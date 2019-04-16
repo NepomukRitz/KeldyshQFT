@@ -1,0 +1,21 @@
+  SHELL = /bin/bash
+
+  CC    = icpc #vtcxx #g++ -3.4 # gcc g++ g++-3.4
+#  CC    = g++ #vtcxx #g++ -3.4 # gcc g++ g++-3.4
+  
+ OPT   =  -shared -O3  `python2-config --cflags`
+#  OPT   = -qopenmp -O3
+#  OPT   = -fopenmp -g  -O0 #-O3
+
+PATH_TO_LIB=~/Code/lib_without_matlab/
+
+  I = -I. -I$(HOME)/Code/lib_without_matlab/ -I$(HOME)/Code/Keldysh_long_range_equilibrium/Includes -I/lrz/sys/tools/python/intelpython27_u4/intelpython2/include -I/lrz/sys/libraries/boost/1.61_icc_serial/include/boost -I/lrz/sys/libraries/gsl/2.3/include -I/lrz/sys/intel/studio2017_u6/compilers_and_libraries_2017.6.256/linux/mkl/include
+  L = -L. -L/lrz/sys/libraries/boost/1.61_icc_serial/lib -L/lrz/sys/tools/python/intelpython27_u4/intelpython2/bin -L/lrz/sys/libraries/gsl/2.3/lib -lgslcblas -L/lrz/sys/intel/studio2017_u6/compilers_and_libraries_2017.6.256/linux/mkl/lib/intel64
+  LINK = -Wl,-rpath=/lrz/sys/libraries/boost/1.61_icc_serial/lib:/lrz/sys/tools/python/intelpython27_u4/intelpython2/lib:/lrz/sys/libraries/gsl/2.3/lib:/lrz/sys/intel/studio2017_u6/compilers_and_libraries_2017.6.256/linux/mkl/lib/intel64
+  LIB  =  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lgsl -lgslcblas -lboost_python 
+%:  %.cpp
+	$(CC) $(OPT) -o $@.so -fPIC $@.cpp  $(PATH_TO_LIB)matrix.cpp $(PATH_TO_LIB)blnla.cpp $(PATH_TO_LIB)physicalpp.cpp $(PATH_TO_LIB)approxxpp.cpp $(PATH_TO_LIB)ozaki.cpp $(PATH_TO_LIB)patterson_set.cpp $(PATH_TO_LIB)basic.cpp $(I) $(L) $(LIB) $(LINK)
+    
+
+# -------------------------------------------------------------------------- #
+

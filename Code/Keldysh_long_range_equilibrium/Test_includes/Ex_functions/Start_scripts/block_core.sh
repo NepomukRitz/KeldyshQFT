@@ -1,0 +1,1 @@
+~/bin/block_core

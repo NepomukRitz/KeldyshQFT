@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --output=/gpfs/work/hmu26/hmu261/DATA/Unit_tests/Ex_methods/LOG/mpi-out.%j
+#SBATCH --error=/gpfs/work/hmu26/hmu261/DATA/Unit_tests/Ex_methods/LOG/mpi-err.%j
+#SBATCH --nodes=2
+#SBATCH --ntasks=2
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=48
+#SBATCH --time=00:01:00
+#SBATCH --partition=batch
+
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+
+cd /gpfs/work/hmu26/hmu261/DATA/Unit_tests/Ex_methods
+srun /gpfs/homea/hmu26/hmu261/bin/ex_mpi_computation

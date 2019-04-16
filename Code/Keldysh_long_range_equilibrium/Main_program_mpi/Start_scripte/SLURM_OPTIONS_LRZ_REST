@@ -1,0 +1,11 @@
+#SBATCH -J MPI_job 
+#SBATCH --get-user-env 
+#SBATCH --clusters=mpp2
+#SBATCH --nodes=2
+#SBATCH --ntasks=2
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=28
+#SBATCH --export=NONE  
+#SBATCH --time=00:15:00
+
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}

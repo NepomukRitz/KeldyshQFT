@@ -1,0 +1,37 @@
+#!/bin/bash
+#SBATCH -o /home/hpc/uh3o1/ri26yad/LOG/LOG_old/OMP_job.%j.%N.out
+#SBATCH -D /home/hpc/uh3o1/ri26yad/RUN
+#SBATCH -J OMP_job
+#SBATCH --get-user-env
+#SBATCH --clusters=lmu_asc
+#SBATCH --partition=lmu_asc_shm8
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=15000
+#SBATCH --mail-type=end
+#SBATCH --mail-user=lukas.weidinger@physik.uni-muenchen.de
+#SBATCH --export=NONE
+#SBATCH --time=72:00:00
+
+. /etc/profile
+. $HOME/.bashrc
+
+export MKL_NUM_THREADS=1
+export OMP_NUM_THREADS=8
+PROGRAM="/home/hpc/uh3o1/ri26yad/bin/dfRG2_general_B0_clean"
+OPTIONS="-muL -1.475 -muR -1.475 -N 31 -Nff 1400 -Nfb 1400 -U .55 -h .000 -Vg .25 -TL 0.001 -TR 0.001 -pot_type 0 -save_all 1 -save_dens 1"
+DIR_DATA_OUT="/naslx/projects/uh3o1/ri26yad/DATA/NE/Vg_25/"
+#Debug info:
+echo "Hostname:"
+/bin/hostname
+echo "Module list:"
+module list
+echo "PROGRAM:" $PROGRAM
+echo "OPTIONS:" $OPTIONS
+echo "DIR_DATA_OUT:" $DIR_DATA_OUT
+echo "OPT_TMP:" $OPT_TMP
+
+cd $DIR_DATA_OUT/
+date
+time $PROGRAM $OPTIONS
+date

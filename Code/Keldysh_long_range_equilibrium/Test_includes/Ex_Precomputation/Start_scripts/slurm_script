@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --output=/p/scratch/chmu26/hmu261/DATA/Unit_tests/Ex_Precomputation/LOG/mpi-out.%j
+#SBATCH --error=/p/scratch/chmu26/hmu261/DATA/Unit_tests/Ex_Precomputation/LOG/mpi-err.%j
+#SBATCH --nodes=2
+#SBATCH --ntasks=2
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=48
+#SBATCH --time=00:01:00
+#SBATCH --partition=batch
+
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+
+cd /p/scratch/chmu26/hmu261/DATA/Unit_tests/Ex_Precomputation
+srun /p/home/jusers/weidinger1/juwels/bin/Ex_Precomputation

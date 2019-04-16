@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --output=/home/hpc/uh3o1/ri26yad/LOG/Main_program_mpi/mpi-out.%j
+#SBATCH --error=/home/hpc/uh3o1/ri26yad/LOG/Main_program_mpi/mpi-err.%j
+#SBATCH -J MPI_job 
+#SBATCH --get-user-env 
+#SBATCH --clusters=mpp2
+#SBATCH --nodes=2
+#SBATCH --ntasks=2
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=28
+#SBATCH --export=NONE  
+#SBATCH --time=00:15:00
+
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+cd /naslx/projects/uh3o1/ri26yad/DATA/Unit_tests/Main_program_mpi
+srun /home/hpc/uh3o1/ri26yad/bin/dsfRG_mpi

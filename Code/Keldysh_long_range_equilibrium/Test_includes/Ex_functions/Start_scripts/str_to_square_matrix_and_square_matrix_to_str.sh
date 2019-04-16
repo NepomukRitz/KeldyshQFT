@@ -1,0 +1,1 @@
+~/bin/str_to_square_matrix_and_square_matrix_to_str

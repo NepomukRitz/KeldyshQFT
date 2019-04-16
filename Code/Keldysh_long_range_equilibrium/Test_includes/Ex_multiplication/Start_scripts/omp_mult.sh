@@ -1,0 +1,1 @@
+~/bin/omp_mult

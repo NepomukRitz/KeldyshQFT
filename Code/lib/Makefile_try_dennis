@@ -1,0 +1,91 @@
+
+  SHELL = /bin/bash
+
+  CC     = icpc
+  
+  ifndef MATLAB
+	MATLAB = /Applications/MATLAB_R2010a.app
+  endif
+
+
+
+  OPT = -O3 #$(OPT2) $(OPT1) $(OPT0)
+
+  I = -I. -I$(MATLAB)/extern/include -I$(HOME)/include $(GSL_INC) 
+#  I = -I. -I$(MATLAB)/extern/include -I$(HOME)/include $(ACML_INC)
+#  L = $(MKL_SHLIB)
+
+# --------------------------------------------------------------------- #
+# Wb,Nov19,04 - lg2c has to come last!!
+# otherwise zoo of error messages such as: undefined reference to 'e_wsfe', ...
+# LIB  = -lwb+ -lm -llapack -lblas -lrfftw -lfftw -lstdc++ -lg2c
+
+  LIB  =# -lmx -lm -lmat -lmex #-llapack -lfftw3 -lstdc++ -lg2c -llapack -lmx -lmex # -lblas
+
+# -licudata -lut -licuuc -licui18n -licuio -lmwmvalue -lmwservices ...
+# spare listing of all other libraries needed by setting LD_LIBRARY_PATH
+# (see .bashrc)
+
+# --------------------------------------------------------------------- #
+# If you link using g++, fortran runtime is linked by adding -lg2c
+# http://www.mrao.cam.ac.uk/~anze/compilers.html
+
+ .SUFFIXES: .c .o .a .cpp .cc .h .cc
+
+ objects =  matrix.o blnla.o physicalpp.o approxxpp.o basic.o
+ objects2 = ozaki.o patterson_set.o
+default: c
+
+# export LD_LIBRARY_PATH=$MATLAB/bin/glnx86:$LD_LIBRARY_PATH
+# works on goldfinger but NOT on scaramanga (stdc++ too old)
+# . ~/.matlab_setup -f -ld
+
+dlib:
+	#make libmypp.so
+	#make clean
+	#make libmyppm.so
+	#make clean
+	make libmyppmd.so
+	make clean
+    
+lib:
+	make libmypp.so
+	make clean
+	make libmyppd.so
+	make clean
+	make libmyppmd.so
+	make clean
+
+fast:
+	make libmyppmd.so
+
+#libmypp.so: DEBUGFLAG=-DDEBUG
+libmypp.so: $(objects)  $(objects2)
+	$(CC) $(OPT) -shared -o $@ $(objects) $(objects2) $(L) $(I) $(LIB)
+	cp *.h $(HOME)/include
+	cp *.cpp $(HOME)/include
+	mv $@ $(HOME)/lib64
+   
+libmyppd.so: DEBUGFLAG=-DDEBUG
+libmyppd.so: $(objects) $(objects2)
+	$(CC) $(OPT) -shared -o $@ $(objects) $(objects2) $(L) $(I) $(LIB)
+	cp *.h $(HOME)/include
+	cp *.cpp $(HOME)/include
+	mv $@ $(HOME)/lib64
+    
+libmyppmd.so: MLFLAG=-DMATLAB
+libmyppmd.so: DEBUGFLAG=-DDEBUG
+libmyppmd.so: $(objects) $(objects2)
+	$(CC) $(OPT) -shared -o $@ $(objects) $(objects2) $(L) $(I) $(LIB)
+	cp *.h $(HOME)/include
+	cp *.cpp $(HOME)/include
+	mv $@ $(HOME)/lib64
+
+%.o:  %.cpp %.h
+	$(CC) $(OPT) -shared -fPIC $(MLFLAG) $(DEBUGFLAG) -c -o $@ $< $(I)
+
+clean:
+	rm $(objects)
+
+# -------------------------------------------------------------------------- #
+

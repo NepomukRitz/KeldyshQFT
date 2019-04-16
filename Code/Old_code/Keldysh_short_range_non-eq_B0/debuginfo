@@ -1,0 +1,10 @@
+#Debug info:
+echo "Hostname:"
+/bin/hostname
+echo "Module list:"
+module list
+echo "PROGRAM:" $PROGRAM
+echo "OPTIONS:" $OPTIONS
+echo "DIR_DATA_OUT:" $DIR_DATA_OUT
+echo "OPT_TMP:" $OPT_TMP
+
