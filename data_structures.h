@@ -8,85 +8,6 @@
 using namespace std;
 typedef complex<double> comp;
 
-// vector of complex numbers, defining element-wise addition and multiplication
-class cvec: public vector<comp> {
-  public:
-    cvec() : vector<comp> () {};
-    cvec(int n) : vector<comp> (n) {};
-    cvec(initializer_list<comp> m) : vector<comp> (m) {};
-
-    comp& operator() (int i) {return (*this)[i]; }
-    cvec operator+ (const cvec& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] + m[i];
-      }
-      return temp;
-    }
-    cvec operator- (const cvec& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] - m[i];
-      }
-      return temp;
-    }
-    cvec operator- () {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = -(*this)[i];
-      }
-      return temp;
-    }
-    cvec operator* (const cvec& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] * m[i];
-      }
-      return temp;
-    }
-    cvec inv() {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = 1./(*this)[i];
-      }
-      return temp;
-    }
-};
-
-/* // OLD IMPLEMENTATION
-class cvec {
-    vector<comp> data;
-  public:
-    cvec() {};
-    cvec(int n) {
-      for (int i=0; i<n; ++i) {
-        data.push_back(0);
-      }
-    }
-    cvec(initializer_list<comp> m) : data(m) {};
-
-    comp& operator() (int i) {return data[i]; }
-    void operator= (initializer_list<comp> m) {
-      cvec temp (m);
-      data = temp.data;
-    }
-    cvec operator+ (const cvec& m) {
-      cvec temp(data.size());
-      for (int i=0; i<data.size(); ++i) {
-        temp.data[i] = data[i] + m.data[i];
-      }
-      return temp;
-    }
-    cvec operator* (const cvec& m) {
-      cvec temp(data.size());
-      for (int i=0; i<data.size(); ++i) {
-        temp.data[i] = data[i] * m.data[i];
-      }
-      return temp;
-    }
-    int size() {return data.size(); }
-};
-*/
 
 // vector of real numbers, defining element-wise addition and multiplication
 class rvec: public vector<double> {
@@ -96,6 +17,8 @@ class rvec: public vector<double> {
     rvec(initializer_list<double> m) : vector<double> (m) {};
 
     double& operator() (int i) {return (*this)[i]; }
+
+    // element-wise addition of two vectors
     rvec operator+ (const rvec& m) {
       rvec temp (this->size());
       for (int i=0; i<this->size(); ++i) {
@@ -103,6 +26,17 @@ class rvec: public vector<double> {
       }
       return temp;
     }
+
+    // addition of a constant
+    rvec operator+ (const double& m) {
+      rvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] + m;
+      }
+      return temp;
+    }
+
+    // element-wise subtraction of two vectors
     rvec operator- (const rvec& m) {
       rvec temp (this->size());
       for (int i=0; i<this->size(); ++i) {
@@ -110,6 +44,17 @@ class rvec: public vector<double> {
       }
       return temp;
     }
+
+    // subtraction of a constant
+    rvec operator- (const double& m) {
+      rvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] - m;
+      }
+      return temp;
+    }
+
+    // invert sign
     rvec operator- () {
       rvec temp (this->size());
       for (int i=0; i<this->size(); ++i) {
@@ -117,6 +62,8 @@ class rvec: public vector<double> {
       }
       return temp;
     }
+
+    // element-wise multiplication of two vectors
     rvec operator* (const rvec& m) {
       rvec temp (this->size());
       for (int i=0; i<this->size(); ++i) {
@@ -124,6 +71,17 @@ class rvec: public vector<double> {
       }
       return temp;
     }
+
+    // multiplication with a constant
+    rvec operator* (const double& m) {
+      rvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] * m;
+      }
+      return temp;
+    }
+
+    // element-wise inversion
     rvec inv() {
       rvec temp (this->size());
       for (int i=0; i<this->size(); ++i) {
@@ -168,6 +126,133 @@ class rvec {
 
 };
 */
+
+
+// vector of complex numbers, defining element-wise addition and multiplication
+class cvec: public vector<comp> {
+public:
+    cvec() : vector<comp> () {};
+    cvec(int n) : vector<comp> (n) {};
+    cvec(initializer_list<comp> m) : vector<comp> (m) {};
+
+    comp& operator() (int i) {return (*this)[i]; }
+
+    // element-wise addition of two vectors
+    cvec operator+ (const cvec& m) {
+      cvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] + m[i];
+      }
+      return temp;
+    }
+
+    // addition of a constant
+    cvec operator+ (const comp& m) {
+      cvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] + m;
+      }
+      return temp;
+    }
+
+    // element-wise subtraction of two vectors
+    cvec operator- (const cvec& m) {
+      cvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] - m[i];
+      }
+      return temp;
+    }
+    // subtraction of a constant
+    cvec operator- (const comp& m) {
+      cvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] - m;
+      }
+      return temp;
+    }
+
+    // invert sign
+    cvec operator- () {
+      cvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = -(*this)[i];
+      }
+      return temp;
+    }
+
+    // element-wise multiplication of two vectors
+    cvec operator* (const cvec& m) {
+      cvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] * m[i];
+      }
+      return temp;
+    }
+
+    // multiplication with a constant
+    cvec operator* (const comp& m) {
+      cvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i] * m;
+      }
+      return temp;
+    }
+
+    // element-wise inversion
+    cvec inv() {
+      cvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = 1./(*this)[i];
+      }
+      return temp;
+    }
+
+    // element-wise real part
+    rvec real() {
+      rvec temp (this->size());
+      for (int i=0; i<this->size(); ++i) {
+        temp[i] = (*this)[i].real();
+      }
+      return temp;
+    }
+};
+
+/* // OLD IMPLEMENTATION
+class cvec {
+    vector<comp> data;
+  public:
+    cvec() {};
+    cvec(int n) {
+      for (int i=0; i<n; ++i) {
+        data.push_back(0);
+      }
+    }
+    cvec(initializer_list<comp> m) : data(m) {};
+
+    comp& operator() (int i) {return data[i]; }
+    void operator= (initializer_list<comp> m) {
+      cvec temp (m);
+      data = temp.data;
+    }
+    cvec operator+ (const cvec& m) {
+      cvec temp(data.size());
+      for (int i=0; i<data.size(); ++i) {
+        temp.data[i] = data[i] + m.data[i];
+      }
+      return temp;
+    }
+    cvec operator* (const cvec& m) {
+      cvec temp(data.size());
+      for (int i=0; i<data.size(); ++i) {
+        temp.data[i] = data[i] * m.data[i];
+      }
+      return temp;
+    }
+    int size() {return data.size(); }
+};
+*/
+
 
 // array of complex numbers, defining element-wise addition and multiplication
 template <int n> class carray: public array<comp, n> {

@@ -5,6 +5,8 @@
 #ifndef PHYSICS_FUNCTIONS_H
 #define PHYSICS_FUNCTIONS_H
 
+#include "data_structures.h"
+
 // Fermi-Dirac distribution function at temperature T and chem. potential mu, as a function of frequency omega
 rvec fermiFunction(rvec& omega, double T, double mu) {
   rvec nF (omega.size());
