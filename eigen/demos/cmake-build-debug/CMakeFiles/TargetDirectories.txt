@@ -1,0 +1,9 @@
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/demos.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/mandelbrot/CMakeFiles/rebuild_cache.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/mandelbrot/CMakeFiles/mandelbrot.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/mandelbrot/CMakeFiles/edit_cache.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/opengl/CMakeFiles/rebuild_cache.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/opengl/CMakeFiles/quaternion_demo.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/opengl/CMakeFiles/edit_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/Keldysch_SelfEnergy_SOPT_2_0.dir/main.cpp.o  -o Keldysch_SelfEnergy_SOPT_2_0 

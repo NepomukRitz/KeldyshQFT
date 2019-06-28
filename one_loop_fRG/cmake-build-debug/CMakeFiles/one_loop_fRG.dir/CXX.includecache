@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/one_loop_fRG/main.cpp
+utility
+-
+iostream
+-
+string
+-
+math.h
+-
+complex.h
+-
+vector
+-
+iostream
+-
+fstream
+-
+sstream
+-
+typeinfo
+-
+

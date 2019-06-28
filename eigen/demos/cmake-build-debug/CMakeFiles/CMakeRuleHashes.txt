@@ -1,0 +1,3 @@
+# Hashes of file build rules.
+552bfef4dd13ad1dbdf012d8c7ccc304 mandelbrot/mandelbrot.moc
+0f044846c9ede97423f511ab1a0158ad opengl/quaternion_demo.moc

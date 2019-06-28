@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/quaternion_demo.dir/gpuhelper.o CMakeFiles/quaternion_demo.dir/icosphere.o CMakeFiles/quaternion_demo.dir/camera.o CMakeFiles/quaternion_demo.dir/trackball.o CMakeFiles/quaternion_demo.dir/quaternion_demo.o  -o quaternion_demo -lQtCore -lQtGui -lQtOpenGL -lGL -lGLU 

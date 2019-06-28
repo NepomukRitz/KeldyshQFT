@@ -1,0 +1,5 @@
+-I/usr/include/qt4
+-DNDEBUG
+-o
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/mandelbrot/mandelbrot.moc
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/mandelbrot/mandelbrot.h
