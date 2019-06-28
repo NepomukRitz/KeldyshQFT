@@ -23,8 +23,8 @@ const long int n_integration = 21;
 const int n_evolution = 5;
 
 //Frequency range on which it's integrated
-const double x_a = -20.0;
-const double x_b = 20.0;
+const double x_a = -15.0;
+const double x_b = 15.0;
 const double domega = (x_b-x_a)/((double)(n_integration-1));
 
 //Values for the start and finish of the fRG flow
@@ -42,10 +42,10 @@ vector<double > weights(n_integration); //Declaration of the weights vector
 const comp epsilon = 0.; // NOLINT(cert-err58-cpp)
 const comp Gamma = 1.; // NOLINT(cert-err58-cpp)
 
-const double nu = 0.5;;
+const double nu = 0.5;
 
 
-class Vertex : public vector<cmat>
+class Vertex
 {
 public:
     vector<vector<cvec> > vert;
@@ -79,9 +79,8 @@ public:
     {
         return vert[i];
     }
-
-
 };
+
 //--------------------------------------------------------------------------------------------------------------------//
 //Function predeclarations
 void setUpLambda();
@@ -147,6 +146,11 @@ int main() {
      * Strictly auxiliary*/
     Propagator s_omega(omega.size());
 
+//    //Stuff for debugging
+//    Propagator gr(omega.size()), ga(omega.size()), gk(omega.size());
+//    Propagator sr(omega.size()), sa(omega.size()), sk(omega.size());
+
+
     //Initialization of the self energy, the propagator and the single scale propagator
     vector<Propagator> SigmaR(lambda.size(), s_omega);
     vector<Propagator> SigmaA(lambda.size(), s_omega);
@@ -183,6 +187,50 @@ int main() {
 
     //Writes out the results in .dat files
     writeOutFile(SigmaR, SigmaA, SigmaK, Sigma22, PropR, PropA, PropK);
+
+//    for (int i=0;i<omega.size();i++) {
+//        gr[i] = gR(lambda[4], omega[i]);
+//        ga[i] = gA(lambda[4], omega[i]);
+//        gk[i] = gK(lambda[4], omega[i]);
+//
+//        sr[i] = sR(lambda[4], omega[i]);
+//        sa[i] = sA(lambda[4], omega[i]);
+//        sk[i] = sK(lambda[4], omega[i]);
+//    }
+//
+//    ostringstream propR, propA, propK, sspropR, sspropA, sspropK;
+//
+//    propR << "propR.dat";
+//    propA << "propA.dat";
+//    propK << "propK.dat";
+//    sspropR << "sspropR.dat";
+//    sspropA << "sspropA.dat";
+//    sspropK << "sspropK.dat";
+//
+//    ofstream my_file_propR, my_file_propA, my_file_propK, my_file_sspropR, my_file_sspropA, my_file_sspropK;
+//
+//    my_file_propR.open(propR.str());
+//    my_file_propA.open(propA.str());
+//    my_file_propK.open(propK.str());
+//    my_file_sspropR.open(sspropR.str());
+//    my_file_sspropA.open(sspropA.str());
+//    my_file_sspropK.open(sspropK.str());
+//
+//    for (int j = 0; j < omega.size(); j++) {
+//        my_file_propR << omega[j] << " " << gr[j].real() << " " << gr[j].imag() << "\n";
+//        my_file_propA << omega[j] << " " << ga[j].real() << " " << ga[j].imag() << "\n";
+//        my_file_propK << omega[j] << " " << gk[j].real() << " " << gk[j].imag() << "\n";
+//        my_file_sspropR << omega[j] << " " << sr[j].real() << " " << sr[j].imag() << "\n";
+//        my_file_sspropA << omega[j] << " " << sa[j].real() << " " << sa[j].imag() << "\n";
+//        my_file_sspropK << omega[j] << " " << sk[j].real() << " " << sk[j].imag() << "\n";
+//
+//    }
+//    my_file_propR.close();
+//    my_file_propA.close();
+//    my_file_propK.close();
+//    my_file_sspropR.close();
+//    my_file_sspropA.close();
+//    my_file_sspropK.close();
     return 0;
 }
 
@@ -227,12 +275,12 @@ comp gR(double lam, double ome)
 
 comp sR(double lam, double ome)
 {
-    return ((comp)-0.5i)*gR(lam,ome)*gR(lam,ome);
+    return -((comp)0.5i)*gR(lam,ome)*gR(lam,ome);
 }
 
 comp gA(double lam, double ome)
 {
-    return 1./(ome-epsilon+((comp)-0.5i*(Gamma+lam)));
+    return 1./(ome-epsilon-((comp)0.5i*(Gamma+lam)));
 }
 
 comp sA(double lam, double ome)
@@ -255,7 +303,7 @@ Propagator SR(double l, Propagator &SigmaR)
 {
     Propagator resp(omega.size());
     for (int i=0; i<omega.size();i++)
-        resp[i] = -(comp)1.i*1./2.*GR(l,SigmaR)[i]*GR(l,SigmaR)[i];
+        resp[i] = -((comp)0.5i)*GR(l,SigmaR)[i]*GR(l,SigmaR)[i];
     return resp;
 }
 
@@ -264,7 +312,7 @@ Propagator SA(double l, Propagator &SigmaA)
 {
     Propagator resp(omega.size());
     for (int i=0; i<omega.size();i++)
-        resp[i] = (comp)1.i*1./2.*GA(l,SigmaA)[i]*GA(l,SigmaA)[i];
+        resp[i] = ((comp)0.5i)*GA(l,SigmaA)[i]*GA(l,SigmaA)[i];
     return resp;
 }
 
@@ -283,7 +331,7 @@ Propagator GR(double l, Propagator &SigmaR)
 {
     Propagator resp(omega.size());
     for (int i=0; i<omega.size();i++) {
-        resp[i] = 1. / (omega[i] - epsilon + ((comp)0.5i)*(Gamma + l) - SigmaR[i]);
+        resp[i] = 1./(omega[i]-epsilon+((comp)0.5i*(Gamma+l))-SigmaR[i]);
     }
     return resp;
 }
@@ -293,7 +341,7 @@ Propagator GA(double l, Propagator &SigmaA)
 {
     Propagator resp(omega.size());
     for (int i=0; i<omega.size();i++) {
-        resp[i] = 1. / (omega[i] - epsilon - ((comp)0.5i)*(Gamma + l) - SigmaA[i]);
+        resp[i] = 1./(omega[i]-epsilon-((comp)0.5i*(Gamma+l))-SigmaA[i]);
     }
     return resp;
 }
@@ -423,8 +471,8 @@ comp dot_product(cvec  &x, vector<double > &y)
 //Each function here returns the corresponding Keldysh component of the vertex, taken in SOPT
 Vertex Gamma1111(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -436,8 +484,7 @@ Vertex Gamma1111(double lam)
                     double p = omega[i]+omega[j]-omega[l];
                     double t = omega[l]+omega[k]-omega[i];
 
-                    integrand[l] = gR(lam,q)*(gR(lam,a)+gA(lam,p)+gR(lam,t)) + gA(lam,q)*(gA(lam,a)+gR(lam,p)+gA(lam,t));
-
+                    integrand[l] = gR(lam,q)*(gR(lam,a)+gA(lam,p)+gR(lam,t))+gA(lam,q)*(gA(lam,a)+gR(lam,p)+gA(lam,t));
                 }
                 resp[i][j][k] = nu*nu*simpson_integrate(integrand);
             }
@@ -447,8 +494,8 @@ Vertex Gamma1111(double lam)
 }
 Vertex Gamma1112(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -471,8 +518,8 @@ Vertex Gamma1112(double lam)
 }
 Vertex Gamma1121(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec  gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -495,8 +542,8 @@ Vertex Gamma1121(double lam)
 }
 Vertex Gamma1122(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -519,8 +566,8 @@ Vertex Gamma1122(double lam)
 }
 Vertex Gamma1211(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -543,8 +590,8 @@ Vertex Gamma1211(double lam)
 }
 Vertex Gamma1212(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -567,8 +614,8 @@ Vertex Gamma1212(double lam)
 }
 Vertex Gamma1221(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -590,8 +637,8 @@ Vertex Gamma1221(double lam)
 }
 Vertex Gamma1222(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -613,8 +660,8 @@ Vertex Gamma1222(double lam)
 }
 Vertex Gamma2111(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -636,8 +683,8 @@ Vertex Gamma2111(double lam)
 }
 Vertex Gamma2112(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -659,8 +706,8 @@ Vertex Gamma2112(double lam)
 }
 Vertex Gamma2121(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -683,8 +730,8 @@ Vertex Gamma2121(double lam)
 }
 Vertex Gamma2122(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -709,8 +756,8 @@ Vertex Gamma2122(double lam)
 }
 Vertex Gamma2211(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -722,7 +769,7 @@ Vertex Gamma2211(double lam)
                     double p = omega[i]+omega[j]-omega[l];
                     double t = omega[l]+omega[k]-omega[i];
 
-                    integrand[l] = gR(lam,q)*(gA(lam,a)+gA(lam,p)+gA(lam,t))+ gA(lam,q)*(gR(lam,a)+gR(lam,p)+gR(lam,t)) + gK(lam,q)*(gK(lam,a)+gR(lam,t));
+                    integrand[l] = gR(lam,q)*(gA(lam,a)+gA(lam,p)+gA(lam,t))+ gA(lam,q)*(gR(lam,a)+gR(lam,p)+gR(lam,t)) + gK(lam,q)*(gK(lam,a)+gK(lam,t));
 
                 }
                 resp[i][j][k] = nu*nu*simpson_integrate(integrand);
@@ -733,8 +780,8 @@ Vertex Gamma2211(double lam)
 }
 Vertex Gamma2212(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -757,8 +804,8 @@ Vertex Gamma2212(double lam)
 }
 Vertex Gamma2221(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){
@@ -782,8 +829,8 @@ Vertex Gamma2221(double lam)
 }
 Vertex Gamma2222(double lam)
 {
-    vector<comp> gamma_1(omega.size());
-    vector<vector<comp> > gamma_2(omega.size(), gamma_1);
+    cvec gamma_1(omega.size());
+    vector<cvec> gamma_2(omega.size(), gamma_1);
     Vertex resp (omega.size(), gamma_2);
     for(int i=0; i<omega.size(); i++){
         for(int j=0; j<omega.size(); j++){

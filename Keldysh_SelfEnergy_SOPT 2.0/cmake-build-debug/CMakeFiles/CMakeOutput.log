@@ -10,7 +10,7 @@ The output was:
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
 
-The C compiler identification is GNU, found in "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdC/a.out"
+The C compiler identification is GNU, found in "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdC/a.out"
 
 Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
 Compiler: /usr/bin/c++ 
@@ -23,38 +23,38 @@ The output was:
 
 Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
 
-The CXX compiler identification is GNU, found in "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdCXX/a.out"
+The CXX compiler identification is GNU, found in "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdCXX/a.out"
 
 Determining if the C compiler works passed with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_ed04b/fast 
-/usr/bin/make -f CMakeFiles/cmTC_ed04b.dir/build.make CMakeFiles/cmTC_ed04b.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_ed04b.dir/testCCompiler.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_ed04b.dir/testCCompiler.c.o   -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp/testCCompiler.c"
-Linking C executable cmTC_ed04b
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ed04b.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_ed04b.dir/testCCompiler.c.o  -o cmTC_ed04b 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_155f5/fast 
+/usr/bin/make -f CMakeFiles/cmTC_155f5.dir/build.make CMakeFiles/cmTC_155f5.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_155f5.dir/testCCompiler.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_155f5.dir/testCCompiler.c.o   -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp/testCCompiler.c"
+Linking C executable cmTC_155f5
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_155f5.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_155f5.dir/testCCompiler.c.o  -o cmTC_155f5 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_44ecf/fast 
-/usr/bin/make -f CMakeFiles/cmTC_44ecf.dir/build.make CMakeFiles/cmTC_44ecf.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc   -v -o CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o   -c /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCCompilerABI.c
+Run Build Command(s):/usr/bin/make cmTC_f55a0/fast 
+/usr/bin/make -f CMakeFiles/cmTC_f55a0.dir/build.make CMakeFiles/cmTC_f55a0.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc   -v -o CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o   -c /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCCompilerABI.c
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 Target: x86_64-linux-gnu
 Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.11' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
 Thread model: posix
 gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11) 
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/5/cc1 -quiet -v -imultiarch x86_64-linux-gnu /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o -version -fstack-protector-strong -Wformat -Wformat-security -o /tmp/ccKnUioM.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/5/cc1 -quiet -v -imultiarch x86_64-linux-gnu /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o -version -fstack-protector-strong -Wformat -Wformat-security -o /tmp/ccl6k85q.s
 GNU C11 (Ubuntu 5.4.0-6ubuntu1~16.04.11) version 5.4.0 20160609 (x86_64-linux-gnu)
 	compiled by GNU C version 5.4.0 20160609, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -72,15 +72,15 @@ GNU C11 (Ubuntu 5.4.0-6ubuntu1~16.04.11) version 5.4.0 20160609 (x86_64-linux-gn
 	compiled by GNU C version 5.4.0 20160609, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 Compiler executable checksum: 5f69ca549f086e2c3748f9d1423a4dee
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
- as -v --64 -o CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o /tmp/ccKnUioM.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o /tmp/ccl6k85q.s
 GNU assembler version 2.26.1 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.26.1
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
-Linking C executable cmTC_44ecf
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_44ecf.dir/link.txt --verbose=1
-/usr/bin/cc     -v CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o  -o cmTC_44ecf 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+Linking C executable cmTC_f55a0
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f55a0.dir/link.txt --verbose=1
+/usr/bin/cc     -v CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o  -o cmTC_f55a0 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper
@@ -90,9 +90,9 @@ Thread model: posix
 gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_44ecf' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccI2ksBR.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_44ecf /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_f55a0' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccZjx7Gv.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_f55a0 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
 Parsed C implicit include dir info from above output: rv=done
@@ -114,21 +114,21 @@ Parsed C implicit include dir info from above output: rv=done
 
 Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):/usr/bin/make cmTC_44ecf/fast ]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_44ecf.dir/build.make CMakeFiles/cmTC_44ecf.dir/build]
-  ignore line: [make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc   -v -o CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o   -c /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCCompilerABI.c]
+  ignore line: [Run Build Command(s):/usr/bin/make cmTC_f55a0/fast ]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_f55a0.dir/build.make CMakeFiles/cmTC_f55a0.dir/build]
+  ignore line: [make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc   -v -o CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o   -c /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCCompilerABI.c]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [Target: x86_64-linux-gnu]
   ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.11' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
   ignore line: [Thread model: posix]
   ignore line: [gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11) ]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/5/cc1 -quiet -v -imultiarch x86_64-linux-gnu /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o -version -fstack-protector-strong -Wformat -Wformat-security -o /tmp/ccKnUioM.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/5/cc1 -quiet -v -imultiarch x86_64-linux-gnu /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o -version -fstack-protector-strong -Wformat -Wformat-security -o /tmp/ccl6k85q.s]
   ignore line: [GNU C11 (Ubuntu 5.4.0-6ubuntu1~16.04.11) version 5.4.0 20160609 (x86_64-linux-gnu)]
   ignore line: [	compiled by GNU C version 5.4.0 20160609, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3]
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
@@ -146,15 +146,15 @@ Parsed C implicit link information from above output:
   ignore line: [	compiled by GNU C version 5.4.0 20160609, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3]
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
   ignore line: [Compiler executable checksum: 5f69ca549f086e2c3748f9d1423a4dee]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [ as -v --64 -o CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o /tmp/ccKnUioM.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [ as -v --64 -o CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o /tmp/ccl6k85q.s]
   ignore line: [GNU assembler version 2.26.1 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.26.1]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [Linking C executable cmTC_44ecf]
-  ignore line: [/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_44ecf.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc     -v CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o  -o cmTC_44ecf ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [Linking C executable cmTC_f55a0]
+  ignore line: [/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f55a0.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc     -v CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o  -o cmTC_f55a0 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper]
@@ -164,13 +164,13 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_44ecf' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccI2ksBR.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_44ecf /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_f55a0' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccZjx7Gv.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_f55a0 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccI2ksBR.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccZjx7Gv.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -187,7 +187,7 @@ Parsed C implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_44ecf] ==> ignore
+    arg [cmTC_f55a0] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o] ==> ignore
@@ -199,7 +199,7 @@ Parsed C implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../..]
-    arg [CMakeFiles/cmTC_44ecf.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_f55a0.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -227,17 +227,17 @@ Parsed C implicit link information from above output:
 
 
 Detecting C [-std=c11] compiler features compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_2d4f8/fast 
-/usr/bin/make -f CMakeFiles/cmTC_2d4f8.dir/build.make CMakeFiles/cmTC_2d4f8.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_2d4f8.dir/feature_tests.c.o
-/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_2d4f8.dir/feature_tests.c.o   -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.c"
-Linking C executable cmTC_2d4f8
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2d4f8.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_2d4f8.dir/feature_tests.c.o  -o cmTC_2d4f8 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_d823c/fast 
+/usr/bin/make -f CMakeFiles/cmTC_d823c.dir/build.make CMakeFiles/cmTC_d823c.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d823c.dir/feature_tests.c.o
+/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_d823c.dir/feature_tests.c.o   -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.c"
+Linking C executable cmTC_d823c
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d823c.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_d823c.dir/feature_tests.c.o  -o cmTC_d823c 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -247,17 +247,17 @@ make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Ke
 
 
 Detecting C [-std=c99] compiler features compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_df9a2/fast 
-/usr/bin/make -f CMakeFiles/cmTC_df9a2.dir/build.make CMakeFiles/cmTC_df9a2.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_df9a2.dir/feature_tests.c.o
-/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_df9a2.dir/feature_tests.c.o   -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.c"
-Linking C executable cmTC_df9a2
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_df9a2.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_df9a2.dir/feature_tests.c.o  -o cmTC_df9a2 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_e2706/fast 
+/usr/bin/make -f CMakeFiles/cmTC_e2706.dir/build.make CMakeFiles/cmTC_e2706.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e2706.dir/feature_tests.c.o
+/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_e2706.dir/feature_tests.c.o   -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.c"
+Linking C executable cmTC_e2706
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e2706.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_e2706.dir/feature_tests.c.o  -o cmTC_e2706 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -267,17 +267,17 @@ make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Ke
 
 
 Detecting C [-std=c90] compiler features compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_b7896/fast 
-/usr/bin/make -f CMakeFiles/cmTC_b7896.dir/build.make CMakeFiles/cmTC_b7896.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b7896.dir/feature_tests.c.o
-/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_b7896.dir/feature_tests.c.o   -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.c"
-Linking C executable cmTC_b7896
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b7896.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_b7896.dir/feature_tests.c.o  -o cmTC_b7896 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_cd674/fast 
+/usr/bin/make -f CMakeFiles/cmTC_cd674.dir/build.make CMakeFiles/cmTC_cd674.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_cd674.dir/feature_tests.c.o
+/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_cd674.dir/feature_tests.c.o   -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.c"
+Linking C executable cmTC_cd674
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cd674.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_cd674.dir/feature_tests.c.o  -o cmTC_cd674 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -285,35 +285,35 @@ make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Ke
     Feature record: C_FEATURE:0c_static_assert
     Feature record: C_FEATURE:0c_variadic_macros
 Determining if the CXX compiler works passed with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_cf739/fast 
-/usr/bin/make -f CMakeFiles/cmTC_cf739.dir/build.make CMakeFiles/cmTC_cf739.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_cf739.dir/testCXXCompiler.cxx.o
-/usr/bin/c++     -o CMakeFiles/cmTC_cf739.dir/testCXXCompiler.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp/testCXXCompiler.cxx"
-Linking CXX executable cmTC_cf739
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cf739.dir/link.txt --verbose=1
-/usr/bin/c++       CMakeFiles/cmTC_cf739.dir/testCXXCompiler.cxx.o  -o cmTC_cf739 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_52d11/fast 
+/usr/bin/make -f CMakeFiles/cmTC_52d11.dir/build.make CMakeFiles/cmTC_52d11.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_52d11.dir/testCXXCompiler.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_52d11.dir/testCXXCompiler.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp/testCXXCompiler.cxx"
+Linking CXX executable cmTC_52d11
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_52d11.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_52d11.dir/testCXXCompiler.cxx.o  -o cmTC_52d11 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX compiler ABI info compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_12063/fast 
-/usr/bin/make -f CMakeFiles/cmTC_12063.dir/build.make CMakeFiles/cmTC_12063.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o
-/usr/bin/c++    -v -o CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o -c /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp
+Run Build Command(s):/usr/bin/make cmTC_3e1a7/fast 
+/usr/bin/make -f CMakeFiles/cmTC_3e1a7.dir/build.make CMakeFiles/cmTC_3e1a7.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++    -v -o CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o -c /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 Target: x86_64-linux-gnu
 Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.11' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
 Thread model: posix
 gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11) 
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/5/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o -version -fstack-protector-strong -Wformat -Wformat-security -o /tmp/ccOM2kcC.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/5/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o -version -fstack-protector-strong -Wformat -Wformat-security -o /tmp/cc6Gc3am.s
 GNU C++ (Ubuntu 5.4.0-6ubuntu1~16.04.11) version 5.4.0 20160609 (x86_64-linux-gnu)
 	compiled by GNU C version 5.4.0 20160609, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -335,15 +335,15 @@ GNU C++ (Ubuntu 5.4.0-6ubuntu1~16.04.11) version 5.4.0 20160609 (x86_64-linux-gn
 	compiled by GNU C version 5.4.0 20160609, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 Compiler executable checksum: 8c2b43f572cd3f060e41aeab70254763
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- as -v --64 -o CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccOM2kcC.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o /tmp/cc6Gc3am.s
 GNU assembler version 2.26.1 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.26.1
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
-Linking CXX executable cmTC_12063
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_12063.dir/link.txt --verbose=1
-/usr/bin/c++      -v CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_12063 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+Linking CXX executable cmTC_3e1a7
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3e1a7.dir/link.txt --verbose=1
+/usr/bin/c++      -v CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_3e1a7 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper
@@ -353,9 +353,9 @@ Thread model: posix
 gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_12063' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccgSr14E.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_12063 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3e1a7' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqKxfbr.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_3e1a7 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
 Parsed CXX implicit include dir info from above output: rv=done
@@ -383,21 +383,21 @@ Parsed CXX implicit include dir info from above output: rv=done
 
 Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):/usr/bin/make cmTC_12063/fast ]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_12063.dir/build.make CMakeFiles/cmTC_12063.dir/build]
-  ignore line: [make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/usr/bin/c++    -v -o CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o -c /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Run Build Command(s):/usr/bin/make cmTC_3e1a7/fast ]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_3e1a7.dir/build.make CMakeFiles/cmTC_3e1a7.dir/build]
+  ignore line: [make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++    -v -o CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o -c /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [Target: x86_64-linux-gnu]
   ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.11' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
   ignore line: [Thread model: posix]
   ignore line: [gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11) ]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/5/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o -version -fstack-protector-strong -Wformat -Wformat-security -o /tmp/ccOM2kcC.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/5/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o -version -fstack-protector-strong -Wformat -Wformat-security -o /tmp/cc6Gc3am.s]
   ignore line: [GNU C++ (Ubuntu 5.4.0-6ubuntu1~16.04.11) version 5.4.0 20160609 (x86_64-linux-gnu)]
   ignore line: [	compiled by GNU C version 5.4.0 20160609, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3]
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
@@ -419,15 +419,15 @@ Parsed CXX implicit link information from above output:
   ignore line: [	compiled by GNU C version 5.4.0 20160609, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3]
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
   ignore line: [Compiler executable checksum: 8c2b43f572cd3f060e41aeab70254763]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  ignore line: [ as -v --64 -o CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccOM2kcC.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [ as -v --64 -o CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o /tmp/cc6Gc3am.s]
   ignore line: [GNU assembler version 2.26.1 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.26.1]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  ignore line: [Linking CXX executable cmTC_12063]
-  ignore line: [/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_12063.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/c++      -v CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_12063 ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [Linking CXX executable cmTC_3e1a7]
+  ignore line: [/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3e1a7.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++      -v CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_3e1a7 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper]
@@ -437,13 +437,13 @@ Parsed CXX implicit link information from above output:
   ignore line: [gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.11) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_12063' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccgSr14E.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_12063 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3e1a7' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqKxfbr.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_3e1a7 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccgSr14E.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccqKxfbr.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -460,7 +460,7 @@ Parsed CXX implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_12063] ==> ignore
+    arg [cmTC_3e1a7] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o] ==> ignore
@@ -472,7 +472,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../..]
-    arg [CMakeFiles/cmTC_12063.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_3e1a7.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -498,17 +498,17 @@ Parsed CXX implicit link information from above output:
 
 
 Detecting CXX [-std=c++1z] compiler features compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_11019/fast 
-/usr/bin/make -f CMakeFiles/cmTC_11019.dir/build.make CMakeFiles/cmTC_11019.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_11019.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++1z -o CMakeFiles/cmTC_11019.dir/feature_tests.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.cxx"
-Linking CXX executable cmTC_11019
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_11019.dir/link.txt --verbose=1
-/usr/bin/c++       CMakeFiles/cmTC_11019.dir/feature_tests.cxx.o  -o cmTC_11019 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_0f8b9/fast 
+/usr/bin/make -f CMakeFiles/cmTC_0f8b9.dir/build.make CMakeFiles/cmTC_0f8b9.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_0f8b9.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++1z -o CMakeFiles/cmTC_0f8b9.dir/feature_tests.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.cxx"
+Linking CXX executable cmTC_0f8b9
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0f8b9.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_0f8b9.dir/feature_tests.cxx.o  -o cmTC_0f8b9 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
@@ -571,17 +571,17 @@ make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Ke
 
 
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_4908e/fast 
-/usr/bin/make -f CMakeFiles/cmTC_4908e.dir/build.make CMakeFiles/cmTC_4908e.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_4908e.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++14 -o CMakeFiles/cmTC_4908e.dir/feature_tests.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.cxx"
-Linking CXX executable cmTC_4908e
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4908e.dir/link.txt --verbose=1
-/usr/bin/c++       CMakeFiles/cmTC_4908e.dir/feature_tests.cxx.o  -o cmTC_4908e 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_1eb75/fast 
+/usr/bin/make -f CMakeFiles/cmTC_1eb75.dir/build.make CMakeFiles/cmTC_1eb75.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_1eb75.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++14 -o CMakeFiles/cmTC_1eb75.dir/feature_tests.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.cxx"
+Linking CXX executable cmTC_1eb75
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1eb75.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_1eb75.dir/feature_tests.cxx.o  -o cmTC_1eb75 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
@@ -644,17 +644,17 @@ make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Ke
 
 
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_ad998/fast 
-/usr/bin/make -f CMakeFiles/cmTC_ad998.dir/build.make CMakeFiles/cmTC_ad998.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_ad998.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_ad998.dir/feature_tests.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.cxx"
-Linking CXX executable cmTC_ad998
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ad998.dir/link.txt --verbose=1
-/usr/bin/c++       CMakeFiles/cmTC_ad998.dir/feature_tests.cxx.o  -o cmTC_ad998 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_773ed/fast 
+/usr/bin/make -f CMakeFiles/cmTC_773ed.dir/build.make CMakeFiles/cmTC_773ed.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_773ed.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_773ed.dir/feature_tests.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.cxx"
+Linking CXX executable cmTC_773ed
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_773ed.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_773ed.dir/feature_tests.cxx.o  -o cmTC_773ed 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
@@ -717,17 +717,17 @@ make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Ke
 
 
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_d7f63/fast 
-/usr/bin/make -f CMakeFiles/cmTC_d7f63.dir/build.make CMakeFiles/cmTC_d7f63.dir/build
-make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_d7f63.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_d7f63.dir/feature_tests.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.cxx"
-Linking CXX executable cmTC_d7f63
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d7f63.dir/link.txt --verbose=1
-/usr/bin/c++       CMakeFiles/cmTC_d7f63.dir/feature_tests.cxx.o  -o cmTC_d7f63 
-make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysch_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Run Build Command(s):/usr/bin/make cmTC_746a8/fast 
+/usr/bin/make -f CMakeFiles/cmTC_746a8.dir/build.make CMakeFiles/cmTC_746a8.dir/build
+make[1]: Entering directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_746a8.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_746a8.dir/feature_tests.cxx.o -c "/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/feature_tests.cxx"
+Linking CXX executable cmTC_746a8
+/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_746a8.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_746a8.dir/feature_tests.cxx.o  -o cmTC_746a8 
+make[1]: Leaving directory '/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT 2.0/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers

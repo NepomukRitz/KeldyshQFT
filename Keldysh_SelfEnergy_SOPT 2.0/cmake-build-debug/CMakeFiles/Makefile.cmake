@@ -48,5 +48,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/Keldysch_SelfEnergy_SOPT_2_0.dir/DependInfo.cmake"
+  "CMakeFiles/Keldysh_SelfEnergy_SOPT_2_0.dir/DependInfo.cmake"
   )

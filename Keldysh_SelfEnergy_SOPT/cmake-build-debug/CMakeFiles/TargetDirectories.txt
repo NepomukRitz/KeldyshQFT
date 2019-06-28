@@ -1,3 +1,0 @@
-/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT/cmake-build-debug/CMakeFiles/Keldysh_SelfEnergy_SOPT.dir
-/home/s/Sa.Aguirre/Downloads/Thesis/Preliminaries/Keldysh_SelfEnergy_SOPT/cmake-build-debug/CMakeFiles/edit_cache.dir
