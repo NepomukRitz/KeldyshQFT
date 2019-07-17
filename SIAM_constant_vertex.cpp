@@ -17,6 +17,7 @@ const std::complex<double> I (0,1);
 #include "data_structures.h"   // defines essential data types
 #include "util.h"              // time
 #include "physics_functions.h" // functions providing physical objects
+#include "integration.h" //
 
 using namespace std;
 using Eigen::MatrixXcd;
@@ -228,7 +229,18 @@ int main() {
 
   V2P SE = initialize_SE(N_omega, U);
 
+  // -----------
 
+  cvec test (3);
+  test(0) = 1;
+  test(1) = 2;
+  test(2) = 3;
+
+  cout << integrate_riemann(test, 1.0) << endl;
+  cout << integrate_trapezoid(test, 1.0) << endl;
+
+
+  // -----------
 
   // usleep(1000); // wait for a certain number of microseconds
   get_time(t0); // print time elapsed since time t0

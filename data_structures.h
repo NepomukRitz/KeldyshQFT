@@ -5,381 +5,316 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
+#include <initializer_list>
+
 using namespace std;
 typedef complex<double> comp;
 
+/// DECLARATIONS ///
 
-// vector of real numbers, defining element-wise addition and multiplication
-class rvec: public vector<double> {
+// general vector class, defining element-wise addition, subtraction and multiplication
+template <typename T>
+class basic_vec : public vector<T> {
   public:
-    rvec() : vector<double> () {};
-    rvec(int n) : vector<double> (n) {};
-    rvec(initializer_list<double> m) : vector<double> (m) {};
+    basic_vec() : vector<T> () {};
+    basic_vec(int n) : vector<T> (n) {};
+    basic_vec(int n, T& value) : vector<T> (n, value) {}; // TODO: test
+    basic_vec(initializer_list<T> m) : vector<T> (m) {};
 
-    double& operator() (int i) {return (*this)[i]; }
+    T& operator() (int i) {return (*this)[i]; }
 
-    // element-wise addition of two vectors
-    rvec operator+ (const rvec& m) {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] + m[i];
-      }
-      return temp;
-    }
+    basic_vec<T> operator+= (const basic_vec<T> &m);  // element-wise addition of two vectors
+    basic_vec<T> operator+= (const T &c);             // addition of a constant
+    basic_vec<T> operator-= (const basic_vec<T> &m);  // element-wise subtraction of two vectors
+    basic_vec<T> operator-= (const T &c);             // subtraction of a constant
+    basic_vec<T> operator*= (const basic_vec<T> &m);  // element-wise multiplication of two vectors
+    basic_vec<T> operator*= (const T &c);             // multiplication with a constant
 
-    // addition of a constant
-    rvec operator+ (const double& m) {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] + m;
-      }
-      return temp;
-    }
-
-    // element-wise subtraction of two vectors
-    rvec operator- (const rvec& m) {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] - m[i];
-      }
-      return temp;
-    }
-
-    // subtraction of a constant
-    rvec operator- (const double& m) {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] - m;
-      }
-      return temp;
-    }
-
-    // invert sign
-    rvec operator- () {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = -(*this)[i];
-      }
-      return temp;
-    }
-
-    // element-wise multiplication of two vectors
-    rvec operator* (const rvec& m) {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] * m[i];
-      }
-      return temp;
-    }
-
-    // multiplication with a constant
-    rvec operator* (const double& m) {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] * m;
-      }
-      return temp;
-    }
-
-    // element-wise inversion
-    rvec inv() {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = 1./(*this)[i];
-      }
-      return temp;
-    }
 };
 
-/* // OLD IMPLEMENTATION
-class rvec {
-    vector<double> data;
+
+// derived general vector class (e.g. for real vector: vec<double>)
+template <typename T>
+class vec : public basic_vec<T> {
   public:
-    rvec() {};
-    rvec(int n) {
-      for (int i=0; i<n; ++i) {
-        data.push_back(0);
-      }
-    }
-    rvec(initializer_list<double> m) : data(m) {};
+    vec() : basic_vec<T> () {};
+    vec(int n) : basic_vec<T> (n) {};
+    vec(int n, T& value) : basic_vec<T> (n, value) {}; // TODO: test
+    vec(initializer_list<T> m) : basic_vec<T> (m) {};
 
-    double& operator() (int i) {return data[i]; }
-    void operator= (initializer_list<double> m) {
-      rvec temp (m);
-      data = temp.data;
-    }
-    rvec operator+ (const rvec& m) {
-      rvec temp(data.size());
-      for (int i=0; i<data.size(); ++i) {
-        temp.data[i] = data[i] + m.data[i];
-      }
-      return temp;
-    }
-    rvec operator* (const rvec& m) {
-      rvec temp(data.size());
-      for (int i=0; i<data.size(); ++i) {
-        temp.data[i] = data[i] * m.data[i];
-      }
-      return temp;
-    }
-    int size() {return data.size(); }
-
-};
-*/
-
-
-// vector of complex numbers, defining element-wise addition and multiplication
-class cvec: public vector<comp> {
-public:
-    cvec() : vector<comp> () {};
-    cvec(int n) : vector<comp> (n) {};
-    cvec(initializer_list<comp> m) : vector<comp> (m) {};
-
-    comp& operator() (int i) {return (*this)[i]; }
-
-    // element-wise addition of two vectors
-    cvec operator+ (const cvec& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] + m[i];
-      }
-      return temp;
-    }
-
-    // addition of a constant
-    cvec operator+ (const comp& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] + m;
-      }
-      return temp;
-    }
-
-    // element-wise subtraction of two vectors
-    cvec operator- (const cvec& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] - m[i];
-      }
-      return temp;
-    }
-    // subtraction of a constant
-    cvec operator- (const comp& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] - m;
-      }
-      return temp;
-    }
-
-    // invert sign
-    cvec operator- () {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = -(*this)[i];
-      }
-      return temp;
-    }
-
-    // element-wise multiplication of two vectors
-    cvec operator* (const cvec& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] * m[i];
-      }
-      return temp;
-    }
-
-    // multiplication with a constant
-    cvec operator* (const comp& m) {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] * m;
-      }
-      return temp;
-    }
-
-    // element-wise inversion
-    cvec inv() {
-      cvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = 1./(*this)[i];
-      }
-      return temp;
-    }
-
-    // element-wise real part
-    rvec real() {
-      rvec temp (this->size());
-      for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i].real();
-      }
-      return temp;
-    }
+    vec<T> inv(); // element-wise inverse
 };
 
-/* // OLD IMPLEMENTATION
-class cvec {
-    vector<comp> data;
+
+// derived complex vector class, providing member functions that return element-wise
+// inverse, real/imaginary part, absolute value, complex conjugate
+template <>
+class vec<comp> : public basic_vec<comp> {
   public:
-    cvec() {};
-    cvec(int n) {
-      for (int i=0; i<n; ++i) {
-        data.push_back(0);
-      }
-    }
-    cvec(initializer_list<comp> m) : data(m) {};
+    vec() : basic_vec<comp> () {};
+    vec(int n) : basic_vec<comp> (n) {};
+    vec(int n, T& value) : basic_vec<comp> (n, value) {}; // TODO: test
+    vec(initializer_list<comp> m) : basic_vec<comp> (m) {};
 
-    comp& operator() (int i) {return data[i]; }
-    void operator= (initializer_list<comp> m) {
-      cvec temp (m);
-      data = temp.data;
-    }
-    cvec operator+ (const cvec& m) {
-      cvec temp(data.size());
-      for (int i=0; i<data.size(); ++i) {
-        temp.data[i] = data[i] + m.data[i];
-      }
-      return temp;
-    }
-    cvec operator* (const cvec& m) {
-      cvec temp(data.size());
-      for (int i=0; i<data.size(); ++i) {
-        temp.data[i] = data[i] * m.data[i];
-      }
-      return temp;
-    }
-    int size() {return data.size(); }
-};
-*/
-
-
-// array of complex numbers, defining element-wise addition and multiplication
-template <int n> class carray: public array<comp, n> {
-public:
-    comp& operator() (int i) {return (*this)[i]; }
-    void operator= (const array<comp, n> m) {
-      for (int i=0; i<n; ++i) {
-        (*this)[i] = m[i];
-      }
-    }
-    carray<n> operator+ (const carray<n>& m) {
-      carray<n> temp;
-      for (int i=0; i<n; ++i) {
-        temp[i] = (*this)[i] + m[i];
-      }
-      return temp;
-    }
-    carray<n> operator- (const carray<n>& m) {
-      carray<n> temp;
-      for (int i=0; i<n; ++i) {
-        temp[i] = (*this)[i] - m[i];
-      }
-      return temp;
-    }
-    carray<n> operator- () {
-      carray<n> temp;
-      for (int i=0; i<n; ++i) {
-        temp[i] = -(*this)[i];
-      }
-      return temp;
-    }
-    carray<n> operator* (const carray<n>& m) {
-      carray<n> temp;
-      for (int i=0; i<n; ++i) {
-        temp[i] = (*this)[i] * m[i];
-      }
-      return temp;
-    }
-    carray<n> inv() {
-      carray<n> temp;
-      for (int i=0; i<n; ++i) {
-        temp[i] = 1./(*this)[i];
-      }
-      return temp;
-    }
+    vec<comp> inv();    // element-wise inverse
+    vec<double> real(); // element-wise real part
+    vec<double> imag(); // element-wise imaginary part
+    vec<double> abs();  // element-wise absolute value
+    vec<comp> conj();   // element-wise complex conjugate
 };
 
-/* // OLD IMPLEMENTATION
-template <int n> class carray {
-    array<comp, n> data;
-public:
-    carray() {
-      for (int i=0; i<n; ++i) {
-        data[i] = 0;
-      }
-    }
-    carray(comp arr_in[n]) {
-      for (int i=0; i<n; ++i) {
-        data[i] = arr_in[i];
-      }
-    }
-    comp& operator() (int i) {return data[i]; }
-    void operator= (const array<comp, n> m) {
-      for (int i=0; i<n; ++i) {
-        data[i] = m[i];
-      }
-    }
-    carray<n> operator+ (const carray<n>& m) {
-      carray<n> temp;
-      for (int i=0; i<n; ++i) {
-        temp.data[i] = data[i] + m.data[i];
-      }
-      return temp;
-    }
-    carray<n> operator* (const carray<n>& m) {
-      carray<n> temp;
-      for (int i=0; i<n; ++i) {
-        temp.data[i] = data[i] * m.data[i];
-      }
-      return temp;
-    }
 
-};
-*/
+/* functions for addition, subtraction, multiplication,... of general vectors vec<T> */
 
-// Keldysh 2x2 matrix structure using array
-template <class T> class KeldyshM2a {
-    T data [2][2];
+// element-wise addition of two vectors
+template <typename T> vec<T> operator+ (const vec<T> &m1, const vec<T> &m2);
+
+// addition of a constant
+template <typename T> vec<T> operator+ (const vec<T> &m, const T &c);
+
+// element-wise subtraction of two vectors
+template <typename T> vec<T> operator- (const vec<T> &m1, const vec<T> &m2);
+
+// subtraction of a constant
+template <typename T> vec<T> operator- (const vec<T> &m, const T &c);
+
+// invert sign
+template <typename T> vec<T> operator- (const vec<T> &m);
+
+// element-wise multiplication of two vectors
+template <typename T> vec<T> operator* (const vec<T> &m1, const vec<T> &m2);
+
+// multiplication with a constant
+template <typename T> vec<T> operator* (const vec<T> &m, const T &c);
+
+
+
+// define aliases for real and complex vector
+typedef vec<double> rvec;
+typedef vec<comp> cvec;
+
+
+
+class VertexComponent {
   public:
-    KeldyshM2a() {};
-    KeldyshM2a(T init) {
-      for (int i=0; i<2; ++i) {
-        for (int j=0; j<2; ++j) {
-          data[i][j] = init;
-        }
-      }
-    };
+    // define diagrammatic classes K1, K2, K3
+    vec<comp> K1;
+    vec<vec<comp> > K2;
+    vec<vec<vec<comp> > > K3;
 
-    T& operator() (int i, int j);
-    KeldyshM2a<T> operator+ (const KeldyshM2a<T>& m);
-    KeldyshM2a<T> operator* (const KeldyshM2a<T>& m);
+    // Constructor
+    VertexComponent(int N_omega1, int N_omega2, int N_omega3) {
+      K1 = vec<comp> (N_omega1);
+      K2 = vec<vec<comp> > (N_omega2, vec<comp> (N_omega2));
+      K3 = vec<vec<vec<comp> > > (N_omega3, vec<vec<comp> > (N_omega3, vec<comp> (N_omega3)));
+    }; // TODO: test
+
+    comp K3(double wa, double wp, double wt); // return value at freq. wa,wp,wt, using interpolation
+    // TODO: implement
 };
 
-template <class T> T& KeldyshM2a<T>::operator() (int i, int j) {
-  return data[i][j];
+
+/// DEFINITIONS ///
+
+/* member functions of general vector class basic_vec<T> */
+
+// element-wise addition of two vectors
+template <typename T>
+basic_vec<T> basic_vec<T>::operator+=(const basic_vec<T> &m) {
+  for (int i=0; i<this->size(); ++i) {
+    (*this)[i] += m[i];
+  }
+  return *this;
 }
 
-template <class T> KeldyshM2a<T> KeldyshM2a<T>::operator+ (const KeldyshM2a<T>& m) {
-  KeldyshM2a<T> temp;
-  for (int i=0; i<2; ++i) {
-    for (int j=0; j<2; ++j) {
-      temp.data[i][j] = data[i][j] + m.data[i][j];
-    }
+// addition of a constant
+template <typename T>
+basic_vec<T> basic_vec<T>::operator+=(const T &c) {
+  for (int i=0; i<this->size(); ++i) {
+    (*this)[i] += c;
+  }
+  return *this;
+}
+
+// element-wise subtraction of two vectors
+template <typename T>
+basic_vec<T> basic_vec<T>::operator-=(const basic_vec<T> &m) {
+  for (int i=0; i<this->size(); ++i) {
+    (*this)[i] -= m[i];
+  }
+  return *this;
+}
+
+// subtraction of a constant
+template <typename T>
+basic_vec<T> basic_vec<T>::operator-=(const T &c) {
+  for (int i=0; i<this->size(); ++i) {
+    (*this)[i] -= c;
+  }
+  return *this;
+}
+
+// element-wise multiplication of two vectors
+template <typename T>
+basic_vec<T> basic_vec<T>::operator*=(const basic_vec<T> &m) {
+  for (int i=0; i<this->size(); ++i) {
+    (*this)[i] *= m[i];
+  }
+  return *this;
+}
+
+// multiplication with a constant
+template <typename T>
+basic_vec<T> basic_vec<T>::operator*=(const T &c) {
+  for (int i=0; i<this->size(); ++i) {
+    (*this)[i] *= c;
+  }
+  return *this;
+}
+
+
+/* member functions of derived general vector class vec<T> */
+
+// element-wise inverse
+template <typename T>
+vec<T> vec<T>::inv() {
+  vec<T> temp (this->size());
+  for (int i=0; i<this->size(); ++i) {
+    temp[i] = 1./(*this)[i];
   }
   return temp;
 }
 
-template <class T> KeldyshM2a<T> KeldyshM2a<T>::operator* (const KeldyshM2a<T>& m) {
-  KeldyshM2a<T> temp;
-  for (int i=0; i<2; ++i) {
-    for (int j=0; j<2; ++j) {
-      temp.data[i][j] = data[i][0] * m.data[0][j] + data[i][1] * m.data[1][j];
-    }
+
+/* member functions of derived complex vector class vec<comp> */
+
+// element-wise inverse
+vec<comp> vec<comp>::inv() {
+  vec<comp> temp (this->size());
+  for (int i=0; i<this->size(); ++i) {
+    temp[i] = 1./(*this)[i];
   }
   return temp;
 }
 
+// element-wise real part
+vec<double> vec<comp>::real() {
+  vec<double> temp (this->size());
+  for (int i=0; i<this->size(); ++i) {
+    temp[i] = (*this)[i].real();
+  }
+  return temp;
+}
+
+// element-wise imaginary part
+vec<double> vec<comp>::imag() {
+  vec<double> temp (this->size());
+  for (int i=0; i<this->size(); ++i) {
+    temp[i] = (*this)[i].imag();
+  }
+  return temp;
+}
+
+// element-wise absolute value
+vec<double> vec<comp>::abs() {
+  vec<double> temp (this->size());
+  for (int i=0; i<this->size(); ++i) {
+    temp[i] = std::abs((*this)[i]);
+  }
+  return temp;
+}
+
+// element-wise complex conjugate
+vec<comp> vec<comp>::conj() {
+  vec<comp> temp (this->size());
+  for (int i=0; i<this->size(); ++i) {
+    temp[i] = std::conj((*this)[i]);
+  }
+  return temp;
+}
+
+
+/* functions for addition, subtraction, multiplication,... of general vectors vec<T> */
+
+// element-wise addition of two vectors
+template <typename T>
+vec<T> operator+ (const vec<T> &m1, const vec<T> &m2) {
+  vec<T> temp (m1.size());
+  for (int i=0; i<m1.size(); ++i){
+    temp[i] = m1[i] + m2[i];
+  }
+  return temp;
+}
+
+// addition of a constant
+template <typename T>
+vec<T> operator+ (const vec<T> &m, const T &c) {
+  vec<T> temp (m.size());
+  for (int i=0; i<m.size(); ++i){
+    temp[i] = m[i] + c;
+  }
+  return temp;
+}
+
+// element-wise subtraction of two vectors
+template <typename T>
+vec<T> operator- (const vec<T> &m1, const vec<T> &m2) {
+  vec<T> temp (m1.size());
+  for (int i=0; i<m1.size(); ++i){
+    temp[i] = m1[i] - m2[i];
+  }
+  return temp;
+}
+
+// subtraction of a constant
+template <typename T>
+vec<T> operator- (const vec<T> &m, const T &c) {
+  vec<T> temp (m.size());
+  for (int i=0; i<m.size(); ++i){
+    temp[i] = m[i] - c;
+  }
+  return temp;
+}
+
+// invert sign
+template <typename T>
+vec<T> operator- (const vec<T> &m) {
+  vec<T> temp (m.size());
+  for (int i=0; i<m.size(); ++i){
+    temp[i] = - m[i];
+  }
+  return temp;
+}
+
+// element-wise multiplication of two vectors
+template <typename T>
+vec<T> operator* (const vec<T> &m1, const vec<T> &m2) {
+  vec<T> temp (m1.size());
+  for (int i=0; i<m1.size(); ++i){
+    temp[i] = m1[i] * m2[i];
+  }
+  return temp;
+}
+
+// multiplication with a constant
+template <typename T>
+vec<T> operator* (const vec<T> &m, const T &c) {
+  vec<T> temp (m.size());
+  for (int i=0; i<m.size(); ++i){
+    temp[i] = m[i] * c;
+  }
+  return temp;
+}
+
+
+
+
+
+
+
+/// FURTHER CLASSES ///
+
+// TODO: check this
 
 // Keldysh 2x2 matrix structure using vector
 template <class T> class KeldyshM2 {
@@ -436,11 +371,11 @@ template <class T> KeldyshM2<T> KeldyshM2<T>::operator* (const KeldyshM2<T>& m) 
 
 template <class T> KeldyshM2<T> KeldyshM2<T>::inv() {
   KeldyshM2<T> temp (this->data[0][0].size());
-  T det = this->data[0][0] * this->data[1][1] - this->data[0][1] * this->data[1][0];
-  temp.data[0][0] = this->data[1][1] * det.inv();
-  temp.data[0][1] = -(this->data[0][1]) * det.inv();
-  temp.data[1][0] = -(this->data[1][0]) * det.inv();
-  temp.data[1][1] = this->data[0][0] * det.inv();
+  T det_inv = (this->data[0][0] * this->data[1][1] - this->data[0][1] * this->data[1][0]).inv();
+  temp.data[0][0] = this->data[1][1] * det_inv;
+  temp.data[0][1] = -(this->data[0][1]) * det_inv;
+  temp.data[1][0] = -(this->data[1][0]) * det_inv;
+  temp.data[1][1] = this->data[0][0] * det_inv;
   return temp;
 }
 

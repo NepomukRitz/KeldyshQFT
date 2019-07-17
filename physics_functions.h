@@ -23,7 +23,6 @@ double fermiFunction(double omega, double T, double mu) {
 
 // reservoir-dressed non-interacting impurity Green's function as a function of frequency,
 // for given impurity energies eps_sigma, temperature T, chem. pot. mu, hybridization Gamma, flow parameter Lambda
-// TODO: adjust Keldysh structure to fermionic convention of Kamenev
 V2P get_G0(rvec& omega, rvec& eps_sigma, double T, double mu, double Gamma, double Lambda) {
   int N_omega = omega.size();
   V2P G0 (N_omega);
@@ -40,7 +39,6 @@ V2P get_G0(rvec& omega, rvec& eps_sigma, double T, double mu, double Gamma, doub
 }
 
 // return self-energy with initial value Sigma^R = Sigma^A = U/2
-// TODO: adjust Keldysh structure to fermionic convention of Kamenev
 V2P initialize_SE(int N_omega, double U) {
   V2P SE (N_omega);
   for (int i_sigma=0; i_sigma<2; ++i_sigma) {

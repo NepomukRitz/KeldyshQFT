@@ -8,8 +8,16 @@
 #include <sys/time.h>  // system time
 #include <unistd.h>    // time delay
 #include <string>
+#include <stdio.h>
 
-/* return time stamp in seconds with millisecond precision */
+using namespace std;
+
+/* return time stamp in seconds with millisecond precision
+ *
+ * usage:
+ *   double t0 = get_time(); // saves starting time stamp t0
+ *
+ * */
 double get_time() {
   struct timeval tp;
   gettimeofday(&tp, NULL);
@@ -18,7 +26,12 @@ double get_time() {
   return t;
 }
 
-/* display time difference in seconds w.r.t. reference time, with millisecond precision */
+/* display time difference in seconds w.r.t. reference time, with millisecond precision
+ *
+ * usage:
+ *   get_time(t0); // prints time elapsed since initial time t0, with milliseconds precision
+ *
+ * */
 void get_time(double t0) {
   struct timeval tp;
   gettimeofday(&tp, NULL);
@@ -29,7 +42,13 @@ void get_time(double t0) {
   cout << "s" << endl;
 }
 
-/* display time difference in seconds w.r.t. reference time, with microsecond precision */
+/* display time difference in seconds w.r.t. reference time, with microsecond precision
+ *
+ * usage:
+ *   get_time(t0, "ms"); // prints time elapsed since initial time t0, with millisecond precision
+ *   get_time(t0, "us"); // prints time elapsed since initial time t0, with microsecond precision
+ *
+ * */
 void get_time(double t0, string prec) {
   struct timeval tp;
   gettimeofday(&tp, NULL);
