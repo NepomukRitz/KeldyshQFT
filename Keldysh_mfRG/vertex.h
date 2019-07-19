@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "parameters.h"
+#include "data_structures.h"
 
 using namespace std;
 
@@ -19,35 +20,14 @@ class avert{
 public:
 
     //K1:
-    //vector<Q> K1;
-    vector<Q> K1 = vector<Q> (nK_K1 * nw1_wa * n_in);
-//    vector<vector<vector<vector<double > > > >  K1 =
-//    vector<vector<vector<vector<double > > > >
-//    (nuc_eff,vector<vector<vector<double > > >
-//             ((nuc_eff+1)/2, vector<vector<double > >
-//                             (3,vector<double >(nw1_q))));//three atoms per unit cell
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wa * n_in);
 
     //K2:
-    //vector<vector<Q> > K2;
-    vector<Q> K2 = vector<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
-//    vector<vector<vector<vector<vector<double > > > > > K2 =
-//    vector<vector<vector<vector<vector<double > > > > >
-//    (nuc_eff,vector<vector<vector<vector<double > > > >
-//             ((nuc_eff+1)/2, vector<vector<vector<double > > >
-//                             (3,vector<vector<double > >//three atoms per unit cell
-//                                (nw2_q, vector<double >(nw2_w1)))));
-
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
 
     //K3:
-    //vector<vector<vector<Q> > > K3;
-    vector<Q> K3 = vector<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
-//    vector<vector<vector<vector<vector<vector<double > > > > > > K3 =
-//    vector<vector<vector<vector<vector<vector<double > > > > > >
-//    (nuc_eff,vector<vector<vector<vector<vector<double > > > > >
-//             ((nuc_eff+1)/2, vector<vector<vector<vector<double > > > >
-//                             (3,vector<vector<vector<double > > >//three atoms per unit cell
-//                                (nw3_q, vector<vector<double > >//nw frequency entries for each of the three frequencies
-//                                        (nw3_w1, vector<double >(nw3_w2))))));
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
+
 
 
 //    avert() {
@@ -92,7 +72,7 @@ public:
 
     //K1:
     //vector<Q> K1;
-    vector<Q> K1 = vector<Q> (nK_K1 * nw1_wp * n_in);
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
 //    vector<vector<vector<vector<double > > > >  K1 =
 //    vector<vector<vector<vector<double > > > >
 //    (nuc_eff,vector<vector<vector<double > > >
@@ -101,7 +81,7 @@ public:
 
     //K2:
     //vector<vector<Q> > K2;
-    vector<Q> K2 = vector<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
 //    vector<vector<vector<vector<vector<double > > > > > K2 =
 //    vector<vector<vector<vector<vector<double > > > > >
 //    (nuc_eff,vector<vector<vector<vector<double > > > >
@@ -112,7 +92,7 @@ public:
 
     //K3:
     //vector<vector<vector<Q> > > K3;
-    vector<Q> K3 = vector<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
 //    vector<vector<vector<vector<vector<vector<double > > > > > > K3 =
 //    vector<vector<vector<vector<vector<vector<double > > > > > >
 //    (nuc_eff,vector<vector<vector<vector<vector<double > > > > >
@@ -162,11 +142,10 @@ public:
 
 template <class Q>
 class tvert{
-public:
 
     //K1:
     //vector<Q> K1;
-    vector<Q> K1 = vector<Q> (nK_K1 * nw1_wp * n_in);
+    vec<Q> vec_K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
 //    vector<vector<vector<vector<double > > > >  K1 =
 //    vector<vector<vector<vector<double > > > >
 //    (nuc_eff,vector<vector<vector<double > > >
@@ -175,7 +154,7 @@ public:
 
     //K2:
     //vector<vector<Q> > K2;
-    vector<Q> K2 = vector<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
+    vec<Q> vec_K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
 //    vector<vector<vector<vector<vector<double > > > > > K2 =
 //    vector<vector<vector<vector<vector<double > > > > >
 //    (nuc_eff,vector<vector<vector<vector<double > > > >
@@ -186,7 +165,7 @@ public:
 
     //K3
     //vector<vector<vector<Q> > > K3;
-    vector<Q> K3 = vector<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
+    vec<Q> vec_K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
 //    vector<vector<vector<vector<vector<vector<double > > > > > > K3 =
 //    vector<vector<vector<vector<vector<vector<double > > > > > >
 //    (nuc_eff,vector<vector<vector<vector<vector<double > > > > >
@@ -194,6 +173,30 @@ public:
 //                             (3,vector<vector<vector<double > > >//three atoms per unit cell
 //                                (nw3_q, vector<vector<double > >//nw frequency entries for each of the three frequencies
 //                                        (nw3_w1, vector<double >(nw3_w2))))));
+
+public:
+    Q K1(int i_K, int i_w1) {
+        return vec_K1[i_K*nw1_wt + i_w1];
+    }
+    Q K2(int i_K, int i_w1, int i_w2) {
+        return vec_K2[i_K*nw2_wt*nw2_nut + i_w1*nw2_nut + i_w2];
+    }
+    Q K3(int i_K, int i_w1, int i_w2, int i_w3) {
+        return vec_K3[i_K*nw3_wt*nw3_nut*nw3_nutp + i_w1*nw3_nut*nw3_nutp + i_w2*nw3_nutp + i_w3];
+    }
+    // TODO: repeat for channels a, p
+
+//    Q K1(int i_K, int i_w1, int i_in[]) {
+//        int index = 0;
+//        for (int i=0; i<d_in; ++i) {
+//            int mult = 1;
+//            for (int j=i+1; j<d_in; ++j) {
+//                mult *= j;
+//            }
+//            index += mult * i_in[i];
+//        }
+//        return vec_K1[i_K*nw1_wt*i_in + i_w1*n_in + i_in];
+//    }
 
 
 //    tvert() {

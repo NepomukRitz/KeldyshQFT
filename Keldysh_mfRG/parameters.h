@@ -29,4 +29,10 @@ const int nw3_nut = 10;
 const int nw3_nutp = 10;
 
 
+const int nK_K1 = 1;
+const int nK_K2 = 1;
+const int nK_K3 = 1;
+
+const int n_in = 3;
+
 #endif //KELDYSH_MFRG_PARAMETERS_H
