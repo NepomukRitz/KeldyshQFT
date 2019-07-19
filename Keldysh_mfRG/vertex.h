@@ -19,7 +19,8 @@ class avert{
 public:
 
     //K1:
-    vector<Q> K1;
+    //vector<Q> K1;
+    vector<Q> K1 = vector<Q> (nK_K1 * nw1_wa * n_in);
 //    vector<vector<vector<vector<double > > > >  K1 =
 //    vector<vector<vector<vector<double > > > >
 //    (nuc_eff,vector<vector<vector<double > > >
@@ -27,7 +28,8 @@ public:
 //                             (3,vector<double >(nw1_q))));//three atoms per unit cell
 
     //K2:
-    vector<vector<Q> > K2;
+    //vector<vector<Q> > K2;
+    vector<Q> K2 = vector<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
 //    vector<vector<vector<vector<vector<double > > > > > K2 =
 //    vector<vector<vector<vector<vector<double > > > > >
 //    (nuc_eff,vector<vector<vector<vector<double > > > >
@@ -37,7 +39,8 @@ public:
 
 
     //K3:
-    vector<vector<vector<Q> > > K3;
+    //vector<vector<vector<Q> > > K3;
+    vector<Q> K3 = vector<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
 //    vector<vector<vector<vector<vector<vector<double > > > > > > K3 =
 //    vector<vector<vector<vector<vector<vector<double > > > > > >
 //    (nuc_eff,vector<vector<vector<vector<vector<double > > > > >
@@ -47,17 +50,17 @@ public:
 //                                        (nw3_w1, vector<double >(nw3_w2))))));
 
 
-    avert() {
-        K1 = vector<Q> (nw1_wa);
-        K2 = vector<vector<Q> > (nw2_wa, vector<Q> (nw2_nua));
-        K3 = vector<vector<vector<Q> > > (nw3_wa, vector<vector<Q> > (nw3_nua, vector<Q> (nw3_nuap)));
-    }
-
-    avert(int input[]) {
-        K1 = vector<Q> (nw1_wa, Q(input));
-        K2 = vector<vector<Q> > (nw2_wa, vector<Q> (nw2_nua, Q(input)));
-        K3 = vector<vector<vector<Q> > > (nw3_wa, vector<vector<Q> > (nw3_nua, vector<Q> (nw3_nuap, Q(input))));
-    }
+//    avert() {
+//        K1 = vector<Q> (nw1_wa);
+//        K2 = vector<vector<Q> > (nw2_wa, vector<Q> (nw2_nua));
+//        K3 = vector<vector<vector<Q> > > (nw3_wa, vector<vector<Q> > (nw3_nua, vector<Q> (nw3_nuap)));
+//    }
+//
+//    avert(int input[]) {
+//        K1 = vector<Q> (nw1_wa, Q(input));
+//        K2 = vector<vector<Q> > (nw2_wa, vector<Q> (nw2_nua, Q(input)));
+//        K3 = vector<vector<vector<Q> > > (nw3_wa, vector<vector<Q> > (nw3_nua, vector<Q> (nw3_nuap, Q(input))));
+//    }
 
 
 /* TODO: check all member functions
@@ -88,7 +91,8 @@ class pvert{
 public:
 
     //K1:
-    vector<Q> K1;
+    //vector<Q> K1;
+    vector<Q> K1 = vector<Q> (nK_K1 * nw1_wp * n_in);
 //    vector<vector<vector<vector<double > > > >  K1 =
 //    vector<vector<vector<vector<double > > > >
 //    (nuc_eff,vector<vector<vector<double > > >
@@ -96,7 +100,8 @@ public:
 //                             (3,vector<double >(nw1_q))));//three atoms per unit cell
 
     //K2:
-    vector<vector<Q> > K2;
+    //vector<vector<Q> > K2;
+    vector<Q> K2 = vector<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
 //    vector<vector<vector<vector<vector<double > > > > > K2 =
 //    vector<vector<vector<vector<vector<double > > > > >
 //    (nuc_eff,vector<vector<vector<vector<double > > > >
@@ -106,7 +111,8 @@ public:
 
 
     //K3:
-    vector<vector<vector<Q> > > K3;
+    //vector<vector<vector<Q> > > K3;
+    vector<Q> K3 = vector<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
 //    vector<vector<vector<vector<vector<vector<double > > > > > > K3 =
 //    vector<vector<vector<vector<vector<vector<double > > > > > >
 //    (nuc_eff,vector<vector<vector<vector<vector<double > > > > >
@@ -116,17 +122,17 @@ public:
 //                                        (nw3_w1, vector<double >(nw3_w2))))));
 
 
-    pvert() {
-        K1 = vector<Q> (nw1_wp);
-        K2 = vector<vector<Q> > (nw2_wp, vector<Q> (nw2_nup));
-        K3 = vector<vector<vector<Q> > > (nw3_wp, vector<vector<Q> > (nw3_nup, vector<Q> (nw3_nupp)));
-    }
-
-    pvert(int input[]) {
-        K1 = vector<Q> (nw1_wp, Q(input));
-        K2 = vector<vector<Q> > (nw2_wp, vector<Q> (nw2_nup, Q(input)));
-        K3 = vector<vector<vector<Q> > > (nw3_wp, vector<vector<Q> > (nw3_nup, vector<Q> (nw3_nupp, Q(input))));
-    }
+//    pvert() {
+//        K1 = vector<Q> (nw1_wp);
+//        K2 = vector<vector<Q> > (nw2_wp, vector<Q> (nw2_nup));
+//        K3 = vector<vector<vector<Q> > > (nw3_wp, vector<vector<Q> > (nw3_nup, vector<Q> (nw3_nupp)));
+//    }
+//
+//    pvert(int input[]) {
+//        K1 = vector<Q> (nw1_wp, Q(input));
+//        K2 = vector<vector<Q> > (nw2_wp, vector<Q> (nw2_nup, Q(input)));
+//        K3 = vector<vector<vector<Q> > > (nw3_wp, vector<vector<Q> > (nw3_nup, vector<Q> (nw3_nupp, Q(input))));
+//    }
 
 
 
@@ -159,7 +165,8 @@ class tvert{
 public:
 
     //K1:
-    vector<Q> K1;
+    //vector<Q> K1;
+    vector<Q> K1 = vector<Q> (nK_K1 * nw1_wp * n_in);
 //    vector<vector<vector<vector<double > > > >  K1 =
 //    vector<vector<vector<vector<double > > > >
 //    (nuc_eff,vector<vector<vector<double > > >
@@ -167,7 +174,8 @@ public:
 //                             (3,vector<double >(nw1_q))));//three atoms per unit cell
 
     //K2:
-    vector<vector<Q> > K2;
+    //vector<vector<Q> > K2;
+    vector<Q> K2 = vector<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
 //    vector<vector<vector<vector<vector<double > > > > > K2 =
 //    vector<vector<vector<vector<vector<double > > > > >
 //    (nuc_eff,vector<vector<vector<vector<double > > > >
@@ -177,7 +185,8 @@ public:
 
 
     //K3
-    vector<vector<vector<Q> > > K3;
+    //vector<vector<vector<Q> > > K3;
+    vector<Q> K3 = vector<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
 //    vector<vector<vector<vector<vector<vector<double > > > > > > K3 =
 //    vector<vector<vector<vector<vector<vector<double > > > > > >
 //    (nuc_eff,vector<vector<vector<vector<vector<double > > > > >
@@ -187,17 +196,17 @@ public:
 //                                        (nw3_w1, vector<double >(nw3_w2))))));
 
 
-    tvert() {
-        K1 = vector<Q> (nw1_wt);
-        K2 = vector<vector<Q> > (nw2_wt, vector<Q> (nw2_nut));
-        K3 = vector<vector<vector<Q> > > (nw3_wt, vector<vector<Q> > (nw3_nut, vector<Q> (nw3_nutp)));
-    }
-
-    tvert(int input[]) {
-        K1 = vector<Q> (nw1_wt, Q(input));
-        K2 = vector<vector<Q> > (nw2_wt, vector<Q> (nw2_nut, Q(input)));
-        K3 = vector<vector<vector<Q> > > (nw3_wt, vector<vector<Q> > (nw3_nut, vector<Q> (nw3_nutp, Q(input))));
-    }
+//    tvert() {
+//        K1 = vector<Q> (nw1_wt);
+//        K2 = vector<vector<Q> > (nw2_wt, vector<Q> (nw2_nut));
+//        K3 = vector<vector<vector<Q> > > (nw3_wt, vector<vector<Q> > (nw3_nut, vector<Q> (nw3_nutp)));
+//    }
+//
+//    tvert(int input[]) {
+//        K1 = vector<Q> (nw1_wt, Q(input));
+//        K2 = vector<vector<Q> > (nw2_wt, vector<Q> (nw2_nut, Q(input)));
+//        K3 = vector<vector<vector<Q> > > (nw3_wt, vector<vector<Q> > (nw3_nut, vector<Q> (nw3_nutp, Q(input))));
+//    }
 
 
 
@@ -234,11 +243,11 @@ public:
 //             ((nuc_eff+1)/2, vector<double >(3)));//three atoms per unit cell
     //the irreducible vertex is approximated by the bare interaction in the parquet approx
 
-    irreducible() {};
-
-    irreducible(int input[]) {
-        U_bare = Q (input);
-    }
+//    irreducible() {};
+//
+//    irreducible(int input[]) {
+//        U_bare = Q (input);
+//    }
 
 /* TODO: check all member functions
 public:
@@ -266,18 +275,18 @@ public:
     pvert<Q> pvertex;
     tvert<Q> tvertex;
 
-    fullvert() {
-        irred = irreducible<Q> ();
-        avertex = avert<Q> ();
-        pvertex = pvert<Q> ();
-        tvertex = tvert<Q> ();
-    }
-    fullvert(int input[]) {
-        irred = irreducible<Q> (input);
-        avertex = avert<Q> (input);
-        pvertex = pvert<Q> (input);
-        tvertex = tvert<Q> (input);
-    }
+//    fullvert() {
+//        irred = irreducible<Q> ();
+//        avertex = avert<Q> ();
+//        pvertex = pvert<Q> ();
+//        tvertex = tvert<Q> ();
+//    }
+//    fullvert(int input[]) {
+//        irred = irreducible<Q> (input);
+//        avertex = avert<Q> (input);
+//        pvertex = pvert<Q> (input);
+//        tvertex = tvert<Q> (input);
+//    }
 
 /* TODO: check all member functions
 public:
@@ -290,50 +299,53 @@ public:
 */
 };
 
-template <class T>
-class Keldyshcomp {
-public:
-    T PsiA;
-    T PsiB;
-    T PhiA;
-    T PhiB;
-    T PhiC;
-    T PhiD;
-
-    Keldyshcomp() {
-        PsiA = T ();
-        PsiB = T ();
-        PhiA = T ();
-        PhiB = T ();
-        PhiC = T ();
-        PhiD = T ();
-    }
-    Keldyshcomp(int input[]) {
-        PsiA = T (input);
-        PsiB = T (input);
-        PhiA = T (input);
-        PhiB = T (input);
-        PhiC = T (input);
-        PhiD = T (input);
-    }
-};
+//template <class T>
+//class Keldyshcomp {
+//public:
+//    T PsiA;
+//    T PsiB;
+//    T PhiA;
+//    T PhiB;
+//    T PhiC;
+//    T PhiD;
+//
+//    Keldyshcomp() {
+//        PsiA = T ();
+//        PsiB = T ();
+//        PhiA = T ();
+//        PhiB = T ();
+//        PhiC = T ();
+//        PhiD = T ();
+//    }
+//    Keldyshcomp(int input[]) {
+//        PsiA = T (input);
+//        PsiB = T (input);
+//        PhiA = T (input);
+//        PhiB = T (input);
+//        PhiC = T (input);
+//        PhiD = T (input);
+//    }
+//};
 
 
 //define parvert as tuple of spin and density vertex
 template <class T>
 class parvert{//define a tuple for parametrized vertices that contains one spin vertex and one density vertex
 public:
-    Keldyshcomp<T> spinvertex;
-    Keldyshcomp<T> densvertex;
+    T spinvertex;
+    T densvertex;
 
-    parvert() {
-        spinvertex = Keldyshcomp<T> () ;
-        densvertex = Keldyshcomp<T> () ;
-    }
-    parvert(int input[]) {
-        spinvertex = Keldyshcomp<T> (input) ;
-        densvertex = Keldyshcomp<T> (input) ;
-    }
+//    Keldyshcomp<T> spinvertex;
+//    Keldyshcomp<T> densvertex;
+//
+//    parvert() {
+//        spinvertex = Keldyshcomp<T> () ;
+//        densvertex = Keldyshcomp<T> () ;
+//    }
+//    parvert(int input[]) {
+//        spinvertex = Keldyshcomp<T> (input) ;
+//        densvertex = Keldyshcomp<T> (input) ;
+//    }
 };
 
 /* TODO: check all those functions
