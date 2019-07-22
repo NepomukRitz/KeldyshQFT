@@ -8,7 +8,6 @@
 #define KELDYSH_MFRG_VERTEX_H
 
 #include <vector>
-
 #include "parameters.h"
 #include "data_structures.h"
 
@@ -17,222 +16,182 @@ using namespace std;
 /*******************************CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX*********************************/
 template <typename Q>
 class avert{
-public:
 
     //K1:
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wa * n_in);
+    vec<Q> vec_K1 = vec<Q> (nK_K1 * nw1_wa * n_in);
 
     //K2:
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
+    vec<Q> vec_K2 = vec<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
 
     //K3:
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
-
-
-
-//    avert() {
-//        K1 = vector<Q> (nw1_wa);
-//        K2 = vector<vector<Q> > (nw2_wa, vector<Q> (nw2_nua));
-//        K3 = vector<vector<vector<Q> > > (nw3_wa, vector<vector<Q> > (nw3_nua, vector<Q> (nw3_nuap)));
-//    }
-//
-//    avert(int input[]) {
-//        K1 = vector<Q> (nw1_wa, Q(input));
-//        K2 = vector<vector<Q> > (nw2_wa, vector<Q> (nw2_nua, Q(input)));
-//        K3 = vector<vector<vector<Q> > > (nw3_wa, vector<vector<Q> > (nw3_nua, vector<Q> (nw3_nuap, Q(input))));
-//    }
-
-
-/* TODO: check all member functions
+    vec<Q> vec_K3 = vec<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
 public:
-    double vvalsmooth(int, int, int, double, double, double, char);
-    double vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-    double vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-    double vvalsmooth(int, int, int, double, double, double);
-    void K1_setvert( int, int, int, int, double);
-    void K2_setvert( int, int, int, int, int, double);
-    void K3_setvert( int, int, int, int, int, int, double);
-    double K1_vval(int, int, int, int);
-    double K2_vval(int, int, int, int, int);
-    double K3_vval(int, int, int, int, int, int);
-    double K1_vvalsmooth(int, int, int, double);
-    double K2_vvalsmooth(int, int, int, double, double);
-    double K3_vvalsmooth(int, int, int, double, double, double);
-    void bust(char);
+    Q K1(int i_K, int i_w1, int i_in) {
+        return vec_K1[i_K*nw1_wa*n_in + i_w1*n_in + i_in];
+    }
+    Q K2(int i_K, int i_w1, int i_w2, int i_in) {
+        return vec_K2[i_K*nw2_wa*nw2_nua*n_in + i_w1*nw2_nua*n_in + i_w2*n_in + i_in];
+    }
+    Q K3(int i_K, int i_w1, int i_w2, int i_w3, int i_in) {
+        return vec_K3[i_K*nw3_wa*nw3_nua*nw3_nuap*n_in + i_w1*nw3_nua*nw3_nuap*n_in + i_w2*nw3_nuap*n_in + i_w3*n_in + i_in];
+    }
+
+
+// TODO: check all member functions
+public:
+    Q vvalsmooth(int, double, double, double, int, char);
+    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+//    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+    Q vvalsmooth(int, double, double, double, int);
+    void K1_setvert(int, int, int, Q);
+    void K2_setvert(int, int, int, int, Q);
+    void K3_setvert(int, int, int, int, int, Q);
+    Q K1_vval(int, int, int);
+    Q K2_vval(int, int, int, int);
+    Q K3_vval(int, int, int, int, int);
+    Q K1_vvalsmooth(int, double, int);
+    Q K2_vvalsmooth(int, double, double, int);
+    Q K3_vvalsmooth(int, double, double, double, int);
+
     friend avert operator*(double alpha, const avert& vertex);
     friend avert operator*(const avert& vertex, double alpha);
     friend avert operator+(const avert& vertex1, const avert& vertex2);
 
-*/
+    /*
+    Q vvalsmooth(int, int, int, double, double, double, char);
+    Q vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+    Q vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+    Q vvalsmooth(int, int, int, double, double, double);
+    void K1_setvert( int, int, int, int, Q);
+    void K2_setvert( int, int, int, int, int, Q);
+    void K3_setvert( int, int, int, int, int, int, Q);
+    Q K1_vval(int, int, int, int);
+    Q K2_vval(int, int, int, int, int);
+    Q K3_vval(int, int, int, int, int, int);
+    Q K1_vvalsmooth(int, int, int, double);
+    Q K2_vvalsmooth(int, int, int, double, double);
+    Q K3_vvalsmooth(int, int, int, double, double, double);
+    */
 };
 
 template <class Q>
 class pvert{
-public:
 
     //K1:
-    //vector<Q> K1;
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
-//    vector<vector<vector<vector<double > > > >  K1 =
-//    vector<vector<vector<vector<double > > > >
-//    (nuc_eff,vector<vector<vector<double > > >
-//             ((nuc_eff+1)/2, vector<vector<double > >
-//                             (3,vector<double >(nw1_q))));//three atoms per unit cell
+    vec<Q> vec_K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
 
     //K2:
-    //vector<vector<Q> > K2;
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
-//    vector<vector<vector<vector<vector<double > > > > > K2 =
-//    vector<vector<vector<vector<vector<double > > > > >
-//    (nuc_eff,vector<vector<vector<vector<double > > > >
-//             ((nuc_eff+1)/2, vector<vector<vector<double > > >
-//                             (3,vector<vector<double > >//three atoms per unit cell
-//                                (nw2_q, vector<double >(nw2_w1)))));
-
+    vec<Q> vec_K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
 
     //K3:
-    //vector<vector<vector<Q> > > K3;
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
-//    vector<vector<vector<vector<vector<vector<double > > > > > > K3 =
-//    vector<vector<vector<vector<vector<vector<double > > > > > >
-//    (nuc_eff,vector<vector<vector<vector<vector<double > > > > >
-//             ((nuc_eff+1)/2, vector<vector<vector<vector<double > > > >
-//                             (3,vector<vector<vector<double > > >//three atoms per unit cell
-//                                (nw3_q, vector<vector<double > >//nw frequency entries for each of the three frequencies
-//                                        (nw3_w1, vector<double >(nw3_w2))))));
+    vec<Q> vec_K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
 
-
-//    pvert() {
-//        K1 = vector<Q> (nw1_wp);
-//        K2 = vector<vector<Q> > (nw2_wp, vector<Q> (nw2_nup));
-//        K3 = vector<vector<vector<Q> > > (nw3_wp, vector<vector<Q> > (nw3_nup, vector<Q> (nw3_nupp)));
-//    }
-//
-//    pvert(int input[]) {
-//        K1 = vector<Q> (nw1_wp, Q(input));
-//        K2 = vector<vector<Q> > (nw2_wp, vector<Q> (nw2_nup, Q(input)));
-//        K3 = vector<vector<vector<Q> > > (nw3_wp, vector<vector<Q> > (nw3_nup, vector<Q> (nw3_nupp, Q(input))));
-//    }
-
-
-
-/* TODO: check all member functions
 public:
+    Q K1(int i_K, int i_w1, int i_in) {
+        return vec_K1[i_K*nw1_wp*n_in + i_w1*n_in + i_in];
+    }
+    Q K2(int i_K, int i_w1, int i_w2, int i_in) {
+        return vec_K2[i_K*nw2_wp*nw2_nup*n_in + i_w1*nw2_nup*n_in + i_w2*n_in + i_in];
+    }
+    Q K3(int i_K, int i_w1, int i_w2, int i_w3, int i_in) {
+        return vec_K3[i_K*nw3_wp*nw3_nup*nw3_nupp*n_in + i_w1*nw3_nup*nw3_nupp*n_in + i_w2*nw3_nupp*n_in + i_w3*n_in + i_in];
+    }
 
-    double vvalsmooth(int, int, int, double, double, double, char);
-    double vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-    double vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-    double vvalsmooth(int, int, int, double, double, double);
-    void K1_setvert( int, int, int, int, double);
-    void K2_setvert( int, int, int, int, int, double);
-    void K3_setvert( int, int, int, int, int, int, double);
-    double K1_vval(int, int, int, int);
-    double K2_vval(int, int, int, int, int);
-    double K3_vval(int, int, int, int, int, int);
-    double K1_vvalsmooth(int, int, int, double);
-    double K2_vvalsmooth(int, int, int, double, double);
-    double K3_vvalsmooth(int, int, int, double, double, double);
+
+// TODO: check all member functions
+public:
+    Q vvalsmooth(int, double, double, double, int, char);
+    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+//    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+    Q vvalsmooth(int, double, double, double, int);
+    void K1_setvert(int, int, int, Q);
+    void K2_setvert(int, int, int, int, Q);
+    void K3_setvert(int, int, int, int, int, Q);
+    Q K1_vval(int, int, int);
+    Q K2_vval(int, int, int, int);
+    Q K3_vval(int, int, int, int, int);
+    Q K1_vvalsmooth(int, double, int);
+    Q K2_vvalsmooth(int, double, double, int);
+    Q K3_vvalsmooth(int, double, double, double, int);
 
     friend pvert operator*(double alpha, const pvert& vertex);
     friend pvert operator*(const pvert& vertex, double alpha);
     friend pvert operator+(const pvert& vertex1, const pvert& vertex2);
-
-*/
+    /*
+    Q vvalsmooth(int, int, int, double, double, double, char);
+    Q vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+    Q vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+    Q vvalsmooth(int, int, int, double, double, double);
+    void K1_setvert( int, int, int, int, Q);
+    void K2_setvert( int, int, int, int, int, Q);
+    void K3_setvert( int, int, int, int, int, int, Q);
+    Q K1_vval(int, int, int, int);
+    Q K2_vval(int, int, int, int, int);
+    Q K3_vval(int, int, int, int, int, int);
+    Q K1_vvalsmooth(int, int, int, double);
+    Q K2_vvalsmooth(int, int, int, double, double);
+    Q K3_vvalsmooth(int, int, int, double, double, double);
+    */
 };
 
 template <class Q>
 class tvert{
 
     //K1:
-    //vector<Q> K1;
     vec<Q> vec_K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
-//    vector<vector<vector<vector<double > > > >  K1 =
-//    vector<vector<vector<vector<double > > > >
-//    (nuc_eff,vector<vector<vector<double > > >
-//             ((nuc_eff+1)/2, vector<vector<double > >
-//                             (3,vector<double >(nw1_q))));//three atoms per unit cell
 
     //K2:
-    //vector<vector<Q> > K2;
     vec<Q> vec_K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
-//    vector<vector<vector<vector<vector<double > > > > > K2 =
-//    vector<vector<vector<vector<vector<double > > > > >
-//    (nuc_eff,vector<vector<vector<vector<double > > > >
-//             ((nuc_eff+1)/2, vector<vector<vector<double > > >
-//                             (3,vector<vector<double > >//three atoms per unit cell
-//                                (nw2_q, vector<double >(nw2_w1)))));
-
 
     //K3
-    //vector<vector<vector<Q> > > K3;
     vec<Q> vec_K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
-//    vector<vector<vector<vector<vector<vector<double > > > > > > K3 =
-//    vector<vector<vector<vector<vector<vector<double > > > > > >
-//    (nuc_eff,vector<vector<vector<vector<vector<double > > > > >
-//             ((nuc_eff+1)/2, vector<vector<vector<vector<double > > > >
-//                             (3,vector<vector<vector<double > > >//three atoms per unit cell
-//                                (nw3_q, vector<vector<double > >//nw frequency entries for each of the three frequencies
-//                                        (nw3_w1, vector<double >(nw3_w2))))));
 
 public:
-    Q K1(int i_K, int i_w1) {
-        return vec_K1[i_K*nw1_wt + i_w1];
+    Q K1(int i_K, int i_w1, int i_in) {
+        return vec_K1[i_K*nw1_wt*n_in + i_w1*n_in + i_in];
     }
-    Q K2(int i_K, int i_w1, int i_w2) {
-        return vec_K2[i_K*nw2_wt*nw2_nut + i_w1*nw2_nut + i_w2];
+    Q K2(int i_K, int i_w1, int i_w2, int i_in) {
+        return vec_K2[i_K*nw2_wt*nw2_nut*n_in + i_w1*nw2_nut*n_in + i_w2*n_in + i_in];
     }
-    Q K3(int i_K, int i_w1, int i_w2, int i_w3) {
-        return vec_K3[i_K*nw3_wt*nw3_nut*nw3_nutp + i_w1*nw3_nut*nw3_nutp + i_w2*nw3_nutp + i_w3];
+    Q K3(int i_K, int i_w1, int i_w2, int i_w3, int i_in) {
+        return vec_K3[i_K*nw3_wt*nw3_nut*nw3_nutp*n_in + i_w1*nw3_nut*nw3_nutp*n_in + i_w2*nw3_nutp*n_in + i_w3*n_in + i_in];
     }
-    // TODO: repeat for channels a, p
-
-//    Q K1(int i_K, int i_w1, int i_in[]) {
-//        int index = 0;
-//        for (int i=0; i<d_in; ++i) {
-//            int mult = 1;
-//            for (int j=i+1; j<d_in; ++j) {
-//                mult *= j;
-//            }
-//            index += mult * i_in[i];
-//        }
-//        return vec_K1[i_K*nw1_wt*i_in + i_w1*n_in + i_in];
-//    }
 
 
-//    tvert() {
-//        K1 = vector<Q> (nw1_wt);
-//        K2 = vector<vector<Q> > (nw2_wt, vector<Q> (nw2_nut));
-//        K3 = vector<vector<vector<Q> > > (nw3_wt, vector<vector<Q> > (nw3_nut, vector<Q> (nw3_nutp)));
-//    }
-//
-//    tvert(int input[]) {
-//        K1 = vector<Q> (nw1_wt, Q(input));
-//        K2 = vector<vector<Q> > (nw2_wt, vector<Q> (nw2_nut, Q(input)));
-//        K3 = vector<vector<vector<Q> > > (nw3_wt, vector<vector<Q> > (nw3_nut, vector<Q> (nw3_nutp, Q(input))));
-//    }
-
-
-
-/* TODO: check all member functions
+// TODO: check all member functions
 public:
-    double vvalsmooth(int, int, int, double, double, double, char);
-    double vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-    double vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-    double vvalsmooth(int, int, int, double, double, double);
-    void K1_setvert( int, int, int, int, double);
-    void K2_setvert( int, int, int, int, int, double);
-    void K3_setvert( int, int, int, int, int, int, double);
-    double K1_vval(int, int, int, int);
-    double K2_vval(int, int, int, int, int);
-    double K3_vval(int, int, int, int, int, int);
-    double K1_vvalsmooth(int, int, int, double);
-    double K2_vvalsmooth(int, int, int, double, double);
-    double K3_vvalsmooth(int, int, int, double, double, double);
+    Q vvalsmooth(int, double, double, double, int, char);
+    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+//    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+    Q vvalsmooth(int, double, double, double, int);
+    void K1_setvert(int, int, int, Q);
+    void K2_setvert(int, int, int, int, Q);
+    void K3_setvert(int, int, int, int, int, Q);
+    Q K1_vval(int, int, int);
+    Q K2_vval(int, int, int, int);
+    Q K3_vval(int, int, int, int, int);
+    Q K1_vvalsmooth(int, double, int);
+    Q K2_vvalsmooth(int, double, double, int);
+    Q K3_vvalsmooth(int, double, double, double, int);
+
     friend tvert operator*(double alpha, const tvert& vertex);
     friend tvert operator*(const tvert& vertex, double alpha);
     friend tvert operator+(const tvert& vertex1, const tvert& vertex2);
-
-*/
+    /*
+    Q vvalsmooth(int, int, int, double, double, double, char);
+    Q vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+    Q vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+    Q vvalsmooth(int, int, int, double, double, double);
+    void K1_setvert( int, int, int, int, Q);
+    void K2_setvert( int, int, int, int, int, Q);
+    void K3_setvert( int, int, int, int, int, int, Q);
+    Q K1_vval(int, int, int, int);
+    Q K2_vval(int, int, int, int, int);
+    Q K3_vval(int, int, int, int, int, int);
+    Q K1_vvalsmooth(int, int, int, double);
+    Q K2_vvalsmooth(int, int, int, double, double);
+    Q K3_vvalsmooth(int, int, int, double, double, double);
+    */
 };
 
 
@@ -240,31 +199,25 @@ template <class Q>
 class irreducible{
 public:
     Q U_bare;
-//    vector<vector<vector<double > > >  U_bare =
-//    vector<vector<vector<double > > >
-//    (nuc_eff,vector<vector<double > >
-//             ((nuc_eff+1)/2, vector<double >(3)));//three atoms per unit cell
-    //the irreducible vertex is approximated by the bare interaction in the parquet approx
 
-//    irreducible() {};
-//
-//    irreducible(int input[]) {
-//        U_bare = Q (input);
-//    }
-
-/* TODO: check all member functions
+// TODO: check all member functions
 public:
-    double vval(int, int, int);
-    double vvalsmooth(int, int, int);
-    double vvalsmooth(int, int, int,double,double,double,char,int,char);
+    Q vval();
+    Q vvalsmooth();
+    Q vvalsmooth(double,double,double,char,int,char);
 
-    void setvert(int,int,int,double);
+    void setvert(Q);
 
     friend irreducible operator*(double alpha, const irreducible & vertex);
     friend irreducible  operator*(const irreducible & vertex, double alpha);
     friend irreducible  operator+(const irreducible & vertex1, const irreducible & vertex2);
+    /*
+    Q vval(int, int, int);
+    Q vvalsmooth(int, int, int);
+    Q vvalsmooth(int, int, int,double,double,double,char,int,char);
 
-*/
+    void setvert(int,int,int,double);
+    */
 };
 /***************************************************************************************************************************/
 
@@ -278,57 +231,22 @@ public:
     pvert<Q> pvertex;
     tvert<Q> tvertex;
 
-//    fullvert() {
-//        irred = irreducible<Q> ();
-//        avertex = avert<Q> ();
-//        pvertex = pvert<Q> ();
-//        tvertex = tvert<Q> ();
-//    }
-//    fullvert(int input[]) {
-//        irred = irreducible<Q> (input);
-//        avertex = avert<Q> (input);
-//        pvertex = pvert<Q> (input);
-//        tvertex = tvert<Q> (input);
-//    }
 
-/* TODO: check all member functions
+// TODO: check all member functions
 public:
-
+    Q vvalsmooth(int,int,int,double,double,double,char);
+    Q vvalsmooth(int,int,int,double,double,double,char,int,char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+    Q vvalsmooth(int,int,int,int,int,double,double,double,char,int,char);//first two arguments: red_side, map
+    friend fullvert operator*(double alpha, const fullvert& vertex);
+    friend fullvert operator+(const fullvert& vertex1,const fullvert& vertex2);
+    /*
     double vvalsmooth(int,int,int,double,double,double,char);
     double vvalsmooth(int,int,int,double,double,double,char,int,char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
     double vvalsmooth(int,int,int,int,int,double,double,double,char,int,char);//first two arguments: red_side, map
-    friend fullvert operator*(double alpha, const fullvert& vertex);
-    friend fullvert operator+(const fullvert& vertex1,const fullvert& vertex2);
-*/
+    */
 };
 
-//template <class T>
-//class Keldyshcomp {
-//public:
-//    T PsiA;
-//    T PsiB;
-//    T PhiA;
-//    T PhiB;
-//    T PhiC;
-//    T PhiD;
-//
-//    Keldyshcomp() {
-//        PsiA = T ();
-//        PsiB = T ();
-//        PhiA = T ();
-//        PhiB = T ();
-//        PhiC = T ();
-//        PhiD = T ();
-//    }
-//    Keldyshcomp(int input[]) {
-//        PsiA = T (input);
-//        PsiB = T (input);
-//        PhiA = T (input);
-//        PhiB = T (input);
-//        PhiC = T (input);
-//        PhiD = T (input);
-//    }
-//};
+
 
 
 //define parvert as tuple of spin and density vertex
@@ -338,38 +256,28 @@ public:
     T spinvertex;
     T densvertex;
 
-//    Keldyshcomp<T> spinvertex;
-//    Keldyshcomp<T> densvertex;
-//
-//    parvert() {
-//        spinvertex = Keldyshcomp<T> () ;
-//        densvertex = Keldyshcomp<T> () ;
-//    }
-//    parvert(int input[]) {
-//        spinvertex = Keldyshcomp<T> (input) ;
-//        densvertex = Keldyshcomp<T> (input) ;
-//    }
+
 };
 
-/* TODO: check all those functions
+// TODO: check all those functions
 //define operators for parvert
-parvert<avert> operator+(parvert<avert> ,parvert<avert>);
-parvert<pvert> operator+(parvert<pvert> ,parvert<pvert>);
-parvert<tvert> operator+(parvert<tvert> ,parvert<tvert>);
-parvert<irreducible> operator+(parvert<irreducible> ,parvert<irreducible>);
-parvert<avert> operator+=(parvert<avert> ,parvert<avert>);
-parvert<pvert> operator+=(parvert<pvert> ,parvert<pvert>);
-parvert<tvert> operator+=(parvert<tvert> ,parvert<tvert>);
-parvert<irreducible> operator+=(parvert<irreducible> ,parvert<irreducible>);
-parvert<avert> operator*(double  ,parvert<avert>&);
-parvert<avert> operator*(parvert<avert>& ,double );
-parvert<pvert> operator*(double  ,parvert<pvert>&);
-parvert<pvert> operator*(parvert<pvert>& ,double );
-parvert<tvert> operator*(double  ,parvert<tvert>&);
-parvert<tvert> operator*(parvert<tvert>& ,double );
-parvert<irreducible> operator*(double  ,parvert<irreducible>&);
-parvert<irreducible> operator*(parvert<irreducible>& ,double );
-*/
+template <typename Q> parvert<avert<Q> > operator+(parvert<avert<Q> > ,parvert<avert<Q> >);
+template <typename Q> parvert<pvert<Q> > operator+(parvert<pvert<Q> > ,parvert<pvert<Q> >);
+template <typename Q> parvert<tvert<Q> > operator+(parvert<tvert<Q> > ,parvert<tvert<Q> >);
+template <typename Q> parvert<irreducible<Q> > operator+(parvert<irreducible<Q> > ,parvert<irreducible<Q> >);
+template <typename Q> parvert<avert<Q> > operator+=(parvert<avert<Q> > ,parvert<avert<Q> >);
+template <typename Q> parvert<pvert<Q> > operator+=(parvert<pvert<Q> > ,parvert<pvert<Q> >);
+template <typename Q> parvert<tvert<Q> > operator+=(parvert<tvert<Q> > ,parvert<tvert<Q> >);
+template <typename Q> parvert<irreducible<Q> > operator+=(parvert<irreducible<Q> > ,parvert<irreducible<Q> >);
+template <typename Q> parvert<avert<Q> > operator*(double  ,parvert<avert<Q> >&);
+template <typename Q> parvert<avert<Q> > operator*(parvert<avert<Q> >& ,double );
+template <typename Q> parvert<pvert<Q> > operator*(double  ,parvert<pvert<Q> >&);
+template <typename Q> parvert<pvert<Q> > operator*(parvert<pvert<Q> >& ,double );
+template <typename Q> parvert<tvert<Q> > operator*(double  ,parvert<tvert<Q> >&);
+template <typename Q> parvert<tvert<Q> > operator*(parvert<tvert<Q> >& ,double );
+template <typename Q> parvert<irreducible<Q> > operator*(double  ,parvert<irreducible<Q> >&);
+template <typename Q> parvert<irreducible<Q> > operator*(parvert<irreducible<Q> >& ,double );
+
 
 
 #endif //KELDYSH_MFRG_VERTEX_H
