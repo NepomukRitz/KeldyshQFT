@@ -99,10 +99,11 @@ template <typename Q> Q avert<Q>::vvalsmooth(int iK, double q, double w1, double
     }
 }
 
-//overload of previous function         => I'm pretty sure we don't andwon't be needing this function
+/*overload of previous function         => I'm pretty sure we won't be needing this function couldn't*/
 //template <typename Q> Q avert<Q>::vvalsmooth(int red_side, int map, double q, double w1, double w2, char channel, int p, char f){
 //    return vvalsmooth( a, b, c, q, w1,w2,channel, p,  f);
 //}
+
 template <typename Q> Q avert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
     double u,w1_u,w2_u;
     u = q;
@@ -1005,10 +1006,11 @@ template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double
     }
 }
 
-//overload of previous function         => I'm pretty sure we don't andwon't be needing this function
+/*overload of previous function         => I'm pretty sure we won't be needing this function*/
 //template <typename Q> Q avert<Q>::vvalsmooth(int red_side, int map, double q, double w1, double w2, char channel, int p, char f){
 //    return vvalsmooth( a, b, c, q, w1,w2,channel, p,  f);
 //}
+
 template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
     double u,w1_u,w2_u;
     u = q;
@@ -1936,10 +1938,11 @@ template <typename Q> Q tvert<Q>::vvalsmooth(int iK, double q, double w1, double
     }
 }
 
-//overload of previous function         => I'm pretty sure we don't andwon't be needing this function
+/*overload of previous function         => I'm pretty sure we won't be needing this function*/
 //template <typename Q> Q avert<Q>::vvalsmooth(int red_side, int map, double q, double w1, double w2, char channel, int p, char f){
 //    return vvalsmooth( a, b, c, q, w1,w2,channel, p,  f);
 //}
+
 template <typename Q> Q tvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
     double u,w1_u,w2_u;
     u = q;
@@ -2838,19 +2841,19 @@ template <typename Q> void irreducible<Q>::setvert(int a_raw, int b_raw, int c_r
 
 /*****************************************operators concerning parvert objects********************************************************/
 
-template <typename Q> parvert<avert<Q> > operator+(parvert<avert<Q> >  vertex1,parvert<avert<Q> >  vertex2){
+template <typename Q> parvert<avert<Q> > operator+(parvert<avert<Q> > vertex1, parvert<avert<Q> > vertex2){
     parvert<avert<Q> >  result;
     result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
     result.densvertex = vertex1.densvertex + vertex2.densvertex;
     return result;
 }
-template <typename Q> parvert<pvert<Q> >  operator+(parvert<pvert<Q> >  vertex1,parvert<pvert<Q> >  vertex2){
+template <typename Q> parvert<pvert<Q> > operator+(parvert<pvert<Q> > vertex1, parvert<pvert<Q> > vertex2){
     parvert<pvert<Q> >  result;
     result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
     result.densvertex = vertex1.densvertex + vertex2.densvertex;
     return result;
 }
-template <typename Q> parvert<tvert<Q> >  operator+(parvert<tvert<Q> >  vertex1,parvert<tvert<Q> >  vertex2){
+template <typename Q> parvert<tvert<Q> > operator+(parvert<tvert<Q> > vertex1, parvert<tvert<Q> > vertex2){
     parvert<tvert<Q> >  result;
     result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
     result.densvertex = vertex1.densvertex + vertex2.densvertex;
@@ -2862,19 +2865,19 @@ template <typename Q> parvert<irreducible<Q> > operator+(parvert<irreducible<Q> 
     result.densvertex = vertex1.densvertex + vertex2.densvertex;
     return result;
 }
-template <typename Q> parvert<avert<Q> >  operator+=(parvert<avert<Q> >  vertex1,parvert<avert<Q> >  vertex2){
+template <typename Q> parvert<avert<Q> > operator+=(parvert<avert<Q> > vertex1, parvert<avert<Q> > vertex2){
     parvert<avert<Q> >  result;
     result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
     result.densvertex = vertex1.densvertex + vertex2.densvertex;
     return result;
 }
-template <typename Q> parvert<pvert<Q> >  operator+=(parvert<pvert<Q> >  vertex1,parvert<pvert<Q> >  vertex2){
+template <typename Q> parvert<pvert<Q> > operator+=(parvert<pvert<Q> > vertex1, parvert<pvert<Q> > vertex2){
     parvert<pvert<Q> >  result;
     result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
     result.densvertex = vertex1.densvertex + vertex2.densvertex;
     return result;
 }
-template <typename Q> parvert<tvert<Q> >  operator+=(parvert<tvert<Q> >  vertex1,parvert<tvert<Q> >  vertex2){
+template <typename Q> parvert<tvert<Q> > operator+=(parvert<tvert<Q> > vertex1, parvert<tvert<Q> > vertex2){
     parvert<tvert<Q> >  result;
     result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
     result.densvertex = vertex1.densvertex + vertex2.densvertex;
@@ -2886,49 +2889,49 @@ template <typename Q> parvert<irreducible<Q> > operator+=(parvert<irreducible<Q>
     result.densvertex = vertex1.densvertex + vertex2.densvertex;
     return result;
 }
-template <typename Q> parvert<avert<Q> >  operator*(double alpha ,parvert<avert<Q> > & vertex){
+template <typename Q> parvert<avert<Q> > operator*(double alpha, parvert<avert<Q> > &vertex){
     parvert<avert<Q> >  result;
     result.spinvertex = alpha * vertex.spinvertex;
     result.densvertex = alpha * vertex.densvertex;
     return result;
 }
-template <typename Q> parvert<avert<Q> >  operator*(parvert<avert<Q> > & vertex,double alpha){
+template <typename Q> parvert<avert<Q> > operator*(parvert<avert<Q> > &vertex,double alpha){
     parvert<avert<Q> >  result;
     result.spinvertex = alpha * vertex.spinvertex;
     result.densvertex = alpha * vertex.densvertex;
     return result;
 }
-template <typename Q> parvert<pvert<Q> >  operator*(double alpha ,parvert<pvert<Q> > & vertex){
+template <typename Q> parvert<pvert<Q> > operator*(double alpha, parvert<pvert<Q> > &vertex){
     parvert<pvert<Q> >  result;
     result.spinvertex = alpha * vertex.spinvertex;
     result.densvertex = alpha * vertex.densvertex;
     return result;
 }
-template <typename Q> parvert<pvert<Q> >  operator*(parvert<pvert<Q> > & vertex,double alpha){
+template <typename Q> parvert<pvert<Q> > operator*(parvert<pvert<Q> > &vertex,double alpha){
     parvert<pvert<Q> >  result;
     result.spinvertex = alpha * vertex.spinvertex;
     result.densvertex = alpha * vertex.densvertex;
     return result;
 }
-template <typename Q> parvert<tvert<Q> >  operator*(double alpha ,parvert<tvert<Q> > & vertex){
+template <typename Q> parvert<tvert<Q> > operator*(double alpha, parvert<tvert<Q> > &vertex){
     parvert<tvert<Q> >  result;
     result.spinvertex = alpha * vertex.spinvertex;
     result.densvertex = alpha * vertex.densvertex;
     return result;
 }
-template <typename Q> parvert<tvert<Q> >  operator*(parvert<tvert<Q> > & vertex,double alpha){
+template <typename Q> parvert<tvert<Q> > operator*(parvert<tvert<Q> > &vertex,double alpha){
     parvert<tvert<Q> >  result;
     result.spinvertex = alpha * vertex.spinvertex;
     result.densvertex = alpha * vertex.densvertex;
     return result;
 }
-template <typename Q> parvert<irreducible<Q> > operator*(double alpha ,parvert<irreducible<Q> >& vertex){
+template <typename Q> parvert<irreducible<Q> > operator*(double alpha, parvert<irreducible<Q> > &vertex){
     parvert<irreducible<Q> > result;
     result.spinvertex = alpha * vertex.spinvertex;
     result.densvertex = alpha * vertex.densvertex;
     return result;
 }
-template <typename Q> parvert<irreducible<Q> > operator*(parvert<irreducible<Q> >& vertex,double alpha){
+template <typename Q> parvert<irreducible<Q> > operator*(parvert<irreducible<Q> > &vertex, double alpha){
     parvert<irreducible<Q> > result;
     result.spinvertex = alpha * vertex.spinvertex;
     result.densvertex = alpha * vertex.densvertex;
@@ -2944,30 +2947,28 @@ template <typename Q> parvert<irreducible<Q> > operator*(parvert<irreducible<Q> 
 /*****************************************FUNCTIONS FOR FULL VERTEX "FULLVERT"********************************************************/
 //arguments are equivalent to those in the simple vertex functions
 
-template <typename Q> Q fullvert<Q>::vvalsmooth(int a, int b, int c, double q, double w1, double w2, char channel){
-    Q result = irred.vvalsmooth(a,b,c) + pvertex.vvalsmooth(a,b,c,q,w1,w2,channel) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel);
+template <typename Q> Q fullvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel){
+    Q result = irred.vvalsmooth() + pvertex.vvalsmooth(iK,q,w1,w2,i_in,channel) + tvertex.vvalsmooth(iK,q,w1,w2,i_in,channel) + avertex.vvalsmooth(iK,q,w1,w2,i_in,channel);
     if(abs(result)>1e-16){
         return  result;}
-    else{return 0;};
+    else{return 0.;}
 }
-template <typename Q> Q fullvert<Q>::vvalsmooth(int a, int b, int c, double q, double w1, double w2, char channel, int p, char f){
+template <typename Q> Q fullvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel, int p, char f){
     Q result=0;
 
     if( p==1 && (f=='K' || f== 'L')){//only yield irred part if both legs are connected to the same bare vertex
-        result += irred.vvalsmooth(a,b,c);
+        result += irred.vvalsmooth();
 
     }
     else if( p==2 && (f=='K' || f== 'M')){
-        result += irred.vvalsmooth(a,b,c);
+        result += irred.vvalsmooth();
 
-    };
+    }
 
-
-
-    result +=  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);
+    result +=  pvertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f) + tvertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f) + avertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f);
     //if(p==2 && f=='L'){cout <<  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) << " " << tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f)  << " " <<  avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) << endl;};
     if(abs(result)<1e-16){
-        result  =0;};
+        result  =0;}
     return result;
 }
 template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, int b, int c, double q, double w1, double w2, char channel, int p, char f){// red_side: if only complementary channel in one vertex, which one is reduced? (0/1/2), p: is this the left/upper (1) or the right/lower (2) vertex of the bubble?, f: diagrammatic class that is computed
@@ -2994,7 +2995,7 @@ template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, in
             if(channel == 's' ){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
             else if(channel == 't'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
             else if(channel == 'u'){  result =  avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
-        };
+        }
 
     };
 
