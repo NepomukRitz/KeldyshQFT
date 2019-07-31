@@ -5,14 +5,16 @@
 #ifndef KELDYSH_MFRG_SELFENERGY_H
 #define KELDYSH_MFRG_SELFENERGY_H
 
+//TODO: naming??
+
 /******************CLASS FOR SELF ENERGY *************/
 template <typename Q>
 class self{
-    vec<Q> selfenergy =  vec<Q> (nSE);
+    vec<Q> selfenergy =  vec<Q> (2*nSE); // factor 2 for Keldysh components: Sigma^R, Sigma^K TODO: check
 public:
-    void setself(int, Q);
-    Q sval(int);
-    Q svalsmooth(double);
+    void setself(int, int, Q);
+    Q sval(int, int);
+    Q svalsmooth(int, double);
     friend self operator+(const self& self1, const self& self2);
     friend self operator+=(const self& self1,const self& self2);
     friend self operator*(Q alpha, const self& self1);
@@ -23,21 +25,21 @@ public:
 
 /*****************************************FUNCTIONS FOR SELF ENERGY********************************************************/
 template <typename Q>
-Q self<Q>::sval(int i){
-    return selfenergy[i];
+Q self<Q>::sval(int iK, int i){
+    return selfenergy[iK*nSE + i];
 }
 
 template <typename Q>
-Q self<Q>::svalsmooth(double w){//smoothly interpolates for values between discrete frequency values of mesh
+Q self<Q>::svalsmooth(int iK, double w){//smoothly interpolates for values between discrete frequency values of mesh
     Q value;
     int W = fconv(w); // TODO: define fconv
-    value += ((selfenergy[W]*(ffreqs[W+1]-w)+selfenergy[W+1]*(-ffreqs[W]+w))/(ffreqs[W+1]-ffreqs[W])); // TODO: make it similar to the version for vertex
+    value += ((selfenergy[iK*nSE+W]*(ffreqs[W+1]-w)+selfenergy[iK*nSE+W+1]*(-ffreqs[W]+w))/(ffreqs[W+1]-ffreqs[W])); // TODO: make it similar to the version for vertex
     return value;
 }
 
 template <typename Q>
-void self<Q>::setself(int i, Q val){
-    selfenergy[i] = val;
+void self<Q>::setself(int iK, int i, Q val){
+    selfenergy[iK*nSE + i] = val;
 }
 
 //operators for self energy
