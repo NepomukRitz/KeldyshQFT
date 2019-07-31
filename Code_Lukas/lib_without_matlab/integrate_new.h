@@ -1,9 +1,9 @@
 #ifndef __INTPAT_H__
 #define __INTPAT_H__
 #define MAXSTP 10000
-#include <matrix.h>
+#include "matrix.h"
 #include <iostream>
-#include <patterson_set.h>
+#include "patterson_set.h"
 
 #define DEBUG_MODE_IN_INTEGRATOR_ADOU7_K3 0
 

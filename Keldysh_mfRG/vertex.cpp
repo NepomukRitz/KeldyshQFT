@@ -2562,7 +2562,7 @@ template <typename Q> void irreducible<Q>::setvert(int a_raw, int b_raw, int c_r
 
 */
 
-/*****************************************FUNCTIONS FOR Vertexex "FULLVERT"********************************************************/
+/*****************************************FUNCTIONS FOR Vertex "FULLVERT"********************************************************/
 //arguments are equivalent to those in the simple vertex functions
 
 template <typename Q> Q fullvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel){

@@ -12,6 +12,9 @@ using namespace std;
 /*Interaction strength*/
 const double U = 1.0;
 
+/*Number of frequency points for the selfenergy*/
+const int nSE = 10;
+
 /*Number of frequency points for the K1 class(bosonic freq wa), K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic
  * frequency wa and fermionic freqs nua and nuap) for the a-channel*/
 const int nw1_wa = 10;

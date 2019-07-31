@@ -34,19 +34,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /home/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake
+CMAKE_COMMAND = /filer/z-sv-pool12c/e/E.Walter/clion-2019.1.2/bin/cmake/linux/bin/cmake
 
 # The command to remove a file.
-RM = /home/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E remove -f
+RM = /filer/z-sv-pool12c/e/E.Walter/clion-2019.1.2/bin/cmake/linux/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos
+CMAKE_SOURCE_DIR = /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug
+CMAKE_BINARY_DIR = /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug
 
 # Utility rule file for demos.
 
@@ -67,6 +67,6 @@ CMakeFiles/demos.dir/clean:
 .PHONY : CMakeFiles/demos.dir/clean
 
 CMakeFiles/demos.dir/depend:
-	cd /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/demos.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/demos.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/demos.dir/depend
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
-#include <matrix.h>
-#include <patterson_set.h>
+#include "matrix.h"
+#include "patterson_set.h"
 
 void patterson_set (matrix<double> &x, matrix<double> &w)
 
