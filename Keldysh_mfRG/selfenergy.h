@@ -1,0 +1,8 @@
+//
+// Created by E.Walter on 7/31/19.
+//
+
+#ifndef KELDYSH_MFRG_SELFENERGY_H
+#define KELDYSH_MFRG_SELFENERGY_H
+
+#endif //KELDYSH_MFRG_SELFENERGY_H
