@@ -2,12 +2,11 @@
 // Created by Sa.Aguirre on 7/18/19.
 //
 
-// TODO: documentation!!
-
 #ifndef KELDYSH_MFRG_VERTEX_H
 #define KELDYSH_MFRG_VERTEX_H
 
 #include <vector>
+
 #include "parameters.h"
 #include "data_structures.h"
 
@@ -16,28 +15,10 @@ using namespace std;
 /*******************************CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX*********************************/
 template <typename Q>
 class avert{
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wa * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
 
-    //K1:
-    vec<Q> vec_K1 = vec<Q> (nK_K1 * nw1_wa * n_in);
-
-    //K2:
-    vec<Q> vec_K2 = vec<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
-
-    //K3:
-    vec<Q> vec_K3 = vec<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
-public:
-    Q K1(int i_K, int i_w1, int i_in) {
-        return vec_K1[i_K*nw1_wa*n_in + i_w1*n_in + i_in];
-    }
-    Q K2(int i_K, int i_w1, int i_w2, int i_in) {
-        return vec_K2[i_K*nw2_wa*nw2_nua*n_in + i_w1*nw2_nua*n_in + i_w2*n_in + i_in];
-    }
-    Q K3(int i_K, int i_w1, int i_w2, int i_w3, int i_in) {
-        return vec_K3[i_K*nw3_wa*nw3_nua*nw3_nuap*n_in + i_w1*nw3_nua*nw3_nuap*n_in + i_w2*nw3_nuap*n_in + i_w3*n_in + i_in];
-    }
-
-
-// TODO: check all member functions
 public:
     /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
      * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
@@ -85,12 +66,34 @@ public:
      * calculated by interpolation for given Keldysh and internal structure indices.*/
     Q K3_vvalsmooth(int, double, double, double, int);
 
-    /*Define the operator of multiplying an a-vertex with a number.    TODO generalize it to multiply by type Q ?*/
-    friend avert operator*(double alpha, const avert& vertex);
-    friend avert operator*(const avert& vertex, double alpha);
+//    /*Define the operator of multiplying an a-vertex with a number.    TODO generalize it to multiply by type Q ?*/
+//    friend avert operator*(double alpha, const avert& vertex);
+//    friend avert operator*(const avert& vertex, double alpha);
+//
+//    /*Define the addition operation of two a-vertices*/
+//    friend avert operator+(const avert& vertex1, const avert& vertex2);
 
-    /*Define the addition operation of two a-vertices*/
-    friend avert operator+(const avert& vertex1, const avert& vertex2);
+    avert<Q> friend operator*(double alpha, const avert<Q> vertex) {
+        avert<Q> vertex2;
+        vertex2.K1 = vertex.K1 * alpha;
+        vertex2.K2 = vertex.K2 * alpha;
+        vertex2.K3 = vertex.K3 * alpha;
+        return vertex2;
+    }
+    avert<Q> friend operator*(const avert<Q>& vertex, double alpha){
+        avert<Q> vertex2;
+        vertex2.K1 = vertex.K1 * alpha;
+        vertex2.K2 = vertex.K2 * alpha;
+        vertex2.K3 = vertex.K3 * alpha;
+        return vertex2;
+    }
+    avert<Q> friend operator+(const avert<Q>& vertex1, const avert<Q>& vertex2){
+        avert<Q> vertex3;
+        vertex3.K1 = vertex1.K1 * vertex2.K1;
+        vertex3.K2 = vertex1.K2 * vertex2.K2;
+        vertex3.K3 = vertex1.K3 * vertex2.K3;
+        return vertex3;
+    }
 
     /*
     Q vvalsmooth(int, int, int, double, double, double, char);
@@ -111,29 +114,10 @@ public:
 
 template <class Q>
 class pvert{
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
 
-    //K1:
-    vec<Q> vec_K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
-
-    //K2:
-    vec<Q> vec_K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
-
-    //K3:
-    vec<Q> vec_K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
-
-public:
-    Q K1(int i_K, int i_w1, int i_in) {
-        return vec_K1[i_K*nw1_wp*n_in + i_w1*n_in + i_in];
-    }
-    Q K2(int i_K, int i_w1, int i_w2, int i_in) {
-        return vec_K2[i_K*nw2_wp*nw2_nup*n_in + i_w1*nw2_nup*n_in + i_w2*n_in + i_in];
-    }
-    Q K3(int i_K, int i_w1, int i_w2, int i_w3, int i_in) {
-        return vec_K3[i_K*nw3_wp*nw3_nup*nw3_nupp*n_in + i_w1*nw3_nup*nw3_nupp*n_in + i_w2*nw3_nupp*n_in + i_w3*n_in + i_in];
-    }
-
-
-// TODO: check all member functions
 public:
     /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
      * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
@@ -182,12 +166,35 @@ public:
     Q K3_vvalsmooth(int, double, double, double, int);
 
 
-    /*Define the operator of multiplying a p-vertex with a number.    TODO generalize it to multiply by type Q ?*/
-    friend pvert operator*(double alpha, const pvert& vertex);
-    friend pvert operator*(const pvert& vertex, double alpha);
+//    /*Define the operator of multiplying a p-vertex with a number.    TODO generalize it to multiply by type Q ?*/
+//    friend pvert operator*(double alpha, const pvert& vertex);
+//    friend pvert operator*(const pvert& vertex, double alpha);
+//
+//    /*Define the addition operation of two p-vertices*/
+//    friend pvert operator+(const pvert& vertex1, const pvert& vertex2);
 
-    /*Define the addition operation of two p-vertices*/
-    friend pvert operator+(const pvert& vertex1, const pvert& vertex2);
+    pvert<Q> friend operator*(double alpha, const pvert<Q> vertex) {
+        pvert<Q> vertex2;
+        vertex2.K1 = vertex.K1 * alpha;
+        vertex2.K2 = vertex.K2 * alpha;
+        vertex2.K3 = vertex.K3 * alpha;
+        return vertex2;
+    }
+    pvert<Q> friend operator*(const pvert<Q>& vertex, double alpha){
+        pvert<Q> vertex2;
+        vertex2.K1 = vertex.K1 * alpha;
+        vertex2.K2 = vertex.K2 * alpha;
+        vertex2.K3 = vertex.K3 * alpha;
+        return vertex2;
+    }
+    pvert<Q> friend operator+(const pvert<Q>& vertex1, const pvert<Q>& vertex2){
+        pvert<Q> vertex3;
+        vertex3.K1 = vertex1.K1 * vertex2.K1;
+        vertex3.K2 = vertex1.K2 * vertex2.K2;
+        vertex3.K3 = vertex1.K3 * vertex2.K3;
+        return vertex3;
+    }
+
     /*
     Q vvalsmooth(int, int, int, double, double, double, char);
     Q vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
@@ -207,29 +214,10 @@ public:
 
 template <class Q>
 class tvert{
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
 
-    //K1:
-    vec<Q> vec_K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
-
-    //K2:
-    vec<Q> vec_K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
-
-    //K3
-    vec<Q> vec_K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
-
-public:
-    Q K1(int i_K, int i_w1, int i_in) {
-        return vec_K1[i_K*nw1_wt*n_in + i_w1*n_in + i_in];
-    }
-    Q K2(int i_K, int i_w1, int i_w2, int i_in) {
-        return vec_K2[i_K*nw2_wt*nw2_nut*n_in + i_w1*nw2_nut*n_in + i_w2*n_in + i_in];
-    }
-    Q K3(int i_K, int i_w1, int i_w2, int i_w3, int i_in) {
-        return vec_K3[i_K*nw3_wt*nw3_nut*nw3_nutp*n_in + i_w1*nw3_nut*nw3_nutp*n_in + i_w2*nw3_nutp*n_in + i_w3*n_in + i_in];
-    }
-
-
-// TODO: check all member functions
 public:
 /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
      * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
@@ -278,12 +266,36 @@ public:
     Q K3_vvalsmooth(int, double, double, double, int);
 
 
-    /*Define the operator of multiplying a p-vertex with a number.    TODO generalize it to multiply by type Q ?*/
-    friend tvert operator*(double alpha, const tvert& vertex);
-    friend tvert operator*(const tvert& vertex, double alpha);
+//    /*Define the operator of multiplying a p-vertex with a number.    TODO generalize it to multiply by type Q ?*/
+//    friend tvert operator*(double alpha, const tvert& vertex);
+//    friend tvert operator*(const tvert& vertex, double alpha);
+//
+//    /*Define the addition operation of two t-vertices*/
+//    friend tvert operator+(const tvert& vertex1, const tvert& vertex2);
 
-    /*Define the addition operation of two t-vertices*/
-    friend tvert operator+(const tvert& vertex1, const tvert& vertex2);
+    tvert<Q> friend operator*(double alpha, const tvert<Q> vertex) {
+        tvert<Q> vertex2;
+        vertex2.K1 = vertex.K1 * alpha;
+        vertex2.K2 = vertex.K2 * alpha;
+        vertex2.K3 = vertex.K3 * alpha;
+        return vertex2;
+    }
+    tvert<Q> friend operator*(const tvert<Q>& vertex, double alpha){
+        tvert<Q> vertex2;
+        vertex2.K1 = vertex.K1 * alpha;
+        vertex2.K2 = vertex.K2 * alpha;
+        vertex2.K3 = vertex.K3 * alpha;
+        return vertex2;
+    }
+    tvert<Q> friend operator+(const tvert<Q>& vertex1, const tvert<Q>& vertex2){
+        tvert<Q> vertex3;
+        vertex3.K1 = vertex1.K1 * vertex2.K1;
+        vertex3.K2 = vertex1.K2 * vertex2.K2;
+        vertex3.K3 = vertex1.K3 * vertex2.K3;
+        return vertex3;
+    }
+
+
     /*
     Q vvalsmooth(int, int, int, double, double, double, char);
     Q vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
@@ -301,13 +313,11 @@ public:
     */
 };
 
-
 template <class Q>
 class irreducible{
 public:
     Q U_bare;
 
-// TODO: check all member functions
 public:
 
     /*All three functions return the value of the bare vertex. Since this value is, this far, independent of everything,
@@ -320,12 +330,25 @@ public:
     /*Sets the value of the bare interaction to Q TODO are we always going to be working in the PA?*/
     void setvert(Q);
 
-    /*Multiplies the value od the irreducible vertex by alpha*/
-    friend irreducible operator*(double alpha, const irreducible & vertex);
-    friend irreducible  operator*(const irreducible & vertex, double alpha);
+    /*Multiplies the value of the irreducible vertex by alpha*/
+    irreducible<Q> friend operator*(double alpha, const irreducible<Q>& vertex) {
+        irreducible<Q> result;
+        result.U_bare = alpha * vertex.U_bare;
+        return result;
+
+    }
+    irreducible<Q> friend operator*(const irreducible<Q>& vertex,double alpha) {
+        irreducible<Q> result;
+        result.U_bare = alpha * vertex.U_bare;
+        return result;
+    }
 
     /*Defines the addition operation for two irreducible vertices*/
-    friend irreducible  operator+(const irreducible & vertex1, const irreducible & vertex2);
+    irreducible<Q> friend operator+(const irreducible<Q>& vertex1,const irreducible<Q>& vertex2) {
+        irreducible<Q> result;
+        result.U_bare = vertex1.U_bare + vertex2.U_bare;
+        return result;
+    }
 
     /*
     Q vval(int, int, int);
@@ -337,10 +360,8 @@ public:
 };
 /***************************************************************************************************************************/
 
-/*******************************define "fullvert"FULLVERT" as collection of all diagrams in all channels*********************************/
-
 template <class Q>
-class fullvert{//collection of all channels
+class fullvert{
 public:
     irreducible<Q> irred;
     avert<Q> avertex;
@@ -348,8 +369,6 @@ public:
     tvert<Q> tvertex;
 
 
-// TODO: check all member functions
-public:
     /*Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
      * Keldysh index (1st int), internal structure index (2nd int) and the three frequencies.*/
     Q vvalsmooth(int,double,double,double,int,char);
@@ -361,49 +380,61 @@ public:
     Q vvalsmooth(int,int,int,int,int,double,double,double,char,int,char);//first two arguments: red_side, map
 
     /*Defines multiplication of a full vertex by a number*/
-    friend fullvert operator*(double alpha, const fullvert& vertex);
+    fullvert<Q> friend operator*(double alpha, const fullvert<Q>& vertex){
+        fullvert<Q> result;
+        result.irred = alpha * vertex.irred;
+        result.pvertex = alpha *vertex.pvertex;
+        result.tvertex = alpha * vertex.tvertex;
+        result.avertex = alpha * vertex.avertex;
+        return result;
+    }
 
     /*Defines addition operation of two full vertices*/
-    friend fullvert operator+(const fullvert& vertex1,const fullvert& vertex2);
+    fullvert<Q> friend operator+( const fullvert<Q>& vertex1, const fullvert<Q>& vertex2) {
+        fullvert<Q> result;
+        result.irred = vertex1.irred + vertex2.irred;
+        result.pvertex = vertex1.pvertex + vertex2.pvertex;
+        result.tvertex = vertex1.tvertex + vertex2.tvertex;
+        result.avertex = vertex1.avertex + vertex2.avertex;
+        return result;
+    }
 
     /*
     double vvalsmooth(int,int,int,double,double,double,char);
     double vvalsmooth(int,int,int,double,double,double,char,int,char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
     double vvalsmooth(int,int,int,int,int,double,double,double,char,int,char);//first two arguments: red_side, map
     */
-};
+    };
 
 
 
 
-//define parvert as tuple of spin and density vertex
+//define Vertex as tuple of spin and density vertex
+//Note that T should be fullvert, so that every (i.e. both) spin component of the vertex inherits a Keldysh substructure
 template <class T>
-class parvert{//define a tuple for parametrized vertices that contains one spin vertex and one density vertex
+class Vertex{//define a tuple for parametrized vertices that contains one spin vertex and one density vertex
 public:
     T spinvertex;
     T densvertex;
-
-
 };
 
-// TODO: check all those functions
-//define operators for parvert
-template <typename Q> parvert<avert<Q> > operator+(parvert<avert<Q> > ,parvert<avert<Q> >);
-template <typename Q> parvert<pvert<Q> > operator+(parvert<pvert<Q> > ,parvert<pvert<Q> >);
-template <typename Q> parvert<tvert<Q> > operator+(parvert<tvert<Q> > ,parvert<tvert<Q> >);
-template <typename Q> parvert<irreducible<Q> > operator+(parvert<irreducible<Q> > ,parvert<irreducible<Q> >);
-template <typename Q> parvert<avert<Q> > operator+=(parvert<avert<Q> > ,parvert<avert<Q> >);
-template <typename Q> parvert<pvert<Q> > operator+=(parvert<pvert<Q> > ,parvert<pvert<Q> >);
-template <typename Q> parvert<tvert<Q> > operator+=(parvert<tvert<Q> > ,parvert<tvert<Q> >);
-template <typename Q> parvert<irreducible<Q> > operator+=(parvert<irreducible<Q> > ,parvert<irreducible<Q> >);
-template <typename Q> parvert<avert<Q> > operator*(double  ,parvert<avert<Q> >&);
-template <typename Q> parvert<avert<Q> > operator*(parvert<avert<Q> >& ,double );
-template <typename Q> parvert<pvert<Q> > operator*(double  ,parvert<pvert<Q> >&);
-template <typename Q> parvert<pvert<Q> > operator*(parvert<pvert<Q> >& ,double );
-template <typename Q> parvert<tvert<Q> > operator*(double  ,parvert<tvert<Q> >&);
-template <typename Q> parvert<tvert<Q> > operator*(parvert<tvert<Q> >& ,double );
-template <typename Q> parvert<irreducible<Q> > operator*(double  ,parvert<irreducible<Q> >&);
-template <typename Q> parvert<irreducible<Q> > operator*(parvert<irreducible<Q> >& ,double );
+//define operators for Vertex
+template <typename Q> Vertex<avert<Q> > operator+(Vertex<avert<Q> > ,Vertex<avert<Q> >);
+template <typename Q> Vertex<pvert<Q> > operator+(Vertex<pvert<Q> > ,Vertex<pvert<Q> >);
+template <typename Q> Vertex<tvert<Q> > operator+(Vertex<tvert<Q> > ,Vertex<tvert<Q> >);
+template <typename Q> Vertex<irreducible<Q> > operator+(Vertex<irreducible<Q> > ,Vertex<irreducible<Q> >);
+template <typename Q> Vertex<avert<Q> > operator+=(Vertex<avert<Q> > ,Vertex<avert<Q> >);
+template <typename Q> Vertex<pvert<Q> > operator+=(Vertex<pvert<Q> > ,Vertex<pvert<Q> >);
+template <typename Q> Vertex<tvert<Q> > operator+=(Vertex<tvert<Q> > ,Vertex<tvert<Q> >);
+template <typename Q> Vertex<irreducible<Q> > operator+=(Vertex<irreducible<Q> > ,Vertex<irreducible<Q> >);
+template <typename Q> Vertex<avert<Q> > operator*(double  ,Vertex<avert<Q> >&);
+template <typename Q> Vertex<avert<Q> > operator*(Vertex<avert<Q> >& ,double );
+template <typename Q> Vertex<pvert<Q> > operator*(double  ,Vertex<pvert<Q> >&);
+template <typename Q> Vertex<pvert<Q> > operator*(Vertex<pvert<Q> >& ,double );
+template <typename Q> Vertex<tvert<Q> > operator*(double  ,Vertex<tvert<Q> >&);
+template <typename Q> Vertex<tvert<Q> > operator*(Vertex<tvert<Q> >& ,double );
+template <typename Q> Vertex<irreducible<Q> > operator*(double  ,Vertex<irreducible<Q> >&);
+template <typename Q> Vertex<irreducible<Q> > operator*(Vertex<irreducible<Q> >& ,double );
 
 
 

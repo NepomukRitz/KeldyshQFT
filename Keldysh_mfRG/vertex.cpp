@@ -4,6 +4,10 @@
 
 #include "vertex.h"
 
+/*Frequency grids for each channel*/
+vector<double> freqs_a(nw_a); // NOLINT(cert-err58-cpp)
+vector<double> freqs_p(nw_p); // NOLINT(cert-err58-cpp)
+vector<double> freqs_t(nw_t); // NOLINT(cert-err58-cpp)
 
 /*****************FUNCTIONS FOR THE A-VERTEX********************************************/
 
@@ -118,23 +122,23 @@ template <typename Q> Q avert<Q>::vvalsmooth(int iK, double q, double w1, double
 }
 
 template <typename Q> void avert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
-    vec_K1[iK*nw1_wa*n_in + i*n_in + i_in] = value;
+    K1[iK*nw1_wa*n_in + i*n_in + i_in] = value;
 }
 template <typename Q> void avert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    vec_K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in] = value;
+    K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in] = value;
 }
 template <typename Q> void avert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] = value;
+    K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> Q avert<Q>::K1_vval(int iK, int i, int i_in){
-    return vec_K1[iK*nw1_wa*n_in + i*n_in + i_in];
+    return K1[iK*nw1_wa*n_in + i*n_in + i_in];
 }
 template <typename Q> Q avert<Q>::K2_vval(int iK, int i,int j, int i_in){
-    return vec_K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
+    return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
 }
 template <typename Q> Q avert<Q>::K3_vval(int iK, int i, int j, int k, int i_in){
-    return vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];
+    return K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];
 }
 
 template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
@@ -149,8 +153,8 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
     double x1 = freqs_a[index];
     double x2 = freqs_a[index+1];
 
-    Q f1 = vec_K1[iK*nw1_wa*n_in + (index)*n_in + i_in];
-    Q f2 = vec_K1[iK*nw1_wa*n_in + (index+1)*n_in + i_in];
+    Q f1 = K1[iK*nw1_wa*n_in + (index)*n_in + i_in];
+    Q f2 = K1[iK*nw1_wa*n_in + (index+1)*n_in + i_in];
 
     return f1 + (u-x1)*(f2-f1)/(x2-x1);
 }
@@ -168,10 +172,10 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double u, double w1, int
     double y1 = freqs_a[index_f];
     double y2 = freqs_a[index_f+1];
 
-    Q f11 = vec_K2[iK*nw2_wa*nw2_nua*n_in + (index_b)*nw2_nua*n_in + (index_f)*n_in + i_in];
-    Q f12 = vec_K2[iK*nw2_wa*nw2_nua*n_in + (index_b)*nw2_nua*n_in + (index_f+1)*n_in + i_in];
-    Q f21 = vec_K2[iK*nw2_wa*nw2_nua*n_in + (index_b+1)*nw2_nua*n_in + (index_f)*n_in + i_in];
-    Q f22 = vec_K2[iK*nw2_wa*nw2_nua*n_in + (index_b+1)*nw2_nua*n_in + (index_f+1)*n_in + i_in];
+    Q f11 = K2[iK*nw2_wa*nw2_nua*n_in + (index_b)*nw2_nua*n_in + (index_f)*n_in + i_in];
+    Q f12 = K2[iK*nw2_wa*nw2_nua*n_in + (index_b)*nw2_nua*n_in + (index_f+1)*n_in + i_in];
+    Q f21 = K2[iK*nw2_wa*nw2_nua*n_in + (index_b+1)*nw2_nua*n_in + (index_f)*n_in + i_in];
+    Q f22 = K2[iK*nw2_wa*nw2_nua*n_in + (index_b+1)*nw2_nua*n_in + (index_f+1)*n_in + i_in];
 
     return (y2-w1)/(y2-y1)*((x2-u)/(x2-x1)*f11 + (u-x1)/(x2-x1)*f21) + (w1-y1)/(y2-y1)*((x2-u)/(x2-x1)*f12 + (u-x1)/(x2-x1)*f22);
 }
@@ -193,14 +197,14 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double z1 = freqs_a[index_fp];
     double z2 = freqs_a[index_fp+1];
 
-    Q f111 = vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
-    Q f112 = vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
-    Q f121 = vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
-    Q f122 = vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
-    Q f211 = vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
-    Q f212 = vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
-    Q f221 = vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
-    Q f222 = vec_K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
+    Q f111 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
+    Q f112 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
+    Q f121 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
+    Q f122 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
+    Q f211 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
+    Q f212 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
+    Q f221 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
+    Q f222 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
 
     double xd = (u-x1)/(x2-x1);
     double yd = (w1-y1)/(y2-y1);
@@ -217,100 +221,6 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     return c0*(1-zd) + c1*zd;
 }
 //non-member functions
-template <typename Q> avert<Q> operator*(double alpha, const avert<Q>& vertex){
-    avert<Q> vertex2;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wa; ++i){
-                //K1 contributions
-                vertex2.vec_K1[nk*nw1_wa*n_in + i*n_in + nin] = alpha * vertex.vec_K1[nk*nw1_wa*n_in + i*n_in + nin];
-            }
-
-            for(int i=0; i<nw2_wa; ++i){
-                for(int j=0; j<nw2_nua; ++j){
-                    vertex2.vec_K2[nk*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + nin] = alpha*vertex.vec_K2[nk*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wa; ++i){
-                for(int j=0; j<nw3_nua; j++){
-                    for(int k=0; k<nw3_nuap; ++k){
-                        vertex2.vec_K3[nk*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + nin] = alpha*vertex.vec_K3[nk*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
-template <typename Q> avert<Q> operator*(const avert<Q>& vertex,double alpha){
-    avert<Q> vertex2;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wa; ++i){
-                //K1 contributions
-                vertex2.vec_K1[nk*nw1_wa*n_in + i*n_in + nin] = alpha * vertex.vec_K1[nk*nw1_wa*n_in + i*n_in + nin];
-            }
-
-            for(int i=0; i<nw2_wa; ++i){
-                for(int j=0; j<nw2_nua; ++j){
-                    vertex2.vec_K2[nk*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + nin] = alpha*vertex.vec_K2[nk*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wa; ++i){
-                for(int j=0; j<nw3_nua; j++){
-                    for(int k=0; k<nw3_nuap; ++k){
-                        vertex2.vec_K3[nk*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + nin] = alpha*vertex.vec_K3[nk*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
-template <typename Q> avert<Q> operator+(const avert<Q>& vertex1,const avert<Q>& vertex2){
-    avert<Q> vertex3;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wa; ++i){
-                //K1 contributions
-                vertex3.vec_K1[nk*nw1_wa*n_in + i*n_in + nin] = vertex1.vec_K1[nk*nw1_wa*n_in + i*n_in + nin] + vertex2.vec_K1[nk*nw1_wa*n_in + i*n_in + nin];
-            }
-
-            for(int i=0; i<nw2_wa; ++i){
-                for(int j=0; j<nw2_nua; ++j){
-                    vertex3.vec_K2[nk*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + nin] = vertex1.vec_K2[nk*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + nin] + vertex2.vec_K2[nk*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wa; ++i){
-                for(int j=0; j<nw3_nua; j++){
-                    for(int k=0; k<nw3_nuap; ++k){
-                        vertex3.vec_K3[nk*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + nin] =
-                                vertex1.vec_K3[nk*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + nin] + vertex2.vec_K3[nk*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
 
 
 /*
@@ -937,9 +847,9 @@ template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double
 
     Q value;
 
-//    if(abs(u) < freqs_a[nw1_wa/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-//    if(abs(w1_u) < freqs_a[nw1_wa/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-//    if(abs(w2_u) < freqs_a[nw1_wa/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
+//    if(abs(u) < freqs_p[nw1_wa/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
+//    if(abs(w1_u) < freqs_p[nw1_wa/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
+//    if(abs(w2_u) < freqs_p[nw1_wa/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
 
     value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK,u,w1_u,i_in) + K3_vvalsmooth(iK, u, w1_u, w2_u, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
 
@@ -1025,23 +935,23 @@ template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double
 }
 
 template <typename Q> void pvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
-    vec_K1[iK*nw1_wp*n_in + i*n_in + i_in] = value;
+    K1[iK*nw1_wp*n_in + i*n_in + i_in] = value;
 }
 template <typename Q> void pvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    vec_K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] = value;
+    K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] = value;
 }
 template <typename Q> void pvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] = value;
+    K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> Q pvert<Q>::K1_vval(int iK, int i, int i_in){
-    return vec_K1[iK*nw1_wp*n_in + i*n_in + i_in];
+    return K1[iK*nw1_wp*n_in + i*n_in + i_in];
 }
 template <typename Q> Q pvert<Q>::K2_vval(int iK, int i,int j, int i_in){
-    return vec_K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in];
+    return K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in];
 }
 template <typename Q> Q pvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in){
-    return vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
+    return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
 }
 
 template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
@@ -1053,11 +963,11 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
     double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw1_wa-1));     //nw1_wa because we're interpolating for K1 in channel a
     auto index = (int)((u-w_lower_b)/dw_b_a);
 
-    double x1 = freqs_a[index];
-    double x2 = freqs_a[index+1];
+    double x1 = freqs_p[index];
+    double x2 = freqs_p[index+1];
 
-    Q f1 = vec_K1[iK*nw1_wp*n_in + (index)*n_in + i_in];
-    Q f2 = vec_K1[iK*nw1_wp*n_in + (index+1)*n_in + i_in];
+    Q f1 = K1[iK*nw1_wp*n_in + (index)*n_in + i_in];
+    Q f2 = K1[iK*nw1_wp*n_in + (index+1)*n_in + i_in];
 
     return f1 + (u-x1)*(f2-f1)/(x2-x1);
 }
@@ -1070,15 +980,15 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double u, double w1, int
     auto index_b = (int)((u-w_lower_b)/dw_b_a);
     auto index_f = (int)((w1-w_lower_f)/dw_f_a);
 
-    double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
-    double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
+    double x1 = freqs_p[index_b];
+    double x2 = freqs_p[index_b+1];
+    double y1 = freqs_p[index_f];
+    double y2 = freqs_p[index_f+1];
 
-    Q f11 = vec_K2[iK*nw2_wp*nw2_nup*n_in + (index_b)*nw2_nup*n_in + (index_f)*n_in + i_in];
-    Q f12 = vec_K2[iK*nw2_wp*nw2_nup*n_in + (index_b)*nw2_nup*n_in + (index_f+1)*n_in + i_in];
-    Q f21 = vec_K2[iK*nw2_wp*nw2_nup*n_in + (index_b+1)*nw2_nup*n_in + (index_f)*n_in + i_in];
-    Q f22 = vec_K2[iK*nw2_wp*nw2_nup*n_in + (index_b+1)*nw2_nup*n_in + (index_f+1)*n_in + i_in];
+    Q f11 = K2[iK*nw2_wp*nw2_nup*n_in + (index_b)*nw2_nup*n_in + (index_f)*n_in + i_in];
+    Q f12 = K2[iK*nw2_wp*nw2_nup*n_in + (index_b)*nw2_nup*n_in + (index_f+1)*n_in + i_in];
+    Q f21 = K2[iK*nw2_wp*nw2_nup*n_in + (index_b+1)*nw2_nup*n_in + (index_f)*n_in + i_in];
+    Q f22 = K2[iK*nw2_wp*nw2_nup*n_in + (index_b+1)*nw2_nup*n_in + (index_f+1)*n_in + i_in];
 
     return (y2-w1)/(y2-y1)*((x2-u)/(x2-x1)*f11 + (u-x1)/(x2-x1)*f21) + (w1-y1)/(y2-y1)*((x2-u)/(x2-x1)*f12 + (u-x1)/(x2-x1)*f22);
 }
@@ -1093,21 +1003,21 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     auto index_f = (int)((w1-w_lower_f)/dw_f_a);
     auto index_fp = (int)((w2-w_lower_f)/dwp_f_a);
 
-    double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
-    double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
-    double z1 = freqs_a[index_fp];
-    double z2 = freqs_a[index_fp+1];
+    double x1 = freqs_p[index_b];
+    double x2 = freqs_p[index_b+1];
+    double y1 = freqs_p[index_f];
+    double y2 = freqs_p[index_f+1];
+    double z1 = freqs_p[index_fp];
+    double z2 = freqs_p[index_fp+1];
 
-    Q f111 = vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
-    Q f112 = vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
-    Q f121 = vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
-    Q f122 = vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
-    Q f211 = vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
-    Q f212 = vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
-    Q f221 = vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
-    Q f222 = vec_K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
+    Q f111 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
+    Q f112 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
+    Q f121 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
+    Q f122 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
+    Q f211 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
+    Q f212 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
+    Q f221 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
+    Q f222 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
 
     double xd = (u-x1)/(x2-x1);
     double yd = (w1-y1)/(y2-y1);
@@ -1124,100 +1034,7 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     return c0*(1-zd) + c1*zd;
 }
 //non-member functions
-template <typename Q> pvert<Q> operator*(double alpha, const pvert<Q>& vertex){
-    pvert<Q> vertex2;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wp; ++i){
-                //K1 contributions
-                vertex2.vec_K1[nk*nw1_wp*n_in + i*n_in + nin] = alpha * vertex.vec_K1[nk*nw1_wp*n_in + i*n_in + nin];
-            }
 
-            for(int i=0; i<nw2_wp; ++i){
-                for(int j=0; j<nw2_nup; ++j){
-                    vertex2.vec_K2[nk*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + nin] = alpha*vertex.vec_K2[nk*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wp; ++i){
-                for(int j=0; j<nw3_nup; j++){
-                    for(int k=0; k<nw3_nupp; ++k){
-                        vertex2.vec_K3[nk*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + nin] = alpha*vertex.vec_K3[nk*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
-template <typename Q> pvert<Q> operator*(const pvert<Q>& vertex,double alpha){
-    pvert<Q> vertex2;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wp; ++i){
-                //K1 contributions
-                vertex2.vec_K1[nk*nw1_wp*n_in + i*n_in + nin] = alpha * vertex.vec_K1[nk*nw1_wp*n_in + i*n_in + nin];
-            }
-
-            for(int i=0; i<nw2_wp; ++i){
-                for(int j=0; j<nw2_nup; ++j){
-                    vertex2.vec_K2[nk*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + nin] = alpha*vertex.vec_K2[nk*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wp; ++i){
-                for(int j=0; j<nw3_nup; j++){
-                    for(int k=0; k<nw3_nupp; ++k){
-                        vertex2.vec_K3[nk*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + nin] = alpha*vertex.vec_K3[nk*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
-template <typename Q> pvert<Q> operator+(const pvert<Q>& vertex1,const pvert<Q>& vertex2){
-    pvert<Q> vertex3;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wp; ++i){
-                //K1 contributions
-                vertex3.vec_K1[nk*nw1_wp*n_in + i*n_in + nin] = vertex1.vec_K1[nk*nw1_wp*n_in + i*n_in + nin] + vertex2.vec_K1[nk*nw1_wp*n_in + i*n_in + nin];
-            }
-
-            for(int i=0; i<nw2_wp; ++i){
-                for(int j=0; j<nw2_nup; ++j){
-                    vertex3.vec_K2[nk*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + nin] = vertex1.vec_K2[nk*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + nin] + vertex2.vec_K2[nk*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wp; ++i){
-                for(int j=0; j<nw3_nup; j++){
-                    for(int k=0; k<nw3_nupp; ++k){
-                        vertex3.vec_K3[nk*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + nin] =
-                                vertex1.vec_K3[nk*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + nin] + vertex2.vec_K3[nk*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
 
 /*
 
@@ -1869,9 +1686,9 @@ template <typename Q> Q tvert<Q>::vvalsmooth(int iK, double q, double w1, double
 
     Q value;
 
-//    if(abs(u) < freqs_a[nw1_wa/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-//    if(abs(w1_u) < freqs_a[nw1_wa/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-//    if(abs(w2_u) < freqs_a[nw1_wa/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
+//    if(abs(u) < freqs_t[nw1_wa/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
+//    if(abs(w1_u) < freqs_t[nw1_wa/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
+//    if(abs(w2_u) < freqs_t[nw1_wa/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
 
     value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK,u,w1_u,i_in) + K3_vvalsmooth(iK, u, w1_u, w2_u, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
 
@@ -1957,23 +1774,23 @@ template <typename Q> Q tvert<Q>::vvalsmooth(int iK, double q, double w1, double
 }
 
 template <typename Q> void tvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
-    vec_K1[iK*nw1_wt*n_in + i*n_in + i_in] = value;
+    K1[iK*nw1_wt*n_in + i*n_in + i_in] = value;
 }
 template <typename Q> void tvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    vec_K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] = value;
+    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] = value;
 }
 template <typename Q> void tvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in] = value;
+    K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> Q tvert<Q>::K1_vval(int iK, int i, int i_in){
-    return vec_K1[iK*nw1_wt*n_in + i*n_in + i_in];
+    return K1[iK*nw1_wt*n_in + i*n_in + i_in];
 }
 template <typename Q> Q tvert<Q>::K2_vval(int iK, int i,int j, int i_in){
-    return vec_K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
+    return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
 }
 template <typename Q> Q tvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in){
-    return vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in];
+    return K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in];
 }
 
 template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
@@ -1985,11 +1802,11 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
     double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw1_wa-1));     //nw1_wa because we're interpolating for K1 in channel a
     auto index = (int)((u-w_lower_b)/dw_b_a);
 
-    double x1 = freqs_a[index];
-    double x2 = freqs_a[index+1];
+    double x1 = freqs_t[index];
+    double x2 = freqs_t[index+1];
 
-    Q f1 = vec_K1[iK*nw1_wt*n_in + (index)*n_in + i_in];
-    Q f2 = vec_K1[iK*nw1_wt*n_in + (index+1)*n_in + i_in];
+    Q f1 = K1[iK*nw1_wt*n_in + (index)*n_in + i_in];
+    Q f2 = K1[iK*nw1_wt*n_in + (index+1)*n_in + i_in];
 
     return f1 + (u-x1)*(f2-f1)/(x2-x1);
 }
@@ -2002,15 +1819,15 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double u, double w1, int
     auto index_b = (int)((u-w_lower_b)/dw_b_a);
     auto index_f = (int)((w1-w_lower_f)/dw_f_a);
 
-    double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
-    double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
+    double x1 = freqs_t[index_b];
+    double x2 = freqs_t[index_b+1];
+    double y1 = freqs_t[index_f];
+    double y2 = freqs_t[index_f+1];
 
-    Q f11 = vec_K2[iK*nw2_wt*nw2_nut*n_in + (index_b)*nw2_nut*n_in + (index_f)*n_in + i_in];
-    Q f12 = vec_K2[iK*nw2_wt*nw2_nut*n_in + (index_b)*nw2_nut*n_in + (index_f+1)*n_in + i_in];
-    Q f21 = vec_K2[iK*nw2_wt*nw2_nut*n_in + (index_b+1)*nw2_nut*n_in + (index_f)*n_in + i_in];
-    Q f22 = vec_K2[iK*nw2_wt*nw2_nut*n_in + (index_b+1)*nw2_nut*n_in + (index_f+1)*n_in + i_in];
+    Q f11 = K2[iK*nw2_wt*nw2_nut*n_in + (index_b)*nw2_nut*n_in + (index_f)*n_in + i_in];
+    Q f12 = K2[iK*nw2_wt*nw2_nut*n_in + (index_b)*nw2_nut*n_in + (index_f+1)*n_in + i_in];
+    Q f21 = K2[iK*nw2_wt*nw2_nut*n_in + (index_b+1)*nw2_nut*n_in + (index_f)*n_in + i_in];
+    Q f22 = K2[iK*nw2_wt*nw2_nut*n_in + (index_b+1)*nw2_nut*n_in + (index_f+1)*n_in + i_in];
 
     return (y2-w1)/(y2-y1)*((x2-u)/(x2-x1)*f11 + (u-x1)/(x2-x1)*f21) + (w1-y1)/(y2-y1)*((x2-u)/(x2-x1)*f12 + (u-x1)/(x2-x1)*f22);
 }
@@ -2025,21 +1842,21 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     auto index_f = (int)((w1-w_lower_f)/dw_f_a);
     auto index_fp = (int)((w2-w_lower_f)/dwp_f_a);
 
-    double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
-    double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
-    double z1 = freqs_a[index_fp];
-    double z2 = freqs_a[index_fp+1];
+    double x1 = freqs_t[index_b];
+    double x2 = freqs_t[index_b+1];
+    double y1 = freqs_t[index_f];
+    double y2 = freqs_t[index_f+1];
+    double z1 = freqs_t[index_fp];
+    double z2 = freqs_t[index_fp+1];
 
-    Q f111 = vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
-    Q f112 = vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
-    Q f121 = vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
-    Q f122 = vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
-    Q f211 = vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
-    Q f212 = vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
-    Q f221 = vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
-    Q f222 = vec_K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
+    Q f111 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
+    Q f112 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
+    Q f121 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
+    Q f122 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
+    Q f211 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
+    Q f212 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
+    Q f221 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
+    Q f222 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
 
     double xd = (u-x1)/(x2-x1);
     double yd = (w1-y1)/(y2-y1);
@@ -2056,100 +1873,7 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     return c0*(1-zd) + c1*zd;
 }
 //non-member functions
-template <typename Q> tvert<Q> operator*(double alpha, const tvert<Q>& vertex){
-    tvert<Q> vertex2;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wt; ++i){
-                //K1 contributions
-                vertex2.vec_K1[nk*nw1_wt*n_in + i*n_in + nin] = alpha * vertex.vec_K1[nk*nw1_wt*n_in + i*n_in + nin];
-            }
 
-            for(int i=0; i<nw2_wt; ++i){
-                for(int j=0; j<nw2_nut; ++j){
-                    vertex2.vec_K2[nk*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + nin] = alpha*vertex.vec_K2[nk*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wt; ++i){
-                for(int j=0; j<nw3_nut; j++){
-                    for(int k=0; k<nw3_nutp; ++k){
-                        vertex2.vec_K3[nk*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + nin] = alpha*vertex.vec_K3[nk*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
-template <typename Q> tvert<Q> operator*(const tvert<Q>& vertex,double alpha){
-    tvert<Q> vertex2;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wt; ++i){
-                //K1 contributions
-                vertex2.vec_K1[nk*nw1_wt*n_in + i*n_in + nin] = alpha * vertex.vec_K1[nk*nw1_wt*n_in + i*n_in + nin];
-            }
-
-            for(int i=0; i<nw2_wt; ++i){
-                for(int j=0; j<nw2_nut; ++j){
-                    vertex2.vec_K2[nk*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + nin] = alpha*vertex.vec_K2[nk*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wt; ++i){
-                for(int j=0; j<nw3_nut; j++){
-                    for(int k=0; k<nw3_nutp; ++k){
-                        vertex2.vec_K3[nk*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + nin] = alpha*vertex.vec_K3[nk*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
-template <typename Q> tvert<Q> operator+(const tvert<Q>& vertex1,const tvert<Q>& vertex2){
-    tvert<Q> vertex3;
-#pragma omp for collapse(3)
-    for(int nk=0; nk<nK_K1; ++nk){
-        for(int nin=0; nin<n_in; ++nin){
-            for(int i=0; i<nw1_wt; ++i){
-                //K1 contributions
-                vertex3.vec_K1[nk*nw1_wt*n_in + i*n_in + nin] = vertex1.vec_K1[nk*nw1_wt*n_in + i*n_in + nin] + vertex2.vec_K1[nk*nw1_wt*n_in + i*n_in + nin];
-            }
-
-            for(int i=0; i<nw2_wt; ++i){
-                for(int j=0; j<nw2_nut; ++j){
-                    vertex3.vec_K2[nk*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + nin] = vertex1.vec_K2[nk*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + nin] + vertex2.vec_K2[nk*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + nin];
-                }
-            }
-
-            for(int i=0; i<nw3_wt; ++i){
-                for(int j=0; j<nw3_nut; j++){
-                    for(int k=0; k<nw3_nutp; ++k){
-                        vertex3.vec_K3[nk*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + nin] =
-                                vertex1.vec_K3[nk*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + nin] + vertex2.vec_K3[nk*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + nin];
-                    }
-                }
-            }
-
-
-
-        }
-
-    }
-    return vertex2;
-}
 
 /*
 
@@ -2781,22 +2505,22 @@ template <typename Q> Q irreducible<Q>::vvalsmooth(double q, double w1, double w
 template <typename Q> void irreducible<Q>::setvert( Q value){
     U_bare = value;}
 //operators for irreducible vertex
-template <typename Q> irreducible<Q> operator*(double alpha, const irreducible<Q>& vertex) {
-    irreducible<Q> result;
-    result.U_bare = alpha * vertex.U_bare;
-    return result;
-
-}
-template <typename Q> irreducible<Q> operator*(const irreducible<Q>& vertex,double alpha) {
-    irreducible<Q> result;
-    result.U_bare = alpha * vertex.U_bare;
-    return result;
-}
-template <typename Q> irreducible<Q> operator+(const irreducible<Q>& vertex1,const irreducible<Q>& vertex2) {
-    irreducible<Q> result;
-    result.U_bare = vertex1.U_bare + vertex2.U_bare;
-    return result;
-}
+//template <typename Q> irreducible<Q> operator*(double alpha, const irreducible<Q>& vertex) {
+//    irreducible<Q> result;
+//    result.U_bare = alpha * vertex.U_bare;
+//    return result;
+//
+//}
+//template <typename Q> irreducible<Q> operator*(const irreducible<Q>& vertex,double alpha) {
+//    irreducible<Q> result;
+//    result.U_bare = alpha * vertex.U_bare;
+//    return result;
+//}
+//template <typename Q> irreducible<Q> operator+(const irreducible<Q>& vertex1,const irreducible<Q>& vertex2) {
+//    irreducible<Q> result;
+//    result.U_bare = vertex1.U_bare + vertex2.U_bare;
+//    return result;
+//}
 
 /*
 
@@ -2838,113 +2562,7 @@ template <typename Q> void irreducible<Q>::setvert(int a_raw, int b_raw, int c_r
 
 */
 
-
-/*****************************************operators concerning parvert objects********************************************************/
-
-template <typename Q> parvert<avert<Q> > operator+(parvert<avert<Q> > vertex1, parvert<avert<Q> > vertex2){
-    parvert<avert<Q> >  result;
-    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-    return result;
-}
-template <typename Q> parvert<pvert<Q> > operator+(parvert<pvert<Q> > vertex1, parvert<pvert<Q> > vertex2){
-    parvert<pvert<Q> >  result;
-    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-    return result;
-}
-template <typename Q> parvert<tvert<Q> > operator+(parvert<tvert<Q> > vertex1, parvert<tvert<Q> > vertex2){
-    parvert<tvert<Q> >  result;
-    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-    return result;
-}
-template <typename Q> parvert<irreducible<Q> > operator+(parvert<irreducible<Q> > vertex1,parvert<irreducible<Q> > vertex2){
-    parvert<irreducible<Q> > result;
-    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-    return result;
-}
-template <typename Q> parvert<avert<Q> > operator+=(parvert<avert<Q> > vertex1, parvert<avert<Q> > vertex2){
-    parvert<avert<Q> >  result;
-    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-    return result;
-}
-template <typename Q> parvert<pvert<Q> > operator+=(parvert<pvert<Q> > vertex1, parvert<pvert<Q> > vertex2){
-    parvert<pvert<Q> >  result;
-    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-    return result;
-}
-template <typename Q> parvert<tvert<Q> > operator+=(parvert<tvert<Q> > vertex1, parvert<tvert<Q> > vertex2){
-    parvert<tvert<Q> >  result;
-    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-    return result;
-}
-template <typename Q> parvert<irreducible<Q> > operator+=(parvert<irreducible<Q> > vertex1,parvert<irreducible<Q> > vertex2){
-    parvert<irreducible<Q> > result;
-    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-    return result;
-}
-template <typename Q> parvert<avert<Q> > operator*(double alpha, parvert<avert<Q> > &vertex){
-    parvert<avert<Q> >  result;
-    result.spinvertex = alpha * vertex.spinvertex;
-    result.densvertex = alpha * vertex.densvertex;
-    return result;
-}
-template <typename Q> parvert<avert<Q> > operator*(parvert<avert<Q> > &vertex,double alpha){
-    parvert<avert<Q> >  result;
-    result.spinvertex = alpha * vertex.spinvertex;
-    result.densvertex = alpha * vertex.densvertex;
-    return result;
-}
-template <typename Q> parvert<pvert<Q> > operator*(double alpha, parvert<pvert<Q> > &vertex){
-    parvert<pvert<Q> >  result;
-    result.spinvertex = alpha * vertex.spinvertex;
-    result.densvertex = alpha * vertex.densvertex;
-    return result;
-}
-template <typename Q> parvert<pvert<Q> > operator*(parvert<pvert<Q> > &vertex,double alpha){
-    parvert<pvert<Q> >  result;
-    result.spinvertex = alpha * vertex.spinvertex;
-    result.densvertex = alpha * vertex.densvertex;
-    return result;
-}
-template <typename Q> parvert<tvert<Q> > operator*(double alpha, parvert<tvert<Q> > &vertex){
-    parvert<tvert<Q> >  result;
-    result.spinvertex = alpha * vertex.spinvertex;
-    result.densvertex = alpha * vertex.densvertex;
-    return result;
-}
-template <typename Q> parvert<tvert<Q> > operator*(parvert<tvert<Q> > &vertex,double alpha){
-    parvert<tvert<Q> >  result;
-    result.spinvertex = alpha * vertex.spinvertex;
-    result.densvertex = alpha * vertex.densvertex;
-    return result;
-}
-template <typename Q> parvert<irreducible<Q> > operator*(double alpha, parvert<irreducible<Q> > &vertex){
-    parvert<irreducible<Q> > result;
-    result.spinvertex = alpha * vertex.spinvertex;
-    result.densvertex = alpha * vertex.densvertex;
-    return result;
-}
-template <typename Q> parvert<irreducible<Q> > operator*(parvert<irreducible<Q> > &vertex, double alpha){
-    parvert<irreducible<Q> > result;
-    result.spinvertex = alpha * vertex.spinvertex;
-    result.densvertex = alpha * vertex.densvertex;
-    return result;
-}
-/*************************************************************************************************************/
-
-
-
-
-
-
-/*****************************************FUNCTIONS FOR FULL VERTEX "FULLVERT"********************************************************/
+/*****************************************FUNCTIONS FOR Vertexex "FULLVERT"********************************************************/
 //arguments are equivalent to those in the simple vertex functions
 
 template <typename Q> Q fullvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel){
@@ -2990,7 +2608,7 @@ template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, in
         if(map==0){
             if(channel == 's'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
             else if(channel == 't'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
-            else if(channel == 'u'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);};}
+            else if(channel == 'u'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}}
         else if(map==1){
             if(channel == 's' ){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
             else if(channel == 't'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
@@ -3003,22 +2621,23 @@ template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, in
         result  =0;};
     return result;
 }
-template <typename Q> fullvert<Q> operator*(double alpha, const fullvert<Q>& vertex){
-    fullvert<Q> result;
-    result.irred = alpha * vertex.irred;
-    result.pvertex = alpha *vertex.pvertex;
-    result.tvertex = alpha * vertex.tvertex;
-    result.avertex = alpha * vertex.avertex;
-    return result;
-}
-template <typename Q> fullvert<Q> operator+( const fullvert<Q>& vertex1, const fullvert<Q>& vertex2){
-    fullvert<Q> result;
-    result.irred = vertex1.irred + vertex2.irred ;
-    result.pvertex = vertex1.pvertex + vertex2.pvertex ;
-    result.tvertex = vertex1.tvertex + vertex2.tvertex ;
-    result.avertex = vertex1.avertex + vertex2.avertex ;
-    return result;
-}
+
+//template <typename Q> fullvert<Q> operator*(double alpha, const fullvert<Q>& vertex){
+//    fullvert<Q> result;
+//    result.irred = alpha * vertex.irred;
+//    result.pvertex = alpha *vertex.pvertex;
+//    result.tvertex = alpha * vertex.tvertex;
+//    result.avertex = alpha * vertex.avertex;
+//    return result;
+//}
+//template <typename Q> fullvert<Q> operator+( const fullvert<Q>& vertex1, const fullvert<Q>& vertex2){
+//    fullvert<Q> result;
+//    result.irred = vertex1.irred + vertex2.irred ;
+//    result.pvertex = vertex1.pvertex + vertex2.pvertex ;
+//    result.tvertex = vertex1.tvertex + vertex2.tvertex ;
+//    result.avertex = vertex1.avertex + vertex2.avertex ;
+//    return result;
+//}
 
 /*
 
@@ -3082,3 +2701,104 @@ template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, in
 }
 
 */
+
+
+/*****************************************operators concerning Vertex objects********************************************************/
+
+template <typename Q> Vertex<avert<Q> > operator+(Vertex<avert<Q> > vertex1, Vertex<avert<Q> > vertex2){
+    Vertex<avert<Q> >  result;
+    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+    result.densvertex = vertex1.densvertex + vertex2.densvertex;
+    return result;
+}
+template <typename Q> Vertex<pvert<Q> > operator+(Vertex<pvert<Q> > vertex1, Vertex<pvert<Q> > vertex2){
+    Vertex<pvert<Q> >  result;
+    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+    result.densvertex = vertex1.densvertex + vertex2.densvertex;
+    return result;
+}
+template <typename Q> Vertex<tvert<Q> > operator+(Vertex<tvert<Q> > vertex1, Vertex<tvert<Q> > vertex2){
+    Vertex<tvert<Q> >  result;
+    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+    result.densvertex = vertex1.densvertex + vertex2.densvertex;
+    return result;
+}
+template <typename Q> Vertex<irreducible<Q> > operator+(Vertex<irreducible<Q> > vertex1,Vertex<irreducible<Q> > vertex2){
+    Vertex<irreducible<Q> > result;
+    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+    result.densvertex = vertex1.densvertex + vertex2.densvertex;
+    return result;
+}
+template <typename Q> Vertex<avert<Q> > operator+=(Vertex<avert<Q> > vertex1, Vertex<avert<Q> > vertex2){
+    Vertex<avert<Q> >  result;
+    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+    result.densvertex = vertex1.densvertex + vertex2.densvertex;
+    return result;
+}
+template <typename Q> Vertex<pvert<Q> > operator+=(Vertex<pvert<Q> > vertex1, Vertex<pvert<Q> > vertex2){
+    Vertex<pvert<Q> >  result;
+    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+    result.densvertex = vertex1.densvertex + vertex2.densvertex;
+    return result;
+}
+template <typename Q> Vertex<tvert<Q> > operator+=(Vertex<tvert<Q> > vertex1, Vertex<tvert<Q> > vertex2){
+    Vertex<tvert<Q> >  result;
+    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+    result.densvertex = vertex1.densvertex + vertex2.densvertex;
+    return result;
+}
+template <typename Q> Vertex<irreducible<Q> > operator+=(Vertex<irreducible<Q> > vertex1,Vertex<irreducible<Q> > vertex2){
+    Vertex<irreducible<Q> > result;
+    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+    result.densvertex = vertex1.densvertex + vertex2.densvertex;
+    return result;
+}
+template <typename Q> Vertex<avert<Q> > operator*(double alpha, Vertex<avert<Q> > &vertex){
+    Vertex<avert<Q> >  result;
+    result.spinvertex = alpha * vertex.spinvertex;
+    result.densvertex = alpha * vertex.densvertex;
+    return result;
+}
+template <typename Q> Vertex<avert<Q> > operator*(Vertex<avert<Q> > &vertex,double alpha){
+    Vertex<avert<Q> >  result;
+    result.spinvertex = alpha * vertex.spinvertex;
+    result.densvertex = alpha * vertex.densvertex;
+    return result;
+}
+template <typename Q> Vertex<pvert<Q> > operator*(double alpha, Vertex<pvert<Q> > &vertex){
+    Vertex<pvert<Q> >  result;
+    result.spinvertex = alpha * vertex.spinvertex;
+    result.densvertex = alpha * vertex.densvertex;
+    return result;
+}
+template <typename Q> Vertex<pvert<Q> > operator*(Vertex<pvert<Q> > &vertex,double alpha){
+    Vertex<pvert<Q> >  result;
+    result.spinvertex = alpha * vertex.spinvertex;
+    result.densvertex = alpha * vertex.densvertex;
+    return result;
+}
+template <typename Q> Vertex<tvert<Q> > operator*(double alpha, Vertex<tvert<Q> > &vertex){
+    Vertex<tvert<Q> >  result;
+    result.spinvertex = alpha * vertex.spinvertex;
+    result.densvertex = alpha * vertex.densvertex;
+    return result;
+}
+template <typename Q> Vertex<tvert<Q> > operator*(Vertex<tvert<Q> > &vertex,double alpha){
+    Vertex<tvert<Q> >  result;
+    result.spinvertex = alpha * vertex.spinvertex;
+    result.densvertex = alpha * vertex.densvertex;
+    return result;
+}
+template <typename Q> Vertex<irreducible<Q> > operator*(double alpha, Vertex<irreducible<Q> > &vertex){
+    Vertex<irreducible<Q> > result;
+    result.spinvertex = alpha * vertex.spinvertex;
+    result.densvertex = alpha * vertex.densvertex;
+    return result;
+}
+template <typename Q> Vertex<irreducible<Q> > operator*(Vertex<irreducible<Q> > &vertex, double alpha){
+    Vertex<irreducible<Q> > result;
+    result.spinvertex = alpha * vertex.spinvertex;
+    result.densvertex = alpha * vertex.densvertex;
+    return result;
+}
+/*************************************************************************************************************/
