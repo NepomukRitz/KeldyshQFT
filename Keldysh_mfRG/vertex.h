@@ -12,6 +12,12 @@
 
 using namespace std;
 
+// TODO: maybe rename member functions K1_vval, K1_vvalsmooth, etc.
+// TODO: need additional wrapper functions that provide the transformations T1, T2, T3, TC
+// TODO: need functions that provide the transformation between the a,p,t frequency conventions (currently in the functions vvalsmooth(...))
+//          --> TODO: as a follow-on: remove this distinction from the vvalsmooth functions
+
+
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
 template <typename Q>
 class avert{
