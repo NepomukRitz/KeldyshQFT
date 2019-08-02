@@ -6,5 +6,5 @@ CXX_FLAGS = -g
 
 CXX_DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB
 
-CXX_INCLUDES = -I/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/opengl -I/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/opengl -isystem /usr/include/qt4 -isystem /usr/include/qt4/QtOpenGL -isystem /usr/include/qt4/QtGui -isystem /usr/include/qt4/QtCore 
+CXX_INCLUDES = -I/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/opengl -I/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/opengl -isystem /usr/include/qt4 -isystem /usr/include/qt4/QtOpenGL -isystem /usr/include/qt4/QtGui -isystem /usr/include/qt4/QtCore 
 

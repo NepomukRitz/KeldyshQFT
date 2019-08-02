@@ -8,5 +8,5 @@
 -DQT_GUI_LIB
 -DQT_CORE_LIB
 -o
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/opengl/quaternion_demo.moc
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/opengl/quaternion_demo.h
+/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/opengl/quaternion_demo.moc
+/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/opengl/quaternion_demo.h

@@ -1,4 +1,4 @@
-/filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos
+/filer/z-sv-pool12c/e/E.Walter/clion-2019.1.2/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos
 -- The C compiler identification is GNU 5.4.0
 -- The CXX compiler identification is GNU 5.4.0
 -- Check for working C compiler: /usr/bin/cc
@@ -36,4 +36,4 @@ This warning is for project developers.  Use -Wno-dev to suppress it.
 
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug
+-- Build files have been written to: /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug

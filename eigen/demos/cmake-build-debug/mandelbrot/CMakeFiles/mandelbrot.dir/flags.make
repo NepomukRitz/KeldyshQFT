@@ -6,5 +6,5 @@ CXX_FLAGS =  -O2 -g
 
 CXX_DEFINES = -DNDEBUG
 
-CXX_INCLUDES = -I/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/mandelbrot -I/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/mandelbrot -I/usr/include/qt4 
+CXX_INCLUDES = -I/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/mandelbrot -I/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/mandelbrot -I/usr/include/qt4 
 

@@ -1,22 +1,22 @@
 Determining if the Q_WS_WIN exist failed with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_918e8/fast 
-/usr/bin/make -f CMakeFiles/cmTC_918e8.dir/build.make CMakeFiles/cmTC_918e8.dir/build
-make[1]: Entering directory '/filer/z-sv-pool12c/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_918e8.dir/CheckSymbolExists.cxx.o
-/usr/bin/c++   -I/usr/include/qt4   -o CMakeFiles/cmTC_918e8.dir/CheckSymbolExists.cxx.o -c /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
+Run Build Command(s):/usr/bin/make cmTC_bf8dd/fast 
+/usr/bin/make -f CMakeFiles/cmTC_bf8dd.dir/build.make CMakeFiles/cmTC_bf8dd.dir/build
+make[1]: Entering directory '/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_bf8dd.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4   -o CMakeFiles/cmTC_bf8dd.dir/CheckSymbolExists.cxx.o -c /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
    return ((int*)(&Q_WS_WIN))[argc];
                    ^
-CMakeFiles/cmTC_918e8.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_918e8.dir/CheckSymbolExists.cxx.o' failed
-make[1]: *** [CMakeFiles/cmTC_918e8.dir/CheckSymbolExists.cxx.o] Error 1
-make[1]: Leaving directory '/filer/z-sv-pool12c/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_918e8/fast' failed
-make: *** [cmTC_918e8/fast] Error 2
+CMakeFiles/cmTC_bf8dd.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_bf8dd.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_bf8dd.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_bf8dd/fast' failed
+make: *** [cmTC_bf8dd/fast] Error 2
 
-File /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+File /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
 /* */
 #include <QtCore/qglobal.h>
 
@@ -32,24 +32,24 @@ int main(int argc, char** argv)
 }
 
 Determining if the Q_WS_QWS exist failed with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_fc5a2/fast 
-/usr/bin/make -f CMakeFiles/cmTC_fc5a2.dir/build.make CMakeFiles/cmTC_fc5a2.dir/build
-make[1]: Entering directory '/filer/z-sv-pool12c/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_fc5a2.dir/CheckSymbolExists.cxx.o
-/usr/bin/c++   -I/usr/include/qt4   -o CMakeFiles/cmTC_fc5a2.dir/CheckSymbolExists.cxx.o -c /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
+Run Build Command(s):/usr/bin/make cmTC_9e4b3/fast 
+/usr/bin/make -f CMakeFiles/cmTC_9e4b3.dir/build.make CMakeFiles/cmTC_9e4b3.dir/build
+make[1]: Entering directory '/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_9e4b3.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4   -o CMakeFiles/cmTC_9e4b3.dir/CheckSymbolExists.cxx.o -c /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
    return ((int*)(&Q_WS_QWS))[argc];
                    ^
-CMakeFiles/cmTC_fc5a2.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_fc5a2.dir/CheckSymbolExists.cxx.o' failed
-make[1]: *** [CMakeFiles/cmTC_fc5a2.dir/CheckSymbolExists.cxx.o] Error 1
-make[1]: Leaving directory '/filer/z-sv-pool12c/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_fc5a2/fast' failed
-make: *** [cmTC_fc5a2/fast] Error 2
+CMakeFiles/cmTC_9e4b3.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_9e4b3.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_9e4b3.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_9e4b3/fast' failed
+make: *** [cmTC_9e4b3/fast] Error 2
 
-File /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+File /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
 /* */
 #include <QtCore/qglobal.h>
 
@@ -65,24 +65,24 @@ int main(int argc, char** argv)
 }
 
 Determining if the Q_WS_MAC exist failed with the following output:
-Change Dir: /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_bcdab/fast 
-/usr/bin/make -f CMakeFiles/cmTC_bcdab.dir/build.make CMakeFiles/cmTC_bcdab.dir/build
-make[1]: Entering directory '/filer/z-sv-pool12c/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_bcdab.dir/CheckSymbolExists.cxx.o
-/usr/bin/c++   -I/usr/include/qt4   -o CMakeFiles/cmTC_bcdab.dir/CheckSymbolExists.cxx.o -c /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
+Run Build Command(s):/usr/bin/make cmTC_75625/fast 
+/usr/bin/make -f CMakeFiles/cmTC_75625.dir/build.make CMakeFiles/cmTC_75625.dir/build
+make[1]: Entering directory '/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_75625.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4   -o CMakeFiles/cmTC_75625.dir/CheckSymbolExists.cxx.o -c /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
    return ((int*)(&Q_WS_MAC))[argc];
                    ^
-CMakeFiles/cmTC_bcdab.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_bcdab.dir/CheckSymbolExists.cxx.o' failed
-make[1]: *** [CMakeFiles/cmTC_bcdab.dir/CheckSymbolExists.cxx.o] Error 1
-make[1]: Leaving directory '/filer/z-sv-pool12c/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_bcdab/fast' failed
-make: *** [cmTC_bcdab/fast] Error 2
+CMakeFiles/cmTC_75625.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_75625.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_75625.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_75625/fast' failed
+make: *** [cmTC_75625/fast] Error 2
 
-File /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+File /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
 /* */
 #include <QtCore/qglobal.h>
 

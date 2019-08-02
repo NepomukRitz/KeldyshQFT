@@ -1,4 +1,4 @@
-# Install script for directory: /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/mandelbrot
+# Install script for directory: /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/mandelbrot
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

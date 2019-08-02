@@ -1,4 +1,4 @@
-# Install script for directory: /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos
+# Install script for directory: /home/e/E.Walter/Documents/fRG/mfrg/eigen/demos
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,8 +39,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/mandelbrot/cmake_install.cmake")
-  include("/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/opengl/cmake_install.cmake")
+  include("/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/mandelbrot/cmake_install.cmake")
+  include("/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/opengl/cmake_install.cmake")
 
 endif()
 
@@ -52,5 +52,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/eigen/demos/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/e/E.Walter/Documents/fRG/mfrg/eigen/demos/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
