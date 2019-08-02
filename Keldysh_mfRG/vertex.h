@@ -655,15 +655,15 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double yd = (w1-y1)/(y2-y1);
     double zd = (w2-z1)/(z2-z1);
 
-    Q c00 = f111*(1-xd) + f211*xd;
-    Q c01 = f112*(1-xd) + f212*xd;
-    Q c10 = f121*(1-xd) + f221*xd;
-    Q c11 = f122*(1-xd) + f222*xd;
+    Q c00 = f111*(1.-xd) + f211*xd;
+    Q c01 = f112*(1.-xd) + f212*xd;
+    Q c10 = f121*(1.-xd) + f221*xd;
+    Q c11 = f122*(1.-xd) + f222*xd;
 
-    Q c0 = c00*(1-yd) + c10*yd;
-    Q c1 = c01*(1-yd) + c11*yd;
+    Q c0 = c00*(1.-yd) + c10*yd;
+    Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1-zd) + c1*zd;
+    return c0*(1.-zd) + c1*zd;
 }
 //non-member functions
 
@@ -1469,15 +1469,15 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double yd = (w1-y1)/(y2-y1);
     double zd = (w2-z1)/(z2-z1);
 
-    Q c00 = f111*(1-xd) + f211*xd;
-    Q c01 = f112*(1-xd) + f212*xd;
-    Q c10 = f121*(1-xd) + f221*xd;
-    Q c11 = f122*(1-xd) + f222*xd;
+    Q c00 = f111*(1.-xd) + f211*xd;
+    Q c01 = f112*(1.-xd) + f212*xd;
+    Q c10 = f121*(1.-xd) + f221*xd;
+    Q c11 = f122*(1.-xd) + f222*xd;
 
-    Q c0 = c00*(1-yd) + c10*yd;
-    Q c1 = c01*(1-yd) + c11*yd;
+    Q c0 = c00*(1.-yd) + c10*yd;
+    Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1-zd) + c1*zd;
+    return c0*(1.-zd) + c1*zd;
 }
 //non-member functions
 
@@ -2308,15 +2308,15 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double yd = (w1-y1)/(y2-y1);
     double zd = (w2-z1)/(z2-z1);
 
-    Q c00 = f111*(1-xd) + f211*xd;
-    Q c01 = f112*(1-xd) + f212*xd;
-    Q c10 = f121*(1-xd) + f221*xd;
-    Q c11 = f122*(1-xd) + f222*xd;
+    Q c00 = f111*(1.-xd) + f211*xd;
+    Q c01 = f112*(1.-xd) + f212*xd;
+    Q c10 = f121*(1.-xd) + f221*xd;
+    Q c11 = f122*(1.-xd) + f222*xd;
 
-    Q c0 = c00*(1-yd) + c10*yd;
-    Q c1 = c01*(1-yd) + c11*yd;
+    Q c0 = c00*(1.-yd) + c10*yd;
+    Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1-zd) + c1*zd;
+    return c0*(1.-zd) + c1*zd;
 }
 //non-member functions
 
