@@ -3121,7 +3121,6 @@ double tvert::vvalsmooth(int a, int b, int c,  double q, double w1, double w2, c
 //overload of previous function
 double tvert::vvalsmooth(int red_side, int map,int a, int b, int c,  double q, double w1, double w2, char channel, int p, char f){
     return vvalsmooth( a, b, c, q, w1,  w2,  channel,p,  f);
-
 }
 double tvert::vvalsmooth(int a, int b, int c,  double q, double w1, double w2){//this function smoother interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
     if(distance(a,b,c) <= d_c){//cutoff distance
@@ -4806,7 +4805,7 @@ double fullvert::vvalsmooth(int a, int b, int c, double q, double w1, double w2,
         result  =0;};
     return result;
 }
-double fullvert::vvalsmooth(int red_side, int map, int a, int b, int c, double q, double w1, double w2, char channel, int p, char f){// red_side: if only complementary channel in one vertex, which one is reduced? (0/1/2), p: is this the left/upper (1) or the right/lower (2) vertex of the bubble?, f: diagrammatic class that is computed
+double fullvert::vvalsmooth(p, int a, int b, int c, double q, double w1, double w2, char channel, int p, char f){// red_side: if only complementary channel in one vertex, which one is reduced? (0/1/2), p: is this the left/upper (1) or the right/lower (2) vertex of the bubble?, f: diagrammatic class that is computed
     double result=0;
 
     if(red_side != p){

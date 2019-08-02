@@ -53,7 +53,7 @@ const double w_upper_f = -w_lower_f;        //Symmetric grid
 
 /*Number of independent Keldysh components for the respective diagrammatic class*/
 const int nK_K1 = 2;
-const int nK_K2 = 3;
+const int nK_K2 = 2;
 const int nK_K3 = 6;
 
 /*Dimension of the space defining the internal structure*/

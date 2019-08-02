@@ -210,15 +210,15 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double yd = (w1-y1)/(y2-y1);
     double zd = (w2-z1)/(z2-z1);
 
-    Q c00 = f111*(1-xd) + f211*xd;
-    Q c01 = f112*(1-xd) + f212*xd;
-    Q c10 = f121*(1-xd) + f221*xd;
-    Q c11 = f122*(1-xd) + f222*xd;
+    Q c00 = f111*(1.-xd) + f211*xd;
+    Q c01 = f112*(1.-xd) + f212*xd;
+    Q c10 = f121*(1.-xd) + f221*xd;
+    Q c11 = f122*(1.-xd) + f222*xd;
 
-    Q c0 = c00*(1-yd) + c10*yd;
-    Q c1 = c01*(1-yd) + c11*yd;
+    Q c0 = c00*(1.-yd) + c10*yd;
+    Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1-zd) + c1*zd;
+    return c0*(1.-zd) + c1*zd;
 }
 //non-member functions
 
@@ -1023,15 +1023,15 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double yd = (w1-y1)/(y2-y1);
     double zd = (w2-z1)/(z2-z1);
 
-    Q c00 = f111*(1-xd) + f211*xd;
-    Q c01 = f112*(1-xd) + f212*xd;
-    Q c10 = f121*(1-xd) + f221*xd;
-    Q c11 = f122*(1-xd) + f222*xd;
+    Q c00 = f111*(1.-xd) + f211*xd;
+    Q c01 = f112*(1.-xd) + f212*xd;
+    Q c10 = f121*(1.-xd) + f221*xd;
+    Q c11 = f122*(1.-xd) + f222*xd;
 
-    Q c0 = c00*(1-yd) + c10*yd;
-    Q c1 = c01*(1-yd) + c11*yd;
+    Q c0 = c00*(1.-yd) + c10*yd;
+    Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1-zd) + c1*zd;
+    return c0*(1.-zd) + c1*zd;
 }
 //non-member functions
 
@@ -1862,15 +1862,15 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double yd = (w1-y1)/(y2-y1);
     double zd = (w2-z1)/(z2-z1);
 
-    Q c00 = f111*(1-xd) + f211*xd;
-    Q c01 = f112*(1-xd) + f212*xd;
-    Q c10 = f121*(1-xd) + f221*xd;
-    Q c11 = f122*(1-xd) + f222*xd;
+    Q c00 = f111*(1.-xd) + f211*xd;
+    Q c01 = f112*(1.-xd) + f212*xd;
+    Q c10 = f121*(1.-xd) + f221*xd;
+    Q c11 = f122*(1.-xd) + f222*xd;
 
-    Q c0 = c00*(1-yd) + c10*yd;
-    Q c1 = c01*(1-yd) + c11*yd;
+    Q c0 = c00*(1.-yd) + c10*yd;
+    Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1-zd) + c1*zd;
+    return c0*(1.-zd) + c1*zd;
 }
 //non-member functions
 
@@ -2504,23 +2504,6 @@ template <typename Q> Q irreducible<Q>::vvalsmooth(double q, double w1, double w
 }
 template <typename Q> void irreducible<Q>::setvert( Q value){
     U_bare = value;}
-//operators for irreducible vertex
-//template <typename Q> irreducible<Q> operator*(double alpha, const irreducible<Q>& vertex) {
-//    irreducible<Q> result;
-//    result.U_bare = alpha * vertex.U_bare;
-//    return result;
-//
-//}
-//template <typename Q> irreducible<Q> operator*(const irreducible<Q>& vertex,double alpha) {
-//    irreducible<Q> result;
-//    result.U_bare = alpha * vertex.U_bare;
-//    return result;
-//}
-//template <typename Q> irreducible<Q> operator+(const irreducible<Q>& vertex1,const irreducible<Q>& vertex2) {
-//    irreducible<Q> result;
-//    result.U_bare = vertex1.U_bare + vertex2.U_bare;
-//    return result;
-//}
 
 /*
 
@@ -2622,22 +2605,7 @@ template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, in
     return result;
 }
 
-//template <typename Q> fullvert<Q> operator*(double alpha, const fullvert<Q>& vertex){
-//    fullvert<Q> result;
-//    result.irred = alpha * vertex.irred;
-//    result.pvertex = alpha *vertex.pvertex;
-//    result.tvertex = alpha * vertex.tvertex;
-//    result.avertex = alpha * vertex.avertex;
-//    return result;
-//}
-//template <typename Q> fullvert<Q> operator+( const fullvert<Q>& vertex1, const fullvert<Q>& vertex2){
-//    fullvert<Q> result;
-//    result.irred = vertex1.irred + vertex2.irred ;
-//    result.pvertex = vertex1.pvertex + vertex2.pvertex ;
-//    result.tvertex = vertex1.tvertex + vertex2.tvertex ;
-//    result.avertex = vertex1.avertex + vertex2.avertex ;
-//    return result;
-//}
+
 
 /*
 

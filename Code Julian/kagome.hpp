@@ -350,7 +350,6 @@ complex<double> propag(double Lambda, double w, self selfenergy,self diffselfene
 /*******BUBBLE INTEGRATION FUNCTIONS***********/
 //s-bubble:
 template<typename  T1,typename  T2>
-
 struct sbubble_params{
 
 
@@ -430,7 +429,7 @@ template<typename T1,typename T2>
 double sbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, self& se, self& dse, double s,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
     double abs_error=1e-2, rel_error=1e-4;
    double abs_error_bare=1e-4,rel_error_bare=1e-4;
-    //Note: factor 1/2 is included due to indistiguishibility of propagators in s-bubble
+    //Note: factor 1/2 is included due to indistiguishability of propagators in s-bubble
 
     double B =0;
 
@@ -523,7 +522,7 @@ double sbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
             int mode1_up=1;int mode2_up=1;
             int mode1_low=1;int mode2_low=1;
             vert1_const = vert1.vvalsmooth(red_side,map1,a,b,c,s,wlimit,w2,'s',1,h);
-            vert2_const =vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,wlimit,'s',2,h);
+            vert2_const = vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,wlimit,'s',2,h);
 
             for(int i=upperR_v2.size()-1; i>-1 ; i--){
                 if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,upperR_v2[i],'s',2,h)-vert2_const)* vert1.vvalsmooth(red_side,map1,a,b,c,s,upperR_v2[i],w2,'s',1,h))>0 ){limit_up2 = upperR_v2[i];break;};
@@ -1797,7 +1796,7 @@ struct tbubble_params{
 };
 
 template<typename T1,typename T2>
-double tbubble_re(double w, void * p){
+double tbubble_re(double w, void * p{
     struct tbubble_params<T1,T2> * params
             = static_cast< struct tbubble_params<T1,T2> *>(p);
     int red_side = (params->red_side);
@@ -1846,10 +1845,6 @@ double tgreensfunc_re(double w, void * p){//returns the value of all constituent
 
     return (-1./(2.*pi)*val);//minus sign is from definition of t-bubble
 }
-
-
-
-
 
 template<typename T1,typename T2>
 double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, self& se, self& dse, double t,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
@@ -3294,8 +3289,6 @@ double ububble_re(double w, void * p){
     return (1./(2*pi)*val);
 }
 
-
-
 template<typename T1,typename T2>
 double ugreensfunc_re(double w, void * p){
     struct ububble_params<T1,T2> * params
@@ -3312,10 +3305,6 @@ double ugreensfunc_re(double w, void * p){
     double val = real( propag(Lambda,w-u/2,selfen,diffselfen,ptype1) * propag(Lambda,w+u/2,selfen,diffselfen,ptype2) );
     return (1./(2*pi)*val);
 }
-
-
-
-
 
 template<typename T1,typename T2>
 double ububble(int red_side,int map1,int map2,gsl_integration_workspace* w,double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, self& se, self& dse, double u,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
@@ -5168,7 +5157,7 @@ parvert<svert> sbubble(int red_side, double Lambda, parvert<T1>& vert1, parvert<
             //note that the asymptotic behaviour is centered around s/2 (half the bosonic transfer freq in the s-channel)
             double s = bfreqs[i];
 
-            spinspin = sbubble(red_side,0,0,w,Lambda, vert1.spinvertex,a,b,c,vert2.spinvertex,a,b,c,p1,p2,selfenergy, diffselfenergy,s,wlimit,wlimit,'K');//these four grids contain all frequency values for fixed (a,b,c) and Lambda
+            spinspin = sbubble(red_side,0,0,w, Lambda, vert1.spinvertex,a,b,c,vert2.spinvertex,a,b,c,p1,p2,selfenergy, diffselfenergy,s,wlimit,wlimit,'K');//these four grids contain all frequency values for fixed (a,b,c) and Lambda
             spindens = sbubble(red_side,0,0,w, Lambda, vert1.spinvertex,a,b,c,vert2.densvertex,a,b,c,p1,p2,selfenergy, diffselfenergy,s,wlimit,wlimit,'K');
             densspin = sbubble(red_side,0,0,w, Lambda, vert1.densvertex,a,b,c,vert2.spinvertex,a,b,c,p1,p2,selfenergy, diffselfenergy,s,wlimit,wlimit,'K');
             densdens = sbubble(red_side,0,0,w, Lambda, vert1.densvertex,a,b,c,vert2.densvertex,a,b,c,p1,p2,selfenergy, diffselfenergy,s,wlimit,wlimit,'K');
