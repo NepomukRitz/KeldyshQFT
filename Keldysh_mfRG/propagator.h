@@ -17,11 +17,11 @@ using namespace std;
 //TODO: add Keldysh component!!
 
 /*******PROPAGATOR FUNCTION***********/
-comp propag(double Lambda, double w, self<comp> selfenergy, self<comp> diffselfenergy, char type);
+comp propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<comp> diffselfenergy, char type);
 
 
 /************FUNCTION TO COMPUTE DIFFERENT TYPES OF PROPAGATOR (full greens function, katanin and single scale propagator)********************************************************/
-comp propag(double Lambda, double w, self<comp> selfenergy, self<comp> diffselfenergy, char type) {
+comp propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<comp> diffselfenergy, char type) {
 
     if(w!=0){
         complex<double> value;

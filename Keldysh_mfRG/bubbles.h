@@ -26,8 +26,8 @@ struct abubble_params{
     T2& vert2;
     char ptype1;
     char ptype2;
-    self<comp>& selfen;
-    self<comp>& diffselfen;
+    SelfEnergy<comp>& selfen;
+    SelfEnergy<comp>& diffselfen;
 
     int a; int b; int c;
 
@@ -47,8 +47,8 @@ double abubble_re(double w, void * p){
     char map2 = (params ->map2);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    self<comp>& selfen = (params->selfen);
-    self<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfen = (params->selfen);
+    SelfEnergy<comp>& diffselfen = (params->diffselfen);
     double Lambda = (params->Lambda);
     T1& vert1 = (params-> vert1);
     T2& vert2 = (params -> vert2);
@@ -75,8 +75,8 @@ double agreensfunc_re(double w, void * p){
             = static_cast< struct abubble_params<T1,T2> *>(p);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    self<comp>& selfen = (params->selfen);
-    self<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfen = (params->selfen);
+    SelfEnergy<comp>& diffselfen = (params->diffselfen);
     double Lambda = (params->Lambda);
 
     double u = (params->u);
@@ -87,7 +87,7 @@ double agreensfunc_re(double w, void * p){
 }
 
 template<typename T1,typename T2>
-double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, self<comp>& se, self<comp>& dse, double u,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
+double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, SelfEnergy<comp>& se, SelfEnergy<comp>& dse, double u,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
 
     double abs_error=1e-2, rel_error=1e-4;
 
@@ -1513,8 +1513,8 @@ struct pbubble_params{
     T2& vert2;
     char ptype1;
     char ptype2;
-    self<comp>& selfen;
-    self<comp>& diffselfen;
+    SelfEnergy<comp>& selfen;
+    SelfEnergy<comp>& diffselfen;
 
 
     int a; int b; int c;
@@ -1536,8 +1536,8 @@ double pbubble_re(double w, void * p){
     int map2 = (params->map2);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    self<comp>& selfen = (params->selfen);
-    self<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfen = (params->selfen);
+    SelfEnergy<comp>& diffselfen = (params->diffselfen);
     double Lambda = (params->Lambda);
     T1& vert1 = (params-> vert1);
     T2& vert2 = (params -> vert2);
@@ -1565,8 +1565,8 @@ double pgreensfunc_re(double w, void * p){//intergrates only propagators - used 
             = static_cast< struct pbubble_params<T1,T2> *>(p);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    self<comp>& selfen = (params->selfen);
-    self<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfen = (params->selfen);
+    SelfEnergy<comp>& diffselfen = (params->diffselfen);
     double Lambda = (params->Lambda);
 
     double s = (params->s);
@@ -1578,7 +1578,7 @@ double pgreensfunc_re(double w, void * p){//intergrates only propagators - used 
 
 
 template<typename T1,typename T2>
-double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, self<comp>& se, self<comp>& dse, double s,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
+double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, SelfEnergy<comp>& se, SelfEnergy<comp>& dse, double s,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
     double abs_error=1e-2, rel_error=1e-4;
     double abs_error_bare=1e-4,rel_error_bare=1e-4;
     //Note: factor 1/2 is included due to indistiguishability of propagators in s-bubble
@@ -2936,8 +2936,8 @@ struct tbubble_params{
     T2& vert2;
     char ptype1;
     char ptype2;
-    self<comp>& selfen;
-    self<comp>& diffselfen;
+    SelfEnergy<comp>& selfen;
+    SelfEnergy<comp>& diffselfen;
 
     int a; int b; int c;
 
@@ -2957,8 +2957,8 @@ double tbubble_re(double w, void * p{
     int map2 = (params->map2);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    self<comp>& selfen = (params->selfen);
-    self<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfen = (params->selfen);
+    SelfEnergy<comp>& diffselfen = (params->diffselfen);
     double Lambda = (params->Lambda);
     T1& vert1 = (params-> vert1);
     T2& vert2 = (params -> vert2);
@@ -2986,8 +2986,8 @@ double tgreensfunc_re(double w, void * p){//returns the value of all constituent
             = static_cast< struct tbubble_params<T1,T2> *>(p);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    self<comp>& selfen = (params->selfen);
-    self<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfen = (params->selfen);
+    SelfEnergy<comp>& diffselfen = (params->diffselfen);
     double Lambda = (params->Lambda);
 
     double t = (params->t);
@@ -3000,7 +3000,7 @@ double tgreensfunc_re(double w, void * p){//returns the value of all constituent
 }
 
 template<typename T1,typename T2>
-double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, self<comp>& se, self<comp>& dse, double t,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
+double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,double Lambda, T1& vert1,int a, int b, int c, T2& vert2,int d, int e, int f,char p1, char p2, SelfEnergy<comp>& se, SelfEnergy<comp>& dse, double t,double w1, double w2, char h){//bubble in s-channel: specified by s: bos. frequency and two external ferm freqs.
 
     double abs_error=1e-2, rel_error=1e-4;
 

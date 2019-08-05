@@ -13,9 +13,10 @@
 
 struct state{
     double Lambda;
-    self<comp> selfenergy;
+    SelfEnergy<comp> selfenergy;
     // Susc sus; TODO: find a way to include this only when necessary
-    Vertex<fullvert<comp> >  vertex;};
+    Vertex<fullvert<comp> > vertex;
+};
 
 
 state operator+(state, state);
@@ -66,7 +67,7 @@ state operator*(state state1, double alpha){
     result.vertex.densvertex.avertex = state1.vertex.densvertex.avertex * alpha;
     result.vertex.densvertex.pvertex = state1.vertex.densvertex.pvertex * alpha;
     result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex * alpha;
-    
+
     result.selfenergy = alpha * state1.selfenergy;
     return result;
 }

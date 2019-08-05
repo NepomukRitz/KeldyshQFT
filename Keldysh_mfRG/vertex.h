@@ -443,9 +443,8 @@ public:
 
 
 
-
-// TODO: put this to another file!!
 /*Frequency grids for each channel*/
+// TODO: put this to another file!!
 vector<double> freqs_a(nw_a); // NOLINT(cert-err58-cpp)
 vector<double> freqs_p(nw_p); // NOLINT(cert-err58-cpp)
 vector<double> freqs_t(nw_t); // NOLINT(cert-err58-cpp)
