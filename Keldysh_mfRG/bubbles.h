@@ -26,8 +26,8 @@ struct abubble_params{
     T2& vert2;
     char ptype1;
     char ptype2;
-    SelfEnergy<comp>& selfen;
-    SelfEnergy<comp>& diffselfen;
+    SelfEnergy<comp>& selfenergy;
+    SelfEnergy<comp>& diffselfenergy;
 
     int a; int b; int c;
 
@@ -47,8 +47,8 @@ double abubble_re(double w, void * p){
     char map2 = (params ->map2);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    SelfEnergy<comp>& selfen = (params->selfen);
-    SelfEnergy<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfenergy = (params->selfenergy);
+    SelfEnergy<comp>& diffselfenergy = (params->diffselfenergy);
     double Lambda = (params->Lambda);
     T1& vert1 = (params-> vert1);
     T2& vert2 = (params -> vert2);
@@ -65,7 +65,7 @@ double abubble_re(double w, void * p){
     double w2 = (params->w2);
     char h = (params->h);
 
-    double val = real(vert1.vvalsmooth(red_side,map1,a,b,c,u,w,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,w,'u',2,h) *  propag(Lambda,w-u/2,selfen,diffselfen,ptype1) * propag(Lambda,w+u/2,selfen,diffselfen,ptype2) );
+    double val = real(vert1.vvalsmooth(red_side,map1,a,b,c,u,w,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,w,'u',2,h) *  propag(Lambda,w-u/2,selfenergy,diffselfenergy,ptype1) * propag(Lambda,w+u/2,selfenergy,diffselfenergy,ptype2) );
     return (1./(2*pi)*val);
 }
 
@@ -75,14 +75,14 @@ double agreensfunc_re(double w, void * p){
             = static_cast< struct abubble_params<T1,T2> *>(p);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    SelfEnergy<comp>& selfen = (params->selfen);
-    SelfEnergy<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfenergy = (params->selfenergy);
+    SelfEnergy<comp>& diffselfenergy = (params->diffselfenergy);
     double Lambda = (params->Lambda);
 
     double u = (params->u);
 
 
-    double val = real( propag(Lambda,w-u/2,selfen,diffselfen,ptype1) * propag(Lambda,w+u/2,selfen,diffselfen,ptype2) );
+    double val = real( propag(Lambda,w-u/2,selfenergy,diffselfenergy,ptype1) * propag(Lambda,w+u/2,selfenergy,diffselfenergy,ptype2) );
     return (1./(2*pi)*val);
 }
 
@@ -1513,8 +1513,8 @@ struct pbubble_params{
     T2& vert2;
     char ptype1;
     char ptype2;
-    SelfEnergy<comp>& selfen;
-    SelfEnergy<comp>& diffselfen;
+    SelfEnergy<comp>& selfenergy;
+    SelfEnergy<comp>& diffselfenergy;
 
 
     int a; int b; int c;
@@ -1536,8 +1536,8 @@ double pbubble_re(double w, void * p){
     int map2 = (params->map2);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    SelfEnergy<comp>& selfen = (params->selfen);
-    SelfEnergy<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfenergy = (params->selfenergy);
+    SelfEnergy<comp>& diffselfenergy = (params->diffselfenergy);
     double Lambda = (params->Lambda);
     T1& vert1 = (params-> vert1);
     T2& vert2 = (params -> vert2);
@@ -1554,7 +1554,7 @@ double pbubble_re(double w, void * p){
     double w1 = (params->w1);
     double w2 = (params->w2);
     char h = (params->h);
-    double val = real(1./2 * vert1.vvalsmooth(red_side,map1,a,b,c,s,w,w2,'s',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,w,'s',2,h)  *  propag(Lambda,w+s/2,selfen, diffselfen,ptype1) * propag(Lambda,s/2-w,selfen,diffselfen,ptype2) );
+    double val = real(1./2 * vert1.vvalsmooth(red_side,map1,a,b,c,s,w,w2,'s',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,w,'s',2,h)  *  propag(Lambda,w+s/2,selfenergy, diffselfenergy,ptype1) * propag(Lambda,s/2-w,selfenergy,diffselfenergy,ptype2) );
     return (1./(2*pi)*val);
 }
 
@@ -1565,13 +1565,13 @@ double pgreensfunc_re(double w, void * p){//intergrates only propagators - used 
             = static_cast< struct pbubble_params<T1,T2> *>(p);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    SelfEnergy<comp>& selfen = (params->selfen);
-    SelfEnergy<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfenergy = (params->selfenergy);
+    SelfEnergy<comp>& diffselfenergy = (params->diffselfenergy);
     double Lambda = (params->Lambda);
 
     double s = (params->s);
 
-    double val = real(1./2 * propag(Lambda,w+s/2,selfen, diffselfen,ptype1) * propag(Lambda,s/2-w,selfen,diffselfen,ptype2) );
+    double val = real(1./2 * propag(Lambda,w+s/2,selfenergy, diffselfenergy,ptype1) * propag(Lambda,s/2-w,selfenergy,diffselfenergy,ptype2) );
 
     return (1./(2*pi)*val);
 }
@@ -2936,8 +2936,8 @@ struct tbubble_params{
     T2& vert2;
     char ptype1;
     char ptype2;
-    SelfEnergy<comp>& selfen;
-    SelfEnergy<comp>& diffselfen;
+    SelfEnergy<comp>& selfenergy;
+    SelfEnergy<comp>& diffselfenergy;
 
     int a; int b; int c;
 
@@ -2957,8 +2957,8 @@ double tbubble_re(double w, void * p{
     int map2 = (params->map2);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    SelfEnergy<comp>& selfen = (params->selfen);
-    SelfEnergy<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfenergy = (params->selfenergy);
+    SelfEnergy<comp>& diffselfenergy = (params->diffselfenergy);
     double Lambda = (params->Lambda);
     T1& vert1 = (params-> vert1);
     T2& vert2 = (params -> vert2);
@@ -2975,7 +2975,7 @@ double tbubble_re(double w, void * p{
     double w2 = (params->w2);
     char h = (params -> h);
 
-    double val = real(-1.*  vert1.vvalsmooth(red_side,map1,a,b,c,t,w,w2,'t',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,t,w1,w,'t',2,h) *  propag(Lambda,w-t/2,selfen,diffselfen,ptype1) * propag(Lambda,w+t/2,selfen,diffselfen,ptype2) );
+    double val = real(-1.*  vert1.vvalsmooth(red_side,map1,a,b,c,t,w,w2,'t',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,t,w1,w,'t',2,h) *  propag(Lambda,w-t/2,selfenergy,diffselfenergy,ptype1) * propag(Lambda,w+t/2,selfenergy,diffselfenergy,ptype2) );
 
     return (1./(2*pi)*val);
 }
@@ -2986,14 +2986,14 @@ double tgreensfunc_re(double w, void * p){//returns the value of all constituent
             = static_cast< struct tbubble_params<T1,T2> *>(p);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
-    SelfEnergy<comp>& selfen = (params->selfen);
-    SelfEnergy<comp>& diffselfen = (params->diffselfen);
+    SelfEnergy<comp>& selfenergy = (params->selfenergy);
+    SelfEnergy<comp>& diffselfenergy = (params->diffselfenergy);
     double Lambda = (params->Lambda);
 
     double t = (params->t);
 
 
-    double val = real( propag(Lambda,w-t/2,selfen,diffselfen,ptype1) * propag(Lambda,w+t/2,selfen,diffselfen,ptype2) );
+    double val = real( propag(Lambda,w-t/2,selfenergy,diffselfenergy,ptype1) * propag(Lambda,w+t/2,selfenergy,diffselfenergy,ptype2) );
 
 
     return (-1./(2.*pi)*val);//minus sign is from definition of t-bubble
