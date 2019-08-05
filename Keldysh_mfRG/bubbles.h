@@ -5,6 +5,7 @@
 #ifndef KELDYSH_MFRG_BUBBLES_H
 #define KELDYSH_MFRG_BUBBLES_H
 
+#include <algorithm>
 #include <gsl/gsl_integration.h>
 
 #include "selfenergy.h"
@@ -12,8 +13,21 @@
 #include "data_structures.h"
 #include "parameters.h"
 
+using namespace std;
 
-/*******BUBBLE INTEGRATION FUNCTIONS***********/
+
+// temporarily fix stuff to remove warnings
+rvec ffreqs (1);
+rvec bfreqs (1);
+int nw, nw1, nw2, nw3, wlimit;
+bool compare(int a, int b)
+{
+    return (a < b);
+}
+//
+
+
+/******************************************** BUBBLE INTEGRATION FUNCTIONS ********************************************/
 
 //a-bubble:
 template<typename  T1,typename  T2>
@@ -128,23 +142,23 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
             //conditions from vertex 1 (primed):
             double v1_K1_t_up = bfreqs[nw1-1]+w2;
-            double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+u},comp);
-            double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-u},comp);
-            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+u,2*ffreqs[(nw+nw3)/2-1]-w2-u},comp);;
+            double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+u},compare);
+            double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-u},compare);
+            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+u,2*ffreqs[(nw+nw3)/2-1]-w2-u},compare);;
             double v1_K1_s_up= bfreqs[nw1-1]-w2;
-            double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+u},comp);
-            double v1_K2b_s_up =  min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-u},comp);
-            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-u,2*ffreqs[(nw+nw3)/2-1]+w2+u},comp);
+            double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+u},compare);
+            double v1_K2b_s_up =  min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-u},compare);
+            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-u,2*ffreqs[(nw+nw3)/2-1]+w2+u},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_up = bfreqs[nw1-1]+w1;
-            double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+u},comp);
-            double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-u},comp);
-            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1-u,2*ffreqs[(nw1+nw3)/2-1]-w1+u},comp);
+            double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+u},compare);
+            double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-u},compare);
+            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1-u,2*ffreqs[(nw1+nw3)/2-1]-w1+u},compare);
             double v2_K1_s_up = bfreqs[nw1-1]-w1;
-            double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-u},comp);
-            double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+u},comp);
-            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+u,2*ffreqs[(nw+nw3)/2-1]+w1-u},comp);;
+            double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-u},compare);
+            double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+u},compare);
+            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+u,2*ffreqs[(nw+nw3)/2-1]+w1-u},compare);;
             //conditions that is equal for both vertices (u-channel contributions). Note that K_{a,1} is constant
             double v_K2_u_up = ffreqs[(nw1+nw2)/2-1];
             double v_R_u_up = ffreqs[(nw1+nw3)/2-1];
@@ -154,24 +168,24 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
             //lower bound:
             //conditions from vertex 1 (primed):
             double v1_K1_t_low = bfreqs[0]+w2;
-            double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+u},comp);
-            double v1_K2b_t_low =max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-u},comp);
-            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+u,2*ffreqs[(nw-nw3)/2]-w2-u},comp);;
+            double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+u},compare);
+            double v1_K2b_t_low =max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-u},compare);
+            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+u,2*ffreqs[(nw-nw3)/2]-w2-u},compare);;
             double v1_K1_s_low = bfreqs[0]-w2;
-            double v1_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+u},comp);
-            double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-u},comp);
-            double v1_R_s_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-u,2*ffreqs[(nw-nw3)/2]+w2+u},comp);
+            double v1_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+u},compare);
+            double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-u},compare);
+            double v1_R_s_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-u,2*ffreqs[(nw-nw3)/2]+w2+u},compare);
 
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_low = bfreqs[0]+w1;
-            double v2_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+u},comp);
-            double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-u},comp);
-            double v2_R_t_low =  max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1-u,2*ffreqs[(nw1-nw3)/2]-w1+u},comp);
+            double v2_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+u},compare);
+            double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-u},compare);
+            double v2_R_t_low =  max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1-u,2*ffreqs[(nw1-nw3)/2]-w1+u},compare);
             double v2_K1_s_low = bfreqs[0]-w1;
-            double v2_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-u},comp);
-            double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+u},comp);
-            double v2_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+u,2*ffreqs[(nw-nw3)/2]+w1-u},comp);;
+            double v2_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-u},compare);
+            double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+u},compare);
+            double v2_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+u,2*ffreqs[(nw-nw3)/2]+w1-u},compare);;
             //conditions that is equal for both vertices (s-channel contributions). Note that K_{s,1} is constant
             double v_K2_u_low = ffreqs[(nw1-nw2)/2];
             double v_R_u_low = ffreqs[(nw1-nw3)/2];
@@ -242,23 +256,23 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_low = bfreqs[0]+w1;
-            double v2_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+u},comp);
-            double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-u},comp);
-            double v2_R_t_low =  max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1-u,2*ffreqs[(nw1-nw3)/2]-w1+u},comp);
+            double v2_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+u},compare);
+            double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-u},compare);
+            double v2_R_t_low =  max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1-u,2*ffreqs[(nw1-nw3)/2]-w1+u},compare);
             double v2_K1_s_low = bfreqs[0]-w1;
-            double v2_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-u},comp);
-            double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+u},comp);
-            double v2_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+u,2*ffreqs[(nw-nw3)/2]+w1-u},comp);
+            double v2_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-u},compare);
+            double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+u},compare);
+            double v2_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+u,2*ffreqs[(nw-nw3)/2]+w1-u},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_up = bfreqs[nw1-1]+w1;
-            double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+u},comp);
-            double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-u},comp);
-            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1-u,2*ffreqs[(nw1+nw3)/2-1]-w1+u},comp);
+            double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+u},compare);
+            double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-u},compare);
+            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1-u,2*ffreqs[(nw1+nw3)/2-1]-w1+u},compare);
             double v2_K1_s_up = bfreqs[nw1-1]-w1;
-            double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-u},comp);
-            double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+u},comp);
-            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+u,2*ffreqs[(nw+nw3)/2-1]+w1-u},comp);
+            double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-u},compare);
+            double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+u},compare);
+            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+u,2*ffreqs[(nw+nw3)/2-1]+w1-u},compare);
 
             vector<double> upperK2_v1{v_K2_u_up};
             sort(upperK2_v1.begin(),upperK2_v1.end());
@@ -328,24 +342,24 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
             //conditions from vertex 1 (primed):
             double v1_K1_t_up = bfreqs[nw1-1]+w2;
-            double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+u},comp);
-            double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-u},comp);
-            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+u,2*ffreqs[(nw+nw3)/2-1]-w2-u},comp);
+            double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+u},compare);
+            double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-u},compare);
+            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+u,2*ffreqs[(nw+nw3)/2-1]-w2-u},compare);
             double v1_K1_s_up= bfreqs[nw1-1]-w2;
-            double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+u},comp);
-            double v1_K2b_s_up =  min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-u},comp);
-            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-u,2*ffreqs[(nw+nw3)/2-1]+w2+u},comp);
+            double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+u},compare);
+            double v1_K2b_s_up =  min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-u},compare);
+            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-u,2*ffreqs[(nw+nw3)/2-1]+w2+u},compare);
 
             //lower bound:
             //conditions from vertex 1 (primed):
             double v1_K1_t_low = bfreqs[0]+w2;
-            double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+u},comp);
-            double v1_K2b_t_low =max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-u},comp);
-            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+u,2*ffreqs[(nw-nw3)/2]-w2-u},comp);
+            double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+u},compare);
+            double v1_K2b_t_low =max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-u},compare);
+            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+u,2*ffreqs[(nw-nw3)/2]-w2-u},compare);
             double v1_K1_s_low = bfreqs[0]-w2;
-            double v1_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+u},comp);
-            double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-u},comp);
-            double v1_R_s_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-u,2*ffreqs[(nw-nw3)/2]+w2+u},comp);
+            double v1_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+u},compare);
+            double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-u},compare);
+            double v1_R_s_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-u,2*ffreqs[(nw-nw3)/2]+w2+u},compare);
 
 
             vector<double> upperK2b_v1{v1_K1_s_up,v1_K2_s_up,v1_K2b_s_up,v1_R_s_up,v1_K1_t_up,v1_K2_t_up,v1_K2b_t_up,v1_R_t_up,v_K2_u_up,v_R_u_up};
@@ -466,9 +480,9 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
         if(mode==0 && abs(vert1_const * vert2_const)>0){
 
+            F.function = &agreensfunc_re<T1,T2>;
 
             if(reg==1 && p1=='g' && p2 =='g'){
-                F.function = &agreensfunc_re<T1,T2>;
                 F.params = &params;
 
 
@@ -478,7 +492,6 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
 
 
-                F.function = &agreensfunc_re<T1,T2>;
                 gsl_integration_qagiu(&F,upper,abs_error_bare,rel_error_bare,1500,
                                       w, &resultgfu_re, &errorgfu_re);
 
@@ -523,7 +536,6 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
                     F.params = &params_mod;
 
-                    F.function = &agreensfunc_re<T1,T2>;
                     gsl_integration_qag(&F,dse_cutoff_low,dse_cutoff_up,abs_error_bare,rel_error_bare,1500,2,
                                         w, &resultgfl_re, &errorgfl_re);
                     double compl_real = (resultgfl_re )*vert1_const * vert2_const;
@@ -538,7 +550,6 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
                     F.params = &params_mod;
 
-                    F.function = &agreensfunc_re<T1,T2>;
                     gsl_integration_qag(&F,dse_cutoff_low,dse_cutoff_up,abs_error_bare,rel_error_bare,1500,2,
                                         w, &resultgfl_re, &errorgfl_re);
                     double compl_real = (resultgfl_re  )*vert1_const * vert2_const;
@@ -546,15 +557,12 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
                     B=singsc + compl_real ;
                 }
                 else if (dse_cutoff_low<lower && dse_cutoff_up > upper){
-                    F.function = &agreensfunc_re<T1,T2>;
                     F.params = &params_mod;
 
 
-                    F.function = &agreensfunc_re<T1,T2>;
                     gsl_integration_qag(&F,dse_cutoff_low,lower,abs_error_bare,rel_error_bare,1500,2,
                                         w, &resultgfl_re, &errorgfl_re);
 
-                    F.function = &agreensfunc_re<T1,T2>;
                     gsl_integration_qag(&F,upper,dse_cutoff_up,abs_error_bare,rel_error_bare,1500,2,
                                         w, &resultgfu_re, &errorgfu_re);
 
@@ -565,7 +573,6 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
             else if(reg==2 && (p1=='g' &&p2=='g')){
 
-                F.function = &agreensfunc_re<T1,T2>;
                 F.params = &params;
 
 
@@ -584,7 +591,6 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
                 if(p1=='s'){bound_low = -7*Lambda+u/2; bound_up = 7*Lambda+u/2;}
                 else if(p2=='s'){bound_low = -7*Lambda-u/2; bound_up = 7*Lambda-u/2;}
                 F.params = &params;
-                F.function = &agreensfunc_re<T1,T2>;
                 gsl_integration_qag(&F,bound_low,bound_up,abs_error, rel_error,1500,2,
                                     w, &result_re, &error_re);
 
@@ -618,15 +624,13 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
                 //first compute single scale contribution
                 struct abubble_params<T1,T2> params_singsc= {red_side,map1,map2,Lambda,vert1, vert2,p1_singsc,p2_singsc,se, dse, a,  b,  c,  d,  e,  f,  u, w1,  w2,h};
                 F.params = &params_singsc;
-                F.function = &agreensfunc_re<T1,T2>;//integration of single scale
                 gsl_integration_qag(&F,bound_low,bound_up,abs_error, rel_error,1500,2,
                                     w, &result_re, &error_re);
 
                 //add katanin extension
                 struct abubble_params<T1,T2> params_mod= {red_side,map1,map2,Lambda,vert1, vert2,p1_new,p2_new,se, dse, a,  b,  c,  d,  e,  f,  u, w1,  w2,h};//modify integration parameters such that one of the propagators only yields the katanin extension
 
-                F.params = &params_mod;//add integration of katanin extension
-                F.function = &agreensfunc_re<T1,T2>;
+                F.params = &params_mod;//add integration of Katanin extension
                 double result_re2=0,error_re2=0;
                 gsl_integration_qag(&F,dse_cutoff_low,dse_cutoff_up,abs_error, rel_error,1500,2,
                                     w, &result_re2, &error_re2);
@@ -1614,23 +1618,23 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
 
             //conditions from vertex 1 (primed):
             double v1_K1_t_up = bfreqs[nw1-1]+w2;
-            double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-s},comp);//choose the minimum since beyond this value, this vertex cannot contribute any more
-            double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+s},comp);
-            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2-s,2*ffreqs[(nw+nw3)/2-1]-w2+s},comp);
+            double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-s},compare);//choose the minimum since beyond this value, this vertex cannot contribute any more
+            double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+s},compare);
+            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2-s,2*ffreqs[(nw+nw3)/2-1]-w2+s},compare);
             double v1_K1_u_up= bfreqs[nw1-1]-w2;
-            double v1_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-s},comp);
-            double v1_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+s},comp);
-            double v1_R_u_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-s,2*ffreqs[(nw+nw3)/2-1]+w2+s},comp);
+            double v1_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-s},compare);
+            double v1_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+s},compare);
+            double v1_R_u_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-s,2*ffreqs[(nw+nw3)/2-1]+w2+s},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_up = bfreqs[nw1-1]+w1;
-            double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw+nw2)/2-1]-w1-s},comp);
-            double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw+nw2)/2-1]-w1+s},comp);
-            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw+nw3)/2-1]-w1+s,2*ffreqs[(nw+nw3)/2-1]-w1-s},comp);
+            double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw+nw2)/2-1]-w1-s},compare);
+            double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw+nw2)/2-1]-w1+s},compare);
+            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw+nw3)/2-1]-w1+s,2*ffreqs[(nw+nw3)/2-1]-w1-s},compare);
             double v2_K1_u_up = bfreqs[nw1-1]-w1;
-            double v2_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+s},comp);
-            double v2_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-s},comp);
-            double v2_R_u_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+s,2*ffreqs[(nw+nw3)/2-1]+w1-s},comp);
+            double v2_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+s},compare);
+            double v2_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-s},compare);
+            double v2_R_u_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+s,2*ffreqs[(nw+nw3)/2-1]+w1-s},compare);
             //conditions that is equal for both vertices (s-channel contributions). Note that K_{s,1} is constant
             double v_K2_s_up = ffreqs[(nw1+nw2)/2-1];
             double v_R_s_up = ffreqs[(nw1+nw3)/2-1];
@@ -1640,23 +1644,23 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
             //lower bound:
             //conditions from vertex 1 (primed):
             double v1_K1_t_low = bfreqs[0]+w2;
-            double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-s},comp);//choose the minimum since bezond this value, this vertex cannot contribute any more
-            double v1_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+s},comp);
-            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2-s,2*ffreqs[(nw-nw3)/2]-w2+s},comp);
+            double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-s},compare);//choose the minimum since bezond this value, this vertex cannot contribute any more
+            double v1_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+s},compare);
+            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2-s,2*ffreqs[(nw-nw3)/2]-w2+s},compare);
             double v1_K1_u_low = bfreqs[0]-w2;
-            double v1_K2_u_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-s},comp);
-            double v1_K2b_u_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+s},comp);
-            double v1_R_u_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-s,2*ffreqs[(nw-nw3)/2]+w2+s},comp);
+            double v1_K2_u_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-s},compare);
+            double v1_K2b_u_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+s},compare);
+            double v1_R_u_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-s,2*ffreqs[(nw-nw3)/2]+w2+s},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_low =  bfreqs[0]+w1;
-            double v2_K2_t_low = max({bfreqs[(nw-+nw2)/2]+w1,2*ffreqs[(nw-nw2)/2]-w1-s},comp);
-            double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw-nw2)/2]-w1+s},comp);
-            double v2_R_t_low = max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw-nw3)/2]-w1+s,2*ffreqs[(nw-nw3)/2]-w1-s},comp);
+            double v2_K2_t_low = max({bfreqs[(nw-+nw2)/2]+w1,2*ffreqs[(nw-nw2)/2]-w1-s},compare);
+            double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw-nw2)/2]-w1+s},compare);
+            double v2_R_t_low = max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw-nw3)/2]-w1+s,2*ffreqs[(nw-nw3)/2]-w1-s},compare);
             double v2_K1_u_low = bfreqs[0]-w1;
-            double v2_K2_u_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+s},comp);
-            double v2_K2b_u_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-s},comp);
-            double v2_R_u_low = max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+s,2*ffreqs[(nw-nw3)/2]+w1-s},comp);
+            double v2_K2_u_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+s},compare);
+            double v2_K2b_u_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-s},compare);
+            double v2_R_u_low = max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+s,2*ffreqs[(nw-nw3)/2]+w1-s},compare);
             //conditions that is equal for both vertices (s-channel contributions). Note that K_{s,1} is constant
             double v_K2_s_low = ffreqs[(nw1-nw2)/2];
             double v_R_s_low = ffreqs[(nw1-nw3)/2];
@@ -1720,24 +1724,24 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_up = bfreqs[nw1-1]+w1;
-            double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw+nw2)/2-1]-w1-s},comp);
-            double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw+nw2)/2-1]-w1+s},comp);
-            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw+nw3)/2-1]-w1+s,2*ffreqs[(nw+nw3)/2-1]-w1-s},comp);
+            double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw+nw2)/2-1]-w1-s},compare);
+            double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw+nw2)/2-1]-w1+s},compare);
+            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw+nw3)/2-1]-w1+s,2*ffreqs[(nw+nw3)/2-1]-w1-s},compare);
             double v2_K1_u_up = bfreqs[nw1-1]-w1;
-            double v2_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+s},comp);
-            double v2_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-s},comp);
-            double v2_R_u_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+s,2*ffreqs[(nw+nw3)/2-1]+w1-s},comp);
+            double v2_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+s},compare);
+            double v2_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-s},compare);
+            double v2_R_u_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+s,2*ffreqs[(nw+nw3)/2-1]+w1-s},compare);
 
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_low =  bfreqs[0]+w1;
-            double v2_K2_t_low = max({bfreqs[(nw-+nw2)/2]+w1,2*ffreqs[(nw-nw2)/2]-w1-s},comp);
-            double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw-nw2)/2]-w1+s},comp);
-            double v2_R_t_low = max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw-nw3)/2]-w1+s,2*ffreqs[(nw-nw3)/2]-w1-s},comp);
+            double v2_K2_t_low = max({bfreqs[(nw-+nw2)/2]+w1,2*ffreqs[(nw-nw2)/2]-w1-s},compare);
+            double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw-nw2)/2]-w1+s},compare);
+            double v2_R_t_low = max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw-nw3)/2]-w1+s,2*ffreqs[(nw-nw3)/2]-w1-s},compare);
             double v2_K1_u_low = bfreqs[0]-w1;
-            double v2_K2_u_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+s},comp);
-            double v2_K2b_u_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-s},comp);
-            double v2_R_u_low = max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+s,2*ffreqs[(nw-nw3)/2]+w1-s},comp);
+            double v2_K2_u_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+s},compare);
+            double v2_K2b_u_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-s},compare);
+            double v2_R_u_low = max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+s,2*ffreqs[(nw-nw3)/2]+w1-s},compare);
 
             vector<double> upperK2_v1{v_K2_s_up};
             sort(upperK2_v1.begin(),upperK2_v1.end());
@@ -1797,24 +1801,24 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
 
             //conditions from vertex 1 (primed):
             double v1_K1_t_up = bfreqs[nw1-1]+w2;
-            double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-s},comp);//choose the minimum since beyond this value, this vertex cannot contribute any more
-            double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+s},comp);
-            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2-s,2*ffreqs[(nw+nw3)/2-1]-w2+s},comp);
+            double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-s},compare);//choose the minimum since beyond this value, this vertex cannot contribute any more
+            double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+s},compare);
+            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2-s,2*ffreqs[(nw+nw3)/2-1]-w2+s},compare);
             double v1_K1_u_up= bfreqs[nw1-1]-w2;
-            double v1_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-s},comp);
-            double v1_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+s},comp);
-            double v1_R_u_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-s,2*ffreqs[(nw+nw3)/2-1]+w2+s},comp);
+            double v1_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-s},compare);
+            double v1_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+s},compare);
+            double v1_R_u_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-s,2*ffreqs[(nw+nw3)/2-1]+w2+s},compare);
 
             //lower bound:
             //conditions from vertex 1 (primed):
             double v1_K1_t_low = bfreqs[0]+w2;
-            double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-s},comp);//choose the minimum since bezond this value, this vertex cannot contribute any more
-            double v1_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+s},comp);
-            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2-s,2*ffreqs[(nw-nw3)/2]-w2+s},comp);
+            double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-s},compare);//choose the minimum since bezond this value, this vertex cannot contribute any more
+            double v1_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+s},compare);
+            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2-s,2*ffreqs[(nw-nw3)/2]-w2+s},compare);
             double v1_K1_u_low = bfreqs[0]-w2;
-            double v1_K2_u_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-s},comp);
-            double v1_K2b_u_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+s},comp);
-            double v1_R_u_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-s,2*ffreqs[(nw-nw3)/2]+w2+s},comp);
+            double v1_K2_u_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-s},compare);
+            double v1_K2b_u_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+s},compare);
+            double v1_R_u_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-s,2*ffreqs[(nw-nw3)/2]+w2+s},compare);
 
             //conditions that is equal for both vertices (s-channel contributions). Note that K_{s,1} is constant
             double v_K2_s_low = ffreqs[(nw1-nw2)/2];
@@ -2949,7 +2953,7 @@ struct tbubble_params{
 };
 
 template<typename T1,typename T2>
-double tbubble_re(double w, void * p{
+double tbubble_re(double w, void * p) {
     struct tbubble_params<T1,T2> * params
             = static_cast< struct tbubble_params<T1,T2> *>(p);
     int red_side = (params->red_side);
@@ -3038,23 +3042,23 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
 
             //conditions from vertex 1 (primed):
             double v1_K1_u_up = bfreqs[nw1-1]+w2;
-            double v1_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+t},comp);
-            double v1_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-t},comp);
-            double v1_R_u_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+t,2*ffreqs[(nw+nw3)/2-1]-w2-t},comp);
+            double v1_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+t},compare);
+            double v1_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-t},compare);
+            double v1_R_u_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+t,2*ffreqs[(nw+nw3)/2-1]-w2-t},compare);
             double v1_K1_s_up= bfreqs[nw1-1]-w2;
-            double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+t},comp);
-            double v1_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-t},comp);
-            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2+t,2*ffreqs[(nw+nw3)/2-1]+w2-t},comp);
+            double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+t},compare);
+            double v1_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-t},compare);
+            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2+t,2*ffreqs[(nw+nw3)/2-1]+w2-t},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_u_up = bfreqs[nw1-1]+w1;
-            double v2_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+t},comp);
-            double v2_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-t},comp);
-            double v2_R_u_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1+t,2*ffreqs[(nw1+nw3)/2-1]-w1-t},comp);
+            double v2_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+t},compare);
+            double v2_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-t},compare);
+            double v2_R_u_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1+t,2*ffreqs[(nw1+nw3)/2-1]-w1-t},compare);
             double v2_K1_s_up = bfreqs[nw1-1]-w1;
-            double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw1+nw2)/2-1]+w1-t},comp);
-            double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw1+nw2)/2-1]+w1+t},comp);
-            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw1+nw3)/2-1]+w1+t,2*ffreqs[(nw1+nw3)/2-1]+w1-t},comp);
+            double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw1+nw2)/2-1]+w1-t},compare);
+            double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw1+nw2)/2-1]+w1+t},compare);
+            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw1+nw3)/2-1]+w1+t,2*ffreqs[(nw1+nw3)/2-1]+w1-t},compare);
             //conditions that is equal for both vertices (t-channel contributions). Note that K_{t,1} is constant
             double v_K2_t_up = ffreqs[(nw1+nw2)/2-1];
             double v_R_t_up = ffreqs[(nw1+nw3)/2-1];
@@ -3064,23 +3068,23 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
             //lower bound:
             //conditions from vertex 1 (primed):
             double v1_K1_u_low = bfreqs[0]+w2;
-            double v1_K2_u_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+t},comp);
-            double v1_K2b_u_low =  max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-t},comp);
-            double v1_R_u_low =  max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+t,2*ffreqs[(nw-nw3)/2]-w2-t},comp);
+            double v1_K2_u_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+t},compare);
+            double v1_K2b_u_low =  max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-t},compare);
+            double v1_R_u_low =  max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+t,2*ffreqs[(nw-nw3)/2]-w2-t},compare);
             double v1_K1_s_low = bfreqs[0]-w2;
-            double v1_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+t},comp);
-            double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-t},comp);
-            double v1_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2+t,2*ffreqs[(nw-nw3)/2]+w2-t},comp);
+            double v1_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+t},compare);
+            double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-t},compare);
+            double v1_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2+t,2*ffreqs[(nw-nw3)/2]+w2-t},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_u_low = bfreqs[0]+w1;
-            double v2_K2_u_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+t},comp);
-            double v2_K2b_u_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-t},comp);
-            double v2_R_u_low = max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1+t,2*ffreqs[(nw1-nw3)/2]-w1-t},comp);
+            double v2_K2_u_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+t},compare);
+            double v2_K2b_u_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-t},compare);
+            double v2_R_u_low = max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1+t,2*ffreqs[(nw1-nw3)/2]-w1-t},compare);
             double v2_K1_s_low =  bfreqs[0]-w1;
-            double v2_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw1-nw2)/2]+w1-t},comp);
-            double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw1-nw2)/2]+w1+t},comp);
-            double v2_R_s_low =max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw1-nw3)/2]+w1+t,2*ffreqs[(nw1-nw3)/2]+w1-t},comp);
+            double v2_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw1-nw2)/2]+w1-t},compare);
+            double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw1-nw2)/2]+w1+t},compare);
+            double v2_R_s_low =max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw1-nw3)/2]+w1+t,2*ffreqs[(nw1-nw3)/2]+w1-t},compare);
             //conditions that is equal for both vertices (t-channel contributions). Note that K_{t,1} is constant
             double v_K2_t_low = ffreqs[(nw1-nw2)/2];
             double v_R_t_low = ffreqs[(nw1-nw3)/2];
@@ -3145,23 +3149,23 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_u_up = bfreqs[nw1-1]+w1;
-            double v2_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+t},comp);
-            double v2_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-t},comp);
-            double v2_R_u_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1+t,2*ffreqs[(nw1+nw3)/2-1]-w1-t},comp);
+            double v2_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+t},compare);
+            double v2_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-t},compare);
+            double v2_R_u_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1+t,2*ffreqs[(nw1+nw3)/2-1]-w1-t},compare);
             double v2_K1_s_up = bfreqs[nw1-1]-w1;
-            double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw1+nw2)/2-1]+w1-t},comp);
-            double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw1+nw2)/2-1]+w1+t},comp);
-            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw1+nw3)/2-1]+w1+t,2*ffreqs[(nw1+nw3)/2-1]+w1-t},comp);
+            double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw1+nw2)/2-1]+w1-t},compare);
+            double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw1+nw2)/2-1]+w1+t},compare);
+            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw1+nw3)/2-1]+w1+t,2*ffreqs[(nw1+nw3)/2-1]+w1-t},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_u_low = bfreqs[0]+w1;
-            double v2_K2_u_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+t},comp);
-            double v2_K2b_u_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-t},comp);
-            double v2_R_u_low = max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1+t,2*ffreqs[(nw1-nw3)/2]-w1-t},comp);
+            double v2_K2_u_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+t},compare);
+            double v2_K2b_u_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-t},compare);
+            double v2_R_u_low = max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1+t,2*ffreqs[(nw1-nw3)/2]-w1-t},compare);
             double v2_K1_s_low =  bfreqs[0]-w1;
-            double v2_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw1-nw2)/2]+w1-t},comp);
-            double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw1-nw2)/2]+w1+t},comp);
-            double v2_R_s_low =max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw1-nw3)/2]+w1+t,2*ffreqs[(nw1-nw3)/2]+w1-t},comp);
+            double v2_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw1-nw2)/2]+w1-t},compare);
+            double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw1-nw2)/2]+w1+t},compare);
+            double v2_R_s_low =max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw1-nw3)/2]+w1+t,2*ffreqs[(nw1-nw3)/2]+w1-t},compare);
 
 
 
@@ -3234,23 +3238,23 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
             //lower bound:
             //conditions from vertex 1 (primed):
             double v1_K1_u_low = bfreqs[0]+w2;
-            double v1_K2_u_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+t},comp);
-            double v1_K2b_u_low =  max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-t},comp);
-            double v1_R_u_low =  max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+t,2*ffreqs[(nw-nw3)/2]-w2-t},comp);
+            double v1_K2_u_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+t},compare);
+            double v1_K2b_u_low =  max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-t},compare);
+            double v1_R_u_low =  max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+t,2*ffreqs[(nw-nw3)/2]-w2-t},compare);
             double v1_K1_s_low = bfreqs[0]-w2;
-            double v1_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+t},comp);
-            double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-t},comp);
-            double v1_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2+t,2*ffreqs[(nw-nw3)/2]+w2-t},comp);
+            double v1_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+t},compare);
+            double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-t},compare);
+            double v1_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2+t,2*ffreqs[(nw-nw3)/2]+w2-t},compare);
 
             //conditions from vertex 1 (primed):
             double v1_K1_u_up = bfreqs[nw1-1]+w2;
-            double v1_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+t},comp);
-            double v1_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-t},comp);
-            double v1_R_u_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+t,2*ffreqs[(nw+nw3)/2-1]-w2-t},comp);
+            double v1_K2_u_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+t},compare);
+            double v1_K2b_u_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-t},compare);
+            double v1_R_u_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+t,2*ffreqs[(nw+nw3)/2-1]-w2-t},compare);
             double v1_K1_s_up= bfreqs[nw1-1]-w2;
-            double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+t},comp);
-            double v1_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-t},comp);
-            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2+t,2*ffreqs[(nw+nw3)/2-1]+w2-t},comp);
+            double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+t},compare);
+            double v1_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-t},compare);
+            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2+t,2*ffreqs[(nw+nw3)/2-1]+w2-t},compare);
 
 
             double v_K2_t_up = ffreqs[(nw1+nw2)/2-1];
@@ -4384,7 +4388,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
 
     if(abs(B)<1e-20){B=0;};//prevents errors from unprecise cancellation of diagrams
     return B;
-}
+};
 
 
 
