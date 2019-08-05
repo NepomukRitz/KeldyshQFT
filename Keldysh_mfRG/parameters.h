@@ -9,6 +9,8 @@
 
 using namespace std;
 
+const double pi = 3.1415926535897;
+
 /*Interaction strength*/
 const double U = 1.0;
 
@@ -62,5 +64,8 @@ const int nK_K3 = 6;
 /*Dimension of the space defining the internal structure*/
 const int n_in = 1;
 
+/*Regulator*/
+const int reg = 2; //sets the regulator that is being used: 1: sharp cutoff, 2: smoothened cutoff TODO: probably better use a preprocessor macro for this
+const double sharp = 2; // Sharpness of the regulator cutoff
 
 #endif //KELDYSH_MFRG_PARAMETERS_H
