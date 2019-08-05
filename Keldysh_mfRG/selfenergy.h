@@ -5,6 +5,9 @@
 #ifndef KELDYSH_MFRG_SELFENERGY_H
 #define KELDYSH_MFRG_SELFENERGY_H
 
+
+#include "parameters.h"
+
 //TODO: naming??
 
 /******************CLASS FOR SELF ENERGY *************/
@@ -65,49 +68,7 @@ self operator+=(const self& self1, const self& self2){//sum operator overloading
 }
 
 
-//TODO: check this below (and define state first)
-//operators containing state objects
-state operator+(state state1, state state2){
-    state result;
-    result.vertex.spinvertex.irred = state1.vertex.spinvertex.irred + state2.vertex.spinvertex.irred;
-    result.vertex.spinvertex.svertex = state1.vertex.spinvertex.svertex + state2.vertex.spinvertex.svertex;
-    result.vertex.spinvertex.tvertex = state1.vertex.spinvertex.tvertex + state2.vertex.spinvertex.tvertex;
-    result.vertex.spinvertex.uvertex = state1.vertex.spinvertex.uvertex + state2.vertex.spinvertex.uvertex;
-    result.vertex.densvertex.irred = state1.vertex.densvertex.irred + state2.vertex.densvertex.irred;
-    result.vertex.densvertex.svertex = state1.vertex.densvertex.svertex + state2.vertex.densvertex.svertex;
-    result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex + state2.vertex.densvertex.tvertex;
-    result.vertex.densvertex.uvertex = state1.vertex.densvertex.uvertex + state2.vertex.densvertex.uvertex;
-    result.selfenergy = state1.selfenergy + state2.selfenergy;
-    return result;
-}
-state operator*(double alpha, state state1){
-    state result;
-    result.vertex.spinvertex.irred = state1.vertex.spinvertex.irred * alpha;
-    result.vertex.spinvertex.svertex = state1.vertex.spinvertex.svertex * alpha;
-    result.vertex.spinvertex.tvertex = state1.vertex.spinvertex.tvertex * alpha;
-    result.vertex.spinvertex.uvertex = state1.vertex.spinvertex.uvertex * alpha;
-    result.vertex.densvertex.irred = state1.vertex.densvertex.irred * alpha;
-    result.vertex.densvertex.svertex = state1.vertex.densvertex.svertex * alpha;
-    result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex * alpha;
-    result.vertex.densvertex.uvertex = state1.vertex.densvertex.uvertex * alpha;
 
-    result.selfenergy = alpha * state1.selfenergy;
-    return result;
-}
-state operator*(state state1, double alpha){
-    state result;
-    result.vertex.spinvertex.irred = state1.vertex.spinvertex.irred * alpha;
-    result.vertex.spinvertex.svertex = state1.vertex.spinvertex.svertex * alpha;
-    result.vertex.spinvertex.tvertex = state1.vertex.spinvertex.tvertex * alpha;
-    result.vertex.spinvertex.uvertex = state1.vertex.spinvertex.uvertex * alpha;
-    result.vertex.densvertex.irred = state1.vertex.densvertex.irred * alpha;
-    result.vertex.densvertex.svertex = state1.vertex.densvertex.svertex * alpha;
-    result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex * alpha;
-    result.vertex.densvertex.uvertex = state1.vertex.densvertex.uvertex * alpha;
-
-    result.selfenergy = alpha * state1.selfenergy;
-    return result;
-}
 
 
 
