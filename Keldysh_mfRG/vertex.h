@@ -5,17 +5,19 @@
 #ifndef KELDYSH_MFRG_VERTEX_H
 #define KELDYSH_MFRG_VERTEX_H
 
+#ifndef KELDYSH_MFRG_2_0_VERTEX_H
+#define KELDYSH_MFRG_2_0_VERTEX_H
+
 #include <vector>
 
 #include "parameters.h"
-#include "data_structures.h"
+#include "frequency_grid.h"
+#include "Keldysh_symmetries.h"
 
 using namespace std;
 
 // TODO: maybe rename member functions K1_vval, K1_vvalsmooth, etc.
 // TODO: need additional wrapper functions that provide the transformations T1, T2, T3, TC
-// TODO: need functions that provide the transformation between the a,p,t frequency conventions (currently in the functions vvalsmooth(...))
-//          --> TODO: as a follow-on: remove this distinction from the vvalsmooth functions
 
 
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
@@ -72,6 +74,58 @@ public:
      * calculated by interpolation for given Keldysh and internal structure indices.*/
     Q K3_vvalsmooth(int, double, double, double, int);
 
+    /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
+     * only have the values 'a', 'p', or 't'.*/
+    tuple<double, double, double> transfToA(double, double, double, char);
+
+    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
+    tuple<double, double, double> transfToA(double, double, double);
+
+    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
+     * I.e. is the inverse of the function above*/
+    tuple<double, double, double> transfBackA(double, double, double);
+
+
+    /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
+     * legs are switched and the three corresponding frequency inputs for the diagrammatic class*/
+    tuple<int, double, double, double, int> indices_T1(int, double, double, double, int);
+
+    /*Symmetry which interchanges the outgoing legs*/
+    tuple<int, double, double, double, int> indices_T2(int, double, double, double, int);
+
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    tuple<int, double, double, double, int> indices_T3(int, double, double, double, int);
+
+    /*Symmetry transformations for the different diagrammatic classes.
+     * K1 */
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K1(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K1(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K1(int, double, double, double, int);
+
+    /*K2*/
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K2(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K2(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K2(int, double, double, double, int);
+
+    /*K3*/
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K3(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K3(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K3(int, double, double, double, int);
+
+
+    /*TODO: notice T1_K1, T2_K1 and T3_K1 depend all on the three frequencies, i.e. the sufix _K1 is a joke at this stage.
+     * TODO: Can one ignore the effects of v1_a and v2_a? If so, define similarly functions T1_K2, T2_K2, T3_K2, T1_K3, T2_K3, T3_K3 with the adequate freq. dependence */
+
+
 //    /*Define the operator of multiplying an a-vertex with a number.    TODO generalize it to multiply by type Q ?*/
 //    friend avert operator*(double alpha, const avert& vertex);
 //    friend avert operator*(const avert& vertex, double alpha);
@@ -101,21 +155,6 @@ public:
         return vertex3;
     }
 
-    /*
-    Q vvalsmooth(int, int, int, double, double, double, char);
-    Q vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-    Q vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-    Q vvalsmooth(int, int, int, double, double, double);
-    void K1_setvert( int, int, int, int, Q);
-    void K2_setvert( int, int, int, int, int, Q);
-    void K3_setvert( int, int, int, int, int, int, Q);
-    Q K1_vval(int, int, int, int);
-    Q K2_vval(int, int, int, int, int);
-    Q K3_vval(int, int, int, int, int, int);
-    Q K1_vvalsmooth(int, int, int, double);
-    Q K2_vvalsmooth(int, int, int, double, double);
-    Q K3_vvalsmooth(int, int, int, double, double, double);
-    */
 };
 
 template <class Q>
@@ -171,6 +210,53 @@ public:
      * calculated by interpolation for given Keldysh and internal structure indices.*/
     Q K3_vvalsmooth(int, double, double, double, int);
 
+    /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
+ * only have the values 'a', 'p', or 't'.*/
+    tuple<double, double, double> transfToP(double, double, double, char);
+
+    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
+    tuple<double, double, double> transfToP(double, double, double);
+
+    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
+ * I.e. is the inverse of the function above*/
+    tuple<double, double, double> transfBackP(double, double, double);
+
+
+    /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
+     * legs are switched and the three corresponding frequency inputs for the diagrammatic class*/
+    tuple<int, double, double, double, int> indices_T1(int, double, double, double, int);
+
+    /*Symmetry which interchanges the outgoing legs*/
+    tuple<int, double, double, double, int> indices_T2(int, double, double, double, int);
+
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    tuple<int, double, double, double, int> indices_T3(int, double, double, double, int);
+
+    /*Symmetry transformations for the different diagrammatic classes.
+     * K1 */
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K1(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K1(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K1(int, double, double, double, int);
+
+    /*K2*/
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K2(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K2(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K2(int, double, double, double, int);
+
+    /*K3*/
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K3(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K3(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K3(int, double, double, double, int);
+
 
 //    /*Define the operator of multiplying a p-vertex with a number.    TODO generalize it to multiply by type Q ?*/
 //    friend pvert operator*(double alpha, const pvert& vertex);
@@ -201,21 +287,6 @@ public:
         return vertex3;
     }
 
-    /*
-    Q vvalsmooth(int, int, int, double, double, double, char);
-    Q vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-    Q vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-    Q vvalsmooth(int, int, int, double, double, double);
-    void K1_setvert( int, int, int, int, Q);
-    void K2_setvert( int, int, int, int, int, Q);
-    void K3_setvert( int, int, int, int, int, int, Q);
-    Q K1_vval(int, int, int, int);
-    Q K2_vval(int, int, int, int, int);
-    Q K3_vval(int, int, int, int, int, int);
-    Q K1_vvalsmooth(int, int, int, double);
-    Q K2_vvalsmooth(int, int, int, double, double);
-    Q K3_vvalsmooth(int, int, int, double, double, double);
-    */
 };
 
 template <class Q>
@@ -272,6 +343,54 @@ public:
     Q K3_vvalsmooth(int, double, double, double, int);
 
 
+    /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
+     * only have the values 'a', 'p', or 't'.*/
+    tuple<double, double, double> transfToT(double, double, double, char);
+
+    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
+    tuple<double, double, double> transfToT(double, double, double);
+
+    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
+     * I.e. is the inverse of the function above*/
+    tuple<double, double, double> transfBackT(double, double, double);
+
+
+    /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
+     * legs are switched and the three corresponding frequency inputs for the diagrammatic class*/
+    tuple<int, double, double, double, int> indices_T1(int, double, double, double, int);
+
+    /*Symmetry which interchanges the outgoing legs*/
+    tuple<int, double, double, double, int> indices_T2(int, double, double, double, int);
+
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    tuple<int, double, double, double, int> indices_T3(int, double, double, double, int);
+
+    /*Symmetry transformations for the different diagrammatic classes.
+     * K1 */
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K1(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K1(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K1(int, double, double, double, int);
+
+    /*K2*/
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K2(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K2(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K2(int, double, double, double, int);
+
+    /*K3*/
+    /*Symmetry which interchanges the incoming legs*/
+    Q T1_K3(int, double, double, double, int);
+    /*Symmetry which interchanges the outgoing legs*/
+    Q T2_K3(int, double, double, double, int);
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    Q T3_K3(int, double, double, double, int);
+
+
 //    /*Define the operator of multiplying a p-vertex with a number.    TODO generalize it to multiply by type Q ?*/
 //    friend tvert operator*(double alpha, const tvert& vertex);
 //    friend tvert operator*(const tvert& vertex, double alpha);
@@ -302,21 +421,6 @@ public:
     }
 
 
-    /*
-    Q vvalsmooth(int, int, int, double, double, double, char);
-    Q vvalsmooth(int, int, int, double, double, double, char, int, char);//second to last arguement: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-    Q vvalsmooth(int, int, int, int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-    Q vvalsmooth(int, int, int, double, double, double);
-    void K1_setvert( int, int, int, int, Q);
-    void K2_setvert( int, int, int, int, int, Q);
-    void K3_setvert( int, int, int, int, int, int, Q);
-    Q K1_vval(int, int, int, int);
-    Q K2_vval(int, int, int, int, int);
-    Q K3_vval(int, int, int, int, int, int);
-    Q K1_vvalsmooth(int, int, int, double);
-    Q K2_vvalsmooth(int, int, int, double, double);
-    Q K3_vvalsmooth(int, int, int, double, double, double);
-    */
 };
 
 template <class Q>
@@ -356,13 +460,6 @@ public:
         return result;
     }
 
-    /*
-    Q vval(int, int, int);
-    Q vvalsmooth(int, int, int);
-    Q vvalsmooth(int, int, int,double,double,double,char,int,char);
-
-    void setvert(int,int,int,double);
-    */
 };
 
 /**********************************************************************************************************************/
@@ -411,44 +508,17 @@ public:
     double vvalsmooth(int,int,int,double,double,double,char,int,char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
     double vvalsmooth(int,int,int,int,int,double,double,double,char,int,char);//first two arguments: red_side, map
     */
-    };
+};
 
 
 //define Vertex as tuple of spin and density vertex
 //Note that T should be fullvert, so that every (i.e. both) spin component of the vertex inherits a Keldysh substructure
 template <class T>
-class Vertex{//define a tuple for parametrized vertices that contains one spin vertex and one density vertex
+class Vertex{
 public:
     T spinvertex;
     T densvertex;
 };
-
-////define operators for Vertex // TODO: unnecessary, comes again below
-//template <typename Q> Vertex<avert<Q> > operator+(Vertex<avert<Q> > ,Vertex<avert<Q> >);
-//template <typename Q> Vertex<pvert<Q> > operator+(Vertex<pvert<Q> > ,Vertex<pvert<Q> >);
-//template <typename Q> Vertex<tvert<Q> > operator+(Vertex<tvert<Q> > ,Vertex<tvert<Q> >);
-//template <typename Q> Vertex<irreducible<Q> > operator+(Vertex<irreducible<Q> > ,Vertex<irreducible<Q> >);
-//template <typename Q> Vertex<avert<Q> > operator+=(Vertex<avert<Q> > ,Vertex<avert<Q> >);
-//template <typename Q> Vertex<pvert<Q> > operator+=(Vertex<pvert<Q> > ,Vertex<pvert<Q> >);
-//template <typename Q> Vertex<tvert<Q> > operator+=(Vertex<tvert<Q> > ,Vertex<tvert<Q> >);
-//template <typename Q> Vertex<irreducible<Q> > operator+=(Vertex<irreducible<Q> > ,Vertex<irreducible<Q> >);
-//template <typename Q> Vertex<avert<Q> > operator*(double  ,Vertex<avert<Q> >&);
-//template <typename Q> Vertex<avert<Q> > operator*(Vertex<avert<Q> >& ,double );
-//template <typename Q> Vertex<pvert<Q> > operator*(double  ,Vertex<pvert<Q> >&);
-//template <typename Q> Vertex<pvert<Q> > operator*(Vertex<pvert<Q> >& ,double );
-//template <typename Q> Vertex<tvert<Q> > operator*(double  ,Vertex<tvert<Q> >&);
-//template <typename Q> Vertex<tvert<Q> > operator*(Vertex<tvert<Q> >& ,double );
-//template <typename Q> Vertex<irreducible<Q> > operator*(double  ,Vertex<irreducible<Q> >&);
-//template <typename Q> Vertex<irreducible<Q> > operator*(Vertex<irreducible<Q> >& ,double );
-
-
-
-/*Frequency grids for each channel*/
-// TODO: put this to another file!!
-vector<double> freqs_a(nw_a); // NOLINT(cert-err58-cpp)
-vector<double> freqs_p(nw_p); // NOLINT(cert-err58-cpp)
-vector<double> freqs_t(nw_t); // NOLINT(cert-err58-cpp)
-
 
 
 /************************ MEMBER FUNCTIONS OF THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX **************************/
@@ -456,33 +526,14 @@ vector<double> freqs_t(nw_t); // NOLINT(cert-err58-cpp)
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
 
 //this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-template <typename Q> Q avert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
+template <typename Q> Q avert<Q>::vvalsmooth(int iK, double w, double v1, double v2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 
-    double u=0.,w1_u=0., w2_u=0.;
-    if(channel == 's'){
-        u = -w2-w1;
-        w1_u = (w1-w2+q)/2;
-        w2_u = (-w1+w2+q)/2;}
-    else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-        u = w2-w1;
-        w1_u = (w1+w2-q)/2;
-        w2_u = (w1+w2+q)/2;}
-    else if(channel == 'u'){
-        u = q;
-        w1_u = w1;
-        w2_u = w2;}
-    else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-        u = w1-w2;
-        w1_u = q + (w1-w2)/2;
-        w2_u = (w1+w2)/2;};
+    double w_a=0., v1_a=0., v2_a=0.;
+    tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
 
     Q value;
 
-//    if(abs(u) < freqs_a[nw1_wa/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-//    if(abs(w1_u) < freqs_a[nw1_wa/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-//    if(abs(w2_u) < freqs_a[nw1_wa/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
-
-    value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK,u,w1_u,i_in) + K3_vvalsmooth(iK, u, w1_u, w2_u, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
+    value += K1_vvalsmooth(iK, w_a, i_in) + K2_vvalsmooth(iK,w_a,v1_a,i_in) + K3_vvalsmooth(iK, w_a, v1_a, v2_a, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
 
     return value;
 }
@@ -585,54 +636,44 @@ template <typename Q> Q avert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
     return K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];
 }
 
-template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
+template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    /*I assume a linear grid for this implementation. TODO: define a set of functions (one per type of grid to use) to convert double in range to index on grid*/
-    /*TODO: since we might want to interpolate according to channel and diagrammatic class, rethink previous TODO */
-
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw1_wa-1));     //nw1_wa because we're interpolating for K1 in channel a
-    auto index = (int)((u-w_lower_b)/dw_b_a);
+    int index = fconv_K1_a(w_a);
 
     double x1 = freqs_a[index];
     double x2 = freqs_a[index+1];
 
-    Q f1 = K1[iK*nw1_wa*n_in + (index)*n_in + i_in];
-    Q f2 = K1[iK*nw1_wa*n_in + (index+1)*n_in + i_in];
+    double xd = (w_a-x1)/(x2-x1);
 
-    return f1 + (u-x1)*(f2-f1)/(x2-x1);
+    Q f1 = K1_vval(iK, index, i_in);
+    Q f2 = K1_vval(iK, index+1, i_in);
+
+    return (1.-xd)*f1 + xd*f2;
 }
-template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double u, double w1, int i_in){
+template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw2_wa-1));     //nw2_wa because we're interpolating for bosonic freq in K2 in channel a
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw2_nua-1));    //nw2_nua because we're interpolating for fermionic freq in K2 in channel a
-
-    auto index_b = (int)((u-w_lower_b)/dw_b_a);
-    auto index_f = (int)((w1-w_lower_f)/dw_f_a);
+    int index_b, index_f;
+    tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
 
     double x1 = freqs_a[index_b];
     double x2 = freqs_a[index_b+1];
     double y1 = freqs_a[index_f];
     double y2 = freqs_a[index_f+1];
 
-    Q f11 = K2[iK*nw2_wa*nw2_nua*n_in + (index_b)*nw2_nua*n_in + (index_f)*n_in + i_in];
-    Q f12 = K2[iK*nw2_wa*nw2_nua*n_in + (index_b)*nw2_nua*n_in + (index_f+1)*n_in + i_in];
-    Q f21 = K2[iK*nw2_wa*nw2_nua*n_in + (index_b+1)*nw2_nua*n_in + (index_f)*n_in + i_in];
-    Q f22 = K2[iK*nw2_wa*nw2_nua*n_in + (index_b+1)*nw2_nua*n_in + (index_f+1)*n_in + i_in];
+    double xd = (w_a-x1)/(x2-x1);
+    double yd = (v1_a-y1)/(y2-y1);
 
-    return (y2-w1)/(y2-y1)*((x2-u)/(x2-x1)*f11 + (u-x1)/(x2-x1)*f21) + (w1-y1)/(y2-y1)*((x2-u)/(x2-x1)*f12 + (u-x1)/(x2-x1)*f22);
+    Q f11 = K2_vval(iK, index_b, index_f, i_in);
+    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
+    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
+    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
+
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
-template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double u, double w1, double w2, int i_in){
+template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a, double v2_a, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw3_wa-1));     //nw3_wa because we're interpolating for bosonic freq in K3 in channel a
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nua-1));    //nw3_nua because we're interpolating for fermionic freq in K3 in channel a
-    double dwp_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nuap-1));  //nw3_nuap because we're interpolating for fermionic freq in K3 in channel a
-
-    auto index_b = (int)((u-w_lower_b)/dw_b_a);
-    auto index_f = (int)((w1-w_lower_f)/dw_f_a);
-    auto index_fp = (int)((w2-w_lower_f)/dwp_f_a);
+    int index_b, index_f, index_fp;
+    tie(index_b,index_f, index_fp) = fconv_K3_a(w_a, v1_a, v2_a);
 
     double x1 = freqs_a[index_b];
     double x2 = freqs_a[index_b+1];
@@ -641,18 +682,18 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double z1 = freqs_a[index_fp];
     double z2 = freqs_a[index_fp+1];
 
-    Q f111 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
-    Q f112 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
-    Q f121 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
-    Q f122 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
-    Q f211 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
-    Q f212 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
-    Q f221 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp)*n_in + i_in];
-    Q f222 = K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + (index_b+1)*nw3_nua*nw3_nuap*n_in + (index_f+1)*nw3_nuap*n_in + (index_fp+1)*n_in + i_in];
+    double xd = (w_a-x1)/(x2-x1);
+    double yd = (v1_a-y1)/(y2-y1);
+    double zd = (v2_a-z1)/(z2-z1);
 
-    double xd = (u-x1)/(x2-x1);
-    double yd = (w1-y1)/(y2-y1);
-    double zd = (w2-z1)/(z2-z1);
+    Q f111 = K3_vval(iK, index_b, index_f, index_fp, i_in);
+    Q f112 = K3_vval(iK, index_b, index_f, index_fp+1, i_in);
+    Q f121 = K3_vval(iK, index_b, index_f+1, index_fp, i_in);
+    Q f122 = K3_vval(iK, index_b, index_f+1, index_fp+1, i_in);
+    Q f211 = K3_vval(iK, index_b+1, index_f, index_fp, i_in);
+    Q f212 = K3_vval(iK, index_b+1, index_f, index_fp+1, i_in);
+    Q f221 = K3_vval(iK, index_b+1, index_f+1, index_fp, i_in);
+    Q f222 = K3_vval(iK, index_b+1, index_f+1, index_fp+1, i_in);
 
     Q c00 = f111*(1.-xd) + f211*xd;
     Q c01 = f112*(1.-xd) + f212*xd;
@@ -664,642 +705,146 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
 
     return c0*(1.-zd) + c1*zd;
 }
-//non-member functions
 
-
-/*
-
-template <typename Q> Q avert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-        double u,w1_u,w2_u;
-        if(channel == 's'){
-            u = -w2-w1;
-            w1_u = (w1-w2+q)/2;
-            w2_u = (-w1+w2+q)/2;}
-        else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-            u = w2-w1;
-            w1_u = (w1+w2-q)/2;
-            w2_u = (w1+w2+q)/2;}
-        else if(channel == 'u'){
-            u = q;
-            w1_u = w1;
-            w2_u = w2;}
-        else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-            u = w1-w2;
-            w1_u = q + (w1-w2)/2;
-            w2_u = (w1+w2)/2;};
-
-        Q value=0;
-
-        if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-        if(abs(w1_u) < ffreqs[nw/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-        if(abs(w2_u) < ffreqs[nw/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
-
-
-
-//        if(u > bfreqs[nw-1] && abs(u - bfreqs[nw-1]) < 1e-12){u = bfreqs[nw-1];}
-//        else if(u<bfreqs[0] && abs(u - bfreqs[0]) < 1e-12){u = bfreqs[0];};
-
-
-//        if(w1_u > ffreqs[nw-1] && abs(w1_u - ffreqs[nw-1]) < 1e-12){w1_u = ffreqs[nw-1];}
-//        else if(w1_u<ffreqs[0] && abs(w1_u - ffreqs[0]) < 1e-12){w1_u = ffreqs[0];};
-
-
-//        if(w2_u > ffreqs[nw-1] && abs(w2_u - ffreqs[nw-1]) < 1e-12){w2_u = ffreqs[nw-1];}
-//        else if(w2_u<ffreqs[0] && abs(w2_u - ffreqs[0]) < 1e-12){w2_u = ffreqs[0];};
-
-
-        value += R_vvalsmooth(a,b,c,u,w1_u,w2_u) + K1_vvalsmooth(a,b,c,u) + K2_vvalsmooth(a,b,c,u,w1_u)  + K2b_vvalsmooth(a,b,c,u,w2_u)  ;//K2b is extracted from K2 by the symmetry relations
-
-        return value;  }
-    else{return 0;}
-
-
-
+template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w, double v1, double v2, char channel)
+{
+    double w_a=0., v1_a=0., v2_a=0.;
+    if(channel == 'a') {
+        w_a = w;
+        v1_a = v1;
+        v2_a = v2;}
+    else if(channel == 'p'){
+        w_a = -v2-v2;
+        v1_a = (v1-v2+w)/2.;
+        v2_a = (v2-v1+w)/2.;}
+    else if(channel == 't'){
+        w_a = v1-v2;
+        v1_a = (v1+v2+w)/2.;
+        v2_a = (v1+v2-w)/2.;}
+    return make_tuple(w_a, v1_a, v2_a);
 }
-template <typename Q> Q avert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2, char channel, int p, char f){//additional specification of vertex number and bubble type (K/L/M/R) for (K1/K2/K2b/R0)-class
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-
-
-        double u,w1_u,w2_u;
-        if(channel == 's'){
-            u = -w2-w1;
-            w1_u = (w1-w2+q)/2;
-            w2_u = (-w1+w2+q)/2;}
-        else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-            u = w2-w1;
-            w1_u = (w1+w2-q)/2;
-            w2_u = (w1+w2+q)/2;}
-        else if(channel == 'u'){
-            u = q;
-            w1_u = w1;
-            w2_u = w2;}
-        else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-            u = w1-w2;
-            w1_u = q + (w1-w2)/2;
-            w2_u = (w1+w2)/2;};
-
-        Q value=0;
-
-        if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-        if(abs(w1_u) < ffreqs[nw/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-        if(abs(w2_u) < ffreqs[nw/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
-
-
-
-//        if(u > bfreqs[nw-1] && abs(u - bfreqs[nw-1]) < 1e-12){u = bfreqs[nw-1];}
-//        else if(u<bfreqs[0] && abs(u - bfreqs[0]) < 1e-12){u = bfreqs[0];};
-
-
-//        if(w1_u > ffreqs[nw-1] && abs(w1_u - ffreqs[nw-1]) < 1e-12){w1_u = ffreqs[nw-1];}
-//        else if(w1_u<ffreqs[0] && abs(w1_u - ffreqs[0]) < 1e-12){w1_u = ffreqs[0];};
-
-
-//        if(w2_u > ffreqs[nw-1] && abs(w2_u - ffreqs[nw-1]) < 1e-12){w2_u = ffreqs[nw-1];}
-//        else if(w2_u<ffreqs[0] && abs(w2_u - ffreqs[0]) < 1e-12){w2_u = ffreqs[0];};
-
-        if(p==1){
-            if(channel=='u'){
-                if(f == 'R' || f == 'M'){value += R_vvalsmooth(a,b,c,u,w1_u,w2_u) + K2b_vvalsmooth(a,b,c,u,w2_u);}//if outer legs are conntected to different  vertex
-                else if(f == 'K' || f == 'L'){value += K1_vvalsmooth(a,b,c,u) + K2_vvalsmooth(a,b,c,u,w1_u);};//if outer legs are conntected to same bare vertex
-
-            }
-            else if (channel=='s' || channel=='t'){
-                if(f == 'R' || f== 'M'){value += R_vvalsmooth(a,b,c,u,w1_u,w2_u) + K1_vvalsmooth(a,b,c,u) + K2_vvalsmooth(a,b,c,u,w1_u) + K2b_vvalsmooth(a,b,c,u,w2_u);};
-            };
-        }
-
-        else if(p==2){
-            if(channel=='u'){
-                if(f == 'R' || f == 'L'){value += R_vvalsmooth(a,b,c,u,w1_u,w2_u) + K2_vvalsmooth(a,b,c,u,w2_u);}//if outer legs are conntected to different bare vertex
-                else if(f == 'K' || f == 'M'){value += K1_vvalsmooth(a,b,c,u) + K2b_vvalsmooth(a,b,c,u,w1_u);};//if outer legs are conntected to same bare vertex
-
-            }
-            else if (channel=='s' || channel=='t'){
-                if(f == 'R' || f== 'L'){value += R_vvalsmooth(a,b,c,u,w1_u,w2_u) + K1_vvalsmooth(a,b,c,u) + K2_vvalsmooth(a,b,c,u,w1_u) + K2b_vvalsmooth(a,b,c,u,w2_u);
-                };
-            };
-        };
-
-
-
-
-        return value;  }
-    else{return 0;}
-
-
-
+template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w, double v1, double v2)
+{
+    double w_a=0., v1_a=0., v2_a=0.;
+    w_a = v1-v2;
+    v1_a = w;
+    v2_a = v2;
+    return make_tuple(w_a, v1_a, v2_a);
 }
-//overload of previous function
-template <typename Q> Q avert<Q>::vvalsmooth(int red_side, int map,int a, int b, int c,  double q, double w1, double w2, char channel, int p, char f){
-    return vvalsmooth( a, b, c, q, w1,w2,channel, p,  f);
-}
-template <typename Q> Q avert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-
-        double u,w1_u,w2_u;
-
-        u = q;
-        w1_u = w1;
-        w2_u = w2;
-
-        Q value=0;
-
-        if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-        if(abs(w1_u) < ffreqs[nw/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-        if(abs(w2_u) < ffreqs[nw/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
-
-        value += R_vvalsmooth(a,b,c,u,w1_u,w2_u) + K1_vvalsmooth(a,b,c,u) + K2_vvalsmooth(a,b,c,u,w1_u) + K2b_vvalsmooth(a,b,c,u,w2_u) ;//K2b is extracted from K2 by the symmetry relations
-        return value;  }
-    else{return 0;}
-
-
-
-}
-template <typename Q> void avert<Q>::K1_setvert(int a, int b, int c, int i, Q value){
-
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-        if(i< nw1 && i>= 0 ){
-            K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)] = value;};}
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;}
-}
-template <typename Q> void avert<Q>::K2_setvert(int a, int b, int c,int i, int j,Q value){
-
-
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-        if(i< nw2 && i>= 0 && j< nw2 && j>= 0 ){
-
-            K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)] = value;};}
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;}
-}
-template <typename Q> void avert<Q>::K3_setvert(int a, int b, int c, int i, int j, int k, Q value){
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-        if(i< nw3 && i>= 0 && j< nw3 && j>= 0 &&  k< nw3 && k>= 0){
-
-
-            K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)] = value;};}
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;}
-}
-template <typename Q> Q avert<Q>::K1_vval(int a_raw, int b_raw, int c_raw,  int i){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(i < nw1 && i >= 0 ){
-        if(sym==0){
-
-            value += K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)];}
-        else if(sym==1 || sym==2){
-            if (i>=nw1/2){
-
-                value += K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)];}
-            else if(i<nw1/2){
-
-                site x = site_switch(a,b,c);
-                i=nw1-1-i;
-                value += K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw1-nw1_q)];};
-        };};
-    if(abs(value)<1e-100){value =0;};
-
-    return value;
-}
-template <typename Q> Q avert<Q>::K2_vval(int a_raw, int b_raw, int c_raw,  int i,int j){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(i < nw2 && i >= 0 && j < nw2 && j >= 0 ){
-        if(sym==0){
-
-            value += K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];}
-        else if(sym==1){
-            if(j >= nw2/2){
-
-
-                value += K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];}
-            else if (j<nw2/2){
-
-                site x = site_switch(a,b,c);
-
-                j = nw2-1-j;
-                value += conj(K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)]);};
-        }
-        else if(sym==2){
-            site x(a,b,c);
-            if(i < nw2/2){i = nw2-1-i;x = site_switch(x.a,x.b,x.c);};
-            if(j < nw2/2){j = nw2-1-j;x = site_switch(x.a,x.b,x.c);};
-
-            value += K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];
-        };};
-    if(abs(value)<1e-100){value =0;};
-
-
-
-    return value;
-}
-template <typename Q> Q avert<Q>::K3_vval(int a_raw, int b_raw, int c_raw,  int i, int j, int k){
-
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(i < nw3 && i >= 0 && j < nw3 && j >= 0 && k < nw3 && k >= 0){
-        if(sym == 0 ){
-
-            value += K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)];}
-
-
-        else if(sym == 1 ){
-            if(i>=nw3/2){
-                if(j >=nw3/2){
-
-                    value += K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)];}
-
-                else if(j < nw3/2){
-                    site x = site_switch(a,b,c);
-
-                    j = nw3-1-j;
-                    k = nw3-1-k;
-                    value += conj(K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)]);};}
-
-            else if (i<nw3/2 ){
-                if(k >= nw3/2){
-                    site x = site_switch(a,b,c);
-
-                    i = nw3-1-i;
-                    value += K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw3-nw3_q)][k-(nw3-nw3_w1)][j-(nw3-nw3_w2)];}//note that k and j are interchanged
-
-                else if ( k < nw3/2){
-
-
-                    i = nw3-1-i;
-                    j = nw3-1-j;
-                    k = nw3-1-k;
-                    value += conj(K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][k-(nw3-nw3_w1)][j-(nw3-nw3_w2)]);};//note that k and j are interchanged
-
-            };}
-        else if(sym == 2 ){
-            site x(a,b,c);
-            int i_eff = i, j_eff = j, k_eff = k;
-            if(i<nw3/2){i_eff = nw3-1-i;x = site_switch(x.a,x.b,x.c);};
-            if(abs(j-nw3/2) > abs(k-nw3/2)){j_eff = k; k_eff = j;};
-            if(j_eff-nw3/2 < 0){j_eff = nw3-1-j_eff; k_eff = nw3-1-k_eff;x = site_switch(x.a,x.b,x.c);};
-            value += K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i_eff-(nw3-nw3_q)][j_eff-(nw3-nw3_w1)][k_eff-(nw3-nw3_w2)];};};
-    if(abs(value)<1e-100){value=0;};
-
-
-
-    return value;
-}
-template <typename Q> Q avert<Q>::K1_vvalsmooth(int a_raw, int b_raw, int c_raw,  double u){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(abs(u)+ 1e-6<= ffreqs[(nw1+nw)/2-1]){
-        if(sym==0){
-
-            int U = fconv_n(u,nw1);
-
-            int U_vert = fconv_n(u,nw1)-(nw1-nw1_q);
-
-            value += ((K1[a+(nuc_eff-1)/2][b][c-1][U_vert ]*(bfreqs[(nw-nw1)/2+U+1]-u)
-                       +K1[a+(nuc_eff-1)/2][b][c-1][U_vert +1]*(-bfreqs[(nw-nw1)/2+U]+u))/((bfreqs[(nw-nw1)/2+U+1]-bfreqs[(nw-nw1)/2+U])));}
-        else if(sym==1 ||sym==2){
-            if (u>0){
-
-
-                int U = fconv_n(u,nw1);
-
-                int U_vert = fconv_n(u,nw1)-(nw1-nw1_q);
-
-                value += ((K1[a+(nuc_eff-1)/2][b][c-1][U_vert]*(bfreqs[(nw-nw1)/2+U+1]-u)
-                           +K1[a+(nuc_eff-1)/2][b][c-1][U_vert+1]*(-bfreqs[(nw-nw1)/2+U]+u))/((bfreqs[(nw-nw1)/2+U+1]-bfreqs[(nw-nw1)/2+U])));}
-            else if (u<0){
-
-                site x = site_switch(a,b,c);
-                int U = fconv_n(-u,nw1);
-
-                int U_vert = fconv_n(-u,nw1)-(nw1-nw1_q);
-                u = -u;
-
-                value += (K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert]*(bfreqs[(nw-nw1)/2+U+1]-u)
-                          +K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1]*(-bfreqs[(nw-nw1)/2+U]+u))/(bfreqs[(nw-nw1)/2+U+1]-bfreqs[(nw-nw1)/2+U]);};};}
-    else{
-        int i;
-        if(abs(u)<= bfreqs[nw1-1] ){
-            i= fconv_n(u,nw1);
-
-            value += K1_vval(a,b,c,i);};    };
-
-
-    return value;
-}
-template <typename Q> Q avert<Q>::K2_vvalsmooth(int a_raw, int b_raw, int c_raw,  double u, double w1){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-
-    Q value=0;
-    if(abs(u)+ 1e-6<= bfreqs[(nw2+nw)/2-1] && abs(w1)+ 1e-6< ffreqs[(nw2+nw)/2-1]){
-        if(sym==0){
-
-            int U = fconv_n(u,nw2);
-            int W1 = fconv_n(w1,nw2);
-
-            int U_vert = fconv_n(u,nw2)-(nw2-nw2_q);
-            int W1_vert = fconv_n(w1,nw2)-(nw2-nw2_w1);
-
-            value += ((K2[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert]*(ffreqs[(nw-nw2)/2+U+1]-u)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+U]+u)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+U+1]-u)*(-ffreqs[(nw-nw2)/2+W1]+w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+U]+u)*(-ffreqs[(nw-nw2)/2+W1]+w1))/((ffreqs[(nw-nw2)/2+U+1]-ffreqs[(nw-nw2)/2+U])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));}
-        else if(sym==1){
-
-            if(w1 > 0){
-
-                int U = fconv_n(u,nw2);
-                int W1 = fconv_n(w1,nw2);
-
-                int U_vert = fconv_n(u,nw2)-(nw2-nw2_q);
-                int W1_vert = fconv_n(w1,nw2)-(nw2-nw2_w1);
-
-                value += ((K2[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert]*(ffreqs[(nw-nw2)/2+U+1]-u)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+U]+u)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+U+1]-u)*(-ffreqs[(nw-nw2)/2+W1]+w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+U]+u)*(-ffreqs[(nw-nw2)/2+W1]+w1))/((ffreqs[(nw-nw2)/2+U+1]-ffreqs[(nw-nw2)/2+U])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));
-            }
-            else if (w1<0){
-
-                site x = site_switch(a,b,c);
-
-                int U = fconv_n(u,nw2);
-                int W1 = fconv_n(-w1,nw2);
-
-                int U_vert = fconv_n(u,nw2)-(nw2-nw2_q);
-                int W1_vert = fconv_n(-w1,nw2)-(nw2-nw2_w1);
-                double w1_eff = -w1 ;
-                value += conj((K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert ][W1_vert ]*(ffreqs[(nw-nw2)/2+U+1]-u)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                               +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert +1][W1_vert ]*(-ffreqs[(nw-nw2)/2+U]+u)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                               +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert ][W1_vert +1]*(ffreqs[(nw-nw2)/2+U+1]-u)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff)
-                               +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert +1][W1_vert +1]*(-ffreqs[(nw-nw2)/2+U]+u)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff))/((ffreqs[(nw-nw2)/2+U+1]-ffreqs[(nw-nw2)/2+U])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));
-
-            };
-        }
-        else if(sym==2){
-            site x(a,b,c);
-            double w1_eff = w1;
-            if(u<0){u = -u;x = site_switch(x.a,x.b,x.c); };
-            if(w1_eff<0){w1_eff = -w1_eff; x = site_switch(x.a,x.b,x.c);};
-
-            int U = fconv_n(u,nw2);
-            int W1 = fconv_n(w1_eff,nw2);
-
-            int U_vert = fconv_n(u,nw2)-(nw2-nw2_q);
-            int W1_vert = fconv_n(w1_eff,nw2)-(nw2-nw2_w1);
-            value += ((K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert]*(ffreqs[(nw-nw2)/2+U+1]-u)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                       +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+U]+u)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                       +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+U+1]-u)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff)
-                       +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+U]+u)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff))/((ffreqs[(nw-nw2)/2+U+1]-ffreqs[(nw-nw2)/2+U])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));
-        };}
-    else{ int i,j;
-        if(abs(u)<= bfreqs[(nw1+nw2)/2-1] && abs(w1)<= ffreqs[(nw1+nw2)/2-1]){
-            i= fconv_n(u,nw2);
-            j = fconv_n(w1,nw2);
-
-            value += K2_vval(a,b,c,i,j);};   };
-
-
-
-    return value;
-}
-template <typename Q> Q avert<Q>::K3_vvalsmooth(int a_raw, int b_raw, int c_raw,  double u, double w1, double w2){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(abs(u)+ 1e-6< ffreqs[(nw3+nw)/2-1] && abs(w1)+ 1e-6<ffreqs[(nw3+nw)/2-1]&& abs(w2)+ 1e-6<=ffreqs[(nw3+nw)/2-1]){
-        if (sym==0){
-
-            int U = fconv_n(u,nw3);
-            int W1 = fconv_n(w1,nw3);
-            int W2 = fconv_n(w2,nw3);
-
-
-            int U_vert = fconv_n(u,nw3)-(nw3-nw3_q);
-            int W1_vert = fconv_n(w1,nw3)-(nw3-nw3_w1);
-            int W2_vert = fconv_n(w2,nw3)-(nw3-nw3_w2);
-
-            value += ((K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2))/
-                      ((ffreqs[(nw-nw3)/2+U+1]-ffreqs[(nw-nw3)/2+U])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-        }
-        else if(sym==1){
-            if(u > 0 ){
-                if( (w1)>0){
-
-                    int U = fconv_n(u,nw3);
-                    int W1 = fconv_n(w1,nw3);
-                    int W2 = fconv_n(w2,nw3);
-
-
-                    int U_vert = fconv_n(u,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(w1,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(w2,nw3)-(nw3-nw3_w2);
-                    value += ((K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2))/
-                              ((ffreqs[(nw-nw3)/2+U+1]-ffreqs[(nw-nw3)/2+U])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));}
-                else if((w1)<0){
-                    site x = site_switch(a,b,c);
-
-                    int U = fconv_n(u,nw3);
-                    int W1 = fconv_n(-w1,nw3);
-                    int W2 = fconv_n(-w2,nw3);
-
-                    int U_vert = fconv_n(u,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(-w1,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(-w2,nw3)-(nw3-nw3_w2);
-                    double w1_eff = -w1 ;
-                    double w2_eff = -w2 ;
-                    value += conj((K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                                  ((ffreqs[(nw-nw3)/2+U+1]-ffreqs[(nw-nw3)/2+U])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-                };}
-
-            else if (u < 0 ){
-                if((w2)>0){
-                    site x = site_switch(a,b,c);
-
-                    int U = fconv_n(-u,nw3);
-                    int W1 = fconv_n(w2 ,nw3);
-                    int W2 = fconv_n(w1 ,nw3);
-
-
-                    int U_vert = fconv_n(-u,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(w2 ,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(w1 ,nw3)-(nw3-nw3_w2);
-                    double w1_eff = w2;
-                    double w2_eff = w1;
-                    u = -u;
-
-                    value += ((K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                              ((ffreqs[(nw-nw3)/2+U+1]-ffreqs[(nw-nw3)/2+U])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-                }
-
-
-                else if ((w2)<0){
-
-
-                    int U = fconv_n(-u,nw3);
-                    int W1 = fconv_n(-w2 ,nw3);
-                    int W2 = fconv_n(-w1 ,nw3);
-
-                    int U_vert = fconv_n(-u,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(-w2 ,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(-w1 ,nw3)-(nw3-nw3_w2);
-                    double w1_eff = -w2;
-                    double w2_eff = -w1;
-                    u = -u;
-
-                    value += conj((K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][U_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][U_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                                  ((ffreqs[(nw-nw3)/2+U+1]-ffreqs[(nw-nw3)/2+U])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));};
-
-            };}
-
-        else if(sym==2){
-            site x(a,b,c);
-            double w1_eff = w1, w2_eff = w2, u_eff =u;
-            if(u<0){u_eff = -u; x = site_switch(x.a,x.b,x.c);};
-            if(abs(w1_eff) > abs(w2_eff)){w1_eff = w2; w2_eff = w1;};
-            if(w1_eff < 0){w1_eff = -w1_eff; w2_eff = -w2_eff;x = site_switch(x.a,x.b,x.c);};
-
-            u = u_eff;
-
-            int U = fconv_n(u,nw3);
-            int W1 = fconv_n(w1_eff,nw3);
-            int W2 = fconv_n(w2_eff,nw3);
-
-            int U_vert = fconv_n(u,nw3)-(nw3-nw3_q);
-            int W1_vert = fconv_n(w1_eff,nw3)-(nw3-nw3_w1);
-            int W2_vert = fconv_n(w2_eff,nw3)-(nw3-nw3_w2);
-            value = ((K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+U+1]-u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][U_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+U]+u)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                     ((ffreqs[(nw-nw3)/2+U+1]-ffreqs[(nw-nw3)/2+U])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-        }
-
-
-        ;}
-    else{
-        int i,j,k;
-        if(abs(u)<= bfreqs[(nw1+nw3)/2-1] && abs(w1)<= ffreqs[(nw1+nw3)/2-1]&& abs(w2)<= ffreqs[(nw1+nw3)/2-1]){
-            i= fconv_n(u,nw3);
-            j = fconv_n(w1,nw3);
-            k = fconv_n(w2,nw3);
-
-            value = K3_vval(a,b,c,i,j,k);};
-    };
-
-
-
-
-    return value;
+template<typename Q> tuple<double, double, double> avert<Q>::transfBackA(double w_a, double v1_a, double v2_a)
+{
+    double v1p=0., v2p=0., v1=0.;
+    v1p = v1_a;
+    v2p = w_a+v2_a;
+    v1 = v2_a;
+
+    return make_tuple(v1p, v2p, v1);
 }
 
-*/
+template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T1(int iK, double w_a, double v1_a, double v2_a, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_a, trans_v1_a, trans_v2_a;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+
+    /*This is the flipping stage!*/
+    ferm1 = ferm1p+ferm2p-ferm1;
+
+    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T2(int iK, double w_a, double v1_a, double v2_a, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_a, trans_v1_a, trans_v2_a;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+
+    /*This is the flipping stage!*/
+    double temp = ferm1p;
+    ferm1p = ferm2p;
+    ferm2p = temp;
+
+    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T3(int iK, double w_a, double v1_a, double v2_a, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_a, trans_v1_a, trans_v2_a;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+
+    /*This is the flipping stage!*/
+    ferm1 = ferm1p+ferm2p-ferm1;
+    double temp = ferm1p;
+    ferm1p = ferm2p;
+    ferm2p = temp;
+
+    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+
+template<typename Q> Q avert<Q>::T1_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q avert<Q>::T2_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q avert<Q>::T3_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q avert<Q>::T1_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q avert<Q>::T2_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q avert<Q>::T3_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q avert<Q>::T1_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
+template<typename Q> Q avert<Q>::T2_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
+template<typename Q> Q avert<Q>::T3_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
 
 
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
 
 //this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
+template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double w, double v1, double v2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 
-    double u=0.,w1_u=0., w2_u=0.;
-    if(channel == 's'){
-        u = -w2-w1;
-        w1_u = (w1-w2+q)/2;
-        w2_u = (-w1+w2+q)/2;}
-    else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-        u = w2-w1;
-        w1_u = (w1+w2-q)/2;
-        w2_u = (w1+w2+q)/2;}
-    else if(channel == 'u'){
-        u = q;
-        w1_u = w1;
-        w2_u = w2;}
-    else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-        u = w1-w2;
-        w1_u = q + (w1-w2)/2;
-        w2_u = (w1+w2)/2;};
+    double w_p=0., v1_p=0., v2_p=0.;
+    tie (w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
 
     Q value;
 
-//    if(abs(u) < freqs_p[nw1_wa/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-//    if(abs(w1_u) < freqs_p[nw1_wa/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-//    if(abs(w2_u) < freqs_p[nw1_wa/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
-
-    value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK,u,w1_u,i_in) + K3_vvalsmooth(iK, u, w1_u, w2_u, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
+    value += K1_vvalsmooth(iK, w_p, i_in) + K2_vvalsmooth(iK,w_p,v1_p,i_in) + K3_vvalsmooth(iK, w, v1_p, v2_p, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
 
     return value;
 }
+
 template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in,  char channel, int p, char f) {//additional specification of vertex number and bubble type (K/L/M/R) for (K1/K2/K2b/R0)-class
 
     double u = 0., w1_u = 0., w2_u = 0.;
@@ -1320,7 +865,7 @@ template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double
         u = w1 - w2;
         w1_u = q + (w1 - w2) / 2;
         w2_u = (w1 + w2) / 2;
-    };
+    }
     Q value;
 
 //        if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
@@ -1399,54 +944,44 @@ template <typename Q> Q pvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
     return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
 }
 
-template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
+template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double w_p, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    /*I assume a linear grid for this implementation. TODO: define a set of functions (one per type of grid to use) to convert double in range to index on grid*/
-    /*TODO: since we might want to interpolate according to channel and diagrammatic class, rethink previous TODO */
-
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw1_wa-1));     //nw1_wa because we're interpolating for K1 in channel a
-    auto index = (int)((u-w_lower_b)/dw_b_a);
+    int index = fconv_K1_p(w_p);
 
     double x1 = freqs_p[index];
     double x2 = freqs_p[index+1];
 
-    Q f1 = K1[iK*nw1_wp*n_in + (index)*n_in + i_in];
-    Q f2 = K1[iK*nw1_wp*n_in + (index+1)*n_in + i_in];
+    double xd = (w_p-x1)/(x2-x1);
 
-    return f1 + (u-x1)*(f2-f1)/(x2-x1);
+    Q f1 = K1_vval(iK, index, i_in);
+    Q f2 = K1_vval(iK, index+1, i_in);
+
+    return (1.-xd)*f1 + xd*f2;
 }
-template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double u, double w1, int i_in){
+template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw2_wa-1));     //nw2_wa because we're interpolating for bosonic freq in K2 in channel a
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw2_nua-1));    //nw2_nua because we're interpolating for fermionic freq in K2 in channel a
-
-    auto index_b = (int)((u-w_lower_b)/dw_b_a);
-    auto index_f = (int)((w1-w_lower_f)/dw_f_a);
+    int index_b, index_f;
+    tie(index_b, index_f) = fconv_K2_p(w_p, v1_p);
 
     double x1 = freqs_p[index_b];
     double x2 = freqs_p[index_b+1];
     double y1 = freqs_p[index_f];
     double y2 = freqs_p[index_f+1];
 
-    Q f11 = K2[iK*nw2_wp*nw2_nup*n_in + (index_b)*nw2_nup*n_in + (index_f)*n_in + i_in];
-    Q f12 = K2[iK*nw2_wp*nw2_nup*n_in + (index_b)*nw2_nup*n_in + (index_f+1)*n_in + i_in];
-    Q f21 = K2[iK*nw2_wp*nw2_nup*n_in + (index_b+1)*nw2_nup*n_in + (index_f)*n_in + i_in];
-    Q f22 = K2[iK*nw2_wp*nw2_nup*n_in + (index_b+1)*nw2_nup*n_in + (index_f+1)*n_in + i_in];
+    double xd = (w_p-x1)/(x2-x1);
+    double yd = (v1_p-y1)/(y2-y1);
 
-    return (y2-w1)/(y2-y1)*((x2-u)/(x2-x1)*f11 + (u-x1)/(x2-x1)*f21) + (w1-y1)/(y2-y1)*((x2-u)/(x2-x1)*f12 + (u-x1)/(x2-x1)*f22);
+    Q f11 = K2_vval(iK, index_b, index_f, i_in);
+    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
+    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
+    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
+
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
-template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double u, double w1, double w2, int i_in){
+template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double w_p, double v1_p, double v2_p, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw3_wa-1));     //nw3_wa because we're interpolating for bosonic freq in K3 in channel a
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nua-1));    //nw3_nua because we're interpolating for fermionic freq in K3 in channel a
-    double dwp_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nuap-1));  //nw3_nuap because we're interpolating for fermionic freq in K3 in channel a
-
-    auto index_b = (int)((u-w_lower_b)/dw_b_a);
-    auto index_f = (int)((w1-w_lower_f)/dw_f_a);
-    auto index_fp = (int)((w2-w_lower_f)/dwp_f_a);
+    int index_b, index_f, index_fp;
+    tie(index_b,index_f, index_fp) = fconv_K3_p(w_p, v1_p, v2_p);
 
     double x1 = freqs_p[index_b];
     double x2 = freqs_p[index_b+1];
@@ -1455,18 +990,18 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double z1 = freqs_p[index_fp];
     double z2 = freqs_p[index_fp+1];
 
-    Q f111 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
-    Q f112 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
-    Q f121 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
-    Q f122 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
-    Q f211 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
-    Q f212 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
-    Q f221 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp)*n_in + i_in];
-    Q f222 = K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + (index_b+1)*nw3_nup*nw3_nupp*n_in + (index_f+1)*nw3_nupp*n_in + (index_fp+1)*n_in + i_in];
+    Q f111 = K3_vval(iK, index_b, index_f, index_fp, i_in);
+    Q f112 = K3_vval(iK, index_b, index_f, index_fp+1, i_in);
+    Q f121 = K3_vval(iK, index_b, index_f+1, index_fp, i_in);
+    Q f122 = K3_vval(iK, index_b, index_f+1, index_fp+1, i_in);
+    Q f211 = K3_vval(iK, index_b+1, index_f, index_fp, i_in);
+    Q f212 = K3_vval(iK, index_b+1, index_f, index_fp+1, i_in);
+    Q f221 = K3_vval(iK, index_b+1, index_f+1, index_fp, i_in);
+    Q f222 = K3_vval(iK, index_b+1, index_f+1, index_fp+1, i_in);
 
-    double xd = (u-x1)/(x2-x1);
-    double yd = (w1-y1)/(y2-y1);
-    double zd = (w2-z1)/(z2-z1);
+    double xd = (w_p-x1)/(x2-x1);
+    double yd = (v1_p-y1)/(y2-y1);
+    double zd = (v2_p-z1)/(z2-z1);
 
     Q c00 = f111*(1.-xd) + f211*xd;
     Q c01 = f112*(1.-xd) + f212*xd;
@@ -1478,664 +1013,149 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
 
     return c0*(1.-zd) + c1*zd;
 }
-//non-member functions
 
 
-/*
-
-//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-template <typename Q> Q pvert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2, char channel){
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-        double s,w1_s,w2_s;
-
-        if(channel == 's'){
-            s = q;
-            w1_s = w1;
-            w2_s = w2;
-        }
-        else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-            s = w1+w2;
-            w1_s = (w1-w2-q)/2;
-            w2_s = (w1-w2+q)/2;}
-        else if(channel == 'u'){
-
-            s = w1+w2;
-            w1_s = (w1-w2-q)/2;
-            w2_s = (-w1+w2-q)/2;
-
-        }
-        else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-            s = q+w1;
-            w1_s = (q-w1)/2;
-            w2_s = w2-(q+w1)/2;};
-        Q value=0;
-
-        if(abs(s) < bfreqs[nw/2]){ if (s >= 0) {s = bfreqs[nw/2];} else{s = bfreqs[nw/2-1];};};
-        if(abs(w1_s) < ffreqs[nw/2]){if (w1_s >= 0) {w1_s = ffreqs[nw/2];} else{w1_s =  ffreqs[nw/2-1];};};
-        if(abs(w2_s) < ffreqs[nw/2]){if (w2_s > 0) {w2_s =  ffreqs[nw/2];} else{w2_s =  ffreqs[nw/2-1];};};
-
-
-//        if(s > bfreqs[nw-1] && abs(s - bfreqs[nw-1]) < 1e-12){s = bfreqs[nw-1];}
-//        else if(s<bfreqs[0] && abs(s - bfreqs[0]) < 1e-12){s = bfreqs[0];};
-
-
-//        if(w1_s > ffreqs[nw-1] && abs(w1_s - ffreqs[nw-1]) < 1e-12){w1_s = ffreqs[nw-1];}
-//        else if(w1_s<ffreqs[0] && abs(w1_s - ffreqs[0]) < 1e-12){w1_s = ffreqs[0];};
-
-
-//        if(w2_s > ffreqs[nw-1] && abs(w2_s - ffreqs[nw-1]) < 1e-12){w2_s = ffreqs[nw-1];}
-//        else if(w2_s<ffreqs[0] && abs(w2_s - ffreqs[0]) < 1e-12){w2_s = ffreqs[0];};
-
-        value += K3_vvalsmooth(a,b,c,s,w1_s,w2_s) + K1_vvalsmooth(a,b,c,s) + K2_vvalsmooth(a,b,c,s,w1_s) + K2b_vvalsmooth(a,b,c,s,w2_s)  ;//K2b is extracted from K2 by the symmetry relations
-
-
-        return value;}
-    else{return 0;}
-
+template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w, double v1, double v2, char channel) {
+    double w_p=0., v1_p = 0., v2_p=0.;
+    if(channel == 'a'){
+        w_p = v2+v1;
+        v1_p = (v1-v2-w)/2.;
+        v2_p = (v2-v1-w)/2.;}
+    else if(channel == 'p'){
+        w_p = w;
+        v1_p = v1;
+        v2_p = v2;}
+    else if(channel == 't'){
+        w_p = v1+v2;
+        v1_p = (v1+v2+w)/2.;
+        v2_p = (v2-v1-w)/2.;}
+    return make_tuple(w_p, v1_p, v2_p);
 }
-//additional specification of vertex number and bubble type (K/L/M/R) for (K1/K2/K2b/R0)-class
-template <typename Q> Q pvert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2, char channel, int p, char f){
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-        double s,w1_s,w2_s;
-
-        if(channel == 's'){
-            s = q;
-            w1_s = w1;
-            w2_s = w2;
-        }
-        else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-            s = w1+w2;
-            w1_s = (w1-w2-q)/2;
-            w2_s = (w1-w2+q)/2;}
-        else if(channel == 'u'){
-
-            s = w1+w2;
-            w1_s = (w1-w2-q)/2;
-            w2_s = (-w1+w2-q)/2;
-
-        }
-        else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-            s = q+w1;
-            w1_s = (q-w1)/2;
-            w2_s = w2-(q+w1)/2;};
-        Q value=0;
-
-        if(abs(s) < bfreqs[nw/2]){ if (s >= 0) {s = bfreqs[nw/2];} else{s = bfreqs[nw/2-1];};};
-        if(abs(w1_s) < ffreqs[nw/2]){if (w1_s >= 0) {w1_s = ffreqs[nw/2];} else{w1_s =  ffreqs[nw/2-1];};};
-        if(abs(w2_s) < ffreqs[nw/2]){if (w2_s > 0) {w2_s =  ffreqs[nw/2];} else{w2_s =  ffreqs[nw/2-1];};};
-
-
-//        if(s > bfreqs[nw-1] && abs(s - bfreqs[nw-1]) < 1e-12){s = bfreqs[nw-1];}
-//        else if(s<bfreqs[0] && abs(s - bfreqs[0]) < 1e-12){s = bfreqs[0];};
-
-
-//        if(w1_s > ffreqs[nw-1] && abs(w1_s - ffreqs[nw-1]) < 1e-12){w1_s = ffreqs[nw-1];}
-//        else if(w1_s<ffreqs[0] && abs(w1_s - ffreqs[0]) < 1e-12){w1_s = ffreqs[0];};
-
-
-//        if(w2_s > ffreqs[nw-1] && abs(w2_s - ffreqs[nw-1]) < 1e-12){w2_s = ffreqs[nw-1];}
-//        else if(w2_s<ffreqs[0] && abs(w2_s - ffreqs[0]) < 1e-12){w2_s = ffreqs[0];};
-
-        if(p==1){
-            if(channel=='s'){
-                if(f == 'R' || f == 'M'){value += K3_vvalsmooth(a,b,c,s,w1_s,w2_s) + K2b_vvalsmooth(a,b,c,s,w2_s);}//if outer legs are conntected to different bare vertex
-                else if(f == 'K' || f == 'L'){value += K1_vvalsmooth(a,b,c,s) + K2_vvalsmooth(a,b,c,s,w1_s);};//if outer legs are conntected to same bare vertex
-
-            }
-            else if (channel=='t' || channel=='u'){
-                if(f == 'R' || f== 'M'){value += K3_vvalsmooth(a,b,c,s,w1_s,w2_s) + K1_vvalsmooth(a,b,c,s) + K2_vvalsmooth(a,b,c,s,w1_s) + K2b_vvalsmooth(a,b,c,s,w2_s);};
-            };
-        }
-
-        else if(p==2){
-            if(channel=='s'){
-                if(f == 'R' || f == 'L'){value += K3_vvalsmooth(a,b,c,s,w1_s,w2_s) + K2_vvalsmooth(a,b,c,s,w2_s);}//if outer legs are conntected to differentbare vertex
-                else if(f == 'K' || f == 'M'){value += K1_vvalsmooth(a,b,c,s) + K2b_vvalsmooth(a,b,c,s,w1_s);};//if outer legs are conntected to same bare vertex
-
-            }
-            else if (channel=='t' || channel=='u'){
-                if(f == 'R' || f== 'L'){value += K3_vvalsmooth(a,b,c,s,w1_s,w2_s) + K1_vvalsmooth(a,b,c,s) + K2_vvalsmooth(a,b,c,s,w1_s) + K2b_vvalsmooth(a,b,c,s,w2_s);};
-            };
-        };
-
-
-
-        return value;}
-    else{return 0;}
-
+template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w, double v1, double v2)
+{
+    double w_p=0., v1_p=0., v2_p=0.;
+    w = v1+v2;
+    v1_p = w;
+    v2_p = v2;
+    return make_tuple(w_p, v1_p, v2_p);
 }
-//overload with first extra firs two arguments: red_side = vertex number with only complementary channels (0,1,2), map = determines if channel mapping is turned on for this vertex (0=off/1=on)
-template <typename Q> Q pvert<Q>::vvalsmooth(int red_side,int map, int a, int b, int c,  double q, double w1, double w2, char channel, int p, char f){
-
-    //THIS FUNCTION IS NEEDED ONLY WHEN BUBBLE FUNCTIONS ARE USED WITH VERTEX OF TYPE "PARVERT" INSTEAD OF "FULLVERT". LEADS TO PREVIOUS FUNCTION.
-    return vvalsmooth(a, b, c, q, w1,w2, channel, p, f);
-}
-template <typename Q> Q pvert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2){//this function smoother interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-        double s,w1_s,w2_s;
-        s = q;
-        w1_s = w1;
-        w2_s = w2;
-
-        if(abs(s) < bfreqs[nw/2]){ if (s >= 0) {s = bfreqs[nw/2];} else{s = bfreqs[nw/2-1];};};
-        if(abs(w1_s) < ffreqs[nw/2]){if (w1_s >= 0) {w1_s = ffreqs[nw/2];} else{w1_s =  ffreqs[nw/2-1];};};
-        if(abs(w2_s) < ffreqs[nw/2]){if (w2_s > 0) {w2_s =  ffreqs[nw/2];} else{w2_s =  ffreqs[nw/2-1];};};
-
-
-
-        Q value=0;
-        value += K3_vvalsmooth(a,b,c,s,w1_s,w2_s) + K1_vvalsmooth(a,b,c,s) + K2_vvalsmooth(a,b,c,s,w1_s) + K2b_vvalsmooth(a,b,c,s,w2_s)  ;//K2b is extracted from K2 by the symmetry relations
-        return value;}
-    else{return 0;}
-
-}
-template <typename Q> void pvert<Q>::K1_setvert(int a, int b, int c,int i, Q value){
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-        if(i< nw1 && i>=0 ){
-
-            K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)] = value;};
-
-    }
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;};
-}
-template <typename Q> void pvert<Q>::K2_setvert(int a, int b, int c, int i, int j, Q value){
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-        if(i< nw2 && i>= 0 && j< nw2 && j>= 0){
-
-            K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)] = value ;};}
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;}
-}
-template <typename Q> void pvert<Q>::K3_setvert(int a, int b, int c, int i, int j, int k, Q value){
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-
-        if(i< nw3 && i>= 0 && j< nw3 && j>= 0 &&  k< nw3 && k>= 0){
-
-            K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)] = value;};
-    }
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;}
-}
-template <typename Q> Q pvert<Q>::K1_vval(int a_raw, int b_raw, int c_raw,  int i){
-
-
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(i<nw1 && i>= 0 ){
-        if (sym==0){
-
-            value += K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)];}
-        else if(sym==1 || sym==2){
-            if (i>= nw1/2){
-
-                value += K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)];}
-            else if(i<nw1/2){
-
-                site x = site_switch(a,b,c);
-                i = nw1-1-i;
-                value += conj(K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw1-nw1_q)]);};
-        }
-
-        ;};
-    if(abs(value)<1e-100){value=0;};
-
-
-
-    return value;
-}
-template <typename Q> Q pvert<Q>::K2_vval(int a_raw, int b_raw, int c_raw,  int i, int j ){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(i < nw2 && i >= 0 && j < nw2 && j >= 0){
-        if(sym==0){
-
-            value += K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];}
-        else if(sym==1){
-            if(j >= nw2/2){
-
-                value += K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];}
-            else if (j< nw2/2){
-
-
-                site x = site_switch(a,b,c);
-                j = nw2 -1 - j;
-
-                value += K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];
-
-            };
-
-        }
-        else if(sym==2){
-            site x(a,b,c);
-            if(i < nw2/2){i = nw2-1-i; x = site_switch(x.a,x.b,x.c);};
-            if(j < nw2/2){j = nw2-1-j; x = site_switch(x.a,x.b,x.c);};
-
-            value += K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];
-        };
-    };
-
-    if(abs(value)<1e-100){value=0;};
-
-
-    return value;
-}
-template <typename Q> Q pvert<Q>::K3_vval(int a_raw, int b_raw, int c_raw,  int i, int j, int k){
-
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-
-    Q value=0;
-    if(i < nw3 && i >= 0 && j < nw3 && j >= 0 && k < nw3 && k >= 0){
-        if(sym == 0){
-
-            value += K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)];}
-
-        else if(sym == 1 ){
-
-            if(i>=nw3/2){
-                if(j>=nw3/2){
-                    value += K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)];}
-                else if(j<nw3/2){
-                    site x = site_switch(a,b,c);
-                    j=nw3-1-j;
-                    k = nw3-1-k;
-                    value += K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)];
-                };
-
-            }
-            else if(i<nw3/2){
-                if(k>=nw3/2){
-                    site x = site_switch(a,b,c);
-                    i=nw3-1-i;
-
-                    value += conj(K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw3-nw3_q)][k-(nw3-nw3_w1)][j-(nw3-nw3_w2)]);//note that j and k are interchanged
-                }
-                else if(k<nw3/2){
-                    i=nw3-1-i;
-                    j=nw3-1-j;
-                    k = nw3-1-k;
-                    value +=conj(K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][k-(nw3-nw3_w1)][j-(nw3-nw3_w2)]);//note that j and k are interchanged
-                }
-            };
-        }
-        else if(sym == 2 ){
-            site x(a,b,c);
-            int i_eff = i, j_eff = j, k_eff = k;
-            if(i<nw3/2){x = site_switch(x.a,x.b,x.c);i_eff = nw3-1-i;};
-            if(abs(j-nw3/2) > abs(k-nw3/2)){j_eff = k; k_eff = j;};
-            if(j_eff-nw3/2 < 0){j_eff = nw3-1-j_eff; k_eff = nw3-1-k_eff;x = site_switch(x.a,x.b,x.c);};
-            value += K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i_eff-(nw3-nw3_q)][j_eff-(nw3-nw3_w1)][k_eff-(nw3-nw3_w2)];};
-
-
-    };
-    if(abs(value)<1e-100){value=0;};
-
-
-    return value;
-}
-template <typename Q> Q pvert<Q>::K1_vvalsmooth(int a_raw, int b_raw, int c_raw,   double s){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(abs(s) + 1e-6 < ffreqs[(nw1+nw)/2-1]){
-        if(sym==0){
-            int S = fconv_n(s,nw1);
-            int S_vert = fconv_n(s,nw1)-(nw1-nw1_q);
-            value = ((K1[a+(nuc_eff-1)/2][b][c-1][S_vert]*(bfreqs[(nw-nw1)/2+S+1]-s)
-                      +K1[a+(nuc_eff-1)/2][b][c-1][S_vert+1]*(-bfreqs[(nw-nw1)/2+S]+s))/(bfreqs[(nw-nw1)/2+S+1]-bfreqs[(nw-nw1)/2+S]));}
-        else if(sym==1 || sym==2){
-
-
-            if (s > 0){
-
-                int S = fconv_n(s,nw1);
-                int S_vert = fconv_n(s,nw1)-(nw1-nw1_q);
-                value += ((K1[a+(nuc_eff-1)/2][b][c-1][S_vert]*(bfreqs[S+1]-s)
-                           +K1[a+(nuc_eff-1)/2][b][c-1][S_vert+1]*(-bfreqs[S]+s))/(bfreqs[S+1]-bfreqs[S]));}
-            else if (s<0){
-                site x = site_switch(a,b,c);
-
-                double s_eff = -s;
-                int S = fconv_n(s_eff,nw1);
-                int S_vert = fconv_n(s_eff,nw1)-(nw1-nw1_q);
-
-                if(sym==1){
-
-                    value = conj((K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert]*(bfreqs[S+1]-s_eff)
-                                  +K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1]*(-bfreqs[S]+s_eff))/(bfreqs[S+1]-bfreqs[S]));}
-                else{
-                    value = ((K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert]*(bfreqs[S+1]-s_eff)
-                              +K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1]*(-bfreqs[S]+s_eff))/(bfreqs[S+1]-bfreqs[S]));};
-            };};
-
-    }
-    else{
-        int i;
-        if(abs(s)<= bfreqs[nw1-1]){
-            i= fconv_n(s,nw1);
-
-            value += K1_vval(a,b,c,i);}
-
-        ;};
-
-
-
-
-    return value;
-
-}
-template <typename Q> Q pvert<Q>::K2_vvalsmooth(int a_raw, int b_raw, int c_raw,  double s, double w1){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-
-    Q value=0;
-
-    if(abs(s) + 1e-6< ffreqs[(nw2+nw)/2-1] && abs(w1)+ 1e-6< ffreqs[(nw2+nw)/2-1]){
-        if(sym==0){
-            int S = fconv_n(s,nw2);
-            int W1 = fconv_n(w1,nw2);
-
-            int S_vert = fconv_n(s,nw2)-(nw2-nw2_q);
-            int W1_vert = fconv_n(w1,nw2)-(nw2-nw2_w1);
-
-            value += ((K2[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert]*(ffreqs[(nw-nw2)/2+S+1]-s)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+S]+s)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+S+1]-s)*(-ffreqs[(nw-nw2)/2+W1]+w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+S]+s)*(-ffreqs[(nw-nw2)/2+W1]+w1))/((ffreqs[(nw-nw2)/2+S+1]-ffreqs[(nw-nw2)/2+S])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));}
-        else if(sym==1){
-            if(w1 > 0){
-
-
-                int S = fconv_n(s,nw2);
-                int W1 = fconv_n(w1,nw2);
-
-
-                int S_vert = fconv_n(s,nw2)-(nw2-nw2_q);
-                int W1_vert = fconv_n(w1,nw2)-(nw2-nw2_w1);
-
-                value += ((K2[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert]*(ffreqs[(nw-nw2)/2+S+1]-s)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+S]+s)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+S+1]-s)*(-ffreqs[(nw-nw2)/2+W1]+w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+S]+s)*(-ffreqs[(nw-nw2)/2+W1]+w1))/((ffreqs[(nw-nw2)/2+S+1]-ffreqs[(nw-nw2)/2+S])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));}
-            else if(w1 < 0){
-
-                site x = site_switch(a,b,c);
-
-                int S = fconv_n(s,nw2);
-                int W1 = fconv_n(-w1,nw2);
-
-                int S_vert = fconv_n(s,nw2)-(nw2-nw2_q);
-                int W1_vert = fconv_n(-w1,nw2)-(nw2-nw2_w1);
-                double w1_eff = -w1 ;
-                value += ((K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert]*(ffreqs[(nw-nw2)/2+S+1]-s)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                           +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+S]+s)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                           +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+S+1]-s)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff)
-                           +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+S]+s)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff))/((ffreqs[(nw-nw2)/2+S+1]-ffreqs[(nw-nw2)/2+S])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));};
-        }
-        else if(sym==2){
-
-            site x(a,b,c);
-            double w1_eff = w1;
-            double s_eff = s;
-            if(s<0){s_eff = -s; x = site_switch(x.a,x.b,x.c);};
-            if(w1_eff<0){w1_eff = -w1_eff; x = site_switch(x.a,x.b,x.c);};
-
-
-            int S = fconv_n(s_eff,nw2);
-            int W1 = fconv_n(w1_eff,nw2);
-
-            int S_vert = fconv_n(s_eff,nw2)-(nw2-nw2_q);
-            int W1_vert = fconv_n(w1_eff,nw2)-(nw2-nw2_w1);
-
-            value += ((K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert]*(ffreqs[(nw-nw2)/2+S+1]-s_eff)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                       +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+S]+s_eff)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                       +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+S+1]-s_eff)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff)
-                       +K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+S]+s_eff)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff))/((ffreqs[(nw-nw2)/2+S+1]-ffreqs[(nw-nw2)/2+S])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));
-
-        };}
-    else{
-        if(abs(s)<= bfreqs[(nw1+nw2)/2-1] && abs(w1)<= ffreqs[(nw1+nw2)/2-1]){
-            int i,j;
-
-            i= fconv_n(s,nw2);
-            j = fconv_n(w1,nw2);
-
-            value += K2_vval(a,b,c,i,j);};
-    };
-
-
-
-
-    return value;
-}
-template <typename Q> Q pvert<Q>::K3_vvalsmooth(int a_raw, int b_raw, int c_raw,   double s, double w1, double w2){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(abs(s)+1e-6 < ffreqs[(nw3+nw)/2-1] && abs(w1)+1e-6<ffreqs[(nw3+nw)/2-1] && abs(w2)+1e-6 <ffreqs[(nw3+nw)/2-1]){//if frequency arguments are out of range, vertex vanishes
-        if (sym==0){
-
-            int S = fconv_n(s,nw3);
-            int W1 = fconv_n(w1,nw3);
-            int W2 = fconv_n(w2,nw3);
-            int S_vert = fconv_n(s,nw3);
-            int W1_vert = fconv_n(w1,nw3);
-            int W2_vert = fconv_n(w2,nw3);
-
-
-            value += ((K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                       +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2))/
-                      ((ffreqs[(nw-nw3)/2+S+1]-ffreqs[(nw-nw3)/2+S])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-        }
-        else if(sym==1){
-
-            if(s > 0){
-                if((w1)>0 ){
-                    int S = fconv_n(s,nw3);
-                    int W1 = fconv_n(w1,nw3);
-                    int W2 = fconv_n(w2,nw3);
-
-                    int S_vert = fconv_n(s,nw3)-(nw3-nw3_w1);
-                    int W1_vert = fconv_n(w1,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(w2,nw3)-(nw3-nw3_w2);
-
-                    value += ((K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert][W2_vert]*(bfreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert][W2_vert]*(-bfreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert+1][W2_vert]*(bfreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert][W2_vert+1]*(bfreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert+1][W2_vert]*(-bfreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert][W2_vert+1]*(-bfreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert+1][W2_vert+1]*(bfreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                               +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert+1][W2_vert+1]*(-bfreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2))/
-                              ((bfreqs[(nw-nw3)/2+S+1]-bfreqs[(nw-nw3)/2+S])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-                }
-                else if((w1)<0 ){
-                    site x = site_switch(a,b,c);
-
-                    int S = fconv_n(s,nw3);
-                    int W1 = fconv_n(-w1,nw3);
-                    int W2 = fconv_n(-w2,nw3);
-                    int S_vert = fconv_n(s,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(-w1,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(-w2,nw3)-(nw3-nw3_w2);
-                    double w1_eff = -w1 ;
-                    double w2_eff = -w2 ;
-
-                    value += ((K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                               +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                              ((ffreqs[(nw-nw3)/2+S+1]-ffreqs[(nw-nw3)/2+S])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-                };}
-
-            else if (s < 0){
-                if((w2)>0){
-
-                    site x = site_switch(a,b,c);
-
-                    int S = fconv_n(-s,nw3);
-                    int W1 = fconv_n(w2,nw3);
-                    int W2 = fconv_n(w1,nw3);
-                    int S_vert = fconv_n(-s,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(w2,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(w1,nw3)-(nw3-nw3_w2);
-                    double w1_eff = w2;
-                    double w2_eff = w1;
-                    s = -s;
-
-
-                    value += conj((K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                                  ((ffreqs[(nw-nw3)/2+S+1]-ffreqs[(nw-nw3)/2+S])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-                }
-
-                else if ((w2)<0){
-                    int S = fconv_n(-s,nw3);
-                    int W1 = fconv_n(-w2,nw3);
-                    int W2 = fconv_n(-w1,nw3);
-
-                    int S_vert = fconv_n(-s,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(-w2,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(-w1,nw3)-(nw3-nw3_w2);
-                    double w1_eff = -w2;
-                    double w2_eff = -w1;
-                    s = -s;
-
-
-                    value += conj((K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][S_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                   +K3[a+(nuc_eff-1)/2][b][c-1][S_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                                  ((ffreqs[(nw-nw3)/2+S+1]-ffreqs[(nw-nw3)/2+S])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-
-                };};
-
-        }
-        else if(sym==2){
-            site x(a,b,c);
-
-            double w1_eff = w1, w2_eff = w2, s_eff = s;
-            if(s<0){s_eff = -s; x = site_switch(x.a,x.b,x.c);};
-            if(abs(w1_eff) > abs(w2_eff)){w1_eff = w2; w2_eff = w1;};
-            if((w1_eff) < 0){w1_eff = -w1_eff; w2_eff = -w2_eff; x = site_switch(x.a,x.b,x.c);};
-            s = s_eff;
-
-            int S = fconv_n(s,nw3);
-            int W1 = fconv_n(w1_eff,nw3);
-            int W2 = fconv_n(w2_eff,nw3);
-
-            int S_vert = fconv_n(s,nw3)-(nw3-nw3_q);
-            int W1_vert = fconv_n(w1_eff,nw3)-(nw3-nw3_w1);
-            int W2_vert = fconv_n(w2_eff,nw3)-(nw3-nw3_w2);
-
-            value = ((K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+S+1]-s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][S_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+S]+s)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))
-                     / ((ffreqs[(nw-nw3)/2+S+1]-ffreqs[(nw-nw3)/2+S])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-
-
-
-        };}
-    else{
-        int i,j,k;
-        if(abs(s)<= bfreqs[(nw1+nw3)/2-1] && abs(w1)<= ffreqs[(nw1+nw3)/2-1]&& abs(w2)<= ffreqs[(nw1+nw3)/2-1]){
-            i= fconv_n(s,nw3);
-            j = fconv_n(w1,nw3);
-            k = fconv_n(w2,nw3);
-
-            value += K3_vval(a,b,c,i,j,k);};};
-
-
-
-
-
-    return value;
+template<typename Q> tuple<double, double, double> pvert<Q>::transfBackP(double w_p, double v1_p, double v2_p)
+{
+    double v1p=0., v2p=0., v1=0.;
+    v1p = v1_p;
+    v2p = w_p-v2_p;
+    v1 = v2_p;
+
+    return make_tuple(v1p, v2p, v1);
 }
 
-*/
+template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T1(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_p, trans_v1_p, trans_v2_p;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+
+    /*This is the flipping stage!*/
+    ferm1 = ferm1p+ferm2p-ferm1;
+
+    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T2(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_p, trans_v1_p, trans_v2_p;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+
+    /*This is the flipping stage!*/
+    double temp = ferm1p;
+    ferm1p = ferm2p;
+    ferm2p = temp;
+
+    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T3(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_p, trans_v1_p, trans_v2_p;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+
+    /*This is the flipping stage!*/
+    ferm1 = ferm1p+ferm2p-ferm1;
+    double temp = ferm1p;
+    ferm1p = ferm2p;
+    ferm2p = temp;
+
+    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+
+template<typename Q> Q pvert<Q>::T1_K1(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q pvert<Q>::T2_K1(int iK, double w_p, double v1_p, double v2_p, int i_in){
+    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q pvert<Q>::T3_K1(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q pvert<Q>::T1_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q pvert<Q>::T2_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q pvert<Q>::T3_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q pvert<Q>::T1_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
+template<typename Q> Q pvert<Q>::T2_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
+template<typename Q> Q pvert<Q>::T3_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
+{
+    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
 
 /****************************************** MEMBER FUNCTIONS OF THE T-VERTEX ******************************************/
 
 //this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-template <typename Q> Q tvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
+template <typename Q> Q tvert<Q>::vvalsmooth(int iK, double w, double v1, double v2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 
-    double u=0.,w1_u=0., w2_u=0.;
-    if(channel == 's'){
-        u = -w2-w1;
-        w1_u = (w1-w2+q)/2;
-        w2_u = (-w1+w2+q)/2;}
-    else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-        u = w2-w1;
-        w1_u = (w1+w2-q)/2;
-        w2_u = (w1+w2+q)/2;}
-    else if(channel == 'u'){
-        u = q;
-        w1_u = w1;
-        w2_u = w2;}
-    else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-        u = w1-w2;
-        w1_u = q + (w1-w2)/2;
-        w2_u = (w1+w2)/2;};
+    double w_t, v1_t, v2_t;
+    tie(w_t, v1_t, v2_t) = transfToT(w, v1,v2,channel);
 
     Q value;
 
-//    if(abs(u) < freqs_t[nw1_wa/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-//    if(abs(w1_u) < freqs_t[nw1_wa/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-//    if(abs(w2_u) < freqs_t[nw1_wa/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
-
-    value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK,u,w1_u,i_in) + K3_vvalsmooth(iK, u, w1_u, w2_u, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
+    value += K1_vvalsmooth(iK, w_t, i_in) + K2_vvalsmooth(iK,w_t,v1_t,i_in) + K3_vvalsmooth(iK, w_t, v1_t, v2_t, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,w_p,w2_u,i_in)
 
     return value;
 }
@@ -2238,54 +1258,45 @@ template <typename Q> Q tvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
     return K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in];
 }
 
-template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double u, int i_in){
+template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    /*I assume a linear grid for this implementation. TODO: define a set of functions (one per type of grid to use) to convert double in range to index on grid*/
-    /*TODO: since we might want to interpolate according to channel and diagrammatic class, rethink previous TODO */
-
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw1_wa-1));     //nw1_wa because we're interpolating for K1 in channel a
-    auto index = (int)((u-w_lower_b)/dw_b_a);
+    int index = fconv_K1_t(w_t);
 
     double x1 = freqs_t[index];
     double x2 = freqs_t[index+1];
 
-    Q f1 = K1[iK*nw1_wt*n_in + (index)*n_in + i_in];
-    Q f2 = K1[iK*nw1_wt*n_in + (index+1)*n_in + i_in];
+    double xd = (w_t-x1)/(x2-x1);
 
-    return f1 + (u-x1)*(f2-f1)/(x2-x1);
+    Q f1 = K1_vval(iK, index, i_in);
+    Q f2 = K1_vval(iK, index+1, i_in);
+
+    return (1.-xd)*f1 + xd*f2;
 }
-template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double u, double w1, int i_in){
+template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw2_wa-1));     //nw2_wa because we're interpolating for bosonic freq in K2 in channel a
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw2_nua-1));    //nw2_nua because we're interpolating for fermionic freq in K2 in channel a
-
-    auto index_b = (int)((u-w_lower_b)/dw_b_a);
-    auto index_f = (int)((w1-w_lower_f)/dw_f_a);
+    int index_b, index_f;
+    tie(index_b, index_f) = fconv_K2_t(w_t, v1_t);
 
     double x1 = freqs_t[index_b];
     double x2 = freqs_t[index_b+1];
     double y1 = freqs_t[index_f];
     double y2 = freqs_t[index_f+1];
 
-    Q f11 = K2[iK*nw2_wt*nw2_nut*n_in + (index_b)*nw2_nut*n_in + (index_f)*n_in + i_in];
-    Q f12 = K2[iK*nw2_wt*nw2_nut*n_in + (index_b)*nw2_nut*n_in + (index_f+1)*n_in + i_in];
-    Q f21 = K2[iK*nw2_wt*nw2_nut*n_in + (index_b+1)*nw2_nut*n_in + (index_f)*n_in + i_in];
-    Q f22 = K2[iK*nw2_wt*nw2_nut*n_in + (index_b+1)*nw2_nut*n_in + (index_f+1)*n_in + i_in];
+    double xd = (w_t-x1)/(x2-x1);
+    double yd = (v1_t-y1)/(y2-y1);
 
-    return (y2-w1)/(y2-y1)*((x2-u)/(x2-x1)*f11 + (u-x1)/(x2-x1)*f21) + (w1-y1)/(y2-y1)*((x2-u)/(x2-x1)*f12 + (u-x1)/(x2-x1)*f22);
+    Q f11 = K2_vval(iK, index_b, index_f, i_in);
+    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
+    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
+    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
+
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
-template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double u, double w1, double w2, int i_in){
+template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t, double v2_t, int i_in){
 
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw3_wa-1));     //nw3_wa because we're interpolating for bosonic freq in K3 in channel a
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nua-1));    //nw3_nua because we're interpolating for fermionic freq in K3 in channel a
-    double dwp_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nuap-1));  //nw3_nuap because we're interpolating for fermionic freq in K3 in channel a
 
-    auto index_b = (int)((u-w_lower_b)/dw_b_a);
-    auto index_f = (int)((w1-w_lower_f)/dw_f_a);
-    auto index_fp = (int)((w2-w_lower_f)/dwp_f_a);
+    int index_b, index_f, index_fp;
+    tie(index_b,index_f, index_fp) = fconv_K3_t(w_t, v1_t, v2_t);
 
     double x1 = freqs_t[index_b];
     double x2 = freqs_t[index_b+1];
@@ -2294,18 +1305,18 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
     double z1 = freqs_t[index_fp];
     double z2 = freqs_t[index_fp+1];
 
-    Q f111 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
-    Q f112 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
-    Q f121 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
-    Q f122 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
-    Q f211 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
-    Q f212 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
-    Q f221 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp)*n_in + i_in];
-    Q f222 = K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + (index_b+1)*nw3_nut*nw3_nutp*n_in + (index_f+1)*nw3_nutp*n_in + (index_fp+1)*n_in + i_in];
+    Q f111 = K3_vval(iK, index_b, index_f, index_fp, i_in);
+    Q f112 = K3_vval(iK, index_b, index_f, index_fp+1, i_in);
+    Q f121 = K3_vval(iK, index_b, index_f+1, index_fp, i_in);
+    Q f122 = K3_vval(iK, index_b, index_f+1, index_fp+1, i_in);
+    Q f211 = K3_vval(iK, index_b+1, index_f, index_fp, i_in);
+    Q f212 = K3_vval(iK, index_b+1, index_f, index_fp+1, i_in);
+    Q f221 = K3_vval(iK, index_b+1, index_f+1, index_fp, i_in);
+    Q f222 = K3_vval(iK, index_b+1, index_f+1, index_fp+1, i_in);
 
-    double xd = (u-x1)/(x2-x1);
-    double yd = (w1-y1)/(y2-y1);
-    double zd = (w2-z1)/(z2-z1);
+    double xd = (w_t-x1)/(x2-x1);
+    double yd = (v1_t-y1)/(y2-y1);
+    double zd = (v2_t-z1)/(z2-z1);
 
     Q c00 = f111*(1.-xd) + f211*xd;
     Q c01 = f112*(1.-xd) + f212*xd;
@@ -2317,625 +1328,135 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double u, double w1, dou
 
     return c0*(1.-zd) + c1*zd;
 }
-//non-member functions
 
-
-/*
-
-template <typename Q> Q tvert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-        double t,w1_t,w2_t;
-        if(channel == 's'){
-
-            t = w2-w1;
-            w1_t = (w1+w2+q)/2;
-            w2_t = (-w1-w2+q)/2;
-        }
-        else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-
-            t = q;
-            w1_t = w1;
-            w2_t = w2;}
-        else if(channel == 'u'){
-
-            t = w2-w1;
-            w1_t = (w1+w2-q)/2;
-            w2_t =(w1+w2+q)/2;}
-        else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-
-            t = w2-q;
-            w1_t = (q+w2)/2;
-            w2_t = w1+(q-w2)/2;
-
-        };
-
-
-        Q value=0;
-
-        if(abs(t) < bfreqs[nw/2]){ if (t >= 0) {t = bfreqs[nw/2];} else{t = bfreqs[nw/2-1];};};
-        if(abs(w1_t) < ffreqs[nw/2]){if (w1_t>= 0) {w1_t = ffreqs[nw/2];} else{w1_t =  ffreqs[nw/2-1];};};
-        if(abs(w2_t) < ffreqs[nw/2]){if (w2_t > 0) {w2_t =  ffreqs[nw/2];} else{w2_t = ffreqs[nw/2-1];};};
-
-
-
-//        if(t > bfreqs[nw-1] && abs(t - bfreqs[nw-1]) < 1e-12){t = bfreqs[nw-1];}
-//        else if(t<bfreqs[0] && abs(t - bfreqs[0]) < 1e-12){t = bfreqs[0];};
-
-
-//        if(w1_t > ffreqs[nw-1] && abs(w1_t - ffreqs[nw-1]) < 1e-12){w1_t = ffreqs[nw-1];}
-//        else if(w1_t<ffreqs[0] && abs(w1_t - ffreqs[0]) < 1e-12){w1_t = ffreqs[0];};
-
-
-//        if(w2_t > ffreqs[nw-1] && abs(w2_t - ffreqs[nw-1]) < 1e-12){w2_t = ffreqs[nw-1];}
-//        else if(w2_t<ffreqs[0] && abs(w2_t - ffreqs[0]) < 1e-12){w2_t = ffreqs[0];};
-
-
-        value += K3_vvalsmooth(a,b,c,t,w1_t,w2_t) + K1_vvalsmooth(a,b,c,t)+K2_vvalsmooth(a,b,c,t,w1_t) + K2b_vvalsmooth(a,b,c,t,w2_t) ;//K2b is extracted from K2 by the symmetry relations
-        return value;}
-    else{return 0;}
-
-
+template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w, double v1, double v2, char channel) {
+    double w_t=0.,v1_t=0., v2_t=0.;
+    if(channel == 'a'){
+        w_t = v1-v2;
+        v1_t = (v1-v2+w)/2.;
+        v2_t = (v1+v2-w)/2.;}
+    else if(channel == 'p'){
+        w_t = v1-v2;
+        v1_t = (w-v2-v1)/2.;
+        v2_t = (v2+v1+w)/2.;}
+    else if(channel == 't'){
+        w_t = w;
+        v1_t = v1;
+        v2_t = v2;}
+    return make_tuple(w_t, v1_t, v2_t);
 }
-template <typename Q> Q tvert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2, char channel, int p, char f){//additional specification of vertex number and bubble type (K/L/M/R) for (K1/K2/K2b/R0)-class
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-        double t,w1_t,w2_t;
-        if(channel == 's'){
-
-            t = w2-w1;
-            w1_t = (w1+w2+q)/2;
-            w2_t = (-w1-w2+q)/2;
-        }
-        else if(channel == 't'){//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-
-            t = q;
-            w1_t = w1;
-            w2_t = w2;}
-        else if(channel == 'u'){
-
-            t = w2-w1;
-            w1_t = (w1+w2-q)/2;
-            w2_t =(w1+w2+q)/2;}
-        else if (channel == 'v'){//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-
-            t = w2-q;
-            w1_t = (q+w2)/2;
-            w2_t = w1+(q-w2)/2;
-
-        };
-
-
-        Q value=0;
-
-        if(abs(t) < bfreqs[nw/2]){ if (t >= 0) {t = bfreqs[nw/2];} else{t = bfreqs[nw/2-1];};};
-        if(abs(w1_t) < ffreqs[nw/2]){if (w1_t>= 0) {w1_t = ffreqs[nw/2];} else{w1_t =  ffreqs[nw/2-1];};};
-        if(abs(w2_t) < ffreqs[nw/2]){if (w2_t > 0) {w2_t =  ffreqs[nw/2];} else{w2_t = ffreqs[nw/2-1];};};
-
-
-
-//        if(t > bfreqs[nw-1] && abs(t - bfreqs[nw-1]) < 1e-12){t = bfreqs[nw-1];}
-//        else if(t<bfreqs[0] && abs(t - bfreqs[0]) < 1e-12){t = bfreqs[0];};
-
-
-//        if(w1_t > ffreqs[nw-1] && abs(w1_t - ffreqs[nw-1]) < 1e-12){w1_t = ffreqs[nw-1];}
-//        else if(w1_t<ffreqs[0] && abs(w1_t - ffreqs[0]) < 1e-12){w1_t = ffreqs[0];};
-
-
-//        if(w2_t > ffreqs[nw-1] && abs(w2_t - ffreqs[nw-1]) < 1e-12){w2_t = ffreqs[nw-1];}
-//        else if(w2_t<ffreqs[0] && abs(w2_t - ffreqs[0]) < 1e-12){w2_t = ffreqs[0];};
-
-        if(p==1){
-            if(channel=='t'){
-                if(f == 'R' || f == 'M'){value += K3_vvalsmooth(a,b,c,t,w1_t,w2_t) + K2b_vvalsmooth(a,b,c,t,w2_t);}//if outer legs are conntected to different bare vertex
-                else if(f == 'K' || f == 'L'){value += K1_vvalsmooth(a,b,c,t) + K2_vvalsmooth(a,b,c,t,w1_t);};//if outer legs are conntected to same bare vertex
-
-            }
-            else if (channel=='s' || channel=='u'){
-                if(f == 'R' || f== 'M'){value += K3_vvalsmooth(a,b,c,t,w1_t,w2_t) + K1_vvalsmooth(a,b,c,t) + K2_vvalsmooth(a,b,c,t,w1_t) + K2b_vvalsmooth(a,b,c,t,w2_t);};
-            };
-        }
-
-        else if(p==2){
-            if(channel=='t'){
-                if(f == 'R' || f == 'L'){value += K3_vvalsmooth(a,b,c,t,w1_t,w2_t) + K2_vvalsmooth(a,b,c,t,w2_t);}//if outer legs are conntected to different bare vertex
-                else if(f == 'K' || f == 'M'){value += K1_vvalsmooth(a,b,c,t) + K2b_vvalsmooth(a,b,c,t,w1_t);};//if outer legs are conntected to same bare vertex
-
-            }
-            else if (channel=='s' || channel=='u'){
-                if(f == 'R' || f== 'L'){value += K3_vvalsmooth(a,b,c,t,w1_t,w2_t) + K1_vvalsmooth(a,b,c,t) + K2_vvalsmooth(a,b,c,t,w1_t) + K2b_vvalsmooth(a,b,c,t,w2_t);
-
-                };
-            };
-        };
-
-
-
-        return value;}
-    else{return 0;}
-
-
+template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w, double v1, double v2) {
+    double w_t=0.,v1_t=0., v2_t=0.;
+    w_t = v1-v2;
+    v1_t = w;
+    v2_t = v2;
+    return make_tuple(w_t, v1_t, v2_t);
 }
-//overload of previous function
-template <typename Q> Q tvert<Q>::vvalsmooth(int red_side, int map,int a, int b, int c,  double q, double w1, double w2, char channel, int p, char f){
-    return vvalsmooth( a, b, c, q, w1,  w2,  channel,p,  f);
-
-}
-template <typename Q> Q tvert<Q>::vvalsmooth(int a, int b, int c,  double q, double w1, double w2){//this function smoother interpolates for frequency arguments that lie between the discrete mesh points ->see K3euther diss. page 45
-    if(distance(a,b,c) <= d_c){//cutoff distance
-
-        double t,w1_t,w2_t;
-        t = q;
-        w1_t = w1;
-        w2_t = w2;
-        Q value=0;
-
-
-        if(abs(t) < bfreqs[nw/2]){ if (t >= 0) {t = bfreqs[nw/2];} else{t = bfreqs[nw/2-1];};};
-        if(abs(w1_t) < ffreqs[nw/2]){if (w1_t>= 0) {w1_t = ffreqs[nw/2];} else{w1_t =  ffreqs[nw/2-1];};};
-        if(abs(w2_t) < ffreqs[nw/2]){if (w2_t > 0) {w2_t =  ffreqs[nw/2];} else{w2_t = ffreqs[nw/2-1];};};
-
-        value += K3_vvalsmooth(a,b,c,t,w1_t,w2_t) + K1_vvalsmooth(a,b,c,t) + K2_vvalsmooth(a,b,c,t,w1_t) + K2b_vvalsmooth(a,b,c,t,w2_t) ;//K2b is extracted from K2 by the symmetry relations
-        return value;}
-    else{return 0;}
-
-
-}
-template <typename Q> void tvert<Q>::K1_setvert(int a, int b, int c,int i, Q value){
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-        if(i< nw1 && i>=0 ){
-
-            K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)] = value;};
-
-    }
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;};
-}
-template <typename Q> void tvert<Q>::K2_setvert(int a, int b, int c, int i, int j, Q value){
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-        if(i< nw2 && i>= 0 && j< nw2 && j>= 0){
-
-            K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)] = value ;};}
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;}
-}
-template <typename Q> void tvert<Q>::K3_setvert(int a, int b, int c, int i, int j, int k, Q value){
-    if((b > 0 || (b==0 && a>=0) || (b==0 && a<0 && c==2)) && distance(a,b,c) <= d_c){//only save sites in upper half
-        if(i< nw3 && i>= 0 && j< nw3 && j>= 0 &&  k< nw3 && k>= 0){
-
-            K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)] = value;};
-    }
-    else{cout << "error: Site (" << a<< " , " <<b<<" , " <<c << ") cannot be written since it lies in the lower half plane.."<< endl;}
-}
-template <typename Q> Q tvert<Q>::K1_vval(int a_raw, int b_raw,int c_raw,  int i){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(i < nw1 && i >= 0){
-        if(sym==0){
-
-            value += K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)];}
-        else if(sym==1 ||sym==2){
-            if (i>=nw1/2){
-
-                value += K1[a+(nuc_eff-1)/2][b][c-1][i-(nw1-nw1_q)];}
-            else if(i<nw1/2){
-
-                site x = site_switch(a,b,c);
-
-                i = nw1-1-i;
-                value += K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw1-nw1_q)];};
-        };};
-    if(abs(value)<1e-100){value=0;};
-
-
-
-    return value;
-}
-template <typename Q> Q tvert<Q>::K2_vval(int a_raw, int b_raw,int c_raw,  int i, int j){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-
-    Q value=0;
-    if(i < nw2 && i >= 0 && j < nw2 && j >=0){
-        if(sym==0){
-
-            value += K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];}
-        else if(sym==1){
-            if(j>=nw2/2){
-
-                value += K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];}
-
-            else if(j < nw2/2){
-
-
-                j = nw2-1-j;
-                value += conj(K2[a+(nuc_eff-1)/2][b][c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)]);
-            };}
-        else if(sym==2){
-            site x(a,b,c);
-            if(i < nw2/2){i = nw2-1-i;};
-            if(j < nw2/2){j = nw2-1-j;};
-
-            value += K2[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw2-nw2_q)][j-(nw2-nw2_w1)];
-        };};
-    if(abs(value)<1e-100){value=0;};
-
-
-    return value;
-}
-template <typename Q> Q tvert<Q>::K3_vval(int a_raw, int b_raw,int c_raw,  int i, int j, int k){
-
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(i < nw3 && i >= 0 && j < nw3 && j >= 0 && k < nw3 && k >= 0){
-        if(sym == 0 ){
-
-            value += K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)];}
-        else if(sym == 1 ){
-
-            if(i >= nw3/2){
-                if(j >= nw3/2 ){
-
-                    value += K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)];}
-
-                else if(i >= nw3/2  && j < nw3/2 ){
-
-                    j = nw3-1-j;
-                    k = nw3-1-k;
-                    value += conj(K3[a+(nuc_eff-1)/2][b][c-1][i-(nw3-nw3_q)][j-(nw3-nw3_w1)][k-(nw3-nw3_w2)]);};}
-
-
-            else if(i < nw3/2){
-                if(k >= nw3/2 ){
-                    site x = site_switch(a,b,c);
-
-                    i = nw3-1-i;
-                    value += K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw3-nw3_q)][k-(nw3-nw3_w1)][j-(nw3-nw3_w2)];}//note that k and j are interchanged
-
-                else if( k < nw3/2 ){
-                    site x = site_switch(a,b,c);
-
-                    i = nw3-1-i;
-                    j = nw3-1-j;
-                    k = nw3-1-k;
-                    value += conj(K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i-(nw3-nw3_q)][k-(nw3-nw3_w1)][j-(nw3-nw3_w2)]);};//note that k and j are interchanged
-            };}
-
-        else if(sym == 2 ){
-            site x(a,b,c);
-            int i_eff = i, j_eff = j, k_eff = k;
-            if(i<nw3/2){i_eff = nw3-1-i;};
-            if(abs(j-nw3/2) > abs(k-nw3/2)){j_eff = k; k_eff = j;x = site_switch(x.a,x.b,x.c);};
-            if(j_eff-nw3/2 < 0){j_eff = nw3-1-j_eff; k_eff = nw3-1-k_eff;};
-            value += K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][i_eff-(nw3-nw3_q)][j_eff-(nw3-nw3_w1)][k_eff-(nw3-nw3_w2)];};
-    };
-    if(abs(value)<1e-100){value=0;};
-
-
-
-    return value;
-}
-template <typename Q> Q tvert<Q>::K1_vvalsmooth(int a_raw, int b_raw,int c_raw,  double t){
-
-
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(abs(t)+ 1e-6< bfreqs[(nw1+nw)/2-1]){
-        if(sym==0){
-
-            int T = fconv_n(t,nw1);
-
-            int T_vert = fconv_n(t,nw1)-(nw1-nw1_q);
-            value = ((K1[a+(nuc_eff-1)/2][b][c-1][T_vert ]*(ffreqs[(nw-nw1)/2+T+1]-t)
-                      +K1[a+(nuc_eff-1)/2][b][c-1][T_vert +1]*(-ffreqs[(nw-nw1)/2+T]+t))/((ffreqs[(nw-nw1)/2+T+1]-ffreqs[(nw-nw1)/2+T])));}
-        else if(sym==1 || sym==2){
-            if (t>0){
-                int T = fconv_n(t,nw1);
-                int T_vert = fconv_n(t,nw1)-(nw1-nw1_q);
-                value = ((K1[a+(nuc_eff-1)/2][b][c-1][T_vert ]*(bfreqs[T+1]-t)
-                          +K1[a+(nuc_eff-1)/2][b][c-1][T_vert +1]*(-bfreqs[T]+t))/((bfreqs[T+1]-bfreqs[T])));}
-            else if (t<0){
-
-                site x = site_switch(a,b,c);
-                double t_eff = -t;
-
-                int T = fconv_n(t_eff,nw1);
-                int T_vert = fconv_n(t_eff,nw1)-(nw1-nw1_q);
-
-                value = ((K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert ]*(bfreqs[T+1]-t_eff)
-                          +K1[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert +1]*(-bfreqs[T]+t_eff))/(bfreqs[T+1]-bfreqs[T]));
-            };};}
-    else{ int i;
-        if(abs(t)<= bfreqs[nw1-1] ){
-            i= fconv_n(t,nw1);
-
-            value = K1_vval(a,b,c,i);};
-    };
-
-
-
-    return value;
-}
-template <typename Q> Q tvert<Q>::K2_vvalsmooth(int a_raw, int b_raw,int c_raw,  double t, double w1){
-
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(abs(t)+ 1e-6< ffreqs[(nw2+nw)/2-1] && abs(w1)+ 1e-6< ffreqs[(nw2+nw)/2-1]){
-        if(sym==0){
-
-            int T = fconv_n(t,nw2);
-            int W1 = fconv_n(w1,nw2);
-
-            int T_vert = fconv_n(t,nw2)-(nw2-nw2_q);
-            int W1_vert = fconv_n(w1,nw2)-(nw2-nw2_w1);
-
-            value += ((K2[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert]*(ffreqs[(nw-nw2)/2+T+1]-t)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+T]+t)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+T+1]-t)*(-ffreqs[(nw-nw2)/2+W1]+w1)
-                       +K2[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+T]+t)*(-ffreqs[(nw-nw2)/2+W1]+w1))/
-                      ((ffreqs[(nw-nw2)/2+T+1]-ffreqs[(nw-nw2)/2+T])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));}
-        else if(sym==1){
-            if(w1 > 0){
-
-                int T = fconv_n(t,nw2);
-                int W1 = fconv_n(w1,nw2);
-
-                int T_vert = fconv_n(t,nw2)-(nw2-nw2_q);
-                int W1_vert = fconv_n(w1,nw2)-(nw2-nw2_w1);
-
-                value += ((K2[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert]*(ffreqs[(nw-nw2)/2+T+1]-t)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+T]+t)*(ffreqs[(nw-nw2)/2+W1+1]-w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+T+1]-t)*(-ffreqs[(nw-nw2)/2+W1]+w1)
-                           +K2[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+T]+t)*(-ffreqs[(nw-nw2)/2+W1]+w1))/
-                          ((ffreqs[(nw-nw2)/2+T+1]-ffreqs[(nw-nw2)/2+T])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));}
-            else if (w1<0){
-
-                double w1_eff = - w1;
-                int T = fconv_n(t,nw2);
-                int W1 =  fconv_n(w1_eff,nw2);
-
-                int T_vert = fconv_n(t,nw2)-(nw2-nw2_q);
-                int W1_vert =  fconv_n(w1_eff,nw2)-(nw2-nw2_w1);
-
-
-
-                value += conj((K2[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert]*(ffreqs[(nw-nw2)/2+T+1]-t)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                               +K2[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+T]+t)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                               +K2[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+T+1]-t)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff)
-                               +K2[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+T]+t)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff))/
-                              ((ffreqs[(nw-nw2)/2+T+1]-ffreqs[(nw-nw2)/2+T])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));};}
-        else if(sym==2){
-            double w1_eff = w1;
-            double t_eff = t;
-            if(t<0){t_eff = -t; };
-            if(w1_eff<0){w1_eff = -w1_eff;};
-
-            int T = fconv_n(t_eff,nw2);
-            int W1 = fconv_n(w1_eff,nw2);
-
-            int T_vert = fconv_n(t_eff,nw2)-(nw2-nw2_q);
-            int W1_vert = fconv_n(w1_eff,nw2)-(nw2-nw2_w1);
-            value = ((K2[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert]*(ffreqs[(nw-nw2)/2+T+1]-t_eff)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                      +K2[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert]*(-ffreqs[(nw-nw2)/2+T]+t_eff)*(ffreqs[(nw-nw2)/2+W1+1]-w1_eff)
-                      +K2[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1]*(ffreqs[(nw-nw2)/2+T+1]-t_eff)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff)
-                      +K2[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1]*(-ffreqs[(nw-nw2)/2+T]+t_eff)*(-ffreqs[(nw-nw2)/2+W1]+w1_eff))/
-                     ((ffreqs[(nw-nw2)/2+T+1]-ffreqs[(nw-nw2)/2+T])*(ffreqs[(nw-nw2)/2+W1+1]-ffreqs[(nw-nw2)/2+W1])));
-        };}
-    else{ int i,j;
-        if(abs(t)<= bfreqs[(nw1+nw2)/2-1] && abs(w1)<= ffreqs[(nw1+nw2)/2-1]){
-            i= fconv_n(t,nw2);
-            j = fconv_n(w1,nw2);
-
-            value += K2_vval(a,b,c,i,j);};
-    };
-    if(abs(value)<1e-100){value=0;};
-
-
-
-    return value;
-}
-template <typename Q> Q tvert<Q>::K3_vvalsmooth(int a_raw, int b_raw,int c_raw,  double t, double w1, double w2){
-
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    Q value=0;
-    if(abs(t)+ 1e-6< bfreqs[(nw3+nw)/2-1] && abs(w1)+ 1e-6<ffreqs[(nw3+nw)/2-1]&& abs(w2)+ 1e-6<ffreqs[(nw3+nw)/2-1]){
-        if (sym==0){
-
-
-            int T = fconv_n(t,nw3);
-            int W1 = fconv_n(w1,nw3);
-            int W2 = fconv_n(w2,nw3);
-
-            int T_vert = fconv_n(t,nw3)-(nw3-nw3_q);
-            int W1_vert = fconv_n(w1,nw3)-(nw3-nw3_w1);
-            int W2_vert = fconv_n(w2,nw3)-(nw3-nw3_w2);
-
-            value = ((K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                      +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                      +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                      +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                      +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                      +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                      +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                      +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2))/
-                     ((ffreqs[(nw-nw3)/2+T+1]-ffreqs[(nw-nw3)/2+T])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-        }
-        else if(sym==1){
-            if(t > 0){
-                if((w1)>0 ){
-
-                    int T = fconv_n(t,nw3);
-                    int W1 = fconv_n(w1,nw3);
-                    int W2 = fconv_n(w2,nw3);
-
-                    int T_vert = fconv_n(t,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(w1,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(w2,nw3)-(nw3-nw3_w2);
-
-                    value = ((K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                              +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                              +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                              +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                              +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(ffreqs[(nw-nw3)/2+W2+1]-w2)
-                              +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                              +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2)
-                              +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1)*(-ffreqs[(nw-nw3)/2+W2]+w2))/
-                             ((ffreqs[(nw-nw3)/2+T+1]-ffreqs[(nw-nw3)/2+T])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-                }
-
-                else if( (w1)<0){
-
-                    int T = fconv_n(t,nw3);
-                    int W1 = fconv_n(-w1,nw3);
-                    int W2 = fconv_n(-w2,nw3);
-
-                    int T_vert = fconv_n(t,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(-w1,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(-w2,nw3)-(nw3-nw3_w2);
-                    double w1_eff = -w1 ;
-                    double w2_eff = -w2 ;
-                    value = conj((K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                  +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                  +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                  +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                  +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                  +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                  +K3[a+(nuc_eff-1)/2][b][c-1][T_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                  +K3[a+(nuc_eff-1)/2][b][c-1][T_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                                 ((ffreqs[(nw-nw3)/2+T+1]-ffreqs[(nw-nw3)/2+T])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-                };}
-
-
-            else if (t < 0  ){
-                if((w2)>0 ){
-                    site x = site_switch(a,b,c);
-
-
-                    int T = fconv_n(-t,nw3);
-                    int W1 = fconv_n(w2,nw3);
-                    int W2 = fconv_n(w1,nw3);
-
-                    int T_vert = fconv_n(-t,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(w2,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(w1,nw3)-(nw3-nw3_w2);
-                    double w1_eff = w2;
-                    double w2_eff = w1;
-
-                    t = -t;
-
-                    value = (K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                             +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                             +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                             +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                             +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                             +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                             +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                             +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                            ((ffreqs[(nw-nw3)/2+T+1]-ffreqs[(nw-nw3)/2+T])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2]));
-                }
-
-
-
-                else if ((w2)<0 ){
-                    site x = site_switch(a,b,c);
-
-
-                    int T = fconv_n(-t,nw3);
-                    int W1 = fconv_n(-w2,nw3);
-                    int W2 = fconv_n(-w1,nw3);
-
-                    int T_vert = fconv_n(-t,nw3)-(nw3-nw3_q);
-                    int W1_vert = fconv_n(-w2,nw3)-(nw3-nw3_w1);
-                    int W2_vert = fconv_n(-w1,nw3)-(nw3-nw3_w2);
-
-                    double w1_eff = -w2;
-                    double w2_eff = -w1;
-
-                    t = -t;
-
-                    value = conj((K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                  +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                  +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                  +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                  +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                                  +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                  +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                                  +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                                 ((ffreqs[(nw-nw3)/2+T+1]-ffreqs[(nw-nw3)/2+T])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-                };};}
-        else if(sym==2){
-            site x(a,b,c);
-            double w1_eff = w1, w2_eff = w2, t_eff =t;
-            if(t<0){t_eff = -t; };
-            if(abs(w1_eff) > abs(w2_eff)){w1_eff = w2; w2_eff = w1; x = site_switch(x.a,x.b,x.c);};
-            if((w1_eff)<0){w1_eff = -w1_eff; w2_eff = -w2_eff;};
-            t = t_eff;
-
-
-            int T = fconv_n(t,nw3);
-            int W1 = fconv_n(w1_eff,nw3);
-            int W2 = fconv_n(w2_eff,nw3);
-
-            int T_vert = fconv_n(t,nw3)-(nw3-nw3_q);
-            int W1_vert = fconv_n(w1_eff,nw3)-(nw3-nw3_w1);
-            int W2_vert = fconv_n(w2_eff,nw3)-(nw3-nw3_w2);
-
-            value = ((K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert+1][W2_vert]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert+1][W2_vert]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(ffreqs[(nw-nw3)/2+W2+1]-w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(ffreqs[(nw-nw3)/2+W1+1]-w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert][W1_vert+1][W2_vert+1]*(ffreqs[(nw-nw3)/2+T+1]-t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff)
-                      +K3[x.a+(nuc_eff-1)/2][x.b][x.c-1][T_vert+1][W1_vert+1][W2_vert+1]*(-ffreqs[(nw-nw3)/2+T]+t)*(-ffreqs[(nw-nw3)/2+W1]+w1_eff)*(-ffreqs[(nw-nw3)/2+W2]+w2_eff))/
-                     ((ffreqs[(nw-nw3)/2+T+1]-ffreqs[(nw-nw3)/2+T])*(ffreqs[(nw-nw3)/2+W1+1]-ffreqs[(nw-nw3)/2+W1])*(ffreqs[(nw-nw3)/2+W2+1]-ffreqs[(nw-nw3)/2+W2])));
-
-        };
-
-    }
-    else{
-        int i,j,k;
-        if(abs(t)<= bfreqs[(nw1+nw3)/2-1] && abs(w1)<= ffreqs[(nw1+nw3)/2-1]&& abs(w2)<= ffreqs[(nw1+nw3)/2-1]){
-            i= fconv_n(t,nw3);
-            j = fconv_n(w1,nw3);
-            k = fconv_n(w2,nw3);
-
-            value += K3_vval(a,b,c,i,j,k);};};
-    if(abs(value)<1e-100){value=0;};
-
-
-
-    return value;
+template<typename Q> tuple<double, double, double> tvert<Q>::transfBackT(double w_t, double v1_t, double v2_t)
+{
+    double v1p=0., v2p=0., v1=0.;
+    v1p = v1_t;
+    v2p = w_t+v2_t;
+    v1 = v2_t;
+
+    return make_tuple(v1p, v2p, v1);
 }
 
-*/
+template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T1(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_t, trans_v1_t, trans_v2_t;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t, v1_t, v2_t);
+
+    /*This is the flipping stage!*/
+    ferm1 = ferm1p+ferm2p-ferm1;
+
+    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T2(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_t, trans_v1_t, trans_v2_t;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t,v1_t, v2_t);
+
+    /*This is the flipping stage!*/
+    double temp = ferm1p;
+    ferm1p = ferm2p;
+    ferm2p = temp;
+
+    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T3(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    int iKp = T_1_Keldysh(iK);
+    double trans_w_t, trans_v1_t, trans_v2_t;
+    double ferm1p, ferm2p, ferm1;
+
+    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t,v1_t, v2_t);
+
+    /*This is the flipping stage!*/
+    ferm1 = ferm1p+ferm2p-ferm1;
+    double temp = ferm1p;
+    ferm1p = ferm2p;
+    ferm2p = temp;
+
+    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
+
+    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+}
+
+template<typename Q> Q tvert<Q>::T1_K1(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q tvert<Q>::T2_K1(int iK, double w_t, double v1_t, double v2_t, int i_in) {
+    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q tvert<Q>::T3_K1(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+}
+template<typename Q> Q tvert<Q>::T1_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q tvert<Q>::T2_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q tvert<Q>::T3_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+}
+template<typename Q> Q tvert<Q>::T1_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
+template<typename Q> Q tvert<Q>::T2_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
+template<typename Q> Q tvert<Q>::T3_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
+{
+    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
 
 
 /************************************* MEMBER FUNCTIONS OF THE IRREDUCIBLE VERTEX *************************************/
@@ -2968,45 +1489,6 @@ template <typename Q> void irreducible<Q>::setvert( Q value){
 //    return result;
 //}
 
-/*
-
-template <typename Q> Q irreducible<Q>::vval(int a_raw, int b_raw, int c_raw){
-    if(distance(a_raw,b_raw,c_raw) <= d_c){//cutoff distance
-        site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-        int a,b,c;
-        a = project.a;
-        b = project.b;
-        c = project.c;
-        return U_bare[a+(nuc_eff-1)/2][b][c-1];}
-    else{return 0;};}
-template <typename Q> Q irreducible<Q>::vvalsmooth(int a_raw, int b_raw, int c_raw){
-    if(distance(a_raw,b_raw,c_raw) <= d_c){//cutoff distance
-        site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-        int a,b,c;
-        a = project.a;
-        b = project.b;
-        c = project.c;
-        //cout << a << " " << b << " " << c << endl;
-        return U_bare[a+(nuc_eff-1)/2][b][c-1];}
-    else{return 0;};}
-template <typename Q> Q irreducible<Q>::vvalsmooth(int a_raw, int b_raw, int c_raw,double q, double w1, double w2, char channel, int par, char f){
-    if(distance(a_raw,b_raw,c_raw) <= d_c){//cutoff distance
-        site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-        int a,b,c;
-        a = project.a;
-        b = project.b;
-        c = project.c;
-        return U_bare[a+(nuc_eff-1)/2][b][c-1];}
-    else{return 0;};}
-template <typename Q> void irreducible<Q>::setvert(int a_raw, int b_raw, int c_raw,  Q value){
-    site project = site_project(a_raw,b_raw,c_raw);//project onto upper hp if site xs located in lower hp
-    int a,b,c;
-    a = project.a;
-    b = project.b;
-    c = project.c;
-    U_bare[a+(nuc_eff-1)/2][b][c-1] = value;}
-
-*/
 
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
 //arguments are equivalent to those in the simple vertex functions
@@ -3084,69 +1566,6 @@ template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, in
 //    result.avertex = vertex1.avertex + vertex2.avertex ;
 //    return result;
 //}
-
-/*
-
-template <typename Q> Q fullvert<Q>::vvalsmooth(int a, int b, int c, double q, double w1, double w2, char channel){
-    Q result = irred.vvalsmooth(a,b,c) + pvertex.vvalsmooth(a,b,c,q,w1,w2,channel) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel);
-    if(abs(result)>1e-16){
-        return  result;}
-    else{return 0;};
-}
-template <typename Q> Q fullvert<Q>::vvalsmooth(int a, int b, int c, double q, double w1, double w2, char channel, int p, char f){
-    Q result=0;
-
-    if( p==1 && (f=='K' || f== 'L')){//only yield irred part if both legs are connected to the same bare vertex
-        result += irred.vvalsmooth(a,b,c);
-
-    }
-    else if( p==2 && (f=='K' || f== 'M')){
-        result += irred.vvalsmooth(a,b,c);
-
-    };
-
-
-
-    result +=  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);
-    //if(p==2 && f=='L'){cout <<  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) << " " << tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f)  << " " <<  avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) << endl;};
-    if(abs(result)<1e-16){
-        result  =0;};
-    return result;
-}
-template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, int b, int c, double q, double w1, double w2, char channel, int p, char f){// red_side: if only complementary channel in one vertex, which one is reduced? (0/1/2), p: is this the left/upper (1) or the right/lower (2) vertex of the bubble?, f: diagrammatic class that is computed
-    Q result=0;
-
-    if(red_side != p){
-        if( p==1 && (f=='K' || f== 'L')){//only yield irred part if both legs are connected to the same bare vertex
-            result = irred.vvalsmooth(a,b,c);
-        }
-        else if( p==2 && (f=='K' || f== 'M')){
-            result = irred.vvalsmooth(a,b,c);
-        };
-        result +=  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);
-    }
-
-
-    else if(red_side == p){
-
-        if(map==0){
-            if(channel == 's'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
-            else if(channel == 't'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
-            else if(channel == 'u'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);};}
-        else if(map==1){
-            if(channel == 's' ){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
-            else if(channel == 't'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
-            else if(channel == 'u'){  result =  avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
-        };
-
-    };
-
-    if(abs(result)<1e-16){
-        result  =0;};
-    return result;
-}
-
-*/
 
 /**************************************** operators concerning Vertex objects *****************************************/
 
@@ -3248,6 +1667,7 @@ template <typename Q> Vertex<irreducible<Q> > operator*(Vertex<irreducible<Q> > 
 }
 
 /**********************************************************************************************************************/
+
 
 
 #endif //KELDYSH_MFRG_VERTEX_H

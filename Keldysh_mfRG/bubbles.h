@@ -17,13 +17,13 @@ using namespace std;
 
 
 // temporarily fix stuff to remove warnings
-rvec ffreqs (1);
-rvec bfreqs (1);
-int nw, nw1, nw2, nw3, wlimit;
-bool compare(int a, int b)
-{
-    return (a < b);
-}
+//rvec ffreqs (1);
+//rvec bfreqs (1);
+//int nw, nw1, nw2, nw3, wlimit;
+//bool compare(int a, int b)
+//{
+//    return (a < b);
+//}
 //
 
 

@@ -11,10 +11,11 @@
 
 //define a struct object which includes the self energy and the vertex which are needed to evaluate the RHS of the flow equations.
 
+//TODO: shouldn't state be a template <Q> struct? Or, stated in another way, isn't it Vertex<fullvert<Q> > ?
 struct state{
     double Lambda;
     SelfEnergy<comp> selfenergy;
-    // Susc sus; TODO: find a way to include this only when necessary
+//    Susc sus; //TODO: find a way to include this only when necessary
     Vertex<fullvert<comp> > vertex;
 };
 
@@ -39,6 +40,9 @@ state operator+(state state1, state state2){
     result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex + state2.vertex.densvertex.tvertex;
 
     result.selfenergy = state1.selfenergy + state2.selfenergy;
+
+//    result.sus == state1.sus + state2.sus; TODO: Are susceptibilities additive?
+
     return result;
 }
 state operator*(double alpha, state state1){
@@ -54,6 +58,9 @@ state operator*(double alpha, state state1){
     result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex * alpha;
 
     result.selfenergy = alpha * state1.selfenergy;
+
+//    result.sus = alpha * state1.sus;
+
     return result;
 }
 state operator*(state state1, double alpha){
@@ -69,6 +76,9 @@ state operator*(state state1, double alpha){
     result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex * alpha;
 
     result.selfenergy = alpha * state1.selfenergy;
+
+//    result.sus = alpha * state1.sus
+
     return result;
 }
 
