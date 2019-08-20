@@ -1,3 +1,6 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "bugprone-narrowing-conversions"
+
 //
 // Created by E.Walter on 8/1/19.
 //
@@ -11,20 +14,9 @@
 #include "selfenergy.h"
 #include "propagator.h"
 #include "data_structures.h"
-#include "parameters.h"
+#include "frequency_grid.h"
 
 using namespace std;
-
-
-// temporarily fix stuff to remove warnings
-//rvec ffreqs (1);
-//rvec bfreqs (1);
-//int nw, nw1, nw2, nw3, wlimit;
-//bool compare(int a, int b)
-//{
-//    return (a < b);
-//}
-//
 
 
 /******************************************** BUBBLE INTEGRATION FUNCTIONS ********************************************/
@@ -43,18 +35,14 @@ struct abubble_params{
     SelfEnergy<comp>& selfenergy;
     SelfEnergy<comp>& diffselfenergy;
 
-    int a; int b; int c;
-
-    int d; int e; int f;
-
-    double u;double w1; double w2;
-    char h;//class of bubble (K = K1, L=K2, M = K2b, R = R)
+    double w;double v1; double v2;
+    char h;//class of bubble (K = K1, L=K2, M = K2b, R = K3)
 
 };
 
 template<typename T1,typename T2>
-double abubble_re(double w, void * p){
-    struct abubble_params<T1,T2> * params
+double abubble_re(double u, void * p){
+    auto * params
             = static_cast< struct abubble_params<T1,T2> *>(p);
     char red_side = (params ->red_side);
     char map1 = (params ->map1);
@@ -74,18 +62,18 @@ double abubble_re(double w, void * p){
     int  e= (params->e);
     int f = (params->f);
 
-    double u = (params->u);
-    double w1 = (params->w1);
-    double w2 = (params->w2);
+    double w = (params->w);
+    double v1 = (params->v1);
+    double v2 = (params->v2);
     char h = (params->h);
 
-    double val = real(vert1.vvalsmooth(red_side,map1,a,b,c,u,w,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,w,'u',2,h) *  propag(Lambda,w-u/2,selfenergy,diffselfenergy,ptype1) * propag(Lambda,w+u/2,selfenergy,diffselfenergy,ptype2) );
+    double val = real(vert1.vvalsmooth(red_side,map1,a,b,c,w,u,v2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,w,v1,u,'u',2,h) *  propag(Lambda,u-w/2,selfenergy,diffselfenergy,ptype1) * propag(Lambda,u+w/2,selfenergy,diffselfenergy,ptype2) );
     return (1./(2*pi)*val);
 }
 
 template<typename T1,typename T2>
-double agreensfunc_re(double w, void * p){
-    struct abubble_params<T1,T2> * params
+double agreensfunc_re(double u, void * p){
+    auto * params
             = static_cast< struct abubble_params<T1,T2> *>(p);
     char ptype1 = (params ->ptype1);
     char ptype2 = (params ->ptype2);
@@ -93,10 +81,10 @@ double agreensfunc_re(double w, void * p){
     SelfEnergy<comp>& diffselfenergy = (params->diffselfenergy);
     double Lambda = (params->Lambda);
 
-    double u = (params->u);
+    double  w = (params->w);
 
 
-    double val = real( propag(Lambda,w-u/2,selfenergy,diffselfenergy,ptype1) * propag(Lambda,w+u/2,selfenergy,diffselfenergy,ptype2) );
+    double val = real( propag(Lambda,u-w/2,selfenergy,diffselfenergy,ptype1) * propag(Lambda,u+w/2,selfenergy,diffselfenergy,ptype2) );
     return (1./(2*pi)*val);
 }
 
@@ -106,13 +94,13 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
     double abs_error=1e-2, rel_error=1e-4;
 
     double abs_error_bare=1e-4,rel_error_bare=1e-4;
-    double B=0;
+    double B=0.;
 
-    if((reg ==1 && p1 =='s')){//if first propagator is single scale propagator, proportional to delta peak: no integration
+    if((REG ==1 && p1 =='s')){//if first propagator is single scale propagator, proportional to delta peak: no integration
         B = real(1./(2*pi)*  vert1.vvalsmooth(red_side,map1,a,b,c,u,-Lambda+u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,-Lambda+u/2,'u',2,h)* propag(Lambda,-Lambda,se,dse,p1) * propag(Lambda,-Lambda+u,se,dse,p2)) ;
         B += real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u,Lambda+u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,Lambda+u/2,'u',2,h) *  propag(Lambda,Lambda,se,dse,p1) * propag(Lambda,Lambda+u,se,dse,p2)) ;
     }
-    else if((reg ==1 && p2 =='s') ){//if second propagator is single scale propagator, proportional to delta peak: no integration
+    else if((REG ==1 && p2 =='s') ){//if second propagator is single scale propagator, proportional to delta peak: no integration
 
         B =  real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u,-Lambda-u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,-Lambda-u/2,'u',2,h) *  propag(Lambda,-Lambda-u,se,dse,p1) * propag(Lambda,-Lambda,se,dse,p2)) ;
         B += real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u,Lambda-u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,Lambda-u/2,'u',2,h) *  propag(Lambda,Lambda-u,se,dse,p1) * propag(Lambda,Lambda,se,dse,p2)) ;
@@ -144,24 +132,24 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
             double v1_K1_t_up = bfreqs[nw1-1]+w2;
             double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+u},compare);
             double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-u},compare);
-            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+u,2*ffreqs[(nw+nw3)/2-1]-w2-u},compare);;
+            double v1_K3_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+u,2*ffreqs[(nw+nw3)/2-1]-w2-u},compare);
             double v1_K1_s_up= bfreqs[nw1-1]-w2;
             double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+u},compare);
             double v1_K2b_s_up =  min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-u},compare);
-            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-u,2*ffreqs[(nw+nw3)/2-1]+w2+u},compare);
+            double v1_K3_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-u,2*ffreqs[(nw+nw3)/2-1]+w2+u},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_up = bfreqs[nw1-1]+w1;
             double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+u},compare);
             double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-u},compare);
-            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1-u,2*ffreqs[(nw1+nw3)/2-1]-w1+u},compare);
+            double v2_K3_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1-u,2*ffreqs[(nw1+nw3)/2-1]-w1+u},compare);
             double v2_K1_s_up = bfreqs[nw1-1]-w1;
             double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-u},compare);
             double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+u},compare);
-            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+u,2*ffreqs[(nw+nw3)/2-1]+w1-u},compare);;
+            double v2_K3_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+u,2*ffreqs[(nw+nw3)/2-1]+w1-u},compare);
             //conditions that is equal for both vertices (u-channel contributions). Note that K_{a,1} is constant
             double v_K2_u_up = ffreqs[(nw1+nw2)/2-1];
-            double v_R_u_up = ffreqs[(nw1+nw3)/2-1];
+            double v_K3_u_up = ffreqs[(nw1+nw3)/2-1];
 
 
 
@@ -170,77 +158,77 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
             double v1_K1_t_low = bfreqs[0]+w2;
             double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+u},compare);
             double v1_K2b_t_low =max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-u},compare);
-            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+u,2*ffreqs[(nw-nw3)/2]-w2-u},compare);;
+            double v1_K3_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+u,2*ffreqs[(nw-nw3)/2]-w2-u},compare);
             double v1_K1_s_low = bfreqs[0]-w2;
             double v1_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+u},compare);
             double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-u},compare);
-            double v1_R_s_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-u,2*ffreqs[(nw-nw3)/2]+w2+u},compare);
+            double v1_K3_s_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-u,2*ffreqs[(nw-nw3)/2]+w2+u},compare);
 
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_low = bfreqs[0]+w1;
             double v2_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+u},compare);
             double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-u},compare);
-            double v2_R_t_low =  max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1-u,2*ffreqs[(nw1-nw3)/2]-w1+u},compare);
+            double v2_K3_t_low =  max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1-u,2*ffreqs[(nw1-nw3)/2]-w1+u},compare);
             double v2_K1_s_low = bfreqs[0]-w1;
             double v2_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-u},compare);
             double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+u},compare);
-            double v2_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+u,2*ffreqs[(nw-nw3)/2]+w1-u},compare);;
+            double v2_K3_s_low =  max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+u,2*ffreqs[(nw-nw3)/2]+w1-u},compare);
             //conditions that is equal for both vertices (s-channel contributions). Note that K_{s,1} is constant
             double v_K2_u_low = ffreqs[(nw1-nw2)/2];
-            double v_R_u_low = ffreqs[(nw1-nw3)/2];
+            double v_K3_u_low = ffreqs[(nw1-nw3)/2];
 
 
-            vector<double> upperR_v1{v1_K1_s_up,v1_K2_s_up,v1_K2b_s_up,v1_R_s_up,v1_K1_t_up,v1_K2_t_up,v1_K2b_t_up,v1_R_t_up,v_K2_u_up,v_R_u_up};
-            sort(upperR_v1.begin(),upperR_v1.end());
-            vector<double> lowerR_v1{v1_K1_s_low,v1_K2_s_low,v1_K2b_s_low,v1_R_s_low,v1_K1_t_low,v1_K2_t_low,v1_K2b_t_low,v1_R_t_low,v_K2_u_low,v_R_u_low};
-            sort(lowerR_v1.begin(),lowerR_v1.end());
+            vector<double> upperK3_v1{v1_K1_s_up,v1_K2_s_up,v1_K2b_s_up,v1_K3_s_up,v1_K1_t_up,v1_K2_t_up,v1_K2b_t_up,v1_K3_t_up,v_K2_u_up,v_K3_u_up};
+            sort(upperK3_v1.begin(),upperK3_v1.end());
+            vector<double> lowerK3_v1{v1_K1_s_low,v1_K2_s_low,v1_K2b_s_low,v1_K3_s_low,v1_K1_t_low,v1_K2_t_low,v1_K2b_t_low,v1_K3_t_low,v_K2_u_low,v_K3_u_low};
+            sort(lowerK3_v1.begin(),lowerK3_v1.end());
 
-            vector<double> upperR_v2{v2_K1_s_up,v2_K2_s_up,v2_K2b_s_up,v2_R_s_up,v2_K1_t_up,v2_K2_t_up,v2_K2b_t_up,v2_R_t_up,v_K2_u_up,v_R_u_up};
-            sort(upperR_v2.begin(),upperR_v2.end());
-            vector<double> lowerR_v2{v2_K1_s_low,v2_K2_s_low,v2_K2b_s_low,v2_R_s_low,v2_K1_t_low,v2_K2_t_low,v2_K2b_t_low,v2_R_t_low,v_K2_u_low,v_R_u_low};
-            sort(lowerR_v2.begin(),lowerR_v2.end());
+            vector<double> upperK3_v2{v2_K1_s_up,v2_K2_s_up,v2_K2b_s_up,v2_K3_s_up,v2_K1_t_up,v2_K2_t_up,v2_K2b_t_up,v2_K3_t_up,v_K2_u_up,v_K3_u_up};
+            sort(upperK3_v2.begin(),upperK3_v2.end());
+            vector<double> lowerK3_v2{v2_K1_s_low,v2_K2_s_low,v2_K2b_s_low,v2_K3_s_low,v2_K1_t_low,v2_K2_t_low,v2_K2b_t_low,v2_K3_t_low,v_K2_u_low,v_K3_u_low};
+            sort(lowerK3_v2.begin(),lowerK3_v2.end());
 
             int mode1_up=1;int mode2_up=1;
             int mode1_low=1;int mode2_low=1;
             vert1_const = vert1.vvalsmooth(red_side,map1,a,b,c,u,wlimit,w2,'u',1,h);
-            vert2_const =vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,wlimit,'u',2,h);
+            vert2_const = vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,wlimit,'u',2,h);
 
-            for(int i=upperR_v2.size()-1; i>-1 ; i--){
-                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperR_v2[i],'u',2,h)-vert2_const)* vert1.vvalsmooth(red_side,map1,a,b,c,u,upperR_v2[i],w2,'u',1,h))>0 ){limit_up2 = upperR_v2[i];break;};
-                if(i==0){mode2_up=0;};
-            };
+            for(int i=upperK3_v2.size()-1; i>-1 ; i--){
+                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK3_v2[i],'u',2,h)-vert2_const)* vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK3_v2[i],w2,'u',1,h))>0 ){limit_up2 = upperK3_v2[i];break;}
+                if(i==0){mode2_up=0;}
+            }
 
-            for(int i=upperR_v1.size()-1; i>-1 ; i--){
-                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,upperR_v1[i],w2,'u',1,h)-vert1_const)* vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperR_v1[i],'u',2,h))>0 ){limit_up1 = upperR_v1[i];break;};
-                if(i==0){mode1_up=0;};
-            };
+            for(int i=upperK3_v1.size()-1; i>-1 ; i--){
+                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK3_v1[i],w2,'u',1,h)-vert1_const)* vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK3_v1[i],'u',2,h))>0 ){limit_up1 = upperK3_v1[i];break;}
+                if(i==0){mode1_up=0;}
+            }
 
             if(mode1_up == 1 && mode2_up ==1){
                 if(limit_up1>limit_up2){limit_up=limit_up1;}
                 else{limit_up=limit_up2;}}
             else if (mode1_up == 1 && mode2_up ==0){limit_up = limit_up1;}
-            else if (mode1_up == 0 && mode2_up ==1){limit_up = limit_up2;};
+            else if (mode1_up == 0 && mode2_up ==1){limit_up = limit_up2;}
 
 
 
-            for(int i=0; i< lowerR_v1.size() ; i++){
-                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerR_v1[i],w2,'u',1,h)-vert1_const)*vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerR_v1[i],'u',2,h))>0){limit_low1 = lowerR_v1[i];break;};
-                if(i==lowerR_v1.size()-1){mode1_low=0;};
-            };
+            for(int i=0; i< lowerK3_v1.size() ; i++){
+                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK3_v1[i],w2,'u',1,h)-vert1_const)*vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK3_v1[i],'u',2,h))>0){limit_low1 = lowerK3_v1[i];break;}
+                if(i==lowerK3_v1.size()-1){mode1_low=0;}
+            }
 
-            for(int i=0; i< lowerR_v2.size() ; i++){
-                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerR_v2[i],'u',2,h)-vert2_const)*vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerR_v2[i],w2,'u',1,h))>0){limit_low2 = lowerR_v2[i];break;};
-                if(i==lowerR_v2.size()-1){mode2_low=0;};
-            };
+            for(int i=0; i< lowerK3_v2.size() ; i++){
+                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK3_v2[i],'u',2,h)-vert2_const)*vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK3_v2[i],w2,'u',1,h))>0){limit_low2 = lowerK3_v2[i];break;}
+                if(i==lowerK3_v2.size()-1){mode2_low=0;}
+            }
 
 
             if(mode1_low == 1 && mode2_low ==1){
                 if(limit_low1<limit_low2){limit_low=limit_low1;}
                 else{limit_low=limit_low2;};}
             else if (mode1_low == 1 && mode2_low ==0){limit_low = limit_low1;}
-            else if (mode1_low == 0 && mode2_low ==1){limit_low = limit_low2;};
-            if(mode1_low ==0 && mode2_low ==0 && mode1_up ==0 && mode2_up ==0){mode =0;};}
+            else if (mode1_low == 0 && mode2_low ==1){limit_low = limit_low2;}
+            if(mode1_low ==0 && mode2_low ==0 && mode1_up ==0 && mode2_up ==0){mode =0;}}
 
 
         else if(h=='L'){ //constant vertices
@@ -249,39 +237,39 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
             //conditions that is equal for both vertices (s-channel contributions). Note that K_{s,1} is constant
             double v_K2_u_low = ffreqs[(nw1-nw2)/2];
-            double v_R_u_low = ffreqs[(nw1-nw3)/2];
+            double v_K3_u_low = ffreqs[(nw1-nw3)/2];
             //conditions that is equal for both vertices (u-channel contributions). Note that K_{a,1} is constant
             double v_K2_u_up = ffreqs[(nw1+nw2)/2-1];
-            double v_R_u_up = ffreqs[(nw1+nw3)/2-1];
+            double v_K3_u_up = ffreqs[(nw1+nw3)/2-1];
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_low = bfreqs[0]+w1;
             double v2_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1+u},compare);
             double v2_K2b_t_low = max({bfreqs[(nw1-nw2)/2]+w1,2*ffreqs[(nw1-nw2)/2]-w1-u},compare);
-            double v2_R_t_low =  max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1-u,2*ffreqs[(nw1-nw3)/2]-w1+u},compare);
+            double v2_K3_t_low =  max({bfreqs[(nw1-nw3)/2]+w1,2*ffreqs[(nw1-nw3)/2]-w1-u,2*ffreqs[(nw1-nw3)/2]-w1+u},compare);
             double v2_K1_s_low = bfreqs[0]-w1;
             double v2_K2_s_low =  max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1-u},compare);
             double v2_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w1,2*ffreqs[(nw-nw2)/2]+w1+u},compare);
-            double v2_R_s_low =  max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+u,2*ffreqs[(nw-nw3)/2]+w1-u},compare);
+            double v2_K3_s_low =  max({bfreqs[(nw1-nw3)/2]-w1,2*ffreqs[(nw-nw3)/2]+w1+u,2*ffreqs[(nw-nw3)/2]+w1-u},compare);
 
             //conditions from vertex 2 (unprimed):
             double v2_K1_t_up = bfreqs[nw1-1]+w1;
             double v2_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1+u},compare);
             double v2_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w1,2*ffreqs[(nw1+nw2)/2-1]-w1-u},compare);
-            double v2_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1-u,2*ffreqs[(nw1+nw3)/2-1]-w1+u},compare);
+            double v2_K3_t_up = min({bfreqs[(nw1+nw3)/2-1]+w1,2*ffreqs[(nw1+nw3)/2-1]-w1-u,2*ffreqs[(nw1+nw3)/2-1]-w1+u},compare);
             double v2_K1_s_up = bfreqs[nw1-1]-w1;
             double v2_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1-u},compare);
             double v2_K2b_s_up = min({bfreqs[(nw1+nw2)/2-1]-w1,2*ffreqs[(nw+nw2)/2-1]+w1+u},compare);
-            double v2_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+u,2*ffreqs[(nw+nw3)/2-1]+w1-u},compare);
+            double v2_K3_s_up = min({bfreqs[(nw1+nw3)/2-1]-w1,2*ffreqs[(nw+nw3)/2-1]+w1+u,2*ffreqs[(nw+nw3)/2-1]+w1-u},compare);
 
             vector<double> upperK2_v1{v_K2_u_up};
             sort(upperK2_v1.begin(),upperK2_v1.end());
             vector<double> lowerK2_v1{v_K2_u_low};
             sort(lowerK2_v1.begin(),lowerK2_v1.end());
 
-            vector<double> upperK2_v2{v2_K1_s_up,v2_K2_s_up,v2_K2b_s_up,v2_R_s_up,v2_K1_t_up,v2_K2_t_up,v2_K2b_t_up,v2_R_t_up,v_K2_u_up,v_R_u_up};
+            vector<double> upperK2_v2{v2_K1_s_up,v2_K2_s_up,v2_K2b_s_up,v2_K3_s_up,v2_K1_t_up,v2_K2_t_up,v2_K2b_t_up,v2_K3_t_up,v_K2_u_up,v_K3_u_up};
             sort(upperK2_v2.begin(),upperK2_v2.end());
-            vector<double> lowerK2_v2{v2_K1_s_low,v2_K2_s_low,v2_K2b_s_low,v2_R_s_low,v2_K1_t_low,v2_K2_t_low,v2_K2b_t_low,v2_R_t_low,v_K2_u_low,v_R_u_low};
+            vector<double> lowerK2_v2{v2_K1_s_low,v2_K2_s_low,v2_K2b_s_low,v2_K3_s_low,v2_K1_t_low,v2_K2_t_low,v2_K2b_t_low,v2_K3_t_low,v_K2_u_low,v_K3_u_low};
             sort(lowerK2_v2.begin(),lowerK2_v2.end());
 
 
@@ -292,79 +280,79 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
 
             for(int i=upperK2_v2.size()-1; i>-1 ; i--){
-                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK2_v2[i],'u',2,h)-vert2_const)* vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK2_v2[i],w2,'u',1,h))>0 ){limit_up2 = upperK2_v2[i];break;};
-                if(i==0){mode2_up=0;};
+                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK2_v2[i],'u',2,h)-vert2_const)* vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK2_v2[i],w2,'u',1,h))>0 ){limit_up2 = upperK2_v2[i];break;}
+                if(i==0){mode2_up=0;}
 
-            };
+            }
 
             for(int i=upperK2_v1.size()-1; i>-1 ; i--){
 
-                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK2_v1[i],w2,'u',1,h)-vert1_const)* vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK2_v1[i],'u',2,h))>0 ){limit_up1 = upperK2_v1[i];break;};
-                if(i==0){mode1_up=0;};
-            };
+                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK2_v1[i],w2,'u',1,h)-vert1_const)* vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK2_v1[i],'u',2,h))>0 ){limit_up1 = upperK2_v1[i];break;}
+                if(i==0){mode1_up=0;}
+            }
 
             if(mode1_up == 1 && mode2_up ==1){
                 if(limit_up1>limit_up2){limit_up=limit_up1;}
                 else{limit_up=limit_up2;}}
             else if (mode1_up == 1 && mode2_up ==0){limit_up = limit_up1;}
-            else if (mode1_up == 0 && mode2_up ==1){limit_up = limit_up2;};
+            else if (mode1_up == 0 && mode2_up ==1){limit_up = limit_up2;}
 
             for(int i=0; i< lowerK2_v1.size() ; i++){
-                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK2_v1[i],w2,'u',1,h)-vert1_const)*vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK2_v1[i],'u',2,h))>0){limit_low1 = lowerK2_v1[i];break;};
-                if(i==lowerK2_v1.size()-1){mode1_low=0;};
-            };
+                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK2_v1[i],w2,'u',1,h)-vert1_const)*vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK2_v1[i],'u',2,h))>0){limit_low1 = lowerK2_v1[i];break;}
+                if(i==lowerK2_v1.size()-1){mode1_low=0;}
+            }
 
             for(int i=0; i< lowerK2_v2.size() ; i++){
-                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK2_v2[i],'u',2,h)-vert2_const)*vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK2_v2[i],w2,'u',1,h))>0){limit_low2 = lowerK2_v2[i];break;};
-                if(i==lowerK2_v2.size()-1){mode2_low=0;};
-            };
+                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK2_v2[i],'u',2,h)-vert2_const)*vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK2_v2[i],w2,'u',1,h))>0){limit_low2 = lowerK2_v2[i];break;}
+                if(i==lowerK2_v2.size()-1){mode2_low=0;}
+            }
 
 
             if(mode1_low == 1 && mode2_low ==1){
                 if(limit_low1<limit_low2){limit_low=limit_low1;}
                 else{limit_low=limit_low2;};}
             else if (mode1_low == 1 && mode2_low ==0){limit_low = limit_low1;}
-            else if (mode1_low == 0 && mode2_low ==1){limit_low = limit_low2;};
+            else if (mode1_low == 0 && mode2_low ==1){limit_low = limit_low2;}
 
-            if(mode1_low ==0 && mode2_low ==0 && mode1_up ==0 && mode2_up ==0){mode =0;};
+            if(mode1_low ==0 && mode2_low ==0 && mode1_up ==0 && mode2_up ==0){mode =0;}
         }
 
         else if(h=='M'){//in this case, only Gamma' (vert1) sets the limits
 
             //conditions that is equal for both vertices (s-channel contributions). Note that K_{s,1} is constant
             double v_K2_u_low = ffreqs[(nw1-nw2)/2];
-            double v_R_u_low = ffreqs[(nw1-nw3)/2];
+            double v_K3_u_low = ffreqs[(nw1-nw3)/2];
 
             //conditions that is equal for both vertices (u-channel contributions). Note that K_{a,1} is constant
             double v_K2_u_up = ffreqs[(nw1+nw2)/2-1];
-            double v_R_u_up = ffreqs[(nw1+nw3)/2-1];
+            double v_K3_u_up = ffreqs[(nw1+nw3)/2-1];
 
 
             //conditions from vertex 1 (primed):
             double v1_K1_t_up = bfreqs[nw1-1]+w2;
             double v1_K2_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2+u},compare);
             double v1_K2b_t_up = min({bfreqs[(nw1+nw2)/2-1]+w2,2*ffreqs[(nw+nw2)/2-1]-w2-u},compare);
-            double v1_R_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+u,2*ffreqs[(nw+nw3)/2-1]-w2-u},compare);
+            double v1_K3_t_up = min({bfreqs[(nw1+nw3)/2-1]+w2,2*ffreqs[(nw+nw3)/2-1]-w2+u,2*ffreqs[(nw+nw3)/2-1]-w2-u},compare);
             double v1_K1_s_up= bfreqs[nw1-1]-w2;
             double v1_K2_s_up = min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2+u},compare);
             double v1_K2b_s_up =  min({bfreqs[(nw1+nw2)/2-1]-w2,2*ffreqs[(nw+nw2)/2-1]+w2-u},compare);
-            double v1_R_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-u,2*ffreqs[(nw+nw3)/2-1]+w2+u},compare);
+            double v1_K3_s_up = min({bfreqs[(nw1+nw3)/2-1]-w2,2*ffreqs[(nw+nw3)/2-1]+w2-u,2*ffreqs[(nw+nw3)/2-1]+w2+u},compare);
 
             //lower bound:
             //conditions from vertex 1 (primed):
             double v1_K1_t_low = bfreqs[0]+w2;
             double v1_K2_t_low = max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2+u},compare);
             double v1_K2b_t_low =max({bfreqs[(nw1-nw2)/2]+w2,2*ffreqs[(nw-nw2)/2]-w2-u},compare);
-            double v1_R_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+u,2*ffreqs[(nw-nw3)/2]-w2-u},compare);
+            double v1_K3_t_low = max({bfreqs[(nw1-nw3)/2]+w2,2*ffreqs[(nw-nw3)/2]-w2+u,2*ffreqs[(nw-nw3)/2]-w2-u},compare);
             double v1_K1_s_low = bfreqs[0]-w2;
             double v1_K2_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2+u},compare);
             double v1_K2b_s_low = max({bfreqs[(nw1-nw2)/2]-w2,2*ffreqs[(nw-nw2)/2]+w2-u},compare);
-            double v1_R_s_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-u,2*ffreqs[(nw-nw3)/2]+w2+u},compare);
+            double v1_K3_s_low = max({bfreqs[(nw1-nw3)/2]-w2,2*ffreqs[(nw-nw3)/2]+w2-u,2*ffreqs[(nw-nw3)/2]+w2+u},compare);
 
 
-            vector<double> upperK2b_v1{v1_K1_s_up,v1_K2_s_up,v1_K2b_s_up,v1_R_s_up,v1_K1_t_up,v1_K2_t_up,v1_K2b_t_up,v1_R_t_up,v_K2_u_up,v_R_u_up};
+            vector<double> upperK2b_v1{v1_K1_s_up,v1_K2_s_up,v1_K2b_s_up,v1_K3_s_up,v1_K1_t_up,v1_K2_t_up,v1_K2b_t_up,v1_K3_t_up,v_K2_u_up,v_K3_u_up};
             sort(upperK2b_v1.begin(),upperK2b_v1.end());
-            vector<double> lowerK2b_v1{v1_K1_s_low,v1_K2_s_low,v1_K2b_s_low,v1_R_s_low,v1_K1_t_low,v1_K2_t_low,v1_K2b_t_low,v1_R_t_low,v_K2_u_low,v_R_u_low};
+            vector<double> lowerK2b_v1{v1_K1_s_low,v1_K2_s_low,v1_K2b_s_low,v1_K3_s_low,v1_K1_t_low,v1_K2_t_low,v1_K2b_t_low,v1_K3_t_low,v_K2_u_low,v_K3_u_low};
             sort(lowerK2b_v1.begin(),lowerK2b_v1.end());
 
             vector<double> upperK2b_v2{v_K2_u_up};
@@ -379,32 +367,32 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
             vert2_const =vert2.vvalsmooth(red_side,map2,d,e,f,u,wlimit,wlimit,'u',2,h);
 
             for(int i=upperK2b_v2.size()-1; i>-1 ; i--){
-                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK2b_v2[i],'u',2,h)-vert2_const)* vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK2b_v2[i],w2,'u',1,h))>0 ){limit_up2 = upperK2b_v2[i];break;};
-                if(i==0){mode2_up=0;};
-            };
+                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK2b_v2[i],'u',2,h)-vert2_const)* vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK2b_v2[i],w2,'u',1,h))>0 ){limit_up2 = upperK2b_v2[i];break;}
+                if(i==0){mode2_up=0;}
+            }
 
             for(int i=upperK2b_v1.size()-1; i>-1 ; i--){
-                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK2b_v1[i],w2,'u',1,h)-vert1_const)* vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK2b_v1[i],'u',2,h))>0 ){limit_up1 = upperK2b_v1[i];break;};
-                if(i==0){mode1_up=0;};
-            };
+                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,upperK2b_v1[i],w2,'u',1,h)-vert1_const)* vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,upperK2b_v1[i],'u',2,h))>0 ){limit_up1 = upperK2b_v1[i];break;}
+                if(i==0){mode1_up=0;}
+            }
 
 
             if(mode1_up == 1 && mode2_up ==1){
                 if(limit_up1>limit_up2){limit_up=limit_up1;}
                 else{limit_up=limit_up2;}}
             else if (mode1_up == 1 && mode2_up ==0){limit_up = limit_up1;}
-            else if (mode1_up == 0 && mode2_up ==1){limit_up = limit_up2;};
+            else if (mode1_up == 0 && mode2_up ==1){limit_up = limit_up2;}
 
 
             for(int i=0; i< lowerK2b_v1.size() ; i++){
-                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK2b_v1[i],w2,'u',1,h)-vert1_const)*vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK2b_v1[i],'u',2,h))>0){limit_low1 = lowerK2b_v1[i];break;};
-                if(i==lowerK2b_v1.size()-1){mode1_low=0;};
-            };
+                if(abs((vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK2b_v1[i],w2,'u',1,h)-vert1_const)*vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK2b_v1[i],'u',2,h))>0){limit_low1 = lowerK2b_v1[i];break;}
+                if(i==lowerK2b_v1.size()-1){mode1_low=0;}
+            }
 
             for(int i=0; i< lowerK2b_v2.size() ; i++){
-                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK2b_v2[i],'u',2,h)-vert2_const)*vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK2b_v2[i],w2,'u',1,h))>0){limit_low2 = lowerK2b_v2[i];break;};
-                if(i==lowerK2b_v2.size()-1){mode2_low=0;};
-            };
+                if(abs((vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,lowerK2b_v2[i],'u',2,h)-vert2_const)*vert1.vvalsmooth(red_side,map1,a,b,c,u,lowerK2b_v2[i],w2,'u',1,h))>0){limit_low2 = lowerK2b_v2[i];break;}
+                if(i==lowerK2b_v2.size()-1){mode2_low=0;}
+            }
 
 
             if(mode1_low == 1 && mode2_low ==1){
@@ -412,10 +400,13 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
                 else{limit_low=limit_low2;};}
             else if (mode1_low == 1 && mode2_low ==0){limit_low = limit_low1;}
             else if (mode1_low == 0 && mode2_low ==1){limit_low = limit_low2;};
-            if(mode1_low ==0 && mode2_low ==0 && mode1_up ==0 && mode2_up ==0){mode =0;};}
+            if(mode1_low ==0 && mode2_low ==0 && mode1_up ==0 && mode2_up ==0){mode =0;}}
 
         else if(h=='K'){ //in this case the only contribution to the non-constat part comes from K2,u
 
+
+            double v_K2_u_low = ffreqs[(nw1-nw2)/2];
+            double v_K2_u_up = ffreqs[(nw1+nw2)/2-1];
 
             vector<double> upperK1_v1{v_K2_u_up};
             sort(upperK1_v1.begin(),upperK1_v1.end());
@@ -468,9 +459,6 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
             else if (mode1_low == 0 && mode2_low ==1){limit_low = limit_low2;};
             if(mode1_low ==0 && mode2_low ==0 && mode1_up ==0 && mode2_up ==0){mode =0;};};
 
-        double v_K2_u_low = ffreqs[(nw1-nw2)/2];
-        double v_K2_u_up = ffreqs[(nw1+nw2)/2-1];
-
         double result_re=0, error_re=0;
         double resultgfl_re=0, errorgfl_re=0;
         double resultgfu_re=0, errorgfu_re=0;
@@ -482,7 +470,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
             F.function = &agreensfunc_re<T1,T2>;
 
-            if(reg==1 && p1=='g' && p2 =='g'){
+            if(REG==1 && p1=='g' && p2 =='g'){
                 F.params = &params;
 
 
@@ -502,7 +490,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
             }
 
 
-            else if(reg==1 && ((p1=='k' &&p2=='g') ||(p1=='g'&& p2 =='k'))){
+            else if(REG==1 && ((p1=='k' &&p2=='g') ||(p1=='g'&& p2 =='k'))){
                 double lower = -abs(u/2)-Lambda;
                 double upper = abs(u/2) + Lambda;
 
@@ -514,15 +502,15 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
 
                 if(p1=='k'){
-                    singsc = real(1./(2*pi)*  vert1.vvalsmooth(red_side,map1,a,b,c,u,-Lambda+u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,-Lambda+u/2,'u',2,h) *  propag(Lambda,-Lambda,se,dse,'s') * propag(Lambda,-Lambda+u,se,dse,p2)) ;
-                    singsc += real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u,Lambda+u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,Lambda+u/2,'u',2,h) *  propag(Lambda,Lambda,se,dse,'s') * propag(Lambda,Lambda+u,se,dse,p2)) ;
+                    singsc =  real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u,-Lambda+u/2,w2,'u',1,h)* vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,-Lambda+u/2,'u',2,h)* propag(Lambda,-Lambda,se,dse,'s') * propag(Lambda,-Lambda+u,se,dse,p2)) ;
+                    singsc += real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u, Lambda+u/2,w2,'u',1,h)* vert2.vvalsmooth(red_side,map2,d,e,f,u,w1, Lambda+u/2,'u',2,h)* propag(Lambda, Lambda,se,dse,'s') * propag(Lambda, Lambda+u,se,dse,p2)) ;
                     p1_new = 'e';
                     p2_new = p2;
                     dse_cutoff_up= ffreqs[nw-1]+u/2;dse_cutoff_low= ffreqs[0]+u/2;}
 
                 else if(p2=='k'){
                     singsc =  real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u,-Lambda-u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,-Lambda-u/2,'u',2,h) *  propag(Lambda,-Lambda-u,se,dse,p1) * propag(Lambda,-Lambda,se,dse,'s') );
-                    singsc += real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u,Lambda-u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1,Lambda-u/2,'u',2,h) *  propag(Lambda,Lambda-u,se,dse,p1) * propag(Lambda,Lambda,se,dse,'s')) ;
+                    singsc += real(1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,u, Lambda-u/2,w2,'u',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,u,w1, Lambda-u/2,'u',2,h) *  propag(Lambda, Lambda-u,se,dse,p1) * propag(Lambda, Lambda,se,dse,'s')) ;
                     p1_new = p1;
                     p2_new = 'e';
                     dse_cutoff_up= ffreqs[nw-1]-u/2;dse_cutoff_low= ffreqs[0]-u/2;};
@@ -531,8 +519,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
                 if(dse_cutoff_low <lower && dse_cutoff_up <=upper){//if highest saved dse-value if lower than upper heavyside-cutoff
 
-                    if(dse_cutoff_up>lower){dse_cutoff_up=lower;};
-
+                    if(dse_cutoff_up>lower){dse_cutoff_up=lower;}
 
                     F.params = &params_mod;
 
@@ -546,7 +533,6 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
                 else if(dse_cutoff_low >=lower && dse_cutoff_up > upper){//if lowest saved dse-value if higher than lower heavyside-cutoff
 
                     if(dse_cutoff_low<upper){dse_cutoff_low=upper;};
-
 
                     F.params = &params_mod;
 
@@ -568,10 +554,10 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
                     double compl_real =(resultgfl_re +resultgfu_re )*vert1_const * vert2_const;
                     B=singsc + compl_real ;
-                };}
+                }}
 
 
-            else if(reg==2 && (p1=='g' &&p2=='g')){
+            else if(REG==2 && (p1=='g' &&p2=='g')){
 
                 F.params = &params;
 
@@ -586,7 +572,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
 
             }
-            else if(reg==2 && ((p1=='g' &&p2=='s') ||(p1=='s'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
+            else if(REG==2 && ((p1=='g' &&p2=='s') ||(p1=='s'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
                 double bound_low=0, bound_up=0;
                 if(p1=='s'){bound_low = -7*Lambda+u/2; bound_up = 7*Lambda+u/2;}
                 else if(p2=='s'){bound_low = -7*Lambda-u/2; bound_up = 7*Lambda-u/2;}
@@ -600,7 +586,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
             }
 
-            else if(reg==2 && ((p1=='g' &&p2=='k') ||(p1=='k'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
+            else if(REG==2 && ((p1=='g' &&p2=='k') ||(p1=='k'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
 
                 double bound_low=0, bound_up=0, dse_cutoff_low=0, dse_cutoff_up=0;
                 char p1_new, p2_new, p1_singsc,p2_singsc;
@@ -637,13 +623,13 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
                 double compl_real =(result_re + result_re2 ) *vert1_const * vert2_const;
                 B=compl_real;
-            };
+            }
         }
 
         else if(mode==1){
 
 
-            if(reg==1 && p1=='g' && p2=='g'){
+            if(REG==1 && p1=='g' && p2=='g'){
                 double lhs=0, rhs=0;//result on left and right side of sharp cutoff
                 double lower = -abs(u/2)-Lambda;
                 double upper = abs(u/2) + Lambda;
@@ -659,7 +645,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
                         lhs=compl_real;
 
-                    };}
+                    }}
                 else if(lower <= limit_up){
                     double compl_real=0;
                     if(abs(vert1_const * vert2_const)>0){
@@ -669,7 +655,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
                                               w, &resultgfl_re, &errorgfl_re);
                         compl_real =(resultgfl_re  )*vert1_const * vert2_const;
 
-                    };
+                    }
 
                     F.params = &params;
                     F.function = &abubble_re<T1,T2>;
@@ -764,7 +750,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
 
             }
-            else if(reg==1 && ((p1=='k' &&p2=='g') || (p1=='g'&& p2 =='k'))){
+            else if(REG==1 && ((p1=='k' &&p2=='g') || (p1=='g'&& p2 =='k'))){
 
                 double lower = -abs(u/2)-Lambda;
                 double upper = abs(u/2) + Lambda;
@@ -961,7 +947,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
                 B=rhs +lhs+ singsc;
             }
 
-            else if(reg==2 && p1=='g' && p2=='g'){
+            else if(REG==2 && p1=='g' && p2=='g'){
 
                 F.function = &abubble_re<T1,T2>;
                 F.params = &params;
@@ -987,7 +973,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
                 B=(result_re + compl_real );
             }
 
-            else if(reg==2 && ((p1=='g' && p2=='s') || (p1=='s' && p2=='g'))){
+            else if(REG==2 && ((p1=='g' && p2=='s') || (p1=='s' && p2=='g'))){
 
 
                 double bound_low=0, bound_up=0;
@@ -1149,7 +1135,7 @@ double abubble(int red_side,int map1,int map2,gsl_integration_workspace* w,doubl
 
             }
 
-            else if(reg==2 && ((p1=='g' && p2=='k') || (p1=='k' && p2=='g'))){
+            else if(REG==2 && ((p1=='g' && p2=='k') || (p1=='k' && p2=='g'))){
 
                 double singsc=0;
                 double bound_low=0, bound_up=0;
@@ -1589,11 +1575,11 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
 
     double B =0;
 
-    if((reg ==1 && p1 =='s') ){//if first propagator is single scale propagator, proportional to delta peak: no integration
+    if((REG ==1 && p1 =='s') ){//if first propagator is single scale propagator, proportional to delta peak: no integration
         B =  real(1./2 * 1./(2*pi)* vert1.vvalsmooth(red_side,map1,a,b,c,s,-Lambda-s/2,w2,'s',1,h) *  vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,-Lambda-s/2,'s',2,h)  *  propag(Lambda,-Lambda,se,dse,p1) * propag(Lambda,s+Lambda,se,dse,p2)) ;
         B += real(1./2 *1./(2*pi)*  vert1.vvalsmooth(red_side,map1,a,b,c,s,Lambda-s/2,w2,'s',1,h) *  vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,Lambda-s/2,'s',2,h)   *  propag(Lambda,Lambda,se,dse,p1) * propag(Lambda,s-Lambda, se,dse, p2));
     }
-    else if((reg ==1 && p2 =='s') ){//if second propagator is single scale propagator, proportional to delta peak: no integration
+    else if((REG ==1 && p2 =='s') ){//if second propagator is single scale propagator, proportional to delta peak: no integration
         B =   real(1./2 * 1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,s,s/2+Lambda,w2,'s',1,h) *  vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,s/2+Lambda,'s',2,h)  *  propag(Lambda,s+Lambda,se,dse,p1) * propag(Lambda,-Lambda,se,dse,p2)) ;
         B += real(1./2 *1./(2*pi)* vert1.vvalsmooth(red_side,map1,a,b,c,s,s/2-Lambda,w2,'s',1,h) * vert2.vvalsmooth(red_side,map2,d,e,f,s,w1,s/2-Lambda,'s',2,h)  *  propag(Lambda,s-Lambda,se,dse,p1) * propag(Lambda,Lambda,se,dse,p2)) ;
 
@@ -1950,7 +1936,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
 
         if(mode==0 && abs(vert1_const * vert2_const)>0){
 
-            if(reg==1 && p1=='g' && p2 =='g'){
+            if(REG==1 && p1=='g' && p2 =='g'){
                 F.function = &pgreensfunc_re<T1,T2>;
                 F.params = &params;
 
@@ -1968,7 +1954,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
             }
 
 
-            else if(reg==1 && ((p1=='k' &&p2=='g') ||(p1=='g'&& p2 =='k'))){
+            else if(REG==1 && ((p1=='k' &&p2=='g') ||(p1=='g'&& p2 =='k'))){
                 double lower = -abs(s/2)-Lambda;
                 double upper = abs(s/2) + Lambda;
                 char p1_new,p2_new;
@@ -2040,7 +2026,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
                 };}
 
 
-            else if(reg==2 && (p1=='g' &&p2=='g')){
+            else if(REG==2 && (p1=='g' &&p2=='g')){
 
 
                 F.params = &params;
@@ -2052,7 +2038,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
                 B=compl_real;
 
             }
-            else if(reg==2 && ((p1=='g' &&p2=='s') ||(p1=='s'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
+            else if(REG==2 && ((p1=='g' &&p2=='s') ||(p1=='s'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
                 double bound_low=0, bound_up=0;
 
                 if(p1=='s'){bound_low = -7*Lambda-s/2; bound_up = 7*Lambda-s/2;}
@@ -2065,7 +2051,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
                 B=compl_real;
             }
 
-            else if(reg==2 && ((p1=='g' &&p2=='k') ||(p1=='k'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
+            else if(REG==2 && ((p1=='g' &&p2=='k') ||(p1=='k'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
                 double bound_low=0, bound_up=0, dse_cutoff_low=0, dse_cutoff_up=0;
                 char p1_new, p2_new, p1_singsc,p2_singsc;
                 if(p1=='k'){
@@ -2111,7 +2097,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
         else if(mode==1){
 
 
-            if(reg ==1 && p1=='g' && p2=='g'){
+            if(REG ==1 && p1=='g' && p2=='g'){
                 double lhs=0, rhs=0;//result on left and right side of sharp cutoff
                 double lower = -abs(s/2)-Lambda;
                 double upper = abs(s/2) + Lambda;
@@ -2223,7 +2209,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
                 B =rhs + lhs;
             }
 
-            else if(reg==1 && ((p1=='k' &&p2=='g') ||(p1=='g'&& p2 =='k'))){
+            else if(REG==1 && ((p1=='k' &&p2=='g') ||(p1=='g'&& p2 =='k'))){
 
                 double lower = -abs(s/2)-Lambda;
                 double upper = abs(s/2) + Lambda;
@@ -2420,7 +2406,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
                 };}
 
 
-            else if(reg==2 && p1=='g' && p2=='g'){
+            else if(REG==2 && p1=='g' && p2=='g'){
 
                 F.function = &pbubble_re<T1,T2>;
                 F.params = &params;
@@ -2446,7 +2432,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
                 B=result_re + compl_real ;
             }
 
-            else if(reg==2 && ((p1=='g' && p2=='s') || (p1=='s' && p2=='g'))){
+            else if(REG==2 && ((p1=='g' && p2=='s') || (p1=='s' && p2=='g'))){
 
                 double bound_low=0, bound_up=0;
 
@@ -2596,7 +2582,7 @@ double pbubble(int red_side,int map1, int map2, gsl_integration_workspace* w, do
 
             }
 
-            else if(reg==2 && ((p1=='g' && p2=='k') || (p1=='k' && p2=='g'))){
+            else if(REG==2 && ((p1=='g' && p2=='k') || (p1=='k' && p2=='g'))){
 
                 double singsc=0;
                 double bound_low=0, bound_up=0;
@@ -3013,11 +2999,11 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
     double B=0;
 
 
-    if((reg ==1 && p1 =='s' && p2 =='g' ) ){//if first propagator is single scale propagator, proportional to delta peak: no integration
+    if((REG ==1 && p1 =='s' && p2 =='g' ) ){//if first propagator is single scale propagator, proportional to delta peak: no integration
         B = real( -1. *1./(2*pi)*  vert1.vvalsmooth(red_side,map1,a,b,c,t,-Lambda+t/2,w2,'t',1,h)  *   vert2.vvalsmooth(red_side,map2,d,e,f,t,w1,-Lambda+t/2,'t',2,h) * propag(Lambda,-Lambda,se,dse,'s') * propag(Lambda,-Lambda+t,se,dse,p2)) ;
         B += real(-1. *1./(2*pi)* vert1.vvalsmooth(red_side,map1,a,b,c,t,Lambda+t/2,w2,'t',1,h)  *   vert2.vvalsmooth(red_side,map2,d,e,f,t,w1,Lambda+t/2,'t',2,h) * propag(Lambda,Lambda,se,dse,'s') * propag(Lambda,Lambda+t,se,dse,p2)) ;
     }
-    else if((reg ==1 && p1=='g' && p2 =='s') ){//if second propagator is single scale propagator, proportional to delta peak: no integration
+    else if((REG ==1 && p1=='g' && p2 =='s') ){//if second propagator is single scale propagator, proportional to delta peak: no integration
 
         B = real(-1. * 1./(2*pi)*vert1.vvalsmooth(red_side,map1,a,b,c,t,-Lambda-t/2,w2,'t',1,h)  *   vert2.vvalsmooth(red_side,map2,d,e,f,t,w1,-Lambda-t/2,'t',2,h) * propag(Lambda,-Lambda-t,se,dse,p1) * propag(Lambda,-Lambda,se,dse,'s')) ;
         B += real(-1. *1./(2*pi)* vert1.vvalsmooth(red_side,map1,a,b,c,t,Lambda-t/2,w2,'t',1,h)  *   vert2.vvalsmooth(red_side,map2,d,e,f,t,w1,Lambda-t/2,'t',2,h) * propag(Lambda,Lambda-t,se,dse,p1) * propag(Lambda,Lambda,se,dse,'s')) ;
@@ -3396,7 +3382,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
 
         if(mode==0 && abs(vert1_const * vert2_const)>0){
 
-            if(reg==1 && p1=='g' && p2 =='g'){
+            if(REG==1 && p1=='g' && p2 =='g'){
 
                 F.function = &tgreensfunc_re<T1,T2>;
                 F.params = &params;
@@ -3416,7 +3402,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
                 B= compl_real ;
 
             }
-            else if(reg==1 && ((p1=='k' &&p2=='g') ||(p1=='g'&& p2 =='k'))){
+            else if(REG==1 && ((p1=='k' &&p2=='g') ||(p1=='g'&& p2 =='k'))){
                 double lower = -abs(t/2)-Lambda;
                 double upper = abs(t/2) + Lambda;
 
@@ -3492,7 +3478,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
                 };}
 
 
-            else if(reg==2 && (p1=='g' &&p2=='g')){
+            else if(REG==2 && (p1=='g' &&p2=='g')){
                 F.params = &params;
 
 
@@ -3506,7 +3492,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
                 B=compl_real;
 
             }
-            else if(reg==2 && ((p1=='g' &&p2=='s') ||(p1=='s'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
+            else if(REG==2 && ((p1=='g' &&p2=='s') ||(p1=='s'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
                 double bound_low, bound_up;
                 if(p1=='s'){bound_low = -7*Lambda+t/2; bound_up = 7*Lambda+t/2;}
                 else if(p2=='s'){bound_low = -7*Lambda-t/2; bound_up = 7*Lambda-t/2;}
@@ -3520,7 +3506,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
 
             }
 
-            else if(reg==2 && ((p1=='g' &&p2=='k') ||(p1=='k'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
+            else if(REG==2 && ((p1=='g' &&p2=='k') ||(p1=='k'&& p2 =='g'))){//in this case, the integration interval must be very small around the peak for accurate numerical results since the single scale propag decays exponentially
                 double bound_low, bound_up, dse_cutoff_low, dse_cutoff_up;
                 char p1_new, p2_new, p1_singsc,p2_singsc;
                 if(p1=='k'){
@@ -3565,7 +3551,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
         else if(mode==1){
 
 
-            if(reg==1 && p1=='g' && p2=='g'){
+            if(REG==1 && p1=='g' && p2=='g'){
                 double lhs=0, rhs=0;//result on left and right side of sharp cutoff
                 double lower = -abs(t/2)-Lambda;
                 double upper = abs(t/2) + Lambda;
@@ -3679,7 +3665,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
                 };
                 B= rhs +lhs;
             }
-            else if((reg==1 && p1=='k' && p2=='g') || (reg==1 && p1=='g' && p2=='k') ){
+            else if((REG==1 && p1=='k' && p2=='g') || (REG==1 && p1=='g' && p2=='k') ){
 
 
                 double lower = -abs(t/2)-Lambda;
@@ -3878,7 +3864,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
                 B= rhs + lhs + singsc;
             }
 
-            else if(reg==2 && p1=='g' && p2=='g'){
+            else if(REG==2 && p1=='g' && p2=='g'){
 
                 F.function = &tbubble_re<T1,T2>;
                 F.params = &params;
@@ -3904,7 +3890,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
                 };
                 B=result_re + compl_real ;
             }
-            else if(reg==2 && ((p1=='g' && p2=='s') || (p1=='s' && p2=='g'))){
+            else if(REG==2 && ((p1=='g' && p2=='s') || (p1=='s' && p2=='g'))){
 
                 double bound_low=0, bound_up=0;
 
@@ -4057,7 +4043,7 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
 
             }
 
-            else if(reg==2 && ((p1=='g' && p2=='k') || (p1=='k' && p2=='g'))){
+            else if(REG==2 && ((p1=='g' && p2=='k') || (p1=='k' && p2=='g'))){
 
                 double singsc=0;
                 double bound_low=0, bound_up=0;
@@ -4396,3 +4382,5 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
 
 
 #endif //KELDYSH_MFRG_BUBBLES_H
+
+#pragma clang diagnostic pop

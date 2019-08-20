@@ -5,9 +5,6 @@
 #ifndef KELDYSH_MFRG_VERTEX_H
 #define KELDYSH_MFRG_VERTEX_H
 
-#ifndef KELDYSH_MFRG_2_0_VERTEX_H
-#define KELDYSH_MFRG_2_0_VERTEX_H
-
 #include <vector>
 
 #include "parameters.h"
@@ -17,8 +14,6 @@
 using namespace std;
 
 // TODO: maybe rename member functions K1_vval, K1_vvalsmooth, etc.
-// TODO: need additional wrapper functions that provide the transformations T1, T2, T3, TC
-
 
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
 template <typename Q>
@@ -35,8 +30,8 @@ public:
     /*Same idea as function above, but is oriented towards the multi-loop implementation */
     Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
 
-    /*No clue, suspect is unnecessary fro us since we do not need map or red_side operations*/
-//    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+    /*No clue, suspect is unnecessary for us since we do not need map or red_side operations*/
+    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
 
     /*This function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45*/
     Q vvalsmooth(int, double, double, double, int);
@@ -557,7 +552,7 @@ template <typename Q> Q avert<Q>::vvalsmooth(int iK, double q, double w1, double
         u = w1 - w2;
         w1_u = q + (w1 - w2) / 2;
         w2_u = (w1 + w2) / 2;
-    };
+    }
     Q value;
 
 //        if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
@@ -1179,7 +1174,7 @@ template <typename Q> Q tvert<Q>::vvalsmooth(int iK, double q, double w1, double
         u = w1 - w2;
         w1_u = q + (w1 - w2) / 2;
         w2_u = (w1 + w2) / 2;
-    };
+    }
     Q value;
 
 //        if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
@@ -1667,7 +1662,6 @@ template <typename Q> Vertex<irreducible<Q> > operator*(Vertex<irreducible<Q> > 
 }
 
 /**********************************************************************************************************************/
-
 
 
 #endif //KELDYSH_MFRG_VERTEX_H

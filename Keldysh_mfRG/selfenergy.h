@@ -5,8 +5,7 @@
 #ifndef KELDYSH_MFRG_SELFENERGY_H
 #define KELDYSH_MFRG_SELFENERGY_H
 
-
-#include "parameters.h"
+#include "frequency_grid.h"
 
 //TODO: naming??
 
@@ -34,10 +33,17 @@ Q SelfEnergy<Q>::sval(int iK, int i){
 
 template <typename Q>
 Q SelfEnergy<Q>::svalsmooth(int iK, double w){//smoothly interpolates for values between discrete frequency values of mesh
-    Q value;
-    int W = fconv(w); // TODO: define fconv
-    value += ((Sigma[iK*nSE+W]*(ffreqs[W+1]-w)+Sigma[iK*nSE+W+1]*(-ffreqs[W]+w))/(ffreqs[W+1]-ffreqs[W])); // TODO: make it similar to the version for vertex
-    return value;
+
+    int W = fconv(w);
+
+    double x1 = ffreqs[W];
+    double x2 = ffreqs[W+1];
+    double xd = (w-x1)/(x2-x1);
+
+    Q f1 = sval(iK, W);
+    Q f2 = sval(iK, W+1);
+
+    return (1.-xd)*f1 + xd*f2;
 }
 
 template <typename Q>
@@ -47,13 +53,13 @@ void SelfEnergy<Q>::setself(int iK, int i, Q val){
 
 //operators for self energy
 template <typename Q>
-SelfEnergy<Q> operator*(double alpha, const SelfEnergy<Q>& self1){//product operator overloading
+SelfEnergy<Q> operator*(Q alpha, const SelfEnergy<Q>& self1){//product operator overloading
     SelfEnergy<Q> self2;
     self2.Sigma = self1.Sigma * alpha;
     return self2;
 }
 template <typename Q>
-SelfEnergy<Q> operator*(const SelfEnergy<Q>& self1, double alpha){//product operator overloading
+SelfEnergy<Q> operator*(const SelfEnergy<Q>& self1, Q alpha){//product operator overloading
     SelfEnergy<Q> self2;
     self2.Sigma = self1.Sigma * alpha;
     return self2;

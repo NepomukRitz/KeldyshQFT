@@ -165,4 +165,5 @@ cvec propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<com
     }
 }
 
+
 #endif //KELDYSH_MFRG_PROPAGATOR_H

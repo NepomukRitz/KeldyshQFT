@@ -6,16 +6,35 @@
 #define KELDYSH_MFRG_PARAMETERS_H
 
 #include <vector>
+#include "data_structures.h"
 
 using namespace std;
 
 const double pi = 3.1415926535897;
 
+/*Grid type - preprocessor macro
+ *1: log-grid, 2: linear grid*/
+#define GRID 2
+
+/*Regulator - TODO: fix to preprocessor macro
+ * 1: sharp cutoff, 2: smoothened cutoff*/
+const int REG = 2;
+const double sharp = 2; // Sharpness of the smoothened regulator cutoff
+
+/*Dispersion relation and sharpness of regulator*/
+const comp epsilon = 0.0;   //NOLINT(cert-err58-cpp)
+const comp Gamma = 1.; // NOLINT(cert-err58-cpp)
+
+//Temperature and chemical potential
+const double T = 0.01;
+const double mu = 0.0;
+
 /*Interaction strength*/
 const double U = 1.0;
 
-/*Number of frequency points for the selfenergy*/
+/*Number of frequency points for the self energy and the susceptibility*/
 const int nSE = 10;
+const int nSUSC = 10;
 
 /*Number of frequency points for the K1 class(bosonic freq wa), K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic
  * frequency wa and fermionic freqs nua and nuap) for the a-channel*/
@@ -64,8 +83,14 @@ const int nK_K3 = 6;
 /*Dimension of the space defining the internal structure*/
 const int n_in = 1;
 
-/*Regulator*/
-const int reg = 2; //sets the regulator that is being used: 1: sharp cutoff, 2: smoothened cutoff TODO: probably better use a preprocessor macro for this
-const double sharp = 2; // Sharpness of the regulator cutoff
+// temporarily fix stuff to remove warnings
+rvec ffreqs (1); // NOLINT(cert-err58-cpp)
+rvec bfreqs (1); // NOLINT(cert-err58-cpp)
+int nw, nw1, nw2, nw3, wlimit;
+
+/*Frequency grids for each channel*/
+rvec freqs_a(nw_a); // NOLINT(cert-err58-cpp)
+rvec freqs_p(nw_p); // NOLINT(cert-err58-cpp)
+rvec freqs_t(nw_t); // NOLINT(cert-err58-cpp)
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

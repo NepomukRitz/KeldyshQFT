@@ -7,27 +7,33 @@
 
 #include "vertex.h"
 #include "selfenergy.h"
-
+#include "susceptibility.h"
 
 //define a struct object which includes the self energy and the vertex which are needed to evaluate the RHS of the flow equations.
 
 //TODO: shouldn't state be a template <Q> struct? Or, stated in another way, isn't it Vertex<fullvert<Q> > ?
 struct state{
-    double Lambda;
+    double Lambda{};
     SelfEnergy<comp> selfenergy;
-//    Susc sus; //TODO: find a way to include this only when necessary
     Vertex<fullvert<comp> > vertex;
+
+    state() = default;;
+    explicit state(double lambda_input) : Lambda(lambda_input) {};
+
+#ifdef SUSC
+    Susc<comp> sus;
+#endif
 };
 
 
-state operator+(state, state);
-state operator*(double,state);
-state operator*(state, double);
+state operator+(const state&, const state&);
+state operator*(double, const state&);
+state operator*(const state&, double);
 
 
 //TODO: check this below (and define state first)
 //operators containing state objects
-state operator+(state state1, state state2){
+state operator+(const state& state1, const state& state2){
     state result;
     result.vertex.spinvertex.irred = state1.vertex.spinvertex.irred + state2.vertex.spinvertex.irred;
     result.vertex.spinvertex.avertex = state1.vertex.spinvertex.avertex + state2.vertex.spinvertex.avertex;
@@ -41,11 +47,12 @@ state operator+(state state1, state state2){
 
     result.selfenergy = state1.selfenergy + state2.selfenergy;
 
-//    result.sus == state1.sus + state2.sus; TODO: Are susceptibilities additive?
-
+#ifdef SUSC
+    result.sus = state1.sus + state2.sus; //TODO: Are susceptibilities additive?
+#endif
     return result;
 }
-state operator*(double alpha, state state1){
+state operator*(double alpha, const state& state1){
     state result;
     result.vertex.spinvertex.irred = state1.vertex.spinvertex.irred * alpha;
     result.vertex.spinvertex.avertex = state1.vertex.spinvertex.avertex * alpha;
@@ -59,11 +66,12 @@ state operator*(double alpha, state state1){
 
     result.selfenergy = alpha * state1.selfenergy;
 
-//    result.sus = alpha * state1.sus;
-
+#ifdef SUSC
+    result.sus = alpha * state1.sus;
+#endif
     return result;
 }
-state operator*(state state1, double alpha){
+state operator*(const state& state1, double alpha){
     state result;
     result.vertex.spinvertex.irred = state1.vertex.spinvertex.irred * alpha;
     result.vertex.spinvertex.avertex = state1.vertex.spinvertex.avertex * alpha;
@@ -77,8 +85,9 @@ state operator*(state state1, double alpha){
 
     result.selfenergy = alpha * state1.selfenergy;
 
-//    result.sus = alpha * state1.sus
-
+#ifdef SUSC
+    result.sus = alpha * state1.sus;
+#endif
     return result;
 }
 
