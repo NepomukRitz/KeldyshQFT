@@ -17,7 +17,7 @@ const double pi = 3.1415926535897;
 #define GRID 2
 
 /*Regulator - TODO: fix to preprocessor macro
- * 1: sharp cutoff, 2: smoothened cutoff*/
+ * 1: sharp cutoff, 2: hybridization flow*/
 const int REG = 2;
 const double sharp = 2; // Sharpness of the smoothened regulator cutoff
 
@@ -84,7 +84,7 @@ const int nK_K3 = 6;
 const int n_in = 1;
 
 // temporarily fix stuff to remove warnings
-rvec ffreqs (1); // NOLINT(cert-err58-cpp)
+rvec ffreqs (1); // NOLINT(cert-err58-cpp)      //TODO self energy and susceptibility interpolation functions depend on this vector. change length appropriately
 rvec bfreqs (1); // NOLINT(cert-err58-cpp)
 int nw, nw1, nw2, nw3, wlimit;
 

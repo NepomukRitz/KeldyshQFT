@@ -58,6 +58,7 @@ comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
 {
     return GR(Lambda,omega,selfEneR)*selfEneK*GA(Lambda,omega,selfEneA);
 }
+
 comp SR(double Lambda, double omega, comp selfEneR)
 {
     return -(comp)0.5i*pow(GR(Lambda, omega, selfEneR),2);
@@ -79,8 +80,8 @@ double Fermi_distribution(double omega)
 cvec propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<comp> diffselfenergy, char type)
 {
     cvec resp;
-    comp G0R = GR(0., w, selfenergy.svalsmooth(0, w));
-    comp G0A = GA(0., w, conj(selfenergy.svalsmooth(0, w)));
+    comp GR0 = GR(0., w, selfenergy.svalsmooth(0, w));
+    comp GA0 = GA(0., w, conj(selfenergy.svalsmooth(0, w)));
     comp selfEneR = selfenergy.svalsmooth(0,w);
     comp selfEneK = selfenergy.svalsmooth(1,w);
     comp diffSelfEneR = diffselfenergy.svalsmooth(0,w);
@@ -90,29 +91,29 @@ cvec propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<com
     {
         if (type == 'g') { //good ol' regular propagator
             if (fabs(w) > Lambda) {
-                resp(0) = 1. / ((1. / G0R) - selfEneR);
-                resp(1) = G0R * selfEneK * gA(0., w);
+                resp(0) = 1. / ((1. / GR0) - selfEneR);
+                resp(1) = GR0 * selfEneK * GA0;
             } else if (fabs(w) == Lambda) {
-                resp(0) = 0.5 / ((1. / G0R) - selfEneR);
-                resp(1) = 0.5 * (G0R * selfEneK * gA(0., w));
+                resp(0) = 0.5 / ((1. / GR0) - selfEneR);
+                resp(1) = 0.5 * (GR0 * selfEneK * GA0);
             }
         }
 
         else if (type == 's') {   //single-scale propagator
             if (fabs(w) == Lambda) {
-                resp(0) = -1.*1. / ((1. / G0R) - selfEneR);
-                resp(1) = -1.*G0R * selfEneK * gA(0., w);
+                resp(0) = -1.*1. / ((1. / GR0) - selfEneR);
+                resp(1) = -1.*GR0 * selfEneK * GA0;
             } //else resp stays being 0
         }
 
         else if (type == 'k') {  //Katanin substitution
             comp SR, ER, SK, EK;
             if (fabs(w) >= Lambda) {
-                ER = gR(0.,w) * diffSelfEneR * gR(0.,w);
-                EK = G0R*diffSelfEneR*G0R*selfEneK*G0A + G0R*diffSelfEneK*G0A + G0R*selfEneK*G0A*conj(diffSelfEneR)*G0A;
+                ER = GR0 * diffSelfEneR * GR0;
+                EK = GR0*diffSelfEneR*GR0*selfEneK*GA0 + GR0*diffSelfEneK*GA0 + GR0*selfEneK*GA0*conj(diffSelfEneR)*GA0;
             } else if (fabs(w) == Lambda) {
-                SR = -1.*1. / ((1. / G0R) - selfEneR);
-                SK = -1.*G0R * selfEneK * gA(0., w);
+                SR = -1.*1. / ((1. / GR0) - selfEneR);
+                SK = -1.*GR0 * selfEneK * GA0;
             }
 
             resp(0) = (SR + ER);
@@ -123,9 +124,9 @@ cvec propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<com
 
             comp ER, EK;
             if (fabs(w) >= Lambda) {
-                ER = gR(0., w) * diffSelfEneR * gR(0., w);
-                EK = G0R * diffSelfEneR * G0R * selfEneK * G0A + G0R * diffSelfEneK * G0A +
-                     G0R * selfEneK * G0A * conj(diffSelfEneR) * G0A;
+                ER = GR0 * diffSelfEneR * GR0;
+                EK = GR0 * diffSelfEneR * GR0 * selfEneK * GA0 + GR0 * diffSelfEneK * GA0 +
+                     GR0 * selfEneK * GA0 * conj(diffSelfEneR) * GA0;
             }
             resp(0) = ER;
             resp(1) = EK;
@@ -162,6 +163,7 @@ cvec propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<com
                       GR(Lambda, w, selfEneR)*selfEneK*GA(Lambda, w, conj(selfEneR))*conj(diffSelfEneR)*conj(GR(Lambda, w, selfEneR));
         }
         return resp;
+        // TODO: preprocessor macro for Gamma - regulator. If Gamma is defined, change the definition of the gR, gK functions!
     }
 }
 

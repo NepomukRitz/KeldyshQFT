@@ -74,13 +74,13 @@ tuple<int, int, int> fconv_K3_p(double u, double w1, double w2)
 {
 
     /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw3_wa-1));     //nw3_wp because we're interpolating for bosonic freq in K3 in channel p
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nua-1));    //nw3_nup because we're interpolating for fermionic freq in K3 in channel p
-    double dwp_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nuap-1));  //nw3_nupp because we're interpolating for fermionic freq in K3 in channel p
+    double dw_b_p = (w_upper_b-w_lower_b)/((double)(nw3_wp-1));     //nw3_wp because we're interpolating for bosonic freq in K3 in channel p
+    double dw_f_p = (w_upper_f-w_lower_f)/((double)(nw3_nup-1));    //nw3_nup because we're interpolating for fermionic freq in K3 in channel p
+    double dwp_f_p = (w_upper_f-w_lower_f)/((double)(nw3_nupp-1));  //nw3_nupp because we're interpolating for fermionic freq in K3 in channel p
 
-    auto index_b = (int)((u-w_lower_b)/dw_b_a);
-    auto index_f = (int)((w1-w_lower_f)/dw_f_a);
-    auto index_fp = (int)((w2-w_lower_f)/dwp_f_a);
+    auto index_b = (int)((u-w_lower_b)/dw_b_p);
+    auto index_f = (int)((w1-w_lower_f)/dw_f_p);
+    auto index_fp = (int)((w2-w_lower_f)/dwp_f_p);
 
     return make_tuple(index_b, index_f, index_fp);
 }

@@ -749,7 +749,7 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 
     tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
 template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T2(int iK, double w_a, double v1_a, double v2_a, int i_in)
 {
@@ -766,7 +766,7 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 
     tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
 template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T3(int iK, double w_a, double v1_a, double v2_a, int i_in)
 {
@@ -784,7 +784,7 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 
     tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
 
 template<typename Q> Q avert<Q>::T1_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
@@ -1057,7 +1057,7 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
 
     tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
 template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T2(int iK, double w_p, double v1_p, double v2_p, int i_in)
 {
@@ -1074,7 +1074,7 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
 
     tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
 template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T3(int iK, double w_p, double v1_p, double v2_p, int i_in)
 {
@@ -1092,7 +1092,7 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
 
     tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
 
 template<typename Q> Q pvert<Q>::T1_K1(int iK, double w_p, double v1_p, double v2_p, int i_in)
@@ -1370,7 +1370,7 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
 
     tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
 template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T2(int iK, double w_t, double v1_t, double v2_t, int i_in)
 {
@@ -1387,7 +1387,7 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
 
     tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
 template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T3(int iK, double w_t, double v1_t, double v2_t, int i_in)
 {
@@ -1405,7 +1405,7 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
 
     tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
-    return make_tuple(iKp, ferm1p, ferm2p, ferm1, i_in);
+    return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
 
 template<typename Q> Q tvert<Q>::T1_K1(int iK, double w_t, double v1_t, double v2_t, int i_in)

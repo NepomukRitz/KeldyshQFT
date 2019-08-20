@@ -5,6 +5,8 @@
 #ifndef KELDYSH_MFRG_KELDYSH_SYMMETRIES_H
 #define KELDYSH_MFRG_KELDYSH_SYMMETRIES_H
 
+// TODO: convert from index (0,...,5) to index (0,...,15)
+
 /*T_1 switches the incoming legs*/
 int T_1_Keldysh(int iK)
 {
