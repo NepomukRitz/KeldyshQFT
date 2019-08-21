@@ -22,6 +22,19 @@ class avert{
     vec<Q> K2 = vec<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
 
+    /* Lists of corresponding Keldysh components to indices in range 0...2 or 0...5 (depending on diagrammatic class)*/
+    /*K1- and K2-classes*/
+    int list_component_1_K1 [8] = {1, 2, 4, 7, 8, 11, 13, 14};
+    int list_component_2_K1 [4] = {3, 5, 10, 12};
+
+    /*K3-class*/
+    int list_component_0_K3 [1] = {0};
+    int list_component_1_K3 [4] = {1, 2, 4, 8};
+    int list_component_2_K3 [2] = {3, 12};
+    int list_component_3_K3 [2] = {5, 10};
+    int list_component_4_K3 [2] = {6, 9};
+    int list_component_5_K3 [4] = {7,11,13,14};
+
 public:
     /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
      * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
@@ -31,7 +44,7 @@ public:
     Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
 
     /*No clue, suspect is unnecessary for us since we do not need map or red_side operations*/
-    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+//    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
 
     /*This function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45*/
     Q vvalsmooth(int, double, double, double, int);
@@ -116,6 +129,10 @@ public:
     /*Symmetry which interchanges both incoming and outgoing legs*/
     Q T3_K3(int, double, double, double, int);
 
+    /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
+     * buuble in the a-channel*/
+    tuple<int, int> indices_sum(int i0, int i2);
+
 
     /*TODO: notice T1_K1, T2_K1 and T3_K1 depend all on the three frequencies, i.e. the sufix _K1 is a joke at this stage.
      * TODO: Can one ignore the effects of v1_a and v2_a? If so, define similarly functions T1_K2, T2_K2, T3_K2, T1_K3, T2_K3, T3_K3 with the adequate freq. dependence */
@@ -157,6 +174,21 @@ class pvert{
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
     vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
+
+    /* Lists of corresponding Keldysh components to indices in range 0...2 or 0...5 (depending on diagrammatic class)*/
+    /*K1- and K2-classes*/
+    int list_component_1_K1 [8] = {1, 2, 4, 7, 8, 11, 13, 14};
+    int list_component_3_K1 [4] = {5, 6, 9, 10};//This is the relevant one only for the p-channel!!
+
+
+    /*K3-class*/
+    int list_component_0_K3 [1] = {0};
+    int list_component_1_K3 [4] = {1, 2, 4, 8};
+    int list_component_2_K3 [2] = {3, 12};
+    int list_component_3_K3 [2] = {5, 10};
+    int list_component_4_K3 [2] = {6, 9};
+    int list_component_5_K3 [4] = {7,11,13,14};
+
 
 public:
     /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
@@ -252,6 +284,10 @@ public:
     /*Symmetry which interchanges both incoming and outgoing legs*/
     Q T3_K3(int, double, double, double, int);
 
+    /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
+     * buuble in the p-channel*/
+    tuple<int, int> indices_sum(int i0, int i2);
+
 
 //    /*Define the operator of multiplying a p-vertex with a number.    TODO generalize it to multiply by type Q ?*/
 //    friend pvert operator*(double alpha, const pvert& vertex);
@@ -289,6 +325,20 @@ class tvert{
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
     vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
+
+    /* Lists of corresponding Keldysh components to indices in range 0...2 or 0...5 (depending on diagrammatic class)*/
+    /*K1- and K2-classes*/
+    int list_component_1_K1 [8] = {1, 2, 4, 7, 8, 11, 13, 14};
+    int list_component_2_K1 [4] = {3, 6, 9, 12};
+
+
+    /*K3-class*/
+    int list_component_0_K3 [1] = {0};
+    int list_component_1_K3 [4] = {1, 2, 4, 8};
+    int list_component_2_K3 [2] = {3, 12};
+    int list_component_3_K3 [2] = {5, 10};
+    int list_component_4_K3 [2] = {6, 9};
+    int list_component_5_K3 [4] = {7,11,13,14};
 
 public:
 /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
@@ -385,6 +435,9 @@ public:
     /*Symmetry which interchanges both incoming and outgoing legs*/
     Q T3_K3(int, double, double, double, int);
 
+    /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the lower(0) and upper(1) vertices of a
+    * buuble in the t-channel*/
+    tuple<int, int> indices_sum(int i0, int i2);
 
 //    /*Define the operator of multiplying a p-vertex with a number.    TODO generalize it to multiply by type Q ?*/
 //    friend tvert operator*(double alpha, const tvert& vertex);
@@ -414,7 +467,6 @@ public:
         vertex3.K3 = vertex1.K3 * vertex2.K3;
         return vertex3;
     }
-
 
 };
 
@@ -824,6 +876,18 @@ template<typename Q> Q avert<Q>::T3_K3(int iK, double w_a, double v1_a, double v
     return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
 }
 
+template<typename Q> tuple<int, int> avert<Q>::indices_sum(int i0, int i2)
+{
+    int a1pi0, a2pi0, a1i0, a2i0, a1pi2, a2pi2, a1i2, a2i2;
+
+    tie(a1pi0, a2pi0, a1i0, a2i0) = alphas(i0);
+    tie(a1pi2, a2pi2, a1i2, a2i2) = alphas(i2);
+
+    return make_tuple(
+            8*(a1pi0-1) + 4*(a2i2-1) + 2*(a1pi2-1) + 1*(a2i0-1),
+            8*(a1i2-1) + 4*(a2pi0-1) + 2*(a1i0-1) + 1*(a2pi2-1));
+}
+
 
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
 
@@ -1140,6 +1204,18 @@ template<typename Q> Q pvert<Q>::T3_K3(int iK, double w_p, double v1_p, double v
     return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
 }
 
+template<typename Q> tuple<int, int> pvert<Q>::indices_sum(int i0, int i2)
+{
+    int a1pi0, a2pi0, a1i0, a2i0, a1pi2, a2pi2, a1i2, a2i2;
+
+    tie(a1pi0, a2pi0, a1i0, a2i0) = alphas(i0);
+    tie(a1pi2, a2pi2, a1i2, a2i2) = alphas(i2);
+
+    return make_tuple(
+            8*(a1pi0-1) + 4*(a2pi0-1) + 2*(a1pi2-1) + 1*(a2pi2-1),
+            8*(a1i2-1) + 4*(a2i2-1) + 2*(a1i0-1) + 1*(a2i0));
+}
+
 /****************************************** MEMBER FUNCTIONS OF THE T-VERTEX ******************************************/
 
 //this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
@@ -1451,6 +1527,18 @@ template<typename Q> Q tvert<Q>::T3_K3(int iK, double w_t, double v1_t, double v
 {
     auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
     return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+}
+
+template<typename Q> tuple<int, int> tvert<Q>::indices_sum(int i0, int i2)
+{
+    int a1pi0, a2pi0, a1i0, a2i0, a1pi2, a2pi2, a1i2, a2i2;
+
+    tie(a1pi0, a2pi0, a1i0, a2i0) = alphas(i0);
+    tie(a1pi2, a2pi2, a1i2, a2i2) = alphas(i2);
+
+    return make_tuple(
+            8*(a1pi0-1) + 4*(a1i2-1) + 2*(a1i0-1) + 1*(a1pi2),
+            8*(a2i2-1) + 4*(a2pi0-1) + 2*(a2pi2-1) + 1*(a2i0-1));
 }
 
 
