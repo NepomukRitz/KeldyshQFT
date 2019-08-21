@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef complex<double> comp; // TODO: redefine comp() function in Julian's kagome.cpp
+typedef complex<double> comp;
 
 
 int main() {
