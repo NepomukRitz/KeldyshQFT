@@ -110,8 +110,6 @@ cvec propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<com
 }
 
 #elif REG==2
-# ifdef GAMMA_REG
-
 
 /*******PROPAGATOR FUNCTIONS***********/
 comp gR(double Lambda, double omega);
@@ -237,7 +235,6 @@ cvec propag(double Lambda, double w, SelfEnergy<comp> selfenergy, SelfEnergy<com
     return resp;
 }
 
-# endif
 #endif
 
 #endif //KELDYSH_MFRG_PROPAGATOR_H
