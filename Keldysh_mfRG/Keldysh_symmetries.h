@@ -5,8 +5,6 @@
 #ifndef KELDYSH_MFRG_KELDYSH_SYMMETRIES_H
 #define KELDYSH_MFRG_KELDYSH_SYMMETRIES_H
 
-// TODO: convert from index (0,...,5) to index (0,...,15)
-
 /*T_1 switches the incoming legs*/
 int T_1_Keldysh(int iK)
 {
@@ -221,8 +219,9 @@ int T_3_Keldysh(int iK) {
 //    return (index3)*8 + (index2)*4 + (index1)*2 + (index0);
 //}
 
-/* This function converts indices in the range 0...5 to the actual Keldysh inndex they correspond to
- * Rule: {0,1,2,3,4,5} -> {0,1,3,5,6,7}*/
+/* This function converts indices in the range 0...5 to the actual Keldysh index they correspond to
+ * Rule: {0,1,2,3,4,5} -> {0,1,3,5,6,7}
+ * The components 0,1,3,5,6 and 7 are the chosen reference components, numerated in the 0...15 "convention"*/
 int convertToRealIndex(int index)
 {
     if(index ==0 || index == 1)
