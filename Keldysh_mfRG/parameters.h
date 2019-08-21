@@ -18,8 +18,11 @@ const double pi = 3.1415926535897;
 
 /*Regulator - TODO: fix to preprocessor macro
  * 1: sharp cutoff, 2: hybridization flow*/
-const int REG = 2;
-const double sharp = 2; // Sharpness of the smoothened regulator cutoff
+#define REG 2
+//const double sharp = 2; // Sharpness of the smoothened regulator cutoff -> would be for smooth cutoff. Have not implemented
+# if REG==2
+#   define GAMMA_REG 1.
+#endif
 
 /*Dispersion relation and sharpness of regulator*/
 const comp epsilon = 0.0;   //NOLINT(cert-err58-cpp)
@@ -34,7 +37,7 @@ const double U = 1.0;
 
 /*Number of frequency points for the self energy and the susceptibility*/
 const int nSE = 10;
-const int nSUSC = 10;
+const int nSUSC = nSE;  //Makes no sense to have these values be different from one another
 
 /*Number of frequency points for the K1 class(bosonic freq wa), K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic
  * frequency wa and fermionic freqs nua and nuap) for the a-channel*/
@@ -84,8 +87,9 @@ const int nK_K3 = 6;
 const int n_in = 1;
 
 // temporarily fix stuff to remove warnings
-rvec ffreqs (1); // NOLINT(cert-err58-cpp)      //TODO self energy and susceptibility interpolation functions depend on this vector. change length appropriately
-rvec bfreqs (1); // NOLINT(cert-err58-cpp)
+rvec ffreqs (nSE); // NOLINT(cert-err58-cpp)
+rvec bfreqs (nSE); // NOLINT(cert-err58-cpp)    //Length of this vector not necessarily fixed by nSE... Think of Wentzell paper
+                                                //where #of bosonic freqs = 2x #of fermionic freqs
 int nw, nw1, nw2, nw3, wlimit;
 
 /*Frequency grids for each channel*/
