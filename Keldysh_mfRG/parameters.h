@@ -16,7 +16,7 @@ const double pi = 3.1415926535897;
  *1: log-grid, 2: linear grid*/
 #define GRID 2
 
-/*Regulator - TODO: fix to preprocessor macro
+/*Regulator
  * 1: sharp cutoff, 2: hybridization flow*/
 #define REG 2
 //const double sharp = 2; // Sharpness of the smoothened regulator cutoff -> would be for smooth cutoff. Have not implemented
@@ -79,12 +79,18 @@ const double w_upper_f = -w_lower_f;        //Symmetric grid
 
 
 /*Number of independent Keldysh components for the respective diagrammatic class*/
-const int nK_K1 = 2;
-const int nK_K2 = 2;
-const int nK_K3 = 6;
+const int nK_K1 = 2;        //For channels a and t, these two are components 1 and 3 (applies for K1 and K2)
+const int nK_K2 = 2;        //For channel p, these two components are 1 and 5 (applies for K1 and K2)
+const int nK_K3 = 6;        //For all channels, these 6 components are 0, 1, 3, 5, 6, 7 (independent components in order of appearance
 
 /*Dimension of the space defining the internal structure*/
 const int n_in = 1;
+
+/*Vector of indices of independent components of the K3-class*/
+vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});         //TODO to perform sums over these indices, make range-based loops!
+
+/*Vector of indices of the non-zero Keldysh components of the bubbles*/
+vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});
 
 // temporarily fix stuff to remove warnings
 rvec ffreqs (nSE); // NOLINT(cert-err58-cpp)
