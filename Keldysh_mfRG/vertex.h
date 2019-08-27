@@ -97,12 +97,12 @@ public:
      * only have the values 'a', 'p', or 't'.*/
     tuple<double, double, double> transfToA(double, double, double, char);
 
-    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
-    tuple<double, double, double> transfToA(double, double, double);
-
-    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
-     * I.e. is the inverse of the function above*/
-    tuple<double, double, double> transfBackA(double, double, double);
+//    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
+//    tuple<double, double, double> transfToA(double, double, double);
+//
+//    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
+//     * I.e. is the inverse of the function above*/
+//    tuple<double, double, double> transfBackA(double, double, double);
 
 
     /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
@@ -259,12 +259,12 @@ public:
  * only have the values 'a', 'p', or 't'.*/
     tuple<double, double, double> transfToP(double, double, double, char);
 
-    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
-    tuple<double, double, double> transfToP(double, double, double);
-
-    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
- * I.e. is the inverse of the function above*/
-    tuple<double, double, double> transfBackP(double, double, double);
+//    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
+//    tuple<double, double, double> transfToP(double, double, double);
+//
+//    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
+// * I.e. is the inverse of the function above*/
+//    tuple<double, double, double> transfBackP(double, double, double);
 
 
     /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
@@ -420,12 +420,12 @@ public:
      * only have the values 'a', 'p', or 't'.*/
     tuple<double, double, double> transfToT(double, double, double, char);
 
-    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
-    tuple<double, double, double> transfToT(double, double, double);
-
-    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
-     * I.e. is the inverse of the function above*/
-    tuple<double, double, double> transfBackT(double, double, double);
+//    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
+//    tuple<double, double, double> transfToT(double, double, double);
+//
+//    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
+//     * I.e. is the inverse of the function above*/
+//    tuple<double, double, double> transfBackT(double, double, double);
 
 
     /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
@@ -938,36 +938,39 @@ template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w,
         v2_a = (v1+v2-w)/2.;}
     return make_tuple(w_a, v1_a, v2_a);
 }
-template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w, double v1, double v2)
-{
-    double w_a=0., v1_a=0., v2_a=0.;
-    w_a = v1-v2;
-    v1_a = w;
-    v2_a = v2;
-    return make_tuple(w_a, v1_a, v2_a);
-}
-template<typename Q> tuple<double, double, double> avert<Q>::transfBackA(double w_a, double v1_a, double v2_a)
-{
-    double v1p=0., v2p=0., v1=0.;
-    v1p = v1_a;
-    v2p = w_a+v2_a;
-    v1 = v2_a;
 
-    return make_tuple(v1p, v2p, v1);
-}
+//template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double v1p, double v2p, double v1)
+//{
+//    double w_a=0., v1_a=0., v2_a=0.;
+//    w_a = v2p-v1;
+//    v1_a = v1p;
+//    v2_a = v1;
+//    return make_tuple(w_a, v1_a, v2_a);
+//}
+//template<typename Q> tuple<double, double, double> avert<Q>::transfBackA(double w_a, double v1_a, double v2_a)
+//{
+//    double v1p=0., v2p=0., v1=0.;
+//    v1p = v1_a;
+//    v2p = w_a+v2_a;
+//    v1 = v2_a;
+//
+//    return make_tuple(v1p, v2p, v1);
+//}
 
 template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T1(int iK, double w_a, double v1_a, double v2_a, int i_in)
 {
     int iKp = T_1_Keldysh(iK);
     double trans_w_a, trans_v1_a, trans_v2_a;
-    double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+//    /*This is the flipping stage!*/
+//    ferm1 = ferm1p+ferm2p-ferm1;
+//    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    ferm1 = ferm1p+ferm2p-ferm1;
-
-    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_a = v2_a-v1_a;
+    trans_v1_a = v1_a;
+    trans_v2_a = w_a+v2_a;
 
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -975,16 +978,18 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 {
     int iKp = T_2_Keldysh(iK);
     double trans_w_a, trans_v1_a, trans_v2_a;
-    double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+//    /*This is the flipping stage!*/
+//    double temp = ferm1p;
+//    ferm1p = ferm2p;
+//    ferm2p = temp;
+//    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    double temp = ferm1p;
-    ferm1p = ferm2p;
-    ferm2p = temp;
-
-    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_a = v1_a - w_a - v2_a;
+    trans_v1_a = w_a + v1_a;
+    trans_v2_a = v2_a;
 
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -992,17 +997,19 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 {
     int iKp = T_3_Keldysh(iK);
     double trans_w_a, trans_v1_a, trans_v2_a;
-    double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a,v1_a, v2_a);
+//    /*This is the flipping stage!*/
+//    ferm1 = ferm1p+ferm2p-ferm1;
+//    double temp = ferm1p;
+//    ferm1p = ferm2p;
+//    ferm2p = temp;
+//    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    ferm1 = ferm1p+ferm2p-ferm1;
-    double temp = ferm1p;
-    ferm1p = ferm2p;
-    ferm2p = temp;
-
-    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_a = v1_a - w_a - v2_a;
+    trans_v1_a = w_a + v1_a;
+    trans_v2_a = w_a+v2_a;
 
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -1013,18 +1020,19 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
     double trans_w_a, trans_v1_a, trans_v2_a;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a, v1_a, v2_a);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackA(w_a, v1_a, v2_a);
+//    //This is the flipping stage
+//    double ferm2 = ferm1p+ferm2p-ferm1;
+//    double temp1 = ferm1, temp2 = ferm2;
+//    ferm1 = ferm1p;
+//    ferm2 = ferm2p;
+//    ferm1p = temp1;
+//    ferm2p = temp2;
+//    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
-
-    //This is the flipping stage
-    double ferm2 = ferm1p+ferm2p-ferm1;
-    double temp1 = ferm1, temp2 = ferm2;
-    ferm1 = ferm1p;
-    ferm2 = ferm2p;
-    ferm1p = temp1;
-    ferm2p = temp2;
-
-    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
+    trans_w_a=w_a;
+    trans_v1_a = v2_a;
+    trans_v2_a = v1_a;
 
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -1423,23 +1431,24 @@ template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w,
         v2_p = (v2-v1-w)/2.;}
     return make_tuple(w_p, v1_p, v2_p);
 }
-template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w, double v1, double v2)
-{
-    double w_p=0., v1_p=0., v2_p=0.;
-    w = v1+v2;
-    v1_p = w;
-    v2_p = v2;
-    return make_tuple(w_p, v1_p, v2_p);
-}
-template<typename Q> tuple<double, double, double> pvert<Q>::transfBackP(double w_p, double v1_p, double v2_p)
-{
-    double v1p=0., v2p=0., v1=0.;
-    v1p = v1_p;
-    v2p = w_p-v2_p;
-    v1 = v2_p;
 
-    return make_tuple(v1p, v2p, v1);
-}
+//template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double v1p, double v2p, double v2)
+//{
+//    double w_p=0., v1_p=0., v2_p=0.;
+//    w_p = v2p+v2;
+//    v1_p = v1p;
+//    v2_p = v2;
+//    return make_tuple(w_p, v1_p, v2_p);
+//}
+//template<typename Q> tuple<double, double, double> pvert<Q>::transfBackP(double w_p, double v1_p, double v2_p)
+//{
+//    double v1p=0., v2p=0., v1=0.;
+//    v1p = v1_p;
+//    v2p = w_p-v2_p;
+//    v1 = v2_p;
+//
+//    return make_tuple(v1p, v2p, v1);
+//}
 
 template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T1(int iK, double w_p, double v1_p, double v2_p, int i_in)
 {
@@ -1447,12 +1456,15 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
     double trans_w_p, trans_v1_p, trans_v2_p;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+//    /*This is the flipping stage!*/
+//    ferm1 = ferm1p+ferm2p-ferm1;
+//    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    ferm1 = ferm1p+ferm2p-ferm1;
-
-    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_p = 2.*w_p + v1_p - 3.*v2_p;
+    trans_v1_p = v1_p;
+    trans_v2_p = w_p + v1_p - 2.*v2_p;
 
     return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
@@ -1462,14 +1474,17 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
     double trans_w_p, trans_v1_p, trans_v2_p;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+//    /*This is the flipping stage!*/
+//    double temp = ferm1p;
+//    ferm1p = ferm2p;
+//    ferm2p = temp;
+//    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    double temp = ferm1p;
-    ferm1p = ferm2p;
-    ferm2p = temp;
-
-    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_p = v1_p+v2_p;
+    trans_v1_p = w_p-v2_p;
+    trans_v2_p = v2_p;
 
     return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
@@ -1479,36 +1494,40 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
     double trans_w_p, trans_v1_p, trans_v2_p;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
+//    /*This is the flipping stage!*/
+//    ferm1 = ferm1p+ferm2p-ferm1;
+//    double temp = ferm1p;
+//    ferm1p = ferm2p;
+//    ferm2p = temp;
+//    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    ferm1 = ferm1p+ferm2p-ferm1;
-    double temp = ferm1p;
-    ferm1p = ferm2p;
-    ferm2p = temp;
-
-    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_p = w_p + 2.*(v1_p-v2_p);
+    trans_v1_p = w_p - v2_p;
+    trans_v2_p = w_p + v1_p - 2.*v2_p;
 
     return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
-
 template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_TC(int iK, double w_p, double v1_p, double v2_p, int i_in)
 {
     int iKp = T_C_Keldysh(iK);
     double trans_w_p, trans_v1_p, trans_v2_p;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p, v1_p, v2_p);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p, v1_p, v2_p);
+//    //This is the flipping stage
+//    double ferm2 = ferm1p+ferm2p-ferm1;
+//    double temp1 = ferm1, temp2 = ferm2;
+//    ferm1 = ferm1p;
+//    ferm2 = ferm2p;
+//    ferm1p = temp1;
+//    ferm2p = temp2;
+//    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
-    //This is the flipping stage
-    double ferm2 = ferm1p+ferm2p-ferm1;
-    double temp1 = ferm1, temp2 = ferm2;
-    ferm1 = ferm1p;
-    ferm2 = ferm2p;
-    ferm1p = temp1;
-    ferm2p = temp2;
-
-    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
+    trans_w_p = w_p;
+    trans_v1_p = v2_p;
+    trans_v2_p = v1_p;
 
     return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
@@ -1911,22 +1930,23 @@ template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w,
         v2_t = v2;}
     return make_tuple(w_t, v1_t, v2_t);
 }
-template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w, double v1, double v2) {
-    double w_t=0.,v1_t=0., v2_t=0.;
-    w_t = v1-v2;
-    v1_t = w;
-    v2_t = v2;
-    return make_tuple(w_t, v1_t, v2_t);
-}
-template<typename Q> tuple<double, double, double> tvert<Q>::transfBackT(double w_t, double v1_t, double v2_t)
-{
-    double v1p=0., v2p=0., v1=0.;
-    v1p = v1_t;
-    v2p = w_t+v2_t;
-    v1 = v2_t;
 
-    return make_tuple(v1p, v2p, v1);
-}
+//template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w, double v1, double v2) {
+//    double w_t=0.,v1_t=0., v2_t=0.;
+//    w_t = v1-v2;
+//    v1_t = w;
+//    v2_t = v2;
+//    return make_tuple(w_t, v1_t, v2_t);
+//}
+//template<typename Q> tuple<double, double, double> tvert<Q>::transfBackT(double w_t, double v1_t, double v2_t)
+//{
+//    double v1p=0., v2p=0., v1=0.;
+//    v1p = v1_t;
+//    v2p = w_t+v2_t;
+//    v1 = v2_t;
+//
+//    return make_tuple(v1p, v2p, v1);
+//}
 
 template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T1(int iK, double w_t, double v1_t, double v2_t, int i_in)
 {
@@ -1934,12 +1954,15 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
     double trans_w_t, trans_v1_t, trans_v2_t;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t, v1_t, v2_t);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t, v1_t, v2_t);
+//    /*This is the flipping stage!*/
+//    ferm1 = ferm1p+ferm2p-ferm1;
+//    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    ferm1 = ferm1p+ferm2p-ferm1;
-
-    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_t = v2_t-v1_t;
+    trans_v1_t = v1_t;
+    trans_v2_t = w_t + v1_t;
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
@@ -1949,14 +1972,17 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
     double trans_w_t, trans_v1_t, trans_v2_t;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t,v1_t, v2_t);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t,v1_t, v2_t);
+//    /*This is the flipping stage!*/
+//    double temp = ferm1p;
+//    ferm1p = ferm2p;
+//    ferm2p = temp;
+//    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    double temp = ferm1p;
-    ferm1p = ferm2p;
-    ferm2p = temp;
-
-    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_t = v1_t-v2_t;
+    trans_v1_t = w_t+v2_t;
+    trans_v2_t = v2_t;
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
@@ -1966,15 +1992,18 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
     double trans_w_t, trans_v1_t, trans_v2_t;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t,v1_t, v2_t);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t,v1_t, v2_t);
+//    /*This is the flipping stage!*/
+//    ferm1 = ferm1p+ferm2p-ferm1;
+//    double temp = ferm1p;
+//    ferm1p = ferm2p;
+//    ferm2p = temp;
+//    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
-    /*This is the flipping stage!*/
-    ferm1 = ferm1p+ferm2p-ferm1;
-    double temp = ferm1p;
-    ferm1p = ferm2p;
-    ferm2p = temp;
-
-    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_t = -w_t;
+    trans_v1_t = w_t+v2_t;
+    trans_v2_t = w_t+v1_t;
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
@@ -1985,17 +2014,20 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
     double trans_w_t, trans_v1_t, trans_v2_t;
     double ferm1p, ferm2p, ferm1;
 
-    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t, v1_t, v2_t);
+//    tie(ferm1p, ferm2p, ferm1) = transfBackT(w_t, v1_t, v2_t);
+//    //This is the flipping stage
+//    double ferm2 = ferm1p+ferm2p-ferm1;
+//    double temp1 = ferm1, temp2 = ferm2;
+//    ferm1 = ferm1p;
+//    ferm2 = ferm2p;
+//    ferm1p = temp1;
+//    ferm2p = temp2;
+//    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
-    //This is the flipping stage
-    double ferm2 = ferm1p+ferm2p-ferm1;
-    double temp1 = ferm1, temp2 = ferm2;
-    ferm1 = ferm1p;
-    ferm2 = ferm2p;
-    ferm1p = temp1;
-    ferm2p = temp2;
-
-    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_t = w_t;
+    trans_v1_t = v2_t;
+    trans_v2_t = v1_t;
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
