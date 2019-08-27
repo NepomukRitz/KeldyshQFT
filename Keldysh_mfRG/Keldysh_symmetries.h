@@ -5,6 +5,8 @@
 #ifndef KELDYSH_MFRG_KELDYSH_SYMMETRIES_H
 #define KELDYSH_MFRG_KELDYSH_SYMMETRIES_H
 
+#include <array>
+
 /*T_1 switches the incoming legs*/
 int T_1_Keldysh(int iK)
 {
@@ -23,7 +25,6 @@ int T_1_Keldysh(int iK)
 int T_2_Keldysh(int iK)
 {
     int alpha1p, alpha2p, alpha1, alpha2, iKp;
-
     alpha2 = iK%2;
     alpha1 = (iK%4)/2;
     alpha2p = (iK%8)/4;
@@ -35,17 +36,46 @@ int T_2_Keldysh(int iK)
 }
 
 /* T3 switches both incoming and outgoing legs */
-int T_3_Keldysh(int iK) {
+int T_3_Keldysh(int iK)
+{
     int alpha1p, alpha2p, alpha1, alpha2, iKp;
-
     alpha2 = iK % 2;
     alpha1 = (iK % 4) / 2;
     alpha2p = (iK % 8) / 4;
     alpha1p = (iK % 16) / 8;
 
-    iKp = alpha2p * 8 + alpha1p * 4 + alpha2 * 2 + alpha1;
+    iKp = alpha2p*8 + alpha1p*4 + alpha2*2 + alpha1;
 
     return iKp;
+}
+
+/*T_C interchanges incoming with outgoing legs i.e. complex conjugation*/
+int T_C_Keldysh(int iK)
+{
+    int alpha1p, alpha2p, alpha1, alpha2, iKp;
+    alpha2 = iK % 2;
+    alpha1 = (iK % 4) / 2;
+    alpha2p = (iK % 8) / 4;
+    alpha1p = (iK % 16) / 8;
+
+    iKp = alpha1*8 + alpha2*4 + alpha1p*2 + alpha2p;
+
+    return iKp;
+}
+
+bool isInList (int iK, const int list[], int size)
+{
+    bool resp = false;
+    int i=0;
+    while(!resp && i<size)
+    {
+        if(iK == list[i])
+        {
+            resp = true;
+        }
+        i++;
+    }
+    return resp;
 }
 
 
