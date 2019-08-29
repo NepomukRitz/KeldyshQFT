@@ -369,7 +369,7 @@ public:
  * This function aims to be the sole function one needs to call to read the full vertex*/
     Q value (int iK, double, double, double, int, char);
 
-/*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
+    /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
      * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
     Q vvalsmooth(int, double, double, double, int, char);
 
@@ -601,6 +601,10 @@ public:
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
 //Here iK is in 0...15 already. Only need to check to what component to transfer to.
 template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
+
+    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
+     * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
+
     double w_a=0., v1_a=0., v2_a=0.;
     tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
     int iK1, iK2, iK3;
@@ -616,7 +620,7 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK1, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK1 = 0;
-        valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
+        valueK1 = -K1_vvalsmooth(iK1,w_a,i_in);
 
     }
     else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
@@ -638,12 +642,12 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
     else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
     else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
@@ -674,32 +678,32 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
     else if(iK==4)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
     }
     else if(iK == 6)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
     else if(iK == 8)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
     }
     else if(iK == 9)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
 
     else if(iK == 10)
@@ -713,21 +717,21 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
 
     else if(iK == 12)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 3;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
     }
 
     else if(iK == 13)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
     }
 
     else if(iK == 14)
@@ -735,7 +739,7 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -930,12 +934,12 @@ template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w,
         v2_a = v2;}
     else if(channel == 'p'){
         w_a = -v2-v2;
-        v1_a = (v1-v2+w)/2.;
-        v2_a = (v2-v1+w)/2.;}
+        v1_a = 0.5*(w+v1-v2);
+        v2_a = 0.5*(w-v1+v2);}
     else if(channel == 't'){
         w_a = v1-v2;
-        v1_a = (v1+v2+w)/2.;
-        v2_a = (v1+v2-w)/2.;}
+        v1_a = 0.5*( w+v1+v2);
+        v2_a = 0.5*(-w+v1+v2);}
     return make_tuple(w_a, v1_a, v2_a);
 }
 
@@ -968,9 +972,9 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 //    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_a = v2_a-v1_a;
-    trans_v1_a = v1_a;
-    trans_v2_a = w_a+v2_a;
+    trans_w_a = v2_a - v1_a;
+    trans_v1_a = 0.5*(v1_a+v2_a-w_a);
+    trans_v2_a = 0.5*(v1_a+v2_a+w_a);
 
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -987,9 +991,9 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 //    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_a = v1_a - w_a - v2_a;
-    trans_v1_a = w_a + v1_a;
-    trans_v2_a = v2_a;
+    trans_w_a = v1_a - v2_a;
+    trans_v1_a = 0.5*(v1_a+v2_a+w_a);
+    trans_v2_a = 0.5*(v1_a+v2_a-w_a);
 
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -1007,9 +1011,9 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 //    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_a = v1_a - w_a - v2_a;
-    trans_v1_a = w_a + v1_a;
-    trans_v2_a = w_a+v2_a;
+    trans_w_a = -w_a;
+    trans_v1_a = v2_a;
+    trans_v2_a = v1_a;
 
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -1030,7 +1034,7 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 //    ferm2p = temp2;
 //    tie(trans_w_a, trans_v1_a, trans_v2_a) = transfToA(ferm1p, ferm2p, ferm1);
 
-    trans_w_a=w_a;
+    trans_w_a = w_a;
     trans_v1_a = v2_a;
     trans_v2_a = v1_a;
 
@@ -1090,6 +1094,10 @@ template<typename Q> tuple<int, int> avert<Q>::indices_sum(int i0, int i2)
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
 //Here iK is in 0...15 already. Only need to check to what component to transfer to.
 template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
+
+    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
+    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
+
     double w_p=0., v1_p=0., v2_p=0.;
     tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
     int iK1, iK2, iK3;
@@ -1105,7 +1113,7 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK1, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK1 = 0;
-        valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
+        valueK1 = conj(K1_vvalsmooth(iK1,w_p,i_in));
 
     }
     else if(isInList(iK, list_K1_T0_comp5, list_K1_T0_comp5.size()))
@@ -1128,18 +1136,18 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        valueK2 = -K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
     else if(isInList(iK,list_K2_TC_comp1,list_K2_TC_comp1.size())){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        valueK2 = conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
     }
     else if(isInList(iK,list_K2_T2TC_comp1,list_K2_T2TC_comp1.size())){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        valueK2 = -conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
     }
     else if(isInList(iK,list_K2_T0_comp5,list_K2_T0_comp5.size())){
         iK2 = 1;
@@ -1165,32 +1173,32 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
     else if(iK==4)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
     }
     else if(iK == 6)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
     else if(iK == 8)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
     }
     else if(iK == 9)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
 
     else if(iK == 10)
@@ -1204,21 +1212,21 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
 
     else if(iK == 12)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 3;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
     }
 
     else if(iK == 13)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
     }
 
     else if(iK == 14)
@@ -1226,7 +1234,7 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -1419,16 +1427,16 @@ template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w,
     double w_p=0., v1_p = 0., v2_p=0.;
     if(channel == 'a'){
         w_p = v2+v1;
-        v1_p = (v1-v2-w)/2.;
-        v2_p = (v2-v1-w)/2.;}
+        v1_p = 0.5*(-w+v1-v2);
+        v2_p = 0.5*(-w-v1+v2);}
     else if(channel == 'p'){
         w_p = w;
         v1_p = v1;
         v2_p = v2;}
     else if(channel == 't'){
         w_p = v1+v2;
-        v1_p = (v1+v2+w)/2.;
-        v2_p = (v2-v1-w)/2.;}
+        v1_p = 0.5*( w-v1+v2);
+        v2_p = 0.5*(-w-v1+v2);}
     return make_tuple(w_p, v1_p, v2_p);
 }
 
@@ -1462,9 +1470,9 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
 //    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_p = 2.*w_p + v1_p - 3.*v2_p;
+    trans_w_p = w_p;
     trans_v1_p = v1_p;
-    trans_v2_p = w_p + v1_p - 2.*v2_p;
+    trans_v2_p = -v2_p;
 
     return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
@@ -1482,8 +1490,8 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
 //    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_p = v1_p+v2_p;
-    trans_v1_p = w_p-v2_p;
+    trans_w_p = w_p;
+    trans_v1_p = -v1_p;
     trans_v2_p = v2_p;
 
     return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
@@ -1503,9 +1511,9 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
 //    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_p = w_p + 2.*(v1_p-v2_p);
-    trans_v1_p = w_p - v2_p;
-    trans_v2_p = w_p + v1_p - 2.*v2_p;
+    trans_w_p = w_p;
+    trans_v1_p = -v1_p;
+    trans_v2_p = -v2_p;
 
     return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
@@ -1592,6 +1600,10 @@ template<typename Q> tuple<int, int> pvert<Q>::indices_sum(int i0, int i2)
 /****************************************** MEMBER FUNCTIONS OF THE T-VERTEX ******************************************/
 
 template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
+
+    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
+    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
+
     double w_t=0., v1_t=0., v2_t=0.;
     tie(w_t, v1_t, v2_t) = transfToT(w,v1,v2,channel);
     int iK1, iK2, iK3;
@@ -1607,7 +1619,7 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK1, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK1 = 0;
-        valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
+        valueK1 = -K1_vvalsmooth(iK1,w_t,i_in);
 
     }
     else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
@@ -1629,12 +1641,12 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
     else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
     else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
@@ -1665,32 +1677,32 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
     else if(iK==4)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
     }
     else if(iK == 6)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
     else if(iK == 8)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
     }
     else if(iK == 9)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
 
     else if(iK == 10)
@@ -1704,21 +1716,21 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
 
     else if(iK == 12)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 3;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
     }
 
     else if(iK == 13)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
     }
 
     else if(iK == 14)
@@ -1726,7 +1738,7 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 7;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -1918,12 +1930,12 @@ template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w,
     double w_t=0.,v1_t=0., v2_t=0.;
     if(channel == 'a'){
         w_t = v1-v2;
-        v1_t = (v1-v2+w)/2.;
-        v2_t = (v1+v2-w)/2.;}
+        v1_t = 0.5*( w+v1+v2);
+        v2_t = 0.5*(-w+v1+v2);}
     else if(channel == 'p'){
         w_t = v1-v2;
-        v1_t = (w-v2-v1)/2.;
-        v2_t = (v2+v1+w)/2.;}
+        v1_t = 0.5*(w-v1-v2);
+        v2_t = 0.5*(w+v1+v2);}
     else if(channel == 't'){
         w_t = w;
         v1_t = v1;
@@ -1960,9 +1972,9 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
 //    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = v2_t-v1_t;
-    trans_v1_t = v1_t;
-    trans_v2_t = w_t + v1_t;
+    trans_w_t = v2_t - v1_t;
+    trans_v1_t = 0.5*(v1_t+v2_t-w_t);
+    trans_v2_t = 0.5*(v1_t+v2_t+w_t);
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
@@ -1981,8 +1993,8 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_t = v1_t-v2_t;
-    trans_v1_t = w_t+v2_t;
-    trans_v2_t = v2_t;
+    trans_v1_t = 0.5*(v1_t+v2_t+w_t);
+    trans_v2_t = 0.5*(v1_t+v2_t+w_t);
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
@@ -2002,8 +2014,8 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_t = -w_t;
-    trans_v1_t = w_t+v2_t;
-    trans_v2_t = w_t+v1_t;
+    trans_v1_t = v2_t;
+    trans_v2_t = v1_t;
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
@@ -2025,9 +2037,9 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
 //    tie(trans_w_t, trans_v1_t, trans_v2_t) = transfToT(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = w_t;
-    trans_v1_t = v2_t;
-    trans_v2_t = v1_t;
+    trans_w_t = -w_t;
+    trans_v1_t = v1_t;
+    trans_v2_t = v2_t;
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
