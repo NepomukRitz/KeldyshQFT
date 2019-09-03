@@ -943,24 +943,6 @@ template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w,
     return make_tuple(w_a, v1_a, v2_a);
 }
 
-//template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double v1p, double v2p, double v1)
-//{
-//    double w_a=0., v1_a=0., v2_a=0.;
-//    w_a = v2p-v1;
-//    v1_a = v1p;
-//    v2_a = v1;
-//    return make_tuple(w_a, v1_a, v2_a);
-//}
-//template<typename Q> tuple<double, double, double> avert<Q>::transfBackA(double w_a, double v1_a, double v2_a)
-//{
-//    double v1p=0., v2p=0., v1=0.;
-//    v1p = v1_a;
-//    v2p = w_a+v2_a;
-//    v1 = v2_a;
-//
-//    return make_tuple(v1p, v2p, v1);
-//}
-
 template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T1(int iK, double w_a, double v1_a, double v2_a, int i_in)
 {
     int iKp = T_1_Keldysh(iK);
@@ -1017,7 +999,6 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
 
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
-
 template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_TC(int iK, double w_a, double v1_a, double v2_a, int i_in)
 {
     int iKp = T_C_Keldysh(iK);
@@ -1252,7 +1233,6 @@ template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double w, double v1, double
 
     return value;
 }
-
 template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in,  char channel, int p, char f) {//additional specification of vertex number and bubble type (K/L/M/R) for (K1/K2/K2b/R0)-class
 
     double u = 0., w1_u = 0., w2_u = 0.;
@@ -1439,24 +1419,6 @@ template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w,
         v2_p = 0.5*(-w-v1+v2);}
     return make_tuple(w_p, v1_p, v2_p);
 }
-
-//template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double v1p, double v2p, double v2)
-//{
-//    double w_p=0., v1_p=0., v2_p=0.;
-//    w_p = v2p+v2;
-//    v1_p = v1p;
-//    v2_p = v2;
-//    return make_tuple(w_p, v1_p, v2_p);
-//}
-//template<typename Q> tuple<double, double, double> pvert<Q>::transfBackP(double w_p, double v1_p, double v2_p)
-//{
-//    double v1p=0., v2p=0., v1=0.;
-//    v1p = v1_p;
-//    v2p = w_p-v2_p;
-//    v1 = v2_p;
-//
-//    return make_tuple(v1p, v2p, v1);
-//}
 
 template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T1(int iK, double w_p, double v1_p, double v2_p, int i_in)
 {
@@ -1943,23 +1905,6 @@ template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w,
     return make_tuple(w_t, v1_t, v2_t);
 }
 
-//template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w, double v1, double v2) {
-//    double w_t=0.,v1_t=0., v2_t=0.;
-//    w_t = v1-v2;
-//    v1_t = w;
-//    v2_t = v2;
-//    return make_tuple(w_t, v1_t, v2_t);
-//}
-//template<typename Q> tuple<double, double, double> tvert<Q>::transfBackT(double w_t, double v1_t, double v2_t)
-//{
-//    double v1p=0., v2p=0., v1=0.;
-//    v1p = v1_t;
-//    v2p = w_t+v2_t;
-//    v1 = v2_t;
-//
-//    return make_tuple(v1p, v2p, v1);
-//}
-
 template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T1(int iK, double w_t, double v1_t, double v2_t, int i_in)
 {
     int iKp = T_1_Keldysh(iK);
@@ -2019,7 +1964,6 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
 
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
-
 template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_TC(int iK, double w_t, double v1_t, double v2_t, int i_in)
 {
     int iKp = T_C_Keldysh(iK);
@@ -2102,7 +2046,6 @@ template<typename Q> tuple<int, int> tvert<Q>::indices_sum(int i0, int i2)
             8*(a2i2-1) + 4*(a2pi0-1) + 2*(a2pi2-1) + 1*(a2i0-1));
 }
 
-
 /************************************* MEMBER FUNCTIONS OF THE IRREDUCIBLE VERTEX *************************************/
 template <typename Q> Q irreducible<Q>::vval() {
     return U_bare;
@@ -2115,23 +2058,6 @@ template <typename Q> Q irreducible<Q>::vvalsmooth(double q, double w1, double w
 }
 template <typename Q> void irreducible<Q>::setvert( Q value){
     U_bare = value;}
-//operators for irreducible vertex
-//template <typename Q> irreducible<Q> operator*(double alpha, const irreducible<Q>& vertex) {
-//    irreducible<Q> result;
-//    result.U_bare = alpha * vertex.U_bare;
-//    return result;
-//
-//}
-//template <typename Q> irreducible<Q> operator*(const irreducible<Q>& vertex,double alpha) {
-//    irreducible<Q> result;
-//    result.U_bare = alpha * vertex.U_bare;
-//    return result;
-//}
-//template <typename Q> irreducible<Q> operator+(const irreducible<Q>& vertex1,const irreducible<Q>& vertex2) {
-//    irreducible<Q> result;
-//    result.U_bare = vertex1.U_bare + vertex2.U_bare;
-//    return result;
-//}
 
 
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
