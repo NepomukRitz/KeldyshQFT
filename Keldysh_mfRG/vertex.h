@@ -620,7 +620,10 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK1, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK1 = 0;
-        valueK1 = -K1_vvalsmooth(iK1,w_a,i_in);
+        if(fabs(w_a)>w_lower_b)
+            valueK1=0.;
+        else
+            valueK1 = -K1_vvalsmooth(iK1,w_a,i_in);
 
     }
     else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
@@ -642,17 +645,26 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
     else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
     else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
     else if(isInList(iK,list_K2_T0_comp3,list_K2_T0_comp3.size())){
         iK2 = 1;
@@ -661,7 +673,10 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T3_comp3,list_K2_T3_comp3.size())){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
     else
     {
@@ -678,7 +693,10 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
     else if(iK==4)
     {
@@ -690,34 +708,49 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 5;
-        valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
     else if(iK == 8)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
     }
     else if(iK == 9)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 5;
-        valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
 
     else if(iK == 10)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
 
     else if(iK == 11)
     {
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 7;
-        valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
     }
 
     else if(iK == 12)
@@ -739,7 +772,10 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 7;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -1117,7 +1153,10 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        valueK2 = -K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
+            valueK2 = 0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
     else if(isInList(iK,list_K2_TC_comp1,list_K2_TC_comp1.size())){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
@@ -1128,7 +1167,10 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        valueK2 = -conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
+            valueK2 = 0.;
+        else
+            valueK2 = -conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
     }
     else if(isInList(iK,list_K2_T0_comp5,list_K2_T0_comp5.size())){
         iK2 = 1;
@@ -1137,7 +1179,10 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T3_comp5,list_K2_T3_comp5.size())){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
+            valueK2 = 0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
     else
     {
@@ -1154,7 +1199,10 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
     else if(iK==4)
     {
@@ -1166,34 +1214,49 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 5;
-        valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
     else if(iK == 8)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
     }
     else if(iK == 9)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 5;
-        valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
 
     else if(iK == 10)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
 
     else if(iK == 11)
     {
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 7;
-        valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
 
     else if(iK == 12)
@@ -1215,7 +1278,10 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 7;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -1581,7 +1647,10 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK1, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK1 = 0;
-        valueK1 = -K1_vvalsmooth(iK1,w_t,i_in);
+        if(fabs(w_t)>w_upper_b)
+            valueK1 = 0.;
+        else
+            valueK1 = -K1_vvalsmooth(iK1,w_t,i_in);
 
     }
     else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
@@ -1603,17 +1672,26 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
     else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
     else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
     else if(isInList(iK,list_K2_T0_comp3,list_K2_T0_comp3.size())){
         iK2 = 1;
@@ -1622,7 +1700,10 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     else if(isInList(iK,list_K2_T3_comp3,list_K2_T3_comp3.size())){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
     else
     {
@@ -1639,7 +1720,10 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
     else if(iK==4)
     {
@@ -1651,34 +1735,49 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 5;
-        valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
     else if(iK == 8)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
     }
     else if(iK == 9)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 5;
-        valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
 
     else if(iK == 10)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 5;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
 
     else if(iK == 11)
     {
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 7;
-        valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
 
     else if(iK == 12)
@@ -1700,7 +1799,10 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 7;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
