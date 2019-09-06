@@ -27,9 +27,8 @@ const double pi = 3.1415926535897;
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 #define SUSC 1
 
-/*Dispersion relation and sharpness of regulator*/
+/*Dispersion relation (here, evidently, a constant)*/
 const comp epsilon = 0.0;   //NOLINT(cert-err58-cpp)
-const comp Gamma = 1.; // NOLINT(cert-err58-cpp)
 
 //Temperature and chemical potential
 const double T = 0.01;
