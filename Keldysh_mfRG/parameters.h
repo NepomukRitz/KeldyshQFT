@@ -41,6 +41,7 @@ const double U = 1.0;
 /*Number of frequency points for the self energy and the susceptibility*/
 const int nSE = 10;
 const int nSUSC = nSE;  //Makes no sense to have these values be different from one another
+const int nPROP = nSE;
 
 /*Number of frequency points for the K1 class(bosonic freq wa), K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic
  * frequency wa and fermionic freqs nua and nuap) for the a-channel*/
@@ -89,11 +90,19 @@ const int nK_K3 = 6;        //For all channels, these 6 components are 0, 1, 3, 
 /*Dimension of the space defining the internal structure*/
 const int n_in = 1;
 
-/*Vector of indices of independent components of the K3-class*/
-vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});         //TODO to perform sums over these indices, make range-based loops!
+/*Vector of indices of independent components of the diagrammatic classes, density channel*/
+vector<int> non_zero_Keldysh_K1a({1,3});                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2a({1,3});                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K1p({1,5});                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2p({1,5});                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K1t({1,3});                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2t({1,3});                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K3({0,1,3,5,7});           // NOLINT(cert-err58-cpp)       //TODO to perform sums over these indices, make range-based loops!
 
 /*Vector of indices of the non-zero Keldysh components of the bubbles*/
-vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});
+vector<int> non_zero_Keldysh_abubble({3,6,7,9,11,12,13,14,15});     // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_pbubble({3,6,7,9,11,12,13,14,15});     // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});    // NOLINT(cert-err58-cpp)
 
 // temporarily fix stuff to remove warnings
 rvec ffreqs (nSE); // NOLINT(cert-err58-cpp)
