@@ -5,9 +5,7 @@
 #ifndef KELDYSH_MFRG_SELFENERGY_H
 #define KELDYSH_MFRG_SELFENERGY_H
 
-#include "frequency_grid.h"
-
-//TODO: naming??
+#include "vertex.h"
 
 /******************CLASS FOR SELF ENERGY *************/
 template <typename Q>
@@ -67,10 +65,6 @@ template <typename Q>SelfEnergy<Q> operator+=(const SelfEnergy<Q>& self1, const 
     self3.Sigma = self1.Sigma + self2.Sigma;
     return self3;
 }
-
-
-
-
 
 
 #endif //KELDYSH_MFRG_SELFENERGY_H
