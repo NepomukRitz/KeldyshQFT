@@ -13,8 +13,6 @@
 
 using namespace std;
 
-// TODO: maybe rename member functions K1_vval, K1_vvalsmooth, etc.
-
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
 template <typename Q>
 class avert{
@@ -47,6 +45,9 @@ public:
      * This function aims to be the sole function one needs to call to read the full vertex*/
     Q value (int, double, double, double, int, char);
 
+    /*For when the channel is already known and the trafo to the specific channel has already been done*/
+    Q value (int, double, double, double, int);
+
     /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
      * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
     Q vvalsmooth(int, double, double, double, int, char);
@@ -71,6 +72,16 @@ public:
     void K3_setvert(int, int, int, int, int, Q);
 
 
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
+    void K1_addvert(int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency internal structure)*/
+    void K2_addvert(int, int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
+    void K3_addvert(int, int, int, int, int, Q);
+
+
     /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
     Q K1_vval(int, int, int);
 
@@ -88,6 +99,10 @@ public:
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
      *  for given Keldysh and internal structure indices.*/
     Q K2_vvalsmooth(int, double, double, int);
+
+    /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
+ *  for given Keldysh and internal structure indices.*/
+    Q K2b_vvalsmooth(int, double, double, int);
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
@@ -209,6 +224,9 @@ public:
  * This function aims to be the sole function one needs to call to read the full vertex*/
     Q value (int, double, double, double, int, char);
 
+    /*For when the channel is already known and the trafo to the specific channel has already been done*/
+    Q value (int, double, double, double, int);
+
     /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
      * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
     Q vvalsmooth(int, double, double, double, int, char);
@@ -231,6 +249,16 @@ public:
 
     /*Sets the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure) to input Q*/
     void K3_setvert(int, int, int, int, int, Q);
+
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
+    void K1_addvert(int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency internal structure)*/
+    void K2_addvert(int, int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
+    void K3_addvert(int, int, int, int, int, Q);
 
 
     /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
@@ -369,6 +397,9 @@ public:
  * This function aims to be the sole function one needs to call to read the full vertex*/
     Q value (int iK, double, double, double, int, char);
 
+    /*For when the channel is already known and the trafo to the specific channel has already been done*/
+    Q value (int, double, double, double, int);
+
     /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
      * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
     Q vvalsmooth(int, double, double, double, int, char);
@@ -391,6 +422,16 @@ public:
 
     /*Sets the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure) to input Q*/
     void K3_setvert(int, int, int, int, int, Q);
+
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
+    void K1_addvert(int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency internal structure)*/
+    void K2_addvert(int, int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
+    void K3_addvert(int, int, int, int, int, Q);
 
 
     /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
@@ -781,6 +822,186 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
 }
 
+template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in){
+
+    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
+     * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
+
+    double w_a=w, v1_a=v1, v2_a=v2;
+    int iK1, iK2, iK3;
+    Q valueK1, valueK2, valueK3;
+
+    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    {
+        iK1=0;
+        valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
+
+    }
+    else if(isInList(iK,list_K1_T1_comp1, list_K1_T1_comp1.size()))
+    {
+        tie(iK1, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+        iK1 = 0;
+        if(fabs(w_a)>w_lower_b)
+            valueK1=0.;
+        else
+            valueK1 = -K1_vvalsmooth(iK1,w_a,i_in);
+
+    }
+    else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
+    {
+        iK1 = 1;
+        valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
+    }
+    else
+    {
+        valueK1=0.;
+    }
+
+
+    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    {
+        iK2 = 0;
+        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+    }
+    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+        tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+        iK2 = 0;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+    }
+    else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
+        tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK2 = 0;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+    }
+    else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
+        tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+        iK2 = 0;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+    }
+    else if(isInList(iK,list_K2_T0_comp3,list_K2_T0_comp3.size())){
+        iK2 = 1;
+        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+    }
+    else if(isInList(iK,list_K2_T3_comp3,list_K2_T3_comp3.size())){
+        tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+        iK2 = 1;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+    }
+    else
+    {
+        valueK2 = 0.;
+    }
+
+
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
+    {
+        iK3=iK;
+        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+    }
+    else if(iK == 2)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 1;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+    }
+    else if(iK==4)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 1;
+        valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+    }
+    else if(iK == 6)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 5;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+    }
+    else if(iK == 8)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 1;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+    }
+    else if(iK == 9)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 5;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+    }
+
+    else if(iK == 10)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 5;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+    }
+
+    else if(iK == 11)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 7;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+    }
+
+    else if(iK == 12)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 3;
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+    }
+
+    else if(iK == 13)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 7;
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+    }
+
+    else if(iK == 14)
+    {
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 7;
+        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
+            valueK3=0.;
+        else
+            valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+    }
+
+    return valueK1 + valueK2 + conj(valueK2) + valueK3;
+}
+
 //this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 template <typename Q> Q avert<Q>::vvalsmooth(int iK, double w, double v1, double v2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 
@@ -882,6 +1103,16 @@ template <typename Q> void avert<Q>::K3_setvert(int iK, int i, int j, int k, int
     K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] = value;
 }
 
+template <typename Q> void avert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
+    K1[iK*nw1_wa*n_in + i*n_in + i_in] += value;
+}
+template <typename Q> void avert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
+    K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in] += value;
+}
+template <typename Q> void avert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
+    K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] += value;
+}
+
 template <typename Q> Q avert<Q>::K1_vval(int iK, int i, int i_in){
     return K1[iK*nw1_wa*n_in + i*n_in + i_in];
 }
@@ -907,6 +1138,26 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in){
 }
 template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
 
+    int index_b, index_f;
+    tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
+
+    double x1 = freqs_a[index_b];
+    double x2 = freqs_a[index_b+1];
+    double y1 = freqs_a[index_f];
+    double y2 = freqs_a[index_f+1];
+
+    double xd = (w_a-x1)/(x2-x1);
+    double yd = (v1_a-y1)/(y2-y1);
+
+    Q f11 = K2_vval(iK, index_b, index_f, i_in);
+    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
+    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
+    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
+
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+}
+template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
+    //TODO implement this methof correctly!
     int index_b, index_f;
     tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
 
@@ -1287,6 +1538,182 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
 }
 
+template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in){
+
+    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
+    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
+
+    double w_p=w, v1_p=v1, v2_p=v2;
+    int iK1, iK2, iK3;
+    Q valueK1, valueK2, valueK3;
+
+    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    {
+        iK1=0;
+        valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
+
+    }
+    else if(isInList(iK,list_K1_TC_comp1, list_K1_TC_comp1.size()))
+    {
+        tie(iK1, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK1 = 0;
+        valueK1 = conj(K1_vvalsmooth(iK1,w_p,i_in));
+
+    }
+    else if(isInList(iK, list_K1_T0_comp5, list_K1_T0_comp5.size()))
+    {
+        iK1 = 1;
+        valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
+    }
+    else
+    {
+        valueK1=0.;
+    }
+
+
+
+    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    {
+        iK2 = 0;
+        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+    }
+    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+        tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+        iK2 = 0;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
+            valueK2 = 0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+    }
+    else if(isInList(iK,list_K2_TC_comp1,list_K2_TC_comp1.size())){
+        tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK2 = 0;
+        valueK2 = conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
+    }
+    else if(isInList(iK,list_K2_T2TC_comp1,list_K2_T2TC_comp1.size())){
+        tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK2 = 0;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
+            valueK2 = 0.;
+        else
+            valueK2 = -conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
+    }
+    else if(isInList(iK,list_K2_T0_comp5,list_K2_T0_comp5.size())){
+        iK2 = 1;
+        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+    }
+    else if(isInList(iK,list_K2_T3_comp5,list_K2_T3_comp5.size())){
+        tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+        iK2 = 1;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
+            valueK2 = 0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+    }
+    else
+    {
+        valueK2 = 0.;
+    }
+
+
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
+    {
+        iK3=iK;
+        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+    }
+    else if(iK == 2)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 1;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+    }
+    else if(iK==4)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 1;
+        valueK3 = conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+    }
+    else if(iK == 6)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 5;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+    }
+    else if(iK == 8)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 1;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+    }
+    else if(iK == 9)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 5;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+    }
+
+    else if(iK == 10)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 5;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+    }
+
+    else if(iK == 11)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 7;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+    }
+
+    else if(iK == 12)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 3;
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+    }
+
+    else if(iK == 13)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 7;
+        valueK3 = conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+    }
+
+    else if(iK == 14)
+    {
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 7;
+        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+            valueK3 = 0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+    }
+
+    return valueK1 + valueK2 + conj(valueK2) + valueK3;
+}
+
 //this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double w, double v1, double v2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 
@@ -1386,6 +1813,16 @@ template <typename Q> void pvert<Q>::K2_setvert(int iK, int i, int j, int i_in, 
 }
 template <typename Q> void pvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
     K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] = value;
+}
+
+template <typename Q> void pvert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
+    K1[iK*nw1_wp*n_in + i*n_in + i_in] += value;
+}
+template <typename Q> void pvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
+    K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] += value;
+}
+template <typename Q> void pvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
+    K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] += value;
 }
 
 template <typename Q> Q pvert<Q>::K1_vval(int iK, int i, int i_in){
@@ -1808,6 +2245,187 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
 }
 
+template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, int i_in){
+
+    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
+    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
+
+    double w_t=w, v1_t=v1, v2_t=v2;
+    int iK1, iK2, iK3;
+    Q valueK1, valueK2, valueK3;
+
+    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    {
+        iK1=0;
+        valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
+
+    }
+    else if(isInList(iK,list_K1_T1_comp1, list_K1_T1_comp1.size()))
+    {
+        tie(iK1, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+        iK1 = 0;
+        if(fabs(w_t)>w_upper_b)
+            valueK1 = 0.;
+        else
+            valueK1 = -K1_vvalsmooth(iK1,w_t,i_in);
+
+    }
+    else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
+    {
+        iK1 = 1;
+        valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
+    }
+    else
+    {
+        valueK1=0.;
+    }
+
+
+    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    {
+        iK2 = 0;
+        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+    }
+    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+        tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+        iK2 = 0;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+    }
+    else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
+        tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK2 = 0;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+    }
+    else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
+        tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+        iK2 = 0;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+    }
+    else if(isInList(iK,list_K2_T0_comp3,list_K2_T0_comp3.size())){
+        iK2 = 1;
+        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+    }
+    else if(isInList(iK,list_K2_T3_comp3,list_K2_T3_comp3.size())){
+        tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+        iK2 = 1;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
+            valueK2=0.;
+        else
+            valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+    }
+    else
+    {
+        valueK2 = 0.;
+    }
+
+
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
+    {
+        iK3=iK;
+        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+    }
+    else if(iK == 2)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 1;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+    }
+    else if(iK==4)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 1;
+        valueK3 = conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+    }
+    else if(iK == 6)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 5;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+    }
+    else if(iK == 8)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 1;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+    }
+    else if(iK == 9)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 5;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+    }
+
+    else if(iK == 10)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 5;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+    }
+
+    else if(iK == 11)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 7;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+    }
+
+    else if(iK == 12)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 3;
+        valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+    }
+
+    else if(iK == 13)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 7;
+        valueK3 = conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+    }
+
+    else if(iK == 14)
+    {
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 7;
+        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+            valueK3=0.;
+        else
+            valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+    }
+
+    return valueK1 + valueK2 + conj(valueK2) + valueK3;
+}
+
+
 //this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 template <typename Q> Q tvert<Q>::vvalsmooth(int iK, double w, double v1, double v2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
 
@@ -1907,6 +2525,16 @@ template <typename Q> void tvert<Q>::K2_setvert(int iK, int i, int j, int i_in, 
 }
 template <typename Q> void tvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
     K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in] = value;
+}
+
+template <typename Q> void tvert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
+    K1[iK*nw1_wt*n_in + i*n_in + i_in] += value;
+}
+template <typename Q> void tvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
+    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] += value;
+}
+template <typename Q> void tvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
+    K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in] += value;
 }
 
 template <typename Q> Q tvert<Q>::K1_vval(int iK, int i, int i_in){
