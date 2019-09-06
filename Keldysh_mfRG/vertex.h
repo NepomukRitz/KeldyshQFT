@@ -22,18 +22,18 @@ class avert{
 
     /*Lists of the Keldysh components of K1a relating the respective component to the independent ones through the marked
      * trafo*/
-    array<int,4>  list_K1_T0_comp1 = {1, 7, 8, 14};     //In the vertex, comp1 will be iK=0
-    array<int,4>  list_K1_T1_comp1 = {2, 4, 11, 13};
-    array<int,4>  list_K1_T0_comp3 = {3, 5, 10, 12};    //In the vertex, comp2 will be iK=1
+    vector<int>  list_K1_T0_comp1 = {1, 7, 8, 14};     //In the vertex, comp1 will be iK=0
+    vector<int>  list_K1_T1_comp1 = {2, 4, 11, 13};
+    vector<int>  list_K1_T0_comp3 = {3, 5, 10, 12};    //In the vertex, comp2 will be iK=1
 
     /*Lists of the Keldysh components of K2a relating the respective component to the independent ones through the marked
     * trafo*/
-    array<int,2> list_K2_T0_comp1 = {1, 7};
-    array<int,2> list_K2_T1_comp1 = {2, 4};
-    array<int,2> list_K2_T2_comp1 = {11, 13};
-    array<int,2> list_K2_T3_comp1 = {8, 14};
-    array<int,2> list_K2_T0_comp3 = {3, 5};
-    array<int,2> list_K2_T3_comp3 = {10, 12};
+    vector<int> list_K2_T0_comp1 = {1, 7};
+    vector<int> list_K2_T1_comp1 = {2, 4};
+    vector<int> list_K2_T2_comp1 = {11, 13};
+    vector<int> list_K2_T3_comp1 = {8, 14};
+    vector<int> list_K2_T0_comp3 = {3, 5};
+    vector<int> list_K2_T3_comp3 = {10, 12};
 
 
 public:
@@ -201,18 +201,18 @@ class pvert{
 
     /*Lists of the Keldysh components of K1p relating the respective component to the independent ones through the marked
  * trafo*/
-    array<int,4> list_K1_T0_comp1 = {1, 2, 13, 14};
-    array<int,4> list_K1_TC_comp1 = {4, 7, 8, 11};
-    array<int,4> list_K1_T0_comp5 = {5, 6, 9, 10};
+    vector<int> list_K1_T0_comp1 = {1, 2, 13, 14};
+    vector<int> list_K1_TC_comp1 = {4, 7, 8, 11};
+    vector<int> list_K1_T0_comp5 = {5, 6, 9, 10};
 
     /*Lists of the Keldysh components of K2p relating the respective component to the independent ones through the marked
     * trafo*/
-    array<int,2> list_K2_T0_comp1 = {1, 2};
-    array<int,2> list_K2_T1_comp1 = {13, 14};
-    array<int,2> list_K2_TC_comp1 = {4, 7};
-    array<int,2> list_K2_T2TC_comp1 = {8, 11};
-    array<int,2> list_K2_T0_comp5 = {5, 6};
-    array<int,2> list_K2_T3_comp5 = {9, 10};
+    vector<int> list_K2_T0_comp1 = {1, 2};
+    vector<int> list_K2_T1_comp1 = {13, 14};
+    vector<int> list_K2_TC_comp1 = {4, 7};
+    vector<int> list_K2_T2TC_comp1 = {8, 11};
+    vector<int> list_K2_T0_comp5 = {5, 6};
+    vector<int> list_K2_T3_comp5 = {9, 10};
 
 
 public:
@@ -378,18 +378,18 @@ class tvert{
 
     /*Lists of the Keldysh components of K1t relating the respective component to the independent ones through the marked
  * trafo*/
-    array<int,4> list_K1_T0_comp1 = {1, 4, 11, 14};
-    array<int,4> list_K1_T1_comp1 = {2, 7, 8, 13};
-    array<int,4> list_K1_T0_comp3 = {3, 6, 9, 12};
+    vector<int> list_K1_T0_comp1 = {1, 4, 11, 14};
+    vector<int> list_K1_T1_comp1 = {2, 7, 8, 13};
+    vector<int> list_K1_T0_comp3 = {3, 6, 9, 12};
 
     /*Lists of the Keldysh components of K2t relating the respective component to the independent ones through the marked
     * trafo*/
-    array<int,2> list_K2_T0_comp1 = {1, 11};
-    array<int,2> list_K2_T1_comp1 = {2, 8};
-    array<int,2> list_K2_T2_comp1 = {7, 13};
-    array<int,2> list_K2_T3_comp1 = {4, 14};
-    array<int,2> list_K2_T0_comp3 = {3, 9};
-    array<int,2> list_K2_T3_comp3 = {6, 12};
+    vector<int> list_K2_T0_comp1 = {1, 11};
+    vector<int> list_K2_T1_comp1 = {2, 8};
+    vector<int> list_K2_T2_comp1 = {7, 13};
+    vector<int> list_K2_T3_comp1 = {4, 14};
+    vector<int> list_K2_T0_comp3 = {3, 9};
+    vector<int> list_K2_T3_comp3 = {6, 12};
 
 
 public:
@@ -659,13 +659,13 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     int iK1, iK2, iK3;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    if(isInList(iK,list_K1_T0_comp1))
     {
         iK1=0;
         valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
 
     }
-    else if(isInList(iK,list_K1_T1_comp1, list_K1_T1_comp1.size()))
+    else if(isInList(iK,list_K1_T1_comp1))
     {
         tie(iK1, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK1 = 0;
@@ -675,7 +675,7 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
             valueK1 = -K1_vvalsmooth(iK1,w_a,i_in);
 
     }
-    else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
+    else if(isInList(iK, list_K1_T0_comp3))
     {
         iK1 = 1;
         valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
@@ -686,12 +686,12 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     }
 
 
-    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    if(isInList(iK,list_K2_T0_comp1))
     {
         iK2 = 0;
         valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+    else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
         if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
@@ -699,7 +699,7 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
+    else if(isInList(iK,list_K2_T2_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
         if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
@@ -707,7 +707,7 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
+    else if(isInList(iK,list_K2_T3_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
         if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
@@ -715,11 +715,11 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T0_comp3,list_K2_T0_comp3.size())){
+    else if(isInList(iK,list_K2_T0_comp3)){
         iK2 = 1;
         valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp3,list_K2_T3_comp3.size())){
+    else if(isInList(iK,list_K2_T3_comp3)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 1;
         if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
@@ -829,7 +829,6 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
 }
-
 template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in){
 
     /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
@@ -839,13 +838,13 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     int iK1, iK2, iK3;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    if(isInList(iK,list_K1_T0_comp1))
     {
         iK1=0;
         valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
 
     }
-    else if(isInList(iK,list_K1_T1_comp1, list_K1_T1_comp1.size()))
+    else if(isInList(iK,list_K1_T1_comp1))
     {
         tie(iK1, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK1 = 0;
@@ -855,7 +854,7 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
             valueK1 = -K1_vvalsmooth(iK1,w_a,i_in);
 
     }
-    else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
+    else if(isInList(iK, list_K1_T0_comp3))
     {
         iK1 = 1;
         valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
@@ -866,12 +865,12 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     }
 
 
-    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    if(isInList(iK,list_K2_T0_comp1))
     {
         iK2 = 0;
         valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+    else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
         if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
@@ -879,7 +878,7 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
+    else if(isInList(iK,list_K2_T2_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
         if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
@@ -887,7 +886,7 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
+    else if(isInList(iK,list_K2_T3_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
         if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
@@ -895,11 +894,11 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T0_comp3,list_K2_T0_comp3.size())){
+    else if(isInList(iK,list_K2_T0_comp3)){
         iK2 = 1;
         valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp3,list_K2_T3_comp3.size())){
+    else if(isInList(iK,list_K2_T3_comp3)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 1;
         if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
@@ -1365,20 +1364,20 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     int iK1, iK2, iK3;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    if(isInList(iK,list_K1_T0_comp1))
     {
         iK1=0;
         valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
 
     }
-    else if(isInList(iK,list_K1_TC_comp1, list_K1_TC_comp1.size()))
+    else if(isInList(iK,list_K1_TC_comp1))
     {
         tie(iK1, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK1 = 0;
         valueK1 = conj(K1_vvalsmooth(iK1,w_p,i_in));
 
     }
-    else if(isInList(iK, list_K1_T0_comp5, list_K1_T0_comp5.size()))
+    else if(isInList(iK, list_K1_T0_comp5))
     {
         iK1 = 1;
         valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
@@ -1390,12 +1389,12 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
 
 
 
-    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    if(isInList(iK,list_K2_T0_comp1))
     {
         iK2 = 0;
         valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
-    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+    else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
         if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
@@ -1403,12 +1402,12 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
-    else if(isInList(iK,list_K2_TC_comp1,list_K2_TC_comp1.size())){
+    else if(isInList(iK,list_K2_TC_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
         valueK2 = conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
     }
-    else if(isInList(iK,list_K2_T2TC_comp1,list_K2_T2TC_comp1.size())){
+    else if(isInList(iK,list_K2_T2TC_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
@@ -1417,11 +1416,11 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
     }
-    else if(isInList(iK,list_K2_T0_comp5,list_K2_T0_comp5.size())){
+    else if(isInList(iK,list_K2_T0_comp5)){
         iK2 = 1;
         valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp5,list_K2_T3_comp5.size())){
+    else if(isInList(iK,list_K2_T3_comp5)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 1;
         if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
@@ -1531,7 +1530,6 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
 }
-
 template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in){
 
     /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
@@ -1541,20 +1539,20 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     int iK1, iK2, iK3;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    if(isInList(iK,list_K1_T0_comp1))
     {
         iK1=0;
         valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
 
     }
-    else if(isInList(iK,list_K1_TC_comp1, list_K1_TC_comp1.size()))
+    else if(isInList(iK,list_K1_TC_comp1))
     {
         tie(iK1, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK1 = 0;
         valueK1 = conj(K1_vvalsmooth(iK1,w_p,i_in));
 
     }
-    else if(isInList(iK, list_K1_T0_comp5, list_K1_T0_comp5.size()))
+    else if(isInList(iK, list_K1_T0_comp5))
     {
         iK1 = 1;
         valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
@@ -1566,12 +1564,12 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
 
 
 
-    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    if(isInList(iK,list_K2_T0_comp1))
     {
         iK2 = 0;
         valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
-    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+    else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
         if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
@@ -1579,12 +1577,12 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
-    else if(isInList(iK,list_K2_TC_comp1,list_K2_TC_comp1.size())){
+    else if(isInList(iK,list_K2_TC_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
         valueK2 = conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
     }
-    else if(isInList(iK,list_K2_T2TC_comp1,list_K2_T2TC_comp1.size())){
+    else if(isInList(iK,list_K2_T2TC_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
@@ -1593,11 +1591,11 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
     }
-    else if(isInList(iK,list_K2_T0_comp5,list_K2_T0_comp5.size())){
+    else if(isInList(iK,list_K2_T0_comp5)){
         iK2 = 1;
         valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp5,list_K2_T3_comp5.size())){
+    else if(isInList(iK,list_K2_T3_comp5)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 1;
         if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
@@ -2064,7 +2062,7 @@ template<typename Q> tuple<int, int> pvert<Q>::indices_sum(int i0, int i2)
 }
 
 /****************************************** MEMBER FUNCTIONS OF THE T-VERTEX ******************************************/
-
+//Here iK is in 0...15 already. Only need to check to what component to transfer to.
 template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
 
     /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
@@ -2075,13 +2073,13 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     int iK1, iK2, iK3;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    if(isInList(iK,list_K1_T0_comp1))
     {
         iK1=0;
         valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
 
     }
-    else if(isInList(iK,list_K1_T1_comp1, list_K1_T1_comp1.size()))
+    else if(isInList(iK,list_K1_T1_comp1))
     {
         tie(iK1, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK1 = 0;
@@ -2091,7 +2089,7 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
             valueK1 = -K1_vvalsmooth(iK1,w_t,i_in);
 
     }
-    else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
+    else if(isInList(iK, list_K1_T0_comp3))
     {
         iK1 = 1;
         valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
@@ -2102,12 +2100,12 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     }
 
 
-    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    if(isInList(iK,list_K2_T0_comp1))
     {
         iK2 = 0;
         valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+    else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
         if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
@@ -2115,7 +2113,7 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
+    else if(isInList(iK,list_K2_T2_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
         if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
@@ -2123,7 +2121,7 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
+    else if(isInList(iK,list_K2_T3_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
         if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
@@ -2131,11 +2129,11 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T0_comp3,list_K2_T0_comp3.size())){
+    else if(isInList(iK,list_K2_T0_comp3)){
         iK2 = 1;
         valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp3,list_K2_T3_comp3.size())){
+    else if(isInList(iK,list_K2_T3_comp3)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 1;
         if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
@@ -2245,7 +2243,6 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
 }
-
 template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, int i_in){
 
     /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
@@ -2255,13 +2252,13 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     int iK1, iK2, iK3;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1, list_K1_T0_comp1.size()))
+    if(isInList(iK,list_K1_T0_comp1))
     {
         iK1=0;
         valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
 
     }
-    else if(isInList(iK,list_K1_T1_comp1, list_K1_T1_comp1.size()))
+    else if(isInList(iK,list_K1_T1_comp1))
     {
         tie(iK1, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK1 = 0;
@@ -2271,7 +2268,7 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
             valueK1 = -K1_vvalsmooth(iK1,w_t,i_in);
 
     }
-    else if(isInList(iK, list_K1_T0_comp3, list_K1_T0_comp3.size()))
+    else if(isInList(iK, list_K1_T0_comp3))
     {
         iK1 = 1;
         valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
@@ -2282,12 +2279,12 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     }
 
 
-    if(isInList(iK,list_K2_T0_comp1,list_K2_T0_comp1.size()))
+    if(isInList(iK,list_K2_T0_comp1))
     {
         iK2 = 0;
         valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T1_comp1,list_K2_T1_comp1.size())){
+    else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
         if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
@@ -2295,7 +2292,7 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T2_comp1,list_K2_T2_comp1.size())){
+    else if(isInList(iK,list_K2_T2_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
         if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
@@ -2303,7 +2300,7 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp1,list_K2_T3_comp1.size())){
+    else if(isInList(iK,list_K2_T3_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
         if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
@@ -2311,11 +2308,11 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
         else
             valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T0_comp3,list_K2_T0_comp3.size())){
+    else if(isInList(iK,list_K2_T0_comp3)){
         iK2 = 1;
         valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
     }
-    else if(isInList(iK,list_K2_T3_comp3,list_K2_T3_comp3.size())){
+    else if(isInList(iK,list_K2_T3_comp3)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 1;
         if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
