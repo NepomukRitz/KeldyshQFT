@@ -1,4 +1,3 @@
-#pragma clang diagnostic push
 #pragma ide diagnostic ignored "bugprone-narrowing-conversions"
 
 //
@@ -13,6 +12,7 @@
 
 #include "selfenergy.h"
 #include "propagator.h"
+#include "susceptibility.h"
 #include "data_structures.h"
 #include "frequency_grid.h"
 
@@ -4382,5 +4382,3 @@ double tbubble(int red_side, int map1, int map2,gsl_integration_workspace* w,dou
 
 
 #endif //KELDYSH_MFRG_BUBBLES_H
-
-#pragma clang diagnostic pop
