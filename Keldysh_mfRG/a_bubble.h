@@ -15,7 +15,7 @@ class A_Bubble{
 
 public:
     explicit A_Bubble(Propagator& propagator) :
-    PiA(cvec(16*nSE*nSE))
+            PiA(cvec(16*nSE*nSE))
     {
         //vector<int> non_zero_Keldysh_abubble({3,6,7,9,11,12,13,14,15});
         for(int i=0; i<nSE; ++i) {
@@ -45,8 +45,6 @@ public:
         }
     }
 };
-
-
 class Diff_A_Bubble{
     cvec PiAdot = cvec (16*nSE);
 public:
@@ -56,7 +54,7 @@ public:
         for(int i=0; i<nSE; ++i) {
             for (int j = 0; j < nSE; ++j) {
                 PiAdot[3*i*nSE + j] = conj(propagatorG.pval(0,i))*propagatorS.pval(0,j) + conj(propagatorS.pval(0,i))*propagatorG.pval(0,j);                //AR
-                PiAdot[6*i*nSE + j] = propagatorG.pval(0,i)*propagatorS.pval(0,j) +  propagatorS.pval(0,i)*propagatorG.pval(0,j);                          //RR
+                PiAdot[6*i*nSE + j] = propagatorG.pval(0,i)*propagatorS.pval(0,j) +  propagatorS.pval(0,i)*propagatorG.pval(0,j);                           //RR
                 PiAdot[7*i*nSE + j] = propagatorG.pval(1,i)*propagatorS.pval(0,j) + propagatorS.pval(1,i)*propagatorG.pval(0,j);                            //KR
                 PiAdot[9*i*nSE + j] =  conj(propagatorG.pval(0,i))*conj(propagatorS.pval(0,j))+conj(propagatorS.pval(0,i))*conj(propagatorG.pval(0,j));     //AA
                 PiAdot[11*i*nSE + j] = conj(propagatorG.pval(0,i))*propagatorS.pval(1,j) +conj(propagatorS.pval(0,i))*propagatorG.pval(1,j);                //AK
@@ -80,7 +78,6 @@ public:
         }
     }
 };
-
 
 template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<avert<Q> >& vertex, Vertex<avert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
@@ -168,7 +165,6 @@ template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<avert<Q> >& ver
             
         }
 
-        //TODO this affects the value for K2b!!!!!!!!!!!!!
         for(auto vpa : ffreqs) {
             int ivpa = fconv(vpa);
             for(auto i0:non_zero_Keldysh_K2a){
@@ -187,9 +183,7 @@ template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<avert<Q> >& ver
     }
     return resp;
 }
-
-template <typename Q>
-Vertex<avert<Q> > diff_a_bubble(Vertex<avert<Q> >& vertex, Vertex<avert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
+template <typename Q> Vertex<avert<Q> > diff_a_bubble(Vertex<avert<Q> >& vertex, Vertex<avert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
     Vertex<avert<Q> > resp = Vertex<avert<Q>>();
     int i1, i3;
@@ -276,7 +270,6 @@ Vertex<avert<Q> > diff_a_bubble(Vertex<avert<Q> >& vertex, Vertex<avert<Q> >& ve
 
         }
 
-        //TODO this affects the value for K2b!!!!!!!!!!!!!
         for(auto vpa : ffreqs) {
             int ivpa = fconv(vpa);
             for(auto i0:non_zero_Keldysh_K2a){
@@ -295,9 +288,5 @@ Vertex<avert<Q> > diff_a_bubble(Vertex<avert<Q> >& vertex, Vertex<avert<Q> >& ve
     }
     return resp;
 }
-
-
-
-
 
 #endif //KELDYSH_MFRG_A_BUBBLE_H

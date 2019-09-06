@@ -17,7 +17,7 @@ public:
     explicit P_Bubble(Propagator& propagator) :
             PiP(cvec(16*nSE*nSE))
     {
-//        vector<int> non_zero_Keldysh_pbubble({3,6,7,9,11,12,13,14,15});     // NOLINT(cert-err58-cpp)
+        //vector<int> non_zero_Keldysh_pbubble({3,6,7,9,11,12,13,14,15});
         for(int i=0; i<nSE; ++i) {
             for (int j = 0; j < nSE; ++j) {
                 PiP[3*i*nSE + j] = conj(propagator.pval(0,i))*conj(propagator.pval(0,j));       //AA
@@ -78,7 +78,6 @@ public:
         }
     }
 };
-
 
 template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<pvert<Q> >& vertex, Vertex<pvert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
@@ -166,7 +165,6 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<pvert<Q> >& ver
 
         }
 
-        //TODO this affects the value for K2b!!!!!!!!!!!!!
         for(auto vpp : ffreqs) {
             int ivpp = fconv(vpp);
             for(auto i0:non_zero_Keldysh_K2p){
@@ -185,7 +183,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<pvert<Q> >& ver
     }
     return 0.5*resp;
 }
-template <typename Q> Vertex<pvert<Q> > diff_a_bubble(Vertex<pvert<Q> >& vertex, Vertex<pvert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
+template <typename Q> Vertex<pvert<Q> > diff_p_bubble(Vertex<pvert<Q> >& vertex, Vertex<pvert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
     Vertex<pvert<Q> > resp = Vertex<pvert<Q>>();
     int i1, i3;
@@ -272,7 +270,6 @@ template <typename Q> Vertex<pvert<Q> > diff_a_bubble(Vertex<pvert<Q> >& vertex,
 
         }
 
-        //TODO this affects the value for K2b!!!!!!!!!!!!!
         for(auto vpp : ffreqs) {
             int ivpp = fconv(vpp);
             for(auto i0:non_zero_Keldysh_K2p){
@@ -289,7 +286,7 @@ template <typename Q> Vertex<pvert<Q> > diff_a_bubble(Vertex<pvert<Q> >& vertex,
         }
 
     }
-    return resp;
+    return 0.5*resp;
 }
 
 #endif //KELDYSH_MFRG_P_BUBBLE_H
