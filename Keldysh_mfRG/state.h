@@ -8,6 +8,8 @@
 #include "vertex.h"
 #include "selfenergy.h"
 #include "susceptibility.h"
+#include "propagator.h"
+#include "integrator.h"
 
 //define a struct object which includes the self energy and the vertex which are needed to evaluate the RHS of the flow equations.
 
@@ -23,6 +25,11 @@ struct state{
 #ifdef SUSC
     Susc<comp> sus;
 #endif
+
+    /**************************************************FUNCTION DECLARATIONS*******************************************/
+public:
+    SelfEnergy<comp> loop(Vertex<fullvert<comp> >& vertex, Propagator& prop);
+
 };
 
 
@@ -89,6 +96,65 @@ state operator*(const state& state1, double alpha){
     result.sus = alpha * state1.sus;
 #endif
     return result;
+}
+
+/**********************************FUNCTIONS WITHIN THE STATE**********************************************************/
+SelfEnergy<comp> state::loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop)
+{
+    cvec integrandR(nPROP);
+    cvec integrandK(nPROP);
+    SelfEnergy<comp> resp;
+    for (int i = 0; i < nPROP; ++i){
+        for(int j=0; j<nPROP; ++j){
+            double w = ffreqs[i];
+            double wp= ffreqs[j];
+            comp GR = prop.pvalsmooth(0, wp);
+            comp GA = conj(GR);
+            comp GK = prop.pvalsmooth(1, wp);
+
+            integrandR[j] = -(  fullvertex.spinvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GR +
+                                fullvertex.spinvertex.avertex.value(6, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GA +
+                                fullvertex.spinvertex.avertex.value(7, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GK +
+
+                                fullvertex.spinvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GR +
+                                fullvertex.spinvertex.pvertex.value(6, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GA +
+                                fullvertex.spinvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GK +
+
+                                fullvertex.spinvertex.tvertex.value(3, 0., wp, w, 1)*GR +
+                                fullvertex.spinvertex.tvertex.value(6, 0., wp, w, 1)*GA +
+                                fullvertex.spinvertex.tvertex.value(7, 0., wp, w, 1)*GK +
+
+                                fullvertex.spinvertex.irred.U_bare*(GR + GA + GK));
+
+
+
+            integrandK[j] = -(  fullvertex.spinvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GR +
+                                fullvertex.spinvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GA +
+                                fullvertex.spinvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GK +
+
+                                fullvertex.spinvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GR +
+                                fullvertex.spinvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GA +
+                                fullvertex.spinvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GK +
+
+                                fullvertex.spinvertex.tvertex.value(1, 0., wp, w, 1)*GR +
+                                fullvertex.spinvertex.tvertex.value(4, 0., wp, w, 1)*GA +
+                                fullvertex.spinvertex.tvertex.value(5, 0., wp, w, 1)*GK +
+
+                                fullvertex.spinvertex.irred.U_bare*(GR + GA + GK));
+
+            //TODO include densvertex contributions!!
+
+        }
+
+        comp integratedR = integrator(integrandR);
+        comp integratedK = integrator(integrandK);
+
+
+        resp.setself(0, i, integratedR);
+        resp.setself(1, i, integratedK);
+
+    }
+    return resp;
 }
 
 
