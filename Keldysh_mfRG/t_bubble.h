@@ -10,9 +10,9 @@
 #include "integrator.h"
 #include "selfenergy.h"
 
+/*Class defining the t_bubble object with a Keldysh structure*/
 class T_Bubble{
     cvec PiT = cvec (16*nSE);
-
 public:
     explicit T_Bubble(Propagator& propagator) :
             PiT(cvec(16*nSE*nSE))
@@ -31,9 +31,9 @@ public:
                 PiT[15*i*nSE + j] = propagator.pval(1,i)*propagator.pval(1,j);                      //KK
             }
         }
-
     };
 
+    /*This function returns the value of the p-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
         if(0>v1 || 0>v2 || v1>w_upper_f || v2>w_upper_f)
@@ -45,12 +45,15 @@ public:
         }
     }
 };
+
+/*Class defining the differentiated p_bubble object with a Keldysh structure*/
 class Diff_T_Bubble{
     cvec PiTdot = cvec (16*nSE);
 public:
     Diff_T_Bubble(Propagator& propagatorG, Propagator& propagatorS) :
             PiTdot(cvec(16*nSE*nSE))
     {
+        //vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});
         for(int i=0; i<nSE; ++i) {
             for (int j = 0; j < nSE; ++j) {
                 PiTdot[3*i*nSE + j] =  conj(propagatorG.pval(0,i))*conj(propagatorS.pval(0,j))+ conj(propagatorS.pval(0,i))*conj(propagatorG.pval(0,j));        //AA
@@ -64,9 +67,9 @@ public:
                 PiTdot[15*i*nSE + j] = propagatorG.pval(1,i)*propagatorS.pval(1,j) + propagatorS.pval(1,i)*propagatorG.pval(1,j);                               //KK
             }
         }
-
     };
 
+    /*This function returns the value of the differentiated a-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
         if(0>v1 || 0>v2 || v1>w_upper_f || v2>w_upper_f)
@@ -79,6 +82,8 @@ public:
     }
 };
 
+
+/*This function returns a regular t-bubble, regular meaning that the propagators are only G */
 template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& vertex, Vertex<tvert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
     Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
@@ -94,21 +99,28 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
     Propagator G = propag(Lambda, self, diffSelf, 'g');
     T_Bubble PiT(G);
 
+    /*First, one goes through the bosonic frequencies*/
     for(auto wt : bfreqs){
         int iwt=fconv(wt);
+        /*This runs over the indices for the K1 contributions to the K1 bubble*/
         for(auto i0:non_zero_Keldysh_K1t){
             for(auto i2:non_zero_Keldysh_tbubble){
                 tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
                 for(int i =0; i<nSE; ++i)
                 {
+                    /*One has to be careful as to what diagrammatic class contributes to a diagrammatic class overall*/
                     double vppt = ffreqs[i];
                     integrand1[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3,wt,1);//K1 Pi K1
                 }
                 resp.spinvertex.K1_addvert(i0, iwt, 1, integrator(integrand1));
             }
         }
+
+        /*Here come now the contributions towards the K2 type, as well as the ones to K1 that can also depend on va i.e K1 and K2,
+        * since there are combinations of K1 and K2 or K2b that lead to overall K1-type bubbles*/
         for(auto vt : ffreqs){
             int ivt=fconv(vt);
+            /*This runs over the indices for the K2 contributions to the K1 bubble*/
             for(auto i0:non_zero_Keldysh_K1t){
                 for(auto i2:non_zero_Keldysh_tbubble){
                     tie(i1,i3) = vertex.spinvertex.indices_sum(i0, i2);
@@ -122,7 +134,7 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
                     resp.spinvertex.K1_addvert(i0, iwt, 1, integrator(integrand2 + integrand3 + integrand4));
                 }
             }
-
+            /*This runs over the indices for the K2 contributions to the K2 bubble*/
             for(auto i0:non_zero_Keldysh_K2t){
                 for(auto i2:non_zero_Keldysh_tbubble){
                     tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
@@ -135,10 +147,11 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
                 }
             }
 
-
+            /*Since we're already running over va, let us calclate already K3 contributions. K2b come after this block*/
             for(auto vpt:ffreqs)
             {
                 int ivpt = fconv(vpt);
+                /*This runs over the indices for the K3 contributions to the K3 bubble*/
                 for(auto i0:non_zero_Keldysh_K3){
                     for(auto i2:non_zero_Keldysh_tbubble){
                         tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
@@ -161,12 +174,12 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
                     }
                 }
             }
-
-
         }
 
+        /*This block then calculates the contributions to the K2b bubble*/
         for(auto vpt : ffreqs) {
             int ivpt = fconv(vpt);
+            /*This runs over the indices of the K2b contributions to the K2b bubble*/
             for(auto i0:non_zero_Keldysh_K2t){
                 for(auto i2:non_zero_Keldysh_tbubble){
                     tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
@@ -179,10 +192,11 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
                 }
             }
         }
-
     }
     return -resp;
 }
+
+/*This function returns a differentiated t-bubble, differentiated meaning that the propagators are one a G and one an S propagator*/
 template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex, Vertex<tvert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
     Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
@@ -199,21 +213,28 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
     Propagator S = propag(Lambda, self, diffSelf, 's');
     Diff_T_Bubble PiTdot(G,S);
 
+    /*First, one goes through the bosonic frequencies*/
     for(auto wt : bfreqs){
         int iwt=fconv(wt);
+        /*This runs over the indices for the K1 contributions to the K1 bubble*/
         for(auto i0:non_zero_Keldysh_K1t){
             for(auto i2:non_zero_Keldysh_tbubble){
                 tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
                 for(int i =0; i<nSE; ++i)
                 {
+                    /*One has to be careful as to what diagrammatic class contributes to a diagrammatic class overall*/
                     double vppt = ffreqs[i];
                     integrand1[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3,wt,1);//K1 Pi K1
                 }
                 resp.spinvertex.K1_addvert(i0, iwt, 1, integrator(integrand1));
             }
         }
+
+        /*Here come now the contributions towards the K2 type, as well as the ones to K1 that can also depend on va i.e K1 and K2,
+        * since there are combinations of K1 and K2 or K2b that lead to overall K1-type bubbles*/
         for(auto vt : ffreqs){
             int ivt=fconv(vt);
+            /*This runs over the indices for the K2 contributions to the K1 bubble*/
             for(auto i0:non_zero_Keldysh_K1t){
                 for(auto i2:non_zero_Keldysh_tbubble){
                     tie(i1,i3) = vertex.spinvertex.indices_sum(i0, i2);
@@ -227,7 +248,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
                     resp.spinvertex.K1_addvert(i0, iwt, 1, integrator(integrand2 + integrand3 + integrand4));
                 }
             }
-
+            /*This runs over the indices for the K2 contributions to the K2 bubble*/
             for(auto i0:non_zero_Keldysh_K2t){
                 for(auto i2:non_zero_Keldysh_tbubble){
                     tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
@@ -240,10 +261,11 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
                 }
             }
 
-
+            /*Since we're already running over va, let us calclate already K3 contributions. K2b come after this block*/
             for(auto vpt:ffreqs)
             {
                 int ivpt = fconv(vpt);
+                /*This runs over the indices for the K3 contributions to the K3 bubble*/
                 for(auto i0:non_zero_Keldysh_K3){
                     for(auto i2:non_zero_Keldysh_tbubble){
                         tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
@@ -261,17 +283,16 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
                             integrand7[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2b_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2b
                             integrand8[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K3 Pi K3
                         }
-
                         resp.spinvertex.K3_addvert(i0, iwt, ivt, ivpt, 1, integrator( integrand1 + integrand2 + integrand3 + integrand4 + integrand5 + integrand6 + integrand7 + integrand8));
                     }
                 }
             }
-
-
         }
 
+        /*This block then calculates the contributions to the K2b bubble*/
         for(auto vpt : ffreqs) {
             int ivpt = fconv(vpt);
+            /*This runs over the indices of the K2b contributions to the K2b bubble*/
             for(auto i0:non_zero_Keldysh_K2t){
                 for(auto i2:non_zero_Keldysh_tbubble){
                     tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
@@ -284,7 +305,6 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
                 }
             }
         }
-
     }
     return -resp;
 }
