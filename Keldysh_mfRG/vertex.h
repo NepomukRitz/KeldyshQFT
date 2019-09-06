@@ -1165,24 +1165,10 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
     return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
 template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
-    //TODO implement this method correctly!
-    int index_b, index_f;
-    tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
-
-    double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
-    double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
-
-    double xd = (w_a-x1)/(x2-x1);
-    double yd = (v1_a-y1)/(y2-y1);
-
-    Q f11 = K2_vval(iK, index_b, index_f, i_in);
-    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
-    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
-    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
-
-    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+    int i0, i1, i2, i3, exponent;
+    tie(i0,i1,i2,i3) = alphas(iK);
+    exponent = 1+i0+i1+i2+i3;
+    return pow(-1., exponent)*K2_vvalsmooth(iK, w_a, v1_a, i_in);
 }
 template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a, double v2_a, int i_in){
 
@@ -1879,24 +1865,10 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p,
 }
 template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v1_p, int i_in)
 {
-    //TODO implement this method correctly!
-    int index_b, index_f;
-    tie(index_b, index_f) = fconv_K2_a(w_p, v1_p);
-
-    double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
-    double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
-
-    double xd = (w_p-x1)/(x2-x1);
-    double yd = (v1_p-y1)/(y2-y1);
-
-    Q f11 = K2_vval(iK, index_b, index_f, i_in);
-    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
-    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
-    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
-
-    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+    int i0, i1, i2, i3, exponent;
+    tie(i0,i1,i2,i3) = alphas(iK);
+    exponent = 1+i0+i1+i2+i3;
+    return pow(-1., exponent)*K2_vvalsmooth(iK, w_p, v1_p, i_in);
 }
 template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double w_p, double v1_p, double v2_p, int i_in){
 
@@ -2611,24 +2583,10 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
 template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v1_t, int i_in){
-    //TODO implement this method correctly!
-    int index_b, index_f;
-    tie(index_b, index_f) = fconv_K2_a(w_t, v1_t);
-
-    double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
-    double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
-
-    double xd = (w_t-x1)/(x2-x1);
-    double yd = (v1_t-y1)/(y2-y1);
-
-    Q f11 = K2_vval(iK, index_b, index_f, i_in);
-    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
-    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
-    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
-
-    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+    int i0, i1, i2, i3, exponent;
+    tie(i0,i1,i2,i3) = alphas(iK);
+    exponent = 1+i0+i1+i2+i3;
+    return pow(-1., exponent)*K2_vvalsmooth(iK, w_t, v1_t, i_in);
 }
 template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t, double v2_t, int i_in){
 
