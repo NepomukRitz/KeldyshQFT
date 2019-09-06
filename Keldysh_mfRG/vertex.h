@@ -279,6 +279,10 @@ public:
      *  for given Keldysh and internal structure indices.*/
     Q K2_vvalsmooth(int, double, double, int);
 
+    /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
+ *  for given Keldysh and internal structure indices.*/
+    Q K2b_vvalsmooth(int, double, double, int);
+
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
     Q K3_vvalsmooth(int, double, double, double, int);
@@ -451,6 +455,10 @@ public:
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
      *  for given Keldysh and internal structure indices.*/
     Q K2_vvalsmooth(int, double, double, int);
+
+    /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
+ *  for given Keldysh and internal structure indices.*/
+    Q K2b_vvalsmooth(int, double, double, int);
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
@@ -1157,7 +1165,7 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
     return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
 template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
-    //TODO implement this methof correctly!
+    //TODO implement this method correctly!
     int index_b, index_f;
     tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
 
@@ -1858,6 +1866,27 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p,
     double x2 = freqs_p[index_b+1];
     double y1 = freqs_p[index_f];
     double y2 = freqs_p[index_f+1];
+
+    double xd = (w_p-x1)/(x2-x1);
+    double yd = (v1_p-y1)/(y2-y1);
+
+    Q f11 = K2_vval(iK, index_b, index_f, i_in);
+    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
+    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
+    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
+
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+}
+template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v1_p, int i_in)
+{
+    //TODO implement this method correctly!
+    int index_b, index_f;
+    tie(index_b, index_f) = fconv_K2_a(w_p, v1_p);
+
+    double x1 = freqs_a[index_b];
+    double x2 = freqs_a[index_b+1];
+    double y1 = freqs_a[index_f];
+    double y2 = freqs_a[index_f+1];
 
     double xd = (w_p-x1)/(x2-x1);
     double yd = (v1_p-y1)/(y2-y1);
@@ -2570,6 +2599,26 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     double x2 = freqs_t[index_b+1];
     double y1 = freqs_t[index_f];
     double y2 = freqs_t[index_f+1];
+
+    double xd = (w_t-x1)/(x2-x1);
+    double yd = (v1_t-y1)/(y2-y1);
+
+    Q f11 = K2_vval(iK, index_b, index_f, i_in);
+    Q f12 = K2_vval(iK, index_b, index_f+1, i_in);
+    Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
+    Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
+
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+}
+template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v1_t, int i_in){
+    //TODO implement this method correctly!
+    int index_b, index_f;
+    tie(index_b, index_f) = fconv_K2_a(w_t, v1_t);
+
+    double x1 = freqs_a[index_b];
+    double x2 = freqs_a[index_b+1];
+    double y1 = freqs_a[index_f];
+    double y2 = freqs_a[index_f+1];
 
     double xd = (w_t-x1)/(x2-x1);
     double yd = (v1_t-y1)/(y2-y1);
