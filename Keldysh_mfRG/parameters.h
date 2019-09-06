@@ -97,7 +97,7 @@ vector<int> non_zero_Keldysh_K1p({1,5});                // NOLINT(cert-err58-cpp
 vector<int> non_zero_Keldysh_K2p({1,5});                // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K1t({1,3});                // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K2t({1,3});                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K3({0,1,3,5,7});           // NOLINT(cert-err58-cpp)       //TODO to perform sums over these indices, make range-based loops!
+vector<int> non_zero_Keldysh_K3({0,1,3,5,7});           // NOLINT(cert-err58-cpp)
 
 /*Vector of indices of the non-zero Keldysh components of the bubbles*/
 vector<int> non_zero_Keldysh_abubble({3,6,7,9,11,12,13,14,15});     // NOLINT(cert-err58-cpp)
