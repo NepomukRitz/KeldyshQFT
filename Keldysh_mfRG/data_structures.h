@@ -144,6 +144,9 @@ template <typename T> vec<T> operator* (const vec<T> &m1, const vec<T> &m2);
 // multiplication with a constant
 template <typename T> vec<T> operator* (const vec<T> &m, const T &c);
 
+// multiplication with a double constant
+template <typename T> vec<T> operator* (const vec<T> &m, double c);
+
 
 
 // define aliases for real and complex vector
@@ -362,6 +365,17 @@ vec<T> operator* (const vec<T> &m, const T &c) {
     temp[i] = m[i] * c;
   }
   return temp;
+}
+
+// multiplication with a constant
+template <typename T>
+vec<T> operator* (const vec<T> &m, double c) {
+    vec<T> temp (m.size());
+#pragma omp parallel for
+    for (int i=0; i<m.size(); ++i){
+        temp[i] = m[i] * c;
+    }
+    return temp;
 }
 
 
