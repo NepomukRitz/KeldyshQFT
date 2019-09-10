@@ -262,6 +262,18 @@ int convertToRealIndex(int index)
         return index + 2;
 }
 
+int convertToIndepIndex(int iK)
+{
+    if(iK ==0 || iK ==1)
+        return iK;
+    else if(iK==3)
+        return 2;
+    else if(iK==5)
+        return 3;
+    else if(iK ==7)
+        return 4;
+}
+
 /*This function returns the values of the 4 alphas for a given index in the 0...15 set */
 tuple<int, int, int, int> alphas(int index)
 {
