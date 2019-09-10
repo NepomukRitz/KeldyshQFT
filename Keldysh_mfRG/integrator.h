@@ -12,10 +12,16 @@
 
 //}
 
-//TODO this ist just so that main.cpp runs
-comp integrator(cvec integrand)
+//TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
+comp integrator(cvec integrand, rvec grid)
 {
-    return 0.;
+    comp resp =0.;
+    for (int i=0; i<grid.size(); ++i)
+    {
+        resp+= integrand[i]*simpson_weights[i];
+    }
+    auto dw = (grid[grid.size()-1]-grid[0])/((double)(grid.size()-1));
+    return dw/3.*resp;
 }
 
 #endif //KELDYSH_MFRG_INTEGRATOR_H
