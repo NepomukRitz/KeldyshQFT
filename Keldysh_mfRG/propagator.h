@@ -177,19 +177,18 @@ comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
 
 comp SR(double Lambda, double omega, comp selfEneR)
 {
-    return -(comp)0.5i*pow(GR(Lambda, omega, selfEneR),2);
+    return -(comp)0.5i*pow(GR(Lambda, omega, selfEneR),2.);
 }
 comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA)
 {
     return -(comp)0.5i*GR(Lambda, omega, selfEneR)*GK(Lambda, omega, selfEneR, selfEneK, selfEneA) +
-           (comp)0.5i*GK(Lambda, omega, selfEneR, selfEneK, selfEneA)*GA(Lambda, omega, selfEneA) -
-           (comp)1.i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
+            (comp)0.5i*GK(Lambda, omega, selfEneR, selfEneK, selfEneA)*GA(Lambda, omega, selfEneA) -
+            (comp)1.i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
 }
 
 Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, SelfEnergy<comp> diffselfenergy, char type)
 {
     Propagator resp;
-
     for(int i=0; i<nPROP; ++i) {
         double w = ffreqs[i];
         comp selfEneR = selfenergy.svalsmooth(0, w);
