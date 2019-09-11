@@ -1118,11 +1118,7 @@ template <typename Q> Q avert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
 
 template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in){
 
-    //For debugging purposes
-    int pause=0;
-
     int index = fconv_K1_a(w_a);
-    auto idea = (int)(index/nSE);
     double x1 = freqs_a[index];
     double x2 = freqs_a[index] + dw_a;
     double xd = (w_a-x1)/(x2-x1);
@@ -1130,19 +1126,10 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in){
     Q f1 = K1_vval(iK, index, i_in);
     Q f2 = K1_vval(iK, index+1, i_in);
 
-    Q control = (1.-xd)*f1 + xd*f2;
-    Q control2 = (1.- idea)*((1.-xd)*f1 + xd*f2);
-
-    if(control!=0.)
-    {
-
-        pause=1;
-    }
-    return control;
+    return  (1.-xd)*f1 + xd*f2;
 }
 template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
-    //For debugging purposes
-    int pause=0;
+
     int index_b, index_f;
     tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
 
@@ -1159,13 +1146,7 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
     Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
     Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
 
-    Q control = (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
-
-    if(control!=0.){
-
-        pause = 2;
-    }
-    return control;
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
 template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
     int i0, i1, i2, i3, exponent;
@@ -1174,8 +1155,6 @@ template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v1_a
     return pow(-1., exponent)*K2_vvalsmooth(iK, w_a, v1_a, i_in);
 }
 template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    //For debugging purposes
-    int pause=0;
 
     int index_b, index_f, index_fp;
     tie(index_b,index_f, index_fp) = fconv_K3_a(w_a, v1_a, v2_a);
@@ -1208,14 +1187,7 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a,
     Q c0 = c00*(1.-yd) + c10*yd;
     Q c1 = c01*(1.-yd) + c11*yd;
 
-    Q control = c0*(1.-zd) + c1*zd;
-
-    if(control!=0.)
-    {
-
-        pause=3;
-    }
-    return control;
+    return c0*(1.-zd) + c1*zd;
 }
 
 template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w, double v1, double v2, char channel)
@@ -1884,7 +1856,6 @@ template <typename Q> Q pvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
     return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
 }
 
-//TODO eliminate control
 template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double w_p, int i_in){
 
     int index = fconv_K1_p(w_p);
@@ -1897,9 +1868,7 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double w_p, int i_in){
     Q f1 = K1_vval(iK, index, i_in);
     Q f2 = K1_vval(iK, index+1, i_in);
 
-    Q control =  (1.-xd)*f1 + xd*f2;
-
-    return control;
+    return (1.-xd)*f1 + xd*f2;
 }
 template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p, int i_in){
 
@@ -1919,9 +1888,7 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p,
     Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
     Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
 
-    Q control = (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
-
-    return control;
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
 template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v1_p, int i_in)
 {
@@ -1963,9 +1930,7 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double w_p, double v1_p,
     Q c0 = c00*(1.-yd) + c10*yd;
     Q c1 = c01*(1.-yd) + c11*yd;
 
-    Q control = c0*(1.-zd) + c1*zd;
-
-    return control;
+    return c0*(1.-zd) + c1*zd;
 }
 
 template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w, double v1, double v2, char channel) {
@@ -2596,7 +2561,6 @@ template <typename Q> Q tvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
     return K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in];
 }
 
-//TODO eliminate control
 template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in){
 
     int index = fconv_K1_t(w_t);
@@ -2609,9 +2573,7 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in){
     Q f1 = K1_vval(iK, index, i_in);
     Q f2 = K1_vval(iK, index+1, i_in);
 
-    Q control =  (1.-xd)*f1 + xd*f2;
-
-    return control;
+    return (1.-xd)*f1 + xd*f2;
 }
 template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t, int i_in){
 
@@ -2631,9 +2593,7 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
     Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
 
-    Q control = (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
-
-    return control;
+    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
 }
 template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v1_t, int i_in){
     int i0, i1, i2, i3, exponent;
@@ -2642,7 +2602,6 @@ template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v1_t
     return pow(-1., exponent)*K2_vvalsmooth(iK, w_t, v1_t, i_in);
 }
 template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t, double v2_t, int i_in){
-
 
     int index_b, index_f, index_fp;
     tie(index_b,index_f, index_fp) = fconv_K3_t(w_t, v1_t, v2_t);
@@ -2675,9 +2634,7 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t,
     Q c0 = c00*(1.-yd) + c10*yd;
     Q c1 = c01*(1.-yd) + c11*yd;
 
-    Q control = c0*(1.-zd) + c1*zd;
-
-    return control;
+    return c0*(1.-zd) + c1*zd;
 }
 
 template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w, double v1, double v2, char channel) {
