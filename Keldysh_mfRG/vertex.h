@@ -133,30 +133,30 @@ public:
     /*Symmetry which interchanges both incoming with outgoing legs*/
     tuple<int, double, double, double, int> indices_TC(int, double, double, double, int);
 
-    /*Symmetry transformations for the different diagrammatic classes.
-     * K1 */
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K1(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K1(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K1(int, double, double, double, int);
-
-    /*K2*/
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K2(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K2(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K2(int, double, double, double, int);
-
-    /*K3*/
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K3(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K3(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K3(int, double, double, double, int);
+//    /*Symmetry transformations for the different diagrammatic classes.
+//     * K1 */
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K1(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K1(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K1(int, double, double, double, int);
+//
+//    /*K2*/
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K2(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K2(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K2(int, double, double, double, int);
+//
+//    /*K3*/
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K3(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K3(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K3(int, double, double, double, int);
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the a-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -312,30 +312,30 @@ public:
     /*Symmetry which interchanges both incoming with outgoing legs*/
     tuple<int, double, double, double, int> indices_TC(int, double, double, double, int);
 
-    /*Symmetry transformations for the different diagrammatic classes.
-     * K1 */
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K1(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K1(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K1(int, double, double, double, int);
-
-    /*K2*/
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K2(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K2(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K2(int, double, double, double, int);
-
-    /*K3*/
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K3(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K3(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K3(int, double, double, double, int);
+//    /*Symmetry transformations for the different diagrammatic classes.
+//     * K1 */
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K1(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K1(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K1(int, double, double, double, int);
+//
+//    /*K2*/
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K2(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K2(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K2(int, double, double, double, int);
+//
+//    /*K3*/
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K3(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K3(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K3(int, double, double, double, int);
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the p-channel*/
@@ -490,30 +490,30 @@ public:
     /*Symmetry which interchanges both incoming with outgoing legs*/
     tuple<int, double, double, double, int> indices_TC(int, double, double, double, int);
 
-    /*Symmetry transformations for the different diagrammatic classes.
-     * K1 */
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K1(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K1(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K1(int, double, double, double, int);
-
-    /*K2*/
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K2(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K2(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K2(int, double, double, double, int);
-
-    /*K3*/
-    /*Symmetry which interchanges the incoming legs*/
-    Q T1_K3(int, double, double, double, int);
-    /*Symmetry which interchanges the outgoing legs*/
-    Q T2_K3(int, double, double, double, int);
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    Q T3_K3(int, double, double, double, int);
+//    /*Symmetry transformations for the different diagrammatic classes.
+//     * K1 */
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K1(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K1(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K1(int, double, double, double, int);
+//
+//    /*K2*/
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K2(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K2(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K2(int, double, double, double, int);
+//
+//    /*K3*/
+//    /*Symmetry which interchanges the incoming legs*/
+//    Q T1_K3(int, double, double, double, int);
+//    /*Symmetry which interchanges the outgoing legs*/
+//    Q T2_K3(int, double, double, double, int);
+//    /*Symmetry which interchanges both incoming and outgoing legs*/
+//    Q T3_K3(int, double, double, double, int);
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the lower(0) and upper(1) vertices of a
     * buuble in the t-channel*/
@@ -550,6 +550,7 @@ public:
 template <class Q>
 class irreducible{
 public:
+    vec<Q> bare = vec<Q>(16);
     Q U_bare;
 
 public:
@@ -557,14 +558,12 @@ public:
     /*All three functions return the value of the bare vertex. Since this value is, this far, independent of everything,
      * the third function stays the same. However, should count on having to adapt it if an internal structure should
      * come forth where the bare interaction does not remain invariant throughout the system.*/
-    Q vval();
-    Q vvalsmooth();
-    Q vvalsmooth(double,double,double,char,int,char);
+    Q vval(int iK);
 
     /*Sets the value of the bare interaction to Q TODO are we always going to be working in the PA?*/
-    void setvert(Q);
+    void setvert(int iK, Q);
 
-    /*Multiplies the value of the irreducible vertex by alpha*/
+    /*Multiplies the value of the irreducible vertex by alpha anf the addition operation for two irreducible vertices*/
     irreducible<Q> friend operator*(double alpha, const irreducible<Q>& vertex) {
         irreducible<Q> result;
         result.U_bare = alpha * vertex.U_bare;
@@ -576,8 +575,6 @@ public:
         result.U_bare = alpha * vertex.U_bare;
         return result;
     }
-
-    /*Defines the addition operation for two irreducible vertices*/
     irreducible<Q> friend operator+(const irreducible<Q>& vertex1,const irreducible<Q>& vertex2) {
         irreducible<Q> result;
         result.U_bare = vertex1.U_bare + vertex2.U_bare;
@@ -657,176 +654,170 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     double w_a=0., v1_a=0., v2_a=0.;
     tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
     int iK1, iK2, iK3;
+    double pf1, pf2, pf3;
+    bool conjugate;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1))
-    {
-        iK1=0;
-        valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
-
+    /*This part determines the value of the K1 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K1_T0_comp1)){
+        iK1 = 0;
+        pf1 = 1.;
     }
-    else if(isInList(iK,list_K1_T1_comp1))
-    {
+    else if(isInList(iK,list_K1_T1_comp1)){
         tie(iK1, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK1 = 0;
-        if(fabs(w_a)>w_lower_b)
-            valueK1=0.;
-        else
-            valueK1 = -K1_vvalsmooth(iK1,w_a,i_in);
-
+        pf1 =-1.;
     }
-    else if(isInList(iK, list_K1_T0_comp3))
-    {
+    else if(isInList(iK, list_K1_T0_comp3)){
         iK1 = 1;
-        valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
+        pf1 = 1.;
     }
+    else{
+        iK1 = 0;
+        pf1 = 0.;
+    }
+    /*And now one checks that the input frequency is in the accepted range*/
+    if(fabs(w_a)>w_upper_b)
+        valueK1 = 0.;
     else
-    {
-        valueK1=0.;
-    }
+        valueK1 = pf1*K1_vvalsmooth(iK1, w_a, i_in);
 
 
-    if(isInList(iK,list_K2_T0_comp1))
-    {
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = -1.;
     }
     else if(isInList(iK,list_K2_T2_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = -1.;
     }
     else if(isInList(iK,list_K2_T3_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T0_comp3)){
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T3_comp3)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 1;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = 1.;
     }
-    else
-    {
+    else{
+        iK2 = 0;
+        pf2 = 0.;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
         valueK2 = 0.;
-    }
+    else
+        valueK2 = pf2*K2_vvalsmooth(iK2, w_a, v1_a, i_in);
 
 
-    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
-    {
-        iK3=iK;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+    /*This part determines the value of the K3 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
+        iK3 = convertToIndepIndex(iK);
+        pf3 = 1.;
+        conjugate = false;
     }
-    else if(iK == 2)
-    {
+    else if(iK == 2){
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        pf3 =-1.;
+        conjugate = false;
     }
-    else if(iK==4)
-    {
+    else if(iK==4){
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+        pf3 = 1.;   //(-1)^(1+1+2+1+1)
+        conjugate = true;
     }
-    else if(iK == 6)
-    {
+    else if(iK == 6){
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 5;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
-    }
-    else if(iK == 8)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 1;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
-    }
-    else if(iK == 9)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 5;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
-    }
-
-    else if(iK == 10)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 5;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
-    }
-
-    else if(iK == 11)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 7;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
-    }
-
-    else if(iK == 12)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 3;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+        pf3 =-1.;
+        conjugate = false;
     }
-
-    else if(iK == 13)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 7;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
-    }
-
-    else if(iK == 14)
-    {
+    else if(iK == 8){
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 7;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+        iK3 = 1;
+        pf3 =-1.;   //(-1.)^(1+2+1+1+1)*(-1) for T2
+        conjugate = true;
+    }
+    else if(iK == 9){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 3;
+        pf3 =-1.;
+        conjugate = false;
     }
 
+    else if(iK == 10){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 3;
+        pf3 = 1.;
+        conjugate = false;
+    }
+
+    else if(iK == 11){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 4;
+        pf3 =-1.;
+        conjugate = false;
+    }
+
+    else if(iK == 12){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 2;
+        pf3 =-1.;   //(-1)^(1+2+2+1+1)
+        conjugate = true;
+    }
+
+    else if(iK == 13){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 4;
+        pf3 = 1.;   //(-1)^(1+2+2+1+2)
+        conjugate = true;
+    }
+
+    else if(iK == 14){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 4;
+        pf3 =-1.;   //(-1)^(1+2+2+2+1)*(-1)for T2
+        conjugate = true;
+    }
+    else{
+        iK3 = 0;
+        pf3 = 0.;
+        conjugate = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f)) {
+        valueK3 = 0.;
+    }
+    else{
+        //And one checks, if one has, or not, to conjugate
+        if(conjugate)
+            valueK3 = pf3*conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+        else
+            valueK3 = pf3*K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+
+    }
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
 }
 template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in){
@@ -836,174 +827,169 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
 
     double w_a=w, v1_a=v1, v2_a=v2;
     int iK1, iK2, iK3;
+    double pf1, pf2, pf3;
+    bool conjugate;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1))
-    {
-        iK1=0;
-        valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
-
+    /*This part determines the value of the K1 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K1_T0_comp1)){
+        iK1 = 0;
+        pf1 = 1.;
     }
-    else if(isInList(iK,list_K1_T1_comp1))
-    {
+    else if(isInList(iK,list_K1_T1_comp1)){
         tie(iK1, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK1 = 0;
-        if(fabs(w_a)>w_lower_b)
-            valueK1=0.;
-        else
-            valueK1 = -K1_vvalsmooth(iK1,w_a,i_in);
-
+        pf1 =-1.;
     }
-    else if(isInList(iK, list_K1_T0_comp3))
-    {
+    else if(isInList(iK, list_K1_T0_comp3)){
         iK1 = 1;
-        valueK1 = K1_vvalsmooth(iK1,w_a,i_in);
+        pf1 = 1.;
     }
+    else{
+        iK1 = 0;
+        pf1 = 0.;
+    }
+    /*And now one checks that the input frequency is in the accepted range*/
+    if(fabs(w_a)>w_upper_b)
+        valueK1 = 0.;
     else
-    {
-        valueK1=0.;
-    }
+        valueK1 = pf1*K1_vvalsmooth(iK1, w_a, i_in);
 
 
-    if(isInList(iK,list_K2_T0_comp1))
-    {
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = -1.;
     }
     else if(isInList(iK,list_K2_T2_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = -1.;
     }
     else if(isInList(iK,list_K2_T3_comp1)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 0;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T0_comp3)){
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T3_comp3)){
         tie(iK2, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
         iK2 = 1;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_a, v1_a, i_in);
+        pf2 = 1.;
     }
-    else
-    {
+    else{
+        iK2 = 0;
+        pf2 = 0.;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f)
         valueK2 = 0.;
-    }
+    else
+        valueK2 = pf2*K2_vvalsmooth(iK2, w_a, v1_a, i_in);
 
 
-    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
-    {
-        iK3=iK;
-        valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+    /*This part determines the value of the K3 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
+        iK3 = convertToIndepIndex(iK);
+        pf3 = 1.;
+        conjugate = false;
     }
-    else if(iK == 2)
-    {
+    else if(iK == 2){
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+        pf3 =-1.;
+        conjugate = false;
     }
-    else if(iK==4)
-    {
+    else if(iK==4){
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 1;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+        pf3 = 1.;   //(-1)^(1+1+2+1+1)
+        conjugate = true;
     }
-    else if(iK == 6)
-    {
+    else if(iK == 6){
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T1(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 5;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
-    }
-    else if(iK == 8)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 1;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
-    }
-    else if(iK == 9)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 5;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
-    }
-
-    else if(iK == 10)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 5;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
-    }
-
-    else if(iK == 11)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 7;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
-    }
-
-    else if(iK == 12)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         iK3 = 3;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+        pf3 =-1.;
+        conjugate = false;
     }
-
-    else if(iK == 13)
-    {
-        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 7;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
-    }
-
-    else if(iK == 14)
-    {
+    else if(iK == 8){
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
         tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-        iK3 = 7;
-        if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f))
-            valueK3=0.;
+        iK3 = 1;
+        pf3 =-1.;   //(-1.)^(1+2+1+1+1)*(-1) for T2
+        conjugate = true;
+    }
+    else if(iK == 9){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 3;
+        pf3 =-1.;
+        conjugate = false;
+    }
+
+    else if(iK == 10){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 3;
+        pf3 = 1.;
+        conjugate = false;
+    }
+
+    else if(iK == 11){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 4;
+        pf3 =-1.;
+        conjugate = false;
+    }
+
+    else if(iK == 12){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 2;
+        pf3 =-1.;   //(-1)^(1+2+2+1+1)
+        conjugate = true;
+    }
+
+    else if(iK == 13){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 4;
+        pf3 = 1.;   //(-1)^(1+2+2+1+2)
+        conjugate = true;
+    }
+
+    else if(iK == 14){
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_TC(iK, w_a, v1_a, v2_a, i_in);
+        tie(iK3, w_a, v1_a, v2_a, i_in) = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+        iK3 = 4;
+        pf3 =-1.;   //(-1)^(1+2+2+2+1)*(-1)for T2
+        conjugate = true;
+    }
+    else{
+        iK3 = 0;
+        pf3 = 0.;
+        conjugate = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a>w_upper_f)) {
+        valueK3 = 0.;
+    }
+    else{
+        //And one checks, if one has, or not, to conjugate
+        if(conjugate)
+            valueK3 = pf3*conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
         else
-            valueK3 = conj(K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in));
+            valueK3 = pf3*K3_vvalsmooth(iK3, w_a, v1_a, v2_a, i_in);
+
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -1132,26 +1118,38 @@ template <typename Q> Q avert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
 
 template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in){
 
-    int index = fconv_K1_a(w_a);
+    //For debugging purposes
+    int pause=0;
 
+    int index = fconv_K1_a(w_a);
+    auto idea = (int)(index/nSE);
     double x1 = freqs_a[index];
-    double x2 = freqs_a[index+1];
+    double x2 = freqs_a[index] + dw_a;
     double xd = (w_a-x1)/(x2-x1);
 
     Q f1 = K1_vval(iK, index, i_in);
     Q f2 = K1_vval(iK, index+1, i_in);
 
-    return (1.-xd)*f1 + xd*f2;
+    Q control = (1.-xd)*f1 + xd*f2;
+    Q control2 = (1.- idea)*((1.-xd)*f1 + xd*f2);
+
+    if(control!=0.)
+    {
+
+        pause=1;
+    }
+    return control;
 }
 template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
-
+    //For debugging purposes
+    int pause=0;
     int index_b, index_f;
     tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
 
     double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
+    double x2 = freqs_a[index_b] + dw_a;
     double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
+    double y2 = freqs_a[index_f] + dw_a;
 
     double xd = (w_a-x1)/(x2-x1);
     double yd = (v1_a-y1)/(y2-y1);
@@ -1161,7 +1159,13 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
     Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
     Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
 
-    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+    Q control = (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+
+    if(control!=0.){
+
+        pause = 2;
+    }
+    return control;
 }
 template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
     int i0, i1, i2, i3, exponent;
@@ -1170,16 +1174,18 @@ template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v1_a
     return pow(-1., exponent)*K2_vvalsmooth(iK, w_a, v1_a, i_in);
 }
 template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a, double v2_a, int i_in){
+    //For debugging purposes
+    int pause=0;
 
     int index_b, index_f, index_fp;
     tie(index_b,index_f, index_fp) = fconv_K3_a(w_a, v1_a, v2_a);
 
     double x1 = freqs_a[index_b];
-    double x2 = freqs_a[index_b+1];
+    double x2 = freqs_a[index_b] + dw_a;
     double y1 = freqs_a[index_f];
-    double y2 = freqs_a[index_f+1];
+    double y2 = freqs_a[index_f] + dw_a;
     double z1 = freqs_a[index_fp];
-    double z2 = freqs_a[index_fp+1];
+    double z2 = freqs_a[index_fp] + dw_a;
 
     double xd = (w_a-x1)/(x2-x1);
     double yd = (v1_a-y1)/(y2-y1);
@@ -1202,7 +1208,14 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a,
     Q c0 = c00*(1.-yd) + c10*yd;
     Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1.-zd) + c1*zd;
+    Q control = c0*(1.-zd) + c1*zd;
+
+    if(control!=0.)
+    {
+
+        pause=3;
+    }
+    return control;
 }
 
 template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w, double v1, double v2, char channel)
@@ -1302,42 +1315,42 @@ template<typename Q> tuple<int, double, double, double, int> avert<Q>::indices_T
     return make_tuple(iKp, trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
 
-template<typename Q> Q avert<Q>::T1_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q avert<Q>::T2_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q avert<Q>::T3_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q avert<Q>::T1_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q avert<Q>::T2_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q avert<Q>::T3_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q avert<Q>::T1_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
-template<typename Q> Q avert<Q>::T2_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
-template<typename Q> Q avert<Q>::T3_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
-    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
+//template<typename Q> Q avert<Q>::T1_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q avert<Q>::T2_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q avert<Q>::T3_K1(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q avert<Q>::T1_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q avert<Q>::T2_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q avert<Q>::T3_K2(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q avert<Q>::T1_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T1(iK, w_a, v1_a, v2_a, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
+//template<typename Q> Q avert<Q>::T2_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T2(iK, w_a, v1_a, v2_a, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
+//template<typename Q> Q avert<Q>::T3_K3(int iK, double w_a, double v1_a, double v2_a, int i_in){
+//    auto indices = indices_T3(iK, w_a, v1_a, v2_a, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
 
 template<typename Q> tuple<int, int> avert<Q>::indices_sum(int i0, int i2)
 {
@@ -1362,170 +1375,192 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     double w_p=0., v1_p=0., v2_p=0.;
     tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
     int iK1, iK2, iK3;
+    bool conjugate1, conjugate2, conjugate3;
+    double pf1, pf2, pf3;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1))
-    {
-        iK1=0;
-        valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
-
+    /*This part determines the value of the K1 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K1_T0_comp1)){
+        iK1 = 0;
+        pf1 = 1.;
+        conjugate1 = false;
     }
-    else if(isInList(iK,list_K1_TC_comp1))
-    {
+    else if(isInList(iK,list_K1_TC_comp1)){
         tie(iK1, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK1 = 0;
-        valueK1 = conj(K1_vvalsmooth(iK1,w_p,i_in));
-
+        pf1 = 1.;
+        conjugate1 = true;
     }
-    else if(isInList(iK, list_K1_T0_comp5))
-    {
+    else if(isInList(iK, list_K1_T0_comp5)){
         iK1 = 1;
-        valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
+        pf1 = 1.;
+        conjugate1 = false;
+    }
+    else{
+        iK1 = 0;
+        pf1 = 0.;
+        conjugate1 = false;
+    }
+
+    /*And now one checks that the input frequency is in the accepted range*/
+    if(fabs(w_p)>w_upper_b){
+        valueK1 = 0.;
     }
     else
-    {
-        valueK1=0.;
-    }
+    if(conjugate1)
+        valueK1 = pf1*conj(K1_vvalsmooth(iK1, w_p, i_in));
+    else
+        valueK1 = pf1*K1_vvalsmooth(iK1, w_p, i_in);
 
 
 
-    if(isInList(iK,list_K2_T0_comp1))
-    {
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        pf2 = 1.;
+        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
-            valueK2 = 0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        pf2 =-1.;
+        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_TC_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        valueK2 = conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
+        pf2 = 1.;
+        conjugate2 = true;
     }
     else if(isInList(iK,list_K2_T2TC_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
-            valueK2 = 0.;
-        else
-            valueK2 = -conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
+        pf2 =-1.;
+        conjugate2 = true;
     }
     else if(isInList(iK,list_K2_T0_comp5)){
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        pf2 = 1.;
+        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_T3_comp5)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 1;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
-            valueK2 = 0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        pf2 = 1.;
+        conjugate2 = false;
     }
-    else
-    {
+    else{
+        iK2 = 0;
+        pf2 = 0.;
+        conjugate2 = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f){
         valueK2 = 0.;
     }
-
-
-    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
-    {
-        iK3=iK;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+    else{
+        //And one checks, if one has, or not, to conjugate
+        if(conjugate2)
+            valueK2 = pf2*conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
+        else
+            valueK2 = pf2*K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
-    else if(iK == 2)
-    {
+
+
+
+    /*This part determines the value of the K3 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
+        iK3 = convertToIndepIndex(iK);
+        pf3 = 1.;
+        conjugate3 = false;
+    }
+    else if(iK == 2){
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        pf3 =-1.;
+        conjugate3 = false;
     }
-    else if(iK==4)
-    {
+    else if(iK==4){
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+        pf3 = 1.;   //(-1)^(1+1+2+1+1)
+        conjugate3 = true;
     }
-    else if(iK == 6)
-    {
+    else if(iK == 6){
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
-    }
-    else if(iK == 8)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 1;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
-    }
-    else if(iK == 9)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
-    }
-
-    else if(iK == 10)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
-    }
-
-    else if(iK == 11)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 7;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
-    }
-
-    else if(iK == 12)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 3;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+        pf3 =-1.;
+        conjugate3 = false;
     }
-
-    else if(iK == 13)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 7;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
-    }
-
-    else if(iK == 14)
-    {
+    else if(iK == 8){
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 7;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
+        iK3 = 1;
+        pf3 =-1.;   //(-1.)^(1+2+1+1+1)*(-1) for T2
+        conjugate3 = true;
+    }
+    else if(iK == 9){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 3;
+        pf3 =-1.;
+        conjugate3 = false;
+    }
+
+    else if(iK == 10){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 3;
+        pf3 = 1.;
+        conjugate3 = false;
+    }
+
+    else if(iK == 11){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 4;
+        pf3 =-1.;
+        conjugate3 = false;
+    }
+
+    else if(iK == 12){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 2;
+        pf3 =-1.;   //(-1)^(1+2+2+1+1)
+        conjugate3 = true;
+    }
+
+    else if(iK == 13){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 4;
+        pf3 = 1.;   //(-1)^(1+2+2+1+2)
+        conjugate3 = true;
+    }
+
+    else if(iK == 14){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 4;
+        pf3 =-1.;   //(-1)^(1+2+2+2+1)*(-1)for T2
+        conjugate3 = true;
+    }
+    else{
+        iK3 = 0;
+        pf3 = 0.;
+        conjugate3 = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+        valueK3 = 0.;
+    else{
+        //And one checks, if one has, or not, to conjugate
+        if(conjugate3)
+            valueK3 = pf3*conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
         else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+            valueK3 = pf3*K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -1537,170 +1572,192 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
 
     double w_p=w, v1_p=v1, v2_p=v2;
     int iK1, iK2, iK3;
+    bool conjugate1, conjugate2, conjugate3;
+    double pf1, pf2, pf3;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1))
-    {
-        iK1=0;
-        valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
-
+    /*This part determines the value of the K1 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K1_T0_comp1)){
+        iK1 = 0;
+        pf1 = 1.;
+        conjugate1 = false;
     }
-    else if(isInList(iK,list_K1_TC_comp1))
-    {
+    else if(isInList(iK,list_K1_TC_comp1)){
         tie(iK1, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK1 = 0;
-        valueK1 = conj(K1_vvalsmooth(iK1,w_p,i_in));
-
+        pf1 = 1.;
+        conjugate1 = true;
     }
-    else if(isInList(iK, list_K1_T0_comp5))
-    {
+    else if(isInList(iK, list_K1_T0_comp5)){
         iK1 = 1;
-        valueK1 = K1_vvalsmooth(iK1,w_p,i_in);
+        pf1 = 1.;
+        conjugate1 = false;
+    }
+    else{
+        iK1 = 0;
+        pf1 = 0.;
+        conjugate1 = false;
+    }
+
+    /*And now one checks that the input frequency is in the accepted range*/
+    if(fabs(w_p)>w_upper_b){
+        valueK1 = 0.;
     }
     else
-    {
-        valueK1=0.;
-    }
+        if(conjugate1)
+            valueK1 = pf1*conj(K1_vvalsmooth(iK1, w_p, i_in));
+        else
+            valueK1 = pf1*K1_vvalsmooth(iK1, w_p, i_in);
 
 
 
-    if(isInList(iK,list_K2_T0_comp1))
-    {
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        pf2 = 1.;
+        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
-            valueK2 = 0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        pf2 =-1.;
+        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_TC_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        valueK2 = conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
+        pf2 = 1.;
+        conjugate2 = true;
     }
     else if(isInList(iK,list_K2_T2TC_comp1)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 0;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
-            valueK2 = 0.;
-        else
-            valueK2 = -conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
+        pf2 =-1.;
+        conjugate2 = true;
     }
     else if(isInList(iK,list_K2_T0_comp5)){
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
+        pf2 = 1.;
+        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_T3_comp5)){
         tie(iK2, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
         iK2 = 1;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f)
+        pf2 = 1.;
+        conjugate2 = false;
+    }
+    else{
+        iK2 = 0;
+        pf2 = 0.;
+        conjugate2 = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f){
             valueK2 = 0.;
+    }
+    else{
+        //And one checks, if one has, or not, to conjugate
+        if(conjugate2)
+            valueK2 = pf2*conj(K2_vvalsmooth(iK2, w_p, v1_p, i_in));
         else
-            valueK2 = K2_vvalsmooth(iK2, w_p, v1_p, i_in);
-    }
-    else
-    {
-        valueK2 = 0.;
+            valueK2 = pf2*K2_vvalsmooth(iK2, w_p, v1_p, i_in);
     }
 
 
-    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
-    {
-        iK3=iK;
-        valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+
+    /*This part determines the value of the K3 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
+        iK3 = convertToIndepIndex(iK);
+        pf3 = 1.;
+        conjugate3 = false;
     }
-    else if(iK == 2)
-    {
+    else if(iK == 2){
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
+        pf3 =-1.;
+        conjugate3 = false;
     }
-    else if(iK==4)
-    {
+    else if(iK==4){
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+        pf3 = 1.;   //(-1)^(1+1+2+1+1)
+        conjugate3 = true;
     }
-    else if(iK == 6)
-    {
+    else if(iK == 6){
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T1(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
-    }
-    else if(iK == 8)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 1;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
-    }
-    else if(iK == 9)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
-    }
-
-    else if(iK == 10)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
-    }
-
-    else if(iK == 11)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 7;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
-    }
-
-    else if(iK == 12)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         iK3 = 3;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+        pf3 =-1.;
+        conjugate3 = false;
     }
-
-    else if(iK == 13)
-    {
-        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 7;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
-    }
-
-    else if(iK == 14)
-    {
+    else if(iK == 8){
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
         tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-        iK3 = 7;
-        if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-            valueK3 = 0.;
+        iK3 = 1;
+        pf3 =-1.;   //(-1.)^(1+2+1+1+1)*(-1) for T2
+        conjugate3 = true;
+    }
+    else if(iK == 9){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 3;
+        pf3 =-1.;
+        conjugate3 = false;
+    }
+
+    else if(iK == 10){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 3;
+        pf3 = 1.;
+        conjugate3 = false;
+    }
+
+    else if(iK == 11){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 4;
+        pf3 =-1.;
+        conjugate3 = false;
+    }
+
+    else if(iK == 12){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 2;
+        pf3 =-1.;   //(-1)^(1+2+2+1+1)
+        conjugate3 = true;
+    }
+
+    else if(iK == 13){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 4;
+        pf3 = 1.;   //(-1)^(1+2+2+1+2)
+        conjugate3 = true;
+    }
+
+    else if(iK == 14){
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_TC(iK, w_p, v1_p, v2_p, i_in);
+        tie(iK3, w_p, v1_p, v2_p, i_in) = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+        iK3 = 4;
+        pf3 =-1.;   //(-1)^(1+2+2+2+1)*(-1)for T2
+        conjugate3 = true;
+    }
+    else{
+        iK3 = 0;
+        pf3 = 0.;
+        conjugate3 = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
+        valueK3 = 0.;
+    else{
+        //And one checks, if one has, or not, to conjugate
+        if(conjugate3)
+            valueK3 = pf3*conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
         else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in));
+            valueK3 = pf3*K3_vvalsmooth(iK3, w_p, v1_p, v2_p, i_in);
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -1827,19 +1884,22 @@ template <typename Q> Q pvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
     return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
 }
 
+//TODO eliminate control
 template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double w_p, int i_in){
 
     int index = fconv_K1_p(w_p);
 
     double x1 = freqs_p[index];
-    double x2 = freqs_p[index+1];
+    double x2 = freqs_p[index] + dw_p;
 
     double xd = (w_p-x1)/(x2-x1);
 
     Q f1 = K1_vval(iK, index, i_in);
     Q f2 = K1_vval(iK, index+1, i_in);
 
-    return (1.-xd)*f1 + xd*f2;
+    Q control =  (1.-xd)*f1 + xd*f2;
+
+    return control;
 }
 template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p, int i_in){
 
@@ -1847,9 +1907,9 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p,
     tie(index_b, index_f) = fconv_K2_p(w_p, v1_p);
 
     double x1 = freqs_p[index_b];
-    double x2 = freqs_p[index_b+1];
+    double x2 = freqs_p[index_b] + dw_p;
     double y1 = freqs_p[index_f];
-    double y2 = freqs_p[index_f+1];
+    double y2 = freqs_p[index_f] + dw_p;
 
     double xd = (w_p-x1)/(x2-x1);
     double yd = (v1_p-y1)/(y2-y1);
@@ -1859,7 +1919,9 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p,
     Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
     Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
 
-    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+    Q control = (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+
+    return control;
 }
 template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v1_p, int i_in)
 {
@@ -1874,11 +1936,11 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double w_p, double v1_p,
     tie(index_b,index_f, index_fp) = fconv_K3_p(w_p, v1_p, v2_p);
 
     double x1 = freqs_p[index_b];
-    double x2 = freqs_p[index_b+1];
+    double x2 = freqs_p[index_b] + dw_p;
     double y1 = freqs_p[index_f];
-    double y2 = freqs_p[index_f+1];
+    double y2 = freqs_p[index_f] + dw_p;
     double z1 = freqs_p[index_fp];
-    double z2 = freqs_p[index_fp+1];
+    double z2 = freqs_p[index_fp] + dw_p;
 
     Q f111 = K3_vval(iK, index_b, index_f, index_fp, i_in);
     Q f112 = K3_vval(iK, index_b, index_f, index_fp+1, i_in);
@@ -1901,9 +1963,10 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double w_p, double v1_p,
     Q c0 = c00*(1.-yd) + c10*yd;
     Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1.-zd) + c1*zd;
-}
+    Q control = c0*(1.-zd) + c1*zd;
 
+    return control;
+}
 
 template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w, double v1, double v2, char channel) {
     double w_p=0., v1_p = 0., v2_p=0.;
@@ -2004,50 +2067,50 @@ template<typename Q> tuple<int, double, double, double, int> pvert<Q>::indices_T
     return make_tuple(iKp, trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
 
-template<typename Q> Q pvert<Q>::T1_K1(int iK, double w_p, double v1_p, double v2_p, int i_in)
-{
-    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q pvert<Q>::T2_K1(int iK, double w_p, double v1_p, double v2_p, int i_in){
-    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q pvert<Q>::T3_K1(int iK, double w_p, double v1_p, double v2_p, int i_in)
-{
-    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q pvert<Q>::T1_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
-{
-    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q pvert<Q>::T2_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
-{
-    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q pvert<Q>::T3_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
-{
-    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q pvert<Q>::T1_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
-{
-    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
-template<typename Q> Q pvert<Q>::T2_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
-{
-    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
-template<typename Q> Q pvert<Q>::T3_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
-{
-    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
+//template<typename Q> Q pvert<Q>::T1_K1(int iK, double w_p, double v1_p, double v2_p, int i_in)
+//{
+//    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q pvert<Q>::T2_K1(int iK, double w_p, double v1_p, double v2_p, int i_in){
+//    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q pvert<Q>::T3_K1(int iK, double w_p, double v1_p, double v2_p, int i_in)
+//{
+//    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q pvert<Q>::T1_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
+//{
+//    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q pvert<Q>::T2_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
+//{
+//    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q pvert<Q>::T3_K2(int iK, double w_p, double v1_p, double v2_p, int i_in)
+//{
+//    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q pvert<Q>::T1_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
+//{
+//    auto indices = indices_T1(iK, w_p, v1_p, v2_p, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
+//template<typename Q> Q pvert<Q>::T2_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
+//{
+//    auto indices = indices_T2(iK, w_p, v1_p, v2_p, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
+//template<typename Q> Q pvert<Q>::T3_K3(int iK, double w_p, double v1_p, double v2_p, int i_in)
+//{
+//    auto indices = indices_T3(iK, w_p, v1_p, v2_p, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
 
 template<typename Q> tuple<int, int> pvert<Q>::indices_sum(int i0, int i2)
 {
@@ -2071,174 +2134,168 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     double w_t=0., v1_t=0., v2_t=0.;
     tie(w_t, v1_t, v2_t) = transfToT(w,v1,v2,channel);
     int iK1, iK2, iK3;
+    double pf1, pf2, pf3;
+    bool conjugate;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1))
-    {
-        iK1=0;
-        valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
-
+    /*This part determines the value of the K1 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K1_T0_comp1)){
+        iK1 = 0;
+        pf1 = 1.;
     }
-    else if(isInList(iK,list_K1_T1_comp1))
-    {
+    else if(isInList(iK,list_K1_T1_comp1)){
         tie(iK1, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK1 = 0;
-        if(fabs(w_t)>w_upper_b)
-            valueK1 = 0.;
-        else
-            valueK1 = -K1_vvalsmooth(iK1,w_t,i_in);
-
+        pf1 =-1.;
     }
-    else if(isInList(iK, list_K1_T0_comp3))
-    {
+    else if(isInList(iK, list_K1_T0_comp3)){
         iK1 = 1;
-        valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
+        pf1 = 1.;
     }
+    else{
+        iK1 = 0;
+        pf1 = 0.;
+    }
+
+    /*And now one checks that the input frequency is in the accepted range*/
+    if(fabs(w_t)>w_upper_b)
+        valueK1 = 0.;
     else
-    {
-        valueK1=0.;
-    }
+        valueK1 = pf1*K1_vvalsmooth(iK1,w_t,i_in);
 
 
-    if(isInList(iK,list_K2_T0_comp1))
-    {
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 =-1.;
     }
     else if(isInList(iK,list_K2_T2_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 =-1.;
     }
     else if(isInList(iK,list_K2_T3_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T0_comp3)){
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T3_comp3)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 1;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 = 1.;
     }
-    else
-    {
+    else{
+        iK2 = 0.;
+        pf2 = 0.;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
         valueK2 = 0.;
-    }
+    else
+        valueK2 = pf2*K2_vvalsmooth(iK2, w_t, v1_t, i_in);
 
 
-    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
-    {
-        iK3=iK;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+    /*This part determines the value of the K3 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
+        iK3 = convertToIndepIndex(iK);
+        pf3 = 1.;
+        conjugate = false;
     }
-    else if(iK == 2)
-    {
+    else if(iK == 2){
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        pf3 =-1.;
+        conjugate = false;
     }
-    else if(iK==4)
-    {
+    else if(iK==4){
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+        pf3 = 1.;   //(-1)^(1+1+2+1+1)
+        conjugate = true;
     }
-    else if(iK == 6)
-    {
+    else if(iK == 6){
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 5;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
-    }
-    else if(iK == 8)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 1;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
-    }
-    else if(iK == 9)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 5;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
-    }
-
-    else if(iK == 10)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 5;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
-    }
-
-    else if(iK == 11)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 7;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
-    }
-
-    else if(iK == 12)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 3;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+        pf3 =-1.;
+        conjugate = false;
     }
-
-    else if(iK == 13)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 7;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
-    }
-
-    else if(iK == 14)
-    {
+    else if(iK == 8){
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 7;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
+        iK3 = 1;
+        pf3 =-1.;   //(-1.)^(1+2+1+1+1)*(-1) for T2
+        conjugate = true;
+    }
+    else if(iK == 9){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 3;
+        pf3 =-1.;
+        conjugate = false;
+    }
+
+    else if(iK == 10){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 3;
+        pf3 = 1.;
+        conjugate = false;
+    }
+
+    else if(iK == 11){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 4;
+        pf3 =-1.;
+        conjugate = false;
+    }
+
+    else if(iK == 12){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 2;
+        pf3 =-1.;   //(-1)^(1+2+2+1+1)
+        conjugate = true;
+    }
+
+    else if(iK == 13){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 4;
+        pf3 = 1.;   //(-1)^(1+2+2+1+2)
+        conjugate = true;
+    }
+
+    else if(iK == 14){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 4;
+        pf3 =-1.;   //(-1)^(1+2+2+2+1)*(-1)for T2
+        conjugate = true;
+    }
+    else{
+        iK3 = 0;
+        pf3 = 0.;
+        conjugate = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+        valueK3=0.;
+    else{
+        //And one checks, if one has, or not, to conjugate
+        if(conjugate)
+            valueK3 = pf3*conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
         else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+            valueK3 = pf3*K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -2250,174 +2307,168 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
 
     double w_t=w, v1_t=v1, v2_t=v2;
     int iK1, iK2, iK3;
+    double pf1, pf2, pf3;
+    bool conjugate;
     Q valueK1, valueK2, valueK3;
 
-    if(isInList(iK,list_K1_T0_comp1))
-    {
-        iK1=0;
-        valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
-
+    /*This part determines the value of the K1 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K1_T0_comp1)){
+        iK1 = 0;
+        pf1 = 1.;
     }
-    else if(isInList(iK,list_K1_T1_comp1))
-    {
+    else if(isInList(iK,list_K1_T1_comp1)){
         tie(iK1, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK1 = 0;
-        if(fabs(w_t)>w_upper_b)
-            valueK1 = 0.;
-        else
-            valueK1 = -K1_vvalsmooth(iK1,w_t,i_in);
-
+        pf1 =-1.;
     }
-    else if(isInList(iK, list_K1_T0_comp3))
-    {
+    else if(isInList(iK, list_K1_T0_comp3)){
         iK1 = 1;
-        valueK1 = K1_vvalsmooth(iK1,w_t,i_in);
+        pf1 = 1.;
     }
+    else{
+        iK1 = 0;
+        pf1 = 0.;
+    }
+
+    /*And now one checks that the input frequency is in the accepted range*/
+    if(fabs(w_t)>w_upper_b)
+        valueK1 = 0.;
     else
-    {
-        valueK1=0.;
-    }
+        valueK1 = pf1*K1_vvalsmooth(iK1,w_t,i_in);
 
 
-    if(isInList(iK,list_K2_T0_comp1))
-    {
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 0;
-        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T1_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 =-1.;
     }
     else if(isInList(iK,list_K2_T2_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = -K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 =-1.;
     }
     else if(isInList(iK,list_K2_T3_comp1)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 0;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T0_comp3)){
         iK2 = 1;
-        valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T3_comp3)){
         tie(iK2, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
         iK2 = 1;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
-            valueK2=0.;
-        else
-            valueK2 = K2_vvalsmooth(iK2, w_t, v1_t, i_in);
+        pf2 = 1.;
     }
-    else
-    {
+    else{
+        iK2 = 0.;
+        pf2 = 0.;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f)
         valueK2 = 0.;
-    }
+    else
+        valueK2 = pf2*K2_vvalsmooth(iK2, w_t, v1_t, i_in);
 
 
-    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7)
-    {
-        iK3=iK;
-        valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+    /*This part determines the value of the K3 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
+        iK3 = convertToIndepIndex(iK);
+        pf3 = 1.;
+        conjugate = false;
     }
-    else if(iK == 2)
-    {
+    else if(iK == 2){
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
+        pf3 =-1.;
+        conjugate = false;
     }
-    else if(iK==4)
-    {
+    else if(iK==4){
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 1;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+        pf3 = 1.;   //(-1)^(1+1+2+1+1)
+        conjugate = true;
     }
-    else if(iK == 6)
-    {
+    else if(iK == 6){
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 5;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
-    }
-    else if(iK == 8)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 1;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
-    }
-    else if(iK == 9)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 5;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
-    }
-
-    else if(iK == 10)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 5;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
-    }
-
-    else if(iK == 11)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 7;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
-        else
-            valueK3 = -K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
-    }
-
-    else if(iK == 12)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         iK3 = 3;
-        valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+        pf3 =-1.;
+        conjugate = false;
     }
-
-    else if(iK == 13)
-    {
-        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 7;
-        valueK3 = conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
-    }
-
-    else if(iK == 14)
-    {
+    else if(iK == 8){
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
         tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-        iK3 = 7;
-        if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
-            valueK3=0.;
+        iK3 = 1;
+        pf3 =-1.;   //(-1.)^(1+2+1+1+1)*(-1) for T2
+        conjugate = true;
+    }
+    else if(iK == 9){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 3;
+        pf3 =-1.;
+        conjugate = false;
+    }
+
+    else if(iK == 10){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 3;
+        pf3 = 1.;
+        conjugate = false;
+    }
+
+    else if(iK == 11){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 4;
+        pf3 =-1.;
+        conjugate = false;
+    }
+
+    else if(iK == 12){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 2;
+        pf3 =-1.;   //(-1)^(1+2+2+1+1)
+        conjugate = true;
+    }
+
+    else if(iK == 13){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 4;
+        pf3 = 1.;   //(-1)^(1+2+2+1+2)
+        conjugate = true;
+    }
+
+    else if(iK == 14){
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_TC(iK, w_t, v1_t, v2_t, i_in);
+        tie(iK3, w_t, v1_t, v2_t, i_in) = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+        iK3 = 4;
+        pf3 =-1.;   //(-1)^(1+2+2+2+1)*(-1)for T2
+        conjugate = true;
+    }
+    else{
+        iK3 = 0;
+        pf3 = 0.;
+        conjugate = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f|| fabs(v2_t)>w_upper_f)
+        valueK3=0.;
+    else{
+        //And one checks, if one has, or not, to conjugate
+        if(conjugate)
+            valueK3 = pf3*conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
         else
-            valueK3 = -conj(K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in));
+            valueK3 = pf3*K3_vvalsmooth(iK3, w_t, v1_t, v2_t, i_in);
     }
 
     return valueK1 + valueK2 + conj(valueK2) + valueK3;
@@ -2545,19 +2596,22 @@ template <typename Q> Q tvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
     return K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in];
 }
 
+//TODO eliminate control
 template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in){
 
     int index = fconv_K1_t(w_t);
 
     double x1 = freqs_t[index];
-    double x2 = freqs_t[index+1];
+    double x2 = freqs_t[index] + dw_t;
 
     double xd = (w_t-x1)/(x2-x1);
 
     Q f1 = K1_vval(iK, index, i_in);
     Q f2 = K1_vval(iK, index+1, i_in);
 
-    return (1.-xd)*f1 + xd*f2;
+    Q control =  (1.-xd)*f1 + xd*f2;
+
+    return control;
 }
 template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t, int i_in){
 
@@ -2565,9 +2619,9 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     tie(index_b, index_f) = fconv_K2_t(w_t, v1_t);
 
     double x1 = freqs_t[index_b];
-    double x2 = freqs_t[index_b+1];
+    double x2 = freqs_t[index_b] + dw_t;
     double y1 = freqs_t[index_f];
-    double y2 = freqs_t[index_f+1];
+    double y2 = freqs_t[index_f] + dw_t;
 
     double xd = (w_t-x1)/(x2-x1);
     double yd = (v1_t-y1)/(y2-y1);
@@ -2577,7 +2631,9 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     Q f21 = K2_vval(iK, index_b+1, index_f, i_in);
     Q f22 = K2_vval(iK, index_b+1, index_f+1, i_in);
 
-    return (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+    Q control = (1.-yd)*((1.-xd)*f11 + xd*f21) + yd*((1.-xd)*f12 + xd*f22);
+
+    return control;
 }
 template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v1_t, int i_in){
     int i0, i1, i2, i3, exponent;
@@ -2592,11 +2648,11 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t,
     tie(index_b,index_f, index_fp) = fconv_K3_t(w_t, v1_t, v2_t);
 
     double x1 = freqs_t[index_b];
-    double x2 = freqs_t[index_b+1];
+    double x2 = freqs_t[index_b] + dw_t;
     double y1 = freqs_t[index_f];
-    double y2 = freqs_t[index_f+1];
+    double y2 = freqs_t[index_f] + dw_t;
     double z1 = freqs_t[index_fp];
-    double z2 = freqs_t[index_fp+1];
+    double z2 = freqs_t[index_fp] + dw_t;
 
     Q f111 = K3_vval(iK, index_b, index_f, index_fp, i_in);
     Q f112 = K3_vval(iK, index_b, index_f, index_fp+1, i_in);
@@ -2619,7 +2675,9 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t,
     Q c0 = c00*(1.-yd) + c10*yd;
     Q c1 = c01*(1.-yd) + c11*yd;
 
-    return c0*(1.-zd) + c1*zd;
+    Q control = c0*(1.-zd) + c1*zd;
+
+    return control;
 }
 
 template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w, double v1, double v2, char channel) {
@@ -2722,51 +2780,51 @@ template<typename Q> tuple<int, double, double, double, int> tvert<Q>::indices_T
     return make_tuple(iKp, trans_w_t, trans_v1_t, trans_v2_t, i_in);
 }
 
-
-template<typename Q> Q tvert<Q>::T1_K1(int iK, double w_t, double v1_t, double v2_t, int i_in)
-{
-    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q tvert<Q>::T2_K1(int iK, double w_t, double v1_t, double v2_t, int i_in) {
-    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q tvert<Q>::T3_K1(int iK, double w_t, double v1_t, double v2_t, int i_in)
-{
-    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
-    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
-}
-template<typename Q> Q tvert<Q>::T1_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
-{
-    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q tvert<Q>::T2_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
-{
-    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q tvert<Q>::T3_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
-{
-    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
-    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
-}
-template<typename Q> Q tvert<Q>::T1_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
-{
-    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
-template<typename Q> Q tvert<Q>::T2_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
-{
-    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
-template<typename Q> Q tvert<Q>::T3_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
-{
-    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
-    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
-}
+//
+//template<typename Q> Q tvert<Q>::T1_K1(int iK, double w_t, double v1_t, double v2_t, int i_in)
+//{
+//    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q tvert<Q>::T2_K1(int iK, double w_t, double v1_t, double v2_t, int i_in) {
+//    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q tvert<Q>::T3_K1(int iK, double w_t, double v1_t, double v2_t, int i_in)
+//{
+//    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+//    return K1_vvalsmooth(get<0>(indices), get<1>(indices), get<4>(indices));
+//}
+//template<typename Q> Q tvert<Q>::T1_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
+//{
+//    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q tvert<Q>::T2_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
+//{
+//    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q tvert<Q>::T3_K2(int iK, double w_t, double v1_t, double v2_t, int i_in)
+//{
+//    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+//    return K2_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<4>(indices));
+//}
+//template<typename Q> Q tvert<Q>::T1_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
+//{
+//    auto indices = indices_T1(iK, w_t, v1_t, v2_t, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
+//template<typename Q> Q tvert<Q>::T2_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
+//{
+//    auto indices = indices_T2(iK, w_t, v1_t, v2_t, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
+//template<typename Q> Q tvert<Q>::T3_K3(int iK, double w_t, double v1_t, double v2_t, int i_in)
+//{
+//    auto indices = indices_T3(iK, w_t, v1_t, v2_t, i_in);
+//    return K3_vvalsmooth(get<0>(indices), get<1>(indices), get<2>(indices), get<3>(indices), get<4>(indices));
+//}
 
 template<typename Q> tuple<int, int> tvert<Q>::indices_sum(int i0, int i2)
 {
@@ -2781,17 +2839,12 @@ template<typename Q> tuple<int, int> tvert<Q>::indices_sum(int i0, int i2)
 }
 
 /************************************* MEMBER FUNCTIONS OF THE IRREDUCIBLE VERTEX *************************************/
-template <typename Q> Q irreducible<Q>::vval() {
-    return U_bare;
+template <typename Q> Q irreducible<Q>::vval(int iK) {
+    return bare[iK];
 }
-template <typename Q> Q irreducible<Q>::vvalsmooth() {
-    return U_bare;
+template <typename Q> void irreducible<Q>::setvert(int iK, Q value){
+    bare[iK] = value;
 }
-template <typename Q> Q irreducible<Q>::vvalsmooth(double q, double w1, double w2, char channel, int par, char f){
-    return U_bare;
-}
-template <typename Q> void irreducible<Q>::setvert( Q value){
-    U_bare = value;}
 
 
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
