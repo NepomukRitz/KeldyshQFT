@@ -119,6 +119,9 @@ int nw, nw1, nw2, nw3, wlimit;
 rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
 rvec freqs_p(nw_p);                                                                                                     // NOLINT(cert-err58-cpp)
 rvec freqs_t(nw_t);                                                                                                     // NOLINT(cert-err58-cpp)
+auto dw_a = (w_upper_b-w_lower_b)/((double)(nw_a-1));
+auto dw_p = (w_upper_b-w_lower_b)/((double)(nw_p-1));
+auto dw_t = (w_upper_b-w_lower_b)/((double)(nw_t-1));
 
 rvec simpson_weights(nSE);  // NOLINT(cert-err58-cpp)
 
