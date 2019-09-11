@@ -52,7 +52,7 @@ state operator+(const state& state1, const state& state2){
     result.vertex.densvertex.pvertex = state1.vertex.densvertex.pvertex + state2.vertex.densvertex.pvertex;
     result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex + state2.vertex.densvertex.tvertex;
 
-    result.selfenergy = state1.selfenergy + state2.selfenergy;
+//    result.selfenergy = state1.selfenergy + state2.selfenergy;
 
 #ifdef SUSC
     result.sus = state1.sus + state2.sus; //TODO: Are susceptibilities additive?
@@ -71,7 +71,7 @@ state operator*(double alpha, const state& state1){
     result.vertex.densvertex.pvertex = state1.vertex.densvertex.pvertex * alpha;
     result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex * alpha;
 
-    result.selfenergy = alpha * state1.selfenergy;
+//    result.selfenergy = alpha * state1.selfenergy;
 
 #ifdef SUSC
     result.sus = alpha * state1.sus;
@@ -90,7 +90,7 @@ state operator*(const state& state1, double alpha){
     result.vertex.densvertex.pvertex = state1.vertex.densvertex.pvertex * alpha;
     result.vertex.densvertex.tvertex = state1.vertex.densvertex.tvertex * alpha;
 
-    result.selfenergy = alpha * state1.selfenergy;
+//    result.selfenergy = alpha * state1.selfenergy;
 
 #ifdef SUSC
     result.sus = alpha * state1.sus;
@@ -103,57 +103,77 @@ SelfEnergy<comp> state::loop(Vertex<fullvert<comp> >& fullvertex, Propagator& pr
 {
     cvec integrandR(nPROP);
     cvec integrandK(nPROP);
-    SelfEnergy<comp> resp;
-    for (int i = 0; i < nPROP; ++i){
+    SelfEnergy<comp> resp = SelfEnergy<comp> ();
+    for (int i = 0; i<nPROP; ++i){
         for(int j=0; j<nPROP; ++j){
             double w = ffreqs[i];
             double wp= ffreqs[j];
-            comp GR = prop.pvalsmooth(0, wp);
-            comp GA = conj(GR);
-            comp GK = prop.pvalsmooth(1, wp);
+            comp pR = prop.pvalsmooth(0, wp);
+            comp pA = conj(pR);
+            comp pK = prop.pvalsmooth(1, wp);
 
-            integrandR[j] = -(  fullvertex.spinvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GR +
-                                fullvertex.spinvertex.avertex.value(6, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GA +
-                                fullvertex.spinvertex.avertex.value(7, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GK +
+            integrandR[j] = (   fullvertex.densvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pR +    //In this formulas, the frequencies
+                                fullvertex.densvertex.avertex.value(6, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pA +    //have already been converted to the
+                                fullvertex.densvertex.avertex.value(7, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pK +    //respective channel convention!
 
-                                fullvertex.spinvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GR +
-                                fullvertex.spinvertex.pvertex.value(6, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GA +
-                                fullvertex.spinvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GK +
+                                fullvertex.densvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pR +
+                                fullvertex.densvertex.pvertex.value(6, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pA +
+                                fullvertex.densvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pK +
 
-                                fullvertex.spinvertex.tvertex.value(3, 0., wp, w, 1)*GR +
-                                fullvertex.spinvertex.tvertex.value(6, 0., wp, w, 1)*GA +
-                                fullvertex.spinvertex.tvertex.value(7, 0., wp, w, 1)*GK +
+                                fullvertex.densvertex.tvertex.value(3, 0., wp, w, 0)*pR +
+                                fullvertex.densvertex.tvertex.value(6, 0., wp, w, 0)*pA +
+                                fullvertex.densvertex.tvertex.value(7, 0., wp, w, 0)*pK +
 
-                                fullvertex.spinvertex.irred.U_bare*(GR + GA + GK));
+                                fullvertex.densvertex.irred.vval(3)*pR +
+                                fullvertex.densvertex.irred.vval(6)*pA +
+                                fullvertex.densvertex.irred.vval(7)*pK);
+
+//TODO finish debugging and get rid of debugging stuff
+            comp var1 = fullvertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pR;
+            comp var2 = fullvertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pA;
+            comp var3 = fullvertex.densvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pK;
+            comp var4 = fullvertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pR;
+            comp var5 = fullvertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pA;
+            comp var6 = fullvertex.densvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pK;
+            comp var7 = fullvertex.densvertex.tvertex.value(1, 0., wp, w, 0)*pR;
+            comp var8 = fullvertex.densvertex.tvertex.value(4, 0., wp, w, 0)*pA;
+            comp var9 = fullvertex.densvertex.tvertex.value(5, 0., wp, w, 0)*pK;
+            comp var10 = fullvertex.densvertex.irred.vval(1)*pR;
+            comp var11 = fullvertex.densvertex.irred.vval(4)*pA;
+            comp var12 = fullvertex.densvertex.irred.vval(5)*pK;
 
 
+            integrandK[j] = var1 + var2+ var3+ var4+ var5+ var6+ var7+ var8+ var9+ var10+ var11+ var12;
 
-            integrandK[j] = -(  fullvertex.spinvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GR +
-                                fullvertex.spinvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GA +
-                                fullvertex.spinvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), 1)*GK +
-
-                                fullvertex.spinvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GR +
-                                fullvertex.spinvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GA +
-                                fullvertex.spinvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), 1)*GK +
-
-                                fullvertex.spinvertex.tvertex.value(1, 0., wp, w, 1)*GR +
-                                fullvertex.spinvertex.tvertex.value(4, 0., wp, w, 1)*GA +
-                                fullvertex.spinvertex.tvertex.value(5, 0., wp, w, 1)*GK +
-
-                                fullvertex.spinvertex.irred.U_bare*(GR + GA + GK));
-
-            //TODO include densvertex contributions!!
+//            integrandK[j] =  (  fullvertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pR +
+//                                fullvertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pA +
+//                                fullvertex.densvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0)*pK +
+//
+//                                fullvertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pR +
+//                                fullvertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pA +
+//                                fullvertex.densvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0)*pK +
+//
+//                                fullvertex.densvertex.tvertex.value(1, 0., wp, w, 0)*pR +
+//                                fullvertex.densvertex.tvertex.value(4, 0., wp, w, 0)*pA +
+//                                fullvertex.densvertex.tvertex.value(5, 0., wp, w, 0)*pK +
+//
+//                                fullvertex.densvertex.irred.vval(1)*pR +
+//                                fullvertex.densvertex.irred.vval(4)*pA +
+//                                fullvertex.densvertex.irred.vval(5)*pK);
+//
+            //TODO include spinvertex contributions!!
 
         }
 
-        comp integratedR = integrator(integrandR);
-        comp integratedK = integrator(integrandK);
+        comp integratedR = integrator(integrandR, ffreqs);
+        comp integratedK = integrator(integrandK, ffreqs);
 
 
         resp.setself(0, i, integratedR);
         resp.setself(1, i, integratedK);
 
     }
+
     return resp;
 }
 
