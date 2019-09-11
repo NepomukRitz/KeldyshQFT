@@ -26,7 +26,8 @@ using namespace std;
 int fconv_K1_a(double w)
 {
     double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw1_wa));     //nw1_wa because we're interpolating for K1 in channel a
-    return (int)((w-w_lower_b)/dw_b_a);
+    auto index = (int)((w-w_lower_b)/dw_b_a);
+    return index -(int)(index/nw1_wa);
 }
 tuple<int, int> fconv_K2_a(double w, double v1)
 {
@@ -37,11 +38,10 @@ tuple<int, int> fconv_K2_a(double w, double v1)
     auto index_b = (int)((w-w_lower_b)/dw_b_a);
     auto index_f = (int)((v1-w_lower_f)/dw_f_a);
 
-    return make_tuple(index_b, index_f);
+    return make_tuple(index_b-(int)(index_b/nw2_wa), index_f-(int)(index_f/nw2_nua));
 }
 tuple<int, int, int> fconv_K3_a(double w, double v1, double v2)
 {
-
     /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
     double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw3_wa));     //nw3_wa because we're interpolating for bosonic freq in K3 in channel a
     double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nua));    //nw3_nua because we're interpolating for fermionic freq in K3 in channel a
@@ -51,13 +51,14 @@ tuple<int, int, int> fconv_K3_a(double w, double v1, double v2)
     auto index_f = (int)((v1-w_lower_f)/dw_f_a);
     auto index_fp = (int)((v2-w_lower_f)/dwp_f_a);
 
-    return make_tuple(index_b, index_f, index_fp);
+    return make_tuple(index_b-(int)(index_b/nw3_wa), index_f-(int)(index_f/nw3_nua), index_fp-(int)(index_fp/nw3_nuap));
 }
 
 int fconv_K1_p(double w)
 {
     double dw_b_p = (w_upper_b-w_lower_b)/((double)(nw1_wp));     //nw1_wp because we're interpolating for K1 in channel p
-    return (int)((w-w_lower_b)/dw_b_p);
+    auto index = (int)((w-w_lower_b)/dw_b_p);
+    return index - (int)(index/nw1_wp);
 }
 tuple<int, int> fconv_K2_p(double w, double v1)
 {
@@ -68,7 +69,7 @@ tuple<int, int> fconv_K2_p(double w, double v1)
     auto index_b = (int)((w-w_lower_b)/dw_b_p);
     auto index_f = (int)((v1-w_lower_f)/dw_f_p);
 
-    return make_tuple(index_b, index_f);
+    return make_tuple(index_b-(int)(index_b/nw2_wp), index_f-(int)(index_f/nw2_nup));
 }
 tuple<int, int, int> fconv_K3_p(double w, double v1, double v2)
 {
@@ -82,13 +83,14 @@ tuple<int, int, int> fconv_K3_p(double w, double v1, double v2)
     auto index_f = (int)((v1-w_lower_f)/dw_f_p);
     auto index_fp = (int)((v2-w_lower_f)/dwp_f_p);
 
-    return make_tuple(index_b, index_f, index_fp);
+    return make_tuple(index_b-(int)(index_b/nw3_wp), index_f-(int)(index_f/nw3_nup), index_fp-(int)(index_fp/nw3_nupp));
 }
 
 int fconv_K1_t(double w)
 {
     double dw_b_t = (w_upper_b-w_lower_b)/((double)(nw1_wt));     //nw1_wt because we're interpolating for K1 in channel t
-    return (int)((w-w_lower_b)/dw_b_t);
+    auto index = (int)((w-w_lower_b)/dw_b_t);
+    return index - (int)(index/nw1_wt);
 }
 tuple<int, int> fconv_K2_t(double w, double v1)
 {
@@ -99,11 +101,10 @@ tuple<int, int> fconv_K2_t(double w, double v1)
     auto index_b = (int)((w-w_lower_b)/dw_b_t);
     auto index_f = (int)((v1-w_lower_f)/dw_f_t);
 
-    return make_tuple(index_b, index_f);
+    return make_tuple(index_b-(int)(index_b/nw2_wt), index_f-(int)(index_f/nw2_nut));
 }
 tuple<int, int, int> fconv_K3_t(double w, double v1, double v2)
 {
-
     /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
     double dw_b_t = (w_upper_b-w_lower_b)/((double)(nw3_wt));     //nw3_wa because we're interpolating for bosonic freq in K3 in channel a
     double dw_f_t = (w_upper_f-w_lower_f)/((double)(nw3_nut));    //nw3_nua because we're interpolating for fermionic freq in K3 in channel a
@@ -113,13 +114,14 @@ tuple<int, int, int> fconv_K3_t(double w, double v1, double v2)
     auto index_f = (int)((v1-w_lower_f)/dw_f_t);
     auto index_fp = (int)((v2-w_lower_f)/dwp_f_t);
 
-    return make_tuple(index_b, index_f, index_fp);
+    return make_tuple(index_b-(int)(index_b/nw3_wt), index_f-(int)(index_f/nw3_nut), index_fp-(int)(index_fp/nw3_nutp));
 }
 
 int fconv(double w)
 {
     double dw_f = (w_upper_f-w_lower_f)/((double)(ffreqs.size()));
-    return (int)((w-w_lower_f)/dw_f);
+    auto index = (int)((w-w_lower_f)/dw_f);
+    return index - (int)(index/ffreqs.size());
 }
 
 # endif
