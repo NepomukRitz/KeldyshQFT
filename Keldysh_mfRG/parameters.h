@@ -93,32 +93,32 @@ const int nK_K3 = 6;        //For all channels, these 6 components are 0, 1, 3, 
 const int n_in = 1;
 
 /*Vector of indices of independent components of the diagrammatic classes, density channel*/
-vector<int> non_zero_Keldysh_K1a({1,3});                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2a({1,3});                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K1p({1,5});                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2p({1,5});                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K1t({1,3});                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2t({1,3});                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K3({0,1,3,5,7});           // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K1a({1,3});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2a({1,3});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K1p({1,5});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2p({1,5});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K1t({1,3});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2t({1,3});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K3({0,1,3,5,7});                                                                           // NOLINT(cert-err58-cpp)
 
 /*Vector of indices whose respective Keldysh indices add up to an odd number*/
-vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});   // NOLINT(cert-err58-cpp)
+vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                                                                   // NOLINT(cert-err58-cpp)
 
 /*Vector of indices of the non-zero Keldysh components of the bubbles*/
-vector<int> non_zero_Keldysh_abubble({3,6,7,9,11,12,13,14,15});     // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_pbubble({3,6,7,9,11,12,13,14,15});     // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});    // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_abubble({3,6,7,9,11,12,13,14,15});                                                         // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_pbubble({3,6,7,9,11,12,13,14,15});                                                         // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});                                                        // NOLINT(cert-err58-cpp)
 
-// temporarily fix stuff to remove warnings
-rvec ffreqs (nSE); // NOLINT(cert-err58-cpp)
-rvec bfreqs (nSE); // NOLINT(cert-err58-cpp)    //Length of this vector not necessarily fixed by nSE... Think of Wentzell paper
-                                                //where #of bosonic freqs = 2x #of fermionic freqs
+/* temporarily fix stuff to remove warnings*/
+rvec ffreqs (nSE);                                                                                                      // NOLINT(cert-err58-cpp)
+rvec bfreqs (nSE);                                                                                                      // NOLINT(cert-err58-cpp)
+//Length of this vector not necessarily fixed by nSE... Think of Wentzell paper where #of bosonic freqs = 2x #of fermionic freqs
 int nw, nw1, nw2, nw3, wlimit;
 
 /*Frequency grids for each channel*/
-rvec freqs_a(nw_a); // NOLINT(cert-err58-cpp)
-rvec freqs_p(nw_p); // NOLINT(cert-err58-cpp)
-rvec freqs_t(nw_t); // NOLINT(cert-err58-cpp)
+rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
+rvec freqs_p(nw_p);                                                                                                     // NOLINT(cert-err58-cpp)
+rvec freqs_t(nw_t);                                                                                                     // NOLINT(cert-err58-cpp)
 
 rvec simpson_weights(nSE);  // NOLINT(cert-err58-cpp)
 
