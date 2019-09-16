@@ -628,12 +628,6 @@ template<typename Q> tuple<double, double, int>         pvert<Q>::indices_T1_K2(
 template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_T1_K3(double w_p, double v1_p, double v2_p, int i_in)
 {
     double trans_w_p, trans_v1_p, trans_v2_p;
-    double ferm1p, ferm2p, ferm1;
-
-//    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
-//    /*This is the flipping stage!*/
-//    ferm1 = ferm1p+ferm2p-ferm1;
-//    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_p = w_p;
@@ -664,14 +658,6 @@ template<typename Q> tuple<double, double, int>         pvert<Q>::indices_T2_K2(
 template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_T2_K3(double w_p, double v1_p, double v2_p, int i_in)
 {
     double trans_w_p, trans_v1_p, trans_v2_p;
-    double ferm1p, ferm2p, ferm1;
-
-//    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
-//    /*This is the flipping stage!*/
-//    double temp = ferm1p;
-//    ferm1p = ferm2p;
-//    ferm2p = temp;
-//    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_p = w_p;
@@ -702,15 +688,6 @@ template<typename Q> tuple<double, double, int>         pvert<Q>::indices_T3_K2(
 template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_T3_K3(double w_p, double v1_p, double v2_p, int i_in)
 {
     double trans_w_p, trans_v1_p, trans_v2_p;
-    double ferm1p, ferm2p, ferm1;
-
-//    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p,v1_p, v2_p);
-//    /*This is the flipping stage!*/
-//    ferm1 = ferm1p+ferm2p-ferm1;
-//    double temp = ferm1p;
-//    ferm1p = ferm2p;
-//    ferm2p = temp;
-//    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_p = w_p;
@@ -740,17 +717,6 @@ template<typename Q> tuple<double, double, int>         pvert<Q>::indices_TC_K2(
 template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_TC_K3(double w_p, double v1_p, double v2_p, int i_in)
 {
     double trans_w_p, trans_v1_p, trans_v2_p;
-    double ferm1p, ferm2p, ferm1;
-
-//    tie(ferm1p, ferm2p, ferm1) = transfBackP(w_p, v1_p, v2_p);
-//    //This is the flipping stage
-//    double ferm2 = ferm1p+ferm2p-ferm1;
-//    double temp1 = ferm1, temp2 = ferm2;
-//    ferm1 = ferm1p;
-//    ferm2 = ferm2p;
-//    ferm1p = temp1;
-//    ferm2p = temp2;
-//    tie(trans_w_p, trans_v1_p, trans_v2_p) = transfToP(ferm1p, ferm2p, ferm1);
 
     trans_w_p = w_p;
     trans_v1_p = v2_p;
