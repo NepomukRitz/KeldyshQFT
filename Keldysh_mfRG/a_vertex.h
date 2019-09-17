@@ -26,12 +26,12 @@ class avert{
 
     /*Lists of the Keldysh components of K2a relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K2_T0_comp1 = {1, 7};
-    vector<int> list_K2_T1_comp1 = {2, 4};
-    vector<int> list_K2_T2_comp1 = {11, 13};
-    vector<int> list_K2_T3_comp1 = {8, 14};
-    vector<int> list_K2_T0_comp3 = {3, 5};
-    vector<int> list_K2_T3_comp3 = {10, 12};
+    vector<int> list_K2_T0_comp1 = {1, 7};      //Values retrieved from the a-K2
+    vector<int> list_K2_T1_comp1 = {2, 4};      //Values retrieved from the t-K2b
+    vector<int> list_K2_T2_comp1 = {11, 13};    //Values retrieved from the t-K2
+    vector<int> list_K2_T3_comp1 = {8, 14};     //Values retrieved from the a-K2b
+    vector<int> list_K2_T0_comp3 = {3, 5};      //Values retrieved from the a-K2
+    vector<int> list_K2_T3_comp3 = {10, 12};    //Values retrieved from the a-K2b
 
 
 public:
@@ -42,7 +42,8 @@ public:
      *
      * This function aims to be the sole function one needs to call to read the full vertex*/
 //    Q value (int, double, double, double, int, char);
-//
+      Q value (int, double, double, double, int, tvert<Q>& tvertex, char);
+
 //    /*For when the channel is already known and the trafo to the specific channel has already been done*/
 //    Q value (int, double, double, double, int);
     Q value (int, double, double, double, int, tvert<Q>& tvertex);
@@ -86,6 +87,9 @@ public:
 
     /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
     Q K2_vval(int, int, int, int);
+
+    /*Returns the value of the K2b vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
+    Q K2b_vval(int, int, int, int);
 
     /*Returns the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
     Q K3_vval(int, int, int, int, int);
@@ -210,6 +214,17 @@ public:
 //            + K3_vvalsmooth (iK, w, v1, v2, i_in);
 //}
 
+template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex, char channel){
+
+    double w_a=0., v1_a=0., v2_a=0.;
+    tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
+
+    return  K1_vvalsmooth (iK, w, i_in, tvertex)
+            + K2_vvalsmooth (iK, w, v1, i_in, tvertex)
+            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex)
+            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
+}
+
 template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex){
 
     return  K1_vvalsmooth (iK, w, i_in, tvertex)
@@ -329,13 +344,17 @@ template <typename Q> void avert<Q>::K3_addvert(int iK, int i, int j, int k, int
     K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] += value;
 }
 
-template <typename Q> Q avert<Q>::K1_vval(int iK, int i, int i_in){
+template <typename Q> Q avert<Q>::K1_vval (int iK, int i, int i_in){
     return K1[iK*nw1_wa*n_in + i*n_in + i_in];
 }
-template <typename Q> Q avert<Q>::K2_vval(int iK, int i,int j, int i_in){
+template <typename Q> Q avert<Q>::K2_vval (int iK, int i,int j, int i_in){
     return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
 }
-template <typename Q> Q avert<Q>::K3_vval(int iK, int i, int j, int k, int i_in){
+template <typename Q> Q avert<Q>::K2b_vval(int iK, int i,int j, int i_in){
+    i = nw2_wt-1-i;
+    return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
+}
+template <typename Q> Q avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
     return K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];
 }
 
@@ -652,42 +671,46 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
 
     int iK2;
     double pf2;
-    bool conjugate2 = false;
+    bool conjugate2;
     bool transform;
     Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(isInList(iK,list_K2_T0_comp1)){
+    if(isInList(iK,list_K2_T0_comp1)){              //Values retrieved from the a-K2
         iK2 = 0;
         pf2 = 1.;
+        conjugate2 = false;
         transform = false;
     }
-    else if(isInList(iK,list_K2_T1_comp1)){
+    else if(isInList(iK,list_K2_T1_comp1)){         //Values retrieved from the t-K2b
         tie(w_a, v1_a, i_in) = indices_T1_K2(w_a, v1_a, i_in);
         iK2 = 0;
         pf2 =-1.;
+        conjugate2 = true;
         transform = true;
     }
-    else if(isInList(iK,list_K2_T2_comp1)){
+    else if(isInList(iK,list_K2_T2_comp1)){         //Values retrieved from the t-K2
         tie(w_a, v1_a, i_in) = indices_T2_K2(w_a, v1_a, i_in);
         iK2 = 0;
         pf2 =-1.;
+        conjugate2 = false;
         transform = true;
     }
-    else if(isInList(iK,list_K2_T3_comp1)){
+    else if(isInList(iK,list_K2_T3_comp1)){         //Values retrieved from the a-K2b
         tie(w_a, v1_a, i_in) = indices_T3_K2(w_a, v1_a, i_in);
         iK2 = 0;
         pf2 = 1.;
         conjugate2 = true;
         transform = false;
     }
-    else if(isInList(iK,list_K2_T0_comp3)){
+    else if(isInList(iK,list_K2_T0_comp3)){          //Values retrieved from the a-K2
         iK2 = 1;
         pf2 = 1.;
+        conjugate2 = false;
         transform = false;
     }
-    else if(isInList(iK,list_K2_T3_comp3)){
+    else if(isInList(iK,list_K2_T3_comp3)){         //Values retrieved from the a-K2b
         tie(w_a, v1_a, i_in) = indices_T3_K2(w_a, v1_a, i_in);
         iK2 = 1;
         pf2 = 1.;
@@ -697,6 +720,7 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
     else{
         iK2 = 0;
         pf2 = 0.;
+        conjugate2 = false;
         transform = false;
     }
 
@@ -709,47 +733,77 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
         double x1, x2, y1, y2, xd, yd;
         Q f11, f12, f21, f22;
         if(transform){
-            tie(index_b, index_f) = fconv_K2_t(w_a, v1_a);
+            if(conjugate2){
+                tie(index_b, index_f) = fconv_K2_t(-w_a, v1_a); // iK2 is already right!! No need to transform it also
 
-            x1 = freqs_t[index_b];
-            x2 = freqs_t[index_b] + dw_t;
-            y1 = freqs_t[index_f];
-            y2 = freqs_t[index_f] + dw_t;
-            xd = (w_a - x1) / (x2 - x1);
-            yd = (v1_a - y1) / (y2 - y1);
+                 x1 = freqs_t[index_b];
+                 x2 = freqs_t[index_b] + dw_t;
+                 y1 = freqs_t[index_f];
+                 y2 = freqs_t[index_f] + dw_t;
+                 xd = (w_a - x1) / (x2 - x1);
+                 yd = (v1_a - y1) / (y2 - y1);
 
-            f11 = tvertex.K2_vval(iK2, index_b, index_f, i_in);
-            f12 = tvertex.K2_vval(iK2, index_b, index_f + 1, i_in);
-            f21 = tvertex.K2_vval(iK2, index_b + 1, index_f, i_in);
-            f22 = tvertex.K2_vval(iK2, index_b + 1, index_f + 1, i_in);
+                 f11 = tvertex.K2b_vval(iK2, index_b, index_f, i_in);
+                 f12 = tvertex.K2b_vval(iK2, index_b, index_f + 1, i_in);
+                 f21 = tvertex.K2b_vval(iK2, index_b + 1, index_f, i_in);
+                 f22 = tvertex.K2b_vval(iK2, index_b + 1, index_f + 1, i_in);
+            }
+
+            else {
+                tie(index_b, index_f) = fconv_K2_t(w_a, v1_a);
+
+                x1 = freqs_t[index_b];
+                x2 = freqs_t[index_b] + dw_t;
+                y1 = freqs_t[index_f];
+                y2 = freqs_t[index_f] + dw_t;
+                xd = (w_a - x1) / (x2 - x1);
+                yd = (v1_a - y1) / (y2 - y1);
+
+                f11 = tvertex.K2_vval(iK2, index_b, index_f, i_in);
+                f12 = tvertex.K2_vval(iK2, index_b, index_f + 1, i_in);
+                f21 = tvertex.K2_vval(iK2, index_b + 1, index_f, i_in);
+                f22 = tvertex.K2_vval(iK2, index_b + 1, index_f + 1, i_in);
+            }
         }
         else {
-            tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
+            if(conjugate2) {
+                tie(index_b, index_f) = fconv_K2_t(-w_a, v1_a); // iK2 is already right!! No need to transform it also
 
-            x1 = freqs_a[index_b];
-            x2 = freqs_a[index_b] + dw_a;
-            y1 = freqs_a[index_f];
-            y2 = freqs_a[index_f] + dw_a;
-            xd = (w_a - x1) / (x2 - x1);
-            yd = (v1_a - y1) / (y2 - y1);
+                x1 = freqs_a[index_b];
+                x2 = freqs_a[index_b] + dw_a;
+                y1 = freqs_a[index_f];
+                y2 = freqs_a[index_f] + dw_a;
+                xd = (w_a - x1) / (x2 - x1);
+                yd = (v1_a - y1) / (y2 - y1);
 
-            f11 = K2_vval(iK2, index_b, index_f, i_in);
-            f12 = K2_vval(iK2, index_b, index_f + 1, i_in);
-            f21 = K2_vval(iK2, index_b + 1, index_f, i_in);
-            f22 = K2_vval(iK2, index_b + 1, index_f + 1, i_in);
+                f11 = K2b_vval(iK2, index_b, index_f, i_in);
+                f12 = K2b_vval(iK2, index_b, index_f + 1, i_in);
+                f21 = K2b_vval(iK2, index_b + 1, index_f, i_in);
+                f22 = K2b_vval(iK2, index_b + 1, index_f + 1, i_in);
+            }
+            else {
+                tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
+
+                x1 = freqs_a[index_b];
+                x2 = freqs_a[index_b] + dw_a;
+                y1 = freqs_a[index_f];
+                y2 = freqs_a[index_f] + dw_a;
+                xd = (w_a - x1) / (x2 - x1);
+                yd = (v1_a - y1) / (y2 - y1);
+
+                f11 = K2_vval(iK2, index_b, index_f, i_in);
+                f12 = K2_vval(iK2, index_b, index_f + 1, i_in);
+                f21 = K2_vval(iK2, index_b + 1, index_f, i_in);
+                f22 = K2_vval(iK2, index_b + 1, index_f + 1, i_in);
+            }
         }
         valueK2 = pf2 * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
-    }
-    if(conjugate2) {
-        valueK2 = conj(valueK2);
     }
     return valueK2;
 }
 template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a, int i_in, tvert<Q>& tvertex){
-    int i0, i1, i2, i3, exponent;
-    tie(i0,i1,i2,i3) = alphas(iK);
-    exponent = 1+i0+i1+i2+i3;
-    return pow(-1., exponent)*K2_vvalsmooth(iK, w_a, v2_a, i_in, tvertex);
+    iK = T_3_Keldysh(iK);
+    return K2_vvalsmooth(iK, -w_a, v2_a, i_in, tvertex);
 }
 template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a, double v2_a, int i_in, tvert<Q>& tvertex){
 
