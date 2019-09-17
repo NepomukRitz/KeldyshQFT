@@ -101,10 +101,10 @@ Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, SelfEnergy<comp> 
 
     for(int i=0; i<nPROP; i++) {
         double w = ffreqs[i];
-        comp selfEneR = selfenergy.svalsmooth(0, w);
-        comp selfEneK = selfenergy.svalsmooth(1, w);
-        comp diffSelfEneR = diffselfenergy.svalsmooth(0, w);
-        comp diffSelfEneK = diffselfenergy.svalsmooth(1, w);
+        comp selfEneR = selfenergy.sval(0, i);
+        comp selfEneK = selfenergy.sval(1, i);
+        comp diffSelfEneR = diffselfenergy.sval(0, i);
+        comp diffSelfEneK = diffselfenergy.sval(1, i);
         comp GR0 = GR(Lambda, w, selfEneR);
         comp GA0 = GA(Lambda, w, conj(selfEneR));
 
@@ -172,12 +172,12 @@ comp GA(double Lambda, double omega, comp selfEneA)
 }
 comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA)
 {
-    return GR(Lambda, omega,selfEneR)*selfEneK*GA(Lambda, omega,selfEneA);
+    return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
 }
 
 comp SR(double Lambda, double omega, comp selfEneR)
 {
-    return -(comp)0.5i*pow(GR(Lambda, omega, selfEneR),2.);
+    return -(comp)0.5i*pow(GR(Lambda, omega, selfEneR), 2.);
 }
 comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA)
 {
@@ -191,10 +191,10 @@ Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, SelfEnergy<comp> 
     Propagator resp;
     for(int i=0; i<nPROP; ++i) {
         double w = ffreqs[i];
-        comp selfEneR = selfenergy.svalsmooth(0, w);
-        comp selfEneK = selfenergy.svalsmooth(1, w);
-        comp diffSelfEneR = diffselfenergy.svalsmooth(0, w);
-        comp diffSelfEneK = diffselfenergy.svalsmooth(1, w);
+        comp selfEneR = selfenergy.sval(0, i);
+        comp selfEneK = selfenergy.sval(1, i);
+        comp diffSelfEneR = diffselfenergy.sval(0, i);
+        comp diffSelfEneK = diffselfenergy.sval(1, i);
         comp GR0 = GR(Lambda, w, selfEneR);
         comp GA0 = GA(Lambda, w, conj(selfEneR));
         comp GK0 = GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
