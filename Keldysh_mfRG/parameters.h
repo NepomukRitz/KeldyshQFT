@@ -41,7 +41,7 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Number of frequency points for the self energy and the susceptibility*/
-const int nSE = 101;
+const int nSE = 201;
 const int nSUSC = nSE;  //Makes no sense to have these values be different from one another
 const int nPROP = nSE;
 
