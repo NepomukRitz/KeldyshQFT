@@ -66,13 +66,13 @@ public:
 
     /*Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
      * Keldysh index (1st int), internal structure index (2nd int) and the three frequencies.*/
-    Q vvalsmooth(int,double,double,double,int,char);
+    Q value(int,double,double,double,int,char);
 
-    /*Same as above but with more toys*/
-    Q vvalsmooth(int,double,double,double,int,char,int,char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-
-    /*We might not need map, but the red_side idea is very nice for multi-loop implementation */
-    Q vvalsmooth(int,int,int,int,int,double,double,double,char,int,char);//first two arguments: red_side, map
+//    /*Same as above but with more toys*/
+//    Q vvalsmooth(int,double,double,double,int,char,int,char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+//
+//    /*We might not need map, but the red_side idea is very nice for multi-loop implementation */
+//    Q vvalsmooth(int,int,int,int,int,double,double,double,char,int,char);//first two arguments: red_side, map
 
     /*Defines multiplication of a full vertex by a number*/
     fullvert<Q> friend operator*(double alpha, const fullvert<Q>& vertex){
@@ -123,61 +123,68 @@ template <typename Q> void irreducible<Q>::setvert(int iK, Q value){
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
 //arguments are equivalent to those in the simple vertex functions
 
-template <typename Q> Q fullvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel){
-    Q result = irred.vvalsmooth() + pvertex.vvalsmooth(iK,q,w1,w2,i_in,channel) + tvertex.vvalsmooth(iK,q,w1,w2,i_in,channel) + avertex.vvalsmooth(iK,q,w1,w2,i_in,channel);
-    if(abs(result)>1e-16){
-        return  result;}
-    else{return 0.;}
-}
-template <typename Q> Q fullvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel, int p, char f){
-    Q result=0;
+//template <typename Q> Q fullvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel){
+//    Q result = irred.vvalsmooth() + pvertex.vvalsmooth(iK,q,w1,w2,i_in,channel) + tvertex.vvalsmooth(iK,q,w1,w2,i_in,channel) + avertex.vvalsmooth(iK,q,w1,w2,i_in,channel);
+//    if(abs(result)>1e-16){
+//        return  result;}
+//    else{return 0.;}
+//}
+//template <typename Q> Q fullvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in, char channel, int p, char f){
+//    Q result=0;
+//
+//    if( p==1 && (f=='K' || f== 'L')){//only yield irred part if both legs are connected to the same bare vertex
+//        result += irred.vvalsmooth();
+//
+//    }
+//    else if( p==2 && (f=='K' || f== 'M')){
+//        result += irred.vvalsmooth();
+//
+//    }
+//
+//    result +=  pvertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f) + tvertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f) + avertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f);
+//    //if(p==2 && f=='L'){cout <<  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) << " " << tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f)  << " " <<  avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) << endl;};
+//    if(abs(result)<1e-16){
+//        result  =0;}
+//    return result;
+//}
+//template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, int b, int c, double q, double w1, double w2, char channel, int p, char f){// red_side: if only complementary channel in one vertex, which one is reduced? (0/1/2), p: is this the left/upper (1) or the right/lower (2) vertex of the bubble?, f: diagrammatic class that is computed
+//    Q result=0;
+//
+//    if(red_side != p){
+//        if( p==1 && (f=='K' || f== 'L')){//only yield irred part if both legs are connected to the same bare vertex
+//            result = irred.vvalsmooth(a,b,c);
+//        }
+//        else if( p==2 && (f=='K' || f== 'M')){
+//            result = irred.vvalsmooth(a,b,c);
+//        };
+//        result +=  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);
+//    }
+//
+//
+//    else if(red_side == p){
+//
+//        if(map==0){
+//            if(channel == 's'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
+//            else if(channel == 't'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
+//            else if(channel == 'u'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}}
+//        else if(map==1){
+//            if(channel == 's' ){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
+//            else if(channel == 't'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
+//            else if(channel == 'u'){  result =  avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
+//        }
+//
+//    };
+//
+//    if(abs(result)<1e-16){
+//        result  =0;};
+//    return result;
+//}
 
-    if( p==1 && (f=='K' || f== 'L')){//only yield irred part if both legs are connected to the same bare vertex
-        result += irred.vvalsmooth();
-
-    }
-    else if( p==2 && (f=='K' || f== 'M')){
-        result += irred.vvalsmooth();
-
-    }
-
-    result +=  pvertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f) + tvertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f) + avertex.vvalsmooth(iK,q,w1,w2,i_in,channel,p,f);
-    //if(p==2 && f=='L'){cout <<  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) << " " << tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f)  << " " <<  avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) << endl;};
-    if(abs(result)<1e-16){
-        result  =0;}
-    return result;
-}
-template <typename Q> Q fullvert<Q>::vvalsmooth(int red_side, int map, int a, int b, int c, double q, double w1, double w2, char channel, int p, char f){// red_side: if only complementary channel in one vertex, which one is reduced? (0/1/2), p: is this the left/upper (1) or the right/lower (2) vertex of the bubble?, f: diagrammatic class that is computed
-    Q result=0;
-
-    if(red_side != p){
-        if( p==1 && (f=='K' || f== 'L')){//only yield irred part if both legs are connected to the same bare vertex
-            result = irred.vvalsmooth(a,b,c);
-        }
-        else if( p==2 && (f=='K' || f== 'M')){
-            result = irred.vvalsmooth(a,b,c);
-        };
-        result +=  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);
-    }
-
-
-    else if(red_side == p){
-
-        if(map==0){
-            if(channel == 's'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
-            else if(channel == 't'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
-            else if(channel == 'u'){  result =  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}}
-        else if(map==1){
-            if(channel == 's' ){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) + avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f);}
-            else if(channel == 't'){  result =  tvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
-            else if(channel == 'u'){  result =  avertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) +  pvertex.vvalsmooth(a,b,c,q,w1,w2,channel,p,f) ;}
-        }
-
-    };
-
-    if(abs(result)<1e-16){
-        result  =0;};
-    return result;
+template <typename Q> Q fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, char channel)
+{
+    Q result = irred.vval(iK) + avertex.value(iK, w, v1, v2, i_in, this->tvert, channel)
+                              + pvertex.value(iK, w, v1, v2, i_in,              channel)
+                              + tvertex.value(iK, w, v1, v2, i_in, this->avert, channel);
 }
 
 //template <typename Q> fullvert<Q> operator*(double alpha, const fullvert<Q>& vertex){
