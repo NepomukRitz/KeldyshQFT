@@ -1,11 +1,12 @@
 #include <cstdlib>
+#include<bits/stdc++.h>
 #include <iostream>
 #include <fstream>
 #include <complex>
-
+#include "parameters.h"
 #include "vertex.h"
-//#include "bubbles.h"
 #include "state.h"
+#include "loop.h"
 #include "a_bubble.h"
 #include "propagator.h"
 #include "selfenergy.h"
@@ -14,26 +15,17 @@ using namespace std;
 
 typedef complex<double> comp;
 
-vector<double> ffreqs1 (nSE);                                                                                                      // NOLINT(cert-err58-cpp)
-
-//TODO figure out why ffreqs is not exactly how we want it
-
 void writeOutFile(rvec& freqs, SelfEnergy<comp>& selfEnergy, Propagator& propagator);
-bool isAntisymmetric(Propagator& propagator);
-bool isAntisymmetric();
+
+
 
 
 int main() {
-
-    auto dw = (w_upper_b-w_lower_b)/((double)(nSE-1));
-    auto dv = (w_upper_f-w_lower_f)/((double)(nSE-1));
 
     for(int i=0; i<nSE; ++i)
     {
         bfreqs[i] = w_lower_b + i*dw;
         ffreqs[i] = w_lower_f + i*dv;
-        ffreqs1[i] = w_lower_f + i*dv;
-
 
         freqs_a[i] = w_lower_b + i*dw_a;
         freqs_p[i] = w_lower_b + i*dw_p;
@@ -48,7 +40,7 @@ int main() {
 
     double Lambda = 1.0;
 
-//    state State(Lambda);
+    State state(Lambda);
 
 
     //Initial conditions
@@ -56,47 +48,56 @@ int main() {
     SelfEnergy<comp> diff_self_ini;
     for(int i=0; i<nSE; ++i)
     {
-        self_ini.setself(0, i, U/2.);
-        self_ini.setself(1, 0, 0.);
+        self_ini.setself(0, i, 0.5*U);
+        self_ini.setself(1, i, 0.);
         diff_self_ini.setself(0, i, 0.);
         diff_self_ini.setself(1, i, 0.);
     }
-//    Vertex<fullvert<comp> > vertex = Vertex<fullvert<comp> >();
-//
-//    for(auto i:odd_Keldysh)
-//    {
-//        vertex.densvertex.irred.setvert(i, 0.5*U);
-//        vertex.spinvertex.irred.setvert(i,-0.5*U);
-//    }
+
+    double t0 = get_time();
+
+    Vertex<fullvert<comp> > vertex = Vertex<fullvert<comp> >();
+    get_time(t0);
+
+    cout << "vertex calculated" << endl;
+    for(auto i:odd_Keldysh)
+    {
+        vertex.densvertex.irred.setvert(i, 0.5*U);
+        vertex.spinvertex.irred.setvert(i,-0.5*U);
+    }
+    state.vertex = vertex;
+    cout << "vertex assigned" << endl;
 
     /*Here I begin implementing Fabian's pseudocode*/
     //Line 1
     Propagator S = propag(Lambda, self_ini, diff_self_ini, 's');
+    cout << "S calculated" << endl;
+
     //Line 2
     Propagator G = propag(Lambda, self_ini, diff_self_ini, 'g');
+    cout << "G calculated" << endl;
+
+
     //Line 3
-//    SelfEnergy<comp> Sigma_std = State.loop(vertex, S);
-    //Line4
-//    State.selfenergy = Sigma_std;
+    SelfEnergy<comp> Sigma_std = loop(vertex, S);
+    cout << "loop calculated" << endl;
 
 
-//    writeOutFile(ffreqs, Sigma_std, S);
-
-
-//    bool aid1 = isAntisymmetric(S);
-//    bool aid2 = isAntisymmetric(G);
+//    //Line 4
+//    state.selfenergy = Sigma_std;
 //
-//    cout << "aid1: " << aid1 << " and aid2: " << aid2 << endl;
-
-    bool aidusmaximus = isAntisymmetric();
-
-//    test.spinvertex.avertex.K1_setvert(0, 1, 2, 3);
+//    //Line 6
+//    Propagator dG = propag(Lambda, state.selfenergy, diff_self_ini, 'k');
 //
-//    Vertex<avert<comp> > test1;
-//    Vertex<avert<comp> > test2;
-//    Vertex<avert<comp> > test3;
+//    cout << "diff bubble started" << endl;
+//    //Line 8
+//    avert<comp> dgammaa = diff_a_bubble(state.vertex.densvertex.avertex, state.vertex.densvertex.avertex, G, dG);
+//    cout << "diff bubble finished" << endl;
+//
+//
+//
+    writeOutFile(ffreqs, Sigma_std, G);
 
-//    test3 = test1 + test2;
 
     return 0;
 }
@@ -143,31 +144,4 @@ void writeOutFile(rvec& freqs, SelfEnergy<comp>& selfEnergy, Propagator& propaga
         my_file_propA.close();
         my_file_propK.close();
 
-}
-
-bool isAntisymmetric(Propagator& propa)
-{
-    bool resp = true;
-    for(int i=0; i<nPROP; ++i)
-    {
-        if(propa.pval(0,i).real() + propa.pval(0, nPROP-1-i).real()>10e-3)
-            cout << propa.pval(0,i).real() + propa.pval(0, nPROP-1-i).real()<<endl;
-            resp = false;
-    }
-    return resp;
-}
-
-bool isAntisymmetric()
-{
-    bool resp = true;
-    for(int i=0; i<ffreqs1.size(); ++i)
-    {
-//        cout << ffreqs[i] << " " << -ffreqs[ffreqs.size()-1-i] << endl;
-        if(ffreqs[i] != -ffreqs[ffreqs.size()-1-i]) {
-            resp = false;
-            cout << ffreqs [i]+ ffreqs [ffreqs.size() - 1 - i] << endl;
-            cout << ffreqs1[i]+ ffreqs1[ffreqs1.size() - 1 - i] << endl;
-        }
-    }
-    return resp;
 }
