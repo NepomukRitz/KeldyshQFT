@@ -41,7 +41,7 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Number of frequency points for the self energy and the susceptibility*/
-const int nSE = 201;
+const int nSE = 101;
 const int nSUSC = nSE;  //Makes no sense to have these values be different from one another
 const int nPROP = nSE;
 
@@ -78,9 +78,9 @@ const int nw_p = nw1_wp;
 const int nw_t = nw1_wt;
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
-const double w_upper_b = 20.0;
+const double w_upper_b = 40.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 20.0;
+const double w_upper_f = 40.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 
 
@@ -111,7 +111,10 @@ vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});                
 
 /* temporarily fix stuff to remove warnings*/
 rvec ffreqs (nSE);                                                                                                      // NOLINT(cert-err58-cpp)
+const double dv = (w_upper_f-w_lower_f)/((nSE-1));
 rvec bfreqs (nSE);                                                                                                      // NOLINT(cert-err58-cpp)
+const double dw = (w_upper_b-w_lower_b)/((nSE-1));
+
 //Length of this vector not necessarily fixed by nSE... Think of Wentzell paper where #of bosonic freqs = 2x #of fermionic freqs
 int nw, nw1, nw2, nw3, wlimit;
 
