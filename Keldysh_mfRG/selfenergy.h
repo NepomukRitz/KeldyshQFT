@@ -5,7 +5,6 @@
 #ifndef KELDYSH_MFRG_SELFENERGY_H
 #define KELDYSH_MFRG_SELFENERGY_H
 
-#include "vertex.h"
 
 /******************CLASS FOR SELF ENERGY *************/
 template <typename Q>
