@@ -41,9 +41,9 @@ public:
      * i.e. only complex numbers
      *
      * This function aims to be the sole function one needs to call to read the full vertex*/
-//    Q value (int, double, double, double, int, char);
-//
-//    /*For when the channel is already known and the trafo to the specific channel has already been done*/
+    Q value (int, double, double, double, int, char);
+
+    /*For when the channel is already known and the trafo to the specific channel has already been done*/
     Q value (int, double, double, double, int);
 
 
@@ -188,17 +188,18 @@ public:
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
-////Here iK is in 0...15 already. Only need to check to what component to transfer to.
-//template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
-//    double w_p=0., v1_p=0., v2_p=0.;
-//    tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
-//    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
-//    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
-//    return  K1_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
-//          + K2_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
-//          + K2b_vvalsmooth(iK, w_p, v1_p, v2_p, i_in)
-//          + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
-//}
+//Here iK is in 0...15 already. Only need to check to what component to transfer to.
+template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
+    double w_p=0., v1_p=0., v2_p=0.;
+    tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
+
+    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
+    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
+    return  K1_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
+          + K2_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
+          + K2b_vvalsmooth(iK, w_p, v1_p, v2_p, i_in)
+          + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
+}
 
 template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in){
 
@@ -410,7 +411,7 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p
     else if(isInList(iK,list_K2_TC_comp1)){
         tie(w_p, v1_p, i_in) = indices_TC_K2(w_p, v1_p, i_in);
         iK2 = 0;
-        pf2 = 1.;
+        pf2 = 1.;   //(-1)^(1+sum alphas)
         conjugate2 = true;
     }
     else if(isInList(iK,list_K2_T2TC_comp1)){
@@ -463,7 +464,7 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p
 
     if(conjugate2)
     {
-        valueK2 = conj(valueK2);    //K2b
+        valueK2 = conj(valueK2);        //It's correct like this
     }
 
     return valueK2;
@@ -473,7 +474,7 @@ template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p
     int i0, i1, i2, i3, exponent;
     tie(i0,i1,i2,i3) = alphas(iK);
     exponent = 1+i0+i1+i2+i3;
-    return pow(-1., exponent)*K2_vvalsmooth(iK, w_p, v2_p, i_in);
+    return pow(-1., exponent)*conj(K2_vvalsmooth(iK, w_p, v2_p, i_in));
 }
 template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in){
 
