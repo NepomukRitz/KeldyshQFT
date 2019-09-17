@@ -10,15 +10,16 @@
 #include "Keldysh_symmetries.h"
 
 
+//template <typename Q> class pvert;
+
 template <class Q>
 class pvert{
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
     vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
 
-
     /*Lists of the Keldysh components of K1p relating the respective component to the independent ones through the marked
- * trafo*/
+    * trafo*/
     vector<int> list_K1_T0_comp1 = {1, 2, 13, 14};
     vector<int> list_K1_TC_comp1 = {4, 7, 8, 11};
     vector<int> list_K1_T0_comp5 = {5, 6, 9, 10};
@@ -35,28 +36,29 @@ class pvert{
 
 public:
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
- * of the necessary indices convertions  and what not...
- * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
- * i.e. only complex numbers
- *
- * This function aims to be the sole function one needs to call to read the full vertex*/
-    Q value (int, double, double, double, int, char);
-
-    /*For when the channel is already known and the trafo to the specific channel has already been done*/
+     * of the necessary indices convertions  and what not...
+     * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
+     * i.e. only complex numbers
+     *
+     * This function aims to be the sole function one needs to call to read the full vertex*/
+//    Q value (int, double, double, double, int, char);
+//
+//    /*For when the channel is already known and the trafo to the specific channel has already been done*/
     Q value (int, double, double, double, int);
 
-    /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
-     * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
-    Q vvalsmooth(int, double, double, double, int, char);
 
-    /*Same idea as function above, but is oriented towards the multi-loop implementation */
-    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-
-    /*No clue, suspect is unnecessary fro us since we do not need map or red_side operations*/
-//    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-
-    /*This function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45*/
-    Q vvalsmooth(int, double, double, double, int);
+//    /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
+//     * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
+//    Q vvalsmooth(int, double, double, double, int, char);
+//
+//    /*Same idea as function above, but is oriented towards the multi-loop implementation */
+//    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
+//
+//    /*No clue, suspect is unnecessary fro us since we do not need map or red_side operations*/
+////    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
+//
+//    /*This function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45*/
+//    Q vvalsmooth(int, double, double, double, int);
 
 
     /*Sets the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure) to input Q*/
@@ -105,8 +107,18 @@ public:
      * calculated by interpolation for given Keldysh and internal structure indices.*/
     Q K3_vvalsmooth(int, double, double, double, int);
 
+
+
+
+
+
+
+
+
+
+
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
- * only have the values 'a', 'p', or 't'.*/
+     * only have the values 'a', 'p', or 't'.*/
     tuple<double, double, double> transfToP(double, double, double, char);
 
 //    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
@@ -119,16 +131,15 @@ public:
 
     /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
      * legs are switched and the three corresponding frequency inputs for the diagrammatic class*/
+    /*Symmetry which interchanges the incoming legs*/
     tuple<double, int> indices_T1_K1(double, int);
     tuple<double, double, int> indices_T1_K2(double, double, int);
     tuple<double, double, double, int> indices_T1_K3(double, double, double, int);
-
 
     /*Symmetry which interchanges the outgoing legs*/
     tuple<double, int> indices_T2_K1(double, int);
     tuple<double, double, int> indices_T2_K2(double, double, int);
     tuple<double, double, double, int> indices_T2_K3(double, double, double, int);
-
 
     /*Symmetry which interchanges both incoming and outgoing legs*/
     tuple<double, int> indices_T3_K1(double, int);
@@ -141,8 +152,11 @@ public:
     tuple<double, double, double, int> indices_TC_K3(double, double, double, int);
 
 
+
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
-     * buuble in the p-channel*/
+     * buuble in the p-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
+     * i2 corresponds to the Keldysh index of the non-zero components of the differentiated bubble (i.e. i2 takes values
+     * in a set of size 9*/
     tuple<int, int> indices_sum(int i0, int i2);
 
 
@@ -174,117 +188,118 @@ public:
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
-//Here iK is in 0...15 already. Only need to check to what component to transfer to.
-template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
-    double w_p=0., v1_p=0., v2_p=0.;
-    tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
-    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
-    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
-    return  K1_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
-          + K2_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
-          + K2b_vvalsmooth(iK, w_p, v1_p, v2_p, i_in)
-          + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
-}
+////Here iK is in 0...15 already. Only need to check to what component to transfer to.
+//template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
+//    double w_p=0., v1_p=0., v2_p=0.;
+//    tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
+//    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
+//    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
+//    return  K1_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
+//          + K2_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
+//          + K2b_vvalsmooth(iK, w_p, v1_p, v2_p, i_in)
+//          + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
+//}
+
 template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in){
 
     /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
     * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
-    return  K1_vvalsmooth (iK, w, v1, v2, i_in)
-            + K2_vvalsmooth (iK, w, v1, v2, i_in)
-            + K2b_vvalsmooth(iK, w, v1, v2, i_in)
+    return  K1_vvalsmooth (iK, w, i_in)
+            + K2_vvalsmooth (iK, w, v1, i_in)
+            + K2b_vvalsmooth(iK, w, v2, i_in)
             + K3_vvalsmooth (iK, w, v1, v2, i_in);
 }
 
-//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double w, double v1, double v2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-
-    double w_p=0., v1_p=0., v2_p=0.;
-    tie (w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
-
-    Q value;
-
-    value += K1_vvalsmooth(iK, w_p, i_in) + K2_vvalsmooth(iK,w_p,v1_p,i_in) + K3_vvalsmooth(iK, w, v1_p, v2_p, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
-
-    return value;
-}
-template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in,  char channel, int p, char f) {//additional specification of vertex number and bubble type (K/L/M/R) for (K1/K2/K2b/R0)-class
-
-    double u = 0., w1_u = 0., w2_u = 0.;
-    if (channel == 's') {
-        u = -w2 - w1;
-        w1_u = (w1 - w2 + q) / 2;
-        w2_u = (-w1 + w2 + q) / 2;
-    } else if (channel ==
-               't') {//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
-        u = w2 - w1;
-        w1_u = (w1 + w2 - q) / 2;
-        w2_u = (w1 + w2 + q) / 2;
-    } else if (channel == 'u') {
-        u = q;
-        w1_u = w1;
-        w2_u = w2;
-    } else if (channel == 'v') {//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
-        u = w1 - w2;
-        w1_u = q + (w1 - w2) / 2;
-        w2_u = (w1 + w2) / 2;
-    }
-    Q value;
-
-//        if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-//        if(abs(w1_u) < ffreqs[nw/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-//        if(abs(w2_u) < ffreqs[nw/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
-
-    if (p == 1) {
-        if (channel == 'u') {
-            if (f == 'R' || f == 'M') {
-                value += K3_vvalsmooth(iK, u, w1_u, w2_u, i_in);
-            }  // + K2b_vvalsmooth(a,b,c,u,w2_u);}//if outer legs are conntected to different  vertex
-            else if (f == 'K' || f == 'L') {
-                value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK, u, w1_u, i_in);
-            };//if outer legs are conntected to same bare vertex
-        } else if (channel == 's' || channel == 't') {
-            if (f == 'R' || f == 'M') {
-                value += K3_vvalsmooth(iK, u, w1_u, w2_u, i_in) + K1_vvalsmooth(iK, u, i_in) +
-                         K2_vvalsmooth(iK, u, w1_u, i_in);
-            }  // + K2b_vvalsmooth(a,b,c,u,w2_u);}
-        }
-    } else if (p == 2) {
-        if (channel == 'u') {
-            if (f == 'R' || f == 'L') {
-                value += K3_vvalsmooth(iK, u, w1_u, w2_u, i_in) + K2_vvalsmooth(iK, u, w2_u, i_in);
-            }//if outer legs are conntected to different bare vertex
-            else if (f == 'K' || f == 'M') {
-                value += K1_vvalsmooth(iK, u,
-                                       i_in);; // + K2b_vvalsmooth(a,b,c,u,w1_u);};//if outer legs are conntected to same bare vertex
-            } else if (channel == 's' || channel == 't') {
-                if (f == 'R' || f == 'L') {
-                    value += K3_vvalsmooth(iK, u, w1_u, w2_u, i_in) + K1_vvalsmooth(iK, u, i_in) +
-                             K2_vvalsmooth(iK, u, w1_u, i_in);  //+ K2b_vvalsmooth(a,b,c,u,w2_u);
-                }
-            }
-        }
-        return value;
-
-    }
-}
-
-/*overload of previous function         => I'm pretty sure we won't be needing this function*/
-//template <typename Q> Q avert<Q>::vvalsmooth(int red_side, int map, double q, double w1, double w2, char channel, int p, char f){
-//    return vvalsmooth( a, b, c, q, w1,w2,channel, p,  f);
+////this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
+//template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double w, double v1, double v2, int i_in, char channel){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
+//
+//    double w_p=0., v1_p=0., v2_p=0.;
+//    tie (w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
+//
+//    Q value;
+//
+//    value += K1_vvalsmooth(iK, w_p, i_in) + K2_vvalsmooth(iK,w_p,v1_p,i_in) + K3_vvalsmooth(iK, w, v1_p, v2_p, i_in)  ;//K2b is extracted from K2 by the symmetry relations  //+ K2b_vvalsmooth(iK,u,w2_u,i_in)
+//
+//    return value;
 //}
-
-template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
-    double u,w1_u,w2_u;
-    u = q;
-    w1_u = w1;
-    w2_u = w2;
-    Q value;
-//      if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
-//      if(abs(w1_u) < ffreqs[nw/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
-//      if(abs(w2_u) < ffreqs[nw/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
-    value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK, u, w1_u, i_in) + K3_vvalsmooth(iK,u,w1_u,w2_u, i_in);   // +  K2b_vvalsmooth(a,b,c,u,w2_u) ;//K2b is extracted from K2 by the symmetry relations
-    return value;
-}
+//template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in,  char channel, int p, char f) {//additional specification of vertex number and bubble type (K/L/M/R) for (K1/K2/K2b/R0)-class
+//
+//    double u = 0., w1_u = 0., w2_u = 0.;
+//    if (channel == 's') {
+//        u = -w2 - w1;
+//        w1_u = (w1 - w2 + q) / 2;
+//        w2_u = (-w1 + w2 + q) / 2;
+//    } else if (channel ==
+//               't') {//the following if-conditions are needed when the vertex type does not match the type of the bubble in which it is used -> ensures that correct frequ. arguments are read off. See SBII, p.15
+//        u = w2 - w1;
+//        w1_u = (w1 + w2 - q) / 2;
+//        w2_u = (w1 + w2 + q) / 2;
+//    } else if (channel == 'u') {
+//        u = q;
+//        w1_u = w1;
+//        w2_u = w2;
+//    } else if (channel == 'v') {//if vertex is read out with natural variables (three fermionic (w1,w2,w1p)
+//        u = w1 - w2;
+//        w1_u = q + (w1 - w2) / 2;
+//        w2_u = (w1 + w2) / 2;
+//    }
+//    Q value;
+//
+////        if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
+////        if(abs(w1_u) < ffreqs[nw/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
+////        if(abs(w2_u) < ffreqs[nw/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
+//
+//    if (p == 1) {
+//        if (channel == 'u') {
+//            if (f == 'R' || f == 'M') {
+//                value += K3_vvalsmooth(iK, u, w1_u, w2_u, i_in);
+//            }  // + K2b_vvalsmooth(a,b,c,u,w2_u);}//if outer legs are conntected to different  vertex
+//            else if (f == 'K' || f == 'L') {
+//                value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK, u, w1_u, i_in);
+//            };//if outer legs are conntected to same bare vertex
+//        } else if (channel == 's' || channel == 't') {
+//            if (f == 'R' || f == 'M') {
+//                value += K3_vvalsmooth(iK, u, w1_u, w2_u, i_in) + K1_vvalsmooth(iK, u, i_in) +
+//                         K2_vvalsmooth(iK, u, w1_u, i_in);
+//            }  // + K2b_vvalsmooth(a,b,c,u,w2_u);}
+//        }
+//    } else if (p == 2) {
+//        if (channel == 'u') {
+//            if (f == 'R' || f == 'L') {
+//                value += K3_vvalsmooth(iK, u, w1_u, w2_u, i_in) + K2_vvalsmooth(iK, u, w2_u, i_in);
+//            }//if outer legs are conntected to different bare vertex
+//            else if (f == 'K' || f == 'M') {
+//                value += K1_vvalsmooth(iK, u,
+//                                       i_in);; // + K2b_vvalsmooth(a,b,c,u,w1_u);};//if outer legs are conntected to same bare vertex
+//            } else if (channel == 's' || channel == 't') {
+//                if (f == 'R' || f == 'L') {
+//                    value += K3_vvalsmooth(iK, u, w1_u, w2_u, i_in) + K1_vvalsmooth(iK, u, i_in) +
+//                             K2_vvalsmooth(iK, u, w1_u, i_in);  //+ K2b_vvalsmooth(a,b,c,u,w2_u);
+//                }
+//            }
+//        }
+//        return value;
+//
+//    }
+//}
+//
+///*overload of previous function         => I'm pretty sure we won't be needing this function*/
+////template <typename Q> Q avert<Q>::vvalsmooth(int red_side, int map, double q, double w1, double w2, char channel, int p, char f){
+////    return vvalsmooth( a, b, c, q, w1,w2,channel, p,  f);
+////}
+//
+//template <typename Q> Q pvert<Q>::vvalsmooth(int iK, double q, double w1, double w2, int i_in){//this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
+//    double u,w1_u,w2_u;
+//    u = q;
+//    w1_u = w1;
+//    w2_u = w2;
+//    Q value;
+////      if(abs(u) < bfreqs[nw/2]){ if (u >= 0) {u = bfreqs[nw/2];} else{u = bfreqs[nw/2-1];};};
+////      if(abs(w1_u) < ffreqs[nw/2]){if (w1_u >= 0) {w1_u =  ffreqs[nw/2];} else{w1_u =  ffreqs[nw/2-1];};};
+////      if(abs(w2_u) < ffreqs[nw/2]){if (w2_u > 0) {w2_u =  ffreqs[nw/2];} else{w2_u = ffreqs[nw/2-1];};};
+//    value += K1_vvalsmooth(iK, u, i_in) + K2_vvalsmooth(iK, u, w1_u, i_in) + K3_vvalsmooth(iK,u,w1_u,w2_u, i_in);   // +  K2b_vvalsmooth(a,b,c,u,w2_u) ;//K2b is extracted from K2 by the symmetry relations
+//    return value;
+//}
 
 template <typename Q> void pvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
     K1[iK*nw1_wp*n_in + i*n_in + i_in] = value;
@@ -316,7 +331,10 @@ template <typename Q> Q pvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
     return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
 }
 
-template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double w_p, int i_in){
+//lhdf
+//sdfjkhhjb<
+
+template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
 
     int iK1;
     double pf1;
@@ -369,7 +387,7 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth(int iK, double w_p, int i_in){
     }
     return valueK1;
 }
-template <typename Q> Q pvert<Q>::K2_vvalsmooth(int iK, double w_p, double v1_p, int i_in){
+template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p, int i_in){
 
     int iK2;
     double pf2;
@@ -457,7 +475,7 @@ template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p
     exponent = 1+i0+i1+i2+i3;
     return pow(-1., exponent)*K2_vvalsmooth(iK, w_p, v2_p, i_in);
 }
-template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double w_p, double v1_p, double v2_p, int i_in){
+template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in){
 
     int iK3;
     double pf3;
@@ -590,6 +608,7 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth(int iK, double w_p, double v1_p,
 
 }
 
+
 template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w, double v1, double v2, char channel) {
     double w_p=0., v1_p = 0., v2_p=0.;
     if(channel == 'a'){
@@ -607,6 +626,8 @@ template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w,
     return make_tuple(w_p, v1_p, v2_p);
 }
 
+//,m<zjdfkjg
+//zsdfhgldsf
 
 template<typename Q> tuple<double, int>                 pvert<Q>::indices_T1_K1(double w_p, int i_in)
 {
@@ -726,7 +747,6 @@ template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_TC_K3(
 }
 
 
-
 template<typename Q> tuple<int, int> pvert<Q>::indices_sum(int i0, int i2)
 {
     int a1pi0, a2pi0, a1i0, a2i0, a1pi2, a2pi2, a1i2, a2i2;
@@ -738,6 +758,5 @@ template<typename Q> tuple<int, int> pvert<Q>::indices_sum(int i0, int i2)
             8*(a1pi0-1) + 4*(a2pi0-1) + 2*(a1pi2-1) + 1*(a2pi2-1),
             8*(a1i2-1) + 4*(a2i2-1) + 2*(a1i0-1) + 1*(a2i0));
 }
-
 
 #endif //KELDYSH_MFRG_P_VERTEX_H
