@@ -13,12 +13,23 @@
 //}
 
 //TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
-comp integrator(cvec integrand)
+//comp integrator(cvec integrand)
+//{
+//    comp resp =0.;
+//    for (int i=0; i<nSE; ++i)
+//    {
+//        resp+= integrand[i]*simpson_weights[i];
+//    }
+//    return (dv*((double)(nSE-1)/nSE))/3.*resp;
+//}
+
+//This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
+template <typename Integrand> comp integrator(Integrand& integrand, rvec& grid)
 {
     comp resp =0.;
-    for (int i=0; i<nSE; ++i)
+    for (int i=0; i<grid.size(); ++i)
     {
-        resp+= integrand[i]*simpson_weights[i];
+        resp+= integrand(grid[i])*simpson_weights[i];
     }
     return (dv*((double)(nSE-1)/nSE))/3.*resp;
 }
