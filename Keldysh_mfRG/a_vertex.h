@@ -352,7 +352,7 @@ template <typename Q> Q avert<Q>::K2_vval (int iK, int i,int j, int i_in){
 }
 template <typename Q> Q avert<Q>::K2b_vval(int iK, int i,int j, int i_in){
     i = nw2_wt-1-i;
-    return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
+    return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in]; //TODO: conjugate?
 }
 template <typename Q> Q avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
     return K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];

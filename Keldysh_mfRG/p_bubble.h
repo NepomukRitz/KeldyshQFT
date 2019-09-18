@@ -11,8 +11,9 @@
 #include "selfenergy.h"
 
 /*Class defining the p_bubble object with a Keldysh structure*/
+// TODO: check: how long does the precomputation of this object take? can we (do we need to) simplify it?
 class P_Bubble{
-    cvec PiP = cvec (16*nSE);
+    cvec PiP = cvec (16*nSE*nSE);
 public:
     explicit P_Bubble(Propagator& propagator) :
             PiP(cvec(16*nSE*nSE))
@@ -36,7 +37,7 @@ public:
     /*This function returns the value of the p-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(0>v1 || 0>v2 || v1>w_upper_f || v2>w_upper_f)
+        if(0>v1 || 0>v2 || v1>w_upper_f || v2>w_upper_f) //TODO: check this: frequencies can be negative?
             return 0;
         else {
             int i = fconv(v1);
@@ -48,7 +49,7 @@ public:
 
 /*Class defining the differentiated p_bubble object with a Keldysh structure*/
 class Diff_P_Bubble{
-    cvec PiPdot = cvec (16*nSE);
+    cvec PiPdot = cvec (16*nSE*nSE);
 public:
     Diff_P_Bubble(Propagator& propagatorG, Propagator& propagatorS) :
             PiPdot(cvec(16*nSE*nSE))
@@ -72,7 +73,7 @@ public:
     /*This function returns the value of the differentiated a-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(0>v1 || 0>v2 || v1>w_upper_f || v2>w_upper_f)
+        if(0>v1 || 0>v2 || v1>w_upper_f || v2>w_upper_f) //TODO: check this: frequencies can be negative?
             return 0;
         else {
             int i = fconv(v1);
@@ -83,7 +84,25 @@ public:
 };
 
 
-/*This function returns a regular p-bubble, regular meaning that the propagators are only G */
+
+/* try out integrand function */
+template <typename Q> class Integrand_p {
+    Vertex<fullvert<Q> >& vertex1;
+    Vertex<fullvert<Q> >& vertex2;
+    P_Bubble& Pi;
+    int i0, iwp, i_in;
+public:
+    Integrand_p(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, P_Bubble& Pi_in, int i0_in, int iwp_in, int i_in_in)
+                  : vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in), i0(i0_in), iwp(iwp_in), i_in(i_in_in) {};
+
+    Q integrand_p_K1(double vppp) {
+        // TODO: implement this
+    }
+};
+
+
+
+/*This function returns a regular p-bubble, regular meaning that the propagators are only G */ // TODO: use fullvert, not pvert
 template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<pvert<Q> >& vertex, Vertex<pvert<Q> >& vertexp, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
     Vertex<pvert<Q> > resp = Vertex<pvert<Q>>();
@@ -99,6 +118,18 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<pvert<Q> >& ver
     Propagator G = propag(Lambda, self, diffSelf, 'g');
     P_Bubble PiP(G);
 
+//    for (int iK1=0; iK1<nK_K1*nw1_wp*n_in; ++iK1) {
+//        // TODO: use MPI
+//        int i0 = (iK1 % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
+//        int iwp = (iK1 % (nw1_wp * n_in)) / n_in;
+//        int i_in = iK1 % n_in;
+//
+//        Integrand_p<Q> integrand_p (vertex, vertexp, PiP, i0, iwp, i_in);
+//
+//        resp.densvertex.K1_addvert(i0, iwp, i_in, integrator(integrand_p.integrand_p_K1(), ...)); // TODO: complete this
+//
+//    }
+
     /*First, one goes through the bosonic frequencies*/
     for(auto wp : bfreqs){
         int iwp=fconv(wp);
@@ -110,31 +141,35 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<pvert<Q> >& ver
                 {
                     /*One has to be careful as to what diagrammatic class contributes to a diagrammatic class overall*/
                     double vppp = ffreqs[i];
-                    integrand1[i] = vertex.densvertex.K1_vvalsmooth(i1, wp, 1)*PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp)*vertexp.densvertex.K1_vvalsmooth(i3,wp,1);//K1 Pi K1 
+                    integrand1[i] = vertex.densvertex.K1_vvalsmooth(i1, wp, 0)*PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp)*vertexp.densvertex.K1_vvalsmooth(i3,wp,0);//K1 Pi K1
+                    // TODO: vertex.densvertex.pvert....
+                    // TODO: add contributions of a,t channels (for K2, K3)
                 }
-                resp.densvertex.K1_addvert(i0, iwp, 1, integrator(integrand1));
+                resp.densvertex.K1_addvert(i0, iwp, 0, integrator(integrand1));
             }
         }
 
         /*Here come now the contributions towards the K2 type, as well as the ones to K1 that can also depend on va i.e K1 and K2,
         * since there are combinations of K1 and K2 or K2b that lead to overall K1-type bubbles*/
-        for(auto vp : ffreqs){
-            int ivp=fconv(vp);
-            /*This runs over the indices for the K2 contributions to the K1 bubble*/
-            for(auto i0:non_zero_Keldysh_K1p){
-                for(auto i2:non_zero_Keldysh_pbubble){
-                    tie(i1,i3) = vertex.densvertex.indices_sum(i0, i2);
-                    for(int i =0; i<nSE; ++i)
-                    {
-                        double vppp = ffreqs[i];
-                        integrand2[i] = vertex.densvertex.K1_vvalsmooth(i1, wp, 1)*PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp)*vertexp.densvertex.K2_vvalsmooph(i3, wp, vppp, 1);//K1 Pi K2 
-                        integrand3[i] = vertex.densvertex.K2b_vvalsmooth(i1, wp, vp, 1)*PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp)*vertexp.densvertex.K1_vvalsmooth(i3, wp, 1);//K2b Pi K1 
-                        integrand4[i] = vertex.densvertex.K2b_vvalsmooth(i1, wp, vp, 1)*PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp)*vertexp.densvertex.K2_vvalsmooth(i3, wp, vppp, 1);//K2b Pi K2
-                    }
-                    resp.densvertex.K1_addvert(i0, iwp, 1, integrator(integrand2 + integrand3 + integrand4));
+
+        /*This runs over the indices for the K2 contributions to the K1 bubble*/
+        for(auto i0:non_zero_Keldysh_K1p){
+            for(auto i2:non_zero_Keldysh_pbubble){
+                tie(i1,i3) = vertex.densvertex.indices_sum(i0, i2);
+                for(int i =0; i<nSE; ++i)
+                {
+                    double vppp = ffreqs[i];
+                    integrand2[i] = vertex.densvertex.K1_vvalsmooth(i1, wp, 1)*PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp)*vertexp.densvertex.K2_vvalsmooph(i3, wp, vppp, 1);//K1 Pi K2
+                    integrand3[i] = vertex.densvertex.K2b_vvalsmooth(i1, wp, vppp, 1)*PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp)*vertexp.densvertex.K1_vvalsmooth(i3, wp, 1);//K2b Pi K1
+                    integrand4[i] = vertex.densvertex.K2b_vvalsmooth(i1, wp, vppp, 1)*PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp)*vertexp.densvertex.K2_vvalsmooth(i3, wp, vppp, 1);//K2b Pi K2
                 }
+                resp.densvertex.K1_addvert(i0, iwp, 1, integrator(integrand2 + integrand3 + integrand4));
             }
-            /*This runs over the indices for the K2 contributions to the K2 bubble*/
+        }
+
+      /*This runs over the indices for the K2 contributions to the K2 bubble*/
+      for(auto vp : ffreqs){
+        int ivp=fconv(vp);
             for(auto i0:non_zero_Keldysh_K2p){
                 for(auto i2:non_zero_Keldysh_pbubble){
                     tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
@@ -147,7 +182,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<pvert<Q> >& ver
                 }
             }
 
-            /*Since we're already running over va, let us calclate already K3 contributions. K2b come after this block*/
+            /*Since we're already running over va, let us calculate already K3 contributions. K2b come after this block*/
             for(auto vpp:ffreqs)
             {
                 int ivpp = fconv(vpp);
@@ -176,7 +211,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<pvert<Q> >& ver
             }
         }
 
-        /*This block then calculates the contributions to the K2b bubble*/
+        /*This block then calculates the contributions to the K2b bubble*/ //TODO: remove this ?
         for(auto vpp : ffreqs) {
             int ivpp = fconv(vpp);
             /*This runs over the indices of the K2b contributions to the K2b bubble*/
