@@ -105,14 +105,14 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
         /*This runs over the indices for the K1 contributions to the K1 bubble*/
         for(auto i0:non_zero_Keldysh_K1t){
             for(auto i2:non_zero_Keldysh_tbubble){
-                tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
+                tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
                 for(int i =0; i<nSE; ++i)
                 {
                     /*One has to be careful as to what diagrammatic class contributes to a diagrammatic class overall*/
                     double vppt = ffreqs[i];
-                    integrand1[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3,wt,1);//K1 Pi K1
+                    integrand1[i] = vertex.densvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K1_vvalsmooth(i3,wt,1);//K1 Pi K1
                 }
-                resp.spinvertex.K1_addvert(i0, iwt, 1, integrator(integrand1));
+                resp.densvertex.K1_addvert(i0, iwt, 1, integrator(integrand1));
             }
         }
 
@@ -123,27 +123,27 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
             /*This runs over the indices for the K2 contributions to the K1 bubble*/
             for(auto i0:non_zero_Keldysh_K1t){
                 for(auto i2:non_zero_Keldysh_tbubble){
-                    tie(i1,i3) = vertex.spinvertex.indices_sum(i0, i2);
+                    tie(i1,i3) = vertex.densvertex.indices_sum(i0, i2);
                     for(int i =0; i<nSE; ++i)
                     {
                         double vppt = ffreqs[i];
-                        integrand2[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2_vvalsmooph(i3, wt, vppt, 1);//K1 Pi K2
-                        integrand3[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3, wt, 1);//K2b Pi K1
-                        integrand4[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K2b Pi K2
+                        integrand2[i] = vertex.densvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2_vvalsmooph(i3, wt, vppt, 1);//K1 Pi K2
+                        integrand3[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K1_vvalsmooth(i3, wt, 1);//K2b Pi K1
+                        integrand4[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K2b Pi K2
                     }
-                    resp.spinvertex.K1_addvert(i0, iwt, 1, integrator(integrand2 + integrand3 + integrand4));
+                    resp.densvertex.K1_addvert(i0, iwt, 1, integrator(integrand2 + integrand3 + integrand4));
                 }
             }
             /*This runs over the indices for the K2 contributions to the K2 bubble*/
             for(auto i0:non_zero_Keldysh_K2t){
                 for(auto i2:non_zero_Keldysh_tbubble){
-                    tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
+                    tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
                     for(int i=0; i<nSE; ++i){
                         double  vppt = ffreqs[i];
-                        integrand5[i] = vertex.spinvertex.K2_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3, wt, 1); //K2 Pi K1
-                        integrand6[i] = vertex.spinvertex.K2_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K2 Pi K2
+                        integrand5[i] = vertex.densvertex.K2_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K1_vvalsmooth(i3, wt, 1); //K2 Pi K1
+                        integrand6[i] = vertex.densvertex.K2_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K2 Pi K2
                     }
-                    resp.spinvertex.K2_addvert(i0, iwt, ivt, 1, integrator(integrand5 + integrand6));
+                    resp.densvertex.K2_addvert(i0, iwt, ivt, 1, integrator(integrand5 + integrand6));
                 }
             }
 
@@ -154,23 +154,23 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
                 /*This runs over the indices for the K3 contributions to the K3 bubble*/
                 for(auto i0:non_zero_Keldysh_K3){
                     for(auto i2:non_zero_Keldysh_tbubble){
-                        tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
+                        tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
                         for(int i=0; i<nSE; ++i){
                             double vppt = ffreqs[i];
-                            comp valueK3 =   vertex.spinvertex.K3_vvalsmooth(i1, wt, vt, vppt, 1);
-                            comp valueK3p = vertexp.spinvertex.K3_vvalsmooth(i3, wt, vppt, vpt, 1);
+                            comp valueK3 =   vertex.densvertex.K3_vvalsmooth(i1, wt, vt, vppt, 1);
+                            comp valueK3p = vertexp.densvertex.K3_vvalsmooth(i3, wt, vppt, vpt, 1);
 
-                            integrand1[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K1 Pi K3
-                            integrand2[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K2b Pi K3
-                            integrand3[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2b_vvalsmooth(i3, wt, vppt, vpt);   //K2 Pi K2b
-                            integrand4[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K2 Pi K3
-                            integrand5[i] = valueK3*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3, wt, 1);   //K3 Pi K1
-                            integrand6[i] = valueK3*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2
-                            integrand7[i] = valueK3*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2b_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2b
+                            integrand1[i] = vertex.densvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K1 Pi K3
+                            integrand2[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K2b Pi K3
+                            integrand3[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2b_vvalsmooth(i3, wt, vppt, vpt);   //K2 Pi K2b
+                            integrand4[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K2 Pi K3
+                            integrand5[i] = valueK3*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K1_vvalsmooth(i3, wt, 1);   //K3 Pi K1
+                            integrand6[i] = valueK3*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2
+                            integrand7[i] = valueK3*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2b_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2b
                             integrand8[i] = valueK3*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K3 Pi K3
                         }
 
-                        resp.spinvertex.K3_addvert(i0, iwt, ivt, ivpt, 1, integrator( integrand1 + integrand2 + integrand3 + integrand4 + integrand5 + integrand6 + integrand7 + integrand8));
+                        resp.densvertex.K3_addvert(i0, iwt, ivt, ivpt, 1, integrator( integrand1 + integrand2 + integrand3 + integrand4 + integrand5 + integrand6 + integrand7 + integrand8));
                     }
                 }
             }
@@ -182,13 +182,13 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<tvert<Q> >& ver
             /*This runs over the indices of the K2b contributions to the K2b bubble*/
             for(auto i0:non_zero_Keldysh_K2t){
                 for(auto i2:non_zero_Keldysh_tbubble){
-                    tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
+                    tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
                     for(int i=0; i<nSE; ++i){
                         double  vppt = ffreqs[i];
-                        integrand7[i] = conj(vertex.spinvertex.K2_vvalsmooth(i1, wt, vpt, 1))*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*conj(vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1)); //K2b Pi K2b
-                        integrand8[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*conj(vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1));//K1 Pi K2b
+                        integrand7[i] = conj(vertex.densvertex.K2_vvalsmooth(i1, wt, vpt, 1))*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*conj(vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1)); //K2b Pi K2b
+                        integrand8[i] = vertex.densvertex.K1_vvalsmooth(i1, wt, 1)*PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt)*conj(vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1));//K1 Pi K2b
                     }
-                    resp.spinvertex.K2_addvert(i0, iwt, ivpt, 1, integrator(integrand7 + integrand8));
+                    resp.densvertex.K2_addvert(i0, iwt, ivpt, 1, integrator(integrand7 + integrand8));
                 }
             }
         }
@@ -219,14 +219,14 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
         /*This runs over the indices for the K1 contributions to the K1 bubble*/
         for(auto i0:non_zero_Keldysh_K1t){
             for(auto i2:non_zero_Keldysh_tbubble){
-                tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
+                tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
                 for(int i =0; i<nSE; ++i)
                 {
                     /*One has to be careful as to what diagrammatic class contributes to a diagrammatic class overall*/
                     double vppt = ffreqs[i];
-                    integrand1[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3,wt,1);//K1 Pi K1
+                    integrand1[i] = vertex.densvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K1_vvalsmooth(i3,wt,1);//K1 Pi K1
                 }
-                resp.spinvertex.K1_addvert(i0, iwt, 1, integrator(integrand1));
+                resp.densvertex.K1_addvert(i0, iwt, 1, integrator(integrand1));
             }
         }
 
@@ -237,27 +237,27 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
             /*This runs over the indices for the K2 contributions to the K1 bubble*/
             for(auto i0:non_zero_Keldysh_K1t){
                 for(auto i2:non_zero_Keldysh_tbubble){
-                    tie(i1,i3) = vertex.spinvertex.indices_sum(i0, i2);
+                    tie(i1,i3) = vertex.densvertex.indices_sum(i0, i2);
                     for(int i =0; i<nSE; ++i)
                     {
                         double vppt = ffreqs[i];
-                        integrand2[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K1 Pi K2
-                        integrand3[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3, wt, 1);//K2b Pi K1
-                        integrand4[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K2b Pi K2
+                        integrand2[i] = vertex.densvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K1 Pi K2
+                        integrand3[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K1_vvalsmooth(i3, wt, 1);//K2b Pi K1
+                        integrand4[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K2b Pi K2
                     }
-                    resp.spinvertex.K1_addvert(i0, iwt, 1, integrator(integrand2 + integrand3 + integrand4));
+                    resp.densvertex.K1_addvert(i0, iwt, 1, integrator(integrand2 + integrand3 + integrand4));
                 }
             }
             /*This runs over the indices for the K2 contributions to the K2 bubble*/
             for(auto i0:non_zero_Keldysh_K2t){
                 for(auto i2:non_zero_Keldysh_tbubble){
-                    tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
+                    tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
                     for(int i=0; i<nSE; ++i){
                         double  vppt = ffreqs[i];
-                        integrand5[i] = vertex.spinvertex.K2_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3, wt, 1); //K2 Pi K1
-                        integrand6[i] = vertex.spinvertex.K2_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K2 Pi K2
+                        integrand5[i] = vertex.densvertex.K2_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K1_vvalsmooth(i3, wt, 1); //K2 Pi K1
+                        integrand6[i] = vertex.densvertex.K2_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1);//K2 Pi K2
                     }
-                    resp.spinvertex.K2_addvert(i0, iwt, ivt, 1, integrator(integrand5 + integrand6));
+                    resp.densvertex.K2_addvert(i0, iwt, ivt, 1, integrator(integrand5 + integrand6));
                 }
             }
 
@@ -268,22 +268,22 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
                 /*This runs over the indices for the K3 contributions to the K3 bubble*/
                 for(auto i0:non_zero_Keldysh_K3){
                     for(auto i2:non_zero_Keldysh_tbubble){
-                        tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
+                        tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
                         for(int i=0; i<nSE; ++i){
                             double vppt = ffreqs[i];
-                            comp valueK3 = vertex.spinvertex.K3_vvalsmooth(i1, wt, vt, vppt,1);
-                            comp valueK3p = vertexp.spinvertex.K3_vvalsmooth(i3, wt, vppt, vpt);
+                            comp valueK3 = vertex.densvertex.K3_vvalsmooth(i1, wt, vt, vppt,1);
+                            comp valueK3p = vertexp.densvertex.K3_vvalsmooth(i3, wt, vppt, vpt);
 
-                            integrand1[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K1 Pi K3
-                            integrand2[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K2b Pi K3
-                            integrand3[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2b_vvalsmooth(i3, wt, vppt, vpt);   //K2 Pi K2b
-                            integrand4[i] = vertex.spinvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K2 Pi K3
-                            integrand5[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K1_vvalsmooth(i3, wt, 1);   //K3 Pi K1
-                            integrand6[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2
-                            integrand7[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.spinvertex.K2b_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2b
+                            integrand1[i] = vertex.densvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K1 Pi K3
+                            integrand2[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K2b Pi K3
+                            integrand3[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2b_vvalsmooth(i3, wt, vppt, vpt);   //K2 Pi K2b
+                            integrand4[i] = vertex.densvertex.K2b_vvalsmooth(i1, wt, vt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K2 Pi K3
+                            integrand5[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K1_vvalsmooth(i3, wt, 1);   //K3 Pi K1
+                            integrand6[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2
+                            integrand7[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.densvertex.K2b_vvalsmooth(i3, wt, vppt, 1);   //K3 Pi K2b
                             integrand8[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;   //K3 Pi K3
                         }
-                        resp.spinvertex.K3_addvert(i0, iwt, ivt, ivpt, 1, integrator( integrand1 + integrand2 + integrand3 + integrand4 + integrand5 + integrand6 + integrand7 + integrand8));
+                        resp.densvertex.K3_addvert(i0, iwt, ivt, ivpt, 1, integrator( integrand1 + integrand2 + integrand3 + integrand4 + integrand5 + integrand6 + integrand7 + integrand8));
                     }
                 }
             }
@@ -295,18 +295,103 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble(Vertex<tvert<Q> >& vertex,
             /*This runs over the indices of the K2b contributions to the K2b bubble*/
             for(auto i0:non_zero_Keldysh_K2t){
                 for(auto i2:non_zero_Keldysh_tbubble){
-                    tie(i1,i3) = resp.spinvertex.indices_sum(i0, i2);
+                    tie(i1,i3) = resp.densvertex.indices_sum(i0, i2);
                     for(int i=0; i<nSE; ++i){
                         double  vppt = ffreqs[i];
-                        integrand7[i] = conj(vertex.spinvertex.K2_vvalsmooth(i1, wt, vpt, 1))*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*conj(vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1)); //K2b Pi K2b
-                        integrand8[i] = vertex.spinvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*conj(vertexp.spinvertex.K2_vvalsmooth(i3, wt, vppt, 1));//K1 Pi K2b
+                        integrand7[i] = conj(vertex.densvertex.K2_vvalsmooth(i1, wt, vpt, 1))*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*conj(vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1)); //K2b Pi K2b
+                        integrand8[i] = vertex.densvertex.K1_vvalsmooth(i1, wt, 1)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*conj(vertexp.densvertex.K2_vvalsmooth(i3, wt, vppt, 1));//K1 Pi K2b
                     }
-                    resp.spinvertex.K2_addvert(i0, iwt, ivpt, 1, integrator(integrand7 + integrand8));
+                    resp.densvertex.K2_addvert(i0, iwt, ivpt, 1, integrator(integrand7 + integrand8));
                 }
             }
         }
     }
     return -resp;
+}
+
+
+
+
+template <typename Q> tvert<Q>  diff_t_bubble(tvert<Q> & vertex, tvert<Q>& vertexp, Propagator& G, Propagator& dG)
+{
+    tvert<Q> resp = tvert<Q>();
+    int i1, i3;
+    vec<Q> integrand1(bfreqs.size());
+    vec<Q> integrand2(bfreqs.size());
+    vec<Q> integrand3(bfreqs.size());
+    vec<Q> integrand4(bfreqs.size());
+    vec<Q> integrand5(ffreqs.size());
+    vec<Q> integrand6(ffreqs.size());
+    vec<Q> integrand7(ffreqs.size());
+    vec<Q> integrand8(ffreqs.size());
+
+
+    cout << "set out to calculate the internal bubble" << endl;
+    Diff_T_Bubble PiTdot(G,dG);
+    cout << "done with the bubble" << endl;
+
+
+    for(auto wt : bfreqs){
+        int iwt=fconv(wt);
+        for(auto vt : ffreqs){
+            int ivt=fconv(vt);
+            for(auto vpt:ffreqs) {
+                int ivpt = fconv(vpt);
+
+                for (auto i0:non_zero_Keldysh_K1t) {
+                    for (auto i2:non_zero_Keldysh_tbubble) {
+                        tie(i1, i3) = resp.indices_sum(i0, i2);
+                        for (int i = 0; i < nSE; ++i) {
+                            /*One has to be careful as to what diagrammatic class contributes to a diagrammatic class overall*/
+                            double vppt = ffreqs[i];
+                            integrand1[i] = vertex.K1_vvalsmooth (i1, wt, 0)    *PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K1_vvalsmooth(i3, wt, 0);                           //K1 Pi K1 => K1
+                            integrand2[i] = vertex.K1_vvalsmooth (i1, wt, 0)    *PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K2_vvalsmooth(i3, wt, vppt, 0);                     //K1 Pi K2 => K1
+                            integrand3[i] = vertex.K2b_vvalsmooth(i1, wt, vt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K1_vvalsmooth(i3, wt, 0);                           //K2b Pi K1 => K1
+                            integrand4[i] = vertex.K2b_vvalsmooth(i1, wt, vt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K2_vvalsmooth(i3, wt, vppt, 0);                     //K2b Pi K2 => K1
+                        }
+                        resp.K1_addvert(i0, iwt, 0, integrator(integrand1 + integrand2 + integrand3 + integrand4, bfreqs));
+                    }
+                }
+
+                for (auto i0:non_zero_Keldysh_K2t) {
+                    for (auto i2:non_zero_Keldysh_tbubble) {
+                        tie(i1, i3) = resp.indices_sum(i0, i2);
+                        for(int i = 0; i < nSE; ++i){
+                            double vppt = ffreqs[i];
+                            integrand5[i] = vertex.K2_vvalsmooth (i1, wt, vt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K1_vvalsmooth(i3, wt, 0);                           //K2 Pi K1  => K2
+                            integrand6[i] = vertex.K2_vvalsmooth (i1, wt, vt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K2_vvalsmooth(i3, wt, vppt, 0);                     //K2 Pi K2 => K2
+                            integrand7[i] = vertex.K2b_vvalsmooth(i1, wt,vpt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K2b_vvalsmooth(i3, wt, vppt, 0);                    //K2b Pi K2b =>K2b
+                            integrand8[i] = vertex.K1_vvalsmooth (i1, wt, 0)    *PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K2b_vvalsmooth(i3, wt, vppt, 0);                    //K1 Pi K2b => K2b
+                        }
+                        resp.K2_addvert(i0, iwt, ivt, 0, integrator(integrand5 + integrand6, ffreqs));
+                        resp.K2_addvert(i0, iwt,ivpt, 0, integrator(integrand7 + integrand8, ffreqs));
+                    }
+                }
+
+                for (auto i0:non_zero_Keldysh_K3) {
+                    for (auto i2:non_zero_Keldysh_tbubble) {
+                        tie(i1, i3) = resp.indices_sum(i0, i2);
+                        for(int i = 0; i < nSE; ++i) {
+                            double vppt = ffreqs[i];
+                            comp valueK3 = vertex.K3_vvalsmooth(i1, wt, vt, vppt,0), valueK3p = vertexp.K3_vvalsmooth(i3, wt, vppt, vpt, 0);
+
+                            integrand1[i] = vertex.K1_vvalsmooth (i1, wt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;                                                       //K1 Pi K3 =>K3     
+                            integrand2[i] = vertex.K2b_vvalsmooth(i1, wt, vt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;                                                  //K2b Pi K3=>K3
+                            integrand3[i] = vertex.K2b_vvalsmooth(i1, wt, vt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K2b_vvalsmooth(i3, wt, vppt, 0);                   //K2 Pi K2b=>K3
+                            integrand4[i] = vertex.K2b_vvalsmooth(i1, wt, vt, 0)*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;                                                  //K2 Pi K3 =>K3
+                            integrand5[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K1_vvalsmooth(i3, wt, 0);                                                       //K3 Pi K1 =>K3 
+                            integrand6[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K2_vvalsmooth(i3, wt, vppt, 0);                                                 //K3 Pi K2 =>K3 
+                            integrand7[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*vertexp.K2b_vvalsmooth(i3, wt, vppt, 0);                                                //K3 Pi K2b=>K3 
+                            integrand8[i] = valueK3*PiTdot.value(i2, vppt-0.5*wt, vppt+0.5*wt)*valueK3p;                                                                               //K3 Pi K3=>K3 
+                        }
+                        resp.K3_addvert(i0, iwt, ivt, ivpt, 0, integrator(integrand1 + integrand2 + integrand3 + integrand4 + integrand5 + integrand6 + integrand7 + integrand8, ffreqs));
+                    }
+                }
+
+            }
+        }
+    }
+    return resp;
 }
 
 #endif //KELDYSH_MFRG_T_BUBBLE_H

@@ -13,15 +13,14 @@
 //}
 
 //TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
-comp integrator(cvec integrand, rvec grid)
+comp integrator(cvec integrand)
 {
     comp resp =0.;
-    for (int i=0; i<grid.size(); ++i)
+    for (int i=0; i<nSE; ++i)
     {
         resp+= integrand[i]*simpson_weights[i];
     }
-    auto dw = (grid[grid.size()-1]-grid[0])/((double)(grid.size()-1));
-    return dw/3.*resp;
+    return (dv*((double)(nSE-1)/nSE))/3.*resp;
 }
 
 #endif //KELDYSH_MFRG_INTEGRATOR_H
