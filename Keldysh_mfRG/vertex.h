@@ -68,6 +68,9 @@ public:
      * Keldysh index (1st int), internal structure index (2nd int) and the three frequencies.*/
     Q value(int,double,double,double,int,char);
 
+    /* Returns the sum of the contributions of the diagrammatic classes r' =/= r */
+    Q gammaRb (int, double, double, double, int, char);
+
 //    /*Same as above but with more toys*/
 //    Q vvalsmooth(int,double,double,double,int,char,int,char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
 //
@@ -182,9 +185,31 @@ template <typename Q> void irreducible<Q>::setvert(int iK, Q value){
 
 template <typename Q> Q fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, char channel)
 {
-    Q result = irred.vval(iK) + avertex.value(iK, w, v1, v2, i_in, this->tvert, channel)
-                              + pvertex.value(iK, w, v1, v2, i_in,              channel)
-                              + tvertex.value(iK, w, v1, v2, i_in, this->avert, channel);
+    Q result = irred.vval(iK) + avertex.value(iK, w, v1, v2, i_in, tvertex, channel)
+                              + pvertex.value(iK, w, v1, v2, i_in,          channel)
+                              + tvertex.value(iK, w, v1, v2, i_in, avertex, channel);
+}
+
+template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, double v2, int i_in, char r)
+{
+   Q resp;
+//    switch(r){
+//        case 'a': resp = pvertex.value(iK, w, v1, v2, i_in, channel)          + tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
+//        case 'p': resp = avertex.value(iK, w, v1, v2, i_in, channel, tvertex) + tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
+//        case 't': resp = avertex.value(iK, w, v1, v2, i_in, channel, tvertex) + pvertex.value(iK, w, v1, v2, i_in, channel);
+//        default :;
+//    }
+
+    if(r == 'a')
+        resp = pvertex.value(iK, w, v1, v2, i_in, r)          + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
+    else if(r == 'p')
+        resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
+    else if(r == 't')
+        resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + pvertex.value(iK, w, v1, v2, i_in, r);
+    else
+        resp = 0.;
+
+    return resp;
 }
 
 //template <typename Q> fullvert<Q> operator*(double alpha, const fullvert<Q>& vertex){
