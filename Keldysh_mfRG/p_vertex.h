@@ -195,9 +195,9 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
 
     /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
     * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
-    return  K1_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
-          + K2_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
-          + K2b_vvalsmooth(iK, w_p, v1_p, v2_p, i_in)
+    return  K1_vvalsmooth (iK, w_p, i_in)
+          + K2_vvalsmooth (iK, w_p, v1_p, i_in)
+          + K2b_vvalsmooth(iK, w_p, v2_p, i_in)
           + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
 }
 

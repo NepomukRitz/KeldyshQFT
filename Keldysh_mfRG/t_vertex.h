@@ -45,7 +45,7 @@ public:
 //
 //    /*For when the channel is already known and the trafo to the specific channel has already been done*/
 //    Q value (int, double, double, double, int);
-    Q value (int, double, double, double, int, avert<Q>& avertex, char);
+    Q value (int, double, double, double, int, char, avert<Q>& avertex);
     Q value (int, double, double, double, int, avert<Q>& avertex);
 
 //    /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
@@ -541,7 +541,7 @@ public:
 //    return valueK1 + valueK2 + conj(valueK2) + valueK3;
 //}
 
-template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, avert<Q>& avertex, char channel){
+template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, avert<Q>& avertex){
 
     double w_t=0., v1_t=0., v2_t=0.;
     tie(w_t, v1_t, v2_t) = transfToT(w,v1,v2,channel);
@@ -678,7 +678,7 @@ template <typename Q> Q tvert<Q>::K2_vval (int iK, int i, int j, int i_in){
     return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
 }
 template <typename Q> Q tvert<Q>::K2b_vval(int iK, int i, int j, int i_in){
-    i = nw2_wt-1-i;
+    i = nw2_wt-i;
     return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
 }
 template <typename Q> Q tvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
@@ -895,7 +895,7 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
                 x2 = freqs_a[index_b] + dw_a;
                 y1 = freqs_a[index_f];
                 y2 = freqs_a[index_f] + dw_a;
-                xd = (w_t - x1) / (x2 - x1);
+                xd = (-w_t - x1) / (x2 - x1);
                 yd = (v1_t - y1) / (y2 - y1);
 
                 f11 = avertex.K2b_vval(iK2, index_b, index_f, i_in);
@@ -927,7 +927,7 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
                 x2 = freqs_t[index_b] + dw_t;
                 y1 = freqs_t[index_f];
                 y2 = freqs_t[index_f] + dw_t;
-                xd = (w_t - x1) / (x2 - x1);
+                xd = (-w_t - x1) / (x2 - x1);
                 yd = (v1_t - y1) / (y2 - y1);
 
                 f11 = K2b_vval(iK2, index_b, index_f, i_in);
