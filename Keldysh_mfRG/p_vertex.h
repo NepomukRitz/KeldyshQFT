@@ -47,20 +47,6 @@ public:
     Q value (int, double, double, double, int);
 
 
-//    /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
-//     * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
-//    Q vvalsmooth(int, double, double, double, int, char);
-//
-//    /*Same idea as function above, but is oriented towards the multi-loop implementation */
-//    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-//
-//    /*No clue, suspect is unnecessary fro us since we do not need map or red_side operations*/
-////    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-//
-//    /*This function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45*/
-//    Q vvalsmooth(int, double, double, double, int);
-
-
     /*Sets the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure) to input Q*/
     void K1_setvert(int, int, int, Q);
 
@@ -106,14 +92,6 @@ public:
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
     Q K3_vvalsmooth(int, double, double, double, int);
-
-
-
-
-
-
-
-
 
 
 

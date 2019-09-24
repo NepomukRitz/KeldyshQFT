@@ -36,30 +36,15 @@ class tvert{
 
 public:
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
-     * of the necessary indices convertions  and what not...
-     * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
-     * i.e. only complex numbers
-     *
-     * This function aims to be the sole function one needs to call to read the full vertex*/
-//    Q value (int, double, double, double, int, char);
-//
-//    /*For when the channel is already known and the trafo to the specific channel has already been done*/
-//    Q value (int, double, double, double, int);
+    * of the necessary indices convertions  and what not...
+    * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
+    * i.e. only complex numbers
+    *
+    * This function aims to be the sole function one needs to call to read the full vertex*/
     Q value (int, double, double, double, int, char, avert<Q>& avertex);
-    Q value (int, double, double, double, int, avert<Q>& avertex);
 
-//    /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
-//     * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
-//    Q vvalsmooth(int, double, double, double, int, char);
-//
-//    /*Same idea as function above, but is oriented towards the multi-loop implementation */
-//    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-//
-//    /*No clue, suspect is unnecessary fro us since we do not need map or red_side operations*/
-////    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-//
-//    /*This function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45*/
-//    Q vvalsmooth(int, double, double, double, int);
+    /*For when the channel is already known and the trafo to the specific channel has already been done*/
+    Q value (int, double, double, double, int, avert<Q>& avertex);
 
 
     /*Sets the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure) to input Q*/
@@ -97,25 +82,19 @@ public:
 
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
      * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-//    Q K1_vvalsmooth(int, double, int);
-//    Q K1_vvalsmooth(int, double, double, double, int);
+
     Q K1_vvalsmooth(int, double, int, avert<Q>&);
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
      *  for given Keldysh and internal structure indices.*/
-//    Q K2_vvalsmooth(int, double, double, int);
-//    Q K2_vvalsmooth(int, double, double, double, int);
     Q K2_vvalsmooth(int, double, double, int, avert<Q>&);
 
     /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
  *  for given Keldysh and internal structure indices.*/
-//    Q K2b_vvalsmooth(int, double, double, int);
-//    Q K2b_vvalsmooth(int, double, double, double, int);
     Q K2b_vvalsmooth(int, double, double, int, avert<Q>&);
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
-//    Q K3_vvalsmooth(int, double, double, double, int);
     Q K3_vvalsmooth(int, double, double, double, int, avert<Q>&);
 
 
@@ -124,13 +103,6 @@ public:
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
     tuple<double, double, double> transfToT(double, double, double, char);
-
-//    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
-//    tuple<double, double, double> transfToT(double, double, double);
-//
-//    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
-//     * I.e. is the inverse of the function above*/
-//    tuple<double, double, double> transfBackT(double, double, double);
 
 
     /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
