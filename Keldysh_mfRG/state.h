@@ -17,6 +17,7 @@
 struct State{
     double Lambda{};
     SelfEnergy<comp> selfenergy;
+    SelfEnergy<comp> diffselfenergy;
     Vertex<fullvert<comp> > vertex;
 
     State() = default;;
@@ -33,6 +34,7 @@ public:
 
 
 State operator+(const State&, const State&);
+State operator+=(const State&, const State&);
 State operator*(double, const State&);
 State operator*(const State&, double);
 
@@ -51,7 +53,28 @@ State operator+(const State& State1, const State& State2){
     result.vertex.densvertex.pvertex = State1.vertex.densvertex.pvertex + State2.vertex.densvertex.pvertex;
     result.vertex.densvertex.tvertex = State1.vertex.densvertex.tvertex + State2.vertex.densvertex.tvertex;
 
-//    result.selfenergy = State1.selfenergy + State2.selfenergy;
+    result.selfenergy = State1.selfenergy + State2.selfenergy;
+    result.diffselfenergy = State1.diffselfenergy + State2.diffselfenergy;
+
+#ifdef SUSC
+    result.sus = State1.sus + State2.sus; //TODO: Are susceptibilities additive?
+#endif
+    return result;
+}
+State operator+=(const State& State1, const State& State2){
+    State result;
+    result.vertex.spinvertex.irred = State1.vertex.spinvertex.irred + State2.vertex.spinvertex.irred;
+    result.vertex.spinvertex.avertex = State1.vertex.spinvertex.avertex + State2.vertex.spinvertex.avertex;
+    result.vertex.spinvertex.pvertex = State1.vertex.spinvertex.pvertex + State2.vertex.spinvertex.pvertex;
+    result.vertex.spinvertex.tvertex = State1.vertex.spinvertex.tvertex + State2.vertex.spinvertex.tvertex;
+
+    result.vertex.densvertex.irred = State1.vertex.densvertex.irred + State2.vertex.densvertex.irred;
+    result.vertex.densvertex.avertex = State1.vertex.densvertex.avertex + State2.vertex.densvertex.avertex;
+    result.vertex.densvertex.pvertex = State1.vertex.densvertex.pvertex + State2.vertex.densvertex.pvertex;
+    result.vertex.densvertex.tvertex = State1.vertex.densvertex.tvertex + State2.vertex.densvertex.tvertex;
+
+    result.selfenergy = State1.selfenergy + State2.selfenergy;
+    result.diffselfenergy = State1.diffselfenergy + State2.diffselfenergy;
 
 #ifdef SUSC
     result.sus = State1.sus + State2.sus; //TODO: Are susceptibilities additive?
@@ -70,8 +93,8 @@ State operator*(double alpha, const State& State1){
     result.vertex.densvertex.pvertex = State1.vertex.densvertex.pvertex * alpha;
     result.vertex.densvertex.tvertex = State1.vertex.densvertex.tvertex * alpha;
 
-//    result.selfenergy = alpha * State1.selfenergy;
-
+    result.selfenergy = alpha * State1.selfenergy;
+    result.diffselfenergy = alpha * State1.diffselfenergy;
 #ifdef SUSC
     result.sus = alpha * State1.sus;
 #endif
@@ -89,8 +112,8 @@ State operator*(const State& State1, double alpha){
     result.vertex.densvertex.pvertex = State1.vertex.densvertex.pvertex * alpha;
     result.vertex.densvertex.tvertex = State1.vertex.densvertex.tvertex * alpha;
 
-//    result.selfenergy = alpha * State1.selfenergy;
-
+    result.selfenergy = alpha * State1.selfenergy;
+    result.diffselfenergy = alpha * State1.diffselfenergy;
 #ifdef SUSC
     result.sus = alpha * State1.sus;
 #endif
