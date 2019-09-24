@@ -124,7 +124,16 @@ int fconv(double w)
     return index - (int)(index/ffreqs.size());
 }
 
+int fconv_Lambda(double Lambda)
+{
+    double dl = (Lambda_ini-Lambda_fin)/((double)(nEVO));
+    auto index = -
+            (int)((Lambda-Lambda_ini)/dl);
+    return index - (int)(index/nEVO);
+}
+
 # endif
+
 #endif
 
 bool compare(int a, int b)
