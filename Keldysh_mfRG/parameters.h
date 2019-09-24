@@ -40,8 +40,11 @@ const double mu = 0.0;
 /*Interaction strength*/
 const double U = 1.0;
 
+/*Number of evolution flow points*/
+const int nEVO = 5;
+
 /*Number of frequency points for the self energy and the susceptibility*/
-const int nSE = 201;
+const int nSE = 101;
 const int nSUSC = nSE;  //Makes no sense to have these values be different from one another
 const int nPROP = nSE;
 
@@ -77,10 +80,14 @@ const int nw_a = nw1_wa;
 const int nw_p = nw1_wp;
 const int nw_t = nw1_wt;
 
+/*Limits of the fRG flow*/
+const double Lambda_ini = 1.0;
+const double Lambda_fin = 0.0;
+
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
-const double w_upper_b = 40.;
+const double w_upper_b = 20.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 40.;
+const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 
 
@@ -108,6 +115,10 @@ vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                           
 vector<int> non_zero_Keldysh_abubble({3,6,7,9,11,12,13,14,15});                                                         // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_pbubble({3,6,7,9,11,12,13,14,15});                                                         // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});                                                        // NOLINT(cert-err58-cpp)
+
+/*Vector with values of Lambda for the fRG flow*/
+rvec flow_grid(nEVO);                                                                                                   // NOLINT(cert-err58-cpp)
+const double dL = (Lambda_fin-Lambda_ini)/((nEVO-1));
 
 /* temporarily fix stuff to remove warnings*/
 rvec ffreqs (nSE);                                                                                                      // NOLINT(cert-err58-cpp)
