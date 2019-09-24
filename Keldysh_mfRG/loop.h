@@ -9,7 +9,7 @@
 #include "vertex.h"
 #include "propagator.h"
 
-
+//TODO One would actually want to have integrands to feed an integrand, not vectors
 SelfEnergy<comp> loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop)
 {
     cvec integrandR(nPROP);
