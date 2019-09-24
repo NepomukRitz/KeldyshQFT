@@ -96,31 +96,43 @@ public:
             :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiT(PiT_in), i0(i0_in),    wt(wt_in), i_in(i_in_in) {};
 
     //First option for integrand feature: a function
-    Q integrand_p_K1(double vppt){
+    Q integrand_p_K1(double vppt) {
         int i1, i3;
         Q resp;
         for(auto i2:non_zero_Keldysh_tbubble) {
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
             //Contributions to K1: (K1 +K2b)Pi(K1+K2)
-            resp += (vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in) + vertex1.densvertex.tvertex.K2b_vvalsmooth(i1, wt, vppt, i_in)) *
+            resp += (vertex1.densvertex.irred.vval(i1) +
+                     vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) +
+                     vertex1.densvertex.tvertex.K2b_vvalsmooth(i1, wt, vppt, i_in, vertex1.densvertex.avertex)) *
+
                     PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
-                    (vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in) + vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in) );
+
+                    (vertex2.densvertex.irred.vval(i3) +
+                     vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex) +
+                     vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in, vertex1.densvertex.avertex));
         }
         return resp;
     }
 
-    //This is a second option for an integrand feature: a cast operator
-    Integrand_t_K1<Q, Bubble> operator() (double vppt){
+    //This is a second option for an integrand feature: a call operator
+    Q operator()(double vppt) {
         int i1, i3;
         Q resp;
         for(auto i2:non_zero_Keldysh_tbubble) {
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
             //Contributions to K1: (K1 +K2b)Pi(K1+K2)
-            resp += (vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in) + vertex1.densvertex.tvertex.K2b_vvalsmooth(i1, wt, vppt, i_in)) *
+            resp += (vertex1.densvertex.irred.vval(i1) +
+                     vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) +
+                     vertex1.densvertex.tvertex.K2b_vvalsmooth(i1, wt, vppt, i_in, vertex1.densvertex.avertex)) *
+
                     PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
-                    (vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in) + vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in) );
+
+                    (vertex2.densvertex.irred.vval(i3) +
+                     vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex) +
+                     vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in, vertex1.densvertex.avertex));
         }
         return resp;
     }
@@ -145,30 +157,36 @@ public:
             tie(i1, i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
             //Contributions to K2: (K2 +K3 + gammaP)Pi(K1+K2)
-            resp += (vertex1.densvertex.tvertex.K2_vvalsmooth(i1, wt, vt, i_in) +
+            resp += (vertex1.densvertex.tvertex.K2_vvalsmooth(i1, wt, vt, i_in, vertex1.densvertex.avertex) +
                      vertex1.densvertex.tvertex.K3_vvalsmooth(i1, wt, vt, vppt, i_in) +
                      vertex1.densvertex.gammaRb(i1, wt, vt, vppt, i_in, 't')) *
+
                     PiT.value(i2, vppt - 0.5 * wt, vppt + 0.5 * wt) *
-                    (vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in) +
-                     vertex2.densvertex.tvertex.K2_vvalsmooth(i3, wt, vppt, i_in));
+
+                    (vertex2.densvertex.irred.vval(i3) +
+                     vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in) +
+                     vertex2.densvertex.tvertex.K2_vvalsmooth(i3, wt, vppt, i_in, vertex1.densvertex.avertex));
         }
         return resp;
     }
 
-    //This is a second option for an integrand feature: a cast operator
-    Integrand_t_K2<Q, Bubble> operator()(double vppt) {
+    //This is a second option for an integrand feature: a call operator
+    Q operator()(double vppt) {
         int i1, i3;
         Q resp;
         for (auto i2:non_zero_Keldysh_tbubble) {
             tie(i1, i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
             //Contributions to K2: (K2 +K3 + gammaP)Pi(K1+K2)
-            resp += (vertex1.densvertex.tvertex.K2_vvalsmooth(i1, wt, vt, i_in) +
-                     vertex1.densvertex.tvertex.K3_vvalsmooth(i1, wt, vt, vppt, i_in) +
+            resp += (vertex1.densvertex.tvertex.K2_vvalsmooth(i1, wt, vt, i_in, vertex1.densvertex.avertex) +
+                     vertex1.densvertex.tvertex.K3_vvalsmooth(i1, wt, vt, vppt, i_in, vertex1.densvertex.avertex) +
                      vertex1.densvertex.gammaRb(i1, wt, vt, vppt, i_in, 't')) *
+
                     PiT.value(i2, vppt - 0.5 * wt, vppt + 0.5 * wt) *
-                    (vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in) +
-                     vertex2.densvertex.tvertex.K2_vvalsmooth(i3, wt, vppt, i_in));
+
+                    (vertex2.densvertex.irred.vval(i3) +
+                     vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex2.densvertex.avertex) +
+                     vertex2.densvertex.tvertex.K2_vvalsmooth(i3, wt, vppt, i_in, vertex2.densvertex.avertex));
         }
         return resp;
     }
@@ -192,25 +210,31 @@ public:
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
             //Contributions to K2: (K1 + K2b)Pi(K2b + K3 + gammaP)
-            resp += (vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in) + vertex1.densvertex.tvertex.K2b_vvalsmooth (i1, wt, vppt, i_in)) *
+            resp += (vertex1.densvertex.irred.vval(i1) +
+                     vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) +
+                     vertex1.densvertex.tvertex.K2b_vvalsmooth (i1, wt, vppt, i_in, vertex1.densvertex.avertex)) *
                     PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
-                    (vertex2.densvertex.tvertex.K2_vvalsmooth(i3, wt, vppt, i_in) + vertex2.densvertex.tvertex.K3_vvalsmooth(i3, wt, vppt, vpt, i_in) +
+                    (vertex2.densvertex.tvertex.K2_vvalsmooth(i3, wt, vppt, i_in, vertex2.densvertex.avertex) +
+                     vertex2.densvertex.tvertex.K3_vvalsmooth(i3, wt, vppt, vpt, i_in, vertex2.densvertex.avertex) +
                      vertex2.densvertex.gammaRb(i3, wt, vppt, vpt, i_in, 't'));
         }
         return resp;
     }
 
-    //This is a second option for an integrand feature: a cast operator
-    Integrand_t_K2b<Q, Bubble> operator() (double vppt){
+    //This is a second option for an integrand feature: a call operator
+    Q operator()(double vppt) {
         int i1, i3;
         Q resp;
         for(auto i2:non_zero_Keldysh_tbubble) {
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
             //Contributions to K2: (K1 + K2b)Pi(K2b + K3 + gammaP)
-            resp += (vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in) + vertex1.densvertex.tvertex.K2b_vvalsmooth (i1, wt, vppt, i_in)) *
+            resp += (vertex1.densvertex.irred.vval(i1) +
+                     vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) +
+                     vertex1.densvertex.tvertex.K2b_vvalsmooth (i1, wt, vppt, i_in, vertex1.densvertex.avertex)) *
                     PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
-                    (vertex2.densvertex.tvertex.K2_vvalsmooth(i3, wt, vppt, i_in) + vertex2.densvertex.tvertex.K3_vvalsmooth(i3, wt, vppt, vpt, i_in) +
+                    (vertex2.densvertex.tvertex.K2_vvalsmooth(i3, wt, vppt, i_in, vertex2.densvertex.avertex) +
+                     vertex2.densvertex.tvertex.K3_vvalsmooth(i3, wt, vppt, vpt, i_in, vertex2.densvertex.avertex) +
                      vertex2.densvertex.gammaRb(i3, wt, vppt, vpt, i_in, 't'));
         }
         return resp;
@@ -236,27 +260,31 @@ public:
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
             //Contributions to K3: (K2 +K3 + gammaP)Pi(K2b + K3 + gammaP)
-            resp += (vertex1.densvertex.tvertex.K2_vvalsmooth(i1, wt, vt, i_in) + vertex1.densvertex.tvertex.K3_vvalsmooth(i1, wt, vt, vppt, i_in) +
+            resp += (vertex1.densvertex.tvertex.K2_vvalsmooth(i1, wt, vt, i_in, vertex1.densvertex.avertex) +
+                     vertex1.densvertex.tvertex.K3_vvalsmooth(i1, wt, vt, vppt, i_in, vertex1.densvertex.avertex) +
                      vertex1.densvertex.gammaRb(i1, wt, vt, vppt, i_in, 't')) *
                     PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
-                    (vertex2.densvertex.tvertex.K2b_vvalsmooth(i3, wt, vt, i_in) + vertex2.densvertex.tvertex.K3_vvalsmooth(i3, wt, vppt, vpt, i_in) +
+                    (vertex2.densvertex.tvertex.K2b_vvalsmooth(i3, wt, vt, i_in, vertex2.densvertex.avertex) +
+                     vertex2.densvertex.tvertex.K3_vvalsmooth(i3, wt, vppt, vpt, i_in, vertex2.densvertex.avertex) +
                      vertex2.densvertex.gammaRb(i3, wt, vppt, vpt, i_in, 't'));
         }
         return resp;
     }
 
-    //This is a second option for an integrand feature: a cast operator
-    Integrand_t_K3<Q, Bubble> operator() (double vppt){
+    //This is a second option for an integrand feature: a call operator
+    Q operator()(double vppt) {
         int i1, i3;
         Q resp;
         for(auto i2:non_zero_Keldysh_tbubble) {
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
             //Contributions to K3: (K2 +K3 + gammaP)Pi(K2b + K3 + gammaP)
-            resp += (vertex1.densvertex.tvertex.K2_vvalsmooth(i1, wt, vt, i_in) + vertex1.densvertex.tvertex.K3_vvalsmooth(i1, wt, vt, vppt, i_in) +
+            resp += (vertex1.densvertex.tvertex.K2_vvalsmooth(i1, wt, vt, i_in, vertex1.densvertex.avertex) +
+                     vertex1.densvertex.tvertex.K3_vvalsmooth(i1, wt, vt, vppt, i_in, vertex1.densvertex.avertex) +
                      vertex1.densvertex.gammaRb(i1, wt, vt, vppt, i_in, 't')) *
                     PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
-                    (vertex2.densvertex.tvertex.K2b_vvalsmooth(i3, wt, vt, i_in) + vertex2.densvertex.tvertex.K3_vvalsmooth(i3, wt, vppt, vpt, i_in) +
+                    (vertex2.densvertex.tvertex.K2b_vvalsmooth(i3, wt, vt, i_in, vertex2.densvertex.avertex) +
+                     vertex2.densvertex.tvertex.K3_vvalsmooth(i3, wt, vppt, vpt, i_in, vertex2.densvertex.avertex) +
                      vertex2.densvertex.gammaRb(i3, wt, vppt, vpt, i_in, 't'));
         }
         return resp;
@@ -268,7 +296,7 @@ public:
 /*This function returns a regular p-bubble, regular meaning that the propagators are only G */
 template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
-    Vertex<avert<Q> > resp = Vertex<avert<Q>>();
+    Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
 
     Propagator G = propag(Lambda, self, diffSelf, 'g');
     T_Bubble PiT(G);
@@ -298,7 +326,7 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_t_K2<Q, T_Bubble> integrand_t_K2 (vertex1, vertex2, PiT, i0, wt, vt,  i_in);
 
-        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2(), ffreqs)); //
+        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
     }
 
     /*K2b contributions*/ //TODO How does one handle this? We dont't wtnt to save K2b part of the object, but these contributions must be added somewhere
@@ -318,7 +346,7 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_t_K3<Q, T_Bubble> integrand_t_K3 (vertex1, vertex2, PiT, i0, wt, va, vtp,  i_in);
 
-        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3(), ffreqs)); // TODO: complete this
+        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3, ffreqs)); // TODO: complete this
     }
 
     return resp;
@@ -327,7 +355,7 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
 /*This function returns a differentiated a-bubble, differentiated meaning that the propagators are one a G and one an S propagator*/
 template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
 {
-    Vertex<avert<Q> > resp = Vertex<avert<Q>>();
+    Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
 
     Propagator G = propag(Lambda, self, diffSelf, 'g');
     Propagator S = propag(Lambda, self, diffSelf, 's');
@@ -341,7 +369,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
         int i_in = iK1 % n_in;
         double wt = bfreqs[iwt];
 
-        Integrand_t_K1<Q, T_Bubble> integrand_t_K1 (vertex1, vertex2, PiTdot, i0, wt, i_in);
+        Integrand_t_K1<Q, Diff_T_Bubble> integrand_t_K1 (vertex1, vertex2, PiTdot, i0, wt, i_in);
 
         resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1, ffreqs) );
     }
@@ -356,9 +384,9 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
         double wt = bfreqs[iwt];
         double vt = ffreqs[ivt];
 
-        Integrand_t_K2<Q, T_Bubble> integrand_t_K2 (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
+        Integrand_t_K2<Q, Diff_T_Bubble> integrand_t_K2 (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
 
-        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2(), ffreqs)); //
+        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
     }
 
     /*K2b contributions*/ //TODO How does one handle this? We dont't wtnt to save K2b part of the object, but these contributions must be added somewhere
@@ -376,12 +404,77 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
         double va = ffreqs[ivt];
         double vtp = ffreqs[ivtp];
 
-        Integrand_t_K3<Q, T_Bubble> integrand_t_K3 (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
+        Integrand_t_K3<Q, Diff_T_Bubble> integrand_t_K3 (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
 
-        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3(), ffreqs)); // TODO: complete this
+        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3, ffreqs)); // TODO: complete this
     }
 
     return resp;
 }
+
+
+template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
+{
+    Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
+
+    Diff_T_Bubble PiTdot(G,S);
+
+    /*K1 contributions*/
+//#pragma omp parallel for
+    for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
+        // TODO: use MPI
+        int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
+        int iwt = (iK1 % (nw1_wt * n_in)) / n_in;
+        int i_in = iK1 % n_in;
+        double wt = bfreqs[iwt];
+
+        Integrand_t_K1<Q, Diff_T_Bubble> integrand_t_K1 (vertex1, vertex2, PiTdot, i0, wt, i_in);
+
+        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1, ffreqs) );
+    }
+    cout << "K1t done" << endl;
+
+    /*K2 contributions*/
+//#pragma omp parallel for
+    for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
+    {
+        int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wt * nw2_nut * n_in);
+        int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
+        int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
+        int i_in = iK2 % n_in;
+        double wt = bfreqs[iwt];
+        double vt = ffreqs[ivt];
+
+        Integrand_t_K2<Q, Diff_T_Bubble> integrand_t_K2 (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
+
+        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
+    }
+    cout << "K2t done" << endl;
+
+    /*K2b contributions*/ //TODO How does one handle this? We dont't wtnt to save K2b part of the object, but these contributions must be added somewhere
+
+
+    /*K3 contributions*/
+//#pragma omp parallel for
+//    for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
+//    {
+//        int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
+//        int iwt = (iK3 % (nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_nut * nw3_nutp * n_in);
+//        int ivt = (iK3 % (nw3_nut * nw3_nutp * n_in)) / (nw3_nutp * n_in);
+//        int ivtp = (iK3 % (nw3_nutp * n_in))/ n_in;
+//        int i_in = iK3 % n_in;
+//        double wt = bfreqs[iwt];
+//        double va = ffreqs[ivt];
+//        double vtp = ffreqs[ivtp];
+//
+//        Integrand_t_K3<Q, Diff_T_Bubble> integrand_t_K3 (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
+//
+//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3, ffreqs)); // TODO: complete this
+//    }
+//    cout << "K3t done" << endl;
+
+    return -1.*resp;
+}
+
 
 #endif //KELDYSH_MFRG_T_BUBBLE_H
