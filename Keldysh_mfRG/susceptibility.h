@@ -11,18 +11,19 @@
 
 #ifdef SUSC
 
-/******************CLASS FOR SELF ENERGY *************/
+/******************CLASS FOR SUSCEPTIBILITY *************/
 template <typename Q>
 class Susc{
-    vec<Q> Susceptibility =  vec<Q> (2*nSUSC); // factor 2 for Keldysh components: Susc^R, Susc^K. Susc^A = [Sus^R] dagger
 public:
+    vec<Q> Susceptibility =  vec<Q> (2*nSUSC); // factor 2 for Keldysh components: Susc^R, Susc^K. Susc^A = [Sus^R] dagger
+
     void setsus(int, int, Q);
     Q susval(int, int);
     Q susvalsmooth(int, double);
-    friend Susc operator+(const Susc& sus1, const Susc& sus2);
-    friend Susc operator+=(const Susc& sus1,const Susc& sus2);
-    friend Susc operator*(Q alpha, const Susc& sus1);
-    friend Susc operator*(const Susc& sus1, Q alpha);
+//    friend Susc operator+(const Susc& sus1, const Susc& sus2);
+//    friend Susc operator+=(const Susc& sus1,const Susc& sus2);
+//    friend Susc operator*(Q alpha, const Susc& sus1);
+//    friend Susc operator*(const Susc& sus1, Q alpha);
 };
 
 
@@ -49,25 +50,35 @@ template <typename Q>void Susc<Q>::setsus(int iK, int i, Q val){
 }
 
 //operators for susceptibility
-template <typename Q>Susc<Q> operator*(Q alpha, const Susc<Q>& sus1){//product operator overloading
-    Susc<Q> sus2;
-    sus2.Sigma = sus1.Sigma * alpha;
-    return sus2;
-}
-template <typename Q>Susc<Q> operator*(const Susc<Q>& sus1, Q alpha){//product operator overloading
-    Susc<Q> sus2;
-    sus2.Sigma = sus1.Sigma * alpha;
-    return sus2;
-}
 template <typename Q>Susc<Q> operator+(const Susc<Q>& sus1, const Susc<Q>& sus2){//sum operator overloading
     Susc<Q> sus3;
-    sus3.Sigma = sus1.Sigma + sus2.Sigma;
+    sus3.Susceptibility = sus1.Susceptibility + sus2.Susceptibility;
     return sus3;
 }
 template <typename Q>Susc<Q> operator+=(const Susc<Q>& sus1, const Susc<Q>& sus2){//sum operator overloading
     Susc<Q> sus3;
-    sus3.Sigma = sus1.Sigma + sus2.Sigma;
+    sus3.Susceptibility = sus1.Susceptibility + sus2.Susceptibility;
     return sus3;
+}
+template <typename Q>Susc<Q> operator*(Q alpha, const Susc<Q>& sus1){//product operator overloading
+    Susc<Q> sus2;
+    sus2.Susceptibility = sus1.Susceptibility * alpha;
+    return sus2;
+}
+template <typename Q>Susc<Q> operator*(const Susc<Q>& sus1, Q alpha){//product operator overloading
+    Susc<Q> sus2;
+    sus2.Susceptibility = sus1.Susceptibility * alpha;
+    return sus2;
+}
+template <typename Q>Susc<Q> operator*(double alpha, const Susc<Q>& sus1){//product operator overloading
+    Susc<Q> sus2;
+    sus2.Susceptibility = sus1.Susceptibility * alpha;
+    return sus2;
+}
+template <typename Q>Susc<Q> operator*(const Susc<Q>& sus1, double alpha){//product operator overloading
+    Susc<Q> sus2;
+    sus2.Susceptibility = sus1.Susceptibility * alpha;
+    return sus2;
 }
 #endif
 

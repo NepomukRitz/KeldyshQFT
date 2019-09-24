@@ -9,16 +9,17 @@
 /******************CLASS FOR SELF ENERGY *************/
 template <typename Q>
 class SelfEnergy{
-    vec<Q> Sigma =  vec<Q> (2*nSE); // factor 2 for Keldysh components: Sigma^R, Sigma^K
 public:
+    vec<Q> Sigma =  vec<Q> (2*nSE); // factor 2 for Keldysh components: Sigma^R, Sigma^K
+
     Q sval(int, int);
     Q svalsmooth(int, double);
     void setself(int, int, Q);
 
-    friend SelfEnergy operator+(const SelfEnergy& self1, const SelfEnergy& self2);
-    friend SelfEnergy operator+=(const SelfEnergy& self1,const SelfEnergy& self2);
-    friend SelfEnergy operator*(Q alpha, const SelfEnergy& self1);
-    friend SelfEnergy operator*(const SelfEnergy& self1, Q alpha);
+//    SelfEnergy<Q> operator+(const SelfEnergy<Q>& self1, const SelfEnergy<Q>& self2);
+//    SelfEnergy<Q> operator+=(const SelfEnergy<Q>& self1,const SelfEnergy<Q>& self2);
+//    SelfEnergy<Q> operator*(Q alpha, const SelfEnergy<Q>& self1);
+//    SelfEnergy<Q> operator*(const SelfEnergy<Q>& self1, Q alpha);
 };
 
 
@@ -60,6 +61,16 @@ template <typename Q> SelfEnergy<Q> operator*(Q alpha, const SelfEnergy<Q>& self
     return self2;
 }
 template <typename Q> SelfEnergy<Q> operator*(const SelfEnergy<Q>& self1, Q alpha){//product operator overloading
+    SelfEnergy<Q> self2;
+    self2.Sigma = self1.Sigma * alpha;
+    return self2;
+}
+template <typename Q> SelfEnergy<Q> operator*(double alpha, const SelfEnergy<Q>& self1){//product operator overloading
+    SelfEnergy<Q> self2;
+    self2.Sigma = self1.Sigma * alpha;
+    return self2;
+}
+template <typename Q> SelfEnergy<Q> operator*(const SelfEnergy<Q>& self1, double alpha){//product operator overloading
     SelfEnergy<Q> self2;
     self2.Sigma = self1.Sigma * alpha;
     return self2;
