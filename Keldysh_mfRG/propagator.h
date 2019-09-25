@@ -14,59 +14,45 @@ using namespace std;
 
 
 class Propagator {
-    cvec propagator =  cvec(2*nPROP); // factor 2 for Keldysh components: G^R, G^K
+    cvec propagator = cvec(2 * nPROP); // factor 2 for Keldysh components: G^R, G^K
 public:
     void setprop(int, int, comp);
     comp pvalsmooth(int, double);
     comp pval(int, int);
 
-    friend Propagator operator+(const Propagator& prop1, const Propagator& prop2);
-    friend Propagator operator+=(const Propagator& prop1,const Propagator& prop2);
-    friend Propagator operator*(comp alpha, const Propagator& prop1);
-    friend Propagator operator*(const Propagator& prop1, comp alpha);
-};
+    Propagator operator+(const Propagator &prop) {
+        this->propagator + prop.propagator;
+        return *this;
+    }
+    Propagator operator+=(const Propagator &prop){
+        this->propagator += prop.propagator;
+        return *this;
+    }
+    Propagator operator*(comp alpha)
+    {
+        this->propagator*alpha;
+        return *this;
+    }
 
+};
 
 Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, SelfEnergy<comp> diffselfenergy, char type);
 
 /************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
-Propagator operator*(comp alpha, const Propagator& prop1){//product operator overloading
-    Propagator prop2;
-    prop2.propagator = prop1.propagator * alpha;
-    return prop2;
-}
-Propagator operator*(const Propagator& prop1, comp alpha){//product operator overloading
-    Propagator prop2;
-    prop2.propagator = prop1.propagator * alpha;
-    return prop2;
-}
-Propagator operator+(const Propagator& prop1, const Propagator& prop2){//sum operator overloading
-    Propagator prop3;
-    prop3.propagator = prop1.propagator + prop2.propagator;
-    return prop3;
-}
-Propagator operator+=(const Propagator& prop1, const Propagator& prop2){//sum operator overloading
-    Propagator prop3;
-    prop3.propagator = prop1.propagator + prop2.propagator;
-    return prop3;
-}
 
 void Propagator::setprop(int iK, int i, comp value)
 {
     propagator[iK*nPROP + i] = value;
 }
-
 comp Propagator::pvalsmooth(int iK, double w)
 {
     int i = fconv(w);
     return pval(iK, i);
 }
-
 comp Propagator::pval(int iK, int i)
 {
     return propagator[iK*nPROP + i];
 }
-
 
 
 #if REG==1
