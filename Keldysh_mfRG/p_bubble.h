@@ -472,7 +472,7 @@ template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q
 //    }
 //    cout << "K3p done" << endl;
 
-    return 0.5*resp;
+    return resp*0.5;
 }
 
 #endif //KELDYSH_MFRG_P_BUBBLE_H
