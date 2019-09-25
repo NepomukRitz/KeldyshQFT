@@ -134,31 +134,26 @@ public:
     tuple<int, int> indices_sum(int i0, int i2);
 
 
-    /*Define the operator of multiplying an a-vertex with a number.*/
-    avert<Q> friend operator*(double alpha, const avert<Q> vertex) {
-        avert<Q> vertex2;
-        vertex2.K1 = vertex.K1 * alpha;
-        vertex2.K2 = vertex.K2 * alpha;
-        vertex2.K3 = vertex.K3 * alpha;
-        return vertex2;
+    avert<Q> operator+(const avert<Q>& vertex)
+    {
+        this->K1 + vertex.K1;
+        this->K2 + vertex.K2;
+        this->K3 + vertex.K3;
+        return *this;
     }
-    avert<Q> friend operator*(const avert<Q>& vertex, double alpha){
-        avert<Q> vertex2;
-        vertex2.K1 = vertex.K1 * alpha;
-        vertex2.K2 = vertex.K2 * alpha;
-        vertex2.K3 = vertex.K3 * alpha;
-        return vertex2;
+    avert<Q> operator+=(const avert<Q>& vertex)
+    {
+        this->K1 += vertex.K1;
+        this->K2 += vertex.K2;
+        this->K3 += vertex.K3;
+        return *this;
     }
-
-    /*Define the addition operation of two a-vertices*/
-    avert<Q> friend operator+(const avert<Q>& vertex1, const avert<Q>& vertex2){
-        avert<Q> vertex3;
-        vertex3.K1 = vertex1.K1 * vertex2.K1;
-        vertex3.K2 = vertex1.K2 * vertex2.K2;
-        vertex3.K3 = vertex1.K3 * vertex2.K3;
-        return vertex3;
+    avert<Q> operator*(double alpha) {
+        this->K1 * alpha;
+        this->K2 * alpha;
+        this->K3 * alpha;
+        return *this;
     }
-
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
