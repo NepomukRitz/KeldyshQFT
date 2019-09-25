@@ -473,7 +473,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 //    }
 //    cout << "K3t done" << endl;
 
-    return -1.*resp;
+    return resp*(-1.);
 }
 
 
