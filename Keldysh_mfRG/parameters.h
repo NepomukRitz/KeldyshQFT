@@ -27,9 +27,6 @@ const double pi = 3.1415926535897;
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
 
-/*Number of flow points*/
-const int nLambda = 2;
-
 /*Dispersion relation (here, evidently, a constant)*/
 const comp epsilon = 0.0;   //NOLINT(cert-err58-cpp)
 
@@ -41,10 +38,10 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Number of evolution flow points*/
-const int nEVO = 5;
+const int nEVO = 10;
 
 /*Number of frequency points for the self energy and the susceptibility*/
-const int nSE = 101;
+const int nSE = 21;
 const int nSUSC = nSE;  //Makes no sense to have these values be different from one another
 const int nPROP = nSE;
 
@@ -85,9 +82,9 @@ const double Lambda_ini = 1.0;
 const double Lambda_fin = 0.0;
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
-const double w_upper_b = 20.;
+const double w_upper_b = 40.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 20.;
+const double w_upper_f = 40.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 
 
