@@ -22,18 +22,26 @@ template <typename T>
 class basic_vec : public vector<T> {
   public:
     basic_vec() : vector<T> () {};
-    basic_vec(int n) : vector<T> (n) {};
+    explicit basic_vec(int n) : vector<T> (n) {};
     basic_vec(int n, T& value) : vector<T> (n, value) {}; // TODO: test
     basic_vec(initializer_list<T> m) : vector<T> (m) {};
 
     T& operator() (int i) {return (*this)[i]; }
 
+    basic_vec<T> operator+  (const basic_vec<T> &m);  // element-wise addition of two vectors
+    basic_vec<T> operator+  (const T &c);             // addition of a constant
     basic_vec<T> operator+= (const basic_vec<T> &m);  // element-wise addition of two vectors
     basic_vec<T> operator+= (const T &c);             // addition of a constant
+    basic_vec<T> operator-  (const basic_vec<T> &m);  // element-wise subtraction of two vectors
+    basic_vec<T> operator-  (const T &c);             // subtraction of a constant
     basic_vec<T> operator-= (const basic_vec<T> &m);  // element-wise subtraction of two vectors
     basic_vec<T> operator-= (const T &c);             // subtraction of a constant
+    basic_vec<T> operator*  (const basic_vec<T> &m);  // element-wise multiplication of two vectors
+    basic_vec<T> operator*  (const T &c);             // multiplication with a constant
+    basic_vec<T> operator*  (double alpha);     // multiplication with a constant
     basic_vec<T> operator*= (const basic_vec<T> &m);  // element-wise multiplication of two vectors
     basic_vec<T> operator*= (const T &c);             // multiplication with a constant
+    basic_vec<T> operator*=  (double alpha);    // multiplication with a constant
 
 };
 
@@ -43,11 +51,20 @@ template <typename T>
 class vec : public basic_vec<T> {
   public:
     vec() : basic_vec<T> () {};
-    vec(int n) : basic_vec<T> (n) {};
+    explicit vec(int n) : basic_vec<T> (n) {};
     vec(int n, T& value) : basic_vec<T> (n, value) {}; // TODO: test
     vec(initializer_list<T> m) : basic_vec<T> (m) {};
 
     vec<T> inv(); // element-wise inverse
+
+//    vec<T> operator+ (const vec<T> &m2);    //element-wise addition of two vectors
+//    vec<T> operator+ (const T &c);          // addition of a constant
+//    vec<T> operator- (const vec<T> &m2);    // element-wise subtraction of two vectors
+//    vec<T> operator- (const T &c);          // subtraction of a constant
+//    vec<T> operator- ();                    // invert sign
+//    vec<T> operator* (const vec<T> &m2);    // element-wise multiplication of two vectors
+//    vec<T> operator* (const T &c);          // multiplication with a constant
+//    vec<T> operator* (double c);            // multiplication with a double constant
 };
 
 
@@ -117,35 +134,10 @@ class vec<comp> : public basic_vec<comp> {
         return temp;
     }
 
-
 };
 
 
 /* functions for addition, subtraction, multiplication,... of general vectors vec<T> */
-
-// element-wise addition of two vectors
-template <typename T> vec<T> operator+ (const vec<T> &m1, const vec<T> &m2);
-
-// addition of a constant
-template <typename T> vec<T> operator+ (const vec<T> &m, const T &c);
-
-// element-wise subtraction of two vectors
-template <typename T> vec<T> operator- (const vec<T> &m1, const vec<T> &m2);
-
-// subtraction of a constant
-template <typename T> vec<T> operator- (const vec<T> &m, const T &c);
-
-// invert sign
-template <typename T> vec<T> operator- (const vec<T> &m);
-
-// element-wise multiplication of two vectors
-template <typename T> vec<T> operator* (const vec<T> &m1, const vec<T> &m2);
-
-// multiplication with a constant
-template <typename T> vec<T> operator* (const vec<T> &m, const T &c);
-
-// multiplication with a double constant
-template <typename T> vec<T> operator* (const vec<T> &m, double c);
 
 
 
@@ -159,6 +151,26 @@ typedef vec<comp> cvec;
 /// DEFINITIONS ///
 
 /* member functions of general vector class basic_vec<T> */
+
+// element-wise addition of two vectors
+template <typename T>
+basic_vec<T> basic_vec<T>::operator+(const basic_vec<T> &m) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] + m[i];
+    }
+    return *this;
+}
+
+// addition of a constant
+template <typename T>
+basic_vec<T> basic_vec<T>::operator+(const T &c) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] + c;
+    }
+    return *this;
+}
 
 // element-wise addition of two vectors
 template <typename T>
@@ -178,6 +190,26 @@ basic_vec<T> basic_vec<T>::operator+=(const T &c) {
     (*this)[i] += c;
   }
   return *this;
+}
+
+// element-wise subtraction of two vectors
+template <typename T>
+basic_vec<T> basic_vec<T>::operator-(const basic_vec<T> &m) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] - m[i];
+    }
+    return *this;
+}
+
+// subtraction of a constant
+template <typename T>
+basic_vec<T> basic_vec<T>::operator-(const T &c) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] - c;
+    }
+    return *this;
 }
 
 // element-wise subtraction of two vectors
@@ -202,6 +234,36 @@ basic_vec<T> basic_vec<T>::operator-=(const T &c) {
 
 // element-wise multiplication of two vectors
 template <typename T>
+basic_vec<T> basic_vec<T>::operator*(const basic_vec<T> &m) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] * m[i];
+    }
+    return *this;
+}
+
+// multiplication with a constant
+template <typename T>
+basic_vec<T> basic_vec<T>::operator*(const T &c) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] * c;
+    }
+    return *this;
+}
+
+// multiplication with a double constant
+template <typename T>
+basic_vec<T> basic_vec<T>::operator*(const double alpha) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] * alpha;
+    }
+    return *this;
+}
+
+// element-wise multiplication of two vectors
+template <typename T>
 basic_vec<T> basic_vec<T>::operator*=(const basic_vec<T> &m) {
 #pragma omp parallel for
   for (int i=0; i<this->size(); ++i) {
@@ -218,6 +280,16 @@ basic_vec<T> basic_vec<T>::operator*=(const T &c) {
     (*this)[i] *= c;
   }
   return *this;
+}
+
+// multiplication with a double constant
+template <typename T>
+basic_vec<T> basic_vec<T>::operator*=(const double alpha) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] *= alpha;
+    }
+    return *this;
 }
 
 
@@ -288,96 +360,102 @@ vec<T> vec<T>::inv() {
 //}
 
 
-/* functions for addition, subtraction, multiplication,... of general vectors vec<T> */
-
-// element-wise addition of two vectors
-template <typename T>
-vec<T> operator+ (const vec<T> &m1, const vec<T> &m2) {
-  vec<T> temp (m1.size());
-#pragma omp parallel for
-  for (int i=0; i<m1.size(); ++i){
-    temp[i] = m1[i] + m2[i];
-  }
-  return temp;
-}
-
-// addition of a constant
-template <typename T>
-vec<T> operator+ (const vec<T> &m, const T &c) {
-  vec<T> temp (m.size());
-#pragma omp parallel for
-  for (int i=0; i<m.size(); ++i){
-    temp[i] = m[i] + c;
-  }
-  return temp;
-}
-
-// element-wise subtraction of two vectors
-template <typename T>
-vec<T> operator- (const vec<T> &m1, const vec<T> &m2) {
-  vec<T> temp (m1.size());
-#pragma omp parallel for
-  for (int i=0; i<m1.size(); ++i){
-    temp[i] = m1[i] - m2[i];
-  }
-  return temp;
-}
-
-// subtraction of a constant
-template <typename T>
-vec<T> operator- (const vec<T> &m, const T &c) {
-  vec<T> temp (m.size());
-#pragma omp parallel for
-  for (int i=0; i<m.size(); ++i){
-    temp[i] = m[i] - c;
-  }
-  return temp;
-}
-
-// invert sign
-template <typename T>
-vec<T> operator- (const vec<T> &m) {
-  vec<T> temp (m.size());
-#pragma omp parallel for
-  for (int i=0; i<m.size(); ++i){
-    temp[i] = - m[i];
-  }
-  return temp;
-}
-
-// element-wise multiplication of two vectors
-template <typename T>
-vec<T> operator* (const vec<T> &m1, const vec<T> &m2) {
-  vec<T> temp (m1.size());
-#pragma omp parallel for
-  for (int i=0; i<m1.size(); ++i){
-    temp[i] = m1[i] * m2[i];
-  }
-  return temp;
-}
-
-// multiplication with a constant
-template <typename T>
-vec<T> operator* (const vec<T> &m, const T &c) {
-  vec<T> temp (m.size());
-#pragma omp parallel for
-  for (int i=0; i<m.size(); ++i){
-    temp[i] = m[i] * c;
-  }
-  return temp;
-}
-
-// multiplication with a constant
-template <typename T>
-vec<T> operator* (const vec<T> &m, double c) {
-    vec<T> temp (m.size());
-#pragma omp parallel for
-    for (int i=0; i<m.size(); ++i){
-        temp[i] = m[i] * c;
-    }
-    return temp;
-}
-
+//
+//// element-wise addition of two vectors
+//template <typename T>
+//vec<T> vec<T>:: operator+ (const vec<T> &m2) {
+//#pragma omp parallel for
+//  for (int i=0; i<this->size(); ++i){
+//      (*this)[i] + m2[i];
+//  }
+//  return *this;
+//}
+//
+//// addition of a constant
+//template <typename T>
+//vec<T> operator+ (const vec<T> &m, const T &c) {
+//  vec<T> temp (m.size());
+//#pragma omp parallel for
+//  for (int i=0; i<m.size(); ++i){
+//    temp[i] = m[i] + c;
+//  }
+//  return temp;
+//}
+//
+//// element-wise subtraction of two vectors
+//template <typename T>
+//vec<T> operator- (const vec<T> &m1, const vec<T> &m2) {
+//  vec<T> temp (m1.size());
+//#pragma omp parallel for
+//  for (int i=0; i<m1.size(); ++i){
+//    temp[i] = m1[i] - m2[i];
+//  }
+//  return temp;
+//}
+//
+//// subtraction of a constant
+//template <typename T>
+//vec<T> operator- (const T &c) {
+//#pragma omp parallel for
+//  for (int i=0; i<m.size(); ++i){
+//    (*this)[i] = m[i] - c;
+//  }
+//  return temp;
+//}
+//
+//// invert sign
+//template <typename T>
+//vec<T> operator- (const vec<T> &m) {
+//  vec<T> temp (m.size());
+//#pragma omp parallel for
+//  for (int i=0; i<m.size(); ++i){
+//    temp[i] = - m[i];
+//  }
+//  return temp;
+//}
+//
+//// element-wise multiplication of two vectors
+//template <typename T>
+//vec<T> operator* (const vec<T> &m1, const vec<T> &m2) {
+//  vec<T> temp (m1.size());
+//#pragma omp parallel for
+//  for (int i=0; i<m1.size(); ++i){
+//    temp[i] = m1[i] * m2[i];
+//  }
+//  return temp;
+//}
+//
+//// multiplication with a constant
+//template <typename T>
+//vec<T> operator* (const vec<T> &m, const T &c) {
+//  vec<T> temp (m.size());
+//#pragma omp parallel for
+//  for (int i=0; i<m.size(); ++i){
+//    temp[i] = m[i] * c;
+//  }
+//  return temp;
+//}
+//
+//// multiplication with a constant
+//template <typename T>
+//vec<T> operator* (const vec<T> &m, double c) {
+//    vec<T> temp (m.size());
+//#pragma omp parallel for
+//    for (int i=0; i<m.size(); ++i){
+//        temp[i] = m[i] * c;
+//    }
+//    return temp;
+//}
+//
+//template <typename T>
+//vec<T> operator* (double c, const vec<T> &m) {
+//    vec<T> temp (m.size());
+//#pragma omp parallel for
+//    for (int i=0; i<m.size(); ++i){
+//        temp[i] = m[i] * c;
+//    }
+//    return temp;
+//}
 
 
 #endif // DATA_STRUCTURES_H
