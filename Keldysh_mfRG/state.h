@@ -14,7 +14,7 @@
 //define a struct object which includes the self energy and the vertex which are needed to evaluate the RHS of the flow equations.
 
 template <typename Q>
-class State{
+struct State{
 public:
     double Lambda{};
     SelfEnergy<Q> selfenergy;
@@ -26,7 +26,6 @@ public:
 
     State() = default;;
     explicit State(double lambda_input) : Lambda(lambda_input) {};
-
 
 //TODO: check this below (and define state first)
 //operators containing State objects
