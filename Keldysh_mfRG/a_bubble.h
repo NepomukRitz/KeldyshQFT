@@ -409,7 +409,7 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
 
 template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
-    Vertex<avert<Q> > resp = Vertex<avert<Q>>();
+    Vertex<avert<Q> > resp = Vertex<avert<Q> >();
 
     Diff_A_Bubble PiAdot(G,S);
 

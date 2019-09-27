@@ -415,7 +415,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 
 template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
-    Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
+    Vertex<tvert<Q> > resp = Vertex<tvert<Q> >();
 
     Diff_T_Bubble PiTdot(G,S);
 

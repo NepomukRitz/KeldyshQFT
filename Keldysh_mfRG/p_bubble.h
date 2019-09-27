@@ -414,7 +414,7 @@ template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q
 
 template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
-    Vertex<pvert<Q> > resp = Vertex<pvert<Q>>();
+    Vertex<pvert<Q> > resp = Vertex<pvert<Q> >();
 
     Diff_P_Bubble PiPdot(G,S);
 
