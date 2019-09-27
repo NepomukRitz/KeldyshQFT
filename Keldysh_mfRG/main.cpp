@@ -19,31 +19,17 @@ typedef complex<double> comp;
 
 void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy);
 template <typename Q> State<Q> derivative(double Lambda, State<Q>& state);
-
+void setUpBosGrid();
+void setUpFerGrid();
+void setUpFlowGrid();
+bool isAntisymmetric(rvec& rvec1);
 
 
 int main() {
 
-    for(int i=0; i<nSE; ++i)
-    {
-        bfreqs[i] = w_lower_b + i*dw;
-        ffreqs[i] = w_lower_f + i*dv;
-
-        freqs_a[i] = w_lower_b + i*dw_a;
-        freqs_p[i] = w_lower_b + i*dw_p;
-        freqs_t[i] = w_lower_b + i*dw_t;
-
-        simpson_weights[i] = (double)(2+2*(i%2));
-    }
-    simpson_weights[0] = 1.;
-    simpson_weights[nSE-1] = 1.;
-
-    for(int i=0; i<nEVO; ++i)
-    {
-        flow_grid[i] = Lambda_ini + i*dL;
-    }
-
-
+    setUpBosGrid();
+    setUpFerGrid();
+    setUpFlowGrid();
 
     double  t0 = get_time();
     State<comp> state(Lambda_ini);
@@ -75,6 +61,7 @@ int main() {
         Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
 
         writeOutFile(ffreqs, Lambda, control, state.selfenergy);
+        cout << "Wrote out" <<endl;
     }
 
 
@@ -108,18 +95,66 @@ State<Q> derivative(double Lambda, State<Q>& state)
 
     cout << "diff bubble started" << endl;
     double t2 = get_time();
-    //Lines 7, 8 & 9
+    //Lines 7-9
     Vertex<avert<comp> > dgammaa = diff_a_bubble_function(state.vertex, state.vertex, G, dG);
     Vertex<pvert<comp> > dgammap = diff_p_bubble_function(state.vertex, state.vertex, G, dG);
     Vertex<tvert<comp> > dgammat = diff_t_bubble_function(state.vertex, state.vertex, G, dG);
     cout << "diff bubble finished. ";
     get_time(t2);
 
+    double t3 = get_time();
+//    Lines 10-13
+    Vertex<fullvert<Q> > dGamma = Vertex<fullvert<Q> >();
+    dGamma.densvertex.avertex = dgammaa.densvertex;
+    dGamma.densvertex.pvertex = dgammap.densvertex;
+    dGamma.densvertex.tvertex = dgammat.densvertex;
+    dGamma.spinvertex.avertex = dgammaa.spinvertex;
+    dGamma.spinvertex.pvertex = dgammap.spinvertex;
+    dGamma.spinvertex.tvertex = dgammat.spinvertex;
+    cout<< "dGamma assigned: " <<endl;
+    get_time(t3);
+//    Vertex<fullvert<Q> > dgammaabar = dgammap + dgammat;
+//    Vertex<fullvert<Q> > dgammapbar = dgammat + dgammaa;
+//    Vertex<fullvert<Q> > dgammatbar = dgammaa + dgammap;
 
-//    resp.vertex.densvertex.irred = state.vertex.densvertex.irred;
+    double t4 = get_time();
+    //The r_bubble_function pics the gamma_r bar contributions
+    Vertex<avert<Q> > dgammaLa = a_bubble_function(dGamma, dGamma, G, 'L');
+    Vertex<pvert<Q> > dgammaLp = p_bubble_function(dGamma, dGamma, G, 'L');
+    Vertex<tvert<Q> > dgammaLt = t_bubble_function(dGamma, dGamma, G, 'L');
+
+    Vertex<avert<Q> > dgammaRa = a_bubble_function(dGamma, dGamma, G, 'R');
+    Vertex<pvert<Q> > dgammaRp = p_bubble_function(dGamma, dGamma, G, 'R');
+    Vertex<tvert<Q> > dgammaRt = t_bubble_function(dGamma, dGamma, G, 'R');
+
+    cout<< "Bubbles calculated: " << endl;
+    get_time(t4);
+
+
+    //Line 14-17
+    Vertex<fullvert<Q> > dGammaT = Vertex<fullvert<Q> >();
+    dGammaT.densvertex.avertex = dgammaLa.densvertex + dgammaRa.densvertex;
+    dGammaT.densvertex.pvertex = dgammaLp.densvertex + dgammaRp.densvertex;
+    dGammaT.densvertex.tvertex = dgammaLt.densvertex + dgammaRt.densvertex;
+    dGammaT.spinvertex.avertex = dgammaLa.spinvertex + dgammaRa.spinvertex;
+    dGammaT.spinvertex.pvertex = dgammaLp.spinvertex + dgammaRp.spinvertex;
+    dGammaT.spinvertex.tvertex = dgammaLt.spinvertex + dgammaRt.spinvertex;
+
+    dgammaa.densvertex += dGammaT.densvertex.avertex;
+    dgammap.densvertex += dGammaT.densvertex.pvertex;
+    dgammat.densvertex += dGammaT.densvertex.tvertex;
+    dgammaa.spinvertex += dGammaT.spinvertex.avertex;
+    dgammap.spinvertex += dGammaT.spinvertex.pvertex;
+    dgammat.spinvertex += dGammaT.spinvertex.tvertex;
+
+
+    //Line 41
     resp.vertex.densvertex.avertex = dgammaa.densvertex;
     resp.vertex.densvertex.pvertex = dgammap.densvertex;
     resp.vertex.densvertex.tvertex = dgammat.densvertex;
+    resp.vertex.spinvertex.avertex = dgammaa.spinvertex;
+    resp.vertex.spinvertex.pvertex = dgammap.spinvertex;
+    resp.vertex.spinvertex.tvertex = dgammat.spinvertex;
     return resp;
 }
 
@@ -164,4 +199,35 @@ void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy
     my_file_propR.close();
     my_file_propA.close();
     my_file_propK.close();
+}
+
+void setUpBosGrid()
+{
+    for(int i=0; i<nBOS; ++i)
+        bfreqs[i] = w_lower_b + i*dw;
+}
+void setUpFerGrid()
+{
+    for(int i=0; i<nFER; ++i)
+        ffreqs[i] = w_lower_f + i*dv;
+}
+void setUpFlowGrid()
+{
+    for(int i=0; i<nEVO; ++i)
+        flow_grid[i] = Lambda_ini + i*dL;
+}
+
+bool isAntisymmetric(rvec& rvec1)
+{
+    bool ans = true;
+    for(int i=0; i<rvec1.size(); ++i)
+    {
+        cout << rvec1[i] << " " << rvec1[rvec1.size()-1-i] << endl;
+
+        if(rvec1[i]!=-rvec1[rvec1.size()-1-i])
+        {
+            ans =false;
+        }
+    }
+    return ans;
 }
