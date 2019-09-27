@@ -43,15 +43,19 @@ template <typename Q> Q SelfEnergy<Q>::sval(int iK, int i){
 }
 template <typename Q> Q SelfEnergy<Q>::svalsmooth(int iK, double w){//smoothly interpolates for values between discrete frequency values of mesh
 
-    int W = fconv(w);
-    double x1 = ffreqs[W];
-    double x2 = ffreqs[W] + dv;
-    double xd = (w-x1)/(x2-x1);
+    if(fabs(w)>=w_upper_f)
+        return 0.;
+    else {
+        int W = fconv_fer(w);
+        double x1 = ffreqs[W];
+        double x2 = ffreqs[W] + dv;
+        double xd = (w - x1) / (x2 - x1);
 
-    Q f1 = sval(iK, W);
-    Q f2 = sval(iK, W+1);
+        Q f1 = sval(iK, W);
+        Q f2 = sval(iK, W + 1);
 
-    return (1.-xd)*f1 + xd*f2;
+        return (1. - xd) * f1 + xd * f2;
+    }
 }
 template <typename Q> void SelfEnergy<Q>::setself(int iK, int i, Q val){
     Sigma[iK*nSE + i] = val;

@@ -770,8 +770,8 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, av
         if(transform){
             index = fconv_K1_a(w_t);
 
-            x1 = freqs_a[index];
-            x2 = freqs_a[index] + dw_a;
+            x1 = bfreqs[index];
+            x2 = bfreqs[index] + dw;
             xd = (w_t - x1) / (x2 - x1);
 
             f1 = avertex.K1_vval(iK1, index, i_in);
@@ -779,8 +779,8 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, av
         }
         else {
             index = fconv_K1_t(w_t);
-            x1 = freqs_t[index];
-            x2 = freqs_t[index] + dw_t;
+            x1 = bfreqs[index];
+            x2 = bfreqs[index] + dw;
             xd = (w_t - x1) / (x2 - x1);
 
             f1 = K1_vval(iK1, index, i_in);
@@ -859,10 +859,10 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
             if(conjugate2){
                 tie(index_b, index_f) = fconv_K2_a(-w_t, v1_t);
 
-                x1 = freqs_a[index_b];
-                x2 = freqs_a[index_b] + dw_a;
-                y1 = freqs_a[index_f];
-                y2 = freqs_a[index_f] + dw_a;
+                x1 = bfreqs[index_b];
+                x2 = bfreqs[index_b] + dw;
+                y1 = ffreqs[index_f];
+                y2 = ffreqs[index_f] + dv;
                 xd = (-w_t - x1) / (x2 - x1);
                 yd = (v1_t - y1) / (y2 - y1);
 
@@ -874,10 +874,10 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
             else {
                 tie(index_b, index_f) = fconv_K2_a(w_t, v1_t);
 
-                x1 = freqs_a[index_b];
-                x2 = freqs_a[index_b] + dw_a;
-                y1 = freqs_a[index_f];
-                y2 = freqs_a[index_f] + dw_a;
+                x1 = bfreqs[index_b];
+                x2 = bfreqs[index_b] + dw;
+                y1 = ffreqs[index_f];
+                y2 = ffreqs[index_f] + dv;
                 xd = (w_t - x1) / (x2 - x1);
                 yd = (v1_t - y1) / (y2 - y1);
 
@@ -891,10 +891,10 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
             if(conjugate2) {
                 tie(index_b, index_f) = fconv_K2_t(-w_t, v1_t);
 
-                x1 = freqs_t[index_b];
-                x2 = freqs_t[index_b] + dw_t;
-                y1 = freqs_t[index_f];
-                y2 = freqs_t[index_f] + dw_t;
+                x1 = bfreqs[index_b];
+                x2 = bfreqs[index_b] + dw;
+                y1 = ffreqs[index_f];
+                y2 = ffreqs[index_f] + dv;
                 xd = (-w_t - x1) / (x2 - x1);
                 yd = (v1_t - y1) / (y2 - y1);
 
@@ -906,10 +906,10 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
             else {
                 tie(index_b, index_f) = fconv_K2_t(w_t, v1_t);
 
-                x1 = freqs_t[index_b];
-                x2 = freqs_t[index_b] + dw_t;
-                y1 = freqs_t[index_f];
-                y2 = freqs_t[index_f] + dw_t;
+                x1 = bfreqs[index_b];
+                x2 = bfreqs[index_b] + dw;
+                y1 = ffreqs[index_f];
+                y2 = ffreqs[index_f] + dv;
                 xd = (w_t - x1) / (x2 - x1);
                 yd = (v1_t - y1) / (y2 - y1);
 
@@ -1040,12 +1040,12 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t,
 
         if(transform){
             tie(index_b, index_f, index_fp) = fconv_K3_a(w_t, v1_t, v2_t);
-            x1 = freqs_a[index_b];
-            x2 = freqs_a[index_b] + dw_a;
-            y1 = freqs_a[index_f];
-            y2 = freqs_a[index_f] + dw_a;
-            z1 = freqs_a[index_fp];
-            z2 = freqs_a[index_fp] + dw_a;
+            x1 = bfreqs[index_b];
+            x2 = bfreqs[index_b] + dw;
+            y1 = ffreqs[index_f];
+            y2 = ffreqs[index_f] + dv;
+            z1 = ffreqs[index_fp];
+            z2 = ffreqs[index_fp] + dv;
             xd = (w_t - x1) / (x2 - x1);
             yd = (v1_t - y1) / (y2 - y1);
             zd = (v2_t- z1) / (z2 - z1);
@@ -1062,12 +1062,12 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t,
 
         else {
             tie(index_b, index_f, index_fp) = fconv_K3_t(w_t, v1_t, v2_t);
-            x1 = freqs_t[index_b];
-            x2 = freqs_t[index_b] + dw_t;
-            y1 = freqs_t[index_f];
-            y2 = freqs_t[index_f] + dw_t;
-            z1 = freqs_t[index_fp];
-            z2 = freqs_t[index_fp] + dw_t;
+            x1 = bfreqs[index_b];
+            x2 = bfreqs[index_b] + dw;
+            y1 = ffreqs[index_f];
+            y2 = ffreqs[index_f] + dv;
+            z1 = ffreqs[index_fp];
+            z2 = ffreqs[index_fp] + dv;
             xd = (w_t - x1) / (x2 - x1);
             yd = (v1_t - y1) / (y2 - y1);
             zd = (v2_t - z1) / (z2 - z1);

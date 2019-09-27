@@ -25,110 +25,82 @@ using namespace std;
 #elif GRID==2
 int fconv_K1_a(double w)
 {
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw1_wa));     //nw1_wa because we're interpolating for K1 in channel a
-    auto index = (int)((w-w_lower_b)/dw_b_a);
+    auto index = (int)((w-w_lower_b)/dw);
     return index -(int)(index/nw1_wa);
 }
 tuple<int, int> fconv_K2_a(double w, double v1)
 {
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw2_wa));     //nw2_wa because we're interpolating for bosonic freq in K2 in channel a
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw2_nua));    //nw2_nua because we're interpolating for fermionic freq in K2 in channel a
-
-    auto index_b = (int)((w-w_lower_b)/dw_b_a);
-    auto index_f = (int)((v1-w_lower_f)/dw_f_a);
+    auto index_b = (int)((w-w_lower_b)/dw);
+    auto index_f = (int)((v1-w_lower_f)/dv);
 
     return make_tuple(index_b-(int)(index_b/nw2_wa), index_f-(int)(index_f/nw2_nua));
 }
 tuple<int, int, int> fconv_K3_a(double w, double v1, double v2)
 {
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_a = (w_upper_b-w_lower_b)/((double)(nw3_wa));     //nw3_wa because we're interpolating for bosonic freq in K3 in channel a
-    double dw_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nua));    //nw3_nua because we're interpolating for fermionic freq in K3 in channel a
-    double dwp_f_a = (w_upper_f-w_lower_f)/((double)(nw3_nuap));  //nw3_nuap because we're interpolating for fermionic freq in K3 in channel a
-
-    auto index_b = (int)((w-w_lower_b)/dw_b_a);
-    auto index_f = (int)((v1-w_lower_f)/dw_f_a);
-    auto index_fp = (int)((v2-w_lower_f)/dwp_f_a);
+    auto index_b = (int)((w-w_lower_b)/dw);
+    auto index_f = (int)((v1-w_lower_f)/dv);
+    auto index_fp = (int)((v2-w_lower_f)/dv);
 
     return make_tuple(index_b-(int)(index_b/nw3_wa), index_f-(int)(index_f/nw3_nua), index_fp-(int)(index_fp/nw3_nuap));
 }
 
 int fconv_K1_p(double w)
 {
-    double dw_b_p = (w_upper_b-w_lower_b)/((double)(nw1_wp));     //nw1_wp because we're interpolating for K1 in channel p
-    auto index = (int)((w-w_lower_b)/dw_b_p);
+    auto index = (int)((w-w_lower_b)/dw);
     return index - (int)(index/nw1_wp);
 }
 tuple<int, int> fconv_K2_p(double w, double v1)
 {
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_p = (w_upper_b-w_lower_b)/((double)(nw2_wp));     //nw2_wp because we're interpolating for bosonic freq in K2 in channel p
-    double dw_f_p = (w_upper_f-w_lower_f)/((double)(nw2_nup));    //nw2_nup because we're interpolating for fermionic freq in K2 in channel p
-
-    auto index_b = (int)((w-w_lower_b)/dw_b_p);
-    auto index_f = (int)((v1-w_lower_f)/dw_f_p);
+    auto index_b = (int)((w-w_lower_b)/dw);
+    auto index_f = (int)((v1-w_lower_f)/dv);
 
     return make_tuple(index_b-(int)(index_b/nw2_wp), index_f-(int)(index_f/nw2_nup));
 }
 tuple<int, int, int> fconv_K3_p(double w, double v1, double v2)
 {
-
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_p = (w_upper_b-w_lower_b)/((double)(nw3_wp));     //nw3_wp because we're interpolating for bosonic freq in K3 in channel p
-    double dw_f_p = (w_upper_f-w_lower_f)/((double)(nw3_nup));    //nw3_nup because we're interpolating for fermionic freq in K3 in channel p
-    double dwp_f_p = (w_upper_f-w_lower_f)/((double)(nw3_nupp));  //nw3_nupp because we're interpolating for fermionic freq in K3 in channel p
-
-    auto index_b = (int)((w-w_lower_b)/dw_b_p);
-    auto index_f = (int)((v1-w_lower_f)/dw_f_p);
-    auto index_fp = (int)((v2-w_lower_f)/dwp_f_p);
+    auto index_b = (int)((w-w_lower_b)/dw);
+    auto index_f = (int)((v1-w_lower_f)/dv);
+    auto index_fp = (int)((v2-w_lower_f)/dv);
 
     return make_tuple(index_b-(int)(index_b/nw3_wp), index_f-(int)(index_f/nw3_nup), index_fp-(int)(index_fp/nw3_nupp));
 }
 
 int fconv_K1_t(double w)
 {
-    double dw_b_t = (w_upper_b-w_lower_b)/((double)(nw1_wt));     //nw1_wt because we're interpolating for K1 in channel t
-    auto index = (int)((w-w_lower_b)/dw_b_t);
+    auto index = (int)((w-w_lower_b)/dw);
     return index - (int)(index/nw1_wt);
 }
 tuple<int, int> fconv_K2_t(double w, double v1)
 {
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_t = (w_upper_b-w_lower_b)/((double)(nw2_wt));     //nw2_wt because we're interpolating for bosonic freq in K2 in channel t
-    double dw_f_t = (w_upper_f-w_lower_f)/((double)(nw2_nut));    //nw2_nut because we're interpolating for fermionic freq in K2 in channel t
-
-    auto index_b = (int)((w-w_lower_b)/dw_b_t);
-    auto index_f = (int)((v1-w_lower_f)/dw_f_t);
+    auto index_b = (int)((w-w_lower_b)/dw);
+    auto index_f = (int)((v1-w_lower_f)/dv);
 
     return make_tuple(index_b-(int)(index_b/nw2_wt), index_f-(int)(index_f/nw2_nut));
 }
 tuple<int, int, int> fconv_K3_t(double w, double v1, double v2)
 {
-    /*First approximation to a crude interpolation i.e. there might be issues with indexing, but want to avoid if-statements*/
-    double dw_b_t = (w_upper_b-w_lower_b)/((double)(nw3_wt));     //nw3_wa because we're interpolating for bosonic freq in K3 in channel a
-    double dw_f_t = (w_upper_f-w_lower_f)/((double)(nw3_nut));    //nw3_nua because we're interpolating for fermionic freq in K3 in channel a
-    double dwp_f_t = (w_upper_f-w_lower_f)/((double)(nw3_nutp));  //nw3_nuap because we're interpolating for fermionic freq in K3 in channel a
-
-    auto index_b = (int)((w-w_lower_b)/dw_b_t);
-    auto index_f = (int)((v1-w_lower_f)/dw_f_t);
-    auto index_fp = (int)((v2-w_lower_f)/dwp_f_t);
+    auto index_b = (int)((w-w_lower_b)/dw);
+    auto index_f = (int)((v1-w_lower_f)/dv);
+    auto index_fp = (int)((v2-w_lower_f)/dv);
 
     return make_tuple(index_b-(int)(index_b/nw3_wt), index_f-(int)(index_f/nw3_nut), index_fp-(int)(index_fp/nw3_nutp));
 }
 
-int fconv(double w)
+
+int fconv_bos(double w)
 {
-    double dw_f = (w_upper_f-w_lower_f)/((double)(ffreqs.size()));
-    auto index = (int)((w-w_lower_f)/dw_f);
+    auto index = (int)((w-w_lower_b)/dw);
+    return index - (int)(index/bfreqs.size());
+}
+int fconv_fer(double w)
+{
+    auto index = (int)((w-w_lower_f)/dv);
     return index - (int)(index/ffreqs.size());
 }
-
 int fconv_Lambda(double Lambda)
 {
     double dl = (Lambda_ini-Lambda_fin)/((double)(nEVO));
-    auto index = -
-            (int)((Lambda-Lambda_ini)/dl);
+    auto index = -(int)((Lambda-Lambda_ini)/dl);
     return index - (int)(index/nEVO);
 }
 

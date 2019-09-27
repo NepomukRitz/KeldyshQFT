@@ -40,51 +40,51 @@ const double U = 1.0;
 /*Number of evolution flow points*/
 const int nEVO = 4;
 
+/*Number of bosonic and fermionic frequency points*/
+const int nBOS = 21;
+const int nFER = 11;
+
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
 const double Lambda_fin = 0.0;
 
 /*Number of frequency points for the self energy and the susceptibility*/
-const int nSE = 41;
-const int nSUSC = nSE;  //Makes no sense to have these values be different from one another
-const int nPROP = nSE;
+const int nSE   = nFER;
+const int nSUSC = nFER;  //Makes no sense to have these values be different from one another
+const int nPROP = nFER;
 
 /*Number of frequency points for the K1 class(bosonic freq wa), K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic
  * frequency wa and fermionic freqs nua and nuap) for the a-channel*/
-const int nw1_wa = nSE;
-const int nw2_wa = nSE;
-const int nw2_nua = nSE;
-const int nw3_wa = nSE;
-const int nw3_nua = nSE;
-const int nw3_nuap = nSE;
+const int nw1_wa   = nBOS;
+const int nw2_wa   = nBOS;
+const int nw2_nua  = nFER;
+const int nw3_wa   = nBOS;
+const int nw3_nua  = nFER;
+const int nw3_nuap = nFER;
 
 /*Number of frequency points for the K1 class(bosonic freq wp), K2 (bosonic freq wp, fermionic freq nup) and K3 (bosonic
  * frequency wp and fermionic freqs nup and nupp) for the p-channel*/
-const int nw1_wp = nSE;
-const int nw2_wp = nSE;
-const int nw2_nup = nSE;
-const int nw3_wp = nSE;
-const int nw3_nup = nSE;
-const int nw3_nupp = nSE;
+const int nw1_wp   = nBOS;
+const int nw2_wp   = nBOS;
+const int nw2_nup  = nFER;
+const int nw3_wp   = nBOS;
+const int nw3_nup  = nFER;
+const int nw3_nupp = nFER;
 
 /*Number of frequency points for the K1 class(bosonic freq wt), K2 (bosonic freq wt, fermionic freq nut) and K3 (bosonic
  * frequency wt and fermionic freqs nut and nutp) for the t-channel*/
-const int nw1_wt = nSE;
-const int nw2_wt = nSE;
-const int nw2_nut = nSE;
-const int nw3_wt = nSE;
-const int nw3_nut = nSE;
-const int nw3_nutp = nSE;
+const int nw1_wt   = nBOS;
+const int nw2_wt   = nBOS;
+const int nw2_nut  = nFER;
+const int nw3_wt   = nBOS;
+const int nw3_nut  = nFER;
+const int nw3_nutp = nFER;
 
-/*Length for the frequency grid vectors for the different channels TODO: ask ourselves if it makes sense to have different lengths*/
-const int nw_a = nw1_wa;
-const int nw_p = nw1_wp;
-const int nw_t = nw1_wt;
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
-const double w_upper_b = 40.;
+const double w_upper_b = 20.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 40.;
+const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 
 
@@ -117,23 +117,23 @@ vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});                
 rvec flow_grid(nEVO);                                                                                                   // NOLINT(cert-err58-cpp)
 const double dL = (Lambda_fin-Lambda_ini)/((nEVO-1));
 
-/* temporarily fix stuff to remove warnings*/
-rvec ffreqs (nSE);                                                                                                      // NOLINT(cert-err58-cpp)
-const double dv = (w_upper_f-w_lower_f)/((nSE-1));
-rvec bfreqs (nSE);                                                                                                      // NOLINT(cert-err58-cpp)
-const double dw = (w_upper_b-w_lower_b)/((nSE-1));
+/*Vectors for fermionic and bosonic frequencies*/
+rvec bfreqs (nBOS);                                                                                                      // NOLINT(cert-err58-cpp)
+const double dw = (w_upper_b-w_lower_b)/((nBOS-1));
+
+rvec ffreqs (nFER);                                                                                                     // NOLINT(cert-err58-cpp)
+const double dv = (w_upper_f-w_lower_f)/((nFER-1));
 
 //Length of this vector not necessarily fixed by nSE... Think of Wentzell paper where #of bosonic freqs = 2x #of fermionic freqs
-int nw, nw1, nw2, nw3, wlimit;
+
+
 
 /*Frequency grids for each channel*/
-rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
-rvec freqs_p(nw_p);                                                                                                     // NOLINT(cert-err58-cpp)
-rvec freqs_t(nw_t);                                                                                                     // NOLINT(cert-err58-cpp)
-auto dw_a = (w_upper_b-w_lower_b)/((double)(nw_a-1));
-auto dw_p = (w_upper_b-w_lower_b)/((double)(nw_p-1));
-auto dw_t = (w_upper_b-w_lower_b)/((double)(nw_t-1));
-
-rvec simpson_weights(nSE);  // NOLINT(cert-err58-cpp)
+//rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
+//rvec freqs_p(nw_p);                                                                                                     // NOLINT(cert-err58-cpp)
+//rvec freqs_t(nw_t);                                                                                                     // NOLINT(cert-err58-cpp)
+//auto dw_a = (w_upper_b-w_lower_b)/((double)(nw_a-1));
+//auto dw_p = (w_upper_b-w_lower_b)/((double)(nw_p-1));
+//auto dw_t = (w_upper_b-w_lower_b)/((double)(nw_t-1));
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

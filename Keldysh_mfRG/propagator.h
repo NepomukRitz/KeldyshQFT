@@ -46,8 +46,19 @@ void Propagator::setprop(int iK, int i, comp value)
 }
 comp Propagator::pvalsmooth(int iK, double w)
 {
-    int i = fconv(w);
-    return pval(iK, i);
+    if(fabs(w)>=w_upper_f)
+        return 0.;
+    else {
+        int W = fconv_fer(w);
+        double x1 = ffreqs[W];
+        double x2 = ffreqs[W] + dv;
+        double xd = (w - x1) / (x2 - x1);
+
+        comp f1 = pval(iK, W);
+        comp f2 = pval(iK, W + 1);
+
+        return (1. - xd) * f1 + xd * f2;
+    }
 }
 comp Propagator::pval(int iK, int i)
 {

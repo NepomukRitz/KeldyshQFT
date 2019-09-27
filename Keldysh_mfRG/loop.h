@@ -83,8 +83,8 @@ SelfEnergy<comp> loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop)
         IntegrandR<comp, fullvert<comp> > integrandR(fullvertex, prop, w);
         IntegrandK<comp, fullvert<comp> > integrandK(fullvertex, prop, w);
 
-        comp integratedR = integrator(integrandR, bfreqs);
-        comp integratedK = integrator(integrandK, bfreqs);
+        comp integratedR = integrator(integrandR, ffreqs);
+        comp integratedK = integrator(integrandK, ffreqs);
 
         resp.setself(0, i, integratedR);
         resp.setself(1, i, integratedK);

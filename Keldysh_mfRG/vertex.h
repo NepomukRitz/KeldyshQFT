@@ -361,4 +361,35 @@ template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, doubl
 ///**********************************************************************************************************************/
 
 
+//TODO achieve that this function replaces all 3 functions below
+//template <typename T, typename T1, typename T2> Vertex<T> operator+ (Vertex<T1>& vertex1, Vertex<T2>& vertex2)
+//{
+//    Vertex<T> resp;
+//    resp.densvertex = vertex1.densvertex + vertex2.spinvertex;
+//    resp.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
+//    return resp;
+//}
+
+template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<pvert<Q> >& pvertex, Vertex<tvert<Q> >& tvertex)
+{
+    Vertex<fullvert<Q> > resp = Vertex<avert<Q> >();
+    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
+    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
+    return resp;
+}
+template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<avert<Q> >& tvertex, Vertex<pvert<Q> >& pvertex)
+{
+    Vertex<fullvert<Q> > resp = Vertex<avert<Q> >();
+    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
+    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
+    return resp;
+}
+template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<tvert<Q> >& pvertex, Vertex<avert<Q> >& tvertex)
+{
+    Vertex<fullvert<Q> > resp = Vertex<avert<Q> >();
+    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
+    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
+    return resp;
+}
+
 #endif //KELDYSH_MFRG_VERTEX_H

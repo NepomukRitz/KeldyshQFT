@@ -346,8 +346,8 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
     else{
         int index = fconv_K1_p(w_p);
 
-        double x1 = freqs_p[index];
-        double x2 = freqs_p[index] + dw_p;
+        double x1 = bfreqs[index];
+        double x2 = bfreqs[index] + dw;
 
         double xd = (w_p - x1) / (x2 - x1);
 
@@ -420,10 +420,10 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p
         int index_b, index_f;
         tie(index_b, index_f) = fconv_K2_p(w_p, v1_p);
 
-        double x1 = freqs_p[index_b];
-        double x2 = freqs_p[index_b] + dw_p;
-        double y1 = freqs_p[index_f];
-        double y2 = freqs_p[index_f] + dw_p;
+        double x1 = bfreqs[index_b];
+        double x2 = bfreqs[index_b] + dw;
+        double y1 = ffreqs[index_f];
+        double y2 = ffreqs[index_f] + dv;
 
         double xd = (w_p - x1) / (x2 - x1);
         double yd = (v1_p - y1) / (y2 - y1);
@@ -543,12 +543,12 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p
         int index_b, index_f, index_fp;
         tie(index_b, index_f, index_fp) = fconv_K3_p(w_p, v1_p, v2_p);
 
-        double x1 = freqs_p[index_b];
-        double x2 = freqs_p[index_b] + dw_p;
-        double y1 = freqs_p[index_f];
-        double y2 = freqs_p[index_f] + dw_p;
-        double z1 = freqs_p[index_fp];
-        double z2 = freqs_p[index_fp] + dw_p;
+        double x1 = bfreqs[index_b];
+        double x2 = bfreqs[index_b] + dw;
+        double y1 = ffreqs[index_f];
+        double y2 = ffreqs[index_f] + dv;
+        double z1 = ffreqs[index_fp];
+        double z2 = ffreqs[index_fp] + dv;
 
         Q f111 = K3_vval(iK3, index_b, index_f, index_fp, i_in);
         Q f112 = K3_vval(iK3, index_b, index_f, index_fp + 1, i_in);
