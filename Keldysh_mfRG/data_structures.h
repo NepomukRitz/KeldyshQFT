@@ -22,26 +22,26 @@ template <typename T>
 class basic_vec : public vector<T> {
   public:
     basic_vec() : vector<T> () {};
-    explicit basic_vec(int n) : vector<T> (n) {};
+    basic_vec(int n) : vector<T> (n) {};
     basic_vec(int n, T& value) : vector<T> (n, value) {}; // TODO: test
     basic_vec(initializer_list<T> m) : vector<T> (m) {};
 
     T& operator() (int i) {return (*this)[i]; }
 
-    basic_vec<T> operator+  (const basic_vec<T> &m);  // element-wise addition of two vectors
-    basic_vec<T> operator+  (const T &c);             // addition of a constant
-    basic_vec<T> operator+= (const basic_vec<T> &m);  // element-wise addition of two vectors
-    basic_vec<T> operator+= (const T &c);             // addition of a constant
-    basic_vec<T> operator-  (const basic_vec<T> &m);  // element-wise subtraction of two vectors
-    basic_vec<T> operator-  (const T &c);             // subtraction of a constant
-    basic_vec<T> operator-= (const basic_vec<T> &m);  // element-wise subtraction of two vectors
-    basic_vec<T> operator-= (const T &c);             // subtraction of a constant
-    basic_vec<T> operator*  (const basic_vec<T> &m);  // element-wise multiplication of two vectors
-    basic_vec<T> operator*  (const T &c);             // multiplication with a constant
-    basic_vec<T> operator*  (double alpha);     // multiplication with a constant
-    basic_vec<T> operator*= (const basic_vec<T> &m);  // element-wise multiplication of two vectors
-    basic_vec<T> operator*= (const T &c);             // multiplication with a constant
-    basic_vec<T> operator*=  (double alpha);    // multiplication with a constant
+    basic_vec<T> operator+  (const basic_vec<T> &m);    // element-wise addition of two vectors
+    basic_vec<T> operator+  (const T &c);               // addition of a constant
+    basic_vec<T> operator+= (const basic_vec<T> &m);    // element-wise addition of two vectors
+    basic_vec<T> operator+= (const T &c);               // addition of a constant
+    basic_vec<T> operator-  (const basic_vec<T> &m);    // element-wise subtraction of two vectors
+    basic_vec<T> operator-  (const T &c);               // subtraction of a constant
+    basic_vec<T> operator-= (const basic_vec<T> &m);    // element-wise subtraction of two vectors
+    basic_vec<T> operator-= (const T &c);               // subtraction of a constant
+    basic_vec<T> operator*  (const basic_vec<T> &m);    // element-wise multiplication of two vectors
+    basic_vec<T> operator*  (const T &c);               // multiplication with a constant
+    basic_vec<T> operator*  (double alpha);             // multiplication with a constant
+    basic_vec<T> operator*= (const basic_vec<T> &m);    // element-wise multiplication of two vectors
+    basic_vec<T> operator*= (const T &c);               // multiplication with a constant
+    basic_vec<T> operator*= (double alpha);             // multiplication with a constant
 
 };
 
@@ -51,7 +51,7 @@ template <typename T>
 class vec : public basic_vec<T> {
   public:
     vec() : basic_vec<T> () {};
-    explicit vec(int n) : basic_vec<T> (n) {};
+    vec(int n) : basic_vec<T> (n) {};
     vec(int n, T& value) : basic_vec<T> (n, value) {}; // TODO: test
     vec(initializer_list<T> m) : basic_vec<T> (m) {};
 
