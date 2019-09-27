@@ -11,7 +11,7 @@
 using namespace std;
 
 const double pi = 3.1415926535897;
-
+//TODO noticed the code only works if w_upper = nSE-1. Figure out where the problem with any other combination is!!
 /*Grid type - preprocessor macro
  *1: log-grid, 2: linear grid*/
 #define GRID 2
@@ -38,10 +38,14 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Number of evolution flow points*/
-const int nEVO = 10;
+const int nEVO = 4;
+
+/*Limits of the fRG flow*/
+const double Lambda_ini = 1.0;
+const double Lambda_fin = 0.0;
 
 /*Number of frequency points for the self energy and the susceptibility*/
-const int nSE = 21;
+const int nSE = 41;
 const int nSUSC = nSE;  //Makes no sense to have these values be different from one another
 const int nPROP = nSE;
 
@@ -76,10 +80,6 @@ const int nw3_nutp = nSE;
 const int nw_a = nw1_wa;
 const int nw_p = nw1_wp;
 const int nw_t = nw1_wt;
-
-/*Limits of the fRG flow*/
-const double Lambda_ini = 1.0;
-const double Lambda_fin = 0.0;
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
 const double w_upper_b = 40.;
