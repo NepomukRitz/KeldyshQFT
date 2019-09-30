@@ -21,15 +21,15 @@ public:
         //vector<int> non_zero_Keldysh_abubble({3,6,7,9,11,12,13,14,15});
         for(int i=0; i<nPROP; ++i) {
             for (int j = 0; j < nPROP; ++j) {
-                PiA[3*i*nPROP + j]  = conj(propagator.pval(0,i))*conj(propagator.pval(0,j));          //AA
-                PiA[6*i*nPROP + j]  = conj(propagator.pval(0,i))*propagator.pval(0,j);                //AR
-                PiA[7*i*nPROP + j]  = conj(propagator.pval(0,i))*propagator.pval(1,j);                //AK
-                PiA[9*i*nPROP + j]  = propagator.pval(0,i)*conj(propagator.pval(0,j));                //RA
-                PiA[11*i*nPROP + j] = propagator.pval(1,i)*conj(propagator.pval(0,j));                //KA
-                PiA[12*i*nPROP + j] = propagator.pval(0,i)*propagator.pval(0,j);                      //RR
-                PiA[13*i*nPROP + j] = propagator.pval(0,i)*propagator.pval(1,j);                      //RK
-                PiA[14*i*nPROP + j] = propagator.pval(1,i)*propagator.pval(0,j);                      //KR
-                PiA[15*i*nPROP + j] = propagator.pval(1,i)*propagator.pval(1,j);                      //KK
+                PiA[3*nPROP*nPROP + i*nPROP + j]  = conj(propagator.pval(0,i))*conj(propagator.pval(0,j));          //AA
+                PiA[6*nPROP*nPROP + i*nPROP + j]  = conj(propagator.pval(0,i))*propagator.pval(0,j);                //AR
+                PiA[7*nPROP*nPROP + i*nPROP + j]  = conj(propagator.pval(0,i))*propagator.pval(1,j);                //AK
+                PiA[9*nPROP*nPROP + i*nPROP + j]  = propagator.pval(0,i)*conj(propagator.pval(0,j));                //RA
+                PiA[11*nPROP*nPROP + i*nPROP + j] = propagator.pval(1,i)*conj(propagator.pval(0,j));                //KA
+                PiA[12*nPROP*nPROP + i*nPROP + j] = propagator.pval(0,i)*propagator.pval(0,j);                      //RR
+                PiA[13*nPROP*nPROP + i*nPROP + j] = propagator.pval(0,i)*propagator.pval(1,j);                      //RK
+                PiA[14*nPROP*nPROP + i*nPROP + j] = propagator.pval(1,i)*propagator.pval(0,j);                      //KR
+                PiA[15*nPROP*nPROP + i*nPROP + j] = propagator.pval(1,i)*propagator.pval(1,j);                      //KK
             }
         }
     };
@@ -38,11 +38,11 @@ public:
     comp value(int iK, double v1, double v2)
     {
         if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
-            return 0;
+            return 0.;
         else {
             int i = fconv_fer(v1);
             int j = fconv_fer(v2);
-            return PiA[iK*i*nSE+ j];
+            return PiA[iK*nPROP*nPROP + i*nPROP+ j];
         }
     }
 };
@@ -57,15 +57,15 @@ public:
         //vector<int> non_zero_Keldysh_abubble({3,6,7,9,11,12,13,14,15});
         for(int i=0; i<nPROP; ++i) {
             for (int j = 0; j < nPROP; ++j) {
-                PiAdot[3*i*nPROP + j]  = conj(propagatorS.pval(0,i))*conj(propagatorG.pval(0,j)) + conj(propagatorG.pval(0,i))*conj(propagatorS.pval(0,j));     //AA
-                PiAdot[6*i*nPROP + j]  = conj(propagatorS.pval(0,i))*propagatorG.pval(0,j) + conj(propagatorG.pval(0,i))*propagatorS.pval(0,j);                 //AR
-                PiAdot[7*i*nPROP + j]  = conj(propagatorS.pval(0,i))*propagatorG.pval(1,j) + conj(propagatorG.pval(0,i))*propagatorS.pval(1,j);                 //AK
-                PiAdot[9*i*nPROP + j]  = propagatorS.pval(0,i)*conj(propagatorG.pval(0,j)) + propagatorG.pval(0,i)*conj(propagatorS.pval(0,j));                 //RA
-                PiAdot[11*i*nPROP + j] = propagatorS.pval(1,i)*conj(propagatorG.pval(0,j)) + propagatorG.pval(1,i)*conj(propagatorS.pval(0,j));                 //KA
-                PiAdot[12*i*nPROP + j] = propagatorS.pval(0,i)*propagatorG.pval(0,j) + propagatorG.pval(0,i)*propagatorS.pval(0,j);                             //RR
-                PiAdot[13*i*nPROP + j] = propagatorS.pval(0,i)*propagatorG.pval(1,j) + propagatorG.pval(0,i)*propagatorS.pval(1,j);                             //RK
-                PiAdot[14*i*nPROP + j] = propagatorS.pval(1,i)*propagatorG.pval(0,j) + propagatorG.pval(1,i)*propagatorS.pval(0,j);                             //KR
-                PiAdot[15*i*nPROP + j] = propagatorS.pval(1,i)*propagatorG.pval(1,j) + propagatorG.pval(1,i)*propagatorS.pval(1,j);                             //KK
+                PiAdot[3*nPROP*nPROP + i*nPROP + j]  = conj(propagatorS.pval(0,i))*conj(propagatorG.pval(0,j)) + conj(propagatorG.pval(0,i))*conj(propagatorS.pval(0,j));     //AA
+                PiAdot[6*nPROP*nPROP + i*nPROP + j]  = conj(propagatorS.pval(0,i))*propagatorG.pval(0,j) + conj(propagatorG.pval(0,i))*propagatorS.pval(0,j);                 //AR
+                PiAdot[7*nPROP*nPROP + i*nPROP + j]  = conj(propagatorS.pval(0,i))*propagatorG.pval(1,j) + conj(propagatorG.pval(0,i))*propagatorS.pval(1,j);                 //AK
+                PiAdot[9*nPROP*nPROP + i*nPROP + j]  = propagatorS.pval(0,i)*conj(propagatorG.pval(0,j)) + propagatorG.pval(0,i)*conj(propagatorS.pval(0,j));                 //RA
+                PiAdot[11*nPROP*nPROP + i*nPROP + j] = propagatorS.pval(1,i)*conj(propagatorG.pval(0,j)) + propagatorG.pval(1,i)*conj(propagatorS.pval(0,j));                 //KA
+                PiAdot[12*nPROP*nPROP + i*nPROP + j] = propagatorS.pval(0,i)*propagatorG.pval(0,j) + propagatorG.pval(0,i)*propagatorS.pval(0,j);                             //RR
+                PiAdot[13*nPROP*nPROP + i*nPROP + j] = propagatorS.pval(0,i)*propagatorG.pval(1,j) + propagatorG.pval(0,i)*propagatorS.pval(1,j);                             //RK
+                PiAdot[14*nPROP*nPROP + i*nPROP + j] = propagatorS.pval(1,i)*propagatorG.pval(0,j) + propagatorG.pval(1,i)*propagatorS.pval(0,j);                             //KR
+                PiAdot[15*nPROP*nPROP + i*nPROP + j] = propagatorS.pval(1,i)*propagatorG.pval(1,j) + propagatorG.pval(1,i)*propagatorS.pval(1,j);                             //KK
             }
         }
     };
@@ -74,11 +74,11 @@ public:
     comp value(int iK, double v1, double v2)
     {
         if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
-            return 0;
+            return 0.;
         else {
             int i = fconv_fer(v1);
             int j = fconv_fer(v2);
-            return PiAdot[iK*i*nSE+ j];
+            return PiAdot[iK*nPROP*nPROP + i*nPROP+ j];
         }
     }
 };
@@ -91,7 +91,7 @@ template <typename Q, typename Bubble> class Integrand_a_K2 {
     double wa, va;
 public:
     Integrand_a_K2 (Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble &PiA_in, int i0_in, double wa_in, double va_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in), i_in(i_in_in) {};
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in), i_in(non_zero_Keldysh_K2a[i_in_in]) {};
 
     Q operator()(double vppa) {
         int i1, i3;
@@ -117,7 +117,7 @@ template <typename Q, typename Bubble> class Integrand_a_K2b {
     double wa, vpa;
 public:
     Integrand_a_K2b (Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& PiA_in, int i0_in, double wa_in, double vpa_in, int i_in_in)
-            :                    vertex1(vertex1_in),              vertex2(vertex2_in),      PiA(PiA_in), i0(i0_in),    wa(wa_in),   vpa(vpa_in), i_in(i_in_in) {};
+            :                    vertex1(vertex1_in),              vertex2(vertex2_in),      PiA(PiA_in), i0(i0_in),    wa(wa_in),   vpa(vpa_in), i_in(non_zero_Keldysh_K2a[i_in_in]) {};
 
     Q operator()(double vppa) {
         int i1, i3;
@@ -144,7 +144,7 @@ template <typename Q, typename Bubble> class Integrand_a_K3 {
     double wa, va, vpa;
 public:
     Integrand_a_K3 (Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, double va_in, double vpa_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(i_in_in) {};
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
 
     Q operator()(double vppa) {
         int i1, i3;
@@ -170,7 +170,7 @@ template <typename Q, typename Bubble> class Integrand_a_K1_diff {
     double wa;
 public:
     explicit Integrand_a_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, int i_in_in)
-                               :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in), i_in(i_in_in) {};
+                               :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K1a[i0_in]),    wa(wa_in), i_in(i_in_in) {};
 
     //First option for integrand feature: a function
     Q integrand_p_K1(double vppa){
@@ -223,7 +223,7 @@ template <typename Q, typename Bubble> class Integrand_a_K2_diff {
     double wa, va;
 public:
     Integrand_a_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble &PiA_in, int i0_in, double wa_in, double va_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in), i_in(i_in_in) {};
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in), i_in(non_zero_Keldysh_K2a[i_in_in]) {};
 
     //First option for integrand feature: a function
     Q integrand_p_K2(double vppa) {
@@ -271,7 +271,7 @@ template <typename Q, typename Bubble> class Integrand_a_K2b_diff {
     double wa, vpa;
 public:
     Integrand_a_K2b_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& PiA_in, int i0_in, double wa_in, double vpa_in, int i_in_in)
-            :                    vertex1(vertex1_in),              vertex2(vertex2_in),      PiA(PiA_in), i0(i0_in),    wa(wa_in),   vpa(vpa_in), i_in(i_in_in) {};
+            :                    vertex1(vertex1_in),              vertex2(vertex2_in),      PiA(PiA_in), i0(i0_in),    wa(wa_in),   vpa(vpa_in), i_in(non_zero_Keldysh_K2a[i_in_in]) {};
 
     //First option for integrand feature: a function
     Q integrand_p_K2b(double vppa) {
@@ -320,7 +320,7 @@ template <typename Q, typename Bubble> class Integrand_a_K3_diff {
     double wa, va, vpa;
 public:
     Integrand_a_K3_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, double va_in, double vpa_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(i_in_in) {};
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
 
     //First option for integrand feature: a function
     Q integrand_p_K3(double vppa) {
