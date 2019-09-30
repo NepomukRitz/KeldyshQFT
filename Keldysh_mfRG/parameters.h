@@ -11,7 +11,6 @@
 using namespace std;
 
 const double pi = 3.1415926535897;
-//TODO noticed the code only works if w_upper = nSE-1. Figure out where the problem with any other combination is!!
 /*Grid type - preprocessor macro
  *1: log-grid, 2: linear grid*/
 #define GRID 2
@@ -38,11 +37,11 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Number of evolution flow points*/
-const int nEVO = 4;
+const int nEVO = 5;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 21;
-const int nFER = 11;
+const int nBOS = 101;
+const int nFER = 51;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -115,14 +114,14 @@ vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});                
 
 /*Vector with values of Lambda for the fRG flow*/
 rvec flow_grid(nEVO);                                                                                                   // NOLINT(cert-err58-cpp)
-const double dL = (Lambda_fin-Lambda_ini)/((nEVO-1));
+const double dL = (Lambda_fin-Lambda_ini)/((double)(nEVO-1));
 
 /*Vectors for fermionic and bosonic frequencies*/
 rvec bfreqs (nBOS);                                                                                                      // NOLINT(cert-err58-cpp)
-const double dw = (w_upper_b-w_lower_b)/((nBOS-1));
+const double dw = (w_upper_b-w_lower_b)/((double)(nBOS-1));
 
 rvec ffreqs (nFER);                                                                                                     // NOLINT(cert-err58-cpp)
-const double dv = (w_upper_f-w_lower_f)/((nFER-1));
+const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1));
 
 //Length of this vector not necessarily fixed by nSE... Think of Wentzell paper where #of bosonic freqs = 2x #of fermionic freqs
 
