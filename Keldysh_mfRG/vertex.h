@@ -370,23 +370,23 @@ template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, doubl
 //    return resp;
 //}
 
+//TODO declare correct sum operators!!!
 template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<pvert<Q> >& pvertex, Vertex<tvert<Q> >& tvertex)
 {
-    Vertex<fullvert<Q> > resp = Vertex<avert<Q> >();
-    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
-    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
+    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
+
     return resp;
 }
 template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<avert<Q> >& tvertex, Vertex<pvert<Q> >& pvertex)
 {
-    Vertex<fullvert<Q> > resp = Vertex<avert<Q> >();
+    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
     resp.densvertex = pvertex.densvertex + tvertex.densvertex;
     resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
     return resp;
 }
 template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<tvert<Q> >& pvertex, Vertex<avert<Q> >& tvertex)
 {
-    Vertex<fullvert<Q> > resp = Vertex<avert<Q> >();
+    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
     resp.densvertex = pvertex.densvertex + tvertex.densvertex;
     resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
     return resp;
