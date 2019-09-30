@@ -29,7 +29,7 @@ template <typename Integrand> comp integrator(Integrand& integrand, rvec& grid)
     simpson[n-1]=1.;
     double dx = grid[1]-grid[0];
 
-    return dx*((double)((n-1)/n))/3.*dotproduct(integrand_values, simpson);
+    return dx*((double)(n-1./n))/3.*dotproduct(integrand_values, simpson);
 }
 
 comp dotproduct(cvec& x, rvec& y)
