@@ -36,7 +36,7 @@ public:
 
 };
 
-Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, SelfEnergy<comp> diffselfenergy, char type);
+Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type);
 
 /************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
 
@@ -183,7 +183,7 @@ comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
             (comp)1.i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
 }
 
-Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, SelfEnergy<comp> diffselfenergy, char type)
+Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type)
 {
     Propagator resp;
     for(int i=0; i<nPROP; ++i) {
