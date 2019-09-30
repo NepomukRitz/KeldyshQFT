@@ -22,7 +22,6 @@ template <typename Q> State<Q> derivative(double Lambda, State<Q>& state);
 void setUpBosGrid();
 void setUpFerGrid();
 void setUpFlowGrid();
-bool isAntisymmetric(rvec& rvec1);
 
 
 int main() {
@@ -102,50 +101,50 @@ State<Q> derivative(double Lambda, State<Q>& state)
     cout << "diff bubble finished. ";
     get_time(t2);
 
-    double t3 = get_time();
+//    double t3 = get_time();
 //    Lines 10-13
-    Vertex<fullvert<Q> > dGamma = Vertex<fullvert<Q> >();
-    dGamma.densvertex.avertex = dgammaa.densvertex;
-    dGamma.densvertex.pvertex = dgammap.densvertex;
-    dGamma.densvertex.tvertex = dgammat.densvertex;
-    dGamma.spinvertex.avertex = dgammaa.spinvertex;
-    dGamma.spinvertex.pvertex = dgammap.spinvertex;
-    dGamma.spinvertex.tvertex = dgammat.spinvertex;
-    cout<< "dGamma assigned: " <<endl;
-    get_time(t3);
+//    Vertex<fullvert<Q> > dGamma = Vertex<fullvert<Q> >();
+//    dGamma.densvertex.avertex = dgammaa.densvertex;
+//    dGamma.densvertex.pvertex = dgammap.densvertex;
+//    dGamma.densvertex.tvertex = dgammat.densvertex;
+//    dGamma.spinvertex.avertex = dgammaa.spinvertex;
+//    dGamma.spinvertex.pvertex = dgammap.spinvertex;
+//    dGamma.spinvertex.tvertex = dgammat.spinvertex;
+//    cout<< "dGamma assigned: " <<endl;
+//    get_time(t3);
 //    Vertex<fullvert<Q> > dgammaabar = dgammap + dgammat;
 //    Vertex<fullvert<Q> > dgammapbar = dgammat + dgammaa;
 //    Vertex<fullvert<Q> > dgammatbar = dgammaa + dgammap;
-
-    double t4 = get_time();
-    //The r_bubble_function pics the gamma_r bar contributions
-    Vertex<avert<Q> > dgammaLa = a_bubble_function(dGamma, dGamma, G, 'L');
-    Vertex<pvert<Q> > dgammaLp = p_bubble_function(dGamma, dGamma, G, 'L');
-    Vertex<tvert<Q> > dgammaLt = t_bubble_function(dGamma, dGamma, G, 'L');
-
-    Vertex<avert<Q> > dgammaRa = a_bubble_function(dGamma, dGamma, G, 'R');
-    Vertex<pvert<Q> > dgammaRp = p_bubble_function(dGamma, dGamma, G, 'R');
-    Vertex<tvert<Q> > dgammaRt = t_bubble_function(dGamma, dGamma, G, 'R');
-
-    cout<< "Bubbles calculated: " << endl;
-    get_time(t4);
+//
+//    double t4 = get_time();
+//    //The r_bubble_function pics the gamma_r bar contributions
+//    Vertex<avert<Q> > dgammaLa = a_bubble_function(dGamma, dGamma, G, 'L');
+//    Vertex<pvert<Q> > dgammaLp = p_bubble_function(dGamma, dGamma, G, 'L');
+//    Vertex<tvert<Q> > dgammaLt = t_bubble_function(dGamma, dGamma, G, 'L');
+//
+//    Vertex<avert<Q> > dgammaRa = a_bubble_function(dGamma, dGamma, G, 'R');
+//    Vertex<pvert<Q> > dgammaRp = p_bubble_function(dGamma, dGamma, G, 'R');
+//    Vertex<tvert<Q> > dgammaRt = t_bubble_function(dGamma, dGamma, G, 'R');
+//
+//    cout<< "Bubbles calculated: " << endl;
+//    get_time(t4);
 
 
     //Line 14-17
-    Vertex<fullvert<Q> > dGammaT = Vertex<fullvert<Q> >();
-    dGammaT.densvertex.avertex = dgammaLa.densvertex + dgammaRa.densvertex;
-    dGammaT.densvertex.pvertex = dgammaLp.densvertex + dgammaRp.densvertex;
-    dGammaT.densvertex.tvertex = dgammaLt.densvertex + dgammaRt.densvertex;
-    dGammaT.spinvertex.avertex = dgammaLa.spinvertex + dgammaRa.spinvertex;
-    dGammaT.spinvertex.pvertex = dgammaLp.spinvertex + dgammaRp.spinvertex;
-    dGammaT.spinvertex.tvertex = dgammaLt.spinvertex + dgammaRt.spinvertex;
-
-    dgammaa.densvertex += dGammaT.densvertex.avertex;
-    dgammap.densvertex += dGammaT.densvertex.pvertex;
-    dgammat.densvertex += dGammaT.densvertex.tvertex;
-    dgammaa.spinvertex += dGammaT.spinvertex.avertex;
-    dgammap.spinvertex += dGammaT.spinvertex.pvertex;
-    dgammat.spinvertex += dGammaT.spinvertex.tvertex;
+//    Vertex<fullvert<Q> > dGammaT = Vertex<fullvert<Q> >();
+//    dGammaT.densvertex.avertex = dgammaLa.densvertex + dgammaRa.densvertex;
+//    dGammaT.densvertex.pvertex = dgammaLp.densvertex + dgammaRp.densvertex;
+//    dGammaT.densvertex.tvertex = dgammaLt.densvertex + dgammaRt.densvertex;
+//    dGammaT.spinvertex.avertex = dgammaLa.spinvertex + dgammaRa.spinvertex;
+//    dGammaT.spinvertex.pvertex = dgammaLp.spinvertex + dgammaRp.spinvertex;
+//    dGammaT.spinvertex.tvertex = dgammaLt.spinvertex + dgammaRt.spinvertex;
+//
+//    dgammaa.densvertex += dGammaT.densvertex.avertex;
+//    dgammap.densvertex += dGammaT.densvertex.pvertex;
+//    dgammat.densvertex += dGammaT.densvertex.tvertex;
+//    dgammaa.spinvertex += dGammaT.spinvertex.avertex;
+//    dgammap.spinvertex += dGammaT.spinvertex.pvertex;
+//    dgammat.spinvertex += dGammaT.spinvertex.tvertex;
 
 
     //Line 41
@@ -215,19 +214,4 @@ void setUpFlowGrid()
 {
     for(int i=0; i<nEVO; ++i)
         flow_grid[i] = Lambda_ini + i*dL;
-}
-
-bool isAntisymmetric(rvec& rvec1)
-{
-    bool ans = true;
-    for(int i=0; i<rvec1.size(); ++i)
-    {
-        cout << rvec1[i] << " " << rvec1[rvec1.size()-1-i] << endl;
-
-        if(rvec1[i]!=-rvec1[rvec1.size()-1-i])
-        {
-            ans =false;
-        }
-    }
-    return ans;
 }
