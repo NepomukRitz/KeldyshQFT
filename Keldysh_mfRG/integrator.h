@@ -11,16 +11,33 @@
 //void integrator(gsl_function& F, ) {
 
 //}
+comp dotproduct(cvec& x, rvec& y);
 
 //TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
-comp integrator(cvec integrand)
+//This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
+template <typename Integrand> comp integrator(Integrand& integrand, rvec& grid)
 {
-    comp resp =0.;
-    for (int i=0; i<nSE; ++i)
+    int n = grid.size();
+    rvec simpson(n);
+    cvec integrand_values(n);
+    for (int i=0; i<n; ++i)
     {
-        resp+= integrand[i]*simpson_weights[i];
+        integrand_values[i] = integrand(grid[i]);
+        simpson[i] = 2. +2*(i%2);
     }
-    return (dv*((double)(nSE-1)/nSE))/3.*resp;
+    simpson[0] = 1.;
+    simpson[n-1]=1.;
+    double dx = grid[1]-grid[0];
+
+    return dx*((double)(n-1./n))/3.*dotproduct(integrand_values, simpson);
+}
+
+comp dotproduct(cvec& x, rvec& y)
+{
+    comp resp;
+    for(int i=0; i<x.size(); ++i)
+        resp+=x[i]*y[i];
+    return resp;
 }
 
 #endif //KELDYSH_MFRG_INTEGRATOR_H

@@ -8,6 +8,8 @@
 #include "state.h"
 #include "loop.h"
 #include "a_bubble.h"
+#include "p_bubble.h"
+#include "t_bubble.h"
 #include "propagator.h"
 #include "selfenergy.h"
 
@@ -15,133 +17,201 @@ using namespace std;
 
 typedef complex<double> comp;
 
-void writeOutFile(rvec& freqs, SelfEnergy<comp>& selfEnergy, Propagator& propagator);
-
-
+void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy);
+template <typename Q> State<Q> derivative(double Lambda, State<Q>& state);
+void setUpBosGrid();
+void setUpFerGrid();
+void setUpFlowGrid();
 
 
 int main() {
 
-    for(int i=0; i<nSE; ++i)
-    {
-        bfreqs[i] = w_lower_b + i*dw;
-        ffreqs[i] = w_lower_f + i*dv;
+    setUpBosGrid();
+    setUpFerGrid();
+    setUpFlowGrid();
 
-        freqs_a[i] = w_lower_b + i*dw_a;
-        freqs_p[i] = w_lower_b + i*dw_p;
-        freqs_t[i] = w_lower_b + i*dw_t;
-
-        simpson_weights[i] = (double)(2+2*(i%2));
-
-    }
-    simpson_weights[0] = 1.;
-    simpson_weights[nSE-1] = 1.;
-
-
-    double Lambda = 1.0;
-
-    State state(Lambda);
-
-
-    //Initial conditions
-    SelfEnergy<comp> self_ini;
-    SelfEnergy<comp> diff_self_ini;
-    for(int i=0; i<nSE; ++i)
-    {
-        self_ini.setself(0, i, 0.5*U);
-        self_ini.setself(1, i, 0.);
-        diff_self_ini.setself(0, i, 0.);
-        diff_self_ini.setself(1, i, 0.);
-    }
-
-    double t0 = get_time();
-
-    Vertex<fullvert<comp> > vertex = Vertex<fullvert<comp> >();
+    double  t0 = get_time();
+    State<comp> state(Lambda_ini);
+    cout << "State created. ";
     get_time(t0);
 
-    cout << "vertex calculated" << endl;
-    for(auto i:odd_Keldysh)
-    {
-        vertex.densvertex.irred.setvert(i, 0.5*U);
-        vertex.spinvertex.irred.setvert(i,-0.5*U);
+    //Initial conditions
+    for (int i = 0; i < nSE; ++i) {
+        state.selfenergy.setself(0, i, 0.5 * U);
+        state.selfenergy.setself(1, i, 0.);
+        state.diffselfenergy.setself(0, i, 0.);
+        state.diffselfenergy.setself(1, i, 0.);
     }
-    state.vertex = vertex;
+    cout << "self energy and diff self energy assigned" << endl;
+
+    for (auto i:odd_Keldysh) {
+        state.vertex.densvertex.irred.setvert(i,  0.5*U);
+        state.vertex.spinvertex.irred.setvert(i, -0.5*U);
+    }
     cout << "vertex assigned" << endl;
 
-    /*Here I begin implementing Fabian's pseudocode*/
-    //Line 1
-    Propagator S = propag(Lambda, self_ini, diff_self_ini, 's');
-    cout << "S calculated" << endl;
 
-    //Line 2
-    Propagator G = propag(Lambda, self_ini, diff_self_ini, 'g');
-    cout << "G calculated" << endl;
+    cout << "Start of flow" << endl;
+    for(auto Lambda:flow_grid) {
+        State<comp> dPsi = derivative(Lambda, state);
 
+        state += dPsi;
 
-    //Line 3
-    SelfEnergy<comp> Sigma_std = loop(vertex, S);
-    cout << "loop calculated" << endl;
+        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
 
-
-//    //Line 4
-//    state.selfenergy = Sigma_std;
-//
-//    //Line 6
-//    Propagator dG = propag(Lambda, state.selfenergy, diff_self_ini, 'k');
-//
-//    cout << "diff bubble started" << endl;
-//    //Line 8
-//    avert<comp> dgammaa = diff_a_bubble(state.vertex.densvertex.avertex, state.vertex.densvertex.avertex, G, dG);
-//    cout << "diff bubble finished" << endl;
-//
-//
-//
-    writeOutFile(ffreqs, Sigma_std, G);
+        writeOutFile(ffreqs, Lambda, control, state.selfenergy);
+        cout << "Wrote out" <<endl;
+    }
 
 
     return 0;
 }
 
 
+template <typename Q>
+State<Q> derivative(double Lambda, State<Q>& state)
+{
+    State<Q> resp(Lambda);
+
+    /*Here I begin implementing Fabian's pseudocode*/
+    //Line 1
+    Propagator S = propag(Lambda, state.selfenergy, state.diffselfenergy, 's');
+    cout << "S calculated" << endl;
+
+    //Line 2
+    Propagator G = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
+    cout << "G calculated" << endl;
+
+    //Line 3
+    SelfEnergy<comp> Sigma_std = loop(state.vertex, S);
+    cout << "loop calculated" << endl;
+
+    //Line 4
+    resp.selfenergy = Sigma_std;
+
+    //Line 6
+    Propagator dG = propag(Lambda, resp.selfenergy, resp.diffselfenergy, 'k');
+
+    cout << "diff bubble started" << endl;
+    double t2 = get_time();
+    //Lines 7-9
+    Vertex<avert<comp> > dgammaa = diff_a_bubble_function(state.vertex, state.vertex, G, dG);
+    Vertex<pvert<comp> > dgammap = diff_p_bubble_function(state.vertex, state.vertex, G, dG);
+    Vertex<tvert<comp> > dgammat = diff_t_bubble_function(state.vertex, state.vertex, G, dG);
+    cout << "diff bubble finished. ";
+    get_time(t2);
+
+//    double t3 = get_time();
+//    Lines 10-13
+//    Vertex<fullvert<Q> > dGamma = Vertex<fullvert<Q> >();
+//    dGamma.densvertex.avertex = dgammaa.densvertex;
+//    dGamma.densvertex.pvertex = dgammap.densvertex;
+//    dGamma.densvertex.tvertex = dgammat.densvertex;
+//    dGamma.spinvertex.avertex = dgammaa.spinvertex;
+//    dGamma.spinvertex.pvertex = dgammap.spinvertex;
+//    dGamma.spinvertex.tvertex = dgammat.spinvertex;
+//    cout<< "dGamma assigned: " <<endl;
+//    get_time(t3);
+//    Vertex<fullvert<Q> > dgammaabar = dgammap + dgammat;
+//    Vertex<fullvert<Q> > dgammapbar = dgammat + dgammaa;
+//    Vertex<fullvert<Q> > dgammatbar = dgammaa + dgammap;
+//
+//    double t4 = get_time();
+//    //The r_bubble_function pics the gamma_r bar contributions
+//    Vertex<avert<Q> > dgammaLa = a_bubble_function(dGamma, dGamma, G, 'L');
+//    Vertex<pvert<Q> > dgammaLp = p_bubble_function(dGamma, dGamma, G, 'L');
+//    Vertex<tvert<Q> > dgammaLt = t_bubble_function(dGamma, dGamma, G, 'L');
+//
+//    Vertex<avert<Q> > dgammaRa = a_bubble_function(dGamma, dGamma, G, 'R');
+//    Vertex<pvert<Q> > dgammaRp = p_bubble_function(dGamma, dGamma, G, 'R');
+//    Vertex<tvert<Q> > dgammaRt = t_bubble_function(dGamma, dGamma, G, 'R');
+//
+//    cout<< "Bubbles calculated: " << endl;
+//    get_time(t4);
+
+
+    //Line 14-17
+//    Vertex<fullvert<Q> > dGammaT = Vertex<fullvert<Q> >();
+//    dGammaT.densvertex.avertex = dgammaLa.densvertex + dgammaRa.densvertex;
+//    dGammaT.densvertex.pvertex = dgammaLp.densvertex + dgammaRp.densvertex;
+//    dGammaT.densvertex.tvertex = dgammaLt.densvertex + dgammaRt.densvertex;
+//    dGammaT.spinvertex.avertex = dgammaLa.spinvertex + dgammaRa.spinvertex;
+//    dGammaT.spinvertex.pvertex = dgammaLp.spinvertex + dgammaRp.spinvertex;
+//    dGammaT.spinvertex.tvertex = dgammaLt.spinvertex + dgammaRt.spinvertex;
+//
+//    dgammaa.densvertex += dGammaT.densvertex.avertex;
+//    dgammap.densvertex += dGammaT.densvertex.pvertex;
+//    dgammat.densvertex += dGammaT.densvertex.tvertex;
+//    dgammaa.spinvertex += dGammaT.spinvertex.avertex;
+//    dgammap.spinvertex += dGammaT.spinvertex.pvertex;
+//    dgammat.spinvertex += dGammaT.spinvertex.tvertex;
+
+
+    //Line 41
+    resp.vertex.densvertex.avertex = dgammaa.densvertex;
+    resp.vertex.densvertex.pvertex = dgammap.densvertex;
+    resp.vertex.densvertex.tvertex = dgammat.densvertex;
+    resp.vertex.spinvertex.avertex = dgammaa.spinvertex;
+    resp.vertex.spinvertex.pvertex = dgammap.spinvertex;
+    resp.vertex.spinvertex.tvertex = dgammat.spinvertex;
+    return resp;
+}
 
 
 //Writes of .dat files of the propagator, the self energy and selected values of the vertex for different values of Lambda during the fRG flow
-void writeOutFile(rvec& freqs, SelfEnergy<comp>& selfEnergy, Propagator& propagator)
+void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy)
 {
-        ostringstream self_energyR, self_energyA, self_energyK, propR, propA, propK;
-        self_energyR << "self_energyR.dat";
-        self_energyA << "self_energyA.dat";
-        self_energyK << "self_energyK.dat";
+    int i = fconv_Lambda(Lambda);
 
-        propR << "propagatorR.dat";
-        propA << "propagatorA.dat";
-        propK << "propagatorK.dat";
+    ostringstream self_energyR, self_energyA, self_energyK, propR, propA, propK;
+    self_energyR << "self_energyR"<<i<<".dat";
+    self_energyA << "self_energyA"<<i<<".dat";
+    self_energyK << "self_energyK"<<i<<".dat";
 
-        ofstream my_file_sigmaR, my_file_sigmaA, my_file_sigmaK, my_file_propR, my_file_propA, my_file_propK;
-        my_file_sigmaR.open(self_energyR.str());
-        my_file_sigmaA.open(self_energyA.str());
-        my_file_sigmaK.open(self_energyK.str());
+    propR << "propagatorR"<<i<<".dat";
+    propA << "propagatorA"<<i<<".dat";
+    propK << "propagatorK"<<i<<".dat";
 
-        my_file_propR.open(propR.str());
-        my_file_propA.open(propA.str());
-        my_file_propK.open(propK.str());
+    ofstream my_file_sigmaR, my_file_sigmaA, my_file_sigmaK, my_file_propR, my_file_propA, my_file_propK;
+    my_file_sigmaR.open(self_energyR.str());
+    my_file_sigmaA.open(self_energyA.str());
+    my_file_sigmaK.open(self_energyK.str());
+
+    my_file_propR.open(propR.str());
+    my_file_propA.open(propA.str());
+    my_file_propK.open(propK.str());
 
 
-        for (int j = 0; j < ffreqs.size(); j++) {
-            my_file_sigmaR << ffreqs[j] << " " << selfEnergy.svalsmooth(0, ffreqs[j]).real() << " " <<  selfEnergy.svalsmooth(0,freqs[j]).imag() << "\n";
-            my_file_sigmaA << ffreqs[j] << " " << selfEnergy.svalsmooth(0, ffreqs[j]).real() << " " << -selfEnergy.svalsmooth(0,freqs[j]).imag() << "\n";
-            my_file_sigmaK << ffreqs[j] << " " << selfEnergy.svalsmooth(1, ffreqs[j]).real() << " " <<  selfEnergy.svalsmooth(1,freqs[j]).imag() << "\n";
+    for (int j = 0; j < ffreqs.size(); j++) {
+        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.svalsmooth(0, ffreqs[j]).real() << " " <<  selfEnergy.svalsmooth(0,freqs[j]).imag() << "\n";
+        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.svalsmooth(0, ffreqs[j]).real() << " " << -selfEnergy.svalsmooth(0,freqs[j]).imag() << "\n";
+        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.svalsmooth(1, ffreqs[j]).real() << " " <<  selfEnergy.svalsmooth(1,freqs[j]).imag() << "\n";
 
-            my_file_propR << ffreqs[j] << " " << propagator.pvalsmooth(0, ffreqs[j]).real() << " " <<  propagator.pvalsmooth(0, ffreqs[j]).imag() << "\n";
-            my_file_propA << ffreqs[j] << " " << propagator.pvalsmooth(0, ffreqs[j]).real() << " " << -propagator.pvalsmooth(0, ffreqs[j]).imag() << "\n";
-            my_file_propK << ffreqs[j] << " " << propagator.pvalsmooth(1, ffreqs[j]).real() << " " <<  propagator.pvalsmooth(1, ffreqs[j]).imag() << "\n";
-        }
-        my_file_sigmaR.close();
-        my_file_sigmaA.close();
-        my_file_sigmaK.close();
+        my_file_propR << ffreqs[j] << " " << propagator.pvalsmooth(0, ffreqs[j]).real() << " " <<  propagator.pvalsmooth(0, ffreqs[j]).imag() << "\n";
+        my_file_propA << ffreqs[j] << " " << propagator.pvalsmooth(0, ffreqs[j]).real() << " " << -propagator.pvalsmooth(0, ffreqs[j]).imag() << "\n";
+        my_file_propK << ffreqs[j] << " " << propagator.pvalsmooth(1, ffreqs[j]).real() << " " <<  propagator.pvalsmooth(1, ffreqs[j]).imag() << "\n";
+    }
+    my_file_sigmaR.close();
+    my_file_sigmaA.close();
+    my_file_sigmaK.close();
 
-        my_file_propR.close();
-        my_file_propA.close();
-        my_file_propK.close();
+    my_file_propR.close();
+    my_file_propA.close();
+    my_file_propK.close();
+}
 
+void setUpBosGrid()
+{
+    for(int i=0; i<nBOS; ++i)
+        bfreqs[i] = w_lower_b + i*dw;
+}
+void setUpFerGrid()
+{
+    for(int i=0; i<nFER; ++i)
+        ffreqs[i] = w_lower_f + i*dv;
+}
+void setUpFlowGrid()
+{
+    for(int i=0; i<nEVO; ++i)
+        flow_grid[i] = Lambda_ini + i*dL;
 }

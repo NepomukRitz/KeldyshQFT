@@ -13,91 +13,71 @@
 
 //define a struct object which includes the self energy and the vertex which are needed to evaluate the RHS of the flow equations.
 
-//TODO: shouldn't state be a template <Q> struct? Or, stated in another way, isn't it Vertex<fullvert<Q> > ?
+template <typename Q>
 struct State{
+public:
     double Lambda{};
-    SelfEnergy<comp> selfenergy;
-    Vertex<fullvert<comp> > vertex;
-
-    State() = default;;
-    explicit State(double lambda_input) : Lambda(lambda_input) {};
-
+    SelfEnergy<Q> selfenergy;
+    SelfEnergy<Q> diffselfenergy;
+    Vertex<fullvert<Q> > vertex;
 #ifdef SUSC
     Susc<comp> sus;
 #endif
 
-    /**************************************************FUNCTION DECLARATIONS*******************************************/
-public:
-
-};
-
-
-State operator+(const State&, const State&);
-State operator*(double, const State&);
-State operator*(const State&, double);
-
+    State() = default;;
+    explicit State(double lambda_input) : Lambda(lambda_input) {};
 
 //TODO: check this below (and define state first)
 //operators containing State objects
-State operator+(const State& State1, const State& State2){
-    State result;
-    result.vertex.spinvertex.irred = State1.vertex.spinvertex.irred + State2.vertex.spinvertex.irred;
-    result.vertex.spinvertex.avertex = State1.vertex.spinvertex.avertex + State2.vertex.spinvertex.avertex;
-    result.vertex.spinvertex.pvertex = State1.vertex.spinvertex.pvertex + State2.vertex.spinvertex.pvertex;
-    result.vertex.spinvertex.tvertex = State1.vertex.spinvertex.tvertex + State2.vertex.spinvertex.tvertex;
+    State operator+(const State& State1){
+        this->vertex.spinvertex.irred   + State1.vertex.spinvertex.irred;
+        this->vertex.spinvertex.avertex + State1.vertex.spinvertex.avertex;
+        this->vertex.spinvertex.pvertex + State1.vertex.spinvertex.pvertex;
+        this->vertex.spinvertex.tvertex + State1.vertex.spinvertex.tvertex;
 
-    result.vertex.densvertex.irred = State1.vertex.densvertex.irred + State2.vertex.densvertex.irred;
-    result.vertex.densvertex.avertex = State1.vertex.densvertex.avertex + State2.vertex.densvertex.avertex;
-    result.vertex.densvertex.pvertex = State1.vertex.densvertex.pvertex + State2.vertex.densvertex.pvertex;
-    result.vertex.densvertex.tvertex = State1.vertex.densvertex.tvertex + State2.vertex.densvertex.tvertex;
+        this->vertex.densvertex.irred   + State1.vertex.densvertex.irred;
+        this->vertex.densvertex.avertex + State1.vertex.densvertex.avertex;
+        this->vertex.densvertex.pvertex + State1.vertex.densvertex.pvertex;
+        this->vertex.densvertex.tvertex + State1.vertex.densvertex.tvertex;
 
-//    result.selfenergy = State1.selfenergy + State2.selfenergy;
-
-#ifdef SUSC
-    result.sus = State1.sus + State2.sus; //TODO: Are susceptibilities additive?
-#endif
-    return result;
-}
-State operator*(double alpha, const State& State1){
-    State result;
-    result.vertex.spinvertex.irred = State1.vertex.spinvertex.irred * alpha;
-    result.vertex.spinvertex.avertex = State1.vertex.spinvertex.avertex * alpha;
-    result.vertex.spinvertex.pvertex = State1.vertex.spinvertex.pvertex * alpha;
-    result.vertex.spinvertex.tvertex = State1.vertex.spinvertex.tvertex * alpha;
-
-    result.vertex.densvertex.irred = State1.vertex.densvertex.irred * alpha;
-    result.vertex.densvertex.avertex = State1.vertex.densvertex.avertex * alpha;
-    result.vertex.densvertex.pvertex = State1.vertex.densvertex.pvertex * alpha;
-    result.vertex.densvertex.tvertex = State1.vertex.densvertex.tvertex * alpha;
-
-//    result.selfenergy = alpha * State1.selfenergy;
+        this->selfenergy + State1.selfenergy ;
+        this->diffselfenergy + State1.diffselfenergy;
 
 #ifdef SUSC
-    result.sus = alpha * State1.sus;
+        this-> sus + State1.sus; //TODO: Are susceptibilities additive?
 #endif
-    return result;
-}
-State operator*(const State& State1, double alpha){
-    State result;
-    result.vertex.spinvertex.irred = State1.vertex.spinvertex.irred * alpha;
-    result.vertex.spinvertex.avertex = State1.vertex.spinvertex.avertex * alpha;
-    result.vertex.spinvertex.pvertex = State1.vertex.spinvertex.pvertex * alpha;
-    result.vertex.spinvertex.tvertex = State1.vertex.spinvertex.tvertex * alpha;
-
-    result.vertex.densvertex.irred = State1.vertex.densvertex.irred * alpha;
-    result.vertex.densvertex.avertex = State1.vertex.densvertex.avertex * alpha;
-    result.vertex.densvertex.pvertex = State1.vertex.densvertex.pvertex * alpha;
-    result.vertex.densvertex.tvertex = State1.vertex.densvertex.tvertex * alpha;
-
-//    result.selfenergy = alpha * State1.selfenergy;
+        return (*this);
+    }
+    State operator+=(const State& State1){
+        this->vertex += State1.vertex;
+        this->selfenergy += State1.selfenergy;
+        this->diffselfenergy += State1.diffselfenergy;
 
 #ifdef SUSC
-    result.sus = alpha * State1.sus;
+        this-> sus + State1.sus; //TODO: Are susceptibilities additive?
 #endif
-    return result;
-}
+        return (*this);
+    }
+    State operator*(double alpha){
+        this->vertex.spinvertex.irred * alpha;
+        this->vertex.spinvertex.avertex * alpha;
+        this->vertex.spinvertex.pvertex * alpha;
+        this->vertex.spinvertex.tvertex * alpha;
 
-/**********************************FUNCTIONS WITHIN THE STATE**********************************************************/
+        this->vertex.densvertex.irred * alpha;
+        this->vertex.densvertex.avertex * alpha;
+        this->vertex.densvertex.pvertex * alpha;
+        this->vertex.densvertex.tvertex * alpha;
+
+        this->selfenergy * alpha;
+        this->diffselfenergy * alpha;
+#ifdef SUSC
+        this-> sus * alpha;
+#endif
+        return (*this);
+    }
+
+};
 
 
 #endif //KELDYSH_MFRG_STATE_H

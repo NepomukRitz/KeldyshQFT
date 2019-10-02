@@ -47,20 +47,6 @@ public:
     Q value (int, double, double, double, int);
 
 
-//    /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
-//     * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
-//    Q vvalsmooth(int, double, double, double, int, char);
-//
-//    /*Same idea as function above, but is oriented towards the multi-loop implementation */
-//    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-//
-//    /*No clue, suspect is unnecessary fro us since we do not need map or red_side operations*/
-////    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-//
-//    /*This function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45*/
-//    Q vvalsmooth(int, double, double, double, int);
-
-
     /*Sets the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure) to input Q*/
     void K1_setvert(int, int, int, Q);
 
@@ -109,14 +95,6 @@ public:
 
 
 
-
-
-
-
-
-
-
-
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
     tuple<double, double, double> transfToP(double, double, double, char);
@@ -160,29 +138,25 @@ public:
     tuple<int, int> indices_sum(int i0, int i2);
 
 
-    /*Define the operator of multiplying a p-vertex with a number.*/
-    pvert<Q> friend operator*(double alpha, const pvert<Q> vertex) {
-        pvert<Q> vertex2;
-        vertex2.K1 = vertex.K1 * alpha;
-        vertex2.K2 = vertex.K2 * alpha;
-        vertex2.K3 = vertex.K3 * alpha;
-        return vertex2;
+    pvert<Q> operator+(const pvert<Q>& vertex)
+    {
+        this->K1 + vertex.K1;
+        this->K2 + vertex.K2;
+        this->K3 + vertex.K3;
+        return *this;
     }
-    pvert<Q> friend operator*(const pvert<Q>& vertex, double alpha){
-        pvert<Q> vertex2;
-        vertex2.K1 = vertex.K1 * alpha;
-        vertex2.K2 = vertex.K2 * alpha;
-        vertex2.K3 = vertex.K3 * alpha;
-        return vertex2;
+    pvert<Q> operator+=(const pvert<Q>& vertex)
+    {
+        this->K1 += vertex.K1;
+        this->K2 += vertex.K2;
+        this->K3 += vertex.K3;
+        return *this;
     }
-
-    /*Define the addition operation of two t-vertices*/
-    pvert<Q> friend operator+(const pvert<Q>& vertex1, const pvert<Q>& vertex2){
-        pvert<Q> vertex3;
-        vertex3.K1 = vertex1.K1 * vertex2.K1;
-        vertex3.K2 = vertex1.K2 * vertex2.K2;
-        vertex3.K3 = vertex1.K3 * vertex2.K3;
-        return vertex3;
+    pvert<Q> operator*(double alpha) {
+        this->K1 * alpha;
+        this->K2 * alpha;
+        this->K3 * alpha;
+        return *this;
     }
 
 };
@@ -195,9 +169,9 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
 
     /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
     * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
-    return  K1_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
-          + K2_vvalsmooth (iK, w_p, v1_p, v2_p, i_in)
-          + K2b_vvalsmooth(iK, w_p, v1_p, v2_p, i_in)
+    return  K1_vvalsmooth (iK, w_p, i_in)
+          + K2_vvalsmooth (iK, w_p, v1_p, i_in)
+          + K2b_vvalsmooth(iK, w_p, v2_p, i_in)
           + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
 }
 
@@ -372,8 +346,8 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
     else{
         int index = fconv_K1_p(w_p);
 
-        double x1 = freqs_p[index];
-        double x2 = freqs_p[index] + dw_p;
+        double x1 = bfreqs[index];
+        double x2 = bfreqs[index] + dw;
 
         double xd = (w_p - x1) / (x2 - x1);
 
@@ -446,10 +420,10 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p
         int index_b, index_f;
         tie(index_b, index_f) = fconv_K2_p(w_p, v1_p);
 
-        double x1 = freqs_p[index_b];
-        double x2 = freqs_p[index_b] + dw_p;
-        double y1 = freqs_p[index_f];
-        double y2 = freqs_p[index_f] + dw_p;
+        double x1 = bfreqs[index_b];
+        double x2 = bfreqs[index_b] + dw;
+        double y1 = ffreqs[index_f];
+        double y2 = ffreqs[index_f] + dv;
 
         double xd = (w_p - x1) / (x2 - x1);
         double yd = (v1_p - y1) / (y2 - y1);
@@ -569,12 +543,12 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p
         int index_b, index_f, index_fp;
         tie(index_b, index_f, index_fp) = fconv_K3_p(w_p, v1_p, v2_p);
 
-        double x1 = freqs_p[index_b];
-        double x2 = freqs_p[index_b] + dw_p;
-        double y1 = freqs_p[index_f];
-        double y2 = freqs_p[index_f] + dw_p;
-        double z1 = freqs_p[index_fp];
-        double z2 = freqs_p[index_fp] + dw_p;
+        double x1 = bfreqs[index_b];
+        double x2 = bfreqs[index_b] + dw;
+        double y1 = ffreqs[index_f];
+        double y2 = ffreqs[index_f] + dv;
+        double z1 = ffreqs[index_fp];
+        double z2 = ffreqs[index_fp] + dv;
 
         Q f111 = K3_vval(iK3, index_b, index_f, index_fp, i_in);
         Q f112 = K3_vval(iK3, index_b, index_f, index_fp + 1, i_in);

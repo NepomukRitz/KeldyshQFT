@@ -36,30 +36,15 @@ class avert{
 
 public:
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
-     * of the necessary indices convertions  and what not...
-     * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
-     * i.e. only complex numbers
-     *
-     * This function aims to be the sole function one needs to call to read the full vertex*/
-//    Q value (int, double, double, double, int, char);
-      Q value (int, double, double, double, int, tvert<Q>& tvertex, char);
+    * of the necessary indices convertions  and what not...
+    * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
+    * i.e. only complex numbers
+    *
+    * This function aims to be the sole function one needs to call to read the full vertex*/
+    Q value (int, double, double, double, int, char, tvert<Q>& tvertex);
 
-//    /*For when the channel is already known and the trafo to the specific channel has already been done*/
-//    Q value (int, double, double, double, int);
+    /*For when the channel is already known and the trafo to the specific channel has already been done*/
     Q value (int, double, double, double, int, tvert<Q>& tvertex);
-
-//    /*This function returns the value of the full vertex (i.e. the sum of the diagrammatic classes) for a given
-//     * combination of Keldysh (first int) and internal structure (second int, set to 0 if no extra structure).*/
-//    Q vvalsmooth(int, double, double, double, int, char);
-//
-//    /*Same idea as function above, but is oriented towards the multi-loop implementation */
-//    Q vvalsmooth(int, double, double, double, int, char, int, char);//second to last argument: vertex 1 or 2; last argument: bubble type: R,(K= K1),(L= K2),(M= K2b)
-//
-//    /*No clue, suspect is unnecessary for us since we do not need map or red_side operations*/
-////    Q vvalsmooth(int, int, double, double, double, char, int, char);//first two arguments: int red_side, int map
-//
-//    /*This function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45*/
-//    Q vvalsmooth(int, double, double, double, int);
 
 
     /*Sets the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure) to input Q*/
@@ -97,40 +82,25 @@ public:
 
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
      * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-//    Q K1_vvalsmooth(int, double, int);
-//    Q K1_vvalsmooth(int, double, double, double, int);
     Q K1_vvalsmooth(int, double, int, tvert<Q>&);
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
      *  for given Keldysh and internal structure indices.*/
-//    Q K2_vvalsmooth(int, double, double, int);
-//    Q K2_vvalsmooth(int, double, double, double, int);
     Q K2_vvalsmooth(int, double, double, int, tvert<Q>&);
 
     /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
  *  for given Keldysh and internal structure indices.*/
-//    Q K2b_vvalsmooth(int, double, double, int);
-//    Q K2b_vvalsmooth(int, double, double, double, int);
     Q K2b_vvalsmooth(int, double, double, int, tvert<Q>&);
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
-//    Q K3_vvalsmooth(int, double, double, double, int);
     Q K3_vvalsmooth(int, double, double, double, int, tvert<Q>&);
-
 
 
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
     tuple<double, double, double> transfToA(double, double, double, char);
-
-//    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
-//    tuple<double, double, double> transfToA(double, double, double);
-//
-//    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
-//     * I.e. is the inverse of the function above*/
-//    tuple<double, double, double> transfBackA(double, double, double);
 
 
     /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
@@ -164,31 +134,26 @@ public:
     tuple<int, int> indices_sum(int i0, int i2);
 
 
-    /*Define the operator of multiplying an a-vertex with a number.*/
-    avert<Q> friend operator*(double alpha, const avert<Q> vertex) {
-        avert<Q> vertex2;
-        vertex2.K1 = vertex.K1 * alpha;
-        vertex2.K2 = vertex.K2 * alpha;
-        vertex2.K3 = vertex.K3 * alpha;
-        return vertex2;
+    avert<Q> operator+(const avert<Q>& vertex)
+    {
+        this->K1 + vertex.K1;
+        this->K2 + vertex.K2;
+        this->K3 + vertex.K3;
+        return *this;
     }
-    avert<Q> friend operator*(const avert<Q>& vertex, double alpha){
-        avert<Q> vertex2;
-        vertex2.K1 = vertex.K1 * alpha;
-        vertex2.K2 = vertex.K2 * alpha;
-        vertex2.K3 = vertex.K3 * alpha;
-        return vertex2;
+    avert<Q> operator+=(const avert<Q>& vertex)
+    {
+        this->K1 += vertex.K1;
+        this->K2 += vertex.K2;
+        this->K3 += vertex.K3;
+        return *this;
     }
-
-    /*Define the addition operation of two a-vertices*/
-    avert<Q> friend operator+(const avert<Q>& vertex1, const avert<Q>& vertex2){
-        avert<Q> vertex3;
-        vertex3.K1 = vertex1.K1 * vertex2.K1;
-        vertex3.K2 = vertex1.K2 * vertex2.K2;
-        vertex3.K3 = vertex1.K3 * vertex2.K3;
-        return vertex3;
+    avert<Q> operator*(double alpha) {
+        this->K1 * alpha;
+        this->K2 * alpha;
+        this->K3 * alpha;
+        return *this;
     }
-
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
@@ -214,7 +179,7 @@ public:
 //            + K3_vvalsmooth (iK, w, v1, v2, i_in);
 //}
 
-template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex, char channel){
+template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, tvert<Q>& tvertex){
 
     double w_a=0., v1_a=0., v2_a=0.;
     tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
@@ -351,7 +316,7 @@ template <typename Q> Q avert<Q>::K2_vval (int iK, int i,int j, int i_in){
     return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
 }
 template <typename Q> Q avert<Q>::K2b_vval(int iK, int i,int j, int i_in){
-    i = nw2_wt-1-i;
+    i = nw2_wt-i;
     return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in]; //TODO: conjugate?
 }
 template <typename Q> Q avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
@@ -647,8 +612,8 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in, tv
         if(transform){
             index = fconv_K1_t(w_a);
 
-            x1 = freqs_t[index];
-            x2 = freqs_t[index] + dw_t;
+            x1 = bfreqs[index];
+            x2 = bfreqs[index] + dw;
             xd = (w_a - x1) / (x2 - x1);
 
             f1 = tvertex.K1_vval(iK1, index, i_in);
@@ -656,8 +621,8 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in, tv
         }
         else {
             index = fconv_K1_a(w_a);
-            x1 = freqs_a[index];
-            x2 = freqs_a[index] + dw_a;
+            x1 = bfreqs[index];
+            x2 = bfreqs[index] + dw;
             xd = (w_a - x1) / (x2 - x1);
 
             f1 = K1_vval(iK1, index, i_in);
@@ -736,11 +701,11 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
             if(conjugate2){
                 tie(index_b, index_f) = fconv_K2_t(-w_a, v1_a); // iK2 is already right!! No need to transform it also
 
-                 x1 = freqs_t[index_b];
-                 x2 = freqs_t[index_b] + dw_t;
-                 y1 = freqs_t[index_f];
-                 y2 = freqs_t[index_f] + dw_t;
-                 xd = (w_a - x1) / (x2 - x1);
+                 x1 = bfreqs[index_b];
+                 x2 = bfreqs[index_b] + dw;
+                 y1 = ffreqs[index_f];
+                 y2 = ffreqs[index_f] + dv;
+                 xd = (-w_a - x1) / (x2 - x1);
                  yd = (v1_a - y1) / (y2 - y1);
 
                  f11 = tvertex.K2b_vval(iK2, index_b, index_f, i_in);
@@ -752,10 +717,10 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
             else {
                 tie(index_b, index_f) = fconv_K2_t(w_a, v1_a);
 
-                x1 = freqs_t[index_b];
-                x2 = freqs_t[index_b] + dw_t;
-                y1 = freqs_t[index_f];
-                y2 = freqs_t[index_f] + dw_t;
+                x1 = bfreqs[index_b];
+                x2 = bfreqs[index_b] + dw;
+                y1 = ffreqs[index_f];
+                y2 = ffreqs[index_f] + dv;
                 xd = (w_a - x1) / (x2 - x1);
                 yd = (v1_a - y1) / (y2 - y1);
 
@@ -769,11 +734,11 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
             if(conjugate2) {
                 tie(index_b, index_f) = fconv_K2_t(-w_a, v1_a); // iK2 is already right!! No need to transform it also
 
-                x1 = freqs_a[index_b];
-                x2 = freqs_a[index_b] + dw_a;
-                y1 = freqs_a[index_f];
-                y2 = freqs_a[index_f] + dw_a;
-                xd = (w_a - x1) / (x2 - x1);
+                x1 = bfreqs[index_b];
+                x2 = bfreqs[index_b] + dw;
+                y1 = ffreqs[index_f];
+                y2 = ffreqs[index_f] + dv;
+                xd = (-w_a - x1) / (x2 - x1);
                 yd = (v1_a - y1) / (y2 - y1);
 
                 f11 = K2b_vval(iK2, index_b, index_f, i_in);
@@ -784,10 +749,10 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
             else {
                 tie(index_b, index_f) = fconv_K2_a(w_a, v1_a);
 
-                x1 = freqs_a[index_b];
-                x2 = freqs_a[index_b] + dw_a;
-                y1 = freqs_a[index_f];
-                y2 = freqs_a[index_f] + dw_a;
+                x1 = bfreqs[index_b];
+                x2 = bfreqs[index_b] + dw;
+                y1 = ffreqs[index_f];
+                y2 = ffreqs[index_f] + dv;
                 xd = (w_a - x1) / (x2 - x1);
                 yd = (v1_a - y1) / (y2 - y1);
 
@@ -918,12 +883,12 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a,
 
         if(transform){
             tie(index_b, index_f, index_fp) = fconv_K3_t(w_a, v1_a, v2_a);
-            x1 = freqs_a[index_b];
-            x2 = freqs_a[index_b] + dw_a;
-            y1 = freqs_a[index_f];
-            y2 = freqs_a[index_f] + dw_a;
-            z1 = freqs_a[index_fp];
-            z2 = freqs_a[index_fp] + dw_a;
+            x1 = bfreqs[index_b];
+            x2 = bfreqs[index_b] + dw;
+            y1 = ffreqs[index_f];
+            y2 = ffreqs[index_f] + dv;
+            z1 = ffreqs[index_fp];
+            z2 = ffreqs[index_fp] + dv;
             xd = (w_a - x1) / (x2 - x1);
             yd = (v1_a - y1) / (y2 - y1);
             zd = (v2_a - z1) / (z2 - z1);
@@ -940,12 +905,12 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a,
 
         else {
             tie(index_b, index_f, index_fp) = fconv_K3_a(w_a, v1_a, v2_a);
-            x1 = freqs_a[index_b];
-            x2 = freqs_a[index_b] + dw_a;
-            y1 = freqs_a[index_f];
-            y2 = freqs_a[index_f] + dw_a;
-            z1 = freqs_a[index_fp];
-            z2 = freqs_a[index_fp] + dw_a;
+            x1 = bfreqs[index_b];
+            x2 = bfreqs[index_b] + dw;
+            y1 = ffreqs[index_f];
+            y2 = ffreqs[index_f] + dv;
+            z1 = ffreqs[index_fp];
+            z2 = ffreqs[index_fp] + dv;
             xd = (w_a - x1) / (x2 - x1);
             yd = (v1_a - y1) / (y2 - y1);
             zd = (v2_a - z1) / (z2 - z1);

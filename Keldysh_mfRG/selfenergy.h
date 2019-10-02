@@ -15,54 +15,50 @@ public:
     Q svalsmooth(int, double);
     void setself(int, int, Q);
 
-    friend SelfEnergy operator+(const SelfEnergy& self1, const SelfEnergy& self2);
-    friend SelfEnergy operator+=(const SelfEnergy& self1,const SelfEnergy& self2);
-    friend SelfEnergy operator*(Q alpha, const SelfEnergy& self1);
-    friend SelfEnergy operator*(const SelfEnergy& self1, Q alpha);
+//operators for self energy
+
+    SelfEnergy<Q> operator+(const SelfEnergy<Q>& self1){//sum operator overloading
+        this->Sigma + self1.Sigma;
+        return *this;
+    }
+    SelfEnergy<Q> operator+=(const SelfEnergy<Q>& self1){//sum operator overloading
+        this->Sigma += self1.Sigma;
+        return *this;
+    }
+    SelfEnergy<Q> operator*(Q alpha) {//multiplication operator overloading
+        this->Sigma * alpha;
+        return *this;
+    }
+    SelfEnergy<Q> operator*(double alpha){//multiplication operator overloading
+        this->Sigma*alpha;
+        return *this;
+    }
 };
 
 
 
-/*****************************************FUNCTIONS FOR SELF ENERGY********************************************************/
+/*****************************************FUNCTIONS FOR SELF ENERGY*****************************************************/
 template <typename Q> Q SelfEnergy<Q>::sval(int iK, int i){
     return Sigma[iK*nSE + i];
 }
 template <typename Q> Q SelfEnergy<Q>::svalsmooth(int iK, double w){//smoothly interpolates for values between discrete frequency values of mesh
 
-    int W = fconv(w);
-    double x1 = ffreqs[W];
-    double x2 = ffreqs[W] + dv;
-    double xd = (w-x1)/(x2-x1);
+    if(fabs(w)>=w_upper_f)
+        return 0.;
+    else {
+        int W = fconv_fer(w);
+        double x1 = ffreqs[W];
+        double x2 = ffreqs[W] + dv;
+        double xd = (w - x1) / (x2 - x1);
 
-    Q f1 = sval(iK, W);
-    Q f2 = sval(iK, W+1);
+        Q f1 = sval(iK, W);
+        Q f2 = sval(iK, W + 1);
 
-    return (1.-xd)*f1 + xd*f2;
+        return (1. - xd) * f1 + xd * f2;
+    }
 }
 template <typename Q> void SelfEnergy<Q>::setself(int iK, int i, Q val){
     Sigma[iK*nSE + i] = val;
-}
-
-//operators for self energy
-template <typename Q> SelfEnergy<Q> operator+(const SelfEnergy<Q>& self1, const SelfEnergy<Q>& self2){//sum operator overloading
-    SelfEnergy<Q> self3;
-    self3.Sigma = self1.Sigma + self2.Sigma;
-    return self3;
-}
-template <typename Q> SelfEnergy<Q> operator+=(const SelfEnergy<Q>& self1, const SelfEnergy<Q>& self2){//sum operator overloading
-    SelfEnergy<Q> self3;
-    self3.Sigma = self1.Sigma + self2.Sigma;
-    return self3;
-}
-template <typename Q> SelfEnergy<Q> operator*(Q alpha, const SelfEnergy<Q>& self1){//product operator overloading
-    SelfEnergy<Q> self2;
-    self2.Sigma = self1.Sigma * alpha;
-    return self2;
-}
-template <typename Q> SelfEnergy<Q> operator*(const SelfEnergy<Q>& self1, Q alpha){//product operator overloading
-    SelfEnergy<Q> self2;
-    self2.Sigma = self1.Sigma * alpha;
-    return self2;
 }
 
 
