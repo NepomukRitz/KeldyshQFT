@@ -26,12 +26,21 @@ class tvert{
 
     /*Lists of the Keldysh components of K2t relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K2_T0_comp1 = {1, 11};
-    vector<int> list_K2_T1_comp1 = {2, 8};
-    vector<int> list_K2_T2_comp1 = {7, 13};
-    vector<int> list_K2_T3_comp1 = {4, 14};
-    vector<int> list_K2_T0_comp3 = {3, 9};
-    vector<int> list_K2_T3_comp3 = {6, 12};
+    vector<int> list_K2_T0_comp0 = {0, 10};  // components in K2 equal to comp.0 of K2
+    vector<int> list_K2_T0_comp1 = {1, 11};  // ...
+    vector<int> list_K2_T0_comp2 = {2,  8};
+    vector<int> list_K2_T0_comp3 = {3,  9};
+    vector<int> list_K2_TC_comp1 = {4, 14};
+    vector<int> list_K2_TC_comp3 = {6, 12};
+    vector<int> list_K2_T0_comp7 = {7, 13};
+
+    vector<int> list_K2b_T3_comp0 = { 0,  5};  // components in K2b equal to T_3 comp.0 of K2
+    vector<int> list_K2b_T3_comp2 = { 1,  4};  // ...
+    vector<int> list_K2b_T3_comp1 = { 2,  7};
+    vector<int> list_K2b_T3_comp3 = { 3,  6};
+    vector<int> list_K2b_TC_comp1 = { 8, 13};
+    vector<int> list_K2b_TC_comp3 = { 9, 12};
+    vector<int> list_K2b_TC_comp7 = {11, 14};
 
 
 public:
@@ -648,7 +657,7 @@ template <typename Q> Q tvert<Q>::K2_vval (int iK, int i, int j, int i_in){
 template <typename Q> Q tvert<Q>::K2b_vval(int iK, int i, int j, int i_in){
     i = nw2_wt-i;
     return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
-}
+}   // TODO: is this correct/do we even need this?? I don't think so...
 template <typename Q> Q tvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
     return K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in];
 }
@@ -793,55 +802,66 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, av
 template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t, int i_in, avert<Q>& avertex){
 
     int iK2;
-    double pf2;
-    bool conjugate2 = false;
-    bool transform = false;
+    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
+    bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
+    bool transform;   // whether or not to switch between channels a,t: true for T_1, T_2, false else
     Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(isInList(iK,list_K2_T0_comp1)){
-        iK2 = 0;
-        pf2 = 1.;
-        conjugate2 = false;
-        transform = false;
-    }
-    else if(isInList(iK,list_K2_T1_comp1)){
-        tie(w_t, v1_t, i_in) = indices_T1_K2(w_t, v1_t, i_in);
-        iK2 = 0;
-        pf2 =-1.;
-        conjugate2 = true;
-        transform = true;
-    }
-    else if(isInList(iK,list_K2_T2_comp1)){
+    if(isInList(iK,list_K2_T0_comp0)){
         tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
         iK2 = 0;
-        pf2 =-1.;
+        pf2 = -1.;
         conjugate2 = false;
         transform = true;
     }
-    else if(isInList(iK,list_K2_T3_comp1)){
-        tie(w_t, v1_t, i_in) = indices_T3_K2(w_t, v1_t, i_in);
-        iK2 = 0;
-        pf2 = 1.;
-        conjugate2 = true;
-        transform = false;
+    else if(isInList(iK,list_K2_T0_comp1)){
+        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+        iK2 = 1;
+        pf2 = -1.;
+        conjugate2 = false;
+        transform = true;
+    }
+    else if(isInList(iK,list_K2_T0_comp2)){
+        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+        iK2 = 2;
+        pf2 = -1.;
+        conjugate2 = false;
+        transform = true;
     }
     else if(isInList(iK,list_K2_T0_comp3)){
-        iK2 = 1;
-        pf2 = 1.;
+        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+        iK2 = 3;
+        pf2 = -1.;
         conjugate2 = false;
-        transform = false;
+        transform = true;
     }
-    else if(isInList(iK,list_K2_T3_comp3)){
-        tie(w_t, v1_t, i_in) = indices_T3_K2(w_t, v1_t, i_in);
+    else if(isInList(iK,list_K2_TC_comp1)){
+        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+        tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
         iK2 = 1;
-        pf2 = 1.;
+        pf2 = -1.;
         conjugate2 = true;
-        transform = false;
+        transform = true;
+    }
+    else if(isInList(iK,list_K2_TC_comp3)){
+        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+        tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
+        iK2 = 3;
+        pf2 = -1.;
+        conjugate2 = true;
+        transform = true;
+    }
+    else if(isInList(iK,list_K2_T0_comp7)){
+        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+        iK2 = 4;
+        pf2 = -1.;
+        conjugate2 = false;
+        transform = true;
     }
     else{
-        iK2 = 0.;
+        iK2 = 0;
         pf2 = 0.;
         conjugate2 = false;
         transform = false;
@@ -926,7 +946,7 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
 template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v2_t, int i_in, avert<Q>& avertex){
     iK = T_3_Keldysh(iK);
     return K2_vvalsmooth(iK,-w_t, v2_t, i_in, avertex);
-}
+}  // TODO: correct this
 template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t, double v2_t, int i_in, avert<Q>& avertex){
 
     int iK3;
