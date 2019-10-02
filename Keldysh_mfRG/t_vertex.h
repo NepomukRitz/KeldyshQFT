@@ -20,9 +20,9 @@ class tvert{
 
     /*Lists of the Keldysh components of K1t relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K1_T0_comp1 = {1, 4, 11, 14};
-    vector<int> list_K1_T1_comp1 = {2, 7, 8, 13};
-    vector<int> list_K1_T0_comp3 = {3, 6, 9, 12};
+    vector<int> list_K1_T0_comp1 = {1, 4, 11, 14};  // components equal to     comp.1     (B_1^t for equal spins). In the vertex, comp1 will be iK=0
+    vector<int> list_K1_T3_comp1 = {2, 7,  8, 13};  // components equal to T_3 comp.1 (T_3 B_1^t for equal spins).
+    vector<int> list_K1_T0_comp3 = {3, 6,  9, 12};  // components equal to     comp.3     (C_1^t for equal spins). In the vertex, comp3 will be iK=1
 
     /*Lists of the Keldysh components of K2t relating the respective component to the independent ones through the marked
     * trafo*/
@@ -179,7 +179,7 @@ public:
 //        iK1 = 0;
 //        pf1 = 1.;
 //    }
-//    else if(isInList(iK,list_K1_T1_comp1)){
+//    else if(isInList(iK,list_K1_T3_comp1)){
 //        tie(iK1, w_t, v1_t, v2_t, i_in) = indices_T1(iK, w_t, v1_t, v2_t, i_in);
 //        iK1 = 0;
 //        pf1 =-1.;
@@ -352,7 +352,7 @@ public:
 //        iK1 = 0;
 //        pf1 = 1.;
 //    }
-//    else if(isInList(iK,list_K1_T1_comp1)){
+//    else if(isInList(iK,list_K1_T3_comp1)){
 //        tie(w_t, v1_t, v2_t, i_in) = indices_T1(w_t, v1_t, v2_t, i_in);
 //        iK1 = 0;
 //        pf1 =-1.;
@@ -732,8 +732,8 @@ template <typename Q> Q tvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in
 template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, avert<Q>& avertex){
 
     int iK1;
-    double pf1;
-    bool transform;
+    double pf1;      // prefactor: -1 for T_1, T_2, +1 else
+    bool transform;  // whether or not to switch between channels a,t: true for T_1, T_2, false else
     Q valueK1;
 
     /*This part determines the value of the K1 contribution*/
@@ -743,11 +743,11 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, av
         pf1 = 1.;
         transform = false;
     }
-    else if(isInList(iK,list_K1_T1_comp1)){
-        tie(w_t, i_in) = indices_T1_K1(w_t, i_in);
+    else if(isInList(iK,list_K1_T3_comp1)){
+        tie(w_t, i_in) = indices_T3_K1(w_t, i_in);
         iK1 = 0;
-        pf1 =-1.;
-        transform = true;
+        pf1 = 1.;
+        transform = false;
     }
     else if(isInList(iK, list_K1_T0_comp3)){
         iK1 = 1;

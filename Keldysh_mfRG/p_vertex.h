@@ -20,9 +20,9 @@ class pvert{
 
     /*Lists of the Keldysh components of K1p relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K1_T0_comp1 = {1, 2, 13, 14};
-    vector<int> list_K1_TC_comp1 = {4, 7, 8, 11};
-    vector<int> list_K1_T0_comp5 = {5, 6, 9, 10};
+    vector<int> list_K1_T0_comp1 = {1, 2, 13, 14};  // components equal to     comp.1     (B_1^p for equal spins). In the vertex, comp1 will be iK=0
+    vector<int> list_K1_TC_comp1 = {4, 7,  8, 11};  // components equal to T_C comp.1 (T_C B_1^p for equal spins).
+    vector<int> list_K1_T0_comp5 = {5, 6,  9, 10};  // components equal to     comp.5     (D_1^p for equal spins). In the vertex, comp5 will be iK=1
 
     /*Lists of the Keldysh components of K2p relating the respective component to the independent ones through the marked
     * trafo*/
@@ -312,8 +312,8 @@ template <typename Q> Q pvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in)
 template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
 
     int iK1;
-    double pf1;
-    bool conjugate1;
+    double pf1;       // prefactor: -1 for T_1, T_2, +1 else
+    bool conjugate1;  // whether or not to conjugate value: true for T_C, false else
     Q valueK1;
 
     /*This part determines the value of the K1 contribution*/
