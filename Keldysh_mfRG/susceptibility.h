@@ -34,16 +34,25 @@ template <typename Q>Q Susc<Q>::susval(int iK, int i){
 }
 template <typename Q>Q Susc<Q>::susvalsmooth(int iK, double w){//smoothly interpolates for values between discrete frequency values of mesh
 
-    int W = fconv_fer(w);
+    if(fabs(w)>w_upper_b)
+        return 0.;
+    else {
+        if(fabs(w)!= w_upper_b) {
+            int W = fconv_bos(w);
+            double x1 = bfreqs[W];
+            double x2 = bfreqs[W] + dw;
+            double xd = (w - x1) / (x2 - x1);
 
-    double x1 = ffreqs[W];
-    double x2 = ffreqs[W]+dv;
-    double xd = (w-x1)/(x2-x1);
+            Q f1 = sval(iK, W);
+            Q f2 = sval(iK, W + 1);
 
-    Q f1 = susval(iK, W);
-    Q f2 = susval(iK, W+1);
-
-    return (1.-xd)*f1 + xd*f2;
+            return (1. - xd) * f1 + xd * f2;
+        }
+        else if(w == w_upper_b)
+            return sval(iK, nSUS-1);
+        else if(w == w_lower_b)
+            return sval(iK, 0);
+    }
 }
 template <typename Q>void Susc<Q>::setsus(int iK, int i, Q val){
     Susceptibility[iK*nSE + i] = val;

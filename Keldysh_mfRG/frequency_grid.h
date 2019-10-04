@@ -89,19 +89,45 @@ tuple<int, int, int> fconv_K3_t(double w, double v1, double v2)
 
 int fconv_bos(double w)
 {
-    auto index = (int)((w-w_lower_b)/dw);
-    return index - (int)(index/bfreqs.size());
+    int index;
+    double aid = (w-w_lower_b)/dw;
+    auto index1 = (int)aid;
+    auto index2 = index1+1;
+
+    if(fabs(aid-index1) > fabs(aid-index2))
+        index = index2;
+    else
+        index = index1;
+
+    return index; //- (int)(index/bfreqs.size());
 }
 int fconv_fer(double w)
 {
-    auto index = (int)((w-w_lower_f)/dv);
-    return index - (int)(index/ffreqs.size());
+    int index;
+    double aid = (w-w_lower_f)/dv;
+    auto index1 = (int)aid;
+    auto index2 = index1+1;
+
+    if(fabs(aid-index1) > fabs(aid-index2))
+        index = index2;
+    else
+        index = index1;
+
+    return index; //- (int)(index/ffreqs.size());
 }
 int fconv_Lambda(double Lambda)
 {
-    double dl = (Lambda_ini-Lambda_fin)/((double)(nEVO));
-    auto index = -(int)((Lambda-Lambda_ini)/dl);
-    return index - (int)(index/nEVO);
+    int index;
+    double aid = (Lambda-Lambda_ini)/dL;
+    auto index1 = (int)aid;
+    auto index2 = index1+1;
+
+    if(fabs(aid-index1) > fabs(aid-index2))
+        index = index2;
+    else
+        index = index1;
+
+    return index; //- (int)(index/flow_grid.size());
 }
 
 # endif

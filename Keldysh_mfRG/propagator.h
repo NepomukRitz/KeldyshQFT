@@ -46,18 +46,24 @@ void Propagator::setprop(int iK, int i, comp value)
 }
 comp Propagator::pvalsmooth(int iK, double w)
 {
-    if(fabs(w)>=w_upper_f)
+    if(fabs(w)>w_upper_b)
         return 0.;
     else {
-        int W = fconv_fer(w);
-        double x1 = ffreqs[W];
-        double x2 = ffreqs[W] + dv;
-        double xd = (w - x1) / (x2 - x1);
+        if(fabs(w)!= w_upper_b) {
+            int W = fconv_bos(w);
+            double x1 = bfreqs[W];
+            double x2 = bfreqs[W] + dw;
+            double xd = (w - x1) / (x2 - x1);
 
-        comp f1 = pval(iK, W);
-        comp f2 = pval(iK, W + 1);
+            comp f1 = pval(iK, W);
+            comp f2 = pval(iK, W + 1);
 
-        return (1. - xd) * f1 + xd * f2;
+            return (1. - xd) * f1 + xd * f2;
+        }
+        else if(w == w_upper_b)
+            return pval(iK, nPROP-1);
+        else if(w == w_lower_b)
+            return pval(iK, 0);
     }
 }
 comp Propagator::pval(int iK, int i)
@@ -97,7 +103,7 @@ Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, SelfEnergy<comp> 
     Propagator resp;
 
     for(int i=0; i<nPROP; i++) {
-        double w = ffreqs[i];
+        double w = bfreqs[i];
         comp selfEneR = selfenergy.sval(0, i);
         comp selfEneK = selfenergy.sval(1, i);
         comp diffSelfEneR = diffselfenergy.sval(0, i);
@@ -187,7 +193,7 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>
 {
     Propagator resp;
     for(int i=0; i<nPROP; ++i) {
-        double w = ffreqs[i];
+        double w = bfreqs[i];
         comp selfEneR = selfenergy.sval(0, i);
         comp selfEneK = selfenergy.sval(1, i);
         comp diffSelfEneR = diffselfenergy.sval(0, i);

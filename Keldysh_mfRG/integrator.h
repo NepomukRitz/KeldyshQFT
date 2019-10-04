@@ -11,11 +11,11 @@
 //void integrator(gsl_function& F, ) {
 
 //}
-comp dotproduct(cvec& x, rvec& y);
+comp dotproduct(const cvec& x, const rvec& y);
 
 //TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
 //This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
-template <typename Integrand> comp integrator(Integrand& integrand, rvec& grid)
+template <typename Integrand> comp integrator(Integrand& integrand, const rvec& grid)
 {
     int n = grid.size();
     rvec simpson(n);
@@ -27,12 +27,12 @@ template <typename Integrand> comp integrator(Integrand& integrand, rvec& grid)
     }
     simpson[0] = 1.;
     simpson[n-1]=1.;
-    double dx = grid[1]-grid[0];
+    double dx = (grid[n-1]-grid[0])/n ;
 
-    return dx*((double)(n-1./n))/3.*dotproduct(integrand_values, simpson);
+    return dx/3.*dotproduct(integrand_values, simpson);
 }
 
-comp dotproduct(cvec& x, rvec& y)
+comp dotproduct(const cvec& x, const rvec& y)
 {
     comp resp;
     for(int i=0; i<x.size(); ++i)

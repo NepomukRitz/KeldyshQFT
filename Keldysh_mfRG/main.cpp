@@ -30,6 +30,7 @@ int main() {
     setUpFerGrid();
     setUpFlowGrid();
 
+
     double  t0 = get_time();
     State<comp> state(Lambda_ini);
     cout << "State created. ";
@@ -37,7 +38,7 @@ int main() {
 
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, 0.5 * U);
+        state.selfenergy.setself(0, i, 0.5*U);
         state.selfenergy.setself(1, i, 0.);
         state.diffselfenergy.setself(0, i, 0.);
         state.diffselfenergy.setself(1, i, 0.);
@@ -51,13 +52,14 @@ int main() {
     cout << "vertex assigned" << endl;
 
 
+
     cout << "Start of flow" << endl;
     for(auto Lambda:flow_grid) {
         State<comp> dPsi = derivative(Lambda, state);
 
-        state += dPsi;
-
         Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
+
+        state += dPsi;
 
         writeOutFile(ffreqs, Lambda, control, state.selfenergy);
         cout << "Wrote out" <<endl;
@@ -102,7 +104,7 @@ State<Q> derivative(double Lambda, State<Q>& state)
     get_time(t2);
 
 //    double t3 = get_time();
-//    Lines 10-13
+////    Lines 10-13
 //    Vertex<fullvert<Q> > dGamma = Vertex<fullvert<Q> >();
 //    dGamma.densvertex.avertex = dgammaa.densvertex;
 //    dGamma.densvertex.pvertex = dgammap.densvertex;
@@ -115,7 +117,7 @@ State<Q> derivative(double Lambda, State<Q>& state)
 //    Vertex<fullvert<Q> > dgammaabar = dgammap + dgammat;
 //    Vertex<fullvert<Q> > dgammapbar = dgammat + dgammaa;
 //    Vertex<fullvert<Q> > dgammatbar = dgammaa + dgammap;
-//
+
 //    double t4 = get_time();
 //    //The r_bubble_function pics the gamma_r bar contributions
 //    Vertex<avert<Q> > dgammaLa = a_bubble_function(dGamma, dGamma, G, 'L');
@@ -182,14 +184,14 @@ void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy
     my_file_propK.open(propK.str());
 
 
-    for (int j = 0; j < ffreqs.size(); j++) {
-        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.svalsmooth(0, ffreqs[j]).real() << " " <<  selfEnergy.svalsmooth(0,freqs[j]).imag() << "\n";
-        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.svalsmooth(0, ffreqs[j]).real() << " " << -selfEnergy.svalsmooth(0,freqs[j]).imag() << "\n";
-        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.svalsmooth(1, ffreqs[j]).real() << " " <<  selfEnergy.svalsmooth(1,freqs[j]).imag() << "\n";
+    for (int j = 0; j < bfreqs.size(); j++) {
+        my_file_sigmaR << bfreqs[j] << " " << selfEnergy.svalsmooth(0, bfreqs[j]).real() << " " <<  selfEnergy.svalsmooth(0,bfreqs[j]).imag() << "\n";
+        my_file_sigmaA << bfreqs[j] << " " << selfEnergy.svalsmooth(0, bfreqs[j]).real() << " " << -selfEnergy.svalsmooth(0,bfreqs[j]).imag() << "\n";
+        my_file_sigmaK << bfreqs[j] << " " << selfEnergy.svalsmooth(1, bfreqs[j]).real() << " " <<  selfEnergy.svalsmooth(1,bfreqs[j]).imag() << "\n";
 
-        my_file_propR << ffreqs[j] << " " << propagator.pvalsmooth(0, ffreqs[j]).real() << " " <<  propagator.pvalsmooth(0, ffreqs[j]).imag() << "\n";
-        my_file_propA << ffreqs[j] << " " << propagator.pvalsmooth(0, ffreqs[j]).real() << " " << -propagator.pvalsmooth(0, ffreqs[j]).imag() << "\n";
-        my_file_propK << ffreqs[j] << " " << propagator.pvalsmooth(1, ffreqs[j]).real() << " " <<  propagator.pvalsmooth(1, ffreqs[j]).imag() << "\n";
+        my_file_propR << bfreqs[j] << " " << propagator.pvalsmooth(0, bfreqs[j]).real() << " " <<  propagator.pvalsmooth(0, bfreqs[j]).imag() << "\n";
+        my_file_propA << bfreqs[j] << " " << propagator.pvalsmooth(0, bfreqs[j]).real() << " " << -propagator.pvalsmooth(0, bfreqs[j]).imag() << "\n";
+        my_file_propK << bfreqs[j] << " " << propagator.pvalsmooth(1, bfreqs[j]).real() << " " <<  propagator.pvalsmooth(1, bfreqs[j]).imag() << "\n";
     }
     my_file_sigmaR.close();
     my_file_sigmaA.close();

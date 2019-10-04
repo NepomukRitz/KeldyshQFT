@@ -37,10 +37,10 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Number of evolution flow points*/
-const int nEVO = 5;
+const int nEVO = 10;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 101;
+const int nBOS = 151;
 const int nFER = 51;
 
 /*Limits of the fRG flow*/
@@ -48,9 +48,9 @@ const double Lambda_ini = 1.0;
 const double Lambda_fin = 0.0;
 
 /*Number of frequency points for the self energy and the susceptibility*/
-const int nSE   = nFER;
-const int nSUSC = nFER;  //Makes no sense to have these values be different from one another
-const int nPROP = nFER;
+const int nSE   = nBOS;
+const int nSUSC = nBOS;  //Makes no sense to have these values be different from one another
+const int nPROP = nBOS;
 
 /*Number of frequency points for the K1 class(bosonic freq wa), K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic
  * frequency wa and fermionic freqs nua and nuap) for the a-channel*/
@@ -114,14 +114,14 @@ vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});                
 
 /*Vector with values of Lambda for the fRG flow*/
 rvec flow_grid(nEVO);                                                                                                   // NOLINT(cert-err58-cpp)
-const double dL = (Lambda_fin-Lambda_ini)/((double)(nEVO-1));
+const double dL = (Lambda_fin-Lambda_ini)/((double)(nEVO-1.));
 
 /*Vectors for fermionic and bosonic frequencies*/
 rvec bfreqs (nBOS);                                                                                                      // NOLINT(cert-err58-cpp)
-const double dw = (w_upper_b-w_lower_b)/((double)(nBOS-1));
+const double dw = (w_upper_b-w_lower_b)/((double)(nBOS-1.));
 
 rvec ffreqs (nFER);                                                                                                     // NOLINT(cert-err58-cpp)
-const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1));
+const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 
 //Length of this vector not necessarily fixed by nSE... Think of Wentzell paper where #of bosonic freqs = 2x #of fermionic freqs
 

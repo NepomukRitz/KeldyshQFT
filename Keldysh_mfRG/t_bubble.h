@@ -38,11 +38,11 @@ public:
     /*This function returns the value of the t-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
+        if(fabs(v1)>=w_upper_b || fabs(v2)>=w_upper_b)
             return 0.;
         else {
-            int i = fconv_fer(v1);
-            int j = fconv_fer(v2);
+            int i = fconv_bos(v1);
+            int j = fconv_bos(v2);
             return PiT[iK*nPROP*nPROP + i*nPROP+ j];
         }
     }
@@ -74,11 +74,11 @@ public:
     /*This function returns the value of the differentiated t-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
+        if(fabs(v1)>=w_upper_b || fabs(v2)>=w_upper_b)
             return 0.;
         else {
-            int i = fconv_fer(v1);
-            int j = fconv_fer(v2);
+            int i = fconv_bos(v1);
+            int j = fconv_bos(v2);
             return PiTdot[iK*nPROP*nPROP + i*nPROP+ j];
         }
     }
@@ -501,64 +501,64 @@ public:
 //}
 
 /*This function returns a differentiated a-bubble, differentiated meaning that the propagators are one a G and one an S propagator*/
-template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
-{
-    Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
-
-    Propagator G = propag(Lambda, self, diffSelf, 'g');
-    Propagator S = propag(Lambda, self, diffSelf, 's');
-    Diff_T_Bubble PiTdot(G,S);
-
-    /*K1 contributions*/
-    for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
-        // TODO: use MPI
-        int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
-        int iwt = (iK1 % (nw1_wt * n_in)) / n_in;
-        int i_in = iK1 % n_in;
-        double wt = bfreqs[iwt];
-
-        Integrand_t_K1_diff<Q, Diff_T_Bubble> integrand_t_K1 (vertex1, vertex2, PiTdot, i0, wt, i_in);
-
-        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1, ffreqs) );
-    }
-
-    /*K2 contributions*/
-    for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
-    {
-        int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wt * nw2_nut * n_in);
-        int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
-        int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
-        int i_in = iK2 % n_in;
-        double wt = bfreqs[iwt];
-        double vt = ffreqs[ivt];
-
-        Integrand_t_K2_diff<Q, Diff_T_Bubble> integrand_t_K2 (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
-
-        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
-    }
-
-    /*K2b contributions*/ //TODO How does one handle this? We dont't wtnt to save K2b part of the object, but these contributions must be added somewhere
-
-
-    /*K3 contributions*/
-    for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
-    {
-        int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
-        int iwt = (iK3 % (nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_nut * nw3_nutp * n_in);
-        int ivt = (iK3 % (nw3_nut * nw3_nutp * n_in)) / (nw3_nutp * n_in);
-        int ivtp = (iK3 % (nw3_nutp * n_in))/ n_in;
-        int i_in = iK3 % n_in;
-        double wt = bfreqs[iwt];
-        double va = ffreqs[ivt];
-        double vtp = ffreqs[ivtp];
-
-        Integrand_t_K3_diff<Q, Diff_T_Bubble> integrand_t_K3 (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
-
-        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3, ffreqs)); // TODO: complete this
-    }
-
-    return resp;
-}
+//template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
+//{
+//    Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
+//
+//    Propagator G = propag(Lambda, self, diffSelf, 'g');
+//    Propagator S = propag(Lambda, self, diffSelf, 's');
+//    Diff_T_Bubble PiTdot(G,S);
+//
+//    /*K1 contributions*/
+//    for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
+//        // TODO: use MPI
+//        int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
+//        int iwt = (iK1 % (nw1_wt * n_in)) / n_in;
+//        int i_in = iK1 % n_in;
+//        double wt = bfreqs[iwt];
+//
+//        Integrand_t_K1_diff<Q, Diff_T_Bubble> integrand_t_K1 (vertex1, vertex2, PiTdot, i0, wt, i_in);
+//
+//        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1, ffreqs) );
+//    }
+//
+//    /*K2 contributions*/
+//    for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
+//    {
+//        int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wt * nw2_nut * n_in);
+//        int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
+//        int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
+//        int i_in = iK2 % n_in;
+//        double wt = bfreqs[iwt];
+//        double vt = ffreqs[ivt];
+//
+//        Integrand_t_K2_diff<Q, Diff_T_Bubble> integrand_t_K2 (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
+//
+//        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
+//    }
+//
+//    /*K2b contributions*/ //TODO How does one handle this? We dont't wtnt to save K2b part of the object, but these contributions must be added somewhere
+//
+//
+//    /*K3 contributions*/
+//    for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
+//    {
+//        int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
+//        int iwt = (iK3 % (nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_nut * nw3_nutp * n_in);
+//        int ivt = (iK3 % (nw3_nut * nw3_nutp * n_in)) / (nw3_nutp * n_in);
+//        int ivtp = (iK3 % (nw3_nutp * n_in))/ n_in;
+//        int i_in = iK3 % n_in;
+//        double wt = bfreqs[iwt];
+//        double va = ffreqs[ivt];
+//        double vtp = ffreqs[ivtp];
+//
+//        Integrand_t_K3_diff<Q, Diff_T_Bubble> integrand_t_K3 (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
+//
+//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3, ffreqs)); // TODO: complete this
+//    }
+//
+//    return resp;
+//}
 
 
 template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
@@ -576,28 +576,28 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
         int i_in = iK1 % n_in;
         double wt = bfreqs[iwt];
 
-        Integrand_t_K1_diff<Q, Diff_T_Bubble> integrand_t_K1 (vertex1, vertex2, PiTdot, i0, wt, i_in);
+        Integrand_t_K1_diff<Q, Diff_T_Bubble> integrand_t_K1_diff (vertex1, vertex2, PiTdot, i0, wt, i_in);
 
-        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1, ffreqs) );
+        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1_diff, bfreqs) );
     }
     cout << "K1t done" << endl;
 
     /*K2 contributions*/
-//#pragma omp parallel for
-    for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
-    {
-        int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wt * nw2_nut * n_in);
-        int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
-        int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
-        int i_in = iK2 % n_in;
-        double wt = bfreqs[iwt];
-        double vt = ffreqs[ivt];
-
-        Integrand_t_K2_diff<Q, Diff_T_Bubble> integrand_t_K2 (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
-
-        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
-    }
-    cout << "K2t done" << endl;
+////#pragma omp parallel for
+//    for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
+//    {
+//        int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wt * nw2_nut * n_in);
+//        int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
+//        int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
+//        int i_in = iK2 % n_in;
+//        double wt = bfreqs[iwt];
+//        double vt = ffreqs[ivt];
+//
+//        Integrand_t_K2_diff<Q, Diff_T_Bubble> integrand_t_K2_diff (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
+//
+//        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2_diff, bfreqs)); //
+//    }
+//    cout << "K2t done" << endl;
 
     /*K2b contributions*/ //TODO How does one handle this? We dont't wtnt to save K2b part of the object, but these contributions must be added somewhere
 
@@ -615,9 +615,9 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 //        double va = ffreqs[ivt];
 //        double vtp = ffreqs[ivtp];
 //
-//        Integrand_t_K3_diff<Q, Diff_T_Bubble> integrand_t_K3 (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
+//        Integrand_t_K3_diff<Q, Diff_T_Bubble> integrand_t_K3_diff (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
 //
-//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3, ffreqs)); // TODO: complete this
+//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3_diff, bfreqs)); // TODO: complete this
 //    }
 //    cout << "K3t done" << endl;
 
@@ -627,37 +627,37 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
 {
     Vertex<tvert<Q> > resp = Vertex<tvert<Q> >();
-    T_Bubble PiT(G);
-
-    if(side == 'L')
-    {
-        //In this case, there are only contributions to K2 and K3
-        /*K2 contributions*/
-#pragma omp parallel for
-        for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
-        {
-            int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wp * nw2_nut * n_in);
-            int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
-            int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
-            int i_in = iK2 % n_in;
-            double wt = bfreqs[iwt];
-            double vt = ffreqs[ivt];
-
-            Integrand_t_K2<Q, T_Bubble> integrand_t_K2 (vertex1, vertex2, PiT, i0, wt, vt, i_in);
-
-            resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
-        }
-    }
-    else if(side == 'R')
-    {
-        //In this case, there are only contributions to K2b and K3
-        /*K2b contributions*/
-        //TODO implement
-    }
-    else
-    {
-        return resp;
-    }
+//    T_Bubble PiT(G);
+//
+//    if(side == 'L')
+//    {
+//        //In this case, there are only contributions to K2 and K3
+//        /*K2 contributions*/
+//#pragma omp parallel for
+//        for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
+//        {
+//            int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wp * nw2_nut * n_in);
+//            int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
+//            int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
+//            int i_in = iK2 % n_in;
+//            double wt = bfreqs[iwt];
+//            double vt = ffreqs[ivt];
+//
+//            Integrand_t_K2<Q, T_Bubble> integrand_t_K2 (vertex1, vertex2, PiT, i0, wt, vt, i_in);
+//
+//            resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
+//        }
+//    }
+//    else if(side == 'R')
+//    {
+//        //In this case, there are only contributions to K2b and K3
+//        /*K2b contributions*/
+//        //TODO implement
+//    }
+//    else
+//    {
+//        return resp;
+//    }
 
     /*K3 contributions*/
 //#pragma omp parallel for
