@@ -1,9 +1,9 @@
 //
-// Created by E.Walter on 8/1/19.
+// Created by Elias Walter on 2019-10-01.
 //
 
-#ifndef KELDYSH_MFRG_SAVE_HDF5_H
-#define KELDYSH_MFRG_SAVE_HDF5_H
+#ifndef TRY_HDF5_SAVE_HDF5_H
+#define TRY_HDF5_SAVE_HDF5_H
 
 #include <iostream>
 #include <string>
@@ -34,17 +34,17 @@ void create_hdf5_file(const H5std_string FILE_NAME) {
         H5File file (FILE_NAME, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
     }
-    // catch failure caused by the H5File operations
+        // catch failure caused by the H5File operations
     catch(FileIException error) {
         error.printErrorStack();
     }
 
-    // catch failure caused by the DataSet operations
+        // catch failure caused by the DataSet operations
     catch(DataSetIException error) {
         error.printErrorStack();
     }
 
-    // catch failure caused by the DataSpace operations
+        // catch failure caused by the DataSpace operations
     catch(DataSpaceIException error) {
         error.printErrorStack();
     }
@@ -91,4 +91,4 @@ void write_hdf5(const H5std_string FILE_NAME) {
     }
 }
 
-#endif //KELDYSH_MFRG_SAVE_HDF5_H
+#endif //TRY_HDF5_SAVE_HDF5_H

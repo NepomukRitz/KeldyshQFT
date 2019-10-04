@@ -20,19 +20,27 @@ class avert{
 
     /*Lists of the Keldysh components of K1a relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K1_T0_comp1 = {1, 7, 8, 14};     //In the vertex, comp1 will be iK=0
-    vector<int> list_K1_T1_comp1 = {2, 4, 11, 13};
-    vector<int> list_K1_T0_comp3 = {3, 5, 10, 12};    //In the vertex, comp2 will be iK=1
+    vector<int> list_K1_T0_comp1 = {1, 7,  8, 14};  // components equal to     comp.1     (B_1^a for equal spins). In the vertex, comp1 will be iK=0
+    vector<int> list_K1_T3_comp1 = {2, 4, 11, 13};  // components equal to T_3 comp.1 (T_3 B_1^a for equal spins).
+    vector<int> list_K1_T0_comp3 = {3, 5, 10, 12};  // components equal to     comp.3     (C_1^a for equal spins). In the vertex, comp3 will be iK=1
 
     /*Lists of the Keldysh components of K2a relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K2_T0_comp1 = {1, 7};      //Values retrieved from the a-K2
-    vector<int> list_K2_T1_comp1 = {2, 4};      //Values retrieved from the t-K2b
-    vector<int> list_K2_T2_comp1 = {11, 13};    //Values retrieved from the t-K2
-    vector<int> list_K2_T3_comp1 = {8, 14};     //Values retrieved from the a-K2b
-    vector<int> list_K2_T0_comp3 = {3, 5};      //Values retrieved from the a-K2
-    vector<int> list_K2_T3_comp3 = {10, 12};    //Values retrieved from the a-K2b
+    vector<int> list_K2_T0_comp0   = { 0,  6};  // components in K2 equal to comp.0 of K2
+    vector<int> list_K2_T0_comp1   = { 1,  7};  // ...
+    vector<int> list_K2_T0_comp2   = { 2,  4};
+    vector<int> list_K2_T0_comp3   = { 3,  5};
+    vector<int> list_K2_TCT3_comp1 = { 8, 14};
+    vector<int> list_K2_TCT3_comp3 = {10, 12};
+    vector<int> list_K2_T0_comp11  = {11, 13};
 
+    vector<int> list_K2b_T3_comp0  = {0,  9};  // components in K2b equal to T_3 comp.0 of K2
+    vector<int> list_K2b_T3_comp2  = {1,  8};  // ...
+    vector<int> list_K2b_T3_comp1  = {2, 11};
+    vector<int> list_K2b_T3_comp3  = {3, 10};
+    vector<int> list_K2b_TC_comp1  = {4, 13};
+    vector<int> list_K2b_TC_comp3  = {5, 12};
+    vector<int> list_K2b_TC_comp11 = {7, 14};
 
 public:
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
@@ -318,7 +326,7 @@ template <typename Q> Q avert<Q>::K2_vval (int iK, int i,int j, int i_in){
 template <typename Q> Q avert<Q>::K2b_vval(int iK, int i,int j, int i_in){
     i = nw2_wt-i;
     return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in]; //TODO: conjugate?
-}
+}  // TODO: is this correct/do we even need this?? I don't think so...
 template <typename Q> Q avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
     return K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];
 }
@@ -334,7 +342,7 @@ template <typename Q> Q avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in
 //        iK1 = 0;
 //        pf1 = 1.;
 //    }
-//    else if(isInList(iK,list_K1_T1_comp1)){
+//    else if(isInList(iK,list_K1_T3_comp1)){
 //        tie(iK1, w_a, i_in) = indices_T1_K1(w_a, v1_a, v2_a, i_in);
 //        iK1 = 0;
 //        pf1 =-1.;
@@ -571,11 +579,11 @@ template <typename Q> Q avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in
 //    return valueK3;
 //}
 
-template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in, tvert<Q>& tvertex){
+template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in, tvert<Q>& tvertex){  // TODO: add other spin components
 
     int iK1;
-    double pf1;
-    bool transform;
+    double pf1;      // prefactor: -1 for T_1, T_2, +1 else
+    bool transform;  // whether or not to switch between channels a,t: true for T_1, T_2, false else
     Q valueK1;
 
     /*This part determines the value of the K1 contribution*/
@@ -585,11 +593,11 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in, tv
         pf1 = 1.;
         transform = false;
     }
-    else if(isInList(iK,list_K1_T1_comp1)){
-        tie(w_a, i_in) = indices_T1_K1(w_a, i_in);
+    else if(isInList(iK,list_K1_T3_comp1)){
+        tie(w_a, i_in) = indices_T3_K1(w_a, i_in);
         iK1 = 0;
-        pf1 =-1.;
-        transform = true;
+        pf1 = 1.;
+        transform = false;
     }
     else if(isInList(iK, list_K1_T0_comp3)){
         iK1 = 1;
@@ -635,51 +643,57 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in, tv
 template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a, int i_in, tvert<Q>& tvertex){
 
     int iK2;
-    double pf2;
-    bool conjugate2;
-    bool transform;
+    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
+    bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
+    bool transform;   // whether or not to switch between channels a,t: true for T_1, T_2, false else
     Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(isInList(iK,list_K2_T0_comp1)){              //Values retrieved from the a-K2
+    if(isInList(iK,list_K2_T0_comp0)){
         iK2 = 0;
         pf2 = 1.;
         conjugate2 = false;
         transform = false;
     }
-    else if(isInList(iK,list_K2_T1_comp1)){         //Values retrieved from the t-K2b
-        tie(w_a, v1_a, i_in) = indices_T1_K2(w_a, v1_a, i_in);
-        iK2 = 0;
-        pf2 =-1.;
-        conjugate2 = true;
-        transform = true;
-    }
-    else if(isInList(iK,list_K2_T2_comp1)){         //Values retrieved from the t-K2
-        tie(w_a, v1_a, i_in) = indices_T2_K2(w_a, v1_a, i_in);
-        iK2 = 0;
-        pf2 =-1.;
-        conjugate2 = false;
-        transform = true;
-    }
-    else if(isInList(iK,list_K2_T3_comp1)){         //Values retrieved from the a-K2b
-        tie(w_a, v1_a, i_in) = indices_T3_K2(w_a, v1_a, i_in);
-        iK2 = 0;
-        pf2 = 1.;
-        conjugate2 = true;
-        transform = false;
-    }
-    else if(isInList(iK,list_K2_T0_comp3)){          //Values retrieved from the a-K2
+    else if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 1;
         pf2 = 1.;
         conjugate2 = false;
         transform = false;
     }
-    else if(isInList(iK,list_K2_T3_comp3)){         //Values retrieved from the a-K2b
+    else if(isInList(iK,list_K2_T0_comp2)){
+        iK2 = 2;
+        pf2 = 1.;
+        conjugate2 = false;
+        transform = false;
+    }
+    else if(isInList(iK,list_K2_T0_comp3)){
+        iK2 = 3;
+        pf2 = 1.;
+        conjugate2 = false;
+        transform = false;
+    }
+    else if(isInList(iK,list_K2_TCT3_comp1)){
         tie(w_a, v1_a, i_in) = indices_T3_K2(w_a, v1_a, i_in);
+        tie(w_a, v1_a, i_in) = indices_TC_K2(w_a, v1_a, i_in);
         iK2 = 1;
         pf2 = 1.;
         conjugate2 = true;
+        transform = false;
+    }
+    else if(isInList(iK,list_K2_TCT3_comp3)){
+        tie(w_a, v1_a, i_in) = indices_T3_K2(w_a, v1_a, i_in);
+        tie(w_a, v1_a, i_in) = indices_TC_K2(w_a, v1_a, i_in);
+        iK2 = 3;
+        pf2 = 1.;
+        conjugate2 = true;
+        transform = false;
+    }
+    else if(isInList(iK,list_K2_T0_comp11)){
+        iK2 = 4;
+        pf2 = 1.;
+        conjugate2 = false;
         transform = false;
     }
     else{
@@ -769,7 +783,7 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
 template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a, int i_in, tvert<Q>& tvertex){
     iK = T_3_Keldysh(iK);
     return K2_vvalsmooth(iK, -w_a, v2_a, i_in, tvertex);
-}
+}  // TODO: correct this
 template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a, double v2_a, int i_in, tvert<Q>& tvertex){
 
     int iK3;
