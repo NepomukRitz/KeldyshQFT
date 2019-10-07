@@ -40,17 +40,17 @@ const double U = 1.0;
 const int nEVO = 10;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 151;
-const int nFER = 51;
+const int nBOS = 101;
+const int nFER = 101;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
 const double Lambda_fin = 0.0;
 
 /*Number of frequency points for the self energy and the susceptibility*/
-const int nSE   = nBOS;
-const int nSUSC = nBOS;  //Makes no sense to have these values be different from one another
-const int nPROP = nBOS;
+const int nSE   = nFER;
+const int nSUSC = nFER;  //Makes no sense to have these values be different from one another
+const int nPROP = nFER;
 
 /*Number of frequency points for the K1 class(bosonic freq wa), K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic
  * frequency wa and fermionic freqs nua and nuap) for the a-channel*/

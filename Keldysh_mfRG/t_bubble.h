@@ -38,11 +38,11 @@ public:
     /*This function returns the value of the t-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(fabs(v1)>=w_upper_b || fabs(v2)>=w_upper_b)
+        if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
             return 0.;
         else {
-            int i = fconv_bos(v1);
-            int j = fconv_bos(v2);
+            int i = fconv_fer(v1);
+            int j = fconv_fer(v2);
             return PiT[iK*nPROP*nPROP + i*nPROP+ j];
         }
     }
@@ -74,11 +74,11 @@ public:
     /*This function returns the value of the differentiated t-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(fabs(v1)>=w_upper_b || fabs(v2)>=w_upper_b)
+        if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
             return 0.;
         else {
-            int i = fconv_bos(v1);
-            int j = fconv_bos(v2);
+            int i = fconv_fer(v1);
+            int j = fconv_fer(v2);
             return PiTdot[iK*nPROP*nPROP + i*nPROP+ j];
         }
     }
@@ -578,7 +578,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 
         Integrand_t_K1_diff<Q, Diff_T_Bubble> integrand_t_K1_diff (vertex1, vertex2, PiTdot, i0, wt, i_in);
 
-        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1_diff, bfreqs) );
+        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1_diff, ffreqs) );
     }
     cout << "K1t done" << endl;
 
@@ -595,7 +595,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 //
 //        Integrand_t_K2_diff<Q, Diff_T_Bubble> integrand_t_K2_diff (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
 //
-//        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2_diff, bfreqs)); //
+//        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2_diff, ffreqs)); //
 //    }
 //    cout << "K2t done" << endl;
 
@@ -617,7 +617,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 //
 //        Integrand_t_K3_diff<Q, Diff_T_Bubble> integrand_t_K3_diff (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
 //
-//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3_diff, bfreqs)); // TODO: complete this
+//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3_diff, ffreqs)); // TODO: complete this
 //    }
 //    cout << "K3t done" << endl;
 

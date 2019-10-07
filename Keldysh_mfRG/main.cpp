@@ -38,7 +38,7 @@ int main() {
 
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, 0.5*U);
+        state.selfenergy.setself(0, i, 0.);
         state.selfenergy.setself(1, i, 0.);
         state.diffselfenergy.setself(0, i, 0.);
         state.diffselfenergy.setself(1, i, 0.);
@@ -61,7 +61,7 @@ int main() {
 
         state += dPsi;
 
-        writeOutFile(ffreqs, Lambda, control, state.selfenergy);
+        writeOutFile(bfreqs, Lambda, control, state.selfenergy);
         cout << "Wrote out" <<endl;
     }
 
@@ -184,14 +184,14 @@ void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy
     my_file_propK.open(propK.str());
 
 
-    for (int j = 0; j < bfreqs.size(); j++) {
-        my_file_sigmaR << bfreqs[j] << " " << selfEnergy.svalsmooth(0, bfreqs[j]).real() << " " <<  selfEnergy.svalsmooth(0,bfreqs[j]).imag() << "\n";
-        my_file_sigmaA << bfreqs[j] << " " << selfEnergy.svalsmooth(0, bfreqs[j]).real() << " " << -selfEnergy.svalsmooth(0,bfreqs[j]).imag() << "\n";
-        my_file_sigmaK << bfreqs[j] << " " << selfEnergy.svalsmooth(1, bfreqs[j]).real() << " " <<  selfEnergy.svalsmooth(1,bfreqs[j]).imag() << "\n";
+    for (int j = 0; j < freqs.size(); j++) {
+        my_file_sigmaR << freqs[j] << " " << selfEnergy.svalsmooth(0, freqs[j]).real() << " " <<  selfEnergy.svalsmooth(0, freqs[j]).imag() << "\n";
+        my_file_sigmaA << freqs[j] << " " << selfEnergy.svalsmooth(0, freqs[j]).real() << " " << -selfEnergy.svalsmooth(0, freqs[j]).imag() << "\n";
+        my_file_sigmaK << freqs[j] << " " << selfEnergy.svalsmooth(1, freqs[j]).real() << " " <<  selfEnergy.svalsmooth(1, freqs[j]).imag() << "\n";
 
-        my_file_propR << bfreqs[j] << " " << propagator.pvalsmooth(0, bfreqs[j]).real() << " " <<  propagator.pvalsmooth(0, bfreqs[j]).imag() << "\n";
-        my_file_propA << bfreqs[j] << " " << propagator.pvalsmooth(0, bfreqs[j]).real() << " " << -propagator.pvalsmooth(0, bfreqs[j]).imag() << "\n";
-        my_file_propK << bfreqs[j] << " " << propagator.pvalsmooth(1, bfreqs[j]).real() << " " <<  propagator.pvalsmooth(1, bfreqs[j]).imag() << "\n";
+        my_file_propR << freqs[j] << " " << propagator.pvalsmooth(0, freqs[j]).real() << " " <<  propagator.pvalsmooth(0, freqs[j]).imag() << "\n";
+        my_file_propA << freqs[j] << " " << propagator.pvalsmooth(0, freqs[j]).real() << " " << -propagator.pvalsmooth(0, freqs[j]).imag() << "\n";
+        my_file_propK << freqs[j] << " " << propagator.pvalsmooth(1, freqs[j]).real() << " " <<  propagator.pvalsmooth(1, freqs[j]).imag() << "\n";
     }
     my_file_sigmaR.close();
     my_file_sigmaA.close();
@@ -204,13 +204,22 @@ void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy
 
 void setUpBosGrid()
 {
+#if GRID==1
+
+#elif GRID==2
     for(int i=0; i<nBOS; ++i)
         bfreqs[i] = w_lower_b + i*dw;
+
+#endif
 }
 void setUpFerGrid()
 {
+#if GRID==1
+
+#elif GRID==2
     for(int i=0; i<nFER; ++i)
         ffreqs[i] = w_lower_f + i*dv;
+#endif
 }
 void setUpFlowGrid()
 {

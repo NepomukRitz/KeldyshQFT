@@ -46,13 +46,13 @@ void Propagator::setprop(int iK, int i, comp value)
 }
 comp Propagator::pvalsmooth(int iK, double w)
 {
-    if(fabs(w)>w_upper_b)
+    if(fabs(w)>w_upper_f)
         return 0.;
     else {
-        if(fabs(w)!= w_upper_b) {
-            int W = fconv_bos(w);
-            double x1 = bfreqs[W];
-            double x2 = bfreqs[W] + dw;
+        if(fabs(w)!= w_upper_f) {
+            int W = fconv_fer(w);
+            double x1 = ffreqs[W];
+            double x2 = ffreqs[W] + dw;
             double xd = (w - x1) / (x2 - x1);
 
             comp f1 = pval(iK, W);
@@ -60,9 +60,9 @@ comp Propagator::pvalsmooth(int iK, double w)
 
             return (1. - xd) * f1 + xd * f2;
         }
-        else if(w == w_upper_b)
+        else if(w == w_upper_f)
             return pval(iK, nPROP-1);
-        else if(w == w_lower_b)
+        else if(w == w_lower_f)
             return pval(iK, 0);
     }
 }
@@ -193,7 +193,7 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>
 {
     Propagator resp;
     for(int i=0; i<nPROP; ++i) {
-        double w = bfreqs[i];
+        double w = ffreqs[i];
         comp selfEneR = selfenergy.sval(0, i);
         comp selfEneK = selfenergy.sval(1, i);
         comp diffSelfEneR = diffselfenergy.sval(0, i);

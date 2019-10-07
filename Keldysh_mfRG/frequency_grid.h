@@ -117,17 +117,11 @@ int fconv_fer(double w)
 }
 int fconv_Lambda(double Lambda)
 {
-    int index;
-    double aid = (Lambda-Lambda_ini)/dL;
-    auto index1 = (int)aid;
-    auto index2 = index1+1;
-
-    if(fabs(aid-index1) > fabs(aid-index2))
-        index = index2;
-    else
-        index = index1;
-
-    return index; //- (int)(index/flow_grid.size());
+    for(int i=0; i<nEVO; ++i){
+        if(Lambda == flow_grid[i])
+            return i;
+    }
+    return -1;
 }
 
 # endif

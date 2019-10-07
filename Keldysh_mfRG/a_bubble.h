@@ -37,11 +37,11 @@ public:
     /*This function returns the value of the a-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(fabs(v1)>=w_upper_b || fabs(v2)>=w_upper_b)
+        if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
             return 0.;
         else {
-            int i = fconv_bos(v1);
-            int j = fconv_bos(v2);
+            int i = fconv_fer(v1);
+            int j = fconv_fer(v2);
             return PiA[iK*nPROP*nPROP + i*nPROP+ j];
         }
     }
@@ -73,11 +73,11 @@ public:
     /*This function returns the value of the differentiated a-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(fabs(v1)>=w_upper_b || fabs(v2)>=w_upper_b)
+        if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
             return 0.;
         else {
-            int i = fconv_bos(v1);
-            int j = fconv_bos(v2);
+            int i = fconv_fer(v1);
+            int j = fconv_fer(v2);
             return PiAdot[iK*nPROP*nPROP + i*nPROP+ j];
         }
     }
@@ -490,7 +490,7 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
     Diff_A_Bubble PiAdot(G,S);
 
     /*K1 contributions*/
-//#pragma omp parallel for
+#pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wa*n_in; ++iK1) {
         // TODO: use MPI
         int i0 = (iK1 % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
@@ -500,7 +500,7 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
 
         Integrand_a_K1_diff<Q, Diff_A_Bubble> integrand_a_K1_diff (vertex1, vertex2, PiAdot, i0, wa, i_in);
 
-        resp.densvertex.K1_addvert(i0, iwa, i_in, integrator(integrand_a_K1_diff, bfreqs) );
+        resp.densvertex.K1_addvert(i0, iwa, i_in, integrator(integrand_a_K1_diff, ffreqs) );
     }
     cout << "K1a done" << endl;
 
@@ -517,7 +517,7 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
 //
 //        Integrand_a_K2_diff<Q, Diff_A_Bubble> integrand_a_K2_diff (vertex1, vertex2, PiAdot, i0, wa, va, i_in);
 //
-//        resp.densvertex.K2_addvert(i0, iwa, va, i_in, integrator(integrand_a_K2_diff, bfreqs)); //
+//        resp.densvertex.K2_addvert(i0, iwa, va, i_in, integrator(integrand_a_K2_diff, ffreqs)); //
 //    }
 //    cout << "K2a done" << endl;
 
@@ -538,7 +538,7 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
 //
 //        Integrand_a_K3_diff<Q, Diff_A_Bubble> integrand_a_K3_diff (vertex1, vertex2, PiAdot, i0, wa, va, vap, i_in);
 //
-//        resp.densvertex.K3_addvert(i0, iwa, iva, ivap, i_in, integrator(integrand_a_K3_diff, bfreqs)); // TODO: complete this
+//        resp.densvertex.K3_addvert(i0, iwa, iva, ivap, i_in, integrator(integrand_a_K3_diff, ffreqs)); // TODO: complete this
 //    }
 //    cout << "K3a done" << endl;
 
