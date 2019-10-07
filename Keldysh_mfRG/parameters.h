@@ -37,11 +37,11 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Number of evolution flow points*/
-const int nEVO = 10;
+const int nEVO = 7;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 101;
-const int nFER = 101;
+const int nBOS = 51;
+const int nFER = 201;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;

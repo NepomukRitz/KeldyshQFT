@@ -25,19 +25,19 @@ public:
     Q operator()(double wp)
     {
         return
-        -( (vertex.densvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0, vertex.densvertex.tvertex) +
-            vertex.densvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0) +
-            vertex.densvertex.tvertex.value(3, 0., wp, w, 0, vertex.densvertex.avertex) +
+        -( (//vertex.densvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0, vertex.densvertex.tvertex) +
+            //vertex.densvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0) +
+            //vertex.densvertex.tvertex.value(3, 0., wp, w, 0, vertex.densvertex.avertex) +
             vertex.densvertex.irred.vval(3) ) * propagator.pvalsmooth(0, wp) +
 
-           (vertex.densvertex.avertex.value(6, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0, vertex.densvertex.tvertex) +
-            vertex.densvertex.pvertex.value(6, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0) +
-            vertex.densvertex.tvertex.value(6, 0., wp, w, 0, vertex.densvertex.avertex) +
+           (//vertex.densvertex.avertex.value(6, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0, vertex.densvertex.tvertex) +
+            //vertex.densvertex.pvertex.value(6, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0) +
+            //vertex.densvertex.tvertex.value(6, 0., wp, w, 0, vertex.densvertex.avertex) +
             vertex.densvertex.irred.vval(6) ) * conj(propagator.pvalsmooth(0, wp)) +
 
-           (vertex.densvertex.avertex.value(7, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0, vertex.densvertex.tvertex) +
-            vertex.densvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0) +
-            vertex.densvertex.tvertex.value(7, 0., wp, w, 0, vertex.densvertex.avertex) +
+           (//vertex.densvertex.avertex.value(7, wp-w, 0.5*(w+wp), 0.5*(w+wp), 0, vertex.densvertex.tvertex) +
+            //vertex.densvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), 0) +
+            //vertex.densvertex.tvertex.value(7, 0., wp, w, 0, vertex.densvertex.avertex) +
             vertex.densvertex.irred.vval(7) ) * propagator.pvalsmooth(1, wp) );
     }
 };

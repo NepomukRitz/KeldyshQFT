@@ -38,7 +38,7 @@ int main() {
 
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, 0.);
+        state.selfenergy.setself(0, i, 0.5*U);
         state.selfenergy.setself(1, i, 0.);
         state.diffselfenergy.setself(0, i, 0.);
         state.diffselfenergy.setself(1, i, 0.);

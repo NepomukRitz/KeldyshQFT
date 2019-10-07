@@ -23,70 +23,6 @@ using namespace std;
     CODE HERE IS UNREACHABLE LIKE THIS
 
 #elif GRID==2
-int fconv_K1_a(double w)
-{
-    auto index = (int)((w-w_lower_b)/dw);
-    return index -(int)(index/nw1_wa);
-}
-tuple<int, int> fconv_K2_a(double w, double v1)
-{
-    auto index_b = (int)((w-w_lower_b)/dw);
-    auto index_f = (int)((v1-w_lower_f)/dv);
-
-    return make_tuple(index_b-(int)(index_b/nw2_wa), index_f-(int)(index_f/nw2_nua));
-}
-tuple<int, int, int> fconv_K3_a(double w, double v1, double v2)
-{
-    auto index_b = (int)((w-w_lower_b)/dw);
-    auto index_f = (int)((v1-w_lower_f)/dv);
-    auto index_fp = (int)((v2-w_lower_f)/dv);
-
-    return make_tuple(index_b-(int)(index_b/nw3_wa), index_f-(int)(index_f/nw3_nua), index_fp-(int)(index_fp/nw3_nuap));
-}
-
-int fconv_K1_p(double w)
-{
-    auto index = (int)((w-w_lower_b)/dw);
-    return index - (int)(index/nw1_wp);
-}
-tuple<int, int> fconv_K2_p(double w, double v1)
-{
-    auto index_b = (int)((w-w_lower_b)/dw);
-    auto index_f = (int)((v1-w_lower_f)/dv);
-
-    return make_tuple(index_b-(int)(index_b/nw2_wp), index_f-(int)(index_f/nw2_nup));
-}
-tuple<int, int, int> fconv_K3_p(double w, double v1, double v2)
-{
-    auto index_b = (int)((w-w_lower_b)/dw);
-    auto index_f = (int)((v1-w_lower_f)/dv);
-    auto index_fp = (int)((v2-w_lower_f)/dv);
-
-    return make_tuple(index_b-(int)(index_b/nw3_wp), index_f-(int)(index_f/nw3_nup), index_fp-(int)(index_fp/nw3_nupp));
-}
-
-int fconv_K1_t(double w)
-{
-    auto index = (int)((w-w_lower_b)/dw);
-    return index - (int)(index/nw1_wt);
-}
-tuple<int, int> fconv_K2_t(double w, double v1)
-{
-    auto index_b = (int)((w-w_lower_b)/dw);
-    auto index_f = (int)((v1-w_lower_f)/dv);
-
-    return make_tuple(index_b-(int)(index_b/nw2_wt), index_f-(int)(index_f/nw2_nut));
-}
-tuple<int, int, int> fconv_K3_t(double w, double v1, double v2)
-{
-    auto index_b = (int)((w-w_lower_b)/dw);
-    auto index_f = (int)((v1-w_lower_f)/dv);
-    auto index_fp = (int)((v2-w_lower_f)/dv);
-
-    return make_tuple(index_b-(int)(index_b/nw3_wt), index_f-(int)(index_f/nw3_nut), index_fp-(int)(index_fp/nw3_nutp));
-}
-
-
 int fconv_bos(double w)
 {
     int index;
@@ -114,6 +50,17 @@ int fconv_fer(double w)
         index = index1;
 
     return index; //- (int)(index/ffreqs.size());
+
+//    //Alternative algorithm
+//    int index=0;
+//    for(int i=0; i<nFER; ++i)
+//    {
+//        if(ffreqs[i]<= w && w<ffreqs[i+1]) {
+//            index = i;
+//            break;
+//        }
+//    }
+//    return index;
 }
 int fconv_Lambda(double Lambda)
 {
@@ -122,6 +69,80 @@ int fconv_Lambda(double Lambda)
             return i;
     }
     return -1;
+}
+
+int fconv_K1_a(double w)
+{
+//    auto index = (int)((w-w_lower_b)/dw);
+//    return index -(int)(index/nw1_wa);
+    return fconv_bos(w);
+}
+tuple<int, int> fconv_K2_a(double w, double v1)
+{
+//    auto index_b = (int)((w-w_lower_b)/dw);
+//    auto index_f = (int)((v1-w_lower_f)/dv);
+//
+//    return make_tuple(index_b-(int)(index_b/nw2_wa), index_f-(int)(index_f/nw2_nua));
+    return make_tuple(fconv_bos(w), fconv_fer(v1));
+}
+tuple<int, int, int> fconv_K3_a(double w, double v1, double v2)
+{
+//    auto index_b = (int)((w-w_lower_b)/dw);
+//    auto index_f = (int)((v1-w_lower_f)/dv);
+//    auto index_fp = (int)((v2-w_lower_f)/dv);
+//
+//    return make_tuple(index_b-(int)(index_b/nw3_wa), index_f-(int)(index_f/nw3_nua), index_fp-(int)(index_fp/nw3_nuap));
+    return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
+}
+
+int fconv_K1_p(double w)
+{
+//    auto index = (int)((w-w_lower_b)/dw);
+//    return index - (int)(index/nw1_wp);
+    return fconv_bos(w);
+}
+tuple<int, int> fconv_K2_p(double w, double v1)
+{
+//    auto index_b = (int)((w-w_lower_b)/dw);
+//    auto index_f = (int)((v1-w_lower_f)/dv);
+//
+//    return make_tuple(index_b-(int)(index_b/nw2_wp), index_f-(int)(index_f/nw2_nup));
+    return make_tuple(fconv_bos(w), fconv_fer(v1));
+}
+tuple<int, int, int> fconv_K3_p(double w, double v1, double v2)
+{
+//    auto index_b = (int)((w-w_lower_b)/dw);
+//    auto index_f = (int)((v1-w_lower_f)/dv);
+//    auto index_fp = (int)((v2-w_lower_f)/dv);
+//
+//    return make_tuple(index_b-(int)(index_b/nw3_wp), index_f-(int)(index_f/nw3_nup), index_fp-(int)(index_fp/nw3_nupp));
+    return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
+
+}
+
+int fconv_K1_t(double w)
+{
+//    auto index = (int)((w-w_lower_b)/dw);
+//    return index - (int)(index/nw1_wt);
+    return fconv_bos(w);
+
+}
+tuple<int, int> fconv_K2_t(double w, double v1)
+{
+//    auto index_b = (int)((w-w_lower_b)/dw);
+//    auto index_f = (int)((v1-w_lower_f)/dv);
+//
+//    return make_tuple(index_b-(int)(index_b/nw2_wt), index_f-(int)(index_f/nw2_nut));
+    return make_tuple(fconv_bos(w), fconv_fer(v1));
+}
+tuple<int, int, int> fconv_K3_t(double w, double v1, double v2)
+{
+//    auto index_b = (int)((w-w_lower_b)/dw);
+//    auto index_f = (int)((v1-w_lower_f)/dv);
+//    auto index_fp = (int)((v2-w_lower_f)/dv);
+//
+//    return make_tuple(index_b-(int)(index_b/nw3_wt), index_f-(int)(index_f/nw3_nut), index_fp-(int)(index_fp/nw3_nutp));
+    return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 
 # endif

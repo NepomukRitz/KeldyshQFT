@@ -244,7 +244,7 @@ template <typename Q, typename Bubble> class Integrand_t_K1_diff {
     double wt;
 public:
     explicit Integrand_t_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiT_in, int i0_in, double wt_in, int i_in_in)
-            :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiT(PiT_in), i0(i0_in),    wt(wt_in), i_in(non_zero_Keldysh_K1t[i_in_in]) {};
+                                    :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiT(PiT_in), i0(i0_in),    wt(wt_in), i_in(non_zero_Keldysh_K1t[i_in_in]) {};
 
     //First option for integrand feature: a function
     Q integrand_p_K1(double vppt) {
@@ -568,7 +568,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
     Diff_T_Bubble PiTdot(G,S);
 
     /*K1 contributions*/
-//#pragma omp parallel for
+#pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
         // TODO: use MPI
         int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);

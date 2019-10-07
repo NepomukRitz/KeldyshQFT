@@ -170,7 +170,7 @@ template <typename Q, typename Bubble> class Integrand_a_K1_diff {
     double wa;
 public:
     explicit Integrand_a_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, int i_in_in)
-                               :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K1a[i0_in]),    wa(wa_in), i_in(i_in_in) {};
+                                    :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K1a[i0_in]),    wa(wa_in), i_in(i_in_in) {};
 
     //First option for integrand feature: a function
     Q integrand_p_K1(double vppa){

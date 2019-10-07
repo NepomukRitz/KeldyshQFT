@@ -320,7 +320,7 @@ template <typename Q> void avert<Q>::K3_addvert(int iK, int i, int j, int k, int
 template <typename Q> Q avert<Q>::K1_vval (int iK, int i, int i_in){
     return K1[iK*nw1_wa*n_in + i*n_in + i_in];
 }
-template <typename Q> Q avert<Q>::K2_vval (int iK, int i,int j, int i_in){
+template <typename Q> Q avert<Q>::K2_vval (int iK, int i,   int j, int i_in){
     return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
 }
 template <typename Q> Q avert<Q>::K2b_vval(int iK, int i,int j, int i_in){
