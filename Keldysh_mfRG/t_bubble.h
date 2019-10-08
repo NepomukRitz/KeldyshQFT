@@ -244,46 +244,26 @@ template <typename Q, typename Bubble> class Integrand_t_K1_diff {
     double wt;
 public:
     explicit Integrand_t_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiT_in, int i0_in, double wt_in, int i_in_in)
-                                    :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiT(PiT_in), i0(i0_in),    wt(wt_in), i_in(non_zero_Keldysh_K1t[i_in_in]) {};
+                                    :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiT(PiT_in), i0(non_zero_Keldysh_K1t[i0_in]),    wt(wt_in), i_in(i_in_in) {};
 
-    //First option for integrand feature: a function
-    Q integrand_p_K1(double vppt) {
-        int i1, i3;
-        Q resp;
-        for(auto i2:non_zero_Keldysh_tbubble) {
-            tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
-            //Contributions to K1: (K1 +K2b)Pi(K1+K2)
-            resp += (vertex1.densvertex.irred.vval(i1) +
-                     vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) +
-                     vertex1.densvertex.tvertex.K2b_vvalsmooth(i1, wt, vppt, i_in, vertex1.densvertex.avertex)) *
-
-                    PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
-
-                    (vertex2.densvertex.irred.vval(i3) +
-                     vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex) +
-                     vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in, vertex1.densvertex.avertex));
-        }
-        return resp;
-    }
-
-    //This is a second option for an integrand feature: a call operator
     Q operator()(double vppt) {
         int i1, i3;
         Q resp;
         for(auto i2:non_zero_Keldysh_tbubble) {
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
 
+            resp += vertex1.densvertex.irred.vval(i1) * PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) * vertex2.densvertex.irred.vval(i3);
             //Contributions to K1: (K1 +K2b)Pi(K1+K2)
-            resp += (vertex1.densvertex.irred.vval(i1) +
-                     vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) +
-                     vertex1.densvertex.tvertex.K2b_vvalsmooth(i1, wt, vppt, i_in, vertex1.densvertex.avertex)) *
-
-                    PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
-
-                    (vertex2.densvertex.irred.vval(i3) +
-                     vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex) +
-                     vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in, vertex1.densvertex.avertex));
+//            resp += (vertex1.densvertex.irred.vval(i1) +
+//                     vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) +
+//                     vertex1.densvertex.tvertex.K2b_vvalsmooth(i1, wt, vppt, i_in, vertex1.densvertex.avertex)) *
+//
+//                    PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt) *
+//
+//                    (vertex2.densvertex.irred.vval(i3) +
+//                     vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex) +
+//                     vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in, vertex1.densvertex.avertex));
         }
         return resp;
     }
@@ -567,6 +547,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 
     Diff_T_Bubble PiTdot(G,S);
 
+    double t0 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
@@ -581,7 +562,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
         resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1_diff, ffreqs) );
     }
     cout << "K1t done" << endl;
-
+    get_time(t0);
     /*K2 contributions*/
 ////#pragma omp parallel for
 //    for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
@@ -621,7 +602,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 //    }
 //    cout << "K3t done" << endl;
 
-    return resp*(-1.);
+    return resp;    //*(-1.);
 }
 
 template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)

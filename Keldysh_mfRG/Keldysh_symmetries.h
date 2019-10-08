@@ -63,17 +63,15 @@ int T_C_Keldysh(int iK)
     return iKp;
 }
 
-bool isInList (int iK, vector<int> list)
+bool isInList (int iK, vector<int>& list)
 {
     bool resp = false;
-    int i=0;
-    while(!resp && i<list.size())
+    for(auto i : list)
     {
-        if(iK == list[i])
-        {
+        if(iK == i) {
             resp = true;
+            break;
         }
-        i++;
     }
     return resp;
 }

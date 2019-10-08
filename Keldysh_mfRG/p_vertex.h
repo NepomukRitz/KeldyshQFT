@@ -734,14 +734,14 @@ template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_TC_K3(
 
 template<typename Q> tuple<int, int> pvert<Q>::indices_sum(int i0, int i2)
 {
-    int a1pi0, a2pi0, a1i0, a2i0, a1pi2, a2pi2, a1i2, a2i2;
+    int a1p, a2p, a1, a2, a3, a4, a3p, a4p;
 
-    tie(a1pi0, a2pi0, a1i0, a2i0) = alphas(i0);
-    tie(a1pi2, a2pi2, a1i2, a2i2) = alphas(i2);
+    tie(a1p, a2p, a1, a2) = alphas(i0);
+    tie(a3, a4, a3p, a4p) = alphas(i2);
 
     return make_tuple(
-            8*(a1pi0-1) + 4*(a2pi0-1) + 2*(a1pi2-1) + 1*(a2pi2-1),
-            8*(a1i2-1) + 4*(a2i2-1) + 2*(a1i0-1) + 1*(a2i0));
+            8*(a1p-1) + 4*(a2p-1) + 2*(a3-1) + 1*(a4-1),
+            8*(a3p-1) + 4*(a4p-1) + 2*(a1-1) + 1*(a2-1));
 }
 
 #endif //KELDYSH_MFRG_P_VERTEX_H
