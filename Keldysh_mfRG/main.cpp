@@ -55,6 +55,7 @@ int main() {
 
     cout << "Start of flow" << endl;
     for(auto Lambda:flow_grid) {
+        double tder = get_time();
         state.Lambda = Lambda;
         State<comp> dPsi = derivative(Lambda, state);
 
@@ -64,6 +65,8 @@ int main() {
 
         writeOutFile(ffreqs, Lambda, control, state.selfenergy);
         cout << "Wrote out" <<endl;
+        cout << "One derivatie step: ";
+        get_time(tder);
     }
 
 

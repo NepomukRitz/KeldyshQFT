@@ -24,4 +24,8 @@ add_executable(Keldysh_mfRG
         free_propagator_functions.h
         a_bubble.h
         p_bubble.h
-        t_bubble.h loop.h a_vertex.h p_vertex.h t_vertex.h)
+        t_bubble.h loop.h a_vertex.h p_vertex.h t_vertex.h
+        include/domain.hpp
+        include/paid.hpp
+        include/queue.hpp
+        include/rule.hpp)

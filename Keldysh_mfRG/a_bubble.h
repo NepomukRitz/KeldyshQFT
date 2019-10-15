@@ -175,10 +175,21 @@ public:
     Q operator() (double vppa){
         int i1, i3;
         Q resp;
+        Q resp1, resp2, resp3, resp4, resp5;
         for(auto i2:non_zero_Keldysh_abubble) {
             tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
+            auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);
 
-            resp += vertex1.densvertex.irred.vval(i1) * PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa) * vertex2.densvertex.irred.vval(i3);
+            resp1 += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.irred.vval(i3);
+            resp2 += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.irred.vval(i3);
+            resp3 += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
+            resp4 += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
+            resp5 += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
+            if (resp5!= (comp)0.)
+            {
+
+                resp5 *= 0.;
+            }
             //Contributions to K1: (K1 +K2b)Pi(K1+K2)
 //            resp += (vertex1.densvertex.irred.vval(i1) +
 //                     vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) +
@@ -189,6 +200,7 @@ public:
 //                    (vertex2.densvertex.irred.vval(i3) +
 //                     vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
 //                     vertex2.densvertex.avertex.K2_vvalsmooth (i3, wa, vppa, i_in, vertex2.densvertex.tvertex) );
+            resp = resp1+resp2+resp3+resp4 + resp5;
         }
         return resp;
     }

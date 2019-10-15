@@ -6,6 +6,7 @@
 #define KELDYSH_MFRG_INTEGRATOR_H
 
 #include <gsl/gsl_integration.h>
+#include "include/paid.hpp"
 #include "data_structures.h"
 
 //void integrator(gsl_function& F, ) {
@@ -17,6 +18,7 @@ comp dotproduct(const cvec& x, const rvec& y);
 //This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
 template <typename Integrand> comp integrator(Integrand& integrand, const rvec& grid)
 {
+    //Simpson
     int n = grid.size();
     rvec simpson(n);
     cvec integrand_values(n);
@@ -30,6 +32,15 @@ template <typename Integrand> comp integrator(Integrand& integrand, const rvec& 
     double dx = (grid[n-1]-grid[0])/n ;
 
     return dx/3.*dotproduct(integrand_values, simpson);
+
+//    Domain1D<comp> D (grid[0], grid[grid.size()-1]);
+//    vector<PAIDInput> inputs;
+//    inputs.emplace_back(D, integrand, 1);
+//    PAID p(inputs);
+//    auto result = p.solve();
+//
+//    return result[1];
+
 }
 
 comp dotproduct(const cvec& x, const rvec& y)
