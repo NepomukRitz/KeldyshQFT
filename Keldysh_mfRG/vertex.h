@@ -22,6 +22,8 @@ class irreducible{
 public:
     vec<Q> bare = vec<Q>(16);
 
+    irreducible() = default;;
+
     /*All three functions return the value of the bare vertex. Since this value is, this far, independent of everything,
      * the third function stays the same. However, should count on having to adapt it if an internal structure should
      * come forth where the bare interaction does not remain invariant throughout the system.*/
@@ -57,6 +59,8 @@ public:
     avert<Q> avertex;
     pvert<Q> pvertex;
     tvert<Q> tvertex;
+
+    fullvert() = default;;
 
 
     /*Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
@@ -99,13 +103,15 @@ public:
     T spinvertex;
     T densvertex;
 
-    Vertex<T> operator+ (Vertex<T> vertex1)
+    Vertex() = default;;
+
+    Vertex<T> operator+ (const Vertex<T>& vertex1)
     {
         this->densvertex + vertex1.densvertex;
         this->spinvertex + vertex1.spinvertex;
         return *this;
     }
-    Vertex<T> operator+= (Vertex<T> vertex1)
+    Vertex<T> operator+= (const Vertex<T>& vertex1)
     {
         this->densvertex += vertex1.densvertex;
         this->spinvertex += vertex1.spinvertex;

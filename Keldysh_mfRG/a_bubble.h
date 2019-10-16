@@ -83,6 +83,30 @@ public:
     }
 };
 
+template <typename Q, typename Bubble> class Integrand_a_K1 {
+    Vertex<fullvert<Q> >& vertex1;
+    Vertex<fullvert<Q> >& vertex2;
+    Bubble& PiA;
+    int i0, i_in;
+    double wa;
+public:
+    explicit Integrand_a_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, int i_in_in)
+    :                                     vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K1a[i0_in]), wa(wa_in), i_in(i_in_in) {};
+
+    Q operator() (double vppa){
+        int i1, i3;
+        Q resp;
+        for(auto i2:non_zero_Keldysh_abubble) {
+            tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
+            auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);
+
+            //This is to test SOPT
+            resp += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.irred.vval(i3);
+        }
+        return resp;
+    }
+
+};
 template <typename Q, typename Bubble> class Integrand_a_K2 {
     Vertex<fullvert<Q> > &vertex1;
     Vertex<fullvert<Q> > &vertex2;
@@ -181,15 +205,11 @@ public:
             auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);
 
             resp1 += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.irred.vval(i3);
-            resp2 += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.irred.vval(i3);
-            resp3 += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
-            resp4 += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
-            resp5 += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
-            if (resp5!= (comp)0.)
-            {
-
-                resp5 *= 0.;
-            }
+            //This is to test SOPT
+//            resp2 += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.irred.vval(i3);
+//            resp3 += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
+//            resp4 += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
+//            resp5 += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
             //Contributions to K1: (K1 +K2b)Pi(K1+K2)
 //            resp += (vertex1.densvertex.irred.vval(i1) +
 //                     vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) +
@@ -540,10 +560,29 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
     return resp;
 }
 
+
 template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
 {
     Vertex<avert<Q> > resp = Vertex<avert<Q> >();
-//    A_Bubble PiA(G);
+    A_Bubble PiA(G);
+
+    //These lines are to test the SOPT results
+    double t0 = get_time();
+    /*K1 contributions*/
+#pragma omp parallel for
+    for (int iK1=0; iK1<nK_K1*nw1_wa*n_in; ++iK1) {
+
+        int i0 = (iK1 % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
+        int iwa = (iK1 % (nw1_wa * n_in)) / n_in;
+        int i_in = iK1 % n_in;
+        double wa = bfreqs[iwa];
+
+        Integrand_a_K1<Q, A_Bubble> integrand_a_K1 (vertex1, vertex2, PiA, i0, wa, i_in);
+
+        resp.densvertex.K1_addvert(i0, iwa, i_in, integrator(integrand_a_K1, ffreqs) );
+    }
+    cout << "K1a done:" << endl;
+    get_time(t0);
 
 //    if(side == 'L')
 //    {

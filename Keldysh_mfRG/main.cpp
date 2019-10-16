@@ -13,6 +13,7 @@
 #include "propagator.h"
 #include "selfenergy.h"
 
+
 using namespace std;
 
 typedef complex<double> comp;
@@ -22,6 +23,9 @@ template <typename Q> State<Q> derivative(double Lambda, State<Q>& state);
 void setUpBosGrid();
 void setUpFerGrid();
 void setUpFlowGrid();
+
+template <typename Q> void SOPT(double Lambda, State<Q>& state);
+void writeOutSOPT(Propagator& propagator, SelfEnergy<comp>& selfEnergy);
 
 
 int main() {
@@ -38,7 +42,7 @@ int main() {
 
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, 0.5*U);
+        state.selfenergy.setself(0, i, 0);
         state.selfenergy.setself(1, i, 0.);
         state.diffselfenergy.setself(0, i, 0.);
         state.diffselfenergy.setself(1, i, 0.);
@@ -53,25 +57,35 @@ int main() {
 
 
 
-    cout << "Start of flow" << endl;
-    for(auto Lambda:flow_grid) {
-        double tder = get_time();
-        state.Lambda = Lambda;
-        State<comp> dPsi = derivative(Lambda, state);
+//    cout << "Start of flow" << endl;
+//    for(auto Lambda:flow_grid) {
+//        double tder = get_time();
+//        state.Lambda = Lambda;
+//        State<comp> dPsi = derivative(Lambda, state);
+//
+//        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
+//
+//        double tadd = get_time();
+////        state += dPsi*dL;
+//        state += dPsi;
+//        cout << "Added:";
+//        get_time(tadd);
+//
+//        writeOutFile(ffreqs, Lambda, control, state.selfenergy);
+//        cout << "Wrote out" <<endl;
+//        cout << "One derivatie step: ";
+//        get_time(tder);
+//    }
 
-        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
+    SOPT(1., state);
+    Propagator control = propag(0., state.selfenergy, state.diffselfenergy, 'g');
 
-        state += dPsi;
-
-        writeOutFile(ffreqs, Lambda, control, state.selfenergy);
-        cout << "Wrote out" <<endl;
-        cout << "One derivatie step: ";
-        get_time(tder);
-    }
+    writeOutSOPT(control, state.selfenergy);
 
 
     return 0;
 }
+
 
 
 template <typename Q>
@@ -242,4 +256,84 @@ void setUpFlowGrid()
 {
     for(int i=0; i<nEVO; ++i)
         flow_grid[i] = Lambda_ini + i*dL;
+}
+
+template<typename Q>
+void SOPT(double Lambda, State<Q> &state) {
+
+    Propagator G = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
+    cout << "G calculated" << endl;
+
+
+    cout << "bubble started" << endl;
+    double t2 = get_time();
+    //Lines 7-9
+    double ta = get_time();
+    Vertex<avert<comp> > dgammaa = a_bubble_function(state.vertex, state.vertex, G, '.');
+    cout<<  "a - Bubble:";
+    get_time(ta);
+
+    double tp = get_time();
+    Vertex<pvert<comp> > dgammap = p_bubble_function(state.vertex, state.vertex, G, '.');
+    cout<<  "p - Bubble:";
+    get_time(tp);
+
+    double  tt=get_time();
+    Vertex<tvert<comp> > dgammat = t_bubble_function(state.vertex, state.vertex, G, '.');
+    cout<<  "t - Bubble:";
+    get_time(tt);
+
+    cout << "bubble finished. ";
+    get_time(t2);
+
+
+
+    //Line 41
+    state.vertex.densvertex.avertex += dgammaa.densvertex;
+    state.vertex.densvertex.pvertex += dgammap.densvertex;
+    state.vertex.densvertex.tvertex += dgammat.densvertex;
+
+
+    SelfEnergy<comp> Sigma_std = loop(state.vertex, G);
+    cout << "loop calculated" << endl;
+
+    state.selfenergy += Sigma_std;
+}
+
+void writeOutSOPT(Propagator& propagator, SelfEnergy<comp>& selfEnergy)
+{
+    ostringstream self_energyR, self_energyA, self_energyK, propR, propA, propK;
+    self_energyR << "self_energyR.dat";
+    self_energyA << "self_energyA.dat";
+    self_energyK << "self_energyK.dat";
+
+    propR << "propagatorR.dat";
+    propA << "propagatorA.dat";
+    propK << "propagatorK.dat";
+
+    ofstream my_file_sigmaR, my_file_sigmaA, my_file_sigmaK, my_file_propR, my_file_propA, my_file_propK;
+    my_file_sigmaR.open(self_energyR.str());
+    my_file_sigmaA.open(self_energyA.str());
+    my_file_sigmaK.open(self_energyK.str());
+
+    my_file_propR.open(propR.str());
+    my_file_propA.open(propA.str());
+    my_file_propK.open(propK.str());
+
+    for (int j = 0; j < nFER; j++) {
+        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.sval(0, j).real() << " " <<  selfEnergy.sval(0, j).imag() << "\n";
+        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.sval(0, j).real() << " " << -selfEnergy.sval(0, j).imag() << "\n";
+        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.sval(1, j).real() << " " <<  selfEnergy.sval(1, j).imag() << "\n";
+
+        my_file_propR << ffreqs[j] << " " << propagator.pval(0, j).real() << " " <<  propagator.pval(0, j).imag() << "\n";
+        my_file_propA << ffreqs[j] << " " << propagator.pval(0, j).real() << " " << -propagator.pval(0, j).imag() << "\n";
+        my_file_propK << ffreqs[j] << " " << propagator.pval(1, j).real() << " " <<  propagator.pval(1, j).imag() << "\n";
+    }
+    my_file_sigmaR.close();
+    my_file_sigmaA.close();
+    my_file_sigmaK.close();
+
+    my_file_propR.close();
+    my_file_propA.close();
+    my_file_propK.close();
 }

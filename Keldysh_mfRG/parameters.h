@@ -40,7 +40,7 @@ const double U = 1.0;
 const int nEVO = 7;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 501;
+const int nBOS = 301;
 const int nFER = 201;
 
 /*Limits of the fRG flow*/

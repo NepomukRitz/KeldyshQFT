@@ -84,6 +84,32 @@ public:
     }
 };
 
+template <typename Q, typename Bubble> class Integrand_p_K1 {
+    Vertex<fullvert<Q> >& vertex1;
+    Vertex<fullvert<Q> >& vertex2;
+    Bubble& PiP;
+    int i0, i_in;
+    double wp;
+public:
+    explicit Integrand_p_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in, int i0_in, double wp_in, int i_in_in)
+            :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K1p[i0_in]),    wp(wp_in), i_in(i_in_in) {};
+
+
+    //This is a second option for an integrand feature: a call operator
+    Q operator()(double vppp) {
+        int i1, i3;
+        Q resp;
+        for(auto i2:non_zero_Keldysh_pbubble) {
+            tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
+            auto PiPval = PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp);
+
+            //This is to test SOPT
+            resp += vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.irred.vval(i3);
+        }
+        return resp;
+    }
+
+};
 template <typename Q, typename Bubble> class Integrand_p_K2
 {
     Vertex<fullvert<Q> > &vertex1;
@@ -188,9 +214,10 @@ public:
             auto PiPval = PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp);
 
             resp += vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.irred.vval(i3);
-            resp += vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) * PiPval * vertex2.densvertex.irred.vval(i3);
-            resp += vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
-            resp += vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) * PiPval * vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
+            //This is to test SOPT
+//            resp += vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) * PiPval * vertex2.densvertex.irred.vval(i3);
+//            resp += vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
+//            resp += vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) * PiPval * vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
             //Contributions to K1: (K1 +K2b)Pi(K1+K2)
 //            resp += (vertex1.densvertex.irred.vval(i1) +
 //                     vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in)  +
@@ -545,8 +572,25 @@ template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q
 template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
 {
     Vertex<pvert<Q> > resp = Vertex<pvert<Q> >();
-//    P_Bubble PiP(G);
-//
+    P_Bubble PiP(G);
+
+    double t0 = get_time();
+    /*K1 contributions*/
+#pragma omp parallel for
+    for (int iK1=0; iK1<nK_K1*nw1_wp*n_in; ++iK1) {
+        // TODO: use MPI
+        int i0 = (iK1 % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
+        int iwp = (iK1 % (nw1_wp * n_in)) / n_in;
+        int i_in = iK1 % n_in;
+        double wp = bfreqs[iwp];
+
+        Integrand_p_K1 <Q, P_Bubble> integrand_p_K1 (vertex1, vertex2, PiP, i0, wp, i_in);
+
+        resp.densvertex.K1_addvert(i0, iwp, i_in, integrator(integrand_p_K1, ffreqs) );
+    }
+    cout << "K1p done" << endl;
+    get_time(t0);
+
 //    if(side == 'L')
 //    {
 //        //In this case, there are only contributions to K2 and K3

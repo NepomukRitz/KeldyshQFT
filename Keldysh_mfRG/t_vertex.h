@@ -149,20 +149,20 @@ public:
     {
         this->K1 + vertex.K1;
         this->K2 + vertex.K2;
-        this->K3 + vertex.K3;
+//        this->K3 + vertex.K3;
         return *this;
     }
     tvert<Q> operator+=(const tvert<Q>& vertex)
     {
         this->K1 += vertex.K1;
         this->K2 += vertex.K2;
-        this->K3 += vertex.K3;
+//        this->K3 += vertex.K3;
         return *this;
     }
     tvert<Q> operator*(double alpha) {
         this->K1 * alpha;
         this->K2 * alpha;
-        this->K3 * alpha;
+//        this->K3 * alpha;
         return *this;
     }
 
