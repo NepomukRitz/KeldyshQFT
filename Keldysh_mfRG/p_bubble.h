@@ -586,7 +586,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_p_K1 <Q, P_Bubble> integrand_p_K1 (vertex1, vertex2, PiP, i0, wp, i_in);
 
-        resp.densvertex.K1_addvert(i0, iwp, i_in, integrator(integrand_p_K1, ffreqs) );
+        resp.densvertex.K1_addvert(i0, iwp, i_in, 0.5*integrator(integrand_p_K1, ffreqs) );
     }
     cout << "K1p done" << endl;
     get_time(t0);
@@ -639,7 +639,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& 
 //        resp.densvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, integrator(integrand_p_K3, ffreqs));
 //    }
 
-    return resp*0.5;
+    return resp;
 }
 
 
