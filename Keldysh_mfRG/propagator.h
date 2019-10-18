@@ -36,7 +36,7 @@ public:
 
 };
 
-Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type);
+Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type, char free);
 
 /************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
 
@@ -189,40 +189,57 @@ comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
             (comp)1.i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
 }
 
-Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type)
+Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type, char free)
 {
     Propagator resp;
-    for(int i=0; i<nPROP; ++i) {
-        double w = ffreqs[i];
-        comp selfEneR = selfenergy.sval(0, i);
-        comp selfEneK = selfenergy.sval(1, i);
-        comp diffSelfEneR = diffselfenergy.sval(0, i);
-        comp diffSelfEneK = diffselfenergy.sval(1, i);
-        comp GR0 = GR(Lambda, w, selfEneR);
-        comp GA0 = GA(Lambda, w, conj(selfEneR));
-        comp GK0 = GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
+    if(free!='f') {
+        for (int i = 0; i < nPROP; ++i) {
+            double w = ffreqs[i];
+            comp selfEneR = selfenergy.sval(0, i);
+            comp selfEneK = selfenergy.sval(1, i);
+            comp diffSelfEneR = diffselfenergy.sval(0, i);
+            comp diffSelfEneK = diffselfenergy.sval(1, i);
+            comp GR0 = GR(Lambda, w, selfEneR);
+            comp GA0 = GA(Lambda, w, conj(selfEneR));
+            comp GK0 = GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
 
 
-        if (type == 'g') { //good ol' regular propagator
-            resp.setprop(0, i, GR0);
-            resp.setprop(1, i, GK0);
-        } else if (type == 's') {   //single-scale propagator
-            resp.setprop(0, i, SR(Lambda, w, selfEneR) );
-            resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, conj(selfEneR)) );
-        } else if (type == 'k') {  //Katanin substitution
-            comp SingR, ER, SingK, EK;
-            ER = GR0 * diffSelfEneR * GR0;
-            EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * conj(diffSelfEneR) * GA0;
-            SingR = SR(Lambda, w, selfEneR);
-            SingK = SK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
-            resp.setprop(0, i, (SingR + ER));
-            resp.setprop(1, i, (SingK + EK));
-        } else if (type == 'e') {   //i.e. only the Katanin extension
-            comp ER, EK;
-            ER = GR0 * diffSelfEneR * GR0;
-            EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * conj(diffSelfEneR) * GA0;
-            resp.setprop(0, i, ER );
-            resp.setprop(1, i, EK );
+            if (type == 'g') { //good ol' regular propagator
+                resp.setprop(0, i, GR0);
+                resp.setprop(1, i, GK0);
+            } else if (type == 's') {   //single-scale propagator
+                resp.setprop(0, i, SR(Lambda, w, selfEneR));
+                resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, conj(selfEneR)));
+            } else if (type == 'k') {  //Katanin substitution
+                comp SingR, ER, SingK, EK;
+                ER = GR0 * diffSelfEneR * GR0;
+                EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * conj(diffSelfEneR) * GA0;
+                SingR = SR(Lambda, w, selfEneR);
+                SingK = SK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
+                resp.setprop(0, i, (SingR + ER));
+                resp.setprop(1, i, (SingK + EK));
+            } else if (type == 'e') {   //i.e. only the Katanin extension
+                comp ER, EK;
+                ER = GR0 * diffSelfEneR * GR0;
+                EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * conj(diffSelfEneR) * GA0;
+                resp.setprop(0, i, ER);
+                resp.setprop(1, i, EK);
+            }
+        }
+    }
+    else{
+        for(int i=0; i<nPROP; ++i)
+        {
+            double w = ffreqs[i];
+
+            if(type=='g') {
+                resp.setprop(0, i, gR(Lambda, w));
+                resp.setprop(1, i, gK(Lambda, w));
+            }
+            else if(type == 's'){
+                resp.setprop(0, i, sR(Lambda, w));
+                resp.setprop(1, i, sK(Lambda, w));
+            }
         }
     }
     return resp;

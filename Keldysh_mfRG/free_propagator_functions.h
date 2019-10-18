@@ -14,7 +14,7 @@ comp gR(double Lambda, double omega)
 #if REG==1
     return 1./(omega-epsilon);
 #elif REG==2
-    return 1./(omega-epsilon + (comp)0.5i*(GAMMA_REG+Lambda));
+    return 1./(omega-epsilon + ((comp)0.5i*(GAMMA_REG+Lambda)));
 #endif
 }
 
@@ -23,7 +23,7 @@ comp gA(double Lambda, double omega)
 #if REG==1
     return 1./(omega-epsilon);
 #elif REG==2
-    return 1./(omega-epsilon - (comp)0.5i*(GAMMA_REG+Lambda));
+    return 1./(omega-epsilon - ((comp)0.5i*(GAMMA_REG+Lambda)));
 #endif
 }
 
@@ -43,11 +43,11 @@ comp gK(double Lambda, double omega)
 
 comp sR(double Lambda, double omega)
 {
-    return -(comp)0.5i*pow(gR(Lambda,omega),2.);
+    return -((comp)0.5i)*gR(Lambda,omega)*gR(Lambda,omega);
 }
 comp sA(double Lambda, double omega)
 {
-    return +(comp)0.5i*pow(gA(Lambda,omega),2.);
+    return ((comp)0.5i)*gA(Lambda,omega)*gA(Lambda,omega);
 }
 comp sK(double Lambda, double omega)
 {

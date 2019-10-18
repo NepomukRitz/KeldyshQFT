@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include<bits/stdc++.h> // TODO: what is this needed for?
+#include <bits/stdc++.h> // TODO: what is this needed for?
 #include <iostream>
 #include <fstream>
 #include <complex>
@@ -42,7 +42,7 @@ int main() {
 
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, 0);
+        state.selfenergy.setself(0, i, 0.5*U);
         state.selfenergy.setself(1, i, 0.);
         state.diffselfenergy.setself(0, i, 0.);
         state.diffselfenergy.setself(1, i, 0.);
@@ -78,7 +78,7 @@ int main() {
 //    }
 
     SOPT(1., state);
-    Propagator control = propag(0., state.selfenergy, state.diffselfenergy, 'g');
+    Propagator control = propag(1., state.selfenergy, state.diffselfenergy, 'g', '.');
 
     writeOutSOPT(control, state.selfenergy);
 
@@ -261,7 +261,7 @@ void setUpFlowGrid()
 template<typename Q>
 void SOPT(double Lambda, State<Q> &state) {
 
-    Propagator G = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
+    Propagator g = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g', 'f');
     cout << "G calculated" << endl;
 
 
@@ -269,24 +269,24 @@ void SOPT(double Lambda, State<Q> &state) {
     double t2 = get_time();
     //Lines 7-9
     double ta = get_time();
-    Vertex<avert<comp> > dgammaa = a_bubble_function(state.vertex, state.vertex, G, '.');
+    Vertex<avert<comp> > dgammaa = a_bubble_function(state.vertex, state.vertex, g, '.');
     cout<<  "a - Bubble:";
     get_time(ta);
 
     double tp = get_time();
-    Vertex<pvert<comp> > dgammap = p_bubble_function(state.vertex, state.vertex, G, '.');
+    Vertex<pvert<comp> > dgammap = p_bubble_function(state.vertex, state.vertex, g, '.');
     cout<<  "p - Bubble:";
     get_time(tp);
 
     double  tt=get_time();
-    Vertex<tvert<comp> > dgammat = t_bubble_function(state.vertex, state.vertex, G, '.');
+    Vertex<tvert<comp> > dgammat = t_bubble_function(state.vertex, state.vertex, g, '.');
     cout<<  "t - Bubble:";
     get_time(tt);
 
     cout << "bubble finished. ";
     get_time(t2);
 
-
+    Propagator s = propag(Lambda, state.selfenergy, state.diffselfenergy, 's', 'f');
 
     //Line 41
     state.vertex.densvertex.avertex += dgammaa.densvertex;
@@ -294,8 +294,10 @@ void SOPT(double Lambda, State<Q> &state) {
     state.vertex.densvertex.tvertex += dgammat.densvertex;
 
 
-    SelfEnergy<comp> Sigma_std = loop(state.vertex, G);
-    cout << "loop calculated" << endl;
+    double tloop = get_time();
+    SelfEnergy<comp> Sigma_std = loop(state.vertex, s);
+    cout << "loop calculated ";
+    get_time(tloop);
 
     state.selfenergy += Sigma_std;
 }
