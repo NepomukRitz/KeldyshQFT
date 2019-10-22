@@ -15,36 +15,70 @@
 
 class T_Bubble{
     cvec PiT = cvec (16*nPROP*nPROP);
+    Propagator& g;
 public:
     explicit T_Bubble(Propagator& propagator) :
-            PiT(cvec(16*nPROP*nPROP))
+            PiT(cvec(16*nPROP*nPROP)), g(propagator)
     {
-        //vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});
-        for(int i=0; i<nPROP; ++i) {
-            for (int j = 0; j < nPROP; ++j) {
-                PiT[3*nPROP*nPROP + i*nPROP + j]  = conj(propagator.pval(0,i))*conj(propagator.pval(0,j));          //AA
-                PiT[5*nPROP*nPROP + i*nPROP + j]  = propagator.pval(0,i)*conj(propagator.pval(0,j));                //RA
-                PiT[7*nPROP*nPROP + i*nPROP + j]  = propagator.pval(1,i)*conj(propagator.pval(0,j));                //KA
-                PiT[10*nPROP*nPROP + i*nPROP + j] = conj(propagator.pval(0,i))*propagator.pval(0,j);                //AR
-                PiT[11*nPROP*nPROP + i*nPROP + j] = conj(propagator.pval(0,i))*propagator.pval(1,j);                //AK
-                PiT[12*nPROP*nPROP + i*nPROP + j] = propagator.pval(0,i)*propagator.pval(0,j);                      //RR
-                PiT[13*nPROP*nPROP + i*nPROP + j] = propagator.pval(0,i)*propagator.pval(1,j);                      //RK
-                PiT[14*nPROP*nPROP + i*nPROP + j] = propagator.pval(1,i)*propagator.pval(0,j);                      //KR
-                PiT[15*nPROP*nPROP + i*nPROP + j] = propagator.pval(1,i)*propagator.pval(1,j);                      //KK
-            }
-        }
+//        //vector<int> non_zero_Keldysh_tbubble({3,5,7,10,11,12,13,14,15});
+//        for(int i=0; i<nPROP; ++i) {
+//            for (int j = 0; j < nPROP; ++j) {
+//                PiT[3*nPROP*nPROP + i*nPROP + j]  = conj(propagator.pval(0,i))*conj(propagator.pval(0,j));          //AA
+//                PiT[5*nPROP*nPROP + i*nPROP + j]  = propagator.pval(0,i)*conj(propagator.pval(0,j));                //RA
+//                PiT[7*nPROP*nPROP + i*nPROP + j]  = propagator.pval(1,i)*conj(propagator.pval(0,j));                //KA
+//                PiT[10*nPROP*nPROP + i*nPROP + j] = conj(propagator.pval(0,i))*propagator.pval(0,j);                //AR
+//                PiT[11*nPROP*nPROP + i*nPROP + j] = conj(propagator.pval(0,i))*propagator.pval(1,j);                //AK
+//                PiT[12*nPROP*nPROP + i*nPROP + j] = propagator.pval(0,i)*propagator.pval(0,j);                      //RR
+//                PiT[13*nPROP*nPROP + i*nPROP + j] = propagator.pval(0,i)*propagator.pval(1,j);                      //RK
+//                PiT[14*nPROP*nPROP + i*nPROP + j] = propagator.pval(1,i)*propagator.pval(0,j);                      //KR
+//                PiT[15*nPROP*nPROP + i*nPROP + j] = propagator.pval(1,i)*propagator.pval(1,j);                      //KK
+//            }
+//        }
     };
 
     /*This function returns the value of the t-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
     {
-        if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
-            return 0.;
-        else {
-            int i = fconv_fer(v1);
-            int j = fconv_fer(v2);
-            return PiT[iK*nPROP*nPROP + i*nPROP+ j];
+//        if(fabs(v1)>=w_upper_f || fabs(v2)>=w_upper_f)
+//            return 0.;
+//        else {
+//            int i = fconv_fer(v1);
+//            int j = fconv_fer(v2);
+//            return PiA[iK*nPROP*nPROP + i*nPROP+ j];
+//        }
+        comp ans;
+        switch (iK){
+            case 3: //AA
+                ans = conj(g.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 5: //RA
+                ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 7: //KA
+                ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 10: //AR
+                ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
+                break;
+            case 11://AK
+                ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
+                break;
+            case 12://RR
+                ans = g.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
+                break;
+            case 13://RK
+                ans = g.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
+                break;
+            case 14://KR
+                ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
+                break;
+            case 15://KK
+                ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
+                break;
+            default:
+                ans = 0.;
         }
+        return ans;
     }
 };
 
@@ -650,7 +684,9 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_t_K1 <Q, T_Bubble> integrand_t_K1 (vertex1, vertex2, PiT, i0, wt, i_in);
 
-        resp.densvertex.K1_addvert(i0, iwt, i_in, (-1.)*integrator(integrand_t_K1, ffreqs) );
+        Q value = (-1.)*integrator(integrand_t_K1, ffreqs);
+
+        resp.densvertex.K1_addvert(i0, iwt, i_in, value);
     }
     cout << "K1t done" << endl;
     get_time(t0);
