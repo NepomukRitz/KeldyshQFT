@@ -30,7 +30,7 @@ int fconv_bos(double w)
     auto index1 = (int)aid;
     auto index2 = index1+1;
 
-    if(fabs(aid-index1) > fabs(aid-index2))
+    if(fabs(aid-index2)<inter_tol)
         index = index2;
     else
         index = index1;
@@ -44,7 +44,7 @@ int fconv_fer(double w)
     auto index1 = (int)aid;
     auto index2 = index1+1;
 
-    if(fabs(aid-index1) > fabs(aid-index2))
+    if(fabs(aid-index2)<inter_tol)
         index = index2;
     else
         index = index1;
