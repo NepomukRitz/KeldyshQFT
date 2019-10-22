@@ -57,21 +57,41 @@ public:
 
     Q operator()(double wp)
     {
-        return
-        -( (vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
-            vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
-            vertex.densvertex.tvertex.value(1, 0., wp, w, i_in, vertex.densvertex.avertex) +
-            vertex.densvertex.irred.vval(1) ) * propagator.pvalsmooth(0, wp) +
+        Q resp1 = vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;
+        Q resp2 = vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;
+        Q resp3 = vertex.densvertex.tvertex.value(1, 0., wp, w, i_in, vertex.densvertex.avertex) ;
+        Q resp4 = vertex.densvertex.irred.vval(1);
 
-           (vertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
-            vertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
-            vertex.densvertex.tvertex.value(4, 0., wp, w, i_in, vertex.densvertex.avertex) +
-            vertex.densvertex.irred.vval(4) ) * conj(propagator.pvalsmooth(0, wp)) +
+        Q resp5 = vertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex);
+        Q resp6 = vertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in);
+        Q resp7 = vertex.densvertex.tvertex.value(4, 0., wp, w, i_in, vertex.densvertex.avertex);
+        Q resp8 = vertex.densvertex.irred.vval(4);
 
-           (vertex.densvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
-            vertex.densvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
-            vertex.densvertex.tvertex.value(5, 0., wp, w, i_in, vertex.densvertex.avertex) +
-            vertex.densvertex.irred.vval(5) ) * propagator.pvalsmooth(1, wp) );
+        Q resp9  = vertex.densvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex);
+        Q resp10 = vertex.densvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in);
+        Q resp11 = vertex.densvertex.tvertex.value(5, 0., wp, w, i_in, vertex.densvertex.avertex);
+        Q resp12 = vertex.densvertex.irred.vval(5);
+
+        Q aid1 = propagator.pvalsmooth(0, wp);
+        Q aid2 = conj(propagator.pvalsmooth(0, wp));
+        Q aid3 = propagator.pvalsmooth(1, wp);
+
+        return -((resp1+resp3+resp4)*aid1 + (resp5+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
+//        return
+//        -( (vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
+//            vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
+//            vertex.densvertex.tvertex.value(1, 0., wp, w, i_in, vertex.densvertex.avertex) +
+//            vertex.densvertex.irred.vval(1) ) * propagator.pvalsmooth(0, wp) +
+//
+//           (vertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
+//            vertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
+//            vertex.densvertex.tvertex.value(4, 0., wp, w, i_in, vertex.densvertex.avertex) +
+//            vertex.densvertex.irred.vval(4) ) * conj(propagator.pvalsmooth(0, wp)) +
+//
+//           (vertex.densvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
+//            vertex.densvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
+//            vertex.densvertex.tvertex.value(5, 0., wp, w, i_in, vertex.densvertex.avertex) +
+//            vertex.densvertex.irred.vval(5) ) * propagator.pvalsmooth(1, wp) );
     }
 };
 
@@ -89,6 +109,17 @@ SelfEnergy<comp> loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop)
 
         IntegrandR<comp, fullvert<comp> > integrandR(fullvertex, prop, w, i_in);
         IntegrandK<comp, fullvert<comp> > integrandK(fullvertex, prop, w, i_in);
+
+//        for(int j = 0; j<nBOS; j++)
+//        {
+//            comp value1 = fullvertex.densvertex.avertex.K1_vval(0, j, 0);
+//            comp value2 = fullvertex.densvertex.avertex.K1_vval(0, nBOS-j-1, 0);
+//
+//            if (value1.real()!= -value2.real())
+//            {
+//                cout<< j << " " << w << endl;
+//            }
+//        }
 
         comp integratedR = integrator(integrandR, ffreqs);
         comp integratedK = integrator(integrandK, ffreqs);

@@ -278,7 +278,7 @@ void SOPT(double Lambda, State<Q> &state) {
     cout<<  "p - Bubble:";
     get_time(tp);
 
-    double  tt=get_time();
+    double tt = get_time();
     Vertex<tvert<comp> > dgammat = t_bubble_function(state.vertex, state.vertex, g, '.');
     cout<<  "t - Bubble:";
     get_time(tt);
