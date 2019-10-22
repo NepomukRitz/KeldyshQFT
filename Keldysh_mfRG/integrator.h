@@ -47,7 +47,7 @@ template <typename Integrand> comp integrator(Integrand& integrand, const rvec& 
     }
     simpson[0] = 1.;
     simpson[n-1]=1.;
-    double dx = (grid[n-1]-grid[0])/n ;
+    double dx = (grid[n-1]-grid[0])/((double)n);
 
     return dx/3.*dotproduct(integrand_values, simpson);
 
