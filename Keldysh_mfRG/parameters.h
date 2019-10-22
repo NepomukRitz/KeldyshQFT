@@ -40,8 +40,8 @@ const double U = 1.0;
 const int nEVO = 7;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 201;
-const int nFER = 201;
+const int nBOS = 31;
+const int nFER = 31;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -126,6 +126,8 @@ const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 //Length of this vector not necessarily fixed by nSE... Think of Wentzell paper where #of bosonic freqs = 2x #of fermionic freqs
 
 
+//Tolerance for closeness to grid points when interpolating
+const double inter_tol = 10e-8;
 
 /*Frequency grids for each channel*/
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
