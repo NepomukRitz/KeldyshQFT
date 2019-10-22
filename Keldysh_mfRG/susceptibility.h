@@ -37,10 +37,10 @@ template <typename Q>Q Susc<Q>::susvalsmooth(int iK, double w){//smoothly interp
     if(fabs(w)>w_upper_b)
         return 0.;
     else {
-        if(fabs(w)!= w_upper_b) {
-            int W = fconv_bos(w);
-            double x1 = bfreqs[W];
-            double x2 = bfreqs[W] + dw;
+        if(fabs(w)!= w_upper_f) {
+            int W = fconv_fer(w);
+            double x1 = ffreqs[W];
+            double x2 = ffreqs[W] + dv;
             double xd = (w - x1) / (x2 - x1);
 
             Q f1 = sval(iK, W);
@@ -48,9 +48,9 @@ template <typename Q>Q Susc<Q>::susvalsmooth(int iK, double w){//smoothly interp
 
             return (1. - xd) * f1 + xd * f2;
         }
-        else if(w == w_upper_b)
+        else if(w == w_upper_f)
             return sval(iK, nSUS-1);
-        else if(w == w_lower_b)
+        else if(w == w_lower_f)
             return sval(iK, 0);
     }
 }
