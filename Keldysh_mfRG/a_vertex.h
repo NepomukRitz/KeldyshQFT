@@ -200,10 +200,10 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
 
 template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex){
 
-    return  K1_vvalsmooth (iK, w, i_in, tvertex)
-            + K2_vvalsmooth (iK, w, v1, i_in, tvertex)
-            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex)
-            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
+    return  K1_vvalsmooth (iK, w, i_in, tvertex);
+//            + K2_vvalsmooth (iK, w, v1, i_in, tvertex)
+//            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex)
+//            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
 }
 
 ////this function smoothly interpolates for frequency arguments that lie between the discrete mesh points ->see Reuther diss. page 45
