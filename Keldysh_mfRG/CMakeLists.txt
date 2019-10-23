@@ -30,4 +30,4 @@ add_executable(Keldysh_mfRG
         include/domain.hpp
         include/paid.hpp
         include/queue.hpp
-        include/rule.hpp)
+        include/rule.hpp internal_symmetries.h)
