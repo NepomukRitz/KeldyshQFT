@@ -63,7 +63,7 @@ int main() {
 //        state.Lambda = Lambda;
 //        State<comp> dPsi = derivative(Lambda, state);
 //
-//        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
+//        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g','.');
 //
 //        double tadd = get_time();
 ////        state += dPsi*dL;
@@ -79,7 +79,6 @@ int main() {
 
     SOPT(1., state);
     Propagator control = propag(1., state.selfenergy, state.diffselfenergy, 'g', '.');
-
     writeOutSOPT(control, state.selfenergy);
 
 
@@ -95,11 +94,11 @@ State<Q> derivative(double Lambda, State<Q>& state)
 
     /*Here I begin implementing Fabian's pseudocode*/
     //Line 1
-    Propagator S = propag(Lambda, state.selfenergy, state.diffselfenergy, 's');
+    Propagator S = propag(Lambda, state.selfenergy, state.diffselfenergy, 's', '.');
     cout << "S calculated" << endl;
 
     //Line 2
-    Propagator G = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g');
+    Propagator G = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g', '.');
     cout << "G calculated" << endl;
 
     //Line 3
@@ -110,7 +109,7 @@ State<Q> derivative(double Lambda, State<Q>& state)
     resp.selfenergy = Sigma_std;
 
     //Line 6
-    Propagator dG = propag(Lambda, resp.selfenergy, resp.diffselfenergy, 'k');
+    Propagator dG = propag(Lambda, resp.selfenergy, resp.diffselfenergy, 'k', '.');
 
     cout << "diff bubble started" << endl;
     double t2 = get_time();
