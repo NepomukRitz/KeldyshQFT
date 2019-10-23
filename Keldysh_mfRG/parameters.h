@@ -89,7 +89,7 @@ const double w_lower_f = -w_upper_f;        //Symmetric grid
 
 /*Number of independent Keldysh components for the respective diagrammatic class*/
 const int nK_K1 = 2;        //For channels a and t, these two are components 1 and 3 (applies for K1 and K2)
-const int nK_K2 = 2;        //For channel p, these two components are 1 and 5 (applies for K1 and K2)
+const int nK_K2 = 5;        //For channels a and t, and for channel p separately
 const int nK_K3 = 6;        //For all channels, these 6 components are 0, 1, 3, 5, 6, 7 (independent components in order of appearance
 
 /*Dimension of the space defining the internal structure*/
@@ -128,6 +128,9 @@ const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 
 //Tolerance for closeness to grid points when interpolating
 const double inter_tol = 10e-8;
+
+//Debugging tolerance
+const double tol = inter_tol;
 
 /*Frequency grids for each channel*/
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
