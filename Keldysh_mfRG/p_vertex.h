@@ -8,6 +8,7 @@
 #include "data_structures.h"
 #include "parameters.h"
 #include "Keldysh_symmetries.h"
+#include "internal_symmetries.h"
 
 
 //template <typename Q> class pvert;
@@ -619,6 +620,7 @@ template<typename Q> tuple<double, int>                 pvert<Q>::indices_T1_K1(
     double trans_w_p;
 
     trans_w_p = w_p;
+    i_in = internal_T1_K1_p(i_in);
 
     return make_tuple(trans_w_p, i_in);
 }
@@ -628,6 +630,7 @@ template<typename Q> tuple<double, double, int>         pvert<Q>::indices_T1_K2(
 
     trans_w_p = w_p;
     trans_v1_p = v1_p;
+    i_in = internal_T1_K2_p(i_in);
 
     return make_tuple(trans_w_p, trans_v1_p, i_in);
 }
@@ -639,6 +642,7 @@ template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_T1_K3(
     trans_w_p = w_p;
     trans_v1_p = v1_p;
     trans_v2_p = -v2_p;
+    i_in = internal_T1_K3_p(i_in);
 
     return make_tuple(trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
@@ -648,6 +652,7 @@ template<typename Q> tuple<double, int>                 pvert<Q>::indices_T2_K1(
     double trans_w_p;
 
     trans_w_p = w_p;
+    i_in = internal_T2_K1_p(i_in);
 
     return make_tuple(trans_w_p, i_in);
 }
@@ -658,6 +663,7 @@ template<typename Q> tuple<double, double, int>         pvert<Q>::indices_T2_K2(
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_p = w_p;
     trans_v1_p = -v1_p;
+    i_in = internal_T2_K2_p(i_in);
 
     return make_tuple(trans_w_p, trans_v1_p, i_in);
 }
@@ -669,6 +675,7 @@ template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_T2_K3(
     trans_w_p = w_p;
     trans_v1_p = -v1_p;
     trans_v2_p = v2_p;
+    i_in = internal_T2_K3_p(i_in);
 
     return make_tuple(trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
@@ -678,6 +685,7 @@ template<typename Q> tuple<double, int>                 pvert<Q>::indices_T3_K1(
     double trans_w_p;
 
     trans_w_p = w_p;
+    i_in = internal_T3_K1_p(i_in);
 
     return make_tuple(trans_w_p, i_in);
 }
@@ -688,6 +696,7 @@ template<typename Q> tuple<double, double, int>         pvert<Q>::indices_T3_K2(
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_p = w_p;
     trans_v1_p = -v1_p;
+    i_in = internal_T3_K2_p(i_in);
 
     return make_tuple(trans_w_p, trans_v1_p, i_in);
 }
@@ -699,6 +708,7 @@ template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_T3_K3(
     trans_w_p = w_p;
     trans_v1_p = -v1_p;
     trans_v2_p = -v2_p;
+    i_in = internal_T3_K3_p(i_in);
 
     return make_tuple(trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
@@ -708,6 +718,7 @@ template<typename Q> tuple<double, int>                 pvert<Q>::indices_TC_K1(
     double trans_w_p;
 
     trans_w_p = w_p;
+    i_in = internal_TC_K1_p(i_in);
 
     return make_tuple( trans_w_p, i_in);
 }
@@ -717,6 +728,7 @@ template<typename Q> tuple<double, double, int>         pvert<Q>::indices_TC_K2(
 
     trans_w_p = w_p;
     trans_v1_p = v1_p;
+    i_in = internal_TC_K2_p(i_in);
 
     return make_tuple( trans_w_p, trans_v1_p, i_in);
 }
@@ -727,6 +739,7 @@ template<typename Q> tuple<double, double, double, int> pvert<Q>::indices_TC_K3(
     trans_w_p = w_p;
     trans_v1_p = v2_p;
     trans_v2_p = v1_p;
+    i_in = internal_TC_K3_p(i_in);
 
     return make_tuple( trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }

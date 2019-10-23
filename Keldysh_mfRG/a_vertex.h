@@ -8,6 +8,7 @@
 #include "data_structures.h"
 #include "parameters.h"
 #include "Keldysh_symmetries.h"
+#include "internal_symmetries.h"
 
 
 template <typename Q> class tvert;
@@ -791,7 +792,7 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a,
     bool conjugate;
     bool transform;
     Q valueK3;
-
+    //TODO switch to swicht-based cases?
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
@@ -1074,11 +1075,11 @@ template<typename Q> tuple<double, double, double> avert<Q>::transfToA(double w,
 template<typename Q> tuple<double, int>                 avert<Q>::indices_T1_K1(double w_a, int i_in)
 {
     double trans_w_a;
-
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_a = -w_a;
+    w_a = -w_a;
+    i_in = internal_T1_K1_a(i_in);
 
-    return make_tuple(trans_w_a, i_in);
+    return make_tuple(w_a, i_in);
 }
 template<typename Q> tuple<double, double, int>         avert<Q>::indices_T1_K2(double w_a, double v1_a, int i_in)
 {
@@ -1087,6 +1088,7 @@ template<typename Q> tuple<double, double, int>         avert<Q>::indices_T1_K2(
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_a = -w_a;
     trans_v1_a = v1_a;
+    i_in = internal_T1_K2_a(i_in);
 
     return make_tuple(trans_w_a, trans_v1_a, i_in);
 }
@@ -1098,6 +1100,7 @@ template<typename Q> tuple<double, double, double, int> avert<Q>::indices_T1_K3(
     trans_w_a = -w_a;
     trans_v1_a = v2_a;
     trans_v2_a = v1_a;
+    i_in = internal_T1_K3_a(i_in);
 
     return make_tuple(trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -1108,6 +1111,7 @@ template<typename Q> tuple<double, int>                 avert<Q>::indices_T2_K1(
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_a = w_a;
+    i_in = internal_T2_K1_a(i_in);
 
     return make_tuple(trans_w_a, i_in);
 }
@@ -1118,6 +1122,7 @@ template<typename Q> tuple<double, double, int>         avert<Q>::indices_T2_K2(
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_a = w_a;
     trans_v1_a = v1_a;
+    i_in = internal_T2_K2_a(i_in);
 
     return make_tuple(trans_w_a, trans_v1_a, i_in);
 }
@@ -1129,6 +1134,7 @@ template<typename Q> tuple<double, double, double, int> avert<Q>::indices_T2_K3(
     trans_w_a = w_a;
     trans_v1_a = v1_a;
     trans_v2_a = v2_a;
+    i_in = internal_T2_K3_a(i_in);
 
     return make_tuple(trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -1139,6 +1145,7 @@ template<typename Q> tuple<double, int>                 avert<Q>::indices_T3_K1(
 
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     trans_w_a = -w_a;
+    i_in = internal_T3_K1_a(i_in);
 
     return make_tuple(trans_w_a, i_in);
 }
@@ -1147,7 +1154,8 @@ template<typename Q> tuple<double, double, int>         avert<Q>::indices_T3_K2(
     double trans_w_a, trans_v1_a;
 
     trans_w_a = -w_a;
-    trans_v1_a = v1_a;      //K2b
+    trans_v1_a = v1_a;
+    i_in = internal_T3_K2_a(i_in);
 
     return make_tuple(trans_w_a, trans_v1_a, i_in);
 }
@@ -1159,6 +1167,7 @@ template<typename Q> tuple<double, double, double, int> avert<Q>::indices_T3_K3(
     trans_w_a = -w_a;
     trans_v1_a = v2_a;
     trans_v2_a = v1_a;
+    i_in = internal_T3_K3_a(i_in);
 
     return make_tuple(trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
@@ -1168,6 +1177,7 @@ template<typename Q> tuple<double, int>                 avert<Q>::indices_TC_K1(
     double trans_w_a;
 
     trans_w_a = w_a;
+    i_in = internal_TC_K1_a(i_in);
 
     return make_tuple(trans_w_a, i_in);
 }
@@ -1176,7 +1186,8 @@ template<typename Q> tuple<double, double, int>         avert<Q>::indices_TC_K2(
     double trans_w_a, trans_v1_a;
 
     trans_w_a = w_a;
-    trans_v1_a = v1_a;      //K2b
+    trans_v1_a = v1_a;
+    i_in = internal_TC_K2_a(i_in);
 
     return make_tuple(trans_w_a, trans_v1_a, i_in);
 }
@@ -1187,6 +1198,7 @@ template<typename Q> tuple<double, double, double, int> avert<Q>::indices_TC_K3(
     trans_w_a = w_a;
     trans_v1_a = v2_a;
     trans_v2_a = v1_a;
+    i_in = internal_TC_K3_a(i_in);
 
     return make_tuple(trans_w_a, trans_v1_a, trans_v2_a, i_in);
 }
