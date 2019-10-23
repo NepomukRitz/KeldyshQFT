@@ -16,7 +16,7 @@ template <typename Q> class avert;
 template <class Q>
 class tvert{
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
+//    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
 
     /*Lists of the Keldysh components of K1t relating the respective component to the independent ones through the marked
@@ -27,21 +27,21 @@ class tvert{
 
     /*Lists of the Keldysh components of K2t relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K2_T0_comp0 = {0, 10};  // components in K2 equal to comp.0 of K2
-    vector<int> list_K2_T0_comp1 = {1, 11};  // ...
-    vector<int> list_K2_T0_comp2 = {2,  8};
-    vector<int> list_K2_T0_comp3 = {3,  9};
-    vector<int> list_K2_TC_comp1 = {4, 14};
-    vector<int> list_K2_TC_comp3 = {6, 12};
-    vector<int> list_K2_T0_comp7 = {7, 13};
+    vector<int> list_K2_T2_comp0 = {0, 10};         // components in K2 equal to comp.0 of K2a          In the vertex, comp0 will be iK=0
+    vector<int> list_K2_T2_comp1 = {1, 11};         // components in K2 equal to comp.1 of K2a          In the vertex, comp1 will be iK=1
+    vector<int> list_K2_T2_comp2 = {2,  8};         // components in K2 equal to comp.2 of K2a          In the vertex, comp2 will be iK=2
+    vector<int> list_K2_T2_comp3 = {3,  9};         // components in K2 equal to comp.3 of K2a          In the vertex, comp3 will be iK=3
+    vector<int> list_K2_TCT_2_comp1 = {4, 14};      // components in K2 equal to comp.0 of K2a
+    vector<int> list_K2_TCT_2_comp3 = {6, 12};      // components in K2 equal to comp.0 of K2a
+    vector<int> list_K2_T2_comp11 = {7, 13};        // components in K2 equal to comp.7 of K2a         In the vertex, comp0 will be iK=4
 
-    vector<int> list_K2b_T3_comp0 = { 0,  5};  // components in K2b equal to T_3 comp.0 of K2
-    vector<int> list_K2b_T3_comp2 = { 1,  4};  // ...
-    vector<int> list_K2b_T3_comp1 = { 2,  7};
-    vector<int> list_K2b_T3_comp3 = { 3,  6};
-    vector<int> list_K2b_TC_comp1 = { 8, 13};
-    vector<int> list_K2b_TC_comp3 = { 9, 12};
-    vector<int> list_K2b_TC_comp7 = {11, 14};
+    vector<int> list_K2b_T1_comp0 = { 0,  5};       // components in K2b equal to T_1 comp.0 of K2a
+    vector<int> list_K2b_T1_comp2 = { 1,  4};       // components in K2b equal to T_1 comp.2 of K2a
+    vector<int> list_K2b_T1_comp1 = { 2,  7};       // components in K2b equal to T_1 comp.1 of K2a
+    vector<int> list_K2b_T1_comp3 = { 3,  6};       // components in K2b equal to T_1 comp.3 of K2a
+    vector<int> list_K2b_T_CT1_comp1 = { 8, 13};    // components in K2b equal to T_1 comp.1 of K2a
+    vector<int> list_K2b_T_CT1_comp3 = { 9, 12};    // components in K2b equal to T_1 comp.3 of K2a
+    vector<int> list_K2b_T1_comp11 = {11, 14};       // components in K2b equal to T_1 comp.11 of K2a
 
 
 public:
@@ -61,7 +61,7 @@ public:
     void K1_setvert(int, int, int, Q);
 
     /*Sets the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure) to input Q*/
-    void K2_setvert(int, int, int, int, Q);
+//    void K2_setvert(int, int, int, int, Q);
 
     /*Sets the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure) to input Q*/
     void K3_setvert(int, int, int, int, int, Q);
@@ -71,7 +71,7 @@ public:
     void K1_addvert(int, int, int, Q);
 
     /*Adds the value Q to the K1 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency internal structure)*/
-    void K2_addvert(int, int, int, int, Q);
+//    void K2_addvert(int, int, int, int, Q);
 
     /*Adds the value Q to the K1 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
     void K3_addvert(int, int, int, int, int, Q);
@@ -80,11 +80,8 @@ public:
     /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
     Q K1_vval(int, int, int);
 
-    /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
-    Q K2_vval(int, int, int, int);
-
-    /*Returns the value of the K2b vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
-    Q K2b_vval(int, int, int, int);
+//    /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
+//    Q K2_vval(int, int, int, int);
 
     /*Returns the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
     Q K3_vval(int, int, int, int, int);
@@ -193,9 +190,9 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
 template <typename Q> void tvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
     K1[iK*nw1_wt*n_in + i*n_in + i_in] = value;
 }
-template <typename Q> void tvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] = value;
-}
+//template <typename Q> void tvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
+//    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] = value;
+//}
 template <typename Q> void tvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
     K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in] = value;
 }
@@ -203,9 +200,9 @@ template <typename Q> void tvert<Q>::K3_setvert(int iK, int i, int j, int k, int
 template <typename Q> void tvert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
     K1[iK*nw1_wt*n_in + i*n_in + i_in] += value;
 }
-template <typename Q> void tvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] += value;
-}
+//template <typename Q> void tvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
+//    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] += value;
+//}
 template <typename Q> void tvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
     K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in] += value;
 }
@@ -213,13 +210,9 @@ template <typename Q> void tvert<Q>::K3_addvert(int iK, int i, int j, int k, int
 template <typename Q> Q tvert<Q>::K1_vval (int iK, int i, int i_in){
     return K1[iK*nw1_wt*n_in + i*n_in + i_in];
 }
-template <typename Q> Q tvert<Q>::K2_vval (int iK, int i, int j, int i_in){
-    return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
-}
-template <typename Q> Q tvert<Q>::K2b_vval(int iK, int i, int j, int i_in){
-    i = nw2_wt-i;
-    return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
-}   // TODO: is this correct/do we even need this?? I don't think so...
+//template <typename Q> Q tvert<Q>::K2_vval (int iK, int i, int j, int i_in){
+//    return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
+//}
 template <typename Q> Q tvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
     return K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in];
 }
@@ -229,7 +222,6 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, av
 
     int iK1;
     double pf1;      // prefactor: -1 for T_1, T_2, +1 else
-    bool transform;  // whether or not to switch between channels a,t: true for T_1, T_2, false else
     Q valueK1;
 
     /*This part determines the value of the K1 contribution*/
@@ -237,51 +229,33 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, av
     if(isInList(iK,list_K1_T0_comp1)){
         iK1 = 0;
         pf1 = 1.;
-        transform = false;
     }
     else if(isInList(iK,list_K1_T3_comp1)){
         tie(w_t, i_in) = indices_T3_K1(w_t, i_in);
         iK1 = 0;
         pf1 = 1.;
-        transform = false;
     }
     else if(isInList(iK, list_K1_T0_comp3)){
         iK1 = 1;
         pf1 = 1.;
-        transform = false;
     }
     else{
         iK1 = 0;
         pf1 = 0.;
-        transform = false;
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
     if(fabs(w_t)>=w_upper_b)
         valueK1 = 0.;
     else {
-        int index;
-        double x1, x2, xd;
-        Q f1, f2;
-        if(transform){
-            index = fconv_K1_a(w_t);
+        int index = fconv_K1_t(w_t);
+        double x1 = bfreqs[index];
+        double x2 = bfreqs[index] + dw;
+        double xd = (w_t - x1) / (x2 - x1);
 
-            x1 = bfreqs[index];
-            x2 = bfreqs[index] + dw;
-            xd = (w_t - x1) / (x2 - x1);
+        Q f2 = K1_vval(iK1, index + 1, i_in);
+        Q f1 = K1_vval(iK1, index, i_in);
 
-            f1 = avertex.K1_vval(iK1, index, i_in);
-            f2 = avertex.K1_vval(iK1, index + 1, i_in);
-        }
-        else {
-            index = fconv_K1_t(w_t);
-            x1 = bfreqs[index];
-            x2 = bfreqs[index] + dw;
-            xd = (w_t - x1) / (x2 - x1);
-
-            f1 = K1_vval(iK1, index, i_in);
-            f2 = K1_vval(iK1, index + 1, i_in);
-        }
         valueK1 = pf1*((1. - xd) * f1 + xd * f2);
     }
     return valueK1;
@@ -291,67 +265,54 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
     bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
-    bool transform;   // whether or not to switch between channels a,t: true for T_1, T_2, false else
     Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(isInList(iK,list_K2_T0_comp0)){
-        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+
+    //Perform T2 at the beggining, since it is required by all elements
+    tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+    if(isInList(iK,list_K2_T2_comp0)){
         iK2 = 0;
         pf2 = -1.;
         conjugate2 = false;
-        transform = true;
     }
-    else if(isInList(iK,list_K2_T0_comp1)){
-        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+    else if(isInList(iK,list_K2_T2_comp1)){
         iK2 = 1;
         pf2 = -1.;
         conjugate2 = false;
-        transform = true;
     }
-    else if(isInList(iK,list_K2_T0_comp2)){
-        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+    else if(isInList(iK,list_K2_T2_comp2)){
         iK2 = 2;
         pf2 = -1.;
         conjugate2 = false;
-        transform = true;
     }
-    else if(isInList(iK,list_K2_T0_comp3)){
-        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+    else if(isInList(iK,list_K2_T2_comp3)){
         iK2 = 3;
         pf2 = -1.;
         conjugate2 = false;
-        transform = true;
     }
-    else if(isInList(iK,list_K2_TC_comp1)){
-        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+    else if(isInList(iK,list_K2_T2_comp11)){
+        iK2 = 4;
+        pf2 = -1.;
+        conjugate2 = false;
+    }
+    else if(isInList(iK,list_K2_TCT_2_comp1)){
         tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
         iK2 = 1;
         pf2 = -1.;
         conjugate2 = true;
-        transform = true;
     }
-    else if(isInList(iK,list_K2_TC_comp3)){
-        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+    else if(isInList(iK,list_K2_TCT_2_comp3)){
         tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
         iK2 = 3;
         pf2 = -1.;
         conjugate2 = true;
-        transform = true;
-    }
-    else if(isInList(iK,list_K2_T0_comp7)){
-        tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
-        iK2 = 4;
-        pf2 = -1.;
-        conjugate2 = false;
-        transform = true;
     }
     else{
         iK2 = 0;
         pf2 = 0.;
         conjugate2 = false;
-        transform = false;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -360,80 +321,113 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     }
     else {
         int index_b, index_f;
-        double x1, x2, y1, y2, xd, yd;
-        Q f11, f12, f21, f22;
-        if(transform){
-            if(conjugate2){
-                tie(index_b, index_f) = fconv_K2_a(-w_t, v1_t);
+        tie(index_b, index_f) = fconv_K2_t(w_t, v1_t);
 
-                x1 = bfreqs[index_b];
-                x2 = bfreqs[index_b] + dw;
-                y1 = ffreqs[index_f];
-                y2 = ffreqs[index_f] + dv;
-                xd = (-w_t - x1) / (x2 - x1);
-                yd = (v1_t - y1) / (y2 - y1);
+        double x1 = bfreqs[index_b];
+        double x2 = bfreqs[index_b] + dw;
+        double y1 = ffreqs[index_f];
+        double y2 = ffreqs[index_f] + dv;
+        double xd = (w_t - x1) / (x2 - x1);
+        double yd = (v1_t - y1) / (y2 - y1);
 
-                f11 = avertex.K2b_vval(iK2, index_b, index_f, i_in);
-                f12 = avertex.K2b_vval(iK2, index_b, index_f + 1, i_in);
-                f21 = avertex.K2b_vval(iK2, index_b + 1, index_f, i_in);
-                f22 = avertex.K2b_vval(iK2, index_b + 1, index_f + 1, i_in);
-            }
-            else {
-                tie(index_b, index_f) = fconv_K2_a(w_t, v1_t);
+        Q f11 = avertex.K2_vval(iK2, index_b, index_f, i_in);
+        Q f12 = avertex.K2_vval(iK2, index_b, index_f + 1, i_in);
+        Q f21 = avertex.K2_vval(iK2, index_b + 1, index_f, i_in);
+        Q f22 = avertex.K2_vval(iK2, index_b + 1, index_f + 1, i_in);
 
-                x1 = bfreqs[index_b];
-                x2 = bfreqs[index_b] + dw;
-                y1 = ffreqs[index_f];
-                y2 = ffreqs[index_f] + dv;
-                xd = (w_t - x1) / (x2 - x1);
-                yd = (v1_t - y1) / (y2 - y1);
-
-                f11 = avertex.K2_vval(iK2, index_b, index_f, i_in);
-                f12 = avertex.K2_vval(iK2, index_b, index_f + 1, i_in);
-                f21 = avertex.K2_vval(iK2, index_b + 1, index_f, i_in);
-                f22 = avertex.K2_vval(iK2, index_b + 1, index_f + 1, i_in);
-            }
-        }
-        else {
-            if(conjugate2) {
-                tie(index_b, index_f) = fconv_K2_t(-w_t, v1_t);
-
-                x1 = bfreqs[index_b];
-                x2 = bfreqs[index_b] + dw;
-                y1 = ffreqs[index_f];
-                y2 = ffreqs[index_f] + dv;
-                xd = (-w_t - x1) / (x2 - x1);
-                yd = (v1_t - y1) / (y2 - y1);
-
-                f11 = K2b_vval(iK2, index_b, index_f, i_in);
-                f12 = K2b_vval(iK2, index_b, index_f + 1, i_in);
-                f21 = K2b_vval(iK2, index_b + 1, index_f, i_in);
-                f22 = K2b_vval(iK2, index_b + 1, index_f + 1, i_in);
-            }
-            else {
-                tie(index_b, index_f) = fconv_K2_t(w_t, v1_t);
-
-                x1 = bfreqs[index_b];
-                x2 = bfreqs[index_b] + dw;
-                y1 = ffreqs[index_f];
-                y2 = ffreqs[index_f] + dv;
-                xd = (w_t - x1) / (x2 - x1);
-                yd = (v1_t - y1) / (y2 - y1);
-
-                f11 = K2_vval(iK2, index_b, index_f, i_in);
-                f12 = K2_vval(iK2, index_b, index_f + 1, i_in);
-                f21 = K2_vval(iK2, index_b + 1, index_f, i_in);
-                f22 = K2_vval(iK2, index_b + 1, index_f + 1, i_in);
-            }
-        }
         valueK2 = pf2 * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+
+        if(conjugate2)
+        {
+            valueK2 = conj(valueK2);
+        }
     }
     return valueK2;
 }
 template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v2_t, int i_in, avert<Q>& avertex){
-    iK = T_3_Keldysh(iK);
-    return K2_vvalsmooth(iK,-w_t, v2_t, i_in, avertex);
-}  // TODO: correct this
+
+    int iK2;
+    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
+    bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
+    Q valueK2;
+
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+
+    //Perform T2 at the beggining, since it is required by all elements
+    tie(w_t, v2_t, i_in) = indices_T1_K2(w_t, v2_t, i_in);
+    if(isInList(iK,list_K2b_T1_comp0)){
+        iK2 = 0;
+        pf2 = -1.;
+        conjugate2 = false;
+    }
+    else if(isInList(iK,list_K2b_T1_comp1)){
+        iK2 = 1;
+        pf2 = -1.;
+        conjugate2 = false;
+    }
+    else if(isInList(iK,list_K2b_T1_comp2)){
+        iK2 = 2;
+        pf2 = -1.;
+        conjugate2 = false;
+    }
+    else if(isInList(iK,list_K2b_T1_comp3)){
+        iK2 = 3;
+        pf2 = -1.;
+        conjugate2 = false;
+    }
+    else if(isInList(iK,list_K2b_T1_comp11)){
+        iK2 = 4;
+        pf2 = -1.;
+        conjugate2 = false;
+    }
+    else if(isInList(iK,list_K2b_T_CT1_comp1)){
+        tie(w_t, v2_t, i_in) = indices_TC_K2(w_t, v2_t, i_in);
+        iK2 = 1;
+        pf2 = -1.;
+        conjugate2 = true;
+    }
+    else if(isInList(iK,list_K2b_T_CT1_comp3)){
+        tie(w_t, v2_t, i_in) = indices_TC_K2(w_t, v2_t, i_in);
+        iK2 = 3;
+        pf2 = -1.;
+        conjugate2 = true;
+    }
+    else{
+        iK2 = 0;
+        pf2 = 0.;
+        conjugate2 = false;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_t)>=w_upper_b || fabs(v2_t)>=w_upper_f) {
+        valueK2 = 0.;
+    }
+    else {
+        int index_b, index_f;
+        tie(index_b, index_f) = fconv_K2_t(w_t, v2_t);
+
+        double x1 = bfreqs[index_b];
+        double x2 = bfreqs[index_b] + dw;
+        double y1 = ffreqs[index_f];
+        double y2 = ffreqs[index_f] + dv;
+        double xd = (w_t - x1) / (x2 - x1);
+        double yd = (v2_t - y1) / (y2 - y1);
+
+        Q f11 = avertex.K2_vval(iK2, index_b, index_f, i_in);
+        Q f12 = avertex.K2_vval(iK2, index_b, index_f + 1, i_in);
+        Q f21 = avertex.K2_vval(iK2, index_b + 1, index_f, i_in);
+        Q f22 = avertex.K2_vval(iK2, index_b + 1, index_f + 1, i_in);
+
+        valueK2 = pf2 * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+
+        if(conjugate2)
+        {
+            valueK2 = conj(valueK2);
+        }
+    }
+    return valueK2;
+}
 template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t, double v2_t, int i_in, avert<Q>& avertex){
 
     int iK3;

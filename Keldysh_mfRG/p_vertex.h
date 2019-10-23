@@ -27,21 +27,21 @@ class pvert{
 
     /*Lists of the Keldysh components of K2p relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K2_T0_comp0  = { 0, 3};  // components in K2 equal to comp.0 of K2
-    vector<int> list_K2_T0_comp1  = { 1, 2};  // ...
-    vector<int> list_K2_T0_comp4  = { 4, 7};
-    vector<int> list_K2_T0_comp5  = { 5, 6};
-    vector<int> list_K2_T3_comp4  = { 8, 11};
-    vector<int> list_K2_T3_comp5  = { 9, 10};
-    vector<int> list_K2_T0_comp13 = {13, 14};
+    vector<int> list_K2_T0_comp0  = { 0, 3};    // components in K2 equal to comp.0 of K2               In the vertex, comp0 will be iK=0
+    vector<int> list_K2_T0_comp1  = { 1, 2};    // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
+    vector<int> list_K2_T0_comp4  = { 4, 7};    // components in K2 equal to comp.4 of K2               In the vertex, comp4 will be iK=2
+    vector<int> list_K2_T0_comp5  = { 5, 6};    // components in K2 equal to comp.5 of K2               In the vertex, comp5 will be iK=3
+    vector<int> list_K2_T3_comp4  = { 8, 11};   // components in K2 equal to T_3 comp.4 of K2
+    vector<int> list_K2_T3_comp5  = { 9, 10};   // components in K2 equal to T_3 comp.5 of K2
+    vector<int> list_K2_T0_comp13 = {13, 14};   // components in K2 equal to comp.13 of K2              In the vertex, comp13 will be iK=4
 
     vector<int> list_K2b_TC_comp0   = {0, 12};  // components in K2b equal to T_C comp.0 of K2
-    vector<int> list_K2b_TC_comp4   = {1, 13};  // ...
-    vector<int> list_K2b_TCT3_comp4 = {2, 14};
-    vector<int> list_K2b_TC_comp1   = {4,  8};
-    vector<int> list_K2b_TC_comp5   = {5,  9};
-    vector<int> list_K2b_TCT3_comp5 = {6, 10};
-    vector<int> list_K2b_TC_comp13  = {7, 11};
+    vector<int> list_K2b_TC_comp4   = {1, 13};  // components in K2b equal to T_C comp.4 of K2
+    vector<int> list_K2b_TCT3_comp4 = {2, 14};  // components in K2b equal to T_CT_3 comp.4 of K2
+    vector<int> list_K2b_TC_comp1   = {4,  8};  // components in K2b equal to T_C comp.1 of K2
+    vector<int> list_K2b_TC_comp5   = {5,  9};  // components in K2b equal to T_C comp.5 of K2
+    vector<int> list_K2b_TCT3_comp5 = {6, 10};  // components in K2b equal to T_CT_3 comp.5 of K2
+    vector<int> list_K2b_TC_comp13  = {7, 11};  // components in K2b equal to T_C comp.13 of K2
 
 public:
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
@@ -279,11 +279,10 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
     }
     return valueK1;
 }
-template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p, int i_in){
+template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p, int i_in) {
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
-    bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
     Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
@@ -291,44 +290,36 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p
     if(isInList(iK,list_K2_T0_comp0)){
         iK2 = 0;
         pf2 = 1.;
-        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 1;
         pf2 = 1.;
-        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_T0_comp4)){
         iK2 = 2;
         pf2 = 1.;
-        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_T0_comp5)){
         iK2 = 3;
         pf2 = 1.;
-        conjugate2 = false;
+    }
+    else if(isInList(iK,list_K2_T0_comp13)){
+        iK2 = 4;
+        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T3_comp4)){
         tie(w_p, v1_p, i_in) = indices_T3_K2(w_p, v1_p, i_in);
         iK2 = 2;
         pf2 = 1.;
-        conjugate2 = false;
     }
     else if(isInList(iK,list_K2_T3_comp5)){
         tie(w_p, v1_p, i_in) = indices_T3_K2(w_p, v1_p, i_in);
         iK2 = 3;
         pf2 = 1.;
-        conjugate2 = false;
-    }
-    else if(isInList(iK,list_K2_T0_comp13)){
-        iK2 = 4;
-        pf2 = 1.;
-        conjugate2 = false;
     }
     else {
         iK2 = 0;
         pf2 = 0.;
-        conjugate2 = false;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -354,21 +345,80 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p
 
         valueK2 = pf2*( (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
     }
-
-    if(conjugate2)
-    {
-        valueK2 = conj(valueK2);        //It's correct like this
-    }
-
     return valueK2;
 }
-template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p, int i_in)
-{
-    int i0, i1, i2, i3, exponent;
-    tie(i0,i1,i2,i3) = alphas(iK);
-    exponent = 1+i0+i1+i2+i3;
-    return pow(-1., exponent)*conj(K2_vvalsmooth(iK, w_p, v2_p, i_in));
-}  // TODO: correct this
+template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p, int i_in) {
+
+    int iK2;
+    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
+    Q valueK2;
+    bool conjugate2;
+
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if(isInList(iK,list_K2b_TC_comp0)){
+        iK2 = 0;
+        pf2 = 1.;
+    }
+    else if(isInList(iK,list_K2b_TC_comp1)){
+        iK2 = 1;
+        pf2 = 1.;
+    }
+    else if(isInList(iK,list_K2b_TC_comp4)){
+        iK2 = 2;
+        pf2 = 1.;
+    }
+    else if(isInList(iK,list_K2b_TC_comp5)){
+        iK2 = 3;
+        pf2 = 1.;
+    }
+    else if(isInList(iK,list_K2b_TC_comp13)){
+        iK2 = 4;
+        pf2 = 1.;
+    }
+    else if(isInList(iK,list_K2b_TCT3_comp4)){
+        tie(w_p, v2_p, i_in) = indices_T3_K2(w_p, v2_p, i_in);
+        iK2 = 2;
+        pf2 = 1.;
+    }
+    else if(isInList(iK,list_K2b_TCT3_comp5)){
+        tie(w_p, v2_p, i_in) = indices_T3_K2(w_p, v2_p, i_in);
+        iK2 = 3;
+        pf2 = 1.;
+    }
+    else {
+        iK2 = 0;
+        pf2 = 0.;
+    }
+    //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
+    tie(w_p, v2_p, i_in) = indices_TC_K2(w_p, v2_p, i_in);
+
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_p)>=w_upper_b || fabs(v2_p)>=w_upper_f){
+        valueK2 = 0.;
+    }
+    else {
+        int index_b, index_f;
+        tie(index_b, index_f) = fconv_K2_p(w_p, v2_p);
+
+        double x1 = bfreqs[index_b];
+        double x2 = bfreqs[index_b] + dw;
+        double y1 = ffreqs[index_f];
+        double y2 = ffreqs[index_f] + dv;
+
+        double xd = (w_p - x1) / (x2 - x1);
+        double yd = (v2_p - y1) / (y2 - y1);
+
+        Q f11 = K2_vval(iK2, index_b, index_f, i_in);
+        Q f12 = K2_vval(iK2, index_b, index_f + 1, i_in);
+        Q f21 = K2_vval(iK2, index_b + 1, index_f, i_in);
+        Q f22 = K2_vval(iK2, index_b + 1, index_f + 1, i_in);
+
+        valueK2 = conj(pf2*( (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22)));
+    }
+    return valueK2;
+}
 template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in){
 
     int iK3;
