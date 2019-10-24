@@ -57,29 +57,31 @@ int main() {
 
 
 
-//    cout << "Start of flow" << endl;
-//    for(auto Lambda:flow_grid) {
-//        double tder = get_time();
-//        state.Lambda = Lambda;
-//        State<comp> dPsi = derivative(Lambda, state);
-//
-//        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g','.');
-//
-//        double tadd = get_time();
-////        state += dPsi*dL;
-//        state += dPsi;
-//        cout << "Added:";
-//        get_time(tadd);
-//
-//        writeOutFile(ffreqs, Lambda, control, state.selfenergy);
-//        cout << "Wrote out" <<endl;
-//        cout << "One derivatie step: ";
-//        get_time(tder);
-//    }
+    cout << "Start of flow" << endl;
+    for(auto Lambda:flow_grid) {
+        double tder = get_time();
+        state.Lambda = Lambda;
+        State<comp> dPsi = derivative(Lambda, state)*dL;
 
-    SOPT(1., state);
-    Propagator control = propag(1., state.selfenergy, state.diffselfenergy, 'g', '.');
-    writeOutSOPT(control, state.selfenergy);
+        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g','f');
+
+        double tadd = get_time();
+
+        //TODO Check addition operator for Vertex
+//        state = state + dPsi;
+        state += dPsi;
+        cout << "Added:";
+        get_time(tadd);
+
+        writeOutFile(ffreqs, Lambda, control, state.selfenergy);
+        cout << "Wrote out" <<endl;
+        cout << "One derivatie step: ";
+        get_time(tder);
+    }
+
+//    SOPT(1., state);
+//    Propagator control = propag(1., state.selfenergy, state.diffselfenergy, 'g', '.');
+//    writeOutSOPT(control, state.selfenergy);
 
 
     return 0;

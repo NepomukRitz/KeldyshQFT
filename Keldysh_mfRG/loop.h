@@ -59,11 +59,14 @@ public:
     {
         Q resp1 = vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;
         Q resp2 = vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;
+        resp2 = (0., resp2.imag());
         Q resp3 = vertex.densvertex.tvertex.value(1, 0., wp, w, i_in, vertex.densvertex.avertex) ;
         Q resp4 = vertex.densvertex.irred.vval(1);
 
-        Q resp5 = vertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex);
-        Q resp6 = vertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in);
+//        Q resp5 = vertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex);
+        Q resp5 = (-resp1.real(), resp1.imag());
+//        Q resp6 = vertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in);
+        Q resp6 = resp2;
         Q resp7 = vertex.densvertex.tvertex.value(4, 0., wp, w, i_in, vertex.densvertex.avertex);
         Q resp8 = vertex.densvertex.irred.vval(4);
 
