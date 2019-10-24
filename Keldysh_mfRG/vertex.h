@@ -108,19 +108,19 @@ public:
     Vertex<T> operator+ (const Vertex<T>& vertex1)
     {
         this->densvertex + vertex1.densvertex;
-        this->spinvertex + vertex1.spinvertex;
+//        this->spinvertex + vertex1.spinvertex;
         return *this;
     }
     Vertex<T> operator+= (const Vertex<T>& vertex1)
     {
         this->densvertex += vertex1.densvertex;
-        this->spinvertex += vertex1.spinvertex;
+//        this->spinvertex += vertex1.spinvertex;
         return *this;
     }
     Vertex<T> operator* (double alpha)
     {
         this->densvertex*alpha;
-        this->spinvertex*alpha;
+//        this->spinvertex*alpha;
         return *this;
     }
 };
