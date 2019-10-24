@@ -16,7 +16,7 @@ template <typename Q> class avert;
 template <class Q>
 class tvert{
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
-//    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
 
     /*Lists of the Keldysh components of K1t relating the respective component to the independent ones through the marked
@@ -35,13 +35,13 @@ class tvert{
     vector<int> list_K2_TCT_2_comp3 = {6, 12};      // components in K2 equal to comp.0 of K2a
     vector<int> list_K2_T2_comp11 = {7, 13};        // components in K2 equal to comp.7 of K2a         In the vertex, comp0 will be iK=4
 
-    vector<int> list_K2b_T1_comp0 = { 0,  5};       // components in K2b equal to T_1 comp.0 of K2a
-    vector<int> list_K2b_T1_comp2 = { 1,  4};       // components in K2b equal to T_1 comp.2 of K2a
-    vector<int> list_K2b_T1_comp1 = { 2,  7};       // components in K2b equal to T_1 comp.1 of K2a
-    vector<int> list_K2b_T1_comp3 = { 3,  6};       // components in K2b equal to T_1 comp.3 of K2a
-    vector<int> list_K2b_T_CT1_comp1 = { 8, 13};    // components in K2b equal to T_1 comp.1 of K2a
-    vector<int> list_K2b_T_CT1_comp3 = { 9, 12};    // components in K2b equal to T_1 comp.3 of K2a
-    vector<int> list_K2b_T1_comp11 = {11, 14};       // components in K2b equal to T_1 comp.11 of K2a
+    vector<int> list_K2b_T1_comp0 = {0,  5};        // components in K2b equal to T_1 comp.0 of K2a
+    vector<int> list_K2b_T1_comp2 = {1,  4};        // components in K2b equal to T_1 comp.2 of K2a
+    vector<int> list_K2b_T1_comp1 = {2,  7};        // components in K2b equal to T_1 comp.1 of K2a
+    vector<int> list_K2b_T1_comp3 = {3,  6};        // components in K2b equal to T_1 comp.3 of K2a
+    vector<int> list_K2b_T_CT1_comp1 = {8, 13};     // components in K2b equal to T_1 comp.1 of K2a
+    vector<int> list_K2b_T_CT1_comp3 = {9, 12};     // components in K2b equal to T_1 comp.3 of K2a
+    vector<int> list_K2b_T1_comp11 = {11, 14};      // components in K2b equal to T_1 comp.11 of K2a
 
 
 public:
@@ -61,7 +61,7 @@ public:
     void K1_setvert(int, int, int, Q);
 
     /*Sets the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure) to input Q*/
-//    void K2_setvert(int, int, int, int, Q);
+    void K2_setvert(int, int, int, int, Q);
 
     /*Sets the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure) to input Q*/
     void K3_setvert(int, int, int, int, int, Q);
@@ -71,7 +71,7 @@ public:
     void K1_addvert(int, int, int, Q);
 
     /*Adds the value Q to the K1 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency internal structure)*/
-//    void K2_addvert(int, int, int, int, Q);
+    void K2_addvert(int, int, int, int, Q);
 
     /*Adds the value Q to the K1 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
     void K3_addvert(int, int, int, int, int, Q);
@@ -80,8 +80,8 @@ public:
     /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
     Q K1_vval(int, int, int);
 
-//    /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
-//    Q K2_vval(int, int, int, int);
+    /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
+    Q K2_vval(int, int, int, int);
 
     /*Returns the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
     Q K3_vval(int, int, int, int, int);
@@ -190,9 +190,9 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
 template <typename Q> void tvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
     K1[iK*nw1_wt*n_in + i*n_in + i_in] = value;
 }
-//template <typename Q> void tvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-//    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] = value;
-//}
+template <typename Q> void tvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
+    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] = value;
+}
 template <typename Q> void tvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
     K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in] = value;
 }
@@ -200,9 +200,9 @@ template <typename Q> void tvert<Q>::K3_setvert(int iK, int i, int j, int k, int
 template <typename Q> void tvert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
     K1[iK*nw1_wt*n_in + i*n_in + i_in] += value;
 }
-//template <typename Q> void tvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
-//    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] += value;
-//}
+template <typename Q> void tvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
+    K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in] += value;
+}
 template <typename Q> void tvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
     K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in] += value;
 }
@@ -210,9 +210,9 @@ template <typename Q> void tvert<Q>::K3_addvert(int iK, int i, int j, int k, int
 template <typename Q> Q tvert<Q>::K1_vval (int iK, int i, int i_in){
     return K1[iK*nw1_wt*n_in + i*n_in + i_in];
 }
-//template <typename Q> Q tvert<Q>::K2_vval (int iK, int i, int j, int i_in){
-//    return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
-//}
+template <typename Q> Q tvert<Q>::K2_vval (int iK, int i, int j, int i_in){
+    return K2[iK*nw2_wt*nw2_nut*n_in + i*nw2_nut*n_in + j*n_in + i_in];
+}
 template <typename Q> Q tvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
     return K3[iK*nw3_wt*nw3_nut*nw3_nutp*n_in + i*nw3_nut*nw3_nutp*n_in + j*nw3_nutp*n_in + k*n_in + i_in];
 }

@@ -88,15 +88,15 @@ public:
 
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
      * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-    Q K1_vvalsmooth(int, double, int);
+    Q K1_vvalsmooth(int, double, int, tvert<Q>& tvertex);
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
      *  for given Keldysh and internal structure indices.*/
-    Q K2_vvalsmooth(int, double, double, int);
+    Q K2_vvalsmooth(int, double, double, int, tvert<Q>& tvertex);
 
     /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
  *  for given Keldysh and internal structure indices.*/
-    Q K2b_vvalsmooth(int, double, double, int);
+    Q K2b_vvalsmooth(int, double, double, int, tvert<Q>& tvertex);
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
@@ -213,7 +213,7 @@ template <typename Q> Q avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in
     return K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];
 }
 
-template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in){  // TODO: add other spin components
+template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in, tvert<Q>& tvertex){  // TODO: add other spin components
 
     int iK1;
     double pf1;      // prefactor: -1 for T_1, T_2, +1 else
@@ -255,7 +255,7 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in){  
     }
     return valueK1;
 }
-template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a, int i_in){
+template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a, int i_in, tvert<Q>& tvertex){
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -338,7 +338,7 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
     }
     return valueK2;
 }
-template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a, int i_in){
+template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a, int i_in, tvert<Q>& tvertex){
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
