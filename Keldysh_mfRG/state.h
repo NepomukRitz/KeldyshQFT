@@ -30,16 +30,7 @@ public:
 //TODO: check this below (and define state first)
 //operators containing State objects
     State operator+(const State& State1){
-        this->vertex.spinvertex.irred   + State1.vertex.spinvertex.irred;
-        this->vertex.spinvertex.avertex + State1.vertex.spinvertex.avertex;
-        this->vertex.spinvertex.pvertex + State1.vertex.spinvertex.pvertex;
-        this->vertex.spinvertex.tvertex + State1.vertex.spinvertex.tvertex;
-
-        this->vertex.densvertex.irred   + State1.vertex.densvertex.irred;
-        this->vertex.densvertex.avertex + State1.vertex.densvertex.avertex;
-        this->vertex.densvertex.pvertex + State1.vertex.densvertex.pvertex;
-        this->vertex.densvertex.tvertex + State1.vertex.densvertex.tvertex;
-
+        this->vertex + State1.vertex;
         this->selfenergy + State1.selfenergy ;
         this->diffselfenergy + State1.diffselfenergy;
 
@@ -48,27 +39,20 @@ public:
 #endif
         return (*this);
     }
+
     State operator+=(const State& State1){
         this->vertex += State1.vertex;
         this->selfenergy += State1.selfenergy;
         this->diffselfenergy += State1.diffselfenergy;
 
 #ifdef SUSC
-        this-> sus + State1.sus; //TODO: Are susceptibilities additive?
+        this-> sus += State1.sus; //TODO: Are susceptibilities additive?
 #endif
         return (*this);
     }
+
     State operator*(double alpha){
-        this->vertex.spinvertex.irred * alpha;
-        this->vertex.spinvertex.avertex * alpha;
-        this->vertex.spinvertex.pvertex * alpha;
-        this->vertex.spinvertex.tvertex * alpha;
-
-        this->vertex.densvertex.irred * alpha;
-        this->vertex.densvertex.avertex * alpha;
-        this->vertex.densvertex.pvertex * alpha;
-        this->vertex.densvertex.tvertex * alpha;
-
+        this->vertex * alpha;
         this->selfenergy * alpha;
         this->diffselfenergy * alpha;
 #ifdef SUSC
