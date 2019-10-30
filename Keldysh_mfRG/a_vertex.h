@@ -88,15 +88,15 @@ public:
 
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
      * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-    Q K1_vvalsmooth(int, double, int, tvert<Q>& tvertex);
+    Q K1_vvalsmooth(int, double, int, tvert<Q>&);
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
      *  for given Keldysh and internal structure indices.*/
-    Q K2_vvalsmooth(int, double, double, int, tvert<Q>& tvertex);
+    Q K2_vvalsmooth(int, double, double, int, tvert<Q>&);
 
     /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
  *  for given Keldysh and internal structure indices.*/
-    Q K2b_vvalsmooth(int, double, double, int, tvert<Q>& tvertex);
+    Q K2b_vvalsmooth(int, double, double, int, tvert<Q>&);
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
