@@ -50,17 +50,6 @@ int fconv_fer(double w)
         index = index1;
 
     return index; //- (int)(index/ffreqs.size());
-
-//    //Alternative algorithm
-//    int index=0;
-//    for(int i=0; i<nFER; ++i)
-//    {
-//        if(ffreqs[i]<= w && w<ffreqs[i+1]) {
-//            index = i;
-//            break;
-//        }
-//    }
-//    return index;
 }
 int fconv_Lambda(double Lambda)
 {
