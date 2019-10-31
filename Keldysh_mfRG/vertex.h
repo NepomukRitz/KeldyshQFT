@@ -29,7 +29,7 @@ public:
      * come forth where the bare interaction does not remain invariant throughout the system.*/
     Q vval(int iK);
 
-    /*Sets the value of the bare interaction to Q TODO are we always going to be working in the PA?*/
+    /*Sets the value of the bare interaction to Q*/
     void setvert(int iK, Q);
 
     /*Multiplies the value of the irreducible vertex by alpha anf the addition operation for two irreducible vertices*/
@@ -205,21 +205,27 @@ template <typename Q> Q fullvert<Q>::value (int iK, double w, double v1, double 
 template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, double v2, int i_in, char r)
 {
    Q resp;
-//    switch(r){
-//        case 'a': resp = pvertex.value(iK, w, v1, v2, i_in, channel)          + tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
-//        case 'p': resp = avertex.value(iK, w, v1, v2, i_in, channel, tvertex) + tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
-//        case 't': resp = avertex.value(iK, w, v1, v2, i_in, channel, tvertex) + pvertex.value(iK, w, v1, v2, i_in, channel);
-//        default :;
-//    }
+    switch(r){
+        case 'a':
+            resp = pvertex.value(iK, w, v1, v2, i_in, r)          + tvertex.value(iK, w, v1, v2, i_in, avertex);
+            break;
+        case 'p':
+            resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
+            break;
+        case 't':
+            resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + pvertex.value(iK, w, v1, v2, i_in, r);
+            break;
+        default :;
+    }
 
-    if(r == 'a')
-        resp = pvertex.value(iK, w, v1, v2, i_in, r)          + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
-    else if(r == 'p')
-        resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
-    else if(r == 't')
-        resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + pvertex.value(iK, w, v1, v2, i_in, r);
-    else
-        resp = 0.;
+//    if(r == 'a')
+//        resp = pvertex.value(iK, w, v1, v2, i_in, r)          + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
+//    else if(r == 'p')
+//        resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
+//    else if(r == 't')
+//        resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + pvertex.value(iK, w, v1, v2, i_in, r);
+//    else
+//        resp = 0.;
 
     return resp;
 }
@@ -377,25 +383,25 @@ template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, doubl
 //}
 
 //TODO declare correct sum operators!!!
-template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<pvert<Q> >& pvertex, Vertex<tvert<Q> >& tvertex)
-{
-    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
-
-    return resp;
-}
-template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<avert<Q> >& tvertex, Vertex<pvert<Q> >& pvertex)
-{
-    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
-    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
-    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
-    return resp;
-}
-template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<tvert<Q> >& pvertex, Vertex<avert<Q> >& tvertex)
-{
-    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
-    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
-    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
-    return resp;
-}
+//template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<pvert<Q> >& pvertex, Vertex<tvert<Q> >& tvertex)
+//{
+//    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
+//
+//    return resp;
+//}
+//template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<avert<Q> >& tvertex, Vertex<pvert<Q> >& pvertex)
+//{
+//    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
+//    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
+//    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
+//    return resp;
+//}
+//template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<tvert<Q> >& pvertex, Vertex<avert<Q> >& tvertex)
+//{
+//    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
+//    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
+//    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
+//    return resp;
+//}
 
 #endif //KELDYSH_MFRG_VERTEX_H
