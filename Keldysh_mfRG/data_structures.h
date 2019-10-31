@@ -264,7 +264,7 @@ basic_vec<T> basic_vec<T>::operator*(const double alpha) {
     basic_vec<T> temp(this->size());
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
-        temp[i] (*this)[i] * alpha;
+        temp[i] = (*this)[i] * alpha;
     }
     return temp;
 }
