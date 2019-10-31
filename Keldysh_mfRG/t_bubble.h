@@ -16,7 +16,7 @@ class T_Bubble{
     Propagator& g;
 public:
     explicit T_Bubble(Propagator& propagator)
-                    : g(propagator) {};
+                    : g(propagator){};
 
     /*This function returns the value of the t-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
@@ -50,8 +50,7 @@ public:
             case 15://KK
                 ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
                 break;
-            default:
-                ans = 0.;
+            default: ;
         }
         return ans;
     }
@@ -63,7 +62,7 @@ class Diff_T_Bubble{
     Propagator& s;
 public:
     Diff_T_Bubble(Propagator& propagatorG, Propagator& propagatorS)
-                    : g(propagatorG), s(propagatorS){};
+                    : g(propagatorG), s(propagatorS)    {};
 
     /*This function returns the value of the differentiated t-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
@@ -113,21 +112,23 @@ template <typename Q, typename Bubble> class Integrand_t_K1 {
     double wt;
 public:
     explicit Integrand_t_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiT_in, int i0_in, double wt_in, int i_in_in)
-            :         vertex1(vertex1_in),              vertex2(vertex2_in),    PiT(PiT_in), i0(non_zero_Keldysh_K1t[i0_in]),    wt(wt_in), i_in(i_in_in) {};
+                        :                vertex1(vertex1_in),              vertex2(vertex2_in),    PiT(PiT_in), i0(non_zero_Keldysh_K1t[i0_in]), wt(wt_in), i_in(i_in_in) {};
 
 
-    Q operator()(double vppt) {
+    Q operator() (double vppt) {
         int i1, i3;
         Q resp;
-        for(auto i2:non_zero_Keldysh_tbubble) {
-            tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
+        for (auto i2:non_zero_Keldysh_tbubble) {
+            tie(i1, i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
             auto PiTval = PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt);
-            //This is to test SOPT
-            resp += vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.irred.vval(i3);
+
+            Q add = vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.irred.vval(i3);
+
+            resp += add;
             //Augments to RPA
-            resp += vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex);
-            resp += vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) * PiTval * vertex2.densvertex.irred.vval(i3);
-            resp += vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) * PiTval * vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex);
+//            resp += vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex);
+//            resp += vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) * PiTval * vertex2.densvertex.irred.vval(i3);
+//            resp += vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) * PiTval * vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex);
         }
         return resp;
     }
@@ -474,125 +475,6 @@ public:
 };
 
 
-/*This function returns a regular p-bubble, regular meaning that the propagators are only G */
-//template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
-//{
-//    Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
-//
-//    Propagator G = propag(Lambda, self, diffSelf, 'g');
-//    T_Bubble PiT(G);
-//
-//    /*K1 contributions*/
-//    for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
-//        // TODO: use MPI
-//        int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
-//        int iwt = (iK1 % (nw1_wt * n_in)) / n_in;
-//        int i_in = iK1 % n_in;
-//        double wt = bfreqs[iwt];
-//
-//        Integrand_t_K1<Q, T_Bubble> integrand_t_K1 (vertex1, vertex2, PiT, i0, wt, i_in);
-//
-//        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1, ffreqs) );
-//    }
-//
-//    /*K2 contributions*/
-//    for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
-//    {
-//        int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wt * nw2_nut * n_in);
-//        int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
-//        int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
-//        int i_in = iK2 % n_in;
-//        double wt = bfreqs[iwt];
-//        double vt = ffreqs[ivt];
-//
-//        Integrand_t_K2<Q, T_Bubble> integrand_t_K2 (vertex1, vertex2, PiT, i0, wt, vt,  i_in);
-//
-//        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
-//    }
-//
-//    /*K2b contributions*/ //TODO How does one handle this? We dont't wtnt to save K2b part of the object, but these contributions must be added somewhere
-//
-//
-//    /*K3 contributions*/
-//    for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
-//    {
-//        int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
-//        int iwt = (iK3 % (nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_nut * nw3_nutp * n_in);
-//        int ivt = (iK3 % (nw3_nut * nw3_nutp * n_in)) / (nw3_nutp * n_in);
-//        int ivtp = (iK3 % (nw3_nutp * n_in))/ n_in;
-//        int i_in = iK3 % n_in;
-//        double wt = bfreqs[iwt];
-//        double va = ffreqs[ivt];
-//        double vtp = ffreqs[ivtp];
-//
-//        Integrand_t_K3<Q, T_Bubble> integrand_t_K3 (vertex1, vertex2, PiT, i0, wt, va, vtp,  i_in);
-//
-//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3, ffreqs)); // TODO: complete this
-//    }
-//
-//    return resp;
-//}
-
-/*This function returns a differentiated a-bubble, differentiated meaning that the propagators are one a G and one an S propagator*/
-//template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
-//{
-//    Vertex<tvert<Q> > resp = Vertex<tvert<Q>>();
-//
-//    Propagator G = propag(Lambda, self, diffSelf, 'g');
-//    Propagator S = propag(Lambda, self, diffSelf, 's');
-//    Diff_T_Bubble PiTdot(G,S);
-//
-//    /*K1 contributions*/
-//    for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
-//        // TODO: use MPI
-//        int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
-//        int iwt = (iK1 % (nw1_wt * n_in)) / n_in;
-//        int i_in = iK1 % n_in;
-//        double wt = bfreqs[iwt];
-//
-//        Integrand_t_K1_diff<Q, Diff_T_Bubble> integrand_t_K1 (vertex1, vertex2, PiTdot, i0, wt, i_in);
-//
-//        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1, ffreqs) );
-//    }
-//
-//    /*K2 contributions*/
-//    for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
-//    {
-//        int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wt * nw2_nut * n_in);
-//        int iwt = (iK2 % (nw2_wt * nw2_nut * n_in)) / (nw2_nut * n_in);
-//        int ivt = (iK2 % (nw2_nut * n_in)) / n_in;
-//        int i_in = iK2 % n_in;
-//        double wt = bfreqs[iwt];
-//        double vt = ffreqs[ivt];
-//
-//        Integrand_t_K2_diff<Q, Diff_T_Bubble> integrand_t_K2 (vertex1, vertex2, PiTdot, i0, wt, vt,  i_in);
-//
-//        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, integrator(integrand_t_K2, ffreqs)); //
-//    }
-//
-//    /*K2b contributions*/ //TODO How does one handle this? We dont't wtnt to save K2b part of the object, but these contributions must be added somewhere
-//
-//
-//    /*K3 contributions*/
-//    for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
-//    {
-//        int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
-//        int iwt = (iK3 % (nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_nut * nw3_nutp * n_in);
-//        int ivt = (iK3 % (nw3_nut * nw3_nutp * n_in)) / (nw3_nutp * n_in);
-//        int ivtp = (iK3 % (nw3_nutp * n_in))/ n_in;
-//        int i_in = iK3 % n_in;
-//        double wt = bfreqs[iwt];
-//        double va = ffreqs[ivt];
-//        double vtp = ffreqs[ivtp];
-//
-//        Integrand_t_K3_diff<Q, Diff_T_Bubble> integrand_t_K3 (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
-//
-//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3, ffreqs)); // TODO: complete this
-//    }
-//
-//    return resp;
-//}
-
 
 template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
@@ -612,7 +494,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 
         Integrand_t_K1_diff<Q, Diff_T_Bubble> integrand_t_K1_diff (vertex1, vertex2, PiTdot, i0, wt, i_in);
 
-        resp.densvertex.K1_addvert(i0, iwt, i_in, integrator(integrand_t_K1_diff, ffreqs) );
+        resp.densvertex.K1_addvert(i0, iwt, i_in, (-1.)*integrator(integrand_t_K1_diff, 2.*w_lower_b, 2.*w_upper_b) );
     }
     cout << "K1t done" << endl;
     get_time(t0);
@@ -663,11 +545,12 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
     Vertex<tvert<Q> > resp = Vertex<tvert<Q> >();
     T_Bubble PiT(G);
 
+    //These lines are to test the SOPT results
     double t0 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
-        // TODO: use MPI
+
         int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
         int iwt = (iK1 % (nw1_wt * n_in)) / n_in;
         int i_in = iK1 % n_in;
@@ -675,12 +558,13 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_t_K1 <Q, T_Bubble> integrand_t_K1 (vertex1, vertex2, PiT, i0, wt, i_in);
 
-        Q value = (-1.)*integrator(integrand_t_K1, ffreqs);
+        Q value = integrator(integrand_t_K1, 2.*w_lower_b, 2.*w_upper_b)*(-1.);
 
         resp.densvertex.K1_addvert(i0, iwt, i_in, value);
     }
-    cout << "K1t done" << endl;
+    cout << "K1t done:" << endl;
     get_time(t0);
+
 //    if(side == 'L')
 //    {
 //        //In this case, there are only contributions to K2 and K3

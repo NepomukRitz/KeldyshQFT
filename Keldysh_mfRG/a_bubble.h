@@ -50,8 +50,7 @@ public:
             case 15://KK
                 ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
                 break;
-            default:
-                ans = 0.;
+            default: ;
         }
         return ans;
     }
@@ -63,7 +62,7 @@ class Diff_A_Bubble{
     Propagator& s;
 public:
     Diff_A_Bubble(Propagator& propagatorG, Propagator& propagatorS)
-                : g(propagatorG), s(propagatorS){ };
+                    : g(propagatorG), s(propagatorS)    {};
 
     /*This function returns the value of the differentiated a-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
     comp value(int iK, double v1, double v2)
@@ -113,23 +112,25 @@ template <typename Q, typename Bubble> class Integrand_a_K1 {
     double wa;
 public:
     explicit Integrand_a_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, int i_in_in)
-    :                                     vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K1a[i0_in]), wa(wa_in), i_in(i_in_in) {};
+                        :                vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K1a[i0_in]), wa(wa_in), i_in(i_in_in) {};
 
-    Q operator() (double vppa){
+
+    Q operator() (double vppa) {
         int i1, i3;
-        Q resp, resp2, resp3, resp4;
-        for(auto i2:non_zero_Keldysh_abubble) {
-            tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
+        Q resp;
+        for (auto i2:non_zero_Keldysh_abubble) {
+            tie(i1, i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
             auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);
 
-            //This is to test SOPT
-            resp += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.irred.vval(i3);
+            Q add = vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.irred.vval(i3);
+
+            resp += add;
             //Augments to RPA
-            resp2 = vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
-            resp3 = vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.irred.vval(i3);
-            resp4 = vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
+//            resp += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
+//            resp += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.irred.vval(i3);
+//            resp += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
         }
-        return resp + resp2 + resp3 + resp4;
+        return resp;
     }
 
 };
@@ -403,125 +404,6 @@ public:
 };
 
 
-/*This function returns a regular p-bubble, regular meaning that the propagators are only G */
-//template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
-//{
-//    Vertex<avert<Q> > resp = Vertex<avert<Q>>();
-//
-//    Propagator G = propag(Lambda, self, diffSelf, 'g');
-//    A_Bubble PiA(G);
-//
-//    /*K1 contributions*/
-//    for (int iK1=0; iK1<nK_K1*nw1_wa*n_in; ++iK1) {
-//        // TODO: use MPI
-//        int i0 = (iK1 % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
-//        int iwa = (iK1 % (nw1_wa * n_in)) / n_in;
-//        int i_in = iK1 % n_in;
-//        double wa = bfreqs[iwa];
-//
-//        Integrand_a_K1_diff<Q, A_Bubble> integrand_a_K1 (vertex1, vertex2, PiA, i0, wa, i_in);
-//
-//        resp.densvertex.K1_addvert(i0, iwa, i_in, integrator(integrand_a_K1, ffreqs) );
-//    }
-//
-//    /*K2 contributions*/
-//    for(int iK2=0; iK2<nK_K2*nw2_wa*nw2_nua*n_in; iK2++)
-//    {
-//        int i0 = (iK2 % (nK_K2 * nw2_wa * nw2_nua * n_in)) / (nw2_wa * nw2_nua * n_in);
-//        int iwa = (iK2 % (nw2_wa * nw2_nua * n_in)) / (nw2_nua * n_in);
-//        int iva = (iK2 % (nw2_nua * n_in)) / n_in;
-//        int i_in = iK2 % n_in;
-//        double wa = bfreqs[iwa];
-//        double va = ffreqs[iva];
-//
-//        Integrand_a_K2_diff<Q, A_Bubble> integrand_a_K2 (vertex1, vertex2, PiA, i0, wa, va,  i_in);
-//
-//        resp.densvertex.K2_addvert(i0, iwa, va, i_in, integrator(integrand_a_K2, ffreqs)); //
-//    }
-//
-//    /*K2b contributions*/ //TODO How does one handle this? We dont't want to save K2b part of the object, but these contributions must be added somewhere
-//
-//
-//    /*K3 contributions*/
-//    for(int iK3=0; iK3<nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in; iK3++)
-//    {
-//        int i0 = (iK3 % (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in)) / (nw3_wa * nw3_nua * nw3_nuap * n_in);
-//        int iwa = (iK3 % (nw3_wa * nw3_nua * nw3_nuap * n_in)) / (nw3_nua * nw3_nuap * n_in);
-//        int iva = (iK3 % (nw3_nua * nw3_nuap * n_in)) / (nw3_nuap * n_in);
-//        int ivap = (iK3 % (nw3_nuap * n_in))/ n_in;
-//        int i_in = iK3 % n_in;
-//        double wa = bfreqs[iwa];
-//        double va = ffreqs[iva];
-//        double vap = ffreqs[ivap];
-//
-//        Integrand_a_K3_diff<Q, A_Bubble> integrand_a_K3 (vertex1, vertex2, PiA, i0, wa, va, vap,  i_in);
-//
-//        resp.densvertex.K3_addvert(i0, iwa, iva, ivap, i_in, integrator(integrand_a_K3, ffreqs)); // TODO: complete this
-//    }
-//
-//    return resp;
-//}
-
-/*This function returns a differentiated a-bubble, differentiated meaning that the propagators are one a G and one an S propagator*/
-//template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double Lambda, SelfEnergy<comp>& self, SelfEnergy<comp>& diffSelf)
-//{
-//    Vertex<avert<Q> > resp = Vertex<avert<Q>>();
-//
-//    Propagator G = propag(Lambda, self, diffSelf, 'g');
-//    Propagator S = propag(Lambda, self, diffSelf, 's');
-//    Diff_A_Bubble PiAdot(G,S);
-//
-//    /*K1 contributions*/
-//    for (int iK1=0; iK1<nK_K1*nw1_wa*n_in; ++iK1) {
-//        // TODO: use MPI
-//        int i0 = (iK1 % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
-//        int iwa = (iK1 % (nw1_wa * n_in)) / n_in;
-//        int i_in = iK1 % n_in;
-//        double wa = bfreqs[iwa];
-//
-//        Integrand_a_K1_diff<Q, Diff_A_Bubble> integrand_a_K1 (vertex1, vertex2, PiAdot, i0, wa, i_in);
-//
-//        resp.densvertex.K1_addvert(i0, iwa, i_in, integrator(integrand_a_K1, ffreqs) );
-//    }
-//
-//    /*K2 contributions*/
-//    for(int iK2=0; iK2<nK_K2*nw2_wa*nw2_nua*n_in; iK2++)
-//    {
-//        int i0 = (iK2 % (nK_K2 * nw2_wa * nw2_nua * n_in)) / (nw2_wa * nw2_nua * n_in);
-//        int iwa = (iK2 % (nw2_wa * nw2_nua * n_in)) / (nw2_nua * n_in);
-//        int iva = (iK2 % (nw2_nua * n_in)) / n_in;
-//        int i_in = iK2 % n_in;
-//        double wa = bfreqs[iwa];
-//        double va = ffreqs[iva];
-//
-//        Integrand_a_K2_diff<Q, Diff_A_Bubble> integrand_a_K2 (vertex1, vertex2, PiAdot, i0, wa, va,  i_in);
-//
-//        resp.densvertex.K2_addvert(i0, iwa, va, i_in, integrator(integrand_a_K2, ffreqs)); //
-//    }
-//
-//    /*K2b contributions*/ //TODO How does one handle this? We dont't want to save K2b part of the object, but these contributions must be added somewhere
-//
-//    /*K3 contributions*/
-//    for(int iK3=0; iK3<nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in; iK3++)
-//    {
-//        int i0 = (iK3 % (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in)) / (nw3_wa * nw3_nua * nw3_nuap * n_in);
-//        int iwa = (iK3 % (nw3_wa * nw3_nua * nw3_nuap * n_in)) / (nw3_nua * nw3_nuap * n_in);
-//        int iva = (iK3 % (nw3_nua * nw3_nuap * n_in)) / (nw3_nuap * n_in);
-//        int ivap = (iK3 % (nw3_nuap * n_in))/ n_in;
-//        int i_in = iK3 % n_in;
-//        double wa = bfreqs[iwa];
-//        double va = ffreqs[iva];
-//        double vap = ffreqs[ivap];
-//
-//        Integrand_a_K3_diff<Q, Diff_A_Bubble> integrand_a_K3 (vertex1, vertex2, PiAdot, i0, wa, va, vap, i_in);
-//
-//        resp.densvertex.K3_addvert(i0, iwa, iva, ivap, i_in, integrator(integrand_a_K3, ffreqs)); // TODO: complete this
-//    }
-//
-//    return resp;
-//}
-
-
 
 template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
@@ -542,7 +424,7 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
 
         Integrand_a_K1_diff<Q, Diff_A_Bubble> integrand_a_K1_diff (vertex1, vertex2, PiAdot, i0, wa, i_in);
 
-        resp.densvertex.K1_addvert(i0, iwa, i_in, integrator(integrand_a_K1_diff, ffreqs) );
+        resp.densvertex.K1_addvert(i0, iwa, i_in, integrator(integrand_a_K1_diff, 2.*w_lower_b, 2.*w_upper_b) );
     }
     cout << "K1a done:" << endl;
     get_time(t0);
@@ -589,7 +471,6 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
     return resp;
 }
 
-
 template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
 {
     Vertex<avert<Q> > resp = Vertex<avert<Q> >();
@@ -606,13 +487,12 @@ template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<fullvert<Q> >& 
         int i_in = iK1 % n_in;
         double wa = bfreqs[iwa];
 
-        Integrand_a_K1<Q, A_Bubble> integrand_a_K1 (vertex1, vertex2, PiA, i0, wa, i_in);
+        Integrand_a_K1 <Q, A_Bubble> integrand_a_K1 (vertex1, vertex2, PiA, i0, wa, i_in);
 
-        Q value =  integrator(integrand_a_K1, ffreqs);
+        Q value = integrator(integrand_a_K1, 2.*w_lower_b, 2.*w_upper_b);
 
         resp.densvertex.K1_addvert(i0, iwa, i_in, value);
     }
-
     cout << "K1a done:" << endl;
     get_time(t0);
 
