@@ -20,9 +20,41 @@ using namespace std;
 # if GRID==1
 //TODO: derive functions to determine index values for the respective logarithmic grid but, first, define logarithmic grid
 
+void setUpBosGrid(){
+
+}
+
+void setUpFerGrid(){
+
+}
+
+void setUpFlowGrid(){
+
+}
+
     CODE HERE IS UNREACHABLE LIKE THIS
 
 #elif GRID==2
+
+void setUpBosGrid()
+{
+    for(int i=0; i<nBOS; ++i)
+        bfreqs[i] = w_lower_b + i*dw;
+}
+void setUpFerGrid()
+{
+    for(int i=0; i<nFER; ++i)
+        ffreqs[i] = w_lower_f + i*dv;
+}
+
+void setUpFlowGrid()
+{
+    for(int i=0; i<nEVO; ++i)
+        flow_grid[i] = Lambda_ini + i*dL;
+}
+
+
+
 int fconv_bos(double w)
 {
     int index;
