@@ -81,9 +81,9 @@ const int nw3_nutp = nFER;
 
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
-const double w_upper_b = 20.;
+const double w_upper_b = 30.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 20.;
+const double w_upper_f = 30.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 
 
@@ -131,6 +131,9 @@ const double inter_tol = 10e-8;
 
 //Debugging tolerance
 const double tol = inter_tol;
+
+//Simpson integraton number of steps
+const int nINT = 20*nBOS;
 
 /*Frequency grids for each channel*/
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
