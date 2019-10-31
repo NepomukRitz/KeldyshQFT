@@ -233,6 +233,7 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
     bool conjugate1;  // whether or not to conjugate value: true for T_C, false else
     Q valueK1;
 
+
     /*This part determines the value of the K1 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(isInList(iK,list_K1_T0_comp1)){
@@ -271,11 +272,11 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
         Q f1 = K1_vval(iK1, index, i_in);
         Q f2 = K1_vval(iK1, index + 1, i_in);
 
-        valueK1 = pf1*(1. - xd) * f1 + xd * f2;
+        valueK1 = pf1*((1. - xd) * f1 + xd * f2);
     }
     if(conjugate1)
     {
-        valueK1 = conj(valueK1);
+        valueK1 = -conj(valueK1);
     }
     return valueK1;
 }
