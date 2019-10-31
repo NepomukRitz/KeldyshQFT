@@ -8,6 +8,7 @@
 #include "gsl-2.5/integration/gsl_integration.h"
 #include "include/paid.hpp"
 #include "data_structures.h"
+#include "parameters.h"
 
 //void integrator(gsl_function& F, ) {
 
@@ -34,20 +35,20 @@ comp dotproduct(const cvec& x, const rvec& y);
 
 //TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
 //This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
-template <typename Integrand> comp integrator(Integrand& integrand, const rvec& grid)
+template <typename Integrand> comp integrator(Integrand& integrand, double a, double b)
 {
     //Simpson
-    int n = grid.size();
-    rvec simpson(n);
-    cvec integrand_values(n);
-    for (int i=0; i<n; ++i)
+    rvec simpson(nINT);
+    cvec integrand_values(nINT);
+    double dx = (b-a)/((double)nINT);
+
+    for (int i=0; i<nINT; ++i)
     {
-        integrand_values[i] = integrand(grid[i]);
+        integrand_values[i] = integrand(a+i*dx);
         simpson[i] = 2. +2*(i%2);
     }
     simpson[0] = 1.;
-    simpson[n-1]=1.;
-    double dx = (grid[n-1]-grid[0])/((double)n);
+    simpson[nINT-1]=1.;
 
     return dx/3.*dotproduct(integrand_values, simpson);
 
