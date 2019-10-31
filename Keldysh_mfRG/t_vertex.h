@@ -253,8 +253,9 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, av
         double x2 = bfreqs[index] + dw;
         double xd = (w_t - x1) / (x2 - x1);
 
-        Q f2 = K1_vval(iK1, index + 1, i_in);
         Q f1 = K1_vval(iK1, index, i_in);
+        Q f2 = K1_vval(iK1, index + 1, i_in);
+
 
         valueK1 = pf1*((1. - xd) * f1 + xd * f2);
     }
@@ -270,7 +271,7 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
-    //Perform T2 at the beggining, since it is required by all elements
+    //Perform T2 at the beginning, since it is required by all elements
     tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
     if(isInList(iK,list_K2_T2_comp0)){
         iK2 = 0;
@@ -354,7 +355,7 @@ template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v2_t
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
-    //Perform T2 at the beggining, since it is required by all elements
+    //Perform T1 at the beggining, since it is required by all elements
     tie(w_t, v2_t, i_in) = indices_T1_K2(w_t, v2_t, i_in);
     if(isInList(iK,list_K2b_T1_comp0)){
         iK2 = 0;
