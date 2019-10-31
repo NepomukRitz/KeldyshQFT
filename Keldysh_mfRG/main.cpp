@@ -54,32 +54,32 @@ int main() {
 
 
 
-//    cout << "Start of flow" << endl;
-//    for(auto Lambda:flow_grid) {
-//        double tder = get_time();
-//        state.Lambda = Lambda;
-//        State<comp> dPsi = derivative(Lambda, state);
-//
-//        dPsi*dL;
-//
-//        double tadd = get_time();
-//
-//        state + dPsi;
-////        state += dPsi;
-//        cout << "Added:";
-//        get_time(tadd);
-//
-//        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g','.');
-//
-//        writeOutFile(ffreqs, Lambda, control, state.selfenergy);
-//        cout << "Wrote out" <<endl;
-//        cout << "One derivatie step: ";
-//        get_time(tder);
-//    }
+    cout << "Start of flow" << endl;
+    for(auto Lambda:flow_grid) {
+        double tder = get_time();
+        state.Lambda = Lambda;
+        State<comp> dPsi = derivative(Lambda, state);
 
-    SOPT(1., state);
-    Propagator control = propag(1., state.selfenergy, state.diffselfenergy, 'g', '.');
-    writeOutSOPT(control, state.selfenergy);
+        dPsi*dL;
+
+        double tadd = get_time();
+
+//        state + dPsi;
+        state += dPsi;
+        cout << "Added:";
+        get_time(tadd);
+
+        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g','.');
+
+        writeOutFile(ffreqs, Lambda, control, state.selfenergy);
+        cout << "Wrote out" <<endl;
+        cout << "One derivatie step: ";
+        get_time(tder);
+    }
+
+//    SOPT(1., state);
+//    Propagator control = propag(1., state.selfenergy, state.diffselfenergy, 'g', '.');
+//    writeOutSOPT(control, state.selfenergy);
 
 
     return 0;
@@ -270,7 +270,6 @@ void SOPT(double Lambda, State<Q> &state) {
     state.vertex.densvertex.avertex += dgammaa.densvertex;
     state.vertex.densvertex.pvertex += dgammap.densvertex;
     state.vertex.densvertex.tvertex += dgammat.densvertex;
-
 
     double tloop = get_time();
     SelfEnergy<comp> Sigma_std = loop(state.vertex, s);
