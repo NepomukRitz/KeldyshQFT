@@ -167,6 +167,12 @@ public:
 //        this->K3 * alpha;
         return *this;
     }
+    pvert<Q> operator*=(double alpha) {
+        this->K1 *= alpha;
+        this->K2 *= alpha;
+//        this->K3 *= alpha;
+        return *this;
+    }
 
 };
 

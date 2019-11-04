@@ -48,6 +48,12 @@ public:
         this->bare *alpha;
         return *this;
     }
+
+    irreducible<Q> operator*= (double alpha)
+    {
+        this->bare *=alpha;
+        return *this;
+    }
 };
 
 /**********************************************************************************************************************/
@@ -92,6 +98,14 @@ public:
         this->avertex *alpha;
         return *this;
     }
+
+    fullvert<Q> operator*= (double alpha){
+        this->irred   *=alpha;
+        this->pvertex *=alpha;
+        this->tvertex *=alpha;
+        this->avertex *=alpha;
+        return *this;
+    }
 };
 
 
@@ -121,6 +135,13 @@ public:
     {
         this->densvertex*alpha;
 //        this->spinvertex*alpha;
+        return *this;
+    }
+
+    Vertex<T> operator*= (double alpha)
+    {
+        this->densvertex*=alpha;
+//        this->spinvertex*=alpha;
         return *this;
     }
 };

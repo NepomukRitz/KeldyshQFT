@@ -61,6 +61,15 @@ public:
         return (*this);
     }
 
+    State operator*=(double alpha){
+        this->vertex *= alpha;
+        this->selfenergy *= alpha;
+        this->diffselfenergy *= alpha;
+#ifdef SUSC
+        this-> sus *= alpha;
+#endif
+        return (*this);
+    }
 };
 
 

@@ -160,6 +160,13 @@ public:
 //        this->K3 * alpha;
         return *this;
     }
+
+    avert<Q> operator*=(double alpha) {
+        this->K1 *= alpha;
+        this->K2 *= alpha;
+//        this->K3 *= alpha;
+        return *this;
+    }
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
