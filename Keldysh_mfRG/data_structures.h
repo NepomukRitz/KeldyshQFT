@@ -74,7 +74,7 @@ template <>
 class vec<comp> : public basic_vec<comp> {
   public:
     vec() : basic_vec<comp> () {};
-    vec(int n) : basic_vec<comp> (n) {};
+    explicit vec(int n) : basic_vec<comp> (n) {};
     vec(int n, comp& value) : basic_vec<comp> (n, value) {}; // TODO: test
     vec(initializer_list<comp> m) : basic_vec<comp> (m) {};
 
