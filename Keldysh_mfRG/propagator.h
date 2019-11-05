@@ -242,6 +242,10 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>
                 resp.setprop(0, i, sR(Lambda, w));
                 resp.setprop(1, i, sK(Lambda, w));
             }
+            else if(type == 'k'){
+                resp.setprop(0, i, sR(Lambda, w));
+                resp.setprop(1, i, sK(Lambda, w));
+            }
         }
     }
     return resp;
