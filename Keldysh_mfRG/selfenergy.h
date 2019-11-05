@@ -41,6 +41,11 @@ public:
         this->Sigma - self1.Sigma;
         return *this;
     }
+    SelfEnergy<Q> operator-=(const SelfEnergy<Q>& self1){//sum operator overloading
+        this->Sigma -= self1.Sigma;
+        return *this;
+    }
+
 };
 
 

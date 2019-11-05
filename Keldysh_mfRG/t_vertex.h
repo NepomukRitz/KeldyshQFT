@@ -169,6 +169,13 @@ public:
 //        this->K3 *= alpha;
         return *this;
     }
+    tvert<Q> operator-=(const tvert<Q>& vertex)
+    {
+        this->K1 -= vertex.K1;
+        this->K2 -= vertex.K2;
+//        this->K3 -= vertex.K3;
+        return *this;
+    }
 
 };
 

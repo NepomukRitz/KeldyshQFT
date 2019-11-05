@@ -43,6 +43,11 @@ public:
         this->bare +=vertex.bare;
         return *this;
     }
+    irreducible<Q> operator-= (const irreducible<Q>& vertex)
+    {
+        this->bare -=vertex.bare;
+        return *this;
+    }
     irreducible<Q> operator* (double alpha)
     {
         this->bare *alpha;
@@ -106,6 +111,13 @@ public:
         this->avertex *=alpha;
         return *this;
     }
+    fullvert<Q> operator-= (const fullvert<Q>& vertex1) {
+        this->irred   -= vertex1.irred;
+        this->pvertex -= vertex1.pvertex;
+        this->tvertex -= vertex1.tvertex;
+        this->avertex -= vertex1.avertex;
+        return *this;
+    }
 };
 
 
@@ -142,6 +154,12 @@ public:
     {
         this->densvertex*=alpha;
 //        this->spinvertex*=alpha;
+        return *this;
+    }
+    Vertex<T> operator-= (const Vertex<T>& vertex1)
+    {
+        this->densvertex -= vertex1.densvertex;
+//        this->spinvertex -= vertex1.spinvertex;
         return *this;
     }
 };

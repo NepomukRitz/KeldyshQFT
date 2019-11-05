@@ -167,6 +167,13 @@ public:
 //        this->K3 *= alpha;
         return *this;
     }
+    avert<Q> operator-=(const avert<Q>& vertex)
+    {
+        this->K1 -= vertex.K1;
+        this->K2 -= vertex.K2;
+//        this->K3 -= vertex.K3;
+        return *this;
+    }
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/

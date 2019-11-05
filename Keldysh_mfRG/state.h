@@ -70,6 +70,18 @@ public:
 #endif
         return (*this);
     }
+
+    State operator-=(const State& State1){
+        this->vertex -= State1.vertex;
+        this->selfenergy -= State1.selfenergy;
+        this->diffselfenergy -= State1.diffselfenergy;
+
+#ifdef SUSC
+        this-> sus += State1.sus; //TODO: Are susceptibilities additive?
+#endif
+        return (*this);
+    }
+
 };
 
 
