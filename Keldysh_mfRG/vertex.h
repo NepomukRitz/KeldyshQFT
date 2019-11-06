@@ -17,6 +17,8 @@
 using namespace std;
 
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
+//Irreducible
+//The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
 template <class Q>
 class irreducible{
 public:
@@ -62,7 +64,8 @@ public:
 };
 
 /**********************************************************************************************************************/
-
+//The class fullvert
+//The class defining a vertex with full channel decomposition i.e. irreducible (bare) a, p and t channels
 template <class Q>
 class fullvert{
 public:
