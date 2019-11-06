@@ -182,13 +182,15 @@ comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
 
 comp SR(double Lambda, double omega, comp selfEneR)
 {
-    return -(comp)0.5i*pow(GR(Lambda, omega, selfEneR), 2.);
+    return -(comp)0.5i*GR(Lambda, omega, selfEneR)*GR(Lambda, omega, selfEneR);
 }
 comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA)
 {
-    return -(comp)0.5i*GR(Lambda, omega, selfEneR)*GK(Lambda, omega, selfEneR, selfEneK, selfEneA) +
-            (comp)0.5i*GK(Lambda, omega, selfEneR, selfEneK, selfEneA)*GA(Lambda, omega, selfEneA) -
-            (comp)1.i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
+    comp retarded = -(comp)0.5i*GR(Lambda, omega, selfEneR)*GK(Lambda, omega, selfEneR, selfEneK, selfEneA);
+    comp advanced = +(comp)0.5i*GK(Lambda, omega, selfEneR, selfEneK, selfEneA)*GA(Lambda, omega, selfEneA);
+    comp extra    = -(comp)1.i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
+
+    return retarded + advanced+extra;
 }
 
 Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type, char free)
@@ -212,7 +214,7 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>
             } else if (type == 's') {   //single-scale propagator
                 resp.setprop(0, i, SR(Lambda, w, selfEneR));
                 resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, conj(selfEneR)));
-            } else if (type == 'k') {  //Katanin substitution //TODO is it actually with the differential self-energy or only with Sigma??
+            } else if (type == 'k') {  //Katanin substitution
                 comp SingR, ER, SingK, EK;
                 ER = GR0 * diffSelfEneR * GR0;
                 EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * conj(diffSelfEneR) * GA0;
