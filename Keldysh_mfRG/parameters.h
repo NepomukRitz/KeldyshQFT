@@ -40,12 +40,12 @@ const double U = 1.0;
 const int nEVO = 7;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 51;
-const int nFER = 51;
+const int nBOS = 201;
+const int nFER = 201;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
-const double Lambda_fin = 0.0;
+const double Lambda_fin = 0;    //1.0-1./7.;
 
 /*Number of frequency points for the self energy and the susceptibility*/
 const int nSE   = nFER;
@@ -81,9 +81,9 @@ const int nw3_nutp = nFER;
 
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
-const double w_upper_b = 30.;
+const double w_upper_b = 20.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 30.;
+const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 
 

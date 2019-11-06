@@ -120,7 +120,7 @@ public:
         Q resp;
         for (auto i2:non_zero_Keldysh_tbubble) {
             tie(i1, i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
-            auto PiTval = PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt);
+            auto PiTval = PiT.value(i2, vppt+0.5*wt, vppt-0.5*wt);          //vppt+1/2wt, vppt-1/2wt for the t-channel
 
             Q add = vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.irred.vval(i3);
 
@@ -301,13 +301,15 @@ public:
         Q resp;
         for(auto i2:non_zero_Keldysh_tbubble) {
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
-            auto PiTval = PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt);
+            auto PiTval = PiT.value(i2, vppt+0.5*wt, vppt-0.5*wt);          //vppt+1/2wt, vppt-1/2wt for the t-channel
 
             //This is to test SOPT
             resp += vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.irred.vval(i3);
+            //These lines include the whole K1 class
 //            resp += vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex);
 //            resp += vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) * PiTval * vertex2.densvertex.irred.vval(i3);
 //            resp += vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) * PiTval * vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex1.densvertex.avertex);
+
             //Contributions to K1: (K1 +K2b)Pi(K1+K2)
 //            resp += (vertex1.densvertex.irred.vval(i1) +
 //                     vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) +

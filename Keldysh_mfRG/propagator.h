@@ -212,7 +212,7 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>
             } else if (type == 's') {   //single-scale propagator
                 resp.setprop(0, i, SR(Lambda, w, selfEneR));
                 resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, conj(selfEneR)));
-            } else if (type == 'k') {  //Katanin substitution
+            } else if (type == 'k') {  //Katanin substitution //TODO is it actually with the differential self-energy or only with Sigma??
                 comp SingR, ER, SingK, EK;
                 ER = GR0 * diffSelfEneR * GR0;
                 EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * conj(diffSelfEneR) * GA0;
