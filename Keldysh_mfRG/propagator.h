@@ -221,6 +221,11 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char 
                 resp.setprop(0, i, ER);
                 resp.setprop(1, i, EK);
             }
+            else {
+                resp.setprop(0, i, 0.);
+                resp.setprop(1, i, 0.);
+                cout << "Something is going terribly wrong with the dressed propagators" << "\n";
+            }
         }
     }
     else{
@@ -239,6 +244,11 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char 
             else if(type == 'k'){
                 resp.setprop(0, i, sR(Lambda, w));
                 resp.setprop(1, i, sK(Lambda, w));
+            }
+            else {
+                resp.setprop(0, i, 0.);
+                resp.setprop(1, i, 0.);
+                cout << "Something is going terribly wrong with the free propagators" << "\n";
             }
         }
     }
