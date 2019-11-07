@@ -36,7 +36,7 @@ public:
 
 };
 
-Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type, char free);
+Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free);
 
 /************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
 
@@ -193,7 +193,7 @@ comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
     return retarded + advanced+extra;
 }
 
-Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffselfenergy, char type, char free)
+Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free)
 {
     Propagator resp;
     if(free!='f') {
@@ -201,31 +201,23 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>
             double w = ffreqs[i];
             comp selfEneR = selfenergy.sval(0, i);
             comp selfEneK = selfenergy.sval(1, i);
-            comp diffSelfEneR = diffselfenergy.sval(0, i);
-            comp diffSelfEneK = diffselfenergy.sval(1, i);
+
             comp GR0 = GR(Lambda, w, selfEneR);
             comp GA0 = GA(Lambda, w, conj(selfEneR));
             comp GK0 = GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
 
 
             if (type == 'g') { //good ol' regular propagator
-                resp.setprop(0, i, GR0);
-                resp.setprop(1, i, GK0);
+                resp.setprop(0, i, GR(Lambda, w, selfEneR));
+                resp.setprop(1, i, GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR)));
             } else if (type == 's') {   //single-scale propagator
                 resp.setprop(0, i, SR(Lambda, w, selfEneR));
                 resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, conj(selfEneR)));
-            } else if (type == 'k') {  //Katanin substitution
-                comp SingR, ER, SingK, EK;
-                ER = GR0 * diffSelfEneR * GR0;
-                EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * conj(diffSelfEneR) * GA0;
-                SingR = SR(Lambda, w, selfEneR);
-                SingK = SK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
-                resp.setprop(0, i, (SingR + ER));
-                resp.setprop(1, i, (SingK + EK));
-            } else if (type == 'e') {   //i.e. only the Katanin extension
+            }
+            else if (type == 'e') {   //i.e. only the Katanin extension. For this case, the selfenergy should be a derivated one!
                 comp ER, EK;
-                ER = GR0 * diffSelfEneR * GR0;
-                EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * conj(diffSelfEneR) * GA0;
+                ER = GR0 * selfEneR * GR0;
+                EK = GR0 * selfEneR * GK0 + GR0 * selfEneK * GA0 + GK0 * conj(selfEneR) * GA0;
                 resp.setprop(0, i, ER);
                 resp.setprop(1, i, EK);
             }
