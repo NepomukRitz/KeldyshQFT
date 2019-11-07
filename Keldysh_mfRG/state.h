@@ -18,7 +18,6 @@ struct State{
 public:
     double Lambda{};
     SelfEnergy<Q> selfenergy;
-    SelfEnergy<Q> diffselfenergy;
     Vertex<fullvert<Q> > vertex;
 #ifdef SUSC
     Susc<comp> sus;
@@ -27,15 +26,13 @@ public:
     State() = default;;
     explicit State(double lambda_input) : Lambda(lambda_input) {};
 
-//TODO: check this below (and define state first)
 //operators containing State objects
     State operator+(const State& State1){
         this->vertex + State1.vertex;
         this->selfenergy + State1.selfenergy ;
-        this->diffselfenergy + State1.diffselfenergy;
 
 #ifdef SUSC
-        this-> sus + State1.sus; //TODO: Are susceptibilities additive?
+        this-> sus + State1.sus;
 #endif
         return (*this);
     }
@@ -43,10 +40,9 @@ public:
     State operator+=(const State& State1){
         this->vertex += State1.vertex;
         this->selfenergy += State1.selfenergy;
-        this->diffselfenergy += State1.diffselfenergy;
 
 #ifdef SUSC
-        this-> sus += State1.sus; //TODO: Are susceptibilities additive?
+        this-> sus += State1.sus;
 #endif
         return (*this);
     }
@@ -54,7 +50,6 @@ public:
     State operator*(double alpha){
         this->vertex * alpha;
         this->selfenergy * alpha;
-        this->diffselfenergy * alpha;
 #ifdef SUSC
         this-> sus * alpha;
 #endif
@@ -64,7 +59,6 @@ public:
     State operator*=(double alpha){
         this->vertex *= alpha;
         this->selfenergy *= alpha;
-        this->diffselfenergy *= alpha;
 #ifdef SUSC
         this-> sus *= alpha;
 #endif
@@ -74,10 +68,8 @@ public:
     State operator-=(const State& State1){
         this->vertex -= State1.vertex;
         this->selfenergy -= State1.selfenergy;
-        this->diffselfenergy -= State1.diffselfenergy;
-
 #ifdef SUSC
-        this-> sus += State1.sus; //TODO: Are susceptibilities additive?
+        this-> sus += State1.sus;
 #endif
         return (*this);
     }
