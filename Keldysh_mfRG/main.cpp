@@ -42,8 +42,6 @@ int main() {
     for (int i = 0; i < nSE; ++i) {
         state.selfenergy.setself(0, i, 0.5*U);
         state.selfenergy.setself(1, i, 0.);
-        state.diffselfenergy.setself(0, i, 0.);
-        state.diffselfenergy.setself(1, i, 0.);
     }
     cout << "self energy and diff self energy assigned" << endl;
 
@@ -55,9 +53,9 @@ int main() {
 
 
 
-    Propagator control_ini = propag(Lambda_ini, state.selfenergy, state.diffselfenergy, 'g', '.');
+    Propagator control_ini = propag(Lambda_ini, state.selfenergy, 'g', '.');
     writeOutSOPT(Lambda_ini, control_ini, state.selfenergy);
-
+//
 //    for(int i=1; i<nEVO; ++i) {
 //        double Lambda = flow_grid[i];
 //        SOPT(Lambda, state);
@@ -68,8 +66,8 @@ int main() {
 
 
 
-    Propagator initial = propag(state.Lambda, state.selfenergy, state.diffselfenergy, 'g', '.');
-    Propagator compare = propag(state.Lambda, state.selfenergy, state.diffselfenergy, 'g', 'f');
+    Propagator initial = propag(state.Lambda, state.selfenergy, 'g', '.');
+    Propagator compare = propag(state.Lambda, state.selfenergy, 'g', 'f');
 
     writeOutFile(ffreqs, state.Lambda, initial, state.selfenergy);
 
@@ -90,7 +88,7 @@ int main() {
 
         double next_Lambda = flow_grid[i];
 
-        Propagator control = propag(next_Lambda, state.selfenergy, state.diffselfenergy, 'g','.');
+        Propagator control = propag(next_Lambda, state.selfenergy, 'g','.');
 
         writeOutFile(ffreqs, next_Lambda, control, state.selfenergy);
         cout << "Wrote out" <<endl;
@@ -110,15 +108,15 @@ int main() {
 template <typename Q>
 State<Q> derivative(double Lambda, State<Q>& state)
 {
-    State<Q> resp(Lambda);
+    State<Q> dPsi(Lambda);
 
     /*Here I begin implementing Fabian's pseudocode*/
     //Line 1
-    Propagator S = propag(Lambda, state.selfenergy, state.diffselfenergy, 's', 'f');
+    Propagator S = propag(Lambda, state.selfenergy, 's', 'f');
     cout << "S calculated" << endl;
 
     //Line 2
-    Propagator G = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g', 'f');
+    Propagator G = propag(Lambda, state.selfenergy, 'g', 'f');
     cout << "G calculated" << endl;
 
     //Line 3
@@ -126,13 +124,11 @@ State<Q> derivative(double Lambda, State<Q>& state)
     cout << "loop calculated" << endl;
 
     //Line 4
-//    SelfEnergy<comp> temp = state.selfenergy;
-    resp.selfenergy = Sigma_std;
-
-//    resp.diffselfenergy = (Sigma_std - temp)*(1./dL);
+    dPsi.selfenergy=Sigma_std;
 
     //Line 6
-    Propagator dG = propag(Lambda, resp.selfenergy, resp.diffselfenergy, 'k', 'f');
+    Propagator extension = propag(Lambda, dPsi.selfenergy, 'e', 'f');
+    Propagator dG = S + extension;
 
     cout << "diff bubble started" << endl;
     double t2 = get_time();
@@ -204,13 +200,13 @@ State<Q> derivative(double Lambda, State<Q>& state)
 
 
     //Line 41
-    resp.vertex.densvertex.avertex = dgammaa.densvertex;
-    resp.vertex.densvertex.pvertex = dgammap.densvertex;
-    resp.vertex.densvertex.tvertex = dgammat.densvertex;
-    resp.vertex.spinvertex.avertex = dgammaa.spinvertex;
-    resp.vertex.spinvertex.pvertex = dgammap.spinvertex;
-    resp.vertex.spinvertex.tvertex = dgammat.spinvertex;
-    return resp;
+    dPsi.vertex.densvertex.avertex = dgammaa.densvertex;
+    dPsi.vertex.densvertex.pvertex = dgammap.densvertex;
+    dPsi.vertex.densvertex.tvertex = dgammat.densvertex;
+    dPsi.vertex.spinvertex.avertex = dgammaa.spinvertex;
+    dPsi.vertex.spinvertex.pvertex = dgammap.spinvertex;
+    dPsi.vertex.spinvertex.tvertex = dgammat.spinvertex;
+    return dPsi;
 }
 
 template <typename Q> State<Q> RungeKutta4thOrder(double Lambda, State<Q>& state)

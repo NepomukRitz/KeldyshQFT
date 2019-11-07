@@ -426,7 +426,9 @@ template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q
 
         Integrand_p_K1_diff<Q, Diff_P_Bubble> integrand_p_K1_diff (vertex1, vertex2, PiPdot, i0, wp, i_in);
 
-        resp.densvertex.K1_addvert(i0, iwp, i_in, (0.5)*integrator(integrand_p_K1_diff,  2.*w_lower_b, 2.*w_upper_b) );
+        Q value = (0.5)*integrator(integrand_p_K1_diff,  2.*w_lower_b, 2.*w_upper_b);
+
+        resp.densvertex.K1_addvert(i0, iwp, i_in, value);
     }
     cout << "K1p done" << endl;
     get_time(t0);
@@ -490,7 +492,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_p_K1 <Q, P_Bubble> integrand_p_K1 (vertex1, vertex2, PiP, i0, wp, i_in);
 
-        Q value = integrator(integrand_p_K1, 2.*w_lower_b, 2.*w_upper_b)*0.5;
+        Q value = (0.5)*integrator(integrand_p_K1, 2.*w_lower_b, 2.*w_upper_b);
 
         resp.densvertex.K1_addvert(i0, iwp, i_in, value);
     }

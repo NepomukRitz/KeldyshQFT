@@ -38,13 +38,20 @@ public:
         Q resp9  = vertex.densvertex.avertex.value(7, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex);   //Something
         Q resp10 = vertex.densvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in);                              //Something
         Q resp11 = vertex.densvertex.tvertex.value(7, 0., wp, w, i_in, vertex.densvertex.avertex);                      //Something
-        Q resp12 = vertex.densvertex.irred.vval(7);                                                                     //Always 0.5
+        Q resp12 = vertex.densvertex.irred.vval(7);                                                                     //Always 0.5*U
 
         Q aid1 = propagator.pvalsmooth(0, wp);
         Q aid2 = conj(propagator.pvalsmooth(0, wp));
         Q aid3 = propagator.pvalsmooth(1, wp);
 
-        return ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
+        Q ans = ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
+
+//        if(fabs(w)<1.) {
+//            Q imag = 2 * resp3.imag() * aid1.real() + (resp1.real() - resp6.real()) * aid1.imag() + (resp9 + resp10 + resp11 + resp12).real() * aid3.imag();
+//            cout <<ans << " " << imag << "\n";
+//        }
+
+        return ans;
 
 
 //        return
@@ -82,12 +89,12 @@ public:
         Q resp1 = vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;
         Q resp2 = vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;
         Q resp3 = vertex.densvertex.tvertex.value(1, 0., wp, w, i_in, vertex.densvertex.avertex) ;
-        Q resp4 = vertex.densvertex.irred.vval(1);                                                                      //Always 0.5
+        Q resp4 = vertex.densvertex.irred.vval(1);                                                                      //Always 0.5*U
 
         Q resp5 = vertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex);    //"Similar" to resp1 (i.e. T3(resp1))
         Q resp6 = vertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in);                               //"Similar" to resp2 (i.e. TC(resp2))
         Q resp7 = vertex.densvertex.tvertex.value(4, 0., wp, w, i_in, vertex.densvertex.avertex);                       //Equal to resp3
-        Q resp8 = vertex.densvertex.irred.vval(4);                                                                      //Always 0.5
+        Q resp8 = vertex.densvertex.irred.vval(4);                                                                      //Always 0.5*U
 
         Q resp9  = vertex.densvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex);   //Note this value is real
         Q resp10 = vertex.densvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in);                              //Note this value is real
@@ -136,8 +143,8 @@ SelfEnergy<comp> loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop)
         IntegrandR<comp, fullvert<comp> > integrandR(fullvertex, prop, w, i_in);
         IntegrandK<comp, fullvert<comp> > integrandK(fullvertex, prop, w, i_in);
 
-        comp integratedR = integrator(integrandR, 2.*w_lower_f, 2.*w_upper_f);
-        comp integratedK = integrator(integrandK, 2.*w_lower_f, 2.*w_upper_f);
+        comp integratedR = integrator(integrandR, w_lower_f, w_upper_f);
+        comp integratedK = integrator(integrandK, w_lower_f, w_upper_f);
 
         resp.setself(0, i, integratedR);
         resp.setself(1, i, integratedK);
