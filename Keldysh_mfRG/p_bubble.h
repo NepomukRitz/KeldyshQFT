@@ -23,32 +23,32 @@ public:
     {
         comp ans;
         switch (iK){
-            case 3: //AA
-                ans = conj(g.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 6: //AR
+            case 3: //AR
                 ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
+                break;
+            case 6: //AA
+                ans = conj(g.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
                 break;
             case 7: //AK
                 ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
                 break;
-            case 9: //RA
-                ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 11://KA
-                ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 12://RR
+            case 9: //RR
                 ans = g.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
+                break;
+            case 11://KR
+                ans = g.pvalsmooth(1, v1) * g.pvalsmooth(0, v2);
+                break;
+            case 12://RA
+                ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
                 break;
             case 13://RK
                 ans = g.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
                 break;
-            case 14://KR
-                ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
+            case 14://KA
+                ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
                 break;
             case 15://KK
-                ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
+                ans = g.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
                 break;
             default: ;
         }
@@ -68,37 +68,35 @@ public:
     comp value(int iK, double v1, double v2)
     {
         comp ans;
-        switch (iK)
-        {
-            case 3: //AA
-                ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 6: //AR
+        switch (iK){
+            case 3: //AR
                 ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(0, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
+                break;
+            case 6: //AA
+                ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
                 break;
             case 7: //AK
                 ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(1, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
                 break;
-            case 9: //RA
-                ans = g.pvalsmooth(0, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 11://KA
-                ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 12://RR
+            case 9: //RR
                 ans = g.pvalsmooth(0, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
+                break;
+            case 11://KR
+                ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(0, v2);
+                break;
+            case 12://RA
+                ans = g.pvalsmooth(0, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
                 break;
             case 13://RK
                 ans = g.pvalsmooth(0, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
                 break;
-            case 14://KR
-                ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(0, v2);
+            case 14://KA
+                ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
                 break;
             case 15://KK
                 ans = g.pvalsmooth(1, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
                 break;
-            default:
-                ans = 0.;
+            default: ;
         }
         return ans;
     }
@@ -120,7 +118,7 @@ public:
         Q resp;
         for (auto i2:non_zero_Keldysh_pbubble) {
             tie(i1, i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
-            auto PiPval = PiP.value(i2, vppp+0.5*wp, vppp-0.5*wp);      //vppp+1/2wp, vppp-1/2wp for the p-channel
+            auto PiPval = PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp);      //2wp/2+vppp, wp/2-vppp for the p-channel
 
             Q add = vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.irred.vval(i3);
 
@@ -234,7 +232,7 @@ public:
         Q resp;
         for(auto i2:non_zero_Keldysh_pbubble) {
             tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
-            auto PiPval = PiP.value(i2, vppp+0.5*wp, vppp-0.5*wp);          //vppp+1/2wp, vppp-1/2wp for the p-channel
+            auto PiPval = PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp);      //2wp/2+vppp, wp/2-vppp for the p-channel
 
             //This is to test SOPT
             resp += vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.irred.vval(i3);

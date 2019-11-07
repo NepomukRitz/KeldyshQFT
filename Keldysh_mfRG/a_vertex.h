@@ -764,11 +764,11 @@ template<typename Q> tuple<int, int> avert<Q>::indices_sum(int i0, int i2)
     int a1p, a2p, a1, a2, a3, a4, a3p, a4p;
 
     tie(a1p, a2p, a1, a2) = alphas(i0);
-    tie(a3, a4, a3p, a4p) = alphas(i2);
+    tie(a3p, a4p, a3, a4) = alphas(i2);
 
     return make_tuple(
-            8*(a1p-1) + 4*(a4p-1) + 2*(a3-1) + 1*(a2-1),
-            8*(a3p-1) + 4*(a2p-1) + 2*(a1-1) + 1*(a4-1));
+            8*(a1p-1) + 4*(a4-1) + 2*(a3p-1) + 1*(a2-1),
+            8*(a3-1) + 4*(a2p-1) + 2*(a1-1) + 1*(a4p-1));
 }
 
 #endif //KELDYSH_MFRG_A_VERTEX_H

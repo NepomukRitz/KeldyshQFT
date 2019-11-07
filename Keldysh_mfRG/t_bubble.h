@@ -26,17 +26,17 @@ public:
             case 3: //AA
                 ans = conj(g.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
                 break;
-            case 5: //RA
-                ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 7: //KA
-                ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 10: //AR
+            case 6: //AR
                 ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
                 break;
-            case 11://AK
+            case 7: //AK
                 ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
+                break;
+            case 9: //RA
+                ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 11://KA
+                ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
                 break;
             case 12://RR
                 ans = g.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
@@ -73,17 +73,17 @@ public:
             case 3: //AA
                 ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
                 break;
-            case 5: //RA
-                ans = g.pvalsmooth(0, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 7: //KA
-                ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 10: //AR
+            case 6: //AR
                 ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(0, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
                 break;
-            case 11://AK
+            case 7: //AK
                 ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(1, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
+                break;
+            case 9: //RA
+                ans = g.pvalsmooth(0, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 11://KA
+                ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
                 break;
             case 12://RR
                 ans = g.pvalsmooth(0, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
@@ -120,7 +120,7 @@ public:
         Q resp;
         for (auto i2:non_zero_Keldysh_tbubble) {
             tie(i1, i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
-            auto PiTval = PiT.value(i2, vppt+0.5*wt, vppt-0.5*wt);          //vppt+1/2wt, vppt-1/2wt for the t-channel
+            auto PiTval = PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt);          //vppt-1/2wt, vppt+1/2wt for the t-channel
 
             Q add = vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.irred.vval(i3);
 
@@ -301,7 +301,7 @@ public:
         Q resp;
         for(auto i2:non_zero_Keldysh_tbubble) {
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
-            auto PiTval = PiT.value(i2, vppt+0.5*wt, vppt-0.5*wt);          //vppt+1/2wt, vppt-1/2wt for the t-channel
+            auto PiTval = PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt);          //vppt-1/2wt, vppt+1/2wt for the t-channel
 
             //This is to test SOPT
             resp += vertex1.densvertex.irred.vval(i1) * PiTval * vertex2.densvertex.irred.vval(i3);
