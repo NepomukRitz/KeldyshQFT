@@ -245,6 +245,10 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char 
                 resp.setprop(0, i, sR(Lambda, w));
                 resp.setprop(1, i, sK(Lambda, w));
             }
+            else if(type == 'e') {
+                resp.setprop(0, i, 0.);
+                resp.setprop(1, i, 0.);
+            }
             else {
                 resp.setprop(0, i, 0.);
                 resp.setprop(1, i, 0.);
