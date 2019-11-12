@@ -97,8 +97,7 @@ public:
             case 15://KK
                 ans = g.pvalsmooth(1, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
                 break;
-            default:
-                ans = 0.;
+            default: ;
         }
         return ans;
     }
@@ -272,10 +271,14 @@ public:
     //This is a call operator
     Q operator()(double vppa) {
         int i1, i3;
-        Q resp=0.;
-//        for (auto i2:non_zero_Keldysh_bubble) {
-//            tie(i1, i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
-//
+        Q resp;
+        for (auto i2:non_zero_Keldysh_bubble) {
+            tie(i1, i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
+
+            resp += vertex1.densvertex.value(i1, wa, va, vppa, i_in, 'a') *
+                    PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa) *                   //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    vertex2.densvertex.irred.vval(i3);
+
 //            //Contributions to K2: (K2 +K3 + gammaP)Pi(K1+K2)
 //            resp += (vertex1.densvertex.avertex.K2_vvalsmooth(i1, wa, va, i_in, vertex1.densvertex.tvertex) +
 //                     vertex1.densvertex.avertex.K3_vvalsmooth(i1, wa, va, vppa, i_in, vertex1.densvertex.tvertex) +
@@ -284,7 +287,7 @@ public:
 //                    (vertex2.densvertex.irred.vval(i3) +
 //                     vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
 //                     vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex));
-//        }
+        }
         return resp;
     }
 };
@@ -298,26 +301,7 @@ public:
     Integrand_a_K2b_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& PiA_in, int i0_in, double wa_in, double vpa_in, int i_in_in)
             :                    vertex1(vertex1_in),              vertex2(vertex2_in),      PiA(PiA_in), i0(i0_in),    wa(wa_in),   vpa(vpa_in), i_in(non_zero_Keldysh_K2a[i_in_in]) {};
 
-    //First option for integrand feature: a function
-    Q integrand_p_K2b(double vppa) {
-        int i1, i3;
-        Q resp;
-        for(auto i2:non_zero_Keldysh_bubble) {
-            tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
-
-            //Contributions to K2: (K1 + K2b)Pi(K2b + K3 + gammaP)
-            resp += (vertex1.densvertex.irred.vval(i1) +
-                     vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) +
-                     vertex1.densvertex.avertex.K2b_vvalsmooth (i1, wa, vppa, i_in, vertex1.densvertex.tvertex)) *
-                    PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa) *
-                    (vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex) +
-                     vertex2.densvertex.avertex.K3_vvalsmooth(i3, wa, vppa, vpa, i_in, vertex2.densvertex.tvertex) +
-                     vertex2.densvertex.gammaRb(i3, wa, vppa, vpa, i_in, 'a'));
-        }
-        return resp;
-    }
-
-    //This is a second option for an integrand feature: a call operator
+    //This a call operator
     Q operator()(double vppa) {
         int i1, i3;
         Q resp;
@@ -347,26 +331,7 @@ public:
     Integrand_a_K3_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, double va_in, double vpa_in, int i_in_in)
             :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
 
-    //First option for integrand feature: a function
-    Q integrand_p_K3(double vppa) {
-        int i1, i3;
-        Q resp;
-        for(auto i2:non_zero_Keldysh_bubble) {
-            tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
-
-            //Contributions to K3: (K2 +K3 + gammaP)Pi(K2b + K3 + gammaP)
-            resp += (vertex1.densvertex.avertex.K2_vvalsmooth(i1, wa, va, i_in, vertex1.densvertex.tvertex) +
-                     vertex1.densvertex.avertex.K3_vvalsmooth(i1, wa, va, vppa, i_in, vertex1.densvertex.tvertex) +
-                     vertex1.densvertex.gammaRb(i1, wa, va, vppa, i_in, 'a')) *
-                    PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa) *
-                    (vertex2.densvertex.avertex.K2b_vvalsmooth(i3, wa, va, i_in, vertex2.densvertex.tvertex) +
-                     vertex2.densvertex.avertex.K3_vvalsmooth(i3, wa, vppa, vpa, i_in, vertex2.densvertex.tvertex) +
-                     vertex2.densvertex.gammaRb(i3, wa, vppa, vpa, i_in, 'a'));
-        }
-        return resp;
-    }
-
-    //This is a second option for an integrand feature: a call operator
+    //This is a call operator
     Q operator()(double vppa) {
         int i1, i3;
         Q resp;
@@ -399,7 +364,6 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
     /*K1 contributions*/
 #pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wa*n_in; ++iK1) {
-
         // TODO: use MPI
         int i0 = (iK1 % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
         int iwa = (iK1 % (nw1_wa * n_in)) / n_in;
@@ -408,7 +372,7 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
 
         Integrand_a_K1_diff<Q, Diff_A_Bubble> integrand_a_K1_diff (vertex1, vertex2, PiAdot, i0, wa, i_in);
 
-        Q value = integrator(integrand_a_K1_diff, 2.*w_lower_f, 2.*w_upper_f);          //Integration over vppa, a fermionic frequency
+        Q value = integrator(integrand_a_K1_diff, w_lower_f, w_upper_f);                            //Integration over vppa, a fermionic frequency
 
         resp.densvertex.K1_addvert(i0, iwa, i_in, value);
     }
@@ -428,9 +392,10 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
 
         Integrand_a_K2_diff<Q, Diff_A_Bubble> integrand_a_K2_diff (vertex1, vertex2, PiAdot, i0, wa, va, i_in);
 
-        Q value = integrator(integrand_a_K2_diff, 2*w_lower_f, 2*w_upper_f);            //Integration over vppa, a fermionic frequency
-//        value -=  resp.densvertex.K1_vval(i0, iwa, i_in);
-        resp.densvertex.K2_addvert(i0, iwa, va, i_in, value); //
+        Q value = integrator(integrand_a_K2_diff, w_lower_f, w_upper_f);                            //Integration over vppa, a fermionic frequency
+//        value -= resp.densvertex.K1_vval(i0, iwa, i_in);
+
+        resp.densvertex.K2_addvert(i0, iwa, va, i_in, value);
     }
     cout << "K2a done" << endl;
 

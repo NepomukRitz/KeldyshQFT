@@ -184,15 +184,15 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
 
     return  K1_vvalsmooth (iK, w, i_in, tvertex)
             + K2_vvalsmooth (iK, w, v1, i_in, tvertex)
-            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex)
-            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
+            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex);
+//            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
 }
 
 template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex){
 
-    return  K1_vvalsmooth (iK, w, i_in, tvertex);
-//            + K2_vvalsmooth (iK, w, v1, i_in, tvertex)
-//            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex)
+    return  K1_vvalsmooth (iK, w, i_in, tvertex)
+            + K2_vvalsmooth (iK, w, v1, i_in, tvertex)
+            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex);
 //            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
 }
 
