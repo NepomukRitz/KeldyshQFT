@@ -31,9 +31,9 @@ class pvert{
     vector<int> list_K2_T0_comp1  = { 1, 2};    // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
     vector<int> list_K2_T0_comp4  = { 4, 7};    // components in K2 equal to comp.4 of K2               In the vertex, comp4 will be iK=2
     vector<int> list_K2_T0_comp5  = { 5, 6};    // components in K2 equal to comp.5 of K2               In the vertex, comp5 will be iK=3
+    vector<int> list_K2_T0_comp13 = {13, 14};   // components in K2 equal to comp.13 of K2              In the vertex, comp13 will be iK=4
     vector<int> list_K2_T3_comp4  = { 8, 11};   // components in K2 equal to T_3 comp.4 of K2
     vector<int> list_K2_T3_comp5  = { 9, 10};   // components in K2 equal to T_3 comp.5 of K2
-    vector<int> list_K2_T0_comp13 = {13, 14};   // components in K2 equal to comp.13 of K2              In the vertex, comp13 will be iK=4
 
     vector<int> list_K2b_TC_comp0   = {0, 12};  // components in K2b equal to T_C comp.0 of K2
     vector<int> list_K2b_TC_comp4   = {1, 13};  // components in K2b equal to T_C comp.4 of K2

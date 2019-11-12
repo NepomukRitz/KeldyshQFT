@@ -31,9 +31,9 @@ class avert{
     vector<int> list_K2_T0_comp1   = { 1,  7};  // components in K2 equal to comp.1 of K2               In the vertex, comp0 will be iK=1
     vector<int> list_K2_T0_comp2   = { 2,  4};  // components in K2 equal to comp.2 of K2               In the vertex, comp0 will be iK=2
     vector<int> list_K2_T0_comp3   = { 3,  5};  // components in K2 equal to comp.3 of K2               In the vertex, comp0 will be iK=3
+    vector<int> list_K2_T0_comp11  = {11, 13};  // components in K2 equal to comp.11 of K2              In the vertex, comp0 will be iK=4
     vector<int> list_K2_TCT3_comp1 = { 8, 14};  // components in K2 equal to T_C T_3 comp.1 of K2
     vector<int> list_K2_TCT3_comp3 = {10, 12};  // components in K2 equal to T_C T_3 comp.2 of K2
-    vector<int> list_K2_T0_comp11  = {11, 13};  // components in K2 equal to comp.11 of K2              In the vertex, comp0 will be iK=4
 
     vector<int> list_K2b_T3_comp0  = {0,  9};   // components in K2b equal to T_3 comp.0 of K2
     vector<int> list_K2b_T3_comp2  = {1,  8};   // components in K2b equal to T_3 comp.2 of K2

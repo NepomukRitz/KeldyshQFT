@@ -31,16 +31,17 @@ class tvert{
     vector<int> list_K2_T2_comp1 = {1, 11};         // components in K2 equal to comp.1 of K2a          In the vertex, comp1 will be iK=1
     vector<int> list_K2_T2_comp2 = {2,  8};         // components in K2 equal to comp.2 of K2a          In the vertex, comp2 will be iK=2
     vector<int> list_K2_T2_comp3 = {3,  9};         // components in K2 equal to comp.3 of K2a          In the vertex, comp3 will be iK=3
-    vector<int> list_K2_TCT2_comp1 = {4, 14};      // components in K2 equal to comp.0 of K2a
-    vector<int> list_K2_TCT2_comp3 = {6, 12};      // components in K2 equal to comp.0 of K2a
-    vector<int> list_K2_T2_comp11 = {7, 13};        // components in K2 equal to comp.7 of K2a         In the vertex, comp0 will be iK=4
+    vector<int> list_K2_T2_comp11 = {7, 13};        // components in K2 equal to comp.7 of K2a          In the vertex, comp0 will be iK=4
+    vector<int> list_K2_TCT2_comp1 = {4, 14};       // components in K2 equal to comp.0 of K2a
+    vector<int> list_K2_TCT2_comp3 = {6, 12};       // components in K2 equal to comp.0 of K2a
+
 
     vector<int> list_K2b_T1_comp0 = {0,  5};        // components in K2b equal to T_1 comp.0 of K2a
     vector<int> list_K2b_T1_comp2 = {1,  4};        // components in K2b equal to T_1 comp.2 of K2a
     vector<int> list_K2b_T1_comp1 = {2,  7};        // components in K2b equal to T_1 comp.1 of K2a
     vector<int> list_K2b_T1_comp3 = {3,  6};        // components in K2b equal to T_1 comp.3 of K2a
-    vector<int> list_K2b_TCT1_comp1 = {8, 13};     // components in K2b equal to T_1 comp.1 of K2a
-    vector<int> list_K2b_TCT1_comp3 = {9, 12};     // components in K2b equal to T_1 comp.3 of K2a
+    vector<int> list_K2b_TCT1_comp1 = {8, 13};      // components in K2b equal to T_1 comp.1 of K2a
+    vector<int> list_K2b_TCT1_comp3 = {9, 12};      // components in K2b equal to T_1 comp.3 of K2a
     vector<int> list_K2b_T1_comp11 = {11, 14};      // components in K2b equal to T_1 comp.11 of K2a
 
 
