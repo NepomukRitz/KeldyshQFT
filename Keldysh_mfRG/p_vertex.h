@@ -15,10 +15,6 @@
 
 template <class Q>
 class pvert{
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
-
     /*Lists of the Keldysh components of K1p relating the respective component to the independent ones through the marked
     * trafo*/
     vector<int> list_K1_T0_comp1 = {1, 2, 13, 14};  // components equal to     comp.1     (B_1^p for equal spins). In the vertex, comp1 will be iK=0
@@ -27,29 +23,35 @@ class pvert{
 
     /*Lists of the Keldysh components of K2p relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K2_T0_comp0  = { 0, 3};    // components in K2 equal to comp.0 of K2               In the vertex, comp0 will be iK=0
-    vector<int> list_K2_T0_comp1  = { 1, 2};    // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
-    vector<int> list_K2_T0_comp4  = { 4, 7};    // components in K2 equal to comp.4 of K2               In the vertex, comp4 will be iK=2
-    vector<int> list_K2_T0_comp5  = { 5, 6};    // components in K2 equal to comp.5 of K2               In the vertex, comp5 will be iK=3
-    vector<int> list_K2_T0_comp13 = {13, 14};   // components in K2 equal to comp.13 of K2              In the vertex, comp13 will be iK=4
-    vector<int> list_K2_T3_comp4  = { 8, 11};   // components in K2 equal to T_3 comp.4 of K2
-    vector<int> list_K2_T3_comp5  = { 9, 10};   // components in K2 equal to T_3 comp.5 of K2
+    vector<int> list_K2_T0_comp0    = { 0, 3};          // components in K2 equal to comp.0 of K2               In the vertex, comp0 will be iK=0
+    vector<int> list_K2_T0_comp1    = { 1, 2};          // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
+    vector<int> list_K2_T0_comp4    = { 4, 7};          // components in K2 equal to comp.4 of K2               In the vertex, comp4 will be iK=2
+    vector<int> list_K2_T0_comp5    = { 5, 6};          // components in K2 equal to comp.5 of K2               In the vertex, comp5 will be iK=3
+    vector<int> list_K2_T0_comp13   = {13, 14};         // components in K2 equal to comp.13 of K2              In the vertex, comp13 will be iK=4
+    vector<int> list_K2_T3_comp4    = { 8, 11};         // components in K2 equal to T_3 comp.4 of K2
+    vector<int> list_K2_T3_comp5    = { 9, 10};         // components in K2 equal to T_3 comp.5 of K2
 
-    vector<int> list_K2b_TC_comp0   = {0, 12};  // components in K2b equal to T_C comp.0 of K2
-    vector<int> list_K2b_TC_comp4   = {1, 13};  // components in K2b equal to T_C comp.4 of K2
-    vector<int> list_K2b_TCT3_comp4 = {2, 14};  // components in K2b equal to T_CT_3 comp.4 of K2
-    vector<int> list_K2b_TC_comp1   = {4,  8};  // components in K2b equal to T_C comp.1 of K2
-    vector<int> list_K2b_TC_comp5   = {5,  9};  // components in K2b equal to T_C comp.5 of K2
-    vector<int> list_K2b_TCT3_comp5 = {6, 10};  // components in K2b equal to T_CT_3 comp.5 of K2
-    vector<int> list_K2b_TC_comp13  = {7, 11};  // components in K2b equal to T_C comp.13 of K2
+    vector<int> list_K2b_TC_comp0   = {0, 12};          // components in K2b equal to T_C comp.0 of K2
+    vector<int> list_K2b_TC_comp4   = {1, 13};          // components in K2b equal to T_C comp.4 of K2
+    vector<int> list_K2b_TCT3_comp4 = {2, 14};          // components in K2b equal to T_CT_3 comp.4 of K2
+    vector<int> list_K2b_TC_comp1   = {4,  8};          // components in K2b equal to T_C comp.1 of K2
+    vector<int> list_K2b_TC_comp5   = {5,  9};          // components in K2b equal to T_C comp.5 of K2
+    vector<int> list_K2b_TCT3_comp5 = {6, 10};          // components in K2b equal to T_CT_3 comp.5 of K2
+    vector<int> list_K2b_TC_comp13  = {7, 11};          // components in K2b equal to T_C comp.13 of K2
 
 public:
+
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
+
+
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
-     * of the necessary indices convertions  and what not...
-     * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
-     * i.e. only complex numbers
-     *
-     * This function aims to be the sole function one needs to call to read the full vertex*/
+    * of the necessary indices convertions  and what not...
+    * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
+    * i.e. only complex numbers
+    *
+    * This function aims to be the sole function one needs to call to read the full vertex*/
     Q value (int, double, double, double, int, char);
 
     /*For when the channel is already known and the trafo to the specific channel has already been done*/

@@ -15,10 +15,6 @@ template <typename Q> class avert;
 
 template <class Q>
 class tvert{
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
-
     /*Lists of the Keldysh components of K1t relating the respective component to the independent ones through the marked
     * trafo*/
     vector<int> list_K1_T0_comp1 = {1, 4, 11, 14};  // components equal to     comp.1     (B_1^t for equal spins). In the vertex, comp1 will be iK=0
@@ -27,25 +23,29 @@ class tvert{
 
     /*Lists of the Keldysh components of K2t relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K2_T2_comp0 = {0, 10};         // components in K2 equal to comp.0 of K2a          In the vertex, comp0 will be iK=0
-    vector<int> list_K2_T2_comp1 = {1, 11};         // components in K2 equal to comp.1 of K2a          In the vertex, comp1 will be iK=1
-    vector<int> list_K2_T2_comp2 = {2,  8};         // components in K2 equal to comp.2 of K2a          In the vertex, comp2 will be iK=2
-    vector<int> list_K2_T2_comp3 = {3,  9};         // components in K2 equal to comp.3 of K2a          In the vertex, comp3 will be iK=3
-    vector<int> list_K2_T2_comp11 = {7, 13};        // components in K2 equal to comp.7 of K2a          In the vertex, comp0 will be iK=4
-    vector<int> list_K2_TCT2_comp1 = {4, 14};       // components in K2 equal to comp.0 of K2a
-    vector<int> list_K2_TCT2_comp3 = {6, 12};       // components in K2 equal to comp.0 of K2a
+    vector<int> list_K2_T2_comp0    = {0, 10};          // components in K2 equal to comp.0 of K2a          In the vertex, comp0 will be iK=0
+    vector<int> list_K2_T2_comp1    = {1, 11};          // components in K2 equal to comp.1 of K2a          In the vertex, comp1 will be iK=1
+    vector<int> list_K2_T2_comp2    = {2,  8};          // components in K2 equal to comp.2 of K2a          In the vertex, comp2 will be iK=2
+    vector<int> list_K2_T2_comp3    = {3,  9};          // components in K2 equal to comp.3 of K2a          In the vertex, comp3 will be iK=3
+    vector<int> list_K2_T2_comp11   = {7, 13};          // components in K2 equal to comp.7 of K2a          In the vertex, comp0 will be iK=4
+    vector<int> list_K2_TCT2_comp1  = {4, 14};          // components in K2 equal to comp.0 of K2a
+    vector<int> list_K2_TCT2_comp3  = {6, 12};          // components in K2 equal to comp.0 of K2a
 
-
-    vector<int> list_K2b_T1_comp0 = {0,  5};        // components in K2b equal to T_1 comp.0 of K2a
-    vector<int> list_K2b_T1_comp2 = {1,  4};        // components in K2b equal to T_1 comp.2 of K2a
-    vector<int> list_K2b_T1_comp1 = {2,  7};        // components in K2b equal to T_1 comp.1 of K2a
-    vector<int> list_K2b_T1_comp3 = {3,  6};        // components in K2b equal to T_1 comp.3 of K2a
-    vector<int> list_K2b_TCT1_comp1 = {8, 13};      // components in K2b equal to T_1 comp.1 of K2a
-    vector<int> list_K2b_TCT1_comp3 = {9, 12};      // components in K2b equal to T_1 comp.3 of K2a
-    vector<int> list_K2b_T1_comp11 = {11, 14};      // components in K2b equal to T_1 comp.11 of K2a
-
+    vector<int> list_K2b_T1_comp0   = {0,  5};          // components in K2b equal to T_1 comp.0 of K2a
+    vector<int> list_K2b_T1_comp2   = {1,  4};          // components in K2b equal to T_1 comp.2 of K2a
+    vector<int> list_K2b_T1_comp1   = {2,  7};          // components in K2b equal to T_1 comp.1 of K2a
+    vector<int> list_K2b_T1_comp3   = {3,  6};          // components in K2b equal to T_1 comp.3 of K2a
+    vector<int> list_K2b_TCT1_comp1 = {8, 13};          // components in K2b equal to T_1 comp.1 of K2a
+    vector<int> list_K2b_TCT1_comp3 = {9, 12};          // components in K2b equal to T_1 comp.3 of K2a
+    vector<int> list_K2b_T1_comp11  = {11, 14};         // components in K2b equal to T_1 comp.11 of K2a
 
 public:
+
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
+
+
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
     * of the necessary indices convertions  and what not...
     * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
@@ -287,6 +287,7 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
 
     //Perform T2 at the beginning, since it is required by all elements
     tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+
     if(isInList(iK,list_K2_T2_comp0)){
         iK2 = 0;
         pf2 = -1.;
@@ -371,6 +372,7 @@ template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v2_t
 
     //Perform T1 at the beggining, since it is required by all elements
     tie(w_t, v2_t, i_in) = indices_T1_K2(w_t, v2_t, i_in);
+
     if(isInList(iK,list_K2b_T1_comp0)){
         iK2 = 0;
         pf2 = -1.;
