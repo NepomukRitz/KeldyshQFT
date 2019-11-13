@@ -19,7 +19,7 @@ using namespace std;
 typedef complex<double> comp;
 
 void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy);
-template <typename Q> State<Q> derivative(double Lambda, State<Q>& state);
+template <typename Q> void derivative(State<Q>& dPsi, double Lambda, State<Q>& state);
 template <typename Q> State<Q> RungeKutta4thOrder(double Lambda, State<Q>& state);
 
 template <typename Q> void SOPT(double Lambda, State<Q>& state);
@@ -53,14 +53,14 @@ int main() {
 
 
 
-    Propagator control_ini = propag(Lambda_ini, state.selfenergy, 'g', '.');
-    writeOutSOPT(Lambda_ini, control_ini, state.selfenergy);
+//    Propagator control_ini = propag(Lambda_ini, state.selfenergy, 'g', '.');
+//    writeOutSOPT(Lambda_ini, control_ini, state.selfenergy);
 //
 //    for(int i=1; i<nEVO; ++i) {
 //        double Lambda = flow_grid[i];
 //        SOPT(Lambda, state);
 //
-//        Propagator control = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g', '.');
+//        Propagator control = propag(Lambda, state.selfenergy, 'g', '.');
 //        writeOutSOPT(Lambda, control, state.selfenergy);
 //    }
 
@@ -76,8 +76,11 @@ int main() {
         double Lambda = flow_grid[i-1];
         double tder = get_time();
         state.Lambda = Lambda;
+
+        State<comp> dPsi(Lambda);
 //        State<comp> dPsi = RungeKutta4thOrder(Lambda, state);
-        State<comp> dPsi = derivative(Lambda, state);
+
+        derivative(dPsi, Lambda, state);
 
         dPsi*=dL;
 
@@ -106,10 +109,8 @@ int main() {
 
 
 template <typename Q>
-State<Q> derivative(double Lambda, State<Q>& state)
+void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
 {
-    State<Q> dPsi(Lambda);
-
     /*Here I begin implementing Fabian's pseudocode*/
     //Line 1
     Propagator S = propag(Lambda, state.selfenergy, 's', 'f');
@@ -206,7 +207,6 @@ State<Q> derivative(double Lambda, State<Q>& state)
     dPsi.vertex.spinvertex.avertex = dgammaa.spinvertex;
     dPsi.vertex.spinvertex.pvertex = dgammap.spinvertex;
     dPsi.vertex.spinvertex.tvertex = dgammat.spinvertex;
-    return dPsi;
 }
 
 template <typename Q> State<Q> RungeKutta4thOrder(double Lambda, State<Q>& state)
@@ -298,7 +298,7 @@ void SOPT(double Lambda, State<Q> &state) {
         bare.vertex.densvertex.irred.setvert(i, 0.5*U);
     }
 
-    Propagator g = propag(Lambda, state.selfenergy, state.diffselfenergy, 'g', 'f');
+    Propagator g = propag(Lambda, state.selfenergy, 'g', 'f');
     cout << "G calculated" << endl;
 
 
@@ -323,7 +323,7 @@ void SOPT(double Lambda, State<Q> &state) {
     cout << "bubble finished. ";
     get_time(t2);
 
-    Propagator s = propag(Lambda, state.selfenergy, state.diffselfenergy, 's', 'f');
+    Propagator s = propag(Lambda, state.selfenergy, 's', 'f');
 
     //Line 41
     bare.vertex.densvertex.avertex += dgammaa.densvertex;
