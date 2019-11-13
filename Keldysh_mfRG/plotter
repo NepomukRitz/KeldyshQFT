@@ -13,3 +13,14 @@ plot "self_energyR0.dat" using 1:3, "self_energyR1.dat" using 1:3, "self_energyR
 plot "self_energyK0.dat" using 1:2, "self_energyK1.dat" using 1:2, "self_energyK2.dat" using 1:2, "self_energyK3.dat" using 1:2, "self_energyK4.dat" using 1:2, "self_energyK5.dat" using 1:2, "self_energyK6.dat" using 1:2, "self_energyK7.dat" using 1:2, "self_energyK8.dat" using 1:2, "self_energyK9.dat" using 1:2
 
 plot "self_energyK0.dat" using 1:3, "self_energyK1.dat" using 1:3, "self_energyK2.dat" using 1:3, "self_energyK3.dat" using 1:3, "self_energyK4.dat" using 1:3, "self_energyK5.dat" using 1:3, "self_energyK6.dat" using 1:3, "self_energyK7.dat" using 1:3, "self_energyK8.dat" using 1:3, "self_energyK9.dat" using 1:3
+
+
+plot "propagatorR.dat" using 1:2
+plot "propagatorR.dat" using 1:3
+plot "propagatorK.dat" using 1:2
+plot "propagatorK.dat" using 1:3
+
+plot "self_energyR.dat" using 1:2
+plot "self_energyR.dat" using 1:3
+plot "self_energyK.dat" using 1:2
+plot "self_energyK.dat" using 1:3
