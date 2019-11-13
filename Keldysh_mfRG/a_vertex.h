@@ -68,16 +68,6 @@ public:
     void K3_setvert(int, int, int, int, int, Q);
 
 
-    /*Sets the whole K1 vertex equal to the K1 vertex of the avertex input*/
-    void setK1(avert<Q>& avertex_in);
-
-    /*Sets the whole K2 vertex equal to the K2 vertex of the avertex input*/
-    void setK2(avert<Q>& avertex_in);
-
-    /*Sets the whole K3 vertex equal to the K3 vertex of the avertex input*/
-    void setK3(avert<Q>& avertex_in);
-
-
     /*Adds the value Q to the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
     void K1_addvert(int, int, int, Q);
 
