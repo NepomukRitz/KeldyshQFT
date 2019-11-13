@@ -67,7 +67,7 @@ public:
 //The class fullvert
 //The class defining a vertex with full channel decomposition i.e. irreducible (bare) a, p and t channels
 template <class Q>
-class fullvert{
+class fullvert {
 public:
     irreducible<Q> irred;
     avert<Q> avertex;
@@ -79,10 +79,10 @@ public:
 
     /*Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
      * Keldysh index (1st int), internal structure index (2nd int) and the three frequencies.*/
-    Q value(int,double,double,double,int,char);
+    Q value(int, double, double, double, int, char);
 
     /* Returns the sum of the contributions of the diagrammatic classes r' =/= r */
-    Q gammaRb (int, double, double, double, int, char);
+    Q gammaRb(int, double, double, double, int, char);
 
 
     fullvert<Q> operator+ (const fullvert<Q>& vertex1) {
@@ -152,7 +152,6 @@ public:
 //        this->spinvertex*alpha;
         return *this;
     }
-
     Vertex<T> operator*= (double alpha)
     {
         this->densvertex*=alpha;
@@ -271,179 +270,5 @@ template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, doubl
 
     return resp;
 }
-
-//template <typename Q> fullvert<Q> operator*(double alpha, const fullvert<Q>& vertex){
-//    fullvert<Q> result;
-//    result.irred = alpha * vertex.irred;
-//    result.pvertex = alpha *vertex.pvertex;
-//    result.tvertex = alpha * vertex.tvertex;
-//    result.avertex = alpha * vertex.avertex;
-//    return result;
-//}
-//template <typename Q> fullvert<Q> operator+( const fullvert<Q>& vertex1, const fullvert<Q>& vertex2){
-//    fullvert<Q> result;
-//    result.irred = vertex1.irred + vertex2.irred ;
-//    result.pvertex = vertex1.pvertex + vertex2.pvertex ;
-//    result.tvertex = vertex1.tvertex + vertex2.tvertex ;
-//    result.avertex = vertex1.avertex + vertex2.avertex ;
-//    return result;
-//}
-//
-///**************************************** operators concerning Vertex objects *****************************************/
-//
-//template <typename Q> Vertex<fullvert<Q> > operator+(Vertex<fullvert<Q> > vertex1, Vertex<fullvert<Q> > vertex2){
-//    Vertex<fullvert<Q> >  result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<avert<Q> > operator+(Vertex<avert<Q> > vertex1, Vertex<avert<Q> > vertex2){
-//    Vertex<avert<Q> >  result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<pvert<Q> > operator+(Vertex<pvert<Q> > vertex1, Vertex<pvert<Q> > vertex2){
-//    Vertex<pvert<Q> >  result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<tvert<Q> > operator+(Vertex<tvert<Q> > vertex1, Vertex<tvert<Q> > vertex2){
-//    Vertex<tvert<Q> >  result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<irreducible<Q> > operator+(Vertex<irreducible<Q> > vertex1,Vertex<irreducible<Q> > vertex2){
-//    Vertex<irreducible<Q> > result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<fullvert<Q> > operator+=(Vertex<fullvert<Q> > vertex1, Vertex<fullvert<Q> > vertex2){
-//    Vertex<fullvert<Q> >  result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<avert<Q> > operator+=(Vertex<avert<Q> > vertex1, Vertex<avert<Q> > vertex2){
-//    Vertex<avert<Q> >  result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<pvert<Q> > operator+=(Vertex<pvert<Q> > vertex1, Vertex<pvert<Q> > vertex2){
-//    Vertex<pvert<Q> >  result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<tvert<Q> > operator+=(Vertex<tvert<Q> > vertex1, Vertex<tvert<Q> > vertex2){
-//    Vertex<tvert<Q> >  result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<irreducible<Q> > operator+=(Vertex<irreducible<Q> > vertex1,Vertex<irreducible<Q> > vertex2){
-//    Vertex<irreducible<Q> > result;
-//    result.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    result.densvertex = vertex1.densvertex + vertex2.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<fullvert<Q> > operator*(double alpha, Vertex<fullvert<Q> > &vertex){
-//    Vertex<fullvert<Q> >  result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<fullvert<Q> > operator*(Vertex<fullvert<Q> > &vertex,double alpha){
-//    Vertex<fullvert<Q> >  result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<avert<Q> > operator*(double alpha, Vertex<avert<Q> > &vertex){
-//    Vertex<avert<Q> >  result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<avert<Q> > operator*(Vertex<avert<Q> > &vertex,double alpha){
-//    Vertex<avert<Q> >  result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<pvert<Q> > operator*(double alpha, Vertex<pvert<Q> > &vertex){
-//    Vertex<pvert<Q> >  result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<pvert<Q> > operator*(Vertex<pvert<Q> > &vertex,double alpha){
-//    Vertex<pvert<Q> >  result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<tvert<Q> > operator*(double alpha, Vertex<tvert<Q> > &vertex){
-//    Vertex<tvert<Q> >  result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<tvert<Q> > operator*(Vertex<tvert<Q> > &vertex,double alpha){
-//    Vertex<tvert<Q> >  result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<irreducible<Q> > operator*(double alpha, Vertex<irreducible<Q> > &vertex){
-//    Vertex<irreducible<Q> > result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//template <typename Q> Vertex<irreducible<Q> > operator*(Vertex<irreducible<Q> > &vertex, double alpha){
-//    Vertex<irreducible<Q> > result;
-//    result.spinvertex = alpha * vertex.spinvertex;
-//    result.densvertex = alpha * vertex.densvertex;
-//    return result;
-//}
-//
-///**********************************************************************************************************************/
-
-
-//TODO achieve that this function replaces all 3 functions below
-//template <typename T, typename T1, typename T2> Vertex<T> operator+ (Vertex<T1>& vertex1, Vertex<T2>& vertex2)
-//{
-//    Vertex<T> resp;
-//    resp.densvertex = vertex1.densvertex + vertex2.spinvertex;
-//    resp.spinvertex = vertex1.spinvertex + vertex2.spinvertex;
-//    return resp;
-//}
-
-//TODO declare correct sum operators!!!
-//template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<pvert<Q> >& pvertex, Vertex<tvert<Q> >& tvertex)
-//{
-//    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
-//
-//    return resp;
-//}
-//template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<avert<Q> >& tvertex, Vertex<pvert<Q> >& pvertex)
-//{
-//    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
-//    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
-//    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
-//    return resp;
-//}
-//template <typename Q> Vertex<fullvert<Q> > operator+ (Vertex<tvert<Q> >& pvertex, Vertex<avert<Q> >& tvertex)
-//{
-//    Vertex<fullvert<Q> > resp = Vertex<fullvert<Q> >();
-//    resp.densvertex = pvertex.densvertex + tvertex.densvertex;
-//    resp.spinvertex = pvertex.spinvertex + tvertex.spinvertex;
-//    return resp;
-//}
 
 #endif //KELDYSH_MFRG_VERTEX_H
