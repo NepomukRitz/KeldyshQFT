@@ -209,46 +209,6 @@ template <typename Q> void avert<Q>::K3_setvert(int iK, int i, int j, int k, int
     K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] = value;
 }
 
-
-//template <typename Q> void avert<Q>::setK1(avert<Q>& avertex_in)
-//{
-//#pragma parallel for
-//    for (int iK1=0; iK1<nK_K1*nw1_wa*n_in; ++iK1) {
-//        int i0 = (iK1 % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
-//        int iwa = (iK1 % (nw1_wa * n_in)) / n_in;
-//        int i_in = iK1 % n_in;
-//
-//        K1_setvert(i0, iwa, i_in, avertex_in.K1_vval(i0, iwa, i_in));
-//    }
-//}
-//
-//template <typename Q> void avert<Q>::setK2(avert<Q>& avertex_in)
-//{
-//#pragma parallel for
-//    for(int iK2=0; iK2<nK_K2*nw2_wa*nw2_nua*n_in; iK2++) {
-//        int i0 = (iK2 % (nK_K2 * nw2_wa * nw2_nua * n_in)) / (nw2_wa * nw2_nua * n_in);
-//        int iwa = (iK2 % (nw2_wa * nw2_nua * n_in)) / (nw2_nua * n_in);
-//        int iva = (iK2 % (nw2_nua * n_in)) / n_in;
-//        int i_in = iK2 % n_in;
-//
-//        K2_setvert(i0, iwa, iva, i_in, avertex_in.K2_vval(i0, iwa, iva, i_in));
-//    }
-//}
-//
-//template <typename Q> void avert<Q>::setK3(avert<Q>& avertex_in)
-//{
-//#pragma omp parallel for
-//    for(int iK3=0; iK3<nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in; iK3++) {
-//        int i0 = (iK3 % (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in)) / (nw3_wa * nw3_nua * nw3_nuap * n_in);
-//        int iwa = (iK3 % (nw3_wa * nw3_nua * nw3_nuap * n_in)) / (nw3_nua * nw3_nuap * n_in);
-//        int iva = (iK3 % (nw3_nua * nw3_nuap * n_in)) / (nw3_nuap * n_in);
-//        int ivap = (iK3 % (nw3_nuap * n_in)) / n_in;
-//        int i_in = iK3 % n_in;
-//
-//        K3_setvert(i0, iwa, iva, ivap, i_in, avertex_in.K3_vval(i0, iwa, iva, ivap, i_in));
-//    }
-//}
-
 template <typename Q> void avert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
     K1[iK*nw1_wa*n_in + i*n_in + i_in] += value;
 }
