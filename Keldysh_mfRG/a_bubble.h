@@ -68,8 +68,7 @@ public:
     comp value(int iK, double v1, double v2)
     {
         comp ans;
-        switch (iK)
-        {
+        switch (iK) {
             case 3: //AA
                 ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
                 break;
@@ -92,7 +91,7 @@ public:
                 ans = g.pvalsmooth(0, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
                 break;
             case 14://KR
-                ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(0, v2);
+                ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
                 break;
             case 15://KK
                 ans = g.pvalsmooth(1, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
@@ -347,13 +346,13 @@ template <typename Q> Vertex<avert<Q> > diff_a_bubble_function(Vertex<fullvert<Q
     /*K1 contributions*/
 #pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wa*n_in; ++iK1) {
-        // TODO: use MPI
+
         int i0 = (iK1 % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
         int iwa = (iK1 % (nw1_wa * n_in)) / n_in;
         int i_in = iK1 % n_in;
         double wa = bfreqs[iwa];
 
-        Integrand_a_K1_diff<Q, Diff_A_Bubble> integrand_a_K1_diff (vertex1, vertex2, PiAdot, i0, wa, i_in);
+        Integrand_a_K1_diff <Q, Diff_A_Bubble> integrand_a_K1_diff (vertex1, vertex2, PiAdot, i0, wa, i_in);
 
         Q value = integrator(integrand_a_K1_diff, w_lower_f, w_upper_f);                            //Integration over vppa, a fermionic frequency
 
@@ -409,7 +408,7 @@ template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<fullvert<Q> >& 
     Vertex<avert<Q> > resp = Vertex<avert<Q> >();
     A_Bubble PiA(G);
 
-    //These lines are to test the SOPT results
+    //These lines are to test the SOPT results - there are no K1 contributions in the corrections!
     double t0 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
@@ -422,7 +421,7 @@ template <typename Q> Vertex<avert<Q> > a_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_a_K1 <Q, A_Bubble> integrand_a_K1 (vertex1, vertex2, PiA, i0, wa, i_in);
 
-        Q value = integrator(integrand_a_K1, 2.*w_lower_f, 2.*w_upper_f);       //Integration over vppa, a fermionic frequency
+        Q value = integrator(integrand_a_K1, w_lower_f, w_upper_f);                         //Integration over vppa, a fermionic frequency
 
         resp.densvertex.K1_addvert(i0, iwa, i_in, value);
     }

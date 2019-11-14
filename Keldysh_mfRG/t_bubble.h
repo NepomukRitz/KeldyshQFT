@@ -68,8 +68,7 @@ public:
     comp value(int iK, double v1, double v2)
     {
         comp ans;
-        switch (iK)
-        {
+        switch (iK){
             case 3: //AA
                 ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
                 break;
@@ -397,19 +396,19 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
     /*K1 contributions*/
 #pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
-        // TODO: use MPI
+
         int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
         int iwt = (iK1 % (nw1_wt * n_in)) / n_in;
         int i_in = iK1 % n_in;
         double wt = bfreqs[iwt];
 
-        Integrand_t_K1_diff<Q, Diff_T_Bubble> integrand_t_K1_diff (vertex1, vertex2, PiTdot, i0, wt, i_in);
+        Integrand_t_K1_diff <Q, Diff_T_Bubble> integrand_t_K1_diff (vertex1, vertex2, PiTdot, i0, wt, i_in);
 
         Q value = (-1.)*integrator(integrand_t_K1_diff, w_lower_f, w_upper_f);                      //Integration over vppt, a fermionic frequency
 
         resp.densvertex.K1_addvert(i0, iwt, i_in, value);
     }
-    cout << "K1t done" << endl;
+    cout << "K1t done:" << endl;
     get_time(t0);
 
     /*K2 contributions*/
@@ -459,7 +458,7 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
     Vertex<tvert<Q> > resp = Vertex<tvert<Q> >();
     T_Bubble PiT(G);
 
-    //These lines are to test the SOPT results
+    //These lines are to test the SOPT results - there are no K1 contributions in the corrections!
     double t0 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
@@ -472,7 +471,7 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_t_K1 <Q, T_Bubble> integrand_t_K1 (vertex1, vertex2, PiT, i0, wt, i_in);
 
-        Q value = integrator(integrand_t_K1, 2.*w_lower_b, 2.*w_upper_b)*(-1.);
+        Q value = (-1.)*integrator(integrand_t_K1, w_lower_f, w_upper_f);                   //Integration over vppt, a fermionic frequency
 
         resp.densvertex.K1_addvert(i0, iwt, i_in, value);
     }

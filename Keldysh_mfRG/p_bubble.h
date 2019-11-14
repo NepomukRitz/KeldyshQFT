@@ -68,8 +68,7 @@ public:
     comp value(int iK, double v1, double v2)
     {
         comp ans;
-        switch (iK)
-        {
+        switch (iK) {
             case 3: //AR
                 ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(0, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
                 break;
@@ -351,19 +350,19 @@ template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q
     /*K1 contributions*/
 #pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wp*n_in; ++iK1) {
-        // TODO: use MPI
+
         int i0 = (iK1 % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
         int iwp = (iK1 % (nw1_wp * n_in)) / n_in;
         int i_in = iK1 % n_in;
         double wp = bfreqs[iwp];
 
-        Integrand_p_K1_diff<Q, Diff_P_Bubble> integrand_p_K1_diff (vertex1, vertex2, PiPdot, i0, wp, i_in);
+        Integrand_p_K1_diff <Q, Diff_P_Bubble> integrand_p_K1_diff (vertex1, vertex2, PiPdot, i0, wp, i_in);
 
         Q value = (0.5)*integrator(integrand_p_K1_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
 
         resp.densvertex.K1_addvert(i0, iwp, i_in, value);
     }
-    cout << "K1p done" << endl;
+    cout << "K1p done:" << endl;
     get_time(t0);
 
     /*K2 contributions*/
@@ -414,7 +413,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& 
     Vertex<pvert<Q> > resp = Vertex<pvert<Q> >();
     P_Bubble PiP(G);
 
-    //These lines are to test the SOPT results
+    //These lines are to test the SOPT results - there are no K1 contributions in the corrections!
     double t0 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
@@ -427,7 +426,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_p_K1 <Q, P_Bubble> integrand_p_K1 (vertex1, vertex2, PiP, i0, wp, i_in);
 
-        Q value = (0.5)*integrator(integrand_p_K1, 2.*w_lower_b, 2.*w_upper_b);             //Integration over vppp, a fermionic frequency
+        Q value = (0.5)*integrator(integrand_p_K1, w_lower_f, w_upper_f);                   //Integration over vppp, a fermionic frequency
 
         resp.densvertex.K1_addvert(i0, iwp, i_in, value);
     }
