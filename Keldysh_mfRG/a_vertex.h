@@ -447,7 +447,7 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a,
     bool conjugate;
     bool transform;
     Q valueK3;
-    //TODO switch to swicht-based cases?
+    //TODO switch to switch-based cases?
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
