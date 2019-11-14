@@ -20,7 +20,7 @@ typedef complex<double> comp;
 
 void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy);
 template <typename Q> void derivative(State<Q>& dPsi, double Lambda, State<Q>& state);
-template <typename Q> State<Q> RungeKutta4thOrder(double Lambda, State<Q>& state);
+template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, State<Q>& state);
 
 template <typename Q> void SOPT(double Lambda, State<Q>& state);
 void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy);
@@ -78,11 +78,10 @@ int main() {
         state.Lambda = Lambda;
 
         State<comp> dPsi(Lambda);
-//        State<comp> dPsi = RungeKutta4thOrder(Lambda, state);
 
-        derivative(dPsi, Lambda, state);
+//        derivative(dPsi, Lambda, state);
+        RungeKutta4thOrder(dPsi, Lambda, state);
 
-        dPsi*=dL;
 
         double tadd = get_time();
         state += dPsi;
@@ -207,28 +206,33 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
     dPsi.vertex.spinvertex.avertex = dgammaa.spinvertex;
     dPsi.vertex.spinvertex.pvertex = dgammap.spinvertex;
     dPsi.vertex.spinvertex.tvertex = dgammat.spinvertex;
+
+    dPsi*=dL;
 }
 
-template <typename Q> State<Q> RungeKutta4thOrder(double Lambda, State<Q>& state)
+template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, State<Q>& state)
 {
-    State<Q> ans;
+    State<Q> k1(Lambda);
+    State<Q> k2(Lambda);
+    State<Q> k3(Lambda);
+    State<Q> k4(Lambda);
 
-    State<Q> k1 = derivative(Lambda, state);
+    derivative(k1, Lambda, state);
 
     k1 *= dL/2.;
     k1 += state;
 
-    State<Q> k2 = derivative(Lambda + dL/2., k1);
+    derivative(k2, Lambda + dL/2., k1);
 
     k2 *= dL/2.;
     k2 += state;
 
-    State<Q> k3 = derivative(Lambda + dL/2., k2);
+    derivative(k3, Lambda + dL/2., k2);
 
     k3 *= dL;
     k3 += state;
 
-    State<Q> k4 = derivative(Lambda + dL, k3);
+    derivative(k4, Lambda + dL, k3);
 
     k1 -= state;
     k1 *= 2./dL;
@@ -237,12 +241,8 @@ template <typename Q> State<Q> RungeKutta4thOrder(double Lambda, State<Q>& state
     k3 -= state;
     k3 *= 1./dL;
 
-    ans += (k1*(1./6.));
-    ans += (k2*(1./3.));
-    ans += (k3*(1./3.));
-    ans += (k4*(1./6.));
+    dPsi += (k1 + k2*2. + k3*2. + k4)*(1./6.);
 
-    return ans;
 }
 
 
