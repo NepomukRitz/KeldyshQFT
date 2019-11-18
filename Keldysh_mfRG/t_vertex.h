@@ -616,19 +616,43 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t,
 
 
 template<typename Q> tuple<double, double, double> tvert<Q>::transfToT(double w, double v1, double v2, char channel) {
-    double w_t=0.,v1_t=0., v2_t=0.;
-    if(channel == 'a'){
-        w_t = v1-v2;
-        v1_t = 0.5*( w+v1+v2);
-        v2_t = 0.5*(-w+v1+v2);}
-    else if(channel == 'p'){
-        w_t = v1-v2;
-        v1_t = 0.5*(w-v1-v2);
-        v2_t = 0.5*(w+v1+v2);}
-    else if(channel == 't'){
-        w_t = w;
-        v1_t = v1;
-        v2_t = v2;}
+    double w_t=0., v1_t=0., v2_t=0.;
+
+    switch(channel) {
+        case 'a':
+            w_t = v1-v2;
+            v1_t = 0.5*( w+v1+v2);
+            v2_t = 0.5*(-w+v1+v2);
+            break;
+        case 'p':
+            w_t = v1-v2;
+            v1_t = 0.5*(w-v1-v2);
+            v2_t = 0.5*(w+v1+v2);
+            break;
+        case 't':
+            w_t = w;
+            v1_t = v1;
+            v2_t = v2;
+            break;
+        case 'f':
+            w_t = w-v2;
+            v1_t = v1;
+            v2_t = v2;
+            break;
+        default:;
+    }
+//    if(channel == 'a'){
+//        w_t = v1-v2;
+//        v1_t = 0.5*( w+v1+v2);
+//        v2_t = 0.5*(-w+v1+v2);}
+//    else if(channel == 'p'){
+//        w_t = v1-v2;
+//        v1_t = 0.5*(w-v1-v2);
+//        v2_t = 0.5*(w+v1+v2);}
+//    else if(channel == 't'){
+//        w_t = w;
+//        v1_t = v1;
+//        v2_t = v2;}
     return make_tuple(w_t, v1_t, v2_t);
 }
 
