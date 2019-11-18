@@ -238,6 +238,8 @@ public:
     Q operator()(double vppt) {
         int i1, i3;
         Q resp;
+        Q resp1, resp2, resp3, resp4, resp5, resp6;
+        int stahp = -10000;
         for(auto i2:non_zero_Keldysh_bubble) {
             tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
             auto PiTval = PiT.value(i2, vppt-0.5*wt, vppt+0.5*wt);                                //vppt-1/2wt, vppt+1/2wt for the t-channel
@@ -251,6 +253,24 @@ public:
 //                    (vertex2.densvertex.irred.vval(i3) +
 //                     vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex2.densvertex.avertex) +
 //                     vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in, vertex2.densvertex.avertex));
+
+//            resp1 = vertex1.densvertex.irred.vval(i1);
+//            resp2 = vertex1.densvertex.tvertex.K1_vvalsmooth(i1, wt, i_in, vertex1.densvertex.avertex) ;
+//            resp3 = vertex1.densvertex.tvertex.K2b_vvalsmooth(i1, wt, vppt, i_in, vertex1.densvertex.avertex);
+//            resp4 = vertex2.densvertex.irred.vval(i3);
+//            resp5 = vertex2.densvertex.tvertex.K1_vvalsmooth(i3, wt, i_in, vertex2.densvertex.avertex);
+//            resp6 = vertex2.densvertex.tvertex.K2_vvalsmooth (i3, wt, vppt, i_in, vertex2.densvertex.avertex);
+//
+//            resp = (resp1 + resp2 + resp3) * PiTval * (resp4 + resp5 + resp6);
+//
+//            //Debugging
+//            if(resp3!=comp(0.) || resp6 !=comp(0.))
+//                cout << "halp" << "\n";
+//
+//            if(PiTval!=comp(0.0) && (resp2 != comp(0.) && resp5!= comp(0.))) {
+//                stahp = 0;
+//                cout << i0 << " " << i1 << " " << i2 << " " << i3 << "\n";
+//            }
         }
         return resp;
     }

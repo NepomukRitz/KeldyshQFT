@@ -121,9 +121,9 @@ public:
             auto PiPval = PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp);      //2wp/2+vppp, wp/2-vppp for the p-channel
 
             Q add1 = vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.irred.vval(i3);
-            Q add2 = vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in);
+//            Q add2 = vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in);
 
-            resp += (add1+add2);
+            resp += add1;
             //Augments to RPA
 //            resp += vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
 //            resp += vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) * PiPval * vertex2.densvertex.irred.vval(i3);
@@ -230,6 +230,8 @@ public:
     Q operator()(double vppp) {
         int i1, i3;
         Q resp;
+        Q resp1, resp2, resp3, resp4, resp5, resp6;
+        int stahp = -10000;
         for(auto i2:non_zero_Keldysh_bubble) {
             tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
             auto PiPval = PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp);                                //wp/2+vppp, wp/2-vppp for the p-channel
@@ -243,6 +245,26 @@ public:
 //                    (vertex2.densvertex.irred.vval(i3) +
 //                     vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in) +
 //                     vertex2.densvertex.pvertex.K2_vvalsmooth (i3, wp, vppp, i_in) );
+
+
+//            resp1 = vertex1.densvertex.irred.vval(i1);
+//            resp2 = vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) ;
+//            resp3 = vertex1.densvertex.pvertex.K2b_vvalsmooth(i1, wp, vppp, i_in);
+//            resp4 = vertex2.densvertex.irred.vval(i3);
+//            resp5 = vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
+//            resp6 = vertex2.densvertex.pvertex.K2_vvalsmooth (i3, wp, vppp, i_in);
+//
+//            resp = (resp1 + resp2 + resp3) * PiPval * (resp4 + resp5 + resp6);
+//
+//            //Debugging
+//            if(resp3!=comp(0.) || resp6 !=comp(0.))
+//                cout << "halp" << "\n";
+//
+//            if(PiPval!=comp(0.0) && (resp2 != comp(0.) && resp5!= comp(0.))) {
+//                stahp = 0;
+//                cout << i0 << " " << i1 << " " << i2 << " " << i3 << "\n";
+//            }
+
         }
         return resp;
     }

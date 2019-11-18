@@ -121,9 +121,9 @@ public:
             auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);      //vppa-1/2wa, vppa+1/2wa for the a-channel
 
             Q add1 = vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.irred.vval(i3);
-            Q add2 = vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
+//            Q add2 = vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
 
-            resp += (add1 + add2);
+            resp += add1;
             //Augments to RPA
 //            resp += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
 //            resp += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.irred.vval(i3);
@@ -226,6 +226,8 @@ public:
     Q operator()(double vppa){
         int i1, i3;
         Q resp;
+        Q resp1, resp2, resp3, resp4, resp5, resp6;
+        int stahp=-100000;
         for(auto i2:non_zero_Keldysh_bubble) {
             tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
             auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
@@ -239,6 +241,25 @@ public:
 //                    (vertex2.densvertex.irred.vval(i3) +
 //                     vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
 //                     vertex2.densvertex.avertex.K2_vvalsmooth (i3, wa, vppa, i_in, vertex2.densvertex.tvertex) );
+
+
+//            resp1 = vertex1.densvertex.irred.vval(i1);
+//            resp2 = vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex);
+//            resp3 = vertex1.densvertex.avertex.K2b_vvalsmooth(i1, wa, vppa, i_in, vertex1.densvertex.tvertex);
+//            resp4 = vertex2.densvertex.irred.vval(i3);
+//            resp5 = vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex);
+//            resp6 = vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
+//
+//            resp = (resp1 + resp2 + resp3) * PiAval * (resp4 + resp5 + resp6);
+//
+//            //Debugging
+//            if(resp3!=comp(0.) || resp6 !=comp(0.))
+//                cout << "halp" << "\n";
+//
+//            if(PiAval!=comp(0.0) && (resp2 != comp(0.) && resp5!= comp(0.))) {
+//                stahp = 0;
+//                cout << i0 << " " << i1 << " " << i2 << " " << i3 << "\n";
+//            }
         }
         return resp;
     }
