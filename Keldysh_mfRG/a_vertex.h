@@ -184,10 +184,10 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
     double w_a=0., v1_a=0., v2_a=0.;
     tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
 
-    return  K1_vvalsmooth (iK, w, i_in, tvertex)
-            + K2_vvalsmooth (iK, w, v1, i_in, tvertex)
-            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex);
-//            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
+    return  K1_vvalsmooth (iK, w_a, i_in, tvertex)
+            + K2_vvalsmooth (iK, w_a, v1_a, i_in, tvertex)
+            + K2b_vvalsmooth(iK, w_a, v2_a, i_in, tvertex);
+//            + K3_vvalsmooth (iK, w_a, v1_a, v2_a, i_in, tvertex);
 }
 
 template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex){
@@ -256,7 +256,7 @@ template <typename Q> Q avert<Q>::K1_vvalsmooth(int iK, double w_a, int i_in, tv
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
-    if(fabs(w_a)>=w_upper_b)
+    if(fabs(w_a)>w_upper_b)
         valueK1 = 0.;
     else {
         int index = fconv_K1_a(w_a);
@@ -326,7 +326,7 @@ template <typename Q> Q avert<Q>::K2_vvalsmooth(int iK, double w_a, double v1_a,
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_a)>=w_upper_b || fabs(v1_a)>=w_upper_f) {
+    if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f) {
         valueK2 = 0.;
     }
     else {
@@ -412,7 +412,7 @@ template <typename Q> Q avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_a)>=w_upper_b || fabs(v2_a)>=w_upper_f) {
+    if(fabs(w_a)>w_upper_b || fabs(v2_a)>w_upper_f) {
         valueK2 = 0.;
     }
     else {
@@ -541,7 +541,7 @@ template <typename Q> Q avert<Q>::K3_vvalsmooth(int iK, double w_a, double v1_a,
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_a)>=w_upper_b || fabs(v1_a)>=w_upper_f || fabs(v2_a)>=w_upper_f) {
+    if(fabs(w_a)>w_upper_b || fabs(v1_a)>w_upper_f || fabs(v2_a)>w_upper_f) {
         valueK3 = 0.;
     }
     else {
@@ -659,7 +659,7 @@ template<typename Q> tuple<double, int>                 avert<Q>::indices_T1_K1(
     w_a = -w_a;
     i_in = internal_T1_K1_a(i_in);
 
-    return make_tuple(w_a, i_in);
+    return make_tuple(trans_w_a, i_in);
 }
 template<typename Q> tuple<double, double, int>         avert<Q>::indices_T1_K2(double w_a, double v1_a, int i_in)
 {

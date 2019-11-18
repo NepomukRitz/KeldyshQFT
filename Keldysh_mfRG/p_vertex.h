@@ -273,7 +273,7 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
         conjugate1 = false;
     }
 
-    if(fabs(w_p)>= w_upper_b){
+    if(fabs(w_p)> w_upper_b){
         valueK1 =0.;
     }
     else{
@@ -339,7 +339,7 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)>=w_upper_b || fabs(v1_p)>=w_upper_f){
+    if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f){
         valueK2 = 0.;
     }
     else {
@@ -368,7 +368,6 @@ template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
     Q valueK2;
-    bool conjugate2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -411,7 +410,7 @@ template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p
 
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)>=w_upper_b || fabs(v2_p)>=w_upper_f){
+    if(fabs(w_p)>w_upper_b || fabs(v2_p)>w_upper_f){
         valueK2 = 0.;
     }
     else {

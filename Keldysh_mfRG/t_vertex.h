@@ -186,10 +186,10 @@ template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, 
     double w_t=0., v1_t=0., v2_t=0.;
     tie(w_t, v1_t, v2_t) = transfToT(w,v1,v2,channel);
 
-    return  K1_vvalsmooth (iK, w, i_in, avertex)
-            + K2_vvalsmooth (iK, w, v1, i_in, avertex)
-            + K2b_vvalsmooth(iK, w, v2, i_in, avertex);
-//            + K3_vvalsmooth (iK, w, v1, v2, i_in, avertex);
+    return  K1_vvalsmooth (iK, w_t, i_in, avertex)
+            + K2_vvalsmooth (iK, w_t, v1_t, i_in, avertex)
+            + K2b_vvalsmooth(iK, w_t, v2_t, i_in, avertex);
+//            + K3_vvalsmooth (iK, w_t, v1_t, v2_t, i_in, avertex);
 }
 
 template <typename Q> Q tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, avert<Q>& avertex){
@@ -259,7 +259,7 @@ template <typename Q> Q tvert<Q>::K1_vvalsmooth(int iK, double w_t, int i_in, av
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
-    if(fabs(w_t)>=w_upper_b)
+    if(fabs(w_t)>w_upper_b)
         valueK1 = 0.;
     else {
         int index = fconv_K1_t(w_t);
@@ -332,7 +332,7 @@ template <typename Q> Q tvert<Q>::K2_vvalsmooth(int iK, double w_t, double v1_t,
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_t)>=w_upper_b || fabs(v1_t)>=w_upper_f) {
+    if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f) {
         valueK2 = 0.;
     }
     else {
@@ -417,7 +417,7 @@ template <typename Q> Q tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v2_t
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_t)>=w_upper_b || fabs(v2_t)>=w_upper_f) {
+    if(fabs(w_t)>w_upper_b || fabs(v2_t)>w_upper_f) {
         valueK2 = 0.;
     }
     else {
@@ -546,7 +546,7 @@ template <typename Q> Q tvert<Q>::K3_vvalsmooth(int iK, double w_t, double v1_t,
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_t)>=w_upper_b || fabs(v1_t)>=w_upper_f || fabs(v2_t)>=w_upper_f) {
+    if(fabs(w_t)>w_upper_b || fabs(v1_t)>w_upper_f || fabs(v2_t)>w_upper_f) {
         valueK3 = 0.;
     }
     else {
