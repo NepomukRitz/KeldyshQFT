@@ -238,9 +238,8 @@ template <typename Q> void irreducible<Q>::setvert(int iK, Q value){
 
 template <typename Q> Q fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, char channel)
 {
-    Q result = irred.vval(iK) + avertex.value(iK, w, v1, v2, i_in, channel, tvertex)
-                              + pvertex.value(iK, w, v1, v2, i_in, channel)
-                              + tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
+    Q result = irred.vval(iK) + avertex.value(iK, w, v1, v2, i_in, channel, tvertex) + pvertex.value(iK, w, v1, v2, i_in, channel) + tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
+    return result;
 }
 
 template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, double v2, int i_in, char r)
