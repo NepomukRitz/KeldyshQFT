@@ -52,56 +52,56 @@ int main() {
     cout << "vertex assigned" << endl;
 
 
-    for(int i=0; i<nEVO; ++i) {
-        double Lambda = flow_grid[i];
+//    for(int i=0; i<nEVO; ++i) {
+//        double Lambda = flow_grid[i];
+//
+//        State<comp> bare (Lambda);
+//        for (auto j:odd_Keldysh) {
+//            bare.vertex.densvertex.irred.setvert(j,  0.5*U);
+//        }
+//
+//        SOPT(bare, Lambda, state);
+//
+//        Propagator control = propag(Lambda, state.selfenergy, 'g', '.');
+//        writeOutSOPT(Lambda, control, state.selfenergy, bare.vertex);
+//    }
 
-        State<comp> bare (Lambda);
-        for (auto j:odd_Keldysh) {
-            bare.vertex.densvertex.irred.setvert(j,  0.5*U);
-        }
 
-        SOPT(bare, Lambda, state);
 
-        Propagator control = propag(Lambda, state.selfenergy, 'g', '.');
-        writeOutSOPT(Lambda, control, state.selfenergy, bare.vertex);
+    Propagator initial = propag(state.Lambda, state.selfenergy, 'g', '.');
+    Propagator compare = propag(state.Lambda, state.selfenergy, 'g', 'f');
+
+    writeOutFile(ffreqs, state.Lambda, initial, state.selfenergy, state.vertex);
+
+    cout << "Start of flow" << endl;
+    for(int i=1; i<nEVO; ++i) {
+        double Lambda = flow_grid[i-1];
+        double tder = get_time();
+        state.Lambda = Lambda;
+
+        State<comp> dPsi(Lambda);
+
+        derivative(dPsi, Lambda, state);
+//        RungeKutta4thOrder(dPsi, Lambda, state);
+
+
+        double tadd = get_time();
+        state += dPsi;
+        cout << "Added:";
+        get_time(tadd);
+
+        double next_Lambda = flow_grid[i];
+
+        Propagator control = propag(next_Lambda, state.selfenergy, 'g','.');
+
+        writeOutFile(ffreqs, next_Lambda, control, state.selfenergy, state.vertex);
+        cout << "Wrote out" <<endl;
+        cout << "One RK-derivative step: ";
+        get_time(tder);
     }
 
-
-
-//    Propagator initial = propag(state.Lambda, state.selfenergy, 'g', '.');
-//    Propagator compare = propag(state.Lambda, state.selfenergy, 'g', 'f');
-//
-//    writeOutFile(ffreqs, state.Lambda, initial, state.selfenergy, state.vertex);
-//
-//    cout << "Start of flow" << endl;
-//    for(int i=1; i<nEVO; ++i) {
-//        double Lambda = flow_grid[i-1];
-//        double tder = get_time();
-//        state.Lambda = Lambda;
-//
-//        State<comp> dPsi(Lambda);
-//
-//        derivative(dPsi, Lambda, state);
-////        RungeKutta4thOrder(dPsi, Lambda, state);
-//
-//
-//        double tadd = get_time();
-//        state += dPsi;
-//        cout << "Added:";
-//        get_time(tadd);
-//
-//        double next_Lambda = flow_grid[i];
-//
-//        Propagator control = propag(next_Lambda, state.selfenergy, 'g','.');
-//
-//        writeOutFile(ffreqs, next_Lambda, control, state.selfenergy, state.vertex);
-//        cout << "Wrote out" <<endl;
-//        cout << "One RK-derivative step: ";
-//        get_time(tder);
-//    }
-//
-//    cout << "Total execution time: ";
-//    get_time(t0);
+    cout << "Total execution time: ";
+    get_time(t0);
 
 
     return 0;
