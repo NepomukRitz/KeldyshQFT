@@ -291,7 +291,7 @@ template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
     }
     if(conjugate1)
     {
-        valueK1 = -conj(valueK1);
+        valueK1 = conj(valueK1);
     }
     return valueK1;
 }
