@@ -97,61 +97,98 @@ comp GA(double Lambda, double omega, comp selfEneA)
 }
 comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA)
 {
-    return GR(Lambda, omega,selfEneR)*selfEneK*GA(Lambda, omega,selfEneA);
+    return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
 }
 
-Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, SelfEnergy<comp> diffselfenergy, char type)
+Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, char type, char free)
 {
     Propagator resp;
 
-    for(int i=0; i<nPROP; i++) {
-        double w = bfreqs[i];
-        comp selfEneR = selfenergy.sval(0, i);
-        comp selfEneK = selfenergy.sval(1, i);
-        comp diffSelfEneR = diffselfenergy.sval(0, i);
-        comp diffSelfEneK = diffselfenergy.sval(1, i);
-        comp GR0 = GR(Lambda, w, selfEneR);
-        comp GA0 = GA(Lambda, w, conj(selfEneR));
+    if(free!='f') {
+        for (int i = 0; i < nPROP; i++) {
+            double w = ffreqs[i];
+            comp selfEneR = selfenergy.sval(0, i);
+            comp selfEneK = selfenergy.sval(1, i);
+            comp GR0 = GR(Lambda, w, selfEneR);
+            comp GA0 = GA(Lambda, w, conj(selfEneR));
+            comp GK0 = GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
 
-        if (type == 'g') { //good ol' regular propagator
-            if (fabs(w) > Lambda) {
-                resp.setprop(0,i, GR0);
-                resp.setprop(1,i, GR0 * selfEneK * GA0);
-            } else if (fabs(w) == Lambda) {
-                resp.setprop(0,i, 0.5 / ((1. / GR0) - selfEneR) );
-                resp.setprop(1,i, 0.5 * (GR0 * selfEneK * GA0) );
-            }
-        } else if (type == 's') {   //single-scale propagator
-            if (fabs(w) == Lambda) {
-                resp.setprop(0,i, -1. * GR0);
-                resp.setprop(1,i, -1. * GR0 * selfEneK * GA0);
-            } //else resp stays being 0
-        } else if (type == 'k') {  //Katanin substitution
-            comp SR, ER, SK, EK;
-            if (fabs(w) >= Lambda) {
-                ER = GR0 * diffSelfEneR * GR0;
-                EK = GR0 * diffSelfEneR * GR0 * selfEneK * GA0 + GR0 * diffSelfEneK * GA0 +
-                     GR0 * selfEneK * GA0 * conj(diffSelfEneR) * GA0;
-            } else if (fabs(w) == Lambda) {
-                SR = -1. * GR0;
-                SK = -1. * GR0 * selfEneK * GA0;
-            }
+            if (type == 'g') { //good ol' regular propagator
+                if (fabs(w) > Lambda) {
+                    resp.setprop(0, i, GR0);
+                    resp.setprop(1, i, GR0 * selfEneK * GA0);
+                } else if (fabs(w) == Lambda) {
+                    resp.setprop(0, i, 0.5 * GR0);
+                    resp.setprop(1, i, 0.5 * (GR0 * selfEneK * GA0));
+                }
+            } else if (type == 's') {   //single-scale propagator
+                if (fabs(w) == Lambda) {
+                    resp.setprop(0, i, -1. * GR0);
+                    resp.setprop(1, i, -1. * GR0 * selfEneK * GA0);
+                } //else resp stays being 0
+            } else if (type == 'k') {  //Katanin substitution
+                comp SR, ER, SK, EK;
+                if (fabs(w) >= Lambda) {
+                    ER = GR0 * selfEneR * GR0;
+                    EK = GR0 * selfEneR * GK0 + GR0 * selfEneK * GA0 + GK0 * conj(selfEneR) * GA0;
+                } else if (fabs(w) == Lambda) {
+                    SR = -1. * GR0;
+                    SK = -1. * GR0 * selfEneK * GA0;
+                }
 
-            resp.setprop(0,i, (SR + ER) );
-            resp.setprop(1,i, (SK + EK) );
-        } else if (type == 'e') {   //i.e. only the Katanin extension
+                resp.setprop(0, i, (SR + ER));
+                resp.setprop(1, i, (SK + EK));
+            } else if (type == 'e') {   //i.e. only the Katanin extension
 
-            comp ER, EK;
-            if (fabs(w) >= Lambda) {
-                ER = GR0 * diffSelfEneR * GR0;
-                EK = GR0 * diffSelfEneR * GR0 * selfEneK * GA0 + GR0 * diffSelfEneK * GA0 +
-                     GR0 * selfEneK * GA0 * conj(diffSelfEneR) * GA0;
+                comp ER, EK;
+                if (fabs(w) >= Lambda) {
+                    ER = GR0 * selfEneR * GR0;
+                    EK = GR0 * selfEneR * GK0 + GR0 * selfEneK * GA0 + GK0 * conj(selfEneR) * GA0;
+                }
+                resp.setprop(0, i, ER);
+                resp.setprop(1, i, EK);
             }
-            resp.setprop(0,i, ER );
-            resp.setprop(1,i, EK );
         }
     }
-        return resp;
+    else{
+        for(int i=0; i<nPROP; ++i)
+        {
+            double w = ffreqs[i];
+
+            if(type=='g') {
+                if(fabs(w) < Lambda) {
+                    resp.setprop(0, i, gR(Lambda, w));
+                    resp.setprop(1, i, gK(Lambda, w));
+                }
+                else if(fabs(w) == Lambda){
+                    resp.setprop(0, i, 0.5*gR(Lambda, w));
+                    resp.setprop(1, i, 0.5*gK(Lambda, w));
+                }
+            }
+            else if(type == 's'){
+                if(fabs(w) == Lambda){
+                    resp.setprop(0, i, (-1.)*gR(Lambda, w));
+                    resp.setprop(1, i, (-1.)*gK(Lambda, w));
+                }
+            }
+            else if(type == 'k'){
+                if(fabs(w) == Lambda){
+                    resp.setprop(0, i, (-1.)*gR(Lambda, w));
+                    resp.setprop(1, i, (-1.)*gK(Lambda, w));
+                }
+            }
+            else if(type == 'e') {
+                resp.setprop(0, i, 0.);
+                resp.setprop(1, i, 0.);
+            }
+            else {
+                resp.setprop(0, i, 0.);
+                resp.setprop(1, i, 0.);
+                cout << "Something is going terribly wrong with the free propagators" << "\n";
+            }
+        }
+    }
+    return resp;
 }
 
 #elif REG==2

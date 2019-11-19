@@ -27,8 +27,6 @@ comp gA(double Lambda, double omega)
 #endif
 }
 
-
-#if REG==2
 //Self-explanatory
 double Fermi_distribution(double omega)
 {
@@ -40,6 +38,7 @@ comp gK(double Lambda, double omega)
     return (1.-2.*Fermi_distribution(omega))*(gR(Lambda,omega) - gA(Lambda,omega));
 }
 
+#if REG==2
 
 comp sR(double Lambda, double omega)
 {
