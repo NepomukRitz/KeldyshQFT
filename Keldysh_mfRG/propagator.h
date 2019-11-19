@@ -100,7 +100,7 @@ comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
     return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
 }
 
-Propagator propag(double Lambda,  SelfEnergy<comp> selfenergy, char type, char free)
+Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free)
 {
     Propagator resp;
 
