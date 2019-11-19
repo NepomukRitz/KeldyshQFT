@@ -46,11 +46,6 @@ public:
 
         Q ans = ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
 
-//        if(fabs(w)<1.) {
-//            Q imag = 2 * resp3.imag() * aid1.real() + (resp1.real() - resp6.real()) * aid1.imag() + (resp9 + resp10 + resp11 + resp12).real() * aid3.imag();
-//            cout <<ans << " " << imag << "\n";
-//        }
-
         return ans;
 
 
@@ -143,8 +138,8 @@ SelfEnergy<comp> loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop)
         IntegrandR<comp, fullvert<comp> > integrandR(fullvertex, prop, w, i_in);
         IntegrandK<comp, fullvert<comp> > integrandK(fullvertex, prop, w, i_in);
 
-        comp integratedR = integrator(integrandR, w_lower_f, w_upper_f);
-        comp integratedK = integrator(integrandK, w_lower_f, w_upper_f);
+        comp integratedR = (-(comp)1.i/(2.*pi))*integrator(integrandR, 1.5*w_lower_f, 1.5*w_upper_f);
+        comp integratedK = (-(comp)1.i/(2.*pi))*integrator(integrandK, 1.5*w_lower_f, 1.5*w_upper_f);
 
         resp.setself(0, i, integratedR);
         resp.setself(1, i, integratedK);

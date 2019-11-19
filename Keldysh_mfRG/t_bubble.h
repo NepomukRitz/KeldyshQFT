@@ -424,7 +424,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 
         Integrand_t_K1_diff <Q, Diff_T_Bubble> integrand_t_K1_diff (vertex1, vertex2, PiTdot, i0, wt, i_in);
 
-        Q value = (-1.)*integrator(integrand_t_K1_diff, w_lower_f, w_upper_f);                      //Integration over vppt, a fermionic frequency
+        Q value = (-1.)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_t_K1_diff, w_lower_f, w_upper_f);                      //Integration over vppt, a fermionic frequency
 
         resp.densvertex.K1_addvert(i0, iwt, i_in, value);
     }
@@ -444,7 +444,7 @@ template <typename Q> Vertex<tvert<Q> > diff_t_bubble_function(Vertex<fullvert<Q
 //
 //        Integrand_t_K2_diff<Q, Diff_T_Bubble> integrand_t_K2_diff (vertex1, vertex2, PiTdot, i0, wt, vt, i_in);
 //
-//        Q value = (-1.)*integrator(integrand_t_K2_diff, w_lower_f, w_upper_f);                      //Integration over vppt, a fermionic frequency
+//        Q value = (-1.)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_t_K2_diff, w_lower_f, w_upper_f);                      //Integration over vppt, a fermionic frequency
 //
 //        resp.densvertex.K2_addvert(i0, iwt, vt, i_in, value); //
 //    }
@@ -491,7 +491,7 @@ template <typename Q> Vertex<tvert<Q> > t_bubble_function(Vertex<fullvert<Q> >& 
 
         Integrand_t_K1 <Q, T_Bubble> integrand_t_K1 (vertex1, vertex2, PiT, i0, wt, i_in);
 
-        Q value = (-1.)*integrator(integrand_t_K1, w_lower_f, w_upper_f);                   //Integration over vppt, a fermionic frequency
+        Q value = (-1.)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_t_K1, w_lower_f, w_upper_f);                   //Integration over vppt, a fermionic frequency
 
         resp.densvertex.K1_addvert(i0, iwt, i_in, value);
     }
