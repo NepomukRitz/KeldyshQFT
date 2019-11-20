@@ -115,10 +115,12 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
     /*Here I begin implementing Fabian's pseudocode*/
     //Line 1
     Propagator S = propag(Lambda, state.selfenergy, 's', 'f');
+    Propagator Sfree = propag(Lambda, state.selfenergy, 's', 'f');
     cout << "S calculated" << endl;
 
     //Line 2
     Propagator G = propag(Lambda, state.selfenergy, 'g', 'f');
+    Propagator Gfree = propag(Lambda, state.selfenergy, 'g', 'f');
     cout << "G calculated" << endl;
 
     //Line 3
@@ -136,17 +138,20 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
     double t2 = get_time();
     //Lines 7-9
     double ta = get_time();
-    Vertex<avert<comp> > dgammaa = diff_a_bubble_function(state.vertex, state.vertex, G, dG);
+    Vertex<avert<comp> > dgammaa = Vertex<avert<comp> > ();
+    diff_a_bubble_function(dgammaa, state.vertex, state.vertex, G, dG);
     cout<<  "a - Bubble:";
     get_time(ta);
 
     double tp = get_time();
-    Vertex<pvert<comp> > dgammap = diff_p_bubble_function(state.vertex, state.vertex, G, dG);
+    Vertex<pvert<comp> > dgammap = Vertex<pvert<comp> > ();
+    diff_p_bubble_function(dgammap, state.vertex, state.vertex, G, dG);
     cout<<  "p - Bubble:";
     get_time(tp);
 
     double  tt=get_time();
-    Vertex<tvert<comp> > dgammat = diff_t_bubble_function(state.vertex, state.vertex, G, dG);
+    Vertex<tvert<comp> > dgammat = Vertex<tvert<comp> > ();
+    diff_t_bubble_function(dgammat, state.vertex, state.vertex, G, dG);
     cout<<  "t - Bubble:";
     get_time(tt);
 
@@ -201,15 +206,21 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
 //    dgammat.spinvertex += dGammaT.spinvertex.tvertex;
 
 
+    double t_assign  = get_time();
     //Line 41
     dPsi.vertex.densvertex.avertex = dgammaa.densvertex;
     dPsi.vertex.densvertex.pvertex = dgammap.densvertex;
     dPsi.vertex.densvertex.tvertex = dgammat.densvertex;
-    dPsi.vertex.spinvertex.avertex = dgammaa.spinvertex;
-    dPsi.vertex.spinvertex.pvertex = dgammap.spinvertex;
-    dPsi.vertex.spinvertex.tvertex = dgammat.spinvertex;
+//    dPsi.vertex.spinvertex.avertex = dgammaa.spinvertex;
+//    dPsi.vertex.spinvertex.pvertex = dgammap.spinvertex;
+//    dPsi.vertex.spinvertex.tvertex = dgammat.spinvertex;
+    cout << "Vertex assigned: " << "\n";
+    get_time(t_assign);
 
+    double t_multiply = get_time();
     dPsi*=dL;
+    cout << "dPsi multiplied: " << "\n";
+    get_time(t_multiply);
 }
 
 template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, State<Q>& state)
@@ -299,13 +310,13 @@ void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy
     }
 
     for (int j = 0; j<bfreqs.size(); j++){
-        my_file_avert1 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).imag()<< "\n";
-        my_file_pvert1 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).imag()<< "\n";
-        my_file_tvert1 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).imag()<< "\n";
+        my_file_avert1 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).imag()<< "\n";
+        my_file_pvert1 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).imag()<< "\n";
+        my_file_tvert1 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).imag()<< "\n";
 
-        my_file_avert3 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(3, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(3, j, 0).imag()<< "\n";
-        my_file_pvert5 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(5, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(5, j, 0).imag()<< "\n";
-        my_file_tvert3 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(3, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(3, j, 0).imag()<< "\n";
+        my_file_avert3 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).imag()<< "\n";
+        my_file_pvert5 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).imag()<< "\n";
+        my_file_tvert3 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).imag()<< "\n";
 
     }
 
@@ -424,13 +435,13 @@ void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
     }
 
     for (int j = 0; j<bfreqs.size(); j++){
-        my_file_avert1 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).imag()<< "\n";
-        my_file_pvert1 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).imag()<< "\n";
-        my_file_tvert1 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).imag()<< "\n";
+        my_file_avert1 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).imag()<< "\n";
+        my_file_pvert1 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).imag()<< "\n";
+        my_file_tvert1 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).imag()<< "\n";
 
-        my_file_avert3 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(3, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(3, j, 0).imag()<< "\n";
-        my_file_pvert5 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(5, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(5, j, 0).imag()<< "\n";
-        my_file_tvert3 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(3, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(3, j, 0).imag()<< "\n";
+        my_file_avert3 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).imag()<< "\n";
+        my_file_pvert5 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).imag()<< "\n";
+        my_file_tvert3 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).imag()<< "\n";
 
     }
 
