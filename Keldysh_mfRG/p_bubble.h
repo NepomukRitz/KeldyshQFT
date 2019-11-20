@@ -235,7 +235,7 @@ public:
         for(auto i2:non_zero_Keldysh_bubble) {
             tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
             auto PiPval = PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp);                                //wp/2+vppp, wp/2-vppp for the p-channel
-            resp += vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.irred.vval(i3);
+//            resp += vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.irred.vval(i3);
 
 //            //Contributions to K1: (u+K1+K2b)Pi(u+K1+K2)
 //            resp += (vertex1.densvertex.irred.vval(i1) +
@@ -246,15 +246,14 @@ public:
 //                     vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in) +
 //                     vertex2.densvertex.pvertex.K2_vvalsmooth (i3, wp, vppp, i_in) );
 
+            resp1 = vertex1.densvertex.irred.vval(i1);
+            resp2 = vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) ;
+            resp3 = vertex1.densvertex.pvertex.K2b_vvalsmooth(i1, wp, vppp, i_in);
+            resp4 = vertex2.densvertex.irred.vval(i3);
+            resp5 = vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
+            resp6 = vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in);
 
-//            resp1 = vertex1.densvertex.irred.vval(i1);
-//            resp2 = vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) ;
-//            resp3 = vertex1.densvertex.pvertex.K2b_vvalsmooth(i1, wp, vppp, i_in);
-//            resp4 = vertex2.densvertex.irred.vval(i3);
-//            resp5 = vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
-//            resp6 = vertex2.densvertex.pvertex.K2_vvalsmooth (i3, wp, vppp, i_in);
-//
-//            resp = (resp1 + resp2 + resp3) * PiPval * (resp4 + resp5 + resp6);
+            resp = (resp1 + resp2 + resp3) * PiPval * (resp4 + resp5 + resp6);
 //
 //            //Debugging
 //            if(resp3!=comp(0.) || resp6 !=comp(0.))
@@ -362,10 +361,8 @@ public:
 
 
 
-template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
+template <typename Q> void diff_p_bubble_function(Vertex<pvert<Q> >& dgammap, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
-    Vertex<pvert<Q> > resp = Vertex<pvert<Q> >();
-
     Diff_P_Bubble PiPdot(G,S);
 
     double t0 = get_time();
@@ -382,30 +379,30 @@ template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q
 
         Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K1_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
 
-        resp.densvertex.K1_addvert(i0, iwp, i_in, value);
+        dgammap.densvertex.K1_addvert(i0, iwp, i_in, value);
     }
     cout << "K1p done:" << endl;
     get_time(t0);
 
     /*K2 contributions*/
-//#pragma omp parallel for
-//    for(int iK2=0; iK2<nK_K2*nw2_wp*nw2_nup*n_in; iK2++)
-//    {
-//        int i0 = (iK2 % (nK_K2 * nw2_wp * nw2_nup * n_in)) / (nw2_wp * nw2_nup * n_in);
-//        int iwp = (iK2 % (nw2_wp * nw2_nup * n_in)) / (nw2_nup * n_in);
-//        int ivp = (iK2 % (nw2_nup * n_in)) / n_in;
-//        int i_in = iK2 % n_in;
-//        double wp = bfreqs[iwp];
-//        double vp = ffreqs[ivp];
-//
-//        Integrand_p_K2_diff<Q, Diff_P_Bubble> integrand_p_K2_diff (vertex1, vertex2, PiPdot, i0, wp, vp, i_in);
-//
-//        Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K2_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
-//
-//
-//        resp.densvertex.K2_addvert(i0, iwp, vp, i_in, value);
-//    }
-//    cout << "K2p done" << endl;
+#pragma omp parallel for
+    for(int iK2=0; iK2<nK_K2*nw2_wp*nw2_nup*n_in; iK2++)
+    {
+        int i0 = (iK2 % (nK_K2 * nw2_wp * nw2_nup * n_in)) / (nw2_wp * nw2_nup * n_in);
+        int iwp = (iK2 % (nw2_wp * nw2_nup * n_in)) / (nw2_nup * n_in);
+        int ivp = (iK2 % (nw2_nup * n_in)) / n_in;
+        int i_in = iK2 % n_in;
+        double wp = bfreqs[iwp];
+        double vp = ffreqs[ivp];
+
+        Integrand_p_K2_diff<Q, Diff_P_Bubble> integrand_p_K2_diff (vertex1, vertex2, PiPdot, i0, wp, vp, i_in);
+
+        Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K2_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+
+
+        dgammap.densvertex.K2_addvert(i0, iwp, vp, i_in, value);
+    }
+    cout << "K2p done" << endl;
 
 
     /*K3 contributions*/
@@ -427,12 +424,10 @@ template <typename Q> Vertex<pvert<Q> > diff_p_bubble_function(Vertex<fullvert<Q
 //    }
 //    cout << "K3p done" << endl;
 
-    return resp;
 }
 
-template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
+template <typename Q> void p_bubble_function(Vertex<pvert<Q> >& gammap, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
 {
-    Vertex<pvert<Q> > resp = Vertex<pvert<Q> >();
     P_Bubble PiP(G);
 
     //These lines are to test the SOPT results - there are no K1 contributions in the corrections!
@@ -450,7 +445,7 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& 
 
         Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K1, w_lower_f, w_upper_f);                   //Integration over vppp, a fermionic frequency
 
-        resp.densvertex.K1_addvert(i0, iwp, i_in, value);
+        gammap.densvertex.K1_addvert(i0, iwp, i_in, value);
     }
     cout << "K1p done:" << endl;
     get_time(t0);
@@ -503,7 +498,6 @@ template <typename Q> Vertex<pvert<Q> > p_bubble_function(Vertex<fullvert<Q> >& 
 //        resp.densvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, integrator(integrand_p_K3, ffreqs));
 //    }
 
-    return resp;
 }
 
 
