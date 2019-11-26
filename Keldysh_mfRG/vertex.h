@@ -164,6 +164,164 @@ public:
 //        this->spinvertex -= vertex1.spinvertex;
         return *this;
     }
+
+///************************************* MEMBER FUNCTIONS OF THE VERTEX "Vertex" ****************************************/
+//
+//    template <typename Q> void set_densvertex(Vertex<avert<Q> >& avertex, Vertex<pvert<Q> >& pvertex, Vertex<tvert<Q> >& tvertex) {
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K1 * nw1_wa * n_in; ++i) {
+//            int iK = (i % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
+//            int iwa = (i % (nw1_wa * n_in)) / n_in;
+//            int i_in = i % n_in;
+//            densvertex.avertex.K1_setvert(iK, iwa, i_in, avertex.densvertex.K1_vval(iK, iwa, i_in));
+//        }
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K1 * nw1_wp * n_in; ++i) {
+//            int iK = (i % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
+//            int iwp = (i % (nw1_wp * n_in)) / n_in;
+//            int i_in = i % n_in;
+//            densvertex.pvertex.K1_setvert(iK, iwp, i_in, pvertex.densvertex.K1_vval(iK, iwp, i_in));
+//        }
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K1 * nw1_wt * n_in; ++i) {
+//            int iK = (i % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
+//            int iwt = (i % (nw1_wt * n_in)) / n_in;
+//            int i_in = i % n_in;
+//            densvertex.tvertex.K1_setvert(iK, iwt, i_in, tvertex.densvertex.K1_vval(iK, iwt, i_in));
+//        }
+//
+//
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K2*nw2_wa*nw2_nua*n_in; ++i){
+//            int iK = (i%(nK_K2*nw2_wa*nw2_nua*n_in))/(nw2_wa*nw2_nua*n_in);
+//            int iwa = (i%(nw2_wa*nw2_nua*n_in))/(nw2_nua*n_in);
+//            int iva = (i%(nw2_nua*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            densvertex.avertex.K2_setvert(iK, iwa, iva, i_in, avertex.densvertex.K2_vval(iK, iwa, iva, i_in));
+//        }
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K2*nw2_wp*nw2_nup*n_in; ++i){
+//            int iK = (i%(nK_K2*nw2_wp*nw2_nup*n_in))/(nw2_wp*nw2_nup*n_in);
+//            int iwp = (i%(nw2_wp*nw2_nup*n_in))/(nw2_nup*n_in);
+//            int ivp = (i%(nw2_nup*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            densvertex.pvertex.K2_setvert(iK, iwp, ivp, i_in, pvertex.densvertex.K2_vval(iK, iwp, ivp, i_in));
+//        }
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K2*nw2_wt*nw2_nut*n_in; ++i){
+//            int iK = (i%(nK_K2*nw2_wt*nw2_nut*n_in))/(nw2_wt*nw2_nut*n_in);
+//            int iwt = (i%(nw2_wt*nw2_nut*n_in))/(nw2_nut*n_in);
+//            int ivt = (i%(nw2_nut*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            densvertex.tvertex.K2_setvert(iK, iwt, ivt, i_in, tvertex.densvertex.K2_vval(iK, iwt, ivt, i_in));
+//        }
+//
+//#pragma omp parallel for
+//        for(int i=0; i<nK_K3*nw3_wa*nw3_nua*nw3_nuap*n_in; ++i){
+//            int iK = (i%(nK_K3*nw3_wa*nw3_nua*nw3_nuap*n_in))/(nw3_wa*nw3_nua*nw3_nuap*n_in);
+//            int iwa = (i%(nw3_wa*nw3_nua*nw3_nuap*n_in))/(nw3_nua*nw3_nuap*n_in);
+//            int iva = (i%(nw3_nua*nw3_nuap*n_in))/(nw3_nuap*n_in);
+//            int ivap= (i%(nw3_nuap*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            densvertex.avertex.K3_setvert(iK, iwa, iva, ivap, i_in, avertex.densvertex.K3_vval(iK, iwa, iva, ivap, i_in));
+//        }
+//#pragma omp parallel for
+//        for(int i=0; i<nK_K3*nw3_wp*nw3_nup*nw3_nupp*n_in; ++i){
+//            int iK = (i%(nK_K3*nw3_wp*nw3_nup*nw3_nupp*n_in))/(nw3_wp*nw3_nup*nw3_nupp*n_in);
+//            int iwp = (i%(nw3_wp*nw3_nup*nw3_nupp*n_in))/(nw3_nup*nw3_nupp*n_in);
+//            int ivp = (i%(nw3_nup*nw3_nupp*n_in))/(nw3_nupp*n_in);
+//            int ivpp= (i%(nw3_nupp*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            densvertex.pvertex.K3_setvert(iK, iwp, ivp, ivpp, i_in, pvertex.densvertex.K3_vval(iK, iwp, ivp, ivpp, i_in));
+//        }
+//#pragma omp parallel for
+//        for(int i=0; i<nK_K3*nw3_wt*nw3_nut*nw3_nutp*n_in; ++i){
+//            int iK = (i%(nK_K3*nw3_wt*nw3_nut*nw3_nutp*n_in))/(nw3_wt*nw3_nut*nw3_nutp*n_in);
+//            int iwt = (i%(nw3_wt*nw3_nut*nw3_nutp*n_in))/(nw3_nut*nw3_nutp*n_in);
+//            int ivt = (i%(nw3_nut*nw3_nutp*n_in))/(nw3_nutp*n_in);
+//            int ivtp= (i%(nw3_nutp*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            densvertex.tvertex.K3_setvert(iK, iwt, ivt, ivtp, i_in, tvertex.densvertex.K3_vval(iK, iwt, ivt, ivtp, i_in));
+//        }
+//    }
+//
+//    template <typename Q> void set_spinvertex(Vertex<avert<Q> >& avertex, Vertex<pvert<Q> >& pvertex, Vertex<tvert<Q> >& tvertex) {
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K1 * nw1_wa * n_in; ++i) {
+//            int iK = (i % (nK_K1 * nw1_wa * n_in)) / (nw1_wa * n_in);
+//            int iwa = (i % (nw1_wa * n_in)) / n_in;
+//            int i_in = i % n_in;
+//            spinvertex.avertex.K1_setvert(iK, iwa, i_in, avertex.spinvertex.K1_vval(iK, iwa, i_in));
+//        }
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K1 * nw1_wp * n_in; ++i) {
+//            int iK = (i % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
+//            int iwp = (i % (nw1_wp * n_in)) / n_in;
+//            int i_in = i % n_in;
+//            spinvertex.pvertex.K1_setvert(iK, iwp, i_in, pvertex.spinvertex.K1_vval(iK, iwp, i_in));
+//        }
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K1 * nw1_wt * n_in; ++i) {
+//            int iK = (i % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
+//            int iwt = (i % (nw1_wt * n_in)) / n_in;
+//            int i_in = i % n_in;
+//            spinvertex.tvertex.K1_setvert(iK, iwt, i_in, tvertex.spinvertex.K1_vval(iK, iwt, i_in));
+//        }
+//
+//
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K2*nw2_wa*nw2_nua*n_in; ++i){
+//            int iK = (i%(nK_K2*nw2_wa*nw2_nua*n_in))/(nw2_wa*nw2_nua*n_in);
+//            int iwa = (i%(nw2_wa*nw2_nua*n_in))/(nw2_nua*n_in);
+//            int iva = (i%(nw2_nua*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            spinvertex.avertex.K2_setvert(iK, iwa, iva, i_in, avertex.spinvertex.K2_vval(iK, iwa, iva, i_in));
+//        }
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K2*nw2_wp*nw2_nup*n_in; ++i){
+//            int iK = (i%(nK_K2*nw2_wp*nw2_nup*n_in))/(nw2_wp*nw2_nup*n_in);
+//            int iwp = (i%(nw2_wp*nw2_nup*n_in))/(nw2_nup*n_in);
+//            int ivp = (i%(nw2_nup*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            spinvertex.pvertex.K2_setvert(iK, iwp, ivp, i_in, pvertex.spinvertex.K2_vval(iK, iwp, ivp, i_in));
+//        }
+//#pragma omp parallel for
+//        for (int i = 0; i < nK_K2*nw2_wt*nw2_nut*n_in; ++i){
+//            int iK = (i%(nK_K2*nw2_wt*nw2_nut*n_in))/(nw2_wt*nw2_nut*n_in);
+//            int iwt = (i%(nw2_wt*nw2_nut*n_in))/(nw2_nut*n_in);
+//            int ivt = (i%(nw2_nut*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            spinvertex.tvertex.K2_setvert(iK, iwt, ivt, i_in, tvertex.spinvertex.K2_vval(iK, iwt, ivt, i_in));
+//        }
+//
+//#pragma omp parallel for
+//        for(int i=0; i<nK_K3*nw3_wa*nw3_nua*nw3_nuap*n_in; ++i){
+//            int iK = (i%(nK_K3*nw3_wa*nw3_nua*nw3_nuap*n_in))/(nw3_wa*nw3_nua*nw3_nuap*n_in);
+//            int iwa = (i%(nw3_wa*nw3_nua*nw3_nuap*n_in))/(nw3_nua*nw3_nuap*n_in);
+//            int iva = (i%(nw3_nua*nw3_nuap*n_in))/(nw3_nuap*n_in);
+//            int ivap= (i%(nw3_nuap*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            spinvertex.avertex.K3_setvert(iK, iwa, iva, ivap, i_in, avertex.spinvertex.K3_vval(iK, iwa, iva, ivap, i_in));
+//        }
+//#pragma omp parallel for
+//        for(int i=0; i<nK_K3*nw3_wp*nw3_nup*nw3_nupp*n_in; ++i){
+//            int iK = (i%(nK_K3*nw3_wp*nw3_nup*nw3_nupp*n_in))/(nw3_wp*nw3_nup*nw3_nupp*n_in);
+//            int iwp = (i%(nw3_wp*nw3_nup*nw3_nupp*n_in))/(nw3_nup*nw3_nupp*n_in);
+//            int ivp = (i%(nw3_nup*nw3_nupp*n_in))/(nw3_nupp*n_in);
+//            int ivpp= (i%(nw3_nupp*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            spinvertex.pvertex.K3_setvert(iK, iwp, ivp, ivpp, i_in, pvertex.spinvertex.K3_vval(iK, iwp, ivp, ivpp, i_in));
+//        }
+//#pragma omp parallel for
+//        for(int i=0; i<nK_K3*nw3_wt*nw3_nut*nw3_nutp*n_in; ++i){
+//            int iK = (i%(nK_K3*nw3_wt*nw3_nut*nw3_nutp*n_in))/(nw3_wt*nw3_nut*nw3_nutp*n_in);
+//            int iwt = (i%(nw3_wt*nw3_nut*nw3_nutp*n_in))/(nw3_nut*nw3_nutp*n_in);
+//            int ivt = (i%(nw3_nut*nw3_nutp*n_in))/(nw3_nutp*n_in);
+//            int ivtp= (i%(nw3_nutp*n_in))/(n_in);
+//            int i_in = i%n_in;
+//            spinvertex.tvertex.K3_setvert(iK, iwt, ivt, ivtp, i_in, tvertex.spinvertex.K3_vval(iK, iwt, ivt, ivtp, i_in));
+//        }
+//    }
 };
 
 
@@ -247,7 +405,7 @@ template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, doubl
    Q resp;
     switch(r){
         case 'a':
-            resp = pvertex.value(iK, w, v1, v2, i_in, r)          + tvertex.value(iK, w, v1, v2, i_in, avertex);
+            resp = pvertex.value(iK, w, v1, v2, i_in, r)          + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
             break;
         case 'p':
             resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
@@ -255,7 +413,9 @@ template <typename Q> Q fullvert<Q>::gammaRb (int iK, double w, double v1, doubl
         case 't':
             resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + pvertex.value(iK, w, v1, v2, i_in, r);
             break;
-        default :;
+        default :
+            resp = 0.;
+            cout << "Something's going wrong with gammaRb"<< endl;
     }
 
 //    if(r == 'a')
