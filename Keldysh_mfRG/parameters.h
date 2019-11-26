@@ -40,8 +40,8 @@ const double U = 1.0;
 const int nEVO = 7;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 301;
-const int nFER = 301;
+const int nBOS = 101;
+const int nFER = 101;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -97,18 +97,18 @@ const int n_in = 1;
 
 /*Vector of indices of independent components of the diagrammatic classes, density channel*/
 vector<int> non_zero_Keldysh_K1a({1,3});                                                                                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K1p({1,5});                                                                                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});                                                                         // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K1t({1,3});                                                                                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2t({0,1,2,3,11});                                                                                // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2t({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K3({0,1,3,5,7});                                                                           // NOLINT(cert-err58-cpp)
 
 /*Vector of indices whose respective Keldysh indices add up to an odd number*/
 vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                                                                   // NOLINT(cert-err58-cpp)
 
 /*Vector of indices of the non-zero Keldysh components of the bubbles*/
-vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                                                         // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                                                          // NOLINT(cert-err58-cpp)
 
 /*Vector with values of Lambda for the fRG flow*/
 rvec flow_grid(nEVO);                                                                                                   // NOLINT(cert-err58-cpp)
@@ -127,11 +127,8 @@ const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 //Tolerance for closeness to grid points when interpolating
 const double inter_tol = 10e-8;
 
-//Debugging tolerance
-const double tol = inter_tol;
-
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-const int nINT = 10*(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
+const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 /*Frequency grids for each channel*/
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
