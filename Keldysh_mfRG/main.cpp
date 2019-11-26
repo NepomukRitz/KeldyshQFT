@@ -110,8 +110,7 @@ int main() {
 
 
 template <typename Q>
-void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
-{
+void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     /*Here I begin implementing Fabian's pseudocode*/
     //Line 1
     Propagator S = propag(Lambda, state.selfenergy, 's', 'f');
@@ -128,7 +127,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
     cout << "loop calculated" << endl;
 
     //Line 4
-    dPsi.selfenergy=Sigma_std;
+    dPsi.selfenergy = Sigma_std;
 
     //Line 6
     Propagator extension = propag(Lambda, dPsi.selfenergy, 'e', 'f');\
@@ -138,21 +137,18 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
     double t2 = get_time();
     //Lines 7-9
     double ta = get_time();
-    Vertex<avert<comp> > dgammaa = Vertex<avert<comp> > ();
-    diff_a_bubble_function(dgammaa, state.vertex, state.vertex, G, dG);
-    cout<<  "a - Bubble:";
+    diff_a_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
+    cout << "a - Bubble:";
     get_time(ta);
 
     double tp = get_time();
-    Vertex<pvert<comp> > dgammap = Vertex<pvert<comp> > ();
-    diff_p_bubble_function(dgammap, state.vertex, state.vertex, G, dG);
+    diff_p_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout<<  "p - Bubble:";
     get_time(tp);
 
-    double  tt=get_time();
-    Vertex<tvert<comp> > dgammat = Vertex<tvert<comp> > ();
-    diff_t_bubble_function(dgammat, state.vertex, state.vertex, G, dG);
-    cout<<  "t - Bubble:";
+    double tt = get_time();
+    diff_t_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
+    cout << "t - Bubble:";
     get_time(tt);
 
     cout << "diff bubble finished. ";
@@ -205,21 +201,9 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state)
 //    dgammap.spinvertex += dGammaT.spinvertex.pvertex;
 //    dgammat.spinvertex += dGammaT.spinvertex.tvertex;
 
-
-    double t_assign  = get_time();
-    //Line 41
-    dPsi.vertex.densvertex.avertex = dgammaa.densvertex;
-    dPsi.vertex.densvertex.pvertex = dgammap.densvertex;
-    dPsi.vertex.densvertex.tvertex = dgammat.densvertex;
-//    dPsi.vertex.spinvertex.avertex = dgammaa.spinvertex;
-//    dPsi.vertex.spinvertex.pvertex = dgammap.spinvertex;
-//    dPsi.vertex.spinvertex.tvertex = dgammat.spinvertex;
-    cout << "Vertex assigned: " << "\n";
-    get_time(t_assign);
-
     double t_multiply = get_time();
-    dPsi*=dL;
-    cout << "dPsi multiplied: " << "\n";
+    dPsi *= dL;
+    cout << "dPsi multiplied";
     get_time(t_multiply);
 }
 
