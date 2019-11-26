@@ -249,7 +249,7 @@ public:
             resp5 = vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex);
             resp6 = vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
 
-            resp = (resp1 + resp2 + resp3) * PiAval * (resp4 + resp5 + resp6);
+            resp += (resp1 + resp2 + resp3) * PiAval * (resp4 + resp5 + resp6);
 //
 //            //Debugging
 //            if(resp3!=comp(0.) || resp6 !=comp(0.))
@@ -278,17 +278,30 @@ public:
     Q operator()(double vppa) {
         int i1, i3;
         Q resp;
+        Q resp1, resp2, resp3, resp4, resp5, resp6;
         for (auto i2:non_zero_Keldysh_bubble) {
             tie(i1, i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
 
+            auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);
+
             //Contributions to K2: (K2 +K3 + gammaP)Pi(K1+K2)
-            resp += (vertex1.densvertex.avertex.K2_vvalsmooth(i1, wa, va, i_in, vertex1.densvertex.tvertex) +
-                     vertex1.densvertex.avertex.K3_vvalsmooth(i1, wa, va, vppa, i_in, vertex1.densvertex.tvertex) +
-                     vertex1.densvertex.gammaRb(i1, wa, va, vppa, i_in, 'a')) *
-                    PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa) *                                       //vppa-1/2wa, vppa+1/2wa for the a-channel
-                    (vertex2.densvertex.irred.vval(i3) +
-                     vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
-                     vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex));
+//            resp += (vertex1.densvertex.avertex.K2_vvalsmooth(i1, wa, va, i_in, vertex1.densvertex.tvertex) +
+//                     vertex1.densvertex.avertex.K3_vvalsmooth(i1, wa, va, vppa, i_in, vertex1.densvertex.tvertex) +
+//                     vertex1.densvertex.gammaRb(i1, wa, va, vppa, i_in, 'a')) *
+//                    PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa) *                                       //vppa-1/2wa, vppa+1/2wa for the a-channel
+//                    (vertex2.densvertex.irred.vval(i3) +
+//                     vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
+//                     vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex));
+
+            resp1 = vertex1.densvertex.avertex.K2_vvalsmooth(i1, wa, va, i_in, vertex1.densvertex.tvertex);
+            resp2 = vertex1.densvertex.avertex.K3_vvalsmooth(i1, wa, va, vppa, i_in, vertex1.densvertex.tvertex);
+            resp3 = vertex1.densvertex.gammaRb(i1, wa, va, vppa, i_in, 'a');
+            resp4 = vertex2.densvertex.irred.vval(i3);
+            resp5 = vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex);
+            resp6 = vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
+
+            resp += (resp1+resp2+resp3)*PiAval*(resp4+resp5+resp6);
+
         }
         return resp;
     }
@@ -356,7 +369,7 @@ public:
 
 
 
-template <typename Q> void diff_a_bubble_function(Vertex<avert<Q> >& dgammaa, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
+template <typename Q> void diff_a_bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
     Diff_A_Bubble PiAdot(G,S);
 
@@ -374,7 +387,7 @@ template <typename Q> void diff_a_bubble_function(Vertex<avert<Q> >& dgammaa, Ve
 
         Q value = (-1./(2.*pi*(comp)1.i))*integrator(integrand_a_K1_diff, w_lower_f, w_upper_f);                            //Integration over vppa, a fermionic frequency
 
-        dgammaa.densvertex.K1_addvert(i0, iwa, i_in, value);
+        dgamma.densvertex.avertex.K1_addvert(i0, iwa, i_in, value);
     }
     cout << "K1a done:" << endl;
     get_time(t0);
@@ -394,7 +407,7 @@ template <typename Q> void diff_a_bubble_function(Vertex<avert<Q> >& dgammaa, Ve
 
         Q value = (-1./(2.*pi*(comp)1.i))*integrator(integrand_a_K2_diff, w_lower_f, w_upper_f);                            //Integration over vppa, a fermionic frequency
 
-        dgammaa.densvertex.K2_addvert(i0, iwa, va, i_in, value);
+        dgamma.densvertex.avertex.K2_addvert(i0, iwa, iva, i_in, value);
     }
     cout << "K2a done" << endl;
 
@@ -419,7 +432,7 @@ template <typename Q> void diff_a_bubble_function(Vertex<avert<Q> >& dgammaa, Ve
 
 }
 
-template <typename Q> void a_bubble_function(Vertex<avert<Q> >& gammaa, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
+template <typename Q> void a_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
 {
     A_Bubble PiA(G);
 
@@ -438,7 +451,7 @@ template <typename Q> void a_bubble_function(Vertex<avert<Q> >& gammaa, Vertex<f
 
         Q value = (-1./(2.*pi*(comp)1.i))*integrator(integrand_a_K1, w_lower_f, w_upper_f);                         //Integration over vppa, a fermionic frequency
 
-        gammaa.densvertex.K1_addvert(i0, iwa, i_in, value);
+        gamma.densvertex.avertex.K1_addvert(i0, iwa, i_in, value);
     }
     cout << "K1a done:" << endl;
     get_time(t0);
@@ -459,7 +472,7 @@ template <typename Q> void a_bubble_function(Vertex<avert<Q> >& gammaa, Vertex<f
 //
 //            Integrand_a_K2<Q, A_Bubble> integrand_a_K2 (vertex1, vertex2, PiA, i0, wa, va, i_in);
 //
-//            resp.densvertex.K2_addvert(i0, iwa, va, i_in, integrator(integrand_a_K2, ffreqs)); //
+//            resp.densvertex.K2_addvert(i0, iwa, iva, i_in, integrator(integrand_a_K2, ffreqs)); //
 //        }
 //    }
 //    else if(side == 'R')

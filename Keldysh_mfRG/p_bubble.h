@@ -231,7 +231,6 @@ public:
         int i1, i3;
         Q resp;
         Q resp1, resp2, resp3, resp4, resp5, resp6;
-        int stahp = -10000;
         for(auto i2:non_zero_Keldysh_bubble) {
             tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
             auto PiPval = PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp);                                //wp/2+vppp, wp/2-vppp for the p-channel
@@ -253,17 +252,7 @@ public:
             resp5 = vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
             resp6 = vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in);
 
-            resp = (resp1 + resp2 + resp3) * PiPval * (resp4 + resp5 + resp6);
-//
-//            //Debugging
-//            if(resp3!=comp(0.) || resp6 !=comp(0.))
-//                cout << "halp" << "\n";
-//
-//            if(PiPval!=comp(0.0) && (resp2 != comp(0.) && resp5!= comp(0.))) {
-//                stahp = 0;
-//                cout << i0 << " " << i1 << " " << i2 << " " << i3 << "\n";
-//            }
-
+            resp += (resp1 + resp2 + resp3) * PiPval * (resp4 + resp5 + resp6);
         }
         return resp;
     }
@@ -283,18 +272,31 @@ public:
     Q operator()(double vppp) {
         int i1, i3;
         Q resp;
+        Q resp1, resp2, resp3, resp4, resp5, resp6;
         for (auto i2:non_zero_Keldysh_bubble) {
             tie(i1, i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
 
+            auto PiPvalue = PiP.value(i2, 0.5*wp+vppp, 0.5*wp - vppp);
+
             //Contributions to K2: (K2 +K3 + gammaP)Pi(K1+K2)
-            resp += (vertex1.densvertex.pvertex.K2_vvalsmooth(i1, wp, vp, i_in) +
-                     vertex1.densvertex.pvertex.K3_vvalsmooth(i1, wp, vp, vppp, i_in) +
-                     vertex1.densvertex.gammaRb(i1, wp, vp, vppp, i_in, 'p')) *
-                    PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp) *                                       //wp/2+vppp, wp/2-vppp for the p-channel
-                    (vertex2.densvertex.irred.vval(i3) +
-                     vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in) +
-                     vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in));
+//            resp += (vertex1.densvertex.pvertex.K2_vvalsmooth(i1, wp, vp, i_in) +
+//                     vertex1.densvertex.pvertex.K3_vvalsmooth(i1, wp, vp, vppp, i_in) +
+//                     vertex1.densvertex.gammaRb(i1, wp, vp, vppp, i_in, 'p')) *
+//                    PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp) *                                       //wp/2+vppp, wp/2-vppp for the p-channel
+//                    (vertex2.densvertex.irred.vval(i3) +
+//                     vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in) +
+//                     vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in));
+
+            resp1 = vertex1.densvertex.pvertex.K2_vvalsmooth(i1, wp, vp, i_in);
+            resp2 = vertex1.densvertex.pvertex.K3_vvalsmooth(i1, wp, vp, vppp, i_in);
+            resp3 = vertex1.densvertex.gammaRb(i1, wp, vp, vppp, i_in, 'p');
+            resp4 = vertex2.densvertex.irred.vval(i3);
+            resp5 = vertex2.densvertex.pvertex.K1_vvalsmooth(i3, wp, i_in);
+            resp6 = vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in);
+
+            resp += (resp1+resp2+resp3)*PiPvalue*(resp4+resp5+resp6);
         }
+
         return resp;
     }
 };
@@ -361,7 +363,7 @@ public:
 
 
 
-template <typename Q> void diff_p_bubble_function(Vertex<pvert<Q> >& dgammap, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
+template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
     Diff_P_Bubble PiPdot(G,S);
 
@@ -379,7 +381,7 @@ template <typename Q> void diff_p_bubble_function(Vertex<pvert<Q> >& dgammap, Ve
 
         Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K1_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
 
-        dgammap.densvertex.K1_addvert(i0, iwp, i_in, value);
+        dgamma.densvertex.pvertex.K1_addvert(i0, iwp, i_in, value);
     }
     cout << "K1p done:" << endl;
     get_time(t0);
@@ -400,7 +402,7 @@ template <typename Q> void diff_p_bubble_function(Vertex<pvert<Q> >& dgammap, Ve
         Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K2_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
 
 
-        dgammap.densvertex.K2_addvert(i0, iwp, vp, i_in, value);
+        dgamma.densvertex.pvertex.K2_addvert(i0, iwp, ivp, i_in, value);
     }
     cout << "K2p done" << endl;
 
@@ -426,7 +428,7 @@ template <typename Q> void diff_p_bubble_function(Vertex<pvert<Q> >& dgammap, Ve
 
 }
 
-template <typename Q> void p_bubble_function(Vertex<pvert<Q> >& gammap, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
+template <typename Q> void p_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
 {
     P_Bubble PiP(G);
 
@@ -445,7 +447,7 @@ template <typename Q> void p_bubble_function(Vertex<pvert<Q> >& gammap, Vertex<f
 
         Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K1, w_lower_f, w_upper_f);                   //Integration over vppp, a fermionic frequency
 
-        gammap.densvertex.K1_addvert(i0, iwp, i_in, value);
+        gamma.densvertex.pvertex.K1_addvert(i0, iwp, i_in, value);
     }
     cout << "K1p done:" << endl;
     get_time(t0);
@@ -466,7 +468,7 @@ template <typename Q> void p_bubble_function(Vertex<pvert<Q> >& gammap, Vertex<f
 //
 //            Integrand_p_K2<Q, P_Bubble> integrand_p_K2 (vertex1, vertex2, PiP, i0, wp, vp, i_in);
 //
-//            resp.densvertex.K2_addvert(i0, iwp, vp, i_in, integrator(integrand_p_K2, ffreqs)); //
+//            resp.densvertex.K2_addvert(i0, iwp, ivp, i_in, integrator(integrand_p_K2, ffreqs)); //
 //        }
 //    }
 //    else if(side == 'R')
