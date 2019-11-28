@@ -422,7 +422,7 @@ template <typename Q> void diff_t_bubble_function(Vertex<fullvert<Q> >& dgamma, 
 {
     Diff_T_Bubble PiTdot(G,S);
 
-    double t0 = get_time();
+    double tK1 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
@@ -438,9 +438,10 @@ template <typename Q> void diff_t_bubble_function(Vertex<fullvert<Q> >& dgamma, 
 
         dgamma.densvertex.tvertex.K1_addvert(i0, iwt, i_in, value);
     }
-    cout << "K1t done:" << endl;
-    get_time(t0);
+    cout << "K1t done: ";
+    get_time(tK1);
 
+    double tK2 = get_time();
     /*K2 contributions*/
 #pragma omp parallel for
     for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
@@ -458,27 +459,31 @@ template <typename Q> void diff_t_bubble_function(Vertex<fullvert<Q> >& dgamma, 
 
         dgamma.densvertex.tvertex.K2_addvert(i0, iwt, ivt, i_in, value); //
     }
-    cout << "K2t done" << endl;
+    cout << "K2t done: ";
+    get_time(tK2);
 
-
+    double tK3 = get_time();
     /*K3 contributions*/
-//#pragma omp parallel for
-//    for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
-//    {
-//        int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
-//        int iwt = (iK3 % (nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_nut * nw3_nutp * n_in);
-//        int ivt = (iK3 % (nw3_nut * nw3_nutp * n_in)) / (nw3_nutp * n_in);
-//        int ivtp = (iK3 % (nw3_nutp * n_in))/ n_in;
-//        int i_in = iK3 % n_in;
-//        double wt = bfreqs[iwt];
-//        double va = ffreqs[ivt];
-//        double vtp = ffreqs[ivtp];
-//
-//        Integrand_t_K3_diff<Q, Diff_T_Bubble> integrand_t_K3_diff (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
-//
-//        resp.densvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, integrator(integrand_t_K3_diff, ffreqs)); // TODO: complete this
-//    }
-//    cout << "K3t done" << endl;
+#pragma omp parallel for
+    for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
+    {
+        int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
+        int iwt = (iK3 % (nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_nut * nw3_nutp * n_in);
+        int ivt = (iK3 % (nw3_nut * nw3_nutp * n_in)) / (nw3_nutp * n_in);
+        int ivtp = (iK3 % (nw3_nutp * n_in))/ n_in;
+        int i_in = iK3 % n_in;
+        double wt = bfreqs[iwt];
+        double va = ffreqs[ivt];
+        double vtp = ffreqs[ivtp];
+
+        Integrand_t_K3_diff<Q, Diff_T_Bubble> integrand_t_K3_diff (vertex1, vertex2, PiTdot, i0, wt, va, vtp,  i_in);
+
+        Q value = (-1.)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_t_K3_diff, w_lower_f, w_upper_f);                      //Integration over vppt, a fermionic frequency
+
+        dgamma.densvertex.tvertex.K3_addvert(i0, iwt, ivt, ivtp, i_in, value);
+    }
+    cout << "K3t done: ";
+    get_time(tK3);
 }
 
 template <typename Q> void t_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)

@@ -146,34 +146,34 @@ public:
     {
         this->K1 + vertex.K1;
         this->K2 + vertex.K2;
-//        this->K3 + vertex.K3;
+        this->K3 + vertex.K3;
         return *this;
     }
     avert<Q> operator+=(const avert<Q>& vertex)
     {
         this->K1 += vertex.K1;
         this->K2 += vertex.K2;
-//        this->K3 += vertex.K3;
+        this->K3 += vertex.K3;
         return *this;
     }
     avert<Q> operator*(double alpha) {
         this->K1 * alpha;
         this->K2 * alpha;
-//        this->K3 * alpha;
+        this->K3 * alpha;
         return *this;
     }
 
     avert<Q> operator*=(double alpha) {
         this->K1 *= alpha;
         this->K2 *= alpha;
-//        this->K3 *= alpha;
+        this->K3 *= alpha;
         return *this;
     }
     avert<Q> operator-=(const avert<Q>& vertex)
     {
         this->K1 -= vertex.K1;
         this->K2 -= vertex.K2;
-//        this->K3 -= vertex.K3;
+        this->K3 -= vertex.K3;
         return *this;
     }
 };
@@ -186,16 +186,16 @@ template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, 
 
     return  K1_vvalsmooth (iK, w_a, i_in, tvertex)
             + K2_vvalsmooth (iK, w_a, v1_a, i_in, tvertex)
-            + K2b_vvalsmooth(iK, w_a, v2_a, i_in, tvertex);
-//            + K3_vvalsmooth (iK, w_a, v1_a, v2_a, i_in, tvertex);
+            + K2b_vvalsmooth(iK, w_a, v2_a, i_in, tvertex)
+            + K3_vvalsmooth (iK, w_a, v1_a, v2_a, i_in, tvertex);
 }
 
 template <typename Q> Q avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex){
 
     return  K1_vvalsmooth (iK, w, i_in, tvertex)
             + K2_vvalsmooth (iK, w, v1, i_in, tvertex)
-            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex);
-//            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
+            + K2b_vvalsmooth(iK, w, v2, i_in, tvertex)
+            + K3_vvalsmooth (iK, w, v1, v2, i_in, tvertex);
 }
 
 

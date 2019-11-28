@@ -367,7 +367,7 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
 {
     Diff_P_Bubble PiPdot(G,S);
 
-    double t0 = get_time();
+    double tK1 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wp*n_in; ++iK1) {
@@ -383,9 +383,10 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
 
         dgamma.densvertex.pvertex.K1_addvert(i0, iwp, i_in, value);
     }
-    cout << "K1p done:" << endl;
-    get_time(t0);
+    cout << "K1p done: ";
+    get_time(tK1);
 
+    double tK2 = get_time();
     /*K2 contributions*/
 #pragma omp parallel for
     for(int iK2=0; iK2<nK_K2*nw2_wp*nw2_nup*n_in; iK2++)
@@ -401,30 +402,33 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
 
         Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K2_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
 
-
         dgamma.densvertex.pvertex.K2_addvert(i0, iwp, ivp, i_in, value);
     }
-    cout << "K2p done" << endl;
+    cout << "K2p done: ";
+    get_time(tK2);
 
-
+    double tK3 = get_time();
     /*K3 contributions*/
-//#pragma omp parallel for
-//    for(int iK3=0; iK3<nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in; iK3++)
-//    {
-//        int i0 = (iK3 % (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_wp * nw3_nup * nw3_nupp * n_in);
-//        int iwp = (iK3 % (nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_nup * nw3_nupp * n_in);
-//        int ivp = (iK3 % (nw3_nup * nw3_nupp * n_in)) / (nw3_nupp * n_in);
-//        int ivpp = (iK3 % (nw3_nupp * n_in))/ n_in;
-//        int i_in = iK3 % n_in;
-//        double wp = bfreqs[iwp];
-//        double vp = ffreqs[ivp];
-//        double vpp = ffreqs[ivpp];
-//
-//        Integrand_p_K3_diff<Q, Diff_P_Bubble> integrand_p_K3_diff (vertex1, vertex2, PiPdot, i0, wp, vp, vpp,  i_in);
-//
-//        resp.densvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, integrator(integrand_p_K3_diff, ffreqs)); // TODO: complete this
-//    }
-//    cout << "K3p done" << endl;
+#pragma omp parallel for
+    for(int iK3=0; iK3<nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in; iK3++)
+    {
+        int i0 = (iK3 % (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_wp * nw3_nup * nw3_nupp * n_in);
+        int iwp = (iK3 % (nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_nup * nw3_nupp * n_in);
+        int ivp = (iK3 % (nw3_nup * nw3_nupp * n_in)) / (nw3_nupp * n_in);
+        int ivpp = (iK3 % (nw3_nupp * n_in))/ n_in;
+        int i_in = iK3 % n_in;
+        double wp = bfreqs[iwp];
+        double vp = ffreqs[ivp];
+        double vpp = ffreqs[ivpp];
+
+        Integrand_p_K3_diff<Q, Diff_P_Bubble> integrand_p_K3_diff (vertex1, vertex2, PiPdot, i0, wp, vp, vpp,  i_in);
+
+        Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K3_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+
+        dgamma.densvertex.pvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, value);
+    }
+    cout << "K3p done: ";
+    get_time(tK3);
 
 }
 

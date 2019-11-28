@@ -153,33 +153,33 @@ public:
     {
         this->K1 + vertex.K1;
         this->K2 + vertex.K2;
-//        this->K3 + vertex.K3;
+        this->K3 + vertex.K3;
         return *this;
     }
     pvert<Q> operator+=(const pvert<Q>& vertex)
     {
         this->K1 += vertex.K1;
         this->K2 += vertex.K2;
-//        this->K3 += vertex.K3;
+        this->K3 += vertex.K3;
         return *this;
     }
     pvert<Q> operator*(double alpha) {
         this->K1 * alpha;
         this->K2 * alpha;
-//        this->K3 * alpha;
+        this->K3 * alpha;
         return *this;
     }
     pvert<Q> operator*=(double alpha) {
         this->K1 *= alpha;
         this->K2 *= alpha;
-//        this->K3 *= alpha;
+        this->K3 *= alpha;
         return *this;
     }
     pvert<Q> operator-=(const pvert<Q>& vertex)
     {
         this->K1 -= vertex.K1;
         this->K2 -= vertex.K2;
-//        this->K3 -= vertex.K3;
+        this->K3 -= vertex.K3;
         return *this;
     }
 
@@ -195,8 +195,8 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
     return  K1_vvalsmooth (iK, w_p, i_in)
           + K2_vvalsmooth (iK, w_p, v1_p, i_in)
-          + K2b_vvalsmooth(iK, w_p, v2_p, i_in);
-//          + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
+          + K2b_vvalsmooth(iK, w_p, v2_p, i_in)
+          + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
 }
 
 template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in){
@@ -205,8 +205,8 @@ template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, 
     * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
     return  K1_vvalsmooth (iK, w, i_in)
             + K2_vvalsmooth (iK, w, v1, i_in)
-            + K2b_vvalsmooth(iK, w, v2, i_in);
-//            + K3_vvalsmooth (iK, w, v1, v2, i_in);
+            + K2b_vvalsmooth(iK, w, v2, i_in)
+            + K3_vvalsmooth (iK, w, v1, v2, i_in);
 }
 
 
