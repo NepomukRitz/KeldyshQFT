@@ -50,7 +50,7 @@
 
 \begin{document}
 %
-\title{Some equations for the vertex in the mfRG setting in the Keldysh formalism}
+\title{Formulaic collection for Keldysh mfRG calculations}
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
@@ -105,7 +105,8 @@ Conservation of momentum implies that one of the frequencies, conventionally cho
     \implies \nu_2 &= \nu_{1'} + \nu_{2'} -\nu_1
 \end{align}
 Hence, we will omit $\nu_{2}$ altogether from all formulas it would have appeared in.
-
+\subsection*{Channel decomposition \& reducibility}
+In the mfRG formalism
 We will be using the channel decomposition for the vertices, depending on the reducibility properties of the diagrams. Hence, introduce the following structures:
 
 \begin{figure}[ht]
@@ -352,27 +353,27 @@ and the $\operatorname{mod}$ functions:
 We summarize the results of these functions for future reference:
 \begin{align}
     \begin{array}{r@{\mskip\thickmuskip}l}
-    1111 &\longleftrightarrow 0 \\
-    1112 &\longleftrightarrow 1 \\
-    1121 &\longleftrightarrow 2 \\
-    1122 &\longleftrightarrow 3 \\
+    11|11 &\longleftrightarrow 0 \\
+    11|12 &\longleftrightarrow 1 \\
+    11|21 &\longleftrightarrow 2 \\
+    11|22 &\longleftrightarrow 3 \\
     \vspace{0.05cm}\\
-    1211 &\longleftrightarrow 4 \\
-    1212 &\longleftrightarrow 5 \\
-    1221 &\longleftrightarrow 6 \\
-    1222 &\longleftrightarrow 7
+    12|11 &\longleftrightarrow 4 \\
+    12|12 &\longleftrightarrow 5 \\
+    12|21 &\longleftrightarrow 6 \\
+    12|22 &\longleftrightarrow 7
     \end{array} 
   \quad  \quad
   \begin{array}{l@{\mskip\thickmuskip}l}
-    2111 &\longleftrightarrow 8 \\
-    2112 &\longleftrightarrow 9 \\
-    2121 &\longleftrightarrow 10 \\
-    2122 &\longleftrightarrow 11 \\
+    21|11 &\longleftrightarrow 8 \\
+    21|12 &\longleftrightarrow 9 \\
+    21|21 &\longleftrightarrow 10 \\
+    21|22 &\longleftrightarrow 11 \\
     \vspace{0.05cm}\\
-    2211 &\longleftrightarrow 12 \\
-    2212 &\longleftrightarrow 13 \\
-    2221 &\longleftrightarrow 14 \\
-    2222 &\longleftrightarrow 15
+    22|11 &\longleftrightarrow 12 \\
+    22|12 &\longleftrightarrow 13 \\
+    22|21 &\longleftrightarrow 14 \\
+    22|22 &\longleftrightarrow 15
   \end{array}
 \end{align}
 This allows us to refer to the components in the matrix as i.e. ``the 7th component'', where now it's unambiguously clear that the element referred to is $\Gamma^{12|22}$.
@@ -417,6 +418,7 @@ A_2^{K^t_2} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= (\overline{\alpha_1'}{\alpha
 Notice that these correspond to the same $A_2^{K^r_1}$ symmetries but, since they apply for a different diagrammatic class, we still define them. Clearly, each symmetry group is isomorphic to $\mathbb{Z}_2$.
 Also, it's important to mention that there are no symmetries whatsoever in the case of $K_3$ i.e. the symmetry group of the diagrammatic class is, for all channels, the trivial group.
 
+\section*{Bubbles}
 \subsection*{Keldysh structure of the bubbles}
 When considering the derivative of the full vertex, there are contributions coming only from each one of the channels, i.e. $\dot{\Gamma^{\Lambda}} = \sum_r \dot{\gamma_r}$  and
 \begin{equation}
@@ -429,7 +431,8 @@ First, one has to look at the Keldysh structure of the bubbles $\Pi_r^{\alpha'_3
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{all-Bubbles}
+	\includegraphics[width=\textwidth]{all-Bubbles.png}
+	\caption{Bubbles in the respective channels}
 \end{figure}
 
 
@@ -439,7 +442,7 @@ Thus, first of all, we have the frequency arguments that go into both propagator
 
 For the a-channel, we have
 \begin{align}
-\Pi_a^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha'_3|\alpha_3}G^{\alpha'_4|\alpha_4}\\
+\Pi_a^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha'_3|\alpha_3}\left(\nu''_a-\frac{\omega_a}{2}\right)G^{\alpha'_4|\alpha_4}\left(\nu''_a+\frac{\omega_a}{2}\right)\\
 \begin{pmatrix}
 0  & 1  & 2   & 3\\
 4  & 5  & 6   & 7\\
@@ -461,7 +464,7 @@ RR & RK & KR & KK
 
 for the p-channel
 \begin{align}
-\Pi_p^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha_3|\alpha'_3}G^{\alpha'_4|\alpha_4}\\
+\Pi_p^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha_3|\alpha'_3}\left(\frac{\omega_p}{2}+\nu''_p\right)G^{\alpha'_4|\alpha_4}\left(\frac{\omega_p}{2}-\nu''_p\right)\\
 \begin{pmatrix}
 0  & 1  & 2   & 3\\
 4  & 5  & 6   & 7\\
@@ -483,7 +486,7 @@ RA & RK & KA & KK
 
 and, lastly, for the t-channel, the same as for the a-channel:
 \begin{align}
-\Pi_t^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha'_3|\alpha_3}G^{\alpha'_4|\alpha_4}\\
+\Pi_t^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha'_3|\alpha_3}\left(\nu''_t-\frac{\omega_t}{2}\right)G^{\alpha'_4|\alpha_4}\left(\nu''_t+\frac{\omega_t}{2}\right)\\
 \begin{pmatrix}
 0  & 1  & 2   & 3\\
 4  & 5  & 6   & 7\\
@@ -506,10 +509,10 @@ This is a good point to point out that it's only the internal structure of the b
 These aforementioned functions are a devise to exploit the zeros in the bubbles \textit{and}, simultaneously, the fact that one only needs to store $n_{K_i}$ Keldysh components per diagrammatic class. These are functions that then, based on the Keldysh index, $i_0$, of the left hand side of Eq. \ref{eq:derivativeOfgamma} (i.e. $i_0\in\{0,\dots, n_{K_i}\}$ and the Keldysh index, $i_2$, of the list of non zero entries of the bubbles (i.e. $i_2\in\{3, 6, 7, 9, 11, 12, 13, 14, 15\}$)  determine precisely the corresponding components $i_1$ and $i_3$ for the vertices left and right of the bubble in Eq. \ref{eq:derivativeOfgamma}. Condensed into an equation, the statement is as follows:
 
 \begin{equation}
-\dot{\gamma_r^{i_0}}(\omega_r, \nu_r, \nu'_r) = \sum_{i_2\in BK} \int d\nu''_r \Gamma^{i^r_1(i_0, i_2)}(\omega_r, \nu_r, \nu''_r)  \Pi_r^{i_2}(\nu_1^r, \nu_2^r)  \Gamma^{i^r_3(i_0, i_2)}(\omega_r, \nu''_r, \nu'_r),
+\dot{\gamma_r}^{i_0}(\omega_r, \nu_r, \nu'_r) = \sum_{i_2\in BK} \int d\nu''_r \Gamma^{i^r_1(i_0, i_2)}(\omega_r, \nu_r, \nu''_r)  \dot{\Pi}_r^{i_2}(\nu_1^r, \nu_2^r)  \Gamma^{i^r_3(i_0, i_2)}(\omega_r, \nu''_r, \nu'_r),
 \label{eq:fullgammaDerivative}
 \end{equation}
-where we have emphasised that the frequencies that go into the bubbles depend on the channel, as depicted above, that the indices $i_1$ and $i_3$ are functions of the other two indices and the way these are determined are also channel-dependent and $BK = \{3, 6, 7, 9, 11, 12, 13, 14, 15\}$.
+where we have emphasized that the frequencies that go into the bubbles depend on the channel, as depicted above, that the indices $i_1$ and $i_3$ are functions of the other two indices and the way these are determined are also channel-dependent and $BK = \{3, 6, 7, 9, 11, 12, 13, 14, 15\}$.
 Writing down the exact form of these functions is a straight-forward task, which requires the conversion of $i_0$ and $i_2$ into indices in the $\{1111, \dots, 2222\}$ set. To visualize the process, just look at the figures drawn above. There, it becomes apparent, that, for $i_0 \rightarrow \alpha'_1\alpha'_2|\alpha_1\alpha_2$ and $i_2 \rightarrow \alpha'_3\alpha'_4|\alpha_3\alpha_4$, the functions are as follows:
 
 \begin{align}
@@ -523,7 +526,7 @@ i_3^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3)
 \subsection*{Structure of the internal bubble - diagrammatic classes' contributions}
 Now, at this stage, the natural question to ask is how the \textit{diagrammatic} decomposition of Eq. \ref{eq:fullgammaDerivative} looks like i.e., given that $\dot{\gamma_r} = \sum_i \dot{K_r^i}$, what are the diagrammatic classes that contribute to each of these derivatives? It should by now be clear that not all classes can contribute to all derivatives, since, for instance, diagrams in the $K_3$ class, by definition, do not fulfill the requirement of having, say, two lines connected to the same vertex on one side. Thus, no terms with $K_3$ can appear in $\dot{K_1}$.
 The natural thing to do at this stage is, basically, classify by sides and lines connected to one vertex, what classes fulfill the requirements to contribute, at least on one side, to which ones.
-Thus, one can establish the following categorisation:
+Thus, one can establish the following categorization:
 
 \begin{center}
 \begin{tabular}{| c| | c | c|} 
@@ -552,12 +555,6 @@ Through this, one then gets the following Contribution Table to $\dot{K_i^r}$:
 \end{center}
 
 What this table summarizes is the possible terms that can appear on the RHS of \ref{eq:derivativeOfgamma}, if one decomposes it into the diagrammatic classes.
-
-
-
-
-
-
 
 
 
