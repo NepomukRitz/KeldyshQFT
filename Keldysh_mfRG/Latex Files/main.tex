@@ -2,7 +2,7 @@
 % LLNCS macro package for Springer Computer Science proceedings;
 % Version 2.20 of 2017/10/04
 %
-\documentclass[runningheads]{llncs}
+\documentclass[12pt,a4paper,roman]{article}
 %
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -56,15 +56,14 @@
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-\author{Santiago Aguirre\inst{1} \and
-Elias Walter\inst{1}}
+\author{Santiago Aguirre \& Elias Walter}
 %
 %\authorrunning{F. Author et al.}
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
-\institute{Ludwig-Maximilians University, Munich, Germany \\
-\email{\{sa.aguirre, e.walter\}@physik.uni-muenchen.de}}
+%\institute{Ludwig-Maximilians University, Munich, Germany \\
+%\email{\{sa.aguirre, e.walter\}@physik.uni-muenchen.de}}
 %
 \maketitle              % typeset the header of the contribution
 %
@@ -81,7 +80,7 @@ Elias Walter\inst{1}}
 \begin{equation}
     \Gamma = \Gamma_{1'2'|12} = \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2)
 \end{equation}
-\begin{figure}
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.65]{vertex.png}
 \caption{Convention for the vertex}
@@ -91,12 +90,13 @@ The Keldysh indices take values in the set $\{1,2\}$, with the convention $1 = q
 \subsection*{Spin conservation:}
 Spin conservation: $\sigma_{1'} + \sigma_{2'} = \sigma_1 + \sigma_2$
 Overall spin conservation of the vertex dictates that there are three (fundamentally, actually only two) different cases:
-\subsubsection{All spins equal}
+\subsubsection*{All spins equal}
 Sum of the incoming (or outgoing) spins equals either -1 or 1: 
 $\Gamma = \Gamma_{\sigma\sigma|\sigma\sigma}$
-\subsubsection{Incoming spins reversed}
-Sum of incoming spins equals 0
+\subsubsection*{Incoming spins reversed}
+Sum of incoming spins equals 0: 
 $\Gamma = \Gamma_{\sigma\overline{\sigma}|\sigma\overline{\sigma}}$ or $\Gamma = \Gamma_{\sigma\overline{\sigma}|\overline{\sigma}\sigma}$
+These last two cases can be linked through a spin-inversion transformation and, hence, aren't considered to be (computationally) different, although they represent distinct physical processes.
 
 \subsection*{Frequency conservation:}
 Conservation of momentum implies that one of the frequencies, conventionally chosen to be $\nu_2$, will be dependent on the other 3.
@@ -104,6 +104,8 @@ Conservation of momentum implies that one of the frequencies, conventionally cho
     \nu_{1'} + \nu_{2'} &= \nu_1 + \nu_2  \\
     \implies \nu_2 &= \nu_{1'} + \nu_{2'} -\nu_1
 \end{align}
+Hence, we will omit $\nu_{2}$ altogether from all formulas it would have appeared in.
+
 We will be using the channel decomposition for the vertices, depending on the reducibility properties of the diagrams. Hence, introduce the following structures:
 
 \begin{figure}[ht]
@@ -112,23 +114,23 @@ We will be using the channel decomposition for the vertices, depending on the re
     \caption{Convention for the introduction of channel-specific frequencies}
     \label{fig:channels}
 \end{figure}
+In this notation we explicitly describe the full vertex function $\Gamma$, which is naturally a function of three arguments, as slight variations that depend on the convention for the respective channel. This means that all $\Gamma_r$ represent the same object, namely the full vertex, but each instantiation receives the arguments $\omega_r$, $\nu_r$ and $\nu'_r$ already expressed in the channel's natural parametrization. This clarification is important since these objects are fundamentally different form the notationally-similar $\gamma_r$, which are the reducible vertices in the $r$-channel.
 
-The frequencies in Fig. \ref{fig:channels} lead then to the following conversion rules between the channels, where the conventional vertex depicted in Fig. \ref{fig:vertex} is referred to as the 'fermionic' vertex:
+The frequencies in Fig. \ref{fig:channels} lead then to the following conversion rules between the channels, where the conventional vertex depicted in Fig. \ref{fig:vertex} is referred to as the 'fermionic' vertex, $\Gamma_f$:
 
-\subsubsection{a-channel}
+\subsubsection*{a-channel}
 From and to the fermionic channel:
 \begin{align}
     \left.\begin{array}{r@{\mskip\thickmuskip}l}
     \nu_{1'} &= \nu_a - \frac{\omega_a}{2} \\
     \nu_{2'} &= \nu'_a + \frac{\omega_a}{2} \\
     \nu_{1 } &= \nu'_a - \frac{\omega_a}{2} \\
-    \nu_{2 } &= \nu_a + \frac{\omega_a}{2} \\
   \end{array} \right\}
   \quad \implies \quad
   \left\{\begin{array}{l@{\mskip\thickmuskip}l}
     \omega_a &= \nu_{2} - \nu_{1'} = \nu_{2'} - \nu_{1}\\
-    \nu_a  &= \frac{\nu_{2} + \nu_{1'}}{2} \\
-    \nu'_a &= \frac{\nu_{2'} + \nu_{1}}{2}\\
+    \nu_a    &= \frac{1}{2}\left(2\nu_{1'}+\nu_{2'}-\nu_{1}\right) \\
+    \nu'_a   &= \frac{1}{2}\left(\nu_{2'} + \nu_{1}\right)\\
   \end{array}\right.
 \end{align}
 
@@ -152,20 +154,19 @@ And from any other channel to the a-channel:
 \end{align}
 
 
-\subsubsection{p-channel}
-From an to the fermionic channel:
+\subsubsection*{p-channel}
+From and to the fermionic channel:
 \begin{align}
     \left.\begin{array}{r@{\mskip\thickmuskip}l}
-    \nu_{1'} &= \nu_p + \frac{\omega_p}{2} \\
+    \nu_{1'} &= \frac{\omega_p}{2} + \nu_p \\
     \nu_{2'} &= \frac{\omega_p}{2} - \nu_p \\
-    \nu_{1 } &= \nu'_p + \frac{\omega_p}{2} \\
-    \nu_{2 } &= \frac{\omega_p}{2} - \nu'_p\\
+    \nu_{1}  &= \frac{\omega_p}{2} + \nu'_p\\
   \end{array} \right\}
   \quad \implies \quad
   \left\{\begin{array}{l@{\mskip\thickmuskip}l}
-    \omega_p &= \nu_{1} + \nu_{1} = \nu_{1'} + \nu_{2}\\
-    \nu_p  &= \frac{\nu_{1'} - \nu_{2'}}{2} \\
-    \nu'_p &= \frac{\nu_{1} - \nu_{2}}{2}\\
+    \omega_p &= \nu_{1'} + \nu_{2'} = \nu_{1} + \nu_{2}\\
+    \nu_p    &= \frac{1}{2}\left(\nu_{1'}-\nu_{2'}\right) \\
+    \nu'_p   &= \frac{1}{2}\left(2\nu_{1}-\nu_{1'}-\nu_{2'}\right)\\
   \end{array}\right.
 \end{align}
 
@@ -188,20 +189,19 @@ And from any other channel to the p-channel:
   \end{array}
 \end{align}
 
-\subsubsection{t-channel}
+\subsubsection*{t-channel}
 From and to the fermionic channel
 \begin{align}
     \left.\begin{array}{r@{\mskip\thickmuskip}l}
     \nu_{1'} &= \nu'_t + \frac{\omega_t}{2} \\
-    \nu_{2'} &= \nu_t - \frac{\omega_t}{2} \\
+    \nu_{2'} &= \nu_t  - \frac{\omega_t}{2} \\
     \nu_{1 } &= \nu'_t - \frac{\omega_t}{2} \\
-    \nu_{2 } &= \nu_t + \frac{\omega_t}{2} \\
   \end{array} \right\}
   \quad \implies \quad
   \left\{\begin{array}{l@{\mskip\thickmuskip}l}
     \omega_t &= \nu_{1'} - \nu_{1} = \nu_{2} - \nu_{2'}\\
-    \nu_t  &= \frac{\nu_{2} + \nu_{2'}}{2} \\
-    \nu'_t &= \frac{\nu_{1'} +\nu_{1}}{2}\\
+    \nu_t    &= \frac{1}{2}\left(2\nu_{2'}+\nu_{1'}-\nu_{1}\right) \\
+    \nu'_t   &= \frac{1}{2}\left(\nu_{1'} +\nu_{1}\right)\\
   \end{array}\right.
 \end{align}
 
@@ -225,6 +225,8 @@ And from any other channel to the t-channel:
   \end{array}
 \end{align}
 
+
+
 \subsection*{Particle exchange and complex conjugation:}
 Here is how the vertex components are related under particle exchange:
 \begin{align}
@@ -240,7 +242,7 @@ And under complex conjugation:
 \end{multline}
 
 \subsection*{Causality:}
-Causality, in the Keldysh formalism translates to $\Gamma^{22|22} = 0$ always.
+Causality, in the Keldysh formalism, translates to $\Gamma^{22|22} = 0$ always.
 
 \section*{Transformations}
 Define the following transformations, based on the previous properties:
@@ -306,7 +308,7 @@ Due to the internal symmetries (i.e. Eqs. \ref{eq:ts}-\ref{eq:tc}), the 16 Keldy
     \Gamma^{22|11} & \Gamma^{22|12} & \Gamma^{22|21} & \Gamma^{22|22}
     \end{pmatrix}_{\sigma\sigma|\sigma\sigma}  \\
     & = :     \begin{pmatrix}
-    \psi_A & \phi_A & T_1\phi_A & \psi_B \\
+    A & \phi_A & T_1\phi_A & \psi_B \\
     T_C\phi_A & \phi_B & T_1\phi_B & \phi_D \\
     T_C T_1\phi_A & T_2 \phi_B & T_3\phi_B & T_2\phi_D \\
     T_C\psi_B & T_C\phi_D & T_CT_2\phi_D & 0
@@ -322,13 +324,13 @@ Due to the internal symmetries (i.e. Eqs. \ref{eq:ts}-\ref{eq:tc}), the 16 Keldy
     \Gamma^{22|11} & \Gamma^{22|12} & \Gamma^{22|21} & \Gamma^{22|22}
     \end{pmatrix}_{\sigma\overline{\sigma}|\sigma\overline{\sigma}} \\
     & = :     \begin{pmatrix}
-    \psi_A & \phi_A & T_1\phi_A & \psi_B \\
+    A & \phi_A & T_1\phi_A & \psi_B \\
     T_C\phi_A & \phi_B & \phi_C & \phi_D \\
     T_C T_1\phi_A & T_C \phi_C & T_3\phi_B & T_2\phi_D \\
     T_C\psi_B & T_C\phi_D & T_CT_2\phi_D & 0
     \end{pmatrix}_{\sigma\overline{\sigma}|\sigma\overline{\sigma}}
 \end{align}
-Therefore, in the worst case scenario, we aren't looking at a matrix of 16 independent components, but of ``only'' 6, which we define to be the set $\{\psi_A, \psi_B, \phi_A, \phi_B, \phi_C, \phi_D\}$.
+Therefore, in the worst case scenario, we aren't looking at a matrix of 16 independent components, but of ``only'' 6, which we define to be the set $\{A, \psi_B, \phi_A, \phi_B, \phi_C, \phi_D\}$, following Elias' older convention.
 
 \subsubsection*{Enumeration of the components}
 To make the whole thing a little easier and be able to refer to the components of the vertex in a concrete and ``linear'' manner, we convert the indices $\alpha_1'\alpha_2'|\alpha_1\alpha_2$ to numbers in the set $\mathcal{N} := \{0, 1, \dots, 15\}$. The following formula does the trick:
@@ -421,10 +423,14 @@ When considering the derivative of the full vertex, there are contributions comi
 \centering
 \dot{\gamma_r} = \Gamma \circ \dot{\Pi_r} \circ \Gamma + \text{multi-loop terms}.
 \label{eq:derivativeOfgamma}
-\end{equation}The thing that now becomes important is determining the Keldysh indices of the whole equation \ref{derivativeOfgamma}, since automating this step plays a crucial role in the computation of the derivative.
+\end{equation}
+What now becomes important is determining the Keldysh indices of the whole equation \ref{eq:derivativeOfgamma}, since automating this step plays a crucial role in the computation of the derivative.
 First, one has to look at the Keldysh structure of the bubbles $\Pi_r^{\alpha'_3\alpha'_4|\alpha_3\alpha_4}$. To do so, we recur first to the following bubble structures:
 
-\vspace{10 cm}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{all-Bubbles}
+\end{figure}
 
 
 
@@ -504,7 +510,7 @@ These aforementioned functions are a devise to exploit the zeros in the bubbles 
 \label{eq:fullgammaDerivative}
 \end{equation}
 where we have emphasised that the frequencies that go into the bubbles depend on the channel, as depicted above, that the indices $i_1$ and $i_3$ are functions of the other two indices and the way these are determined are also channel-dependent and $BK = \{3, 6, 7, 9, 11, 12, 13, 14, 15\}$.
-Writing down the exact form of these functions is a straight-forward task, which requires the conversion of $i_0$ and $i_2$ into indices in the $\{1111, \dots, 2222\}$ set. To visualise the process, just look at the figures drawn above. There, it becomes apparent, that, for $i_0 \rightarrow \alpha'_1\alpha'_2|\alpha_1\alpha_2$ and $i_2 \rightarrow \alpha'_3\alpha'_4|\alpha_3\alpha_4$, the functions are as follows:
+Writing down the exact form of these functions is a straight-forward task, which requires the conversion of $i_0$ and $i_2$ into indices in the $\{1111, \dots, 2222\}$ set. To visualize the process, just look at the figures drawn above. There, it becomes apparent, that, for $i_0 \rightarrow \alpha'_1\alpha'_2|\alpha_1\alpha_2$ and $i_2 \rightarrow \alpha'_3\alpha'_4|\alpha_3\alpha_4$, the functions are as follows:
 
 \begin{align}
 i_1^a (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha_4| \alpha'_3\alpha_2 \\
@@ -514,7 +520,7 @@ i_3^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3)
 i_1^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha_4\alpha'_2| \alpha'_3\alpha_2 \\
 i_3^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha_3| \alpha_1\alpha'_4 \\
 \end{align}
-\subsection{Structure of the internal bubble - diagrammatic classes' contributions}
+\subsection*{Structure of the internal bubble - diagrammatic classes' contributions}
 Now, at this stage, the natural question to ask is how the \textit{diagrammatic} decomposition of Eq. \ref{eq:fullgammaDerivative} looks like i.e., given that $\dot{\gamma_r} = \sum_i \dot{K_r^i}$, what are the diagrammatic classes that contribute to each of these derivatives? It should by now be clear that not all classes can contribute to all derivatives, since, for instance, diagrams in the $K_3$ class, by definition, do not fulfill the requirement of having, say, two lines connected to the same vertex on one side. Thus, no terms with $K_3$ can appear in $\dot{K_1}$.
 The natural thing to do at this stage is, basically, classify by sides and lines connected to one vertex, what classes fulfill the requirements to contribute, at least on one side, to which ones.
 Thus, one can establish the following categorisation:
@@ -545,11 +551,7 @@ Through this, one then gets the following Contribution Table to $\dot{K_i^r}$:
 \end{tabular}
 \end{center}
 
-What this table summarises is the possible terms that can appear on the RHS of \ref{eq:derivativeOfgamma}, if one decomposes it into the diagrammatic classes.
-
-
-
-
+What this table summarizes is the possible terms that can appear on the RHS of \ref{eq:derivativeOfgamma}, if one decomposes it into the diagrammatic classes.
 
 
 
