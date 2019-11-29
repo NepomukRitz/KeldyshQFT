@@ -105,9 +105,30 @@ Conservation of momentum implies that one of the frequencies, conventionally cho
     \implies \nu_2 &= \nu_{1'} + \nu_{2'} -\nu_1
 \end{align}
 Hence, we will omit $\nu_{2}$ altogether from all formulas it would have appeared in.
+
+\subsection*{Causality:}
+Causality, in the Keldysh formalism, translates to $\Gamma^{22|22} = 0$ always.
+
+\subsection*{Particle exchange and complex conjugation:}
+Here is how the vertex components are related under particle exchange:
+\begin{align}
+&\Gamma_{\sigma_2'\sigma_1'|\sigma_1\sigma_2}^{\alpha_2'\alpha_1'|\alpha_1\alpha_2}(q_2'q_1'|q_1q_2, \nu_2'\nu_1'|\nu_1\nu_2) \\
+&= \Gamma_{\sigma_1'\sigma_2'|\sigma_2\sigma_1}^{\alpha_1'\alpha_2'|\alpha_2\alpha_1}(q_1'q_2'|q_2q_1, \nu_1'\nu_2'|\nu_2\nu_1) \\
+&= - \Gamma_{\sigma_2'\sigma_1'|\sigma_2\sigma_1}^{\alpha_2'\alpha_1'|\alpha_2\alpha_1}(q_2'q_1'|q_2q_1, \nu_2'\nu_1'|\nu_2\nu_1) \\
+&= - \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2)
+\end{align}
+And under complex conjugation:
+\begin{multline}
+\left[ \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2) \right]^* \\ =
+(-1)^{(1+\alpha_1'+\alpha_2'+\alpha_1+\alpha_2)} \Gamma_{\sigma_1\sigma_2|\sigma_1'\sigma_2'}^{\alpha_1\alpha_2|\alpha_1'\alpha_2'}(q_1q_2|q_1'q_2', \nu_1\nu_2|\nu_1'\nu_2')
+\end{multline}
+
 \subsection*{Channel decomposition \& reducibility}
-In the mfRG formalism
-We will be using the channel decomposition for the vertices, depending on the reducibility properties of the diagrams. Hence, introduce the following structures:
+In the mfRG formalism we have that the full vertex can be written as the sum of the irreducible part $R = U + \mathcal{O}(u^4)$ and reducible contributions $\gamma_r$ in three channels: $r=a$ for \textit{anti-parallel}, $r=p$ for \textit{parallel} and $r=t$ for \textit{transverse}. These names allude to the relation of the cut propagator lines have, were one to make a diagram disconnected. Since any reducible diagram can only belong to one of these classes\cite{}, one can then write the following equation for the full vertex:
+\begin{equation}
+	\Gamma = R + \sum_r \gamma_r = R + \gamma_a + \gamma_p + \gamma_t
+\end{equation}
+This reducibility of the diagrams then gives rise to the ``bubble'' objects, $\Pi_r$, which are the pair of propagators that, should they be cut, would disconnect the diagram. These pairs of propagators effectively carry a (bosonic) transfer frequency between the two sides of the bubble. Knowing this, we can tailor an explicit frequency dependence that highlights and exploits this fact, in order to then simplify calculations. Hence, we introduce the following structures:
 
 \begin{figure}[ht]
     \centering
@@ -115,7 +136,7 @@ We will be using the channel decomposition for the vertices, depending on the re
     \caption{Convention for the introduction of channel-specific frequencies}
     \label{fig:channels}
 \end{figure}
-In this notation we explicitly describe the full vertex function $\Gamma$, which is naturally a function of three arguments, as slight variations that depend on the convention for the respective channel. This means that all $\Gamma_r$ represent the same object, namely the full vertex, but each instantiation receives the arguments $\omega_r$, $\nu_r$ and $\nu'_r$ already expressed in the channel's natural parametrization. This clarification is important since these objects are fundamentally different form the notationally-similar $\gamma_r$, which are the reducible vertices in the $r$-channel.
+In this notation we explicitly describe the full vertex function $\Gamma$, which is naturally a function of three arguments, as slight variations that depend on the convention for the respective channel. This means that all $\Gamma_r$ represent the same object, namely the full vertex, but each instantiation receives the arguments $\omega_r$, $\nu_r$ and $\nu'_r$, the bosonic and the two fermionic frequencies, respectively, already expressed in the channel's natural parametrization. This clarification is important since these objects are fundamentally different form the notationally-similar $\gamma_r$, which are the reducible vertices in the $r$-channel.
 
 The frequencies in Fig. \ref{fig:channels} lead then to the following conversion rules between the channels, where the conventional vertex depicted in Fig. \ref{fig:vertex} is referred to as the 'fermionic' vertex, $\Gamma_f$:
 
@@ -228,22 +249,7 @@ And from any other channel to the t-channel:
 
 
 
-\subsection*{Particle exchange and complex conjugation:}
-Here is how the vertex components are related under particle exchange:
-\begin{align}
-    &\Gamma_{\sigma_2'\sigma_1'|\sigma_1\sigma_2}^{\alpha_2'\alpha_1'|\alpha_1\alpha_2}(q_2'q_1'|q_1q_2, \nu_2'\nu_1'|\nu_1\nu_2) \\
-    &= \Gamma_{\sigma_1'\sigma_2'|\sigma_2\sigma_1}^{\alpha_1'\alpha_2'|\alpha_2\alpha_1}(q_1'q_2'|q_2q_1, \nu_1'\nu_2'|\nu_2\nu_1) \\
-    &= - \Gamma_{\sigma_2'\sigma_1'|\sigma_2\sigma_1}^{\alpha_2'\alpha_1'|\alpha_2\alpha_1}(q_2'q_1'|q_2q_1, \nu_2'\nu_1'|\nu_2\nu_1) \\
-    &= - \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2)
-\end{align}
-And under complex conjugation:
-\begin{multline}
-    \left[ \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2) \right]^* \\ =
-    (-1)^{(1+\alpha_1'+\alpha_2'+\alpha_1+\alpha_2)} \Gamma_{\sigma_1\sigma_2|\sigma_1'\sigma_2'}^{\alpha_1\alpha_2|\alpha_1'\alpha_2'}(q_1q_2|q_1'q_2', \nu_1\nu_2|\nu_1'\nu_2')
-\end{multline}
 
-\subsection*{Causality:}
-Causality, in the Keldysh formalism, translates to $\Gamma^{22|22} = 0$ always.
 
 \section*{Transformations}
 Define the following transformations, based on the previous properties:
