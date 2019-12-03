@@ -110,13 +110,6 @@ public:
      * only have the values 'a', 'p', or 't'.*/
     tuple<double, double, double> transfToP(double, double, double, char);
 
-//    /*Overload of previous function to single out the transfer from 3-fermionic frequencies*/
-//    tuple<double, double, double> transfToP(double, double, double);
-//
-//    /*This function transforms the frequency arguments from the a-channel convention to the standard 3-fermionic freqs. input
-// * I.e. is the inverse of the function above*/
-//    tuple<double, double, double> transfBackP(double, double, double);
-
 
     /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
      * legs are switched and the three corresponding frequency inputs for the diagrammatic class*/
@@ -186,27 +179,17 @@ public:
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
-//Here iK is in 0...15 already. Only need to check to what component to transfer to.
 template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel){
+
     double w_p=0., v1_p=0., v2_p=0.;
     tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
 
-    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
-    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
-    return  K1_vvalsmooth (iK, w_p, i_in)
-          + K2_vvalsmooth (iK, w_p, v1_p, i_in)
-          + K2b_vvalsmooth(iK, w_p, v2_p, i_in)
-          + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
+    return K1_vvalsmooth (iK, w_p, i_in) + K2_vvalsmooth (iK, w_p, v1_p, i_in) + K2b_vvalsmooth(iK, w_p, v2_p, i_in) + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
 }
 
 template <typename Q> Q pvert<Q>::value(int iK, double w, double v1, double v2, int i_in){
 
-    /*If the transformation taking place is T1 or T2, the value gets multiplied by -1. If it's T3, no factor is added.
-    * If it is TC, the value gets multiplied by (-1)^(1+sum_of_alphas) and also conjugated*/
-    return  K1_vvalsmooth (iK, w, i_in)
-            + K2_vvalsmooth (iK, w, v1, i_in)
-            + K2b_vvalsmooth(iK, w, v2, i_in)
-            + K3_vvalsmooth (iK, w, v1, v2, i_in);
+    return K1_vvalsmooth (iK, w, i_in) + K2_vvalsmooth (iK, w, v1, i_in) + K2b_vvalsmooth(iK, w, v2, i_in) + K3_vvalsmooth (iK, w, v1, v2, i_in);
 }
 
 
@@ -230,16 +213,15 @@ template <typename Q> void pvert<Q>::K3_addvert(int iK, int i, int j, int k, int
     K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] += value;
 }
 
-template <typename Q> Q pvert<Q>::K1_vval(int iK, int i, int i_in){
+template <typename Q> Q pvert<Q>::K1_vval (int iK, int i, int i_in){
     return K1[iK*nw1_wp*n_in + i*n_in + i_in];
 }
-template <typename Q> Q pvert<Q>::K2_vval(int iK, int i,int j, int i_in){
+template <typename Q> Q pvert<Q>::K2_vval (int iK, int i, int j, int i_in){
     return K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in];
 }
-template <typename Q> Q pvert<Q>::K3_vval(int iK, int i, int j, int k, int i_in){
+template <typename Q> Q pvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in){
     return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
 }
-
 
 template <typename Q> Q pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in){
 
@@ -301,37 +283,32 @@ template <typename Q> Q pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
     Q valueK2;
 
+    pf2 = 1.;
+
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(isInList(iK,list_K2_T0_comp0)){
         iK2 = 0;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T0_comp1)){
         iK2 = 1;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T0_comp4)){
         iK2 = 2;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T0_comp5)){
         iK2 = 3;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T0_comp13)){
         iK2 = 4;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T3_comp4)){
         tie(w_p, v1_p, i_in) = indices_T3_K2(w_p, v1_p, i_in);
         iK2 = 2;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2_T3_comp5)){
         tie(w_p, v1_p, i_in) = indices_T3_K2(w_p, v1_p, i_in);
         iK2 = 3;
-        pf2 = 1.;
     }
     else {
         iK2 = 0;
@@ -369,37 +346,31 @@ template <typename Q> Q pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
     Q valueK2;
 
+    pf2 = 1.;
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(isInList(iK,list_K2b_TC_comp0)){
         iK2 = 0;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2b_TC_comp1)){
         iK2 = 1;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2b_TC_comp4)){
         iK2 = 2;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2b_TC_comp5)){
         iK2 = 3;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2b_TC_comp13)){
         iK2 = 4;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2b_TCT3_comp4)){
         tie(w_p, v2_p, i_in) = indices_T3_K2(w_p, v2_p, i_in);
         iK2 = 2;
-        pf2 = 1.;
     }
     else if(isInList(iK,list_K2b_TCT3_comp5)){
         tie(w_p, v2_p, i_in) = indices_T3_K2(w_p, v2_p, i_in);
         iK2 = 3;
-        pf2 = 1.;
     }
     else {
         iK2 = 0;
@@ -448,9 +419,9 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p
         conjugate3 = false;
     }
     else if(iK == 2){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        pf3 =-1.;
+        pf3 = 1.;
         conjugate3 = false;
     }
     else if(iK==4){
@@ -466,10 +437,10 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p
         conjugate3 = false;
     }
     else if(iK == 8){
+        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
         tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
-        tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
         iK3 = 1;
-        pf3 =-1.;   //(-1.)^(1+2+1+1+1)*(-1) for T2
+        pf3 = 1.;   //(-1.)^(1+2+1+1+1)
         conjugate3 = true;
     }
     else if(iK == 9){
@@ -487,9 +458,9 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p
     }
 
     else if(iK == 11){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 4;
-        pf3 =-1.;
+        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+        iK3 = 5;
+        pf3 = 1.;
         conjugate3 = false;
     }
 
@@ -502,16 +473,16 @@ template <typename Q> Q pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p
 
     else if(iK == 13){
         tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 4;
+        iK3 = 5;
         pf3 = 1.;   //(-1)^(1+2+2+1+2)
         conjugate3 = true;
     }
 
     else if(iK == 14){
+        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
         tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
-        tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 4;
-        pf3 =-1.;   //(-1)^(1+2+2+2+1)*(-1)for T2
+        iK3 = 5;
+        pf3 = 1.;   //(-1)^(1+2+2+2+1)
         conjugate3 = true;
     }
     else{
@@ -573,9 +544,9 @@ template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w,
 
     switch(channel){
         case 'a':
-            w_p = v2+v1;
-            v1_p = 0.5*(-w+v1-v2);
-            v2_p = 0.5*(-w-v1+v2);
+            w_p = v1+v2;                    //w  = w_a
+            v1_p = 0.5*(-w+v1-v2);          //v1 = v_a
+            v2_p = 0.5*(-w-v1+v2);          //v2 = v'_a
             break;
         case 'p':
             w_p = w;
@@ -583,29 +554,17 @@ template<typename Q> tuple<double, double, double> pvert<Q>::transfToP(double w,
             v2_p = v2;
             break;
         case 't':
-            w_p = v1+v2;
-            v1_p = 0.5*( w-v1+v2);
-            v2_p = 0.5*(-w-v1+v2);
+            w_p = v1+v2;                    //w  = w_t
+            v1_p = 0.5*( w-v1+v2);          //v1 = v_t
+            v2_p = 0.5*(-w-v1+v2);          //v2 = v'_t
             break;
         case 'f' :
-            w_p = w + v1;
-            v1_p = 0.5*(w-v1);
-            v2_p = 0.5*(w-v1);
+            w_p = w+v1;                     //w  = v_1'
+            v1_p = 0.5*(w-v1);              //v1 = v_2'
+            v2_p = 0.5*(2.*v2-w-v1);        //v2 = v_1
             break;
         default: ;
     }
-//    if(channel == 'a'){
-//        w_p = v2+v1;
-//        v1_p = 0.5*(-w+v1-v2);
-//        v2_p = 0.5*(-w-v1+v2);}
-//    else if(channel == 'p'){
-//        w_p = w;
-//        v1_p = v1;
-//        v2_p = v2;}
-//    else if(channel == 't'){
-//        w_p = v1+v2;
-//        v1_p = 0.5*( w-v1+v2);
-//        v2_p = 0.5*(-w-v1+v2);}
     return make_tuple(w_p, v1_p, v2_p);
 }
 
