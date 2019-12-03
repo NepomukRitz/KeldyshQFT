@@ -18,7 +18,7 @@ using namespace std;
 
 typedef complex<double> comp;
 
-void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
+void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
 template <typename Q> void derivative(State<Q>& dPsi, double Lambda, State<Q>& state);
 template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, State<Q>& state);
 
@@ -26,7 +26,7 @@ template <typename Q> void SOPT(State<Q>& bare, double Lambda, State<Q>& state);
 void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
 
 
-int main() {
+auto main() -> int {
 
     setUpBosGrid();
     setUpFerGrid();
@@ -71,7 +71,7 @@ int main() {
     Propagator initial = propag(state.Lambda, state.selfenergy, 'g', '.');
     Propagator compare = propag(state.Lambda, state.selfenergy, 'g', 'f');
 
-    writeOutFile(ffreqs, state.Lambda, initial, state.selfenergy, state.vertex);
+    writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
 
     cout << "Start of flow" << endl;
     for(int i=1; i<nEVO; ++i) {
@@ -89,12 +89,11 @@ int main() {
         state += dPsi;
         cout << "Added:";
         get_time(tadd);
-
         double next_Lambda = flow_grid[i];
 
         Propagator control = propag(next_Lambda, state.selfenergy, 'g','.');
 
-        writeOutFile(ffreqs, next_Lambda, control, state.selfenergy, state.vertex);
+        writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
         cout << "Wrote out" <<endl;
         cout << "One RK-derivative step: ";
         get_time(tder);
@@ -243,82 +242,277 @@ template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, Sta
 }
 
 //Writes of .dat files of the propagator, the self energy and selected values of the vertex for different values of Lambda during the fRG flow
-void writeOutFile(rvec& freqs, double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex)
+void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex)
 {
     int i = fconv_Lambda(Lambda);
 
     ostringstream self_energyR, self_energyA, self_energyK, propR, propA, propK;
-    ostringstream avert1, pvert1, tvert1, avert3, pvert5, tvert3;
+    ofstream my_file_sigmaR, my_file_sigmaA, my_file_sigmaK, my_file_propR, my_file_propA, my_file_propK;
+
     self_energyR << "self_energyR"<<i<<".dat";
     self_energyA << "self_energyA"<<i<<".dat";
     self_energyK << "self_energyK"<<i<<".dat";
-
     propR << "propagatorR"<<i<<".dat";
     propA << "propagatorA"<<i<<".dat";
     propK << "propagatorK"<<i<<".dat";
 
-    avert1 << "avert1"<<i<<".dat";
-    pvert1 << "pvert1"<<i<<".dat";
-    tvert1 << "tvert1"<<i<<".dat";
-
-    avert3 << "avert3"<<i<<".dat";
-    pvert5 << "pvert5"<<i<<".dat";
-    tvert3 << "tvert3"<<i<<".dat";
-
-    ofstream my_file_sigmaR, my_file_sigmaA, my_file_sigmaK, my_file_propR, my_file_propA, my_file_propK;
-    ofstream  my_file_avert1, my_file_pvert1, my_file_tvert1, my_file_avert3, my_file_pvert5, my_file_tvert3;
     my_file_sigmaR.open(self_energyR.str());
     my_file_sigmaA.open(self_energyA.str());
     my_file_sigmaK.open(self_energyK.str());
-
     my_file_propR.open(propR.str());
     my_file_propA.open(propA.str());
     my_file_propK.open(propK.str());
 
-    my_file_avert1.open(avert1.str());
-    my_file_pvert1.open(pvert1.str());
-    my_file_tvert1.open(tvert1.str());
+    for (int j = 0; j < ffreqs.size(); j++) {
+        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.sval(0, j).real() << " " <<  selfEnergy.sval(0, j).imag() << "\n";
+        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.sval(0, j).real() << " " << -selfEnergy.sval(0, j).imag() << "\n";
+        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.sval(1, j).real() << " " <<  selfEnergy.sval(1, j).imag() << "\n";
 
-    my_file_avert3.open(avert3.str());
-    my_file_pvert5.open(pvert5.str());
-    my_file_tvert3.open(tvert3.str());
-
-    for (int j = 0; j < freqs.size(); j++) {
-        my_file_sigmaR << freqs[j] << " " << selfEnergy.sval(0, j).real() << " " <<  selfEnergy.sval(0, j).imag() << "\n";
-        my_file_sigmaA << freqs[j] << " " << selfEnergy.sval(0, j).real() << " " << -selfEnergy.sval(0, j).imag() << "\n";
-        my_file_sigmaK << freqs[j] << " " << selfEnergy.sval(1, j).real() << " " <<  selfEnergy.sval(1, j).imag() << "\n";
-
-        my_file_propR << freqs[j] << " " << propagator.pval(0, j).real() << " " <<  propagator.pval(0, j).imag() << "\n";
-        my_file_propA << freqs[j] << " " << propagator.pval(0, j).real() << " " << -propagator.pval(0, j).imag() << "\n";
-        my_file_propK << freqs[j] << " " << propagator.pval(1, j).real() << " " <<  propagator.pval(1, j).imag() << "\n";
-    }
-
-    for (int j = 0; j<bfreqs.size(); j++){
-        my_file_avert1 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).imag()<< "\n";
-        my_file_pvert1 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).imag()<< "\n";
-        my_file_tvert1 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).imag()<< "\n";
-
-        my_file_avert3 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).imag()<< "\n";
-        my_file_pvert5 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).imag()<< "\n";
-        my_file_tvert3 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).imag()<< "\n";
-
+        my_file_propR << ffreqs[j] << " " << propagator.pval(0, j).real() << " " <<  propagator.pval(0, j).imag() << "\n";
+        my_file_propA << ffreqs[j] << " " << propagator.pval(0, j).real() << " " << -propagator.pval(0, j).imag() << "\n";
+        my_file_propK << ffreqs[j] << " " << propagator.pval(1, j).real() << " " <<  propagator.pval(1, j).imag() << "\n";
     }
 
     my_file_sigmaR.close();
     my_file_sigmaA.close();
     my_file_sigmaK.close();
-
     my_file_propR.close();
     my_file_propA.close();
     my_file_propK.close();
 
-    my_file_avert1.close();
-    my_file_pvert1.close();
-    my_file_tvert1.close();
+#if DIAG_CLASS >=1
+    ostringstream avert1K1, pvert1K1, tvert1K1, avert3K1, pvert5K1, tvert3K1;
+    avert1K1 << "avert1K1"<<i<<".dat";
+    pvert1K1 << "pvert1K1"<<i<<".dat";
+    tvert1K1 << "tvert1K1"<<i<<".dat";
+    avert3K1 << "avert3K1"<<i<<".dat";
+    pvert5K1 << "pvert5K1"<<i<<".dat";
+    tvert3K1 << "tvert3K1"<<i<<".dat";
 
-    my_file_avert3.close();
-    my_file_pvert5.close();
-    my_file_tvert3.close();
+    ofstream  my_file_avert1K1, my_file_pvert1K1, my_file_tvert1K1, my_file_avert3K1, my_file_pvert5K1, my_file_tvert3K1;
+
+    my_file_avert1K1.open(avert1K1.str());
+    my_file_pvert1K1.open(pvert1K1.str());
+    my_file_tvert1K1.open(tvert1K1.str());
+    my_file_avert3K1.open(avert3K1.str());
+    my_file_pvert5K1.open(pvert5K1.str());
+    my_file_tvert3K1.open(tvert3K1.str());
+
+    for (int j = 0; j<bfreqs.size(); j++){
+        my_file_avert1K1 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).imag()<< "\n";
+        my_file_pvert1K1 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).imag()<< "\n";
+        my_file_tvert1K1 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).imag()<< "\n";
+        my_file_avert3K1 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).imag()<< "\n";
+        my_file_pvert5K1 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).imag()<< "\n";
+        my_file_tvert3K1 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).imag()<< "\n";
+    }
+
+    my_file_avert1K1.close();
+    my_file_pvert1K1.close();
+    my_file_tvert1K1.close();
+    my_file_avert3K1.close();
+    my_file_pvert5K1.close();
+    my_file_tvert3K1.close();
+#endif
+
+#if DIAG_CLASS>=2
+    ostringstream avert0K2, avert1K2, avert2K2, avert3K2, avert11K2;
+    ostringstream pvert0K2, pvert1K2, pvert4K2, pvert5K2, pvert13K2;
+    ostringstream tvert0K2, tvert1K2, tvert2K2, tvert3K2, tvert11K2;
+
+
+    avert0K2 << "avert0K2"<<i<<".dat";
+    avert1K2 << "avert1K2"<<i<<".dat";
+    avert2K2 << "avert2K2"<<i<<".dat";
+    avert3K2 << "avert3K2"<<i<<".dat";
+    avert11K2<<"avert11K2"<<i<<".dat";
+
+    pvert0K2 << "pvert0K2"<<i<<".dat";
+    pvert1K2 << "pvert1K2"<<i<<".dat";
+    pvert4K2 << "pvert4K2"<<i<<".dat";
+    pvert5K2 << "pvert5K2"<<i<<".dat";
+    pvert13K2<<"pvert13K2"<<i<<".dat";
+
+    tvert0K2 << "tvert0K2"<<i<<".dat";
+    tvert1K2 << "tvert1K2"<<i<<".dat";
+    tvert2K2 << "tvert2K2"<<i<<".dat";
+    tvert3K2 << "tvert3K2"<<i<<".dat";
+    tvert11K2<<"tvert11K2"<<i<<".dat";
+
+    ofstream  my_file_avert0K2, my_file_avert1K2, my_file_avert2K2, my_file_avert3K2, my_file_avert11K2;
+    ofstream  my_file_pvert0K2, my_file_pvert1K2, my_file_pvert4K2, my_file_pvert5K2, my_file_pvert13K2;
+    ofstream  my_file_tvert0K2, my_file_tvert1K2, my_file_tvert2K2, my_file_tvert3K2, my_file_tvert11K2;
+
+    my_file_avert0K2.open(avert0K2.str());
+    my_file_avert1K2.open(avert1K2.str());
+    my_file_avert2K2.open(avert2K2.str());
+    my_file_avert3K2.open(avert3K2.str());
+    my_file_avert11K2.open(avert11K2.str());
+
+    my_file_pvert0K2.open(pvert0K2.str());
+    my_file_pvert1K2.open(pvert1K2.str());
+    my_file_pvert4K2.open(pvert4K2.str());
+    my_file_pvert5K2.open(pvert5K2.str());
+    my_file_pvert13K2.open(pvert13K2.str());
+
+    my_file_tvert0K2.open(tvert0K2.str());
+    my_file_tvert1K2.open(tvert1K2.str());
+    my_file_tvert2K2.open(tvert2K2.str());
+    my_file_tvert3K2.open(tvert3K2.str());
+    my_file_tvert11K2.open(tvert11K2.str());
+
+
+    for(int j=0; i<bfreqs.size(); ++i){
+        for(int k=0; j<ffreqs.size(); j++){
+
+            my_file_avert0K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K2_vval(0, j, k, 0).real() << " " << vertex.densvertex.avertex.K2_vval(0, j, k, 0).imag()<< "\n";
+            my_file_avert1K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K2_vval(1, j, k, 0).real() << " " << vertex.densvertex.avertex.K2_vval(1, j, k, 0).imag()<< "\n";
+            my_file_avert2K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K2_vval(2, j, k, 0).real() << " " << vertex.densvertex.avertex.K2_vval(2, j, k, 0).imag()<< "\n";
+            my_file_avert3K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K2_vval(3, j, k, 0).real() << " " << vertex.densvertex.avertex.K2_vval(3, j, k, 0).imag()<< "\n";
+            my_file_avert11K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K2_vval(4, j, k, 0).real() << " " << vertex.densvertex.avertex.K2_vval(4, j, k, 0).imag()<< "\n";
+
+            my_file_pvert0K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K2_vval(0, j, k, 0).real() << " " << vertex.densvertex.pvertex.K2_vval(0, j, k, 0).imag()<< "\n";
+            my_file_pvert1K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K2_vval(1, j, k, 0).real() << " " << vertex.densvertex.pvertex.K2_vval(1, j, k, 0).imag()<< "\n";
+            my_file_pvert4K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K2_vval(2, j, k, 0).real() << " " << vertex.densvertex.pvertex.K2_vval(2, j, k, 0).imag()<< "\n";
+            my_file_pvert5K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K2_vval(3, j, k, 0).real() << " " << vertex.densvertex.pvertex.K2_vval(3, j, k, 0).imag()<< "\n";
+            my_file_pvert13K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K2_vval(4, j, k, 0).real() << " " << vertex.densvertex.pvertex.K2_vval(4, j, k, 0).imag()<< "\n";
+
+            my_file_tvert0K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K2_vval(0, j, k, 0).real() << " " << vertex.densvertex.tvertex.K2_vval(0, j, k, 0).imag()<< "\n";
+            my_file_tvert1K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K2_vval(1, j, k, 0).real() << " " << vertex.densvertex.tvertex.K2_vval(1, j, k, 0).imag()<< "\n";
+            my_file_tvert2K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K2_vval(2, j, k, 0).real() << " " << vertex.densvertex.tvertex.K2_vval(2, j, k, 0).imag()<< "\n";
+            my_file_tvert3K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K2_vval(3, j, k, 0).real() << " " << vertex.densvertex.tvertex.K2_vval(3, j, k, 0).imag()<< "\n";
+            my_file_tvert11K2 << bfreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K2_vval(4, j, k, 0).real() << " " << vertex.densvertex.tvertex.K2_vval(4, j, k, 0).imag()<< "\n";
+
+
+        }
+    }
+
+    my_file_avert0K2.close();
+    my_file_avert1K2.close();
+    my_file_avert2K2.close();
+    my_file_avert3K2.close();
+    my_file_avert11K2.close();
+
+    my_file_pvert0K2.close();
+    my_file_pvert1K2.close();
+    my_file_pvert4K2.close();
+    my_file_pvert5K2.close();
+    my_file_pvert13K2.close();
+
+    my_file_tvert0K2.close();
+    my_file_tvert1K2.close();
+    my_file_tvert2K2.close();
+    my_file_tvert3K2.close();
+    my_file_tvert11K2.close();
+
+#endif
+
+#if DIAG_CLASS>=3
+    ostringstream avert0K3, avert1K3, avert3K3, avert5K3, avert6K3, avert7K3;
+    ostringstream pvert0K3, pvert1K3, pvert3K3, pvert5K3, pvert6K3, pvert7K3;
+    ostringstream tvert0K3, tvert1K3, tvert3K3, tvert5K3, tvert6K3, tvert7K3;
+
+
+    avert0K3 << "avert0K3"<<i<<".dat";
+    avert1K3 << "avert1K3"<<i<<".dat";
+    avert3K3 << "avert3K3"<<i<<".dat";
+    avert5K3 << "avert5K3"<<i<<".dat";
+    avert6K3 << "avert6K3"<<i<<".dat";
+    avert7K3 << "avert7K3"<<i<<".dat";
+
+    pvert0K3 << "pvert0K3"<<i<<".dat";
+    pvert1K3 << "pvert1K3"<<i<<".dat";
+    pvert3K3 << "pvert3K3"<<i<<".dat";
+    pvert5K3 << "pvert5K3"<<i<<".dat";
+    pvert6K3 << "pvert6K3"<<i<<".dat";
+    pvert7K3 << "pvert7K3"<<i<<".dat";
+
+    tvert0K3 << "tvert0K3"<<i<<".dat";
+    tvert1K3 << "tvert1K3"<<i<<".dat";
+    tvert3K3 << "tvert3K3"<<i<<".dat";
+    tvert5K3 << "tvert5K3"<<i<<".dat";
+    tvert6K3 << "tvert6K3"<<i<<".dat";
+    tvert7K3 << "tvert7K3"<<i<<".dat";
+
+    ofstream  my_file_avert0K3, my_file_avert1K3, my_file_avert3K3, my_file_avert5K3, my_file_avert6K3, my_file_avert7K3;
+    ofstream  my_file_pvert0K3, my_file_pvert1K3, my_file_pvert3K3, my_file_pvert5K3, my_file_pvert6K3, my_file_pvert7K3;
+    ofstream  my_file_tvert0K3, my_file_tvert1K3, my_file_tvert3K3, my_file_tvert5K3, my_file_tvert6K3, my_file_tvert7K3;
+
+    my_file_avert0K3.open(avert0K3.str());
+    my_file_avert1K3.open(avert1K3.str());
+    my_file_avert3K3.open(avert3K3.str());
+    my_file_avert5K3.open(avert5K3.str());
+    my_file_avert6K3.open(avert6K3.str());
+    my_file_avert7K3.open(avert7K3.str());
+
+    my_file_pvert0K3.open(pvert0K3.str());
+    my_file_pvert1K3.open(pvert1K3.str());
+    my_file_pvert3K3.open(pvert3K3.str());
+    my_file_pvert5K3.open(pvert5K3.str());
+    my_file_pvert6K3.open(pvert6K3.str());
+    my_file_pvert7K3.open(pvert7K3.str());
+
+    my_file_tvert0K3.open(tvert0K3.str());
+    my_file_tvert1K3.open(tvert1K3.str());
+    my_file_tvert3K3.open(tvert3K3.str());
+    my_file_tvert5K3.open(tvert5K3.str());
+    my_file_tvert6K3.open(tvert6K3.str());
+    my_file_tvert7K3.open(tvert7K3.str());
+
+
+    for(int j=0; i<ffreqs.size(); ++i){
+        for(int k=0; j<ffreqs.size(); j++){
+
+            int l = fconv_bos(0.);
+
+            my_file_avert0K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K3_vval(0, l, j, k, 0).real() << " " << vertex.densvertex.avertex.K3_vval(0, l, j, k, 0).imag()<< "\n";
+            my_file_avert1K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K3_vval(1, l, j, k, 0).real() << " " << vertex.densvertex.avertex.K3_vval(1, l, j, k, 0).imag()<< "\n";
+            my_file_avert3K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K3_vval(2, l, j, k, 0).real() << " " << vertex.densvertex.avertex.K3_vval(2, l, j, k, 0).imag()<< "\n";
+            my_file_avert5K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K3_vval(3, l, j, k, 0).real() << " " << vertex.densvertex.avertex.K3_vval(3, l, j, k, 0).imag()<< "\n";
+            my_file_avert6K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K3_vval(4, l, j, k, 0).real() << " " << vertex.densvertex.avertex.K3_vval(4, l, j, k, 0).imag()<< "\n";
+            my_file_avert7K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.avertex.K3_vval(5, l, j, k, 0).real() << " " << vertex.densvertex.avertex.K3_vval(5, l, j, k, 0).imag()<< "\n";
+
+            my_file_pvert0K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K3_vval(0, l, j, k, 0).real() << " " << vertex.densvertex.pvertex.K3_vval(0, l, j, k, 0).imag()<< "\n";
+            my_file_pvert1K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K3_vval(1, l, j, k, 0).real() << " " << vertex.densvertex.pvertex.K3_vval(1, l, j, k, 0).imag()<< "\n";
+            my_file_pvert3K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K3_vval(2, l, j, k, 0).real() << " " << vertex.densvertex.pvertex.K3_vval(2, l, j, k, 0).imag()<< "\n";
+            my_file_pvert5K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K3_vval(3, l, j, k, 0).real() << " " << vertex.densvertex.pvertex.K3_vval(3, l, j, k, 0).imag()<< "\n";
+            my_file_pvert6K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K3_vval(4, l, j, k, 0).real() << " " << vertex.densvertex.pvertex.K3_vval(4, l, j, k, 0).imag()<< "\n";
+            my_file_pvert7K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.pvertex.K3_vval(5, l, j, k, 0).real() << " " << vertex.densvertex.pvertex.K3_vval(5, l, j, k, 0).imag()<< "\n";
+
+            my_file_tvert0K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K3_vval(0, l, j, k, 0).real() << " " << vertex.densvertex.tvertex.K3_vval(0, l, j, k, 0).imag()<< "\n";
+            my_file_tvert1K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K3_vval(1, l, j, k, 0).real() << " " << vertex.densvertex.tvertex.K3_vval(1, l, j, k, 0).imag()<< "\n";
+            my_file_tvert3K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K3_vval(2, l, j, k, 0).real() << " " << vertex.densvertex.tvertex.K3_vval(2, l, j, k, 0).imag()<< "\n";
+            my_file_tvert5K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K3_vval(3, l, j, k, 0).real() << " " << vertex.densvertex.tvertex.K3_vval(3, l, j, k, 0).imag()<< "\n";
+            my_file_tvert6K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K3_vval(4, l, j, k, 0).real() << " " << vertex.densvertex.tvertex.K3_vval(4, l, j, k, 0).imag()<< "\n";
+            my_file_tvert7K3 << ffreqs[j] << " " << ffreqs[k] << " " << vertex.densvertex.tvertex.K3_vval(5, l, j, k, 0).real() << " " << vertex.densvertex.tvertex.K3_vval(5, l, j, k, 0).imag()<< "\n";
+        }
+    }
+
+    my_file_avert0K3.close();
+    my_file_avert1K3.close();
+    my_file_avert3K3.close();
+    my_file_avert5K3.close();
+    my_file_avert6K3.close();
+    my_file_avert7K3.close();
+
+    my_file_pvert0K3.close();
+    my_file_pvert1K3.close();
+    my_file_pvert3K3.close();
+    my_file_pvert5K3.close();
+    my_file_pvert6K3.close();
+    my_file_pvert7K3.close();
+
+    my_file_tvert0K3.close();
+    my_file_tvert1K3.close();
+    my_file_tvert3K3.close();
+    my_file_tvert5K3.close();
+    my_file_tvert6K3.close();
+    my_file_tvert7K3.close();
+
+
+
+#endif
+
 }
 
 
