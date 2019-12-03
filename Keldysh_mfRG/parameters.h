@@ -24,7 +24,7 @@ const double pi = 3.1415926535897;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 2
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
