@@ -16,24 +16,24 @@ plot "self_energyK0.dat" using 1:3, "self_energyK1.dat" using 1:3, "self_energyK
 
 
 
-plot "avert10.dat" using 1:2, "avert11.dat" using 1:2, "avert12.dat" using 1:2, "avert13.dat" using 1:2, "avert14.dat" using 1:2, "avert15.dat" using 1:2, "avert16.dat" using 1:2
+plot "avert1K10.dat" using 1:2, "avert1K11.dat" using 1:2, "avert1K12.dat" using 1:2, "avert1K13.dat" using 1:2, "avert1K14.dat" using 1:2, "avert1K15.dat" using 1:2, "avert1K16.dat" using 1:2
 
-plot "avert10.dat" using 1:3, "avert11.dat" using 1:3, "avert12.dat" using 1:3, "avert13.dat" using 1:3, "avert14.dat" using 1:3, "avert15.dat" using 1:3, "avert16.dat" using 1:3
+plot "avert1K10.dat" using 1:3, "avert1K11.dat" using 1:3, "avert1K12.dat" using 1:3, "avert1K13.dat" using 1:3, "avert1K14.dat" using 1:3, "avert1K15.dat" using 1:3, "avert1K16.dat" using 1:3
 
-plot "avert30.dat" using 1:2, "avert31.dat" using 1:2, "avert32.dat" using 1:2, "avert33.dat" using 1:2, "avert34.dat" using 1:2, "avert35.dat" using 1:2, "avert36.dat" using 1:2
+plot "avert3K10.dat" using 1:2, "avert3K11.dat" using 1:2, "avert3K12.dat" using 1:2, "avert3K13.dat" using 1:2, "avert3K14.dat" using 1:2, "avert3K15.dat" using 1:2, "avert3K16.dat" using 1:2
 
-plot "avert30.dat" using 1:3, "avert31.dat" using 1:3, "avert32.dat" using 1:3, "avert33.dat" using 1:3, "avert34.dat" using 1:3, "avert35.dat" using 1:3, "avert36.dat" using 1:3
-
-
+plot "avert3K10.dat" using 1:3, "avert3K11.dat" using 1:3, "avert3K12.dat" using 1:3, "avert3K13.dat" using 1:3, "avert3K14.dat" using 1:3, "avert3K15.dat" using 1:3, "avert3K16.dat" using 1:3
 
 
-plot "pvert10.dat" using 1:2, "pvert11.dat" using 1:2, "pvert12.dat" using 1:2, "pvert13.dat" using 1:2, "pvert14.dat" using 1:2, "pvert15.dat" using 1:2, "pvert16.dat" using 1:2
 
-plot "pvert10.dat" using 1:3, "pvert11.dat" using 1:3, "pvert12.dat" using 1:3, "pvert13.dat" using 1:3, "pvert14.dat" using 1:3, "pvert15.dat" using 1:3, "pvert16.dat" using 1:3
 
-plot "pvert50.dat" using 1:2, "pvert51.dat" using 1:2, "pvert52.dat" using 1:2, "pvert53.dat" using 1:2, "pvert54.dat" using 1:2, "pvert55.dat" using 1:2, "pvert56.dat" using 1:2
+plot "pvert1K10.dat" using 1:2, "pvert1K11.dat" using 1:2, "pvert1K12.dat" using 1:2, "pvert1K13.dat" using 1:2, "pvert1K14.dat" using 1:2, "pvert1K15.dat" using 1:2, "pvert1K16.dat" using 1:2
 
-plot "pvert50.dat" using 1:3, "pvert51.dat" using 1:3, "pvert52.dat" using 1:3, "pvert53.dat" using 1:3, "pvert54.dat" using 1:3, "pvert55.dat" using 1:3, "pvert56.dat" using 1:3
+plot "pvert1K10.dat" using 1:3, "pvert1K11.dat" using 1:3, "pvert1K12.dat" using 1:3, "pvert1K13.dat" using 1:3, "pvert1K14.dat" using 1:3, "pvert1K15.dat" using 1:3, "pvert1K16.dat" using 1:3
+
+plot "pvert5K10.dat" using 1:2, "pvert5K11.dat" using 1:2, "pvert5K12.dat" using 1:2, "pvert5K13.dat" using 1:2, "pvert5K14.dat" using 1:2, "pvert5K15.dat" using 1:2, "pvert5K16.dat" using 1:2
+
+plot "pvert5K10.dat" using 1:3, "pvert5K11.dat" using 1:3, "pvert5K12.dat" using 1:3, "pvert5K13.dat" using 1:3, "pvert5K14.dat" using 1:3, "pvert5K15.dat" using 1:3, "pvert5K16.dat" using 1:3
 
 
 
