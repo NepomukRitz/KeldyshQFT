@@ -160,36 +160,6 @@ public:
         return resp;
     }
 };
-template <typename Q, typename Bubble> class Integrand_p_K2b {
-    Vertex<fullvert<Q> >& vertex1;
-    Vertex<fullvert<Q> >& vertex2;
-    Bubble& PiP;
-    int i0, i_in;
-    double wp, vpp;
-public:
-    Integrand_p_K2b(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& PiP_in, int i0_in, double wp_in, double vpp_in, int i_in_in)
-            :                    vertex1(vertex1_in),              vertex2(vertex2_in),      PiP(PiP_in), i0(i0_in),    wp(wp_in),   vpp(vpp_in), i_in(non_zero_Keldysh_K2p[i_in_in]) {};
-
-
-    Q operator()(double vppp) {
-        int i1, i3;
-        Q resp;
-        for(auto i2:non_zero_Keldysh_bubble) {
-            tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
-
-            //Contributions to K2: (K1 + K2b)Pi(gammaP)
-            resp += (vertex1.densvertex.irred.vval(i1) +
-                     vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) +
-                     vertex1.densvertex.pvertex.K2b_vvalsmooth (i1, wp, vppp, i_in)) *
-
-                    PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp) *
-
-                    (vertex2.densvertex.gammaRb(i3, wp, vppp, vpp, i_in, 'p'));
-        }
-        return resp;
-    }
-
-};
 template <typename Q, typename Bubble> class Integrand_p_K3 {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
@@ -256,7 +226,6 @@ public:
         }
         return resp;
     }
-
 };
 template <typename Q, typename Bubble> class Integrand_p_K2_diff {
     Vertex<fullvert<Q> > &vertex1;
@@ -300,38 +269,6 @@ public:
         return resp;
     }
 };
-template <typename Q, typename Bubble> class Integrand_p_K2b_diff {
-    Vertex<fullvert<Q> >& vertex1;
-    Vertex<fullvert<Q> >& vertex2;
-    Bubble& PiP;
-    int i0, i_in;
-    double wp, vpp;
-public:
-    Integrand_p_K2b_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& PiP_in, int i0_in, double wp_in, double vpp_in, int i_in_in)
-            :                    vertex1(vertex1_in),              vertex2(vertex2_in),      PiP(PiP_in), i0(i0_in),    wp(wp_in),   vpp(vpp_in), i_in(non_zero_Keldysh_K2p[i_in_in]) {};
-
-    //This is a call operator
-    Q operator()(double vppp) {
-        int i1, i3;
-        Q resp;
-        for(auto i2:non_zero_Keldysh_bubble) {
-            tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
-
-            //Contributions to K2: (K1 + K2b)Pi(K2b + K3 + gammaP)
-            resp += (vertex1.densvertex.irred.vval(i1) +
-                     vertex1.densvertex.pvertex.K1_vvalsmooth(i1, wp, i_in) +
-                     vertex1.densvertex.pvertex.K2b_vvalsmooth (i1, wp, vppp, i_in)) *
-
-                    PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp) *
-
-                    (vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in) +
-                     vertex2.densvertex.pvertex.K3_vvalsmooth(i3, wp, vppp, vpp, i_in) +
-                     vertex2.densvertex.gammaRb(i3, wp, vppp, vpp, i_in, 'p'));
-        }
-        return resp;
-    }
-
-};
 template <typename Q, typename Bubble> class Integrand_p_K3_diff {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
@@ -367,6 +304,8 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
 {
     Diff_P_Bubble PiPdot(G,S);
 
+#ifdef DIAG_CLASS
+    #if DIAG_CLASS >=1
     double tK1 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
@@ -385,7 +324,9 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     }
     cout << "K1p done: ";
     get_time(tK1);
+    #endif
 
+    #if DIAG_CLASS>=2
     double tK2 = get_time();
     /*K2 contributions*/
 #pragma omp parallel for
@@ -406,7 +347,9 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     }
     cout << "K2p done: ";
     get_time(tK2);
+    #endif
 
+    #if DIAG_CLASS>=3
     double tK3 = get_time();
     /*K3 contributions*/
 #pragma omp parallel for
@@ -429,7 +372,12 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     }
     cout << "K3p done: ";
     get_time(tK3);
+    #endif
 
+    #if DIAG_CLASS >=4
+        cout << "Damn son, this is a bad error"
+    #endif
+#endif
 }
 
 template <typename Q> void p_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
