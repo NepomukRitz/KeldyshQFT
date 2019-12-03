@@ -25,7 +25,7 @@ public:
     IntegrandR(Vertex<T>& vertex_in, Propagator& prop_in, double w_in, int i_in_in)
         : vertex(vertex_in), propagator(prop_in), w(w_in), i_in(i_in_in) {};
 
-    Q operator()(double wp)
+    auto operator()(double wp) -> Q
     {
         Q resp1 = vertex.densvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;   //Result should always be real
         Q resp2 = vertex.densvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;                              //Should always be 0
@@ -81,7 +81,7 @@ public:
     IntegrandK(Vertex<T>& vertex_in, Propagator& prop_in, double w_in, int i_in_in)
             : vertex(vertex_in), propagator(prop_in), w(w_in), i_in(i_in_in) {};
 
-    Q operator()(double wp)
+    auto operator()(double wp) -> Q
     {
         Q resp1 = vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;
         Q resp2 = vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;
@@ -126,7 +126,7 @@ public:
 };
 
 
-SelfEnergy<comp> loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop)
+auto loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop) -> SelfEnergy<comp>
 {
     SelfEnergy<comp> resp = SelfEnergy<comp> ();
 //TODO complete support for internal structure

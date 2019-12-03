@@ -19,9 +19,12 @@ const double pi = 3.1415926535897;
  * 1: sharp cutoff, 2: hybridization flow*/
 #define REG 2
 //const double sharp = 2; // Sharpness of the smoothened regulator cutoff -> would be for smooth cutoff. Have not implemented
-# if REG==2
+#if REG==2
     #define GAMMA_REG 1.
 #endif
+
+//Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
+#define DIAG_CLASS 2
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
@@ -90,7 +93,7 @@ const double w_lower_f = -w_upper_f;        //Symmetric grid
 /*Number of independent Keldysh components for the respective diagrammatic class*/
 const int nK_K1 = 2;        //For channels a and t, these two are components 1 and 3 (applies for K1 and K2)
 const int nK_K2 = 5;        //For channels a, p and t -channel separately
-const int nK_K3 = 6;        //For all channels, these 6 components are 0, 1, 3, 5, 6, 7 (independent components in order of appearance
+const int nK_K3 = 6;        //For all channels, these 6 components are 0, 1, 3, 5, 6, 7 (independent components in order of appearance)
 
 /*Dimension of the space defining the internal structure*/
 const int n_in = 1;
@@ -102,7 +105,7 @@ vector<int> non_zero_Keldysh_K1p({1,5});                                        
 vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});                                                                         // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K1t({1,3});                                                                                // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K2t({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K3({0,1,3,5,7});                                                                           // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});                                                                           // NOLINT(cert-err58-cpp)
 
 /*Vector of indices whose respective Keldysh indices add up to an odd number*/
 vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                                                                   // NOLINT(cert-err58-cpp)
