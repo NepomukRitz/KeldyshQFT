@@ -19,7 +19,7 @@ public:
                     : g(propagator){};
 
     /*This function returns the value of the p-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
-    comp value(int iK, double v1, double v2)
+    auto value(int iK, double v1, double v2) -> comp
     {
         comp ans;
         switch (iK){
@@ -65,7 +65,7 @@ public:
                     : g(propagatorG), s(propagatorS)    {};
 
     /*This function returns the value of the differentiated p-bubble for the Keldysh index iK and propagators frequencies v1 and v2*/
-    comp value(int iK, double v1, double v2)
+    auto value(int iK, double v1, double v2) -> comp
     {
         comp ans;
         switch (iK) {
@@ -113,7 +113,7 @@ public:
                         :                vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K1p[i0_in]), wp(wp_in), i_in(i_in_in) {};
 
 
-    Q operator() (double vppp) {
+    auto operator() (double vppp) -> Q {
         int i1, i3;
         Q resp;
         for (auto i2:non_zero_Keldysh_bubble) {
@@ -121,7 +121,6 @@ public:
             auto PiPval = PiP.value(i2, 0.5*wp+vppp, 0.5*wp-vppp);      //2wp/2+vppp, wp/2-vppp for the p-channel
 
             Q add1 = vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.irred.vval(i3);
-//            Q add2 = vertex1.densvertex.irred.vval(i1) * PiPval * vertex2.densvertex.pvertex.K2_vvalsmooth(i3, wp, vppp, i_in);
 
             resp += add1;
             //Augments to RPA
@@ -144,7 +143,7 @@ public:
     Integrand_p_K2(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in,   Bubble &PiP_in, int i0_in, double wp_in, double vp_in, int i_in_in)
             :                   vertex1(vertex1_in),              vertex2(vertex2_in),      PiP(PiP_in), i0(i0_in),    wp(wp_in),    vp(vp_in), i_in(non_zero_Keldysh_K2p[i_in_in]) {};
 
-    Q operator()(double vppp) {
+    auto operator() (double vppp) -> Q {
         int i1, i3;
         Q resp;
         for (auto i2:non_zero_Keldysh_bubble) {
@@ -160,7 +159,8 @@ public:
         return resp;
     }
 };
-template <typename Q, typename Bubble> class Integrand_p_K3 {
+template <typename Q, typename Bubble> class Integrand_p_K3
+{
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
     Bubble& PiP;
@@ -170,7 +170,7 @@ public:
     Integrand_p_K3(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in, int i0_in, double wp_in, double vp_in, double vpp_in, int i_in_in)
             :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(i0_in),    wp(wp_in),    vp(vp_in),   vpp(vpp_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
 
-    Q operator()(double vppp) {
+    auto operator() (double vppp) -> Q {
         int i1, i3;
         Q resp;
         for(auto i2:non_zero_Keldysh_bubble) {
@@ -197,7 +197,7 @@ public:
                                 :             vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K1p[i0_in]),    wp(wp_in), i_in(i_in_in) {};
 
     //This is a call operator
-    Q operator()(double vppp) {
+    auto operator() (double vppp) -> Q {
         int i1, i3;
         Q resp;
         Q resp1, resp2, resp3, resp4, resp5, resp6;
@@ -238,7 +238,7 @@ public:
             :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(i0_in),    wp(wp_in),    vp(vp_in), i_in(non_zero_Keldysh_K2p[i_in_in]) {};
 
     //This is a call operator
-    Q operator()(double vppp) {
+    auto operator() (double vppp) -> Q {
         int i1, i3;
         Q resp;
         Q resp1, resp2, resp3, resp4, resp5, resp6;
@@ -265,7 +265,6 @@ public:
 
             resp += (resp1+resp2+resp3)*PiPvalue*(resp4+resp5+resp6);
         }
-
         return resp;
     }
 };
@@ -280,17 +279,19 @@ public:
             :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(i0_in),    wp(wp_in),    vp(vp_in),   vpp(vpp_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
 
     //This is a call operator
-    Q operator()(double vppp) {
+    auto operator() (double vppp) -> Q {
         int i1, i3;
         Q resp;
         for(auto i2:non_zero_Keldysh_bubble) {
             tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
 
             //Contributions to K3: (K2 +K3 + gammaP)Pi(K2b + K3 + gammaP)
-            resp += (vertex1.densvertex.pvertex.K2_vvalsmooth(i1, wp, vp, i_in) + vertex1.densvertex.pvertex.K3_vvalsmooth(i1, wp, vp, vppp, i_in) +
+            resp += (vertex1.densvertex.pvertex.K2_vvalsmooth(i1, wp, vp, i_in) +
+                     vertex1.densvertex.pvertex.K3_vvalsmooth(i1, wp, vp, vppp, i_in) +
                      vertex1.densvertex.gammaRb(i1, wp, vp, vppp, i_in, 'p')) *
                     PiP.value(i2, vppp-0.5*wp, vppp+0.5*wp) *
-                    (vertex2.densvertex.pvertex.K2b_vvalsmooth(i3, wp, vp, i_in) + vertex2.densvertex.pvertex.K3_vvalsmooth(i3, wp, vppp, vpp, i_in) +
+                    (vertex2.densvertex.pvertex.K2b_vvalsmooth(i3, wp, vp, i_in) +
+                     vertex2.densvertex.pvertex.K3_vvalsmooth(i3, wp, vppp, vpp, i_in) +
                      vertex2.densvertex.gammaRb(i3, wp, vppp, vpp, i_in, 'p'));
         }
         return resp;
@@ -305,7 +306,7 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     Diff_P_Bubble PiPdot(G,S);
 
 #ifdef DIAG_CLASS
-    #if DIAG_CLASS >=1
+    #if DIAG_CLASS>=1
     double tK1 = get_time();
     /*K1 contributions*/
 #pragma omp parallel for
@@ -374,7 +375,7 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     get_time(tK3);
     #endif
 
-    #if DIAG_CLASS >=4
+    #if DIAG_CLASS>=4
         cout << "Damn son, this is a bad error"
     #endif
 #endif
