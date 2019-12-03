@@ -15,10 +15,6 @@
 \usepackage[all]{nowidow}
 \usepackage[utf8]{inputenc}
 \usepackage{xcolor}
-\usepackage{tikz}
-\usepackage{tikz-feynman} 
-\tikzfeynmanset{compat=1.0.0}
-\usetikzlibrary{er,positioning,bayesnet}
 \usepackage{multicol}
 \usepackage{algpseudocode,algorithm,algorithmicx}
 \usepackage{hyperref}
@@ -36,7 +32,276 @@
 \definecolor{orange}{HTML}{FF7F0E}
 \definecolor{green}{HTML}{2CA02C}
 
-\pgfplotsset{compat=1.14}
+
+
+% colors
+\definecolor{blau}{RGB}{0,84,159}
+\definecolor{maigruen}{RGB}{189,205,0}
+\definecolor{rot}{RGB}{204,7,30}
+\definecolor{bordeaux}{RGB}{161,16,53}
+\definecolor{violett}{RGB}{97,33,88}
+\definecolor{lila}{RGB}{122,111,172}
+\definecolor{magenta}{RGB}{255,0,255}
+\definecolor{orange}{RGB}{255,140,0}
+
+\definecolor{gelb}{RGB}{247,166,60}
+\definecolor{gruen}{RGB}{85,170,67}
+\definecolor{rot2}{RGB}{205,2,37}        %%%%
+\definecolor{blau2}{RGB}{0,86,153}      %%%%
+
+\newcommand{\bl}[1]{{\color{blau}{#1}}}
+\newcommand{\vl}[1]{{\color{violett}{#1}}}
+\newcommand{\gr}[1]{{\color{Green}{#1}}}
+\newcommand{\rd}[1]{{\color{rot}{#1}}}
+\newcommand{\bd}[1]{{\color{bordeaux}{#1}}}
+\newcommand{\mg}[1]{{\color{magenta}{#1}}}
+\newcommand{\ora}[1]{{\color{orange}{#1}}}
+
+%  diagrammatic classes
+\newcommand{\K}[1]{\mathcal{K}_#1}
+\newcommand{\Ka}[1]{\mathcal{K}_#1^a}
+\newcommand{\Kp}[1]{\mathcal{K}_#1^p}
+\newcommand{\Kt}[1]{\mathcal{K}_#1^t}
+\newcommand{\Kbar}[1]{\bar{\mathcal{K}}_#1}
+\newcommand{\Kabar}[1]{\bar{\mathcal{K}}_#1^a}
+\newcommand{\Kpbar}[1]{\bar{\mathcal{K}}_#1^p}
+\newcommand{\Ktbar}[1]{\bar{\mathcal{K}}_#1^t}
+
+\newcommand{\al}[6]{
+	^{
+		\ifcase #5 %0
+		\alpha_#1 \alpha_#2 
+		\or %1
+		\alpha_#1^\prime \alpha_#2^\prime 
+		\or %2
+		#1 #2
+		\or %3
+		\bar{\alpha}_#1 \alpha_#2
+		\or %4
+		\alpha_#1 \bar{\alpha}_#2
+		\or %5
+		\bar{\alpha}_#1 \bar{\alpha}_#2
+		\or %6
+		\bar{\alpha}_#1^\prime \alpha_#2^\prime
+		\or %7
+		\alpha_#1^\prime \bar{\alpha}_#2^\prime
+		\or %8
+		\bar{\alpha}_#1^\prime \bar{\alpha}_#2^\prime
+		\else
+		0
+		\fi
+		|
+		\ifcase #6 %0
+		\alpha_#3 \alpha_#4
+		\or %1
+		\alpha_#3^\prime \alpha_#4^\prime
+		\or %2
+		#3 #4
+		\or %3
+		\bar{\alpha}_#3 \alpha_#4
+		\or %4
+		\alpha_#3 \bar{\alpha}_#4
+		\or %5
+		\bar{\alpha}_#3 \bar{\alpha}_#4
+		\or %6
+		\bar{\alpha}_#3^\prime \alpha_#4^\prime
+		\or %7
+		\alpha_#3^\prime \bar{\alpha}_#4^\prime
+		\or %8
+		\bar{\alpha}_#3^\prime \bar{\alpha}_#4^\prime
+		\else
+		0
+		\fi
+	}
+}
+%
+% sigma: 
+% 0 = sigma_ind
+% 1 = sigma_ind^\prime
+% 2 = ind (no sigma)
+\newcommand{\si}[6]{
+	_{
+		\ifcase #5
+		\sigma_#1 \sigma_#2 
+		\or
+		\sigma_#1^\prime \sigma_#2^\prime 
+		\or
+		#1 #2
+		\else
+		0
+		\fi
+		|
+		\ifcase #6
+		\sigma_#3 \sigma_#4
+		\or
+		\sigma_#3^\prime \sigma_#4^\prime
+		\or
+		#3 #4
+		\else
+		0
+		\fi
+	}
+}
+%
+% sigmas:
+% 0 = sigma sigma
+% 1 = sigma \bar{sigma}
+% 2 = \bar{sigma} sigma
+\newcommand{\sig}[2]{
+	_{
+		\ifcase #1
+		\sigma \sigma
+		\or
+		\sigma \bar{\sigma}
+		\or
+		\bar{\sigma} \sigma
+		\else
+		0
+		\fi
+		|
+		\ifcase #2
+		\sigma \sigma
+		\or
+		\sigma \bar{\sigma}
+		\or
+		\bar{\sigma} \sigma
+		\else
+		0
+		\fi
+	}
+}
+%
+\newcommand{\sss}{_{\sigma \sigma}}
+\newcommand{\ssb}{_{\sigma \bar{\sigma}}}
+\newcommand{\sbs}{_{\bar{\sigma} \sigma}}
+\newcommand{\ass}[1][]{_{a_{#1}, \sigma \sigma}}
+\newcommand{\asb}[1][]{_{a_{#1}, \sigma \bar{\sigma}}}
+\newcommand{\abs}[1][]{_{a_{#1}, \bar{\sigma} \sigma}}
+\newcommand{\pss}[1][]{_{p_{#1}, \sigma \sigma}}
+\newcommand{\psb}[1][]{_{p_{#1}, \sigma \bar{\sigma}}}
+\newcommand{\pbs}[1][]{_{p_{#1}, \bar{\sigma} \sigma}}
+\newcommand{\tss}[1][]{_{t_{#1}, \sigma \sigma}}
+\newcommand{\tsb}[1][]{_{t_{#1}, \sigma \bar{\sigma}}}
+\newcommand{\tbs}[1][]{_{t_{#1}, \bar{\sigma} \sigma}}
+
+\newcommand{\q}[6]{
+	\ifcase #5
+	q_#1 q_#2 
+	\or
+	q_#1^\prime q_#2^\prime 
+	\else
+	0
+	\fi
+	|
+	\ifcase #6
+	q_#3 q_#4
+	\or
+	q_#3^\prime q_#4^\prime
+	\else
+	0
+	\fi
+	\,,\,
+}
+\newcommand{\om}[6]{
+	\ifcase #5
+	\omega_#1 \omega_#2 
+	\or
+	\omega_#1^\prime \omega_#2^\prime 
+	\else
+	0
+	\fi
+	|
+	\ifcase #6
+	\omega_#3 \omega_#4
+	\or
+	\omega_#3^\prime \omega_#4^\prime
+	\else
+	0
+	\fi
+}
+
+\newcommand{\V}[9]{
+	\def\Vertex{#1}
+	\def\ala{#2}
+	\def\alb{#3}
+	\def\alc{#4}
+	\def\ald{#5}
+	\def\sga{#6}
+	\def\sgb{#7}
+	\def\sgc{#8}
+	\def\sgd{#9}
+	\Vcont
+}
+
+\newcommand{\vqw}[8]{
+	\def\qa{#1}
+	\def\qb{#2}
+	\def\qc{#3}
+	\def\qd{#4}
+	\def\wa{#5}
+	\def\wb{#6}
+	\def\wc{#7}
+	\def\wd{#8}
+	\vqwcont
+}
+
+% independent Keldysh components in different diagrammatic classes
+
+\definecolor{Aa}{RGB}{0, 0, 102}%{0,97,101}
+\definecolor{Ba}{RGB}{51, 51, 153}
+\definecolor{Ca}{RGB}{102,102,153}%{97,33,88}
+\definecolor{Da}{RGB}{102, 0, 204}
+\definecolor{Ea}{RGB}{153, 0, 255}
+\definecolor{Fa}{RGB}{204, 0, 255}
+
+\definecolor{Ap}{RGB}{153, 51, 51}%{87,171,39}
+\definecolor{Bp}{RGB}{128, 0, 0}
+\definecolor{Cp}{RGB}{255, 0, 0}%{204,7,30}
+\definecolor{Dp}{RGB}{255, 102, 0}
+\definecolor{Ep}{RGB}{255, 153, 51}
+\definecolor{Fp}{RGB}{255, 204, 0}
+
+\definecolor{At}{RGB}{0, 51, 0}%{189,205,0}
+\definecolor{Bt}{RGB}{0, 102, 0}
+\definecolor{Ct}{RGB}{51, 153, 51}%{246,168,0}
+\definecolor{Dt}{RGB}{51, 153, 102}
+\definecolor{Et}{RGB}{0, 204, 102}
+\definecolor{Ft}{RGB}{0, 255, 0}
+
+\newcommand{\Aa}[1]{{\color{Aa} $A_{#1}^a$}}
+\newcommand{\Ap}[1]{{\color{Ap} $A_{#1}^p$}}
+\newcommand{\At}[1]{{\color{At} $A_{#1}^t$}}
+\newcommand{\Ba}[1]{{\color{Ba} $B_{#1}^a$}}
+\newcommand{\Bp}[1]{{\color{Bp} $B_{#1}^p$}}
+\newcommand{\Bt}[1]{{\color{Bt} $B_{#1}^t$}}
+\newcommand{\Ca}[1]{{\color{Ca} $C_{#1}^a$}}
+\newcommand{\Cp}[1]{{\color{Cp} $C_{#1}^p$}}
+\newcommand{\Ct}[1]{{\color{Ct} $C_{#1}^t$}}
+\newcommand{\Da}[1]{{\color{Da} $D_{#1}^a$}}
+\newcommand{\Dp}[1]{{\color{Dp} $D_{#1}^p$}}
+\newcommand{\Dt}[1]{{\color{Dt} $D_{#1}^t$}}
+\newcommand{\Fa}[1]{{\color{Fa} $F_{#1}^a$}}
+\newcommand{\Fp}[1]{{\color{Fp} $F_{#1}^p$}}
+\newcommand{\Ft}[1]{{\color{Ft} $F_{#1}^t$}}
+
+\newcommand{\bAa}[1]{{\color{Aa} $\bar{A}_{#1}^a$}}
+\newcommand{\bAp}[1]{{\color{Ap} $\bar{A}_{#1}^p$}}
+\newcommand{\bAt}[1]{{\color{At} $\bar{A}_{#1}^t$}}
+\newcommand{\bBa}[1]{{\color{Ba} $\bar{B}_{#1}^a$}}
+\newcommand{\bBp}[1]{{\color{Bp} $\bar{B}_{#1}^p$}}
+\newcommand{\bBt}[1]{{\color{Bt} $\bar{B}_{#1}^t$}}
+\newcommand{\bCa}[1]{{\color{Ca} $\bar{C}_{#1}^a$}}
+\newcommand{\bCp}[1]{{\color{Cp} $\bar{C}_{#1}^p$}}
+\newcommand{\bCt}[1]{{\color{Ct} $\bar{C}_{#1}^t$}}
+\newcommand{\bDa}[1]{{\color{Da} $\bar{D}_{#1}^a$}}
+\newcommand{\bDp}[1]{{\color{Dp} $\bar{D}_{#1}^p$}}
+\newcommand{\bDt}[1]{{\color{Dt} $\bar{D}_{#1}^t$}}
+\newcommand{\bEa}[1]{{\color{Ea} $\bar{E}_{#1}^a$}}
+\newcommand{\bEp}[1]{{\color{Ep} $\bar{E}_{#1}^p$}}
+\newcommand{\bEt}[1]{{\color{Et} $\bar{E}_{#1}^t$}}
+\newcommand{\bFa}[1]{{\color{Fa} $\bar{F}_{#1}^a$}}
+\newcommand{\bFp}[1]{{\color{Fp} $\bar{F}_{#1}^p$}}
+\newcommand{\bFt}[1]{{\color{Ft} $\bar{F}_{#1}^t$}}
 
 \renewcommand{\topfraction}{0.85}
 \renewcommand{\bottomfraction}{0.85}
@@ -255,8 +520,7 @@ And from any other channel to the t-channel:
 Define the following transformations, based on the previous properties:
 \subsection*{Spin flip}
 \begin{equation}
-    ...
-    \label{eq:ts}
+T_S \Gamma^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma_1'\sigma_2'|\sigma_1\sigma2} (q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2) = \Gamma^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\bar{\sigma}_1'\bar{\sigma}_2'|\bar{\sigma}_1\bar{\sigma}_2} (q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2)
 \end{equation}
 
 \subsection*{Exchange symmetries}
@@ -302,127 +566,713 @@ Notice the $T_i$ transformations ($i\in \{1,2,3\}$) form a group which is isomor
     T_C &= T_1T_CT_2 = T_2T_CT_1
   \end{array}
 \end{align}
+The inclusion of $T_S$ expands the group, but does not yield any interesting structure.
 
-\section*{Independent components of the four-point vertex}
-Due to the internal symmetries (i.e. Eqs. \ref{eq:ts}-\ref{eq:tc}), the 16 Keldysh components of the vertex depend on one another. The convention we hereby define is as follows:
+\pagebreak
+\section*{Independent spin and Keldysh components}
 
-\begin{align}
-\Gamma_{\sigma\sigma|\sigma\sigma} &=
-    \begin{pmatrix}
-    \Gamma^{11|11} & \Gamma^{11|12} & \Gamma^{11|21} & \Gamma^{11|22} \\
-    \Gamma^{12|11} & \Gamma^{12|12} & \Gamma^{12|21} & \Gamma^{12|22} \\
-    \Gamma^{21|11} & \Gamma^{21|12} & \Gamma^{21|21} & \Gamma^{21|22} \\
-    \Gamma^{22|11} & \Gamma^{22|12} & \Gamma^{22|21} & \Gamma^{22|22}
-    \end{pmatrix}_{\sigma\sigma|\sigma\sigma}  \\
-    & = :     \begin{pmatrix}
-    A & \phi_A & T_1\phi_A & \psi_B \\
-    T_C\phi_A & \phi_B & T_1\phi_B & \phi_D \\
-    T_C T_1\phi_A & T_2 \phi_B & T_3\phi_B & T_2\phi_D \\
-    T_C\psi_B & T_C\phi_D & T_CT_2\phi_D & 0
-    \end{pmatrix}_{\sigma\sigma|\sigma\sigma} 
-\end{align}
+\textbf{Keldysh components which are equal due to diagrammatic structure of $\K1$, $\K2$, $\K3$}
 
-\begin{align}
-\Gamma_{\sigma\overline{\sigma}|\sigma\overline{\sigma}} &=
-    \begin{pmatrix}
-    \Gamma^{11|11} & \Gamma^{11|12} & \Gamma^{11|21} & \Gamma^{11|22} \\
-    \Gamma^{12|11} & \Gamma^{12|12} & \Gamma^{12|21} & \Gamma^{12|22} \\
-    \Gamma^{21|11} & \Gamma^{21|12} & \Gamma^{21|21} & \Gamma^{21|22} \\
-    \Gamma^{22|11} & \Gamma^{22|12} & \Gamma^{22|21} & \Gamma^{22|22}
-    \end{pmatrix}_{\sigma\overline{\sigma}|\sigma\overline{\sigma}} \\
-    & = :     \begin{pmatrix}
-    A & \phi_A & T_1\phi_A & \psi_B \\
-    T_C\phi_A & \phi_B & \phi_C & \phi_D \\
-    T_C T_1\phi_A & T_C \phi_C & T_3\phi_B & T_2\phi_D \\
-    T_C\psi_B & T_C\phi_D & T_CT_2\phi_D & 0
-    \end{pmatrix}_{\sigma\overline{\sigma}|\sigma\overline{\sigma}}
-\end{align}
-Therefore, in the worst case scenario, we aren't looking at a matrix of 16 independent components, but of ``only'' 6, which we define to be the set $\{A, \psi_B, \phi_A, \phi_B, \phi_C, \phi_D\}$, following Elias' older convention.
+Class $\K1$:
+\begin{align*}
+(\Ka1)\al121210 &= (\Ka1)\al121264 = (\Ka1)\al121273 = (\Ka1)\al121285 \\
+(\Kp1)\al121210 &= (\Kp1)\al121280 = (\Kp1)\al121215 = (\Kp1)\al121285 \\
+(\Kt1)\al121210 &= (\Kt1)\al121263 = (\Kt1)\al121274 = (\Kt1)\al121285 \\
+\end{align*}
+
+Class $\K2$, $\Kbar2$:
+\begin{align*}
+(\Ka2)\al121210 &= (\Ka2)\al121273 \,, \quad
+(\Kabar2)\al121210 = (\Kabar2)\al121264 \\
+(\Kp1)\al121210 &= (\Kp1)\al121215 \,, \quad
+(\Kpbar1)\al121210 = (\Kpbar1)\al121280 \\
+(\Kt2)\al121210 &= (\Kt2)\al121263 \,, \quad
+(\Ktbar2)\al121210 = (\Ktbar2)\al121274
+\end{align*}
+
+\subsection*{Equal spins $\sigma\sigma|\sigma\sigma$}
+
+\textbf{Symmetries under particle exchange, complex conjugation}
+
+Class $\K1$:
+\begin{itemize}
+	\item particle exchange:
+	\begin{itemize}
+		\item
+		channels $a$, $t$:
+		\begin{align*}
+		\Ka1(1^\prime 2^\prime|12) &= -\Kt1(1^\prime 2^\prime|21) 
+		\quad \Rightarrow \quad
+		(\Ka1)\al121210 = T_1 (\Kt1)\al122110
+		\\
+		&= -\Kt1(2^\prime 1^\prime|12) 
+		\quad \Rightarrow \quad
+		(\Ka1)\al121210 = T_2 (\Kt1)\al211210
+		\\
+		\Ka1(1^\prime 2^\prime|12) & = \Ka1(2^\prime 1^\prime|21) 
+		\quad \Rightarrow \quad
+		(\Ka1)\al121210 = T_3 (\Ka1)\al212110
+		\\
+		\Kt1(1^\prime 2^\prime|12) & = \Kt1(2^\prime 1^\prime|21) 
+		\quad \Rightarrow \quad
+		(\Kt1)\al121210 = T_3 (\Kt1)\al212110
+		\end{align*}
+		\item channel $p$:
+		\begin{align*}
+		\Kp1(1^\prime 2^\prime|12) & = -\Kp1(1^\prime 2^\prime|21) 
+		\quad \Rightarrow \quad
+		(\Kp1)\al121210 = T_1 (\Kp1)\al122110
+		\\
+		&= -\Kp1(2^\prime 1^\prime|12) 
+		\quad \Rightarrow \quad
+		(\Kp1)\al121210 = T_2 (\Kp1)\al211210
+		\\
+		&= \Kp1(2^\prime 1^\prime|21)
+		\quad \Rightarrow \quad
+		(\Kp1)\al121210 = T_3 (\Kp1)\al212110
+		\end{align*}
+	\end{itemize}
+	\item complex conjugation:
+	\begin{align*}
+	\K1^r(1^\prime 2^\prime|12) = -(-1)^{\sum_j (\alpha_j + \bar{\alpha}_j)} (\K1^r(12|1^\prime 2^\prime))^*
+	\quad \Rightarrow \quad
+	(\K1^r)\al121210 = T_C (\K1^r)\al121201
+	\end{align*}
+\end{itemize}
+
+Class $\K2$, $\Kbar2$:
+\begin{itemize}
+	\item particle exchange:
+	\begin{itemize}
+		\item
+		channels $a$, $t$:
+		\begin{align*}
+		\Ka2(1^\prime 2^\prime|12) &= -\Ktbar2(1^\prime 2^\prime|21) 
+		\quad \Rightarrow \quad
+		(\Ka2)\al121210 = T_1 (\Ktbar2)\al122110
+		\\
+		&= -\Kt2(2^\prime 1^\prime|12) 
+		\quad \Rightarrow \quad
+		(\Ka2)\al121210 = T_2 (\Kt2)\al211210
+		\\
+		\Ka2(1^\prime 2^\prime|12) & = \Kabar2(2^\prime 1^\prime|21) 
+		\quad \Rightarrow \quad
+		(\Ka2)\al121210 = T_3 (\Kabar2)\al212110
+		\\
+		\Kt2(1^\prime 2^\prime|12) & = \Ktbar2(2^\prime 1^\prime|21) 
+		\quad \Rightarrow \quad
+		(\Kt2)\al121210 = T_3 (\Ktbar2)\al212110
+		\end{align*}
+		\item channel $p$:
+		\begin{align*}
+		\Kp2(1^\prime 2^\prime|12) & = -\Kp2(1^\prime 2^\prime|21) 
+		\quad \Rightarrow \quad
+		(\Kp2)\al121210 = T_1 (\Kp2)\al122110
+		\\
+		&= -\Kp2(2^\prime 1^\prime|12) 
+		\quad \Rightarrow \quad
+		(\Kp2)\al121210 = T_2 (\Kp2)\al211210
+		\\
+		&= \Kp2(2^\prime 1^\prime|21)
+		\quad \Rightarrow \quad
+		(\Kp2)\al121210 = T_3 (\Kp2)\al212110
+		\end{align*}
+		(similarly for $\Kpbar2$)
+	\end{itemize}
+	\item complex conjugation:
+	\begin{align*}
+	\K2^{a,p}(1^\prime 2^\prime|12) &= -(-1)^{\sum_j (\alpha_j + \bar{\alpha}_j)} (\Kbar2^{a,p}(12|1^\prime 2^\prime))^*
+	\quad \Rightarrow \quad
+	(\K2^{a,p})\al121210 = T_C (\Kbar2^{a,p})\al121201 \\
+	\Kt2(1^\prime 2^\prime|12) &= -(-1)^{\sum_j (\alpha_j + \bar{\alpha}_j)} (\Kt2(12|1^\prime 2^\prime))^*
+	\quad \Rightarrow \quad
+	(\Kt2)\al121210 = T_C (\Kt2)\al121201 \\
+	\Ktbar2(1^\prime 2^\prime|12) &= -(-1)^{\sum_j (\alpha_j + \bar{\alpha}_j)} (\Ktbar2(12|1^\prime 2^\prime))^*
+	\quad \Rightarrow \quad
+	(\Ktbar2)\al121210 = T_C (\Ktbar2)\al121201
+	\end{align*}
+\end{itemize}
 
 \subsubsection*{Enumeration of the components}
 To make the whole thing a little easier and be able to refer to the components of the vertex in a concrete and ``linear'' manner, we convert the indices $\alpha_1'\alpha_2'|\alpha_1\alpha_2$ to numbers in the set $\mathcal{N} := \{0, 1, \dots, 15\}$. The following formula does the trick:
 \begin{align}
-    i_\mathcal{N} &= 2^3(\alpha_1'-1)+2^2(\alpha_2'-1)+2^1(\alpha_1-1)+2^0(\alpha_2-1)\\
-        &= 8(\alpha_1'-1)+4(\alpha_2'-1)+2\alpha_1-1)+(\alpha_2-1)
+i_\mathcal{N} &= 2^3(\alpha_1'-1)+2^2(\alpha_2'-1)+2^1(\alpha_1-1)+2^0(\alpha_2-1)\\
+&= 8(\alpha_1'-1)+4(\alpha_2'-1)+2\alpha_1-1)+(\alpha_2-1)
 \end{align}
 
 There's also an inverse function for this, which involves using both the $\operatorname{floor}$
 and the $\operatorname{mod}$ functions:
 
 \begin{align}
-    \alpha_2 &= \left\lfloor{\frac{(i_\mathcal{N}\operatorname{mod}2)}{1}  }\right\rfloor +1 =(i_\mathcal{N}\operatorname{mod}2) +1\\
-    \alpha_1 &= \left\lfloor{\frac{(i_\mathcal{N}\operatorname{mod}4)}{2}  }\right\rfloor +1 \\
-    \alpha_2' &= \left\lfloor{\frac{(i_\mathcal{N}\operatorname{mod}8)}{4}  }\right\rfloor +1 \\
-    \alpha_1' &= \left\lfloor{\frac{(i_\mathcal{N}\operatorname{mod}16)}{8}  }\right\rfloor +1 
+\alpha_2 &= \left\lfloor{\frac{(i_\mathcal{N}\operatorname{mod}2)}{1}  }\right\rfloor +1 =(i_\mathcal{N}\operatorname{mod}2) +1\\
+\alpha_1 &= \left\lfloor{\frac{(i_\mathcal{N}\operatorname{mod}4)}{2}  }\right\rfloor +1 \\
+\alpha_2' &= \left\lfloor{\frac{(i_\mathcal{N}\operatorname{mod}8)}{4}  }\right\rfloor +1 \\
+\alpha_1' &= \left\lfloor{\frac{(i_\mathcal{N}\operatorname{mod}16)}{8}  }\right\rfloor +1 
 \end{align}
 
 We summarize the results of these functions for future reference:
 \begin{align}
-    \begin{array}{r@{\mskip\thickmuskip}l}
-    11|11 &\longleftrightarrow 0 \\
-    11|12 &\longleftrightarrow 1 \\
-    11|21 &\longleftrightarrow 2 \\
-    11|22 &\longleftrightarrow 3 \\
-    \vspace{0.05cm}\\
-    12|11 &\longleftrightarrow 4 \\
-    12|12 &\longleftrightarrow 5 \\
-    12|21 &\longleftrightarrow 6 \\
-    12|22 &\longleftrightarrow 7
-    \end{array} 
-  \quad  \quad
-  \begin{array}{l@{\mskip\thickmuskip}l}
-    21|11 &\longleftrightarrow 8 \\
-    21|12 &\longleftrightarrow 9 \\
-    21|21 &\longleftrightarrow 10 \\
-    21|22 &\longleftrightarrow 11 \\
-    \vspace{0.05cm}\\
-    22|11 &\longleftrightarrow 12 \\
-    22|12 &\longleftrightarrow 13 \\
-    22|21 &\longleftrightarrow 14 \\
-    22|22 &\longleftrightarrow 15
-  \end{array}
+\begin{array}{r@{\mskip\thickmuskip}l}
+11|11 &\longleftrightarrow 0 \\
+11|12 &\longleftrightarrow 1 \\
+11|21 &\longleftrightarrow 2 \\
+11|22 &\longleftrightarrow 3 \\
+\vspace{0.05cm}\\
+12|11 &\longleftrightarrow 4 \\
+12|12 &\longleftrightarrow 5 \\
+12|21 &\longleftrightarrow 6 \\
+12|22 &\longleftrightarrow 7
+\end{array} 
+\quad  \quad
+\begin{array}{l@{\mskip\thickmuskip}l}
+21|11 &\longleftrightarrow 8 \\
+21|12 &\longleftrightarrow 9 \\
+21|21 &\longleftrightarrow 10 \\
+21|22 &\longleftrightarrow 11 \\
+\vspace{0.05cm}\\
+22|11 &\longleftrightarrow 12 \\
+22|12 &\longleftrightarrow 13 \\
+22|21 &\longleftrightarrow 14 \\
+22|22 &\longleftrightarrow 15
+\end{array}
 \end{align}
 This allows us to refer to the components in the matrix as i.e. ``the 7th component'', where now it's unambiguously clear that the element referred to is $\Gamma^{12|22}$.
 
+The above numeration and transformation properties of the respective diagrammatic classes yield the following tables:
 
-\subsection*{Keldysh components and diagrammatic classes}
-\subsubsection*{Keldysh symmetries}
-Since the diagrammatic classes have a simplified general structure and, particularly, their definition defines some ``connection properties'' of the outer legs, this gives rise to further internal symmetries. This means that, independently from the Keldysh indices of the outer legs, the internal structure defining the vertex remains invariant, which implies that some components of the vertex take up the same values.
-Therefore, we introduce the Keldysh symmetries $A_i^{K^r_j}$, where $i$ stands for the index of the symmetry ($i \in \{1,2,3\}$, $j\in\{1,2,3\}$ labels the diagrammatic class the specific symmetry applies to and $r\in\{a, p, t\}$ labels the channel for the diagrammatic class. Note that, in this case, this symmetry \textit{only} acts on the Keldysh indices, not on the rest of the indices!
 
-First the results for the first diagrammatic class:
+%\renewcommand{\tabcolsep}{4pt} 
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{c|c||ccc||ccc||ccc}
+		\multicolumn{2}{c||}{} &
+		\multicolumn{3}{c||}{$\sigma\sigma|\sigma\sigma$} & 
+		\multicolumn{3}{c}{$\sigma\bar\sigma|\sigma\bar\sigma$} & 
+		\multicolumn{3}{c}{$\sigma\bar\sigma|\bar\sigma\sigma$} 
+		\\ 
+		\multicolumn{2}{c||}{} & 
+		$\Ka1$ & $\Kp1$ & $\Kt1$ & 
+		$\Ka1$ & $\Kp1$ & $\Kt1$ & 
+		$\Ka1$ & $\Kp1$ & $\Kt1$  
+		\\ \hline
+		
+		1111 & 0 & 
+		0 & 0 & 0 & 
+		0 & 0 & 0 &
+		0 & 0 & 0 
+		\\ %\hline
+		1112 & 1 & 
+		\Ba1 & \Bp1 & \Bt1 & 
+		\bBa1 & \bBp1 & \bBt1 &
+		$T_S T_2$\bBt1 & $T_1$\bBp1 & $T_S T_2$\bBa1 
+		\\ %\hline
+		1121 & 2 & 
+		$T_3$\Ba1 & \Bp1 & $T_3$\Bt1 & 
+		$T_S T_3$\bBa1 & \bBp1 & $T_S T_3$\bBt1 &
+		$T_1$\bBt1 & $T_1$\bBp1 & $T_1$\bBa1
+		\\ %\hline
+		1122 & 3 & 
+		\Ca1 & 0 & \Ct1 & 
+		\bCa1 & 0 & \bCt1 &
+		$T_1$\bCt1 & 0 & $T_1$\bCa1
+		\\ %\hline
+		\hline
+		
+		
+		1211 & 4 & 
+		$T_3$\Ba1 & $T_C$\Bp1 & \Bt1 & 
+		$T_S T_3$\bBa1 & $T_C$\bBp1 & \bBt1 &
+		$T_1$\bBt1 & $T_1 T_C$\bBp1 & $T_S T_2$\bBa1 
+		\\ %\hline
+		1212 & 5 & 
+		\Ca1 & \Dp1 & 0 & 
+		\bCa1 & \bDp1 & 0 &
+		$T_1$\bCt1 & $T_1$\bDp1 & 0
+		\\ %\hline
+		1221 & 6 & 
+		0 & \Dp1 & \Ct1 & 
+		0 & \bDp1 & \bCt1 &
+		0 & $T_1$\bDp1 & $T_1$\bCa1
+		\\ %\hline
+		1222 & 7 & 
+		\Ba1 & $T_C$\Bp1 & $T_3$\Bt1 & 
+		\bBa1 & $T_C$\bBp1 & $T_S T_3$\bBt1 &
+		$T_S T_2$\bBt1 & $T_1 T_C$\bBp1 & $T_1$\bBa1
+		\\ %\hline
+		\hline
+		
+		
+		2111 & 8 & 
+		\Ba1 & $T_C$\Bp1 & $T_3$\Bt1 & 
+		\bBa1 & $T_C$\bBp1 & $T_S T_3$\bBt1 &
+		$T_S T_2$\bBt1 & $T_1 T_C$\bBp1 & $T_1$\bBa1
+		\\ %\hline
+		2112 & 9 & 
+		0 & \Dp1 & \Ct1 & 
+		0 & \bDp1 & \bCt1 &
+		0 & $T_1$\bDp1 & $T_1$\bCa1
+		\\ %\hline
+		2121 & 10 & 
+		\Ca1 & \Dp1 & 0 & 
+		\bCa1 & \bDp1 & 0 &
+		$T_1$\bCt1 & $T_1$\bDp1 & 0
+		\\ %\hline
+		2122 & 11 & 
+		$T_3$\Ba1 & $T_C$\Bp1 & \Bt1 & 
+		$T_S T_3$\bBa1 & $T_C$\bBp1 & \bBt1 &
+		$T_1$\bBt1 & $T_1 T_C$\bBp1 & $T_S T_2$\bBa1 
+		\\ %\hline
+		\hline
+		
+		
+		2211 & 12 & 
+		\Ca1 & 0 & \Ct1 & 
+		\bCa1 & 0 & \bCt1 &
+		$T_1$\bCt1 & 0 & $T_1$\bCa1
+		\\ %\hline
+		2212 & 13 & 
+		$T_3$\Ba1 & \Bp1 & $T_3$\Bt1 & 
+		$T_S T_3$\bBa1 & \bBp1 & $T_S T_3$\bBt1 &
+		$T_1$\bBt1 & $T_1$\bBp1 & $T_1$\bBa1
+		\\ %\hline
+		2221 & 14 & 
+		\Ba1 & \Bp1 & \Bt1 & 
+		\bBa1 & \bBp1 & \bBt1 &
+		$T_S T_2$\bBt1 & $T_1$\bBp1 & $T_S T_2$\bBa1 
+		\\ %\hline
+		2222 & 15 & 
+		0 & 0 & 0 & 
+		0 & 0 & 0 &
+		0 & 0 & 0
+		\\ \hline
+	\end{tabular}
+\end{table}
 
-\begin{align}\begin{array}{r@{\mskip\thickmuskip}l}
-A_1^{K^a_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= (\overline{\alpha_1'}{\alpha_2'}{\alpha_1}\overline{\alpha_2})\\
-A_2^{K^a_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= ({\alpha_1'}\overline{\alpha_2'}\overline{\alpha_1}{\alpha_2})\\
-A_3^{K^a_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= (\overline{\alpha_1'}\overline{\alpha_2'}\overline{\alpha_1}\overline{\alpha_2})
-  \end{array}
- \quad  \quad
-  \begin{array}{l@{\mskip\thickmuskip}l}
-A_1^{K^p_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= (\overline{\alpha_1'}\overline{\alpha_2'}{\alpha_1}{\alpha_2})\\
-A_2^{K^p_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= ({\alpha_1'}{\alpha_2'}\overline{\alpha_1}\overline{\alpha_2})\\
-A_3^{K^p_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= (\overline{\alpha_1'}\overline{\alpha_2'}\overline{\alpha_1}\overline{\alpha_2})
-    \end{array}
-\end{align}
 
-\begin{align}
-A_1^{K^t_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= ({\alpha_1'}\overline{\alpha_2'}{\alpha_1}\overline{\alpha_2})\\
-A_2^{K^t_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= (\overline{\alpha_1'}{\alpha_2'}\overline{\alpha_1}{\alpha_2})\\
-A_3^{K^t_1} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= (\overline{\alpha_1'}\overline{\alpha_2'}\overline{\alpha_1}\overline{\alpha_2})
-\end{align}
 
-Notice these also form one Klein group per channel!!
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{c|c||c|c|c|c|c|c}
+		\multicolumn{2}{c||}{} &
+		\multicolumn{6}{c}{$\sigma\sigma|\sigma\sigma$}
+		\\
+		\multicolumn{2}{c||}{} &
+		$\Ka2$ & $\Kabar2$ & 
+		$\Kp2$ & $\Kpbar2$ & 
+		$\Kt2$ & $\Ktbar2$  
+		\\ \hline
+		
+		1111 & 0 & 
+		\Aa2 & $T_3$\Aa2 & 
+		\Ap2 & $T_C$\Ap2 & 
+		$T_2$\Aa2 & $T_1$\Aa2 
+		\\ %\hline
+		1112 & 1 & 
+		\Ba2 & $T_3$\Ca2 & 
+		\Bp2 & $T_C$\Cp2 & 
+		$T_2$\Ba2 & $T_1$\Ca2 
+		\\ %\hline
+		1121 & 2 & 
+		\Ca2 & $T_3$\Ba2 & 
+		\Bp2 & $T_C T_3$\Cp2 & 
+		$T_2$\Ca2 & $T_1$\Ba2 
+		\\ %\hline
+		1122 & 3 & 
+		\Da2 & $T_3$\Da2 & 
+		\Ap2 & 0 & 
+		$T_2$\Da2 & $T_1$\Da2 
+		\\ %\hline
+		\hline
+		
+		
+		1211 & 4 & 
+		\Ca2 & $T_C$\Ba2 & 
+		\Cp2 & $T_C$\Bp2 & 
+		$T_C T_2$\Ba2 & $T_1$\Ca2 
+		\\ %\hline
+		1212 & 5 & 
+		\Da2 & $T_C$\Da2 & 
+		\Dp2 & $T_C$\Dp2 & 
+		0 & $T_1$\Aa2 
+		\\ %\hline
+		1221 & 6 & 
+		\Aa2 & 0 & 
+		\Dp2 & $T_C T_3$\Dp2 & 
+		$T_C T_2$\Da2 & $T_1$\Da2  
+		\\ %\hline
+		1222 & 7 & 
+		\Ba2 & $T_3$\Fa2 & 
+		\Cp2 & $T_C$\Fp2 & 
+		$T_2$\Fa2 & $T_1$\Ba2
+		\\ %\hline
+		\hline
+		
+		
+		2111 & 8 & 
+		$T_C T_3$\Ba2 & $T_3$\Ca2 & 
+		$T_3$\Cp2 & $T_C$\Bp2 & 
+		$T_2$\Ca2 & $T_C T_1$\Ba2
+		\\ %\hline
+		2112 & 9 & 
+		0 & $T_3$\Aa2 & 
+		$T_3$\Dp2 & $T_C$\Dp2 & 
+		$T_2$\Da2 & $T_C T_1$\Da2 
+		\\ %\hline
+		2121 & 10 & 
+		$T_C T_3$\Da2 & $T_3$\Da2 & 
+		$T_3$\Dp2 & $T_C T_3$\Dp2 & 
+		$T_2$\Aa2 & 0 
+		\\ %\hline
+		2122 & 11 & 
+		\Fa2 & $T_3$\Ba2 & 
+		$T_3$\Cp2 & $T_C$\Fp2 & 
+		$T_2$\Ba2 & $T_1$\Fa2 
+		\\ %\hline
+		\hline
+		
+		
+		2211 & 12 & 
+		$T_C T_3$\Da2 & $T_C$\Da2 & 
+		0 & $T_C$\Ap2 & 
+		$T_C T_2$\Da2 & $T_C T_1$\Da2 
+		\\ %\hline
+		2212 & 13 & 
+		\Fa2 & $T_C$\Ba2 & 
+		\Fp2 & $T_C$\Cp2 & 
+		$T_2$\Fa2 & $T_C T_1$\Ba2 
+		\\ %\hline
+		2221 & 14 & 
+		$T_C T_3$\Ba2 & $T_3$\Fa2 & 
+		\Fp2 & $T_C T_3$\Cp2 & 
+		$T_C T_2$\Ba2 & $T_1$\Fa2 
+		\\ %\hline
+		2222 & 15 & 
+		0 & 0 & 0 & 0 & 0 & 0 
+		\\ %\hline
+		\hline
+	\end{tabular}
+\end{table}
 
-Now, the second diagrammatic class. Notice how now there is now only \textit{one} active symmetry per channel:
 
-\begin{align}
-A_2^{K^a_2} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= ({\alpha_1'}\overline{\alpha_2'}\overline{\alpha_1}{\alpha_2})\\
-A_2^{K^p_2} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= ({\alpha_1'}{\alpha_2'}\overline{\alpha_1}\overline{\alpha_2})\\
-A_2^{K^t_2} (\alpha_1'\alpha_2'\alpha_1\alpha_2) &= (\overline{\alpha_1'}{\alpha_2'}\overline{\alpha_1}{\alpha_2})\\
-\end{align}
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{c|c||c|c|c|c|c|c}
+		\multicolumn{2}{c||}{} &
+		\multicolumn{6}{c}{$\sigma\bar\sigma|\sigma\bar\sigma$}
+		\\
+		\multicolumn{2}{c||}{} &
+		$\Ka2$ & $\Kabar2$ & 
+		$\Kp2$ & $\Kpbar2$ & 
+		$\Kt2$ & $\Ktbar2$  
+		\\ \hline
+		
+		1111 & 0 & 
+		\bAa2 & $T_S T_3$\bAa2 & 
+		\bAp2 & $T_C$\bAp2 & 
+		\bAt2 & $T_S T_3$\bAt2 
+		\\ %\hline
+		1112 & 1 & 
+		\bBa2 & $T_S T_3$\bCa2 & 
+		\bBp2 & $T_C$\bCp2 & 
+		\bBt2 & $T_S T_3$\bCt2 
+		\\ %\hline
+		1121 & 2 & 
+		\bCa2 & $T_S T_3$\bBa2 & 
+		\bBp2 & $T_S T_C T_3$\bCp2 & 
+		\bCt2 & $T_S T_3$\bBt2 
+		\\ %\hline
+		1122 & 3 & 
+		\bDa2 & $T_S T_3$\bDa2 & 
+		\bAp2 & 0 & 
+		\bDt2 & $T_S T_3$\bDt2 
+		\\ %\hline
+		\hline
+		
+		
+		1211 & 4 & 
+		\bCa2 & $T_C$\bBa2 & 
+		\bCp2 & $T_C$\bBp2 & 
+		$T_C$\bBt2 & $T_S T_3$\bCt2 
+		\\ %\hline
+		1212 & 5 & 
+		\bDa2 & $T_C$\bDa2 & 
+		\bDp2 & $T_C$\bDp2 & 
+		0 & $T_S T_3$\bAt2 
+		\\ %\hline
+		1221 & 6 & 
+		\bAa2 & 0 & 
+		\bDp2 & $T_S T_C T_3$\bDp2 & 
+		$T_C$\bDt2 & $T_S T_3$\bDt2  
+		\\ %\hline
+		1222 & 7 & 
+		\bBa2 & $T_S T_3$\bFa2 & 
+		\bCp2 & $T_C$\bFp2 & 
+		\bFt2 & $T_S T_3$\bBt2
+		\\ %\hline
+		\hline
+		
+		
+		2111 & 8 & 
+		$T_S T_C T_3$\bBa2 & $T_S T_3$\bCa2 & 
+		$T_S T_3$\bCp2 & $T_C$\bBp2 & 
+		\bCt2 & $T_S T_C T_3$\bBt2
+		\\ %\hline
+		2112 & 9 & 
+		0 & $T_S T_3$\bAa2 & 
+		$T_S T_3$\bDp2 & $T_C$\bDp2 & 
+		\bDt2 & $T_S T_C T_3$\bDt2 
+		\\ %\hline
+		2121 & 10 & 
+		$T_S T_C T_3$\bDa2 & $T_S T_3$\bDa2 & 
+		$T_S T_3$\bDp2 & $T_S T_C T_3$\bDp2 & 
+		\bAt2 & 0 
+		\\ %\hline
+		2122 & 11 & 
+		\bFa2 & $T_S T_3$\bBa2 & 
+		$T_S T_3$\bCp2 & $T_C$\bFp2 & 
+		\bBt2 & $T_S T_3$\bFt2 
+		\\ %\hline
+		\hline
+		
+		
+		2211 & 12 & 
+		$T_S T_C T_3$\bDa2 & $T_C$\bDa2 & 
+		0 & $T_C$\bAp2 & 
+		$T_C$\bDt2 & $T_S T_C T_3$\bDt2 
+		\\ %\hline
+		2212 & 13 & 
+		\bFa2 & $T_C$\bBa2 & 
+		\bFp2 & $T_C$\bCp2 & 
+		\bFt2 & $T_S T_C T_3$\bBt2 
+		\\ %\hline
+		2221 & 14 & 
+		$T_S T_C T_3$\bBa2 & $T_S T_3$\bFa2 & 
+		\bFp2 & $T_S T_C T_3$\bCp2 & 
+		$T_C$\bBt2 & $T_S T_3$\bFt2 
+		\\ %\hline
+		2222 & 15 & 
+		0 & 0 & 0 & 0 & 0 & 0 
+		\\ %\hline
+		\hline
+	\end{tabular}
+\end{table}
 
-Notice that these correspond to the same $A_2^{K^r_1}$ symmetries but, since they apply for a different diagrammatic class, we still define them. Clearly, each symmetry group is isomorphic to $\mathbb{Z}_2$.
-Also, it's important to mention that there are no symmetries whatsoever in the case of $K_3$ i.e. the symmetry group of the diagrammatic class is, for all channels, the trivial group.
+
+
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{c|c||c|c|c|c|c|c}
+		\multicolumn{2}{c||}{} &
+		\multicolumn{6}{c}{$\sigma\bar\sigma|\bar\sigma\sigma$}
+		\\
+		\multicolumn{2}{c||}{} &
+		$\Ka2$ & $\Kabar2$ & 
+		$\Kp2$ & $\Kpbar2$ & 
+		$\Kt2$ & $\Ktbar2$ 
+		\\ \hline
+		
+		1111 & 0 & 
+		$T_S T_2$\bAt2 & $T_1$\bAt2 & 
+		$T_1$\bAp2 & $T_S T_C T_1$\bAp2 & 
+		$T_S T_2$\bAa2 & $T_1$\bAa2 
+		\\ %\hline
+		1112 & 1 & 
+		$T_S T_2$\bBt2 & $T_1$\bCt2 & 
+		$T_1$\bBp2 & $T_S T_C T_1$\bCp2 & 
+		$T_S T_2$\bBa2 & $T_1$\bCa2 
+		\\ %\hline
+		1121 & 2 & 
+		$T_S T_2$\bCt2 & $T_1$\bBt2 & 
+		$T_1$\bBp2 & $T_1 T_C$\bCp2 & 
+		$T_S T_2$\bCa2 & $T_1$\bBa2 
+		\\ %\hline
+		1122 & 3 & 
+		$T_S T_2$\bDt2 & $T_1$\bDt2 & 
+		$T_1$\bAp2 & 0 & 
+		$T_S T_2$\bDa2 & $T_1$\bDa2 
+		\\ %\hline
+		\hline
+		
+		
+		1211 & 4 & 
+		$T_S T_2$\bCt2 & $T_1 T_C$\bBt2 & 
+		$T_1$\bCp2 & $T_1 T_C$\bBp2 & 
+		$T_1 T_C$\bBa2 & $T_1$\bCa2 
+		\\ %\hline
+		1212 & 5 & 
+		$T_S T_2$\bDt2 & $T_1 T_C$\bDt2 & 
+		$T_1$\bDp2 & $T_S T_C T_1$\bDp2 & 
+		0 & $T_1$\bAa2 
+		\\ %\hline
+		1221 & 6 & 
+		$T_S T_2$\bAt2 & 0 & 
+		$T_1$\bDp2 & $T_1 T_C$\bDp2 & 
+		$T_1 T_C$\bDa2 & $T_1$\bDa2  
+		\\ %\hline
+		1222 & 7 & 
+		$T_S T_2$\bBt2 & $T_1$\bFt2 & 
+		$T_1$\bCp2 & $T_S T_C T_1$\bFp2 & 
+		$T_S T_2$\bFa2 & $T_1$\bBa2
+		\\ %\hline
+		\hline
+		
+		
+		2111 & 8 & 
+		$T_S T_C T_1$\bBt2 & $T_1$\bCt2 & 
+		$T_S T_2$\bCp2 & $T_1 T_C$\bBp2 & 
+		$T_S T_2$\bCa2 & $T_S T_C T_1$\bBa2
+		\\ %\hline
+		2112 & 9 & 
+		0 & $T_1$\bAt2 & 
+		$T_S T_2$\bDp2 & $T_S T_C T_1$\bDp2 & 
+		$T_S T_2$\bDa2 & $T_S T_C T_1$\bDa2 
+		\\ %\hline
+		2121 & 10 & 
+		$T_S T_C T_1$\bDt2 & $T_1$\bDt2 & 
+		$T_S T_2$\bDp2 & $T_1 T_C$\bDp2 & 
+		$T_S T_2$\bAa2 & 0 
+		\\ %\hline
+		2122 & 11 & 
+		$T_S T_2$\bFt2 & $T_1$\bBt2 & 
+		$T_S T_2$\bCp2 & $T_S T_C T_1$\bFp2 & 
+		$T_S T_2$\bBa2 & $T_1$\bFa2 
+		\\ %\hline
+		\hline
+		
+		
+		2211 & 12 & 
+		$T_S T_C T_1$\bDt2 & $T_1 T_C$\bDt2 & 
+		0 & $T_S T_C T_1$\bAp2 & 
+		$T_1 T_C$\bDa2 & $T_S T_C T_1$\bDa2 
+		\\ %\hline
+		2212 & 13 & 
+		$T_S T_2$\bFt2 & $T_1 T_C$\bBt2 & 
+		$T_1$\bFp2 & $T_S T_C T_1$\bCp2 & 
+		$T_S T_2$\bFa2 & $T_S T_C T_1$\bBa2 
+		\\ %\hline
+		2221 & 14 & 
+		$T_S T_C T_1$\bBt2 & $T_1$\bFt2 & 
+		$T_1$\bFp2 & $T_1 T_C$\bCp2 & 
+		$T_1 T_C$\bBa2 & $T_1$\bFa2 
+		\\ %\hline
+		2222 & 15 & 
+		0 & 0 & 0 & 0 & 0 & 0 
+		\\ %\hline
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\renewcommand{\tabcolsep}{2pt} 
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{c|c||c|c|c||c|c|c||c|c|c}
+		\multicolumn{2}{c||}{} &
+		\multicolumn{3}{c||}{$\sigma\sigma|\sigma\sigma$} & 
+		\multicolumn{3}{c}{$\sigma\bar\sigma|\sigma\bar\sigma$} & 
+		\multicolumn{3}{c}{$\sigma\bar\sigma|\bar\sigma\sigma$} 
+		\\ 
+		\multicolumn{2}{c||}{} & 
+		$\Ka3$ & $\Kp3$ & $\Kt3$ &
+		$\Ka3$ & $\Kp3$ & $\Kt3$ &
+		$\Ka3$ & $\Kp3$ & $\Kt3$ 
+		\\ \hline
+		
+		1111 & 0 & 
+		\Aa3 & \Ap3 & $T_2$\Aa3 &
+		\bAa3 & \bAp3 & \bAt3 &
+		$T_1$\bAt3 & $T_1$\bAp3 & $T_1$\bAa3
+		\\ %\hline
+		1112 & 1 & 
+		\Ba3 & \Bp3 & $T_2$\Ba3 &
+		\bBa3 & \bBp3 & \bBt3 &
+		$T_S T_2$\bBt3 & $T_S T_2$\bBp3 & $T_S T_2$\bBa3
+		\\ %\hline
+		1121 & 2 & 
+		$T_3$\Ba3 & $T_3$\Bp3 & $T_1$\Ba3 &
+		$T_S T_3$\bBa3 & $T_S T_3$\bBp3 & $T_S T_3$\bBt3 &
+		$T_1$\bBt3 & $T_1$\bBp3 & $T_1$\bBa3
+		\\ %\hline
+		1122 & 3 & 
+		\Ca3 & \Cp3 & $T_2$\Ca3 &
+		\bCa3 & \bCp3 & \bCt3 &
+		$T_1$\bCt3 & $T_1$\bCp3 & $T_1$\bCa3
+		\\ %\hline
+		\hline
+		
+		
+		1211 & 4 & 
+		$T_C$\Ba3 & $T_C$\Bp3 & $T_1 T_C$\Ba3 &
+		$T_C$\bBa3 & $T_C$\bBp3 & $T_C$\bBt3 &
+		$T_1 T_C$\bBt3 & $T_1 T_C$\bBp3 & $T_1 T_C$\bBa3
+		\\ %\hline
+		1212 & 5 & 
+		\Da3 & \Dp3 & \Dt3 &
+		\bDa3 & \bDp3 & \bDt3 &
+		$T_1$\bEt3 & $T_1$\bEp3 & $T_1$\bEa3
+		\\ %\hline
+		1221 & 6 & 
+		$T_1$\Dt3 & $T_1$\Dp3 & $T_1$\Da3 &
+		\bEa3 & \bEp3 & \bEt3 &
+		$T_1$\bDt3 & $T_1$\bDp3 & $T_1$\bDa3
+		\\ %\hline
+		1222 & 7 & 
+		\Fa3 & \Fp3 & $T_1$\Fa3 &
+		\bFa3 & \bFp3 & \bFt3 &
+		$T_1$\bFt3 & $T_1$\bFp3 & $T_1$\bFa3
+		\\ %\hline
+		\hline
+		
+		
+		2111 & 8 & 
+		$T_C T_3$\Ba3 & $T_C T_3$\Bp3 & $T_C T_1$\Ba3 &
+		$T_S T_C T_3$\bBa3 & $T_S T_C T_3$\bBp3 & $T_S T_C T_3$\bBt3 &
+		$T_S T_C T_1$\bBt3 & $T_S T_C T_1$\bBp3 & $T_S T_C T_1$\bBa3
+		\\ %\hline
+		2112 & 9 & 
+		$T_2$\Dt3 & $T_2$\Dp3 & $T_2$\Da3 &
+		$T_S T_3$\bEa3 & $T_S T_3$\bEp3 & $T_S T_3$\bEt3 & 
+		$T_S T_2$\bDt3 & $T_S T_2$\bDp3 & $T_S T_2$\bDa3
+		\\ %\hline
+		2121 & 10 & 
+		$T_3$\Da3 & $T_3$\Dp3 & $T_3$\Dt3 &
+		$T_S T_3$\bDa3 & $T_S T_3$\bDp3 & $T_S T_3$\bDt3 & 
+		$T_S T_2$\bEt3 & $T_S T_2$\bEp3 & $T_S T_2$\bEa3
+		\\ %\hline
+		2122 & 11 & 
+		$T_3$\Fa3 & $T_3$\Fp3 & $T_2$\Fa3 &
+		$T_S T_3$\bFa3 & $T_S T_3$\bFp3 & $T_S T_3$\bFt3 & 
+		$T_S T_2$\bFt3 & $T_S T_2$\bFp3 & $T_S T_2$\bFa3
+		\\ %\hline
+		\hline
+		
+		
+		2211 & 12 & 
+		$T_C$\Ca3 & $T_C$\Cp3 & $T_1 T_C$\Ca3 &
+		$T_C$\bCa3 & $T_C$\bCp3 & $T_C$\bCt3 &
+		$T_1 T_C$\bCt3 & $T_1 T_C$\bCp3 & $T_1 T_C$\bCa3
+		\\ %\hline
+		2212 & 13 & 
+		$T_C$\Fa3 & $T_C$\Fp3 & $T_2 T_C$\Fa3 &
+		$T_C$\bFa3 & $T_C$\bFp3 & $T_C$\bFt3 &
+		$T_S T_C T_1$\bFt3 & $T_S T_C T_1$\bFp3 & $T_S T_C T_1$\bFa3
+		\\ %\hline
+		2221 & 14 & 
+		$T_C T_3$\Fa3 & $T_C T_3$\Fp3 & $T_C T_2$\Fa3 &
+		$T_S T_C T_3$\bFa3 & $T_S T_C T_3$\bFp3 & $T_S T_C T_3$\bFt3 &
+		$T_1 T_C$\bFt3 & $T_1 T_C$\bFp3 & $T_1 T_C$\bFa3
+		\\ %\hline
+		2222 & 15 & 
+		0 & 0 & 0 &
+		0 & 0 & 0 &
+		0 & 0 & 0
+		\\
+		\hline
+		
+		
+	\end{tabular}
+\end{table}
+
 
 \section*{Bubbles}
 \subsection*{Keldysh structure of the bubbles}
