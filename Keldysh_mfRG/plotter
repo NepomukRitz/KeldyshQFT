@@ -48,6 +48,29 @@ plot "tvert3K10.dat" using 1:3, "tvert3K11.dat" using 1:3, "tvert3K12.dat" using
 
 
 
+
+set autoscale xfix
+set autoscale yfix
+set autoscale cbfix
+
+plot "avert0K26.dat" matrix nonuniform with image notitle
+plot "avert1K26.dat" matrix nonuniform with image notitle
+plot "avert2K26.dat" matrix nonuniform with image notitle
+plot "avert3K26.dat" matrix nonuniform with image notitle
+plot "avert11K26.dat" matrix nonuniform with image notitle
+
+plot "pvert0K26.dat" matrix nonuniform with image notitle
+plot "pvert1K26.dat" matrix nonuniform with image notitle
+plot "pvert4K26.dat" matrix nonuniform with image notitle
+plot "pvert5K26.dat" matrix nonuniform with image notitle
+plot "pvert13K26.dat" matrix nonuniform with image notitle
+
+plot "tvert0K26.dat" matrix nonuniform with image notitle
+plot "tvert1K26.dat" matrix nonuniform with image notitle
+plot "tvert2K26.dat" matrix nonuniform with image notitle
+plot "tvert3K26.dat" matrix nonuniform with image notitle
+plot "tvert11K26.dat" matrix nonuniform with image notitle
+
 plot "propagatorR.dat" using 1:2
 plot "propagatorR.dat" using 1:3
 plot "propagatorK.dat" using 1:2
