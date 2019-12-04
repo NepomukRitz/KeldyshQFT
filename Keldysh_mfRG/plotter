@@ -38,13 +38,13 @@ plot "pvert5K10.dat" using 1:3, "pvert5K11.dat" using 1:3, "pvert5K12.dat" using
 
 
 
-plot "tvert10.dat" using 1:2, "tvert11.dat" using 1:2, "tvert12.dat" using 1:2, "tvert13.dat" using 1:2, "tvert14.dat" using 1:2, "tvert15.dat" using 1:2, "tvert16.dat" using 1:2
+plot "tvert1K10.dat" using 1:2, "tvert1K11.dat" using 1:2, "tvert1K12.dat" using 1:2, "tvert1K13.dat" using 1:2, "tvert1K14.dat" using 1:2, "tvert1K15.dat" using 1:2, "tvert1K16.dat" using 1:2
 
-plot "tvert10.dat" using 1:3, "tvert11.dat" using 1:3, "tvert12.dat" using 1:3, "tvert13.dat" using 1:3, "tvert14.dat" using 1:3, "tvert15.dat" using 1:3, "tvert16.dat" using 1:3
+plot "tvert1K10.dat" using 1:3, "tvert1K11.dat" using 1:3, "tvert1K12.dat" using 1:3, "tvert1K13.dat" using 1:3, "tvert1K14.dat" using 1:3, "tvert1K15.dat" using 1:3, "tvert1K16.dat" using 1:3
 
-plot "tvert30.dat" using 1:2, "tvert31.dat" using 1:2, "tvert32.dat" using 1:2, "tvert33.dat" using 1:2, "tvert34.dat" using 1:2, "tvert35.dat" using 1:2, "tvert36.dat" using 1:2
+plot "tvert3K10.dat" using 1:2, "tvert3K11.dat" using 1:2, "tvert3K12.dat" using 1:2, "tvert3K13.dat" using 1:2, "tvert3K14.dat" using 1:2, "tvert3K15.dat" using 1:2, "tvert3K16.dat" using 1:2
 
-plot "tvert30.dat" using 1:3, "tvert31.dat" using 1:3, "tvert32.dat" using 1:3, "tvert33.dat" using 1:3, "tvert34.dat" using 1:3, "tvert35.dat" using 1:3, "tvert36.dat" using 1:3
+plot "tvert3K10.dat" using 1:3, "tvert3K11.dat" using 1:3, "tvert3K12.dat" using 1:3, "tvert3K13.dat" using 1:3, "tvert3K14.dat" using 1:3, "tvert3K15.dat" using 1:3, "tvert3K16.dat" using 1:3
 
 
 
