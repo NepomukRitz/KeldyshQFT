@@ -67,9 +67,14 @@ auto main() -> int {
 //    }
 
 
-
+#if PROP_TYPE==1
+    Propagator initial = propag(state.Lambda, state.selfenergy, 'g', 'f');
+#elif PROP_TYPE==2
     Propagator initial = propag(state.Lambda, state.selfenergy, 'g', '.');
-    Propagator compare = propag(state.Lambda, state.selfenergy, 'g', 'f');
+#else
+    cout << "Error with PROP_TYPE."
+#endif
+
 
     writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
 
@@ -91,7 +96,13 @@ auto main() -> int {
         get_time(tadd);
 
         double next_Lambda = flow_grid[i];
-        Propagator control = propag(next_Lambda, state.selfenergy, 'g','.');
+#if PROP_TYPE==1
+        Propagator control = propag(state.Lambda, state.selfenergy, 'g', 'f');
+#elif PROP_TYPE==2
+        Propagator control = propag(state.Lambda, state.selfenergy, 'g', '.');
+#else
+    cout << "Error with PROP_TYPE."
+#endif
 
         writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
 
@@ -111,26 +122,38 @@ auto main() -> int {
 template <typename Q>
 void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     /*Here I begin implementing Fabian's pseudocode*/
+#if PROP_TYPE==1
     //Line 1
     Propagator S = propag(Lambda, state.selfenergy, 's', 'f');
-    Propagator Sfree = propag(Lambda, state.selfenergy, 's', 'f');
     cout << "S calculated" << endl;
-
     //Line 2
     Propagator G = propag(Lambda, state.selfenergy, 'g', 'f');
-    Propagator Gfree = propag(Lambda, state.selfenergy, 'g', 'f');
     cout << "G calculated" << endl;
-
     //Line 3
     SelfEnergy<comp> Sigma_std = loop(state.vertex, S);
     cout << "loop calculated" << endl;
-
     //Line 4
     dPsi.selfenergy = Sigma_std;
-
     //Line 6
     Propagator extension = propag(Lambda, dPsi.selfenergy, 'e', 'f');\
     Propagator dG = S + extension;
+
+#elif PROP_TYPE==2
+    //Line 1
+    Propagator S = propag(Lambda, state.selfenergy, 's', '.');
+    cout << "S calculated" << endl;
+    //Line 2
+    Propagator G = propag(Lambda, state.selfenergy, 'g', '.');
+    cout << "G calculated" << endl;
+    //Line 3
+    SelfEnergy<comp> Sigma_std = loop(state.vertex, S);
+    cout << "loop calculated" << endl;
+    //Line 4
+    dPsi.selfenergy = Sigma_std;
+    //Line 6
+    Propagator extension = propag(Lambda, dPsi.selfenergy, 'e', '.');\
+    Propagator dG = S + extension;
+#endif
 
     cout << "diff bubble started" << endl;
     double t2 = get_time();
