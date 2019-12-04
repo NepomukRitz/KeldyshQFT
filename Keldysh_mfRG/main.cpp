@@ -251,12 +251,12 @@ void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
     ostringstream self_energyR, self_energyA, self_energyK, propR, propA, propK;
     ofstream my_file_sigmaR, my_file_sigmaA, my_file_sigmaK, my_file_propR, my_file_propA, my_file_propK;
 
-    self_energyR << "self_energyR"<<i<<".dat";
-    self_energyA << "self_energyA"<<i<<".dat";
-    self_energyK << "self_energyK"<<i<<".dat";
-    propR << "propagatorR"<<i<<".dat";
-    propA << "propagatorA"<<i<<".dat";
-    propK << "propagatorK"<<i<<".dat";
+    self_energyR << "Output/self_energyR"<<i<<".dat";
+    self_energyA << "Output/self_energyA"<<i<<".dat";
+    self_energyK << "Output/self_energyK"<<i<<".dat";
+    propR << "Output/propagatorR"<<i<<".dat";
+    propA << "Output/propagatorA"<<i<<".dat";
+    propK << "Output/propagatorK"<<i<<".dat";
 
     my_file_sigmaR.open(self_energyR.str());
     my_file_sigmaA.open(self_energyA.str());
@@ -284,12 +284,12 @@ void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
 
 #if DIAG_CLASS >=1
     ostringstream avert1K1, pvert1K1, tvert1K1, avert3K1, pvert5K1, tvert3K1;
-    avert1K1 << "avert1K1"<<i<<".dat";
-    pvert1K1 << "pvert1K1"<<i<<".dat";
-    tvert1K1 << "tvert1K1"<<i<<".dat";
-    avert3K1 << "avert3K1"<<i<<".dat";
-    pvert5K1 << "pvert5K1"<<i<<".dat";
-    tvert3K1 << "tvert3K1"<<i<<".dat";
+    avert1K1 << "Output/avert1K1"<<i<<".dat";
+    pvert1K1 << "Output/pvert1K1"<<i<<".dat";
+    tvert1K1 << "Output/tvert1K1"<<i<<".dat";
+    avert3K1 << "Output/avert3K1"<<i<<".dat";
+    pvert5K1 << "Output/pvert5K1"<<i<<".dat";
+    tvert3K1 << "Output/tvert3K1"<<i<<".dat";
 
     ofstream  my_file_avert1K1, my_file_pvert1K1, my_file_tvert1K1, my_file_avert3K1, my_file_pvert5K1, my_file_tvert3K1;
 
@@ -323,23 +323,23 @@ void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
     ostringstream tvert0K2, tvert1K2, tvert2K2, tvert3K2, tvert11K2;
 
 
-    avert0K2 << "avert0K2"<<i<<".dat";
-    avert1K2 << "avert1K2"<<i<<".dat";
-    avert2K2 << "avert2K2"<<i<<".dat";
-    avert3K2 << "avert3K2"<<i<<".dat";
-    avert11K2<<"avert11K2"<<i<<".dat";
+    avert0K2 << "Output/avert0K2"<<i<<".dat";
+    avert1K2 << "Output/avert1K2"<<i<<".dat";
+    avert2K2 << "Output/avert2K2"<<i<<".dat";
+    avert3K2 << "Output/avert3K2"<<i<<".dat";
+    avert11K2<< "Output/avert11K2"<<i<<".dat";
 
-    pvert0K2 << "pvert0K2"<<i<<".dat";
-    pvert1K2 << "pvert1K2"<<i<<".dat";
-    pvert4K2 << "pvert4K2"<<i<<".dat";
-    pvert5K2 << "pvert5K2"<<i<<".dat";
-    pvert13K2<<"pvert13K2"<<i<<".dat";
+    pvert0K2 << "Output/pvert0K2"<<i<<".dat";
+    pvert1K2 << "Output/pvert1K2"<<i<<".dat";
+    pvert4K2 << "Output/pvert4K2"<<i<<".dat";
+    pvert5K2 << "Output/pvert5K2"<<i<<".dat";
+    pvert13K2<< "Output/pvert13K2"<<i<<".dat";
 
-    tvert0K2 << "tvert0K2"<<i<<".dat";
-    tvert1K2 << "tvert1K2"<<i<<".dat";
-    tvert2K2 << "tvert2K2"<<i<<".dat";
-    tvert3K2 << "tvert3K2"<<i<<".dat";
-    tvert11K2<<"tvert11K2"<<i<<".dat";
+    tvert0K2 << "Output/tvert0K2"<<i<<".dat";
+    tvert1K2 << "Output/tvert1K2"<<i<<".dat";
+    tvert2K2 << "Output/tvert2K2"<<i<<".dat";
+    tvert3K2 << "Output/tvert3K2"<<i<<".dat";
+    tvert11K2<< "Output/tvert11K2"<<i<<".dat";
 
     ofstream  my_file_avert0K2, my_file_avert1K2, my_file_avert2K2, my_file_avert3K2, my_file_avert11K2;
     ofstream  my_file_pvert0K2, my_file_pvert1K2, my_file_pvert4K2, my_file_pvert5K2, my_file_pvert13K2;
