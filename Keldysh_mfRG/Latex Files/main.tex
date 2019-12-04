@@ -315,7 +315,7 @@
 
 \begin{document}
 %
-\title{Formulaic collection for Keldysh mfRG calculations}
+\title{Keldysh vertices and mfRG flow equations}
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
@@ -354,9 +354,10 @@
 The Keldysh indices take values in the set $\{1,2\}$, with the convention $1 = q$ and $2=c$, where in some texts $c$ stands for 'classical component' and $q$ for 'quantum component'.
 \subsection*{Spin conservation:}
 Spin conservation: $\sigma_{1'} + \sigma_{2'} = \sigma_1 + \sigma_2$
-Overall spin conservation of the vertex dictates that there are three (fundamentally, actually only two) different cases:
+\\
+Overall spin conservation of the vertex dictates that there are two different cases:
 \subsubsection*{All spins equal}
-Sum of the incoming (or outgoing) spins equals either -1 or 1: 
+Sum of the incoming (or outgoing) spins equals either $-1$ or 1: 
 $\Gamma = \Gamma_{\sigma\sigma|\sigma\sigma}$
 \subsubsection*{Incoming spins reversed}
 Sum of incoming spins equals 0: 
@@ -364,7 +365,7 @@ $\Gamma = \Gamma_{\sigma\overline{\sigma}|\sigma\overline{\sigma}}$ or $\Gamma =
 These last two cases can be linked through a spin-inversion transformation and, hence, aren't considered to be (computationally) different, although they represent distinct physical processes.
 
 \subsection*{Frequency conservation:}
-Conservation of momentum implies that one of the frequencies, conventionally chosen to be $\nu_2$, will be dependent on the other 3.
+Conservation of momentum implies that one of the frequencies, conventionally chosen to be $\nu_2$, will be dependent on the other three.
 \begin{align}
     \nu_{1'} + \nu_{2'} &= \nu_1 + \nu_2  \\
     \implies \nu_2 &= \nu_{1'} + \nu_{2'} -\nu_1
@@ -401,7 +402,7 @@ This reducibility of the diagrams then gives rise to the ``bubble'' objects, $\P
     \caption{Convention for the introduction of channel-specific frequencies}
     \label{fig:channels}
 \end{figure}
-In this notation we explicitly describe the full vertex function $\Gamma$, which is naturally a function of three arguments, as slight variations that depend on the convention for the respective channel. This means that all $\Gamma_r$ represent the same object, namely the full vertex, but each instantiation receives the arguments $\omega_r$, $\nu_r$ and $\nu'_r$, the bosonic and the two fermionic frequencies, respectively, already expressed in the channel's natural parametrization. This clarification is important since these objects are fundamentally different form the notationally-similar $\gamma_r$, which are the reducible vertices in the $r$-channel.
+In this notation we explicitly describe the full vertex function $\Gamma$, which is naturally a function of three arguments, as slight variations that depend on the convention for the respective channel. This means that all $\Gamma_r$ represent the same object, namely the full vertex, but each instantiation receives the arguments $\omega_r$, $\nu_r$ and $\nu'_r$, the bosonic and the two fermionic frequencies, respectively, already expressed in the channel's natural parametrization. This clarification is important since these objects are fundamentally different from the notationally-similar $\gamma_r$, which are the reducible vertices in the $r$-channel.
 
 The frequencies in Fig. \ref{fig:channels} lead then to the following conversion rules between the channels, where the conventional vertex depicted in Fig. \ref{fig:vertex} is referred to as the 'fermionic' vertex, $\Gamma_f$:
 
@@ -520,7 +521,7 @@ And from any other channel to the t-channel:
 Define the following transformations, based on the previous properties:
 \subsection*{Spin flip}
 \begin{equation}
-T_S \Gamma^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma_1'\sigma_2'|\sigma_1\sigma2} (q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2) = \Gamma^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\bar{\sigma}_1'\bar{\sigma}_2'|\bar{\sigma}_1\bar{\sigma}_2} (q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2)
+T_S \Gamma^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma_1'\sigma_2'|\sigma_1\sigma_2} (q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2) = \Gamma^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\bar{\sigma}_1'\bar{\sigma}_2'|\bar{\sigma}_1\bar{\sigma}_2} (q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2)
 \end{equation}
 
 \subsection*{Exchange symmetries}
@@ -1163,7 +1164,7 @@ The above numeration and transformation properties of the respective diagrammati
 \end{table}
 
 
-\renewcommand{\tabcolsep}{2pt} 
+\renewcommand{\tabcolsep}{0.5pt}  % 2pt
 \begin{table}[H]
 	\renewcommand{\arraystretch}{1.2}
 	\begin{tabular}{c|c||c|c|c||c|c|c||c|c|c}
@@ -1361,8 +1362,8 @@ and, lastly, for the t-channel, the same as for the a-channel:
 RR & RK & KR & KK
 \end{pmatrix}.
 \end{align}
-This is a good point to point out that it's only the internal structure of the bubble the one that is the same for the a- and t-channels. The way the legs are connected and, consequently, the following functions, do defer between both (and, actually, all three) channels.
-These aforementioned functions are a devise to exploit the zeros in the bubbles \textit{and}, simultaneously, the fact that one only needs to store $n_{K_i}$ Keldysh components per diagrammatic class. These are functions that then, based on the Keldysh index, $i_0$, of the left hand side of Eq. \ref{eq:derivativeOfgamma} (i.e. $i_0\in\{0,\dots, n_{K_i}\}$ and the Keldysh index, $i_2$, of the list of non zero entries of the bubbles (i.e. $i_2\in\{3, 6, 7, 9, 11, 12, 13, 14, 15\}$)  determine precisely the corresponding components $i_1$ and $i_3$ for the vertices left and right of the bubble in Eq. \ref{eq:derivativeOfgamma}. Condensed into an equation, the statement is as follows:
+This is a good point to point out that it's only the internal structure of the bubble the one that is the same for the a- and t-channels. The way the legs are connected and, consequently, the following functions, do differ between both (and, actually, all three) channels.
+These aforementioned functions are a devise to exploit the zeros in the bubbles \textit{and}, simultaneously, the fact that one only needs to store $n_{K_i}$ Keldysh components per diagrammatic class. These are functions that then, based on the Keldysh index, $i_0$, of the left hand side of Eq.~\eqref{eq:derivativeOfgamma} (i.e. $i_0\in\{0,\dots, n_{K_i}\}$ and the Keldysh index, $i_2$, of the list of non zero entries of the bubbles (i.e. $i_2\in\{3, 6, 7, 9, 11, 12, 13, 14, 15\}$)  determine precisely the corresponding components $i_1$ and $i_3$ for the vertices left and right of the bubble in Eq.~\eqref{eq:derivativeOfgamma}. Condensed into an equation, the statement is as follows:
 
 \begin{equation}
 \dot{\gamma_r}^{i_0}(\omega_r, \nu_r, \nu'_r) = \sum_{i_2\in BK} \int d\nu''_r \Gamma^{i^r_1(i_0, i_2)}(\omega_r, \nu_r, \nu''_r)  \dot{\Pi}_r^{i_2}(\nu_1^r, \nu_2^r)  \Gamma^{i^r_3(i_0, i_2)}(\omega_r, \nu''_r, \nu'_r),
@@ -1380,37 +1381,43 @@ i_1^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3)
 i_3^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha_3| \alpha_1\alpha'_4 \\
 \end{align}
 \subsection*{Structure of the internal bubble - diagrammatic classes' contributions}
-Now, at this stage, the natural question to ask is how the \textit{diagrammatic} decomposition of Eq. \ref{eq:fullgammaDerivative} looks like i.e., given that $\dot{\gamma_r} = \sum_i \dot{K_r^i}$, what are the diagrammatic classes that contribute to each of these derivatives? It should by now be clear that not all classes can contribute to all derivatives, since, for instance, diagrams in the $K_3$ class, by definition, do not fulfill the requirement of having, say, two lines connected to the same vertex on one side. Thus, no terms with $K_3$ can appear in $\dot{K_1}$.
+Now, at this stage, the natural question to ask is how the \textit{diagrammatic} decomposition of Eq.~\eqref{eq:fullgammaDerivative} looks like i.e., given that $\dot{\gamma_r} = \sum_i \dot{K_i^r}$, what are the diagrammatic classes that contribute to each of these derivatives? It should by now be clear that not all classes can contribute to all derivatives, since, for instance, diagrams in the $K_3$ class, by definition, do not fulfill the requirement of having, say, two lines connected to the same vertex on one side. Thus, no terms with $K_3$ can appear in $\dot{K_1}$.
 The natural thing to do at this stage is, basically, classify by sides and lines connected to one vertex, what classes fulfill the requirements to contribute, at least on one side, to which ones.
 Thus, one can establish the following categorization:
 
 \begin{center}
+\renewcommand{\tabcolsep}{5pt} 
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{| c| | c | c|} 
 \hline
           &  L & R \\ 
           \hline\hline
- SV   & $K_1^r$, $\bar{K_2^r}$ &  $K_1^r$, $K_2^r$\\ 
+ SV   & $\Gamma_0$, $K_1^r$, $\bar{K_2^r}$ & $\Gamma_0$, $K_1^r$, $K_2^r$\\ 
   DV & $K_2^r$, $K_3^r$, $\gamma_{\bar{r}}$  & $\bar{K_2^r}$, $K_3^r$, $\gamma_{\bar{r}}$\\ 
  \hline
 \end{tabular}
 \end{center}
-Here, SV and DV stand for ''same vertex'' and ''different vertex'', alluding to whether or not both lines to the right (R) of the left (L) of the vertex connect to the same or to different vertices. The inclusion already of $\gamma_{\bar{r}}$ is due to the foreshadowing of the multi-loop iterative loop i.e., we will be interested in feeding back diagrams of channels $\bar{r}$ to calculate higher loop order contributions to channel $r$.
+Here, SV and DV stand for ''same vertex'' and ''different vertices'', alluding to whether or not both lines to the right (R) of the left (L) of the vertex connect to the same or to different vertices. 
+$\Gamma_0$ is the bare vertex.
+The inclusion already of $\gamma_{\bar{r}}$ is due to the foreshadowing of the multi-loop iterative loop i.e., we will be interested in feeding back diagrams of channels $\bar{r}$ to calculate higher loop order contributions to channel $r$.
 Through this, one then gets the following Contribution Table to $\dot{K_i^r}$:
 
 \begin{center}
+\renewcommand{\tabcolsep}{5pt} 
+\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{| c| | c | c|} 
 \hline
           &  L & R \\ 
           \hline\hline
- $\dot{K_1^r}$  & $K_1^r$, $\bar{K_2^r}$&  $K_1^r$, $K_2^r$\\ 
- $\dot{K_2^r}$ & $K_2^r$, $K_3^r$, $\gamma_{\bar{r}}$  & $K_1^r$, $K_2^r$\\
- $\dot{\bar{K_2^r}}$ & $K_1^r$, $\bar{K_2^r}$ & $\bar{K_2^r}$, $K_3^r$, $\gamma_{\bar{r}}$\\ 
+ $\dot{K_1^r}$  & $\Gamma_0$, $K_1^r$, $\bar{K_2^r}$ & $\Gamma_0$, $K_1^r$, $K_2^r$\\ 
+ $\dot{K_2^r}$ & $K_2^r$, $K_3^r$, $\gamma_{\bar{r}}$  & $\Gamma_0$, $K_1^r$, $K_2^r$\\
+ $\dot{\bar{K_2^r}}$ & $\Gamma_0$, $K_1^r$, $\bar{K_2^r}$ & $\bar{K_2^r}$, $K_3^r$, $\gamma_{\bar{r}}$\\ 
  $\dot{K_3^r}$ &  $K_2^r$, $K_3^r$, $\gamma_{\bar{r}}$   & $\bar{K_2^r}$, $K_3^r$, $\gamma_{\bar{r}}$\\
  \hline
 \end{tabular}
 \end{center}
 
-What this table summarizes is the possible terms that can appear on the RHS of \ref{eq:derivativeOfgamma}, if one decomposes it into the diagrammatic classes.
+What this table summarizes is the possible terms that can appear on the RHS of Eq.~\eqref{eq:derivativeOfgamma}, if one decomposes it into the diagrammatic classes.
 
 
 
