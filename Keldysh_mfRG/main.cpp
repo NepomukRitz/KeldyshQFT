@@ -87,15 +87,15 @@ auto main() -> int {
 
         double tadd = get_time();
         state += dPsi;
-        cout << "Added:";
+        cout << "Added. ";
         get_time(tadd);
-        double next_Lambda = flow_grid[i];
 
+        double next_Lambda = flow_grid[i];
         Propagator control = propag(next_Lambda, state.selfenergy, 'g','.');
 
         writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
-        cout << "Wrote out" <<endl;
-        cout << "One RK-derivative step: ";
+
+        cout << "One RK-derivative step. ";
         get_time(tder);
     }
 
@@ -202,7 +202,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 
     double t_multiply = get_time();
     dPsi *= dL;
-    cout << "dPsi multiplied";
+    cout << "dPsi multiplied. ";
     get_time(t_multiply);
 }
 
@@ -244,6 +244,8 @@ template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, Sta
 //Writes of .dat files of the propagator, the self energy and selected values of the vertex for different values of Lambda during the fRG flow
 void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex)
 {
+
+    double t_write = get_time();
     int i = fconv_Lambda(Lambda);
 
     ostringstream self_energyR, self_energyA, self_energyK, propR, propA, propK;
@@ -404,7 +406,6 @@ void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
     my_file_tvert2K2.close();
     my_file_tvert3K2.close();
     my_file_tvert11K2.close();
-
 #endif
 
 #if DIAG_CLASS>=3
@@ -508,11 +509,10 @@ void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
     my_file_tvert5K3.close();
     my_file_tvert6K3.close();
     my_file_tvert7K3.close();
-
-
-
 #endif
 
+    cout << "Wrote out. ";
+    get_time(t_write);
 }
 
 
