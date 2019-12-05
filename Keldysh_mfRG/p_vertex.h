@@ -707,8 +707,8 @@ template<typename Q> auto pvert<Q>::indices_sum(int i0, int i2) -> tuple<int, in
     tie(a3p, a4p, a3, a4) = alphas(i2);
 
     return make_tuple(
-            8*(a1p-1) + 4*(a2p-1) + 2*(a3p-1) + 1*(a4-1),
-            8*(a3-1) + 4*(a4p-1) + 2*(a1-1) + 1*(a2-1));
+            8*(a1p-1) + 4*(a2p-1) + 2*(a3p-1) + 1*(a4p-1),
+            8*(a3-1) + 4*(a4-1) + 2*(a1-1) + 1*(a2-1));
 }
 
 #endif //KELDYSH_MFRG_P_VERTEX_H

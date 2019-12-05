@@ -11,6 +11,8 @@
 #include "selfenergy.h"
 #include "util.h"
 
+
+//TODO If structure of ALL bubbles is equal, why not have a master-bubble class, takes in g and s and a parameter to choose if regular or differentiated and calculates value accordingly?
 /*Class defining the p_bubble object with a Keldysh structure*/
 class P_Bubble{
     Propagator& g;
@@ -23,32 +25,32 @@ public:
     {
         comp ans;
         switch (iK){
-            case 3: //AR
-                ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
-                break;
-            case 6: //AA
+            case 3: //AA
                 ans = conj(g.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 6: //AR
+                ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
                 break;
             case 7: //AK
                 ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
                 break;
-            case 9: //RR
-                ans = g.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
-                break;
-            case 11://KR
-                ans = g.pvalsmooth(1, v1) * g.pvalsmooth(0, v2);
-                break;
-            case 12://RA
+            case 9: //RA
                 ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 11://KA
+                ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 12://RR
+                ans = g.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
                 break;
             case 13://RK
                 ans = g.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
                 break;
-            case 14://KA
-                ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+            case 14://KR
+                ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
                 break;
             case 15://KK
-                ans = g.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
+                ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
                 break;
             default: ;
         }
@@ -69,29 +71,29 @@ public:
     {
         comp ans;
         switch (iK) {
-            case 3: //AR
-                ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(0, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
-                break;
-            case 6: //AA
+            case 3: //AA
                 ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 6: //AR
+                ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(0, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
                 break;
             case 7: //AK
                 ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(1, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
                 break;
-            case 9: //RR
-                ans = g.pvalsmooth(0, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
-                break;
-            case 11://KR
-                ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(0, v2);
-                break;
-            case 12://RA
+            case 9: //RA
                 ans = g.pvalsmooth(0, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 11://KA
+                ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+                break;
+            case 12://RR
+                ans = g.pvalsmooth(0, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
                 break;
             case 13://RK
                 ans = g.pvalsmooth(0, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
                 break;
-            case 14://KA
-                ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+            case 14://KR
+                ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
                 break;
             case 15://KK
                 ans = g.pvalsmooth(1, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
