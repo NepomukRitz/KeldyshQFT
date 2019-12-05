@@ -376,7 +376,7 @@ template <typename Q> void diff_t_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     #endif
 
     #if DIAG_CLASS>=4
-        cout << "Damn son, this is a bad error"
+        cout << "Damn son, this is a bad error";
     #endif
 #endif
 }
