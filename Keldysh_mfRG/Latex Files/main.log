@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.11.10)  5 DEC 2019 18:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.11.10)  5 DEC 2019 20:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1262,97 +1262,101 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: ./figures/vertex.pdf Graphic file (type pdf)
 
 <use ./figures/vertex.pdf>
-Package pdftex.def Info: ./figures/vertex.pdf used on input line 416.
+Package pdftex.def Info: ./figures/vertex.pdf used on input line 425.
 (pdftex.def)             Requested size: 147.61307pt x 138.46857pt.
  [3 <./figures/vertex.pdf>] [4]
-<figures/channels_with_labels.pdf, id=77, 1284.02686pt x 254.19174pt>
+<figures/channels_with_labels.pdf, id=78, 1284.02686pt x 254.19174pt>
 File: figures/channels_with_labels.pdf Graphic file (type pdf)
 
 <use figures/channels_with_labels.pdf>
-Package pdftex.def Info: figures/channels_with_labels.pdf used on input line 46
-7.
+Package pdftex.def Info: figures/channels_with_labels.pdf used on input line 47
+6.
 (pdftex.def)             Requested size: 390.0pt x 77.2045pt.
  [5 <./figures/channels_with_labels.pdf>] [6]
 
-LaTeX Font Warning: Command \large invalid in math mode on input line 621.
+LaTeX Font Warning: Command \large invalid in math mode on input line 630.
 
 
-LaTeX Font Warning: Command \large invalid in math mode on input line 621.
+LaTeX Font Warning: Command \large invalid in math mode on input line 630.
 
 
-LaTeX Font Warning: Command \large invalid in math mode on input line 621.
+LaTeX Font Warning: Command \large invalid in math mode on input line 630.
 
 
-LaTeX Font Warning: Command \large invalid in math mode on input line 621.
+LaTeX Font Warning: Command \large invalid in math mode on input line 630.
 
 [7]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 666.
+Underfull \hbox (badness 10000) in paragraph at lines 672--676
 
- (/usr/local/texlive/2017/texmf-dist/tex/latex/base/omscmr.fd
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 683.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 666.
-
-Overfull \hbox (31.99739pt too wide) in paragraph at lines 707--707
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 683.
+ [8]
+Overfull \hbox (31.99739pt too wide) in paragraph at lines 724--724
 [] 
  []
 
-[8] [9]
-Overfull \hbox (86.35266pt too wide) in paragraph at lines 814--916
+[9]
+Overfull \hbox (86.35266pt too wide) in paragraph at lines 831--933
 [][] 
  []
 
 [10] [11]
-Overfull \hbox (11.41898pt too wide) in paragraph at lines 1026--1125
+Overfull \hbox (11.41898pt too wide) in paragraph at lines 1043--1142
 [][] 
  []
 
 [12]
-Overfull \hbox (24.06245pt too wide) in paragraph at lines 1131--1230
+Overfull \hbox (24.06245pt too wide) in paragraph at lines 1148--1247
 [][] 
  []
 
 [13]
-Overfull \hbox (99.56444pt too wide) in paragraph at lines 1236--1341
+Overfull \hbox (99.56444pt too wide) in paragraph at lines 1253--1358
 [][] 
  []
 
-[14] <./figures/all-Bubbles.pdf, id=170, 818.29756pt x 496.34834pt>
+[14] <./figures/all-Bubbles.pdf, id=171, 818.29756pt x 496.34834pt>
 File: ./figures/all-Bubbles.pdf Graphic file (type pdf)
 
 <use ./figures/all-Bubbles.pdf>
-Package pdftex.def Info: ./figures/all-Bubbles.pdf used on input line 1357.
+Package pdftex.def Info: ./figures/all-Bubbles.pdf used on input line 1374.
 (pdftex.def)             Requested size: 390.0pt x 236.56314pt.
  [15]
-Overfull \hbox (33.8088pt too wide) in paragraph at lines 1387--1387
+Overfull \hbox (33.8088pt too wide) in paragraph at lines 1404--1404
 [] 
  []
 
 
-Overfull \hbox (33.8088pt too wide) in paragraph at lines 1410--1410
+Overfull \hbox (33.8088pt too wide) in paragraph at lines 1427--1427
 [] 
  []
 
 [16 <./figures/all-Bubbles.pdf>]
-Overfull \hbox (33.8088pt too wide) in paragraph at lines 1433--1433
+Overfull \hbox (33.8088pt too wide) in paragraph at lines 1450--1450
 [] 
  []
 
 [17] [18] [19]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1501.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1501.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1518.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1518.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1501.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1501.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1518.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1518.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1501.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1518.
  ) 
 Here is how much of TeX's memory you used:
- 30144 strings out of 492995
- 706372 string characters out of 6132703
+ 30145 strings out of 492995
+ 706385 string characters out of 6132703
  924626 words of memory out of 5000000
  33098 multiletter control sequences out of 15000+600000
  13997 words of font info for 54 fonts, out of 8000000 for 9000
@@ -1373,10 +1377,10 @@ exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/tex
 live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texli
 ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texliv
 e/2017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (19 pages, 283924 bytes).
+Output written on main.pdf (19 pages, 284544 bytes).
 PDF statistics:
- 294 PDF objects out of 1000 (max. 8388607)
- 252 compressed objects within 3 object streams
- 118 named destinations out of 1000 (max. 500000)
+ 295 PDF objects out of 1000 (max. 8388607)
+ 253 compressed objects within 3 object streams
+ 119 named destinations out of 1000 (max. 500000)
  28 words of extra memory for PDF output out of 10000 (max. 10000000)
 

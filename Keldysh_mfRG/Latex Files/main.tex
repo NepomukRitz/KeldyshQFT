@@ -404,7 +404,16 @@ G^{2|1} & G^{2|2}
 \end{equation}
 
 \section*{General properties of the self energy $\Sigma$}
-The self energy behaves in, essentially, the same way as the propagator i.e.\ is diagonal in frequency- (when time-translational symmetry), momentum- (when space-translational symmetry) and spin-space. It also has two independent components, $\Sigma^R$, which it's conjugate is $\Sigma^A = \left[\Sigma^R\right]^*$ and $\Sigma^K$, which is anti-hermitian, i.e. $\left[\Sigma^K\right]^* = -\Sigma^K$. Due to $G^{1|1}=0$, it directly follows that $\Sigma^{1|1}=0$.
+The self energy has similar symmetry properties as the propagator. It also has two independent components, $\Sigma^R$, which it's conjugate is $\Sigma^A = \left[\Sigma^R\right]^*$ and $\Sigma^K$, which is anti-hermitian, i.e. $\left[\Sigma^K\right]^* = -\Sigma^K$. However, causality for the self-energy translates to $\Sigma^{2|2}=0$, such that it's Keldysh structure in matrix form reads
+\begin{equation}
+\Sigma^{\alpha_1|\alpha'_1}_{\sigma_1} =
+\begin{pmatrix}
+\Sigma^{1|1} & \Sigma^{1|2} \\
+\Sigma^{2|1} & \Sigma^{2|2}
+\end{pmatrix}_{\sigma_1|\sigma_1} = \begin{pmatrix}
+\Sigma^K & \Sigma^R \\ \Sigma^A & 0
+\end{pmatrix}_{\sigma_1|\sigma_1}
+\end{equation}
 
 \section*{General properties of the four-point vertex $\Gamma$}
 
@@ -638,13 +647,18 @@ The inclusion of $T_S$ expands the group, but does not yield any interesting str
 \pagebreak
 \section*{Independent spin and Keldysh components}
 
+The reducible part of the vertex in each channel can be decomposed into four diagrammatic classes:
+\begin{align*}
+\gamma_r (\omega_r, \nu_r, \nu_r^\prime) = \K1^r (\omega_r) + \K2^r (\omega_r, \nu_r) + \Kbar2^r (\omega_r, \nu_r^\prime) + \K3^r (\omega_r, \nu_r, \nu_r^\prime)
+\end{align*}
+\\
 \textbf{Keldysh components which are equal due to diagrammatic structure of $\K1$, $\K2$, $\K3$}
 
 Class $\K1$:
 \begin{align*}
 (\Ka1)\al121210 &= (\Ka1)\al121264 = (\Ka1)\al121273 = (\Ka1)\al121285 \\
 (\Kp1)\al121210 &= (\Kp1)\al121280 = (\Kp1)\al121215 = (\Kp1)\al121285 \\
-(\Kt1)\al121210 &= (\Kt1)\al121263 = (\Kt1)\al121274 = (\Kt1)\al121285 \\
+(\Kt1)\al121210 &= (\Kt1)\al121263 = (\Kt1)\al121274 = (\Kt1)\al121285 
 \end{align*}
 
 Class $\K2$, $\Kbar2$:
@@ -656,6 +670,9 @@ Class $\K2$, $\Kbar2$:
 (\Kt2)\al121210 &= (\Kt2)\al121263 \,, \quad
 (\Ktbar2)\al121210 = (\Ktbar2)\al121274
 \end{align*}
+\\
+\\
+The diagrammatic classes $\K1$, $\K2$, $\Kbar2$, $\K3$ behave differently under particle exchange and complex conjugation (also depending on the spin configuration), as elaborated further on. Here the multi-index notation $(1^\prime 2^\prime | 12)$ stands for Keldysh index, frequency, momentum. 
 
 \subsection*{Equal spins $\sigma\sigma|\sigma\sigma$}
 
