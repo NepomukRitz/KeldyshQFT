@@ -10,6 +10,7 @@
 \usepackage{caption} % For caption spacing
 \usepackage{subcaption} % For sub-figures
 \usepackage{graphicx}
+\usepackage{mathtools}
 \graphicspath{ {./figures/} }
 \usepackage{pgfplots}
 \usepackage[all]{nowidow}
@@ -18,6 +19,7 @@
 \usepackage{multicol}
 \usepackage{algpseudocode,algorithm,algorithmicx}
 \usepackage{hyperref}
+\usepackage{cleveref}
 \usepackage[inline]{enumitem} % Horizontal lists
 % Used for displaying a sample figure. If possible, figure files should
 % be included in EPS format.
@@ -25,7 +27,7 @@
 % If you use the hyperref package, please uncomment the following line
 % to display URLs in blue roman font according to Springer's eBook style:
 % \renewcommand\UrlFont{\color{blue}\rmfamily}
-
+\newcommand{\defeq}{\vcentcolon=}
 \newcommand{\card}[1]{\left\vert{#1}\right\vert}
 \newcommand*\Let[2]{\State #1 $\gets$ #2}
 \definecolor{blue}{HTML}{1F77B4}
@@ -340,14 +342,78 @@
 %
 %
 %
-\section*{General properties of the four-point vertex}
+This document serves as a compendium of derived and collected formulas for the analytical study and computational implementation of mfRG flow equations in the real-time Keldysh formalism.
+The Keldysh indices take values in the set $\{1,2\}$, with the convention $1 = q$ and $2=c$, where in some texts $c$ stands for 'classical component' and $q$ for 'quantum component'.
+
+\section*{General properties of the Green's function}
+\begin{equation}
+G = G_{1|1'} = G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1, \nu'_1)
+\end{equation}
+\subsection*{Frequency \& momentum conservation}
+The fact that the propagator conserves energy and momentum (due to time- or, given the case, space-translation invariance) translates to the Green's functions being diagonal in frequency and momentum space, respectively.
+\begin{align}
+\text{Time trans. inv: } &G(t|t') = G(t-t')\\ &\Rightarrow G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1| \nu'_1) = 2\pi \delta(\nu_1-\nu'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1)\\
+\text{Space trans. inv: } &G(x|x') = G(x-x')\\ &\Rightarrow G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1| \nu'_1) = 2\pi \delta(q_1-q'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1, \nu_1| \nu'_1)\\
+\text{Both: } &G(t|t', x|x') = G(t-t',x-x')\\ &\Rightarrow
+(2\pi)^2 \delta(q_1-q'_1)\delta(\nu_1-\nu'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1, \nu_1)
+\end{align}
+For this compendium we will assume time-invariance for all formulas but, since not all models will be translational invariant, we will not assume that symmetry.
+
+\subsection*{Spin conservation}
+Spin conservation leads to the Green's function begin diagonal in the finite dimensional spin-space (hence a Kronecker's instead of a Dirac's delta).
+\begin{equation}
+G_{\sigma_1|\sigma'_1} = \delta_{\sigma_1 \sigma'_1}G_{\sigma_1}
+\end{equation}
+
+\subsection*{Causality}
+Causality in the Keldysh formalism translates to:
+\begin{equation}
+G^{1|1} = 0
+\end{equation}
+
+\subsection*{Complex conjugation}
+Complex conjugation of the Green's function leads to the following equation:
+\begin{equation}
+\left[ G^{\alpha_1|\alpha'_1}_{\sigma_1}\right]^* = (-1)^{1+\alpha_1\alpha'_1}G^{\alpha'_1|\alpha_1}_{\sigma_1}
+\end{equation}
+This means, effectively, that the direction of time is inverted (notice the flip in Keldysh indices).
+
+
+\section*{Independent components of the single particle Green's function}
+Within the Keldysh formalism, the propagator has three different non-zero components. Due to their analytical properties (considered as functions of a complex time variable $t\in \mathbb{C}$), these are called \textit{retarded}, \textit{advanced}, and \text{Keldysh}. They are defined as follows:
+\begin{equation}
+R \defeq G^R = G^{2|1}  \hspace{0.7cm} A \defeq G^A = G^{1|2}\hspace{0.7cm} K \defeq G^K = G^{2|2}
+\end{equation}
+The components, thanks to the general property of the Green's function under conjugation, follow the following two relations:
+
+\begin{equation}
+\left[R\right]^* = A \hspace{0.7cm} \left[K\right]^* = -K
+\end{equation}
+Hence, $K$ is purely imaginary and there are only \textit{two} independent Keldysh components for the propagator, which we choose to be $R$ and $K$.
+
+One can accommodate the components of the Green's function in a matrix, using the $\alpha_1|\alpha'_1$ as row and column indices:
+
+\begin{equation}
+G^{\alpha_1|\alpha'_1}_{\sigma_1} =
+\begin{pmatrix}
+G^{1|1} & G^{1|2} ||
+G^{2|1} & G^{2|2}
+\end{pmatrix}_{\sigma_1|\sigma_1} = \begin{pmatrix}
+0 & A \\ R & K
+\end{pmatrix}_{\sigma_1|\sigma_1}
+\end{equation}
+
+\section*{General properties of the self energy $\Sigma$}
+The self energy behaves in, essentially, the same way as the propagator i.e is diagonal in frequency- (when time-translational symmetry), momentum- (when space-translational symmetry) and spin-space. It also has two independent components, $\Sigma^R$, which it's conjugate is $\Sigma^A = \left[\Sigma^R\right]^*$ and $\Sigma^K$, which is anti-hermitian, i.e. $\left[\Sigma^K\right]^* = -\Sigma^K$. Due to $G^{1|1}=0$, it directly follows that $\Sigma^{1|1}=0$.
+
+\section*{General properties of the four-point vertex $\Gamma$}
 
 \begin{equation}
     \Gamma = \Gamma_{1'2'|12} = \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2)
 \end{equation}
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.65]{vertex.png}
+\includegraphics[scale=0.65]{vertex.pdf}
 \caption{Convention for the vertex}
 \label{fig:vertex}
 \end{figure}
@@ -398,7 +464,7 @@ This reducibility of the diagrams then gives rise to the ``bubble'' objects, $\P
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{figures/channels_with_labels.png}
+    \includegraphics[width=\linewidth]{figures/channels_with_labels.pdf}
     \caption{Convention for the introduction of channel-specific frequencies}
     \label{fig:channels}
 \end{figure}
@@ -635,7 +701,7 @@ Class $\K1$:
 	\end{itemize}
 	\item complex conjugation:
 	\begin{align*}
-	\K1^r(1^\prime 2^\prime|12) = -(-1)^{\sum_j (\alpha_j + \bar{\alpha}_j)} (\K1^r(12|1^\prime 2^\prime))^*
+	\K1^r(1^\prime 2^\prime|12) = (-1)^{\sum_j (1+\alpha_j + \bar{\alpha}_j)} (\K1^r(12|1^\prime 2^\prime))^*
 	\quad \Rightarrow \quad
 	(\K1^r)\al121210 = T_C (\K1^r)\al121201
 	\end{align*}
@@ -682,14 +748,14 @@ Class $\K2$, $\Kbar2$:
 	\end{itemize}
 	\item complex conjugation:
 	\begin{align*}
-	\K2^{a,p}(1^\prime 2^\prime|12) &= -(-1)^{\sum_j (\alpha_j + \bar{\alpha}_j)} (\Kbar2^{a,p}(12|1^\prime 2^\prime))^*
-	\quad \Rightarrow \quad
+	\K2^{a,p}(1^\prime 2^\prime|12) = &(-1)^{1+\sum_j (\alpha_j + \bar{\alpha}_j)} (\Kbar2^{a,p}(12|1^\prime 2^\prime))^*
+	\quad\\ &\Rightarrow \quad
 	(\K2^{a,p})\al121210 = T_C (\Kbar2^{a,p})\al121201 \\
-	\Kt2(1^\prime 2^\prime|12) &= -(-1)^{\sum_j (\alpha_j + \bar{\alpha}_j)} (\Kt2(12|1^\prime 2^\prime))^*
-	\quad \Rightarrow \quad
+	\Kt2(1^\prime 2^\prime|12) = &(-1)^{1+\sum_j (\alpha_j + \bar{\alpha}_j)} (\Kt2(12|1^\prime 2^\prime))^*
+	\quad\\ &\Rightarrow \quad
 	(\Kt2)\al121210 = T_C (\Kt2)\al121201 \\
-	\Ktbar2(1^\prime 2^\prime|12) &= -(-1)^{\sum_j (\alpha_j + \bar{\alpha}_j)} (\Ktbar2(12|1^\prime 2^\prime))^*
-	\quad \Rightarrow \quad
+	\Ktbar2(1^\prime 2^\prime|12) = &(-1)^{1+\sum_j (\alpha_j + \bar{\alpha}_j)} (\Ktbar2(12|1^\prime 2^\prime))^*
+	\quad\\ &\Rightarrow \quad
 	(\Ktbar2)\al121210 = T_C (\Ktbar2)\al121201
 	\end{align*}
 \end{itemize}
@@ -1275,7 +1341,7 @@ The above numeration and transformation properties of the respective diagrammati
 \end{table}
 
 
-\section*{Bubbles}
+\section*{General properties of the bubbles $\Pi_r$}
 \subsection*{Keldysh structure of the bubbles}
 When considering the derivative of the full vertex, there are contributions coming only from each one of the channels, i.e. $\dot{\Gamma^{\Lambda}} = \sum_r \dot{\gamma_r}$  and
 \begin{equation}
@@ -1288,7 +1354,7 @@ First, one has to look at the Keldysh structure of the bubbles $\Pi_r^{\alpha'_3
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\textwidth]{all-Bubbles.png}
+	\includegraphics[width=\textwidth]{all-Bubbles.pdf}
 	\caption{Bubbles in the respective channels}
 \end{figure}
 
@@ -1307,21 +1373,22 @@ For the a-channel, we have
 12& 13&14 & 15
 \end{pmatrix} &=
 \begin{pmatrix}
-1111 & 1112 & 1121 & 1122 \\
-1211 & 1212 & 1221 & 1222\\
-2111 & 2112 & 2121 & 2122\\
-2211& 2212 & 2221 & 2222
+11|11 & 11|12 & 11|21 & 11|22 \\
+12|11 & 12|12 & 12|21 & 12|22\\
+21|11 & 21|12 & 21|21 & 21|22\\
+22|11 & 22|12 & 22|21 & 22|22
 \end{pmatrix} = \begin{pmatrix}
 0    & 0    & 0    & AA \\
 0    & 0    & AR & AK\\
 0    & RA & 0    & KA\\
 RR & RK & KR & KK
 \end{pmatrix},
+\label{eq:Pia}
 \end{align}
 
 for the p-channel
 \begin{align}
-\Pi_p^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha_3|\alpha'_3}\left(\frac{\omega_p}{2}+\nu''_p\right)G^{\alpha'_4|\alpha_4}\left(\frac{\omega_p}{2}-\nu''_p\right)\\
+\Pi_p^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha'_3|\alpha_3}\left(\frac{\omega_p}{2}+\nu''_p\right)G^{\alpha'_4|\alpha_4}\left(\frac{\omega_p}{2}-\nu''_p\right)\\
 \begin{pmatrix}
 0  & 1  & 2   & 3\\
 4  & 5  & 6   & 7\\
@@ -1329,16 +1396,17 @@ for the p-channel
 12& 13&14 & 15
 \end{pmatrix} &=
 \begin{pmatrix}
-1111 & 1112 & 1121 & 1122 \\
-1211 & 1212 & 1221 & 1222\\
-2111 & 2112 & 2121 & 2122\\
-2211& 2212 & 2221 & 2222
+11|11 & 11|12 & 11|21 & 11|22 \\
+12|11 & 12|12 & 12|21 & 12|22\\
+21|11 & 21|12 & 21|21 & 21|22\\
+22|11 & 22|12 & 22|21 & 22|22
 \end{pmatrix} = \begin{pmatrix}
-0    & 0    & 0    & AR \\
-0    & 0    & AA & AK\\
-0    & RR & 0    & KR\\
-RA & RK & KA & KK
+0    & 0    & 0    & AA \\
+0    & 0    & AR & AK\\
+0    & RA & 0    & KA\\
+RR & RK & KR & KK
 \end{pmatrix},
+\label{eq:Pip}
 \end{align}
 
 and, lastly, for the t-channel, the same as for the a-channel:
@@ -1351,34 +1419,35 @@ and, lastly, for the t-channel, the same as for the a-channel:
 12& 13&14 & 15
 \end{pmatrix} &=
 \begin{pmatrix}
-1111 & 1112 & 1121 & 1122 \\
-1211 & 1212 & 1221 & 1222\\
-2111 & 2112 & 2121 & 2122\\
-2211& 2212 & 2221 & 2222
+11|11 & 11|12 & 11|21 & 11|22 \\
+12|11 & 12|12 & 12|21 & 12|22\\
+21|11 & 21|12 & 21|21 & 21|22\\
+22|11 & 22|12 & 22|21 & 22|22
 \end{pmatrix} = \begin{pmatrix}
 0    & 0    & 0    & AA \\
 0    & 0    & AR & AK\\
 0    & RA & 0    & KA\\
 RR & RK & KR & KK
 \end{pmatrix}.
+\label{eq:Pit}
 \end{align}
-This is a good point to point out that it's only the internal structure of the bubble the one that is the same for the a- and t-channels. The way the legs are connected and, consequently, the following functions, do differ between both (and, actually, all three) channels.
+Note that, choosing this structural convention for the bubbles, one attains internal Keldysh structures that are exactly equal, independent of the channel. However, the way the legs are connected and, consequently, the functions that will be defined below do differ among the three channels. These functions are a devise to exploit the zeroes in the bubbles \textit{and}, simultaneously, the fact that one only needs to store $n_{K_i}$ Keldysh components per diagrammatic class.
 These aforementioned functions are a devise to exploit the zeros in the bubbles \textit{and}, simultaneously, the fact that one only needs to store $n_{K_i}$ Keldysh components per diagrammatic class. These are functions that then, based on the Keldysh index, $i_0$, of the left hand side of Eq.~\eqref{eq:derivativeOfgamma} (i.e. $i_0\in\{0,\dots, n_{K_i}\}$ and the Keldysh index, $i_2$, of the list of non zero entries of the bubbles (i.e. $i_2\in\{3, 6, 7, 9, 11, 12, 13, 14, 15\}$)  determine precisely the corresponding components $i_1$ and $i_3$ for the vertices left and right of the bubble in Eq.~\eqref{eq:derivativeOfgamma}. Condensed into an equation, the statement is as follows:
 
 \begin{equation}
 \dot{\gamma_r}^{i_0}(\omega_r, \nu_r, \nu'_r) = \sum_{i_2\in BK} \int d\nu''_r \Gamma^{i^r_1(i_0, i_2)}(\omega_r, \nu_r, \nu''_r)  \dot{\Pi}_r^{i_2}(\nu_1^r, \nu_2^r)  \Gamma^{i^r_3(i_0, i_2)}(\omega_r, \nu''_r, \nu'_r),
 \label{eq:fullgammaDerivative}
 \end{equation}
-where we have emphasized that the frequencies that go into the bubbles depend on the channel, as depicted above, that the indices $i_1$ and $i_3$ are functions of the other two indices and the way these are determined are also channel-dependent and $BK = \{3, 6, 7, 9, 11, 12, 13, 14, 15\}$.
+where we have emphasized that the frequencies $\nu^r_{1}$ and $\nu^r_2$ that go into the bubbles depend on the channel, as depicted above in \Crefrange{eq:Pia}{eq:Pit}), that the indices $i_1$ and $i_3$ are functions of the other two indices and the way these are determined are also channel-dependent and $BK = \{3, 6, 7, 9, 11, 12, 13, 14, 15\}$.
 Writing down the exact form of these functions is a straight-forward task, which requires the conversion of $i_0$ and $i_2$ into indices in the $\{1111, \dots, 2222\}$ set. To visualize the process, just look at the figures drawn above. There, it becomes apparent, that, for $i_0 \rightarrow \alpha'_1\alpha'_2|\alpha_1\alpha_2$ and $i_2 \rightarrow \alpha'_3\alpha'_4|\alpha_3\alpha_4$, the functions are as follows:
 
 \begin{align}
 i_1^a (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha_4| \alpha'_3\alpha_2 \\
 i_3^a (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha_3\alpha'_2| \alpha_1\alpha'_4 \\
-i_1^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha'_2| \alpha'_3\alpha_4 \\
-i_3^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha_3\alpha'_4| \alpha_1\alpha_2 \\
+i_1^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha'_2| \alpha'_3\alpha'_4 \\
+i_3^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha_3\alpha_4| \alpha_1\alpha_2 \\
 i_1^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha_4\alpha'_2| \alpha'_3\alpha_2 \\
-i_3^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha_3| \alpha_1\alpha'_4 \\
+i_3^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha_3| \alpha_1\alpha'_4
 \end{align}
 \subsection*{Structure of the internal bubble - diagrammatic classes' contributions}
 Now, at this stage, the natural question to ask is how the \textit{diagrammatic} decomposition of Eq.~\eqref{eq:fullgammaDerivative} looks like i.e., given that $\dot{\gamma_r} = \sum_i \dot{K_i^r}$, what are the diagrammatic classes that contribute to each of these derivatives? It should by now be clear that not all classes can contribute to all derivatives, since, for instance, diagrams in the $K_3$ class, by definition, do not fulfill the requirement of having, say, two lines connected to the same vertex on one side. Thus, no terms with $K_3$ can appear in $\dot{K_1}$.
@@ -1418,11 +1487,6 @@ Through this, one then gets the following Contribution Table to $\dot{K_i^r}$:
 \end{center}
 
 What this table summarizes is the possible terms that can appear on the RHS of Eq.~\eqref{eq:derivativeOfgamma}, if one decomposes it into the diagrammatic classes.
-
-
-
-
-
 
 
 
