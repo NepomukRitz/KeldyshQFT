@@ -309,7 +309,7 @@ template <typename Q> void diff_t_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     #if DIAG_CLASS>=1
     double tK1 = get_time();
     /*K1 contributions*/
-#pragma omp parallel default (none)
+#pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
 
         int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
@@ -330,7 +330,7 @@ template <typename Q> void diff_t_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     #if DIAG_CLASS>=2
     double tK2 = get_time();
     /*K2 contributions*/
-#pragma omp parallel default (none)
+#pragma omp parallel for
     for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
     {
         int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wt * nw2_nut * n_in);
@@ -353,7 +353,7 @@ template <typename Q> void diff_t_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     #if DIAG_CLASS>=3
     double tK3 = get_time();
     /*K3 contributions*/
-#pragma omp parallel default (none)
+#pragma omp parallel for
     for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
     {
         int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
@@ -388,7 +388,7 @@ template <typename Q> void t_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex
     //These lines are to test the SOPT results - there are no K1 contributions in the corrections!
     double t0 = get_time();
     /*K1 contributions*/
-#pragma omp parallel default (none)
+#pragma omp parallel for
     for (int iK1=0; iK1<nK_K1*nw1_wt*n_in; ++iK1) {
 
         int i0 = (iK1 % (nK_K1 * nw1_wt * n_in)) / (nw1_wt * n_in);
@@ -409,7 +409,7 @@ template <typename Q> void t_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex
 //    {
 //        //In this case, there are only contributions to K2 and K3
 //        /*K2 contributions*/
-//#pragma omp parallel default (none)
+//#pragma omp parallel for
 //        for(int iK2=0; iK2<nK_K2*nw2_wt*nw2_nut*n_in; iK2++)
 //        {
 //            int i0 = (iK2 % (nK_K2 * nw2_wt * nw2_nut * n_in)) / (nw2_wp * nw2_nut * n_in);
@@ -436,7 +436,7 @@ template <typename Q> void t_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex
 //    }
 
     /*K3 contributions*/
-//#pragma omp parallel default (none)
+//#pragma omp parallel for
 //    for(int iK3=0; iK3<nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in; iK3++)
 //    {
 //        int i0 = (iK3 % (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in)) / (nw3_wt * nw3_nut * nw3_nutp * n_in);
