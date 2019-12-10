@@ -27,6 +27,62 @@
 					<DistClean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="openmp_test_clion">
+				<Option output="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/openmp_test_clion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 openmp_test_clion"/>
+					<CompileFile command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="openmp_test_clion/fast">
+				<Option output="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/openmp_test_clion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 openmp_test_clion/fast"/>
+					<CompileFile command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="Keldysh_mfRG">
 				<Option output="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Keldysh_mfRG" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug"/>
@@ -34,7 +90,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/$ gsl-2.5"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -58,7 +113,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/$ gsl-2.5"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -75,16 +129,6 @@
 					<DistClean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="edit_cache">
-				<Option working_dir="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j20 -f &quot;/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 		</Build>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/Keldysh_symmetries.h">
 			<Option target="Keldysh_mfRG"/>
@@ -93,9 +137,6 @@
 			<Option target="Keldysh_mfRG"/>
 		</Unit>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/a_vertex.h">
-			<Option target="Keldysh_mfRG"/>
-		</Unit>
-		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/bubbles.h">
 			<Option target="Keldysh_mfRG"/>
 		</Unit>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_structures.h">
@@ -129,6 +170,7 @@
 			<Option target="Keldysh_mfRG"/>
 		</Unit>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/main.cpp">
+			<Option target="openmp_test_clion"/>
 			<Option target="Keldysh_mfRG"/>
 		</Unit>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/p_bubble.h">

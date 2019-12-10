@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named openmp_test_clion
+
+# Build rule for target.
+openmp_test_clion: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 openmp_test_clion
+.PHONY : openmp_test_clion
+
+# fast build rule for target.
+openmp_test_clion/fast:
+	$(MAKE) -f CMakeFiles/openmp_test_clion.dir/build.make CMakeFiles/openmp_test_clion.dir/build
+.PHONY : openmp_test_clion/fast
+
+#=============================================================================
 # Target rules for targets named Keldysh_mfRG
 
 # Build rule for target.
@@ -129,6 +142,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
+	$(MAKE) -f CMakeFiles/openmp_test_clion.dir/build.make CMakeFiles/openmp_test_clion.dir/main.cpp.o
 	$(MAKE) -f CMakeFiles/Keldysh_mfRG.dir/build.make CMakeFiles/Keldysh_mfRG.dir/main.cpp.o
 .PHONY : main.cpp.o
 
@@ -138,6 +152,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
+	$(MAKE) -f CMakeFiles/openmp_test_clion.dir/build.make CMakeFiles/openmp_test_clion.dir/main.cpp.i
 	$(MAKE) -f CMakeFiles/Keldysh_mfRG.dir/build.make CMakeFiles/Keldysh_mfRG.dir/main.cpp.i
 .PHONY : main.cpp.i
 
@@ -147,6 +162,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
+	$(MAKE) -f CMakeFiles/openmp_test_clion.dir/build.make CMakeFiles/openmp_test_clion.dir/main.cpp.s
 	$(MAKE) -f CMakeFiles/Keldysh_mfRG.dir/build.make CMakeFiles/Keldysh_mfRG.dir/main.cpp.s
 .PHONY : main.cpp.s
 
@@ -157,8 +173,9 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... Keldysh_mfRG"
 	@echo "... edit_cache"
+	@echo "... openmp_test_clion"
+	@echo "... Keldysh_mfRG"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

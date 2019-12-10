@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/Keldysh_mfRG.dir/main.cpp.o  -o Keldysh_mfRG 
+/usr/bin/c++   -std=c++14 -fopenmp -g   CMakeFiles/Keldysh_mfRG.dir/main.cpp.o  -o Keldysh_mfRG 
