@@ -1,0 +1,2 @@
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Code Julian/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Code Julian/cmake-build-debug/CMakeFiles/edit_cache.dir
