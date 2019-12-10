@@ -9,7 +9,7 @@
 #include "parameters.h"
 
 /*******PROPAGATOR FUNCTIONS***********/
-comp gR(double Lambda, double omega)
+auto gR(double Lambda, double omega) -> comp
 {
 #if REG==1
     return 1./(omega-epsilon);
@@ -18,7 +18,7 @@ comp gR(double Lambda, double omega)
 #endif
 }
 
-comp gA(double Lambda, double omega)
+auto gA(double Lambda, double omega) -> comp
 {
 #if REG==1
     return 1./(omega-epsilon);
@@ -28,27 +28,27 @@ comp gA(double Lambda, double omega)
 }
 
 //Self-explanatory
-double Fermi_distribution(double omega)
+auto Fermi_distribution(double omega) -> double
 {
     return 1./(exp((omega-mu)/T)+1.);
 }
 
-comp gK(double Lambda, double omega)
+auto gK(double Lambda, double omega) -> comp
 {
     return (1.-2.*Fermi_distribution(omega))*(gR(Lambda,omega) - gA(Lambda,omega));
 }
 
 #if REG==2
 
-comp sR(double Lambda, double omega)
+auto sR(double Lambda, double omega) -> comp
 {
     return -((comp)0.5i)*gR(Lambda,omega)*gR(Lambda,omega);
 }
-comp sA(double Lambda, double omega)
+auto sA(double Lambda, double omega) -> comp
 {
     return ((comp)0.5i)*gA(Lambda,omega)*gA(Lambda,omega);
 }
-comp sK(double Lambda, double omega)
+auto sK(double Lambda, double omega) -> comp
 {
     return (1.-2.*Fermi_distribution(omega))*(sR(Lambda,omega) - sA(Lambda,omega));
 }

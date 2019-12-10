@@ -11,37 +11,37 @@ template <typename Q>
 class SelfEnergy{
     vec<Q> Sigma =  vec<Q> (2*nSE); // factor 2 for Keldysh components: Sigma^R, Sigma^K
 public:
-    Q sval(int, int);
-    Q svalsmooth(int, double);
+    auto sval(int, int) -> Q;
+    auto svalsmooth(int, double) -> Q;
     void setself(int, int, Q);
 
 //operators for self energy
 
-    SelfEnergy<Q> operator+(const SelfEnergy<Q>& self1){//sum operator overloading
+    auto operator+(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma + self1.Sigma;
         return *this;
     }
-    SelfEnergy<Q> operator+=(const SelfEnergy<Q>& self1){//sum operator overloading
+    auto operator+=(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma += self1.Sigma;
         return *this;
     }
-    SelfEnergy<Q> operator*(Q alpha) {//multiplication operator overloading
+    auto operator*(Q alpha) -> SelfEnergy<Q> {//multiplication operator overloading
         this->Sigma * alpha;
         return *this;
     }
-    SelfEnergy<Q> operator*(double alpha){//multiplication operator overloading
+    auto operator*(double alpha) -> SelfEnergy<Q> {
         this->Sigma*alpha;
         return *this;
     }
-    SelfEnergy<Q> operator*=(double alpha){
+    auto operator*=(double alpha) -> SelfEnergy<Q> {
         this->Sigma*=alpha;
         return *this;
     }
-    SelfEnergy<Q> operator-(const SelfEnergy<Q>& self1){//sum operator overloading
+    auto operator-(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma - self1.Sigma;
         return *this;
     }
-    SelfEnergy<Q> operator-=(const SelfEnergy<Q>& self1){//sum operator overloading
+    auto operator-=(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma -= self1.Sigma;
         return *this;
     }
@@ -51,10 +51,10 @@ public:
 
 
 /*****************************************FUNCTIONS FOR SELF ENERGY*****************************************************/
-template <typename Q> Q SelfEnergy<Q>::sval(int iK, int i){
+template <typename Q> auto SelfEnergy<Q>::sval(int iK, int i) -> Q{
     return Sigma[iK*nSE + i];
 }
-template <typename Q> Q SelfEnergy<Q>::svalsmooth(int iK, double w){//smoothly interpolates for values between discrete frequency values of mesh
+template <typename Q> auto SelfEnergy<Q>::svalsmooth(int iK, double w) -> Q{//smoothly interpolates for values between discrete frequency values of mesh
 
     if(fabs(w)>w_upper_b)
         return 0.;

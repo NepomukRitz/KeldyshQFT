@@ -18,6 +18,7 @@ using namespace std;
 
 #ifdef GRID
 # if GRID==1
+/***********************************************    LOG GRID    *******************************************************/
 //TODO: derive functions to determine index values for the respective logarithmic grid but, first, define logarithmic grid
 
 void setUpBosGrid(){
@@ -33,8 +34,8 @@ void setUpFlowGrid(){
 }
 
     CODE HERE IS UNREACHABLE LIKE THIS
-
 #elif GRID==2
+/*********************************************    LINEAR GRID    ******************************************************/
 
 void setUpBosGrid()
 {
@@ -55,7 +56,7 @@ void setUpFlowGrid()
 
 
 
-int fconv_bos(double w)
+auto fconv_bos(double w) -> int
 {
     int index;
     double aid = (w-w_lower_b)/dw;
@@ -69,7 +70,7 @@ int fconv_bos(double w)
 
     return index; //- (int)(index/bfreqs.size());
 }
-int fconv_fer(double w)
+auto fconv_fer(double w) -> int
 {
     int index;
     double aid = (w-w_lower_f)/dv;
@@ -83,7 +84,7 @@ int fconv_fer(double w)
 
     return index; //- (int)(index/ffreqs.size());
 }
-int fconv_Lambda(double Lambda)
+auto fconv_Lambda(double Lambda) -> int
 {
     for(int i=0; i<nEVO; ++i){
         if(Lambda == flow_grid[i])
@@ -92,13 +93,13 @@ int fconv_Lambda(double Lambda)
     return -1;
 }
 
-int fconv_K1_a(double w)
+auto fconv_K1_a(double w) -> int
 {
 //    auto index = (int)((w-w_lower_b)/dw);
 //    return index -(int)(index/nw1_wa);
     return fconv_bos(w);
 }
-tuple<int, int> fconv_K2_a(double w, double v1)
+auto fconv_K2_a(double w, double v1) -> tuple<int, int>
 {
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
@@ -106,7 +107,7 @@ tuple<int, int> fconv_K2_a(double w, double v1)
 //    return make_tuple(index_b-(int)(index_b/nw2_wa), index_f-(int)(index_f/nw2_nua));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
-tuple<int, int, int> fconv_K3_a(double w, double v1, double v2)
+auto fconv_K3_a(double w, double v1, double v2) -> tuple<int, int, int>
 {
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
@@ -116,13 +117,13 @@ tuple<int, int, int> fconv_K3_a(double w, double v1, double v2)
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 
-int fconv_K1_p(double w)
+auto fconv_K1_p(double w) -> int
 {
 //    auto index = (int)((w-w_lower_b)/dw);
 //    return index - (int)(index/nw1_wp);
     return fconv_bos(w);
 }
-tuple<int, int> fconv_K2_p(double w, double v1)
+auto fconv_K2_p(double w, double v1) -> tuple<int, int>
 {
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
@@ -130,7 +131,7 @@ tuple<int, int> fconv_K2_p(double w, double v1)
 //    return make_tuple(index_b-(int)(index_b/nw2_wp), index_f-(int)(index_f/nw2_nup));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
-tuple<int, int, int> fconv_K3_p(double w, double v1, double v2)
+auto fconv_K3_p(double w, double v1, double v2) -> tuple<int, int, int>
 {
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
@@ -141,14 +142,14 @@ tuple<int, int, int> fconv_K3_p(double w, double v1, double v2)
 
 }
 
-int fconv_K1_t(double w)
+auto fconv_K1_t(double w) -> int
 {
 //    auto index = (int)((w-w_lower_b)/dw);
 //    return index - (int)(index/nw1_wt);
     return fconv_bos(w);
 
 }
-tuple<int, int> fconv_K2_t(double w, double v1)
+auto fconv_K2_t(double w, double v1) -> tuple<int, int>
 {
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
@@ -156,7 +157,7 @@ tuple<int, int> fconv_K2_t(double w, double v1)
 //    return make_tuple(index_b-(int)(index_b/nw2_wt), index_f-(int)(index_f/nw2_nut));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
-tuple<int, int, int> fconv_K3_t(double w, double v1, double v2)
+auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
 {
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
@@ -170,47 +171,11 @@ tuple<int, int, int> fconv_K3_t(double w, double v1, double v2)
 
 #endif
 
-bool compare(int a, int b)
+auto compare(int a, int b) -> bool
 {
     return (a < b);
 }
 
-
-/**************************** LINEAR GRID ***************/
-//to convert on full frequency grid:
-
-
-
-//int fconv(double w){//conversion  on linear grid
-//    int i; //next lower lying lattice site on frequency vector
-//    if(abs(w) < ffreqs[nw-1]){
-//        i = w/k - 0.5 + nw/2;
-//        if(i != nw-1 && w == ffreqs[i+1]){i+=1;}//avoid rounding errors:
-//        else if(i != 0 && w == ffreqs[i-1]){i-=1;}
-//        return i;}
-//    else if(abs((w - ffreqs[nw-1]))<1e-12){return nw-1;}
-//    else if(abs((w - ffreqs[0]))<1e-12){return 0;}
-//    else{cout << "erroneous frequency conversion fconv:  max frequency is " << ffreqs[nw-1] << ". Given frequency: " <<  w << endl; return 0;};
-//}
-
-
-
-////to convert on reduced frequency grid:
-
-
-
-//int fconv_n(double w, int n){//conversion  on linear grid of size n
-//    int i; //next lower lying lattice site on frequency vector
-//    if(fabs(w) < ffreqs[(nw+n)/2-1]){
-//        i = w/k - 0.5 + n/2;
-//        if(i != n-1 && w == ffreqs[(nw-n)/2+i+1]){i+=1;}//avoid rounding errors:
-//        else if(i != 0 && w == ffreqs[(nw-n)/2+i-1]){i-=1;}
-//        return i;}
-//    else if(abs((w - ffreqs[(nw+n)/2-1]))<1e-12){return n-1;}
-//    else if(abs((w - ffreqs[(nw-n)/2]))<1e-12){return 0;}
-//    else{cout << setprecision (16) << endl;
-//        cout << "erroneous frequency conversion fconv_n: n is " <<n << "  with the max frequency " << ffreqs[(nw+n)/2-1] << ". Given frequency: " <<  w << endl; return 0;};
-//}
 
 /**************************** LOG GRID ******************/
 //to convert on full frequency grid:

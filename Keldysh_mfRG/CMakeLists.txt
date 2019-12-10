@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 11)
 # added -fopenmp
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fopenmp")
 
-include_directories("$ gsl-2.5/")
+#include_directories("$ gsl-2.5/")
 
 set(SOURCE_FILES main.cpp)
 add_executable(openmp_test_clion ${SOURCE_FILES})
@@ -21,7 +21,6 @@ add_executable(Keldysh_mfRG
         vertex.h
         selfenergy.h
         propagator.h
-        bubbles.h
         integrator.h
         data_structures.h
         frequency_grid.h

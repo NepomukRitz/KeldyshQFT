@@ -17,18 +17,18 @@ class Propagator {
     cvec propagator = cvec(2 * nPROP); // factor 2 for Keldysh components: G^R, G^K
 public:
     void setprop(int, int, comp);
-    comp pvalsmooth(int, double);
-    comp pval(int, int);
+    auto pvalsmooth(int, double) -> comp;
+    auto pval(int, int) -> comp;
 
-    Propagator operator+(const Propagator &prop) {
+    auto operator+(const Propagator &prop) -> Propagator{
         this->propagator + prop.propagator;
         return *this;
     }
-    Propagator operator+=(const Propagator &prop){
+    auto operator+=(const Propagator &prop) -> Propagator{
         this->propagator += prop.propagator;
         return *this;
     }
-    Propagator operator*(comp alpha)
+    auto operator*(comp alpha) -> Propagator
     {
         this->propagator*alpha;
         return *this;
@@ -36,7 +36,7 @@ public:
 
 };
 
-Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free);
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) -> Propagator;
 
 /************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
 
@@ -44,7 +44,7 @@ void Propagator::setprop(int iK, int i, comp value)
 {
     propagator[iK*nPROP + i] = value;
 }
-comp Propagator::pvalsmooth(int iK, double w)
+auto Propagator::pvalsmooth(int iK, double w) -> comp
 {
     comp ans;
     if(fabs(w)>w_upper_f)
@@ -68,7 +68,7 @@ comp Propagator::pvalsmooth(int iK, double w)
     }
     return ans;
 }
-comp Propagator::pval(int iK, int i)
+auto Propagator::pval(int iK, int i) -> comp
 {
     return propagator[iK*nPROP + i];
 }
@@ -77,30 +77,30 @@ comp Propagator::pval(int iK, int i)
 #if REG==1
 
 /*******PROPAGATOR FUNCTIONS***********/
-comp GR(double Lambda, double omega, comp selfEneR);
-comp GA(double Lambda, double omega, comp selfEneA);
-comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA);
+auto GR(double Lambda, double omega, comp selfEneR) -> comp;
+auto GA(double Lambda, double omega, comp selfEneA) -> comp;
+auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp;
 
-comp SR(double Lambda, double omega, comp selfEneR);
-comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA);
+auto SR(double Lambda, double omega, comp selfEneR) -> comp;
+auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp;
 
 
 /************FUNCTION TO COMPUTE DIFFERENT TYPES OF PROPAGATOR (full greens function, katanin and single scale propagator)********************************************************/
 
-comp GR(double Lambda, double omega, comp selfEneR)
+auto GR(double Lambda, double omega, comp selfEneR) -> comp
 {
     return 1./((1./(gR(Lambda, omega))) - selfEneR);
 }
-comp GA(double Lambda, double omega, comp selfEneA)
+auto GA(double Lambda, double omega, comp selfEneA) -> comp
 {
     return 1./((1./(gA(Lambda, omega))) - selfEneA);
 }
-comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA)
+auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
 {
     return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
 }
 
-Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free)
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) -> Propagator
 {
     Propagator resp;
 
@@ -195,42 +195,42 @@ Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char 
 
 /*******PROPAGATOR FUNCTIONS***********/
 
-comp GR(double Lambda, double omega, comp selfEneR);
-comp GA(double Lambda, double omega, comp selfEneA);
-comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA);
+auto GR(double Lambda, double omega, comp selfEneR) -> comp;
+auto GA(double Lambda, double omega, comp selfEneA) -> comp;
+auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp;
 
-comp SR(double Lambda, double omega, comp selfEneR);
-comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA);
+auto SR(double Lambda, double omega, comp selfEneR) -> comp;
+auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp;
 
 /************FUNCTION TO COMPUTE DIFFERENT TYPES OF PROPAGATOR (full greens function, katanin and single scale propagator)********************************************************/
 
-comp GR(double Lambda, double omega, comp selfEneR)
+auto GR(double Lambda, double omega, comp selfEneR) -> comp
 {
     return 1./((1./(gR(Lambda,omega))) - selfEneR);
 }
-comp GA(double Lambda, double omega, comp selfEneA)
+auto GA(double Lambda, double omega, comp selfEneA) -> comp
 {
     return 1./((1./(gA(Lambda,omega))) - selfEneA);
 }
-comp GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA)
+auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
 {
     return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
 }
 
-comp SR(double Lambda, double omega, comp selfEneR)
+auto SR(double Lambda, double omega, comp selfEneR)-> comp
 {
     return -(comp)0.5i*GR(Lambda, omega, selfEneR)*GR(Lambda, omega, selfEneR);
 }
-comp SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA)
+auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
 {
     comp retarded = -(comp)0.5i*GR(Lambda, omega, selfEneR)*GK(Lambda, omega, selfEneR, selfEneK, selfEneA);
     comp advanced = +(comp)0.5i*GK(Lambda, omega, selfEneR, selfEneK, selfEneA)*GA(Lambda, omega, selfEneA);
     comp extra    = -(comp)1.i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
 
-    return retarded + advanced+extra;
+    return retarded + advanced + extra;
 }
 
-Propagator propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free)
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) -> Propagator
 {
     Propagator resp;
     if(free!='f') {

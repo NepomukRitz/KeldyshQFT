@@ -15,7 +15,7 @@
 //}
 
 template <typename  Integrand>
-double f_real(double x, void* params)
+auto f_real(double x, void* params) -> double
 {
     Integrand integrand = *(Integrand*) params;
     double f_real = integrand(x).real();
@@ -23,7 +23,7 @@ double f_real(double x, void* params)
 }
 
 template <typename  Integrand>
-double f_imag(double x, void* params)
+auto f_imag(double x, void* params) -> double
 {
     Integrand integrand = *(Integrand*) params;
     double f = integrand(x).imag();
@@ -31,11 +31,11 @@ double f_imag(double x, void* params)
 }
 
 
-comp dotproduct(const cvec& x, const rvec& y);
+auto dotproduct(const cvec& x, const rvec& y) -> comp;
 
 //TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
 //This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
-template <typename Integrand> comp integrator(Integrand& integrand, double a, double b)
+template <typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> comp
 {
     //Simpson
     rvec simpson(nINT);
@@ -85,7 +85,7 @@ template <typename Integrand> comp integrator(Integrand& integrand, double a, do
 //    return result_real + 1.i*result_imag;
 }
 
-comp dotproduct(const cvec& x, const rvec& y)
+auto dotproduct(const cvec& x, const rvec& y) -> comp
 {
     comp resp;
     for(int i=0; i<x.size(); ++i)

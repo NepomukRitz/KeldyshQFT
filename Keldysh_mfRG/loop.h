@@ -130,7 +130,7 @@ auto loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop) -> SelfEnergy<c
 {
     SelfEnergy<comp> resp = SelfEnergy<comp> ();
 //TODO complete support for internal structure
-#pragma omp parallel for
+#pragma omp parallel default(none)
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
         int i = ( (iSE%(nSE*n_in))/n_in);
         int i_in = iSE%n_in;
