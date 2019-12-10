@@ -27,7 +27,7 @@ public:
     explicit State(double lambda_input) : Lambda(lambda_input) {};
 
 //operators containing State objects
-    State operator+(const State& State1){
+    auto operator+(const State& State1) -> State {
         this->vertex + State1.vertex;
         this->selfenergy + State1.selfenergy ;
 
@@ -36,8 +36,7 @@ public:
 #endif
         return (*this);
     }
-
-    State operator+=(const State& State1){
+    auto operator+=(const State& State1) -> State{
         this->vertex += State1.vertex;
         this->selfenergy += State1.selfenergy;
 
@@ -46,8 +45,7 @@ public:
 #endif
         return (*this);
     }
-
-    State operator*(double alpha){
+    auto operator*(double alpha) -> State{
         this->vertex * alpha;
         this->selfenergy * alpha;
 #ifdef SUSC
@@ -55,8 +53,7 @@ public:
 #endif
         return (*this);
     }
-
-    State operator*=(double alpha){
+    auto operator*=(double alpha) -> State{
         this->vertex *= alpha;
         this->selfenergy *= alpha;
 #ifdef SUSC
@@ -64,8 +61,7 @@ public:
 #endif
         return (*this);
     }
-
-    State operator-=(const State& State1){
+    auto operator-=(const State& State1) -> State{
         this->vertex -= State1.vertex;
         this->selfenergy -= State1.selfenergy;
 #ifdef SUSC
