@@ -347,7 +347,7 @@ The Keldysh indices take values in the set $\{1,2\}$, with the convention $1 = q
 
 \section*{General properties of the Green's function}
 \begin{equation}
-G = G_{1|1'} = G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1, \nu'_1)
+G = G_{1|1'} = G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1| \nu'_1)
 \end{equation}
 \subsection*{Frequency \& momentum conservation}
 The fact that the propagator conserves energy and momentum (due to time- or, given the case, space-translation invariance) translates to the Green's functions being diagonal in frequency and momentum space, respectively.
@@ -374,7 +374,7 @@ G^{1|1} = 0
 \subsection*{Complex conjugation}
 Complex conjugation of the Green's function leads to the following equation:
 \begin{equation}
-\left[ G^{\alpha_1|\alpha'_1}_{\sigma_1}\right]^* = (-1)^{1+\alpha_1\alpha'_1}G^{\alpha'_1|\alpha_1}_{\sigma_1}
+\left[ G^{\alpha_1|\alpha'_1}_{\sigma_1}\right]^* = (-1)^{1+\alpha_1+\alpha'_1}G^{\alpha'_1|\alpha_1}_{\sigma_1}
 \end{equation}
 This means, effectively, that the direction of time is inverted (notice the flip in Keldysh indices).
 
@@ -396,7 +396,7 @@ One can accommodate the components of the Green's function in a matrix, using th
 \begin{equation}
 G^{\alpha_1|\alpha'_1}_{\sigma_1} =
 \begin{pmatrix}
-G^{1|1} & G^{1|2} ||
+G^{1|1} & G^{1|2} \\
 G^{2|1} & G^{2|2}
 \end{pmatrix}_{\sigma_1|\sigma_1} = \begin{pmatrix}
 0 & A \\ R & K
@@ -404,7 +404,16 @@ G^{2|1} & G^{2|2}
 \end{equation}
 
 \section*{General properties of the self energy $\Sigma$}
-The self energy behaves in, essentially, the same way as the propagator i.e is diagonal in frequency- (when time-translational symmetry), momentum- (when space-translational symmetry) and spin-space. It also has two independent components, $\Sigma^R$, which it's conjugate is $\Sigma^A = \left[\Sigma^R\right]^*$ and $\Sigma^K$, which is anti-hermitian, i.e. $\left[\Sigma^K\right]^* = -\Sigma^K$. Due to $G^{1|1}=0$, it directly follows that $\Sigma^{1|1}=0$.
+The self energy has similar symmetry properties as the propagator. It also has two independent components, $\Sigma^R$, which it's conjugate is $\Sigma^A = \left[\Sigma^R\right]^*$ and $\Sigma^K$, which is anti-hermitian, i.e. $\left[\Sigma^K\right]^* = -\Sigma^K$. However, causality for the self-energy translates to $\Sigma^{2|2}=0$, such that it's Keldysh structure in matrix form reads
+\begin{equation}
+\Sigma^{\alpha_1|\alpha'_1}_{\sigma_1} =
+\begin{pmatrix}
+\Sigma^{1|1} & \Sigma^{1|2} \\
+\Sigma^{2|1} & \Sigma^{2|2}
+\end{pmatrix}_{\sigma_1|\sigma_1} = \begin{pmatrix}
+\Sigma^K & \Sigma^R \\ \Sigma^A & 0
+\end{pmatrix}_{\sigma_1|\sigma_1}
+\end{equation}
 
 \section*{General properties of the four-point vertex $\Gamma$}
 
@@ -419,7 +428,7 @@ The self energy behaves in, essentially, the same way as the propagator i.e is d
 \end{figure}
 The Keldysh indices take values in the set $\{1,2\}$, with the convention $1 = q$ and $2=c$, where in some texts $c$ stands for 'classical component' and $q$ for 'quantum component'.
 \subsection*{Spin conservation:}
-Spin conservation: $\sigma_{1'} + \sigma_{2'} = \sigma_1 + \sigma_2$
+Spin conservation: $\sigma_{1}^\prime + \sigma_{2}^\prime = \sigma_1 + \sigma_2$
 \\
 Overall spin conservation of the vertex dictates that there are two different cases:
 \subsubsection*{All spins equal}
@@ -433,8 +442,8 @@ These last two cases can be linked through a spin-inversion transformation and, 
 \subsection*{Frequency conservation:}
 Conservation of momentum implies that one of the frequencies, conventionally chosen to be $\nu_2$, will be dependent on the other three.
 \begin{align}
-    \nu_{1'} + \nu_{2'} &= \nu_1 + \nu_2  \\
-    \implies \nu_2 &= \nu_{1'} + \nu_{2'} -\nu_1
+    \nu_{1}^\prime + \nu_{2}^\prime &= \nu_1 + \nu_2  \\
+    \implies \nu_2 &= \nu_{1}^\prime + \nu_{2}^\prime -\nu_1
 \end{align}
 Hence, we will omit $\nu_{2}$ altogether from all formulas it would have appeared in.
 
@@ -638,13 +647,18 @@ The inclusion of $T_S$ expands the group, but does not yield any interesting str
 \pagebreak
 \section*{Independent spin and Keldysh components}
 
+The reducible part of the vertex in each channel can be decomposed into four diagrammatic classes:
+\begin{align*}
+\gamma_r (\omega_r, \nu_r, \nu_r^\prime) = \K1^r (\omega_r) + \K2^r (\omega_r, \nu_r) + \Kbar2^r (\omega_r, \nu_r^\prime) + \K3^r (\omega_r, \nu_r, \nu_r^\prime)
+\end{align*}
+\\
 \textbf{Keldysh components which are equal due to diagrammatic structure of $\K1$, $\K2$, $\K3$}
 
 Class $\K1$:
 \begin{align*}
 (\Ka1)\al121210 &= (\Ka1)\al121264 = (\Ka1)\al121273 = (\Ka1)\al121285 \\
 (\Kp1)\al121210 &= (\Kp1)\al121280 = (\Kp1)\al121215 = (\Kp1)\al121285 \\
-(\Kt1)\al121210 &= (\Kt1)\al121263 = (\Kt1)\al121274 = (\Kt1)\al121285 \\
+(\Kt1)\al121210 &= (\Kt1)\al121263 = (\Kt1)\al121274 = (\Kt1)\al121285 
 \end{align*}
 
 Class $\K2$, $\Kbar2$:
@@ -656,6 +670,9 @@ Class $\K2$, $\Kbar2$:
 (\Kt2)\al121210 &= (\Kt2)\al121263 \,, \quad
 (\Ktbar2)\al121210 = (\Ktbar2)\al121274
 \end{align*}
+\\
+\\
+The diagrammatic classes $\K1$, $\K2$, $\Kbar2$, $\K3$ behave differently under particle exchange and complex conjugation (also depending on the spin configuration), as elaborated further on. Here the multi-index notation $(1^\prime 2^\prime | 12)$ stands for Keldysh index, frequency, momentum. 
 
 \subsection*{Equal spins $\sigma\sigma|\sigma\sigma$}
 
@@ -1349,7 +1366,7 @@ When considering the derivative of the full vertex, there are contributions comi
 \dot{\gamma_r} = \Gamma \circ \dot{\Pi_r} \circ \Gamma + \text{multi-loop terms}.
 \label{eq:derivativeOfgamma}
 \end{equation}
-What now becomes important is determining the Keldysh indices of the whole equation \ref{eq:derivativeOfgamma}, since automating this step plays a crucial role in the computation of the derivative.
+What now becomes important is determining the Keldysh indices of the whole equation \eqref{eq:derivativeOfgamma}, since automating this step plays a crucial role in the computation of the derivative.
 First, one has to look at the Keldysh structure of the bubbles $\Pi_r^{\alpha'_3\alpha'_4|\alpha_3\alpha_4}$. To do so, we recur first to the following bubble structures:
 
 \begin{figure}[H]
