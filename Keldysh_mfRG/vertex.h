@@ -22,17 +22,17 @@ using namespace std;
 template <class Q>
 class irreducible{
 public:
-    vec<Q> bare = vec<Q>(16); // TODO: correct i_in, n_in, ...
+    vec<Q> bare = vec<Q>(16*n_in);
 
     irreducible() = default;;
 
     /*All three functions return the value of the bare vertex. Since this value is, this far, independent of everything,
      * the third function stays the same. However, should count on having to adapt it if an internal structure should
      * come forth where the bare interaction does not remain invariant throughout the system.*/
-    auto vval(int iK) -> Q;
+    auto vval(int iK, int i_in) -> Q;
 
     /*Sets the value of the bare interaction to Q*/
-    void setvert(int iK, Q);
+    void setvert(int iK, int i_in, Q);
 
     /*Various operators for the irreducible vertex*/
     auto operator+ (const irreducible<Q>& vertex) -> irreducible<Q>
@@ -170,11 +170,11 @@ public:
 
 
 /************************************* MEMBER FUNCTIONS OF THE IRREDUCIBLE VERTEX *************************************/
-template <typename Q> auto irreducible<Q>::vval(int iK) -> Q {
-    return bare[iK];
+template <typename Q> auto irreducible<Q>::vval(int iK, int i_in) -> Q {
+    return bare[iK*n_in + i_in];
 }
-template <typename Q> void irreducible<Q>::setvert(int iK, Q value){
-    bare[iK] = value;
+template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value){
+    bare[iK*n_in + i_in] = value;
 }
 
 
