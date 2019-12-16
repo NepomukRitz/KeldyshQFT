@@ -16,7 +16,7 @@
 
 using namespace std;
 
-typedef complex<double> comp;
+typedef complex<double> comp;  // TODO: complex double as two doubles??
 
 void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
 template <typename Q> void derivative(State<Q>& dPsi, double Lambda, State<Q>& state);

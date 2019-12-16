@@ -230,7 +230,7 @@ auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
     return retarded + advanced + extra;
 }
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) -> Propagator
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) -> Propagator // TODO: distinguish between SE and diff. SE
 {
     Propagator resp;
     if(free!='f') {
