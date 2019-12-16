@@ -423,7 +423,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
     Q valueK3;
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
+    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){  // TODO: switch case!
         iK3 = convertToIndepIndex(iK);
         pf3 = 1.;
         conjugate = false;

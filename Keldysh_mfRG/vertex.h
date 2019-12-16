@@ -22,7 +22,7 @@ using namespace std;
 template <class Q>
 class irreducible{
 public:
-    vec<Q> bare = vec<Q>(16);
+    vec<Q> bare = vec<Q>(16); // TODO: correct i_in, n_in, ...
 
     irreducible() = default;;
 
