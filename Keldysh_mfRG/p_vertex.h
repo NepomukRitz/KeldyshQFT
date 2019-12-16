@@ -418,77 +418,75 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
         pf3 = 1.;
         conjugate3 = false;
     }
-    else if(iK == 2){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 1;
-        pf3 = 1.;
-        conjugate3 = false;
-    }
-    else if(iK==4){
-        tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 1;
-        pf3 = 1.;   //(-1)^(1+1+2+1+1)
-        conjugate3 = true;
-    }
-    else if(iK == 6){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 3;
-        pf3 =-1.;
-        conjugate3 = false;
-    }
-    else if(iK == 8){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
-        tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 1;
-        pf3 = 1.;   //(-1.)^(1+2+1+1+1)
-        conjugate3 = true;
-    }
-    else if(iK == 9){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 3;
-        pf3 =-1.;
-        conjugate3 = false;
-    }
-
-    else if(iK == 10){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 3;
-        pf3 = 1.;
-        conjugate3 = false;
-    }
-
-    else if(iK == 11){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        pf3 = 1.;
-        conjugate3 = false;
-    }
-
-    else if(iK == 12){
-        tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 2;
-        pf3 =-1.;   //(-1)^(1+2+2+1+1)
-        conjugate3 = true;
-    }
-
-    else if(iK == 13){
-        tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        pf3 = 1.;   //(-1)^(1+2+2+1+2)
-        conjugate3 = true;
-    }
-
-    else if(iK == 14){
-        tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
-        tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
-        iK3 = 5;
-        pf3 = 1.;   //(-1)^(1+2+2+2+1)
-        conjugate3 = true;
-    }
-    else{
-        iK3 = 0;
-        pf3 = 0.;
-        conjugate3 = false;
+    else {
+        switch(iK) {
+            case 2:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 1;
+                pf3 = 1.;
+                conjugate3 = false;
+                break;
+            case 4:
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 1;
+                pf3 = 1.;   //(-1)^(1+1+2+1+1)
+                conjugate3 = true;
+                break;
+            case 6:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 3;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 8:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 1;
+                pf3 = 1.;   //(-1.)^(1+2+1+1+1)
+                conjugate3 = true;
+                break;
+            case 9:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 3;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 10:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 3;
+                pf3 = 1.;
+                conjugate3 = false;
+                break;
+            case 11:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 5;
+                pf3 = 1.;
+                conjugate3 = false;
+                break;
+            case 12:
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 2;
+                pf3 = -1.;   //(-1)^(1+2+2+1+1)
+                conjugate3 = true;
+                break;
+            case 13:
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 5;
+                pf3 = 1.;   //(-1)^(1+2+2+1+2)
+                conjugate3 = true;
+                break;
+            case 14:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 5;
+                pf3 = 1.;   //(-1)^(1+2+2+2+1)
+                conjugate3 = true;
+                break;
+            default:
+                iK3 = 0;
+                pf3 = 0.;
+                conjugate3 = false;
+        }
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
