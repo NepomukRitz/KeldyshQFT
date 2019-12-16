@@ -12,8 +12,6 @@
 
 //TODO include spinvertex contributions!!
 
-//TODO think how to actually impose equal time constraints!
-
 template <typename Q, typename T >
 class IntegrandR{
     Vertex<T>& vertex;
@@ -140,8 +138,8 @@ auto loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop) -> SelfEnergy<c
         IntegrandR<comp, fullvert<comp> > integrandR(fullvertex, prop, w, i_in);
         IntegrandK<comp, fullvert<comp> > integrandK(fullvertex, prop, w, i_in);
 
-        comp integratedR = (-(comp)1.i/(2.*pi))*integrator(integrandR, w_lower_f, w_upper_f);
-        comp integratedK = (-(comp)1.i/(2.*pi))*integrator(integrandK, w_lower_f, w_upper_f);
+        comp integratedR = (1./(2.*pi*(comp)1.i))*integrator(integrandR, w_lower_f, w_upper_f);
+        comp integratedK = (1./(2.*pi*(comp)1.i))*integrator(integrandK, w_lower_f, w_upper_f);
 
         resp.setself(0, i, integratedR);
         resp.setself(1, i, integratedK);
