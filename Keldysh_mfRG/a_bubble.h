@@ -186,6 +186,8 @@ public:
 
 };
 
+// TODO: 2nd spin comp.
+// TODO: combine standard and diff bubble??
 template <typename Q, typename Bubble> class Integrand_a_K1_diff {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
