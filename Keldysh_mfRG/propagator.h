@@ -36,7 +36,7 @@ public:
 
 };
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) -> Propagator;
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, char free) -> Propagator;
 
 /************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
 
@@ -100,7 +100,7 @@ auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
     return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
 }
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) -> Propagator
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, char free) -> Propagator
 {
     Propagator resp;
 
@@ -128,9 +128,12 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) 
                 } //else resp stays being 0
             } else if (type == 'k') {  //Katanin substitution
                 comp SR, ER, SK, EK;
+                comp diffSelfEneR = diffSelfenergy.sval(0, i);
+                comp diffSelfEneA = conj(diffSelfEneR);
+                comp diffSelfEneK = diffSelfenergy.sval(1, i);
                 if (fabs(w) >= Lambda) {
-                    ER = GR0 * selfEneR * GR0;
-                    EK = GR0 * selfEneR * GK0 + GR0 * selfEneK * GA0 + GK0 * conj(selfEneR) * GA0;
+                    ER = GR0 * diffSelfEneR * GR0;
+                    EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * diffSelfEneA * GA0;
                 } else if (fabs(w) == Lambda) {
                     SR = -1. * GR0;
                     SK = -1. * GR0 * selfEneK * GA0;
@@ -142,8 +145,11 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) 
 
                 comp ER, EK;
                 if (fabs(w) >= Lambda) {
-                    ER = GR0 * selfEneR * GR0;
-                    EK = GR0 * selfEneR * GK0 + GR0 * selfEneK * GA0 + GK0 * conj(selfEneR) * GA0;
+                    comp diffSelfEneR = diffSelfenergy.sval(0, i);
+                    comp diffSelfEneA = conj(diffSelfEneR);
+                    comp diffSelfEneK = diffSelfenergy.sval(1, i);
+                    ER = GR0 * diffSelfEneR * GR0;
+                    EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * diffSelfEneA * GA0;
                 }
                 resp.setprop(0, i, ER);
                 resp.setprop(1, i, EK);
@@ -230,7 +236,7 @@ auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
     return retarded + advanced + extra;
 }
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) -> Propagator // TODO: distinguish between SE and diff. SE
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, char free) -> Propagator
 {
     Propagator resp;
     if(free!='f') {
@@ -249,11 +255,14 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) 
             }
             else if (type == 'e') {   //i.e. only the Katanin extension. For this case, the selfenergy should be a derivated one!
                 comp ER, EK;
-                ER = GR(Lambda, w, selfEneR) * selfEneR * GR(Lambda, w, selfEneR);
+                comp diffSelfEneR = diffSelfenergy.sval(0, i);
+                comp diffSelfEneA = conj(diffSelfEneR);
+                comp diffSelfEneK = diffSelfenergy.sval(1, i);
+                ER = GR(Lambda, w, selfEneR) * diffSelfEneR * GR(Lambda, w, selfEneR);
 
-                EK = GR(Lambda, w, selfEneR) * selfEneR * GK(Lambda, w, selfEneR, selfEneK, selfEneA)
-                   + GR(Lambda, w, selfEneR) * selfEneK * GA(Lambda, w, selfEneA)
-                   + GK(Lambda, w, selfEneR, selfEneK, selfEneA) * selfEneA * GA(Lambda, w, selfEneA);
+                EK = GR(Lambda, w, selfEneR) * diffSelfEneR * GK(Lambda, w, selfEneR, selfEneK, selfEneA)
+                   + GR(Lambda, w, selfEneR) * diffSelfEneK * GA(Lambda, w, selfEneA)
+                   + GK(Lambda, w, selfEneR, selfEneK, selfEneA) * diffSelfEneA * GA(Lambda, w, selfEneA);
 
                 resp.setprop(0, i, ER);
                 resp.setprop(1, i, EK);
@@ -274,11 +283,7 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, char type, char free) 
                 resp.setprop(0, i, gR(Lambda, w));
                 resp.setprop(1, i, gK(Lambda, w));
             }
-            else if(type == 's'){
-                resp.setprop(0, i, sR(Lambda, w));
-                resp.setprop(1, i, sK(Lambda, w));
-            }
-            else if(type == 'k'){
+            else if(type == 's' || type == 'k'){
                 resp.setprop(0, i, sR(Lambda, w));
                 resp.setprop(1, i, sK(Lambda, w));
             }
