@@ -120,12 +120,12 @@ public:
             tie(i1, i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
             auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);      //vppa-1/2wa, vppa+1/2wa for the a-channel
 
-            Q add1 = vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.irred.vval(i3);
+            Q add1 = vertex1.densvertex.irred.vval(i1, i_in) * PiAval * vertex2.densvertex.irred.vval(i3, i_in);
 
             resp += add1;
             //Augments to RPA
-//            resp += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
-//            resp += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.irred.vval(i3);
+//            resp += vertex1.densvertex.irred.vval(i1, i_in) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
+//            resp += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.irred.vval(i3, i_in);
 //            resp += vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) * PiAval * vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex1.densvertex.tvertex);
         }
         return resp;
@@ -152,7 +152,7 @@ public:
             //Contributions to K2: (gammaP)Pi(K1+K2)
             resp += (vertex1.densvertex.gammaRb(i1, wa, va, vppa, i_in, 'a')) *
                     PiA.value(i2, vppa - 0.5 * wa, vppa + 0.5 * wa) *
-                    (vertex2.densvertex.irred.vval(i3) +
+                    (vertex2.densvertex.irred.vval(i3, i_in) +
                      vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
                      vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex));
         }
@@ -204,21 +204,21 @@ public:
         for(auto i2:non_zero_Keldysh_bubble) {
             tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
             auto PiAval = PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
-//            resp += vertex1.densvertex.irred.vval(i1) * PiAval * vertex2.densvertex.irred.vval(i3);
+//            resp += vertex1.densvertex.irred.vval(i1, i_in) * PiAval * vertex2.densvertex.irred.vval(i3, i_in);
 
             //Contributions to K1: (u+K1+K2b)Pi(u+K1+K2)
-//            resp += (vertex1.densvertex.irred.vval(i1) +
+//            resp += (vertex1.densvertex.irred.vval(i1, i_in) +
 //                     vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex) +
 //                     vertex1.densvertex.avertex.K2b_vvalsmooth(i1, wa, vppa, i_in, vertex1.densvertex.tvertex)) *
 //                    PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa) *                                       //vppa-1/2wa, vppa+1/2wa for the a-channel
-//                    (vertex2.densvertex.irred.vval(i3) +
+//                    (vertex2.densvertex.irred.vval(i3, i_in) +
 //                     vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
 //                     vertex2.densvertex.avertex.K2_vvalsmooth (i3, wa, vppa, i_in, vertex2.densvertex.tvertex) );
 
-            resp1 = vertex1.densvertex.irred.vval(i1);
+            resp1 = vertex1.densvertex.irred.vval(i1, i_in);
             resp2 = vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex);
             resp3 = vertex1.densvertex.avertex.K2b_vvalsmooth(i1, wa, vppa, i_in, vertex1.densvertex.tvertex);
-            resp4 = vertex2.densvertex.irred.vval(i3);
+            resp4 = vertex2.densvertex.irred.vval(i3, i_in);
             resp5 = vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex);
             resp6 = vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
 
@@ -252,14 +252,14 @@ public:
 //                     vertex1.densvertex.avertex.K3_vvalsmooth(i1, wa, va, vppa, i_in, vertex1.densvertex.tvertex) +
 //                     vertex1.densvertex.gammaRb(i1, wa, va, vppa, i_in, 'a')) *
 //                    PiA.value(i2, vppa-0.5*wa, vppa+0.5*wa) *                                       //vppa-1/2wa, vppa+1/2wa for the a-channel
-//                    (vertex2.densvertex.irred.vval(i3) +
+//                    (vertex2.densvertex.irred.vval(i3, i_in) +
 //                     vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
 //                     vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex));
 
             resp1 = vertex1.densvertex.avertex.K2_vvalsmooth(i1, wa, va, i_in, vertex1.densvertex.tvertex);
             resp2 = vertex1.densvertex.avertex.K3_vvalsmooth(i1, wa, va, vppa, i_in, vertex1.densvertex.tvertex);
             resp3 = vertex1.densvertex.gammaRb(i1, wa, va, vppa, i_in, 'a');
-            resp4 = vertex2.densvertex.irred.vval(i3);
+            resp4 = vertex2.densvertex.irred.vval(i3, i_in);
             resp5 = vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex);
             resp6 = vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
 
