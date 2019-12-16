@@ -258,6 +258,8 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diff
                 comp diffSelfEneR = diffSelfenergy.sval(0, i);
                 comp diffSelfEneA = conj(diffSelfEneR);
                 comp diffSelfEneK = diffSelfenergy.sval(1, i);
+
+
                 ER = GR(Lambda, w, selfEneR) * diffSelfEneR * GR(Lambda, w, selfEneR);
 
                 EK = GR(Lambda, w, selfEneR) * diffSelfEneR * GK(Lambda, w, selfEneR, selfEneK, selfEneA)
