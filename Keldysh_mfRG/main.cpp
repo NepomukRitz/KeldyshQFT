@@ -46,8 +46,8 @@ auto main() -> int {
     cout << "self energy and diff self energy assigned" << endl;
 
     for (auto i:odd_Keldysh) {
-        state.vertex.densvertex.irred.setvert(i,  0.5*U);
-        state.vertex.spinvertex.irred.setvert(i, -0.5*U);
+        state.vertex.densvertex.irred.setvert(i, 0., 0.5*U);
+        state.vertex.spinvertex.irred.setvert(i, 0.,-0.5*U);
     }
     cout << "vertex assigned" << endl;
 
@@ -66,11 +66,13 @@ auto main() -> int {
 //        writeOutSOPT(Lambda, control, state.selfenergy, bare.vertex);
 //    }
 
+    SelfEnergy<comp> diffZero = SelfEnergy<comp>();
+
 
 #if PROP_TYPE==1
     Propagator initial = propag(state.Lambda, state.selfenergy, 'g', 'f');
 #elif PROP_TYPE==2
-    Propagator initial = propag(state.Lambda, state.selfenergy, 'g', '.');
+    Propagator initial = propag(state.Lambda, state.selfenergy, diffZero, 'g', '.');
 #else
     cout << "Error with PROP_TYPE."
 #endif
@@ -99,7 +101,7 @@ auto main() -> int {
 #if PROP_TYPE==1
         Propagator control = propag(state.Lambda, state.selfenergy, 'g', 'f');
 #elif PROP_TYPE==2
-        Propagator control = propag(state.Lambda, state.selfenergy, 'g', '.');
+        Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 'g', '.');
 #else
     cout << "Error with PROP_TYPE."
 #endif
@@ -124,10 +126,10 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     /*Here I begin implementing Fabian's pseudocode*/
 #if PROP_TYPE==1
     //Line 1
-    Propagator S = propag(Lambda, state.selfenergy, 's', 'f');
+    Propagator S = propag(Lambda, state.selfenergy, state.selfenergy, 's', 'f');
     cout << "S calculated" << endl;
     //Line 2
-    Propagator G = propag(Lambda, state.selfenergy, 'g', 'f');
+    Propagator G = propag(Lambda, state.selfenergy, state.selfenergy, 'g', 'f');
     cout << "G calculated" << endl;
     //Line 3
     SelfEnergy<comp> Sigma_std = loop(state.vertex, S);
@@ -135,15 +137,15 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     //Line 4
     dPsi.selfenergy = Sigma_std;
     //Line 6
-    Propagator extension = propag(Lambda, dPsi.selfenergy, 'e', 'f');\
+    Propagator extension = propag(Lambda, state.selfenergy, dPsi.selfenergy, 'e', 'f');\
     Propagator dG = S + extension;
 
 #elif PROP_TYPE==2
     //Line 1
-    Propagator S = propag(Lambda, state.selfenergy, 's', '.');
+    Propagator S = propag(Lambda, state.selfenergy, state.selfenergy, 's', '.');
     cout << "S calculated" << endl;
     //Line 2
-    Propagator G = propag(Lambda, state.selfenergy, 'g', '.');
+    Propagator G = propag(Lambda, state.selfenergy, state.selfenergy, 'g', '.');
     cout << "G calculated" << endl;
     //Line 3
     SelfEnergy<comp> Sigma_std = loop(state.vertex, S);
@@ -151,7 +153,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     //Line 4
     dPsi.selfenergy = Sigma_std;
     //Line 6
-    Propagator extension = propag(Lambda, dPsi.selfenergy, 'e', '.');\
+    Propagator extension = propag(Lambda, state.selfenergy, dPsi.selfenergy, 'e', '.');\
     Propagator dG = S + extension;
 #endif
 
