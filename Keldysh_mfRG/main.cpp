@@ -78,7 +78,7 @@ auto main() -> int {
 #endif
 
 
-    writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+    //writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
 
     cout << "Start of flow" << endl;
     for(int i=1; i<nEVO; ++i) {
@@ -106,7 +106,7 @@ auto main() -> int {
     cout << "Error with PROP_TYPE."
 #endif
 
-        writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+        //writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
 
         cout << "One RK-derivative step. ";
         get_time(tder);

@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fopenmp")
 
 #include_directories("$ gsl-2.5/")
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cpp mpi_setup.h)
 add_executable(openmp_test_clion ${SOURCE_FILES})
 
 add_executable(Keldysh_mfRG
@@ -36,4 +36,7 @@ add_executable(Keldysh_mfRG
         include/domain.hpp
         include/paid.hpp
         include/queue.hpp
-        include/rule.hpp internal_symmetries.h)
+        include/rule.hpp internal_symmetries.h
+        )
+
+include_directories(/usr/include/mpi/)
