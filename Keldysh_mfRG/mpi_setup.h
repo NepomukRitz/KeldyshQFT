@@ -10,38 +10,67 @@
 //#include <omp.h>
 #include <mpi.h>
 
-template <typename Q>
-vec<Q> mpi_initialize_buffer(int n_para_mpi, int n_para_omp) {
-
-    // Get the rank(ID) of the current process
+// Get the rank(ID) of the current process
+int mpi_world_rank() {
     int world_rank;
-    //MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-
-    int world_size;
-    //MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-
-    vec<Q> K3_buffer (n_para_omp*(n_para_mpi/world_size+1));
-
-    return K3_buffer;
-
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    return world_rank;
 }
 
-void mpi_collect(vec<comp>& K3_buffer, vec<comp>& K3_result, int n_para_mpi, int n_para_omp) {
-
+// Get the number of processes
+int mpi_world_size() {
     int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-
-    MPI_Allgather(&K3_buffer[0], static_cast<int>(n_para_omp*(n_para_mpi/world_size+1)), MPI_COMPLEX,
-                  &K3_result[0], static_cast<int>(n_para_omp*(n_para_mpi/world_size+1)), MPI_COMPLEX, MPI_COMM_WORLD);
+    return world_size;
 }
 
-void mpi_collect(vec<double>& K3_buffer, vec<double>& K3_result, int n_para_mpi, int n_para_omp) {
+template <typename Q>
+vec<Q> mpi_initialize_buffer(int n_mpi, int n_omp) {
+    int world_size = mpi_world_size();
+    vec<Q> buffer (n_omp*(n_mpi/world_size+1));
+    return buffer;
+}
 
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+template <typename Q>
+vec<Q> mpi_initialize_result(int n_mpi, int n_omp) {
+    int world_size = mpi_world_size();
+    vec<Q> result (n_omp * (n_mpi - (n_mpi % world_size) + world_size));
+    return result;
+}
 
-    MPI_Allgather(&K3_buffer[0], static_cast<int>(n_para_omp*(n_para_mpi/world_size+1)), MPI_DOUBLE,
-                  &K3_result[0], static_cast<int>(n_para_omp*(n_para_mpi/world_size+1)), MPI_DOUBLE, MPI_COMM_WORLD);
+void mpi_collect(vec<comp>& buffer, vec<comp>& result, int n_mpi, int n_omp) {
+    int world_size = mpi_world_size();
+
+    MPI_Allgather(&buffer[0], static_cast<int>(n_omp*(n_mpi/world_size+1)), MPI_COMPLEX,
+                  &result[0], static_cast<int>(n_omp*(n_mpi/world_size+1)), MPI_COMPLEX, MPI_COMM_WORLD);
+}
+
+void mpi_collect(vec<double>& buffer, vec<double>& result, int n_mpi, int n_omp) {
+    int world_size = mpi_world_size();
+
+    MPI_Allgather(&buffer[0], static_cast<int>(n_omp*(n_mpi/world_size+1)), MPI_DOUBLE,
+                  &result[0], static_cast<int>(n_omp*(n_mpi/world_size+1)), MPI_DOUBLE, MPI_COMM_WORLD);
+}
+
+template <typename Q>
+vec<Q> mpi_reorder_result(vec<Q>& result, int n_mpi, int n_omp) {
+    int world_size = mpi_world_size();
+    vec<Q> ordered_result;
+    for (int i=0; i<n_mpi/world_size; ++i) {
+        for (int j=0; j<world_size; ++j) {
+            typename vec<Q>::const_iterator first = result.begin() + (j*(n_mpi/world_size+1) + i) * n_omp;
+            typename vec<Q>::const_iterator last = first + n_omp;
+            ordered_result.insert(ordered_result.end(), first, last);
+        }
+    }
+    for (int j=0; j<world_size; ++j) {
+        if (n_mpi % world_size > j) {
+            typename vec<Q>::const_iterator first = result.begin() + (j*(n_mpi/world_size+1) + n_mpi/world_size) * n_omp;
+            typename vec<Q>::const_iterator last = first + n_omp;
+            ordered_result.insert(ordered_result.end(), first, last);
+        }
+    }
+    return ordered_result;
 }
 
 #endif //KELDYSH_MFRG_MPI_SETUP_H

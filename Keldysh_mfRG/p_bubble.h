@@ -10,6 +10,7 @@
 #include "integrator.h"
 #include "selfenergy.h"
 #include "util.h"
+#include "mpi_setup.h"
 
 
 //TODO If structure of ALL bubbles is equal, why not have a master-bubble class, takes in g and s and a parameter to choose if regular or differentiated and calculates value accordingly?
@@ -307,24 +308,46 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
 {
     Diff_P_Bubble PiPdot(G,S);
 
+    int mpi_size = mpi_world_size();
+    int mpi_rank = mpi_world_rank();
+
 #ifdef DIAG_CLASS
     #if DIAG_CLASS>=1
     double tK1 = get_time();
     /*K1 contributions*/
-#pragma omp parallel for
-    for (int iK1=0; iK1<nK_K1*nw1_wp*n_in; ++iK1) {
+    int n_mpi = nK_K1 * nw1_wp;
+    int n_omp = n_in;
 
-        int i0 = (iK1 % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
-        int iwp = (iK1 % (nw1_wp * n_in)) / n_in;
-        int i_in = iK1 % n_in;
-        double wp = bfreqs[iwp];
+    vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
-        Integrand_p_K1_diff <Q, Diff_P_Bubble> integrand_p_K1_diff (vertex1, vertex2, PiPdot, i0, wp, i_in);
+    int iterator = 0;
+    for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
+        if (i_mpi % mpi_size == mpi_rank) {
+            #pragma omp parallel for
+            for (int i_omp=0; i_omp<n_omp; ++i_omp) {
+                int iK1 = i_mpi * n_omp + i_omp;
+                int i0 = (iK1 % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
+                int iwp = (iK1 % (nw1_wp * n_in)) / n_in;
+                int i_in = iK1 % n_in;
+                double wp = bfreqs[iwp];
 
-        Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K1_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                Integrand_p_K1_diff<Q, Diff_P_Bubble> integrand_p_K1_diff (vertex1, vertex2, PiPdot, i0, wp, i_in);
 
-        dgamma.densvertex.pvertex.K1_addvert(i0, iwp, i_in, value);
+                Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K1_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+
+                K1_buffer[iterator*n_omp + i_omp] = value;
+            }
+            ++iterator;
+        }
     }
+
+    vec<Q> K1_result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(K1_buffer, K1_result, n_mpi, n_omp);
+    vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
+
+    dgamma.densvertex.pvertex.K1 = K1_ordered_result; // TODO: better use a copy member function?
+    // dgamma.densvertex.pvertex.K1_addvert(i0, iwp, i_in, value); // old version w/o mpi
+
     cout << "K1p done: ";
     get_time(tK1);
     #endif
@@ -332,22 +355,41 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     #if DIAG_CLASS>=2
     double tK2 = get_time();
     /*K2 contributions*/
-#pragma omp parallel for
-    for(int iK2=0; iK2<nK_K2*nw2_wp*nw2_nup*n_in; iK2++)
-    {
-        int i0 = (iK2 % (nK_K2 * nw2_wp * nw2_nup * n_in)) / (nw2_wp * nw2_nup * n_in);
-        int iwp = (iK2 % (nw2_wp * nw2_nup * n_in)) / (nw2_nup * n_in);
-        int ivp = (iK2 % (nw2_nup * n_in)) / n_in;
-        int i_in = iK2 % n_in;
-        double wp = bfreqs[iwp];
-        double vp = ffreqs[ivp];
+    n_mpi = nK_K2 * nw2_wp;
+    n_omp = nw2_nup * n_in;
 
-        Integrand_p_K2_diff<Q, Diff_P_Bubble> integrand_p_K2_diff (vertex1, vertex2, PiPdot, i0, wp, vp, i_in);
+    vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
-        Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K2_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+    iterator = 0;
+    for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
+        if (i_mpi % mpi_size == mpi_rank) {
+            #pragma omp parallel for
+            for (int i_omp=0; i_omp<n_omp; ++i_omp) {
+                int iK2 = i_mpi * n_omp + i_omp;
+                int i0 = (iK2 % (nK_K2 * nw2_wp * nw2_nup * n_in)) / (nw2_wp * nw2_nup * n_in);
+                int iwp = (iK2 % (nw2_wp * nw2_nup * n_in)) / (nw2_nup * n_in);
+                int ivp = (iK2 % (nw2_nup * n_in)) / n_in;
+                int i_in = iK2 % n_in;
+                double wp = bfreqs[iwp];
+                double vp = ffreqs[ivp];
 
-        dgamma.densvertex.pvertex.K2_addvert(i0, iwp, ivp, i_in, value);
+                Integrand_p_K2_diff<Q, Diff_P_Bubble> integrand_p_K2_diff (vertex1, vertex2, PiPdot, i0, wp, vp, i_in);
+
+                Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K2_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+
+                K2_buffer[iterator*n_omp + i_omp] = value;
+            }
+            ++iterator;
+        }
     }
+
+    vec<Q> K2_result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(K2_buffer, K2_result, n_mpi, n_omp);
+    vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
+
+    dgamma.densvertex.pvertex.K2 = K2_ordered_result; // TODO: better use a copy member function?
+    // dgamma.densvertex.pvertex.K2_addvert(i0, iwp, ivp, i_in, value); // old version w/o mpi
+
     cout << "K2p done: ";
     get_time(tK2);
     #endif
@@ -355,24 +397,43 @@ template <typename Q> void diff_p_bubble_function(Vertex<fullvert<Q> >& dgamma, 
     #if DIAG_CLASS>=3
     double tK3 = get_time();
     /*K3 contributions*/
-#pragma omp parallel for
-    for(int iK3=0; iK3<nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in; iK3++)
-    {
-        int i0 = (iK3 % (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_wp * nw3_nup * nw3_nupp * n_in);
-        int iwp = (iK3 % (nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_nup * nw3_nupp * n_in);
-        int ivp = (iK3 % (nw3_nup * nw3_nupp * n_in)) / (nw3_nupp * n_in);
-        int ivpp = (iK3 % (nw3_nupp * n_in))/ n_in;
-        int i_in = iK3 % n_in;
-        double wp = bfreqs[iwp];
-        double vp = ffreqs[ivp];
-        double vpp = ffreqs[ivpp];
+    n_mpi = nK_K3 * nw3_wp * nw3_nup;
+    n_omp = nw3_nupp * n_in;
 
-        Integrand_p_K3_diff<Q, Diff_P_Bubble> integrand_p_K3_diff (vertex1, vertex2, PiPdot, i0, wp, vp, vpp,  i_in);
+    vec<Q> K3_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
-        Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K3_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+    iterator = 0;
+    for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
+        if (i_mpi % mpi_size == mpi_rank) {
+            #pragma omp parallel for
+            for (int i_omp=0; i_omp<n_omp; ++i_omp) {
+                int iK3 = i_mpi * n_omp + i_omp;
+                int i0 = (iK3 % (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_wp * nw3_nup * nw3_nupp * n_in);
+                int iwp = (iK3 % (nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_nup * nw3_nupp * n_in);
+                int ivp = (iK3 % (nw3_nup * nw3_nupp * n_in)) / (nw3_nupp * n_in);
+                int ivpp = (iK3 % (nw3_nupp * n_in))/ n_in;
+                int i_in = iK3 % n_in;
+                double wp = bfreqs[iwp];
+                double vp = ffreqs[ivp];
+                double vpp = ffreqs[ivpp];
 
-        dgamma.densvertex.pvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, value);
+                Integrand_p_K3_diff<Q, Diff_P_Bubble> integrand_p_K3_diff (vertex1, vertex2, PiPdot, i0, wp, vp, vpp,  i_in);
+
+                Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_p_K3_diff, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+
+                K3_buffer[iterator*n_omp + i_omp] = value;
+            }
+            ++iterator;
+        }
     }
+
+    vec<Q> K3_result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(K3_buffer, K3_result, n_mpi, n_omp);
+    vec<Q> K3_ordered_result = mpi_reorder_result(K3_result, n_mpi, n_omp);
+
+    dgamma.densvertex.pvertex.K3 = K3_ordered_result; // TODO: better use a copy member function?
+    // dgamma.densvertex.pvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, value); // old version w/o mpi
+
     cout << "K3p done: ";
     get_time(tK3);
     #endif

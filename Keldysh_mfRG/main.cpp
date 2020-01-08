@@ -28,6 +28,8 @@ void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
 
 auto main() -> int {
 
+    MPI_Init(NULL, NULL);
+
     setUpBosGrid();
     setUpFerGrid();
     setUpFlowGrid();
