@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <complex>
+
 #include "parameters.h"
 #include "vertex.h"
 #include "state.h"
@@ -12,6 +13,7 @@
 #include "t_bubble.h"
 #include "propagator.h"
 #include "selfenergy.h"
+#include "hdf5_routines.h"
 
 
 using namespace std;
@@ -35,10 +37,17 @@ auto main() -> int {
     setUpFlowGrid();
 
 
+
     double  t0 = get_time();
     State<comp> state(Lambda_ini);
     cout << "State created. ";
     get_time(t0);
+
+    vector<double> Lambdas(10);
+const H5std_string FILE_NAME("testfile.h5");
+write_hdf(FILE_NAME,10.,10,state);
+add_hdf(FILE_NAME,1,10,state,Lambdas);
+State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
 
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
