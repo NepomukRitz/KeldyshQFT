@@ -14,7 +14,8 @@ public:
     auto sval(int, int) -> Q;
     auto svalsmooth(int, double) -> Q;
     void setself(int, int, Q);
-
+    auto acc(int) ->Q;// access to the ith element of the vector "SIGMA"
+    void direct_set(int,Q);
 //operators for self energy
 
     auto operator+(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
@@ -53,6 +54,18 @@ public:
 /*****************************************FUNCTIONS FOR SELF ENERGY*****************************************************/
 template <typename Q> auto SelfEnergy<Q>::sval(int iK, int i) -> Q{
     return Sigma[iK*nSE + i];
+}
+
+template <typename Q> auto SelfEnergy<Q>::acc(int i) -> Q{
+    if(i>=0 && i < Sigma.size()){
+    return Sigma[i];}
+    else{cout << "Error: Tried to access value outside of self energy range" << endl;};
+}
+
+template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q value) {
+    if(i>=0 && i < Sigma.size()){
+    Sigma[i] = value;}
+    else{cout << "Error: Tried to access value outside of self energy range" << endl;};
 }
 template <typename Q> auto SelfEnergy<Q>::svalsmooth(int iK, double w) -> Q{//smoothly interpolates for values between discrete frequency values of mesh
 
