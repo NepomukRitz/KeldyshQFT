@@ -31,6 +31,8 @@ public:
      * come forth where the bare interaction does not remain invariant throughout the system.*/
     auto vval(int iK, int i_in) -> Q;
 
+    auto acc(int i) -> Q;
+    void direct_set(int i,Q value);
     /*Sets the value of the bare interaction to Q*/
     void setvert(int iK, int i_in, Q);
 
@@ -173,6 +175,19 @@ public:
 template <typename Q> auto irreducible<Q>::vval(int iK, int i_in) -> Q {
     return bare[iK*n_in + i_in];
 }
+
+template <typename Q> auto irreducible<Q>::acc(int i) -> Q {
+   if(i>=0 && i<bare.size()){
+    return bare[i];}
+   else{cout << "ERROR: Tried to access value outside of range in irreducible vertex" << endl;};
+}
+
+template <typename Q>void irreducible<Q>::direct_set(int i,Q value)  {
+    if(i>=0 && i<bare.size()){
+     bare[i]=value;}
+    else{cout << "ERROR: Tried to access value outside of range in irreducible vertex" << endl;};
+}
+
 template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value){
     bare[iK*n_in + i_in] = value;
 }
