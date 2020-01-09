@@ -45,7 +45,13 @@ public:
     vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
 
+    auto K1_acc (int) -> Q;
+    auto K2_acc (int) -> Q;
+    auto K3_acc (int) -> Q;
 
+    void K1_direct_set (int, Q);
+    void K2_direct_set (int, Q);
+    void K3_direct_set (int, Q);
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
     * of the necessary indices convertions  and what not...
     * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
@@ -191,6 +197,42 @@ template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v
 
     return K1_vvalsmooth (iK, w, i_in, avertex) + K2_vvalsmooth (iK, w, v1, i_in, avertex)  + K2b_vvalsmooth(iK, w, v2, i_in, avertex) + K3_vvalsmooth (iK, w, v1, v2, i_in, avertex);
 }
+
+
+template <typename Q> auto tvert<Q>::K1_acc (int i) -> Q{
+    if(i>=0 && i<K1.size()){
+    return K1[i];}
+    else{cout << "Error: Tried to access value outside of K1 vertex in t-channel" << endl;};
+}
+template <typename Q> auto tvert<Q>::K2_acc (int i) -> Q{
+    if(i>=0 && i<K2.size()){
+    return K2[i];}
+    else{cout << "Error: Tried to access value outside of K2 vertex in t-channel" << endl;};
+}
+template <typename Q> auto tvert<Q>::K3_acc (int i) -> Q{
+    if(i>=0 && i<K3.size()){
+    return K3[i];}
+    else{cout << "Error: Tried to access value outside of K3 vertex in t-channel" << endl;};
+}
+
+
+
+template <typename Q> void tvert<Q>::K1_direct_set (int i, Q value){
+    if(i>=0 && i<K1.size()){
+    K1[i]=value;}
+    else{cout << "Error: Tried to access value outside of K1 vertex in t-channel" << endl;};
+}
+template <typename Q> void  tvert<Q>::K2_direct_set (int i, Q value){
+    if(i>=0 && i<K2.size()){
+     K2[i]=value;}
+    else{cout << "Error: Tried to access value outside of K2 vertex in t-channel" << endl;};
+}
+template <typename Q> void  tvert<Q>::K3_direct_set (int i, Q value){
+    if(i>=0 && i<K3.size()){
+    K3[i]=value;}
+    else{cout << "Error: Tried to access value outside of K3 vertex in t-channel" << endl;};
+}
+
 
 
 template <typename Q> void tvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
