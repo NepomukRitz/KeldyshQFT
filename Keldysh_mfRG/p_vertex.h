@@ -57,7 +57,13 @@ public:
     /*For when the channel is already known and the trafo to the specific channel has already been done*/
     auto value (int, double, double, double, int) -> Q;
 
+    auto K1_acc (int) -> Q;
+    auto K2_acc (int) -> Q;
+    auto K3_acc (int) -> Q;
 
+    void K1_direct_set (int, Q);
+    void K2_direct_set (int, Q);
+    void K3_direct_set (int, Q);
     /*Sets the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure) to input Q*/
     void K1_setvert(int, int, int, Q);
 
@@ -191,6 +197,41 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
 
     return K1_vvalsmooth (iK, w, i_in) + K2_vvalsmooth (iK, w, v1, i_in) + K2b_vvalsmooth(iK, w, v2, i_in) + K3_vvalsmooth (iK, w, v1, v2, i_in);
 }
+
+
+template <typename Q> auto pvert<Q>::K1_acc (int i) -> Q{
+    if(i>=0 && i<K1.size()){
+    return K1[i];}
+    else{cout << "Error: Tried to access value outside of K1 vertex in p-channel" << endl;};
+}
+template <typename Q> auto pvert<Q>::K2_acc (int i) -> Q{
+    if(i>=0 && i<K2.size()){
+    return K2[i];}
+    else{cout << "Error: Tried to access value outside of K2 vertex in p-channel" << endl;};
+}
+template <typename Q> auto pvert<Q>::K3_acc (int i) -> Q{
+    if(i>=0 && i<K3.size()){
+    return K3[i];}
+    else{cout << "Error: Tried to access value outside of K3 vertex in p-channel" << endl;};
+}
+
+
+template <typename Q> void pvert<Q>::K1_direct_set (int i, Q value){
+    if(i>=0 && i<K1.size()){
+    K1[i]=value;}
+    else{cout << "Error: Tried to access value outside of K1 vertex in p-channel" << endl;};
+}
+template <typename Q> void pvert<Q>::K2_direct_set (int i, Q value){
+    if(i>=0 && i<K2.size()){
+     K2[i]=value;}
+    else{cout << "Error: Tried to access value outside of K2 vertex in p-channel" << endl;};
+}
+template <typename Q> void pvert<Q>::K3_direct_set (int i, Q value) {
+    if(i>=0 && i<K3.size()){
+    K3[i]=value;}
+    else{cout << "Error: Tried to access value outside of K3 vertex in p-channel" << endl;};
+}
+
 
 
 template <typename Q> void pvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
