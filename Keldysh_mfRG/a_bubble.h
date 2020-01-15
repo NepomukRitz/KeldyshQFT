@@ -140,8 +140,8 @@ template <typename Q, typename Bubble> class Integrand_a_K2
     int i0, i_in;
     double wa, va;
 public:
-    Integrand_a_K2 (Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble &PiA_in, int i0_in, double wa_in, double va_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in), i_in(non_zero_Keldysh_K2a[i_in_in]) {};
+    Integrand_a_K2 (Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble &PiA_in,                      int i0_in, double wa_in, double va_in, int i_in_in)
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K2a[i0_in]),    wa(wa_in),    va(va_in), i_in(i_in_in) {};
 
     auto operator() (double vppa) -> Q {
         int i1, i3;
@@ -167,8 +167,8 @@ template <typename Q, typename Bubble> class Integrand_a_K3
     int i0, i_in;
     double wa, va, vpa;
 public:
-    Integrand_a_K3 (Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, double va_in, double vpa_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
+    Integrand_a_K3 (Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in,                     int i0_in, double wa_in, double va_in, double vpa_in, int i_in_in)
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K3[i0_in]),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(i_in_in) {};
 
     auto operator()(double vppa) -> Q {
         int i1, i3;
@@ -195,7 +195,7 @@ template <typename Q, typename Bubble> class Integrand_a_K1_diff {
     int i0, i_in;
     double wa;
 public:
-    explicit Integrand_a_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, int i_in_in)
+    explicit Integrand_a_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in,                       int i0_in, double wa_in, int i_in_in)
                                 :             vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(non_zero_Keldysh_K1a[i0_in]),    wa(wa_in), i_in(i_in_in) {};
 
     //This is a call operator
@@ -236,8 +236,8 @@ template <typename Q, typename Bubble> class Integrand_a_K2_diff {
     int i0, i_in;
     double wa, va;
 public:
-    Integrand_a_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble &PiA_in, int i0_in, double wa_in, double va_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in), i_in(non_zero_Keldysh_K2a[i_in_in]) {};
+    Integrand_a_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble &PiA_in,                       int i0_in, double wa_in, double va_in, int i_in_in)
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),         PiA(PiA_in), i0(non_zero_Keldysh_K2a[i0_in]),    wa(wa_in),   va(va_in), i_in(i_in_in) {};
 
     //This is a call operator
     auto operator()(double vppa) -> Q {
@@ -277,8 +277,8 @@ template <typename Q, typename Bubble> class Integrand_a_K3_diff {
     int i0, i_in;
     double wa, va, vpa;
 public:
-    Integrand_a_K3_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiA_in, int i0_in, double wa_in, double va_in, double vpa_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiA(PiA_in), i0(i0_in),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
+    Integrand_a_K3_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& PiA_in,                       int i0_in, double wa_in, double va_in, double vpa_in, int i_in_in)
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),            PiA(PiA_in), i0(non_zero_Keldysh_K3[i0_in]),    wa(wa_in),    va(va_in),   vpa(vpa_in), i_in(i_in_in) {};
 
     //This is a call operator
     auto operator()(double vppa) -> Q {

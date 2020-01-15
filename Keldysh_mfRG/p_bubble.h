@@ -112,8 +112,8 @@ template <typename Q, typename Bubble> class Integrand_p_K1 {
     int i0, i_in;
     double wp;
 public:
-    explicit Integrand_p_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in, int i0_in, double wp_in, int i_in_in)
-                        :                vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K1p[i0_in]), wp(wp_in), i_in(i_in_in) {};
+    explicit Integrand_p_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in,                       int i0_in, double wp_in, int i_in_in)
+                        :                vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K1p[i0_in]),    wp(wp_in), i_in(i_in_in) {};
 
 
     auto operator() (double vppp) -> Q {
@@ -143,8 +143,8 @@ template <typename Q, typename Bubble> class Integrand_p_K2
     int i0, i_in;
     double wp, vp;
 public:
-    Integrand_p_K2(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in,   Bubble &PiP_in, int i0_in, double wp_in, double vp_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),      PiP(PiP_in), i0(i0_in),    wp(wp_in),    vp(vp_in), i_in(non_zero_Keldysh_K2p[i_in_in]) {};
+    Integrand_p_K2(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in,   Bubble &PiP_in,                       int i0_in, double wp_in, double vp_in, int i_in_in)
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),      PiP(PiP_in), i0(non_zero_Keldysh_K2p[i0_in]),    wp(wp_in),    vp(vp_in), i_in(i_in_in) {};
 
     auto operator() (double vppp) -> Q {
         int i1, i3;
@@ -170,8 +170,8 @@ template <typename Q, typename Bubble> class Integrand_p_K3
     int i0, i_in;
     double wp, vp, vpp;
 public:
-    Integrand_p_K3(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in, int i0_in, double wp_in, double vp_in, double vpp_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(i0_in),    wp(wp_in),    vp(vp_in),   vpp(vpp_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
+    Integrand_p_K3(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in,                      int i0_in, double wp_in, double vp_in, double vpp_in, int i_in_in)
+            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K3[i0_in]),    wp(wp_in),    vp(vp_in),   vpp(vpp_in), i_in(i_in_in) {};
 
     auto operator() (double vppp) -> Q {
         int i1, i3;
@@ -196,7 +196,7 @@ template <typename Q, typename Bubble> class Integrand_p_K1_diff {
     int i0, i_in;
     double wp;
 public:
-    explicit Integrand_p_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in, int i0_in, double wp_in, int i_in_in)
+    explicit Integrand_p_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in,                       int i0_in, double wp_in, int i_in_in)
                                 :             vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K1p[i0_in]),    wp(wp_in), i_in(i_in_in) {};
 
     //This is a call operator
@@ -237,8 +237,8 @@ template <typename Q, typename Bubble> class Integrand_p_K2_diff {
     int i0, i_in;
     double wp, vp;
 public:
-    Integrand_p_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble &PiP_in, int i0_in, double wp_in, double vp_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(i0_in),    wp(wp_in),    vp(vp_in), i_in(non_zero_Keldysh_K2p[i_in_in]) {};
+    Integrand_p_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble &PiP_in,                       int i0_in, double wp_in, double vp_in, int i_in_in)
+            :                        vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K2p[i0_in]),    wp(wp_in),    vp(vp_in), i_in(i_in_in) {};
 
     //This is a call operator
     auto operator() (double vppp) -> Q {
@@ -278,8 +278,8 @@ template <typename Q, typename Bubble> class Integrand_p_K3_diff {
     int i0, i_in;
     double wp, vp, vpp;
 public:
-    Integrand_p_K3_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in, int i0_in, double wp_in, double vp_in, double vpp_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(i0_in),    wp(wp_in),    vp(vp_in),   vpp(vpp_in), i_in(non_zero_Keldysh_K3[i_in_in]) {};
+    Integrand_p_K3_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& PiP_in,                      int i0_in, double wp_in, double vp_in, double vpp_in, int i_in_in)
+                 :                   vertex1(vertex1_in),              vertex2(vertex2_in),    PiP(PiP_in), i0(non_zero_Keldysh_K3[i0_in]),    wp(wp_in),    vp(vp_in),   vpp(vpp_in), i_in(i_in_in) {};
 
     //This is a call operator
     auto operator() (double vppp) -> Q {
