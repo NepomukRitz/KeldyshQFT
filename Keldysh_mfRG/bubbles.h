@@ -298,12 +298,15 @@ public:
                 case 'a':
                     tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    break;
                 case 'p':
                     tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp);                                //wp/2+vppp, wp/2-vppp for the p-channel
+                    break;
                 case 't':
                     tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppt-1/2wt, vppt+1/2wt for the t-channel
+                    break;
                 default: ;
             }
             res_l = left_same_bare<comp, channel> (vertex1, i1, w, vpp, i_in);
@@ -342,12 +345,15 @@ public:
                 case 'a':
                     tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, v-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    break;
                 case 'p':
                     tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp);                                //wp/2+vppp, wp/2-vppp for the p-channel
+                    break;
                 case 't':
                     tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppt-1/2wt, vppt+1/2wt for the t-channel
+                    break;
                 default: ;
             }
             res_l = left_diff_bare<comp, channel> (vertex1, i1, w, v, vpp, i_in);
@@ -381,12 +387,15 @@ public:
                 case 'a':
                     tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, v-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    break;
                 case 'p':
                     tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp);                                //wp/2+vppp, wp/2-vppp for the p-channel
+                    break;
                 case 't':
                     tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppt-1/2wt, vppt+1/2wt for the t-channel
+                    break;
                 default: ;
             }
             res_l = left_diff_bare<comp, channel> (vertex1, i1, w, v, vpp, i_in);
