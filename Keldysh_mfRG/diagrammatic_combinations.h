@@ -9,13 +9,10 @@
 
 template <typename Q, char channel>
 auto left_same_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp, int i_in) -> Q;
-
 template <typename Q, char channel>
 auto right_same_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in) -> Q;
-
 template <typename Q, char channel>
 auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, double vpp, int i_in) -> Q;
-
 template <typename Q, char channel>
 auto right_diff_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vp, double vpp, int i_in) -> Q;
 
