@@ -14,93 +14,84 @@
 #include "diagrammatic_combinations.h"
 
 
-//TODO If structure of ALL bubbles is equal, why not have a master-bubble class, takes in g and s and a parameter to choose if regular or differentiated and calculates value accordingly?
-/*Class defining the bubble object (two propagators) with a Keldysh structure*/
+
+template <bool dot>
 class Bubble{
-    Propagator& g;
-public:
-    explicit Bubble(Propagator& propagator)
-            : g(propagator){};
-
-    /*This function returns the value of the bubble (two propagators) for the Keldysh index iK and propagators frequencies v1 and v2*/
-    auto value(int iK, double v1, double v2) -> comp
-    {
-        comp ans;
-        switch (iK){
-            case 3: //AA
-                ans = conj(g.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 6: //AR
-                ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
-                break;
-            case 7: //AK
-                ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
-                break;
-            case 9: //RA
-                ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 11://KA
-                ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 12://RR
-                ans = g.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
-                break;
-            case 13://RK
-                ans = g.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
-                break;
-            case 14://KR
-                ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
-                break;
-            case 15://KK
-                ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
-                break;
-            default: ;
-        }
-        return ans;
-    }
-};
-
-/*Class defining the differentiated bubble object with a Keldysh structure*/
-class Diff_Bubble{
     Propagator& g;
     Propagator& s;
 public:
-    Diff_Bubble(Propagator& propagatorG, Propagator& propagatorS)
-            : g(propagatorG), s(propagatorS)    {};
+    explicit Bubble(Propagator& propagator)
+        :g(propagator){};
 
-    /*This function returns the value of the differentiated bubble (two propagators) for the Keldysh index iK and propagators frequencies v1 and v2*/
-    auto value(int iK, double v1, double v2) -> comp
-    {
+    Bubble(Propagator& propagatorG, Propagator& propagatorS)
+        :g(propagatorG), s(propagatorS) {};
+
+    auto value(int iK, double v1, double v2) -> comp{
         comp ans;
-        switch (iK) {
-            case 3: //AA
-                ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 6: //AR
-                ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(0, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
-                break;
-            case 7: //AK
-                ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(1, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
-                break;
-            case 9: //RA
-                ans = g.pvalsmooth(0, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 11://KA
-                ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
-                break;
-            case 12://RR
-                ans = g.pvalsmooth(0, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
-                break;
-            case 13://RK
-                ans = g.pvalsmooth(0, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
-                break;
-            case 14://KR
-                ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
-                break;
-            case 15://KK
-                ans = g.pvalsmooth(1, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
-                break;
-            default: ;
+        if(dot){
+            switch (iK) {
+                case 3: //AA
+                    ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
+                    break;
+                case 6: //AR
+                    ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(0, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
+                    break;
+                case 7: //AK
+                    ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(1, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
+                    break;
+                case 9: //RA
+                    ans = g.pvalsmooth(0, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                    break;
+                case 11://KA
+                    ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+                    break;
+                case 12://RR
+                    ans = g.pvalsmooth(0, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
+                    break;
+                case 13://RK
+                    ans = g.pvalsmooth(0, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
+                    break;
+                case 14://KR
+                    ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
+                    break;
+                case 15://KK
+                    ans = g.pvalsmooth(1, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
+                    break;
+                default: ;
+            }
+        }
+        else
+        {
+            switch (iK){
+                case 3: //AA
+                    ans = conj(g.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
+                    break;
+                case 6: //AR
+                    ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
+                    break;
+                case 7: //AK
+                    ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
+                    break;
+                case 9: //RA
+                    ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                    break;
+                case 11://KA
+                    ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+                    break;
+                case 12://RR
+                    ans = g.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
+                    break;
+                case 13://RK
+                    ans = g.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
+                    break;
+                case 14://KR
+                    ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
+                    break;
+                case 15://KK
+                    ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
+                    break;
+                default: ;
+            }
         }
         return ans;
     }
@@ -108,28 +99,25 @@ public:
 
 
 
-template <typename Q, char channel, char part> class Integrand_K1 {
+template <typename Q, char channel>           class Integrand_K1 {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
-    Bubble& Pi;
+    Bubble<false>& Pi;
     int i0, i_in;
     double w;
 public:
-    Integrand_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in,   int i_in_in)
-             :                vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),  i_in(i_in_in)
-                {
-                    switch (channel) {
-                        case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
-                        case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
-                        case 't': i0 = non_zero_Keldysh_K1t[i0_in]; break;
-                        default: ;
-                    }
-                };
+    Integrand_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble<false>& Pi_in, int i0_in, double w_in,   int i_in_in)
+        :                     vertex1(vertex1_in),              vertex2(vertex2_in),            Pi(Pi_in),                w(w_in),  i_in(i_in_in)
+    {
+        switch (channel) {
+            case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
+            case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
+            case 't': i0 = non_zero_Keldysh_K1t[i0_in]; break;
+            default: ;
+        }
+    };
 
     auto operator() (double vpp) -> Q {
-
-        if(part != 'C')
-            return 0.;
 
         int i1=0, i3=0;
         Q res;
@@ -162,20 +150,20 @@ template <typename Q, char channel, char part> class Integrand_K2
 {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
-    Bubble &Pi;
+    Bubble<false>&Pi;
     int i0, i_in;
     double w, v;
 public:
-    Integrand_K2(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in)
-             :                vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in)
-             {
-                 switch (channel) {
-                     case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
-                     case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
-                     case 't': i0 = non_zero_Keldysh_K2t[i0_in]; break;
-                     default: ;
-                 }
-             };
+    Integrand_K2(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble<false>& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in)
+        :                     vertex1(vertex1_in),              vertex2(vertex2_in),            Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in)
+    {
+        switch (channel) {
+            case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
+            case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
+            case 't': i0 = non_zero_Keldysh_K2t[i0_in]; break;
+            default: ;
+        }
+    };
 
     auto operator() (double vpp) -> Q {
 
@@ -217,12 +205,12 @@ template <typename Q, char channel, char part> class Integrand_K3
 {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
-    Bubble& Pi;
+    Bubble<false>& Pi;
     int i0, i_in;
     double w, v, vp;
 public:
-    Integrand_K3(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in)
-            :                   vertex1(vertex1_in),              vertex2(vertex2_in),    Pi(Pi_in),                 w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in)
+    Integrand_K3(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble<false>& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in)
+        :                     vertex1(vertex1_in),              vertex2(vertex2_in),            Pi(Pi_in),                 w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in)
     {
         i0 = non_zero_Keldysh_K3[i0];
     };
@@ -270,15 +258,15 @@ public:
 
 };
 
-template <typename Q, char channel> class Integrand_K1_diff { // TODO: finish
+template <typename Q, char channel> class Integrand_K1_diff {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
-    Bubble& Pi;
+    Bubble<true>& Pi;
     int i0, i_in;
     double w;
 public:
-    Integrand_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in, int i_in_in)
-             :                     vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in), i_in(i_in_in)
+    Integrand_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble<true>& Pi_in, int i0_in, double w_in, int i_in_in)
+        :                          vertex1(vertex1_in),              vertex2(vertex2_in),            Pi(Pi_in),               w(w_in), i_in(i_in_in)
     {
         switch (channel) {
             case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
@@ -320,12 +308,12 @@ public:
 template <typename Q, char channel> class Integrand_K2_diff {
     Vertex<fullvert<Q> > &vertex1;
     Vertex<fullvert<Q> > &vertex2;
-    Bubble &Pi;
+    Bubble<true>& Pi;
     int i0, i_in;
     double w, v;
 public:
-    Integrand_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in, int i_in_in)
-               :                   vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in)
+    Integrand_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble<true>& Pi_in, int i0_in, double w_in, double v_in, int i_in_in)
+        :                          vertex1(vertex1_in),              vertex2(vertex2_in),           Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in)
     {
         switch (channel){
             case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
@@ -367,12 +355,12 @@ public:
 template <typename Q, char channel> class Integrand_K3_diff {
     Vertex<fullvert<Q> > &vertex1;
     Vertex<fullvert<Q> > &vertex2;
-    Bubble &Pi;
+    Bubble<true>&Pi;
     int i0, i_in;
     double w, v, vp;
 public:
-    Integrand_K3_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in)
-               :                   vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in)
+    Integrand_K3_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble<true>& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in)
+        :                          vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                      w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in)
     {
         i0 = non_zero_Keldysh_K3[i0_in];
     };
@@ -408,12 +396,10 @@ public:
 };
 
 
-
 template <typename Q, char channel, bool diff>
 void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
-    Bubble Pi(G);
-    if (diff) Diff_Bubble Pi(G,S);
+    Bubble<diff> Pi(G,S);
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_vp = 0;
     Q prefactor;
@@ -472,10 +458,11 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
                 int i_in = iK1 % n_in;
                 double w = bfreqs[iw];
 
-                Integrand_K1<Q, channel, 'C'> integrand_K1 (vertex1, vertex2, Pi, i0, w, i_in);
+                //TODO fix template specification problem arising here, I don't know how though
+                Integrand_K1<Q, channel> integrand_K1 (vertex1, vertex2, Pi, i0, w, i_in);
                 if (diff) Integrand_K1_diff<Q, channel> integrand_K1 (vertex1, vertex2, Pi, i0, w, i_in);
 
-                Q value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                Q value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
 
                 K1_buffer[iterator*n_omp + i_omp] = value;
             }
@@ -610,78 +597,78 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
 #endif
 }
 
-template <typename Q> void p_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
-{
-    Bubble PiP(G);
-
-    //These lines are to test the SOPT results - there are no K1 contributions in the corrections!
-    double t0 = get_time();
-    /*K1 contributions*/
-#pragma omp parallel for
-    for (int iK1=0; iK1<nK_K1*nw1_wp*n_in; ++iK1) {
-
-        int i0 = (iK1 % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
-        int iwp = (iK1 % (nw1_wp * n_in)) / n_in;
-        int i_in = iK1 % n_in;
-        double wp = bfreqs[iwp];
-
-        Integrand_K1 <Q, 'p', 'C'> integrand_K1 (vertex1, vertex2, PiP, i0, wp, i_in);
-
-        Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K1, w_lower_f, w_upper_f);                   //Integration over vppp, a fermionic frequency
-
-        gamma.densvertex.pvertex.K1_addvert(i0, iwp, i_in, value);
-    }
-    cout << "K1p done:" << endl;
-    get_time(t0);
-
-//    if(side == 'L')
-//    {
-//        //In this case, there are only contributions to K2 and K3
-//        /*K2 contributions*/
-//#pragma omp parallel for
-//        for(int iK2=0; iK2<nK_K2*nw2_wp*nw2_nup*n_in; iK2++)
-//        {
-//            int i0 = (iK2 % (nK_K2 * nw2_wp * nw2_nup * n_in)) / (nw2_wp * nw2_nup * n_in);
-//            int iwp = (iK2 % (nw2_wp * nw2_nup * n_in)) / (nw2_nup * n_in);
-//            int ivp = (iK2 % (nw2_nup * n_in)) / n_in;
-//            int i_in = iK2 % n_in;
-//            double wp = bfreqs[iwp];
-//            double vp = ffreqs[ivp];
+//template <typename Q> void p_bubble_function(Vertex<fullvert<Q> >& gamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, char side)
+//{
+//    Bubble PiP(G);
 //
-//            Integrand_p_K2<Q, P_Bubble> integrand_p_K2 (vertex1, vertex2, PiP, i0, wp, vp, i_in);
-//
-//            resp.densvertex.K2_addvert(i0, iwp, ivp, i_in, integrator(integrand_p_K2, ffreqs)); //
-//        }
-//    }
-//    else if(side == 'R')
-//    {
-//        //In this case, there are only contributions to K2b and K3
-//        /*K2b contributions*/
-//        //TODO implement
-//    }
-//    else
-//    {
-//        return resp;
-//    }
-
-    /*K3 contributions*/
+//    //These lines are to test the SOPT results - there are no K1 contributions in the corrections!
+//    double t0 = get_time();
+//    /*K1 contributions*/
 //#pragma omp parallel for
-//    for(int iK3=0; iK3<nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in; iK3++)
-//    {
-//        int i0 = (iK3 % (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_wp * nw3_nup * nw3_nupp * n_in);
-//        int iwp = (iK3 % (nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_nup * nw3_nupp * n_in);
-//        int ivp = (iK3 % (nw3_nup * nw3_nupp * n_in)) / (nw3_nupp * n_in);
-//        int ivpp = (iK3 % (nw3_nupp * n_in))/ n_in;
-//        int i_in = iK3 % n_in;
+//    for (int iK1=0; iK1<nK_K1*nw1_wp*n_in; ++iK1) {
+//
+//        int i0 = (iK1 % (nK_K1 * nw1_wp * n_in)) / (nw1_wp * n_in);
+//        int iwp = (iK1 % (nw1_wp * n_in)) / n_in;
+//        int i_in = iK1 % n_in;
 //        double wp = bfreqs[iwp];
-//        double vp = ffreqs[ivp];
-//        double vpp = ffreqs[ivpp];
 //
-//        Integrand_p_K3<Q, P_Bubble> integrand_p_K3 (vertex1, vertex2, PiP, i0, wp, vp, vpp, i_in);
+//        Integrand_K1 <Q, 'p', 'C'> integrand_K1 (vertex1, vertex2, PiP, i0, wp, i_in);
 //
-//        resp.densvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, integrator(integrand_p_K3, ffreqs));
+//        Q value = (0.5)*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K1, w_lower_f, w_upper_f);                   //Integration over vppp, a fermionic frequency
+//
+//        gamma.densvertex.pvertex.K1_addvert(i0, iwp, i_in, value);
 //    }
-
-}
+//    cout << "K1p done:" << endl;
+//    get_time(t0);
+//
+////    if(side == 'L')
+////    {
+////        //In this case, there are only contributions to K2 and K3
+////        /*K2 contributions*/
+////#pragma omp parallel for
+////        for(int iK2=0; iK2<nK_K2*nw2_wp*nw2_nup*n_in; iK2++)
+////        {
+////            int i0 = (iK2 % (nK_K2 * nw2_wp * nw2_nup * n_in)) / (nw2_wp * nw2_nup * n_in);
+////            int iwp = (iK2 % (nw2_wp * nw2_nup * n_in)) / (nw2_nup * n_in);
+////            int ivp = (iK2 % (nw2_nup * n_in)) / n_in;
+////            int i_in = iK2 % n_in;
+////            double wp = bfreqs[iwp];
+////            double vp = ffreqs[ivp];
+////
+////            Integrand_p_K2<Q, P_Bubble> integrand_p_K2 (vertex1, vertex2, PiP, i0, wp, vp, i_in);
+////
+////            resp.densvertex.K2_addvert(i0, iwp, ivp, i_in, integrator(integrand_p_K2, ffreqs)); //
+////        }
+////    }
+////    else if(side == 'R')
+////    {
+////        //In this case, there are only contributions to K2b and K3
+////        /*K2b contributions*/
+////        //TODO implement
+////    }
+////    else
+////    {
+////        return resp;
+////    }
+//
+//    /*K3 contributions*/
+////#pragma omp parallel for
+////    for(int iK3=0; iK3<nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in; iK3++)
+////    {
+////        int i0 = (iK3 % (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_wp * nw3_nup * nw3_nupp * n_in);
+////        int iwp = (iK3 % (nw3_wp * nw3_nup * nw3_nupp * n_in)) / (nw3_nup * nw3_nupp * n_in);
+////        int ivp = (iK3 % (nw3_nup * nw3_nupp * n_in)) / (nw3_nupp * n_in);
+////        int ivpp = (iK3 % (nw3_nupp * n_in))/ n_in;
+////        int i_in = iK3 % n_in;
+////        double wp = bfreqs[iwp];
+////        double vp = ffreqs[ivp];
+////        double vpp = ffreqs[ivpp];
+////
+////        Integrand_p_K3<Q, P_Bubble> integrand_p_K3 (vertex1, vertex2, PiP, i0, wp, vp, vpp, i_in);
+////
+////        resp.densvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, integrator(integrand_p_K3, ffreqs));
+////    }
+//
+//}
 
 #endif //KELDYSH_MFRG_BUBBLES_H
