@@ -36,7 +36,7 @@ public:
 
 };
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, char free) -> Propagator;
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, bool free) -> Propagator;
 
 /************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
 
@@ -212,11 +212,11 @@ auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
 
 auto GR(double Lambda, double omega, comp selfEneR) -> comp
 {
-    return 1./((1./(gR(Lambda,omega))) - selfEneR);
+    return 1./(omega + (comp)0.5i*(GAMMA_REG+Lambda) - selfEneR);
 }
 auto GA(double Lambda, double omega, comp selfEneA) -> comp
 {
-    return 1./((1./(gA(Lambda,omega))) - selfEneA);
+    return 1./(omega - (comp)0.5i*(GAMMA_REG+Lambda) - selfEneA);
 }
 auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
 {
@@ -236,67 +236,67 @@ auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
     return retarded + advanced + extra;
 }
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, char free) -> Propagator
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, bool free) -> Propagator
 {
     Propagator resp;
-    if(free!='f') {
-        for (int i = 0; i < nPROP; ++i) {
+
+    if(free){
+        for(int i=0; i<nPROP; ++i){
             double w = ffreqs[i];
-            comp selfEneR = selfenergy.sval(0, i);
-            comp selfEneA = conj(selfEneR);
-            comp selfEneK = selfenergy.sval(1, i);
-
-            if (type == 'g') { //good ol' regular propagator
-                resp.setprop(0, i, GR(Lambda, w, selfEneR));
-                resp.setprop(1, i, GK(Lambda, w, selfEneR, selfEneK, selfEneA));
-            } else if (type == 's') {   //single-scale propagator
-                resp.setprop(0, i, SR(Lambda, w, selfEneR));
-                resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, selfEneA));
-            }
-            else if (type == 'e') {   //i.e. only the Katanin extension. For this case, the selfenergy should be a derivated one!
-                comp ER, EK;
-                comp diffSelfEneR = diffSelfenergy.sval(0, i);
-                comp diffSelfEneA = conj(diffSelfEneR);
-                comp diffSelfEneK = diffSelfenergy.sval(1, i);
-
-
-                ER = GR(Lambda, w, selfEneR) * diffSelfEneR * GR(Lambda, w, selfEneR);
-
-                EK = GR(Lambda, w, selfEneR) * diffSelfEneR * GK(Lambda, w, selfEneR, selfEneK, selfEneA)
-                   + GR(Lambda, w, selfEneR) * diffSelfEneK * GA(Lambda, w, selfEneA)
-                   + GK(Lambda, w, selfEneR, selfEneK, selfEneA) * diffSelfEneA * GA(Lambda, w, selfEneA);
-
-                resp.setprop(0, i, ER);
-                resp.setprop(1, i, EK);
-            }
-            else {
-                resp.setprop(0, i, 0.);
-                resp.setprop(1, i, 0.);
-                cout << "Something is going terribly wrong with the dressed propagators" << "\n";
+            switch (type){
+                case 'g' :                              //Good ol' regular propagator
+                    resp.setprop(0, i, gR(Lambda, w));
+                    resp.setprop(1, i, gK(Lambda, w));
+                    break;
+                case 's':                               //Single scale propagator
+                    resp.setprop(0, i, sR(Lambda, w));
+                    resp.setprop(1, i, sK(Lambda, w));
+                    break;
+                case 'k':                               //Katanin extension
+                    resp.setprop(0, i, sR(Lambda, w)+ 0.);
+                    resp.setprop(1, i, sK(Lambda, w)+ 0.);
+                    break;
+                default:                                //This case includes type e, the Katanin extension term, dg = s + e
+                    resp.setprop(0, i, 0.);
+                    resp.setprop(1, i, 0.);
             }
         }
     }
     else{
-        for(int i=0; i<nPROP; ++i)
-        {
+        for(int i=0; i<nPROP; ++i){
             double w = ffreqs[i];
 
-            if(type=='g') {
-                resp.setprop(0, i, gR(Lambda, w));
-                resp.setprop(1, i, gK(Lambda, w));
-            }
-            else if(type == 's' || type == 'k'){
-                resp.setprop(0, i, sR(Lambda, w));
-                resp.setprop(1, i, sK(Lambda, w));
-            }
-            else if(type == 'e') {
-                resp.setprop(0, i, 0.);
-                resp.setprop(1, i, 0.);
-            }
-            else {
-                resp.setprop(0, i, 0.);
-                resp.setprop(1, i, 0.);
-                cout << "Something is going terribly wrong with the free propagators" << "\n";
+            comp selfEneR = selfenergy.sval(0, i);
+            comp selfEneA = conj(selfEneR);
+            comp selfEneK = selfenergy.sval(1, i);
+            comp ER, EK, diffSelfEneR, diffSelfEneA, diffSelfEneK;
+
+            switch (type){
+                case 'g' :                              //Good ol' regular propagator
+                    resp.setprop(0, i, GR(Lambda, w, selfEneR));
+                    resp.setprop(1, i, GK(Lambda, w, selfEneR, selfEneK, selfEneA));
+                    break;
+                case 's':                               //Single scale propagator
+                    resp.setprop(0, i, SR(Lambda, w, selfEneR));
+                    resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, selfEneA));
+                    break;
+                case 'k':                               //Katanin extension
+                    diffSelfEneR = diffSelfenergy.sval(0, i);
+                    diffSelfEneA = conj(diffSelfEneR);
+                    diffSelfEneK = diffSelfenergy.sval(1, i);
+
+                    ER = GR(Lambda, w, selfEneR) * diffSelfEneR * GR(Lambda, w, selfEneR);
+
+                    EK = GR(Lambda, w, selfEneR) * diffSelfEneR * GK(Lambda, w, selfEneR, selfEneK, selfEneA)
+                         + GR(Lambda, w, selfEneR) * diffSelfEneK * GA(Lambda, w, selfEneA)
+                         + GK(Lambda, w, selfEneR, selfEneK, selfEneA) * diffSelfEneA * GA(Lambda, w, selfEneA);
+
+                    resp.setprop(0, i, ER);
+                    resp.setprop(1, i, EK);
+                    break;
+                default:                                //This case includes type e, the Katanin extension term, dg = s + e
+                    resp.setprop(0, i, 0.);
+                    resp.setprop(1, i, 0.);
             }
         }
     }
