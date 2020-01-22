@@ -11,9 +11,10 @@
 #include "a_bubble.h"
 #include "p_bubble.h"
 #include "t_bubble.h"
+#include "bubbles.h"
 #include "propagator.h"
 #include "selfenergy.h"
-#include "hdf5_routines.h"
+//#include "hdf5_routines.h"
 
 
 using namespace std;
@@ -26,7 +27,7 @@ template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, Sta
 
 template <typename Q> void SOPT(State<Q>& bare, double Lambda, State<Q>& state);
 void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
-
+void writePropagators(Propagator& free, Propagator& full);
 
 auto main() -> int {
 
@@ -44,10 +45,10 @@ auto main() -> int {
     get_time(t0);
 
     vector<double> Lambdas(10);
-const H5std_string FILE_NAME("testfile.h5");
-write_hdf(FILE_NAME,10.,10,state);
-add_hdf(FILE_NAME,1,10,state,Lambdas);
-State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
+//    const H5std_string FILE_NAME("testfile.h5");
+//    write_hdf(FILE_NAME,10.,10,state);
+//    add_hdf(FILE_NAME,1,10,state,Lambdas);
+//    State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
 
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
@@ -62,7 +63,7 @@ State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
     }
     cout << "vertex assigned" << endl;
 
-
+//SOPT Code here:
 //    for(int i=0; i<nEVO; ++i) {
 //        double Lambda = flow_grid[i];
 //
@@ -81,15 +82,15 @@ State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
 
 
 #if PROP_TYPE==1
-    Propagator initial = propag(state.Lambda, state.selfenergy, 'g', 'f');
+    Propagator initial = propag(state.Lambda, state.selfenergy, diffZero, 's', 'f');
 #elif PROP_TYPE==2
-    Propagator initial = propag(state.Lambda, state.selfenergy, diffZero, 'g', '.');
+    Propagator initial = propag(state.Lambda, state.selfenergy, diffZero, 's', '.');
 #else
-    cout << "Error with PROP_TYPE."
+    cout << "Error with PROP_TYPE.";
 #endif
 
 
-    //writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+    writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
 
     cout << "Start of flow" << endl;
     for(int i=1; i<nEVO; ++i) {
@@ -110,14 +111,14 @@ State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
 
         double next_Lambda = flow_grid[i];
 #if PROP_TYPE==1
-        Propagator control = propag(state.Lambda, state.selfenergy, 'g', 'f');
+        Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 's', 'f');
 #elif PROP_TYPE==2
-        Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 'g', '.');
+        Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 's', '.');
 #else
-    cout << "Error with PROP_TYPE."
+    cout << "Error with PROP_TYPE.";
 #endif
 
-        //writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+        writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
 
         cout << "One RK-derivative step. ";
         get_time(tder);
@@ -169,20 +170,24 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 #endif
 
     cout << "diff bubble started" << endl;
+    bool diff = true;
     double t2 = get_time();
     //Lines 7-9
     double ta = get_time();
-    diff_a_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
+    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'a', diff);
+//    diff_a_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout << "a - Bubble:";
     get_time(ta);
 
     double tp = get_time();
-    diff_p_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
+    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'p', diff);
+//    diff_p_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout<<  "p - Bubble:";
     get_time(tp);
 
     double tt = get_time();
-    diff_t_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
+    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 't', diff);
+//    diff_t_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout << "t - Bubble:";
     get_time(tt);
 
