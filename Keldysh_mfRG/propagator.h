@@ -14,8 +14,12 @@ using namespace std;
 
 
 class Propagator {
+    double Lambda;
     cvec propagator = cvec(2 * nPROP); // factor 2 for Keldysh components: G^R, G^K
 public:
+    explicit Propagator(double Lambda_in)
+        :Lambda(Lambda_in){};
+
     void setprop(int, int, comp);
     auto pvalsmooth(int, double) -> comp;
     auto pval(int, int) -> comp;
@@ -48,7 +52,14 @@ auto Propagator::pvalsmooth(int iK, double w) -> comp
 {
     comp ans;
     if(fabs(w)>w_upper_f)
-        ans = 0.;
+        switch (iK){
+        case 0:
+            return gR_outer(Lambda, w);
+        case 1:
+            return gK_outer(Lambda, w);
+        default:
+            return 0.;
+    }
     else {
         if(fabs(w)!= w_upper_f) {
             int W = fconv_fer(w);
@@ -238,7 +249,7 @@ auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
 
 auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, bool free) -> Propagator
 {
-    Propagator resp;
+    Propagator resp(Lambda);
 
     if(free){
         for(int i=0; i<nPROP; ++i){
@@ -294,7 +305,7 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diff
                     resp.setprop(0, i, ER);
                     resp.setprop(1, i, EK);
                     break;
-                default:                                //This case includes type e, the Katanin extension term, dg = s + e
+                default:                                //This case includes type e, the Katanin extension term, dg = s + e, which is zero in the free case
                     resp.setprop(0, i, 0.);
                     resp.setprop(1, i, 0.);
             }

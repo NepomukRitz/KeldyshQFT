@@ -38,6 +38,30 @@ auto gK(double Lambda, double omega) -> comp
     return (1.-2.*Fermi_distribution(omega))*(gR(Lambda,omega) - gA(Lambda,omega));
 }
 
+//These three functions return the values of the propagators once the self-energy has decayed enough as to not deviate
+// from the base values, i.e. SigmaR = 0.5+i0., SigmaK = 0.+i0.);
+auto gR_outer(double Lambda, double omega) -> comp
+{
+#if REG==1
+    return 1./(omega-epsilon - 0.5);
+#elif REG==2
+    return 1./(omega-epsilon + ((comp)0.5i*(GAMMA_REG+Lambda)) - 0.5);
+#endif
+}
+auto gA_outer(double Lambda, double omega) -> comp
+{
+#if REG==1
+    return 1./(omega-epsilon - 0.5);
+#elif REG==2
+    return 1./(omega-epsilon - ((comp)0.5i*(GAMMA_REG+Lambda)) - 0.5);
+#endif
+}
+auto gK_outer(double Lambda, double omega) -> comp
+{
+    return (1.-2.*Fermi_distribution(omega))*(gR_outer(Lambda,omega) - gA_outer(Lambda,omega));
+}
+
+
 #if REG==2
 
 auto sR(double Lambda, double omega) -> comp
