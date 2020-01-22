@@ -39,21 +39,21 @@ auto gK(double Lambda, double omega) -> comp
 }
 
 //These three functions return the values of the propagators once the self-energy has decayed enough as to not deviate
-// from the base values, i.e. SigmaR = 0.5+i0., SigmaK = 0.+i0.);
+// from the base values, i.e. SigmaR = 0.5*U+i0., SigmaK = 0.+i0.);
 auto gR_outer(double Lambda, double omega) -> comp
 {
 #if REG==1
-    return 1./(omega-epsilon - 0.5);
+    return 1./(omega-epsilon - 0.5*U);
 #elif REG==2
-    return 1./(omega-epsilon + ((comp)0.5i*(GAMMA_REG+Lambda)) - 0.5);
+    return 1./(omega-epsilon + ((comp)0.5i*(GAMMA_REG+Lambda)) - 0.5*U);
 #endif
 }
 auto gA_outer(double Lambda, double omega) -> comp
 {
 #if REG==1
-    return 1./(omega-epsilon - 0.5);
+    return 1./(omega-epsilon - 0.5*U);
 #elif REG==2
-    return 1./(omega-epsilon - ((comp)0.5i*(GAMMA_REG+Lambda)) - 0.5);
+    return 1./(omega-epsilon - ((comp)0.5i*(GAMMA_REG+Lambda)) - 0.5*U);
 #endif
 }
 auto gK_outer(double Lambda, double omega) -> comp
