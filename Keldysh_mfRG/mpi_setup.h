@@ -40,9 +40,8 @@ vec<Q> mpi_initialize_result(int n_mpi, int n_omp) {
 
 void mpi_collect(vec<comp>& buffer, vec<comp>& result, int n_mpi, int n_omp) {
     int world_size = mpi_world_size();
-
-    MPI_Allgather(&buffer[0], static_cast<int>(n_omp*(n_mpi/world_size+1)), MPI_COMPLEX,
-                  &result[0], static_cast<int>(n_omp*(n_mpi/world_size+1)), MPI_COMPLEX, MPI_COMM_WORLD);
+    MPI_Allgather(&buffer[0], static_cast<int>(2*n_omp*(n_mpi/world_size+1)), MPI_COMPLEX,
+                  &result[0], static_cast<int>(2*n_omp*(n_mpi/world_size+1)), MPI_COMPLEX, MPI_COMM_WORLD);
 }
 
 void mpi_collect(vec<double>& buffer, vec<double>& result, int n_mpi, int n_omp) {
