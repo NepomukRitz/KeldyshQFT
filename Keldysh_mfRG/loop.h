@@ -123,8 +123,8 @@ public:
     }
 };
 
-
-auto loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop) -> SelfEnergy<comp>
+template <typename Q>
+auto loop(Vertex<fullvert<Q> >& fullvertex, Propagator& prop) -> SelfEnergy<comp>
 {
     SelfEnergy<comp> resp = SelfEnergy<comp> ();
 //TODO complete support for internal structure
@@ -135,8 +135,8 @@ auto loop(Vertex<fullvert<comp> >& fullvertex, Propagator& prop) -> SelfEnergy<c
 
         double w = ffreqs[i];
 
-        IntegrandR<comp, fullvert<comp> > integrandR(fullvertex, prop, w, i_in);
-        IntegrandK<comp, fullvert<comp> > integrandK(fullvertex, prop, w, i_in);
+        IntegrandR<Q, fullvert<Q> > integrandR(fullvertex, prop, w, i_in);
+        IntegrandK<Q, fullvert<Q> > integrandK(fullvertex, prop, w, i_in);
 
         comp integratedR = (1./(2.*pi*(comp)1.i))*integrator(integrandR, w_lower_f, w_upper_f);
         comp integratedK = (1./(2.*pi*(comp)1.i))*integrator(integrandK, w_lower_f, w_upper_f);
