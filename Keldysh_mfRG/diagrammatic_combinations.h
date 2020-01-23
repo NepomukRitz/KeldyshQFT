@@ -41,7 +41,7 @@ auto left_same_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp,
 }
 
 template <typename Q>
-auto right_same_bare (Vertex<fullvert<comp> >& vertex, int i3, double w, double vpp, int i_in, char channel) -> Q
+auto right_same_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, char channel) -> Q
 {
     switch (channel){
         case 'a':
@@ -105,7 +105,7 @@ auto right_same_bare (Vertex<fullvert<comp> >& vertex, int i3, double w, double 
 
 
 template <typename Q>
-auto left_diff_bare (Vertex<fullvert<comp> >& vertex, int i1, double w, double v, double vpp, int i_in, char channel) -> comp {
+auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, double vpp, int i_in, char channel) -> Q {
 
     switch (channel){
         case 'a' :
@@ -126,7 +126,7 @@ auto left_diff_bare (Vertex<fullvert<comp> >& vertex, int i1, double w, double v
 }
 
 template <typename Q>
-auto right_diff_bare (Vertex<fullvert<comp> >& vertex, int i3, double w, double vp, double vpp, int i_in, char channel) -> comp {
+auto right_diff_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vp, double vpp, int i_in, char channel) -> Q {
     switch (channel){
         case 'a' :
             return vertex.densvertex.avertex.K2b_vvalsmooth(i3, w, vp, i_in, vertex.densvertex.tvertex)
