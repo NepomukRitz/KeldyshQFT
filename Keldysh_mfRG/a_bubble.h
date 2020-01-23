@@ -10,6 +10,7 @@
 #include "integrator.h"
 #include "selfenergy.h"
 #include "util.h"
+#include "bubbles.h"
 
 /*Class defining the a_bubble object with a Keldysh structure*/
 class A_Bubble{
@@ -217,14 +218,15 @@ public:
 //                     vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex) +
 //                     vertex2.densvertex.avertex.K2_vvalsmooth (i3, wa, vppa, i_in, vertex2.densvertex.tvertex) );
 
-            resp1 = vertex1.densvertex.irred.vval(i1, i_in);
-            resp2 = vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex);
-            resp3 = vertex1.densvertex.avertex.K2b_vvalsmooth(i1, wa, vppa, i_in, vertex1.densvertex.tvertex);
-            resp4 = vertex2.densvertex.irred.vval(i3, i_in);
-            resp5 = vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex);
-            resp6 = vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
+//            resp1 = vertex1.densvertex.irred.vval(i1, i_in);
+//            resp2 = vertex1.densvertex.avertex.K1_vvalsmooth(i1, wa, i_in, vertex1.densvertex.tvertex);
+//            resp3 = vertex1.densvertex.avertex.K2b_vvalsmooth(i1, wa, vppa, i_in, vertex1.densvertex.tvertex);
+//            resp4 = vertex2.densvertex.irred.vval(i3, i_in);
+//            resp5 = vertex2.densvertex.avertex.K1_vvalsmooth(i3, wa, i_in, vertex2.densvertex.tvertex);
+//            resp6 = vertex2.densvertex.avertex.K2_vvalsmooth(i3, wa, vppa, i_in, vertex2.densvertex.tvertex);
 
-            resp += (resp1 + resp2 + resp3) * PiAval * (resp4 + resp5 + resp6);
+
+            resp += left_same_bare<Q>(vertex1, i1, wa, vppa, i_in, 'a') * PiAval * right_same_bare<Q>(vertex2, i3, wa, vppa, i_in, 'a');
         }
         return resp;
     }
@@ -305,7 +307,7 @@ public:
 
 template <typename Q> void diff_a_bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S)
 {
-    Diff_A_Bubble PiAdot(G,S);
+    Bubble PiAdot(G,S, true);
 
 #ifdef DIAG_CLASS
     #if DIAG_CLASS>=1
@@ -319,11 +321,11 @@ template <typename Q> void diff_a_bubble_function(Vertex<fullvert<Q> >& dgamma, 
         int i_in = iK1 % n_in;
         double wa = bfreqs[iwa];
 
-        Integrand_a_K1_diff <Q, Diff_A_Bubble> integrand_a_K1_diff (vertex1, vertex2, PiAdot, i0, wa, i_in);
+        Integrand_a_K1_diff <Q, Bubble> integrand_a_K1_diff (vertex1, vertex2, PiAdot, i0, wa, i_in);
 
         Q value = (-1./(2.*pi*(comp)1.i))*integrator(integrand_a_K1_diff, w_lower_f, w_upper_f);                            //Integration over vppa, a fermionic frequency
 
-        dgamma.densvertex.avertex.K1_addvert(i0, iwa, i_in, value);
+        dgamma.densvertex.avertex.K1_setvert(i0, iwa, i_in, value);
     }
     cout << "K1a done: ";
     get_time(tK1);
