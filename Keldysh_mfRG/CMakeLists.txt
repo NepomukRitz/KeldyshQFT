@@ -6,10 +6,13 @@ set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3")
 
+find_package(MPI REQUIRED)
+include_directories(${MPI_INCLUDE_PATH})
+
 set(CMAKE_CXX_COMPILER mpicxx)
 
 # added -fopenmp
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -std=c++14 -fopenmp")
 
 #include_directories("$ gsl-2.5/")
 
