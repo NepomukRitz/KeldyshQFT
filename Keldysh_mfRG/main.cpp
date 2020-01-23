@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <complex>
-#include <mpi.h>
 
 #include "parameters.h"
 #include "vertex.h"
