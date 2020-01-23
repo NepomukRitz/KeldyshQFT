@@ -20,14 +20,14 @@ const double pi = 3.1415926535897;
 #define REG 2
 //const double sharp = 2; // Sharpness of the smoothened regulator cutoff -> would be for smooth cutoff. Have not implemented
 #if REG==2
-    #define GAMMA_REG 1.
+    #define GAMMA_REG (comp)1.
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 3
+#define DIAG_CLASS 2
 
-//Defines the type of propagators to handle. 1 for always free, 2 for dressed propgators always
-#define PROP_TYPE 2
+//Defines the type of propagators to handle. 1 for always free, 2 for always dressed
+#define PROP_TYPE 1
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
@@ -46,8 +46,8 @@ const double U = 1.0;
 const int nEVO = 7;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 11;
-const int nFER = 11;
+const int nBOS = 101;
+const int nFER = 101;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
