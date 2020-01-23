@@ -546,8 +546,6 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
         default: ;
     }
 
-    // dgamma.densvertex.pvertex.K2_addvert(i0, iwp, ivp, i_in, value); // old version w/o mpi
-
     cout << "K2"<<channel<<" done: ";
     get_time(tK2);
 #endif
@@ -668,7 +666,6 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
 ////    {
 ////        //In this case, there are only contributions to K2b and K3
 ////        /*K2b contributions*/
-////        //TODO implement
 ////    }
 ////    else
 ////    {
