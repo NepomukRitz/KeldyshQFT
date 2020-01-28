@@ -300,8 +300,8 @@ public:
                     break;
                 default: ;
             }
-            res_l =  left_same_bare<comp> (vertex1, i1, w, vpp, i_in, channel);
-            res_r = right_same_bare<comp> (vertex2, i3, w, vpp, i_in, channel);
+            res_l =  left_same_bare<Q> (vertex1, i1, w, vpp, i_in, channel);
+            res_r = right_same_bare<Q> (vertex2, i3, w, vpp, i_in, channel);
 
             res += res_l * Pival * res_r;
         }
@@ -337,7 +337,7 @@ public:
             switch (channel) {
                 case 'a':
                     tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
-                    Pival = Pi.value(i2, v-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
                     break;
                 case 'p':
                     tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
@@ -349,8 +349,8 @@ public:
                     break;
                 default: ;
             }
-            res_l =  left_diff_bare<comp> (vertex1, i1, w, v, vpp, i_in, channel);
-            res_r = right_same_bare<comp> (vertex2, i3, w, vpp, i_in, channel);
+            res_l =  left_diff_bare<Q> (vertex1, i1, w, v, vpp, i_in, channel);
+            res_r = right_same_bare<Q> (vertex2, i3, w, vpp, i_in, channel);
 
             res += res_l * Pival * res_r;
         }
@@ -381,7 +381,7 @@ public:
             switch (channel) {
                 case 'a':
                     tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
-                    Pival = Pi.value(i2, v-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
                     break;
                 case 'p':
                     tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
@@ -393,8 +393,8 @@ public:
                     break;
                 default: ;
             }
-            res_l =  left_diff_bare<comp> (vertex1, i1, w, v, vpp, i_in, channel);
-            res_r = right_diff_bare<comp> (vertex2, i3, w, vp, vpp, i_in, channel);
+            res_l =  left_diff_bare<Q> (vertex1, i1, w, v, vpp, i_in, channel);
+            res_r = right_diff_bare<Q> (vertex2, i3, w, vp, vpp, i_in, channel);
 
             res += res_l * Pival * res_r;
         }
