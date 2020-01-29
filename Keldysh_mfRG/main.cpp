@@ -44,7 +44,7 @@ auto main() -> int {
     cout << "State created. ";
     get_time(t0);
 
-    vector<double> Lambdas(10);
+//    vector<double> Lambdas(10);
 //    const H5std_string FILE_NAME("testfile.h5");
 //    write_hdf(FILE_NAME,10.,10,state);
 //    add_hdf(FILE_NAME,1,10,state,Lambdas);
@@ -260,9 +260,14 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 
     //Lines 18-33
     Vertex<fullvert<Q> > dGammaC;
-    for(int i=3; i<nLOOPS; i++){
+    Vertex<fullvert<Q> > dGammaCtb;
+    for(int i=3; i<=nLOOPS; i++){
         bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
         bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');
+
+        //This corresponds to Line 29 in the pseudo-code and is important for self-energy corrections.
+        dGammaCtb +=dGammaC;
+
         bubble_function(dGammaC, state.vertex, dGammaL, G, G, 't', diff, 'C');
 
         bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'a', diff, 'L');
@@ -272,7 +277,23 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
         bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'a', diff, 'R');
         bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'p', diff, 'R');
         bubble_function(dGammaR, state.vertex, dGammaT, G, G, 't', diff, 'R');
+
+        dGammaT = dGammaL + dGammaC + dGammaR;
+        dPsi.vertex += dGammaT;
+
+//        if(max_r(norm(dGammaT)/norm(dPsi.vertex)) < tol_vertex){ //TODO define a sensible norm for the vertices and a good way to implement this condition
+//            break;
+//        }
     }
+
+#if PROP_TYPE==2
+    //Lines 33-41
+    SelfEnergy<comp> dSigma_tbar = loop(dGammaCtb, G);
+    Propagator corrected = propag(Lambda, dPsi.selfenergy, dSigma_tbar, 'e', false);
+    SelfEnergy<comp> dSigma_t = loop(dPsi.vertex, corrected);
+    dPsi.selfenergy += (dSigma_t + dSigma_tbar);
+#endif
+
 
     double t_multiply = get_time();
     dPsi *= dL;
