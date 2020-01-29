@@ -8,9 +8,9 @@
 #include "vertex.h"
 #include "state.h"
 #include "loop.h"
-#include "a_bubble.h"
-#include "p_bubble.h"
-#include "t_bubble.h"
+//#include "a_bubble.h"
+//#include "p_bubble.h"
+//#include "t_bubble.h"
 #include "bubbles.h"
 #include "propagator.h"
 #include "selfenergy.h"
@@ -174,19 +174,19 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     double t2 = get_time();
     //Lines 7-9
     double ta = get_time();
-    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'a', diff);
+    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'a', diff, '.');
 //    diff_a_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout << "a - Bubble:";
     get_time(ta);
 
     double tp = get_time();
-    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'p', diff);
+    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'p', diff, '.');
 //    diff_p_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout<<  "p - Bubble:";
     get_time(tp);
 
     double tt = get_time();
-    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 't', diff);
+    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 't', diff, '.');
 //    diff_t_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout << "t - Bubble:";
     get_time(tt);
@@ -210,8 +210,22 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 //    Vertex<fullvert<Q> > dgammapbar = dgammat + dgammaa;
 //    Vertex<fullvert<Q> > dgammatbar = dgammaa + dgammap;
 
-//    Lines 10-13
-//    double t4 = get_time();
+//    Lines 10-13   => Multi-loop
+    double t4 = get_time();
+    /*Create two new vertices to accommodate the contributions on each side */
+    Vertex<fullvert<Q> > dGammaL;
+    Vertex<fullvert<Q> > dGammaR;
+    //Change from differentiated to regular bubbles
+    diff = false;
+
+    bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 'a', diff, 'L');
+    bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 'p', diff, 'L');
+    bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 't', diff, 'L');
+
+    bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'a', diff, 'R');
+    bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'p', diff, 'R');
+    bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 't', diff, 'R');
+
 //    //The r_bubble_function pics the gamma_r bar contributions
 //    Vertex<avert<Q> > dgammaLa = a_bubble_function(state.vertex, state.vertex, G, 'L');
 //    Vertex<pvert<Q> > dgammaLp = p_bubble_function(state.vertex, state.vertex, G, 'L');
@@ -221,11 +235,14 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 //    Vertex<pvert<Q> > dgammaRp = p_bubble_function(state.vertex, state.vertex, G, 'R');
 //    Vertex<tvert<Q> > dgammaRt = t_bubble_function(state.vertex, state.vertex, G, 'R');
 //
-//    cout<< "Bubbles calculated: " << endl;
-//    get_time(t4);
+    cout<< "Bubbles calculated: " << endl;
+    get_time(t4);
 
 
-    //Line 14-17
+    //Lines 14-17
+    Vertex<fullvert<Q> > dGammaT = dGammaL + dGammaR;
+    dPsi.vertex += dGammaT;
+
 //    Vertex<fullvert<Q> > dGammaT = Vertex<fullvert<Q> >();
 //    dGammaT.densvertex.avertex = dgammaLa.densvertex + dgammaRa.densvertex;
 //    dGammaT.densvertex.pvertex = dgammaLp.densvertex + dgammaRp.densvertex;
@@ -240,6 +257,22 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 //    dgammaa.spinvertex += dGammaT.spinvertex.avertex;
 //    dgammap.spinvertex += dGammaT.spinvertex.pvertex;
 //    dgammat.spinvertex += dGammaT.spinvertex.tvertex;
+
+    //Lines 18-33
+    Vertex<fullvert<Q> > dGammaC;
+    for(int i=3; i<nLOOPS; i++){
+        bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
+        bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');
+        bubble_function(dGammaC, state.vertex, dGammaL, G, G, 't', diff, 'C');
+
+        bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'a', diff, 'L');
+        bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'p', diff, 'L');
+        bubble_function(dGammaL, dGammaT, state.vertex, G, G, 't', diff, 'L');
+
+        bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'a', diff, 'R');
+        bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'p', diff, 'R');
+        bubble_function(dGammaR, state.vertex, dGammaT, G, G, 't', diff, 'R');
+    }
 
     double t_multiply = get_time();
     dPsi *= dL;

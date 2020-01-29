@@ -97,7 +97,7 @@ public:
 
 
 
-template <typename Q>class Integrand_K1 {
+template <typename Q> class Integrand_K1 {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
     Bubble& Pi;
@@ -105,7 +105,7 @@ template <typename Q>class Integrand_K1 {
     char channel;
     double w;
 public:
-    Integrand_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in,   int i_in_in, char ch_in)
+    Integrand_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in,    int i_in_in, char ch_in)
         :                     vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),  i_in(i_in_in), channel(ch_in)
     {
         switch (channel) {
@@ -121,7 +121,7 @@ public:
         int i1=0, i3=0;
         Q res;
         comp Pival;
-        //TODO implement!!!
+        //TODO implement!!! It may be, however, that this implementation will be trivial, since in the higher loops there are no contributions to K1
 //        for (auto i2:non_zero_Keldysh_bubble) {
 //            switch (channel) {
 //                case 'a':
@@ -145,7 +145,7 @@ public:
     }
 
 };
-template <typename Q>class Integrand_K2
+template <typename Q> class Integrand_K2
 {
     Vertex<fullvert<Q> >& vertex1;
     Vertex<fullvert<Q> >& vertex2;
@@ -154,7 +154,7 @@ template <typename Q>class Integrand_K2
     char channel, part;
     double w, v;
 public:
-    Integrand_K2(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in, char ch_in, char pt_in)
+    Integrand_K2(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in,     char ch_in, char pt_in)
         :                     vertex1(vertex1_in),              vertex2(vertex2_in),       Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
     {
         switch (channel) {
@@ -167,7 +167,7 @@ public:
 
     auto operator() (double vpp) -> Q {
 
-        if (part != 'L') return 0.;//TODO we also have to consider the case where part = C for multi-loops!!
+        if (part != 'L') return 0.;
 
         int i1=0, i3=0;
         Q res, res_l, res_r;
@@ -188,13 +188,9 @@ public:
                     break;
                 default: ;
             }
-            if(part == 'L') {
-                res_l = vertex1.densvertex.gammaRb(i1, w, v, vpp, i_in, channel);
-                res_r = right_same_bare<Q>(vertex2, i3, w, vpp, i_in, channel);
-            }
 
-            else if(part == 'C'){
-            }
+            res_l = vertex1.densvertex.gammaRb(i1, w, v, vpp, i_in, channel);
+            res_r = right_same_bare<Q>(vertex2, i3, w, vpp, i_in, channel);
 
             res += res_l * Pival * res_r;
         }
@@ -245,10 +241,6 @@ public:
             else if(part=='R'){
                 res_l = left_diff_bare<Q>(vertex1, i1, w, v, vpp, i_in, channel);
                 res_r = vertex2.densvertex.gammaRb(i3, w, vp, vpp, i_in, channel);
-            }
-            else if(part=='C'){
-                res_l = 0.;  // = ?
-                res_r = 0.;  // = ?
             }
             else ;
 
@@ -404,7 +396,7 @@ public:
 
 
 template <typename Q>
-void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S, char channel, bool diff)
+void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, Propagator& G, Propagator& S, char channel, bool diff, char part)
 {
     Bubble Pi(G,S, diff);
 
@@ -525,7 +517,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
                     value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K2, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
                 }
                 else{
-                    Integrand_K2<Q> integrand_K2 (vertex1, vertex2, Pi, i0, w, v, i_in, channel, 'L');
+                    Integrand_K2<Q> integrand_K2 (vertex1, vertex2, Pi, i0, w, v, i_in, channel, part);
                     value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K2, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
                 }
 
@@ -576,18 +568,14 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
 
 
                 if (diff){
-                    Integrand_K3_diff<Q> integrand_K3_L (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel);
-                    Integrand_K3_diff<Q> integrand_K3_R (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel);
+                    Integrand_K3_diff<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel);
 
-                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K3_L, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency                    // y
-                    value += prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K3_R, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K3, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency                    // y
                 }
                 else{
-                    Integrand_K3<Q> integrand_K3_L (vertex1, vertex2, Pi, i0, w, v, vp,  i_in, channel, 'L');
-                    Integrand_K3<Q> integrand_K3_R (vertex1, vertex2, Pi, i0, w, v, vp,  i_in, channel, 'R');
+                    Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp,  i_in, channel, part);
 
-                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K3_L, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
-                    value += prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K3_R, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K3, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
                 }
 
                 K3_buffer[iterator*n_omp + i_omp] = value;

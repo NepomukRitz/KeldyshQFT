@@ -27,10 +27,13 @@ const double pi = 3.1415926535897;
 #define DIAG_CLASS 2
 
 //Defines the type of propagators to handle. 1 for always free, 2 for always dressed
-#define PROP_TYPE 1
+#define PROP_TYPE 2
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
+
+/*Number of loops*/
+const int nLOOPS = 1;
 
 /*Dispersion relation (here, evidently, a constant)*/
 const comp epsilon = 0.0;   //NOLINT(cert-err58-cpp)
@@ -40,14 +43,14 @@ const double T = 0.01;
 const double mu = 0.0;
 
 /*Interaction strength*/
-const double U = 1.0;
+const double U = 0.5;
 
 /*Number of evolution flow points*/
-const int nEVO = 7;
+const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 101;
-const int nFER = 101;
+const int nBOS = 51;
+const int nFER = 51;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
