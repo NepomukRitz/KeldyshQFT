@@ -302,10 +302,24 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diff
                          + GR(Lambda, w, selfEneR) * diffSelfEneK * GA(Lambda, w, selfEneA)
                          + GK(Lambda, w, selfEneR, selfEneK, selfEneA) * diffSelfEneA * GA(Lambda, w, selfEneA);
 
+                    resp.setprop(0, i, SR(Lambda, w, selfEneR)+ ER);
+                    resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, selfEneA)+ EK);
+                    break;
+                case 'e':
+                    diffSelfEneR = diffSelfenergy.sval(0, i);
+                    diffSelfEneA = conj(diffSelfEneR);
+                    diffSelfEneK = diffSelfenergy.sval(1, i);
+
+                    ER = GR(Lambda, w, selfEneR) * diffSelfEneR * GR(Lambda, w, selfEneR);
+
+                    EK = GR(Lambda, w, selfEneR) * diffSelfEneR * GK(Lambda, w, selfEneR, selfEneK, selfEneA)
+                         + GR(Lambda, w, selfEneR) * diffSelfEneK * GA(Lambda, w, selfEneA)
+                         + GK(Lambda, w, selfEneR, selfEneK, selfEneA) * diffSelfEneA * GA(Lambda, w, selfEneA);
+
                     resp.setprop(0, i, ER);
                     resp.setprop(1, i, EK);
                     break;
-                default:                                //This case includes type e, the Katanin extension term, dg = s + e, which is zero in the free case
+                default:
                     resp.setprop(0, i, 0.);
                     resp.setprop(1, i, 0.);
             }
