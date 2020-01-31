@@ -14,7 +14,7 @@
 #include "bubbles.h"
 #include "propagator.h"
 #include "selfenergy.h"
-//#include "hdf5_routines.h"
+#include "hdf5_routines.h"
 
 
 using namespace std;
