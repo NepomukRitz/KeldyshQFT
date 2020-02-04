@@ -22,7 +22,7 @@ auto isInList (int iK, vector<int>& list) -> bool
 }
 
 /* This function converts indices in the range 0...5 to the actual Keldysh index they correspond to
- * Rule: {0,1,2,3,4,5} -> {0,1,3,5,6,7}
+ * Rule: {0,1,3,5,6,7} -> {0,1,2,3,4,5}
  * The components 0,1,3,5,6 and 7 are the chosen reference components, numerated in the 0...15 convention*/
 auto convertToIndepIndex(int iK) -> int
 {
