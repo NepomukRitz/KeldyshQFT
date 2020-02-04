@@ -9,6 +9,7 @@
 #include "parameters.h"
 #include "Keldysh_symmetries.h"
 #include "internal_symmetries.h"
+#include "interpolations.h"
 
 
 //template <typename Q> class pvert;
@@ -97,18 +98,22 @@ public:
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
      * and internal structure indices. Structurally speaking, these functions should call the ones above*/
     auto K1_vvalsmooth(int, double, int) -> Q;
+    auto K1_vvalsmooth(int, double, int, int) -> Q;
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
      *  for given Keldysh and internal structure indices.*/
     auto K2_vvalsmooth(int, double, double, int) -> Q;
+    auto K2_vvalsmooth(int, double, double, int, int) -> Q;
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
  *  for given Keldysh and internal structure indices.*/
     auto K2b_vvalsmooth(int, double, double, int) -> Q;
+    auto K2b_vvalsmooth(int, double, double, int, int) -> Q;
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
     auto K3_vvalsmooth(int, double, double, double, int) -> Q;
+    auto K3_vvalsmooth(int, double, double, double, int, int) -> Q;
 
 
 
@@ -294,28 +299,63 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
         iK1 = 0;
         pf1 = 0.;
         conjugate1 = false;
+        cout << "Problems in pvertex.K1_vvalsmooth w/o spin!";
     }
 
-    if(fabs(w_p)> w_upper_b){
-        valueK1 =0.;
+
+    if(fabs(w_p)<=w_upper_b){
+        interpolateK1(valueK1, pf1, iK1, w_p, i_in, *(this));
     }
-    else{
-        int index = fconv_K1_p(w_p);
 
-        double x1 = bfreqs[index];
-        double x2 = bfreqs[index] + dw;
+    if(conjugate1)
+        valueK1 = conj(valueK1);
 
-        double xd = (w_p - x1) / (x2 - x1);
+    return valueK1;
+}
+template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in, int spin) -> Q{
 
-        Q f1 = K1_vval(iK1, index, i_in);
-        Q f2 = K1_vval(iK1, index + 1, i_in);
+    int iK1;
+    double pf1;       // prefactor: -1 for T_1, T_2, +1 else
+    bool conjugate1;  // whether or not to conjugate value: true for T_C, false else
+    Q valueK1;
 
-        valueK1 = pf1*((1. - xd) * f1 + xd * f2);
+    /*This part determines the value of the K1 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if (isInList(iK, list_K1_T0_comp1)) {
+        iK1 = 0;
+        pf1 = 1.;
+        conjugate1 = false;
+    } else if (isInList(iK, list_K1_TC_comp1)) {
+        tie(w_p, i_in) = indices_TC_K1(w_p, i_in);
+        iK1 = 0;
+        pf1 = 1.;
+        conjugate1 = true;
+    } else if (isInList(iK, list_K1_T0_comp5)) {
+        iK1 = 1;
+        pf1 = 1.;
+        conjugate1 = false;
+    } else {
+        iK1 = 0;
+        pf1 = 0.;
+        conjugate1 = false;
+        cout << "Problems in pvertex.K1_vvalsmooth w/ spin!";
+    }
+    switch (spin) {
+        case 0:
+            break;
+        case 1:
+            tie(w_p, i_in) = indices_T1_K1(w_p, i_in);
+            pf1 = -1.;
+            break;
+        default: ;
+
+    }
+    if(fabs(w_p)<= w_upper_b){
+        interpolateK1(valueK1, pf1, iK1, w_p, i_in, *(this));
     }
     if(conjugate1)
-    {
         valueK1 = conj(valueK1);
-    }
+
     return valueK1;
 }
 template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p, int i_in) -> Q {
@@ -354,31 +394,65 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
     else {
         iK2 = 0;
         pf2 = 0.;
+        cout << "Problems in pvertex.K2_vvalsmooth w/o spin!";
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f){
-        valueK2 = 0.;
+    if(fabs(w_p)<=w_upper_b && fabs(v1_p)<=w_upper_f){
+        interpolateK2(valueK2, pf2, iK2, w_p, v1_p, i_in, *(this));
     }
-    else {
-        int index_b, index_f;
-        tie(index_b, index_f) = fconv_K2_p(w_p, v1_p);
 
-        double x1 = bfreqs[index_b];
-        double x2 = bfreqs[index_b] + dw;
-        double y1 = ffreqs[index_f];
-        double y2 = ffreqs[index_f] + dv;
+    return valueK2;
+}
+template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p, int i_in, int spin) -> Q {
 
-        double xd = (w_p - x1) / (x2 - x1);
-        double yd = (v1_p - y1) / (y2 - y1);
+    int iK2;
+    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
+    Q valueK2;
 
-        Q f11 = K2_vval(iK2, index_b, index_f, i_in);
-        Q f12 = K2_vval(iK2, index_b, index_f + 1, i_in);
-        Q f21 = K2_vval(iK2, index_b + 1, index_f, i_in);
-        Q f22 = K2_vval(iK2, index_b + 1, index_f + 1, i_in);
+    pf2 = 1.;
 
-        valueK2 = pf2*( (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    if (isInList(iK, list_K2_T0_comp0)) {
+        iK2 = 0;
+    } else if (isInList(iK, list_K2_T0_comp1)) {
+        iK2 = 1;
+    } else if (isInList(iK, list_K2_T0_comp4)) {
+        iK2 = 2;
+    } else if (isInList(iK, list_K2_T0_comp5)) {
+        iK2 = 3;
+    } else if (isInList(iK, list_K2_T0_comp13)) {
+        iK2 = 4;
+    } else if (isInList(iK, list_K2_T3_comp4)) {
+        tie(w_p, v1_p, i_in) = indices_T3_K2(w_p, v1_p, i_in);
+        iK2 = 2;
+    } else if (isInList(iK, list_K2_T3_comp5)) {
+        tie(w_p, v1_p, i_in) = indices_T3_K2(w_p, v1_p, i_in);
+        iK2 = 3;
+    } else {
+        iK2 = 0;
+        pf2 = 0.;
+        cout << "Problems in pvertex.K2_vvalsmooth w/ spin!";
     }
+
+    switch (spin) {
+        case 0:
+            break;
+
+        case 1:
+            tie(w_p, v1_p, i_in) = indices_T1_K2(w_p, v1_p, i_in);
+            pf2 = -1.;
+            break;
+
+        default: ;
+    }
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_p)<=w_upper_b && v1_p<=w_upper_f){
+        interpolateK2(valueK2, pf2, iK2, w_p, v1_p, i_in, *(this));
+    }
+
     return valueK2;
 }
 template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p, int i_in) -> Q {
@@ -416,35 +490,76 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
     else {
         iK2 = 0;
         pf2 = 0.;
+        cout << "Problems in pvertex.K2b_vvalsmooth w/o spin!";
     }
     //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
     tie(w_p, v2_p, i_in) = indices_TC_K2(w_p, v2_p, i_in);
 
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)>w_upper_b || fabs(v2_p)>w_upper_f){
-        valueK2 = 0.;
+    if(fabs(w_p)<=w_upper_b && fabs(v2_p)<=w_upper_f)
+        interpolateK2(valueK2, pf2, iK2, w_p, v2_p, i_in, *(this));
+
+    return conj(valueK2);
+}
+template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p, int i_in, int spin) -> Q {
+
+    int iK2;
+    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
+    Q valueK2;
+
+    pf2 = 1.;
+    /*This part determines the value of the K2 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+    switch (spin){
+        case 0:
+            break;
+        case 1:
+            tie(w_p, v2_p, i_in) = indices_T1_K2(w_p, v2_p, i_in);
+            pf2 = -1.;
+            break;
+
+        default: ;
+    }
+
+    if(isInList(iK,list_K2b_TC_comp0)){
+        iK2 = 0;
+    }
+    else if(isInList(iK,list_K2b_TC_comp1)){
+        iK2 = 1;
+    }
+    else if(isInList(iK,list_K2b_TC_comp4)){
+        iK2 = 2;
+    }
+    else if(isInList(iK,list_K2b_TC_comp5)){
+        iK2 = 3;
+    }
+    else if(isInList(iK,list_K2b_TC_comp13)){
+        iK2 = 4;
+    }
+    else if(isInList(iK,list_K2b_TCT3_comp4)){
+        tie(w_p, v2_p, i_in) = indices_T3_K2(w_p, v2_p, i_in);
+        iK2 = 2;
+    }
+    else if(isInList(iK,list_K2b_TCT3_comp5)){
+        tie(w_p, v2_p, i_in) = indices_T3_K2(w_p, v2_p, i_in);
+        iK2 = 3;
     }
     else {
-        int index_b, index_f;
-        tie(index_b, index_f) = fconv_K2_p(w_p, v2_p);
+        iK2 = 0;
+        pf2 = 0.;
+        cout << "Problems in pvertex.K2b_vvalsmooth w/ spin!";
 
-        double x1 = bfreqs[index_b];
-        double x2 = bfreqs[index_b] + dw;
-        double y1 = ffreqs[index_f];
-        double y2 = ffreqs[index_f] + dv;
-
-        double xd = (w_p - x1) / (x2 - x1);
-        double yd = (v2_p - y1) / (y2 - y1);
-
-        Q f11 = K2_vval(iK2, index_b, index_f, i_in);
-        Q f12 = K2_vval(iK2, index_b, index_f + 1, i_in);
-        Q f21 = K2_vval(iK2, index_b + 1, index_f, i_in);
-        Q f22 = K2_vval(iK2, index_b + 1, index_f + 1, i_in);
-
-        valueK2 = conj(pf2*( (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22)));
     }
-    return valueK2;
+    //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
+    tie(w_p, v2_p, i_in) = indices_TC_K2(w_p, v2_p, i_in);
+
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_p)<=w_upper_b && fabs(v2_p)<=w_upper_f)
+        interpolateK2(valueK2, pf2, iK2, w_p, v2_p, i_in, *(this));
+
+    return conj(valueK2);
 }
 template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in) -> Q{
 
@@ -454,13 +569,113 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
     Q valueK3;
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(iK==0 || iK == 1 || iK==3 || iK==5 || iK ==7){
-        iK3 = convertToIndepIndex(iK);
-        pf3 = 1.;
-        conjugate3 = false;
+
+    switch(iK) {
+        case 0: case 1: case 3: case 5: case 7:
+            iK3 = convertToIndepIndex(iK);
+            pf3 = 1.;
+            conjugate3 = false;
+            break;
+        case 2:
+            tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 1;
+            pf3 = 1.;
+            conjugate3 = false;
+            break;
+        case 4:
+            tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 1;
+            pf3 = 1.;   //(-1)^(1+1+2+1+1)
+            conjugate3 = true;
+            break;
+        case 6:
+            tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 3;
+            pf3 = -1.;
+            conjugate3 = false;
+            break;
+        case 8:
+            tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+            tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 1;
+            pf3 = 1.;   //(-1.)^(1+2+1+1+1)
+            conjugate3 = true;
+            break;
+        case 9:
+            tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 3;
+            pf3 = -1.;
+            conjugate3 = false;
+            break;
+        case 10:
+            tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 3;
+            pf3 = 1.;
+            conjugate3 = false;
+            break;
+        case 11:
+            tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 5;
+            pf3 = 1.;
+            conjugate3 = false;
+            break;
+        case 12:
+            tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 2;
+            pf3 = -1.;   //(-1)^(1+2+2+1+1)
+            conjugate3 = true;
+            break;
+        case 13:
+            tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 5;
+            pf3 = 1.;   //(-1)^(1+2+2+1+2)
+            conjugate3 = true;
+            break;
+        case 14:
+            tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+            tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+            iK3 = 5;
+            pf3 = 1.;   //(-1)^(1+2+2+2+1)
+            conjugate3 = true;
+            break;
+        default:
+            iK3 = 0;
+            pf3 = 0.;
+            conjugate3 = false;
+            cout << "Problems in pvertex.K3_vvalsmooth w/o spin!";
     }
-    else {
-        switch(iK) {
+
+    /*And now one checks that the input frequencies are in the accepted range*/
+    if(fabs(w_p)<=w_upper_b && fabs(v1_p)<=w_upper_f && fabs(v2_p)<=w_upper_f)
+        interpolateK3(valueK3, pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
+
+    if(conjugate3)
+        valueK3 = conj(valueK3);
+
+    return valueK3;
+}
+template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in, int spin) -> Q{
+
+    int iK3;
+    double pf3;
+    bool conjugate3;
+    Q valueK3;
+    /*This part determines the value of the K3 contribution*/
+    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
+
+    switch (spin) {
+        case 0:
+            switch (iK) {
+            case 0:
+            case 1:
+            case 3:
+            case 5:
+            case 6:
+            case 7:
+                iK3 = convertToIndepIndex(iK);
+                pf3 = 1.;
+                conjugate3 = false;
+                break;
             case 2:
                 tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
                 iK3 = 1;
@@ -473,12 +688,6 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
                 pf3 = 1.;   //(-1)^(1+1+2+1+1)
                 conjugate3 = true;
                 break;
-            case 6:
-                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 3;
-                pf3 = -1.;
-                conjugate3 = false;
-                break;
             case 8:
                 tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
                 tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
@@ -487,9 +696,9 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
                 conjugate3 = true;
                 break;
             case 9:
-                tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 3;
-                pf3 = -1.;
+                tie(w_p, v1_p, v2_p, i_in) = indices_T3_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 4;
+                pf3 = 1.;
                 conjugate3 = false;
                 break;
             case 10:
@@ -527,54 +736,118 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
                 iK3 = 0;
                 pf3 = 0.;
                 conjugate3 = false;
+                cout << "Problems in pvertex.K3_vvalsmooth w/o spin!";
         }
+            break;
+        case 1:
+            switch (iK) {
+            case 0: case 3: case 7:
+                iK3 = convertToIndepIndex(iK);
+                pf3 = 1.;
+                conjugate3 = false;
+                break;
+            case 1:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 1;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 2:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 1;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 4:
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 1;
+                pf3 = -1.;   //(-1)^(1+1+2+1+1)*(-1)
+                conjugate3 = true;
+                break;
+            case 5:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 4;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 6:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 3;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 8:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 1;
+                pf3 = -1.;   //(-1.)^(1+2+1+1+1)*(-1)
+                conjugate3 = true;
+                break;
+            case 9:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 3;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 10:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 4;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 11:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T2_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 5;
+                pf3 = -1.;
+                conjugate3 = false;
+                break;
+            case 12:
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 2;
+                pf3 = -1.;   //(-1)^(1+2+2+1+1)
+                conjugate3 = true;
+                break;
+            case 13:
+                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 5;
+                pf3 = -1.;   //(-1)^(1+2+2+1+2)*(-1)
+                conjugate3 = true;
+                break;
+            case 14:
+                tie(w_p, v1_p, v2_p, i_in) = indices_TC_K3(w_p, v1_p, v2_p, i_in);
+                tie(w_p, v1_p, v2_p, i_in) = indices_T1_K3(w_p, v1_p, v2_p, i_in);
+                iK3 = 5;
+                pf3 = -1.;   //(-1)^(1+2+2+2+1)*(-1)
+                conjugate3 = true;
+                break;
+            default:
+                iK3 = 0;
+                pf3 = 0.;
+                conjugate3 = false;
+                cout << "Problems in pvertex.K3_vvalsmooth w/o spin!";
+
+            }
+
+            break;
+
+        default:
+            iK3 = 0;
+            pf3 = 0.;
+            conjugate3 = false;
+            cout << "Problem with the spins in pvert.K3_vvalsmooth w/ spin!";
+
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)>w_upper_b || fabs(v1_p)>w_upper_f || fabs(v2_p)>w_upper_f)
-        valueK3 = 0.;
-    else {
-        int index_b, index_f, index_fp;
-        tie(index_b, index_f, index_fp) = fconv_K3_p(w_p, v1_p, v2_p);
-
-        double x1 = bfreqs[index_b];
-        double x2 = bfreqs[index_b] + dw;
-        double y1 = ffreqs[index_f];
-        double y2 = ffreqs[index_f] + dv;
-        double z1 = ffreqs[index_fp];
-        double z2 = ffreqs[index_fp] + dv;
-
-        Q f111 = K3_vval(iK3, index_b, index_f, index_fp, i_in);
-        Q f112 = K3_vval(iK3, index_b, index_f, index_fp + 1, i_in);
-        Q f121 = K3_vval(iK3, index_b, index_f + 1, index_fp, i_in);
-        Q f122 = K3_vval(iK3, index_b, index_f + 1, index_fp + 1, i_in);
-        Q f211 = K3_vval(iK3, index_b + 1, index_f, index_fp, i_in);
-        Q f212 = K3_vval(iK3, index_b + 1, index_f, index_fp + 1, i_in);
-        Q f221 = K3_vval(iK3, index_b + 1, index_f + 1, index_fp, i_in);
-        Q f222 = K3_vval(iK3, index_b + 1, index_f + 1, index_fp + 1, i_in);
-
-        double xd = (w_p - x1) / (x2 - x1);
-        double yd = (v1_p - y1) / (y2 - y1);
-        double zd = (v2_p - z1) / (z2 - z1);
-
-        Q c00 = f111 * (1. - xd) + f211 * xd;
-        Q c01 = f112 * (1. - xd) + f212 * xd;
-        Q c10 = f121 * (1. - xd) + f221 * xd;
-        Q c11 = f122 * (1. - xd) + f222 * xd;
-
-        Q c0 = c00 * (1. - yd) + c10 * yd;
-        Q c1 = c01 * (1. - yd) + c11 * yd;
-
-        valueK3 = pf3*( c0 * (1. - zd) + c1 * zd);
-    }
+    if(fabs(w_p)<=w_upper_b && fabs(v1_p)<=w_upper_f && fabs(v2_p)<=w_upper_f)
+        interpolateK3(valueK3, pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
 
     if(conjugate3)
-    {
         valueK3 = conj(valueK3);
-    }
 
     return valueK3;
-
 }
 
 
