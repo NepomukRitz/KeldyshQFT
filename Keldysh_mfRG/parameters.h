@@ -24,10 +24,10 @@ const double pi = 3.1415926535897;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define DIAG_CLASS 3
 
 //Defines the type of propagators to handle. 1 for always free, 2 for always dressed
-#define PROP_TYPE 2
+#define PROP_TYPE 1
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
@@ -43,14 +43,14 @@ const double T = 0.01;
 const double mu = 0.0;
 
 /*Interaction strength*/
-const double U = 0.5;
+const double U = 1.0;
 
 /*Number of evolution flow points*/
 const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 51;
-const int nFER = 51;
+const int nBOS = 151;
+const int nFER = 151;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -110,8 +110,8 @@ vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                 
 vector<int> non_zero_Keldysh_K1p({1,5});                                                                                // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});                                                                         // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K1t({1,3});                                                                                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2t({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});                                                                           // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});                                                                          // NOLINT(cert-err58-cpp)
+vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});                                                                         // NOLINT(cert-err58-cpp)
 
 /*Vector of indices whose respective Keldysh indices add up to an odd number*/
 vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                                                                   // NOLINT(cert-err58-cpp)
@@ -137,7 +137,7 @@ const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 const double inter_tol = 10e-8;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-const int nINT = 2*(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
+const int nINT = 3*(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 /*Frequency grids for each channel*/
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
