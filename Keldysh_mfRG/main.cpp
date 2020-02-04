@@ -91,7 +91,7 @@ auto main() -> int {
 
 
     writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
-    write_hdf(FILE_NAME, 0, nEVO, state);
+//    write_hdf(FILE_NAME, 0, nEVO, state);
 
     cout << "Start of flow" << endl;
     for(int i=1; i<nEVO; ++i) {
@@ -121,7 +121,7 @@ auto main() -> int {
 #endif
 
         writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
-        add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
+//        add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
 
         cout << "One RK-derivative step. ";
         get_time(tder);
@@ -179,41 +179,24 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     //Lines 7-9
     double ta = get_time();
     bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'a', diff, '.');
-//    diff_a_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout << "a - Bubble:";
     get_time(ta);
 
     double tp = get_time();
     bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'p', diff, '.');
-//    diff_p_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout<<  "p - Bubble:";
     get_time(tp);
 
     double tt = get_time();
     bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 't', diff, '.');
-//    diff_t_bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG);
     cout << "t - Bubble:";
     get_time(tt);
 
     cout << "diff bubble finished. ";
     get_time(t2);
 
-
-//    double t3 = get_time();
-
-//    Vertex<fullvert<Q> > dGamma = Vertex<fullvert<Q> >();
-//    dGamma.densvertex.avertex = dgammaa.densvertex;
-//    dGamma.densvertex.pvertex = dgammap.densvertex;
-//    dGamma.densvertex.tvertex = dgammat.densvertex;
-//    dGamma.spinvertex.avertex = dgammaa.spinvertex;
-//    dGamma.spinvertex.pvertex = dgammap.spinvertex;
-//    dGamma.spinvertex.tvertex = dgammat.spinvertex;
-//    cout<< "dGamma assigned: " <<endl;
-//    get_time(t3);
-//    Vertex<fullvert<Q> > dgammaabar = dgammap + dgammat;
-//    Vertex<fullvert<Q> > dgammapbar = dgammat + dgammaa;
-//    Vertex<fullvert<Q> > dgammatbar = dgammaa + dgammap;
-
+#ifdef NLOOPS
+    #if NLOOPS > 1
 //    Lines 10-13   => Multi-loop
     double t4 = get_time();
     /*Create two new vertices to accommodate the contributions on each side */
@@ -230,15 +213,6 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'p', diff, 'R');
     bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 't', diff, 'R');
 
-//    //The r_bubble_function pics the gamma_r bar contributions
-//    Vertex<avert<Q> > dgammaLa = a_bubble_function(state.vertex, state.vertex, G, 'L');
-//    Vertex<pvert<Q> > dgammaLp = p_bubble_function(state.vertex, state.vertex, G, 'L');
-//    Vertex<tvert<Q> > dgammaLt = t_bubble_function(state.vertex, state.vertex, G, 'L');
-//
-//    Vertex<avert<Q> > dgammaRa = a_bubble_function(state.vertex, state.vertex, G, 'R');
-//    Vertex<pvert<Q> > dgammaRp = p_bubble_function(state.vertex, state.vertex, G, 'R');
-//    Vertex<tvert<Q> > dgammaRt = t_bubble_function(state.vertex, state.vertex, G, 'R');
-//
     cout<< "Bubbles calculated: " << endl;
     get_time(t4);
 
@@ -247,25 +221,11 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     Vertex<fullvert<Q> > dGammaT = dGammaL + dGammaR;
     dPsi.vertex += dGammaT;
 
-//    Vertex<fullvert<Q> > dGammaT = Vertex<fullvert<Q> >();
-//    dGammaT.densvertex.avertex = dgammaLa.densvertex + dgammaRa.densvertex;
-//    dGammaT.densvertex.pvertex = dgammaLp.densvertex + dgammaRp.densvertex;
-//    dGammaT.densvertex.tvertex = dgammaLt.densvertex + dgammaRt.densvertex;
-//    dGammaT.spinvertex.avertex = dgammaLa.spinvertex + dgammaRa.spinvertex;
-//    dGammaT.spinvertex.pvertex = dgammaLp.spinvertex + dgammaRp.spinvertex;
-//    dGammaT.spinvertex.tvertex = dgammaLt.spinvertex + dgammaRt.spinvertex;
-//
-//    dgammaa.densvertex += dGammaT.densvertex.avertex;
-//    dgammap.densvertex += dGammaT.densvertex.pvertex;
-//    dgammat.densvertex += dGammaT.densvertex.tvertex;
-//    dgammaa.spinvertex += dGammaT.spinvertex.avertex;
-//    dgammap.spinvertex += dGammaT.spinvertex.pvertex;
-//    dgammat.spinvertex += dGammaT.spinvertex.tvertex;
-
     //Lines 18-33
+    #if NLOOPS >=3
     Vertex<fullvert<Q> > dGammaC;
     Vertex<fullvert<Q> > dGammaCtb;
-    for(int i=3; i<=nLOOPS; i++){
+    for(int i=3; i<=NLOOPS; i++){
         bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
         bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');
 
@@ -289,6 +249,9 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 //            break;
 //        }
     }
+    #endif
+    #endif
+#endif
 
 #if PROP_TYPE==2
     //Lines 33-41
