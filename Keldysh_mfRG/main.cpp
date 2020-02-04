@@ -58,8 +58,8 @@ auto main() -> int {
     cout << "self energy and diff self energy assigned" << endl;
 
     for (auto i:odd_Keldysh) {
-        state.vertex.densvertex.irred.setvert(i, 0., 0.5*U);
-        state.vertex.spinvertex.irred.setvert(i, 0.,-0.5*U);
+        state.vertex.densvertex.irred.setvert(i, 0., 0.);
+        state.vertex.spinvertex.irred.setvert(i, 0., 0.5*U);
     }
     cout << "vertex assigned" << endl;
 
