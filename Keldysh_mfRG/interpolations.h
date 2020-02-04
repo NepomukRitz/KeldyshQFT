@@ -8,9 +8,7 @@
 #include "frequency_grid.h"
 #include "parameters.h"
 #include "data_structures.h"
-//#include "a_vertex.h"
-//#include "p_vertex.h"
-//#include "t_vertex.h"
+
 
 template <typename Q, typename T>
 void interpolateK1(Q& ans, double pf, int iK, double w, int i_in, T& vertex){
