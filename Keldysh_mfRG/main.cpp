@@ -45,7 +45,7 @@ auto main() -> int {
     get_time(t0);
 
 //    vector<double> Lambdas(10);
-//    const H5std_string FILE_NAME("testfile.h5");
+    const H5std_string FILE_NAME("testfile.h5");
 //    write_hdf(FILE_NAME,10.,10,state);
 //    add_hdf(FILE_NAME,1,10,state,Lambdas);
 //    State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
@@ -91,6 +91,7 @@ auto main() -> int {
 
 
     writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+    write_hdf(FILE_NAME, 0, nEVO, state);
 
     cout << "Start of flow" << endl;
     for(int i=1; i<nEVO; ++i) {
@@ -110,6 +111,7 @@ auto main() -> int {
         get_time(tadd);
 
         double next_Lambda = flow_grid[i];
+        //state.Lambda = next_Lambda;
 #if PROP_TYPE==1
         Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 's', 'f');
 #elif PROP_TYPE==2
@@ -119,11 +121,13 @@ auto main() -> int {
 #endif
 
         writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+        add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
 
         cout << "One RK-derivative step. ";
         get_time(tder);
     }
 
+    MPI_Finalize();
     cout << "Total execution time: ";
     get_time(t0);
 

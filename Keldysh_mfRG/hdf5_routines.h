@@ -1056,6 +1056,7 @@ State<complex<double>> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long
     State<complex<double>> result;
     if(Lambda_it<Lambda_size){
 
+        result.Lambda = Lambdas[Lambda_it]; // TODO: or Lambdas[Lambda_it-1] ?
 
         H5::H5File* file = 0;
         file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
