@@ -95,3 +95,12 @@ plot "mathematica_SigmaR.dat" using 1:2
 plot "mathematica_SigmaR.dat" using 1:3
 plot "mathematica_SigmaK.dat" using 1:2
 plot "mathematica_SigmaK.dat" using 1:3
+
+
+plot "self_energyR0.dat" using 1:2, "self_energyR2.dat" using 1:2, "self_energyR4.dat" using 1:2, "self_energyR6.dat" using 1:2, "self_energyR8.dat" using 1:2, "self_energyR10.dat" using 1:2, "self_energyR12.dat" using 1:2
+
+plot "self_energyR0.dat" using 1:3, "self_energyR2.dat" using 1:3, "self_energyR4.dat" using 1:3, "self_energyR6.dat" using 1:3, "self_energyR8.dat" using 1:3, "self_energyR10.dat" using 1:3, "self_energyR12.dat" using 1:3
+
+plot "self_energyK0.dat" using 1:2, "self_energyK2.dat" using 1:2, "self_energyK4.dat" using 1:2, "self_energyK6.dat" using 1:2, "self_energyK8.dat" using 1:2, "self_energyK10.dat" using 1:2, "self_energyK12.dat" using 1:2
+
+plot "self_energyK0.dat" using 1:3, "self_energyK2.dat" using 1:3, "self_energyK4.dat" using 1:3, "self_energyK6.dat" using 1:3, "self_energyK8.dat" using 1:3, "self_energyK10.dat" using 1:3, "self_energyK12.dat" using 1:3
