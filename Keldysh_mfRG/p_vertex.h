@@ -187,7 +187,7 @@ public:
 #endif
         return *this;
     }
-    auto operator*(double alpha) -> avert<Q>
+    auto operator*(double alpha) -> pvert<Q>
     {
 #if DIAG_CLASS>=1
         this->K1 * alpha;
@@ -200,7 +200,7 @@ public:
 #endif
         return *this;
     }
-    auto operator*=(double alpha) -> avert<Q>
+    auto operator*=(double alpha) -> pvert<Q>
     {
 #if DIAG_CLASS>=1
         this->K1 *= alpha;
