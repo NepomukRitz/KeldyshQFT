@@ -137,7 +137,7 @@ const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 const double inter_tol = 10e-8;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-const int nINT = 3*(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
+const int nINT = 2*(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 /*Frequency grids for each channel*/
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
