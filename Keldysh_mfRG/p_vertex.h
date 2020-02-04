@@ -42,11 +42,6 @@ class pvert{
 
 public:
 
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
-
-
     /*THIS function returns the value of the full vertex, taking into account internal Keldysh symmetries, taking care
     * of the necessary indices convertions  and what not...
     * First int is the Keldysh index in set 0...15, second int ist internal structure (set to 0 if no internal structure
@@ -58,93 +53,9 @@ public:
     /*For when the channel is already known and the trafo to the specific channel has already been done*/
     auto value (int, double, double, double, int) -> Q;
 
-    auto K1_acc (int) -> Q;
-    auto K2_acc (int) -> Q;
-    auto K3_acc (int) -> Q;
-
-    void K1_direct_set (int, Q);
-    void K2_direct_set (int, Q);
-    void K3_direct_set (int, Q);
-    /*Sets the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure) to input Q*/
-    void K1_setvert(int, int, int, Q);
-
-    /*Sets the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure) to input Q*/
-    void K2_setvert(int, int, int, int, Q);
-
-    /*Sets the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure) to input Q*/
-    void K3_setvert(int, int, int, int, int, Q);
-
-
-    /*Adds the value Q to the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
-    void K1_addvert(int, int, int, Q);
-
-    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency internal structure)*/
-    void K2_addvert(int, int, int, int, Q);
-
-    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
-    void K3_addvert(int, int, int, int, int, Q);
-
-
-    /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
-    auto K1_vval(int, int, int) -> Q;
-
-    /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
-    auto K2_vval(int, int, int, int) -> Q;
-
-    /*Returns the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
-    auto K3_vval(int, int, int, int, int) -> Q;
-
-
-    /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
-     * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-    auto K1_vvalsmooth(int, double, int) -> Q;
-    auto K1_vvalsmooth(int, double, int, int) -> Q;
-
-    /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
-     *  for given Keldysh and internal structure indices.*/
-    auto K2_vvalsmooth(int, double, double, int) -> Q;
-    auto K2_vvalsmooth(int, double, double, int, int) -> Q;
-
-    /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
- *  for given Keldysh and internal structure indices.*/
-    auto K2b_vvalsmooth(int, double, double, int) -> Q;
-    auto K2b_vvalsmooth(int, double, double, int, int) -> Q;
-
-    /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
-     * calculated by interpolation for given Keldysh and internal structure indices.*/
-    auto K3_vvalsmooth(int, double, double, double, int) -> Q;
-    auto K3_vvalsmooth(int, double, double, double, int, int) -> Q;
-
-
-
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
     auto transfToP(double, double, double, char) -> tuple<double, double, double>;
-
-
-    /*The following three functions return a tuple consisting of the new Keldysh index of the overall vertex (given that
-     * legs are switched and the three corresponding frequency inputs for the diagrammatic class*/
-    /*Symmetry which interchanges the incoming legs*/
-    auto indices_T1_K1(double, int) -> tuple<double, int>;
-    auto indices_T1_K2(double, double, int) -> tuple<double, double, int>;
-    auto indices_T1_K3(double, double, double, int) -> tuple<double, double, double, int>;
-
-    /*Symmetry which interchanges the outgoing legs*/
-    auto indices_T2_K1(double, int) -> tuple<double, int>;
-    auto indices_T2_K2(double, double, int) -> tuple<double, double, int>;
-    auto indices_T2_K3(double, double, double, int) -> tuple<double, double, double, int>;
-
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    auto indices_T3_K1(double, int) -> tuple<double, int>;
-    auto indices_T3_K2(double, double, int) -> tuple<double, double, int>;
-    auto indices_T3_K3(double, double, double, int) -> tuple<double, double, double, int>;
-
-    /*Symmetry which interchanges both incoming with outgoing legs*/
-    auto indices_TC_K1(double, int) -> tuple<double, int>;
-    auto indices_TC_K2(double, double, int) -> tuple<double, double, int>;
-    auto indices_TC_K3(double, double, double, int) -> tuple<double, double, double, int>;
-
-
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the p-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -152,38 +63,167 @@ public:
      * in a set of size 9*/
     auto indices_sum(int i0, int i2) -> tuple<int, int>;
 
+#ifdef DIAG_CLASS
+#if DIAG_CLASS >=1
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
+
+    auto K1_acc (int) -> Q;
+
+    void K1_direct_set (int, Q);
+
+    /*Sets the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure) to input Q*/
+    void K1_setvert(int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
+    void K1_addvert(int, int, int, Q);
+
+    /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
+    auto K1_vval(int, int, int) -> Q;
+
+    /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
+ * and internal structure indices. Structurally speaking, these functions should call the ones above*/
+    auto K1_vvalsmooth(int, double, int) -> Q;
+    auto K1_vvalsmooth(int, double, int, int) -> Q;
+
+    /*Symmetry which interchanges the incoming legs*/
+    auto indices_T1_K1(double, int) -> tuple<double, int>;
+    /*Symmetry which interchanges the outgoing legs*/
+    auto indices_T2_K1(double, int) -> tuple<double, int>;
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    auto indices_T3_K1(double, int) -> tuple<double, int>;
+    /*Symmetry which interchanges both incoming with outgoing legs*/
+    auto indices_TC_K1(double, int) -> tuple<double, int>;
+#endif
+#if DIAG_CLASS >=2
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
+
+    auto K2_acc (int) -> Q;
+
+    void K2_direct_set (int, Q);
+
+    /*Sets the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure) to input Q*/
+    void K2_setvert(int, int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency internal structure)*/
+    void K2_addvert(int, int, int, int, Q);
+
+    /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
+    auto K2_vval(int, int, int, int) -> Q;
+
+    /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
+    *for given Keldysh and internal structure indices.*/
+    auto K2_vvalsmooth(int, double, double, int) -> Q;
+    auto K2_vvalsmooth(int, double, double, int, int) -> Q;
+
+    /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
+    *for given Keldysh and internal structure indices.*/
+    auto K2b_vvalsmooth(int, double, double, int) -> Q;
+    auto K2b_vvalsmooth(int, double, double, int, int) -> Q;
+
+    /*Symmetry which interchanges the incoming legs*/
+    auto indices_T1_K2(double, double, int) -> tuple<double, double, int>;
+    /*Symmetry which interchanges the outgoing legs*/
+    auto indices_T2_K2(double, double, int) -> tuple<double, double, int>;
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    auto indices_T3_K2(double, double, int) -> tuple<double, double, int>;
+    /*Symmetry which interchanges both incoming with outgoing legs*/
+    auto indices_TC_K2(double, double, int) -> tuple<double, double, int>;
+#endif
+#if DIAG_CLASS >=3
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
+
+    auto K3_acc (int) -> Q;
+
+    void K3_direct_set (int, Q);
+
+    /*Sets the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure) to input Q*/
+    void K3_setvert(int, int, int, int, int, Q);
+
+    /*Adds the value Q to the K1 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
+    void K3_addvert(int, int, int, int, int, Q);
+
+    /*Returns the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
+    auto K3_vval(int, int, int, int, int) -> Q;
+
+    /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
+     * calculated by interpolation for given Keldysh and internal structure indices.*/
+    auto K3_vvalsmooth(int, double, double, double, int) -> Q;
+    auto K3_vvalsmooth(int, double, double, double, int, int) -> Q;
+
+    /*Symmetry which interchanges the incoming legs*/
+    auto indices_T1_K3(double, double, double, int) -> tuple<double, double, double, int>;
+    /*Symmetry which interchanges the outgoing legs*/
+    auto indices_T2_K3(double, double, double, int) -> tuple<double, double, double, int>;
+    /*Symmetry which interchanges both incoming and outgoing legs*/
+    auto indices_T3_K3(double, double, double, int) -> tuple<double, double, double, int>;
+    /*Symmetry which interchanges both incoming with outgoing legs*/
+    auto indices_TC_K3(double, double, double, int) -> tuple<double, double, double, int>;
+#endif
+#endif
 
     auto operator+(const pvert<Q>& vertex) -> pvert<Q>
     {
+#if DIAG_CLASS>=1
         this->K1 + vertex.K1;
+#endif
+#if DIAG_CLASS>=2
         this->K2 + vertex.K2;
+#endif
+#if DIAG_CLASS>=3
         this->K3 + vertex.K3;
+#endif
         return *this;
     }
     auto operator+=(const pvert<Q>& vertex) -> pvert<Q>
     {
+#if DIAG_CLASS>=1
         this->K1 += vertex.K1;
+#endif
+#if DIAG_CLASS>=2
         this->K2 += vertex.K2;
+#endif
+#if DIAG_CLASS>=3
         this->K3 += vertex.K3;
+#endif
         return *this;
     }
-    auto operator*(double alpha) -> pvert<Q> {
+    auto operator*(double alpha) -> avert<Q>
+    {
+#if DIAG_CLASS>=1
         this->K1 * alpha;
+#endif
+#if DIAG_CLASS>=2
         this->K2 * alpha;
+#endif
+#if DIAG_CLASS>=3
         this->K3 * alpha;
+#endif
         return *this;
     }
-    auto operator*=(double alpha) -> pvert<Q> {
+    auto operator*=(double alpha) -> avert<Q>
+    {
+#if DIAG_CLASS>=1
         this->K1 *= alpha;
+#endif
+#if DIAG_CLASS>=2
         this->K2 *= alpha;
+#endif
+#if DIAG_CLASS>=3
         this->K3 *= alpha;
+#endif
         return *this;
     }
     auto operator-=(const pvert<Q>& vertex) -> pvert<Q>
     {
+#if DIAG_CLASS>=1
         this->K1 -= vertex.K1;
+#endif
+#if DIAG_CLASS>=2
         this->K2 -= vertex.K2;
+#endif
+#if DIAG_CLASS>=3
         this->K3 -= vertex.K3;
+#endif
         return *this;
     }
 
@@ -195,78 +235,104 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
     double w_p=0., v1_p=0., v2_p=0.;
     tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
 
-    return K1_vvalsmooth (iK, w_p, i_in) + K2_vvalsmooth (iK, w_p, v1_p, i_in) + K2b_vvalsmooth(iK, w_p, v2_p, i_in) + K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
+    Q k1, k2, k2b, k3;
+
+#if DIAG_CLASS >=1
+    k1 = K1_vvalsmooth (iK, w_p, i_in);
+#endif
+#if DIAG_CLASS >=2
+    k2 = K2_vvalsmooth (iK, w_p, v1_p, i_in);
+    k2b= K2b_vvalsmooth(iK, w_p, v2_p, i_in);
+#endif
+#if DIAG_CLASS >=3
+    k3 = K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
+#endif
+
+    return k1+k2+k2b+k3;
 }
 
 template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in) -> Q{
 
-    return K1_vvalsmooth (iK, w, i_in) + K2_vvalsmooth (iK, w, v1, i_in) + K2b_vvalsmooth(iK, w, v2, i_in) + K3_vvalsmooth (iK, w, v1, v2, i_in);
+    Q k1, k2, k2b, k3;
+
+#if DIAG_CLASS >=1
+    k1 = K1_vvalsmooth (iK, w, i_in);
+#endif
+#if DIAG_CLASS >=2
+    k2 = K2_vvalsmooth (iK, w, v1, i_in);
+    k2b= K2b_vvalsmooth(iK, w, v2, i_in);
+#endif
+#if DIAG_CLASS >=3
+    k3 = K3_vvalsmooth (iK, w, v1, v2, i_in);
+#endif
+
+    return k1+k2+k2b+k3;
 }
 
+template<typename Q> auto pvert<Q>::transfToP(double w, double v1, double v2, char channel) -> tuple<double, double, double> {
+    double w_p=0., v1_p=0., v2_p=0.;
 
+    switch(channel){
+        case 'a':
+            w_p = v1+v2;                    //w  = w_a
+            v1_p = 0.5*(-w+v1-v2);          //v1 = v_a
+            v2_p = 0.5*(-w-v1+v2);          //v2 = v'_a
+            break;
+        case 'p':
+            w_p = w;
+            v1_p = v1;
+            v2_p = v2;
+            break;
+        case 't':
+            w_p = v1+v2;                    //w  = w_t
+            v1_p = 0.5*( w-v1+v2);          //v1 = v_t
+            v2_p = 0.5*(-w-v1+v2);          //v2 = v'_t
+            break;
+        case 'f' :
+            w_p = w+v1;                     //w  = v_1'
+            v1_p = 0.5*(w-v1);              //v1 = v_2'
+            v2_p = 0.5*(2.*v2-w-v1);        //v2 = v_1
+            break;
+        default: ;
+    }
+    return make_tuple(w_p, v1_p, v2_p);
+}
+
+template<typename Q> auto pvert<Q>::indices_sum(int i0, int i2) -> tuple<int, int>
+{
+    int a1p, a2p, a1, a2, a3, a4, a3p, a4p;
+
+    tie(a1p, a2p, a1, a2) = alphas(i0);
+    tie(a3p, a4p, a3, a4) = alphas(i2);
+
+    return make_tuple(
+            8*(a1p-1) + 4*(a2p-1) + 2*(a3p-1) + 1*(a4p-1),
+            8*(a3-1) + 4*(a4-1) + 2*(a1-1) + 1*(a2-1));
+}
+
+#if DIAG_CLASS >=1
 template <typename Q> auto pvert<Q>::K1_acc (int i) -> Q{
     if(i>=0 && i<K1.size()){
     return K1[i];}
     else{cout << "Error: Tried to access value outside of K1 vertex in p-channel" << endl;};
 }
-template <typename Q> auto pvert<Q>::K2_acc (int i) -> Q{
-    if(i>=0 && i<K2.size()){
-    return K2[i];}
-    else{cout << "Error: Tried to access value outside of K2 vertex in p-channel" << endl;};
-}
-template <typename Q> auto pvert<Q>::K3_acc (int i) -> Q{
-    if(i>=0 && i<K3.size()){
-    return K3[i];}
-    else{cout << "Error: Tried to access value outside of K3 vertex in p-channel" << endl;};
-}
-
 
 template <typename Q> void pvert<Q>::K1_direct_set (int i, Q value){
     if(i>=0 && i<K1.size()){
-    K1[i]=value;}
+        K1[i]=value;}
     else{cout << "Error: Tried to access value outside of K1 vertex in p-channel" << endl;};
 }
-template <typename Q> void pvert<Q>::K2_direct_set (int i, Q value){
-    if(i>=0 && i<K2.size()){
-     K2[i]=value;}
-    else{cout << "Error: Tried to access value outside of K2 vertex in p-channel" << endl;};
-}
-template <typename Q> void pvert<Q>::K3_direct_set (int i, Q value) {
-    if(i>=0 && i<K3.size()){
-    K3[i]=value;}
-    else{cout << "Error: Tried to access value outside of K3 vertex in p-channel" << endl;};
-}
-
-
 
 template <typename Q> void pvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
     K1[iK*nw1_wp*n_in + i*n_in + i_in] = value;
-}
-template <typename Q> void pvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] = value;
-}
-template <typename Q> void pvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> void pvert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
     K1[iK*nw1_wp*n_in + i*n_in + i_in] += value;
 }
-template <typename Q> void pvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] += value;
-}
-template <typename Q> void pvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] += value;
-}
 
 template <typename Q> auto pvert<Q>::K1_vval (int iK, int i, int i_in) -> Q{
     return K1[iK*nw1_wp*n_in + i*n_in + i_in];
-}
-template <typename Q> auto pvert<Q>::K2_vval (int iK, int i, int j, int i_in) -> Q{
-    return K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in];
-}
-template <typename Q> auto pvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in) -> Q{
-    return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
 }
 
 template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in) -> Q{
@@ -358,6 +424,69 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
 
     return valueK1;
 }
+
+template<typename Q> auto pvert<Q>::indices_T1_K1(double w_p, int i_in) -> tuple<double, int>
+{
+    double trans_w_p;
+
+    trans_w_p = w_p;
+    i_in = internal_T1_K1_p(i_in);
+
+    return make_tuple(trans_w_p, i_in);
+}
+template<typename Q> auto pvert<Q>::indices_T2_K1(double w_p, int i_in) -> tuple<double, int>
+{
+    double trans_w_p;
+
+    trans_w_p = w_p;
+    i_in = internal_T2_K1_p(i_in);
+
+    return make_tuple(trans_w_p, i_in);
+}
+template<typename Q> auto pvert<Q>::indices_T3_K1(double w_p, int i_in) -> tuple<double, int>
+{
+    double trans_w_p;
+
+    trans_w_p = w_p;
+    i_in = internal_T3_K1_p(i_in);
+
+    return make_tuple(trans_w_p, i_in);
+}
+template<typename Q> auto pvert<Q>::indices_TC_K1(double w_p, int i_in) -> tuple<double, int>
+{
+    double trans_w_p;
+
+    trans_w_p = w_p;
+    i_in = internal_TC_K1_p(i_in);
+
+    return make_tuple( trans_w_p, i_in);
+}
+#endif
+#if DIAG_CLASS >=2
+template <typename Q> auto pvert<Q>::K2_acc (int i) -> Q{
+    if(i>=0 && i<K2.size()){
+    return K2[i];}
+    else{cout << "Error: Tried to access value outside of K2 vertex in p-channel" << endl;};
+}
+
+template <typename Q> void pvert<Q>::K2_direct_set (int i, Q value){
+    if(i>=0 && i<K2.size()){
+        K2[i]=value;}
+    else{cout << "Error: Tried to access value outside of K2 vertex in p-channel" << endl;};
+}
+
+template <typename Q> void pvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
+    K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] = value;
+}
+
+template <typename Q> void pvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
+    K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] += value;
+}
+
+template <typename Q> auto pvert<Q>::K2_vval (int iK, int i, int j, int i_in) -> Q{
+    return K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in];
+}
+
 template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p, int i_in) -> Q {
 
     int iK2;
@@ -561,6 +690,75 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
 
     return conj(valueK2);
 }
+
+template<typename Q> auto pvert<Q>::indices_T1_K2(double w_p, double v1_p, int i_in) -> tuple<double, double, int>
+{
+    double trans_w_p, trans_v1_p;
+
+    trans_w_p = w_p;
+    trans_v1_p = v1_p;
+    i_in = internal_T1_K2_p(i_in);
+
+    return make_tuple(trans_w_p, trans_v1_p, i_in);
+}
+template<typename Q> auto pvert<Q>::indices_T2_K2(double w_p, double v1_p, int i_in) -> tuple<double, double, int>
+{
+    double trans_w_p, trans_v1_p;
+
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_p = w_p;
+    trans_v1_p = -v1_p;
+    i_in = internal_T2_K2_p(i_in);
+
+    return make_tuple(trans_w_p, trans_v1_p, i_in);
+}
+template<typename Q> auto pvert<Q>::indices_T3_K2(double w_p, double v1_p, int i_in) -> tuple<double, double, int>
+{
+    double trans_w_p, trans_v1_p;
+
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    trans_w_p = w_p;
+    trans_v1_p = -v1_p;
+    i_in = internal_T3_K2_p(i_in);
+
+    return make_tuple(trans_w_p, trans_v1_p, i_in);
+}
+template<typename Q> auto pvert<Q>::indices_TC_K2(double w_p, double v1_p, int i_in) -> tuple<double, double, int>
+{
+    double trans_w_p, trans_v1_p;
+
+    trans_w_p = w_p;
+    trans_v1_p = v1_p;
+    i_in = internal_TC_K2_p(i_in);
+
+    return make_tuple( trans_w_p, trans_v1_p, i_in);
+}
+#endif
+#if DIAG_CLASS >=3
+template <typename Q> auto pvert<Q>::K3_acc (int i) -> Q{
+    if(i>=0 && i<K3.size()){
+    return K3[i];}
+    else{cout << "Error: Tried to access value outside of K3 vertex in p-channel" << endl;};
+}
+
+template <typename Q> void pvert<Q>::K3_direct_set (int i, Q value) {
+    if(i>=0 && i<K3.size()){
+    K3[i]=value;}
+    else{cout << "Error: Tried to access value outside of K3 vertex in p-channel" << endl;};
+}
+
+template <typename Q> void pvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
+    K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] = value;
+}
+
+template <typename Q> void pvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
+    K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] += value;
+}
+
+template <typename Q> auto pvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in) -> Q{
+    return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
+}
+
 template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in) -> Q{
 
     int iK3;
@@ -850,56 +1048,6 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
     return valueK3;
 }
 
-
-template<typename Q> auto pvert<Q>::transfToP(double w, double v1, double v2, char channel) -> tuple<double, double, double> {
-    double w_p=0., v1_p=0., v2_p=0.;
-
-    switch(channel){
-        case 'a':
-            w_p = v1+v2;                    //w  = w_a
-            v1_p = 0.5*(-w+v1-v2);          //v1 = v_a
-            v2_p = 0.5*(-w-v1+v2);          //v2 = v'_a
-            break;
-        case 'p':
-            w_p = w;
-            v1_p = v1;
-            v2_p = v2;
-            break;
-        case 't':
-            w_p = v1+v2;                    //w  = w_t
-            v1_p = 0.5*( w-v1+v2);          //v1 = v_t
-            v2_p = 0.5*(-w-v1+v2);          //v2 = v'_t
-            break;
-        case 'f' :
-            w_p = w+v1;                     //w  = v_1'
-            v1_p = 0.5*(w-v1);              //v1 = v_2'
-            v2_p = 0.5*(2.*v2-w-v1);        //v2 = v_1
-            break;
-        default: ;
-    }
-    return make_tuple(w_p, v1_p, v2_p);
-}
-
-
-template<typename Q> auto pvert<Q>::indices_T1_K1(double w_p, int i_in) -> tuple<double, int>
-{
-    double trans_w_p;
-
-    trans_w_p = w_p;
-    i_in = internal_T1_K1_p(i_in);
-
-    return make_tuple(trans_w_p, i_in);
-}
-template<typename Q> auto pvert<Q>::indices_T1_K2(double w_p, double v1_p, int i_in) -> tuple<double, double, int>
-{
-    double trans_w_p, trans_v1_p;
-
-    trans_w_p = w_p;
-    trans_v1_p = v1_p;
-    i_in = internal_T1_K2_p(i_in);
-
-    return make_tuple(trans_w_p, trans_v1_p, i_in);
-}
 template<typename Q> auto pvert<Q>::indices_T1_K3(double w_p, double v1_p, double v2_p, int i_in) -> tuple<double, double, double, int>
 {
     double trans_w_p, trans_v1_p, trans_v2_p;
@@ -911,27 +1059,6 @@ template<typename Q> auto pvert<Q>::indices_T1_K3(double w_p, double v1_p, doubl
     i_in = internal_T1_K3_p(i_in);
 
     return make_tuple(trans_w_p, trans_v1_p, trans_v2_p, i_in);
-}
-
-template<typename Q> auto pvert<Q>::indices_T2_K1(double w_p, int i_in) -> tuple<double, int>
-{
-    double trans_w_p;
-
-    trans_w_p = w_p;
-    i_in = internal_T2_K1_p(i_in);
-
-    return make_tuple(trans_w_p, i_in);
-}
-template<typename Q> auto pvert<Q>::indices_T2_K2(double w_p, double v1_p, int i_in) -> tuple<double, double, int>
-{
-    double trans_w_p, trans_v1_p;
-
-    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_p = w_p;
-    trans_v1_p = -v1_p;
-    i_in = internal_T2_K2_p(i_in);
-
-    return make_tuple(trans_w_p, trans_v1_p, i_in);
 }
 template<typename Q> auto pvert<Q>::indices_T2_K3(double w_p, double v1_p, double v2_p, int i_in) -> tuple<double, double, double, int>
 {
@@ -945,27 +1072,6 @@ template<typename Q> auto pvert<Q>::indices_T2_K3(double w_p, double v1_p, doubl
 
     return make_tuple(trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
-
-template<typename Q> auto pvert<Q>::indices_T3_K1(double w_p, int i_in) -> tuple<double, int>
-{
-    double trans_w_p;
-
-    trans_w_p = w_p;
-    i_in = internal_T3_K1_p(i_in);
-
-    return make_tuple(trans_w_p, i_in);
-}
-template<typename Q> auto pvert<Q>::indices_T3_K2(double w_p, double v1_p, int i_in) -> tuple<double, double, int>
-{
-    double trans_w_p, trans_v1_p;
-
-    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_p = w_p;
-    trans_v1_p = -v1_p;
-    i_in = internal_T3_K2_p(i_in);
-
-    return make_tuple(trans_w_p, trans_v1_p, i_in);
-}
 template<typename Q> auto pvert<Q>::indices_T3_K3(double w_p, double v1_p, double v2_p, int i_in) -> tuple<double, double, double, int>
 {
     double trans_w_p, trans_v1_p, trans_v2_p;
@@ -978,26 +1084,6 @@ template<typename Q> auto pvert<Q>::indices_T3_K3(double w_p, double v1_p, doubl
 
     return make_tuple(trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
-
-template<typename Q> auto pvert<Q>::indices_TC_K1(double w_p, int i_in) -> tuple<double, int>
-{
-    double trans_w_p;
-
-    trans_w_p = w_p;
-    i_in = internal_TC_K1_p(i_in);
-
-    return make_tuple( trans_w_p, i_in);
-}
-template<typename Q> auto pvert<Q>::indices_TC_K2(double w_p, double v1_p, int i_in) -> tuple<double, double, int>
-{
-    double trans_w_p, trans_v1_p;
-
-    trans_w_p = w_p;
-    trans_v1_p = v1_p;
-    i_in = internal_TC_K2_p(i_in);
-
-    return make_tuple( trans_w_p, trans_v1_p, i_in);
-}
 template<typename Q> auto pvert<Q>::indices_TC_K3(double w_p, double v1_p, double v2_p, int i_in) -> tuple<double, double, double, int>
 {
     double trans_w_p, trans_v1_p, trans_v2_p;
@@ -1009,18 +1095,6 @@ template<typename Q> auto pvert<Q>::indices_TC_K3(double w_p, double v1_p, doubl
 
     return make_tuple( trans_w_p, trans_v1_p, trans_v2_p, i_in);
 }
-
-
-template<typename Q> auto pvert<Q>::indices_sum(int i0, int i2) -> tuple<int, int>
-{
-    int a1p, a2p, a1, a2, a3, a4, a3p, a4p;
-
-    tie(a1p, a2p, a1, a2) = alphas(i0);
-    tie(a3p, a4p, a3, a4) = alphas(i2);
-
-    return make_tuple(
-            8*(a1p-1) + 4*(a2p-1) + 2*(a3p-1) + 1*(a4p-1),
-            8*(a3-1) + 4*(a4-1) + 2*(a1-1) + 1*(a2-1));
-}
+#endif
 
 #endif //KELDYSH_MFRG_P_VERTEX_H
