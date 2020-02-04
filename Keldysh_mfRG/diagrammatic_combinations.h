@@ -171,6 +171,7 @@ auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, d
 #endif
 #if DIAG_CLASS >=3
             K3 = vertex.densvertex.tvertex.K3_vvalsmooth(i1, w, v, vpp, i_in, vertex.densvertex.avertex);
+#endif
             break;
         default:
             return 0.;
