@@ -90,6 +90,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
 auto main() -> int {
 
     MPI_Init(NULL, NULL);
+    int world_rank = mpi_world_rank();
 
     setUpBosGrid();
     setUpFerGrid();
@@ -99,7 +100,7 @@ auto main() -> int {
 
     double  t0 = get_time();
     State<comp> state(Lambda_ini);
-    cout << "State created. ";
+    print("State created. ");
     get_time(t0);
 
 //    vector<double> Lambdas(10);
@@ -113,13 +114,13 @@ auto main() -> int {
         state.selfenergy.setself(0, i, 0.5*U);
         state.selfenergy.setself(1, i, 0.);
     }
-    cout << "self energy and diff self energy assigned" << endl;
+    print("self energy and diff self energy assigned", true);
 
     for (auto i:odd_Keldysh) {
         state.vertex.densvertex.irred.setvert(i, 0., 0.);
         state.vertex.spinvertex.irred.setvert(i, 0., 0.5*U);
     }
-    cout << "vertex assigned" << endl;
+    print("vertex assigned", true);
 
 //SOPT Code here:
 //    for(int i=0; i<nEVO; ++i) {
@@ -144,14 +145,14 @@ auto main() -> int {
 #elif PROP_TYPE==2
     Propagator initial = propag(state.Lambda, state.selfenergy, diffZero, 's', '.');
 #else
-    cout << "Error with PROP_TYPE.";
+    print("Error with PROP_TYPE.");
 #endif
 
 
-    writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
-    write_hdf(FILE_NAME, 0, nEVO, state);
+    //writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+    if (world_rank == 0) write_hdf(FILE_NAME, 0, nEVO, state);
 
-    cout << "Start of flow" << endl;
+    print("Start of flow", true);
     for(int i=1; i<nEVO; ++i) {
         double Lambda = flow_grid[i-1];
         double tder = get_time();
@@ -165,7 +166,7 @@ auto main() -> int {
 
         double tadd = get_time();
         state += dPsi;
-        cout << "Added. ";
+        print("Added. ");
         get_time(tadd);
 
         double next_Lambda = flow_grid[i];
@@ -175,21 +176,26 @@ auto main() -> int {
 #elif PROP_TYPE==2
         Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 's', '.');
 #else
-    cout << "Error with PROP_TYPE.";
+    print("Error with PROP_TYPE.");
 #endif
 
-        writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
-        add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
-        test_hdf5(FILE_NAME, i, state);
+        //writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+        if (world_rank == 0) add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
+        //test_hdf5(FILE_NAME, i, state);
 
-        cout << "One RK-derivative step. ";
+        print("One RK-derivative step. ");
         get_time(tder);
     }
 
-    MPI_Finalize();
-    cout << "Total execution time: ";
+    print("Total execution time: ");
     get_time(t0);
 
+    print("time spent initializing mpi buffer: "); print(t_ini_buffer); print(" s", true);
+    print("time spent initializing mpi result: "); print(t_ini_res);    print(" s", true);
+    print("time spent gathering mpi results: ");   print(t_gather);     print(" s", true);
+    print("time spent reordering mpi results: ");  print(t_reorder);    print(" s", true);
+
+    MPI_Finalize();
 
     return 0;
 }
@@ -202,13 +208,13 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 #if PROP_TYPE==1
     //Line 1
     Propagator S = propag(Lambda, state.selfenergy, state.selfenergy, 's', 'f');
-    cout << "S calculated" << endl;
+    print("S calculated", true);
     //Line 2
     Propagator G = propag(Lambda, state.selfenergy, state.selfenergy, 'g', 'f');
-    cout << "G calculated" << endl;
+    print("G calculated", true);
     //Line 3
     SelfEnergy<comp> Sigma_std = loop(state.vertex, S);
-    cout << "loop calculated" << endl;
+    print("loop calculated", true);
     //Line 4
     dPsi.selfenergy = Sigma_std;
     //Line 6
@@ -218,13 +224,13 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 #elif PROP_TYPE==2
     //Line 1
     Propagator S = propag(Lambda, state.selfenergy, state.selfenergy, 's', '.');
-    cout << "S calculated" << endl;
+    print("S calculated", true);
     //Line 2
     Propagator G = propag(Lambda, state.selfenergy, state.selfenergy, 'g', '.');
-    cout << "G calculated" << endl;
+    print("G calculated", true);
     //Line 3
     SelfEnergy<comp> Sigma_std = loop(state.vertex, S);
-    cout << "loop calculated" << endl;
+    print("loop calculated", true);
     //Line 4
     dPsi.selfenergy = Sigma_std;
     //Line 6
@@ -232,26 +238,26 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     Propagator dG = S + extension;
 #endif
 
-    cout << "diff bubble started" << endl;
+    print("diff bubble started", true);
     bool diff = true;
     double t2 = get_time();
     //Lines 7-9
     double ta = get_time();
     bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'a', diff, '.');
-    cout << "a - Bubble:";
+    print("a - Bubble:");
     get_time(ta);
 
     double tp = get_time();
     bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'p', diff, '.');
-    cout<<  "p - Bubble:";
+    print("p - Bubble:");
     get_time(tp);
 
     double tt = get_time();
     bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 't', diff, '.');
-    cout << "t - Bubble:";
+    print("t - Bubble:");
     get_time(tt);
 
-    cout << "diff bubble finished. ";
+    print("diff bubble finished. ");
     get_time(t2);
 
 #ifdef NLOOPS
@@ -272,7 +278,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'p', diff, 'R');
     bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 't', diff, 'R');
 
-    cout<< "Bubbles calculated: " << endl;
+    print("Bubbles calculated: ", true);
     get_time(t4);
 
 
@@ -323,7 +329,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 
     double t_multiply = get_time();
     dPsi *= dL;
-    cout << "dPsi multiplied. ";
+    print("dPsi multiplied. ");
     get_time(t_multiply);
 }
 
