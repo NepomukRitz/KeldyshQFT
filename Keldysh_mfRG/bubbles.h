@@ -444,11 +444,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
     int n_mpi = nK_K1 * nw1_w;
     int n_omp = n_in;
 
-    double ti, tf;
-    if (mpi_rank == 0) double ti = get_time(); ///
     vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
-    if (mpi_rank == 0) double tf = get_time(); ///
-    if (mpi_rank == 0) t_ini_buffer += tf - ti; ///
 
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
@@ -477,18 +473,9 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
         }
     }
 
-    if (mpi_rank == 0) ti = get_time(); ///
     vec<Q> K1_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_ini_res += tf - ti; ///
-    if (mpi_rank == 0) ti = get_time(); ///
     mpi_collect(K1_buffer, K1_result, n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_gather += tf - ti; ///
-    if (mpi_rank == 0) ti = get_time(); ///
     vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_reorder += tf - ti; ///
 
     switch (channel) {
         case 'a': dgamma.densvertex.avertex.K1 += K1_ordered_result; break;
@@ -509,10 +496,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
     n_mpi = nK_K2 * nw2_w;
     n_omp = nw2_v * n_in;
 
-    if (mpi_rank == 0) ti = get_time(); ///
     vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_ini_buffer += tf - ti; ///
 
     iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
@@ -543,18 +527,9 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
         }
     }
 
-    if (mpi_rank == 0) ti = get_time(); ///
     vec<Q> K2_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_ini_res += tf - ti; ///
-    if (mpi_rank == 0) ti = get_time(); ///
     mpi_collect(K2_buffer, K2_result, n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_gather += tf - ti; ///
-    if (mpi_rank == 0) ti = get_time(); ///
     vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_reorder += tf - ti; ///
 
     switch (channel) {
         case 'a': dgamma.densvertex.avertex.K2 += K2_ordered_result; break;
@@ -573,10 +548,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
     n_mpi = nK_K3 * nw3_w * nw3_v;
     n_omp = nw3_vp * n_in;
 
-    if (mpi_rank == 0) ti = get_time(); ///
     vec<Q> K3_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_ini_buffer += tf - ti; ///
 
     iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
@@ -612,18 +584,9 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
         }
     }
 
-    if (mpi_rank == 0) ti = get_time(); ///
     vec<Q> K3_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_ini_res += tf - ti; ///
-    if (mpi_rank == 0) ti = get_time(); ///
     mpi_collect(K3_buffer, K3_result, n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_gather += tf - ti; ///
-    if (mpi_rank == 0) ti = get_time(); ///
     vec<Q> K3_ordered_result = mpi_reorder_result(K3_result, n_mpi, n_omp);
-    if (mpi_rank == 0) tf = get_time(); ///
-    if (mpi_rank == 0) t_reorder += tf - ti; ///
 
     switch (channel) {
         case 'a': dgamma.densvertex.avertex.K3 += K3_ordered_result; break;
