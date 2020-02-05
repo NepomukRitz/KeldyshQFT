@@ -377,7 +377,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
-    if(fabs(w_a)<=w_upper_b){
+    if(fabs(w_a)<w_upper_b){
         interpolateK1(valueK1, pf1, iK1, w_a, i_in, *(this));
     }
     return valueK1;
@@ -407,7 +407,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
-            if(fabs(w_a) <= w_upper_b){
+            if(fabs(w_a) < w_upper_b){
                 interpolateK1(valueK1, pf1, iK1, w_a, i_in, *(this));
             }
             break;
@@ -428,7 +428,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
-            if(fabs(w_a) <= w_upper_b){
+            if(fabs(w_a) < w_upper_b){
                 interpolateK1(valueK1, pf1, iK1, w_a, i_in, tvertex);
             }
             break;
@@ -546,7 +546,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_a)<=w_upper_b && fabs(v1_a)<=w_upper_f)
+    if(fabs(w_a)<w_upper_b && fabs(v1_a)<w_upper_f)
         interpolateK2(valueK2, pf2, iK2, w_a, v1_a, i_in, *(this));
 
     if(conjugate2)
@@ -592,7 +592,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
                 return valueK2;
             }
             /*And now one checks that the input frequencies are in the accepted range*/
-            if(fabs(w_a)<=w_upper_b && fabs(v1_a)<=w_upper_f){
+            if(fabs(w_a)<w_upper_b && fabs(v1_a)<w_upper_f){
                 interpolateK2(valueK2, pf2, iK2, w_a, v1_a, i_in, *(this));
             }
             break;
@@ -625,7 +625,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
             pf2 = -1.;
 
             /*And now one checks that the input frequencies are in the accepted range*/
-            if(fabs(w_a)<=w_upper_b && fabs(v1_a)<=w_upper_f){
+            if(fabs(w_a)<w_upper_b && fabs(v1_a)<w_upper_f){
                 interpolateK2(valueK2, pf2, iK2, w_a, v1_a, i_in, tvertex);
             }
             break;
@@ -686,7 +686,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_a)<=w_upper_b && fabs(v2_a)<=w_upper_f){
+    if(fabs(w_a)<w_upper_b && fabs(v2_a)<w_upper_f){
         interpolateK2(valueK2, pf2, iK2, w_a, v2_a, i_in, *(this));
     }
 
@@ -737,7 +737,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
-            if(fabs(w_a)<=w_upper_b && fabs(v2_a)<=w_upper_f){
+            if(fabs(w_a)<w_upper_b && fabs(v2_a)<w_upper_f){
                 interpolateK2(valueK2, pf2, iK2, w_a, v2_a, i_in, *(this));
             }
             break;
@@ -768,7 +768,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
             pf2 = -1.;
 
             /*And now one checks that the input frequencies are in the accepted range*/
-            if(fabs(w_a)<=w_upper_b && fabs(v2_a)<=w_upper_f){
+            if(fabs(w_a)<w_upper_b && fabs(v2_a)<w_upper_f){
                 interpolateK2(valueK2, pf2, iK2, w_a, v2_a, i_in, tvertex);
             }
 
@@ -946,7 +946,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_a)<=w_upper_b && fabs(v1_a)<=w_upper_f && fabs(v2_a)<=w_upper_f) {
+    if(fabs(w_a)<w_upper_b && fabs(v1_a)<w_upper_f && fabs(v2_a)<w_upper_f) {
         if (transform) {
             interpolateK3(valueK3, pf3, iK3, w_a, v1_a, v2_a, i_in, tvertex);
         } else {
@@ -1044,7 +1044,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
 
             }
 
-            if(fabs(w_a)<=w_upper_b && fabs(v1_a)<=w_upper_f && fabs(v2_a)<=w_upper_f)
+            if(fabs(w_a)<w_upper_b && fabs(v1_a)<w_upper_f && fabs(v2_a)<w_upper_f)
                 interpolateK3(valueK3, pf3, iK3, w_a, v1_a, v2_a, i_in, *(this));
 
             break;
@@ -1130,7 +1130,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
 
             }
 
-            if(fabs(w_a)<=w_upper_b && fabs(v1_a)<=w_upper_f && fabs(v2_a)<=w_upper_f)
+            if(fabs(w_a)<w_upper_b && fabs(v1_a)<w_upper_f && fabs(v2_a)<w_upper_f)
                 interpolateK3(valueK3, pf3, iK3, w_a, v1_a, v2_a, i_in, tvertex);
 
             break;
