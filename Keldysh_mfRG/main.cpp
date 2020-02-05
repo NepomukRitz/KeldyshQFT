@@ -60,7 +60,7 @@ auto main() -> int {
     print("self energy and diff self energy assigned", true);
 
     for (auto i:odd_Keldysh) {
-        state.vertex.densvertex.irred.setvert(i, 0., 0.);
+        state.vertex.densvertex.irred.setvert(i, 0., 0.5*U);
         state.vertex.spinvertex.irred.setvert(i, 0., 0.5*U);
     }
     print("vertex assigned", true);
@@ -92,7 +92,7 @@ auto main() -> int {
 #endif
 
 
-    //writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+//    writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
     if (world_rank == 0) write_hdf(FILE_NAME, 0, nEVO, state);
 
     print("Start of flow", true);
@@ -122,7 +122,7 @@ auto main() -> int {
     print("Error with PROP_TYPE.");
 #endif
 
-        //writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+//        writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
         if (world_rank == 0) add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
         //test_hdf5(FILE_NAME, i, state);
 
