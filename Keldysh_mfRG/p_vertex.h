@@ -49,9 +49,11 @@ public:
     *
     * This function aims to be the sole function one needs to call to read the full vertex*/
     auto value (int, double, double, double, int, char) -> Q;
+    auto value (int, double, double, double, int, int, char) -> Q;
 
     /*For when the channel is already known and the trafo to the specific channel has already been done*/
     auto value (int, double, double, double, int) -> Q;
+    auto value (int, double, double, double, int, int) -> Q;
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
@@ -235,20 +237,14 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
     double w_p=0., v1_p=0., v2_p=0.;
     tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
 
-    Q k1, k2, k2b, k3;
+    return value (iK, w_p, v1_p, v2_p, i_in);
+}
+template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel) -> Q{
 
-#if DIAG_CLASS >=1
-    k1 = K1_vvalsmooth (iK, w_p, i_in);
-#endif
-#if DIAG_CLASS >=2
-    k2 = K2_vvalsmooth (iK, w_p, v1_p, i_in);
-    k2b= K2b_vvalsmooth(iK, w_p, v2_p, i_in);
-#endif
-#if DIAG_CLASS >=3
-    k3 = K3_vvalsmooth (iK, w_p, v1_p, v2_p, i_in);
-#endif
+    double w_p=0., v1_p=0., v2_p=0.;
+    tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
 
-    return k1+k2+k2b+k3;
+    return value (iK, w_p, v1_p, v2_p, i_in, spin);
 }
 
 template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in) -> Q{
@@ -264,6 +260,23 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
 #endif
 #if DIAG_CLASS >=3
     k3 = K3_vvalsmooth (iK, w, v1, v2, i_in);
+#endif
+
+    return k1+k2+k2b+k3;
+}
+template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin) -> Q{
+
+    Q k1, k2, k2b, k3;
+
+#if DIAG_CLASS >=1
+    k1 = K1_vvalsmooth (iK, w, i_in, spin);
+#endif
+#if DIAG_CLASS >=2
+    k2 = K2_vvalsmooth (iK, w, v1, i_in, spin);
+    k2b= K2b_vvalsmooth(iK, w, v2, i_in, spin);
+#endif
+#if DIAG_CLASS >=3
+    k3 = K3_vvalsmooth (iK, w, v1, v2, i_in, spin);
 #endif
 
     return k1+k2+k2b+k3;
