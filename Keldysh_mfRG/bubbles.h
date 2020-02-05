@@ -274,28 +274,45 @@ public:
     //This is a call operator
     auto operator() (double vpp) -> Q {
         int i1=0, i3=0;
-        Q res, res_l, res_r;
+        Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
-                case 'a':
+                case 'a':                                                                       //Flow eq: V*Pi*V
                     tie(i1,i3) = vertex1.densvertex.avertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    res_l_V =  left_same_bare<Q> (vertex1, i1, w, vpp, i_in, 0, channel);
+                    res_r_V = right_same_bare<Q> (vertex2, i3, w, vpp, i_in, 0, channel);
+
+                    res += res_l_V * Pival * res_r_V;
                     break;
-                case 'p':
+                case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
                     tie(i1,i3) = vertex1.densvertex.pvertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp);                                //wp/2+vppp, wp/2-vppp for the p-channel
+                    res_l_V =  left_same_bare<Q> (vertex1, i1, w, vpp, i_in, 0, channel);
+                    res_r_V = right_same_bare<Q> (vertex2, i3, w, vpp, i_in, 0, channel);
+
+                    res_l_Vhat =  left_same_bare<Q> (vertex1, i1, w, vpp, i_in, 1, channel);
+                    res_r_Vhat = right_same_bare<Q> (vertex2, i3, w, vpp, i_in, 1, channel);
+
+                    res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
-                case 't':
+                case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
                     tie(i1,i3) = vertex1.densvertex.tvertex.indices_sum(i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppt-1/2wt, vppt+1/2wt for the t-channel
+                    res_l_V =  left_same_bare<Q> (vertex1, i1, w, vpp, i_in, channel);
+                    res_r_V = right_same_bare<Q> (vertex2, i3, w, vpp, i_in, channel);
+
+                    res_l_Vhat =  left_same_bare<Q> (vertex1, i1, w, vpp, i_in, 1, channel);
+                    res_r_Vhat = right_same_bare<Q> (vertex2, i3, w, vpp, i_in, 1, channel);
+
+                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_Vhat+res_l_Vhat) * Pival * res_r_Vhat;
+
                     break;
                 default: ;
             }
-            res_l =  left_same_bare<Q> (vertex1, i1, w, vpp, i_in, channel);
-            res_r = right_same_bare<Q> (vertex2, i3, w, vpp, i_in, channel);
 
-            res += res_l * Pival * res_r;
+
         }
         return res;
     }

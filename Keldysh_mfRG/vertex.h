@@ -79,11 +79,15 @@ public:
     fullvert() = default;;
 
     /*Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
-     * Keldysh index (1st int), internal structure index (2nd int) and the three frequencies.*/
+     * Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin*/
     auto value(int, double, double, double, int, char) -> Q;
+    auto value(int, double, double, double, int, int, char) -> Q;
+
 
     /* Returns the sum of the contributions of the diagrammatic classes r' =/= r */
     auto gammaRb(int, double, double, double, int, char) -> Q;
+    auto gammaRb(int, double, double, double, int, int, char) -> Q;
+
 
     /*Various operators for the fullvertex class*/
     auto operator+ (const fullvert<Q>& vertex1) -> fullvert<Q> {
@@ -197,9 +201,19 @@ template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value){
 
 template <typename Q> auto fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, char channel) -> Q
 {
-    Q result = irred.vval(iK) + avertex.value(iK, w, v1, v2, i_in, channel, tvertex) + pvertex.value(iK, w, v1, v2, i_in, channel) + tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
-    return result;
+    return irred.vval(iK, i_in) +
+    avertex.value(iK, w, v1, v2, i_in, channel, tvertex) +
+    pvertex.value(iK, w, v1, v2, i_in, channel) +
+    tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
 }
+template <typename Q> auto fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, int spin, char channel) -> Q
+{
+    return irred.vval(iK, i_in) +
+    avertex.value(iK, w, v1, v2, i_in, spin, channel, tvertex) +
+    pvertex.value(iK, w, v1, v2, i_in, spin, channel) +
+    tvertex.value(iK, w, v1, v2, i_in, spin, channel, avertex);
+}
+
 
 template <typename Q> auto fullvert<Q>::gammaRb (int iK, double w, double v1, double v2, int i_in, char r) -> Q
 {
@@ -221,5 +235,26 @@ template <typename Q> auto fullvert<Q>::gammaRb (int iK, double w, double v1, do
 
     return resp;
 }
+template <typename Q> auto fullvert<Q>::gammaRb (int iK, double w, double v1, double v2, int i_in, int spin, char r) -> Q
+{
+    Q resp;
+    switch(r){
+        case 'a':
+            resp = pvertex.value(iK, w, v1, v2, i_in, r)          + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
+            break;
+        case 'p':
+            resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + tvertex.value(iK, w, v1, v2, i_in, r, avertex);
+            break;
+        case 't':
+            resp = avertex.value(iK, w, v1, v2, i_in, r, tvertex) + pvertex.value(iK, w, v1, v2, i_in, r);
+            break;
+        default :
+            resp = 0.;
+            cout << "Something's going wrong with gammaRb"<< endl;
+    }
+
+    return resp;
+}
+
 
 #endif //KELDYSH_MFRG_VERTEX_H

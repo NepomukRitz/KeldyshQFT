@@ -49,9 +49,13 @@ public:
     *
     * This function aims to be the sole function one needs to call to read the full vertex*/
     auto value (int, double, double, double, int, char, tvert<Q>& tvertex) -> Q;
+    auto value (int, double, double, double, int, int, char, tvert<Q>& tvertex) -> Q;
+
 
     /*For when the channel is already known and the trafo to the specific channel has already been done*/
     auto value (int, double, double, double, int, tvert<Q>& tvertex) -> Q;
+    auto value (int, double, double, double, int, int, tvert<Q>& tvertex) -> Q;
+
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
@@ -235,20 +239,14 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
     double w_a=0., v1_a=0., v2_a=0.;
     tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
 
-    Q k1, k2, k2b, k3;
+    return value(iK, w_a, v1_a, v2_a, i_in, tvertex);
+}
+template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, tvert<Q>& tvertex) -> Q{
 
-#if DIAG_CLASS >=1
-    k1 = K1_vvalsmooth (iK, w_a, i_in, tvertex);
-#endif
-#if DIAG_CLASS >=2
-    k2 = K2_vvalsmooth (iK, w_a, v1_a, i_in, tvertex);
-    k2b= K2b_vvalsmooth(iK, w_a, v2_a, i_in, tvertex);
-#endif
-#if DIAG_CLASS >=3
-    k3 = K3_vvalsmooth (iK, w_a, v1_a, v2_a, i_in, tvertex);
-#endif
+    double w_a=0., v1_a=0., v2_a=0.;
+    tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
 
-    return k1+k2+k2b+k3;
+    return value(iK, w_a, v1_a, v2_a, i_in, spin, tvertex);
 }
 
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex) -> Q{
@@ -268,6 +266,24 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
 
     return k1+k2+k2b+k3;
 }
+template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, tvert<Q>& tvertex) -> Q{
+
+    Q k1, k2, k2b, k3;
+
+#if DIAG_CLASS >=1
+    k1 = K1_vvalsmooth (iK, w, i_in, spin, tvertex);
+#endif
+#if DIAG_CLASS >=2
+    k2 = K2_vvalsmooth (iK, w, v1, i_in, spin, tvertex);
+    k2b= K2b_vvalsmooth(iK, w, v2, i_in, spin, tvertex);
+#endif
+#if DIAG_CLASS >=3
+    k3 = K3_vvalsmooth (iK, w, v1, v2, i_in, spin, tvertex);
+#endif
+
+    return k1+k2+k2b+k3;
+}
+
 
 template<typename Q> auto avert<Q>::transfToA(double w, double v1, double v2, char channel) -> tuple<double, double, double> {
     double w_a=0., v1_a=0., v2_a=0.;

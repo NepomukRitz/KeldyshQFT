@@ -40,28 +40,30 @@ public:
 //        Q resp11 = vertex.densvertex.tvertex.value(7, 0., wp, w, i_in, vertex.densvertex.avertex);                      //Something
 //        Q resp12 = vertex.densvertex.irred.vval(7, i_in);  // =0 ?                                                            //Always 0.5*U
 
-        Q resp1 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(3, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(3, wp-w, i_in, 1, vertex.spinvertex.tvertex);
-        Q resp2 = 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(3, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(3, wp+w, i_in, 1);
-        Q resp3 = 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(3, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(3, 0.  , i_in, 1, vertex.spinvertex.avertex);
-        Q resp4 = vertex.spinvertex.irred.vval(3, i_in);
-
-        Q resp5 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(6, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(6, wp-w, i_in, 1, vertex.spinvertex.tvertex);
-        Q resp6 = 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(6, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(6, wp+w, i_in, 1);
-        Q resp7 = 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(6, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(6, 0.  , i_in, 1, vertex.spinvertex.avertex);
-        Q resp8 = vertex.spinvertex.irred.vval(6, i_in);
-
-        Q resp9 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(7, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(7, wp-w, i_in, 1, vertex.spinvertex.tvertex);
-        Q resp10= 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(7, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(7, wp+w, i_in, 1);
-        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(7, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(7, 0.  , i_in, 1, vertex.spinvertex.avertex);
-        Q resp12= vertex.spinvertex.irred.vval(7, i_in);
+//        Q resp1 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(3, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(3, wp-w, i_in, 1, vertex.spinvertex.tvertex);
+//        Q resp2 = 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(3, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(3, wp+w, i_in, 1);
+//        Q resp3 = 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(3, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(3, 0.  , i_in, 1, vertex.spinvertex.avertex);
+//        Q resp4 = vertex.spinvertex.irred.vval(3, i_in);
+//
+//        Q resp5 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(6, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(6, wp-w, i_in, 1, vertex.spinvertex.tvertex);
+//        Q resp6 = 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(6, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(6, wp+w, i_in, 1);
+//        Q resp7 = 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(6, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(6, 0.  , i_in, 1, vertex.spinvertex.avertex);
+//        Q resp8 = vertex.spinvertex.irred.vval(6, i_in);
+//
+//        Q resp9 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(7, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(7, wp-w, i_in, 1, vertex.spinvertex.tvertex);
+//        Q resp10= 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(7, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(7, wp+w, i_in, 1);
+//        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(7, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(7, 0.  , i_in, 1, vertex.spinvertex.avertex);
+//        Q resp12= vertex.spinvertex.irred.vval(7, i_in);
 
         Q aid1 = propagator.pvalsmooth(0, wp);
         Q aid2 = conj(propagator.pvalsmooth(0, wp));
         Q aid3 = propagator.pvalsmooth(1, wp);
+//
+//        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
 
-        Q ans = ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
-
-        return ans;
+        return -(vertex.densvertex.value(3, w, wp, w, i_in, 'f')*aid1 +
+               vertex.densvertex.value(6, w, wp, w, i_in, 'f')*aid2+
+               vertex.densvertex.value(7, w, wp, w, i_in, 'f')*aid3);
 
 
 //        return
@@ -115,30 +117,32 @@ public:
 //        Q aid2 = conj(propagator.pvalsmooth(0, wp));
 //        Q aid3 = propagator.pvalsmooth(1, wp);
 //
-//        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
+//        Q ans = -((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
 
-        Q resp1 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(1, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(1, wp-w, i_in, 1, vertex.spinvertex.tvertex);
-        Q resp2 = 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(1, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(1, wp+w, i_in, 1);
-        Q resp3 = 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(1, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(1, 0.  , i_in, 1, vertex.spinvertex.avertex);
-        Q resp4 = vertex.spinvertex.irred.vval(1, i_in);
-
-        Q resp5 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(4, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(4, wp-w, i_in, 1, vertex.spinvertex.tvertex);
-        Q resp6 = 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(4, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(4, wp+w, i_in, 1);
-        Q resp7 = 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(4, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(4, 0.  , i_in, 1, vertex.spinvertex.avertex);
-        Q resp8 = vertex.spinvertex.irred.vval(4, i_in);
-
-        Q resp9 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(5, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(5, wp-w, i_in, 1, vertex.spinvertex.tvertex);
-        Q resp10= 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(5, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(5, wp+w, i_in, 1);
-        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 1, vertex.spinvertex.avertex);
-        Q resp12= vertex.spinvertex.irred.vval(5, i_in);
-
+//        Q resp1 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(1, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(1, wp-w, i_in, 1, vertex.spinvertex.tvertex);
+//        Q resp2 = 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(1, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(1, wp+w, i_in, 1);
+//        Q resp3 = 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(1, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(1, 0.  , i_in, 1, vertex.spinvertex.avertex);
+//        Q resp4 = vertex.spinvertex.irred.vval(1, i_in);
+//
+//        Q resp5 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(4, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(4, wp-w, i_in, 1, vertex.spinvertex.tvertex);
+//        Q resp6 = 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(4, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(4, wp+w, i_in, 1);
+//        Q resp7 = 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(4, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(4, 0.  , i_in, 1, vertex.spinvertex.avertex);
+//        Q resp8 = vertex.spinvertex.irred.vval(4, i_in);
+//
+//        Q resp9 = 2.*vertex.spinvertex.avertex.K1_vvalsmooth(5, wp-w, i_in, 0, vertex.spinvertex.tvertex) + vertex.spinvertex.avertex.K1_vvalsmooth(5, wp-w, i_in, 1, vertex.spinvertex.tvertex);
+//        Q resp10= 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(5, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(5, wp+w, i_in, 1);
+//        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 1, vertex.spinvertex.avertex);
+//        Q resp12= vertex.spinvertex.irred.vval(5, i_in);
+//
         Q aid1 = propagator.pvalsmooth(0, wp);
         Q aid2 = conj(propagator.pvalsmooth(0, wp));
         Q aid3 = propagator.pvalsmooth(1, wp);
+//
+//        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
 
-        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
-
-        return ans;
+        return -(vertex.densvertex.value(1, w, wp, w, i_in, 'f')*aid1 +
+        vertex.densvertex.value(4, w, wp, w, i_in, 'f')*aid2+
+        vertex.densvertex.value(5, w, wp, w, i_in, 'f')*aid3);
 
 //        return
 //        -( (vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
