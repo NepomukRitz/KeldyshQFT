@@ -9,7 +9,7 @@
 #include "parameters.h"
 #include "data_structures.h"
 
-
+//TODO improve to return the edge values
 template <typename Q, typename T>
 void interpolateK1(Q& ans, double pf, int iK, double w, int i_in, T& vertex){
     int index = fconv_bos(w);
