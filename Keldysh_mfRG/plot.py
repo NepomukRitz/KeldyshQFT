@@ -40,16 +40,16 @@ def load_hdf5(filename, only_SE):
 def rearrange_SE(selfenergy):
     """
     bring selfenergy into appropriate format: 2 x 2 x nw numpy array, where:
-    1st index    : 0 = Re(Sigma), 1 = Im(Sigma)
-    2nd index iK : 0 = Sigma^R,   1 = Sigma^K
+    1st index iK : 0 = Sigma^R,   1 = Sigma^K
+    2nd index    : 0 = Re(Sigma), 1 = Im(Sigma)
     3rd index iw : frequency index
     """
     nw = len(selfenergy)/2
     SE = np.zeros((2, 2, nw))
     for iK in range(2):
         for iw in range(nw):
-            SE[0, iK, iw] = selfenergy[iK*nw+iw][0]
-            SE[1, iK, iw] = selfenergy[iK*nw+iw][1]
+            SE[iK, 0, iw] = selfenergy[iK*nw+iw][0]
+            SE[iK, 1, iw] = selfenergy[iK*nw+iw][1]
     return SE
 
 try:
@@ -65,8 +65,9 @@ else:
 
 wmin = -20
 wmax = 20
-re = 0   # 0 = Re(Sigma), 1 = Im(Sigma)
-iK = 0   # Keldysh component: 0 = Sigma^R, 1 = Sigma^K
+
+iK = int(sys.argv[2])   # Keldysh component: 0 = Sigma^R, 1 = Sigma^K
+re = int(sys.argv[3])   # 0 = Re(Sigma), 1 = Im(Sigma)
 
 fs = 14  # font size
 
@@ -82,7 +83,7 @@ lines = []
 leg = []
 for i in range(7):
     SE = rearrange_SE(selfenergy[i])
-    line, = plt.plot(w, SE[re, iK])
+    line, = plt.plot(w, SE[iK, re])
     lines.append(line)
     leg.append(r'$\Lambda=\ $' + str(round(Lambdas[i], 2)))
     
@@ -94,9 +95,9 @@ if not re:
         plt.ylabel(r'$\mathrm{Re}(\Sigma^K(\omega))$', fontsize=fs)
 else:
     if not iK:
-        plt.ylabel(r'$\text{Im}(\Sigma^R(\omega))$', fontsize=fs)
+        plt.ylabel(r'$\mathrm{Im}(\Sigma^R(\omega))$', fontsize=fs)
     else:
-        plt.ylabel(r'$\text{Im}(\Sigma^K(\omega))$', fontsize=fs)            
+        plt.ylabel(r'$\mathrm{Im}(\Sigma^K(\omega))$', fontsize=fs)            
 
 plt.xticks(fontsize=fs)        
 plt.yticks(fontsize=fs)
