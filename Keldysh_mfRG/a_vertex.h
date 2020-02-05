@@ -357,9 +357,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
         pf1 = 1.;
     }
     else{
-        iK1 = 0;
-        pf1 = 0.;
-        cout << "Problems with avert.K1_vvalsmooth w/o spin!";
+        return valueK1;
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
@@ -389,9 +387,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
                 iK1 = 1;
                 pf1 = 1.;
             } else {
-                iK1 = 0;
-                pf1 = 0.;
-                cout << "Problems with avert.K1_vvalsmooth w/ spin!";
+                return valueK1;
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
@@ -412,9 +408,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
                 tie(w_a, i_in) = indices_T1_K1(w_a, i_in);
                 iK1 = 1;
             } else {
-                iK1 = 0;
-                pf1 = 0.;
-                cout << "Problems with avert.K1_vvalsmooth w/ spin!";
+                return valueK1;
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
@@ -532,8 +526,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
         iK2 = 4;
     }
     else{
-        iK2 = 0;
-        cout << "Problems with avert.K2_vvalsmooth w/o spin!";
+        return valueK2;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -580,8 +573,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
             } else if (isInList(iK, list_K2_T0_comp11)) {
                 iK2 = 4;
             } else {
-                iK2 = 0;
-                cout << "Problems in avertex.K2_vvalsmooth w/ spin!";
+                return valueK2;
             }
             /*And now one checks that the input frequencies are in the accepted range*/
             if(fabs(w_a)<=w_upper_b && fabs(v1_a)<=w_upper_f){
@@ -609,8 +601,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
             } else if (isInList(iK, list_K2_T0_comp11)) {   //T0comp11 => T2 iK=4
                 iK2 = 4;
             } else {
-                iK2 = 0;
-                cout << "Problems in avertex.K2_vvalsmooth w/ spin!";
+                return valueK2;
             }
 
             //This case, T2 is applied to all components so, regardless of the component, apply it at the end.
@@ -675,10 +666,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
         iK2 = 4;
     }
     else{
-        iK2 = 0;
-        pf2 = 0.;
-        cout << "Problems in avertex.K2b_vvalsmooth w/o spin!";
-
+        return valueK2;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -729,8 +717,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
                 tie(w_a, v2_a, i_in) = indices_T3_K2(w_a, v2_a, i_in);
                 iK2 = 4;
             } else {
-                iK2 = 0;
-                cout << "Problems in avertex.K2b_vvalsmooth w/ spin!";
+                return valueK2;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -759,8 +746,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
             } else if (isInList(iK, list_K2b_T3_comp11)) {              //T3comp11 => T1 iK=4
                 iK2 = 4;
             } else {
-                iK2 = 0;
-                cout << "Problems in avertex.K2b_vvalsmooth w/ spin!";
+                return valueK2;
             }
             tie(w_a, v2_a, i_in) = indices_T1_K2(w_a, v2_a, i_in);
             pf2 = -1.;
@@ -939,11 +925,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
             transform = false;
             break;
         default:
-            iK3 = 0;
-            pf3 = 0.;
-            conjugate = false;
-            transform = false;
-            cout << "Problems in avertex.K3_vvalsmooth w/o spin!";
+            return valueK3;
 
     }
 
@@ -1041,10 +1023,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
                     conjugate = true;
                     break;
                 default:
-                    iK3 = 0;
-                    pf3 = 0.;
-                    conjugate = false;
-                    cout << "Problems in avertex.K3_vvalsmooth w/ spin!";
+                    return valueK3;
 
 
             }
@@ -1130,10 +1109,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
                     conjugate = true;
                     break;
                 default:
-                    iK3 = 0;
-                    pf3 = 0.;
-                    conjugate = false;
-                    cout << "Problems in avertex.K3_vvalsmooth w/ spin!";
+                    return valueK3;
 
 
             }

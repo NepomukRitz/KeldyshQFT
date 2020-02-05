@@ -362,10 +362,7 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
         conjugate1 = false;
     }
     else{
-        iK1 = 0;
-        pf1 = 0.;
-        conjugate1 = false;
-        cout << "Problems in pvertex.K1_vvalsmooth w/o spin!";
+        return valueK1;
     }
 
 
@@ -401,10 +398,7 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
         pf1 = 1.;
         conjugate1 = false;
     } else {
-        iK1 = 0;
-        pf1 = 0.;
-        conjugate1 = false;
-        cout << "Problems in pvertex.K1_vvalsmooth w/ spin!";
+        return valueK1;
     }
     switch (spin) {
         case 0:
@@ -521,9 +515,7 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
         iK2 = 3;
     }
     else {
-        iK2 = 0;
-        pf2 = 0.;
-        cout << "Problems in pvertex.K2_vvalsmooth w/o spin!";
+        return valueK2;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -560,9 +552,7 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
         tie(w_p, v1_p, i_in) = indices_T3_K2(w_p, v1_p, i_in);
         iK2 = 3;
     } else {
-        iK2 = 0;
-        pf2 = 0.;
-        cout << "Problems in pvertex.K2_vvalsmooth w/ spin!";
+        return valueK2;
     }
 
     switch (spin) {
@@ -617,9 +607,7 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
         iK2 = 3;
     }
     else {
-        iK2 = 0;
-        pf2 = 0.;
-        cout << "Problems in pvertex.K2b_vvalsmooth w/o spin!";
+        return valueK2;
     }
     //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
     tie(w_p, v2_p, i_in) = indices_TC_K2(w_p, v2_p, i_in);
@@ -675,9 +663,7 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
         iK2 = 3;
     }
     else {
-        iK2 = 0;
-        pf2 = 0.;
-        cout << "Problems in pvertex.K2b_vvalsmooth w/ spin!";
+        return valueK2;
 
     }
     //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
@@ -837,10 +823,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
             conjugate3 = true;
             break;
         default:
-            iK3 = 0;
-            pf3 = 0.;
-            conjugate3 = false;
-            cout << "Problems in pvertex.K3_vvalsmooth w/o spin!";
+            return valueK3;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -931,10 +914,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
                 conjugate3 = true;
                 break;
             default:
-                iK3 = 0;
-                pf3 = 0.;
-                conjugate3 = false;
-                cout << "Problems in pvertex.K3_vvalsmooth w/o spin!";
+                return valueK3;
         }
             break;
         case 1:
@@ -1021,10 +1001,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
                 conjugate3 = true;
                 break;
             default:
-                iK3 = 0;
-                pf3 = 0.;
-                conjugate3 = false;
-                cout << "Problems in pvertex.K3_vvalsmooth w/o spin!";
+                return valueK3;
 
             }
 

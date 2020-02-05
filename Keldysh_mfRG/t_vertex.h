@@ -372,9 +372,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
         pf1 = 1.;
     }
     else{
-        iK1 = 0;
-        pf1 = 0.;
-        cout << "Problems in tvertex.K1_vvalsmooth w/o spin!";
+        return valueK1;
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
@@ -404,9 +402,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
                 iK1 = 1;
                 pf1 = 1.;
             } else {
-                iK1 = 0;
-                pf1 = 0.;
-                cout << "Problems in tvertex.K1_vvalsmooth w/ spin!";
+                return valueK1;
             }
             /*And now one checks that the input frequency is in the accepted range*/
             if(fabs(w_t) <= w_upper_b){
@@ -426,9 +422,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
                 tie(w_t, i_in) = indices_T1_K1(w_t, i_in);
                 iK1 = 1;
             } else {
-                iK1 = 0;
-                pf1 = 0.;
-                cout << "Problems in tvertex.K1_vvalsmooth w/ spin!";
+                return valueK1;
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
@@ -549,10 +543,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
         conjugate2 = true;
     }
     else{
-        iK2 = 0;
-        pf2 = 0.;
-        conjugate2 = false;
-        cout << "Problems in tvertex.K2_vvalsmooth w/o spin!";
+        return valueK2;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -597,10 +588,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
                 iK2 = 3;
                 conjugate2 = true;
             } else {
-                iK2 = 0;
-                pf2 = 0.;
-                conjugate2 = false;
-                cout << "Problems in tvertex.K2_vvalsmooth w/ spin!";
+                return valueK2;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -632,10 +620,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
                 iK2 = 3;
                 conjugate2 = true;
             } else {
-                iK2 = 0;
-                pf2 = 0.;
-                conjugate2 = false;
-                cout << "Problems in tvertex.K2_vvalsmooth w/ spin!";
+                return valueK2;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -693,9 +678,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
         conjugate2 = true;
     }
     else{
-        iK2 = 0;
-        pf2 = 0.;
-        cout << "Problems in tvertex.K2b_vvalsmooth w/o spin!";
+        return valueK2;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -742,9 +725,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
                 iK2 = 3;
                 conjugate2 = true;
             } else {
-                iK2 = 0;
-                pf2 = 0.;
-                cout << "Problems in tvertex.K2b_vvalsmooth w/ spin!";
+                return valueK2;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -778,9 +759,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
                 iK2 = 3;
                 conjugate2 = true;
             } else {
-                iK2 = 0;
-                pf2 = 0.;
-                cout << "Problems in tvertex.K2b_vvalsmooth w/ spin!";
+                return valueK2;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -1063,10 +1042,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
                     conjugate = true;
                     break;
                 default:
-                    iK3 = 0;
-                    pf3 = 0.;
-                    conjugate = false;
-                    cout << "Problems in tvertex.K3_vvalsmooth w/ spin!";
+                    return valueK3;
 
 
             }
@@ -1154,10 +1130,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
                     conjugate = true;
                     break;
                 default:
-                    iK3 = 0;
-                    pf3 = 0.;
-                    conjugate = false;
-                    cout << "Problems in tvertex.K3_vvalsmooth w/ spin!";
+                    return valueK3;
 
 
             }
