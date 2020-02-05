@@ -58,8 +58,8 @@ auto main() -> int {
     cout << "self energy and diff self energy assigned" << endl;
 
     for (auto i:odd_Keldysh) {
-        state.vertex.densvertex.irred.setvert(i, 0., 0.);
-        state.vertex.spinvertex.irred.setvert(i, 0., 0.5*U);
+        state.vertex.densvertex.irred.setvert(i, 0., 0.5*U);
+        state.vertex.spinvertex.irred.setvert(i, 0., 0.);
     }
     cout << "vertex assigned" << endl;
 
@@ -90,8 +90,8 @@ auto main() -> int {
 #endif
 
 
-    writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
-//    write_hdf(FILE_NAME, 0, nEVO, state);
+//    writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+    write_hdf(FILE_NAME, 0, nEVO, state);
 
     cout << "Start of flow" << endl;
     for(int i=1; i<nEVO; ++i) {
@@ -110,8 +110,8 @@ auto main() -> int {
         cout << "Added. ";
         get_time(tadd);
 
-        double next_Lambda = flow_grid[i];
-        //state.Lambda = next_Lambda;
+//        double next_Lambda = flow_grid[i];
+//        state.Lambda = next_Lambda;
 #if PROP_TYPE==1
         Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 's', 'f');
 #elif PROP_TYPE==2
@@ -120,8 +120,8 @@ auto main() -> int {
     cout << "Error with PROP_TYPE.";
 #endif
 
-        writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
-//        add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
+//        writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+        add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
 
         cout << "One RK-derivative step. ";
         get_time(tder);
