@@ -39,7 +39,6 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
             if (state.selfenergy.sval(iK, iSE) != out.selfenergy.sval(iK, iSE)) {
                 cout << "Self-energy not equal, " << iK << ", " << iSE << endl;
-                //return 0;
             }
         }
     }
@@ -150,7 +149,7 @@ auto main() -> int {
 
 
     writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
-//    write_hdf(FILE_NAME, 0, nEVO, state);
+    write_hdf(FILE_NAME, 0, nEVO, state);
 
     cout << "Start of flow" << endl;
     for(int i=1; i<nEVO; ++i) {
@@ -180,7 +179,7 @@ auto main() -> int {
 #endif
 
         writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
-//        add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
+        add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
         test_hdf5(FILE_NAME, i, state);
 
         cout << "One RK-derivative step. ";
