@@ -55,15 +55,15 @@ public:
 //        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(7, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(7, 0.  , i_in, 1, vertex.spinvertex.avertex);
 //        Q resp12= vertex.spinvertex.irred.vval(7, i_in);
 
-        Q aid1 = propagator.pvalsmooth(0, wp);
-        Q aid2 = conj(propagator.pvalsmooth(0, wp));
-        Q aid3 = propagator.pvalsmooth(1, wp);
+//        Q aid1 = propagator.pvalsmooth(0, wp);
+//        Q aid2 = conj(propagator.pvalsmooth(0, wp));
+//        Q aid3 = propagator.pvalsmooth(1, wp);
+////
+////        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
 //
-//        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
-
-        return -(vertex.densvertex.value(3, w, wp, w, i_in, 'f')*aid1 +
-               vertex.densvertex.value(6, w, wp, w, i_in, 'f')*aid2+
-               vertex.densvertex.value(7, w, wp, w, i_in, 'f')*aid3);
+//        return -(vertex.densvertex.value(3, w, wp, w, i_in, 'f')*aid1 +
+//               vertex.densvertex.value(6, w, wp, w, i_in, 'f')*aid2+
+//               vertex.densvertex.value(7, w, wp, w, i_in, 'f')*aid3);
 
 
 //        return
@@ -81,6 +81,16 @@ public:
 //            vertex.densvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
 //            vertex.densvertex.tvertex.value(7, 0., wp, w, i_in, vertex.densvertex.avertex) +
 //            vertex.densvertex.irred.vval(7) ) * propagator.pvalsmooth(1, wp) );
+
+
+        Q aid1 = propagator.pvalsmooth(0, wp);
+        Q aid2 = conj(propagator.pvalsmooth(0, wp));
+        Q aid3 = propagator.pvalsmooth(1, wp);
+
+        return -(   ( 2.* vertex.spinvertex.value(3, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(3, w, wp, w, i_in, 1, 'f') ) * aid1 +
+                    ( 2.* vertex.spinvertex.value(6, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(6, w, wp, w, i_in, 1, 'f') ) * aid2 +
+                    ( 2.* vertex.spinvertex.value(7, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(7, w, wp, w, i_in, 1, 'f') ) * aid3 );
+
     }
 };
 
@@ -137,12 +147,16 @@ public:
         Q aid1 = propagator.pvalsmooth(0, wp);
         Q aid2 = conj(propagator.pvalsmooth(0, wp));
         Q aid3 = propagator.pvalsmooth(1, wp);
+
+        return -(   ( 2.* vertex.spinvertex.value(1, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(1, w, wp, w, i_in, 1, 'f') ) * aid1 +
+                    ( 2.* vertex.spinvertex.value(4, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(4, w, wp, w, i_in, 1, 'f') ) * aid2 +
+                    ( 2.* vertex.spinvertex.value(5, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(5, w, wp, w, i_in, 1, 'f') ) * aid3 );
 //
 //        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
 
-        return -(vertex.densvertex.value(1, w, wp, w, i_in, 'f')*aid1 +
-        vertex.densvertex.value(4, w, wp, w, i_in, 'f')*aid2+
-        vertex.densvertex.value(5, w, wp, w, i_in, 'f')*aid3);
+//        return -(vertex.densvertex.value(1, w, wp, w, i_in, 'f')*aid1 +
+//        vertex.densvertex.value(4, w, wp, w, i_in, 'f')*aid2+
+//        vertex.densvertex.value(5, w, wp, w, i_in, 'f')*aid3);
 
 //        return
 //        -( (vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
