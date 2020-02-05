@@ -850,10 +850,6 @@ void add_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_size,State<
     };
 }
 
-
-
-
-
 //function to read out an exstiting Hdf5 file. Needed to resume computation if it has been interrupted during the flow
 template<typename Q>
 State<complex<double>> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_size, vector<double> &Lambdas){
@@ -1197,3 +1193,61 @@ cout << "File '" << FILE_NAME<< "' successfully read out" << endl;
     };
 
 }
+
+void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
+    // test hdf5: read files and compare to original file
+    State<comp> out = read_hdf<comp>(FILE_NAME, i, nEVO, flow_grid);
+    if (state.Lambda != out.Lambda) {
+        cout << "Lambdas not equal" << endl;
+    }
+    for (int iK=0; iK<2; ++iK) {
+        for (int iSE = 0; iSE < nSE; ++iSE) {
+            if (state.selfenergy.sval(iK, iSE) != out.selfenergy.sval(iK, iSE)) {
+                cout << "Self-energy not equal, " << iK << ", " << iSE << endl;
+            }
+        }
+    }
+    for (int iK=0; iK<nK_K1; ++iK) {
+        for (int iw1=0; iw1<nBOS; ++iw1) {
+            if (state.vertex.densvertex.avertex.K1_vval(iK, iw1, 0) != out.vertex.densvertex.avertex.K1_vval(iK, iw1, 0)) {
+                cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
+            }
+            if (state.vertex.densvertex.pvertex.K1_vval(iK, iw1, 0) != out.vertex.densvertex.pvertex.K1_vval(iK, iw1, 0)) {
+                cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
+            }
+            if (state.vertex.densvertex.tvertex.K1_vval(iK, iw1, 0) != out.vertex.densvertex.tvertex.K1_vval(iK, iw1, 0)) {
+                cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
+            }
+#if DIAG_CLASS >= 2
+            for (int iw2=0; iw2<nFER; ++iw2) {
+                if (state.vertex.densvertex.avertex.K2_vval(iK, iw1, iw2, 0) != out.vertex.densvertex.avertex.K2_vval(iK, iw1, iw2, 0)) {
+                    cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
+                }
+                if (state.vertex.densvertex.pvertex.K2_vval(iK, iw1, iw2, 0) != out.vertex.densvertex.pvertex.K2_vval(iK, iw1, iw2, 0)) {
+                    cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
+                }
+                if (state.vertex.densvertex.tvertex.K2_vval(iK, iw1, iw2, 0) != out.vertex.densvertex.tvertex.K2_vval(iK, iw1, iw2, 0)) {
+                    cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
+                }
+#if DIAG_CLASS == 3
+                for (int iw3=0; iw3<nFER; ++iw3) {
+                    if (state.vertex.densvertex.avertex.K3_vval(iK, iw1, iw2, iw3, 0) != out.vertex.densvertex.avertex.K3_vval(iK, iw1, iw2, iw3, 0)) {
+                        cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
+                    }
+                    if (state.vertex.densvertex.pvertex.K3_vval(iK, iw1, iw2, iw3, 0) != out.vertex.densvertex.pvertex.K3_vval(iK, iw1, iw2, iw3, 0)) {
+                        cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
+                    }
+                    if (state.vertex.densvertex.tvertex.K3_vval(iK, iw1, iw2, iw3, 0) != out.vertex.densvertex.tvertex.K3_vval(iK, iw1, iw2, iw3, 0)) {
+                        cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
+                    }
+                }
+#endif
+            }
+#endif
+        }
+        if (state.vertex.densvertex.irred.bare[iK] != out.vertex.densvertex.irred.bare[iK]) {
+            cout << "Vertex not equal, " << iK << endl;
+        }
+    }
+}
+
