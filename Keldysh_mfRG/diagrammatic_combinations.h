@@ -253,7 +253,7 @@ auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, d
         case 'a' :
 #if DIAG_CLASS >=2
             K2 = vertex.densvertex.avertex.K2_vvalsmooth(i1, w, v, i_in, spin, vertex.densvertex.tvertex);
-            gammaRb = vertex.densvertex.gammaRb(i1, w, v, vpp, i_in, 'a');
+            gammaRb = vertex.densvertex.gammaRb(i1, w, v, vpp, i_in, spin, 'a');
 #endif
 #if DIAG_CLASS >=3
             K3 = vertex.densvertex.avertex.K3_vvalsmooth(i1, w, v, vpp, i_in, spin, vertex.densvertex.tvertex);
@@ -262,7 +262,7 @@ auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, d
         case 'p':
 #if DIAG_CLASS >=2
             K2 = vertex.densvertex.pvertex.K2_vvalsmooth(i1, w, v, i_in, spin);
-            gammaRb = vertex.densvertex.gammaRb(i1, w, v, vpp, i_in, 'p');
+            gammaRb = vertex.densvertex.gammaRb(i1, w, v, vpp, i_in, spin, 'p');
 #endif
 #if DIAG_CLASS >=3
             K3 = vertex.densvertex.pvertex.K3_vvalsmooth(i1, w, v, vpp, i_in, spin);
@@ -271,7 +271,7 @@ auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, d
         case 't':
 #if DIAG_CLASS >=2
             K2 = vertex.densvertex.tvertex.K2_vvalsmooth(i1, w, v, i_in, spin, vertex.densvertex.avertex);
-            gammaRb = vertex.densvertex.gammaRb(i1, w, v, vpp, i_in, 't');;
+            gammaRb = vertex.densvertex.gammaRb(i1, w, v, vpp, i_in, spin, 't');;
 #endif
 #if DIAG_CLASS >=3
             K3 = vertex.densvertex.tvertex.K3_vvalsmooth(i1, w, v, vpp, i_in, spin, vertex.densvertex.avertex);
@@ -291,7 +291,7 @@ auto right_diff_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vp,
         case 'a' :
 #if DIAG_CLASS >= 2
             K2b = vertex.densvertex.avertex.K2b_vvalsmooth(i3, w, vp, i_in, spin, vertex.densvertex.tvertex);
-            gammaRb = vertex.densvertex.gammaRb(i3, w, vpp, vp, i_in, 'a');
+            gammaRb = vertex.densvertex.gammaRb(i3, w, vpp, vp, i_in, spin, 'a');
 #endif
 #if DIAG_CLASS >= 3
             K3 = vertex.densvertex.avertex.K3_vvalsmooth(i3, w, vpp, vp, i_in, spin, vertex.densvertex.tvertex);
@@ -300,7 +300,7 @@ auto right_diff_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vp,
         case 'p':
 #if DIAG_CLASS >= 2
             K2b = vertex.densvertex.pvertex.K2b_vvalsmooth(i3, w, vp, i_in, spin);
-            gammaRb = vertex.densvertex.gammaRb(i3, w, vpp, vp, i_in, 'p');
+            gammaRb = vertex.densvertex.gammaRb(i3, w, vpp, vp, i_in, spin, 'p');
 #endif
 #if DIAG_CLASS >= 3
             K3 = vertex.densvertex.pvertex.K3_vvalsmooth(i3, w, vpp, vp, i_in, spin);
@@ -309,7 +309,7 @@ auto right_diff_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vp,
         case 't':
 #if DIAG_CLASS >= 2
             K2b = vertex.densvertex.tvertex.K2b_vvalsmooth(i3, w, vp, i_in, spin, vertex.densvertex.avertex);
-            gammaRb = vertex.densvertex.gammaRb(i3, w, vpp, vp, i_in, 't');
+            gammaRb = vertex.densvertex.gammaRb(i3, w, vpp, vp, i_in, spin, 't');
 #endif
 #if DIAG_CLASS >= 3
             K3 = vertex.densvertex.tvertex.K3_vvalsmooth(i3, w, vpp, vp, i_in, spin, vertex.densvertex.avertex);
