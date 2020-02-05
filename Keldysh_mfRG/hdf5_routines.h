@@ -99,7 +99,7 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
 
         //buffer irreducible vertex:
-    int irred_dim1 =16*n_in;
+        int irred_dim1 =16*n_in;
         auto irreducible_class = new complex_t[irred_dim1];//irrdeucible vertex
 
 
@@ -401,7 +401,6 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
         delete[] selfenergy;
 
         dataset_lambda->close();
-
         dataset_irred->close();
         dataset_self->close();
 
