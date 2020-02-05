@@ -25,9 +25,9 @@ def load_hdf5(filename, only_SE):
             K3a = list(f[keys[6]])
             K3p = list(f[keys[7]])
             K3t = list(f[keys[8]])
-            irred = list(f[keys[9]])
-        Lambdas = list(f[keys[10]])
-        selfenergy = list(f[keys[11]])
+            irred = list(f[keys[-3]])
+        Lambdas = list(f[keys[-2]])
+        selfenergy = list(f[keys[-1]])
         
     if only_SE:
         return selfenergy, Lambdas
@@ -105,4 +105,4 @@ plt.yticks(fontsize=fs)
 plt.legend(lines, leg, fontsize=fs, loc='upper right')
 
 plt.show()
-    
+
