@@ -14,7 +14,7 @@ auto gR(double Lambda, double omega) -> comp
 #if REG==1
     return 1./(omega-epsilon);
 #elif REG==2
-    return 1./(omega-epsilon + ((comp)0.5i*(GAMMA_REG+Lambda)));
+    return 1./(omega-epsilon + (0.5*im_unit*(GAMMA_REG+Lambda)));
 #endif
 }
 
@@ -23,7 +23,7 @@ auto gA(double Lambda, double omega) -> comp
 #if REG==1
     return 1./(omega-epsilon);
 #elif REG==2
-    return 1./(omega-epsilon - ((comp)0.5i*(GAMMA_REG+Lambda)));
+    return 1./(omega-epsilon - (0.5*im_unit*(GAMMA_REG+Lambda)));
 #endif
 }
 
@@ -45,7 +45,7 @@ auto gR_outer(double Lambda, double omega) -> comp
 #if REG==1
     return 1./(omega-epsilon - 0.5*U);
 #elif REG==2
-    return 1./(omega-epsilon + ((comp)0.5i*(GAMMA_REG+Lambda)) - 0.5*U);
+    return 1./(omega-epsilon + (0.5*im_unit*(GAMMA_REG+Lambda)) - 0.5*U);
 #endif
 }
 auto gA_outer(double Lambda, double omega) -> comp
@@ -53,7 +53,7 @@ auto gA_outer(double Lambda, double omega) -> comp
 #if REG==1
     return 1./(omega-epsilon - 0.5*U);
 #elif REG==2
-    return 1./(omega-epsilon - ((comp)0.5i*(GAMMA_REG+Lambda)) - 0.5*U);
+    return 1./(omega-epsilon - (0.5*im_unit*(GAMMA_REG+Lambda)) - 0.5*U);
 #endif
 }
 auto gK_outer(double Lambda, double omega) -> comp
@@ -66,11 +66,11 @@ auto gK_outer(double Lambda, double omega) -> comp
 
 auto sR(double Lambda, double omega) -> comp
 {
-    return -((comp)0.5i)*gR(Lambda,omega)*gR(Lambda,omega);
+    return -(0.5*im_unit)*gR(Lambda,omega)*gR(Lambda,omega);
 }
 auto sA(double Lambda, double omega) -> comp
 {
-    return ((comp)0.5i)*gA(Lambda,omega)*gA(Lambda,omega);
+    return (0.5*im_unit)*gA(Lambda,omega)*gA(Lambda,omega);
 }
 auto sK(double Lambda, double omega) -> comp
 {

@@ -545,11 +545,11 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
 
                 if(diff){
                     Integrand_K1_diff<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
-                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
+                    value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
                 }
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
-                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
+                    value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value;
@@ -599,11 +599,11 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
 
                 if(diff){
                     Integrand_K2_diff<Q> integrand_K2 (vertex1, vertex2, Pi, i0, w, v, i_in, channel);
-                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K2, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                    value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K2, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
                 }
                 else{
                     Integrand_K2<Q> integrand_K2 (vertex1, vertex2, Pi, i0, w, v, i_in, channel, part);
-                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K2, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                    value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K2, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
                 }
 
                 K2_buffer[iterator*n_omp + i_omp] = value;
@@ -655,12 +655,12 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
                 if (diff){
                     Integrand_K3_diff<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel);
 
-                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K3, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency                    // y
+                    value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K3, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency                    // y
                 }
                 else{
                     Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp,  i_in, channel, part);
 
-                    value = prefactor*(-1./(2.*pi*(comp)1.i))*integrator(integrand_K3, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                    value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K3, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
                 }
 
                 K3_buffer[iterator*n_omp + i_omp] = value;
