@@ -8,7 +8,7 @@
 #include "selfenergy.h"
 #include "vertex.h"
 #include "propagator.h"
-
+#include "parameters.h"
 
 //TODO include spinvertex contributions!!
 
@@ -81,7 +81,6 @@ public:
 //            vertex.densvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
 //            vertex.densvertex.tvertex.value(7, 0., wp, w, i_in, vertex.densvertex.avertex) +
 //            vertex.densvertex.irred.vval(7) ) * propagator.pvalsmooth(1, wp) );
-
 
         Q aid1 = propagator.pvalsmooth(0, wp);
         Q aid2 = conj(propagator.pvalsmooth(0, wp));
@@ -183,16 +182,16 @@ auto loop(Vertex<fullvert<Q> >& fullvertex, Propagator& prop) -> SelfEnergy<comp
 //TODO complete support for internal structure
 #pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
-        int i = ( (iSE%(nSE*n_in))/n_in);
-        int i_in = iSE%n_in;
+        int i = iSE/n_in;
+        int i_in = iSE - i*n_in;
 
         double w = ffreqs[i];
 
         IntegrandR<Q, fullvert<Q> > integrandR(fullvertex, prop, w, i_in);
         IntegrandK<Q, fullvert<Q> > integrandK(fullvertex, prop, w, i_in);
 
-        comp integratedR = (1./((comp)1.i))*integrator(integrandR, w_lower_f, w_upper_f);
-        comp integratedK = (1./((comp)1.i))*integrator(integrandK, w_lower_f, w_upper_f);
+        comp integratedR = (-im_unit)*integrator(integrandR, w_lower_f, w_upper_f);
+        comp integratedK = (-im_unit)*integrator(integrandK, w_lower_f, w_upper_f);
 
         resp.setself(0, i, integratedR);
         resp.setself(1, i, integratedK);

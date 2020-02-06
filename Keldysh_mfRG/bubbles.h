@@ -537,9 +537,9 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
 #pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 int iK1 = i_mpi * n_omp + i_omp;
-                int i0 = (iK1 % (nK_K1 * nw1_w * n_in)) / (nw1_w * n_in);
-                int iw = (iK1 % (nw1_w * n_in)) / n_in;
-                int i_in = iK1 % n_in;
+                int i0 = iK1/(nw1_w*n_in);
+                int iw = iK1/(n_in) - i0*nw1_w;
+                int i_in = iK1 - i0*nw1_w*n_in - iw*n_in;
                 double w = bfreqs[iw];
                 Q value;
 
@@ -589,10 +589,10 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
 #pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 int iK2 = i_mpi * n_omp + i_omp;
-                int i0 = (iK2 % (nK_K2 * nw2_w * nw2_v * n_in)) / (nw2_w * nw2_v * n_in);
-                int iw = (iK2 % (nw2_w * nw2_v * n_in)) / (nw2_v * n_in);
-                int iv = (iK2 % (nw2_v * n_in)) / n_in;
-                int i_in = iK2 % n_in;
+                int i0 = iK2 /(nw2_w * nw2_v * n_in);
+                int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
+                int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
+                int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
                 double w = bfreqs[iw];
                 double v = ffreqs[iv];
                 Q value;
@@ -641,11 +641,11 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
 #pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 int iK3 = i_mpi * n_omp + i_omp;
-                int i0 = (iK3 % (nK_K3 * nw3_w * nw3_v * nw3_vp * n_in)) / (nw3_w * nw3_v * nw3_vp * n_in);
-                int iw = (iK3 % (nw3_wp * nw3_v * nw3_vp * n_in)) / (nw3_v * nw3_vp * n_in);
-                int iv = (iK3 % (nw3_v * nw3_v * n_in)) / (nw3_v * n_in);
-                int ivp = (iK3 % (nw3_vp * n_in))/ n_in;
-                int i_in = iK3 % n_in;
+                int i0 = iK3/(nw3_w * nw3_v * nw3_vp * n_in);
+                int iw = iK3/(nw3_v * nw3_vp * n_in) - i0*nw3_w;
+                int iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
+                int ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_vp - iw*nw3_v*nw3_vp - iv*nw3_vp;
+                int i_in = iK3 - i0*nw3_w*nw3_v*nw3_vp*n_in - iw*nw3_v*nw3_vp*n_in - iv*nw3_vp*n_in - ivp*n_in;
                 double w = bfreqs[iw];
                 double v = ffreqs[iv];
                 double vp = ffreqs[ivp];
