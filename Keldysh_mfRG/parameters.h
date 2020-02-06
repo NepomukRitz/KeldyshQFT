@@ -24,7 +24,7 @@ const double pi = 3.1415926535897;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define DIAG_CLASS 3
 
 //Defines the type of propagators to handle. 1 for always free, 2 for always dressed
 #define PROP_TYPE 1
@@ -33,7 +33,10 @@ const double pi = 3.1415926535897;
 //#define SUSC 1
 
 /*Number of loops*/
-#define NLOOPS 2
+#define NLOOPS 1
+
+/*Imaginary unit*/
+const comp im_unit = 1.i;
 
 /*Dispersion relation (here, evidently, a constant)*/
 const comp epsilon = 0.0;   //NOLINT(cert-err58-cpp)
