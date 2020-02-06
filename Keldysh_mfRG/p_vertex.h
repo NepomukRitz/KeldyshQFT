@@ -57,7 +57,7 @@ public:
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    void transfToP(double&, double&, double&, char);
+    auto transfToP(double, double, double, char) -> tuple<double, double, double>;
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the p-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -233,12 +233,18 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
 template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel) -> Q{
-    transfToP(w,v1,v2,channel);
-    return value (iK, w, v1, v2, i_in);
+
+    double w_p=0., v1_p=0., v2_p=0.;
+    tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
+
+    return value (iK, w_p, v1_p, v2_p, i_in);
 }
 template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel) -> Q{
-    transfToP(w,v1,v2,channel);
-    return value (iK, w, v1, v2, i_in, spin);
+
+    double w_p=0., v1_p=0., v2_p=0.;
+    tie(w_p, v1_p, v2_p) = transfToP(w,v1,v2,channel);
+
+    return value (iK, w_p, v1_p, v2_p, i_in, spin);
 }
 
 template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in) -> Q{
@@ -276,9 +282,8 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
     return k1+k2+k2b+k3;
 }
 
-template<typename Q> void pvert<Q>::transfToP(double &w_p, double &v1_p, double &v2_p, char channel) {
-
-    double w=*(&w_p), v1=*(&v1_p), v2=*(&v2_p);
+template<typename Q> auto pvert<Q>::transfToP(double w, double v1, double v2, char channel) -> tuple<double, double, double> {
+    double w_p=0., v1_p=0., v2_p=0.;
 
     switch(channel){
         case 'a':
@@ -303,6 +308,7 @@ template<typename Q> void pvert<Q>::transfToP(double &w_p, double &v1_p, double 
             break;
         default: ;
     }
+    return make_tuple(w_p, v1_p, v2_p);
 }
 
 template<typename Q> void pvert<Q>::indices_sum(vector<int>& indices, int i0, int i2)
