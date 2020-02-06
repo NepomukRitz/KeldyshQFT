@@ -59,7 +59,7 @@ public:
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    auto transfToA(double, double, double, char) -> tuple<double, double, double>;
+    void transfToA(double&, double&, double&, char);
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the a-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -237,14 +237,14 @@ public:
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, tvert<Q>& tvertex) -> Q{
 
     double w_a=0., v1_a=0., v2_a=0.;
-    tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
+    transfToA(w,v1,v2,channel);
 
     return value(iK, w_a, v1_a, v2_a, i_in, tvertex);
 }
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, tvert<Q>& tvertex) -> Q{
 
     double w_a=0., v1_a=0., v2_a=0.;
-    tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
+    transfToA(w,v1,v2,channel);
 
     return value(iK, w_a, v1_a, v2_a, i_in, spin, tvertex);
 }
@@ -285,8 +285,9 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
 }
 
 
-template<typename Q> auto avert<Q>::transfToA(double w, double v1, double v2, char channel) -> tuple<double, double, double> {
-    double w_a=0., v1_a=0., v2_a=0.;
+template<typename Q> void avert<Q>::transfToA(double& w_a, double& v1_a, double& v2_a, char channel) {
+
+    double w =*(&w_a), v1= *(&v1_a), v2= *(&v2_a);
 
     switch(channel) {
         case 'a':
@@ -311,7 +312,6 @@ template<typename Q> auto avert<Q>::transfToA(double w, double v1, double v2, ch
             break;
         default:;
     }
-    return make_tuple(w_a, v1_a, v2_a);
 }
 
 template<typename Q> void avert<Q>::indices_sum(vector<int>& indices, int i0, int i2)
