@@ -81,7 +81,7 @@ w = np.linspace(wmin, wmax, nw)
 
 lines = []
 leg = []
-for i in range(7):
+for i in range(14):
     SE = rearrange_SE(selfenergy[i])
     line, = plt.plot(w, SE[iK, re])
     lines.append(line)
