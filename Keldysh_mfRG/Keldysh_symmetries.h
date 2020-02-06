@@ -40,16 +40,12 @@ auto convertToIndepIndex(int iK) -> int
 }
 
 /*This function returns the values of the 4 alphas for a given index in the 0...15 set */
-auto alphas(int index) -> tuple<int, int, int, int>
+void alphas(vector<int>& alphas, int index)
 {
-    int alpha1p, alpha2p, alpha1, alpha2;
-
-    alpha2 = index % 2+1;
-    alpha1 = (index % 4) / 2+1;
-    alpha2p = (index % 8) / 4+1;
-    alpha1p = (index % 16) / 8+1;
-
-    return make_tuple(alpha1p, alpha2p, alpha1, alpha2);
+    alphas[0] = (index % 16)/ 8+1;
+    alphas[1] = (index % 8) / 4+1;
+    alphas[2] = (index % 4) / 2+1;
+    alphas[3] = index % 2+1;
 }
 
 
