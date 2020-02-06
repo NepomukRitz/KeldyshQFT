@@ -79,7 +79,7 @@ public:
      * bubble in the t-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
      * i2 corresponds to the Keldysh index of the non-zero components of the differentiated bubble (i.e. i2 takes values
      * in a set of size 9*/
-    auto indices_sum(int i0, int i2) -> tuple<int, int>;
+    void indices_sum(vector<int>&, int i0, int i2);
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >=1
@@ -326,16 +326,17 @@ template<typename Q> auto tvert<Q>::transfToT(double w, double v1, double v2, ch
     return make_tuple(w_t, v1_t, v2_t);
 }
 
-template<typename Q> auto tvert<Q>::indices_sum(int i0, int i2) -> tuple<int, int>
+template<typename Q> void tvert<Q>::indices_sum(vector<int>& indices, int i0, int i2)
 {
-    int a1p, a2p, a1, a2, a3, a4, a3p, a4p;
+    vector<int> alphasi0(4), alphasi2(4);
+    int *a1p = &alphasi0[0], *a2p = &alphasi0[1], *a1 = &alphasi0[2], *a2 = &alphasi0[3];
+    int *a3 = &alphasi2[0], *a4 = &alphasi2[1], *a3p = &alphasi2[2], *a4p = &alphasi2[3];
 
-    tie(a1p, a2p, a1, a2) = alphas(i0);
-    tie(a3p, a4p, a3, a4) = alphas(i2);
+    alphas(alphasi0, i0);
+    alphas(alphasi2, i2);
 
-    return make_tuple(
-            8*(a4-1) + 4*(a2p-1) + 2*(a3p-1) + 1*(a2-1),
-            8*(a1p-1) + 4*(a3-1) + 2*(a1-1) + 1*(a4p-1));
+    indices[0] = 8*(*a4-1) + 4*(*a2p-1) + 2*(*a3p-1) + 1*(*a2-1);
+    indices[1] = 8*(*a1p-1) + 4*(*a3-1) + 2*(*a1-1) + 1*(*a4p-1);
 }
 
 #if DIAG_CLASS >=1
