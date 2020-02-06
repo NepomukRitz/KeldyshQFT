@@ -233,18 +233,12 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
 template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel) -> Q{
-
-    double w_p=0., v1_p=0., v2_p=0.;
     transfToP(w,v1,v2,channel);
-
-    return value (iK, w_p, v1_p, v2_p, i_in);
+    return value (iK, w, v1, v2, i_in);
 }
 template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel) -> Q{
-
-    double w_p=0., v1_p=0., v2_p=0.;
     transfToP(w,v1,v2,channel);
-
-    return value (iK, w_p, v1_p, v2_p, i_in, spin);
+    return value (iK, w, v1, v2, i_in, spin);
 }
 
 template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in) -> Q{

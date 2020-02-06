@@ -235,18 +235,12 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, tvert<Q>& tvertex) -> Q{
-
-    double w_a=0., v1_a=0., v2_a=0.;
     transfToA(w,v1,v2,channel);
-
-    return value(iK, w_a, v1_a, v2_a, i_in, tvertex);
+    return value(iK, w, v1, v2, i_in, tvertex);
 }
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, tvert<Q>& tvertex) -> Q{
-
-    double w_a=0., v1_a=0., v2_a=0.;
     transfToA(w,v1,v2,channel);
-
-    return value(iK, w_a, v1_a, v2_a, i_in, spin, tvertex);
+    return value(iK, w, v1, v2, i_in, spin, tvertex);
 }
 
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex) -> Q{

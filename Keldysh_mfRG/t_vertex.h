@@ -249,18 +249,12 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE T-VERTEX ******************************************/
 template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, avert<Q>& avertex) -> Q{
-
-    double w_t=0., v1_t=0., v2_t=0.;
     transfToT(w,v1,v2,channel);
-
-    return value (iK, w_t, v1_t, v2_t, i_in, avertex);
+    return value (iK, w, v1, v2, i_in, avertex);
 }
 template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, avert<Q>& avertex) -> Q{
-
-    double w_t=0., v1_t=0., v2_t=0.;
     transfToT(w,v1,v2,channel);
-
-    return value (iK, w_t, v1_t, v2_t, i_in, spin, avertex);
+    return value (iK, w, v1, v2, i_in, spin, avertex);
 }
 
 template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, avert<Q>& avertex) -> Q{
