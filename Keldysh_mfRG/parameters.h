@@ -36,7 +36,7 @@ const double pi = 3.1415926535897;
 #define NLOOPS 1
 
 /*Imaginary unit*/
-const comp im_unit = 1.i;
+const comp im_unit (0., 1.);
 
 /*Dispersion relation (here, evidently, a constant)*/
 const comp epsilon = 0.0;   //NOLINT(cert-err58-cpp)
