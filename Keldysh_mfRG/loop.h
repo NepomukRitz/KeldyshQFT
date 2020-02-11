@@ -58,19 +58,6 @@ public:
 //        Q aid1 = propagator.pvalsmooth(0, wp);
 //        Q aid2 = conj(propagator.pvalsmooth(0, wp));
 //        Q aid3 = propagator.pvalsmooth(1, wp);
-////
-////        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
-//
-//        return -(vertex.densvertex.value(3, w, wp, w, i_in, 'f')*aid1 +
-//               vertex.densvertex.value(6, w, wp, w, i_in, 'f')*aid2+
-//               vertex.densvertex.value(7, w, wp, w, i_in, 'f')*aid3);
-
-
-//        return
-//        -( (vertex.densvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
-//            vertex.densvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
-//            vertex.densvertex.tvertex.value(3, 0., wp, w, i_in, vertex.densvertex.avertex) +
-//            vertex.densvertex.irred.vval(3) ) * propagator.pvalsmooth(0, wp) +
 //
 //           (vertex.densvertex.avertex.value(6, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
 //            vertex.densvertex.pvertex.value(6, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
