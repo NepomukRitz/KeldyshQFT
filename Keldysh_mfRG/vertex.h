@@ -201,17 +201,17 @@ template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value){
 
 template <typename Q> auto fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, char channel) -> Q
 {
-    return irred.vval(iK, i_in) +
-    avertex.value(iK, w, v1, v2, i_in, channel, tvertex) +
-    pvertex.value(iK, w, v1, v2, i_in, channel) +
-    tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
+    return irred.vval(iK, i_in)
+            + avertex.value(iK, w, v1, v2, i_in, channel, tvertex)
+            + pvertex.value(iK, w, v1, v2, i_in, channel)
+            + tvertex.value(iK, w, v1, v2, i_in, channel, avertex);
 }
 template <typename Q> auto fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, int spin, char channel) -> Q
 {
-    return irred.vval(iK, i_in) +
-    avertex.value(iK, w, v1, v2, i_in, spin, channel, tvertex) +
-    pvertex.value(iK, w, v1, v2, i_in, spin, channel) +
-    tvertex.value(iK, w, v1, v2, i_in, spin, channel, avertex);
+    return irred.vval(iK, i_in)
+            + avertex.value(iK, w, v1, v2, i_in, spin, channel, tvertex)
+            + pvertex.value(iK, w, v1, v2, i_in, spin, channel)
+            + tvertex.value(iK, w, v1, v2, i_in, spin, channel, avertex);
 }
 
 
