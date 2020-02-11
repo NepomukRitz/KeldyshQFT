@@ -229,7 +229,8 @@ public:
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
     auto operator() (double vpp) -> Q {
-        if (part != 'L') return 0.;  // left part of multi-loop contribution does not contribute to K2 class
+        if (part != 'L') return 0.;  // right part of multi-loop contribution does not contribute to K2 class
+        // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!!
 
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
