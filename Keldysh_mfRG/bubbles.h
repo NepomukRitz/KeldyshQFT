@@ -350,7 +350,7 @@ public:
                     res_l_Vhat =  left_same_bare<Q> (vertex1, *i1, w, vpp, i_in, 1, channel);
                     res_r_Vhat = right_same_bare<Q> (vertex2, *i3, w, vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_Vhat+res_l_Vhat) * Pival * res_r_Vhat;
+                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
 
                     break;
                 default: ;
@@ -416,7 +416,7 @@ public:
                     res_l_Vhat =  left_diff_bare<Q> (vertex1, *i1, w, v, vpp, i_in, 1, channel);
                     res_r_Vhat = right_same_bare<Q> (vertex2, *i3, w,    vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_Vhat+res_l_Vhat) * Pival * res_r_Vhat;
+                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
 
                     break;
                 default: ;
@@ -476,7 +476,7 @@ public:
                     res_l_Vhat =  left_diff_bare<Q> (vertex1, *i1, w, v,  vpp, i_in, 1, channel);
                     res_r_Vhat = right_diff_bare<Q> (vertex2, *i3, w, vp, vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_Vhat+res_l_Vhat) * Pival * res_r_Vhat;
+                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
 
                     break;
                 default: ;
