@@ -24,7 +24,7 @@ const double pi = 3.1415926535897;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 3
+#define DIAG_CLASS 1
 
 //Defines the type of propagators to handle. 1 for always free, 2 for always dressed
 #define PROP_TYPE 1
@@ -52,8 +52,8 @@ const double U = 1.0;
 const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 101;
-const int nFER = 101;
+const int nBOS = 151;
+const int nFER = 151;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -140,7 +140,7 @@ const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 const double inter_tol = 10e-8;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-const int nINT = 2*(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
+const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 /*Frequency grids for each channel*/
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
