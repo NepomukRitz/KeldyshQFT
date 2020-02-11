@@ -315,7 +315,7 @@ template<typename Q> void pvert<Q>::indices_sum(vector<int>& indices, int i0, in
 {
     vector<int> alphasi0(4), alphasi2(4);
     int *a1p = &alphasi0[0], *a2p = &alphasi0[1], *a1 = &alphasi0[2], *a2 = &alphasi0[3];
-    int *a3 = &alphasi2[0], *a4 = &alphasi2[1], *a3p = &alphasi2[2], *a4p = &alphasi2[3];
+    int *a3p = &alphasi2[0], *a4p = &alphasi2[1], *a3 = &alphasi2[2], *a4 = &alphasi2[3];
 
     alphas(alphasi0, i0);
     alphas(alphasi2, i2);

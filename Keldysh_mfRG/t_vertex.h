@@ -73,7 +73,7 @@ public:
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    void transfToT(double&, double&, double&, char);
+    auto transfToT(double, double, double, char) -> tuple<double, double, double>;
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * bubble in the t-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -249,12 +249,18 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE T-VERTEX ******************************************/
 template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, avert<Q>& avertex) -> Q{
-    transfToT(w,v1,v2,channel);
-    return value (iK, w, v1, v2, i_in, avertex);
+
+    double w_t=0., v1_t=0., v2_t=0.;
+    tie(w_t, v1_t, v2_t) = transfToT(w,v1,v2,channel);
+
+    return value (iK, w_t, v1_t, v2_t, i_in, avertex);
 }
 template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, avert<Q>& avertex) -> Q{
-    transfToT(w,v1,v2,channel);
-    return value (iK, w, v1, v2, i_in, spin, avertex);
+
+    double w_t=0., v1_t=0., v2_t=0.;
+    tie(w_t, v1_t, v2_t) = transfToT(w,v1,v2,channel);
+
+    return value (iK, w_t, v1_t, v2_t, i_in, spin, avertex);
 }
 
 template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, avert<Q>& avertex) -> Q{
@@ -288,12 +294,12 @@ template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v
     k3 = K3_vvalsmooth (iK, w, v1, v2, i_in, spin, avertex);
 #endif
 
-    return k1+k2+k2b+k3;}
+    return k1+k2+k2b+k3;
+}
 
 
-template<typename Q> void tvert<Q>::transfToT(double &w_t, double &v1_t, double &v2_t, char channel){
-
-    double w=*(&w_t), v1=*(&v1_t), v2=*(&v2_t);
+template<typename Q> auto tvert<Q>::transfToT(double w, double v1, double v2, char channel) -> tuple<double, double, double> {
+    double w_t=0., v1_t=0., v2_t=0.;
 
     switch(channel) {
         case 'a':
@@ -318,13 +324,14 @@ template<typename Q> void tvert<Q>::transfToT(double &w_t, double &v1_t, double 
             break;
         default:;
     }
+    return make_tuple(w_t, v1_t, v2_t);
 }
 
 template<typename Q> void tvert<Q>::indices_sum(vector<int>& indices, int i0, int i2)
 {
     vector<int> alphasi0(4), alphasi2(4);
     int *a1p = &alphasi0[0], *a2p = &alphasi0[1], *a1 = &alphasi0[2], *a2 = &alphasi0[3];
-    int *a3 = &alphasi2[0], *a4 = &alphasi2[1], *a3p = &alphasi2[2], *a4p = &alphasi2[3];
+    int *a3p = &alphasi2[0], *a4p = &alphasi2[1], *a3 = &alphasi2[2], *a4 = &alphasi2[3];
 
     alphas(alphasi0, i0);
     alphas(alphasi2, i2);
