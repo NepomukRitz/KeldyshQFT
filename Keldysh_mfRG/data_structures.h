@@ -1,5 +1,5 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "bugprone-too-small-loop-variable"
+//#pragma clang diagnostic push
+//#pragma ide diagnostic ignored "bugprone-too-small-loop-variable"
 /*
  * Define essential data types
  */
@@ -467,4 +467,4 @@ vec<T> vec<T>::inv() {
 
 #endif // DATA_STRUCTURES_H
 
-#pragma clang diagnostic pop
+//#pragma clang diagnostic pop
