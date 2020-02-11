@@ -135,7 +135,7 @@ public:
      * @param vertex1_in : left vertex
      * @param vertex2_in : right vertex
      * @param Pi_in      : Bubble object connecting the left and right vertex
-     * @param i0_in      : index (0,...,5) specifying the (external) Keldysh component of integrand object
+     * @param i0_in      : index (0 or 1) specifying the (external) Keldysh component of integrand object
      *                     (converted into actual Keldysh index i0 within the constructor)
      * @param w_in       : external bosonic frequency \omega
      * @param i_in_in    : external index for internal structure
@@ -144,7 +144,7 @@ public:
     Integrand_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in,    int i_in_in, char ch_in)
         :                     vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),  i_in(i_in_in), channel(ch_in)
     {
-        // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
+        // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
             case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
@@ -202,7 +202,7 @@ public:
      * @param vertex1_in : left vertex
      * @param vertex2_in : right vertex
      * @param Pi_in      : Bubble object connecting the left and right vertex
-     * @param i0_in      : index (0,...,5) specifying the (external) Keldysh component of integrand object
+     * @param i0_in      : index (0,...,4) specifying the (external) Keldysh component of integrand object
      *                     (converted into actual Keldysh index i0 within the constructor)
      * @param w_in       : external bosonic frequency \omega
      * @param v_in       : external fermionic frequency \nu
@@ -214,7 +214,7 @@ public:
     Integrand_K2(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in,     char ch_in, char pt_in)
         :                     vertex1(vertex1_in),              vertex2(vertex2_in),       Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
     {
-        // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
+        // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
             case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
@@ -387,9 +387,21 @@ template <typename Q> class Integrand_K1_diff {
     char channel;
     double w;
 public:
+    /**
+     * Constructor:
+     * @param vertex1_in : left vertex
+     * @param vertex2_in : right vertex
+     * @param Pi_in      : Bubble object connecting the left and right vertex
+     * @param i0_in      : index (0 or 1) specifying the (external) Keldysh component of integrand object
+     *                     (converted into actual Keldysh index i0 within the constructor)
+     * @param w_in       : external bosonic frequency \omega
+     * @param i_in_in    : external index for internal structure
+     * @param ch_in      : diagrammatic channel ('a', 'p', 't')
+     */
     Integrand_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in, int i_in_in, char ch_in)
         :                          vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),               w(w_in), i_in(i_in_in), channel(ch_in)
     {
+        // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         assert(i0_in<2);
         switch (channel) {
             case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
@@ -399,7 +411,11 @@ public:
         }
     };
 
-    //This is a call operator
+    /**
+     * Call operator:
+     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
     auto operator() (double vpp) -> Q {
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
@@ -452,9 +468,22 @@ template <typename Q> class Integrand_K2_diff {
     char channel;
     double w, v;
 public:
+    /**
+     * Constructor:
+     * @param vertex1_in : left vertex
+     * @param vertex2_in : right vertex
+     * @param Pi_in      : Bubble object connecting the left and right vertex
+     * @param i0_in      : index (0,...,4) specifying the (external) Keldysh component of integrand object
+     *                     (converted into actual Keldysh index i0 within the constructor)
+     * @param w_in       : external bosonic frequency \omega
+     * @param v_in       : external fermionic frequency \nu
+     * @param i_in_in    : external index for internal structure
+     * @param ch_in      : diagrammatic channel ('a', 'p', 't')
+     */
     Integrand_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in, int i_in_in, char ch_in)
         :                          vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
     {
+        // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
         assert(i0_in<6);
         switch (channel){
             case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
@@ -464,7 +493,11 @@ public:
         }
     };
 
-    //This is a call operator
+    /**
+     * Call operator:
+     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
     auto operator() (double vpp) -> Q {
 
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
@@ -518,14 +551,32 @@ template <typename Q> class Integrand_K3_diff {
     char channel;
     double w, v, vp;
 public:
+    /**
+     * Constructor:
+     * @param vertex1_in : left vertex
+     * @param vertex2_in : right vertex
+     * @param Pi_in      : Bubble object connecting the left and right vertex
+     * @param i0_in      : index (0,...,5) specifying the (external) Keldysh component of integrand object
+     *                     (converted into actual Keldysh index i0 within the constructor)
+     * @param w_in       : external bosonic frequency \omega
+     * @param v_in       : external fermionic frequency \nu
+     * @param vp_in      : external fermionic frequency \nu'
+     * @param i_in_in    : external index for internal structure
+     * @param ch_in      : diagrammatic channel ('a', 'p', 't')
+     */
     Integrand_K3_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in)
         :                          vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                      w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in)
     {
+        // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
         assert(i0_in<7);
         i0 = non_zero_Keldysh_K3[i0_in];
     };
 
-    //This is a call operator
+    /**
+     * Call operator:
+     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
     auto operator() (double vpp) -> Q {
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
