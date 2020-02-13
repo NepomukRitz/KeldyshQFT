@@ -376,7 +376,7 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
         conjugate1 = false;
     }
     else{
-        return valueK1;
+        return 0.;
     }
 
 
@@ -412,7 +412,7 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
         pf1 = 1.;
         conjugate1 = false;
     } else {
-        return valueK1;
+        return 0.;
     }
     switch (spin) {
         case 0:
@@ -513,7 +513,7 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
         iK2 = 3;
     }
     else {
-        return valueK2;
+        return 0.;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -550,7 +550,7 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
         T3_K2(w_p, v1_p, i_in);
         iK2 = 3;
     } else {
-        return valueK2;
+        return 0.;
     }
 
     switch (spin) {
@@ -605,7 +605,7 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
         iK2 = 3;
     }
     else {
-        return valueK2;
+        return 0.;
     }
     //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
     TC_K2(w_p, v2_p, i_in);
@@ -661,7 +661,7 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
         iK2 = 3;
     }
     else {
-        return valueK2;
+        return 0.;
 
     }
     //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
@@ -806,7 +806,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
             conjugate3 = true;
             break;
         default:
-            return valueK3;
+            return 0.;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -830,12 +830,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
     switch (spin) {
         case 0:
             switch (iK) {
-            case 0:
-            case 1:
-            case 3:
-            case 5:
-            case 6:
-            case 7:
+            case 0: case 1: case 3: case 5: case 6: case 7:
                 iK3 = convertToIndepIndex(iK);
                 pf3 = 1.;
                 conjugate3 = false;
@@ -897,7 +892,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
                 conjugate3 = true;
                 break;
             default:
-                return valueK3;
+                return 0.;
         }
             break;
         case 1:
@@ -984,8 +979,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
                 conjugate3 = true;
                 break;
             default:
-                return valueK3;
-
+                return 0.;
             }
 
             break;

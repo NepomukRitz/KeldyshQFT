@@ -374,7 +374,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
         pf1 = 1.;
     }
     else{
-        return valueK1;
+        return 0.;
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
@@ -404,7 +404,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
                 iK1 = 1;
                 pf1 = 1.;
             } else {
-                return valueK1;
+                return 0.;
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
@@ -425,7 +425,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
                 T1_K1(w_a, i_in);
                 iK1 = 1;
             } else {
-                return valueK1;
+                return 0.;
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
@@ -528,7 +528,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
         iK2 = 4;
     }
     else{
-        return valueK2;
+        return 0.;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -575,7 +575,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
             } else if (isInList(iK, list_K2_T0_comp11)) {
                 iK2 = 4;
             } else {
-                return valueK2;
+                return 0.;
             }
             /*And now one checks that the input frequencies are in the accepted range*/
             if(fabs(w_a)<w_upper_b && fabs(v1_a)<w_upper_f){
@@ -603,7 +603,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
             } else if (isInList(iK, list_K2_T0_comp11)) {   //T0comp11 => T2 iK=4
                 iK2 = 4;
             } else {
-                return valueK2;
+                return 0.;
             }
 
             //This case, T2 is applied to all components so, regardless of the component, apply it at the end.
@@ -668,7 +668,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
         iK2 = 4;
     }
     else{
-        return valueK2;
+        return 0.;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -719,7 +719,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
                 T3_K2(w_a, v2_a, i_in);
                 iK2 = 4;
             } else {
-                return valueK2;
+                return 0.;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -748,7 +748,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
             } else if (isInList(iK, list_K2b_T3_comp11)) {              //T3comp11 => T1 iK=4
                 iK2 = 4;
             } else {
-                return valueK2;
+                return 0.;
             }
             T1_K2(w_a, v2_a, i_in);
             pf2 = -1.;
@@ -911,7 +911,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
             transform = false;
             break;
         default:
-            return valueK3;
+            return 0.;
 
     }
 
@@ -942,12 +942,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
             /*This part determines the value of the K3 contribution*/
             /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
             switch (iK) {
-                case 0:
-                case 1:
-                case 3:
-                case 5:
-                case 6:
-                case 7:
+                case 0: case 1: case 3: case 5: case 6: case 7:
                     iK3 = convertToIndepIndex(iK);
                     pf3 = 1.;
                     conjugate = false;
@@ -1009,7 +1004,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
                     conjugate = true;
                     break;
                 default:
-                    return valueK3;
+                    return 0.;
 
 
             }
@@ -1095,7 +1090,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
                     conjugate = true;
                     break;
                 default:
-                    return valueK3;
+                    return 0.;
 
 
             }

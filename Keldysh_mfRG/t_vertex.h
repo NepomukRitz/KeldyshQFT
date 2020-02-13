@@ -387,7 +387,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
         pf1 = 1.;
     }
     else{
-        return valueK1;
+        return 0.;
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
@@ -417,7 +417,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
                 iK1 = 1;
                 pf1 = 1.;
             } else {
-                return valueK1;
+                return 0.;
             }
             /*And now one checks that the input frequency is in the accepted range*/
             if(fabs(w_t) < w_upper_b){
@@ -437,7 +437,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
                 T1_K1(w_t, i_in);
                 iK1 = 1;
             } else {
-                return valueK1;
+                return 0.;
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
@@ -542,7 +542,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
         conjugate2 = true;
     }
     else{
-        return valueK2;
+        return 0.;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -587,7 +587,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
                 iK2 = 3;
                 conjugate2 = true;
             } else {
-                return valueK2;
+                return 0.;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -619,7 +619,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
                 iK2 = 3;
                 conjugate2 = true;
             } else {
-                return valueK2;
+                return 0.;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -677,7 +677,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
         conjugate2 = true;
     }
     else{
-        return valueK2;
+        return 0.;
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
@@ -724,7 +724,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
                 iK2 = 3;
                 conjugate2 = true;
             } else {
-                return valueK2;
+                return 0.;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -758,7 +758,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
                 iK2 = 3;
                 conjugate2 = true;
             } else {
-                return valueK2;
+                return 0.;
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
@@ -929,8 +929,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
             conjugate = true;
             break;
         default:
-            iK3 = 0;
-            pf3 = 0.;
+            return 0.;
 
     }
 
@@ -958,12 +957,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
             /*This part determines the value of the K3 contribution*/
             /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
             switch (iK) {
-                case 0:
-                case 1:
-                case 3:
-                case 5:
-                case 6:
-                case 7:
+                case 0: case 1: case 3: case 5: case 6: case 7:
                     iK3 = convertToIndepIndex(iK);
                     pf3 = 1.;
                     conjugate = false;
@@ -1025,7 +1019,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
                     conjugate = true;
                     break;
                 default:
-                    return valueK3;
+                    return 0.;
 
 
             }
@@ -1037,11 +1031,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
 
         case 1:
             switch (iK) {
-                case 0:
-                case 3:
-                case 5:
-                case 6:
-                case 7:
+                case 0: case 3: case 5: case 6: case 7:
                     T1_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = convertToIndepIndex(iK);
                     pf3 = 1.;
@@ -1113,7 +1103,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
                     conjugate = true;
                     break;
                 default:
-                    return valueK3;
+                    return 0.;
 
 
             }
