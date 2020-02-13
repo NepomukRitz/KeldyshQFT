@@ -81,7 +81,7 @@ auto left_same_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp,
 template <typename Q>
 auto right_same_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, char channel) -> Q
 {
-    Q gamma0, K1, K2; //TODO: previously K2b --> Typo? // TODO: check frequency
+    Q gamma0, K1, K2; // TODO: check frequency
     gamma0 = vertex.densvertex.irred.vval(i3, i_in);
 
     switch (channel){
@@ -288,7 +288,7 @@ auto left_same_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp,
 template <typename Q>
 auto right_same_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, int spin, char channel) -> Q
 {
-    Q gamma0, K1, K2; //TODO: previously K2b --> Typo?
+    Q gamma0, K1, K2;
     gamma0 = vertex.spinvertex.irred.vval(i3, i_in);
 
     switch (channel){
