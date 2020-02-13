@@ -104,13 +104,13 @@ public:
     auto K1_vvalsmooth(int, double, int, int, avert<Q>&) -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
-    auto indices_T1_K1(double, int) -> tuple<double, int>;
+    void T1_K1(double&, int&);
     /*Symmetry which interchanges the outgoing legs*/
-    auto indices_T2_K1(double, int) -> tuple<double, int>;
+    void T2_K1(double&, int&);
     /*Symmetry which interchanges both incoming and outgoing legs*/
-    auto indices_T3_K1(double, int) -> tuple<double, int>;
+    void T3_K1(double&, int&);
     /*Symmetry which interchanges both incoming with outgoing legs*/
-    auto indices_TC_K1(double, int) -> tuple<double, int>;
+    void TC_K1(double&, int&);
 #endif
 #if DIAG_CLASS >=2
     vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_nut * n_in);
@@ -139,13 +139,13 @@ public:
     auto K2b_vvalsmooth(int, double, double, int, int, avert<Q>&) -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
-    auto indices_T1_K2(double, double, int) -> tuple<double, double, int>;
+    void T1_K2(double&, double&, int&);
     /*Symmetry which interchanges the outgoing legs*/
-    auto indices_T2_K2(double, double, int) -> tuple<double, double, int>;
+    void T2_K2(double&, double&, int&);
     /*Symmetry which interchanges both incoming and outgoing legs*/
-    auto indices_T3_K2(double, double, int) -> tuple<double, double, int>;
+    void T3_K2(double&, double&, int&);
     /*Symmetry which interchanges both incoming with outgoing legs*/
-    auto indices_TC_K2(double, double, int) -> tuple<double, double, int>;
+    void TC_K2(double&, double&, int&);
 #endif
 #if DIAG_CLASS >=3
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in);
@@ -169,13 +169,13 @@ public:
     auto K3_vvalsmooth(int, double, double, double, int, int, avert<Q>&) -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
-    auto indices_T1_K3(double, double, double, int) -> tuple<double, double, double, int>;
+    void T1_K3(double&, double&, double&, int&);
     /*Symmetry which interchanges the outgoing legs*/
-    auto indices_T2_K3(double, double, double, int) -> tuple<double, double, double, int>;
+    void T2_K3(double&, double&, double&, int&);
     /*Symmetry which interchanges both incoming and outgoing legs*/
-    auto indices_T3_K3(double, double, double, int) -> tuple<double, double, double, int>;
+    void T3_K3(double&, double&, double&, int&);
     /*Symmetry which interchanges both incoming with outgoing legs*/
-    auto indices_TC_K3(double, double, double, int) -> tuple<double, double, double, int>;
+    void TC_K3(double&, double&, double&, int&);
 #endif
 #endif
 
@@ -378,7 +378,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
         pf1 = 1.;
     }
     else if(isInList(iK,list_K1_T3_comp1)){
-        tie(w_t, i_in) = indices_T3_K1(w_t, i_in);
+        T3_K1(w_t, i_in);
         iK1 = 0;
         pf1 = 1.;
     }
@@ -410,7 +410,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
                 iK1 = 0;
                 pf1 = 1.;
             } else if (isInList(iK, list_K1_T3_comp1)) {
-                tie(w_t, i_in) = indices_T3_K1(w_t, i_in);
+                T3_K1(w_t, i_in);
                 iK1 = 0;
                 pf1 = 1.;
             } else if (isInList(iK, list_K1_T0_comp3)) {
@@ -428,13 +428,13 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
         case 1:
             pf1 = -1.;  //Always a sign-flipping traffo
             if (isInList(iK, list_K1_T0_comp1)) {               //T0comp1 => T2 iK=0
-                tie(w_t, i_in) = indices_T2_K1(w_t, i_in);
+                T2_K1(w_t, i_in);
                 iK1 = 0;
             } else if (isInList(iK, list_K1_T3_comp1)) {        //T3comp1 => T1, iK=0
-                tie(w_t, i_in) = indices_T1_K1(w_t, i_in);
+                T1_K1(w_t, i_in);
                 iK1 = 0;
             } else if (isInList(iK, list_K1_T0_comp3)) {        //T0comp3 => T1, iK=1
-                tie(w_t, i_in) = indices_T1_K1(w_t, i_in);
+                T1_K1(w_t, i_in);
                 iK1 = 1;
             } else {
                 return valueK1;
@@ -452,44 +452,28 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
     return valueK1;
 }
 
-template<typename Q> auto tvert<Q>::indices_T1_K1(double w_t, int i_in) -> tuple<double, int>
+template<typename Q> void tvert<Q>::T1_K1(double& w_t, int& i_in)
 {
-    double trans_w_t;
-
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = -w_t;
-    i_in = internal_T1_K1_t(i_in);
-
-    return make_tuple(trans_w_t, i_in);
+    w_t *= -1.;
+    internal_T1_K1_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_T2_K1(double w_t, int i_in) -> tuple<double, int>
+template<typename Q> void tvert<Q>::T2_K1(double& w_t, int& i_in)
 {
-    double trans_w_t;
-
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = w_t;
-    i_in = internal_T2_K1_t(i_in);
-
-    return make_tuple(trans_w_t, i_in);
+    //w_t *=1.;
+    internal_T2_K1_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_T3_K1(double w_t, int i_in) -> tuple<double, int>
+template<typename Q> void tvert<Q>::T3_K1(double& w_t, int& i_in)
 {
-    double trans_w_t;
-
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = -w_t;
-    i_in = internal_T3_K1_t(i_in);
-
-    return make_tuple(trans_w_t, i_in);
+    w_t *=-1.;
+    internal_T3_K1_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_TC_K1(double w_t, int i_in) -> tuple<double, int>
+template<typename Q> void tvert<Q>::TC_K1(double& w_t, int& i_in)
 {
-    double trans_w_t;
-
-    trans_w_t = w_t;
-    i_in = internal_TC_K1_t(i_in);
-
-    return make_tuple(trans_w_t, i_in);
+    w_t *= 1.;
+    internal_TC_K1_t(i_in);
 }
 #endif
 #if DIAG_CLASS >=2
@@ -528,7 +512,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
     //Perform T2 at the beginning, since it is required by all elements
-    tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+    T2_K2(w_t, v1_t, i_in);
     pf2 = -1.;
     conjugate2 = false;
 
@@ -548,12 +532,12 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
         iK2 = 4;
     }
     else if(isInList(iK,list_K2_TCT2_comp1)){
-        tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
+        TC_K2(w_t, v1_t, i_in);
         iK2 = 1;
         conjugate2 = true;
     }
     else if(isInList(iK,list_K2_TCT2_comp3)){
-        tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
+        TC_K2(w_t, v1_t, i_in);
         iK2 = 3;
         conjugate2 = true;
     }
@@ -595,11 +579,11 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
             } else if (isInList(iK, list_K2_T0_comp7)) {
                 iK2 = 4;
             } else if (isInList(iK, list_K2_TC_comp1)) {
-                tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
+                TC_K2(w_t, v1_t, i_in);
                 iK2 = 1;
                 conjugate2 = true;
             } else if (isInList(iK, list_K2_TC_comp3)) {
-                tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
+                TC_K2(w_t, v1_t, i_in);
                 iK2 = 3;
                 conjugate2 = true;
             } else {
@@ -613,7 +597,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
             break;
 
         case 1:
-            tie(w_t, v1_t, i_in) = indices_T2_K2(w_t, v1_t, i_in);
+            T2_K2(w_t, v1_t, i_in);
             pf2 = -1.;
 
             if (isInList(iK, list_K2_T0_comp0)) {               //T0comp0 => T2 iK=0
@@ -627,11 +611,11 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
             } else if (isInList(iK, list_K2_T0_comp7)) {       //T0 comp7 => T2 iK=4
                 iK2 = 4;
             } else if (isInList(iK, list_K2_TC_comp1)) {        //TCcomp1 => TCT2 iK=1
-                tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
+                TC_K2(w_t, v1_t, i_in);
                 iK2 = 1;
                 conjugate2 = true;
             } else if (isInList(iK, list_K2_TC_comp3)) {        //TCcomp3 => TCT2 iK =3
-                tie(w_t, v1_t, i_in) = indices_TC_K2(w_t, v1_t, i_in);
+                TC_K2(w_t, v1_t, i_in);
                 iK2 = 3;
                 conjugate2 = true;
             } else {
@@ -663,7 +647,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
     //Perform T1 at the beggining, since it is required by all elements
-    tie(w_t, v2_t, i_in) = indices_T1_K2(w_t, v2_t, i_in);
+    T1_K2(w_t, v2_t, i_in);
     pf2 = -1.;
     conjugate2 = false;
 
@@ -683,12 +667,12 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
         iK2 = 4;
     }
     else if(isInList(iK,list_K2b_TCT1_comp1)){
-        tie(w_t, v2_t, i_in) = indices_TC_K2(w_t, v2_t, i_in);
+        TC_K2(w_t, v2_t, i_in);
         iK2 = 1;
         conjugate2 = true;
     }
     else if(isInList(iK,list_K2b_TCT1_comp3)){
-        tie(w_t, v2_t, i_in) = indices_TC_K2(w_t, v2_t, i_in);
+        TC_K2(w_t, v2_t, i_in);
         iK2 = 3;
         conjugate2 = true;
     }
@@ -718,7 +702,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
         /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
         case 0:
             //Perform T3, since all components need this
-            tie(w_t, v2_t, i_in) = indices_T3_K2(w_t, v2_t, i_in);
+            T3_K2(w_t, v2_t, i_in);
             pf2 = 1.;
 
             if (isInList(iK, list_K2b_T3_comp0)) {
@@ -732,11 +716,11 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
             } else if (isInList(iK, list_K2b_T3_comp7)) {
                 iK2 = 4;
             } else if (isInList(iK, list_K2b_TCT3_comp1)) {
-                tie(w_t, v2_t, i_in) = indices_TC_K2(w_t, v2_t, i_in);
+                TC_K2(w_t, v2_t, i_in);
                 iK2 = 1;
                 conjugate2 = true;
             } else if (isInList(iK, list_K2b_TCT3_comp3)) {
-                tie(w_t, v2_t, i_in) = indices_TC_K2(w_t, v2_t, i_in);
+                TC_K2(w_t, v2_t, i_in);
                 iK2 = 3;
                 conjugate2 = true;
             } else {
@@ -752,7 +736,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
 
         case 1:
             //Perform T1, since all components need this
-            tie(w_t, v2_t, i_in) = indices_T1_K2(w_t, v2_t, i_in);
+            T1_K2(w_t, v2_t, i_in);
             pf2 = -1.;
 
             if (isInList(iK, list_K2b_T3_comp0)) {                  //T3comp0 => T1 iK=0
@@ -766,11 +750,11 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
             } else if (isInList(iK, list_K2b_T3_comp7)) {           //T3comp7 => T1 iK=4
                 iK2 = 4;
             } else if (isInList(iK, list_K2b_TCT3_comp1)) {         //TCT3comp1 => TCT1 iK=1
-                tie(w_t, v2_t, i_in) = indices_TC_K2(w_t, v2_t, i_in);
+                TC_K2(w_t, v2_t, i_in);
                 iK2 = 1;
                 conjugate2 = true;
             } else if (isInList(iK, list_K2b_TCT3_comp3)) {         //TCT3comp3 => TCT1 iK=3
-                tie(w_t, v2_t, i_in) = indices_TC_K2(w_t, v2_t, i_in);
+                TC_K2(w_t, v2_t, i_in);
                 iK2 = 3;
                 conjugate2 = true;
             } else {
@@ -792,47 +776,31 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
     return valueK2;
 }
 
-template<typename Q> auto tvert<Q>::indices_T1_K2(double w_t, double v1_t, int i_in) -> tuple<double, double, int>
+template<typename Q> void tvert<Q>::T1_K2(double& w_t, double& v1_t, int& i_in)
 {
-    double trans_w_t, trans_v1_t;
-
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = -w_t;
-    trans_v1_t = v1_t;
-    i_in = internal_T1_K2_t(i_in);
-
-    return make_tuple(trans_w_t, trans_v1_t, i_in);
+    w_t *= -1.;
+    //v1_t *= 1.;
+    internal_T1_K2_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_T2_K2(double w_t, double v1_t, int i_in) -> tuple<double, double, int>
+template<typename Q> void tvert<Q>::T2_K2(double& w_t, double& v1_t, int& i_in)
 {
-    double trans_w_t, trans_v1_t;
-
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = w_t;
-    trans_v1_t = v1_t;
-    i_in = internal_T2_K2_t(i_in);
-
-    return make_tuple(trans_w_t, trans_v1_t, i_in);
+    //w_t *= 1.;
+    //v1_t *= 1.;
+    internal_T2_K2_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_T3_K2(double w_t, double v1_t, int i_in) -> tuple<double, double, int>
+template<typename Q> void tvert<Q>::T3_K2(double& w_t, double& v1_t, int& i_in)
 {
-    double trans_w_t, trans_v1_t;
-
-    trans_w_t = -w_t;
-    trans_v1_t = v1_t;      //K2b
-    i_in = internal_T3_K2_t(i_in);
-
-    return make_tuple(trans_w_t, trans_v1_t, i_in);
+    w_t *= -1.;
+    //v1_t *= 1.;      //K2b
+    internal_T3_K2_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_TC_K2(double w_t, double v1_t, int i_in) -> tuple<double, double, int>
+template<typename Q> void tvert<Q>::TC_K2(double& w_t, double& v1_t, int& i_in)
 {
-    double trans_w_t, trans_v1_t;
-
-    trans_w_t = w_t;
-    trans_v1_t = v1_t;      //K2b
-    i_in = internal_TC_K2_t(i_in);
-
-    return make_tuple(trans_w_t, trans_v1_t, i_in);
+    //w_t *= 1.;
+    //v1_t *= 1.;      //K2b
+    internal_TC_K2_t(i_in);
 }
 #endif
 #if DIAG_CLASS >=3
@@ -875,28 +843,28 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
 
     switch (iK) {
         case 0:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+            T2_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 0;
             pf3 = -1.;
             break;
         case 1:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+            T2_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 1;
             pf3 = -1.;
             break;
         case 2:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+            T1_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 1;
             pf3 = -1.;
             break;
         case 3:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+            T2_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 2;
             pf3 = -1.;
             break;
         case 4:
-            tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
-            tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+            TC_K3(w_t, v1_t, v2_t, i_in);
+            T1_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 1;
             pf3 = -1.;   //(-1)^(1+1+2+1+1)*(-1) for T2
             conjugate = true;
@@ -907,55 +875,55 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
             transform = false;
             break;
         case 6:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+            T1_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 3;
             pf3 = -1.;
             break;
         case 7:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+            T1_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 5;
             pf3 = -1.;
             break;
         case 8:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
-            tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+            T1_K3(w_t, v1_t, v2_t, i_in);
+            TC_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 1;
             pf3 = -1.;   //(-1.)^(1+2+1+1+1)*(-1) for T1
             conjugate = true;
             break;
         case 9:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+            T2_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 3;
             pf3 = -1.;
             break;
         case 10:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T3_K3(w_t, v1_t, v2_t, i_in);
+            T3_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 3;
             pf3 = 1.;
             transform = false;
             break;
         case 11:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+            T2_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 5;
             pf3 = -1.;
             break;
         case 12:
-            tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
-            tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+            TC_K3(w_t, v1_t, v2_t, i_in);
+            T1_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 2;
             pf3 = 1.;   //(-1)^(1+2+2+1+1)*(-1) for T1
             conjugate = true;
             break;
         case 13:
-            tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
-            tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+            TC_K3(w_t, v1_t, v2_t, i_in);
+            T2_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 5;
             pf3 = -1.;   //(-1)^(1+2+2+1+2)*(-1) for T2
             conjugate = true;
             break;
         case 14:
-            tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
-            tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+            T2_K3(w_t, v1_t, v2_t, i_in);
+            TC_K3(w_t, v1_t, v2_t, i_in);
             iK3 = 5;
             pf3 = -1.;   //(-1)^(1+2+2+2+1)*(-1)for T2
             conjugate = true;
@@ -1001,57 +969,57 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
                     conjugate = false;
                     break;
                 case 2:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T3_K3(w_t, v1_t, v2_t, i_in);
+                    T3_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 1;
                     pf3 = 1.;
                     conjugate = false;
                     break;
                 case 4:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 1;
                     pf3 = 1.;   //(-1)^(1+1+2+1+1)
                     conjugate = true;
                     break;
                 case 8:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T3_K3(w_t, v1_t, v2_t, i_in);
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+                    T3_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 1;
                     pf3 = 1.;   //(-1.)^(1+2+1+1+1)
                     conjugate = true;
                     break;
                 case 9:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T3_K3(w_t, v1_t, v2_t, i_in);
+                    T3_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 4;
                     pf3 = 1.;
                     conjugate = false;
                     break;
                 case 10:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T3_K3(w_t, v1_t, v2_t, i_in);
+                    T3_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 3;
                     pf3 = 1.;
                     conjugate = false;
                     break;
                 case 11:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T3_K3(w_t, v1_t, v2_t, i_in);
+                    T3_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 5;
                     pf3 = 1.;
                     conjugate = false;
                     break;
                 case 12:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 2;
                     pf3 = -1.;   //(-1)^(1+2+2+1+1)
                     conjugate = true;
                     break;
                 case 13:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 5;
                     pf3 = 1.;   //(-1)^(1+2+2+1+2)
                     conjugate = true;
                     break;
                 case 14:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T3_K3(w_t, v1_t, v2_t, i_in);
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+                    T3_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 5;
                     pf3 = 1.;   //(-1)^(1+2+2+2+1)
                     conjugate = true;
@@ -1074,72 +1042,72 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
                 case 5:
                 case 6:
                 case 7:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+                    T1_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = convertToIndepIndex(iK);
                     pf3 = 1.;
                     conjugate = false;
                     break;
                 case 1:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+                    T2_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 1;
                     pf3 = -1.;
                     conjugate = false;
                     break;
                 case 2:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+                    T1_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 1;
                     pf3 = -1.;
                     conjugate = false;
                     break;
                 case 4:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
+                    T1_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 1;
                     pf3 = -1.;   //(-1)^(1+1+2+1+1)*(-1)
                     conjugate = true;
                     break;
                 case 8:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+                    T1_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 1;
                     pf3 = -1.;   //(-1.)^(1+2+1+1+1)
                     conjugate = true;
                     break;
                 case 9:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+                    T2_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 3;
                     pf3 = -1.;
                     conjugate = false;
                     break;
                 case 10:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+                    T2_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 4;
                     pf3 = -1.;
                     conjugate = false;
                     break;
                 case 11:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T2_K3(w_t, v1_t, v2_t, i_in);
+                    T2_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 5;
                     pf3 = -1.;
                     conjugate = false;
                     break;
                 case 12:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+                    T1_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 2;
                     pf3 = 1.;   //(-1)^(1+2+2+1+1)*(-1)
                     conjugate = true;
                     break;
                 case 13:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
+                    T1_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 5;
                     pf3 = -1.;   //(-1)^(1+2+2+1+2)*(-1)
                     conjugate = true;
                     break;
                 case 14:
-                    tie(w_t, v1_t, v2_t, i_in) = indices_TC_K3(w_t, v1_t, v2_t, i_in);
-                    tie(w_t, v1_t, v2_t, i_in) = indices_T1_K3(w_t, v1_t, v2_t, i_in);
+                    TC_K3(w_t, v1_t, v2_t, i_in);
+                    T1_K3(w_t, v1_t, v2_t, i_in);
                     iK3 = 5;
                     pf3 = -1.;   //(-1)^(1+2+2+2+1)*(-1)
                     conjugate = true;
@@ -1167,52 +1135,40 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
     return valueK3;
 }
 
-template<typename Q> auto tvert<Q>::indices_T1_K3(double w_t, double v1_t, double v2_t, int i_in) -> tuple<double, double, double, int>
+template<typename Q> void tvert<Q>::T1_K3(double& w_t, double& v1_t, double& v2_t, int& i_in)
 {
-    double trans_w_t, trans_v1_t, trans_v2_t;
-
+    double temp = *(&v1_t);
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = -w_t;
-    trans_v1_t = v2_t;
-    trans_v2_t = v1_t;
-    i_in = internal_T1_K3_t(i_in);
-
-    return make_tuple(trans_w_t, trans_v1_t, trans_v2_t, i_in);
+    w_t *= -1.;                       //w_t = -w_t
+    v1_t = v2_t;                      //v1_t = v2_t
+    v2_t = temp;                      //v2_t = v1_t
+    internal_T1_K3_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_T2_K3(double w_t, double v1_t, double v2_t, int i_in) -> tuple<double, double, double, int>
+template<typename Q> void tvert<Q>::T2_K3(double& w_t, double& v1_t, double& v2_t, int& i_in)
 {
-    double trans_w_t, trans_v1_t, trans_v2_t;
-
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = w_t;
-    trans_v1_t = v1_t;
-    trans_v2_t = v2_t;
-    i_in = internal_T2_K3_t(i_in);
-
-    return make_tuple(trans_w_t, trans_v1_t, trans_v2_t, i_in);
+    //w_t *= 1.;                    //w_t = w_t
+    //v1_t*= 1.;                    //v1_t = v1_t
+    //v2_t*= 1.;                    //v2_t = v2_t
+    internal_T2_K3_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_T3_K3(double w_t, double v1_t, double v2_t, int i_in) -> tuple<double, double, double, int>
+template<typename Q> void tvert<Q>::T3_K3(double& w_t, double& v1_t, double& v2_t, int& i_in)
 {
-    double trans_w_t, trans_v1_t, trans_v2_t;
-
+    double temp = *(&v1_t);
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    trans_w_t = -w_t;
-    trans_v1_t = v2_t;
-    trans_v2_t = v1_t;
-    i_in = internal_T3_K3_t(i_in);
-
-    return make_tuple(trans_w_t, trans_v1_t, trans_v2_t, i_in);
+    w_t *= -1.;                       //w_t = -w_t
+    v1_t = v2_t;                      //v1_t = v2_t
+    v2_t = temp;                      //v2_t = v1_t
+    internal_T1_K3_t(i_in);
 }
-template<typename Q> auto tvert<Q>::indices_TC_K3(double w_t, double v1_t, double v2_t, int i_in) -> tuple<double, double, double, int>
+template<typename Q> void tvert<Q>::TC_K3(double& w_t, double& v1_t, double& v2_t, int& i_in)
 {
-    double trans_w_t, trans_v1_t, trans_v2_t;
-
-    trans_w_t = w_t;
-    trans_v1_t = v2_t;
-    trans_v2_t = v1_t;
-    i_in = internal_TC_K3_t(i_in);
-
-    return make_tuple(trans_w_t, trans_v1_t, trans_v2_t, i_in);
+    double temp = *(&v1_t);
+    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
+    w_t *= 1.;                       //w_t = w_t
+    v1_t = v2_t;                      //v1_t = v2_t
+    v2_t = temp;                      //v2_t = v1_t
+    internal_T1_K3_t(i_in);
 }
 #endif
 
