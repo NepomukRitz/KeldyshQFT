@@ -32,6 +32,10 @@ auto f_imag(double x, void* params) -> double
 
 
 auto dotproduct(const cvec& x, const rvec& y) -> comp;
+//TODO implement the intergration with pragma omp simd for vetorization.
+// Think about the compatibility of the execution flow with declaration of data_structures.h also with omp (simd ) and
+// wether or not it'd make sense to only MPI-parallelize at bubble_function and allow omp to take over the vector or
+// scalar (reduction) operations e.g. integration, vector sums, products and such
 
 //TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
 //This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator

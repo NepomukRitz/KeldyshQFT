@@ -24,7 +24,7 @@ const double pi = 3.1415926535897;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 2
 
 //Defines the type of propagators to handle. 1 for always free, 2 for always dressed
 #define PROP_TYPE 1
@@ -52,8 +52,8 @@ const double U = 1.0;
 const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 151;
-const int nFER = 151;
+const int nBOS = 51;
+const int nFER = 51;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
