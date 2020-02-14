@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import sys
 from load_data import load_hdf5, rearrange_SE, compute_spectralfunction

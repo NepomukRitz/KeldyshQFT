@@ -1,7 +1,6 @@
 import numpy as np
 from numpy import pi, imag
 import h5py
-from parameters import set_parameters
 
 def load_hdf5(filename, only_SE):
     """
