@@ -38,15 +38,15 @@ const double pi = 3.1415926535897;
 /*Imaginary unit*/
 const comp im_unit (0., 1.);
 
-/*Dispersion relation (here, evidently, a constant)*/
-const comp epsilon = 0.0;   //NOLINT(cert-err58-cpp)
-
 //Temperature and chemical potential
 const double T = 0.01;
 const double mu = 0.0;
 
 /*Interaction strength*/
 const double U = 1.0;
+
+/*Dispersion relation (here, evidently, a constant)*/
+const comp epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
 
 /*Number of evolution flow points*/
 const int nEVO = 14;
