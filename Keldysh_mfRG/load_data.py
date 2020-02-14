@@ -25,17 +25,18 @@ def load_hdf5(filename, only_SE):
             K3a = list(f[keys[6]])
             K3p = list(f[keys[7]])
             K3t = list(f[keys[8]])
-            irred = list(f[keys[-3]])
-        Lambdas = list(f[keys[-2]])
+            irred = list(f[keys[-4]])
+        Lambdas = list(f[keys[-3]])
+        parameters = list(f[keys[-2]])
         selfenergy = list(f[keys[-1]])
         
     if only_SE:
-        return selfenergy, Lambdas
+        return selfenergy, Lambdas, parameters
     else:
         return K1a, K1p, K1t, \
                K2a, K2p, K2t, \
                K3a, K3p, K3t, \
-               irred, selfenergy, Lambdas
+               irred, selfenergy, Lambdas, parameters
 
 def rearrange_SE(selfenergy):
     """

@@ -13,7 +13,7 @@ def plot_selfenergy(*args):
     iK = int(sys.argv[cnt + 1])   # Keldysh component: 0 = Sigma^R, 1 = Sigma^K
     re = int(sys.argv[cnt + 2])   # 0 = Re(Sigma), 1 = Im(Sigma)
     
-    selfenergy, Lambdas = load_hdf5(filename, True)
+    selfenergy, Lambdas, parameters = load_hdf5(filename, True)
     w, epsilon, Gamma, nLambda, fs = set_parameters(selfenergy)
     
     lines = []
@@ -36,7 +36,7 @@ def plot_selfenergy(*args):
     finalize_figure_selfenergy(lines, leg, re, iK, fs)
     
 def plot_spectralfunction(*args):
-    selfenergy, Lambdas = load_hdf5(filename, True)
+    selfenergy, Lambdas, parameters = load_hdf5(filename, True)
     w, epsilon, Gamma, nLambda, fs = set_parameters(selfenergy)
     
     lines = []
