@@ -223,11 +223,11 @@ auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
 
 auto GR(double Lambda, double omega, comp selfEneR) -> comp
 {
-    return 1./(omega + 0.5*im_unit*(GAMMA_REG+Lambda) - selfEneR);
+    return 1./(omega - epsilon + 0.5*im_unit*(GAMMA_REG+Lambda) - selfEneR);
 }
 auto GA(double Lambda, double omega, comp selfEneA) -> comp
 {
-    return 1./(omega - 0.5*im_unit*(GAMMA_REG+Lambda) - selfEneA);
+    return 1./(omega - epsilon - 0.5*im_unit*(GAMMA_REG+Lambda) - selfEneA);
 }
 auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
 {
