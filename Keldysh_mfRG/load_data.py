@@ -13,7 +13,7 @@ def load_hdf5(filename, only_SE):
                    vertex components (# of return arguments depends on this)
     """
     with h5py.File(filename, 'r') as f:
-        keys = list(f.keys());
+        keys = list(f.keys())
         
         if not only_SE:
             K1a = list(f[keys[0]])
@@ -38,33 +38,40 @@ def load_hdf5(filename, only_SE):
                K3a, K3p, K3t, \
                irred, selfenergy, Lambdas, parameters
 
-def rearrange_SE(selfenergy):
+def rearrange_SE(selfenergy, parameters):
     """
     bring selfenergy into appropriate format: 2 x 2 x nw numpy array, where:
     1st index iK : 0 = Sigma^R,   1 = Sigma^K
     2nd index    : 0 = Re(Sigma), 1 = Im(Sigma)
     3rd index iw : frequency index
+    
+    and create frequency vector
     """
+    wmax = parameters[10]
+    wmin = parameters[11]
     nw = len(selfenergy)/2
+    w = np.linspace(wmin, wmax, nw)
+    
     SE = np.zeros((2, 2, nw))
     for iK in range(2):
         for iw in range(nw):
             SE[iK, 0, iw] = selfenergy[iK*nw+iw][0]
             SE[iK, 1, iw] = selfenergy[iK*nw+iw][1]
-    return SE
+    return SE, w
 
-def compute_spectralfunction(selfenergy, w, epsilon, Gamma):
+def compute_spectralfunction(selfenergy, parameters):
     """
     compute spectral function from selfenergy
     
     Parameters:
         selfenergy : selfenergy as obtained from rearrange_SE
-        w          : list of frequencies
-        epsilon    : impurity onsite energy
-        Gamma      : impurity-bath coupling
+        parameters : list of system parameters
     """
-    SE = rearrange_SE(selfenergy)
+    epsilon = parameters[9]
+    Gamma = parameters[2]
+    
+    SE, w = rearrange_SE(selfenergy, parameters)
     SE = SE[0, 0] + 1j*SE[0, 1]
     G = 1/(w - epsilon + 1j*Gamma/2 - SE)
     A = -1/pi * imag(G)
-    return A
+    return A, w
