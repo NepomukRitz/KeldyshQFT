@@ -20,7 +20,7 @@ const double pi = 3.1415926535897;
 #define REG 2
 //const double sharp = 2; // Sharpness of the smoothened regulator cutoff -> would be for smooth cutoff. Have not implemented
 #if REG==2
-    #define GAMMA_REG (comp)1.
+    #define GAMMA_REG (double)1. //TODO: doesn't need to be comp, right? (but actually should become a function in non-equilibrium...)
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
@@ -150,8 +150,14 @@ const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 //auto dw_p = (w_upper_b-w_lower_b)/((double)(nw_p-1));
 //auto dw_t = (w_upper_b-w_lower_b)/((double)(nw_t-1));
 
+#if REG==2
+const int param_size = 14;
+const double parameter_list[param_size] = {GRID, REG, GAMMA_REG, DIAG_CLASS, PROP_TYPE, NLOOPS,
+                                           T, mu, U, epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
+#else
 const int param_size = 13;
 const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, PROP_TYPE, NLOOPS,
                                            T, mu, U, epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
+#endif
 
 #endif //KELDYSH_MFRG_PARAMETERS_H
