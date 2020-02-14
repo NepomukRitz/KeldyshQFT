@@ -37,6 +37,21 @@ def load_hdf5(filename, only_SE):
                K3a, K3p, K3t, \
                irred, selfenergy, Lambdas, parameters
 
+def omegas(parameters, nw, diag_class):
+    if diag_class == 1:
+        wmax = parameters[10]
+        wmin = parameters[11]
+        w = np.linspace(wmin, wmax, nw)
+        return w
+    elif diag_class == 2:
+        wbmax = parameters[10]
+        wbmin = parameters[11]
+        wfmax = parameters[12]
+        wfmin = parameters[13]
+        wb = np.linspace(wbmin, wbmax, nw)
+        wf = np.linspace(wfmin, wfmax, nw)
+        return wb, wf
+
 def rearrange_SE(selfenergy, parameters):
     """
     bring selfenergy into appropriate format: 2 x 2 x nw numpy array, where:
@@ -46,10 +61,8 @@ def rearrange_SE(selfenergy, parameters):
     
     and create frequency vector
     """
-    wmax = parameters[10]
-    wmin = parameters[11]
     nw = len(selfenergy)/2
-    w = np.linspace(wmin, wmax, nw)
+    w = omegas(parameters, nw, 1)
     
     SE = np.zeros((2, 2, nw))
     for iK in range(2):
