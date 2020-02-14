@@ -1,108 +1,65 @@
-import numpy as np
 import matplotlib.pyplot as plt
-import h5py
+from numpy import pi, imag
 import sys
+from load_data import load_hdf5, rearrange_SE, compute_spectralfunction
+from setup_figure import initialize_figure, finalize_figure_selfenergy, finalize_figure_spectralfunction
+from parameters import set_parameters
 
-def load_hdf5(filename, only_SE):
-    """
-    load hdf5 file and write the data into lists
+filename, cnt = initialize_figure()
+
+plot = sys.argv[cnt]
+
+def plot_selfenergy(*args):
+    iK = int(sys.argv[cnt + 1])   # Keldysh component: 0 = Sigma^R, 1 = Sigma^K
+    re = int(sys.argv[cnt + 2])   # 0 = Re(Sigma), 1 = Im(Sigma)
     
-    Parameters:
-        filename
-        only_SE  : boolean, if true only load selfenergy, otherwise also load 
-                   vertex components (# of return arguments depends on this)
-    """
-    with h5py.File(filename, 'r') as f:
-        keys = list(f.keys());
-        
-        if not only_SE:
-            K1a = list(f[keys[0]])
-            K1p = list(f[keys[1]])
-            K1t = list(f[keys[2]])
-            K2a = list(f[keys[3]])
-            K2p = list(f[keys[4]])
-            K2t = list(f[keys[5]])
-            K3a = list(f[keys[6]])
-            K3p = list(f[keys[7]])
-            K3t = list(f[keys[8]])
-            irred = list(f[keys[-3]])
-        Lambdas = list(f[keys[-2]])
-        selfenergy = list(f[keys[-1]])
-        
-    if only_SE:
-        return selfenergy, Lambdas
-    else:
-        return K1a, K1p, K1t, \
-               K2a, K2p, K2t, \
-               K3a, K3p, K3t, \
-               irred, selfenergy, Lambdas
-
-def rearrange_SE(selfenergy):
-    """
-    bring selfenergy into appropriate format: 2 x 2 x nw numpy array, where:
-    1st index iK : 0 = Sigma^R,   1 = Sigma^K
-    2nd index    : 0 = Re(Sigma), 1 = Im(Sigma)
-    3rd index iw : frequency index
-    """
-    nw = len(selfenergy)/2
-    SE = np.zeros((2, 2, nw))
-    for iK in range(2):
-        for iw in range(nw):
-            SE[iK, 0, iw] = selfenergy[iK*nw+iw][0]
-            SE[iK, 1, iw] = selfenergy[iK*nw+iw][1]
-    return SE
-
-try:
-    filename = sys.argv[1]
-except IndexError:
-    filename = "testfile.h5"
-else:
-    plt.rc('text', usetex=True)
-    plt.rc('font', family='serif')
-
-
-""" PARAMETERS """
-
-wmin = -20
-wmax = 20
-
-iK = int(sys.argv[2])   # Keldysh component: 0 = Sigma^R, 1 = Sigma^K
-re = int(sys.argv[3])   # 0 = Re(Sigma), 1 = Im(Sigma)
-
-fs = 14  # font size
-
-""" """ 
-
-
-selfenergy, Lambdas = load_hdf5(filename, True)
-
-nw = len(selfenergy[0])/2
-w = np.linspace(wmin, wmax, nw)
-
-lines = []
-leg = []
-for i in range(14):
-    SE = rearrange_SE(selfenergy[i])
-    line, = plt.plot(w, SE[iK, re])
-    lines.append(line)
-    leg.append(r'$\Lambda=\ $' + str(round(Lambdas[i], 2)))
+    selfenergy, Lambdas = load_hdf5(filename, True)
+    w, epsilon, Gamma, nLambda, fs = set_parameters(selfenergy)
     
-plt.xlabel(r'$\omega$', fontsize=fs)
-if not re:
-    if not iK:
-        plt.ylabel(r'$\mathrm{Re}(\Sigma^R(\omega))$', fontsize=fs)
+    lines = []
+    leg = []
+    try:
+        args[0]
+    except IndexError:
+        for i in range(nLambda):
+            SE = rearrange_SE(selfenergy[i])
+            line, = plt.plot(w, SE[iK, re])
+            lines.append(line)
+            leg.append(r'$\Lambda=\ $' + str(round(Lambdas[i], 2)))          
     else:
-        plt.ylabel(r'$\mathrm{Re}(\Sigma^K(\omega))$', fontsize=fs)
-else:
-    if not iK:
-        plt.ylabel(r'$\mathrm{Im}(\Sigma^R(\omega))$', fontsize=fs)
+        i = args[0]
+        SE = rearrange_SE(selfenergy[i])
+        line, = plt.plot(w, SE[iK, re])
+        lines.append(line)
+        leg.append(r'$\Lambda=\ $' + str(round(Lambdas[i], 2)))
+    
+    finalize_figure_selfenergy(lines, leg, re, iK, fs)
+    
+def plot_spectralfunction(*args):
+    selfenergy, Lambdas = load_hdf5(filename, True)
+    w, epsilon, Gamma, nLambda, fs = set_parameters(selfenergy)
+    
+    lines = []
+    leg = []
+    try:
+        args[0]
+    except IndexError:
+        for i in range(nLambda):
+            A = compute_spectralfunction(selfenergy[i], w, epsilon, Gamma)
+            line, = plt.plot(w, A)
+            lines.append(line)
+            leg.append(r'$\Lambda=\ $' + str(round(Lambdas[i], 2)))
     else:
-        plt.ylabel(r'$\mathrm{Im}(\Sigma^K(\omega))$', fontsize=fs)            
+        i = args[0]
+        A = compute_spectralfunction(selfenergy[i], w, epsilon, Gamma)
+        line, = plt.plot(w, A)
+        lines.append(line)
+        leg.append(r'$\Lambda=\ $' + str(round(Lambdas[i], 2)))
+        
+    finalize_figure_spectralfunction(lines, leg, fs)
 
-plt.xticks(fontsize=fs)        
-plt.yticks(fontsize=fs)
-
-plt.legend(lines, leg, fontsize=fs, loc='upper right')
-
-plt.show()
+if plot == 'selfenergy':
+    plot_selfenergy(13)
+elif plot == 'spectralfunction':
+    plot_spectralfunction(0)
 
