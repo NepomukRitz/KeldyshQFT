@@ -46,7 +46,7 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Dispersion relation (here, evidently, a constant)*/
-const comp epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
+const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp) //TODO: why should this be comp?
 
 /*Number of evolution flow points*/
 const int nEVO = 14;
@@ -149,5 +149,9 @@ const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 //auto dw_a = (w_upper_b-w_lower_b)/((double)(nw_a-1));
 //auto dw_p = (w_upper_b-w_lower_b)/((double)(nw_p-1));
 //auto dw_t = (w_upper_b-w_lower_b)/((double)(nw_t-1));
+
+const int param_size = 13;
+const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, PROP_TYPE, NLOOPS,
+                                           T, mu, U, epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

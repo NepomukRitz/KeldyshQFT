@@ -58,6 +58,7 @@ const H5std_string	FERM_FREQS_LIST("ferm_freqslist");
 const H5std_string	BOS_FREQS_LIST("bos_freqslist");
 const H5std_string	SELF_LIST("selflist");
 const H5std_string	LAMBDA_LIST("lambdas");
+const H5std_string  PARAM_LIST("parameters");
 const H5std_string  MEMBER1( "spin_re" );
 const H5std_string  MEMBER2( "spin_im" );
 const H5std_string  MEMBER3( "dens_re" );
@@ -231,6 +232,7 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
         // Create the dimension arrays for objects in file and in buffer
         hsize_t Lambda_dims[]={static_cast<hsize_t>(Lambda_size)};
+        hsize_t param_dims[]={static_cast<hsize_t>(param_size)};
         hsize_t self_dims[]={static_cast<hsize_t>(Lambda_size),static_cast<hsize_t>(self_dim)};
         hsize_t irreducible_dims[]= {static_cast<hsize_t>(Lambda_size),static_cast<hsize_t>(irred_dim1)};  // dataset dimensions for vertex (it_nbr lambda iterations, nuc unit cells, 3 sity per unit cell, nw^3 freqs configurations)
 
@@ -258,6 +260,7 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
         // Create the data space for the dataset in file and for buffer objects
         H5::DataSpace dataspacelambda(1, Lambda_dims);
+        H5::DataSpace dataspaceparams(1, param_dims);
         H5::DataSpace dataspaceself(RANK_self, self_dims);
         H5::DataSpace dataspacevertex_irreducible(RANK_irreducible,irreducible_dims);//data space for vertex with three dimensions (three independent frequencies)
 
@@ -267,6 +270,9 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
         // Create the datasets in file:
         H5::DataSet* dataset_lambda;
         dataset_lambda = new H5::DataSet(file -> createDataSet(LAMBDA_LIST,H5::PredType::NATIVE_DOUBLE, dataspacelambda));
+
+        H5::DataSet* dataset_params;
+        dataset_params = new H5::DataSet(file -> createDataSet(PARAM_LIST,H5::PredType::NATIVE_DOUBLE, dataspaceparams));
 
         H5::DataSet* dataset_self;
         dataset_self = new H5::DataSet(file -> createDataSet(SELF_LIST,mtype2, dataspaceself));
@@ -348,6 +354,7 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
 
         dataset_lambda -> write(Lambda_list, H5::PredType::NATIVE_DOUBLE );
+        dataset_params -> write(parameter_list, H5::PredType::NATIVE_DOUBLE);
 
         count[1]= self_dim;
         dataspaceself.selectHyperslab(H5S_SELECT_SET, count,start,stride,block);
@@ -401,6 +408,7 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
         delete[] selfenergy;
 
         dataset_lambda->close();
+        dataset_params->close();
         dataset_irred->close();
         dataset_self->close();
 
@@ -925,9 +933,9 @@ State<complex<double>> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long
         H5::DataSet dataset_irred = file->openDataSet("irred");
 
 
-        H5::DataSpace dataspacelambdas=dataset_lambdas.getSpace();
-        H5::DataSpace dataspaceself=dataset_self.getSpace();
-        H5::DataSpace dataspacevertex_irreducible=dataset_irred.getSpace();//data space for vertex with three dimensions (three independent frequencies)
+        H5::DataSpace dataspacelambdas = dataset_lambdas.getSpace();
+        H5::DataSpace dataspaceself = dataset_self.getSpace();
+        H5::DataSpace dataspacevertex_irreducible = dataset_irred.getSpace();//data space for vertex with three dimensions (three independent frequencies)
 
 
         // Create the dimension arrays for objects in buffer.
