@@ -228,6 +228,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     //Lines 14-17
     Vertex<fullvert<Q> > dGammaT = dGammaL + dGammaR;
     dPsi.vertex += dGammaT;
+    print("2-loops done. \n");
 
     //Lines 18-33
     #if NLOOPS >=3
@@ -256,6 +257,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 //        if(max_r(norm(dGammaT)/norm(dPsi.vertex)) < tol_vertex){ //TODO define a sensible norm for the vertices and a good way to implement this condition
 //            break;
 //        }
+        printf("%i- loops done. \n", i);
     }
     #endif
     #endif
