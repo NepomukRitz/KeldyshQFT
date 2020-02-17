@@ -257,7 +257,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 //        if(max_r(norm(dGammaT)/norm(dPsi.vertex)) < tol_vertex){ //TODO define a sensible norm for the vertices and a good way to implement this condition
 //            break;
 //        }
-        printf("%i- loops done. \n", i);
+        printf("%i-loops done. \n", i);
     }
     #endif
     #endif
