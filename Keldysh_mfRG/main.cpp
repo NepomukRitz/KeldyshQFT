@@ -92,8 +92,10 @@ auto main() -> int {
 #endif
 
 
-    writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
-    if (world_rank == 0) write_hdf(FILE_NAME, 0, nEVO, state);
+    if (world_rank == 0){
+        write_hdf(FILE_NAME, 0, nEVO, state);
+//        writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+    }
 
     print("Start of flow", true);
     for(int i=1; i<nEVO; ++i) {
@@ -122,9 +124,12 @@ auto main() -> int {
     print("Error with PROP_TYPE.");
 #endif
 
-        writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
-        if (world_rank == 0) add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
-        //test_hdf5(FILE_NAME, i, state);
+
+        if (world_rank == 0){
+            add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
+//            writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+//            test_hdf5(FILE_NAME, i, state);
+        }
 
         print("One RK-derivative step. ");
         get_time(tder);
