@@ -20,7 +20,7 @@ const double pi = 3.1415926535897;
 #define REG 2
 //const double sharp = 2; // Sharpness of the smoothened regulator cutoff -> would be for smooth cutoff. Have not implemented
 #if REG==2
-    #define GAMMA_REG (double)1. //TODO: doesn't need to be comp, right? (but actually should become a function in non-equilibrium...)
+    #define GAMMA_REG (double)1.
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
@@ -46,7 +46,7 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Dispersion relation (here, evidently, a constant)*/
-const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp) //TODO: why should this be comp?
+const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
 
 /*Number of evolution flow points*/
 const int nEVO = 14;
