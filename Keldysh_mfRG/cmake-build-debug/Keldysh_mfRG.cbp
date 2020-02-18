@@ -44,6 +44,11 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include"/>
+					<Add directory="/usr/include/mpi"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -67,6 +72,11 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include"/>
+					<Add directory="/usr/include/mpi"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -90,6 +100,11 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include"/>
+					<Add directory="/usr/include/mpi"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -113,6 +128,11 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/openmpi/include"/>
+					<Add directory="/usr/include/mpi"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -139,7 +159,14 @@
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/a_vertex.h">
 			<Option target="Keldysh_mfRG"/>
 		</Unit>
+		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/bubbles.h">
+			<Option target="Keldysh_mfRG"/>
+		</Unit>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_structures.h">
+			<Option target="Keldysh_mfRG"/>
+		</Unit>
+		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/diagrammatic_combinations.h">
+			<Option target="openmp_test_clion"/>
 			<Option target="Keldysh_mfRG"/>
 		</Unit>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/free_propagator_functions.h">
@@ -165,6 +192,9 @@
 		</Unit>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/internal_symmetries.h">
 			<Option target="Keldysh_mfRG"/>
+		</Unit>
+		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/interpolations.h">
+			<Option target="openmp_test_clion"/>
 		</Unit>
 		<Unit filename="/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/loop.h">
 			<Option target="Keldysh_mfRG"/>

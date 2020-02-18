@@ -34,10 +34,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake
+CMAKE_COMMAND = /home/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake
 
 # The command to remove a file.
-RM = /filer/z-sv-pool12c/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E remove -f
+RM = /home/s/Sa.Aguirre/clion-2019.1.2/bin/cmake/linux/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -60,15 +60,15 @@ include CMakeFiles/openmp_test_clion.dir/flags.make
 CMakeFiles/openmp_test_clion.dir/main.cpp.o: CMakeFiles/openmp_test_clion.dir/flags.make
 CMakeFiles/openmp_test_clion.dir/main.cpp.o: ../main.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/openmp_test_clion.dir/main.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/openmp_test_clion.dir/main.cpp.o -c /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/main.cpp
+	mpicxx  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/openmp_test_clion.dir/main.cpp.o -c /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/main.cpp
 
 CMakeFiles/openmp_test_clion.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/openmp_test_clion.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/main.cpp > CMakeFiles/openmp_test_clion.dir/main.cpp.i
+	mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/main.cpp > CMakeFiles/openmp_test_clion.dir/main.cpp.i
 
 CMakeFiles/openmp_test_clion.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/openmp_test_clion.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/main.cpp -o CMakeFiles/openmp_test_clion.dir/main.cpp.s
+	mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/main.cpp -o CMakeFiles/openmp_test_clion.dir/main.cpp.s
 
 # Object files for target openmp_test_clion
 openmp_test_clion_OBJECTS = \
