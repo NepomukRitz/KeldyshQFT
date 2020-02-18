@@ -22,6 +22,8 @@ using namespace std;
 typedef complex<double> comp;  // TODO: complex double as two doubles??
 
 void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
+void flow();
+template <typename Q> void setInitialConditions(State<Q>& state);
 template <typename Q> void derivative(State<Q>& dPsi, double Lambda, State<Q>& state);
 template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, State<Q>& state);
 
@@ -32,37 +34,8 @@ void writePropagators(Propagator& free, Propagator& full);
 
 auto main() -> int {
 
-    MPI_Init(NULL, NULL);
-    int world_rank = mpi_world_rank();
-
     setUpBosGrid();
     setUpFerGrid();
-    setUpFlowGrid();
-
-
-    double  t0 = get_time();
-    State<comp> state(Lambda_ini);
-    print("State created. ");
-    get_time(t0);
-
-//    vector<double> Lambdas(10);
-    const H5std_string FILE_NAME("testfile.h5");
-//    write_hdf(FILE_NAME,10.,10,state);
-//    add_hdf(FILE_NAME,1,10,state,Lambdas);
-//    State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
-
-    //Initial conditions
-    for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, U/2.);
-        state.selfenergy.setself(1, i, 0.);
-    }
-    print("self energy and diff self energy assigned", true);
-
-    for (auto i:odd_Keldysh) {
-        state.vertex.densvertex.irred.setvert(i, 0, 0.);
-        state.vertex.spinvertex.irred.setvert(i, 0, U/2.);
-    }
-    print("vertex assigned", true);
 
 //SOPT Code here:
 //    for(int i=0; i<nEVO; ++i) {
@@ -79,54 +52,13 @@ auto main() -> int {
 //        writeOutSOPT(Lambda, control, state.selfenergy, bare.vertex);
 //    }
 
-    SelfEnergy<comp> diffZero = SelfEnergy<comp>();
 
-    Propagator initial = propag(state.Lambda, state.selfenergy, diffZero, 's');
-
-
-
-    if (world_rank == 0){
-        write_hdf(FILE_NAME, 0, nEVO, state);
-        writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
-    }
-
+    double t0 = get_time();
     print("Start of flow", true);
-    for(int i=1; i<nEVO; ++i) {
-        double Lambda = flow_grid[i-1];
-        double tder = get_time();
-        state.Lambda = Lambda;
-
-        State<comp> dPsi(Lambda);
-
-        derivative(dPsi, Lambda, state);
-//        RungeKutta4thOrder(dPsi, Lambda, state);
-
-
-        double tadd = get_time();
-        state += dPsi;
-        print("Added. ");
-        get_time(tadd);
-
-        double next_Lambda = flow_grid[i];
-        //state.Lambda = next_Lambda;
-
-        Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 's');
-
-
-        if (world_rank == 0){
-            add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
-            writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
-//            test_hdf5(FILE_NAME, i, state);
-        }
-
-        print("One RK-derivative step. ");
-        get_time(tder);
-    }
-
+    flow();
     print("Total execution time: ");
     get_time(t0);
 
-    MPI_Finalize();
 
     return 0;
 }
@@ -285,6 +217,87 @@ template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, Sta
     k3 *= 1./dL;
 
     dPsi += (k1 + k2*2. + k3*2. + k4)*(1./6.);
+
+}
+
+template <typename Q> void setInitialConditions (State<Q>& state){
+    //Initial conditions
+    for (int i = 0; i < nSE; ++i) {
+        state.selfenergy.setself(0, i, U/2.);
+        state.selfenergy.setself(1, i, 0.);
+    }
+    print("self energy and diff self energy assigned", true);
+
+    for (auto i:odd_Keldysh) {
+        state.vertex.densvertex.irred.setvert(i, 0, 0.);
+        state.vertex.spinvertex.irred.setvert(i, 0, U/2.);
+    }
+    print("vertex assigned", true);
+}
+
+void flow(){
+
+    setUpFlowGrid();
+
+    MPI_Init(NULL, NULL);
+    int world_rank = mpi_world_rank();
+
+    double  t0 = get_time();
+    State<comp> state(Lambda_ini);
+    print("State created. ");
+    get_time(t0);
+
+//    vector<double> Lambdas(10);
+    const H5std_string FILE_NAME("testfile.h5");
+//    write_hdf(FILE_NAME,10.,10,state);
+//    add_hdf(FILE_NAME,1,10,state,Lambdas);
+//    State<comp> out= read_hdf<comp>(FILE_NAME,1,10,Lambdas);
+
+    //Set initial conditions
+    setInitialConditions(state);
+
+    //Create objects to print at zero-th evolution step
+    SelfEnergy<comp> diffZero = SelfEnergy<comp>();
+    Propagator initial = propag(state.Lambda, state.selfenergy, diffZero, 's');
+
+    if (world_rank == 0){
+        write_hdf(FILE_NAME, 0, nEVO, state);
+        writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+    }
+
+    for(int i=1; i<nEVO; ++i) {
+        double Lambda = flow_grid[i-1];
+        double tder = get_time();
+        state.Lambda = Lambda;
+
+        State<comp> dPsi(Lambda);
+
+        derivative(dPsi, Lambda, state);
+//        RungeKutta4thOrder(dPsi, Lambda, state);
+
+
+        double tadd = get_time();
+        state += dPsi;
+        print("Added. ");
+        get_time(tadd);
+
+        double next_Lambda = flow_grid[i];
+        //state.Lambda = next_Lambda;
+
+        Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 's');
+
+
+        if (world_rank == 0){
+            add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
+            writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+//            test_hdf5(FILE_NAME, i, state);
+        }
+
+        print("One RK-derivative step. ");
+        get_time(tder);
+    }
+
+    MPI_Finalize();
 
 }
 
