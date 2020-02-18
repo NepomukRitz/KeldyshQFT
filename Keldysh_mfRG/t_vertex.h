@@ -82,7 +82,7 @@ public:
     void indices_sum(vector<int>&, int i0, int i2);
 
 #ifdef DIAG_CLASS
-#if DIAG_CLASS >=1
+#if DIAG_CLASS>=0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
 
     auto K1_acc (int) -> Q;
@@ -181,7 +181,7 @@ public:
 
     auto operator+(const tvert<Q>& vertex) -> tvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 + vertex.K1;
 #endif
 #if DIAG_CLASS>=2
@@ -194,7 +194,7 @@ public:
     }
     auto operator+=(const tvert<Q>& vertex) -> tvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 += vertex.K1;
 #endif
 #if DIAG_CLASS>=2
@@ -207,7 +207,7 @@ public:
     }
     auto operator*(double alpha) -> tvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 * alpha;
 #endif
 #if DIAG_CLASS>=2
@@ -220,7 +220,7 @@ public:
     }
     auto operator*=(double alpha) -> tvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 *= alpha;
 #endif
 #if DIAG_CLASS>=2
@@ -233,7 +233,7 @@ public:
     }
     auto operator-=(const tvert<Q>& vertex) -> tvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 -= vertex.K1;
 #endif
 #if DIAG_CLASS>=2
@@ -267,7 +267,7 @@ template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v
 
     Q k1, k2, k2b, k3;
 
-#if DIAG_CLASS >=1
+#if DIAG_CLASS>=0
     k1 = K1_vvalsmooth (iK, w, i_in, avertex);
 #endif
 #if DIAG_CLASS >=2
@@ -283,7 +283,7 @@ template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v
 
     Q k1, k2, k2b, k3;
 
-#if DIAG_CLASS >=1
+#if DIAG_CLASS>=0
     k1 = K1_vvalsmooth (iK, w, i_in, spin, avertex);
 #endif
 #if DIAG_CLASS >=2
@@ -340,7 +340,7 @@ template<typename Q> void tvert<Q>::indices_sum(vector<int>& indices, int i0, in
     indices[1] = 8*(*a1p-1) + 4*(*a3-1) + 2*(*a1-1) + 1*(*a4p-1);
 }
 
-#if DIAG_CLASS >=1
+#if DIAG_CLASS>=0
 template <typename Q> auto tvert<Q>::K1_acc (int i) -> Q{
     if(i>=0 && i<K1.size()){
         return K1[i];}

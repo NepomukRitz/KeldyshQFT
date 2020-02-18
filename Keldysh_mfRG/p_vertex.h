@@ -66,7 +66,7 @@ public:
     void indices_sum(vector<int>&, int i0, int i2);
 
 #ifdef DIAG_CLASS
-#if DIAG_CLASS >=1
+#if DIAG_CLASS>=0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
 
     auto K1_acc (int) -> Q;
@@ -165,7 +165,7 @@ public:
 
     auto operator+(const pvert<Q>& vertex) -> pvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 + vertex.K1;
 #endif
 #if DIAG_CLASS>=2
@@ -178,7 +178,7 @@ public:
     }
     auto operator+=(const pvert<Q>& vertex) -> pvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 += vertex.K1;
 #endif
 #if DIAG_CLASS>=2
@@ -191,7 +191,7 @@ public:
     }
     auto operator*(double alpha) -> pvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 * alpha;
 #endif
 #if DIAG_CLASS>=2
@@ -204,7 +204,7 @@ public:
     }
     auto operator*=(double alpha) -> pvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 *= alpha;
 #endif
 #if DIAG_CLASS>=2
@@ -217,7 +217,7 @@ public:
     }
     auto operator-=(const pvert<Q>& vertex) -> pvert<Q>
     {
-#if DIAG_CLASS>=1
+#if DIAG_CLASS>=0
         this->K1 -= vertex.K1;
 #endif
 #if DIAG_CLASS>=2
@@ -251,7 +251,7 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
 
     Q k1, k2, k2b, k3;
 
-#if DIAG_CLASS >=1
+#if DIAG_CLASS>=0
     k1 = K1_vvalsmooth (iK, w, i_in);
 #endif
 #if DIAG_CLASS >=2
@@ -268,7 +268,7 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
 
     Q k1, k2, k2b, k3;
 
-#if DIAG_CLASS >=1
+#if DIAG_CLASS>=0
     k1 = K1_vvalsmooth (iK, w, i_in, spin);
 #endif
 #if DIAG_CLASS >=2
@@ -324,7 +324,7 @@ template<typename Q> void pvert<Q>::indices_sum(vector<int>& indices, int i0, in
     indices[1] = 8*(*a3-1) + 4*(*a4-1) + 2*(*a1-1) + 1*(*a2-1);
 }
 
-#if DIAG_CLASS >=1
+#if DIAG_CLASS>=0
 template <typename Q> auto pvert<Q>::K1_acc (int i) -> Q{
     if(i>=0 && i<K1.size()){
     return K1[i];}
@@ -367,7 +367,7 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
     else if(isInList(iK,list_K1_TC_comp1)){
         TC_K1(w_p, i_in);
         iK1 = 0;
-        pf1 = 1.;
+        pf1 *= -1.;
         conjugate1 = true;
     }
     else if(isInList(iK, list_K1_T0_comp5)){
@@ -419,7 +419,7 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
             break;
         case 1:
             T1_K1(w_p, i_in);
-            pf1 = -1.;
+            pf1 *= -1.;
             break;
         default: ;
 
