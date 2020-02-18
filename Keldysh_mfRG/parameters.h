@@ -24,19 +24,20 @@ const double pi = 3.1415926535897;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define DIAG_CLASS 1
 
 //Defines the type of propagators to handle. 1 for always free, 2 for always dressed
-#define PROP_TYPE 1
+#define PROP_TYPE 2
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
 
 /*Number of loops*/
 #define NLOOPS 1
+//#define SOPT
 
 /*Imaginary unit*/
-const comp im_unit (0., 1.);
+const comp im_unit = 1.i;
 
 //Temperature and chemical potential
 const double T = 0.01;
@@ -46,7 +47,11 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Dispersion relation (here, evidently, a constant)*/
+#if PROP_TYPE == 1
+const double epsilon = 0;
+#elif PROP_TYPE == 2
 const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
+#endif
 
 /*Number of evolution flow points*/
 const int nEVO = 14;
