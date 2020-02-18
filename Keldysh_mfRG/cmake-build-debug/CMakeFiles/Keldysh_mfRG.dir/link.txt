@@ -1,1 +1,0 @@
-mpicxx   -L/usr/lib -pthread -std=c++14 -fopenmp -g   CMakeFiles/Keldysh_mfRG.dir/main.cpp.o  -o Keldysh_mfRG -lhdf5 -lhdf5_cpp 

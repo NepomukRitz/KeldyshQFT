@@ -1,4 +1,0 @@
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/CMakeFiles/openmp_test_clion.dir
-/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/cmake-build-debug/CMakeFiles/Keldysh_mfRG.dir

@@ -1,1 +1,0 @@
-mpicxx   -L/usr/lib -pthread -std=c++14 -fopenmp -g   CMakeFiles/openmp_test_clion.dir/main.cpp.o  -o openmp_test_clion 
