@@ -4,6 +4,10 @@
 %
 \documentclass[12pt,a4paper,roman]{article}
 %
+
+\usepackage{geometry}
+\geometry{a4paper, margin=3cm}
+
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs} % For pretty tables
@@ -28,6 +32,7 @@
 % to display URLs in blue roman font according to Springer's eBook style:
 % \renewcommand\UrlFont{\color{blue}\rmfamily}
 \newcommand{\defeq}{\vcentcolon=}
+\newcommand{\eqdef}{=\vcentcolon}
 \newcommand{\card}[1]{\left\vert{#1}\right\vert}
 \newcommand*\Let[2]{\State #1 $\gets$ #2}
 \definecolor{blue}{HTML}{1F77B4}
@@ -305,6 +310,8 @@
 \newcommand{\bFp}[1]{{\color{Fp} $\bar{F}_{#1}^p$}}
 \newcommand{\bFt}[1]{{\color{Ft} $\bar{F}_{#1}^t$}}
 
+\newcommand{\dd}{\mathrm{d}}
+
 \renewcommand{\topfraction}{0.85}
 \renewcommand{\bottomfraction}{0.85}
 \renewcommand{\textfraction}{0.15}
@@ -345,17 +352,27 @@
 This document serves as a compendium of derived and collected formulas for the analytical study and computational implementation of mfRG flow equations in the real-time Keldysh formalism.
 The Keldysh indices take values in the set $\{1,2\}$, with the convention $1 = q$ and $2=c$, where in some texts $c$ stands for 'classical component' and $q$ for 'quantum component'.
 
-\section*{General properties of the Green's function}
+\section*{General properties of the single particle Green's function}
 \begin{equation}
 G = G_{1|1'} = G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1| \nu'_1)
 \end{equation}
+Graphically, this is represented as follows:
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\textwidth]{propagator}
+	\caption{Propagator line}
+	\label{fig:prop}
+\end{figure}
+
+
+
 \subsection*{Frequency \& momentum conservation}
 The fact that the propagator conserves energy and momentum (due to time- or, given the case, space-translation invariance) translates to the Green's functions being diagonal in frequency and momentum space, respectively.
 \begin{align}
-\text{Time trans. inv: } &G(t|t') = G(t-t')\\ &\Rightarrow G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1| \nu'_1) = 2\pi \delta(\nu_1-\nu'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1)\\
-\text{Space trans. inv: } &G(x|x') = G(x-x')\\ &\Rightarrow G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1| \nu'_1) = 2\pi \delta(q_1-q'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1, \nu_1| \nu'_1)\\
+\text{Time trans. inv: } &G(t|t') = G(t-t')\\ &\Rightarrow G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1| \nu'_1) = 2\pi i \delta(\nu_1-\nu'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1)\\
+\text{Space trans. inv: } &G(x|x') = G(x-x')\\ &\Rightarrow G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1|q'_1, \nu_1| \nu'_1) = 2\pi i \delta(q_1-q'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1, \nu_1| \nu'_1)\\
 \text{Both: } &G(t|t', x|x') = G(t-t',x-x')\\ &\Rightarrow
-(2\pi)^2 \delta(q_1-q'_1)\delta(\nu_1-\nu'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1, \nu_1)
+(2\pi i)^2 \delta(q_1-q'_1)\delta(\nu_1-\nu'_1)G^{\alpha_1|\alpha'_1}_{\sigma_1|\sigma'_1}(q_1, \nu_1)
 \end{align}
 For this compendium we will assume time-invariance for all formulas but, since not all models will be translational invariant, we will not assume that symmetry.
 
@@ -380,7 +397,7 @@ This means, effectively, that the direction of time is inverted (notice the flip
 
 
 \section*{Independent components of the single particle Green's function}
-Within the Keldysh formalism, the propagator has three different non-zero components. Due to their analytical properties (considered as functions of a complex time variable $t\in \mathbb{C}$), these are called \textit{retarded}, \textit{advanced}, and \text{Keldysh}. They are defined as follows:
+Within the Keldysh formalism, the propagator has three different non-zero components. Due to their analytical properties (considered as functions of a complex time variable $t\in \mathbb{C}$), these are called \textit{retarded}, \textit{advanced}, and \textit{Keldysh} components. They are defined as follows:
 \begin{equation}
 R \defeq G^R = G^{2|1}  \hspace{0.7cm} A \defeq G^A = G^{1|2}\hspace{0.7cm} K \defeq G^K = G^{2|2}
 \end{equation}
@@ -403,17 +420,6 @@ G^{2|1} & G^{2|2}
 \end{pmatrix}_{\sigma_1|\sigma_1}
 \end{equation}
 
-\section*{General properties of the self energy $\Sigma$}
-The self energy has similar symmetry properties as the propagator. It also has two independent components, $\Sigma^R$, which it's conjugate is $\Sigma^A = \left[\Sigma^R\right]^*$ and $\Sigma^K$, which is anti-hermitian, i.e. $\left[\Sigma^K\right]^* = -\Sigma^K$. However, causality for the self-energy translates to $\Sigma^{2|2}=0$, such that it's Keldysh structure in matrix form reads
-\begin{equation}
-\Sigma^{\alpha_1|\alpha'_1}_{\sigma_1} =
-\begin{pmatrix}
-\Sigma^{1|1} & \Sigma^{1|2} \\
-\Sigma^{2|1} & \Sigma^{2|2}
-\end{pmatrix}_{\sigma_1|\sigma_1} = \begin{pmatrix}
-\Sigma^K & \Sigma^R \\ \Sigma^A & 0
-\end{pmatrix}_{\sigma_1|\sigma_1}
-\end{equation}
 
 \section*{General properties of the four-point vertex $\Gamma$}
 
@@ -465,11 +471,40 @@ And under complex conjugation:
 \end{multline}
 
 \subsection*{Channel decomposition \& reducibility}
-In the mfRG formalism we have that the full vertex can be written as the sum of the irreducible part $R = U + \mathcal{O}(u^4)$ and reducible contributions $\gamma_r$ in three channels: $r=a$ for \textit{anti-parallel}, $r=p$ for \textit{parallel} and $r=t$ for \textit{transverse}. These names allude to the relation of the cut propagator lines have, were one to make a diagram disconnected. Since any reducible diagram can only belong to one of these classes\cite{}, one can then write the following equation for the full vertex:
+In the mfRG formalism we have that the full vertex can be written as the sum of the irreducible part $R = \Gamma_0 + \mathcal{O}(u^4)$ and reducible contributions $\gamma_r$ in three channels: $r=a$ for \textit{anti-parallel}, $r=p$ for \textit{parallel} and $r=t$ for \textit{transverse}. These names allude to the relation of the cut propagator lines have, were one to make a diagram disconnected. Since any reducible diagram can only belong to one of these classes, one can then write the following equation for the full vertex:
 \begin{equation}
-	\Gamma = R + \sum_r \gamma_r = R + \gamma_a + \gamma_p + \gamma_t
+	\Gamma = \Gamma_0 + \sum_r \gamma_r = \Gamma_0 + \gamma_a + \gamma_p + \gamma_t
+	\label{eq:simpleGammaDef}
 \end{equation}
-This reducibility of the diagrams then gives rise to the ``bubble'' objects, $\Pi_r$, which are the pair of propagators that, should they be cut, would disconnect the diagram. These pairs of propagators effectively carry a (bosonic) transfer frequency between the two sides of the bubble. Knowing this, we can tailor an explicit frequency dependence that highlights and exploits this fact, in order to then simplify calculations. Hence, we introduce the following structures:
+
+Including the spin and Keldysh indices, (but omitting the frequency and momentum dependencies) Eq. \eqref{eq:simpleGammaDef} becomes
+\begin{equation}
+	\Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2} \eqdef \left[\Gamma_0 \right]_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2} + \left[\gamma_a \right]_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}\left[\gamma_p \right]_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}\left[\gamma_t \right]_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2},
+\end{equation}
+where we introduce the notation $\left[\Gamma_0 \right]_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}$ to imply the fact that the bare vertex, although trivial in frequency and momentum, has a non-trivial spin and Keldysh structure.
+
+This structure is as follows \cite{PhysRevB.81.195109}:
+
+\begin{equation}
+	\left[\Gamma_0 \right]_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2} = \begin{cases}
+	\frac{1}{2} \left[\Gamma_0 \right]_{\sigma_1'\sigma_2'|\sigma_1\sigma_2} \hspace{0.7cm}\text{if } \alpha_1'+\alpha_2' + \alpha_1+\alpha_2 \text{ is odd,} \\
+	0, \text{ else,}
+	\end{cases}
+	\label{eq:defGamma0withKeldysh}
+\end{equation}
+
+with 
+
+\begin{equation}
+\left[\Gamma_0 \right]_{\sigma_1'\sigma_2'|\sigma_1\sigma_2} = \begin{cases}
+U, \text{ if } \sigma_1'=\sigma_1= \overline{\sigma}'_2=\overline{\sigma}_2, \\
+-U, \text{ if } \sigma_1'=\overline{\sigma}_1= \overline{\sigma}'_2=\sigma_2, \\
+0, \text{ else.}
+\end{cases}
+\label{eq:defGamma0withourKeldysh}
+\end{equation}
+
+The reducibility of the diagrams then gives rise to the ``bubble'' objects, $\Pi_r$, which are the pair of propagators that, should they be cut, would disconnect the diagram. These pairs of propagators effectively carry a (bosonic) transfer frequency between the two sides of the bubble. Knowing this, we can tailor an explicit frequency dependence that highlights and exploits this fact, in order to then simplify calculations. Hence, we introduce the following structures:
 
 \begin{figure}[ht]
     \centering
@@ -477,7 +512,13 @@ This reducibility of the diagrams then gives rise to the ``bubble'' objects, $\P
     \caption{Convention for the introduction of channel-specific frequencies}
     \label{fig:channels}
 \end{figure}
-In this notation we explicitly describe the full vertex function $\Gamma$, which is naturally a function of three arguments, as slight variations that depend on the convention for the respective channel. This means that all $\Gamma_r$ represent the same object, namely the full vertex, but each instantiation receives the arguments $\omega_r$, $\nu_r$ and $\nu'_r$, the bosonic and the two fermionic frequencies, respectively, already expressed in the channel's natural parametrization. This clarification is important since these objects are fundamentally different from the notationally-similar $\gamma_r$, which are the reducible vertices in the $r$-channel.
+In this notation we explicitly describe the full vertex function $\Gamma$, which is naturally a function of three arguments, as slight variations that depend on the convention for the respective channel:
+\begin{align}
+ \Gamma_f(\nu_1', \nu_2', \nu_1) &\hspace{0.7cm} \Gamma_a(\omega_a, \nu_a, \nu_a') \label{eq:vertexParam1}\\
+ \Gamma_p(\omega_p, \nu_p, \nu_p') &\hspace{0.7cm} \Gamma_t(\omega_t, \nu_t, \nu_t')
+ \label{eq:vertexParam2}
+\end{align} 
+This means that all $\Gamma_r$ represent the same object, namely the full vertex, but each instantiation receives the arguments $\omega_r$, $\nu_r$ and $\nu'_r$, the bosonic and the two fermionic frequencies (or all three fermionic frequencies, in the case of $r=f$), already expressed in the channel's natural parametrization. This clarification is important since these objects are fundamentally different from the notationally-similar $\gamma_r$, which are the reducible vertices in the $r$-channel.
 
 The frequencies in Fig. \ref{fig:channels} lead then to the following conversion rules between the channels, where the conventional vertex depicted in Fig. \ref{fig:vertex} is referred to as the 'fermionic' vertex, $\Gamma_f$:
 
@@ -495,6 +536,7 @@ From and to the fermionic channel:
     \nu_a    &= \frac{1}{2}\left(2\nu_{1'}+\nu_{2'}-\nu_{1}\right) \\
     \nu'_a   &= \frac{1}{2}\left(\nu_{2'} + \nu_{1}\right)\\
   \end{array}\right.
+  \label{eq:AtoF}
 \end{align}
 
 And from any other channel to the a-channel:
@@ -514,6 +556,7 @@ And from any other channel to the a-channel:
     \nu_a  &= \frac{ \omega_t+\nu_t+\nu'_t}{2}\\
     \nu'_a &= \frac{-\omega_t+\nu_t+\nu'_t}{2}\\
   \end{array}
+  \label{eq:AtoAll}
 \end{align}
 
 
@@ -531,6 +574,7 @@ From and to the fermionic channel:
     \nu_p    &= \frac{1}{2}\left(\nu_{1'}-\nu_{2'}\right) \\
     \nu'_p   &= \frac{1}{2}\left(2\nu_{1}-\nu_{1'}-\nu_{2'}\right)\\
   \end{array}\right.
+  \label{eq:PtoF}
 \end{align}
 
 And from any other channel to the p-channel:
@@ -550,6 +594,7 @@ And from any other channel to the p-channel:
     \nu_p &= \frac{ \omega_t-\nu_t+\nu'_t}{2}\\
     \nu'_p &= \frac{-\omega_t-\nu_t+\nu'_t}{2}\\
   \end{array}
+  \label{eq:PtoAll}
 \end{align}
 
 \subsubsection*{t-channel}
@@ -566,6 +611,7 @@ From and to the fermionic channel
     \nu_t    &= \frac{1}{2}\left(2\nu_{2'}+\nu_{1'}-\nu_{1}\right) \\
     \nu'_t   &= \frac{1}{2}\left(\nu_{1'} +\nu_{1}\right)\\
   \end{array}\right.
+  \label{eq:TtoF}
 \end{align}
 
 
@@ -586,6 +632,7 @@ And from any other channel to the t-channel:
     \nu_t  &= \nu_t \\
     \nu'_t &= \nu'_t\\
   \end{array}
+  \label{eq:TtoAll}
 \end{align}
 
 
@@ -593,7 +640,7 @@ And from any other channel to the t-channel:
 
 
 \section*{Transformations}
-Define the following transformations, based on the previous properties:
+Define the following transformations for the full vertex:
 \subsection*{Spin flip}
 \begin{equation}
 T_S \Gamma^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma_1'\sigma_2'|\sigma_1\sigma_2} (q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2) = \Gamma^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\bar{\sigma}_1'\bar{\sigma}_2'|\bar{\sigma}_1\bar{\sigma}_2} (q_1'q_2'|q_1q_2, \nu_1'\nu_2'|\nu_1\nu_2)
@@ -641,10 +688,15 @@ Notice the $T_i$ transformations ($i\in \{1,2,3\}$) form a group which is isomor
     T_1T_C &= T_CT_2 \\
     T_C &= T_1T_CT_2 = T_2T_CT_1
   \end{array}
+    \quad  \quad
+  \begin{array}{l@{\mskip\thickmuskip}l}
+  T_3T_C &= T_CT_3 \\
+   & 
+  \end{array}
 \end{align}
-The inclusion of $T_S$ expands the group, but does not yield any interesting structure.
 
-\pagebreak
+As much as one would like the above table to be applicable to the channel decomposition of the vertex, this is simply not the case. Notice that the $T_1$ and $T_2$ symmetries exchange roles of corner-opposite legs of a diagram, which, when looked at in detail, means that the $a$ and $t$-channels get mapped into one another under these transformations. An exhaustive table of the cases will be presented after the following analysis of independent spin and Keldysh components in the vertex, since this work makes the other job much easier. 
+
 \section*{Independent spin and Keldysh components}
 
 The reducible part of the vertex in each channel can be decomposed into four diagrammatic classes:
@@ -1357,6 +1409,131 @@ The above numeration and transformation properties of the respective diagrammati
 	\end{tabular}
 \end{table}
 
+\section*{General properties of the self energy $\Sigma$}
+The self energy has similar symmetry properties as the propagator. Thus, the following diagrammatic representation:
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\textwidth]{self_energy}
+\end{figure}
+
+
+It also has two independent components, $\Sigma^R$, which it's conjugate is $\Sigma^A = \left[\Sigma^R\right]^*$ and $\Sigma^K$, which is anti-hermitian, i.e. $\left[\Sigma^K\right]^* = -\Sigma^K$. However, causality for the self-energy translates to $\Sigma^{2|2}=0$, such that it's Keldysh structure in matrix form reads
+\begin{equation}
+\Sigma^{\alpha_1|\alpha'_1}_{\sigma_1} =
+\begin{pmatrix}
+\Sigma^{1|1} & \Sigma^{1|2} \\
+\Sigma^{2|1} & \Sigma^{2|2}
+\end{pmatrix}_{\sigma_1|\sigma_1} = \begin{pmatrix}
+\Sigma^K & \Sigma^R \\ \Sigma^A & 0
+\end{pmatrix}_{\sigma_1|\sigma_1}
+\end{equation}
+
+\subsection*{Computing the self energy}
+For computing the self energy, we take the contribution from all the $2n$-point vertices that we have (in our truncation only $\Gamma$, the four-point vertex, whose properties come in the next section) to the 2 point-vertex. Hence, we get the following equation:
+
+\begin{align}
+\Sigma^{\alpha_1'|\alpha_1}_{\sigma_1'|\sigma_{1}}(\nu_1'|\nu_1) &= \sum_{\sigma_2', \sigma_2}\sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu_2'}{2\pi i} \frac{\dd\nu_2}{2\pi i} G^{\alpha_2'|\alpha_2}_{\sigma_2'|\sigma_2}(\nu_2| \nu_2') \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu_1', \nu_2'| \nu_1, \nu_2)
+\label{eq:defSelfEnergy}
+\end{align}
+Using the fact that $G$ is diagonal in frequency and spin spaces, we can, through a Kronecker and a Dirac delta, get rid of the first sum as well as of one of the integrals. Hence, as mentioned above, $\Sigma$ inherits the same properties in frequency and spin spaces from $G$.
+
+Simplifying Eq.~\eqref{eq:defSelfEnergy} according to this, one then obtains the actual formula to be used:
+\begin{align}
+\Sigma^{\alpha_1'|\alpha_1}_{\sigma_1}(\nu) &= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i} \Gamma_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu'| \nu, \nu')G^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')
+\label{eq:actualSelfEnergy}
+\end{align}
+
+Since we'll be interested in a $\Lambda$-dependent RG-flow, we also include the case for $\dot{\Sigma}^\Lambda$, where now both $\Gamma \rightarrow \Gamma^\Lambda$ and $G \rightarrow G^\Lambda$ start to depend on the scale parameter $\Lambda$. 
+
+\begin{align}
+\dot{\Sigma}^{\alpha_1'|\alpha_1}_{\sigma_1}(\nu) &= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i}  \Gamma_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu'| \nu, \nu')S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')\\
+&= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i}  \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu', \nu)S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')
+\label{eq:derivativeSelfEnergy}
+\end{align}
+Here we are using the notation introduced in Fig.\ref{fig:channels} and Eqs.\eqref{eq:vertexParam1} and \eqref{eq:vertexParam2} and the single-scale propagator $S^\Lambda \defeq \partial_\Lambda G|_{\Sigma =\text{ const.}}$. $S$ also has a Keldysh structure which is, unsurprisingly, exactly equal to the one of the propagator $G$. Note that it's important that we take $S$ for calculating $\Sigma$ in a first instance and not $\partial_\Lambda G = S + G\circ \dot{\Sigma}\circ G$, since the second term constitute corrections (of course this must be accounted somewhere, just not here).
+
+Now, exploiting the fact that we only need two components of $\Sigma$ (namely $\Sigma^K=\Sigma^{1|1}$ and $\Sigma^R=\Sigma^{1|2}$), we write off the explicit contributions these receive:
+
+\begin{align}
+\begin{split}
+\dot{\Sigma}^{1|1}_\sigma(\nu) =\dot{\Sigma}^K_\sigma(\nu) = \sum_{\sigma'}&\sum_{\alpha_2', \alpha_2}\int \frac{\dd\nu'}{2\pi i} \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{1\alpha_2'|1\alpha_2}(\nu, \nu', \nu)S^{\alpha_2|\alpha_2'}_{\sigma'}(\nu')
+\end{split}\\
+\begin{split}
+= \sum_{\sigma'} \Bigl(
+&\left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{11|12}(\nu, \nu', \nu)S^R_{\sigma'}(\nu') +\\
+&\left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{12|11}(\nu, \nu', \nu)S^A_{\sigma'}(\nu') +\\
+& \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{12|12}(\nu, \nu', \nu)S^K_{\sigma'}(\nu')\Bigr)
+\end{split}\\
+\begin{split}
+= \sum_{\sigma'} \Bigl(
+&\left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{1}(\nu, \nu', \nu)S^R_{\sigma'}(\nu') +\\
+&\left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{4}(\nu, \nu', \nu)S^A_{\sigma'}(\nu') +\\
+& \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{5}(\nu, \nu', \nu)S^K_{\sigma'}(\nu')\Bigr)
+\label{eq:SigmaK}
+\end{split}
+\end{align}
+
+\begin{align}
+\begin{split}
+\dot{\Sigma}^{1|2}_\sigma(\nu) =\dot{\Sigma}^R_\sigma(\nu) = \sum_{\sigma'}&\sum_{\alpha_2', \alpha_2}\int \frac{\dd\nu'}{2\pi i} \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{1\alpha_2'|2\alpha_2}(\nu, \nu', \nu)S^{\alpha_2|\alpha_2'}_{\sigma'}(\nu')
+\end{split}\\
+\begin{split}
+= \sum_{\sigma'} \Bigl(
+&\left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{11|22}(\nu, \nu', \nu)S^R_{\sigma'}(\nu') +\\
+&\left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{12|21}(\nu, \nu', \nu)S^A_{\sigma'}(\nu') +\\
+& \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{12|22}(\nu, \nu', \nu)S^K_{\sigma'}(\nu')\Bigr)
+\end{split}\\
+\begin{split}
+= \sum_{\sigma'} \Bigl(
+&\left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{3}(\nu, \nu', \nu)S^R_{\sigma'}(\nu') +\\
+&\left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{6}(\nu, \nu', \nu)S^A_{\sigma'}(\nu') +\\
+& \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{7}(\nu, \nu', \nu)S^K_{\sigma'}(\nu')\Bigr)
+\end{split}
+\label{eq:SigmaR}
+\end{align}
+
+At this point, one could be completely satisfied with Eqs. \eqref{eq:SigmaK} and \eqref{eq:SigmaR}. However, these make no use whatsoever of the channel decomposition, which does offer some computational advantages in performance and it yields possibilities to benchmark code segments.
+
+Using Eqs.\eqref{eq:AtoF}, \eqref{eq:PtoF} and \eqref{eq:TtoF} to transform the fermionic frequencies to the corresponding frequencies of the respective channels, one obtains the following equation for $\dot{\Sigma}$, following Eq. \eqref{eq:derivativeSelfEnergy}.
+
+\begin{align}
+	\begin{split}
+	\dot{\Sigma}^{\alpha_1'|\alpha_1}_\sigma (\nu) = \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i} \Bigg( &\left[\Gamma_a\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'}\left(\nu'-\nu, \frac{\nu+\nu'}{2}, \frac{\nu+\nu'}{2}\right) S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')\\
+	+&\left[\Gamma_p\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'}\left(\nu+\nu', \frac{\nu-\nu'}{2}, \frac{\nu-\nu'}{2}\right)
+	S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu') \\
+	+&\left[\Gamma_t\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'}\left(0, \nu', \nu \right) S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')\\
+	+&\left[\Gamma_0\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'} S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')\Bigg)\end{split}
+	\label{eq:SigmaDotinChannels}
+\end{align}
+
+Notice that comparing results using Eqs. \eqref{eq:derivativeSelfEnergy} and \eqref{eq:SigmaDotinChannels} provides a computational consistency check that one can perform in order to check and verify that the frequency transformations between the fermionic and the $r$-channels is correctly implemented. Also, since the inputs are tailored to the way the vertices are parameterized, the computation of the self energy is slightly faster using the second formula.
+
+A crucial remark that needs to be made at this point regarding the causality structure of the last term in Eq. \eqref{eq:SigmaDotinChannels}. According to Ref. \cite{kamenev_2011}, 
+\begin{equation}
+	G^R(t,t) + G^A(t,t) = 0.
+	\label{eq:SameTimeSum}
+\end{equation}
+
+Eq. \ref{eq:SameTimeSum}, when converted to frequency space, takes the following form:
+\begin{align}
+\int \frac{\dd \nu}{2 \pi} \left( G^R(\nu) + G^A(\nu) \right) &= 0\\
+\partial_\Lambda\Rightarrow \int \frac{\dd \nu}{2 \pi} \left( S^R(\nu) + S^A(\nu) \right) &= 0
+\label{eq:SameTimeConstranit}
+\end{align}
+
+This same term is part of Eq. \eqref{eq:SigmaDotinChannels} for the case $\alpha_1=\alpha_1' = 1$, i.e. for contributions to $\Sigma^K$. If one \textit{only} writes the expansion of the sum for the last term of Eq. \eqref{eq:SigmaDotinChannels}, one obtains the following:
+\begin{align}
+	\left[\dot{\Sigma}^K_\sigma(\nu)\right]_0 = &\sum_{\sigma'} \int \frac{\dd \nu'}{2\pi i}\bigg(\left[\Gamma_0\right]^{11|12}_{\sigma\sigma'|\sigma\sigma'} S_{\sigma'}^R  
+	+ \left[\Gamma_0\right]^{12|11}_{\sigma\sigma'|\sigma\sigma'} S_{\sigma'}^A  
+	+\left[\Gamma_0\right]^{12|12}_{\sigma\sigma'|\sigma\sigma'} S_{\sigma'}^K  \bigg) \\
+	\xRightarrow{Eq. \text{\eqref{eq:defGamma0withKeldysh}}} &\sum_{\sigma'} \int \frac{\dd \nu'}{2\pi i}\bigg(\left[\Gamma_0\right]_{\sigma\sigma'|\sigma\sigma'} S_{\sigma'}^R  
+	+ \left[\Gamma_0\right]_{\sigma\sigma'|\sigma\sigma'} S_{\sigma'}^A \bigg) \\
+	&\sum_{\sigma'} \left[\Gamma_0\right]_{\sigma\sigma'|\sigma\sigma'}  \underbrace{\int\frac{\dd \nu'}{2\pi i} \left( S_{\sigma'}^R + S_{\sigma'}^A \right)}_{=0} \\
+	& =0.
+\end{align}
+
+This same-time constraint must be fulfilled at all times (pun intended) during the execution of the code. One here then has two possibilities: either one tailors the code as to include the same-time constraint, gaining some speed in the execution by leaving out unnecessary calls for call-operators, or one includes the terms as part of execution-time checks that slow the code down but assure, in every step of the computation, that the propagators retain the required causality structure (for a free theory, where the propagators do not evolve, this is trivial. However, we're not interested in the free theory, so it might be a powerful tool since preservation of causality deeply important and the check is pretty simple to implement.). Notice also, that this constraint appears only in the terms involving $\dot{\Sigma}^K$. The only term that survives in $\dot{\Sigma}^R$, after invoking Eq. \eqref{eq:defGamma0withKeldysh}, is the one corresponding to $S^K$. The propagators $S^R$ and $S^A$ get multiplied by bare vertices whose sum of Keldysh components is not odd, thus becoming zero.
+
 
 \section*{General properties of the bubbles $\Pi_r$}
 \subsection*{Keldysh structure of the bubbles}
@@ -1448,6 +1625,9 @@ RR & RK & KR & KK
 \end{pmatrix}.
 \label{eq:Pit}
 \end{align}
+
+In the case of $\dot{\Pi}_r$, one needs to of course replace $GG \rightarrow GS+SG$.
+
 Note that, choosing this structural convention for the bubbles, one attains internal Keldysh structures that are exactly equal, independent of the channel. However, the way the legs are connected and, consequently, the functions that will be defined below do differ among the three channels. These functions are a devise to exploit the zeroes in the bubbles \textit{and}, simultaneously, the fact that one only needs to store $n_{K_i}$ Keldysh components per diagrammatic class.
 These aforementioned functions are a devise to exploit the zeros in the bubbles \textit{and}, simultaneously, the fact that one only needs to store $n_{K_i}$ Keldysh components per diagrammatic class. These are functions that then, based on the Keldysh index, $i_0$, of the left hand side of Eq.~\eqref{eq:derivativeOfgamma} (i.e. $i_0\in\{0,\dots, n_{K_i}\}$ and the Keldysh index, $i_2$, of the list of non zero entries of the bubbles (i.e. $i_2\in\{3, 6, 7, 9, 11, 12, 13, 14, 15\}$)  determine precisely the corresponding components $i_1$ and $i_3$ for the vertices left and right of the bubble in Eq.~\eqref{eq:derivativeOfgamma}. Condensed into an equation, the statement is as follows:
 
@@ -1459,12 +1639,12 @@ where we have emphasized that the frequencies $\nu^r_{1}$ and $\nu^r_2$ that go 
 Writing down the exact form of these functions is a straight-forward task, which requires the conversion of $i_0$ and $i_2$ into indices in the $\{1111, \dots, 2222\}$ set. To visualize the process, just look at the figures drawn above. There, it becomes apparent, that, for $i_0 \rightarrow \alpha'_1\alpha'_2|\alpha_1\alpha_2$ and $i_2 \rightarrow \alpha'_3\alpha'_4|\alpha_3\alpha_4$, the functions are as follows:
 
 \begin{align}
-i_1^a (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha_4| \alpha'_3\alpha_2 \\
-i_3^a (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha_3\alpha'_2| \alpha_1\alpha'_4 \\
-i_1^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha'_2| \alpha'_3\alpha'_4 \\
-i_3^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha_3\alpha_4| \alpha_1\alpha_2 \\
-i_1^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha_4\alpha'_2| \alpha'_3\alpha_2 \\
-i_3^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_3) &= \alpha'_1\alpha_3| \alpha_1\alpha'_4
+i_1^a (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_4) &= \alpha'_1\alpha_4| \alpha'_3\alpha_2 \\
+i_3^a (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_4) &= \alpha_3\alpha'_2| \alpha_1\alpha'_4 \\
+i_1^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_4) &= \alpha'_1\alpha'_2| \alpha'_3\alpha'_4 \\
+i_3^p (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_4) &= \alpha_3\alpha_4| \alpha_1\alpha_2 \\
+i_1^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_4) &= \alpha_4\alpha'_2| \alpha'_3\alpha_2 \\
+i_3^t (\alpha'_1\alpha'_2|\alpha_1\alpha_2, \alpha'_3\alpha'_4|\alpha_3\alpha_4) &= \alpha'_1\alpha_3| \alpha_1\alpha'_4
 \end{align}
 \subsection*{Structure of the internal bubble - diagrammatic classes' contributions}
 Now, at this stage, the natural question to ask is how the \textit{diagrammatic} decomposition of Eq.~\eqref{eq:fullgammaDerivative} looks like i.e., given that $\dot{\gamma_r} = \sum_i \dot{K_i^r}$, what are the diagrammatic classes that contribute to each of these derivatives? It should by now be clear that not all classes can contribute to all derivatives, since, for instance, diagrams in the $K_3$ class, by definition, do not fulfill the requirement of having, say, two lines connected to the same vertex on one side. Thus, no terms with $K_3$ can appear in $\dot{K_1}$.
@@ -1508,6 +1688,8 @@ What this table summarizes is the possible terms that can appear on the RHS of E
 
 
 
+\bibliography{bibliography}
+\bibliographystyle{ieeetr}
 
 
 
