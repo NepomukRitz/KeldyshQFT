@@ -39,15 +39,15 @@ def load_hdf5(filename, only_SE):
 
 def omegas(parameters, nw, diag_class):
     if diag_class == 1:
-        wmax = parameters[10]
-        wmin = parameters[11]
+        wmax = parameters[-2]
+        wmin = parameters[-1]
         w = np.linspace(wmin, wmax, nw)
         return w
     elif diag_class == 2:
-        wbmax = parameters[10]
-        wbmin = parameters[11]
-        wfmax = parameters[12]
-        wfmin = parameters[13]
+        wbmax = parameters[-4]
+        wbmin = parameters[-3]
+        wfmax = parameters[-2]
+        wfmin = parameters[-1]
         wb = np.linspace(wbmin, wbmax, nw)
         wf = np.linspace(wfmin, wfmax, nw)
         return wb, wf
