@@ -36,29 +36,38 @@ auto main() -> int {
 
     setUpBosGrid();
     setUpFerGrid();
+    setUpFlowGrid();
 
-//SOPT Code here:
-//    for(int i=0; i<nEVO; ++i) {
-//        double Lambda = flow_grid[i];
-//
-//        State<comp> bare (Lambda);
-//        for (auto j:odd_Keldysh) {
-//            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*U);
-//        }
-//
-//        sopt(bare, Lambda, state);
-//
-//        Propagator control = propag(Lambda, state.selfenergy, state.selfenergy, 'g', '.');
-//        writeOutSOPT(Lambda, control, state.selfenergy, bare.vertex);
-//    }
+    MPI_Init(NULL, NULL);
 
 
-    double t0 = get_time();
-    print("Start of flow", true);
-    flow();
-    print("Total execution time: ");
-    get_time(t0);
+    //SOPT Code here:
+#ifdef SOPT
+    SelfEnergy<comp> diffZero;
 
+    for(int i=0; i<nEVO; ++i) {
+        double Lambda = flow_grid[i];
+
+        State<comp> bare (Lambda);
+        for (auto j:odd_Keldysh) {
+            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*U);
+        }
+
+        sopt(bare, Lambda, bare);
+
+        Propagator control = propag(Lambda, bare.selfenergy, diffZero, 'g');
+        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
+    }
+#endif
+
+
+//    double t0 = get_time();
+//    printf("Start of flow");
+//    flow();
+//    printf("Total execution time: ");
+//    get_time(t0);
+
+    MPI_Finalize();
 
     return 0;
 }
@@ -107,7 +116,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     get_time(t2);
 
 #ifdef SOPT
-    Propagator s = propag(Lambda, state.selfenergy, state.selfenergy, 's', 'f');
+    Propagator s = propag(Lambda, state.selfenergy, state.selfenergy, 's');
     dPsi.selfenergy = loop(state.vertex, s);
 #endif
 #ifdef NLOOPS
@@ -237,9 +246,7 @@ template <typename Q> void setInitialConditions (State<Q>& state){
 
 void flow(){
 
-    setUpFlowGrid();
 
-    MPI_Init(NULL, NULL);
     int world_rank = mpi_world_rank();
 
     double  t0 = get_time();
@@ -297,7 +304,7 @@ void flow(){
         get_time(tder);
     }
 
-    MPI_Finalize();
+
 
 }
 
@@ -579,7 +586,7 @@ void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
 template<typename Q>
 void sopt(State<Q>& dPsi, double Lambda, State<Q> &state) {
 
-    Propagator g = propag(Lambda, state.selfenergy, state.selfenergy, 'g', 'f');
+    Propagator g = propag(Lambda, state.selfenergy, state.selfenergy, 'g');
     cout << "G calculated" << endl;
 
     bool diff = false;
@@ -605,7 +612,7 @@ void sopt(State<Q>& dPsi, double Lambda, State<Q> &state) {
     cout << "bubble finished. ";
     get_time(t2);
 
-    Propagator s = propag(Lambda, state.selfenergy, state.selfenergy, 's', 'f');
+    Propagator s = propag(Lambda, state.selfenergy, state.selfenergy, 's');
 
     double tloop = get_time();
     SelfEnergy<comp> Sigma_std = loop(dPsi.vertex, s);
@@ -623,13 +630,13 @@ void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
     int i = fconv_Lambda(Lambda);
 
     ostringstream self_energyR, self_energyA, self_energyK, propR, propA, propK;
-    self_energyR << "self_energyR"<<i<<".dat";
-    self_energyA << "self_energyA"<<i<<".dat";
-    self_energyK << "self_energyK"<<i<<".dat";
+    self_energyR << "Output/self_energyR"<<i<<".dat";
+    self_energyA << "Output/self_energyA"<<i<<".dat";
+    self_energyK << "Output/self_energyK"<<i<<".dat";
 
-    propR << "propagatorR"<<i<<".dat";
-    propA << "propagatorA"<<i<<".dat";
-    propK << "propagatorK"<<i<<".dat";
+    propR << "Output/propagatorR"<<i<<".dat";
+    propA << "Output/propagatorA"<<i<<".dat";
+    propK << "Output/propagatorK"<<i<<".dat";
 
 
     ofstream my_file_sigmaR, my_file_sigmaA, my_file_sigmaK, my_file_propR, my_file_propA, my_file_propK;
@@ -655,13 +662,13 @@ void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
 #if DIAG_CLASS >=1
     ostringstream avert1, pvert1, tvert1, avert3, pvert5, tvert3;
 
-    avert1 << "avert1"<<i<<".dat";
-    pvert1 << "pvert1"<<i<<".dat";
-    tvert1 << "tvert1"<<i<<".dat";
+    avert1 << "Output/avert1"<<i<<".dat";
+    pvert1 << "Output/pvert1"<<i<<".dat";
+    tvert1 << "Output/tvert1"<<i<<".dat";
 
-    avert3 << "avert3"<<i<<".dat";
-    pvert5 << "pvert5"<<i<<".dat";
-    tvert3 << "tvert3"<<i<<".dat";
+    avert3 << "Output/avert3"<<i<<".dat";
+    pvert5 << "Output/pvert5"<<i<<".dat";
+    tvert3 << "Output/tvert3"<<i<<".dat";
 
     ofstream  my_file_avert1, my_file_pvert1, my_file_tvert1, my_file_avert3, my_file_pvert5, my_file_tvert3;
 
