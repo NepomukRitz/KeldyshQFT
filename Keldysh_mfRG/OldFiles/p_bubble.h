@@ -5,12 +5,12 @@
 #ifndef KELDYSH_MFRG_P_BUBBLE_H
 #define KELDYSH_MFRG_P_BUBBLE_H
 
-#include "vertex.h"
-#include "propagator.h"
-#include "integrator.h"
-#include "selfenergy.h"
-#include "util.h"
-#include "mpi_setup.h"
+#include "../vertex.h"
+#include "../propagator.h"
+#include "../integrator.h"
+#include "../selfenergy.h"
+#include "../util.h"
+#include "../mpi_setup.h"
 
 
 //TODO If structure of ALL bubbles is equal, why not have a master-bubble class, takes in g and s and a parameter to choose if regular or differentiated and calculates value accordingly?

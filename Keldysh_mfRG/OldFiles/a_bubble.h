@@ -5,12 +5,12 @@
 #ifndef KELDYSH_MFRG_A_BUBBLE_H
 #define KELDYSH_MFRG_A_BUBBLE_H
 
-#include "vertex.h"
-#include "propagator.h"
-#include "integrator.h"
-#include "selfenergy.h"
-#include "util.h"
-#include "bubbles.h"
+#include "../vertex.h"
+#include "../propagator.h"
+#include "../integrator.h"
+#include "../selfenergy.h"
+#include "../util.h"
+#include "../bubbles.h"
 
 /*Class defining the a_bubble object with a Keldysh structure*/
 class A_Bubble{

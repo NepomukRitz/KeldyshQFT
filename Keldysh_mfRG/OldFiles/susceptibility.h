@@ -5,9 +5,9 @@
 #ifndef KELDYSH_MFRG_SUSCEPTIBILITY_H
 #define KELDYSH_MFRG_SUSCEPTIBILITY_H
 
-#include "data_structures.h"
-#include "parameters.h"
-#include "frequency_grid.h"
+#include "../data_structures.h"
+#include "../parameters.h"
+#include "../frequency_grid.h"
 
 #ifdef SUSC
 
