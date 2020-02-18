@@ -7,7 +7,7 @@
 
 #include "vertex.h"
 #include "selfenergy.h"
-#include "susceptibility.h"
+#include "OldFiles/susceptibility.h"
 #include "propagator.h"
 #include "integrator.h"
 #include "H5Cpp.h"
