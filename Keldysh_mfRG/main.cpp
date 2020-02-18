@@ -41,8 +41,14 @@ auto main() -> int {
     MPI_Init(NULL, NULL);
 
 
-    //SOPT Code here:
-#ifdef SOPT
+#ifndef SOPT // standard fRG flow
+    double t0 = get_time();
+    printf("Start of flow");
+    flow();
+    printf("Total execution time: ");
+    get_time(t0);
+
+#else // SOPT Code here:
     SelfEnergy<comp> diffZero;
 
     for(int i=0; i<nEVO; ++i) {
@@ -59,13 +65,6 @@ auto main() -> int {
         writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
     }
 #endif
-
-
-//    double t0 = get_time();
-//    printf("Start of flow");
-//    flow();
-//    printf("Total execution time: ");
-//    get_time(t0);
 
     MPI_Finalize();
 
