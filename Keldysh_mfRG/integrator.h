@@ -44,7 +44,7 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
     //Simpson
     rvec simpson(nINT);
     cvec integrand_values(nINT);
-    double dx = (b-a)/((double)nINT);
+    double dx = (b-a)/((double)(nINT-1));
 
     for (int i=0; i<nINT; ++i)
     {
