@@ -31,6 +31,7 @@ template <typename Q> void sopt(State<Q>& bare, double Lambda, State<Q>& state);
 void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
 void writePropagators(Propagator& free, Propagator& full);
 
+void testBubbles(Propagator&, Propagator&);
 
 auto main() -> int {
 
@@ -65,6 +66,15 @@ auto main() -> int {
         writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
     }
 #endif
+
+//    SelfEnergy<comp> self;
+//    for (int i = 0; i < nSE; ++i) {
+//        self.setself(0, i, U/2.);
+//        self.setself(1, i, 0.);
+//    }
+//    SelfEnergy<comp> zero;
+//    Propagator bubbles_prop = propag(1.0, self, zero, 'g');
+//    testBubbles(bubbles_prop, bubbles_prop);
 
     MPI_Finalize();
 
@@ -706,4 +716,71 @@ void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
     my_file_propR.close();
     my_file_propA.close();
     my_file_propK.close();
+}
+
+void testBubbles(Propagator& g1, Propagator& g2){
+
+    vector<comp> Pia9  (nBOS);
+    vector<comp> Pia12 (nBOS);
+    vector<comp> Pia13 (nBOS);
+    vector<comp> Pia14 (nBOS);
+    vector<comp> Pia15 (nBOS);
+
+
+    int i = 0;
+    for(auto w:bfreqs){
+        IntegrandBubble integrandPia9  (g1, g2, false, w, 9,  'a');
+        IntegrandBubble integrandPia12 (g1, g2, false, w, 12, 'a');
+        IntegrandBubble integrandPia13 (g1, g2, false, w, 13, 'a');
+        IntegrandBubble integrandPia14 (g1, g2, false, w, 14, 'a');
+        IntegrandBubble integrandPia15 (g1, g2, false, w, 15, 'a');
+
+
+        Pia9 [i] = integrator(integrandPia9 , w_lower_b, w_upper_b);
+        Pia12[i] = integrator(integrandPia12, w_lower_b, w_upper_b);
+        Pia13[i] = integrator(integrandPia13, w_lower_b, w_upper_b);
+        Pia14[i] = integrator(integrandPia14, w_lower_b, w_upper_b);
+        Pia15[i] = integrator(integrandPia15, w_lower_b, w_upper_b);
+        i++;
+    }
+
+
+    ostringstream Pia9file;
+    ostringstream Pia12file;
+    ostringstream Pia13file;
+    ostringstream Pia14file;
+    ostringstream Pia15file;
+
+    Pia9file << "Output/Pia9.dat";
+    Pia12file << "Output/Pia12.dat";
+    Pia13file << "Output/Pia13.dat";
+    Pia14file << "Output/Pia14.dat";
+    Pia15file << "Output/Pia15.dat";
+
+
+    ofstream my_file_Pia9 ;
+    ofstream my_file_Pia12;
+    ofstream my_file_Pia13;
+    ofstream my_file_Pia14;
+    ofstream my_file_Pia15;
+
+    my_file_Pia9.open(Pia9file.str());
+    my_file_Pia12.open(Pia12file.str());
+    my_file_Pia13.open(Pia13file.str());
+    my_file_Pia14.open(Pia14file.str());
+    my_file_Pia15.open(Pia15file.str());
+
+    for(int i = 0; i<nBOS; i++){
+        my_file_Pia9  << bfreqs[i] << " " << Pia9 [i].real() << " " << Pia9 [i].imag() << "\n";
+        my_file_Pia12 << bfreqs[i] << " " << Pia12[i].real() << " " << Pia12[i].imag() << "\n";
+        my_file_Pia13 << bfreqs[i] << " " << Pia13[i].real() << " " << Pia13[i].imag() << "\n";
+        my_file_Pia14 << bfreqs[i] << " " << Pia14[i].real() << " " << Pia14[i].imag() << "\n";
+        my_file_Pia15 << bfreqs[i] << " " << Pia15[i].real() << " " << Pia15[i].imag() << "\n";
+    }
+
+    my_file_Pia9.close();
+    my_file_Pia12.close();
+    my_file_Pia13.close();
+    my_file_Pia14.close();
+    my_file_Pia15.close();
 }
