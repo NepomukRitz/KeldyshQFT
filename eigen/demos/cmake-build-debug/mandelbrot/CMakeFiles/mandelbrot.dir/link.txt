@@ -1,1 +1,0 @@
-/usr/bin/c++   -O2 -g  -rdynamic CMakeFiles/mandelbrot.dir/mandelbrot.o  -o mandelbrot -lQtCore -lQtGui 
