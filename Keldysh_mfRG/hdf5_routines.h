@@ -1214,7 +1214,9 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
             }
         }
     }
+
     for (int iK=0; iK<nK_K1; ++iK) {
+#if DIAG_CLASS >=1
         for (int iw1=0; iw1<nBOS; ++iw1) {
             if (state.vertex.densvertex.avertex.K1_vval(iK, iw1, 0) != out.vertex.densvertex.avertex.K1_vval(iK, iw1, 0)) {
                 cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
@@ -1252,9 +1254,11 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
             }
 #endif
         }
+#endif
         if (state.vertex.densvertex.irred.bare[iK] != out.vertex.densvertex.irred.bare[iK]) {
             cout << "Vertex not equal, " << iK << endl;
         }
     }
 }
+
 
