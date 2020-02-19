@@ -177,8 +177,8 @@ auto loop(Vertex<fullvert<Q> >& fullvertex, Propagator& prop) -> SelfEnergy<comp
         IntegrandR<Q, fullvert<Q> > integrandR(fullvertex, prop, w, i_in);
         IntegrandK<Q, fullvert<Q> > integrandK(fullvertex, prop, w, i_in);
 
-        comp integratedR = (-im_unit)*integrator(integrandR, w_lower_f, w_upper_f);
-        comp integratedK = (-im_unit)*integrator(integrandK, w_lower_f, w_upper_f);
+        comp integratedR = 1./(2.*pi*im_unit)*integrator(integrandR, w_lower_f, w_upper_f);
+        comp integratedK = 1./(2.*pi*im_unit)*integrator(integrandK, w_lower_f, w_upper_f);
 
         resp.setself(0, i, integratedR);
         resp.setself(1, i, integratedK);
