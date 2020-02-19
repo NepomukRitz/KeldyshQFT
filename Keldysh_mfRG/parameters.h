@@ -37,7 +37,7 @@ const double pi = 3.1415926535897;
 //#define SOPT
 
 /*Imaginary unit*/
-const comp im_unit = (0., 1.);
+const comp im_unit = comp(0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;
 
 //Temperature and chemical potential
 const double T = 0.01;
