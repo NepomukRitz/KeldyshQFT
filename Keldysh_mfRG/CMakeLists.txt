@@ -16,7 +16,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -std=c++14 -fopen
 
 #include_directories("$ gsl-2.5/")
 
-set(SOURCE_FILES main.cpp diagrammatic_combinations.h interpolations.h)
+set(SOURCE_FILES main.cpp diagrammatic_combinations.h interpolations.h testFunctions.h)
 add_executable(openmp_test_clion ${SOURCE_FILES})
 
 add_executable(Keldysh_mfRG

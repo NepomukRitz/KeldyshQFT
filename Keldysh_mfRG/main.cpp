@@ -16,6 +16,8 @@
 #include "selfenergy.h"
 #include "hdf5_routines.h"
 
+#include "testFunctions.h"
+
 
 using namespace std;
 
@@ -30,7 +32,6 @@ template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, Sta
 template <typename Q> void sopt(State<Q>& bare, double Lambda, State<Q>& state);
 void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
 void writePropagators(Propagator& free, Propagator& full);
-
 
 auto main() -> int {
 
@@ -65,6 +66,15 @@ auto main() -> int {
         writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
     }
 #endif
+
+//    SelfEnergy<comp> self;
+//    for (int i = 0; i < nSE; ++i) {
+//        self.setself(0, i, U/2.);
+//        self.setself(1, i, 0.);
+//    }
+//    SelfEnergy<comp> zero;
+//    Propagator bubbles_prop = propag(1.0, self, zero, 'g');
+//    testBubbles(bubbles_prop, bubbles_prop);
 
     MPI_Finalize();
 

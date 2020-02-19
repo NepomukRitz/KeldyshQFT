@@ -78,7 +78,8 @@ public:
                 case 15://KK
                     ans = g.pvalsmooth(1, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
                     break;
-                default: ;
+                default:
+                    return 0.;
             }
         }
         else
@@ -111,13 +112,51 @@ public:
                 case 15://KK
                     ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
                     break;
-                default: ;
+                default:
+                    return 0.;
             }
         }
         return ans;
     }
 };
 
+
+class IntegrandBubble{
+    Propagator& g1;
+    Propagator& g2;
+    bool diff;
+    double w;
+    int iK;
+    char channel;
+
+public:
+    IntegrandBubble(Propagator& g1_in, Propagator& g2_in, bool diff_in, double w_in, int iK_in, char channel_in)
+            : g1(g1_in), g2(g2_in), diff(diff_in), w(w_in), iK(iK_in), channel(channel_in) {};
+
+    auto operator() (double vpp) -> comp {
+        comp ans;
+        double v1, v2;
+        Bubble Pi(g1, g2, diff);
+
+        switch(channel){
+            case 'p':
+                v1 = w/2.+vpp;
+                v2 = w/2.-vpp;
+                break;
+
+            case 'a': case 't':
+                v1 = vpp-w/2.;
+                v2 = vpp+w/2.;
+                break;
+            default:
+                v1 = 0.;
+                v2 = 0.;
+                cout << "Error in IntegrandBubble";
+        }
+
+        return Pi.value(iK, v1, v2)/(2.*pi);
+    }
+};
 
 /**
  * Integrand classes for non-differentiated bubble contributing to diagrammatic class K1, K2, K3

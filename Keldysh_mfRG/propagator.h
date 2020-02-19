@@ -231,7 +231,8 @@ auto GA(double Lambda, double omega, comp selfEneA) -> comp
 }
 auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
 {
-    return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
+    //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
+    return (1.-2.*Fermi_distribution(omega))*(GR(Lambda, omega, selfEneR) - GA(Lambda, omega, selfEneA));
 }
 
 auto SR(double Lambda, double omega, comp selfEneR)-> comp
@@ -247,14 +248,14 @@ auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
     return retarded + advanced + extra;
 }
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type) -> Propagator
-{
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type) -> Propagator {
+
     Propagator resp(Lambda);
 
-#if PROP_TYPE==1
-    for(int i=0; i<nPROP; ++i){
+#if PROP_TYPE == 1
+    for (int i = 0; i < nPROP; ++i) {
         double w = ffreqs[i];
-        switch (type){
+        switch (type) {
             case 'g' :                              //Good ol' regular propagator
                 resp.setprop(0, i, gR(Lambda, w));
                 resp.setprop(1, i, gK(Lambda, w));
@@ -264,8 +265,8 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diff
                 resp.setprop(1, i, sK(Lambda, w));
                 break;
             case 'k':                               //Katanin extension
-                resp.setprop(0, i, sR(Lambda, w)+ 0.);
-                resp.setprop(1, i, sK(Lambda, w)+ 0.);
+                resp.setprop(0, i, sR(Lambda, w) + 0.);
+                resp.setprop(1, i, sK(Lambda, w) + 0.);
                 break;
             default:                                //This case includes type e, the Katanin extension term, dg = s + e
                 resp.setprop(0, i, 0.);
@@ -273,7 +274,7 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diff
         }
     }
 
-#elif PROP_TYPE==2
+#elif PROP_TYPE == 2
 
     for(int i=0; i<nPROP; ++i){
         double w = ffreqs[i];
@@ -318,11 +319,9 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diff
                 resp.setprop(1, i, 0.);
         }
     }
-
+#endif
     return resp;
 }
-#endif
-
 
 #endif
 
