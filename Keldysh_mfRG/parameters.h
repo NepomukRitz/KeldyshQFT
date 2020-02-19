@@ -37,7 +37,7 @@ const double pi = 3.1415926535897;
 //#define SOPT
 
 /*Imaginary unit*/
-const comp im_unit = comp(0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;
+const comp im_unit (0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;
 
 //Temperature and chemical potential
 const double T = 0.01;
@@ -57,8 +57,8 @@ const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
 const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 11;
-const int nFER = 11;
+const int nBOS = 151;
+const int nFER = 151;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
