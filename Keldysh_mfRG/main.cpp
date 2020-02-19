@@ -43,9 +43,9 @@ auto main() -> int {
 
 #ifndef SOPT // standard fRG flow
     double t0 = get_time();
-    printf("Start of flow");
+    print("Start of flow", true);
     flow();
-    printf("Total execution time: ");
+    print("Total execution time: ");
     get_time(t0);
 
 #else // SOPT Code here:
