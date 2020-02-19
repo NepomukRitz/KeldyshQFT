@@ -154,7 +154,7 @@ public:
                 cout << "Error in IntegrandBubble";
         }
 
-        return Pi.value(iK, v1, v2)/(2.*pi);
+        return Pi.value(iK, v1, v2)/(2.*pi*im_unit);
     }
 };
 
