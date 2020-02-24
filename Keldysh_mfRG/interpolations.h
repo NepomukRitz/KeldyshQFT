@@ -14,7 +14,7 @@ template <typename Q, typename T>
 void interpolateK1(Q& ans, double pf, int iK, double w, int i_in, T& vertex){
     int index = fconv_bos(w);
     double x1 = bfreqs[index];
-    double x2 = bfreqs[index] + dw;
+    double x2 = bfreqs[index + 1];
     double xd = (w - x1) / (x2 - x1);
 
     Q f1 = vertex.K1_vval(iK, index, i_in);
@@ -29,9 +29,9 @@ void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, T& 
     int index_f = fconv_fer(v);
 
     double x1 = bfreqs[index_b];
-    double x2 = bfreqs[index_b] + dw;
+    double x2 = bfreqs[index_b + 1];
     double y1 = ffreqs[index_f];
-    double y2 = ffreqs[index_f] + dv;
+    double y2 = ffreqs[index_f + 1];
     double xd = (w - x1) / (x2 - x1);
     double yd = (v - y1) / (y2 - y1);
 
@@ -50,11 +50,11 @@ void interpolateK3 (Q& ans, double pf, int iK, double w, double v1, double v2, i
     int index_f2=fconv_fer(v2);
 
     double x1 = bfreqs[index_b];
-    double x2 = bfreqs[index_b] + dw;
+    double x2 = bfreqs[index_b + 1];
     double y1 = ffreqs[index_f1];
-    double y2 = ffreqs[index_f1] + dv;
+    double y2 = ffreqs[index_f1 + 1];
     double z1 = ffreqs[index_f2];
-    double z2 = ffreqs[index_f2] + dv;
+    double z2 = ffreqs[index_f2 + 1];
     double xd = (w - x1) / (x2 - x1);
     double yd = (v1 - y1) / (y2 - y1);
     double zd = (v2- z1) / (z2 - z1);
