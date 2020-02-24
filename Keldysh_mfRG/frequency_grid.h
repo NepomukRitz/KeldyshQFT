@@ -17,7 +17,7 @@ using namespace std;
 
 
 #ifdef GRID
-# if GRID==1
+#if GRID==1
 /***********************************************    LOG GRID    *******************************************************/
 //TODO: derive functions to determine index values for the respective logarithmic grid but, first, define logarithmic grid
 
@@ -93,6 +93,8 @@ auto fconv_Lambda(double Lambda) -> int
     return -1;
 }
 
+// TODO: all these functions below are not used -- do we need them?
+
 auto fconv_K1_a(double w) -> int
 {
 //    auto index = (int)((w-w_lower_b)/dw);
@@ -167,7 +169,67 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 
-# endif
+#elif GRID==3
+/*******************************************    NON-LINEAR GRID    ****************************************************/
+// TODO: finish
+void setUpBosGrid()
+{
+    for(int i=0; i<nBOS; ++i)
+        bfreqs[i] = w_lower_b + i*dw;
+}
+void setUpFerGrid()
+{
+    for(int i=0; i<nFER; ++i)
+        ffreqs[i] = w_lower_f + i*dv;
+}
+
+void setUpFlowGrid()
+{
+    for(int i=0; i<nEVO; ++i)
+        flow_grid[i] = Lambda_ini + i*dL;
+}
+
+
+
+auto fconv_bos(double w) -> int
+{
+    int index;
+    double aid = (w-w_lower_b)/dw;
+    auto index1 = (int)aid;
+    auto index2 = index1+1;
+
+    if(fabs(aid-index2)<inter_tol)
+        index = index2;
+    else
+        index = index1;
+
+    return index; //- (int)(index/bfreqs.size());
+}
+auto fconv_fer(double w) -> int
+{
+    int index;
+    double aid = (w-w_lower_f)/dv;
+    auto index1 = (int)aid;
+    auto index2 = index1+1;
+
+    if(fabs(aid-index2)<inter_tol)
+        index = index2;
+    else
+        index = index1;
+
+    return index; //- (int)(index/ffreqs.size());
+}
+auto fconv_Lambda(double Lambda) -> int
+{
+    for(int i=0; i<nEVO; ++i){
+        if(Lambda == flow_grid[i])
+            return i;
+    }
+    return -1;
+}
+
+
+#endif
 
 #endif
 
