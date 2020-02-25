@@ -114,7 +114,7 @@ template <typename Integrand> auto integrator_PAID(Integrand& integrand, double 
 }
 
 template <typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> comp {
-    integrator_simpson(integrand, a, b);
+    return integrator_simpson(integrand, a, b);
 }
 
 auto dotproduct(const cvec& x, const rvec& y) -> comp
