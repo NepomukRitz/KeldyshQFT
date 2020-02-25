@@ -129,43 +129,60 @@ void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
 }
 
 void testBubbles(Propagator& g1, Propagator& g2){
-    vector<comp> w (nBOS);
+
     vector<comp> Pia_odd_even (nBOS);
     vector<comp> Pia_odd_odd (nBOS);
+    vector<comp> Pia_odd_odd_c (nBOS);
 
     for(auto w:bfreqs){
         int i = fconv_bos(w);
-        IntegrandBubble integrandPia6  (g1, g2, false, w, 6,  'a');
-        IntegrandBubble integrandPia9  (g1, g2, false, w, 9,  'a');
-        IntegrandBubble integrandPia11 (g1, g2, false, w, 11, 'a');
-        IntegrandBubble integrandPia13 (g1, g2, false, w, 13, 'a');
-        IntegrandBubble integrandPia15 (g1, g2, false, w, 15, 'a');
+        IntegrandBubble integrandPia6  (g1, g2, false, w, 6,  'a');     //AR
+        IntegrandBubble integrandPia9  (g1, g2, false, w, 9,  'a');     //RA
+        IntegrandBubble integrandPia11 (g1, g2, false, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13 (g1, g2, false, w, 13, 'a');     //RK
+        IntegrandBubble integrandPia15 (g1, g2, false, w, 15, 'a');     //KK
 
-        Pia_odd_even[i] = integrator(integrandPia11 , w_lower_b, w_upper_b) + integrator(integrandPia13 , w_lower_b, w_upper_b);
-        Pia_odd_odd [i] = integrator(integrandPia6 , w_lower_b, w_upper_b) + integrator(integrandPia9 , w_lower_b, w_upper_b) + integrator(integrandPia15 , w_lower_b, w_upper_b);
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        auto cont6  = integrator(integrandPia6 , w_lower_b, w_upper_b);
+        auto cont9  = integrator(integrandPia9 , w_lower_b, w_upper_b);
+        auto cont15 = integrator(integrandPia15 , w_lower_b, w_upper_b);
+
+        Pia_odd_even[i] = 1./2.*(cont11 + cont13);
+        Pia_odd_odd [i] = 1./2.*(cont6 + cont9 + cont15);
+
+        auto correction = 1./2.*(1./(2.*pi*im_unit)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
+
+        Pia_odd_odd_c[i] = Pia_odd_odd[i] + correction;
     }
 
 
     ostringstream Pia_odd_evenfile;
     ostringstream Pia_odd_oddfile;
+    ostringstream Pia_odd_oddcfile;
 
     Pia_odd_evenfile << "Output/Pia_odd_even.dat";
     Pia_odd_oddfile  << "Output/Pia_odd_odd.dat";
-
+    Pia_odd_oddcfile  << "Output/Pia_odd_odd_c.dat";
 
     ofstream my_file_Pia_odd_even ;
     ofstream my_file_Pia_odd_odd;
+    ofstream my_file_Pia_odd_odd_c;
 
     my_file_Pia_odd_even.open(Pia_odd_evenfile.str()) ;
     my_file_Pia_odd_odd.open( Pia_odd_oddfile.str());
+    my_file_Pia_odd_odd_c.open( Pia_odd_oddcfile.str());
 
     for(int i = 0; i<nBOS; i++){
         my_file_Pia_odd_even<< bfreqs[i] << " " << Pia_odd_even[i].real() << " " << Pia_odd_even [i].imag() << "\n";
         my_file_Pia_odd_odd << bfreqs[i] << " " << Pia_odd_odd[i].real()  << " " << Pia_odd_odd[i].imag() << "\n";
+        my_file_Pia_odd_odd_c << bfreqs[i] << " " << Pia_odd_odd_c[i].real()  << " " << Pia_odd_odd_c[i].imag() << "\n";
     }
 
     my_file_Pia_odd_even.close() ;
     my_file_Pia_odd_odd.close();
+    my_file_Pia_odd_odd_c.close();
 }
 
 void testSelfEnergy(Propagator& g1, State<comp>& state){
