@@ -707,7 +707,7 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
 
-                res += (res_l_V * res_r_V) * correctionFunctionAT(w, a, b, gamma_m, gamma_p);
+                res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
                 break;
             case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
                 vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
@@ -716,7 +716,7 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
                 res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
                 res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
 
-                res += (res_l_V  * res_r_V + res_l_Vhat * res_r_Vhat) * correctionFunctionP(w, a, b, gamma_m, gamma_p);;
+                res += (res_l_V  * res_r_V + res_l_Vhat * res_r_Vhat) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p);;
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
                 vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
@@ -725,7 +725,7 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
                 res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
                 res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
 
-                res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionAT(w, a, b, gamma_m, gamma_p);;
+                res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);;
                 break;
             default: ;
         }
