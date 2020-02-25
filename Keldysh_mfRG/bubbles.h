@@ -830,7 +830,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
                     value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
-                    //value += prefactor*(-1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_lower_b,w_upper_b, w, i0, i_in, channel);
+                    //value += prefactor*(-1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_upper_b,w_upper_b, w, i0, i_in, channel);
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
