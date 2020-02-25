@@ -679,7 +679,7 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
     vector<int> indices(2);
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
 
-    for(auto i2:non_zero_Keldysh_bubble_corrections){
+    for(int i2=3; i2<=12; i2+=3){       //i2 must be 3, 6, 9 and 12
         switch (i2){
             case 3:     //AA
                 a=1.;
