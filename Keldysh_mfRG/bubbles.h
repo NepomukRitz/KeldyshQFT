@@ -20,7 +20,7 @@
 #include "util.h"
 #include "mpi_setup.h"
 #include "diagrammatic_combinations.h"
-
+#include "correctionFunctions.h"
 
 /**
  * Class combining two propagators, either GG or GS+SG
@@ -143,7 +143,6 @@ public:
                 v1 = w/2.+vpp;
                 v2 = w/2.-vpp;
                 break;
-
             case 'a': case 't':
                 v1 = vpp-w/2.;
                 v2 = vpp+w/2.;
@@ -672,6 +671,71 @@ public:
 };
 
 
+
+template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double gamma_m, double gamma_p, double w, int i0, int i_in, char channel) -> Q{
+
+    Q res=0.;
+    double a,b;
+    vector<int> indices(2);
+    Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
+
+    for(auto i2:non_zero_Keldysh_bubble_corrections){
+        switch (i2){
+            case 3:     //AA
+                a=1.;
+                b=1.;
+                break;
+            case 6:     //AR
+                a=1.;
+                b=-1.;
+                break;
+            case 9:     //RA
+                a=-1.;
+                b=1.;
+                break;
+            case 12:    //RR
+                a=-1.;
+                b=-1.;
+                break;
+            default:
+                print("Houston, we've got a problem");
+                return 0.;
+        }
+        switch (channel) {
+            case 'a':                                                                       //Flow eq: V*Pi*V
+                vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
+                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
+                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
+
+                res += (res_l_V * res_r_V) * correctionFunctionAT(w, a, b, gamma_m, gamma_p);
+                break;
+            case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
+                vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
+                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
+                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
+                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
+                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
+
+                res += (res_l_V  * res_r_V + res_l_Vhat * res_r_Vhat) * correctionFunctionP(w, a, b, gamma_m, gamma_p);;
+                break;
+            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
+                vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
+                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
+                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
+                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
+                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
+
+                res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionAT(w, a, b, gamma_m, gamma_p);;
+                break;
+            default: ;
+        }
+
+
+    }
+
+}
+
+
 /**
  * Function that computes the bubble frequency integral for all external parameters,
  * including MPI and OMP parallelization. The first (reference) argument contains the result.
@@ -766,6 +830,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
                     value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
+                    //value += prefactor*(-1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_lower_b,w_upper_b, w, i0, i_in, channel);
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
