@@ -40,7 +40,7 @@ void sopt(State<Q>& dPsi, double Lambda, State<Q> &state) {
     SelfEnergy<comp> Sigma_std = loop(dPsi.vertex, g);
     cout << "loop calculated ";
 
-    state.selfenergy += Sigma_std;
+    state.selfenergy = Sigma_std;
 
 }
 

@@ -39,12 +39,12 @@ void setUpFlowGrid(){
 
 void setUpBosGrid()
 {
-    for(int i=0; i<nBOS; ++i)
+    for(int i=0; i<nBOS+1; ++i)
         bfreqs[i] = w_lower_b + i*dw;
 }
 void setUpFerGrid()
 {
-    for(int i=0; i<nFER; ++i)
+    for(int i=0; i<nFER+1; ++i)
         ffreqs[i] = w_lower_f + i*dv;
 }
 
