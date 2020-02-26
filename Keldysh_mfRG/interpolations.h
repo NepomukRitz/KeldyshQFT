@@ -12,19 +12,29 @@
 //TODO improve to return the edge values
 template <typename Q, typename T>
 void interpolateK1(Q& ans, double pf, int iK, double w, int i_in, T& vertex){
-    int index = fconv_bos(w);
-    double x1 = bfreqs[index];
-    double x2 = bfreqs[index + 1];
-    double xd = (w - x1) / (x2 - x1);
+    assert(w_lower_b<=w && w <=w_upper_b);
+    if(fabs(w-w_lower_b)<inter_tol)
+        ans = vertex.K1_vval(iK, 0, i_in);
+    else if(fabs(w-w_upper_b)<inter_tol)
+        ans = vertex.K1_vval(iK, nBOS-1, i_in);
+    else {
+        int index = fconv_bos(w);
+        double x1 = bfreqs[index];
+        double x2 = bfreqs[index + 1];
+        double xd = (w - x1) / (x2 - x1);
 
-    Q f1 = vertex.K1_vval(iK, index, i_in);
-    Q f2 = vertex.K1_vval(iK, index + 1, i_in);
+        Q f1 = vertex.K1_vval(iK, index, i_in);
+        Q f2 = vertex.K1_vval(iK, index + 1, i_in);
 
-    ans = pf * ((1. - xd) * f1 + xd * f2);
+        ans = pf * ((1. - xd) * f1 + xd * f2);
+    }
 }
 
 template <typename Q, typename T>
 void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, T& vertex){
+    assert(w_lower_b<=w && w <=w_upper_b);
+    assert(w_lower_f<=v && v <=w_upper_f);
+
     int index_b = fconv_bos(w);
     int index_f = fconv_fer(v);
 
@@ -45,6 +55,10 @@ void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, T& 
 
 template <typename Q, typename T>
 void interpolateK3 (Q& ans, double pf, int iK, double w, double v1, double v2, int i_in, T& vertex) {
+    assert(w_lower_b<=w && w <=w_upper_b);
+    assert(w_lower_f<=v1 && v1 <=w_upper_f);
+    assert(w_lower_f<=v2 && v2 <=w_upper_f);
+
     int index_b = fconv_bos(w);
     int index_f1=fconv_fer(v1);
     int index_f2=fconv_fer(v2);
