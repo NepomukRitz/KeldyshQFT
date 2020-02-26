@@ -729,10 +729,8 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
                 break;
             default: ;
         }
-
-
     }
-
+    return res;
 }
 
 
@@ -760,7 +758,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
     Bubble Pi(G, S, diff); // initialize bubble object
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_vp = 0;
-    Q prefactor;
+    Q prefactor = 1./2.;
 
     // set channel-specific frequency ranges and prefactor (1, 1/2, -1 for a, p, t)
     switch (channel) {
@@ -771,7 +769,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
             nw3_w = nw3_wa;
             nw3_v = nw3_nua;
             nw3_vp = nw3_nuap;
-            prefactor = 1.;
+            prefactor *= 1.;
             break;
         case 'p':
             nw1_w = nw1_wp;
@@ -780,7 +778,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
             nw3_w = nw3_wp;
             nw3_v = nw3_nup;
             nw3_vp = nw3_nupp;
-            prefactor = 0.5;
+            prefactor *= 0.5;
             break;
         case 't':
             nw1_w = nw1_wt;
@@ -789,7 +787,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
             nw3_w = nw3_wt;
             nw3_v = nw3_nut;
             nw3_vp = nw3_nutp;
-            prefactor = -1.;
+            prefactor *= -1.;
             break;
         default: ;
     }
@@ -830,7 +828,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
                     value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
-                    //value += prefactor*(-1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_upper_b,w_upper_b, w, i0, i_in, channel);
+                    value += prefactor*(-1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_upper_b, w_upper_b, w, i0, i_in, channel);
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
