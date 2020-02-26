@@ -14,7 +14,7 @@
  * a and b define the propagators in question: for R => 1
  *                                             for A =>-1*/
 auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
-    if(w==0.)
+    if(w==0. && fabs(b-a)==0)
         return 0.;
     else
         return 1./(w+im_unit*GAMMA_REG*(b-a))
@@ -23,7 +23,7 @@ auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, do
 }
 
 auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
-    if(w==2.*epsilon)
+    if(w==2.*epsilon && fabs(b-a)==0)
         return 0.;
     else
         return 1./(w-2*epsilon+im_unit*GAMMA_REG*(a+b))
