@@ -391,9 +391,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
-    if(fabs(w_t)<w_upper_b){
-        interpolateK1(valueK1, pf1, iK1, w_t, i_in, *(this));
-    }
+    interpolateK1(valueK1, pf1, iK1, w_t, i_in, *(this));
     return valueK1;
 }
 template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in, int spin, avert<Q>& avertex) -> Q{
@@ -420,9 +418,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
                 return 0.;
             }
             /*And now one checks that the input frequency is in the accepted range*/
-            if(fabs(w_t) < w_upper_b){
-                interpolateK1(valueK1, pf1, iK1, w_t, i_in, *(this));
-            }
+            interpolateK1(valueK1, pf1, iK1, w_t, i_in, *(this));
             break;
 
         case 1:
@@ -441,9 +437,7 @@ template <typename Q> auto tvert<Q>::K1_vvalsmooth (int iK, double w_t, int i_in
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
-            if(fabs(w_t) < w_upper_b){
-                interpolateK1(valueK1, pf1, iK1, w_t, i_in, avertex);
-            }
+            interpolateK1(valueK1, pf1, iK1, w_t, i_in, avertex);
             break;
 
         default:;
@@ -546,8 +540,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_t)<w_upper_b && fabs(v1_t)<w_upper_f)
-        interpolateK2(valueK2, pf2, iK2, w_t, v1_t, i_in, avertex);
+    interpolateK2(valueK2, pf2, iK2, w_t, v1_t, i_in, avertex);
 
     if(conjugate2)
         valueK2 = conj(valueK2);
@@ -591,8 +584,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
-            if(fabs(w_t)<w_upper_b && fabs(v1_t)<w_upper_f)
-                interpolateK2(valueK2, pf2, iK2, w_t, v1_t, i_in, *(this));
+            interpolateK2(valueK2, pf2, iK2, w_t, v1_t, i_in, *(this));
 
             break;
 
@@ -623,8 +615,7 @@ template <typename Q> auto tvert<Q>::K2_vvalsmooth (int iK, double w_t, double v
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
-            if(fabs(w_t)<w_upper_b && fabs(v1_t)<w_upper_f)
-                interpolateK2(valueK2, pf2, iK2, w_t, v1_t, i_in, avertex);
+            interpolateK2(valueK2, pf2, iK2, w_t, v1_t, i_in, avertex);
 
             break;
 
@@ -681,8 +672,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_t)<w_upper_b && fabs(v2_t)<w_upper_f)
-        interpolateK2(valueK2, pf2, iK2, w_t, v2_t, i_in, avertex);
+    interpolateK2(valueK2, pf2, iK2, w_t, v2_t, i_in, avertex);
 
     if(conjugate2)
         valueK2 = conj(valueK2);
@@ -728,9 +718,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
-            if(fabs(w_t)<w_upper_b && fabs(v2_t)<w_upper_f)
-                interpolateK2(valueK2, pf2, iK2, w_t, v2_t, i_in, *(this));
-
+            interpolateK2(valueK2, pf2, iK2, w_t, v2_t, i_in, *(this));
 
             break;
 
@@ -762,8 +750,7 @@ template <typename Q> auto tvert<Q>::K2b_vvalsmooth(int iK, double w_t, double v
             }
 
             /*And now one checks that the input frequencies are in the accepted range*/
-            if(fabs(w_t)<w_upper_b && fabs(v2_t)<w_upper_f)
-                interpolateK2(valueK2, pf2, iK2, w_t, v2_t, i_in, avertex);
+            interpolateK2(valueK2, pf2, iK2, w_t, v2_t, i_in, avertex);
 
             break;
 
@@ -933,12 +920,10 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
 
     }
 
-    if(fabs(w_t)<w_upper_b && fabs(v1_t)<w_upper_f && fabs(v2_t)<w_upper_f){
-        if(transform)
-            interpolateK3(valueK3, pf3, iK3, w_t, v1_t, v2_t, i_in, avertex);
-        else
-            interpolateK3(valueK3, pf3, iK3, w_t, v1_t, v2_t, i_in, *(this));
-    }
+    if(transform)
+        interpolateK3(valueK3, pf3, iK3, w_t, v1_t, v2_t, i_in, avertex);
+    else
+        interpolateK3(valueK3, pf3, iK3, w_t, v1_t, v2_t, i_in, *(this));
 
     if(conjugate)
         valueK3 = conj(valueK3);
@@ -1024,8 +1009,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
 
             }
 
-            if(fabs(w_t)<w_upper_b && fabs(v1_t)<w_upper_f && fabs(v2_t)<w_upper_f)
-                interpolateK3(valueK3, pf3, iK3, w_t, v1_t, v2_t, i_in, *(this));
+            interpolateK3(valueK3, pf3, iK3, w_t, v1_t, v2_t, i_in, *(this));
 
             break;
 
@@ -1108,8 +1092,7 @@ template <typename Q> auto tvert<Q>::K3_vvalsmooth (int iK, double w_t, double v
 
             }
 
-            if(fabs(w_t)<w_upper_b && fabs(v1_t)<w_upper_f && fabs(v2_t)<w_upper_f)
-                interpolateK3(valueK3, pf3, iK3, w_t, v1_t, v2_t, i_in, avertex);
+            interpolateK3(valueK3, pf3, iK3, w_t, v1_t, v2_t, i_in, avertex);
 
             break;
 
