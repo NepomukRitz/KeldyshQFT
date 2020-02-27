@@ -58,6 +58,8 @@ const H5std_string	FERM_FREQS_LIST("ferm_freqslist");
 const H5std_string	BOS_FREQS_LIST("bos_freqslist");
 const H5std_string	SELF_LIST("selflist");
 const H5std_string	LAMBDA_LIST("lambdas");
+const H5std_string  BFREQS_LIST("bfreqs");
+const H5std_string  FFREQS_LIST("ffreqs");
 const H5std_string  PARAM_LIST("parameters");
 const H5std_string  MEMBER1( "spin_re" );
 const H5std_string  MEMBER2( "spin_im" );
@@ -193,6 +195,16 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
         for(int i=1; i<Lambda_size; i++){
             Lambda_list[i]=0;};
 
+        double bfreqs_list[nBOS];
+        for (int i=0; i<nBOS; ++i) {
+            bfreqs_list[i] = bfreqs[i];
+        }
+
+        double ffreqs_list[nFER];
+        for (int i=0; i<nFER; ++i) {
+            ffreqs_list[i] = ffreqs[i];
+        }
+
         cout << "Buffer ready. Preparing for saving into Hdf5 file..." << endl;
         // Turn off the auto-printing when failure occurs so that we can
         // handle the errors appropriately
@@ -232,6 +244,8 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
         // Create the dimension arrays for objects in file and in buffer
         hsize_t Lambda_dims[]={static_cast<hsize_t>(Lambda_size)};
+        hsize_t bfreqs_dims[]={static_cast<hsize_t>(nBOS)};
+        hsize_t ffreqs_dims[]={static_cast<hsize_t>(nFER)};
         hsize_t param_dims[]={static_cast<hsize_t>(param_size)};
         hsize_t self_dims[]={static_cast<hsize_t>(Lambda_size),static_cast<hsize_t>(self_dim)};
         hsize_t irreducible_dims[]= {static_cast<hsize_t>(Lambda_size),static_cast<hsize_t>(irred_dim1)};  // dataset dimensions for vertex (it_nbr lambda iterations, nuc unit cells, 3 sity per unit cell, nw^3 freqs configurations)
@@ -260,6 +274,8 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
         // Create the data space for the dataset in file and for buffer objects
         H5::DataSpace dataspacelambda(1, Lambda_dims);
+        H5::DataSpace dataspacebfreqs(1, bfreqs_dims);
+        H5::DataSpace dataspaceffreqs(1, ffreqs_dims);
         H5::DataSpace dataspaceparams(1, param_dims);
         H5::DataSpace dataspaceself(RANK_self, self_dims);
         H5::DataSpace dataspacevertex_irreducible(RANK_irreducible,irreducible_dims);//data space for vertex with three dimensions (three independent frequencies)
@@ -270,6 +286,12 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
         // Create the datasets in file:
         H5::DataSet* dataset_lambda;
         dataset_lambda = new H5::DataSet(file -> createDataSet(LAMBDA_LIST,H5::PredType::NATIVE_DOUBLE, dataspacelambda));
+
+        H5::DataSet* dataset_bfreqs;
+        dataset_bfreqs = new H5::DataSet(file -> createDataSet(BFREQS_LIST,H5::PredType::NATIVE_DOUBLE, dataspacebfreqs));
+
+        H5::DataSet* dataset_ffreqs;
+        dataset_ffreqs = new H5::DataSet(file -> createDataSet(FFREQS_LIST,H5::PredType::NATIVE_DOUBLE, dataspaceffreqs));
 
         H5::DataSet* dataset_params;
         dataset_params = new H5::DataSet(file -> createDataSet(PARAM_LIST,H5::PredType::NATIVE_DOUBLE, dataspaceparams));
@@ -354,6 +376,8 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
 
         dataset_lambda -> write(Lambda_list, H5::PredType::NATIVE_DOUBLE );
+        dataset_bfreqs -> write(bfreqs_list, H5::PredType::NATIVE_DOUBLE);
+        dataset_ffreqs -> write(ffreqs_list, H5::PredType::NATIVE_DOUBLE);
         dataset_params -> write(parameter_list, H5::PredType::NATIVE_DOUBLE);
 
         count[1]= self_dim;
@@ -408,6 +432,8 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
         delete[] selfenergy;
 
         dataset_lambda->close();
+        dataset_bfreqs->close();
+        dataset_ffreqs->close();
         dataset_params->close();
         dataset_irred->close();
         dataset_self->close();
