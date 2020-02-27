@@ -7,6 +7,81 @@
 #ifndef KELDYSH_MFRG_TESTFUNCTIONS_H
 #define KELDYSH_MFRG_TESTFUNCTIONS_H
 
+template <typename Q, typename T >
+class IntegrandR_test{
+    Vertex<T>& vertex;
+    Propagator& propagator;
+    double w;
+    int i_in;
+
+public:
+    IntegrandR_test(Vertex<T>& vertex_in, Propagator& prop_in, double w_in, int i_in_in)
+            : vertex(vertex_in), propagator(prop_in), w(w_in), i_in(i_in_in) {};
+
+    auto operator()(double wp) -> Q
+    {
+        Q aid1 = propagator.pvalsmooth(0, wp);
+        Q aid2 = conj(propagator.pvalsmooth(0, wp));
+        Q aid3 = propagator.pvalsmooth(1, wp);
+
+        Q termR = 2.*vertex.spinvertex.value(3, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(3, w, wp, w, i_in, 1, 'f');
+        Q termA = 2.*vertex.spinvertex.value(6, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(6, w, wp, w, i_in, 1, 'f');
+        Q termK = 2.*vertex.spinvertex.value(7, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(7, w, wp, w, i_in, 1, 'f');
+
+        return (termR*aid1 + termA*aid2 + termK*aid3) ;
+    }
+};
+
+
+template <typename Q, typename T >
+class IntegrandK_test{
+    Vertex<T>& vertex;
+    Propagator& propagator;
+    double w;
+    int i_in;
+
+public:
+    IntegrandK_test(Vertex<T>& vertex_in, Propagator& prop_in, double w_in, int i_in_in)
+            : vertex(vertex_in), propagator(prop_in), w(w_in), i_in(i_in_in) {};
+
+    auto operator()(double wp) -> Q
+    {
+        Q aid1 = propagator.pvalsmooth(0, wp);
+        Q aid2 = conj(propagator.pvalsmooth(0, wp));
+        Q aid3 = propagator.pvalsmooth(1, wp);
+
+        Q termR = 2.*vertex.spinvertex.value(1, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(1, w, wp, w, i_in, 1, 'f');
+        Q termA = 2.*vertex.spinvertex.value(4, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(4, w, wp, w, i_in, 1, 'f');
+        Q termK = 2.*vertex.spinvertex.value(5, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(5, w, wp, w, i_in, 1, 'f');
+
+        return (termR*aid1 + termA*aid2 + termK*aid3) ;
+    }
+};
+
+template <typename Q>
+auto loop_test(Vertex<fullvert<Q> >& fullvertex, Propagator& prop) -> SelfEnergy<comp>
+{
+    SelfEnergy<comp> resp = SelfEnergy<comp> ();
+//#pragma omp parallel for
+    for (int iSE=0; iSE<nSE*n_in; ++iSE){
+        int i = iSE/n_in;
+        int i_in = iSE - i*n_in;
+
+        double w = ffreqs[i];
+
+        IntegrandR_test<Q, fullvert<Q> > integrandR(fullvertex, prop, w, i_in);
+        IntegrandK_test<Q, fullvert<Q> > integrandK(fullvertex, prop, w, i_in);
+
+        comp integratedR = 1./(2.*pi*im_unit)*integrator(integrandR, 2.*w_lower_f, 2.*w_upper_f);
+        comp integratedK = 1./(2.*pi*im_unit)*integrator(integrandK, 2.*w_lower_f, 2.*w_upper_f);
+
+        resp.setself(0, i, integratedR);
+        resp.setself(1, i, integratedK);
+    }
+
+    return resp;
+}
+
 template<typename Q>
 void sopt(State<Q>& dPsi, double Lambda, State<Q> &state) {
 
@@ -23,21 +98,21 @@ void sopt(State<Q>& dPsi, double Lambda, State<Q> &state) {
     cout<<  "a - Bubble:";
     get_time(ta);
 
-    double tp = get_time();
-    bubble_function(dPsi.vertex, state.vertex, state.vertex, g, g, 'p', diff, '.');
-    cout<<  "p - Bubble:";
-    get_time(tp);
-
-    double tt = get_time();
-    bubble_function(dPsi.vertex, state.vertex, state.vertex, g, g, 't', diff, '.');
-    cout<<  "t - Bubble:";
-    get_time(tt);
+//    double tp = get_time();
+//    bubble_function(dPsi.vertex, state.vertex, state.vertex, g, g, 'p', diff, '.');
+//    cout<<  "p - Bubble:";
+//    get_time(tp);
+//
+//    double tt = get_time();
+//    bubble_function(dPsi.vertex, state.vertex, state.vertex, g, g, 't', diff, '.');
+//    cout<<  "t - Bubble:";
+//    get_time(tt);
 
     cout << "bubble finished. ";
     get_time(t2);
 
 
-    SelfEnergy<comp> Sigma_std = loop(dPsi.vertex, g);
+    SelfEnergy<comp> Sigma_std = loop_test(dPsi.vertex, g);
     cout << "loop calculated ";
 
     state.selfenergy = Sigma_std;
@@ -189,25 +264,46 @@ void testSelfEnergy(Propagator& g1, State<comp>& state){
 
     sopt(state, 1.0, state);
 
+    SelfEnergy<comp> corrected = state.selfenergy;
+    for(int i = 0; i<nFER; i++) {
+
+        auto corr1 = correctionFunctionSelfEnergy(1., w_upper_f, w_upper_f);
+        auto corr2 = correctionFunctionSelfEnergy(2., w_upper_f, w_upper_f);
+
+        corrected.setself(0, i, corrected.sval(0,i) + corr1);
+        corrected.setself(1, i, corrected.sval(1,i) + corr2);
+    }
     ostringstream selfEnergyR_cxx;
     ostringstream selfEnergyK_cxx;
+    ostringstream selfEnergyR_c_cxx;
+    ostringstream selfEnergyK_c_cxx;
 
     selfEnergyR_cxx << "Output/SelfEnergyR_cxx.dat";
     selfEnergyK_cxx << "Output/SelfEnergyK_cxx.dat";
+    selfEnergyR_c_cxx << "Output/SelfEnergyR_c_cxx.dat";
+    selfEnergyK_c_cxx << "Output/SelfEnergyK_c_cxx.dat";
 
     ofstream my_file_SelfEnergyR_cxx;
     ofstream my_file_SelfEnergyK_cxx;
+    ofstream my_file_SelfEnergyR_c_cxx;
+    ofstream my_file_SelfEnergyK_c_cxx;
 
     my_file_SelfEnergyR_cxx.open(selfEnergyR_cxx.str());
     my_file_SelfEnergyK_cxx.open(selfEnergyK_cxx.str());
+    my_file_SelfEnergyR_c_cxx.open(selfEnergyR_c_cxx.str());
+    my_file_SelfEnergyK_c_cxx.open(selfEnergyK_c_cxx.str());
 
     for(int i = 0; i<nFER; i++){
-        my_file_SelfEnergyR_cxx<< bfreqs[i] << " " << state.selfenergy.sval(0,i).real() << " " << state.selfenergy.sval(0,i).imag() << "\n";
-        my_file_SelfEnergyK_cxx<< bfreqs[i] << " " << state.selfenergy.sval(1,i).real() << " " << state.selfenergy.sval(1,i).imag() << "\n";
+        my_file_SelfEnergyR_cxx<< ffreqs[i] << " " << state.selfenergy.sval(0,i).real() << " " << state.selfenergy.sval(0,i).imag() << "\n";
+        my_file_SelfEnergyK_cxx<< ffreqs[i] << " " << state.selfenergy.sval(1,i).real() << " " << state.selfenergy.sval(1,i).imag() << "\n";
+        my_file_SelfEnergyR_c_cxx<< ffreqs[i] << " " << corrected.sval(0,i).real() << " " << corrected.sval(0,i).imag() << "\n";
+        my_file_SelfEnergyK_c_cxx<< ffreqs[i] << " " << corrected.sval(1,i).real() << " " << corrected.sval(1,i).imag() << "\n";
     }
 
     my_file_SelfEnergyR_cxx.close();
     my_file_SelfEnergyK_cxx.close();
+    my_file_SelfEnergyR_c_cxx.close();
+    my_file_SelfEnergyK_c_cxx.close();
 }
 
 #endif //KELDYSH_MFRG_TESTFUNCTIONS_H
