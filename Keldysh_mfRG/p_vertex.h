@@ -315,13 +315,13 @@ template<typename Q> void pvert<Q>::indices_sum(vector<int>& indices, int i0, in
 {
     vector<int> alphasi0(4), alphasi2(4);
     int *a1p = &alphasi0[0], *a2p = &alphasi0[1], *a1 = &alphasi0[2], *a2 = &alphasi0[3];
-    int *a3p = &alphasi2[0], *a4p = &alphasi2[1], *a3 = &alphasi2[2], *a4 = &alphasi2[3];
+    int *a3 = &alphasi2[0], *a4 = &alphasi2[1], *a3p = &alphasi2[2], *a4p = &alphasi2[3];
 
     alphas(alphasi0, i0);
     alphas(alphasi2, i2);
 
-    indices[0] = 8*(*a1p-1) + 4*(*a2p-1) + 2*(*a3p-1) + 1*(*a4p-1);
-    indices[1] = 8*(*a3-1) + 4*(*a4-1) + 2*(*a1-1) + 1*(*a2-1);
+    indices[0] = 8*(*a1p-1) + 4*(*a2p-1) + 2*(*a3-1) + 1*(*a4-1);
+    indices[1] = 8*(*a3p-1) + 4*(*a4p-1) + 2*(*a1-1) + 1*(*a2-1);
 }
 
 #if DIAG_CLASS>=0
