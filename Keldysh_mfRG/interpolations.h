@@ -12,8 +12,8 @@
 //TODO improve to return the edge values
 template <typename Q, typename T>
 void interpolateK1(Q& ans, double pf, int iK, double w, int i_in, T& vertex){
-    assert(w_lower_b<=w && w <=w_upper_b);
-    if(fabs(w)<w_upper_b) {
+//    assert(w_lower_b<=w && w <=w_upper_b);
+    if(fabs(w)<=w_upper_b) {
         if (fabs(w - w_lower_b) < inter_tol)
             ans = vertex.K1_vval(iK, 0, i_in);
         else if (fabs(w - w_upper_b) < inter_tol)
@@ -34,8 +34,8 @@ void interpolateK1(Q& ans, double pf, int iK, double w, int i_in, T& vertex){
 
 template <typename Q, typename T>
 void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, T& vertex){
-    assert(w_lower_b<=w && w <=w_upper_b);
-    assert(w_lower_f<=v && v <=w_upper_f);
+//    assert(w_lower_b<=w && w <=w_upper_b);
+//    assert(w_lower_f<=v && v <=w_upper_f);
 
     if(fabs(w)<w_upper_b && fabs(v)<w_upper_f) {
         int index_b = fconv_bos(w);
@@ -59,9 +59,9 @@ void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, T& 
 
 template <typename Q, typename T>
 void interpolateK3 (Q& ans, double pf, int iK, double w, double v1, double v2, int i_in, T& vertex) {
-    assert(w_lower_b<=w && w <=w_upper_b);
-    assert(w_lower_f<=v1 && v1 <=w_upper_f);
-    assert(w_lower_f<=v2 && v2 <=w_upper_f);
+//    assert(w_lower_b<=w && w <=w_upper_b);
+//    assert(w_lower_f<=v1 && v1 <=w_upper_f);
+//    assert(w_lower_f<=v2 && v2 <=w_upper_f);
 
     if(fabs(w)<w_upper_b && fabs(v1)<w_upper_f && fabs(v2)<w_upper_f) {
 
