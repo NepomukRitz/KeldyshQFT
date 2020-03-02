@@ -39,12 +39,12 @@ void setUpFlowGrid(){
 
 void setUpBosGrid()
 {
-    for(int i=0; i<nBOS+1; ++i)
+    for(int i=0; i<nBOS; ++i)
         bfreqs[i] = w_lower_b + i*dw;
 }
 void setUpFerGrid()
 {
-    for(int i=0; i<nFER+1; ++i)
+    for(int i=0; i<nFER; ++i)
         ffreqs[i] = w_lower_f + i*dv;
 }
 
@@ -58,31 +58,15 @@ void setUpFlowGrid()
 
 auto fconv_bos(double w) -> int
 {
-    int index;
     double aid = (w-w_lower_b)/dw;
     auto index1 = (int)aid;
-    auto index2 = index1+1;
-
-    if(fabs(aid-index2)<inter_tol)
-        index = index2;
-    else
-        index = index1;
-
-    return index; //- (int)(index/bfreqs.size());
+    return index1; //- (int)(index/bfreqs.size());
 }
 auto fconv_fer(double w) -> int
 {
-    int index;
     double aid = (w-w_lower_f)/dv;
     auto index1 = (int)aid;
-    auto index2 = index1+1;
-
-    if(fabs(aid-index2)<inter_tol)
-        index = index2;
-    else
-        index = index1;
-
-    return index; //- (int)(index/ffreqs.size());
+    return index1; //- (int)(index/ffreqs.size());
 }
 auto fconv_Lambda(double Lambda) -> int
 {

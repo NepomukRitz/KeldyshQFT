@@ -57,8 +57,8 @@ const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
 const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 151;
-const int nFER = 151;
+const int nBOS = 51;
+const int nFER = 51;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -138,10 +138,10 @@ rvec flow_grid(nEVO);                                                           
 const double dL = (Lambda_fin-Lambda_ini)/((double)(nEVO-1.));
 
 /*Vectors for fermionic and bosonic frequencies*/
-rvec bfreqs (nBOS+1);                                       // length+1 in order for interpolations to be able to access bfreqs[end+1]  // NOLINT(cert-err58-cpp)
+rvec bfreqs (nBOS);                                                                                                     // NOLINT(cert-err58-cpp)
 const double dw = (w_upper_b-w_lower_b)/((double)(nBOS-1.));
 
-rvec ffreqs (nFER+1);                                                                                                     // NOLINT(cert-err58-cpp)
+rvec ffreqs (nFER);                                                                                                     // NOLINT(cert-err58-cpp)
 const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 
 //Length of this vector not necessarily fixed by nSE... Think of Wentzell paper where #of bosonic freqs = 2x #of fermionic freqs

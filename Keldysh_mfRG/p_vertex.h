@@ -315,13 +315,13 @@ template<typename Q> void pvert<Q>::indices_sum(vector<int>& indices, int i0, in
 {
     vector<int> alphasi0(4), alphasi2(4);
     int *a1p = &alphasi0[0], *a2p = &alphasi0[1], *a1 = &alphasi0[2], *a2 = &alphasi0[3];
-    int *a3p = &alphasi2[0], *a4p = &alphasi2[1], *a3 = &alphasi2[2], *a4 = &alphasi2[3];
+    int *a3 = &alphasi2[0], *a4 = &alphasi2[1], *a3p = &alphasi2[2], *a4p = &alphasi2[3];
 
     alphas(alphasi0, i0);
     alphas(alphasi2, i2);
 
-    indices[0] = 8*(*a1p-1) + 4*(*a2p-1) + 2*(*a3p-1) + 1*(*a4p-1);
-    indices[1] = 8*(*a3-1) + 4*(*a4-1) + 2*(*a1-1) + 1*(*a2-1);
+    indices[0] = 8*(*a1p-1) + 4*(*a2p-1) + 2*(*a3-1) + 1*(*a4-1);
+    indices[1] = 8*(*a3p-1) + 4*(*a4p-1) + 2*(*a1-1) + 1*(*a2-1);
 }
 
 #if DIAG_CLASS>=0
@@ -380,9 +380,7 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
     }
 
 
-    if(fabs(w_p)<w_upper_b){
-        interpolateK1(valueK1, pf1, iK1, w_p, i_in, *(this));
-    }
+    interpolateK1(valueK1, pf1, iK1, w_p, i_in, *(this));
 
     if(conjugate1)
         valueK1 = conj(valueK1);
@@ -424,9 +422,8 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
         default: ;
 
     }
-    if(fabs(w_p)< w_upper_b){
-        interpolateK1(valueK1, pf1, iK1, w_p, i_in, *(this));
-    }
+    interpolateK1(valueK1, pf1, iK1, w_p, i_in, *(this));
+
     if(conjugate1)
         valueK1 = conj(valueK1);
 
@@ -517,9 +514,7 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)<w_upper_b && fabs(v1_p)<w_upper_f){
-        interpolateK2(valueK2, pf2, iK2, w_p, v1_p, i_in, *(this));
-    }
+    interpolateK2(valueK2, pf2, iK2, w_p, v1_p, i_in, *(this));
 
     return valueK2;
 }
@@ -566,9 +561,7 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)<w_upper_b && v1_p<w_upper_f){
-        interpolateK2(valueK2, pf2, iK2, w_p, v1_p, i_in, *(this));
-    }
+    interpolateK2(valueK2, pf2, iK2, w_p, v1_p, i_in, *(this));
 
     return valueK2;
 }
@@ -612,8 +605,7 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
 
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)<w_upper_b && fabs(v2_p)<w_upper_f)
-        interpolateK2(valueK2, pf2, iK2, w_p, v2_p, i_in, *(this));
+    interpolateK2(valueK2, pf2, iK2, w_p, v2_p, i_in, *(this));
 
     return conj(valueK2);
 }
@@ -669,8 +661,7 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
 
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)<w_upper_b && fabs(v2_p)<w_upper_f)
-        interpolateK2(valueK2, pf2, iK2, w_p, v2_p, i_in, *(this));
+    interpolateK2(valueK2, pf2, iK2, w_p, v2_p, i_in, *(this));
 
     return conj(valueK2);
 }
@@ -810,8 +801,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)<w_upper_b && fabs(v1_p)<w_upper_f && fabs(v2_p)<w_upper_f)
-        interpolateK3(valueK3, pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
+    interpolateK3(valueK3, pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
 
     if(conjugate3)
         valueK3 = conj(valueK3);
@@ -993,8 +983,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
     }
 
     /*And now one checks that the input frequencies are in the accepted range*/
-    if(fabs(w_p)<w_upper_b && fabs(v1_p)<w_upper_f && fabs(v2_p)<w_upper_f)
-        interpolateK3(valueK3, pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
+    interpolateK3(valueK3, pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
 
     if(conjugate3)
         valueK3 = conj(valueK3);

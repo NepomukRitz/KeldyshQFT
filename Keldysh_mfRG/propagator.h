@@ -64,7 +64,7 @@ auto Propagator::pvalsmooth(int iK, double w) -> comp
         if(fabs(w)!= w_upper_f) {
             int W = fconv_fer(w);
             double x1 = ffreqs[W];
-            double x2 = ffreqs[W] + dv;
+            double x2 = ffreqs[W + 1];
             double xd = (w - x1) / (x2 - x1);
 
             comp f1 = pval(iK, W);

@@ -244,13 +244,13 @@ template <typename Q> void setInitialConditions (State<Q>& state){
         state.selfenergy.setself(0, i, U/2.);
         state.selfenergy.setself(1, i, 0.);
     }
-    print("self energy and diff self energy assigned", true);
+    print("SE initial conditions assigned", true);
 
     for (auto i:odd_Keldysh) {
         state.vertex.densvertex.irred.setvert(i, 0, 0.);
         state.vertex.spinvertex.irred.setvert(i, 0, U/2.);
     }
-    print("vertex assigned", true);
+    print("Bare vertex initial assigned", true);
 }
 
 void flow(){
