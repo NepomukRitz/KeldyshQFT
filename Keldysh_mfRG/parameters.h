@@ -11,8 +11,8 @@
 using namespace std;
 
 const double pi = 3.1415926535897;
-/*Grid type - preprocessor macro
- *1: log-grid, 2: linear grid*/
+/* Grid type - preprocessor macro
+ * 1: log-grid, 2: linear grid, 3: non-linear grid */
 #define GRID 2
 
 /*Regulator
@@ -98,11 +98,18 @@ const int nw3_nutp = nFER;
 
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
+#if GRID==2
 const double w_upper_b = 20.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
 const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
-
+#elif GRID==3
+const double W_scale = 5.*U;
+const double w_upper_b = 100.;
+const double w_lower_b = -w_upper_b;
+const double w_upper_f = 100.;
+const double w_lower_f = -w_upper_f;
+#endif
 
 /*Number of independent Keldysh components for the respective diagrammatic class*/
 const int nK_K1 = 2;        //For channels a and t, these two are components 1 and 3 (applies for K1 and K2)

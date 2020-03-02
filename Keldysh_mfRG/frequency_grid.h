@@ -6,6 +6,7 @@
 #define KELDYSH_MFRG_FREQUENCY_GRID_H
 
 #include <tuple>
+#include <math.h>
 #include "parameters.h"
 
 
@@ -17,7 +18,7 @@ using namespace std;
 
 
 #ifdef GRID
-# if GRID==1
+#if GRID==1
 /***********************************************    LOG GRID    *******************************************************/
 //TODO: derive functions to determine index values for the respective logarithmic grid but, first, define logarithmic grid
 
@@ -76,6 +77,8 @@ auto fconv_Lambda(double Lambda) -> int
     }
     return -1;
 }
+
+// TODO: all these functions below are not used -- do we need them?
 
 auto fconv_K1_a(double w) -> int
 {
@@ -151,7 +154,75 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 
-# endif
+#elif GRID==3
+/*******************************************    NON-LINEAR GRID    ****************************************************/
+// TODO: finish
+
+double grid_transf_inv(double w) {
+    return w/sqrt(W_scale*W_scale + w*w);
+}
+double grid_transf(double W) {
+    return W_scale*W/sqrt(1.-W*W);
+}
+
+void setUpBosGrid() {
+    double W;
+    double W_lower_b = grid_transf_inv(w_lower_b);
+    double W_upper_b = grid_transf_inv(w_upper_b);
+    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
+    for(int i=0; i<nBOS; ++i) {
+        W = W_lower_b + i*dW;
+        bfreqs[i] = grid_transf(W);
+    }
+}
+void setUpFerGrid() {
+    double W;
+    double W_lower_f = grid_transf_inv(w_lower_f);
+    double W_upper_f = grid_transf_inv(w_upper_f);
+    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
+    for(int i=0; i<nFER; ++i) {
+        W = W_lower_f + i*dW;
+        ffreqs[i] =  grid_transf(W);
+    }
+}
+
+void setUpFlowGrid()
+{
+    for(int i=0; i<nEVO; ++i)
+        flow_grid[i] = Lambda_ini + i*dL;
+}
+
+
+
+auto fconv_bos(double w) -> int {
+    double W = grid_transf_inv(w);
+    double W_lower_b = grid_transf_inv(w_lower_b);
+    double W_upper_b = grid_transf_inv(w_upper_b);
+    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
+    double W1 = (W-W_lower_b)/dW;
+    auto index = (int)W1;
+    return index;
+}
+auto fconv_fer(double w) -> int {
+    double W = grid_transf_inv(w);
+    double W_lower_f = grid_transf_inv(w_lower_f);
+    double W_upper_f = grid_transf_inv(w_upper_f);
+    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
+    W = (W-W_lower_f)/dW;
+    auto index = (int)W;
+    return index;
+}
+auto fconv_Lambda(double Lambda) -> int
+{
+    for(int i=0; i<nEVO; ++i){
+        if(Lambda == flow_grid[i])
+            return i;
+    }
+    return -1;
+}
+
+
+#endif
 
 #endif
 

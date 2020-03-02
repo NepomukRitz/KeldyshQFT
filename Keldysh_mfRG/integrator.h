@@ -39,8 +39,7 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp;
 
 //TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
 //This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
-template <typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> comp
-{
+template <typename Integrand> auto integrator_simpson(Integrand& integrand, double a, double b) -> comp {
     //Simpson
     rvec simpson(nINT);
     cvec integrand_values(nINT);
@@ -55,7 +54,32 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
     simpson[nINT-1]=1.;
 
     return dx/3.*dotproduct(integrand_values, simpson);
+}
 
+template <typename Integrand> auto integrator_riemann(Integrand& integrand, double a, double b) -> comp {
+    rvec spacings(nINT);
+    cvec integrand_values(nINT);
+    double w0, w1, w2;
+
+    spacings[0] = bfreqs[1] - bfreqs[0];
+    integrand_values[0] = integrand(bfreqs[0]);
+
+    for (int i=1; i<nINT-1; ++i) {
+        w0 = bfreqs[i-1];   //TODO: now specifically relies on bfreqs, only works if bfreqs = ffreqs...
+        w1 = bfreqs[i];
+        w2 = bfreqs[i+1];
+        spacings[i] = w2 - w0;
+        integrand_values[i] = integrand(w1);
+    }
+
+    spacings[nINT-1] = bfreqs[nINT-1] - bfreqs[nINT-2];
+    integrand_values[nINT-1] = integrand(bfreqs[nINT-1]);
+
+    return 1/2.*dotproduct(integrand_values, spacings);
+}
+
+
+template <typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> comp {
     //PAID
     //TODO Solve issue with the first vertex not being passed completely
 //    Domain1D<comp> D (grid[0], grid[grid.size()-1]);
@@ -87,6 +111,14 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
 //    gsl_integration_workspace_free(W_imag);
 //
 //    return result_real + 1.i*result_imag;
+}
+
+template <typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> comp {
+#if GRID==2
+    return integrator_simpson(integrand, a, b);
+#elif GRID==3
+    return integrator_riemann(integrand, a, b);
+#endif
 }
 
 auto dotproduct(const cvec& x, const rvec& y) -> comp

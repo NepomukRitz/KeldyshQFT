@@ -67,14 +67,14 @@ auto main() -> int {
     }
 #endif
 
-    State<comp> sopt_state;
-
-    setInitialConditions(sopt_state);
-
-    SelfEnergy<comp> zero;
-    Propagator bubbles_prop = propag(1.0, sopt_state.selfenergy, zero, 'g');
-    testBubbles(bubbles_prop, bubbles_prop);
-    testSelfEnergy(bubbles_prop, sopt_state);
+//    State<comp> sopt_state;
+//
+//    setInitialConditions(sopt_state);
+//
+//    SelfEnergy<comp> zero;
+//    Propagator bubbles_prop = propag(1.0, sopt_state.selfenergy, zero, 'g');
+//    testBubbles(bubbles_prop, bubbles_prop);
+//    testSelfEnergy(bubbles_prop, sopt_state);
 
     MPI_Finalize();
 
@@ -278,7 +278,7 @@ void flow(){
 
     if (world_rank == 0){
         write_hdf(FILE_NAME, 0, nEVO, state);
-        writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
+        //writeOutFile(state.Lambda, initial, state.selfenergy, state.vertex);
     }
 
     for(int i=1; i<nEVO; ++i) {
@@ -305,7 +305,7 @@ void flow(){
 
         if (world_rank == 0){
             add_hdf(FILE_NAME, i, nEVO, state, flow_grid);
-            writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
+            //writeOutFile(next_Lambda, control, state.selfenergy, state.vertex);
 //            test_hdf5(FILE_NAME, i, state);
         }
 
