@@ -11,8 +11,8 @@
 using namespace std;
 
 const double pi = 3.1415926535897;
-/*Grid type - preprocessor macro
- *1: log-grid, 2: linear grid*/
+/* Grid type - preprocessor macro
+ * 1: log-grid, 2: linear grid, 3: non-linear grid */
 #define GRID 2
 
 /*Regulator
@@ -104,9 +104,10 @@ const double w_lower_b = -w_upper_b;        //Symmetric grid
 const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 #elif GRID==3
-const double w_upper_b = 0.99;
+const double W_scale = 5.*U;
+const double w_upper_b = 100.;
 const double w_lower_b = -w_upper_b;
-const double w_upper_f = 0.99;
+const double w_upper_f = 100.;
 const double w_lower_f = -w_upper_f;
 #endif
 

@@ -6,6 +6,7 @@
 #define KELDYSH_MFRG_FREQUENCY_GRID_H
 
 #include <tuple>
+#include <math.h>
 #include "parameters.h"
 
 
@@ -156,15 +157,33 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
 #elif GRID==3
 /*******************************************    NON-LINEAR GRID    ****************************************************/
 // TODO: finish
-void setUpBosGrid()
-{
-    for(int i=0; i<nBOS; ++i)
-        bfreqs[i] = w_lower_b + i*dw;
+
+double grid_transf_inv(double w) {
+    return w/sqrt(W_scale*W_scale + w*w);
 }
-void setUpFerGrid()
-{
-    for(int i=0; i<nFER; ++i)
-        ffreqs[i] = w_lower_f + i*dv;
+double grid_transf(double W) {
+    return W_scale*W/sqrt(1.-W*W);
+}
+
+void setUpBosGrid() {
+    double W;
+    double W_lower_b = grid_transf_inv(w_lower_b);
+    double W_upper_b = grid_transf_inv(w_upper_b);
+    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
+    for(int i=0; i<nBOS; ++i) {
+        W = W_lower_b + i*dW;
+        bfreqs[i] = grid_transf(W);
+    }
+}
+void setUpFerGrid() {
+    double W;
+    double W_lower_f = grid_transf_inv(w_lower_f);
+    double W_upper_f = grid_transf_inv(w_upper_f);
+    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
+    for(int i=0; i<nFER; ++i) {
+        W = W_lower_f + i*dW;
+        ffreqs[i] =  grid_transf(W);
+    }
 }
 
 void setUpFlowGrid()
@@ -175,33 +194,23 @@ void setUpFlowGrid()
 
 
 
-auto fconv_bos(double w) -> int
-{
-    int index;
-    double aid = (w-w_lower_b)/dw;
-    auto index1 = (int)aid;
-    auto index2 = index1+1;
-
-    if(fabs(aid-index2)<inter_tol)
-        index = index2;
-    else
-        index = index1;
-
-    return index; //- (int)(index/bfreqs.size());
+auto fconv_bos(double w) -> int {
+    double W = grid_transf_inv(w);
+    double W_lower_b = grid_transf_inv(w_lower_b);
+    double W_upper_b = grid_transf_inv(w_upper_b);
+    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
+    double W1 = (W-W_lower_b)/dW;
+    auto index = (int)W1;
+    return index;
 }
-auto fconv_fer(double w) -> int
-{
-    int index;
-    double aid = (w-w_lower_f)/dv;
-    auto index1 = (int)aid;
-    auto index2 = index1+1;
-
-    if(fabs(aid-index2)<inter_tol)
-        index = index2;
-    else
-        index = index1;
-
-    return index; //- (int)(index/ffreqs.size());
+auto fconv_fer(double w) -> int {
+    double W = grid_transf_inv(w);
+    double W_lower_f = grid_transf_inv(w_lower_f);
+    double W_upper_f = grid_transf_inv(w_upper_f);
+    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
+    W = (W-W_lower_f)/dW;
+    auto index = (int)W;
+    return index;
 }
 auto fconv_Lambda(double Lambda) -> int
 {
