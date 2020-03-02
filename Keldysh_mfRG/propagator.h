@@ -54,9 +54,9 @@ auto Propagator::pvalsmooth(int iK, double w) -> comp
     if(fabs(w)>w_upper_f)
         switch (iK){
         case 0:
-            return gR_outer(Lambda, w);
+            return gR(Lambda, w);
         case 1:
-            return gK_outer(Lambda, w);
+            return gK(Lambda, w);
         default:
             return 0.;
     }

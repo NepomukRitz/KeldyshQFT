@@ -14,7 +14,7 @@ auto gR(double Lambda, double omega) -> comp
 #if REG==1
     return 1./(omega-epsilon);
 #elif REG==2
-    return 1./(omega-epsilon + (0.5*im_unit*(GAMMA_REG+Lambda)));
+    return 1./(omega-epsilon + (0.5*im_unit*(GAMMA_REG+Lambda)) - U/2.);
 #endif
 }
 
@@ -23,7 +23,7 @@ auto gA(double Lambda, double omega) -> comp
 #if REG==1
     return 1./(omega-epsilon);
 #elif REG==2
-    return 1./(omega-epsilon - (0.5*im_unit*(GAMMA_REG+Lambda)));
+    return 1./(omega-epsilon - (0.5*im_unit*(GAMMA_REG+Lambda)) - U/2.);
 #endif
 }
 
@@ -36,29 +36,6 @@ auto Fermi_distribution(double omega) -> double
 auto gK(double Lambda, double omega) -> comp
 {
     return (1.-2.*Fermi_distribution(omega))*(gR(Lambda,omega) - gA(Lambda,omega));
-}
-
-//These three functions return the values of the propagators once the self-energy has decayed enough as to not deviate
-// from the base values, i.e. SigmaR = 0.5*U+i0., SigmaK = 0.+i0.);
-auto gR_outer(double Lambda, double omega) -> comp
-{
-#if REG==1
-    return 1./(omega-epsilon - 0.5*U);
-#elif REG==2
-    return 1./(omega-epsilon + (0.5*im_unit*(GAMMA_REG+Lambda)) - 0.5*U);
-#endif
-}
-auto gA_outer(double Lambda, double omega) -> comp
-{
-#if REG==1
-    return 1./(omega-epsilon - 0.5*U);
-#elif REG==2
-    return 1./(omega-epsilon - (0.5*im_unit*(GAMMA_REG+Lambda)) - 0.5*U);
-#endif
-}
-auto gK_outer(double Lambda, double omega) -> comp
-{
-    return (1.-2.*Fermi_distribution(omega))*(gR_outer(Lambda,omega) - gA_outer(Lambda,omega));
 }
 
 
