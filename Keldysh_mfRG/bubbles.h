@@ -672,44 +672,41 @@ public:
 
 
 
-template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double gamma_m, double gamma_p, double w, int i0, int i_in, char channel) -> Q{
+template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double gamma_m, double gamma_p, double w, int i0_in, int i_in, char channel) -> Q{
 
+    int i0;
     Q res=0.;
     double a,b;
-    vector<int> indices(2);
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
 
-    for(int i2=3; i2<=12; i2+=3){       //i2 must be 3, 6, 9 and 12
+
+    for(auto i2 : {6,9}){       //i2 must be 6, 9
         switch (i2){
-            case 3:     //AA
-                a=1.;
-                b=1.;
-                break;
             case 6:     //AR
-                a=1.;
-                b=-1.;
+                a=-1.;
+                b=1.;
                 break;
             case 9:     //RA
-                a=-1.;
-                b=1.;
-                break;
-            case 12:    //RR
-                a=-1.;
+                a=1.;
                 b=-1.;
                 break;
             default:
                 print("Houston, we've got a problem");
                 return 0.;
         }
+        vector<int> indices(2);
         switch (channel) {
             case 'a':                                                                       //Flow eq: V*Pi*V
+                i0 = non_zero_Keldysh_K1a[i0_in];
                 vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
 
                 res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
+
                 break;
             case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
+                i0 = non_zero_Keldysh_K1p[i0_in];
                 vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
@@ -719,6 +716,7 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
                 res += (res_l_V  * res_r_V + res_l_Vhat * res_r_Vhat) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p);;
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
+                i0 = non_zero_Keldysh_K1t[i0_in];
                 vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
@@ -809,7 +807,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for
+//#pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices (TODO: put into extra function(s)?)
                 int iK1 = i_mpi * n_omp + i_omp;
@@ -823,12 +821,12 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
                 // (distinguishing between differentiated and non-differentiated bubble)
                 if(diff){
                     Integrand_K1_diff<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
-                    value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
+                    value = prefactor*(1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
                 } //TODO: prefactor -1./(2.*pi*im_unit) into Integrand classes?
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
-                    value = prefactor*(-1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
-                    value += prefactor*(-1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_upper_b, w_upper_b, w, i0, i_in, channel);
+                    value = prefactor*(1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
+                    value += prefactor*(1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_upper_b, w_upper_b, w, i0, i_in, channel);
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
