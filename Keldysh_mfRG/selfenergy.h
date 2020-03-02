@@ -14,6 +14,7 @@ public:
     auto sval(int, int) -> Q;
     auto svalsmooth(int, double) -> Q;
     void setself(int, int, Q);
+    void addself(int, int, Q);
     auto acc(int) ->Q;// access to the ith element of the vector "SIGMA"
     void direct_set(int,Q);
 //operators for self energy
@@ -92,6 +93,9 @@ template <typename Q> auto SelfEnergy<Q>::svalsmooth(int iK, double w) -> Q{//sm
 }
 template <typename Q> void SelfEnergy<Q>::setself(int iK, int i, Q val){
     Sigma[iK*nSE + i] = val;
+}
+template <typename Q> void SelfEnergy<Q>::addself(int iK, int i, Q val){
+    Sigma[iK*nSE + i] += val;
 }
 
 

@@ -1419,7 +1419,7 @@ The self energy has similar symmetry properties as the propagator. Thus, the fol
 
 It also has two independent components, $\Sigma^R$, which it's conjugate is $\Sigma^A = \left[\Sigma^R\right]^*$ and $\Sigma^K$, which is anti-hermitian, i.e. $\left[\Sigma^K\right]^* = -\Sigma^K$. However, causality for the self-energy translates to $\Sigma^{2|2}=0$, such that it's Keldysh structure in matrix form reads
 \begin{equation}
-\Sigma^{\alpha_1|\alpha'_1}_{\sigma_1} =
+\Sigma^{\alpha'_1|\alpha_1}_{\sigma_1} =
 \begin{pmatrix}
 \Sigma^{1|1} & \Sigma^{1|2} \\
 \Sigma^{2|1} & \Sigma^{2|2}
@@ -1432,22 +1432,22 @@ It also has two independent components, $\Sigma^R$, which it's conjugate is $\Si
 For computing the self energy, we take the contribution from all the $2n$-point vertices that we have (in our truncation only $\Gamma$, the four-point vertex, whose properties come in the next section) to the 2 point-vertex. Hence, we get the following equation:
 
 \begin{align}
-\Sigma^{\alpha_1'|\alpha_1}_{\sigma_1'|\sigma_{1}}(\nu_1'|\nu_1) &= \sum_{\sigma_2', \sigma_2}\sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu_2'}{2\pi i} \frac{\dd\nu_2}{2\pi i} G^{\alpha_2'|\alpha_2}_{\sigma_2'|\sigma_2}(\nu_2| \nu_2') \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu_1', \nu_2'| \nu_1, \nu_2)
+\Sigma^{\alpha_1'|\alpha_1}_{\sigma_1'|\sigma_{1}}(\nu_1'|\nu_1) &= \sum_{\sigma_2', \sigma_2}\sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu_2'}{2\pi i} \frac{\dd\nu_2}{2\pi i} G^{\alpha_2|\alpha'_2}_{\sigma_2'|\sigma_2}(\nu_2| \nu_2') \Gamma_{\sigma_1'\sigma_2'|\sigma_1\sigma_2}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu_1', \nu_2'| \nu_1, \nu_2)
 \label{eq:defSelfEnergy}
 \end{align}
 Using the fact that $G$ is diagonal in frequency and spin spaces, we can, through a Kronecker and a Dirac delta, get rid of the first sum as well as of one of the integrals. Hence, as mentioned above, $\Sigma$ inherits the same properties in frequency and spin spaces from $G$.
 
 Simplifying Eq.~\eqref{eq:defSelfEnergy} according to this, one then obtains the actual formula to be used:
 \begin{align}
-\Sigma^{\alpha_1'|\alpha_1}_{\sigma_1}(\nu) &= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i} \Gamma_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu'| \nu, \nu')G^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')
+\Sigma^{\alpha_1'|\alpha_1}_{\sigma_1}(\nu) &= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i} \Gamma_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu'| \nu, \nu')G^{\alpha_2|\alpha'_2}_{\sigma'}(\nu')
 \label{eq:actualSelfEnergy}
 \end{align}
 
 Since we'll be interested in a $\Lambda$-dependent RG-flow, we also include the case for $\dot{\Sigma}^\Lambda$, where now both $\Gamma \rightarrow \Gamma^\Lambda$ and $G \rightarrow G^\Lambda$ start to depend on the scale parameter $\Lambda$. 
 
 \begin{align}
-\dot{\Sigma}^{\alpha_1'|\alpha_1}_{\sigma_1}(\nu) &= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i}  \Gamma_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu'| \nu, \nu')S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')\\
-&= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i}  \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu', \nu)S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')
+\dot{\Sigma}^{\alpha_1'|\alpha_1}_{\sigma_1}(\nu) &= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i}  \Gamma_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu'| \nu, \nu')S^{\alpha_2|\alpha'_2}_{\sigma'}(\nu')\\
+&= \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i}  \left[\Gamma_f\right]_{\sigma\sigma'|\sigma\sigma'}^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}(\nu, \nu', \nu)S^{\alpha_2|\alpha'_2}_{\sigma'}(\nu')
 \label{eq:derivativeSelfEnergy}
 \end{align}
 Here we are using the notation introduced in Fig.\ref{fig:channels} and Eqs.\eqref{eq:vertexParam1} and \eqref{eq:vertexParam2} and the single-scale propagator $S^\Lambda \defeq \partial_\Lambda G|_{\Sigma =\text{ const.}}$. $S$ also has a Keldysh structure which is, unsurprisingly, exactly equal to the one of the propagator $G$. Note that it's important that we take $S$ for calculating $\Sigma$ in a first instance and not $\partial_\Lambda G = S + G\circ \dot{\Sigma}\circ G$, since the second term constitute corrections (of course this must be accounted somewhere, just not here).
@@ -1498,11 +1498,11 @@ Using Eqs.\eqref{eq:AtoF}, \eqref{eq:PtoF} and \eqref{eq:TtoF} to transform the 
 
 \begin{align}
 	\begin{split}
-	\dot{\Sigma}^{\alpha_1'|\alpha_1}_\sigma (\nu) = \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i} \Bigg( &\left[\Gamma_a\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'}\left(\nu'-\nu, \frac{\nu+\nu'}{2}, \frac{\nu+\nu'}{2}\right) S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')\\
+	\dot{\Sigma}^{\alpha_1'|\alpha_1}_\sigma (\nu) = \sum_{\sigma'} \sum_{\alpha_2', \alpha_2} \int \frac{\dd\nu'}{2\pi i} \Bigg( &\left[\Gamma_a\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'}\left(\nu'-\nu, \frac{\nu+\nu'}{2}, \frac{\nu+\nu'}{2}\right) S^{\alpha_2|\alpha'_2}_{\sigma'}(\nu')\\
 	+&\left[\Gamma_p\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'}\left(\nu+\nu', \frac{\nu-\nu'}{2}, \frac{\nu-\nu'}{2}\right)
-	S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu') \\
-	+&\left[\Gamma_t\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'}\left(0, \nu', \nu \right) S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')\\
-	+&\left[\Gamma_0\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'} S^{\alpha_2'|\alpha_2}_{\sigma'}(\nu')\Bigg)\end{split}
+	S^{\alpha_2|\alpha'_2}_{\sigma'}(\nu') \\
+	+&\left[\Gamma_t\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'}\left(0, \nu', \nu \right) S^{\alpha_2|\alpha'_2}_{\sigma'}(\nu')\\
+	+&\left[\Gamma_0\right]^{\alpha_1'\alpha_2'|\alpha_1\alpha_2}_{\sigma\sigma'|\sigma\sigma'} S^{\alpha_2|\alpha'_2}_{\sigma'}(\nu')\Bigg)\end{split}
 	\label{eq:SigmaDotinChannels}
 \end{align}
 
@@ -1559,7 +1559,7 @@ Thus, first of all, we have the frequency arguments that go into both propagator
 
 For the a-channel, we have
 \begin{align}
-\Pi_a^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha'_3|\alpha_3}\left(\nu''_a-\frac{\omega_a}{2}\right)G^{\alpha'_4|\alpha_4}\left(\nu''_a+\frac{\omega_a}{2}\right)\\
+\Pi_a^{\alpha_3\alpha_4|\alpha'_3\alpha'_4} &= G^{\alpha_3|\alpha'_3}\left(\nu''_a-\frac{\omega_a}{2}\right)G^{\alpha_4|\alpha'_4}\left(\nu''_a+\frac{\omega_a}{2}\right)\\
 \begin{pmatrix}
 0  & 1  & 2   & 3\\
 4  & 5  & 6   & 7\\
@@ -1582,7 +1582,7 @@ RR & RK & KR & KK
 
 for the p-channel
 \begin{align}
-\Pi_p^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha'_3|\alpha_3}\left(\frac{\omega_p}{2}+\nu''_p\right)G^{\alpha'_4|\alpha_4}\left(\frac{\omega_p}{2}-\nu''_p\right)\\
+\Pi_p^{\alpha_3\alpha_4|\alpha'_3\alpha'_4} &= G^{\alpha_3|\alpha'_3}\left(\frac{\omega_p}{2}+\nu''_p\right)G^{\alpha_4|\alpha'_4}\left(\frac{\omega_p}{2}-\nu''_p\right)\\
 \begin{pmatrix}
 0  & 1  & 2   & 3\\
 4  & 5  & 6   & 7\\
@@ -1605,7 +1605,7 @@ RR & RK & KR & KK
 
 and, lastly, for the t-channel, the same as for the a-channel:
 \begin{align}
-\Pi_t^{\alpha'_3\alpha'_4|\alpha_3\alpha_4} &= G^{\alpha'_3|\alpha_3}\left(\nu''_t-\frac{\omega_t}{2}\right)G^{\alpha'_4|\alpha_4}\left(\nu''_t+\frac{\omega_t}{2}\right)\\
+\Pi_t^{\alpha_3\alpha_4|\alpha'_3\alpha'_4} &= G^{\alpha_3|\alpha'_3}\left(\nu''_t-\frac{\omega_t}{2}\right)G^{\alpha_4|\alpha'_4}\left(\nu''_t+\frac{\omega_t}{2}\right)\\
 \begin{pmatrix}
 0  & 1  & 2   & 3\\
 4  & 5  & 6   & 7\\
