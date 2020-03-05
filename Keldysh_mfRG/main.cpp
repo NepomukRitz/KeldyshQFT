@@ -42,39 +42,40 @@ auto main() -> int {
     MPI_Init(NULL, NULL);
 
 
-#ifndef SOPT // standard fRG flow
-    double t0 = get_time();
-    print("Start of flow", true);
-    flow();
-    print("Total execution time: ");
-    get_time(t0);
-
-#else // SOPT Code here:
-    SelfEnergy<comp> diffZero;
-
-    for(int i=0; i<nEVO; ++i) {
-        double Lambda = flow_grid[i];
-
-        State<comp> bare (Lambda);
-        for (auto j:odd_Keldysh) {
-            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*U);
-        }
-
-        sopt(bare, Lambda, bare);
-
-        Propagator control = propag(Lambda, bare.selfenergy, diffZero, 'g');
-        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
-    }
-#endif
-
-//    State<comp> sopt_state;
+//#ifndef SOPT // standard fRG flow
+//    double t0 = get_time();
+//    print("Start of flow", true);
+//    flow();
+//    print("Total execution time: ");
+//    get_time(t0);
 //
-//    setInitialConditions(sopt_state);
+//#else // SOPT Code here:
+//    SelfEnergy<comp> diffZero;
 //
-//    SelfEnergy<comp> zero;
-//    Propagator bubbles_prop = propag(1.0, sopt_state.selfenergy, zero, 'g');
-//    testBubbles(bubbles_prop, bubbles_prop);
-//    testSelfEnergy(bubbles_prop, sopt_state);
+//    for(int i=0; i<nEVO; ++i) {
+//        double Lambda = flow_grid[i];
+//
+//        State<comp> bare (Lambda);
+//        for (auto j:odd_Keldysh) {
+//            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*U);
+//        }
+//
+//        sopt(bare, Lambda, bare);
+//
+//        Propagator control = propag(Lambda, bare.selfenergy, diffZero, 'g');
+//        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
+//    }
+//#endif
+
+    State<comp> sopt_state;
+
+    setInitialConditions(sopt_state);
+
+    SelfEnergy<comp> zero;
+    Propagator bubbles_prop = propag(1.0, sopt_state.selfenergy, zero, 'g');
+//    testBubbles(bubbles_prop, bubbles_prop, sopt_state);
+    testSelfEnergy(bubbles_prop, sopt_state);
+//    test_selfEnergyComponents(bubbles_prop, sopt_state);
 
     MPI_Finalize();
 
@@ -93,7 +94,8 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     Propagator G = propag(Lambda, state.selfenergy, state.selfenergy, 'g');
     print("G calculated", true);
     //Line 3
-    SelfEnergy<comp> Sigma_std = loop(state.vertex, S);
+    SelfEnergy<comp> Sigma_std;
+    loop(Sigma_std, state.vertex, S);
     print("loop calculated", true);
     //Line 4
     dPsi.selfenergy = Sigma_std;
@@ -126,7 +128,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 
 #ifdef SOPT
     Propagator s = propag(Lambda, state.selfenergy, state.selfenergy, 's');
-    dPsi.selfenergy = loop(state.vertex, s);
+    loop(dPsi.selfenergy, state.vertex, s);
 #endif
 #ifdef NLOOPS
     #if NLOOPS > 1
@@ -190,9 +192,11 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 
 //#if PROP_TYPE==2
 //    //Lines 33-41
-//    SelfEnergy<comp> dSigma_tbar = loop(dGammaCtb, G);
+//    SelfEnergy<comp> dSigma_tbar;
+//    loop(dSigma_tbar, dGammaCtb, G);
 //    Propagator corrected = propag(Lambda, dPsi.selfenergy, dSigma_tbar, 'e', false);
-//    SelfEnergy<comp> dSigma_t = loop(dPsi.vertex, corrected);
+//    SelfEnergy<comp> dSigma_t;
+//    loop(dSigma_t, dPsi.vertex, corrected);
 //    dPsi.selfenergy += (dSigma_t + dSigma_tbar);
 //#endif
 
@@ -248,7 +252,7 @@ template <typename Q> void setInitialConditions (State<Q>& state){
 
     for (auto i:odd_Keldysh) {
         state.vertex.densvertex.irred.setvert(i, 0, 0.);
-        state.vertex.spinvertex.irred.setvert(i, 0, U/2.);
+        state.vertex.spinvertex.irred.setvert(i, 0, -U/2.);
     }
     print("Bare vertex initial assigned", true);
 }
