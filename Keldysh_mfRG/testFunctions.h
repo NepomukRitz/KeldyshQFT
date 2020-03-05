@@ -87,7 +87,7 @@ void loop_test_individual(SelfEnergy<Q>& ans, Vertex<fullvert<Q> >& fullvertex, 
         IntegrandSigma<Q, fullvert<Q>> integrandSigma(fullvertex, prop, vert_iK, v, i_in, prop_iK); //prop_iK = 0 for R, =-1 for A and =1 for K
 
         //Integration of the object. Notice the required limits for the integral
-        Q integrated = -1./(2.*pi*im_unit)*integrator(integrandSigma, w_lower_f-fabs(v), w_upper_f+fabs(v));
+        Q integrated = -1./(2.*pi*glb_i)*integrator(integrandSigma, w_lower_f-fabs(v), w_upper_f+fabs(v));
 
         //The result is updated
         ans.addself(self_iK, i, integrated);
@@ -265,7 +265,7 @@ void testBubbles(State<comp>& state){
         Pia_odd_odd [i] = 1./2.*(cont6 + cont9 + cont15);
 
         //Add the correction to compare
-        Pia_odd_odd_c[i] = Pia_odd_odd[i] + 1./2.*(1./(2.*pi*im_unit)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
+        Pia_odd_odd_c[i] = Pia_odd_odd[i] + 1./2.*(1./(2.*pi*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
 
         //The relevant components are read out and added in the correct places directly.
 
