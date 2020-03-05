@@ -100,7 +100,7 @@ const double w_lower_b = -w_upper_b;        //Symmetric grid
 const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 #elif GRID==3
-const double W_scale = 5.*U;
+const double W_scale = 50.*U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
 const double w_upper_b = 100.;
 const double w_lower_b = -w_upper_b;
 const double w_upper_f = 100.;
