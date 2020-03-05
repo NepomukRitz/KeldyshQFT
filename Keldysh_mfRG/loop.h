@@ -10,20 +10,36 @@
 #include "propagator.h"
 #include "parameters.h"
 
-//TODO include spinvertex contributions!!
-
+/**
+ * Class for the integrand of the Retarded SelfEnergy
+ * Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index
+ * @tparam Q Type in which the integrand takes values, usually comp
+ * @tparam T Vertex type of the Vertex object needed, usually <fullvert<comp> >
+ */
 template <typename Q, typename T >
 class IntegrandR{
     Vertex<T>& vertex;
     Propagator& propagator;
-    double w;
+    double v;
     int i_in;
 
 public:
-    IntegrandR(Vertex<T>& vertex_in, Propagator& prop_in, double w_in, int i_in_in)
-        : vertex(vertex_in), propagator(prop_in), w(w_in), i_in(i_in_in) {};
+    /**
+     * Constructor
+     * @param vertex_in : Vertex object of the integrand
+     * @param prop_in   : Propagator object for the integrand
+     * @param v_in      : Frequency at which the integrand is evaluated
+     * @param i_in_in   : Internal frequency index
+     */    IntegrandR(Vertex<T>& vertex_in, Propagator& prop_in, double v_in, int i_in_in)
+        : vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in) {};
 
-    auto operator()(double wp) -> Q
+    /**
+     * Call operator
+     * @param vp    : Input frequency v'
+     * @return      : Here we pick the explicit components that appear in the sum over Keldysh indices.
+     *              When summing over spins, the formula for the vertex value is Gammma=(2V+V^). In SOPT, one only requires Gamma=V
+     */
+    auto operator()(double vp) -> Q
     {
 //        Q resp1 = vertex.densvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;   //Result should always be real
 //        Q resp2 = vertex.densvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;                              //Should always be 0
@@ -69,30 +85,54 @@ public:
 //            vertex.densvertex.tvertex.value(7, 0., wp, w, i_in, vertex.densvertex.avertex) +
 //            vertex.densvertex.irred.vval(7) ) * propagator.pvalsmooth(1, wp) );
 
-        Q aid1 = propagator.pvalsmooth(0, wp);
-        Q aid2 = conj(propagator.pvalsmooth(0, wp));
-        Q aid3 = propagator.pvalsmooth(1, wp);
+        Q aid1 = propagator.pvalsmooth(0, vp);
+        Q aid2 = conj(propagator.pvalsmooth(0, vp));
+        Q aid3 = propagator.pvalsmooth(1, vp);
 
-        return -(   ( 2.* vertex.spinvertex.value(3, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(3, w, wp, w, i_in, 1, 'f') ) * aid1 +
-                    ( 2.* vertex.spinvertex.value(6, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(6, w, wp, w, i_in, 1, 'f') ) * aid2 +
-                    ( 2.* vertex.spinvertex.value(7, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(7, w, wp, w, i_in, 1, 'f') ) * aid3 );
+#ifdef SOPT
+        return (vertex.spinvertex.value(3, v, vp, v, i_in, 0, 'f')* aid1 +
+                vertex.spinvertex.value(6, v, vp, v, i_in, 0, 'f')* aid2 +
+                vertex.spinvertex.value(7, v, vp, v, i_in, 0, 'f')* aid3 );
+#endif
+
+        return (( 2.* vertex.spinvertex.value(3, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(3, v, vp, v, i_in, 1, 'f') ) * aid1 +
+                ( 2.* vertex.spinvertex.value(6, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(6, v, vp, v, i_in, 1, 'f') ) * aid2 +
+                ( 2.* vertex.spinvertex.value(7, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(7, v, vp, v, i_in, 1, 'f') ) * aid3 );
 
     }
 };
 
-
+/**
+ * Class for the integrand of the Retarded SelfEnergy
+ * Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index
+ * @tparam Q Type in which the integrand takes values, usually comp
+ * @tparam T Vertex type of the Vertex object needed, usually <fullvert<comp> >
+ */
 template <typename Q, typename T >
 class IntegrandK{
     Vertex<T>& vertex;
     Propagator& propagator;
-    double w;
+    double v;
     int i_in;
 
 public:
-    IntegrandK(Vertex<T>& vertex_in, Propagator& prop_in, double w_in, int i_in_in)
-            : vertex(vertex_in), propagator(prop_in), w(w_in), i_in(i_in_in) {};
+    /**
+     * Constructor
+     * @param vertex_in : Vertex object of the integrand
+     * @param prop_in   : Propagator object for the integrand
+     * @param v_in      : Frequency at which the integrand is evaluated
+     * @param i_in_in   : Internal frequency index
+     */
+    IntegrandK(Vertex<T>& vertex_in, Propagator& prop_in, double v_in, int i_in_in)
+            : vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in) {};
 
-    auto operator()(double wp) -> Q
+    /**
+     * Call operator
+     * @param vp    : Input frequency v'
+     * @return      : Here we pick the explicit components that appear in the sum over Keldysh indices.
+     *              When summing over spins, the formula for the vertex value is Gammma=(2V+V^). In SOPT, one only requires Gamma=V
+     */
+    auto operator()(double vp) -> Q
     {
 //        Q resp1 = vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;
 //        Q resp2 = vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;
@@ -129,62 +169,55 @@ public:
 //        Q resp10= 2.*vertex.spinvertex.pvertex.K1_vvalsmooth(5, wp+w, i_in, 0) + vertex.spinvertex.pvertex.K1_vvalsmooth(5, wp+w, i_in, 1);
 //        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 1, vertex.spinvertex.avertex);
 //        Q resp12= vertex.spinvertex.irred.vval(5, i_in);
-//
-        Q aid1 = propagator.pvalsmooth(0, wp);
-        Q aid2 = conj(propagator.pvalsmooth(0, wp));
-        Q aid3 = propagator.pvalsmooth(1, wp);
 
-        return -(   ( 2.* vertex.spinvertex.value(1, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(1, w, wp, w, i_in, 1, 'f') ) * aid1 +
-                    ( 2.* vertex.spinvertex.value(4, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(4, w, wp, w, i_in, 1, 'f') ) * aid2 +
-                    ( 2.* vertex.spinvertex.value(5, w, wp, w, i_in, 0, 'f') + vertex.spinvertex.value(5, w, wp, w, i_in, 1, 'f') ) * aid3 );
-//
-//        Q ans= ((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
+        Q aid1 = propagator.pvalsmooth(0, vp);
+        Q aid2 = conj(propagator.pvalsmooth(0, vp));
+        Q aid3 = propagator.pvalsmooth(1, vp);
 
-//        return -(vertex.densvertex.value(1, w, wp, w, i_in, 'f')*aid1 +
-//        vertex.densvertex.value(4, w, wp, w, i_in, 'f')*aid2+
-//        vertex.densvertex.value(5, w, wp, w, i_in, 'f')*aid3);
-
-//        return
-//        -( (vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
-//            vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
-//            vertex.densvertex.tvertex.value(1, 0., wp, w, i_in, vertex.densvertex.avertex) +
-//            vertex.densvertex.irred.vval(1) ) * propagator.pvalsmooth(0, wp) +
-//
-//           (vertex.densvertex.avertex.value(4, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
-//            vertex.densvertex.pvertex.value(4, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
-//            vertex.densvertex.tvertex.value(4, 0., wp, w, i_in, vertex.densvertex.avertex) +
-//            vertex.densvertex.irred.vval(4) ) * conj(propagator.pvalsmooth(0, wp)) +
-//
-//           (vertex.densvertex.avertex.value(5, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
-//            vertex.densvertex.pvertex.value(5, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
-//            vertex.densvertex.tvertex.value(5, 0., wp, w, i_in, vertex.densvertex.avertex) +
-//            vertex.densvertex.irred.vval(5) ) * propagator.pvalsmooth(1, wp) );
+#ifdef SOPT
+        return (vertex.spinvertex.value(1, v, vp, v, i_in, 0, 'f')* aid1 +
+                vertex.spinvertex.value(4, v, vp, v, i_in, 0, 'f')* aid2 +
+                vertex.spinvertex.value(5, v, vp, v, i_in, 0, 'f')* aid3 );
+#endif
+        return (( 2.* vertex.spinvertex.value(1, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(1, v, vp, v, i_in, 1, 'f') ) * aid1 +
+                ( 2.* vertex.spinvertex.value(4, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(4, v, vp, v, i_in, 1, 'f') ) * aid2 +
+                ( 2.* vertex.spinvertex.value(5, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(5, v, vp, v, i_in, 1, 'f') ) * aid3 );
     }
 };
 
+/**
+ * Loop function for calculating the self energy
+ * @tparam Q Type of the elements of the vertex, usually comp
+ * @param self      : SelfEnergy<comp> object of which the Retarded and Keldysh components will be updated in the loop
+ * @param fullvertex: Vertex object for the calculation of the loop
+ * @param prop      : Propagator object for the calculation of the loop
+ */
 template <typename Q>
-auto loop(Vertex<fullvert<Q> >& fullvertex, Propagator& prop) -> SelfEnergy<comp>
+void loop(SelfEnergy<comp>& self, Vertex<fullvert<Q> >& fullvertex, Propagator& prop)
 {
-    SelfEnergy<comp> resp = SelfEnergy<comp> ();
-//TODO complete support for internal structure
 #pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
         int i = iSE/n_in;
         int i_in = iSE - i*n_in;
 
-        double w = ffreqs[i];
+        double v = ffreqs[i];
 
-        IntegrandR<Q, fullvert<Q> > integrandR(fullvertex, prop, w, i_in);
-        IntegrandK<Q, fullvert<Q> > integrandK(fullvertex, prop, w, i_in);
+        //Integrand objects are declared and created for every input frequency v
+        IntegrandR<Q, fullvert<Q> > integrandR(fullvertex, prop, v, i_in);
+        IntegrandK<Q, fullvert<Q> > integrandK(fullvertex, prop, v, i_in);
 
-        comp integratedR = 1./(2.*pi*im_unit)*integrator(integrandR, w_lower_f, w_upper_f);
-        comp integratedK = 1./(2.*pi*im_unit)*integrator(integrandK, w_lower_f, w_upper_f);
+        /*One integrates the integrands from w_lower_f-|v| to w_upper_f+|v|
+         *The limits of the integral must depend on v because of the transformations that must be done on the frequencies
+         * (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v', needing both extensions of the integration domain in both directions
+         * The prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
+         * */
+        comp integratedR = -1./(2.*pi*im_unit)*integrator(integrandR, w_lower_f-fabs(v), w_upper_f+fabs(v));
+        comp integratedK = -1./(2.*pi*im_unit)*integrator(integrandK, w_lower_f-fabs(v), w_upper_f+fabs(v));
 
-        resp.setself(0, i, integratedR);
-        resp.setself(1, i, integratedK);
+        //The results are emplaced in the right place of the answer object.
+        self.setself(0, i, integratedR);
+        self.setself(1, i, integratedK);
     }
-
-    return resp;
 }
 
 
