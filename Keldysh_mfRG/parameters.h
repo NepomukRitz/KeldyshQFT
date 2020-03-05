@@ -34,7 +34,7 @@ const double pi = 3.1415926535897;
 
 /*Number of loops*/
 #define NLOOPS 1
-//#define SOPT
+#define SOPT
 
 /*Imaginary unit*/
 const comp im_unit (0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;
@@ -53,8 +53,8 @@ const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
 const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 51;
-const int nFER = 51;
+const int nBOS = 501;
+const int nFER = 501;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -95,9 +95,9 @@ const int nw3_nutp = nFER;
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
 #if GRID==2
-const double w_upper_b = 20.;
+const double w_upper_b = 40.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 20.;
+const double w_upper_f = 40.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 #elif GRID==3
 const double W_scale = 50.*U;                //Resolution scale schould be chosen big enough... ~50.*U seems good

@@ -71,11 +71,9 @@ auto main() -> int {
 
     setInitialConditions(sopt_state);
 
-    SelfEnergy<comp> zero;
-    Propagator bubbles_prop = propag(1.0, sopt_state.selfenergy, zero, 'g');
-//    testBubbles(bubbles_prop, bubbles_prop, sopt_state);
-    testSelfEnergy(bubbles_prop, sopt_state);
-//    test_selfEnergyComponents(bubbles_prop, sopt_state);
+//    testBubbles(sopt_state);
+//    testSelfEnergy(sopt_state);
+    test_selfEnergyComponents(sopt_state);
 
     MPI_Finalize();
 
