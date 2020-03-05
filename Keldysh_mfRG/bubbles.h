@@ -120,7 +120,7 @@ public:
     }
 };
 
-
+//Class created for debugging of the Bubbles
 class IntegrandBubble{
     Propagator& g1;
     Propagator& g2;
@@ -130,9 +130,24 @@ class IntegrandBubble{
     char channel;
 
 public:
+    /**
+     * Constructor for the IntegrandBubble
+     * @param g1_in     : Propagator object for the lower (right) leg
+     * @param g2_in     : Propagator object for the upper (left) leg
+     * @param diff_in   : Boolean defining whether bubble is differentiated or not
+     * @param w_in      : Transfer frequency at which the bubble should be integrated
+     * @param iK_in     : Keldysh index to be taken
+     * @param channel_in: Char indicating the channel in which the bubble should be calculated and which determines the frequency transformations
+     */
     IntegrandBubble(Propagator& g1_in, Propagator& g2_in, bool diff_in, double w_in, int iK_in, char channel_in)
             : g1(g1_in), g2(g2_in), diff(diff_in), w(w_in), iK(iK_in), channel(channel_in) {};
 
+    /**
+     * Call operator
+     * @param vpp : v'', the frequency over which is being integrated
+     * @return The value g1(v1)*g2(v2), where v1 and v2 are calculated according to the channel. The components of the
+     * propagators taken depend on the Keldysh component
+     */
     auto operator() (double vpp) -> comp {
         comp ans;
         double v1, v2;
@@ -152,7 +167,7 @@ public:
                 v2 = 0.;
                 cout << "Error in IntegrandBubble";
         }
-
+        //Make reference to the Bubble object of the actual code, making this into a useful test of code correctnes and compliance
         return Pi.value(iK, v1, v2)/(2.*pi*im_unit);
     }
 };
@@ -200,8 +215,14 @@ public:
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
+        //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
+                //According to channel, indices of the left and right vertices are determined.
+                //Then, the value of the multiplication of the two propagators is calculated.
+                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                 *contribute to the relevant spin components*/
+                //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
@@ -210,16 +231,19 @@ public:
 
                     res += res_l_V * Pival * res_r_V;
                     break;
-                case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
+                case 'p':                                                                       //Flow eq: V*Pi*V //+ V^*Pi*V^
                     vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp);                                //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
-                    res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
-                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
+                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
+                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                     * the bubble_function(...) must be changed.*/
+//                    res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
+//                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
+                    res += res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
                     vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
@@ -287,8 +311,14 @@ public:
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
-        for (auto i2:non_zero_Keldysh_bubble) {
+        //Iterates over all Keldysh components of the bubble which are nonzero
+        for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
+                //According to channel, indices of the left and right vertices are determined.
+                //Then, the value of the multiplication of the two propagators is calculated.
+                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                 *contribute to the relevant spin components*/
+                //Add contribution to the result.
                 case 'a':                                                                       //Contributions: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w);
@@ -297,16 +327,19 @@ public:
 
                     res += res_l_V * Pival * res_r_V;
                     break;
-                case 'p':                                                                       //Contributions: V*Pi*V + V^*Pi*V^
+                case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
                     vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w);
                     res_l_V = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
-                    res_l_Vhat = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
-                    res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
+                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
+                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                     * the bubble_function(...) must be changed.*/
+//                    res_l_Vhat = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+//                    res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
+                    res += res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
                     vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
@@ -364,8 +397,14 @@ public:
         Q res, res_l_V, res_r_V,  res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
-        for (auto i2:non_zero_Keldysh_bubble) {
+        //Iterates over all Keldysh components of the bubble which are nonzero
+        for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
+                //According to channel, indices of the left and right vertices are determined.
+                //Then, the value of the multiplication of the two propagators is calculated.
+                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                 *contribute to the relevant spin components*/
+                //Add contribution to the result.
                 case 'a':                                                                               //Contributions: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w);
@@ -380,22 +419,24 @@ public:
                     else ;
                     res += res_l_V * Pival * res_r_V;
                     break;
-                case 'p':                                                                               //Contributions: V*Pi*V + V^*Pi*V^
+                case 'p':                                                                               //Contributions: V*Pi*V; + V^*Pi*V^
                     vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w);
                     if(part=='L'){
                         res_l_V = vertex1.spinvertex.gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
                         res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
-
-                        res_l_Vhat = vertex1.spinvertex.gammaRb( indices[0], w,  v, vpp, i_in, 1, channel);
-                        res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
+                        /*This is commented out on the ground of p-channel contributions being cross-symmetric
+                         *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                         * the bubble_function(...) must be changed.*/
+//                        res_l_Vhat = vertex1.spinvertex.gammaRb( indices[0], w,  v, vpp, i_in, 1, channel);
+//                        res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
                     }
                     else if(part=='R'){
                         res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
                         res_r_V = vertex2.spinvertex.gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
 
-                        res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
-                        res_r_Vhat = vertex2.spinvertex.gammaRb(indices[1], w, vp, vpp, i_in, 1, channel);
+//                        res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
+//                        res_r_Vhat = vertex2.spinvertex.gammaRb(indices[1], w, vp, vpp, i_in, 1, channel);
                     }
                     else ;
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
@@ -471,8 +512,14 @@ public:
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
+        //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
+                //According to channel, indices of the left and right vertices are determined.
+                //Then, the value of the multiplication of the two propagators is calculated.
+                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                 *contribute to the relevant spin components*/
+                //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
@@ -481,16 +528,19 @@ public:
 
                     res += res_l_V * Pival * res_r_V;
                     break;
-                case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
+                case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
                     vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp);                                //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
-                    res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
-                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
+                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
+                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                     * the bubble_function(...) must be changed.*/
+//                    res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
+//                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
+                    res += res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
                     vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
@@ -553,8 +603,14 @@ public:
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
-        for (auto i2:non_zero_Keldysh_bubble) {
+        //Iterates over all Keldysh components of the bubble which are nonzero
+        for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
+                //According to channel, indices of the left and right vertices are determined.
+                //Then, the value of the multiplication of the two propagators is calculated.
+                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                 *contribute to the relevant spin components*/
+                //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
@@ -563,12 +619,15 @@ public:
 
                     res += res_l_V * Pival * res_r_V;
                     break;
-                case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
+                case 'p':                                                                       //Flow eq: V*Pi*V; + V^*Pi*V^
                     vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp);                                //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
 
+                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
+                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                     * the bubble_function(...) must be changed.*/
                     res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
                     res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
 
@@ -630,8 +689,14 @@ public:
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
-        for (auto i2:non_zero_Keldysh_bubble) {
+        //Iterates over all Keldysh components of the bubble which are nonzero
+        for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
+                //According to channel, indices of the left and right vertices are determined.
+                //Then, the value of the multiplication of the two propagators is calculated.
+                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                 *contribute to the relevant spin components*/
+                //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
@@ -640,14 +705,17 @@ public:
 
                     res += res_l_V * Pival * res_r_V;
                     break;
-                case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
+                case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
                     vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp);                                //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
 
-                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 1, channel);
-                    res_r_Vhat = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
+                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
+                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                     * the bubble_function(...) must be changed.*/
+//                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 1, channel);
+//                    res_r_Vhat = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
 
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
@@ -671,7 +739,19 @@ public:
 };
 
 
-
+/**
+ * Function that calculates the asymptotic corrections of the K1 class
+ * @tparam Q        : Type of the return, usually comp
+ * @param vertex1   : Left vertex
+ * @param vertex2   : Right vertex
+ * @param gamma_m   : gamma minus, the positive value of the lower limit of the finite integral in bubble_function
+ * @param gamma_p   : gamma plus, the positive value of the upper limit of the finite integral in bubble_function
+ * @param w         : Bosonic frequency at which the correction ought to be calculated
+ * @param i0_in     : Independent Keldysh index input. Must be converted to iK in 0...15
+ * @param i_in      : Internal index
+ * @param channel   : Char indicating for which channel one is calculating the correction. Changes depending on the parametrization of the frequencies
+ * @return          : Returns value of the correction
+ */
 template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double gamma_m, double gamma_p, double w, int i0_in, int i_in, char channel) -> Q{
 
     int i0;
@@ -679,9 +759,14 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
     double a,b;
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
 
-
-    for(auto i2 : {6,9}){       //i2 must be 6, 9
+    for(auto i2 : {3,6,9,12}){       //i2 must be 3, 6, 9 or 12, since these are the terms that require corrections. We're neglecting oder corrections (for now)
         switch (i2){
+            // a=1  => Retarded
+            // a=-1 => Advanced
+            case 3:     //AA
+                a=-1.;
+                b=-1.;
+                break;
             case 6:     //AR
                 a=-1.;
                 b=1.;
@@ -690,12 +775,20 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
                 a=1.;
                 b=-1.;
                 break;
+            case 12:    //RR
+                a=1.;
+                b=1.;
+                break;
             default:
                 print("Houston, we've got a problem");
                 return 0.;
         }
         vector<int> indices(2);
         switch (channel) {
+            //According to channel, indices of the left and right vertices are determined.
+            //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
+            //Keep in mind which spin components of the vertex contribute to the relevant spin components
+            //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
             case 'a':                                                                       //Flow eq: V*Pi*V
                 i0 = non_zero_Keldysh_K1a[i0_in];
                 vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
@@ -705,15 +798,19 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
                 res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
 
                 break;
-            case 'p':                                                                       //Flow eq: V*Pi*V + V^*Pi*V^
+            case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
                 i0 = non_zero_Keldysh_K1p[i0_in];
                 vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
-                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
 
-                res += (res_l_V  * res_r_V + res_l_Vhat * res_r_Vhat) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p);;
+                /*This is commented out on the ground of p-channel contributions being cross-symmetric
+                 *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                 * the bubble_function(...) must be changed.*/
+//                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
+//                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
+
+                res += (res_l_V  * res_r_V) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p); //+ res_l_Vhat * res_r_Vhat
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
                 i0 = non_zero_Keldysh_K1t[i0_in];
@@ -756,9 +853,9 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
     Bubble Pi(G, S, diff); // initialize bubble object
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_vp = 0;
-    Q prefactor = 1./2.;
+    Q prefactor = 1.;
 
-    // set channel-specific frequency ranges and prefactor (1, 1/2, -1 for a, p, t)
+    // set channel-specific frequency ranges and prefactor (1, 1, -1 for a, p, t) for sum over spins.
     switch (channel) {
         case 'a':
             nw1_w = nw1_wa;
@@ -776,7 +873,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
             nw3_w = nw3_wp;
             nw3_v = nw3_nup;
             nw3_vp = nw3_nupp;
-            prefactor *= 0.5;
+            prefactor *= 1.;
             break;
         case 't':
             nw1_w = nw1_wt;
@@ -807,7 +904,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-//#pragma omp parallel for
+#pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices (TODO: put into extra function(s)?)
                 int iK1 = i_mpi * n_omp + i_omp;
@@ -825,8 +922,8 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1
                 } //TODO: prefactor -1./(2.*pi*im_unit) into Integrand classes?
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
-                    value = prefactor*(1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
-                    value += prefactor*(1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_upper_b, w_upper_b, w, i0, i_in, channel);
+                    value  = prefactor*(1./(2.*pi*im_unit))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
+                    value += prefactor*(1./(2.*pi*im_unit))*asymp_corrections_K1(vertex1, vertex2, w_upper_b, w_upper_b, w, i0, i_in, channel); //Correction needed for the K1 class
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
