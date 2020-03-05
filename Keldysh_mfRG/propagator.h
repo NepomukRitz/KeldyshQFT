@@ -342,9 +342,6 @@ auto Propagator::pvalsmooth(int iK, double w) -> comp
                     return 0.;
             }
 
-            break;
-
-
         case 'k':                               //Katanin extension = S + E
             switch(iK){
                 case 0:
