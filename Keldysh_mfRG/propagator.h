@@ -15,74 +15,19 @@ using namespace std;
 
 class Propagator {
     double Lambda;
-    cvec propagator = cvec(2 * nPROP); // factor 2 for Keldysh components: G^R, G^K
+    SelfEnergy<comp>& selfEnergy;
+    SelfEnergy<comp>& diffSelfie;
+    char type;
 public:
-    explicit Propagator(double Lambda_in)
-        :Lambda(Lambda_in){};
+    Propagator(double Lambda_in, SelfEnergy<comp>& SE_in, SelfEnergy<comp>& diffSE_in, char type_in)
+        :Lambda(Lambda_in), selfEnergy(SE_in), diffSelfie(diffSE_in), type(type_in){};
 
-    void setprop(int, int, comp);
     auto pvalsmooth(int, double) -> comp;
-    auto pval(int, int) -> comp;
-
-    auto operator+(const Propagator &prop) -> Propagator{
-        this->propagator + prop.propagator;
-        return *this;
-    }
-    auto operator+=(const Propagator &prop) -> Propagator{
-        this->propagator += prop.propagator;
-        return *this;
-    }
-    auto operator*(comp alpha) -> Propagator
-    {
-        this->propagator*alpha;
-        return *this;
-    }
 
 };
 
+
 auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, bool free) -> Propagator;
-
-/************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
-
-void Propagator::setprop(int iK, int i, comp value)
-{
-    propagator[iK*nPROP + i] = value;
-}
-auto Propagator::pvalsmooth(int iK, double w) -> comp
-{
-    comp ans;
-    if(fabs(w)>w_upper_f)
-        switch (iK){
-        case 0:
-            return gR(Lambda, w);
-        case 1:
-            return gK(Lambda, w);
-        default:
-            return 0.;
-    }
-    else {
-        if(fabs(w)!= w_upper_f) {
-            int W = fconv_fer(w);
-            double x1 = ffreqs[W];
-            double x2 = ffreqs[W + 1];
-            double xd = (w - x1) / (x2 - x1);
-
-            comp f1 = pval(iK, W);
-            comp f2 = pval(iK, W + 1);
-
-            ans = (1. - xd) * f1 + xd * f2;
-        }
-        else if(w == w_upper_f)
-            ans = pval(iK, nPROP-1);
-        else if(w == w_lower_f)
-            ans = pval(iK, 0);
-    }
-    return ans;
-}
-auto Propagator::pval(int iK, int i) -> comp
-{
-    return propagator[iK*nPROP + i];
-}
 
 
 #if REG==1
@@ -322,6 +267,114 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diff
 #endif
     return resp;
 }
+
+/************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
+
+auto Propagator::pvalsmooth(int iK, double w) -> comp
+{
+    switch(type) {
+        case 'g':
+            switch (iK) {
+                case 0:
+                    if(fabs(w)>w_upper_f)
+                        return gR(Lambda, w);
+                    else {
+                        comp SigmaR = selfEnergy.svalsmooth(iK, w);
+                        return GR(Lambda, w, SigmaR);
+                    }
+                case 1:
+                    if(fabs(w)>w_upper_f)
+                        return gK(Lambda, w);
+                    else {
+                        comp SigmaR = selfEnergy.svalsmooth(0, w);
+                        comp SigmaK = selfEnergy.svalsmooth(1, w);
+                        return GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR));
+                    }
+                default:
+                    return 0.;
+            }
+
+        case 's':
+            switch (iK) {
+                case 0:
+                    if(fabs(w)>w_upper_f)
+                        return sR(Lambda, w);
+                    else {
+                        comp SigmaR = selfEnergy.svalsmooth(iK, w);
+                        return SR(Lambda, w, SigmaR);
+                    }
+                case 1:
+                    if(fabs(w)>w_upper_f)
+                        return sK(Lambda, w);
+                    else {
+                        comp SigmaR = selfEnergy.svalsmooth(0, w);
+                        comp SigmaK = selfEnergy.svalsmooth(1, w);
+                        return SK(Lambda, w, SigmaR, SigmaK, conj(SigmaR));
+                    }
+                default:
+                    return 0.;
+            }
+
+        case 'e':
+            switch(iK){
+                case 0:
+                    if(fabs(w)>w_upper_f)
+                        return 0.;
+                    else {
+                        comp SigmaR = selfEnergy.svalsmooth(iK, w);
+                        comp diffSigmaR = diffSelfie.svalsmooth(iK, w);
+                        return GR(Lambda, w, SigmaR) * diffSigmaR * GR(Lambda, w, SigmaR);
+                    }
+                case 1:
+                    if(fabs(w)>w_upper_f)
+                        return 0.;
+                    else{
+                        comp SigmaR = selfEnergy.svalsmooth(0, w);
+                        comp SigmaK = selfEnergy.svalsmooth(1, w);
+                        comp diffSigmaR = diffSelfie.svalsmooth(0, w);
+                        comp diffSigmaK = diffSelfie.svalsmooth(1, w);
+
+                        return GR(Lambda, w, SigmaR) * diffSigmaR * GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR))+
+                               GR(Lambda, w, SigmaR) * diffSigmaK * GA(Lambda, w, conj(SigmaR))+
+                               GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR)) * conj(diffSigmaR) * GA(Lambda, w, conj(SigmaR));
+                    }
+                default:
+                    return 0.;
+            }
+
+            break;
+
+
+        case 'k':                               //Katanin extension = S + E
+            switch(iK){
+                case 0:
+                    if(fabs(w)>w_upper_f)
+                        return sR(Lambda, w);
+                    else {
+                        comp SigmaR = selfEnergy.svalsmooth(iK, w);
+                        comp diffSigmaR = diffSelfie.svalsmooth(iK, w);
+                        return SR(Lambda, w, SigmaR) + GR(Lambda, w, SigmaR) * diffSigmaR * GR(Lambda, w, SigmaR);
+                    }
+                case 1:
+                    if(fabs(w)>w_upper_f)
+                        return sK(Lambda, w);
+                    else{
+                        comp SigmaR = selfEnergy.svalsmooth(0, w);
+                        comp SigmaK = selfEnergy.svalsmooth(1, w);
+                        comp diffSigmaR = diffSelfie.svalsmooth(0, w);
+                        comp diffSigmaK = diffSelfie.svalsmooth(1, w);
+
+                        return SK(Lambda, w, SigmaR, SigmaK, conj(SigmaR)) +
+                        GR(Lambda, w, SigmaR) * diffSigmaR * GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR))+
+                        GR(Lambda, w, SigmaR) * diffSigmaK * GA(Lambda, w, conj(SigmaR))+
+                        GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR)) * conj(diffSigmaR) * GA(Lambda, w, conj(SigmaR));
+                    }
+                default:
+                    return 0.;
+            }
+    }
+}
+
 
 #endif
 
