@@ -7,6 +7,7 @@
 
 #include "data_structures.h"
 #include "parameters.h"
+#include <cmath>
 
 /*Correction functions for bubbles of the kinds RR, RA, AR, AA.
  * These functions are the result of the integration of the tails of the bubbles, i.e. from gamma_p to infinity and from -infinity to -gamma_m.
@@ -33,12 +34,21 @@ auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, dou
 
 /*At this point, we work with corrections to bubbles of the kinds KR, KA, AK, RK, KK  being neglected, due to faster decay to zero (O(1/w^2))*/
 
-auto correctionFunctionSelfEnergy(double a, double gamma_m, double gamma_p) -> comp{
-    if(a==1.)
-        return log((gamma_m+epsilon-im_unit*GAMMA_REG*a)/(gamma_p-epsilon+im_unit*GAMMA_REG*a));
-    else
-        return 2.*im_unit*(atan((gamma_m+epsilon)/GAMMA_REG) + atan((gamma_p-epsilon)/GAMMA_REG)-pi);
-}
+//Correction for the Self Energy implemented but not in use
+
+//auto correctionFunctionSelfEnergy(double prop_iK, double gamma_m, double gamma_p) -> comp{   //prop_iK = 0 for R, =-1 for A and =1 for K
+//    double a=0;
+//    if(prop_iK==0){
+//        a = 1.;
+//    } else if(prop_iK==-1){
+//        a = -1.;
+//    }
+//
+//    if(a==1. || a==-1.)           //Advanced or Retarded
+//        return log((-gamma_m-epsilon+im_unit*GAMMA_REG*a)/(gamma_p-epsilon+im_unit*GAMMA_REG*a));
+//    else                //Keldysh
+//        return 0.; //2.*im_unit*(atan((gamma_m+epsilon)/GAMMA_REG) + atan((gamma_p-epsilon)/GAMMA_REG)-pi);
+//}
 
 
 #endif //KELDYSH_MFRG_CORRECTIONFUNCTIONS_H
