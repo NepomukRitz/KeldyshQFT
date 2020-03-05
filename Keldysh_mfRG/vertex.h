@@ -30,6 +30,7 @@ public:
      * the third function stays the same. However, should count on having to adapt it if an internal structure should
      * come forth where the bare interaction does not remain invariant throughout the system.*/
     auto vval(int iK, int i_in) -> Q;
+    auto vval(int iK, int i_in, int spin) -> Q;
 
     auto acc(int i) -> Q;
     void direct_set(int i,Q value);
@@ -179,6 +180,16 @@ public:
 template <typename Q> auto irreducible<Q>::vval(int iK, int i_in) -> Q {
     return bare[iK*n_in + i_in];
 }
+template <typename Q> auto irreducible<Q>::vval(int iK, int i_in, int spin) -> Q {
+    switch(spin){
+        case 0:
+            return bare[iK*n_in + i_in];
+        case 1:
+            return -bare[iK*n_in + i_in];
+        default:
+            cout << "Problems in irred.vval" << endl;
+    }
+}
 
 template <typename Q> auto irreducible<Q>::acc(int i) -> Q {
    if(i>=0 && i<bare.size()){
@@ -208,7 +219,7 @@ template <typename Q> auto fullvert<Q>::value (int iK, double w, double v1, doub
 }
 template <typename Q> auto fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, int spin, char channel) -> Q
 {
-    return irred.vval(iK, i_in)
+    return irred.vval(iK, i_in, spin)
             + avertex.value(iK, w, v1, v2, i_in, spin, channel, tvertex)
             + pvertex.value(iK, w, v1, v2, i_in, spin, channel)
             + tvertex.value(iK, w, v1, v2, i_in, spin, channel, avertex);

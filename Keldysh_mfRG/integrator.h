@@ -37,7 +37,7 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp;
 // wether or not it'd make sense to only MPI-parallelize at bubble_function and allow omp to take over the vector or
 // scalar (reduction) operations e.g. integration, vector sums, products and such
 
-//TODO this ist just so that main.cpp runs! Implement a reasonable integrator later
+
 //This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
 template <typename Integrand> auto integrator_simpson(Integrand& integrand, double a, double b) -> comp {
     //Simpson
@@ -45,6 +45,7 @@ template <typename Integrand> auto integrator_simpson(Integrand& integrand, doub
     cvec integrand_values(nINT);
     double dx = (b-a)/((double)(nINT-1));
 
+//#pragma acc parallel loop private (i)
     for (int i=0; i<nINT; ++i)
     {
         integrand_values[i] = integrand(a+i*dx);
@@ -124,6 +125,7 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
 auto dotproduct(const cvec& x, const rvec& y) -> comp
 {
     comp resp;
+//#pragma acc parallel loop private(i) reduction(+:resp)
     for(int i=0; i<x.size(); ++i)
         resp+=x[i]*y[i];
     return resp;

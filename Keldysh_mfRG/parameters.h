@@ -47,11 +47,7 @@ const double mu = 0.0;
 const double U = 1.0;
 
 /*Dispersion relation (here, evidently, a constant)*/
-#if PROP_TYPE == 1
-const double epsilon = 0;
-#elif PROP_TYPE == 2
 const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
-#endif
 
 /*Number of evolution flow points*/
 const int nEVO = 14;
