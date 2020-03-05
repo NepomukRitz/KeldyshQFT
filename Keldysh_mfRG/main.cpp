@@ -8,9 +8,6 @@
 #include "vertex.h"
 #include "state.h"
 #include "loop.h"
-//#include "a_bubble.h"
-//#include "p_bubble.h"
-//#include "t_bubble.h"
 #include "bubbles.h"
 #include "propagator.h"
 #include "selfenergy.h"
@@ -21,7 +18,7 @@
 
 using namespace std;
 
-typedef complex<double> comp;  // TODO: complex double as two doubles??
+typedef complex<double> comp;
 
 void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
 void flow();
@@ -30,16 +27,17 @@ template <typename Q> void derivative(State<Q>& dPsi, double Lambda, State<Q>& s
 template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, State<Q>& state);
 
 template <typename Q> void sopt(State<Q>& bare, double Lambda, State<Q>& state);
-void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex);
 void writePropagators(Propagator& free, Propagator& full);
 
 auto main() -> int {
+
+    int i = 0;
 
     setUpBosGrid();
     setUpFerGrid();
     setUpFlowGrid();
 
-    MPI_Init(NULL, NULL);
+    MPI_Init(nullptr, nullptr);
 
 
 //#ifndef SOPT // standard fRG flow
@@ -128,64 +126,67 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     Propagator s = propag(Lambda, state.selfenergy, state.selfenergy, 's');
     loop(dPsi.selfenergy, state.vertex, s);
 #endif
+
 #ifdef NLOOPS
-    #if NLOOPS > 1
-//    Lines 10-13   => Multi-loop
-    double t4 = get_time();
-    /*Create two new vertices to accommodate the contributions on each side */
-    Vertex<fullvert<Q> > dGammaL;
-    Vertex<fullvert<Q> > dGammaR;
-    //Change from differentiated to regular bubbles
-    diff = false;
+    if(nLoops>1) {
+        //    Lines 10-13   => Multi-loop
+        double t4 = get_time();
+        /*Create two new vertices to accommodate the contributions on each side */
+        Vertex<fullvert<Q> > dGammaL;
+        Vertex<fullvert<Q> > dGammaR;
+        //Change from differentiated to regular bubbles
+        diff = false;
 
-    bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 'a', diff, 'L');
-    bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 'p', diff, 'L');
-    bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 't', diff, 'L');
+        bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 'a', diff, 'L');
+        bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 'p', diff, 'L');
+        bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 't', diff, 'L');
 
-    bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'a', diff, 'R');
-    bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'p', diff, 'R');
-    bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 't', diff, 'R');
+        bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'a', diff, 'R');
+        bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'p', diff, 'R');
+        bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 't', diff, 'R');
 
-    print("Bubbles calculated: ", true);
-    get_time(t4);
+        print("Bubbles calculated: ", true);
+        get_time(t4);
 
 
-    //Lines 14-17
-    Vertex<fullvert<Q> > dGammaT = dGammaL + dGammaR;
-    dPsi.vertex += dGammaT;
-    print("2-loops done. \n");
-
-    //Lines 18-33
-    #if NLOOPS >=3
-    Vertex<fullvert<Q> > dGammaC;
-    Vertex<fullvert<Q> > dGammaCtb;
-    for(int i=3; i<=NLOOPS; i++){
-        bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
-        bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');
-
-        //This corresponds to Line 29 in the pseudo-code and is important for self-energy corrections.
-        dGammaCtb +=dGammaC;
-
-        bubble_function(dGammaC, state.vertex, dGammaL, G, G, 't', diff, 'C');
-
-        bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'a', diff, 'L');
-        bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'p', diff, 'L');
-        bubble_function(dGammaL, dGammaT, state.vertex, G, G, 't', diff, 'L');
-
-        bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'a', diff, 'R');
-        bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'p', diff, 'R');
-        bubble_function(dGammaR, state.vertex, dGammaT, G, G, 't', diff, 'R');
-
-        dGammaT = dGammaL + dGammaC + dGammaR;
+        //Lines 14-17
+        Vertex<fullvert<Q> > dGammaT = dGammaL + dGammaR;
         dPsi.vertex += dGammaT;
+        print("2-loops done. \n");
+
+
+        //Lines 18-33
+        if (nLoops >= 3) {
+            Vertex<fullvert<Q> > dGammaC;
+            Vertex<fullvert<Q> > dGammaCtb;
+            for (int i = 3; i <= nLoops; i++) {
+                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
+                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');
+
+                //This corresponds to Line 29 in the pseudo-code and is important for self-energy corrections.
+                dGammaCtb += dGammaC;
+
+                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 't', diff, 'C');
+
+                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'a', diff, 'L');
+                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'p', diff, 'L');
+                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 't', diff, 'L');
+
+                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'a', diff, 'R');
+                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'p', diff, 'R');
+                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 't', diff, 'R');
+
+                dGammaT = dGammaL + dGammaC + dGammaR;
+                dPsi.vertex += dGammaT;
 
 //        if(max_r(norm(dGammaT)/norm(dPsi.vertex)) < tol_vertex){ //TODO define a sensible norm for the vertices and a good way to implement this condition
 //            break;
 //        }
-        printf("%i-loops done. \n", i);
+                printf("%i-loops done. \n", i);
+            }
+        }
     }
-    #endif
-    #endif
+
 #endif
 
 //#if PROP_TYPE==2
@@ -243,14 +244,14 @@ template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, Sta
 template <typename Q> void setInitialConditions (State<Q>& state){
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, U/2.);
+        state.selfenergy.setself(0, i, glb_U/2.);
         state.selfenergy.setself(1, i, 0.);
     }
     print("SE initial conditions assigned", true);
 
     for (auto i:odd_Keldysh) {
         state.vertex.densvertex.irred.setvert(i, 0, 0.);
-        state.vertex.spinvertex.irred.setvert(i, 0, -U/2.);
+        state.vertex.spinvertex.irred.setvert(i, 0, -glb_U/2.);
     }
     print("Bare vertex initial assigned", true);
 }

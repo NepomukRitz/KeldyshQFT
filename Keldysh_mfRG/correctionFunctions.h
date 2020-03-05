@@ -18,18 +18,18 @@ auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, do
     if(w==0. && fabs(b-a)==0)
         return 0.;
     else
-        return 1./(w+im_unit*GAMMA_REG*(b-a))
-            *(log((gamma_p+w/2.-epsilon+im_unit*GAMMA_REG*b)/(gamma_p-w/2.-epsilon+im_unit*GAMMA_REG*a))
-            + log((gamma_m+w/2.+epsilon-im_unit*GAMMA_REG*a)/(gamma_m-w/2.+epsilon-im_unit*GAMMA_REG*b)));
+        return 1./(w+glb_i*glb_Gamma_REG*(b-a))
+            *(log((gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*b)/(gamma_p-w/2.-glb_epsilon+glb_i*glb_Gamma_REG*a))
+            + log((gamma_m+w/2.+glb_epsilon-glb_i*glb_Gamma_REG*a)/(gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*b)));
 }
 
 auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
-    if(w==2.*epsilon && fabs(b-a)==0)
+    if(w==2.*glb_epsilon && fabs(b-a)==0)
         return 0.;
     else
-        return 1./(w-2*epsilon+im_unit*GAMMA_REG*(a+b))
-            *(log((gamma_p-w/2.+epsilon-im_unit*GAMMA_REG*b)/(gamma_p+w/2.-epsilon+im_unit*GAMMA_REG*a))
-            + log((gamma_m-w/2.+epsilon-im_unit*GAMMA_REG*a)/(gamma_m+w/2.-epsilon+im_unit*GAMMA_REG*b)));
+        return 1./(w-2*glb_epsilon+glb_i*glb_Gamma_REG*(a+b))
+            *(log((gamma_p-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*b)/(gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*a))
+            + log((gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*a)/(gamma_m+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*b)));
 }
 
 /*At this point, we work with corrections to bubbles of the kinds KR, KA, AK, RK, KK  being neglected, due to faster decay to zero (O(1/w^2))*/
@@ -45,9 +45,9 @@ auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, dou
 //    }
 //
 //    if(a==1. || a==-1.)           //Advanced or Retarded
-//        return log((-gamma_m-epsilon+im_unit*GAMMA_REG*a)/(gamma_p-epsilon+im_unit*GAMMA_REG*a));
+//        return log((-gamma_m-glb_epsilon+glb_i*glb_Gamma_REG*a)/(gamma_p-glb_epsilon+glb_i*glb_Gamma_REG*a));
 //    else                //Keldysh
-//        return 0.; //2.*im_unit*(atan((gamma_m+epsilon)/GAMMA_REG) + atan((gamma_p-epsilon)/GAMMA_REG)-pi);
+//        return 0.; //2.*glb_i*(atan((gamma_m+glb_epsilon)/glb_Gamma_REG) + atan((gamma_p-glb_epsilon)/glb_Gamma_REG)-pi);
 //}
 
 

@@ -211,8 +211,8 @@ void loop(SelfEnergy<comp>& self, Vertex<fullvert<Q> >& fullvertex, Propagator& 
          * (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v', needing both extensions of the integration domain in both directions
          * The prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
          * */
-        comp integratedR = -1./(2.*pi*im_unit)*integrator(integrandR, w_lower_f-fabs(v), w_upper_f+fabs(v));
-        comp integratedK = -1./(2.*pi*im_unit)*integrator(integrandK, w_lower_f-fabs(v), w_upper_f+fabs(v));
+        comp integratedR = -1./(2.*pi*glb_i)*integrator(integrandR, w_lower_f-fabs(v), w_upper_f+fabs(v));
+        comp integratedK = -1./(2.*pi*glb_i)*integrator(integrandK, w_lower_f-fabs(v), w_upper_f+fabs(v));
 
         //The results are emplaced in the right place of the answer object.
         self.setself(0, i, integratedR);

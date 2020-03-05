@@ -12,25 +12,25 @@
 auto gR(double Lambda, double omega) -> comp
 {
 #if REG==1
-    return 1./(omega-epsilon);
+    return 1./(omega-glb_epsilon);
 #elif REG==2
-    return 1./(omega-epsilon + (0.5*im_unit*(GAMMA_REG+Lambda)) - U/2.);
+    return 1./(omega-glb_epsilon + (0.5*glb_i*(glb_Gamma_REG+Lambda)) - glb_U/2.);
 #endif
 }
 
 auto gA(double Lambda, double omega) -> comp
 {
 #if REG==1
-    return 1./(omega-epsilon);
+    return 1./(omega-glb_epsilon);
 #elif REG==2
-    return 1./(omega-epsilon - (0.5*im_unit*(GAMMA_REG+Lambda)) - U/2.);
+    return 1./(omega-glb_epsilon - (0.5*glb_i*(glb_Gamma_REG+Lambda)) - glb_U/2.);
 #endif
 }
 
 //Self-explanatory
 auto Fermi_distribution(double omega) -> double
 {
-    return 1./(exp((omega-mu)/T)+1.);
+    return 1./(exp((omega-glb_mu)/glb_T)+1.);
 }
 
 auto gK(double Lambda, double omega) -> comp
@@ -43,11 +43,11 @@ auto gK(double Lambda, double omega) -> comp
 
 auto sR(double Lambda, double omega) -> comp
 {
-    return -(0.5*im_unit)*gR(Lambda,omega)*gR(Lambda,omega);
+    return -(0.5*glb_i)*gR(Lambda,omega)*gR(Lambda,omega);
 }
 auto sA(double Lambda, double omega) -> comp
 {
-    return (0.5*im_unit)*gA(Lambda,omega)*gA(Lambda,omega);
+    return (0.5*glb_i)*gA(Lambda,omega)*gA(Lambda,omega);
 }
 auto sK(double Lambda, double omega) -> comp
 {

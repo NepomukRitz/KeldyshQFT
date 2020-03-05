@@ -20,11 +20,11 @@ const double pi = 3.1415926535897;
 #define REG 2
 //const double sharp = 2; // Sharpness of the smoothened regulator cutoff -> would be for smooth cutoff. Have not implemented
 #if REG==2
-    #define GAMMA_REG (double)1.
+    const double glb_Gamma_REG = 1.;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 3
 
 //Defines the type of propagators to handle. 1 for always free, 2 for always dressed
 #define PROP_TYPE 2
@@ -33,21 +33,26 @@ const double pi = 3.1415926535897;
 //#define SUSC 1
 
 /*Number of loops*/
-#define NLOOPS 1
+//#define NLOOPS
+#ifdef NLOOPS
+const int nLoops = 1;
+#endif
+
+//Computation is in Second Order Perturbation Theory
 #define SOPT
 
 /*Imaginary unit*/
-const comp im_unit (0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;
+const comp glb_i (0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;
 
 //Temperature and chemical potential
-const double T = 0.01;
-const double mu = 0.0;
+const double glb_T = 0.01;
+const double glb_mu = 0.0;
 
 /*Interaction strength*/
-const double U = 1.0;
+const double glb_U = 1.0;
 
 /*Dispersion relation (here, evidently, a constant)*/
-const double epsilon = mu - U/2.;   //NOLINT(cert-err58-cpp)
+const double glb_epsilon = glb_mu - glb_U/2.;   //NOLINT(cert-err58-cpp)
 
 /*Number of evolution flow points*/
 const int nEVO = 14;

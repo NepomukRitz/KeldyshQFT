@@ -76,7 +76,7 @@ template <typename Q> auto SelfEnergy<Q>::svalsmooth(int iK, double w) -> Q{//sm
         if(fabs(w)!= w_upper_f) {
             int W = fconv_fer(w);
             double x1 = ffreqs[W];
-            double x2 = ffreqs[W] + dv;
+            double x2 = ffreqs[W + 1];
             double xd = (w - x1) / (x2 - x1);
 
             Q f1 = sval(iK, W);
