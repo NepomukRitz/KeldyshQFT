@@ -33,7 +33,7 @@ const double pi = 3.1415926535897;
 //#define SUSC 1
 
 /*Number of loops*/
-//#define NLOOPS
+#define NLOOPS
 #ifdef NLOOPS
 const int nLoops = 1;
 #endif
@@ -165,8 +165,8 @@ const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 #if REG==2
 const int param_size = 14;
-const double parameter_list[param_size] = {GRID, REG, GAMMA_REG, DIAG_CLASS, PROP_TYPE, NLOOPS,
-                                           T, mu, U, epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
+const double parameter_list[param_size] = {GRID, REG, glb_Gamma_REG, DIAG_CLASS, PROP_TYPE, nLoops,
+                                           glb_T, glb_mu, glb_U, glb_epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
 #else
 const int param_size = 13;
 const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, PROP_TYPE, NLOOPS,
