@@ -223,11 +223,11 @@ auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
 
 auto GR(double Lambda, double omega, comp selfEneR) -> comp
 {
-    return 1./(omega - epsilon + 0.5*im_unit*(GAMMA_REG+Lambda) - selfEneR);
+    return 1./(omega - glb_epsilon + 0.5*glb_i*(glb_Gamma_REG+Lambda) - selfEneR);
 }
 auto GA(double Lambda, double omega, comp selfEneA) -> comp
 {
-    return 1./(omega - epsilon - 0.5*im_unit*(GAMMA_REG+Lambda) - selfEneA);
+    return 1./(omega - glb_epsilon - 0.5*glb_i*(glb_Gamma_REG+Lambda) - selfEneA);
 }
 auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
 {
@@ -237,13 +237,13 @@ auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
 
 auto SR(double Lambda, double omega, comp selfEneR)-> comp
 {
-    return -0.5*im_unit*GR(Lambda, omega, selfEneR)*GR(Lambda, omega, selfEneR);
+    return -0.5*glb_i*GR(Lambda, omega, selfEneR)*GR(Lambda, omega, selfEneR);
 }
 auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
 {
-    comp retarded = -0.5*im_unit*GR(Lambda, omega, selfEneR)*GK(Lambda, omega, selfEneR, selfEneK, selfEneA);
-    comp advanced = +0.5*im_unit*GK(Lambda, omega, selfEneR, selfEneK, selfEneA)*GA(Lambda, omega, selfEneA);
-    comp extra    = -im_unit*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
+    comp retarded = -0.5*glb_i*GR(Lambda, omega, selfEneR)*GK(Lambda, omega, selfEneR, selfEneK, selfEneA);
+    comp advanced = +0.5*glb_i*GK(Lambda, omega, selfEneR, selfEneK, selfEneA)*GA(Lambda, omega, selfEneA);
+    comp extra    = -glb_i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
 
     return retarded + advanced + extra;
 }
