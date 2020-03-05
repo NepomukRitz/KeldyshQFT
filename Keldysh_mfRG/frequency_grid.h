@@ -199,8 +199,8 @@ auto fconv_bos(double w) -> int {
     double W_lower_b = grid_transf_inv(w_lower_b);
     double W_upper_b = grid_transf_inv(w_upper_b);
     double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
-    double W1 = (W-W_lower_b)/dW;
-    auto index = (int)W1;
+    W = (W-W_lower_b)/dW;
+    auto index = (int)W;
     return index;
 }
 auto fconv_fer(double w) -> int {
