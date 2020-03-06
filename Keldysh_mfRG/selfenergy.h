@@ -71,7 +71,8 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q value) {
 template <typename Q> auto SelfEnergy<Q>::svalsmooth(int iK, double w) -> Q{//smoothly interpolates for values between discrete frequency values of mesh
 
     if(fabs(w)>w_upper_b)
-        return 0.;
+        //Returns U/2 for Retarded and 0. for Keldysh
+        return (1.-(double)iK)*glb_U/2.;
     else {
         if(fabs(w)!= w_upper_f) {
             int W = fconv_fer(w);
