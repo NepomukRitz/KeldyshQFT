@@ -59,7 +59,7 @@ const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
 const int nBOS = 51;
-const int nFER = 51;
+const int nFER = 500;//51;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
