@@ -31,8 +31,6 @@ void writePropagators(Propagator& free, Propagator& full);
 
 auto main() -> int {
 
-    int i = 0;
-
     setUpBosGrid();
     setUpFerGrid();
     setUpFlowGrid();
@@ -40,30 +38,30 @@ auto main() -> int {
     MPI_Init(nullptr, nullptr);
 
 
-//#ifndef SOPT // standard fRG flow
-//    double t0 = get_time();
-//    print("Start of flow", true);
-//    flow();
-//    print("Total execution time: ");
-//    get_time(t0);
-//
-//#else // SOPT Code here:
-//    SelfEnergy<comp> diffZero;
-//
-//    for(int i=0; i<nEVO; ++i) {
-//        double Lambda = flow_grid[i];
-//
-//        State<comp> bare (Lambda);
-//        for (auto j:odd_Keldysh) {
-//            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*U);
-//        }
-//
-//        sopt(bare, Lambda, bare);
-//
-//        Propagator control = propag(Lambda, bare.selfenergy, diffZero, 'g');
-//        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
-//    }
-//#endif
+#ifndef SOPT // standard fRG flow
+    double t0 = get_time();
+    print("Start of flow", true);
+    flow();
+    print("Total execution time: ");
+    get_time(t0);
+
+#else // SOPT Code here:
+    SelfEnergy<comp> diffZero;
+
+    for(int i=0; i<nEVO; ++i) {
+        double Lambda = flow_grid[i];
+
+        State<comp> bare (Lambda);
+        for (auto j:odd_Keldysh) {
+            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*glb_U);
+        }
+
+        sopt(bare, Lambda, bare);
+
+        Propagator control = propag(Lambda, bare.selfenergy, diffZero, 'g');
+        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
+    }
+#endif
 
     State<comp> sopt_state;
 
@@ -317,6 +315,50 @@ void flow(){
     }
 
 
+
+}
+
+
+/**
+ * Function which calculates a SOPT state. Should however toggle off the components not to be computed.
+ * @tparam Q    : Data type of the state, usually comp
+ * @param Psi   : State whose Vertex is to be calculated
+ * @param Lambda: Data structure-needed parameter. Should be set to 1. in all SOPT calculations
+ * @param state : State whose Vertex whould be the bare vertex already initialized
+ */
+template<typename Q>
+void sopt(State<Q>& Psi, double Lambda, State<Q> &state) {
+
+    //Calculate a propagator given the SelfEnergy of the initial condition-state
+    Propagator g = propag(Lambda, state.selfenergy, state.selfenergy, 'g');
+    cout << "G calculated" << endl;
+
+    //Bubbles are non-differentiated i.e. GG
+    bool diff = false;
+
+    cout << "bubble started" << endl;
+    double t2 = get_time();
+    //Lines 7-9
+    //These lines calculate an a-Bubble. Toggle off if p-Bubble is on
+    double ta = get_time();
+    bubble_function(Psi.vertex, state.vertex, state.vertex, g, g, 'a', diff, '.');
+    cout<<  "a - Bubble:";
+    get_time(ta);
+
+    //These lines calculate a p-Bubble. Toggle off if a-Bubble is on
+    double tp = get_time();
+    bubble_function(Psi.vertex, state.vertex, state.vertex, g, g, 'p', diff, '.');
+    cout<<  "p - Bubble:";
+    get_time(tp);
+
+    //These lines calculate a t-Bubble. Toggle off for SOPT calculations
+    double tt = get_time();
+    bubble_function(Psi.vertex, state.vertex, state.vertex, g, g, 't', diff, '.');
+    cout<<  "t - Bubble:";
+    get_time(tt);
+
+    cout << "bubble finished. ";
+    get_time(t2);
 
 }
 

@@ -24,7 +24,7 @@ const double pi = 3.1415926535897;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 3
+#define DIAG_CLASS 1
 
 //Defines the type of propagators to handle. 1 for always free, 2 for always dressed
 #define PROP_TYPE 2
@@ -39,7 +39,7 @@ const int nLoops = 1;
 #endif
 
 //Computation is in Second Order Perturbation Theory
-#define SOPT
+//#define SOPT
 
 /*Imaginary unit*/
 const comp glb_i (0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;
@@ -58,8 +58,8 @@ const double glb_epsilon = glb_mu - glb_U/2.;   //NOLINT(cert-err58-cpp)
 const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 501;
-const int nFER = 501;
+const int nBOS = 51;
+const int nFER = 51;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -105,7 +105,7 @@ const double w_lower_b = -w_upper_b;        //Symmetric grid
 const double w_upper_f = 40.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 #elif GRID==3
-const double W_scale = 50.*U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
+const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
 const double w_upper_b = 100.;
 const double w_lower_b = -w_upper_b;
 const double w_upper_f = 100.;
@@ -169,8 +169,8 @@ const double parameter_list[param_size] = {GRID, REG, glb_Gamma_REG, DIAG_CLASS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
 #else
 const int param_size = 13;
-const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, PROP_TYPE, NLOOPS,
-                                           T, mu, U, epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
+const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, PROP_TYPE, nLoops,
+                                           glb_T, glb_mu, glb_U, glb_epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
 #endif
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

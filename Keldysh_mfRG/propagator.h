@@ -15,19 +15,74 @@ using namespace std;
 
 class Propagator {
     double Lambda;
-    SelfEnergy<comp>& selfEnergy;
-    SelfEnergy<comp>& diffSelfie;
-    char type;
+    cvec propagator = cvec(2 * nPROP); // factor 2 for Keldysh components: G^R, G^K
 public:
-    Propagator(double Lambda_in, SelfEnergy<comp>& SE_in, SelfEnergy<comp>& diffSE_in, char type_in)
-        :Lambda(Lambda_in), selfEnergy(SE_in), diffSelfie(diffSE_in), type(type_in){};
+    explicit Propagator(double Lambda_in)
+        :Lambda(Lambda_in){};
 
+    void setprop(int, int, comp);
     auto pvalsmooth(int, double) -> comp;
+    auto pval(int, int) -> comp;
+
+    auto operator+(const Propagator &prop) -> Propagator{
+        this->propagator + prop.propagator;
+        return *this;
+    }
+    auto operator+=(const Propagator &prop) -> Propagator{
+        this->propagator += prop.propagator;
+        return *this;
+    }
+    auto operator*(comp alpha) -> Propagator
+    {
+        this->propagator*alpha;
+        return *this;
+    }
 
 };
 
-
 auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, bool free) -> Propagator;
+
+/************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
+
+void Propagator::setprop(int iK, int i, comp value)
+{
+    propagator[iK*nPROP + i] = value;
+}
+auto Propagator::pvalsmooth(int iK, double w) -> comp
+{
+    comp ans;
+    if(fabs(w)>w_upper_f)
+        switch (iK){
+        case 0:
+            return gR(Lambda, w);
+        case 1:
+            return gK(Lambda, w);
+        default:
+            return 0.;
+    }
+    else {
+        if(fabs(w)!= w_upper_f) {
+            int W = fconv_fer(w);
+            double x1 = ffreqs[W];
+            double x2 = ffreqs[W] + dv;
+            double xd = (w - x1) / (x2 - x1);
+
+            comp f1 = pval(iK, W);
+            comp f2 = pval(iK, W + 1);
+
+            ans = (1. - xd) * f1 + xd * f2;
+        }
+        else if(w == w_upper_f)
+            ans = pval(iK, nPROP-1);
+        else if(w == w_lower_f)
+            ans = pval(iK, 0);
+    }
+    return ans;
+}
+auto Propagator::pval(int iK, int i) -> comp
+{
+    return propagator[iK*nPROP + i];
+}
 
 
 #if REG==1
@@ -56,100 +111,96 @@ auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA
     return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
 }
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, char free) -> Propagator
+auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type) -> Propagator
 {
-    Propagator resp;
+    Propagator resp(Lambda);
 
-    if(free!='f') {
-        for (int i = 0; i < nPROP; i++) {
-            double w = ffreqs[i];
-            comp selfEneR = selfenergy.sval(0, i);
-            comp selfEneK = selfenergy.sval(1, i);
-            comp GR0 = GR(Lambda, w, selfEneR);
-            comp GA0 = GA(Lambda, w, conj(selfEneR));
-            comp GK0 = GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
-
-            if (type == 'g') { //good ol' regular propagator
-                if (fabs(w) > Lambda) {
-                    resp.setprop(0, i, GR0);
-                    resp.setprop(1, i, GR0 * selfEneK * GA0);
-                } else if (fabs(w) == Lambda) {
-                    resp.setprop(0, i, 0.5 * GR0);
-                    resp.setprop(1, i, 0.5 * (GR0 * selfEneK * GA0));
-                }
-            } else if (type == 's') {   //single-scale propagator
-                if (fabs(w) == Lambda) {
-                    resp.setprop(0, i, -1. * GR0);
-                    resp.setprop(1, i, -1. * GR0 * selfEneK * GA0);
-                } //else resp stays being 0
-            } else if (type == 'k') {  //Katanin substitution
-                comp SR, ER, SK, EK;
+#if PROP_TYPE==2
+    for (int i = 0; i < nPROP; i++) {
+        double w = ffreqs[i];
+        comp selfEneR = selfenergy.sval(0, i);
+        comp selfEneK = selfenergy.sval(1, i);
+        comp GR0 = GR(Lambda, w, selfEneR);
+        comp GA0 = GA(Lambda, w, conj(selfEneR));
+        comp GK0 = GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
+        if (type == 'g') { //good ol' regular propagator
+            if (fabs(w) > Lambda) {
+                resp.setprop(0, i, GR0);
+                resp.setprop(1, i, GR0 * selfEneK * GA0);
+            } else if (fabs(w) == Lambda) {
+                resp.setprop(0, i, 0.5 * GR0);
+                resp.setprop(1, i, 0.5 * (GR0 * selfEneK * GA0));
+            }
+        } else if (type == 's') {   //single-scale propagator
+            if (fabs(w) == Lambda) {
+                resp.setprop(0, i, -1. * GR0);
+                resp.setprop(1, i, -1. * GR0 * selfEneK * GA0);
+            } //else resp stays being 0
+        } else if (type == 'k') {  //Katanin substitution
+            comp SR, ER, SK, EK;
+            comp diffSelfEneR = diffSelfenergy.sval(0, i);
+            comp diffSelfEneA = conj(diffSelfEneR);
+            comp diffSelfEneK = diffSelfenergy.sval(1, i);
+            if (fabs(w) >= Lambda) {
+                ER = GR0 * diffSelfEneR * GR0;
+                EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * diffSelfEneA * GA0;
+            } else if (fabs(w) == Lambda) {
+                SR = -1. * GR0;
+                SK = -1. * GR0 * selfEneK * GA0;
+            }
+            resp.setprop(0, i, (SR + ER));
+            resp.setprop(1, i, (SK + EK));
+        } else if (type == 'e') {   //i.e. only the Katanin extension
+            comp ER, EK;
+            if (fabs(w) >= Lambda) {
                 comp diffSelfEneR = diffSelfenergy.sval(0, i);
                 comp diffSelfEneA = conj(diffSelfEneR);
                 comp diffSelfEneK = diffSelfenergy.sval(1, i);
-                if (fabs(w) >= Lambda) {
-                    ER = GR0 * diffSelfEneR * GR0;
-                    EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * diffSelfEneA * GA0;
-                } else if (fabs(w) == Lambda) {
-                    SR = -1. * GR0;
-                    SK = -1. * GR0 * selfEneK * GA0;
-                }
-
-                resp.setprop(0, i, (SR + ER));
-                resp.setprop(1, i, (SK + EK));
-            } else if (type == 'e') {   //i.e. only the Katanin extension
-
-                comp ER, EK;
-                if (fabs(w) >= Lambda) {
-                    comp diffSelfEneR = diffSelfenergy.sval(0, i);
-                    comp diffSelfEneA = conj(diffSelfEneR);
-                    comp diffSelfEneK = diffSelfenergy.sval(1, i);
-                    ER = GR0 * diffSelfEneR * GR0;
-                    EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * diffSelfEneA * GA0;
-                }
-                resp.setprop(0, i, ER);
-                resp.setprop(1, i, EK);
+                ER = GR0 * diffSelfEneR * GR0;
+                EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * diffSelfEneA * GA0;
             }
+            resp.setprop(0, i, ER);
+            resp.setprop(1, i, EK);
         }
     }
-    else{
-        for(int i=0; i<nPROP; ++i)
-        {
-            double w = ffreqs[i];
 
-            if(type=='g') {
-                if(fabs(w) < Lambda) {
-                    resp.setprop(0, i, gR(Lambda, w));
-                    resp.setprop(1, i, gK(Lambda, w));
-                }
-                else if(fabs(w) == Lambda){
-                    resp.setprop(0, i, 0.5*gR(Lambda, w));
-                    resp.setprop(1, i, 0.5*gK(Lambda, w));
-                }
+#elif PROP_TYPE == 1
+    for(int i=0; i<nPROP; ++i)
+    {
+        double w = ffreqs[i];
+        if(type=='g') {
+            if(fabs(w) < Lambda) {
+                resp.setprop(0, i, gR(Lambda, w));
+                resp.setprop(1, i, gK(Lambda, w));
             }
-            else if(type == 's'){
-                if(fabs(w) == Lambda){
-                    resp.setprop(0, i, (-1.)*gR(Lambda, w));
-                    resp.setprop(1, i, (-1.)*gK(Lambda, w));
-                }
-            }
-            else if(type == 'k'){
-                if(fabs(w) == Lambda){
-                    resp.setprop(0, i, (-1.)*gR(Lambda, w));
-                    resp.setprop(1, i, (-1.)*gK(Lambda, w));
-                }
-            }
-            else if(type == 'e') {
-                resp.setprop(0, i, 0.);
-                resp.setprop(1, i, 0.);
-            }
-            else {
-                resp.setprop(0, i, 0.);
-                resp.setprop(1, i, 0.);
-                cout << "Something is going terribly wrong with the free propagators" << "\n";
+            else if(fabs(w) == Lambda){
+                resp.setprop(0, i, 0.5*gR(Lambda, w));
+                resp.setprop(1, i, 0.5*gK(Lambda, w));
             }
         }
+        else if(type == 's'){
+            if(fabs(w) == Lambda){
+                resp.setprop(0, i, (-1.)*gR(Lambda, w));
+                resp.setprop(1, i, (-1.)*gK(Lambda, w));
+            }
+        }
+        else if(type == 'k'){
+            if(fabs(w) == Lambda){
+                resp.setprop(0, i, (-1.)*gR(Lambda, w));
+                resp.setprop(1, i, (-1.)*gK(Lambda, w));
+            }
+        }
+        else if(type == 'e') {
+            resp.setprop(0, i, 0.);
+            resp.setprop(1, i, 0.);
+        }
+        else {
+            resp.setprop(0, i, 0.);
+            resp.setprop(1, i, 0.);
+            cout << "Something is going terribly wrong with the free propagators" << "\n";
+        }
     }
+#endif
     return resp;
 }
 
@@ -267,111 +318,6 @@ auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diff
 #endif
     return resp;
 }
-
-/************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
-
-auto Propagator::pvalsmooth(int iK, double w) -> comp
-{
-    switch(type) {
-        case 'g':
-            switch (iK) {
-                case 0:
-                    if(fabs(w)>w_upper_f)
-                        return gR(Lambda, w);
-                    else {
-                        comp SigmaR = selfEnergy.svalsmooth(iK, w);
-                        return GR(Lambda, w, SigmaR);
-                    }
-                case 1:
-                    if(fabs(w)>w_upper_f)
-                        return gK(Lambda, w);
-                    else {
-                        comp SigmaR = selfEnergy.svalsmooth(0, w);
-                        comp SigmaK = selfEnergy.svalsmooth(1, w);
-                        return GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR));
-                    }
-                default:
-                    return 0.;
-            }
-
-        case 's':
-            switch (iK) {
-                case 0:
-                    if(fabs(w)>w_upper_f)
-                        return sR(Lambda, w);
-                    else {
-                        comp SigmaR = selfEnergy.svalsmooth(iK, w);
-                        return SR(Lambda, w, SigmaR);
-                    }
-                case 1:
-                    if(fabs(w)>w_upper_f)
-                        return sK(Lambda, w);
-                    else {
-                        comp SigmaR = selfEnergy.svalsmooth(0, w);
-                        comp SigmaK = selfEnergy.svalsmooth(1, w);
-                        return SK(Lambda, w, SigmaR, SigmaK, conj(SigmaR));
-                    }
-                default:
-                    return 0.;
-            }
-
-        case 'e':
-            switch(iK){
-                case 0:
-                    if(fabs(w)>w_upper_f)
-                        return 0.;
-                    else {
-                        comp SigmaR = selfEnergy.svalsmooth(iK, w);
-                        comp diffSigmaR = diffSelfie.svalsmooth(iK, w);
-                        return GR(Lambda, w, SigmaR) * diffSigmaR * GR(Lambda, w, SigmaR);
-                    }
-                case 1:
-                    if(fabs(w)>w_upper_f)
-                        return 0.;
-                    else{
-                        comp SigmaR = selfEnergy.svalsmooth(0, w);
-                        comp SigmaK = selfEnergy.svalsmooth(1, w);
-                        comp diffSigmaR = diffSelfie.svalsmooth(0, w);
-                        comp diffSigmaK = diffSelfie.svalsmooth(1, w);
-
-                        return GR(Lambda, w, SigmaR) * diffSigmaR * GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR))+
-                               GR(Lambda, w, SigmaR) * diffSigmaK * GA(Lambda, w, conj(SigmaR))+
-                               GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR)) * conj(diffSigmaR) * GA(Lambda, w, conj(SigmaR));
-                    }
-                default:
-                    return 0.;
-            }
-
-        case 'k':                               //Katanin extension = S + E
-            switch(iK){
-                case 0:
-                    if(fabs(w)>w_upper_f)
-                        return sR(Lambda, w);
-                    else {
-                        comp SigmaR = selfEnergy.svalsmooth(iK, w);
-                        comp diffSigmaR = diffSelfie.svalsmooth(iK, w);
-                        return SR(Lambda, w, SigmaR) + GR(Lambda, w, SigmaR) * diffSigmaR * GR(Lambda, w, SigmaR);
-                    }
-                case 1:
-                    if(fabs(w)>w_upper_f)
-                        return sK(Lambda, w);
-                    else{
-                        comp SigmaR = selfEnergy.svalsmooth(0, w);
-                        comp SigmaK = selfEnergy.svalsmooth(1, w);
-                        comp diffSigmaR = diffSelfie.svalsmooth(0, w);
-                        comp diffSigmaK = diffSelfie.svalsmooth(1, w);
-
-                        return SK(Lambda, w, SigmaR, SigmaK, conj(SigmaR)) +
-                        GR(Lambda, w, SigmaR) * diffSigmaR * GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR))+
-                        GR(Lambda, w, SigmaR) * diffSigmaK * GA(Lambda, w, conj(SigmaR))+
-                        GK(Lambda, w, SigmaR, SigmaK, conj(SigmaR)) * conj(diffSigmaR) * GA(Lambda, w, conj(SigmaR));
-                    }
-                default:
-                    return 0.;
-            }
-    }
-}
-
 
 #endif
 
