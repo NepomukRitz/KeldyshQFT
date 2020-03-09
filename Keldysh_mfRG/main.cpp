@@ -12,6 +12,7 @@
 #include "propagator.h"
 #include "selfenergy.h"
 #include "hdf5_routines.h"
+#include "write_data2file.h"
 
 #include "testFunctions.h"
 
