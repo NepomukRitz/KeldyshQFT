@@ -41,7 +41,8 @@ add_executable(Keldysh_mfRG
         include/paid.hpp
         include/queue.hpp
         include/rule.hpp internal_symmetries.h
-        bubbles.h diagrammatic_combinations.h)
+        bubbles.h diagrammatic_combinations.h
+        write_data2file.h)
 
 include_directories(/usr/include/mpi/)
 

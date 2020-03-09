@@ -1,3 +1,5 @@
+#include <fstream>
+#include "data_structures.h"
 #include "H5Cpp.h"
 
 // write vectors of real numbers into text (.dat) file
