@@ -36,8 +36,8 @@ void interp1_FFT(cvec& Gy, const rvec& y, const cvec& Gx, const rvec& x) {
     double temp_diff; // temporary difference
     for (int i = 1; i < Nx; ++i) {
         temp_diff = x[i] - x[i-1];
-        if(abs(temp_diff - dx) > 1e-14) {
-            cout << "Error in interp1_FFT: x grid must be linear." << endl;
+        if(abs(temp_diff - dx) > 1e-12) {
+            cout << "Error in interp1_FFT: x grid must be linear. Deviation in difference is: " << (temp_diff-dx) << "." << endl;
             break;
         }
     }
