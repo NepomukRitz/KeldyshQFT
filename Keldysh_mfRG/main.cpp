@@ -15,7 +15,6 @@
 #include "hdf5_routines.h"
 #include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
 #include "H5Cpp.h"
-#include "write_data2file.h"
 
 #include "testFunctions.h"
 
@@ -59,16 +58,16 @@ auto main() -> int {
     setUpFerGrid();
     setUpFlowGrid();
 
-    SOPT_FFT_SelfEnergy(SEout, vin, Gin, U);
-    SOPTbare_FFT_SelfEnergy(SEout2, 0.5, 1., 1000, 80.);
+    //SOPT_FFT_SelfEnergy(SEout, vin, Gin, U);
+    SOPTbare_FFT_SelfEnergy(SEout2, 1., 1., 1000, 80.);
 
-    State<comp> test_state;
-    test_state.selfenergy = SEout2;
-    write_hdf("hdf5_test_file.h5",1., 1, test_state);
+    //State<comp> test_state;
+    //test_state.selfenergy = SEout2;
+    //write_hdf("hdf5_test_file.h5",1., 1, test_state);
 
     cout << "hi" << endl;
 
-    write_h5_rvecs("myh5test.h5", {"test"}, {vin});
+
 
 
     MPI_Init(nullptr, nullptr);
