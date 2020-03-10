@@ -234,7 +234,11 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
 
 // TODO: overload = operator for basic_vec
 void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const double Uin, const int nFFT, const double V_FFT) {
-    //********************************************* input *********************************************************//
+    bool SEflag_FFT = true;
+    bool PiAflag_FFT = true;
+    bool PiPflag_FFT = true;
+
+    /// ------------------- READ INPUT --------------------- ///
     rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
     const double dvFFT = V_FFT / (double)nFFT; // frequency spacing
     for (int i = 0; i < nFFT; ++i) // fill frequency grid
@@ -244,51 +248,107 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const
         GvR[i] = gR(Lambda, vFFT[i]); // retarded component
         GvK[i] = gK(Lambda, vFFT[i]); // Keldysh component
     }
+    /// ------------------- TRANSFORM INPUT --------------------- ///
     rvec tFFT (nFFT); // vector for real time
     cvec GtR (nFFT), GtK (nFFT), GtAc (nFFT), GtK_(nFFT); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
     ft_v2t(tFFT, GtR, vFFT, GvR); // Fourier trafo, retarded component
     ft_v2t(tFFT, GtK, vFFT, GvK); // Fourier trafo, Keldysh component
     flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
     flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
-    //********************************************* retarded *********************************************************//
-    cvec SEt_RKK (nFFT), SEt_KAK (nFFT), SEt_KKR (nFFT), SEt_RAR (nFFT); // vectors for \Sigma(t) terms arising in SOPT for retarded component
-    for (int i = 0; i < nFFT; ++i) {
-        SEt_RKK[i] = GtR[i] * GtK[i] * GtK_[i]; // G^R(t) G^K(t) G^K(-t)
-        SEt_KAK[i] = GtK[i] * GtK[i] * conj(GtR[i]); // G^K(t) G^K(t) G^A(-t)
-        SEt_KKR[i] = GtR[i] * GtK[i] * GtK_[i]; // G^R(t) G^K(t) G^K(-t)
-        SEt_RAR[i] = GtR[i] * GtR[i] * conj(GtR[i]); // G^R(t) G^R(t) G^A(-t)
+
+
+
+    if(PiAflag_FFT) {
+        /// ------------------- K1a COMPONENT 1 --------------------- ///
+        // left sum of indices is even, right sum of indices is odd, retarded component of bosonic self-energy
+        // vectors for \K1a(t) terms arising in SOPT for component 1
+        cvec K1at_RK(nFFT), K1at_KA(nFFT);
+        // individual terms
+        K1at_RK = GtR * GtK_; // G^R(t) G^K(-t)
+        K1at_KA = GtK * GtR.conj(); // G^K(t) G^A(-t)
+        // resulting K1a component 1 in time and frequency
+        cvec K1at_1(nFFT), K1av_1(nFFT);
+        K1at_1 = (K1at_RK + K1at_KA) * (-glb_i*Uin*Uin/4.); // prefactor: (\pm U/2)^2 1/i
+        ft_t2v(vFFT, K1av_1, tFFT, K1at_1); // Fourier trafo, component 3
+        /// ------------------- K1a COMPONENT 3 --------------------- ///
+        // left sum of indices is odd, right sum of indices is odd, Keldysh component of bosonic self-energy
+        // vectors for \K1a(t) terms arising in SOPT for component 3
+        cvec K1at_KK(nFFT), K1at_AR(nFFT), K1at_RA(nFFT);
+        // individual terms
+        K1at_KK = GtK * GtK_; // G^K(t) G^K(-t)
+        K1at_AR = GtAc.conj() * GtAc; // G^A(t) G^R(-t)
+        K1at_RA = GtR * GtR.conj(); // G^R(t) G^A(-t)
+        // resulting K1a component 3 in time and frequency
+        cvec K1at_3(nFFT), K1av_3(nFFT);
+        K1at_3 = (K1at_KK + K1at_AR + K1at_RA) * (-glb_i*Uin*Uin/4.); // prefactor: (\pm U/2)^2 1/i
+        ft_t2v(vFFT, K1av_3, tFFT, K1at_3); // Fourier trafo, component 3
     }
-    cvec SEtR (nFFT), SEvR (nFFT); // resulting retarded self-energy in time and frequency
-    for (int i = 0; i < nFFT; ++i)
-        SEtR[i] = (SEt_RKK[i] + SEt_KAK[i] + SEt_KKR[i] + SEt_RAR[i]) * (Uin*Uin/4.);
-    ft_t2v(vFFT, SEvR, tFFT, SEtR); // Fourier trafo, retarded component
-    //********************************************* Keldysh *********************************************************//
-    cvec SEt_RKA (nFFT), SEt_RRK (nFFT), SEt_AKR (nFFT), SEt_AAK (nFFT), SEt_KRA (nFFT), SEt_KAR (nFFT), SEt_KKK (nFFT); // vectors for \Sigma(t) terms arising in SOPT for Keldysh component
-    for (int i = 0; i < nFFT; ++i) {
-        SEt_RKA[i] = GtR[i] * GtK[i] * conj(GtR[i]); // G^R(t) G^K(t) G^A(-t)
-        SEt_RRK[i] = GtR[i] * GtR[i] * GtK_[i]; // G^R(t) G^R(t) G^K(-t)
-        SEt_AKR[i] = conj(GtAc[i]) * GtK[i] * GtAc[i]; // G^A(t) G^K(t) G^R(-t)
-        SEt_AAK[i] = conj(GtAc[i]) * conj(GtAc[i]) * GtK_[i]; // G^A(t) G^A(t) G^K(-t)
-        SEt_KRA[i] = GtK[i] * GtR[i] * conj(GtR[i]); // G^K(t) G^R(t) G^A(-t)
-        SEt_KAR[i] = GtK[i] * conj(GtAc[i]) * GtAc[i]; // G^K(t) G^A(t) G^R(-t)
-        SEt_KKK[i] = GtK[i] * GtK[i] * GtK_[i]; // G^K(t) G^K(t) G^K(-t)
+
+    if(PiPflag_FFT) {
+        /// ------------------- K1p COMPONENT 1 --------------------- ///
+        // left sum of indices is even, right sum of indices is odd, retarded component of bosonic self-energy
+        // vectors for \K1p(t) terms arising in SOPT for component 1
+        cvec K1pt_RK(nFFT);
+        // only one term but appears twice
+        K1pt_RK = GtR * GtK; // G^R(t) G^K(t)
+        // resulting K1p component 1 in time and frequency
+        cvec K1pt_1(nFFT), K1pv_1(nFFT);
+        K1pt_1 = K1pt_RK * (-glb_i*Uin*Uin/2.); // prefactor: (\pm U/2)^2 1/i twice
+        ft_t2v(vFFT, K1pv_1, tFFT, K1pt_1); // Fourier trafo, component 3
+        /// ------------------- K1p COMPONENT 3 --------------------- ///
+        // left sum of indices is odd, right sum of indices is odd, Keldysh component of bosonic self-energy
+        // vectors for \K1a(t) terms arising in SOPT for component 3
+        cvec K1pt_KK(nFFT);
+        // only one term
+        K1pt_KK = GtK * GtK_; // G^K(t) G^K(-t)
+        // resulting K1p component 3 in time and frequency
+        cvec K1pt_3(nFFT), K1pv_3(nFFT);
+        K1pt_3 = K1pt_KK * (-glb_i*Uin*Uin/4.); // prefactor: (\pm U/2)^2 1/i
+        ft_t2v(vFFT, K1pv_3, tFFT, K1pt_3); // Fourier trafo, component 3
     }
-    cvec SEtK (nFFT), SEvK (nFFT); // resulting Keldysh self-energy in time and frequency
-    for (int i = 0; i < nFFT; ++i)
-        SEtK[i] = (SEt_RKA[i] + SEt_RRK[i] + SEt_AKR[i] + SEt_AAK[i] + SEt_KRA[i] + SEt_KAR[i] + SEt_KKK[i]) * (Uin*Uin/4.);
-    ft_t2v(vFFT, SEvK, tFFT, SEtK); // Fourier trafo, Keldysh component
-    //********************************************* output *********************************************************//
-    cvec SEoutR (nSE), SEoutK (nSE); // resulting self-energy components on external grid
-    interp1_FFT(SEoutR, ffreqs, SEvR, vFFT); // linear interpolation for retarded component
-    interp1_FFT(SEoutK, ffreqs, SEvK, vFFT); // linear interpolation for Keldysh component
-    for (int i = 0; i < nSE; ++i) { // fill results in output self-energy
-        SEout.setself(0, i, SEoutR[i]); // retarded component
-        SEout.setself(1, i, SEoutK[i]); // Keldysh component
+
+    if(SEflag_FFT) {
+        /// ------------------- SELF-ENERGY RETARDED COMPONENT --------------------- ///
+        // vectors for \Sigma(t) terms arising in SOPT for retarded component
+        cvec SEt_RKK(nFFT), SEt_KAK(nFFT), SEt_KKR(nFFT), SEt_RAR(nFFT);
+        // individual terms
+        SEt_RKK = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
+        SEt_KAK = GtK * GtK * GtR.conj(); // G^K(t) G^K(t) G^A(-t)
+        SEt_KKR = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
+        SEt_RAR = GtR * GtR * GtR.conj(); // G^R(t) G^R(t) G^A(-t)
+        // resulting retarded self-energy in time and frequency
+        cvec SEtR(nFFT), SEvR(nFFT);
+        SEtR = (SEt_RKK + SEt_KAK + SEt_KKR + SEt_RAR) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
+        ft_t2v(vFFT, SEvR, tFFT, SEtR); // Fourier trafo, retarded component
+        /// ------------------- SELF-ENERGY KELDYSH COMPONENT --------------------- ///
+        // vectors for \Sigma(t) terms arising in SOPT for Keldysh component
+        cvec SEt_RKA(nFFT), SEt_RRK(nFFT), SEt_AKR(nFFT), SEt_AAK(nFFT), SEt_KRA(nFFT), SEt_KAR(nFFT), SEt_KKK(nFFT);
+        // individual terms
+        SEt_RKA = GtR * GtK * GtR.conj(); // G^R(t) G^K(t) G^A(-t)
+        SEt_RRK = GtR * GtR * GtK_; // G^R(t) G^R(t) G^K(-t)
+        SEt_AKR = GtAc.conj() * GtK * GtAc; // G^A(t) G^K(t) G^R(-t)
+        SEt_AAK = GtAc.conj() * GtAc.conj() * GtK_; // G^A(t) G^A(t) G^K(-t)
+        SEt_KRA = GtK * GtR * GtR.conj(); // G^K(t) G^R(t) G^A(-t)
+        SEt_KAR = GtK * GtAc.conj() * GtAc; // G^K(t) G^A(t) G^R(-t)
+        SEt_KKK = GtK * GtK * GtK_; // G^K(t) G^K(t) G^K(-t)
+        // resulting Keldysh self-energy in time and frequency
+        cvec SEtK(nFFT), SEvK(nFFT);
+        SEtK = (SEt_RKA + SEt_RRK + SEt_AKR + SEt_AAK + SEt_KRA + SEt_KAR + SEt_KKK) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
+        ft_t2v(vFFT, SEvK, tFFT, SEtK); // Fourier trafo, Keldysh component
+        /// ------------------- SELF-ENERGY OUTPUT --------------------- ///
+        cvec SEoutR(nSE), SEoutK(nSE); // resulting self-energy components on external grid
+        interp1_FFT(SEoutR, ffreqs, SEvR, vFFT); // linear interpolation for retarded component
+        interp1_FFT(SEoutK, ffreqs, SEvK, vFFT); // linear interpolation for Keldysh component
+        for (int i = 0; i < nSE; ++i) { // fill results in output self-energy
+            SEout.setself(0, i, SEoutR[i]); // retarded component
+            SEout.setself(1, i, SEoutK[i]); // Keldysh component
+        }
     }
 }
 
 
 void SOPT_FFT_SelfEnergy(SelfEnergy<comp>& SEout, rvec& v, SelfEnergy<comp>& Gin, const double Uin) {
+    /// ------------------- READ INPUT --------------------- ///
     const int N = v.size(); // vector size, all vector sizes must be equal
     // linear grid is required for Fourier trafo
     const double diff = v[1] - v[0];
@@ -305,37 +365,41 @@ void SOPT_FFT_SelfEnergy(SelfEnergy<comp>& SEout, rvec& v, SelfEnergy<comp>& Gin
         GvR[i] = Gin.sval(0, i); // retarded component
         GvK[i] = Gin.sval(1, i); // Keldysh component
     }
+    /// ------------------- TRANSFORM INPUT --------------------- ///
     rvec t (N); // vector for real time
     cvec GtR (N), GtK (N), GtAc (N), GtK_(N); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
     ft_v2t(t, GtR, v, GvR); // Fourier trafo, retarded component
     ft_v2t(t, GtK, v, GvK); // Fourier trafo, Keldysh component
     flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
     flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
-    cvec SEt_RKK (N), SEt_KAK (N), SEt_KKR (N), SEt_RAR (N); // vectors for \Sigma(t) terms arising in SOPT for retarded component
-    for (int i = 0; i < N; ++i) {
-        SEt_RKK[i] = GtR[i] * GtK[i] * GtK_[i]; // G^R(t) G^K(t) G^K(-t)
-        SEt_KAK[i] = GtK[i] * GtK[i] * conj(GtR[i]); // G^K(t) G^K(t) G^A(-t)
-        SEt_KKR[i] = GtR[i] * GtK[i] * GtK_[i]; // G^R(t) G^K(t) G^K(-t)
-        SEt_RAR[i] = GtR[i] * GtR[i] * conj(GtR[i]); // G^R(t) G^R(t) G^A(-t)
-    }
-    cvec SEtR (N), SEvR (N); // resulting retarded self-energy in time and frequency
-    for (int i = 0; i < N; ++i)
-        SEtR[i] = (SEt_RKK[i] + SEt_KAK[i] + SEt_KKR[i] + SEt_RAR[i]) * (Uin*Uin/4.);
+    /// ------------------- SELF-ENERGY RETARDED COMPONENT --------------------- ///
+    // vectors for \Sigma(t) terms arising in SOPT for retarded component
+    cvec SEt_RKK (N), SEt_KAK (N), SEt_KKR (N), SEt_RAR (N);
+    // individual terms
+    SEt_RKK = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
+    SEt_KAK = GtK * GtK * GtR.conj(); // G^K(t) G^K(t) G^A(-t)
+    SEt_KKR = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
+    SEt_RAR = GtR * GtR * GtR.conj(); // G^R(t) G^R(t) G^A(-t)
+    // resulting retarded self-energy in time and frequency
+    cvec SEtR (N), SEvR (N);
+    SEtR = (SEt_RKK + SEt_KAK + SEt_KKR + SEt_RAR) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
     ft_t2v(v, SEvR, t, SEtR); // Fourier trafo, retarded component
-    cvec SEt_RKA (N), SEt_RRK (N), SEt_AKR (N), SEt_AAK (N), SEt_KRA (N), SEt_KAR (N), SEt_KKK (N); // vectors for \Sigma(t) terms arising in SOPT for Keldysh component
-    for (int i = 0; i < N; ++i) {
-        SEt_RKA[i] = GtR[i] * GtK[i] * conj(GtR[i]); // G^R(t) G^K(t) G^A(-t)
-        SEt_RRK[i] = GtR[i] * GtR[i] * GtK_[i]; // G^R(t) G^R(t) G^K(-t)
-        SEt_AKR[i] = conj(GtAc[i]) * GtK[i] * GtAc[i]; // G^A(t) G^K(t) G^R(-t)
-        SEt_AAK[i] = conj(GtAc[i]) * conj(GtAc[i]) * GtK_[i]; // G^A(t) G^A(t) G^K(-t)
-        SEt_KRA[i] = GtK[i] * GtR[i] * conj(GtR[i]); // G^K(t) G^R(t) G^A(-t)
-        SEt_KAR[i] = GtK[i] * conj(GtAc[i]) * GtAc[i]; // G^K(t) G^A(t) G^R(-t)
-        SEt_KKK[i] = GtK[i] * GtK[i] * GtK_[i]; // G^K(t) G^K(t) G^K(-t)
-    }
-    cvec SEtK (N), SEvK (N); // resulting Keldysh self-energy in time and frequency
-    for (int i = 0; i < N; ++i)
-        SEtK[i] = (SEt_RKA[i] + SEt_RRK[i] + SEt_AKR[i] + SEt_AAK[i] + SEt_KRA[i] + SEt_KAR[i] + SEt_KKK[i]) * (Uin*Uin/4.);
+    /// ------------------- SELF-ENERGY KELDYSH COMPONENT --------------------- ///
+    // vectors for \Sigma(t) terms arising in SOPT for Keldysh component
+    cvec SEt_RKA (N), SEt_RRK (N), SEt_AKR (N), SEt_AAK (N), SEt_KRA (N), SEt_KAR (N), SEt_KKK (N);
+    // individual terms
+    SEt_RKA = GtR * GtK * GtR.conj(); // G^R(t) G^K(t) G^A(-t)
+    SEt_RRK = GtR * GtR * GtK_; // G^R(t) G^R(t) G^K(-t)
+    SEt_AKR = GtAc.conj() * GtK * GtAc; // G^A(t) G^K(t) G^R(-t)
+    SEt_AAK = GtAc.conj() * GtAc.conj() * GtK_; // G^A(t) G^A(t) G^K(-t)
+    SEt_KRA = GtK * GtR * GtR.conj(); // G^K(t) G^R(t) G^A(-t)
+    SEt_KAR = GtK * GtAc.conj() * GtAc; // G^K(t) G^A(t) G^R(-t)
+    SEt_KKK = GtK * GtK * GtK_; // G^K(t) G^K(t) G^K(-t)
+    // resulting Keldysh self-energy in time and frequency
+    cvec SEtK (N), SEvK (N);
+    SEtK = (SEt_RKA + SEt_RRK + SEt_AKR + SEt_AAK + SEt_KRA + SEt_KAR + SEt_KKK) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
     ft_t2v(v, SEvK, t, SEtK); // Fourier trafo, Keldysh component
+    /// ------------------- SELF-ENERGY OUTPUT --------------------- ///
     for (int i = 0; i < N; ++i) { // fill results in output self-energy
         SEout.setself(0, i, SEvR[i]); // retarded component
         SEout.setself(1, i, SEvK[i]); // Keldysh component
@@ -345,8 +409,8 @@ void SOPT_FFT_SelfEnergy(SelfEnergy<comp>& SEout, rvec& v, SelfEnergy<comp>& Gin
 // Comment for other function
 // Dyson eq.: G^K = G^R G^A ( \Sigma^K + \Delta^K)
 // equilibrium: \Sigma^K = (1+2n_F)(\Sigma^R-\Sigma^A), acc. for \Delta^K
-// \Rightarrow G^K = (1+2n_F) G^R G^A [ (\Sigma+\Delta)^R - (\Sigma+\Delta)^A ]
-//                 = (1+2n_F) G^R G^A (G_0^A - G_0^R) = (1+2n_F) (G^R-G^A)
+// \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Delta)^R - (\Sigma+\Delta)^A ]
+//                 = (1-2n_F) G^R G^A (G_0^A - G_0^R) = (1+2n_F) (G^R-G^A)
 
 
 
