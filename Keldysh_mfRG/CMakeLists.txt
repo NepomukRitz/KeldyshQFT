@@ -41,7 +41,7 @@ add_executable(Keldysh_mfRG
         include/queue.hpp
         include/rule.hpp internal_symmetries.h
         bubbles.h diagrammatic_combinations.h
-        write_data2file.h)
+        fourier_trafo.h solvers.h)
 
 include_directories(/usr/include/mpi/)
 
@@ -49,3 +49,4 @@ link_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib)
 
 target_link_libraries(Keldysh_mfRG hdf5)
 target_link_libraries(Keldysh_mfRG hdf5_cpp)
+target_link_libraries(Keldysh_mfRG fftw3)

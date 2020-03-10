@@ -1,5 +1,6 @@
-#include <fstream>
-#include "data_structures.h"
+#ifndef KELDYSH_MFRG_WRITE_DATA2FILE_H
+#define KELDYSH_MFRG_WRITE_DATA2FILE_H
+
 #include "H5Cpp.h"
 
 // write vectors of real numbers into text (.dat) file
@@ -40,3 +41,5 @@ void test_write_h5_rvecs() {
     rvec y{-0.5, 0.5, 1.5, 4};
     write_h5_rvecs("test_write_h5_rvecs.h5", {"xvector", "yvector"}, {x, y});
 }
+
+#endif // KELDYSH_MFRG_WRITE_DATA2FILE_H
