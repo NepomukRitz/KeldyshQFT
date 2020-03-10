@@ -79,8 +79,7 @@ void test_interp1_FFT() {
 //      = e^{-i v0 t} 1/T \sum_{nv} e^{-2pi i nv nt} e^{-i (v-v0) t0} G(v) = e^{-i v0 t} 1/T DFT(e^{-i (v-v0) t0} G(v))
 // Dt = T/N, Dv = V/N = 2pi/T
 // hyb encodes analytic high-frequency decay tail_coef/(v+i tail_hyb), setting coef=0 ignores this
-void ft_v2t(rvec& t, cvec& Gt, const rvec& v, const cvec& Gv, const comp tail_coef, const double tail_hyb)
-{
+void ft_v2t(rvec& t, cvec& Gt, const rvec& v, const cvec& Gv, const comp tail_coef, const double tail_hyb) {
     const int N = v.size(); // vector size, all vector sizes must be equal
     if(N != t.size() || N != Gt.size() || N != Gv.size())
         cout << "Error in ft_v2t: Vector sizes must be equal." << endl;
@@ -129,8 +128,7 @@ void ft_v2t(rvec& t, cvec& Gt, const rvec& v, const cvec& Gv) {
 //      = e^{i v t0} T/N \sum_{nt} e^{2pi i nv nt} e^{i v0 (t-t0)} G(t) = e^{i v0 t} T/N IDFT(e^{i v0 (t-t0)} G(t))
 // Dt = T/N, Dv = V/N = 2pi/T
 // hyb encodes analytic high-frequency decay tail_coef/(v+i tail_hyb), setting coef=0 ignores this
-void ft_t2v(rvec& v, cvec& Gv, const rvec& t, const cvec& Gt, const comp tail_coef, const double tail_hyb)
-{
+void ft_t2v(rvec& v, cvec& Gv, const rvec& t, const cvec& Gt, const comp tail_coef, const double tail_hyb) {
     const int N = t.size(); // vector size, all vector sizes must be equal
     if(N != v.size() || N != Gv.size() || N != Gt.size())
         cout << "Error in ft_t2v: Vector sizes must be equal." << endl;
@@ -181,8 +179,7 @@ void ft_t2v(rvec& v, cvec& Gv, const rvec& t, const cvec& Gt) {
 //        = e^{-i v0 tau} 1/beta \sum_{nv} e^{-2pi i nv ntau} e^{-i (vn-v0) tau0} G(vn)
 //        = e^{-i v0 tau} 1/beta DFT(e^{-i (vn-v0) t0} G(vn))
 // Dt = T/N, Dv = V/N = 2pi/T
-void ft_vn2tau(rvec& tau, cvec& Gtau, const rvec& vn, const cvec& Gvn, const bool incl_tail)
-{
+void ft_vn2tau(rvec& tau, cvec& Gtau, const rvec& vn, const cvec& Gvn, const bool incl_tail) {
     const int N = vn.size(); // vector size, all vector sizes must be equal
     if(N != tau.size() || N != Gtau.size() || N != Gvn.size())
         cout << "Error in ft_vn2tau: Vector sizes must be equal." << endl;
@@ -231,8 +228,7 @@ void ft_vn2tau(rvec& tau, cvec& Gtau, const rvec& vn, const cvec& Gvn, const boo
 //       = e^{i vn tau0} \beta/N \sum_{ntau} e^{2pi i nv ntau} e^{i v0 (tau-tau0)} G(tau)
 //       = e^{i vn tau0} \beta/N IDFT(e^{i v0 (tau-tau0)} G(tau))
 // Dtau = beta/N, Dv = V/N = 2pi/beta
-void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const char type, const bool incl_tail)
-{
+void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const char type, const bool incl_tail) {
     const int N = tau.size(); // vector size, all vector sizes must be equal
     if(N != vn.size() || N != Gvn.size() || N != Gtau.size())
         cout << "Error in ft_tau2vn: Vector sizes must be equal." << endl;
