@@ -45,13 +45,13 @@ public:
     {
         Q aid, propTerm;
         if(prop_iK==-1) {
-            propTerm = conj(propagator.pvalsmooth(0, vp));
+            propTerm = conj(propagator.valsmooth(0, vp));
         }
         else if(prop_iK==0) {
-            propTerm = propagator.pvalsmooth(0, vp);
+            propTerm = propagator.valsmooth(0, vp);
         }
         else {
-            propTerm = propagator.pvalsmooth(1, vp);
+            propTerm = propagator.valsmooth(1, vp);
         }
 
 #ifdef SOPT
@@ -105,7 +105,7 @@ template<typename Q>
 void sopt_state(State<Q>& Psi, double Lambda, State<Q> &state) {
 
     //Calculate a propagator given the SelfEnergy of the initial condition-state
-    Propagator g = propag(Lambda, state.selfenergy, state.selfenergy, 'g');
+    Propagator g(Lambda, state.selfenergy, state.selfenergy, 'g');
     cout << "G calculated" << endl;
 
     //Bubbles are non-differentiated i.e. GG
@@ -162,13 +162,13 @@ void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
 
 
     for (int j = 0; j < ffreqs.size(); j++) {
-        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.sval(0, j).real() << " " <<  selfEnergy.sval(0, j).imag() << "\n";
-        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.sval(0, j).real() << " " << -selfEnergy.sval(0, j).imag() << "\n";
-        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.sval(1, j).real() << " " <<  selfEnergy.sval(1, j).imag() << "\n";
+        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.val(0, j).real() << " " <<  selfEnergy.val(0, j).imag() << "\n";
+        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.val(0, j).real() << " " << -selfEnergy.val(0, j).imag() << "\n";
+        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.val(1, j).real() << " " <<  selfEnergy.val(1, j).imag() << "\n";
 
-        my_file_propR << ffreqs[j] << " " << propagator.pval(0, j).real() << " " <<  propagator.pval(0, j).imag() << "\n";
-        my_file_propA << ffreqs[j] << " " << propagator.pval(0, j).real() << " " << -propagator.pval(0, j).imag() << "\n";
-        my_file_propK << ffreqs[j] << " " << propagator.pval(1, j).real() << " " <<  propagator.pval(1, j).imag() << "\n";
+        my_file_propR << ffreqs[j] << " " << propagator.valsmooth(0, ffreqs[j]).real() << " " <<  propagator.valsmooth(0, ffreqs[j]).imag() << "\n";
+        my_file_propA << ffreqs[j] << " " << propagator.valsmooth(0, ffreqs[j]).real() << " " << -propagator.valsmooth(0, ffreqs[j]).imag() << "\n";
+        my_file_propK << ffreqs[j] << " " << propagator.valsmooth(1, ffreqs[j]).real() << " " <<  propagator.valsmooth(1, ffreqs[j]).imag() << "\n";
     }
 
 #if DIAG_CLASS >=1
@@ -229,12 +229,12 @@ void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
 void testBubbles(State<comp>& state){
 
     SelfEnergy<comp> zero;
-    Propagator g1 = propag(1.0, state.selfenergy, zero, 'g');
-    Propagator g2 = propag(1.0, state.selfenergy, zero, 'g');
+    Propagator g1(1.0, state.selfenergy, zero, 'g');
+    Propagator g2(1.0, state.selfenergy, zero, 'g');
 
-    vector<comp> Pia_odd_even (nBOS);
-    vector<comp> Pia_odd_odd (nBOS);
-    vector<comp> Pia_odd_odd_c (nBOS);
+    cvec Pia_odd_even (nBOS);
+    cvec Pia_odd_odd (nBOS);
+    cvec Pia_odd_odd_c (nBOS);
 
     vector<comp> PiaOE(nBOS);
     vector<comp> PiaOO(nBOS);
@@ -242,15 +242,16 @@ void testBubbles(State<comp>& state){
     //Calculate the vertex for comparison
     sopt_state(state, 1.0, state);
 
+    //for(int i=75; i<76; i++){
     for(int i=0; i<nBOS; i++){
         double w = bfreqs[i];
 
         //Create the objects explicitly designed to return the determined Keldysh component needed
-        IntegrandBubble integrandPia6  (g1, g2, false, w, 6,  'a');     //AR
-        IntegrandBubble integrandPia9  (g1, g2, false, w, 9,  'a');     //RA
-        IntegrandBubble integrandPia11 (g1, g2, false, w, 11, 'a');     //KA
-        IntegrandBubble integrandPia13 (g1, g2, false, w, 13, 'a');     //RK
-        IntegrandBubble integrandPia15 (g1, g2, false, w, 15, 'a');     //KK
+        IntegrandBubble integrandPia6 (g1, g2, false, w, 6,  'a');     //AR
+        IntegrandBubble integrandPia9 (g1, g2, false, w, 9,  'a');     //RA
+        IntegrandBubble integrandPia11(g1, g2, false, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(g1, g2, false, w, 13, 'a');     //RK
+        IntegrandBubble integrandPia15(g1, g2, false, w, 15, 'a');     //KK
 
         //Calculate the contributions
         auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
@@ -258,17 +259,44 @@ void testBubbles(State<comp>& state){
 
         auto cont6  = integrator(integrandPia6 , w_lower_b, w_upper_b);
         auto cont9  = integrator(integrandPia9 , w_lower_b, w_upper_b);
-        auto cont15 = integrator(integrandPia15 , w_lower_b, w_upper_b);
+        auto cont15 = integrator(integrandPia15, w_lower_b, w_upper_b);
 
         //Add the respective contributions to the respective bubble
-        Pia_odd_even[i] = 1./2.*(cont11 + cont13);
+        Pia_odd_even[i] = 1./2.*(cont11+ cont13);
         Pia_odd_odd [i] = 1./2.*(cont6 + cont9 + cont15);
 
+/*
+        //cout << Pia_odd_even[i] << endl;
+        //cout << integrandPia11(-2.6) << endl;
+        //cout << g1.pvalsmooth(1,-2.6-w/2.)*conj(g2.pvalsmooth(0,-2.6+w/2.))/(2.*pi*glb_i) << endl;
+        cout << "GK(v-w/2): " << g1.pvalsmooth(1,-2.6-w/2.) << endl;
+
+
+        cout << "GA(v+w/2): " << conj(g2.pvalsmooth(0,-2.6+w/2.)) << endl;
+        cout << "GR(v-w/2): " << g2.pvalsmooth(0,-2.6-w/2.) << endl;
+        cout << "GK_formula(v-w/2): " << (1.-2.*Fermi_distribution(-2.6-w/2.))*(g1.pvalsmooth(0,-2.6-w/2.)-conj(g1.pvalsmooth(0,-2.6-w/2.))) << endl;
+        double myv = -0.1;
+        cout << "myv: " << myv << endl;
+        cout << "GK(myv): " << g1.pvalsmooth(1,myv) << endl;
+        cout << "GK_formula(myv): " << (1.-2.*Fermi_distribution(myv))*(g1.pvalsmooth(0,myv)-conj(g1.pvalsmooth(0,myv))) << endl;
+
+        myv = -0.2;
+        cout << "myv: " << myv << endl;
+        cout << "GK(myv): " << g1.pvalsmooth(1,myv) << endl;
+        cout << "GK_formula(myv): " << (1.-2.*Fermi_distribution(myv))*(g1.pvalsmooth(0,myv)-conj(g1.pvalsmooth(0,myv))) << endl;
+
+        myv = 0.;
+        cout << "myv: " << myv << endl;
+        cout << "GK(myv): " << g1.pvalsmooth(1,myv) << endl;
+        cout << "GK_formula(myv): " << (1.-2.*Fermi_distribution(myv))*(g1.pvalsmooth(0,myv)-conj(g1.pvalsmooth(0,myv))) << endl;
+
+        cout << g1.pvalsmooth(0, 0.) << endl;
+        cout << g1.pvalsmooth(1, 0.) << endl;
+*/
         //Add the correction to compare
         Pia_odd_odd_c[i] = Pia_odd_odd[i] + 1./2.*(1./(2.*pi*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
 
         //The relevant components are read out and added in the correct places directly.
-
         PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
         PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
         PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
@@ -301,6 +329,8 @@ void testBubbles(State<comp>& state){
 //        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(12, w, 0, 0, *aid);
 //        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(12, w, 0, 1, *aid);
     }
+
+//    write_h5_rvecs("bubble_wIP_nINT_501.h5", {"w", "PiR", "PiI"},{bfreqs, Pia_odd_even.real(), Pia_odd_even.imag()});
 
     //Stuff to print out results in .dat format. Is less cumbersome than hdf5 and hence easier to use for debugging purposes.
     ostringstream Pia_odd_evenfile;
@@ -355,7 +385,7 @@ void testBubbles(State<comp>& state){
 void testSelfEnergy(State<comp>& state){
 
     SelfEnergy<comp> zero;
-    Propagator g1 = propag(1.0, state.selfenergy, zero, 'g');
+    Propagator g1(1.0, state.selfenergy, zero, 'g');
 
     //Calculate the vertex
     sopt_state(state, 1.0, state);
@@ -378,8 +408,8 @@ void testSelfEnergy(State<comp>& state){
 
 
     for(int i = 0; i<nFER; i++){
-        my_file_SelfEnergyR_cxx<< ffreqs[i] << " " << selfie.sval(0,i).real() << " " << selfie.sval(0,i).imag() << "\n";
-        my_file_SelfEnergyK_cxx<< ffreqs[i] << " " << selfie.sval(1,i).real() << " " << selfie.sval(1,i).imag() << "\n";
+        my_file_SelfEnergyR_cxx<< ffreqs[i] << " " << selfie.val(0,i).real() << " " << selfie.val(0,i).imag() << "\n";
+        my_file_SelfEnergyK_cxx<< ffreqs[i] << " " << selfie.val(1,i).real() << " " << selfie.val(1,i).imag() << "\n";
     }
 
     my_file_SelfEnergyR_cxx.close();
@@ -393,7 +423,7 @@ void testSelfEnergy(State<comp>& state){
 void test_selfEnergyComponents(State<comp>& state)
 {
     SelfEnergy<comp> zero;
-    Propagator g1 = propag(1., state.selfenergy, zero, 'g');
+    Propagator g1(1., state.selfenergy, zero, 'g');
 
     SelfEnergy<comp> SER_R;
     SelfEnergy<comp> SER_A;
@@ -444,12 +474,12 @@ void test_selfEnergyComponents(State<comp>& state)
     my_file_SelfEnergyK_K_cxx.open(selfEnergyK_K_cxx.str());
 
     for(int i = 0; i<nFER; i++){
-        my_file_SelfEnergyR_R_cxx << ffreqs[i]<< " " << SER_R.sval(0, i).real() << " " << SER_R.sval(0, i).imag() << "\n";
-        my_file_SelfEnergyR_A_cxx << ffreqs[i]<< " " << SER_A.sval(0, i).real() << " " << SER_A.sval(0, i).imag() << "\n";
-        my_file_SelfEnergyR_K_cxx << ffreqs[i]<< " " << SER_K.sval(0, i).real() << " " << SER_K.sval(0, i).imag() << "\n";
-        my_file_SelfEnergyK_R_cxx << ffreqs[i]<< " " << SEK_R.sval(1, i).real() << " " << SEK_R.sval(1, i).imag() << "\n";
-        my_file_SelfEnergyK_A_cxx << ffreqs[i]<< " " << SEK_A.sval(1, i).real() << " " << SEK_A.sval(1, i).imag() << "\n";
-        my_file_SelfEnergyK_K_cxx << ffreqs[i]<< " " << SEK_K.sval(1, i).real() << " " << SEK_K.sval(1, i).imag() << "\n";
+        my_file_SelfEnergyR_R_cxx << ffreqs[i]<< " " << SER_R.val(0, i).real() << " " << SER_R.val(0, i).imag() << "\n";
+        my_file_SelfEnergyR_A_cxx << ffreqs[i]<< " " << SER_A.val(0, i).real() << " " << SER_A.val(0, i).imag() << "\n";
+        my_file_SelfEnergyR_K_cxx << ffreqs[i]<< " " << SER_K.val(0, i).real() << " " << SER_K.val(0, i).imag() << "\n";
+        my_file_SelfEnergyK_R_cxx << ffreqs[i]<< " " << SEK_R.val(1, i).real() << " " << SEK_R.val(1, i).imag() << "\n";
+        my_file_SelfEnergyK_A_cxx << ffreqs[i]<< " " << SEK_A.val(1, i).real() << " " << SEK_A.val(1, i).imag() << "\n";
+        my_file_SelfEnergyK_K_cxx << ffreqs[i]<< " " << SEK_K.val(1, i).real() << " " << SEK_K.val(1, i).imag() << "\n";
 
     }
 

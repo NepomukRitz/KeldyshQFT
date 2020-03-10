@@ -52,31 +52,31 @@ public:
         if(dot){
             switch (iK) {
                 case 3: //AA
-                    ans = conj(g.pvalsmooth(0, v1)) * conj(s.pvalsmooth(0, v2)) + conj(s.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
+                    ans = conj(g.valsmooth(0, v1)) * conj(s.valsmooth(0, v2)) + conj(s.valsmooth(0, v1)) * conj(g.valsmooth(0, v2));
                     break;
                 case 6: //AR
-                    ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(0, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
+                    ans = conj(g.valsmooth(0, v1)) * s.valsmooth(0, v2) + conj(s.valsmooth(0, v1)) * g.valsmooth(0, v2);
                     break;
                 case 7: //AK
-                    ans = conj(g.pvalsmooth(0, v1)) * s.pvalsmooth(1, v2) + conj(s.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
+                    ans = conj(g.valsmooth(0, v1)) * s.valsmooth(1, v2) + conj(s.valsmooth(0, v1)) * g.valsmooth(1, v2);
                     break;
                 case 9: //RA
-                    ans = g.pvalsmooth(0, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                    ans = g.valsmooth(0, v1) * conj(s.valsmooth(0, v2)) + s.valsmooth(0, v1) * conj(g.valsmooth(0, v2));
                     break;
                 case 11://KA
-                    ans = g.pvalsmooth(1, v1) * conj(s.pvalsmooth(0, v2)) + s.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+                    ans = g.valsmooth(1, v1) * conj(s.valsmooth(0, v2)) + s.valsmooth(1, v1) * conj(g.valsmooth(0, v2));
                     break;
                 case 12://RR
-                    ans = g.pvalsmooth(0, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
+                    ans = g.valsmooth(0, v1) * s.valsmooth(0, v2) + s.valsmooth(0, v1) * g.valsmooth(0, v2);
                     break;
                 case 13://RK
-                    ans = g.pvalsmooth(0, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
+                    ans = g.valsmooth(0, v1) * s.valsmooth(1, v2) + s.valsmooth(0, v1) * g.valsmooth(1, v2);
                     break;
                 case 14://KR
-                    ans = g.pvalsmooth(1, v1) * s.pvalsmooth(0, v2) + s.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
+                    ans = g.valsmooth(1, v1) * s.valsmooth(0, v2) + s.valsmooth(1, v1) *  g.valsmooth(0, v2);
                     break;
                 case 15://KK
-                    ans = g.pvalsmooth(1, v1) * s.pvalsmooth(1, v2) + s.pvalsmooth(1, v1) * g.pvalsmooth(1, v2);
+                    ans = g.valsmooth(1, v1) * s.valsmooth(1, v2) + s.valsmooth(1, v1) * g.valsmooth(1, v2);
                     break;
                 default:
                     return 0.;
@@ -86,31 +86,31 @@ public:
         {
             switch (iK){
                 case 3: //AA
-                    ans = conj(g.pvalsmooth(0, v1)) * conj(g.pvalsmooth(0, v2));
+                    ans = conj(g.valsmooth(0, v1)) * conj(g.valsmooth(0, v2));
                     break;
                 case 6: //AR
-                    ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(0, v2);
+                    ans = conj(g.valsmooth(0, v1)) * g.valsmooth(0, v2);
                     break;
                 case 7: //AK
-                    ans = conj(g.pvalsmooth(0, v1)) * g.pvalsmooth(1, v2);
+                    ans = conj(g.valsmooth(0, v1)) * g.valsmooth(1, v2);
                     break;
                 case 9: //RA
-                    ans = g.pvalsmooth(0, v1) * conj(g.pvalsmooth(0, v2));
+                    ans = g.valsmooth(0, v1) * conj(g.valsmooth(0, v2));
                     break;
                 case 11://KA
-                    ans = g.pvalsmooth(1, v1) * conj(g.pvalsmooth(0, v2));
+                    ans = g.valsmooth(1, v1) * conj(g.valsmooth(0, v2));
                     break;
                 case 12://RR
-                    ans = g.pvalsmooth(0, v1) * g.pvalsmooth(0, v2);
+                    ans = g.valsmooth(0, v1) * g.valsmooth(0, v2);
                     break;
                 case 13://RK
-                    ans = g.pvalsmooth(0, v1) * g.pvalsmooth(1, v2);
+                    ans = g.valsmooth(0, v1) * g.valsmooth(1, v2);
                     break;
                 case 14://KR
-                    ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(0, v2);
+                    ans =  g.valsmooth(1, v1) *  g.valsmooth(0, v2);
                     break;
                 case 15://KK
-                    ans =  g.pvalsmooth(1, v1) *  g.pvalsmooth(1, v2);
+                    ans =  g.valsmooth(1, v1) *  g.valsmooth(1, v2);
                     break;
                 default:
                     return 0.;

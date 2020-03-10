@@ -7,318 +7,325 @@
 
 #include <iostream>
 #include "selfenergy.h"
-#include "free_propagator_functions.h"
 #include "parameters.h"
 
 using namespace std;
 
+//Self-explanatory
+auto Fermi_distribution(double v) -> double
+{
+    return 1./(exp((v-glb_mu)/glb_T)+1.);
+}
 
+
+/**
+ * Propagator class
+ */
 class Propagator {
     double Lambda;
-    cvec propagator = cvec(2 * nPROP); // factor 2 for Keldysh components: G^R, G^K
+    SelfEnergy<comp>& SE;
+    SelfEnergy<comp>& diffSE;
+    char type;
+#ifdef INTER_PROP
+    cvec prop = cvec(2*nPROP);
+#endif
+
 public:
-    explicit Propagator(double Lambda_in)
-        :Lambda(Lambda_in){};
+    /**
+     * Free Propagator object. SelfEnergy is zero 
+     * @param Lambda_in : Input scale
+     * @param type_in   : Type of propagator being handled
+     */
+    Propagator(double Lambda_in, char type_in)
+            : Lambda(Lambda_in), SE(*new SelfEnergy<comp>()), diffSE(*new SelfEnergy<comp>()), type(type_in) { }
 
-    void setprop(int, int, comp);
-    auto pvalsmooth(int, double) -> comp;
-    auto pval(int, int) -> comp;
 
-    auto operator+(const Propagator &prop) -> Propagator{
-        this->propagator + prop.propagator;
-        return *this;
-    }
-    auto operator+=(const Propagator &prop) -> Propagator{
-        this->propagator += prop.propagator;
-        return *this;
-    }
-    auto operator*(comp alpha) -> Propagator
+    /**
+     * Dressed propagator for non-flowing calculations, i,e, no differential SelfEnergy is needed and, hence, is set to zero. 
+     * @param Lambda_in : Input scale
+     * @param self_in   : SelfEnergy
+     * @param type_in   : Type of propagator being handled
+     */
+    Propagator(double Lambda_in, SelfEnergy<comp>& self_in, char type_in)
+            :Lambda(Lambda_in), SE(self_in), diffSE(*new SelfEnergy<comp>()), type(type_in)
     {
-        this->propagator*alpha;
-        return *this;
-    }
-
-};
-
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type, bool free) -> Propagator;
-
-/************************************FUNCTIONS FOR PROPAGATOR (ALWAYS)*************************************************/
-
-void Propagator::setprop(int iK, int i, comp value)
-{
-    propagator[iK*nPROP + i] = value;
-}
-auto Propagator::pvalsmooth(int iK, double w) -> comp
-{
-    comp ans;
-    if(fabs(w)>w_upper_f)
-        switch (iK){
-        case 0:
-            return gR(Lambda, w);
-        case 1:
-            return gK(Lambda, w);
-        default:
-            return 0.;
-    }
-    else {
-        if(fabs(w)!= w_upper_f) {
-            int W = fconv_fer(w);
-            double x1 = ffreqs[W];
-            double x2 = ffreqs[W] + dv;
-            double xd = (w - x1) / (x2 - x1);
-
-            comp f1 = pval(iK, W);
-            comp f2 = pval(iK, W + 1);
-
-            ans = (1. - xd) * f1 + xd * f2;
+#ifdef INTER_PROP
+        for(int i=0; i<nPROP; i++) {
+            double v = ffreqs[i];
+            prop[i] = GR(v);
+            prop[nPROP+i] = GK(v);
         }
-        else if(w == w_upper_f)
-            ans = pval(iK, nPROP-1);
-        else if(w == w_lower_f)
-            ans = pval(iK, 0);
+#endif  //INTER_PROP
     }
-    return ans;
-}
-auto Propagator::pval(int iK, int i) -> comp
-{
-    return propagator[iK*nPROP + i];
-}
 
+    /**
+     * Dressed propagator for flows. Needs both a SelfEnergy and a Differential SelfEnergy
+     * @param Lambda_in     : Input scale
+     * @param self_in       : SelfEnergy
+     * @param diffSelf_in   : Differential SelfEnergy
+     * @param type_in       : Type of propagator being handled
+     */
+    Propagator(double Lambda_in, SelfEnergy<comp>& self_in, SelfEnergy<comp>& diffSelf_in, char type_in)
+            :Lambda(Lambda_in), SE(self_in), diffSE(diffSelf_in), type(type_in)
+    {
+#ifdef INTER_PROP
+        for(int i=0; i<nPROP; i++) {
+            double v = ffreqs[i];
+            prop[i] = GR(v);
+            prop[nPROP+i] = GK(v);
+        }
+#endif  //INTER_PROP
+
+    };
+
+    auto valsmooth(int, double) -> comp;
+
+    auto GR(double v) -> comp;
+    auto GA(double v) -> comp;
+    auto GK(double v) -> comp;
+    auto SR(double v) -> comp;
+    auto SK(double v) -> comp;
+};
 
 #if REG==1
 
 /*******PROPAGATOR FUNCTIONS***********/
-auto GR(double Lambda, double omega, comp selfEneR) -> comp;
-auto GA(double Lambda, double omega, comp selfEneA) -> comp;
-auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp;
-
-auto SR(double Lambda, double omega, comp selfEneR) -> comp;
-auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp;
-
-
-/************FUNCTION TO COMPUTE DIFFERENT TYPES OF PROPAGATOR (full greens function, katanin and single scale propagator)********************************************************/
-
-auto GR(double Lambda, double omega, comp selfEneR) -> comp
+auto Propagator::GR(double v) -> comp
 {
-    return 1./((1./(gR(Lambda, omega))) - selfEneR);
+    return 1./(v - glb_epsilon - SE.valsmooth(0, v));
 }
-auto GA(double Lambda, double omega, comp selfEneA) -> comp
+auto Propagator::GA(double v) -> comp
 {
-    return 1./((1./(gA(Lambda, omega))) - selfEneA);
+    return 1./(v - glb_epsilon - conj(SE.valsmooth(0,v)));
 }
-auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
+auto Propagator::GK(double v) -> comp
 {
-    return GR(Lambda, omega, selfEneR)*selfEneK*GA(Lambda, omega, selfEneA);
+    //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
+    return (1.-2.*Fermi_distribution(v))*(GR(v)-GA(v));
 }
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type) -> Propagator
+auto Propagator::SR(double v) -> comp
 {
-    Propagator resp(Lambda);
+    return 0.;
+}
+auto Propagator::SK(double v) -> comp
+{
+    return 0.;
+}
 
-#if PROP_TYPE==2
-    for (int i = 0; i < nPROP; i++) {
-        double w = ffreqs[i];
-        comp selfEneR = selfenergy.sval(0, i);
-        comp selfEneK = selfenergy.sval(1, i);
-        comp GR0 = GR(Lambda, w, selfEneR);
-        comp GA0 = GA(Lambda, w, conj(selfEneR));
-        comp GK0 = GK(Lambda, w, selfEneR, selfEneK, conj(selfEneR));
-        if (type == 'g') { //good ol' regular propagator
-            if (fabs(w) > Lambda) {
-                resp.setprop(0, i, GR0);
-                resp.setprop(1, i, GR0 * selfEneK * GA0);
-            } else if (fabs(w) == Lambda) {
-                resp.setprop(0, i, 0.5 * GR0);
-                resp.setprop(1, i, 0.5 * (GR0 * selfEneK * GA0));
+auto Propagator::valsmooth(int iK, double v) -> comp
+{
+    comp SR, SK;
+    comp diffSelfEneR;
+    comp diffSelfEneA;
+    comp diffSelfEneK;
+
+    switch (type){
+        case 'g':
+            if (fabs(v) < Lambda) {
+                switch (iK){
+                    case 0:
+                        return GR(v);
+                    case 1:
+                        return GK(v);
+                    default:
+                        return 0.;
+                }
+            } else if (fabs(v) == Lambda) {
+                switch (iK){
+                    case 0:
+                        return 1./2.*GR(v);
+                    case 1:
+                        return 1./2.*GK(v);
+                    default:
+                        return 0.;
+                }
             }
-        } else if (type == 's') {   //single-scale propagator
-            if (fabs(w) == Lambda) {
-                resp.setprop(0, i, -1. * GR0);
-                resp.setprop(1, i, -1. * GR0 * selfEneK * GA0);
-            } //else resp stays being 0
-        } else if (type == 'k') {  //Katanin substitution
-            comp SR, ER, SK, EK;
-            comp diffSelfEneR = diffSelfenergy.sval(0, i);
-            comp diffSelfEneA = conj(diffSelfEneR);
-            comp diffSelfEneK = diffSelfenergy.sval(1, i);
-            if (fabs(w) >= Lambda) {
-                ER = GR0 * diffSelfEneR * GR0;
-                EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * diffSelfEneA * GA0;
-            } else if (fabs(w) == Lambda) {
-                SR = -1. * GR0;
-                SK = -1. * GR0 * selfEneK * GA0;
+            return 0.;
+        case 's':
+            if (fabs(v) == Lambda) {
+                switch (iK){
+                    case 0:
+                        return -GR(v);
+                    case 1:
+                        return -GK(v);
+                    default:
+                        return 0.;
+                }
             }
-            resp.setprop(0, i, (SR + ER));
-            resp.setprop(1, i, (SK + EK));
-        } else if (type == 'e') {   //i.e. only the Katanin extension
-            comp ER, EK;
-            if (fabs(w) >= Lambda) {
-                comp diffSelfEneR = diffSelfenergy.sval(0, i);
-                comp diffSelfEneA = conj(diffSelfEneR);
-                comp diffSelfEneK = diffSelfenergy.sval(1, i);
-                ER = GR0 * diffSelfEneR * GR0;
-                EK = GR0 * diffSelfEneR * GK0 + GR0 * diffSelfEneK * GA0 + GK0 * diffSelfEneA * GA0;
+            return 0.;
+        case 'k':
+            diffSelfEneR = diffSE.valsmooth(0, v);
+            diffSelfEneA = conj(diffSelfEneR);
+            diffSelfEneK = diffSE.valsmooth(1, v);
+            if(fabs(v)<Lambda){
+                switch(iK){
+                    case 0:
+                        return GR(v) * diffSelfEneR * GR(v);
+                    case 1:
+                        return GR(v) * diffSelfEneR * GK(v) + GR(v) * diffSelfEneK * GA(v) + GK(v) * diffSelfEneA * GA(v);
+                    default:
+                        return 0.;
+                }
+            }else if (fabs(v)==Lambda){
+                switch(iK){
+                    case 0:
+                        SR = -1.*GR(v);
+                        return SR + GR(v) * diffSelfEneR * GR(v);
+                    case 1:
+                        SK = -1. *GK(v);
+                        return SK + GR(v) * diffSelfEneR * GK(v) + GR(v) * diffSelfEneK * GA(v) + GK(v) * diffSelfEneA * GA(v);
+                    default:
+                        return 0.;
+                }
             }
-            resp.setprop(0, i, ER);
-            resp.setprop(1, i, EK);
-        }
+            return 0.;
+        case 'e':
+            if(fabs(v)<=Lambda) {
+                switch(iK){
+                    case 0:
+                        return GR(v) * diffSelfEneR * GR(v);
+                    case 1:
+                        return GR(v) * diffSelfEneR * GK(v) + GR(v) * diffSelfEneK * GA(v) + GK(v) * diffSelfEneA * GA(v);
+                    default:
+                        return 0.;
+                }
+            }
+            return 0.;
+
+        default:
+            return 0.;
     }
 
-#elif PROP_TYPE == 1
-    for(int i=0; i<nPROP; ++i)
-    {
-        double w = ffreqs[i];
-        if(type=='g') {
-            if(fabs(w) < Lambda) {
-                resp.setprop(0, i, gR(Lambda, w));
-                resp.setprop(1, i, gK(Lambda, w));
-            }
-            else if(fabs(w) == Lambda){
-                resp.setprop(0, i, 0.5*gR(Lambda, w));
-                resp.setprop(1, i, 0.5*gK(Lambda, w));
-            }
-        }
-        else if(type == 's'){
-            if(fabs(w) == Lambda){
-                resp.setprop(0, i, (-1.)*gR(Lambda, w));
-                resp.setprop(1, i, (-1.)*gK(Lambda, w));
-            }
-        }
-        else if(type == 'k'){
-            if(fabs(w) == Lambda){
-                resp.setprop(0, i, (-1.)*gR(Lambda, w));
-                resp.setprop(1, i, (-1.)*gK(Lambda, w));
-            }
-        }
-        else if(type == 'e') {
-            resp.setprop(0, i, 0.);
-            resp.setprop(1, i, 0.);
-        }
-        else {
-            resp.setprop(0, i, 0.);
-            resp.setprop(1, i, 0.);
-            cout << "Something is going terribly wrong with the free propagators" << "\n";
-        }
-    }
-#endif
-    return resp;
+
 }
 
 #elif REG==2
 
 /*******PROPAGATOR FUNCTIONS***********/
 
-auto GR(double Lambda, double omega, comp selfEneR) -> comp;
-auto GA(double Lambda, double omega, comp selfEneA) -> comp;
-auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp;
-
-auto SR(double Lambda, double omega, comp selfEneR) -> comp;
-auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp;
-
-/************FUNCTION TO COMPUTE DIFFERENT TYPES OF PROPAGATOR (full greens function, katanin and single scale propagator)********************************************************/
-
-auto GR(double Lambda, double omega, comp selfEneR) -> comp
+auto Propagator::GR(double v) -> comp
 {
-    return 1./(omega - glb_epsilon + 0.5*glb_i*(glb_Gamma_REG+Lambda) - selfEneR);
+    return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma_REG+Lambda) - SE.valsmooth(0, v));
 }
-auto GA(double Lambda, double omega, comp selfEneA) -> comp
+auto Propagator::GA(double v) -> comp
 {
-    return 1./(omega - glb_epsilon - 0.5*glb_i*(glb_Gamma_REG+Lambda) - selfEneA);
+    return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma_REG+Lambda) - conj(SE.valsmooth(0, v)));
 }
-auto GK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
+auto Propagator::GK(double v) -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*Fermi_distribution(omega))*(GR(Lambda, omega, selfEneR) - GA(Lambda, omega, selfEneA));
+    return (1.-2.*Fermi_distribution(v))*(GR(v)-GA(v));
 }
-
-auto SR(double Lambda, double omega, comp selfEneR)-> comp
+auto Propagator::SR(double v) -> comp
 {
-    return -0.5*glb_i*GR(Lambda, omega, selfEneR)*GR(Lambda, omega, selfEneR);
+    return -0.5*glb_i*GR(v)*GR(v);
 }
-auto SK(double Lambda, double omega, comp selfEneR, comp selfEneK, comp selfEneA) -> comp
+auto Propagator::SK(double v) -> comp
 {
-    comp retarded = -0.5*glb_i*GR(Lambda, omega, selfEneR)*GK(Lambda, omega, selfEneR, selfEneK, selfEneA);
-    comp advanced = +0.5*glb_i*GK(Lambda, omega, selfEneR, selfEneK, selfEneA)*GA(Lambda, omega, selfEneA);
-    comp extra    = -glb_i*(1.-2.*Fermi_distribution(omega))*GR(Lambda, omega, selfEneR)*GA(Lambda, omega, selfEneA);
+    comp retarded = -0.5*glb_i*GR(v)*GK(v);
+    comp advanced = +0.5*glb_i*GK(v)*GA(v);
+    comp extra    = -glb_i*(1.-2.*Fermi_distribution(v))*GR(v)*GA(v);
 
     return retarded + advanced + extra;
 }
 
-auto propag(double Lambda,  SelfEnergy<comp>& selfenergy, SelfEnergy<comp>& diffSelfenergy, char type) -> Propagator {
 
-    Propagator resp(Lambda);
 
-#if PROP_TYPE == 1
-    for (int i = 0; i < nPROP; ++i) {
-        double w = ffreqs[i];
-        switch (type) {
-            case 'g' :                              //Good ol' regular propagator
-                resp.setprop(0, i, gR(Lambda, w));
-                resp.setprop(1, i, gK(Lambda, w));
-                break;
-            case 's':                               //Single scale propagator
-                resp.setprop(0, i, sR(Lambda, w));
-                resp.setprop(1, i, sK(Lambda, w));
-                break;
-            case 'k':                               //Katanin extension
-                resp.setprop(0, i, sR(Lambda, w) + 0.);
-                resp.setprop(1, i, sK(Lambda, w) + 0.);
-                break;
-            default:                                //This case includes type e, the Katanin extension term, dg = s + e
-                resp.setprop(0, i, 0.);
-                resp.setprop(1, i, 0.);
-        }
-    }
-
-#elif PROP_TYPE == 2
-
-    for(int i=0; i<nPROP; ++i){
-        double w = ffreqs[i];
-        comp selfEneR = selfenergy.sval(0, i);
-        comp selfEneA = conj(selfEneR);
-        comp selfEneK = selfenergy.sval(1, i);
-        comp ER, EK, diffSelfEneR, diffSelfEneA, diffSelfEneK;
-        switch (type){
-            case 'g' :                              //Good ol' regular propagator
-                resp.setprop(0, i, GR(Lambda, w, selfEneR));
-                resp.setprop(1, i, GK(Lambda, w, selfEneR, selfEneK, selfEneA));
-                break;
-            case 's':                               //Single scale propagator
-                resp.setprop(0, i, SR(Lambda, w, selfEneR));
-                resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, selfEneA));
-                break;
-            case 'k':                               //Katanin extension = S + E
-                diffSelfEneR = diffSelfenergy.sval(0, i);
-                diffSelfEneA = conj(diffSelfEneR);
-                diffSelfEneK = diffSelfenergy.sval(1, i);
-
-                ER = GR(Lambda, w, selfEneR) * diffSelfEneR * GR(Lambda, w, selfEneR);
-                EK = GR(Lambda, w, selfEneR) * diffSelfEneR * GK(Lambda, w, selfEneR, selfEneK, selfEneA)
-                     + GR(Lambda, w, selfEneR) * diffSelfEneK * GA(Lambda, w, selfEneA)
-                     + GK(Lambda, w, selfEneR, selfEneK, selfEneA) * diffSelfEneA * GA(Lambda, w, selfEneA);
-                resp.setprop(0, i, SR(Lambda, w, selfEneR)+ ER);
-                resp.setprop(1, i, SK(Lambda, w, selfEneR, selfEneK, selfEneA)+ EK);
-                break;
-            case 'e':
-                diffSelfEneR = diffSelfenergy.sval(0, i);
-                diffSelfEneA = conj(diffSelfEneR);
-                diffSelfEneK = diffSelfenergy.sval(1, i);
-                ER = GR(Lambda, w, selfEneR) * diffSelfEneR * GR(Lambda, w, selfEneR);
-                EK = GR(Lambda, w, selfEneR) * diffSelfEneR * GK(Lambda, w, selfEneR, selfEneK, selfEneA)
-                     + GR(Lambda, w, selfEneR) * diffSelfEneK * GA(Lambda, w, selfEneA)
-                     + GK(Lambda, w, selfEneR, selfEneK, selfEneA) * diffSelfEneA * GA(Lambda, w, selfEneA);
-                resp.setprop(0, i, ER);
-                resp.setprop(1, i, EK);
-                break;
+auto Propagator::valsmooth(int iK, double v) -> comp
+{
+#ifdef INTER_PROP
+    comp ans;
+    if(fabs(v)>w_upper_f) {
+        switch (iK) {
+            case 0:
+                return GR(v);
+            case 1:
+                return GK(v);
             default:
-                resp.setprop(0, i, 0.);
-                resp.setprop(1, i, 0.);
+                return 0.;
         }
     }
-#endif
-    return resp;
+    else {
+        if (fabs(v) != w_upper_f) {
+            int V = fconv_fer(v);
+            double x1 = ffreqs[V];
+            double x2 = ffreqs[V+1];
+            double xd = (v - x1) / (x2 - x1);
+
+            comp f1 = prop[iK * nPROP + V];
+            comp f2 = prop[iK * nPROP + V + 1];
+
+            ans = (1. - xd) * f1 + xd * f2;
+
+        } else if (fabs(v-w_upper_f)<inter_tol)
+            ans = prop[iK * nPROP + nPROP - 1];
+        else if (fabs(v-w_lower_f)<inter_tol)
+            ans = prop[iK * nPROP];
+        return ans;
+
+    }
+    return ans;
+#else //INTER_PROP
+
+
+    switch (type){
+        case 'g' :                              //Good ol' regular propagator
+            switch (iK){
+                case 0:
+                    return GR(v);
+                case 1:
+                    return GK(v);
+                default:
+                    return 0.;
+            }
+
+        case 's':
+            switch (iK){
+                case 0:
+                    return SR(v);
+                case 1:
+                    return SK(v);
+                default:
+                    return 0.;
+            }
+
+        case 'k':
+            switch (iK){
+                case 0:
+                    return SR(v) + GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                case 1:
+                    return SK(v)
+                         + GR(v) * diffSE.valsmooth(0, v) * GK(v)
+                         + GR(v) * diffSE.valsmooth(1, v) * GA(v)
+                         + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                default:
+                    return 0.;
+            }
+
+        case 'e':
+            switch (iK){
+                case 0:
+                    return GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                case 1:
+                    return GR(v) * diffSE.valsmooth(0, v) * GK(v)
+                         + GR(v) * diffSE.valsmooth(1, v) * GA(v)
+                         + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                default:
+                    return 0.;
+            }
+        default:
+            return 0.;
+    }
+
+
+
+#endif //INTER_PROP
 }
 
-#endif
+#endif //REG
+
+
+
 
 #endif //KELDYSH_MFRG_PROPAGATOR_H

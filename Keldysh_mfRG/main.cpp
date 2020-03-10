@@ -32,7 +32,7 @@ template <typename Q> void derivative(State<Q>& dPsi, double Lambda, State<Q>& s
 template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, State<Q>& state);
 
 template <typename Q> void sopt(State<Q>& bare, double Lambda, State<Q>& state);
-void writePropagators(Propagator& free, Propagator& full);
+void writePropagators(Propagator& g);
 
 auto main() -> int {
 
@@ -84,30 +84,30 @@ auto main() -> int {
     MPI_Init(nullptr, nullptr);
 
 
-#ifndef SOPT // standard fRG flow
-    double t0 = get_time();
-    print("Start of flow", true);
-    flow();
-    print("Total execution time: ");
-    get_time(t0);
-
-#else // SOPT Code here:
-    SelfEnergy<comp> diffZero;
-
-    for(int i=0; i<nEVO; ++i) {
-        double Lambda = flow_grid[i];
-
-        State<comp> bare (Lambda);
-        for (auto j:odd_Keldysh) {
-            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*glb_U);
-        }
-
-        sopt(bare, Lambda, bare);
-
-        Propagator control = propag(Lambda, bare.selfenergy, diffZero, 'g');
-        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
-    }
-#endif
+//#ifndef SOPT // standard fRG flow
+//    double t0 = get_time();
+//    print("Start of flow", true);
+//    flow();
+//    print("Total execution time: ");
+//    get_time(t0);
+//
+//#else // SOPT Code here:
+//    SelfEnergy<comp> diffZero;
+//
+//    for(int i=0; i<nEVO; ++i) {
+//        double Lambda = flow_grid[i];
+//
+//        State<comp> bare (Lambda);
+//        for (auto j:odd_Keldysh) {
+//            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*glb_U);
+//        }
+//
+//        sopt(bare, Lambda, bare);
+//
+//        Propagator control = propag(Lambda, bare.selfenergy, diffZero, 'g');
+//        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
+//    }
+//#endif
 
     State<comp> sopt_state;
 
@@ -116,6 +116,10 @@ auto main() -> int {
 //    testBubbles(sopt_state);
 //    testSelfEnergy(sopt_state);
     test_selfEnergyComponents(sopt_state);
+
+    Propagator g(1.0, sopt_state.selfenergy, 'g');
+    writePropagators(g);
+
 
     MPI_Finalize();
 
@@ -128,10 +132,10 @@ template <typename Q>
 void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     /*Here I begin implementing Fabian's pseudocode*/
     //Line 1
-    Propagator S = propag(Lambda, state.selfenergy, state.selfenergy, 's');
+    Propagator S(Lambda, state.selfenergy, 's');
     print("S calculated", true);
     //Line 2
-    Propagator G = propag(Lambda, state.selfenergy, state.selfenergy, 'g');
+    Propagator G(Lambda, state.selfenergy, 'g');
     print("G calculated", true);
     //Line 3
     SelfEnergy<comp> Sigma_std;
@@ -140,8 +144,8 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     //Line 4
     dPsi.selfenergy = Sigma_std;
     //Line 6
-    Propagator extension = propag(Lambda, state.selfenergy, dPsi.selfenergy, 'e');\
-    Propagator dG = S + extension;
+    Propagator dG (Lambda, state.selfenergy, dPsi.selfenergy, 'k');
+
 
 
     print("diff bubble started", true);
@@ -320,8 +324,7 @@ void flow(){
     setInitialConditions(state);
 
     //Create objects to print at zero-th evolution step
-    SelfEnergy<comp> diffZero = SelfEnergy<comp>();
-    Propagator initial = propag(state.Lambda, state.selfenergy, diffZero, 's');
+    Propagator initial(state.Lambda, state.selfenergy, 's');
 
     if (world_rank == 0){
         write_hdf(FILE_NAME, 0, nEVO, state);
@@ -347,7 +350,7 @@ void flow(){
         double next_Lambda = flow_grid[i];
         //state.Lambda = next_Lambda;
 
-        Propagator control = propag(state.Lambda, state.selfenergy, diffZero, 's');
+        Propagator control(state.Lambda, state.selfenergy, 's');
 
 
         if (world_rank == 0){
@@ -376,7 +379,7 @@ template<typename Q>
 void sopt(State<Q>& Psi, double Lambda, State<Q> &state) {
 
     //Calculate a propagator given the SelfEnergy of the initial condition-state
-    Propagator g = propag(Lambda, state.selfenergy, state.selfenergy, 'g');
+    Propagator g = propag(Lambda, state.selfenergy, 'g');
     cout << "G calculated" << endl;
 
     //Bubbles are non-differentiated i.e. GG
@@ -433,13 +436,13 @@ void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
     my_file_propK.open(propK.str());
 
     for (int j = 0; j < ffreqs.size(); j++) {
-        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.sval(0, j).real() << " " <<  selfEnergy.sval(0, j).imag() << "\n";
-        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.sval(0, j).real() << " " << -selfEnergy.sval(0, j).imag() << "\n";
-        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.sval(1, j).real() << " " <<  selfEnergy.sval(1, j).imag() << "\n";
+        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.val(0, j).real() << " " <<  selfEnergy.val(0, j).imag() << "\n";
+        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.val(0, j).real() << " " << -selfEnergy.val(0, j).imag() << "\n";
+        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.val(1, j).real() << " " <<  selfEnergy.val(1, j).imag() << "\n";
 
-        my_file_propR << ffreqs[j] << " " << propagator.pval(0, j).real() << " " <<  propagator.pval(0, j).imag() << "\n";
-        my_file_propA << ffreqs[j] << " " << propagator.pval(0, j).real() << " " << -propagator.pval(0, j).imag() << "\n";
-        my_file_propK << ffreqs[j] << " " << propagator.pval(1, j).real() << " " <<  propagator.pval(1, j).imag() << "\n";
+        my_file_propR << ffreqs[j] << " " << propagator.valsmooth(0, ffreqs[j]).real() << " " <<  propagator.valsmooth(0, ffreqs[j]).imag() << "\n";
+        my_file_propA << ffreqs[j] << " " << propagator.valsmooth(0, ffreqs[j]).real() << " " << -propagator.valsmooth(0, ffreqs[j]).imag() << "\n";
+        my_file_propK << ffreqs[j] << " " << propagator.valsmooth(1, ffreqs[j]).real() << " " <<  propagator.valsmooth(1, ffreqs[j]).imag() << "\n";
     }
 
     my_file_sigmaR.close();
@@ -680,4 +683,24 @@ void writeOutFile(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfE
 
     cout << "Wrote out. ";
     get_time(t_write);
+}
+
+
+void writePropagators(Propagator& g){
+    ostringstream propR, propK;
+    ofstream my_file_propR, my_file_propK;
+
+    propR << "Output/propagatorR.dat";
+    propK << "Output/propagatorK.dat";
+
+    my_file_propR.open(propR.str());
+    my_file_propK.open(propK.str());
+
+    for (int j = 0; j < ffreqs.size(); j++) {
+        my_file_propR << ffreqs[j] << " " << g.valsmooth(0, ffreqs[j]).real() << " " << g.valsmooth(0, ffreqs[j]).imag() << "\n";
+        my_file_propK << ffreqs[j] << " " << g.valsmooth(1, ffreqs[j]).real() << " " << g.valsmooth(1, ffreqs[j]).imag() << "\n";
+    }
+
+    my_file_propR.close();
+    my_file_propK.close();
 }

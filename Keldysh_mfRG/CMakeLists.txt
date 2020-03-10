@@ -33,7 +33,6 @@ add_executable(Keldysh_mfRG
         OldFiles/save_hdf5.h
         Keldysh_symmetries.h
         OldFiles/susceptibility.h
-        free_propagator_functions.h
         OldFiles/a_bubble.h
         OldFiles/p_bubble.h
         OldFiles/t_bubble.h loop.h a_vertex.h p_vertex.h t_vertex.h
