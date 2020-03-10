@@ -1,5 +1,5 @@
-#ifndef WRITE_DATA2FILE_H
-#define WRITE_DATA2FILE_H
+#ifndef KELDYSH_MFRG_WRITE_DATA2FILE_H
+#define KELDYSH_MFRG_WRITE_DATA2FILE_H
 
 #include "H5Cpp.h"
 
@@ -42,4 +42,4 @@ void test_write_h5_rvecs() {
     write_h5_rvecs("test_write_h5_rvecs.h5", {"xvector", "yvector"}, {x, y});
 }
 
-#endif // WRITE_DATA2FILE_H
+#endif // KELDYSH_MFRG_WRITE_DATA2FILE_H

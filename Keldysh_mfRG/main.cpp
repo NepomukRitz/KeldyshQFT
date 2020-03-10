@@ -14,7 +14,9 @@
 #include "selfenergy.h"
 #include "hdf5_routines.h"
 #include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
+#include "solvers.h" // Fourier transforms in physics convention and SOPT using FFT
 #include "H5Cpp.h"
+
 
 #include "testFunctions.h"
 
@@ -59,15 +61,24 @@ auto main() -> int {
     setUpFlowGrid();
 
     //SOPT_FFT_SelfEnergy(SEout, vin, Gin, U);
-    SOPTbare_FFT_SelfEnergy(SEout2, 1., 1., 1000, 80.);
+    //SOPTbare_FFT_SelfEnergy(SEout2, 1., 1., 1000, 80.);
 
     //State<comp> test_state;
+    //test_state = test_function();
     //test_state.selfenergy = SEout2;
     //write_hdf("hdf5_test_file.h5",1., 1, test_state);
 
     cout << "hi" << endl;
+/*
+    State<comp> y_ini, y_fin;
+    double x_ini, x_fin;
+    x_ini = 0.; x_fin = 1.; // boundary values
+    const int N_ODE = 100; // number of steps in ODE solver
+    ODE_solver_Euler(y_fin,  x_fin, y_ini, x_ini, test_rhs_state, N_ODE);
+*/
 
-
+    test_ODE_solvers();
+    test_SCE_solver();
 
 
     MPI_Init(nullptr, nullptr);

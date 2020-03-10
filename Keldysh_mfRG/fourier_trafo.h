@@ -7,6 +7,14 @@
 
 using namespace std;
 
+State<comp> test_function () {
+    State<comp> test_state;
+    return test_state;
+}
+
+
+
+
 double Theta(double x) {
     // Heaviside step function
     if (x > 0) return 1.;
