@@ -15,21 +15,29 @@
  * a and b define the propagators in question: for R => 1
  *                                             for A =>-1*/
 auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
+#if REG==2
     if(w==0. && fabs(b-a)==0)
         return 0.;
     else
         return 1./(w+glb_i*glb_Gamma_REG*(b-a))
             *(log((gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*b)/(gamma_p-w/2.-glb_epsilon+glb_i*glb_Gamma_REG*a))
             + log((gamma_m+w/2.+glb_epsilon-glb_i*glb_Gamma_REG*a)/(gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*b)));
+#else
+    return 0.;
+#endif
 }
 
 auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
+#if REG==2
     if(w==2.*glb_epsilon && fabs(b-a)==0)
         return 0.;
     else
         return 1./(w-2*glb_epsilon+glb_i*glb_Gamma_REG*(a+b))
             *(log((gamma_p-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*b)/(gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*a))
             + log((gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*a)/(gamma_m+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*b)));
+#else
+    return 0.;
+#endif
 }
 
 /*At this point, we work with corrections to bubbles of the kinds KR, KA, AK, RK, KK  being neglected, due to faster decay to zero (O(1/w^2))*/

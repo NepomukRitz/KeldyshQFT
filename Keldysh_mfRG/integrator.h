@@ -9,6 +9,7 @@
 #include "include/paid.hpp"
 #include "data_structures.h"
 #include "parameters.h"
+#include "write_data2file.h"
 
 //void integrator(gsl_function& F, ) {
 
@@ -41,18 +42,31 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp;
 //This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
 template <typename Integrand> auto integrator_simpson(Integrand& integrand, double a, double b) -> comp {
     //Simpson
-    rvec simpson(nINT);
-    cvec integrand_values(nINT);
-    double dx = (b-a)/((double)(nINT-1));
+#ifdef INTER_PROP
+    int N = nINT;
+#else
+    /*First, determine which between nINT and the number of points required to have a step of 1/4 of the temperature is bigger.
+     *Then compare that number to a maximal N of 4001 (chosen arbitrarily) and return the smallest one of these. Calculate
+     * the step dx and fill the vectors accordingly. */
+    int N = min({ max({ nINT, (int)( (b-a)/(glb_T/4.) + 1.) }), 4001});
+#endif
+
+    double dx = (b-a)/((double)(N-1));
+    rvec simpson(N);
+    cvec integrand_values(N);
 
 //#pragma acc parallel loop private (i)
-    for (int i=0; i<nINT; ++i)
+    for (int i=0; i<N; ++i)
     {
         integrand_values[i] = integrand(a+i*dx);
         simpson[i] = 2. +2*(i%2);
     }
     simpson[0] = 1.;
-    simpson[nINT-1]=1.;
+    simpson[N-1]=1.;
+
+    //rvec v_int (nINT);
+    //for (int i=0; i<nINT; ++i) v_int[i] = a+i*dx;
+    //write_h5_rvecs("integr_wIP_nINT_1001.h5", {"ffreqs", "Integrand_real", "Integrand_imag"},{v_int, integrand_values.real(), integrand_values.imag()});
 
     return dx/3.*dotproduct(integrand_values, simpson);
 }

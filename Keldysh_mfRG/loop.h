@@ -71,23 +71,23 @@ public:
 //        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(7, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(7, 0.  , i_in, 1, vertex.spinvertex.avertex);
 //        Q resp12= vertex.spinvertex.irred.vval(7, i_in);
 
-//        Q aid1 = propagator.pvalsmooth(0, wp);
-//        Q aid2 = conj(propagator.pvalsmooth(0, wp));
-//        Q aid3 = propagator.pvalsmooth(1, wp);
+//        Q aid1 = propagator.value(0, wp);
+//        Q aid2 = conj(propagator.value(0, wp));
+//        Q aid3 = propagator.value(1, wp);
 //
 //           (vertex.densvertex.avertex.value(6, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
 //            vertex.densvertex.pvertex.value(6, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
 //            vertex.densvertex.tvertex.value(6, 0., wp, w, i_in, vertex.densvertex.avertex) +
-//            vertex.densvertex.irred.vval(6) ) * conj(propagator.pvalsmooth(0, wp)) +
+//            vertex.densvertex.irred.vval(6) ) * conj(propagator.value(0, wp)) +
 //
 //           (vertex.densvertex.avertex.value(7, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) +
 //            vertex.densvertex.pvertex.value(7, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) +
 //            vertex.densvertex.tvertex.value(7, 0., wp, w, i_in, vertex.densvertex.avertex) +
-//            vertex.densvertex.irred.vval(7) ) * propagator.pvalsmooth(1, wp) );
+//            vertex.densvertex.irred.vval(7) ) * propagator.value(1, wp) );
 
-        Q aid1 = propagator.pvalsmooth(0, vp);
-        Q aid2 = conj(propagator.pvalsmooth(0, vp));
-        Q aid3 = propagator.pvalsmooth(1, vp);
+        Q aid1 = propagator.valsmooth(0, vp);
+        Q aid2 = conj(propagator.valsmooth(0, vp));
+        Q aid3 = propagator.valsmooth(1, vp);
 
 #ifdef SOPT
         return (vertex.spinvertex.value(3, v, vp, v, i_in, 0, 'f')* aid1 +
@@ -149,9 +149,9 @@ public:
 //        Q resp11 = vertex.densvertex.tvertex.value(5, 0., wp, w, i_in, vertex.densvertex.avertex);                      //Should always be 0.
 //        Q resp12 = vertex.densvertex.irred.vval(5, i_in);                                                                      //Always 0.
 //
-//        Q aid1 = propagator.pvalsmooth(0, wp);
-//        Q aid2 = conj(propagator.pvalsmooth(0, wp));
-//        Q aid3 = propagator.pvalsmooth(1, wp);
+//        Q aid1 = propagator.value(0, wp);
+//        Q aid2 = conj(propagator.value(0, wp));
+//        Q aid3 = propagator.value(1, wp);
 //
 //        Q ans = -((resp1+resp2+resp3+resp4)*aid1 + (resp5+resp6+resp7+resp8)*aid2 + (resp9+resp10+resp11+resp12)*aid3);
 
@@ -170,9 +170,9 @@ public:
 //        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 1, vertex.spinvertex.avertex);
 //        Q resp12= vertex.spinvertex.irred.vval(5, i_in);
 
-        Q aid1 = propagator.pvalsmooth(0, vp);
-        Q aid2 = conj(propagator.pvalsmooth(0, vp));
-        Q aid3 = propagator.pvalsmooth(1, vp);
+        Q aid1 = propagator.valsmooth(0, vp);
+        Q aid2 = conj(propagator.valsmooth(0, vp));
+        Q aid3 = propagator.valsmooth(1, vp);
 
 #ifdef SOPT
         return (vertex.spinvertex.value(1, v, vp, v, i_in, 0, 'f')* aid1 +

@@ -26,8 +26,8 @@ const double pi = 3.1415926535897;
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define DIAG_CLASS 1
 
-//Defines the type of propagators to handle. 1 for always free, 2 for always dressed
-#define PROP_TYPE 2
+//Defines whether the values are interpolated from previously saved ones or from the self-energy
+#define INTER_PROP
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
@@ -58,8 +58,8 @@ const double glb_epsilon = glb_mu - glb_U/2.;   //NOLINT(cert-err58-cpp)
 const int nEVO = 14;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 51;
-const int nFER = 51;
+const int nBOS = 201;
+const int nFER = 201;
 
 /*Limits of the fRG flow*/
 const double Lambda_ini = 1.0;
@@ -100,12 +100,12 @@ const int nw3_nutp = nFER;
 
 /*Limits of the frequency grid vectors for the different kinds of frequencies (i.e. bosonic transfer frequency and fermionic frequencies*/
 #if GRID==2
-const double w_upper_b = 40.;
+const double w_upper_b = 20.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 40.;
+const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 #elif GRID==3
-const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
+const double W_scale = 5.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
 const double w_upper_b = 100.;
 const double w_lower_b = -w_upper_b;
 const double w_upper_f = 100.;
@@ -153,7 +153,7 @@ const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1.));
 const double inter_tol = 10e-8;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
+const int nINT = 501;//(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 /*Frequency grids for each channel*/
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
@@ -164,12 +164,12 @@ const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 //auto dw_t = (w_upper_b-w_lower_b)/((double)(nw_t-1));
 
 #if REG==2
-const int param_size = 14;
-const double parameter_list[param_size] = {GRID, REG, glb_Gamma_REG, DIAG_CLASS, PROP_TYPE, nLoops,
+const int param_size = 13;
+const double parameter_list[param_size] = {GRID, REG, glb_Gamma_REG, DIAG_CLASS, nLoops,
                                            glb_T, glb_mu, glb_U, glb_epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
 #else
-const int param_size = 13;
-const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, PROP_TYPE, nLoops,
+const int param_size = 12;
+const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, nLoops,
                                            glb_T, glb_mu, glb_U, glb_epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
 #endif
 
