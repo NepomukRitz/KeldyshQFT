@@ -7,14 +7,6 @@
 
 using namespace std;
 
-State<comp> test_function () {
-    State<comp> test_state;
-    return test_state;
-}
-
-
-
-
 double Theta(double x) {
     // Heaviside step function
     if (x > 0) return 1.;
@@ -304,8 +296,8 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const
         vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
     cvec GvR (nFFT), GvK (nFFT); // separate vectors for retarded and Keldysh component of input GF
     for (int i = 0; i < nFFT; ++i) {
-        GvR[i] = gR(Lambda, vFFT[i]); // retarded component
-        GvK[i] = gK(Lambda, vFFT[i]); // Keldysh component
+        GvR[i] = 0.;//gR(Lambda, vFFT[i]); // retarded component
+        GvK[i] = 0.;//gK(Lambda, vFFT[i]); // Keldysh component
     }
     /// ------------------- TRANSFORM INPUT --------------------- ///
     rvec tFFT (nFFT); // vector for real time
@@ -438,72 +430,11 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const
     }
 }
 
-
-void SOPT_FFT_SelfEnergy(SelfEnergy<comp>& SEout, rvec& v, SelfEnergy<comp>& Gin, const double Uin) {
-    /// ------------------- READ INPUT --------------------- ///
-    const int N = v.size(); // vector size, all vector sizes must be equal
-    // linear grid is required for Fourier trafo
-    const double diff = v[1] - v[0];
-    double temp_diff; // temporary difference
-    for (int i = 1; i < N; ++i) {
-        temp_diff = v[i] - v[i-1];
-        if(abs(temp_diff - diff) > 1e-14) {
-            cout << "Error in SOPT_SelfEnergy: Frequency grid must be linear." << endl;
-            break;
-        }
-    }
-    cvec GvR (N), GvK (N); // separate vectors for retarded and Keldysh component of input GF
-    for (int i = 0; i < N; ++i) {
-        GvR[i] = Gin.sval(0, i); // retarded component
-        GvK[i] = Gin.sval(1, i); // Keldysh component
-    }
-    /// ------------------- TRANSFORM INPUT --------------------- ///
-    rvec t (N); // vector for real time
-    cvec GtR (N), GtK (N), GtAc (N), GtK_(N); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
-    ft_v2t(t, GtR, v, GvR); // Fourier trafo, retarded component
-    ft_v2t(t, GtK, v, GvK); // Fourier trafo, Keldysh component
-    flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
-    flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
-    /// ------------------- SELF-ENERGY RETARDED COMPONENT --------------------- ///
-    // vectors for \Sigma(t) terms arising in SOPT for retarded component
-    cvec SEt_RKK (N), SEt_KAK (N), SEt_KKR (N), SEt_RAR (N);
-    // individual terms
-    SEt_RKK = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
-    SEt_KAK = GtK * GtK * GtR.conj(); // G^K(t) G^K(t) G^A(-t)
-    SEt_KKR = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
-    SEt_RAR = GtR * GtR * GtR.conj(); // G^R(t) G^R(t) G^A(-t)
-    // resulting retarded self-energy in time and frequency
-    cvec SEtR (N), SEvR (N);
-    SEtR = (SEt_RKK + SEt_KAK + SEt_KKR + SEt_RAR) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
-    ft_t2v(v, SEvR, t, SEtR); // Fourier trafo, retarded component
-    /// ------------------- SELF-ENERGY KELDYSH COMPONENT --------------------- ///
-    // vectors for \Sigma(t) terms arising in SOPT for Keldysh component
-    cvec SEt_RKA (N), SEt_RRK (N), SEt_AKR (N), SEt_AAK (N), SEt_KRA (N), SEt_KAR (N), SEt_KKK (N);
-    // individual terms
-    SEt_RKA = GtR * GtK * GtR.conj(); // G^R(t) G^K(t) G^A(-t)
-    SEt_RRK = GtR * GtR * GtK_; // G^R(t) G^R(t) G^K(-t)
-    SEt_AKR = GtAc.conj() * GtK * GtAc; // G^A(t) G^K(t) G^R(-t)
-    SEt_AAK = GtAc.conj() * GtAc.conj() * GtK_; // G^A(t) G^A(t) G^K(-t)
-    SEt_KRA = GtK * GtR * GtR.conj(); // G^K(t) G^R(t) G^A(-t)
-    SEt_KAR = GtK * GtAc.conj() * GtAc; // G^K(t) G^A(t) G^R(-t)
-    SEt_KKK = GtK * GtK * GtK_; // G^K(t) G^K(t) G^K(-t)
-    // resulting Keldysh self-energy in time and frequency
-    cvec SEtK (N), SEvK (N);
-    SEtK = (SEt_RKA + SEt_RRK + SEt_AKR + SEt_AAK + SEt_KRA + SEt_KAR + SEt_KKK) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
-    ft_t2v(v, SEvK, t, SEtK); // Fourier trafo, Keldysh component
-    /// ------------------- SELF-ENERGY OUTPUT --------------------- ///
-    for (int i = 0; i < N; ++i) { // fill results in output self-energy
-        SEout.setself(0, i, SEvR[i]); // retarded component
-        SEout.setself(1, i, SEvK[i]); // Keldysh component
-    }
-}
-
 // Comment for other function
 // Dyson eq.: G^K = G^R G^A ( \Sigma^K + \Delta^K)
 // equilibrium: \Sigma^K = (1+2n_F)(\Sigma^R-\Sigma^A), acc. for \Delta^K
 // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Delta)^R - (\Sigma+\Delta)^A ]
 //                 = (1-2n_F) G^R G^A (G_0^A - G_0^R) = (1+2n_F) (G^R-G^A)
-
 
 
 #endif // FOURIER_TRAFO_H

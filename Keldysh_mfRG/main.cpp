@@ -15,7 +15,7 @@
 #include "hdf5_routines.h"
 #include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
 #include "solvers.h" // Fourier transforms in physics convention and SOPT using FFT
-#include "H5Cpp.h"
+//#include "H5Cpp.h"
 
 
 #include "testFunctions.h"
@@ -36,46 +36,12 @@ void writePropagators(Propagator& g);
 
 auto main() -> int {
 
-
-    double V = 40.;
-    double T = 2.*pi*(double)(nSE)/V;
-    double beta = 100.;
-    double U = 1.;
-    double Delta = 1.; // hybridization strength
-
-    rvec vin (nSE); // allocate frequency grid
-    for(int i=0; i<nSE; ++i) // fill frequency grid
-        vin[i] = -V/2. + (V/((double)nSE))*i;
-    SelfEnergy<comp> Gin, SEout, SEout2;
-    comp temp1, temp2;
-    for (int i = 0; i < nSE; ++i) {
-        temp1 = 1./(vin[i] + glb_i*Delta);
-        temp2 = (1.-2./(exp(beta*vin[i])+1.)) * (temp1 - conj(temp1));
-        Gin.setself(0, i, temp1);
-        Gin.setself(1, i, temp2);
-    }
-
-
     setUpBosGrid();
     setUpFerGrid();
     setUpFlowGrid();
 
-    //SOPT_FFT_SelfEnergy(SEout, vin, Gin, U);
+    //SelfEnergy<comp> SEout;
     //SOPTbare_FFT_SelfEnergy(SEout2, 1., 1., 1000, 80.);
-
-    //State<comp> test_state;
-    //test_state = test_function();
-    //test_state.selfenergy = SEout2;
-    //write_hdf("hdf5_test_file.h5",1., 1, test_state);
-
-    cout << "hi" << endl;
-/*
-    State<comp> y_ini, y_fin;
-    double x_ini, x_fin;
-    x_ini = 0.; x_fin = 1.; // boundary values
-    const int N_ODE = 100; // number of steps in ODE solver
-    ODE_solver_Euler(y_fin,  x_fin, y_ini, x_ini, test_rhs_state, N_ODE);
-*/
 
     test_ODE_solvers();
     test_SCE_solver();

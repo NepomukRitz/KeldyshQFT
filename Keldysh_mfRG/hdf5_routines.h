@@ -1235,7 +1235,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
     }
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
-            if (state.selfenergy.sval(iK, iSE) != out.selfenergy.sval(iK, iSE)) {
+            if (state.selfenergy.val(iK, iSE) != out.selfenergy.val(iK, iSE)) {
                 cout << "Self-energy not equal, " << iK << ", " << iSE << endl;
             }
         }

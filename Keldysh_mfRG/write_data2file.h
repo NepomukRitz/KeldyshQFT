@@ -1,6 +1,8 @@
 #ifndef KELDYSH_MFRG_WRITE_DATA2FILE_H
 #define KELDYSH_MFRG_WRITE_DATA2FILE_H
 
+#include "data_structures.h"
+#include <fstream>
 #include "H5Cpp.h"
 
 // write vectors of real numbers into text (.dat) file

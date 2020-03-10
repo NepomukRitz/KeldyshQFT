@@ -41,7 +41,7 @@ add_executable(Keldysh_mfRG
         include/queue.hpp
         include/rule.hpp internal_symmetries.h
         bubbles.h diagrammatic_combinations.h
-        fourier_trafo.h solvers.h)
+        write_data2file fourier_trafo.h solvers.h)
 
 include_directories(/usr/include/mpi/)
 
