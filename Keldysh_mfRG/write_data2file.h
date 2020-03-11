@@ -20,7 +20,13 @@ void test_write_dat_rvecs() {
     write_dat_rvecs("test_write_dat_rvecs.dat", {x, y});
 }
 
-// write vectors of real numbers into hdf5 (.h5) file
+/**
+ * Write vectors of real numbers into hdf5 (.h5) file
+ * @param path          : Path to file in which the data is going to be stored
+ * @param key_list      : List of the keys, given in the format {"...", "..",...}
+ * @param rvec_list     : List of the vectors to be printed. Must be in the order of key_list
+ * Notice the vectors to be stored must be real!
+ */
 void write_h5_rvecs(string path, initializer_list<string> key_list, initializer_list<rvec> rvec_list) {
 	H5::H5File myfile(path, H5F_ACC_TRUNC); // create file at path
 	vector<string> keys; // store keys in a vector
