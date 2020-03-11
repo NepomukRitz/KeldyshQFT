@@ -65,7 +65,7 @@ double test_rhs_SCE_sqrt(const double& y, const double x) {
     return -x/(1.-y);
 }
 
-void test_SCE_solver() { // test SCE solvers in solving y=-x(1-y); solution is y(x)=1/2*(1\pm\sqrt{1+4x}), stable solution: y(x)=1/2*(1\-\sqrt{1+4x}), y(1) = 1/2*(1-\sqrt{5})
+void test_SCE_solver() { // test SCE solvers in solving y=-x/(1-y); solution is y(x)=1/2*(1\pm\sqrt{1+4x}), stable solution: y(x)=1/2*(1-\sqrt{1+4x}), y(1) = 1/2*(1-\sqrt{5})
     double y_ini, y_fin, x; // necessary variables
     y_ini = 0.; x = 1.; // initial y and fixed x
     const int N_SCE = 100; // number of steps in ODE solver
