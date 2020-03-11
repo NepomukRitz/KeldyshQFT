@@ -39,8 +39,8 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp;
 // scalar (reduction) operations e.g. integration, vector sums, products and such
 
 
-//This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a ()-operator
-template <typename Integrand> auto integrator_simpson(Integrand& integrand, double a, double b) -> comp {
+//This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a const ()-operator
+template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b) -> comp {
     //Simpson
 #ifdef INTER_PROP
     int N = nINT;
@@ -71,7 +71,7 @@ template <typename Integrand> auto integrator_simpson(Integrand& integrand, doub
     return dx/3.*dotproduct(integrand_values, simpson);
 }
 
-template <typename Integrand> auto integrator_riemann(Integrand& integrand, double a, double b) -> comp {
+template <typename Integrand> auto integrator_riemann(const Integrand& integrand, double a, double b) -> comp {
     rvec spacings(nINT);
     cvec integrand_values(nINT);
     double w0, w1, w2;
@@ -128,7 +128,7 @@ template <typename Integrand> auto integrator_PAID(Integrand& integrand, double 
 //    return result_real + 1.i*result_imag;
 }
 
-template <typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> comp {
+template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b) -> comp {
 #if GRID==2
     return integrator_simpson(integrand, a, b);
 #elif GRID==3

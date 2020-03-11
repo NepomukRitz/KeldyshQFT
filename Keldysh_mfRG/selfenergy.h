@@ -11,8 +11,8 @@ template <typename Q>
 class SelfEnergy{
     vec<Q> Sigma =  vec<Q> (2*nSE); // factor 2 for Keldysh components: Sigma^R, Sigma^K
 public:
-    auto val(int, int) -> Q;
-    auto valsmooth(int, double) -> Q;
+    auto val(int, int) const -> Q;
+    auto valsmooth(int, double) const -> Q;
     void setself(int, int, Q);
     void addself(int, int, Q);
     auto acc(int) ->Q;// access to the ith element of the vector "SIGMA"
@@ -53,7 +53,7 @@ public:
 
 
 /*****************************************FUNCTIONS FOR SELF ENERGY*****************************************************/
-template <typename Q> auto SelfEnergy<Q>::val(int iK, int i) -> Q{
+template <typename Q> auto SelfEnergy<Q>::val(int iK, int i) const -> Q{
     return Sigma[iK*nSE + i];
 }
 
@@ -69,7 +69,7 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q value) {
     else{cout << "Error: Tried to access value outside of self energy range" << endl;};
 }
 
-template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double w) -> Q{//smoothly interpolates for values between discrete frequency values of mesh
+template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double w) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
 
     if(fabs(w)>w_upper_b)
         //Returns U/2 for Retarded and 0. for Keldysh

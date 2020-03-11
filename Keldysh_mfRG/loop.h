@@ -18,8 +18,8 @@
  */
 template <typename Q, typename T >
 class IntegrandR{
-    Vertex<T>& vertex;
-    Propagator& propagator;
+    const Vertex<T>& vertex;
+    const Propagator& propagator;
     double v;
     int i_in;
 
@@ -30,7 +30,7 @@ public:
      * @param prop_in   : Propagator object for the integrand
      * @param v_in      : Frequency at which the integrand is evaluated
      * @param i_in_in   : Internal frequency index
-     */    IntegrandR(Vertex<T>& vertex_in, Propagator& prop_in, double v_in, int i_in_in)
+     */    IntegrandR(const Vertex<T>& vertex_in, const Propagator& prop_in, double v_in, int i_in_in)
         : vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in) {};
 
     /**
@@ -39,7 +39,7 @@ public:
      * @return      : Here we pick the explicit components that appear in the sum over Keldysh indices.
      *              When summing over spins, the formula for the vertex value is Gammma=(2V+V^). In SOPT, one only requires Gamma=V
      */
-    auto operator()(double vp) -> Q
+    auto operator()(double vp) const -> Q
     {
 //        Q resp1 = vertex.densvertex.avertex.value(3, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;   //Result should always be real
 //        Q resp2 = vertex.densvertex.pvertex.value(3, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;                              //Should always be 0
@@ -110,8 +110,8 @@ public:
  */
 template <typename Q, typename T >
 class IntegrandK{
-    Vertex<T>& vertex;
-    Propagator& propagator;
+    const Vertex<T>& vertex;
+    const Propagator& propagator;
     double v;
     int i_in;
 
@@ -123,7 +123,7 @@ public:
      * @param v_in      : Frequency at which the integrand is evaluated
      * @param i_in_in   : Internal frequency index
      */
-    IntegrandK(Vertex<T>& vertex_in, Propagator& prop_in, double v_in, int i_in_in)
+    IntegrandK(const Vertex<T>& vertex_in, const Propagator& prop_in, double v_in, int i_in_in)
             : vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in) {};
 
     /**
@@ -132,7 +132,7 @@ public:
      * @return      : Here we pick the explicit components that appear in the sum over Keldysh indices.
      *              When summing over spins, the formula for the vertex value is Gammma=(2V+V^). In SOPT, one only requires Gamma=V
      */
-    auto operator()(double vp) -> Q
+    auto operator()(double vp) const -> Q
     {
 //        Q resp1 = vertex.densvertex.avertex.value(1, wp-w, 0.5*(w+wp), 0.5*(w+wp), i_in, vertex.densvertex.tvertex) ;
 //        Q resp2 = vertex.densvertex.pvertex.value(1, wp+w, 0.5*(w-wp), 0.5*(w-wp), i_in) ;
@@ -193,7 +193,7 @@ public:
  * @param prop      : Propagator object for the calculation of the loop
  */
 template <typename Q>
-void loop(SelfEnergy<comp>& self, Vertex<fullvert<Q> >& fullvertex, Propagator& prop)
+void loop(SelfEnergy<comp>& self, const Vertex<fullvert<Q> >& fullvertex, const Propagator& prop)
 {
 #pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){

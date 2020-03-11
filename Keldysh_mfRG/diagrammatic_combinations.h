@@ -29,7 +29,7 @@
  * @return Q      : result of the corresponding combination of diag. classes evaluated at the above arguments
  */
 template <typename Q>
-auto left_same_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp, int i_in, char channel) -> Q
+auto left_same_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp, int i_in, char channel) -> Q
 {
     Q gamma0, K1, K2b;
     gamma0 = vertex.densvertex.irred.vval(i1, i_in);
@@ -79,7 +79,7 @@ auto left_same_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp,
  * @return Q      : result of the corresponding combination of diag. classes evaluated at the above arguments
  */
 template <typename Q>
-auto right_same_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, char channel) -> Q
+auto right_same_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, char channel) -> Q
 {
     Q gamma0, K1, K2; // TODO: check frequency
     gamma0 = vertex.densvertex.irred.vval(i3, i_in);
@@ -130,7 +130,7 @@ auto right_same_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp
  * @return Q      : result of the corresponding combination of diag. classes evaluated at the above arguments
  */
 template <typename Q>
-auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, double vpp, int i_in, char channel) -> Q {
+auto left_diff_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, double v, double vpp, int i_in, char channel) -> Q {
 
     Q K2, K3, gammaRb;
 #if DIAG_CLASS >= 2
@@ -182,7 +182,7 @@ auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, d
  * @return Q      : result of the corresponding combination of diag. classes evaluated at the above arguments
  */
 template <typename Q>
-auto right_diff_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vp, double vpp, int i_in, char channel) -> Q {
+auto right_diff_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, double vp, double vpp, int i_in, char channel) -> Q {
 
     Q K2b, K3, gammaRb;
 #if DIAG_CLASS >= 2
@@ -235,7 +235,7 @@ auto right_diff_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vp,
  * @return        : result of the corresponding combination of diag. classes evaluated at the above arguments
  */
 template <typename Q>
-auto left_same_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp, int i_in, int spin, char channel) -> Q
+auto left_same_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp, int i_in, int spin, char channel) -> Q
 {
     Q gamma0, K1, K2b;
     gamma0 = vertex.spinvertex.irred.vval(i1, i_in);
@@ -286,7 +286,7 @@ auto left_same_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp,
  * @return        : result of the corresponding combination of diag. classes evaluated at the above arguments
  */
 template <typename Q>
-auto right_same_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, int spin, char channel) -> Q
+auto right_same_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, int spin, char channel) -> Q
 {
     Q gamma0, K1, K2;
     gamma0 = vertex.spinvertex.irred.vval(i3, i_in);
@@ -338,7 +338,7 @@ auto right_same_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp
  * @return Q      : result of the corresponding combination of diag. classes evaluated at the above arguments
  */
 template <typename Q>
-auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, double vpp, int i_in, int spin, char channel) -> Q {
+auto left_diff_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, double v, double vpp, int i_in, int spin, char channel) -> Q {
 
     Q K2, K3, gammaRb;
 #if DIAG_CLASS >= 2
@@ -390,7 +390,7 @@ auto left_diff_bare (Vertex<fullvert<Q> >& vertex, int i1, double w, double v, d
  * @return Q      : result of the corresponding combination of diag. classes evaluated at the above arguments
  */
 template <typename Q>
-auto right_diff_bare (Vertex<fullvert<Q> >& vertex, int i3, double w, double vp, double vpp, int i_in, int spin, char channel) -> Q {
+auto right_diff_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, double vp, double vpp, int i_in, int spin, char channel) -> Q {
 
     Q K2b, K3, gammaRb;
 #if DIAG_CLASS >= 2

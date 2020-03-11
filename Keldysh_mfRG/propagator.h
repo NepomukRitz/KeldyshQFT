@@ -23,8 +23,8 @@ auto Fermi_distribution(double v) -> double
  */
 class Propagator {
     double Lambda;
-    SelfEnergy<comp>& SE;
-    SelfEnergy<comp>& diffSE;
+    const SelfEnergy<comp>& SE;
+    const SelfEnergy<comp>& diffSE;
     char type;
 #ifdef INTER_PROP
     cvec prop = cvec(2*nPROP);
@@ -46,7 +46,7 @@ public:
      * @param self_in   : SelfEnergy
      * @param type_in   : Type of propagator being handled
      */
-    Propagator(double Lambda_in, SelfEnergy<comp>& self_in, char type_in)
+    Propagator(double Lambda_in, const SelfEnergy<comp>& self_in, char type_in)
             :Lambda(Lambda_in), SE(self_in), diffSE(*new SelfEnergy<comp>()), type(type_in)
     {
 #ifdef INTER_PROP
@@ -65,7 +65,7 @@ public:
      * @param diffSelf_in   : Differential SelfEnergy
      * @param type_in       : Type of propagator being handled
      */
-    Propagator(double Lambda_in, SelfEnergy<comp>& self_in, SelfEnergy<comp>& diffSelf_in, char type_in)
+    Propagator(double Lambda_in, const SelfEnergy<comp>& self_in, const SelfEnergy<comp>& diffSelf_in, char type_in)
             :Lambda(Lambda_in), SE(self_in), diffSE(diffSelf_in), type(type_in)
     {
 #ifdef INTER_PROP
@@ -78,42 +78,42 @@ public:
 
     };
 
-    auto valsmooth(int, double) -> comp;
+    auto valsmooth(int, double) const -> comp;
 
-    auto GR(double v) -> comp;
-    auto GA(double v) -> comp;
-    auto GK(double v) -> comp;
-    auto SR(double v) -> comp;
-    auto SK(double v) -> comp;
+    auto GR(double v) const -> comp;
+    auto GA(double v) const -> comp;
+    auto GK(double v) const -> comp;
+    auto SR(double v) const -> comp;
+    auto SK(double v) const -> comp;
 };
 
 #if REG==1
 
 /*******PROPAGATOR FUNCTIONS***********/
-auto Propagator::GR(double v) -> comp
+auto Propagator::GR(double v) const -> comp
 {
     return 1./(v - glb_epsilon - SE.valsmooth(0, v));
 }
-auto Propagator::GA(double v) -> comp
+auto Propagator::GA(double v) const -> comp
 {
     return 1./(v - glb_epsilon - conj(SE.valsmooth(0,v)));
 }
-auto Propagator::GK(double v) -> comp
+auto Propagator::GK(double v) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
     return (1.-2.*Fermi_distribution(v))*(GR(v)-GA(v));
 }
 
-auto Propagator::SR(double v) -> comp
+auto Propagator::SR(double v) const -> comp
 {
     return 0.;
 }
-auto Propagator::SK(double v) -> comp
+auto Propagator::SK(double v) const -> comp
 {
     return 0.;
 }
 
-auto Propagator::valsmooth(int iK, double v) -> comp
+auto Propagator::valsmooth(int iK, double v) const -> comp
 {
     comp SR, SK;
     comp diffSelfEneR;
@@ -204,24 +204,24 @@ auto Propagator::valsmooth(int iK, double v) -> comp
 
 /*******PROPAGATOR FUNCTIONS***********/
 
-auto Propagator::GR(double v) -> comp
+auto Propagator::GR(double v) const -> comp
 {
     return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma_REG+Lambda) - SE.valsmooth(0, v));
 }
-auto Propagator::GA(double v) -> comp
+auto Propagator::GA(double v) const -> comp
 {
     return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma_REG+Lambda) - conj(SE.valsmooth(0, v)));
 }
-auto Propagator::GK(double v) -> comp
+auto Propagator::GK(double v) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
     return (1.-2.*Fermi_distribution(v))*(GR(v)-GA(v));
 }
-auto Propagator::SR(double v) -> comp
+auto Propagator::SR(double v) const -> comp
 {
     return -0.5*glb_i*GR(v)*GR(v);
 }
-auto Propagator::SK(double v) -> comp
+auto Propagator::SK(double v) const -> comp
 {
     comp retarded = -0.5*glb_i*GR(v)*GK(v);
     comp advanced = +0.5*glb_i*GK(v)*GA(v);
@@ -232,7 +232,7 @@ auto Propagator::SK(double v) -> comp
 
 
 
-auto Propagator::valsmooth(int iK, double v) -> comp
+auto Propagator::valsmooth(int iK, double v) const -> comp
 {
 #ifdef INTER_PROP
     comp ans;

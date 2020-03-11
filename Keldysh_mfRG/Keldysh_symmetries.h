@@ -8,7 +8,7 @@
 #include <array>
 
 /*Checks if a given index is in a list of indices passed by reference. The indices are checked in the 0...15 set*/
-auto isInList (int iK, vector<int>& list) -> bool
+auto isInList (int iK, const vector<int>& list) -> bool
 {
     bool resp = false;
     for(auto i : list)

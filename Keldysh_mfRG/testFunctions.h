@@ -14,12 +14,12 @@
  */
 template <typename Q, typename T >
 class IntegrandSigma{
-    Vertex<T>& vertex;
+    const Vertex<T>& vertex;
     int iK;
     double v;
     int i_in;
 
-    Propagator& propagator;
+    const Propagator& propagator;
     int prop_iK;
 
 public:
@@ -32,8 +32,8 @@ public:
      * @param i_in_in   : Internal index
      * @param prop_iK_in: Keldysh index for the Propagator to be read out
      */
-    IntegrandSigma(Vertex<T>& vertex_in, Propagator& prop_in, int iK_in, double v_in, int i_in_in, int prop_iK_in)
-            :         vertex(vertex_in), propagator(prop_in), iK(iK_in),     v(v_in), i_in(i_in_in), prop_iK(prop_iK_in) {};
+    IntegrandSigma(const Vertex<T>& vertex_in, const Propagator& prop_in, int iK_in, double v_in, int i_in_in, int prop_iK_in)
+            :               vertex(vertex_in),       propagator(prop_in), iK(iK_in),     v(v_in), i_in(i_in_in), prop_iK(prop_iK_in) {};
 
     /**
      * Call operator
@@ -41,7 +41,7 @@ public:
      * @return The value of the iK component of the vertex at (v, v', v) times the propagator component prop_iK at v'.
      *          If SOPT, the value of the vertex changes from (2V+V^) to just V.
      */
-    auto operator()(double vp) -> Q
+    auto operator()(double vp) const-> Q
     {
         Q aid, propTerm;
         if(prop_iK==-1) {
@@ -75,7 +75,7 @@ public:
  * @param vert_iK       : Vertex index singled out for the calculation
  */
 template <typename Q>
-void loop_test_individual(SelfEnergy<Q>& ans, Vertex<fullvert<Q> >& fullvertex, Propagator& prop, int prop_iK, int self_iK, int vert_iK)
+void loop_test_individual(SelfEnergy<Q>& ans, const Vertex<fullvert<Q> >& fullvertex, const Propagator& prop, int prop_iK, int self_iK, int vert_iK)
 {
 #pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE) {
@@ -102,7 +102,7 @@ void loop_test_individual(SelfEnergy<Q>& ans, Vertex<fullvert<Q> >& fullvertex, 
  * @param state : State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q>
-void sopt_state(State<Q>& Psi, double Lambda, State<Q> &state) {
+void sopt_state(State<Q>& Psi, double Lambda, const State<Q> &state) {
 
     //Calculate a propagator given the SelfEnergy of the initial condition-state
     Propagator g(Lambda, state.selfenergy, state.selfenergy, 'g');
@@ -137,7 +137,7 @@ void sopt_state(State<Q>& Psi, double Lambda, State<Q> &state) {
 
 }
 
-void writeOutSOPT(double Lambda, Propagator& propagator, SelfEnergy<comp>& selfEnergy, Vertex<fullvert<comp> >& vertex)
+void writeOutSOPT(double Lambda, const Propagator& propagator, const SelfEnergy<comp>& selfEnergy, const Vertex<fullvert<comp> >& vertex)
 {
     int i = fconv_Lambda(Lambda);
 

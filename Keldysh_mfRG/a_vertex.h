@@ -18,27 +18,27 @@ template <typename Q>
 class avert{
     /*Lists of the Keldysh components of K1a relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K1_T0_comp1 = {1, 7,  8, 14};  // components equal to     comp.1     (B_1^a for equal spins). In the vertex, comp1 will be iK=0
-    vector<int> list_K1_T3_comp1 = {2, 4, 11, 13};  // components equal to T_3 comp.1 (T_3 B_1^a for equal spins).
-    vector<int> list_K1_T0_comp3 = {3, 5, 10, 12};  // components equal to     comp.3     (C_1^a for equal spins). In the vertex, comp3 will be iK=1
+    const vector<int> list_K1_T0_comp1 = {1, 7,  8, 14};  // components equal to     comp.1     (B_1^a for equal spins). In the vertex, comp1 will be iK=0
+    const vector<int> list_K1_T3_comp1 = {2, 4, 11, 13};  // components equal to T_3 comp.1 (T_3 B_1^a for equal spins).
+    const vector<int> list_K1_T0_comp3 = {3, 5, 10, 12};  // components equal to     comp.3     (C_1^a for equal spins). In the vertex, comp3 will be iK=1
 
     /*Lists of the Keldysh components of K2a relating the respective component to the independent ones through the marked
     * trafo*/
-    vector<int> list_K2_T0_comp0    = { 0,  6};         // components in K2 equal to comp.0 of K2               In the vertex, comp0 will be iK=0
-    vector<int> list_K2_T0_comp1    = { 1,  7};         // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
-    vector<int> list_K2_T0_comp2    = { 2,  4};         // components in K2 equal to comp.2 of K2               In the vertex, comp2 will be iK=2
-    vector<int> list_K2_T0_comp3    = { 3,  5};         // components in K2 equal to comp.3 of K2               In the vertex, comp3 will be iK=3
-    vector<int> list_K2_T0_comp11   = {11, 13};         // components in K2 equal to comp.11 of K2              In the vertex, comp11 will be iK=4
-    vector<int> list_K2_TCT3_comp1  = { 8, 14};         // components in K2 equal to T_C T_3 comp.1 of K2
-    vector<int> list_K2_TCT3_comp3  = {10, 12};         // components in K2 equal to T_C T_3 comp.2 of K2
+    const vector<int> list_K2_T0_comp0    = { 0,  6};         // components in K2 equal to comp.0 of K2               In the vertex, comp0 will be iK=0
+    const vector<int> list_K2_T0_comp1    = { 1,  7};         // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
+    const vector<int> list_K2_T0_comp2    = { 2,  4};         // components in K2 equal to comp.2 of K2               In the vertex, comp2 will be iK=2
+    const vector<int> list_K2_T0_comp3    = { 3,  5};         // components in K2 equal to comp.3 of K2               In the vertex, comp3 will be iK=3
+    const vector<int> list_K2_T0_comp11   = {11, 13};         // components in K2 equal to comp.11 of K2              In the vertex, comp11 will be iK=4
+    const vector<int> list_K2_TCT3_comp1  = { 8, 14};         // components in K2 equal to T_C T_3 comp.1 of K2
+    const vector<int> list_K2_TCT3_comp3  = {10, 12};         // components in K2 equal to T_C T_3 comp.2 of K2
 
-    vector<int> list_K2b_T3_comp0   = {0,  9};          // components in K2b equal to T_3 comp.0 of K2
-    vector<int> list_K2b_T3_comp2   = {1,  8};          // components in K2b equal to T_3 comp.2 of K2
-    vector<int> list_K2b_T3_comp1   = {2, 11};          // components in K2b equal to T_3 comp.1 of K2
-    vector<int> list_K2b_T3_comp3   = {3, 10};          // components in K2b equal to T_3 comp.3 of K2
-    vector<int> list_K2b_TC_comp1   = {4, 13};          // components in K2b equal to T_C comp.1 of K2
-    vector<int> list_K2b_TC_comp3   = {5, 12};          // components in K2b equal to T_C comp.3 of K2
-    vector<int> list_K2b_T3_comp11  = {7, 14};          // components in K2b equal to T_3 comp.11 of K2
+    const vector<int> list_K2b_T3_comp0   = {0,  9};          // components in K2b equal to T_3 comp.0 of K2
+    const vector<int> list_K2b_T3_comp2   = {1,  8};          // components in K2b equal to T_3 comp.2 of K2
+    const vector<int> list_K2b_T3_comp1   = {2, 11};          // components in K2b equal to T_3 comp.1 of K2
+    const vector<int> list_K2b_T3_comp3   = {3, 10};          // components in K2b equal to T_3 comp.3 of K2
+    const vector<int> list_K2b_TC_comp1   = {4, 13};          // components in K2b equal to T_C comp.1 of K2
+    const vector<int> list_K2b_TC_comp3   = {5, 12};          // components in K2b equal to T_C comp.3 of K2
+    const vector<int> list_K2b_T3_comp11  = {7, 14};          // components in K2b equal to T_3 comp.11 of K2
 
 public:
 
@@ -48,30 +48,30 @@ public:
     * i.e. only complex numbers
     *
     * This function aims to be the sole function one needs to call to read the full vertex*/
-    auto value (int, double, double, double, int, char, tvert<Q>& tvertex) -> Q;
-    auto value (int, double, double, double, int, int, char, tvert<Q>& tvertex) -> Q;
+    auto value (int, double, double, double, int, char, const tvert<Q>& tvertex) const -> Q;
+    auto value (int, double, double, double, int, int, char, const tvert<Q>& tvertex) const -> Q;
 
 
     /*For when the channel is already known and the trafo to the specific channel has already been done*/
-    auto value (int, double, double, double, int, tvert<Q>& tvertex) -> Q;
-    auto value (int, double, double, double, int, int, tvert<Q>& tvertex) -> Q;
+    auto value (int, double, double, double, int, const tvert<Q>& tvertex) const-> Q;
+    auto value (int, double, double, double, int, int, const tvert<Q>& tvertex) const-> Q;
 
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    auto transfToA(double, double, double, char) -> tuple<double, double, double>;
+    auto transfToA(double, double, double, char) const -> tuple<double, double, double>;
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the a-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
      * i2 corresponds to the Keldysh index of the non-zero components of the differentiated bubble (i.e. i2 takes values
      * in a set of size 9*/
-    void indices_sum(vector<int>&, int i0, int i2);
+    void indices_sum(vector<int>&, int i0, int i2) const;
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >=0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_wa * n_in);
 
-    auto K1_acc (int) -> Q;
+    auto K1_acc (int) const -> Q;
 
     void K1_direct_set (int, Q);
 
@@ -82,26 +82,26 @@ public:
     void K1_addvert(int, int, int, Q);
 
     /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
-    auto K1_vval(int, int, int) -> Q;
+    auto K1_vval(int, int, int) const -> Q;
 
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
  * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-    auto K1_vvalsmooth(int, double, int, tvert<Q>&) -> Q;
-    auto K1_vvalsmooth(int, double, int, int, tvert<Q>&) -> Q;
+    auto K1_vvalsmooth(int, double, int, const tvert<Q>&) const -> Q;
+    auto K1_vvalsmooth(int, double, int, int, const tvert<Q>&) const -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
-    void T1_K1(double&, int&);
+    void T1_K1(double&, int&) const;
     /*Symmetry which interchanges the outgoing legs*/
-    void T2_K1(double&, int&);
+    void T2_K1(double&, int&) const;
     /*Symmetry which interchanges both incoming and outgoing legs*/
-    void T3_K1(double&, int&);
+    void T3_K1(double&, int&) const;
     /*Symmetry which interchanges both incoming with outgoing legs*/
-    void TC_K1(double&, int&);
+    void TC_K1(double&, int&) const;
 #endif
 #if DIAG_CLASS>=2
     vec<Q> K2 = vec<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
 
-    auto K2_acc (int) -> Q;
+    auto K2_acc (int) const -> Q;
 
     void K2_direct_set (int, Q);
 
@@ -112,31 +112,31 @@ public:
     void K2_addvert(int, int, int, int, Q);
 
     /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
-    auto K2_vval(int, int, int, int) -> Q;
+    auto K2_vval(int, int, int, int) const -> Q;
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
     *for given Keldysh and internal structure indices.*/
-    auto K2_vvalsmooth(int, double, double, int, tvert<Q>&) -> Q;
-    auto K2_vvalsmooth(int, double, double, int, int, tvert<Q>&) -> Q;
+    auto K2_vvalsmooth(int, double, double, int, const tvert<Q>&) const-> Q;
+    auto K2_vvalsmooth(int, double, double, int, int, const tvert<Q>&) const-> Q;
 
     /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
     *for given Keldysh and internal structure indices.*/
-    auto K2b_vvalsmooth(int, double, double, int, tvert<Q>&) -> Q;
-    auto K2b_vvalsmooth(int, double, double, int, int, tvert<Q>&) -> Q;
+    auto K2b_vvalsmooth(int, double, double, int, const tvert<Q>&) const -> Q;
+    auto K2b_vvalsmooth(int, double, double, int, int, const tvert<Q>&) const -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
-    void T1_K2(double&, double&, int&);
+    void T1_K2(double&, double&, int&) const;
     /*Symmetry which interchanges the outgoing legs*/
-    void T2_K2(double&, double&, int&);
+    void T2_K2(double&, double&, int&) const;
     /*Symmetry which interchanges both incoming and outgoing legs*/
-    void T3_K2(double&, double&, int&);
+    void T3_K2(double&, double&, int&) const;
     /*Symmetry which interchanges both incoming with outgoing legs*/
-    void TC_K2(double&, double&, int&);
+    void TC_K2(double&, double&, int&) const;
 #endif
 #if DIAG_CLASS >=3
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
 
-    auto K3_acc (int) -> Q;
+    auto K3_acc (int) const -> Q;
 
     void K3_direct_set (int, Q);
 
@@ -147,21 +147,21 @@ public:
     void K3_addvert(int, int, int, int, int, Q);
 
     /*Returns the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
-    auto K3_vval(int, int, int, int, int) -> Q;
+    auto K3_vval(int, int, int, int, int) const -> Q;
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
  * calculated by interpolation for given Keldysh and internal structure indices.*/
-    auto K3_vvalsmooth(int, double, double, double, int, tvert<Q>&) -> Q;
-    auto K3_vvalsmooth(int, double, double, double, int, int, tvert<Q>&) -> Q;
+    auto K3_vvalsmooth(int, double, double, double, int, const tvert<Q>&) const -> Q;
+    auto K3_vvalsmooth(int, double, double, double, int, int, const tvert<Q>&) const -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
-    void T1_K3(double&, double&, double&, int&);
+    void T1_K3(double&, double&, double&, int&) const;
     /*Symmetry which interchanges the outgoing legs*/
-    void T2_K3(double&, double&, double&, int&);
+    void T2_K3(double&, double&, double&, int&) const;
     /*Symmetry which interchanges both incoming and outgoing legs*/
-    void T3_K3(double&, double&, double&, int&);
+    void T3_K3(double&, double&, double&, int&) const;
     /*Symmetry which interchanges both incoming with outgoing legs*/
-    void TC_K3(double&, double&, double&, int&);
+    void TC_K3(double&, double&, double&, int&) const;
 #endif
 #endif
 
@@ -234,14 +234,14 @@ public:
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
-template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, const tvert<Q>& tvertex) const -> Q{
 
     double w_a=0., v1_a=0., v2_a=0.;
     tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
 
     return value(iK, w_a, v1_a, v2_a, i_in, tvertex);
 }
-template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, const tvert<Q>& tvertex) const -> Q{
 
     double w_a=0., v1_a=0., v2_a=0.;
     tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
@@ -249,7 +249,7 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
     return value(iK, w_a, v1_a, v2_a, i_in, spin, tvertex);
 }
 
-template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, const tvert<Q>& tvertex) const -> Q{
 
     Q k1, k2, k2b, k3;
 
@@ -266,7 +266,7 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
 
     return k1+k2+k2b+k3;
 }
-template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     Q k1, k2, k2b, k3;
 
@@ -285,7 +285,7 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
 }
 
 
-template<typename Q> auto avert<Q>::transfToA(double w, double v1, double v2, char channel) -> tuple<double, double, double> {
+template<typename Q> auto avert<Q>::transfToA(double w, double v1, double v2, char channel) const -> tuple<double, double, double>{
     double w_a=0., v1_a=0., v2_a=0.;
 
     switch(channel) {
@@ -314,7 +314,7 @@ template<typename Q> auto avert<Q>::transfToA(double w, double v1, double v2, ch
     return make_tuple(w_a, v1_a, v2_a);
 }
 
-template<typename Q> void avert<Q>::indices_sum(vector<int>& indices, int i0, int i2)
+template<typename Q> void avert<Q>::indices_sum(vector<int>& indices, int i0, int i2) const
 {
     vector<int> alphasi0(4), alphasi2(4);
     int *a1p = &alphasi0[0], *a2p = &alphasi0[1], *a1 = &alphasi0[2], *a2 = &alphasi0[3];
@@ -328,7 +328,7 @@ template<typename Q> void avert<Q>::indices_sum(vector<int>& indices, int i0, in
 }
 
 #if DIAG_CLASS>=0
-template <typename Q> auto avert<Q>::K1_acc (int i) -> Q{
+template <typename Q> auto avert<Q>::K1_acc (int i) const -> Q{
     if(i>=0 && i<K1.size()){
         return K1[i];}
     else{cout << "Error: Tried to access value outside of K1 vertex in a-channel" << endl;};
@@ -348,11 +348,11 @@ template <typename Q> void avert<Q>::K1_addvert(int iK, int i, int i_in, Q value
     K1[iK*nw1_wa*n_in + i*n_in + i_in] += value;
 }
 
-template <typename Q> auto avert<Q>::K1_vval (int iK, int i, int i_in) -> Q{
+template <typename Q> auto avert<Q>::K1_vval (int iK, int i, int i_in) const -> Q{
     return K1[iK*nw1_wa*n_in + i*n_in + i_in];
 }
 
-template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in, tvert<Q>& tvertex) -> Q{  // TODO: add other spin components
+template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
     int iK1;
     double pf1;      // prefactor: -1 for T_1, T_2, +1 else
@@ -381,7 +381,7 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
     interpolateK1(valueK1, pf1, iK1, w_a, i_in, *(this));
     return valueK1;
 }
-template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in, int spin, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     int iK1;
     double pf1;      // prefactor: -1 for T_1, T_2, +1 else
@@ -434,32 +434,32 @@ template <typename Q> auto avert<Q>::K1_vvalsmooth (int iK, double w_a, int i_in
     return valueK1;
 }
 
-template<typename Q> void avert<Q>::T1_K1(double& w_a, int& i_in)
+template<typename Q> void avert<Q>::T1_K1(double& w_a, int& i_in) const
 {
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     w_a *= -1.;
     internal_T1_K1_a(i_in);
 }
-template<typename Q> void avert<Q>::T2_K1(double& w_a, int& i_in)
+template<typename Q> void avert<Q>::T2_K1(double& w_a, int& i_in) const
 {
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     //w_a *= 1.;
     internal_T2_K1_a(i_in);
 }
-template<typename Q> void avert<Q>::T3_K1(double& w_a, int& i_in)
+template<typename Q> void avert<Q>::T3_K1(double& w_a, int& i_in) const
 {
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     w_a *= -1.;
     internal_T3_K1_a(i_in);
 }
-template<typename Q> void avert<Q>::TC_K1(double& w_a, int& i_in)
+template<typename Q> void avert<Q>::TC_K1(double& w_a, int& i_in) const
 {
     //w_a *= 1.;
     internal_TC_K1_a(i_in);
 }
 #endif
 #if DIAG_CLASS>=2
-template <typename Q> auto avert<Q>::K2_acc (int i) -> Q{
+template <typename Q> auto avert<Q>::K2_acc (int i) const -> Q{
     if(i>=0 && i<K2.size()){
         return K2[i];}
     else{cout << "Error: Tried to access value outside of K2 vertex in a-channel" << endl;};
@@ -479,11 +479,11 @@ template <typename Q> void avert<Q>::K2_addvert(int iK, int i, int j, int i_in, 
     K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in] += value;
 }
 
-template <typename Q> auto avert<Q>::K2_vval (int iK, int i, int j, int i_in) -> Q{
+template <typename Q> auto avert<Q>::K2_vval (int iK, int i, int j, int i_in) const -> Q{
     return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
 }
 
-template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v1_a, int i_in, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v1_a, int i_in, const tvert<Q>& tvertex)const -> Q{
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -533,7 +533,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
 
     return valueK2;
 }
-template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v1_a, int i_in, int spin, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v1_a, int i_in, int spin, const tvert<Q>& tvertex)const -> Q{
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -614,7 +614,7 @@ template <typename Q> auto avert<Q>::K2_vvalsmooth (int iK, double w_a, double v
 
     return valueK2;
 }
-template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a, int i_in, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -668,7 +668,7 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
 
     return valueK2;
 }
-template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a, int i_in, int spin, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v2_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -751,27 +751,27 @@ template <typename Q> auto avert<Q>::K2b_vvalsmooth(int iK, double w_a, double v
     return valueK2;
 }
 
-template<typename Q> void avert<Q>::T1_K2(double& w_a, double& v1_a, int& i_in)
+template<typename Q> void avert<Q>::T1_K2(double& w_a, double& v1_a, int& i_in) const
 {
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     w_a *= -1.;
     v1_a *= 1.;
     internal_T1_K2_a(i_in);
 }
-template<typename Q> void avert<Q>::T2_K2(double& w_a, double& v1_a, int& i_in)
+template<typename Q> void avert<Q>::T2_K2(double& w_a, double& v1_a, int& i_in) const
 {
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     //w_a *= 1.;
     //v1_a *= 1.;
     internal_T2_K2_a(i_in);
 }
-template<typename Q> void avert<Q>::T3_K2(double& w_a, double& v1_a, int& i_in)
+template<typename Q> void avert<Q>::T3_K2(double& w_a, double& v1_a, int& i_in) const
 {
     w_a *= -1.;
     //v1_a *= 1.;
     internal_T3_K2_a(i_in);
 }
-template<typename Q> void avert<Q>::TC_K2(double& w_a, double& v1_a, int& i_in)
+template<typename Q> void avert<Q>::TC_K2(double& w_a, double& v1_a, int& i_in) const
 {
     //w_a *= 1.;
     //v1_a *= 1.;;
@@ -779,7 +779,7 @@ template<typename Q> void avert<Q>::TC_K2(double& w_a, double& v1_a, int& i_in)
 }
 #endif
 #if DIAG_CLASS>=3
-template <typename Q> auto avert<Q>::K3_acc (int i) -> Q{
+template <typename Q> auto avert<Q>::K3_acc (int i) const -> Q{
     if(i>=0 && i<K3.size()){
     return K3[i];}
     else{cout << "Error: Tried to access value outside of K3 vertex in a-channel" << endl;};
@@ -799,11 +799,11 @@ template <typename Q> void avert<Q>::K3_addvert(int iK, int i, int j, int k, int
     K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] += value;
 }
 
-template <typename Q> auto avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in) -> Q{
+template <typename Q> auto avert<Q>::K3_vval (int iK, int i, int j, int k, int i_in) const -> Q{
     return K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];
 }
 
-template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
     int iK3;
     double pf3;
@@ -909,7 +909,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
 
     return valueK3;
 }
-template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, int spin, tvert<Q>& tvertex) -> Q{
+template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     int iK3;
     double pf3;
@@ -1090,7 +1090,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
     return valueK3;
 }
 
-template<typename Q> void avert<Q>::T1_K3(double& w_a, double& v1_a, double& v2_a, int& i_in)
+template<typename Q> void avert<Q>::T1_K3(double& w_a, double& v1_a, double& v2_a, int& i_in) const
 {
     double temp = *(&v1_a);
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
@@ -1099,7 +1099,7 @@ template<typename Q> void avert<Q>::T1_K3(double& w_a, double& v1_a, double& v2_
     v2_a = temp;                            //v2_a -> v1_a
     internal_T1_K3_a(i_in);
 }
-template<typename Q> void avert<Q>::T2_K3(double& w_a, double& v1_a, double& v2_a, int& i_in)
+template<typename Q> void avert<Q>::T2_K3(double& w_a, double& v1_a, double& v2_a, int& i_in) const
 {
     double trans_w_a, trans_v1_a, trans_v2_a;
 
@@ -1109,7 +1109,7 @@ template<typename Q> void avert<Q>::T2_K3(double& w_a, double& v1_a, double& v2_
     //v2_a *=1.;                      //v2_a -> v2_a
     internal_T2_K3_a(i_in);
 }
-template<typename Q> void avert<Q>::T3_K3(double& w_a, double& v1_a, double& v2_a, int& i_in)
+template<typename Q> void avert<Q>::T3_K3(double& w_a, double& v1_a, double& v2_a, int& i_in) const
 {
     double temp = *(&v1_a);
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
@@ -1118,7 +1118,7 @@ template<typename Q> void avert<Q>::T3_K3(double& w_a, double& v1_a, double& v2_
     v2_a = temp;                            //v2_a -> v1_a
     internal_T3_K3_a(i_in);
 }
-template<typename Q> void avert<Q>::TC_K3(double& w_a, double& v1_a, double& v2_a, int& i_in)
+template<typename Q> void avert<Q>::TC_K3(double& w_a, double& v1_a, double& v2_a, int& i_in) const
 {
     double temp = *(&v1_a);
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions

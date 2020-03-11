@@ -26,8 +26,8 @@
  * Class combining two propagators, either GG or GS+SG
  */
 class Bubble{
-    Propagator& g;
-    Propagator& s;
+    const Propagator& g;
+    const Propagator& s;
     bool dot;
 public:
 
@@ -37,7 +37,7 @@ public:
      * @param propagatorS : second propagator (standard or single-scale/differentiated, depending on "dot_in")
      * @param dot_in      : whether to compute standard (false) or differentiated (true) bubble
      */
-    Bubble(Propagator& propagatorG, Propagator& propagatorS, bool dot_in)
+    Bubble(const Propagator& propagatorG, const Propagator& propagatorS, bool dot_in)
         :g(propagatorG), s(propagatorS), dot(dot_in) {};
 
     /**
@@ -47,7 +47,7 @@ public:
      * @param v2    : frequency of second propagator
      * @return comp : value of the bubble evaluated at (iK, v1, v2)
      */
-    auto value(int iK, double v1, double v2) -> comp{
+    auto value(int iK, double v1, double v2) const -> comp{
         comp ans;
         if(dot){
             switch (iK) {
@@ -122,8 +122,8 @@ public:
 
 //Class created for debugging of the Bubbles
 class IntegrandBubble{
-    Propagator& g1;
-    Propagator& g2;
+    const Propagator& g1;
+    const Propagator& g2;
     bool diff;
     double w;
     int iK;
@@ -139,7 +139,7 @@ public:
      * @param iK_in     : Keldysh index to be taken
      * @param channel_in: Char indicating the channel in which the bubble should be calculated and which determines the frequency transformations
      */
-    IntegrandBubble(Propagator& g1_in, Propagator& g2_in, bool diff_in, double w_in, int iK_in, char channel_in)
+    IntegrandBubble(const Propagator& g1_in, const Propagator& g2_in, bool diff_in, double w_in, int iK_in, char channel_in)
             : g1(g1_in), g2(g2_in), diff(diff_in), w(w_in), iK(iK_in), channel(channel_in) {};
 
     /**
@@ -148,7 +148,7 @@ public:
      * @return The value g1(v1)*g2(v2), where v1 and v2 are calculated according to the channel. The components of the
      * propagators taken depend on the Keldysh component
      */
-    auto operator() (double vpp) -> comp {
+    auto operator() (double vpp) const -> comp {
         comp ans;
         double v1, v2;
         Bubble Pi(g1, g2, diff);
@@ -176,9 +176,9 @@ public:
  * Integrand classes for non-differentiated bubble contributing to diagrammatic class K1, K2, K3
  */
 template <typename Q> class Integrand_K1 {
-    Vertex<fullvert<Q> >& vertex1;
-    Vertex<fullvert<Q> >& vertex2;
-    Bubble& Pi;
+    const Vertex<fullvert<Q> >& vertex1;
+    const Vertex<fullvert<Q> >& vertex2;
+    const Bubble& Pi;
     int i0, i_in;
     char channel;
     double w;
@@ -194,8 +194,8 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K1(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in,    int i_in_in, char ch_in)
-        :                     vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),  i_in(i_in_in), channel(ch_in)
+    Integrand_K1(const Vertex<fullvert<Q> >& vertex1_in, const Vertex<fullvert<Q> >& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in,    int i_in_in, char ch_in)
+            :                       vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),                w(w_in),  i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -211,7 +211,7 @@ public:
      * @param vpp : frequency at which to evaluate integrand (to be integrated over)
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
-    auto operator() (double vpp) -> Q {
+    auto operator() (double vpp) const -> Q {
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
@@ -266,9 +266,9 @@ public:
 };
 template <typename Q> class Integrand_K2
 {
-    Vertex<fullvert<Q> >& vertex1;
-    Vertex<fullvert<Q> >& vertex2;
-    Bubble&Pi;
+    const Vertex<fullvert<Q> >& vertex1;
+    const Vertex<fullvert<Q> >& vertex2;
+    const Bubble&Pi;
     int i0, i_in;
     char channel, part;
     double w, v;
@@ -287,8 +287,8 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K2(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in,   Bubble& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in,     char ch_in, char pt_in)
-        :                     vertex1(vertex1_in),              vertex2(vertex2_in),       Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
+    Integrand_K2(const Vertex<fullvert<Q> >& vertex1_in, const Vertex<fullvert<Q> >& vertex2_in, const  Bubble& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in,     char ch_in, char pt_in)
+              :                     vertex1(vertex1_in),                    vertex2(vertex2_in),            Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
     {
         // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -304,7 +304,7 @@ public:
      * @param vpp : frequency at which to evaluate integrand (to be integrated over)
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
-    auto operator() (double vpp) -> Q {
+    auto operator() (double vpp) const -> Q {
         if (part != 'L') return 0.;  // right part of multi-loop contribution does not contribute to K2 class
         // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!!
 
@@ -360,9 +360,9 @@ public:
 };
 template <typename Q> class Integrand_K3
 {
-    Vertex<fullvert<Q> >& vertex1;
-    Vertex<fullvert<Q> >& vertex2;
-    Bubble& Pi;
+    const Vertex<fullvert<Q> >& vertex1;
+    const Vertex<fullvert<Q> >& vertex2;
+    const Bubble& Pi;
     int i0, i_in;
     char channel, part;
     double w, v, vp;
@@ -382,8 +382,8 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K3(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in, char pt_in)
-        :                     vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                 w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in), part(pt_in)
+    Integrand_K3(const Vertex<fullvert<Q> >& vertex1_in, const Vertex<fullvert<Q> >& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in, char pt_in)
+            :                       vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),                 w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in), part(pt_in)
     {
         i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
     };
@@ -393,7 +393,7 @@ public:
      * @param vpp : frequency at which to evaluate integrand (to be integrated over)
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
-    auto operator() (double vpp) -> Q {
+    auto operator() (double vpp) const -> Q {
         Q res, res_l_V, res_r_V,  res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
@@ -472,9 +472,9 @@ public:
  * Integrand classes for differentiated bubble contributing to diagrammatic class K1, K2, K3
  */
 template <typename Q> class Integrand_K1_diff {
-    Vertex<fullvert<Q> >& vertex1;
-    Vertex<fullvert<Q> >& vertex2;
-    Bubble& Pi;
+    const Vertex<fullvert<Q> >& vertex1;
+    const Vertex<fullvert<Q> >& vertex2;
+    const Bubble& Pi;
     int i0, i_in;
     char channel;
     double w;
@@ -490,11 +490,10 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K1_diff(Vertex<fullvert<Q> >& vertex1_in, Vertex<fullvert<Q> >& vertex2_in, Bubble& Pi_in, int i0_in, double w_in, int i_in_in, char ch_in)
-        :                          vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),               w(w_in), i_in(i_in_in), channel(ch_in)
+    Integrand_K1_diff(const Vertex<fullvert<Q> >& vertex1_in, const Vertex<fullvert<Q> >& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, int i_in_in, char ch_in)
+            :                            vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),               w(w_in), i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
-        assert(i0_in<2);
         switch (channel) {
             case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
             case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
@@ -508,7 +507,7 @@ public:
      * @param vpp : frequency at which to evaluate integrand (to be integrated over)
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
-    auto operator() (double vpp) -> Q {
+    auto operator() (double vpp) const -> Q {
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
@@ -561,9 +560,9 @@ public:
     }
 };
 template <typename Q> class Integrand_K2_diff {
-    Vertex<fullvert<Q> > &vertex1;
-    Vertex<fullvert<Q> > &vertex2;
-    Bubble& Pi;
+    const Vertex<fullvert<Q> > &vertex1;
+    const Vertex<fullvert<Q> > &vertex2;
+    const Bubble& Pi;
     int i0, i_in;
     char channel;
     double w, v;
@@ -580,11 +579,10 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K2_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in, int i_in_in, char ch_in)
-        :                          vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
+    Integrand_K2_diff(const Vertex<fullvert<Q> > &vertex1_in, const Vertex<fullvert<Q> > &vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, int i_in_in, char ch_in)
+            :                            vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
-        assert(i0_in<6);
         switch (channel){
             case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
             case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
@@ -598,7 +596,7 @@ public:
      * @param vpp : frequency at which to evaluate integrand (to be integrated over)
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
-    auto operator() (double vpp) -> Q {
+    auto operator() (double vpp) const -> Q {
 
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
@@ -652,9 +650,9 @@ public:
     }
 };
 template <typename Q> class Integrand_K3_diff {
-    Vertex<fullvert<Q> > &vertex1;
-    Vertex<fullvert<Q> > &vertex2;
-    Bubble&Pi;
+    const Vertex<fullvert<Q> > & vertex1;
+    const Vertex<fullvert<Q> > & vertex2;
+    const Bubble& Pi;
     int i0, i_in;
     char channel;
     double w, v, vp;
@@ -672,11 +670,10 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K3_diff(Vertex<fullvert<Q> > &vertex1_in, Vertex<fullvert<Q> > &vertex2_in, Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in)
-        :                          vertex1(vertex1_in),              vertex2(vertex2_in),     Pi(Pi_in),                      w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in)
+    Integrand_K3_diff(const Vertex<fullvert<Q> > &vertex1_in, const Vertex<fullvert<Q> > &vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in)
+            :                            vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),                      w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
-        assert(i0_in<7);
         i0 = non_zero_Keldysh_K3[i0_in];
     };
 
@@ -685,7 +682,7 @@ public:
      * @param vpp : frequency at which to evaluate integrand (to be integrated over)
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
-    auto operator() (double vpp) -> Q {
+    auto operator() (double vpp) const -> Q {
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
@@ -752,7 +749,7 @@ public:
  * @param channel   : Char indicating for which channel one is calculating the correction. Changes depending on the parametrization of the frequencies
  * @return          : Returns value of the correction
  */
-template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2, double gamma_m, double gamma_p, double w, int i0_in, int i_in, char channel) -> Q{
+template <typename Q> auto asymp_corrections_K1(const Vertex<fullvert<Q> >& vertex1, const Vertex<fullvert<Q> >& vertex2, double gamma_m, double gamma_p, double w, int i0_in, int i_in, char channel) -> Q{
 
     int i0;
     Q res=0.;
@@ -847,8 +844,8 @@ template <typename Q> auto asymp_corrections_K1(Vertex<fullvert<Q> >& vertex1, V
  *                  multi-loop contribution. Use '.' for first loop order.
  */
 template <typename Q>
-void bubble_function(Vertex<fullvert<Q> >& dgamma, Vertex<fullvert<Q> >& vertex1, Vertex<fullvert<Q> >& vertex2,
-                     Propagator& G, Propagator& S, char channel, bool diff, char part)
+void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& vertex1, const Vertex<fullvert<Q> >& vertex2,
+                     const Propagator& G, const Propagator& S, char channel, bool diff, char part)
 {
     Bubble Pi(G, S, diff); // initialize bubble object
 
