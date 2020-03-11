@@ -43,8 +43,8 @@ auto main() -> int {
     //SelfEnergy<comp> SEout;
     //SOPTbare_FFT_SelfEnergy(SEout2, 1., 1., 1000, 80.);
 
-    test_ODE_solvers();
-    test_SCE_solver();
+//    test_ODE_solvers();
+//    test_SCE_solver();
 
 
     MPI_Init(nullptr, nullptr);
@@ -70,7 +70,7 @@ auto main() -> int {
 //
 //        sopt(bare, Lambda, bare);
 //
-//        Propagator control = propag(Lambda, bare.selfenergy, diffZero, 'g');
+//        Propagator control(Lambda, bare.selfenergy, diffZero, 'g');
 //        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
 //    }
 //#endif
@@ -81,11 +81,15 @@ auto main() -> int {
 
 //    testBubbles(sopt_state);
 //    testSelfEnergy(sopt_state);
-    test_selfEnergyComponents(sopt_state);
+//    test_selfEnergyComponents(sopt_state);
 
-    Propagator g(1.0, sopt_state.selfenergy, 'g');
-    writePropagators(g);
+    State<comp> test_state;
+    setInitialConditions(test_state);
 
+    State<comp> final_state;
+
+    export_data(final_state, 0);
+    ODE_solver_Euler(final_state, Lambda_fin, test_state, Lambda_ini, test_rhs_state, nEVO+1);
 
     MPI_Finalize();
 
@@ -137,7 +141,7 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     get_time(t2);
 
 #ifdef SOPT
-    Propagator s = propag(Lambda, state.selfenergy, state.selfenergy, 's');
+    Propagator s(Lambda, state.selfenergy, state.selfenergy, 's');
     loop(dPsi.selfenergy, state.vertex, s);
 #endif
 
@@ -170,35 +174,35 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
 
 
         //Lines 18-33
-        if (nLoops >= 3) {
-            Vertex<fullvert<Q> > dGammaC;
-            Vertex<fullvert<Q> > dGammaCtb;
-            for (int i = 3; i <= nLoops; i++) {
-                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
-                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');
-
-                //This corresponds to Line 29 in the pseudo-code and is important for self-energy corrections.
-                dGammaCtb += dGammaC;
-
-                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 't', diff, 'C');
-
-                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'a', diff, 'L');
-                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'p', diff, 'L');
-                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 't', diff, 'L');
-
-                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'a', diff, 'R');
-                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'p', diff, 'R');
-                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 't', diff, 'R');
-
-                dGammaT = dGammaL + dGammaC + dGammaR;
-                dPsi.vertex += dGammaT;
-
-//        if(max_r(norm(dGammaT)/norm(dPsi.vertex)) < tol_vertex){ //TODO define a sensible norm for the vertices and a good way to implement this condition
-//            break;
+//        if (nLoops >= 3) {
+//            Vertex<fullvert<Q> > dGammaC;
+//            Vertex<fullvert<Q> > dGammaCtb;
+//            for (int i = 3; i <= nLoops; i++) {
+//                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
+//                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');
+//
+//                //This corresponds to Line 29 in the pseudo-code and is important for self-energy corrections.
+//                dGammaCtb += dGammaC;
+//
+//                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 't', diff, 'C');
+//
+//                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'a', diff, 'L');
+//                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'p', diff, 'L');
+//                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 't', diff, 'L');
+//
+//                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'a', diff, 'R');
+//                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'p', diff, 'R');
+//                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 't', diff, 'R');
+//
+//                dGammaT = dGammaL + dGammaC + dGammaR;
+//                dPsi.vertex += dGammaT;
+//
+////        if(max_r(norm(dGammaT)/norm(dPsi.vertex)) < tol_vertex){ //TODO define a sensible norm for the vertices and a good way to implement this condition
+////            break;
+////        }
+//                printf("%i-loops done. \n", i);
+//            }
 //        }
-                printf("%i-loops done. \n", i);
-            }
-        }
     }
 
 #endif
@@ -257,6 +261,10 @@ template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, Sta
 
 template <typename Q> void setInitialConditions (State<Q>& state){
     //Initial conditions
+    //Assign the starting value for Lambda
+    state.Lambda = Lambda_ini;
+
+    //Asign self energy to initial values (H
     for (int i = 0; i < nSE; ++i) {
         state.selfenergy.setself(0, i, glb_U/2.);
         state.selfenergy.setself(1, i, 0.);
