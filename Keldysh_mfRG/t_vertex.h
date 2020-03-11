@@ -179,6 +179,19 @@ public:
 #endif
 #endif
 
+    auto operator=(const tvert<Q>& vertex) -> tvert<Q>&{
+        if(this == &vertex) return *this;
+#if DIAG_CLASS>=1
+        this->K1 = vertex.K1;
+#endif
+#if DIAG_CLASS>=2
+        this->K2 = vertex.K2;
+#endif
+#if DIAG_CLASS>=3
+        this->K3 = vertex.K3;
+#endif
+        return *this;
+    }
     auto operator+(const tvert<Q>& vertex) -> tvert<Q>
     {
 #if DIAG_CLASS>=0
@@ -243,6 +256,19 @@ public:
         this->K3 -= vertex.K3;
 #endif
         return *this;
+    }
+    auto operator==(const tvert<Q>& vertex) -> bool {
+        bool k1=1, k2=1, k3=1;
+#if DIAG_CLASS>=1
+        k1 = (this->K1==vertex.K1);
+#endif
+#if DIAG_CLASS>=2
+        k2 = (this->K1==vertex.K2);
+#endif
+#if DIAG_CLASS>=3
+        k3 = (this->K3==vertex.K3);
+#endif
+        return k1*k2*k3;
     }
 
 };

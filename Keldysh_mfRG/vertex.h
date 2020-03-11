@@ -38,6 +38,12 @@ public:
     void setvert(int iK, int i_in, Q);
 
     /*Various operators for the irreducible vertex*/
+    auto operator= (const irreducible<Q>& vertex) -> irreducible<Q>&
+    {
+        if (this == &vertex) return *this;
+        this->bare = vertex.bare;
+        return *this;
+    }
     auto operator+ (const irreducible<Q>& vertex) -> irreducible<Q>
     {
         this->bare + vertex.bare;
@@ -62,6 +68,10 @@ public:
     {
         this->bare *=alpha;
         return *this;
+    }
+    auto operator==(const irreducible<Q>& vertex) -> irreducible<Q>
+    {
+        return (this->bare == vertex.bare);
     }
 };
 
@@ -91,6 +101,15 @@ public:
 
 
     /*Various operators for the fullvertex class*/
+    auto operator= (const fullvert<Q>& vertex1) -> fullvert<Q>& {
+        if(this == &vertex1) return *this;
+        this->irred = vertex1.irred;
+        this->avertex = vertex1.avertex;
+        this->pvertex = vertex1.pvertex;
+        this->tvertex = vertex1.tvertex;
+        return *this;
+    }
+
     auto operator+ (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   + vertex1.irred;
         this->pvertex + vertex1.pvertex;
@@ -126,6 +145,13 @@ public:
         this->avertex -= vertex1.avertex;
         return *this;
     }
+
+    auto operator==(const fullvert<Q>& vertex1) -> bool {
+        return (this->irred == vertex1.irred)
+             &&(this->avertex == vertex1.avertex)
+             &&(this->pvertex == vertex1.pvertex)
+             &&(this->tvertex == vertex1.tvertex);
+    }
 };
 
 
@@ -141,6 +167,12 @@ public:
     Vertex() = default;;
 
     /*Various operators for the Vertex class*/
+    auto operator= (const Vertex<T>& vertex) -> Vertex<T>&{
+        if(this==&vertex) return *this;
+        this->spinvertex = vertex.spinvertex;
+        this->densvertex = vertex.densvertex;
+        return *this;
+    }
     auto operator+ (const Vertex<T>& vertex1) -> Vertex<T>
     {
         this->densvertex + vertex1.densvertex;
@@ -172,6 +204,9 @@ public:
         return *this;
     }
 
+    auto operator == (const Vertex& vertex) -> bool{
+        return (this->spinvertex==vertex.spinvertex)&&(this->densvertex==vertex.densvertex);
+    }
 
 };
 

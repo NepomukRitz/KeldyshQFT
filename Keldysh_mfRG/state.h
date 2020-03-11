@@ -27,21 +27,31 @@ public:
     explicit State(double lambda_input) : Lambda(lambda_input) {};
 
 //operators containing State objects
-    auto operator+(const State& State1) -> State {
-        this->vertex + State1.vertex;
-        this->selfenergy + State1.selfenergy ;
+    auto operator=(const State& state1) -> State&{
+//        if(this == &state1) return *this;   //Handling of self-assignment
+        this->Lambda = state1.Lambda;
+        this->vertex = state1.vertex;
+        this->selfenergy = state1.selfenergy;
+#ifdef SUSC
+        this->sus = state1.sus;
+#endif
+        return *this;
+    }
+    auto operator+(const State& state) -> State {
+        this->vertex + state.vertex;
+        this->selfenergy + state.selfenergy ;
 
 #ifdef SUSC
-        this-> sus + State1.sus;
+        this-> sus + state.sus;
 #endif
         return (*this);
     }
-    auto operator+=(const State& State1) -> State{
-        this->vertex += State1.vertex;
-        this->selfenergy += State1.selfenergy;
+    auto operator+=(const State& state) -> State{
+        this->vertex += state.vertex;
+        this->selfenergy += state.selfenergy;
 
 #ifdef SUSC
-        this-> sus += State1.sus;
+        this-> sus += state.sus;
 #endif
         return (*this);
     }
@@ -61,15 +71,26 @@ public:
 #endif
         return (*this);
     }
-    auto operator-=(const State& State1) -> State{
-        this->vertex -= State1.vertex;
-        this->selfenergy -= State1.selfenergy;
+    auto operator-=(const State& state) -> State{
+        this->vertex -= state.vertex;
+        this->selfenergy -= state.selfenergy;
 #ifdef SUSC
-        this-> sus += State1.sus;
+        this-> sus += state.sus;
 #endif
         return (*this);
     }
-
+    auto operator == (const State& state) -> bool{
+#ifndef SUSC
+        return (this->Lambda==state.Lambda)
+             &&(this->vertex==state.vertex)
+             &&(this->selfenergy== state.selfenergy);
+#else
+        return (this->Lambda==state.Lambda)
+             &&(this->vertex==state.vertex)
+             &&(this->selfenergy== state.selfenergy)
+             &&(this->sus==state.sus);
+#endif
+    }
 };
 
 
