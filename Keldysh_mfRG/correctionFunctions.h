@@ -16,7 +16,7 @@
  *                                             for A =>-1*/
 auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
 #if REG==2
-    if(w==0. && fabs(b-a)==0)
+    if((w + glb_i * glb_Gamma_REG * (b - a))==0.)
         return 0.;
     else
         return 1./(w+glb_i*glb_Gamma_REG*(b-a))
@@ -29,7 +29,7 @@ auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, do
 
 auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
 #if REG==2
-    if(w==2.*glb_epsilon && fabs(b-a)==0)
+    if((w - 2. * glb_epsilon + glb_i * glb_Gamma_REG * (a + b))==0.)
         return 0.;
     else
         return 1./(w-2*glb_epsilon+glb_i*glb_Gamma_REG*(a+b))
