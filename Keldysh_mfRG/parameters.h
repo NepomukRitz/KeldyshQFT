@@ -28,7 +28,7 @@ const double pi = 3.1415926535897;
 #define DIAG_CLASS 0
 
 //Defines whether the values are interpolated from previously saved ones or from the self-energy
-//#define INTER_PROP
+#define INTER_PROP
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1

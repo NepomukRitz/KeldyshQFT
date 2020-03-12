@@ -56,7 +56,7 @@ auto main() -> int {
     setInitialConditions(sopt_state);
 
 //    testBubbles(sopt_state);
-    testSelfEnergy_and_Bubbles(sopt_state, 1.0);
+    testSelfEnergy_and_Bubbles(sopt_state, 0.0);
 //    test_selfEnergyComponents(sopt_state);
 
 #else
@@ -69,6 +69,27 @@ auto main() -> int {
     ODE_solver_Euler(final_state, Lambda_fin, test_state, Lambda_ini, test_rhs_state, nEVO+1);
 
 #endif
+//
+//    Propagator S(1.0, test_state.selfenergy, 's');
+//
+//    cvec SR(nFER);
+//    cvec SK(nFER);
+//    for(int i=0; i<nFER; i++){
+//        SR[i] = S.valsmooth(0, ffreqs[i]);
+//        SK[i] = S.valsmooth(1, ffreqs[i]);
+//    }
+//
+//    write_h5_rvecs("propagator.h5",{"v", "ReSR", "ImSR", "ReSK", "ImSK"},{ffreqs, SR.real(), SR.imag(), SK.real(), SK.imag()});
+//
+//    cvec actualSR(nFER);
+//    cvec actualSK(nFER);
+//
+//    for(int i=0; i<nFER; i++){
+//        actualSR[i] = S.SR(ffreqs[i]);
+//        actualSK[i] = S.SK(ffreqs[i]);
+//    }
+//
+//    write_h5_rvecs("actual_propagator.h5",{"v", "acRSR", "acISR", "acRSK", "acISK"},{ffreqs, actualSR.real(), actualSR.imag(), actualSK.real(), actualSK.imag()});
 
     MPI_Finalize();
 

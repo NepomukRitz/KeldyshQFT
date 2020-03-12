@@ -50,10 +50,43 @@ public:
             :Lambda(Lambda_in), SE(self_in), diffSE(*new SelfEnergy<comp>()), type(type_in)
     {
 #ifdef INTER_PROP
-        for(int i=0; i<nPROP; i++) {
-            double v = ffreqs[i];
-            prop[i] = GR(v);
-            prop[nPROP+i] = GK(v);
+        switch(type){
+            case 'g':
+                for(int i=0; i<nPROP; i++) {
+                    double v = ffreqs[i];
+                    prop[i] = GR(v);
+                    prop[nPROP+i] = GK(v);
+                }
+                break;
+            case 's':
+                for(int i=0; i<nPROP; i++) {
+                    double v = ffreqs[i];
+                    prop[i] = SR(v);
+                    prop[nPROP+i] = SK(v);
+                }
+                break;
+
+            case 'k':
+                for(int i=0; i<nPROP; i++) {
+                    double v = ffreqs[i];
+                    prop[i] = SR(v) + GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                    prop[nPROP+i] = SK(v)
+                                    + GR(v) * diffSE.valsmooth(0, v) * GK(v)
+                                    + GR(v) * diffSE.valsmooth(1, v) * GA(v)
+                                    + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                }
+                break;
+
+            case 'e':
+                for(int i=0; i<nPROP; i++) {
+                    double v = ffreqs[i];
+                    prop[i] = GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                    prop[nPROP+i] = GR(v) * diffSE.valsmooth(0, v) * GK(v)
+                                  + GR(v) * diffSE.valsmooth(1, v) * GA(v)
+                                  + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                }
+                break;
+            default: ;
         }
 #endif  //INTER_PROP
     }
@@ -69,11 +102,45 @@ public:
             :Lambda(Lambda_in), SE(self_in), diffSE(diffSelf_in), type(type_in)
     {
 #ifdef INTER_PROP
-        for(int i=0; i<nPROP; i++) {
-            double v = ffreqs[i];
-            prop[i] = GR(v);
-            prop[nPROP+i] = GK(v);
+        switch(type){
+            case 'g':
+                for(int i=0; i<nPROP; i++) {
+                    double v = ffreqs[i];
+                    prop[i] = GR(v);
+                    prop[nPROP+i] = GK(v);
+                }
+                break;
+            case 's':
+                for(int i=0; i<nPROP; i++) {
+                    double v = ffreqs[i];
+                    prop[i] = SR(v);
+                    prop[nPROP+i] = SK(v);
+                }
+                break;
+
+            case 'k':
+                for(int i=0; i<nPROP; i++) {
+                    double v = ffreqs[i];
+                    prop[i] = SR(v) + GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                    prop[nPROP+i] = SK(v)
+                                    + GR(v) * diffSE.valsmooth(0, v) * GK(v)
+                                    + GR(v) * diffSE.valsmooth(1, v) * GA(v)
+                                    + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                }
+                break;
+
+            case 'e':
+                for(int i=0; i<nPROP; i++) {
+                    double v = ffreqs[i];
+                    prop[i] = GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                    prop[nPROP+i] = GR(v) * diffSE.valsmooth(0, v) * GK(v)
+                                    + GR(v) * diffSE.valsmooth(1, v) * GA(v)
+                                    + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                }
+                break;
+            default: ;
         }
+
 #endif  //INTER_PROP
 
     };
