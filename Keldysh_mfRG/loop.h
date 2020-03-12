@@ -30,7 +30,8 @@ public:
      * @param prop_in   : Propagator object for the integrand
      * @param v_in      : Frequency at which the integrand is evaluated
      * @param i_in_in   : Internal frequency index
-     */    IntegrandR(const Vertex<T>& vertex_in, const Propagator& prop_in, double v_in, int i_in_in)
+     */
+    IntegrandR(const Vertex<T>& vertex_in, const Propagator& prop_in, double v_in, int i_in_in)
         : vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in) {};
 
     /**
@@ -89,15 +90,15 @@ public:
         Q aid2 = conj(propagator.valsmooth(0, vp));
         Q aid3 = propagator.valsmooth(1, vp);
 
-#ifdef SOPT
+#ifdef FLOW
+        return (( 2.* vertex.spinvertex.value(3, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(3, v, vp, v, i_in, 1, 'f') ) * aid1 +
+                ( 2.* vertex.spinvertex.value(6, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(6, v, vp, v, i_in, 1, 'f') ) * aid2 +
+                ( 2.* vertex.spinvertex.value(7, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(7, v, vp, v, i_in, 1, 'f') ) * aid3 );
+#else
         return (vertex.spinvertex.value(3, v, vp, v, i_in, 0, 'f')* aid1 +
                 vertex.spinvertex.value(6, v, vp, v, i_in, 0, 'f')* aid2 +
                 vertex.spinvertex.value(7, v, vp, v, i_in, 0, 'f')* aid3 );
 #endif
-
-        return (( 2.* vertex.spinvertex.value(3, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(3, v, vp, v, i_in, 1, 'f') ) * aid1 +
-                ( 2.* vertex.spinvertex.value(6, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(6, v, vp, v, i_in, 1, 'f') ) * aid2 +
-                ( 2.* vertex.spinvertex.value(7, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(7, v, vp, v, i_in, 1, 'f') ) * aid3 );
 
     }
 };
@@ -174,14 +175,15 @@ public:
         Q aid2 = conj(propagator.valsmooth(0, vp));
         Q aid3 = propagator.valsmooth(1, vp);
 
-#ifdef SOPT
+#ifdef FLOW
+        return (( 2.* vertex.spinvertex.value(1, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(1, v, vp, v, i_in, 1, 'f') ) * aid1 +
+                ( 2.* vertex.spinvertex.value(4, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(4, v, vp, v, i_in, 1, 'f') ) * aid2 +
+                ( 2.* vertex.spinvertex.value(5, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(5, v, vp, v, i_in, 1, 'f') ) * aid3 );
+#else
         return (vertex.spinvertex.value(1, v, vp, v, i_in, 0, 'f')* aid1 +
                 vertex.spinvertex.value(4, v, vp, v, i_in, 0, 'f')* aid2 +
                 vertex.spinvertex.value(5, v, vp, v, i_in, 0, 'f')* aid3 );
 #endif
-        return (( 2.* vertex.spinvertex.value(1, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(1, v, vp, v, i_in, 1, 'f') ) * aid1 +
-                ( 2.* vertex.spinvertex.value(4, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(4, v, vp, v, i_in, 1, 'f') ) * aid2 +
-                ( 2.* vertex.spinvertex.value(5, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(5, v, vp, v, i_in, 1, 'f') ) * aid3 );
     }
 };
 
@@ -215,8 +217,8 @@ void loop(SelfEnergy<comp>& self, const Vertex<fullvert<Q> >& fullvertex, const 
         comp integratedK = -1./(2.*pi*glb_i)*integrator(integrandK, w_lower_f-fabs(v), w_upper_f+fabs(v));
 
         //The results are emplaced in the right place of the answer object.
-        self.setself(0, i, integratedR);
-        self.setself(1, i, integratedK);
+        self.addself(0, i, integratedR);
+        self.addself(1, i, integratedK);
     }
 }
 

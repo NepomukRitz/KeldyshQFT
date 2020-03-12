@@ -24,10 +24,11 @@ const double pi = 3.1415926535897;
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+//For a SOPT calculation, set this to 0
+#define DIAG_CLASS 0
 
 //Defines whether the values are interpolated from previously saved ones or from the self-energy
-#define INTER_PROP
+//#define INTER_PROP
 
 /*Include the following line if calculations should include susceptibility. Otherwise, comment out*/
 //#define SUSC 1
@@ -38,8 +39,8 @@ const double pi = 3.1415926535897;
 const int nLoops = 1;
 #endif
 
-//Computation is in Second Order Perturbation Theory
-//#define SOPT
+//Computation is flowing or not (determines the value of the vertex). Define FLOW for flow and comment out for static calculation
+#define FLOW
 
 /*Imaginary unit*/
 const comp glb_i (0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;

@@ -40,8 +40,8 @@ auto main() -> int {
     setUpFerGrid();
     setUpFlowGrid();
 
-    //SelfEnergy<comp> SEout;
-    //SOPTbare_FFT_SelfEnergy(SEout2, 1., 1., 1000, 80.);
+//    SelfEnergy<comp> SEout;
+//    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);
 
 //    test_ODE_solvers();
 //    test_SCE_solver();
@@ -50,46 +50,25 @@ auto main() -> int {
     MPI_Init(nullptr, nullptr);
 
 
-//#ifndef SOPT // standard fRG flow
-//    double t0 = get_time();
-//    print("Start of flow", true);
-//    flow();
-//    print("Total execution time: ");
-//    get_time(t0);
-//
-//#else // SOPT Code here:
-//    SelfEnergy<comp> diffZero;
-//
-//    for(int i=0; i<nEVO; ++i) {
-//        double Lambda = flow_grid[i];
-//
-//        State<comp> bare (Lambda);
-//        for (auto j:odd_Keldysh) {
-//            bare.vertex.spinvertex.irred.setvert(j, 0, 0.5*glb_U);
-//        }
-//
-//        sopt(bare, Lambda, bare);
-//
-//        Propagator control(Lambda, bare.selfenergy, diffZero, 'g');
-//        writeOutSOPT(Lambda, control, bare.selfenergy, bare.vertex);
-//    }
-//#endif
+#ifndef FLOW
 
     State<comp> sopt_state;
-
     setInitialConditions(sopt_state);
 
 //    testBubbles(sopt_state);
-//    testSelfEnergy(sopt_state);
+    testSelfEnergy_and_Bubbles(sopt_state, 1.0);
 //    test_selfEnergyComponents(sopt_state);
 
+#else
     State<comp> test_state;
     setInitialConditions(test_state);
 
     State<comp> final_state;
 
-    export_data(final_state, 0);
+    export_data(test_state, 0);
     ODE_solver_Euler(final_state, Lambda_fin, test_state, Lambda_ini, test_rhs_state, nEVO+1);
+
+#endif
 
     MPI_Finalize();
 
@@ -222,41 +201,6 @@ void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
     dPsi *= dL;
     print("dPsi multiplied. ");
     get_time(t_multiply);
-}
-
-template <typename Q> void RungeKutta4thOrder(State<Q>& dPsi, double Lambda, State<Q>& state)
-{
-    State<Q> k1(Lambda);
-    State<Q> k2(Lambda);
-    State<Q> k3(Lambda);
-    State<Q> k4(Lambda);
-
-    derivative(k1, Lambda, state);
-
-    k1 *= dL/2.;
-    k1 += state;
-
-    derivative(k2, Lambda + dL/2., k1);
-
-    k2 *= dL/2.;
-    k2 += state;
-
-    derivative(k3, Lambda + dL/2., k2);
-
-    k3 *= dL;
-    k3 += state;
-
-    derivative(k4, Lambda + dL, k3);
-
-    k1 -= state;
-    k1 *= 2./dL;
-    k2 -= state;
-    k2 *= 2./dL;
-    k3 -= state;
-    k3 *= 1./dL;
-
-    dPsi += (k1 + k2*2. + k3*2. + k4)*(1./6.);
-
 }
 
 template <typename Q> void setInitialConditions (State<Q>& state){
