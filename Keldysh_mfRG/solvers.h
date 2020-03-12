@@ -37,16 +37,18 @@ void export_data(State<comp>& state, int iter){
     cvec SER(nBOS);
     cvec SEK(nBOS);
     for (int j = 0; j < nBOS; j++) {
-        PiaOE[iter] = 4. * state.vertex.spinvertex.avertex.K1_vval(0, iter, 0);
-        PiaOO[iter] = 4. * state.vertex.spinvertex.avertex.K1_vval(1, iter, 0);
-        SER[iter] = state.selfenergy.val(0, iter);
-        SEK[iter] = state.selfenergy.val(1, iter);
+        PiaOE[j] = 4.*state.vertex.spinvertex.avertex.K1_vval(0, j, 0);
+        PiaOO[j] = 4.*state.vertex.spinvertex.avertex.K1_vval(1, j, 0);
+        SER[j] = state.selfenergy.val(0, j);
+        SEK[j] = state.selfenergy.val(1, j);
     }
 
     //Write out to file with name "name"
     write_h5_rvecs(name, {"w", ReSER, ImSER, ReSEK, ImSEK, RePiaOE, ImPiaOE, RePiaOO, ImPiaOO},
                    {bfreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(), PiaOE.real(), PiaOE.imag(),
                     PiaOO.real(), PiaOO.imag()});
+    cout << "Lambda at this iteration: " << flow_grid[iter]<< "\n";
+    cout << "Printed in hdf5 the step " << iter << "\n";
 }
 
 template <typename T>
@@ -70,10 +72,10 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     for (int i=0; i<N_ODE; ++i) {
         x_run += dx; // update x
         T y1 = rhs(y_run, x_run) * dx;
-        T y2 = rhs(y_run + y1/2., x_run + dx/2.) * dx;
-        T y3 = rhs(y_run + y2/2., x_run + dx/2.) * dx;
+        T y2 = rhs(y_run + y1*0.5, x_run + dx/2.) * dx;
+        T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
         T y4 = rhs(y_run + y3, x_run + dx) * dx;
-        y_run += (y1 + 2.*y2 + 2.*y3 + y4) / 6.; // update y
+        y_run += (y1 + y2*2. + y3*2. + y4) *(1./ 6.); // update y
         export_data(y_run, i+1);
     }
     y_fin = y_run; // final y value
