@@ -7,6 +7,8 @@
 #ifndef KELDYSH_MFRG_TESTFUNCTIONS_H
 #define KELDYSH_MFRG_TESTFUNCTIONS_H
 
+#include "write_data2file.h"
+
 /**
  * Integrand for the SelfEnergy when terms are calculated individually
  * @tparam Q : Type of data, usually comp
@@ -54,10 +56,10 @@ public:
             propTerm = propagator.valsmooth(1, vp);
         }
 
-#ifdef SOPT
-        Q vertexTerm = vertex.spinvertex.value(iK, v, vp, v, i_in, 0, 'f');
-#else
+#ifdef FLOW
         Q vertexTerm = 2.*vertex.spinvertex.value(iK, v, vp, v, i_in, 0, 'f')+ vertex.spinvertex.value(iK, v, vp, v, i_in, 1, 'f');
+#else
+        Q vertexTerm = vertex.spinvertex.value(iK, v, vp, v, i_in, 0, 'f');
 #endif
 
         return vertexTerm*propTerm;
@@ -382,38 +384,42 @@ void testBubbles(State<comp>& state){
  * Function to test the loop function and the calculation of the SelfEnergy
  * @param state : State initialized with initial conditions
  */
-void testSelfEnergy(State<comp>& state){
+void testSelfEnergy_and_Bubbles(State<comp>& state, double Lambda){
 
-    SelfEnergy<comp> zero;
-    Propagator g1(1.0, state.selfenergy, zero, 'g');
+    Propagator g1(Lambda, state.selfenergy, 'g');
 
     //Calculate the vertex
-    sopt_state(state, 1.0, state);
-
-    SelfEnergy<comp> selfie;
+    sopt_state(state, Lambda, state);
 
     //Calculate the SelfEnergy in SOPT
-    loop(selfie, state.vertex, g1);
+    loop(state.selfenergy, state.vertex, g1);
 
-
-    //Print results in .dat format
-    ostringstream selfEnergyR_cxx;
-    ostringstream selfEnergyK_cxx;
-    selfEnergyR_cxx << "Output/SelfEnergyR_cxx.dat";
-    selfEnergyK_cxx << "Output/SelfEnergyK_cxx.dat";
-    ofstream my_file_SelfEnergyR_cxx;
-    ofstream my_file_SelfEnergyK_cxx;
-    my_file_SelfEnergyR_cxx.open(selfEnergyR_cxx.str());
-    my_file_SelfEnergyK_cxx.open(selfEnergyK_cxx.str());
-
-
+    //Print results in .g5 format
+    cvec SER(nFER);
+    cvec SEK(nFER);
+    cvec PiaOO(nBOS);
+    cvec PiaOE(nBOS);
     for(int i = 0; i<nFER; i++){
-        my_file_SelfEnergyR_cxx<< ffreqs[i] << " " << selfie.val(0,i).real() << " " << selfie.val(0,i).imag() << "\n";
-        my_file_SelfEnergyK_cxx<< ffreqs[i] << " " << selfie.val(1,i).real() << " " << selfie.val(1,i).imag() << "\n";
+        SER[i] = state.selfenergy.val(0, i);
+        SEK[i] = state.selfenergy.val(1, i);
+    }
+    for(int i = 0; i<nBOS; i++){
+        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+
+        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
     }
 
-    my_file_SelfEnergyR_cxx.close();
-    my_file_SelfEnergyK_cxx.close();
+    write_h5_rvecs("SOPT_SE.h5", {"v", "Bench_ReSER", "Bench_ImSER", "Bench_ReSEK", "Bench_ImSEK",
+                                  "Bench_RePiaOO", "Bench_ImPiaOO", "Bench_RePiaOE", "Bench_ImPiaOE"},
+                                 {ffreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(),
+                                  PiaOO.real(), PiaOO.imag(), PiaOE.real(), PiaOE.imag()});
+
 }
 
 /**
