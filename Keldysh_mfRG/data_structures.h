@@ -1,5 +1,3 @@
-//#pragma clang diagnostic push
-//#pragma ide diagnostic ignored "bugprone-too-small-loop-variable"
 /*
  * Define essential data types
  */
@@ -39,10 +37,8 @@ public:
     basic_vec<T> operator-= (const T &c);               // subtraction of a constant
     basic_vec<T> operator*  (const basic_vec<T> &m);    // element-wise multiplication of two vectors
     basic_vec<T> operator*  (const T &c);               // multiplication with a constant
-    basic_vec<T> operator*  (double alpha);             // multiplication with a double constant
     basic_vec<T> operator*= (const basic_vec<T> &m);    // element-wise multiplication of two vectors
     basic_vec<T> operator*= (const T &c);               // multiplication with a constant
-    basic_vec<T> operator*= (double alpha);             // multiplication with a double constant
 
 };
 
@@ -72,7 +68,8 @@ public:
     vec(int n, comp value) : basic_vec<comp> (n, value) {};
     vec(initializer_list<comp> m) : basic_vec<comp> (m) {};
 
-    using basic_vec<comp>::operator=;		// use assignment operator from base class
+    using basic_vec<comp>::operator=;		        // use assignment operator from base class
+    vec<comp> operator*= (const double alpha);      // multiplication with a double constant
 
     vec<comp> inv();    // element-wise inverse
     vec<double> real(); // element-wise real part
@@ -90,8 +87,18 @@ public:
 typedef vec<double> rvec;
 typedef vec<comp> cvec;
 
-
-
+/// NON-MEMBER FUNCTIONS ///
+template<typename T>
+basic_vec<T> operator*(T const& scalar, basic_vec<T> rhs) {
+    return rhs *= scalar; // scalar multiplication is commutative, calls rhs.operator*=(scalar);
+}
+vec<comp> operator*(const double scalar, vec<comp> rhs) {
+    return rhs *= scalar; // scalar multiplication is commutative, calls rhs.operator*=(scalar);
+}
+vec<comp> operator*(vec<comp> rhs, const double scalar) {
+    return rhs *= scalar; // scalar multiplication is commutative, calls rhs.operator*=(scalar);
+}
+// from stackoverflow: Note how the lhs Matrix is a copy and not a reference. This allows the compiler to make optimizations such as copy elision / move semantics. Also note that the return type of these operators is Matrix<T> and not const Matrix<T> which was recommended in some old C++ books, but which prevents move semantics in C++11.
 
 /// DEFINITIONS ///
 
@@ -213,17 +220,6 @@ basic_vec<T> basic_vec<T>::operator*(const T &c) {
     return temp;
 }
 
-// multiplication with a double constant
-template <typename T>
-basic_vec<T> basic_vec<T>::operator*(const double alpha) {
-    basic_vec<T> temp(this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] * alpha;
-    }
-    return temp;
-}
-
 // element-wise multiplication of two vectors
 template <typename T>
 basic_vec<T> basic_vec<T>::operator*=(const basic_vec<T> &m) {
@@ -244,16 +240,6 @@ basic_vec<T> basic_vec<T>::operator*=(const T &c) {
     return *this;
 }
 
-// multiplication with a double constant
-template <typename T>
-basic_vec<T> basic_vec<T>::operator*=(const double alpha) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] *= alpha;
-    }
-    return *this;
-}
-
 
 /* member functions of derived general vector class vec<T> */
 
@@ -270,6 +256,15 @@ vec<T> vec<T>::inv() {
 
 
 /* member functions of derived complex vector class vec<comp> */
+
+// multiplication with a double constant
+vec<comp> vec<comp>::operator*=(const double alpha) {
+#pragma omp parallel for
+    for (int i=0; i<this->size(); ++i) {
+        (*this)[i] *= alpha;
+    }
+    return *this;
+}
 
 // element-wise inverse
 vec<comp> vec<comp>::inv() {
@@ -322,5 +317,3 @@ vec<comp> vec<comp>::conj() {
 }
 
 #endif // DATA_STRUCTURES_H
-
-//#pragma clang diagnostic pop
