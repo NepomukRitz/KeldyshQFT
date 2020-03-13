@@ -49,6 +49,7 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
      *Then compare that number to a maximal N of 4001 (chosen arbitrarily) and return the smallest one of these. Calculate
      * the step dx and fill the vectors accordingly. */
     int N = min({ max({ nINT, (int)( (b-a)/(glb_T/4.) + 1.) }), 4001});
+    //Something doesn't work properly with this formula!!
 #endif
 
     double dx = (b-a)/((double)(N-1));
