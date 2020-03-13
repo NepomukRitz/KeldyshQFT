@@ -47,8 +47,6 @@ void export_data(State<comp>& state, int iter){
     write_h5_rvecs(name, {"w", ReSER, ImSER, ReSEK, ImSEK, RePiaOE, ImPiaOE, RePiaOO, ImPiaOO},
                    {bfreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(), PiaOE.real(), PiaOE.imag(),
                     PiaOO.real(), PiaOO.imag()});
-    cout << "Lambda at this iteration: " << flow_grid[iter]<< "\n";
-    cout << "Printed in hdf5 the step " << iter << "\n";
 }
 
 template <typename T>
@@ -60,6 +58,7 @@ void ODE_solver_Euler(T& y_fin, const double x_fin, const T& y_ini, const double
         x_run += dx; // update x
         y_run += rhs(y_run, x_run) * dx; // update y
         export_data(y_run, i+1);
+        cout << "Lambda at this iteration: " << x_run<< "\n";
     }
     y_fin = y_run; // final y value
 }
@@ -77,6 +76,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         T y4 = rhs(y_run + y3, x_run + dx) * dx;
         y_run += (y1 + y2*2. + y3*2. + y4) *(1./ 6.); // update y
         export_data(y_run, i+1);
+        cout << "Lambda at this iteration: " << x_run<< "\n";
     }
     y_fin = y_run; // final y value
 }
@@ -120,6 +120,51 @@ auto test_rhs_state(const State<comp>& Psi, const double Lambda) -> State<comp> 
     get_time(t_multiply);
 
     return dPsi;
+}
+
+auto test_rhs_bubbles_flow(const State<comp>& state, double Lambda) -> State<comp>{
+    State<comp> ans;
+
+    Propagator g(Lambda, state.selfenergy, 'g');
+    Propagator s(Lambda, state.selfenergy, 's');
+
+    //for(int i=75; i<76; i++){
+    for(int i=1; i<nBOS; i++){
+        double w = bfreqs[i];
+
+        //Create the objects explicitly designed to return the determined Keldysh component needed
+        IntegrandBubble integrandPia6 (g, s, true, w, 6,  'a');     //AR
+        IntegrandBubble integrandPia9 (g, s, true, w, 9,  'a');     //RA
+        IntegrandBubble integrandPia11(g, s, true, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(g, s, true, w, 13, 'a');     //RK
+        IntegrandBubble integrandPia15(g, s, true, w, 15, 'a');     //KK
+
+        //Calculate the contributions
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        auto cont6  = integrator(integrandPia6 , w_lower_b, w_upper_b);
+        auto cont9  = integrator(integrandPia9 , w_lower_b, w_upper_b);
+        auto cont15 = integrator(integrandPia15, w_lower_b, w_upper_b);
+
+        //Add the respective contributions to the respective bubble
+        ans.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 0.);//1./2.*(cont11+ cont13) );             //11+13 = OE => Keldysh comp0
+        ans.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15) );     //6+9+15= OO => Keldysh comp1
+
+//        //The relevant components are read out and added in the correct places directly.
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+
+    }
+
+    return ans*dL;
 }
 
 double test_rhs_ODE_exp(const double& y, const double x) {

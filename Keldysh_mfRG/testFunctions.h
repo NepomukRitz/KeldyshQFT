@@ -228,18 +228,14 @@ void writeOutSOPT(double Lambda, const Propagator& propagator, const SelfEnergy<
  * The implementation requires sopt_state() to have toggled the a-bubble on
  * @param state : State initialized with initial conditions
  */
-void testBubbles(State<comp>& state){
+void testBubbles(State<comp>& state, double Lambda){
 
     SelfEnergy<comp> zero;
-    Propagator g1(1.0, state.selfenergy, zero, 'g');
-    Propagator g2(1.0, state.selfenergy, zero, 'g');
+    Propagator g1(Lambda, state.selfenergy, zero, 'g');
+    Propagator g2(Lambda, state.selfenergy, zero, 'g');
 
-    cvec Pia_odd_even (nBOS);
-    cvec Pia_odd_odd (nBOS);
-    cvec Pia_odd_odd_c (nBOS);
-
-    vector<comp> PiaOE(nBOS);
-    vector<comp> PiaOO(nBOS);
+    cvec PiaOO (nBOS);
+    cvec PiaOE (nBOS);
 
     //Calculate the vertex for comparison
     sopt_state(state, 1.0, state);
@@ -264,8 +260,9 @@ void testBubbles(State<comp>& state){
         auto cont15 = integrator(integrandPia15, w_lower_b, w_upper_b);
 
         //Add the respective contributions to the respective bubble
-        Pia_odd_even[i] = 1./2.*(cont11+ cont13);
-        Pia_odd_odd [i] = 1./2.*(cont6 + cont9 + cont15);
+        PiaOE[i] = 0.;//1./2.*(cont11+ cont13);
+        PiaOO[i] = 1./2.*(cont6 + cont9);// + cont15);
+        PiaOO[i]+= 1./2.*(1./(2.*pi*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
 
 /*
         //cout << Pia_odd_even[i] << endl;
@@ -295,14 +292,12 @@ void testBubbles(State<comp>& state){
         cout << g1.pvalsmooth(0, 0.) << endl;
         cout << g1.pvalsmooth(1, 0.) << endl;
 */
-        //Add the correction to compare
-        Pia_odd_odd_c[i] = Pia_odd_odd[i] + 1./2.*(1./(2.*pi*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
 
         //The relevant components are read out and added in the correct places directly.
-        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
 
 
         //One can conversely use the K1_vvalsmooth (interpolating) functions to determine the value, which should not alter the result!
@@ -317,10 +312,10 @@ void testBubbles(State<comp>& state){
 //        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(14, w, 0, 0, *aid);
 //        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(14, w, 0, 1, *aid);
 
-        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
 
 //        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(3, w, 0, 0, *aid);
 //        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(3, w, 0, 1, *aid);
@@ -332,52 +327,62 @@ void testBubbles(State<comp>& state){
 //        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(12, w, 0, 1, *aid);
     }
 
-//    write_h5_rvecs("bubble_wIP_nINT_501.h5", {"w", "PiR", "PiI"},{bfreqs, Pia_odd_even.real(), Pia_odd_even.imag()});
+    write_h5_rvecs("SOPT_Bubbles.h5", {"v", "Bench_RePiaOO", "Bench_ImPiaOO", "Bench_RePiaOE", "Bench_ImPiaOE"},
+                   {ffreqs, PiaOO.real(), PiaOO.imag(), PiaOE.real(), PiaOE.imag()});
+}
 
-    //Stuff to print out results in .dat format. Is less cumbersome than hdf5 and hence easier to use for debugging purposes.
-    ostringstream Pia_odd_evenfile;
-    ostringstream Pia_odd_oddfile;
-    ostringstream Pia_odd_oddcfile;
 
-    ostringstream PiaOEfile;
-    ostringstream PiaOOfile;
+/**
+ * Function to test the OddOdd and OddEven bubbles
+ * The implementation requires sopt_state() to have toggled the a-bubble on
+ * @param state : State initialized with initial conditions
+ */
+void testBubblesFlow(){
 
-    Pia_odd_evenfile << "Output/Pia_odd_even.dat";
-    Pia_odd_oddfile  << "Output/Pia_odd_odd.dat";
-    Pia_odd_oddcfile  << "Output/Pia_odd_odd_c.dat";
-
-    PiaOEfile << "Output/PiaOE.dat";
-    PiaOOfile << "Output/PiaOO.dat";
-
-    ofstream my_file_Pia_odd_even ;
-    ofstream my_file_Pia_odd_odd;
-    ofstream my_file_Pia_odd_odd_c;
-
-    ofstream my_file_PiaOE;
-    ofstream my_file_PiaOO;
-
-    my_file_Pia_odd_even.open(Pia_odd_evenfile.str()) ;
-    my_file_Pia_odd_odd.open( Pia_odd_oddfile.str());
-    my_file_Pia_odd_odd_c.open( Pia_odd_oddcfile.str());
-
-    my_file_PiaOE.open(PiaOEfile.str());
-    my_file_PiaOO.open(PiaOOfile.str());
-
-    for(int i = 0; i<nBOS; i++){
-        my_file_Pia_odd_even<< bfreqs[i] << " " << Pia_odd_even[i].real() << " " << Pia_odd_even [i].imag() << "\n";
-        my_file_Pia_odd_odd << bfreqs[i] << " " << Pia_odd_odd[i].real()  << " " << Pia_odd_odd[i].imag() << "\n";
-        my_file_Pia_odd_odd_c << bfreqs[i] << " " << Pia_odd_odd_c[i].real()  << " " << Pia_odd_odd_c[i].imag() << "\n";
-
-        my_file_PiaOE << bfreqs[i] << " " << PiaOE[i].real() << " " << PiaOE[i].imag() << "\n";
-        my_file_PiaOO << bfreqs[i] << " " << PiaOO[i].real() << " " << PiaOO[i].imag() << "\n";
+    State<comp> test_state;
+    //Initial conditions
+    for (int i = 0; i < nSE; ++i) {
+        test_state.selfenergy.setself(0, i, 0.);
+        test_state.selfenergy.setself(1, i, 0.);
+    }
+    for (auto i:odd_Keldysh) {
+        test_state.vertex.densvertex.irred.setvert(i, 0, 0.);
+        test_state.vertex.spinvertex.irred.setvert(i, 0, -glb_U/2.);
     }
 
-    my_file_Pia_odd_even.close() ;
-    my_file_Pia_odd_odd.close();
-    my_file_Pia_odd_odd_c.close();
+    Propagator g1(Lambda_ini, test_state.selfenergy, 'g');
+    Propagator g2(Lambda_ini, test_state.selfenergy, 'g');
 
-    my_file_PiaOE.close();
-    my_file_PiaOO.close();
+    for(int i=0; i<nBOS; i++) {
+        double w = bfreqs[i];
+
+        //Create the objects explicitly designed to return the determined Keldysh component needed
+        IntegrandBubble integrandPia6(g1, g2, false, w, 6, 'a');     //AR
+        IntegrandBubble integrandPia9(g1, g2, false, w, 9, 'a');     //RA
+        IntegrandBubble integrandPia11(g1, g2, false, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(g1, g2, false, w, 13, 'a');     //RK
+        IntegrandBubble integrandPia15(g1, g2, false, w, 15, 'a');     //KK
+
+        //Calculate the contributions
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        auto cont6 = integrator(integrandPia6, w_lower_b, w_upper_b);
+        auto cont9 = integrator(integrandPia9, w_lower_b, w_upper_b);
+        auto cont15 = integrator(integrandPia15, w_lower_b, w_upper_b);
+
+        //Add the respective contributions to the respective bubble
+        test_state.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 0.);//1./2.*(cont11 + cont13));              //11+13 => OE => Keldysh 0
+        test_state.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15));        //6+9+15=> OO => Keldysh 1
+        test_state.vertex.spinvertex.avertex.K1_addvert(1, i, 0, 1./2.*(1./(2.*pi*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b))));
+    }
+
+
+    State<comp> final_state;
+    export_data(test_state, 0);
+
+    ODE_solver_RK4(final_state, 1.0, test_state, 2.0, test_rhs_bubbles_flow, nEVO);
+
 }
 
 /**

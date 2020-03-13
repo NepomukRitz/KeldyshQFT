@@ -62,18 +62,12 @@ auto main() -> int {
     State<comp> sopt_state;
     setInitialConditions(sopt_state);
 
-//    testBubbles(sopt_state);
-    testSelfEnergy_and_Bubbles(sopt_state, 1.0);
+    testBubbles(sopt_state, 1.0);
+//    testSelfEnergy_and_Bubbles(sopt_state, 2.0);
 //    test_selfEnergyComponents(sopt_state);
 
 #else
-    State<comp> test_state;
-    setInitialConditions(test_state);
-
-    State<comp> final_state;
-
-    export_data(test_state, 0);
-    ODE_solver_Euler(final_state, Lambda_fin, test_state, Lambda_ini, test_rhs_state, nEVO+1);
+    testBubblesFlow();
 
 #endif
 //
