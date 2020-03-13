@@ -56,15 +56,15 @@ const double glb_U = 1.0;
 const double glb_epsilon = glb_mu - glb_U/2.;   //NOLINT(cert-err58-cpp)
 
 /*Number of evolution flow points*/
-const int nEVO = 14;
+const int nEVO = 10;
 
 /*Number of bosonic and fermionic frequency points*/
-const int nBOS = 201;
-const int nFER = 201;
+const int nBOS = 501;
+const int nFER = 501;
 
 /*Limits of the fRG flow*/
-const double Lambda_ini = 1.0;
-const double Lambda_fin = 0;    //1.0-1./7.;
+const double Lambda_ini = 2.0;
+const double Lambda_fin = 1.0;    //1.0-1./7.;
 
 /*Number of frequency points for the self energy and the susceptibility*/
 const int nSE   = nFER;
@@ -106,7 +106,7 @@ const double w_lower_b = -w_upper_b;        //Symmetric grid
 const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 #elif GRID==3
-const double W_scale = 5.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
+const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
 const double w_upper_b = 100.;
 const double w_lower_b = -w_upper_b;
 const double w_upper_f = 100.;
