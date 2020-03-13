@@ -304,11 +304,47 @@ auto Propagator::valsmooth(int iK, double v) const -> comp
 #ifdef INTER_PROP
     comp ans;
     if(fabs(v)>w_upper_f) {
-        switch (iK) {
-            case 0:
-                return GR(v);
-            case 1:
-                return GK(v);
+        switch(type) {
+            case 'g':
+                switch (iK) {
+                    case 0:
+                        return GR(v);
+                    case 1:
+                        return GK(v);
+                    default:
+                        return 0.;
+                }
+            case 's':
+                switch (iK) {
+                    case 0:
+                        return SR(v);
+                    case 1:
+                        return SK(v);
+                    default:
+                        return 0.;
+                }
+            case 'k':
+                switch(iK){
+                    case 0:
+                        return SR(v) + GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                    case 1:
+                        return SK(v) + GR(v) * diffSE.valsmooth(0, v) * GK(v)
+                                     + GR(v) * diffSE.valsmooth(1, v) * GA(v)
+                                     + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                    default:
+                        return 0.;
+                }
+            case 'e':
+                switch(iK){
+                    case 0:
+                        return GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                    case 1:
+                        return GR(v) * diffSE.valsmooth(0, v) * GK(v)
+                             + GR(v) * diffSE.valsmooth(1, v) * GA(v)
+                             + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                    default:
+                        return 0.;
+                }
             default:
                 return 0.;
         }
@@ -332,7 +368,6 @@ auto Propagator::valsmooth(int iK, double v) const -> comp
         return ans;
 
     }
-    return ans;
 #else //INTER_PROP
 
 
