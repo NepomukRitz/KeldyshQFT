@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <bits/stdc++.h>
 #include <iostream>
 #include <fstream>
 #include <complex>
@@ -62,7 +63,7 @@ auto main() -> int {
     setInitialConditions(sopt_state);
 
 //    testBubbles(sopt_state);
-    testSelfEnergy_and_Bubbles(sopt_state, 0.0);
+    testSelfEnergy_and_Bubbles(sopt_state, 1.0);
 //    test_selfEnergyComponents(sopt_state);
 
 #else
