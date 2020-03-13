@@ -23,8 +23,8 @@ auto Fermi_distribution(double v) -> double
  */
 class Propagator {
     double Lambda;
-    const SelfEnergy<comp>& SE;
-    const SelfEnergy<comp>& diffSE;
+    const SelfEnergy<comp> SE;
+    const SelfEnergy<comp> diffSE;
     char type;
 #ifdef INTER_PROP
     cvec prop = cvec(2*nPROP);
@@ -37,7 +37,7 @@ public:
      * @param type_in   : Type of propagator being handled
      */
     Propagator(double Lambda_in, char type_in)
-            : Lambda(Lambda_in), SE(*new SelfEnergy<comp>()), diffSE(*new SelfEnergy<comp>()), type(type_in) { }
+            : Lambda(Lambda_in), type(type_in) { }
 
 
     /**
@@ -46,8 +46,8 @@ public:
      * @param self_in   : SelfEnergy
      * @param type_in   : Type of propagator being handled
      */
-    Propagator(double Lambda_in, const SelfEnergy<comp>& self_in, char type_in)
-            :Lambda(Lambda_in), SE(self_in), diffSE(*new SelfEnergy<comp>()), type(type_in)
+    Propagator(double Lambda_in, const SelfEnergy<comp> self_in, char type_in)
+            :Lambda(Lambda_in), SE(self_in), type(type_in)
     {
 #ifdef INTER_PROP
         switch(type){
@@ -98,7 +98,7 @@ public:
      * @param diffSelf_in   : Differential SelfEnergy
      * @param type_in       : Type of propagator being handled
      */
-    Propagator(double Lambda_in, const SelfEnergy<comp>& self_in, const SelfEnergy<comp>& diffSelf_in, char type_in)
+    Propagator(double Lambda_in, const SelfEnergy<comp> self_in, const SelfEnergy<comp> diffSelf_in, char type_in)
             :Lambda(Lambda_in), SE(self_in), diffSE(diffSelf_in), type(type_in)
     {
 #ifdef INTER_PROP
