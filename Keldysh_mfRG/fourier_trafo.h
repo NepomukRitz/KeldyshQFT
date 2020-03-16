@@ -3,7 +3,13 @@
 
 #include <cmath> // needed for exponential function to adjust Fourier convention
 #include <fftw3.h> // fftw library
+#include "data_structures.h"
 #include "write_data2file.h"
+#include <iostream> // text in- and output
+#include "parameters.h"
+#include "propagator.h"
+#include "a_vertex.h"
+#include "p_vertex.h"
 
 using namespace std;
 
@@ -110,7 +116,7 @@ void ft_v2t(rvec& t, cvec& Gt, const rvec& v, const cvec& Gv, const comp tail_co
     fftw_destroy_plan(p);
     if(abs(tail_coef)>1e-10) { // FT tail_coef/(v+i*tail_hyb) = -i tail_coef * sign(tail_hyb) Theta(sign(tail_hyb)*t) e^{-tail_hyb*t}
         for (int i = 0; i < N; ++i) // fill output
-            Gt[i] = ( -glb_i * tail_coef * sign(tail_hyb) * Theta(sign(tail_hyb)*t[i] + 1e-16) * exp(-tail_hyb*t[i]) ) +
+            Gt[i] = ( -glb_i * tail_coef * sign(tail_hyb) * Theta(tail_hyb*t[i] + 1e-16) * exp(-abs(tail_hyb*t[i])) ) +
                     comp(out[i][0], out[i][1]) * exp(-glb_i * v[0] * t[i]) / Ttot; // see Fourier convention above
     }
     else { // standard procedure
@@ -140,8 +146,8 @@ void ft_t2v(rvec& v, cvec& Gv, const rvec& t, const cvec& Gt, const comp tail_co
     comp temp; // temporary variable to adjust Fourier convention (see above)
     if(abs(tail_coef)>1e-10) { // include long-time decay -i sgn(tail_hyb) tail_coef \Theta(sgn(tail_hyb)*t) e^{-tail_hyb t} explicitly, here enforce Theta(0)=1 via +1e-16
         for (int i = 0; i < N; ++i) { // fill input array
-            temp = ( Gt[i] + glb_i * tail_coef * sign(tail_hyb) * Theta(sign(tail_hyb)*t[i] + 1e-16) * exp(-tail_hyb*t[i]) )
-                    * exp(glb_i * v[0] * (t[i] - t[0])); // see Fourier convention above
+            temp = ( Gt[i] + glb_i * tail_coef * sign(tail_hyb) * Theta(tail_hyb*t[i] + 1e-16) * exp(-abs(tail_hyb*t[i])) )
+                   * exp(glb_i * v[0] * (t[i] - t[0])); // see Fourier convention above
             in[i][0] = temp.real(); // real part
             in[i][1] = temp.imag(); // imaginary part
         }
@@ -192,7 +198,7 @@ void ft_vn2tau(rvec& tau, cvec& Gtau, const rvec& vn, const cvec& Gvn, const boo
     if(incl_tail) { // incorporate FT(1/iv) = -1/2 * Theta(-tau) exactly
         for(int i=0; i<N; ++i) { // fill input array
             temp = (Gvn[i] + glb_i/vn[i])
-                    * exp(-glb_i*(vn[i]-vn[0])*tau[0]); // see Fourier convention above
+                   * exp(-glb_i*(vn[i]-vn[0])*tau[0]); // see Fourier convention above
             in[i][0] = temp.real(); // real part
             in[i][1] = temp.imag(); // imaginary part
         }
@@ -211,7 +217,7 @@ void ft_vn2tau(rvec& tau, cvec& Gtau, const rvec& vn, const cvec& Gvn, const boo
     if(incl_tail) { // incorporate FT(iv) = -1/2 + Theta(-tau) exactly
         for (int i = 0; i < N; ++i) // fill output
             Gtau[i] = -0.5 + Theta(-tau[i]) +
-                    comp(out[i][0], out[i][1]) * exp(-glb_i*vn[0]*tau[i]) / beta; // see Fourier convention above
+                      comp(out[i][0], out[i][1]) * exp(-glb_i*vn[0]*tau[i]) / beta; // see Fourier convention above
     }
     else {
         for(int i=0; i<N; ++i) // fill output
@@ -239,8 +245,8 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
             vn[i] = (2. * (double)(nmin + i) + 1.) / (pi * beta);
     }
     else if(type=='b') { // bosonic Matsubara frequencies
-            for(int i=0; i<N; ++i) // fill frequency grid
-                vn[i] = (2. * (double)(nmin + i)) / (pi*beta);
+        for(int i=0; i<N; ++i) // fill frequency grid
+            vn[i] = (2. * (double)(nmin + i)) / (pi*beta);
     }
     else
         cout << "Error in ft_tau2vn: Type must be f or b." << endl;
@@ -249,7 +255,7 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
     if(incl_tail) { // incorporate FT(1/iv) = -1/2 + Theta(-tau) exactly
         for (int i = 0; i < N; ++i) { // fill input array
             temp = ( Gtau[i] - (-0.5 + Theta(-tau[0])) ) // subtract FT(1/iv)
-                    * exp(glb_i * vn[0] * (tau[i] - tau[0])); // see Fourier convention above, tau0=0
+                   * exp(glb_i * vn[0] * (tau[i] - tau[0])); // see Fourier convention above, tau0=0
             in[i][0] = temp.real(); // real part
             in[i][1] = temp.imag(); // imaginary part
         }
@@ -268,7 +274,7 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
     if(incl_tail) { // incorporate FT(iv) = -1/2 * Theta(-tau) exactly
         for (int i = 0; i < N; ++i) // fill output
             Gvn[i] = -glb_i / vn[i] + // explicit 1/iv
-                    comp(out[i][0], out[i][1]) * exp(glb_i * vn[i] * tau[0]) * (beta / (double)N); // see Fourier convention above
+                     comp(out[i][0], out[i][1]) * exp(glb_i * vn[i] * tau[0]) * (beta / (double)N); // see Fourier convention above
     }
     else {
         for (int i = 0; i < N; ++i) // fill output
@@ -278,16 +284,15 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
 }
 
 
-// TODO: overload = operator for basic_vec
-void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const double Uin, const int nFFT, const double V_FFT) {
+void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gammaPout, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
     // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
     bool SEflag_FFT = true;
     bool PiAflag_FFT = true;
     bool PiPflag_FFT = true;
-    bool writeflag_FFT = false; // whether to write data into file
+    bool writeflag_FFT = true; // whether to write data into file
     bool tailflag_FFT = true; // whether to include analytic treatment of tail
     double hyb_FFT = 0; // hybridization for high-freuqency decay, e.g., G^R(v)=1/(v+i*hyb)
-    if(tailflag_FFT) hyb_FFT = (glb_Gamma_REG+Lambda)/2.;
+    if(tailflag_FFT) hyb_FFT = (glb_Gamma_REG+Gin.Lambda)/2.;
     /// ------------------- READ INPUT --------------------- ///
     rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
     const double dvFFT = V_FFT / (double)nFFT; // frequency spacing
@@ -296,8 +301,8 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const
         vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
     cvec GvR (nFFT), GvK (nFFT); // separate vectors for retarded and Keldysh component of input GF
     for (int i = 0; i < nFFT; ++i) {
-        GvR[i] = 0.;//gR(Lambda, vFFT[i]); // retarded component
-        GvK[i] = 0.;//gK(Lambda, vFFT[i]); // Keldysh component
+        GvR[i] = Gin.valsmooth(0, vFFT[i]);//gR(Lambda, vFFT[i]); // retarded component
+        GvK[i] = Gin.valsmooth(1, vFFT[i]);;//gK(Lambda, vFFT[i]); // Keldysh component
     }
     /// ------------------- TRANSFORM INPUT --------------------- ///
     rvec tFFT (nFFT); // vector for real time
@@ -308,7 +313,7 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const
     ft_v2t(tFFT, GtK, vFFT, GvK); // Fourier trafo, Keldysh component
     flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
     flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
-    if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_G.h5", {"t","G_R_R","G_R_I","G_K_R","G_K_I"}, {tFFT,GtR.real(),GtR.imag(),GtK.real(),GtK.imag()});
+    //if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_G.h5", {"t","G_R_R","G_R_I","G_K_R","G_K_I"}, {tFFT,GtR.real(),GtR.imag(),GtK.real(),GtK.imag()});
     if(SEflag_FFT) {
         /// ------------------- SELF-ENERGY RETARDED COMPONENT --------------------- ///
         // vectors for \Sigma(t) terms arising in SOPT for retarded component
@@ -391,6 +396,14 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const
             K1at_3 = (K1at_KK + K1at_AR + K1at_RA) * (-glb_i*Uin*Uin/4.); // prefactor: (\pm U/2)^2 1/i
             ft_t2v(vFFT, K1av_3, tFFT, K1at_3); // Fourier trafo, component 3
         }
+        /// ------------------- K1a OUTPUT --------------------- ///
+        cvec K1aout_1(nw1_wa), K1aout_3(nw1_wa); // resulting self-energy components on external grid
+        interp1_FFT(K1aout_1, bfreqs, K1av_1, vFFT); // linear interpolation for component 1
+        interp1_FFT(K1aout_3, bfreqs, K1av_3, vFFT); // linear interpolation for component 3
+        for (int i = 0; i < nw1_wa; ++i) { // fill results in output self-energy
+            gammaAout.K1_setvert(0, i, 0, K1aout_1[i]); // component 1
+            gammaAout.K1_setvert(1, i, 0, K1aout_3[i]); // component 3
+        }
         if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_K1a.h5", {"v","K1a_1_R","K1a_1_I","K1a_3_R","K1a_3_I"}, {vFFT,K1av_1.real(),K1av_1.imag(),K1av_3.real(),K1av_3.imag()});
     }
     if(PiPflag_FFT) {
@@ -426,7 +439,115 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, const double Lambda, const
             K1pt_3 = (K1pt_KK + K1pt_RR + K1pt_AA) * (-glb_i*Uin*Uin/4.); // prefactor: (\pm U/2)^2 1/i
             ft_t2v(vFFT, K1pv_3, tFFT, K1pt_3); // Fourier trafo, component 3
         }
+        /// ------------------- K1p OUTPUT --------------------- ///
+        cvec K1pout_1(nw1_wa), K1pout_3(nw1_wa); // resulting self-energy components on external grid
+        interp1_FFT(K1pout_1, bfreqs, K1pv_1, vFFT); // linear interpolation for component 1
+        interp1_FFT(K1pout_3, bfreqs, K1pv_3, vFFT); // linear interpolation for component 3
+        for (int i = 0; i < nw1_wa; ++i) { // fill results in output self-energy
+            gammaPout.K1_setvert(0, i, 0, K1pout_1[i]); // component 1
+            gammaPout.K1_setvert(1, i, 0, K1pout_3[i]); // component 3
+        }
         if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_K1p.h5", {"v","K1p_1_R","K1p_1_I","K1p_3_R","K1p_3_I"}, {vFFT,K1pv_1.real(),K1pv_1.imag(),K1pv_3.real(),K1pv_3.imag()});
+    }
+}
+
+void SOPTbare_FFT_SelfEnergy(cvec& PiaEO, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
+    // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
+    bool PiAflag_FFT = true;
+    bool writeflag_FFT = true; // whether to write data into file
+    bool tailflag_FFT = true; // whether to include analytic treatment of tail
+    double hyb_FFT = 0; // hybridization for high-freuqency decay, e.g., G^R(v)=1/(v+i*hyb)
+    if (tailflag_FFT) hyb_FFT = (glb_Gamma_REG + Gin.Lambda) / 2.;
+    /// ------------------- READ INPUT --------------------- ///
+    rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
+    const double dvFFT = V_FFT / (double) nFFT; // frequency spacing
+    if (dvFFT > glb_T)
+        cout << "Warning in SOPT_FFT: frequency spacing dv=" << dvFFT << " is greater than temperature T=" << glb_T
+             << "." << endl;
+    for (int i = 0; i < nFFT; ++i) // fill frequency grid
+        vFFT[i] = -V_FFT / 2. + dvFFT * (double) i;
+    cvec GvR(nFFT), GvK(nFFT); // separate vectors for retarded and Keldysh component of input GF
+    for (int i = 0; i < nFFT; ++i) {
+        GvR[i] = Gin.valsmooth(0, vFFT[i]);//gR(Lambda, vFFT[i]); // retarded component
+        GvK[i] = Gin.valsmooth(1, vFFT[i]);;//gK(Lambda, vFFT[i]); // Keldysh component
+    }
+    /// ------------------- TRANSFORM INPUT --------------------- ///
+    rvec tFFT(nFFT); // vector for real time
+    cvec GtR(nFFT), GtK(nFFT), GtAc(nFFT), GtK_(nFFT); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
+    // Fourier trafo, retarded component
+    if (tailflag_FFT) ft_v2t(tFFT, GtR, vFFT, GvR, 1., hyb_FFT);
+    else ft_v2t(tFFT, GtR, vFFT, GvR);
+    ft_v2t(tFFT, GtK, vFFT, GvK); // Fourier trafo, Keldysh component
+    flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
+    flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
+    //if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_G.h5", {"t","G_R_R","G_R_I","G_K_R","G_K_I"}, {tFFT,GtR.real(),GtR.imag(),GtK.real(),GtK.imag()});
+    if (PiAflag_FFT) {
+        /// ------------------- K1a COMPONENT 1 --------------------- ///
+        // left sum of indices is even, right sum of indices is odd, retarded component of bosonic self-energy
+        // vectors for \K1a(t) terms arising in SOPT for component 1
+        cvec K1at_RK(nFFT), K1at_KA(nFFT);
+        // individual terms
+        K1at_RK = GtR * GtK_; // G^R(t) G^K(-t)
+        K1at_KA = GtK * GtR.conj(); // G^K(t) G^A(-t)
+        // resulting K1a component 1 in time and frequency
+        cvec K1at_1(nFFT), K1av_1(nFFT);
+        K1at_1 = (K1at_RK + K1at_KA) * (-glb_i * Uin * Uin / 4.); // prefactor: (\pm U/2)^2 1/i
+        ft_t2v(vFFT, K1av_1, tFFT, K1at_1); // Fourier trafo, component 3
+        /// ------------------- K1a OUTPUT --------------------- ///
+        cvec K1aout_1(nw1_wa); // resulting K1a component 1 on external grid
+        interp1_FFT(PiaEO, bfreqs, K1av_1, vFFT); // linear interpolation for component 1
+    }
+}
+
+void diffSOPTbare_FFT_SelfEnergy(cvec& dPiaEO, const Propagator Gin, const Propagator Sin, const double Uin, const int nFFT, const double V_FFT) {
+    // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
+    bool PiAflag_FFT = true;
+    bool writeflag_FFT = false; // whether to write data into file
+    /// ------------------- READ INPUT --------------------- ///
+    rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
+    const double dvFFT = V_FFT / (double)nFFT; // frequency spacing
+    if(dvFFT > glb_T) cout << "Warning in SOPT_FFT: frequency spacing dv=" << dvFFT << " is greater than temperature T=" << glb_T << "." << endl;
+    for (int i = 0; i < nFFT; ++i) // fill frequency grid
+        vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
+    cvec GvR (nFFT), GvK (nFFT), SvR (nFFT), SvK (nFFT); // separate vectors for retarded and Keldysh component of input GF
+    for (int i = 0; i < nFFT; ++i) {
+        GvR[i] = Gin.valsmooth(0, vFFT[i]); // retarded component
+        GvK[i] = Gin.valsmooth(1, vFFT[i]); // Keldysh component
+        SvR[i] = Sin.valsmooth(0, vFFT[i]); // retarded component
+        SvK[i] = Sin.valsmooth(1, vFFT[i]); // Keldysh component
+    }
+    /// ------------------- TRANSFORM INPUT --------------------- ///
+    rvec tFFT (nFFT); // vector for real time
+    cvec GtR (nFFT), GtK (nFFT), GtAc (nFFT), GtK_(nFFT); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
+    cvec StR (nFFT), StK (nFFT), StAc (nFFT), StK_(nFFT); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
+    // Fourier trafo, retarded component
+    ft_v2t(tFFT, GtR, vFFT, GvR);
+    ft_v2t(tFFT, StR, vFFT, SvR);
+    // Fourier trafo, Keldysh component
+    ft_v2t(tFFT, GtK, vFFT, GvK);
+    ft_v2t(tFFT, StK, vFFT, SvK);
+    flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
+    flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
+    flip_adjust(StAc, StR); // store S^A(t)*=S^R(-t) for convenience
+    flip_adjust(StK_, StK); // store S^K(-t) for convenience
+    //if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_G.h5", {"t","G_R_R","G_R_I","G_K_R","G_K_I"}, {tFFT,GtR.real(),GtR.imag(),GtK.real(),GtK.imag()});
+    if(PiAflag_FFT) {
+        /// ------------------- K1a COMPONENT 1 --------------------- ///
+        // left sum of indices is even, right sum of indices is odd, retarded component of bosonic self-energy
+        // vectors for \K1a(t) terms arising in SOPT for component 1
+        cvec K1at_RK_GS(nFFT), K1at_KA_GS(nFFT), K1at_RK_SG(nFFT), K1at_KA_SG(nFFT);
+        // individual terms
+        K1at_RK_GS = GtR * StK_; // G^R(t) S^K(-t)
+        K1at_KA_GS = GtK * StR.conj(); // G^K(t) S^A(-t)
+        K1at_RK_SG = StR * GtK_; // S^R(t) G^K(-t)
+        K1at_KA_SG = StK * GtR.conj(); // S^K(t) G^A(-t)
+        // resulting K1a component 1 in time and frequency
+        cvec K1at_1(nFFT), K1av_1(nFFT);
+        K1at_1 = (K1at_RK_GS + K1at_KA_GS + K1at_RK_SG + K1at_KA_SG) * (-glb_i*Uin*Uin/4.); // prefactor: (\pm U/2)^2 1/i
+        ft_t2v(vFFT, K1av_1, tFFT, K1at_1); // Fourier trafo, component 3
+        /// ------------------- K1a OUTPUT --------------------- ///
+        interp1_FFT(dPiaEO, bfreqs, K1av_1, vFFT); // linear interpolation for component 1
+        if(writeflag_FFT) write_h5_rvecs("dSOPT_FFT_K1a.h5", {"v","K1a_1_R","K1a_1_I"}, {vFFT,K1av_1.real(),K1av_1.imag()});
     }
 }
 
