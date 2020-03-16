@@ -19,6 +19,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Keldysh_mfRG
         main.cpp
+        data_structures.h
+        write_data2file.h
 #        state.h
 #        vertex.h
 #        selfenergy.h
@@ -32,11 +34,11 @@ add_executable(Keldysh_mfRG
 #        loop.h a_vertex.h p_vertex.h t_vertex.h
 #        internal_symmetries.h
 #        bubbles.h diagrammatic_combinations.h
-#        write_data2file fourier_trafo.h solvers.h right_hand_sides.h
+#        write_data2file.h fourier_trafo.h solvers.h right_hand_sides.h
         )
 
 #include_directories(/usr/include/mpi/)
 
-#target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
 
 #target_link_libraries(Keldysh_mfRG fftw3)

@@ -1,6 +1,8 @@
 //#include <cstdlib>
 //#include <bits/stdc++.h>
-#include <iostream>
+#include <iostream> // text input/output
+#include "data_structures.h" // real/complex vector classes
+#include "write_data2file.h" // writing data into text or hdf5 files
 //#include <fstream>
 //#include <complex>
 //#include <fftw3.h> // Fast Fourier Transform (FFT)
@@ -83,6 +85,15 @@ auto main() -> int {
     cout << "on apple.";
 #endif
     cout << endl;
+
+    cvec test (3);
+    for (int i=0; i<3; ++i) {
+        test[i] = (comp)i * 2.;
+        cout << test[i].real() << " " << test[i].imag() << endl;
+    }
+    write_h5_rvecs("test.h5", {"testreal", "testimag"}, {test.real(), test.imag()});
+    cout << "writing finished" << endl;
+
 
     return 0;
 }

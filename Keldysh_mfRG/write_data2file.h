@@ -1,9 +1,9 @@
 #ifndef KELDYSH_MFRG_WRITE_DATA2FILE_H
 #define KELDYSH_MFRG_WRITE_DATA2FILE_H
 
-#include "data_structures.h"
-#include <fstream>
-#include "H5Cpp.h"
+#include "data_structures.h" // real/complex vector classes
+#include <fstream>           // standard file input/output
+#include "H5Cpp.h"           // HDF5 package
 
 // write vectors of real numbers into text (.dat) file
 void write_dat_rvecs(string path, initializer_list<rvec> rvec_list) {
