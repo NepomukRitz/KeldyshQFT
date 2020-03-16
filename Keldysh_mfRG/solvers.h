@@ -57,8 +57,8 @@ void ODE_solver_Euler(T& y_fin, const double x_fin, const T& y_ini, const double
     for (int i=0; i<N_ODE; ++i) {
         x_run += dx; // update x
         y_run += rhs(y_run, x_run) * dx; // update y
-        export_data(y_run, i+1);
-        cout << "Lambda at this iteration: " << x_run<< "\n";
+        //export_data(y_run, i+1);
+        //cout << "Lambda at this iteration: " << x_run<< "\n";
     }
     y_fin = y_run; // final y value
 }
@@ -75,8 +75,8 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
         T y4 = rhs(y_run + y3, x_run + dx) * dx;
         y_run += (y1 + y2*2. + y3*2. + y4) *(1./ 6.); // update y
-        export_data(y_run, i+1);
-        cout << "Lambda at this iteration: " << x_run<< "\n";
+        //export_data(y_run, i+1);
+        //cout << "Lambda at this iteration: " << x_run<< "\n";
     }
     y_fin = y_run; // final y value
 }
@@ -174,10 +174,12 @@ double test_rhs_ODE_exp(const double& y, const double x) {
 void test_ODE_solvers() { // test ODE solvers in solving dy/dx = y from x=0 to x=1 with y(0)=1; solution is y(x)=e^x, y(1)=e;
     double y_ini, y_fin_Euler, y_fin_RK4, x_ini, x_fin; // necessary variables
     y_ini = 1.; x_ini = 0.; x_fin = 1.; // boundary values
-    const int N_ODE = 100; // number of steps in ODE solver
-    ODE_solver_Euler(y_fin_Euler,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE);
-    ODE_solver_RK4(y_fin_RK4,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE);
-    cout << "Exact result is " << exp(1.) << ". Using " << N_ODE << " steps, Euler gives " << y_fin_Euler << "; RK4 gives " << y_fin_RK4 << "." << endl;
+    const int N_ODE_Euler = 100; const int N_ODE_RK4 = 10; // number of steps in ODE solver
+    ODE_solver_Euler(y_fin_Euler,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE_Euler);
+    ODE_solver_RK4(y_fin_RK4,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE_RK4);
+    cout << "Exact result is " << exp(1.) << "." << endl;
+    cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << endl;
+    cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << endl;
 }
 
 template <typename T>
