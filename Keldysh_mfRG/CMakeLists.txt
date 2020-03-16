@@ -48,6 +48,6 @@ include_directories(/usr/include/mpi/)
 #link_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib)
 #target_link_libraries(Keldysh_mfRG hdf5)
 #target_link_libraries(Keldysh_mfRG hdf5_cpp)
-target_link_libraries(cl_test -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
 
 target_link_libraries(Keldysh_mfRG fftw3)
