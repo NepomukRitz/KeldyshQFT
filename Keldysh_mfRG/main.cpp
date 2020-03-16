@@ -1,21 +1,21 @@
-#include <cstdlib>
-#include <bits/stdc++.h>
+//#include <cstdlib>
+//#include <bits/stdc++.h>
 #include <iostream>
-#include <fstream>
-#include <complex>
-#include <fftw3.h> // Fast Fourier Transform (FFT)
-#include "parameters.h"
-#include "vertex.h"
-#include "state.h"
-#include "loop.h"
-#include "bubbles.h"
-#include "propagator.h"
-#include "selfenergy.h"
-#include "hdf5_routines.h"
-#include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
-#include "solvers.h" // Fourier transforms in physics convention and SOPT using FFT
-//#include "H5Cpp.h"
-#include "testFunctions.h"
+//#include <fstream>
+//#include <complex>
+//#include <fftw3.h> // Fast Fourier Transform (FFT)
+//#include "parameters.h"
+//#include "vertex.h"
+//#include "state.h"
+//#include "loop.h"
+//#include "bubbles.h"
+//#include "propagator.h"
+//#include "selfenergy.h"
+//#include "hdf5_routines.h"
+//#include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
+//#include "solvers.h" // Fourier transforms in physics convention and SOPT using FFT
+////#include "H5Cpp.h"
+//#include "testFunctions.h"
 
 
 using namespace std;
@@ -39,12 +39,12 @@ auto main() -> int {
 
 #ifndef FLOW
 
-    State<comp> sopt_state;
-    setInitialConditions(sopt_state);
-
-    testBubbles(sopt_state, 1.0);
-//    testSelfEnergy_and_Bubbles(sopt_state, 2.0);
-//    test_selfEnergyComponents(sopt_state);
+//    State<comp> sopt_state;
+//    setInitialConditions(sopt_state);
+//
+//    testBubbles(sopt_state, 1.0);
+////    testSelfEnergy_and_Bubbles(sopt_state, 2.0);
+////    test_selfEnergyComponents(sopt_state);
 
 #else
 //  testBubblesFlow();
@@ -76,6 +76,6 @@ auto main() -> int {
     MPI_Finalize();
 #endif
 
-    cout
+    cout << "Hello world" << endl;
     return 0;
 }
