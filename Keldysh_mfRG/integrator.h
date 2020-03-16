@@ -5,8 +5,6 @@
 #ifndef KELDYSH_MFRG_INTEGRATOR_H
 #define KELDYSH_MFRG_INTEGRATOR_H
 
-//#include "gsl-2.5/integration/gsl_integration.h"
-#include "include/paid.hpp"
 #include "data_structures.h"
 #include "parameters.h"
 #include "write_data2file.h"

@@ -21,31 +21,11 @@
 using namespace std;
 
 
-template <typename Q> void setInitialConditions (State<Q>& state){
-    //Initial conditions
-    //Assign the starting value for Lambda
-    state.Lambda = Lambda_ini;
-
-    //Asign self energy to initial values (H
-    for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, glb_U/2.);
-        state.selfenergy.setself(1, i, 0.);
-    }
-    print("SE initial conditions assigned", true);
-
-    for (auto i:odd_Keldysh) {
-        state.vertex.densvertex.irred.setvert(i, 0, 0.);
-        state.vertex.spinvertex.irred.setvert(i, 0, -glb_U/2.);
-    }
-    print("Bare vertex initial assigned", true);
-}
-
-
 auto main() -> int {
 
-    setUpBosGrid();
-    setUpFerGrid();
-    setUpFlowGrid();
+//    setUpBosGrid();
+//    setUpFerGrid();
+//  setUpFlowGrid();
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);
@@ -67,7 +47,7 @@ auto main() -> int {
 //    test_selfEnergyComponents(sopt_state);
 
 #else
-    testBubblesFlow();
+//  testBubblesFlow();
 
 #endif
 //
@@ -96,5 +76,6 @@ auto main() -> int {
     MPI_Finalize();
 #endif
 
+    cout
     return 0;
 }

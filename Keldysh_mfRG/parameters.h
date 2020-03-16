@@ -43,7 +43,7 @@ const int nLoops = 1;
 #define FLOW
 
 //Flag whether to use MPI, comment out following to not use MPI_FLAG
-#define MPI_FLAG
+//#define MPI_FLAG
 
 /*Imaginary unit*/
 const comp glb_i (0., 1.); // one needs keyword comp in front of (0., 1.); alternatively use im_unit = 1i;

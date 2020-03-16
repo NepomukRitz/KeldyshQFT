@@ -11,6 +11,7 @@
 #include "propagator.h"
 #include "integrator.h"
 #include "H5Cpp.h"
+#include "util.h"
 //define a struct object which includes the self energy and the vertex which are needed to evaluate the RHS of the flow equations.
 
 template <typename Q>
@@ -93,7 +94,24 @@ public:
     }
 };
 
+template <typename Q> void setInitialConditions (State<Q>& state){
+    //Initial conditions
+    //Assign the starting value for Lambda
+    state.Lambda = Lambda_ini;
 
+    //Asign self energy to initial values (H
+    for (int i = 0; i < nSE; ++i) {
+        state.selfenergy.setself(0, i, glb_U/2.);
+        state.selfenergy.setself(1, i, 0.);
+    }
+    print("SE initial conditions assigned", true);
+
+    for (auto i:odd_Keldysh) {
+        state.vertex.densvertex.irred.setvert(i, 0, 0.);
+        state.vertex.spinvertex.irred.setvert(i, 0, -glb_U/2.);
+    }
+    print("Bare vertex initial assigned", true);
+}
 
 
 #endif //KELDYSH_MFRG_STATE_H
