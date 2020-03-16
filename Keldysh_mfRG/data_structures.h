@@ -24,7 +24,7 @@ public:
     basic_vec(int n, T value) : vector<T> (n, value) {};// constructor with number of elements and value
     basic_vec(initializer_list<T> m) : vector<T> (m) {};// constructor from initializer lis
 
-    T& operator() (int i) {return (*this)[i]; }			// operator for element access //TODO: T& (with reference) on purpose?
+    T operator() (int i) {return (*this)[i]; }			// operator for element access
 
     basic_vec<T>& operator= (const basic_vec<T> &m);	// element-wise assignment
     basic_vec<T> operator+  (const basic_vec<T> &m);    // element-wise addition of two vectors
