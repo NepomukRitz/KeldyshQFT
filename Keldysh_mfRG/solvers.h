@@ -1,53 +1,10 @@
-//
-// Created by Fabian.Kugler on 3/10/20.
-//
-
 #ifndef KELDYSH_MFRG_SOLVERS_H
 #define KELDYSH_MFRG_SOLVERS_H
 
-#include <cmath> // needed for exponential and sqrt function
-#include "write_data2file.h"
-#include <string>
+#include <cmath>             // needed for exponential and sqrt function
+#include "write_data2file.h" // writing data into text or hdf5 files
+//#include <string>
 
-
-template <typename T>
-void export_data(T& state, int iter){}
-
-/**
- * Exports data of a state (i.e. Retarded and Keldysh SelfEnergies plus values stored in K1-class (for SOPT, these values are the bubbles)
- * @param state     : State<comp> whose data is going to be printed
- * @param iter      : Number of the iteration
- */
-void export_data(State<comp>& state, int iter){
-
-    //Names for the different keys
-    string name = "SOPT_flowstep_" + to_string(iter) + ".h5";
-    string ReSER = "SOPT_ReSER";
-    string ImSER = "SOPT_ImSER";
-    string ReSEK = "SOPT_ReSEK";
-    string ImSEK = "SOPT_ImSEK";
-    string RePiaOE = "SOPT_RePiaOE";
-    string ImPiaOE = "SOPT_ImPiaOE";
-    string RePiaOO = "SOPT_RePiaOO";
-    string ImPiaOO = "SOPT_ImPiaOO";
-
-    //Prealocation of buffer for data and successive allocation
-    cvec PiaOE(nBOS);
-    cvec PiaOO(nBOS);
-    cvec SER(nBOS);
-    cvec SEK(nBOS);
-    for (int j = 0; j < nBOS; j++) {
-        PiaOE[j] = 4.*state.vertex.spinvertex.avertex.K1_vval(0, j, 0);
-        PiaOO[j] = 4.*state.vertex.spinvertex.avertex.K1_vval(1, j, 0);
-        SER[j] = state.selfenergy.val(0, j);
-        SEK[j] = state.selfenergy.val(1, j);
-    }
-
-    //Write out to file with name "name"
-    write_h5_rvecs(name, {"w", ReSER, ImSER, ReSEK, ImSEK, RePiaOE, ImPiaOE, RePiaOO, ImPiaOO},
-                   {bfreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(), PiaOE.real(), PiaOE.imag(),
-                    PiaOO.real(), PiaOO.imag()});
-}
 
 template <typename T>
 void ODE_solver_Euler(T& y_fin, const double x_fin, const T& y_ini, const double x_ini, T rhs (const T& y, const double x), const int N_ODE) {
@@ -57,8 +14,6 @@ void ODE_solver_Euler(T& y_fin, const double x_fin, const T& y_ini, const double
     for (int i=0; i<N_ODE; ++i) {
         x_run += dx; // update x
         y_run += rhs(y_run, x_run) * dx; // update y
-        //export_data(y_run, i+1);
-        //cout << "Lambda at this iteration: " << x_run<< "\n";
     }
     y_fin = y_run; // final y value
 }
@@ -75,97 +30,10 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
         T y4 = rhs(y_run + y3, x_run + dx) * dx;
         y_run += (y1 + y2*2. + y3*2. + y4) *(1./ 6.); // update y
-        //export_data(y_run, i+1);
-        //cout << "Lambda at this iteration: " << x_run<< "\n";
     }
     y_fin = y_run; // final y value
 }
 
-auto test_rhs_state(const State<comp>& Psi, const double Lambda) -> State<comp> {
-
-    State<comp> dPsi;
-
-    //Line 1
-    Propagator S(Lambda, Psi.selfenergy, 's');
-    //Line 2
-    Propagator G(Lambda, Psi.selfenergy, 'g');
-
-    print("diff bubble started", true);
-    bool diff = true;
-    double t2 = get_time();
-    //Lines 7-9
-    double ta = get_time();
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', diff, '.');
-    print("a - Bubble:");
-    get_time(ta);
-
-    double tp = get_time();
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'p', diff, '.');
-    print("p - Bubble:");
-    get_time(tp);
-
-    double tt = get_time();
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 't', diff, '.');
-    print("t - Bubble:");
-    get_time(tt);
-
-    print("diff bubble finished. ");
-    get_time(t2);
-
-    loop(dPsi.selfenergy, Psi.vertex, S);
-
-    double t_multiply = get_time();
-    dPsi *= dL;
-    print("dPsi multiplied. ");
-    get_time(t_multiply);
-
-    return dPsi;
-}
-
-auto test_rhs_bubbles_flow(const State<comp>& state, double Lambda) -> State<comp>{
-    State<comp> ans;
-
-    Propagator g(Lambda, state.selfenergy, 'g');
-    Propagator s(Lambda, state.selfenergy, 's');
-
-    //for(int i=75; i<76; i++){
-    for(int i=1; i<nBOS; i++){
-        double w = bfreqs[i];
-
-        //Create the objects explicitly designed to return the determined Keldysh component needed
-        IntegrandBubble integrandPia6 (g, s, true, w, 6,  'a');     //AR
-        IntegrandBubble integrandPia9 (g, s, true, w, 9,  'a');     //RA
-        IntegrandBubble integrandPia11(g, s, true, w, 11, 'a');     //KA
-        IntegrandBubble integrandPia13(g, s, true, w, 13, 'a');     //RK
-        IntegrandBubble integrandPia15(g, s, true, w, 15, 'a');     //KK
-
-        //Calculate the contributions
-        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
-        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
-
-        auto cont6  = integrator(integrandPia6 , w_lower_b, w_upper_b);
-        auto cont9  = integrator(integrandPia9 , w_lower_b, w_upper_b);
-        auto cont15 = integrator(integrandPia15, w_lower_b, w_upper_b);
-
-        //Add the respective contributions to the respective bubble
-        ans.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 0.);//1./2.*(cont11+ cont13) );             //11+13 = OE => Keldysh comp0
-        ans.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15) );     //6+9+15= OO => Keldysh comp1
-
-//        //The relevant components are read out and added in the correct places directly.
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-
-    }
-
-    return ans*dL;
-}
 
 double test_rhs_ODE_exp(const double& y, const double x) {
     return y;
