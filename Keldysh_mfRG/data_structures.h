@@ -69,6 +69,7 @@ public:
     vec(initializer_list<comp> m) : basic_vec<comp> (m) {};
 
     using basic_vec<comp>::operator=;		        // use assignment operator from base class
+    vec<comp> operator+  (const vec<comp> &m);      // element-wise addition of two vectors, must be newly defined to allow, e.g., for (cvec+cvec).real()
     vec<comp> operator*= (const double alpha);      // multiplication with a double constant
 
     vec<comp> inv();    // element-wise inverse
@@ -76,6 +77,7 @@ public:
     vec<double> imag(); // element-wise imaginary part
     vec<double> abs();  // element-wise absolute value
     vec<comp> conj();   // element-wise complex conjugate
+    double max_norm();   // maximum norm
 };
 
 
@@ -257,6 +259,15 @@ vec<T> vec<T>::inv() {
 
 /* member functions of derived complex vector class vec<comp> */
 
+vec<comp> vec<comp>::operator+(const vec<comp> &m) {
+    vec<comp> temp(this->size());
+#pragma omp parallel for
+    for (int i = 0; i < this->size(); ++i) {
+        temp[i] = (*this)[i] + m[i];
+    }
+    return temp;
+}
+
 // multiplication with a double constant
 vec<comp> vec<comp>::operator*=(const double alpha) {
 #pragma omp parallel for
@@ -314,6 +325,15 @@ vec<comp> vec<comp>::conj() {
         temp[i] = std::conj((*this)[i]);
     }
     return temp;
+}
+
+// maximum norm
+double vec<comp>::max_norm() {
+    double out = 0.;
+    for (int i=0; i<this->size(); ++i) {
+        out = max(out, std::abs((*this)[i]));
+    }
+    return out;
 }
 
 #endif // DATA_STRUCTURES_H
