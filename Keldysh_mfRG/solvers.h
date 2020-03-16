@@ -2,8 +2,8 @@
 #define KELDYSH_MFRG_SOLVERS_H
 
 #include <cmath>             // needed for exponential and sqrt function
+#include <iostream>          // text input/output
 #include "write_data2file.h" // writing data into text or hdf5 files
-//#include <string>
 
 
 template <typename T>
