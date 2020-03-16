@@ -88,9 +88,9 @@ public:
 //            vertex.densvertex.tvertex.value(7, 0., wp, w, i_in, vertex.densvertex.avertex) +
 //            vertex.densvertex.irred.vval(7) ) * propagator.value(1, wp) );
 
-        Q aid1 = propagator.valsmooth(0, vp);
-        Q aid2 = conj(propagator.valsmooth(0, vp));
-        Q aid3 = propagator.valsmooth(1, vp);
+        Q aid1 = propagator.valsmooth(0, vp, i_in);
+        Q aid2 = conj(propagator.valsmooth(0, vp, i_in));
+        Q aid3 = propagator.valsmooth(1, vp, i_in);
 
 #ifdef FLOW
         return (( 2.* vertex.spinvertex.value(3, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(3, v, vp, v, i_in, 1, 'f') ) * aid1 +
@@ -173,9 +173,9 @@ public:
 //        Q resp11= 2.*vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 0, vertex.spinvertex.avertex) + vertex.spinvertex.tvertex.K1_vvalsmooth(5, 0.  , i_in, 1, vertex.spinvertex.avertex);
 //        Q resp12= vertex.spinvertex.irred.vval(5, i_in);
 
-        Q aid1 = propagator.valsmooth(0, vp);
-        Q aid2 = conj(propagator.valsmooth(0, vp));
-        Q aid3 = propagator.valsmooth(1, vp);
+        Q aid1 = propagator.valsmooth(0, vp, i_in);
+        Q aid2 = conj(propagator.valsmooth(0, vp, i_in));
+        Q aid3 = propagator.valsmooth(1, vp, i_in);
 
 #ifdef FLOW
         return (( 2.* vertex.spinvertex.value(1, v, vp, v, i_in, 0, 'f') + vertex.spinvertex.value(1, v, vp, v, i_in, 1, 'f') ) * aid1 +
@@ -219,8 +219,8 @@ void loop(SelfEnergy<comp>& self, const Vertex<fullvert<Q> >& fullvertex, const 
         comp integratedK = -1./(M_2_PI*glb_i)*integrator(integrandK, w_lower_f-fabs(v), w_upper_f+fabs(v));
 
         //The results are emplaced in the right place of the answer object.
-        self.addself(0, i, integratedR);
-        self.addself(1, i, integratedK);
+        self.addself(0, i, i_in, integratedR);
+        self.addself(1, i, i_in, integratedK);
     }
 }
 

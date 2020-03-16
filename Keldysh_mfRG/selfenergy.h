@@ -5,16 +5,18 @@
 #ifndef KELDYSH_MFRG_SELFENERGY_H
 #define KELDYSH_MFRG_SELFENERGY_H
 
+#include "data_structures.h"
+
 
 /******************CLASS FOR SELF ENERGY *************/
 template <typename Q>
 class SelfEnergy{
-    vec<Q> Sigma =  vec<Q> (2*nSE); // factor 2 for Keldysh components: Sigma^R, Sigma^K
+    vec<Q> Sigma =  vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
 public:
-    auto val(int, int) const -> Q;
-    auto valsmooth(int, double) const -> Q;
-    void setself(int, int, Q);
-    void addself(int, int, Q);
+    auto val(int, int, int) const -> Q;
+    auto valsmooth(int, double, int) const -> Q;
+    void setself(int, int, int, Q);
+    void addself(int, int, int, Q);
     auto acc(int) ->Q;// access to the ith element of the vector "SIGMA"
     void direct_set(int,Q);
 //operators for self energy
@@ -53,8 +55,8 @@ public:
 
 
 /*****************************************FUNCTIONS FOR SELF ENERGY*****************************************************/
-template <typename Q> auto SelfEnergy<Q>::val(int iK, int i) const -> Q{
-    return Sigma[iK*nSE + i];
+template <typename Q> auto SelfEnergy<Q>::val(int iK, int i, int i_in) const -> Q{
+    return Sigma[iK*nSE*n_in + i*n_in + i_in];
 }
 
 template <typename Q> auto SelfEnergy<Q>::acc(int i) -> Q{
@@ -69,7 +71,7 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q value) {
     else{cout << "Error: Tried to access value outside of self energy range" << endl;};
 }
 
-template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double w) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
+template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double w, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
 
     if(fabs(w)>w_upper_b)
         //Returns U/2 for Retarded and 0. for Keldysh
@@ -81,8 +83,8 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double w) const -> Q
             double x2 = ffreqs[W + 1];
             double xd = (w - x1) / (x2 - x1);
 
-            Q f1 = val(iK, W);
-            Q f2 = val(iK, W + 1);
+            Q f1 = val(iK, W, i_in);
+            Q f2 = val(iK, W + 1, i_in);
 
             return (1. - xd) * f1 + xd * f2;
         }
@@ -94,12 +96,12 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double w) const -> Q
 
 }
 
-template <typename Q> void SelfEnergy<Q>::setself(int iK, int i, Q val){
-    Sigma[iK*nSE + i] = val;
+template <typename Q> void SelfEnergy<Q>::setself(int iK, int i, int i_in, Q val){
+    Sigma[iK*nSE + i*n_in + i_in] = val;
 }
 
-template <typename Q> void SelfEnergy<Q>::addself(int iK, int i, Q val){
-    Sigma[iK*nSE + i] += val;
+template <typename Q> void SelfEnergy<Q>::addself(int iK, int i, int i_in, Q val){
+    Sigma[iK*nSE + i*n_in + i_in] += val;
 }
 
 

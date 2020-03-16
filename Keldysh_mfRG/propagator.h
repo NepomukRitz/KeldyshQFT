@@ -29,7 +29,7 @@ private:
     const SelfEnergy<comp> diffSE;
     char type;
 #ifdef INTER_PROP
-    cvec prop = cvec(2*nPROP);
+    cvec prop = cvec(2*nPROP*n_in);
 #endif
 
 public:
@@ -52,43 +52,25 @@ public:
             :Lambda(Lambda_in), SE(self_in), type(type_in)
     {
 #ifdef INTER_PROP
-        switch(type){
-            case 'g':
-                for(int i=0; i<nPROP; i++) {
-                    double v = ffreqs[i];
-                    prop[i] = GR(v);
-                    prop[nPROP+i] = GK(v);
-                }
-                break;
-            case 's':
-                for(int i=0; i<nPROP; i++) {
-                    double v = ffreqs[i];
-                    prop[i] = SR(v);
-                    prop[nPROP+i] = SK(v);
-                }
-                break;
+        for(int i_in =0; i_in<n_in; i_in++) {
+            switch (type) {
+                case 'g':
+                    for (int i = 0; i < nPROP; i++) {
+                        double v = ffreqs[i];
+                        prop[n_in*i + i_in] = GR(v, i_in);
+                        prop[n_in*nPROP + n_in*i + i_in] = GK(v, i_in);
+                    }
+                    break;
+                case 's': case 'k':
+                    for (int i = 0; i < nPROP; i++) {
+                        double v = ffreqs[i];
+                        prop[n_in*i + i_in] = SR(v, i_in);
+                        prop[n_in*nPROP + n_in*i + i_in] = SK(v, i_in);
+                    }
+                    break;
 
-            case 'k':
-                for(int i=0; i<nPROP; i++) {
-                    double v = ffreqs[i];
-                    prop[i] = SR(v) + GR(v) * diffSE.valsmooth(0, v) * GR(v);
-                    prop[nPROP+i] = SK(v)
-                                    + GR(v) * diffSE.valsmooth(0, v) * GK(v)
-                                    + GR(v) * diffSE.valsmooth(1, v) * GA(v)
-                                    + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
-                }
-                break;
-
-            case 'e':
-                for(int i=0; i<nPROP; i++) {
-                    double v = ffreqs[i];
-                    prop[i] = GR(v) * diffSE.valsmooth(0, v) * GR(v);
-                    prop[nPROP+i] = GR(v) * diffSE.valsmooth(0, v) * GK(v)
-                                  + GR(v) * diffSE.valsmooth(1, v) * GA(v)
-                                  + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
-                }
-                break;
-            default: ;
+                default:;       //case 'e' is contained here too
+            }
         }
 #endif  //INTER_PROP
     }
@@ -104,85 +86,87 @@ public:
             :Lambda(Lambda_in), SE(self_in), diffSE(diffSelf_in), type(type_in)
     {
 #ifdef INTER_PROP
-        switch(type){
-            case 'g':
-                for(int i=0; i<nPROP; i++) {
-                    double v = ffreqs[i];
-                    prop[i] = GR(v);
-                    prop[nPROP+i] = GK(v);
-                }
-                break;
-            case 's':
-                for(int i=0; i<nPROP; i++) {
-                    double v = ffreqs[i];
-                    prop[i] = SR(v);
-                    prop[nPROP+i] = SK(v);
-                }
-                break;
+        for(int i_in =0; i_in<n_in; i_in++) {
+            switch (type) {
+                case 'g':
+                    for (int i = 0; i < nPROP; i++) {
+                        double v = ffreqs[i];
+                        prop[n_in*i + i_in] = GR(v, i_in);
+                        prop[n_in*nPROP + n_in*i + i_in] = GK(v, i_in);
+                    }
+                    break;
+                case 's':
+                    for (int i = 0; i < nPROP; i++) {
+                        double v = ffreqs[i];
+                        prop[n_in*i + i_in] = SR(v, i_in);
+                        prop[n_in*nPROP + n_in*i + i_in] = SK(v, i_in);
+                    }
+                    break;
 
-            case 'k':
-                for(int i=0; i<nPROP; i++) {
-                    double v = ffreqs[i];
-                    prop[i] = SR(v) + GR(v) * diffSE.valsmooth(0, v) * GR(v);
-                    prop[nPROP+i] = SK(v)
-                                    + GR(v) * diffSE.valsmooth(0, v) * GK(v)
-                                    + GR(v) * diffSE.valsmooth(1, v) * GA(v)
-                                    + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
-                }
-                break;
+                case 'k':
+                    for (int i = 0; i < nPROP; i++) {
+                        double v = ffreqs[i];
+                        prop[n_in*i + i_in] = SR(v, i_in) + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                        prop[n_in*nPROP + n_in*i + i_in] = SK(v, i_in)
+                                                           + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
+                                                           + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
+                                                           + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in)) * GA(v, i_in);
+                    }
+                    break;
 
-            case 'e':
-                for(int i=0; i<nPROP; i++) {
-                    double v = ffreqs[i];
-                    prop[i] = GR(v) * diffSE.valsmooth(0, v) * GR(v);
-                    prop[nPROP+i] = GR(v) * diffSE.valsmooth(0, v) * GK(v)
-                                    + GR(v) * diffSE.valsmooth(1, v) * GA(v)
-                                    + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
-                }
-                break;
-            default: ;
+                case 'e':
+                    for (int i = 0; i < nPROP; i++) {
+                        double v = ffreqs[i];
+                        prop[n_in*i + i_in] = GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                        prop[n_in*nPROP + n_in*i + i_in] = GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
+                                                           + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
+                                                           + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in)) * GA(v, i_in);
+                    }
+                    break;
+                default:;
+            }
         }
 
 #endif  //INTER_PROP
 
     };
 
-    auto valsmooth(int, double) const -> comp;
+    auto valsmooth(int, double, int i_in) const -> comp;
 
-    auto GR(double v) const -> comp;
-    auto GA(double v) const -> comp;
-    auto GK(double v) const -> comp;
-    auto SR(double v) const -> comp;
-    auto SK(double v) const -> comp;
+    auto GR(double v, int i_in) const -> comp;
+    auto GA(double v, int i_in) const -> comp;
+    auto GK(double v, int i_in) const -> comp;
+    auto SR(double v, int i_in) const -> comp;
+    auto SK(double v, int i_in) const -> comp;
 };
 
 #if REG==1
 
 /*******PROPAGATOR FUNCTIONS***********/
-auto Propagator::GR(double v) const -> comp
+auto Propagator::GR(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon - SE.valsmooth(0, v));
+    return 1./(v - glb_epsilon - SE.valsmooth(0, v, i_in));
 }
-auto Propagator::GA(double v) const -> comp
+auto Propagator::GA(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon - conj(SE.valsmooth(0,v)));
+    return 1./(v - glb_epsilon - conj(SE.valsmooth(0,v, i_in)));
 }
-auto Propagator::GK(double v) const -> comp
+auto Propagator::GK(double v, int i_in) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*Fermi_distribution(v))*(GR(v)-GA(v));
+    return (1.-2.*Fermi_distribution(v))*(GR(v, i_in)-GA(v, i_in));
 }
 
-auto Propagator::SR(double v) const -> comp
+auto Propagator::SR(double v, int i_in) const -> comp
 {
     return 0.;
 }
-auto Propagator::SK(double v) const -> comp
+auto Propagator::SK(double v, int i_in) const -> comp
 {
     return 0.;
 }
 
-auto Propagator::valsmooth(int iK, double v) const -> comp
+auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 {
     comp SR, SK;
     comp diffSelfEneR;
@@ -194,18 +178,18 @@ auto Propagator::valsmooth(int iK, double v) const -> comp
             if (fabs(v) < Lambda) {
                 switch (iK){
                     case 0:
-                        return GR(v);
+                        return GR(v, i_in);
                     case 1:
-                        return GK(v);
+                        return GK(v, i_in);
                     default:
                         return 0.;
                 }
             } else if (fabs(v) == Lambda) {
                 switch (iK){
                     case 0:
-                        return 1./2.*GR(v);
+                        return 1./2.*GR(v, i_in);
                     case 1:
-                        return 1./2.*GK(v);
+                        return 1./2.*GK(v, i_in);
                     default:
                         return 0.;
                 }
@@ -215,47 +199,47 @@ auto Propagator::valsmooth(int iK, double v) const -> comp
             if (fabs(v) == Lambda) {
                 switch (iK){
                     case 0:
-                        return -GR(v);
+                        return -GR(v, i_in);
                     case 1:
-                        return -GK(v);
+                        return -GK(, i_inv);
                     default:
                         return 0.;
                 }
             }
             return 0.;
         case 'k':
-            diffSelfEneR = diffSE.valsmooth(0, v);
+            diffSelfEneR = diffSE.valsmooth(0, v, i_in);
             diffSelfEneA = conj(diffSelfEneR);
-            diffSelfEneK = diffSE.valsmooth(1, v);
+            diffSelfEneK = diffSE.valsmooth(1, v, i_in);
             if(fabs(v)<Lambda){
                 switch(iK){
                     case 0:
-                        return GR(v) * diffSelfEneR * GR(v);
+                        return GR(v, i_in) * diffSelfEneR * GR(v, i_in);
                     case 1:
-                        return GR(v) * diffSelfEneR * GK(v) + GR(v) * diffSelfEneK * GA(v) + GK(v) * diffSelfEneA * GA(v);
+                        return GR(v, i_in) * diffSelfEneR * GK(v, i_in) + GR(v, i_in) * diffSelfEneK * GA(v, i_in) + GK(v, i_in) * diffSelfEneA * GA(v, i_in);
                     default:
                         return 0.;
                 }
             }else if (fabs(v)==Lambda){
                 switch(iK){
                     case 0:
-                        SR = -1.*GR(v);
-                        return SR + GR(v) * diffSelfEneR * GR(v);
+                        SR = -1.*GR(v, i_in);
+                        return SR + GR(v, i_in) * diffSelfEneR * GR(v, i_in);
                     case 1:
-                        SK = -1. *GK(v);
-                        return SK + GR(v) * diffSelfEneR * GK(v) + GR(v) * diffSelfEneK * GA(v) + GK(v) * diffSelfEneA * GA(v);
+                        SK = -1. *GK(v, i_in);
+                        return SK + GR(v, i_in) * diffSelfEneR * GK(v, i_in) + GR(v, i_in) * diffSelfEneK * GA(v, i_in) + GK(v, i_in) * diffSelfEneA * GA(v, i_in);
                     default:
                         return 0.;
                 }
             }
             return 0.;
         case 'e':
-            if(fabs(v)<=Lambda) {
+            if(fabs(v, i_in)<=Lambda) {
                 switch(iK){
                     case 0:
-                        return GR(v) * diffSelfEneR * GR(v);
+                        return GR(v, i_in) * diffSelfEneR * GR(v, i_in);
                     case 1:
-                        return GR(v) * diffSelfEneR * GK(v) + GR(v) * diffSelfEneK * GA(v) + GK(v) * diffSelfEneA * GA(v);
+                        return GR(v, i_in) * diffSelfEneR * GK(v, i_in) + GR(v, i_in) * diffSelfEneK * GA(v, i_in) + GK(v, i_in) * diffSelfEneA * GA(v, i_in);
                     default:
                         return 0.;
                 }
@@ -273,35 +257,35 @@ auto Propagator::valsmooth(int iK, double v) const -> comp
 
 /*******PROPAGATOR FUNCTIONS***********/
 
-auto Propagator::GR(double v) const -> comp
+auto Propagator::GR(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma+Lambda) - SE.valsmooth(0, v));
+    return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma+Lambda) - SE.valsmooth(0, v, i_in));
 }
-auto Propagator::GA(double v) const -> comp
+auto Propagator::GA(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma+Lambda) - conj(SE.valsmooth(0, v)));
+    return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma+Lambda) - conj(SE.valsmooth(0, v, i_in)));
 }
-auto Propagator::GK(double v) const -> comp
+auto Propagator::GK(double v, int i_in) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*Fermi_distribution(v))*(GR(v)-GA(v));
+    return (1.-2.*Fermi_distribution(v)*(GR(v, i_in)-GA(v, i_in));
 }
-auto Propagator::SR(double v) const -> comp
+auto Propagator::SR(double v, int i_in) const -> comp
 {
-    return -0.5*glb_i*GR(v)*GR(v);
+    return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
 }
-auto Propagator::SK(double v) const -> comp
+auto Propagator::SK(double v, int i_in) const -> comp
 {
-    comp retarded = -0.5*glb_i*GR(v)*GK(v);
-    comp advanced = +0.5*glb_i*GK(v)*GA(v);
-    comp extra    = -glb_i*(1.-2.*Fermi_distribution(v))*GR(v)*GA(v);
+    comp retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
+    comp advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
+    comp extra    = -glb_i*(1.-2.*Fermi_distribution(v))*GR(v, i_in)*GA(v, i_in);
 
     return retarded + advanced + extra;
 }
 
 
 
-auto Propagator::valsmooth(int iK, double v) const -> comp
+auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 {
 #ifdef INTER_PROP
     comp ans;
@@ -310,40 +294,40 @@ auto Propagator::valsmooth(int iK, double v) const -> comp
             case 'g':
                 switch (iK) {
                     case 0:
-                        return GR(v);
+                        return GR(v, i_in);
                     case 1:
-                        return GK(v);
+                        return GK(v, i_in);
                     default:
                         return 0.;
                 }
             case 's':
                 switch (iK) {
                     case 0:
-                        return SR(v);
+                        return SR(v, i_in);
                     case 1:
-                        return SK(v);
+                        return SK(v, i_in);
                     default:
                         return 0.;
                 }
             case 'k':
                 switch(iK){
                     case 0:
-                        return SR(v) + GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                        return SR(v, i_in) + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
-                        return SK(v) + GR(v) * diffSE.valsmooth(0, v) * GK(v)
-                                     + GR(v) * diffSE.valsmooth(1, v) * GA(v)
-                                     + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                        return SK(v, i_in) + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
+                                     + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
+                                     + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }
             case 'e':
                 switch(iK){
                     case 0:
-                        return GR(v) * diffSE.valsmooth(0, v) * GR(v);
+                        return GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
-                        return GR(v) * diffSE.valsmooth(0, v) * GK(v)
-                             + GR(v) * diffSE.valsmooth(1, v) * GA(v)
-                             + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
+                        return GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
+                             + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
+                             + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }
@@ -358,69 +342,71 @@ auto Propagator::valsmooth(int iK, double v) const -> comp
             double x2 = ffreqs[V+1];
             double xd = (v - x1) / (x2 - x1);
 
-            comp f1 = prop[iK * nPROP + V];
-            comp f2 = prop[iK * nPROP + V + 1];
+            comp f1 = prop[iK*nPROP*n_in + V*n_in + i_in];
+            comp f2 = prop[iK*nPROP*n_in + (V+1)*n_in + i_in];
 
             ans = (1. - xd) * f1 + xd * f2;
 
         } else if (fabs(v-w_upper_f)<inter_tol)
-            ans = prop[iK * nPROP + nPROP - 1];
+            ans = prop[iK * nPROP + (nPROP - 1)*n_in + i_in];
         else if (fabs(v-w_lower_f)<inter_tol)
-            ans = prop[iK * nPROP];
+            ans = prop[iK * nPROP + i_in];
         return ans;
 
     }
 #else //INTER_PROP
 
+    for(int i=0; i<n_in; i++){
+        switch (type){
+            case 'g' :                              //Good ol' regular propagator
+                switch (iK){
+                    case 0:
+                        return GR(v, i_in);
+                    case 1:
+                        return GK(v, i_in);
+                    default:
+                        return 0.;
+                }
 
-    switch (type){
-        case 'g' :                              //Good ol' regular propagator
-            switch (iK){
-                case 0:
-                    return GR(v);
-                case 1:
-                    return GK(v);
-                default:
-                    return 0.;
-            }
+            case 's':
+                switch (iK){
+                    case 0:
+                        return SR(v, i_in);
+                    case 1:
+                        return SK(v, i_in);
+                    default:
+                        return 0.;
+                }
 
-        case 's':
-            switch (iK){
-                case 0:
-                    return SR(v);
-                case 1:
-                    return SK(v);
-                default:
-                    return 0.;
-            }
+            case 'k':
+                switch (iK){
+                    case 0:
+                        return SR(v, i_in) + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                    case 1:
+                        return SK(v, i_in)
+                             + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
+                             + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
+                             + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in))* GA(v, i_in);
+                    default:
+                        return 0.;
+                }
 
-        case 'k':
-            switch (iK){
-                case 0:
-                    return SR(v) + GR(v) * diffSE.valsmooth(0, v) * GR(v);
-                case 1:
-                    return SK(v)
-                         + GR(v) * diffSE.valsmooth(0, v) * GK(v)
-                         + GR(v) * diffSE.valsmooth(1, v) * GA(v)
-                         + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
-                default:
-                    return 0.;
-            }
-
-        case 'e':
-            switch (iK){
-                case 0:
-                    return GR(v) * diffSE.valsmooth(0, v) * GR(v);
-                case 1:
-                    return GR(v) * diffSE.valsmooth(0, v) * GK(v)
-                         + GR(v) * diffSE.valsmooth(1, v) * GA(v)
-                         + GK(v) * conj(diffSE.valsmooth(0, v))* GA(v);
-                default:
-                    return 0.;
-            }
-        default:
-            return 0.;
+            case 'e':
+                switch (iK){
+                    case 0:
+                        return GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                    case 1:
+                        return GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
+                             + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
+                             + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in))* GA(v, i_in);
+                    default:
+                        return 0.;
+                }
+            default:
+                return 0.;
+        }
     }
+
 
 
 
