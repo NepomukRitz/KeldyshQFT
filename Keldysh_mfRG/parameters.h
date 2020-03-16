@@ -5,12 +5,12 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
-#include <vector>
-#include "data_structures.h"
+#include <cmath>
+#include <vector>            // standard vector for Keldysh indices
+#include "data_structures.h" // real/complex vector classes
 
 using namespace std;
 
-const double pi = 3.1415926535897;
 /* Grid type - preprocessor macro
  * 1: log-grid, 2: linear grid, 3: non-linear grid */
 #define GRID 2
