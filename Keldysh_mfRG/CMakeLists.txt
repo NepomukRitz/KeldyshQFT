@@ -30,16 +30,9 @@ add_executable(Keldysh_mfRG
         frequency_grid.h
         parameters.h
         util.h
-        OldFiles/save_hdf5.h
         Keldysh_symmetries.h
-        OldFiles/susceptibility.h
-        OldFiles/a_bubble.h
-        OldFiles/p_bubble.h
-        OldFiles/t_bubble.h loop.h a_vertex.h p_vertex.h t_vertex.h
-        include/domain.hpp
-        include/paid.hpp
-        include/queue.hpp
-        include/rule.hpp internal_symmetries.h
+        loop.h a_vertex.h p_vertex.h t_vertex.h
+        internal_symmetries.h
         bubbles.h diagrammatic_combinations.h
         write_data2file fourier_trafo.h solvers.h right_hand_sides.h)
 
