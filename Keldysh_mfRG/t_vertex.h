@@ -14,7 +14,7 @@
 
 template <typename Q> class avert;
 
-template <class Q>
+template <typename Q>
 class tvert{
     /*Lists of the Keldysh components of K1t relating the respective component to the independent ones through the marked
     * trafo*/
