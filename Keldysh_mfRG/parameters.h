@@ -161,7 +161,7 @@ const int n_in = 1;  // TODO: also include in selfenergy functions
 #define INTER_PROP
 
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
-// #define MPI_FLAG
+#define MPI_FLAG
 
 const comp glb_i (0., 1.); // Imaginary unit
 

@@ -6,7 +6,7 @@
 //#include <fstream>
 //#include <complex>
 //#include <fftw3.h> // Fast Fourier Transform (FFT)
-//#include "parameters.h"
+#include "parameters.h"
 //#include "vertex.h"
 //#include "state.h"
 //#include "loop.h"
@@ -18,7 +18,8 @@
 //#include "solvers.h" // Fourier transforms in physics convention and SOPT using FFT
 ////#include "H5Cpp.h"
 //#include "testFunctions.h"
-
+#include <mpi.h>
+#include "solvers.h"
 
 using namespace std;
 
@@ -74,6 +75,8 @@ auto main() -> int {
 //
 //    write_h5_rvecs("actual_propagator.h5",{"v", "acRSR", "acISR", "acRSK", "acISK"},{ffreqs, actualSR.real(), actualSR.imag(), actualSK.real(), actualSK.imag()});
 
+    test_ODE_solvers();
+
 #ifdef MPI_FLAG
     MPI_Finalize();
 #endif
@@ -86,13 +89,6 @@ auto main() -> int {
 #endif
     cout << endl;
 
-    cvec test (3);
-    for (int i=0; i<3; ++i) {
-        test[i] = (comp)i * 2.;
-        cout << test[i].real() << " " << test[i].imag() << endl;
-    }
-    write_h5_rvecs("test.h5", {"testreal", "testimag"}, {test.real(), test.imag()});
-    cout << "writing finished" << endl;
 
 
     return 0;
