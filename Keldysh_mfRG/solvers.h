@@ -250,7 +250,7 @@ void test_SCE_solver() { // test SCE solvers in solving y=-x/(1-y); solution is 
 //    loop(dPsi.selfenergy, state.vertex, s);
 //#endif
 //
-//#ifdef NLOOPS
+//
 //    if(nLoops>1) {
 //        //    Lines 10-13   => Multi-loop
 //        double t4 = get_time();
@@ -310,7 +310,7 @@ void test_SCE_solver() { // test SCE solvers in solving y=-x/(1-y); solution is 
 ////        }
 //    }
 //
-//#endif
+//
 //
 ////#if PROP_TYPE==2
 ////    //Lines 33-41
