@@ -22,7 +22,9 @@ auto Fermi_distribution(double v) -> double
  * Propagator class
  */
 class Propagator {
+public:
     double Lambda;
+private:
     const SelfEnergy<comp> SE;
     const SelfEnergy<comp> diffSE;
     char type;
