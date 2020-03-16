@@ -76,6 +76,13 @@ auto main() -> int {
     MPI_Finalize();
 #endif
 
-    cout << "Hello world" << endl;
+    cout << "Hello world ";
+#ifdef __linux__
+    cout << "on linux.";
+#elif __APPLE__
+    cout << "on apple.";
+#endif
+    cout << endl;
+
     return 0;
 }
