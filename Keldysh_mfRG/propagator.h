@@ -275,11 +275,11 @@ auto Propagator::valsmooth(int iK, double v) const -> comp
 
 auto Propagator::GR(double v) const -> comp
 {
-    return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma_REG+Lambda) - SE.valsmooth(0, v));
+    return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma+Lambda) - SE.valsmooth(0, v));
 }
 auto Propagator::GA(double v) const -> comp
 {
-    return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma_REG+Lambda) - conj(SE.valsmooth(0, v)));
+    return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma+Lambda) - conj(SE.valsmooth(0, v)));
 }
 auto Propagator::GK(double v) const -> comp
 {

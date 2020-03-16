@@ -16,12 +16,12 @@
  *                                             for A =>-1*/
 auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
 #if REG==2
-    if((w + glb_i * glb_Gamma_REG * (b - a))==0.)
+    if((w + glb_i * glb_Gamma * (b - a))==0.)
         return 0.;
     else
-        return 1./(w+glb_i*glb_Gamma_REG*(b-a))
-            *(log((gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*b)/(gamma_p-w/2.-glb_epsilon+glb_i*glb_Gamma_REG*a))
-            + log((gamma_m+w/2.+glb_epsilon-glb_i*glb_Gamma_REG*a)/(gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*b)));
+        return 1./(w+glb_i*glb_Gamma*(b-a))
+            *(log((gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma*b)/(gamma_p-w/2.-glb_epsilon+glb_i*glb_Gamma*a))
+            + log((gamma_m+w/2.+glb_epsilon-glb_i*glb_Gamma*a)/(gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma*b)));
 #else
     return 0.;
 #endif
@@ -29,12 +29,12 @@ auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, do
 
 auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
 #if REG==2
-    if((w - 2. * glb_epsilon + glb_i * glb_Gamma_REG * (a + b))==0.)
+    if((w - 2. * glb_epsilon + glb_i * glb_Gamma * (a + b))==0.)
         return 0.;
     else
-        return 1./(w-2*glb_epsilon+glb_i*glb_Gamma_REG*(a+b))
-            *(log((gamma_p-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*b)/(gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*a))
-            + log((gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma_REG*a)/(gamma_m+w/2.-glb_epsilon+glb_i*glb_Gamma_REG*b)));
+        return 1./(w-2*glb_epsilon+glb_i*glb_Gamma*(a+b))
+            *(log((gamma_p-w/2.+glb_epsilon-glb_i*glb_Gamma*b)/(gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma*a))
+            + log((gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma*a)/(gamma_m+w/2.-glb_epsilon+glb_i*glb_Gamma*b)));
 #else
     return 0.;
 #endif
@@ -53,9 +53,9 @@ auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, dou
 //    }
 //
 //    if(a==1. || a==-1.)           //Advanced or Retarded
-//        return log((-gamma_m-glb_epsilon+glb_i*glb_Gamma_REG*a)/(gamma_p-glb_epsilon+glb_i*glb_Gamma_REG*a));
+//        return log((-gamma_m-glb_epsilon+glb_i*glb_Gamma*a)/(gamma_p-glb_epsilon+glb_i*glb_Gamma*a));
 //    else                //Keldysh
-//        return 0.; //2.*glb_i*(atan((gamma_m+glb_epsilon)/glb_Gamma_REG) + atan((gamma_p-glb_epsilon)/glb_Gamma_REG)-pi);
+//        return 0.; //2.*glb_i*(atan((gamma_m+glb_epsilon)/glb_Gamma) + atan((gamma_p-glb_epsilon)/glb_Gamma)-pi);
 //}
 
 

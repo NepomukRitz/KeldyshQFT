@@ -20,7 +20,7 @@ using namespace std;
 #define REG 2
 //const double sharp = 2; // Sharpness of the smoothened regulator cutoff -> would be for smooth cutoff. Have not implemented
 #if REG==2
-    const double glb_Gamma_REG = 1.;
+    const double glb_Gamma = 1.;  // Hybridization of Anderson model
 #endif
 
 //Defines the number of diagrammatic classes that are relevant for a code: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
