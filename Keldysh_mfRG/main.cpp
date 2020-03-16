@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
 #include <iostream>
 #include <fstream>
 #include <complex>
@@ -53,9 +53,9 @@ auto main() -> int {
 //    test_ODE_solvers();
 //    test_SCE_solver();
 
-
+#ifdef MPI_FLAG
     MPI_Init(nullptr, nullptr);
-
+#endif
 
 #ifndef FLOW
 
@@ -92,7 +92,9 @@ auto main() -> int {
 //
 //    write_h5_rvecs("actual_propagator.h5",{"v", "acRSR", "acISR", "acRSK", "acISK"},{ffreqs, actualSR.real(), actualSR.imag(), actualSK.real(), actualSK.imag()});
 
+#ifdef MPI_FLAG
     MPI_Finalize();
+#endif
 
     return 0;
 }

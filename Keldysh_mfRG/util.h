@@ -9,39 +9,51 @@
 #include <unistd.h>    // time delay
 #include <string>
 #include <iostream>
+
+#ifdef MPI_FLAG
 #include "mpi_setup.h"
+#endif
 
 using namespace std;
 
 /* print string in standard output */
 void print(string s) {
-    if (mpi_world_rank() == 0) {
+#ifdef MPI_FLAG
+    if (mpi_world_rank() == 0)
+#endif
         cout << s;
-    }
 }
 
 /* print char in standard output */
 void print(char c) {
-    if (mpi_world_rank() == 0) {
+#ifdef MPI_FLAG
+    if (mpi_world_rank() == 0)
+#endif
         cout << c;
-    }
 }
 
 /* print double in standard output */
 void print(double d) {
-    if (mpi_world_rank() == 0) {
+#ifdef MPI_FLAG
+    if (mpi_world_rank() == 0)
+#endif
         cout << d;
-    }
 }
 
 /* print string in standard output and add new line */
 void print(string s, bool endline) {
+#ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
         cout << s;
         if (endline) cout << endl;
     }
+#else
+    cout << s;
+    if (endline) cout << endl;
+#endif
 }
 
+#ifdef MPI_FLAG
 /* return time stamp in seconds with millisecond precision */
 double get_time() {
     struct timeval tp;
@@ -81,5 +93,6 @@ void get_time(double t0, std::string prec) {
         print("s", true);
     }
 }
+#endif // MPI_FLAG
 
 #endif // UTIL_H
