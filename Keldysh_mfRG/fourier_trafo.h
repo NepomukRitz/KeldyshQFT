@@ -1,8 +1,8 @@
 #ifndef FOURIER_TRAFO_H
 #define FOURIER_TRAFO_H
 
-#include <cmath> // needed for exponential function to adjust Fourier convention
-#include <fftw3.h> // fftw library
+#include <cmath> // needed for exponential function (in Fourier convention), M_PI = 3.1415..., M_2_PI = 2.*3.1415...
+#include <fftw3.h> // Fourier transform library
 #include "data_structures.h"
 #include "write_data2file.h"
 #include <iostream> // text in- and output
@@ -90,7 +90,7 @@ void ft_v2t(rvec& t, cvec& Gt, const rvec& v, const cvec& Gv, const comp tail_co
     if(N != t.size() || N != Gt.size() || N != Gv.size())
         cout << "Error in ft_v2t: Vector sizes must be equal." << endl;
     const double Vtot = (v[1]-v[0])*(double)N; // frequency span
-    const double Ttot = (2.*pi*(double)N)/Vtot; // time span
+    const double Ttot = (M_2_PI*(double)N)/Vtot; // time span
     for(int i=0; i<N; ++i) // fill time grid
         t[i] = -Ttot/2. + (Ttot/(double)N)*(double)i;
     fftw_complex in[N], out[N]; // input and output array in fftw format
@@ -139,7 +139,7 @@ void ft_t2v(rvec& v, cvec& Gv, const rvec& t, const cvec& Gt, const comp tail_co
     if(N != v.size() || N != Gv.size() || N != Gt.size())
         cout << "Error in ft_t2v: Vector sizes must be equal." << endl;
     const double Ttot = (t[1]-t[0])*(double)N; // time span
-    const double Vtot = (2.*pi*(double)N)/Ttot; // frequency span
+    const double Vtot = (M_2_PI*(double)N)/Ttot; // frequency span
     for(int i=0; i<N; ++i) // fill frequency grid
         v[i] = -Vtot/2. + (Vtot/(double)N)*(double)i;
     fftw_complex in[N], out[N]; // input and output array in fftw format
@@ -190,7 +190,7 @@ void ft_vn2tau(rvec& tau, cvec& Gtau, const rvec& vn, const cvec& Gvn, const boo
     if(N != tau.size() || N != Gtau.size() || N != Gvn.size())
         cout << "Error in ft_vn2tau: Vector sizes must be equal." << endl;
     const double Vtot = (vn[1]-vn[0])*(double)N; // frequency span = 2pi/beta*N
-    const double beta = (2.*pi*(double)N)/Vtot; // time span = beta = inverse temperature
+    const double beta = (M_2_PI*(double)N)/Vtot; // time span = beta = inverse temperature
     for(int i=0; i<N; ++i) // fill time grid
         tau[i] = (beta/(double)N)*(double)i;
     fftw_complex in[N], out[N]; // input and output array in fftw format
@@ -242,11 +242,11 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
     const int nmin = (int)(-floor(0.5*(double)N)); // lowest Matsubara-frequency index
     if(type=='f') { // fermionic Matsubara frequencies
         for (int i = 0; i < N; ++i) // fill frequency grid
-            vn[i] = (2. * (double)(nmin + i) + 1.) / (pi * beta);
+            vn[i] = (2. * (double)(nmin + i) + 1.) / (M_PI * beta);
     }
     else if(type=='b') { // bosonic Matsubara frequencies
         for(int i=0; i<N; ++i) // fill frequency grid
-            vn[i] = (2. * (double)(nmin + i)) / (pi*beta);
+            vn[i] = (2. * (double)(nmin + i)) / (M_PI*beta);
     }
     else
         cout << "Error in ft_tau2vn: Type must be f or b." << endl;
