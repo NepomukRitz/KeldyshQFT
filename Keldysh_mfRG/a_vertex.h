@@ -11,7 +11,7 @@
 #include "internal_symmetries.h"
 #include "interpolations.h"
 
-
+// TODO: vval -> val, vvalsmooth -> valsmooth
 template <typename Q> class tvert;
 
 template <typename Q>
@@ -840,7 +840,7 @@ template <typename Q> auto avert<Q>::K3_vvalsmooth (int iK, double w_a, double v
 
     switch (iK) {
         case 0: case 1: case 3: case 5: case 7:
-            iK3 = 0;
+            iK3 = convertToIndepIndex(iK);
             pf3 = 1.;
             conjugate = false;
             transform = false;

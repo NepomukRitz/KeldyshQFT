@@ -11,7 +11,7 @@
 #include "internal_symmetries.h"
 #include "interpolations.h"
 
-
+// TODO: vval -> val, vvalsmooth -> valsmooth
 template <typename Q> class avert;
 
 template <typename Q>

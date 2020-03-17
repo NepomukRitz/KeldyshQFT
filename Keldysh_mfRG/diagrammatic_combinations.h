@@ -14,7 +14,7 @@
 #define KELDYSH_MFRG_DIAGRAMMATIC_COMBINATIONS_H
 
 #include "vertex.h"
-
+// TODO: vval -> val, vvalsmooth -> valsmooth
 
 /**
  * Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
