@@ -1,20 +1,17 @@
-//
-// Created by E.Walter on 8/1/19.
-//
-
 #ifndef KELDYSH_MFRG_PROPAGATOR_H
 #define KELDYSH_MFRG_PROPAGATOR_H
 
-#include <iostream>
-#include "selfenergy.h"
-#include "parameters.h"
+#include <cmath>        // exp, tanh, fabs, conj
+#include "selfenergy.h" // self-energy class
+#include "parameters.h" // system parameters (lengths of vectors etc.)
 
 using namespace std;
 
 //Self-explanatory
 auto Fermi_distribution(double v) -> double
 {
-    return 1./(exp((v-glb_mu)/glb_T)+1.);
+    // return 1./(exp((v-glb_mu)/glb_T)+1.);
+    return 1./2. * (1. - tanh((v-glb_mu)/(2.*glb_T))); // numerically preferential
 }
 
 
@@ -268,7 +265,7 @@ auto Propagator::GA(double v, int i_in) const -> comp
 auto Propagator::GK(double v, int i_in) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*Fermi_distribution(v)*(GR(v, i_in)-GA(v, i_in));
+    return (1.-2.*Fermi_distribution(v)*(GR(v, i_in)-GA(v, i_in)));
 }
 auto Propagator::SR(double v, int i_in) const -> comp
 {

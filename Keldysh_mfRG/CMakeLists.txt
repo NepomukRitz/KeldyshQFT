@@ -21,19 +21,14 @@ add_executable(Keldysh_mfRG
         frequency_grid.h
         mpi_setup.h
         parameters.h
+        propagator.h
         selfenergy.h
         solvers.h
         util.h
         write_data2file.h
-
-
 #        state.h
 #        vertex.h
-#
-#        propagator.h
 #        integrator.h
-#
-#
 #        Keldysh_symmetries.h
 #        loop.h a_vertex.h p_vertex.h t_vertex.h
 #        internal_symmetries.h

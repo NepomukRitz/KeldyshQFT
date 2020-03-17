@@ -157,7 +157,7 @@ const int n_in = 1;  // TODO: also include in selfenergy functions
 #define DIAG_CLASS 0
 
 // Defines whether the values are interpolated from previously saved ones or from the self-energy
-#define INTER_PROP
+//#define INTER_PROP
 
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
 #define MPI_FLAG

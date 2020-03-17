@@ -11,7 +11,6 @@
 //#include "state.h"
 //#include "loop.h"
 //#include "bubbles.h"
-//#include "propagator.h"
 //#include "hdf5_routines.h"
 //#include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
 ////#include "H5Cpp.h"
@@ -22,6 +21,7 @@
 #include "frequency_grid.h"
 #include "util.h"
 #include "selfenergy.h"
+#include "propagator.h"
 
 using namespace std;
 
@@ -36,19 +36,24 @@ auto main() -> int {
     setUpFerGrid();
     setUpFlowGrid();
 
-    print(ffreqs[1], true);
+    //print(ffreqs[1], true);
 
-    print(mpi_world_rank(), true);
-    print(mpi_world_size(), true);
+    //print(mpi_world_rank(), true);
+    //print(mpi_world_size(), true);
+    //vec<comp> testvec = mpi_initialize_buffer<comp>(1, 12);
+    //print(testvec.size(), true);
 
-    vec<comp> testvec = mpi_initialize_buffer<comp>(1, 12);
-    print(testvec.size(), true);
-
-    test_ODE_solvers();
+    //test_ODE_solvers();
 
     SelfEnergy<comp> testSE;
     testSE.initialize(glb_U/2., 0.);
     print(testSE.valsmooth(0, 1.5, 0), true);
+
+    print(Fermi_distribution(0.1), true);
+    Propagator testProp (1., testSE, 'g');
+    print(testProp.valsmooth(0, 1.5, 0), true);
+    comp testPropcompare = 1./(1.5 + glb_i);
+    print(testPropcompare, true);
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);
