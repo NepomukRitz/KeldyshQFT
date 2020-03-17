@@ -11,20 +11,20 @@
 #include "integrator.h"               // integration routines
 #include "util.h"                     // printing text output
 
+// TODO: change operator+, operator* 
 template <typename Q>
-struct State{
+class State{
 public:
-    double Lambda{};
     SelfEnergy<Q> selfenergy;
     Vertex<fullvert<Q> > vertex;
 
     State() = default;;
-    explicit State(double lambda_input) : Lambda(lambda_input) {};
+
+    void initialize();
 
 //operators containing State objects
     auto operator=(const State& state1) -> State&{
 //        if(this == &state1) return *this;   //Handling of self-assignment
-        this->Lambda = state1.Lambda;
         this->vertex = state1.vertex;
         this->selfenergy = state1.selfenergy;
         return *this;
@@ -55,24 +55,20 @@ public:
         return (*this);
     }
     auto operator == (const State& state) -> bool{
-        return (this->Lambda==state.Lambda)
-             &&(this->vertex==state.vertex)
+        return (this->vertex==state.vertex)
              &&(this->selfenergy== state.selfenergy);
     }
 };
 
-template <typename Q> void setInitialConditions (State<Q>& state){
+template <typename Q> void State<Q>::initialize (){
     // Initial conditions
-    // Assign the starting value for Lambda
-    state.Lambda = Lambda_ini;
-
     // Assign initial conditions to self energy
-    state.selfenergy.initialize(glb_U/2., 0.);
+    this->selfenergy.initialize(glb_U/2., 0.);
     print("SE initial conditions assigned", true);
 
     // Assign initial conditions to bare vertex
-    state.vertex.densvertex.initialize(0.);
-    state.vertex.spinvertex.initialize(-glb_U/2.);
+    this->vertex.densvertex.initialize(0.);
+    this->vertex.spinvertex.initialize(-glb_U/2.);
     print("Bare vertex initial conditions assigned", true);
 }
 
