@@ -1,27 +1,25 @@
 #ifndef FOURIER_TRAFO_H
 #define FOURIER_TRAFO_H
 
-#include <cmath> // needed for exponential function (in Fourier convention), M_PI = 3.1415..., M_2_PI = 2.*3.1415...
-#include <fftw3.h> // Fourier transform library
-#include "data_structures.h"
-#include "write_data2file.h"
-#include <iostream> // text in- and output
-#include "parameters.h"
-#include "propagator.h"
-#include "a_vertex.h"
-#include "p_vertex.h"
+#include <cmath>                    // exp (to adjust Fourier convention), M_PI = 3.1415..., M_2_PI = 2.*3.1415...
+#include <fftw3.h>                  // Fast Fourier transform library
+#include "data_structures.h"        // real/complex vector classes, imag. unit
+#include "write_data2file.h"        // writing data into text or hdf5 files
+#include <iostream>                 // text input/output
+#include "propagator.h"             // propagator to perform second-order perturbation theory (SOPT)
+#include "selfenergy.h"             // self-energy filled in SOPT
+#include "a_vertex.h"               // K1a filled in SOPT
+#include "p_vertex.h"               // K1p filled in SOPT
 
 using namespace std;
 
-double Theta(double x) {
-    // Heaviside step function
+double Theta(double x) { // Heaviside step function for analytical Fourier transform
     if (x > 0) return 1.;
     else if (x < 0) return 0.;
     else return 1./2.;
 }
 
-double sign(double x) {
-    // sign function
+double sign(double x) { // sign function for analytical Fourier transform
     if (x > 0) return 1.;
     else if (x < 0) return -1.;
     else return 0.;
@@ -76,7 +74,7 @@ void test_interp1_FFT() {
     rvec y{-0.5, 0.5, 1.5, 4};
     cvec fy(4);
     interp1_FFT(fy, y, fx, x);
-    cout << "Differences from exact results are: " << fy[0] - 0. << " " << fy[1] - 0.5 << " " << fy[2] - 2.5 << " "
+    cout << "Testing interp1_FFT. Differences from exact results are: " << fy[0] - 0. << " " << fy[1] - 0.5 << " " << fy[2] - 2.5 << " "
          << fy[3] - 0. << "." << endl;
 }
 
@@ -284,7 +282,7 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
 }
 
 
-void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gammaPout, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
+void SOPTbare_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gammaPout, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
     // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
     bool SEflag_FFT = true;
     bool PiAflag_FFT = true;
@@ -292,7 +290,7 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pv
     bool writeflag_FFT = true; // whether to write data into file
     bool tailflag_FFT = true; // whether to include analytic treatment of tail
     double hyb_FFT = 0; // hybridization for high-freuqency decay, e.g., G^R(v)=1/(v+i*hyb)
-    if(tailflag_FFT) hyb_FFT = (glb_Gamma_REG+Gin.Lambda)/2.;
+    if(tailflag_FFT) hyb_FFT = (glb_Gamma+Gin.Lambda)/2.;
     /// ------------------- READ INPUT --------------------- ///
     rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
     const double dvFFT = V_FFT / (double)nFFT; // frequency spacing
@@ -301,8 +299,8 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pv
         vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
     cvec GvR (nFFT), GvK (nFFT); // separate vectors for retarded and Keldysh component of input GF
     for (int i = 0; i < nFFT; ++i) {
-        GvR[i] = Gin.valsmooth(0, vFFT[i]);//gR(Lambda, vFFT[i]); // retarded component
-        GvK[i] = Gin.valsmooth(1, vFFT[i]);;//gK(Lambda, vFFT[i]); // Keldysh component
+        GvR[i] = Gin.valsmooth(0, vFFT[i], 0); // retarded component
+        GvK[i] = Gin.valsmooth(1, vFFT[i], 0); // Keldysh component
     }
     /// ------------------- TRANSFORM INPUT --------------------- ///
     rvec tFFT (nFFT); // vector for real time
@@ -357,8 +355,8 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pv
         interp1_FFT(SEoutR, ffreqs, SEvR, vFFT); // linear interpolation for retarded component
         interp1_FFT(SEoutK, ffreqs, SEvK, vFFT); // linear interpolation for Keldysh component
         for (int i = 0; i < nSE; ++i) { // fill results in output self-energy
-            SEout.setself(0, i, SEoutR[i]); // retarded component
-            SEout.setself(1, i, SEoutK[i]); // Keldysh component
+            SEout.setself(0, i, 0, SEoutR[i]); // retarded component
+            SEout.setself(1, i, 0, SEoutK[i]); // Keldysh component
         }
         if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_SE.h5", {"v","SE_R_R","SE_R_I","SE_K_R","SE_K_I"}, {vFFT,SEvR.real(),SEvR.imag(),SEvK.real(),SEvK.imag()});
     }
@@ -451,13 +449,13 @@ void SOPTbare_FFT_SelfEnergy(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pv
     }
 }
 
-void SOPTbare_FFT_SelfEnergy(cvec& PiaEO, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
+void SOPT_FFT(cvec& PiaEO, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
     // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
     bool PiAflag_FFT = true;
     bool writeflag_FFT = true; // whether to write data into file
     bool tailflag_FFT = true; // whether to include analytic treatment of tail
     double hyb_FFT = 0; // hybridization for high-freuqency decay, e.g., G^R(v)=1/(v+i*hyb)
-    if (tailflag_FFT) hyb_FFT = (glb_Gamma_REG + Gin.Lambda) / 2.;
+    if (tailflag_FFT) hyb_FFT = (glb_Gamma + Gin.Lambda) / 2.;
     /// ------------------- READ INPUT --------------------- ///
     rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
     const double dvFFT = V_FFT / (double) nFFT; // frequency spacing
@@ -468,8 +466,8 @@ void SOPTbare_FFT_SelfEnergy(cvec& PiaEO, const Propagator Gin, const double Uin
         vFFT[i] = -V_FFT / 2. + dvFFT * (double) i;
     cvec GvR(nFFT), GvK(nFFT); // separate vectors for retarded and Keldysh component of input GF
     for (int i = 0; i < nFFT; ++i) {
-        GvR[i] = Gin.valsmooth(0, vFFT[i]);//gR(Lambda, vFFT[i]); // retarded component
-        GvK[i] = Gin.valsmooth(1, vFFT[i]);;//gK(Lambda, vFFT[i]); // Keldysh component
+        GvR[i] = Gin.valsmooth(0, vFFT[i], 0); // retarded component
+        GvK[i] = Gin.valsmooth(1, vFFT[i], 0); // Keldysh component
     }
     /// ------------------- TRANSFORM INPUT --------------------- ///
     rvec tFFT(nFFT); // vector for real time
@@ -499,8 +497,8 @@ void SOPTbare_FFT_SelfEnergy(cvec& PiaEO, const Propagator Gin, const double Uin
     }
 }
 
-void diffSOPTbare_FFT_SelfEnergy(cvec& dPiaEO, const Propagator Gin, const Propagator Sin, const double Uin, const int nFFT, const double V_FFT) {
-    // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
+void diffSOPT_FFT(cvec& dPiaEO, const Propagator Gin, const Propagator Sin, const double Uin, const int nFFT, const double V_FFT) {
+    // whether to compute antiparallel/particle-hole bubble (PiA)
     bool PiAflag_FFT = true;
     bool writeflag_FFT = false; // whether to write data into file
     /// ------------------- READ INPUT --------------------- ///
@@ -511,10 +509,10 @@ void diffSOPTbare_FFT_SelfEnergy(cvec& dPiaEO, const Propagator Gin, const Propa
         vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
     cvec GvR (nFFT), GvK (nFFT), SvR (nFFT), SvK (nFFT); // separate vectors for retarded and Keldysh component of input GF
     for (int i = 0; i < nFFT; ++i) {
-        GvR[i] = Gin.valsmooth(0, vFFT[i]); // retarded component
-        GvK[i] = Gin.valsmooth(1, vFFT[i]); // Keldysh component
-        SvR[i] = Sin.valsmooth(0, vFFT[i]); // retarded component
-        SvK[i] = Sin.valsmooth(1, vFFT[i]); // Keldysh component
+        GvR[i] = Gin.valsmooth(0, vFFT[i], 0); // retarded component
+        GvK[i] = Gin.valsmooth(1, vFFT[i], 0); // Keldysh component
+        SvR[i] = Sin.valsmooth(0, vFFT[i], 0); // retarded component
+        SvK[i] = Sin.valsmooth(1, vFFT[i], 0); // Keldysh component
     }
     /// ------------------- TRANSFORM INPUT --------------------- ///
     rvec tFFT (nFFT); // vector for real time
@@ -552,10 +550,10 @@ void diffSOPTbare_FFT_SelfEnergy(cvec& dPiaEO, const Propagator Gin, const Propa
 }
 
 // Comment for other function
-// Dyson eq.: G^K = G^R G^A ( \Sigma^K + \Delta^K)
-// equilibrium: \Sigma^K = (1+2n_F)(\Sigma^R-\Sigma^A), acc. for \Delta^K
+// Dyson eq.: G^K = G^R G^A ( \Sigma^K + \Delta^K )
+// equilibrium: \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Delta^K
 // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Delta)^R - (\Sigma+\Delta)^A ]
-//                 = (1-2n_F) G^R G^A (G_0^A - G_0^R) = (1+2n_F) (G^R-G^A)
+//                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
 
 
 #endif // FOURIER_TRAFO_H
