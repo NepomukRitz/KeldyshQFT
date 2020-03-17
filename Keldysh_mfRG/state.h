@@ -101,6 +101,7 @@ template <typename Q> void setInitialConditions (State<Q>& state){
 
     //Assign self energy to initial values
     state.selfenergy.initialize(glb_U/2., 0.);
+    print("SE initial conditions assigned", true);
 
     for (auto i:odd_Keldysh) {
         state.vertex.densvertex.irred.setvert(i, 0, 0.);

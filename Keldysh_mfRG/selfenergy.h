@@ -63,7 +63,6 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
             this->setself(1, iv, i_in, valK);
         }
     }
-    print("SE initial conditions assigned", true);
 }
 
 template <typename Q> auto SelfEnergy<Q>::val(int iK, int i, int i_in) const -> Q{
