@@ -5,7 +5,6 @@
 #include "parameters.h"
 
 
-//#include "hdf5_routines.h"
 
 #include <mpi.h>
 #include "mpi_setup.h"
@@ -22,6 +21,7 @@
 #include "loop.h"
 #include "bubbles.h"
 #include "testFunctions.h"
+#include "hdf5_routines.h"
 
 using namespace std;
 
@@ -68,6 +68,8 @@ auto main() -> int {
     State<comp> teststate;
     teststate.initialize();
     print(teststate.vertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
+
+    write_hdf("test1.h5", Lambda_ini, nEVO, teststate);
 
     //double t0 = get_time();
     //loop(testSE, testvertex, testProp);

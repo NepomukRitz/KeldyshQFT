@@ -1232,7 +1232,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
     State<comp> out = read_hdf<comp>(FILE_NAME, i, nEVO, flow_grid);
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
-            if (state.selfenergy.val(iK, iSE) != out.selfenergy.val(iK, iSE)) {
+            if (state.selfenergy.val(iK, iSE, 0) != out.selfenergy.val(iK, iSE, 0)) {
                 cout << "Self-energy not equal, " << iK << ", " << iSE << endl;
             }
         }
