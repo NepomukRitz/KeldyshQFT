@@ -830,7 +830,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& v
                 if(diff){
                     Integrand_K1_diff<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
                     value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
-                } //TODO: prefactor -1./(2.*M_PI*glb_i) into Integrand classes?
+                }
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
                     value  = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
