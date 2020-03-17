@@ -57,9 +57,9 @@ auto main() -> int {
 
     vector<double> testvec {1., 2., 3., 5.5, M_PI};
     print(isInList(M_PI, testvec), true);
-    print(isInList(M_2_PI/M_2_PI, testvec), true);
+    print(isInList(M_PI/M_PI, testvec), true);
 
-    //test_ODE_SOPT_FFT_K1a(100);
+    test_ODE_SOPT_FFT_K1a(100);
 
     Vertex<fullvert<comp> > testvertex;
     testvertex.spinvertex.initialize(-glb_U/2.);
@@ -69,7 +69,9 @@ auto main() -> int {
     teststate.initialize();
     print(teststate.vertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
 
-    write_hdf("test1.h5", Lambda_ini, nEVO, teststate);
+    //write_hdf("test1.h5", Lambda_ini, nEVO, teststate);
+
+    print(2.*M_PI, true);
 
     //double t0 = get_time();
     //loop(testSE, testvertex, testProp);

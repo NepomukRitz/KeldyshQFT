@@ -4,7 +4,7 @@
 #ifndef KELDYSH_MFRG_LOOP_H
 #define KELDYSH_MFRG_LOOP_H
 
-#include <cmath>         // for using the macro M_2_PI as 2*pi
+#include <cmath>         // for using the macro M_PI as pi
 
 #include "selfenergy.h"  // self-energy class
 #include "vertex.h"      // vertex class
@@ -134,8 +134,8 @@ void loop(SelfEnergy<comp>& self, const Vertex<fullvert<Q> >& fullvertex, const 
         // The limits of the integral must depend on v because of the transformations that must be done on the frequencies
         // (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v', needing both extensions of the integration domain in both directions
         // The prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
-        comp integratedR = -1./(M_2_PI*glb_i)*integrator(integrandR, w_lower_f-fabs(v), w_upper_f+fabs(v));
-        comp integratedK = -1./(M_2_PI*glb_i)*integrator(integrandK, w_lower_f-fabs(v), w_upper_f+fabs(v));
+        comp integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, w_lower_f-fabs(v), w_upper_f+fabs(v));
+        comp integratedK = -1./(2.*M_PI*glb_i)*integrator(integrandK, w_lower_f-fabs(v), w_upper_f+fabs(v));
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, i, i_in, integratedR);

@@ -1,7 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTFUNCTIONS_H
 #define KELDYSH_MFRG_TESTFUNCTIONS_H
 
-#include <cmath>              // use M_2_PI as 2*pi
+#include <cmath>              // use M_PI as pi
 #include "loop.h"             // self-energy loop
 #include "solvers.h"          // ODE solvers
 #include "write_data2file.h"  // writing data to txt or hdf5 file
@@ -86,7 +86,7 @@ void loop_test_individual(SelfEnergy<Q>& ans, const Vertex<fullvert<Q> >& fullve
         IntegrandSigma<Q, fullvert<Q>> integrandSigma(fullvertex, prop, vert_iK, v, i_in, prop_iK); //prop_iK = 0 for R, =-1 for A and =1 for K
 
         //Integration of the object. Notice the required limits for the integral
-        Q integrated = -1./(M_2_PI*glb_i)*integrator(integrandSigma, w_lower_f-fabs(v), w_upper_f+fabs(v));
+        Q integrated = -1./(2.*M_PI*glb_i)*integrator(integrandSigma, w_lower_f-fabs(v), w_upper_f+fabs(v));
 
         //The result is updated
         ans.addself(self_iK, i, 0, integrated);
@@ -214,12 +214,12 @@ void testBubbles(State<comp>& state, double Lambda){
         //Add the respective contributions to the respective bubble
         PiaOE[i] = 0.;//1./2.*(cont11+ cont13);
         PiaOO[i] = 1./2.*(cont6 + cont9);// + cont15);
-        PiaOO[i]+= 1./2.*(1./(M_2_PI*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
+        PiaOO[i]+= 1./2.*(1./(2.*M_PI*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
 
 /*
         //cout << Pia_odd_even[i] << endl;
         //cout << integrandPia11(-2.6) << endl;
-        //cout << g1.pvalsmooth(1,-2.6-w/2.)*conj(g2.pvalsmooth(0,-2.6+w/2.))/(M_2_PI*glb_i) << endl;
+        //cout << g1.pvalsmooth(1,-2.6-w/2.)*conj(g2.pvalsmooth(0,-2.6+w/2.))/(2.*M_PI*glb_i) << endl;
         cout << "GK(v-w/2): " << g1.pvalsmooth(1,-2.6-w/2.) << endl;
 
 
@@ -372,7 +372,7 @@ void testBubblesFlow(){
         //Add the respective contributions to the respective bubble
         test_state.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 0.);//1./2.*(cont11 + cont13));              //11+13 => OE => Keldysh 0
         test_state.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15));        //6+9+15=> OO => Keldysh 1
-        test_state.vertex.spinvertex.avertex.K1_addvert(1, i, 0, 1./2.*(1./(M_2_PI*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b))));
+        test_state.vertex.spinvertex.avertex.K1_addvert(1, i, 0, 1./2.*(1./(2.*M_PI*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b))));
     }
 
 

@@ -1,7 +1,7 @@
 #ifndef FOURIER_TRAFO_H
 #define FOURIER_TRAFO_H
 
-#include <cmath>                    // exp (to adjust Fourier convention), M_PI = 3.1415..., M_2_PI = 2.*3.1415...
+#include <cmath>                    // exp (to adjust Fourier convention), M_PI = 3.1415...
 #include <fftw3.h>                  // Fast Fourier transform library
 #include "data_structures.h"        // real/complex vector classes, imag. unit
 #include "write_data2file.h"        // writing data into text or hdf5 files
@@ -88,7 +88,7 @@ void ft_v2t(rvec& t, cvec& Gt, const rvec& v, const cvec& Gv, const comp tail_co
     if(N != t.size() || N != Gt.size() || N != Gv.size())
         cout << "Error in ft_v2t: Vector sizes must be equal." << endl;
     const double Vtot = (v[1]-v[0])*(double)N; // frequency span
-    const double Ttot = (M_2_PI*(double)N)/Vtot; // time span
+    const double Ttot = (2.*M_PI*(double)N)/Vtot; // time span
     for(int i=0; i<N; ++i) // fill time grid
         t[i] = -Ttot/2. + (Ttot/(double)N)*(double)i;
     fftw_complex in[N], out[N]; // input and output array in fftw format
@@ -137,7 +137,7 @@ void ft_t2v(rvec& v, cvec& Gv, const rvec& t, const cvec& Gt, const comp tail_co
     if(N != v.size() || N != Gv.size() || N != Gt.size())
         cout << "Error in ft_t2v: Vector sizes must be equal." << endl;
     const double Ttot = (t[1]-t[0])*(double)N; // time span
-    const double Vtot = (M_2_PI*(double)N)/Ttot; // frequency span
+    const double Vtot = (2.*M_PI*(double)N)/Ttot; // frequency span
     for(int i=0; i<N; ++i) // fill frequency grid
         v[i] = -Vtot/2. + (Vtot/(double)N)*(double)i;
     fftw_complex in[N], out[N]; // input and output array in fftw format
@@ -188,7 +188,7 @@ void ft_vn2tau(rvec& tau, cvec& Gtau, const rvec& vn, const cvec& Gvn, const boo
     if(N != tau.size() || N != Gtau.size() || N != Gvn.size())
         cout << "Error in ft_vn2tau: Vector sizes must be equal." << endl;
     const double Vtot = (vn[1]-vn[0])*(double)N; // frequency span = 2pi/beta*N
-    const double beta = (M_2_PI*(double)N)/Vtot; // time span = beta = inverse temperature
+    const double beta = (2.*M_PI*(double)N)/Vtot; // time span = beta = inverse temperature
     for(int i=0; i<N; ++i) // fill time grid
         tau[i] = (beta/(double)N)*(double)i;
     fftw_complex in[N], out[N]; // input and output array in fftw format
