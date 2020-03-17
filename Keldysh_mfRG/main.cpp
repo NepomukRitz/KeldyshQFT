@@ -19,26 +19,37 @@
 ////#include "H5Cpp.h"
 //#include "testFunctions.h"
 #include <mpi.h>
+#include "mpi_setup.h"
 #include "solvers.h"
+#include "frequency_grid.h"
+#include "util.h"
 
 using namespace std;
 
 
 auto main() -> int {
 
-//    setUpBosGrid();
-//    setUpFerGrid();
-//  setUpFlowGrid();
+#ifdef MPI_FLAG
+    MPI_Init(nullptr, nullptr);
+#endif
+
+    setUpBosGrid();
+    setUpFerGrid();
+    setUpFlowGrid();
+
+    print(ffreqs[1], true);
+
+    print(mpi_world_rank(), true);
+    print(mpi_world_size(), true);
+
+    vec<comp> testvec = mpi_initialize_buffer<comp>(1, 12);
+    print(testvec.size(), true);
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);
 
 //    test_ODE_solvers();
 //    test_SCE_solver();
-
-#ifdef MPI_FLAG
-    MPI_Init(nullptr, nullptr);
-#endif
 
 #ifndef FLOW
 
@@ -77,10 +88,6 @@ auto main() -> int {
 
     test_ODE_solvers();
 
-#ifdef MPI_FLAG
-    MPI_Finalize();
-#endif
-
     cout << "Hello world ";
 #ifdef __linux__
     cout << "on linux.";
@@ -90,6 +97,8 @@ auto main() -> int {
     cout << endl;
 
 
-
+#ifdef MPI_FLAG
+    MPI_Finalize();
+#endif
     return 0;
 }

@@ -1,23 +1,41 @@
-//
-// Created by E.Walter on 8/1/19.
-//
+/**
+ * Set up the frequency and flow Lambda grid // TODO: make flow grid more flexible
+ * Functions that initialize the grid and provide conversion between doubles and grid indices.
+ * Three different grid types:
+ * GRID=1: log grid -- to be implemented
+ * GRID=2: linear grid
+ * GRID=3: non-linear grid w/sqrt(W^2 + w^2)
+ */
 
 #ifndef KELDYSH_MFRG_FREQUENCY_GRID_H
 #define KELDYSH_MFRG_FREQUENCY_GRID_H
 
-#include <tuple>
-#include <math.h>
-#include "parameters.h"
+#include <cmath>        // for sqrt
+#include "parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
 
 
 using namespace std;
 
+/*********************************************    LAMBDA GRID    ******************************************************/
 
-//TODO: revise this
+void setUpFlowGrid()
+{
+    for(int i=0; i<nEVO; ++i)
+        flow_grid[i] = Lambda_ini + i*dL;
+}
+
+auto fconv_Lambda(double Lambda) -> int
+{
+    for(int i=0; i<nEVO; ++i){
+        if(Lambda == flow_grid[i])
+            return i;
+    }
+    return -1;
+}
 
 
+/*******************************************    FREQUENCY GRID    *****************************************************/
 
-#ifdef GRID
 #if GRID==1
 /***********************************************    LOG GRID    *******************************************************/
 //TODO: derive functions to determine index values for the respective logarithmic grid but, first, define logarithmic grid
@@ -30,11 +48,6 @@ void setUpFerGrid(){
 
 }
 
-void setUpFlowGrid(){
-
-}
-
-    CODE HERE IS UNREACHABLE LIKE THIS
 #elif GRID==2
 /*********************************************    LINEAR GRID    ******************************************************/
 
@@ -49,13 +62,6 @@ void setUpFerGrid()
         ffreqs[i] = w_lower_f + i*dv;
 }
 
-void setUpFlowGrid()
-{
-    for(int i=0; i<nEVO; ++i)
-        flow_grid[i] = Lambda_ini + i*dL;
-}
-
-
 
 auto fconv_bos(double w) -> int
 {
@@ -69,16 +75,12 @@ auto fconv_fer(double w) -> int
     auto index1 = (int)aid;
     return index1; //- (int)(index/ffreqs.size());
 }
-auto fconv_Lambda(double Lambda) -> int
-{
-    for(int i=0; i<nEVO; ++i){
-        if(Lambda == flow_grid[i])
-            return i;
-    }
-    return -1;
-}
 
-// TODO: all these functions below are not used -- do we need them?
+
+/*
+// only need these functions when using different grids for a,p,t
+
+#include <tuple>   // return several indices // TODO: change to vector (here and in vertex files...)
 
 auto fconv_K1_a(double w) -> int
 {
@@ -154,6 +156,8 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 
+*/
+
 #elif GRID==3
 /*******************************************    NON-LINEAR GRID    ****************************************************/
 // TODO: finish
@@ -186,13 +190,6 @@ void setUpFerGrid() {
     }
 }
 
-void setUpFlowGrid()
-{
-    for(int i=0; i<nEVO; ++i)
-        flow_grid[i] = Lambda_ini + i*dL;
-}
-
-
 
 auto fconv_bos(double w) -> int {
     double W = grid_transf_inv(w);
@@ -212,32 +209,22 @@ auto fconv_fer(double w) -> int {
     auto index = (int)W;
     return index;
 }
-auto fconv_Lambda(double Lambda) -> int
-{
-    for(int i=0; i<nEVO; ++i){
-        if(Lambda == flow_grid[i])
-            return i;
-    }
-    return -1;
-}
 
 
 #endif
 
-#endif
+
+/*********************************************** LOG GRID *************************************************************/
+//to convert on full frequency grid: (old functions from Julian)
+
+/*
 
 auto compare(int a, int b) -> bool
 {
     return (a < b);
 }
 
-
-/**************************** LOG GRID ******************/
-//to convert on full frequency grid:
-
-/*
-
-int fconv(double w){//conversion  on lcombination of linear and log grid. This function can only be called if it is ensured that w is in the range of the frequency grid and that abs(w) >= w0 where w0 is the smallest frequency saved.
+int fconv(double w){//conversion on combination of linear and log grid. This function can only be called if it is ensured that w is in the range of the frequency grid and that abs(w) >= w0 where w0 is the smallest frequency saved.
     int i;
 
 

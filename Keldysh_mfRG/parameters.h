@@ -5,9 +5,8 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
-#include <cmath>
 #include <vector>            // standard vector for Keldysh indices
-#include "data_structures.h" // real/complex vector classes
+#include "data_structures.h" // real/complex vector classes, comp as complex double
 
 using namespace std;
 

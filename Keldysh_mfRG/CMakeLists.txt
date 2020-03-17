@@ -21,13 +21,16 @@ add_executable(Keldysh_mfRG
         write_data2file.h
         parameters.h
         solvers.h
+        frequency_grid.h
+        util.h
+        mpi_setup.h
 #        state.h
 #        vertex.h
 #        selfenergy.h
 #        propagator.h
 #        integrator.h
-#        frequency_grid.h
-#        util.h
+#
+#
 #        Keldysh_symmetries.h
 #        loop.h a_vertex.h p_vertex.h t_vertex.h
 #        internal_symmetries.h
@@ -35,7 +38,7 @@ add_executable(Keldysh_mfRG
 #        fourier_trafo.h right_hand_sides.h
         )
 
-#include_directories(/usr/include/mpi/) # automatically included
+include_directories(/usr/include/mpi/)
 
 target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
 
