@@ -33,6 +33,9 @@ public:
     // Sets the value of the bare interaction to Q
     void setvert(int iK, int i_in, Q);
 
+    // Initialize irreducible vertex
+    void initialize(Q val);
+
     // Various operators for the irreducible vertex
     auto operator= (const irreducible<Q>& vertex) -> irreducible<Q>&
     {
@@ -95,6 +98,8 @@ public:
     auto gammaRb(int, double, double, double, int, char) const -> Q;
     auto gammaRb(int, double, double, double, int, int, char) const -> Q;
 
+    // Initialize vertex
+    void initialize(Q val);
 
     // Various operators for the fullvertex class
     auto operator= (const fullvert<Q>& vertex1) -> fullvert<Q>& {
@@ -227,8 +232,16 @@ template <typename Q> void irreducible<Q>::direct_set(int i, Q value) {
     else{cout << "ERROR: Tried to access value outside of range in irreducible vertex" << endl;};
 }
 
-template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value){
+template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
     bare[iK*n_in + i_in] = value;
+}
+
+template <typename Q> void irreducible<Q>::initialize(Q val) {
+    for (auto i:odd_Keldysh) {
+        for (int i_in=0; i_in<n_in; ++i_in) {
+            this->setvert(i, i_in, val);
+        }
+    }
 }
 
 
@@ -291,5 +304,9 @@ template <typename Q> auto fullvert<Q>::gammaRb (int iK, double w, double v1, do
     return resp;
 }
 
+
+template <typename Q> void fullvert<Q>::initialize(Q val) {
+    this->irred.initialize(val);
+}
 
 #endif //KELDYSH_MFRG_VERTEX_H

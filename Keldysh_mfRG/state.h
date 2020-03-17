@@ -103,10 +103,8 @@ template <typename Q> void setInitialConditions (State<Q>& state){
     state.selfenergy.initialize(glb_U/2., 0.);
     print("SE initial conditions assigned", true);
 
-    for (auto i:odd_Keldysh) {
-        state.vertex.densvertex.irred.setvert(i, 0, 0.);
-        state.vertex.spinvertex.irred.setvert(i, 0, -glb_U/2.);
-    }
+    state.vertex.densvertex.initialize(0.);
+    state.vertex.spinvertex.initialize(-glb_U/2.);
     print("Bare vertex initial assigned", true);
 }
 

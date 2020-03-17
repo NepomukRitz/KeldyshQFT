@@ -1,6 +1,6 @@
 //#include <cstdlib>
 //#include <bits/stdc++.h>
-#include <iostream> // text input/output
+#include <iostream>          // text input/output
 #include "data_structures.h" // real/complex vector classes
 #include "write_data2file.h" // writing data into text or hdf5 files
 //#include <fstream>
@@ -24,6 +24,7 @@
 #include "Keldysh_symmetries.h"
 #include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
 #include "right_hand_sides.h"
+#include "vertex.h"
 
 using namespace std;
 
@@ -61,7 +62,11 @@ auto main() -> int {
     print(isInList(M_PI, testvec), true);
     print(isInList(M_2_PI/M_2_PI, testvec), true);
 
-    test_ODE_SOPT_FFT_K1a(100);
+    //test_ODE_SOPT_FFT_K1a(100);
+
+    Vertex<fullvert<comp> > testvertex;
+    testvertex.spinvertex.initialize(-glb_U/2.);
+    print(testvertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);

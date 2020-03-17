@@ -17,6 +17,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 
 add_executable(Keldysh_mfRG
         main.cpp
+        a_vertex.h
         data_structures.h
         fourier_trafo.h
         frequency_grid.h
@@ -24,16 +25,18 @@ add_executable(Keldysh_mfRG
         mpi_setup.h
         parameters.h
         propagator.h
+        p_vertex.h
         right_hand_sides.h
         selfenergy.h
         solvers.h
+        t_vertex.h
         util.h
+        vertex.h
         write_data2file.h
 #        state.h
-#        vertex.h
 #        integrator.h
 #
-#        loop.h a_vertex.h p_vertex.h t_vertex.h
+#        loop.h
 #        internal_symmetries.h
 #        bubbles.h diagrammatic_combinations.h
         )

@@ -1,7 +1,6 @@
-//
-// Created by Sa.Aguirre on 10/23/19.
-//
-
+/**
+ *  Symmetry transformations for internal indices (e.g. momentum, position, ...). To be implemented if needed.
+ */
 #ifndef KELDYSH_MFRG_INTERNAL_SYMMETRIES_H
 #define KELDYSH_MFRG_INTERNAL_SYMMETRIES_H
 
