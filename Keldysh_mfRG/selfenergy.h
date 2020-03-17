@@ -1,24 +1,23 @@
-//
-// Created by E.Walter on 7/31/19.
-//
-
 #ifndef KELDYSH_MFRG_SELFENERGY_H
 #define KELDYSH_MFRG_SELFENERGY_H
 
-#include "data_structures.h"
+#include "data_structures.h" // real/complex vector classes
+#include <omp.h>             // parallelize initialization of self-energy
 
-
-/******************CLASS FOR SELF ENERGY *************/
+/****************** CLASS FOR SELF ENERGY *************/
 template <typename Q>
 class SelfEnergy{
-    vec<Q> Sigma =  vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
+    // TODO: split into two members: Sigma_R, Sigma_K (?)
+    vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
 public:
+    // TODO: comment member functions
+    void initialize(Q, Q);
     auto val(int, int, int) const -> Q;
     auto valsmooth(int, double, int) const -> Q;
     void setself(int, int, int, Q);
     void addself(int, int, int, Q);
-    auto acc(int) ->Q;// access to the ith element of the vector "SIGMA"
-    void direct_set(int,Q);
+    auto acc(int) -> Q;// access to the ith element of the vector "SIGMA"
+    void direct_set(int, Q);
 //operators for self energy
 
     auto operator+(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
@@ -55,6 +54,18 @@ public:
 
 
 /*****************************************FUNCTIONS FOR SELF ENERGY*****************************************************/
+template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
+    //Assign self energy to initial values
+#pragma omp parallel for
+    for (int iv=0; iv<nSE; ++iv) {
+        for (int i_in=0; i_in<n_in; ++i_in) {
+            this->setself(0, iv, i_in, valR);
+            this->setself(1, iv, i_in, valK);
+        }
+    }
+    print("SE initial conditions assigned", true);
+}
+
 template <typename Q> auto SelfEnergy<Q>::val(int iK, int i, int i_in) const -> Q{
     return Sigma[iK*nSE*n_in + i*n_in + i_in];
 }
@@ -89,9 +100,9 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double w, int i_in) 
             return (1. - xd) * f1 + xd * f2;
         }
         else if(w == w_upper_f)
-            return val(iK, nSE-1);
+            return val(iK, nSE-1, i_in);
         else if(w == w_lower_f)
-            return val(iK, 0);
+            return val(iK, 0, i_in);
     }
 
 }

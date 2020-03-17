@@ -18,15 +18,18 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 add_executable(Keldysh_mfRG
         main.cpp
         data_structures.h
-        write_data2file.h
-        parameters.h
-        solvers.h
         frequency_grid.h
-        util.h
         mpi_setup.h
+        parameters.h
+        selfenergy.h
+        solvers.h
+        util.h
+        write_data2file.h
+
+
 #        state.h
 #        vertex.h
-#        selfenergy.h
+#
 #        propagator.h
 #        integrator.h
 #

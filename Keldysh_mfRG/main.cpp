@@ -12,10 +12,8 @@
 //#include "loop.h"
 //#include "bubbles.h"
 //#include "propagator.h"
-//#include "selfenergy.h"
 //#include "hdf5_routines.h"
 //#include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
-//#include "solvers.h" // Fourier transforms in physics convention and SOPT using FFT
 ////#include "H5Cpp.h"
 //#include "testFunctions.h"
 #include <mpi.h>
@@ -23,6 +21,7 @@
 #include "solvers.h"
 #include "frequency_grid.h"
 #include "util.h"
+#include "selfenergy.h"
 
 using namespace std;
 
@@ -44,6 +43,12 @@ auto main() -> int {
 
     vec<comp> testvec = mpi_initialize_buffer<comp>(1, 12);
     print(testvec.size(), true);
+
+    test_ODE_solvers();
+
+    SelfEnergy<comp> testSE;
+    testSE.initialize(glb_U/2., 0.);
+    print(testSE.valsmooth(0, 1.5, 0), true);
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);
@@ -86,7 +91,6 @@ auto main() -> int {
 //
 //    write_h5_rvecs("actual_propagator.h5",{"v", "acRSR", "acISR", "acRSK", "acISK"},{ffreqs, actualSR.real(), actualSR.imag(), actualSK.real(), actualSK.imag()});
 
-    test_ODE_solvers();
 
     cout << "Hello world ";
 #ifdef __linux__

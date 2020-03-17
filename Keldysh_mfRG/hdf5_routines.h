@@ -92,7 +92,7 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
         //buffer self energy
         int self_dim =2*nSE;
-        auto selfenergy = new complex[self_dim];//irrdeucible vertex
+        auto selfenergy = new complex[self_dim];
         for(int i=0; i<self_dim; i++){
             selfenergy[i].re = real(state_in.selfenergy.acc(i));
             selfenergy[i].im = imag(state_in.selfenergy.acc(i));
@@ -103,7 +103,7 @@ void write_hdf(const H5std_string FILE_NAME,double Lambda_i, long Lambda_size,St
 
         //buffer irreducible vertex:
         int irred_dim1 =16*n_in;
-        auto irreducible_class = new complex_t[irred_dim1];//irrdeucible vertex
+        auto irreducible_class = new complex_t[irred_dim1];//irreducible vertex
 
 
         for(int i=0;i<irred_dim1;i++){

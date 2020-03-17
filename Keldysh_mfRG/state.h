@@ -99,12 +99,8 @@ template <typename Q> void setInitialConditions (State<Q>& state){
     //Assign the starting value for Lambda
     state.Lambda = Lambda_ini;
 
-    //Asign self energy to initial values (H
-    for (int i = 0; i < nSE; ++i) {
-        state.selfenergy.setself(0, i, glb_U/2.);
-        state.selfenergy.setself(1, i, 0.);
-    }
-    print("SE initial conditions assigned", true);
+    //Assign self energy to initial values
+    state.selfenergy.initialize(glb_U/2., 0.);
 
     for (auto i:odd_Keldysh) {
         state.vertex.densvertex.irred.setvert(i, 0, 0.);
