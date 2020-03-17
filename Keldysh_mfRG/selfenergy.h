@@ -20,6 +20,7 @@ public:
     void direct_set(int, Q);
 //operators for self energy
 
+    // TODO: change operator+, operator*
     auto operator+(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma + self1.Sigma;
         return *this;

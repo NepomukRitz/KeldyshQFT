@@ -8,6 +8,7 @@
 #include "interpolations.h"       // frequency interpolations for vertices
 
 // TODO: vval -> val, vvalsmooth -> valsmooth
+// TODO: change operator+, operator*
 template <typename Q> class tvert;
 
 template <typename Q>

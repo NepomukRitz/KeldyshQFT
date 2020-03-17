@@ -16,6 +16,8 @@ const comp glb_i (0., 1.);    // Imaginary unit
 
 /// DECLARATIONS ///
 
+// TODO: maybe just use one class vec<Q>, and define real() and imag() generally, testing the type of Q?
+
 // general vector class, defining element-wise addition, subtraction and multiplication
 template <typename T>
 class basic_vec : public vector<T> {
