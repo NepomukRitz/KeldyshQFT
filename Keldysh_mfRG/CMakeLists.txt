@@ -29,11 +29,12 @@ add_executable(Keldysh_mfRG
         right_hand_sides.h
         selfenergy.h
         solvers.h
+        state.h
         t_vertex.h
         util.h
         vertex.h
         write_data2file.h
-#        state.h
+#
 #        integrator.h
 #
 #        loop.h

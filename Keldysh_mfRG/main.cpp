@@ -25,6 +25,7 @@
 #include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
 #include "right_hand_sides.h"
 #include "vertex.h"
+#include "state.h"
 
 using namespace std;
 
@@ -68,6 +69,10 @@ auto main() -> int {
     testvertex.spinvertex.initialize(-glb_U/2.);
     print(testvertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
 
+    State<comp> teststate;
+    teststate.initialize();
+    print(teststate.vertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
+
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);
 
@@ -77,7 +82,7 @@ auto main() -> int {
 #ifndef FLOW
 
 //    State<comp> sopt_state;
-//    setInitialConditions(sopt_state);
+//    sopt_state.initialize();
 //
 //    testBubbles(sopt_state, 1.0);
 ////    testSelfEnergy_and_Bubbles(sopt_state, 2.0);
