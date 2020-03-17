@@ -12,7 +12,6 @@
 //#include "loop.h"
 //#include "bubbles.h"
 //#include "hdf5_routines.h"
-//#include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
 ////#include "H5Cpp.h"
 //#include "testFunctions.h"
 #include <mpi.h>
@@ -23,8 +22,8 @@
 #include "selfenergy.h"
 #include "propagator.h"
 #include "Keldysh_symmetries.h"
-
-#include "right_hand_sides.h"
+//#include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
+//#include "right_hand_sides.h"
 
 using namespace std;
 
@@ -61,9 +60,8 @@ auto main() -> int {
     vector<double> testvec {1., 2., 3., 5.5, M_PI};
     print(isInList(M_PI, testvec), true);
     print(isInList(M_2_PI/M_2_PI, testvec), true);
-    print("check");
 
-    test_ODE_G(100);
+    //test_ODE_G(100);
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);
