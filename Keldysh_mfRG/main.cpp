@@ -5,10 +5,10 @@
 #include "write_data2file.h" // writing data into text or hdf5 files
 //#include <fstream>
 //#include <complex>
-//#include <fftw3.h> // Fast Fourier Transform (FFT)
+
 #include "parameters.h"
-//#include "vertex.h"
-//#include "state.h"
+
+
 //#include "loop.h"
 //#include "bubbles.h"
 //#include "hdf5_routines.h"
@@ -26,6 +26,7 @@
 #include "right_hand_sides.h"
 #include "vertex.h"
 #include "state.h"
+#include "loop.h"
 
 using namespace std;
 
@@ -72,6 +73,10 @@ auto main() -> int {
     State<comp> teststate;
     teststate.initialize();
     print(teststate.vertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
+
+    double t0 = get_time();
+    loop(testSE, testvertex, testProp);
+    get_time(t0);
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);

@@ -21,7 +21,10 @@ add_executable(Keldysh_mfRG
         data_structures.h
         fourier_trafo.h
         frequency_grid.h
+        integrator.h
+        internal_symmetries.h
         Keldysh_symmetries.h
+        loop.h
         mpi_setup.h
         parameters.h
         propagator.h
@@ -34,11 +37,6 @@ add_executable(Keldysh_mfRG
         util.h
         vertex.h
         write_data2file.h
-#
-#        integrator.h
-#
-#        loop.h
-#        internal_symmetries.h
 #        bubbles.h diagrammatic_combinations.h
         )
 
