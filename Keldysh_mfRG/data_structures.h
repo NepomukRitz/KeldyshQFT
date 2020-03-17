@@ -1,4 +1,4 @@
-/*
+/**
  * Define essential data types
  */
 
@@ -11,7 +11,8 @@
 #include <cmath>
 
 using namespace std;
-typedef complex<double> comp;
+typedef complex<double> comp; // Complex number
+const comp glb_i (0., 1.);    // Imaginary unit
 
 /// DECLARATIONS ///
 

@@ -162,8 +162,6 @@ const int n_in = 1;  // TODO: also include in selfenergy functions
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
 #define MPI_FLAG
 
-const comp glb_i (0., 1.); // Imaginary unit
-
 //Tolerance for closeness to grid points when interpolating
 const double inter_tol = 10e-8;
 

@@ -1,9 +1,10 @@
 #ifndef KELDYSH_MFRG_PROPAGATOR_H
 #define KELDYSH_MFRG_PROPAGATOR_H
 
-#include <cmath>        // exp, tanh, fabs, conj
-#include "selfenergy.h" // self-energy class
-#include "parameters.h" // system parameters (lengths of vectors etc.)
+#include <cmath>             // exp, tanh, fabs, conj
+#include "data_structures.h" // real/complex vector classes, imag. unit
+#include "selfenergy.h"      // self-energy class
+#include "parameters.h"      // system parameters (lengths of vectors etc.)
 
 using namespace std;
 
