@@ -36,6 +36,7 @@ add_executable(Keldysh_mfRG
         selfenergy.h
         solvers.h
         state.h
+        testFunctions.h
         t_vertex.h
         util.h
         vertex.h

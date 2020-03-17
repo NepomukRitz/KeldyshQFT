@@ -1,13 +1,10 @@
-//
-// Created by Sa.Aguirre on 2/19/20.
-//
-
-#include "loop.h"
-
 #ifndef KELDYSH_MFRG_TESTFUNCTIONS_H
 #define KELDYSH_MFRG_TESTFUNCTIONS_H
 
-#include "write_data2file.h"
+#include <cmath>              // use M_2_PI as 2*pi
+#include "loop.h"             // self-energy loop
+#include "solvers.h"          // ODE solvers
+#include "write_data2file.h"  // writing data to txt or hdf5 file
 
 /**
  * Integrand for the SelfEnergy when terms are calculated individually
@@ -47,13 +44,13 @@ public:
     {
         Q aid, propTerm;
         if(prop_iK==-1) {
-            propTerm = conj(propagator.valsmooth(0, vp));
+            propTerm = conj(propagator.valsmooth(0, vp, 0));
         }
         else if(prop_iK==0) {
-            propTerm = propagator.valsmooth(0, vp);
+            propTerm = propagator.valsmooth(0, vp, 0);
         }
         else {
-            propTerm = propagator.valsmooth(1, vp);
+            propTerm = propagator.valsmooth(1, vp, 0);
         }
 
 #ifdef FLOW
@@ -89,10 +86,10 @@ void loop_test_individual(SelfEnergy<Q>& ans, const Vertex<fullvert<Q> >& fullve
         IntegrandSigma<Q, fullvert<Q>> integrandSigma(fullvertex, prop, vert_iK, v, i_in, prop_iK); //prop_iK = 0 for R, =-1 for A and =1 for K
 
         //Integration of the object. Notice the required limits for the integral
-        Q integrated = -1./(2.*pi*glb_i)*integrator(integrandSigma, w_lower_f-fabs(v), w_upper_f+fabs(v));
+        Q integrated = -1./(M_2_PI*glb_i)*integrator(integrandSigma, w_lower_f-fabs(v), w_upper_f+fabs(v));
 
         //The result is updated
-        ans.addself(self_iK, i, integrated);
+        ans.addself(self_iK, i, 0, integrated);
     }
 }
 
@@ -139,90 +136,6 @@ void sopt_state(State<Q>& Psi, double Lambda, const State<Q> &state) {
 
 }
 
-void writeOutSOPT(double Lambda, const Propagator& propagator, const SelfEnergy<comp>& selfEnergy, const Vertex<fullvert<comp> >& vertex)
-{
-    int i = fconv_Lambda(Lambda);
-
-    ostringstream self_energyR, self_energyA, self_energyK, propR, propA, propK;
-    self_energyR << "Output/self_energyR"<<i<<".dat";
-    self_energyA << "Output/self_energyA"<<i<<".dat";
-    self_energyK << "Output/self_energyK"<<i<<".dat";
-
-    propR << "Output/propagatorR"<<i<<".dat";
-    propA << "Output/propagatorA"<<i<<".dat";
-    propK << "Output/propagatorK"<<i<<".dat";
-
-
-    ofstream my_file_sigmaR, my_file_sigmaA, my_file_sigmaK, my_file_propR, my_file_propA, my_file_propK;
-    my_file_sigmaR.open(self_energyR.str());
-    my_file_sigmaA.open(self_energyA.str());
-    my_file_sigmaK.open(self_energyK.str());
-
-    my_file_propR.open(propR.str());
-    my_file_propA.open(propA.str());
-    my_file_propK.open(propK.str());
-
-
-    for (int j = 0; j < ffreqs.size(); j++) {
-        my_file_sigmaR << ffreqs[j] << " " << selfEnergy.val(0, j).real() << " " <<  selfEnergy.val(0, j).imag() << "\n";
-        my_file_sigmaA << ffreqs[j] << " " << selfEnergy.val(0, j).real() << " " << -selfEnergy.val(0, j).imag() << "\n";
-        my_file_sigmaK << ffreqs[j] << " " << selfEnergy.val(1, j).real() << " " <<  selfEnergy.val(1, j).imag() << "\n";
-
-        my_file_propR << ffreqs[j] << " " << propagator.valsmooth(0, ffreqs[j]).real() << " " <<  propagator.valsmooth(0, ffreqs[j]).imag() << "\n";
-        my_file_propA << ffreqs[j] << " " << propagator.valsmooth(0, ffreqs[j]).real() << " " << -propagator.valsmooth(0, ffreqs[j]).imag() << "\n";
-        my_file_propK << ffreqs[j] << " " << propagator.valsmooth(1, ffreqs[j]).real() << " " <<  propagator.valsmooth(1, ffreqs[j]).imag() << "\n";
-    }
-
-#if DIAG_CLASS >=1
-    ostringstream avert1, pvert1, tvert1, avert3, pvert5, tvert3;
-
-    avert1 << "Output/avert1"<<i<<".dat";
-    pvert1 << "Output/pvert1"<<i<<".dat";
-    tvert1 << "Output/tvert1"<<i<<".dat";
-
-    avert3 << "Output/avert3"<<i<<".dat";
-    pvert5 << "Output/pvert5"<<i<<".dat";
-    tvert3 << "Output/tvert3"<<i<<".dat";
-
-    ofstream  my_file_avert1, my_file_pvert1, my_file_tvert1, my_file_avert3, my_file_pvert5, my_file_tvert3;
-
-    my_file_avert1.open(avert1.str());
-    my_file_pvert1.open(pvert1.str());
-    my_file_tvert1.open(tvert1.str());
-
-    my_file_avert3.open(avert3.str());
-    my_file_pvert5.open(pvert5.str());
-    my_file_tvert3.open(tvert3.str());
-
-    for (int j = 0; j<bfreqs.size(); j++){
-        my_file_avert1 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(0, j, 0).imag()<< "\n";
-        my_file_pvert1 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(0, j, 0).imag()<< "\n";
-        my_file_tvert1 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(0, j, 0).imag()<< "\n";
-
-        my_file_avert3 << bfreqs[j] << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.avertex.K1_vval(1, j, 0).imag()<< "\n";
-        my_file_pvert5 << bfreqs[j] << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.pvertex.K1_vval(1, j, 0).imag()<< "\n";
-        my_file_tvert3 << bfreqs[j] << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).real() << " " << vertex.densvertex.tvertex.K1_vval(1, j, 0).imag()<< "\n";
-
-    }
-
-    my_file_avert1.close();
-    my_file_pvert1.close();
-    my_file_tvert1.close();
-
-    my_file_avert3.close();
-    my_file_pvert5.close();
-    my_file_tvert3.close();
-#endif
-
-    my_file_sigmaR.close();
-    my_file_sigmaA.close();
-    my_file_sigmaK.close();
-
-    my_file_propR.close();
-    my_file_propA.close();
-    my_file_propK.close();
-}
-
 template <typename T>
 void export_data(T& state, int iter){}
 
@@ -252,8 +165,8 @@ void export_data(State<comp>& state, int iter){
     for (int j = 0; j < nBOS; j++) {
         PiaOE[j] = 4.*state.vertex.spinvertex.avertex.K1_vval(0, j, 0);
         PiaOO[j] = 4.*state.vertex.spinvertex.avertex.K1_vval(1, j, 0);
-        SER[j] = state.selfenergy.val(0, j);
-        SEK[j] = state.selfenergy.val(1, j);
+        SER[j] = state.selfenergy.val(0, j, 0);
+        SEK[j] = state.selfenergy.val(1, j, 0);
     }
 
     //Write out to file with name "name"
@@ -301,12 +214,12 @@ void testBubbles(State<comp>& state, double Lambda){
         //Add the respective contributions to the respective bubble
         PiaOE[i] = 0.;//1./2.*(cont11+ cont13);
         PiaOO[i] = 1./2.*(cont6 + cont9);// + cont15);
-        PiaOO[i]+= 1./2.*(1./(2.*pi*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
+        PiaOO[i]+= 1./2.*(1./(M_2_PI*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b)));
 
 /*
         //cout << Pia_odd_even[i] << endl;
         //cout << integrandPia11(-2.6) << endl;
-        //cout << g1.pvalsmooth(1,-2.6-w/2.)*conj(g2.pvalsmooth(0,-2.6+w/2.))/(2.*pi*glb_i) << endl;
+        //cout << g1.pvalsmooth(1,-2.6-w/2.)*conj(g2.pvalsmooth(0,-2.6+w/2.))/(M_2_PI*glb_i) << endl;
         cout << "GK(v-w/2): " << g1.pvalsmooth(1,-2.6-w/2.) << endl;
 
 
@@ -371,6 +284,52 @@ void testBubbles(State<comp>& state, double Lambda){
 }
 
 
+auto test_rhs_bubbles_flow(const State<comp>& state, double Lambda) -> State<comp>{
+    State<comp> ans;
+
+    Propagator g(Lambda, state.selfenergy, 'g');
+    Propagator s(Lambda, state.selfenergy, 's');
+
+    //for(int i=75; i<76; i++){
+    for(int i=1; i<nBOS; i++){
+        double w = bfreqs[i];
+
+        //Create the objects explicitly designed to return the determined Keldysh component needed
+        IntegrandBubble integrandPia6 (g, s, true, w, 6,  'a');     //AR
+        IntegrandBubble integrandPia9 (g, s, true, w, 9,  'a');     //RA
+        IntegrandBubble integrandPia11(g, s, true, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(g, s, true, w, 13, 'a');     //RK
+        IntegrandBubble integrandPia15(g, s, true, w, 15, 'a');     //KK
+
+        //Calculate the contributions
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        auto cont6  = integrator(integrandPia6 , w_lower_b, w_upper_b);
+        auto cont9  = integrator(integrandPia9 , w_lower_b, w_upper_b);
+        auto cont15 = integrator(integrandPia15, w_lower_b, w_upper_b);
+
+        //Add the respective contributions to the respective bubble
+        ans.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 0.);//1./2.*(cont11+ cont13) );             //11+13 = OE => Keldysh comp0
+        ans.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15) );     //6+9+15= OO => Keldysh comp1
+
+//        //The relevant components are read out and added in the correct places directly.
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+
+    }
+
+    ans *= dL;
+    return ans;
+}
+
 /**
  * Function to test the OddOdd and OddEven bubbles
  * The implementation requires sopt_state() to have toggled the a-bubble on
@@ -381,8 +340,8 @@ void testBubblesFlow(){
     State<comp> test_state;
     //Initial conditions
     for (int i = 0; i < nSE; ++i) {
-        test_state.selfenergy.setself(0, i, 0.);
-        test_state.selfenergy.setself(1, i, 0.);
+        test_state.selfenergy.setself(0, i, 0, 0.);
+        test_state.selfenergy.setself(1, i, 0, 0.);
     }
     for (auto i:odd_Keldysh) {
         test_state.vertex.densvertex.irred.setvert(i, 0, 0.);
@@ -413,14 +372,14 @@ void testBubblesFlow(){
         //Add the respective contributions to the respective bubble
         test_state.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 0.);//1./2.*(cont11 + cont13));              //11+13 => OE => Keldysh 0
         test_state.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15));        //6+9+15=> OO => Keldysh 1
-        test_state.vertex.spinvertex.avertex.K1_addvert(1, i, 0, 1./2.*(1./(2.*pi*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b))));
+        test_state.vertex.spinvertex.avertex.K1_addvert(1, i, 0, 1./2.*(1./(M_2_PI*glb_i)*(correctionFunctionBubbleAT(w, -1., 1., w_upper_b, w_upper_b)+correctionFunctionBubbleAT(w, 1.,-1., w_upper_b, w_upper_b))));
     }
 
 
     State<comp> final_state;
     export_data(test_state, 0);
 
-    ODE_solver_RK4(final_state, 1.0, test_state, 2.0, test_rhs_bubbles_flow, nEVO);
+    // ODE_solver_RK4(final_state, 1.0, test_state, 2.0, test_rhs_bubbles_flow, nEVO); // TODO: first check operator* before using this
 
 }
 
@@ -444,8 +403,8 @@ void testSelfEnergy_and_Bubbles(State<comp>& state, double Lambda){
     cvec PiaOO(nBOS);
     cvec PiaOE(nBOS);
     for(int i = 0; i<nFER; i++){
-        SER[i] = state.selfenergy.val(0, i);
-        SEK[i] = state.selfenergy.val(1, i);
+        SER[i] = state.selfenergy.val(0, i, 0);
+        SEK[i] = state.selfenergy.val(1, i, 0);
     }
     for(int i = 0; i<nBOS; i++){
         PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
@@ -524,12 +483,12 @@ void test_selfEnergyComponents(State<comp>& state)
     my_file_SelfEnergyK_K_cxx.open(selfEnergyK_K_cxx.str());
 
     for(int i = 0; i<nFER; i++){
-        my_file_SelfEnergyR_R_cxx << ffreqs[i]<< " " << SER_R.val(0, i).real() << " " << SER_R.val(0, i).imag() << "\n";
-        my_file_SelfEnergyR_A_cxx << ffreqs[i]<< " " << SER_A.val(0, i).real() << " " << SER_A.val(0, i).imag() << "\n";
-        my_file_SelfEnergyR_K_cxx << ffreqs[i]<< " " << SER_K.val(0, i).real() << " " << SER_K.val(0, i).imag() << "\n";
-        my_file_SelfEnergyK_R_cxx << ffreqs[i]<< " " << SEK_R.val(1, i).real() << " " << SEK_R.val(1, i).imag() << "\n";
-        my_file_SelfEnergyK_A_cxx << ffreqs[i]<< " " << SEK_A.val(1, i).real() << " " << SEK_A.val(1, i).imag() << "\n";
-        my_file_SelfEnergyK_K_cxx << ffreqs[i]<< " " << SEK_K.val(1, i).real() << " " << SEK_K.val(1, i).imag() << "\n";
+        my_file_SelfEnergyR_R_cxx << ffreqs[i]<< " " << SER_R.val(0, i, 0).real() << " " << SER_R.val(0, i, 0).imag() << "\n";
+        my_file_SelfEnergyR_A_cxx << ffreqs[i]<< " " << SER_A.val(0, i, 0).real() << " " << SER_A.val(0, i, 0).imag() << "\n";
+        my_file_SelfEnergyR_K_cxx << ffreqs[i]<< " " << SER_K.val(0, i, 0).real() << " " << SER_K.val(0, i, 0).imag() << "\n";
+        my_file_SelfEnergyK_R_cxx << ffreqs[i]<< " " << SEK_R.val(1, i, 0).real() << " " << SEK_R.val(1, i, 0).imag() << "\n";
+        my_file_SelfEnergyK_A_cxx << ffreqs[i]<< " " << SEK_A.val(1, i, 0).real() << " " << SEK_A.val(1, i, 0).imag() << "\n";
+        my_file_SelfEnergyK_K_cxx << ffreqs[i]<< " " << SEK_K.val(1, i, 0).real() << " " << SEK_K.val(1, i, 0).imag() << "\n";
 
     }
 
@@ -581,51 +540,6 @@ auto test_rhs_state(const State<comp>& Psi, const double Lambda) -> State<comp> 
     get_time(t_multiply);
 
     return dPsi;
-}
-
-auto test_rhs_bubbles_flow(const State<comp>& state, double Lambda) -> State<comp>{
-    State<comp> ans;
-
-    Propagator g(Lambda, state.selfenergy, 'g');
-    Propagator s(Lambda, state.selfenergy, 's');
-
-    //for(int i=75; i<76; i++){
-    for(int i=1; i<nBOS; i++){
-        double w = bfreqs[i];
-
-        //Create the objects explicitly designed to return the determined Keldysh component needed
-        IntegrandBubble integrandPia6 (g, s, true, w, 6,  'a');     //AR
-        IntegrandBubble integrandPia9 (g, s, true, w, 9,  'a');     //RA
-        IntegrandBubble integrandPia11(g, s, true, w, 11, 'a');     //KA
-        IntegrandBubble integrandPia13(g, s, true, w, 13, 'a');     //RK
-        IntegrandBubble integrandPia15(g, s, true, w, 15, 'a');     //KK
-
-        //Calculate the contributions
-        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
-        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
-
-        auto cont6  = integrator(integrandPia6 , w_lower_b, w_upper_b);
-        auto cont9  = integrator(integrandPia9 , w_lower_b, w_upper_b);
-        auto cont15 = integrator(integrandPia15, w_lower_b, w_upper_b);
-
-        //Add the respective contributions to the respective bubble
-        ans.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 0.);//1./2.*(cont11+ cont13) );             //11+13 = OE => Keldysh comp0
-        ans.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15) );     //6+9+15= OO => Keldysh comp1
-
-//        //The relevant components are read out and added in the correct places directly.
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-
-    }
-
-    return ans*dL;
 }
 
 #endif //KELDYSH_MFRG_TESTFUNCTIONS_H

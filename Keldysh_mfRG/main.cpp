@@ -1,17 +1,12 @@
-//#include <cstdlib>
-//#include <bits/stdc++.h>
 #include <iostream>          // text input/output
 #include "data_structures.h" // real/complex vector classes
 #include "write_data2file.h" // writing data into text or hdf5 files
-//#include <fstream>
-//#include <complex>
 
 #include "parameters.h"
 
 
 //#include "hdf5_routines.h"
-////#include "H5Cpp.h"
-//#include "testFunctions.h"
+
 #include <mpi.h>
 #include "mpi_setup.h"
 #include "solvers.h"
@@ -26,6 +21,7 @@
 #include "state.h"
 #include "loop.h"
 #include "bubbles.h"
+#include "testFunctions.h"
 
 using namespace std;
 
@@ -77,9 +73,9 @@ auto main() -> int {
     //loop(testSE, testvertex, testProp);
     //get_time(t0);
 
-    double t0 = get_time();
-    bubble_function(testvertex, testvertex, testvertex, testProp, testProp, 'a', false, '.');
-    get_time(t0);
+    //double t0 = get_time();
+    //bubble_function(testvertex, testvertex, testvertex, testProp, testProp, 'a', false, '.');
+    //get_time(t0);
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);
