@@ -282,7 +282,7 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
 }
 
 
-void SOPTbare_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gammaPout, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
+void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gammaPout, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
     // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
     bool SEflag_FFT = true;
     bool PiAflag_FFT = true;

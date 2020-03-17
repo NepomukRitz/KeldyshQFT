@@ -18,11 +18,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 add_executable(Keldysh_mfRG
         main.cpp
         data_structures.h
+        fourier_trafo.h
         frequency_grid.h
         Keldysh_symmetries.h
         mpi_setup.h
         parameters.h
         propagator.h
+        right_hand_sides.h
         selfenergy.h
         solvers.h
         util.h
@@ -34,11 +36,10 @@ add_executable(Keldysh_mfRG
 #        loop.h a_vertex.h p_vertex.h t_vertex.h
 #        internal_symmetries.h
 #        bubbles.h diagrammatic_combinations.h
-#        fourier_trafo.h right_hand_sides.h
         )
 
 include_directories(/usr/include/mpi/)
 
 target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
 
-#target_link_libraries(Keldysh_mfRG fftw3)
+target_link_libraries(Keldysh_mfRG fftw3)
