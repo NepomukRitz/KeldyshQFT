@@ -13,7 +13,7 @@
 #ifndef KELDYSH_MFRG_DIAGRAMMATIC_COMBINATIONS_H
 #define KELDYSH_MFRG_DIAGRAMMATIC_COMBINATIONS_H
 
-#include "vertex.h"
+#include "vertex.h" // vertex class
 // TODO: vval -> val, vvalsmooth -> valsmooth
 
 /**
@@ -81,7 +81,7 @@ auto left_same_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, doubl
 template <typename Q>
 auto right_same_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, char channel) -> Q
 {
-    Q gamma0, K1, K2; // TODO: check frequency
+    Q gamma0, K1, K2;
     gamma0 = vertex.densvertex.irred.vval(i3, i_in);
 
     switch (channel){

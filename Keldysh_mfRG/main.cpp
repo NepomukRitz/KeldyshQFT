@@ -9,8 +9,6 @@
 #include "parameters.h"
 
 
-//#include "loop.h"
-//#include "bubbles.h"
 //#include "hdf5_routines.h"
 ////#include "H5Cpp.h"
 //#include "testFunctions.h"
@@ -27,6 +25,7 @@
 #include "vertex.h"
 #include "state.h"
 #include "loop.h"
+#include "bubbles.h"
 
 using namespace std;
 
@@ -74,8 +73,12 @@ auto main() -> int {
     teststate.initialize();
     print(teststate.vertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
 
+    //double t0 = get_time();
+    //loop(testSE, testvertex, testProp);
+    //get_time(t0);
+
     double t0 = get_time();
-    loop(testSE, testvertex, testProp);
+    bubble_function(testvertex, testvertex, testvertex, testProp, testProp, 'a', false, '.');
     get_time(t0);
 
 //    SelfEnergy<comp> SEout;

@@ -13,16 +13,17 @@
 #ifndef KELDYSH_MFRG_BUBBLES_H
 #define KELDYSH_MFRG_BUBBLES_H
 
-#include <cmath> // for using the macro M_2_PI as 2*pi
+#include <cmath>                        // for using the macro M_2_PI as 2*pi
 
-#include "vertex.h"
-#include "propagator.h"
-#include "integrator.h"
-#include "selfenergy.h"
-#include "util.h"
-#include "mpi_setup.h"
-#include "diagrammatic_combinations.h"
-#include "correctionFunctions.h"
+#include "vertex.h"                     // vertex class
+#include "selfenergy.h"                 // self-energy class
+#include "propagator.h"                 // propagator class
+#include "integrator.h"                 // integration routines
+#include "util.h"                       // measuring time, printing text output
+#include "mpi_setup.h"                  // mpi parallelization routines
+#include "diagrammatic_combinations.h"  // combinations of diagrammatic classes that go into the left/right vertex
+                                        // in the bubble
+#include "correctionFunctions.h"        // correction terms due to finite integration range
 
 /**
  * Class combining two propagators, either GG or GS+SG
@@ -60,25 +61,25 @@ public:
                     ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(0, v2, i_in) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
                     break;
                 case 7: //AK
-                    ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(1, v2) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2);
+                    ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(1, v2, i_in) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
                     break;
                 case 9: //RA
                     ans = g.valsmooth(0, v1, i_in) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(0, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
                     break;
                 case 11://KA
-                    ans = g.valsmooth(1, v1) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(1, v1) * conj(g.valsmooth(0, v2, i_in));
+                    ans = g.valsmooth(1, v1, i_in) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(1, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
                     break;
                 case 12://RR
                     ans = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
                     break;
                 case 13://RK
-                    ans = g.valsmooth(0, v1, i_in) * s.valsmooth(1, v2) + s.valsmooth(0, v1, i_in) * g.valsmooth(1, v2);
+                    ans = g.valsmooth(0, v1, i_in) * s.valsmooth(1, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(1, v2, i_in);
                     break;
                 case 14://KR
-                    ans = g.valsmooth(1, v1) * s.valsmooth(0, v2, i_in) + s.valsmooth(1, v1) *  g.valsmooth(0, v2, i_in);
+                    ans = g.valsmooth(1, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(1, v1, i_in) *  g.valsmooth(0, v2, i_in);
                     break;
                 case 15://KK
-                    ans = g.valsmooth(1, v1) * s.valsmooth(1, v2) + s.valsmooth(1, v1) * g.valsmooth(1, v2);
+                    ans = g.valsmooth(1, v1, i_in) * s.valsmooth(1, v2, i_in) + s.valsmooth(1, v1, i_in) * g.valsmooth(1, v2, i_in);
                     break;
                 default:
                     return 0.;
@@ -94,25 +95,25 @@ public:
                     ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
                     break;
                 case 7: //AK
-                    ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2);
+                    ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
                     break;
                 case 9: //RA
                     ans = g.valsmooth(0, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
                     break;
                 case 11://KA
-                    ans = g.valsmooth(1, v1) * conj(g.valsmooth(0, v2, i_in));
+                    ans = g.valsmooth(1, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
                     break;
                 case 12://RR
                     ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
                     break;
                 case 13://RK
-                    ans = g.valsmooth(0, v1, i_in) * g.valsmooth(1, v2);
+                    ans = g.valsmooth(0, v1, i_in) * g.valsmooth(1, v2, i_in);
                     break;
                 case 14://KR
-                    ans =  g.valsmooth(1, v1) *  g.valsmooth(0, v2, i_in);
+                    ans =  g.valsmooth(1, v1, i_in) *  g.valsmooth(0, v2, i_in);
                     break;
                 case 15://KK
-                    ans =  g.valsmooth(1, v1) *  g.valsmooth(1, v2);
+                    ans =  g.valsmooth(1, v1, i_in) *  g.valsmooth(1, v2, i_in);
                     break;
                 default:
                     return 0.;
@@ -737,95 +738,6 @@ public:
     }
 };
 
-
-/**
- * Function that calculates the asymptotic corrections of the K1 class
- * @tparam Q        : Type of the return, usually comp
- * @param vertex1   : Left vertex
- * @param vertex2   : Right vertex
- * @param gamma_m   : gamma minus, the positive value of the lower limit of the finite integral in bubble_function
- * @param gamma_p   : gamma plus, the positive value of the upper limit of the finite integral in bubble_function
- * @param w         : Bosonic frequency at which the correction ought to be calculated
- * @param i0_in     : Independent Keldysh index input. Must be converted to iK in 0...15
- * @param i_in      : Internal index
- * @param channel   : Char indicating for which channel one is calculating the correction. Changes depending on the parametrization of the frequencies
- * @return          : Returns value of the correction
- */
-template <typename Q> auto asymp_corrections_K1(const Vertex<fullvert<Q> >& vertex1, const Vertex<fullvert<Q> >& vertex2, double gamma_m, double gamma_p, double w, int i0_in, int i_in, char channel) -> Q{
-
-    int i0;
-    Q res=0.;
-    double a,b;
-    Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-
-    for(auto i2 : {3,6,9,12}){       //i2 must be 3, 6, 9 or 12, since these are the terms that require corrections. We're neglecting oder corrections (for now)
-        switch (i2){
-            // a=1  => Retarded
-            // a=-1 => Advanced
-            case 3:     //AA
-                a=-1.;
-                b=-1.;
-                break;
-            case 6:     //AR
-                a=-1.;
-                b=1.;
-                break;
-            case 9:     //RA
-                a=1.;
-                b=-1.;
-                break;
-            case 12:    //RR
-                a=1.;
-                b=1.;
-                break;
-            default:
-                print("Houston, we've got a problem");
-                return 0.;
-        }
-        vector<int> indices(2);
-        switch (channel) {
-            //According to channel, indices of the left and right vertices are determined.
-            //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
-            //Keep in mind which spin components of the vertex contribute to the relevant spin components
-            //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
-            case 'a':                                                                       //Flow eq: V*Pi*V
-                i0 = non_zero_Keldysh_K1a[i0_in];
-                vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
-
-                res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
-
-                break;
-            case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                i0 = non_zero_Keldysh_K1p[i0_in];
-                vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
-
-                /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                 *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                 * the bubble_function(...) must be changed.*/
-//                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
-//                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
-
-                res += (res_l_V  * res_r_V) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p); //+ res_l_Vhat * res_r_Vhat
-                break;
-            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                i0 = non_zero_Keldysh_K1t[i0_in];
-                vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
-                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
-
-                res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);;
-                break;
-            default: ;
-        }
-    }
-    return res;
-}
 
 
 /**

@@ -266,7 +266,7 @@ auto Propagator::GA(double v, int i_in) const -> comp
 auto Propagator::GK(double v, int i_in) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*Fermi_distribution(v)*(GR(v, i_in)-GA(v, i_in)));
+    return (1.-2.*Fermi_distribution(v))*(GR(v, i_in)-GA(v, i_in));
 }
 auto Propagator::SR(double v, int i_in) const -> comp
 {
