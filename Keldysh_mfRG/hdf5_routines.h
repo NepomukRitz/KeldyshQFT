@@ -889,8 +889,6 @@ State<complex<double>> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long
     State<complex<double>> result;
     if(Lambda_it<Lambda_size){
 
-        result.Lambda = Lambdas[Lambda_it]; // TODO: or Lambdas[Lambda_it-1] ?
-
         H5::H5File* file = 0;
         file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
 
@@ -1232,9 +1230,6 @@ cout << "File '" << FILE_NAME<< "' successfully read out" << endl;
 void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
     // test hdf5: read files and compare to original file
     State<comp> out = read_hdf<comp>(FILE_NAME, i, nEVO, flow_grid);
-    if (state.Lambda != out.Lambda) {
-        cout << "Lambdas not equal" << endl;
-    }
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
             if (state.selfenergy.val(iK, iSE) != out.selfenergy.val(iK, iSE)) {
