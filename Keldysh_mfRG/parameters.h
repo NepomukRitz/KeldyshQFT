@@ -9,9 +9,6 @@ using namespace std;
 /// fRG parameters ///
 const int nLoops = 1;  // Number of loops
 
-// Include the following line if calculations should include susceptibility. Otherwise, comment out
-// #define SUSC 1
-
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow
 #define REG 2
@@ -53,7 +50,6 @@ const int nFER = 501;
 // Number of frequency points for the self energy and the susceptibility
 const int nSE   = nFER;
 const int nPROP = nFER;
-// const int nSUSC = nFER;  //Makes no sense to have these values be different from one another
 
 // Number of frequency points for the K1 class(bosonic freq wa),
 // K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic frequency wa and fermionic freqs nua and nuap)
