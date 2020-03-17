@@ -22,6 +22,7 @@
 #include "util.h"
 #include "selfenergy.h"
 #include "propagator.h"
+#include "Keldysh_symmetries.h"
 
 using namespace std;
 
@@ -54,6 +55,11 @@ auto main() -> int {
     print(testProp.valsmooth(0, 1.5, 0), true);
     comp testPropcompare = 1./(1.5 + glb_i);
     print(testPropcompare, true);
+
+    vector<double> testvec {1., 2., 3., 5.5, M_PI};
+    print(isInList(M_PI, testvec), true);
+    print(isInList(M_2_PI/M_2_PI, testvec), true);
+    print("check");
 
 //    SelfEnergy<comp> SEout;
 //    SOPTbare_FFT_SelfEnergy(SEout, 1., 1., 10000, 80.);

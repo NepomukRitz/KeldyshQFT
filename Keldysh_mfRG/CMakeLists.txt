@@ -19,6 +19,7 @@ add_executable(Keldysh_mfRG
         main.cpp
         data_structures.h
         frequency_grid.h
+        Keldysh_symmetries.h
         mpi_setup.h
         parameters.h
         propagator.h
@@ -29,7 +30,7 @@ add_executable(Keldysh_mfRG
 #        state.h
 #        vertex.h
 #        integrator.h
-#        Keldysh_symmetries.h
+#
 #        loop.h a_vertex.h p_vertex.h t_vertex.h
 #        internal_symmetries.h
 #        bubbles.h diagrammatic_combinations.h
