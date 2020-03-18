@@ -14,7 +14,6 @@
 #define KELDYSH_MFRG_DIAGRAMMATIC_COMBINATIONS_H
 
 #include "vertex.h" // vertex class
-// TODO: vval -> val, vvalsmooth -> valsmooth
 
 /**
  * Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
@@ -32,32 +31,32 @@ template <typename Q>
 auto left_same_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp, int i_in, char channel) -> Q
 {
     Q gamma0, K1, K2b;
-    gamma0 = vertex.densvertex.irred.vval(i1, i_in);
+    gamma0 = vertex.densvertex.irred.val(i1, i_in);
 
     switch (channel){
         case 'a':
 #if DIAG_CLASS >=1
-            K1 = vertex.densvertex.avertex.K1_vvalsmooth(i1, w, i_in, vertex.densvertex.tvertex);
+            K1 = vertex.densvertex.avertex.K1_valsmooth(i1, w, i_in, vertex.densvertex.tvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2b = vertex.densvertex.avertex.K2b_vvalsmooth(i1, w, vpp, i_in, vertex.densvertex.tvertex);
+            K2b = vertex.densvertex.avertex.K2b_valsmooth(i1, w, vpp, i_in, vertex.densvertex.tvertex);
 #endif
             break;
 
         case 'p':
 #if DIAG_CLASS >=1
-            K1 = vertex.densvertex.pvertex.K1_vvalsmooth(i1, w, i_in);
+            K1 = vertex.densvertex.pvertex.K1_valsmooth(i1, w, i_in);
 #endif
 #if DIAG_CLASS >=2
-            K2b = vertex.densvertex.pvertex.K2b_vvalsmooth(i1, w, vpp, i_in);
+            K2b = vertex.densvertex.pvertex.K2b_valsmooth(i1, w, vpp, i_in);
 #endif
             break;
         case 't' :
 #if DIAG_CLASS >=1
-            K1 = vertex.densvertex.tvertex.K1_vvalsmooth(i1, w, i_in, vertex.densvertex.avertex);
+            K1 = vertex.densvertex.tvertex.K1_valsmooth(i1, w, i_in, vertex.densvertex.avertex);
 #endif
 #if DIAG_CLASS >=2
-            K2b = vertex.densvertex.tvertex.K2b_vvalsmooth(i1, w, vpp, i_in, vertex.densvertex.avertex);
+            K2b = vertex.densvertex.tvertex.K2b_valsmooth(i1, w, vpp, i_in, vertex.densvertex.avertex);
 #endif
             break;
         default:
@@ -82,32 +81,32 @@ template <typename Q>
 auto right_same_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, char channel) -> Q
 {
     Q gamma0, K1, K2;
-    gamma0 = vertex.densvertex.irred.vval(i3, i_in);
+    gamma0 = vertex.densvertex.irred.val(i3, i_in);
 
     switch (channel){
         case 'a':
 #if DIAG_CLASS >=1
-            K1 = vertex.densvertex.avertex.K1_vvalsmooth(i3, w, i_in, vertex.densvertex.tvertex);
+            K1 = vertex.densvertex.avertex.K1_valsmooth(i3, w, i_in, vertex.densvertex.tvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2 = vertex.densvertex.avertex.K2_vvalsmooth(i3, w, vpp, i_in, vertex.densvertex.tvertex);
+            K2 = vertex.densvertex.avertex.K2_valsmooth(i3, w, vpp, i_in, vertex.densvertex.tvertex);
 #endif
             break;
 
         case 'p':
 #if DIAG_CLASS >=1
-            K1 = vertex.densvertex.pvertex.K1_vvalsmooth(i3, w, i_in);
+            K1 = vertex.densvertex.pvertex.K1_valsmooth(i3, w, i_in);
 #endif
 #if DIAG_CLASS >=2
-            K2 = vertex.densvertex.pvertex.K2_vvalsmooth(i3, w, vpp, i_in);
+            K2 = vertex.densvertex.pvertex.K2_valsmooth(i3, w, vpp, i_in);
 #endif
             break;
         case 't' :
 #if DIAG_CLASS >=1
-            K1 = vertex.densvertex.tvertex.K1_vvalsmooth(i3, w, i_in, vertex.densvertex.avertex);
+            K1 = vertex.densvertex.tvertex.K1_valsmooth(i3, w, i_in, vertex.densvertex.avertex);
 #endif
 #if DIAG_CLASS >=2
-            K2 = vertex.densvertex.tvertex.K2_vvalsmooth(i3, w, vpp, i_in, vertex.densvertex.avertex);
+            K2 = vertex.densvertex.tvertex.K2_valsmooth(i3, w, vpp, i_in, vertex.densvertex.avertex);
 #endif
             break;
         default:
@@ -140,26 +139,26 @@ auto left_diff_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, doubl
     switch (channel){
         case 'a' :
 #if DIAG_CLASS >=2
-            K2 = vertex.densvertex.avertex.K2_vvalsmooth(i1, w, v, i_in, vertex.densvertex.tvertex);
+            K2 = vertex.densvertex.avertex.K2_valsmooth(i1, w, v, i_in, vertex.densvertex.tvertex);
 #endif
 #if DIAG_CLASS >=3
-            K3 = vertex.densvertex.avertex.K3_vvalsmooth(i1, w, v, vpp, i_in, vertex.densvertex.tvertex);
+            K3 = vertex.densvertex.avertex.K3_valsmooth(i1, w, v, vpp, i_in, vertex.densvertex.tvertex);
 #endif
             break;
         case 'p':
 #if DIAG_CLASS >=2
-            K2 = vertex.densvertex.pvertex.K2_vvalsmooth(i1, w, v, i_in);
+            K2 = vertex.densvertex.pvertex.K2_valsmooth(i1, w, v, i_in);
 #endif
 #if DIAG_CLASS >=3
-            K3 = vertex.densvertex.pvertex.K3_vvalsmooth(i1, w, v, vpp, i_in);
+            K3 = vertex.densvertex.pvertex.K3_valsmooth(i1, w, v, vpp, i_in);
 #endif
             break;
         case 't':
 #if DIAG_CLASS >=2
-            K2 = vertex.densvertex.tvertex.K2_vvalsmooth(i1, w, v, i_in, vertex.densvertex.avertex);
+            K2 = vertex.densvertex.tvertex.K2_valsmooth(i1, w, v, i_in, vertex.densvertex.avertex);
 #endif
 #if DIAG_CLASS >=3
-            K3 = vertex.densvertex.tvertex.K3_vvalsmooth(i1, w, v, vpp, i_in, vertex.densvertex.avertex);
+            K3 = vertex.densvertex.tvertex.K3_valsmooth(i1, w, v, vpp, i_in, vertex.densvertex.avertex);
 #endif
             break;
         default:
@@ -192,26 +191,26 @@ auto right_diff_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, doub
     switch (channel){
         case 'a' :
 #if DIAG_CLASS >= 2
-            K2b = vertex.densvertex.avertex.K2b_vvalsmooth(i3, w, vp, i_in, vertex.densvertex.tvertex);
+            K2b = vertex.densvertex.avertex.K2b_valsmooth(i3, w, vp, i_in, vertex.densvertex.tvertex);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = vertex.densvertex.avertex.K3_vvalsmooth(i3, w, vpp, vp, i_in, vertex.densvertex.tvertex);
+            K3 = vertex.densvertex.avertex.K3_valsmooth(i3, w, vpp, vp, i_in, vertex.densvertex.tvertex);
 #endif
             break;
         case 'p':
 #if DIAG_CLASS >= 2
-            K2b = vertex.densvertex.pvertex.K2b_vvalsmooth(i3, w, vp, i_in);
+            K2b = vertex.densvertex.pvertex.K2b_valsmooth(i3, w, vp, i_in);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = vertex.densvertex.pvertex.K3_vvalsmooth(i3, w, vpp, vp, i_in);
+            K3 = vertex.densvertex.pvertex.K3_valsmooth(i3, w, vpp, vp, i_in);
 #endif
             break;
         case 't':
 #if DIAG_CLASS >= 2
-            K2b = vertex.densvertex.tvertex.K2b_vvalsmooth(i3, w, vp, i_in, vertex.densvertex.avertex);
+            K2b = vertex.densvertex.tvertex.K2b_valsmooth(i3, w, vp, i_in, vertex.densvertex.avertex);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = vertex.densvertex.tvertex.K3_vvalsmooth(i3, w, vpp, vp, i_in, vertex.densvertex.avertex);
+            K3 = vertex.densvertex.tvertex.K3_valsmooth(i3, w, vpp, vp, i_in, vertex.densvertex.avertex);
 #endif
             break;
         default:
@@ -238,32 +237,32 @@ template <typename Q>
 auto left_same_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp, int i_in, int spin, char channel) -> Q
 {
     Q gamma0, K1, K2b;
-    gamma0 = vertex.spinvertex.irred.vval(i1, i_in);
+    gamma0 = vertex.spinvertex.irred.val(i1, i_in);
 
     switch (channel){
         case 'a':
 #if DIAG_CLASS >=1
-            K1 = vertex.spinvertex.avertex.K1_vvalsmooth(i1, w, i_in, spin, vertex.spinvertex.tvertex);
+            K1 = vertex.spinvertex.avertex.K1_valsmooth(i1, w, i_in, spin, vertex.spinvertex.tvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2b = vertex.spinvertex.avertex.K2b_vvalsmooth(i1, w, vpp, i_in, spin, vertex.spinvertex.tvertex);
+            K2b = vertex.spinvertex.avertex.K2b_valsmooth(i1, w, vpp, i_in, spin, vertex.spinvertex.tvertex);
 #endif
             break;
 
         case 'p':
 #if DIAG_CLASS >=1
-            K1 = vertex.spinvertex.pvertex.K1_vvalsmooth(i1, w, i_in, spin);
+            K1 = vertex.spinvertex.pvertex.K1_valsmooth(i1, w, i_in, spin);
 #endif
 #if DIAG_CLASS >=2
-            K2b = vertex.spinvertex.pvertex.K2b_vvalsmooth(i1, w, vpp, i_in, spin);
+            K2b = vertex.spinvertex.pvertex.K2b_valsmooth(i1, w, vpp, i_in, spin);
 #endif
             break;
         case 't' :
 #if DIAG_CLASS >=1
-            K1 = vertex.spinvertex.tvertex.K1_vvalsmooth(i1, w, i_in, spin, vertex.spinvertex.avertex);
+            K1 = vertex.spinvertex.tvertex.K1_valsmooth(i1, w, i_in, spin, vertex.spinvertex.avertex);
 #endif
 #if DIAG_CLASS >=2
-            K2b = vertex.spinvertex.tvertex.K2b_vvalsmooth(i1, w, vpp, i_in, spin, vertex.spinvertex.avertex);
+            K2b = vertex.spinvertex.tvertex.K2b_valsmooth(i1, w, vpp, i_in, spin, vertex.spinvertex.avertex);
 #endif
             break;
         default:
@@ -289,32 +288,32 @@ template <typename Q>
 auto right_same_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, int spin, char channel) -> Q
 {
     Q gamma0, K1, K2;
-    gamma0 = vertex.spinvertex.irred.vval(i3, i_in);
+    gamma0 = vertex.spinvertex.irred.val(i3, i_in);
 
     switch (channel){
         case 'a':
 #if DIAG_CLASS >=1
-            K1 = vertex.spinvertex.avertex.K1_vvalsmooth(i3, w, i_in, spin, vertex.spinvertex.tvertex);
+            K1 = vertex.spinvertex.avertex.K1_valsmooth(i3, w, i_in, spin, vertex.spinvertex.tvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2 = vertex.spinvertex.avertex.K2_vvalsmooth(i3, w, vpp, i_in, spin, vertex.spinvertex.tvertex);
+            K2 = vertex.spinvertex.avertex.K2_valsmooth(i3, w, vpp, i_in, spin, vertex.spinvertex.tvertex);
 #endif
             break;
 
         case 'p':
 #if DIAG_CLASS >=1
-            K1 = vertex.spinvertex.pvertex.K1_vvalsmooth(i3, w, i_in, spin);
+            K1 = vertex.spinvertex.pvertex.K1_valsmooth(i3, w, i_in, spin);
 #endif
 #if DIAG_CLASS >=2
-            K2 = vertex.spinvertex.pvertex.K2_vvalsmooth(i3, w, vpp, i_in, spin);
+            K2 = vertex.spinvertex.pvertex.K2_valsmooth(i3, w, vpp, i_in, spin);
 #endif
             break;
         case 't' :
 #if DIAG_CLASS >=1
-            K1 = vertex.spinvertex.tvertex.K1_vvalsmooth(i3, w, i_in, spin, vertex.spinvertex.avertex);
+            K1 = vertex.spinvertex.tvertex.K1_valsmooth(i3, w, i_in, spin, vertex.spinvertex.avertex);
 #endif
 #if DIAG_CLASS >=2
-            K2 = vertex.spinvertex.tvertex.K2_vvalsmooth(i3, w, vpp, i_in, spin, vertex.spinvertex.avertex);
+            K2 = vertex.spinvertex.tvertex.K2_valsmooth(i3, w, vpp, i_in, spin, vertex.spinvertex.avertex);
 #endif
             break;
         default:
@@ -348,26 +347,26 @@ auto left_diff_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, doubl
     switch (channel){
         case 'a' :
 #if DIAG_CLASS >=2
-            K2 = vertex.spinvertex.avertex.K2_vvalsmooth(i1, w, v, i_in, spin, vertex.spinvertex.tvertex);
+            K2 = vertex.spinvertex.avertex.K2_valsmooth(i1, w, v, i_in, spin, vertex.spinvertex.tvertex);
 #endif
 #if DIAG_CLASS >=3
-            K3 = vertex.spinvertex.avertex.K3_vvalsmooth(i1, w, v, vpp, i_in, spin, vertex.spinvertex.tvertex);
+            K3 = vertex.spinvertex.avertex.K3_valsmooth(i1, w, v, vpp, i_in, spin, vertex.spinvertex.tvertex);
 #endif
             break;
         case 'p':
 #if DIAG_CLASS >=2
-            K2 = vertex.spinvertex.pvertex.K2_vvalsmooth(i1, w, v, i_in, spin);
+            K2 = vertex.spinvertex.pvertex.K2_valsmooth(i1, w, v, i_in, spin);
 #endif
 #if DIAG_CLASS >=3
-            K3 = vertex.spinvertex.pvertex.K3_vvalsmooth(i1, w, v, vpp, i_in, spin);
+            K3 = vertex.spinvertex.pvertex.K3_valsmooth(i1, w, v, vpp, i_in, spin);
 #endif
             break;
         case 't':
 #if DIAG_CLASS >=2
-            K2 = vertex.spinvertex.tvertex.K2_vvalsmooth(i1, w, v, i_in, spin, vertex.spinvertex.avertex);
+            K2 = vertex.spinvertex.tvertex.K2_valsmooth(i1, w, v, i_in, spin, vertex.spinvertex.avertex);
 #endif
 #if DIAG_CLASS >=3
-            K3 = vertex.spinvertex.tvertex.K3_vvalsmooth(i1, w, v, vpp, i_in, spin, vertex.spinvertex.avertex);
+            K3 = vertex.spinvertex.tvertex.K3_valsmooth(i1, w, v, vpp, i_in, spin, vertex.spinvertex.avertex);
 #endif
             break;
         default:
@@ -400,26 +399,26 @@ auto right_diff_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, doub
     switch (channel){
         case 'a' :
 #if DIAG_CLASS >= 2
-            K2b = vertex.spinvertex.avertex.K2b_vvalsmooth(i3, w, vp, i_in, spin, vertex.spinvertex.tvertex);
+            K2b = vertex.spinvertex.avertex.K2b_valsmooth(i3, w, vp, i_in, spin, vertex.spinvertex.tvertex);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = vertex.spinvertex.avertex.K3_vvalsmooth(i3, w, vpp, vp, i_in, spin, vertex.spinvertex.tvertex);
+            K3 = vertex.spinvertex.avertex.K3_valsmooth(i3, w, vpp, vp, i_in, spin, vertex.spinvertex.tvertex);
 #endif
             break;
         case 'p':
 #if DIAG_CLASS >= 2
-            K2b = vertex.spinvertex.pvertex.K2b_vvalsmooth(i3, w, vp, i_in, spin);
+            K2b = vertex.spinvertex.pvertex.K2b_valsmooth(i3, w, vp, i_in, spin);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = vertex.spinvertex.pvertex.K3_vvalsmooth(i3, w, vpp, vp, i_in, spin);
+            K3 = vertex.spinvertex.pvertex.K3_valsmooth(i3, w, vpp, vp, i_in, spin);
 #endif
             break;
         case 't':
 #if DIAG_CLASS >= 2
-            K2b = vertex.spinvertex.tvertex.K2b_vvalsmooth(i3, w, vp, i_in, spin, vertex.spinvertex.avertex);
+            K2b = vertex.spinvertex.tvertex.K2b_valsmooth(i3, w, vp, i_in, spin, vertex.spinvertex.avertex);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = vertex.spinvertex.tvertex.K3_vvalsmooth(i3, w, vpp, vp, i_in, spin, vertex.spinvertex.avertex);
+            K3 = vertex.spinvertex.tvertex.K3_valsmooth(i3, w, vpp, vp, i_in, spin, vertex.spinvertex.avertex);
 #endif
             break;
         default:

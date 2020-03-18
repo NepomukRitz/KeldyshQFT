@@ -7,7 +7,6 @@
 #include "internal_symmetries.h"  // symmetry transformations for internal indices (momentum etc.), currently trivial
 #include "interpolations.h"       // frequency interpolations for vertices
 
-// TODO: vval -> val, vvalsmooth -> valsmooth
 // TODO: change operator+, operator*
 //template <typename Q> class pvert;
 
@@ -77,12 +76,12 @@ public:
     void K1_addvert(int, int, int, Q);
 
     /*Returns the value of the K1 vertex at multi-index i,j,k (Keldysh, bosonic frequency, internal structure)*/
-    auto K1_vval(int, int, int) const -> Q;
+    auto K1_val(int, int, int) const -> Q;
 
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
  * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-    auto K1_vvalsmooth(int, double, int) const -> Q;
-    auto K1_vvalsmooth(int, double, int, int) const -> Q;
+    auto K1_valsmooth(int, double, int) const -> Q;
+    auto K1_valsmooth(int, double, int, int) const -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
     void T1_K1(double&, int&) const;
@@ -107,17 +106,17 @@ public:
     void K2_addvert(int, int, int, int, Q);
 
     /*Returns the value of the K2 vertex at multi-index i,j,k,l (Keldysh, bosonic frequency, fermionic frequency, internal structure)*/
-    auto K2_vval(int, int, int, int) const -> Q;
+    auto K2_val(int, int, int, int) const -> Q;
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
     *for given Keldysh and internal structure indices.*/
-    auto K2_vvalsmooth(int, double, double, int) const -> Q;
-    auto K2_vvalsmooth(int, double, double, int, int) const -> Q;
+    auto K2_valsmooth(int, double, double, int) const -> Q;
+    auto K2_valsmooth(int, double, double, int, int) const -> Q;
 
     /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
     *for given Keldysh and internal structure indices.*/
-    auto K2b_vvalsmooth(int, double, double, int) const -> Q;
-    auto K2b_vvalsmooth(int, double, double, int, int) const -> Q;
+    auto K2b_valsmooth(int, double, double, int) const -> Q;
+    auto K2b_valsmooth(int, double, double, int, int) const -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
     void T1_K2(double&, double&, int&) const;
@@ -142,12 +141,12 @@ public:
     void K3_addvert(int, int, int, int, int, Q);
 
     /*Returns the value of the K3 vertex at multi-index i,j,k,l,m (Keldysh, bosonic frequency, two fermionic frequencies, internal structure)*/
-    auto K3_vval(int, int, int, int, int) const -> Q;
+    auto K3_val(int, int, int, int, int) const -> Q;
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
-    auto K3_vvalsmooth(int, double, double, double, int) const -> Q;
-    auto K3_vvalsmooth(int, double, double, double, int, int) const -> Q;
+    auto K3_valsmooth(int, double, double, double, int) const -> Q;
+    auto K3_valsmooth(int, double, double, double, int, int) const -> Q;
 
     /*Symmetry which interchanges the incoming legs*/
     void T1_K3(double&, double&, double&, int&) const;
@@ -274,14 +273,14 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
     Q k1, k2, k2b, k3;
 
 #if DIAG_CLASS>=0
-    k1 = K1_vvalsmooth (iK, w, i_in);
+    k1 = K1_valsmooth (iK, w, i_in);
 #endif
 #if DIAG_CLASS >=2
-    k2 = K2_vvalsmooth (iK, w, v1, i_in);
-    k2b= K2b_vvalsmooth(iK, w, v2, i_in);
+    k2 = K2_valsmooth (iK, w, v1, i_in);
+    k2b= K2b_valsmooth(iK, w, v2, i_in);
 #endif
 #if DIAG_CLASS >=3
-    k3 = K3_vvalsmooth (iK, w, v1, v2, i_in);
+    k3 = K3_valsmooth (iK, w, v1, v2, i_in);
 #endif
 
     return k1+k2+k2b+k3;
@@ -291,14 +290,14 @@ template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v
     Q k1, k2, k2b, k3;
 
 #if DIAG_CLASS>=0
-    k1 = K1_vvalsmooth (iK, w, i_in, spin);
+    k1 = K1_valsmooth (iK, w, i_in, spin);
 #endif
 #if DIAG_CLASS >=2
-    k2 = K2_vvalsmooth (iK, w, v1, i_in, spin);
-    k2b= K2b_vvalsmooth(iK, w, v2, i_in, spin);
+    k2 = K2_valsmooth (iK, w, v1, i_in, spin);
+    k2b= K2b_valsmooth(iK, w, v2, i_in, spin);
 #endif
 #if DIAG_CLASS >=3
-    k3 = K3_vvalsmooth (iK, w, v1, v2, i_in, spin);
+    k3 = K3_valsmooth (iK, w, v1, v2, i_in, spin);
 #endif
 
     return k1+k2+k2b+k3;
@@ -367,11 +366,11 @@ template <typename Q> void pvert<Q>::K1_addvert(int iK, int i, int i_in, Q value
     K1[iK*nw1_wp*n_in + i*n_in + i_in] += value;
 }
 
-template <typename Q> auto pvert<Q>::K1_vval (int iK, int i, int i_in) const -> Q{
+template <typename Q> auto pvert<Q>::K1_val (int iK, int i, int i_in) const -> Q{
     return K1[iK*nw1_wp*n_in + i*n_in + i_in];
 }
 
-template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in) const -> Q{
+template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in) const -> Q{
 
     int iK1;
     double pf1;       // prefactor: -1 for T_1, T_2, +1 else
@@ -409,7 +408,7 @@ template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in
 
     return valueK1;
 }
-template <typename Q> auto pvert<Q>::K1_vvalsmooth (int iK, double w_p, int i_in, int spin) const -> Q{
+template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in, int spin) const -> Q{
 
     int iK1;
     double pf1;       // prefactor: -1 for T_1, T_2, +1 else
@@ -494,11 +493,11 @@ template <typename Q> void pvert<Q>::K2_addvert(int iK, int i, int j, int i_in, 
     K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] += value;
 }
 
-template <typename Q> auto pvert<Q>::K2_vval (int iK, int i, int j, int i_in) const -> Q{
+template <typename Q> auto pvert<Q>::K2_val (int iK, int i, int j, int i_in) const -> Q{
     return K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in];
 }
 
-template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p, int i_in) const -> Q {
+template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in) const -> Q {
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -540,7 +539,7 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
 
     return valueK2;
 }
-template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v1_p, int i_in, int spin) const -> Q {
+template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in, int spin) const -> Q {
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -587,7 +586,7 @@ template <typename Q> auto pvert<Q>::K2_vvalsmooth (int iK, double w_p, double v
 
     return valueK2;
 }
-template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p, int i_in) const -> Q {
+template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in) const -> Q {
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -631,7 +630,7 @@ template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v
 
     return conj(valueK2);
 }
-template <typename Q> auto pvert<Q>::K2b_vvalsmooth(int iK, double w_p, double v2_p, int i_in, int spin) const -> Q {
+template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in, int spin) const -> Q {
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1 else
@@ -737,11 +736,11 @@ template <typename Q> void pvert<Q>::K3_addvert(int iK, int i, int j, int k, int
     K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] += value;
 }
 
-template <typename Q> auto pvert<Q>::K3_vval (int iK, int i, int j, int k, int i_in) const -> Q{
+template <typename Q> auto pvert<Q>::K3_val (int iK, int i, int j, int k, int i_in) const -> Q{
     return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
 }
 
-template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in) const -> Q{
+template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in) const -> Q{
 
     int iK3;
     double pf3;
@@ -830,7 +829,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
 
     return valueK3;
 }
-template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in, int spin) const -> Q{
+template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in, int spin) const -> Q{
 
     int iK3;
     double pf3;
@@ -1000,7 +999,7 @@ template <typename Q> auto pvert<Q>::K3_vvalsmooth (int iK, double w_p, double v
             iK3 = 0;
             pf3 = 0.;
             conjugate3 = false;
-            cout << "Problem with the spins in pvert.K3_vvalsmooth w/ spin!";
+            cout << "Problem with the spins in pvert.K3_valsmooth w/ spin!";
 
     }
 

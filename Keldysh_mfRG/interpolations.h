@@ -19,8 +19,8 @@ void interpolateK1(Q& ans, double pf, int iK, double w, int i_in, const T& verte
         double x2 = bfreqs[index + 1];
         double xd = (w - x1) / (x2 - x1);
 
-        Q f1 = vertex.K1_vval(iK, index, i_in);
-        Q f2 = vertex.K1_vval(iK, index + 1, i_in);
+        Q f1 = vertex.K1_val(iK, index, i_in);
+        Q f2 = vertex.K1_val(iK, index + 1, i_in);
 
         ans = pf * ((1. - xd) * f1 + xd * f2);
     }
@@ -42,10 +42,10 @@ void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, con
         double xd = (w - x1) / (x2 - x1);
         double yd = (v - y1) / (y2 - y1);
 
-        Q f11 = vertex.K2_vval(iK, index_b, index_f, i_in);
-        Q f12 = vertex.K2_vval(iK, index_b, index_f + 1, i_in);
-        Q f21 = vertex.K2_vval(iK, index_b + 1, index_f, i_in);
-        Q f22 = vertex.K2_vval(iK, index_b + 1, index_f + 1, i_in);
+        Q f11 = vertex.K2_val(iK, index_b, index_f, i_in);
+        Q f12 = vertex.K2_val(iK, index_b, index_f + 1, i_in);
+        Q f21 = vertex.K2_val(iK, index_b + 1, index_f, i_in);
+        Q f22 = vertex.K2_val(iK, index_b + 1, index_f + 1, i_in);
 
         ans = pf * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
     }
@@ -73,14 +73,14 @@ void interpolateK3 (Q& ans, double pf, int iK, double w, double v1, double v2, i
         double yd = (v1 - y1) / (y2 - y1);
         double zd = (v2 - z1) / (z2 - z1);
 
-        Q f111 = vertex.K3_vval(iK, index_b, index_f1, index_f2, i_in);
-        Q f112 = vertex.K3_vval(iK, index_b, index_f1, index_f2 + 1, i_in);
-        Q f121 = vertex.K3_vval(iK, index_b, index_f1 + 1, index_f2, i_in);
-        Q f122 = vertex.K3_vval(iK, index_b, index_f1 + 1, index_f2 + 1, i_in);
-        Q f211 = vertex.K3_vval(iK, index_b + 1, index_f1, index_f2, i_in);
-        Q f212 = vertex.K3_vval(iK, index_b + 1, index_f1, index_f2 + 1, i_in);
-        Q f221 = vertex.K3_vval(iK, index_b + 1, index_f1 + 1, index_f2, i_in);
-        Q f222 = vertex.K3_vval(iK, index_b + 1, index_f1 + 1, index_f2 + 1, i_in);
+        Q f111 = vertex.K3_val(iK, index_b, index_f1, index_f2, i_in);
+        Q f112 = vertex.K3_val(iK, index_b, index_f1, index_f2 + 1, i_in);
+        Q f121 = vertex.K3_val(iK, index_b, index_f1 + 1, index_f2, i_in);
+        Q f122 = vertex.K3_val(iK, index_b, index_f1 + 1, index_f2 + 1, i_in);
+        Q f211 = vertex.K3_val(iK, index_b + 1, index_f1, index_f2, i_in);
+        Q f212 = vertex.K3_val(iK, index_b + 1, index_f1, index_f2 + 1, i_in);
+        Q f221 = vertex.K3_val(iK, index_b + 1, index_f1 + 1, index_f2, i_in);
+        Q f222 = vertex.K3_val(iK, index_b + 1, index_f1 + 1, index_f2 + 1, i_in);
 
         Q c00 = f111 * (1. - xd) + f211 * xd;
         Q c01 = f112 * (1. - xd) + f212 * xd;

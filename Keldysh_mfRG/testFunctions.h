@@ -163,8 +163,8 @@ void export_data(State<comp>& state, int iter){
     cvec SER(nBOS);
     cvec SEK(nBOS);
     for (int j = 0; j < nBOS; j++) {
-        PiaOE[j] = 4.*state.vertex.spinvertex.avertex.K1_vval(0, j, 0);
-        PiaOO[j] = 4.*state.vertex.spinvertex.avertex.K1_vval(1, j, 0);
+        PiaOE[j] = 4.*state.vertex.spinvertex.avertex.K1_val(0, j, 0);
+        PiaOO[j] = 4.*state.vertex.spinvertex.avertex.K1_val(1, j, 0);
         SER[j] = state.selfenergy.val(0, j, 0);
         SEK[j] = state.selfenergy.val(1, j, 0);
     }
@@ -246,37 +246,37 @@ void testBubbles(State<comp>& state, double Lambda){
 */
 
         //The relevant components are read out and added in the correct places directly.
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i, 0);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i, 0);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i, 0);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i, 0);
 
 
-        //One can conversely use the K1_vvalsmooth (interpolating) functions to determine the value, which should not alter the result!
+        //One can conversely use the K1_valsmooth (interpolating) functions to determine the value, which should not alter the result!
 //        tvert<comp>* aid = &state.vertex.spinvertex.tvertex;
 
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(1, w, 0, 0, *aid);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(1, w, 0, 1, *aid);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(7, w, 0, 0, *aid);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(7, w, 0, 1, *aid);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(8, w, 0, 0, *aid);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(8, w, 0, 1, *aid);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(14, w, 0, 0, *aid);
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(14, w, 0, 1, *aid);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_valsmooth(1, w, 0, 0, *aid);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_valsmooth(1, w, 0, 1, *aid);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_valsmooth(7, w, 0, 0, *aid);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_valsmooth(7, w, 0, 1, *aid);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_valsmooth(8, w, 0, 0, *aid);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_valsmooth(8, w, 0, 1, *aid);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_valsmooth(14, w, 0, 0, *aid);
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_valsmooth(14, w, 0, 1, *aid);
 
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i, 0);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i, 0);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i, 0);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i, 0);
 
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(3, w, 0, 0, *aid);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(3, w, 0, 1, *aid);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(5, w, 0, 0, *aid);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(5, w, 0, 1, *aid);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(10, w, 0, 0, *aid);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(10, w, 0, 1, *aid);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(12, w, 0, 0, *aid);
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vvalsmooth(12, w, 0, 1, *aid);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_valsmooth(3, w, 0, 0, *aid);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_valsmooth(3, w, 0, 1, *aid);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_valsmooth(5, w, 0, 0, *aid);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_valsmooth(5, w, 0, 1, *aid);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_valsmooth(10, w, 0, 0, *aid);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_valsmooth(10, w, 0, 1, *aid);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_valsmooth(12, w, 0, 0, *aid);
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_valsmooth(12, w, 0, 1, *aid);
     }
 
     write_h5_rvecs("SOPT_Bubbles.h5", {"v", "Bench_RePiaOO", "Bench_ImPiaOO", "Bench_RePiaOE", "Bench_ImPiaOE"},
@@ -314,15 +314,15 @@ auto test_rhs_bubbles_flow(const State<comp>& state, double Lambda) -> State<com
         ans.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15) );     //6+9+15= OO => Keldysh comp1
 
 //        //The relevant components are read out and added in the correct places directly.
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(0, i, 0)*dL;
+//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(0, i, 0)*dL;
 //
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_vval(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(1, i, 0)*dL;
+//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(1, i, 0)*dL;
 
     }
 
@@ -407,15 +407,15 @@ void testSelfEnergy_and_Bubbles(State<comp>& state, double Lambda){
         SEK[i] = state.selfenergy.val(1, i, 0);
     }
     for(int i = 0; i<nBOS; i++){
-        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
-        PiaOE[i] += state.vertex.spinvertex.avertex.K1_vval(0, i, 0);
+        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i, 0);
+        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i, 0);
+        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i, 0);
+        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i, 0);
 
-        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
-        PiaOO[i] += state.vertex.spinvertex.avertex.K1_vval(1, i, 0);
+        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i, 0);
+        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i, 0);
+        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i, 0);
+        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i, 0);
     }
 
     write_h5_rvecs("SOPT_SE.h5", {"v", "Bench_ReSER", "Bench_ImSER", "Bench_ReSEK", "Bench_ImSEK",
