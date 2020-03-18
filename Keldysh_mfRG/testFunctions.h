@@ -283,51 +283,152 @@ void testBubbles(State<comp>& state, double Lambda){
                    {ffreqs, PiaOO.real(), PiaOO.imag(), PiaOE.real(), PiaOE.imag()});
 }
 
-
-auto test_rhs_bubbles_flow(const State<comp>& state, double Lambda) -> State<comp>{
+auto rhs_bubbles_flow_wstate(const State<comp>& input, double Lambda) -> State<comp>{
     State<comp> ans;
+    ans.selfenergy.initialize(glb_U/2., 0. );
 
-    Propagator g(Lambda, state.selfenergy, 'g');
-    Propagator s(Lambda, state.selfenergy, 's');
+    Propagator g(Lambda, ans.selfenergy, 'g');
+    Propagator s(Lambda, ans.selfenergy, 's');
 
-    //for(int i=75; i<76; i++){
+//#pragma parallel for default: none
     for(int i=1; i<nBOS; i++){
         double w = bfreqs[i];
 
         //Create the objects explicitly designed to return the determined Keldysh component needed
-        IntegrandBubble integrandPia6 (g, s, true, w, 6,  'a');     //AR
-        IntegrandBubble integrandPia9 (g, s, true, w, 9,  'a');     //RA
         IntegrandBubble integrandPia11(g, s, true, w, 11, 'a');     //KA
         IntegrandBubble integrandPia13(g, s, true, w, 13, 'a');     //RK
-        IntegrandBubble integrandPia15(g, s, true, w, 15, 'a');     //KK
 
         //Calculate the contributions
         auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
         auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
 
-        auto cont6  = integrator(integrandPia6 , w_lower_b, w_upper_b);
-        auto cont9  = integrator(integrandPia9 , w_lower_b, w_upper_b);
-        auto cont15 = integrator(integrandPia15, w_lower_b, w_upper_b);
-
         //Add the respective contributions to the respective bubble
-        ans.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 0.);//1./2.*(cont11+ cont13) );             //11+13 = OE => Keldysh comp0
-        ans.vertex.spinvertex.avertex.K1_setvert(1, i, 0, 1./2.*(cont6 + cont9));// + cont15) );     //6+9+15= OO => Keldysh comp1
+        ans.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 1./2.*(cont11+ cont13));            //11+13 = OE => Keldysh comp0
+    }
+    return ans;
+}
 
-//        //The relevant components are read out and added in the correct places directly.
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(0, i, 0)*dL;
-//        PiaOE[i] += state.vertex.spinvertex.avertex.K1_val(0, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(0, i, 0)*dL;
-//
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(1, i, 0)*dL;
-//        PiaOO[i] += state.vertex.spinvertex.avertex.K1_val(1, i-1, 0) + state.vertex.spinvertex.avertex.K1_val(1, i, 0)*dL;
+void test_rhs_bubbles_flow_wstate(int N_ODE) {
+    bool write_flag = false; // whether to write output in hdf5
+    State<comp> state_dir, state_fin, state_ini; // direct, final, initial K1a_1
+    state_dir.selfenergy.initialize(glb_U/2., 0.); // initialize with Hartree term
+    state_dir.selfenergy.initialize(glb_U/2., 0.); // initialize with Hartree term
+    state_dir.selfenergy.initialize(glb_U/2., 0.); // initialize with Hartree term
 
+    Propagator G0ini(Lambda_ini, state_ini.selfenergy, 'g'); // initial propagator
+    Propagator G0dir(Lambda_fin, state_dir.selfenergy, 'g'); // final propagator
+
+    // direct calculation of initial K1a
+    for(int i=0; i<nw1_wa; ++i) {
+        double w = bfreqs[i];
+
+        //Create the objects explicitly designed to return the determined Keldysh component needed
+        IntegrandBubble integrandPia11(G0ini, G0ini, false, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(G0ini, G0ini, false, w, 13, 'a');     //RK
+
+        //Calculate the contributions
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        state_ini.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 1./2.*(cont11 + cont13));
     }
 
-    ans *= dL;
+    // direct calculation of direct K1a
+    for(int i=0; i<nw1_wa; ++i) {
+        double w = bfreqs[i];
+
+        //Create the objects explicitly designed to return the determined Keldysh component needed
+        IntegrandBubble integrandPia11(G0dir, G0dir, false, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(G0dir, G0dir, false, w, 13, 'a');     //RK
+
+        //Calculate the contributions
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        state_dir.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 1./2.*(cont11 + cont13));
+    }
+    ODE_solver_Euler(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
+    cvec K1a_dif = state_dir.vertex.spinvertex.avertex.K1 + ( state_fin.vertex.spinvertex.avertex.K1*(-1.) ); // difference in results
+    cout << "Testing ODE for bare K1a_1. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << K1a_dif.max_norm() << "." << endl;
+    if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
+                                  {"v", "state_dir_R", "state_dir_I", "state_fin_R", "state_fin_I", "state_ini_R", "state_ini_I"},
+                                  {bfreqs, state_dir.vertex.spinvertex.avertex.K1.real(), state_dir.vertex.spinvertex.avertex.K1.imag(),
+                                                   state_fin.vertex.spinvertex.avertex.K1.real(), state_fin.vertex.spinvertex.avertex.K1.imag(),
+                                                   state_ini.vertex.spinvertex.avertex.K1.real(), state_ini.vertex.spinvertex.avertex.K1.imag()});
+}
+
+auto rhs_bubbles_flow(const cvec& input, double Lambda) -> cvec{
+    cvec ans(nw1_wa);
+
+    SelfEnergy<comp> selfini;
+    selfini.initialize(glb_U/2., 0.);
+
+    Propagator g(Lambda, selfini, 'g');
+    Propagator s(Lambda, selfini, 's');
+
+//#pragma parallel for default: none
+    for(int i=1; i<nBOS; i++){
+        double w = bfreqs[i];
+
+        //Create the objects explicitly designed to return the determined Keldysh component needed
+        IntegrandBubble integrandPia11(g, s, true, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(g, s, true, w, 13, 'a');     //RK
+
+        //Calculate the contributions
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        //Add the respective contributions to the respective bubble
+        ans[i] = 1./2.*(cont11+ cont13);            //11+13 = OE => Keldysh comp0
+    }
+
     return ans;
+}
+
+void test_rhs_bubbles_flow(int N_ODE){
+    bool write_flag = true; // whether to write output in hdf5
+    cvec K1a_dir(nw1_wa), K1a_fin(nw1_wa), K1a_ini(nw1_wa); // direct, final, initial K1a_1
+    SelfEnergy<comp> SEin; // trivial self-energy
+    SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
+    Propagator G0ini(Lambda_ini, SEin, 'g'); // initial propagator
+    Propagator G0dir(Lambda_fin, SEin, 'g'); // final propagator
+
+    // direct calculation of initial K1a
+    for(int i=0; i<nw1_wa; ++i) {
+        double w = bfreqs[i];
+
+        //Create the objects explicitly designed to return the determined Keldysh component needed
+        IntegrandBubble integrandPia11(G0ini, G0ini, false, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(G0ini, G0ini, false, w, 13, 'a');     //RK
+
+        //Calculate the contributions
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        K1a_ini[i] = 1./2.*(cont11 + cont13);
+    }
+
+    // direct calculation of direct K1a
+    for(int i=0; i<nw1_wa; ++i) {
+        double w = bfreqs[i];
+
+        //Create the objects explicitly designed to return the determined Keldysh component needed
+        IntegrandBubble integrandPia11(G0dir, G0dir, false, w, 11, 'a');     //KA
+        IntegrandBubble integrandPia13(G0dir, G0dir, false, w, 13, 'a');     //RK
+
+        //Calculate the contributions
+        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
+        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+
+        K1a_dir[i] = 1./2.*(cont11 + cont13);
+    }
+
+    ODE_solver_RK4(K1a_fin, Lambda_fin, K1a_ini, Lambda_ini, rhs_bubbles_flow, N_ODE); // final K1a from ODE
+    cvec K1a_dif = K1a_dir + ( K1a_fin*(-1.) ); // difference in results
+    cout << "Testing ODE for bare K1a_1. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << K1a_dif.max_norm() << "." << endl;
+    if(write_flag) write_h5_rvecs("rhs_bubbles_flow.h5",
+                                  {"v", "K1a_dir_R", "K1a_dir_I", "K1a_fin_R", "K1a_fin_I", "K1a_ini_R", "K1a_ini_I"},
+                                  {bfreqs, K1a_dir.real(), K1a_dir.imag(), K1a_fin.real(), K1a_fin.imag(), K1a_ini.real(), K1a_ini.imag()});
 }
 
 /**
