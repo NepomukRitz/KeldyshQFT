@@ -80,7 +80,7 @@ auto fconv_fer(double w) -> int
 /*
 // only need these functions when using different grids for a,p,t
 
-#include <tuple>   // return several indices // TODO: change to vector (here and in vertex files...)
+#include <tuple>   // return several indices // TODO: change to vector
 
 auto fconv_K1_a(double w) -> int
 {

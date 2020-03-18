@@ -54,7 +54,7 @@ public:
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    auto transfToA(double, double, double, char) const -> tuple<double, double, double>;
+    void transfToA(rvec&, double, double, double, char);
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the a-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -245,18 +245,14 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, const tvert<Q>& tvertex) const -> Q{
-
-    double w_a=0., v1_a=0., v2_a=0.;
-    tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
-
-    return value(iK, w_a, v1_a, v2_a, i_in, tvertex);
+    rvec freqs(3);
+    transfToA(freqs, w, v1, v2, channel);
+    return value(iK, freqs[0], freqs[1], freqs[2], i_in, tvertex);
 }
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, const tvert<Q>& tvertex) const -> Q{
-
-    double w_a=0., v1_a=0., v2_a=0.;
-    tie(w_a, v1_a, v2_a) = transfToA(w,v1,v2,channel);
-
-    return value(iK, w_a, v1_a, v2_a, i_in, spin, tvertex);
+    rvec freqs(3);
+    transfToA(freqs, w, v1, v2, channel);
+    return value(iK, freqs[0], freqs[1], freqs[2], i_in, spin, tvertex);
 }
 
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, const tvert<Q>& tvertex) const -> Q{
@@ -295,33 +291,30 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
 }
 
 
-template<typename Q> auto avert<Q>::transfToA(double w, double v1, double v2, char channel) const -> tuple<double, double, double>{
-    double w_a=0., v1_a=0., v2_a=0.;
-
+template<typename Q> void avert<Q>::transfToA(rvec& freqs, double w, double v1, double v2, char channel){
     switch(channel) {
         case 'a':
-            w_a = w;
-            v1_a = v1;
-            v2_a = v2;
+            freqs[0] = w;
+            freqs[1] = v1;
+            freqs[2] = v2;
             break;
         case 'p':
-            w_a = -v1-v2;                   //w  = w_p
-            v1_a = 0.5*(w+v1-v2);           //v1 = v_p
-            v2_a = 0.5*(w-v1+v2);           //v2 = v'_p
+            freqs[0] = -v1-v2;                   //w  = w_p
+            freqs[1] = 0.5*(w+v1-v2);           //v1 = v_p
+            freqs[2] = 0.5*(w-v1+v2);           //v2 = v'_p
             break;
         case 't':
-            w_a = v1-v2;                    //w  = w_t
-            v1_a = 0.5*( w+v1+v2);          //v1 = v_t
-            v2_a = 0.5*(-w+v1+v2);          //v2 = v'_t
+            freqs[0] = v1-v2;                    //w  = w_t
+            freqs[1] = 0.5*( w+v1+v2);          //v1 = v_t
+            freqs[2] = 0.5*(-w+v1+v2);          //v2 = v'_t
             break;
         case 'f':
-            w_a = v1-v2;                    //w  = v_1'
-            v1_a = 0.5*(2.*w+v1-v2);        //v1 = v_2'
-            v2_a = 0.5*(v1+v2);             //v2 = v_1
+            freqs[0] = v1-v2;                    //w  = v_1'
+            freqs[1] = 0.5*(2.*w+v1-v2);        //v1 = v_2'
+            freqs[2] = 0.5*(v1+v2);             //v2 = v_1
             break;
         default:;
     }
-    return make_tuple(w_a, v1_a, v2_a);
 }
 
 template<typename Q> void avert<Q>::indices_sum(vector<int>& indices, int i0, int i2) const
