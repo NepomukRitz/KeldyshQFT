@@ -21,8 +21,8 @@ const int nLoops = 1;  // Number of loops
 const int nEVO = 10;
 
 // Limits of the fRG flow
-const double Lambda_ini = 2.0;
-const double Lambda_fin = 1.0;    //1.0-1./7.;
+const double Lambda_ini = 1.0;
+const double Lambda_fin = 0.0;    //1.0-1./7.;
 
 // Vector with values of Lambda for the fRG flow
 rvec flow_grid(nEVO);                                                                                                   // NOLINT(cert-err58-cpp)
@@ -43,9 +43,33 @@ const double glb_Gamma = 1.;                   // Hybridization of Anderson mode
 // 1: log-grid, 2: linear grid, 3: non-linear grid
 #define GRID 2
 
+// Limits of the frequency grid vectors for the different kinds of frequencies
+// (i.e. bosonic transfer frequency and fermionic frequencies
+#if GRID==2
+const double w_upper_b = 20.;
+const double w_lower_b = -w_upper_b;        //Symmetric grid
+const double w_upper_f = 20.;
+const double w_lower_f = -w_upper_f;        //Symmetric grid
+
+const double glb_n_p = 1./20.;                  //Density of points  - with w_up=20=-w_lo, set to 1./20. for 200 and to 0.12 for 500 points
+
+// Number of bosonic and fermionic frequency points
+const int nBOS = (int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)) + (1-(((int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)))%2)); //Second term added to ensure nBOS is odd
+const int nFER = (int)(glb_n_p*(w_upper_f-w_lower_f)/(glb_T)) + (1-(((int)(glb_n_p*(w_upper_f-w_lower_f)/(glb_T)))%2)); //Second term added to ensure nFER is odd
+#elif GRID==3
+const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
+const double w_upper_b = 100.;
+const double w_lower_b = -w_upper_b;
+const double w_upper_f = 100.;
+const double w_lower_f = -w_upper_f;
+
 // Number of bosonic and fermionic frequency points
 const int nBOS = 501;
 const int nFER = 501;
+#endif
+
+
+
 
 // Number of frequency points for the self energy and the susceptibility
 const int nSE   = nFER;
@@ -78,21 +102,6 @@ const int nw2_nut  = nFER;
 const int nw3_wt   = nBOS;
 const int nw3_nut  = nFER;
 const int nw3_nutp = nFER;
-
-// Limits of the frequency grid vectors for the different kinds of frequencies
-// (i.e. bosonic transfer frequency and fermionic frequencies
-#if GRID==2
-const double w_upper_b = 20.;
-const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 20.;
-const double w_lower_f = -w_upper_f;        //Symmetric grid
-#elif GRID==3
-const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
-const double w_upper_b = 100.;
-const double w_lower_b = -w_upper_b;
-const double w_upper_f = 100.;
-const double w_lower_f = -w_upper_f;
-#endif
 
 // Vectors for fermionic and bosonic frequencies
 rvec bfreqs (nBOS);                                                                                                     // NOLINT(cert-err58-cpp)
@@ -138,7 +147,7 @@ vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                  
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure
-const int n_in = 1;  // TODO: also include in selfenergy functions
+const int n_in = 1;
 
 
 /// Technical parameters ///
@@ -149,7 +158,7 @@ const int n_in = 1;  // TODO: also include in selfenergy functions
 #define DIAG_CLASS 0
 
 // Defines whether the values are interpolated from previously saved ones or from the self-energy
-//#define INTER_PROP
+#define INTER_PROP
 
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
 #define MPI_FLAG
