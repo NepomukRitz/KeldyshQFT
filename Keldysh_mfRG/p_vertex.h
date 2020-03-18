@@ -13,27 +13,27 @@ template <class Q>
 class pvert{
     /*Lists of the Keldysh components of K1p relating the respective component to the independent ones through the marked
     * trafo*/
-    const vector<int> list_K1_T0_comp1 = {1, 2, 13, 14};  // components equal to     comp.1     (B_1^p for equal spins). In the vertex, comp1 will be iK=0
-    const vector<int> list_K1_TC_comp1 = {4, 7,  8, 11};  // components equal to T_C comp.1 (T_C B_1^p for equal spins).
-    const vector<int> list_K1_T0_comp5 = {5, 6,  9, 10};  // components equal to     comp.5     (D_1^p for equal spins). In the vertex, comp5 will be iK=1
+    vector<int> list_K1_T0_comp1 = {1, 2, 13, 14};  // components equal to     comp.1     (B_1^p for equal spins). In the vertex, comp1 will be iK=0
+    vector<int> list_K1_TC_comp1 = {4, 7,  8, 11};  // components equal to T_C comp.1 (T_C B_1^p for equal spins).
+    vector<int> list_K1_T0_comp5 = {5, 6,  9, 10};  // components equal to     comp.5     (D_1^p for equal spins). In the vertex, comp5 will be iK=1
 
     /*Lists of the Keldysh components of K2p relating the respective component to the independent ones through the marked
     * trafo*/
-    const vector<int> list_K2_T0_comp0    = { 0, 3};          // components in K2 equal to comp.0 of K2               In the vertex, comp0 will be iK=0
-    const vector<int> list_K2_T0_comp1    = { 1, 2};          // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
-    const vector<int> list_K2_T0_comp4    = { 4, 7};          // components in K2 equal to comp.4 of K2               In the vertex, comp4 will be iK=2
-    const vector<int> list_K2_T0_comp5    = { 5, 6};          // components in K2 equal to comp.5 of K2               In the vertex, comp5 will be iK=3
-    const vector<int> list_K2_T0_comp13   = {13, 14};         // components in K2 equal to comp.13 of K2              In the vertex, comp13 will be iK=4
-    const vector<int> list_K2_T3_comp4    = { 8, 11};         // components in K2 equal to T_3 comp.4 of K2
-    const vector<int> list_K2_T3_comp5    = { 9, 10};         // components in K2 equal to T_3 comp.5 of K2
+    vector<int> list_K2_T0_comp0    = { 0, 3};          // components in K2 equal to comp.0 of K2               In the vertex, comp0 will be iK=0
+    vector<int> list_K2_T0_comp1    = { 1, 2};          // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
+    vector<int> list_K2_T0_comp4    = { 4, 7};          // components in K2 equal to comp.4 of K2               In the vertex, comp4 will be iK=2
+    vector<int> list_K2_T0_comp5    = { 5, 6};          // components in K2 equal to comp.5 of K2               In the vertex, comp5 will be iK=3
+    vector<int> list_K2_T0_comp13   = {13, 14};         // components in K2 equal to comp.13 of K2              In the vertex, comp13 will be iK=4
+    vector<int> list_K2_T3_comp4    = { 8, 11};         // components in K2 equal to T_3 comp.4 of K2
+    vector<int> list_K2_T3_comp5    = { 9, 10};         // components in K2 equal to T_3 comp.5 of K2
 
-    const vector<int> list_K2b_TC_comp0   = {0, 12};          // components in K2b equal to T_C comp.0 of K2
-    const vector<int> list_K2b_TC_comp4   = {1, 13};          // components in K2b equal to T_C comp.4 of K2
-    const vector<int> list_K2b_TCT3_comp4 = {2, 14};          // components in K2b equal to T_CT_3 comp.4 of K2
-    const vector<int> list_K2b_TC_comp1   = {4,  8};          // components in K2b equal to T_C comp.1 of K2
-    const vector<int> list_K2b_TC_comp5   = {5,  9};          // components in K2b equal to T_C comp.5 of K2
-    const vector<int> list_K2b_TCT3_comp5 = {6, 10};          // components in K2b equal to T_CT_3 comp.5 of K2
-    const vector<int> list_K2b_TC_comp13  = {7, 11};          // components in K2b equal to T_C comp.13 of K2
+    vector<int> list_K2b_TC_comp0   = {0, 12};          // components in K2b equal to T_C comp.0 of K2
+    vector<int> list_K2b_TC_comp4   = {1, 13};          // components in K2b equal to T_C comp.4 of K2
+    vector<int> list_K2b_TCT3_comp4 = {2, 14};          // components in K2b equal to T_CT_3 comp.4 of K2
+    vector<int> list_K2b_TC_comp1   = {4,  8};          // components in K2b equal to T_C comp.1 of K2
+    vector<int> list_K2b_TC_comp5   = {5,  9};          // components in K2b equal to T_C comp.5 of K2
+    vector<int> list_K2b_TCT3_comp5 = {6, 10};          // components in K2b equal to T_CT_3 comp.5 of K2
+    vector<int> list_K2b_TC_comp13  = {7, 11};          // components in K2b equal to T_C comp.13 of K2
 
 public:
 
