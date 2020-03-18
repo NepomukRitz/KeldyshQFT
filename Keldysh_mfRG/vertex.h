@@ -100,14 +100,14 @@ public:
     void initialize(Q val);
 
     // Various operators for the fullvertex class
-    auto operator= (const fullvert<Q>& vertex1) -> fullvert<Q>& {
-        if(this == &vertex1) return *this;
-        this->irred = vertex1.irred;
-        this->avertex = vertex1.avertex;
-        this->pvertex = vertex1.pvertex;
-        this->tvertex = vertex1.tvertex;
-        return *this;
-    }
+//    auto operator= (const fullvert<Q>& vertex1) -> fullvert<Q>& {
+//        if(this == &vertex1) return *this;
+//        this->irred = vertex1.irred;
+//        this->avertex = vertex1.avertex;
+//        this->pvertex = vertex1.pvertex;
+//        this->tvertex = vertex1.tvertex;
+//        return *this;
+//    }
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   += vertex1.irred;
         this->pvertex += vertex1.pvertex;
@@ -115,12 +115,10 @@ public:
         this->avertex += vertex1.avertex;
         return *this;
     }
-    friend fullvert<Q> operator+(fullvert<Q> lhs, const fullvert<Q>& rhs) // passing lhs by value helps optimize chained a+b+c
-    {
+    friend fullvert<Q> operator+(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
         lhs += rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
-    // TODO: change this also in other classes (selfenergy, propagator, a,p,tvertex,...)
     auto operator*= (double alpha) -> fullvert<Q> {
         this->irred   *=alpha;
         this->pvertex *=alpha;
@@ -128,8 +126,7 @@ public:
         this->avertex *=alpha;
         return *this;
     }
-    friend fullvert<Q> operator*(fullvert<Q> lhs, const fullvert<Q>& rhs) // passing lhs by value helps optimize chained a+b+c
-    {
+    friend fullvert<Q> operator*(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
         lhs *= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
@@ -140,12 +137,16 @@ public:
         this->avertex -= vertex1.avertex;
         return *this;
     }
-    auto operator== (const fullvert<Q>& vertex1) -> bool {
-        return (this->irred == vertex1.irred)
-             &&(this->avertex == vertex1.avertex)
-             &&(this->pvertex == vertex1.pvertex)
-             &&(this->tvertex == vertex1.tvertex);
+    friend fullvert<Q> operator-(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
+        lhs -= rhs; // reuse compound assignment
+        return lhs; // return the result by value (uses move constructor)
     }
+//    auto operator== (const fullvert<Q>& vertex1) -> bool {
+//        return (this->irred == vertex1.irred)
+//             &&(this->avertex == vertex1.avertex)
+//             &&(this->pvertex == vertex1.pvertex)
+//             &&(this->tvertex == vertex1.tvertex);
+//    }
 };
 
 
@@ -161,20 +162,13 @@ public:
     Vertex() = default;;
 
     // Various operators for the Vertex class
-    auto operator= (const Vertex<T>& vertex) -> Vertex<T>& {
-        if(this==&vertex) return *this;
-        this->spinvertex = vertex.spinvertex;
-        this->densvertex = vertex.densvertex;
-        return *this;
-    }
     auto operator+= (const Vertex<T>& vertex1) -> Vertex<T>
     {
         this->densvertex += vertex1.densvertex;
         this->spinvertex += vertex1.spinvertex;
         return *this;
     }
-    friend Vertex<T> operator+(Vertex<T> lhs, const Vertex<T>& rhs) // passing lhs by value helps optimize chained a+b+c
-    {
+    friend Vertex<T> operator+(Vertex<T> lhs, const Vertex<T>& rhs) {// passing lhs by value helps optimize chained a+b+c
         lhs += rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
@@ -184,8 +178,7 @@ public:
         this->spinvertex*=alpha;
         return *this;
     }
-    friend Vertex<T> operator*(Vertex<T> lhs, const Vertex<T>& rhs) // passing lhs by value helps optimize chained a+b+c
-    {
+    friend Vertex<T> operator*(Vertex<T> lhs, const Vertex<T>& rhs) {// passing lhs by value helps optimize chained a+b+c
         lhs *= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
@@ -195,10 +188,23 @@ public:
         this->spinvertex -= vertex1.spinvertex;
         return *this;
     }
-
+    friend Vertex<T> operator-(Vertex<T> lhs, const Vertex<T>& rhs) {// passing lhs by value helps optimize chained a+b+c
+        lhs -= rhs; // reuse compound assignment
+        return lhs; // return the result by value (uses move constructor)
+    }
+/*  This should not be necessary. Move assignment operator and move constructor are implicitly defined
+ *  if the copy assignment operator is NOT explicitly defined.
+ *
+    auto operator= (const Vertex<T>& vertex) -> Vertex<T>& {
+        if(this==&vertex) return *this;
+        this->spinvertex = vertex.spinvertex;
+        this->densvertex = vertex.densvertex;
+        return *this;
+    }
     auto operator == (const Vertex& vertex) -> bool{
         return (this->spinvertex==vertex.spinvertex)&&(this->densvertex==vertex.densvertex);
     }
+*/
 
 };
 

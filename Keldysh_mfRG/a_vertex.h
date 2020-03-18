@@ -7,7 +7,6 @@
 #include "internal_symmetries.h"  // symmetry transformations for internal indices (momentum etc.), currently trivial
 #include "interpolations.h"       // frequency interpolations for vertices
 
-// TODO: change operator+, operator*
 template <typename Q> class tvert;
 
 template <typename Q>
@@ -161,33 +160,7 @@ public:
 #endif
 #endif
 
-    auto operator=(const avert<Q>& vertex) -> avert<Q>&{
-        if(this == &vertex) return *this;
-#if DIAG_CLASS>=1
-        this->K1 = vertex.K1;
-#endif
-#if DIAG_CLASS>=2
-        this->K2 = vertex.K2;
-#endif
-#if DIAG_CLASS>=3
-        this->K3 = vertex.K3;
-#endif
-        return *this;
-    }
-    auto operator+(const avert<Q>& vertex) -> avert<Q>
-    {
-#if DIAG_CLASS>=0
-        this->K1 + vertex.K1;
-#endif
-#if DIAG_CLASS>=2
-        this->K2 + vertex.K2;
-#endif
-#if DIAG_CLASS>=3
-        this->K3 + vertex.K3;
-#endif
-        return *this;
-    }
-    auto operator+=(const avert<Q>& vertex) -> avert<Q>
+    auto operator+= (const avert<Q>& vertex) -> avert<Q>
     {
 #if DIAG_CLASS>=0
         this->K1 += vertex.K1;
@@ -200,20 +173,11 @@ public:
 #endif
         return *this;
     }
-    auto operator*(double alpha) -> avert<Q>
-    {
-#if DIAG_CLASS>=0
-        this->K1 * alpha;
-#endif
-#if DIAG_CLASS>=2
-        this->K2 * alpha;
-#endif
-#if DIAG_CLASS>=3
-        this->K3 * alpha;
-#endif
-        return *this;
+    friend avert<Q> operator+ (avert<Q> lhs, const avert<Q>& rhs) {
+        lhs += rhs;
+        return lhs;
     }
-    auto operator*=(double alpha) -> avert<Q>
+    auto operator*= (double alpha) -> avert<Q>
     {
 #if DIAG_CLASS>=0
         this->K1 *= alpha;
@@ -226,7 +190,11 @@ public:
 #endif
         return *this;
     }
-    auto operator-=(const avert<Q>& vertex) -> avert<Q>
+    friend avert<Q> operator* (avert<Q> lhs, const double& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    auto operator-= (const avert<Q>& vertex) -> avert<Q>
     {
 #if DIAG_CLASS>=0
         this->K1 -= vertex.K1;
@@ -236,6 +204,26 @@ public:
 #endif
 #if DIAG_CLASS>=3
         this->K3 -= vertex.K3;
+#endif
+        return *this;
+    }
+    friend avert<Q> operator- (avert<Q> lhs, const avert<Q>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
+    /* This should not be necessary. Move assignment operator and move constructor are implicitly defined
+     * if the copy assignment operator is NOT explicitly defined.
+     *
+    auto operator=(const avert<Q>& vertex) -> avert<Q>&{
+        if(this == &vertex) return *this;
+#if DIAG_CLASS>=1
+        this->K1 = vertex.K1;
+#endif
+#if DIAG_CLASS>=2
+        this->K2 = vertex.K2;
+#endif
+#if DIAG_CLASS>=3
+        this->K3 = vertex.K3;
 #endif
         return *this;
     }
@@ -252,6 +240,7 @@ public:
 #endif
         return k1*k2*k3;
     }
+     */
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/

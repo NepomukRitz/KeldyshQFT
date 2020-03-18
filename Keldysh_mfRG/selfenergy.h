@@ -18,36 +18,39 @@ public:
     void addself(int, int, int, Q);
     auto acc(int) -> Q;// access to the ith element of the vector "SIGMA"
     void direct_set(int, Q);
-//operators for self energy
 
-    // TODO: change operator+, operator*
-    auto operator+(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
-        this->Sigma + self1.Sigma;
-        return *this;
-    }
-    auto operator+=(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
+    // operators for self energy
+    auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma += self1.Sigma;
         return *this;
     }
-    auto operator*(Q alpha) -> SelfEnergy<Q> {//multiplication operator overloading
-        this->Sigma * alpha;
+    friend SelfEnergy<Q> operator+ (SelfEnergy<Q> lhs, const SelfEnergy<Q>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    auto operator*= (Q alpha) -> SelfEnergy<Q> {
+        this->Sigma *= alpha;
         return *this;
     }
-    auto operator*(double alpha) -> SelfEnergy<Q> {
-        this->Sigma*alpha;
+    friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const Q& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    auto operator*= (double alpha) -> SelfEnergy<Q> {
+        this->Sigma *= alpha;
         return *this;
     }
-    auto operator*=(double alpha) -> SelfEnergy<Q> {
-        this->Sigma*=alpha;
-        return *this;
+    friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const double& rhs) {
+        lhs *= rhs;
+        return lhs;
     }
-    auto operator-(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
-        this->Sigma - self1.Sigma;
-        return *this;
-    }
-    auto operator-=(const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
+    auto operator-= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma -= self1.Sigma;
         return *this;
+    }
+    friend SelfEnergy<Q> operator- (SelfEnergy<Q> lhs, const SelfEnergy<Q>& rhs) {
+        lhs -= rhs;
+        return lhs;
     }
 
 };
