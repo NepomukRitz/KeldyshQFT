@@ -54,7 +54,7 @@ public:
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    void transfToA(rvec&, double, double, double, char);
+    auto transfToA(double, double, double, char) const -> rvec;
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the a-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -245,13 +245,11 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, const tvert<Q>& tvertex) const -> Q{
-    rvec freqs(3);
-    transfToA(freqs, w, v1, v2, channel);
+    rvec freqs = transfToA(w, v1, v2, channel);
     return value(iK, freqs[0], freqs[1], freqs[2], i_in, tvertex);
 }
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, const tvert<Q>& tvertex) const -> Q{
-    rvec freqs(3);
-    transfToA(freqs, w, v1, v2, channel);
+    rvec freqs = transfToA( w, v1, v2, channel);
     return value(iK, freqs[0], freqs[1], freqs[2], i_in, spin, tvertex);
 }
 
@@ -291,7 +289,8 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
 }
 
 
-template<typename Q> void avert<Q>::transfToA(rvec& freqs, double w, double v1, double v2, char channel){
+template<typename Q> auto avert<Q>::transfToA( double w, double v1, double v2, char channel) const -> rvec{
+    rvec freqs(3);
     switch(channel) {
         case 'a':
             freqs[0] = w;
@@ -315,6 +314,7 @@ template<typename Q> void avert<Q>::transfToA(rvec& freqs, double w, double v1, 
             break;
         default:;
     }
+    return freqs;
 }
 
 template<typename Q> void avert<Q>::indices_sum(vector<int>& indices, int i0, int i2) const
