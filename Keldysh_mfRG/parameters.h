@@ -21,12 +21,11 @@ const int nLoops = 1;  // Number of loops
 const int nEVO = 10;
 
 // Limits of the fRG flow
-const double Lambda_ini = 1.0;
-const double Lambda_fin = 0.0;    //1.0-1./7.;
+const double Lambda_ini = 2.0;
+const double Lambda_fin = 1.0;    //1.0-1./7.;
 
 // Vector with values of Lambda for the fRG flow
 rvec flow_grid(nEVO);                                                                                                   // NOLINT(cert-err58-cpp)
-const double dL = (Lambda_fin-Lambda_ini)/((double)(nEVO-1)); // TODO: remove this?
 
 
 /// Physical parameters ///

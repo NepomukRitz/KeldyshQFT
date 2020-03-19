@@ -20,8 +20,10 @@ using namespace std;
 
 void setUpFlowGrid()
 {
-    for(int i=0; i<nEVO; ++i)
-        flow_grid[i] = Lambda_ini + i*dL;
+    for(int i=0; i<nEVO; ++i) {
+        double dL = (Lambda_fin - Lambda_ini) / ((double) (nEVO - 1));
+        flow_grid[i] = Lambda_ini + i * dL;
+    }
 }
 
 auto fconv_Lambda(double Lambda) -> int
