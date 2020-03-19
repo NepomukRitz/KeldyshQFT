@@ -68,7 +68,7 @@ public:
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    void transfToT(rvec&, double, double, double, char);
+    auto transfToT(double, double, double, char) const -> rvec;
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * bubble in the t-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -259,13 +259,11 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE T-VERTEX ******************************************/
 template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, const avert<Q>& avertex) const -> Q{
-    rvec freqs(3);
-    transfToT(freqs, w, v1, v2, channel);
+    rvec freqs = transfToT(w, v1, v2, channel);
     return value(iK, freqs[0], freqs[1], freqs[2], i_in, avertex);
 }
 template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, const avert<Q>& avertex) const -> Q{
-    rvec freqs(3);
-    transfToT(freqs, w, v1, v2, channel);
+    rvec freqs = transfToT(w, v1, v2, channel);
     return value(iK, freqs[0], freqs[1], freqs[2], i_in, spin, avertex);
 }
 
@@ -304,7 +302,8 @@ template <typename Q> auto tvert<Q>::value(int iK, double w, double v1, double v
 }
 
 
-template<typename Q> void tvert<Q>::transfToT(rvec& freqs, double w, double v1, double v2, char channel){
+template<typename Q> auto tvert<Q>::transfToT(double w, double v1, double v2, char channel) const -> rvec{
+    rvec freqs(3);
     switch(channel) {
         case 'a':
             freqs[0] = v1-v2;                    //w  = w_a
@@ -328,6 +327,7 @@ template<typename Q> void tvert<Q>::transfToT(rvec& freqs, double w, double v1, 
             break;
         default:;
     }
+    return freqs;
 }
 
 template<typename Q> void tvert<Q>::indices_sum(vector<int>& indices, int i0, int i2) const
