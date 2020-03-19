@@ -1,14 +1,17 @@
 /**
- * Define essential data types
+ * Define essential data types:
+ * comp  : complex number (complex<double>)
+ * glb_i : imaginary unit
+ * vec   : vector class with additional functionality such as element-wise operations, real/imag part etc.
  */
 
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
-#include <initializer_list>
-#include <vector>
-#include <complex>
-#include <cmath>
+#include <complex>          // for usage of complex numbers
+#include <cmath>            // for math. operations (real, imag, abs etc.)
+#include <vector>           // vec class is derived from vector class
+#include <initializer_list> // to initialize vec class with initializer list
 
 using namespace std;
 typedef complex<double> comp; // Complex number
@@ -16,134 +19,61 @@ const comp glb_i (0., 1.);    // Imaginary unit
 
 /// DECLARATIONS ///
 
-// TODO: maybe just use one class vec<Q>, and define real() and imag() generally, testing the type of Q?
-
-// general vector class, defining element-wise addition, subtraction and multiplication
+// General vector class, defining element-wise addition, subtraction and multiplication, as well as real/imag part etc.
 template <typename T>
-class basic_vec : public vector<T> {
+class vec : public vector<T> {
 public:
-    basic_vec() : vector<T> () {}; 						// trivial constructor
-    basic_vec(int n) : vector<T> (n) {};				// constructor with number of elements
-    basic_vec(int n, T value) : vector<T> (n, value) {};// constructor with number of elements and value
-    basic_vec(initializer_list<T> m) : vector<T> (m) {};// constructor from initializer lis
+    vec() : vector<T> () {}; 						 // trivial constructor
+    vec(int n) : vector<T> (n) {};				     // constructor with number of elements
+    vec(int n, T value) : vector<T> (n, value) {};   // constructor with number of elements and value
+    vec(initializer_list<T> m) : vector<T> (m) {};   // constructor from initializer list
 
-    T operator() (int i) {return (*this)[i]; }			// operator for element access
+    T operator() (int i) {return (*this)[i]; }	     // operator for element access
 
-    basic_vec<T>& operator= (const basic_vec<T> &m);	// element-wise assignment
-    basic_vec<T> operator+  (const basic_vec<T> &m);    // element-wise addition of two vectors
-    basic_vec<T> operator+  (const T &c);               // addition of a constant
-    basic_vec<T> operator+= (const basic_vec<T> &m);    // element-wise addition of two vectors
-    basic_vec<T> operator+= (const T &c);               // addition of a constant
-    basic_vec<T> operator-  (const basic_vec<T> &m);    // element-wise subtraction of two vectors
-    basic_vec<T> operator-  (const T &c);               // subtraction of a constant
-    basic_vec<T> operator-= (const basic_vec<T> &m);    // element-wise subtraction of two vectors
-    basic_vec<T> operator-= (const T &c);               // subtraction of a constant
-    basic_vec<T> operator*  (const basic_vec<T> &m);    // element-wise multiplication of two vectors
-    basic_vec<T> operator*  (const T &c);               // multiplication with a constant
-    basic_vec<T> operator*= (const basic_vec<T> &m);    // element-wise multiplication of two vectors
-    basic_vec<T> operator*= (const T &c);               // multiplication with a constant
+    vec<T> inv();         // element-wise inverse
+    vec<double> real();   // element-wise real part
+    vec<double> imag();   // element-wise imaginary part
+    vec<double> abs();    // element-wise absolute value
+    vec<T> conj();        // element-wise complex conjugate
+    double max_norm();    // maximum norm
 
+    vec<T> operator+= (const vec<T>& m);     // element-wise addition of two vectors
+    vec<T> operator+= (const T& c);          // addition of a constant
+    vec<T> operator-= (const vec<T>& m);     // element-wise subtraction of two vectors
+    vec<T> operator-= (const T& c);          // subtraction of a constant
+    vec<T> operator*= (const vec<T>& m);     // element-wise multiplication of two vectors
+    vec<T> operator*= (const T& c);          // multiplication with a constant
+
+    friend vec<T> operator+ (vec<T> lhs, const vec<T>& rhs) { // element-wise addition of two vectors
+        lhs += rhs; return lhs;
+    };
+    friend vec<T> operator+ (vec<T> lhs, const T& rhs) {      // addition of a constant
+        lhs += rhs; return lhs;
+    };
+    friend vec<T> operator- (vec<T> lhs, const vec<T>& rhs) { // element-wise subtraction of two vectors
+        lhs -= rhs; return lhs;
+    };
+    friend vec<T> operator- (vec<T> lhs, const T& rhs) {      // subtraction of a constant
+        lhs -= rhs; return lhs;
+    };
+    friend vec<T> operator* (vec<T> lhs, const vec<T>& rhs) { // element-wise multiplication of two vectors
+        lhs *= rhs; return lhs;
+    };
+    friend vec<T> operator* (vec<T> lhs, const T& rhs) {      // multiplication with a constant
+        lhs *= rhs; return lhs;
+    };
 };
-
-
-// derived general vector class (e.g. for real vector: vec<double>)
-template <typename T>
-class vec : public basic_vec<T> {
-public:
-    vec() : basic_vec<T> () {};							// constructors, see above
-    vec(int n) : basic_vec<T> (n) {};
-    vec(int n, T value) : basic_vec<T> (n, value) {};
-    vec(initializer_list<T> m) : basic_vec<T> (m) {};
-
-    using basic_vec<T>::operator=;		// use assignment operator from base class
-
-    vec<T> inv(); 										// element-wise inverse
-};
-
-
-// derived complex vector class, providing member functions that return element-wise
-// inverse, real/imaginary part, absolute value, complex conjugate
-template <>
-class vec<comp> : public basic_vec<comp> {
-public:
-    vec() : basic_vec<comp> () {};						// constructors, see above
-    explicit vec(int n) : basic_vec<comp> (n) {};
-    vec(int n, comp value) : basic_vec<comp> (n, value) {};
-    vec(initializer_list<comp> m) : basic_vec<comp> (m) {};
-
-    using basic_vec<comp>::operator=;		        // use assignment operator from base class
-    vec<comp> operator+  (const vec<comp> &m);      // element-wise addition of two vectors, must be newly defined to allow, e.g., for (cvec+cvec).real()
-    vec<comp> operator*= (const double alpha);      // multiplication with a double constant
-
-    vec<comp> inv();    // element-wise inverse
-    vec<double> real(); // element-wise real part
-    vec<double> imag(); // element-wise imaginary part
-    vec<double> abs();  // element-wise absolute value
-    vec<comp> conj();   // element-wise complex conjugate
-    double max_norm();   // maximum norm
-};
-
-
-/* functions for addition, subtraction, multiplication,... of general vectors vec<T> */
-
-
 
 // define aliases for real and complex vector
 typedef vec<double> rvec;
 typedef vec<comp> cvec;
 
-/// NON-MEMBER FUNCTIONS ///
-template<typename T>
-basic_vec<T> operator*(T const& scalar, basic_vec<T> rhs) {
-    return rhs *= scalar; // scalar multiplication is commutative, calls rhs.operator*=(scalar);
-}
-vec<comp> operator*(const double scalar, vec<comp> rhs) {
-    return rhs *= scalar; // scalar multiplication is commutative, calls rhs.operator*=(scalar);
-}
-vec<comp> operator*(vec<comp> rhs, const double scalar) {
-    return rhs *= scalar; // scalar multiplication is commutative, calls rhs.operator*=(scalar);
-}
-// from stackoverflow: Note how the lhs Matrix is a copy and not a reference. This allows the compiler to make optimizations such as copy elision / move semantics. Also note that the return type of these operators is Matrix<T> and not const Matrix<T> which was recommended in some old C++ books, but which prevents move semantics in C++11.
 
-/// DEFINITIONS ///
-
-/* member functions of general vector class basic_vec<T> */
-
-// element-wise assignment
-template <typename T>
-basic_vec<T>& basic_vec<T>::operator=(const basic_vec<T> &m) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] = m[i];
-    }
-    return *this;
-}
+/// DEFINITIONS -- MEMBER FUNCTIONS ///
 
 // element-wise addition of two vectors
 template <typename T>
-basic_vec<T> basic_vec<T>::operator+(const basic_vec<T> &m) {
-    basic_vec<T> temp(this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] + m[i];
-    }
-    return temp;
-}
-
-// addition of a constant
-template <typename T>
-basic_vec<T> basic_vec<T>::operator+(const T &c) {
-    basic_vec<T> temp(this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] + c;
-    }
-    return temp;
-}
-
-// element-wise addition of two vectors
-template <typename T>
-basic_vec<T> basic_vec<T>::operator+=(const basic_vec<T> &m) {
+vec<T> vec<T>::operator+= (const vec<T>& m) {
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
         (*this)[i] += m[i];
@@ -153,7 +83,7 @@ basic_vec<T> basic_vec<T>::operator+=(const basic_vec<T> &m) {
 
 // addition of a constant
 template <typename T>
-basic_vec<T> basic_vec<T>::operator+=(const T &c) {
+vec<T> vec<T>::operator+= (const T& c) {
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
         (*this)[i] += c;
@@ -163,29 +93,7 @@ basic_vec<T> basic_vec<T>::operator+=(const T &c) {
 
 // element-wise subtraction of two vectors
 template <typename T>
-basic_vec<T> basic_vec<T>::operator-(const basic_vec<T> &m) {
-    basic_vec<T> temp(this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] - m[i];
-    }
-    return temp;
-}
-
-// subtraction of a constant
-template <typename T>
-basic_vec<T> basic_vec<T>::operator-(const T &c) {
-    basic_vec<T> temp(this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] - c;
-    }
-    return temp;
-}
-
-// element-wise subtraction of two vectors
-template <typename T>
-basic_vec<T> basic_vec<T>::operator-=(const basic_vec<T> &m) {
+vec<T> vec<T>::operator-= (const vec<T>& m) {
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
         (*this)[i] -= m[i];
@@ -195,7 +103,7 @@ basic_vec<T> basic_vec<T>::operator-=(const basic_vec<T> &m) {
 
 // subtraction of a constant
 template <typename T>
-basic_vec<T> basic_vec<T>::operator-=(const T &c) {
+vec<T> vec<T>::operator-= (const T& c) {
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
         (*this)[i] -= c;
@@ -205,29 +113,7 @@ basic_vec<T> basic_vec<T>::operator-=(const T &c) {
 
 // element-wise multiplication of two vectors
 template <typename T>
-basic_vec<T> basic_vec<T>::operator*(const basic_vec<T> &m) {
-    basic_vec<T> temp(this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] * m[i];
-    }
-    return temp;
-}
-
-// multiplication with a constant
-template <typename T>
-basic_vec<T> basic_vec<T>::operator*(const T &c) {
-    basic_vec<T> temp(this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = (*this)[i] * c;
-    }
-    return temp;
-}
-
-// element-wise multiplication of two vectors
-template <typename T>
-basic_vec<T> basic_vec<T>::operator*=(const basic_vec<T> &m) {
+vec<T> vec<T>::operator*= (const vec<T>& m) {
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
         (*this)[i] *= m[i];
@@ -237,16 +123,13 @@ basic_vec<T> basic_vec<T>::operator*=(const basic_vec<T> &m) {
 
 // multiplication with a constant
 template <typename T>
-basic_vec<T> basic_vec<T>::operator*=(const T &c) {
+vec<T> vec<T>::operator*= (const T& c) {
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
         (*this)[i] *= c;
     }
     return *this;
 }
-
-
-/* member functions of derived general vector class vec<T> */
 
 // element-wise inverse
 template <typename T>
@@ -259,59 +142,45 @@ vec<T> vec<T>::inv() {
     return temp;
 }
 
-
-/* member functions of derived complex vector class vec<comp> */
-
-vec<comp> vec<comp>::operator+(const vec<comp> &m) {
-    vec<comp> temp(this->size());
-#pragma omp parallel for
-    for (int i = 0; i < this->size(); ++i) {
-        temp[i] = (*this)[i] + m[i];
-    }
+// element-wise real part
+template <typename T>
+vec<double> vec<T>::real() {                    // if T != comp or double, vector of zeros is returned
+    vec<double> temp (this->size());
     return temp;
 }
-
-// multiplication with a double constant
-vec<comp> vec<comp>::operator*=(const double alpha) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] *= alpha;
-    }
+template <>
+vec<double> vec<double>::real() {               // if T == double, return input
     return *this;
 }
-
-// element-wise inverse
-vec<comp> vec<comp>::inv() {
-    vec<comp> temp (this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = 1./(*this)[i];
-    }
-    return temp;
-}
-
-// element-wise real part
-vec<double> vec<comp>::real() {
+template <>
+vec<double> vec<comp>::real() {                 // if T == comp, get real part
     vec<double> temp (this->size());
 #pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
+    for (int i = 0; i < this->size(); ++i) {
         temp[i] = (*this)[i].real();
     }
     return temp;
 }
 
 // element-wise imaginary part
-vec<double> vec<comp>::imag() {
+template <typename T>
+vec<double> vec<T>::imag() {                    // if T != comp, vector of zeros is returned
+    vec<double> temp (this->size());
+    return temp;
+}
+template <>
+vec<double> vec<comp>::imag() {                 // if T == comp, get imag. part
     vec<double> temp (this->size());
 #pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
+    for (int i = 0; i < this->size(); ++i) {
         temp[i] = (*this)[i].imag();
     }
     return temp;
 }
 
 // element-wise absolute value
-vec<double> vec<comp>::abs() {
+template <typename T>
+vec<double> vec<T>::abs() {
     vec<double> temp (this->size());
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
@@ -321,22 +190,70 @@ vec<double> vec<comp>::abs() {
 }
 
 // element-wise complex conjugate
-vec<comp> vec<comp>::conj() {
-    vec<comp> temp (this->size());
+template <typename T>
+vec<T> vec<T>::conj() {                         // if T != comp, return input
+    return *this;
+}
+template <>
+vec<comp> vec<comp>::conj() {                   // if T == comp, get conjugate
+    vec<comp> temp(this->size());
 #pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
+    for (int i = 0; i < this->size(); ++i) {
         temp[i] = std::conj((*this)[i]);
     }
     return temp;
 }
 
 // maximum norm
-double vec<comp>::max_norm() {
+template <typename T>
+double vec<T>::max_norm() {
     double out = 0.;
     for (int i=0; i<this->size(); ++i) {
         out = max(out, std::abs((*this)[i]));
     }
     return out;
 }
+
+
+/// NON-MEMBER FUNCTIONS ///
+
+// The functions below are necessary for operations concerning a complex vector and a double constant.
+
+// addition of a double constant to comp vector
+vec<comp> operator+= (vec<comp>& lhs, const double& rhs) {
+#pragma omp parallel for
+    for (int i=0; i<lhs.size(); ++i) {
+        lhs[i] += rhs;
+    }
+    return lhs;
+}
+vec<comp> operator+ (vec<comp> lhs, const double& rhs) {
+    lhs += rhs; return lhs;
+}
+
+// subtraction of a double constant to comp vector
+vec<comp> operator-= (vec<comp>& lhs, const double& rhs) {
+#pragma omp parallel for
+    for (int i=0; i<lhs.size(); ++i) {
+        lhs[i] -= rhs;
+    }
+    return lhs;
+}
+vec<comp> operator- (vec<comp> lhs, const double& rhs) {
+    lhs -= rhs; return lhs;
+}
+
+// multiplication of a double constant to comp vector
+vec<comp> operator*= (vec<comp>& lhs, const double& rhs) {
+#pragma omp parallel for
+    for (int i=0; i<lhs.size(); ++i) {
+        lhs[i] *= rhs;
+    }
+    return lhs;
+}
+vec<comp> operator* (vec<comp> lhs, const double& rhs) {
+    lhs *= rhs; return lhs;
+}
+
 
 #endif // DATA_STRUCTURES_H
