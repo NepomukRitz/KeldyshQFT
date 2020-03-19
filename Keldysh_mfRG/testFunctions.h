@@ -431,6 +431,16 @@ void test_rhs_bubbles_flow(int N_ODE){
                                   {bfreqs, K1a_dir.real(), K1a_dir.imag(), K1a_fin.real(), K1a_fin.imag(), K1a_ini.real(), K1a_ini.imag()});
 }
 
+void test_derivatives(double Lambda){
+    cvec rhs_SOPT_FFT_K1a(nw1_wa), rhs_flow(nw1_wa);
+    dSOPT_FFT_K1a_rhs(rhs_SOPT_FFT_K1a, Lambda);
+    rhs_bubbles_flow(rhs_flow, Lambda);
+
+    write_h5_rvecs("ders.h5",
+            {"v", "FFT_R", "FFT_I", "SOPT_R", "SOPT_I"},
+        {ffreqs, rhs_SOPT_FFT_K1a.real(), rhs_SOPT_FFT_K1a.imag(), rhs_flow.real(), rhs_flow.imag()});
+}
+
 /**
  * Function to test the OddOdd and OddEven bubbles
  * The implementation requires sopt_state() to have toggled the a-bubble on
@@ -636,7 +646,7 @@ auto test_rhs_state(const State<comp>& Psi, const double Lambda) -> State<comp> 
     loop(dPsi.selfenergy, Psi.vertex, S);
 
     double t_multiply = get_time();
-    dPsi *= dL;
+    //dPsi *= dL;
     print("dPsi multiplied. ");
     get_time(t_multiply);
 
