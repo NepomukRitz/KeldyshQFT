@@ -35,40 +35,26 @@ public:
     void initialize(Q val);
 
     // Various operators for the irreducible vertex
-    auto operator= (const irreducible<Q>& vertex) -> irreducible<Q>&
-    {
-        if (this == &vertex) return *this;
-        this->bare = vertex.bare;
-        return *this;
-    }
-    auto operator+ (const irreducible<Q>& vertex) -> irreducible<Q>
-    {
-        this->bare + vertex.bare;
-        return *this;
-    }
-    auto operator+= (const irreducible<Q>& vertex) -> irreducible<Q>
-    {
+    auto operator+= (const irreducible<Q>& vertex) -> irreducible<Q> {
         this->bare +=vertex.bare;
         return *this;
     }
-    auto operator-= (const irreducible<Q>& vertex) -> irreducible<Q>
-    {
+    friend irreducible<Q> operator+(irreducible<Q> lhs, const irreducible<Q>& rhs) {
+        lhs += rhs; return lhs;
+    }
+    auto operator-= (const irreducible<Q>& vertex) -> irreducible<Q> {
         this->bare -=vertex.bare;
         return *this;
     }
-    auto operator* (double alpha) -> irreducible<Q>
-    {
-        this->bare *alpha;
-        return *this;
+    friend irreducible<Q> operator-(irreducible<Q> lhs, const irreducible<Q>& rhs) {
+        lhs -= rhs; return lhs;
     }
-    auto operator*= (double alpha) -> irreducible<Q>
-    {
+    auto operator*= (double alpha) -> irreducible<Q> {
         this->bare *=alpha;
         return *this;
     }
-    auto operator== (const irreducible<Q>& vertex) -> irreducible<Q>
-    {
-        return (this->bare == vertex.bare);
+    friend irreducible<Q> operator*(irreducible<Q> lhs, const irreducible<Q>& rhs) {
+        lhs *= rhs; return lhs;
     }
 };
 
@@ -100,14 +86,6 @@ public:
     void initialize(Q val);
 
     // Various operators for the fullvertex class
-//    auto operator= (const fullvert<Q>& vertex1) -> fullvert<Q>& {
-//        if(this == &vertex1) return *this;
-//        this->irred = vertex1.irred;
-//        this->avertex = vertex1.avertex;
-//        this->pvertex = vertex1.pvertex;
-//        this->tvertex = vertex1.tvertex;
-//        return *this;
-//    }
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   += vertex1.irred;
         this->pvertex += vertex1.pvertex;
@@ -141,12 +119,6 @@ public:
         lhs -= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
-//    auto operator== (const fullvert<Q>& vertex1) -> bool {
-//        return (this->irred == vertex1.irred)
-//             &&(this->avertex == vertex1.avertex)
-//             &&(this->pvertex == vertex1.pvertex)
-//             &&(this->tvertex == vertex1.tvertex);
-//    }
 };
 
 
@@ -192,20 +164,6 @@ public:
         lhs -= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
-/*  This should not be necessary. Move assignment operator and move constructor are implicitly defined
- *  if the copy assignment operator is NOT explicitly defined.
- *
-    auto operator= (const Vertex<T>& vertex) -> Vertex<T>& {
-        if(this==&vertex) return *this;
-        this->spinvertex = vertex.spinvertex;
-        this->densvertex = vertex.densvertex;
-        return *this;
-    }
-    auto operator == (const Vertex& vertex) -> bool{
-        return (this->spinvertex==vertex.spinvertex)&&(this->densvertex==vertex.densvertex);
-    }
-*/
-
 };
 
 

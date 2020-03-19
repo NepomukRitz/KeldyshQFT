@@ -49,20 +49,6 @@ public:
         lhs -= rhs;
         return lhs;
     }
-    /* This should not be necessary. Move assignment operator and move constructor are implicitly defined
-     * if the copy assignment operator is NOT explicitly defined.
-     *
-    auto operator=(const State& state1) -> State&{
-        // if(this == &state1) return *this;   //Handling of self-assignment
-        this->vertex = state1.vertex;
-        this->selfenergy = state1.selfenergy;
-        return *this;
-    }
-    auto operator == (const State& state) -> bool{
-        return (this->vertex==state.vertex)
-             &&(this->selfenergy== state.selfenergy);
-    }
-     */
 };
 
 template <typename Q> void State<Q>::initialize() {
