@@ -31,9 +31,9 @@ cvec SOPT_FFT_K1a_rhs(const double Lambda) { // return (Lambda-dependent) K1a_1 
 }
 
 void test_ODE_SOPT_FFT_K1a(const int N_ODE) { // test ODE solver using K1a from SOPT_FFT
-    bool write_flag = false; // whether to write output in hdf5
+    bool write_flag = true; // whether to write output in hdf5
     cvec K1a_dir(nw1_wa), K1a_fin(nw1_wa), K1a_ini(nw1_wa); // direct, final, initial K1a_1
-    double Lambda_fin = 1.; double Lambda_ini = 2.; // end points of flow
+    //double Lambda_fin = 1.; double Lambda_ini = 2.; // end points of flow -> defined in parameters.h
     SelfEnergy<comp> SEin; // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0ini(Lambda_ini, SEin, 'g'); // initial propagator

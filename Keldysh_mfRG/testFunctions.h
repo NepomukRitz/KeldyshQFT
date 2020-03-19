@@ -312,8 +312,8 @@ void test_rhs_bubbles_flow_wstate(int N_ODE) {
     bool write_flag = false; // whether to write output in hdf5
     State<comp> state_dir, state_fin, state_ini; // direct, final, initial K1a_1
     state_dir.selfenergy.initialize(glb_U/2., 0.); // initialize with Hartree term
-    state_dir.selfenergy.initialize(glb_U/2., 0.); // initialize with Hartree term
-    state_dir.selfenergy.initialize(glb_U/2., 0.); // initialize with Hartree term
+    state_fin.selfenergy.initialize(glb_U/2., 0.); // initialize with Hartree term
+    state_ini.selfenergy.initialize(glb_U/2., 0.); // initialize with Hartree term
 
     Propagator G0ini(Lambda_ini, state_ini.selfenergy, 'g'); // initial propagator
     Propagator G0dir(Lambda_fin, state_dir.selfenergy, 'g'); // final propagator
@@ -347,7 +347,7 @@ void test_rhs_bubbles_flow_wstate(int N_ODE) {
 
         state_dir.vertex.spinvertex.avertex.K1_setvert(0, i, 0, 1./2.*(cont11 + cont13));
     }
-    ODE_solver_Euler(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
+    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
     cvec K1a_dif = state_dir.vertex.spinvertex.avertex.K1 + ( state_fin.vertex.spinvertex.avertex.K1*(-1.) ); // difference in results
     cout << "Testing ODE for bare K1a_1. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << K1a_dif.max_norm() << "." << endl;
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
