@@ -55,12 +55,10 @@ template <typename Q> void State<Q>::initialize() {
 // Initial conditions
 // Assign initial conditions to self energy
 this->selfenergy.initialize(glb_U/2., 0.);
-print("SE initial conditions assigned", true);
 
 // Assign initial conditions to bare vertex
 this->vertex.densvertex.initialize(0.);
 this->vertex.spinvertex.initialize(-glb_U/2.);
-print("Bare vertex initial conditions assigned", true);
 }
 
 
