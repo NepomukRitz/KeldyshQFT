@@ -282,7 +282,7 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
 }
 
 
-void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gammaPout, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
+void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gammaPout, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT) {
     // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
     bool SEflag_FFT = true;
     bool PiAflag_FFT = true;
@@ -311,28 +311,30 @@ void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gamm
     ft_v2t(tFFT, GtK, vFFT, GvK); // Fourier trafo, Keldysh component
     flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
     flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
-    //if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_G.h5", {"t","G_R_R","G_R_I","G_K_R","G_K_I"}, {tFFT,GtR.real(),GtR.imag(),GtK.real(),GtK.imag()});
+    if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_G.h5",
+            {"t","Gt_R_R","Gt_R_I","Gt_K_R","Gt_K_I","v","Gv_R_R","Gv_R_I","Gv_K_R","Gv_K_I"},
+            {tFFT,GtR.real(),GtR.imag(),GtK.real(),GtK.imag(),vFFT,GvR.real(),GvR.imag(),GvK.real(),GvK.imag()});
     if(SEflag_FFT) {
         /// ------------------- SELF-ENERGY RETARDED COMPONENT --------------------- ///
         // vectors for \Sigma(t) terms arising in SOPT for retarded component
-        cvec SEt_RKK(nFFT), SEt_KAK(nFFT), SEt_KKR(nFFT), SEt_RAR(nFFT);
+        cvec SEt_RKK(nFFT), SEt_KKA(nFFT), SEt_KRK(nFFT), SEt_RRA(nFFT);
         // individual terms
         SEt_RKK = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
-        SEt_KAK = GtK * GtK * GtR.conj(); // G^K(t) G^K(t) G^A(-t)
-        SEt_KKR = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
-        SEt_RAR = GtR * GtR * GtR.conj(); // G^R(t) G^R(t) G^A(-t) //!
+        SEt_KKA = GtK * GtK * GtR.conj(); // G^K(t) G^K(t) G^A(-t)
+        SEt_KRK = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
+        SEt_RRA = GtR * GtR * GtR.conj(); // G^R(t) G^R(t) G^A(-t) //!
         // resulting retarded self-energy in time and frequency
         cvec SEtR(nFFT), SEvR(nFFT);
         if(tailflag_FFT) {
             cvec SEv_RAR(nFFT);
-            SEtR = SEt_RKK + SEt_KAK + SEt_KKR; // without RAR component
+            SEtR = SEt_RKK + SEt_KKA + SEt_KRK; // without RAR component
             // Fourier trafos
             ft_t2v(vFFT, SEvR, tFFT, SEtR); // Fourier trafo, without RAR component
-            ft_t2v(vFFT, SEv_RAR, tFFT, SEt_RAR, 1., 3.*hyb_FFT); // G^R(t)^2 G^A(-t) = -i Theta(t)e^{-3ht}
+            ft_t2v(vFFT, SEv_RAR, tFFT, SEt_RRA, 1., 3.*hyb_FFT); // G^R(t)^2 G^A(-t) = -i Theta(t)e^{-3ht}
             SEvR = (SEvR + SEv_RAR) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
         }
         else {
-            SEtR = (SEt_RKK + SEt_KAK + SEt_KKR + SEt_RAR) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
+            SEtR = (SEt_RKK + SEt_KKA + SEt_KRK + SEt_RRA) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
             ft_t2v(vFFT, SEvR, tFFT, SEtR); // Fourier trafo, retarded component
         }
         /// ------------------- SELF-ENERGY KELDYSH COMPONENT --------------------- ///
@@ -449,10 +451,9 @@ void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gamm
     }
 }
 
-void SOPT_FFT(cvec& PiaEO, const Propagator Gin, const double Uin, const int nFFT, const double V_FFT) {
+void SOPT_FFT_K1a(cvec& PiaEO, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT) {
     // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
     bool PiAflag_FFT = true;
-    bool writeflag_FFT = true; // whether to write data into file
     bool tailflag_FFT = true; // whether to include analytic treatment of tail
     double hyb_FFT = 0; // hybridization for high-freuqency decay, e.g., G^R(v)=1/(v+i*hyb)
     if (tailflag_FFT) hyb_FFT = (glb_Gamma + Gin.Lambda) / 2.;
@@ -478,7 +479,6 @@ void SOPT_FFT(cvec& PiaEO, const Propagator Gin, const double Uin, const int nFF
     ft_v2t(tFFT, GtK, vFFT, GvK); // Fourier trafo, Keldysh component
     flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
     flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
-    //if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_G.h5", {"t","G_R_R","G_R_I","G_K_R","G_K_I"}, {tFFT,GtR.real(),GtR.imag(),GtK.real(),GtK.imag()});
     if (PiAflag_FFT) {
         /// ------------------- K1a COMPONENT 1 --------------------- ///
         // left sum of indices is even, right sum of indices is odd, retarded component of bosonic self-energy
@@ -497,7 +497,7 @@ void SOPT_FFT(cvec& PiaEO, const Propagator Gin, const double Uin, const int nFF
     }
 }
 
-void diffSOPT_FFT(cvec& dPiaEO, const Propagator Gin, const Propagator Sin, const double Uin, const int nFFT, const double V_FFT) {
+void diffSOPT_FFT_K1a(cvec& dK1a, const Propagator& Gin, const Propagator& Sin, const double Uin, const int nFFT, const double V_FFT) {
     // whether to compute antiparallel/particle-hole bubble (PiA)
     bool PiAflag_FFT = true;
     bool writeflag_FFT = false; // whether to write data into file
@@ -528,7 +528,6 @@ void diffSOPT_FFT(cvec& dPiaEO, const Propagator Gin, const Propagator Sin, cons
     flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
     flip_adjust(StAc, StR); // store S^A(t)*=S^R(-t) for convenience
     flip_adjust(StK_, StK); // store S^K(-t) for convenience
-    //if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_G.h5", {"t","G_R_R","G_R_I","G_K_R","G_K_I"}, {tFFT,GtR.real(),GtR.imag(),GtK.real(),GtK.imag()});
     if(PiAflag_FFT) {
         /// ------------------- K1a COMPONENT 1 --------------------- ///
         // left sum of indices is even, right sum of indices is odd, retarded component of bosonic self-energy
@@ -544,8 +543,119 @@ void diffSOPT_FFT(cvec& dPiaEO, const Propagator Gin, const Propagator Sin, cons
         K1at_1 = (K1at_RK_GS + K1at_KA_GS + K1at_RK_SG + K1at_KA_SG) * (-glb_i*Uin*Uin/4.); // prefactor: (\pm U/2)^2 1/i
         ft_t2v(vFFT, K1av_1, tFFT, K1at_1); // Fourier trafo, component 3
         /// ------------------- K1a OUTPUT --------------------- ///
-        interp1_FFT(dPiaEO, bfreqs, K1av_1, vFFT); // linear interpolation for component 1
+        interp1_FFT(dK1a, bfreqs, K1av_1, vFFT); // linear interpolation for component 1
         if(writeflag_FFT) write_h5_rvecs("dSOPT_FFT_K1a.h5", {"v","K1a_1_R","K1a_1_I"}, {vFFT,K1av_1.real(),K1av_1.imag()});
+    }
+}
+
+void SOPT_FFT_SE(cvec& SE, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT) {
+    // whether to compute self-energy (SE), antiparallel/particle-hole bubble (PiA), parallel/particle-particle bubble (PiP)
+    bool SEflag_FFT = true;
+    bool writeflag_FFT = false; // whether to write data into file
+    bool tailflag_FFT = true; // whether to include analytic treatment of tail
+    double hyb_FFT = 0; // hybridization for high-freuqency decay, e.g., G^R(v)=1/(v+i*hyb)
+    if(tailflag_FFT) hyb_FFT = (glb_Gamma+Gin.Lambda)/2.;
+    /// ------------------- READ INPUT --------------------- ///
+    rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
+    const double dvFFT = V_FFT / (double)nFFT; // frequency spacing
+    if(dvFFT > glb_T) cout << "Warning in SOPT_FFT: frequency spacing dv=" << dvFFT << " is greater than temperature T=" << glb_T << "." << endl;
+    for (int i = 0; i < nFFT; ++i) // fill frequency grid
+        vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
+    cvec GvR (nFFT), GvK (nFFT); // separate vectors for retarded and Keldysh component of input GF
+    for (int i = 0; i < nFFT; ++i) {
+        GvR[i] = Gin.valsmooth(0, vFFT[i], 0); // retarded component
+        GvK[i] = Gin.valsmooth(1, vFFT[i], 0); // Keldysh component
+    }
+    /// ------------------- TRANSFORM INPUT --------------------- ///
+    rvec tFFT (nFFT); // vector for real time
+    cvec GtR (nFFT), GtK (nFFT), GtAc (nFFT), GtK_(nFFT); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
+    // Fourier trafo, retarded component
+    if(tailflag_FFT) ft_v2t(tFFT, GtR, vFFT, GvR, 1., hyb_FFT);
+    else ft_v2t(tFFT, GtR, vFFT, GvR);
+    ft_v2t(tFFT, GtK, vFFT, GvK); // Fourier trafo, Keldysh component
+    flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
+    flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
+    if(SEflag_FFT) {
+        /// ------------------- SELF-ENERGY RETARDED COMPONENT --------------------- ///
+        // vectors for \Sigma(t) terms arising in SOPT for retarded component
+        cvec SEt_RKK(nFFT), SEt_KKA(nFFT), SEt_KRK(nFFT), SEt_RRA(nFFT);
+        // individual terms
+        SEt_RKK = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
+        SEt_KKA = GtK * GtK * GtR.conj(); // G^K(t) G^K(t) G^A(-t)
+        SEt_KRK = GtR * GtK * GtK_; // G^R(t) G^K(t) G^K(-t)
+        SEt_RRA = GtR * GtR * GtR.conj(); // G^R(t) G^R(t) G^A(-t) //!
+        // resulting retarded self-energy in time and frequency
+        cvec SEtR(nFFT), SEvR(nFFT);
+        if(tailflag_FFT) {
+            cvec SEv_RAR(nFFT);
+            SEtR = SEt_RKK + SEt_KKA + SEt_KRK; // without RAR component
+            // Fourier trafos
+            ft_t2v(vFFT, SEvR, tFFT, SEtR); // Fourier trafo, without RAR component
+            ft_t2v(vFFT, SEv_RAR, tFFT, SEt_RRA, 1., 3.*hyb_FFT); // G^R(t)^2 G^A(-t) = -i Theta(t)e^{-3ht}
+            SEvR = (SEvR + SEv_RAR) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
+        }
+        else {
+            SEtR = (SEt_RKK + SEt_KKA + SEt_KRK + SEt_RRA) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
+            ft_t2v(vFFT, SEvR, tFFT, SEtR); // Fourier trafo, retarded component
+        }
+        /// ------------------- SELF-ENERGY OUTPUT --------------------- ///
+        interp1_FFT(SE, ffreqs, SEvR, vFFT); // linear interpolation for retarded component
+        if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_SE.h5", {"v","SE_R_R","SE_R_I"}, {vFFT,SEvR.real(),SEvR.imag()});
+    }
+}
+
+void diffSOPT_FFT_SE(cvec& dSE, const Propagator& Gin, const Propagator& Sin, const double Uin, const int nFFT, const double V_FFT) {
+    // whether to compute self-energy (SE)
+    bool SEflag_FFT = true;
+    bool writeflag_FFT = false; // whether to write data into file
+    /// ------------------- READ INPUT --------------------- ///
+    rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
+    const double dvFFT = V_FFT / (double)nFFT; // frequency spacing
+    if(dvFFT > glb_T) cout << "Warning in SOPT_FFT: frequency spacing dv=" << dvFFT << " is greater than temperature T=" << glb_T << "." << endl;
+    for (int i = 0; i < nFFT; ++i) // fill frequency grid
+        vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
+    cvec GvR (nFFT), GvK (nFFT), SvR (nFFT), SvK (nFFT); // separate vectors for retarded and Keldysh component of input GF
+    for (int i = 0; i < nFFT; ++i) {
+        GvR[i] = Gin.valsmooth(0, vFFT[i], 0); // retarded component
+        GvK[i] = Gin.valsmooth(1, vFFT[i], 0); // Keldysh component
+        SvR[i] = Sin.valsmooth(0, vFFT[i], 0); // retarded component
+        SvK[i] = Sin.valsmooth(1, vFFT[i], 0); // Keldysh component
+    }
+    /// ------------------- TRANSFORM INPUT --------------------- ///
+    rvec tFFT (nFFT); // vector for real time
+    cvec GtR (nFFT), GtK (nFFT), GtAc (nFFT), GtK_(nFFT); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
+    cvec StR (nFFT), StK (nFFT), StAc (nFFT), StK_(nFFT); // vectors for G^R(t), G^K(t), G^A(t)*=G^R(-t), G^K(-t)
+    // Fourier trafo, retarded component
+    ft_v2t(tFFT, GtR, vFFT, GvR);
+    ft_v2t(tFFT, StR, vFFT, SvR);
+    // Fourier trafo, Keldysh component
+    ft_v2t(tFFT, GtK, vFFT, GvK);
+    ft_v2t(tFFT, StK, vFFT, SvK);
+    flip_adjust(GtAc, GtR); // store G^A(t)*=G^R(-t) for convenience
+    flip_adjust(GtK_, GtK); // store G^K(-t) for convenience
+    flip_adjust(StAc, StR); // store S^A(t)*=S^R(-t) for convenience
+    flip_adjust(StK_, StK); // store S^K(-t) for convenience
+    if(SEflag_FFT) {
+        /// ------------------- SELF-ENERGY RETARDED COMPONENT --------------------- ///
+        // vectors for \Sigma(t) terms arising in SOPT for retarded component
+        cvec SEt_RKK_SGG(nFFT), SEt_RKK_GSG(nFFT), SEt_RKK_GGS(nFFT), SEt_KKA_SGG(nFFT), SEt_KKA_GGS(nFFT), SEt_RRA_SGG(nFFT), SEt_RRA_GGS(nFFT);
+        // individual terms
+        SEt_RKK_SGG = StR * GtK * GtK_; // S^R(t) G^K(t) G^K(-t)
+        SEt_RKK_GSG = GtR * StK * GtK_; // G^R(t) S^K(t) G^K(-t)
+        SEt_RKK_GGS = GtR * GtK * StK_; // G^R(t) G^K(t) S^K(-t)
+
+        SEt_KKA_SGG = StK * GtK * GtR.conj(); // S^K(t) G^K(t) G^A(-t)
+        SEt_KKA_GGS = GtK * GtK * StR.conj(); // G^K(t) G^K(t) S^A(-t)
+
+        SEt_RRA_SGG = StR * GtR * GtR.conj(); // S^R(t) G^R(t) G^A(-t)
+        SEt_RRA_GGS = GtR * GtR * StR.conj(); // G^R(t) G^R(t) S^A(-t)
+        // resulting retarded self-energy in time and frequency
+        cvec SEtR(nFFT), SEvR(nFFT);
+        SEtR = ( (SEt_RKK_SGG+SEt_RKK_GSG+SEt_RKK_GGS)*2. + (SEt_KKA_SGG*2.+SEt_KKA_GGS) + (SEt_RRA_SGG*2.+SEt_RRA_GGS) ) * (Uin*Uin/4.); // prefactor: -(\pm U/2/i)^2
+        ft_t2v(vFFT, SEvR, tFFT, SEtR); // Fourier trafo, retarded component
+        /// ------------------- SELF-ENERGY OUTPUT --------------------- ///
+        interp1_FFT(dSE, ffreqs, SEvR, vFFT); // linear interpolation for retarded component
+        if(writeflag_FFT) write_h5_rvecs("dSOPT_FFT_SE.h5", {"v","SE_R_R","SE_R_I"}, {vFFT,SEvR.real(),SEvR.imag()});
     }
 }
 
