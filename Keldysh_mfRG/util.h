@@ -29,10 +29,50 @@ void print(T s, bool endline) {
 #endif
 }
 
+// print two different data types in standard output and add new line
+template <typename T, typename U>
+void print(T t, U u, bool endline) {
+#ifdef MPI_FLAG
+    if (mpi_world_rank() == 0) {
+        cout << t << u;
+        if (endline) cout << endl;
+    }
+#else
+    cout << t << u;
+    if (endline) cout << endl;
+#endif
+}
+
+// print three different data types in standard output and add new line
+template <typename T, typename U, typename V>
+void print(T t, U u, V v, bool endline) {
+#ifdef MPI_FLAG
+    if (mpi_world_rank() == 0) {
+        cout << t << u << v;
+        if (endline) cout << endl;
+    }
+#else
+    cout << t << u << v;
+    if (endline) cout << endl;
+#endif
+}
+
 // print any printable data in standard output
 template <typename T>
 void print(T s) {
     print(s, false);
+}
+
+// print two different data types in standard output
+template <typename T, typename U>
+void print(T t, U u) {
+    print(t, u, false);
+}
+
+// print three different data types in standard output
+template <typename T, typename U, typename V>
+void print(T t, U u, V v) {
+    print(t, u, v, false);
 }
 
 // return time stamp in seconds with millisecond precision
