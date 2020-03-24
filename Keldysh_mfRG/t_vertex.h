@@ -302,15 +302,12 @@ template<typename Q> auto tvert<Q>::transfToT(double w, double v1, double v2, ch
 
 template<typename Q> void tvert<Q>::indices_sum(vector<int>& indices, int i0, int i2) const
 {
-    vector<int> alphasi0(4), alphasi2(4);
-    int *a1p = &alphasi0[0], *a2p = &alphasi0[1], *a1 = &alphasi0[2], *a2 = &alphasi0[3];
-    int *a3 = &alphasi2[0], *a4 = &alphasi2[1], *a3p = &alphasi2[2], *a4p = &alphasi2[3];
+    vector<int> alphasi0(4), alphasi2(4);   //Create vectors to hold the values of the indices
+    alphas(alphasi0, i0);   //Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
+    alphas(alphasi2, i2);   //Calculate the alphas of each input. Refer to these alphas as (34|3'4')
 
-    alphas(alphasi0, i0);
-    alphas(alphasi2, i2);
-
-    indices[0] = 8*(*a4p-1) + 4*(*a2p-1) + 2*(*a3-1) + 1*(*a2-1);
-    indices[1] = 8*(*a1p-1) + 4*(*a3p-1) + 2*(*a1-1) + 1*(*a4-1);
+    indices[0] = 8*(alphasi2[3]-1) + 4*(alphasi0[1]-1) + 2*(alphasi2[0]-1) + 1*(alphasi0[3]-1); //i1 = (4'2'|32)
+    indices[1] = 8*(alphasi0[0]-1) + 4*(alphasi2[2]-1) + 2*(alphasi0[2]-1) + 1*(alphasi2[1]-1); //i3 = (1'3'|14)
 }
 
 #if DIAG_CLASS>=0

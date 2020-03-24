@@ -11,13 +11,13 @@
 
 using namespace std;
 
-cvec dSOPT_FFT_K1a_rhs(const cvec& PiaEO, const double Lambda) { // return differentiated K1a_1 using SOPT_FFT for testing
+cvec dSOPT_FFT_K1a_rhs(const cvec& K1a, const double Lambda) { // return differentiated K1a_1 using SOPT_FFT for testing
     SelfEnergy<comp> SEin; // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     Propagator S0(Lambda, SEin,'s'); // bare differentiated propagator
     cvec dK1a_1(nw1_wa); // output cvec: bare differentiated K1a, component 1
-    diffSOPT_FFT(dK1a_1, G0, S0, glb_U, 10000, 80.); // fill ouput cvec
+    diffSOPT_FFT_K1a(dK1a_1, G0, S0, glb_U, 10000, 80.); // fill ouput cvec
     return dK1a_1;
 }
 
@@ -26,17 +26,17 @@ cvec SOPT_FFT_K1a_rhs(const double Lambda) { // return (Lambda-dependent) K1a_1 
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     cvec K1a_1(nw1_wa); // output cvec: bare K1a, component 1
-    SOPT_FFT(K1a_1, G0, glb_U, 10000, 80.); // fill ouput cvec
+    SOPT_FFT_K1a(K1a_1, G0, glb_U, 10000, 80.); // fill ouput cvec
     return K1a_1;
 }
 
 void test_ODE_SOPT_FFT_K1a(const int N_ODE) { // test ODE solver using K1a from SOPT_FFT
-    bool write_flag = true; // whether to write output in hdf5
+    bool write_flag = false; // whether to write output in hdf5
     cvec K1a_dir(nw1_wa), K1a_fin(nw1_wa), K1a_ini(nw1_wa); // direct, final, initial K1a_1
     //double Lambda_fin = 1.; double Lambda_ini = 2.; // end points of flow -> defined in parameters.h
-    SelfEnergy<comp> SEin; // trivial self-energy
-    SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
-    Propagator G0ini(Lambda_ini, SEin, 'g'); // initial propagator
+    //SelfEnergy<comp> SEin; // trivial self-energy
+    //SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
+    //Propagator G0ini(Lambda_ini, SEin, 'g'); // initial propagator
     K1a_ini = SOPT_FFT_K1a_rhs(Lambda_ini); // direct calculation of initial K1a
     K1a_dir = SOPT_FFT_K1a_rhs(Lambda_fin); // direct calculation of final K1a
     ODE_solver_RK4(K1a_fin, Lambda_fin, K1a_ini, Lambda_ini, dSOPT_FFT_K1a_rhs, N_ODE); // final K1a from ODE
@@ -45,6 +45,42 @@ void test_ODE_SOPT_FFT_K1a(const int N_ODE) { // test ODE solver using K1a from 
     if(write_flag) write_h5_rvecs("SOPT_FFT_ODE_K1a.h5",
                                   {"v", "K1a_dir_R", "K1a_dir_I", "K1a_fin_R", "K1a_fin_I", "K1a_ini_R", "K1a_ini_I"},
                                   {bfreqs, K1a_dir.real(), K1a_dir.imag(), K1a_fin.real(), K1a_fin.imag(), K1a_ini.real(), K1a_ini.imag()});
+}
+
+cvec dSOPT_FFT_SE_rhs(const cvec& SE, const double Lambda) { // return differentiated SE using SOPT_FFT for testing
+    SelfEnergy<comp> SEin; // trivial self-energy
+    SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
+    Propagator G0(Lambda, SEin,'g'); // bare propagator
+    Propagator S0(Lambda, SEin,'s'); // bare differentiated propagator
+    cvec dSEout(nSE); // output cvec: bare differentiated SE, retarded component
+    diffSOPT_FFT_SE(dSEout, G0, S0, glb_U, 10000, 80.); // fill ouput cvec
+    return dSEout;
+}
+
+cvec SOPT_FFT_SE_rhs(const double Lambda) { // return (Lambda-dependent) SE using SOPT_FFT for testing
+    SelfEnergy<comp> SEin; // trivial self-energy
+    SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
+    Propagator G0(Lambda, SEin,'g'); // bare propagator
+    cvec SEout(nSE); // output cvec: bare SE, retarded component
+    SOPT_FFT_SE(SEout, G0, glb_U, 10000, 80.); // fill ouput cvec
+    return SEout;
+}
+
+void test_ODE_SOPT_FFT_SE(const int N_ODE) { // test ODE solver using SE from SOPT_FFT
+    bool write_flag = true; // whether to write output in hdf5
+    cvec SE_dir(nSE), SE_fin(nSE), SE_ini(nSE); // direct, final, initial SE
+    //double Lambda_fin = 1.; double Lambda_ini = 2.; // end points of flow -> defined in parameters.h
+    //SelfEnergy<comp> SEin; // trivial self-energy
+    //SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
+    //Propagator G0ini(Lambda_ini, SEin, 'g'); // initial propagator
+    SE_ini = SOPT_FFT_SE_rhs(Lambda_ini); // direct calculation of initial K1a
+    SE_dir = SOPT_FFT_SE_rhs(Lambda_fin); // direct calculation of final K1a
+    ODE_solver_RK4(SE_fin, Lambda_fin, SE_ini, Lambda_ini, dSOPT_FFT_SE_rhs, N_ODE); // final K1a from ODE
+    cvec SE_dif = SE_dir + ( SE_fin*(-1.) ); // difference in results
+    cout << "Testing ODE for bare SE_R. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << SE_dif.max_norm() << "." << endl;
+    if(write_flag) write_h5_rvecs("SOPT_FFT_ODE_SE.h5",
+                                  {"v", "SE_dir_R", "SE_dir_I", "SE_fin_R", "SE_fin_I", "SE_ini_R", "SE_ini_I"},
+                                  {ffreqs, SE_dir.real(), SE_dir.imag(), SE_fin.real(), SE_fin.imag(), SE_ini.real(), SE_ini.imag()});
 }
 
 cvec dG_rhs(const cvec& G, const double Lambda) { // return bare differentiated propagator for testing purposes
