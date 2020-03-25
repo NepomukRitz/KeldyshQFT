@@ -223,8 +223,8 @@ public:
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
-                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                 *contribute to the relevant spin components*/
+                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
@@ -240,9 +240,9 @@ public:
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
-                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                     * the bubble_function(...) must be changed.*/
+                    //This is commented out on the ground of p-channel contributions being cross-symmetric
+                    //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                    //the bubble_function(...) must be changed.*/
 //                    res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
 //                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
 
@@ -319,8 +319,8 @@ public:
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
-                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                 *contribute to the relevant spin components*/
+                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Contributions: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
@@ -336,9 +336,9 @@ public:
                     res_l_V = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
-                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                     * the bubble_function(...) must be changed.*/
+                    //This is commented out on the ground of p-channel contributions being cross-symmetric
+                    //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                    //the bubble_function(...) must be changed.*/
 //                    res_l_Vhat = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
 //                    res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
 
@@ -405,8 +405,8 @@ public:
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
-                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                 *contribute to the relevant spin components*/
+                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                               //Contributions: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
@@ -519,8 +519,8 @@ public:
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
-                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                 *contribute to the relevant spin components*/
+                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
@@ -536,9 +536,9 @@ public:
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
-                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                     * the bubble_function(...) must be changed.*/
+                    //This is commented out on the ground of p-channel contributions being cross-symmetric
+                    //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                    //the bubble_function(...) must be changed.
 //                    res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
 //                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
 
@@ -609,8 +609,8 @@ public:
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
-                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                 *contribute to the relevant spin components*/
+                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
@@ -626,9 +626,9 @@ public:
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
 
-                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                     * the bubble_function(...) must be changed.*/
+                    //This is commented out on the ground of p-channel contributions being cross-symmetric
+                    //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                    //the bubble_function(...) must be changed.
                     res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
                     res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
 
@@ -694,8 +694,8 @@ public:
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
-                /*Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                 *contribute to the relevant spin components*/
+                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+                //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
@@ -711,9 +711,9 @@ public:
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
 
-                    /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                     *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                     * the bubble_function(...) must be changed.*/
+                    //This is commented out on the ground of p-channel contributions being cross-symmetric
+                     //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                     //the bubble_function(...) must be changed.
 //                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 1, channel);
 //                    res_r_Vhat = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
 
@@ -737,7 +737,6 @@ public:
         return res;
     }
 };
-
 
 
 /**
@@ -803,7 +802,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& v
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS>=0
-    double tK1 = get_time();
+//    double tK1 = get_time();
     /*K1 contributions*/
     int n_mpi = nK_K1 * nw1_w; // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
     int n_omp = n_in;          // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
@@ -815,7 +814,7 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& v
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for
+//#pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices (TODO: put into extra function(s)?)
                 int iK1 = i_mpi * n_omp + i_omp;
@@ -857,8 +856,8 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& v
 
     // dgamma.spinvertex.pvertex.K1_addvert(i0, iwp, i_in, value); // old version w/o mpi
 
-    print("K1");  print(channel); print(" done: ");
-    get_time(tK1);
+//    print("K1");  print(channel); print(" done: ");
+//    get_time(tK1);
 #endif
 
 #if DIAG_CLASS>=2
