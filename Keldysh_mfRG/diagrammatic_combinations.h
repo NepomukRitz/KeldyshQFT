@@ -237,7 +237,7 @@ template <typename Q>
 auto left_same_bare (const Vertex<fullvert<Q> >& vertex, int i1, double w, double vpp, int i_in, int spin, char channel) -> Q
 {
     Q gamma0, K1, K2b;
-    gamma0 = vertex.spinvertex.irred.val(i1, i_in);
+    gamma0 = vertex.spinvertex.irred.val(i1, i_in, spin);
 
     switch (channel){
         case 'a':
@@ -288,7 +288,7 @@ template <typename Q>
 auto right_same_bare (const Vertex<fullvert<Q> >& vertex, int i3, double w, double vpp, int i_in, int spin, char channel) -> Q
 {
     Q gamma0, K1, K2;
-    gamma0 = vertex.spinvertex.irred.val(i3, i_in);
+    gamma0 = vertex.spinvertex.irred.val(i3, i_in, spin);
 
     switch (channel){
         case 'a':
