@@ -15,7 +15,7 @@ const int nLoops = 1;  // Number of loops
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
-#define FLOW
+//#define FLOW
 
 // Number of evolution flow points
 const int nEVO = 10;
