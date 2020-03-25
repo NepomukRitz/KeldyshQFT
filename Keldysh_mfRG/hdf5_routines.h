@@ -333,15 +333,21 @@ public:
              H5::DataSpace& dataSpaces_bfreqs,
              H5::DataSpace& dataSpaces_ffreqs,
              H5::DataSpace& dataSpaces_params,
+#if DIAG_CLASS >= 1
              H5::DataSpace& dataSpaces_K1_a,
              H5::DataSpace& dataSpaces_K1_p,
              H5::DataSpace& dataSpaces_K1_t,
+#endif
+#if DIAG_CLASS >= 2
              H5::DataSpace& dataSpaces_K2_a,
              H5::DataSpace& dataSpaces_K2_p,
              H5::DataSpace& dataSpaces_K2_t,
+#endif
+#if DIAG_CLASS >= 3
              H5::DataSpace& dataSpaces_K3_a,
              H5::DataSpace& dataSpaces_K3_p,
              H5::DataSpace& dataSpaces_K3_t,
+#endif
              H5::CompType mtype_comp, H5::CompType mtype_comp_spin, H5::DSetCreatPropList plist_vert) {
         if (!file_exists) {
             lambda_p = new H5::DataSet(
@@ -572,9 +578,15 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         DataSets dataSets(file, file_exists,
                           dataSpaces_Lambda, dataSpaces_selfenergy, dataSpaces_irreducible,
                           dataSpaces_bfreqs, dataSpaces_ffreqs, dataSpaces_params,
+#if DIAG_CLASS >= 1
                           dataSpaces_K1_a, dataSpaces_K1_p, dataSpaces_K1_t,
+#endif
+#if DIAG_CLASS >= 2
                           dataSpaces_K2_a, dataSpaces_K2_p, dataSpaces_K2_t,
+#endif
+#if DIAG_CLASS >= 3
                           dataSpaces_K3_a, dataSpaces_K3_p, dataSpaces_K3_t,
+#endif
                           mtype_comp, mtype_comp_spin, plist_vert);
 
         //Select hyperslab in the file where the data should be located and after that write buffered data into file.
