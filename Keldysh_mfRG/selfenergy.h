@@ -7,9 +7,9 @@
 /****************** CLASS FOR SELF ENERGY *************/
 template <typename Q>
 class SelfEnergy{
+public:
     // TODO: split into two members: Sigma_R, Sigma_K (?)
     vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
-public:
     // TODO: comment member functions
     void initialize(Q valR, Q valK);
     auto val(int iK, int iv, int i_in) const -> Q;
