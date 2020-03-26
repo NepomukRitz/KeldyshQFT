@@ -15,7 +15,7 @@ template <typename Q>
 class State{
 public:
     SelfEnergy<Q> selfenergy;
-    Vertex<Q> vertex = Vertex<Q> (2);
+    Vertex<Q> vertex = Vertex<Q> (n_spin);
 
     void initialize();
 
