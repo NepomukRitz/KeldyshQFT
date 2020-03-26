@@ -19,13 +19,13 @@
  */
 template <typename Q>
 class IntegrandSE {
-    char type;
+    const char type;
     vector<int> components = vector<int>(3);
     const Vertex<Q>& vertex;
     const Propagator& propagator;
-    double v;
-    int i_in;
-    bool all_spins;
+    const double v;
+    const int i_in;
+    const bool all_spins;
 
 public:
     /**
@@ -37,7 +37,7 @@ public:
      * @param i_in_in   : Internal frequency index
      * @param all_spins_in: Defines the value of the vertex to be taken
      */
-    IntegrandSE(char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in, double v_in, int i_in_in, bool all_spins_in)
+    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in, const double v_in, const int i_in_in, const bool all_spins_in)
         : type(type_in), vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in), all_spins(all_spins_in)
         {
             if(type=='r'){  //Check which kind of contribution is calculated
@@ -58,7 +58,7 @@ public:
      * @return      : Here we pick the explicit components that appear in the sum over Keldysh indices.
      *              When summing over spins, the formula for the vertex value is Gammma=(2V+V^). In SOPT, one only requires Gamma=V
      */
-    auto operator()(double vp) const -> Q {
+    auto operator()(const double vp) const -> Q {
         Q GR = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
         Q GA = conj(propagator.valsmooth(0, vp, i_in));  // advanced propagator (full or single scale)
         Q GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
@@ -87,7 +87,7 @@ public:
  * @param all_spins : Wether the calculation of the loop should include all spin components of the vertex
  */
 template <typename Q>
-void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, bool all_spins)
+void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins)
 {
 #pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
