@@ -122,7 +122,7 @@ public:
         this->avertex *= vertex1.avertex;
         return *this;
     }
-    friend fullvert<Q> operator*(fullvert<Q> lhs, const double& rhs) {// passing lhs by value helps optimize chained a+b+c
+    friend fullvert<Q> operator*(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
         lhs *= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
@@ -133,7 +133,7 @@ public:
         this->avertex *= alpha;
         return *this;
     }
-    friend fullvert<Q> operator*(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
+    friend fullvert<Q> operator*(fullvert<Q> lhs, const double& rhs) {// passing lhs by value helps optimize chained a+b+c
         lhs *= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
@@ -152,7 +152,67 @@ public:
 
 
 template <typename Q>
-using Vertex = vec<fullvert<Q> >;
+class Vertex : public vec<fullvert<Q> > {
+public:
+    Vertex() : vec<fullvert<Q> > () {};
+    Vertex(int n) : vec<fullvert<Q> > (n) {};
+    Vertex(int n, fullvert<Q> val) : vec<fullvert<Q> > (n, val) {};
+
+    auto operator+= (const Vertex<Q>& rhs) -> Vertex<Q> {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i] += rhs[i];
+        }
+        return *this;
+    }
+    friend Vertex<Q> operator+ (Vertex<Q> lhs, const Vertex<Q>& rhs) {
+        lhs += rhs; return lhs;
+    }
+    auto operator+= (const double& rhs) -> Vertex<Q> {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i] += rhs;
+        }
+        return *this;
+    }
+    friend Vertex<Q> operator+ (Vertex<Q> lhs, const double& rhs) {
+        lhs += rhs; return lhs;
+    }
+    auto operator*= (const Vertex<Q>& rhs) -> Vertex<Q> {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i] *= rhs[i];
+        }
+        return *this;
+    }
+    friend Vertex<Q> operator* (Vertex<Q> lhs, const Vertex<Q>& rhs) {
+        lhs *= rhs; return lhs;
+    }
+    auto operator*= (const double& rhs) -> Vertex<Q> {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i] *= rhs;
+        }
+        return *this;
+    }
+    friend Vertex<Q> operator* (Vertex<Q> lhs, const double& rhs) {
+        lhs *= rhs; return lhs;
+    }
+    auto operator-= (const Vertex<Q>& rhs) -> Vertex<Q> {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i] -= rhs[i];
+        }
+        return *this;
+    }
+    friend Vertex<Q> operator- (Vertex<Q> lhs, const Vertex<Q>& rhs) {
+        lhs -= rhs; return lhs;
+    }
+    auto operator-= (const double& rhs) -> Vertex<Q> {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i] -= rhs;
+        }
+        return *this;
+    }
+    friend Vertex<Q> operator- (Vertex<Q> lhs, const double& rhs) {
+        lhs -= rhs; return lhs;
+    }
+};
 
 
 /************************************* MEMBER FUNCTIONS OF THE IRREDUCIBLE VERTEX *************************************/

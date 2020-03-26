@@ -15,9 +15,7 @@ template <typename Q>
 class State{
 public:
     SelfEnergy<Q> selfenergy;
-    Vertex<Q> vertex;
-
-    State() : vertex(2) {}
+    Vertex<Q> vertex = Vertex<Q> (2);
 
     void initialize();
 
@@ -31,7 +29,7 @@ public:
         lhs += rhs;
         return lhs;
     }
-    auto operator*= (double alpha) -> State {
+    auto operator*= (const double& alpha) -> State {
         this->vertex *= alpha;
         this->selfenergy *= alpha;
         return (*this);
