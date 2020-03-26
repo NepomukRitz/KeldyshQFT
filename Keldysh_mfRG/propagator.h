@@ -267,7 +267,7 @@ auto Propagator::GA(double v, int i_in) const -> comp
 {
     return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma+Lambda) - conj(SE.valsmooth(0, v, i_in)));
 }
-auto Propagator::GK(double v, int i_in) const -> comp
+auto Propagator::GK(double v, int i_in) const -> comp       // TODO: fix
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
     return (1.-2.*effective_distribution_function(v))*(GR(v, i_in)-GA(v, i_in));
@@ -276,7 +276,7 @@ auto Propagator::SR(double v, int i_in) const -> comp
 {
     return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
 }
-auto Propagator::SK(double v, int i_in) const -> comp
+auto Propagator::SK(double v, int i_in) const -> comp       // TODO: fix
 {
     comp retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
     comp advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
