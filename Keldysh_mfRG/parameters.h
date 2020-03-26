@@ -34,6 +34,7 @@ const double glb_mu = 0.0;                     // Chemical potential
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 const double glb_Gamma = 1.;                   // Hybridization of Anderson model
+const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 
 
 /// Frequency grid parameters ///
@@ -170,13 +171,13 @@ const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 
 #if REG==2
-const int param_size = 13;
+const int param_size = 14;
 const double parameter_list[param_size] = {GRID, REG, glb_Gamma, DIAG_CLASS, nLoops,
-                                           glb_T, glb_mu, glb_U, glb_epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
+                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
 #else
-const int param_size = 12;
+const int param_size = 13;
 const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, nLoops,
-                                           glb_T, glb_mu, glb_U, glb_epsilon, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
+                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
 #endif
 
 #endif //KELDYSH_MFRG_PARAMETERS_H
