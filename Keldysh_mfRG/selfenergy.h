@@ -10,6 +10,7 @@ class SelfEnergy{
 public:
     // TODO: split into two members: Sigma_R, Sigma_K (?)
     vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
+    Q asymp_value_R = 0.;   //Asymptotic value for the Retarded SE
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid
@@ -73,6 +74,7 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
             this->setself(1, iv, i_in, valK);
         }
     }
+    this-> asymp_value_R = valR;
 }
 
 /**
@@ -123,7 +125,7 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
 
     if(abs(v)>w_upper_f)    //Check the range of frequency. If too large, return Sigma(\infty)
         //Returns U/2 for retarded and 0. for Keldysh component
-        return (1.-(double)iK)*glb_U/2.;    //TODO: Generalize this to include differential Self Energies
+        return (1.-(double)iK)*(this->asymp_value_R);
     else {
         if(fabs(v)!= w_upper_f) { // linear interpolation
             int iv = fconv_fer(v); // index corresponding to v
