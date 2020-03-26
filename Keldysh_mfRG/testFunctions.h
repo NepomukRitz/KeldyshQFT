@@ -19,15 +19,19 @@ void sopt_state(State<Q>& Psi, double Lambda) {
     State<comp> bare;   //Create bare state
     bare.initialize();  //i.e. a state with a bare vertex and a self-energy initialized at the Hartree value
 
-    Propagator g(Lambda, bare.selfenergy, 'g');    //Bare propagator
+    Propagator g0(Lambda, bare.selfenergy, 'g');    //Bare propagator
 
-    //Calculate the bubbles -> Vertex
-    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g, g, 'a', false, '.');
-    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g, g, 'p', false, '.');
-    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g, g, 't', false, '.');
+    //Calculate the bubbles -> Vertex in SOPT
+    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g0, g0, 'a', false, '.');
+    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g0, g0, 'p', false, '.');
+    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g0, g0, 't', false, '.');
+
+
+    //Do an a-Bubble for the calculation of the self-energy
+    bubble_function(bare.vertex,  bare.vertex, bare.vertex, g0, g0, 'a', false, '.');
 
     //Calculate the Self-Energy
-    loop(Psi.selfenergy, bare.vertex, g, false);
+    loop(Psi.selfenergy, bare.vertex, g0, false);
 }
 
 
@@ -262,16 +266,24 @@ void test_rhs_state_flow_SOPT(int N_ODE){
     cout << "Confirming correctness of the bubbles. The max diff between direct and final results is " << K1a0_dif.max_norm() << ". \n";
     cout << "Testing ODE for SelfEnergyR. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << SER_dif.max_norm() << "." << endl;
     cout << "Testing ODE for SelfEnergyK. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << SEK_dif.max_norm() << "." << endl;
-    if(write_flag) write_h5_rvecs("rhs_selfenergy_flow_SOPT.h5",
+    if(write_flag) write_h5_rvecs("rhs_state_flow_SOPT.h5",
                                   {"v", "dir_SE_R", "dir_SE_I", "fin_SE_R", "fin_SE_I", "ini_SE_R", "ini_SE_I",
-                                   "dir_K1_R", "dir_K1_I", "fin_K1_R", "fin_K1_I", "ini_K1_R", "ini_K1_I"},
+                                   "dir_K1a_R", "dir_K1a_I", "fin_K1a_R", "fin_K1a_I", "ini_K1a_R", "ini_K1a_I",
+                                   "dir_K1p_R", "dir_K1p_I", "fin_K1p_R", "fin_K1p_I", "ini_K1p_R", "ini_K1p_I",
+                                   "dir_K1t_R", "dir_K1t_I", "fin_K1t_R", "fin_K1t_I", "ini_K1t_R", "ini_K1t_I"},
                                   {ffreqs,
                                    state_dir.selfenergy.Sigma.real(), state_dir.selfenergy.Sigma.imag(),
                                    state_fin.selfenergy.Sigma.real(), state_fin.selfenergy.Sigma.imag(),
                                    state_ini.selfenergy.Sigma.real(), state_ini.selfenergy.Sigma.imag(),
                                    state_dir.vertex.spinvertex.avertex.K1.real(), state_dir.vertex.spinvertex.avertex.K1.imag(),
                                    state_fin.vertex.spinvertex.avertex.K1.real(), state_fin.vertex.spinvertex.avertex.K1.imag(),
-                                   state_ini.vertex.spinvertex.avertex.K1.real(), state_ini.vertex.spinvertex.avertex.K1.imag()});
+                                   state_ini.vertex.spinvertex.avertex.K1.real(), state_ini.vertex.spinvertex.avertex.K1.imag(),
+                                   state_dir.vertex.spinvertex.pvertex.K1.real(), state_dir.vertex.spinvertex.pvertex.K1.imag(),
+                                   state_fin.vertex.spinvertex.pvertex.K1.real(), state_fin.vertex.spinvertex.pvertex.K1.imag(),
+                                   state_ini.vertex.spinvertex.pvertex.K1.real(), state_ini.vertex.spinvertex.pvertex.K1.imag(),
+                                   state_dir.vertex.spinvertex.tvertex.K1.real(), state_dir.vertex.spinvertex.tvertex.K1.imag(),
+                                   state_fin.vertex.spinvertex.tvertex.K1.real(), state_fin.vertex.spinvertex.tvertex.K1.imag(),
+                                   state_ini.vertex.spinvertex.tvertex.K1.real(), state_ini.vertex.spinvertex.tvertex.K1.imag()});
 
 }
 
@@ -304,6 +316,12 @@ void test_derivatives_SE(double Lambda){
     sopt_state(sopt, Lambda);
     State<comp> rhs_flow = rhs_state_flow_SOPT(sopt, Lambda);
 
+    cvec SER_dif(nFER);
+    for(int iv=0; iv<nFER;++iv){
+        SER_dif[iv] = rhs_flow.selfenergy.val(0, iv, 0) -rhs_SOPT_FFT_K1a[iv];
+    }
+
+    cout << "Testing derivatives of the Self Energy. Using Lambda=" << Lambda << ", the max difference between fRG and FFT results is " << SER_dif.max_norm() << "." << endl;
     write_h5_rvecs("derivativess_SE.h5",
                    {"v", "FFT_R", "FFT_I", "SOPT_R", "SOPT_I"},
                    {ffreqs, rhs_SOPT_FFT_K1a.real(), rhs_SOPT_FFT_K1a.imag(),
