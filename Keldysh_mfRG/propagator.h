@@ -9,10 +9,14 @@
 using namespace std;
 
 //Self-explanatory
-auto Fermi_distribution(double v) -> double
+auto Fermi_distribution(double v, double mu) -> double
 {
-    // return 1./(exp((v-glb_mu)/glb_T)+1.);
-    return 1./2. * (1. - tanh((v-glb_mu)/(2.*glb_T))); // numerically preferential
+    // return 1./(exp((v-mu)/glb_T)+1.);
+    return 1./2. * (1. - tanh((v-mu)/(2.*glb_T))); // numerically preferential
+}
+
+auto effective_distribution_function(double v) -> double {
+    return 1./2. * (Fermi_distribution(v, glb_mu + glb_V) + Fermi_distribution(v, glb_mu));
 }
 
 
@@ -152,7 +156,7 @@ auto Propagator::GA(double v, int i_in) const -> comp
 auto Propagator::GK(double v, int i_in) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*Fermi_distribution(v))*(GR(v, i_in)-GA(v, i_in));
+    return (1.-2.*effective_distribution_function(v))*(GR(v, i_in)-GA(v, i_in));
 }
 
 auto Propagator::SR(double v, int i_in) const -> comp
@@ -266,7 +270,7 @@ auto Propagator::GA(double v, int i_in) const -> comp
 auto Propagator::GK(double v, int i_in) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*Fermi_distribution(v))*(GR(v, i_in)-GA(v, i_in));
+    return (1.-2.*effective_distribution_function(v))*(GR(v, i_in)-GA(v, i_in));
 }
 auto Propagator::SR(double v, int i_in) const -> comp
 {
@@ -276,7 +280,7 @@ auto Propagator::SK(double v, int i_in) const -> comp
 {
     comp retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
     comp advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
-    comp extra    = -glb_i*(1.-2.*Fermi_distribution(v))*GR(v, i_in)*GA(v, i_in);
+    comp extra    = -glb_i*(1.-2.*effective_distribution_function(v))*GR(v, i_in)*GA(v, i_in);
 
     return retarded + advanced + extra;
 }
