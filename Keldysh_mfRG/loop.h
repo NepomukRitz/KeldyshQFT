@@ -40,15 +40,15 @@ public:
     IntegrandSE(char type_in, const Vertex<fullvert<Q> >& vertex_in, const Propagator& prop_in, double v_in, int i_in_in, bool all_spins_in)
         : type(type_in), vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in), all_spins(all_spins_in)
         {
-            if(type=='r'){
-                components[0]=3;
-                components[1]=6;
-                components[2]=7;
+            if(type=='r'){  //Check which kind of contribution is calculated
+                components[0]=3;    //Vertex component associated to Retarded propagator
+                components[1]=6;    //Vertex component associated to Advanced propagator
+                components[2]=7;    //Vertex component associated to Keldysh propagator
             }
             else {
-                components[0]=1;
-                components[1]=4;
-                components[2]=5;
+                components[0]=1;    //Vertex component associated to Retarded propagator
+                components[1]=4;    //Vertex component associated to Advanced propagator
+                components[2]=5;    //Vertex component associated to Keldysh propagator
             }
     };
 
