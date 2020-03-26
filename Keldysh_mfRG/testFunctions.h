@@ -26,7 +26,6 @@ void sopt_state(State<Q>& Psi, double Lambda) {
     bubble_function(Psi.vertex, bare.vertex, bare.vertex, g0, g0, 'p', false, '.');
     bubble_function(Psi.vertex, bare.vertex, bare.vertex, g0, g0, 't', false, '.');
 
-
     //Do an a-Bubble for the calculation of the self-energy
     bubble_function(bare.vertex,  bare.vertex, bare.vertex, g0, g0, 'a', false, '.');
 
@@ -65,11 +64,8 @@ void test_rhs_bubbles_flow_wstate(int N_ODE) {
     Propagator G0ini(Lambda_ini, state_ini.selfenergy, 'g'); // initial propagator
     Propagator G0dir(Lambda_fin, state_dir.selfenergy, 'g'); // final propagator
 
-    // direct calculation of initial K1a
-    sopt_state(state_ini, Lambda_ini);
-
-    // direct calculation of direct K1a
-    sopt_state(state_dir, Lambda_fin);
+    sopt_state(state_ini, Lambda_ini); // direct calculation of initial K1a
+    sopt_state(state_dir, Lambda_fin); // direct calculation of direct K1a
 
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
     cvec K1a_dif = state_dir.vertex.spinvertex.avertex.K1 + ( state_fin.vertex.spinvertex.avertex.K1*(-1.) ); // difference in results
@@ -172,7 +168,7 @@ void test_rhs_bubbles_flow(int N_ODE){
  */
 void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
 
-    Propagator g1(Lambda, state.selfenergy, 'g');
+    Propagator g(Lambda, state.selfenergy, 'g');
 
     //Calculate the vertex
     sopt_state(state, Lambda);
@@ -181,8 +177,7 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
     temp_vertex_a.spinvertex.avertex = state.vertex.spinvertex.avertex;
     temp_vertex_p.spinvertex.pvertex = state.vertex.spinvertex.pvertex;
 
-    //Calculate the SelfEnergy in SOPT
-    loop(state.selfenergy, temp_vertex_a, g1, false);
+    loop(state.selfenergy, temp_vertex_a, g, false);//Calculate the SelfEnergy in SOPT
 
     //Print results in .h5 format
     cvec SER(nFER);
@@ -193,7 +188,7 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
         SEK[iv] = state.selfenergy.val(1, iv, 0);
     }
 
-
+    //Print results
     write_h5_rvecs("SOPT_test.h5", {"v", "ReSER", "ImSER", "ReSEK", "ImSEK",
                                   "K1a_R", "K1a_I", "K1p_R", "K1p_I", "K1t_R", "K1t_I"},
                                  {ffreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(),
@@ -245,10 +240,8 @@ void test_rhs_state_flow_SOPT(int N_ODE){
     Propagator G0ini(Lambda_ini, state_ini.selfenergy, 'g'); // initial propagator
     Propagator G0dir(Lambda_fin, state_dir.selfenergy, 'g'); // final propagator
 
-    // direct calculation of initial K1a
-    sopt_state(state_ini, Lambda_ini);
-    // direct calculation of direct K1a
-    sopt_state(state_dir, Lambda_fin);
+    sopt_state(state_ini, Lambda_ini); // direct calculation of initial K1a
+    sopt_state(state_dir, Lambda_fin); // direct calculation of direct K1a
 
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT, N_ODE); // final K1a from ODE
 
