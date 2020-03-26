@@ -49,8 +49,15 @@ public:
     friend irreducible<Q> operator-(irreducible<Q> lhs, const irreducible<Q>& rhs) {
         lhs -= rhs; return lhs;
     }
-    auto operator*= (double alpha) -> irreducible<Q> {
+    auto operator*= (const double& alpha) -> irreducible<Q> {
         this->bare *=alpha;
+        return *this;
+    }
+    friend irreducible<Q> operator*(irreducible<Q> lhs, const double& rhs) {
+        lhs *= rhs; return lhs;
+    }
+    auto operator*= (const irreducible<Q>& vertex) -> irreducible<Q> {
+        this->bare *= vertex.bare;
         return *this;
     }
     friend irreducible<Q> operator*(irreducible<Q> lhs, const irreducible<Q>& rhs) {
@@ -97,11 +104,33 @@ public:
         lhs += rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
-    auto operator*= (double alpha) -> fullvert<Q> {
-        this->irred   *=alpha;
-        this->pvertex *=alpha;
-        this->tvertex *=alpha;
-        this->avertex *=alpha;
+    auto operator+= (const double& alpha) -> fullvert<Q> {
+        this->irred   += alpha;
+        this->pvertex += alpha;
+        this->tvertex += alpha;
+        this->avertex += alpha;
+        return *this;
+    }
+    friend fullvert<Q> operator+(fullvert<Q> lhs, const double& rhs) {// passing lhs by value helps optimize chained a+b+c
+        lhs += rhs; // reuse compound assignment
+        return lhs; // return the result by value (uses move constructor)
+    }
+    auto operator*= (const fullvert<Q>& vertex1) -> fullvert<Q> {
+        this->irred   *= vertex1.irred;
+        this->pvertex *= vertex1.pvertex;
+        this->tvertex *= vertex1.tvertex;
+        this->avertex *= vertex1.avertex;
+        return *this;
+    }
+    friend fullvert<Q> operator*(fullvert<Q> lhs, const double& rhs) {// passing lhs by value helps optimize chained a+b+c
+        lhs *= rhs; // reuse compound assignment
+        return lhs; // return the result by value (uses move constructor)
+    }
+    auto operator*= (const double& alpha) -> fullvert<Q> {
+        this->irred   *= alpha;
+        this->pvertex *= alpha;
+        this->tvertex *= alpha;
+        this->avertex *= alpha;
         return *this;
     }
     friend fullvert<Q> operator*(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
@@ -122,49 +151,8 @@ public:
 };
 
 
-// define Vertex as tuple of spin and density vertex
-// Note that T should be fullvert, so that every (i.e. both) spin component of the vertex inherits a Keldysh substructure
-template <class T>
-class Vertex{ // TODO: remove this class
-public:
-    // The two independent spin components of the Vertex
-    T spinvertex;
-    T densvertex;
-
-    Vertex() = default;;
-
-    // Various operators for the Vertex class
-    auto operator+= (const Vertex<T>& vertex1) -> Vertex<T>
-    {
-        this->densvertex += vertex1.densvertex;
-        this->spinvertex += vertex1.spinvertex;
-        return *this;
-    }
-    friend Vertex<T> operator+(Vertex<T> lhs, const Vertex<T>& rhs) {// passing lhs by value helps optimize chained a+b+c
-        lhs += rhs; // reuse compound assignment
-        return lhs; // return the result by value (uses move constructor)
-    }
-    auto operator*= (double alpha) -> Vertex<T>
-    {
-        this->densvertex*=alpha;
-        this->spinvertex*=alpha;
-        return *this;
-    }
-    friend Vertex<T> operator*(Vertex<T> lhs, const Vertex<T>& rhs) {// passing lhs by value helps optimize chained a+b+c
-        lhs *= rhs; // reuse compound assignment
-        return lhs; // return the result by value (uses move constructor)
-    }
-    auto operator-= (const Vertex<T>& vertex1) -> Vertex<T>
-    {
-        this->densvertex -= vertex1.densvertex;
-        this->spinvertex -= vertex1.spinvertex;
-        return *this;
-    }
-    friend Vertex<T> operator-(Vertex<T> lhs, const Vertex<T>& rhs) {// passing lhs by value helps optimize chained a+b+c
-        lhs -= rhs; // reuse compound assignment
-        return lhs; // return the result by value (uses move constructor)
-    }
-};
+template <typename Q>
+using Vertex = vec<fullvert<Q> >;
 
 
 /************************************* MEMBER FUNCTIONS OF THE IRREDUCIBLE VERTEX *************************************/

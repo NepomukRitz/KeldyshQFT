@@ -160,63 +160,63 @@ public:
             selfenergy[i].im = imag(state_in.selfenergy.acc(i));
         }
         for (int i = 0; i < irred_dim; ++i) {                       // write irreducible vertex into buffer
-            irreducible_class[i].spin_re = real(state_in.vertex.spinvertex.irred.acc(i));
-            irreducible_class[i].dens_re = real(state_in.vertex.densvertex.irred.acc(i));
-            irreducible_class[i].spin_im = imag(state_in.vertex.spinvertex.irred.acc(i));
-            irreducible_class[i].dens_im = imag(state_in.vertex.densvertex.irred.acc(i));
+            irreducible_class[i].spin_re = real(state_in.vertex[0].irred.acc(i));
+            irreducible_class[i].dens_re = real(state_in.vertex[1].irred.acc(i));
+            irreducible_class[i].spin_im = imag(state_in.vertex[0].irred.acc(i));
+            irreducible_class[i].dens_im = imag(state_in.vertex[1].irred.acc(i));
         }
 #if DIAG_CLASS >= 1
         for(int i=0; i<K1_dim; ++i){                                // write K1 into buffer
-            K1_class_a[i].spin_re = real(state_in.vertex.spinvertex.avertex.K1_acc(i));
-            K1_class_a[i].dens_re = real(state_in.vertex.densvertex.avertex.K1_acc(i));
-            K1_class_a[i].spin_im = imag(state_in.vertex.spinvertex.avertex.K1_acc(i));
-            K1_class_a[i].dens_im = imag(state_in.vertex.densvertex.avertex.K1_acc(i));
+            K1_class_a[i].spin_re = real(state_in.vertex[0].avertex.K1_acc(i));
+            K1_class_a[i].dens_re = real(state_in.vertex[1].avertex.K1_acc(i));
+            K1_class_a[i].spin_im = imag(state_in.vertex[0].avertex.K1_acc(i));
+            K1_class_a[i].dens_im = imag(state_in.vertex[1].avertex.K1_acc(i));
 
-            K1_class_p[i].spin_re = real(state_in.vertex.spinvertex.pvertex.K1_acc(i));
-            K1_class_p[i].dens_re = real(state_in.vertex.densvertex.pvertex.K1_acc(i));
-            K1_class_p[i].spin_im = imag(state_in.vertex.spinvertex.pvertex.K1_acc(i));
-            K1_class_p[i].dens_im = imag(state_in.vertex.densvertex.pvertex.K1_acc(i));
+            K1_class_p[i].spin_re = real(state_in.vertex[0].pvertex.K1_acc(i));
+            K1_class_p[i].dens_re = real(state_in.vertex[1].pvertex.K1_acc(i));
+            K1_class_p[i].spin_im = imag(state_in.vertex[0].pvertex.K1_acc(i));
+            K1_class_p[i].dens_im = imag(state_in.vertex[1].pvertex.K1_acc(i));
 
-            K1_class_t[i].spin_re = real(state_in.vertex.spinvertex.tvertex.K1_acc(i));
-            K1_class_t[i].dens_re = real(state_in.vertex.densvertex.tvertex.K1_acc(i));
-            K1_class_t[i].spin_im = imag(state_in.vertex.spinvertex.tvertex.K1_acc(i));
-            K1_class_t[i].dens_im = imag(state_in.vertex.densvertex.tvertex.K1_acc(i));
+            K1_class_t[i].spin_re = real(state_in.vertex[0].tvertex.K1_acc(i));
+            K1_class_t[i].dens_re = real(state_in.vertex[1].tvertex.K1_acc(i));
+            K1_class_t[i].spin_im = imag(state_in.vertex[0].tvertex.K1_acc(i));
+            K1_class_t[i].dens_im = imag(state_in.vertex[1].tvertex.K1_acc(i));
         }
 #endif
 #if DIAG_CLASS >= 2
         for(int i=0; i<K2_dim; ++i){                                // write K2 into buffer
-            K2_class_a[i].spin_re = real(state_in.vertex.spinvertex.avertex.K2_acc(i));
-            K2_class_a[i].dens_re = real(state_in.vertex.densvertex.avertex.K2_acc(i));
-            K2_class_a[i].spin_im = imag(state_in.vertex.spinvertex.avertex.K2_acc(i));
-            K2_class_a[i].dens_im = imag(state_in.vertex.densvertex.avertex.K2_acc(i));
+            K2_class_a[i].spin_re = real(state_in.vertex[0].avertex.K2_acc(i));
+            K2_class_a[i].dens_re = real(state_in.vertex[1].avertex.K2_acc(i));
+            K2_class_a[i].spin_im = imag(state_in.vertex[0].avertex.K2_acc(i));
+            K2_class_a[i].dens_im = imag(state_in.vertex[1].avertex.K2_acc(i));
 
-            K2_class_p[i].spin_re = real(state_in.vertex.spinvertex.pvertex.K2_acc(i));
-            K2_class_p[i].dens_re = real(state_in.vertex.densvertex.pvertex.K2_acc(i));
-            K2_class_p[i].spin_im = imag(state_in.vertex.spinvertex.pvertex.K2_acc(i));
-            K2_class_p[i].dens_im = imag(state_in.vertex.densvertex.pvertex.K2_acc(i));
+            K2_class_p[i].spin_re = real(state_in.vertex[0].pvertex.K2_acc(i));
+            K2_class_p[i].dens_re = real(state_in.vertex[1].pvertex.K2_acc(i));
+            K2_class_p[i].spin_im = imag(state_in.vertex[0].pvertex.K2_acc(i));
+            K2_class_p[i].dens_im = imag(state_in.vertex[1].pvertex.K2_acc(i));
 
-            K2_class_t[i].spin_re = real(state_in.vertex.spinvertex.tvertex.K2_acc(i));
-            K2_class_t[i].dens_re = real(state_in.vertex.densvertex.tvertex.K2_acc(i));
-            K2_class_t[i].spin_im = imag(state_in.vertex.spinvertex.tvertex.K2_acc(i));
-            K2_class_t[i].dens_im = imag(state_in.vertex.densvertex.tvertex.K2_acc(i));
+            K2_class_t[i].spin_re = real(state_in.vertex[0].tvertex.K2_acc(i));
+            K2_class_t[i].dens_re = real(state_in.vertex[1].tvertex.K2_acc(i));
+            K2_class_t[i].spin_im = imag(state_in.vertex[0].tvertex.K2_acc(i));
+            K2_class_t[i].dens_im = imag(state_in.vertex[1].tvertex.K2_acc(i));
         }
 #endif
 #if DIAG_CLASS >= 3
         for(int i=0; i<K3_dim; ++i){                                // write K3 into buffer
-            K3_class_a[i].spin_re = real(state_in.vertex.spinvertex.avertex.K3_acc(i));
-            K3_class_a[i].dens_re = real(state_in.vertex.densvertex.avertex.K3_acc(i));
-            K3_class_a[i].spin_im = imag(state_in.vertex.spinvertex.avertex.K3_acc(i));
-            K3_class_a[i].dens_im = imag(state_in.vertex.densvertex.avertex.K3_acc(i));
+            K3_class_a[i].spin_re = real(state_in.vertex[0].avertex.K3_acc(i));
+            K3_class_a[i].dens_re = real(state_in.vertex[1].avertex.K3_acc(i));
+            K3_class_a[i].spin_im = imag(state_in.vertex[0].avertex.K3_acc(i));
+            K3_class_a[i].dens_im = imag(state_in.vertex[1].avertex.K3_acc(i));
 
-            K3_class_p[i].spin_re = real(state_in.vertex.spinvertex.pvertex.K3_acc(i));
-            K3_class_p[i].dens_re = real(state_in.vertex.densvertex.pvertex.K3_acc(i));
-            K3_class_p[i].spin_im = imag(state_in.vertex.spinvertex.pvertex.K3_acc(i));
-            K3_class_p[i].dens_im = imag(state_in.vertex.densvertex.pvertex.K3_acc(i));
+            K3_class_p[i].spin_re = real(state_in.vertex[0].pvertex.K3_acc(i));
+            K3_class_p[i].dens_re = real(state_in.vertex[1].pvertex.K3_acc(i));
+            K3_class_p[i].spin_im = imag(state_in.vertex[0].pvertex.K3_acc(i));
+            K3_class_p[i].dens_im = imag(state_in.vertex[1].pvertex.K3_acc(i));
 
-            K3_class_t[i].spin_re = real(state_in.vertex.spinvertex.tvertex.K3_acc(i));
-            K3_class_t[i].dens_re = real(state_in.vertex.densvertex.tvertex.K3_acc(i));
-            K3_class_t[i].spin_im = imag(state_in.vertex.spinvertex.tvertex.K3_acc(i));
-            K3_class_t[i].dens_im = imag(state_in.vertex.densvertex.tvertex.K3_acc(i));
+            K3_class_t[i].spin_re = real(state_in.vertex[0].tvertex.K3_acc(i));
+            K3_class_t[i].dens_re = real(state_in.vertex[1].tvertex.K3_acc(i));
+            K3_class_t[i].spin_im = imag(state_in.vertex[0].tvertex.K3_acc(i));
+            K3_class_t[i].dens_im = imag(state_in.vertex[1].tvertex.K3_acc(i));
         }
 #endif
         print("Buffer ready. Preparing for saving into Hdf5 file...", true);
@@ -783,62 +783,62 @@ void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
     }
     for(int i=0; i<buffer.irred_dim; ++i) {
         val = {buffer.irreducible_class[i].spin_re, buffer.irreducible_class[i].spin_im};
-        result.vertex.spinvertex.irred.direct_set(i, val);
+        result.vertex[0].irred.direct_set(i, val);
         val = {buffer.irreducible_class[i].dens_re, buffer.irreducible_class[i].dens_im};
-        result.vertex.densvertex.irred.direct_set(i, val);
+        result.vertex[1].irred.direct_set(i, val);
     }
 #if DIAG_CLASS >= 1
     for (int i=0; i<buffer.K1_dim; ++i) {
         val = {buffer.K1_class_a[i].spin_re, buffer.K1_class_a[i].spin_im};
-        result.vertex.spinvertex.avertex.K1_direct_set(i, val);
+        result.vertex[0].avertex.K1_direct_set(i, val);
         val = {buffer.K1_class_a[i].dens_re, buffer.K1_class_a[i].dens_im};
-        result.vertex.densvertex.avertex.K1_direct_set(i, val);
+        result.vertex[1].avertex.K1_direct_set(i, val);
 
         val = {buffer.K1_class_p[i].spin_re, buffer.K1_class_p[i].spin_im};
-        result.vertex.spinvertex.pvertex.K1_direct_set(i, val);
+        result.vertex[0].pvertex.K1_direct_set(i, val);
         val = {buffer.K1_class_p[i].dens_re, buffer.K1_class_p[i].dens_im};
-        result.vertex.densvertex.pvertex.K1_direct_set(i, val);
+        result.vertex[1].pvertex.K1_direct_set(i, val);
 
         val = {buffer.K1_class_t[i].spin_re, buffer.K1_class_t[i].spin_im};
-        result.vertex.spinvertex.tvertex.K1_direct_set(i, val);
+        result.vertex[0].tvertex.K1_direct_set(i, val);
         val = {buffer.K1_class_t[i].dens_re, buffer.K1_class_t[i].dens_im};
-        result.vertex.densvertex.tvertex.K1_direct_set(i, val);
+        result.vertex[1].tvertex.K1_direct_set(i, val);
     }
 #endif
 #if DIAG_CLASS >= 2
     for (int i=0; i<buffer.K2_dim; ++i) {
         val = {buffer.K2_class_a[i].spin_re, buffer.K2_class_a[i].spin_im};
-        result.vertex.spinvertex.avertex.K2_direct_set(i, val);
+        result.vertex[0].avertex.K2_direct_set(i, val);
         val = {buffer.K2_class_a[i].dens_re, buffer.K2_class_a[i].dens_im};
-        result.vertex.densvertex.avertex.K2_direct_set(i, val);
+        result.vertex[1].avertex.K2_direct_set(i, val);
 
         val = {buffer.K2_class_p[i].spin_re, buffer.K2_class_p[i].spin_im};
-        result.vertex.spinvertex.pvertex.K2_direct_set(i, val);
+        result.vertex[0].pvertex.K2_direct_set(i, val);
         val = {buffer.K2_class_p[i].dens_re, buffer.K2_class_p[i].dens_im};
-        result.vertex.densvertex.pvertex.K2_direct_set(i, val);
+        result.vertex[1].pvertex.K2_direct_set(i, val);
 
         val = {buffer.K2_class_t[i].spin_re, buffer.K2_class_t[i].spin_im};
-        result.vertex.spinvertex.tvertex.K2_direct_set(i, val);
+        result.vertex[0].tvertex.K2_direct_set(i, val);
         val = {buffer.K2_class_t[i].dens_re, buffer.K2_class_t[i].dens_im};
-        result.vertex.densvertex.tvertex.K2_direct_set(i, val);
+        result.vertex[1].tvertex.K2_direct_set(i, val);
     }
 #endif
 #if DIAG_CLASS >= 3
     for (int i=0; i<buffer.K3_dim; ++i) {
         val = {buffer.K3_class_a[i].spin_re, buffer.K3_class_a[i].spin_im};
-        result.vertex.spinvertex.avertex.K3_direct_set(i, val);
+        result.vertex[0].avertex.K3_direct_set(i, val);
         val = {buffer.K3_class_a[i].dens_re, buffer.K3_class_a[i].dens_im};
-        result.vertex.densvertex.avertex.K3_direct_set(i, val);
+        result.vertex[1].avertex.K3_direct_set(i, val);
 
         val = {buffer.K3_class_p[i].spin_re, buffer.K3_class_p[i].spin_im};
-        result.vertex.spinvertex.pvertex.K3_direct_set(i, val);
+        result.vertex[0].pvertex.K3_direct_set(i, val);
         val = {buffer.K3_class_p[i].dens_re, buffer.K3_class_p[i].dens_im};
-        result.vertex.densvertex.pvertex.K3_direct_set(i, val);
+        result.vertex[1].pvertex.K3_direct_set(i, val);
 
         val = {buffer.K3_class_t[i].spin_re, buffer.K3_class_t[i].spin_im};
-        result.vertex.spinvertex.tvertex.K3_direct_set(i, val);
+        result.vertex[0].tvertex.K3_direct_set(i, val);
         val = {buffer.K3_class_t[i].dens_re, buffer.K3_class_t[i].dens_im};
-        result.vertex.densvertex.tvertex.K3_direct_set(i, val);
+        result.vertex[1].tvertex.K3_direct_set(i, val);
     }
 #endif
 }
@@ -1011,43 +1011,43 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
         for (int i_in=0; i_in<n_in; ++i_in) {
 #if DIAG_CLASS >= 1
             for (int iw1=0; iw1<nBOS; ++iw1) {
-                if (state.vertex.densvertex.avertex.K1_val(iK, iw1, i_in) != out.vertex.densvertex.avertex.K1_val(iK, iw1, i_in)) {
+                if (state.vertex[1].avertex.K1_val(iK, iw1, i_in) != out.vertex[1].avertex.K1_val(iK, iw1, i_in)) {
                     cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
                     cnt += 1;
                 }
-                if (state.vertex.densvertex.pvertex.K1_val(iK, iw1, i_in) != out.vertex.densvertex.pvertex.K1_val(iK, iw1, i_in)) {
+                if (state.vertex[1].pvertex.K1_val(iK, iw1, i_in) != out.vertex[1].pvertex.K1_val(iK, iw1, i_in)) {
                     cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
                     cnt += 1;
                 }
-                if (state.vertex.densvertex.tvertex.K1_val(iK, iw1, i_in) != out.vertex.densvertex.tvertex.K1_val(iK, iw1, i_in)) {
+                if (state.vertex[1].tvertex.K1_val(iK, iw1, i_in) != out.vertex[1].tvertex.K1_val(iK, iw1, i_in)) {
                     cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
                     cnt += 1;
                 }
 #if DIAG_CLASS >= 2
                 for (int iw2=0; iw2<nFER; ++iw2) {
-                    if (state.vertex.densvertex.avertex.K2_val(iK, iw1, iw2, i_in) != out.vertex.densvertex.avertex.K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[1].avertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[1].avertex.K2_val(iK, iw1, iw2, i_in)) {
                         cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
                         cnt += 1;
                     }
-                    if (state.vertex.densvertex.pvertex.K2_val(iK, iw1, iw2, i_in) != out.vertex.densvertex.pvertex.K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[1].pvertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[1].pvertex.K2_val(iK, iw1, iw2, i_in)) {
                         cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
                         cnt += 1;
                     }
-                    if (state.vertex.densvertex.tvertex.K2_val(iK, iw1, iw2, i_in) != out.vertex.densvertex.tvertex.K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[1].tvertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[1].tvertex.K2_val(iK, iw1, iw2, i_in)) {
                         cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
                         cnt += 1;
                     }
 #if DIAG_CLASS == 3
                     for (int iw3=0; iw3<nFER; ++iw3) {
-                        if (state.vertex.densvertex.avertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex.densvertex.avertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[1].avertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[1].avertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
                             cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
                             cnt += 1;
                         }
-                        if (state.vertex.densvertex.pvertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex.densvertex.pvertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[1].pvertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[1].pvertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
                             cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
                             cnt += 1;
                         }
-                        if (state.vertex.densvertex.tvertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex.densvertex.tvertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[1].tvertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[1].tvertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
                             cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
                             cnt += 1;
                         }
@@ -1057,7 +1057,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
 #endif
             }
 #endif
-            if (state.vertex.densvertex.irred.val(iK, i_in) != out.vertex.densvertex.irred.val(iK, i_in)) {
+            if (state.vertex[1].irred.val(iK, i_in) != out.vertex[1].irred.val(iK, i_in)) {
                 cout << "Vertex not equal, " << iK << endl;
                 cnt += 1;
             }

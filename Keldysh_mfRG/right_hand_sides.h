@@ -165,8 +165,8 @@ void test_ODE_G(const int N_ODE) { // test ODE applied to bare (differentiated) 
 //        //    Lines 10-13   => Multi-loop
 //        double t4 = get_time();
 //        /*Create two new vertices to accommodate the contributions on each side */
-//        Vertex<fullvert<Q> > dGammaL;
-//        Vertex<fullvert<Q> > dGammaR;
+//        Vertex<Q> dGammaL (2);
+//        Vertex<Q> dGammaR (2);
 //        //Change from differentiated to regular bubbles
 //        diff = false;
 //
@@ -183,15 +183,15 @@ void test_ODE_G(const int N_ODE) { // test ODE applied to bare (differentiated) 
 //
 //
 //        //Lines 14-17
-//        Vertex<fullvert<Q> > dGammaT = dGammaL + dGammaR;
+//        Vertex<Q> dGammaT = dGammaL + dGammaR;
 //        dPsi.vertex += dGammaT;
 //        print("2-loops done. \n");
 //
 //
 //        //Lines 18-33
 ////        if (nLoops >= 3) {
-////            Vertex<fullvert<Q> > dGammaC;
-////            Vertex<fullvert<Q> > dGammaCtb;
+////            Vertex<Q> dGammaC (2);
+////            Vertex<Q> dGammaCtb (2);
 ////            for (int i = 3; i <= nLoops; i++) {
 ////                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
 ////                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');

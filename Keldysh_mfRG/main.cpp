@@ -49,7 +49,7 @@ auto main() -> int {
     testSE.initialize(glb_U/2., 0.);
     print(testSE.valsmooth(0, 1.5, 0), true);
 
-    print(Fermi_distribution(0.1), true);
+    print(Fermi_distribution(0.1, glb_mu), true);
     Propagator testProp (1., testSE, 'g');
     print(testProp.valsmooth(0, 1.5, 0), true);
     comp testPropcompare = 1./(1.5 + glb_i);
@@ -61,15 +61,18 @@ auto main() -> int {
 
     test_ODE_SOPT_FFT_K1a(100);
 
-    Vertex<fullvert<comp> > testvertex;
-    testvertex.spinvertex.initialize(-glb_U/2.);
-    print(testvertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
+    Vertex<comp> testvertex (1);
+    testvertex[0].initialize(-glb_U/2.);
+    print(testvertex[0].value(2, 0., 0., 0., 0, 0, 'a'), true);
 
     State<comp> teststate;
     teststate.initialize();
-    print(teststate.vertex.spinvertex.value(2, 0., 0., 0., 0, 0, 'a'), true);
+    print(teststate.vertex[0].value(2, 0., 0., 0., 0, 0, 'a'), true);
 
-    //write_hdf("test1.h5", Lambda_ini, nEVO, teststate);
+    write_hdf("test1.h5", Lambda_ini, nEVO, teststate);
+    add_hdf("test1.h5", 1, nEVO, teststate, flow_grid);
+    test_hdf5("test1.h5", 1, teststate);
+    test_hdf5("test1.h5", 0, teststate);
 
     print(2.*M_PI, true);
 

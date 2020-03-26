@@ -179,8 +179,8 @@ public:
  * Integrand classes for non-differentiated bubble contributing to diagrammatic class K1, K2, K3
  */
 template <typename Q> class Integrand_K1 {
-    const Vertex<fullvert<Q> >& vertex1;
-    const Vertex<fullvert<Q> >& vertex2;
+    const Vertex<Q>& vertex1;
+    const Vertex<Q>& vertex2;
     const Bubble& Pi;
     int i0, i_in;
     char channel;
@@ -197,8 +197,8 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K1(const Vertex<fullvert<Q> >& vertex1_in, const Vertex<fullvert<Q> >& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in,    int i_in_in, char ch_in)
-            :                       vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),                w(w_in),  i_in(i_in_in), channel(ch_in)
+    Integrand_K1(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in,    int i_in_in, char ch_in)
+            :            vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),                w(w_in),  i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -227,7 +227,7 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
-                    vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
+                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w, i_in);  ;                                //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
@@ -235,7 +235,7 @@ public:
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V //+ V^*Pi*V^
-                    vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2,  0.5*w+vpp, 0.5*w-vpp, i_in);  ;                                //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
@@ -249,7 +249,7 @@ public:
                     res += res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w, i_in);  ;                                //vppt-1/2wt, vppt+1/2wt for the t-channel
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
@@ -269,8 +269,8 @@ public:
 };
 template <typename Q> class Integrand_K2
 {
-    const Vertex<fullvert<Q> >& vertex1;
-    const Vertex<fullvert<Q> >& vertex2;
+    const Vertex<Q>& vertex1;
+    const Vertex<Q>& vertex2;
     const Bubble&Pi;
     int i0, i_in;
     char channel, part;
@@ -290,8 +290,8 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K2(const Vertex<fullvert<Q> >& vertex1_in, const Vertex<fullvert<Q> >& vertex2_in, const  Bubble& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in,     char ch_in, char pt_in)
-              :                     vertex1(vertex1_in),                    vertex2(vertex2_in),            Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
+    Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const  Bubble& Pi_in, int i0_in, double w_in, double v_in,   int i_in_in,     char ch_in, char pt_in)
+              :          vertex1(vertex1_in),         vertex2(vertex2_in),            Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
     {
         // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -323,34 +323,34 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Contributions: V*Pi*V
-                    vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
+                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w, i_in);
-                    res_l_V = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
-                    vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w, i_in);
-                    res_l_V = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
                     //This is commented out on the ground of p-channel contributions being cross-symmetric
                     //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
                     //the bubble_function(...) must be changed.*/
-//                    res_l_Vhat = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+//                    res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
 //                    res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
 
                     res += res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w, i_in);
-                    res_l_V = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
-                    res_l_Vhat = vertex1.spinvertex.gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+                    res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
                     res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
 
                     res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
@@ -363,8 +363,8 @@ public:
 };
 template <typename Q> class Integrand_K3
 {
-    const Vertex<fullvert<Q> >& vertex1;
-    const Vertex<fullvert<Q> >& vertex2;
+    const Vertex<Q>& vertex1;
+    const Vertex<Q>& vertex2;
     const Bubble& Pi;
     int i0, i_in;
     char channel, part;
@@ -385,8 +385,8 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K3(const Vertex<fullvert<Q> >& vertex1_in, const Vertex<fullvert<Q> >& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in, char pt_in)
-            :                       vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),                 w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in), part(pt_in)
+    Integrand_K3(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in, char pt_in)
+            :            vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),                 w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in), part(pt_in)
     {
         i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
     };
@@ -409,57 +409,57 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                               //Contributions: V*Pi*V
-                    vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
+                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w, i_in);
                     if(part=='L'){
-                        res_l_V = vertex1.spinvertex.gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
+                        res_l_V = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
                         res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
                     }
                     else if(part=='R'){
                         res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2.spinvertex.gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
+                        res_r_V = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
                     }
                     else ;
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                               //Contributions: V*Pi*V; + V^*Pi*V^
-                    vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w, i_in);
                     if(part=='L'){
-                        res_l_V = vertex1.spinvertex.gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
+                        res_l_V = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
                         res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
                         /*This is commented out on the ground of p-channel contributions being cross-symmetric
                          *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
                          * the bubble_function(...) must be changed.*/
-//                        res_l_Vhat = vertex1.spinvertex.gammaRb( indices[0], w,  v, vpp, i_in, 1, channel);
+//                        res_l_Vhat = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 1, channel);
 //                        res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
                     }
                     else if(part=='R'){
                         res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2.spinvertex.gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
+                        res_r_V = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
 
 //                        res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
-//                        res_r_Vhat = vertex2.spinvertex.gammaRb(indices[1], w, vp, vpp, i_in, 1, channel);
+//                        res_r_Vhat = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 1, channel);
                     }
                     else ;
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                               //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - 0.5 * w, vpp + 0.5 * w, i_in);
                     if(part=='L'){
-                        res_l_V = vertex1.spinvertex.gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
+                        res_l_V = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
                         res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
 
-                        res_l_Vhat = vertex1.spinvertex.gammaRb( indices[0], w,  v, vpp, i_in, 1, channel);
+                        res_l_Vhat = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 1, channel);
                         res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
                     }
                     else if(part=='R'){
                         res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2.spinvertex.gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
+                        res_r_V = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
 
                         res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
-                        res_r_Vhat = vertex2.spinvertex.gammaRb(indices[1], w, vp, vpp, i_in, 1, channel);
+                        res_r_Vhat = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 1, channel);
                     }
                     else ;
                     res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
@@ -475,8 +475,8 @@ public:
  * Integrand classes for differentiated bubble contributing to diagrammatic class K1, K2, K3
  */
 template <typename Q> class Integrand_K1_diff {
-    const Vertex<fullvert<Q> >& vertex1;
-    const Vertex<fullvert<Q> >& vertex2;
+    const Vertex<Q>& vertex1;
+    const Vertex<Q>& vertex2;
     const Bubble& Pi;
     int i0, i_in;
     char channel;
@@ -493,8 +493,8 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K1_diff(const Vertex<fullvert<Q> >& vertex1_in, const Vertex<fullvert<Q> >& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, int i_in_in, char ch_in)
-            :                            vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),               w(w_in), i_in(i_in_in), channel(ch_in)
+    Integrand_K1_diff(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, int i_in_in, char ch_in)
+            :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),               w(w_in), i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -523,7 +523,7 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
-                    vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
+                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w, i_in);                                //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
@@ -531,7 +531,7 @@ public:
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                    vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, 0.5*w+vpp, 0.5*w-vpp, i_in);                                //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
@@ -545,7 +545,7 @@ public:
                     res += res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w, i_in);                                //vppt-1/2wt, vppt+1/2wt for the t-channel
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
@@ -563,8 +563,8 @@ public:
     }
 };
 template <typename Q> class Integrand_K2_diff {
-    const Vertex<fullvert<Q> > &vertex1;
-    const Vertex<fullvert<Q> > &vertex2;
+    const Vertex<Q> &vertex1;
+    const Vertex<Q> &vertex2;
     const Bubble& Pi;
     int i0, i_in;
     char channel;
@@ -582,8 +582,8 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K2_diff(const Vertex<fullvert<Q> > &vertex1_in, const Vertex<fullvert<Q> > &vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, int i_in_in, char ch_in)
-            :                            vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
+    Integrand_K2_diff(const Vertex<Q> &vertex1_in, const Vertex<Q> &vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, int i_in_in, char ch_in)
+            :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),                w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
         switch (channel){
@@ -613,7 +613,7 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
-                    vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
+                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w, i_in);  ;                                //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
@@ -621,7 +621,7 @@ public:
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V; + V^*Pi*V^
-                    vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2,  0.5*w+vpp, 0.5*w-vpp, i_in);  ;                                //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
@@ -635,7 +635,7 @@ public:
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w, i_in);  ;                                //vppt-1/2wt, vppt+1/2wt for the t-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
@@ -653,8 +653,8 @@ public:
     }
 };
 template <typename Q> class Integrand_K3_diff {
-    const Vertex<fullvert<Q> > & vertex1;
-    const Vertex<fullvert<Q> > & vertex2;
+    const Vertex<Q> & vertex1;
+    const Vertex<Q> & vertex2;
     const Bubble& Pi;
     int i0, i_in;
     char channel;
@@ -673,8 +673,8 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K3_diff(const Vertex<fullvert<Q> > &vertex1_in, const Vertex<fullvert<Q> > &vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in)
-            :                            vertex1(vertex1_in),                    vertex2(vertex2_in),           Pi(Pi_in),                      w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in)
+    Integrand_K3_diff(const Vertex<Q> &vertex1_in, const Vertex<Q> &vertex2_in, const Bubble& Pi_in, int i0_in, double w_in, double v_in, double vp_in, int i_in_in, char ch_in)
+            :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),                      w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
         i0 = non_zero_Keldysh_K3[i0_in];
@@ -698,7 +698,7 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
-                    vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
+                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w, i_in);  ;                                //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
@@ -706,7 +706,7 @@ public:
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                    vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2,  0.5*w+vpp, 0.5*w-vpp, i_in);  ;                                //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
@@ -720,7 +720,7 @@ public:
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
+                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp-0.5*w, vpp+0.5*w, i_in);  ;                                //vppt-1/2wt, vppt+1/2wt for the t-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
@@ -757,7 +757,7 @@ public:
  *                  multi-loop contribution. Use '.' for first loop order.
  */
 template <typename Q>
-void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& vertex1, const Vertex<fullvert<Q> >& vertex2,
+void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
                      const Propagator& G, const Propagator& S, char channel, bool diff, char part)
 {
     Bubble Pi(G, S, diff); // initialize bubble object
@@ -848,13 +848,13 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& v
     vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': dgamma.spinvertex.avertex.K1 += K1_ordered_result; break;
-        case 'p': dgamma.spinvertex.pvertex.K1 += K1_ordered_result; break;
-        case 't': dgamma.spinvertex.tvertex.K1 += K1_ordered_result; break;
+        case 'a': dgamma[0].avertex.K1 += K1_ordered_result; break;
+        case 'p': dgamma[0].pvertex.K1 += K1_ordered_result; break;
+        case 't': dgamma[0].tvertex.K1 += K1_ordered_result; break;
         default: ;
     }
 
-    // dgamma.spinvertex.pvertex.K1_addvert(i0, iwp, i_in, value); // old version w/o mpi
+    // dgamma[0].pvertex.K1_addvert(i0, iwp, i_in, value); // old version w/o mpi
 
 //    print("K1");  print(channel); print(" done: ");
 //    get_time(tK1);
@@ -908,9 +908,9 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& v
     vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': dgamma.spinvertex.avertex.K2 += K2_ordered_result; break;
-        case 'p': dgamma.spinvertex.pvertex.K2 += K2_ordered_result; break;
-        case 't': dgamma.spinvertex.tvertex.K2 += K2_ordered_result; break;
+        case 'a': dgamma[0].avertex.K2 += K2_ordered_result; break;
+        case 'p': dgamma[0].pvertex.K2 += K2_ordered_result; break;
+        case 't': dgamma[0].tvertex.K2 += K2_ordered_result; break;
         default: ;
     }
 
@@ -970,13 +970,13 @@ void bubble_function(Vertex<fullvert<Q> >& dgamma, const Vertex<fullvert<Q> >& v
     vec<Q> K3_ordered_result = mpi_reorder_result(K3_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': dgamma.spinvertex.avertex.K3 += K3_ordered_result; break;
-        case 'p': dgamma.spinvertex.pvertex.K3 += K3_ordered_result; break;
-        case 't': dgamma.spinvertex.tvertex.K3 += K3_ordered_result; break;
+        case 'a': dgamma[0].avertex.K3 += K3_ordered_result; break;
+        case 'p': dgamma[0].pvertex.K3 += K3_ordered_result; break;
+        case 't': dgamma[0].tvertex.K3 += K3_ordered_result; break;
         default: ;
     }
 
-    // dgamma.spinvertex.pvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, value); // old version w/o mpi
+    // dgamma[0].pvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, value); // old version w/o mpi
 
     print("K3"); print(channel); print(" done: ");
     get_time(tK3);

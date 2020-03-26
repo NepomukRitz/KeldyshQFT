@@ -194,6 +194,23 @@ public:
         lhs *= rhs;
         return lhs;
     }
+    auto operator*= (const avert<Q>& rhs) -> avert<Q>
+    {
+#if DIAG_CLASS>=0
+        this->K1 *= rhs.K1;
+#endif
+#if DIAG_CLASS>=2
+        this->K2 *= rhs.K1;
+#endif
+#if DIAG_CLASS>=3
+        this->K3 *= rhs.K1;
+#endif
+        return *this;
+    }
+    friend avert<Q> operator* (avert<Q> lhs, const avert<Q>& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
     auto operator-= (const avert<Q>& vertex) -> avert<Q>
     {
 #if DIAG_CLASS>=0

@@ -208,6 +208,23 @@ public:
         lhs *= rhs;
         return lhs;
     }
+    auto operator*= (const tvert<Q>& rhs) -> tvert<Q>
+    {
+#if DIAG_CLASS>=0
+        this->K1 *= rhs.K1;
+#endif
+#if DIAG_CLASS>=2
+        this->K2 *= rhs.K2;
+#endif
+#if DIAG_CLASS>=3
+        this->K3 *= rhs.K3;
+#endif
+        return *this;
+    }
+    friend tvert<Q> operator* (tvert<Q> lhs, const tvert<Q>& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
     auto operator-= (const tvert<Q>& vertex) -> tvert<Q>
     {
 #if DIAG_CLASS>=0

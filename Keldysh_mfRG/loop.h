@@ -21,7 +21,7 @@ template <typename Q>
 class IntegrandSE {
     char type;
     vector<int> components = vector<int>(3);
-    const Vertex<fullvert<Q> >& vertex;
+    const Vertex<Q>& vertex;
     const Propagator& propagator;
     double v;
     int i_in;
@@ -37,7 +37,7 @@ public:
      * @param i_in_in   : Internal frequency index
      * @param all_spins_in: Defines the value of the vertex to be taken
      */
-    IntegrandSE(char type_in, const Vertex<fullvert<Q> >& vertex_in, const Propagator& prop_in, double v_in, int i_in_in, bool all_spins_in)
+    IntegrandSE(char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in, double v_in, int i_in_in, bool all_spins_in)
         : type(type_in), vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in), all_spins(all_spins_in)
         {
             if(type=='r'){  //Check which kind of contribution is calculated
@@ -64,16 +64,16 @@ public:
         Q GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
 
         if (all_spins)
-            return ((2. * vertex.spinvertex.value(components[0], v, vp, v, i_in, 0, 'f')
-                        + vertex.spinvertex.value(components[0], v, vp, v, i_in, 1, 'f')) * GR +
-                    (2. * vertex.spinvertex.value(components[1], v, vp, v, i_in, 0, 'f')
-                        + vertex.spinvertex.value(components[1], v, vp, v, i_in, 1, 'f')) * GA +
-                    (2. * vertex.spinvertex.value(components[2], v, vp, v, i_in, 0, 'f')
-                        + vertex.spinvertex.value(components[2], v, vp, v, i_in, 1, 'f')) * GK);
+            return ((2. * vertex[0].value(components[0], v, vp, v, i_in, 0, 'f')
+                        + vertex[0].value(components[0], v, vp, v, i_in, 1, 'f')) * GR +
+                    (2. * vertex[0].value(components[1], v, vp, v, i_in, 0, 'f')
+                        + vertex[0].value(components[1], v, vp, v, i_in, 1, 'f')) * GA +
+                    (2. * vertex[0].value(components[2], v, vp, v, i_in, 0, 'f')
+                        + vertex[0].value(components[2], v, vp, v, i_in, 1, 'f')) * GK);
         else
-            return (vertex.spinvertex.value(components[0], v, vp, v, i_in, 0, 'f') * GR +
-                    vertex.spinvertex.value(components[1], v, vp, v, i_in, 0, 'f') * GA +
-                    vertex.spinvertex.value(components[2], v, vp, v, i_in, 0, 'f') * GK);
+            return (vertex[0].value(components[0], v, vp, v, i_in, 0, 'f') * GR +
+                    vertex[0].value(components[1], v, vp, v, i_in, 0, 'f') * GA +
+                    vertex[0].value(components[2], v, vp, v, i_in, 0, 'f') * GK);
     }
 };
 
@@ -87,7 +87,7 @@ public:
  * @param all_spins : Wether the calculation of the loop should include all spin components of the vertex
  */
 template <typename Q>
-void loop(SelfEnergy<comp>& self, const Vertex<fullvert<Q> >& fullvertex, const Propagator& prop, bool all_spins)
+void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, bool all_spins)
 {
 #pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){

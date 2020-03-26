@@ -68,13 +68,13 @@ void test_rhs_bubbles_flow_wstate(int N_ODE) {
     sopt_state(state_dir, Lambda_fin); // direct calculation of direct K1a
 
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
-    cvec K1a_dif = state_dir.vertex.spinvertex.avertex.K1 + ( state_fin.vertex.spinvertex.avertex.K1*(-1.) ); // difference in results
+    cvec K1a_dif = state_dir.vertex[0].avertex.K1 + ( state_fin.vertex[0].avertex.K1*(-1.) ); // difference in results
     cout << "Testing ODE for bare K1a_0 with State class. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << K1a_dif.max_norm() << "." << endl;
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
                                   {"v", "state_dir_R", "state_dir_I", "state_fin_R", "state_fin_I", "state_ini_R", "state_ini_I"},
-                                  {bfreqs, state_dir.vertex.spinvertex.avertex.K1.real(), state_dir.vertex.spinvertex.avertex.K1.imag(),
-                                                   state_fin.vertex.spinvertex.avertex.K1.real(), state_fin.vertex.spinvertex.avertex.K1.imag(),
-                                                   state_ini.vertex.spinvertex.avertex.K1.real(), state_ini.vertex.spinvertex.avertex.K1.imag()});
+                                  {bfreqs, state_dir.vertex[0].avertex.K1.real(), state_dir.vertex[0].avertex.K1.imag(),
+                                                   state_fin.vertex[0].avertex.K1.real(), state_fin.vertex[0].avertex.K1.imag(),
+                                                   state_ini.vertex[0].avertex.K1.real(), state_ini.vertex[0].avertex.K1.imag()});
 }
 
 /**
@@ -173,9 +173,9 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
     //Calculate the vertex
     sopt_state(state, Lambda);
 
-    Vertex<fullvert<comp> > temp_vertex_a, temp_vertex_p; //All zeros
-    temp_vertex_a.spinvertex.avertex = state.vertex.spinvertex.avertex;
-    temp_vertex_p.spinvertex.pvertex = state.vertex.spinvertex.pvertex;
+    Vertex<comp> temp_vertex_a (1), temp_vertex_p (1); //All zeros
+    temp_vertex_a[0].avertex = state.vertex[0].avertex;
+    temp_vertex_p[0].pvertex = state.vertex[0].pvertex;
 
     loop(state.selfenergy, temp_vertex_a, g, false);//Calculate the SelfEnergy in SOPT
 
@@ -192,12 +192,12 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
     write_h5_rvecs("SOPT_test.h5", {"v", "ReSER", "ImSER", "ReSEK", "ImSEK",
                                   "K1a_R", "K1a_I", "K1p_R", "K1p_I", "K1t_R", "K1t_I"},
                                  {ffreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(),
-                                  state.vertex.spinvertex.avertex.K1.real(),
-                                  state.vertex.spinvertex.avertex.K1.imag(),
-                                  state.vertex.spinvertex.pvertex.K1.real(),
-                                  state.vertex.spinvertex.pvertex.K1.imag(),
-                                  state.vertex.spinvertex.tvertex.K1.real(),
-                                  state.vertex.spinvertex.tvertex.K1.imag()});
+                                  state.vertex[0].avertex.K1.real(),
+                                  state.vertex[0].avertex.K1.imag(),
+                                  state.vertex[0].pvertex.K1.real(),
+                                  state.vertex[0].pvertex.K1.imag(),
+                                  state.vertex[0].tvertex.K1.real(),
+                                  state.vertex[0].tvertex.K1.imag()});
 
 }
 
@@ -247,7 +247,7 @@ void test_rhs_state_flow_SOPT(int N_ODE){
 
     cvec K1a0_dif(nBOS);
     for(int i=0; i<nBOS; ++i){
-        K1a0_dif[i] = state_dir.vertex.spinvertex.avertex.K1_val(0, i, 0) - state_fin.vertex.spinvertex.avertex.K1_val(0, i, 0);
+        K1a0_dif[i] = state_dir.vertex[0].avertex.K1_val(0, i, 0) - state_fin.vertex[0].avertex.K1_val(0, i, 0);
     }
     cvec SER_dif(nFER);
     cvec SEK_dif(nFER);
@@ -268,15 +268,15 @@ void test_rhs_state_flow_SOPT(int N_ODE){
                                    state_dir.selfenergy.Sigma.real(), state_dir.selfenergy.Sigma.imag(),
                                    state_fin.selfenergy.Sigma.real(), state_fin.selfenergy.Sigma.imag(),
                                    state_ini.selfenergy.Sigma.real(), state_ini.selfenergy.Sigma.imag(),
-                                   state_dir.vertex.spinvertex.avertex.K1.real(), state_dir.vertex.spinvertex.avertex.K1.imag(),
-                                   state_fin.vertex.spinvertex.avertex.K1.real(), state_fin.vertex.spinvertex.avertex.K1.imag(),
-                                   state_ini.vertex.spinvertex.avertex.K1.real(), state_ini.vertex.spinvertex.avertex.K1.imag(),
-                                   state_dir.vertex.spinvertex.pvertex.K1.real(), state_dir.vertex.spinvertex.pvertex.K1.imag(),
-                                   state_fin.vertex.spinvertex.pvertex.K1.real(), state_fin.vertex.spinvertex.pvertex.K1.imag(),
-                                   state_ini.vertex.spinvertex.pvertex.K1.real(), state_ini.vertex.spinvertex.pvertex.K1.imag(),
-                                   state_dir.vertex.spinvertex.tvertex.K1.real(), state_dir.vertex.spinvertex.tvertex.K1.imag(),
-                                   state_fin.vertex.spinvertex.tvertex.K1.real(), state_fin.vertex.spinvertex.tvertex.K1.imag(),
-                                   state_ini.vertex.spinvertex.tvertex.K1.real(), state_ini.vertex.spinvertex.tvertex.K1.imag()});
+                                   state_dir.vertex[0].avertex.K1.real(), state_dir.vertex[0].avertex.K1.imag(),
+                                   state_fin.vertex[0].avertex.K1.real(), state_fin.vertex[0].avertex.K1.imag(),
+                                   state_ini.vertex[0].avertex.K1.real(), state_ini.vertex[0].avertex.K1.imag(),
+                                   state_dir.vertex[0].pvertex.K1.real(), state_dir.vertex[0].pvertex.K1.imag(),
+                                   state_fin.vertex[0].pvertex.K1.real(), state_fin.vertex[0].pvertex.K1.imag(),
+                                   state_ini.vertex[0].pvertex.K1.real(), state_ini.vertex[0].pvertex.K1.imag(),
+                                   state_dir.vertex[0].tvertex.K1.real(), state_dir.vertex[0].tvertex.K1.imag(),
+                                   state_fin.vertex[0].tvertex.K1.real(), state_fin.vertex[0].tvertex.K1.imag(),
+                                   state_ini.vertex[0].tvertex.K1.real(), state_ini.vertex[0].tvertex.K1.imag()});
 
 }
 

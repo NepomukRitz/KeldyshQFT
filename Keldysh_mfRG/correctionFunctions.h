@@ -53,7 +53,7 @@ auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, dou
  * @param channel   : Char indicating for which channel one is calculating the correction. Changes depending on the parametrization of the frequencies
  * @return          : Returns value of the correction
  */
-template <typename Q> auto asymp_corrections_K1(const Vertex<fullvert<Q> >& vertex1, const Vertex<fullvert<Q> >& vertex2, double gamma_m, double gamma_p, double w, int i0_in, int i_in, char channel) -> Q{
+template <typename Q> auto asymp_corrections_K1(const Vertex<Q>& vertex1, const Vertex<Q>& vertex2, double gamma_m, double gamma_p, double w, int i0_in, int i_in, char channel) -> Q{
 
     int i0;
     Q res=0.;
@@ -92,7 +92,7 @@ template <typename Q> auto asymp_corrections_K1(const Vertex<fullvert<Q> >& vert
             //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
             case 'a':                                                                       //Flow eq: V*Pi*V
                 i0 = non_zero_Keldysh_K1a[i0_in];
-                vertex1.spinvertex.avertex.indices_sum(indices, i0, i2);
+                vertex1[0].avertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
 
@@ -101,7 +101,7 @@ template <typename Q> auto asymp_corrections_K1(const Vertex<fullvert<Q> >& vert
                 break;
             case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
                 i0 = non_zero_Keldysh_K1p[i0_in];
-                vertex1.spinvertex.pvertex.indices_sum(indices, i0, i2);
+                vertex1[0].pvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
 
@@ -115,7 +115,7 @@ template <typename Q> auto asymp_corrections_K1(const Vertex<fullvert<Q> >& vert
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
                 i0 = non_zero_Keldysh_K1t[i0_in];
-                vertex1.spinvertex.tvertex.indices_sum(indices, i0, i2);
+                vertex1[0].tvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
                 res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);

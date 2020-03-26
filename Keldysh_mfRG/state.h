@@ -15,9 +15,9 @@ template <typename Q>
 class State{
 public:
     SelfEnergy<Q> selfenergy;
-    Vertex<fullvert<Q> > vertex;
+    Vertex<Q> vertex;
 
-    State() = default;;
+    State() : vertex(2) {}
 
     void initialize();
 
@@ -52,13 +52,12 @@ public:
 };
 
 template <typename Q> void State<Q>::initialize() {
-// Initial conditions
-// Assign initial conditions to self energy
-this->selfenergy.initialize(glb_U/2., 0.);
+    // Initial conditions
+    // Assign initial conditions to self energy
+    this->selfenergy.initialize(glb_U/2., 0.);
 
-// Assign initial conditions to bare vertex
-this->vertex.densvertex.initialize(0.);
-this->vertex.spinvertex.initialize(-glb_U/2.);
+    // Assign initial conditions to bare vertex
+    this->vertex[0].initialize(-glb_U/2.);
 }
 
 
