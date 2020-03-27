@@ -15,8 +15,13 @@ auto Fermi_distribution(double v, double mu) -> double
     return 1./2. * (1. - tanh((v-mu)/(2.*glb_T))); // numerically preferential
 }
 
-auto effective_distribution_function(double v) -> double {
+// effective distribution function
+auto N_eff(double v) -> double {
+#ifdef EQUILIBRIUM
+    return Fermi_distribution(v, glb_mu);
+#else
     return 1./2. * (Fermi_distribution(v, glb_mu + glb_V) + Fermi_distribution(v, glb_mu));
+#endif
 }
 
 
@@ -267,22 +272,33 @@ auto Propagator::GA(double v, int i_in) const -> comp
 {
     return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma+Lambda) - conj(selfenergy.valsmooth(0, v, i_in)));
 }
-auto Propagator::GK(double v, int i_in) const -> comp       // TODO: fix
+auto Propagator::GK(double v, int i_in) const -> comp
 {
-    //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*effective_distribution_function(v))*(GR(v, i_in)-GA(v, i_in));
+#ifdef EQUILIBRIUM
+    // FDT in equilibrium: (1-2*N_eff)*(GR-GA)
+    return (1.-2.*N_eff(v))*(GR(v, i_in) - GA(v, i_in));
+#else
+    // General form: GR*(SigmaK+SigmaK_res)*GA
+    return GR(v, i_in) * (SE.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*N_eff(v))) * GA(v, i_in);
+#endif
 }
 auto Propagator::SR(double v, int i_in) const -> comp
 {
     return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
 }
-auto Propagator::SK(double v, int i_in) const -> comp       // TODO: fix
+auto Propagator::SK(double v, int i_in) const -> comp
 {
+#ifdef EQUILIBRIUM
+    // FDT in equilibrium: (1-2*N_eff)*(SR-SA)
+    return (1.-2.*N_eff(v))*(SR(v, i_in) - conj(SR(v, i_in)));
+#else
+    // General form:
     comp retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
     comp advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
-    comp extra    = -glb_i*(1.-2.*effective_distribution_function(v))*GR(v, i_in)*GA(v, i_in);
+    comp extra    = -glb_i*(1.-2.*N_eff(v))*GR(v, i_in)*GA(v, i_in);
 
     return retarded + advanced + extra;
+#endif
 }
 
 

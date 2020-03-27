@@ -35,6 +35,8 @@ const double glb_U = 1.0;                      // Impurity on-site interaction s
 const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 const double glb_Gamma = 1.;                   // Hybridization of Anderson model
 const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
+#define EQUILIBRIUM                            // If defined, use equilibrium FDT's for propagators
+                                               // (only sensible when glb_V = 0)
 
 
 /// Frequency grid parameters ///
