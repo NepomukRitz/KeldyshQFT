@@ -276,7 +276,8 @@ auto Propagator::GK(double v, int i_in) const -> comp
 {
 #ifdef EQUILIBRIUM
     // FDT in equilibrium: (1-2*N_eff)*(GR-GA)
-    return (1.-2.*N_eff(v))*(GR(v, i_in) - GA(v, i_in));
+    //return (1.-2.*N_eff(v))*(GR(v, i_in) - GA(v, i_in));
+    return glb_i*(2.-4.*N_eff(v))*imag(GR(v, i_in)); // more efficient: only one interpolation instead of two
 #else
     // General form: GR*(SigmaK+SigmaK_res)*GA
     return GR(v, i_in) * (SE.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*N_eff(v))) * GA(v, i_in);
@@ -284,20 +285,22 @@ auto Propagator::GK(double v, int i_in) const -> comp
 }
 auto Propagator::SR(double v, int i_in) const -> comp
 {
-    return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
+    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
+    return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
 }
 auto Propagator::SK(double v, int i_in) const -> comp
 {
 #ifdef EQUILIBRIUM
     // FDT in equilibrium: (1-2*N_eff)*(SR-SA)
-    return (1.-2.*N_eff(v))*(SR(v, i_in) - conj(SR(v, i_in)));
+    //return (1.-2.*N_eff(v))*(SR(v, i_in) - conj(SR(v, i_in)));
+    return glb_i*(2.-4.*N_eff(v))*imag(SR(v, i_in));
 #else
     // General form:
-    comp retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
-    comp advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
-    comp extra    = -glb_i*(1.-2.*N_eff(v))*GR(v, i_in)*GA(v, i_in);
-
-    return retarded + advanced + extra;
+    //comp retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
+    //comp advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
+    //comp extra    = -glb_i*(1.-2.*N_eff(v))*GR(v, i_in)*GA(v, i_in);
+    //return retarded + advanced + extra;
+    return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*N_eff(v))*GR(v, i_in)*GA(v, i_in); // more efficient
 #endif
 }
 
