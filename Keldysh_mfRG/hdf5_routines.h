@@ -40,10 +40,6 @@ const H5std_string	LAMBDA_LIST("lambdas");
 const H5std_string  BFREQS_LIST("bfreqs");
 const H5std_string  FFREQS_LIST("ffreqs");
 const H5std_string  PARAM_LIST("parameters");
-const H5std_string  SPIN_RE( "spin_re" );
-const H5std_string  SPIN_IM( "spin_im" );
-const H5std_string  DENS_RE( "dens_re" );
-const H5std_string  DENS_IM( "dens_im" );
 const H5std_string  RE( "re" );
 const H5std_string  IM( "im" );
 
@@ -55,30 +51,12 @@ typedef struct h5_comp {
     double im; // imaginary part
 } h5_comp;
 
-// Define struct to save complex numbers with two spin components in hdf5 file
-typedef struct h5_comp_spin {
-    double spin_re; // real part for spin component
-    double spin_im; // imag part for spin component
-    double dens_re; // real part for dens component
-    double dens_im; // imag part for dens component
-} h5_comp_spin;
-
-// Create the memory data type for storing data in file
-// Data type for complex number
+// Create the memory data type for storing complex numbers in file
 H5::CompType def_mtype_comp() {
     H5::CompType mtype_comp(sizeof(h5_comp));
     mtype_comp.insertMember(RE, HOFFSET(h5_comp, re), H5::PredType::NATIVE_DOUBLE);
     mtype_comp.insertMember(IM, HOFFSET(h5_comp, im), H5::PredType::NATIVE_DOUBLE);
     return mtype_comp;
-}
-// Data type for complex number with spin structure
-H5::CompType def_mtype_comp_spin() {
-    H5::CompType mtype_comp_spin(sizeof(h5_comp_spin));
-    mtype_comp_spin.insertMember(SPIN_RE, HOFFSET(h5_comp_spin, spin_re), H5::PredType::NATIVE_DOUBLE);
-    mtype_comp_spin.insertMember(SPIN_IM, HOFFSET(h5_comp_spin, spin_im), H5::PredType::NATIVE_DOUBLE);
-    mtype_comp_spin.insertMember(DENS_RE, HOFFSET(h5_comp_spin, dens_re), H5::PredType::NATIVE_DOUBLE);
-    mtype_comp_spin.insertMember(DENS_IM, HOFFSET(h5_comp_spin, dens_im), H5::PredType::NATIVE_DOUBLE);
-    return mtype_comp_spin;
 }
 
 /// --- Helper classes: buffer, dimension arrays, data sets --- ///
@@ -93,43 +71,43 @@ public:
     const int self_dim = 2 * nSE;                                     // length of self-energy buffer
     h5_comp * selfenergy;
     const int irred_dim = 16 * n_in;                                  // length of irreducible vertex buffer
-    h5_comp_spin * irreducible_class;
+    h5_comp * irreducible_class;
 #if DIAG_CLASS >= 1
     const int K1_dim = nK_K1 * nw1_wt * n_in;                         // length of K1 buffer
-    h5_comp_spin * K1_class_a;
-    h5_comp_spin * K1_class_p;
-    h5_comp_spin * K1_class_t;
+    h5_comp * K1_class_a;
+    h5_comp * K1_class_p;
+    h5_comp * K1_class_t;
 #endif
 #if DIAG_CLASS >= 2
     const int K2_dim = nK_K2 * nw2_wt * nw2_nut * n_in;               // length of K2 buffer
-    h5_comp_spin * K2_class_a;
-    h5_comp_spin * K2_class_p;
-    h5_comp_spin * K2_class_t;
+    h5_comp * K2_class_a;
+    h5_comp * K2_class_p;
+    h5_comp * K2_class_t;
 #endif
 #if DIAG_CLASS >= 3
     const int K3_dim = nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in;    // length of K3 buffer
-    h5_comp_spin * K3_class_a;
-    h5_comp_spin * K3_class_p;
-    h5_comp_spin * K3_class_t;
+    h5_comp * K3_class_a;
+    h5_comp * K3_class_p;
+    h5_comp * K3_class_t;
 #endif
 
     Buffer() {
         selfenergy = new h5_comp[self_dim];                           // create buffer for self-energy
-        irreducible_class = new h5_comp_spin[irred_dim];              // create buffer for irreducible vertex
+        irreducible_class = new h5_comp[irred_dim];              // create buffer for irreducible vertex
 #if DIAG_CLASS >= 1
-        K1_class_a = new h5_comp_spin[K1_dim];                        // create buffer for K1_a
-        K1_class_p = new h5_comp_spin[K1_dim];                        // create buffer for K1_p
-        K1_class_t = new h5_comp_spin[K1_dim];                        // create buffer for K1_t
+        K1_class_a = new h5_comp[K1_dim];                        // create buffer for K1_a
+        K1_class_p = new h5_comp[K1_dim];                        // create buffer for K1_p
+        K1_class_t = new h5_comp[K1_dim];                        // create buffer for K1_t
 #endif
 #if DIAG_CLASS >= 2
-        K2_class_a = new h5_comp_spin[K2_dim];                        // create buffer for K2_a
-        K2_class_p = new h5_comp_spin[K2_dim];                        // create buffer for K2_p
-        K2_class_t = new h5_comp_spin[K2_dim];                        // create buffer for K2_t
+        K2_class_a = new h5_comp[K2_dim];                        // create buffer for K2_a
+        K2_class_p = new h5_comp[K2_dim];                        // create buffer for K2_p
+        K2_class_t = new h5_comp[K2_dim];                        // create buffer for K2_t
 #endif
 #if DIAG_CLASS >= 3
-        K3_class_a = new h5_comp_spin[K3_dim];                        // create buffer for K3_a
-        K3_class_p = new h5_comp_spin[K3_dim];                        // create buffer for K3_p
-        K3_class_t = new h5_comp_spin[K3_dim];                        // create buffer for K3_t
+        K3_class_a = new h5_comp[K3_dim];                        // create buffer for K3_a
+        K3_class_p = new h5_comp[K3_dim];                        // create buffer for K3_p
+        K3_class_t = new h5_comp[K3_dim];                        // create buffer for K3_t
 #endif
     }
 
@@ -160,63 +138,43 @@ public:
             selfenergy[i].im = imag(state_in.selfenergy.acc(i));
         }
         for (int i = 0; i < irred_dim; ++i) {                       // write irreducible vertex into buffer
-            irreducible_class[i].spin_re = real(state_in.vertex[0].irred.acc(i));
-            irreducible_class[i].dens_re = real(state_in.vertex[1].irred.acc(i));
-            irreducible_class[i].spin_im = imag(state_in.vertex[0].irred.acc(i));
-            irreducible_class[i].dens_im = imag(state_in.vertex[1].irred.acc(i));
+            irreducible_class[i].re = real(state_in.vertex[0].irred.acc(i));
+            irreducible_class[i].im = imag(state_in.vertex[0].irred.acc(i));
         }
 #if DIAG_CLASS >= 1
         for(int i=0; i<K1_dim; ++i){                                // write K1 into buffer
-            K1_class_a[i].spin_re = real(state_in.vertex[0].avertex.K1_acc(i));
-            K1_class_a[i].dens_re = real(state_in.vertex[1].avertex.K1_acc(i));
-            K1_class_a[i].spin_im = imag(state_in.vertex[0].avertex.K1_acc(i));
-            K1_class_a[i].dens_im = imag(state_in.vertex[1].avertex.K1_acc(i));
+            K1_class_a[i].re = real(state_in.vertex[0].avertex.K1_acc(i));
+            K1_class_a[i].im = imag(state_in.vertex[0].avertex.K1_acc(i));
 
-            K1_class_p[i].spin_re = real(state_in.vertex[0].pvertex.K1_acc(i));
-            K1_class_p[i].dens_re = real(state_in.vertex[1].pvertex.K1_acc(i));
-            K1_class_p[i].spin_im = imag(state_in.vertex[0].pvertex.K1_acc(i));
-            K1_class_p[i].dens_im = imag(state_in.vertex[1].pvertex.K1_acc(i));
+            K1_class_p[i].re = real(state_in.vertex[0].pvertex.K1_acc(i));
+            K1_class_p[i].im = imag(state_in.vertex[0].pvertex.K1_acc(i));
 
-            K1_class_t[i].spin_re = real(state_in.vertex[0].tvertex.K1_acc(i));
-            K1_class_t[i].dens_re = real(state_in.vertex[1].tvertex.K1_acc(i));
-            K1_class_t[i].spin_im = imag(state_in.vertex[0].tvertex.K1_acc(i));
-            K1_class_t[i].dens_im = imag(state_in.vertex[1].tvertex.K1_acc(i));
+            K1_class_t[i].re = real(state_in.vertex[0].tvertex.K1_acc(i));
+            K1_class_t[i].im = imag(state_in.vertex[0].tvertex.K1_acc(i));
         }
 #endif
 #if DIAG_CLASS >= 2
         for(int i=0; i<K2_dim; ++i){                                // write K2 into buffer
-            K2_class_a[i].spin_re = real(state_in.vertex[0].avertex.K2_acc(i));
-            K2_class_a[i].dens_re = real(state_in.vertex[1].avertex.K2_acc(i));
-            K2_class_a[i].spin_im = imag(state_in.vertex[0].avertex.K2_acc(i));
-            K2_class_a[i].dens_im = imag(state_in.vertex[1].avertex.K2_acc(i));
+            K2_class_a[i].re = real(state_in.vertex[0].avertex.K2_acc(i));
+            K2_class_a[i].im = imag(state_in.vertex[0].avertex.K2_acc(i));
 
-            K2_class_p[i].spin_re = real(state_in.vertex[0].pvertex.K2_acc(i));
-            K2_class_p[i].dens_re = real(state_in.vertex[1].pvertex.K2_acc(i));
-            K2_class_p[i].spin_im = imag(state_in.vertex[0].pvertex.K2_acc(i));
-            K2_class_p[i].dens_im = imag(state_in.vertex[1].pvertex.K2_acc(i));
+            K2_class_p[i].re = real(state_in.vertex[0].pvertex.K2_acc(i));
+            K2_class_p[i].im = imag(state_in.vertex[0].pvertex.K2_acc(i));
 
-            K2_class_t[i].spin_re = real(state_in.vertex[0].tvertex.K2_acc(i));
-            K2_class_t[i].dens_re = real(state_in.vertex[1].tvertex.K2_acc(i));
-            K2_class_t[i].spin_im = imag(state_in.vertex[0].tvertex.K2_acc(i));
-            K2_class_t[i].dens_im = imag(state_in.vertex[1].tvertex.K2_acc(i));
+            K2_class_t[i].re = real(state_in.vertex[0].tvertex.K2_acc(i));
+            K2_class_t[i].im = imag(state_in.vertex[0].tvertex.K2_acc(i));
         }
 #endif
 #if DIAG_CLASS >= 3
         for(int i=0; i<K3_dim; ++i){                                // write K3 into buffer
-            K3_class_a[i].spin_re = real(state_in.vertex[0].avertex.K3_acc(i));
-            K3_class_a[i].dens_re = real(state_in.vertex[1].avertex.K3_acc(i));
-            K3_class_a[i].spin_im = imag(state_in.vertex[0].avertex.K3_acc(i));
-            K3_class_a[i].dens_im = imag(state_in.vertex[1].avertex.K3_acc(i));
+            K3_class_a[i].re = real(state_in.vertex[0].avertex.K3_acc(i));
+            K3_class_a[i].im = imag(state_in.vertex[0].avertex.K3_acc(i));
 
-            K3_class_p[i].spin_re = real(state_in.vertex[0].pvertex.K3_acc(i));
-            K3_class_p[i].dens_re = real(state_in.vertex[1].pvertex.K3_acc(i));
-            K3_class_p[i].spin_im = imag(state_in.vertex[0].pvertex.K3_acc(i));
-            K3_class_p[i].dens_im = imag(state_in.vertex[1].pvertex.K3_acc(i));
+            K3_class_p[i].re = real(state_in.vertex[0].pvertex.K3_acc(i));
+            K3_class_p[i].im = imag(state_in.vertex[0].pvertex.K3_acc(i));
 
-            K3_class_t[i].spin_re = real(state_in.vertex[0].tvertex.K3_acc(i));
-            K3_class_t[i].dens_re = real(state_in.vertex[1].tvertex.K3_acc(i));
-            K3_class_t[i].spin_im = imag(state_in.vertex[0].tvertex.K3_acc(i));
-            K3_class_t[i].dens_im = imag(state_in.vertex[1].tvertex.K3_acc(i));
+            K3_class_t[i].re = real(state_in.vertex[0].tvertex.K3_acc(i));
+            K3_class_t[i].im = imag(state_in.vertex[0].tvertex.K3_acc(i));
         }
 #endif
         print("Buffer ready. Preparing for saving into Hdf5 file...", true);
@@ -322,8 +280,7 @@ public:
      * @param file            : File to which data sets are added / from which they are read.
      * @param file_exists     : To check if the file already existed.
      * @param dataSpaces_...  : Data spaces, needed when creating new data sets.
-     * @param mtype_comp      : Data type of selfenergy (complex number).
-     * @param mtype_comp_spin : Data type of vertex (complex number with spin structure).
+     * @param mtype_comp      : Data type of selfenergy and vertex (complex number).
      * @param plist_vert      : Initial value for vertex data sets.
      */
     DataSets(H5::H5File* file, bool file_exists,
@@ -348,13 +305,13 @@ public:
              H5::DataSpace& dataSpaces_K3_p,
              H5::DataSpace& dataSpaces_K3_t,
 #endif
-             H5::CompType mtype_comp, H5::CompType mtype_comp_spin, H5::DSetCreatPropList plist_vert) {
+             H5::CompType mtype_comp, H5::DSetCreatPropList plist_vert) {
         if (!file_exists) {
             lambda_p = new H5::DataSet(
                     file->createDataSet(LAMBDA_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_Lambda));
             self_p = new H5::DataSet(file->createDataSet(SELF_LIST, mtype_comp, dataSpaces_selfenergy));
             irred_p = new H5::DataSet(
-                    file->createDataSet(DATASET_irred, mtype_comp_spin, dataSpaces_irreducible, plist_vert));
+                    file->createDataSet(DATASET_irred, mtype_comp, dataSpaces_irreducible, plist_vert));
             bfreqs_p = new H5::DataSet(
                     file->createDataSet(BFREQS_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs));
             ffreqs_p = new H5::DataSet(
@@ -364,29 +321,29 @@ public:
 #if DIAG_CLASS >= 1
             // Create the datasets in file:
             K1_a_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K1_a, mtype_comp_spin, dataSpaces_K1_a, plist_vert));
+                    file->createDataSet(DATASET_K1_a, mtype_comp, dataSpaces_K1_a, plist_vert));
             K1_p_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K1_p, mtype_comp_spin, dataSpaces_K1_p, plist_vert));
+                    file->createDataSet(DATASET_K1_p, mtype_comp, dataSpaces_K1_p, plist_vert));
             K1_t_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K1_t, mtype_comp_spin, dataSpaces_K1_t, plist_vert));
+                    file->createDataSet(DATASET_K1_t, mtype_comp, dataSpaces_K1_t, plist_vert));
 #endif
 #if DIAG_CLASS >= 2
             // Create the datasets in file:
             K2_a_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K2_a, mtype_comp_spin, dataSpaces_K2_a, plist_vert));
+                    file->createDataSet(DATASET_K2_a, mtype_comp, dataSpaces_K2_a, plist_vert));
             K2_p_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K2_p, mtype_comp_spin, dataSpaces_K2_p, plist_vert));
+                    file->createDataSet(DATASET_K2_p, mtype_comp, dataSpaces_K2_p, plist_vert));
             K2_t_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K2_t, mtype_comp_spin, dataSpaces_K2_t, plist_vert));
+                    file->createDataSet(DATASET_K2_t, mtype_comp, dataSpaces_K2_t, plist_vert));
 #endif
 #if DIAG_CLASS >= 3
             // Create the datasets in file:
             K3_a_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K3_a, mtype_comp_spin, dataSpaces_K3_a, plist_vert));
+                    file->createDataSet(DATASET_K3_a, mtype_comp, dataSpaces_K3_a, plist_vert));
             K3_p_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K3_p, mtype_comp_spin, dataSpaces_K3_p, plist_vert));
+                    file->createDataSet(DATASET_K3_p, mtype_comp, dataSpaces_K3_p, plist_vert));
             K3_t_p = new H5::DataSet(
-                    file->createDataSet(DATASET_K3_t, mtype_comp_spin, dataSpaces_K3_t, plist_vert));
+                    file->createDataSet(DATASET_K3_t, mtype_comp, dataSpaces_K3_t, plist_vert));
 #endif
         }
         else {
@@ -519,9 +476,8 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
             file = new H5::H5File(FILE_NAME, H5F_ACC_RDWR);
         }
 
-        // Create the memory data type for storing data in file
-        H5::CompType mtype_comp = def_mtype_comp();             // data type for complex number
-        H5::CompType mtype_comp_spin = def_mtype_comp_spin();   // data type for complex number with spin structure
+        // Create the memory data type for storing complex numbers in file
+        H5::CompType mtype_comp = def_mtype_comp();
 
         // Create the dimension arrays for objects in file and in buffer
         Dims dims(buffer, Lambda_size);
@@ -565,14 +521,12 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K3_t_buffer(RANK_K3-1, dims.K3_buffer);
 #endif
 
-        // Initial value for vertex data sets
-        h5_comp_spin fillvalue_vert;
-        fillvalue_vert.spin_re = 0;
-        fillvalue_vert.dens_re = 0;
-        fillvalue_vert.spin_im = 0;
-        fillvalue_vert.dens_im = 0;
+        // Initial value for vertex data sets // TODO: remove?
+        h5_comp fillvalue_vert;
+        fillvalue_vert.re = 0;
+        fillvalue_vert.im = 0;
         H5::DSetCreatPropList plist_vert;
-        plist_vert.setFillValue(mtype_comp_spin, &fillvalue_vert);
+        plist_vert.setFillValue(mtype_comp, &fillvalue_vert);
 
         // Create the data sets for all data to be saved
         DataSets dataSets(file, file_exists,
@@ -587,7 +541,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 #if DIAG_CLASS >= 3
                           dataSpaces_K3_a, dataSpaces_K3_p, dataSpaces_K3_t,
 #endif
-                          mtype_comp, mtype_comp_spin, plist_vert);
+                          mtype_comp, plist_vert);
 
         //Select hyperslab in the file where the data should be located and after that write buffered data into file.
         hsize_t start[2];
@@ -625,10 +579,10 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         count[1] = buffer.irred_dim;
         dataSpaces_irreducible.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
-            dataSets.irred_p -> write(buffer.irreducible_class, mtype_comp_spin,
+            dataSets.irred_p -> write(buffer.irreducible_class, mtype_comp,
                                       dataSpaces_irreducible_buffer, dataSpaces_irreducible);
         else
-            dataSets.irred.write(buffer.irreducible_class, mtype_comp_spin,
+            dataSets.irred.write(buffer.irreducible_class, mtype_comp,
                                  dataSpaces_irreducible_buffer, dataSpaces_irreducible);
 
 #if DIAG_CLASS >= 1
@@ -638,14 +592,14 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         dataSpaces_K1_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
         if (!file_exists) {
-            dataSets.K1_a_p -> write(buffer.K1_class_a, mtype_comp_spin, dataSpaces_K1_a_buffer, dataSpaces_K1_a);
-            dataSets.K1_p_p -> write(buffer.K1_class_p, mtype_comp_spin, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
-            dataSets.K1_t_p -> write(buffer.K1_class_t, mtype_comp_spin, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
+            dataSets.K1_a_p -> write(buffer.K1_class_a, mtype_comp, dataSpaces_K1_a_buffer, dataSpaces_K1_a);
+            dataSets.K1_p_p -> write(buffer.K1_class_p, mtype_comp, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
+            dataSets.K1_t_p -> write(buffer.K1_class_t, mtype_comp, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
         }
         else {
-            dataSets.K1_a.write(buffer.K1_class_a, mtype_comp_spin, dataSpaces_K1_a_buffer, dataSpaces_K1_a);
-            dataSets.K1_p.write(buffer.K1_class_p, mtype_comp_spin, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
-            dataSets.K1_t.write(buffer.K1_class_t, mtype_comp_spin, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
+            dataSets.K1_a.write(buffer.K1_class_a, mtype_comp, dataSpaces_K1_a_buffer, dataSpaces_K1_a);
+            dataSets.K1_p.write(buffer.K1_class_p, mtype_comp, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
+            dataSets.K1_t.write(buffer.K1_class_t, mtype_comp, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
         }
 #endif
 
@@ -656,14 +610,14 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         dataSpaces_K2_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
         if (!file_exists) {
-            dataSets.K2_a_p -> write(buffer.K2_class_a, mtype_comp_spin, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
-            dataSets.K2_p_p -> write(buffer.K2_class_p, mtype_comp_spin, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
-            dataSets.K2_t_p -> write(buffer.K2_class_t, mtype_comp_spin, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
+            dataSets.K2_a_p -> write(buffer.K2_class_a, mtype_comp, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
+            dataSets.K2_p_p -> write(buffer.K2_class_p, mtype_comp, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
+            dataSets.K2_t_p -> write(buffer.K2_class_t, mtype_comp, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
         }
         else {
-            dataSets.K2_a.write(buffer.K2_class_a, mtype_comp_spin, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
-            dataSets.K2_p.write(buffer.K2_class_p, mtype_comp_spin, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
-            dataSets.K2_t.write(buffer.K2_class_t, mtype_comp_spin, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
+            dataSets.K2_a.write(buffer.K2_class_a, mtype_comp, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
+            dataSets.K2_p.write(buffer.K2_class_p, mtype_comp, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
+            dataSets.K2_t.write(buffer.K2_class_t, mtype_comp, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
         }
 #endif
 
@@ -674,14 +628,14 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         dataSpaces_K3_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
         if (!file_exists) {
-            dataSets.K3_a_p -> write(buffer.K3_class_a, mtype_comp_spin, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
-            dataSets.K3_p_p -> write(buffer.K3_class_p, mtype_comp_spin, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
-            dataSets.K3_t_p -> write(buffer.K3_class_t, mtype_comp_spin, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
+            dataSets.K3_a_p -> write(buffer.K3_class_a, mtype_comp, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
+            dataSets.K3_p_p -> write(buffer.K3_class_p, mtype_comp, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
+            dataSets.K3_t_p -> write(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
         }
         else {
-            dataSets.K3_a.write(buffer.K3_class_a, mtype_comp_spin, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
-            dataSets.K3_p.write(buffer.K3_class_p, mtype_comp_spin, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
-            dataSets.K3_t.write(buffer.K3_class_t, mtype_comp_spin, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
+            dataSets.K3_a.write(buffer.K3_class_a, mtype_comp, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
+            dataSets.K3_p.write(buffer.K3_class_p, mtype_comp, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
+            dataSets.K3_t.write(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
         }
 #endif
 
@@ -769,91 +723,67 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 
 /**
  * Copy results that are read from a file to a buffer into a State object.
- * @tparam Q     : Data type (comp or double). TODO: currently, all hdf5 functions are not as general for this to be useful. Check this.
  * @param result : Empty State object into which result is copied.
  * @param buffer : Buffer from which result is read. Should contain data read from a file.
  */
-template <typename Q>
 void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
-    Q val; //buffer value
+    comp val; // buffer value
 
     for(int i=0; i<buffer.self_dim; ++i) {
         val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
         result.selfenergy.direct_set(i, val);
     }
     for(int i=0; i<buffer.irred_dim; ++i) {
-        val = {buffer.irreducible_class[i].spin_re, buffer.irreducible_class[i].spin_im};
+        val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
         result.vertex[0].irred.direct_set(i, val);
-        val = {buffer.irreducible_class[i].dens_re, buffer.irreducible_class[i].dens_im};
-        result.vertex[1].irred.direct_set(i, val);
     }
 #if DIAG_CLASS >= 1
     for (int i=0; i<buffer.K1_dim; ++i) {
-        val = {buffer.K1_class_a[i].spin_re, buffer.K1_class_a[i].spin_im};
+        val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
         result.vertex[0].avertex.K1_direct_set(i, val);
-        val = {buffer.K1_class_a[i].dens_re, buffer.K1_class_a[i].dens_im};
-        result.vertex[1].avertex.K1_direct_set(i, val);
 
-        val = {buffer.K1_class_p[i].spin_re, buffer.K1_class_p[i].spin_im};
+        val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
         result.vertex[0].pvertex.K1_direct_set(i, val);
-        val = {buffer.K1_class_p[i].dens_re, buffer.K1_class_p[i].dens_im};
-        result.vertex[1].pvertex.K1_direct_set(i, val);
 
-        val = {buffer.K1_class_t[i].spin_re, buffer.K1_class_t[i].spin_im};
+        val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
         result.vertex[0].tvertex.K1_direct_set(i, val);
-        val = {buffer.K1_class_t[i].dens_re, buffer.K1_class_t[i].dens_im};
-        result.vertex[1].tvertex.K1_direct_set(i, val);
     }
 #endif
 #if DIAG_CLASS >= 2
     for (int i=0; i<buffer.K2_dim; ++i) {
-        val = {buffer.K2_class_a[i].spin_re, buffer.K2_class_a[i].spin_im};
+        val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
         result.vertex[0].avertex.K2_direct_set(i, val);
-        val = {buffer.K2_class_a[i].dens_re, buffer.K2_class_a[i].dens_im};
-        result.vertex[1].avertex.K2_direct_set(i, val);
 
-        val = {buffer.K2_class_p[i].spin_re, buffer.K2_class_p[i].spin_im};
+        val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
         result.vertex[0].pvertex.K2_direct_set(i, val);
-        val = {buffer.K2_class_p[i].dens_re, buffer.K2_class_p[i].dens_im};
-        result.vertex[1].pvertex.K2_direct_set(i, val);
 
-        val = {buffer.K2_class_t[i].spin_re, buffer.K2_class_t[i].spin_im};
+        val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
         result.vertex[0].tvertex.K2_direct_set(i, val);
-        val = {buffer.K2_class_t[i].dens_re, buffer.K2_class_t[i].dens_im};
-        result.vertex[1].tvertex.K2_direct_set(i, val);
     }
 #endif
 #if DIAG_CLASS >= 3
     for (int i=0; i<buffer.K3_dim; ++i) {
-        val = {buffer.K3_class_a[i].spin_re, buffer.K3_class_a[i].spin_im};
+        val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
         result.vertex[0].avertex.K3_direct_set(i, val);
-        val = {buffer.K3_class_a[i].dens_re, buffer.K3_class_a[i].dens_im};
-        result.vertex[1].avertex.K3_direct_set(i, val);
 
-        val = {buffer.K3_class_p[i].spin_re, buffer.K3_class_p[i].spin_im};
+        val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
         result.vertex[0].pvertex.K3_direct_set(i, val);
-        val = {buffer.K3_class_p[i].dens_re, buffer.K3_class_p[i].dens_im};
-        result.vertex[1].pvertex.K3_direct_set(i, val);
 
-        val = {buffer.K3_class_t[i].spin_re, buffer.K3_class_t[i].spin_im};
+        val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
         result.vertex[0].tvertex.K3_direct_set(i, val);
-        val = {buffer.K3_class_t[i].dens_re, buffer.K3_class_t[i].dens_im};
-        result.vertex[1].tvertex.K3_direct_set(i, val);
     }
 #endif
 }
 
 /**
  * Read results from an existing file to a State object. Useful when resuming a computation (checkpointing).
- * @tparam Q          : Data type (comp or double). TODO: currently, all hdf5 functions are not as general for this to be useful. Check this.
  * @param FILE_NAME   : File name.
  * @param Lambda_it   : Lambda iteration from which to load result.
  * @param Lambda_size : Total number of Lambda iterations saved in the file.
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  * @return            : State object containing the result.
  */
-template<typename Q>
-State<comp> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_size, rvec &Lambdas){
+State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size, rvec &Lambdas){
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -868,9 +798,8 @@ State<comp> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_siz
             // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
             Buffer buffer;
 
-            // Create the memory data type for storing data in file
-            H5::CompType mtype_comp = def_mtype_comp();             // data type for complex number
-            H5::CompType mtype_comp_spin = def_mtype_comp_spin();   // data type for complex number with spin structure
+            // Create the memory data type for storing complex numbers in file
+            H5::CompType mtype_comp = def_mtype_comp();
 
             // Create the dimension arrays for objects in file and in buffer
             Dims dims(buffer, Lambda_size);
@@ -938,7 +867,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_siz
 
             count[1] = buffer.irred_dim;
             dataSpaces_irreducible.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-            dataSets.irred.read(buffer.irreducible_class, mtype_comp_spin,
+            dataSets.irred.read(buffer.irreducible_class, mtype_comp,
                                 dataSpaces_irreducible_buffer, dataSpaces_irreducible);
 
 
@@ -948,9 +877,9 @@ State<comp> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_siz
             dataSpaces_K1_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
             dataSpaces_K1_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
-            dataSets.K1_a.read(buffer.K1_class_a, mtype_comp_spin, dataSpaces_K1_a_buffer, dataSpaces_K1_a);
-            dataSets.K1_p.read(buffer.K1_class_p, mtype_comp_spin, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
-            dataSets.K1_t.read(buffer.K1_class_t, mtype_comp_spin, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
+            dataSets.K1_a.read(buffer.K1_class_a, mtype_comp, dataSpaces_K1_a_buffer, dataSpaces_K1_a);
+            dataSets.K1_p.read(buffer.K1_class_p, mtype_comp, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
+            dataSets.K1_t.read(buffer.K1_class_t, mtype_comp, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
 #endif
 #if DIAG_CLASS >= 2
             count[1] = buffer.K2_dim;
@@ -958,9 +887,9 @@ State<comp> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_siz
             dataSpaces_K2_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
             dataSpaces_K2_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
-            dataSets.K2_a.read(buffer.K2_class_a, mtype_comp_spin, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
-            dataSets.K2_p.read(buffer.K2_class_p, mtype_comp_spin, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
-            dataSets.K2_t.read(buffer.K2_class_t, mtype_comp_spin, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
+            dataSets.K2_a.read(buffer.K2_class_a, mtype_comp, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
+            dataSets.K2_p.read(buffer.K2_class_p, mtype_comp, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
+            dataSets.K2_t.read(buffer.K2_class_t, mtype_comp, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
 #endif
 #if DIAG_CLASS >= 3
             count[1] = buffer.K3_dim;
@@ -968,14 +897,14 @@ State<comp> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_siz
             dataSpaces_K3_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
             dataSpaces_K3_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
-            dataSets.K3_a.read(buffer.K3_class_a, mtype_comp_spin, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
-            dataSets.K3_p.read(buffer.K3_class_p, mtype_comp_spin, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
-            dataSets.K3_t.read(buffer.K3_class_t, mtype_comp_spin, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
+            dataSets.K3_a.read(buffer.K3_class_a, mtype_comp, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
+            dataSets.K3_p.read(buffer.K3_class_p, mtype_comp, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
+            dataSets.K3_t.read(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
 
 #endif
 
             // Copy the buffered result into State object
-            copy_buffer_to_result<Q>(result, buffer);
+            copy_buffer_to_result(result, buffer);
 
             // Terminate
             dataSets.close(true);
@@ -997,7 +926,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME,int Lambda_it, long Lambda_siz
 void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
     // test hdf5: read files and compare to original file
     int cnt = 0;
-    State<comp> out = read_hdf<comp>(FILE_NAME, i, nEVO, flow_grid);
+    State<comp> out = read_hdf(FILE_NAME, i, nEVO, flow_grid);
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
             if (state.selfenergy.val(iK, iSE, 0) != out.selfenergy.val(iK, iSE, 0)) {
@@ -1011,43 +940,43 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
         for (int i_in=0; i_in<n_in; ++i_in) {
 #if DIAG_CLASS >= 1
             for (int iw1=0; iw1<nBOS; ++iw1) {
-                if (state.vertex[1].avertex.K1_val(iK, iw1, i_in) != out.vertex[1].avertex.K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].avertex.K1_val(iK, iw1, i_in) != out.vertex[0].avertex.K1_val(iK, iw1, i_in)) {
                     cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
                     cnt += 1;
                 }
-                if (state.vertex[1].pvertex.K1_val(iK, iw1, i_in) != out.vertex[1].pvertex.K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].pvertex.K1_val(iK, iw1, i_in) != out.vertex[0].pvertex.K1_val(iK, iw1, i_in)) {
                     cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
                     cnt += 1;
                 }
-                if (state.vertex[1].tvertex.K1_val(iK, iw1, i_in) != out.vertex[1].tvertex.K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].tvertex.K1_val(iK, iw1, i_in) != out.vertex[0].tvertex.K1_val(iK, iw1, i_in)) {
                     cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
                     cnt += 1;
                 }
 #if DIAG_CLASS >= 2
                 for (int iw2=0; iw2<nFER; ++iw2) {
-                    if (state.vertex[1].avertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[1].avertex.K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].avertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[0].avertex.K2_val(iK, iw1, iw2, i_in)) {
                         cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
                         cnt += 1;
                     }
-                    if (state.vertex[1].pvertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[1].pvertex.K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].pvertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[0].pvertex.K2_val(iK, iw1, iw2, i_in)) {
                         cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
                         cnt += 1;
                     }
-                    if (state.vertex[1].tvertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[1].tvertex.K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].tvertex.K2_val(iK, iw1, iw2, i_in) != out.vertex[0].tvertex.K2_val(iK, iw1, iw2, i_in)) {
                         cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
                         cnt += 1;
                     }
 #if DIAG_CLASS == 3
                     for (int iw3=0; iw3<nFER; ++iw3) {
-                        if (state.vertex[1].avertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[1].avertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].avertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].avertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
                             cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
                             cnt += 1;
                         }
-                        if (state.vertex[1].pvertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[1].pvertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].pvertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].pvertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
                             cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
                             cnt += 1;
                         }
-                        if (state.vertex[1].tvertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[1].tvertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].tvertex.K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].tvertex.K3_val(iK, iw1, iw2, iw3, i_in)) {
                             cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
                             cnt += 1;
                         }
@@ -1057,7 +986,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
 #endif
             }
 #endif
-            if (state.vertex[1].irred.val(iK, i_in) != out.vertex[1].irred.val(iK, i_in)) {
+            if (state.vertex[0].irred.val(iK, i_in) != out.vertex[0].irred.val(iK, i_in)) {
                 cout << "Vertex not equal, " << iK << endl;
                 cnt += 1;
             }

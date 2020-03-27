@@ -146,7 +146,7 @@ vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                  
 /// Spin parameters ///
 
 // Number of independent spin components. n_spin = 1 with SU(2) symmetry.
-const int n_spin = 2; // TODO: change to 1 after removing densvertex from hdf5_routines
+const int n_spin = 1;
 
 /// Parameters for internal structure ///
 
