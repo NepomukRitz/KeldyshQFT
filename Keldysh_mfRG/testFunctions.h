@@ -210,19 +210,20 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
  */
 auto rhs_state_flow_SOPT(const State<comp>& Psi, double Lambda) -> State<comp>{
     State<comp> dPsi;   //Answer object
-    SelfEnergy<comp> SEhartree; //Hartree self-energy
-    SEhartree.initialize(glb_U/2., 0.); //Initialization of the Hartree self-energy
 
-    Propagator g(Lambda, SEhartree, 'g');    //Bare regular propagator at scale Lambda
-    Propagator s(Lambda, SEhartree, 's');    //Bare single scale propagator at scale Lambda
+    State<comp> bare;   //Bare state
+    bare.initialize();  //Initialize bare state
+
+    Propagator g(Lambda, bare.selfenergy, 'g');    //Bare regular propagator at scale Lambda
+    Propagator s(Lambda, bare.selfenergy, 's');    //Bare single scale propagator at scale Lambda
 
     //Self energy flow
     loop(dPsi.selfenergy, Psi.vertex, s, true);  //Loop for the Self-Energy calculation
 
     //Vertex flow
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, g, s, 'a', true, '.');  //Differentiated bubble in the a-channel
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, g, s, 'p', true, '.');  //Differentiated bubble in the p-channel
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, g, s, 't', true, '.');  //Differentiated bubble in the t-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, g, s, 'a', true, '.');  //Differentiated bubble in the a-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, g, s, 'p', true, '.');  //Differentiated bubble in the p-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, g, s, 't', true, '.');  //Differentiated bubble in the t-channel
 
     return dPsi;
 }
