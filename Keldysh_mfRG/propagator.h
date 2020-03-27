@@ -26,10 +26,10 @@ auto effective_distribution_function(double v) -> double {
 class Propagator {
 public:
     double Lambda;
-private:
-    const SelfEnergy<comp> SE;
-    const SelfEnergy<comp> diffSE;
+    SelfEnergy<comp> selfenergy;
+    SelfEnergy<comp> diff_selfenergy;
     char type;
+private:
 #ifdef INTER_PROP
     cvec prop = cvec(2*nPROP*n_in);
 #endif
@@ -50,8 +50,8 @@ public:
      * @param self_in   : SelfEnergy
      * @param type_in   : Type of propagator being handled
      */
-    Propagator(double Lambda_in, const SelfEnergy<comp> self_in, char type_in)
-            :Lambda(Lambda_in), SE(self_in), type(type_in)
+    Propagator(double Lambda_in, SelfEnergy<comp> self_in, char type_in)
+            :Lambda(Lambda_in), selfenergy(self_in), type(type_in)
     {
 #ifdef INTER_PROP
         for(int i_in =0; i_in<n_in; i_in++) {
@@ -84,8 +84,8 @@ public:
      * @param diffSelf_in   : Differential SelfEnergy
      * @param type_in       : Type of propagator being handled
      */
-    Propagator(double Lambda_in, const SelfEnergy<comp> self_in, const SelfEnergy<comp> diffSelf_in, char type_in)
-            :Lambda(Lambda_in), SE(self_in), diffSE(diffSelf_in), type(type_in)
+    Propagator(double Lambda_in, SelfEnergy<comp> self_in, SelfEnergy<comp> diffSelf_in, char type_in)
+            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in)
     {
 #ifdef INTER_PROP
         for(int i_in =0; i_in<n_in; i_in++) {
@@ -108,21 +108,21 @@ public:
                 case 'k':
                     for (int i = 0; i < nPROP; i++) {
                         double v = ffreqs[i];
-                        prop[n_in*i + i_in] = SR(v, i_in) + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                        prop[n_in*i + i_in] = SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
                         prop[n_in*nPROP + n_in*i + i_in] = SK(v, i_in)
-                                                           + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
-                                                           + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
-                                                           + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in)) * GA(v, i_in);
+                                                           + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                                                           + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                                                           + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
                     }
                     break;
 
                 case 'e':
                     for (int i = 0; i < nPROP; i++) {
                         double v = ffreqs[i];
-                        prop[n_in*i + i_in] = GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
-                        prop[n_in*nPROP + n_in*i + i_in] = GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
-                                                           + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
-                                                           + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in)) * GA(v, i_in);
+                        prop[n_in*i + i_in] = GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
+                        prop[n_in*nPROP + n_in*i + i_in] = GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                                                           + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                                                           + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
                     }
                     break;
                 default:;
@@ -147,11 +147,11 @@ public:
 /*******PROPAGATOR FUNCTIONS***********/
 auto Propagator::GR(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon - SE.valsmooth(0, v, i_in));
+    return 1./(v - glb_epsilon - selfenergy.valsmooth(0, v, i_in));
 }
 auto Propagator::GA(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon - conj(SE.valsmooth(0,v, i_in)));
+    return 1./(v - glb_epsilon - conj(selfenergy.valsmooth(0,v, i_in)));
 }
 auto Propagator::GK(double v, int i_in) const -> comp
 {
@@ -210,9 +210,9 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
             }
             return 0.;
         case 'k':
-            diffSelfEneR = diffSE.valsmooth(0, v, i_in);
+            diffSelfEneR = diff_selfenergy.valsmooth(0, v, i_in);
             diffSelfEneA = conj(diffSelfEneR);
-            diffSelfEneK = diffSE.valsmooth(1, v, i_in);
+            diffSelfEneK = diff_selfenergy.valsmooth(1, v, i_in);
             if(fabs(v)<Lambda){
                 switch(iK){
                     case 0:
@@ -261,11 +261,11 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 
 auto Propagator::GR(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma+Lambda) - SE.valsmooth(0, v, i_in));
+    return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma+Lambda) - selfenergy.valsmooth(0, v, i_in));
 }
 auto Propagator::GA(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma+Lambda) - conj(SE.valsmooth(0, v, i_in)));
+    return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma+Lambda) - conj(selfenergy.valsmooth(0, v, i_in)));
 }
 auto Propagator::GK(double v, int i_in) const -> comp       // TODO: fix
 {
@@ -314,22 +314,22 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
             case 'k':
                 switch(iK){
                     case 0:
-                        return SR(v, i_in) + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                        return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
-                        return SK(v, i_in) + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
-                                     + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
-                                     + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in))* GA(v, i_in);
+                        return SK(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                                     + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                                     + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }
             case 'e':
                 switch(iK){
                     case 0:
-                        return GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                        return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
-                        return GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
-                             + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
-                             + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in))* GA(v, i_in);
+                        return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                             + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                             + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }
@@ -383,12 +383,12 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
             case 'k':
                 switch (iK){
                     case 0:
-                        return SR(v, i_in) + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                        return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
                         return SK(v, i_in)
-                             + GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
-                             + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
-                             + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in))* GA(v, i_in);
+                             + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                             + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                             + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }
@@ -396,11 +396,11 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
             case 'e':
                 switch (iK){
                     case 0:
-                        return GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GR(v, i_in);
+                        return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
-                        return GR(v, i_in) * diffSE.valsmooth(0, v, i_in) * GK(v, i_in)
-                             + GR(v, i_in) * diffSE.valsmooth(1, v, i_in) * GA(v, i_in)
-                             + GK(v, i_in) * conj(diffSE.valsmooth(0, v, i_in))* GA(v, i_in);
+                        return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                             + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                             + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }

@@ -208,31 +208,74 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
  * @param Lambda:  Scale at which the calculation is being performed
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
-auto rhs_state_flow_SOPT(const State<comp>& Psi, double Lambda) -> State<comp>{
+auto rhs_state_flow_SOPT(const State<comp>& Psi, const double Lambda, const int feedback) -> State<comp>{
     State<comp> dPsi;   //Answer object
 
     State<comp> bare;   //Bare state
     bare.initialize();  //Initialize bare state
+    Propagator G(Lambda, bare.selfenergy,'g');    //Initialization of Propagator objects
+    Propagator S(Lambda, bare.selfenergy,'s');    //Initialization of Propagator objects
 
-    Propagator g(Lambda, bare.selfenergy, 'g');    //Bare regular propagator at scale Lambda
-    Propagator s(Lambda, bare.selfenergy, 's');    //Bare single scale propagator at scale Lambda
+    if(!(feedback==0 || feedback==3)){  //Check whether Self Energy feedback to Propagators is wanted
+        G=Propagator(Lambda, Psi.selfenergy, 'g');
+        S=Propagator(Lambda, Psi.selfenergy, 's');
+    }
 
-    //Self energy flow
-    loop(dPsi.selfenergy, Psi.vertex, s, true);  //Loop for the Self-Energy calculation
+    //Self energy loop
+    loop(dPsi.selfenergy, Psi.vertex, S, true);  //Loop for the Self-Energy calculation
+
+
+    if(feedback>=3){    //If feedback>=3, there is vertex feedback
+        bare.vertex = Psi.vertex;
+    }
+
+    if(feedback==2 || feedback==5) {  //These two options make use of the Katanin substitution
+        S=Propagator(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
+    }
 
     //Vertex flow
-    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, g, s, 'a', true, '.');  //Differentiated bubble in the a-channel
-    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, g, s, 'p', true, '.');  //Differentiated bubble in the p-channel
-    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, g, s, 't', true, '.');  //Differentiated bubble in the t-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 'a', true, '.');  //Differentiated bubble in the a-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 'p', true, '.');  //Differentiated bubble in the p-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 't', true, '.');  //Differentiated bubble in the t-channel
 
     return dPsi;
+}
+
+//No feedback
+auto rhs_state_flow_SOPT_0(const State<comp>& Psi, const double Lambda) -> State<comp>{
+    return rhs_state_flow_SOPT(Psi, Lambda, 0);
+}
+
+//Self-Energy fed back into Propagators
+auto rhs_state_flow_SOPT_1(const State<comp>& Psi, const double Lambda) -> State<comp>{
+    return rhs_state_flow_SOPT(Psi, Lambda, 1);
+}
+
+//As above + Katanin
+auto rhs_state_flow_SOPT_2(const State<comp>& Psi, const double Lambda) -> State<comp>{
+    return rhs_state_flow_SOPT(Psi, Lambda, 2);
+}
+
+//Vertex feedback, free propagators
+auto rhs_state_flow_SOPT_3(const State<comp>& Psi, const double Lambda) -> State<comp>{
+    return rhs_state_flow_SOPT(Psi, Lambda, 3);
+}
+
+//Self_energy fed back into Propagators + Vertex feedback
+auto rhs_state_flow_SOPT_4(const State<comp>& Psi, const double Lambda) -> State<comp>{
+    return rhs_state_flow_SOPT(Psi, Lambda, 4);
+}
+
+//As above + Katanin
+auto rhs_state_flow_SOPT_5(const State<comp>& Psi, const double Lambda) -> State<comp>{
+    return rhs_state_flow_SOPT(Psi, Lambda, 5);
 }
 
 /**
  * Function to test the correctness of the flow of the State
  * @param N_ODE : Numbres of ODE-solver steps to be taken
  */
-void test_rhs_state_flow_SOPT(int N_ODE){
+void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
     bool write_flag = true; // whether to write output in hdf5
     State<comp> state_dir, state_fin, state_ini; // direct, final, initial K1a_1
     state_dir.initialize(); // initialize state
@@ -244,8 +287,33 @@ void test_rhs_state_flow_SOPT(int N_ODE){
     sopt_state(state_ini, Lambda_ini); // direct calculation of initial K1a
     sopt_state(state_dir, Lambda_fin); // direct calculation of direct K1a
 
-    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT, N_ODE); // final K1a from ODE
-
+    string name;
+    switch (feedback){
+        case 1:
+            ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_1, N_ODE); // final K1a from ODE
+            name = "rhs_state_flow_SOPT_1.h5";
+            break;
+        case 2:
+            ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_2, N_ODE); // final K1a from ODE
+            name = "rhs_state_flow_SOPT_2.h5";
+            break;
+        case 3:
+            ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_3, N_ODE); // final K1a from ODE
+            name = "rhs_state_flow_SOPT_3.h5";
+            break;
+        case 4:
+            ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_4, N_ODE); // final K1a from ODE
+            name = "rhs_state_flow_SOPT_4.h5";
+            break;
+        case 5:
+            ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_5, N_ODE); // final K1a from ODE
+            name = "rhs_state_flow_SOPT_5.h5";
+            break;
+        default:
+            ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_0, N_ODE); // final K1a from ODE
+            name = "rhs_state_flow_SOPT_0.h5";
+    }
+    
     cvec K1a0_dif(nBOS);
     for(int i=0; i<nBOS; ++i){
         K1a0_dif[i] = state_dir.vertex[0].avertex.K1_val(0, i, 0) - state_fin.vertex[0].avertex.K1_val(0, i, 0);
@@ -260,7 +328,7 @@ void test_rhs_state_flow_SOPT(int N_ODE){
     cout << "Confirming correctness of the bubbles. The max diff between direct and final results is " << K1a0_dif.max_norm() << ". \n";
     cout << "Testing ODE for SelfEnergyR. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << SER_dif.max_norm() << "." << endl;
     cout << "Testing ODE for SelfEnergyK. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << SEK_dif.max_norm() << "." << endl;
-    if(write_flag) write_h5_rvecs("rhs_state_flow_SOPT.h5",
+    if(write_flag) write_h5_rvecs(name,
                                   {"v", "dir_SE_R", "dir_SE_I", "fin_SE_R", "fin_SE_I", "ini_SE_R", "ini_SE_I",
                                    "dir_K1a_R", "dir_K1a_I", "fin_K1a_R", "fin_K1a_I", "ini_K1a_R", "ini_K1a_I",
                                    "dir_K1p_R", "dir_K1p_I", "fin_K1p_R", "fin_K1p_I", "ini_K1p_R", "ini_K1p_I",
@@ -308,7 +376,7 @@ void test_derivatives_SE(double Lambda){
     cvec rhs_SOPT_FFT_K1a = dSOPT_FFT_SE_rhs(blah, Lambda);
 
     sopt_state(sopt, Lambda);
-    State<comp> rhs_flow = rhs_state_flow_SOPT(sopt, Lambda);
+    State<comp> rhs_flow = rhs_state_flow_SOPT_0(sopt, Lambda);
 
     cvec SER_dif(nFER);
     for(int iv=0; iv<nFER;++iv){
