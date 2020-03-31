@@ -10,7 +10,7 @@
 #ifndef KELDYSH_MFRG_FREQUENCY_GRID_H
 #define KELDYSH_MFRG_FREQUENCY_GRID_H
 
-#include <cmath>        // for sqrt
+#include <cmath>        // for sqrt, log, exp
 #include "parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
 
 
@@ -40,14 +40,68 @@ auto fconv_Lambda(double Lambda) -> int
 
 #if GRID==1
 /***********************************************    LOG GRID    *******************************************************/
-//TODO: derive functions to determine index values for the respective logarithmic grid but, first, define logarithmic grid
+//TODO: optimize; currently much slower than lin./non-lin. grid
 
-void setUpBosGrid(){
-
+double sgn(double x) {
+    return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
 }
 
-void setUpFerGrid(){
+double grid_transf_b(double w) {
+    return sgn(w) * log(1 + abs(w)/w_a) / k_w_b;
+}
+double grid_transf_b_inv(double W) {
+    return sgn(W) * w_a * (exp(k_w_b*abs(W)) - 1);
+}
+double grid_transf_f(double w) {
+    return sgn(w) * log(1 + abs(w)/w_a) / k_w_f;
+}
+double grid_transf_f_inv(double W) {
+    return sgn(W) * w_a * (exp(k_w_f*abs(W)) - 1);
+}
 
+void setUpBosGrid() {
+    double W;
+    double W_lower_b = grid_transf_b(w_lower_b);
+    double W_upper_b = grid_transf_b(w_upper_b);
+    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
+    for(int i=0; i<nBOS; ++i) {
+        W = W_lower_b + i*dW;
+        bfreqs[i] = grid_transf_b_inv(W);
+    }
+}
+void setUpFerGrid() {
+    double W;
+    double W_lower_f = grid_transf_f(w_lower_f);
+    double W_upper_f = grid_transf_f(w_upper_f);
+    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
+    for(int i=0; i<nFER; ++i) {
+        W = W_lower_f + i*dW;
+        ffreqs[i] =  grid_transf_f_inv(W);
+    }
+}
+
+
+auto fconv_bos(double w) -> int {
+    double W = grid_transf_b(w);
+//    double W_lower_b = grid_transf_b(w_lower_b);
+//    double W_upper_b = grid_transf_b(w_upper_b);
+//    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
+    double dW = 2./((double)(nBOS-1.));
+//    W = (W-W_lower_b)/dW;
+    W = (W + 1.)/dW;
+    auto index = (int)W;
+    return index;
+}
+auto fconv_fer(double w) -> int {
+    double W = grid_transf_f(w);
+//    double W_lower_f = grid_transf_f(w_lower_f);
+//    double W_upper_f = grid_transf_f(w_upper_f);
+//    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
+    double dW = 2./((double)(nFER-1.));
+//    W = (W-W_lower_f)/dW;
+    W = (W + 1.)/dW;
+    auto index = (int)W;
+    return index;
 }
 
 #elif GRID==2
@@ -164,48 +218,48 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
 /*******************************************    NON-LINEAR GRID    ****************************************************/
 // TODO: finish
 
-double grid_transf_inv(double w) {
+double grid_transf(double w) {
     return w/sqrt(W_scale*W_scale + w*w);
 }
-double grid_transf(double W) {
+double grid_transf_inv(double W) {
     return W_scale*W/sqrt(1.-W*W);
 }
 
 void setUpBosGrid() {
     double W;
-    double W_lower_b = grid_transf_inv(w_lower_b);
-    double W_upper_b = grid_transf_inv(w_upper_b);
+    double W_lower_b = grid_transf(w_lower_b);
+    double W_upper_b = grid_transf(w_upper_b);
     double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
     for(int i=0; i<nBOS; ++i) {
         W = W_lower_b + i*dW;
-        bfreqs[i] = grid_transf(W);
+        bfreqs[i] = grid_transf_inv(W);
     }
 }
 void setUpFerGrid() {
     double W;
-    double W_lower_f = grid_transf_inv(w_lower_f);
-    double W_upper_f = grid_transf_inv(w_upper_f);
+    double W_lower_f = grid_transf(w_lower_f);
+    double W_upper_f = grid_transf(w_upper_f);
     double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
     for(int i=0; i<nFER; ++i) {
         W = W_lower_f + i*dW;
-        ffreqs[i] =  grid_transf(W);
+        ffreqs[i] =  grid_transf_inv(W);
     }
 }
 
 
 auto fconv_bos(double w) -> int {
-    double W = grid_transf_inv(w);
-    double W_lower_b = grid_transf_inv(w_lower_b);
-    double W_upper_b = grid_transf_inv(w_upper_b);
+    double W = grid_transf(w);
+    double W_lower_b = grid_transf(w_lower_b);
+    double W_upper_b = grid_transf(w_upper_b);
     double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
     W = (W-W_lower_b)/dW;
     auto index = (int)W;
     return index;
 }
 auto fconv_fer(double w) -> int {
-    double W = grid_transf_inv(w);
-    double W_lower_f = grid_transf_inv(w_lower_f);
-    double W_upper_f = grid_transf_inv(w_upper_f);
+    double W = grid_transf(w);
+    double W_lower_f = grid_transf(w_lower_f);
+    double W_upper_f = grid_transf(w_upper_f);
     double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
     W = (W-W_lower_f)/dW;
     auto index = (int)W;

@@ -1,6 +1,7 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
+#include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include "data_structures.h" // real/complex vector classes, comp as complex double
 
@@ -47,7 +48,18 @@ const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in e
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
-#if GRID==2
+#if GRID==1
+const double w_upper_b = 100.;
+const double w_lower_b = -w_upper_b;
+const double w_upper_f = 100.;
+const double w_lower_f = -w_upper_f;
+const double w_a = 1.;
+const double k_w_b = log(1. + w_upper_b/w_a);
+const double k_w_f = log(1. + w_upper_f/w_a);
+
+const int nBOS = 51;
+const int nFER = 51;
+#elif GRID==2
 const double w_upper_b = 20.;
 const double w_lower_b = -w_upper_b;        //Symmetric grid
 const double w_upper_f = 20.;
