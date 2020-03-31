@@ -34,6 +34,49 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     y_fin = y_run; // final y value
 }
 
+double log_substitution(double x) {
+    return log10(x);
+    //return x/sqrt(5*5+x*x);
+}
+double log_resubstitution(double x) {
+    return pow(10, x);
+    //return 5*x/sqrt(1-x*x);
+}
+
+// explicit RK4 using non-constant step-width determined by substitution
+template <typename T>
+void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
+                        T rhs (const T& y, const double x),
+                        double subst(double x), double resubst(double x),
+                        const int N_ODE) {
+    const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
+    const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
+
+    // create non-linear integration grid using substitution
+    vec<double> x_vals (N_ODE+1);               // integration values
+    vec<double> x_diffs (N_ODE);                // step sizes
+    x_vals[0] = x_ini;                          // start with initial value
+    for (int i=1; i<=N_ODE; ++i) {
+        x_vals[i] = resubst(X_ini + i*dX);      // value i
+        x_diffs[i-1] = x_vals[i] - x_vals[i-1]; // step size i
+    }
+
+    // solve ODE using step sizes x_diffs
+    T y_run = y_ini; // initial y value
+    double x_run = x_ini; // initial x value
+    double dx;
+    for (int i=0; i<N_ODE; ++i) {
+        dx = x_diffs[i];
+        x_run += dx; // update x
+        T y1 = rhs(y_run, x_run) * dx;
+        T y2 = rhs(y_run + y1*0.5, x_run + dx/2.) * dx;
+        T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
+        T y4 = rhs(y_run + y3, x_run + dx) * dx;
+        y_run += (y1 + y2*2. + y3*2. + y4) *(1./ 6.); // update y
+    }
+    y_fin = y_run; // final y value
+}
+
 
 double test_rhs_ODE_exp(const double& y, const double x) {
     return y;
