@@ -174,6 +174,10 @@ const double inter_tol = 10e-8;
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
+// If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
+// Only makes sense for pure K1 calculations.
+//#define CHANNEL_DECOMPOSITION
+
 
 #if REG==2
 const int param_size = 14;

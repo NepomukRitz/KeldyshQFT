@@ -390,4 +390,58 @@ void test_derivatives_SE(double Lambda){
                     rhs_flow.selfenergy.Sigma.real(), rhs_flow.selfenergy.Sigma.imag()});
 }
 
+
+#ifdef CHANNEL_DECOMPOSITION
+/**
+ * Compute the right hand side of the flow equations according to Severin Jakobs' channel decomposition with
+ * approximated channel feedback and modified self-energy feedback (only static level shift to avoid
+ * overbroadening of spectral features)
+ * @param Psi    : state at which to compute right hand side
+ * @param Lambda : Lambda at which to compute right hand side
+ * @return       : dPsi (right hand side of flow equation)
+ */
+auto rhs_channel_decomposition(const State<comp>& Psi, const double Lambda) -> State<comp> {
+    State<comp> dPsi; // result
+
+    SelfEnergy<comp> selfEnergy;
+    comp static_shift = real(Psi.selfenergy.valsmooth(0, glb_mu, 0));  // only use a static level shift as self-energy
+    selfEnergy.initialize(static_shift, 0.);
+
+    Propagator G(Lambda, selfEnergy, 'g');    //Initialization of Propagator objects
+    Propagator S(Lambda, selfEnergy, 's');    //Initialization of Propagator objects
+
+    // Self-energy flow
+    loop(dPsi.selfenergy, Psi.vertex, S, true);  // self-energy loop
+
+    // Vertex flow
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', true, '.'); // diff. bubble in the a-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'p', true, '.'); // diff. bubble in the p-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 't', true, '.'); // diff. bubble in the t-channel
+
+    return dPsi;
+}
+
+/**
+ * FRG flow according to Severin Jakobs' channel decomposition with approximated channel feedback
+ * and modified self-energy feedback (only static level shift to avoid overbroadening of spectral features).
+ * Only correct if parameter CHANNEL_DECOMPOSITION is defined.
+ * @param N_ODE : number of Runge-Kutta ODE iterations
+ */
+void test_channel_decomposition(int N_ODE) {
+    State<comp> state_ini, state_fin;   // create initial and final state
+    state_ini.initialize();             // initialize initial state
+
+//    sopt_state(state_ini, Lambda_ini);  // set initial state to SOPT (necessary if Lambda_ini is too small)
+
+    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_channel_decomposition,
+                    log_substitution, log_resubstitution, N_ODE); // compute flow
+
+    string name = "test_channel_decomposition.h5";
+    write_h5_rvecs(name, {"v", "Sigma_re", "Sigma_im", "Sigma_ini_re", "Sigma_ini_im"},
+                         {ffreqs,
+                          state_fin.selfenergy.Sigma.real(), state_fin.selfenergy.Sigma.imag(),
+                          state_ini.selfenergy.Sigma.real(), state_ini.selfenergy.Sigma.imag()});
+}
+#endif
+
 #endif //KELDYSH_MFRG_TESTFUNCTIONS_H

@@ -63,6 +63,25 @@ auto left_same_bare (const Vertex<Q>& vertex, int i1, double w, double vpp, int 
         default:
             return 0.;
     }
+#ifdef CHANNEL_DECOMPOSITION
+#if DIAG_CLASS <= 1
+    switch (channel) {
+        case 'a':
+            K1 += vertex[0].pvertex.K1_valsmooth(i1, 2*glb_mu, i_in, spin)
+                  + vertex[0].tvertex.K1_valsmooth(i1, 0, i_in, spin, vertex[0].avertex);
+            break;
+        case 'p':
+            K1 += vertex[0].avertex.K1_valsmooth(i1, 0, i_in, spin, vertex[0].tvertex)
+                  + vertex[0].tvertex.K1_valsmooth(i1, 0, i_in, spin, vertex[0].avertex);
+            break;
+        case 't':
+            K1 += vertex[0].avertex.K1_valsmooth(i1, 0, i_in, spin, vertex[0].tvertex)
+                  + vertex[0].pvertex.K1_valsmooth(i1, 2*glb_mu, i_in, spin);
+            break;
+        default: ;
+    }
+#endif
+#endif
     return gamma0 + K1 + K2b;
 }
 
@@ -114,6 +133,25 @@ auto right_same_bare (const Vertex<Q>& vertex, int i3, double w, double vpp, int
         default:
             return 0.;
     }
+#ifdef CHANNEL_DECOMPOSITION
+#if DIAG_CLASS <= 1
+    switch (channel) {
+        case 'a':
+            K1 += vertex[0].pvertex.K1_valsmooth(i3, 2*glb_mu, i_in, spin)
+                  + vertex[0].tvertex.K1_valsmooth(i3, 0, i_in, spin, vertex[0].avertex);
+            break;
+        case 'p':
+            K1 += vertex[0].avertex.K1_valsmooth(i3, 0, i_in, spin, vertex[0].tvertex)
+                  + vertex[0].tvertex.K1_valsmooth(i3, 0, i_in, spin, vertex[0].avertex);
+            break;
+        case 't':
+            K1 += vertex[0].avertex.K1_valsmooth(i3, 0, i_in, spin, vertex[0].tvertex)
+                  + vertex[0].pvertex.K1_valsmooth(i3, 2*glb_mu, i_in, spin);
+            break;
+        default: ;
+    }
+#endif
+#endif
     return gamma0 + K1 + K2;
 }
 
