@@ -894,8 +894,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=0
 //    double tK1 = get_time();
     /*K1 contributions*/
-    int n_mpi = nK_K1 * nw1_w; // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-    int n_omp = n_in;          // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+    int n_mpi = 1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+    int n_omp = nK_K1 * nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
@@ -904,7 +904,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-//#pragma omp parallel for
+#pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices (TODO: put into extra function(s)?)
                 int iK1 = i_mpi * n_omp + i_omp;
