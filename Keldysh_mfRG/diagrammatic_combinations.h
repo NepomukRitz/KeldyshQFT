@@ -63,7 +63,7 @@ auto left_same_bare (const Vertex<Q>& vertex, int i1, double w, double vpp, int 
         default:
             return 0.;
     }
-#ifdef CHANNEL_DECOMPOSITION
+#ifdef STATIC_FEEDBACK
 #if DIAG_CLASS <= 1
     switch (channel) {
         case 'a':
@@ -133,7 +133,7 @@ auto right_same_bare (const Vertex<Q>& vertex, int i3, double w, double vpp, int
         default:
             return 0.;
     }
-#ifdef CHANNEL_DECOMPOSITION
+#ifdef STATIC_FEEDBACK
 #if DIAG_CLASS <= 1
     switch (channel) {
         case 'a':

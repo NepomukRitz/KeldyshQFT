@@ -391,7 +391,7 @@ void test_derivatives_SE(double Lambda){
 }
 
 
-#ifdef CHANNEL_DECOMPOSITION
+#ifdef STATIC_FEEDBACK
 /**
  * Compute the right hand side of the flow equations according to Severin Jakobs' channel decomposition with
  * approximated channel feedback and modified self-energy feedback (only static level shift to avoid
@@ -424,7 +424,7 @@ auto rhs_channel_decomposition(const State<comp>& Psi, const double Lambda) -> S
 /**
  * FRG flow according to Severin Jakobs' channel decomposition with approximated channel feedback
  * and modified self-energy feedback (only static level shift to avoid overbroadening of spectral features).
- * Only correct if parameter CHANNEL_DECOMPOSITION is defined.
+ * Only correct if parameter STATIC_FEEDBACK is defined.
  * @param N_ODE : number of Runge-Kutta ODE iterations
  */
 void test_channel_decomposition(int N_ODE) {

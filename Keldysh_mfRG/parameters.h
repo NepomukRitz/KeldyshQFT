@@ -188,7 +188,7 @@ const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
-//#define CHANNEL_DECOMPOSITION
+//#define STATIC_FEEDBACK
 
 
 #if REG==2
