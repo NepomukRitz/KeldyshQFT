@@ -17,7 +17,7 @@ cvec dSOPT_FFT_K1a_rhs(const cvec& K1a, const double Lambda) { // return differe
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     Propagator S0(Lambda, SEin,'s'); // bare differentiated propagator
     cvec dK1a_1(nw1_wa); // output cvec: bare differentiated K1a, component 1
-    diffSOPT_FFT_K1a(dK1a_1, G0, S0, glb_U, 10000, 80.); // fill ouput cvec
+    diffSOPT_FFT_K1a_R(dK1a_1, G0, S0, glb_U, 10000, 80.); // fill ouput cvec
     return dK1a_1;
 }
 
@@ -26,7 +26,7 @@ cvec SOPT_FFT_K1a_rhs(const double Lambda) { // return (Lambda-dependent) K1a_1 
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     cvec K1a_1(nw1_wa); // output cvec: bare K1a, component 1
-    SOPT_FFT_K1a(K1a_1, G0, glb_U, 10000, 80.); // fill ouput cvec
+    SOPT_FFT_K1a_R(K1a_1, G0, glb_U, 10000, 80.); // fill ouput cvec
     return K1a_1;
 }
 
@@ -53,7 +53,7 @@ cvec dSOPT_FFT_SE_rhs(const cvec& SE, const double Lambda) { // return different
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     Propagator S0(Lambda, SEin,'s'); // bare differentiated propagator
     cvec dSEout(nSE); // output cvec: bare differentiated SE, retarded component
-    diffSOPT_FFT_SE(dSEout, G0, S0, glb_U, 10000, 80.); // fill ouput cvec
+    diffSOPT_FFT_SE_R(dSEout, G0, S0, glb_U, 10000, 80.); // fill ouput cvec
     return dSEout;
 }
 
@@ -62,7 +62,21 @@ cvec SOPT_FFT_SE_rhs(const double Lambda) { // return (Lambda-dependent) SE usin
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     cvec SEout(nSE); // output cvec: bare SE, retarded component
-    SOPT_FFT_SE(SEout, G0, glb_U, 10000, 80.); // fill ouput cvec
+    SOPT_FFT_SE_R(SEout, G0, glb_U, 10000, 80.); // fill ouput cvec
+    return SEout;
+}
+
+SelfEnergy<comp> SOPT_FFT_SE_rhs(const SelfEnergy<comp>& SEin, const double Lambda) { // return (Lambda-dependent) SE using SOPT_FFT for testing
+    Propagator G(Lambda, SEin,'g'); // full propagator
+    SelfEnergy<comp> SEout; // output self-energy
+    SOPT_FFT(SEout, G, glb_U, 100000, 500., false); // fill ouput self-energy
+    return SEout;
+}
+
+SelfEnergy<comp> SOPTlad_FFT_SE_rhs(const SelfEnergy<comp>& SEin, const double Lambda) { // return (Lambda-dependent) SE using SOPT_FFT for testing
+    Propagator G(Lambda, SEin,'g'); // full propagator
+    SelfEnergy<comp> SEout; // output self-energy
+    SOPT_FFT(SEout, G, glb_U, 100000, 500., true); // fill ouput self-energy
     return SEout;
 }
 
@@ -81,6 +95,26 @@ void test_ODE_SOPT_FFT_SE(const int N_ODE) { // test ODE solver using SE from SO
     if(write_flag) write_h5_rvecs("SOPT_FFT_ODE_SE.h5",
                                   {"v", "SE_dir_R", "SE_dir_I", "SE_fin_R", "SE_fin_I", "SE_ini_R", "SE_ini_I"},
                                   {ffreqs, SE_dir.real(), SE_dir.imag(), SE_fin.real(), SE_fin.imag(), SE_ini.real(), SE_ini.imag()});
+}
+
+void test_SCE_SOPT_FFT_SE(const int N_SCE_SOPT, const int N_SCE_SOPTlad) { // test SCE solver using SE from SOPT(lad)_FFT
+    bool write_flag = true; // whether to write output in hdf5
+    SelfEnergy<comp> SEini; // trivial self-energy
+    SEini.initialize(glb_U/2., 0.); // initialize with Hartree term
+    SelfEnergy<comp> SEfin; // final self-energy
+    SCE_solver(SEfin, SEini, Lambda_fin, SOPT_FFT_SE_rhs, N_SCE_SOPT, 0.); // final self-energy after self-consistency iterations
+    SCE_solver(SEfin, SEfin, Lambda_fin, SOPTlad_FFT_SE_rhs, N_SCE_SOPTlad, 0.); // dito including ladder
+    cout << "Testing SCE for SEOPT using " << N_SCE_SOPT << " iterations for self-consistent SOPT and " << N_SCE_SOPTlad << " iterations including ladders." << endl;
+    if(write_flag) {
+        cvec SEfin_R(nSE), SEfin_K(nSE); // store result in cvecs for writing
+        for (int iv=0; iv<nSE; ++iv) {
+            SEfin_R[iv] = SEfin.val(0, iv, 0);
+            SEfin_K[iv] = SEfin.val(1, iv, 0);
+        }
+        write_h5_rvecs("SOPT_FFT_SCE_SE.h5",
+                {"v", "SE_R_R", "SE_R_I", "SE_K_R", "SE_K_I"},
+                {ffreqs, SEfin_R.real(), SEfin_R.imag(), SEfin_K.real(), SEfin_K.imag()});
+    }
 }
 
 cvec dG_rhs(const cvec& G, const double Lambda) { // return bare differentiated propagator for testing purposes
