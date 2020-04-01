@@ -926,7 +926,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
 void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
     // test hdf5: read files and compare to original file
     int cnt = 0;
-    State<comp> out = read_hdf(FILE_NAME, i, nEVO, flow_grid);
+    State<comp> out = read_hdf(FILE_NAME, i, nODE, flow_grid);
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
             if (state.selfenergy.val(iK, iSE, 0) != out.selfenergy.val(iK, iSE, 0)) {
