@@ -291,27 +291,27 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
     switch (feedback){
         case 1:
             ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_1, N_ODE); // final K1a from ODE
-            name = "rhs_state_flow_SOPT_1.h5";
+            name = "rhs_state_flow_feedback_1.h5";
             break;
         case 2:
             ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_2, N_ODE); // final K1a from ODE
-            name = "rhs_state_flow_SOPT_2.h5";
+            name = "rhs_state_flow_feedback_2.h5";
             break;
         case 3:
             ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_3, N_ODE); // final K1a from ODE
-            name = "rhs_state_flow_SOPT_3.h5";
+            name = "rhs_state_flow_feedback_3.h5";
             break;
         case 4:
             ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_4, N_ODE); // final K1a from ODE
-            name = "rhs_state_flow_SOPT_4.h5";
+            name = "rhs_state_flow_feedback_4.h5";
             break;
         case 5:
             ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_5, N_ODE); // final K1a from ODE
-            name = "rhs_state_flow_SOPT_5.h5";
+            name = "rhs_state_flow_feedback_5.h5";
             break;
         default:
             ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_0, N_ODE); // final K1a from ODE
-            name = "rhs_state_flow_SOPT_0.h5";
+            name = "rhs_state_flow_feedback_0.h5";
     }
     
     cvec K1a0_dif(nBOS);

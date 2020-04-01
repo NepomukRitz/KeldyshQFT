@@ -20,15 +20,15 @@ using namespace std;
 
 void setUpFlowGrid()
 {
-    for(int i=0; i<nEVO; ++i) {
-        double dL = (Lambda_fin - Lambda_ini) / ((double) (nEVO - 1));
+    for(int i=0; i < nODE; ++i) {
+        double dL = (Lambda_fin - Lambda_ini) / ((double) (nODE - 1));
         flow_grid[i] = Lambda_ini + i * dL;
     }
 }
 
 auto fconv_Lambda(double Lambda) -> int
 {
-    for(int i=0; i<nEVO; ++i){
+    for(int i=0; i < nODE; ++i){
         if(Lambda == flow_grid[i])
             return i;
     }
