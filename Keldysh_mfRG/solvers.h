@@ -35,11 +35,11 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
 }
 
 double log_substitution(double x) {
-    return log10(x);
+    return log10(1 + x);
     //return x/sqrt(5*5+x*x);
 }
 double log_resubstitution(double x) {
-    return pow(10, x);
+    return pow(10, x) - 1;
     //return 5*x/sqrt(1-x*x);
 }
 
