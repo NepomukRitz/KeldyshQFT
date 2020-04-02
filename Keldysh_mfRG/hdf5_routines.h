@@ -79,13 +79,13 @@ public:
     h5_comp * K1_class_t;
 #endif
 #if DIAG_CLASS >= 2
-    const int K2_dim = nK_K2 * nw2_wt * nw2_nut * n_in;               // length of K2 buffer
+    const int K2_dim = nK_K2 * nw2_wt * nw2_vt * n_in;               // length of K2 buffer
     h5_comp * K2_class_a;
     h5_comp * K2_class_p;
     h5_comp * K2_class_t;
 #endif
 #if DIAG_CLASS >= 3
-    const int K3_dim = nK_K3 * nw3_wt * nw3_nut * nw3_nutp * n_in;    // length of K3 buffer
+    const int K3_dim = nK_K3 * nw3_wt * nw3_vt * nw3_vtp * n_in;    // length of K3 buffer
     h5_comp * K3_class_a;
     h5_comp * K3_class_p;
     h5_comp * K3_class_t;

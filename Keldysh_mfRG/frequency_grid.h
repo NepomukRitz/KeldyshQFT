@@ -149,7 +149,7 @@ auto fconv_K2_a(double w, double v1) -> tuple<int, int>
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw2_wa), index_f-(int)(index_f/nw2_nua));
+//    return make_tuple(index_b-(int)(index_b/nw2_wa), index_f-(int)(index_f/nw2_va));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
 auto fconv_K3_a(double w, double v1, double v2) -> tuple<int, int, int>
@@ -158,7 +158,7 @@ auto fconv_K3_a(double w, double v1, double v2) -> tuple<int, int, int>
 //    auto index_f = (int)((v1-w_lower_f)/dv);
 //    auto index_fp = (int)((v2-w_lower_f)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw3_wa), index_f-(int)(index_f/nw3_nua), index_fp-(int)(index_fp/nw3_nuap));
+//    return make_tuple(index_b-(int)(index_b/nw3_wa), index_f-(int)(index_f/nw3_va), index_fp-(int)(index_fp/nw3_vap));
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 
@@ -173,7 +173,7 @@ auto fconv_K2_p(double w, double v1) -> tuple<int, int>
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw2_wp), index_f-(int)(index_f/nw2_nup));
+//    return make_tuple(index_b-(int)(index_b/nw2_wp), index_f-(int)(index_f/nw2_vp));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
 auto fconv_K3_p(double w, double v1, double v2) -> tuple<int, int, int>
@@ -182,7 +182,7 @@ auto fconv_K3_p(double w, double v1, double v2) -> tuple<int, int, int>
 //    auto index_f = (int)((v1-w_lower_f)/dv);
 //    auto index_fp = (int)((v2-w_lower_f)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw3_wp), index_f-(int)(index_f/nw3_nup), index_fp-(int)(index_fp/nw3_nupp));
+//    return make_tuple(index_b-(int)(index_b/nw3_wp), index_f-(int)(index_f/nw3_vp), index_fp-(int)(index_fp/nw3_vpp));
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 
 }
@@ -199,7 +199,7 @@ auto fconv_K2_t(double w, double v1) -> tuple<int, int>
 //    auto index_b = (int)((w-w_lower_b)/dw);
 //    auto index_f = (int)((v1-w_lower_f)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw2_wt), index_f-(int)(index_f/nw2_nut));
+//    return make_tuple(index_b-(int)(index_b/nw2_wt), index_f-(int)(index_f/nw2_vt));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
 auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
@@ -208,7 +208,7 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
 //    auto index_f = (int)((v1-w_lower_f)/dv);
 //    auto index_fp = (int)((v2-w_lower_f)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw3_wt), index_f-(int)(index_f/nw3_nut), index_fp-(int)(index_fp/nw3_nutp));
+//    return make_tuple(index_b-(int)(index_b/nw3_wt), index_f-(int)(index_f/nw3_vt), index_fp-(int)(index_fp/nw3_vtp));
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 

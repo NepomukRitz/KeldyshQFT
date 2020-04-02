@@ -65,7 +65,7 @@ const double w_lower_b = -w_upper_b;        //Symmetric grid
 const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 
-const double glb_n_p = 1./20.;                  //Density of points  - with w_up=20=-w_lo, set to 1./20. for 200 and to 0.12 for 500 points
+const double glb_n_p = 1./50.;                  //Density of points  - with w_up=20=-w_lo, set to 1./20. for 200 and to 0.12 for 500 points
 
 // Number of bosonic and fermionic frequency points
 const int nBOS = (int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)) + (1-(((int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)))%2)); //Second term added to ensure nBOS is odd
@@ -91,31 +91,31 @@ const int nPROP = nFER;
 
 // Number of frequency points for the K1 class(bosonic freq wa),
 // K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic frequency wa and fermionic freqs nua and nuap)
-// for the a-channel // TODO: change nu to v ?
+// for the a-channel
 const int nw1_wa   = nBOS;
 const int nw2_wa   = nBOS;
-const int nw2_nua  = nFER;
+const int nw2_va  = nFER;
 const int nw3_wa   = nBOS;
-const int nw3_nua  = nFER;
-const int nw3_nuap = nFER;
+const int nw3_va  = nFER;
+const int nw3_vap = nFER;
 
 // Number of frequency points for the K1 class(bosonic freq wp), K2 (bosonic freq wp, fermionic freq nup) and K3
 // (bosonic frequency wp and fermionic freqs nup and nupp) for the p-channel
 const int nw1_wp   = nBOS;
 const int nw2_wp   = nBOS;
-const int nw2_nup  = nFER;
+const int nw2_vp  = nFER;
 const int nw3_wp   = nBOS;
-const int nw3_nup  = nFER;
-const int nw3_nupp = nFER;
+const int nw3_vp  = nFER;
+const int nw3_vpp = nFER;
 
 // Number of frequency points for the K1 class(bosonic freq wt), K2 (bosonic freq wt, fermionic freq nut) and K3
 // (bosonic frequency wt and fermionic freqs nut and nutp) for the t-channel
 const int nw1_wt   = nBOS;
 const int nw2_wt   = nBOS;
-const int nw2_nut  = nFER;
+const int nw2_vt  = nFER;
 const int nw3_wt   = nBOS;
-const int nw3_nut  = nFER;
-const int nw3_nutp = nFER;
+const int nw3_vt  = nFER;
+const int nw3_vtp = nFER;
 
 // Vectors for fermionic and bosonic frequencies
 rvec bfreqs (nBOS);                                                                                                     // NOLINT(cert-err58-cpp)
@@ -172,7 +172,7 @@ const int n_in = 1;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 2
 
 // Defines whether the values are interpolated from previously saved ones or from the self-energy
 #define INTER_PROP

@@ -92,7 +92,7 @@ public:
     void TC_K1(double&, int&) const;
 #endif
 #if DIAG_CLASS >=2
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_nup * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_vp * n_in);
 
     auto K2_acc (int) const -> Q;
 
@@ -127,7 +127,7 @@ public:
     void TC_K2(double&, double&, int&) const;
 #endif
 #if DIAG_CLASS >=3
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_nup * nw3_nupp * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_vp * nw3_vpp * n_in);
 
     auto K3_acc (int) const -> Q;
 
@@ -452,15 +452,15 @@ template <typename Q> void pvert<Q>::K2_direct_set (int i, Q value){
 }
 
 template <typename Q> void pvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] = value;
+    K2[iK * nw2_wp * nw2_vp * n_in + i * nw2_vp * n_in + j * n_in + i_in] = value;
 }
 
 template <typename Q> void pvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in] += value;
+    K2[iK * nw2_wp * nw2_vp * n_in + i * nw2_vp * n_in + j * n_in + i_in] += value;
 }
 
 template <typename Q> auto pvert<Q>::K2_val (int iK, int i, int j, int i_in) const -> Q{
-    return K2[iK*nw2_wp*nw2_nup*n_in + i*nw2_nup*n_in + j*n_in + i_in];
+    return K2[iK * nw2_wp * nw2_vp * n_in + i * nw2_vp * n_in + j * n_in + i_in];
 }
 
 template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in) const -> Q {
@@ -695,15 +695,15 @@ template <typename Q> void pvert<Q>::K3_direct_set (int i, Q value) {
 }
 
 template <typename Q> void pvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] = value;
+    K3[iK*nw3_wp*nw3_vp*nw3_vpp*n_in + i*nw3_vp*nw3_vpp*n_in + j*nw3_vpp*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> void pvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in] += value;
+    K3[iK*nw3_wp*nw3_vp*nw3_vpp*n_in + i*nw3_vp*nw3_vpp*n_in + j*nw3_vpp*n_in + k*n_in + i_in] += value;
 }
 
 template <typename Q> auto pvert<Q>::K3_val (int iK, int i, int j, int k, int i_in) const -> Q{
-    return K3[iK*nw3_wp*nw3_nup*nw3_nupp*n_in + i*nw3_nup*nw3_nupp*n_in + j*nw3_nupp*n_in + k*n_in + i_in];
+    return K3[iK*nw3_wp*nw3_vp*nw3_vpp*n_in + i*nw3_vp*nw3_vpp*n_in + j*nw3_vpp*n_in + k*n_in + i_in];
 }
 
 template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in) const -> Q{

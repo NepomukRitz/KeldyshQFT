@@ -390,6 +390,153 @@ void test_derivatives_SE(double Lambda){
                     rhs_flow.selfenergy.Sigma.real(), rhs_flow.selfenergy.Sigma.imag()});
 }
 
+/**
+ * This function checks the consistency of the K2 class
+ * @param Lambda    : Scale
+ * @param r         : Channel to be tested i.e. K_2^r
+ */
+auto test_K2_consistency(double Lambda, const char r) -> bool{
+    State<comp> bare;   //Create a bare state
+    bare.initialize();  //Initialize bare state
+
+    Propagator G(Lambda, bare.selfenergy, 'g'); //Bare propagator at scale Lambda>
+
+    //Create and initialize states to save the channel contributions in
+    State<comp> K1a;
+    State<comp> K1p;
+    State<comp> K1t;
+    K1a.initialize();
+    K1p.initialize();
+    K1t.initialize();
+
+    //Calculate K1a, K1p and K1t contributions separately
+    bubble_function(K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
+    bubble_function(K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
+    bubble_function(K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
+
+    //Create and initialize the K2r-objects to test
+    State<comp> test_K2r_with_K1a;
+    State<comp> test_K2r_with_K1p;
+    State<comp> test_K2r_with_K1t;
+    test_K2r_with_K1a.initialize();
+    test_K2r_with_K1p.initialize();
+    test_K2r_with_K1t.initialize();
+
+
+    if(r=='p' ||  r=='t') {
+        //Perform TOPT calculation of K2r with K1a
+        bubble_function(test_K2r_with_K1a.vertex, K1a.vertex, bare.vertex, G, G, r, false, 'L');
+    }
+
+    if(r=='a' || r=='t') {
+        //Perform TOPT calculation of K2r with K1p
+        bubble_function(test_K2r_with_K1p.vertex, K1p.vertex, bare.vertex, G, G, r, false, 'L');
+    }
+
+    if(r=='a' || r=='p') {
+        //Perform TOPT calculation of K2r with K1t
+        bubble_function(test_K2r_with_K1t.vertex, K1t.vertex, bare.vertex, G, G, r, false, 'L');
+    }
+
+
+    //TOPT-consistency checks for K2
+
+    bool empty = true;  //Boolean that stays true if everything is zero
+    if(r=='a' || r=='p') {
+#pragma omp parallel
+        //Check parallelized that everything in the K2 vertex is zero.
+        for (int index = 0; index < test_K2r_with_K1t.vertex[0].avertex.K2.size(); ++index) {
+            if (test_K2r_with_K1t.vertex[0].avertex.K2_acc(index) != 0.) {
+                empty = false;  //If any one element is not zero, K2 is not empty
+                break;  //Exit the for-loop early
+            }
+        }
+        //Print result of consistency check
+        if (empty) cout << "TOPT-consistency check passed. K2"<< r <<" with K1t is zero everywhere. \n";
+        else cout <<"TOPT-consistency check failed. K2" << r << " with K1t is not zero everywhere. \n";
+    }
+    else if(r=='t'){
+#pragma omp parallel
+        //Check parallelized that everything in the K2 vertices is zero.
+        for (int index = 0; index < test_K2r_with_K1a.vertex[0].avertex.K2.size(); ++index) {
+            if (test_K2r_with_K1a.vertex[0].avertex.K2_acc(index) != 0. ||
+                test_K2r_with_K1p.vertex[0].avertex.K2_acc(index) != 0.) {
+                empty = false;  //If any one element is not zero, K2 is not empty
+                break;  //Exit the for-loop early
+            }
+        }
+        //Print result of consistency check
+        if (empty) cout << "TOPT-consistency check passed. K2"<< r <<" with K1a and K1p are zero everywhere. \n";
+        else cout <<"TOPT-consistency check failed. K2" << r << " with K1a and K1p are not zero everywhere. \n";
+    }
+
+    return empty;
+}
+
+/**
+ * Function to test correctness of K2a when calculating a susceptibility (a K1a-object) //Notice that the same calculation
+ * can be performed in the p-channel.
+ * @param Lambda : Scale at which the calculation is done.
+ */
+void test_K2_correctness(double Lambda){
+
+    bool write_flag = true; //Write out results in a HDF5 file
+
+    State<comp> bare;   //Bare state
+    bare.initialize();  //Initialize bare state
+
+    Propagator G(Lambda, bare.selfenergy, 'g'); //Bare propagator
+
+    //Create states for K1-calculations
+    State<comp> K1a;
+    State<comp> K1p;
+    State<comp> K1t;
+
+    //Save K1-bubbles in separate objects
+    bubble_function(K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
+    bubble_function(K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
+    bubble_function(K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
+
+    State<comp> K2a;    //Create state for K2a calculation
+
+    //Do appropriate calculation for K2a with K1p and K1t being fed back into the left vertex. Notice part = 'L' to ensure
+    //that the correct contributions are added on both sides.
+    bubble_function(K2a.vertex, K1p.vertex + K1t.vertex, bare.vertex, G, G, 'a', false, 'L');
+
+    State<comp> right_side = bare + K1a + K2a;  //Create vertex of the right side of BSE
+    State<comp> TOPT_K1a;    //Create state to compare with K1a
+
+    //Calculate a K1a-object to compare with K1a and NRG-results. Notice part='R', suggesting the "weird" vertex is on the }
+    //right and, thanks to this, no unnecessary K2 calculation is entered in bubble_function
+    bubble_function(TOPT_K1a.vertex, bare.vertex, right_side.vertex, G, G, 'a', false, 'R');
+
+    cvec K1a_diff(nBOS);
+    for(int iw=0; iw<nBOS; ++iw){
+        K1a_diff[iw] = TOPT_K1a.vertex[0].avertex.K1_val(0, iw, 0) - K1a.vertex[0].avertex.K1_val(0, iw, 0);
+    }
+
+    cout << "Testing correctness of K2a. Using U=" << glb_U  << " and Lambda="<<Lambda<<", the maximal difference between direct K1a and K1a over integration of K2a is " << K1a_diff.max_norm() << "." << endl;
+    if(write_flag) write_h5_rvecs("TOPT_check_of_K2a", {"w", "SOPT_K1a_R", "SOPT_K1a_I", "TOPT_K1a_R", "TOPT_K1a_I"},
+                                  {bfreqs, K1a.vertex[0].avertex.K1.real(), K1a.vertex[0].avertex.K1.imag(),
+                                              TOPT_K1a.vertex[0].avertex.K1.real(), TOPT_K1a.vertex[0].avertex.K1.imag()});
+}
+
+/**
+ * Master function to test both consistency and correctness of K2-class
+ * @param Lambda
+ */
+void test_K2(double Lambda){
+
+    //First test consistency
+    bool K2a = test_K2_consistency(Lambda, 'a');    //Consistency of a-channel
+    bool K2p = test_K2_consistency(Lambda, 'p');    //Consistency of p-channel
+    bool K2t = test_K2_consistency(Lambda, 't');    //Consistency of t-channel
+
+    //Only if consistent test correctness
+    if(K2a&&K2p&&K2t)
+        test_K2_correctness(Lambda);
+}
+
 
 #ifdef STATIC_FEEDBACK
 /**

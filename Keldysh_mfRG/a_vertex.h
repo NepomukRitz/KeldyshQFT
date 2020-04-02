@@ -94,7 +94,7 @@ public:
     void TC_K1(double&, int&) const;
 #endif
 #if DIAG_CLASS>=2
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wa * nw2_nua * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wa * nw2_va * n_in);
 
     auto K2_acc (int) const -> Q;
 
@@ -129,7 +129,7 @@ public:
     void TC_K2(double&, double&, int&) const;
 #endif
 #if DIAG_CLASS >=3
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wa * nw3_nua * nw3_nuap * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wa * nw3_va * nw3_vap * n_in);
 
     auto K3_acc (int) const -> Q;
 
@@ -460,15 +460,15 @@ template <typename Q> void avert<Q>::K2_direct_set (int i, Q value){
 }
 
 template <typename Q> void avert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in] = value;
+    K2[iK * nw2_wa * nw2_va * n_in + i * nw2_va * n_in + j * n_in + i_in] = value;
 }
 
 template <typename Q> void avert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in] += value;
+    K2[iK * nw2_wa * nw2_va * n_in + i * nw2_va * n_in + j * n_in + i_in] += value;
 }
 
 template <typename Q> auto avert<Q>::K2_val (int iK, int i, int j, int i_in) const -> Q{
-    return K2[iK*nw2_wa*nw2_nua*n_in + i*nw2_nua*n_in + j*n_in + i_in];
+    return K2[iK * nw2_wa * nw2_va * n_in + i * nw2_va * n_in + j * n_in + i_in];
 }
 
 template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, const tvert<Q>& tvertex)const -> Q{
@@ -780,15 +780,15 @@ template <typename Q> void avert<Q>::K3_direct_set (int i, Q value){
 }
 
 template <typename Q> void avert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] = value;
+    K3[iK*nw3_wa*nw3_va*nw3_vap*n_in + i*nw3_va*nw3_vap*n_in + j*nw3_vap*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> void avert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in] += value;
+    K3[iK*nw3_wa*nw3_va*nw3_vap*n_in + i*nw3_va*nw3_vap*n_in + j*nw3_vap*n_in + k*n_in + i_in] += value;
 }
 
 template <typename Q> auto avert<Q>::K3_val (int iK, int i, int j, int k, int i_in) const -> Q{
-    return K3[iK*nw3_wa*nw3_nua*nw3_nuap*n_in + i*nw3_nua*nw3_nuap*n_in + j*nw3_nuap*n_in + k*n_in + i_in];
+    return K3[iK*nw3_wa*nw3_va*nw3_vap*n_in + i*nw3_va*nw3_vap*n_in + j*nw3_vap*n_in + k*n_in + i_in];
 }
 
 template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
