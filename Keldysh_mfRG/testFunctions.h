@@ -5,6 +5,7 @@
 #include "loop.h"             // self-energy loop
 #include "solvers.h"          // ODE solvers
 #include "write_data2file.h"  // writing data to txt or hdf5 file
+#include "hdf5_routines.h"    // writing states to hdf5 file
 
 /**
  * Function which calculates a SOPT state. Should however toggle off the components not to be computed.
@@ -589,6 +590,8 @@ void test_channel_decomposition(int N_ODE) {
                          {ffreqs,
                           state_fin.selfenergy.Sigma.real(), state_fin.selfenergy.Sigma.imag(),
                           state_ini.selfenergy.Sigma.real(), state_ini.selfenergy.Sigma.imag()});
+
+    write_hdf("channel_decomposition.h5", 0, 1, state_fin);
 }
 #endif
 
