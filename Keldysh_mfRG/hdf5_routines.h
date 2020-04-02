@@ -2,6 +2,9 @@
  * Functions to write/read a State object to/from an HDF5 file.
  */
 
+#ifndef KELDYSH_MFRG_HDF5_ROUTINES_H
+#define KELDYSH_MFRG_HDF5_ROUTINES_H
+
 #include "util.h"               // printing text
 #include "parameters.h"         // system parameters (necessary for vector lengths etc.)
 #include "data_structures.h"    // comp data type, real/complex vector class
@@ -995,3 +998,5 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
     if (cnt == 0) print("HDF5 test successful.", true);
     else print("HDF5 test failed. Number of differences: ", cnt, true);
 }
+
+#endif //KELDYSH_MFRG_HDF5_ROUTINES_H
