@@ -390,6 +390,7 @@ void test_derivatives_SE(double Lambda){
                     rhs_flow.selfenergy.Sigma.real(), rhs_flow.selfenergy.Sigma.imag()});
 }
 
+#if DIAG_CLASS >= 2
 /**
  * This function checks the consistency of the K2 class
  * @param Lambda    : Scale
@@ -536,7 +537,7 @@ void test_K2(double Lambda){
     if(K2a&&K2p&&K2t)
         test_K2_correctness(Lambda);
 }
-
+#endif
 
 #ifdef STATIC_FEEDBACK
 /**
