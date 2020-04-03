@@ -20,7 +20,7 @@ auto N_eff(double v) -> double {
 #ifdef EQUILIBRIUM
     return Fermi_distribution(v, glb_mu);
 #else
-    return 1./2. * (Fermi_distribution(v, glb_mu + glb_V) + Fermi_distribution(v, glb_mu));
+    return 1./2. * (Fermi_distribution(v, glb_mu + glb_V/2.) + Fermi_distribution(v, glb_mu - glb_V/2.));
 #endif
 }
 
