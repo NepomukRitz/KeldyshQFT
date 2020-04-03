@@ -218,11 +218,24 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
 /*******************************************    NON-LINEAR GRID    ****************************************************/
 // TODO: finish
 
+double sgn(double x) {
+    return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
+}
+
 double grid_transf(double w) {
-    return w/sqrt(W_scale*W_scale + w*w);
+    // Version 1: linear around w=0
+//    return w/sqrt(W_scale*W_scale + w*w);
+
+    // Version 2: quadratic around w=0
+    double w2 = pow(w, 2);
+    return sgn(w) * sqrt((sqrt(pow(w2, 2) + 4*w2*pow(W_scale, 2)) - w2) / 2.) / W_scale;
 }
 double grid_transf_inv(double W) {
-    return W_scale*W/sqrt(1.-W*W);
+    // Version 1: linear around w=0
+//    return W_scale*W/sqrt(1.-W*W);
+
+    // Version 2: quadratic around w=0
+    return W_scale * W * abs(W)/sqrt(1.-W*W);
 }
 
 void setUpBosGrid() {
