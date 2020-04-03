@@ -43,7 +43,7 @@ const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in e
 /// Frequency grid parameters ///
 
 // Grid type
-// 1: log-grid, 2: linear grid, 3: non-linear grid
+// 1: log-grid, 2: linear grid, 3: non-linear grid, 4: tangent grid
 #define GRID 2
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
@@ -80,6 +80,23 @@ const double w_lower_f = -w_upper_f;
 // Number of bosonic and fermionic frequency points
 const int nBOS = 501;
 const int nFER = 501;
+
+#elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
+// density of points around zero frequency
+const double dw_at_zero_f = 0.15;
+const double dw_at_zero_b = 0.15;
+// deviation from linear grid 0 < c < pi/2 ( strictly smalller! ), c = 0^+: linear grid, c = pi/2-O^+: wmax \to \infty
+const double dev_from_lin_f = 0.85;
+const double dev_from_lin_b = 0.85;
+// Number of bosonic and fermionic frequency points
+const int nBOS = 201; // should be odd to ensure that zero is in the grid
+const int nFER = 201; // should be odd to ensure that zero is in the grid
+// formula yields
+const double w_upper_b = dw_at_zero_b * ((double)(nBOS/2)) / dev_from_lin_b * tan( dev_from_lin_b);
+const double w_lower_b = -w_upper_b;
+const double w_upper_f = dw_at_zero_f * ((double)(nFER/2)) / dev_from_lin_f * tan( dev_from_lin_f);
+const double w_lower_f = -w_upper_f;
+
 #endif
 
 

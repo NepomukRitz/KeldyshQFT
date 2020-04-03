@@ -5,6 +5,7 @@
  * GRID=1: log grid -- to be implemented
  * GRID=2: linear grid
  * GRID=3: non-linear grid w/sqrt(W^2 + w^2)
+ * GRID=4: tangent grid w = c1 * tan( c2 * i + c3 )
  */
 
 #ifndef KELDYSH_MFRG_FREQUENCY_GRID_H
@@ -279,6 +280,35 @@ auto fconv_fer(double w) -> int {
     return index;
 }
 
+#elif GRID==4
+/*********************************************    TAN GRID    ******************************************************/
+
+// grid formula is v = a/c * tan( (i-N/2)/(N/2) * c )
+// and             i = arctan(v*c/a) * (N/2)/c + N/2
+// we have         dv_at_zero = a / (N/2)
+// and define      Nh_dev_lin = (N/2) / c, note that ( c = dev_from_lin )
+// such that       v = dv_at_zero * Nh_dev_lin * tan( (i-N/2) / Nh_dev_lin ) )
+// and             i = arctan(v/(dev_at_zero*Nh_dev_lin)) * Nh_dev_lin + N/2
+
+const double Nh_dev_lin_b = (double)(nBOS/2) / dev_from_lin_b;
+const double Nh_dev_lin_f = (double)(nFER/2) / dev_from_lin_f;
+
+void setUpBosGrid() {
+    for(int i=0; i<nBOS; ++i)
+        bfreqs[i] = dw_at_zero_b * Nh_dev_lin_b * tan( (double)(i - nBOS/2) / Nh_dev_lin_b);
+}
+void setUpFerGrid() {
+    for(int i=0; i<nFER; ++i)
+        ffreqs[i] = dw_at_zero_f * Nh_dev_lin_f * tan( (double)(i - nFER/2) / Nh_dev_lin_f);
+}
+auto fconv_bos(const double w) -> int {
+    //return (int) ( atan( w/(dw_at_zero_b*Nh_dev_lin_b) ) * Nh_dev_lin_b + (double)(nBOS/2) );
+    return (int) ( atan( w/(dw_at_zero_b*Nh_dev_lin_b) ) * Nh_dev_lin_b + (double)(nBOS/2) );
+}
+auto fconv_fer(const double v) -> int {
+    return (int) ( atan( v/(dw_at_zero_f*Nh_dev_lin_f) ) * Nh_dev_lin_f + (double)(nFER/2) );
+}
+// note: value must be positive before flooring via (int) so that interpolation works correectly
 
 #endif
 

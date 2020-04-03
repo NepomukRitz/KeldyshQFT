@@ -128,13 +128,8 @@ template <typename Integrand> auto integrator_PAID(Integrand& integrand, double 
 }
 
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b) -> comp {
-#if GRID==1
-    return integrator_riemann(integrand, a, b);
-#elif GRID==2
     return integrator_simpson(integrand, a, b);
-#elif GRID==3
-    return integrator_riemann(integrand, a, b);
-#endif
+    //return integrator_riemann(integrand, a, b);
 }
 
 auto dotproduct(const cvec& x, const rvec& y) -> comp

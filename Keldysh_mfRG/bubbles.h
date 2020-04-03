@@ -263,7 +263,7 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2, i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
 #if DIAG_CLASS <= 1
                     res += res_l_V[i2] * Pival * res_r_V[i2];
 #else
@@ -372,7 +372,7 @@ public:
                 //Add contribution to the result.
                 case 'a':                                                                       //Contributions: V*Pi*V
                     vertex1[0].avertex.indices_sum(indices, i0, i2);
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2, i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
@@ -461,7 +461,7 @@ public:
                 //Add contribution to the result.
                 case 'a':                                                                               //Contributions: V*Pi*V
                     vertex1[0].avertex.indices_sum(indices, i0, i2);
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2, i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                     if(part=='L'){
                         res_l_V = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
                         res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
@@ -610,7 +610,7 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2, i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
 #if DIAG_CLASS <= 1
                     res += res_l_V[i2] * Pival * res_r_V[i2];
 #else
@@ -716,7 +716,7 @@ public:
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1[0].avertex.indices_sum(indices, i0, i2);
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2, i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
 
@@ -804,7 +804,7 @@ public:
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     vertex1[0].avertex.indices_sum(indices, i0, i2);
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2, i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
 
