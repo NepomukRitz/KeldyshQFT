@@ -986,8 +986,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
                 int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
                 int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
-                double w = bfreqs[iw];
-                double v = ffreqs[iv];
+                double w = bfreqs2[iw];
+                double v = ffreqs2[iv];
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
@@ -1049,9 +1049,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 int iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
                 int ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
                 int i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
-                double w = bfreqs[iw];
-                double v = ffreqs[iv];
-                double vp = ffreqs[ivp];
+                double w = bfreqs3[iw];
+                double v = ffreqs3[iv];
+                double vp = ffreqs3[ivp];
                 Q value;
 
                 // initialize the integrand object and perform frequency integration

@@ -40,8 +40,12 @@ const H5std_string	DATASET_K3_t("K3_t");
 
 const H5std_string	SELF_LIST("selflist");
 const H5std_string	LAMBDA_LIST("lambdas");
-const H5std_string  BFREQS_LIST("bfreqs");
-const H5std_string  FFREQS_LIST("ffreqs");
+const H5std_string  BFREQS_LIST ("bfreqs");
+const H5std_string  BFREQS2_LIST("bfreqs2");
+const H5std_string  BFREQS3_LIST("bfreqs3");
+const H5std_string  FFREQS_LIST ("ffreqs");
+const H5std_string  FFREQS2_LIST("ffreqs2");
+const H5std_string  FFREQS3_LIST("ffreqs3");
 const H5std_string  PARAM_LIST("parameters");
 const H5std_string  RE( "re" );
 const H5std_string  IM( "im" );
@@ -208,10 +212,14 @@ public:
     hsize_t K1_buffer[1];
 #endif
 #if DIAG_CLASS >= 2
+    hsize_t bfreqs2[1];
+    hsize_t ffreqs2[1];
     hsize_t K2[2];
     hsize_t K2_buffer[1];
 #endif
 #if DIAG_CLASS >= 3
+    hsize_t bfreqs3[1];
+    hsize_t ffreqs3[1];
     hsize_t K3[2];
     hsize_t K3_buffer[1];
 #endif
@@ -222,10 +230,14 @@ public:
         K1_buffer {h5_cast(buffer.K1_dim)},
 #endif
 #if DIAG_CLASS >= 2
+        bfreqs2 {h5_cast(nBOS2)},
+        ffreqs2 {h5_cast(nFER2)},
         K2 {h5_cast(Lambda_size), h5_cast(buffer.K2_dim)},
         K2_buffer {h5_cast(buffer.K2_dim)},
 #endif
 #if DIAG_CLASS >= 3
+        bfreqs3 {h5_cast(nBOS3)},
+        ffreqs3 {h5_cast(nFER3)},
         K3 {h5_cast(Lambda_size), h5_cast(buffer.K3_dim)},
         K3_buffer {h5_cast(buffer.K3_dim)},
 #endif
@@ -258,9 +270,11 @@ public:
     H5::DataSet *K1_a_p, *K1_p_p, *K1_t_p;
 #endif
 #if DIAG_CLASS >= 2
+    H5::DataSet *bfreqs2_p, *ffreqs2_p;
     H5::DataSet *K2_a_p, *K2_p_p, *K2_t_p;
 #endif
 #if DIAG_CLASS >= 3
+    H5::DataSet *bfreqs3_p, *ffreqs3_p;
     H5::DataSet *K3_a_p, *K3_p_p, *K3_t_p;
 #endif
 
@@ -299,11 +313,15 @@ public:
              H5::DataSpace& dataSpaces_K1_t,
 #endif
 #if DIAG_CLASS >= 2
+             H5::DataSpace& dataSpaces_bfreqs2,
+             H5::DataSpace& dataSpaces_ffreqs2,
              H5::DataSpace& dataSpaces_K2_a,
              H5::DataSpace& dataSpaces_K2_p,
              H5::DataSpace& dataSpaces_K2_t,
 #endif
 #if DIAG_CLASS >= 3
+             H5::DataSpace& dataSpaces_bfreqs3,
+             H5::DataSpace& dataSpaces_ffreqs3,
              H5::DataSpace& dataSpaces_K3_a,
              H5::DataSpace& dataSpaces_K3_p,
              H5::DataSpace& dataSpaces_K3_t,
@@ -332,6 +350,10 @@ public:
 #endif
 #if DIAG_CLASS >= 2
             // Create the datasets in file:
+            bfreqs2_p = new H5::DataSet(
+                    file->createDataSet(BFREQS2_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs2));
+            ffreqs2_p = new H5::DataSet(
+                    file->createDataSet(FFREQS2_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs2));
             K2_a_p = new H5::DataSet(
                     file->createDataSet(DATASET_K2_a, mtype_comp, dataSpaces_K2_a, plist_vert));
             K2_p_p = new H5::DataSet(
@@ -341,6 +363,10 @@ public:
 #endif
 #if DIAG_CLASS >= 3
             // Create the datasets in file:
+            bfreqs3_p = new H5::DataSet(
+                    file->createDataSet(BFREQS3_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs3));
+            ffreqs3_p = new H5::DataSet(
+                    file->createDataSet(FFREQS3_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs3));
             K3_a_p = new H5::DataSet(
                     file->createDataSet(DATASET_K3_a, mtype_comp, dataSpaces_K3_a, plist_vert));
             K3_p_p = new H5::DataSet(
@@ -412,11 +438,15 @@ public:
             K1_t_p -> close();
 #endif
 #if DIAG_CLASS >= 2
+            bfreqs2_p -> close();
+            ffreqs2_p -> close();
             K2_a_p -> close();
             K2_p_p -> close();
             K2_t_p -> close();
 #endif
 #if DIAG_CLASS >= 3
+            bfreqs3_p -> close();
+            ffreqs3_p -> close();
             K3_a_p -> close();
             K3_p_p -> close();
             K3_t_p -> close();
@@ -506,6 +536,9 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K1_t_buffer(RANK_K1-1, dims.K1_buffer);
 #endif
 #if DIAG_CLASS >= 2
+        H5::DataSpace dataSpaces_bfreqs2(1, dims.bfreqs2);
+        H5::DataSpace dataSpaces_ffreqs2(1, dims.ffreqs2);
+
         H5::DataSpace dataSpaces_K2_a(RANK_K2, dims.K2);
         H5::DataSpace dataSpaces_K2_p(RANK_K2, dims.K2);
         H5::DataSpace dataSpaces_K2_t(RANK_K2, dims.K2);
@@ -515,6 +548,9 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K2_t_buffer(RANK_K2-1, dims.K2_buffer);
 #endif
 #if DIAG_CLASS >= 3
+        H5::DataSpace dataSpaces_bfreqs3(1, dims.bfreqs3);
+        H5::DataSpace dataSpaces_ffreqs3(1, dims.ffreqs3);
+
         H5::DataSpace dataSpaces_K3_a(RANK_K3, dims.K3);
         H5::DataSpace dataSpaces_K3_p(RANK_K3, dims.K3);
         H5::DataSpace dataSpaces_K3_t(RANK_K3, dims.K3);
@@ -539,9 +575,11 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
                           dataSpaces_K1_a, dataSpaces_K1_p, dataSpaces_K1_t,
 #endif
 #if DIAG_CLASS >= 2
+                          dataSpaces_bfreqs2, dataSpaces_ffreqs2,
                           dataSpaces_K2_a, dataSpaces_K2_p, dataSpaces_K2_t,
 #endif
 #if DIAG_CLASS >= 3
+                          dataSpaces_bfreqs3, dataSpaces_ffreqs3,
                           dataSpaces_K3_a, dataSpaces_K3_p, dataSpaces_K3_t,
 #endif
                           mtype_comp, plist_vert);
@@ -613,6 +651,8 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         dataSpaces_K2_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
         if (!file_exists) {
+            dataSets.bfreqs2_p -> write(bfreqs2.data(),  H5::PredType::NATIVE_DOUBLE);
+            dataSets.ffreqs2_p -> write(ffreqs2.data(),  H5::PredType::NATIVE_DOUBLE);
             dataSets.K2_a_p -> write(buffer.K2_class_a, mtype_comp, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
             dataSets.K2_p_p -> write(buffer.K2_class_p, mtype_comp, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
             dataSets.K2_t_p -> write(buffer.K2_class_t, mtype_comp, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
@@ -631,6 +671,8 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         dataSpaces_K3_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
         if (!file_exists) {
+            dataSets.bfreqs2_p -> write(bfreqs2.data(),  H5::PredType::NATIVE_DOUBLE);
+            dataSets.ffreqs2_p -> write(ffreqs2.data(),  H5::PredType::NATIVE_DOUBLE);
             dataSets.K3_a_p -> write(buffer.K3_class_a, mtype_comp, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
             dataSets.K3_p_p -> write(buffer.K3_class_p, mtype_comp, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
             dataSets.K3_t_p -> write(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);

@@ -70,6 +70,10 @@ const double glb_n_p = 1./50.;                  //Density of points  - with w_up
 // Number of bosonic and fermionic frequency points
 const int nBOS = (int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)) + (1-(((int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)))%2)); //Second term added to ensure nBOS is odd
 const int nFER = (int)(glb_n_p*(w_upper_f-w_lower_f)/(glb_T)) + (1-(((int)(glb_n_p*(w_upper_f-w_lower_f)/(glb_T)))%2)); //Second term added to ensure nFER is odd
+
+const double dw = (w_upper_b-w_lower_b)/((double)(nBOS-1)); // TODO: remove this?
+const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1)); // TODO: remove this?
+
 #elif GRID==3
 const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
 const double w_upper_b = 100.;
@@ -99,7 +103,11 @@ const double w_lower_f = -w_upper_f;
 
 #endif
 
-
+// Number of frequency points for K2 and K3 classes
+const int nBOS2 = nBOS;
+const int nFER2 = nFER;
+const int nBOS3 = nBOS;
+const int nFER3 = nFER;
 
 
 // Number of frequency points for the self energy and the susceptibility
@@ -109,37 +117,39 @@ const int nPROP = nFER;
 // Number of frequency points for the K1 class(bosonic freq wa),
 // K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic frequency wa and fermionic freqs nua and nuap)
 // for the a-channel
-const int nw1_wa   = nBOS;
-const int nw2_wa   = nBOS;
-const int nw2_va  = nFER;
-const int nw3_wa   = nBOS;
-const int nw3_va  = nFER;
-const int nw3_vap = nFER;
+const int nw1_wa  = nBOS;
+const int nw2_wa  = nBOS2;
+const int nw2_va  = nFER2;
+const int nw3_wa  = nBOS3;
+const int nw3_va  = nFER3;
+const int nw3_vap = nFER3;
 
 // Number of frequency points for the K1 class(bosonic freq wp), K2 (bosonic freq wp, fermionic freq nup) and K3
 // (bosonic frequency wp and fermionic freqs nup and nupp) for the p-channel
-const int nw1_wp   = nBOS;
-const int nw2_wp   = nBOS;
-const int nw2_vp  = nFER;
-const int nw3_wp   = nBOS;
-const int nw3_vp  = nFER;
-const int nw3_vpp = nFER;
+const int nw1_wp  = nBOS;
+const int nw2_wp  = nBOS2;
+const int nw2_vp  = nFER2;
+const int nw3_wp  = nBOS3;
+const int nw3_vp  = nFER3;
+const int nw3_vpp = nFER3;
 
 // Number of frequency points for the K1 class(bosonic freq wt), K2 (bosonic freq wt, fermionic freq nut) and K3
 // (bosonic frequency wt and fermionic freqs nut and nutp) for the t-channel
-const int nw1_wt   = nBOS;
-const int nw2_wt   = nBOS;
-const int nw2_vt  = nFER;
-const int nw3_wt   = nBOS;
-const int nw3_vt  = nFER;
-const int nw3_vtp = nFER;
+const int nw1_wt  = nBOS;
+const int nw2_wt  = nBOS2;
+const int nw2_vt  = nFER2;
+const int nw3_wt  = nBOS3;
+const int nw3_vt  = nFER3;
+const int nw3_vtp = nFER3;
 
 // Vectors for fermionic and bosonic frequencies
 rvec bfreqs (nBOS);                                                                                                     // NOLINT(cert-err58-cpp)
-const double dw = (w_upper_b-w_lower_b)/((double)(nBOS-1)); // TODO: remove this?
+rvec bfreqs2 (nBOS2);
+rvec bfreqs3 (nBOS3);
 
 rvec ffreqs (nFER);                                                                                                     // NOLINT(cert-err58-cpp)
-const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1)); // TODO: remove this?
+rvec ffreqs2 (nFER2);
+rvec ffreqs3 (nFER3);
 
 // Frequency grids for each channel
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)

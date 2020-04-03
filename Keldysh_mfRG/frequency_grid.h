@@ -60,46 +60,43 @@ double grid_transf_f_inv(double W) {
     return sgn(W) * w_a * (exp(k_w_f*abs(W)) - 1);
 }
 
-void setUpBosGrid() {
+void setUpBosGrid(rvec& freqs, int nfreqs) {
     double W;
     double W_lower_b = grid_transf_b(w_lower_b);
     double W_upper_b = grid_transf_b(w_upper_b);
-    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
-    for(int i=0; i<nBOS; ++i) {
+
+    // self-energy and K1
+    double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
+    for(int i=0; i<nfreqs; ++i) {
         W = W_lower_b + i*dW;
-        bfreqs[i] = grid_transf_b_inv(W);
+        freqs[i] = grid_transf_b_inv(W);
     }
 }
-void setUpFerGrid() {
+
+void setUpFerGrid(rvec& freqs, int nfreqs) {
     double W;
     double W_lower_f = grid_transf_f(w_lower_f);
     double W_upper_f = grid_transf_f(w_upper_f);
-    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
-    for(int i=0; i<nFER; ++i) {
+
+    // self-energy and K1
+    double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
+    for(int i=0; i<nfreqs; ++i) {
         W = W_lower_f + i*dW;
-        ffreqs[i] =  grid_transf_f_inv(W);
+        freqs[i] =  grid_transf_f_inv(W);
     }
 }
 
 
-auto fconv_bos(double w) -> int {
+auto fconv_bos(double w, int nfreqs) -> int {
     double W = grid_transf_b(w);
-//    double W_lower_b = grid_transf_b(w_lower_b);
-//    double W_upper_b = grid_transf_b(w_upper_b);
-//    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
-    double dW = 2./((double)(nBOS-1.));
-//    W = (W-W_lower_b)/dW;
+    double dW = 2./((double)(nfreqs-1.));
     W = (W + 1.)/dW;
     auto index = (int)W;
     return index;
 }
-auto fconv_fer(double w) -> int {
+auto fconv_fer(double w, int nfreqs) -> int {
     double W = grid_transf_f(w);
-//    double W_lower_f = grid_transf_f(w_lower_f);
-//    double W_upper_f = grid_transf_f(w_upper_f);
-//    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
-    double dW = 2./((double)(nFER-1.));
-//    W = (W-W_lower_f)/dW;
+    double dW = 2./((double)(nfreqs-1.));
     W = (W + 1.)/dW;
     auto index = (int)W;
     return index;
@@ -108,29 +105,31 @@ auto fconv_fer(double w) -> int {
 #elif GRID==2
 /*********************************************    LINEAR GRID    ******************************************************/
 
-void setUpBosGrid()
+void setUpBosGrid(rvec& freqs, int nfreqs)
 {
-    for(int i=0; i<nBOS; ++i)
-        bfreqs[i] = w_lower_b + i*dw;
+    for(int i=0; i<nfreqs; ++i)
+        freqs[i] = w_lower_b + i*dw;
 }
-void setUpFerGrid()
+void setUpFerGrid(rvec& freqs, int nfreqs)
 {
-    for(int i=0; i<nFER; ++i)
-        ffreqs[i] = w_lower_f + i*dv;
+    for(int i=0; i<nfreqs; ++i)
+        freqs[i] = w_lower_f + i*dv;
 }
 
 
-auto fconv_bos(double w) -> int
+auto fconv_bos(double w, int nfreqs) -> int
 {
+    double dw = (w_upper_b-w_lower_b)/((double)(nfreqs-1));
     double aid = (w-w_lower_b)/dw;
     auto index1 = (int)aid;
-    return index1; //- (int)(index/bfreqs.size());
+    return index1; //- (int)(index/nfreqs);
 }
-auto fconv_fer(double w) -> int
+auto fconv_fer(double w, int nfreqs) -> int
 {
+    double dv = (w_upper_f-w_lower_f)/((double)(nfreqs-1));
     double aid = (w-w_lower_f)/dv;
     auto index1 = (int)aid;
-    return index1; //- (int)(index/ffreqs.size());
+    return index1; //- (int)(index/nfreqs);
 }
 
 
@@ -217,7 +216,6 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
 
 #elif GRID==3
 /*******************************************    NON-LINEAR GRID    ****************************************************/
-// TODO: finish
 
 double sgn(double x) {
     return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
@@ -239,42 +237,42 @@ double grid_transf_inv(double W) {
     return W_scale * W * abs(W)/sqrt(1.-W*W);
 }
 
-void setUpBosGrid() {
+void setUpBosGrid(rvec& freqs, int nfreqs) {
     double W;
     double W_lower_b = grid_transf(w_lower_b);
     double W_upper_b = grid_transf(w_upper_b);
-    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
-    for(int i=0; i<nBOS; ++i) {
+    double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
+    for(int i=0; i<nfreqs; ++i) {
         W = W_lower_b + i*dW;
-        bfreqs[i] = grid_transf_inv(W);
+        freqs[i] = grid_transf_inv(W);
     }
 }
-void setUpFerGrid() {
+void setUpFerGrid(rvec& freqs, int nfreqs) {
     double W;
     double W_lower_f = grid_transf(w_lower_f);
     double W_upper_f = grid_transf(w_upper_f);
-    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
-    for(int i=0; i<nFER; ++i) {
+    double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
+    for(int i=0; i<nfreqs; ++i) {
         W = W_lower_f + i*dW;
-        ffreqs[i] =  grid_transf_inv(W);
+        freqs[i] =  grid_transf_inv(W);
     }
 }
 
 
-auto fconv_bos(double w) -> int {
+auto fconv_bos(double w, int nfreqs) -> int {
     double W = grid_transf(w);
     double W_lower_b = grid_transf(w_lower_b);
     double W_upper_b = grid_transf(w_upper_b);
-    double dW = (W_upper_b-W_lower_b)/((double)(nBOS-1.));
+    double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
     W = (W-W_lower_b)/dW;
     auto index = (int)W;
     return index;
 }
-auto fconv_fer(double w) -> int {
+auto fconv_fer(double w, int nfreqs) -> int {
     double W = grid_transf(w);
     double W_lower_f = grid_transf(w_lower_f);
     double W_upper_f = grid_transf(w_upper_f);
-    double dW = (W_upper_f-W_lower_f)/((double)(nFER-1.));
+    double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
     W = (W-W_lower_f)/dW;
     auto index = (int)W;
     return index;
@@ -290,27 +288,68 @@ auto fconv_fer(double w) -> int {
 // such that       v = dv_at_zero * Nh_dev_lin * tan( (i-N/2) / Nh_dev_lin ) )
 // and             i = arctan(v/(dev_at_zero*Nh_dev_lin)) * Nh_dev_lin + N/2
 
-const double Nh_dev_lin_b = (double)(nBOS/2) / dev_from_lin_b;
-const double Nh_dev_lin_f = (double)(nFER/2) / dev_from_lin_f;
+//const double Nh_dev_lin_b = (double)(nBOS/2) / dev_from_lin_b;
+//const double Nh_dev_lin_f = (double)(nFER/2) / dev_from_lin_f;
 
-void setUpBosGrid() {
-    for(int i=0; i<nBOS; ++i)
-        bfreqs[i] = dw_at_zero_b * Nh_dev_lin_b * tan( (double)(i - nBOS/2) / Nh_dev_lin_b);
+void setUpBosGrid(rvec& freqs, int nfreqs) {
+    const double Nh_dev_lin_b = (double)(nfreqs/2) / dev_from_lin_b;
+    for(int i=0; i<nfreqs; ++i)
+        freqs[i] = dw_at_zero_b * Nh_dev_lin_b * tan( (double)(i - nfreqs/2) / Nh_dev_lin_b);
 }
-void setUpFerGrid() {
-    for(int i=0; i<nFER; ++i)
-        ffreqs[i] = dw_at_zero_f * Nh_dev_lin_f * tan( (double)(i - nFER/2) / Nh_dev_lin_f);
+void setUpFerGrid(rvec& freqs, int nfreqs) {
+    const double Nh_dev_lin_f = (double)(nfreqs/2) / dev_from_lin_f;
+    for(int i=0; i<nfreqs; ++i)
+        freqs[i] = dw_at_zero_f * Nh_dev_lin_f * tan( (double)(i - nfreqs/2) / Nh_dev_lin_f);
 }
-auto fconv_bos(const double w) -> int {
-    //return (int) ( atan( w/(dw_at_zero_b*Nh_dev_lin_b) ) * Nh_dev_lin_b + (double)(nBOS/2) );
-    return (int) ( atan( w/(dw_at_zero_b*Nh_dev_lin_b) ) * Nh_dev_lin_b + (double)(nBOS/2) );
+auto fconv_bos(const double w, int nfreqs) -> int {
+    const double Nh_dev_lin_b = (double)(nfreqs/2) / dev_from_lin_b;  // TODO: make it global again?
+    return (int) ( atan( w/(dw_at_zero_b*Nh_dev_lin_b) ) * Nh_dev_lin_b + (double)(nfreqs/2) );
 }
-auto fconv_fer(const double v) -> int {
-    return (int) ( atan( v/(dw_at_zero_f*Nh_dev_lin_f) ) * Nh_dev_lin_f + (double)(nFER/2) );
+auto fconv_fer(const double v, int nfreqs) -> int {
+    const double Nh_dev_lin_f = (double)(nfreqs/2) / dev_from_lin_f;  // TODO: make it global again?
+    return (int) ( atan( v/(dw_at_zero_f*Nh_dev_lin_f) ) * Nh_dev_lin_f + (double)(nfreqs/2) );
 }
 // note: value must be positive before flooring via (int) so that interpolation works correectly
 
 #endif
+
+// Set up the grid, using the grid-specific functions defined above
+void setUpBosGrid() {
+    setUpBosGrid(bfreqs, nBOS);
+    setUpBosGrid(bfreqs2, nBOS2);
+    setUpBosGrid(bfreqs3, nBOS3);
+}
+void setUpFerGrid() {
+    setUpBosGrid(ffreqs, nFER);
+    setUpBosGrid(ffreqs2, nFER2);
+    setUpBosGrid(ffreqs3, nFER3);
+}
+
+// Frequency-to-index conversion
+
+// self-energy and K1
+auto fconv_bos(double w) -> int {
+    return fconv_bos(w, nBOS);
+}
+auto fconv_fer(double w) -> int {
+    return fconv_fer(w, nFER);
+}
+
+// K2
+auto fconv_bos2(double w) -> int {
+    return fconv_bos(w, nBOS2);
+}
+auto fconv_fer2(double w) -> int {
+    return fconv_fer(w, nFER2);
+}
+
+// K3
+auto fconv_bos3(double w) -> int {
+    return fconv_bos(w, nBOS3);
+}
+auto fconv_fer3(double w) -> int {
+    return fconv_fer(w, nFER3);
+}
 
 
 /*********************************************** LOG GRID *************************************************************/
