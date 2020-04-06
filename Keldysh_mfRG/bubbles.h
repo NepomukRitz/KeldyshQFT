@@ -933,11 +933,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 // (distinguishing between differentiated and non-differentiated bubble)
                 if(diff){
                     Integrand_K1_diff<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
-                    value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
+                    value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, w_lower_f, w_upper_f, -w/2., w/2.);                      //Integration over a fermionic frequency
                 }
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
-                    value  = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, w_lower_f, w_upper_f);                      //Integration over a fermionic frequency
+                    value  = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, w_lower_f, w_upper_f, -w/2., w/2.);                      //Integration over a fermionic frequency
                     value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, w_upper_b, w_upper_b, w, i0, i_in, channel); //Correction needed for the K1 class
                 }
 
@@ -994,14 +994,14 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 // (distinguishing between differentiated and non-differentiated bubble)
                 if(diff){
                     Integrand_K2_diff<Q> integrand_K2 (vertex1, vertex2, Pi, i0, w, v, i_in, channel);
-                    value = prefactor*(-1./(2.*M_PI*glb_i))*integrator(integrand_K2, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                    value = prefactor*(-1./(2.*M_PI*glb_i))*integrator(integrand_K2, w_lower_f, w_upper_f, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
                 }
                 else{
                     if (part != 'L') value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
                     // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
                     else {
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, w, v, i_in, channel, part);
-                        value = prefactor*(-1./(2.*M_PI*glb_i))*integrator(integrand_K2, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                        value = prefactor*(-1./(2.*M_PI*glb_i))*integrator(integrand_K2, w_lower_f, w_upper_f, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
                     }
                 }
 
@@ -1059,12 +1059,12 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 if (diff){
                     Integrand_K3_diff<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel);
 
-                    value = prefactor*(-1./(2.*M_PI*glb_i))*integrator(integrand_K3, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency                    // y
+                    value = prefactor*(-1./(2.*M_PI*glb_i))*integrator(integrand_K3, w_lower_f, w_upper_f, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency                    // y
                 }
                 else{
                     Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp,  i_in, channel, part);
 
-                    value = prefactor*(-1./(2.*M_PI*glb_i))*integrator(integrand_K3, w_lower_f, w_upper_f);                      //Integration over vppp, a fermionic frequency
+                    value = prefactor*(-1./(2.*M_PI*glb_i))*integrator(integrand_K3, w_lower_f, w_upper_f, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
                 }
 
                 K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
