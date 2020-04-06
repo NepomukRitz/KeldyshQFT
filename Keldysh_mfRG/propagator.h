@@ -1,33 +1,44 @@
 #ifndef KELDYSH_MFRG_PROPAGATOR_H
 #define KELDYSH_MFRG_PROPAGATOR_H
 
-#include <cmath>             // exp, tanh, fabs, conj
+#include <cmath>             // exp, tanh
 #include "data_structures.h" // real/complex vector classes, imag. unit
 #include "selfenergy.h"      // self-energy class
 #include "parameters.h"      // system parameters (lengths of vectors etc.)
 
 using namespace std;
 
-//Self-explanatory
-auto Fermi_distribution(double v, double mu) -> double
-{
+// Fermi--Dirac distribution function
+auto Fermi_distr(double v, double mu) -> double {
     // return 1./(exp((v-mu)/glb_T)+1.);
-    return 1./2. * (1. - tanh((v-mu)/(2.*glb_T))); // numerically preferential
+    return 0.5 * (1. - tanh((v-mu)/(2.*glb_T))); // numerically preferential
+}
+
+// Fermi distribution factor: 1. - 2. * Fermi_distr
+auto Fermi_fac(double v, double mu) -> double {
+    return tanh((v-mu)/(2.*glb_T));
 }
 
 // effective distribution function
-auto N_eff(double v) -> double {
+auto Eff_distr(double v) -> double {
 #ifdef EQUILIBRIUM
-    return Fermi_distribution(v, glb_mu);
+    return Fermi_distr(v, glb_mu);
 #else
-    return 1./2. * (Fermi_distribution(v, glb_mu + glb_V/2.) + Fermi_distribution(v, glb_mu - glb_V/2.));
+    return 0.5 * (Fermi_distr(v, glb_mu + glb_V/2.) + Fermi_distr(v, glb_mu - glb_V/2.));
+#endif
+}
+
+// effective distribution factor: 1. - 2. * Eff_distr
+auto Eff_fac(double v) -> double {
+#ifdef EQUILIBRIUM
+    return Fermi_fac(v, glb_mu);
+#else
+    return 1. - (Fermi_distr(v, glb_mu + glb_V/2.) + Fermi_distr(v, glb_mu - glb_V/2.));
 #endif
 }
 
 
-/**
- * Propagator class
- */
+/// Propagator class ///
 class Propagator {
 public:
     double Lambda;
@@ -161,7 +172,7 @@ auto Propagator::GA(double v, int i_in) const -> comp
 auto Propagator::GK(double v, int i_in) const -> comp
 {
     //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*effective_distribution_function(v))*(GR(v, i_in)-GA(v, i_in));
+    return (1.-2.*effective_distr_function(v))*(GR(v, i_in)-GA(v, i_in));
 }
 
 auto Propagator::SR(double v, int i_in) const -> comp
@@ -262,25 +273,32 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 
 #elif REG==2
 
-/*******PROPAGATOR FUNCTIONS***********/
+/////// PROPAGATOR FUNCTIONS ///////
 
 auto Propagator::GR(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon + 0.5*glb_i*(glb_Gamma+Lambda) - selfenergy.valsmooth(0, v, i_in));
+    return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
 }
 auto Propagator::GA(double v, int i_in) const -> comp
 {
-    return 1./(v - glb_epsilon - 0.5*glb_i*(glb_Gamma+Lambda) - conj(selfenergy.valsmooth(0, v, i_in)));
+    return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
 }
 auto Propagator::GK(double v, int i_in) const -> comp
 {
 #ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*N_eff)*(GR-GA)
-    //return (1.-2.*N_eff(v))*(GR(v, i_in) - GA(v, i_in));
-    return glb_i*(2.-4.*N_eff(v))*imag(GR(v, i_in)); // more efficient: only one interpolation instead of two
+    // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
+    //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
+    return glb_i * ( Eff_fac(v) * 2. * imag(GR(v, i_in)) ); // more efficient: only one interpolation instead of two
 #else
-    // General form: GR*(SigmaK+SigmaK_res)*GA
-    return GR(v, i_in) * (SE.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*N_eff(v))) * GA(v, i_in);
+    // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
+    // Derivation of equilibrium form:
+    // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
+    // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
+    //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
+    // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
+    // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
+    // more efficient: only one interpolation instead of two; std::norm(c)=std::abs(c)^2
+    return std::norm( GR(v, i_in) ) * ( selfenergy.valsmooth(1, v, i_in) - glb_i* ( (glb_Gamma+Lambda) * Eff_fac(v) ) );
 #endif
 }
 auto Propagator::SR(double v, int i_in) const -> comp
@@ -291,16 +309,26 @@ auto Propagator::SR(double v, int i_in) const -> comp
 auto Propagator::SK(double v, int i_in) const -> comp
 {
 #ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*N_eff)*(SR-SA)
-    //return (1.-2.*N_eff(v))*(SR(v, i_in) - conj(SR(v, i_in)));
-    return glb_i*(2.-4.*N_eff(v))*imag(SR(v, i_in));
+    // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
+    //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - conj(SR(v, i_in)));
+    return glb_i * ( Eff_fac(v) * 2. * imag(SR(v, i_in)) );
 #else
-    // General form:
+    // Derivation of general matrix form:
+    // S = - G * ( \partial_\Lambda G_0^{-1} ) * G
+    // where G = (0, G^A; G^R, G^K), G_0^{-1} = (Ginv0K, G_0^{A,-1}; G_0^{R,-1}, 0), Ginv0K = - \Sigma^K_res, \dot{Ginv0K} = i (1-2n_F)
+    // Thus, S^K = - G^R \dot{G_0^{R,-1}} G^K - G^K \dot{G_0^{A,-1}} G^A - G^R Ginv0K G^A
+    // Upon inserting G^K = (1-2n_F) (G^R-G^A), one recovers the equilibrium formula
     //comp retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
     //comp advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
-    //comp extra    = -glb_i*(1.-2.*N_eff(v))*GR(v, i_in)*GA(v, i_in);
+    //comp extra    = -glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in);
     //return retarded + advanced + extra;
-    return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*N_eff(v))*GR(v, i_in)*GA(v, i_in); // more efficient
+    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in); // more efficient
+    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(Eff_fac(v)) * std::norm( GR(v, i_in) ); // more efficient
+    // most efficient: insert GK, factor out, combine real factors
+    comp gr = GR(v, i_in);
+    double gri = imag(gr);
+    double grn = std::norm(gr);
+    return selfenergy.valsmooth(1, v, i_in) * (grn * gri)  -  glb_i * ( grn * Eff_fac(v) * ( 1. + (glb_Gamma+Lambda) * gri ) );
 #endif
 }
 
@@ -358,13 +386,13 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
     }
     else {
         if (fabs(v) != w_upper_f) {
-            int V = fconv_fer(v);
-            double x1 = ffreqs[V];
-            double x2 = ffreqs[V+1];
+            int iv = fconv_fer(v);
+            double x1 = ffreqs[iv];
+            double x2 = ffreqs[iv+1];
             double xd = (v - x1) / (x2 - x1);
 
-            comp f1 = prop[iK*nPROP*n_in + V*n_in + i_in];
-            comp f2 = prop[iK*nPROP*n_in + (V+1)*n_in + i_in];
+            comp f1 = prop[iK*nPROP*n_in + iv*n_in + i_in];
+            comp f2 = prop[iK*nPROP*n_in + (iv+1)*n_in + i_in];
 
             ans = (1. - xd) * f1 + xd * f2;
 
