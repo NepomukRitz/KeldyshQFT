@@ -25,9 +25,7 @@
                                         // in the bubble
 #include "correctionFunctions.h"        // correction terms due to finite integration range
 
-/**
- * Class combining two propagators, either GG or GS+SG
- */
+/// Class combining two propagators, either GG or GS+SG
 class Bubble{
     const Propagator& g;
     const Propagator& s;
@@ -85,9 +83,8 @@ public:
                     return 0.;
             }
         }
-        else
-        {
-            switch (iK){
+        else {
+            switch (iK){ // labelling propagators from top (t: left) to bottom (t: right); a,t: G(v+w/2)G(v-w/2), p: G(w/2-v)G(w/2+v)
                 case 3: //AA
                     ans = conj(g.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
                     break;
@@ -175,9 +172,7 @@ public:
     }
 };
 
-/**
- * Integrand classes for non-differentiated bubble contributing to diagrammatic class K1, K2, K3
- */
+/// Integrand classes for non-differentiated bubble contributing to diagrammatic class K1, K2, K3
 template <typename Q> class Integrand_K1 {
     const Vertex<Q>& vertex1;
     const Vertex<Q>& vertex2;
@@ -254,6 +249,7 @@ public:
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         vector<int> indices(2);
 #endif
+
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
@@ -263,6 +259,10 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
+#if DIAG_CLASS <= 1 // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if(i0==1 && (i2 != 11 && i2 != 13)) continue;
+                    if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) continue;
+#endif
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
 #if DIAG_CLASS <= 1
                     res += res_l_V[i2] * Pival * res_r_V[i2];
@@ -275,6 +275,10 @@ public:
 #endif
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V //+ V^*Pi*V^
+#if DIAG_CLASS <= 1 // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if(i0==1 && (i2 != 7 && i2 != 11)) continue;
+                    if(i0==5 && (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15)) continue;
+#endif
                     Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
 #if DIAG_CLASS <= 1
                     res += res_l_V[i2] * Pival * res_r_V[i2];
@@ -293,6 +297,10 @@ public:
 #endif
                     break;
                 case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
+#if DIAG_CLASS <= 1 // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if(i0==1 && (i2 != 11 && i2 != 13)) continue;
+                    if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) continue;
+#endif
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
 #if DIAG_CLASS <= 1
                     res += res_l_V[i2] * Pival * (res_r_V[i2]+res_r_Vhat[i2])
@@ -522,9 +530,7 @@ public:
     }
 };
 
-/**
- * Integrand classes for differentiated bubble contributing to diagrammatic class K1, K2, K3
- */
+/// Integrand classes for differentiated bubble contributing to diagrammatic class K1, K2, K3
 template <typename Q> class Integrand_K1_diff {
     const Vertex<Q>& vertex1;
     const Vertex<Q>& vertex2;
@@ -919,7 +925,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for
+//#pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices (TODO: put into extra function(s)?)
                 int iK1 = i_mpi * n_omp + i_omp;
