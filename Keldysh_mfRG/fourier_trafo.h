@@ -619,11 +619,4 @@ void diffSOPT_FFT_K1a_R(cvec& dK1aout_R, const Propagator& Gin, const Propagator
     diffSOPT_FFT(dSE_R, dK1aout_R, Gin, Sin, Uin, nFFT, V_FFT, false, true);
 }
 
-// Comment for other function
-// Dyson eq.: G^K = G^R G^A ( \Sigma^K + \Delta^K )
-// equilibrium: \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Delta^K
-// \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Delta)^R - (\Sigma+\Delta)^A ]
-//                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
-
-
 #endif // FOURIER_TRAFO_H
