@@ -126,8 +126,9 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
         result += integrator_simpson(integrand, w2+Delta, b, Nb);
 
         // Check if w1 and w2 are so close that their surroundings overlap
-        if (w2-w1 > 2*Delta) {  // w1 and w2 are far enough away from each other to consider separate regions around them
-            Nc = N - Na - Nb;   // number of points in the central interval between w1/w2 (odd since N,Na,Nb are odd)
+        if (w2-w1 > 2*Delta) {   // w1 and w2 are far enough away from each other to consider separate regions around them
+            Nc = N - Na - Nb;    // number of points in the central interval between w1/w2 (odd since N,Na,Nb are odd)
+            if (Nc < 1) Nc = 1;  // check that Nc doesn't become negative due to rounding above
 
             // Compute contributions of the intervals around w1/w2 and between them
             result += integrator_simpson(integrand, w1-Delta, w1+Delta, Nw);
