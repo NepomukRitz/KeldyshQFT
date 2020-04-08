@@ -524,7 +524,7 @@ void test_K2_correctness(double Lambda){
         K1a_diff[iw] = FOPT_K1a.vertex[0].avertex.K1_val(0, iw, 0) - SOPT_K1a.vertex[0].avertex.K1_val(0, iw, 0);
     }
 
-    cout << "Testing correctness of K2a. Using U=" << glb_U  << " and Lambda="<<Lambda<<", the maximal difference between direct K1a and K1a over integration of K2a is " << K1a_diff.max_norm() << "." << endl;
+    print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
     if(write_flag) write_h5_rvecs("FOPT_check_of_K2a", {"w", "SOPT_K1a_R", "SOPT_K1a_I", "FOPT_K1a_R", "FOPT_K1a_I"},
                                   {bfreqs, SOPT_K1a.vertex[0].avertex.K1.real(), SOPT_K1a.vertex[0].avertex.K1.imag(),
                                    FOPT_K1a.vertex[0].avertex.K1.real(), FOPT_K1a.vertex[0].avertex.K1.imag()});
