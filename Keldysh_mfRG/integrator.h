@@ -77,10 +77,10 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     int N = nINT;
 #else
     /*First, determine which between nINT and the number of points required to have a step of 1/4 of the temperature is bigger.
-     *Then compare that number to a maximal N of 4001 (chosen arbitrarily) and return the smallest one of these. Calculate
+     *Then compare that number to a maximal N of 1001 (chosen arbitrarily) and return the smallest one of these. Calculate
      * the step dx and fill the vectors accordingly. */
-    int N = min({ max({ nINT, (int)( (b-a)/(glb_T/4.) + 1.) }), 4001});
-    //Something doesn't work properly with this formula!!
+    int N = min({ max({ nINT, 2*(int)( (b-a)/(glb_T/2.) ) + 1 }), 1001}); // Simpson rule requires odd number of points
+    //TODO: old comment: Something doesn't work properly with this formula!!
 #endif
     return integrator_simpson(integrand, a, b, N);
 }

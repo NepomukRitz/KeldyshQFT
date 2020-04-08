@@ -70,7 +70,7 @@ void test_rhs_bubbles_flow_wstate(int N_ODE) {
 
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
     cvec K1a_dif = state_dir.vertex[0].avertex.K1 + ( state_fin.vertex[0].avertex.K1*(-1.) ); // difference in results
-    cout << "Testing ODE for bare K1a_0 with State class. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << K1a_dif.max_norm() << "." << endl;
+    print("Testing ODE for bare K1a_0 with State class. Using " +to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
                                   {"v", "state_dir_R", "state_dir_I", "state_fin_R", "state_fin_I", "state_ini_R", "state_ini_I"},
                                   {bfreqs, state_dir.vertex[0].avertex.K1.real(), state_dir.vertex[0].avertex.K1.imag(),
@@ -155,7 +155,7 @@ void test_rhs_bubbles_flow(int N_ODE){
 
     ODE_solver_RK4(K1a_fin, Lambda_fin, K1a_ini, Lambda_ini, rhs_bubbles_flow, N_ODE); // final K1a from ODE
     cvec K1a_dif = K1a_dir + ( K1a_fin*(-1.) ); // difference in results
-    cout << "Testing ODE for bare K1a_0. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << K1a_dif.max_norm() << "." << endl;
+    print("Testing ODE for bare K1a_0. Using " +to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow.h5",
                                   {"v", "K1a_dir_R", "K1a_dir_I", "K1a_fin_R", "K1a_fin_I", "K1a_ini_R", "K1a_ini_I"},
                                   {bfreqs, K1a_dir.real(), K1a_dir.imag(), K1a_fin.real(), K1a_fin.imag(), K1a_ini.real(), K1a_ini.imag()});
@@ -326,9 +326,13 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
         SEK_dif[i] = state_dir.selfenergy.val(1, i, 0) - state_fin.selfenergy.val(1, i, 0);
     }
 
-    cout << "Confirming correctness of the bubbles. The max diff between direct and final results is " << K1a0_dif.max_norm() << ". \n";
-    cout << "Testing ODE for SelfEnergyR. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << SER_dif.max_norm() << "." << endl;
-    cout << "Testing ODE for SelfEnergyK. Using " << N_ODE << " ODE steps, the maximal difference between direct and ODE-final result is " << SEK_dif.max_norm() << "." << endl;
+    if(mpi_world_rank()==0) {
+        print("Confirming correctness of the bubbles. The max diff between direct and final results is " +to_string(K1a0_dif.max_norm())+". \n "+
+        "Testing ODE for SelfEnergyR. Using " +to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +
+        to_string(SER_dif.max_norm())+ ". \n" +
+        "Testing ODE for SelfEnergyK. Using " + to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +
+        to_string(SEK_dif.max_norm()) +".", true);
+    }
     if(write_flag) write_h5_rvecs(name,
                                   {"v", "dir_SE_R", "dir_SE_I", "fin_SE_R", "fin_SE_I", "ini_SE_R", "ini_SE_I",
                                    "dir_K1a_R", "dir_K1a_I", "fin_K1a_R", "fin_K1a_I", "ini_K1a_R", "ini_K1a_I",
@@ -384,7 +388,7 @@ void test_derivatives_SE(double Lambda){
         SER_dif[iv] = rhs_flow.selfenergy.val(0, iv, 0) -rhs_SOPT_FFT_K1a[iv];
     }
 
-    cout << "Testing derivatives of the Self Energy. Using Lambda=" << Lambda << ", the max difference between fRG and FFT results is " << SER_dif.max_norm() << "." << endl;
+    print("Testing derivatives of the Self Energy. Using Lambda=" +to_string(Lambda)+ ", the max difference between fRG and FFT results is " +to_string(SER_dif.max_norm())+ ".", true);
     write_h5_rvecs("derivativess_SE.h5",
                    {"v", "FFT_R", "FFT_I", "SOPT_R", "SOPT_I"},
                    {ffreqs, rhs_SOPT_FFT_K1a.real(), rhs_SOPT_FFT_K1a.imag(),
@@ -454,8 +458,8 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
             }
         }
         //Print result of consistency check
-        if (empty) cout << "TOPT-consistency check passed. K2"<< r <<" with K1t is zero everywhere. \n";
-        else cout <<"TOPT-consistency check failed. K2" << r << " with K1t is not zero everywhere. \n";
+        if (empty) print("TOPT-consistency check passed. K2a or K2p with K1t is zero everywhere.", true);
+        else print("TOPT-consistency check failed. K2a or K2p with K1t is not zero everywhere.", true);
     }
     else if(r=='t'){
 #pragma omp parallel
@@ -468,8 +472,8 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
             }
         }
         //Print result of consistency check
-        if (empty) cout << "TOPT-consistency check passed. K2"<< r <<" with K1a and K1p are zero everywhere. \n";
-        else cout <<"TOPT-consistency check failed. K2" << r << " with K1a and K1p are not zero everywhere. \n";
+        if (empty) print("TOPT-consistency check passed. K2t with K1a and K1p are zero everywhere.", true);
+        else print("TOPT-consistency check failed. K2t with K1a and K1p are not zero everywhere.", true);
     }
 
     return empty;
@@ -520,7 +524,7 @@ void test_K2_correctness(double Lambda){
         K1a_diff[iw] = FOPT_K1a.vertex[0].avertex.K1_val(0, iw, 0) - SOPT_K1a.vertex[0].avertex.K1_val(0, iw, 0);
     }
 
-    cout << "Testing correctness of K2a. Using U=" << glb_U  << " and Lambda="<<Lambda<<", the maximal difference between direct K1a and K1a over integration of K2a is " << K1a_diff.max_norm() << "." << endl;
+    print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
     if(write_flag) write_h5_rvecs("FOPT_check_of_K2a", {"w", "SOPT_K1a_R", "SOPT_K1a_I", "FOPT_K1a_R", "FOPT_K1a_I"},
                                   {bfreqs, SOPT_K1a.vertex[0].avertex.K1.real(), SOPT_K1a.vertex[0].avertex.K1.imag(),
                                    FOPT_K1a.vertex[0].avertex.K1.real(), FOPT_K1a.vertex[0].avertex.K1.imag()});
