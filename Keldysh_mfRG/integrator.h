@@ -68,7 +68,6 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     return dx/3.*dotproduct(integrand_values, simpson);
 }
 
-//This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a const ()-operator
 /**
  * Wrapper for integrator_simpson(const Integrand& integrand, double a, double b, int N).
  * Determines the number of integration points depending on INTER_PROP.
@@ -86,8 +85,33 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     return integrator_simpson(integrand, a, b, N);
 }
 
-// This integrator performs Simpson's rule but on an arbitrary integrand, which only requires a const ()-operator.
-// Optimized version for bubbles, separately integrating sharp features at frequencies w1/w2 with higher accuracy.
+/**
+ * Wrapper for integrator_simpson(const Integrand& integrand, double a, double b, int N).
+ * Optimized version for loop that has a sharp features within the integration domain
+ * at frequency w (typically w=0, where w is the loop external frequency).
+ *   --> Split up the integration domain into different regions, integrate with higher resolution around the
+ *       sharp feature.
+ */
+template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w) -> comp {
+    comp result = 0.;   // initialize result
+    int N = nINT;       // total number of integration points
+
+    double Delta = 50*glb_T;  // half-width of the region around the sharp feature which should get better resolution
+    int Nw = N/10;            // number of additional points around the sharp feature
+    if (!(Nw % 2)) Nw += 1;   // number of points needs to be odd
+
+
+    int Na = (int)(N * (w - a) / (b - a));  // number of points in the first interval (fraction of N)
+    if (!(Na % 2)) Na += 1;                 // number of points needs to be odd
+    int Nb = N - Na + 1;                    // number of points in the last interval (also odd)
+
+    // Compute different contributions
+    result += integrator_simpson(integrand, a, w-Delta, Na);        // interval of frequencies < w
+    result += integrator_simpson(integrand, w-Delta, w+Delta, Nw);  // interval around w
+    result += integrator_simpson(integrand, w+Delta, b, Nb);        // interval of frequencies > w
+    return result;
+}
+
 /**
  * Wrapper for integrator_simpson(const Integrand& integrand, double a, double b, int N).
  * Optimized version for bubbles that have two distinct sharp features within the integration domain
@@ -211,12 +235,23 @@ template <typename Integrand> auto integrator_PAID(Integrand& integrand, double 
 //    return result_real + 1.i*result_imag;
 }
 
+// old wrapper function
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b) -> comp {
     return integrator_simpson(integrand, a, b);
+//    return integrator_riemann(integrand, a, b);
+}
+
+// wrapper function, used for loop
+template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b, double w) -> comp {
+    return integrator_simpson(integrand, a, b, w);
+    //return integrator_simpson(integrand, a, b);  // old version
     //return integrator_riemann(integrand, a, b);
 }
+
+// wrapper function, used for bubbles
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b, double w1, double w2) -> comp {
     return integrator_simpson(integrand, a, b, w1, w2);
+    //return integrator_simpson(integrand, a, b);  // old version
 }
 
 auto dotproduct(const cvec& x, const rvec& y) -> comp

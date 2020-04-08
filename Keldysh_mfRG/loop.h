@@ -104,8 +104,8 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         // The limits of the integral must depend on v because of the transformations that must be done on the frequencies
         // (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v', needing both extensions of the integration domain in both directions
         // The prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
-        comp integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, w_lower_f-abs(v), w_upper_f+abs(v));
-        comp integratedK = -1./(2.*M_PI*glb_i)*integrator(integrandK, w_lower_f-abs(v), w_upper_f+abs(v));
+        comp integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, w_lower_f-abs(v), w_upper_f+abs(v), 0.);
+        comp integratedK = -1./(2.*M_PI*glb_i)*integrator(integrandK, w_lower_f-abs(v), w_upper_f+abs(v), 0.);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
