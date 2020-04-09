@@ -47,8 +47,8 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp;
  * @return           : result of the integration (comp)
  */
 template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, int N) -> comp {
+    if (N < 3) N = 3;
     double dx = (b-a)/((double)(N-1));
-    if (N == 1) dx = 1.;
     rvec simpson(N);
     cvec integrand_values(N);
 
@@ -96,14 +96,15 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     comp result = 0.;   // initialize result
     int N = nINT;       // total number of integration points
 
-    double Delta = 50*glb_T;  // half-width of the region around the sharp feature which should get better resolution
-    int Nw = N/10;            // number of additional points around the sharp feature
-    if (!(Nw % 2)) Nw += 1;   // number of points needs to be odd
+    double Delta = 2*glb_Gamma;  // half-width of the region around the sharp feature which should get better resolution
+    int Nw = N/5;                // number of additional points around the sharp feature
+    if (!(Nw % 2)) Nw += 1;      // number of points needs to be odd
 
 
     int Na = (int)(N * (w - a) / (b - a));  // number of points in the first interval (fraction of N)
     if (!(Na % 2)) Na += 1;                 // number of points needs to be odd
-    int Nb = N - Na + 1;                    // number of points in the last interval (also odd)
+    int Nb = (int)(N * (b - w) / (b - a));  // number of points in the first interval (fraction of N)
+    if (!(Nb % 2)) Nb += 1;                 // number of points needs to be odd
 
     // Compute different contributions
     result += integrator_simpson(integrand, a, w-Delta, Na);        // interval of frequencies < w
@@ -149,26 +150,26 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
         result += integrator_simpson(integrand, a, w1-Delta, Na);
         result += integrator_simpson(integrand, w2+Delta, b, Nb);
 
-        // Check if w1 and w2 are so close that their surroundings overlap
-        if (w2-w1 > 2*Delta) {   // w1 and w2 are far enough away from each other to consider separate regions around them
-            Nc = N - Na - Nb;    // number of points in the central interval between w1/w2 (odd since N,Na,Nb are odd)
-            if (Nc < 1) Nc = 1;  // check that Nc doesn't become negative due to rounding above
+        // Check if w1 and w2 are too close to consider them separately
+        if (w2-w1 > 10*Delta) {   // w1 and w2 are far enough away from each other to consider separate regions around them
+            Nc = (int)(N * (w2 - w1)/(b - a)); // number of points in the central interval between w1/w2
+            if (!(Nc % 2)) Nc += 1;            // number of points needs to be odd
 
             // Compute contributions of the intervals around w1/w2 and between them
             result += integrator_simpson(integrand, w1-Delta, w1+Delta, Nw);
             result += integrator_simpson(integrand, w1+Delta, w2-Delta, Nc);
             result += integrator_simpson(integrand, w2-Delta, w2+Delta, Nw);
         }
-        else { // w1/w2 are close to each other and surroundings overlap --> single contribution
+        else { // w1/w2 are close to each other only consider single contribution
             Nc = (int)(Nw * (w2-w1+2*Delta)/(2*Delta)); // number of points in the interval enclosing w1/w2
-                                                        // (depends on the distance between w1/w2)
+            // (depends on the distance between w1/w2)
             if (!(Nc % 2)) Nc += 1;                     // number of points needs to be odd
 
             result += integrator_simpson(integrand, w1-Delta, w2+Delta, Nc);
         }
     }
 
-    // Second case: w1/w2 are close to boundaries a/b
+    // Second case: w1/w2 are close to boundaries a/b // currently not necessary since w1/2 = +-w/2
     else {
         result += integrator_simpson(integrand, a, w1+Delta, Nw);       // interval around w1/a
         result += integrator_simpson(integrand, w1+Delta, w2-Delta, N); // interval between w1/w2
