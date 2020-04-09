@@ -164,7 +164,7 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
                                                         // (depends on the distance between w1/w2)
             if (!(Nc % 2)) Nc += 1;                     // number of points needs to be odd
 
-            result += integrator_simpson(integrand, w1-Delta, w1+Delta, Nc);
+            result += integrator_simpson(integrand, w1-Delta, w2+Delta, Nc);
         }
     }
 
