@@ -6,6 +6,7 @@
 #define UTIL_H
 
 #include <sys/time.h>  // system time
+#include <chrono>      // system time
 #include <unistd.h>    // time delay
 #include <iostream>    // text input/output
 
@@ -15,11 +16,28 @@
 
 using namespace std;
 
+// print a time stamp in the following format: YYYY-MM-DD | hh-mm-ss |
+void print_time_stamp() {
+    time_t tt = chrono::system_clock::to_time_t(chrono::system_clock::now()); // get time stamp
+    tm loc = *localtime(&tt);                                            // convert time stamp to readable format
+
+    // get elements of time stamp: Y, M, D, h, m, s
+    int tms [6] {loc.tm_year + 1900, loc.tm_mon + 1, loc.tm_mday, loc.tm_hour, loc.tm_min, loc.tm_sec};
+    // separators for readable time stamp format
+    string separators [6] {"-", "-", " | ", ":", ":", " | "};
+
+    for (int i=0; i<6; ++i) {
+        if (tms[i] < 10) cout << "0";     // make sure to use two-digit format: add zero if necessary
+        cout << tms[i] << separators[i];  // print time organized by separators
+    }
+}
+
 // print any printable data in standard output and add new line
 template <typename T>
 void print(T s, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
+        print_time_stamp();
         cout << s;
         if (endline) cout << endl;
     }
@@ -34,6 +52,7 @@ template <typename T, typename U>
 void print(T t, U u, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
+        print_time_stamp();
         cout << t << u;
         if (endline) cout << endl;
     }
@@ -48,6 +67,7 @@ template <typename T, typename U, typename V>
 void print(T t, U u, V v, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
+        print_time_stamp();
         cout << t << u << v;
         if (endline) cout << endl;
     }
@@ -90,13 +110,17 @@ void get_time(double t0) {
     gettimeofday(&tp, NULL);
     long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
     double t = ms/1000.;
-    print("time elapsed: ");
 #ifdef MPI_FLAG
-    if (mpi_world_rank() == 0) printf("%.3f", t-t0);
+    if (mpi_world_rank() == 0) {
+        cout << "time elapsed: ";
+        printf("%.3f", t-t0);
+        cout << "s" << endl;
+    }
 #else
+    cout << "time elapsed: ";
     printf("%.3f", t-t0);
+    cout << "s" << endl;
 #endif
-    print("s", true);
 }
 
 // display time difference in seconds w.r.t. reference time, with microsecond precision
@@ -106,24 +130,32 @@ void get_time(double t0, std::string prec) {
     if (prec == "us") {
         long int us = tp.tv_sec * 1000000 + tp.tv_usec;
         double t = us / 1000000.;
-        print("time elapsed: ");
 #ifdef MPI_FLAG
-        if (mpi_world_rank() == 0) printf("%.6f", t-t0);
+        if (mpi_world_rank() == 0) {
+            cout << "time elapsed: ";
+            printf("%.6f", t-t0);
+            cout << "s" << endl;
+        }
 #else
+        cout << "time elapsed: ";
         printf("%.6f", t-t0);
+        cout << "s" << endl;
 #endif
-        print("s", true);
     }
     else {
         long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
         double t = ms / 1000.;
-        cout << "time elapsed: ";
 #ifdef MPI_FLAG
-        if (mpi_world_rank() == 0) printf("%.3f", t-t0);
+        if (mpi_world_rank() == 0) {
+            cout << "time elapsed: ";
+            printf("%.3f", t-t0);
+            cout << "s" << endl;
+        }
 #else
+        cout << "time elapsed: ";
         printf("%.3f", t-t0);
+        cout << "s" << endl;
 #endif
-        print("s", true);
     }
 }
 

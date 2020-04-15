@@ -967,7 +967,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 
     // dgamma[0].pvertex.K1_addvert(i0, iwp, i_in, value); // old version w/o mpi
 
-//    print("K1");  print(channel); print(" done: ");
+//    print("K1", channel, " done: ");
 //    get_time(tK1);
 #endif
 
@@ -1029,7 +1029,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
         default: ;
     }
 
-//    print("K2"); print(channel); print(" done: ");
+//    print("K2", channel, " done: ");
 //    get_time(tK2);
 #endif
 
@@ -1093,7 +1093,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 
     // dgamma[0].pvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, value); // old version w/o mpi
 
-    print("K3"); print(channel); print(" done: ");
+    print("K3", channel, " done: ");
     get_time(tK3);
 #endif
 
