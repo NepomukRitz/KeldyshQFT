@@ -32,8 +32,8 @@ void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, con
 //    assert(w_lower_f<=v && v <=w_upper_f);
 
     if(fabs(w)<w_upper_b && fabs(v)<w_upper_f) {
-        int index_b = fconv_bos(w);
-        int index_f = fconv_fer(v);
+        int index_b = fconv_bos2(w);
+        int index_f = fconv_fer2(v);
 
         double x1 = bfreqs2[index_b];
         double x2 = bfreqs2[index_b + 1];
@@ -59,9 +59,9 @@ void interpolateK3 (Q& ans, double pf, int iK, double w, double v1, double v2, i
 
     if(fabs(w)<w_upper_b && fabs(v1)<w_upper_f && fabs(v2)<w_upper_f) {
 
-        int index_b = fconv_bos(w);
-        int index_f1 = fconv_fer(v1);
-        int index_f2 = fconv_fer(v2);
+        int index_b = fconv_bos3(w);
+        int index_f1 = fconv_fer3(v1);
+        int index_f2 = fconv_fer3(v2);
 
         double x1 = bfreqs3[index_b];
         double x2 = bfreqs3[index_b + 1];
