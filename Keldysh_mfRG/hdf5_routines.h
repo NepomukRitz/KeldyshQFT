@@ -671,8 +671,8 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         dataSpaces_K3_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
 
         if (!file_exists) {
-            dataSets.bfreqs2_p -> write(bfreqs2.data(),  H5::PredType::NATIVE_DOUBLE);
-            dataSets.ffreqs2_p -> write(ffreqs2.data(),  H5::PredType::NATIVE_DOUBLE);
+            dataSets.bfreqs3_p -> write(bfreqs3.data(),  H5::PredType::NATIVE_DOUBLE);
+            dataSets.ffreqs3_p -> write(ffreqs3.data(),  H5::PredType::NATIVE_DOUBLE);
             dataSets.K3_a_p -> write(buffer.K3_class_a, mtype_comp, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
             dataSets.K3_p_p -> write(buffer.K3_class_p, mtype_comp, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
             dataSets.K3_t_p -> write(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
