@@ -5,6 +5,7 @@
 #ifndef KELDYSH_MFRG_INTEGRATOR_H
 #define KELDYSH_MFRG_INTEGRATOR_H
 
+#include <numeric>
 #include "data_structures.h"
 #include "parameters.h"
 #include "write_data2file.h"
@@ -201,6 +202,157 @@ template <typename Integrand> auto integrator_riemann(const Integrand& integrand
     return 1/2.*dotproduct(integrand_values, spacings);
 }
 
+class TestIntegrand {
+    double c;
+    double g;
+public:
+    TestIntegrand(double c_in, double g_in) : c(c_in), g(g_in) {}
+    auto operator() (double x) const -> comp {
+        return (x-c)/(g*g+(x-c)*(x-c)) - (x+c)/(g*g+(x+c)*(x+c)); //exp(-x*x); //1/x; //sin(x);
+    }
+};
+
+// compute Simpson rule for 3 given values and given step size dx
+auto simpson_rule_3(comp& val0, comp& val1, comp& val2, double& dx) -> comp {
+    return dx / 3. * (val0 + 4.*val1 + val2);
+}
+
+// compute Simpson rule for vector of 3 given values and given step size dx
+auto simpson_rule_3(cvec& values, double& dx) -> comp {
+    return dx / 3. * (values[0] + 4.*values[1] + values[2]);
+}
+
+/**
+ * Adaptive integrator.
+ * Idea: Start with just 3-point Simpson (integration boundaries + point in the center), then split it up into
+ * two sub-intervals by adding one point in the center of each of the two sub-intervals.
+ * Then split those up again to obtain four sub-intervals, then eight, etc. For each sub-interval check convergence
+ * separately by comparing to the previous result, split it up only if desired accuracy is not yet reached.
+ * Continue successive splitting until either
+ *  - all sub-intervals of the preceding step are converged, or
+ *  - desired accuracy for the total result is reached, or
+ *  - max. number of allowed points (integrand accesses) is reached.
+ * During this iterative process, results from the previous step are stored to minimize the number of integrand accesses.
+ */
+template <typename Integrand> auto adaptive_integrator(const Integrand& integrand, double a, double b) -> comp {
+    // accuracy: relative error between successive results for the same interval
+    // at which to stop splitting the interval into sub-intervals
+    double accuracy = 1e-2;
+    // total_accuracy: relative error between successive results for the full integral
+    // at which to stop the integration procedure and return result
+    double total_accuracy = 1e-3;
+
+    /// --- initial step: start with 3-point Simpson --- ///
+
+    // Create vectors containing information about each sub-interval. Initially: only one sub-interval.
+    rvec points (3);             // vector containing all grid points at which integrand is evaluated
+    cvec values (3);             // vector containing the integrand values for each grid point
+    cvec result (1);             // vector containing the integration result for each sub-interval
+    vec<bool> converged {false}; // vector of bools containing the information if each sub-interval is converged
+
+    double dx = (b-a)/2.;                    // initial step size: half the full interval
+    for (int i=0; i<3; ++i) {
+        points[i] = a+i*dx;                  // choose 3 equidistant grid points
+        values[i] = integrand(points[i]);    // get the integrand value at those grid points
+    }
+    result[0] = simpson_rule_3(values[0], values[1], values[2], dx); // compute the integral using 3-point Simpson
+    comp res = result[0];                                            // initialize result
+
+    /// --- loop: successively split intervals into two sub-intervals until converged --- ///
+
+    for (int it=0; true; ++it) {    // Infinite loop: only quit by reaching convergence or max. number of evaluations.
+        dx /= 2.;                   // in each step, halve the step size
+
+        rvec points_next;           // new vector for grid points
+        cvec values_next;           // new vector for integrand values
+        cvec result_next;           // new vector for results of sub-intervals
+        vec<bool> converged_next;   // new vector for convergence flags of sub-intervals
+
+        // add the left boundary and the corresponding integrand value to the new vectors
+        points_next.push_back(points[0]);
+        values_next.push_back(values[0]);
+
+        for (int interval=0; interval<result.size(); ++interval) { // Go through all existing sub-intervals:
+            if (converged[interval] && it>3) {                     // If the interval is converged, don't do anything
+                                                                   // (only after having performed the first few splits)
+                // add existing points, values, ... for this interval
+                // to the new list
+                points_next.push_back(points[2*interval+1]);
+                points_next.push_back(points[2*interval+2]);
+                values_next.push_back(values[2*interval+1]);
+                values_next.push_back(values[2*interval+2]);
+
+                result_next.push_back(result[interval]);
+                converged_next.push_back(true);
+            }
+            else {                          // If the interval is not converged, split it up into 2 new sub-intervals:
+
+                // add center and right points for first sub-interval (left known from previous interval)
+                points_next.push_back(points[2*interval] + dx);
+                points_next.push_back(points[2*interval+1]);
+                // add integrand values for first sub-interval
+                values_next.push_back(integrand(points_next.end()[-2]));
+                values_next.push_back(values[2*interval+1]);
+
+                // compute integral over the first sub-interval
+                auto val = values_next.end();
+                comp result1 = simpson_rule_3(val[-3], val[-2], val[-1], dx);
+
+                // add center and right points for second sub-interval (left known from first sub-interval)
+                points_next.push_back(points[2*interval+1] + dx);
+                points_next.push_back(points[2*interval+2]);
+                // add integrand values for second sub-interval
+                values_next.push_back(integrand(points_next.end()[-2]));
+                values_next.push_back(values[2*interval+2]);
+
+                // compute integral over the second sub-interval
+                val = values_next.end();
+                comp result2 = simpson_rule_3(val[-3], val[-2], val[-1], dx);
+
+                // add the results to the vector of all intervals, for later checking convergence
+                result_next.push_back(result1);
+                result_next.push_back(result2);
+
+                // Check convergence: if difference between the sum of the results of the 2 sub-intervals and the
+                // previous result only has a relative error smaller than predefined accuracy,
+                // set convergence flag for both sub-intervals to true, such that they are not split in the next iteration
+                if (abs((result1+result2-result[interval])/(result1+result2+1e-16)) < accuracy) {   // add 1e-16 to avoid errors if result is zero
+                    converged_next.push_back(true);
+                    converged_next.push_back(true);
+                }
+                else {
+                    converged_next.push_back(false);
+                    converged_next.push_back(false);
+                }
+            }
+        }
+
+        // compute the total result of the integration after the current splitting step
+        comp res_next = accumulate(result_next.begin(), result_next.end(), (comp)0.);
+
+        // First stop condition: check convergence of the total result w.r.t. predefined accuracy
+        if (abs((res-res_next)/res) < total_accuracy) {
+            res = res_next;
+            break;
+        }
+
+        res = res_next; // update the total result for convergence check in the next iteration
+
+        // update points, values, results, converged flags
+        points = points_next;
+        values = values_next;
+        result = result_next;
+        converged = converged_next;
+
+        // Second stop condition: check if all sub-intervals are converged
+        if (count(converged.begin(), converged.end(), true) == converged.size()) break;
+
+        // Third stop condition: check if the total number of evaluation points exceeds the predefined maximum
+        if (points.size() > nINT) break;
+    }
+
+    return res;  // return the result
+}
 
 template <typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> comp {
     //PAID
@@ -244,15 +396,17 @@ template <typename Integrand> auto integrator(const Integrand& integrand, double
 
 // wrapper function, used for loop
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b, double w) -> comp {
-    return integrator_simpson(integrand, a, b, w);
-    //return integrator_simpson(integrand, a, b);  // old version
+    //return adaptive_integrator(integrand, a, b);      // use adaptive integrator
+    return integrator_simpson(integrand, a, b, w);      // use standard Simpson plus additional points around w = 0
+    //return integrator_simpson(integrand, a, b);       // only use standard Simpson
     //return integrator_riemann(integrand, a, b);
 }
 
 // wrapper function, used for bubbles
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b, double w1, double w2) -> comp {
-    return integrator_simpson(integrand, a, b, w1, w2);
-    //return integrator_simpson(integrand, a, b);  // old version
+    //return adaptive_integrator(integrand, a, b);          // use adaptive integrator
+    return integrator_simpson(integrand, a, b, w1, w2);     // use standard Simpson plus additional points around +- w/2
+    //return integrator_simpson(integrand, a, b);           // only use standard Simpson
 }
 
 auto dotproduct(const cvec& x, const rvec& y) -> comp
