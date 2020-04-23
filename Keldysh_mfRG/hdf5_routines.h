@@ -685,8 +685,8 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 #endif
 
         print("Successfully saved in hdf5 file: ", FILE_NAME);
-        if (file_exists) print(" in Lambda-layer ", Lambda_it);
-        cout << endl;
+        if (file_exists) print_add(" in Lambda-layer ", Lambda_it, false);
+        print_add("", true);
 
         // Terminate
         dataSets.close(file_exists);

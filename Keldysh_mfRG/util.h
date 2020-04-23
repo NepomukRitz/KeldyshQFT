@@ -42,6 +42,21 @@ void print(T s, bool endline) {
         if (endline) cout << endl;
     }
 #else
+    print_time_stamp();
+    cout << s;
+    if (endline) cout << endl;
+#endif
+}
+
+// print any printable data in standard output and add new line (without time stamp)
+template <typename T>
+void print_add(T s, bool endline) {
+#ifdef MPI_FLAG
+    if (mpi_world_rank() == 0) {
+        cout << s;
+        if (endline) cout << endl;
+    }
+#else
     cout << s;
     if (endline) cout << endl;
 #endif
@@ -57,6 +72,21 @@ void print(T t, U u, bool endline) {
         if (endline) cout << endl;
     }
 #else
+    print_time_stamp();
+    cout << t << u;
+    if (endline) cout << endl;
+#endif
+}
+
+// print two different data types in standard output and add new line (without time stamp)
+template <typename T, typename U>
+void print_add(T t, U u, bool endline) {
+#ifdef MPI_FLAG
+    if (mpi_world_rank() == 0) {
+        cout << t << u;
+        if (endline) cout << endl;
+    }
+#else
     cout << t << u;
     if (endline) cout << endl;
 #endif
@@ -68,6 +98,21 @@ void print(T t, U u, V v, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
         print_time_stamp();
+        cout << t << u << v;
+        if (endline) cout << endl;
+    }
+#else
+    print_time_stamp();
+    cout << t << u << v;
+    if (endline) cout << endl;
+#endif
+}
+
+// print three different data types in standard output and add new line (without time stamp)
+template <typename T, typename U, typename V>
+void print_add(T t, U u, V v, bool endline) {
+#ifdef MPI_FLAG
+    if (mpi_world_rank() == 0) {
         cout << t << u << v;
         if (endline) cout << endl;
     }
