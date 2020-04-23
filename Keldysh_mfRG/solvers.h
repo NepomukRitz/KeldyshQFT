@@ -2,7 +2,7 @@
 #define KELDYSH_MFRG_SOLVERS_H
 
 #include <cmath>             // needed for exponential and sqrt function
-#include <iostream>          // text input/output
+#include "util.h"            // text input/output
 #include "write_data2file.h" // writing data into text or hdf5 files
 
 
@@ -41,6 +41,15 @@ double log_substitution(double x) {
 double log_resubstitution(double x) {
     return pow(10, x) - 1;
     //return 5*x/sqrt(1-x*x);
+}
+
+double sq_substitution(double x) {
+    double a = 3.;
+    return sqrt((sqrt(pow(x, 4) + 4.*pow(a*x, 2)) - pow(x, 2))/2.)/a;
+}
+double sq_resubstitution(double x) {
+    double a = 3.;
+    return a*pow(x, 2) / sqrt(1. - pow(x, 2));
 }
 
 // explicit RK4 using non-constant step-width determined by substitution
