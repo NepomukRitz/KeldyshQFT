@@ -5,11 +5,18 @@
 #include "write_data2file.h"        // writing data into text or hdf5 files
 #include "propagator.h"             // propagator to perform second-order perturbation theory (SOPT)
 #include "selfenergy.h"             // self-energy used in SOPT
+#include "state.h"                  // state to perform full flow
+#include "loop.h"                   // compute self-energy loop
+#include "bubbles.h"                // compute vertex bubbles
 #include "parameters.h"             // system parameters (lengths of vectors etc.)
 #include "fourier_trafo.h"          // SOPT from Fast Fourier transform (FFT)
 #include "solvers.h"                // ODE solver
 
 using namespace std;
+
+/// ------ TEST FUNCTIONS ------ ///
+// TODO: Here are also functions that should belong to testFunctions.h. On the other hand side,
+//  in testFunctions.h are functions that would rather belong here.
 
 cvec dSOPT_FFT_K1a_rhs(const cvec& K1a, const double Lambda) { // return differentiated K1a_1 using SOPT_FFT for testing
     SelfEnergy<comp> SEin; // trivial self-energy
@@ -145,6 +152,29 @@ void test_ODE_G(const int N_ODE) { // test ODE applied to bare (differentiated) 
     if(write_flag) write_h5_rvecs("ODE_G.h5",
                                   {"v", "G_dir_R", "G_dir_I", "G_fin_R", "G_fin_I", "G_ini_R", "G_ini_I"},
                                   {ffreqs, G_dir.real(), G_dir.imag(), G_fin.real(), G_fin.imag(), G_ini.real(), G_ini.imag()});
+}
+
+/**
+ * Function to implement a one-loop flow (without Katanin substitution).
+ * @param Psi   : Known state of the State at Lambda
+ * @param Lambda:  Scale at which the calculation is being performed
+ * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
+ */
+auto rhs_one_loop_flow(const State<comp>& Psi, const double Lambda) -> State<comp>{
+    State<comp> dPsi; // result
+
+    Propagator G(Lambda, Psi.selfenergy,'g');   // Initialization of Propagator objects
+    Propagator S(Lambda, Psi.selfenergy,'s');   // Initialization of Propagator objects
+
+    // Self-energy flow
+    loop(dPsi.selfenergy, Psi.vertex, S, true); // Loop for the Self-Energy calculation
+
+    // Vertex flow
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', true, '.');  // Differentiated bubble in the a-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'p', true, '.');  // Differentiated bubble in the p-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 't', true, '.');  // Differentiated bubble in the t-channel
+
+    return dPsi;
 }
 
 //template <typename Q>
