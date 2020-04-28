@@ -52,12 +52,12 @@ double sq_resubstitution(double x) {
     return a*pow(x, 2) / sqrt(1. - pow(x, 2));
 }
 
-// explicit RK4 using non-constant step-width determined by substitution
+// explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step
 template <typename T>
 void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
                         T rhs (const T& y, const double x),
                         double subst(double x), double resubst(double x),
-                        const int N_ODE) {
+                        const int N_ODE, string filename) {
     const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
     const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
 
@@ -77,13 +77,34 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     for (int i=0; i<N_ODE; ++i) {
         dx = x_diffs[i];
         x_run += dx; // update x
+
+        // print iteration number and Lambda to log file
+        print("i: ", i, true);
+        print("Lambda: ", x_run, true);
+        double t0 = get_time();
+
         T y1 = rhs(y_run, x_run) * dx;
         T y2 = rhs(y_run + y1*0.5, x_run + dx/2.) * dx;
         T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
         T y4 = rhs(y_run + y3, x_run + dx) * dx;
         y_run += (y1 + y2*2. + y3*2. + y4) *(1./ 6.); // update y
+
+        get_time(t0); // measure time for one iteration
+
+        if (filename != "") {
+            add_hdf(filename, i + 1, N_ODE+1, y_run, x_vals);
+        }
     }
     y_fin = y_run; // final y value
+}
+
+// explicit RK4 using non-constant step-width determined by substitution (without saving at each step)
+template <typename T>
+void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
+                    T rhs (const T& y, const double x),
+                    double subst(double x), double resubst(double x),
+                    const int N_ODE) {
+    ODE_solver_RK4(y_fin, x_fin, y_ini, x_ini, rhs, subst, resubst, N_ODE, "");
 }
 
 
