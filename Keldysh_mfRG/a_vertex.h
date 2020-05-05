@@ -343,23 +343,20 @@ template <typename Q> auto avert<Q>::K1_val (int iK, int i, int i_in) const -> Q
 template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
     int iK1;
-    double pf1;      // prefactor: -1 for T_1, T_2, +1 else
+    double pf1 = 1.;      // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
     Q valueK1;
 
     /*This part determines the value of the K1 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(isInList(iK,list_K1_T0_comp1)){
         iK1 = 0;
-        pf1 = 1.;
     }
     else if(isInList(iK,list_K1_T3_comp1)){
-        T3_K1(w_a, i_in);
         iK1 = 0;
-        pf1 = 1.;
+        T3_K1(w_a, i_in);
     }
     else if(isInList(iK, list_K1_T0_comp3)){
         iK1 = 1;
-        pf1 = 1.;
     }
     else{
         return 0.;
@@ -372,7 +369,7 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
 template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     int iK1;
-    double pf1;      // prefactor: -1 for T_1, T_2, +1 else
+    double pf1 = 1.;      // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
     Q valueK1;
 
     switch(spin) {
@@ -381,14 +378,11 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
         case 0:
             if (isInList(iK, list_K1_T0_comp1)) {
                 iK1 = 0;
-                pf1 = 1.;
             } else if (isInList(iK, list_K1_T3_comp1)) {
-                T3_K1(w_a, i_in);
                 iK1 = 0;
-                pf1 = 1.;
+                T3_K1(w_a, i_in);
             } else if (isInList(iK, list_K1_T0_comp3)) {
                 iK1 = 1;
-                pf1 = 1.;
             } else {
                 return 0.;
             }
@@ -398,16 +392,16 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
             break;
 
         case 1:
-            pf1 = -1.;  //Always a sign-flipping traffo
+            pf1 *= -1.;  //Always a sign-flipping trafo
             if (isInList(iK, list_K1_T0_comp1)) {               //T0comp1 => T2 iK=0
+                iK1 = 0;
                 T2_K1(w_a, i_in);
-                iK1 = 0;
             } else if (isInList(iK, list_K1_T3_comp1)) {        //T3comp1 => T1, iK=0
-                T1_K1(w_a, i_in);
                 iK1 = 0;
-            } else if (isInList(iK, list_K1_T0_comp3)) {        //T0comp3 => T1, iK=1
                 T1_K1(w_a, i_in);
+            } else if (isInList(iK, list_K1_T0_comp3)) {        //T0comp3 => T1, iK=1
                 iK1 = 1;
+                T1_K1(w_a, i_in);
             } else {
                 return 0.;
             }
@@ -474,12 +468,10 @@ template <typename Q> auto avert<Q>::K2_val (int iK, int i, int j, int i_in) con
 template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, const tvert<Q>& tvertex)const -> Q{
 
     int iK2;
-    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
-    bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
+    double pf2 = 1.;          // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
+    bool conjugate2 = false;  // whether or not to conjugate value: true for T_C, false else
     Q valueK2;
 
-    pf2 = 1.;
-    conjugate2 = false;
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(isInList(iK,list_K2_T0_comp0)){
@@ -495,15 +487,16 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
         iK2 = 3;
     }
     else if(isInList(iK,list_K2_TCT3_comp1)){
-        T3_K2(w_a, v1_a, i_in);
-        TC_K2(w_a, v1_a, i_in);
         iK2 = 1;
+        T3_K2(w_a, v1_a, i_in);
+        TC_K2(w_a, v1_a, i_in);   // TC acts on component (1112) -> prefactor = +1
         conjugate2 = true;
     }
     else if(isInList(iK,list_K2_TCT3_comp3)){
-        T3_K2(w_a, v1_a, i_in);
-        TC_K2(w_a, v1_a, i_in);
         iK2 = 3;
+        T3_K2(w_a, v1_a, i_in);
+        TC_K2(w_a, v1_a, i_in);   // TC acts on component (1122) -> prefactor = -1
+        pf2 *= -1.;
         conjugate2 = true;
     }
     else if(isInList(iK,list_K2_T0_comp11)){
@@ -524,12 +517,9 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
 template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, int spin, const tvert<Q>& tvertex)const -> Q{
 
     int iK2;
-    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
-    bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
+    double pf2 = 1.;            // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
+    bool conjugate2 = false;    // whether or not to conjugate value: true for T_C, false else
     Q valueK2;
-
-    pf2 = 1.;
-    conjugate2 = false;
 
     switch (spin) {
         /*This part determines the value of the K2 contribution*/
@@ -544,14 +534,15 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
             } else if (isInList(iK, list_K2_T0_comp3)) {
                 iK2 = 3;
             } else if (isInList(iK, list_K2_TCT3_comp1)) {
-                T3_K2(w_a, v1_a, i_in);
-                TC_K2(w_a, v1_a, i_in);
                 iK2 = 1;
+                T3_K2(w_a, v1_a, i_in);
+                TC_K2(w_a, v1_a, i_in);   // TC acts on component (1112) -> prefactor = +1
                 conjugate2 = true;
             } else if (isInList(iK, list_K2_TCT3_comp3)) {
-                T3_K2(w_a, v1_a, i_in);
-                TC_K2(w_a, v1_a, i_in);
                 iK2 = 3;
+                T3_K2(w_a, v1_a, i_in);
+                TC_K2(w_a, v1_a, i_in);   // TC acts on component (1122) -> prefactor = -1
+                pf2 *= -1.;
                 conjugate2 = true;
             } else if (isInList(iK, list_K2_T0_comp11)) {
                 iK2 = 4;
@@ -572,12 +563,13 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
             } else if (isInList(iK, list_K2_T0_comp3)) {    //T0comp2 => T2 iK=3
                 iK2 = 3;
             } else if (isInList(iK, list_K2_TCT3_comp1)) {  //TCT3comp1 => T2TC iK=1
-                TC_K2(w_a, v1_a, i_in);
                 iK2 = 1;
+                TC_K2(w_a, v1_a, i_in);   // TC acts on component (1112) -> prefactor = +1
                 conjugate2 = true;
             } else if (isInList(iK, list_K2_TCT3_comp3)) {  //TCT3comp3 => T2TC iK=3
-                TC_K2(w_a, v1_a, i_in);
                 iK2 = 3;
+                TC_K2(w_a, v1_a, i_in);   // TC acts on component (1122) -> prefactor = -1
+                pf2 *= -1.;
                 conjugate2 = true;
             } else if (isInList(iK, list_K2_T0_comp11)) {   //T0comp11 => T2 iK=4
                 iK2 = 4;
@@ -587,7 +579,7 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
 
             //This case, T2 is applied to all components so, regardless of the component, apply it at the end.
             T2_K2(w_a, v1_a, i_in);
-            pf2 = -1.;
+            pf2 *= -1.;
 
             /*And now one checks that the input frequencies are in the accepted range*/
             interpolateK2(valueK2, pf2, iK2, w_a, v1_a, i_in, tvertex);
@@ -596,53 +588,49 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
         default:;
     }
     if(conjugate2)
-    {
         valueK2 = conj(valueK2);
-    }
 
     return valueK2;
 }
 template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
     int iK2;
-    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
-    bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
+    double pf2 = 1.;          // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
+    bool conjugate2 = false;  // whether or not to conjugate value: true for T_C, false else
     Q valueK2;
-
-    pf2 = 1.;
-    conjugate2 = false;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(isInList(iK,list_K2b_T3_comp0)){
-        T3_K2(w_a, v2_a, i_in);
         iK2 = 0;
+        T3_K2(w_a, v2_a, i_in);
     }
     else if(isInList(iK,list_K2b_T3_comp1)){
-        T3_K2(w_a, v2_a, i_in);
         iK2 = 1;
+        T3_K2(w_a, v2_a, i_in);
     }
     else if(isInList(iK,list_K2b_T3_comp2)){
-        T3_K2(w_a, v2_a, i_in);
         iK2 = 2;
+        T3_K2(w_a, v2_a, i_in);
     }
     else if(isInList(iK,list_K2b_T3_comp3)){
-        T3_K2(w_a, v2_a, i_in);
         iK2 = 3;
+        T3_K2(w_a, v2_a, i_in);
     }
     else if(isInList(iK,list_K2b_TC_comp1)){
-        TC_K2(w_a, v2_a, i_in);
         iK2 = 1;
+        TC_K2(w_a, v2_a, i_in);   // TC acts on component (1112) -> prefactor = +1
         conjugate2 = true;
     }
     else if(isInList(iK,list_K2b_TC_comp3)){
-        TC_K2(w_a, v2_a, i_in);
         iK2 = 3;
+        TC_K2(w_a, v2_a, i_in);   // TC acts on component (1122) -> prefactor = -1
+        pf2 *= -1.;
         conjugate2 = true;
     }
     else if(isInList(iK,list_K2b_T3_comp11)){
-        T3_K2(w_a, v2_a, i_in);
         iK2 = 4;
+        T3_K2(w_a, v2_a, i_in);
     }
     else{
         return 0.;
@@ -659,40 +647,38 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
 template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     int iK2;
-    double pf2;       // prefactor: -1 for T_1, T_2, +1 else
-    bool conjugate2;  // whether or not to conjugate value: true for T_C, false else
+    double pf2 = 1.;          // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
+    bool conjugate2 = false;  // whether or not to conjugate value: true for T_C, false else
     Q valueK2;
-
-    pf2 = 1.;
-    conjugate2 = false;
 
     switch (spin) {
         /*This part determines the value of the K2 contribution*/
         /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
         case 0:
             if (isInList(iK, list_K2b_T3_comp0)) {
-                T3_K2(w_a, v2_a, i_in);
                 iK2 = 0;
+                T3_K2(w_a, v2_a, i_in);
             } else if (isInList(iK, list_K2b_T3_comp1)) {
-                T3_K2(w_a, v2_a, i_in);
                 iK2 = 1;
+                T3_K2(w_a, v2_a, i_in);
             } else if (isInList(iK, list_K2b_T3_comp2)) {
-                T3_K2(w_a, v2_a, i_in);
                 iK2 = 2;
-            } else if (isInList(iK, list_K2b_T3_comp3)) {
                 T3_K2(w_a, v2_a, i_in);
+            } else if (isInList(iK, list_K2b_T3_comp3)) {
                 iK2 = 3;
+                T3_K2(w_a, v2_a, i_in);
             } else if (isInList(iK, list_K2b_TC_comp1)) {
-                TC_K2(w_a, v2_a, i_in);
                 iK2 = 1;
+                TC_K2(w_a, v2_a, i_in);   // TC acts on component (1112) -> prefactor = +1
                 conjugate2 = true;
             } else if (isInList(iK, list_K2b_TC_comp3)) {
-                TC_K2(w_a, v2_a, i_in);
                 iK2 = 3;
+                TC_K2(w_a, v2_a, i_in);   // TC acts on component (1122) -> prefactor = -1
+                pf2 *= -1.;
                 conjugate2 = true;
             } else if (isInList(iK, list_K2b_T3_comp11)) {
-                T3_K2(w_a, v2_a, i_in);
                 iK2 = 4;
+                T3_K2(w_a, v2_a, i_in);
             } else {
                 return 0.;
             }
@@ -712,11 +698,12 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
                 iK2 = 3;
             } else if (isInList(iK, list_K2b_TC_comp1)) {               //TCcomp1 => T1TC iK=1
                 iK2 = 1;
-                TC_K2(w_a, v2_a, i_in);
+                TC_K2(w_a, v2_a, i_in);   // TC acts on component (1112) -> prefactor = +1
                 conjugate2 = true;
             } else if (isInList(iK, list_K2b_TC_comp3)) {               //TCcomp3 => T1TC iK=3
                 iK2 = 3;
-                TC_K2(w_a, v2_a, i_in);
+                TC_K2(w_a, v2_a, i_in);   // TC acts on component (1122) -> prefactor = -1
+                pf2 *= -1.;
                 conjugate2 = true;
             } else if (isInList(iK, list_K2b_T3_comp11)) {              //T3comp11 => T1 iK=4
                 iK2 = 4;
@@ -724,7 +711,7 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
                 return 0.;
             }
             T1_K2(w_a, v2_a, i_in);
-            pf2 = -1.;
+            pf2 *= -1.;
 
             /*And now one checks that the input frequencies are in the accepted range*/
             interpolateK2(valueK2, pf2, iK2, w_a, v2_a, i_in, tvertex);
