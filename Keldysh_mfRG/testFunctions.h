@@ -532,7 +532,7 @@ void test_K2_correctness(double Lambda){
     if(write_flag) write_h5_rvecs("PT4_check_of_K2a", {"w", "PT2_K1a_R", "PT2_K1a_I", "PT4_K1a22_R", "PT4_K1a22_I", "PT4_K1a13_1_R", "PT4_K1a13_1_I", "PT4_K1a13_2_R", "PT4_K1a13_2_I"},
                                   {bfreqs, PT2_K1a.vertex[0].avertex.K1.real(), PT2_K1a.vertex[0].avertex.K1.imag(),
                                    PT4_K1a22.vertex[0].avertex.K1.real(), PT4_K1a22.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_1.vertex[0].avertex.K1.real(), PT4_K1a13_1.vertex[0].avertex.K1.imag()
+                                   PT4_K1a13_1.vertex[0].avertex.K1.real(), PT4_K1a13_1.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2.vertex[0].avertex.K1.real(), PT4_K1a13_2.vertex[0].avertex.K1.imag()});
 }
 
