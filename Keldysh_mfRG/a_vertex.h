@@ -730,7 +730,7 @@ template<typename Q> void avert<Q>::T1_K2(double& w_a, double& v1_a, int& i_in) 
 {
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
     w_a *= -1.;
-    v1_a *= 1.;
+    //v1_a *= 1.;
     internal_T1_K2_a(i_in);
 }
 template<typename Q> void avert<Q>::T2_K2(double& w_a, double& v1_a, int& i_in) const
@@ -1097,7 +1097,7 @@ template<typename Q> void avert<Q>::TC_K3(double& w_a, double& v1_a, double& v2_
 {
     double temp = *(&v1_a);
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    w_a *= 1.;                             //w_a ->  w_a
+    //w_a *= 1.;                            //w_a ->  w_a
     v1_a = v2_a;                            //v1_a -> v2_a
     v2_a = temp;                            //v2_a -> v1_a
     internal_TC_K3_a(i_in);
