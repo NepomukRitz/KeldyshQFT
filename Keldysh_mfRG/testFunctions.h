@@ -494,40 +494,46 @@ void test_K2_correctness(double Lambda){
     Propagator G(Lambda, bare.selfenergy, 'g'); //Bare propagator
 
     //Create states for K1-calculations
-    State<comp> SOPT_K1a;
-    State<comp> SOPT_K1p;
-    State<comp> SOPT_K1t;
+    State<comp> PT2_K1a;
+    State<comp> PT2_K1p;
+    State<comp> PT2_K1t;
 
     //Save K1-bubbles in separate objects - SOPT
-    bubble_function(SOPT_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
-    bubble_function(SOPT_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
-    bubble_function(SOPT_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
+    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
+    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
 
-    State<comp> TOPT_K2a;    //Create state for K2a calculation
+    State<comp> PT3_K2a;    //Create state for K2a calculation
 
     //Do appropriate calculation for K2a with K1p and K1t being fed back into the left vertex. Notice part = 'L' to ensure
     //that the correct contributions are added on both sides. - TOPT
-    bubble_function(TOPT_K2a.vertex, SOPT_K1p.vertex + SOPT_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');
 
-    State<comp> TOPT_K1a;    //Create state to compare with K1a
-    bubble_function(TOPT_K1a.vertex, SOPT_K1a.vertex, bare.vertex, G, G, 'a', false, '.');
+    State<comp> PT3_K1a;    //Create state to compare with K1a
+    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false, '.');
 
-    State<comp> right_side = bare + SOPT_K1a + TOPT_K1a + TOPT_K2a;  //Create vertex of the right side of BSE
+    State<comp> PT123_a = bare + PT2_K1a + PT3_K1a + PT3_K2a;  //Create vertex of the right side of BSE
 
-    State<comp> FOPT_K1a;
+    State<comp> PT4_K1a22;
+    State<comp> PT4_K1a13_1;
+    State<comp> PT4_K1a13_2;
     //Calculate a K1a-object to compare with K1a and NRG-results. Notice part='R', suggesting the "weird" vertex is on the }
     //right and, thanks to this, no unnecessary K2 calculation is entered in bubble_function
-    bubble_function(FOPT_K1a.vertex, bare.vertex, right_side.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R');
 
     cvec K1a_diff(nBOS);
     for(int iw=0; iw<nBOS; ++iw){
-        K1a_diff[iw] = FOPT_K1a.vertex[0].avertex.K1_val(0, iw, 0) - SOPT_K1a.vertex[0].avertex.K1_val(0, iw, 0);
+        K1a_diff[iw] = PT4_K1a22.vertex[0].avertex.K1_val(0, iw, 0) - PT2_K1a.vertex[0].avertex.K1_val(0, iw, 0);
     }
 
     print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
-    if(write_flag) write_h5_rvecs("FOPT_check_of_K2a", {"w", "SOPT_K1a_R", "SOPT_K1a_I", "FOPT_K1a_R", "FOPT_K1a_I"},
-                                  {bfreqs, SOPT_K1a.vertex[0].avertex.K1.real(), SOPT_K1a.vertex[0].avertex.K1.imag(),
-                                   FOPT_K1a.vertex[0].avertex.K1.real(), FOPT_K1a.vertex[0].avertex.K1.imag()});
+    if(write_flag) write_h5_rvecs("PT4_check_of_K2a", {"w", "PT2_K1a_R", "PT2_K1a_I", "PT4_K1a22_R", "PT4_K1a22_I", "PT4_K1a13_1_R", "PT4_K1a13_1_I", "PT4_K1a13_2_R", "PT4_K1a13_2_I"},
+                                  {bfreqs, PT2_K1a.vertex[0].avertex.K1.real(), PT2_K1a.vertex[0].avertex.K1.imag(),
+                                   PT4_K1a22.vertex[0].avertex.K1.real(), PT4_K1a22.vertex[0].avertex.K1.imag(),
+                                   PT4_K1a13_1.vertex[0].avertex.K1.real(), PT4_K1a13_1.vertex[0].avertex.K1.imag()
+                                   PT4_K1a13_2.vertex[0].avertex.K1.real(), PT4_K1a13_2.vertex[0].avertex.K1.imag()});
 }
 
 /**
