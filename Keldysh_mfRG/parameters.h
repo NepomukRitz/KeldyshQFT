@@ -22,7 +22,7 @@ const int nLoops = 1;  // Number of loops
 const int nODE = 10;
 
 // Limits of the fRG flow
-const double Lambda_ini = 2.0;
+const double Lambda_ini = 20.0;
 const double Lambda_fin = 1.0;    //1.0-1./7.;
 
 // Vector with values of Lambda for the fRG flow
@@ -31,7 +31,7 @@ rvec flow_grid(nODE);                                                           
 
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
-const double glb_mu = 0.0;                     // Chemical potential
+const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 const double glb_Gamma = 1.;                   // Hybridization of Anderson model
@@ -49,37 +49,37 @@ const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in e
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
 #if GRID==1
-const double w_upper_b = 100.;
-const double w_lower_b = -w_upper_b;
-const double w_upper_f = 100.;
-const double w_lower_f = -w_upper_f;
+const double glb_w_upper = 100.;
+const double glb_w_lower = -glb_w_upper;
+const double glb_v_upper = 100.;
+const double glb_v_lower = -glb_v_upper;
 const double w_a = 1.;
-const double k_w_b = log(1. + w_upper_b/w_a);
-const double k_w_f = log(1. + w_upper_f/w_a);
+const double k_w_b = log(1. + glb_w_upper/w_a);
+const double k_w_f = log(1. + glb_v_upper/w_a);
 
 const int nBOS = 51;
 const int nFER = 51;
 #elif GRID==2
-const double w_upper_b = 20.;
-const double w_lower_b = -w_upper_b;        //Symmetric grid
-const double w_upper_f = 20.;
-const double w_lower_f = -w_upper_f;        //Symmetric grid
+const double glb_w_upper = 20.;//20.;
+const double glb_w_lower = -glb_w_upper;        //Symmetric grid
+const double glb_v_upper = 20.;//20.;
+const double glb_v_lower = -glb_v_upper;        //Symmetric grid
 
-const double glb_n_p = 1./50.;                  //Density of points  - with w_up=20=-w_lo, set to 1./20. for 200 and to 0.12 for 500 points
+const double glb_n_p = 1./10.;///20.;                  //Density of points  - with w_up=20=-w_lo, set to 1./20. for 200 and to 0.12 for 500 points
 
 // Number of bosonic and fermionic frequency points
-const int nBOS = (int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)) + (1-(((int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)))%2)); //Second term added to ensure nBOS is odd
-const int nFER = (int)(glb_n_p*(w_upper_f-w_lower_f)/(glb_T)) + (1-(((int)(glb_n_p*(w_upper_f-w_lower_f)/(glb_T)))%2)); //Second term added to ensure nFER is odd
+const int nBOS = (int)(glb_n_p*(glb_w_upper-glb_w_lower)/(glb_T)) + (1-(((int)(glb_n_p*(glb_w_upper-glb_w_lower)/(glb_T)))%2)); //Second term added to ensure nBOS is odd
+const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)))%2)); //Second term added to ensure nFER is odd
 
-const double dw = (w_upper_b-w_lower_b)/((double)(nBOS-1)); // TODO: remove this?
-const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1)); // TODO: remove this?
+//const int nBOS = 20;
+//const int nFER = 20;
 
 #elif GRID==3
 const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
-const double w_upper_b = 100.;
-const double w_lower_b = -w_upper_b;
-const double w_upper_f = 100.;
-const double w_lower_f = -w_upper_f;
+const double glb_w_upper = 100.;
+const double glb_w_lower = -glb_w_upper;
+const double glb_v_upper = 100.;
+const double glb_v_lower = -glb_v_upper;
 
 // Number of bosonic and fermionic frequency points
 const int nBOS = 501;
@@ -96,10 +96,10 @@ const double dev_from_lin_b = 0.85;
 const int nBOS = 201; // should be odd to ensure that zero is in the grid
 const int nFER = 201; // should be odd to ensure that zero is in the grid
 // formula yields
-const double w_upper_b = dw_at_zero_b * ((double)(nBOS/2)) / dev_from_lin_b * tan( dev_from_lin_b);
-const double w_lower_b = -w_upper_b;
-const double w_upper_f = dw_at_zero_f * ((double)(nFER/2)) / dev_from_lin_f * tan( dev_from_lin_f);
-const double w_lower_f = -w_upper_f;
+const double glb_w_upper = dw_at_zero_b * ((double)(nBOS/2)) / dev_from_lin_b * tan( dev_from_lin_b);
+const double glb_w_lower = -glb_w_upper;
+const double glb_v_upper = dw_at_zero_f * ((double)(nFER/2)) / dev_from_lin_f * tan( dev_from_lin_f);
+const double glb_v_lower = -glb_v_upper;
 
 #endif
 
@@ -114,33 +114,26 @@ const int nFER3 = nFER;
 const int nSE   = nFER;
 const int nPROP = nFER;
 
-// Number of frequency points for the K1 class(bosonic freq wa),
-// K2 (bosonic freq wa, fermionic freq nua) and K3 (bosonic frequency wa and fermionic freqs nua and nuap)
-// for the a-channel
-const int nw1_wa  = nBOS;
-const int nw2_wa  = nBOS2;
-const int nw2_va  = nFER2;
-const int nw3_wa  = nBOS3;
-const int nw3_va  = nFER3;
-const int nw3_vap = nFER3;
-
-// Number of frequency points for the K1 class(bosonic freq wp), K2 (bosonic freq wp, fermionic freq nup) and K3
-// (bosonic frequency wp and fermionic freqs nup and nupp) for the p-channel
-const int nw1_wp  = nBOS;
-const int nw2_wp  = nBOS2;
-const int nw2_vp  = nFER2;
-const int nw3_wp  = nBOS3;
-const int nw3_vp  = nFER3;
-const int nw3_vpp = nFER3;
-
-// Number of frequency points for the K1 class(bosonic freq wt), K2 (bosonic freq wt, fermionic freq nut) and K3
-// (bosonic frequency wt and fermionic freqs nut and nutp) for the t-channel
-const int nw1_wt  = nBOS;
-const int nw2_wt  = nBOS2;
-const int nw2_vt  = nFER2;
-const int nw3_wt  = nBOS3;
-const int nw3_vt  = nFER3;
-const int nw3_vtp = nFER3;
+// Number of frequency points for the K1 class (bosonic freq w),
+// K2 (bosonic freq w, fermionic freq v) and K3 (bosonic frequency w and fermionic freqs, both v and vp)
+// for the a channel
+const int nw1_a  = nBOS;
+const int nw2_a  = nBOS2;
+const int nv2_a  = nFER2;
+const int nw3_a  = nBOS3;
+const int nv3_a  = nFER3;
+// for the p channel
+const int nw1_p  = nBOS;
+const int nw2_p  = nBOS2;
+const int nv2_p  = nFER2;
+const int nw3_p  = nBOS3;
+const int nv3_p = nFER3;
+// for the t channel
+const int nw1_t  = nBOS;
+const int nw2_t  = nBOS2;
+const int nv2_t  = nFER2;
+const int nw3_t  = nBOS3;
+const int nv3_t = nFER3;
 
 // Vectors for fermionic and bosonic frequencies
 rvec bfreqs (nBOS);                                                                                                     // NOLINT(cert-err58-cpp)
@@ -155,9 +148,9 @@ rvec ffreqs3 (nFER3);
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)
 //rvec freqs_p(nw_p);                                                                                                     // NOLINT(cert-err58-cpp)
 //rvec freqs_t(nw_t);                                                                                                     // NOLINT(cert-err58-cpp)
-//auto dw_a = (w_upper_b-w_lower_b)/((double)(nw_a-1));
-//auto dw_p = (w_upper_b-w_lower_b)/((double)(nw_p-1));
-//auto dw_t = (w_upper_b-w_lower_b)/((double)(nw_t-1));
+//auto dw_a = (glb_w_upper-glb_w_lower)/((double)(nw_a-1));
+//auto dw_p = (glb_w_upper-glb_w_lower)/((double)(nw_p-1));
+//auto dw_t = (glb_w_upper-glb_w_lower)/((double)(nw_t-1));
 
 
 /// Keldysh index parameters ///
@@ -199,7 +192,7 @@ const int n_in = 1;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define DIAG_CLASS 1
 
 // Defines whether the values are interpolated from previously saved ones or from the self-energy
 #define INTER_PROP
@@ -215,17 +208,18 @@ const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
-//#define STATIC_FEEDBACK
+#define STATIC_FEEDBACK
 
 
 #if REG==2
 const int param_size = 14;
 const double parameter_list[param_size] = {GRID, REG, glb_Gamma, DIAG_CLASS, nLoops,
-                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
+                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #else
 const int param_size = 13;
 const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, nLoops,
-                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V, w_upper_b, w_lower_b, w_upper_f, w_lower_f};
+                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #endif
+
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

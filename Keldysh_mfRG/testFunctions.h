@@ -85,7 +85,7 @@ void test_rhs_bubbles_flow_wstate(int N_ODE) {
  * @return          : The results of the calculation
  */
 auto rhs_bubbles_flow(const cvec& input, double Lambda) -> cvec{
-    cvec ans(nw1_wa);   //Initialize the answer
+    cvec ans(nw1_a);   //Initialize the answer
 
     SelfEnergy<comp> selfini;   //Initialize self energy
     selfini.initialize(glb_U/2., 0.);   //Hartree term
@@ -101,8 +101,8 @@ auto rhs_bubbles_flow(const cvec& input, double Lambda) -> cvec{
         IntegrandBubble integrandPia13(g, s, true, w, 13, 'a');     //RK
 
         //Calculate the contributions
-        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
-        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+        auto cont11 = integrator(integrandPia11, glb_w_lower, glb_w_lower);
+        auto cont13 = integrator(integrandPia13, glb_w_lower, glb_w_lower);
 
         //Add the respective contributions to the respective bubble
         ans[i] = pow(-glb_U/2., 2.)*(cont11+ cont13);            //11+13 = OE => Keldysh comp0
@@ -117,14 +117,14 @@ auto rhs_bubbles_flow(const cvec& input, double Lambda) -> cvec{
  */
 void test_rhs_bubbles_flow(int N_ODE){
     bool write_flag = true; // whether to write output in hdf5
-    cvec K1a_dir(nw1_wa), K1a_fin(nw1_wa), K1a_ini(nw1_wa); // direct, final, initial K1a_1
+    cvec K1a_dir(nw1_a), K1a_fin(nw1_a), K1a_ini(nw1_a); // direct, final, initial K1a_1
     SelfEnergy<comp> SEin; // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0ini(Lambda_ini, SEin, 'g'); // initial propagator
     Propagator G0dir(Lambda_fin, SEin, 'g'); // final propagator
 
     // direct calculation of initial K1a
-    for(int i=0; i<nw1_wa; ++i) {
+    for(int i=0; i<nw1_a; ++i) {
         double w = bfreqs[i];
 
         //Create the objects explicitly designed to return the determined Keldysh component needed
@@ -132,14 +132,14 @@ void test_rhs_bubbles_flow(int N_ODE){
         IntegrandBubble integrandPia13(G0ini, G0ini, false, w, 13, 'a');     //RK
 
         //Calculate the contributions
-        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
-        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+        auto cont11 = integrator(integrandPia11, glb_w_lower, glb_w_lower);
+        auto cont13 = integrator(integrandPia13, glb_w_lower, glb_w_lower);
 
         K1a_ini[i] = pow(-glb_U/2.,2.)*(cont11 + cont13);
     }
 
     // direct calculation of direct K1a
-    for(int i=0; i<nw1_wa; ++i) {
+    for(int i=0; i<nw1_a; ++i) {
         double w = bfreqs[i];
 
         //Create the objects explicitly designed to return the determined Keldysh component needed
@@ -147,8 +147,8 @@ void test_rhs_bubbles_flow(int N_ODE){
         IntegrandBubble integrandPia13(G0dir, G0dir, false, w, 13, 'a');     //RK
 
         //Calculate the contributions
-        auto cont11 = integrator(integrandPia11, w_lower_b, w_upper_b);
-        auto cont13 = integrator(integrandPia13, w_lower_b, w_upper_b);
+        auto cont11 = integrator(integrandPia11, glb_w_lower, glb_w_lower);
+        auto cont13 = integrator(integrandPia13, glb_w_lower, glb_w_lower);
 
         K1a_dir[i] = pow((-glb_U/2.),2.)*(cont11 + cont13);
     }
@@ -361,7 +361,7 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
  * @param Lambda    : Lambda at which the derivatives are to be calculated
  */
 void test_derivatives_K1a(double Lambda){
-    cvec blah(nw1_wa);
+    cvec blah(nw1_a);
     cvec rhs_SOPT_FFT_K1a = dSOPT_FFT_K1a_rhs(blah, Lambda);
     cvec rhs_flow = rhs_bubbles_flow(blah, Lambda);
 
@@ -375,7 +375,7 @@ void test_derivatives_K1a(double Lambda){
  * @param Lambda    : Lambda at which the derivatives are to be calculated
  */
 void test_derivatives_SE(double Lambda){
-    cvec blah(nw1_wa);
+    cvec blah(nw1_a);
     State<comp> sopt;
     sopt.initialize();
     cvec rhs_SOPT_FFT_K1a = dSOPT_FFT_SE_rhs(blah, Lambda);

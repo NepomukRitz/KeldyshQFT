@@ -360,7 +360,7 @@ void SOPT_FFT(cvec& SEout_R, cvec& SEout_K, cvec& K1aout_R, cvec& K1aout_K, cvec
             K1av_K *= ( (Piav_R*(Uin/2.) + 1.) * (Piav_R.conj()*(Uin/2.) + 1.) ).inv();
             //K1av_K_lad = K1av_K * ( (Piav_R*(Uin/2.) + 1.) * (Piav_R.conj()*(Uin/2.) + 1.) ).inv();
         /// ------------------- K1a OUTPUT --------------------- ///
-        // resulting K1a components on external grid (nw1_wa elements for frequencies bfreqs)
+        // resulting K1a components on external grid (nw1_a elements for frequencies bfreqs)
         interp1_FFT(K1aout_R, bfreqs, K1av_R, vFFT); // linear interpolation for retarded component
         interp1_FFT(K1aout_K, bfreqs, K1av_K, vFFT); // linear interpolation for Keldysh component
         if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_K1a.h5", {"v","K1a_R_R","K1a_R_I","K1a_K_R","K1a_K_I"}, {vFFT,K1av_R.real(),K1av_R.imag(),K1av_K.real(),K1av_K.imag()});
@@ -405,7 +405,7 @@ void SOPT_FFT(cvec& SEout_R, cvec& SEout_K, cvec& K1aout_R, cvec& K1aout_K, cvec
         if(ladflag_FFT) // ladder summation: \Gamma_0^2 ( Pip + Pip \Gamma_0 Pip + Pip \Gamma_0 Pip \Gamma_0 Pip + ...)
             K1pv_K *= ( (Pipv_R*(Uin/2.) + 1.) * (Pipv_R.conj()*(Uin/2.) + 1.) ).inv();
         /// ------------------- K1p OUTPUT --------------------- ///
-        // resulting K1p components on external grid (nw1_wp elements for frequencies bfreqs)
+        // resulting K1p components on external grid (nw1_p elements for frequencies bfreqs)
         interp1_FFT(K1pout_R, bfreqs, K1pv_R, vFFT); // linear interpolation for component 1
         interp1_FFT(K1pout_K, bfreqs, K1pv_K, vFFT); // linear interpolation for component 3
         if(writeflag_FFT) write_h5_rvecs("SOPT_FFT_K1p_lad.h5", {"v","K1p_R_R","K1p_R_I","K1p_K_R","K1p_K_I"}, {vFFT,K1pv_R.real(),K1pv_R.imag(),K1pv_K.real(),K1pv_K.imag()});
@@ -422,12 +422,12 @@ void SOPT_FFT(cvec& SEout_R, cvec& SEout_K, cvec& K1aout_R, cvec& K1aout_K, cvec
         // resulting retarded self-energy in time and frequency
         cvec SEt_R(nFFT), SEv_R(nFFT);
         if(tailflag_FFT) {
-            cvec SEv_RAR(nFFT);
+            cvec SEv_RRA(nFFT);
             SEt_R = SEt_RKK + SEt_KKA + SEt_KRK; // without RAR component
             // Fourier trafos
             ft_t2v(vFFT, SEv_R, tFFT, SEt_R); // Fourier trafo, without RAR component
-            ft_t2v(vFFT, SEv_RAR, tFFT, SEt_RRA, 1., 3.*hyb_FFT); // G^R(t)^2 G^A(-t) = -i Theta(t)e^{-3ht}
-            SEv_R = (SEv_R + SEv_RAR) * (Uin*Uin/4.); // prefactor: -(-U/2/i)^2
+            ft_t2v(vFFT, SEv_RRA, tFFT, SEt_RRA, 1., 3.*hyb_FFT); // G^R(t)^2 G^A(-t) = -i Theta(t)e^{-3ht}
+            SEv_R = (SEv_R + SEv_RRA) * (Uin*Uin/4.); // prefactor: -(-U/2/i)^2
         }
         else {
             SEt_R = (SEt_RKK + SEt_KKA + SEt_KRK + SEt_RRA) * (Uin*Uin/4.); // prefactor: -(-U/2/i)^2
@@ -491,13 +491,13 @@ void SOPT_FFT_SE_R(cvec& SEout_R, const Propagator& Gin, const double Uin, const
 
 void SOPT_FFT_K1a_R(cvec& K1aout_R, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT) {
     cvec SE_R, SE_K, K1p_R, K1p_K; // dummy cvecs for output that is not computed at all
-    cvec K1a_K(nw1_wa); // dummy cvec for output that is not returned
+    cvec K1a_K(nw1_a); // dummy cvec for output that is not returned
     SOPT_FFT(SE_R, SE_K, K1aout_R, K1a_K, K1p_R, K1p_K, Gin, Uin, nFFT, V_FFT, false, true, false, false);
 }
 
 void SOPT_FFT_K1p_R(cvec& K1pout_R, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT) {
     cvec SE_R, SE_K, K1a_R, K1a_K; // dummy cvecs for output that is not computed at all
-    cvec K1p_K(nw1_wp); // dummy cvec for output that is not returned
+    cvec K1p_K(nw1_p); // dummy cvec for output that is not returned
     SOPT_FFT(SE_R, SE_K, K1a_R, K1a_K, K1pout_R, K1p_K, Gin, Uin, nFFT, V_FFT, false, false, true, false);
 }
 
@@ -505,8 +505,8 @@ void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gamm
         const double Uin, const int nFFT, const double V_FFT, const bool SEflag_FFT, const bool K1aflag_FFT, const bool K1pflag_FFT, const bool ladflag_FFT) {
     /// prepare output ///
     cvec SE_R(nSE), SE_K(nSE); // cvecs for SOPT self-energy
-    cvec K1a_R(nw1_wa), K1a_K(nw1_wa); // cvecs for SOPT K1a
-    cvec K1p_R(nw1_wp), K1p_K(nw1_wp); // cvecs for SOPT K1p
+    cvec K1a_R(nw1_a), K1a_K(nw1_a); // cvecs for SOPT K1a
+    cvec K1p_R(nw1_p), K1p_K(nw1_p); // cvecs for SOPT K1p
     /// perform SOPT ///
     SOPT_FFT(SE_R, SE_K, K1a_R, K1a_K, K1p_R, K1p_K, Gin, Uin, nFFT, V_FFT, SEflag_FFT, K1aflag_FFT, K1pflag_FFT, ladflag_FFT);
     /// fill output ///
@@ -518,13 +518,13 @@ void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gamm
         }
     }
     if(K1aflag_FFT) {
-        for (int iw = 0; iw < nw1_wa; ++iw) { // K1a
+        for (int iw = 0; iw < nw1_a; ++iw) { // K1a
             gammaAout.K1_setvert(0, iw, 0, K1a_R[iw]); // retarded component
             gammaAout.K1_setvert(1, iw, 0, K1a_K[iw]); // Keldysh component
         }
     }
     if(K1pflag_FFT) {
-        for (int iw = 0; iw < nw1_wp; ++iw) { // K1p
+        for (int iw = 0; iw < nw1_p; ++iw) { // K1p
             gammaPout.K1_setvert(0, iw, 0, K1p_R[iw]); // retarded component
             gammaPout.K1_setvert(1, iw, 0, K1p_K[iw]); // Keldysh component
         }

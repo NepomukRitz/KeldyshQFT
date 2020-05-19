@@ -81,13 +81,12 @@ public:
 
     // Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
     // Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin
-    auto value(int, double, double, double, int, char) const -> Q;
-    auto value(int, double, double, double, int, int, char) const -> Q;
-
+    auto value(int iK, double w, double v1, double v2, int i_in, char channel) const -> Q;
+    auto value(int iK, double w, double v1, double v2, int i_in, int spin, char channel) const -> Q;
 
     // Returns the sum of the contributions of the diagrammatic classes r' =/= r
-    auto gammaRb(int, double, double, double, int, char) const -> Q;
-    auto gammaRb(int, double, double, double, int, int, char) const -> Q;
+    auto gammaRb(int iK, double w, double v1, double v2, int i_in, char r) const -> Q;
+    auto gammaRb(int iK, double w, double v1, double v2, int i_in, int spin, char r) const -> Q;
 
     // Initialize vertex
     void initialize(Q val);

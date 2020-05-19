@@ -62,8 +62,8 @@ double grid_transf_f_inv(double W) {
 
 void setUpBosGrid(rvec& freqs, int nfreqs) {
     double W;
-    double W_lower_b = grid_transf_b(w_lower_b);
-    double W_upper_b = grid_transf_b(w_upper_b);
+    double W_lower_b = grid_transf_b(glb_w_lower);
+    double W_upper_b = grid_transf_b(glb_w_upper);
 
     // self-energy and K1
     double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
@@ -75,8 +75,8 @@ void setUpBosGrid(rvec& freqs, int nfreqs) {
 
 void setUpFerGrid(rvec& freqs, int nfreqs) {
     double W;
-    double W_lower_f = grid_transf_f(w_lower_f);
-    double W_upper_f = grid_transf_f(w_upper_f);
+    double W_lower_f = grid_transf_f(glb_v_lower);
+    double W_upper_f = grid_transf_f(glb_v_upper);
 
     // self-energy and K1
     double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
@@ -107,29 +107,27 @@ auto fconv_fer(double w, int nfreqs) -> int {
 
 void setUpBosGrid(rvec& freqs, int nfreqs)
 {
+    double dw = (glb_w_upper-glb_w_lower)/((double)(nfreqs-1)); // TODO: define as global variable
     for(int i=0; i<nfreqs; ++i)
-        freqs[i] = w_lower_b + i*dw;
+        freqs[i] = glb_w_lower + i*dw;
 }
 void setUpFerGrid(rvec& freqs, int nfreqs)
 {
+    double dv = (glb_v_upper-glb_v_lower)/((double)(nfreqs-1)); // TODO: define as global variable
     for(int i=0; i<nfreqs; ++i)
-        freqs[i] = w_lower_f + i*dv;
+        freqs[i] = glb_v_lower + i*dv;
 }
 
 
 auto fconv_bos(double w, int nfreqs) -> int
 {
-    double dw = (w_upper_b-w_lower_b)/((double)(nfreqs-1));
-    double aid = (w-w_lower_b)/dw;
-    auto index1 = (int)aid;
-    return index1; //- (int)(index/nfreqs);
+    double dw = (glb_w_upper-glb_w_lower)/((double)(nfreqs-1));
+    return (int)((w-glb_w_lower)/dw);
 }
-auto fconv_fer(double w, int nfreqs) -> int
+auto fconv_fer(double v, int nfreqs) -> int
 {
-    double dv = (w_upper_f-w_lower_f)/((double)(nfreqs-1));
-    double aid = (w-w_lower_f)/dv;
-    auto index1 = (int)aid;
-    return index1; //- (int)(index/nfreqs);
+    double dv = (glb_v_upper-glb_v_lower)/((double)(nfreqs-1));
+    return (int)((v-glb_v_lower)/dv);
 }
 
 
@@ -140,75 +138,75 @@ auto fconv_fer(double w, int nfreqs) -> int
 
 auto fconv_K1_a(double w) -> int
 {
-//    auto index = (int)((w-w_lower_b)/dw);
-//    return index -(int)(index/nw1_wa);
+//    auto index = (int)((w-glb_w_lower)/dw);
+//    return index -(int)(index/nw1_a);
     return fconv_bos(w);
 }
 auto fconv_K2_a(double w, double v1) -> tuple<int, int>
 {
-//    auto index_b = (int)((w-w_lower_b)/dw);
-//    auto index_f = (int)((v1-w_lower_f)/dv);
+//    auto index_b = (int)((w-glb_w_lower)/dw);
+//    auto index_f = (int)((v1-glb_v_lower)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw2_wa), index_f-(int)(index_f/nw2_va));
+//    return make_tuple(index_b-(int)(index_b/nw2_a), index_f-(int)(index_f/nv2_a));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
 auto fconv_K3_a(double w, double v1, double v2) -> tuple<int, int, int>
 {
-//    auto index_b = (int)((w-w_lower_b)/dw);
-//    auto index_f = (int)((v1-w_lower_f)/dv);
-//    auto index_fp = (int)((v2-w_lower_f)/dv);
+//    auto index_b = (int)((w-glb_w_lower)/dw);
+//    auto index_f = (int)((v1-glb_v_lower)/dv);
+//    auto index_fp = (int)((v2-glb_v_lower)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw3_wa), index_f-(int)(index_f/nw3_va), index_fp-(int)(index_fp/nw3_vap));
+//    return make_tuple(index_b-(int)(index_b/nw3_a), index_f-(int)(index_f/nv3_a), index_fp-(int)(index_fp/nv3_a));
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 
 auto fconv_K1_p(double w) -> int
 {
-//    auto index = (int)((w-w_lower_b)/dw);
-//    return index - (int)(index/nw1_wp);
+//    auto index = (int)((w-glb_w_lower)/dw);
+//    return index - (int)(index/nw1_p);
     return fconv_bos(w);
 }
 auto fconv_K2_p(double w, double v1) -> tuple<int, int>
 {
-//    auto index_b = (int)((w-w_lower_b)/dw);
-//    auto index_f = (int)((v1-w_lower_f)/dv);
+//    auto index_b = (int)((w-glb_w_lower)/dw);
+//    auto index_f = (int)((v1-glb_v_lower)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw2_wp), index_f-(int)(index_f/nw2_vp));
+//    return make_tuple(index_b-(int)(index_b/nw2_p), index_f-(int)(index_f/nv2_p));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
 auto fconv_K3_p(double w, double v1, double v2) -> tuple<int, int, int>
 {
-//    auto index_b = (int)((w-w_lower_b)/dw);
-//    auto index_f = (int)((v1-w_lower_f)/dv);
-//    auto index_fp = (int)((v2-w_lower_f)/dv);
+//    auto index_b = (int)((w-glb_w_lower)/dw);
+//    auto index_f = (int)((v1-glb_v_lower)/dv);
+//    auto index_fp = (int)((v2-glb_v_lower)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw3_wp), index_f-(int)(index_f/nw3_vp), index_fp-(int)(index_fp/nw3_vpp));
+//    return make_tuple(index_b-(int)(index_b/nw3_p), index_f-(int)(index_f/nv3_p), index_fp-(int)(index_fp/nv3_p));
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 
 }
 
 auto fconv_K1_t(double w) -> int
 {
-//    auto index = (int)((w-w_lower_b)/dw);
-//    return index - (int)(index/nw1_wt);
+//    auto index = (int)((w-glb_w_lower)/dw);
+//    return index - (int)(index/nw1_t);
     return fconv_bos(w);
 
 }
 auto fconv_K2_t(double w, double v1) -> tuple<int, int>
 {
-//    auto index_b = (int)((w-w_lower_b)/dw);
-//    auto index_f = (int)((v1-w_lower_f)/dv);
+//    auto index_b = (int)((w-glb_w_lower)/dw);
+//    auto index_f = (int)((v1-glb_v_lower)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw2_wt), index_f-(int)(index_f/nw2_vt));
+//    return make_tuple(index_b-(int)(index_b/nw2_t), index_f-(int)(index_f/nv2_t));
     return make_tuple(fconv_bos(w), fconv_fer(v1));
 }
 auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
 {
-//    auto index_b = (int)((w-w_lower_b)/dw);
-//    auto index_f = (int)((v1-w_lower_f)/dv);
-//    auto index_fp = (int)((v2-w_lower_f)/dv);
+//    auto index_b = (int)((w-glb_w_lower)/dw);
+//    auto index_f = (int)((v1-glb_v_lower)/dv);
+//    auto index_fp = (int)((v2-glb_v_lower)/dv);
 //
-//    return make_tuple(index_b-(int)(index_b/nw3_wt), index_f-(int)(index_f/nw3_vt), index_fp-(int)(index_fp/nw3_vtp));
+//    return make_tuple(index_b-(int)(index_b/nw3_t), index_f-(int)(index_f/nv3_t), index_fp-(int)(index_fp/nv3_t));
     return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
 }
 
@@ -239,8 +237,8 @@ double grid_transf_inv(double W) {
 
 void setUpBosGrid(rvec& freqs, int nfreqs) {
     double W;
-    double W_lower_b = grid_transf(w_lower_b);
-    double W_upper_b = grid_transf(w_upper_b);
+    double W_lower_b = grid_transf(glb_w_lower);
+    double W_upper_b = grid_transf(glb_w_upper);
     double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
     for(int i=0; i<nfreqs; ++i) {
         W = W_lower_b + i*dW;
@@ -249,8 +247,8 @@ void setUpBosGrid(rvec& freqs, int nfreqs) {
 }
 void setUpFerGrid(rvec& freqs, int nfreqs) {
     double W;
-    double W_lower_f = grid_transf(w_lower_f);
-    double W_upper_f = grid_transf(w_upper_f);
+    double W_lower_f = grid_transf(glb_v_lower);
+    double W_upper_f = grid_transf(glb_v_upper);
     double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
     for(int i=0; i<nfreqs; ++i) {
         W = W_lower_f + i*dW;
@@ -261,8 +259,8 @@ void setUpFerGrid(rvec& freqs, int nfreqs) {
 
 auto fconv_bos(double w, int nfreqs) -> int {
     double W = grid_transf(w);
-    double W_lower_b = grid_transf(w_lower_b);
-    double W_upper_b = grid_transf(w_upper_b);
+    double W_lower_b = grid_transf(glb_w_lower);
+    double W_upper_b = grid_transf(glb_w_upper);
     double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
     W = (W-W_lower_b)/dW;
     auto index = (int)W;
@@ -270,8 +268,8 @@ auto fconv_bos(double w, int nfreqs) -> int {
 }
 auto fconv_fer(double w, int nfreqs) -> int {
     double W = grid_transf(w);
-    double W_lower_f = grid_transf(w_lower_f);
-    double W_upper_f = grid_transf(w_upper_f);
+    double W_lower_f = grid_transf(glb_v_lower);
+    double W_upper_f = grid_transf(glb_v_upper);
     double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
     W = (W-W_lower_f)/dW;
     auto index = (int)W;

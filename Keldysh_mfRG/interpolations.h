@@ -1,7 +1,3 @@
-//
-// Created by Sa.Aguirre on 2/4/20.
-//
-
 #ifndef KELDYSH_MFRG_INTERPOLATIONS_H
 #define KELDYSH_MFRG_INTERPOLATIONS_H
 
@@ -10,28 +6,31 @@
 #include "data_structures.h"
 
 //TODO improve to return the edge values
-template <typename Q, typename T>
-void interpolateK1(Q& ans, double pf, int iK, double w, int i_in, const T& vertex){
-//    assert(w_lower_b<=w && w <=w_upper_b);
-    if(fabs(w)<w_upper_b) {
+template <typename T>
+auto interpolateK1(double pf, int iK, double w, int i_in, const T& vertex){
+//    assert(glb_w_lower<=w && w <=glb_w_upper);
+    if(fabs(w)<glb_w_upper) {
         int index = fconv_bos(w);
         double x1 = bfreqs[index];
         double x2 = bfreqs[index + 1];
         double xd = (w - x1) / (x2 - x1);
 
-        Q f1 = vertex.K1_val(iK, index, i_in);
-        Q f2 = vertex.K1_val(iK, index + 1, i_in);
+        auto f1 = vertex.K1_val(iK, index, i_in);
+        auto f2 = vertex.K1_val(iK, index + 1, i_in);
 
-        ans = pf * ((1. - xd) * f1 + xd * f2);
+        return pf * ((1. - xd) * f1 + xd * f2);
+    }
+    else {
+        return 0. * vertex.K1_val(0, 0, 0);
     }
 }
 
 template <typename Q, typename T>
 void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, const T& vertex){
-//    assert(w_lower_b<=w && w <=w_upper_b);
-//    assert(w_lower_f<=v && v <=w_upper_f);
+//    assert(glb_w_lower<=w && w <=glb_w_upper);
+//    assert(glb_v_lower<=v && v <=glb_v_upper);
 
-    if(fabs(w)<w_upper_b && fabs(v)<w_upper_f) {
+    if(fabs(w)<glb_w_upper && fabs(v)<glb_v_upper) {
         int index_b = fconv_bos2(w);
         int index_f = fconv_fer2(v);
 
@@ -53,11 +52,11 @@ void interpolateK2 (Q& ans, double pf, int iK, double w, double v, int i_in, con
 
 template <typename Q, typename T>
 void interpolateK3 (Q& ans, double pf, int iK, double w, double v1, double v2, int i_in, const T& vertex) {
-//    assert(w_lower_b<=w && w <=w_upper_b);
-//    assert(w_lower_f<=v1 && v1 <=w_upper_f);
-//    assert(w_lower_f<=v2 && v2 <=w_upper_f);
+//    assert(glb_w_lower<=w && w <=glb_w_upper);
+//    assert(glb_v_lower<=v1 && v1 <=glb_v_upper);
+//    assert(glb_v_lower<=v2 && v2 <=glb_v_upper);
 
-    if(fabs(w)<w_upper_b && fabs(v1)<w_upper_f && fabs(v2)<w_upper_f) {
+    if(fabs(w)<glb_w_upper && fabs(v1)<glb_v_upper && fabs(v2)<glb_v_upper) {
 
         int index_b = fconv_bos3(w);
         int index_f1 = fconv_fer3(v1);
