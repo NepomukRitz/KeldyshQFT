@@ -12,8 +12,8 @@ void ODE_solver_Euler(T& y_fin, const double x_fin, const T& y_ini, const double
     T y_run = y_ini; // initial y value
     double x_run = x_ini; // initial x value
     for (int i=0; i<N_ODE; ++i) {
-        x_run += dx; // update x
         y_run += rhs(y_run, x_run) * dx; // update y
+        x_run += dx; // update x
     }
     y_fin = y_run; // final y value
 }
@@ -24,12 +24,12 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     T y_run = y_ini; // initial y value
     double x_run = x_ini; // initial x value
     for (int i=0; i<N_ODE; ++i) {
-        x_run += dx; // update x
         T y1 = rhs(y_run, x_run) * dx;
         T y2 = rhs(y_run + y1*0.5, x_run + dx/2.) * dx;
         T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
         T y4 = rhs(y_run + y3, x_run + dx) * dx;
-        y_run += (y1 + y2*2. + y3*2. + y4) *(1./ 6.); // update y
+        y_run += (y1 + y2*2. + y3*2. + y4) * (1./6.); // update y
+        x_run += dx; // update x
     }
     y_fin = y_run; // final y value
 }
@@ -76,7 +76,6 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     double dx;
     for (int i=0; i<N_ODE; ++i) {
         dx = x_diffs[i];
-        x_run += dx; // update x
 
         // print iteration number and Lambda to log file
         print("i: ", i, true);
@@ -87,7 +86,8 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         T y2 = rhs(y_run + y1*0.5, x_run + dx/2.) * dx;
         T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
         T y4 = rhs(y_run + y3, x_run + dx) * dx;
-        y_run += (y1 + y2*2. + y3*2. + y4) *(1./ 6.); // update y
+        y_run += (y1 + y2*2. + y3*2. + y4) * (1./6.); // update y
+        x_run += dx; // update x
 
         get_time(t0); // measure time for one iteration
 
@@ -118,6 +118,34 @@ void test_ODE_solvers() { // test ODE solvers in solving dy/dx = y from x=0 to x
     const int N_ODE_Euler = 100; const int N_ODE_RK4 = 10; // number of steps in ODE solver
     ODE_solver_Euler(y_fin_Euler,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE_Euler);
     ODE_solver_RK4(y_fin_RK4,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE_RK4);
+    cout << "Exact result is " << exp(1.) << "." << endl;
+    cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << endl;
+    cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << endl;
+}
+
+double x_t_trafo_quadr(const double t) { // variable transformation x = x(t)
+    return t*t;
+}
+
+double dx_dt_trafo_quadr(const double t) { // variable transformation dx/dt = \dot{x}(t)
+    return 2.*t;
+}
+
+template <typename T> // evaluate any right hand side with any variable transformation
+T rhs_trafo (const T& y, const double t, T rhs (const T& y, const double x), double x_t_trafo(double t), double dx_dt_trafo(double t)) {
+    return rhs(y, x_t_trafo(t)) * dx_dt_trafo(t);
+}
+
+double test_rhs_ODE_exp_quadr(const double& y, const double t) { // test ODE with quadratic variable transformation
+    return rhs_trafo(y, t, test_rhs_ODE_exp, x_t_trafo_quadr, dx_dt_trafo_quadr);
+}
+
+void test_ODE_solvers_quadr() { // test ODE solvers in solving dy/dt = y*2t from t=0 to t=1 with y(0)=1; solution is y(x)=e^{t^2}, y(1)=e;
+    double y_ini, y_fin_Euler, y_fin_RK4, t_ini, t_fin; // necessary variables
+    y_ini = 1.; t_ini = 0.; t_fin = 1.; // boundary values
+    const int N_ODE_Euler = 100; const int N_ODE_RK4 = 10; // number of steps in ODE solver
+    ODE_solver_Euler(y_fin_Euler,  t_fin, y_ini, t_ini, test_rhs_ODE_exp_quadr, N_ODE_Euler);
+    ODE_solver_RK4(y_fin_RK4,  t_fin, y_ini, t_ini, test_rhs_ODE_exp_quadr, N_ODE_RK4);
     cout << "Exact result is " << exp(1.) << "." << endl;
     cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << endl;
     cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << endl;
