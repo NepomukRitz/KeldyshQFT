@@ -23,7 +23,7 @@ cvec dSOPT_FFT_K1a_rhs(const cvec& K1a, const double Lambda) { // return differe
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     Propagator S0(Lambda, SEin,'s'); // bare differentiated propagator
-    cvec dK1a_1(nw1_wa); // output cvec: bare differentiated K1a, component 1
+    cvec dK1a_1(nw1_a); // output cvec: bare differentiated K1a, component 1
     diffSOPT_FFT_K1a_R(dK1a_1, G0, S0, glb_U, 10000, 80.); // fill ouput cvec
     return dK1a_1;
 }
@@ -32,14 +32,14 @@ cvec SOPT_FFT_K1a_rhs(const double Lambda) { // return (Lambda-dependent) K1a_1 
     SelfEnergy<comp> SEin; // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
-    cvec K1a_1(nw1_wa); // output cvec: bare K1a, component 1
+    cvec K1a_1(nw1_a); // output cvec: bare K1a, component 1
     SOPT_FFT_K1a_R(K1a_1, G0, glb_U, 10000, 80.); // fill ouput cvec
     return K1a_1;
 }
 
 void test_ODE_SOPT_FFT_K1a(const int N_ODE) { // test ODE solver using K1a from SOPT_FFT
     bool write_flag = false; // whether to write output in hdf5
-    cvec K1a_dir(nw1_wa), K1a_fin(nw1_wa), K1a_ini(nw1_wa); // direct, final, initial K1a_1
+    cvec K1a_dir(nw1_a), K1a_fin(nw1_a), K1a_ini(nw1_a); // direct, final, initial K1a_1
     //double Lambda_fin = 1.; double Lambda_ini = 2.; // end points of flow -> defined in parameters.h
     //SelfEnergy<comp> SEin; // trivial self-energy
     //SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
@@ -136,7 +136,7 @@ cvec dG_rhs(const cvec& G, const double Lambda) { // return bare differentiated 
 
 void test_ODE_G(const int N_ODE) { // test ODE applied to bare (differentiated) propagator
     bool write_flag = false; // whether to write result in hdf5 file
-    cvec G_dir(nw1_wa), G_fin(nw1_wa), G_ini(nw1_wa); // direct, final, initial propagator as cvec
+    cvec G_dir(nw1_a), G_fin(nw1_a), G_ini(nw1_a); // direct, final, initial propagator as cvec
     double Lambda_fin = 1.; double Lambda_ini = 2.; // end points of flow
     SelfEnergy<comp> SEin; // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term

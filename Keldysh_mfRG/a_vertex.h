@@ -43,18 +43,18 @@ public:
     * i.e. only complex numbers
     *
     * This function aims to be the sole function one needs to call to read the full vertex*/
-    auto value (int, double, double, double, int, char, const tvert<Q>& tvertex) const -> Q;
-    auto value (int, double, double, double, int, int, char, const tvert<Q>& tvertex) const -> Q;
+    auto value (int iK, double w, double v1, double v2, int i_in, char channel, const tvert<Q>& tvertex) const -> Q;
+    auto value (int iK, double w, double v1, double v2, int i_in, int spin, char channel, const tvert<Q>& tvertex) const -> Q;
 
 
     /*For when the channel is already known and the trafo to the specific channel has already been done*/
-    auto value (int, double, double, double, int, const tvert<Q>& tvertex) const-> Q;
-    auto value (int, double, double, double, int, int, const tvert<Q>& tvertex) const-> Q;
+    auto value (int iK, double w, double v1, double v2, int i_in, const tvert<Q>& tvertex) const-> Q;
+    auto value (int iK, double w, double v1, double v2, int i_in, int spin, const tvert<Q>& tvertex) const-> Q;
 
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    auto transfToA(double, double, double, char) const -> rvec;
+    auto transfToA(double w, double v1, double v2, char channel) const -> rvec;
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the a-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -64,7 +64,7 @@ public:
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >=0
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wa * n_in);
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_a * n_in);
 
     auto K1_acc (int) const -> Q;
 
@@ -94,7 +94,7 @@ public:
     void TC_K1(double&, int&) const;
 #endif
 #if DIAG_CLASS>=2
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wa * nw2_va * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_a * nv2_a * n_in);
 
     auto K2_acc (int) const -> Q;
 
@@ -129,7 +129,7 @@ public:
     void TC_K2(double&, double&, int&) const;
 #endif
 #if DIAG_CLASS >=3
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wa * nw3_va * nw3_vap * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_a * nv3_a * nv3_a * n_in);
 
     auto K3_acc (int) const -> Q;
 
@@ -276,7 +276,7 @@ template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v
 }
 
 
-template<typename Q> auto avert<Q>::transfToA( double w, double v1, double v2, char channel) const -> rvec{
+template<typename Q> auto avert<Q>::transfToA(double w, double v1, double v2, char channel) const -> rvec{
     rvec freqs(3);
     switch(channel) {
         case 'a':
@@ -329,22 +329,21 @@ template <typename Q> void avert<Q>::K1_direct_set (int i, Q value){
 }
 
 template <typename Q> void avert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
-    K1[iK*nw1_wa*n_in + i*n_in + i_in] = value;
+    K1[iK*nw1_a*n_in + i*n_in + i_in] = value;
 }
 
 template <typename Q> void avert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
-    K1[iK*nw1_wa*n_in + i*n_in + i_in] += value;
+    K1[iK*nw1_a*n_in + i*n_in + i_in] += value;
 }
 
 template <typename Q> auto avert<Q>::K1_val (int iK, int i, int i_in) const -> Q{
-    return K1[iK*nw1_wa*n_in + i*n_in + i_in];
+    return K1[iK*nw1_a*n_in + i*n_in + i_in];
 }
 
 template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
     int iK1;
     double pf1 = 1.;      // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    Q valueK1;
 
     /*This part determines the value of the K1 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -363,14 +362,12 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
-    interpolateK1(valueK1, pf1, iK1, w_a, i_in, *(this));
-    return valueK1;
+    return interpolateK1(pf1, iK1, w_a, i_in, *(this));
 }
 template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     int iK1;
     double pf1 = 1.;      // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    Q valueK1;
 
     switch(spin) {
         /*This part determines the value of the K1 contribution*/
@@ -388,8 +385,7 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
-            interpolateK1(valueK1, pf1, iK1, w_a, i_in, *(this));
-            break;
+            return interpolateK1(pf1, iK1, w_a, i_in, *(this));
 
         case 1:
             pf1 *= -1.;  //Always a sign-flipping trafo
@@ -407,13 +403,12 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
-            interpolateK1(valueK1, pf1, iK1, w_a, i_in, tvertex);
-            break;
+            return interpolateK1(pf1, iK1, w_a, i_in, tvertex);
 
         default:;
 
     }
-    return valueK1;
+    return 0.;
 }
 
 template<typename Q> void avert<Q>::T1_K1(double& w_a, int& i_in) const
@@ -454,15 +449,15 @@ template <typename Q> void avert<Q>::K2_direct_set (int i, Q value){
 }
 
 template <typename Q> void avert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK * nw2_wa * nw2_va * n_in + i * nw2_va * n_in + j * n_in + i_in] = value;
+    K2[iK * nw2_a * nv2_a * n_in + i * nv2_a * n_in + j * n_in + i_in] = value;
 }
 
 template <typename Q> void avert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK * nw2_wa * nw2_va * n_in + i * nw2_va * n_in + j * n_in + i_in] += value;
+    K2[iK * nw2_a * nv2_a * n_in + i * nv2_a * n_in + j * n_in + i_in] += value;
 }
 
 template <typename Q> auto avert<Q>::K2_val (int iK, int i, int j, int i_in) const -> Q{
-    return K2[iK * nw2_wa * nw2_va * n_in + i * nw2_va * n_in + j * n_in + i_in];
+    return K2[iK * nw2_a * nv2_a * n_in + i * nv2_a * n_in + j * n_in + i_in];
 }
 
 template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, const tvert<Q>& tvertex)const -> Q{
@@ -767,15 +762,15 @@ template <typename Q> void avert<Q>::K3_direct_set (int i, Q value){
 }
 
 template <typename Q> void avert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wa*nw3_va*nw3_vap*n_in + i*nw3_va*nw3_vap*n_in + j*nw3_vap*n_in + k*n_in + i_in] = value;
+    K3[iK*nw3_a*nv3_a*nv3_a*n_in + i*nv3_a*nv3_a*n_in + j*nv3_a*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> void avert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wa*nw3_va*nw3_vap*n_in + i*nw3_va*nw3_vap*n_in + j*nw3_vap*n_in + k*n_in + i_in] += value;
+    K3[iK*nw3_a*nv3_a*nv3_a*n_in + i*nv3_a*nv3_a*n_in + j*nv3_a*n_in + k*n_in + i_in] += value;
 }
 
 template <typename Q> auto avert<Q>::K3_val (int iK, int i, int j, int k, int i_in) const -> Q{
-    return K3[iK*nw3_wa*nw3_va*nw3_vap*n_in + i*nw3_va*nw3_vap*n_in + j*nw3_vap*n_in + k*n_in + i_in];
+    return K3[iK*nw3_a*nv3_a*nv3_a*n_in + i*nv3_a*nv3_a*n_in + j*nv3_a*n_in + k*n_in + i_in];
 }
 
 template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{

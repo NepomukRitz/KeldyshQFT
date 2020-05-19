@@ -1,5 +1,5 @@
 /**
- * Define a struct object which includes the self energy and the vertex which are needed
+ * Define a struct object which includes the self-energy and the vertex which are needed
  * to evaluate the RHS of the flow equations.
  */
 #ifndef KELDYSH_MFRG_STATE_H

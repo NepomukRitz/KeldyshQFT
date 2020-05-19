@@ -4,13 +4,13 @@
 #include "data_structures.h" // real/complex vector classes
 #include <omp.h>             // parallelize initialization of self-energy
 
-/****************** CLASS FOR SELF ENERGY *************/
+/****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>
 class SelfEnergy{
 public:
     // TODO: split into two members: Sigma_R, Sigma_K (?)
     vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
-    Q asymp_value_R = 0.;   //Asymptotic value for the Retarded SE
+    Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid
@@ -20,7 +20,7 @@ public:
     auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
 
-    // operators for self energy
+    // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma += self1.Sigma;
         return *this;
@@ -58,15 +58,15 @@ public:
 
 
 
-/*****************************************FUNCTIONS FOR SELF ENERGY*****************************************************/
+/*****************************************FUNCTIONS FOR SELF-ENERGY*****************************************************/
 /**
- * Function initializes the Retarded and Keldysh components of the Self Energy
+ * Function initializes the Retarded and Keldysh components of the self-energy
  * @tparam Q    : Type of values (usually comp)
- * @param valR  : Value for the constant Retarded Self Energy
- * @param valK  : Value for the constant Keldyh Self Energy
+ * @param valR  : Value for the constant Retarded self-energy
+ * @param valK  : Value for the constant Keldyh self-energy
  */
 template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
-    //Assign self energy to initial values
+    //Assign self-energy to initial values
 #pragma omp parallel for
     for (int iv=0; iv<nSE; ++iv) {
         for (int i_in=0; i_in<n_in; ++i_in) {
@@ -74,11 +74,11 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
             this->setself(1, iv, i_in, valK);
         }
     }
-    this-> asymp_value_R = valR;
+    this-> asymp_val_R = valR;
 }
 
 /**
- * Returns the saved value of the Self Energy
+ * Returns the saved value of the self-energy
  * @tparam Q    : Type of values (usually comp)
  * @param iK    : Keldysh index (either 0 or 1)
  * @param iv    : Frequency index
@@ -102,7 +102,7 @@ template <typename Q> auto SelfEnergy<Q>::acc(int i) -> Q{
 }
 
 /**
- * Set value of Self Energy at index i
+ * Set value of self-energy at index i
  * @tparam Q : Type of values (usually comp)
  * @param i  : Index
  * @param val: Value
@@ -114,7 +114,7 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
 }
 
 /**
- * Linear interpolating function returning the value of the Retarded or Keldysh Self Energy at freq v
+ * Linear interpolating function returning the value of the Retarded or Keldysh self-energy at freq v
  * @tparam Q    : Type of values (usually comp)
  * @param iK    : Keldysh index (either 0 or 1)
  * @param v     : Frequency
@@ -123,11 +123,11 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
  */
 template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
 
-    if(abs(v)>w_upper_f)    //Check the range of frequency. If too large, return Sigma(\infty)
+    if(abs(v)>glb_v_upper)    //Check the range of frequency. If too large, return Sigma(\infty)
         //Returns U/2 for retarded and 0. for Keldysh component
-        return (1.-(double)iK)*(this->asymp_value_R);
+        return (1.-(double)iK)*(this->asymp_val_R);
     else {
-        if(fabs(v)!= w_upper_f) { // linear interpolation
+        if(fabs(v)!= glb_v_upper) { // linear interpolation
             int iv = fconv_fer(v); // index corresponding to v
             double x1 = ffreqs[iv]; // lower adjacent frequency value
             double x2 = ffreqs[iv + 1]; // upper adjacent frequency value
@@ -138,21 +138,21 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
 
             return (1. - xd) * f1 + xd * f2; // interpolated value
         }
-        else if(v == w_upper_f) //Exactly at the upper boundary
+        else if(v == glb_v_upper) //Exactly at the upper boundary
             return val(iK, nSE-1, i_in);
-        else if(v == w_lower_f) //Exactly at the lower boundary
+        else if(v == glb_v_lower) //Exactly at the lower boundary
             return val(iK, 0, i_in);
     }
 
 }
 
 /**
- * Sets the value of the Self Energy to a specific value at the specified location
+ * Sets the value of the self-energy to a specific value at the specified location
  * @tparam Q    : Type of values (usually comp)
  * @param iK    : Keldysh index (either 0 or 1)
  * @param iv    : Frequency index
  * @param i_in  : Internal index
- * @param val   : Value of the Self Energy at this given point
+ * @param val   : Value of the self-energy at this given point
  */
 template <typename Q> void SelfEnergy<Q>::setself(int iK, int iv, int i_in, Q val){
     Sigma[iK*nSE + iv*n_in + i_in] = val;
@@ -164,7 +164,7 @@ template <typename Q> void SelfEnergy<Q>::setself(int iK, int iv, int i_in, Q va
  * @param iK    : Keldysh index (either 0 or 1)
  * @param iv    : Frequency index
  * @param i_in  : Internal index
- * @param val   : Value of the Self Energy at this given point
+ * @param val   : Value of the self-energy at this given point
  */
 template <typename Q> void SelfEnergy<Q>::addself(int iK, int iv, int i_in, Q val){
     Sigma[iK*nSE + iv*n_in + i_in] += val;

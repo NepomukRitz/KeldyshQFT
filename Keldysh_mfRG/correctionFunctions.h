@@ -93,8 +93,8 @@ template <typename Q> auto asymp_corrections_K1(const Vertex<Q>& vertex1, const 
             case 'a':                                                                       //Flow eq: V*Pi*V
                 i0 = non_zero_Keldysh_K1a[i0_in];
                 vertex1[0].avertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
+                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 0, channel);
+                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 0, channel);
 
                 res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
 
@@ -102,24 +102,24 @@ template <typename Q> auto asymp_corrections_K1(const Vertex<Q>& vertex1, const 
             case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
                 i0 = non_zero_Keldysh_K1p[i0_in];
                 vertex1[0].pvertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
+                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 0, channel);
+                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 0, channel);
 
                 /*This is commented out on the ground of p-channel contributions being cross-symmetric
                  *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
                  * the bubble_function(...) must be changed.*/
-//                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
-//                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
+//                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 1, channel);
+//                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 1, channel);
 
                 res += (res_l_V  * res_r_V) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p); //+ res_l_Vhat * res_r_Vhat
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
                 i0 = non_zero_Keldysh_K1t[i0_in];
                 vertex1[0].tvertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 0, channel);
-                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, w_upper_b, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, w_upper_b, i_in, 1, channel);
+                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 0, channel);
+                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 0, channel);
+                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 1, channel);
+                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 1, channel);
 
                 res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);;
                 break;

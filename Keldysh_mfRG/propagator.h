@@ -338,7 +338,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 {
 #ifdef INTER_PROP
     comp ans;
-    if(fabs(v)>w_upper_f) {
+    if(fabs(v)>glb_v_upper) {
         switch(type) {
             case 'g':
                 switch (iK) {
@@ -385,7 +385,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
         }
     }
     else {
-        if (fabs(v) != w_upper_f) {
+        if (fabs(v) != glb_v_upper) {
             int iv = fconv_fer(v);
             double x1 = ffreqs[iv];
             double x2 = ffreqs[iv+1];
@@ -396,9 +396,9 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 
             ans = (1. - xd) * f1 + xd * f2;
 
-        } else if (fabs(v-w_upper_f)<inter_tol)
+        } else if (fabs(v-glb_v_upper)<inter_tol)
             ans = prop[iK * nPROP + (nPROP - 1)*n_in + i_in];
-        else if (fabs(v-w_lower_f)<inter_tol)
+        else if (fabs(v-glb_v_lower)<inter_tol)
             ans = prop[iK * nPROP + i_in];
         return ans;
 

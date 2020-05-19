@@ -62,7 +62,7 @@ public:
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS>=0
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wp * n_in);
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_p * n_in);
 
     auto K1_acc (int) const -> Q;
 
@@ -92,7 +92,7 @@ public:
     void TC_K1(double&, int&) const;
 #endif
 #if DIAG_CLASS >=2
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wp * nw2_vp * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_p * nv2_p * n_in);
 
     auto K2_acc (int) const -> Q;
 
@@ -127,7 +127,7 @@ public:
     void TC_K2(double&, double&, int&) const;
 #endif
 #if DIAG_CLASS >=3
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wp * nw3_vp * nw3_vpp * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_p * nv3_p * nv3_p * n_in);
 
     auto K3_acc (int) const -> Q;
 
@@ -325,15 +325,15 @@ template <typename Q> void pvert<Q>::K1_direct_set (int i, Q value){
 }
 
 template <typename Q> void pvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
-    K1[iK*nw1_wp*n_in + i*n_in + i_in] = value;
+    K1[iK*nw1_p*n_in + i*n_in + i_in] = value;
 }
 
 template <typename Q> void pvert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
-    K1[iK*nw1_wp*n_in + i*n_in + i_in] += value;
+    K1[iK*nw1_p*n_in + i*n_in + i_in] += value;
 }
 
 template <typename Q> auto pvert<Q>::K1_val (int iK, int i, int i_in) const -> Q{
-    return K1[iK*nw1_wp*n_in + i*n_in + i_in];
+    return K1[iK*nw1_p*n_in + i*n_in + i_in];
 }
 
 template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in) const -> Q{
@@ -341,8 +341,6 @@ template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in)
     int iK1;
     double pf1 = 1.;            // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
     bool conjugate1 = false;    // whether or not to conjugate value: true for T_C, false else
-    Q valueK1;
-
 
     /*This part determines the value of the K1 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -361,19 +359,19 @@ template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in)
         return 0.;
     }
 
-    interpolateK1(valueK1, pf1, iK1, w_p, i_in, *(this));
+    if(conjugate1) {
+        return conj(interpolateK1(pf1, iK1, w_p, i_in, *(this)));
+    }
+    else {
+        return interpolateK1(pf1, iK1, w_p, i_in, *(this));
+    }
 
-    if(conjugate1)
-        valueK1 = conj(valueK1);
-
-    return valueK1;
 }
 template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in, int spin) const -> Q{
 
     int iK1;
     double pf1 = 1.;            // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
     bool conjugate1 = false;    // whether or not to conjugate value: true for T_C, false else
-    Q valueK1;
 
     /*This part determines the value of the K1 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -398,12 +396,14 @@ template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in,
         default: ;
 
     }
-    interpolateK1(valueK1, pf1, iK1, w_p, i_in, *(this));
 
-    if(conjugate1)
-        valueK1 = conj(valueK1);
+    if(conjugate1) {
+        return conj(interpolateK1(pf1, iK1, w_p, i_in, *(this)));
+    }
+    else {
+        return interpolateK1(pf1, iK1, w_p, i_in, *(this));
+    }
 
-    return valueK1;
 }
 
 template<typename Q> void pvert<Q>::T1_K1(double& w_p, int& i_in) const
@@ -441,15 +441,15 @@ template <typename Q> void pvert<Q>::K2_direct_set (int i, Q value){
 }
 
 template <typename Q> void pvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK * nw2_wp * nw2_vp * n_in + i * nw2_vp * n_in + j * n_in + i_in] = value;
+    K2[iK * nw2_p * nv2_p * n_in + i * nv2_p * n_in + j * n_in + i_in] = value;
 }
 
 template <typename Q> void pvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK * nw2_wp * nw2_vp * n_in + i * nw2_vp * n_in + j * n_in + i_in] += value;
+    K2[iK * nw2_p * nv2_p * n_in + i * nv2_p * n_in + j * n_in + i_in] += value;
 }
 
 template <typename Q> auto pvert<Q>::K2_val (int iK, int i, int j, int i_in) const -> Q{
-    return K2[iK * nw2_wp * nw2_vp * n_in + i * nw2_vp * n_in + j * n_in + i_in];
+    return K2[iK * nw2_p * nv2_p * n_in + i * nv2_p * n_in + j * n_in + i_in];
 }
 
 template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in) const -> Q {
@@ -684,15 +684,15 @@ template <typename Q> void pvert<Q>::K3_direct_set (int i, Q value) {
 }
 
 template <typename Q> void pvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wp*nw3_vp*nw3_vpp*n_in + i*nw3_vp*nw3_vpp*n_in + j*nw3_vpp*n_in + k*n_in + i_in] = value;
+    K3[iK*nw3_p*nv3_p*nv3_p*n_in + i*nv3_p*nv3_p*n_in + j*nv3_p*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> void pvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wp*nw3_vp*nw3_vpp*n_in + i*nw3_vp*nw3_vpp*n_in + j*nw3_vpp*n_in + k*n_in + i_in] += value;
+    K3[iK*nw3_p*nv3_p*nv3_p*n_in + i*nv3_p*nv3_p*n_in + j*nv3_p*n_in + k*n_in + i_in] += value;
 }
 
 template <typename Q> auto pvert<Q>::K3_val (int iK, int i, int j, int k, int i_in) const -> Q{
-    return K3[iK*nw3_wp*nw3_vp*nw3_vpp*n_in + i*nw3_vp*nw3_vpp*n_in + j*nw3_vpp*n_in + k*n_in + i_in];
+    return K3[iK*nw3_p*nv3_p*nv3_p*n_in + i*nv3_p*nv3_p*n_in + j*nv3_p*n_in + k*n_in + i_in];
 }
 
 template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in) const -> Q{

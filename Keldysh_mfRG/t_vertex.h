@@ -78,7 +78,7 @@ public:
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS>=0
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_wt * n_in);
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1_t * n_in);
 
     auto K1_acc (int) const -> Q;
 
@@ -108,7 +108,7 @@ public:
     void TC_K1(double&, int&) const;
 #endif
 #if DIAG_CLASS >=2
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2_wt * nw2_vt * n_in);
+    vec<Q> K2 = vec<Q> (nK_K2 * nw2_t * nv2_t * n_in);
 
     auto K2_acc (int) const -> Q;
 
@@ -143,7 +143,7 @@ public:
     void TC_K2(double&, double&, int&) const;
 #endif
 #if DIAG_CLASS >=3
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3_wt * nw3_vt * nw3_vtp * n_in);
+    vec<Q> K3 = vec<Q> (nK_K3 * nw3_t * nv3_t * nv3_t * n_in);
 
     auto K3_acc (int) const -> Q;
 
@@ -341,22 +341,21 @@ template <typename Q> void tvert<Q>::K1_direct_set (int i, Q value){
 }
 
 template <typename Q> void tvert<Q>::K1_setvert(int iK, int i, int i_in, Q value){
-    K1[iK*nw1_wt*n_in + i*n_in + i_in] = value;
+    K1[iK*nw1_t*n_in + i*n_in + i_in] = value;
 }
 
 template <typename Q> void tvert<Q>::K1_addvert(int iK, int i, int i_in, Q value){
-    K1[iK*nw1_wt*n_in + i*n_in + i_in] += value;
+    K1[iK*nw1_t*n_in + i*n_in + i_in] += value;
 }
 
 template <typename Q> auto tvert<Q>::K1_val (int iK, int i, int i_in) const -> Q{
-    return K1[iK*nw1_wt*n_in + i*n_in + i_in];
+    return K1[iK*nw1_t*n_in + i*n_in + i_in];
 }
 
 template <typename Q> auto tvert<Q>::K1_valsmooth (int iK, double w_t, int i_in, const avert<Q>& avertex) const -> Q{
 
     int iK1;
     double pf1 = 1.;      // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    Q valueK1;
 
     /*This part determines the value of the K1 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -375,14 +374,12 @@ template <typename Q> auto tvert<Q>::K1_valsmooth (int iK, double w_t, int i_in,
     }
 
     /*And now one checks that the input frequency is in the accepted range*/
-    interpolateK1(valueK1, pf1, iK1, w_t, i_in, *(this));
-    return valueK1;
+    return interpolateK1(pf1, iK1, w_t, i_in, *(this));
 }
 template <typename Q> auto tvert<Q>::K1_valsmooth (int iK, double w_t, int i_in, int spin, const avert<Q>& avertex) const -> Q{
 
     int iK1;
     double pf1 = 1.;      // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    Q valueK1;
 
     switch (spin) {
         /*This part determines the value of the K1 contribution*/
@@ -399,8 +396,7 @@ template <typename Q> auto tvert<Q>::K1_valsmooth (int iK, double w_t, int i_in,
                 return 0.;
             }
             /*And now one checks that the input frequency is in the accepted range*/
-            interpolateK1(valueK1, pf1, iK1, w_t, i_in, *(this));
-            break;
+            return interpolateK1(pf1, iK1, w_t, i_in, *(this));
 
         case 1:
             pf1 *= -1.;  //Always a sign-flipping trafo
@@ -418,13 +414,12 @@ template <typename Q> auto tvert<Q>::K1_valsmooth (int iK, double w_t, int i_in,
             }
 
             /*And now one checks that the input frequency is in the accepted range*/
-            interpolateK1(valueK1, pf1, iK1, w_t, i_in, avertex);
-            break;
+            return interpolateK1(pf1, iK1, w_t, i_in, avertex);
 
         default:;
 
     }
-    return valueK1;
+    return 0.;
 }
 
 template<typename Q> void tvert<Q>::T1_K1(double& w_t, int& i_in) const
@@ -465,15 +460,15 @@ template <typename Q> void tvert<Q>::K2_direct_set (int i, Q value){
 }
 
 template <typename Q> void tvert<Q>::K2_setvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK * nw2_wt * nw2_vt * n_in + i * nw2_vt * n_in + j * n_in + i_in] = value;
+    K2[iK * nw2_t * nv2_t * n_in + i * nv2_t * n_in + j * n_in + i_in] = value;
 }
 
 template <typename Q> void tvert<Q>::K2_addvert(int iK, int i, int j, int i_in, Q value){
-    K2[iK * nw2_wt * nw2_vt * n_in + i * nw2_vt * n_in + j * n_in + i_in] += value;
+    K2[iK * nw2_t * nv2_t * n_in + i * nv2_t * n_in + j * n_in + i_in] += value;
 }
 
 template <typename Q> auto tvert<Q>::K2_val (int iK, int i, int j, int i_in) const -> Q{
-    return K2[iK * nw2_wt * nw2_vt * n_in + i * nw2_vt * n_in + j * n_in + i_in];
+    return K2[iK * nw2_t * nv2_t * n_in + i * nv2_t * n_in + j * n_in + i_in];
 }
 
 template <typename Q> auto tvert<Q>::K2_valsmooth (int iK, double w_t, double v1_t, int i_in, const avert<Q>& avertex) const -> Q{
@@ -742,15 +737,15 @@ template <typename Q> void tvert<Q>::K3_direct_set (int i, Q value){
 }
 
 template <typename Q> void tvert<Q>::K3_setvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wt*nw3_vt*nw3_vtp*n_in + i*nw3_vt*nw3_vtp*n_in + j*nw3_vtp*n_in + k*n_in + i_in] = value;
+    K3[iK*nw3_t*nv3_t*nv3_t*n_in + i*nv3_t*nv3_t*n_in + j*nv3_t*n_in + k*n_in + i_in] = value;
 }
 
 template <typename Q> void tvert<Q>::K3_addvert(int iK, int i, int j, int k, int i_in, Q value){
-    K3[iK*nw3_wt*nw3_vt*nw3_vtp*n_in + i*nw3_vt*nw3_vtp*n_in + j*nw3_vtp*n_in + k*n_in + i_in] += value;
+    K3[iK*nw3_t*nv3_t*nv3_t*n_in + i*nv3_t*nv3_t*n_in + j*nv3_t*n_in + k*n_in + i_in] += value;
 }
 
 template <typename Q> auto tvert<Q>::K3_val (int iK, int i, int j, int k, int i_in) const -> Q{
-    return K3[iK*nw3_wt*nw3_vt*nw3_vtp*n_in + i*nw3_vt*nw3_vtp*n_in + j*nw3_vtp*n_in + k*n_in + i_in];
+    return K3[iK*nw3_t*nv3_t*nv3_t*n_in + i*nv3_t*nv3_t*n_in + j*nv3_t*n_in + k*n_in + i_in];
 }
 
 template <typename Q> auto tvert<Q>::K3_valsmooth (int iK, double w_t, double v1_t, double v2_t, int i_in, const avert<Q>& avertex) const -> Q{
