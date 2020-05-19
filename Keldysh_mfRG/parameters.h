@@ -208,7 +208,7 @@ const int nINT = 501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
-#define STATIC_FEEDBACK
+//#define STATIC_FEEDBACK
 
 bool glb_int_flag = false;
 bool glb_K1_flag = false;

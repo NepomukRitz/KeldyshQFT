@@ -953,17 +953,17 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                     if (glb_int_flag && glb_K1_flag) {
                         print("w: ", w, true);
                     }
-                    value  = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_lower, -w/2., w/2.);                      //Integration over a fermionic frequency
+                    value  = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_w_lower, glb_w_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
                     if (glb_int_flag && glb_K1_flag) {
                         print("w: ", w, true);
                         print(value, true);
                     }
-                    value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, glb_w_upper, glb_w_upper, w, i0, i_in, channel); //Correction needed for the K1 class
+                    value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, glb_w_lower, glb_w_upper, w, i0, i_in, channel); //Correction needed for the K1 class
                     //value += prefactor*(1./(2.*M_PI*glb_i))*2.*w_upper_b*integrand_K1(w_upper_b);
                 }
                 if (glb_int_flag && glb_K1_flag) {
                     print("correction: ");
-                    printf("%.16f", prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, glb_w_upper, glb_w_upper, w, i0, i_in, channel));
+                    printf("%.16f", prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, glb_w_lower, glb_w_upper, w, i0, i_in, channel));
                     printf("\n");
                     print(value, true);
                 }
