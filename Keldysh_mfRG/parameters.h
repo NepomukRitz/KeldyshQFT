@@ -19,11 +19,11 @@ const int nLoops = 1;  // Number of loops
 //#define FLOW
 
 // Number of evolution flow points
-const int nODE = 10;
+const int nODE = 50;
 
 // Limits of the fRG flow
-const double Lambda_ini = 2.0;
-const double Lambda_fin = 1.0;    //1.0-1./7.;
+const double Lambda_ini = 10.0;
+const double Lambda_fin = 0.0;    //1.0-1./7.;
 
 // Vector with values of Lambda for the fRG flow
 rvec flow_grid(nODE);                                                                                                   // NOLINT(cert-err58-cpp)
@@ -44,7 +44,7 @@ const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in e
 
 // Grid type
 // 1: log-grid, 2: linear grid, 3: non-linear grid, 4: tangent grid
-#define GRID 2
+#define GRID 3
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
@@ -65,7 +65,7 @@ const double w_lower_b = -w_upper_b;        //Symmetric grid
 const double w_upper_f = 20.;
 const double w_lower_f = -w_upper_f;        //Symmetric grid
 
-const double glb_n_p = 1./50.;                  //Density of points  - with w_up=20=-w_lo, set to 1./20. for 200 and to 0.12 for 500 points
+const double glb_n_p = 1./8.;                  //Density of points  - with w_up=20=-w_lo, set to 1./20. for 200 and to 0.12 for 500 points
 
 // Number of bosonic and fermionic frequency points
 const int nBOS = (int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)) + (1-(((int)(glb_n_p*(w_upper_b-w_lower_b)/(glb_T)))%2)); //Second term added to ensure nBOS is odd
@@ -75,15 +75,15 @@ const double dw = (w_upper_b-w_lower_b)/((double)(nBOS-1)); // TODO: remove this
 const double dv = (w_upper_f-w_lower_f)/((double)(nFER-1)); // TODO: remove this?
 
 #elif GRID==3
-const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
-const double w_upper_b = 100.;
+const double W_scale = 50.*1;                //Resolution scale should be chosen big enough... ~50.*U seems good
+const double w_upper_b = 50.;
 const double w_lower_b = -w_upper_b;
-const double w_upper_f = 100.;
+const double w_upper_f = 50.;
 const double w_lower_f = -w_upper_f;
 
 // Number of bosonic and fermionic frequency points
-const int nBOS = 501;
-const int nFER = 501;
+const int nBOS = 201;
+const int nFER = 201;
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
@@ -104,10 +104,10 @@ const double w_lower_f = -w_upper_f;
 #endif
 
 // Number of frequency points for K2 and K3 classes
-const int nBOS2 = nBOS;
-const int nFER2 = nFER;
-const int nBOS3 = nBOS;
-const int nFER3 = nFER;
+const int nBOS2 = 101;//nBOS;
+const int nFER2 = 101;//nFER;
+const int nBOS3 = 21; //nBOS;
+const int nFER3 = 21; //nFER;
 
 
 // Number of frequency points for the self energy and the susceptibility
@@ -202,7 +202,7 @@ const int n_in = 1;
 #define DIAG_CLASS 2
 
 // Defines whether the values are interpolated from previously saved ones or from the self-energy
-#define INTER_PROP
+//#define INTER_PROP
 
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
 #define MPI_FLAG
@@ -211,11 +211,14 @@ const int n_in = 1;
 const double inter_tol = 10e-8;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
+const int nINT = 501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
 //#define STATIC_FEEDBACK
+
+bool glb_int_flag = false;
+bool glb_K1_flag = false;
 
 
 #if REG==2

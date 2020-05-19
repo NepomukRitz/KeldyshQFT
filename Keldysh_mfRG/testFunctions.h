@@ -478,7 +478,7 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 
     return empty;
 }
-
+#endif
 /**
  * Function to test correctness of K2a when calculating a susceptibility (a K1a-object) //Notice that the same calculation
  * can be performed in the p-channel.
@@ -499,9 +499,11 @@ void test_K2_correctness(double Lambda){
     State<comp> PT2_K1t;
 
     //Save K1-bubbles in separate objects - SOPT
+    double t0 = get_time();
     bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
     bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
     bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
+    get_time(t0);
 
     State<comp> PT3_K2a;    //Create state for K2a calculation
 
@@ -510,6 +512,7 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');
 
     State<comp> PT3_K1a;    //Create state to compare with K1a
+    glb_int_flag = true;
     bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false, '.');
 
     State<comp> PT123_a = bare + PT2_K1a + PT3_K1a + PT3_K2a;  //Create vertex of the right side of BSE
@@ -529,8 +532,15 @@ void test_K2_correctness(double Lambda){
     }
 
     print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
-    if(write_flag) write_h5_rvecs("PT4_check_of_K2a", {"w", "PT2_K1a_R", "PT2_K1a_I", "PT4_K1a22_R", "PT4_K1a22_I", "PT4_K1a13_1_R", "PT4_K1a13_1_I", "PT4_K1a13_2_R", "PT4_K1a13_2_I"},
+    if(write_flag) write_h5_rvecs("PT4_check_of_K2a", {"w", "PT2_K1a_R", "PT2_K1a_I",
+                                                       "PT3_K1a_R", "PT3_K1a_I",
+                                                       //"PT3_K2a_R", "PT3_K2a_I",
+                                                       "PT4_K1a22_R", "PT4_K1a22_I",
+                                                       "PT4_K1a13_1_R", "PT4_K1a13_1_I",
+                                                       "PT4_K1a13_2_R", "PT4_K1a13_2_I"},
                                   {bfreqs, PT2_K1a.vertex[0].avertex.K1.real(), PT2_K1a.vertex[0].avertex.K1.imag(),
+                                   PT3_K1a.vertex[0].avertex.K1.real(), PT3_K1a.vertex[0].avertex.K1.imag(),
+                                   //PT3_K2a.vertex[0].avertex.K2.real(), PT3_K2a.vertex[0].avertex.K2.imag(),
                                    PT4_K1a22.vertex[0].avertex.K1.real(), PT4_K1a22.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_1.vertex[0].avertex.K1.real(), PT4_K1a13_1.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2.vertex[0].avertex.K1.real(), PT4_K1a13_2.vertex[0].avertex.K1.imag()});
@@ -540,23 +550,23 @@ void test_K2_correctness(double Lambda){
  * Master function to test both consistency and correctness of K2-class
  * @param Lambda
  */
-void test_K2(double Lambda, bool test_consistency){
-
-
-    //First test consistency
-    if(test_consistency) {
-        bool K2a = test_K2_consistency(Lambda, 'a');    //Consistency of a-channel
-        bool K2p = test_K2_consistency(Lambda, 'p');    //Consistency of p-channel
-        bool K2t = test_K2_consistency(Lambda, 't');    //Consistency of t-channel
-
-        if(K2a&&K2p&&K2t)
-            test_K2_correctness(Lambda);
-    }
-
-    test_K2_correctness(Lambda);
-
-}
-#endif
+//void test_K2(double Lambda, bool test_consistency){
+//
+//
+//    //First test consistency
+//    if(test_consistency) {
+//        bool K2a = test_K2_consistency(Lambda, 'a');    //Consistency of a-channel
+//        bool K2p = test_K2_consistency(Lambda, 'p');    //Consistency of p-channel
+//        bool K2t = test_K2_consistency(Lambda, 't');    //Consistency of t-channel
+//
+//        if(K2a&&K2p&&K2t)
+//            test_K2_correctness(Lambda);
+//    }
+//
+//    test_K2_correctness(Lambda);
+//
+//}
+//#endif
 
 #ifdef STATIC_FEEDBACK
 /**

@@ -9,6 +9,8 @@
 #include "data_structures.h"
 #include "parameters.h"
 #include "write_data2file.h"
+#include <gsl/gsl_integration.h>
+#include <gsl/gsl_errno.h>
 
 //void integrator(gsl_function& F, ) {
 
@@ -58,9 +60,25 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     {
         integrand_values[i] = integrand(a+i*dx);
         simpson[i] = 2. +2*(i%2);
+        if (glb_int_flag && glb_K1_flag) {
+            //print_add("{", a + i * dx, ", ", false);
+            //print_add(integrand_values[i].imag(), "},", false);
+            printf("%.16f", integrand_values[i].imag());
+            printf("\n");
+        }
     }
     simpson[0] = 1.;
     simpson[N-1]=1.;
+
+    if (glb_int_flag && glb_K1_flag) {
+        print_add("", true);
+        for (int i=0; i<N; ++i) {
+            print_add(simpson[i], ", ", false);
+        }
+        print_add("", true);
+        print("res: ", dx / 3. * dotproduct(integrand_values, simpson), true);
+        print("res: ", (1./(2.*M_PI*glb_i)) * dx / 3. * dotproduct(integrand_values, simpson), true);
+    }
 
     //rvec v_int (nINT);
     //for (int i=0; i<nINT; ++i) v_int[i] = a+i*dx;
@@ -80,7 +98,8 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     /*First, determine which between nINT and the number of points required to have a step of 1/4 of the temperature is bigger.
      *Then compare that number to a maximal N of 1001 (chosen arbitrarily) and return the smallest one of these. Calculate
      * the step dx and fill the vectors accordingly. */
-    int N = min({ max({ nINT, 2*(int)( (b-a)/(glb_T/2.) ) + 1 }), 1001}); // Simpson rule requires odd number of points
+    int N = nINT;
+    //int N = min({ max({ nINT, 2*(int)( (b-a)/(glb_T/2.) ) + 1 }), 1001}); // Simpson rule requires odd number of points
     //TODO: old comment: Something doesn't work properly with this formula!!
 #endif
     return integrator_simpson(integrand, a, b, N);
@@ -215,6 +234,7 @@ public:
 // compute Simpson rule for 3 given values and given step size dx
 auto simpson_rule_3(comp& val0, comp& val1, comp& val2, double& dx) -> comp {
     return dx / 3. * (val0 + 4.*val1 + val2);
+    //return dx / 2. * (val0 + 2.*val1 + val2);
 }
 
 // compute Simpson rule for vector of 3 given values and given step size dx
@@ -237,10 +257,10 @@ auto simpson_rule_3(cvec& values, double& dx) -> comp {
 template <typename Integrand> auto adaptive_integrator(const Integrand& integrand, double a, double b) -> comp {
     // accuracy: relative error between successive results for the same interval
     // at which to stop splitting the interval into sub-intervals
-    double accuracy = 1e-2;
+    double accuracy = 1e-4;
     // total_accuracy: relative error between successive results for the full integral
     // at which to stop the integration procedure and return result
-    double total_accuracy = 1e-3;
+    double total_accuracy = 1e-6;
 
     /// --- initial step: start with 3-point Simpson --- ///
 
@@ -316,6 +336,9 @@ template <typename Integrand> auto adaptive_integrator(const Integrand& integran
                 // Check convergence: if difference between the sum of the results of the 2 sub-intervals and the
                 // previous result only has a relative error smaller than predefined accuracy,
                 // set convergence flag for both sub-intervals to true, such that they are not split in the next iteration
+
+                //if ((abs(real(result1+result2-result[interval])/real(result1+result2+1e-16)) < accuracy)
+                //    && (abs(imag(result1+result2-result[interval])/imag(result1+result2+glb_i*1e-16)) < accuracy)) {   // add 1e-16 to avoid errors if result is zero
                 if (abs((result1+result2-result[interval])/(result1+result2+1e-16)) < accuracy) {   // add 1e-16 to avoid errors if result is zero
                     converged_next.push_back(true);
                     converged_next.push_back(true);
@@ -331,6 +354,8 @@ template <typename Integrand> auto adaptive_integrator(const Integrand& integran
         comp res_next = accumulate(result_next.begin(), result_next.end(), (comp)0.);
 
         // First stop condition: check convergence of the total result w.r.t. predefined accuracy
+
+        //if ((abs(real(res-res_next)/real(res+1e-16)) < total_accuracy) && (abs(imag(res-res_next)/imag(res+glb_i*1e-16)) < total_accuracy) && it>3) {
         if (abs((res-res_next)/res) < total_accuracy) {
             res = res_next;
             break;
@@ -343,6 +368,52 @@ template <typename Integrand> auto adaptive_integrator(const Integrand& integran
         values = values_next;
         result = result_next;
         converged = converged_next;
+
+////        print(it, ": ");
+////        print_add(converged.size(), ". ", false);
+//        for (int interval=0; interval<converged.size(); ++interval) {
+////            print_add(converged[interval], ",", false);
+//            if (!converged[interval])
+//                converged[converged.size()-1-interval] = false; /// make sure points are selected symmetrically
+//        }
+
+        /*
+        //print_add("", true);
+        vec<bool> conv_rev = converged;
+        reverse(conv_rev.begin(), conv_rev.end());
+        vec<bool> diff_conv (converged.size());
+        for (int ic=0; ic<converged.size(); ++ic) {
+            diff_conv[ic] = converged[ic] - conv_rev[ic];
+        }
+        int n_diff = count(diff_conv.begin(), diff_conv.end(), true);
+        if (n_diff > 0)
+            print("n diff: ", n_diff, true);
+
+        if (glb_int_flag && glb_K1_flag) {
+
+            print(it, ": ");
+            for (int interval = 0; interval < result.size(); ++interval) {
+                print_add(converged[interval], ", ", false);
+            }
+            print_add("", true);
+            for (int interval = 0; interval < points.size(); ++interval) {
+                print_add(points[interval], ", ", false);
+            }
+            print_add("", true);
+            for (int interval = 0; interval < values.size(); ++interval) {
+                print_add(values[interval].real(), ", ", false);
+            }
+            print_add("", true);
+            for (int interval = 0; interval < values.size(); ++interval) {
+                print_add(values[interval].imag(), ", ", false);
+            }
+            print_add("", true);
+
+            print("res: ", res, true);
+
+        }
+
+        // */
 
         // Second stop condition: check if all sub-intervals are converged
         if (count(converged.begin(), converged.end(), true) == converged.size()) break;
@@ -388,6 +459,68 @@ template <typename Integrand> auto integrator_PAID(Integrand& integrand, double 
 //    return result_real + 1.i*result_imag;
 }
 
+void handler (const char * reason,
+              const char * file,
+              int line,
+              int gsl_errno) {
+    print(reason, true);
+
+//    glb_int_flag = true;
+//    glb_K1_flag = true;
+//    int i=0;
+}
+
+template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in) -> comp {
+    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(nINT);
+    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(nINT);
+
+    //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(nINT);
+    //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(nINT);
+
+    gsl_function F_real, F_imag;
+
+    F_real.function = &f_real<Integrand>;
+    F_real.params = &integrand;
+
+    F_imag.function = &f_imag<Integrand>;
+    F_imag.params = &integrand;
+
+    double result_real, result_imag, error_real, error_imag;
+
+    gsl_set_error_handler(handler);
+
+    gsl_integration_qag(&F_real, a, b, 1e-9, 1e-6, nINT, 1, W_real, &result_real, &error_real);
+    gsl_integration_qag(&F_imag, a, b, 1e-9, 1e-6, nINT, 1, W_imag, &result_imag, &error_imag);
+
+    //double w1, w2;
+    //if (w1_in < w2_in) {
+    //    w1 = w1_in; w2 = w2_in;
+    //}
+    //else {
+    //    w1 = w2_in; w2 = w1_in;
+    //}
+    //
+    //double pts[4] = {a, w1, w2, b};
+    //int npts = 4;
+    //
+    //gsl_integration_qagp(&F_real, pts, npts, 1e-4, 1e-4, nINT, W_real, &result_real, &error_real);
+    //gsl_integration_qagp(&F_imag, pts, npts, 1e-4, 1e-4, nINT, W_imag, &result_imag, &error_imag);
+
+    //gsl_integration_qagi(&F_real, 0, 1e-4, nINT, W_real, &result_real, &error_real);
+    //gsl_integration_qagi(&F_imag, 0, 1e-4, nINT, W_imag, &result_imag, &error_imag);
+
+    //size_t neval = nINT;
+    //gsl_integration_cquad(&F_real, a, b, 1e-4, 1e-4, W_real, &result_real, &result_imag, &neval);
+
+    gsl_integration_workspace_free(W_real);
+    gsl_integration_workspace_free(W_imag);
+
+    //gsl_integration_cquad_workspace_free(W_real);
+    //gsl_integration_cquad_workspace_free(W_imag);
+
+    return result_real + glb_i*result_imag;
+}
+
 // old wrapper function
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b) -> comp {
     return integrator_simpson(integrand, a, b);
@@ -396,16 +529,17 @@ template <typename Integrand> auto integrator(const Integrand& integrand, double
 
 // wrapper function, used for loop
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b, double w) -> comp {
-    //return adaptive_integrator(integrand, a, b);      // use adaptive integrator
-    return integrator_simpson(integrand, a, b, w);      // use standard Simpson plus additional points around w = 0
+    return adaptive_integrator(integrand, a, b);      // use adaptive integrator
+    //return integrator_simpson(integrand, a, b, w);      // use standard Simpson plus additional points around w = 0
     //return integrator_simpson(integrand, a, b);       // only use standard Simpson
     //return integrator_riemann(integrand, a, b);
 }
 
 // wrapper function, used for bubbles
-template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b, double w1, double w2) -> comp {
+template <typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> comp {
+    return integrator_gsl(integrand, a, b, w1, w2);
     //return adaptive_integrator(integrand, a, b);          // use adaptive integrator
-    return integrator_simpson(integrand, a, b, w1, w2);     // use standard Simpson plus additional points around +- w/2
+    //return integrator_simpson(integrand, a, b, w1, w2);     // use standard Simpson plus additional points around +- w/2
     //return integrator_simpson(integrand, a, b);           // only use standard Simpson
 }
 

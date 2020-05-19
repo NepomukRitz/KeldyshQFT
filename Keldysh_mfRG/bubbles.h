@@ -178,6 +178,7 @@ template <typename Q> class Integrand_K1 {
     const Vertex<Q>& vertex2;
     const Bubble& Pi;
     int i0;
+    int iK_select;
     const int i_in;
     const char channel;
     const double w;
@@ -197,9 +198,9 @@ public:
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
     Integrand_K1(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, const double w_in,
-                 const int i_in_in, const char ch_in)
+                 const int i_in_in, const char ch_in, const int iK_select_in)
             :            vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),                w(w_in),
-                    i_in(i_in_in), channel(ch_in)
+                    i_in(i_in_in), channel(ch_in), iK_select(iK_select_in)
     {
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -268,6 +269,7 @@ public:
                     res += res_l_V[i2] * Pival * res_r_V[i2];
 #else
                     vertex1[0].avertex.indices_sum(indices, i0, i2);
+                    if (indices[1] != iK_select) continue;
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -925,7 +927,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for
+//#pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices (TODO: put into extra function(s)?)
                 int iK1 = i_mpi * n_omp + i_omp;
@@ -943,11 +945,32 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 }
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
+                    if (glb_int_flag && i0 == 1 && abs(w-0.525)<0.005) {
+                        print(w, true);
+                        //glb_K1_flag = true;
+                    }
+                    if (glb_int_flag && glb_K1_flag) {
+                        print("w: ", w, true);
+                    }
                     value  = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, w_lower_f, w_upper_f, -w/2., w/2.);                      //Integration over a fermionic frequency
+                    if (glb_int_flag && glb_K1_flag) {
+                        print("w: ", w, true);
+                        print(value, true);
+                    }
                     value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, w_upper_b, w_upper_b, w, i0, i_in, channel); //Correction needed for the K1 class
+                    //value += prefactor*(1./(2.*M_PI*glb_i))*2.*w_upper_b*integrand_K1(w_upper_b);
+                }
+                if (glb_int_flag && glb_K1_flag) {
+                    print("correction: ");
+                    printf("%.16f", prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, w_upper_b, w_upper_b, w, i0, i_in, channel));
+                    printf("\n");
+                    print(value, true);
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
+                if (glb_int_flag && glb_K1_flag) {
+                    print(K1_buffer[iterator*n_omp + i_omp], true);
+                }
             }
             ++iterator;
         }
