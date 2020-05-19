@@ -269,7 +269,7 @@ public:
                     res += res_l_V[i2] * Pival * res_r_V[i2];
 #else
                     vertex1[0].avertex.indices_sum(indices, i0, i2);
-                    if (indices[1] != iK_select) continue;
+                    if (indices[1] != iK_select && iK_select < 7) continue;
                     res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -871,7 +871,8 @@ public:
  */
 template <typename Q>
 void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
-                     const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part)
+                     const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part,
+                     const int iK_select)
 {
     Bubble Pi(G, S, diff); // initialize bubble object
 
@@ -944,7 +945,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                     value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
                 }
                 else{
-                    Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
+                    Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel, iK_select);
                     if (glb_int_flag && i0 == 1 && abs(w-0.525)<0.005) {
                         print(w, true);
                         //glb_K1_flag = true;
@@ -1124,6 +1125,13 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     print("Damn son, this is a bad error");
 #endif
 #endif
+}
+
+template <typename Q>
+void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
+                     const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part)
+{
+    bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, part, 7);
 }
 
 #endif //KELDYSH_MFRG_BUBBLES_H
