@@ -520,11 +520,21 @@ void test_K2_correctness(double Lambda){
     State<comp> PT4_K1a22;
     State<comp> PT4_K1a13_1;
     State<comp> PT4_K1a13_2;
+    State<comp> PT4_K1a13_2_11e; // A
+    State<comp> PT4_K1a13_2_21e; // B
+    State<comp> PT4_K1a13_2_11o; // C
+    State<comp> PT4_K1a13_2_21o; // D
+    State<comp> PT4_K1a13_2_22o; // F
     //Calculate a K1a-object to compare with K1a and NRG-results. Notice part='R', suggesting the "weird" vertex is on the }
     //right and, thanks to this, no unnecessary K2 calculation is entered in bubble_function
     bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, 'R');
     bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, 'R');
     bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a13_2_11e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 0); // A
+    bubble_function(PT4_K1a13_2_21e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 1); // B
+    bubble_function(PT4_K1a13_2_11o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 2); // C
+    bubble_function(PT4_K1a13_2_21o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 3); // D
+    bubble_function(PT4_K1a13_2_22o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 4); // F
 
     cvec K1a_diff(nBOS);
     for(int iw=0; iw<nBOS; ++iw){
@@ -537,13 +547,24 @@ void test_K2_correctness(double Lambda){
                                                        //"PT3_K2a_R", "PT3_K2a_I",
                                                        "PT4_K1a22_R", "PT4_K1a22_I",
                                                        "PT4_K1a13_1_R", "PT4_K1a13_1_I",
-                                                       "PT4_K1a13_2_R", "PT4_K1a13_2_I"},
+                                                       "PT4_K1a13_2_R", "PT4_K1a13_2_I",
+                                                       "PT4_K1a13_2_11e_R", "PT4_K1a13_2_11e_I",
+                                                       "PT4_K1a13_2_21e_R", "PT4_K1a13_2_21e_I",
+                                                       "PT4_K1a13_2_11o_R", "PT4_K1a13_2_11o_I",
+                                                       "PT4_K1a13_2_21o_R", "PT4_K1a13_2_21o_I",
+                                                       "PT4_K1a13_2_22o_R", "PT4_K1a13_2_22o_I"
+                                                       },
                                   {bfreqs, PT2_K1a.vertex[0].avertex.K1.real(), PT2_K1a.vertex[0].avertex.K1.imag(),
                                    PT3_K1a.vertex[0].avertex.K1.real(), PT3_K1a.vertex[0].avertex.K1.imag(),
                                    //PT3_K2a.vertex[0].avertex.K2.real(), PT3_K2a.vertex[0].avertex.K2.imag(),
                                    PT4_K1a22.vertex[0].avertex.K1.real(), PT4_K1a22.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_1.vertex[0].avertex.K1.real(), PT4_K1a13_1.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2.vertex[0].avertex.K1.real(), PT4_K1a13_2.vertex[0].avertex.K1.imag()});
+                                   PT4_K1a13_2.vertex[0].avertex.K1.real(), PT4_K1a13_2.vertex[0].avertex.K1.imag(),
+                                   PT4_K1a13_2_11e.vertex[0].avertex.K1.real(), PT4_K1a13_2_11e.vertex[0].avertex.K1.imag(),
+                                   PT4_K1a13_2_21e.vertex[0].avertex.K1.real(), PT4_K1a13_2_21e.vertex[0].avertex.K1.imag(),
+                                   PT4_K1a13_2_11o.vertex[0].avertex.K1.real(), PT4_K1a13_2_11o.vertex[0].avertex.K1.imag(),
+                                   PT4_K1a13_2_21o.vertex[0].avertex.K1.real(), PT4_K1a13_2_21o.vertex[0].avertex.K1.imag(),
+                                   PT4_K1a13_2_22o.vertex[0].avertex.K1.real(), PT4_K1a13_2_22o.vertex[0].avertex.K1.imag()});
 }
 
 /**
