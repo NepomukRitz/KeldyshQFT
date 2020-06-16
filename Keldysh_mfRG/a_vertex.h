@@ -361,7 +361,6 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
         return 0.;
     }
 
-    /*And now one checks that the input frequency is in the accepted range*/
     return interpolateK1(pf1, iK1, w_a, i_in, *(this));
 }
 template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
@@ -383,8 +382,6 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
             } else {
                 return 0.;
             }
-
-            /*And now one checks that the input frequency is in the accepted range*/
             return interpolateK1(pf1, iK1, w_a, i_in, *(this));
 
         case 1:
@@ -401,8 +398,6 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
             } else {
                 return 0.;
             }
-
-            /*And now one checks that the input frequency is in the accepted range*/
             return interpolateK1(pf1, iK1, w_a, i_in, tvertex);
 
         default:;
@@ -465,7 +460,6 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
     int iK2;
     double pf2 = 1.;          // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
     bool conjugate2 = false;  // whether or not to conjugate value: true for T_C, false else
-    Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -501,20 +495,18 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
         return 0.;
     }
 
-    /*And now one checks that the input frequencies are in the accepted range*/
-    interpolateK2(valueK2, pf2, iK2, w_a, v1_a, i_in, *(this));
-
-    if(conjugate2)
-        valueK2 = conj(valueK2);
-
-    return valueK2;
+    if(conjugate2) {
+        return conj(interpolateK2(pf2, iK2, w_a, v1_a, i_in, *(this)));
+    }
+    else {
+        return interpolateK2(pf2, iK2, w_a, v1_a, i_in, *(this));
+    }
 }
 template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, int spin, const tvert<Q>& tvertex)const -> Q{
 
     int iK2;
     double pf2 = 1.;            // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
     bool conjugate2 = false;    // whether or not to conjugate value: true for T_C, false else
-    Q valueK2;
 
     switch (spin) {
         /*This part determines the value of the K2 contribution*/
@@ -544,9 +536,11 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
             } else {
                 return 0.;
             }
-            /*And now one checks that the input frequencies are in the accepted range*/
-            interpolateK2(valueK2, pf2, iK2, w_a, v1_a, i_in, *(this));
-            break;
+
+            if(conjugate2)
+                return conj(interpolateK2(pf2, iK2, w_a, v1_a, i_in, *(this)));
+            else
+                return interpolateK2(pf2, iK2, w_a, v1_a, i_in, *(this));
 
         case 1:
             if (isInList(iK, list_K2_T0_comp0)) {           //T0comp0 => T2 iK=0
@@ -576,23 +570,21 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
             T2_K2(w_a, v1_a, i_in);
             pf2 *= -1.;
 
-            /*And now one checks that the input frequencies are in the accepted range*/
-            interpolateK2(valueK2, pf2, iK2, w_a, v1_a, i_in, tvertex);
-            break;
+            if(conjugate2)
+                return conj(interpolateK2(pf2, iK2, w_a, v1_a, i_in, tvertex));
+            else
+                return interpolateK2(pf2, iK2, w_a, v1_a, i_in, tvertex);
 
         default:;
     }
-    if(conjugate2)
-        valueK2 = conj(valueK2);
 
-    return valueK2;
+    return 0.;
 }
 template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
     int iK2;
     double pf2 = 1.;          // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
     bool conjugate2 = false;  // whether or not to conjugate value: true for T_C, false else
-    Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -631,20 +623,16 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
         return 0.;
     }
 
-    /*And now one checks that the input frequencies are in the accepted range*/
-    interpolateK2(valueK2, pf2, iK2, w_a, v2_a, i_in, *(this));
-
     if(conjugate2)
-        valueK2 = conj(valueK2);
-
-    return valueK2;
+        return conj(interpolateK2(pf2, iK2, w_a, v2_a, i_in, *(this)));
+    else
+        return interpolateK2(pf2, iK2, w_a, v2_a, i_in, *(this));
 }
 template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     int iK2;
     double pf2 = 1.;          // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
     bool conjugate2 = false;  // whether or not to conjugate value: true for T_C, false else
-    Q valueK2;
 
     switch (spin) {
         /*This part determines the value of the K2 contribution*/
@@ -678,9 +666,10 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
                 return 0.;
             }
 
-            /*And now one checks that the input frequencies are in the accepted range*/
-            interpolateK2(valueK2, pf2, iK2, w_a, v2_a, i_in, *(this));
-            break;
+            if(conjugate2)
+                return conj(interpolateK2(pf2, iK2, w_a, v2_a, i_in, *(this)));
+            else
+                return interpolateK2(pf2, iK2, w_a, v2_a, i_in, *(this));
 
         case 1:
             if (isInList(iK, list_K2b_T3_comp0)) {                      //T3comp0 T1 iK=0
@@ -708,17 +697,15 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
             T1_K2(w_a, v2_a, i_in);
             pf2 *= -1.;
 
-            /*And now one checks that the input frequencies are in the accepted range*/
-            interpolateK2(valueK2, pf2, iK2, w_a, v2_a, i_in, tvertex);
-            break;
+            if(conjugate2)
+                return conj(interpolateK2(pf2, iK2, w_a, v2_a, i_in, tvertex));
+            else
+                return interpolateK2(pf2, iK2, w_a, v2_a, i_in, tvertex);
 
         default:;
     }
 
-    if(conjugate2)
-        valueK2 = conj(valueK2);
-
-    return valueK2;
+    return 0.;
 }
 
 template<typename Q> void avert<Q>::T1_K2(double& w_a, double& v1_a, int& i_in) const
@@ -779,7 +766,6 @@ template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1
     double pf3;
     bool conjugate;
     bool transform;
-    Q valueK3;
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
@@ -867,24 +853,24 @@ template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1
 
     }
 
-    /*And now one checks that the input frequencies are in the accepted range*/
     if (transform) {
-        interpolateK3(valueK3, pf3, iK3, w_a, v1_a, v2_a, i_in, tvertex);
+        if(conjugate)
+            return conj(interpolateK3(pf3, iK3, w_a, v1_a, v2_a, i_in, tvertex));
+        else
+            return interpolateK3(pf3, iK3, w_a, v1_a, v2_a, i_in, tvertex);
     } else {
-        interpolateK3(valueK3, pf3, iK3, w_a, v1_a, v2_a, i_in, *(this));
+        if(conjugate)
+            return conj(interpolateK3(pf3, iK3, w_a, v1_a, v2_a, i_in, *(this)));
+        else
+            return interpolateK3(pf3, iK3, w_a, v1_a, v2_a, i_in, *(this));
     }
 
-    if(conjugate)
-        valueK3 = conj(valueK3);
-
-    return valueK3;
 }
 template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     int iK3;
     double pf3;
     bool conjugate;
-    Q valueK3;
 
     switch(spin) {
 
@@ -959,9 +945,10 @@ template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1
 
             }
 
-            interpolateK3(valueK3, pf3, iK3, w_a, v1_a, v2_a, i_in, *(this));
-
-            break;
+            if(conjugate)
+                return conj(interpolateK3(pf3, iK3, w_a, v1_a, v2_a, i_in, *(this)));
+            else
+                return interpolateK3(pf3, iK3, w_a, v1_a, v2_a, i_in, *(this));
 
         case 1:
             switch (iK) {
@@ -1044,20 +1031,17 @@ template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1
 
             }
 
-            interpolateK3(valueK3, pf3, iK3, w_a, v1_a, v2_a, i_in, tvertex);
-
-            break;
+            if(conjugate)
+                return conj(interpolateK3(pf3, iK3, w_a, v1_a, v2_a, i_in, tvertex));
+            else
+                return interpolateK3(pf3, iK3, w_a, v1_a, v2_a, i_in, tvertex);
 
         default:
-            conjugate = false;
             cout << "Problem with the spins in avert.K3_valsmooth w/ spin!";
 
     }
 
-    if(conjugate)
-        valueK3 = conj(valueK3);
-
-    return valueK3;
+    return 0.;
 }
 
 template<typename Q> void avert<Q>::T1_K3(double& w_a, double& v1_a, double& v2_a, int& i_in) const

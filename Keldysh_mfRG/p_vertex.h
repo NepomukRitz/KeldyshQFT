@@ -359,12 +359,10 @@ template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in)
         return 0.;
     }
 
-    if(conjugate1) {
+    if(conjugate1)
         return conj(interpolateK1(pf1, iK1, w_p, i_in, *(this)));
-    }
-    else {
+    else
         return interpolateK1(pf1, iK1, w_p, i_in, *(this));
-    }
 
 }
 template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in, int spin) const -> Q{
@@ -397,12 +395,10 @@ template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in,
 
     }
 
-    if(conjugate1) {
+    if(conjugate1)
         return conj(interpolateK1(pf1, iK1, w_p, i_in, *(this)));
-    }
-    else {
+    else
         return interpolateK1(pf1, iK1, w_p, i_in, *(this));
-    }
 
 }
 
@@ -456,7 +452,6 @@ template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1
 
     int iK2;
     double pf2 = 1.;       // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -487,16 +482,12 @@ template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1
         return 0.;
     }
 
-    /*And now one checks that the input frequencies are in the accepted range*/
-    interpolateK2(valueK2, pf2, iK2, w_p, v1_p, i_in, *(this));
-
-    return valueK2;
+    return interpolateK2(pf2, iK2, w_p, v1_p, i_in, *(this));
 }
 template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in, int spin) const -> Q {
 
     int iK2;
     double pf2 = 1.;       // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -531,16 +522,12 @@ template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1
         default: ;
     }
 
-    /*And now one checks that the input frequencies are in the accepted range*/
-    interpolateK2(valueK2, pf2, iK2, w_p, v1_p, i_in, *(this));
-
-    return valueK2;
+    return interpolateK2(pf2, iK2, w_p, v1_p, i_in, *(this));
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in) const -> Q {
 
     int iK2;
     double pf2 = 1.;       // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    Q valueK2;
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
@@ -576,16 +563,12 @@ template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2
     //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
     TC_K2(w_p, v2_p, i_in);
 
-    /*And now one checks that the input frequencies are in the accepted range*/
-    interpolateK2(valueK2, pf2, iK2, w_p, v2_p, i_in, *(this));
-
-    return conj(valueK2);
+    return conj(interpolateK2(pf2, iK2, w_p, v2_p, i_in, *(this)));
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in, int spin) const -> Q {
 
     int iK2;
     double pf2;       // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    Q valueK2;
 
     pf2 = 1.;
     /*This part determines the value of the K2 contribution*/
@@ -636,10 +619,7 @@ template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2
     //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
     TC_K2(w_p, v2_p, i_in);
 
-    /*And now one checks that the input frequencies are in the accepted range*/
-    interpolateK2(valueK2, pf2, iK2, w_p, v2_p, i_in, *(this));
-
-    return conj(valueK2);
+    return conj(interpolateK2(pf2, iK2, w_p, v2_p, i_in, *(this)));
 }
 
 template<typename Q> void pvert<Q>::T1_K2(double& w_p, double& v1_p, int& i_in) const
@@ -700,7 +680,6 @@ template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1
     int iK3;
     double pf3;
     bool conjugate3;
-    Q valueK3;
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
@@ -776,20 +755,17 @@ template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1
             return 0.;
     }
 
-    /*And now one checks that the input frequencies are in the accepted range*/
-    interpolateK3(valueK3, pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
-
     if(conjugate3)
-        valueK3 = conj(valueK3);
+        return conj(interpolateK3(pf3, iK3, w_p, v1_p, v2_p, i_in, *(this)));
+    else
+        return interpolateK3(pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
 
-    return valueK3;
 }
 template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in, int spin) const -> Q{
 
     int iK3;
     double pf3;
     bool conjugate3;
-    Q valueK3;
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
@@ -958,13 +934,10 @@ template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1
 
     }
 
-    /*And now one checks that the input frequencies are in the accepted range*/
-    interpolateK3(valueK3, pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
-
     if(conjugate3)
-        valueK3 = conj(valueK3);
-
-    return valueK3;
+        return conj(interpolateK3(pf3, iK3, w_p, v1_p, v2_p, i_in, *(this)));
+    else
+        return interpolateK3(pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
 }
 
 template<typename Q> void pvert<Q>::T1_K3(double& w_p, double& v1_p, double& v2_p, int& i_in) const
