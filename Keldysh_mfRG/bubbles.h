@@ -267,7 +267,7 @@ public:
                 res = res_l_V * Pival * res_r_V;
 #else
                 vertex1[0].avertex.indices_sum(indices, i0, i2);
-                if (indices[1] != iK_select && iK_select < 7) return 0.;
+                if (indices[1] != iK_select && iK_select < 16) return 0.;
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -322,6 +322,45 @@ public:
         return res;
     }
 
+    void save_integrand() {
+        rvec integrand_re (nFER);
+        rvec integrand_im (nFER);
+        rvec Pival_re (nFER);
+        rvec Pival_im (nFER);
+        for (int i=0; i<nFER; ++i) {
+            double vpp = ffreqs[i];
+            Q integrand_value = (*this)(vpp);
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+
+            Q Pival;
+            switch (channel) {
+                case 'a':
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);
+                    break;
+                case 'p':
+                    Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);
+                    break;
+                case 't':
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);
+                    break;
+                default: ;
+            }
+            Pival_re[i] = Pival.real();
+            Pival_im[i] = Pival.imag();
+        }
+
+
+        string filename = "integrand_K1";
+        filename += channel;
+        filename += "_i0=" + to_string(i0)
+                  + "_i2=" + to_string(i2)
+                  + "_w=" + to_string(w) + ".h5";
+        write_h5_rvecs(filename,
+                {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
+                {ffreqs, integrand_re, integrand_im, Pival_re, Pival_im});
+    }
+
 };
 template <typename Q> class Integrand_K2
 {
@@ -329,6 +368,8 @@ template <typename Q> class Integrand_K2
     const Vertex<Q>& vertex2;
     const Bubble&Pi;
     int i0;
+    int i2;
+    int iK_select;
     const int i_in;
     const char channel, part;
     const double w, v;
@@ -347,10 +388,10 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const  Bubble& Pi_in, int i0_in,
-            const double w_in, double v_in,   const int i_in_in,    const char ch_in, const char pt_in)
-              :          vertex1(vertex1_in),         vertex2(vertex2_in),            Pi(Pi_in),                w(w_in),
-              v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
+    Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const  Bubble& Pi_in, int i0_in, int i2_in,
+            const double w_in, double v_in,   const int i_in_in,    const char ch_in, const char pt_in, const int iK_select_in)
+              :          vertex1(vertex1_in),         vertex2(vertex2_in),            Pi(Pi_in),           i2(i2_in),     w(w_in),
+              v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in), iK_select(iK_select_in)
     {
         // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -371,48 +412,47 @@ public:
         Q Pival;
         vector<int> indices(2);
         //Iterates over all Keldysh components of the bubble which are nonzero
-        for(auto i2:non_zero_Keldysh_bubble) {
-            switch (channel) {
-                //According to channel, indices of the left and right vertices are determined.
-                //Then, the value of the multiplication of the two propagators is calculated.
-                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                //contribute to the relevant spin components
-                //Add contribution to the result.
-                case 'a':                                                                       //Contributions: V*Pi*V
-                    vertex1[0].avertex.indices_sum(indices, i0, i2);
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
-                    res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
+        switch (channel) {
+            //According to channel, indices of the left and right vertices are determined.
+            //Then, the value of the multiplication of the two propagators is calculated.
+            //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
+            //contribute to the relevant spin components
+            //Add contribution to the result.
+            case 'a':                                                                       //Contributions: V*Pi*V
+                vertex1[0].avertex.indices_sum(indices, i0, i2);
+                if (indices[0] != iK_select && iK_select < 16) return 0.;
+                Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
+                res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
-                    res += res_l_V * Pival * res_r_V;
-                    break;
-                case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
-                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
-                    Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
-                    res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
+                res = res_l_V * Pival * res_r_V;
+                break;
+            case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
+                vertex1[0].pvertex.indices_sum(indices, i0, i2);
+                Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
+                res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
-                    //This is commented out on the ground of p-channel contributions being cross-symmetric
-                    //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                    //the bubble_function(...) must be changed.*/
+                //This is commented out on the ground of p-channel contributions being cross-symmetric
+                //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                //the bubble_function(...) must be changed.*/
 //                    res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
 //                    res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
-                    break;
-                case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
-                    res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
+                res = res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
+                break;
+            case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
+                vertex1[0].tvertex.indices_sum(indices, i0, i2);
+                Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
+                res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
-                    res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
-                    res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
+                res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+                res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-                    break;
-                default: ;
-            }
+                res = res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+                break;
+            default: ;
         }
         return res;
     }
@@ -870,7 +910,7 @@ public:
 template <typename Q>
 void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
                      const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part,
-                     const int iK_select)
+                     const int iK_select, const int iK_select2)
 {
     Bubble Pi(G, S, diff); // initialize bubble object
 
@@ -945,14 +985,18 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 else{
                     for (auto i2:non_zero_Keldysh_bubble) {
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, iK_select);
-                        if (glb_int_flag && i0 == 1 && abs(w-0.525)<0.005) {
+                        if (glb_int_flag && i0 == 1 && abs(w-0.31)<0.005) {
                             //print(w, true);
+
                             //glb_K1_flag = true;
                         }
                         if (glb_int_flag && glb_K1_flag) {
                             print("w: ", w, true);
+                            integrand_K1.save_integrand();
                         }
-                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_w_lower, glb_w_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
+                        Q value1 = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_w_lower, glb_w_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
+                        value += value1;
+                        if (i0 == 1 && (iK_select==0 || iK_select==1) && value1!=0.) print("test", true);
                         if (glb_int_flag && glb_K1_flag) {
                             print("w: ", w, true);
                             print(value, true);
@@ -998,8 +1042,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=2
 //    double tK2 = get_time();
     /*K2 contributions*/
-    n_mpi = nK_K2 * nw2_w;
-    n_omp = nw2_v * n_in;
+    n_mpi = nK_K2;
+    n_omp = nw2_w * nw2_v * n_in;
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
@@ -1030,8 +1074,10 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                     if (part != 'L') value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
                     // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
                     else {
-                        Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, w, v, i_in, channel, part);
-                        value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
+                        for(auto i2:non_zero_Keldysh_bubble) {
+                            Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, iK_select2);
+                            value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
+                        }
                     }
                 }
 
@@ -1131,7 +1177,7 @@ template <typename Q>
 void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
                      const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part)
 {
-    bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, part, 7);
+    bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, part, 16, 16);
 }
 
 #endif //KELDYSH_MFRG_BUBBLES_H
