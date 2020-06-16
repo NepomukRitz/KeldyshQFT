@@ -944,7 +944,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 else{
                     Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, w, i_in, channel);
                     value  = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
-                    value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, glb_w_upper, glb_w_upper, w, i0, i_in, channel); //Correction needed for the K1 class
+                    value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i_in, channel); //Correction needed for the K1 class
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
@@ -1008,6 +1008,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                     else {
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, w, v, i_in, channel, part);
                         value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
+                        value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K2(vertex1, vertex2,-glb_w_lower, glb_w_upper, w, v, i0, i_in, channel); //Correction needed for the K1 class
                     }
                 }
 
@@ -1071,6 +1072,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                     Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp,  i_in, channel, part);
 
                     value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
+                    value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K3(vertex1, vertex2,-glb_v_lower, glb_v_upper, w, v, vp, i0, i_in, channel); //Correction needed for the K1 class
                 }
 
                 K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
