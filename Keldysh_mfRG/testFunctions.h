@@ -529,6 +529,7 @@ void test_K2_correctness(double Lambda){
     State<comp> PT4_K1a22;
     State<comp> PT4_K1a13_1;
     State<comp> PT4_K1a13_2;
+    State<comp> PT4_K1a31_2;
     State<comp> PT4_K1a13_2_11e; // A
     State<comp> PT4_K1a13_2_21e; // B
     State<comp> PT4_K1a13_2_11o; // C
@@ -544,6 +545,7 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, 'R');
     glb_int_flag = true;
     bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, 'R');
     get_time(t0);
     t0 = get_time();
     bubble_function(PT4_K1a13_2_11e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 0, 16); // A
@@ -570,6 +572,7 @@ void test_K2_correctness(double Lambda){
                                                        "PT4_K1a22_R", "PT4_K1a22_I",
                                                        "PT4_K1a13_1_R", "PT4_K1a13_1_I",
                                                        "PT4_K1a13_2_R", "PT4_K1a13_2_I",
+                                                       "PT4_K1a31_2_R", "PT4_K1a31_2_I",
                                                        "PT4_K1a13_2_11e_R", "PT4_K1a13_2_11e_I",
                                                        "PT4_K1a13_2_21e_R", "PT4_K1a13_2_21e_I",
                                                        "PT4_K1a13_2_11o_R", "PT4_K1a13_2_11o_I",
@@ -587,6 +590,7 @@ void test_K2_correctness(double Lambda){
                                    PT4_K1a22.vertex[0].avertex.K1.real(), PT4_K1a22.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_1.vertex[0].avertex.K1.real(), PT4_K1a13_1.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2.vertex[0].avertex.K1.real(), PT4_K1a13_2.vertex[0].avertex.K1.imag(),
+                                   PT4_K1a31_2.vertex[0].avertex.K1.real(), PT4_K1a31_2.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2_11e.vertex[0].avertex.K1.real(), PT4_K1a13_2_11e.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2_21e.vertex[0].avertex.K1.real(), PT4_K1a13_2_21e.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2_11o.vertex[0].avertex.K1.real(), PT4_K1a13_2_11o.vertex[0].avertex.K1.imag(),
