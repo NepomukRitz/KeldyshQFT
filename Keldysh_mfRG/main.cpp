@@ -66,6 +66,36 @@ auto main() -> int {
 
     test_K2_correctness(0.0);
 
+//    vector<int> indices (2);
+//    vector<int> alpha1 (4);
+//    vector<int> alpha2 (4);
+//    vector<int> alpha3 (4);
+//    Vertex<comp> vertex1;
+//    int i0 = 1;
+//    i0 = non_zero_Keldysh_K1a[i0];
+//    print(i0, true);
+//
+//    for (auto i2:non_zero_Keldysh_bubble) {
+//        print(i2, true);
+//        vertex1[0].avertex.indices_sum(indices, i0, i2);
+//
+//        alphas(alpha1, indices[0]);
+//        alphas(alpha2, i2);
+//        alphas(alpha3, indices[1]);
+//        string s1 = "";
+//        string s2 = "";
+//        string s3 = "";
+//        for (int i=0; i<4; ++i) {
+//            s1 += to_string(alpha1[i]);
+//            s2 += to_string(alpha2[i]);
+//            s3 += to_string(alpha3[i]);
+//        }
+//        print(indices[0], ": ", s1, true);
+//        print(i2, ": ", s2, true);
+//        print(indices[1], ": ", s3, true);
+//        print("", true);
+//    }
+
 //    print("number of integrator calls: ", glb_int, true);
 //    print("average number of accesses: ", glb_intpoints/glb_int, true);
 
@@ -76,7 +106,7 @@ auto main() -> int {
     double g = .2;
 
     TestIntegrand integrand (c, g);
-    double exact = -1.6945866505393496; //124.01956314478682; //1254.9927990925705; //(-atan((a-c)/g) + atan((b-c)/g) - atan((a+c)/g) + atan((b+c)/g))/g; //1.7724538509055159; //log(b)-log(a); //cos(a)-cos(b);
+    double exact = 200./10001.; //-1.6945866505393496; //124.01956314478682; //1254.9927990925705; //(-atan((a-c)/g) + atan((b-c)/g) - atan((a+c)/g) + atan((b+c)/g))/g; //1.7724538509055159; //log(b)-log(a); //cos(a)-cos(b);
     print("exact res.: ", exact, true);
 
     int nmult = 100;
@@ -102,7 +132,7 @@ auto main() -> int {
     double t_gsl = get_time();
     comp integral_gsl;
     for (int i=0; i<nmult; ++i) {
-        integral_gsl += integrator_gsl(integrand, a, b); //-20., 20.);
+        integral_gsl += integrator_gsl(integrand, a, b, 0., 0.); //-20., 20.);
     }
     print("gsl: ", integral_gsl.real()/(double)nmult, true);
     print("rel. error: ", abs(integral_gsl.real()/(double)nmult-exact)/exact, true);
