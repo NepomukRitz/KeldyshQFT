@@ -268,6 +268,7 @@ public:
 #else
                 vertex1[0].avertex.indices_sum(indices, i0, i2);
                 if (indices[1] != iK_select && iK_select < 16) return 0.;
+                //if (iK_select == 11 && i2 != 15) return 0.;
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -421,6 +422,7 @@ public:
             case 'a':                                                                       //Contributions: V*Pi*V
                 vertex1[0].avertex.indices_sum(indices, i0, i2);
                 if (indices[0] != iK_select && iK_select < 16) return 0.;
+                //if (iK_select == 6 && i2 != 15) return 0.;
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                 res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
