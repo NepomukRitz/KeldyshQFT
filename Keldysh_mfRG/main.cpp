@@ -44,7 +44,7 @@ auto main() -> int {
 //    }
 
     ///
-    omp_set_num_threads(20);
+    //omp_set_num_threads(20);
     print(omp_get_num_threads(), true);
     print(nBOS, true);
 
@@ -55,16 +55,16 @@ auto main() -> int {
     //test_rhs_state_flow_SOPT(50, 4);
     //test_ODE_solvers();
 
-    /*
+    //*
     string dir = "runs/";
-    string sname = "int_C6_L_K" + to_string(DIAG_CLASS) + "_flow_G" + to_string(GRID) + "_U=" + to_string(glb_U) + "_V=" + to_string(glb_V) + ".h5";
+    string sname = "K" + to_string(DIAG_CLASS) + "_flow" + "_n1=" + to_string(nBOS) + "_n2=" + to_string(nBOS2) + "_adap_m2m3" + "_nI=" + to_string(nINT) + "_G" + to_string(GRID) + "_U=" + to_string(glb_U) + "_V=" + to_string(glb_V) + ".h5";
     string filename = dir + sname;
 
     one_loop_flow(nODE, filename);
 
     //*/
 
-    test_K2_correctness(0.0);
+    //test_K2_correctness(0.0);
 
 //    vector<int> indices (2);
 //    vector<int> alpha1 (4);
