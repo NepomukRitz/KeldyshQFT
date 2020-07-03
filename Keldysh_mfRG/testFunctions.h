@@ -492,6 +492,7 @@ void test_K2_correctness(double Lambda){
     bare.initialize();  //Initialize bare state
 
     Propagator G(Lambda, bare.selfenergy, 'g'); //Bare propagator
+    Propagator S(Lambda, bare.selfenergy, 's'); //Bare single-scale propagator
 
     //Create states for K1-calculations
     State<comp> PT2_K1a;
@@ -513,10 +514,13 @@ void test_K2_correctness(double Lambda){
     State<comp> PT3_K2a_iva;
     State<comp> PT3_K2a_ivb;
 
+    State<comp> PT3_K2p;
+    State<comp> PT3_K2t;
+
     //Do appropriate calculation for K2a with K1p and K1t being fed back into the left vertex. Notice part = 'L' to ensure
     //that the correct contributions are added on both sides. - TOPT
     t0 = get_time();
-    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');   // K2a in PT3
 
     bubble_function(PT3_K2a_ia.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 9, 6);
     bubble_function(PT3_K2a_ib.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 6, 9);
@@ -526,7 +530,19 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT3_K2a_ivb.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 6, 15);
     rvec Lambdas {1.};
     //PT3_K2a = read_hdf("PT4_check_of_K2a_K2_switchedcc_adap_m3m9_g501_101_nI1501_state_PT3_K2a", 0, 1, Lambdas);
+
+    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'p', false, 'L');    // K2p  in PT3
+    bubble_function(PT3_K2t.vertex, PT2_K1a.vertex + PT2_K1p.vertex, bare.vertex, G, G, 't', false, 'L');    // K2t  in PT3
     get_time(t0);
+
+    // K2 contribution to self-energy flow
+    State<comp> PT3_SE_a;
+    State<comp> PT3_SE_p;
+    State<comp> PT3_SE_t;
+
+    loop(PT3_SE_a.selfenergy, PT3_K2a.vertex, S, false);
+    loop(PT3_SE_p.selfenergy, PT3_K2p.vertex, S, false);
+    loop(PT3_SE_t.selfenergy, PT3_K2t.vertex, S, false);
 
     State<comp> PT3_K1a;    //Create state to compare with K1a
     t0 = get_time();
@@ -583,7 +599,7 @@ void test_K2_correctness(double Lambda){
     }
 
     print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
-    if(write_flag) write_h5_rvecs("PT4_check_of_K2a_K2_switchedcc_K12_tails_full_s_g2_pm20_101_101_nI201", {"w",
+    if(write_flag) write_h5_rvecs("PT4_check_of_K2a_K2_switchedcc_full_adap_m3m9_gW10_501_101_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
                                                        "PT2_K1p_R", "PT2_K1p_I",
                                                        "PT3_K1a_R", "PT3_K1a_I",
@@ -594,6 +610,11 @@ void test_K2_correctness(double Lambda){
                                                        "PT3_K2a_iib_R", "PT3_K2a_iib_I",
                                                        "PT3_K2a_iva_R", "PT3_K2a_iva_I",
                                                        "PT3_K2a_ivb_R", "PT3_K2a_ivb_I",
+                                                       "PT3_K2p_R", "PT3_K2p_I",
+                                                       "PT3_K2t_R", "PT3_K2t_I",
+                                                       "PT3_SE_a_R", "PT3_SE_a_I",
+                                                       "PT3_SE_p_R", "PT3_SE_p_I",
+                                                       "PT3_SE_t_R", "PT3_SE_t_I",
                                                        "PT4_K1a22_R", "PT4_K1a22_I",
                                                        "PT4_K1a13_1_R", "PT4_K1a13_1_I",
                                                        "PT4_K1a13_2_R", "PT4_K1a13_2_I",
@@ -622,6 +643,11 @@ void test_K2_correctness(double Lambda){
                                    PT3_K2a_iib.vertex[0].avertex.K2.real(), PT3_K2a_iib.vertex[0].avertex.K2.imag(),
                                    PT3_K2a_iva.vertex[0].avertex.K2.real(), PT3_K2a_iva.vertex[0].avertex.K2.imag(),
                                    PT3_K2a_ivb.vertex[0].avertex.K2.real(), PT3_K2a_ivb.vertex[0].avertex.K2.imag(),
+                                   PT3_K2p.vertex[0].avertex.K2.real(), PT3_K2p.vertex[0].avertex.K2.imag(),
+                                   PT3_K2t.vertex[0].avertex.K2.real(), PT3_K2t.vertex[0].avertex.K2.imag(),
+                                   PT3_SE_a.selfenergy.Sigma.real(), PT3_SE_a.selfenergy.Sigma.imag(),
+                                   PT3_SE_p.selfenergy.Sigma.real(), PT3_SE_p.selfenergy.Sigma.imag(),
+                                   PT3_SE_t.selfenergy.Sigma.real(), PT3_SE_t.selfenergy.Sigma.imag(),
                                    PT4_K1a22.vertex[0].avertex.K1.real(), PT4_K1a22.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_1.vertex[0].avertex.K1.real(), PT4_K1a13_1.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2.vertex[0].avertex.K1.real(), PT4_K1a13_2.vertex[0].avertex.K1.imag(),
@@ -639,7 +665,7 @@ void test_K2_correctness(double Lambda){
                                    PT4_K1a13_2_iva.vertex[0].avertex.K1.real(), PT4_K1a13_2_iva.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2_ivb.vertex[0].avertex.K1.real(), PT4_K1a13_2_ivb.vertex[0].avertex.K1.imag()});
 
-    write_hdf("PT4_check_of_K2a_K2_switchedcc_K12_tails_full_s_g2_pm20_101_101_nI201_state_PT3_K2a", 0, 1, PT3_K2a);
+    write_hdf("PT4_check_of_K2a_K2_switchedcc_full_adap_m3m9_gW10_501_101_nI1501_U1_state_PT3_K2a", 0, 1, PT3_K2a);
 }
 
 /**
