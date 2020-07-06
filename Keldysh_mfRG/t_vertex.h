@@ -24,8 +24,8 @@ class tvert{
     vector<int> list_K2_T2_comp2    = {2,  8};          // components in K2 equal to comp.2 of K2a          In the vertex, comp2 will be iK=2
     vector<int> list_K2_T2_comp3    = {3,  9};          // components in K2 equal to comp.3 of K2a          In the vertex, comp3 will be iK=3
     vector<int> list_K2_T2_comp11   = {7, 13};          // components in K2 equal to comp.7 of K2a          In the vertex, comp0 will be iK=4
-    vector<int> list_K2_TCT2_comp1  = {4, 14};          // components in K2 equal to comp.0 of K2a
-    vector<int> list_K2_TCT2_comp3  = {6, 12};          // components in K2 equal to comp.0 of K2a
+    vector<int> list_K2_T1TC_comp1  = {4, 14};          // components in K2 equal to comp.0 of K2a
+    vector<int> list_K2_T1TC_comp3  = {6, 12};          // components in K2 equal to comp.0 of K2a
 
     vector<int> list_K2b_T1_comp0   = {0,   5};         // components in K2b equal to T_1 comp.0 of K2a
     vector<int> list_K2b_T1_comp2   = {1,   4};         // components in K2b equal to T_1 comp.2 of K2a
@@ -495,12 +495,12 @@ template <typename Q> auto tvert<Q>::K2_valsmooth (int iK, double w_t, double v1
     else if(isInList(iK,list_K2_T2_comp11)){
         iK2 = 4;
     }
-    else if(isInList(iK,list_K2_TCT2_comp1)){
+    else if(isInList(iK,list_K2_T1TC_comp1)){       //In equal-spins case, T1TC = TCT2
         iK2 = 1;
         TC_K2(w_t, v1_t, i_in);  // TC acts on component (1112) -> prefactor = +1
         conjugate2 = true;
     }
-    else if(isInList(iK,list_K2_TCT2_comp3)){
+    else if(isInList(iK,list_K2_T1TC_comp3)){       //In equal-spins case, T1TC = TCT2
         iK2 = 3;
         TC_K2(w_t, v1_t, i_in);  // TC acts on component (1122) -> prefactor = -1
         pf2 *= -1;
@@ -526,6 +526,7 @@ template <typename Q> auto tvert<Q>::K2_valsmooth (int iK, double w_t, double v1
     switch (spin) {
         case 0: break;
         case 1:
+            //T2 must be appplies to almost all components. Hence do always and invert whenever needed
             T2_K2(w_t, v1_t, i_in);
             pf2 *= -1.;
             break;
@@ -542,15 +543,29 @@ template <typename Q> auto tvert<Q>::K2_valsmooth (int iK, double w_t, double v1
         iK2 = 3;
     } else if (isInList(iK, list_K2_T0_comp7)) {        //T0 comp7 => T2 iK=4
         iK2 = 4;
-    } else if (isInList(iK, list_K2_TC_comp1)) {        //TCcomp1 => TCT2 iK=1
+    } else if (isInList(iK, list_K2_TC_comp1)) {        //TCcomp1 => T1TC iK=1
         iK2 = 1;
+
+        T2_K2(w_t, v1_t, i_in); //This and the next line invert T2
+        pf2 *= -1.;
+
         TC_K2(w_t, v1_t, i_in);  // TC acts on component (1112) -> prefactor = +1
         conjugate2 = true;
-    } else if (isInList(iK, list_K2_TC_comp3)) {        //TCcomp3 => TCT2 iK =3
+
+        T1_K2(w_t, v1_t, i_in); //Perform T1
+        pf2 *= -1.;
+    } else if (isInList(iK, list_K2_TC_comp3)) {        //TCcomp3 => T1TC iK =3
         iK2 = 3;
+
+        T2_K2(w_t, v1_t, i_in); //This and the next line invert T2
+        pf2 *= -1.;
+
         TC_K2(w_t, v1_t, i_in);  // TC acts on component (1122) -> prefactor = -1
         pf2 *= -1.;
         conjugate2 = true;
+
+        T1_K2(w_t, v1_t, i_in); //Perform T1
+        pf2 *= -1.;
     } else {
         return 0.;
     }
