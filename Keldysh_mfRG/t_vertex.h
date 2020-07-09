@@ -438,7 +438,7 @@ template<typename Q> void tvert<Q>::T3_K1(double& w_t, int& i_in) const
 }
 template<typename Q> void tvert<Q>::TC_K1(double& w_t, int& i_in) const
 {
-    //w_t *= 1.;
+    w_t *=-1.;
     internal_TC_K1_t(i_in);
 }
 #endif
@@ -712,13 +712,13 @@ template<typename Q> void tvert<Q>::T2_K2(double& w_t, double& v1_t, int& i_in) 
 template<typename Q> void tvert<Q>::T3_K2(double& w_t, double& v1_t, int& i_in) const
 {
     w_t *= -1.;
-    //v1_t *= 1.;      //K2b
+    //v1_t *= 1.;
     internal_T3_K2_t(i_in);
 }
 template<typename Q> void tvert<Q>::TC_K2(double& w_t, double& v1_t, int& i_in) const
 {
-    //w_t *= 1.;
-    //v1_t *= 1.;      //K2b
+    w_t *=-1.;
+    //v1_t *= 1.;
     internal_TC_K2_t(i_in);
 }
 #endif
@@ -1069,7 +1069,7 @@ template<typename Q> void tvert<Q>::TC_K3(double& w_t, double& v1_t, double& v2_
 {
     double temp = *(&v1_t);
     //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    //w_t *= 1.;                      //w_t = w_t
+    w_t *=- 1.;                      //w_t = w_t
     v1_t = v2_t;                      //v1_t = v2_t
     v2_t = temp;                      //v2_t = v1_t
     internal_T1_K3_t(i_in);
