@@ -194,6 +194,9 @@ const int n_in = 1;
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define DIAG_CLASS 1
 
+//If defined, the flow of the self_energy is symmetrized, closed above and below
+#define SYMMETRIZED_SEFL_ENERGY_FLOW
+
 // Defines whether the values are interpolated from previously saved ones or from the self-energy
 #define INTER_PROP
 

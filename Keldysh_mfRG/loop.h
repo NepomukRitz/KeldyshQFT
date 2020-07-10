@@ -20,7 +20,7 @@
 template <typename Q>
 class IntegrandSE {
     const char type;
-    vector<int> components = vector<int>(3);
+    vector<int> components = vector<int>(6);
     const Vertex<Q>& vertex;
     const Propagator& propagator;
     const double v;
@@ -44,11 +44,17 @@ public:
                 components[0]=3;    //Vertex component associated to Retarded propagator
                 components[1]=6;    //Vertex component associated to Advanced propagator
                 components[2]=7;    //Vertex component associated to Keldysh propagator
+                components[3]=3;    //Vertex component associated to Retarded propagator in symmetrized flow
+                components[4]=9;    //Vertex component associated to Advanced propagator in symmetrized flow
+                components[5]=11;   //Vertex component associated to Keldysh propagator in symmetrized flow
             }
             else {
                 components[0]=1;    //Vertex component associated to Retarded propagator
                 components[1]=4;    //Vertex component associated to Advanced propagator
                 components[2]=5;    //Vertex component associated to Keldysh propagator
+                components[4]=2;    //Vertex component associated to Retarded propagator in symmetrized flow
+                components[3]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
+                components[5]=10;   //Vertex component associated to Keldysh propagator in symmetrized flow
             }
     };
 
@@ -63,17 +69,47 @@ public:
         Q GA = conj(propagator.valsmooth(0, vp, i_in));  // advanced propagator (full or single scale)
         Q GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
 
-        if (all_spins)
-            return ((2. * vertex[0].value(components[0], v, vp, v, i_in, 0, 'f')
-                        + vertex[0].value(components[0], v, vp, v, i_in, 1, 'f')) * GR +
-                    (2. * vertex[0].value(components[1], v, vp, v, i_in, 0, 'f')
-                        + vertex[0].value(components[1], v, vp, v, i_in, 1, 'f')) * GA +
-                    (2. * vertex[0].value(components[2], v, vp, v, i_in, 0, 'f')
-                        + vertex[0].value(components[2], v, vp, v, i_in, 1, 'f')) * GK);
-        else
-            return (vertex[0].value(components[0], v, vp, v, i_in, 0, 'f') * GR +
-                    vertex[0].value(components[1], v, vp, v, i_in, 0, 'f') * GA +
-                    vertex[0].value(components[2], v, vp, v, i_in, 0, 'f') * GK);
+
+        //In any case, read the value of spin component 0
+        Q factorRetardedClosedAbove = vertex[0].value(components[0], v, vp, v, i_in, 0, 'f');
+        Q factorAdvancedClosedAbove = vertex[0].value(components[1], v, vp, v, i_in, 0, 'f');
+        Q factorKeldyshClosedAbove  = vertex[0].value(components[2], v, vp, v, i_in, 0, 'f');
+
+        Q symmetrization_prefactor = 1.;
+
+#ifdef SYMMETRIZED_SEFL_ENERGY_FLOW
+        symmetrization_prefactor = 1./2.;
+
+        Q factorRetardedClosedBelow = vertex[0].value(components[3],vp,  v,vp, i_in, 0, 'f');
+        Q factorAdvancedClosedBelow = vertex[0].value(components[4],vp,  v,vp, i_in, 0, 'f');
+        Q factorKeldyshClosedBelow  = vertex[0].value(components[5],vp,  v,vp, i_in, 0, 'f');
+#endif
+
+        //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
+        if(all_spins){
+            factorRetardedClosedAbove *=2;
+            factorAdvancedClosedAbove *=2;
+            factorKeldyshClosedAbove  *=2;
+
+            factorRetardedClosedAbove += vertex[0].value(components[0], v, vp, v, i_in, 1, 'f');
+            factorAdvancedClosedAbove += vertex[0].value(components[1], v, vp, v, i_in, 1, 'f');
+            factorKeldyshClosedAbove  += vertex[0].value(components[2], v, vp, v, i_in, 1, 'f');
+
+#ifdef SYMMETRIZED_SEFL_ENERGY_FLOW
+            factorRetardedClosedBelow *=2;
+            factorAdvancedClosedBelow *=2;
+            factorKeldyshClosedBelow  *=2;
+
+            factorRetardedClosedBelow += vertex[0].value(components[3],vp,  v,vp, i_in, 1, 'f');
+            factorAdvancedClosedBelow += vertex[0].value(components[4],vp,  v,vp, i_in, 1, 'f');
+            factorKeldyshClosedBelow  += vertex[0].value(components[5],vp,  v,vp, i_in, 1, 'f');
+#endif
+
+        }
+
+        return symmetrization_prefactor*( GR*(factorRetardedClosedAbove + factorRetardedClosedBelow) +
+                                          GA*(factorAdvancedClosedAbove + factorAdvancedClosedBelow) +
+                                          GK*(factorKeldyshClosedAbove  + factorKeldyshClosedBelow ) );
     }
 };
 
