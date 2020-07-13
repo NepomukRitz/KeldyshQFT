@@ -32,7 +32,7 @@ rvec flow_grid(nODE);                                                           
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
 const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
-const double glb_U = 1;                      // Impurity on-site interaction strength
+const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 const double glb_Gamma = 1.;                   // Hybridization of Anderson model
 const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
@@ -44,7 +44,7 @@ const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in e
 
 // Grid type
 // 1: log-grid, 2: linear grid, 3: non-linear grid, 4: tangent grid
-#define GRID 2
+#define GRID 3
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
@@ -75,15 +75,15 @@ const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(g
 //const int nFER = 20;
 
 #elif GRID==3
-const double W_scale = 10.*glb_U;                //Resolution scale should be chosen big enough... ~50.*U seems good
+const double W_scale = 10.; //*glb_U;                //Resolution scale should be chosen big enough... ~50.*U seems good
 const double glb_w_upper = 50.;
 const double glb_w_lower = -glb_w_upper;
 const double glb_v_upper = 50.;
 const double glb_v_lower = -glb_v_upper;
 
 // Number of bosonic and fermionic frequency points
-const int nBOS = 101;
-const int nFER = 101;
+const int nBOS = 501;
+const int nFER = 501;
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
@@ -204,7 +204,7 @@ const int n_in = 1;
 const double inter_tol = 10e-8;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-const int nINT = 401; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
+const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
