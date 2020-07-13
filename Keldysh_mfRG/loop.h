@@ -77,7 +77,7 @@ public:
 
         Q symmetrization_prefactor = 1.;
 
-#ifdef SYMMETRIZED_SEFL_ENERGY_FLOW
+#ifdef SYMMETRIZED_SELF_ENERGY_FLOW
         symmetrization_prefactor = 1./2.;
 
         Q factorRetardedClosedBelow = vertex[0].value(components[3],vp,  v,vp, i_in, 0, 'f');
@@ -95,7 +95,7 @@ public:
             factorAdvancedClosedAbove += vertex[0].value(components[1], v, vp, v, i_in, 1, 'f');
             factorKeldyshClosedAbove  += vertex[0].value(components[2], v, vp, v, i_in, 1, 'f');
 
-#ifdef SYMMETRIZED_SEFL_ENERGY_FLOW
+#ifdef SYMMETRIZED_SELF_ENERGY_FLOW
             factorRetardedClosedBelow *=2;
             factorAdvancedClosedBelow *=2;
             factorKeldyshClosedBelow  *=2;
@@ -106,10 +106,16 @@ public:
 #endif
 
         }
-
+#ifdef SYMMETRIZED_SELF_ENERGY_FLOW
         return symmetrization_prefactor*( GR*(factorRetardedClosedAbove + factorRetardedClosedBelow) +
                                           GA*(factorAdvancedClosedAbove + factorAdvancedClosedBelow) +
                                           GK*(factorKeldyshClosedAbove  + factorKeldyshClosedBelow ) );
+#else
+        return symmetrization_prefactor*( GR*(factorRetardedClosedAbove) +
+                                          GA*(factorAdvancedClosedAbove) +
+                                          GK*(factorKeldyshClosedAbove ) );
+
+#endif
     }
 };
 
