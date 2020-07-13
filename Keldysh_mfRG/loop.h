@@ -70,7 +70,7 @@ public:
         Q GA = conj(propagator.valsmooth(0, vp, i_in));  // advanced propagator (full or single scale)
         Q GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
 
-        rvec pf_select = rvec(3);
+        rvec pf_select = rvec(6);
         for (int i=0; i<6; ++i) {
             pf_select[i] = 1.;
             if (components[i] != iK_select && iK_select < 16) pf_select[i] = 0.;
