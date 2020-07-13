@@ -25,6 +25,7 @@ class IntegrandSE {
     const Propagator& propagator;
     const double v;
     const int i_in;
+    const int iK_select;
     const bool all_spins;
 
 public:
@@ -37,8 +38,8 @@ public:
      * @param i_in_in   : Internal frequency index
      * @param all_spins_in: Defines the value of the vertex to be taken
      */
-    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in, const double v_in, const int i_in_in, const bool all_spins_in)
-        : type(type_in), vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in), all_spins(all_spins_in)
+    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in, const double v_in, const int i_in_in, const int iK_select_in, const bool all_spins_in)
+        : type(type_in), vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in), iK_select(iK_select_in), all_spins(all_spins_in)
         {
             if(type=='r'){  //Check which kind of contribution is calculated
                 components[0]=3;    //Vertex component associated to Retarded propagator
@@ -63,17 +64,23 @@ public:
         Q GA = conj(propagator.valsmooth(0, vp, i_in));  // advanced propagator (full or single scale)
         Q GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
 
+        rvec pf_select = rvec(3);
+        for (int i=0; i<3; ++i) {
+            pf_select[i] = 1.;
+            if (components[i] != iK_select && iK_select < 16) pf_select[i] = 0.;
+        }
+
         if (all_spins)
-            return ((2. * vertex[0].value(components[0], v, vp, v, i_in, 0, 'f')
-                        + vertex[0].value(components[0], v, vp, v, i_in, 1, 'f')) * GR +
-                    (2. * vertex[0].value(components[1], v, vp, v, i_in, 0, 'f')
-                        + vertex[0].value(components[1], v, vp, v, i_in, 1, 'f')) * GA +
-                    (2. * vertex[0].value(components[2], v, vp, v, i_in, 0, 'f')
-                        + vertex[0].value(components[2], v, vp, v, i_in, 1, 'f')) * GK);
+            return ((2. * pf_select[0] * vertex[0].value(components[0], v, vp, v, i_in, 0, 'f')
+                        + pf_select[0] * vertex[0].value(components[0], v, vp, v, i_in, 1, 'f')) * GR +
+                    (2. * pf_select[1] * vertex[0].value(components[1], v, vp, v, i_in, 0, 'f')
+                        + pf_select[1] * vertex[0].value(components[1], v, vp, v, i_in, 1, 'f')) * GA +
+                    (2. * pf_select[2] * vertex[0].value(components[2], v, vp, v, i_in, 0, 'f')
+                        + pf_select[2] * vertex[0].value(components[2], v, vp, v, i_in, 1, 'f')) * GK);
         else
-            return (vertex[0].value(components[0], v, vp, v, i_in, 0, 'f') * GR +
-                    vertex[0].value(components[1], v, vp, v, i_in, 0, 'f') * GA +
-                    vertex[0].value(components[2], v, vp, v, i_in, 0, 'f') * GK);
+            return (pf_select[0] * vertex[0].value(components[0], v, vp, v, i_in, 0, 'f') * GR +
+                    pf_select[1] * vertex[0].value(components[1], v, vp, v, i_in, 0, 'f') * GA +
+                    pf_select[2] * vertex[0].value(components[2], v, vp, v, i_in, 0, 'f') * GK);
     }
 };
 
@@ -87,7 +94,7 @@ public:
  * @param all_spins : Wether the calculation of the loop should include all spin components of the vertex
  */
 template <typename Q>
-void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins)
+void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins, const int iK_select)
 {
 #pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
@@ -97,8 +104,8 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         double v = ffreqs[iv];
 
         // Integrand objects are declared and created for every input frequency v
-        IntegrandSE<Q> integrandR('r', fullvertex, prop, v, i_in, all_spins);
-        IntegrandSE<Q> integrandK('k', fullvertex, prop, v, i_in, all_spins);
+        IntegrandSE<Q> integrandR('r', fullvertex, prop, v, i_in, iK_select, all_spins);
+        IntegrandSE<Q> integrandK('k', fullvertex, prop, v, i_in, iK_select, all_spins);
 
         // One integrates the integrands from glb_v_lower-|v| to glb_v_upper+|v|
         // The limits of the integral must depend on v because of the transformations that must be done on the frequencies
@@ -111,6 +118,11 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         self.addself(0, iv, i_in, integratedR);
         self.addself(1, iv, i_in, integratedK);
     }
+}
+
+template <typename Q>
+void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins) {
+    loop(self, fullvertex, prop, all_spins, 16);
 }
 
 #endif //KELDYSH_MFRG_LOOP_H
