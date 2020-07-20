@@ -6,6 +6,7 @@
 #include "Keldysh_symmetries.h"   // transformations on Keldysh indices
 #include "internal_symmetries.h"  // symmetry transformations for internal indices (momentum etc.), currently trivial
 #include "interpolations.h"       // frequency interpolations for vertices
+#include "symmetry_transformations.h"
 
 //template <typename Q> class pvert;
 
@@ -82,14 +83,6 @@ public:
     auto K1_valsmooth(int, double, int) const -> Q;
     auto K1_valsmooth(int, double, int, int) const -> Q;
 
-    /*Symmetry which interchanges the incoming legs*/
-    void T1_K1(double&, int&) const;
-    /*Symmetry which interchanges the outgoing legs*/
-    void T2_K1(double&, int&) const;
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    void T3_K1(double&, int&) const;
-    /*Symmetry which interchanges both incoming with outgoing legs*/
-    void TC_K1(double&, int&) const;
 #endif
 #if DIAG_CLASS >=2
     vec<Q> K2 = vec<Q> (nK_K2 * nw2_p * nv2_p * n_in);
@@ -117,14 +110,6 @@ public:
     auto K2b_valsmooth(int, double, double, int) const -> Q;
     auto K2b_valsmooth(int, double, double, int, int) const -> Q;
 
-    /*Symmetry which interchanges the incoming legs*/
-    void T1_K2(double&, double&, int&) const;
-    /*Symmetry which interchanges the outgoing legs*/
-    void T2_K2(double&, double&, int&) const;
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    void T3_K2(double&, double&, int&) const;
-    /*Symmetry which interchanges both incoming with outgoing legs*/
-    void TC_K2(double&, double&, int&) const;
 #endif
 #if DIAG_CLASS >=3
     vec<Q> K3 = vec<Q> (nK_K3 * nw3_p * nv3_p * nv3_p * n_in);
@@ -147,14 +132,6 @@ public:
     auto K3_valsmooth(int, double, double, double, int) const -> Q;
     auto K3_valsmooth(int, double, double, double, int, int) const -> Q;
 
-    /*Symmetry which interchanges the incoming legs*/
-    void T1_K3(double&, double&, double&, int&) const;
-    /*Symmetry which interchanges the outgoing legs*/
-    void T2_K3(double&, double&, double&, int&) const;
-    /*Symmetry which interchanges both incoming and outgoing legs*/
-    void T3_K3(double&, double&, double&, int&) const;
-    /*Symmetry which interchanges both incoming with outgoing legs*/
-    void TC_K3(double&, double&, double&, int&) const;
 #endif
 #endif
 
@@ -314,7 +291,7 @@ template<typename Q> void pvert<Q>::indices_sum(vector<int>& indices, int i0, in
 #if DIAG_CLASS>=0
 template <typename Q> auto pvert<Q>::K1_acc (int i) const -> Q{
     if(i>=0 && i<K1.size()){
-    return K1[i];}
+        return K1[i];}
     else{cout << "Error: Tried to access value outside of K1 vertex in p-channel" << endl;};
 }
 
@@ -338,90 +315,66 @@ template <typename Q> auto pvert<Q>::K1_val (int iK, int i, int i_in) const -> Q
 
 template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in) const -> Q{
 
-    int iK1;
-    double pf1 = 1.;            // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    bool conjugate1 = false;    // whether or not to conjugate value: true for T_C, false else
+    IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in);
 
     /*This part determines the value of the K1 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(isInList(iK,list_K1_T0_comp1)){
-        iK1 = 0;
+        indices.iK = 0;
     }
     else if(isInList(iK,list_K1_TC_comp1)){
-        iK1 = 0;
-        TC_K1(w_p, i_in);   // TC acts on component (1112) -> prefactor = +1
-        conjugate1 = true;
+        TC(indices, 'p');
+        indices.iK = 0;
     }
     else if(isInList(iK, list_K1_T0_comp5)){
-        iK1 = 1;
+        indices.iK = 1;
     }
     else{
         return 0.;
     }
 
-    if(conjugate1)
-        return conj(interpolateK1(pf1, iK1, w_p, i_in, *(this)));
-    else
-        return interpolateK1(pf1, iK1, w_p, i_in, *(this));
 
+    if(indices.conjugate){
+        return conj(interpolateK1(indices, *(this)));
+    }
+
+    return interpolateK1(indices, *(this));
 }
 template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in, int spin) const -> Q{
 
-    int iK1;
-    double pf1 = 1.;            // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
-    bool conjugate1 = false;    // whether or not to conjugate value: true for T_C, false else
+    IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in);
 
     /*This part determines the value of the K1 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if (isInList(iK, list_K1_T0_comp1)) {
-        iK1 = 0;
-    } else if (isInList(iK, list_K1_TC_comp1)) {
-        iK1 = 0;
-        TC_K1(w_p, i_in);   // TC acts on component (1112) -> prefactor = +1
-        conjugate1 = true;
-    } else if (isInList(iK, list_K1_T0_comp5)) {
-        iK1 = 1;
-    } else {
+        indices.iK = 0;
+    }
+    else if (isInList(iK, list_K1_TC_comp1)) {
+        TC(indices, 'p');
+        indices.iK = 0;
+    }
+    else if (isInList(iK, list_K1_T0_comp5)) {
+        indices.iK = 1;
+    }
+    else {
         return 0.;
     }
     switch (spin) {
         case 0:
             break;
         case 1:
-            T1_K1(w_p, i_in);
-            pf1 *= -1.;
+            T1(indices, 'p');
             break;
         default: ;
 
     }
 
-    if(conjugate1)
-        return conj(interpolateK1(pf1, iK1, w_p, i_in, *(this)));
-    else
-        return interpolateK1(pf1, iK1, w_p, i_in, *(this));
+    if(indices.conjugate)
+        return conj(interpolateK1(indices, *(this)));
 
+    return interpolateK1(indices, *(this));
 }
 
-template<typename Q> void pvert<Q>::T1_K1(double& w_p, int& i_in) const
-{
-    //w_p *=1.;
-    internal_T1_K1_p(i_in);
-}
-template<typename Q> void pvert<Q>::T2_K1(double& w_p, int& i_in) const
-{
-    //w_p *=1.;
-    internal_T2_K1_p(i_in);
-}
-template<typename Q> void pvert<Q>::T3_K1(double& w_p, int& i_in) const
-{
-    //w_p *=1.;
-    internal_T3_K1_p(i_in);
-}
-template<typename Q> void pvert<Q>::TC_K1(double& w_p, int& i_in) const
-{
-    //w_p *= 1.;
-    internal_TC_K1_p(i_in);
-}
 #endif
 #if DIAG_CLASS >=2
 template <typename Q> auto pvert<Q>::K2_acc (int i) const -> Q{
@@ -450,64 +403,69 @@ template <typename Q> auto pvert<Q>::K2_val (int iK, int i, int j, int i_in) con
 
 template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in) const -> Q {
 
-    int iK2;
-    double pf2 = 1.;       // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
+    IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in);
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if(isInList(iK,list_K2_T0_comp0)){
-        iK2 = 0;
+        indices.iK = 0;
     }
     else if(isInList(iK,list_K2_T0_comp1)){
-        iK2 = 1;
+        indices.iK = 1;
     }
     else if(isInList(iK,list_K2_T0_comp4)){
-        iK2 = 2;
+        indices.iK = 2;
     }
     else if(isInList(iK,list_K2_T0_comp5)){
-        iK2 = 3;
+        indices.iK = 3;
     }
     else if(isInList(iK,list_K2_T0_comp13)){
-        iK2 = 4;
+        indices.iK = 4;
     }
     else if(isInList(iK,list_K2_T3_comp4)){
-        iK2 = 2;
-        T3_K2(w_p, v1_p, i_in);
+        T3(indices, 'p');
+        indices.iK = 2;
     }
     else if(isInList(iK,list_K2_T3_comp5)){
-        iK2 = 3;
-        T3_K2(w_p, v1_p, i_in);
+        T3(indices, 'p');
+        indices.iK = 3;
     }
     else {
         return 0.;
     }
 
-    return interpolateK2(pf2, iK2, w_p, v1_p, i_in, *(this));
+    return interpolateK2(indices, *(this));
 }
 template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in, int spin) const -> Q {
 
-    int iK2;
-    double pf2 = 1.;       // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
+    IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in);
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     if (isInList(iK, list_K2_T0_comp0)) {
-        iK2 = 0;
-    } else if (isInList(iK, list_K2_T0_comp1)) {
-        iK2 = 1;
-    } else if (isInList(iK, list_K2_T0_comp4)) {
-        iK2 = 2;
-    } else if (isInList(iK, list_K2_T0_comp5)) {
-        iK2 = 3;
-    } else if (isInList(iK, list_K2_T0_comp13)) {
-        iK2 = 4;
-    } else if (isInList(iK, list_K2_T3_comp4)) {
-        iK2 = 2;
-        T3_K2(w_p, v1_p, i_in);
-    } else if (isInList(iK, list_K2_T3_comp5)) {
-        iK2 = 3;
-        T3_K2(w_p, v1_p, i_in);
-    } else {
+        indices.iK = 0;
+    }
+    else if (isInList(iK, list_K2_T0_comp1)) {
+        indices.iK = 1;
+    }
+    else if (isInList(iK, list_K2_T0_comp4)) {
+        indices.iK = 2;
+    }
+    else if (isInList(iK, list_K2_T0_comp5)){
+        indices.iK = 3;
+    }
+    else if (isInList(iK, list_K2_T0_comp13)){
+        indices.iK = 4;
+    }
+    else if (isInList(iK, list_K2_T3_comp4)){
+        T3(indices, 'p');
+        indices.iK = 2;
+    }
+    else if (isInList(iK, list_K2_T3_comp5)){
+        T3(indices, 'p');
+        indices.iK = 3;
+    }
+    else{
         return 0.;
     }
 
@@ -515,140 +473,110 @@ template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1
         case 0:
             break;
         case 1:
-            T1_K2(w_p, v1_p, i_in);
-            pf2 *= -1.;
+            T1(indices, 'p');
             break;
 
         default: ;
     }
 
-    return interpolateK2(pf2, iK2, w_p, v1_p, i_in, *(this));
+    return interpolateK2(indices, *(this));
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in) const -> Q {
 
-    int iK2;
-    double pf2 = 1.;       // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
+    IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in);
 
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(isInList(iK,list_K2b_TC_comp0)){         // TC acts on component (1111) -> prefactor = -1
-        iK2 = 0;
-        pf2 *= -1.;
+    if(isInList(iK,list_K2b_TC_comp0)){
+        TC(indices, 'p');
+        indices.iK = 0;
     }
-    else if(isInList(iK,list_K2b_TC_comp1)){    // TC acts on component (1112) -> prefactor = +1
-        iK2 = 1;
+    else if(isInList(iK,list_K2b_TC_comp1)){
+        TC(indices, 'p');
+        indices.iK = 1;
     }
-    else if(isInList(iK,list_K2b_TC_comp4)){    // TC acts on component (1211) -> prefactor = +1
-        iK2 = 2;
+    else if(isInList(iK,list_K2b_TC_comp4)){
+        TC(indices, 'p');
+        indices.iK = 2;
     }
-    else if(isInList(iK,list_K2b_TC_comp5)){    // TC acts on component (1212) -> prefactor = -1
-        iK2 = 3;
-        pf2 *= -1.;
+    else if(isInList(iK,list_K2b_TC_comp5)){
+        TC(indices, 'p');
+        indices.iK = 3;
     }
-    else if(isInList(iK,list_K2b_TC_comp13)){   // TC acts on component (2212) -> prefactor = +1
-        iK2 = 4;
+    else if(isInList(iK,list_K2b_TC_comp13)){
+        TC(indices, 'p');
+        indices.iK = 4;
     }
-    else if(isInList(iK,list_K2b_TCT3_comp4)){  // TC acts on component (1211) -> prefactor = +1
-        iK2 = 2;
-        T3_K2(w_p, v2_p, i_in);
+    else if(isInList(iK,list_K2b_TCT3_comp4)){
+        T3(indices, 'p');
+        TC(indices, 'p');
+        indices.iK = 2;
     }
-    else if(isInList(iK,list_K2b_TCT3_comp5)){  // TC acts on component (1212) -> prefactor = -1
-        iK2 = 3;
-        T3_K2(w_p, v2_p, i_in);
-        pf2 *= -1.;
+    else if(isInList(iK,list_K2b_TCT3_comp5)){
+        T3(indices, 'p');
+        TC(indices, 'p');
+        indices.iK = 3;
     }
     else {
         return 0.;
     }
-    //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
-    TC_K2(w_p, v2_p, i_in);
 
-    return conj(interpolateK2(pf2, iK2, w_p, v2_p, i_in, *(this)));
+    return conj(interpolateK1(indices, *(this)));
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in, int spin) const -> Q {
 
-    int iK2;
-    double pf2;       // prefactor: -1 for T_1, T_2, +1/-1 for T_C depending on Keldysh component, +1 else
+    IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in);
 
-    pf2 = 1.;
     /*This part determines the value of the K2 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
     switch (spin){
         case 0:
             break;
         case 1:
-            T1_K2(w_p, v2_p, i_in);
-            pf2 *= -1.;
+            T1(indices, 'p');
             break;
 
         default: ;
     }
 
-    if(isInList(iK,list_K2b_TC_comp0)){         // TC acts on component (1111) -> prefactor = -1
-        iK2 = 0;
-        pf2 *= -1.;
+    if(isInList(iK,list_K2b_TC_comp0)){
+        TC(indices, 'p');
+        indices.iK = 0;
     }
-    else if(isInList(iK,list_K2b_TC_comp1)){    // TC acts on component (1112) -> prefactor = +1
-        iK2 = 1;
-        if (spin == 1)
-            T3_K2(w_p, v2_p, i_in);
+    else if(isInList(iK,list_K2b_TC_comp1)){
+        TC(indices, 'p');
+        indices.iK = 1;
     }
-    else if(isInList(iK,list_K2b_TC_comp4)){    // TC acts on component (1211) -> prefactor = +1
-        iK2 = 2;
+    else if(isInList(iK,list_K2b_TC_comp4)){
+        TC(indices, 'p');
+        indices.iK = 2;
     }
-    else if(isInList(iK,list_K2b_TC_comp5)){    // TC acts on component (1212) -> prefactor = -1
-        iK2 = 3;
-        pf2 *= -1.;
+    else if(isInList(iK,list_K2b_TC_comp5)){
+        TC(indices, 'p');
+        indices.iK = 3;
     }
-    else if(isInList(iK,list_K2b_TC_comp13)){   // TC acts on component (2212) -> prefactor = +1
-        iK2 = 4;
+    else if(isInList(iK,list_K2b_TC_comp13)){
+        TC(indices, 'p');
+        indices.iK = 4;
     }
-    else if(isInList(iK,list_K2b_TCT3_comp4)){  // TC acts on component (1211) -> prefactor = +1
-        iK2 = 2;
-        T3_K2(w_p, v2_p, i_in);
+    else if(isInList(iK,list_K2b_TCT3_comp4)){
+        T3(indices, 'p');
+        TC(indices, 'p');
+        indices.iK = 2;
     }
-    else if(isInList(iK,list_K2b_TCT3_comp5)){  // TC acts on component (1212) -> prefactor = -1
-        iK2 = 3;
-        T3_K2(w_p, v2_p, i_in);
-        pf2 *= -1.;
+    else if(isInList(iK,list_K2b_TCT3_comp5)){
+        T3(indices, 'p');
+        TC(indices, 'p');
+        indices.iK = 3;
     }
     else {
         return 0.;
     }
 
-    //Since all elements must be conjugated, do not include above but perform after verifying if one has to perform T_3
-    TC_K2(w_p, v2_p, i_in);
-
-    return conj(interpolateK2(pf2, iK2, w_p, v2_p, i_in, *(this)));
+    /*And now one checks that the input frequencies are in the accepted range*/
+    return conj(interpolateK2(indices, *(this)));
 }
 
-template<typename Q> void pvert<Q>::T1_K2(double& w_p, double& v1_p, int& i_in) const
-{
-    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    //w_p *= 1.;
-    //v1_p *=1.;
-    internal_T1_K2_p(i_in);
-}
-template<typename Q> void pvert<Q>::T2_K2(double& w_p, double& v1_p, int& i_in) const
-{
-    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    //w_p *= 1.;
-    v1_p *= -1.;
-    internal_T2_K2_p(i_in);
-}
-template<typename Q> void pvert<Q>::T3_K2(double& w_p, double& v1_p, int& i_in) const
-{
-    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    //w_p *= 1.;
-    v1_p *= -1.;
-    internal_T3_K2_p(i_in);
-}
-template<typename Q> void pvert<Q>::TC_K2(double& w_p, double& v1_p, int& i_in) const
-{
-    //w_p *= 1.;
-    //v1_p*= 1.;
-    internal_TC_K2_p(i_in);
-}
 #endif
 #if DIAG_CLASS >=3
 template <typename Q> auto pvert<Q>::K3_acc (int i) const -> Q{
@@ -677,95 +605,68 @@ template <typename Q> auto pvert<Q>::K3_val (int iK, int i, int j, int k, int i_
 
 template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in) const -> Q{
 
-    int iK3;
-    double pf3;
-    bool conjugate3;
+    IndicesSymmetryTransformations indices(iK, w_p, v1_p, v2_p, i_in);
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
     switch(iK) {
         case 0: case 1: case 3: case 5: case 7:
-            iK3 = convertToIndepIndex(iK);
-            pf3 = 1.;
-            conjugate3 = false;
+            indices.iK = convertToIndepIndex(iK);
             break;
         case 2:
-            T3_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 1;
-            pf3 = 1.;
-            conjugate3 = false;
+            T3(indices, 'p');
+            indices.iK = 1;
             break;
         case 4:
-            TC_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 1;
-            pf3 = 1.;   //(-1)^(1+1+2+1+1)
-            conjugate3 = true;
+            TC(indices, 'p');
+            indices.iK = 1;
             break;
         case 6:
-            T1_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 3;
-            pf3 = -1.;
-            conjugate3 = false;
+            T1(indices, 'p');
+            indices.iK = 3;
             break;
         case 8:
-            T3_K3(w_p, v1_p, v2_p, i_in);
-            TC_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 1;
-            pf3 = 1.;   //(-1.)^(1+2+1+1+1)
-            conjugate3 = true;
+            T3(indices, 'p');
+            TC(indices, 'p');
+            indices.iK = 1;
             break;
         case 9:
-            T2_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 3;
-            pf3 = -1.;
-            conjugate3 = false;
+            T2(indices, 'p');
+            indices.iK = 3;
             break;
         case 10:
-            T3_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 3;
-            pf3 = 1.;
-            conjugate3 = false;
+            T3(indices, 'p');
+            indices.iK = 3;
             break;
         case 11:
-            T3_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 5;
-            pf3 = 1.;
-            conjugate3 = false;
+            T3(indices, 'p');
+            indices.iK = 5;
             break;
         case 12:
-            TC_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 2;
-            pf3 = -1.;   //(-1)^(1+2+2+1+1)
-            conjugate3 = true;
+            TC(indices, 'p');
+            indices.iK = 2;
             break;
         case 13:
-            TC_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 5;
-            pf3 = 1.;   //(-1)^(1+2+2+1+2)
-            conjugate3 = true;
+            TC(indices, 'p');
+            indices.iK = 5;
             break;
         case 14:
-            T3_K3(w_p, v1_p, v2_p, i_in);
-            TC_K3(w_p, v1_p, v2_p, i_in);
-            iK3 = 5;
-            pf3 = 1.;   //(-1)^(1+2+2+2+1)
-            conjugate3 = true;
+            T3(indices, 'p');
+            TC(indices, 'p');
+            indices.iK = 5;
             break;
         default:
             return 0.;
     }
 
-    if(conjugate3)
-        return conj(interpolateK3(pf3, iK3, w_p, v1_p, v2_p, i_in, *(this)));
-    else
-        return interpolateK3(pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
+    if(indices.conjugate)
+        return conj(interpolateK3(indices, *(this)));
 
+    return interpolateK3(indices, *(this));
 }
 template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in, int spin) const -> Q{
 
-    int iK3;
-    double pf3;
-    bool conjugate3;
+    IndicesSymmetryTransformations indices(iK, w_p, v1_p, v2_p, i_in);
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
 
@@ -773,152 +674,106 @@ template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1
         case 0:
             switch (iK) {
             case 0: case 1: case 3: case 5: case 6: case 7:
-                iK3 = convertToIndepIndex(iK);
-                pf3 = 1.;
-                conjugate3 = false;
+                indices.iK = convertToIndepIndex(iK);
                 break;
             case 2:
-                T3_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 1;
-                pf3 = 1.;
-                conjugate3 = false;
+                T3(indices, 'p');
+                indices.iK = 1;
                 break;
             case 4:
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 1;
-                pf3 = 1.;   //(-1)^(1+1+2+1+1)
-                conjugate3 = true;
+                TC(indices, 'p');
+                indices.iK = 1;
                 break;
             case 8:
-                T3_K3(w_p, v1_p, v2_p, i_in);
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 1;
-                pf3 = 1.;   //(-1.)^(1+2+1+1+1)
-                conjugate3 = true;
+                T3(indices, 'p');
+                TC(indices, 'p');
+                indices.iK = 1;
                 break;
             case 9:
-                T3_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 4;
-                pf3 = 1.;
-                conjugate3 = false;
+                T3(indices, 'p');
+                indices.iK = 4;
                 break;
             case 10:
-                T3_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 3;
-                pf3 = 1.;
-                conjugate3 = false;
+                T3(indices, 'p');
+                indices.iK = 3;
                 break;
             case 11:
-                T3_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 5;
-                pf3 = 1.;
-                conjugate3 = false;
+                T3(indices, 'p');
+                indices.iK = 5;
                 break;
             case 12:
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 2;
-                pf3 = -1.;   //(-1)^(1+2+2+1+1)
-                conjugate3 = true;
+                TC(indices, 'p');
+                indices.iK = 2;
                 break;
             case 13:
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 5;
-                pf3 = 1.;   //(-1)^(1+2+2+1+2)
-                conjugate3 = true;
+                TC(indices, 'p');
+                indices.iK = 5;
                 break;
             case 14:
-                T3_K3(w_p, v1_p, v2_p, i_in);
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 5;
-                pf3 = 1.;   //(-1)^(1+2+2+2+1)
-                conjugate3 = true;
+                T3(indices, 'p');
+                TC(indices, 'p');
+                indices.iK = 5;
                 break;
             default:
                 return 0.;
-        }
+            }
             break;
         case 1:
             switch (iK) {
             case 0: case 3: case 7:
-                iK3 = convertToIndepIndex(iK);
-                pf3 = 1.;
-                conjugate3 = false;
+                indices.iK = convertToIndepIndex(iK);
                 break;
             case 1:
-                T2_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 1;
-                pf3 = -1.;
-                conjugate3 = false;
+                T2(indices, 'p');
+                indices.iK = 1;
                 break;
             case 2:
-                T1_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 1;
-                pf3 = -1.;
-                conjugate3 = false;
+                T1(indices, 'p');
+                indices.iK = 1;
                 break;
             case 4:
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                T1_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 1;
-                pf3 = -1.;   //(-1)^(1+1+2+1+1)*(-1)
-                conjugate3 = true;
+                TC(indices, 'p');
+                T1(indices, 'p');
+                indices.iK = 1;
                 break;
             case 5:
-                T1_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 4;
-                pf3 = -1.;
-                conjugate3 = false;
+                T1(indices, 'p');
+                indices.iK = 4;
                 break;
             case 6:
-                T1_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 3;
-                pf3 = -1.;
-                conjugate3 = false;
+                T1(indices, 'p');
+                indices.iK = 3;
                 break;
             case 8:
-                T1_K3(w_p, v1_p, v2_p, i_in);
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 1;
-                pf3 = -1.;   //(-1.)^(1+2+1+1+1)*(-1)
-                conjugate3 = true;
+                T1(indices, 'p');
+                TC(indices, 'p');
+                indices.iK = 1;
                 break;
             case 9:
-                T2_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 3;
-                pf3 = -1.;
-                conjugate3 = false;
+                T2(indices, 'p');
+                indices.iK = 3;
                 break;
             case 10:
-                T2_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 4;
-                pf3 = -1.;
-                conjugate3 = false;
+                T2(indices, 'p');
+                indices.iK = 4;
                 break;
             case 11:
-                T2_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 5;
-                pf3 = -1.;
-                conjugate3 = false;
+                T2(indices, 'p');
+                indices.iK = 5;
                 break;
             case 12:
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 2;
-                pf3 = -1.;   //(-1)^(1+2+2+1+1)
-                conjugate3 = true;
+                TC(indices, 'p');
+                indices.iK = 2;
                 break;
             case 13:
-                T1_K3(w_p, v1_p, v2_p, i_in);
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 5;
-                pf3 = -1.;   //(-1)^(1+2+2+1+2)*(-1)
-                conjugate3 = true;
+                T1(indices, 'p');
+                TC(indices, 'p');
+                indices.iK = 5;
                 break;
             case 14:
-                TC_K3(w_p, v1_p, v2_p, i_in);
-                T1_K3(w_p, v1_p, v2_p, i_in);
-                iK3 = 5;
-                pf3 = -1.;   //(-1)^(1+2+2+2+1)*(-1)
-                conjugate3 = true;
+                TC(indices, 'p');
+                T1(indices, 'p');
+                indices.iK = 5;
                 break;
             default:
                 return 0.;
@@ -927,52 +782,16 @@ template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1
             break;
 
         default:
-            iK3 = 0;
-            pf3 = 0.;
-            conjugate3 = false;
             cout << "Problem with the spins in pvert.K3_valsmooth w/ spin!";
 
     }
 
-    if(conjugate3)
-        return conj(interpolateK3(pf3, iK3, w_p, v1_p, v2_p, i_in, *(this)));
-    else
-        return interpolateK3(pf3, iK3, w_p, v1_p, v2_p, i_in, *(this));
+    if(indices.conjugate)
+        return conj(interpolateK3(indices, *(this)));
+
+    return interpolateK3(indices, *(this));
 }
 
-template<typename Q> void pvert<Q>::T1_K3(double& w_p, double& v1_p, double& v2_p, int& i_in) const
-{
-    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    //w_p *= 1.;                //w_p = w_p
-    //v1_p *= 1.;               //v1_p = v1_p
-    v2_p *= -1.;                //v2_p = -v2_p
-    internal_T1_K3_p(i_in);
-}
-template<typename Q> void pvert<Q>::T2_K3(double& w_p, double& v1_p, double& v2_p, int& i_in) const
-{
-    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    //w_p *= 1.;                //w_p = w_p
-    v1_p *= -1.;               //v1_p = -v1_p
-    //v2_p *= 1.;                //v2_p = v2_p
-    internal_T1_K3_p(i_in);
-}
-template<typename Q> void pvert<Q>::T3_K3(double& w_p, double& v1_p, double& v2_p, int& i_in) const
-{
-    //Calculated the transformation explicitly to avoid two unnecessary calls to functions
-    //w_p *= 1.;                //w_p = w_p
-    v1_p *= -1.;                //v1_p = -v1_p
-    v2_p *= -1.;                //v2_p = -v2_p
-    internal_T1_K3_p(i_in);
-}
-template<typename Q> void pvert<Q>::TC_K3(double& w_p, double& v1_p, double& v2_p, int& i_in) const
-{
-    double temp = *(&v1_p);
-
-    //w_p *=1.;                     //w_p = w_p
-    v1_p = v2_p;                    //v1_p = v2_p
-    v2_p = temp;                    //v2_p = v1_p
-    internal_TC_K3_p(i_in);
-}
 #endif
 
 #endif //KELDYSH_MFRG_P_VERTEX_H
