@@ -17,6 +17,17 @@
 
 using namespace std;
 
+void setUpBosGrid();
+void setUpFerGrid();
+void setUpFlowGrid();
+
+
+void setUpGrids() {
+    setUpBosGrid();
+    setUpFerGrid();
+    setUpFlowGrid();
+}
+
 /*********************************************    LAMBDA GRID    ******************************************************/
 
 void setUpFlowGrid()

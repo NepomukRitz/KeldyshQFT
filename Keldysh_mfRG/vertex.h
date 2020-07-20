@@ -91,6 +91,9 @@ public:
     // Initialize vertex
     void initialize(Q val);
 
+    //Norm of the vertex
+    double norm();
+
     // Various operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   += vertex1.irred;
@@ -211,6 +214,11 @@ public:
     friend Vertex<Q> operator- (Vertex<Q> lhs, const double& rhs) {
         lhs -= rhs; return lhs;
     }
+
+    double norm(){
+        //TODO Implement a reasonable norm here
+        return 1.;
+    }
 };
 
 
@@ -313,9 +321,13 @@ template <typename Q> auto fullvert<Q>::gammaRb (int iK, double w, double v1, do
     return resp;
 }
 
-
 template <typename Q> void fullvert<Q>::initialize(Q val) {
     this->irred.initialize(val);
+}
+
+template <typename Q> auto fullvert<Q>::norm() -> double {
+    //TODO Implement a meaningful norm!
+    return 1.;
 }
 
 #endif //KELDYSH_MFRG_VERTEX_H

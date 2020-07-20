@@ -11,8 +11,24 @@
 #include "parameters.h"             // system parameters (lengths of vectors etc.)
 #include "fourier_trafo.h"          // SOPT from Fast Fourier transform (FFT)
 #include "solvers.h"                // ODE solver
+#include "assert.h"
 
 using namespace std;
+
+template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -> State<Q>;
+template <typename Q> void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVertex, const Propagator& S);
+template <typename Q> void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& Psi, const Propagator& G, const Propagator& dG);
+
+template <typename Q> void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammatbar_C, const State<Q>& Psi, const Propagator& G);
+
+template <typename Q> auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>;
+template <typename Q> auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>;
+template <typename Q> auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>;
+template <typename Q> auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>;
+
+
+template <typename Q> bool vertexConvergedInLoops(Vertex<Q>& dGamma_T, Vertex<Q>&dGamma);
+template <typename Q> bool selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, SelfEnergy<Q>& PsiSelfEnergy, Propagator& dG);
 
 /// ------ TEST FUNCTIONS ------ ///
 // TODO: Here are also functions that should belong to testFunctions.h. On the other hand side,
@@ -154,153 +170,155 @@ void test_ODE_G(const int N_ODE) { // test ODE applied to bare (differentiated) 
                                   {ffreqs, G_dir.real(), G_dir.imag(), G_fin.real(), G_fin.imag(), G_ini.real(), G_ini.imag()});
 }
 
+
 /**
- * Function to implement a one-loop flow (without Katanin substitution).
+ * Function to implement an n-loop flow (without Katanin substitution).
  * @param Psi   : Known state of the State at Lambda
  * @param Lambda:  Scale at which the calculation is being performed
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
-auto rhs_one_loop_flow(const State<comp>& Psi, const double Lambda) -> State<comp>{
-    State<comp> dPsi; // result
+template <typename Q>
+auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
-    Propagator G(Lambda, Psi.selfenergy,'g');   // Initialization of Propagator objects
-    Propagator S(Lambda, Psi.selfenergy,'s');   // Initialization of Propagator objects
+    static_assert(N_LOOPS>=1, "");
 
-    // Self-energy flow
-    loop(dPsi.selfenergy, Psi.vertex, S, true); // Loop for the Self-Energy calculation
+    State<Q> dPsi; // result
 
-    // Vertex flow
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', true, '.');  // Differentiated bubble in the a-channel
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'p', true, '.');  // Differentiated bubble in the p-channel
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 't', true, '.');  // Differentiated bubble in the t-channel
+    Propagator S (Lambda, Psi.selfenergy, 's');
+    Propagator G (Lambda, Psi.selfenergy, 'g');
+
+    //For flow without self-energy, comment out this line
+    //selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+
+    //Propagator dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
+    //Run alternatively, for no self-energy feedback
+    Propagator dG (Lambda, Psi.selfenergy, 's');
+
+    vertexOneLoopFlow(dPsi.vertex, Psi.vertex, G, dG);
+
+#if N_LOOPS>=2
+
+    Vertex<Q> dGammaL = calculate_dGammaL(dPsi.vertex, Psi.vertex, G);
+    Vertex<Q> dGammaR = calculate_dGammaR(dPsi.vertex, Psi.vertex, G);
+    Vertex<Q> dGammaT = dGammaL + dGammaR;
+    dPsi.vertex += dGammaT;
+#endif
+
+#if N_LOOPS>=3
+
+#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+    Vertex<Q> dGammatbar_C(n_spin);
+#endif
+
+    for(int i=3; i<N_LOOPS; i++){
+        Vertex<Q> dGammaC_ap = calculate_dGammaC_ap(Psi.vertex, dGammaL, G);
+        Vertex<Q> dGammaC_t  = calculate_dGammaC_t (Psi.vertex, dGammaL, G);
+        Vertex<Q> dGammaC = dGammaC_ap + dGammaC_t;
+
+        dGammaL = calculate_dGammaL(dGammaT, Psi.vertex, G);
+        dGammaR = calculate_dGammaR(dGammaT, Psi.vertex, G);
+
+        dGammaT = dGammaL + dGammaC + dGammaR;
+        dPsi.vertex += dGammaT;
+#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+        dGammatbar_C += dGammaC_ap;
+#endif
+        //if(vertexConvergedInLoops(dGammaT, dPsi.vertex))
+        //    break;
+    }
+
+#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+    selfEnergyFlowCorrections(dPsi.selfenergy, dGammatbar_C, Psi, G);
+
+    //TODO These are supposed to be lines 37-39 of pseudo-code. What do these refer to?
+    //if(selfEnergyConverged(Psi.selfenergy, Lambda))
+    //    break;
+#endif
+
+#endif
 
     return dPsi;
+
 }
 
-//template <typename Q>
-//void derivative(State<Q>& dPsi, double Lambda, State<Q>& state) {
-//    /*Here I begin implementing Fabian's pseudocode*/
-//    //Line 1
-//    Propagator S(Lambda, state.selfenergy, 's');
-//    print("S calculated", true);
-//    //Line 2
-//    Propagator G(Lambda, state.selfenergy, 'g');
-//    print("G calculated", true);
-//    //Line 3
-//    SelfEnergy<comp> Sigma_std;
-//    loop(Sigma_std, state.vertex, S);
-//    print("loop calculated", true);
-//    //Line 4
-//    dPsi.selfenergy = Sigma_std;
-//    //Line 6
-//    Propagator dG (Lambda, state.selfenergy, dPsi.selfenergy, 'k');
-//
-//
-//
-//    print("diff bubble started", true);
-//    bool diff = true;
-//    double t2 = get_time();
-//    //Lines 7-9
-//    double ta = get_time();
-//    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'a', diff, '.');
-//    print("a - Bubble:");
-//    get_time(ta);
-//
-//    double tp = get_time();
-//    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 'p', diff, '.');
-//    print("p - Bubble:");
-//    get_time(tp);
-//
-//    double tt = get_time();
-//    bubble_function(dPsi.vertex, state.vertex, state.vertex, G, dG, 't', diff, '.');
-//    print("t - Bubble:");
-//    get_time(tt);
-//
-//    print("diff bubble finished. ");
-//    get_time(t2);
-//
-//#ifdef SOPT
-//    Propagator s(Lambda, state.selfenergy, state.selfenergy, 's');
-//    loop(dPsi.selfenergy, state.vertex, s);
-//#endif
-//
-//
-//    if(nLoops>1) {
-//        //    Lines 10-13   => Multi-loop
-//        double t4 = get_time();
-//        /*Create two new vertices to accommodate the contributions on each side */
-//        Vertex<Q> dGammaL (n_spin);
-//        Vertex<Q> dGammaR (n_spin);
-//        //Change from differentiated to regular bubbles
-//        diff = false;
-//
-//        bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 'a', diff, 'L');
-//        bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 'p', diff, 'L');
-//        bubble_function(dGammaL, dPsi.vertex, state.vertex, G, G, 't', diff, 'L');
-//
-//        bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'a', diff, 'R');
-//        bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 'p', diff, 'R');
-//        bubble_function(dGammaR, state.vertex, dPsi.vertex, G, G, 't', diff, 'R');
-//
-//        print("Bubbles calculated: ", true);
-//        get_time(t4);
-//
-//
-//        //Lines 14-17
-//        Vertex<Q> dGammaT = dGammaL + dGammaR;
-//        dPsi.vertex += dGammaT;
-//        print("2-loops done. \n");
-//
-//
-//        //Lines 18-33
-////        if (nLoops >= 3) {
-////            Vertex<Q> dGammaC (n_spin);
-////            Vertex<Q> dGammaCtb (n_spin);
-////            for (int i = 3; i <= nLoops; i++) {
-////                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'a', diff, 'C');
-////                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 'p', diff, 'C');
-////
-////                //This corresponds to Line 29 in the pseudo-code and is important for self-energy corrections.
-////                dGammaCtb += dGammaC;
-////
-////                bubble_function(dGammaC, state.vertex, dGammaL, G, G, 't', diff, 'C');
-////
-////                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'a', diff, 'L');
-////                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 'p', diff, 'L');
-////                bubble_function(dGammaL, dGammaT, state.vertex, G, G, 't', diff, 'L');
-////
-////                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'a', diff, 'R');
-////                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 'p', diff, 'R');
-////                bubble_function(dGammaR, state.vertex, dGammaT, G, G, 't', diff, 'R');
-////
-////                dGammaT = dGammaL + dGammaC + dGammaR;
-////                dPsi.vertex += dGammaT;
-////
-//////        if(max_r(norm(dGammaT)/norm(dPsi.vertex)) < tol_vertex){ //TODO define a sensible norm for the vertices and a good way to implement this condition
-//////            break;
-//////        }
-////                printf("%i-loops done. \n", i);
-////            }
-////        }
-//    }
-//
-//
-//
-////#if PROP_TYPE==2
-////    //Lines 33-41
-////    SelfEnergy<comp> dSigma_tbar;
-////    loop(dSigma_tbar, dGammaCtb, G);
-////    Propagator corrected = propag(Lambda, dPsi.selfenergy, dSigma_tbar, 'e', false);
-////    SelfEnergy<comp> dSigma_t;
-////    loop(dSigma_t, dPsi.vertex, corrected);
-////    dPsi.selfenergy += (dSigma_t + dSigma_tbar);
-////#endif
-//
-//
-//    double t_multiply = get_time();
-//    dPsi *= dL;
-//    print("dPsi multiplied. ");
-//    get_time(t_multiply);
-//}
+template <typename Q>
+void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVertex, const Propagator& S){
+    // Self-energy flow
+    loop(dPsiSelfEnergy, PsiVertex, S, true); // Loop for the Self-Energy calculation
+}
+
+template <typename Q>
+void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G, const Propagator& dG){
+
+    // Vertex flow
+    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 'a', true, '.');  // Differentiated bubble in the a-channel
+    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 'p', true, '.');  // Differentiated bubble in the p-channel
+    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 't', true, '.');  // Differentiated bubble in the t-channel
+}
+
+template <typename Q>
+auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>{
+    Vertex<Q> dGammaL(n_spin);
+
+    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 'a', false, 'L');
+    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 'p', false, 'L');
+    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 't', false, 'L');
+
+    return dGammaL;
+}
+template <typename Q>
+auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>{
+    Vertex<Q> dGammaR(n_spin);
+
+    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 'a', false, 'R');
+    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 'p', false, 'R');
+    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 't', false, 'R');
+
+    return dGammaR;
+}
+
+template <typename Q>
+auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
+    Vertex<Q> dGamma_C_ap(n_spin);
+
+    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'a', false, 'L');
+    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'p', false, 'L');
+
+    return dGamma_C_ap;
+}
+
+template <typename Q>
+auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
+    Vertex<Q> dGamma_C_t(n_spin);
+    bubble_function(dGamma_C_t, PsiVertex, dGammaL, G, G, 't', false, 'L');
+    return dGamma_C_t;
+}
+
+template <typename Q>
+void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammatbar_C, const State<Q>& Psi, const Propagator& G){
+
+    SelfEnergy<Q> dSigma_tbar;
+    SelfEnergy<Q> dSigma_t;
+
+    loop(dSigma_tbar, dGammatbar_C, G, false);
+
+    Propagator extension (G.Lambda, Psi.selfenergy, dSigma_tbar, 'e');
+    loop(dSigma_t, Psi.vertex, extension, false);
+
+    dPsiSelfEnergy += dSigma_tbar + dSigma_t;
+
+}
+
+template <typename Q>
+auto vertexConvergedInLoops(Vertex<Q>& dGamma_T, Vertex<Q>&dGamma) -> bool {
+    return (dGamma_T.norm() / dGamma.norm() < converged_tol);
+}
+template <typename Q>
+auto selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, SelfEnergy<Q>& PsiSelfEnergy, Propagator& dG) -> bool {
+    Propagator compare(dG.Lambda, PsiSelfEnergy, dPsiSelfEnergy, 'k');
+    compare += dG*((Q)-1.);
+
+    return (  compare.norm()/ dG.norm() < converged_tol );
+}
 
 #endif //RIGHT_HAND_SIDES_H

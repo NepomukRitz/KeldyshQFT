@@ -6,33 +6,9 @@
 #include "solvers.h"          // ODE solvers
 #include "write_data2file.h"  // writing data to txt or hdf5 file
 #include "hdf5_routines.h"    // writing states to hdf5 file
+#include "perturbation_theory.h"
 
-/**
- * Function which calculates a SOPT state. Should however toggle off the components not to be computed.
- * @tparam Q    : Data type of the state, usually comp
- * @param Psi   : State whose Vertex is to be calculated
- * @param Lambda: Data structure-needed parameter. Should be set to 1. in all SOPT calculations
- * @param state : State whose Vertex whould be the bare vertex already initialized
- */
-template<typename Q>
-void sopt_state(State<Q>& Psi, double Lambda) {
 
-    State<comp> bare;   //Create bare state
-    bare.initialize();  //i.e. a state with a bare vertex and a self-energy initialized at the Hartree value
-
-    Propagator g0(Lambda, bare.selfenergy, 'g');    //Bare propagator
-
-    //Calculate the bubbles -> Vertex in SOPT
-    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g0, g0, 'a', false, '.');
-    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g0, g0, 'p', false, '.');
-    bubble_function(Psi.vertex, bare.vertex, bare.vertex, g0, g0, 't', false, '.');
-
-    //Do an a-Bubble for the calculation of the self-energy
-    bubble_function(bare.vertex,  bare.vertex, bare.vertex, g0, g0, 'a', false, '.');
-
-    //Calculate the Self-Energy
-    loop(Psi.selfenergy, bare.vertex, g0, false);
-}
 
 
 /**
