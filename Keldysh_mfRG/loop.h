@@ -53,8 +53,8 @@ public:
                 components[0]=1;    //Vertex component associated to Retarded propagator
                 components[1]=4;    //Vertex component associated to Advanced propagator
                 components[2]=5;    //Vertex component associated to Keldysh propagator
-                components[4]=2;    //Vertex component associated to Retarded propagator in symmetrized flow
-                components[3]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
+                components[3]=2;    //Vertex component associated to Retarded propagator in symmetrized flow
+                components[4]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
                 components[5]=10;   //Vertex component associated to Keldysh propagator in symmetrized flow
             }
     };
