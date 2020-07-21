@@ -156,6 +156,8 @@ public:
     auto GK(double v, int i_in) const -> comp;
     auto SR(double v, int i_in) const -> comp;
     auto SK(double v, int i_in) const -> comp;
+
+    auto norm() const -> double;
 };
 
 #if REG==1
@@ -460,6 +462,15 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 
 
 #endif //INTER_PROP
+}
+
+auto Propagator::norm() const -> double{
+    double out = 0.;
+    for(int i=0; i<nPROP; i++){
+        out += pow(abs(GR(ffreqs[i], 0)), 2.);
+    }
+
+    return sqrt(out);
 }
 
 #endif //REG

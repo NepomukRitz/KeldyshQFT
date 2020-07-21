@@ -32,6 +32,7 @@ add_executable(Keldysh_mfRG
         loop.h
         mpi_setup.h
         parameters.h
+        perturbation_theory.h
         propagator.h
         p_vertex.h
         right_hand_sides.h
