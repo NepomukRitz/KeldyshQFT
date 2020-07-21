@@ -8,7 +8,7 @@
 using namespace std;
 
 /// fRG parameters ///
-const int nLoops = 1;  // Number of loops
+#define N_LOOPS 1  // Number of loops
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow
@@ -44,7 +44,7 @@ const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in e
 
 // Grid type
 // 1: log-grid, 2: linear grid, 3: non-linear grid, 4: tangent grid
-#define GRID 2
+#define GRID 3
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
@@ -75,15 +75,15 @@ const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(g
 //const int nFER = 20;
 
 #elif GRID==3
-const double W_scale = 50.*glb_U;                //Resolution scale schould be chosen big enough... ~50.*U seems good
+const double W_scale = 10.*glb_U;                //Resolution scale should be chosen big enough... ~10.*U seems good
 const double glb_w_upper = 100.;
 const double glb_w_lower = -glb_w_upper;
 const double glb_v_upper = 100.;
 const double glb_v_lower = -glb_v_upper;
 
 // Number of bosonic and fermionic frequency points
-const int nBOS = 501;
-const int nFER = 501;
+const int nBOS = 151;
+const int nFER = 151;
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
@@ -198,13 +198,15 @@ const int n_in = 1;
 #define SYMMETRIZED_SELF_ENERGY_FLOW
 
 // Defines whether the values are interpolated from previously saved ones or from the self-energy
-#define INTER_PROP
+//#define INTER_PROP
 
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
 #define MPI_FLAG
 
 //Tolerance for closeness to grid points when interpolating
 const double inter_tol = 10e-8;
+
+const double converged_tol = 10e-7;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
@@ -216,11 +218,11 @@ const int nINT = (nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 #if REG==2
 const int param_size = 14;
-const double parameter_list[param_size] = {GRID, REG, glb_Gamma, DIAG_CLASS, nLoops,
+const double parameter_list[param_size] = {GRID, REG, glb_Gamma, DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #else
 const int param_size = 13;
-const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, nLoops,
+const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #endif
 
