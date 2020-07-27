@@ -662,13 +662,13 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
                 indices.iK = 3;
             }
             else if (isInList(iK, list_K2b_TC_comp1)){               //TCcomp1 => T1TC iK=1
-                T1(indices, 'a');
                 TC(indices, 'a');
+                T1(indices, 'a');
                 indices.iK = 1;
             }
             else if (isInList(iK, list_K2b_TC_comp3)) {               //TCcomp3 => T1TC iK=3
-                T1(indices, 'a');
                 TC(indices, 'a');
+                T1(indices, 'a');
                 indices.iK = 3;
             }
             else if (isInList(iK, list_K2b_T3_comp11)) {              //T3comp11 => T1 iK=4

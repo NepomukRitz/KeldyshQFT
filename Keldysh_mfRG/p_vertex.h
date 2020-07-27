@@ -521,7 +521,7 @@ template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2
         return 0.;
     }
 
-    return conj(interpolateK1(indices, *(this)));
+    return conj(interpolateK2(indices, *(this)));
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in, int spin) const -> Q {
 
@@ -545,6 +545,7 @@ template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2
     }
     else if(isInList(iK,list_K2b_TC_comp1)){
         TC(indices, 'p');
+        T3(indices, 'p');
         indices.iK = 1;
     }
     else if(isInList(iK,list_K2b_TC_comp4)){
