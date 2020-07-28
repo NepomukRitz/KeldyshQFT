@@ -93,18 +93,18 @@ public:
 
         //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
         if(all_spins){
-            factorRetardedClosedAbove *=2;
-            factorAdvancedClosedAbove *=2;
-            factorKeldyshClosedAbove  *=2;
+            factorRetardedClosedAbove *= 2.;
+            factorAdvancedClosedAbove *= 2.;
+            factorKeldyshClosedAbove  *= 2.;
 
             factorRetardedClosedAbove += pf_select[0] * vertex[0].value(components[0], v, vp, v, i_in, 1, 'f');
             factorAdvancedClosedAbove += pf_select[1] * vertex[0].value(components[1], v, vp, v, i_in, 1, 'f');
             factorKeldyshClosedAbove  += pf_select[2] * vertex[0].value(components[2], v, vp, v, i_in, 1, 'f');
 
 #ifdef SYMMETRIZED_SELF_ENERGY_FLOW
-            factorRetardedClosedBelow *=2;
-            factorAdvancedClosedBelow *=2;
-            factorKeldyshClosedBelow  *=2;
+            factorRetardedClosedBelow *= 2.;
+            factorAdvancedClosedBelow *= 2.;
+            factorKeldyshClosedBelow  *= 2.;
 
             factorRetardedClosedBelow += pf_select[3] * vertex[0].value(components[3],vp,  v,vp, i_in, 1, 'f');
             factorAdvancedClosedBelow += pf_select[4] * vertex[0].value(components[4],vp,  v,vp, i_in, 1, 'f');
