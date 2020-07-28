@@ -188,7 +188,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     Propagator G (Lambda, Psi.selfenergy, 'g');
 
     //For flow without self-energy, comment out this line
-    //selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+    selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
 
     //Propagator dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback
