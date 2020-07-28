@@ -96,4 +96,33 @@ void TC (IndicesSymmetryTransformations& indicesSymmetryTransformations, const c
     }
 }
 
+void Ti (IndicesSymmetryTransformations& indicesSymmetryTransformations, const int i, const char channel) {
+    if (i == 0) return;
+    switch (i) {
+        case 1:
+            T1(indicesSymmetryTransformations, channel);
+            break;
+        case 2:
+            T2(indicesSymmetryTransformations, channel);
+            break;
+        case 3:
+            T3(indicesSymmetryTransformations, channel);
+            break;
+        case 4:
+            TC(indicesSymmetryTransformations, channel);
+            break;
+        case 14:
+            TC(indicesSymmetryTransformations, channel);
+            T1(indicesSymmetryTransformations, channel);
+        case 41:
+            T1(indicesSymmetryTransformations, channel);
+            TC(indicesSymmetryTransformations, channel);
+        case 43:
+            T3(indicesSymmetryTransformations, channel);
+            TC(indicesSymmetryTransformations, channel);
+            break;
+        default: ;
+    }
+}
+
 #endif //KELDYSH_MFRG_SYMMETRY_TRANSFORMATIONS_H

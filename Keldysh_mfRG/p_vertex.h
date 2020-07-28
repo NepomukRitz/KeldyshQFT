@@ -12,29 +12,57 @@
 
 template <class Q>
 class pvert{
-    /*Lists of the Keldysh components of K1p relating the respective component to the independent ones through the marked
-    * trafo*/
-    vector<int> list_K1_T0_comp1 = {1, 2, 13, 14};  // components equal to     comp.1     (B_1^p for equal spins). In the vertex, comp1 will be iK=0
-    vector<int> list_K1_TC_comp1 = {4, 7,  8, 11};  // components equal to T_C comp.1 (T_C B_1^p for equal spins).
-    vector<int> list_K1_T0_comp5 = {5, 6,  9, 10};  // components equal to     comp.5     (D_1^p for equal spins). In the vertex, comp5 will be iK=1
 
-    /*Lists of the Keldysh components of K2p relating the respective component to the independent ones through the marked
-    * trafo*/
-    vector<int> list_K2_T0_comp0    = { 0, 3};          // components in K2 equal to comp.0 of K2               In the vertex, comp0 will be iK=0
-    vector<int> list_K2_T0_comp1    = { 1, 2};          // components in K2 equal to comp.1 of K2               In the vertex, comp1 will be iK=1
-    vector<int> list_K2_T0_comp4    = { 4, 7};          // components in K2 equal to comp.4 of K2               In the vertex, comp4 will be iK=2
-    vector<int> list_K2_T0_comp5    = { 5, 6};          // components in K2 equal to comp.5 of K2               In the vertex, comp5 will be iK=3
-    vector<int> list_K2_T0_comp13   = {13, 14};         // components in K2 equal to comp.13 of K2              In the vertex, comp13 will be iK=4
-    vector<int> list_K2_T3_comp4    = { 8, 11};         // components in K2 equal to T_3 comp.4 of K2
-    vector<int> list_K2_T3_comp5    = { 9, 10};         // components in K2 equal to T_3 comp.5 of K2
 
-    vector<int> list_K2b_TC_comp0   = {0, 12};          // components in K2b equal to T_C comp.0 of K2
-    vector<int> list_K2b_TC_comp4   = {1, 13};          // components in K2b equal to T_C comp.4 of K2
-    vector<int> list_K2b_TCT3_comp4 = {2, 14};          // components in K2b equal to T_CT_3 comp.4 of K2
-    vector<int> list_K2b_TC_comp1   = {4,  8};          // components in K2b equal to T_C comp.1 of K2
-    vector<int> list_K2b_TC_comp5   = {5,  9};          // components in K2b equal to T_C comp.5 of K2
-    vector<int> list_K2b_TCT3_comp5 = {6, 10};          // components in K2b equal to T_CT_3 comp.5 of K2
-    vector<int> list_K2b_TC_comp13  = {7, 11};          // components in K2b equal to T_C comp.13 of K2
+    // relate the Keldysh components in each diagrammatic class to the independent ones
+    // -1 = this component is zero
+    //  0 = related to component 0
+    //  1 = related to component 1
+    //  ...
+    vector<int> components_K1 = {-1, 0, 0, -1,
+                                 0, 1, 1, 0,
+                                 0, 1, 1, 0,
+                                 -1, 0, 0, -1};
+    vector<int> components_K2 = {0, 1, 1, 0,
+                                 2, 3, 3, 2,
+                                 2, 3, 3, 2,
+                                 -1, 4, 4, -1};
+    vector<int> components_K2b = {0, 2, 2, -1,
+                                  1, 3, 3, 4,
+                                  1, 3, 3, 4,
+                                  0, 2, 2, -1};
+    vector<int> components_K3 = {0, 1, 1, 2,
+                                 1, 3, 4, 5,
+                                 1, 4, 3, 5,
+                                 2, 5, 5, -1};
+
+    // transformations that need to be applied to the respective stored components to get the correct actual components
+    // 0 = nothing, 1 = T1, 2 = T2, 3 = T3, 4 = TC
+    // 34 = first apply 4, then 3 etc.
+    vector<vector<int> > transformations_K1 = {vector<int> ({0, 0, 0, 0,
+                                                             4, 0, 0, 4,
+                                                             4, 0, 0, 4,
+                                                             0, 0, 0, 0}),   // spin comp. V
+                                               vector<int> ({0, 1, 1, 0,
+                                                             14, 1, 1, 14,
+                                                             14, 1, 1, 14,
+                                                             0, 1, 1, 0})};  // spin comp. Vhat
+    vector<vector<int> > transformations_K2 = {vector<int> ({0, 0, 0, 0,
+                                                             0, 0, 0, 0,
+                                                             3, 3, 3, 3,
+                                                             0, 0, 0, 0}),   // spin comp. V
+                                               vector<int> ({1, 1, 1, 1,
+                                                             1, 1, 1, 1,
+                                                             2, 2, 2, 2,
+                                                             0, 1, 1, 0})};  // spin comp. Vhat
+    vector<vector<int> > transformations_K2b = {vector<int> ({4, 4, 43, 0,
+                                                              4, 4, 43, 4,
+                                                              4, 4, 43, 4,
+                                                              4, 4, 43, 0}),
+                                                vector<int> ({41, 41, 14, 0,
+                                                              14, 41, 14, 41,
+                                                              14, 41, 14, 41,
+                                                              41, 41, 14, 0})};
 
 public:
 
@@ -317,62 +345,25 @@ template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in)
 
     IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in);
 
-    /*This part determines the value of the K1 contribution*/
-    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(isInList(iK,list_K1_T0_comp1)){
-        indices.iK = 0;
-    }
-    else if(isInList(iK,list_K1_TC_comp1)){
-        TC(indices, 'p');
-        indices.iK = 0;
-    }
-    else if(isInList(iK, list_K1_T0_comp5)){
-        indices.iK = 1;
-    }
-    else{
-        return 0.;
-    }
-
-
-    if(indices.conjugate){
-        return conj(interpolateK1(indices, *(this)));
-    }
-
+    Ti(indices, transformations_K1[0][iK], 'p');
+    indices.iK = components_K1[iK];
+    if (indices.iK < 0) return 0.;
+    if (indices.conjugate) return conj(interpolateK1(indices, *(this)));
     return interpolateK1(indices, *(this));
+
+
 }
 template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in, int spin) const -> Q{
 
     IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in);
 
-    /*This part determines the value of the K1 contribution*/
-    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if (isInList(iK, list_K1_T0_comp1)) {
-        indices.iK = 0;
-    }
-    else if (isInList(iK, list_K1_TC_comp1)) {
-        TC(indices, 'p');
-        indices.iK = 0;
-    }
-    else if (isInList(iK, list_K1_T0_comp5)) {
-        indices.iK = 1;
-    }
-    else {
-        return 0.;
-    }
-    switch (spin) {
-        case 0:
-            break;
-        case 1:
-            T1(indices, 'p');
-            break;
-        default: ;
-
-    }
-
-    if(indices.conjugate)
-        return conj(interpolateK1(indices, *(this)));
-
+    Ti(indices, transformations_K1[spin][iK], 'p');
+    indices.iK = components_K1[iK];
+    if (indices.iK < 0) return 0.;
+    if (indices.conjugate) return conj(interpolateK1(indices, *(this)));
     return interpolateK1(indices, *(this));
+
+
 }
 
 #endif
@@ -405,177 +396,49 @@ template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1
 
     IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in);
 
-    /*This part determines the value of the K2 contribution*/
-    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(isInList(iK,list_K2_T0_comp0)){
-        indices.iK = 0;
-    }
-    else if(isInList(iK,list_K2_T0_comp1)){
-        indices.iK = 1;
-    }
-    else if(isInList(iK,list_K2_T0_comp4)){
-        indices.iK = 2;
-    }
-    else if(isInList(iK,list_K2_T0_comp5)){
-        indices.iK = 3;
-    }
-    else if(isInList(iK,list_K2_T0_comp13)){
-        indices.iK = 4;
-    }
-    else if(isInList(iK,list_K2_T3_comp4)){
-        T3(indices, 'p');
-        indices.iK = 2;
-    }
-    else if(isInList(iK,list_K2_T3_comp5)){
-        T3(indices, 'p');
-        indices.iK = 3;
-    }
-    else {
-        return 0.;
-    }
-
+    Ti(indices, transformations_K2[0][iK], 'p');
+    indices.iK = components_K2[iK];
+    if (indices.iK < 0) return 0.;
+    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
     return interpolateK2(indices, *(this));
+
+
 }
 template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in, int spin) const -> Q {
 
     IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in);
 
-    /*This part determines the value of the K2 contribution*/
-    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if (isInList(iK, list_K2_T0_comp0)) {
-        indices.iK = 0;
-    }
-    else if (isInList(iK, list_K2_T0_comp1)) {
-        indices.iK = 1;
-    }
-    else if (isInList(iK, list_K2_T0_comp4)) {
-        indices.iK = 2;
-    }
-    else if (isInList(iK, list_K2_T0_comp5)){
-        indices.iK = 3;
-    }
-    else if (isInList(iK, list_K2_T0_comp13)){
-        indices.iK = 4;
-    }
-    else if (isInList(iK, list_K2_T3_comp4)){
-        T3(indices, 'p');
-        indices.iK = 2;
-    }
-    else if (isInList(iK, list_K2_T3_comp5)){
-        T3(indices, 'p');
-        indices.iK = 3;
-    }
-    else{
-        return 0.;
-    }
-
-    switch (spin) {
-        case 0:
-            break;
-        case 1:
-            T1(indices, 'p');
-            break;
-
-        default: ;
-    }
-
+    Ti(indices, transformations_K2[spin][iK], 'p');
+    indices.iK = components_K2[iK];
+    if (indices.iK < 0) return 0.;
+    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
     return interpolateK2(indices, *(this));
+
+
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in) const -> Q {
 
     IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in);
 
-    /*This part determines the value of the K2 contribution*/
-    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    if(isInList(iK,list_K2b_TC_comp0)){
-        TC(indices, 'p');
-        indices.iK = 0;
-    }
-    else if(isInList(iK,list_K2b_TC_comp1)){
-        TC(indices, 'p');
-        indices.iK = 1;
-    }
-    else if(isInList(iK,list_K2b_TC_comp4)){
-        TC(indices, 'p');
-        indices.iK = 2;
-    }
-    else if(isInList(iK,list_K2b_TC_comp5)){
-        TC(indices, 'p');
-        indices.iK = 3;
-    }
-    else if(isInList(iK,list_K2b_TC_comp13)){
-        TC(indices, 'p');
-        indices.iK = 4;
-    }
-    else if(isInList(iK,list_K2b_TCT3_comp4)){
-        T3(indices, 'p');
-        TC(indices, 'p');
-        indices.iK = 2;
-    }
-    else if(isInList(iK,list_K2b_TCT3_comp5)){
-        T3(indices, 'p');
-        TC(indices, 'p');
-        indices.iK = 3;
-    }
-    else {
-        return 0.;
-    }
+    Ti(indices, transformations_K2b[0][iK], 'p');
+    indices.iK = components_K2b[iK];
+    if (indices.iK < 0) return 0.;
+    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
+    return interpolateK2(indices, *(this));
 
-    return conj(interpolateK2(indices, *(this)));
+
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in, int spin) const -> Q {
 
     IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in);
 
-    /*This part determines the value of the K2 contribution*/
-    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    switch (spin){
-        case 0:
-            break;
-        case 1:
-            T1(indices, 'p');
-            break;
+    Ti(indices, transformations_K2b[spin][iK], 'p');
+    indices.iK = components_K2b[iK];
+    if (indices.iK < 0) return 0.;
+    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
+    return interpolateK2(indices, *(this));
 
-        default: ;
-    }
 
-    if(isInList(iK,list_K2b_TC_comp0)){
-        TC(indices, 'p');
-        indices.iK = 0;
-    }
-    else if(isInList(iK,list_K2b_TC_comp1)){
-        TC(indices, 'p');
-        T3(indices, 'p');
-        indices.iK = 1;
-    }
-    else if(isInList(iK,list_K2b_TC_comp4)){
-        TC(indices, 'p');
-        indices.iK = 2;
-    }
-    else if(isInList(iK,list_K2b_TC_comp5)){
-        TC(indices, 'p');
-        indices.iK = 3;
-    }
-    else if(isInList(iK,list_K2b_TC_comp13)){
-        TC(indices, 'p');
-        indices.iK = 4;
-    }
-    else if(isInList(iK,list_K2b_TCT3_comp4)){
-        T3(indices, 'p');
-        TC(indices, 'p');
-        indices.iK = 2;
-    }
-    else if(isInList(iK,list_K2b_TCT3_comp5)){
-        T3(indices, 'p');
-        TC(indices, 'p');
-        indices.iK = 3;
-    }
-    else {
-        return 0.;
-    }
-
-    /*And now one checks that the input frequencies are in the accepted range*/
-    return conj(interpolateK2(indices, *(this)));
 }
 
 #endif
