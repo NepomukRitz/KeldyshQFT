@@ -985,7 +985,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                         value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
                     }
                 }
-                else{
+                else{ // Todo: this should be zero for multiloop, but non-zero for PT calculations -> compiler flag
                     for (auto i2:non_zero_Keldysh_bubble) {
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, iK_select, iK_select_bubble);
                         if (glb_int_flag && i0 == 1 && abs(w-0.31)<0.005) {
