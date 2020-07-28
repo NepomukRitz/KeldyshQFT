@@ -261,10 +261,10 @@ auto simpson_rule_3(cvec& values, double& dx) -> comp {
 template <typename Integrand> auto adaptive_integrator(const Integrand& integrand, double a, double b) -> comp {
     // accuracy: relative error between successive results for the same interval
     // at which to stop splitting the interval into sub-intervals
-    double accuracy = 1e-3;
+    double accuracy = 1e-2; //1e-3;
     // total_accuracy: relative error between successive results for the full integral
     // at which to stop the integration procedure and return result
-    double total_accuracy = 1e-9;
+    double total_accuracy = 1e-3; //1e-9;
 
     /// --- initial step: start with 3-point Simpson --- ///
 
@@ -545,9 +545,9 @@ template <typename Integrand> auto integrator(const Integrand& integrand, double
 // wrapper function, used for bubbles
 template <typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> comp {
     //return integrator_gsl(integrand, a, b, w1, w2);
-    //return adaptive_integrator(integrand, a, b);          // use adaptive integrator
+    return adaptive_integrator(integrand, a, b);          // use adaptive integrator
     //return integrator_simpson(integrand, a, b, w1, w2);     // use standard Simpson plus additional points around +- w/2
-    return integrator_simpson(integrand, a, b);           // only use standard Simpson
+    //return integrator_simpson(integrand, a, b);           // only use standard Simpson
 }
 
 auto dotproduct(const cvec& x, const rvec& y) -> comp
