@@ -8,7 +8,7 @@
 using namespace std;
 
 /// fRG parameters ///
-const int nLoops = 1;  // Number of loops
+#define N_LOOPS 1  // Number of loops
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow
@@ -104,8 +104,8 @@ const double glb_v_lower = -glb_v_upper;
 #endif
 
 // Number of frequency points for K2 and K3 classes
-const int nBOS2 = 101;//nBOS;
-const int nFER2 = 101;//nFER;
+const int nBOS2 = 51;//nBOS;
+const int nFER2 = 51;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 
@@ -195,7 +195,7 @@ const int n_in = 1;
 #define DIAG_CLASS 2
 
 //If defined, the flow of the self_energy is symmetrized, closed above and below
-#define SYMMETRIZED_SELF_ENERGY_FLOW
+//#define SYMMETRIZED_SELF_ENERGY_FLOW
 
 // Defines whether the values are interpolated from previously saved ones or from the self-energy
 //#define INTER_PROP
@@ -205,6 +205,8 @@ const int n_in = 1;
 
 //Tolerance for closeness to grid points when interpolating
 const double inter_tol = 10e-8;
+
+const double converged_tol = 10e-7;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
@@ -219,11 +221,11 @@ bool glb_K1_flag = false;
 
 #if REG==2
 const int param_size = 14;
-const double parameter_list[param_size] = {GRID, REG, glb_Gamma, DIAG_CLASS, nLoops,
+const double parameter_list[param_size] = {GRID, REG, glb_Gamma, DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #else
 const int param_size = 13;
-const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, nLoops,
+const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #endif
 
