@@ -124,14 +124,16 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TC(indices);
             break;
         case 14:
-            TC(indices);
             T1(indices);
+            TC(indices);
+            break;
         case 41:
+            TC(indices);
             T1(indices);
-            TC(indices);
+            break;
         case 43:
-            T3(indices);
             TC(indices);
+            T3(indices);
             break;
         default: ;
     }
