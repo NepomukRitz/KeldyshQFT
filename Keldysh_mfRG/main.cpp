@@ -57,10 +57,10 @@ auto main() -> int {
 
     //*
     string dir = "runs/";
-    string sname = "K" + to_string(DIAG_CLASS) + "_flow" + "_n1=" + to_string(nBOS) + "_n2=" + to_string(nBOS2) + "_adap_m2m3" + "_nI=" + to_string(nINT) + "_G" + to_string(GRID) + "_U=" + to_string(glb_U) + "_V=" + to_string(glb_V) + ".h5";
+    string sname = "new_K" + to_string(DIAG_CLASS) + "_flow" + "_n1=" + to_string(nBOS) + "_n2=" + to_string(nBOS2) + "_adap_m2m3" + "_nI=" + to_string(nINT) + "_G" + to_string(GRID) + "_U=" + to_string(glb_U) + "_V=" + to_string(glb_V) + ".h5";
     string filename = dir + sname;
 
-    one_loop_flow(nODE, filename);
+    n_loop_flow(filename);
 
     //*/
 
