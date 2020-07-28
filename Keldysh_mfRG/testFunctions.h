@@ -290,7 +290,7 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
             ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_0, N_ODE); // final K1a from ODE
             name = "rhs_state_flow_feedback_0.h5";
     }
-    
+
     cvec K1a0_dif(nBOS);
     for(int i=0; i<nBOS; ++i){
         K1a0_dif[i] = state_dir.vertex[0].avertex.K1_val(0, i, 0) - state_fin.vertex[0].avertex.K1_val(0, i, 0);
@@ -482,6 +482,20 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
     get_time(t0);
 
+    State<comp> PT2_SE_a;
+    State<comp> PT2_SE_p;
+    State<comp> PT2_SE_t;
+    State<comp> PT2_SE_p_1;
+    State<comp> PT2_SE_p_4;
+    State<comp> PT2_SE_p_5;
+
+    loop(PT2_SE_a.selfenergy, PT2_K1a.vertex, S, true);
+    loop(PT2_SE_p.selfenergy, PT2_K1p.vertex, S, true);
+    loop(PT2_SE_t.selfenergy, PT2_K1t.vertex, S, true);
+    loop(PT2_SE_p_1.selfenergy, PT2_K1p.vertex, S, true, 1);
+    loop(PT2_SE_p_4.selfenergy, PT2_K1p.vertex, S, true, 4);
+    loop(PT2_SE_p_5.selfenergy, PT2_K1p.vertex, S, true, 5);
+
     State<comp> PT3_K2a;    //Create state for K2a calculation
     State<comp> PT3_K2a_ia;
     State<comp> PT3_K2a_ib;
@@ -615,10 +629,16 @@ void test_K2_correctness(double Lambda){
     }
 
     print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
-    if(write_flag) write_h5_rvecs("PT4_check_of_K2a_K2_switchedcc_t_update_SE_symm_full_adap_m3m9_gW10_501_101_nI201_U1", {"w",
+    if(write_flag) write_h5_rvecs("PT4_check_of_K2a_K2_switchedcc_t_update_symmrev_new8_SE_symm_full_adap_m3m9_gW10_501_101_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
                                                        "PT2_K1p_R", "PT2_K1p_I",
                                                        "PT2_K1t_R", "PT2_K1t_I",
+                                                       "PT2_SE_a_R", "PT2_SE_a_I",
+                                                       "PT2_SE_p_R", "PT2_SE_p_I",
+                                                       "PT2_SE_t_R", "PT2_SE_t_I",
+                                                       "PT2_SE_p_1_R", "PT2_SE_p_1_I",
+                                                       "PT2_SE_p_4_R", "PT2_SE_p_4_I",
+                                                       "PT2_SE_p_5_R", "PT2_SE_p_5_I",
                                                        "PT3_K1a_R", "PT3_K1a_I",
                                                        "PT3_K2a_R", "PT3_K2a_I",
                                                        "PT3_K2a_ia_R", "PT3_K2a_ia_I",
@@ -669,6 +689,12 @@ void test_K2_correctness(double Lambda){
                                    PT2_K1a.vertex[0].avertex.K1.real(), PT2_K1a.vertex[0].avertex.K1.imag(),
                                    PT2_K1p.vertex[0].pvertex.K1.real(), PT2_K1p.vertex[0].pvertex.K1.imag(),
                                    PT2_K1t.vertex[0].tvertex.K1.real(), PT2_K1t.vertex[0].tvertex.K1.imag(),
+                                   PT2_SE_a.selfenergy.Sigma.real(), PT2_SE_a.selfenergy.Sigma.imag(),
+                                   PT2_SE_p.selfenergy.Sigma.real(), PT2_SE_p.selfenergy.Sigma.imag(),
+                                   PT2_SE_t.selfenergy.Sigma.real(), PT2_SE_t.selfenergy.Sigma.imag(),
+                                   PT2_SE_p_1.selfenergy.Sigma.real(), PT2_SE_p_1.selfenergy.Sigma.imag(),
+                                   PT2_SE_p_4.selfenergy.Sigma.real(), PT2_SE_p_4.selfenergy.Sigma.imag(),
+                                   PT2_SE_p_5.selfenergy.Sigma.real(), PT2_SE_p_5.selfenergy.Sigma.imag(),
                                    PT3_K1a.vertex[0].avertex.K1.real(), PT3_K1a.vertex[0].avertex.K1.imag(),
                                    PT3_K2a.vertex[0].avertex.K2.real(), PT3_K2a.vertex[0].avertex.K2.imag(),
                                    PT3_K2a_ia.vertex[0].avertex.K2.real(), PT3_K2a_ia.vertex[0].avertex.K2.imag(),
