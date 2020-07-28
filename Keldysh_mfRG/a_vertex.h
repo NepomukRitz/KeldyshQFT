@@ -48,13 +48,13 @@ class avert{
                                                              2, 0, 1, 1,
                                                              1, 1, 2, 0})};  // spin comp. Vhat
     vector<vector<int> > transformations_K2 = {vector<int> ({0, 0, 0, 0,
-                                                               0, 0, 0, 0,
-                                                               43, 0, 43, 0,
-                                                               43, 0, 43, 0}),   // spin comp. V
-                                                 vector<int> ({2, 2, 2, 2,
-                                                               2, 2, 2, 2,
-                                                               41, 0, 41, 2,
-                                                               41, 2, 41, 0})};  // spin comp. Vhat
+                                                             0, 0, 0, 0,
+                                                             43, 0, 43, 0,
+                                                             43, 0, 43, 0}),   // spin comp. V
+                                               vector<int> ({2, 2, 2, 2,
+                                                             2, 2, 2, 2,
+                                                             41, 0, 41, 2,
+                                                             41, 2, 41, 0})};  // spin comp. Vhat
     vector<vector<int> > transformations_K2b = {vector<int> ({3, 3, 3, 3,
                                                               4, 4, 0, 3,
                                                               3, 3, 3, 3,
@@ -350,9 +350,9 @@ template <typename Q> auto avert<Q>::K1_val (int iK, int i, int i_in) const -> Q
 
 template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_a, 0., 0., i_in);
+    IndicesSymmetryTransformations indices(iK, w_a, 0., 0., i_in, 'a');
 
-    Ti(indices, transformations_K1[0][iK], 'a');
+    Ti(indices, transformations_K1[0][iK]);
     indices.iK = components_K1[iK];
     if (indices.iK < 0) return 0.;
     return interpolateK1(indices, *(this));
@@ -361,9 +361,9 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
 }
 template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_a, 0., 0., i_in);
+    IndicesSymmetryTransformations indices(iK, w_a, 0., 0., i_in, 'a');
 
-    Ti(indices, transformations_K1[spin][iK], 'a');
+    Ti(indices, transformations_K1[spin][iK]);
     indices.iK = components_K1[iK];
     if (indices.iK < 0) return 0.;
     if (indices.transform) return interpolateK1(indices, tvertex);
@@ -400,9 +400,9 @@ template <typename Q> auto avert<Q>::K2_val (int iK, int i, int j, int i_in) con
 
 template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, const tvert<Q>& tvertex)const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_a, v1_a, 0., i_in);
+    IndicesSymmetryTransformations indices(iK, w_a, v1_a, 0., i_in, 'a');
 
-    Ti(indices, transformations_K2[0][iK], 'a');
+    Ti(indices, transformations_K2[0][iK]);
     indices.iK = components_K2[iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
@@ -412,9 +412,9 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
 }
 template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, int spin, const tvert<Q>& tvertex)const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_a, v1_a, 0., i_in);
+    IndicesSymmetryTransformations indices(iK, w_a, v1_a, 0., i_in, 'a');
 
-    Ti(indices, transformations_K2[spin][iK], 'a');
+    Ti(indices, transformations_K2[spin][iK]);
     indices.iK = components_K2[iK];
     if (indices.iK < 0) return 0.;
 
@@ -432,9 +432,9 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
 }
 template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
-    IndicesSymmetryTransformations indices (iK, w_a, 0., v2_a, i_in);
+    IndicesSymmetryTransformations indices (iK, w_a, 0., v2_a, i_in, 'a');
 
-    Ti(indices, transformations_K2b[0][iK], 'a');
+    Ti(indices, transformations_K2b[0][iK]);
     indices.iK = components_K2b[iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
@@ -444,9 +444,9 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
 }
 template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_a, 0., v2_a, i_in);
+    IndicesSymmetryTransformations indices(iK, w_a, 0., v2_a, i_in, 'a');
 
-    Ti(indices, transformations_K2b[spin][iK], 'a');
+    Ti(indices, transformations_K2b[spin][iK]);
     indices.iK = components_K2b[iK];
     if (indices.iK < 0) return 0.;
 

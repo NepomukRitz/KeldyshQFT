@@ -6,123 +6,141 @@
 #define KELDYSH_MFRG_SYMMETRY_TRANSFORMATIONS_H
 
 #include "parameters.h"
+#include "Keldysh_symmetries.h"
 
 struct IndicesSymmetryTransformations{
     int iK;
-    double prefactor;
-    bool conjugate;
-    bool transform;
+    double prefactor = 1.;
+    bool conjugate = false;
+    bool transform = false;
     double w, v1, v2; int i_in;
+    char channel;
 
-    IndicesSymmetryTransformations(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in)
-            : iK(iK_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in)
-    {
-        prefactor = 1.;
-        conjugate = false;
-        transform = false;
-    }
+    IndicesSymmetryTransformations(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, char channel_in)
+            : iK(iK_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), channel(channel_in)
+    {}
 };
 
-void T1 (IndicesSymmetryTransformations& indicesSymmetryTransformations, const char channel){
-
-    indicesSymmetryTransformations.prefactor *= -1.;
-    indicesSymmetryTransformations.conjugate ^= false;
-    indicesSymmetryTransformations.transform ^= true;
-
-    if(channel == 'p'){
-        indicesSymmetryTransformations.w  *= 1.;
-#if DIAG_CLASS>1
-        indicesSymmetryTransformations.v1 *= 1.;
-        indicesSymmetryTransformations.v2 *= -1.;
-#endif
-    }
-    else {
-        indicesSymmetryTransformations.w  *= -1.;
-#if DIAG_CLASS>1
-        double temp = indicesSymmetryTransformations.v1;
-        indicesSymmetryTransformations.v1 = indicesSymmetryTransformations.v2;
-        indicesSymmetryTransformations.v2 = temp;
-#endif
-    }
-}
-
-void T2 (IndicesSymmetryTransformations& indicesSymmetryTransformations, const char channel){
-
-    indicesSymmetryTransformations.prefactor *= -1.;
-    indicesSymmetryTransformations.conjugate ^= false;
-    indicesSymmetryTransformations.transform ^= true;
-
-    if(channel == 'p'){
-        indicesSymmetryTransformations.w  *= 1.;
-#if DIAG_CLASS>1
-        indicesSymmetryTransformations.v1 *= -1.;
-        indicesSymmetryTransformations.v2 *= 1.;
-#endif
-    }
-    else {
-//        indicesSymmetryTransformations.w  *= 1.;
-//        indicesSymmetryTransformations.v1 *= 1.;
-//        indicesSymmetryTransformations.v2 *= 1.;
-    }
-}
-
-void T3 (IndicesSymmetryTransformations& indicesSymmetryTransformations, const char channel){
-    T1(indicesSymmetryTransformations, channel);
-    T2(indicesSymmetryTransformations, channel);
-}
-
-void TC (IndicesSymmetryTransformations& indicesSymmetryTransformations, const char channel){
-
-    if(isInList(indicesSymmetryTransformations.iK, odd_Keldysh))
-        indicesSymmetryTransformations.prefactor *= 1.;
-    else
-        indicesSymmetryTransformations.prefactor *= -1.;
-
-    indicesSymmetryTransformations.conjugate ^= true;
-    indicesSymmetryTransformations.transform ^= false;
-
-    if (channel == 't'){ //TC acts differently on t, not on p!!
-        indicesSymmetryTransformations.w  *= -1.;
-//        indicesSymmetryTransformations.v1 *= 1.;
-//        indicesSymmetryTransformations.v2 *= 1.;
-    }
-    else{
-        indicesSymmetryTransformations.w  *= 1.;
-#if DIAG_CLASS>1
-        double temp = indicesSymmetryTransformations.v1;
-        indicesSymmetryTransformations.v1 = indicesSymmetryTransformations.v2;
-        indicesSymmetryTransformations.v2 = temp;
-#endif
-    }
-}
-
-void Ti (IndicesSymmetryTransformations& indicesSymmetryTransformations, const int i, const char channel) {
-    if (i == 0) return;
-    switch (i) {
-        case 1:
-            T1(indicesSymmetryTransformations, channel);
+void switch_channel(IndicesSymmetryTransformations& indices) {
+    switch (indices.channel) {
+        case 'a':
+            indices.channel = 't';
             break;
-        case 2:
-            T2(indicesSymmetryTransformations, channel);
-            break;
-        case 3:
-            T3(indicesSymmetryTransformations, channel);
-            break;
-        case 4:
-            TC(indicesSymmetryTransformations, channel);
-            break;
-        case 14:
-            TC(indicesSymmetryTransformations, channel);
-            T1(indicesSymmetryTransformations, channel);
-        case 41:
-            T1(indicesSymmetryTransformations, channel);
-            TC(indicesSymmetryTransformations, channel);
-        case 43:
-            T3(indicesSymmetryTransformations, channel);
-            TC(indicesSymmetryTransformations, channel);
+        case 't':
+            indices.channel = 'a';
             break;
         default: ;
     }
 }
+
+void T1 (IndicesSymmetryTransformations& indices){
+
+    indices.prefactor *= -1.;
+    indices.conjugate ^= false;
+    indices.transform ^= true;
+
+    if(indices.channel == 'p'){
+        indices.w  *= 1.;
+#if DIAG_CLASS>1
+        indices.v1 *= 1.;
+        indices.v2 *= -1.;
+#endif
+    }
+    else {
+        indices.w  *= -1.;
+#if DIAG_CLASS>1
+        double temp = indices.v1;
+        indices.v1 = indices.v2;
+        indices.v2 = temp;
+#endif
+    }
+    switch_channel(indices);
+}
+
+void T2 (IndicesSymmetryTransformations& indices){
+
+    indices.prefactor *= -1.;
+    indices.conjugate ^= false;
+    indices.transform ^= true;
+
+    if(indices.channel == 'p'){
+        indices.w  *= 1.;
+#if DIAG_CLASS>1
+        indices.v1 *= -1.;
+        indices.v2 *= 1.;
+#endif
+    }
+    else {
+//        indices.w  *= 1.;
+//        indices.v1 *= 1.;
+//        indices.v2 *= 1.;
+    }
+    switch_channel(indices);
+}
+
+void T3 (IndicesSymmetryTransformations& indices){
+    T1(indices);
+    T2(indices);
+}
+
+void TC (IndicesSymmetryTransformations& indices){
+
+    if(isInList(indices.iK, odd_Keldysh))
+        indices.prefactor *= 1.;
+    else
+        indices.prefactor *= -1.;
+
+    indices.conjugate ^= true;
+    indices.transform ^= false;
+
+    if (indices.channel == 't'){ //TC acts differently on t, not on p!!
+        indices.w  *= -1.;
+//        indices.v1 *= 1.;
+//        indices.v2 *= 1.;
+    }
+    else{
+        indices.w  *= 1.;
+#if DIAG_CLASS>1
+        double temp = indices.v1;
+        indices.v1 = indices.v2;
+        indices.v2 = temp;
+#endif
+    }
+}
+
+void Ti (IndicesSymmetryTransformations& indices, const int i) {
+    if (i == 0) return;
+    switch (i) {
+        case 1:
+            T1(indices);
+            break;
+        case 2:
+            T2(indices);
+            break;
+        case 3:
+            T3(indices);
+            break;
+        case 4:
+            TC(indices);
+            break;
+        case 14:
+            TC(indices);
+            T1(indices);
+        case 41:
+            T1(indices);
+            TC(indices);
+        case 43:
+            T3(indices);
+            TC(indices);
+            break;
+        default: ;
+    }
+}
+
+// test cases:
+// 1.) obvious checks for some concrete values
+// 2.) group structure of transformations: T1TC == TCT2, T1T2 == T2T1, T1TC != TCT1, etc., for all channels
+
+
 
 #endif //KELDYSH_MFRG_SYMMETRY_TRANSFORMATIONS_H

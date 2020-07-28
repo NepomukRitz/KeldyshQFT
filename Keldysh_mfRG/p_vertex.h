@@ -343,9 +343,9 @@ template <typename Q> auto pvert<Q>::K1_val (int iK, int i, int i_in) const -> Q
 
 template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in);
+    IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in, 'p');
 
-    Ti(indices, transformations_K1[0][iK], 'p');
+    Ti(indices, transformations_K1[0][iK]);
     indices.iK = components_K1[iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK1(indices, *(this)));
@@ -355,9 +355,9 @@ template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in)
 }
 template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in, int spin) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in);
+    IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in, 'p');
 
-    Ti(indices, transformations_K1[spin][iK], 'p');
+    Ti(indices, transformations_K1[spin][iK]);
     indices.iK = components_K1[iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK1(indices, *(this)));
@@ -394,9 +394,9 @@ template <typename Q> auto pvert<Q>::K2_val (int iK, int i, int j, int i_in) con
 
 template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in) const -> Q {
 
-    IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in);
+    IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in, 'p');
 
-    Ti(indices, transformations_K2[0][iK], 'p');
+    Ti(indices, transformations_K2[0][iK]);
     indices.iK = components_K2[iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
@@ -406,9 +406,9 @@ template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1
 }
 template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in, int spin) const -> Q {
 
-    IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in);
+    IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in, 'p');
 
-    Ti(indices, transformations_K2[spin][iK], 'p');
+    Ti(indices, transformations_K2[spin][iK]);
     indices.iK = components_K2[iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
@@ -418,9 +418,9 @@ template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in) const -> Q {
 
-    IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in);
+    IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in, 'p');
 
-    Ti(indices, transformations_K2b[0][iK], 'p');
+    Ti(indices, transformations_K2b[0][iK]);
     indices.iK = components_K2b[iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
@@ -430,9 +430,9 @@ template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2
 }
 template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in, int spin) const -> Q {
 
-    IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in);
+    IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in, 'p');
 
-    Ti(indices, transformations_K2b[spin][iK], 'p');
+    Ti(indices, transformations_K2b[spin][iK]);
     indices.iK = components_K2b[iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
