@@ -10,7 +10,7 @@
 
 //TODO improve to return the edge values
 template <typename T>
-auto interpolateK1(IndicesSymmetryTransformations indices, const T& vertex){
+auto interpolateK1(IndicesSymmetryTransformations indices, const T& vertex) -> comp {
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
     if(fabs(indices.w)<glb_w_upper) {
         int index = fconv_bos(indices.w);
@@ -29,7 +29,7 @@ auto interpolateK1(IndicesSymmetryTransformations indices, const T& vertex){
 }
 
 template <typename T>
-auto interpolateK2 (IndicesSymmetryTransformations indices, const T& vertex){
+auto interpolateK2 (IndicesSymmetryTransformations indices, const T& vertex) -> comp {
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
 //    assert(glb_v_lower<=v && v <=glb_v_upper); // give error message if v out of range
 
@@ -57,7 +57,7 @@ auto interpolateK2 (IndicesSymmetryTransformations indices, const T& vertex){
 }
 
 template <typename T>
-auto interpolateK3 (IndicesSymmetryTransformations indices, const T& vertex) {
+auto interpolateK3 (IndicesSymmetryTransformations indices, const T& vertex) -> comp {
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
 //    assert(glb_v_lower<=v1 && v1 <=glb_v_upper); // give error message if v1 out of range
 //    assert(glb_v_lower<=v2 && v2 <=glb_v_upper); // give error message if v2 out of range
