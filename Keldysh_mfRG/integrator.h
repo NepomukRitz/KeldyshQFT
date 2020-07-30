@@ -12,10 +12,6 @@
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_errno.h>
 
-//void integrator(gsl_function& F, ) {
-
-//}
-
 template <typename  Integrand>
 auto f_real(double x, void* params) -> double
 {
@@ -60,33 +56,9 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     {
         integrand_values[i] = integrand(a+i*dx);
         simpson[i] = 2. +2*(i%2);
-        /*
-        if (glb_int_flag && glb_K1_flag) {
-            //print_add("{", a + i * dx, ", ", false);
-            //print_add(integrand_values[i].imag(), "},", false);
-            printf("%.16f", integrand_values[i].imag());
-            printf("\n");
-        }
-        // */
     }
     simpson[0] = 1.;
     simpson[N-1]=1.;
-
-    /*
-    if (glb_int_flag && glb_K1_flag) {
-        print_add("", true);
-        for (int i=0; i<N; ++i) {
-            print_add(simpson[i], ", ", false);
-        }
-        print_add("", true);
-        print("res: ", dx / 3. * dotproduct(integrand_values, simpson), true);
-        print("res: ", (1./(2.*M_PI*glb_i)) * dx / 3. * dotproduct(integrand_values, simpson), true);
-    }
-    // */
-
-    //rvec v_int (nINT);
-    //for (int i=0; i<nINT; ++i) v_int[i] = a+i*dx;
-    //write_h5_rvecs("integr_wIP_nINT_1001.h5", {"ffreqs", "Integrand_real", "Integrand_imag"},{v_int, integrand_values.real(), integrand_values.imag()});
 
     return dx/3.*dotproduct(integrand_values, simpson);
 }
@@ -372,55 +344,6 @@ template <typename Integrand> auto adaptive_integrator(const Integrand& integran
         values = values_next;
         result = result_next;
         converged = converged_next;
-
-////        print(it, ": ");
-////        print_add(converged.size(), ". ", false);
-//        for (int interval=0; interval<converged.size(); ++interval) {
-////            print_add(converged[interval], ",", false);
-//            if (!converged[interval])
-//                converged[converged.size()-1-interval] = false; /// make sure points are selected symmetrically
-//        }
-
-
-        //print_add("", true);
-        /*
-        vec<bool> conv_rev = converged;
-        reverse(conv_rev.begin(), conv_rev.end());
-        vec<bool> diff_conv (converged.size());
-        for (int ic=0; ic<converged.size(); ++ic) {
-            diff_conv[ic] = converged[ic] - conv_rev[ic];
-        }
-        int n_diff = count(diff_conv.begin(), diff_conv.end(), true);
-        if (n_diff > 0)
-            print("n diff: ", n_diff, true);
-        //*/
-
-        /*
-        if (glb_int_flag && glb_K1_flag) {
-
-            print(it, ": ");
-            for (int interval = 0; interval < result.size(); ++interval) {
-                print_add(converged[interval], ", ", false);
-            }
-            print_add("", true);
-            for (int interval = 0; interval < points.size(); ++interval) {
-                print_add(points[interval], ", ", false);
-            }
-            print_add("", true);
-            for (int interval = 0; interval < values.size(); ++interval) {
-                print_add(values[interval].real(), ", ", false);
-            }
-            print_add("", true);
-            for (int interval = 0; interval < values.size(); ++interval) {
-                print_add(values[interval].imag(), ", ", false);
-            }
-            print_add("", true);
-
-            print("res: ", res, true);
-
-        }
-
-        // */
 
         // Second stop condition: check if all sub-intervals are converged
         if (count(converged.begin(), converged.end(), true) == converged.size()) break;

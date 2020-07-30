@@ -179,7 +179,7 @@ template <typename Q> class Integrand_K1 {
     const Bubble& Pi;
     int i0;
     int i2;
-    int iK_select;
+    int iK_select; // TODO: introduce compiler flag
     int iK_select_bubble;
     const int i_in;
     const char channel;
@@ -988,31 +988,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 else{ // Todo: this should be zero for multiloop, but non-zero for PT calculations -> compiler flag
                     for (auto i2:non_zero_Keldysh_bubble) {
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, iK_select, iK_select_bubble);
-                        if (glb_int_flag && i0 == 1 && abs(w-0.31)<0.005) {
-                            //print(w, true);
-
-                            //glb_K1_flag = true;
-                        }
-                        if (glb_int_flag && glb_K1_flag) {
-                            print("w: ", w, true);
-                            integrand_K1.save_integrand();
-                        }
-                        Q value1 = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
-                        value += value1;
-                        if (i0 == 1 && (iK_select==0 || iK_select==1) && value1!=0.) print("test", true);
-                        if (glb_int_flag && glb_K1_flag) {
-                            print("w: ", w, true);
-                            print(value, true);
-                        }
+                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
                     }
                     value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i_in, channel); //Correction needed for the K1 class
-                    //value += prefactor*(1./(2.*M_PI*glb_i))*2.*w_upper_b*integrand_K1(w_upper_b);
-                }
-                if (glb_int_flag && glb_K1_flag) {
-                    print("correction: ");
-                    printf("%.16f", prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i_in, channel));
-                    printf("\n");
-                    print(value, true);
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
