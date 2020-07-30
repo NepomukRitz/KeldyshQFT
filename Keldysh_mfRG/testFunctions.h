@@ -603,7 +603,7 @@ void test_K2_correctness(double Lambda){
     t0 = get_time();
     bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, 'R');
     bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, 'R');
-    glb_int_flag = true;
+
     bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R');
     bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, 'R');
     get_time(t0);
@@ -629,7 +629,7 @@ void test_K2_correctness(double Lambda){
     }
 
     print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
-    if(write_flag) write_h5_rvecs("PT4_check_of_K2a_K2_switchedcc_t_update_symmrev_new8_SE_symm_full_adap_m3m9_gW10_501_101_nI1501_U1", {"w",
+    if(write_flag) write_h5_rvecs("PT4_check_of_K2a_K2_switchedcc_t_update_symmrev_new11_SE_symm_full_adap_m3m9_gW10_501_101_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
                                                        "PT2_K1p_R", "PT2_K1p_I",
                                                        "PT2_K1t_R", "PT2_K1t_I",
@@ -741,7 +741,7 @@ void test_K2_correctness(double Lambda){
                                    PT4_K1a13_2_iva.vertex[0].avertex.K1.real(), PT4_K1a13_2_iva.vertex[0].avertex.K1.imag(),
                                    PT4_K1a13_2_ivb.vertex[0].avertex.K1.real(), PT4_K1a13_2_ivb.vertex[0].avertex.K1.imag()});
 
-    //write_hdf("PT4_check_of_K2a_K2_switchedcc_t_update_SE_symm_full_adap_m3m9_gW10_501_101_nI1501_U1_state_PT3_K2a", 0, 1, PT3_K2a);
+    write_hdf("PT4_check_of_K2a_K2_switchedcc_t_update_symmrev_new11_SE_symm_full_adap_m3m9_gW10_501_101_nI1501_U1_state_PT3_K2a", 0, 1, PT3_K2a);
 }
 
 /**
