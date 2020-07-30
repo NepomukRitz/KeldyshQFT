@@ -994,9 +994,6 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
-                if (glb_int_flag && glb_K1_flag) {
-                    print(K1_buffer[iterator*n_omp + i_omp], true);
-                }
             }
             ++iterator;
         }

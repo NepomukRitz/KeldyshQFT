@@ -394,10 +394,6 @@ void handler (const char * reason,
               int line,
               int gsl_errno) {
     //print(reason, true);
-
-//    glb_int_flag = true;
-//    glb_K1_flag = true;
-//    int i=0;
 }
 
 template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in) -> comp {

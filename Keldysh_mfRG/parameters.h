@@ -215,8 +215,6 @@ const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 // Only makes sense for pure K1 calculations.
 //#define STATIC_FEEDBACK
 
-bool glb_int_flag = false;
-bool glb_K1_flag = false;
 
 
 #if REG==2
