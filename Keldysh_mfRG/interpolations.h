@@ -13,7 +13,7 @@
 template <typename T>
 auto interpolateK1(IndicesSymmetryTransformations indices, const T& vertex) -> comp {
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
-    if(fabs(indices.w)+1e-9<glb_w_upper) {
+    if(fabs(indices.w)+inter_tol<glb_w_upper) {
         int index = fconv_bos(indices.w);
         double x1 = bfreqs[index];
         double x2 = bfreqs[index + 1];
@@ -34,7 +34,7 @@ auto interpolateK2 (IndicesSymmetryTransformations indices, const T& vertex) -> 
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
 //    assert(glb_v_lower<=v && v <=glb_v_upper); // give error message if v out of range
 
-    if(fabs(indices.w)+1e-9<glb_w_upper && fabs(indices.v1)+1e-9<glb_v_upper) {
+    if(fabs(indices.w)+inter_tol<glb_w_upper && fabs(indices.v1)+inter_tol<glb_v_upper) {
         int index_b = fconv_bos2(indices.w);
         int index_f = fconv_fer2(indices.v1);
 
@@ -63,7 +63,7 @@ auto interpolateK3 (IndicesSymmetryTransformations indices, const T& vertex) -> 
 //    assert(glb_v_lower<=v1 && v1 <=glb_v_upper); // give error message if v1 out of range
 //    assert(glb_v_lower<=v2 && v2 <=glb_v_upper); // give error message if v2 out of range
 
-    if(fabs(indices.w)+1e-9<glb_w_upper && fabs(indices.v1)+1e-9<glb_v_upper && fabs(indices.v2)+1e-9<glb_v_upper) {
+    if(fabs(indices.w)+inter_tol<glb_w_upper && fabs(indices.v1)+inter_tol<glb_v_upper && fabs(indices.v2)+inter_tol<glb_v_upper) {
         int index_b = fconv_bos3(indices.w);
         int index_f1 = fconv_fer3(indices.v1);
         int index_f2 = fconv_fer3(indices.v2);
