@@ -19,50 +19,60 @@ class avert{
     //  0 = related to component 0
     //  1 = related to component 1
     //  ...
-    vector<int> components_K1 = {-1, 0, 0, 1,
-                                 0, 1, -1, 0,
-                                 0, -1, 1, 0,
-                                 1, 0, 0, -1};
-    vector<int> components_K2 = {0, 1, 2, 3,
-                                 2, 3, 0, 1,
-                                 1, -1, 3, 4,
-                                 3, 4, 1, -1};
-    vector<int> components_K2b = {0, 2, 1, 3,
-                                  1, 3, -1, 4,
-                                  2, 0, 3, 1,
-                                  3, 1, 4, -1};
-    vector<int> components_K3 = {0, 1, 1, 2,
-                                 1, 3, 4, 5,
-                                 1, 4, 3, 5,
-                                 2, 5, 5, -1};
+    vector<int> components_K1 = {-1,  0,  0,  1,
+                                  0,  1, -1,  0,
+                                  0, -1,  1,  0,
+                                  1,  0,  0, -1};
+    vector<int> components_K2 = { 0,  1,  2,  3,
+                                  2,  3,  0,  1,
+                                  1, -1,  3,  4,
+                                  3,  4,  1, -1};
+    vector<int> components_K2b = { 0,  2,  1,  3,
+                                   1,  3, -1,  4,
+                                   2,  0,  3,  1,
+                                   3,  1,  4, -1};
+    vector<int> components_K3 = { 0,  1,  1,  2,
+                                  1,  3,  4,  5,
+                                  1,  4,  3,  5,
+                                  2,  5,  5, -1};
 
     // transformations that need to be applied to the respective stored components to get the correct actual components
     // 0 = nothing, 1 = T1, 2 = T2, 3 = T3, 4 = TC
     // 43 = first apply 3, then 4 etc.
-    vector<vector<int> > transformations_K1 = {vector<int> ({0, 0, 3, 0,
-                                                             3, 0, 0, 0,
-                                                             0, 0, 0, 3,
-                                                             0, 3, 0, 0}),   // spin comp. V
-                                               vector<int> ({0, 2, 1, 1,
-                                                             1, 1, 0, 2,
-                                                             2, 0, 1, 1,
-                                                             1, 1, 2, 0})};  // spin comp. Vhat
-    vector<vector<int> > transformations_K2 = {vector<int> ({0, 0, 0, 0,
-                                                             0, 0, 0, 0,
-                                                             43, 0, 43, 0,
-                                                             43, 0, 43, 0}),   // spin comp. V
-                                               vector<int> ({2, 2, 2, 2,
-                                                             2, 2, 2, 2,
-                                                             41, 0, 41, 2,
-                                                             41, 2, 41, 0})};  // spin comp. Vhat
-    vector<vector<int> > transformations_K2b = {vector<int> ({3, 3, 3, 3,
-                                                              4, 4, 0, 3,
-                                                              3, 3, 3, 3,
-                                                              4, 4, 3, 0}),
-                                                vector<int> ({1, 1, 1, 1,
-                                                              14, 14, 0, 1,
-                                                              1, 1, 1, 1,
-                                                              14, 14, 1, 0})};
+    vector<vector<int> > transformations_K1 = {vector<int> ({ 0,  0,  3,  0,
+                                                              3,  0,  0,  0,
+                                                              0,  0,  0,  3,
+                                                              0,  3,  0,  0}),   // spin comp. V
+                                               vector<int> ({ 0,  2,  1,  1,
+                                                              1,  1,  0,  2,
+                                                              2,  0,  1,  1,
+                                                              1,  1,  2,  0})};  // spin comp. Vhat
+    vector<vector<int> > transformations_K2 = {vector<int> ({ 0,  0,  0,  0,
+                                                              0,  0,  0,  0,
+                                                             43,  0, 43,  0,
+                                                             43,  0, 43,  0}),   // spin comp. V
+                                               vector<int> ({ 2,  2,  2,  2,
+                                                              2,  2,  2,  2,
+                                                             41,  0, 41,  2,
+                                                             41,  2, 41,  0})};  // spin comp. Vhat
+    vector<vector<int> > transformations_K2b = {vector<int> ({ 3,  3,  3,  3,
+                                                               4,  4,  0,  3,
+                                                               3,  3,  3,  3,
+                                                               4,  4,  3,  0}), // spin comp. V
+                                                vector<int> ({ 1,  1,  1,  1,
+                                                              14, 14,  0,  1,
+                                                               1,  1,  1,  1,
+                                                              14, 14,  1,  0})};  // spin comp. Vhat
+    vector<vector<int> > transformations_K3 = {vector<int> ({ 0,  0,  3,  0,
+                                                              4,  0,  0,  0,
+                                                             43,  3,  3,  3,
+                                                              4,  4, 43,  0}), // spin comp. V
+                                               vector<int> ({ 1,  2,  1,  1,
+                                                             14,  1,  1,  1,
+                                                             14,  2,  2,  2,            //Uses TCT2 = T1TC
+                                                             14, 14, 14,  0})}; //spin comp. Vhat
+
+
 
 public:
 
@@ -366,7 +376,7 @@ template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in,
     Ti(indices, transformations_K1[spin][iK]);
     indices.iK = components_K1[iK];
     if (indices.iK < 0) return 0.;
-    if (indices.transform) return interpolateK1(indices, tvertex);
+    if (indices.channel == 't') return interpolateK1(indices, tvertex);
     return interpolateK1(indices, *(this));
 
 
@@ -420,7 +430,7 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
 
     Q valueK2;
 
-    if(indices.transform)  //Applied trafo changes channel a -> t
+    if(indices.channel == 't')  //Applied trafo changes channel a -> t
         valueK2 = interpolateK2(indices, tvertex);
     else
         valueK2 = interpolateK2(indices, *(this));
@@ -452,7 +462,7 @@ template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2
 
     Q valueK2;
 
-    if(indices.transform)  //Applied trafo changes channel a -> t
+    if(indices.channel=='t')  //Applied trafo changes channel a -> t
         valueK2 = interpolateK2(indices, tvertex);
     else
         valueK2 = interpolateK2(indices, *(this));
@@ -491,200 +501,39 @@ template <typename Q> auto avert<Q>::K3_val (int iK, int i, int j, int k, int i_
 
 template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_a, v1_a, v2_a, i_in);
+    IndicesSymmetryTransformations indices(iK, w_a, v1_a, v2_a, i_in, 'a');
     /*This part determines the value of the K3 contribution*/
     /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    switch (iK) {
-        case 0: case 1: case 3: case 5: case 7:
-            indices.iK = convertToIndepIndex(iK);
-            break;
-        case 2:
-            T3(indices, 'a');
-            indices.iK = 1;
-            break;
-        case 4:
-            TC(indices, 'a');
-            indices.iK = 1;
-            break;
-        case 6:
-            T1(indices, 'a');
-            indices.iK = 3;
-            break;
-        case 8:
-            T3(indices, 'a');
-            TC(indices, 'a');
-            indices.iK = 1;
-            break;
-        case 9:
-            T2(indices, 'a');
-            indices.iK = 3;
-            break;
-        case 10:
-            T3(indices, 'a');
-            indices.iK = 3;
-            break;
-        case 11:
-            T3(indices, 'a');
-            indices.iK = 5;
-            break;
-        case 12:
-            TC(indices, 'a');
-            indices.iK = 2;
-            break;
-        case 13:
-            TC(indices, 'a');
-            indices.iK = 5;
-            break;
-        case 14:
-            T3(indices, 'a');
-            TC(indices, 'a');
-            indices.iK = 5;
-            break;
-        default:
-            return 0.;
-
-    }
+    Ti(indices, transformations_K3[0][iK]);
+    indices.iK = components_K3[iK];
+    if (indices.iK < 0) return 0.;
 
     Q valueK3;
-    if (indices.transform) {
+
+    if(indices.channel=='t')  //Applied trafo changes channel a -> t
         valueK3 = interpolateK3(indices, tvertex);
-    }
-    else {
+    else
         valueK3 = interpolateK3(indices, *(this));
-    }
 
-    if(indices.conjugate)
-        return conj(valueK3);
-
+    if(indices.conjugate) return conj(valueK3);
     return valueK3;
 }
 template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_a, v1_a, v2_a, i_in);
+    IndicesSymmetryTransformations indices(iK, w_a, v1_a, v2_a, i_in, 'a');
 
-    switch(spin) {
-
-        case 0:
-            /*This part determines the value of the K3 contribution*/
-            /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-            switch (iK) {
-                case 0: case 1: case 3: case 5: case 6: case 7:
-                    indices.iK = convertToIndepIndex(iK);
-                    break;
-                case 2:
-                    T3(indices, 'a');
-                    indices.iK = 1;
-                    break;
-                case 4:
-                    TC(indices, 'a');
-                    indices.iK = 1;
-                    break;
-                case 8:
-                    T3(indices, 'a');
-                    TC(indices, 'a');
-                    indices.iK = 1;
-                    break;
-                case 9:
-                    T2(indices, 'a');
-                    indices.iK = 3;
-                    break;
-                case 10:
-                    T3(indices, 'a');
-                    indices.iK = 3;
-                    break;
-                case 11:
-                    T3(indices, 'a');
-                    indices.iK = 5;
-                    break;
-                case 12:
-                    TC(indices, 'a');
-                    indices.iK = 2;
-                    break;
-                case 13:
-                    TC(indices, 'a');
-                    indices.iK = 5;
-                    break;
-                case 14:
-                    T3(indices, 'a');
-                    TC(indices, 'a');
-                    indices.iK = 5;
-                    break;
-                default:
-                    return 0.;
-            }
-            break;
-
-        case 1:
-            switch (iK) {
-                case 0: case 3: case 5: case 6: case 7:
-                    T1(indices, 'a');
-                    indices.iK = convertToIndepIndex(iK);
-                    break;
-                case 1:
-                    T2(indices, 'a');
-                    indices.iK = 1;
-                    break;
-                case 2:
-                    T1(indices, 'a');
-                    indices.iK = 1;
-                    break;
-                case 4:
-                    TC(indices, 'a');
-                    T1(indices, 'a');
-                    indices.iK = 1;
-                    break;
-                case 8:
-                    T1(indices, 'a');
-                    TC(indices, 'a');
-                    indices.iK = 1;
-                    break;
-                case 9:
-                    T2(indices, 'a');
-                    indices.iK = 3;
-                    break;
-                case 10:
-                    T2(indices, 'a');
-                    indices.iK = 4;
-                    break;
-                case 11:
-                    T2(indices, 'a');
-                    indices.iK = 5;
-                    break;
-                case 12:
-                    TC(indices, 'a');
-                    indices.iK = 2;
-                    break;
-                case 13:
-                    T1(indices, 'a');
-                    TC(indices, 'a');
-                    indices.iK = 5;
-                    break;
-                case 14:
-                    TC(indices, 'a');
-                    indices.iK = 5;
-                    break;
-                default:
-                    return 0.;
-            }
-            break;
-
-        default:
-            cout << "Problem with the spins in avert.K3_valsmooth w/ spin!";
-
-    }
+    Ti(indices, transformations_K3[spin][iK]);
+    indices.iK = components_K3[iK];
+    if (indices.iK < 0) return 0.;
 
     Q valueK3;
 
-    if (indices.transform) {
+    if(indices.channel=='t')  //Applied trafo changes channel a -> t
         valueK3 = interpolateK3(indices, tvertex);
-    }
-    else {
+    else
         valueK3 = interpolateK3(indices, *(this));
-    }
 
-    if(indices.conjugate)
-        return conj(valueK3);
-
+    if(indices.conjugate) return conj(valueK3);
     return valueK3;
 }
 
