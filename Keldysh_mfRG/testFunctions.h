@@ -492,9 +492,11 @@ void test_K2_correctness(double Lambda){
     loop(PT2_SE_a.selfenergy, PT2_K1a.vertex, S, true);
     loop(PT2_SE_p.selfenergy, PT2_K1p.vertex, S, true);
     loop(PT2_SE_t.selfenergy, PT2_K1t.vertex, S, true);
+#ifdef DEBUG_MODE
     loop(PT2_SE_p_1.selfenergy, PT2_K1p.vertex, S, true, 1);
     loop(PT2_SE_p_4.selfenergy, PT2_K1p.vertex, S, true, 4);
     loop(PT2_SE_p_5.selfenergy, PT2_K1p.vertex, S, true, 5);
+#endif
 
     State<comp> PT3_K2a;    //Create state for K2a calculation
     State<comp> PT3_K2a_ia;
@@ -515,12 +517,14 @@ void test_K2_correctness(double Lambda){
     t0 = get_time();
     bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');   // K2a in PT3
 
+#ifdef DEBUG_MODE
     bubble_function(PT3_K2a_ia.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 9, 6);
     bubble_function(PT3_K2a_ib.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 6, 9);
     bubble_function(PT3_K2a_iia.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 11, 14);
     bubble_function(PT3_K2a_iib.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 7, 9);
     bubble_function(PT3_K2a_iva.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 9, 6);
     bubble_function(PT3_K2a_ivb.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 6, 15);
+#endif
 
     bubble_function(PT3_K2a_t.vertex, PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');   // K2a in PT3
     rvec Lambdas {1.};
@@ -562,17 +566,20 @@ void test_K2_correctness(double Lambda){
     loop(PT3_SE_a.selfenergy, PT3_K2a.vertex, S, true);
     loop(PT3_SE_p.selfenergy, PT3_K2p.vertex, S, true);
     loop(PT3_SE_t.selfenergy, PT3_K2t.vertex, S, true);
+
+    loop(PT3_SE_t_a.selfenergy, PT3_K2t_a.vertex, S, true);
+    loop(PT3_SE_t_p.selfenergy, PT3_K2t_p.vertex, S, true);
+#ifdef DEBUG_MODE
     loop(PT3_SE_t_1.selfenergy, PT3_K2t.vertex, S, true, 1);
     loop(PT3_SE_t_4.selfenergy, PT3_K2t.vertex, S, true, 4);
     loop(PT3_SE_t_5.selfenergy, PT3_K2t.vertex, S, true, 5);
-    loop(PT3_SE_t_a.selfenergy, PT3_K2t_a.vertex, S, true);
     loop(PT3_SE_t_a_1.selfenergy, PT3_K2t_a.vertex, S, true, 1);
     loop(PT3_SE_t_a_4.selfenergy, PT3_K2t_a.vertex, S, true, 4);
     loop(PT3_SE_t_a_5.selfenergy, PT3_K2t_a.vertex, S, true, 5);
-    loop(PT3_SE_t_p.selfenergy, PT3_K2t_p.vertex, S, true);
     loop(PT3_SE_t_p_1.selfenergy, PT3_K2t_p.vertex, S, true, 1);
     loop(PT3_SE_t_p_4.selfenergy, PT3_K2t_p.vertex, S, true, 4);
     loop(PT3_SE_t_p_5.selfenergy, PT3_K2t_p.vertex, S, true, 5);
+#endif
 
     State<comp> PT3_K1a;    //Create state to compare with K1a
     t0 = get_time();
@@ -608,6 +615,7 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, 'R');
     get_time(t0);
     t0 = get_time();
+#ifdef DEBUG_MODE
     bubble_function(PT4_K1a13_2_11e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 0, 16, 16, 16); // A
     bubble_function(PT4_K1a13_2_21e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 1, 16, 16, 16); // B
     bubble_function(PT4_K1a13_2_11o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 2, 16, 16, 16); // C
@@ -621,6 +629,7 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT4_K1a13_2_iib.vertex, bare.vertex, PT3_K2a_iib.vertex, G, G, 'a', false, 'R', 10, 11, 16, 16);
     bubble_function(PT4_K1a13_2_iva.vertex, bare.vertex, PT3_K2a_iva.vertex, G, G, 'a', false, 'R', 11, 15, 16, 16);
     bubble_function(PT4_K1a13_2_ivb.vertex, bare.vertex, PT3_K2a_ivb.vertex, G, G, 'a', false, 'R', 2, 9, 16, 16);
+#endif
     get_time(t0);
 
     cvec K1a_diff(nBOS);

@@ -204,9 +204,9 @@ const int n_in = 1;
 #define MPI_FLAG
 
 //Tolerance for closeness to grid points when interpolating
-const double inter_tol = 10e-8;
+const double inter_tol = 1e-9;
 
-const double converged_tol = 10e-7;
+const double converged_tol = 1e-7;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
@@ -215,7 +215,8 @@ const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 // Only makes sense for pure K1 calculations.
 //#define STATIC_FEEDBACK
 
-
+// Debug mode allows to select specific Keldysh components contributing to loop and bubbles
+//#define DEBUG_MODE
 
 #if REG==2
 const int param_size = 14;

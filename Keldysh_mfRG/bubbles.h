@@ -179,8 +179,10 @@ template <typename Q> class Integrand_K1 {
     const Bubble& Pi;
     int i0;
     int i2;
-    int iK_select; // TODO: introduce compiler flag
+#ifdef DEBUG_MODE
+    int iK_select;
     int iK_select_bubble;
+#endif
     const int i_in;
     const char channel;
     const double w;
@@ -199,10 +201,17 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K1(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, int i2_in, const double w_in,
-                 const int i_in_in, const char ch_in, const int iK_select_in, const int iK_select_bubble_in)
-            :            vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),            i2(i2_in), w(w_in),
-                    i_in(i_in_in), channel(ch_in), iK_select(iK_select_in), iK_select_bubble(iK_select_bubble_in)
+    Integrand_K1(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in,
+                 int i0_in, int i2_in, const double w_in, const int i_in_in, const char ch_in
+#ifdef DEBUG_MODE
+                 , const int iK_select_in, const int iK_select_bubble_in
+#endif
+                 )
+               : vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),
+                 i2(i2_in), w(w_in), i_in(i_in_in), channel(ch_in)
+#ifdef DEBUG_MODE
+                 , iK_select(iK_select_in), iK_select_bubble(iK_select_bubble_in)
+#endif
     {
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -268,8 +277,10 @@ public:
                 res = res_l_V * Pival * res_r_V;
 #else
                 vertex1[0].avertex.indices_sum(indices, i0, i2);
+#ifdef DEBUG_MODE
                 if (indices[1] != iK_select && iK_select < 16) return 0.;
                 if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
+#endif
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -371,8 +382,10 @@ template <typename Q> class Integrand_K2
     const Bubble&Pi;
     int i0;
     int i2;
+#ifdef DEBUG_MODE
     int iK_select;
     int iK_select_bubble;
+#endif
     const int i_in;
     const char channel, part;
     const double w, v;
@@ -391,10 +404,17 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const  Bubble& Pi_in, int i0_in, int i2_in,
-            const double w_in, double v_in,   const int i_in_in,    const char ch_in, const char pt_in, const int iK_select_in, const int iK_select_bubble_in)
-              :          vertex1(vertex1_in),         vertex2(vertex2_in),            Pi(Pi_in),           i2(i2_in),     w(w_in),
-              v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in), iK_select(iK_select_in), iK_select_bubble(iK_select_bubble_in)
+    Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const  Bubble& Pi_in,
+                 int i0_in, int i2_in, const double w_in, double v_in, const int i_in_in, const char ch_in, const char pt_in
+#ifdef DEBUG_MODE
+                 , const int iK_select_in, const int iK_select_bubble_in
+#endif
+                 )
+               : vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
+                 i2(i2_in), w(w_in), v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
+#ifdef DEBUG_MODE
+                 , iK_select(iK_select_in), iK_select_bubble(iK_select_bubble_in)
+#endif
     {
         // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
@@ -423,8 +443,10 @@ public:
             //Add contribution to the result.
             case 'a':                                                                       //Contributions: V*Pi*V
                 vertex1[0].avertex.indices_sum(indices, i0, i2);
+#ifdef DEBUG_MODE
                 if (indices[0] != iK_select && iK_select < 16) return 0.;
                 if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
+#endif
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                 res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
@@ -910,8 +932,11 @@ public:
  */
 template <typename Q>
 void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
-                     const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part,
-                     const int iK_select, const int iK_select_bubble, const int iK_select2, const int iK_select_bubble2)
+                     const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part
+#ifdef DEBUG_MODE
+                     , const int iK_select, const int iK_select_bubble, const int iK_select2, const int iK_select_bubble2
+#endif
+                     )
 {
     Bubble Pi(G, S, diff); // initialize bubble object
 
@@ -987,7 +1012,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 }
                 else{ // Todo: this should be zero for multiloop, but non-zero for PT calculations -> compiler flag
                     for (auto i2:non_zero_Keldysh_bubble) {
+#ifdef DEBUG_MODE
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, iK_select, iK_select_bubble);
+#else
+                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel);
+#endif
                         value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
                     }
                     value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i_in, channel); //Correction needed for the K1 class
@@ -1053,7 +1082,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                     // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
                     else {
                         for(auto i2:non_zero_Keldysh_bubble) {
+#ifdef DEBUG_MODE
                             Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, iK_select2, iK_select_bubble2);
+#else
+                            Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part);
+#endif
                             value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
                             value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K2(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, i0, i_in, channel); //Correction needed for the K2 class
                         }
@@ -1153,11 +1186,13 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #endif
 }
 
+#ifdef DEBUG_MODE
 template <typename Q>
 void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
                      const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part)
 {
     bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, part, 16, 16, 16, 16);
 }
+#endif
 
 #endif //KELDYSH_MFRG_BUBBLES_H
