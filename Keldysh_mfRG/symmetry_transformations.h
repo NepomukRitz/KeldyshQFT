@@ -12,7 +12,6 @@ struct IndicesSymmetryTransformations{
     int iK;
     double prefactor = 1.;
     bool conjugate = false;
-    bool transform = false;
     double w, v1, v2; int i_in;
     char channel;
 
@@ -37,7 +36,6 @@ void T1 (IndicesSymmetryTransformations& indices){
 
     indices.prefactor *= -1.;
     indices.conjugate ^= false;
-    indices.transform ^= true;
 
     if(indices.channel == 'p'){
         indices.w  *= 1.;
@@ -61,7 +59,6 @@ void T2 (IndicesSymmetryTransformations& indices){
 
     indices.prefactor *= -1.;
     indices.conjugate ^= false;
-    indices.transform ^= true;
 
     if(indices.channel == 'p'){
         indices.w  *= 1.;
@@ -91,7 +88,6 @@ void TC (IndicesSymmetryTransformations& indices){
         indices.prefactor *= -1.;
 
     indices.conjugate ^= true;
-    indices.transform ^= false;
 
     if (indices.channel == 't'){ //TC acts differently on t, not on p!!
         indices.w  *= -1.;
