@@ -329,9 +329,9 @@ void setUpBosGrid() {
     setUpBosGrid(bfreqs3, nBOS3);
 }
 void setUpFerGrid() {
-    setUpBosGrid(ffreqs, nFER);
-    setUpBosGrid(ffreqs2, nFER2);
-    setUpBosGrid(ffreqs3, nFER3);
+    setUpFerGrid(ffreqs, nFER);
+    setUpFerGrid(ffreqs2, nFER2);
+    setUpFerGrid(ffreqs3, nFER3);
 }
 
 // Frequency-to-index conversion
