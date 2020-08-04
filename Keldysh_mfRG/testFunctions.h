@@ -454,7 +454,7 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 
     return empty;
 }
-#endif
+
 /**
  * Function to test correctness of K2a when calculating a susceptibility (a K1a-object) //Notice that the same calculation
  * can be performed in the p-channel.
@@ -757,23 +757,23 @@ void test_K2_correctness(double Lambda){
  * Master function to test both consistency and correctness of K2-class
  * @param Lambda
  */
-//void test_K2(double Lambda, bool test_consistency){
-//
-//
-//    //First test consistency
-//    if(test_consistency) {
-//        bool K2a = test_K2_consistency(Lambda, 'a');    //Consistency of a-channel
-//        bool K2p = test_K2_consistency(Lambda, 'p');    //Consistency of p-channel
-//        bool K2t = test_K2_consistency(Lambda, 't');    //Consistency of t-channel
-//
-//        if(K2a&&K2p&&K2t)
-//            test_K2_correctness(Lambda);
-//    }
-//
-//    test_K2_correctness(Lambda);
-//
-//}
-//#endif
+void test_K2(double Lambda, bool test_consistency){
+
+
+    //First test consistency
+    if(test_consistency) {
+        bool K2a = test_K2_consistency(Lambda, 'a');    //Consistency of a-channel
+        bool K2p = test_K2_consistency(Lambda, 'p');    //Consistency of p-channel
+        bool K2t = test_K2_consistency(Lambda, 't');    //Consistency of t-channel
+
+        if(K2a&&K2p&&K2t)
+            test_K2_correctness(Lambda);
+    }
+
+    test_K2_correctness(Lambda);
+
+}
+#endif
 
 #ifdef STATIC_FEEDBACK
 /**
