@@ -43,7 +43,7 @@ add_executable(Keldysh_mfRG
         t_vertex.h
         util.h
         vertex.h
-        write_data2file.h)
+        write_data2file.h Integrator_NR/integrator_NR.h)
 
 include_directories(/usr/include/mpi/)
 
