@@ -75,15 +75,15 @@ const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(g
 //const int nFER = 20;
 
 #elif GRID==3
-const double W_scale = 10.; //*glb_U;                //Resolution scale should be chosen big enough... ~50.*U seems good
-const double glb_w_upper = 50.;
+const double W_scale = 20.; //*glb_U;                //Resolution scale should be chosen big enough... ~50.*U seems good
+const double glb_w_upper = 200.;
 const double glb_w_lower = -glb_w_upper;
-const double glb_v_upper = 50.;
+const double glb_v_upper = 200.;
 const double glb_v_lower = -glb_v_upper;
 
 // Number of bosonic and fermionic frequency points
-const int nBOS = 501;
-const int nFER = 501;
+const int nBOS = 201;
+const int nFER = 201;
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
