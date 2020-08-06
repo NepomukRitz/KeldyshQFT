@@ -76,16 +76,18 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     x_vals[0] = x_ini;                          // start with initial value
     for (int i=1; i<=N_ODE; ++i) {
         x_vals[i] = resubst(X_ini + i*dX);      // value i
+    }
+    add_points_to_Lambda_grid(x_vals, valuesToAdd);
+
+    for (int i=1; i<x_diffs.size(); i++){
         x_diffs[i-1] = x_vals[i] - x_vals[i-1]; // step size i
     }
-
-    add_points_to_Lambda_grid(x_vals, valuesToAdd);
 
     // solve ODE using step sizes x_diffs
     T y_run = y_ini; // initial y value
     double x_run = x_ini; // initial x value
     double dx;
-    for (int i=0; i<N_ODE; ++i) {
+    for (int i=0; i<x_diffs.size(); ++i) {
         dx = x_diffs[i];
 
         // print iteration number and Lambda to log file
@@ -103,7 +105,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         get_time(t0); // measure time for one iteration
 
         if (filename != "") {
-            add_hdf(filename, i + 1, N_ODE+1, y_run, x_vals);
+            add_hdf(filename, i + 1, x_vals.size(), y_run, x_vals);
         }
     }
     y_fin = y_run; // final y value
