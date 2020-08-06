@@ -1010,16 +1010,23 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                         value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
                     }
                 }
-                else{ // Todo: this should be zero for multiloop, but non-zero for PT calculations -> compiler flag
-                    for (auto i2:non_zero_Keldysh_bubble) {
+                else{ // TODO: improve handling of multiloop corrections vs. perturbation theory calculations
+                    if(part != '.') value = 0.;
+                    else {
+                        for (auto i2:non_zero_Keldysh_bubble) {
 #ifdef DEBUG_MODE
-                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, iK_select, iK_select_bubble);
+                            Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, iK_select, iK_select_bubble);
 #else
-                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel);
+                            Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel);
 #endif
-                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
+                            value += prefactor * (1. / (2. * M_PI * glb_i)) *
+                                     integrator(integrand_K1, glb_v_lower, glb_v_upper, -w / 2.,
+                                                w / 2.);                      //Integration over a fermionic frequency
+                        }
+                        value += prefactor * (1. / (2. * M_PI * glb_i)) *
+                                 asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i_in,
+                                                      channel); //Correction needed for the K1 class
                     }
-                    value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i_in, channel); //Correction needed for the K1 class
                 }
 
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer

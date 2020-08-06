@@ -48,8 +48,9 @@ auto main() -> int {
 
     //*
     string dir = "runs/";
-    string sname = "test_new_K" + to_string(DIAG_CLASS) + "_flow" + "_n1=" + to_string(nBOS) + "_n2=" + to_string(nBOS2) + "_adap_m2m3" + "_nI=" + to_string(nINT) + "_G" + to_string(GRID) + "_U=" + to_string(glb_U) + "_V=" + to_string(glb_V) + ".h5";
-    string filename = dir + sname;
+    string sname = "K" + to_string(DIAG_CLASS) + "_" +  to_string(N_LOOPS) + "_loop_flow" + "_n1=" + to_string(nBOS) +
+        + "_n2=" + to_string(nBOS2) +"_adapGLK" + "_G" + to_string(GRID) + "_Gamma=" + to_string(glb_Gamma);
+    string filename = dir + sname + "_fb=4.h5";
 
     n_loop_flow(filename);
     //*/
