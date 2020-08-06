@@ -2,9 +2,18 @@
 #define KELDYSH_MFRG_SOLVERS_H
 
 #include <cmath>             // needed for exponential and sqrt function
+#include <algorithm>         // needed for std::find_if
 #include "util.h"            // text input/output
 #include "write_data2file.h" // writing data into text or hdf5 files
+#include "parameters.h"      // needed for the vector of grid values to add
 
+void add_points_to_Lambda_grid(vector<double>& grid, const vector<double>& points){
+    for (auto y : points){
+        auto it = grid.begin();
+        auto pos = std::find_if(it, grid.end(), [y](auto x) {return x<y;});
+        grid.insert(pos, y);
+    }
+}
 
 template <typename T>
 void ODE_solver_Euler(T& y_fin, const double x_fin, const T& y_ini, const double x_ini, T rhs (const T& y, const double x), const int N_ODE) {
@@ -69,6 +78,8 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         x_vals[i] = resubst(X_ini + i*dX);      // value i
         x_diffs[i-1] = x_vals[i] - x_vals[i-1]; // step size i
     }
+
+    add_points_to_Lambda_grid(x_vals, valuesToAdd);
 
     // solve ODE using step sizes x_diffs
     T y_run = y_ini; // initial y value
