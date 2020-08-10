@@ -199,9 +199,6 @@ const int n_in = 1;
 //If defined, the flow of the self_energy is symmetrized, closed above and below
 //#define SYMMETRIZED_SELF_ENERGY_FLOW
 
-// Defines whether the values are interpolated from previously saved ones or from the self-energy
-//#define INTER_PROP
-
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
 #define MPI_FLAG
 

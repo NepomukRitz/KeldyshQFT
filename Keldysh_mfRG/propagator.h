@@ -45,10 +45,6 @@ public:
     SelfEnergy<comp> selfenergy;
     SelfEnergy<comp> diff_selfenergy;
     char type;
-private:
-#ifdef INTER_PROP
-    cvec prop = cvec(2*nPROP*n_in);
-#endif
 
 public:
     /**
@@ -67,31 +63,7 @@ public:
      * @param type_in   : Type of propagator being handled
      */
     Propagator(double Lambda_in, SelfEnergy<comp> self_in, char type_in)
-            :Lambda(Lambda_in), selfenergy(self_in), type(type_in)
-    {
-#ifdef INTER_PROP
-        for(int i_in =0; i_in<n_in; i_in++) {
-            switch (type) {
-                case 'g':
-                    for (int i = 0; i < nPROP; i++) {
-                        double v = ffreqs[i];
-                        prop[n_in*i + i_in] = GR(v, i_in);
-                        prop[n_in*nPROP + n_in*i + i_in] = GK(v, i_in);
-                    }
-                    break;
-                case 's': case 'k':
-                    for (int i = 0; i < nPROP; i++) {
-                        double v = ffreqs[i];
-                        prop[n_in*i + i_in] = SR(v, i_in);
-                        prop[n_in*nPROP + n_in*i + i_in] = SK(v, i_in);
-                    }
-                    break;
-
-                default:;       //case 'e' is contained here too
-            }
-        }
-#endif  //INTER_PROP
-    }
+            :Lambda(Lambda_in), selfenergy(self_in), type(type_in) { }
 
     /**
      * Dressed propagator for flows. Needs both a SelfEnergy and a Differential SelfEnergy
@@ -101,53 +73,7 @@ public:
      * @param type_in       : Type of propagator being handled
      */
     Propagator(double Lambda_in, SelfEnergy<comp> self_in, SelfEnergy<comp> diffSelf_in, char type_in)
-            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in)
-    {
-#ifdef INTER_PROP
-        for(int i_in =0; i_in<n_in; i_in++) {
-            switch (type) {
-                case 'g':
-                    for (int i = 0; i < nPROP; i++) {
-                        double v = ffreqs[i];
-                        prop[n_in*i + i_in] = GR(v, i_in);
-                        prop[n_in*nPROP + n_in*i + i_in] = GK(v, i_in);
-                    }
-                    break;
-                case 's':
-                    for (int i = 0; i < nPROP; i++) {
-                        double v = ffreqs[i];
-                        prop[n_in*i + i_in] = SR(v, i_in);
-                        prop[n_in*nPROP + n_in*i + i_in] = SK(v, i_in);
-                    }
-                    break;
-
-                case 'k':
-                    for (int i = 0; i < nPROP; i++) {
-                        double v = ffreqs[i];
-                        prop[n_in*i + i_in] = SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
-                        prop[n_in*nPROP + n_in*i + i_in] = SK(v, i_in)
-                                                           + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                                                           + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                                                           + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
-                    }
-                    break;
-
-                case 'e':
-                    for (int i = 0; i < nPROP; i++) {
-                        double v = ffreqs[i];
-                        prop[n_in*i + i_in] = GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
-                        prop[n_in*nPROP + n_in*i + i_in] = GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                                                           + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                                                           + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
-                    }
-                    break;
-                default:;
-            }
-        }
-
-#endif  //INTER_PROP
-
-    };
+            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in) { }
 
     auto valsmooth(int, double, int i_in) const -> comp;
 
@@ -338,75 +264,6 @@ auto Propagator::SK(double v, int i_in) const -> comp
 
 auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 {
-#ifdef INTER_PROP
-    comp ans;
-    if(fabs(v)>glb_v_upper) {
-        switch(type) {
-            case 'g':
-                switch (iK) {
-                    case 0:
-                        return GR(v, i_in);
-                    case 1:
-                        return GK(v, i_in);
-                    default:
-                        return 0.;
-                }
-            case 's':
-                switch (iK) {
-                    case 0:
-                        return SR(v, i_in);
-                    case 1:
-                        return SK(v, i_in);
-                    default:
-                        return 0.;
-                }
-            case 'k':
-                switch(iK){
-                    case 0:
-                        return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
-                    case 1:
-                        return SK(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                                     + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                                     + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
-                    default:
-                        return 0.;
-                }
-            case 'e':
-                switch(iK){
-                    case 0:
-                        return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
-                    case 1:
-                        return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                             + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                             + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
-                    default:
-                        return 0.;
-                }
-            default:
-                return 0.;
-        }
-    }
-    else {
-        if (fabs(v) != glb_v_upper) {
-            int iv = fconv_fer(v);
-            double x1 = ffreqs[iv];
-            double x2 = ffreqs[iv+1];
-            double xd = (v - x1) / (x2 - x1);
-
-            comp f1 = prop[iK*nPROP*n_in + iv*n_in + i_in];
-            comp f2 = prop[iK*nPROP*n_in + (iv+1)*n_in + i_in];
-
-            ans = (1. - xd) * f1 + xd * f2;
-
-        } else if (fabs(v-glb_v_upper)<inter_tol)
-            ans = prop[iK * nPROP + (nPROP - 1)*n_in + i_in];
-        else if (fabs(v-glb_v_lower)<inter_tol)
-            ans = prop[iK * nPROP + i_in];
-        return ans;
-
-    }
-#else //INTER_PROP
-
     for(int i=0; i<n_in; i++){
         switch (type){
             case 'g' :                              //Good ol' regular propagator
@@ -458,10 +315,6 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
         }
     }
 
-
-
-
-#endif //INTER_PROP
 }
 
 auto Propagator::norm() const -> double{
