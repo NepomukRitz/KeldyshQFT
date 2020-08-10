@@ -10,7 +10,7 @@
 void add_points_to_Lambda_grid(vector<double>& grid, const vector<double>& points){
     for (auto y : points){
         auto it = grid.begin();
-        auto pos = std::find_if(it, grid.end(), [y](auto x) {return x<y;});
+        auto pos = std::find_if(it, grid.end(), [y](double x) {return x<y;});
         grid.insert(pos, y);
     }
 }
