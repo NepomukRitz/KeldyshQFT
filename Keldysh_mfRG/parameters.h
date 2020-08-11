@@ -26,7 +26,7 @@ const double Lambda_ini = 10.0;
 const double Lambda_fin = 0.0;    //1.0-1./7.;
 
 //Vector with the values of U for which we have NRG data to compare with (exclude zero!)
-vector<double> U_NRG {0.1, 0.5, 1., 2., 3., 5., 10.};                                                   // NOLINT(cert-err58-cpp)
+vector<double> U_NRG {0.1, 0.2, 0.5, 1., 1.2, 1.5, 2., 3., 5., 10.};                                                   // NOLINT(cert-err58-cpp)
 
 
 // Vector with values of Lambda for the fRG flow
