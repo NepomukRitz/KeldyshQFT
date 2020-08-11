@@ -207,7 +207,11 @@ const int n_in = 1;
 //Tolerance for closeness to grid points when interpolating
 const double inter_tol = 1e-9;
 
+//Tolerance for loop convergence
 const double converged_tol = 1e-7;
+
+//Integrator tolerance
+const double integrator_tol = 1e-5;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));

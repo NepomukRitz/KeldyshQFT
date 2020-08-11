@@ -69,16 +69,12 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
  * Determines the number of integration points depending on INTER_PROP.
  */
 template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b) -> comp {
-#ifdef INTER_PROP
-    int N = nINT;
-#else
     /*First, determine which between nINT and the number of points required to have a step of 1/4 of the temperature is bigger.
      *Then compare that number to a maximal N of 1001 (chosen arbitrarily) and return the smallest one of these. Calculate
      * the step dx and fill the vectors accordingly. */
     int N = nINT;
     //int N = min({ max({ nINT, 2*(int)( (b-a)/(glb_T/2.) ) + 1 }), 1001}); // Simpson rule requires odd number of points
     //TODO: old comment: Something doesn't work properly with this formula!!
-#endif
     return integrator_simpson(integrand, a, b, N);
 }
 
@@ -461,7 +457,7 @@ template <typename Integrand> auto integrator(const Integrand& integrand, double
     //return integrator_simpson(integrand, a, b);       // only use standard Simpson
     //return integrator_riemann(integrand, a, b);
 
-    Adapt<Integrand> adaptor(1e-4, integrand);
+    Adapt<Integrand> adaptor(integrator_tol, integrand);
     return adaptor.integrate(a,b);
 }
 
@@ -472,7 +468,7 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
     //return integrator_simpson(integrand, a, b, w1, w2);     // use standard Simpson plus additional points around +- w/2
     //return integrator_simpson(integrand, a, b);           // only use standard Simpson
 
-    Adapt<Integrand> adaptor(1e-4, integrand);
+    Adapt<Integrand> adaptor(integrator_tol, integrand);
     return adaptor.integrate(a,b);
 }
 
