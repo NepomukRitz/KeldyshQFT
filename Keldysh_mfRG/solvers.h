@@ -7,8 +7,12 @@
 #include "write_data2file.h" // writing data into text or hdf5 files
 #include "parameters.h"      // needed for the vector of grid values to add
 
-void add_points_to_Lambda_grid(vector<double>& grid, const vector<double>& points){
-    for (auto y : points){
+void add_points_to_Lambda_grid(vector<double>& grid){
+    for (auto U : U_NRG){
+        auto y = 1/U - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
+        if(y<0){
+            break;
+        }
         auto it = grid.begin();
         auto pos = std::find_if(it, grid.end(), [y](double x) {return x<y;});
         grid.insert(pos, y);
@@ -76,7 +80,8 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     for (int i=1; i<=N_ODE; ++i) {
         x_vals[i] = resubst(X_ini + i*dX);      // value i
     }
-    add_points_to_Lambda_grid(x_vals, valuesToAdd);
+
+    add_points_to_Lambda_grid(x_vals);
 
     vec<double> x_diffs (x_vals.size()-1);                // step sizes
     for (int i=1; i<x_diffs.size(); i++){

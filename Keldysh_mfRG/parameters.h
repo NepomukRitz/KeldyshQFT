@@ -24,7 +24,9 @@ const int nODE = 50;
 // Limits of the fRG flow
 const double Lambda_ini = 10.0;
 const double Lambda_fin = 0.0;    //1.0-1./7.;
-vector<double> valuesToAdd {2.0 , 1.5, 1.2, 1.1, 1.0, 0.5, 0.2, 0.1};                                                   // NOLINT(cert-err58-cpp)
+
+//Vector with the values of U for which we have NRG data to compare with (exclude zero!)
+vector<double> U_NRG {0.1, 0.5, 1., 2., 3., 5., 10.};                                                   // NOLINT(cert-err58-cpp)
 
 
 // Vector with values of Lambda for the fRG flow
