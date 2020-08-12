@@ -108,8 +108,8 @@ const double glb_v_lower = -glb_v_upper;
 #endif
 
 // Number of frequency points for K2 and K3 classes
-const int nBOS2 = 51;//nBOS;
-const int nFER2 = 51;//nFER;
+const int nBOS2 = 101;//nBOS;
+const int nFER2 = 101;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 
@@ -211,7 +211,7 @@ const double inter_tol = 1e-9;
 const double converged_tol = 1e-7;
 
 //Integrator tolerance
-const double integrator_tol = 1e-5;
+const double integrator_tol = 1e-4;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));

@@ -36,28 +36,19 @@ auto main() -> int {
     print("Lambda flows from ", Lambda_ini); print_add(" to ", Lambda_fin, true);
     print("nODE for this run: ", nODE, true);
 
-    //omp_set_num_threads(20);
     print(omp_get_num_threads(), true);
-    print("number of frequencies ", nBOS, true);
+    print("nBOS1 = ", nBOS, true);
+    print("nFER1 = ", nFER, true);
+    print("nBOS2 = ", nBOS2, true);
+    print("nFER2 = ", nFER2, true);
 
-    double t_test_ODE = get_time();
-
-    //test_channel_decomposition(50);
-    //test_rhs_state_flow_SOPT(50, 4);
-    //test_ODE_solvers();
 
     //*
     string dir = "runs/";
-    string sname = "K" + to_string(DIAG_CLASS) + "_" +  to_string(N_LOOPS) + "_loop_flow" + "_n1=" + to_string(nBOS) +
-        + "_n2=" + to_string(nBOS2) +"_adapGLK" + "_G" + to_string(GRID) + "_Gamma=" + to_string(glb_Gamma);
-    string filename = dir + sname + "_fb=4.h5";
+    string filename = "K" + to_string(DIAG_CLASS) + "_" +  to_string(N_LOOPS) + "LF" + "_n1=" + to_string(nBOS) +
+        + "_n2=" + to_string(nBOS2) + "_G" + to_string(GRID) + "_Gamma=" + to_string(glb_Gamma) + ".h5";
 
     n_loop_flow(filename);
-    //*/
-
-    //test_K2_correctness(0.0);
-
-    get_time(t_test_ODE, "us");
 
     cout << "Hello world ";
 #ifdef __linux__
