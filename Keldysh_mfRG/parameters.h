@@ -19,10 +19,10 @@ using namespace std;
 //#define FLOW
 
 // Number of evolution flow points
-const int nODE = 50;
+const int nODE = 100;
 
 // Limits of the fRG flow
-const double Lambda_ini = 10.0;
+const double Lambda_ini = 15.0;
 const double Lambda_fin = 0.0;    //1.0-1./7.;
 
 //Vector with the values of U for which we have NRG data to compare with (exclude zero!)
@@ -38,7 +38,7 @@ const double glb_T = 0.01;                     // Temperature
 const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-const double glb_Gamma = 1.;                   // Hybridization of Anderson model
+const double glb_Gamma = 1./2.;                   // Hybridization of Anderson model
 const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 #define EQUILIBRIUM                            // If defined, use equilibrium FDT's for propagators
                                                // (only sensible when glb_V = 0)
