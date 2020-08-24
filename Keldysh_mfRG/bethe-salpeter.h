@@ -388,56 +388,35 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
 #endif
 
 #if DIAG_CLASS>=2
-    /*K2 contributions*/
-    n_mpi = nK_K2;
-    n_omp = nw2_w * nw2_v * n_in;
+    vec<Q> K2_values(nK_K2 * nw2_w * nw2_v * n_in);
 
-    // initialize buffer into which each MPI process writes their results
-    vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
+    for (int i0=0; i0< nK_K2; i0++){
+        for (int iw=0; iw<nw2_w; iw++){
+            double w = bfreqs2[iw];
 
-    // start for-loop over external arguments, using MPI and OMP
-    iterator = 0;
-    for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
-        if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for
-            for (int i_omp=0; i_omp<n_omp; ++i_omp) {
-                // converting external MPI/OMP indices to physical indices
-                int iK2 = i_mpi * n_omp + i_omp;
-                int i0 = iK2 /(nw2_w * nw2_v * n_in);
-                int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
-                int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
-                int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
-                double w = bfreqs2[iw];
+            for (int iv=0; iv<nw2_v; iv++){
                 double v = ffreqs2[iv];
-                Q value;
 
-                // initialize the integrand object and perform frequency integration
-                // (distinguishing between differentiated and non-differentiated bubble)
-                for(auto i2:non_zero_Keldysh_bubble){
-                    Integrand_BS_K2<Q> integrand_BS_K2 (vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, side);
-                    value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_BS_K2, glb_v_lower, glb_v_upper);                      //Integration over vppp, a fermionic frequency
+                for (int i_in=0; i_in<n_in; i_in++){
+                    for(auto i2:non_zero_Keldysh_bubble){
+
+                        Integrand_BS_K2<Q> integrand_BS_K2 (vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, side);
+
+                        K2_values[i0 * nw2_t * nv2_t * n_in + iw * nv2_t * n_in + iv * n_in + i_in]
+                        += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_BS_K2, glb_v_lower, glb_v_upper);                      //Integration over vppp, a fermionic frequency
+                    }
                 }
-
-                K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
-            ++iterator;
         }
     }
 
-    // collect+combine results from different MPI processes, reorder them appropriately
-    vec<Q> K2_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    mpi_collect(K2_buffer, K2_result, n_mpi, n_omp);
-    vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
-
     switch (channel) {
-        case 'a': lhs_vertex[0].avertex.K2 += K2_ordered_result; break;
-        case 'p': lhs_vertex[0].pvertex.K2 += K2_ordered_result; break;
-        case 't': lhs_vertex[0].tvertex.K2 += K2_ordered_result; break;
+        case 'a': lhs_vertex[0].avertex.K2 += K2_values; break;
+        case 'p': lhs_vertex[0].pvertex.K2 += K2_values; break;
+        case 't': lhs_vertex[0].tvertex.K2 += K2_values; break;
         default: ;
     }
 
-//    print("K2", channel, " done: ");
-//    get_time(tK2);
 #endif
 #endif
 }
