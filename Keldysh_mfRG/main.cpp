@@ -20,10 +20,31 @@
 #include "hdf5_routines.h"
 #include "flow.h"
 #include "tests/omp_test.h"
+#include "bethe-salpeter.h"
 
 using namespace std;
 
+#define BETHE_SALPETER
 
+#ifdef BETHE_SALPETER
+auto main(int argc, char **argv) -> int {
+#ifdef MPI_FLAG
+    MPI_Init(nullptr, nullptr);
+#endif
+    setUpGrids();
+
+    string dir = "/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_KCS/";
+//    string dir = "/tmp/tmp.bmJJ1dm2z1/";
+    string filename = "K2_1_loop_flow_n1=201_n2=51_adapGLK_G3_Gamma=0.500000_fb=4.h5";
+
+    print("Bethe-Salpteter run for file: " + dir + filename, true);
+    print("nLambda = " + to_string(atoi(argv[1])));
+
+    check_Bethe_Salpeter(dir+filename, atoi(argv[1]));
+
+    return 0;
+}
+#else
 auto main() -> int {
 
 #ifdef MPI_FLAG
@@ -33,7 +54,8 @@ auto main() -> int {
     setUpGrids();
 
     print("U for this run is: ", glb_U, true);
-    print("Lambda flows from ", Lambda_ini); print_add(" to ", Lambda_fin, true);
+    print("Lambda flows from ", Lambda_ini);
+    print_add(" to ", Lambda_fin, true);
     print("nODE for this run: ", nODE, true);
 
     print(omp_get_num_threads(), true);
@@ -44,11 +66,11 @@ auto main() -> int {
 
 
     //*
-    string dir = "runs/";
-    string filename = "K" + to_string(DIAG_CLASS) + "_" +  to_string(N_LOOPS) + "LF" + "_n1=" + to_string(nBOS) +
+    string dir = "../Data/";
+    string filename = "testK" + to_string(DIAG_CLASS) + "_" +  to_string(N_LOOPS) + "LF" + "_n1=" + to_string(nBOS) +
         + "_n2=" + to_string(nBOS2) + "_G" + to_string(GRID) + "_Gamma=" + to_string(glb_Gamma) + ".h5";
 
-    n_loop_flow(filename);
+    n_loop_flow(dir+filename);
 
     cout << "Hello world ";
 #ifdef __linux__
@@ -64,3 +86,4 @@ auto main() -> int {
 #endif
     return 0;
 }
+#endif

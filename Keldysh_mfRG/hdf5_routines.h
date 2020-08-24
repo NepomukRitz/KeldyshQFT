@@ -828,7 +828,7 @@ void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  * @return            : State object containing the result.
  */
-State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size, rvec &Lambdas){
+State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -971,7 +971,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
 void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
     // test hdf5: read files and compare to original file
     int cnt = 0;
-    State<comp> out = read_hdf(FILE_NAME, i, nODE, flow_grid);
+    State<comp> out = read_hdf(FILE_NAME, i, nODE);
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
             if (state.selfenergy.val(iK, iSE, 0) != out.selfenergy.val(iK, iSE, 0)) {
@@ -1031,10 +1031,6 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
 #endif
             }
 #endif
-            if (state.vertex[0].irred.val(iK, i_in) != out.vertex[0].irred.val(iK, i_in)) {
-                cout << "Vertex not equal, " << iK << endl;
-                cnt += 1;
-            }
         }
     }
     if (cnt == 0) print("HDF5 test successful.", true);
