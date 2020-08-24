@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(Keldysh_mfRG)
+project(Keldysh_mfRG_testing)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -45,10 +46,42 @@ add_executable(Keldysh_mfRG
         vertex.h
         write_data2file.h Integrator_NR/integrator_NR.h)
 
+add_executable(Keldysh_mfRG_testing
+        unit_tests/unit_tests.cpp
+        a_vertex.h
+        bubbles.h
+        correctionFunctions.h
+        data_structures.h
+        diagrammatic_combinations.h
+        flow.h
+        fourier_trafo.h
+        frequency_grid.h
+        hdf5_routines.h
+        integrator.h
+        internal_symmetries.h
+        Keldysh_symmetries.h
+        loop.h
+        mpi_setup.h
+        parameters.h
+        perturbation_theory.h
+        propagator.h
+        p_vertex.h
+        right_hand_sides.h
+        selfenergy.h
+        solvers.h
+        state.h
+        testFunctions.h
+        t_vertex.h
+        util.h
+        vertex.h
+        write_data2file.h Integrator_NR/integrator_NR.h)
+
 include_directories(/usr/include/mpi/)
 
 target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
-
 target_link_libraries(Keldysh_mfRG -lgsl -lgslcblas)
-
 target_link_libraries(Keldysh_mfRG fftw3)
+
+target_link_libraries(Keldysh_mfRG_testing -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+target_link_libraries(Keldysh_mfRG_testing -lgsl -lgslcblas)
+target_link_libraries(Keldysh_mfRG_testing fftw3)
