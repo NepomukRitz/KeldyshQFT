@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "openmp-use-default-none"
 /**
  * Classes / functions for computing bubbles.
  *
@@ -1205,5 +1203,3 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #endif
 
 #endif //KELDYSH_MFRG_BUBBLES_H
-
-#pragma clang diagnostic pop
