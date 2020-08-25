@@ -9,7 +9,7 @@ TEST_CASE( "vector operations", "[data_structures]" ) {
     v[0] = 0. + 0.*glb_i;
     v[1] = 1.;
     v[2] = glb_i;
-    v[3] = -1;
+    v[3] = -1.;
     v[4] = -glb_i;
     v[5] = 1. + glb_i;
     v[6] = 1e-9 + glb_i;
