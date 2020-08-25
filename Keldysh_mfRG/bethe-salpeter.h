@@ -372,9 +372,9 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
 
                     K1_values[i0*nw1_w*n_in + iw*n_in + i_in] += prefactor * (1. / (2. * M_PI * glb_i)) *
                              integrator(integrand_BS_K1, glb_v_lower, glb_v_upper);   //Integration over a fermionic frequency
+                    K1_values[i0*nw1_w*n_in + iw*n_in + i_in] += prefactor * (1. / (2. * M_PI * glb_i)) *
+                                                                 asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i2, i_in, channel);
                 }
-                K1_values[i0*nw1_w*n_in + iw*n_in + i_in] += prefactor * (1. / (2. * M_PI * glb_i)) *
-                         asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i_in, channel);
             }
         }
     }
@@ -404,7 +404,10 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
                         Integrand_BS_K2<Q> integrand_BS_K2 (vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, side);
 
                         K2_values[i0 * nw2_t * nv2_t * n_in + iw * nv2_t * n_in + iv * n_in + i_in]
-                        += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_BS_K2, glb_v_lower, glb_v_upper);                      //Integration over vppp, a fermionic frequency
+                        += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_BS_K2, glb_v_lower, glb_v_upper);
+                        K2_values[i0 * nw2_t * nv2_t * n_in + iw * nv2_t * n_in + iv * n_in + i_in]
+                        += prefactor*(1./(2.*M_PI*glb_i))*
+                           asymp_corrections_K2(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, i0, i2, i_in, channel);
                     }
                 }
             }
