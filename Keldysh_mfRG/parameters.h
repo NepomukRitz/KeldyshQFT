@@ -19,10 +19,10 @@ using namespace std;
 //#define FLOW
 
 // Number of evolution flow points
-const int nODE = 100;
+const int nODE = 50;
 
 // Limits of the fRG flow
-const double Lambda_ini = 15.0;
+const double Lambda_ini = 20.0;
 const double Lambda_fin = 0.0;    //1.0-1./7.;
 
 //Vector with the values of U for which we have NRG data to compare with (exclude zero!)

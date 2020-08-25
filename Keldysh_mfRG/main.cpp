@@ -24,7 +24,7 @@
 
 using namespace std;
 
-#define BETHE_SALPETER
+//#define BETHE_SALPETER
 
 #ifdef BETHE_SALPETER
 auto main(int argc, char **argv) -> int {
@@ -57,17 +57,20 @@ auto main() -> int {
     print("Lambda flows from ", Lambda_ini);
     print_add(" to ", Lambda_fin, true);
     print("nODE for this run: ", nODE, true);
-
-    print(omp_get_num_threads(), true);
+    print("MPI World Size = " + to_string(mpi_world_size()), true);
+#pragma omp parallel default(none)
+    {
+    #pragma omp master
+        print("OMP Threads = " + to_string(omp_get_num_threads()), true);
+    }
     print("nBOS1 = ", nBOS, true);
     print("nFER1 = ", nFER, true);
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
 
-
     //*
     string dir = "../Data/";
-    string filename = "testK" + to_string(DIAG_CLASS) + "_" +  to_string(N_LOOPS) + "LF" + "_n1=" + to_string(nBOS) +
+    string filename = "K" + to_string(DIAG_CLASS) + "_" +  to_string(N_LOOPS) + "LF" + "_n1=" + to_string(nBOS) +
         + "_n2=" + to_string(nBOS2) + "_G" + to_string(GRID) + "_Gamma=" + to_string(glb_Gamma) + ".h5";
 
     n_loop_flow(dir+filename);
