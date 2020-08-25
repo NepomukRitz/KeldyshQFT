@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "openmp-use-default-none"
 //
 // Created by SAguirre on 15/08/2020.
 //
@@ -461,5 +459,3 @@ void check_Bethe_Salpeter(const H5std_string filename, int nLambda){
 
 
 #endif //KELDYSH_MFRG_BETHE_SALPETER_H
-
-#pragma clang diagnostic pop
