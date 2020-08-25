@@ -52,6 +52,7 @@ add_executable(Keldysh_mfRG_testing
         bubbles.h
         correctionFunctions.h
         data_structures.h
+        unit_tests/test_data_structures.h
         diagrammatic_combinations.h
         flow.h
         fourier_trafo.h
