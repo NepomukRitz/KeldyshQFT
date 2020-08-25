@@ -6,8 +6,11 @@
 SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_transformations]") {
 
     GIVEN( "a set of frequency indices etc." ) {
+        auto w =  GENERATE( -100., 0., 1e-16, 1., 100. );
+        auto v1 = GENERATE( -100., 0., 1e-16, 1., 100. );
+        auto v2 = GENERATE( -100., 0., 1e-16, 1., 100. );
 
-        IndicesSymmetryTransformations indices(0, 1., 2., 3., 0, 'a');
+        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 'a');
 
         REQUIRE( indices.prefactor == 1. );
         REQUIRE( !indices.conjugate );
