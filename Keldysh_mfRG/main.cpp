@@ -21,8 +21,35 @@
 #include "flow.h"
 #include "tests/omp_test.h"
 #include "bethe-salpeter.h"
+#include <cassert>
 
 using namespace std;
+
+
+string generate_filename(string& dir) {
+    string klass = "K" + to_string(DIAG_CLASS) + "_";
+    string loops = to_string(N_LOOPS) + "LF_";
+    string n1 = "n1=" + to_string(nBOS) + "_";
+    string n2 = "n2=" + to_string(nBOS2) + "_";
+    string n3 = "n3=" + to_string(nBOS3) + "_";
+    string gamma = "Gamma=" + to_string(glb_Gamma) + "_";
+    string lambda = "L_ini=" + to_string((int)Lambda_ini)+"_";
+    string ode = "nODE=" + to_string(nODE);
+    string extension = ".h5";
+
+    string filename = klass + loops + n1;
+#if DIAG_CLASS >= 2
+    filename += n2;
+#elif defined(STATIC_FEEDBACK)
+    filename += "static_";
+#endif
+#if DIAG_CLASS >= 3
+    filename += n3;
+#endif
+    filename += gamma + lambda + ode + extension;
+
+    return dir + filename;
+}
 
 //#define BETHE_SALPETER
 
@@ -51,6 +78,10 @@ auto main() -> int {
     MPI_Init(nullptr, nullptr);
 #endif
 
+#ifdef STATIC_FEEDBACK
+    assert(DIAG_CLASS == 1);
+#endif
+
     setUpGrids();
 
     print("U for this run is: ", glb_U, true);
@@ -70,10 +101,9 @@ auto main() -> int {
 
     //*
     string dir = "../Data/";
-    string filename = "K" + to_string(DIAG_CLASS) + "_" +  to_string(N_LOOPS) + "LF" + "_n1=" + to_string(nBOS) +
-        + "_n2=" + to_string(nBOS2) + "_G" + to_string(GRID) + "_Gamma=" + to_string(glb_Gamma) + ".h5";
+    string filename = generate_filename(dir);
 
-    n_loop_flow(dir+filename);
+    n_loop_flow(filename);
 
     cout << "Hello world ";
 #ifdef __linux__
