@@ -16,6 +16,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 #set(SOURCE_FILES main.cpp) # diagrammatic_combinations.h interpolations.h testFunctions.h correctionFunctions.h)
 #add_executable(openmp_test_clion ${SOURCE_FILES})
 
+# standard executable for integration tests and production runs
 add_executable(Keldysh_mfRG
         main.cpp
         a_vertex.h
@@ -28,6 +29,7 @@ add_executable(Keldysh_mfRG
         frequency_grid.h
         hdf5_routines.h
         integrator.h
+        Integrator_NR/integrator_NR.h
         internal_symmetries.h
         Keldysh_symmetries.h
         loop.h
@@ -40,25 +42,30 @@ add_executable(Keldysh_mfRG
         selfenergy.h
         solvers.h
         state.h
+        symmetry_transformations.h
         testFunctions.h
         t_vertex.h
         util.h
         vertex.h
-        write_data2file.h Integrator_NR/integrator_NR.h)
+        write_data2file.h)
 
+# executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
         unit_tests/unit_tests.cpp
+        unit_tests/catch.hpp
+        unit_tests/test_data_structures.h
+        unit_tests/test_symmetry_transformations.h
         a_vertex.h
         bubbles.h
         correctionFunctions.h
         data_structures.h
-        unit_tests/test_data_structures.h
         diagrammatic_combinations.h
         flow.h
         fourier_trafo.h
         frequency_grid.h
         hdf5_routines.h
         integrator.h
+        Integrator_NR/integrator_NR.h
         internal_symmetries.h
         Keldysh_symmetries.h
         loop.h
@@ -71,11 +78,12 @@ add_executable(Keldysh_mfRG_testing
         selfenergy.h
         solvers.h
         state.h
+        symmetry_transformations.h
         testFunctions.h
         t_vertex.h
         util.h
         vertex.h
-        write_data2file.h Integrator_NR/integrator_NR.h)
+        write_data2file.h)
 
 include_directories(/usr/include/mpi/)
 
