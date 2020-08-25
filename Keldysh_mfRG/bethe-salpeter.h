@@ -15,6 +15,7 @@
 #include "solvers.h"
 #include "hdf5_routines.h"
 #include "data_structures.h"
+#include <iostream>
 
 rvec reconstruct_grid(){
     const double X_ini = sq_substitution(Lambda_ini), X_fin = sq_substitution(Lambda_fin); // substitute limits
@@ -448,6 +449,9 @@ void check_Bethe_Salpeter(const H5std_string filename, int nLambda){
 
     Vertex<comp> calculated_vertex = state.vertex;
 
+    Vertex<comp> difference = bethe_salpeter_L - calculated_vertex;
+
+    print("The 2-norm difference between mfRG and Bethe-Salpeter is " + to_string(difference[0].norm(2)));
 
 }
 

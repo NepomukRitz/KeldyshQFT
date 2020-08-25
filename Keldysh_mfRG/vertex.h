@@ -1,6 +1,7 @@
 #ifndef KELDYSH_MFRG_VERTEX_H
 #define KELDYSH_MFRG_VERTEX_H
 
+#include <cmath>
 #include "data_structures.h"    // real/complex vector classes
 #include "parameters.h"         // system parameters (vector lengths etc.)
 #include "Keldysh_symmetries.h" // auxiliary functions for conversions of Keldysh indices
@@ -92,7 +93,7 @@ public:
     void initialize(Q val);
 
     //Norm of the vertex
-    double norm();
+    double norm(int);
 
     // Various operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
@@ -325,9 +326,137 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
     this->irred.initialize(val);
 }
 
-template <typename Q> auto fullvert<Q>::norm() -> double {
-    //TODO Implement a meaningful norm!
-    return 1.;
+template <typename Q> auto fullvert<Q>::norm(const int p) -> double {
+    if(p==0) {//infinity (max) norm
+        double max = 0;
+#if DIAG_CLASS>=0
+        for(int iK = 0; iK<nK_K1; iK++){
+            for(int iw=0; iw < nBOS; iw++) {
+                for (int i_in = 0; i_in < n_in; i_in++) {
+                    double compare = abs(this->avertex.K1_val(iK, iw, i_in));
+                    if(compare > max){
+                        max = compare;
+                    }
+
+                    compare = abs(this->pvertex.K1_val(iK, iw, i_in));
+                    if(compare > max){
+                        max = compare;
+                    }
+
+                    compare = abs(this->tvertex.K1_val(iK, iw, i_in));
+                    if(compare > max){
+                        max = compare;
+                    }
+                }
+            }
+        }
+#endif
+#if DIAG_CLASS>=2
+        for(int iK=0; iK < nK_K2; iK++) {
+            for (int iw = 0; iw < nBOS2; iw++) {
+                for (int iv = 0; iv < nFER2; iv++) {
+                    for (int i_in = 0; i_in < n_in; i_in++) {
+
+                        double compare = abs(this->avertex.K2_val(iK, iw, iv, i_in));
+                        if(compare > max){
+                            max = compare;
+                        }
+
+                        compare = abs(this->pvertex.K2_val(iK, iw, iv, i_in));
+                        if(compare > max){
+                            max = compare;
+                        }
+
+                        compare = abs(this->tvertex.K2_val(iK, iw, iv, i_in));
+                        if(compare > max){
+                            max = compare;
+                        }
+                    }
+                }
+            }
+        }
+#endif
+#if DIAG_CLASS >= 3
+        for(int iK=0; iK < nK_K3; iK++) {
+            for (int iw = 0; iw < nBOS3; iw++) {
+                for (int iv1 = 0; iv1 < nFER3; iv1++) {
+                    for (int iv2 = 0; iv2 < nFER3; iv2++) {
+                        for (int i_in = 0; i_in < n_in; i_in++) {
+                            double compare = abs(this->avertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            if(compare > max){
+                                max = compare;
+                            }
+
+                            compare = abs(this->pvertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            if(compare > max){
+                                max = compare;
+                            }
+
+                            compare = abs(this->tvertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            if(compare > max){
+                                max = compare;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+#endif
+    return max;
+    }
+    else { //p-norm
+
+        double result = 0;
+#if DIAG_CLASS >=0
+        for(int iK = 0; iK<nK_K1; iK++){
+            for(int iw=0; iw < nBOS; iw++){
+                for(int i_in=0; i_in<n_in; i_in++){
+
+                    result += pow(abs(this->avertex.K1_val(iK, iw, i_in)), (double)p);
+                    result += pow(abs(this->pvertex.K1_val(iK, iw, i_in)), (double)p);
+                    result += pow(abs(this->tvertex.K1_val(iK, iw, i_in)), (double)p);
+
+                }
+            }
+        }
+#endif
+#if DIAG_CLASS>=2
+        for(int iK=0; iK < nK_K2; iK++){
+            for(int iw=0; iw < nBOS2; iw++){
+                for(int iv=0; iv < nFER2; iv++) {
+                    for (int i_in = 0; i_in < n_in; i_in++) {
+
+                        result += pow(abs(this->avertex.K2_val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(abs(this->pvertex.K2_val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(abs(this->tvertex.K2_val(iK, iw, iv, i_in)), (double) p);
+
+                    }
+                }
+            }
+        }
+#endif
+
+#if DIAG_CLASS>=3
+        for(int iK=0; iK < nK_K3; iK++){
+            for(int iw=0; iw < nBOS3; iw++){
+                for(int iv1=0; iv1<nFER3; iv1++) {
+                    for (int iv2 = 0; iv2 < nFER3; iv2++) {
+                        for (int i_in = 0; i_in < n_in; i_in++) {
+
+                            result += pow(abs(this->avertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
+                            result += pow(abs(this->pvertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
+                            result += pow(abs(this->tvertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
+
+                        }
+                    }
+                }
+            }
+        }
+#endif
+
+    return pow(result, 1./((double)p));
+    }
+
 }
 
 #endif //KELDYSH_MFRG_VERTEX_H
