@@ -57,11 +57,11 @@ double log_resubstitution(double x) {
 }
 
 double sq_substitution(double x) {
-    double a = 3.;
+    double a = 5.;
     return sqrt((sqrt(pow(x, 4) + 4.*pow(a*x, 2)) - pow(x, 2))/2.)/a;
 }
 double sq_resubstitution(double x) {
-    double a = 3.;
+    double a = 5.;
     return a*pow(x, 2) / sqrt(1. - pow(x, 2));
 }
 

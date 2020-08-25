@@ -14,27 +14,36 @@
 // Both gamma_m and gamma_p must be taken positive!
 // a and b define the propagators in question: for R => 1
 //                                             for A =>-1
-auto correctionFunctionBubbleAT(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
+auto correctionFunctionBubbleAT(double w, double a, double b, double gamma, double sign) -> comp{
 #if REG==2
     if((w + glb_i * glb_Gamma * (b - a))==0.)
         return 0.;
     else
-        return 1./(w+glb_i*glb_Gamma*(b-a))
-            *(log((gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma*b)/(gamma_p-w/2.-glb_epsilon+glb_i*glb_Gamma*a))
-            + log((gamma_m+w/2.+glb_epsilon-glb_i*glb_Gamma*a)/(gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma*b)));
+        return 1./(w + glb_i*glb_Gamma*(b-a))
+            *log( (gamma + w/2. - sign*glb_epsilon - glb_i*glb_Gamma*a)/
+                  (gamma - w/2. - sign*glb_epsilon - glb_i*glb_Gamma*b) );
 #else
     return 0.;
 #endif
 }
 
-auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, double gamma_p) -> comp{
+auto correctionFunctionBubbleP(double w, double a, double b, double gamma, double sign) -> comp{
 #if REG==2
     if((w - 2. * glb_epsilon + glb_i * glb_Gamma * (a + b))==0.)
         return 0.;
-    else
-        return 1./(w-2*glb_epsilon+glb_i*glb_Gamma*(a+b))
-            *(log((gamma_p-w/2.+glb_epsilon-glb_i*glb_Gamma*b)/(gamma_p+w/2.-glb_epsilon+glb_i*glb_Gamma*a))
-            + log((gamma_m-w/2.+glb_epsilon-glb_i*glb_Gamma*a)/(gamma_m+w/2.-glb_epsilon+glb_i*glb_Gamma*b)));
+    else{
+        if(sign>0){
+            return 1./(w-2*glb_epsilon+glb_i*glb_Gamma*(a+b)) *
+            log( (gamma - w/2. + glb_epsilon - glb_i*glb_Gamma*b) /
+                 (gamma + w/2. - glb_epsilon + glb_i*glb_Gamma*a) );
+        }
+        else {
+            return 1./(w-2*glb_epsilon+glb_i*glb_Gamma*(a+b)) *
+            log( (gamma - w/2. + glb_epsilon - glb_i*glb_Gamma*a) /
+                 (gamma + w/2. - glb_epsilon + glb_i*glb_Gamma*b) );
+        }
+    }
+
 #else
     return 0.;
 #endif
@@ -53,231 +62,249 @@ auto correctionFunctionBubbleP(double w, double a, double b, double gamma_m, dou
  * @param channel   : Char indicating for which channel one is calculating the correction. Changes depending on the parametrization of the frequencies
  * @return          : Returns value of the correction
  */
-template <typename Q> auto asymp_corrections_K1(const Vertex<Q>& vertex1, const Vertex<Q>& vertex2, double gamma_m, double gamma_p, double w, int i0_in, int i_in, char channel) -> Q{
+template <typename Q> auto asymp_corrections_K1(const Vertex<Q>& vertex1, const Vertex<Q>& vertex2, double gamma_m, double gamma_p,
+        double w, int i0_in, int i2, int i_in, char channel) -> Q{
 
     int i0;
     Q res=0.;
     double a,b;
-    Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-
-    for(auto i2 : {3,6,9,12}){       //i2 must be 3, 6, 9 or 12, since these are the terms that require corrections. We're neglecting oder corrections (for now)
-        switch (i2){
-            // a=1  => Retarded
-            // a=-1 => Advanced
-            case 3:     //AA
-                a=-1.;
-                b=-1.;
-                break;
-            case 6:     //AR
-                a=-1.;
-                b=1.;
-                break;
-            case 9:     //RA
-                a=1.;
-                b=-1.;
-                break;
-            case 12:    //RR
-                a=1.;
-                b=1.;
-                break;
-            default:
-                print("Houston, we've got a problem");
-                return 0.;
-        }
-        vector<int> indices(2);
-        switch (channel) {
-            //According to channel, indices of the left and right vertices are determined.
-            //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
-            //Keep in mind which spin components of the vertex contribute to the relevant spin components
-            //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
-            case 'a':                                                                       //Flow eq: V*Pi*V
-                i0 = non_zero_Keldysh_K1a[i0_in];
-                vertex1[0].avertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 0, channel);
-
-                res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
-
-                break;
-            case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                i0 = non_zero_Keldysh_K1p[i0_in];
-                vertex1[0].pvertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 0, channel);
-
-                /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                 *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                 * the bubble_function(...) must be changed.*/
-//                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 1, channel);
-//                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 1, channel);
-
-                res += (res_l_V  * res_r_V) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p); //+ res_l_Vhat * res_r_Vhat
-                break;
-            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                i0 = non_zero_Keldysh_K1t[i0_in];
-                vertex1[0].tvertex.indices_sum(indices, i0, i2);
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 0, channel);
-                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 1, channel);
-
-                res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);;
-                break;
-            default: ;
-        }
+    Q res_l_V_m, res_r_V_m, res_l_Vhat_m, res_r_Vhat_m;
+    Q res_l_V_p, res_r_V_p, res_l_Vhat_p, res_r_Vhat_p;
+    switch (i2){
+        // a=1  => Retarded
+        // a=-1 => Advanced
+        case 3:     //AA
+            a=-1.;
+            b=-1.;
+            break;
+        case 6:     //AR
+            a=-1.;
+            b=1.;
+            break;
+        case 9:     //RA
+            a=1.;
+            b=-1.;
+            break;
+        case 12:    //RR
+            a=1.;
+            b=1.;
+            break;
+        default:
+            return 0.;
     }
+    vector<int> indices(2);
+    switch (channel) {
+        //According to channel, indices of the left and right vertices are determined.
+        //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
+        //Keep in mind which spin components of the vertex contribute to the relevant spin components
+        //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
+        case 'a':                                                                       //Flow eq: V*Pi*V
+            i0 = non_zero_Keldysh_K1a[i0_in];
+            vertex1[0].avertex.indices_sum(indices, i0, i2);
+            res_l_V_m =  left_same_bare<Q> (vertex1, indices[0], w, -gamma_m, i_in, 0, channel);
+            res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
+
+            res_l_V_p =  left_same_bare<Q> (vertex1, indices[0], w, gamma_p, i_in, 0, channel);
+            res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
+
+            res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
+            res += (res_l_V_p * res_r_V_p) * correctionFunctionBubbleAT(w, a, b, gamma_p, +1.);
+
+            break;
+        case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
+            i0 = non_zero_Keldysh_K1p[i0_in];
+            vertex1[0].pvertex.indices_sum(indices, i0, i2);
+
+            res_l_V_m =  left_same_bare<Q> (vertex1, indices[0], w, -gamma_m, i_in, 0, channel);
+            res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
+
+            res_l_V_p =  left_same_bare<Q> (vertex1, indices[0], w, gamma_p, i_in, 0, channel);
+            res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
+
+            res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
+            res += (res_l_V_p * res_r_V_p) * correctionFunctionBubbleAT(w, a, b, gamma_p, +1.);
+            break;
+        case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
+            i0 = non_zero_Keldysh_K1t[i0_in];
+            vertex1[0].tvertex.indices_sum(indices, i0, i2);
+            res_l_V_m =  left_same_bare<Q> (vertex1, indices[0], w, -gamma_m, i_in, 0, channel);
+            res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
+
+            res_l_V_p =  left_same_bare<Q> (vertex1, indices[0], w, gamma_p, i_in, 0, channel);
+            res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
+
+            res_l_Vhat_m =  left_same_bare<Q> (vertex1, indices[0], w, -gamma_m, i_in, 1, channel);
+            res_r_Vhat_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 1, channel);
+
+            res_l_Vhat_p =  left_same_bare<Q> (vertex1, indices[0], w, gamma_p, i_in, 1, channel);
+            res_r_Vhat_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 1, channel);
+
+            res += (res_l_V_m * (res_r_V_m+res_r_Vhat_m) + (res_l_V_m+res_l_Vhat_m) * res_r_V_m) *correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
+            res += (res_l_V_p * (res_r_V_p+res_r_Vhat_p) + (res_l_V_p+res_l_Vhat_p) * res_r_V_p) *correctionFunctionBubbleAT(w, a, b, gamma_p, +1.);
+            break;
+        default: ;
+    }
+
     return res;
 }
 
-template <typename Q> auto asymp_corrections_K2(const Vertex<Q>& vertex1, const Vertex<Q>& vertex2, double gamma_m, double gamma_p, double w, double v, int i0_in, int i_in, char channel) -> Q{
+template <typename Q> auto asymp_corrections_K2(const Vertex<Q>& vertex1, const Vertex<Q>& vertex2, double gamma_m, double gamma_p, double w,
+        double v, int i0_in, int i2, int i_in, char channel) -> Q{
 
     int i0;
     Q res=0.;
     double a,b;
-    Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
+    Q res_l_V_m, res_r_V_m, res_l_Vhat_m, res_r_Vhat_m;
+    Q res_l_V_p, res_r_V_p, res_l_Vhat_p, res_r_Vhat_p;
 
-    for(auto i2 : {3,6,9,12}){       //i2 must be 3, 6, 9 or 12, since these are the terms that require corrections. We're neglecting oder corrections (for now)
-        switch (i2){
-            // a=1  => Retarded
-            // a=-1 => Advanced
-            case 3:     //AA
-                a=-1.;
-                b=-1.;
-                break;
-            case 6:     //AR
-                a=-1.;
-                b=1.;
-                break;
-            case 9:     //RA
-                a=1.;
-                b=-1.;
-                break;
-            case 12:    //RR
-                a=1.;
-                b=1.;
-                break;
-            default:
-                print("Houston, we've got a problem");
-                return 0.;
-        }
-        vector<int> indices(2);
-        switch (channel) {
-            //According to channel, indices of the left and right vertices are determined.
-            //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
-            //Keep in mind which spin components of the vertex contribute to the relevant spin components
-            //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
-            case 'a':                                                                       //Flow eq: V*Pi*V
-                i0 = non_zero_Keldysh_K1a[i0_in];
-                vertex1[0].avertex.indices_sum(indices, i0, i2);
-                res_l_V = vertex1[0].avertex.K2_valsmooth(indices[0], w, v, i_in, 0, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-                res_r_V = vertex2[0].irred.val(indices[1], i_in, 0) + vertex1[0].avertex.K1_valsmooth(indices[1], w, i_in, 0, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
-
-                res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
-
-                break;
-            case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                i0 = non_zero_Keldysh_K1p[i0_in];
-                vertex1[0].pvertex.indices_sum(indices, i0, i2);
-                res_l_V = vertex1[0].pvertex.K2_valsmooth(indices[0], w, v, i_in, 0); //What remains when taking lim v'' to infinity on the left vertex is K2
-                res_r_V = vertex2[0].irred.val(indices[1], i_in, 0) + vertex1[0].pvertex.K1_valsmooth(indices[1], w, i_in, 0); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
-
-                /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                 *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                 * the bubble_function(...) must be changed.*/
-//                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 1, channel);
-//                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 1, channel);
-
-                res += (res_l_V  * res_r_V) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p); //+ res_l_Vhat * res_r_Vhat
-                break;
-            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                i0 = non_zero_Keldysh_K1t[i0_in];
-                vertex1[0].tvertex.indices_sum(indices, i0, i2);
-                res_l_V = vertex1[0].tvertex.K2_valsmooth(indices[0], w, v, i_in, 0, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-                res_r_V = vertex2[0].irred.val(indices[1], i_in, 0) + vertex1[0].tvertex.K1_valsmooth(indices[1], w, i_in, 0, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
-                res_l_Vhat = vertex1[0].tvertex.K2_valsmooth(indices[0], w, v, i_in, 1, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-                res_r_Vhat = vertex2[0].irred.val(indices[1], i_in, 0) + vertex1[0].tvertex.K1_valsmooth(indices[1], w, i_in, 1, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
-
-                res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);;
-                break;
-            default: ;
-        }
+    switch (i2){
+        // a=1  => Retarded
+        // a=-1 => Advanced
+        case 3:     //AA
+            a=-1.;
+            b=-1.;
+            break;
+        case 6:     //AR
+            a=-1.;
+            b=1.;
+            break;
+        case 9:     //RA
+            a=1.;
+            b=-1.;
+            break;
+        case 12:    //RR
+            a=1.;
+            b=1.;
+            break;
+        default:
+            return 0.;
     }
+    vector<int> indices(2);
+    switch (channel) {
+        //According to channel, indices of the left and right vertices are determined.
+        //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
+        //Keep in mind which spin components of the vertex contribute to the relevant spin components
+        //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
+        case 'a':                                                                       //Flow eq: V*Pi*V
+            i0 = non_zero_Keldysh_K1a[i0_in];
+            vertex1[0].avertex.indices_sum(indices, i0, i2);
+
+            res_l_V_m = left_diff_bare<Q> (vertex1, indices[0], w, v, -gamma_m, i_in, 0, channel);
+            res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
+
+            res_l_V_p = left_diff_bare<Q> (vertex1, indices[0], w, v, gamma_p, i_in, 0, channel);
+            res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
+
+            res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
+            res += (res_l_V_p * res_r_V_p) * correctionFunctionBubbleAT(w, a, b, gamma_p, +1.);
+            break;
+        case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
+            i0 = non_zero_Keldysh_K1p[i0_in];
+            vertex1[0].pvertex.indices_sum(indices, i0, i2);
+
+            res_l_V_m = left_diff_bare<Q> (vertex1, indices[0], w, v, -gamma_m, i_in, 0, channel);
+            res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
+
+            res_l_V_p = left_diff_bare<Q> (vertex1, indices[0], w, v, gamma_p, i_in, 0, channel);
+            res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
+
+            res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
+            res += (res_l_V_p * res_r_V_p) * correctionFunctionBubbleAT(w, a, b, gamma_p, +1.);
+            break;
+        case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
+            i0 = non_zero_Keldysh_K1t[i0_in];
+            vertex1[0].tvertex.indices_sum(indices, i0, i2);
+
+            res_l_V_m = left_diff_bare<Q> (vertex1, indices[0], w, v, -gamma_m, i_in, 0, channel);
+            res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
+
+            res_l_V_p = left_diff_bare<Q> (vertex1, indices[0], w, v, gamma_p, i_in, 0, channel);
+            res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
+
+
+            res_l_Vhat_m = left_diff_bare<Q> (vertex1, indices[0], w, v, -gamma_m, i_in, 1, channel);
+            res_r_Vhat_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 1, channel);
+
+            res_l_Vhat_p = left_diff_bare<Q> (vertex1, indices[0], w, v, gamma_p, i_in, 1, channel);
+            res_r_Vhat_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 1, channel);
+
+
+            res += (res_l_V_m * (res_r_V_m+res_r_Vhat_m) + (res_l_V_m+res_l_Vhat_m) * res_r_V_m) *correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
+            res += (res_l_V_p * (res_r_V_p+res_r_Vhat_p) + (res_l_V_p+res_l_Vhat_p) * res_r_V_p) *correctionFunctionBubbleAT(w, a, b, gamma_p, +1.);
+            break;
+        default: ;
+    }
+
     return res;
 }
 
-template <typename Q> auto asymp_corrections_K3(const Vertex<Q>& vertex1, const Vertex<Q>& vertex2, double gamma_m, double gamma_p, double w, double v, double vp, int i0_in, int i_in, char channel) -> Q{
+template <typename Q> auto asymp_corrections_K3(const Vertex<Q>& vertex1, const Vertex<Q>& vertex2, double gamma_m, double gamma_p, double w,
+        double v, double vp, int i0_in, int i2, int i_in, char channel) -> Q{
+    //TODO function not correct yet, use plus and minus corrections according to scheme above.
 
     int i0;
     Q res=0.;
     double a,b;
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
 
-    for(auto i2 : {3,6,9,12}){       //i2 must be 3, 6, 9 or 12, since these are the terms that require corrections. We're neglecting oder corrections (for now)
-        switch (i2){
-            // a=1  => Retarded
-            // a=-1 => Advanced
-            case 3:     //AA
-                a=-1.;
-                b=-1.;
-                break;
-            case 6:     //AR
-                a=-1.;
-                b=1.;
-                break;
-            case 9:     //RA
-                a=1.;
-                b=-1.;
-                break;
-            case 12:    //RR
-                a=1.;
-                b=1.;
-                break;
-            default:
-                print("Houston, we've got a problem");
-                return 0.;
-        }
-        vector<int> indices(2);
-        switch (channel) {
-            //According to channel, indices of the left and right vertices are determined.
-            //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
-            //Keep in mind which spin components of the vertex contribute to the relevant spin components
-            //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
-            case 'a':                                                                       //Flow eq: V*Pi*V
-                i0 = non_zero_Keldysh_K1a[i0_in];
-                vertex1[0].avertex.indices_sum(indices, i0, i2);
-                res_l_V = vertex1[0].avertex.K2_valsmooth(indices[0], w, v, i_in, 0, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-                res_r_V = vertex1[0].avertex.K2b_valsmooth(indices[1], w, vp, i_in, 0, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
-
-                res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
-
-                break;
-            case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                i0 = non_zero_Keldysh_K1p[i0_in];
-                vertex1[0].pvertex.indices_sum(indices, i0, i2);
-                res_l_V = vertex1[0].pvertex.K2_valsmooth(indices[0], w, v, i_in, 0); //What remains when taking lim v'' to infinity on the left vertex is K2
-                res_r_V = vertex1[0].pvertex.K2b_valsmooth(indices[1], w, vp, i_in, 0); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
-
-                /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                 *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                 * the bubble_function(...) must be changed.*/
-//                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, glb_w_lower, i_in, 1, channel);
-//                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, glb_w_lower, i_in, 1, channel);
-
-                res += (res_l_V  * res_r_V) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p); //+ res_l_Vhat * res_r_Vhat
-                break;
-            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                i0 = non_zero_Keldysh_K1t[i0_in];
-                vertex1[0].tvertex.indices_sum(indices, i0, i2);
-                res_l_V = vertex1[0].tvertex.K2_valsmooth(indices[0], w, v, i_in, 0, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-                res_r_V = vertex1[0].tvertex.K2b_valsmooth(indices[1], w, vp, i_in, 0, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
-                res_l_Vhat = vertex1[0].tvertex.K2_valsmooth(indices[0], w, v, i_in, 1, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-                res_r_Vhat = vertex1[0].tvertex.K2b_valsmooth(indices[1], w, vp, i_in, 1, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
-
-                res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);;
-                break;
-            default: ;
-        }
+    switch (i2){
+        // a=1  => Retarded
+        // a=-1 => Advanced
+        case 3:     //AA
+            a=-1.;
+            b=-1.;
+            break;
+        case 6:     //AR
+            a=-1.;
+            b=1.;
+            break;
+        case 9:     //RA
+            a=1.;
+            b=-1.;
+            break;
+        case 12:    //RR
+            a=1.;
+            b=1.;
+            break;
+        default:
+            return 0.;
     }
+    vector<int> indices(2);
+    switch (channel) {
+        //According to channel, indices of the left and right vertices are determined.
+        //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
+        //Keep in mind which spin components of the vertex contribute to the relevant spin components
+        //Correction is calculated and, multiplied by the value of the vertex, the contribution is added to the result.
+        case 'a':                                                                       //Flow eq: V*Pi*V
+            i0 = non_zero_Keldysh_K1a[i0_in];
+            vertex1[0].avertex.indices_sum(indices, i0, i2);
+            res_l_V = vertex1[0].avertex.K2_valsmooth(indices[0], w, v, i_in, 0, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is K2
+            res_r_V = vertex1[0].avertex.K2b_valsmooth(indices[1], w, vp, i_in, 0, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
+
+            res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
+
+            break;
+        case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
+            i0 = non_zero_Keldysh_K1p[i0_in];
+            vertex1[0].pvertex.indices_sum(indices, i0, i2);
+            res_l_V = vertex1[0].pvertex.K2_valsmooth(indices[0], w, v, i_in, 0); //What remains when taking lim v'' to infinity on the left vertex is K2
+            res_r_V = vertex1[0].pvertex.K2b_valsmooth(indices[1], w, vp, i_in, 0); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
+
+            res += (res_l_V  * res_r_V) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p); //+ res_l_Vhat * res_r_Vhat
+            break;
+        case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
+            i0 = non_zero_Keldysh_K1t[i0_in];
+            vertex1[0].tvertex.indices_sum(indices, i0, i2);
+            res_l_V = vertex1[0].tvertex.K2_valsmooth(indices[0], w, v, i_in, 0, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
+            res_r_V = vertex1[0].tvertex.K2b_valsmooth(indices[1], w, vp, i_in, 0, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
+            res_l_Vhat = vertex1[0].tvertex.K2_valsmooth(indices[0], w, v, i_in, 1, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
+            res_r_Vhat = vertex1[0].tvertex.K2b_valsmooth(indices[1], w, vp, i_in, 1, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
+
+            res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);;
+            break;
+        default: ;
+    }
+
     return res;
 }
 
