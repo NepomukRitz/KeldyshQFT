@@ -196,7 +196,7 @@ const int n_in = 1;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define DIAG_CLASS 1
 
 //If defined, the flow of the self_energy is symmetrized, closed above and below
 //#define SYMMETRIZED_SELF_ENERGY_FLOW

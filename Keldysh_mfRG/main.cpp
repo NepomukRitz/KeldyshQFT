@@ -33,6 +33,8 @@ string generate_filename(string& dir) {
     string n2 = "n2=" + to_string(nBOS2) + "_";
     string n3 = "n3=" + to_string(nBOS3) + "_";
     string gamma = "Gamma=" + to_string(glb_Gamma) + "_";
+    string voltage = "V=" + to_string(glb_V) + "_";
+    string temp = "T=" + to_string(glb_T) + "_";
     string lambda = "L_ini=" + to_string((int)Lambda_ini)+"_";
     string ode = "nODE=" + to_string(nODE);
     string extension = ".h5";
@@ -46,7 +48,12 @@ string generate_filename(string& dir) {
 #if DIAG_CLASS >= 3
     filename += n3;
 #endif
-    filename += gamma + lambda + ode + extension;
+    filename += gamma;
+    if(glb_V != 0.)
+        filename += voltage;
+    if(glb_T != 0.01)
+        filename += temp;
+    filename += lambda + ode + extension;
 
     return dir + filename;
 }
