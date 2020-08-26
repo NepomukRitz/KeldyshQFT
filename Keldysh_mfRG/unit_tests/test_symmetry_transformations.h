@@ -25,8 +25,10 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 are flipped" ) {
                 REQUIRE( indices1.w  == -indices.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices1.v1 == indices.v2 );
                 REQUIRE( indices1.v2 == indices.v1 );
+#endif
             }
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices1.channel == 't' );
@@ -51,8 +53,10 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             }
             AND_THEN( "frequencies remain unchanged" ) {
                 REQUIRE( indices2.w  == indices.w  );
+#if DIAG_CLASS > 1
                 REQUIRE( indices2.v1 == indices.v1 );
                 REQUIRE( indices2.v2 == indices.v2 );
+#endif
             }
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices2.channel == 't' );
@@ -77,8 +81,10 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 are flipped" ) {
                 REQUIRE( indices3.w  == -indices.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices3.v1 == indices.v2 );
                 REQUIRE( indices3.v2 == indices.v1 );
+#endif
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 'a' );
@@ -102,10 +108,12 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
                 REQUIRE( indices3.iK == indices12.iK );
                 REQUIRE( indices3.w == indices21.w );
                 REQUIRE( indices3.w == indices12.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices3.v1 == indices21.v1 );
                 REQUIRE( indices3.v1 == indices12.v1 );
                 REQUIRE( indices3.v2 == indices21.v2 );
                 REQUIRE( indices3.v2 == indices12.v2 );
+#endif
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
                 REQUIRE( indices3.prefactor == indices21.prefactor );
@@ -126,8 +134,10 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             }
             AND_THEN( "w remains unchanged, v1 and v2 are flipped" ) {
                 REQUIRE( indices_c.w  == indices.w  );
+#if DIAG_CLASS > 1
                 REQUIRE( indices_c.v1 == indices.v2 );
                 REQUIRE( indices_c.v2 == indices.v1 );
+#endif
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'a' );
@@ -163,8 +173,11 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_transformations]") {
 
     GIVEN( "a set of frequency indices etc." ) {
+        auto w =  GENERATE( -100., 0., 1e-16, 1., 100. );
+        auto v1 = GENERATE( -100., 0., 1e-16, 1., 100. );
+        auto v2 = GENERATE( -100., 0., 1e-16, 1., 100. );
 
-        IndicesSymmetryTransformations indices(0, 1., 2., 3., 0, 'p');
+        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 'p');
 
         REQUIRE( indices.prefactor == 1. );
         REQUIRE( !indices.conjugate );
@@ -179,8 +192,10 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             }
             AND_THEN( "w and v1 are unchanged, v2 gets a minus sign" ) {
                 REQUIRE( indices1.w  == indices.w   );
+#if DIAG_CLASS > 1
                 REQUIRE( indices1.v1 == indices.v1  );
                 REQUIRE( indices1.v2 == -indices.v2 );
+#endif
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices1.channel == 'p' );
@@ -205,8 +220,10 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             }
             AND_THEN( "w and v2 are unchanged, v1 gets a minus sign" ) {
                 REQUIRE( indices2.w  == indices.w   );
+#if DIAG_CLASS > 1
                 REQUIRE( indices2.v1 == -indices.v1 );
                 REQUIRE( indices2.v2 == indices.v2  );
+#endif
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices2.channel == 'p' );
@@ -231,8 +248,10 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             }
             AND_THEN( "w remains unchanged, v1 and v2 get a minus sign" ) {
                 REQUIRE( indices3.w  == indices.w   );
+#if DIAG_CLASS > 1
                 REQUIRE( indices3.v1 == -indices.v1 );
                 REQUIRE( indices3.v2 == -indices.v2 );
+#endif
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 'p' );
@@ -256,10 +275,12 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                 REQUIRE( indices3.iK == indices12.iK );
                 REQUIRE( indices3.w == indices21.w );
                 REQUIRE( indices3.w == indices12.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices3.v1 == indices21.v1 );
                 REQUIRE( indices3.v1 == indices12.v1 );
                 REQUIRE( indices3.v2 == indices21.v2 );
                 REQUIRE( indices3.v2 == indices12.v2 );
+#endif
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
                 REQUIRE( indices3.prefactor == indices21.prefactor );
@@ -280,8 +301,10 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             }
             AND_THEN( "w remains unchanged, v1 and v2 are flipped" ) {
                 REQUIRE( indices_c.w  == indices.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices_c.v1 == indices.v2 );
                 REQUIRE( indices_c.v2 == indices.v1 );
+#endif
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'p' );
@@ -317,8 +340,11 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_transformations]") {
 
     GIVEN( "a set of frequency indices etc." ) {
+        auto w =  GENERATE( -100., 0., 1e-16, 1., 100. );
+        auto v1 = GENERATE( -100., 0., 1e-16, 1., 100. );
+        auto v2 = GENERATE( -100., 0., 1e-16, 1., 100. );
 
-        IndicesSymmetryTransformations indices(0, 1., 2., 3., 0, 't');
+        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 't');
 
         REQUIRE( indices.prefactor == 1. );
         REQUIRE( !indices.conjugate );
@@ -333,8 +359,10 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 are flipped" ) {
                 REQUIRE( indices1.w  == -indices.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices1.v1 == indices.v2 );
                 REQUIRE( indices1.v2 == indices.v1 );
+#endif
             }
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices1.channel == 'a' );
@@ -359,8 +387,10 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             }
             AND_THEN( "frequencies remain unchanged" ) {
                 REQUIRE( indices2.w  == indices.w  );
+#if DIAG_CLASS > 1
                 REQUIRE( indices2.v1 == indices.v1 );
                 REQUIRE( indices2.v2 == indices.v2 );
+#endif
             }
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices2.channel == 'a' );
@@ -385,8 +415,10 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 are flipped" ) {
                 REQUIRE( indices3.w  == -indices.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices3.v1 == indices.v2 );
                 REQUIRE( indices3.v2 == indices.v1 );
+#endif
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 't' );
@@ -410,10 +442,12 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
                 REQUIRE( indices3.iK == indices12.iK );
                 REQUIRE( indices3.w == indices21.w );
                 REQUIRE( indices3.w == indices12.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices3.v1 == indices21.v1 );
                 REQUIRE( indices3.v1 == indices12.v1 );
                 REQUIRE( indices3.v2 == indices21.v2 );
                 REQUIRE( indices3.v2 == indices12.v2 );
+#endif
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
                 REQUIRE( indices3.prefactor == indices21.prefactor );
@@ -434,8 +468,10 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 remain unchanged" ) {
                 REQUIRE( indices_c.w  == -indices.w );
+#if DIAG_CLASS > 1
                 REQUIRE( indices_c.v1 == indices.v1 );
                 REQUIRE( indices_c.v2 == indices.v2 );
+#endif
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 't' );
