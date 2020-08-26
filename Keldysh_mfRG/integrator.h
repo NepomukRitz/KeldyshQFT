@@ -194,15 +194,6 @@ template <typename Integrand> auto integrator_riemann(const Integrand& integrand
     return 1/2.*dotproduct(integrand_values, spacings);
 }
 
-class TestIntegrand {
-    double c;
-    double g;
-public:
-    TestIntegrand(double c_in, double g_in) : c(c_in), g(g_in) {}
-    auto operator() (double x) const -> comp {
-        return (1.-x*x)/pow(1.+x*x, 2); //(x-c)/(g*g+(x-c)*(x-c)) - (x+c)/(g*g+(x+c)*(x+c)); //exp(-x*x); //1/x; //sin(x);
-    }
-};
 
 // compute Simpson rule for 3 given values and given step size dx
 auto simpson_rule_3(comp& val0, comp& val1, comp& val2, double& dx) -> comp {

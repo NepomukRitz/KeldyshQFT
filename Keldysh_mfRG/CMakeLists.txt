@@ -56,6 +56,7 @@ add_executable(Keldysh_mfRG_testing
         unit_tests/catch.hpp
         unit_tests/test_data_structures.h
         unit_tests/test_symmetry_transformations.h
+        unit_tests/test_integrator.h
         a_vertex.h
         bubbles.h
         correctionFunctions.h
