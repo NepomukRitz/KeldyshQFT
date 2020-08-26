@@ -437,8 +437,10 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a
 
 // old wrapper function
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b) -> comp {
-    return integrator_simpson(integrand, a, b);
+//    return integrator_simpson(integrand, a, b);
 //    return integrator_riemann(integrand, a, b);
+    Adapt<Integrand> adaptor(integrator_tol, integrand);
+    return adaptor.integrate(a,b);
 }
 
 // wrapper function, used for loop

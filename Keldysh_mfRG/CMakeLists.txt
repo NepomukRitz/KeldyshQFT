@@ -21,6 +21,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
 add_executable(Keldysh_mfRG
         main.cpp
         a_vertex.h
+        bethe-salpeter.h
         bubbles.h
         correctionFunctions.h
         data_structures.h
@@ -59,6 +60,7 @@ add_executable(Keldysh_mfRG_testing
         unit_tests/test_integrator.h
         a_vertex.h
         bubbles.h
+        bethe-salpeter.h
         correctionFunctions.h
         data_structures.h
         diagrammatic_combinations.h

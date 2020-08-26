@@ -7,32 +7,6 @@
 
 using namespace std;
 
-/// fRG parameters ///
-#define N_LOOPS 1  // Number of loops
-
-// Regulator
-// 1: sharp cutoff, 2: hybridization flow
-#define REG 2
-
-// Computation is flowing or not (determines the value of the vertex).
-// Define FLOW for flow and comment out for static calculation
-//#define FLOW
-
-// Number of evolution flow points
-const int nODE = 100;
-
-// Limits of the fRG flow
-const double Lambda_ini = 15.0;
-const double Lambda_fin = 0.0;    //1.0-1./7.;
-
-//Vector with the values of U for which we have NRG data to compare with (exclude zero!)
-vector<double> U_NRG {0.1, 0.2, 0.5, 1., 1.2, 1.5, 2., 3., 5., 10.};                                                   // NOLINT(cert-err58-cpp)
-
-
-// Vector with values of Lambda for the fRG flow
-rvec flow_grid(nODE);                                                                                                   // NOLINT(cert-err58-cpp)
-
-
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
 const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
@@ -191,12 +165,37 @@ const int n_spin = 1;
 // Dimension of the space defining the internal structure
 const int n_in = 1;
 
+/// fRG parameters ///
+#define N_LOOPS 1  // Number of loops
+
+// Regulator
+// 1: sharp cutoff, 2: hybridization flow
+#define REG 2
+
+// Computation is flowing or not (determines the value of the vertex).
+// Define FLOW for flow and comment out for static calculation
+//#define FLOW
+
+// Number of evolution flow points
+const int nODE = 50;
+
+// Limits of the fRG flow
+const double Lambda_ini = 20.0;
+const double Lambda_fin = 0.0;    //1.0-1./7.;
+
+//Vector with the values of U for which we have NRG data to compare with (exclude zero!)
+vector<double> U_NRG {0.1, 0.2, 0.5, 1., 1.2, 1.5, 2., 3., 5., 10.};                                                   // NOLINT(cert-err58-cpp)
+
+
+// Vector with values of Lambda for the fRG flow
+rvec flow_grid(nODE);                                                                                                   // NOLINT(cert-err58-cpp)
+
 
 /// Technical parameters ///
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define DIAG_CLASS 1
 
 //If defined, the flow of the self_energy is symmetrized, closed above and below
 //#define SYMMETRIZED_SELF_ENERGY_FLOW
