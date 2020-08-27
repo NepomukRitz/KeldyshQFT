@@ -209,6 +209,15 @@ const double inter_tol = 1e-9;
 //Tolerance for loop convergence
 const double converged_tol = 1e-7;
 
+//Integrator type:
+// 0: Riemann sum
+// 1: Simpson
+// 2: Simpson + additional points
+// 3: adaptive Simpson
+// 4: GSL // TODO: code does currently not compile with this integrator
+// 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
+#define INTEGRATOR_TYPE 5
+
 //Integrator tolerance
 const double integrator_tol = 1e-4;
 

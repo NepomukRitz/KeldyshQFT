@@ -43,20 +43,20 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
 
     /* // only adaptive Gauss-Lobatto passes all tests
 
-    WHEN( "Simpson integrator with 500 points" ) {
-        double res = integrator_simpson(integrand, -50., 50., 500).real();
+    WHEN( "Simpson integrator with 1500 points" ) {
+        double res = integrator_simpson(integrand, -50., 50., 1500).real();
         CHECK( res == Approx(exact[i]).epsilon(0.001) );
     }
-    WHEN( "Simpson integrator with additional points around 0" ) {
-        double res = integrator_simpson(integrand, -50., 50., 0.).real();
+    WHEN( "Simpson integrator with 1500 points with additional points around 0" ) {
+        double res = integrator_simpson(integrand, -50., 50., 0., 1500).real();
         CHECK( res == Approx(exact[i]).epsilon(0.001) );
     }
-    WHEN( "Simpson integrator with additional points around +- 5" ) {
-        double res = integrator_simpson(integrand, -50., 50., -5., 5.).real();
+    WHEN( "Simpson integrator with 1500 points with additional points around +- 5" ) {
+        double res = integrator_simpson(integrand, -50., 50., -5., 5., 1500).real();
         CHECK( res == Approx(exact[i]).epsilon(0.001) );
     }
-    WHEN( "self-made adaptive Simpson integrator" ) {
-        double res = adaptive_integrator(integrand, -50., 50.).real();
+    WHEN( "self-made adaptive Simpson integrator with 1500 points" ) {
+        double res = adaptive_simpson_integrator(integrand, -50., 50., 1500).real();
         CHECK( res == Approx(exact[i]).epsilon(0.001) );
     }
     // */

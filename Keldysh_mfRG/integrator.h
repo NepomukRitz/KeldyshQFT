@@ -1,41 +1,68 @@
-//
-// Created by E.Walter on 8/5/19.
-//
-
 #ifndef KELDYSH_MFRG_INTEGRATOR_H
 #define KELDYSH_MFRG_INTEGRATOR_H
 
 #include <numeric>
-#include "data_structures.h"
-#include "parameters.h"
-#include "write_data2file.h"
-#include <gsl/gsl_integration.h>
-#include <gsl/gsl_errno.h>
-#include "Integrator_NR/integrator_NR.h"
+#include "data_structures.h"                // real and complex vectors
+#include "parameters.h"                     // system parameters
+#include <gsl/gsl_integration.h>            // for GSL integrator
+#include <gsl/gsl_errno.h>                  // for GSL integrator
+#include "Integrator_NR/integrator_NR.h"    // adaptive Gauss-Lobatto integrator with Kronrod extension
 
-template <typename  Integrand>
-auto f_real(double x, void* params) -> double
-{
+
+/* compute real part of integrand (for GSL/PAID) */
+template <typename Integrand>
+auto f_real(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
     double f_real = integrand(x).real();
     return f_real;
 }
 
-template <typename  Integrand>
-auto f_imag(double x, void* params) -> double
-{
+/* compute imaginary part of integrand (for GSL/PAID) */
+template <typename Integrand>
+auto f_imag(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
     double f = integrand(x).imag();
     return f;
 }
 
+/* compute the dot product of two vectors (integrand values and weights) */
+auto dotproduct(const cvec& x, const rvec& y) -> comp {
+    comp res;
+//#pragma acc parallel loop private(i) reduction(+:resp)
+    for(int i=0; i<x.size(); ++i)
+        res += x[i] * y[i];
+    return res;
+}
 
-auto dotproduct(const cvec& x, const rvec& y) -> comp;
 //TODO implement the intergration with pragma omp simd for vetorization.
 // Think about the compatibility of the execution flow with declaration of data_structures.h also with omp (simd ) and
 // wether or not it'd make sense to only MPI-parallelize at bubble_function and allow omp to take over the vector or
 // scalar (reduction) operations e.g. integration, vector sums, products and such
 
+/// --- DIFFERENT INTEGRATION ROUTINES --- ///
+
+/* Integration using Riemann sum -- deprecated, not recommended */
+template <typename Integrand> auto integrator_riemann(const Integrand& integrand, int N) -> comp {
+    rvec spacings(N);
+    cvec integrand_values(N);
+    double w0, w1, w2;
+
+    spacings[0] = bfreqs[1] - bfreqs[0];
+    integrand_values[0] = integrand(bfreqs[0]);
+
+    for (int i=1; i<N-1; ++i) {
+        w0 = bfreqs[i-1];   // now specifically relies on bfreqs, only works if bfreqs = ffreqs...
+        w1 = bfreqs[i];
+        w2 = bfreqs[i+1];
+        spacings[i] = w2 - w0;
+        integrand_values[i] = integrand(w1);
+    }
+
+    spacings[N-1] = bfreqs[N-1] - bfreqs[N-2];
+    integrand_values[N-1] = integrand(bfreqs[N-1]);
+
+    return 1/2.*dotproduct(integrand_values, spacings);
+}
 
 /**
  * Perform an integration using Simpson's rule.
@@ -66,28 +93,13 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
 
 /**
  * Wrapper for integrator_simpson(const Integrand& integrand, double a, double b, int N).
- * Determines the number of integration points depending on INTER_PROP.
- */
-template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b) -> comp {
-    /*First, determine which between nINT and the number of points required to have a step of 1/4 of the temperature is bigger.
-     *Then compare that number to a maximal N of 1001 (chosen arbitrarily) and return the smallest one of these. Calculate
-     * the step dx and fill the vectors accordingly. */
-    int N = nINT;
-    //int N = min({ max({ nINT, 2*(int)( (b-a)/(glb_T/2.) ) + 1 }), 1001}); // Simpson rule requires odd number of points
-    //TODO: old comment: Something doesn't work properly with this formula!!
-    return integrator_simpson(integrand, a, b, N);
-}
-
-/**
- * Wrapper for integrator_simpson(const Integrand& integrand, double a, double b, int N).
  * Optimized version for loop that has a sharp features within the integration domain
  * at frequency w (typically w=0, where w is the loop external frequency).
  *   --> Split up the integration domain into different regions, integrate with higher resolution around the
  *       sharp feature.
  */
-template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w) -> comp {
+template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w, int N) -> comp {
     comp result = 0.;   // initialize result
-    int N = nINT;       // total number of integration points
 
     double Delta = 2*glb_Gamma;  // half-width of the region around the sharp feature which should get better resolution
     int Nw = N/5;                // number of additional points around the sharp feature
@@ -113,10 +125,9 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
  *   --> Split up the integration domain into different regions, integrate with higher resolution around the
  *       sharp features.
  */
-template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w1_in, double w2_in) -> comp {
+template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w1_in, double w2_in, int N) -> comp {
 
     comp result = 0.;   // initialize result
-    int N = nINT;       // total number of integration points
     int Na, Nb, Nc;     // number of points in different intervals
 
     double Delta = 5*glb_T;  // half-width of the region around the sharp features which should get better resolution
@@ -172,33 +183,10 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     return result;
 }
 
-template <typename Integrand> auto integrator_riemann(const Integrand& integrand, double a, double b) -> comp {
-    rvec spacings(nINT);
-    cvec integrand_values(nINT);
-    double w0, w1, w2;
-
-    spacings[0] = bfreqs[1] - bfreqs[0];
-    integrand_values[0] = integrand(bfreqs[0]);
-
-    for (int i=1; i<nINT-1; ++i) {
-        w0 = bfreqs[i-1];   //TODO: now specifically relies on bfreqs, only works if bfreqs = ffreqs...
-        w1 = bfreqs[i];
-        w2 = bfreqs[i+1];
-        spacings[i] = w2 - w0;
-        integrand_values[i] = integrand(w1);
-    }
-
-    spacings[nINT-1] = bfreqs[nINT-1] - bfreqs[nINT-2];
-    integrand_values[nINT-1] = integrand(bfreqs[nINT-1]);
-
-    return 1/2.*dotproduct(integrand_values, spacings);
-}
-
 
 // compute Simpson rule for 3 given values and given step size dx
 auto simpson_rule_3(comp& val0, comp& val1, comp& val2, double& dx) -> comp {
     return dx / 3. * (val0 + 4.*val1 + val2);
-    //return dx / 2. * (val0 + 2.*val1 + val2);
 }
 
 // compute Simpson rule for vector of 3 given values and given step size dx
@@ -207,7 +195,7 @@ auto simpson_rule_3(cvec& values, double& dx) -> comp {
 }
 
 /**
- * Adaptive integrator.
+ * Adaptive Simpson integrator.
  * Idea: Start with just 3-point Simpson (integration boundaries + point in the center), then split it up into
  * two sub-intervals by adding one point in the center of each of the two sub-intervals.
  * Then split those up again to obtain four sub-intervals, then eight, etc. For each sub-interval check convergence
@@ -218,7 +206,7 @@ auto simpson_rule_3(cvec& values, double& dx) -> comp {
  *  - max. number of allowed points (integrand accesses) is reached.
  * During this iterative process, results from the previous step are stored to minimize the number of integrand accesses.
  */
-template <typename Integrand> auto adaptive_integrator(const Integrand& integrand, double a, double b) -> comp {
+template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& integrand, double a, double b, int Nmax) -> comp {
     // accuracy: relative error between successive results for the same interval
     // at which to stop splitting the interval into sub-intervals
     double accuracy = 1e-3; //1e-3;
@@ -337,46 +325,13 @@ template <typename Integrand> auto adaptive_integrator(const Integrand& integran
         if (count(converged.begin(), converged.end(), true) == converged.size()) break;
 
         // Third stop condition: check if the total number of evaluation points exceeds the predefined maximum
-        if (points.size() > nINT) break;
+        if (points.size() > Nmax) break;
     }
 
     return res;  // return the result
 }
 
-template <typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> comp {
-    //PAID
-    //TODO Solve issue with the first vertex not being passed completely
-//    Domain1D<comp> D (grid[0], grid[grid.size()-1]);
-//    vector<PAIDInput> inputs;
-//    inputs.emplace_back(D, integrand, 1);
-//    PAID p(inputs);
-//    auto result = p.solve();
-//
-//    return result[1];
-
-    //GSL
-//    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(1000);
-//    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(1000);
-//
-//    gsl_function F_real, F_imag;
-//
-//    F_real.function = &f_real<Integrand>;
-//    F_real.params = &integrand;
-//
-//    F_imag.function = &f_imag<Integrand>;
-//    F_imag.params = &integrand;
-//
-//    double result_real, result_imag, error_real, error_imag;
-//
-//    gsl_integration_qags(&F_real, grid[0], grid[grid.size()-1], 0, 10e-7, 1000, W_real, &result_real, &error_real);
-//    gsl_integration_qags(&F_imag, grid[0], grid[grid.size()-1], 0, 10e-7, 1000, W_imag, &result_imag, &error_imag);
-//
-//    gsl_integration_workspace_free(W_real);
-//    gsl_integration_workspace_free(W_imag);
-//
-//    return result_real + 1.i*result_imag;
-}
-
+/* error handler for GSL integrator */
 void handler (const char * reason,
               const char * file,
               int line,
@@ -384,12 +339,14 @@ void handler (const char * reason,
     //print(reason, true);
 }
 
-template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in) -> comp {
-    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(nINT);
-    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(nINT);
+/* Integration using routines from the GSL library (many different routines available, would need more testing) */
+// TODO: code does currently not compile when this integrator is used!
+template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in, int Nmax) -> comp {
+    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
+    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
 
-    //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(nINT);
-    //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(nINT);
+    //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
+    //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
 
     gsl_function F_real, F_imag;
 
@@ -403,8 +360,8 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a
 
     gsl_set_error_handler(handler);
 
-    gsl_integration_qag(&F_real, a, b, 0, 1e-6, nINT, 1, W_real, &result_real, &error_real);
-    gsl_integration_qag(&F_imag, a, b, 0, 1e-6, nINT, 1, W_imag, &result_imag, &error_imag);
+    gsl_integration_qag(&F_real, a, b, 0, 1e-6, Nmax, 1, W_real, &result_real, &error_real);
+    gsl_integration_qag(&F_imag, a, b, 0, 1e-6, Nmax, 1, W_imag, &result_imag, &error_imag);
 
     //double w1, w2;
     //if (w1_in < w2_in) {
@@ -417,13 +374,13 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a
     //double pts[4] = {a, w1, w2, b};
     //int npts = 4;
     //
-    //gsl_integration_qagp(&F_real, pts, npts, 1e-4, 1e-4, nINT, W_real, &result_real, &error_real);
-    //gsl_integration_qagp(&F_imag, pts, npts, 1e-4, 1e-4, nINT, W_imag, &result_imag, &error_imag);
+    //gsl_integration_qagp(&F_real, pts, npts, 1e-4, 1e-4, Nmax, W_real, &result_real, &error_real);
+    //gsl_integration_qagp(&F_imag, pts, npts, 1e-4, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
 
-    //gsl_integration_qagi(&F_real, 0, 1e-4, nINT, W_real, &result_real, &error_real);
-    //gsl_integration_qagi(&F_imag, 0, 1e-4, nINT, W_imag, &result_imag, &error_imag);
+    //gsl_integration_qagi(&F_real, 0, 1e-4, Nmax, W_real, &result_real, &error_real);
+    //gsl_integration_qagi(&F_imag, 0, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
 
-    //size_t neval = nINT;
+    //size_t neval = Nmax;
     //gsl_integration_cquad(&F_real, a, b, 1e-4, 1e-4, W_real, &result_real, &result_imag, &neval);
 
     gsl_integration_workspace_free(W_real);
@@ -435,43 +392,74 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a
     return result_real + glb_i*result_imag;
 }
 
+/* Integration using the PAID algorithm (not yet properly implemented) */
+template <typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> comp {
+    //PAID
+    //TODO Solve issue with the first vertex not being passed completely
+//    Domain1D<comp> D (grid[0], grid[grid.size()-1]);
+//    vector<PAIDInput> inputs;
+//    inputs.emplace_back(D, integrand, 1);
+//    PAID p(inputs);
+//    auto result = p.solve();
+//
+//    return result[1];
+}
+
+
+/// --- WRAPPER FUNCTIONS: INTERFACE FOR ACCESSING THE INTEGRATOR IN BUBBLES/LOOP --- ///
+
 // old wrapper function
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b) -> comp {
-//    return integrator_simpson(integrand, a, b);
-//    return integrator_riemann(integrand, a, b);
+#if INTEGRATOR_TYPE == 0 // Riemann sum
+    return integrator_riemann(integrand, nINT);
+#elif INTEGRATOR_TYPE == 1 // Simpson
+    return integrator_simpson(integrand, a, b, nINT);
+#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
+    return integrator_simpson(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
+#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
+    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+#elif INTEGRATOR_TYPE == 4 // GSL
+    return integrator_gsl(integrand, a, b, 0., 0., nINT);
+#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
     Adapt<Integrand> adaptor(integrator_tol, integrand);
-    return adaptor.integrate(a,b);
+    return adaptor.integrate(a, b);
+#endif
 }
 
 // wrapper function, used for loop
 template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b, double w) -> comp {
-//    return adaptive_integrator(integrand, a, b);      // use adaptive integrator
-    //return integrator_simpson(integrand, a, b, w);      // use standard Simpson plus additional points around w = 0
-    //return integrator_simpson(integrand, a, b);       // only use standard Simpson
-    //return integrator_riemann(integrand, a, b);
-
+#if INTEGRATOR_TYPE == 0 // Riemann sum
+    return integrator_riemann(integrand, nINT);
+#elif INTEGRATOR_TYPE == 1 // Simpson
+    return integrator_simpson(integrand, a, b, nINT);       // only use standard Simpson
+#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
+    return integrator_simpson(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
+#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
+    return adaptive_simpson_integrator(integrand, a, b, nINT);      // use adaptive Simpson integrator
+#elif INTEGRATOR_TYPE == 4 // GSL
+    return integrator_gsl(integrand, a, b, w, w, nINT);
+#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
     Adapt<Integrand> adaptor(integrator_tol, integrand);
-    return adaptor.integrate(a,b);
+    return adaptor.integrate(a, b);
+#endif
 }
 
 // wrapper function, used for bubbles
 template <typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> comp {
-    //return integrator_gsl(integrand, a, b, w1, w2);
-//    return adaptive_integrator(integrand, a, b);          // use adaptive integrator
-    //return integrator_simpson(integrand, a, b, w1, w2);     // use standard Simpson plus additional points around +- w/2
-    //return integrator_simpson(integrand, a, b);           // only use standard Simpson
-
+#if INTEGRATOR_TYPE == 0 // Riemann sum
+    return integrator_riemann(integrand, nINT);
+#elif INTEGRATOR_TYPE == 1 // Simpson
+    return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
+#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
+    return integrator_simpson(integrand, a, b, w1, w2, nINT);     // use standard Simpson plus additional points around +- w/2
+#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
+    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+#elif INTEGRATOR_TYPE == 4 // GSL
+    return integrator_gsl(integrand, a, b, w1, w2, nINT);
+#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
     Adapt<Integrand> adaptor(integrator_tol, integrand);
     return adaptor.integrate(a,b);
-}
-
-auto dotproduct(const cvec& x, const rvec& y) -> comp
-{
-    comp resp;
-//#pragma acc parallel loop private(i) reduction(+:resp)
-    for(int i=0; i<x.size(); ++i)
-        resp+=x[i]*y[i];
-    return resp;
+#endif
 }
 
 #endif //KELDYSH_MFRG_INTEGRATOR_H
