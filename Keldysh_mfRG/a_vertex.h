@@ -218,10 +218,10 @@ public:
         this->K1 *= rhs.K1;
 #endif
 #if DIAG_CLASS>=2
-        this->K2 *= rhs.K1;
+        this->K2 *= rhs.K2;
 #endif
 #if DIAG_CLASS>=3
-        this->K3 *= rhs.K1;
+        this->K3 *= rhs.K3;
 #endif
         return *this;
     }
