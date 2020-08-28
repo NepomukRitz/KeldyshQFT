@@ -235,8 +235,10 @@ double grid_transf(double w) {
 //    return w/sqrt(W_scale*W_scale + w*w);
 
     // Version 2: quadratic around w=0
-    double w2 = pow(w, 2);
-    return sgn(w) * sqrt((sqrt(pow(w2, 2) + 4*w2*pow(W_scale, 2)) - w2) / 2.) / W_scale;
+    //double w2 = pow(w, 2);
+    double w2 = w * w;
+    //return sgn(w) * sqrt((sqrt(pow(w2, 2) + 4*w2*pow(W_scale, 2)) - w2) / 2.) / W_scale;
+    return sgn(w) * sqrt((sqrt(w2*w2 + 4*w2*W_scale*W_scale) - w2) / 2.) / W_scale; // much faster
 }
 double grid_transf_inv(double W) {
     // Version 1: linear around w=0
