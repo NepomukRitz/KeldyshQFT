@@ -18,6 +18,7 @@
 #include "test_symmetry_transformations.h"
 
 #ifdef INTEGRATION_TESTS
+#include "../frequency_grid.h"
 #include "../testFunctions.h"
 #endif
 
@@ -25,9 +26,16 @@ int main(int argc, char* argv[]) {
 #ifdef MPI_FLAG
     MPI_Init(nullptr, nullptr);
 #endif
+    setUpGrids(); // set up frequency grids
 
 #ifdef INTEGRATION_TESTS
     // run integration tests
+    print("Start integration tests.", true);
+
+    /* check that the flow of the K1a-vertex (no selfenergy feedback) from Lambda_i = 20 to Lambda_f = 9.5
+     * (initialized via SOPT) is very close to the SOPT solution at Lambda_f = 9.5.
+     * Lambda_f = 9.5 corresponds to U/Delta = 0.2 for Gamma = 0.5, U = 1. */
+    test_rhs_bubbles_flow_wstate(10, 20., 9.5);
 #endif
 
 #ifdef MPI_FLAG

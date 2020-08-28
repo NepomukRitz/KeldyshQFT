@@ -34,20 +34,22 @@ auto rhs_bubbles_flow_wstate(const State<comp>& input, double Lambda) -> State<c
 /**
  * Function to call when testing the rhs of the bubbles flow with the State class
  * @param N_ODE : Number of ODE steps to take between the globally defined Lambda_ini and Lambda_fin
+ * @param Lambda_i : initial Lambda value of flow
+ * @param Lambda_f : final Lambda value of flow
+ * @param write_flag : whether to write output in hdf5
  */
-void test_rhs_bubbles_flow_wstate(int N_ODE) {
-    bool write_flag = true; // whether to write output in hdf5
+void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, bool write_flag = true) {
     State<comp> state_dir, state_fin, state_ini; // direct, final, initial K1a_1
     state_dir.initialize(); // initialize
     state_ini.initialize(); // initialize
 
-    Propagator G0ini(Lambda_ini, state_ini.selfenergy, 'g'); // initial propagator
-    Propagator G0dir(Lambda_fin, state_dir.selfenergy, 'g'); // final propagator
+    Propagator G0ini(Lambda_i, state_ini.selfenergy, 'g'); // initial propagator
+    Propagator G0dir(Lambda_f, state_dir.selfenergy, 'g'); // final propagator
 
-    sopt_state(state_ini, Lambda_ini); // direct calculation of initial K1a
-    sopt_state(state_dir, Lambda_fin); // direct calculation of direct K1a
+    sopt_state(state_ini, Lambda_i); // direct calculation of initial K1a
+    sopt_state(state_dir, Lambda_f); // direct calculation of direct K1a
 
-    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
+    ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
     cvec K1a_dif = state_dir.vertex[0].avertex.K1 + ( state_fin.vertex[0].avertex.K1*(-1.) ); // difference in results
     print("Testing ODE for bare K1a_0 with State class. Using " +to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
