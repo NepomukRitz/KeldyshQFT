@@ -435,6 +435,8 @@ public:
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
+        VertexInput input (indices[0], w, v, vpp, i_in, 0, channel);
+
         //Iterates over all Keldysh components of the bubble which are nonzero
         switch (channel) {
             //According to channel, indices of the left and right vertices are determined.
@@ -449,7 +451,7 @@ public:
                 if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
 #endif
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                res_l_V = vertex1[0].gammaRb(input);
                 res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
                 res = res_l_V * Pival * res_r_V;
@@ -457,13 +459,14 @@ public:
             case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
                 vertex1[0].pvertex.indices_sum(indices, i0, i2);
                 Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                res_l_V = vertex1[0].gammaRb(input);
                 res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
                 //This is commented out on the ground of p-channel contributions being cross-symmetric
                 //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
                 //the bubble_function(...) must be changed.*/
-//                    res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+//                    input.spin = 1;
+//                    res_l_Vhat = vertex1[0].gammaRb(input);
 //                    res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
 
                 res = res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
@@ -471,10 +474,11 @@ public:
             case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
                 vertex1[0].tvertex.indices_sum(indices, i0, i2);
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                res_l_V = vertex1[0].gammaRb(input);
                 res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
 
-                res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+                input.spin = 1;
+                res_l_Vhat = vertex1[0].gammaRb(input);
                 res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
 
                 res = res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
@@ -526,6 +530,9 @@ public:
         Q res, res_l_V, res_r_V,  res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
+        VertexInput input_L (indices[0], w, v, vpp, i_in, 0, channel);
+        VertexInput input_R (indices[1], w, vp, vpp, i_in, 0, channel);
+
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
             switch (channel) {
@@ -538,12 +545,12 @@ public:
                     vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                     if(part=='L'){
-                        res_l_V = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
+                        res_l_V = vertex1[0].gammaRb(input_L);
                         res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
                     }
                     else if(part=='R'){
                         res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
+                        res_r_V = vertex2[0].gammaRb(input_R);
                     }
                     else ;
                     res += res_l_V * Pival * res_r_V;
@@ -552,20 +559,22 @@ public:
                     vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
                     if(part=='L'){
-                        res_l_V = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
+                        res_l_V = vertex1[0].gammaRb(input_L);
                         res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
                         /*This is commented out on the ground of p-channel contributions being cross-symmetric
                          *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
                          * the bubble_function(...) must be changed.*/
-//                        res_l_Vhat = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 1, channel);
+//                        input_L.spin = 1;
+//                        res_l_Vhat = vertex1[0].gammaRb(input_L);
 //                        res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
                     }
                     else if(part=='R'){
                         res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
+                        res_r_V = vertex2[0].gammaRb(input_R);
 
 //                        res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
-//                        res_r_Vhat = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 1, channel);
+//                        input_R.spin = 1;
+//                        res_r_Vhat = vertex2[0].gammaRb(input_R);
                     }
                     else ;
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
@@ -574,18 +583,20 @@ public:
                     vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
                     if(part=='L'){
-                        res_l_V = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 0, channel);
+                        res_l_V = vertex1[0].gammaRb(input_L);
                         res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
 
-                        res_l_Vhat = vertex1[0].gammaRb( indices[0], w,  v, vpp, i_in, 1, channel);
+                        input_L.spin = 1;
+                        res_l_Vhat = vertex1[0].gammaRb(input_L);
                         res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
                     }
                     else if(part=='R'){
                         res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 0, channel);
+                        res_r_V = vertex2[0].gammaRb(input_R);
 
+                        input_R.spin = 1;
                         res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
-                        res_r_Vhat = vertex2[0].gammaRb(indices[1], w, vp, vpp, i_in, 1, channel);
+                        res_r_Vhat = vertex2[0].gammaRb(input_R);
                     }
                     else ;
                     res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;

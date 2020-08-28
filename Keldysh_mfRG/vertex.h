@@ -11,6 +11,19 @@
 
 using namespace std;
 
+/** auxiliary struct that contains all input variables of vertices */
+struct VertexInput{
+    int iK;
+    double w, v1, v2;
+    int i_in;
+    int spin;
+    char channel;
+
+    VertexInput(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, int spin_in, char channel_in)
+            : iK(iK_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel(channel_in)
+    {}
+};
+
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
 //Irreducible
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
@@ -81,10 +94,10 @@ public:
 
     // Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
     // Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin
-    auto value(int iK, double w, double v1, double v2, int i_in, int spin, char channel) const -> Q;
+    auto value(VertexInput input) const -> Q;
 
     // Returns the sum of the contributions of the diagrammatic classes r' =/= r
-    auto gammaRb(int iK, double w, double v1, double v2, int i_in, int spin, char r) const -> Q;
+    auto gammaRb(VertexInput input) const -> Q;
 
     // Initialize vertex
     void initialize(Q val);
@@ -259,33 +272,31 @@ template <typename Q> void irreducible<Q>::initialize(Q val) {
 
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
 
-template <typename Q> auto fullvert<Q>::value (int iK, double w, double v1, double v2, int i_in, int spin, char channel) const -> Q
-{
-    return irred.val(iK, i_in, spin)
-            + avertex.value(iK, w, v1, v2, i_in, spin, channel, tvertex)
-            + pvertex.value(iK, w, v1, v2, i_in, spin, channel)
-            + tvertex.value(iK, w, v1, v2, i_in, spin, channel, avertex);
+template <typename Q> auto fullvert<Q>::value (VertexInput input) const -> Q {
+    return irred.val(input.iK, input.i_in, input.spin)
+            + avertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, tvertex)
+            + pvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel)
+            + tvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, avertex);
 }
 
-template <typename Q> auto fullvert<Q>::gammaRb (int iK, double w, double v1, double v2, int i_in, int spin, char r) const -> Q
-{
-    Q resp;
-    switch(r){
+template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
+    Q res;
+    switch (input.channel){
         case 'a':
-            resp = pvertex.value(iK, w, v1, v2, i_in, spin, r)          + tvertex.value(iK, w, v1, v2, i_in, spin, r, avertex);
+            res = pvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel)          + tvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, avertex);
             break;
         case 'p':
-            resp = avertex.value(iK, w, v1, v2, i_in, spin, r, tvertex) + tvertex.value(iK, w, v1, v2, i_in, spin, r, avertex);
+            res = avertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, tvertex) + tvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, avertex);
             break;
         case 't':
-            resp = avertex.value(iK, w, v1, v2, i_in, spin, r, tvertex) + pvertex.value(iK, w, v1, v2, i_in, spin, r);
+            res = avertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, tvertex) + pvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel);
             break;
         default :
-            resp = 0.;
+            res = 0.;
             cout << "Something's going wrong with gammaRb"<< endl;
     }
 
-    return resp;
+    return res;
 }
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {

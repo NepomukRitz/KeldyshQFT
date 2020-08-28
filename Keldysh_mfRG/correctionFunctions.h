@@ -180,6 +180,10 @@ template <typename Q> auto asymp_corrections_K2(const Vertex<Q>& vertex1, const 
             return 0.;
     }
     vector<int> indices(2);
+
+    VertexInput input_l_V_m (indices[0], w, v, -gamma_m, i_in, 0, channel);
+    VertexInput input_l_V_p (indices[0], w, v, gamma_p, i_in, 0, channel);
+
     switch (channel) {
         //According to channel, indices of the left and right vertices are determined.
         //Then, the value of the vertex at the limit is determined. (Assume Gamma(infty, *, *) = Gamma(-infty, *, *)
@@ -189,10 +193,11 @@ template <typename Q> auto asymp_corrections_K2(const Vertex<Q>& vertex1, const 
             i0 = non_zero_Keldysh_K1a[i0_in];
             vertex1[0].avertex.indices_sum(indices, i0, i2);
 
-            res_l_V_m = vertex1[0].gammaRb(indices[0], w, v, -gamma_m, i_in, 0, channel);
+            res_l_V_m = vertex1[0].gammaRb(input_l_V_m);
             res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
 
-            res_l_V_p = vertex1[0].gammaRb(indices[0], w, v, gamma_p, i_in, 0, channel);
+
+            res_l_V_p = vertex1[0].gammaRb(input_l_V_p);
             res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
 
             res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
@@ -202,10 +207,10 @@ template <typename Q> auto asymp_corrections_K2(const Vertex<Q>& vertex1, const 
             i0 = non_zero_Keldysh_K1p[i0_in];
             vertex1[0].pvertex.indices_sum(indices, i0, i2);
 
-            res_l_V_m = vertex1[0].gammaRb(indices[0], w, v, -gamma_m, i_in, 0, channel);
+            res_l_V_m = vertex1[0].gammaRb(input_l_V_m);
             res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
 
-            res_l_V_p = vertex1[0].gammaRb(indices[0], w, v, gamma_p, i_in, 0, channel);
+            res_l_V_p = vertex1[0].gammaRb(input_l_V_p);
             res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
 
             res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
@@ -215,17 +220,18 @@ template <typename Q> auto asymp_corrections_K2(const Vertex<Q>& vertex1, const 
             i0 = non_zero_Keldysh_K1t[i0_in];
             vertex1[0].tvertex.indices_sum(indices, i0, i2);
 
-            res_l_V_m = vertex1[0].gammaRb(indices[0], w, v, -gamma_m, i_in, 0, channel);
+            res_l_V_m = vertex1[0].gammaRb(input_l_V_m);
             res_r_V_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 0, channel);
 
-            res_l_V_p = vertex1[0].gammaRb(indices[0], w, v, gamma_p, i_in, 0, channel);
+            res_l_V_p = vertex1[0].gammaRb(input_l_V_p);
             res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
 
-
-            res_l_Vhat_m = vertex1[0].gammaRb(indices[0], w, v, -gamma_m, i_in, 1, channel);
+            input_l_V_m.spin = 1;
+            res_l_Vhat_m = vertex1[0].gammaRb(input_l_V_m);
             res_r_Vhat_m = right_same_bare<Q> (vertex2, indices[1], w, -gamma_m, i_in, 1, channel);
 
-            res_l_Vhat_p = vertex1[0].gammaRb(indices[0], w, v, gamma_p, i_in, 1, channel);
+            input_l_V_p.spin = 1;
+            res_l_Vhat_p = vertex1[0].gammaRb(input_l_V_p);
             res_r_Vhat_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 1, channel);
 
 

@@ -174,7 +174,8 @@ auto left_diff_bare (const Vertex<Q>& vertex, int i1, double w, double v, double
 
     Q K2, K3, gammaRb;
 #if DIAG_CLASS >= 2
-    gammaRb = vertex[0].gammaRb(i1, w, v, vpp, i_in, spin, channel);
+    VertexInput input (i1, w, v, vpp, i_in, spin, channel);
+    gammaRb = vertex[0].gammaRb(input);
 #endif
 
     switch (channel){
@@ -226,7 +227,8 @@ auto right_diff_bare (const Vertex<Q>& vertex, int i3, double w, double vp, doub
 
     Q K2b, K3, gammaRb;
 #if DIAG_CLASS >= 2
-    gammaRb = vertex[0].gammaRb(i3, w, vpp, vp, i_in, spin, channel);
+    VertexInput input (i3, w, vpp, vp, i_in, spin, channel);
+    gammaRb = vertex[0].gammaRb(input);
 #endif
 
     switch (channel){

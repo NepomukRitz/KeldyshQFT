@@ -90,9 +90,12 @@ public:
 #endif
 
         //In any case, read the value of spin component 0
-        Q factorRetardedClosedAbove = vertex[0].value(components[0], v, vp, v, i_in, 0, 'f');
-        Q factorAdvancedClosedAbove = vertex[0].value(components[1], v, vp, v, i_in, 0, 'f');
-        Q factorKeldyshClosedAbove  = vertex[0].value(components[2], v, vp, v, i_in, 0, 'f');
+        VertexInput inputRetardedClosedAbove (components[0], v, vp, v, i_in, 0, 'f');
+        VertexInput inputAdvancedClosedAbove (components[1], v, vp, v, i_in, 0, 'f');
+        VertexInput inputKeldyshClosedAbove  (components[2], v, vp, v, i_in, 0, 'f');
+        Q factorRetardedClosedAbove = vertex[0].value(inputRetardedClosedAbove);
+        Q factorAdvancedClosedAbove = vertex[0].value(inputAdvancedClosedAbove);
+        Q factorKeldyshClosedAbove  = vertex[0].value(inputKeldyshClosedAbove);
 #ifdef DEBUG_MODE
         factorRetardedClosedAbove *= pf_select[0];
         factorAdvancedClosedAbove *= pf_select[1];
@@ -103,9 +106,12 @@ public:
 #ifdef SYMMETRIZED_SELF_ENERGY_FLOW
         symmetrization_prefactor = 1./2.;
 
-        Q factorRetardedClosedBelow = vertex[0].value(components[3],vp, v, vp, i_in, 0, 'f');
-        Q factorAdvancedClosedBelow = vertex[0].value(components[4],vp, v, vp, i_in, 0, 'f');
-        Q factorKeldyshClosedBelow  = vertex[0].value(components[5],vp, v, vp, i_in, 0, 'f');
+        VertexInput inputRetardedClosedBelow (components[3], vp, v, vp, i_in, 0, 'f');
+        VertexInput inputAdvancedClosedBelow (components[4], vp, v, vp, i_in, 0, 'f');
+        VertexInput inputKeldyshClosedBelow  (components[5], vp, v, vp, i_in, 0, 'f');
+        Q factorRetardedClosedBelow = vertex[0].value(inputRetardedClosedBelow);
+        Q factorAdvancedClosedBelow = vertex[0].value(inputAdvancedClosedBelow);
+        Q factorKeldyshClosedBelow  = vertex[0].value(inputKeldyshClosedBelow);
 
 #ifdef DEBUG_MODE
         factorRetardedClosedBelow *= pf_select[3];
@@ -120,14 +126,17 @@ public:
             factorAdvancedClosedAbove *= 2.;
             factorKeldyshClosedAbove  *= 2.;
 
+            inputRetardedClosedAbove.spin = 1;
+            inputAdvancedClosedAbove.spin = 1;
+            inputKeldyshClosedAbove.spin = 1;
 #ifdef DEBUG_MODE
-            factorRetardedClosedAbove += pf_select[0] * vertex[0].value(components[0], v, vp, v, i_in, 1, 'f');
-            factorAdvancedClosedAbove += pf_select[1] * vertex[0].value(components[1], v, vp, v, i_in, 1, 'f');
-            factorKeldyshClosedAbove  += pf_select[2] * vertex[0].value(components[2], v, vp, v, i_in, 1, 'f');
+            factorRetardedClosedAbove += pf_select[0] * vertex[0].value(inputRetardedClosedAbove);
+            factorAdvancedClosedAbove += pf_select[1] * vertex[0].value(inputAdvancedClosedAbove);
+            factorKeldyshClosedAbove  += pf_select[2] * vertex[0].value(inputKeldyshClosedAbove);
 #else
-            factorRetardedClosedAbove += vertex[0].value(components[0], v, vp, v, i_in, 1, 'f');
-            factorAdvancedClosedAbove += vertex[0].value(components[1], v, vp, v, i_in, 1, 'f');
-            factorKeldyshClosedAbove  += vertex[0].value(components[2], v, vp, v, i_in, 1, 'f');
+            factorRetardedClosedAbove += vertex[0].value(inputRetardedClosedAbove);
+            factorAdvancedClosedAbove += vertex[0].value(inputAdvancedClosedAbove);
+            factorKeldyshClosedAbove  += vertex[0].value(inputKeldyshClosedAbove);
 #endif
 
 #ifdef SYMMETRIZED_SELF_ENERGY_FLOW
@@ -135,14 +144,17 @@ public:
             factorAdvancedClosedBelow *= 2.;
             factorKeldyshClosedBelow  *= 2.;
 
+            inputRetardedClosedBelow.spin = 1;
+            inputAdvancedClosedBelow.spin = 1;
+            inputKeldyshClosedBelow.spin = 1;
 #ifdef DEBUG_MODE
-            factorRetardedClosedBelow += pf_select[3] * vertex[0].value(components[3], vp, v, vp, i_in, 1, 'f');
-            factorAdvancedClosedBelow += pf_select[4] * vertex[0].value(components[4], vp, v, vp, i_in, 1, 'f');
-            factorKeldyshClosedBelow  += pf_select[5] * vertex[0].value(components[5], vp, v, vp, i_in, 1, 'f');
+            factorRetardedClosedBelow += pf_select[3] * vertex[0].value(inputRetardedClosedBelow);
+            factorAdvancedClosedBelow += pf_select[4] * vertex[0].value(inputAdvancedClosedBelow);
+            factorKeldyshClosedBelow  += pf_select[5] * vertex[0].value(inputKeldyshClosedBelow);
 #else
-            factorRetardedClosedBelow += vertex[0].value(components[3], vp, v, vp, i_in, 1, 'f');
-            factorAdvancedClosedBelow += vertex[0].value(components[4], vp, v, vp, i_in, 1, 'f');
-            factorKeldyshClosedBelow  += vertex[0].value(components[5], vp, v, vp, i_in, 1, 'f');
+            factorRetardedClosedBelow += vertex[0].value(inputRetardedClosedBelow);
+            factorAdvancedClosedBelow += vertex[0].value(inputAdvancedClosedBelow);
+            factorKeldyshClosedBelow  += vertex[0].value(inputKeldyshClosedBelow);
 #endif
 #endif
 
