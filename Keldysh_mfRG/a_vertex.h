@@ -82,12 +82,10 @@ public:
     * i.e. only complex numbers
     *
     * This function aims to be the sole function one needs to call to read the full vertex*/
-    auto value (int iK, double w, double v1, double v2, int i_in, char channel, const tvert<Q>& tvertex) const -> Q;
     auto value (int iK, double w, double v1, double v2, int i_in, int spin, char channel, const tvert<Q>& tvertex) const -> Q;
 
 
     /*For when the channel is already known and the trafo to the specific channel has already been done*/
-    auto value (int iK, double w, double v1, double v2, int i_in, const tvert<Q>& tvertex) const-> Q;
     auto value (int iK, double w, double v1, double v2, int i_in, int spin, const tvert<Q>& tvertex) const-> Q;
 
 
@@ -122,7 +120,6 @@ public:
 
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
  * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-    auto K1_valsmooth(int, double, int, const tvert<Q>&) const -> Q;
     auto K1_valsmooth(int, double, int, int, const tvert<Q>&) const -> Q;
 
 
@@ -145,12 +142,10 @@ public:
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
     *for given Keldysh and internal structure indices.*/
-    auto K2_valsmooth(int, double, double, int, const tvert<Q>&) const-> Q;
     auto K2_valsmooth(int, double, double, int, int, const tvert<Q>&) const-> Q;
 
     /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
     *for given Keldysh and internal structure indices.*/
-    auto K2b_valsmooth(int, double, double, int, const tvert<Q>&) const -> Q;
     auto K2b_valsmooth(int, double, double, int, int, const tvert<Q>&) const -> Q;
 
 #endif
@@ -172,7 +167,6 @@ public:
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
  * calculated by interpolation for given Keldysh and internal structure indices.*/
-    auto K3_valsmooth(int, double, double, double, int, const tvert<Q>&) const -> Q;
     auto K3_valsmooth(int, double, double, double, int, int, const tvert<Q>&) const -> Q;
 
 #endif
@@ -249,32 +243,11 @@ public:
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE A-VERTEX ******************************************/
-template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, char channel, const tvert<Q>& tvertex) const -> Q{
-    rvec freqs = transfToA(w, v1, v2, channel);
-    return value(iK, freqs[0], freqs[1], freqs[2], i_in, tvertex);
-}
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel, const tvert<Q>& tvertex) const -> Q{
     rvec freqs = transfToA( w, v1, v2, channel);
     return value(iK, freqs[0], freqs[1], freqs[2], i_in, spin, tvertex);
 }
 
-template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, const tvert<Q>& tvertex) const -> Q{
-
-    Q k1, k2, k2b, k3;
-
-#if DIAG_CLASS>=0
-    k1 = K1_valsmooth (iK, w, i_in, tvertex);
-#endif
-#if DIAG_CLASS >=2
-    k2 = K2_valsmooth (iK, w, v1, i_in, tvertex);
-    k2b= K2b_valsmooth(iK, w, v2, i_in, tvertex);
-#endif
-#if DIAG_CLASS >=3
-    k3 = K3_valsmooth (iK, w, v1, v2, i_in, tvertex);
-#endif
-
-    return k1+k2+k2b+k3;
-}
 template <typename Q> auto avert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     Q k1, k2, k2b, k3;
@@ -358,17 +331,6 @@ template <typename Q> auto avert<Q>::K1_val (int iK, int i, int i_in) const -> Q
     return K1[iK*nw1_a*n_in + i*n_in + i_in];
 }
 
-template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, const tvert<Q>& tvertex) const -> Q{
-
-    IndicesSymmetryTransformations indices(iK, w_a, 0., 0., i_in, 'a');
-
-    Ti(indices, transformations_K1[0][iK]);
-    indices.iK = components_K1[iK];
-    if (indices.iK < 0) return 0.;
-    return interpolateK1(indices, *(this));
-
-
-}
 template <typename Q> auto avert<Q>::K1_valsmooth (int iK, double w_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     IndicesSymmetryTransformations indices(iK, w_a, 0., 0., i_in, 'a');
@@ -408,18 +370,6 @@ template <typename Q> auto avert<Q>::K2_val (int iK, int i, int j, int i_in) con
     return K2[iK * nw2_a * nv2_a * n_in + i * nv2_a * n_in + j * n_in + i_in];
 }
 
-template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, const tvert<Q>& tvertex)const -> Q{
-
-    IndicesSymmetryTransformations indices(iK, w_a, v1_a, 0., i_in, 'a');
-
-    Ti(indices, transformations_K2[0][iK]);
-    indices.iK = components_K2[iK];
-    if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
-    return interpolateK2(indices, *(this));
-
-
-}
 template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1_a, int i_in, int spin, const tvert<Q>& tvertex)const -> Q{
 
     IndicesSymmetryTransformations indices(iK, w_a, v1_a, 0., i_in, 'a');
@@ -437,18 +387,6 @@ template <typename Q> auto avert<Q>::K2_valsmooth (int iK, double w_a, double v1
 
     if(indices.conjugate) return conj(valueK2);
     return valueK2;
-
-
-}
-template <typename Q> auto avert<Q>::K2b_valsmooth(int iK, double w_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
-
-    IndicesSymmetryTransformations indices (iK, w_a, 0., v2_a, i_in, 'a');
-
-    Ti(indices, transformations_K2b[0][iK]);
-    indices.iK = components_K2b[iK];
-    if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
-    return interpolateK2(indices, *(this));
 
 
 }
@@ -499,25 +437,6 @@ template <typename Q> auto avert<Q>::K3_val (int iK, int i, int j, int k, int i_
     return K3[iK*nw3_a*nv3_a*nv3_a*n_in + i*nv3_a*nv3_a*n_in + j*nv3_a*n_in + k*n_in + i_in];
 }
 
-template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, const tvert<Q>& tvertex) const -> Q{
-
-    IndicesSymmetryTransformations indices(iK, w_a, v1_a, v2_a, i_in, 'a');
-    /*This part determines the value of the K3 contribution*/
-    /*First, one checks the lists to determine the Keldysh indices and the symmetry prefactor*/
-    Ti(indices, transformations_K3[0][iK]);
-    indices.iK = components_K3[iK];
-    if (indices.iK < 0) return 0.;
-
-    Q valueK3;
-
-    if(indices.channel=='t')  //Applied trafo changes channel a -> t
-        valueK3 = interpolateK3(indices, tvertex);
-    else
-        valueK3 = interpolateK3(indices, *(this));
-
-    if(indices.conjugate) return conj(valueK3);
-    return valueK3;
-}
 template <typename Q> auto avert<Q>::K3_valsmooth (int iK, double w_a, double v1_a, double v2_a, int i_in, int spin, const tvert<Q>& tvertex) const -> Q{
 
     IndicesSymmetryTransformations indices(iK, w_a, v1_a, v2_a, i_in, 'a');
