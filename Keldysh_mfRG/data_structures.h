@@ -26,6 +26,9 @@ public:
     vec() : vector<T> () {}; 						 // trivial constructor
     vec(int n) : vector<T> (n) {};				     // constructor with number of elements
     vec(int n, T value) : vector<T> (n, value) {};   // constructor with number of elements and value
+    template <class InputIterator>
+    vec (InputIterator first, InputIterator last)
+     : vector<T> (first, last) {};                   // constructor from interators to copy parts of existing vector
     vec(initializer_list<T> m) : vector<T> (m) {};   // constructor from initializer list
 
     T operator() (int i) {return (*this)[i]; }	     // operator for element access
