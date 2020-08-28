@@ -232,7 +232,9 @@ auto Propagator::GK(double v, int i_in) const -> comp
 auto Propagator::SR(double v, int i_in) const -> comp
 {
     //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
-    return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
+    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
+    comp G = GR(v, i_in);
+    return -0.5*glb_i*G*G; // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
 }
 auto Propagator::SK(double v, int i_in) const -> comp
 {
