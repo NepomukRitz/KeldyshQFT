@@ -26,7 +26,7 @@
 using namespace std;
 
 
-string generate_filename(string& dir) {
+string generate_filename(const string& dir) {
     string klass = "K" + to_string(DIAG_CLASS) + "_";
     string loops = to_string(N_LOOPS) + "LF_";
     string n1 = "n1=" + to_string(nBOS) + "_";
@@ -58,23 +58,45 @@ string generate_filename(string& dir) {
     return dir + filename;
 }
 
-//#define BETHE_SALPETER
+#ifdef BSE_SDE
+string output_filename_BSE_and_SDE(const string& dir) {
+    string klass = "K" + to_string(DIAG_CLASS);
+    string loops = "_" + to_string(N_LOOPS) + "LF";
+    string gamma = "_Gamma=" + to_string(glb_Gamma);
+    string voltage = "_V=" + to_string(glb_V);
+    string temp = "_T=" + to_string(glb_T);
+    string extension = ".h5";
 
-#ifdef BETHE_SALPETER
-auto main(int argc, char **argv) -> int {
+    string filename = "BSE_SDE_" + klass + loops;
+#if defined(STATIC_FEEDBACK)
+    filename += "_static";
+#endif
+    filename += gamma;
+    if(glb_V != 0.)
+        filename += voltage;
+    if(glb_T != 0.01)
+        filename += temp;
+    filename += extension;
+
+    return dir + filename;
+}
+
+
+auto main() -> int {
 #ifdef MPI_FLAG
     MPI_Init(nullptr, nullptr);
 #endif
     setUpGrids();
 
-    string dir = "/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_KCS/";
-//    string dir = "/tmp/tmp.bmJJ1dm2z1/";
-    string filename = "K2_1_loop_flow_n1=201_n2=51_adapGLK_G3_Gamma=0.500000_fb=4.h5";
+//    string dir = "/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_KCS/";
+    string dir = "/tmp/tmp.0oxEehg9jJ/Data/";
+    string filename = generate_filename(dir);
 
-    print("Bethe-Salpteter run for file: " + dir + filename, true);
-    print("nLambda = " + to_string(atoi(argv[1])));
+    print("Bethe-Salpteter run for file: " + filename, true);
 
-    check_Bethe_Salpeter(dir+filename, atoi(argv[1]));
+    string outputFilename = output_filename_BSE_and_SDE(dir);
+
+    check_BSE_and_SDE(filename, outputFilename);
 
     return 0;
 }

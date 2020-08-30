@@ -7,6 +7,10 @@
 
 using namespace std;
 
+/// Data analysis ///
+#define BSE_SDE
+
+
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
 const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
