@@ -1,8 +1,9 @@
 /**
  * Define essential data types:
- * comp  : complex number (complex<double>)
- * glb_i : imaginary unit
- * vec   : vector class with additional functionality such as element-wise operations, real/imag part etc.
+ * comp        : complex number (complex<double>)
+ * glb_i       : imaginary unit
+ * vec         : vector class with additional functionality such as element-wise operations, real/imag part etc.
+ * VertexInput : auxiliary struct that contains all input variables of vertices
  */
 
 #ifndef DATA_STRUCTURES_H
@@ -258,5 +259,18 @@ vec<comp> operator* (vec<comp> lhs, const double& rhs) {
     lhs *= rhs; return lhs;
 }
 
+
+/** auxiliary struct that contains all input variables of vertices */
+struct VertexInput{
+    int iK;
+    double w, v1, v2;
+    int i_in;
+    int spin;
+    char channel;
+
+    VertexInput(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, int spin_in, char channel_in)
+            : iK(iK_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel(channel_in)
+    {}
+};
 
 #endif // DATA_STRUCTURES_H

@@ -11,19 +11,6 @@
 
 using namespace std;
 
-/** auxiliary struct that contains all input variables of vertices */
-struct VertexInput{
-    int iK;
-    double w, v1, v2;
-    int i_in;
-    int spin;
-    char channel;
-
-    VertexInput(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, int spin_in, char channel_in)
-            : iK(iK_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel(channel_in)
-    {}
-};
-
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
 //Irreducible
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
