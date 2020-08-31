@@ -366,7 +366,7 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-//#pragma omp parallel for
+#pragma omp parallel for
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices
                 int iK1 = i_mpi * n_omp + i_omp;
@@ -476,11 +476,25 @@ Vertex<comp> calculate_Bethe_Salpeter_equation(const Vertex<comp>& Gamma, const 
 void check_BSE_and_SDE(const H5std_string& filename, const string& outputFilename){
 
     rvec lambdas = reconstruct_grid();
-    rvec K1_diff (lambdas.size());
-    rvec K2_diff(lambdas.size());
-    rvec Sigma_diff(lambdas.size());
+    rvec actual_gird;       //lambdas has length nODE + U_NRG.size() which, for Gamma>0 is larger than needed!
+    rvec K1_diff;
+    rvec K2_diff;
+    rvec Sigma_diff_p;
+    rvec Sigma_diff_a;
+
+    bool done = false;
 
     for(int i=0; i<lambdas.size(); i++){
+
+        if(done){
+            break;
+        }
+
+        if(lambdas[i] == 0){
+            done = true;
+        }
+
+        actual_gird.emplace_back(lambdas[i]);
 
         print("Current nLambda = " + to_string(i)+". Represents Lambda = " + to_string(lambdas[i]), true);
 
@@ -491,18 +505,19 @@ void check_BSE_and_SDE(const H5std_string& filename, const string& outputFilenam
         //Bethe-Salpeter equation for gamma_r. Due to channel-crossing symmetries, only consider full vertex
         Vertex<comp> bethe_salpeter_L = calculate_Bethe_Salpeter_equation(state.vertex, G, 'L');
         Vertex<comp> bethe_salpeter_R = calculate_Bethe_Salpeter_equation(state.vertex, G, 'R');
+        Vertex<comp> bethe_salpeter = (bethe_salpeter_L + bethe_salpeter_R) * 0.5;
 
         Vertex<comp> fRG_vertex = state.vertex;
-        Vertex<comp> vertex_diff = fRG_vertex - (bethe_salpeter_L + bethe_salpeter_R) * 0.5;
+        Vertex<comp> vertex_diff = fRG_vertex - bethe_salpeter;
 
         //p of the p-norm
         int p = 2;
 
 #if DIAG_CLASS >= 0
-        K1_diff[i] = vertex_diff[0].norm_K1(p);
+        K1_diff.emplace_back(vertex_diff[0].norm_K1(p)/fRG_vertex[0].norm_K1(p));
 #endif
 #if DIAG_CLASS >= 2
-        K2_diff[i] = vertex_diff[0].norm_K2(p);
+        K2_diff.emplace_back(vertex_diff[0].norm_K2(p)/fRG_vertex[0].norm_K2(p));
 #endif
 
         //Schwinger-Dyson comparison
@@ -511,21 +526,35 @@ void check_BSE_and_SDE(const H5std_string& filename, const string& outputFilenam
 
         Vertex<comp> temp_bubble_p(n_spin);
         bubble_function(temp_bubble_p, bare_vertex, fRG_vertex, G, G, 'p', false, '.');
+        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false, '.');
+        temp_bubble_p *= 0.5;
 
-        SelfEnergy<comp> schwinger_dyson;
+        Vertex<comp> temp_bubble_a(n_spin);
+        bubble_function(temp_bubble_a, bare_vertex, fRG_vertex, G, G, 'a', false, '.');
+        bubble_function(temp_bubble_a, fRG_vertex, bare_vertex, G, G, 'a', false, '.');
+        temp_bubble_a *= 0.5;
+
+        SelfEnergy<comp> schwinger_dyson_p;
+        SelfEnergy<comp> schwinger_dyson_a;
         SelfEnergy<comp> fRG_self_energy = state.selfenergy;
-        schwinger_dyson.initialize(glb_U/2., 0.);
 
-        loop(schwinger_dyson, bare_vertex, G, false);
-        loop(schwinger_dyson, temp_bubble_p, G, false);
 
-        SelfEnergy<comp> self_energy_diff = fRG_self_energy - schwinger_dyson;
+        schwinger_dyson_p.initialize(glb_U/2., 0.);   //Bare-vertex contribution known analytically for ph-symmetric
+        loop(schwinger_dyson_p, temp_bubble_p, G, false);
 
-        Sigma_diff[i] = self_energy_diff.norm(p);
+        schwinger_dyson_a.initialize(glb_U/2., 0.);   //Bare-vertex contribution known analytically for ph-symmetric
+        loop(schwinger_dyson_a, temp_bubble_a, G, false);
+
+        SelfEnergy<comp> self_energy_diff_p = fRG_self_energy - schwinger_dyson_p;
+        SelfEnergy<comp> self_energy_diff_a = fRG_self_energy - schwinger_dyson_a;
+
+        Sigma_diff_p.emplace_back(self_energy_diff_p.norm(p)/fRG_self_energy.norm(p));
+        Sigma_diff_a.emplace_back(self_energy_diff_a.norm(p)/fRG_self_energy.norm(p));
     }
 
 
-    write_h5_rvecs(outputFilename, {"lambdas", "K1_diff", "K2_diff", "Sigma_diff"}, {lambdas, K1_diff, K2_diff, Sigma_diff});
+    write_h5_rvecs(outputFilename, {"lambdas", "K1_diff", "K2_diff", "Sigma_diff_p", "Sigma_diff_a"},
+                   {actual_gird, K1_diff, K2_diff, Sigma_diff_p, Sigma_diff_a});
 
 }
 
