@@ -81,14 +81,11 @@ public:
     * i.e. only complex numbers
     *
     * This function aims to be the sole function one needs to call to read the full vertex*/
-    auto value (int, double, double, double, int, int, char) const -> Q;
-
-    /*For when the channel is already known and the trafo to the specific channel has already been done*/
-    auto value (int, double, double, double, int, int) const -> Q;
+    auto value (VertexInput input) const -> Q;
 
     /* Transforms the input frequencies, depending on the channel, to the a-channel convention. char-Variable channel can
      * only have the values 'a', 'p', or 't'.*/
-    auto transfToP(double, double, double, char) const -> rvec;
+    void transfToP(VertexInput& input) const;
 
     /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
      * buuble in the p-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
@@ -115,7 +112,7 @@ public:
 
     /*Returns the value of the K1 vertex for bosonic frequency (double) calculated by interpolation for given Keldysh
  * and internal structure indices. Structurally speaking, these functions should call the ones above*/
-    auto K1_valsmooth(int, double, int, int) const -> Q;
+    auto K1_valsmooth(VertexInput) const -> Q;
 
 #endif
 #if DIAG_CLASS >=2
@@ -136,11 +133,11 @@ public:
 
     /*Returns the value of the K2 vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
     *for given Keldysh and internal structure indices.*/
-    auto K2_valsmooth(int, double, double, int, int) const -> Q;
+    auto K2_valsmooth(VertexInput) const -> Q;
 
     /*Returns the value of the K2b vertex for bosonic frequency, fermionic frequency (double, double) calculated by interpolation
     *for given Keldysh and internal structure indices.*/
-    auto K2b_valsmooth(int, double, double, int, int) const -> Q;
+    auto K2b_valsmooth(VertexInput) const -> Q;
 
 #endif
 #if DIAG_CLASS >=3
@@ -161,7 +158,7 @@ public:
 
     /*Returns the value of the K3 vertex for bosonic frequency, two fermionic frequencies (double, double, double),
      * calculated by interpolation for given Keldysh and internal structure indices.*/
-    auto K3_valsmooth(int, double, double, double, int, int) const -> Q;
+    auto K3_valsmooth(VertexInput) const -> Q;
 
 #endif
 #endif
@@ -237,55 +234,51 @@ public:
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE P-VERTEX ******************************************/
-template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin, char channel) const -> Q{
-    rvec freqs=transfToP( w, v1, v2, channel);
-    return value(iK, freqs[0], freqs[1], freqs[2], i_in, spin);
-}
+template <typename Q> auto pvert<Q>::value(VertexInput input) const -> Q{
 
-template <typename Q> auto pvert<Q>::value(int iK, double w, double v1, double v2, int i_in, int spin) const -> Q{
+    transfToP(input);
 
     Q k1, k2, k2b, k3;
 
 #if DIAG_CLASS>=0
-    k1 = K1_valsmooth (iK, w, i_in, spin);
+    k1 = K1_valsmooth (input);
 #endif
 #if DIAG_CLASS >=2
-    k2 = K2_valsmooth (iK, w, v1, i_in, spin);
-    k2b= K2b_valsmooth(iK, w, v2, i_in, spin);
+    k2 = K2_valsmooth (input);
+    k2b= K2b_valsmooth(input);
 #endif
 #if DIAG_CLASS >=3
-    k3 = K3_valsmooth (iK, w, v1, v2, i_in, spin);
+    k3 = K3_valsmooth (input);
 #endif
 
     return k1+k2+k2b+k3;
 }
 
-template<typename Q> auto pvert<Q>::transfToP(double w, double v1, double v2, char channel) const -> rvec{
-    rvec freqs(3);
-    switch(channel){
+template<typename Q> void pvert<Q>::transfToP(VertexInput& input) const {
+    double w, v1, v2;
+    switch (input.channel) {
         case 'a':
-            freqs[0] = v1+v2;                    //w  = w_a
-            freqs[1] = 0.5*(-w+v1-v2);          //v1 = v_a
-            freqs[2] = 0.5*(-w-v1+v2);          //v2 = v'_a
+            w  = input.v1+input.v2;                    //w  = w_a
+            v1 = 0.5*(-input.w+input.v1-input.v2);     //v1 = v_a
+            v2 = 0.5*(-input.w-input.v1+input.v2);     //v2 = v'_a
             break;
         case 'p':
-            freqs[0] = w;
-            freqs[1] = v1;
-            freqs[2] = v2;
-            break;
+            return;                                    // do nothing
         case 't':
-            freqs[0] = v1+v2;                    //w  = w_t
-            freqs[1] = 0.5*( w-v1+v2);          //v1 = v_t
-            freqs[2] = 0.5*(-w-v1+v2);          //v2 = v'_t
+            w  = input.v1+input.v2;                    //w  = w_t
+            v1 = 0.5*( input.w-input.v1+input.v2);     //v1 = v_t
+            v2 = 0.5*(-input.w-input.v1+input.v2);     //v2 = v'_t
             break;
         case 'f' :
-            freqs[0] = w+v1;                     //w  = v_1'
-            freqs[1] = 0.5*(w-v1);              //v1 = v_2'
-            freqs[2] = 0.5*(2.*v2-w-v1);        //v2 = v_1
+            w  = input.w+input.v1;                     //w  = v_1'
+            v1 = 0.5*(input.w-input.v1);               //v1 = v_2'
+            v2 = 0.5*(2.*input.v2-input.w-input.v1);   //v2 = v_1
             break;
-        default: ;
+        default:;
     }
-    return freqs;
+    input.w  = w;
+    input.v1 = v1;
+    input.v2 = v2;
 }
 
 template<typename Q> void pvert<Q>::indices_sum(vector<int>& indices, int i0, int i2) const
@@ -323,17 +316,15 @@ template <typename Q> auto pvert<Q>::K1_val (int iK, int i, int i_in) const -> Q
     return K1[iK*nw1_p*n_in + i*n_in + i_in];
 }
 
-template <typename Q> auto pvert<Q>::K1_valsmooth (int iK, double w_p, int i_in, int spin) const -> Q{
+template <typename Q> auto pvert<Q>::K1_valsmooth (VertexInput input) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_p, 0., 0., i_in, 'p');
+    IndicesSymmetryTransformations indices(input.iK, input.w, 0., 0., input.i_in, 'p');
 
-    Ti(indices, transformations_K1[spin][iK]);
-    indices.iK = components_K1[iK];
+    Ti(indices, transformations_K1[input.spin][input.iK]);
+    indices.iK = components_K1[input.iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK1(indices, *(this)));
     return interpolateK1(indices, *(this));
-
-
 }
 
 #endif
@@ -362,27 +353,25 @@ template <typename Q> auto pvert<Q>::K2_val (int iK, int i, int j, int i_in) con
     return K2[iK * nw2_p * nv2_p * n_in + i * nv2_p * n_in + j * n_in + i_in];
 }
 
-template <typename Q> auto pvert<Q>::K2_valsmooth (int iK, double w_p, double v1_p, int i_in, int spin) const -> Q {
+template <typename Q> auto pvert<Q>::K2_valsmooth (VertexInput input) const -> Q {
 
-    IndicesSymmetryTransformations indices(iK, w_p, v1_p, 0., i_in, 'p');
+    IndicesSymmetryTransformations indices(input.iK, input.w, input.v1, 0., input.i_in, 'p');
 
-    Ti(indices, transformations_K2[spin][iK]);
-    indices.iK = components_K2[iK];
+    Ti(indices, transformations_K2[input.spin][input.iK]);
+    indices.iK = components_K2[input.iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
     return interpolateK2(indices, *(this));
 }
-template <typename Q> auto pvert<Q>::K2b_valsmooth(int iK, double w_p, double v2_p, int i_in, int spin) const -> Q {
+template <typename Q> auto pvert<Q>::K2b_valsmooth(VertexInput input) const -> Q {
 
-    IndicesSymmetryTransformations indices(iK, w_p, 0., v2_p, i_in, 'p');
+    IndicesSymmetryTransformations indices(input.iK, input.w, 0., input.v2, input.i_in, 'p');
 
-    Ti(indices, transformations_K2b[spin][iK]);
-    indices.iK = components_K2b[iK];
+    Ti(indices, transformations_K2b[input.spin][input.iK]);
+    indices.iK = components_K2b[input.iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
     return interpolateK2(indices, *(this));
-
-
 }
 
 #endif
@@ -411,12 +400,12 @@ template <typename Q> auto pvert<Q>::K3_val (int iK, int i, int j, int k, int i_
     return K3[iK*nw3_p*nv3_p*nv3_p*n_in + i*nv3_p*nv3_p*n_in + j*nv3_p*n_in + k*n_in + i_in];
 }
 
-template <typename Q> auto pvert<Q>::K3_valsmooth (int iK, double w_p, double v1_p, double v2_p, int i_in, int spin) const -> Q{
+template <typename Q> auto pvert<Q>::K3_valsmooth (VertexInput input) const -> Q{
 
-    IndicesSymmetryTransformations indices(iK, w_p, v1_p, v2_p, i_in, 'p');
+    IndicesSymmetryTransformations indices(input.iK, input.w, input.v1, input.v2, input.i_in, 'p');
 
-    Ti(indices, transformations_K3[spin][iK]);
-    indices.iK = components_K3[iK];
+    Ti(indices, transformations_K3[input.spin][input.iK]);
+    indices.iK = components_K3[input.iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK3(indices, *(this)));
     return interpolateK3(indices, *(this));

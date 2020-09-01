@@ -261,22 +261,22 @@ template <typename Q> void irreducible<Q>::initialize(Q val) {
 
 template <typename Q> auto fullvert<Q>::value (VertexInput input) const -> Q {
     return irred.val(input.iK, input.i_in, input.spin)
-            + avertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, tvertex)
-            + pvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel)
-            + tvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, avertex);
+            + avertex.value(input, tvertex)
+            + pvertex.value(input)
+            + tvertex.value(input, avertex);
 }
 
 template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
     Q res;
     switch (input.channel){
         case 'a':
-            res = pvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel)          + tvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, avertex);
+            res = pvertex.value(input)          + tvertex.value(input, avertex);
             break;
         case 'p':
-            res = avertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, tvertex) + tvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, avertex);
+            res = avertex.value(input, tvertex) + tvertex.value(input, avertex);
             break;
         case 't':
-            res = avertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel, tvertex) + pvertex.value(input.iK, input.w, input.v1, input.v2, input.i_in, input.spin, input.channel);
+            res = avertex.value(input, tvertex) + pvertex.value(input);
             break;
         default :
             res = 0.;
