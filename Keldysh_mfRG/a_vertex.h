@@ -258,7 +258,6 @@ template <typename Q> auto avert<Q>::value(VertexInput input, const tvert<Q>& tv
     return k1+k2+k2b+k3;
 }
 
-
 template<typename Q> void avert<Q>::transfToA(VertexInput& input) const {
     double w, v1, v2;
     switch (input.channel) {
@@ -288,13 +287,12 @@ template<typename Q> void avert<Q>::transfToA(VertexInput& input) const {
 
 template<typename Q> void avert<Q>::indices_sum(vector<int>& indices, int i0, int i2) const
 {
-    vector<int> alphasi0(4), alphasi2(4);   //Create vectors to hold the values of the indices
-    alphas(alphasi0, i0);   //Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
-    alphas(alphasi2, i2);   //Calculate the alphas of each input. Refer to these alphas as (34|3'4')
+    vector<int> alphas_i0 = alphas(i0);   //Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
+    vector<int> alphas_i2 = alphas(i2);   //Calculate the alphas of each input. Refer to these alphas as (34|3'4')
 
     //Distribute the alphas of indices i0 and i2 into i1 and i3
-    indices[0] = 8*(alphasi0[0]-1) + 4*(alphasi2[3]-1) + 2*(alphasi2[0]-1) + 1*(alphasi0[3]-1);     //i1 = (1'4'|32)
-    indices[1] = 8*(alphasi2[2]-1) + 4*(alphasi0[1]-1) + 2*(alphasi0[2]-1) + 1*(alphasi2[1]-1);     //i3 = (3'2'|14)
+    indices[0] = 8*(alphas_i0[0]-1) + 4*(alphas_i2[3]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i0[3]-1);     //i1 = (1'4'|32)
+    indices[1] = 8*(alphas_i2[2]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i2[1]-1);     //i3 = (3'2'|14)
 }
 
 #if DIAG_CLASS>=0
