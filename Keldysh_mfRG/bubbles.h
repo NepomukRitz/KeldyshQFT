@@ -1151,7 +1151,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                     Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp,  i_in, channel, part);
 
                     value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
-                    value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K3(vertex1, vertex2,-glb_v_lower, glb_v_upper, w, v, vp, i0, i_in, channel); //Correction needed for the K3 class
+                    for (auto i2:non_zero_Keldysh_bubble) {
+                        value += prefactor * (1. / (2. * M_PI * glb_i)) *
+                                 asymp_corrections_K3(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, vp, i0, i2,
+                                                      i_in, channel); //Correction needed for the K3 class
+                    }
                 }
 
                 K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
