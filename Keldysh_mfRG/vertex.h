@@ -86,6 +86,11 @@ public:
     // Returns the sum of the contributions of the diagrammatic classes r' =/= r
     auto gammaRb(VertexInput input) const -> Q;
 
+    auto left_same_bare(VertexInput input) const -> Q;
+    auto right_same_bare(VertexInput input) const -> Q;
+    auto left_diff_bare(VertexInput input) const -> Q;
+    auto right_diff_bare(VertexInput input) const -> Q;
+
     // Initialize vertex
     void initialize(Q val);
 
@@ -284,6 +289,200 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
     }
 
     return res;
+}
+
+template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const -> Q {
+    Q gamma0, K1, K2b;
+    gamma0 = irred.val(input.iK, input.i_in, input.spin);
+
+    switch (input.channel){
+        case 'a':
+#if DIAG_CLASS >=1
+            K1 = avertex.K1_valsmooth(input, tvertex);
+#endif
+#if DIAG_CLASS >=2
+            K2b = avertex.K2b_valsmooth(input, tvertex);
+#endif
+            break;
+
+        case 'p':
+#if DIAG_CLASS >=1
+            K1 = pvertex.K1_valsmooth(input);
+#endif
+#if DIAG_CLASS >=2
+            K2b = pvertex.K2b_valsmooth(input);
+#endif
+            break;
+        case 't' :
+#if DIAG_CLASS >=1
+            K1 = tvertex.K1_valsmooth(input, avertex);
+#endif
+#if DIAG_CLASS >=2
+            K2b = tvertex.K2b_valsmooth(input, avertex);
+#endif
+            break;
+        default:
+            return 0.;
+    }
+#ifdef STATIC_FEEDBACK
+    #if DIAG_CLASS <= 1
+    VertexInput input_p = input;
+    VertexInput input_at = input;
+    input_p.w = 2*glb_mu;
+    input_at.w = 0.;
+
+    switch (channel) {
+        case 'a':
+            K1 += pvertex.K1_valsmooth(input_p)
+                  + tvertex.K1_valsmooth(input_at, avertex);
+            break;
+        case 'p':
+            K1 += avertex.K1_valsmooth(input_at, tvertex)
+                  + tvertex.K1_valsmooth(input_at, avertex);
+            break;
+        case 't':
+            K1 += avertex.K1_valsmooth(input_at, tvertex)
+                  + pvertex.K1_valsmooth(input_p);
+            break;
+        default: ;
+    }
+#endif
+#endif
+    return gamma0 + K1 + K2b;
+}
+
+template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const -> Q {
+    Q gamma0, K1, K2;
+    gamma0 = irred.val(input.iK, input.i_in, input.spin);
+
+    switch (input.channel){
+        case 'a':
+#if DIAG_CLASS >=1
+            K1 = avertex.K1_valsmooth(input, tvertex);
+#endif
+#if DIAG_CLASS >=2
+            K2 = avertex.K2_valsmooth(input, tvertex);
+#endif
+            break;
+
+        case 'p':
+#if DIAG_CLASS >=1
+            K1 = pvertex.K1_valsmooth(input);
+#endif
+#if DIAG_CLASS >=2
+            K2 = pvertex.K2_valsmooth(input);
+#endif
+            break;
+        case 't' :
+#if DIAG_CLASS >=1
+            K1 = tvertex.K1_valsmooth(input, avertex);
+#endif
+#if DIAG_CLASS >=2
+            K2 = tvertex.K2_valsmooth(input, avertex);
+#endif
+            break;
+        default:
+            return 0.;
+    }
+#ifdef STATIC_FEEDBACK
+    #if DIAG_CLASS <= 1
+    VertexInput input_p = input;
+    VertexInput input_at = input;
+    input_p.w = 2*glb_mu;
+    input_at.w = 0.;
+
+    switch (channel) {
+        case 'a':
+            K1 += pvertex.K1_valsmooth(input_p)
+                  + tvertex.K1_valsmooth(input_at, avertex);
+            break;
+        case 'p':
+            K1 += avertex.K1_valsmooth(input_at, tvertex)
+                  + tvertex.K1_valsmooth(input_at, avertex);
+            break;
+        case 't':
+            K1 += avertex.K1_valsmooth(input_at, tvertex)
+                  + pvertex.K1_valsmooth(input_p);
+            break;
+        default: ;
+    }
+#endif
+#endif
+    return gamma0 + K1 + K2;
+}
+
+template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const -> Q {
+    Q K2, K3, gamma_Rb;
+#if DIAG_CLASS >= 2
+    gamma_Rb = gammaRb(input);
+#endif
+
+    switch (input.channel){
+        case 'a' :
+#if DIAG_CLASS >=2
+            K2 = avertex.K2_valsmooth(input, tvertex);
+#endif
+#if DIAG_CLASS >=3
+            K3 = avertex.K3_valsmooth(input, tvertex);
+#endif
+            break;
+        case 'p':
+#if DIAG_CLASS >=2
+            K2 = pvertex.K2_valsmooth(input);
+#endif
+#if DIAG_CLASS >=3
+            K3 = pvertex.K3_valsmooth(input);
+#endif
+            break;
+        case 't':
+#if DIAG_CLASS >=2
+            K2 = tvertex.K2_valsmooth(input, avertex);
+#endif
+#if DIAG_CLASS >=3
+            K3 = tvertex.K3_valsmooth(input, avertex);
+#endif
+            break;
+        default:
+            return 0.;
+    }
+    return K2 + K3 + gamma_Rb;
+}
+
+template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const -> Q {
+    Q K2b, K3, gamma_Rb;
+#if DIAG_CLASS >= 2
+    gamma_Rb = gammaRb(input);
+#endif
+
+    switch (input.channel){
+        case 'a' :
+#if DIAG_CLASS >= 2
+            K2b = avertex.K2b_valsmooth(input, tvertex);
+#endif
+#if DIAG_CLASS >= 3
+            K3 = avertex.K3_valsmooth(input, tvertex);
+#endif
+            break;
+        case 'p':
+#if DIAG_CLASS >= 2
+            K2b = pvertex.K2b_valsmooth(input);
+#endif
+#if DIAG_CLASS >= 3
+            K3 = pvertex.K3_valsmooth(input);
+#endif
+            break;
+        case 't':
+#if DIAG_CLASS >= 2
+            K2b = tvertex.K2b_valsmooth(input, avertex);
+#endif
+#if DIAG_CLASS >= 3
+            K3 = tvertex.K3_valsmooth(input, avertex);
+#endif
+            break;
+        default:
+            return 0.;
+    }
+    return K2b + K3 + gamma_Rb;
 }
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {

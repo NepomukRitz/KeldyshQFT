@@ -225,11 +225,15 @@ public:
         // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
         vector<int> indices = indices_sum(i0, i2, channel);
 
-        res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
-        res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
+        VertexInput input_l (indices[0], w, 0., 0., i_in, 0, channel);
+        VertexInput input_r (indices[1], w, 0., 0., i_in, 0, channel);
+        res_l_V = vertex1[0].left_same_bare(input_l);
+        res_r_V = vertex2[0].right_same_bare(input_r);
         if (channel == 't') {
-            res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 1, channel);
-            res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 1, channel);
+            input_l.spin = 1;
+            input_r.spin = 1;
+            res_l_Vhat = vertex1[0].left_same_bare(input_l);
+            res_r_Vhat = vertex2[0].right_same_bare(input_r);
         }
 #endif
     };
@@ -281,12 +285,17 @@ public:
             default: ;
         }
 #if DIAG_CLASS >=2
-        res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
-        res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
+        VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
+        VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
+
+        res_l_V = vertex1[0].left_same_bare(input_l);
+        res_r_V = vertex2[0].right_same_bare(input_r);
 
         if (channel == 't') {
-            res_l_Vhat = left_same_bare<Q>(vertex1, indices[0], w, vpp, i_in, 1, channel);
-            res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w, vpp, i_in, 1, channel);
+            input_l.spin = 1;
+            input_r.spin = 1;
+            res_l_Vhat = vertex1[0].left_same_bare(input_l);
+            res_r_Vhat = vertex2[0].right_same_bare(input_r);
         }
 #endif
         if (channel != 't')
@@ -396,7 +405,6 @@ public:
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices = indices_sum(i0, i2, channel);
-        VertexInput input (indices[0], w, v, vpp, i_in, 0, channel);
 
         //Iterates over all Keldysh components of the bubble which are nonzero
         switch (channel) {
@@ -421,16 +429,19 @@ public:
             default: ;
         }
 
-        res_l_V = vertex1[0].gammaRb(input);
-        res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
+        VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
+        VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
+        res_l_V = vertex1[0].gammaRb(input_l);
+        res_r_V = vertex2[0].right_same_bare(input_r);
 
         if (channel != 't') {
             res = res_l_V * Pival * res_r_V;
         }
         else {
-            input.spin = 1;
-            res_l_Vhat = vertex1[0].gammaRb(input);
-            res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w, vpp, i_in, 1, channel);
+            input_l.spin = 1;
+            input_r.spin = 1;
+            res_l_Vhat = vertex1[0].gammaRb(input_l);
+            res_r_Vhat = vertex2[0].right_same_bare(input_r);
 
             res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
         }
@@ -479,8 +490,6 @@ public:
         Q res, res_l_V, res_r_V,  res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
-        VertexInput input_L (indices[0], w, v, vpp, i_in, 0, channel);
-        VertexInput input_R (indices[1], w, vp, vpp, i_in, 0, channel);
 
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
@@ -502,31 +511,34 @@ public:
                     break;
                 default: ;
             }
+            VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
+            VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel); // TODO: before this was: w, vp, vpp -> wrong?!
 
             if(part=='L'){
-                res_l_V = vertex1[0].gammaRb(input_L);
-                res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
+                res_l_V = vertex1[0].gammaRb(input_l);
+                res_r_V = vertex2[0].right_diff_bare(input_r);
             }
             else if(part=='R'){
-                res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                res_r_V = vertex2[0].gammaRb(input_R);
+                res_l_V = vertex1[0].left_diff_bare(input_l);
+                res_r_V = vertex2[0].gammaRb(input_r);
             }
             else ;
-            res += res_l_V * Pival * res_r_V;
 
             if (channel != 't') {
                 res += res_l_V * Pival * res_r_V;
             }
             else {
                 if(part=='L'){
-                    input_L.spin = 1;
-                    res_l_Vhat = vertex1[0].gammaRb(input_L);
-                    res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
+                    input_l.spin = 1;
+                    input_r.spin = 1;
+                    res_l_Vhat = vertex1[0].gammaRb(input_l);
+                    res_r_Vhat = vertex2[0].right_diff_bare(input_r);
                 }
                 else if(part=='R'){
-                    input_R.spin = 1;
-                    res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
-                    res_r_Vhat = vertex2[0].gammaRb(input_R);
+                    input_l.spin = 1;
+                    input_r.spin = 1;
+                    res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                    res_r_Vhat = vertex2[0].gammaRb(input_r);
                 }
                 else ;
                 res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
@@ -577,11 +589,15 @@ public:
         // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
         vector<int> indices = indices_sum(i0, i2, channel);
 
-        res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
-        res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
+        VertexInput input_l (indices[0], w, 0., 0., i_in, 0, channel);
+        VertexInput input_r (indices[1], w, 0., 0., i_in, 0, channel);
+        res_l_V = vertex1[0].left_same_bare(input_l);
+        res_r_V = vertex2[0].right_same_bare(input_r);
         if (channel == 't') {
-            res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 1, channel);
-            res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 1, channel);
+            input_l.spin = 1;
+            input_r.spin = 1;
+            res_l_Vhat = vertex1[0].left_same_bare(input_l);
+            res_r_Vhat = vertex2[0].right_same_bare(input_r);
         }
 #endif
     };
@@ -617,12 +633,17 @@ public:
             default: ;
         }
 #if DIAG_CLASS >= 2
-        res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
-        res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
+        VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
+        VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
+
+        res_l_V = vertex1[0].left_same_bare(input_l);
+        res_r_V = vertex2[0].right_same_bare(input_r);
 
         if (channel == 't') {
-            res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
-            res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
+            input_l.spin = 1;
+            input_r.spin = 1;
+            res_l_Vhat = vertex1[0].left_same_bare(input_l);
+            res_r_Vhat = vertex2[0].right_same_bare(input_r);
         }
 #endif
         if (channel != 't')
@@ -698,8 +719,11 @@ public:
                     break;
                 default: ;
             }
-            res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
-            res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
+
+            VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
+            VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
+            res_l_V = vertex1[0].left_diff_bare(input_l);
+            res_r_V = vertex2[0].right_same_bare(input_r);
 
             if (channel != 't') {
                 res += res_l_V * Pival * res_r_V;
@@ -708,15 +732,19 @@ public:
                     //This is commented out on the ground of p-channel contributions being cross-symmetric
                     //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
                     //the bubble_function(...) must be changed.
-                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
-                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
+                    input_l.spin = 1;
+                    input_r.spin = 1;
+                    res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                    res_r_Vhat = vertex2[0].right_same_bare(input_r);
 
                     res += res_l_Vhat * Pival * res_r_Vhat;
                 }
             }
             else {
-                res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
+                input_l.spin = 1;
+                input_r.spin = 1;
+                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                res_r_Vhat = vertex2[0].right_same_bare(input_r);
 
                 res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
             }
@@ -784,15 +812,20 @@ public:
                     break;
                 default: ;
             }
-            res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
-            res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
+            VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
+            VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
+
+            res_l_V = vertex1[0].left_diff_bare (input_l);
+            res_r_V = vertex2[0].right_diff_bare (input_r);
 
             if (channel != 't') {
                 res += res_l_V * Pival * res_r_V;
             }
             else {
-                res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 1, channel);
-                res_r_Vhat = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
+                input_l.spin = 1;
+                input_r.spin = 1;
+                res_l_Vhat = vertex1[0].left_diff_bare (input_l);
+                res_r_Vhat = vertex2[0].right_diff_bare (input_r);
 
                 res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
             }
