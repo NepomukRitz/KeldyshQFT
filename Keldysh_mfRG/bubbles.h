@@ -224,23 +224,12 @@ public:
 #if DIAG_CLASS <= 1
         // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
         vector<int> indices = indices_sum(i0, i2, channel);
-        switch (channel) {
-            case 'a':                                                                       //Flow eq: V*Pi*V
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
-                break;
-            case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
-                break;
-            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
 
-                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 1, channel);
-                break;
-            default: ;
+        res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
+        res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
+        if (channel == 't') {
+            res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 1, channel);
+            res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 1, channel);
         }
 #endif
     };
@@ -257,7 +246,6 @@ public:
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         vector<int> indices = indices_sum(i0, i2, channel);
 #endif
-
         //Iterates over all Keldysh components of the bubble which are nonzero
         switch (channel) {
             //According to channel, indices of the left and right vertices are determined.
@@ -271,17 +259,9 @@ public:
                 if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
 #endif
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-#if DIAG_CLASS <= 1
-                res = res_l_V * Pival * res_r_V;
-#else
 #ifdef DEBUG_MODE
                 if (indices[1] != iK_select && iK_select < 16) return 0.;
                 if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
-#endif
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
-
-                res = res_l_V * Pival * res_r_V;
 #endif
                 break;
             case 'p':                                                                       //Flow eq: V*Pi*V //+ V^*Pi*V^
@@ -290,20 +270,6 @@ public:
                 if(i0==5 && (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
 #endif
                 Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-#if DIAG_CLASS <= 1
-                res = res_l_V * Pival * res_r_V;
-#else
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
-
-                //This is commented out on the ground of p-channel contributions being cross-symmetric
-                //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                //the bubble_function(...) must be changed.*/
-//                    res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
-//                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
-
-                res = res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
-#endif
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
 #if DIAG_CLASS <= 1 // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
@@ -311,21 +277,22 @@ public:
                 if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
 #endif
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-#if DIAG_CLASS <= 1
-                res = res_l_V * Pival * (res_r_V+res_r_Vhat)
-                        + (res_l_V+res_l_Vhat) * Pival * res_r_V;
-#else
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
-
-                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
-
-                res = res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
-#endif
                 break;
             default: ;
         }
+#if DIAG_CLASS >=2
+        res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
+        res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
+
+        if (channel == 't') {
+            res_l_Vhat = left_same_bare<Q>(vertex1, indices[0], w, vpp, i_in, 1, channel);
+            res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w, vpp, i_in, 1, channel);
+        }
+#endif
+        if (channel != 't')
+            res = res_l_V * Pival * res_r_V;
+        else
+            res = res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
 
         return res;
     }
@@ -444,37 +411,28 @@ public:
                 if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
 #endif
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                res_l_V = vertex1[0].gammaRb(input);
-                res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
-
-                res = res_l_V * Pival * res_r_V;
                 break;
             case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
                 Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                res_l_V = vertex1[0].gammaRb(input);
-                res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
-
-                //This is commented out on the ground of p-channel contributions being cross-symmetric
-                //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                //the bubble_function(...) must be changed.*/
-//                    input.spin = 1;
-//                    res_l_Vhat = vertex1[0].gammaRb(input);
-//                    res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
-
-                res = res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
                 break;
             case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                res_l_V = vertex1[0].gammaRb(input);
-                res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
-
-                input.spin = 1;
-                res_l_Vhat = vertex1[0].gammaRb(input);
-                res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 1, channel);
-
-                res = res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
                 break;
             default: ;
+        }
+
+        res_l_V = vertex1[0].gammaRb(input);
+        res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
+
+        if (channel != 't') {
+            res = res_l_V * Pival * res_r_V;
+        }
+        else {
+            input.spin = 1;
+            res_l_Vhat = vertex1[0].gammaRb(input);
+            res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w, vpp, i_in, 1, channel);
+
+            res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
         }
         return res;
     }
@@ -535,62 +493,43 @@ public:
                 //Add contribution to the result.
                 case 'a':                                                                               //Contributions: V*Pi*V
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                    if(part=='L'){
-                        res_l_V = vertex1[0].gammaRb(input_L);
-                        res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
-                    }
-                    else if(part=='R'){
-                        res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2[0].gammaRb(input_R);
-                    }
-                    else ;
-                    res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                               //Contributions: V*Pi*V; + V^*Pi*V^
                     Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                    if(part=='L'){
-                        res_l_V = vertex1[0].gammaRb(input_L);
-                        res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
-                        /*This is commented out on the ground of p-channel contributions being cross-symmetric
-                         *Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                         * the bubble_function(...) must be changed.*/
-//                        input_L.spin = 1;
-//                        res_l_Vhat = vertex1[0].gammaRb(input_L);
-//                        res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
-                    }
-                    else if(part=='R'){
-                        res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2[0].gammaRb(input_R);
-
-//                        res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
-//                        input_R.spin = 1;
-//                        res_r_Vhat = vertex2[0].gammaRb(input_R);
-                    }
-                    else ;
-                    res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                               //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                    if(part=='L'){
-                        res_l_V = vertex1[0].gammaRb(input_L);
-                        res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
-
-                        input_L.spin = 1;
-                        res_l_Vhat = vertex1[0].gammaRb(input_L);
-                        res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
-                    }
-                    else if(part=='R'){
-                        res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
-                        res_r_V = vertex2[0].gammaRb(input_R);
-
-                        input_R.spin = 1;
-                        res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
-                        res_r_Vhat = vertex2[0].gammaRb(input_R);
-                    }
-                    else ;
-                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
                     break;
                 default: ;
+            }
+
+            if(part=='L'){
+                res_l_V = vertex1[0].gammaRb(input_L);
+                res_r_V = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
+            }
+            else if(part=='R'){
+                res_l_V = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 0, channel);
+                res_r_V = vertex2[0].gammaRb(input_R);
+            }
+            else ;
+            res += res_l_V * Pival * res_r_V;
+
+            if (channel != 't') {
+                res += res_l_V * Pival * res_r_V;
+            }
+            else {
+                if(part=='L'){
+                    input_L.spin = 1;
+                    res_l_Vhat = vertex1[0].gammaRb(input_L);
+                    res_r_Vhat = right_diff_bare<Q>(vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
+                }
+                else if(part=='R'){
+                    input_R.spin = 1;
+                    res_l_Vhat = left_diff_bare<Q>(vertex1, indices[0], w,  v, vpp, i_in, 1, channel);
+                    res_r_Vhat = vertex2[0].gammaRb(input_R);
+                }
+                else ;
+                res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
         }
         return res;
@@ -637,23 +576,12 @@ public:
 #if DIAG_CLASS <= 1
         // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
         vector<int> indices = indices_sum(i0, i2, channel);
-        switch (channel) {
-            case 'a':                                                                       //Flow eq: V*Pi*V
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
-                break;
-            case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
-                break;
-            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
 
-                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 1, channel);
-                break;
-            default: ;
+        res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
+        res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
+        if (channel == 't') {
+            res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 1, channel);
+            res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 1, channel);
         }
 #endif
     };
@@ -679,49 +607,29 @@ public:
             //Add contribution to the result.
             case 'a':                                                                       //Flow eq: V*Pi*V
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-#if DIAG_CLASS <= 1
-                res += res_l_V * Pival * res_r_V;
-#else
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
-
-                res += res_l_V * Pival * res_r_V;
-#endif
                 break;
             case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
                 Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-#if DIAG_CLASS <= 1
-                res += res_l_V * Pival * res_r_V;
-#else
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
-
-                //This is commented out on the ground of p-channel contributions being cross-symmetric
-                //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                //the bubble_function(...) must be changed.
-//                    res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
-//                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
-
-                res += res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
-#endif
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-#if DIAG_CLASS <= 1
-                res += res_l_V * Pival * (res_r_V+res_r_Vhat)
-                        + (res_l_V+res_l_Vhat) * Pival * res_r_V;
-#else
-                res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
-                res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
-
-                res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
-                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
-
-                res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
-#endif
                 break;
             default: ;
         }
+#if DIAG_CLASS >= 2
+        res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
+        res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
+
+        if (channel == 't') {
+            res_l_Vhat =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 1, channel);
+            res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 1, channel);
+        }
+#endif
+        if (channel != 't')
+            res += res_l_V * Pival * res_r_V;
+        else
+            res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
+
         return res;
     }
 };
@@ -781,36 +689,36 @@ public:
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                    res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
-                    res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
-
-                    res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V; + V^*Pi*V^
                     Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                    res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
-                    res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
+                    break;
+                case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
+                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
+                    break;
+                default: ;
+            }
+            res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
+            res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
 
+            if (channel != 't') {
+                res += res_l_V * Pival * res_r_V;
+                // the following lines should be commented out.... ?!?
+                if (channel == 'p') {
                     //This is commented out on the ground of p-channel contributions being cross-symmetric
                     //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
                     //the bubble_function(...) must be changed.
                     res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
                     res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
-                    break;
-                case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                    res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
-                    res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
+                    res += res_l_Vhat * Pival * res_r_Vhat;
+                }
+            }
+            else {
+                res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
+                res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
 
-                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
-                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
-
-                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
-
-                    break;
-                default: ;
+                res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
             }
         }
         return res;
@@ -867,36 +775,26 @@ public:
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                    res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
-                    res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
-
-                    res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
                     Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                    res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
-                    res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
-
-                    //This is commented out on the ground of p-channel contributions being cross-symmetric
-                     //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                     //the bubble_function(...) must be changed.
-//                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 1, channel);
-//                    res_r_Vhat = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
-
-                    res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                    res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
-                    res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
-
-                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 1, channel);
-                    res_r_Vhat = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
-
-                    res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
-
                     break;
                 default: ;
+            }
+            res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
+            res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
+
+            if (channel != 't') {
+                res += res_l_V * Pival * res_r_V;
+            }
+            else {
+                res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 1, channel);
+                res_r_Vhat = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 1, channel);
+
+                res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
             }
         }
         return res;
