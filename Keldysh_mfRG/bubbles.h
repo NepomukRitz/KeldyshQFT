@@ -47,6 +47,7 @@ public:
      * @param iK    : Keldysh index of combined bubble object (0 <= iK <= 15)
      * @param v1    : frequency of first propagator
      * @param v2    : frequency of second propagator
+     * @param i_in  : internal structure index
      * @return comp : value of the bubble evaluated at (iK, v1, v2)
      */
     auto value(int iK, double v1, double v2, int i_in) const -> comp{
@@ -118,6 +119,32 @@ public:
             }
         }
         return ans;
+    }
+
+    /**
+     * Wrapper for value function above, providing the natural arguments for evaluation of the bubble in each channel:
+     * @param iK      : Keldysh index of combined bubble object (0 <= iK <= 15)
+     * @param w       : bubble transfer frequency of the corresponding channel
+     * @param vpp     : bubble integration frequency of the corresponding channel
+     * @param i_in    : internal structure index
+     * @param channel : channel to which the bubble belongs
+     * @return comp   : value of the bubble evaluated at the arguments described above
+     */
+    auto value(int iK, double w, double vpp, int i_in, char channel) const -> comp {
+        comp Pival;
+        switch (channel) {
+            case 'a':
+                Pival = value(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+                break;
+            case 'p':
+                Pival = value(iK, w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+                break;
+            case 't':
+                Pival = value(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+                break;
+            default:;
+        }
+        return Pival;
     }
 };
 
@@ -244,7 +271,6 @@ public:
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
     auto operator() (double vpp) const -> Q {
-        Q Pival;
         Q res;
 #if DIAG_CLASS >= 2
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
@@ -262,7 +288,6 @@ public:
                 if(i0==1 && (i2 != 11 && i2 != 13)) return 0.;
                 if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
 #endif
-                Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
 #ifdef DEBUG_MODE
                 if (indices[1] != iK_select && iK_select < 16) return 0.;
                 if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
@@ -273,17 +298,17 @@ public:
                 if(i0==1 && (i2 != 7 && i2 != 11)) return 0.;
                 if(i0==5 && (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
 #endif
-                Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
 #if DIAG_CLASS <= 1 // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
                 if(i0==1 && (i2 != 11 && i2 != 13)) return 0.;
                 if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
 #endif
-                Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
                 break;
             default: ;
         }
+        Q Pival = Pi.value(i2, w, vpp, i_in, channel);
+
 #if DIAG_CLASS >=2
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
@@ -317,19 +342,7 @@ public:
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
 
-            Q Pival;
-            switch (channel) {
-                case 'a':
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);
-                    break;
-                case 'p':
-                    Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);
-                    break;
-                case 't':
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);
-                    break;
-                default: ;
-            }
+            Q Pival = Pi.value(i2, w, vpp, i_in, channel);
             Pival_re[i] = Pival.real();
             Pival_im[i] = Pival.imag();
         }
@@ -403,31 +416,15 @@ public:
      */
     auto operator() (double vpp) const -> Q {
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-        Q Pival;
         vector<int> indices = indices_sum(i0, i2, channel);
 
-        //Iterates over all Keldysh components of the bubble which are nonzero
-        switch (channel) {
-            //According to channel, indices of the left and right vertices are determined.
-            //Then, the value of the multiplication of the two propagators is calculated.
-            //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-            //contribute to the relevant spin components
-            //Add contribution to the result.
-            case 'a':                                                                       //Contributions: V*Pi*V
 #ifdef DEBUG_MODE
-                if (indices[0] != iK_select && iK_select < 16) return 0.;
-                if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
-#endif
-                Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                break;
-            case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
-                Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                break;
-            case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
-                Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                break;
-            default: ;
+        if (channel == 'a') {
+            if (indices[0] != iK_select && iK_select < 16) return 0.;
+            if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
         }
+#endif
+        Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
         VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
@@ -494,23 +491,8 @@ public:
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
             indices = indices_sum(i0, i2, channel);
-            switch (channel) {
-                //According to channel, indices of the left and right vertices are determined.
-                //Then, the value of the multiplication of the two propagators is calculated.
-                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                //contribute to the relevant spin components
-                //Add contribution to the result.
-                case 'a':                                                                               //Contributions: V*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                    break;
-                case 'p':                                                                               //Contributions: V*Pi*V; + V^*Pi*V^
-                    Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                    break;
-                case 't':                                                                               //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                    break;
-                default: ;
-            }
+            Pival = Pi.value(i2, w, vpp, i_in, channel);
+
             VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
             VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel); // TODO: before this was: w, vp, vpp -> wrong?!
 
@@ -608,30 +590,12 @@ public:
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
     auto operator() (double vpp) const -> Q {
-        Q Pival;
         Q res;
 #if DIAG_CLASS >= 2
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         vector<int> indices = indices_sum(i0, i2, channel);
 #endif
-        //Iterates over all Keldysh components of the bubble which are nonzero
-        switch (channel) {
-            //According to channel, indices of the left and right vertices are determined.
-            //Then, the value of the multiplication of the two propagators is calculated.
-            //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-            //contribute to the relevant spin components
-            //Add contribution to the result.
-            case 'a':                                                                       //Flow eq: V*Pi*V
-                Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                break;
-            case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                break;
-            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                break;
-            default: ;
-        }
+        Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 #if DIAG_CLASS >= 2
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
@@ -702,23 +666,7 @@ public:
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
             indices = indices_sum(i0, i2, channel);
-            switch (channel) {
-                //According to channel, indices of the left and right vertices are determined.
-                //Then, the value of the multiplication of the two propagators is calculated.
-                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                //contribute to the relevant spin components
-                //Add contribution to the result.
-                case 'a':                                                                       //Flow eq: V*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                    break;
-                case 'p':                                                                       //Flow eq: V*Pi*V; + V^*Pi*V^
-                    Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                    break;
-                case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                    break;
-                default: ;
-            }
+            Pival = Pi.value(i2, w, vpp, i_in, channel);
 
             VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
             VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
@@ -795,23 +743,8 @@ public:
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
             indices = indices_sum(i0, i2, channel);
-            switch (channel) {
-                //According to channel, indices of the left and right vertices are determined.
-                //Then, the value of the multiplication of the two propagators is calculated.
-                //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-                //contribute to the relevant spin components
-                //Add contribution to the result.
-                case 'a':                                                                       //Flow eq: V*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-                    break;
-                case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                    Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                    break;
-                case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
-                    Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                    break;
-                default: ;
-            }
+            Pival = Pi.value(i2, w, vpp, i_in, channel);
+
             VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
             VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
 
