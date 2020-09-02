@@ -223,20 +223,17 @@ public:
         }
 #if DIAG_CLASS <= 1
         // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
-        vector<int> indices(2);
+        vector<int> indices = indices_sum(i0, i2, channel);
         switch (channel) {
             case 'a':                                                                       //Flow eq: V*Pi*V
-                vertex1[0].avertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
                 break;
             case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                vertex1[0].pvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                vertex1[0].tvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
 
@@ -258,7 +255,7 @@ public:
         Q res;
 #if DIAG_CLASS >= 2
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-        vector<int> indices(2);
+        vector<int> indices = indices_sum(i0, i2, channel);
 #endif
 
         //Iterates over all Keldysh components of the bubble which are nonzero
@@ -277,7 +274,6 @@ public:
 #if DIAG_CLASS <= 1
                 res = res_l_V * Pival * res_r_V;
 #else
-                vertex1[0].avertex.indices_sum(indices, i0, i2);
 #ifdef DEBUG_MODE
                 if (indices[1] != iK_select && iK_select < 16) return 0.;
                 if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
@@ -297,7 +293,6 @@ public:
 #if DIAG_CLASS <= 1
                 res = res_l_V * Pival * res_r_V;
 #else
-                vertex1[0].pvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -320,7 +315,6 @@ public:
                 res = res_l_V * Pival * (res_r_V+res_r_Vhat)
                         + (res_l_V+res_l_Vhat) * Pival * res_r_V;
 #else
-                vertex1[0].tvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -434,7 +428,7 @@ public:
     auto operator() (double vpp) const -> Q {
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
-        vector<int> indices(2);
+        vector<int> indices = indices_sum(i0, i2, channel);
         VertexInput input (indices[0], w, v, vpp, i_in, 0, channel);
 
         //Iterates over all Keldysh components of the bubble which are nonzero
@@ -445,7 +439,6 @@ public:
             //contribute to the relevant spin components
             //Add contribution to the result.
             case 'a':                                                                       //Contributions: V*Pi*V
-                vertex1[0].avertex.indices_sum(indices, i0, i2);
 #ifdef DEBUG_MODE
                 if (indices[0] != iK_select && iK_select < 16) return 0.;
                 if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
@@ -457,7 +450,6 @@ public:
                 res = res_l_V * Pival * res_r_V;
                 break;
             case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
-                vertex1[0].pvertex.indices_sum(indices, i0, i2);
                 Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
                 res_l_V = vertex1[0].gammaRb(input);
                 res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
@@ -472,7 +464,6 @@ public:
                 res = res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
                 break;
             case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
-                vertex1[0].tvertex.indices_sum(indices, i0, i2);
                 Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
                 res_l_V = vertex1[0].gammaRb(input);
                 res_r_V = right_same_bare<Q>(vertex2, indices[1], w,   vpp, i_in, 0, channel);
@@ -535,6 +526,7 @@ public:
 
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
+            indices = indices_sum(i0, i2, channel);
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
@@ -542,7 +534,6 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                               //Contributions: V*Pi*V
-                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                     if(part=='L'){
                         res_l_V = vertex1[0].gammaRb(input_L);
@@ -556,7 +547,6 @@ public:
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                               //Contributions: V*Pi*V; + V^*Pi*V^
-                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
                     if(part=='L'){
                         res_l_V = vertex1[0].gammaRb(input_L);
@@ -580,7 +570,6 @@ public:
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                               //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
                     if(part=='L'){
                         res_l_V = vertex1[0].gammaRb(input_L);
@@ -647,20 +636,17 @@ public:
         }
 #if DIAG_CLASS <= 1
         // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
-        vector<int> indices(2);
+        vector<int> indices = indices_sum(i0, i2, channel);
         switch (channel) {
             case 'a':                                                                       //Flow eq: V*Pi*V
-                vertex1[0].avertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
                 break;
             case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                vertex1[0].pvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                vertex1[0].tvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, 0, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, 0, i_in, 0, channel);
 
@@ -682,7 +668,7 @@ public:
         Q res;
 #if DIAG_CLASS >= 2
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-        vector<int> indices(2);
+        vector<int> indices = indices_sum(i0, i2, channel);
 #endif
         //Iterates over all Keldysh components of the bubble which are nonzero
         switch (channel) {
@@ -696,7 +682,6 @@ public:
 #if DIAG_CLASS <= 1
                 res += res_l_V * Pival * res_r_V;
 #else
-                vertex1[0].avertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -708,7 +693,6 @@ public:
 #if DIAG_CLASS <= 1
                 res += res_l_V * Pival * res_r_V;
 #else
-                vertex1[0].pvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -727,7 +711,6 @@ public:
                 res += res_l_V * Pival * (res_r_V+res_r_Vhat)
                         + (res_l_V+res_l_Vhat) * Pival * res_r_V;
 #else
-                vertex1[0].tvertex.indices_sum(indices, i0, i2);
                 res_l_V =  left_same_bare<Q> (vertex1, indices[0], w, vpp, i_in, 0, channel);
                 res_r_V = right_same_bare<Q> (vertex2, indices[1], w, vpp, i_in, 0, channel);
 
@@ -789,6 +772,7 @@ public:
         vector<int> indices(2);
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
+            indices = indices_sum(i0, i2, channel);
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
@@ -796,7 +780,6 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
-                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
@@ -804,7 +787,6 @@ public:
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V; + V^*Pi*V^
-                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
@@ -818,7 +800,6 @@ public:
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 0, channel);
@@ -877,6 +858,7 @@ public:
         vector<int> indices(2);
         //Iterates over all Keldysh components of the bubble which are nonzero
         for(auto i2:non_zero_Keldysh_bubble) {
+            indices = indices_sum(i0, i2, channel);
             switch (channel) {
                 //According to channel, indices of the left and right vertices are determined.
                 //Then, the value of the multiplication of the two propagators is calculated.
@@ -884,7 +866,6 @@ public:
                 //contribute to the relevant spin components
                 //Add contribution to the result.
                 case 'a':                                                                       //Flow eq: V*Pi*V
-                    vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
@@ -892,7 +873,6 @@ public:
                     res += res_l_V * Pival * res_r_V;
                     break;
                 case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
-                    vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, w/2. + vpp, w/2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);
@@ -906,7 +886,6 @@ public:
                     res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
-                    vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w/2., vpp + w/2., i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
                     res_l_V =  left_diff_bare<Q> (vertex1, indices[0], w, v,  vpp, i_in, 0, channel);
                     res_r_V = right_diff_bare<Q> (vertex2, indices[1], w, vp, vpp, i_in, 0, channel);

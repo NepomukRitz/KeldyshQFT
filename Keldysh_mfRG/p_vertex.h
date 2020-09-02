@@ -87,12 +87,6 @@ public:
      * only have the values 'a', 'p', or 't'.*/
     void transfToP(VertexInput& input) const;
 
-    /*Function returns, for an input i0,i2 in 0...15 the two Keldysh indices of the left(0) and right(1) vertices of a
-     * buuble in the p-channel. i0 corresponds to the Keldysh index of the lhs of a derivative equation for the vertex and
-     * i2 corresponds to the Keldysh index of the non-zero components of the differentiated bubble (i.e. i2 takes values
-     * in a set of size 9*/
-    void indices_sum(vector<int>&, int i0, int i2) const;
-
 #ifdef DIAG_CLASS
 #if DIAG_CLASS>=0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1_p * n_in);
@@ -279,15 +273,6 @@ template<typename Q> void pvert<Q>::transfToP(VertexInput& input) const {
     input.w  = w;
     input.v1 = v1;
     input.v2 = v2;
-}
-
-template<typename Q> void pvert<Q>::indices_sum(vector<int>& indices, int i0, int i2) const
-{
-    vector<int> alphas_i0 = alphas(i0);   //Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
-    vector<int> alphas_i2 = alphas(i2);   //Calculate the alphas of each input. Refer to these alphas as (34|3'4')
-
-    indices[0] = 8*(alphas_i0[0]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i2[1]-1); //i1 = (1'2'|34)
-    indices[1] = 8*(alphas_i2[2]-1) + 4*(alphas_i2[3]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i0[3]-1); //i3 = (3'4'|12)
 }
 
 #if DIAG_CLASS>=0

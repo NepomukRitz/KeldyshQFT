@@ -43,6 +43,38 @@ auto alphas(int index) -> vector<int> {
     return alphas;
 }
 
+/**
+ * Function that returns, for an input i0, i2 in 0...15, the two Keldysh indices of the left [0] and right [1] vertices
+ * of a bubble in a given channel.
+ * @param i0      : Keldysh index of the lhs of a derivative equation for the vertex
+ * @param i2      : Keldysh index of the non-zero components of the bubble propagators (takes values in a set of size 9)
+ * @param channel : channel of the bubble
+ * @return        : Vector of two Keldysh indices for the left [0] and right [1] vertex in a bubble
+ */
+auto indices_sum(int i0, int i2, const char channel) -> vector<int> {
+    vector<int> indices (2);              // Return vector
+    vector<int> alphas_i0 = alphas(i0);   // Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
+    vector<int> alphas_i2 = alphas(i2);   // Calculate the alphas of each input. Refer to these alphas as (34|3'4')
+
+    //Distribute the alphas of indices i0 and i2 into i1 and i3
+    switch (channel) {
+        case 'a':
+            indices[0] = 8*(alphas_i0[0]-1) + 4*(alphas_i2[3]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i0[3]-1);  // i1 = (1'4'|32)
+            indices[1] = 8*(alphas_i2[2]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i2[1]-1);  // i3 = (3'2'|14)
+            break;
+        case 'p':
+            indices[0] = 8*(alphas_i0[0]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i2[1]-1);  // i1 = (1'2'|34)
+            indices[1] = 8*(alphas_i2[2]-1) + 4*(alphas_i2[3]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i0[3]-1);  // i3 = (3'4'|12)
+            break;
+        case 't':
+            indices[0] = 8*(alphas_i2[3]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i0[3]-1);  // i1 = (4'2'|32)
+            indices[1] = 8*(alphas_i0[0]-1) + 4*(alphas_i2[2]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i2[1]-1);  // i3 = (1'3'|14)
+            break;
+        default:;
+    }
+    return indices;
+}
+
 
 
 
