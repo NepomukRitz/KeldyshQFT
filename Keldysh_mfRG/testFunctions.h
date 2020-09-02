@@ -521,6 +521,74 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 }
 
 /**
+ * Function that computes K1 up to PT4 using K2 in PT3, and performs FDT checks
+ */
+void test_K2_PT4(double Lambda) {
+    print("Test K2 by computing K1 up to PT4, using K2 in PT3.", true);
+    // Initialize a bare state
+    State<comp> bare;
+    bare.initialize();
+
+    // Initialize a bare normal and single-scale propagator
+    Propagator G(Lambda, bare.selfenergy, 'g');
+    Propagator S(Lambda, bare.selfenergy, 's');
+
+    // Compute K1 in PT2
+    State<comp> PT2_K1a;
+    State<comp> PT2_K1p;
+    State<comp> PT2_K1t;
+
+    double t0 = get_time();
+    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
+    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
+    print("Computed K1 in PT2.", true);
+    get_time(t0);
+
+    // Compute K1a in PT3, using K1 in PT2
+    State<comp> PT3_K1a;
+    t0 = get_time();
+    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false, '.');
+    print("Computed K1 in PT3.", true);
+    get_time(t0);
+
+    // Compute K2a in PT3, using K1p, K1t in PT2
+    State<comp> PT3_K2a;
+    t0 = get_time();
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');   // K2a in PT3
+    print("Computed K2 in PT3.", true);
+    get_time(t0);
+
+    // Compute K1a contributions in PT4, using
+    // (22):   K1a in PT2
+    // (13_1): K1a in PT3
+    // (13_2): K2a in PT3
+    // (31_2): K2a in PT3
+    State<comp> PT4_K1a22;
+    State<comp> PT4_K1a13_1;
+    State<comp> PT4_K1a13_2;
+    State<comp> PT4_K1a31_2;
+
+    t0 = get_time();
+    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, 'R');
+    print("Computed K1 in PT4.", true);
+    get_time(t0);
+
+    // FDT checks
+    print("Check K1a in PT4 (22):", true);
+    check_FDTs(PT4_K1a22);
+    print("Check K1a in PT4 (13_1):", true);
+    check_FDTs(PT4_K1a13_1);
+    print("Check K1a in PT4 (13_2):", true);
+    check_FDTs(PT4_K1a13_2);
+    print("Check K1a in PT4 (31_2):", true);
+    check_FDTs(PT4_K1a31_2);
+}
+
+/**
  * Function to test correctness of K2a when calculating a susceptibility (a K1a-object) //Notice that the same calculation
  * can be performed in the p-channel.
  * @param Lambda : Scale at which the calculation is done.
