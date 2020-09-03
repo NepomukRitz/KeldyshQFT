@@ -364,8 +364,7 @@ public:
     }
 
 };
-template <typename Q> class Integrand_K2
-{
+template <typename Q> class Integrand_K2 {
     const Vertex<Q>& vertex1;
     const Vertex<Q>& vertex2;
     const Bubble& Pi;
@@ -541,6 +540,7 @@ template <typename Q> class Integrand_K2_diff {
     const Vertex<Q>& vertex2;
     const Bubble& Pi;
     int i0;
+    int i2;
     const int i_in;
     const char channel;
     const double w, v;
@@ -557,7 +557,7 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K2_diff(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in,
+    Integrand_K2_diff(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, int i2_in,
                       const double w_in, const double v_in, const int i_in_in, const char ch_in)
             :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),
             w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
@@ -579,42 +579,41 @@ public:
     auto operator() (double vpp) const -> Q {
 
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-        Q Pival;
         vector<int> indices(2);
         //Iterates over all Keldysh components of the bubble which are nonzero
-        for(auto i2:non_zero_Keldysh_bubble) {
-            indices = indices_sum(i0, i2, channel);
-            Pival = Pi.value(i2, w, vpp, i_in, channel);
 
-            VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
-            VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
-            res_l_V = vertex1[0].left_diff_bare(input_l);
-            res_r_V = vertex2[0].right_same_bare(input_r);
+        indices = indices_sum(i0, i2, channel);
+        Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
-            if (channel != 't') {
-                res += res_l_V * Pival * res_r_V;
-                // the following lines should be commented out.... ?!?
-                if (channel == 'p') {
-                    //This is commented out on the ground of p-channel contributions being cross-symmetric
-                    //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                    //the bubble_function(...) must be changed.
-                    input_l.spin = 1;
-                    input_r.spin = 1;
-                    res_l_Vhat = vertex1[0].left_diff_bare(input_l);
-                    res_r_Vhat = vertex2[0].right_same_bare(input_r);
+        VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
+        VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
+        res_l_V = vertex1[0].left_diff_bare(input_l);
+        res_r_V = vertex2[0].right_same_bare(input_r);
 
-                    res += res_l_Vhat * Pival * res_r_Vhat;
-                }
-            }
-            else {
+        if (channel != 't') {
+            res += res_l_V * Pival * res_r_V;
+            // the following lines should be commented out.... ?!?
+            if (channel == 'p') {
+                //This is commented out on the ground of p-channel contributions being cross-symmetric
+                //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
+                //the bubble_function(...) must be changed.
                 input_l.spin = 1;
                 input_r.spin = 1;
                 res_l_Vhat = vertex1[0].left_diff_bare(input_l);
                 res_r_Vhat = vertex2[0].right_same_bare(input_r);
 
-                res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+                res += res_l_Vhat * Pival * res_r_Vhat;
             }
         }
+        else {
+            input_l.spin = 1;
+            input_r.spin = 1;
+            res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+            res_r_Vhat = vertex2[0].right_same_bare(input_r);
+
+            res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+        }
+
         return res;
     }
 };
@@ -842,8 +841,10 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 // initialize the integrand object and perform frequency integration
                 // (distinguishing between differentiated and non-differentiated bubble)
                 if(diff){
-                    Integrand_K2_diff<Q> integrand_K2 (vertex1, vertex2, Pi, i0, w, v, i_in, channel);
-                    value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
+                    for(auto i2:non_zero_Keldysh_bubble) {
+                        Integrand_K2_diff<Q> integrand_K2 (vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel);
+                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
+                    }
                 }
                 else{
                     if (part != 'L') value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
