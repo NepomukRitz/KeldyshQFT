@@ -592,18 +592,6 @@ public:
 
         if (channel != 't') {
             res = res_l_V * Pival * res_r_V;
-            // the following lines should be commented out.... ?!?
-            if (channel == 'p') {
-                //This is commented out on the ground of p-channel contributions being cross-symmetric
-                //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
-                //the bubble_function(...) must be changed.
-                input_l.spin = 1;
-                input_r.spin = 1;
-                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
-                res_r_Vhat = vertex2[0].right_same_bare(input_r);
-
-                res += res_l_Vhat * Pival * res_r_Vhat;
-            }
         }
         else {
             input_l.spin = 1;
