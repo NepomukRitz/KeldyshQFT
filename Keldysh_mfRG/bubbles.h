@@ -276,40 +276,36 @@ public:
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         vector<int> indices = indices_sum(i0, i2, channel);
 #endif
-        //Iterates over all Keldysh components of the bubble which are nonzero
+#if DIAG_CLASS <= 1
+        // directly return zero in cases that always have to be zero
         switch (channel) {
-            //According to channel, indices of the left and right vertices are determined.
-            //Then, the value of the multiplication of the two propagators is calculated.
-            //Left and right values of the vertices are determined. Keep in mind which spin components of the vertex
-            //contribute to the relevant spin components
-            //Add contribution to the result.
             case 'a':                                                                       //Flow eq: V*Pi*V
-#if DIAG_CLASS <= 1 // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
                 if(i0==1 && (i2 != 11 && i2 != 13)) return 0.;
                 if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
-#endif
-#ifdef DEBUG_MODE
-                if (indices[1] != iK_select && iK_select < 16) return 0.;
-                if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
-#endif
                 break;
             case 'p':                                                                       //Flow eq: V*Pi*V //+ V^*Pi*V^
-#if DIAG_CLASS <= 1 // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
                 if(i0==1 && (i2 != 7 && i2 != 11)) return 0.;
                 if(i0==5 && (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
-#endif
                 break;
             case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-#if DIAG_CLASS <= 1 // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
                 if(i0==1 && (i2 != 11 && i2 != 13)) return 0.;
                 if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
-#endif
                 break;
             default: ;
         }
+#endif
+#ifdef DEBUG_MODE
+        if (channel == 'a') {
+            if (indices[1] != iK_select && iK_select < 16) return 0.;
+            if (i2 != iK_select_bubble && iK_select_bubble < 16) return 0.;
+        }
+#endif
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
-#if DIAG_CLASS >=2
+#if DIAG_CLASS >= 2
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
 
@@ -326,7 +322,7 @@ public:
         if (channel != 't')
             res = res_l_V * Pival * res_r_V;
         else
-            res = res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
+            res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
 
         return res;
     }
@@ -363,7 +359,7 @@ template <typename Q> class Integrand_K2
 {
     const Vertex<Q>& vertex1;
     const Vertex<Q>& vertex2;
-    const Bubble&Pi;
+    const Bubble& Pi;
     int i0;
     int i2;
 #ifdef DEBUG_MODE
@@ -388,7 +384,7 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const  Bubble& Pi_in,
+    Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in,
                  int i0_in, int i2_in, const double w_in, double v_in, const int i_in_in, const char ch_in, const char pt_in
 #ifdef DEBUG_MODE
                  , const int iK_select_in, const int iK_select_bubble_in
@@ -523,7 +519,7 @@ public:
                     res_r_Vhat = vertex2[0].gammaRb(input_r);
                 }
                 else ;
-                res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+                res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
         }
         return res;
@@ -611,16 +607,16 @@ public:
         }
 #endif
         if (channel != 't')
-            res += res_l_V * Pival * res_r_V;
+            res = res_l_V * Pival * res_r_V;
         else
-            res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
+            res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
 
         return res;
     }
 };
 template <typename Q> class Integrand_K2_diff {
-    const Vertex<Q> &vertex1;
-    const Vertex<Q> &vertex2;
+    const Vertex<Q>& vertex1;
+    const Vertex<Q>& vertex2;
     const Bubble& Pi;
     int i0;
     const int i_in;
@@ -639,7 +635,7 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K2_diff(const Vertex<Q> &vertex1_in, const Vertex<Q> &vertex2_in, const Bubble& Pi_in, int i0_in,
+    Integrand_K2_diff(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in,
                       const double w_in, const double v_in, const int i_in_in, const char ch_in)
             :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),
             w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
@@ -694,15 +690,15 @@ public:
                 res_l_Vhat = vertex1[0].left_diff_bare(input_l);
                 res_r_Vhat = vertex2[0].right_same_bare(input_r);
 
-                res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
+                res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
         }
         return res;
     }
 };
 template <typename Q> class Integrand_K3_diff {
-    const Vertex<Q> & vertex1;
-    const Vertex<Q> & vertex2;
+    const Vertex<Q>& vertex1;
+    const Vertex<Q>& vertex2;
     const Bubble& Pi;
     int i0;
     const int i_in;
@@ -722,13 +718,12 @@ public:
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
-    Integrand_K3_diff(const Vertex<Q> &vertex1_in, const Vertex<Q> &vertex2_in, const Bubble& Pi_in, int i0_in,
+    Integrand_K3_diff(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in,
                       const double w_in, const double v_in, const double vp_in, const int i_in_in, const char ch_in)
             :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),
             w(w_in),     v(v_in),    vp(vp_in), i_in(i_in_in), channel(ch_in)
     {
-        // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
-        i0 = non_zero_Keldysh_K3[i0_in];
+        i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
     };
 
     /**
@@ -748,8 +743,8 @@ public:
             VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
             VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
 
-            res_l_V = vertex1[0].left_diff_bare (input_l);
-            res_r_V = vertex2[0].right_diff_bare (input_r);
+            res_l_V = vertex1[0].left_diff_bare(input_l);
+            res_r_V = vertex2[0].right_diff_bare(input_r);
 
             if (channel != 't') {
                 res += res_l_V * Pival * res_r_V;
@@ -757,10 +752,10 @@ public:
             else {
                 input_l.spin = 1;
                 input_r.spin = 1;
-                res_l_Vhat = vertex1[0].left_diff_bare (input_l);
-                res_r_Vhat = vertex2[0].right_diff_bare (input_r);
+                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                res_r_Vhat = vertex2[0].right_diff_bare(input_r);
 
-                res += res_l_V * Pival * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * Pival * res_r_V;
+                res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
         }
         return res;
