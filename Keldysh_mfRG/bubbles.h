@@ -200,7 +200,7 @@ public:
     }
 };
 
-/// Integrand classes for non-differentiated bubble contributing to diagrammatic class K1, K2, K3
+/// Integrand classes for bubble contributing to diagrammatic class K1, K2, K3
 template <typename Q> class Integrand_K1 {
     const Vertex<Q>& vertex1;
     const Vertex<Q>& vertex2;
@@ -214,6 +214,7 @@ template <typename Q> class Integrand_K1 {
     const int i_in;
     const char channel;
     const double w;
+    const bool diff;
 #if DIAG_CLASS <= 1
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
 #endif
@@ -230,13 +231,13 @@ public:
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      */
     Integrand_K1(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in,
-                 int i0_in, int i2_in, const double w_in, const int i_in_in, const char ch_in
+                 int i0_in, int i2_in, const double w_in, const int i_in_in, const char ch_in, const bool diff_in
 #ifdef DEBUG_MODE
                  , const int iK_select_in, const int iK_select_bubble_in
 #endif
                  )
                : vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),
-                 i2(i2_in), w(w_in), i_in(i_in_in), channel(ch_in)
+                 i2(i2_in), w(w_in), i_in(i_in_in), channel(ch_in), diff(diff_in)
 #ifdef DEBUG_MODE
                  , iK_select(iK_select_in), iK_select_bubble(iK_select_bubble_in)
 #endif
@@ -277,24 +278,32 @@ public:
         vector<int> indices = indices_sum(i0, i2, channel);
 #endif
 #if DIAG_CLASS <= 1
-        // directly return zero in cases that always have to be zero
-        switch (channel) {
-            case 'a':                                                                       //Flow eq: V*Pi*V
-                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                if(i0==1 && (i2 != 11 && i2 != 13)) return 0.;
-                if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
-                break;
-            case 'p':                                                                       //Flow eq: V*Pi*V //+ V^*Pi*V^
-                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                if(i0==1 && (i2 != 7 && i2 != 11)) return 0.;
-                if(i0==5 && (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
-                break;
-            case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
-                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                if(i0==1 && (i2 != 11 && i2 != 13)) return 0.;
-                if(i0==3 && (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15)) return 0.;
-                break;
-            default: ;
+        if (!diff) {
+            // directly return zero in cases that always have to be zero
+            switch (channel) {
+                case 'a':
+                    // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if (i0 == 1 && (i2 != 11 && i2 != 13)) return 0.;
+                    if (i0 == 3 &&
+                        (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
+                        return 0.;
+                    break;
+                case 'p':
+                    // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if (i0 == 1 && (i2 != 7 && i2 != 11)) return 0.;
+                    if (i0 == 5 &&
+                        (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15))
+                        return 0.;
+                    break;
+                case 't':
+                    // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if (i0 == 1 && (i2 != 11 && i2 != 13)) return 0.;
+                    if (i0 == 3 &&
+                        (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
+                        return 0.;
+                    break;
+                default:;
+            }
         }
 #endif
 #ifdef DEBUG_MODE
@@ -527,93 +536,6 @@ public:
 };
 
 /// Integrand classes for differentiated bubble contributing to diagrammatic class K1, K2, K3
-template <typename Q> class Integrand_K1_diff {
-    const Vertex<Q>& vertex1;
-    const Vertex<Q>& vertex2;
-    const Bubble& Pi;
-    int i0;
-    int i2;
-    const int i_in;
-    const char channel;
-    const double w;
-#if DIAG_CLASS <= 1
-    Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-#endif
-public:
-    /**
-     * Constructor:
-     * @param vertex1_in : left vertex
-     * @param vertex2_in : right vertex
-     * @param Pi_in      : Bubble object connecting the left and right vertex
-     * @param i0_in      : index (0 or 1) specifying the (external) Keldysh component of integrand object
-     *                     (converted into actual Keldysh index i0 within the constructor)
-     * @param w_in       : external bosonic frequency \omega
-     * @param i_in_in    : external index for internal structure
-     * @param ch_in      : diagrammatic channel ('a', 'p', 't')
-     */
-    Integrand_K1_diff(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, int i2_in,
-                      const double w_in, const int i_in_in, const char ch_in)
-            :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in), i2(i2_in),
-            w(w_in), i_in(i_in_in), channel(ch_in)
-    {
-        // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
-        switch (channel) {
-            case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
-            case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
-            case 't': i0 = non_zero_Keldysh_K1t[i0_in]; break;
-            default: ;
-        }
-#if DIAG_CLASS <= 1
-        // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
-        vector<int> indices = indices_sum(i0, i2, channel);
-
-        VertexInput input_l (indices[0], w, 0., 0., i_in, 0, channel);
-        VertexInput input_r (indices[1], w, 0., 0., i_in, 0, channel);
-        res_l_V = vertex1[0].left_same_bare(input_l);
-        res_r_V = vertex2[0].right_same_bare(input_r);
-        if (channel == 't') {
-            input_l.spin = 1;
-            input_r.spin = 1;
-            res_l_Vhat = vertex1[0].left_same_bare(input_l);
-            res_r_Vhat = vertex2[0].right_same_bare(input_r);
-        }
-#endif
-    };
-
-    /**
-     * Call operator:
-     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
-     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
-     */
-    auto operator() (double vpp) const -> Q {
-        Q res;
-#if DIAG_CLASS >= 2
-        Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-        vector<int> indices = indices_sum(i0, i2, channel);
-#endif
-        Q Pival = Pi.value(i2, w, vpp, i_in, channel);
-#if DIAG_CLASS >= 2
-        VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
-        VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
-
-        res_l_V = vertex1[0].left_same_bare(input_l);
-        res_r_V = vertex2[0].right_same_bare(input_r);
-
-        if (channel == 't') {
-            input_l.spin = 1;
-            input_r.spin = 1;
-            res_l_Vhat = vertex1[0].left_same_bare(input_l);
-            res_r_Vhat = vertex2[0].right_same_bare(input_r);
-        }
-#endif
-        if (channel != 't')
-            res = res_l_V * Pival * res_r_V;
-        else
-            res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-
-        return res;
-    }
-};
 template <typename Q> class Integrand_K2_diff {
     const Vertex<Q>& vertex1;
     const Vertex<Q>& vertex2;
@@ -853,32 +775,24 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
-                // (distinguishing between differentiated and non-differentiated bubble)
-                if(diff){
+                if (!diff && part != '.') value = 0.;
+                else {
                     for (auto i2:non_zero_Keldysh_bubble) {
-                        Integrand_K1_diff<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel);
-                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K1, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over a fermionic frequency
-                    }
-                }
-                else{ // TODO: improve handling of multiloop corrections vs. perturbation theory calculations
-                    if(part != '.') value = 0.;
-                    else {
-                        for (auto i2:non_zero_Keldysh_bubble) {
 #ifdef DEBUG_MODE
-                            Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, iK_select, iK_select_bubble);
+                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
+                                                     iK_select, iK_select_bubble);
 #else
-                            Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel);
+                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
 #endif
-                            value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                     integrator(integrand_K1, glb_v_lower, glb_v_upper, -w / 2.,
-                                                w / 2.);                      //Integration over a fermionic frequency
+                        value += prefactor * (1. / (2. * M_PI * glb_i)) *
+                                 integrator(integrand_K1, glb_v_lower, glb_v_upper, -w / 2., w / 2.);
+                        if (!diff) {
                             value += prefactor * (1. / (2. * M_PI * glb_i)) *
                                      asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i2, i_in,
                                                           channel); //Correction needed for the K1 class
                         }
                     }
                 }
-
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
             ++iterator;
@@ -896,9 +810,6 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
         case 't': dgamma[0].tvertex.K1 += K1_ordered_result; break;
         default: ;
     }
-
-    // dgamma[0].pvertex.K1_addvert(i0, iwp, i_in, value); // old version w/o mpi
-
 //    print("K1", channel, " done: ");
 //    get_time(tK1);
 #endif
