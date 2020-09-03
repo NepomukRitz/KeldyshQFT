@@ -800,10 +800,10 @@ public:
                     //This is commented out on the ground of p-channel contributions being cross-symmetric
                     //Should this not hold, must return to calculating this too, bearing in mind that the prefactor in
                     //the bubble_function(...) must be changed.
-                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
-                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
+//                    res_l_Vhat =  left_diff_bare<Q> (vertex1, indices[0], w, v, vpp, i_in, 1, channel);
+//                    res_r_Vhat = right_same_bare<Q> (vertex2, indices[1], w,    vpp, i_in, 1, channel);
 
-                    res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
+                    res += res_l_V * Pival * res_r_V; // + res_l_Vhat * Pival * res_r_Vhat;
                     break;
                 case 't':                                                                       //Flow V*Pi*(V+V^) + (V+V^)*Pi*V
                     vertex1[0].tvertex.indices_sum(indices, i0, i2);
