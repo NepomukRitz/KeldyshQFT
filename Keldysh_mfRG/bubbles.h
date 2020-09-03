@@ -559,7 +559,7 @@ public:
      */
     Integrand_K2_diff(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, int i2_in,
                       const double w_in, const double v_in, const int i_in_in, const char ch_in)
-            :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),
+            :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),  i2(i2_in),
             w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
     {
         // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
@@ -591,7 +591,7 @@ public:
         res_r_V = vertex2[0].right_same_bare(input_r);
 
         if (channel != 't') {
-            res += res_l_V * Pival * res_r_V;
+            res = res_l_V * Pival * res_r_V;
             // the following lines should be commented out.... ?!?
             if (channel == 'p') {
                 //This is commented out on the ground of p-channel contributions being cross-symmetric
@@ -611,7 +611,7 @@ public:
             res_l_Vhat = vertex1[0].left_diff_bare(input_l);
             res_r_Vhat = vertex2[0].right_same_bare(input_r);
 
-            res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+            res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
         }
 
         return res;
