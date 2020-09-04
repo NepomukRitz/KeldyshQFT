@@ -5,9 +5,7 @@
 #include "data_structures.h"    // real/complex vector classes
 #include "parameters.h"         // system parameters (vector lengths etc.)
 #include "Keldysh_symmetries.h" // auxiliary functions for conversions of Keldysh indices
-#include "a_vertex.h"           // vertex in the a channel
-#include "p_vertex.h"           // vertex in the p channel
-#include "t_vertex.h"           // vertex in the t channel
+#include "r_vertex.h"           // reducible vertex in channel r
 
 using namespace std;
 
@@ -73,9 +71,9 @@ class fullvert {
 public:
     // Channel decomposition of the full vertex
     irreducible<Q> irred;
-    avert<Q> avertex;
-    pvert<Q> pvertex;
-    tvert<Q> tvertex;
+    rvert<Q> avertex = rvert<Q> ('a');
+    rvert<Q> pvertex = rvert<Q> ('p');
+    rvert<Q> tvertex = rvert<Q> ('t');
 
     fullvert() = default;;
 

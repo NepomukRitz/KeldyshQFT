@@ -8,8 +8,7 @@
 #include <iostream>                 // text input/output
 #include "propagator.h"             // propagator to perform second-order perturbation theory (SOPT)
 #include "selfenergy.h"             // self-energy filled in SOPT
-#include "a_vertex.h"               // K1a filled in SOPT
-#include "p_vertex.h"               // K1p filled in SOPT
+#include "r_vertex.h"               // reducible vertex in channel r (for K1a, K1p in SOPT)
 
 using namespace std;
 
@@ -501,7 +500,7 @@ void SOPT_FFT_K1p_R(cvec& K1pout_R, const Propagator& Gin, const double Uin, con
     SOPT_FFT(SE_R, SE_K, K1a_R, K1a_K, K1pout_R, K1p_K, Gin, Uin, nFFT, V_FFT, false, false, true, false);
 }
 
-void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gammaPout, const Propagator& Gin,
+void SOPT_FFT(SelfEnergy<comp>& SEout, rvert<comp>& gammaAout, rvert<comp>& gammaPout, const Propagator& Gin,
         const double Uin, const int nFFT, const double V_FFT, const bool SEflag_FFT, const bool K1aflag_FFT, const bool K1pflag_FFT, const bool ladflag_FFT) {
     /// prepare output ///
     cvec SE_R(nSE), SE_K(nSE); // cvecs for SOPT self-energy
@@ -532,7 +531,7 @@ void SOPT_FFT(SelfEnergy<comp>& SEout, avert<comp>& gammaAout, pvert<comp>& gamm
 }
 
 void SOPT_FFT(SelfEnergy<comp>& SEout, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT, const bool ladflag_FFT) {
-    avert<comp> gammaA; pvert<comp> gammaP; // dummy objects for output that is not computed at all
+    rvert<comp> gammaA ('a'); rvert<comp> gammaP ('p'); // dummy objects for output that is not computed at all
     SOPT_FFT(SEout, gammaA, gammaP, Gin, Uin, nFFT, V_FFT, true, false, false, ladflag_FFT);
 }
 

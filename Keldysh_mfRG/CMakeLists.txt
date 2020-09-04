@@ -41,10 +41,12 @@ add_executable(Keldysh_mfRG
         propagator.h
         p_vertex.h
         right_hand_sides.h
+        r_vertex.h
         selfenergy.h
         solvers.h
         state.h
         symmetry_transformations.h
+        symmetry_table.h
         testFunctions.h
         t_vertex.h
         util.h
@@ -79,10 +81,12 @@ add_executable(Keldysh_mfRG_testing
         propagator.h
         p_vertex.h
         right_hand_sides.h
+        r_vertex.h
         selfenergy.h
         solvers.h
         state.h
         symmetry_transformations.h
+        symmetry_table.h
         testFunctions.h
         t_vertex.h
         util.h
