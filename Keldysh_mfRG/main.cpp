@@ -26,7 +26,7 @@
 using namespace std;
 
 
-string generate_filename(const string& dir) {
+string generate_filename() {
     string klass = "K" + to_string(DIAG_CLASS) + "_";
     string loops = to_string(N_LOOPS) + "LF_";
     string n1 = "n1=" + to_string(nBOS) + "_";
@@ -55,11 +55,11 @@ string generate_filename(const string& dir) {
         filename += temp;
     filename += lambda + ode + extension;
 
-    return dir + filename;
+    return filename;
 }
 
-#ifdef BSE_SDE
-string output_filename_BSE_and_SDE(const string& dir) {
+
+string output_filename_BSE_and_SDE() {
     string klass = "K" + to_string(DIAG_CLASS);
     string loops = "_" + to_string(N_LOOPS) + "LF";
     string gamma = "_Gamma=" + to_string(glb_Gamma);
@@ -78,37 +78,20 @@ string output_filename_BSE_and_SDE(const string& dir) {
         filename += temp;
     filename += extension;
 
-    return dir + filename;
+    return filename;
 }
 
 
-auto main() -> int {
-#ifdef MPI_FLAG
-    MPI_Init(nullptr, nullptr);
-#endif
-    setUpGrids();
-
-//    string dir = "/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_KCS/";
-    string dir = "/tmp/tmp.0oxEehg9jJ/Data/";
-    string filename = generate_filename(dir);
-
-    print("Bethe-Salpteter run for file: " + filename, true);
-
-    string outputFilename = output_filename_BSE_and_SDE(dir);
-
-    check_BSE_and_SDE(filename, outputFilename);
-
-    return 0;
-}
-#else
 auto main() -> int {
 
 #ifdef MPI_FLAG
     MPI_Init(nullptr, nullptr);
 #endif
-
 #ifdef STATIC_FEEDBACK
     assert(DIAG_CLASS == 1);
+#endif
+#if DIAG_CLASS<2
+    assert(N_LOOPS < 2);
 #endif
 
     setUpGrids();
@@ -128,11 +111,29 @@ auto main() -> int {
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
 
+#ifdef BSE_SDE
+//    string dir = "/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_KCS/";
+    string dir = "/tmp/tmp.0oxEehg9jJ/Data/";
+    string filename = generate_filename();
+
+    print("Bethe-Salpteter run for file: " + filename, true);
+
+    string outputFilename = output_filename_BSE_and_SDE();
+
+
+    check_BSE_and_SDE(dir, filename, outputFilename);
+
+    return 0;
+#else
+
     //*
     string dir = "../Data/";
-    string filename = generate_filename(dir);
+    string filename = generate_filename();
 
-    n_loop_flow(filename);
+    n_loop_flow(dir+filename);
+
+
+#endif
 
     cout << "Hello world ";
 #ifdef __linux__
@@ -148,4 +149,3 @@ auto main() -> int {
 #endif
     return 0;
 }
-#endif
