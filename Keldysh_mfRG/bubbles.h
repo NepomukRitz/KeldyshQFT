@@ -229,6 +229,7 @@ public:
      * @param w_in       : external bosonic frequency \omega
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
+     * @param diff_in    : determines whether to compute differentiated or non-differentiated bubble
      */
     Integrand_K1(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in,
                  int i0_in, int i2_in, const double w_in, const int i_in_in, const char ch_in, const bool diff_in
@@ -377,6 +378,7 @@ template <typename Q> class Integrand_K2 {
     const int i_in;
     const char channel, part;
     const double w, v;
+    const bool diff;
 public:
     /**
      * Constructor:
@@ -391,15 +393,17 @@ public:
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
+     * @param diff_in    : determines whether to compute differentiated or non-differentiated bubble
      */
     Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in,
-                 int i0_in, int i2_in, const double w_in, double v_in, const int i_in_in, const char ch_in, const char pt_in
+                 int i0_in, int i2_in, const double w_in, double v_in, const int i_in_in,
+                 const char ch_in, const char pt_in, const bool diff_in
 #ifdef DEBUG_MODE
                  , const int iK_select_in, const int iK_select_bubble_in
 #endif
                  )
                : vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
-                 i2(i2_in), w(w_in), v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in)
+                 i2(i2_in), w(w_in), v(v_in), i_in(i_in_in), channel(ch_in), part(pt_in), diff(diff_in)
 #ifdef DEBUG_MODE
                  , iK_select(iK_select_in), iK_select_bubble(iK_select_bubble_in)
 #endif
@@ -432,7 +436,10 @@ public:
 
         VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
-        res_l_V = vertex1[0].gammaRb(input_l);
+        if (diff)
+            res_l_V = vertex1[0].left_diff_bare(input_l);
+        else
+            res_l_V = vertex1[0].gammaRb(input_l);
         res_r_V = vertex2[0].right_same_bare(input_r);
 
         if (channel != 't') {
@@ -441,7 +448,10 @@ public:
         else {
             input_l.spin = 1;
             input_r.spin = 1;
-            res_l_Vhat = vertex1[0].gammaRb(input_l);
+            if (diff)
+                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+            else
+                res_l_Vhat = vertex1[0].gammaRb(input_l);
             res_r_Vhat = vertex2[0].right_same_bare(input_r);
 
             res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
@@ -535,76 +545,6 @@ public:
 };
 
 /// Integrand classes for differentiated bubble contributing to diagrammatic class K1, K2, K3
-template <typename Q> class Integrand_K2_diff {
-    const Vertex<Q>& vertex1;
-    const Vertex<Q>& vertex2;
-    const Bubble& Pi;
-    int i0;
-    int i2;
-    const int i_in;
-    const char channel;
-    const double w, v;
-public:
-    /**
-     * Constructor:
-     * @param vertex1_in : left vertex
-     * @param vertex2_in : right vertex
-     * @param Pi_in      : Bubble object connecting the left and right vertex
-     * @param i0_in      : index (0,...,4) specifying the (external) Keldysh component of integrand object
-     *                     (converted into actual Keldysh index i0 within the constructor)
-     * @param w_in       : external bosonic frequency \omega
-     * @param v_in       : external fermionic frequency \nu
-     * @param i_in_in    : external index for internal structure
-     * @param ch_in      : diagrammatic channel ('a', 'p', 't')
-     */
-    Integrand_K2_diff(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in, int i2_in,
-                      const double w_in, const double v_in, const int i_in_in, const char ch_in)
-            :                 vertex1(vertex1_in),         vertex2(vertex2_in),           Pi(Pi_in),  i2(i2_in),
-            w(w_in),     v(v_in), i_in(i_in_in), channel(ch_in)
-    {
-        // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
-        switch (channel){
-            case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
-            case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
-            case 't': i0 = non_zero_Keldysh_K2t[i0_in]; break;
-            default: ;
-        }
-    };
-
-    /**
-     * Call operator:
-     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
-     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
-     */
-    auto operator() (double vpp) const -> Q {
-
-        Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-        vector<int> indices(2);
-        //Iterates over all Keldysh components of the bubble which are nonzero
-
-        indices = indices_sum(i0, i2, channel);
-        Q Pival = Pi.value(i2, w, vpp, i_in, channel);
-
-        VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
-        VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
-        res_l_V = vertex1[0].left_diff_bare(input_l);
-        res_r_V = vertex2[0].right_same_bare(input_r);
-
-        if (channel != 't') {
-            res = res_l_V * Pival * res_r_V;
-        }
-        else {
-            input_l.spin = 1;
-            input_r.spin = 1;
-            res_l_Vhat = vertex1[0].left_diff_bare(input_l);
-            res_r_Vhat = vertex2[0].right_same_bare(input_r);
-
-            res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-        }
-
-        return res;
-    }
-};
 template <typename Q> class Integrand_K3_diff {
     const Vertex<Q>& vertex1;
     const Vertex<Q>& vertex2;
@@ -827,29 +767,24 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
-                // (distinguishing between differentiated and non-differentiated bubble)
-                if(diff){
+                if (!diff && part != 'L') value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
+                // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
+                else {
                     for(auto i2:non_zero_Keldysh_bubble) {
-                        Integrand_K2_diff<Q> integrand_K2 (vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel);
-                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
-                    }
-                }
-                else{
-                    if (part != 'L') value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
-                    // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
-                    else {
-                        for(auto i2:non_zero_Keldysh_bubble) {
 #ifdef DEBUG_MODE
-                            Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, iK_select2, iK_select_bubble2);
+                        Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff,
+                                                     iK_select2, iK_select_bubble2);
 #else
-                            Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part);
+                        Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff);
 #endif
-                            value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
-                            value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K2(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, i0, i2, i_in, channel); //Correction needed for the K2 class
+                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);                      //Integration over vppp, a fermionic frequency
+                        if (!diff) {
+                            value += prefactor * (1. / (2. * M_PI * glb_i)) *
+                                     asymp_corrections_K2(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, i0, i2,
+                                                          i_in, channel); //Correction needed for the K2 class
                         }
                     }
                 }
-
                 K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
             ++iterator;
