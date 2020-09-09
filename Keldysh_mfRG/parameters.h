@@ -116,6 +116,12 @@ const int nw2_t  = nBOS2;
 const int nv2_t  = nFER2;
 const int nw3_t  = nBOS3;
 const int nv3_t = nFER3;
+// for a general channel r
+const int nw1 = nBOS;
+const int nw2 = nBOS2;
+const int nv2 = nFER2;
+const int nw3 = nBOS3;
+const int nv3 = nFER3;
 
 // Vectors for fermionic and bosonic frequencies
 rvec bfreqs (nBOS);                                                                                                     // NOLINT(cert-err58-cpp)
