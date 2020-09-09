@@ -93,7 +93,10 @@ public:
     void initialize(Q val);
 
     //Norm of the vertex
-    double norm(int);
+    double sum_norm(int);
+    double norm_K1(int);
+    double norm_K2(int);
+    double norm_K3(int);
 
     // Various operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
@@ -487,32 +490,53 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
     this->irred.initialize(val);
 }
 
-template <typename Q> auto fullvert<Q>::norm(const int p) -> double {
+template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
     if(p==0) {//infinity (max) norm
         double max = 0;
-#if DIAG_CLASS>=0
-        for(int iK = 0; iK<nK_K1; iK++){
-            for(int iw=0; iw < nBOS; iw++) {
+        for (int iK = 0; iK < nK_K1; iK++) {
+            for (int iw = 0; iw < nBOS; iw++) {
                 for (int i_in = 0; i_in < n_in; i_in++) {
                     double compare = abs(this->avertex.K1_val(iK, iw, i_in));
-                    if(compare > max){
+                    if (compare > max) {
                         max = compare;
                     }
 
                     compare = abs(this->pvertex.K1_val(iK, iw, i_in));
-                    if(compare > max){
+                    if (compare > max) {
                         max = compare;
                     }
 
                     compare = abs(this->tvertex.K1_val(iK, iw, i_in));
-                    if(compare > max){
+                    if (compare > max) {
                         max = compare;
                     }
                 }
             }
         }
-#endif
-#if DIAG_CLASS>=2
+
+        return max;
+    }
+
+    else {//p-norm
+        double result = 0;
+        for(int iK = 0; iK<nK_K1; iK++){
+            for(int iw=0; iw < nBOS; iw++){
+                for(int i_in=0; i_in<n_in; i_in++){
+
+                    result += pow(abs(this->avertex.K1_val(iK, iw, i_in)), (double)p);
+                    result += pow(abs(this->pvertex.K1_val(iK, iw, i_in)), (double)p);
+                    result += pow(abs(this->tvertex.K1_val(iK, iw, i_in)), (double)p);
+
+                }
+            }
+        }
+        return pow(result, 1./((double)p));
+    }
+}
+
+template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
+    if(p==0) { //infinity (max) norm
+        double max = 0.;
         for(int iK=0; iK < nK_K2; iK++) {
             for (int iw = 0; iw < nBOS2; iw++) {
                 for (int iv = 0; iv < nFER2; iv++) {
@@ -536,8 +560,30 @@ template <typename Q> auto fullvert<Q>::norm(const int p) -> double {
                 }
             }
         }
-#endif
-#if DIAG_CLASS >= 3
+        return max;
+    }
+    else{//p-norm
+        double result = 0.;
+        for(int iK=0; iK < nK_K2; iK++){
+            for(int iw=0; iw < nBOS2; iw++){
+                for(int iv=0; iv < nFER2; iv++) {
+                    for (int i_in = 0; i_in < n_in; i_in++) {
+
+                        result += pow(abs(this->avertex.K2_val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(abs(this->pvertex.K2_val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(abs(this->tvertex.K2_val(iK, iw, iv, i_in)), (double) p);
+
+                    }
+                }
+            }
+        }
+        return pow(result, 1./((double)p));
+    }
+}
+
+template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
+    if(p==0) {
+        double max = 0.;
         for(int iK=0; iK < nK_K3; iK++) {
             for (int iw = 0; iw < nBOS3; iw++) {
                 for (int iv1 = 0; iv1 < nFER3; iv1++) {
@@ -562,42 +608,11 @@ template <typename Q> auto fullvert<Q>::norm(const int p) -> double {
                 }
             }
         }
-#endif
-    return max;
+        return max;
     }
+
     else { //p-norm
-
-        double result = 0;
-#if DIAG_CLASS >=0
-        for(int iK = 0; iK<nK_K1; iK++){
-            for(int iw=0; iw < nBOS; iw++){
-                for(int i_in=0; i_in<n_in; i_in++){
-
-                    result += pow(abs(this->avertex.K1_val(iK, iw, i_in)), (double)p);
-                    result += pow(abs(this->pvertex.K1_val(iK, iw, i_in)), (double)p);
-                    result += pow(abs(this->tvertex.K1_val(iK, iw, i_in)), (double)p);
-
-                }
-            }
-        }
-#endif
-#if DIAG_CLASS>=2
-        for(int iK=0; iK < nK_K2; iK++){
-            for(int iw=0; iw < nBOS2; iw++){
-                for(int iv=0; iv < nFER2; iv++) {
-                    for (int i_in = 0; i_in < n_in; i_in++) {
-
-                        result += pow(abs(this->avertex.K2_val(iK, iw, iv, i_in)), (double) p);
-                        result += pow(abs(this->pvertex.K2_val(iK, iw, iv, i_in)), (double) p);
-                        result += pow(abs(this->tvertex.K2_val(iK, iw, iv, i_in)), (double) p);
-
-                    }
-                }
-            }
-        }
-#endif
-
-#if DIAG_CLASS>=3
+        double result = 0.;
         for(int iK=0; iK < nK_K3; iK++){
             for(int iw=0; iw < nBOS3; iw++){
                 for(int iv1=0; iv1<nFER3; iv1++) {
@@ -613,11 +628,24 @@ template <typename Q> auto fullvert<Q>::norm(const int p) -> double {
                 }
             }
         }
-#endif
-
-    return pow(result, 1./((double)p));
+        return pow(result, 1./((double)p));
     }
 
+
+}
+
+template <typename Q> auto fullvert<Q>::sum_norm(const int p) -> double {
+    double result = 0.;
+#if DIAG_CLASS >= 0
+    result += norm_K1(p);
+#endif
+#if DIAG_CLASS >= 2
+    result += norm_K2(p);
+#endif
+#if DIAG_CLASS >= 3
+    result += norm_K3(p);
+#endif
+    return result;
 }
 
 #endif //KELDYSH_MFRG_VERTEX_H

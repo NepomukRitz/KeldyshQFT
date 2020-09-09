@@ -19,6 +19,7 @@ public:
     void addself(int iK, int iv, int i_in, Q val);  //Adds given input to specified location
     auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
+    auto norm(int p) -> double;
 
     // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
@@ -168,6 +169,29 @@ template <typename Q> void SelfEnergy<Q>::setself(int iK, int iv, int i_in, Q va
  */
 template <typename Q> void SelfEnergy<Q>::addself(int iK, int iv, int i_in, Q val){
     Sigma[iK*nSE + iv*n_in + i_in] += val;
+}
+
+/*
+ * p-norm for the SelfEnergy
+ */
+template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
+    if(p==0){ //max norm
+        double max = 0.;
+        for (auto value : (this->Sigma)){
+            if(abs(value) > max){
+                max = abs(value);
+            }
+        }
+        return max;
+    }
+
+    else{ //p-norm
+        double result = 0;
+        for (auto value : (this->Sigma)){
+            result += pow(abs(value), (double)p);
+        }
+        return pow(result, 1./((double)p));
+    }
 }
 
 

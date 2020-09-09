@@ -956,7 +956,6 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
             file->close();
             delete file;
 
-            print("File '", FILE_NAME, "' successfully read out", true);
             return result;
 
         } else {
