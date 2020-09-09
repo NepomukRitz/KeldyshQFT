@@ -33,14 +33,14 @@ auto correctionFunctionBubbleP(double w, double a, double b, double gamma, doubl
         return 0.;
     else{
         if(sign>0){
-            return 1./(w-2*glb_epsilon+glb_i*glb_Gamma*(a+b)) *
-            log( (gamma - w/2. + glb_epsilon - glb_i*glb_Gamma*b) /
-                 (gamma + w/2. - glb_epsilon + glb_i*glb_Gamma*a) );
+            return 1./(w - 2*glb_epsilon + glb_i*glb_Gamma*(a+b)) *
+            log( (w/2. - gamma - glb_epsilon + glb_i*a*glb_Gamma) /
+                 (w/2. + gamma - glb_epsilon + glb_i*b*glb_Gamma) );
         }
         else {
-            return 1./(w-2*glb_epsilon+glb_i*glb_Gamma*(a+b)) *
-            log( (gamma - w/2. + glb_epsilon - glb_i*glb_Gamma*a) /
-                 (gamma + w/2. - glb_epsilon + glb_i*glb_Gamma*b) );
+            return 1./(w - 2*glb_epsilon + glb_i*glb_Gamma*(a+b)) *
+            log( (w/2. - gamma - glb_epsilon + glb_i*glb_Gamma*b) /
+                 (w/2. + gamma - glb_epsilon + glb_i*glb_Gamma*a) );
         }
     }
 
@@ -121,8 +121,8 @@ template <typename Q> auto asymp_corrections_K1(const Vertex<Q>& vertex1, const 
             res_l_V_p =  left_same_bare<Q> (vertex1, indices[0], w, gamma_p, i_in, 0, channel);
             res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
 
-            res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
-            res += (res_l_V_p * res_r_V_p) * correctionFunctionBubbleAT(w, a, b, gamma_p, +1.);
+            res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleP(w, a, b, gamma_m, -1.);
+            res += (res_l_V_p * res_r_V_p) * correctionFunctionBubbleP(w, a, b, gamma_p, +1.);
             break;
         case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
             i0 = non_zero_Keldysh_K1t[i0_in];
@@ -213,8 +213,8 @@ template <typename Q> auto asymp_corrections_K2(const Vertex<Q>& vertex1, const 
             res_l_V_p = vertex1[0].gammaRb(input_l_V_p);
             res_r_V_p = right_same_bare<Q> (vertex2, indices[1], w, gamma_p, i_in, 0, channel);
 
-            res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleAT(w, a, b, gamma_m, -1.);
-            res += (res_l_V_p * res_r_V_p) * correctionFunctionBubbleAT(w, a, b, gamma_p, +1.);
+            res += (res_l_V_m * res_r_V_m) * correctionFunctionBubbleP(w, a, b, gamma_m, -1.);
+            res += (res_l_V_p * res_r_V_p) * correctionFunctionBubbleP(w, a, b, gamma_p, +1.);
             break;
         case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
             i0 = non_zero_Keldysh_K1t[i0_in];

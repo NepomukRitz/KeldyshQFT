@@ -13,6 +13,8 @@
 #include "solvers.h"
 #include "hdf5_routines.h"
 #include "data_structures.h"
+#include "write_data2file.h"
+#include "loop.h"
 #include <iostream>
 
 rvec reconstruct_grid(){
@@ -41,9 +43,7 @@ template <typename Q> class Integrand_BS_K1 {
     const int i_in;
     const char channel;
     const char side;
-#if DIAG_CLASS <= 1
-    Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
-#endif
+
 public:
     /**
      * Constructor:
@@ -344,70 +344,105 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
 #if DIAG_CLASS>=0
 //    double tK1 = get_time();
     /*K1 contributions*/
+    int n_mpi = 1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+    int n_omp = nK_K1 * nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
 
-    vec<Q> K1_values(nK_K1 * nw1_w * n_in);
+    // initialize buffer into which each MPI process writes their results
+    vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
-    for(int i0 =0; i0 < nK_K1; i0++){
+    // start for-loop over external arguments, using MPI and OMP
+    int iterator = 0;
+    for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
+        if (i_mpi % mpi_size == mpi_rank) {
 #pragma omp parallel for
-        for (int iw=0; iw < nw1_w; iw++){
-            double w = bfreqs[iw];
-            for (int i_in = 0; i_in < n_in; i_in ++){
+            for (int i_omp=0; i_omp<n_omp; ++i_omp) {
+                // converting external MPI/OMP indices to physical indices
+                int iK1 = i_mpi * n_omp + i_omp;
+                int i0 = iK1/(nw1_w*n_in);
+                int iw = iK1/(n_in) - i0*nw1_w;
+                int i_in = iK1 - i0*nw1_w*n_in - iw*n_in;
+                double w = bfreqs[iw];
+                Q value;
 
-                for (auto i2: non_zero_Keldysh_bubble){
+                for(auto i2: non_zero_Keldysh_bubble){
                     Integrand_BS_K1<Q> integrand_BS_K1 (vertex1, vertex2, Pi, i0, i2, w, i_in, channel, side);
 
-                    K1_values[i0*nw1_w*n_in + iw*n_in + i_in] += prefactor * (1. / (2. * M_PI * glb_i)) *
-                             integrator(integrand_BS_K1, glb_v_lower, glb_v_upper);   //Integration over a fermionic frequency
-                    K1_values[i0*nw1_w*n_in + iw*n_in + i_in] += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                                                 asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i2, i_in, channel);
+                    value += prefactor * (1. / (2. * M_PI * glb_i))*integrator(integrand_BS_K1, glb_v_lower, glb_v_upper);   //Integration over a fermionic frequency
+//                    value += prefactor * (1. / (2. * M_PI * glb_i))*asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i2, i_in, channel);
                 }
+
+                K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
+            ++iterator;
         }
     }
 
+    // collect+combine results from different MPI processes, reorder them appropriately
+    vec<Q> K1_result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(K1_buffer, K1_result, n_mpi, n_omp);
+    vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': lhs_vertex[0].avertex.K1 += K1_values; break;
-        case 'p': lhs_vertex[0].pvertex.K1 += K1_values; break;
-        case 't': lhs_vertex[0].tvertex.K1 += K1_values; break;
+        case 'a': lhs_vertex[0].avertex.K1 += K1_ordered_result; break;
+        case 'p': lhs_vertex[0].pvertex.K1 += K1_ordered_result; break;
+        case 't': lhs_vertex[0].tvertex.K1 += K1_ordered_result; break;
         default: ;
     }
 #endif
+
 
 #if DIAG_CLASS>=2
-    vec<Q> K2_values(nK_K2 * nw2_w * nw2_v * n_in);
+//    double tK2 = get_time();
+    /*K2 contributions*/
+    n_mpi = nK_K2;
+    n_omp = nw2_w * nw2_v * n_in;
 
-    for (int i0=0; i0< nK_K2; i0++){
-        for (int iw=0; iw<nw2_w; iw++){
-            double w = bfreqs2[iw];
+    // initialize buffer into which each MPI process writes their results
+    vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
-            for (int iv=0; iv<nw2_v; iv++){
+    // start for-loop over external arguments, using MPI and OMP
+    iterator = 0;
+    for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
+        if (i_mpi % mpi_size == mpi_rank) {
+#pragma omp parallel for
+            for (int i_omp=0; i_omp<n_omp; ++i_omp) {
+                // converting external MPI/OMP indices to physical indices
+                int iK2 = i_mpi * n_omp + i_omp;
+                int i0 = iK2 /(nw2_w * nw2_v * n_in);
+                int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
+                int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
+                int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
+                double w = bfreqs2[iw];
                 double v = ffreqs2[iv];
+                Q value;
 
-                for (int i_in=0; i_in<n_in; i_in++){
-                    for(auto i2:non_zero_Keldysh_bubble){
+                for(auto i2:non_zero_Keldysh_bubble){
+                    Integrand_BS_K2<Q> integrand_BS_K2 (vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, side);
 
-                        Integrand_BS_K2<Q> integrand_BS_K2 (vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, side);
-
-                        K2_values[i0 * nw2_t * nv2_t * n_in + iw * nv2_t * n_in + iv * n_in + i_in]
-                        += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_BS_K2, glb_v_lower, glb_v_upper);
-                        K2_values[i0 * nw2_t * nv2_t * n_in + iw * nv2_t * n_in + iv * n_in + i_in]
-                        += prefactor*(1./(2.*M_PI*glb_i))*
-                           asymp_corrections_K2(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, i0, i2, i_in, channel);
-                    }
+                    value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_BS_K2, glb_v_lower, glb_v_upper);
+                    value += prefactor*(1./(2.*M_PI*glb_i))*asymp_corrections_K2(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, i0, i2, i_in, channel);
                 }
+
+
+                K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
+            ++iterator;
         }
     }
 
+    // collect+combine results from different MPI processes, reorder them appropriately
+    vec<Q> K2_result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(K2_buffer, K2_result, n_mpi, n_omp);
+    vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
+
     switch (channel) {
-        case 'a': lhs_vertex[0].avertex.K2 += K2_values; break;
-        case 'p': lhs_vertex[0].pvertex.K2 += K2_values; break;
-        case 't': lhs_vertex[0].tvertex.K2 += K2_values; break;
+        case 'a': lhs_vertex[0].avertex.K2 += K2_ordered_result; break;
+        case 'p': lhs_vertex[0].pvertex.K2 += K2_ordered_result; break;
+        case 't': lhs_vertex[0].tvertex.K2 += K2_ordered_result; break;
         default: ;
     }
-
 #endif
+
 #endif
 }
 
@@ -419,28 +454,95 @@ Vertex<comp> calculate_Bethe_Salpeter_equation(const Vertex<comp>& Gamma, const 
     bethe_salpeter[0].irred.initialize(-glb_U/2.);
 
     Bethe_Salpeter_bubble(bethe_salpeter, Gamma, Gamma, G, G, 'a', side);
+    Bethe_Salpeter_bubble(bethe_salpeter, Gamma, Gamma, G, G, 'p', side);
+    Bethe_Salpeter_bubble(bethe_salpeter, Gamma, Gamma, G, G, 't', side);
 
     return bethe_salpeter;
 
 }
 
-void check_Bethe_Salpeter(const H5std_string filename, int nLambda){
+void check_BSE_and_SDE(const H5std_string& filename, const string& outputFilename){
 
-    State<comp> state = read_hdf(filename, nLambda, nODE + U_NRG.size() + 1);
+    rvec lambdas = reconstruct_grid();
+    rvec actual_gird;       //lambdas has length nODE + U_NRG.size() which, for Gamma>0 is larger than needed!
+    rvec K1_diff;
+    rvec K2_diff;
+    rvec Sigma_diff_p;
+    rvec Sigma_diff_a;
 
-    double Lambda = reconstruct_grid()[nLambda];        //No need to save the grid, just read out the needed value
+    bool done = false;
 
-    Propagator G (Lambda, state.selfenergy, 'g');
+    for(int i=0; i<lambdas.size(); i++){
 
-    Vertex<comp> bethe_salpeter_L = calculate_Bethe_Salpeter_equation(state.vertex, G, 'L');
+        if(done){
+            break;
+        }
 
-    Vertex<comp> bethe_salpeter_R = calculate_Bethe_Salpeter_equation(state.vertex, G, 'R');
+        if(lambdas[i] == 0){
+            done = true;
+        }
 
-    Vertex<comp> calculated_vertex = state.vertex;
+        actual_gird.emplace_back(lambdas[i]);
 
-    Vertex<comp> difference = bethe_salpeter_L - calculated_vertex;
+        print("Current nLambda = " + to_string(i)+". Represents Lambda = " + to_string(lambdas[i]), true);
 
-    print("The 2-norm difference between mfRG and Bethe-Salpeter is " + to_string(difference[0].norm(2)));
+        State<comp> state = read_hdf(filename, i, lambdas.size());
+
+        Propagator G (lambdas[i], state.selfenergy, 'g');
+
+        //Bethe-Salpeter equation for gamma_r. Due to channel-crossing symmetries, only consider full vertex
+        Vertex<comp> bethe_salpeter_L = calculate_Bethe_Salpeter_equation(state.vertex, G, 'L');
+        Vertex<comp> bethe_salpeter_R = calculate_Bethe_Salpeter_equation(state.vertex, G, 'R');
+        Vertex<comp> bethe_salpeter = (bethe_salpeter_L + bethe_salpeter_R) * 0.5;
+
+        Vertex<comp> fRG_vertex = state.vertex;
+        Vertex<comp> vertex_diff = fRG_vertex - bethe_salpeter;
+
+        //p of the p-norm
+        int p = 2;
+
+#if DIAG_CLASS >= 0
+        K1_diff.emplace_back(vertex_diff[0].norm_K1(p)/fRG_vertex[0].norm_K1(p));
+#endif
+#if DIAG_CLASS >= 2
+        K2_diff.emplace_back(vertex_diff[0].norm_K2(p)/fRG_vertex[0].norm_K2(p));
+#endif
+
+        //Schwinger-Dyson comparison
+        Vertex<comp> bare_vertex (n_spin);
+        bare_vertex[0].initialize(-glb_U/2.);
+
+        Vertex<comp> temp_bubble_p(n_spin);
+        bubble_function(temp_bubble_p, bare_vertex, fRG_vertex, G, G, 'p', false, '.');
+        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false, '.');
+        temp_bubble_p *= 0.5;
+
+        Vertex<comp> temp_bubble_a(n_spin);
+        bubble_function(temp_bubble_a, bare_vertex, fRG_vertex, G, G, 'a', false, '.');
+        bubble_function(temp_bubble_a, fRG_vertex, bare_vertex, G, G, 'a', false, '.');
+        temp_bubble_a *= 0.5;
+
+        SelfEnergy<comp> schwinger_dyson_p;
+        SelfEnergy<comp> schwinger_dyson_a;
+        SelfEnergy<comp> fRG_self_energy = state.selfenergy;
+
+
+        schwinger_dyson_p.initialize(glb_U/2., 0.);   //Bare-vertex contribution known analytically for ph-symmetric
+        loop(schwinger_dyson_p, temp_bubble_p, G, false);
+
+        schwinger_dyson_a.initialize(glb_U/2., 0.);   //Bare-vertex contribution known analytically for ph-symmetric
+        loop(schwinger_dyson_a, temp_bubble_a, G, false);
+
+        SelfEnergy<comp> self_energy_diff_p = fRG_self_energy - schwinger_dyson_p;
+        SelfEnergy<comp> self_energy_diff_a = fRG_self_energy - schwinger_dyson_a;
+
+        Sigma_diff_p.emplace_back(self_energy_diff_p.norm(p)/fRG_self_energy.norm(p));
+        Sigma_diff_a.emplace_back(self_energy_diff_a.norm(p)/fRG_self_energy.norm(p));
+    }
+
+
+    write_h5_rvecs(outputFilename, {"lambdas", "K1_diff", "K2_diff", "Sigma_diff_p", "Sigma_diff_a"},
+                   {actual_gird, K1_diff, K2_diff, Sigma_diff_p, Sigma_diff_a});
 
 }
 

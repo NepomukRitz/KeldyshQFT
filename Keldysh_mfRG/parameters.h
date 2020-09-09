@@ -7,12 +7,16 @@
 
 using namespace std;
 
+/// Data analysis ///
+//#define BSE_SDE
+
+
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
 const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-const double glb_Gamma = 1./2.;                   // Hybridization of Anderson model
+const double glb_Gamma = 1./5.;                // Hybridization of Anderson model
 const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 #define EQUILIBRIUM                            // If defined, use equilibrium FDT's for propagators
                                                // (only sensible when glb_V = 0)
@@ -53,15 +57,15 @@ const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(g
 //const int nFER = 20;
 
 #elif GRID==3
-const double W_scale = 20.; //*glb_U;                //Resolution scale should be chosen big enough... ~50.*U seems good
-const double glb_w_upper = 200.;
+const double W_scale = 25.; //*glb_U;                //Resolution scale should be chosen big enough... ~25.*U seems good
+const double glb_w_upper = 300.;
 const double glb_w_lower = -glb_w_upper;
-const double glb_v_upper = 200.;
+const double glb_v_upper = 300.;
 const double glb_v_lower = -glb_v_upper;
 
 // Number of bosonic and fermionic frequency points
-const int nBOS = 201;
-const int nFER = 201;
+const int nBOS = 301;
+const int nFER = 301;
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
@@ -82,8 +86,8 @@ const double glb_v_lower = -glb_v_upper;
 #endif
 
 // Number of frequency points for K2 and K3 classes
-const int nBOS2 = 101;//nBOS;
-const int nFER2 = 101;//nFER;
+const int nBOS2 = 151;//nBOS;
+const int nFER2 = 151;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 

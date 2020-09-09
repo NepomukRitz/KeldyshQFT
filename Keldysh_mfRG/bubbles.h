@@ -653,11 +653,13 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #endif
                         value += prefactor * (1. / (2. * M_PI * glb_i)) *
                                  integrator(integrand_K1, glb_v_lower, glb_v_upper, -w / 2., w / 2.);
+                        /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
                             value += prefactor * (1. / (2. * M_PI * glb_i)) *
                                      asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i2, i_in,
                                                           channel); //Correction needed for the K1 class
                         }
+                        // */
                     }
                 }
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
@@ -718,11 +720,13 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff);
 #endif
                         value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);
+                        /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
                             value += prefactor * (1. / (2. * M_PI * glb_i)) *
                                      asymp_corrections_K2(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, i0, i2,
                                                           i_in, channel); //Correction needed for the K2 class
                         }
+                        // */
                     }
                 }
                 K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
