@@ -9,7 +9,7 @@
 
 void add_points_to_Lambda_grid(vector<double>& grid){
     for (auto U : U_NRG){
-        auto y = 1/U - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
+        auto y = glb_U/U - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
         if(y<0){
             break;
         }
