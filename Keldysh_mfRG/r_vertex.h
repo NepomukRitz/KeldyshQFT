@@ -36,14 +36,14 @@ public:
      * Return the value of the reducible vertex in channel r (used for r = p).
      * @param input : Combination of input arguments.
      */
-    auto value (VertexInput input) const -> Q;
+    auto value(VertexInput input) const -> Q;
     /**
      * Return the value of the reducible vertex in channel r (used for r = (a,t)).
      * @param input     : Combination of input arguments.
      * @param vertex_in : Reducible vertex in the related channel (t,a), needed to apply symmetry transformations that
      *                    map between channels a <--> t.
      */
-    auto value (VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    auto value(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
 
     /**
      * Transform the frequencies from the frequency convention of input.channel to the frequency convention of
@@ -53,7 +53,7 @@ public:
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >= 0
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1_a * n_in);  // data points of K1
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
     /// Member functions for accessing/setting values of the vector K1 ///
 
