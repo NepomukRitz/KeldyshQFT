@@ -16,6 +16,8 @@
 
 /// --- Constants concerning HDF5 data format --- ///
 
+// TODO: store ffreqs, bfreqs etc. for each Lambda step when using an adaptive grid
+
 // Dataset dimensions
 const int RANK_K1 = 2;
 const int RANK_K2 = 2;

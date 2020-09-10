@@ -51,6 +51,11 @@ public:
      */
     void transfToR(VertexInput& input) const;
 
+    /**
+     * Interpolate the vertex to updated grid when rescaling the grid from Lambda1 to Lambda2.
+     */
+    void update_grid(double Lambda1, double Lambda2);
+
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >= 0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
@@ -368,6 +373,64 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     input.w  = w;
     input.v1 = v1;
     input.v2 = v2;
+}
+
+template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2) {
+#if DIAG_CLASS >= 1
+    rvec bfreqs_new = bfreqs * ((glb_Gamma + Lambda2) / (glb_Gamma + Lambda1)); // rescaled frequencies
+    vec<Q> K1_new (nK_K1 * nw1 * n_in);                                         // temporary K1 vector
+    for (int iK1=0; iK1<nK_K1; ++iK1) {
+        for (int iw=0; iw<nw1; ++iw) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                IndicesSymmetryTransformations indices (iK1, bfreqs_new[iw], 0., 0., i_in, channel);
+                // interpolate old values to new vector
+                K1_new[iK1*nw1*n_in + iw*n_in + i_in] = interpolateK1(indices, *this);
+            }
+        }
+    }
+    this->K1 = K1_new; // update vertex to new interpolated values
+#endif
+#if DIAG_CLASS >= 2
+    rvec bfreqs2_new = bfreqs2 * ((glb_Gamma + Lambda2) / (glb_Gamma + Lambda1)); // rescaled frequencies
+    rvec ffreqs2_new = ffreqs2 * ((glb_Gamma + Lambda2) / (glb_Gamma + Lambda1)); // rescaled frequencies
+    vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);
+    for (int iK2=0; iK2<nK_K2; ++iK2) {
+        for (int iw=0; iw<nw2; ++iw) {
+            for (int iv=0; iv<nv2; ++iv) {
+                for (int i_in = 0; i_in<n_in; ++i_in) {
+                    IndicesSymmetryTransformations indices (iK2, bfreqs2_new[iw], ffreqs2_new[iv], 0.,
+                                                            i_in, channel);
+                    // interpolate old values to new vector
+                    K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
+                        = interpolateK2(indices, *this);
+                }
+            }
+        }
+    }
+    this->K2 = K2_new; // update vertex to new interpolated values
+#endif
+#if DIAG_CLASS >= 3
+    rvec bfreqs3_new = bfreqs3 * ((glb_Gamma + Lambda2) / (glb_Gamma + Lambda1)); // rescaled frequencies
+    rvec ffreqs3_new = ffreqs3 * ((glb_Gamma + Lambda2) / (glb_Gamma + Lambda1)); // rescaled frequencies
+    vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);
+    for (int iK3=0; iK3<nK_K3; ++iK3) {
+        for (int iw=0; iw<nw3; ++iw) {
+            for (int iv=0; iv<nv3; ++iv) {
+                for (int ivp=0; ivp<nv3; ++ivp) {
+                    for (int i_in = 0; i_in<n_in; ++i_in) {
+                        IndicesSymmetryTransformations indices (iK3, bfreqs3_new[iw], ffreqs3_new[iv], ffreqs3_new[ivp],
+                                                                i_in, channel);
+                        // interpolate old values to new vector
+                        K3_new[iK3*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in]
+                            = interpolateK3(indices, *this);
+                    }
+                }
+            }
+        }
+    }
+    this->K3 = K3_new; // update vertex to new interpolated values
+#endif
+
 }
 
 #if DIAG_CLASS >= 0

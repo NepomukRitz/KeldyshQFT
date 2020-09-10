@@ -362,6 +362,25 @@ auto fconv_fer3(double w) -> int {
     return fconv_fer(w, nFER3);
 }
 
+// TODO: implement the two functions below also for grids 1, 2, 4
+// scale the grid initially set in parameters.h by a factor determined by the initial value of the flow Lambda_ini
+void scale_grid_parameters() {
+    glb_w_upper *= (glb_Gamma + Lambda_ini);
+    glb_w_lower *= (glb_Gamma + Lambda_ini);
+    glb_v_upper *= (glb_Gamma + Lambda_ini);
+    glb_v_lower *= (glb_Gamma + Lambda_ini);
+    W_scale *= (glb_Gamma + Lambda_ini);
+}
+
+// rescale the grid from Lambda1 to Lambda2
+void rescale_grid_parameters(double Lambda1, double Lambda2) {
+    glb_w_upper *= (glb_Gamma + Lambda2) / (glb_Gamma + Lambda1);
+    glb_w_lower *= (glb_Gamma + Lambda2) / (glb_Gamma + Lambda1);
+    glb_v_upper *= (glb_Gamma + Lambda2) / (glb_Gamma + Lambda1);
+    glb_v_lower *= (glb_Gamma + Lambda2) / (glb_Gamma + Lambda1);
+    W_scale *= (glb_Gamma + Lambda2) / (glb_Gamma + Lambda1);
+}
+
 
 /*********************************************** LOG GRID *************************************************************/
 //to convert on full frequency grid: (old functions from Julian)

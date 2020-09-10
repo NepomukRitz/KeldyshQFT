@@ -92,6 +92,9 @@ public:
     // Initialize vertex
     void initialize(Q val);
 
+    // Interpolate vertex to updated grid
+    void update_grid(double Lambda1, double Lambda2);
+
     //Norm of the vertex
     double sum_norm(int);
     double norm_K1(int);
@@ -223,6 +226,13 @@ public:
         //TODO Implement a reasonable norm here
         return 1.;
     }
+
+    void update_grid(double Lambda1, double Lambda2) {  // Interpolate vertex to updated grid
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].update_grid(Lambda1, Lambda2);
+        }
+    };
+
 };
 
 
@@ -488,6 +498,12 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {
     this->irred.initialize(val);
+}
+
+template <typename Q> void fullvert<Q>::update_grid(double Lambda1, double Lambda2) {
+    this->avertex.update_grid(Lambda1, Lambda2);
+    this->pvertex.update_grid(Lambda1, Lambda2);
+    this->tvertex.update_grid(Lambda1, Lambda2);
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {

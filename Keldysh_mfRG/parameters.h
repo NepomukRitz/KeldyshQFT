@@ -57,11 +57,11 @@ const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(g
 //const int nFER = 20;
 
 #elif GRID==3
-const double W_scale = 25.; //*glb_U;                //Resolution scale should be chosen big enough... ~25.*U seems good
-const double glb_w_upper = 300.;
-const double glb_w_lower = -glb_w_upper;
-const double glb_v_upper = 300.;
-const double glb_v_lower = -glb_v_upper;
+double W_scale = 25.; //*glb_U;                //Resolution scale should be chosen big enough... ~25.*U seems good
+double glb_w_upper = 300.;
+double glb_w_lower = -glb_w_upper;
+double glb_v_upper = 300.;
+double glb_v_lower = -glb_v_upper;
 
 // Number of bosonic and fermionic frequency points
 const int nBOS = 301;

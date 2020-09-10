@@ -18,6 +18,7 @@ public:
     Vertex<Q> vertex = Vertex<Q> (n_spin);
 
     void initialize();
+    void update_grid(double Lambda1, double Lambda2);
 
     // operators containing State objects
     auto operator+= (const State& state) -> State {
@@ -58,5 +59,11 @@ template <typename Q> void State<Q>::initialize() {
     this->vertex[0].initialize(-glb_U/2.);
 }
 
+template <typename Q> void State<Q>::update_grid(double Lambda1, double Lambda2) {
+    this->selfenergy.update_grid(Lambda1, Lambda2);
+    this->vertex.update_grid(Lambda1, Lambda2);
+    rescale_grid_parameters(Lambda1, Lambda2);
+    setUpGrids();
+}
 
 #endif //KELDYSH_MFRG_STATE_H

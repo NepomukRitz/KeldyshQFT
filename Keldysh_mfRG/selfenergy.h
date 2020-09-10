@@ -19,6 +19,7 @@ public:
     void addself(int iK, int iv, int i_in, Q val);  //Adds given input to specified location
     auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
+    void update_grid(double Lambda1, double Lambda2);  // Interpolate self-energy to updated grid
     auto norm(int p) -> double;
 
     // operators for self-energy
@@ -169,6 +170,20 @@ template <typename Q> void SelfEnergy<Q>::setself(int iK, int iv, int i_in, Q va
  */
 template <typename Q> void SelfEnergy<Q>::addself(int iK, int iv, int i_in, Q val){
     Sigma[iK*nSE + iv*n_in + i_in] += val;
+}
+
+template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lambda2) {
+    rvec ffreqs_new = ffreqs * ((glb_Gamma + Lambda2) / (glb_Gamma + Lambda1)); // rescaled frequencies
+    vec<Q> Sigma_new (2*nSE*n_in);                                              // temporary self-energy vector
+    for (int iK=0; iK<2; ++iK) {
+        for (int iv=0; iv<nSE; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                // interpolate old values to new vector
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, ffreqs_new[iv], i_in);
+            }
+        }
+    }
+    this->Sigma = Sigma_new; // update selfenergy to new interpolated values
 }
 
 /*
