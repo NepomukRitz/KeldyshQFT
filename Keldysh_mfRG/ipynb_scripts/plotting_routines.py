@@ -93,14 +93,14 @@ def plot_spin_susceptibility(U_NRG, filenames, labels, path_NRG="../"):
     
     # load fRG data
     DIAG_CLASS, N_LOOPS, T, epsilon, mu, Gamma, Lambda, Delta, U, V, \
-    v, SigmaR, SigmaK, A, \
+    v, Sigma, A, \
     w, K1a, K1p, K1t, \
     w2, v2, K2a, K2p, K2t \
         = load_data(U_NRG, Delta_NRG, filenames)
 
 
     fs = 18  # font size
-    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12, 4))
+    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
 
     for i in range(len(filenames)):
         # real part of spin susceptibility (retarded comp. of K1a)
