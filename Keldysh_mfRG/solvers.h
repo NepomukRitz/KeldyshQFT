@@ -84,7 +84,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     add_points_to_Lambda_grid(x_vals);
 
     vec<double> x_diffs (x_vals.size()-1);                // step sizes
-    for (int i=1; i<x_diffs.size(); i++){
+    for (int i=1; i<=x_diffs.size(); i++){
         x_diffs[i-1] = x_vals[i] - x_vals[i-1]; // step size i
     }
 
@@ -115,7 +115,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
 
         // update frequency grid, interpolate result to new grid
         t0 = get_time();
-        y_run.update_grid(x_run, x_run+dx);
+        y_run.update_grid(x_run-dx, x_run);
         print("Interpolated to new frequency grid.", true);
         get_time(t0); // measure time for interpolation to new grid
 
