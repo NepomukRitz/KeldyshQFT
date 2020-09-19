@@ -57,12 +57,10 @@ double log_resubstitution(double x) {
 }
 
 double sq_substitution(double x) {
-    double a = 5.;
-    return sqrt((sqrt(pow(x, 4) + 4.*pow(a*x, 2)) - pow(x, 2))/2.)/a;
+//    return sqrt((sqrt(pow(x, 4) + 4.*pow(Lambda_scale*x, 2)) - pow(x, 2))/2.)/Lambda_scale;
 }
 double sq_resubstitution(double x) {
-    double a = 5.;
-    return a*pow(x, 2) / sqrt(1. - pow(x, 2));
+//    return Lambda_scale*pow(x, 2) / sqrt(1. - pow(x, 2));
 }
 
 // explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step
@@ -71,14 +69,26 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
                         T rhs (const T& y, const double x),
                         double subst(double x), double resubst(double x),
                         const int N_ODE, string filename) {
-    const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
-    const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
+//    const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
+//    const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
 
-    // create non-linear integration grid using substitution
-    vec<double> x_vals (N_ODE+1);               // integration values
-    x_vals[0] = x_ini;                          // start with initial value
-    for (int i=1; i<=N_ODE; ++i) {
-        x_vals[i] = resubst(X_ini + i*dX);      // value i
+//     create non-linear integration grid using substitution
+//    vec<double> x_vals (N_ODE+1);               // integration values
+//    x_vals[0] = x_ini;                          // start with initial value
+//    for (int i=1; i<=N_ODE; ++i) {
+//        x_vals[i] = resubst(X_ini + i*dX);      // value i
+//    }
+
+    vec<double> x_vals(nODE+1);
+
+    cout << x_vals.size() << "\n";
+
+    int i = 0;
+    for(int k=order_ini; k<order_ini+k_orders;k++){
+        for(double j= 1; j<10; j+=j_inc){
+            x_vals[x_vals.size()-i-2] = j*pow(10, k);
+            i++;
+        }
     }
 
     add_points_to_Lambda_grid(x_vals);
@@ -90,7 +100,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
 
     // solve ODE using step sizes x_diffs
     T y_run = y_ini; // initial y value
-    double x_run = x_ini; // initial x value
+    double x_run = x_vals[0]; // initial x value
     double dx;
     for (int i=0; i<x_diffs.size(); ++i) {
         dx = x_diffs[i];

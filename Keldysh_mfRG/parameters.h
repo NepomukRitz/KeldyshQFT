@@ -181,14 +181,19 @@ const int n_in = 1;
 //#define FLOW
 
 // Number of evolution flow points
-const int nODE = 50;
+const double j_inc = 1./2.;
+const double k_orders = 6;
+const int order_ini = -3;
+
+const int nODE = (int)((9/j_inc)*k_orders);
 
 // Limits of the fRG flow
-const double Lambda_ini = 20.0;
+const double Lambda_ini = pow(10, order_ini+k_orders) - j_inc*pow(10, order_ini+k_orders-1);                // NOLINT(cert-err58-cpp)
 const double Lambda_fin = 0.0;    //1.0-1./7.;
+//const double Lambda_scale = 60;     //Scale of the quadratic substitution
 
 //Vector with the values of U for which we have NRG data to compare with (exclude zero!)
-vector<double> U_NRG {0.1, 0.2, 0.5, 1., 1.2, 1.5, 2., 3., 5., 10.};                                                   // NOLINT(cert-err58-cpp)
+vector<double> U_NRG {0.1, 0.2, 0.5, 1., 1.2, 1.5, 2., 3., 5., 10.};                                                    // NOLINT(cert-err58-cpp)
 
 
 // Vector with values of Lambda for the fRG flow
