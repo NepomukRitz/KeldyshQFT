@@ -128,21 +128,16 @@ auto main() -> int {
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
 
-#ifdef BSE_SDE
-//    string dir = "/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_KCS/";
     string dir = "../Data/";
     string filename = generate_filename();
 
-    print("Bethe-Salpteter run for file: " + filename, true);
+#ifdef BSE_SDE
+    print("Parquet-check for file: " + filename, true);
 
     check_BSE_and_SDE(dir, filename);
 
     return 0;
 #else
-
-    //*
-    string dir = "../Data/";
-    string filename = generate_filename();
 
     n_loop_flow(dir+filename);
 

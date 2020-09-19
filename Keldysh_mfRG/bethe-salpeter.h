@@ -572,7 +572,7 @@ void check_BSE_and_SDE(const string& dir, const H5std_string& filename){
         parquet.vertex = bethe_salpeter_vertex;
         parquet.selfenergy = schwinger_dyson_self_energy;
 
-        save_to_hdf(dir + "ParquetCheck_" + filename, i, lambdas.size(), parquet, lambdas, (bool)i);
+        save_to_hdf(dir + "parquet_check_" + filename, i, lambdas.size(), parquet, lambdas, (bool)i);
 
     }
 
