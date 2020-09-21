@@ -275,7 +275,7 @@ public:
                     vertex1[0].avertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w / 2., vpp + w / 2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
 
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = left_diff_bare<Q>(vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = vertex2[0].irred.val(indices[1], i_in, 0);
 
                     res = res_l_V * Pival * res_r_V;
@@ -284,7 +284,7 @@ public:
                     vertex1[0].pvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, w / 2. + vpp, w / 2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
 
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = left_diff_bare<Q>(vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = vertex2[0].irred.val(indices[1], i_in, 0);
 
                     res = res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
@@ -293,10 +293,10 @@ public:
                     vertex1[0].tvertex.indices_sum(indices, i0, i2);
                     Pival = Pi.value(i2, vpp - w / 2., vpp + w / 2.,i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
 
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = left_diff_bare<Q>(vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = vertex2[0].irred.val(indices[1], i_in, 0);
 
-                    res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+                    res_l_V = left_diff_bare<Q>(vertex1, indices[0], w, v, vpp, i_in, 1, channel);
                     res_r_Vhat = vertex2[0].irred.val(indices[1], i_in, 1);
 
                     res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
