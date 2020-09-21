@@ -6,12 +6,14 @@
 #include "data_structures.h"
 #include "symmetry_transformations.h"
 
-//TODO: unify classes avert, pvert, tvert, e.g. into rvert. Then, the last argument in the following functions would be rvert<Q>& vertex, the return type Q, and "return 0." possible
-
 //TODO improve to return the edge values
 //TODO: references to indices instead of copy (for speed)??
-template <typename T>
-auto interpolateK1(IndicesSymmetryTransformations indices, const T& vertex) -> comp {
+
+// forward declaration of rvert from r_vertex.h
+template <typename Q> class rvert;
+
+template <typename Q>
+auto interpolateK1(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
     if(fabs(indices.w)+inter_tol<glb_w_upper) {
         int index = fconv_bos(indices.w);
@@ -25,12 +27,12 @@ auto interpolateK1(IndicesSymmetryTransformations indices, const T& vertex) -> c
         return indices.prefactor * ((1. - xd) * f1 + xd * f2);
     }
     else {
-        return 0. * vertex.K1_val(0, 0, 0); // need multiplication by vertex component for auto return type
+        return 0.;
     }
 }
 
-template <typename T>
-auto interpolateK2 (IndicesSymmetryTransformations indices, const T& vertex) -> comp {
+template <typename Q>
+auto interpolateK2 (IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
 //    assert(glb_v_lower<=v && v <=glb_v_upper); // give error message if v out of range
 
@@ -53,12 +55,12 @@ auto interpolateK2 (IndicesSymmetryTransformations indices, const T& vertex) -> 
         return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
     }
     else {
-        return 0. * vertex.K2_val(0, 0, 0, 0); // need multiplication by vertex component for auto return type
+        return 0.;
     }
 }
 
-template <typename T>
-auto interpolateK3 (IndicesSymmetryTransformations indices, const T& vertex) -> comp {
+template <typename Q>
+auto interpolateK3 (IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
 //    assert(glb_v_lower<=v1 && v1 <=glb_v_upper); // give error message if v1 out of range
 //    assert(glb_v_lower<=v2 && v2 <=glb_v_upper); // give error message if v2 out of range
@@ -97,7 +99,7 @@ auto interpolateK3 (IndicesSymmetryTransformations indices, const T& vertex) -> 
         return indices.prefactor * (c0 * (1. - zd) + c1 * zd);
     }
     else {
-        return 0. * vertex.K3_val(0, 0, 0, 0, 0); // need multiplication by vertex component for auto return type
+        return 0.;
     }
 }
 
