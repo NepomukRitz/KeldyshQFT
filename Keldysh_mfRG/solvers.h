@@ -52,7 +52,7 @@ double log_substitution(double x) {
     //return x/sqrt(5*5+x*x);
 }
 double log_resubstitution(double x) {
-    return Lambda_scale*pow(10, x) - 1;
+    return Lambda_scale*(pow(10, x) - 1);
     //return 5*x/sqrt(1-x*x);
 }
 
