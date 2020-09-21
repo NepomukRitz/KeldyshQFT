@@ -18,7 +18,7 @@ State<comp> n_loop_flow(string outputFileName){
 
     sopt_state(state_ini, Lambda_ini);  // initialize the flow with SOPT at Lambda_ini (important!)
 
-    write_hdf(outputFileName, 0, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+    write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
     // compute the flow using RK4 solver
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,              // use n-loop-flow rhs
