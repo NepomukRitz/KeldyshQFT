@@ -9,7 +9,7 @@ from load_data import load_data, load_SIAM_NRG
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-def generate_filename_fRG(path, diagClass, nLoops, n1=301, sf=False, n2=201, Gamma=0.2, V=0.0, T=0.01, L_ini=20, nODE=50):
+def generate_filename_fRG(path, diagClass, nLoops, n1=301, sf=False, n2=201, Gamma=0.2, V=0.0, T=0.01, L_ini=1000, nODE=50):
     
     Gamma_str = "%.6f" % Gamma
     V_str = "%.6f" % V
