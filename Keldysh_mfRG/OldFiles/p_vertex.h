@@ -1,12 +1,12 @@
 #ifndef KELDYSH_MFRG_P_VERTEX_H
 #define KELDYSH_MFRG_P_VERTEX_H
 
-#include "data_structures.h"      // real/complex vector classes
-#include "parameters.h"           // system parameters (lengths of vectors etc.)
-#include "Keldysh_symmetries.h"   // transformations on Keldysh indices
-#include "internal_symmetries.h"  // symmetry transformations for internal indices (momentum etc.), currently trivial
-#include "interpolations.h"       // frequency interpolations for vertices
-#include "symmetry_transformations.h"
+#include "../data_structures.h"      // real/complex vector classes
+#include "../parameters.h"           // system parameters (lengths of vectors etc.)
+#include "../Keldysh_symmetries.h"   // transformations on Keldysh indices
+#include "../internal_symmetries.h"  // symmetry transformations for internal indices (momentum etc.), currently trivial
+#include "../interpolations.h"       // frequency interpolations for vertices
+#include "../symmetry_transformations.h"
 
 //template <typename Q> class pvert;
 
