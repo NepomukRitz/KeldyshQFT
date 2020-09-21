@@ -180,17 +180,13 @@ const int n_in = 1;
 // Define FLOW for flow and comment out for static calculation
 //#define FLOW
 
-// Number of evolution flow points
-const double j_inc = 1./2.;
-const double k_orders = 6;
-const int order_ini = -3;
 
-const int nODE = (int)((9/j_inc)*k_orders);
+const int nODE = 50;
 
 // Limits of the fRG flow
-const double Lambda_ini = pow(10, order_ini+k_orders) - j_inc*pow(10, order_ini+k_orders-1);                // NOLINT(cert-err58-cpp)
-const double Lambda_fin = 0.0;    //1.0-1./7.;
-//const double Lambda_scale = 60;     //Scale of the quadratic substitution
+const double Lambda_ini = 1000.;                // NOLINT(cert-err58-cpp)
+const double Lambda_fin = 0.0;
+const double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 //Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 vector<double> U_NRG {0.1, 0.2, 0.5, 1., 1.2, 1.5, 2., 3., 5., 10.};                                                    // NOLINT(cert-err58-cpp)
@@ -204,7 +200,7 @@ rvec flow_grid(nODE);                                                           
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 2
 
 //If defined, the flow of the self_energy is symmetrized, closed above and below
 //#define SYMMETRIZED_SELF_ENERGY_FLOW

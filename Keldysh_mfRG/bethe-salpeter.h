@@ -18,27 +18,15 @@
 #include <iostream>
 
 rvec reconstruct_grid(){
-//    const double X_ini = sq_substitution(Lambda_ini), X_fin = sq_substitution(Lambda_fin); // substitute limits
-//    const double dX = (X_fin-X_ini)/((double)nODE);         // equidistant grid in substituted variable X
-//
+    const double X_ini = log_substitution(Lambda_ini), X_fin = log_substitution(Lambda_fin); // substitute limits
+    const double dX = (X_fin-X_ini)/((double)nODE);         // equidistant grid in substituted variable X
+
     // create non-linear integration grid using substitution
-//    rvec x_vals (nODE+1);               // integration values
-//    x_vals[0] = Lambda_ini;                          // start with initial value
-//    for (int i=1; i<=nODE; ++i) {
-//        x_vals[i] = sq_resubstitution(X_ini + i*dX);      // value i
-//    }
-    vec<double> x_vals(nODE+1);
-
-    int i = 0;
-    for(int k=order_ini; k<order_ini+k_orders;k++){
-        for(double j= 1; j<10; j+=j_inc){
-            x_vals[x_vals.size()-i-2] = j*pow(10, k);
-            i++;
-        }
+    rvec x_vals (nODE+1);               // integration values
+    x_vals[0] = Lambda_ini;                          // start with initial value
+    for (int i=1; i<=nODE; ++i) {
+        x_vals[i] = log_resubstitution(X_ini + i*dX);      // value i
     }
-    add_points_to_Lambda_grid(x_vals);
-
-    return x_vals;
 }
 
 /// Integrand classes for non-differentiated bubble contributing to diagrammatic class K1, K2, K3

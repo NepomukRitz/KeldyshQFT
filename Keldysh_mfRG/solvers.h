@@ -48,11 +48,11 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
 }
 
 double log_substitution(double x) {
-    return log10(1 + x);
+    return log10(1 + x/Lambda_scale);
     //return x/sqrt(5*5+x*x);
 }
 double log_resubstitution(double x) {
-    return pow(10, x) - 1;
+    return Lambda_scale*pow(10, x) - 1;
     //return 5*x/sqrt(1-x*x);
 }
 
@@ -69,26 +69,14 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
                         T rhs (const T& y, const double x),
                         double subst(double x), double resubst(double x),
                         const int N_ODE, string filename) {
-//    const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
-//    const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
+    const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
+    const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
 
 //     create non-linear integration grid using substitution
-//    vec<double> x_vals (N_ODE+1);               // integration values
-//    x_vals[0] = x_ini;                          // start with initial value
-//    for (int i=1; i<=N_ODE; ++i) {
-//        x_vals[i] = resubst(X_ini + i*dX);      // value i
-//    }
-
-    vec<double> x_vals(nODE+1);
-
-    cout << x_vals.size() << "\n";
-
-    int i = 0;
-    for(int k=order_ini; k<order_ini+k_orders;k++){
-        for(double j= 1; j<10; j+=j_inc){
-            x_vals[x_vals.size()-i-2] = j*pow(10, k);
-            i++;
-        }
+    vec<double> x_vals (N_ODE+1);               // integration values
+    x_vals[0] = x_ini;                          // start with initial value
+    for (int i=1; i<=N_ODE; ++i) {
+        x_vals[i] = resubst(X_ini + i*dX);      // value i
     }
 
     add_points_to_Lambda_grid(x_vals);
