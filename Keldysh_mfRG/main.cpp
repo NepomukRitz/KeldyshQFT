@@ -136,7 +136,6 @@ auto main() -> int {
 
     check_BSE_and_SDE(dir, filename);
 
-    return 0;
 #else
 
     n_loop_flow(dir+filename);
