@@ -982,8 +982,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=0
 //    double tK1 = get_time();
     /*K1 contributions*/
-    int n_mpi = 1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-    int n_omp = nK_K1 * nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+    int n_mpi = nK_K1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+    int n_omp = nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
@@ -1052,8 +1052,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=2
 //    double tK2 = get_time();
     /*K2 contributions*/
-    n_mpi = nK_K2;
-    n_omp = nw2_w * nw2_v * n_in;
+    n_mpi = nK_K2 * nw2_w;
+    n_omp = nw2_v * n_in;
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
