@@ -133,7 +133,10 @@ def load_data(U_NRG, Delta_NRG, filenames):
         Deltas = (Gamma + Lambdas) / 2
 
         # check at which Lambda iteration U/Delta matches between fRG and the desired NRG value
-        iLambda = np.where(U/Deltas == U_NRG/Delta_NRG)[0][0]
+        if(U_NRG == 0):
+            iLambda = 0
+        else:
+            iLambda = np.where(U/Deltas == U_NRG/Delta_NRG)[0][0]
 
         # fix Lambda and effective hybridization Delta
         Lambda = Lambdas[iLambda]
