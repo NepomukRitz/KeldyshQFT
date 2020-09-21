@@ -27,6 +27,8 @@ rvec reconstruct_grid(){
     for (int i=1; i<=nODE; ++i) {
         x_vals[i] = log_resubstitution(X_ini + i*dX);      // value i
     }
+    add_points_to_Lambda_grid(x_vals);
+    return x_vals;
 }
 
 /// Integrand classes for non-differentiated bubble contributing to diagrammatic class K1, K2, K3
