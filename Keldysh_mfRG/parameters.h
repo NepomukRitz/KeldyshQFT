@@ -9,7 +9,17 @@ using namespace std;
 
 /// Data analysis ///
 //#define BSE_SDE
+/// Production runs parameters ///
 
+// Defines the number of diagrammatic classes that are relevant for a code:
+// 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
+#define DIAG_CLASS 1
+
+#define N_LOOPS 1  // Number of loops
+
+// If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
+// Only makes sense for pure K1 calculations.
+//#define STATIC_FEEDBACK
 
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
@@ -86,8 +96,8 @@ const double glb_v_lower = -glb_v_upper;
 #endif
 
 // Number of frequency points for K2 and K3 classes
-const int nBOS2 = 151;//nBOS;
-const int nFER2 = 151;//nFER;
+const int nBOS2 = 201;//nBOS;
+const int nFER2 = 201;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 
@@ -170,7 +180,6 @@ const int n_spin = 1;
 const int n_in = 1;
 
 /// fRG parameters ///
-#define N_LOOPS 1  // Number of loops
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow
@@ -197,11 +206,6 @@ rvec flow_grid(nODE);                                                           
 
 
 /// Technical parameters ///
-
-// Defines the number of diagrammatic classes that are relevant for a code:
-// 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
-
 //If defined, the flow of the self_energy is symmetrized, closed above and below
 //#define SYMMETRIZED_SELF_ENERGY_FLOW
 
@@ -215,14 +219,11 @@ const double inter_tol = 1e-9;
 const double converged_tol = 1e-7;
 
 //Integrator tolerance
-const double integrator_tol = 1e-4;
+const double integrator_tol = 1e-6;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
-// If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
-// Only makes sense for pure K1 calculations.
-//#define STATIC_FEEDBACK
 
 // Debug mode allows to select specific Keldysh components contributing to loop and bubbles
 //#define DEBUG_MODE
