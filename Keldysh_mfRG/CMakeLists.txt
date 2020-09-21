@@ -20,7 +20,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 # standard executable for integration tests and production runs
 add_executable(Keldysh_mfRG
         main.cpp
-        a_vertex.h
         bethe-salpeter.h
         bubbles.h
         correctionFunctions.h
@@ -39,7 +38,6 @@ add_executable(Keldysh_mfRG
         parameters.h
         perturbation_theory.h
         propagator.h
-        p_vertex.h
         right_hand_sides.h
         r_vertex.h
         selfenergy.h
@@ -48,7 +46,6 @@ add_executable(Keldysh_mfRG
         symmetry_transformations.h
         symmetry_table.h
         testFunctions.h
-        t_vertex.h
         util.h
         vertex.h
         write_data2file.h)
@@ -60,7 +57,6 @@ add_executable(Keldysh_mfRG_testing
         unit_tests/test_data_structures.h
         unit_tests/test_symmetry_transformations.h
         unit_tests/test_integrator.h
-        a_vertex.h
         bubbles.h
         bethe-salpeter.h
         correctionFunctions.h
@@ -79,7 +75,6 @@ add_executable(Keldysh_mfRG_testing
         parameters.h
         perturbation_theory.h
         propagator.h
-        p_vertex.h
         right_hand_sides.h
         r_vertex.h
         selfenergy.h
@@ -88,7 +83,6 @@ add_executable(Keldysh_mfRG_testing
         symmetry_transformations.h
         symmetry_table.h
         testFunctions.h
-        t_vertex.h
         util.h
         vertex.h
         write_data2file.h)
