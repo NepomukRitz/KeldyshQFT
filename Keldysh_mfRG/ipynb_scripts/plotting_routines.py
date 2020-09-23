@@ -44,8 +44,15 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
     path_NRG = NRG_info[1]
     
     # load NRG reference data
-    Gamma_NRG, w_NRG, Aimp, SE_re, SE_im, K1a_re, K1a_im, K1p_re, K1p_im, K1t_re, K1t_im = load_SIAM_NRG(U_NRG, path_NRG)
-    Delta_NRG = Gamma_NRG/2.
+    try:
+        plot_NRG=True
+        Gamma_NRG, w_NRG, Aimp, SE_re, SE_im, K1a_re, K1a_im, K1p_re, K1p_im, K1t_re, K1t_im = load_SIAM_NRG(U_NRG, path_NRG)
+        Delta_NRG = Gamma_NRG/2.
+    
+    except KeyError:
+        plot_NRG=False
+        Delta_NRG=0.5
+    
     
     # load fRG data
     DIAG_CLASS, N_LOOPS, T, epsilon, mu, Gamma, Lambda, Delta, U, V, \
@@ -55,15 +62,22 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
         = load_data(U_NRG, Delta_NRG, filenames)
     
     fs = 18 # font size
-
+    
+    lw = 1. #linewidth
     #Plot spectral funciton
     if(typ[0]=="A"):        
         fig, ax = plt.subplots(figsize=(18, 6))
 
         for i in range(len(filenames)):
-            ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i])
+            if (filenames[i][-43:-37] == 'static'):
+                ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+            else:
+                ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw)
             
-        ax.plot(w_NRG/Delta_NRG, Aimp*np.pi*Delta_NRG, 'k:', label='NRG')    
+        if plot_NRG:    
+            ax.plot(w_NRG/Delta_NRG, Aimp*np.pi*Delta_NRG, 'k:', label='NRG')    
+            
+        ax.hlines(1., -0.5, 0.5, linestyles='--')
         ax.set_ylabel(r'$(\mathcal{A}(\nu)\pi\Delta$', fontsize=fs)
         
         ax.set_xlim(-5, 5)
@@ -77,12 +91,18 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
         fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
 
         for i in range(len(filenames)):
-            ax[0].plot(v[i]/Delta[i], Sigma[i][iK].real/Delta[i], '.-', label=labels[i])
-            ax[1].plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i])
+            if (filenames[i][-43:-37] == 'static'):                
+                ax[0].plot(v[i]/Delta[i], Sigma[i][iK].real/Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                ax[1].plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+            else:
+                ax[0].plot(v[i]/Delta[i], Sigma[i][iK].real/Delta[i], '.-', label=labels[i], linewidth=lw)
+                ax[1].plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], linewidth=lw)
 
         if(iK==0):
-            ax[0].plot(w_NRG / Delta_NRG, (SE_re - U_NRG / 2) / Delta_NRG, 'k:', label='NRG')
-            ax[1].plot(w_NRG / Delta_NRG, SE_im / Delta_NRG, 'k:', label='NRG')
+            ax[1].hlines(0, -2, 2, linestyles='--')
+            if plot_NRG:
+                ax[0].plot(w_NRG / Delta_NRG, (SE_re - U_NRG / 2) / Delta_NRG, 'k:', label='NRG')
+                ax[1].plot(w_NRG / Delta_NRG, SE_im / Delta_NRG, 'k:', label='NRG')
 
             ax[0].set_ylabel('$(\mathrm{Re}\Sigma^R-U/2)/\Delta$', fontsize=fs)
             ax[1].set_ylabel('$(\mathrm{Im}\Sigma^R)/\Delta$', fontsize=fs)
@@ -90,6 +110,7 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
             ax[0].set_ylabel('$(\mathrm{Re}\Sigma^K)/\Delta$', fontsize=fs)
             ax[1].set_ylabel('$(\mathrm{Im}\Sigma^K)/\Delta$', fontsize=fs)
 
+            
         for i in range(2):
             ax[i].set_xlim(-20, 20)
             ax[i].set_xlabel(r'$\nu/\Delta$', fontsize=fs)
@@ -103,13 +124,16 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
         fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
 
         for i in range(len(filenames)):
-            # real part of spin susceptibility (retarded comp. of K1a)
-            ax[0].plot(w[i] / Delta[i], K1a[i][0].real / Delta[i], '.-', label=labels[i])
-            # imag part of spin susceptibility (retarded comp. of K1a = -advanced comp. of K1a)
-            ax[1].plot(w[i] / Delta[i], -K1a[i][0].imag / Delta[i], '.-', label=labels[i])
-
-        ax[0].plot(w_NRG / Delta_NRG, K1a_re * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
-        ax[1].plot(w_NRG / Delta_NRG, K1a_im * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
+            if (filenames[i][-43:-37] == 'static'):
+                ax[0].plot(w[i] / Delta[i],  K1a[i][0].real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                ax[1].plot(w[i] / Delta[i], -K1a[i][0].imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+            else:
+                ax[0].plot(w[i] / Delta[i],  K1a[i][0].real / Delta[i], '.-', label=labels[i], linewidth=lw)
+                ax[1].plot(w[i] / Delta[i], -K1a[i][0].imag / Delta[i], '.-', label=labels[i], linewidth=lw)
+        
+        if plot_NRG:
+            ax[0].plot(w_NRG / Delta_NRG, K1a_re * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
+            ax[1].plot(w_NRG / Delta_NRG, K1a_im * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
 
         ax[0].set_ylabel(r'$\mathrm{Re}\chi_\mathrm{sp}/\Delta$', fontsize=fs)
         ax[1].set_ylabel(r'$\mathrm{Im}\chi_\mathrm{sp}/\Delta$', fontsize=fs)
@@ -126,13 +150,18 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
         fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
 
         for i in range(len(filenames)):
-            # real part of spin susceptibility (retarded comp. of K1a)
-            ax[0].plot(w[i] / Delta[i], (2*K1t[i][0]-K1a[i][0]).real / Delta[i], '.-', label=labels[i])
-            # imag part of spin susceptibility (retarded comp. of K1a = -advanced comp. of K1a)
-            ax[1].plot(w[i] / Delta[i], -(2*K1t[i][0]-K1a[i][0]).imag / Delta[i], '.-', label=labels[i])
+            if (filenames[i][-43:-37] == 'static'):
+                ax[0].plot(w[i] / Delta[i],  (2*K1t[i][0]-K1a[i][0]).real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)   
+                ax[1].plot(w[i] / Delta[i], -(2*K1t[i][0]-K1a[i][0]).imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+            else:
+                ax[0].plot(w[i] / Delta[i],  (2*K1t[i][0]-K1a[i][0]).real / Delta[i], '.-', label=labels[i], linewidth=lw)   
+                ax[1].plot(w[i] / Delta[i], -(2*K1t[i][0]-K1a[i][0]).imag / Delta[i], '.-', label=labels[i], linewidth=lw)
+            
+            
 
-        ax[0].plot(w_NRG / Delta_NRG, (2*K1t_re - K1a_re) * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
-        ax[1].plot(w_NRG / Delta_NRG, (2*K1t_im - K1a_im) * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
+        if plot_NRG:    
+            ax[0].plot(w_NRG / Delta_NRG, (2*K1t_re - K1a_re) * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
+            ax[1].plot(w_NRG / Delta_NRG, (2*K1t_im - K1a_im) * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
 
         ax[0].set_ylabel(r'$\mathrm{Re}\chi_\mathrm{ch}/\Delta$', fontsize=fs)
         ax[1].set_ylabel(r'$\mathrm{Im}\chi_\mathrm{ch}/\Delta$', fontsize=fs)
