@@ -136,7 +136,11 @@ def load_data(U_NRG, Delta_NRG, filenames):
         if(U_NRG == 0):
             iLambda = 0
         else:
-            iLambda = np.where(U/Deltas == U_NRG/Delta_NRG)[0][0]
+            try:
+                iLambda = np.where(U/Deltas == U_NRG/Delta_NRG)[0][0]
+            except IndexError:
+                iLambda = np.argmin(np.abs(U/Deltas - U_NRG/Delta_NRG))
+                print("Actual U/Delta-value = " + str( (2*U)/(Lambdas[iLambda] + Gamma)))
 
         # fix Lambda and effective hybridization Delta
         Lambda = Lambdas[iLambda]
