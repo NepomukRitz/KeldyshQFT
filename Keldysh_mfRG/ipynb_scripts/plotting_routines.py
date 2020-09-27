@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 from load_data import load_data, load_SIAM_NRG
 
@@ -9,7 +11,24 @@ from load_data import load_data, load_SIAM_NRG
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-def generate_filename_fRG(path, diagClass, nLoops, n1=301, sf=False, n2=201, Gamma=0.2, V=0.0, T=0.01, L_ini=1000, nODE=50):
+def effec_distribution(v, T, stat):
+    #stat is either =-1 for fermionic statistics or =+1 for bosonic statistics
+    res = np.power(np.tanh(v/(2.*T)), -stat)
+    if stat == +1:
+        try:
+            infinite_index = np.where(res == np.inf)[0][0]
+            res[infinite_index] = 0
+        except IndexError:
+            infinite_index = int(len(v)/2)
+            res[infinite_index] = 0
+    return res
+
+def generate_Keldysh_component(Im_X, v, T, stat):
+    #X is retarded component of object
+    return 2.*Im_X*effec_distribution(v, T, stat)
+    
+
+def generate_filename_fRG(path, diagClass, nLoops, n1=301, sf=False, n2=201, Gamma=1./3., V=0.0, T=0.01, L_ini=1000, nODE=50):
     
     Gamma_str = "%.6f" % Gamma
     V_str = "%.6f" % V
@@ -38,18 +57,39 @@ def change_prefix(path, prefix, filename):
     filename = "".join(s)
     return filename
 
+def generate_label(path_fRG, filenames):
+    labels = [] 
+    
+    for filename in filenames:
+        diag_class = filename[len(path_fRG)+1]
+        label = r'$\mathcal{K}_' + diag_class
+        if (filename[len(path_fRG)+14 : len(path_fRG)+20] == 'static'):
+            label += '\mathrm{-sf}'
+        
+        elif(diag_class == str(2)):
+            label += '\mathrm{-' + filename[len(path_fRG)+3] + 'L}'
+            
+        label += '$'
+        labels.append(label)
+    return labels
 
-def plot_fRG(typ, iK, filenames, labels, NRG_info):
+
+def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
     U_NRG = NRG_info[0]
     path_NRG = NRG_info[1]
+    possible_NRG = NRG_info[2]
     
-    # load NRG reference data
-    try:
-        plot_NRG=True
-        Gamma_NRG, w_NRG, Aimp, SE_re, SE_im, K1a_re, K1a_im, K1p_re, K1p_im, K1t_re, K1t_im = load_SIAM_NRG(U_NRG, path_NRG)
-        Delta_NRG = Gamma_NRG/2.
-    
-    except KeyError:
+    if possible_NRG:
+        # load NRG reference data
+        try:
+            plot_NRG=True
+            Gamma_NRG, w_NRG, Aimp, SE_re, SE_im, K1a_re, K1a_im, K1p_re, K1p_im, K1t_re, K1t_im = load_SIAM_NRG(U_NRG,path_NRG)
+            Delta_NRG = Gamma_NRG/2.
+        
+        except KeyError:
+            plot_NRG=False
+            Delta_NRG=0.5
+    else:
         plot_NRG=False
         Delta_NRG=0.5
     
@@ -89,7 +129,7 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
     #Plot self energy, component iK
     elif(typ[0:4] == "self"):
         fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
-
+        
         for i in range(len(filenames)):
             if (filenames[i][-43:-37] == 'static'):                
                 ax[0].plot(v[i]/Delta[i], Sigma[i][iK].real/Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
@@ -97,14 +137,41 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
             else:
                 ax[0].plot(v[i]/Delta[i], Sigma[i][iK].real/Delta[i], '.-', label=labels[i], linewidth=lw)
                 ax[1].plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], linewidth=lw)
-
+            
+        if plot_NRG:
+            Re_X_NRG = (SE_re - U_NRG / 2) / Delta_NRG
+            Im_X_NRG = SE_im / Delta_NRG
+            if iK == 1:
+                Re_X_NRG = np.zeros(len(w_NRG/Delta_NRG))
+                Im_X_NRG = generate_Keldysh_component( Im_X_NRG, w_NRG / Delta_NRG, T[i], stat=-1)
+            
+            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG, 'k:', label='NRG')
+            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG, 'k:', label='NRG')
+            
+            
+        if inset:
+            axins = zoomed_inset_axes(ax[1], 10, loc=4)
+            axins.aspect='equal'
+            for i in range(len(filenames)):
+                if (filenames[i][-43:-37] == 'static'):                
+                    axins.plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                else:
+                    axins.plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], linewidth=lw)
+            axins.set_xlim(-0.4, 0.4)
+            axins.set_ylim(-0.1, 0.001)
+            axins.set_xticks(np.linspace(-0.4, 0.4, 5, endpoint=True))
+            axins.set_yticks(np.linspace(-0.001, 0.001, 3, endpoint=True))
+            plt.xticks(visible=False)  # Not present ticks
+            plt.yticks(visible=False)
+            
         if(iK==0):
             ax[1].hlines(0, -2, 2, linestyles='--')
-            if plot_NRG:
-                ax[0].plot(w_NRG / Delta_NRG, (SE_re - U_NRG / 2) / Delta_NRG, 'k:', label='NRG')
-                ax[1].plot(w_NRG / Delta_NRG, SE_im / Delta_NRG, 'k:', label='NRG')
+            if plot_NRG and inset:
+                    axins.plot(w_NRG / Delta_NRG, SE_im / Delta_NRG, 'k:', label='NRG')
+            if inset:
+                axins.hlines(0, -2, 2, linestyles='--')
 
-            ax[0].set_ylabel('$(\mathrm{Re}\Sigma^R-U/2)/\Delta$', fontsize=fs)
+            ax[0].set_ylabel('$(\mathrm{Re}\Sigma^R-\Sigma^H)/\Delta$', fontsize=fs)
             ax[1].set_ylabel('$(\mathrm{Im}\Sigma^R)/\Delta$', fontsize=fs)
         else:
             ax[0].set_ylabel('$(\mathrm{Re}\Sigma^K)/\Delta$', fontsize=fs)
@@ -117,61 +184,59 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info):
             ax[i].tick_params(axis='both', labelsize=fs-1)
 
         ax[0].legend(fontsize=fs)
-        fig.tight_layout(pad=3.0)
+        #fig.tight_layout(pad=3.0)
     
     #Plot susceptibilities
-    elif(typ[0:7] == "susc_sp"):    #spin susceptibility
+    elif(typ[0:4] == "susc"):    #susceptibility
         fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
-
-        for i in range(len(filenames)):
-            if (filenames[i][-43:-37] == 'static'):
-                ax[0].plot(w[i] / Delta[i],  K1a[i][0].real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
-                ax[1].plot(w[i] / Delta[i], -K1a[i][0].imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
-            else:
-                ax[0].plot(w[i] / Delta[i],  K1a[i][0].real / Delta[i], '.-', label=labels[i], linewidth=lw)
-                ax[1].plot(w[i] / Delta[i], -K1a[i][0].imag / Delta[i], '.-', label=labels[i], linewidth=lw)
-        
+        sup_indices = ['R', 'K']
+        pfs = [-1, +1]
+        if typ[6:7]=="sp":      #spin susceptibility
+            for i in range(len(filenames)):
+                if (filenames[i][-43:-37] == 'static'):
+                    ax[0].plot(w[i] / Delta[i],  K1a[i][iK].real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                    ax[1].plot(w[i] / Delta[i], pfs[iK]*K1a[i][iK].imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                else:
+                    ax[0].plot(w[i] / Delta[i],  K1a[i][iK].real / Delta[i], '.-', label=labels[i], linewidth=lw)
+                    ax[1].plot(w[i] / Delta[i], pfs[iK]*K1a[i][iK].imag / Delta[i], '.-', label=labels[i], linewidth=lw)
+                    
+        elif typ[6:7]=="ch":        #charge susceptibility
+            for i in range(len(filenames)):
+                if (filenames[i][-43:-37] == 'static'):
+                    ax[0].plot(w[i] / Delta[i],  (2*K1t[i][0]-K1a[i][iK]).real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                    ax[1].plot(w[i] / Delta[i], pfs[iK]*(2*K1t[i][0]-K1a[i][iK]).imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                else:
+                    ax[0].plot(w[i] / Delta[i],  (2*K1t[i][0]-K1a[i][iK]).real / Delta[i], '.-', label=labels[i], linewidth=lw) 
+                    ax[1].plot(w[i] / Delta[i], pfs[iK]*(2*K1t[i][0]-K1a[i][iK]).imag / Delta[i], '.-', label=labels[i], linewidth=lw)
+            
         if plot_NRG:
-            ax[0].plot(w_NRG / Delta_NRG, K1a_re * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
-            ax[1].plot(w_NRG / Delta_NRG, K1a_im * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
-
-        ax[0].set_ylabel(r'$\mathrm{Re}\chi_\mathrm{sp}/\Delta$', fontsize=fs)
-        ax[1].set_ylabel(r'$\mathrm{Im}\chi_\mathrm{sp}/\Delta$', fontsize=fs)
-
-        for i in range(2):
-            ax[i].set_xlabel(r'$\omega/\Delta$', fontsize=fs)
-            ax[i].set_xlim(-5,5)
-            ax[i].tick_params(axis='both', labelsize=fs -1)
-        ax[0].legend(fontsize=fs)
-        fig.tight_layout(pad=3.0)
+            if typ[6:7] == "sp":
+                Re_X_NRG = K1a_re * (U_NRG/Delta_NRG)**2 / 2
+                Im_X_NRG = K1a_im * (U_NRG/Delta_NRG)**2 / 2
+                
+            elif typ[6:7] == "ch":
+                Re_X_NRG = (2*K1t_re - K1a_re) * (U_NRG/Delta_NRG)**2 / 2
+                Im_X_NRG = (2*K1t_im - K1a_im) * (U_NRG/Delta_NRG)**2 / 2
+                
+            if iK == 1:
+                Re_X_NRG = np.zeros(len(w_NRG/Delta_NRG))
+                Im_X_NRG = generate_Keldysh_component( Im_X_NRG, w_NRG / Delta_NRG, T[i], stat=+1)
+            
+            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG, 'k:', label='NRG')
+            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG, 'k:', label='NRG')
+            
         
-       
-    elif(typ[0:7] == "susc_ch"):    #charge suscpeptibility
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
-
-        for i in range(len(filenames)):
-            if (filenames[i][-43:-37] == 'static'):
-                ax[0].plot(w[i] / Delta[i],  (2*K1t[i][0]-K1a[i][0]).real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)   
-                ax[1].plot(w[i] / Delta[i], -(2*K1t[i][0]-K1a[i][0]).imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
-            else:
-                ax[0].plot(w[i] / Delta[i],  (2*K1t[i][0]-K1a[i][0]).real / Delta[i], '.-', label=labels[i], linewidth=lw)   
-                ax[1].plot(w[i] / Delta[i], -(2*K1t[i][0]-K1a[i][0]).imag / Delta[i], '.-', label=labels[i], linewidth=lw)
-            
-            
-
-        if plot_NRG:    
-            ax[0].plot(w_NRG / Delta_NRG, (2*K1t_re - K1a_re) * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
-            ax[1].plot(w_NRG / Delta_NRG, (2*K1t_im - K1a_im) * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
-
-        ax[0].set_ylabel(r'$\mathrm{Re}\chi_\mathrm{ch}/\Delta$', fontsize=fs)
-        ax[1].set_ylabel(r'$\mathrm{Im}\chi_\mathrm{ch}/\Delta$', fontsize=fs)
+        ax[0].set_ylabel(r'$\mathrm{Re}\chi^'+ sup_indices[iK]+'_\mathrm{'+typ[6:7]+'}/\Delta$', fontsize=fs)
+        ax[1].set_ylabel(r'$\mathrm{Im}\chi^'+ sup_indices[iK]+'_\mathrm{'+typ[6:7]+'}/\Delta$', fontsize=fs)
+        
 
         for i in range(2):
             ax[i].set_xlabel(r'$\omega/\Delta$', fontsize=fs)
-            ax[i].set_xlim(-10,10)
+            if typ[6:7] == 'sp':
+                ax[i].set_xlim(-5,5)
+            elif typ[6:7] == 'ch':
+                ax[i].set_xlim(10,10)
             ax[i].tick_params(axis='both', labelsize=fs -1)
         ax[0].legend(fontsize=fs)
-        fig.tight_layout(pad=3.0)
-            
-            
+        fig.tight_layout(pad=3.0)            
     return fig, ax
