@@ -79,6 +79,8 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
     path_NRG = NRG_info[1]
     possible_NRG = NRG_info[2]
     
+    U_to_ins_ylim  = {0.1: -0.0005, 0.5:-0.01, 1:-0.003, 1.5: 0.01, 2:-0.03, 2.5:-0.1, 3:0.5}
+    
     if possible_NRG:
         # load NRG reference data
         try:
@@ -158,7 +160,10 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
                 else:
                     axins.plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], linewidth=lw)
             axins.set_xlim(-0.4, 0.4)
-            axins.set_ylim(-0.1, 0.001)
+            try:
+                axins.set_ylim(U_to_ins_xlim[U_NRG], 0.001)
+            except:
+                axins.set_ylim(-U_NRG/10, 0.001)
             axins.set_xticks(np.linspace(-0.4, 0.4, 5, endpoint=True))
             axins.set_yticks(np.linspace(-0.001, 0.001, 3, endpoint=True))
             plt.xticks(visible=False)  # Not present ticks
