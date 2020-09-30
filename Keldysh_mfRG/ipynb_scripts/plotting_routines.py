@@ -15,12 +15,9 @@ def effec_distribution(v, T, stat):
     #stat is either =-1 for fermionic statistics or =+1 for bosonic statistics
     res = np.power(np.tanh(v/(2.*T)), -stat)
     if stat == +1:
-        try:
-            infinite_index = np.where(res == np.inf)[0][0]
-            res[infinite_index] = 0
-        except IndexError:
-            infinite_index = int(len(v)/2)
-            res[infinite_index] = 0
+        indices = np.where(np.abs(res) > 10)[0]
+        for i in indices:
+            res[i] = np.sign(res[i])*10
     return res
 
 def generate_Keldysh_component(Im_X, v, T, stat):
@@ -62,14 +59,13 @@ def generate_label(path_fRG, filenames):
     
     for filename in filenames:
         diag_class = filename[len(path_fRG)+1]
-        label = r'$\mathcal{K}_' + diag_class
+        label = r'$\mathcal{K}_' + diag_class + '$'
         if (filename[len(path_fRG)+14 : len(path_fRG)+20] == 'static'):
-            label += '\mathrm{-sf}'
+            label +='\t{-- sf}'
         
         elif(diag_class == str(2)):
-            label += '\mathrm{-' + filename[len(path_fRG)+3] + 'L}'
+            label += '\t{' + filename[len(path_fRG)+3] + '-loop}'
             
-        label += '$'
         labels.append(label)
     return labels
 
@@ -79,7 +75,7 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
     path_NRG = NRG_info[1]
     possible_NRG = NRG_info[2]
     
-    U_to_ins_ylim  = {0.1: -0.0005, 0.5:-0.01, 1:-0.003, 1.5: 0.01, 2:-0.03, 2.5:-0.1, 3:0.5}
+    U_to_ins_ylim  = {0.1: 0.0001, 0.5:0.003, 1:0.008, 1.5: 0.02, 2:0.05, 2.5:0.07, 2.9:0.1, 3:0.1}
     
     if possible_NRG:
         # load NRG reference data
@@ -103,6 +99,8 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
     w2, v2, K2a, K2p, K2t \
         = load_data(U_NRG, Delta_NRG, filenames)
     
+    K1_dic = {'K1a': K1a, 'K1p': K1p, 'K1t': K1t}
+    
     fs = 18 # font size
     
     lw = 1. #linewidth
@@ -120,11 +118,35 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
             ax.plot(w_NRG/Delta_NRG, Aimp*np.pi*Delta_NRG, 'k:', label='NRG')    
             
         ax.hlines(1., -0.5, 0.5, linestyles='--')
-        ax.set_ylabel(r'$(\mathcal{A}(\nu)\pi\Delta$', fontsize=fs)
+        ax.set_ylabel(r'$\mathcal{A}(\nu)\pi\Delta$', fontsize=fs)
         
+        ax.set_ylim(-0.1, 1.15)
         ax.set_xlim(-5, 5)
         ax.set_xlabel(r'$\nu/\Delta$', fontsize=fs)
         ax.tick_params(axis='both', labelsize=fs-1)
+        
+                    
+        if inset:
+            axins = zoomed_inset_axes(ax, 2.1, loc=2, borderpad = 4)
+            axins.aspect='equal'
+            axins.hlines(1., -0.5, 0.5, linestyles='--')
+            for i in range(len(filenames)):
+                if (filenames[i][-43:-37] == 'static'):                
+                    axins.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                else:
+                    axins.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw)
+            if plot_NRG:    
+                axins.plot(w_NRG/Delta_NRG, Aimp*np.pi*Delta_NRG, 'k:', label='NRG')                      
+                
+                
+            axins.set_ylim(0.9, 1.1)
+            axins.set_yticks(np.linspace(0.9, 1.1, 3, endpoint=True))    
+            axins.set_xlim(-0.4, 0.4)    
+            axins.set_xticks(np.linspace(-0.4, 0.4, 3, endpoint=True))
+            axins.tick_params(axis='both', labelsize=fs-4)
+            plt.xticks(visible=True)  # Present ticks
+            plt.yticks(visible=True)
+            mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
     
         ax.legend(fontsize=fs)
     
@@ -152,22 +174,28 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
             
             
         if inset:
-            axins = zoomed_inset_axes(ax[1], 10, loc=4)
+            axins = zoomed_inset_axes(ax[1], 7, loc=4, borderpad=2.9)
             axins.aspect='equal'
             for i in range(len(filenames)):
                 if (filenames[i][-43:-37] == 'static'):                
                     axins.plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
                 else:
                     axins.plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], linewidth=lw)
-            axins.set_xlim(-0.4, 0.4)
             try:
-                axins.set_ylim(U_to_ins_xlim[U_NRG], 0.001)
-            except:
-                axins.set_ylim(-U_NRG/10, 0.001)
-            axins.set_xticks(np.linspace(-0.4, 0.4, 5, endpoint=True))
-            axins.set_yticks(np.linspace(-0.001, 0.001, 3, endpoint=True))
-            plt.xticks(visible=False)  # Not present ticks
-            plt.yticks(visible=False)
+                ylim = U_to_ins_ylim[U_NRG]
+            except KeyError:
+                ylim = U_NRG/20
+                
+                
+            axins.set_ylim(-ylim, 0.2*ylim)
+            axins.set_yticks(np.linspace(-ylim, 0, 2, endpoint=True))    
+            axins.set_xlim(-0.5, 0.5)    
+            axins.set_xticks(np.linspace(-0.5, 0.5, 3, endpoint=True))
+            axins.tick_params(axis='both', labelsize=fs-4)
+
+            
+            plt.xticks(visible=True)  # Present ticks
+            plt.yticks(visible=True)
             
         if(iK==0):
             ax[1].hlines(0, -2, 2, linestyles='--')
@@ -177,10 +205,10 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
                 axins.hlines(0, -2, 2, linestyles='--')
 
             ax[0].set_ylabel('$(\mathrm{Re}\Sigma^R-\Sigma^H)/\Delta$', fontsize=fs)
-            ax[1].set_ylabel('$(\mathrm{Im}\Sigma^R)/\Delta$', fontsize=fs)
+            ax[1].set_ylabel('$\mathrm{Im}\Sigma^R/\Delta$', fontsize=fs)
         else:
-            ax[0].set_ylabel('$(\mathrm{Re}\Sigma^K)/\Delta$', fontsize=fs)
-            ax[1].set_ylabel('$(\mathrm{Im}\Sigma^K)/\Delta$', fontsize=fs)
+            ax[0].set_ylabel('$\mathrm{Re}\Sigma^K/\Delta$', fontsize=fs)
+            ax[1].set_ylabel('$\mathrm{Im}\Sigma^K/\Delta$', fontsize=fs)
 
             
         for i in range(2):
@@ -188,7 +216,7 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
             ax[i].set_xlabel(r'$\nu/\Delta$', fontsize=fs)
             ax[i].tick_params(axis='both', labelsize=fs-1)
 
-        ax[0].legend(fontsize=fs)
+        ax[0].legend(fontsize=fs, loc='upper left')
         #fig.tight_layout(pad=3.0)
     
     #Plot susceptibilities
@@ -196,7 +224,8 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
         fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
         sup_indices = ['R', 'K']
         pfs = [-1, +1]
-        if typ[6:7]=="sp":      #spin susceptibility
+        susc = typ[5:7]
+        if susc=="sp":      #spin susceptibility
             for i in range(len(filenames)):
                 if (filenames[i][-43:-37] == 'static'):
                     ax[0].plot(w[i] / Delta[i],  K1a[i][iK].real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
@@ -205,43 +234,95 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
                     ax[0].plot(w[i] / Delta[i],  K1a[i][iK].real / Delta[i], '.-', label=labels[i], linewidth=lw)
                     ax[1].plot(w[i] / Delta[i], pfs[iK]*K1a[i][iK].imag / Delta[i], '.-', label=labels[i], linewidth=lw)
                     
-        elif typ[6:7]=="ch":        #charge susceptibility
+        elif susc=="ch":        #charge susceptibility
             for i in range(len(filenames)):
                 if (filenames[i][-43:-37] == 'static'):
-                    ax[0].plot(w[i] / Delta[i],  (2*K1t[i][0]-K1a[i][iK]).real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
-                    ax[1].plot(w[i] / Delta[i], pfs[iK]*(2*K1t[i][0]-K1a[i][iK]).imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                    ax[0].plot(w[i] / Delta[i], (2*K1t[i][iK]-K1a[i][iK]).real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                    ax[1].plot(w[i] / Delta[i], pfs[iK]*(2*K1t[i][iK]-K1a[i][iK]).imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
                 else:
-                    ax[0].plot(w[i] / Delta[i],  (2*K1t[i][0]-K1a[i][iK]).real / Delta[i], '.-', label=labels[i], linewidth=lw) 
-                    ax[1].plot(w[i] / Delta[i], pfs[iK]*(2*K1t[i][0]-K1a[i][iK]).imag / Delta[i], '.-', label=labels[i], linewidth=lw)
+                    ax[0].plot(w[i] / Delta[i], (2*K1t[i][iK]-K1a[i][iK]).real / Delta[i], '.-', label=labels[i], linewidth=lw) 
+                    ax[1].plot(w[i] / Delta[i], pfs[iK]*(2*K1t[i][iK]-K1a[i][iK]).imag / Delta[i], '.-', label=labels[i], linewidth=lw)
             
         if plot_NRG:
-            if typ[6:7] == "sp":
-                Re_X_NRG = K1a_re * (U_NRG/Delta_NRG)**2 / 2
-                Im_X_NRG = K1a_im * (U_NRG/Delta_NRG)**2 / 2
+            if susc == "sp":
+                Re_X_NRG = K1a_re 
+                Im_X_NRG = K1a_im 
                 
-            elif typ[6:7] == "ch":
-                Re_X_NRG = (2*K1t_re - K1a_re) * (U_NRG/Delta_NRG)**2 / 2
-                Im_X_NRG = (2*K1t_im - K1a_im) * (U_NRG/Delta_NRG)**2 / 2
+            elif susc == "ch":
+                Re_X_NRG = (2*K1t_re - K1a_re)
+                Im_X_NRG = (2*K1t_im - K1a_im)
                 
             if iK == 1:
                 Re_X_NRG = np.zeros(len(w_NRG/Delta_NRG))
-                Im_X_NRG = generate_Keldysh_component( Im_X_NRG, w_NRG / Delta_NRG, T[i], stat=+1)
+                Im_X_NRG = generate_Keldysh_component( Im_X_NRG, w_NRG, T[i], stat=+1)
             
-            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG, 'k:', label='NRG')
-            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG, 'k:', label='NRG')
+            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
+            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
             
         
-        ax[0].set_ylabel(r'$\mathrm{Re}\chi^'+ sup_indices[iK]+'_\mathrm{'+typ[6:7]+'}/\Delta$', fontsize=fs)
-        ax[1].set_ylabel(r'$\mathrm{Im}\chi^'+ sup_indices[iK]+'_\mathrm{'+typ[6:7]+'}/\Delta$', fontsize=fs)
+        ax[0].set_ylabel(r'$\mathrm{Re}\chi^'+ sup_indices[iK]+'_\mathrm{'+susc+'}/\Delta$', fontsize=fs)
+        ax[1].set_ylabel(r'$\mathrm{Im}\chi^'+ sup_indices[iK]+'_\mathrm{'+susc+'}/\Delta$', fontsize=fs)
         
 
         for i in range(2):
             ax[i].set_xlabel(r'$\omega/\Delta$', fontsize=fs)
-            if typ[6:7] == 'sp':
+            if susc == 'sp':
                 ax[i].set_xlim(-5,5)
-            elif typ[6:7] == 'ch':
-                ax[i].set_xlim(10,10)
+            elif susc == 'ch':
+                ax[i].set_xlim(-10,10)
             ax[i].tick_params(axis='both', labelsize=fs -1)
         ax[0].legend(fontsize=fs)
-        fig.tight_layout(pad=3.0)            
+        fig.tight_layout(pad=3.0)  
+        
+        
+    #Plot vertex K1
+    elif(typ[0:2] == "K1"):    
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
+        sup_indices = ['R', 'K']
+        r = typ[2]
+        pfs = [-1, +1]
+        K1 = K1_dic[typ]
+        for i in range(len(filenames)):
+            if (filenames[i][-43:-37] == 'static'):
+                ax[0].plot(w[i] / Delta[i], K1[i][iK].real / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                ax[1].plot(w[i] / Delta[i], pfs[iK]*K1[i][iK].imag / Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+            else:
+                ax[0].plot(w[i] / Delta[i], K1[i][iK].real / Delta[i], '.-', label=labels[i], linewidth=lw)
+                ax[1].plot(w[i] / Delta[i], pfs[iK]*K1[i][iK].imag / Delta[i], '.-', label=labels[i], linewidth=lw)
+            
+        if plot_NRG:
+            if r == "a":
+                Re_X_NRG = K1a_re 
+                Im_X_NRG = K1a_im 
+                
+            elif r == "p":
+                Re_X_NRG = K1p_re 
+                Im_X_NRG = K1p_im 
+                
+            elif r == "t":
+                Re_X_NRG = K1t_re 
+                Im_X_NRG = K1t_im 
+                
+            if iK == 1:
+                Re_X_NRG = np.zeros(len(w_NRG/Delta_NRG))
+                Im_X_NRG = generate_Keldysh_component(Im_X_NRG, w_NRG, T[i], stat=+1)
+            
+            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
+            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG * (U_NRG/Delta_NRG)**2 / 2, 'k:', label='NRG')
+            
+        
+        ax[0].set_ylabel(r'$\mathrm{Re}{\mathcal{K}_1^'+ sup_indices[iK]+'}_\mathrm{'+r+'}/\Delta$', fontsize=fs)
+        ax[1].set_ylabel(r'$\mathrm{Im}{\mathcal{K}_1^'+ sup_indices[iK]+'}_\mathrm{'+r+'}/\Delta$', fontsize=fs)
+        
+
+        for i in range(2):
+            ax[i].set_xlabel(r'$\omega/\Delta$', fontsize=fs)
+            if r == 'a' or 't':
+                ax[i].set_xlim(-5,5)
+            elif r == 'p':
+                ax[i].set_xlim(-10,10)
+            ax[i].tick_params(axis='both', labelsize=fs -1)
+        ax[0].legend(fontsize=fs)
+        fig.tight_layout(pad=3.0) 
+        
     return fig, ax
