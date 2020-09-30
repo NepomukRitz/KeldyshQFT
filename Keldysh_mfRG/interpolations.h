@@ -15,10 +15,10 @@ template <typename Q> class rvert;
 template <typename Q>
 auto interpolateK1(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
-    if(fabs(indices.w)+inter_tol<glb_w_upper) {
-        int index = fconv_bos(indices.w);
-        double x1 = bfreqs[index];
-        double x2 = bfreqs[index + 1];
+    if (fabs(indices.w) + inter_tol < vertex.frequencies.b_K1.w_upper) {
+        int index = vertex.frequencies.b_K1.fconv(indices.w);
+        double x1 = vertex.frequencies.b_K1.w[index];
+        double x2 = vertex.frequencies.b_K1.w[index + 1];
         double xd = (indices.w - x1) / (x2 - x1);
 
         auto f1 = vertex.K1_val(indices.iK, index, indices.i_in);
@@ -36,14 +36,16 @@ auto interpolateK2 (IndicesSymmetryTransformations indices, const rvert<Q>& vert
 //    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
 //    assert(glb_v_lower<=v && v <=glb_v_upper); // give error message if v out of range
 
-    if(fabs(indices.w)+inter_tol<glb_w_upper && fabs(indices.v1)+inter_tol<glb_v_upper) {
-        int index_b = fconv_bos2(indices.w);
-        int index_f = fconv_fer2(indices.v1);
+    if (    fabs(indices.w) + inter_tol < vertex.frequencies.b_K2.w_upper
+        && fabs(indices.v1) + inter_tol < vertex.frequencies.f_K2.w_upper) {
 
-        double x1 = bfreqs2[index_b];
-        double x2 = bfreqs2[index_b + 1];
-        double y1 = ffreqs2[index_f];
-        double y2 = ffreqs2[index_f + 1];
+        int index_b = vertex.frequencies.b_K2.fconv(indices.w);
+        int index_f = vertex.frequencies.f_K2.fconv(indices.v1);
+
+        double x1 = vertex.frequencies.b_K2.w[index_b];
+        double x2 = vertex.frequencies.b_K2.w[index_b + 1];
+        double y1 = vertex.frequencies.f_K2.w[index_f];
+        double y2 = vertex.frequencies.f_K2.w[index_f + 1];
         double xd = (indices.w - x1) / (x2 - x1);
         double yd = (indices.v1 - y1) / (y2 - y1);
 
@@ -65,17 +67,20 @@ auto interpolateK3 (IndicesSymmetryTransformations indices, const rvert<Q>& vert
 //    assert(glb_v_lower<=v1 && v1 <=glb_v_upper); // give error message if v1 out of range
 //    assert(glb_v_lower<=v2 && v2 <=glb_v_upper); // give error message if v2 out of range
 
-    if(fabs(indices.w)+inter_tol<glb_w_upper && fabs(indices.v1)+inter_tol<glb_v_upper && fabs(indices.v2)+inter_tol<glb_v_upper) {
-        int index_b = fconv_bos3(indices.w);
-        int index_f1 = fconv_fer3(indices.v1);
-        int index_f2 = fconv_fer3(indices.v2);
+    if (    fabs(indices.w) + inter_tol < vertex.frequencies.b_K3.w_upper
+        && fabs(indices.v1) + inter_tol < vertex.frequencies.f_K3.w_upper
+        && fabs(indices.v2) + inter_tol < vertex.frequencies.f_K3.w_upper) {
 
-        double x1 = bfreqs3[index_b];
-        double x2 = bfreqs3[index_b + 1];
-        double y1 = ffreqs3[index_f1];
-        double y2 = ffreqs3[index_f1 + 1];
-        double z1 = ffreqs3[index_f2];
-        double z2 = ffreqs3[index_f2 + 1];
+        int index_b =  vertex.frequencies.b_K3.fconv(indices.w);
+        int index_f1 = vertex.frequencies.f_K3.fconv(indices.v1);
+        int index_f2 = vertex.frequencies.f_K3.fconv(indices.v2);
+
+        double x1 = vertex.frequencies.b_K3.w[index_b];
+        double x2 = vertex.frequencies.b_K3.w[index_b + 1];
+        double y1 = vertex.frequencies.f_K3.w[index_f1];
+        double y2 = vertex.frequencies.f_K3.w[index_f1 + 1];
+        double z1 = vertex.frequencies.f_K3.w[index_f2];
+        double z2 = vertex.frequencies.f_K3.w[index_f2 + 1];
         double xd = (indices.w - x1) / (x2 - x1);
         double yd = (indices.v1 - y1) / (y2 - y1);
         double zd = (indices.v2 - z1) / (z2 - z1);

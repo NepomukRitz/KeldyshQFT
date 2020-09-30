@@ -37,7 +37,7 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, double 
 template<typename Q>
 void sopt_state(State<Q>& Psi, double Lambda) {
 
-    State<comp> bareState;
+    State<comp> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     //Calculate the bubbles -> Vertex in SOPT saved in Psi

@@ -27,8 +27,6 @@ int main(int argc, char* argv[]) {
 #ifdef MPI_FLAG
     MPI_Init(nullptr, nullptr);
 #endif
-    scale_grid_parameters();
-    setUpGrids(); // set up frequency grids
 
 #ifdef INTEGRATION_TESTS
     // run integration tests
@@ -39,13 +37,14 @@ int main(int argc, char* argv[]) {
      * Lambda_f = 9.5 corresponds to U/Delta = 0.2 for Gamma = 0.5, U = 1. */
     //test_rhs_bubbles_flow_wstate(10, 20., 9.5);
 
-#if DIAG_CLASS == 1
+#if DIAG_CLASS >= 1
     /* run a complete flow and check FDTs and causality */
-    string filename = "integration_test_flow_10";
+    string filename = "integration_test_flow_14";
     State<comp> state = n_loop_flow(filename);
     check_FDTs(state);
     check_SE_causality(state.selfenergy);
-#elif DIAG_CLASS == 2
+#endif
+#if DIAG_CLASS == 2
     test_K2_PT4(0.);
     test_K2_correctness(0.);
 #endif

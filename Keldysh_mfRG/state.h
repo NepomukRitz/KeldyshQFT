@@ -15,7 +15,10 @@ template <typename Q>
 class State{
 public:
     SelfEnergy<Q> selfenergy;
-    Vertex<Q> vertex = Vertex<Q> (n_spin);
+    Vertex<Q> vertex;
+
+    State() : selfenergy(), vertex(n_spin) {};
+    State(double Lambda) : selfenergy(Lambda), vertex(n_spin, Lambda) {};
 
     void initialize();
     void update_grid(double Lambda1, double Lambda2);
@@ -62,8 +65,6 @@ template <typename Q> void State<Q>::initialize() {
 template <typename Q> void State<Q>::update_grid(double Lambda1, double Lambda2) {
     this->selfenergy.update_grid(Lambda1, Lambda2);
     this->vertex.update_grid(Lambda1, Lambda2);
-    rescale_grid_parameters(Lambda1, Lambda2);
-    setUpGrids();
 }
 
 #endif //KELDYSH_MFRG_STATE_H

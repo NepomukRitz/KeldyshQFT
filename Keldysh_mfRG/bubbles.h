@@ -343,7 +343,7 @@ public:
         rvec Pival_re (nFER);
         rvec Pival_im (nFER);
         for (int i=0; i<nFER; ++i) {
-            double vpp = ffreqs[i];
+            double vpp = vertex1[0].avertex.frequencies.f_K1[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -361,7 +361,7 @@ public:
                   + "_w=" + to_string(w) + ".h5";
         write_h5_rvecs(filename,
                 {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
-                {ffreqs, integrand_re, integrand_im, Pival_re, Pival_im});
+                {vertex1[0].avertex.frequencies.f_K1, integrand_re, integrand_im, Pival_re, Pival_im});
     }
 
 };
@@ -638,7 +638,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 int i0 = iK1/(nw1_w*n_in);
                 int iw = iK1/(n_in) - i0*nw1_w;
                 int i_in = iK1 - i0*nw1_w*n_in - iw*n_in;
-                double w = bfreqs[iw];
+                double w = dgamma[0].avertex.frequencies.b_K1.w[iw];
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
@@ -704,8 +704,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
                 int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
                 int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
-                double w = bfreqs2[iw];
-                double v = ffreqs2[iv];
+                double w = dgamma[0].avertex.frequencies.b_K2.w[iw];
+                double v = dgamma[0].avertex.frequencies.f_K2.w[iv];
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
@@ -773,9 +773,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 int iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
                 int ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
                 int i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
-                double w = bfreqs3[iw];
-                double v = ffreqs3[iv];
-                double vp = ffreqs3[ivp];
+                double w = dgamma[0].avertex.frequencies.b_K3.w[iw];
+                double v = dgamma[0].avertex.frequencies.f_K3.w[iv];
+                double vp = dgamma[0].avertex.frequencies.f_K3.w[ivp];
                 Q value;
 
                 // initialize the integrand object and perform frequency integration

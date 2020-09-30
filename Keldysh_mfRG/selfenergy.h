@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_SELFENERGY_H
 
 #include "data_structures.h" // real/complex vector classes
+#include "frequency_grid.h"  // interpolate self-energy on new frequency grid
 #include <omp.h>             // parallelize initialization of self-energy
 
 /****************** CLASS FOR SELF-ENERGY *************/
@@ -9,8 +10,12 @@ template <typename Q>
 class SelfEnergy{
 public:
     // TODO: split into two members: Sigma_R, Sigma_K (?)
+    FrequencyGrid frequencies;
     vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
+
+    SelfEnergy() : frequencies('f', 1) {};
+    SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid
@@ -130,9 +135,9 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
         if(fabs(v)!= glb_v_upper) { // linear interpolation
-            int iv = fconv_fer(v); // index corresponding to v
-            double x1 = ffreqs[iv]; // lower adjacent frequency value
-            double x2 = ffreqs[iv + 1]; // upper adjacent frequency value
+            int iv = this->frequencies.fconv(v); // index corresponding to v
+            double x1 = this->frequencies.w[iv]; // lower adjacent frequency value
+            double x2 = this->frequencies.w[iv + 1]; // upper adjacent frequency value
             double xd = (v - x1) / (x2 - x1); // distance between adjacent frequnecy values
 
             Q f1 = val(iK, iv, i_in); // lower adjacent value
@@ -173,17 +178,19 @@ template <typename Q> void SelfEnergy<Q>::addself(int iK, int iv, int i_in, Q va
 }
 
 template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lambda2) {
-    rvec ffreqs_new = ffreqs * ((glb_Gamma + Lambda2) / (glb_Gamma + Lambda1)); // rescaled frequencies
-    vec<Q> Sigma_new (2*nSE*n_in);                                              // temporary self-energy vector
+    FrequencyGrid frequencies_new = this->frequencies; // new frequency grid
+    frequencies_new.rescale_grid(Lambda1, Lambda2);    // rescale new frequency grid
+    vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
     for (int iK=0; iK<2; ++iK) {
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 // interpolate old values to new vector
-                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, ffreqs_new[iv], i_in);
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.w[iv], i_in);
             }
         }
     }
-    this->Sigma = Sigma_new; // update selfenergy to new interpolated values
+    this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
+    this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
 }
 
 /*

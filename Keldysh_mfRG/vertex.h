@@ -71,11 +71,16 @@ class fullvert {
 public:
     // Channel decomposition of the full vertex
     irreducible<Q> irred;
-    rvert<Q> avertex = rvert<Q> ('a');
-    rvert<Q> pvertex = rvert<Q> ('p');
-    rvert<Q> tvertex = rvert<Q> ('t');
+    rvert<Q> avertex;
+    rvert<Q> pvertex;
+    rvert<Q> tvertex;
 
-    fullvert() = default;;
+    fullvert() : avertex('a'),
+                 pvertex('p'),
+                 tvertex('t') {}
+    fullvert(double Lambda) : avertex('a', Lambda),
+                              pvertex('p', Lambda),
+                              tvertex('t', Lambda) {}
 
     // Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
     // Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin
@@ -165,7 +170,8 @@ class Vertex : public vec<fullvert<Q> > {
 public:
     Vertex() : vec<fullvert<Q> > () {};
     Vertex(int n) : vec<fullvert<Q> > (n) {};
-    Vertex(int n, fullvert<Q> val) : vec<fullvert<Q> > (n, val) {};
+    Vertex(int n, double Lambda) : vec<fullvert<Q> > (n, fullvert<Q> (Lambda)) {};
+    Vertex(int n, fullvert<Q> val) : vec<fullvert<Q> > (n, val) {}; // TODO: never used?
 
     auto operator+= (const Vertex<Q>& rhs) -> Vertex<Q> {
         for (int i=0; i<this->size(); ++i) {

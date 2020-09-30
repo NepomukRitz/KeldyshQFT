@@ -193,7 +193,7 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         int iv = iSE/n_in;
         int i_in = iSE - iv*n_in;
 
-        double v = ffreqs[iv];
+        double v = self.frequencies.w[iv];
 
         // Integrand objects are declared and created for every input frequency v
 #ifdef DEBUG_MODE

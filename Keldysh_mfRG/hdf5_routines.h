@@ -14,6 +14,8 @@
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file
 #endif
 
+// TODO: incorporate change of frequency grid: read frequency vectors also
+
 /// --- Constants concerning HDF5 data format --- ///
 
 // Dataset dimensions
@@ -160,10 +162,10 @@ public:
     void initialize(State<comp>& state_in) {
         print("Starting to copy to buffer...", true);
         for (int i=0; i<nBOS; ++i) {
-            bfreqs_buffer[i] = bfreqs[i];
+            bfreqs_buffer[i] = state_in.vertex[0].avertex.frequencies.b_K1.w[i];
         }
         for (int i=0; i<nFER; ++i) {
-            ffreqs_buffer[i] = ffreqs[i];
+            ffreqs_buffer[i] = state_in.selfenergy.frequencies.w[i];
         }
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
             selfenergy[i].re = real(state_in.selfenergy.acc(i));
@@ -187,10 +189,10 @@ public:
 #endif
 #if DIAG_CLASS >= 2
         for (int i=0; i<nBOS2; ++i) {
-            bfreqs2_buffer[i] = bfreqs2[i];
+            bfreqs2_buffer[i] = state_in.vertex[0].avertex.frequencies.b_K2.w[i];
         }
         for (int i=0; i<nFER2; ++i) {
-            ffreqs2_buffer[i] = ffreqs2[i];
+            ffreqs2_buffer[i] = state_in.vertex[0].avertex.frequencies.f_K2.w[i];
         }
         for(int i=0; i<K2_dim; ++i) {                                // write K2 into buffer
             K2_class_a[i].re = real(state_in.vertex[0].avertex.K2_acc(i));
@@ -205,10 +207,10 @@ public:
 #endif
 #if DIAG_CLASS >= 3
         for (int i=0; i<nBOS3; ++i) {
-            bfreqs3_buffer[i] = bfreqs3[i];
+            bfreqs3_buffer[i] = state_in.vertex[0].avertex.frequencies.b_K3.w[i];
         }
         for (int i=0; i<nFER3; ++i) {
-            ffreqs3_buffer[i] = ffreqs3[i];
+            ffreqs3_buffer[i] = state_in.vertex[0].avertex.frequencies.f_K3.w[i];
         }
         for(int i=0; i<K3_dim; ++i) {                                // write K3 into buffer
             K3_class_a[i].re = real(state_in.vertex[0].avertex.K3_acc(i));
@@ -959,7 +961,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
     {
-        State<comp> result;
+        State<comp> result (0.); // TODO: read the Lambda value here, and read the frequency vectors from file
         if (Lambda_it < Lambda_size) {
 
             // Open the file. Access rights: read-only

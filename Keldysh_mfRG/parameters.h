@@ -57,15 +57,28 @@ const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(g
 //const int nFER = 20;
 
 #elif GRID==3
-double W_scale = 25.; //*glb_U;                //Resolution scale should be chosen big enough... ~25.*U seems good
-double glb_w_upper = 300.;
-double glb_w_lower = -glb_w_upper;
-double glb_v_upper = 300.;
-double glb_v_lower = -glb_v_upper;
+// parameters for the grid at Lambda = 0
+const double glb_W_scale = 10;
+const double glb_w_upper = 100.;
+const double glb_w_lower = -glb_w_upper;
+const double glb_v_upper = 100.;
+const double glb_v_lower = -glb_v_upper;
+
+const double glb_W2_scale = 5;
+const double glb_w2_upper = 50.;
+const double glb_w2_lower = -glb_w_upper;
+const double glb_v2_upper = 50.;
+const double glb_v2_lower = -glb_v_upper;
+
+const double glb_W3_scale = 2;
+const double glb_w3_upper = 20.;
+const double glb_w3_lower = -glb_w_upper;
+const double glb_v3_upper = 20.;
+const double glb_v3_lower = -glb_v_upper;
 
 // Number of bosonic and fermionic frequency points
-const int nBOS = 301;
-const int nFER = 301;
+const int nBOS = 201;
+const int nFER = 201;
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
@@ -86,8 +99,8 @@ const double glb_v_lower = -glb_v_upper;
 #endif
 
 // Number of frequency points for K2 and K3 classes
-const int nBOS2 = 151;//nBOS;
-const int nFER2 = 151;//nFER;
+const int nBOS2 = 51;//nBOS;
+const int nFER2 = 51;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 
@@ -123,14 +136,15 @@ const int nv2 = nFER2;
 const int nw3 = nBOS3;
 const int nv3 = nFER3;
 
-// Vectors for fermionic and bosonic frequencies
-rvec bfreqs (nBOS);                                                                                                     // NOLINT(cert-err58-cpp)
-rvec bfreqs2 (nBOS2);                                                                                                   // NOLINT(cert-err58-cpp)
-rvec bfreqs3 (nBOS3);                                                                                                   // NOLINT(cert-err58-cpp)
 
-rvec ffreqs (nFER);                                                                                                     // NOLINT(cert-err58-cpp)
-rvec ffreqs2 (nFER2);                                                                                                   // NOLINT(cert-err58-cpp)
-rvec ffreqs3 (nFER3);                                                                                                   // NOLINT(cert-err58-cpp)
+//// Vectors for fermionic and bosonic frequencies
+//rvec bfreqs (nBOS);                                                                                                     // NOLINT(cert-err58-cpp)
+//rvec bfreqs2 (nBOS2);                                                                                                   // NOLINT(cert-err58-cpp)
+//rvec bfreqs3 (nBOS3);                                                                                                   // NOLINT(cert-err58-cpp)
+//
+//rvec ffreqs (nFER);                                                                                                     // NOLINT(cert-err58-cpp)
+//rvec ffreqs2 (nFER2);                                                                                                   // NOLINT(cert-err58-cpp)
+//rvec ffreqs3 (nFER3);                                                                                                   // NOLINT(cert-err58-cpp)
 
 // Frequency grids for each channel
 //rvec freqs_a(nw_a);                                                                                                     // NOLINT(cert-err58-cpp)

@@ -35,7 +35,7 @@ template <typename Q> bool selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, Se
 //  in testFunctions.h are functions that would rather belong here.
 
 cvec dSOPT_FFT_K1a_rhs(const cvec& K1a, const double Lambda) { // return differentiated K1a_1 using SOPT_FFT for testing
-    SelfEnergy<comp> SEin; // trivial self-energy
+    SelfEnergy<comp> SEin (Lambda); // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     Propagator S0(Lambda, SEin,'s'); // bare differentiated propagator
@@ -45,7 +45,7 @@ cvec dSOPT_FFT_K1a_rhs(const cvec& K1a, const double Lambda) { // return differe
 }
 
 cvec SOPT_FFT_K1a_rhs(const double Lambda) { // return (Lambda-dependent) K1a_1 using SOPT_FFT for testing
-    SelfEnergy<comp> SEin; // trivial self-energy
+    SelfEnergy<comp> SEin (Lambda); // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     cvec K1a_1(nw1_a); // output cvec: bare K1a, component 1
@@ -71,7 +71,7 @@ void test_ODE_SOPT_FFT_K1a(const int N_ODE) { // test ODE solver using K1a from 
 }
 
 cvec dSOPT_FFT_SE_rhs(const cvec& SE, const double Lambda) { // return differentiated SE using SOPT_FFT for testing
-    SelfEnergy<comp> SEin; // trivial self-energy
+    SelfEnergy<comp> SEin (Lambda); // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     Propagator S0(Lambda, SEin,'s'); // bare differentiated propagator
@@ -81,7 +81,7 @@ cvec dSOPT_FFT_SE_rhs(const cvec& SE, const double Lambda) { // return different
 }
 
 cvec SOPT_FFT_SE_rhs(const double Lambda) { // return (Lambda-dependent) SE using SOPT_FFT for testing
-    SelfEnergy<comp> SEin; // trivial self-energy
+    SelfEnergy<comp> SEin (Lambda); // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G0(Lambda, SEin,'g'); // bare propagator
     cvec SEout(nSE); // output cvec: bare SE, retarded component
@@ -91,14 +91,14 @@ cvec SOPT_FFT_SE_rhs(const double Lambda) { // return (Lambda-dependent) SE usin
 
 SelfEnergy<comp> SOPT_FFT_SE_rhs(const SelfEnergy<comp>& SEin, const double Lambda) { // return (Lambda-dependent) SE using SOPT_FFT for testing
     Propagator G(Lambda, SEin,'g'); // full propagator
-    SelfEnergy<comp> SEout; // output self-energy
+    SelfEnergy<comp> SEout (Lambda); // output self-energy
     SOPT_FFT(SEout, G, glb_U, 100000, 500., false); // fill ouput self-energy
     return SEout;
 }
 
 SelfEnergy<comp> SOPTlad_FFT_SE_rhs(const SelfEnergy<comp>& SEin, const double Lambda) { // return (Lambda-dependent) SE using SOPT_FFT for testing
     Propagator G(Lambda, SEin,'g'); // full propagator
-    SelfEnergy<comp> SEout; // output self-energy
+    SelfEnergy<comp> SEout (Lambda); // output self-energy
     SOPT_FFT(SEout, G, glb_U, 100000, 500., true); // fill ouput self-energy
     return SEout;
 }
@@ -122,9 +122,9 @@ void test_ODE_SOPT_FFT_SE(const int N_ODE) { // test ODE solver using SE from SO
 
 void test_SCE_SOPT_FFT_SE(const int N_SCE_SOPT, const int N_SCE_SOPTlad) { // test SCE solver using SE from SOPT(lad)_FFT
     bool write_flag = true; // whether to write output in hdf5
-    SelfEnergy<comp> SEini; // trivial self-energy
+    SelfEnergy<comp> SEini (Lambda_fin); // trivial self-energy
     SEini.initialize(glb_U/2., 0.); // initialize with Hartree term
-    SelfEnergy<comp> SEfin; // final self-energy
+    SelfEnergy<comp> SEfin (Lambda_fin); // final self-energy
     SCE_solver(SEfin, SEini, Lambda_fin, SOPT_FFT_SE_rhs, N_SCE_SOPT, 0.); // final self-energy after self-consistency iterations
     SCE_solver(SEfin, SEfin, Lambda_fin, SOPTlad_FFT_SE_rhs, N_SCE_SOPTlad, 0.); // dito including ladder
     cout << "Testing SCE for SEOPT using " << N_SCE_SOPT << " iterations for self-consistent SOPT and " << N_SCE_SOPTlad << " iterations including ladders." << endl;
@@ -141,7 +141,7 @@ void test_SCE_SOPT_FFT_SE(const int N_SCE_SOPT, const int N_SCE_SOPTlad) { // te
 }
 
 cvec dG_rhs(const cvec& G, const double Lambda) { // return bare differentiated propagator for testing purposes
-    SelfEnergy<comp> SEin; // trivial self-energy
+    SelfEnergy<comp> SEin (Lambda); // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator S0(Lambda, SEin,'s'); // bare differentiated propagator from class
     cvec dG(nSE); // bare differentiated propagator as cvec
@@ -154,7 +154,7 @@ void test_ODE_G(const int N_ODE) { // test ODE applied to bare (differentiated) 
     bool write_flag = false; // whether to write result in hdf5 file
     cvec G_dir(nw1_a), G_fin(nw1_a), G_ini(nw1_a); // direct, final, initial propagator as cvec
     double Lambda_fin = 1.; double Lambda_ini = 2.; // end points of flow
-    SelfEnergy<comp> SEin; // trivial self-energy
+    SelfEnergy<comp> SEin (Lambda_ini); // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
     Propagator G_ini_prop(Lambda_ini, SEin, 'g'); // initial propagator from class
     Propagator G_dir_prop(Lambda_fin, SEin, 'g'); // final propagator from class
@@ -182,7 +182,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     static_assert(N_LOOPS>=1, "");
 
-    State<Q> dPsi; // result
+    State<Q> dPsi (Lambda); // result
 
     Propagator S (Lambda, Psi.selfenergy, 's');
     Propagator G (Lambda, Psi.selfenergy, 'g');

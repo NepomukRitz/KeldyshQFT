@@ -8,6 +8,8 @@
 #include <gsl/gsl_errno.h>                  // for GSL integrator
 #include "Integrator_NR/integrator_NR.h"    // adaptive Gauss-Lobatto integrator with Kronrod extension
 
+// temporarily necessary to make use of frequency grid bfreqs
+#include "frequency_grid.h"
 
 /* compute real part of integrand (for GSL/PAID) */
 template <typename Integrand>

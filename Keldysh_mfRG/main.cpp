@@ -94,9 +94,6 @@ auto main() -> int {
     assert(N_LOOPS < 2);
 #endif
 
-    scale_grid_parameters();
-    setUpGrids();
-
     print("U for this run is: ", glb_U, true);
     print("Lambda flows from ", Lambda_ini);
     print_add(" to ", Lambda_fin, true);

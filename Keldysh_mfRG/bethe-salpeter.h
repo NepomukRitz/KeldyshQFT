@@ -361,7 +361,7 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
                 int i0 = iK1/(nw1_w*n_in);
                 int iw = iK1/(n_in) - i0*nw1_w;
                 int i_in = iK1 - i0*nw1_w*n_in - iw*n_in;
-                double w = bfreqs[iw];
+                double w = lhs_vertex[0].avertex.frequencies.b_K1.w[iw];
                 Q value;
 
                 for(auto i2: non_zero_Keldysh_bubble){
@@ -412,8 +412,8 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
                 int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
                 int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
                 int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
-                double w = bfreqs2[iw];
-                double v = ffreqs2[iv];
+                double w = lhs_vertex[0].avertex.frequencies.b_K2.w[iw];
+                double v = lhs_vertex[0].avertex.frequencies.f_K2.w[iv];
                 Q value;
 
                 for(auto i2:non_zero_Keldysh_bubble){

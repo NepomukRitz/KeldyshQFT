@@ -13,7 +13,7 @@
 
 State<comp> n_loop_flow(string outputFileName){
 
-    State<comp> state_fin, state_ini;   // create final and initial state
+    State<comp> state_fin (Lambda_fin), state_ini (Lambda_ini);   // create final and initial state
     state_ini.initialize();             // initialize state
 
     sopt_state(state_ini, Lambda_ini);  // initialize the flow with SOPT at Lambda_ini (important!)
