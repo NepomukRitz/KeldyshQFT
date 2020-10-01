@@ -77,6 +77,7 @@ public:
                 break;
             default:;
         }
+        w = rvec (N_w);
         initialize_grid();
     };
 
