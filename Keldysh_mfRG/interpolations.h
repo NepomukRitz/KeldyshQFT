@@ -14,7 +14,7 @@ template <typename Q> class rvert;
 
 template <typename Q>
 auto interpolateK1(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
-//    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
+//    assert(vertex.frequencies.b_K1.w_lower <= w && w <= vertex.frequencies.b_K1.w_upper); // give error message if w out of range
     if (fabs(indices.w) + inter_tol < vertex.frequencies.b_K1.w_upper) {
         int index = vertex.frequencies.b_K1.fconv(indices.w);
         double x1 = vertex.frequencies.b_K1.w[index];
@@ -33,8 +33,8 @@ auto interpolateK1(IndicesSymmetryTransformations indices, const rvert<Q>& verte
 
 template <typename Q>
 auto interpolateK2 (IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
-//    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
-//    assert(glb_v_lower<=v && v <=glb_v_upper); // give error message if v out of range
+//    assert(vertex.frequencies.b_K2.w_lower <= w && w <= vertex.frequencies.b_K2.w_upper); // give error message if w out of range
+//    assert(vertex.frequencies.f_K2.w_lower <= v && v <= vertex.frequencies.f_K2.w_upper); // give error message if v out of range
 
     if (    fabs(indices.w) + inter_tol < vertex.frequencies.b_K2.w_upper
         && fabs(indices.v1) + inter_tol < vertex.frequencies.f_K2.w_upper) {
@@ -63,9 +63,9 @@ auto interpolateK2 (IndicesSymmetryTransformations indices, const rvert<Q>& vert
 
 template <typename Q>
 auto interpolateK3 (IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
-//    assert(glb_w_lower<=w && w <=glb_w_upper); // give error message if w out of range
-//    assert(glb_v_lower<=v1 && v1 <=glb_v_upper); // give error message if v1 out of range
-//    assert(glb_v_lower<=v2 && v2 <=glb_v_upper); // give error message if v2 out of range
+//    assert(vertex.frequencies.b_K3.w_lower <= w  && w  <= vertex.frequencies.b_K3.w_upper); // give error message if w out of range
+//    assert(vertex.frequencies.f_K3.w_lower <= v1 && v1 <= vertex.frequencies.f_K3.w_upper); // give error message if v1 out of range
+//    assert(vertex.frequencies.f_K3.w_lower <= v2 && v2 <= vertex.frequencies.f_K3.w_upper); // give error message if v2 out of range
 
     if (    fabs(indices.w) + inter_tol < vertex.frequencies.b_K3.w_upper
         && fabs(indices.v1) + inter_tol < vertex.frequencies.f_K3.w_upper

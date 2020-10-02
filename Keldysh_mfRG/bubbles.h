@@ -627,6 +627,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     // initialize buffer into which each MPI process writes their results
     vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
+    // initialize frequency grid to be used for K1
+    FrequencyGrid freqs_K1 = dgamma[0].avertex.frequencies.b_K1;
+
     // start for-loop over external arguments, using MPI and OMP
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
@@ -638,7 +641,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 int i0 = iK1/(nw1_w*n_in);
                 int iw = iK1/(n_in) - i0*nw1_w;
                 int i_in = iK1 - i0*nw1_w*n_in - iw*n_in;
-                double w = dgamma[0].avertex.frequencies.b_K1.w[iw];
+                double w = freqs_K1.w[iw];
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
@@ -652,11 +655,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
 #endif
                         value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                 integrator(integrand_K1, glb_v_lower, glb_v_upper, -w / 2., w / 2.);
+                                 integrator(integrand_K1, freqs_K1.w_lower, freqs_K1.w_upper, -w / 2., w / 2.);
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
                             value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                     asymp_corrections_K1(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, i0, i2, i_in,
+                                     asymp_corrections_K1(vertex1, vertex2, -freqs_K1.w_lower, freqs_K1.w_upper, w, i0, i2, i_in,
                                                           channel); //Correction needed for the K1 class
                         }
                         // */
@@ -692,6 +695,10 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     // initialize buffer into which each MPI process writes their results
     vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
+    // initialize frequency grids to be used for K2
+    FrequencyGrid bfreqs_K2 = dgamma[0].avertex.frequencies.b_K2;
+    FrequencyGrid ffreqs_K2 = dgamma[0].avertex.frequencies.f_K2;
+
     // start for-loop over external arguments, using MPI and OMP
     iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
@@ -704,8 +711,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
                 int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
                 int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
-                double w = dgamma[0].avertex.frequencies.b_K2.w[iw];
-                double v = dgamma[0].avertex.frequencies.f_K2.w[iv];
+                double w = bfreqs_K2.w[iw];
+                double v = ffreqs_K2.w[iv];
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
@@ -719,11 +726,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #else
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff);
 #endif
-                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, glb_v_lower, glb_v_upper, -w/2., w/2.);
+                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, ffreqs_K2.w_lower, ffreqs_K2.w_upper, -w/2., w/2.);
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
                             value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                     asymp_corrections_K2(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, i0, i2,
+                                     asymp_corrections_K2(vertex1, vertex2, -ffreqs_K2.w_lower, ffreqs_K2.w_upper, w, v, i0, i2,
                                                           i_in, channel); //Correction needed for the K2 class
                         }
                         // */
@@ -760,6 +767,10 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     // initialize buffer into which each MPI process writes their results
     vec<Q> K3_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
+    // initialize frequency grids to be used for K2
+    FrequencyGrid bfreqs_K3 = dgamma[0].avertex.frequencies.b_K3;
+    FrequencyGrid ffreqs_K3 = dgamma[0].avertex.frequencies.f_K3;
+
     // start for-loop over external arguments, using MPI and OMP
     iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
@@ -773,20 +784,20 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 int iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
                 int ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
                 int i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
-                double w = dgamma[0].avertex.frequencies.b_K3.w[iw];
-                double v = dgamma[0].avertex.frequencies.f_K3.w[iv];
-                double vp = dgamma[0].avertex.frequencies.f_K3.w[ivp];
+                double w = bfreqs_K3.w[iw];
+                double v = ffreqs_K3.w[iv];
+                double vp = ffreqs_K3.w[ivp];
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
                 Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, part, diff);
 
-                value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, glb_v_lower, glb_v_upper, -w/2., w/2.);
+                value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, ffreqs_K3.w_lower, ffreqs_K3.w_upper, -w/2., w/2.);
 
                 if (!diff) {
                     for (auto i2:non_zero_Keldysh_bubble) {
                         value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                 asymp_corrections_K3(vertex1, vertex2, -glb_v_lower, glb_v_upper, w, v, vp, i0, i2,
+                                 asymp_corrections_K3(vertex1, vertex2, -ffreqs_K3.w_lower, ffreqs_K3.w_upper, w, v, vp, i0, i2,
                                                       i_in, channel); //Correction needed for the K3 class
                     }
                 }

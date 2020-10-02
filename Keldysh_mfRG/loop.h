@@ -204,12 +204,14 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         IntegrandSE<Q> integrandK('k', fullvertex, prop, v, i_in, all_spins);
 #endif
 
-        // One integrates the integrands from glb_v_lower-|v| to glb_v_upper+|v|
+        // One integrates the integrands from v_lower-|v| to v_upper+|v|
         // The limits of the integral must depend on v because of the transformations that must be done on the frequencies
         // (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v', needing both extensions of the integration domain in both directions
         // The prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
-        comp integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, glb_v_lower-abs(v), glb_v_upper+abs(v), 0.);
-        comp integratedK = -1./(2.*M_PI*glb_i)*integrator(integrandK, glb_v_lower-abs(v), glb_v_upper+abs(v), 0.);
+        double v_lower = prop.selfenergy.frequencies.w_lower;
+        double v_upper = prop.selfenergy.frequencies.w_upper;
+        comp integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedK = -1./(2.*M_PI*glb_i)*integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
