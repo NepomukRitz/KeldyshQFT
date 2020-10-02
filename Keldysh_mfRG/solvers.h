@@ -114,11 +114,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         }
 
         // update frequency grid, interpolate result to new grid
-        t0 = get_time();
         y_run.update_grid(x_run-dx, x_run);
-        print("Interpolated to new frequency grid.", true);
-        get_time(t0); // measure time for interpolation to new grid
-
     }
     y_fin = y_run; // final y value
 }
