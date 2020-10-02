@@ -58,22 +58,22 @@ const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(g
 
 #elif GRID==3
 // parameters for the grid at Lambda = 0
-const double glb_W_scale = 10;
-const double glb_w_upper = 100.;
+const double glb_W_scale = 5.;
+const double glb_w_upper = 50.;
 const double glb_w_lower = -glb_w_upper;
-const double glb_v_upper = 100.;
+const double glb_v_upper = 50.;
 const double glb_v_lower = -glb_v_upper;
 
-const double glb_W2_scale = 5;
-const double glb_w2_upper = 50.;
+const double glb_W2_scale = 2.;
+const double glb_w2_upper = 20.;
 const double glb_w2_lower = -glb_w_upper;
-const double glb_v2_upper = 50.;
+const double glb_v2_upper = 20.;
 const double glb_v2_lower = -glb_v_upper;
 
-const double glb_W3_scale = 2;
-const double glb_w3_upper = 20.;
+const double glb_W3_scale = 1.;
+const double glb_w3_upper = 10.;
 const double glb_w3_lower = -glb_w_upper;
-const double glb_v3_upper = 20.;
+const double glb_v3_upper = 10.;
 const double glb_v3_lower = -glb_v_upper;
 
 // Number of bosonic and fermionic frequency points
