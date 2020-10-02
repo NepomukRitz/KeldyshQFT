@@ -21,6 +21,7 @@ public:
     State(double Lambda) : selfenergy(Lambda), vertex(n_spin, Lambda) {};
 
     void initialize();
+    void set_frequency_grid(const State<Q>& state_in);
     void update_grid(double Lambda1, double Lambda2);
 
     // operators containing State objects
@@ -60,6 +61,16 @@ template <typename Q> void State<Q>::initialize() {
 
     // Assign initial conditions to bare vertex
     this->vertex[0].initialize(-glb_U/2.);
+}
+
+// set frequency grids of newly created state to those of existing reference state
+template <typename Q> void State<Q>::set_frequency_grid(const State<Q>& state_in) {
+    this->selfenergy.frequencies = state_in.selfenergy.frequencies;
+    for (int i=0; i<this->vertex.size(); ++i) {
+        this->vertex[i].avertex.frequencies = state_in.vertex[i].avertex.frequencies;
+        this->vertex[i].pvertex.frequencies = state_in.vertex[i].pvertex.frequencies;
+        this->vertex[i].tvertex.frequencies = state_in.vertex[i].tvertex.frequencies;
+    }
 }
 
 template <typename Q> void State<Q>::update_grid(double Lambda1, double Lambda2) {

@@ -182,7 +182,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     static_assert(N_LOOPS>=1, "");
 
-    State<Q> dPsi (Lambda); // result
+    State<Q> dPsi; // result
+    dPsi.set_frequency_grid(Psi); // set frequency grids of result state to the one of input state
 
     Propagator S (Lambda, Psi.selfenergy, 's');
     Propagator G (Lambda, Psi.selfenergy, 'g');
