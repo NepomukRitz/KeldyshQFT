@@ -66,15 +66,15 @@ const double glb_v_lower = -glb_v_upper;
 
 const double glb_W2_scale = 2.;
 const double glb_w2_upper = 20.;
-const double glb_w2_lower = -glb_w_upper;
+const double glb_w2_lower = -glb_w2_upper;
 const double glb_v2_upper = 20.;
-const double glb_v2_lower = -glb_v_upper;
+const double glb_v2_lower = -glb_v2_upper;
 
 const double glb_W3_scale = 1.;
 const double glb_w3_upper = 10.;
-const double glb_w3_lower = -glb_w_upper;
+const double glb_w3_lower = -glb_w3_upper;
 const double glb_v3_upper = 10.;
-const double glb_v3_lower = -glb_v_upper;
+const double glb_v3_lower = -glb_v3_upper;
 
 // Number of bosonic and fermionic frequency points
 const int nBOS = 201;
