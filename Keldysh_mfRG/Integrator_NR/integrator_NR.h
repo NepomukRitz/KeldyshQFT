@@ -12,13 +12,13 @@ template<typename Integrand>
 struct Adapt {
 public:
     double TOL, toler;
+    const double EPS = std::numeric_limits<double>::epsilon();
     static const double alpha, beta, x1, x2, x3, x[12];
     bool terminate, out_of_toler;
     const Integrand& integrand;
 
     Adapt(double tol_in, const Integrand& integrand_in)
     : TOL(tol_in), integrand(integrand_in), terminate(true), out_of_toler(false){
-        const double EPS = std::numeric_limits<double>::epsilon();
         if(TOL<10.*EPS){
             TOL = 10.*EPS;
         }
@@ -91,7 +91,7 @@ auto Adapt<Integrand>::adaptlob(const double a, const double b, const comp fa, c
     i2=h/6.0*(fa+fb+5.0*(fml+fmr));                                             //4-pt Gauss-Lobatte formula
     i1=h/1470.0*(77.0*(fa+fb)+432.0*(fmll+fmrr)+625.0*(fml+fmr)+672.0*fm);      //7-pt Kronrod extension
 
-    if(abs(i1-i2)<= max(TOL, toler*fabs(is)) || mll <= a || b<= mrr){
+    if(abs(i1-i2)<= max(EPS, toler*fabs(is)) || mll <= a || b<= mrr){
         if((mll <= a || b <= mrr) && terminate){
             out_of_toler = true;
             terminate = false;
