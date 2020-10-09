@@ -208,3 +208,25 @@ def load_SIAM_NRG(U, path_NRG):
         K1t_im = np.array(f["U=" + str(U)]["K1t_div_by_U_squared_im"])
 
     return Gamma_NRG, w_NRG, Aimp, SE_re, SE_im, K1a_re, K1a_im, K1p_re, K1p_im, K1t_re, K1t_im
+
+def load_SIAM_NRG_finite_T(U, T, path_NRG):
+    """
+    Load NRG reference data
+    """
+    if T==0.01:
+        return load_SIAM_NRG(U, path_NRG)
+    
+    with h5py.File(path_NRG + "SIAM_NRG_finite_T.h5", 'r') as f:
+        Gamma_NRG = np.array(f['Gamma'])
+        w_NRG  = np.array(f["w"])
+        Aimp   = np.array(f["U=" + str(U)+'_T=' + str(T)]["Aimp"])
+        SE_re  = np.array(f["U=" + str(U)+'_T=' + str(T)]["SE_re"])
+        SE_im  = np.array(f["U=" + str(U)+'_T=' + str(T)]["SE_im"])
+        K1a_re = np.array(f["U=" + str(U)+'_T=' + str(T)]["K1a_div_by_U_squared_re"])
+        K1a_im = np.array(f["U=" + str(U)+'_T=' + str(T)]["K1a_div_by_U_squared_im"])
+        K1p_re = np.array(f["U=" + str(U)+'_T=' + str(T)]["K1p_div_by_U_squared_re"])
+        K1p_im = np.array(f["U=" + str(U)+'_T=' + str(T)]["K1p_div_by_U_squared_im"])
+        K1t_re = np.array(f["U=" + str(U)+'_T=' + str(T)]["K1t_div_by_U_squared_re"])
+        K1t_im = np.array(f["U=" + str(U)+'_T=' + str(T)]["K1t_div_by_U_squared_im"])
+
+    return Gamma_NRG, w_NRG, Aimp, SE_re, SE_im, K1a_re, K1a_im, K1p_re, K1p_im, K1t_re, K1t_im
