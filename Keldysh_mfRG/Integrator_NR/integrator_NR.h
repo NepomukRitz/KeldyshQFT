@@ -44,7 +44,7 @@ auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
 
     y[0] = fa;
     y[12]=fb;
-    for(int i = 0; i<12; i++){
+    for(int i = 1; i<12; i++){
         y[i] = integrand(m + x[i]*h);
     }
     i2 =(h/6.0)*(y[0]+y[12]+5.0*(y[4]+y[8]));                                           //4-pt Gaus-Lobatto formula
@@ -91,7 +91,7 @@ auto Adapt<Integrand>::adaptlob(const double a, const double b, const comp fa, c
     i2=h/6.0*(fa+fb+5.0*(fml+fmr));                                             //4-pt Gauss-Lobatte formula
     i1=h/1470.0*(77.0*(fa+fb)+432.0*(fmll+fmrr)+625.0*(fml+fmr)+672.0*fm);      //7-pt Kronrod extension
 
-    if(abs(i1-i2)<= toler*fabs(is) || mll <= a || b<= mrr){
+    if(abs(i1-i2)<= max(TOL, toler*fabs(is)) || mll <= a || b<= mrr){
         if((mll <= a || b <= mrr) && terminate){
             out_of_toler = true;
             terminate = false;
