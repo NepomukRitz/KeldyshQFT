@@ -4,8 +4,9 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+from matplotlib.ticker import MaxNLocator, StrMethodFormatter
 
-from load_data import load_data, load_SIAM_NRG
+from load_data import load_data, load_SIAM_NRG, load_SIAM_NRG_finite_T
 
 # use latex and serif fonts
 plt.rc('text', usetex=True)
@@ -78,7 +79,6 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
     U_to_ins_ylim  = {0.1: 0.0001, 0.5:0.003, 1:0.008, 1.5: 0.02, 2:0.05, 2.5:0.07, 2.9:0.1, 3:0.1}
     U_str = "%.1f" % (2*U_NRG)
     
-    
     if possible_NRG:
         # load NRG reference data
         try:
@@ -103,62 +103,80 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
     
     K1_dic = {'K1a': K1a, 'K1p': K1p, 'K1t': K1t}
     
-    fs = 26 # font size
-    fs_leg = fs - 6
-    fs_ticks = fs-2
+    fs = 34 # font size
+    fs_leg = 26
+    fs_ticks = fs-4
     fs_ins = fs_leg
-    plt.rcParams['legend.title_fontsize'] = fs-4
+    plt.rcParams['legend.title_fontsize'] = 28
     
-    lw = 3 #linewidth
+    size_a = (15,5)
+    size_twocols = (15,5)
+    
+    lw = 5 #linewidth
+    
+    lw_a = 3
+    fs_a = 26 # font size
+    fs_leg_a = 22
+    fs_ticks_a = fs-4
+    fs_ins_a = fs_leg_a
+    
     #Plot spectral funciton
     if(typ[0]=="A"):        
-        fig, ax = plt.subplots(figsize=(15, 5))
+        fig, ax = plt.subplots(figsize=size_a)
 
         for i in range(len(filenames)):
             if (filenames[i][-43:-37] == 'static'):
-                ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw_a*0.5)
             else:
-                ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw)
+                ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw_a)
             
         if plot_NRG:    
-            ax.plot(w_NRG/Delta_NRG, Aimp*np.pi*Delta_NRG, 'k:', label='NRG')    
+            ax.plot(w_NRG/Delta_NRG, Aimp*np.pi*Delta_NRG, 'k:', label='NRG', linewidth=lw_a)    
             
         ax.hlines(1., -0.5, 0.5, linestyles='--')
         ax.set_ylabel(r'$\mathcal{A}(\nu)\pi\Delta$', fontsize=fs)
         
         ax.set_ylim(-0.1, 1.15)
         ax.set_xlim(-5, 5)
-        ax.set_xlabel(r'$\nu/\Delta$', fontsize=fs)
-        ax.tick_params(axis='both', labelsize=fs_ticks)
+        
         
                     
         if inset:
-            axins = zoomed_inset_axes(ax, 2.1, loc=2, borderpad = 4)
+            axins = zoomed_inset_axes(ax, 2.1, loc=2, borderpad = 4.5)
             axins.aspect='equal'
             axins.hlines(1., -0.5, 0.5, linestyles='--')
             for i in range(len(filenames)):
                 if (filenames[i][-43:-37] == 'static'):                
-                    axins.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw*0.5)
+                    axins.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw_a*0.5)
                 else:
-                    axins.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw)
+                    axins.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], linewidth=lw_a)
             if plot_NRG:    
-                axins.plot(w_NRG/Delta_NRG, Aimp*np.pi*Delta_NRG, 'k:', label='NRG')                      
+                axins.plot(w_NRG/Delta_NRG, Aimp*np.pi*Delta_NRG, 'k:', label='NRG', linewidth=lw_a)                      
                 
                 
             axins.set_ylim(0.9, 1.1)
             axins.set_yticks(np.linspace(0.9, 1.1, 3, endpoint=True))    
             axins.set_xlim(-0.4, 0.4)    
             axins.set_xticks(np.linspace(-0.4, 0.4, 3, endpoint=True))
-            axins.tick_params(axis='both', labelsize=fs_ins)
+            axins.tick_params(axis='both', labelsize=fs_ins_a)
             plt.xticks(visible=True)  # Present ticks
             plt.yticks(visible=True)
             mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
     
-        ax.legend(fontsize=fs_leg, title=r'$U/\Delta=$' + U_str)
+        ax.legend(fontsize=fs_leg_a, title=r'$U/\Delta=$' + U_str, frameon=False)
+        
+        if U_NRG==2.5:
+            ax.set_xlabel(r'$\nu/\Delta$', fontsize=fs_a)
+            ax.tick_params(axis='both', labelsize=fs_ticks_a)
+        else:
+            ax.axes.xaxis.set_visible(False)
+            ax.tick_params(axis='y', labelsize=fs_ticks_a)
     
     #Plot self energy, component iK
     elif(typ[0:4] == "self"):
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=size_twocols)
+        
+
         
         for i in range(len(filenames)):
             if (filenames[i][-43:-37] == 'static'):                
@@ -175,8 +193,8 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
                 Re_X_NRG = np.zeros(len(w_NRG/Delta_NRG))
                 Im_X_NRG = generate_Keldysh_component( Im_X_NRG, w_NRG / Delta_NRG, T[i], stat=-1)
             
-            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG, 'k:', label='NRG')
-            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG, 'k:', label='NRG')
+            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG, 'k:', label='NRG', linewidth=lw) 
+            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG, 'k:', label='NRG', linewidth=lw) 
             
             
         if inset:
@@ -194,7 +212,8 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
                 
                 
             axins.set_ylim(-ylim, 0.2*ylim)
-            axins.set_yticks(np.linspace(-ylim, 0, 2, endpoint=True))    
+            axins.set_yticks(np.linspace(-ylim, 0, 2, endpoint=True))   
+            axins.yaxis.set_major_formatter(StrMethodFormatter('{x:,.2f}')) # Two decimal places
             axins.set_xlim(-0.5, 0.5)    
             axins.set_xticks(np.linspace(-0.5, 0.5, 3, endpoint=True))
             axins.tick_params(axis='both', labelsize=fs_ins-4)
@@ -206,28 +225,43 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
         if(iK==0):
             ax[1].hlines(0, -2, 2, linestyles='--')
             if plot_NRG and inset:
-                    axins.plot(w_NRG / Delta_NRG, SE_im / Delta_NRG, 'k:', label='NRG')
+                    axins.plot(w_NRG / Delta_NRG, SE_im / Delta_NRG, 'k:', label='NRG', linewidth=lw) 
             if inset:
                 axins.hlines(0, -2, 2, linestyles='--')
 
             ax[0].set_ylabel('$(\mathrm{Re}\Sigma^R-\Sigma^H)/\Delta$', fontsize=fs+2)
             ax[1].set_ylabel('$\mathrm{Im}\Sigma^R/\Delta$', fontsize=fs+2)
         else:
+            t = ax[0].yaxis.get_offset_text()
+            t.set_size(fs_leg)
             ax[0].set_ylabel('$\mathrm{Re}\Sigma^K/\Delta$', fontsize=fs+2)
             ax[1].set_ylabel('$\mathrm{Im}\Sigma^K/\Delta$', fontsize=fs+2)
 
             
+        plt.tight_layout(pad=4)
+        
         for i in range(2):
             ax[i].set_xlim(-20, 20)
-            ax[i].set_xlabel(r'$\nu/\Delta$', fontsize=fs+2)
-            ax[i].tick_params(axis='both', labelsize=fs_ticks)
-
-        ax[0].legend(fontsize=fs_leg, loc='upper left', title=r'$U/\Delta=$' + U_str)
-        plt.tight_layout()
+            if U_NRG==2.5:
+                ax[i].set_xlabel(r'$\nu/\Delta$', fontsize=fs+2)
+                ax[i].tick_params(axis='both', labelsize=fs_ticks)
+            else:
+                ax[i].axes.xaxis.set_visible(False)
+                ax[i].tick_params(axis='y', labelsize=fs_ticks)
+            
+            if iK == 1:
+                ax[1].yaxis.set_major_formatter(StrMethodFormatter('{x:,.1f}')) # One decimal place
+            else:
+                ax[i].yaxis.set_major_formatter(StrMethodFormatter('{x:,.1f}')) # One decimal place
+                
+        if iK == 1:
+            t = ax[0].yaxis.get_offset_text()
+            t.set_size(fs_leg)
+            ax[0].legend(fontsize=fs_leg, title=r'$U/\Delta=$' + U_str)    
         
     #Plot susceptibilities
     elif(typ[0:4] == "susc"):    #susceptibility
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=size_twocols)
         sup_indices = ['R', 'K']
         pfs = [-1, +1]
         susc = typ[5:7]
@@ -261,29 +295,45 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
             if iK == 1:
                 Re_X_NRG = np.zeros(len(w_NRG/Delta_NRG))
                 Im_X_NRG = generate_Keldysh_component( Im_X_NRG, w_NRG, T[i], stat=+1)
+                
             
-            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG * 2*U_NRG**2* np.pi*Delta[i]**2, 'k:', label='NRG') 
-            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG * 2*U_NRG**2* np.pi*Delta[i]**2, 'k:', label='NRG')
+            ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG * 2*U_NRG**2* np.pi*Delta[i]**2, 'k:', label='NRG', linewidth=lw)  
+            ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG * 2*U_NRG**2* np.pi*Delta[i]**2, 'k:', label='NRG', linewidth=lw) 
             
         
         ax[0].set_ylabel(r'$\mathrm{Re}\chi^'+ sup_indices[iK]+'_\mathrm{'+susc+'}\pi\Delta$', fontsize=fs+2)
         ax[1].set_ylabel(r'$\mathrm{Im}\chi^'+ sup_indices[iK]+'_\mathrm{'+susc+'}\pi\Delta$', fontsize=fs+2)
         
-
+        
+        fig.tight_layout(pad=4)  
+    
+        if iK == 1:
+            t = ax[0].yaxis.get_offset_text()
+            t.set_size(fs_leg)
+            ax[0].legend(fontsize=fs_leg, title=r'$U/\Delta=$' + U_str)   
+            
         for i in range(2):
-            ax[i].set_xlabel(r'$\omega/\Delta$', fontsize=fs+2)
+            if iK == 1:
+                ax[0].yaxis.set_major_locator(MaxNLocator(3, symmetric=True))
+                ax[1].yaxis.set_major_formatter(StrMethodFormatter('{x:,.1f}')) # One decimal place
+            else:
+                ax[i].yaxis.set_major_formatter(StrMethodFormatter('{x:,.1f}')) # One decimal place
             if susc == 'sp':
                 ax[i].set_xlim(-5,5)
             elif susc == 'ch':
                 ax[i].set_xlim(-10,10)
-            ax[i].tick_params(axis='both', labelsize=fs_ticks)
-        ax[0].legend(fontsize=fs_leg, title=r'$U/\Delta=$' + U_str)
-        fig.tight_layout()  
-        
-        
+                
+            if U_NRG==2.5:
+                ax[i].set_xlabel(r'$\omega/\Delta$', fontsize=fs+2)
+                ax[i].tick_params(axis='both', labelsize=fs_ticks)
+            else:
+                ax[i].axes.xaxis.set_visible(False)
+                ax[i].tick_params(axis='y', labelsize=fs_ticks)
+               
+
     #Plot vertex K1
     elif(typ[0:2] == "K1"):    
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=size_twocols)
         sup_indices = ['R', 'K']
         r = typ[2]
         pfs = [-1, +1]
@@ -336,24 +386,26 @@ def plot_fRG(typ, iK, filenames, labels, NRG_info, inset):
 
 
 
-def plot_fRG_V_runs(typ, iK, filenames, U_NRG, labels, run, kind):
+def plot_fRG_V_runs(typ, iK, filenames, NRG_info, labels, run, kind):
     if (typ == "self" and iK ==0) or (typ=='A'):
         inset = True
     else:
         inset = False
+        
+    U_NRG = NRG_info[0]
+    path_NRG = NRG_info[1]
     
     U_to_ins_ylim  = {0.1: 0.0001, 0.5:0.003, 1:0.008, 1.5: 0.02, 2:0.05, 2.5:0.07, 2.9:0.1, 3:0.1}
     U_str = "%.1f" % (2*U_NRG)
 
     
-    color_dic = {'K1' : 'tab:blue', 'K1_sf' : 'tab:orange', 'K2_1L' : 'tab:green', 'K2_2L' : 'tab:red'}
+    color_dic = {'K1' : cm.Blues, 'K1_sf' : cm.Oranges, 'K2_1L' : cm.Greens, 'K2_2L' : cm.Reds}
     title_dic = {'K1' : r'$\mathcal{K}_1$ -- ' + kind,\
                  'K1_sf' : r'$\mathcal{K}_1$ -sf -- ' + kind,\
                  'K2_1L' : r'$\mathcal{K}_2$ 1-L -- ' + kind,\
-                 'K2_2L' : r'$\mathcal{K}_2$ 2-loop -- '+'$U/\Delta= '+U_str+'$\n $\quad$'+ kind}
-    c = color_dic[run]
+                 'K2_2L' : r'$\mathcal{K}_2$ 2-loop '+'\n$U/\Delta= '+U_str+'$'}
     
-    styles = ['solid', 'dashed', 'dashdot', 'dotted', ' ', '']
+    c = color_dic[run](np.linspace(0.3,1, len(filenames)))
     
     Delta_NRG = 0.5
     
@@ -366,37 +418,63 @@ def plot_fRG_V_runs(typ, iK, filenames, U_NRG, labels, run, kind):
     
     K1_dic = {'K1a': K1a, 'K1p': K1p, 'K1t': K1t}
     
-    fs = 26 # font size
-    fs_leg = fs - 2
-    fs_ticks = fs-2
-    fs_ins = fs_leg
+    fs = 40 # font size
+    fs_leg = 28
+    fs_ticks = 36
+    fs_ins = 20
+    plt.rcParams['legend.title_fontsize'] = 34
     
-    lw=3
+    size_a = (15,5)
+    size_twocols = (15,5)
     
-    plt.rcParams['legend.title_fontsize'] = fs-2
+    lw = 4 #linewidth
     
+    lw_a = 3
+    fs_a = 26 # font size
+    fs_leg_a = 18
+    fs_ticks_a = fs-4
+    fs_ins_a = fs_leg_a
+
+    
+    ls = ['dashed', 'dotted', '-.']
+    
+    temp_dic_U05 = {0: 0.01, 1: 0.05, 2: 0.5}
+    temp_dic_U15 = {0: 0.01, 1: 0.15, 2: 1.5}
+    temp_dic_U25 = {0: 0.01, 1: 0.25, 2: 2.5}
+    
+    temp_dic = {0.5: temp_dic_U05, 1.5: temp_dic_U15, 2.5: temp_dic_U25}
+        
     #Plot spectral funciton
     if(typ[0]=="A"):        
-        fig, ax = plt.subplots(figsize=(15, 5))
-
-        for i in range(len(filenames)):
-            ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], linestyle=styles[i], label=labels[i], color=c, linewidth=lw)
+        fig, ax = plt.subplots(figsize=size_a)
+        plt.rcParams['legend.title_fontsize'] = 24
+        for i in range(len(filenames)):        
+            ax.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], color=c[i], linewidth=lw_a)
+        if kind == 'T/U':
+            for i in range(len(filenames)):
+                T = temp_dic[U_NRG][i]
+                Tstr = "%.2f" % T
+                _, w_NRG, Aimp, SE_re, SE_im, _, _, _, _, _, _ = load_SIAM_NRG_finite_T(U_NRG, T ,path_NRG)
+                ax.plot(2*w_NRG, Aimp*np.pi*0.5, linestyle=ls[i], label=Tstr + '--NRG', color='k', linewidth=lw_a*0.7)
             
         ax.hlines(1., -0.5, 0.5, linestyles='--')
-        ax.set_ylabel(r'$\mathcal{A}(\nu)\pi\Delta$', fontsize=fs)
+        ax.set_ylabel(r'$\mathcal{A}(\nu)\pi\Delta$', fontsize=fs_a)
         
         ax.set_ylim(-0.1, 1.15)
         ax.set_xlim(-5, 5)
-        ax.set_xlabel(r'$\nu/\Delta$', fontsize=fs)
-        ax.tick_params(axis='both', labelsize=fs_ticks)
-        
+       
                     
         if inset:
-            axins = zoomed_inset_axes(ax, 2.1, loc=2, borderpad = 4)
+            axins = zoomed_inset_axes(ax, 2.1, loc=2, borderpad = 4.5)
             axins.aspect='equal'
             axins.hlines(1., -0.5, 0.5, linestyles='--')
             for i in range(len(filenames)):
-                axins.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], linestyle=styles[i], label=labels[i], color=c, linewidth=lw)
+                T = temp_dic[U_NRG][i]
+                Tstr = "%.2f" % T
+                _, w_NRG, Aimp, SE_re, SE_im, _, _, _, _, _, _ = load_SIAM_NRG_finite_T(U_NRG, T ,path_NRG)
+                
+                axins.plot(v[i]/Delta[i], A[i]*np.pi*Delta[i], '.-', label=labels[i], color=c[i], linewidth=lw_a)
+                axins.plot(2*w_NRG, Aimp*np.pi*0.5, linestyle=ls[i], label=Tstr + '--NRG', color='k', linewidth=lw_a*0.7)
                 
             axins.set_ylim(0.9, 1.1)
             axins.set_yticks(np.linspace(0.9, 1.1, 3, endpoint=True))    
@@ -407,22 +485,54 @@ def plot_fRG_V_runs(typ, iK, filenames, U_NRG, labels, run, kind):
             plt.yticks(visible=True)
             mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
     
-        l = ax.legend(fontsize=fs_leg, title=title_dic[run])
+        if kind == 'T/U':
+            l = ax.legend(handles=[], title=title_dic[run], frameon=False)
+        else:
+            l = ax.legend(fontsize=fs_leg_a, title=title_dic[run], frameon=False, ncol=2)
         plt.setp(l.get_title(), multialignment='center')
+        
+
+        if U_NRG==2.5 or kind=='T/U':
+            ax.set_xlabel(r'$\nu/\Delta$', fontsize=fs_a)
+            ax.tick_params(axis='both', labelsize=fs_ticks_a)
+        else:
+            ax.axes.xaxis.set_visible(False)
+            ax.tick_params(axis='y', labelsize=fs_ticks_a)
     
     #Plot self energy, component iK
     elif(typ[0:4] == "self"):
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
-        
-        for i in range(len(filenames)):
-            ax[0].plot(v[i]/Delta[i], Sigma[i][iK].real/Delta[i], linestyle=styles[i], label=labels[i], color=c, linewidth=lw)
-            ax[1].plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], linestyle=styles[i], label=labels[i], color=c, linewidth=lw)            
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=size_twocols)
+            
+        if kind == 'T/U':
+            for i in range(len(filenames)):
+                ax[0].plot(v[i]/Delta[i], Sigma[i][iK].real/Delta[i], '.-', color=c[i], linewidth=lw)
+                ax[1].plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', color=c[i], linewidth=lw)
+            for i in range(len(filenames)):
+                T = temp_dic[U_NRG][i]
+                Tstr = "%.2f" % T
+                _, w_NRG, _, SE_re, SE_im, _, _, _, _, _, _ = load_SIAM_NRG_finite_T(U_NRG, T ,path_NRG)
+                Re_X_NRG = (SE_re - U_NRG / 2) / Delta_NRG
+                Im_X_NRG = SE_im / Delta_NRG
+                if iK == 1:
+                    Re_X_NRG = np.zeros(len(w_NRG/Delta_NRG))
+                    Im_X_NRG = generate_Keldysh_component( Im_X_NRG, w_NRG / Delta_NRG, T, stat=-1)
+            
+                ax[0].plot(w_NRG / Delta_NRG, Re_X_NRG, linestyle=ls[i], color='k', linewidth=lw_a*0.7)
+                ax[1].plot(w_NRG / Delta_NRG, Im_X_NRG, linestyle=ls[i], color='k', linewidth=lw_a*0.7)
+        else:
+            for i in range(len(filenames)):
+                ax[0].plot(v[i]/Delta[i], Sigma[i][iK].real/Delta[i], '.-', label=labels[i], color=c[i], linewidth=lw)
+                ax[1].plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], color=c[i], linewidth=lw)
             
         if inset:
             axins = zoomed_inset_axes(ax[1], 7, loc=4, borderpad=2.9)
             axins.aspect='equal'
             for i in range(len(filenames)):
-                axins.plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], linestyle=styles[i], label=labels[i], color=c, linewidth=lw)
+                axins.plot(v[i]/Delta[i], Sigma[i][iK].imag/Delta[i], '.-', label=labels[i], color=c[i], linewidth=lw)
+
+                _, w_NRG, _, _, SE_im, _, _, _, _, _, _ = load_SIAM_NRG_finite_T(U_NRG, 0.01 ,path_NRG)
+                Im_X_NRG = SE_im / Delta_NRG
+                axins.plot(w_NRG / Delta_NRG, Im_X_NRG, linestyle=ls[i], color='k', linewidth=lw_a*0.7)    
             try:
                 ylim = U_to_ins_ylim[U_NRG]
             except KeyError:
@@ -430,10 +540,11 @@ def plot_fRG_V_runs(typ, iK, filenames, U_NRG, labels, run, kind):
                 
                 
             axins.set_ylim(-ylim, 0.2*ylim)
-            axins.set_yticks(np.linspace(-ylim, 0, 2, endpoint=True))    
+            axins.set_yticks(np.linspace(-ylim, 0, 2, endpoint=True)) 
+            axins.yaxis.set_major_formatter(StrMethodFormatter('{x:,.2f}')) # One decimal place
             axins.set_xlim(-0.5, 0.5)    
             axins.set_xticks(np.linspace(-0.5, 0.5, 3, endpoint=True))
-            axins.tick_params(axis='both', labelsize=fs_ticks-4)
+            axins.tick_params(axis='both', labelsize=fs_ins)
 
             
             plt.xticks(visible=True)  # Present ticks
@@ -447,22 +558,37 @@ def plot_fRG_V_runs(typ, iK, filenames, U_NRG, labels, run, kind):
             ax[0].set_ylabel('$(\mathrm{Re}\Sigma^R-\Sigma^H)/\Delta$', fontsize=fs+2)
             ax[1].set_ylabel('$\mathrm{Im}\Sigma^R/\Delta$', fontsize=fs+2)
         else:
+            t = ax[0].yaxis.get_offset_text()
+            t.set_size(fs_leg)
             ax[0].set_ylabel('$\mathrm{Re}\Sigma^K/\Delta$', fontsize=fs+2)
             ax[1].set_ylabel('$\mathrm{Im}\Sigma^K/\Delta$', fontsize=fs+2)
-
+        
+        fig.tight_layout(pad=4)
             
         for i in range(2):
             ax[i].set_xlim(-20, 20)
-            ax[i].set_xlabel(r'$\nu/\Delta$', fontsize=fs+2)
-            ax[i].tick_params(axis='both', labelsize=fs_ticks)
-
-        l = ax[0].legend(title=title_dic[run], fontsize=fs_leg, loc='upper left')
-        plt.setp(l.get_title(), multialignment='center')
-        fig.tight_layout()
+            if U_NRG==2.5:
+                ax[i].set_xlabel(r'$\nu/\Delta$', fontsize=fs+2)
+                ax[i].tick_params(axis='both', labelsize=fs_ticks)
+            else:
+                ax[i].axes.xaxis.set_visible(False)
+                ax[i].tick_params(axis='y', labelsize=fs_ticks)
+                
+        if iK == 1:
+            ax[1].yaxis.set_major_formatter(StrMethodFormatter('{x:,.1f}')) # One decimal place
+        else:
+            ax[i].yaxis.set_major_formatter(StrMethodFormatter('{x:,.1f}')) # One decimal place
+                
+        if iK == 1:
+            t = ax[0].yaxis.get_offset_text()
+            t.set_size(fs_leg)
+            l = ax[0].legend(title=title_dic[run], fontsize=fs_leg, loc='upper left', ncol=2)
+            plt.setp(l.get_title(), multialignment='center')
+        
     
     #Plot susceptibilities
     elif(typ[0:4] == "susc"):    #susceptibility
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=size_twocols)
         sup_indices = ['R', 'K']
         pfs = [-1, +1]
         susc = typ[5:7]
