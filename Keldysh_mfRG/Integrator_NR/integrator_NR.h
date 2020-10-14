@@ -1,6 +1,7 @@
-//
-// Created by SAguirre on 3/08/2020.
-//
+/**
+ * Adaptive integration using 4-point Gauss-Lobatto rule with 7-point Gauss-Kronrod extension,
+ * and 13-point Gauss-Kronrod as error estimate.
+ */
 
 #ifndef KELDYSH_MFRG_INTEGRATOR_NR_H
 #define KELDYSH_MFRG_INTEGRATOR_NR_H
@@ -8,108 +9,142 @@
 #include <limits>
 #include "../data_structures.h"
 
-template<typename Integrand>
+template <typename Integrand>
 struct Adapt {
 public:
-    double TOL, toler;
-    const double EPS = std::numeric_limits<double>::epsilon();
-    static const double alpha, beta, x1, x2, x3, x[12];
-    bool terminate, out_of_toler;
-    const Integrand& integrand;
+    double TOL, tolerance; // relative tolerance
+    const double EPS = std::numeric_limits<double>::epsilon();  // machine precision, used as absolute tolerance
+    static const double alpha, beta, x1, x2, x3, nodes[12];     // relative positions of Gauss-Kronrod nodes
+    const Integrand& integrand;                                 // integrand, needs call operator returning a comp
 
-    Adapt(double tol_in, const Integrand& integrand_in)
-    : TOL(tol_in), integrand(integrand_in), terminate(true), out_of_toler(false){
-        if(TOL<10.*EPS){
-            TOL = 10.*EPS;
-        }
+    Adapt(double tol_in, const Integrand& integrand_in) : TOL(tol_in), integrand(integrand_in) {
+        if (TOL < 10.*EPS)  // if absolute tolerance is smaller than 10 * machine precision,
+            TOL = 10.*EPS;  // set it to 10 * machine precision
     }
 
-
+    /** Integrate integrand from a to b. */
     auto integrate(const double a, const double b) -> comp;
-
-    auto adaptlob(const double a, const double b, const comp fa, const comp fb, const comp is) -> comp;
-
+    /** Helper function for recursion: Integrate integrand in subinterval [a, b],
+     *  reusing the boundary values fa, fb and given error estimate is. */
+    auto integrate(const double a, const double b, const comp fa, const comp fb, const comp is) -> comp;
 };
 
+/** 4-point Gauss-Lobatto rule */
+inline auto Gauss_Lobatto_4(double h, comp f1, comp f2, comp f3, comp f4) -> comp {
+    return (h / 6.0) * (f1 + f4 + 5.0 * (f2 + f3));
+}
+/** 7-point Gauss-Kronrod rule */
+inline auto Gauss_Kronrod_7(double h, comp f1, comp f2, comp f3, comp f4, comp f5, comp f6, comp f7) -> comp {
+    return (h / 1470.0) * (77.0 * (f1 + f7)
+                        + 432.0 * (f2 + f6)
+                        + 625.0 * (f3 + f5)
+                        + 672.0 *  f4);
+}
+/** 13-point Gauss-Kronrod rule */
+inline auto Gauss_Kronrod_13(double h, comp f1, comp f2, comp f3, comp f4, comp f5, comp f6, comp f7,
+                             comp f8, comp f9, comp f10, comp f11, comp f12, comp f13) -> comp {
+    return h * (0.0158271919734802 * (f1 + f13)
+              + 0.0942738402188500 * (f2 + f12)
+              + 0.155071987336585  * (f3 + f11)
+              + 0.188821573960182  * (f4 + f10)
+              + 0.199773405226859  * (f5 + f9)
+              + 0.224926465333340  * (f6 + f8)
+              + 0.242611071901408  *  f7);
+}
 
 template <typename Integrand>
 auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
-    double m, h, erri1, erri2, r;
-    m = 0.5*(b+a);
-    h = 0.5*(b-a);
+    double m, h, err_i1, err_i2, r, x[13];
+    comp i1, i2, is, f[13];
 
-    comp fa, fb, i1, i2, is, y[13];
-    fa = integrand(a);
-    fb = integrand(b);
+    m = 0.5*(b+a);  // center of the interval
+    h = 0.5*(b-a);  // half width of the interval
 
-    y[0] = fa;
-    y[12]=fb;
-    for(int i = 1; i<12; i++){
-        y[i] = integrand(m + x[i]*h);
+    x[0]  = a;  // left boundary
+    x[12] = b;  // right boundary
+    f[0]  = integrand(x[0]);  // value at the left boundary
+    f[12] = integrand(x[12]);  // value at the right boundary
+
+    for (int i=1; i<12; i++) {
+        x[i] = m + nodes[i] * h;  // positions of the 13 Gauss-Kronrod nodes
+        f[i] = integrand(x[i]);   // integrand values at the 13 Gauss-Kronrod nodes
     }
-    i2 =(h/6.0)*(y[0]+y[12]+5.0*(y[4]+y[8]));                                           //4-pt Gaus-Lobatto formula
-    i1 =(h/1470.0)*(77.0*(y[0]+y[12])+432.0*(y[2]+y[10])+
-                 625.0*(y[4]+y[8])+672.0*y[6]);                                         //7-pt Kronrod extension
-    is=h*(0.0158271919734802*(y[0]+y[12])+0.0942738402188500*(y[1]+y[11])+0.155071987336585*(y[2]+y[10])+
-          0.188821573960182*(y[3]+y[9])+0.199773405226859*(y[4]+y[8])+0.224926465333340*(y[5]+y[7])
-          + 0.242611071901408*y[6]);                                                    //13-pt Kronrod extension
 
-    erri1=abs(i1-is);
-    erri2=abs(i2-is);
+    // use 4-point Gauss-Lobatto rule as a first estimate
+    i1 = Gauss_Lobatto_4(h, f[0], f[4], f[8], f[12]);
 
-    r=(erri2 != 0.0) ? erri1/erri2 : 1.0;
-    toler=(r > 0.0 && r < 1.0) ? TOL/r : TOL;
+    // use 7-point Gauss-Kronrod rule as a second estimate
+    i2 = Gauss_Kronrod_7(h, f[0], f[2], f[4], f[6], f[8], f[10], f[12]);
 
-    if(is == (comp)0.){
+    // use 13-point Gauss-Kronrod rule as error estimate
+    is = Gauss_Kronrod_13(h, f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8], f[9], f[10], f[11], f[12]);
+
+    err_i1 = abs(i1 - is);  // error of first estimate compared to 13-point Gauss-Kronrod
+    err_i2 = abs(i2 - is);  // error of second estimate compared to 13-point Gauss-Kronrod
+
+    // scale tolerance: if error of i2 is smaller than error of i1 (integral is converging), increase tolerance.
+    r = (err_i1 != 0.0) ? err_i2/err_i1 : 1.0;          // scaling factor r
+    tolerance = (r > 0.0 && r < 1.0) ? TOL / r : TOL;   // if 0 < r < 1, increase relative tolerance by factor 1/r
+
+    // if error estimate is zero, set to interval width to avoid infinite recursion
+    if (is == (comp)0.)
         is = (comp)(b-a);
-    }
+
+    // use absolute value of error estimate
     is = (comp)(fabs(is));
 
-    return adaptlob(a, b, fa, fb, is);
-
+    // if difference between first and second estimate is already smaller than absolute or relative tolerance,
+    // return second estimate, else subdivide interval
+    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)))
+        return i2;
+    else
+        return integrate(x[0],  x[2],  f[0],  f[2],  is)  // subdivide interval
+             + integrate(x[2],  x[4],  f[2],  f[4],  is)
+             + integrate(x[4],  x[6],  f[4],  f[6],  is)
+             + integrate(x[6],  x[8],  f[6],  f[8],  is)
+             + integrate(x[8],  x[10], f[8],  f[10], is)
+             + integrate(x[10], x[12], f[10], f[12], is);
 }
 
 template <typename Integrand>
-auto Adapt<Integrand>::adaptlob(const double a, const double b, const comp fa, const comp fb, const comp is) -> comp{
+auto Adapt<Integrand>::integrate(const double a, const double b, const comp fa, const comp fb, const comp is) -> comp{
 
-    double m, h, mll, ml, mr, mrr;
-    comp fmll, fml, fm, fmr, fmrr, i1, i2;
+    double m, h, x[5];
+    comp i1, i2, f[5];
+    //double m, h, mll, ml, mr, mrr;
+    //comp fmll, fml, fm, fmr, fmrr, i2, i1;
 
-    m=0.5*(a+b);
-    h=0.5*(b-a);
-    mll=m-alpha*h;
-    ml=m-beta*h;
-    mr=m+beta*h;
-    mrr=m+alpha*h;
+    m = 0.5*(a+b);  // center of the interval
+    h = 0.5*(b-a);  // half width of the interval
 
-    fmll = integrand(mll);
-    fml = integrand(ml);
-    fm = integrand(m);
-    fmr = integrand(mr);
-    fmrr = integrand(mrr);
+    // positions of the Gauss-Kronrod nodes
+    x[0] = m - alpha * h;
+    x[1] = m - beta * h;
+    x[2] = m;
+    x[3] = m + beta * h;
+    x[4] = m + alpha * h;
 
-    i2=h/6.0*(fa+fb+5.0*(fml+fmr));                                             //4-pt Gauss-Lobatte formula
-    i1=h/1470.0*(77.0*(fa+fb)+432.0*(fmll+fmrr)+625.0*(fml+fmr)+672.0*fm);      //7-pt Kronrod extension
+    for (int i=0; i<4; ++i)
+        f[i] = integrand(x[i]);  // integrand values at the Gauss-Kronrod nodes
 
-    if(abs(i1-i2)<= max(EPS, toler*fabs(is)) || mll <= a || b<= mrr){
-        if((mll <= a || b <= mrr) && terminate){
-            out_of_toler = true;
-            terminate = false;
-        }
-        return i1;
-    }
-    else {
-        return adaptlob(a,mll,fa,fmll,is)+                         // Subdivide interval
-               adaptlob(mll,ml,fmll,fml,is)+
-               adaptlob(ml,m,fml,fm,is)+
-               adaptlob(m,mr,fm,fmr,is)+
-               adaptlob(mr,mrr,fmr,fmrr,is)+
-               adaptlob(mrr,b,fmrr,fb,is);
-    }
+    // first and second estimate using 4-point Gauss-Lobatto and 7-point Gauss-Kronrod
+    i1 = Gauss_Lobatto_4(h, fa, f[1], f[3], fb);
+    i2 = Gauss_Kronrod_7(h, fa, f[0], f[1], f[2], f[3], f[4], fb);
 
+    // if difference between first and second estimate is smaller than absolute or relative tolerance,
+    // or nodes lie outside the interval, return second estimate, else subdivide interval
+    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)) || x[0] < a || b < x[4])
+        return i2;
+    else
+        return integrate(a,    x[0], fa,   f[0], is)  // subdivide interval
+             + integrate(x[0], x[1], f[0], f[1], is)
+             + integrate(x[1], x[2], f[1], f[2], is)
+             + integrate(x[2], x[3], f[2], f[3], is)
+             + integrate(x[3], x[4], f[3], f[4], is)
+             + integrate(x[4], b,    f[4], fb,   is);
 }
 
-
+// relative positions of Gauss-Kronrod nodes
 template <typename Integrand>
 const double Adapt<Integrand>::alpha = sqrt(2./3.);
 template <typename Integrand>
@@ -121,7 +156,7 @@ const double Adapt<Integrand>::x2 = 0.641853342345781;
 template <typename Integrand>
 const double Adapt<Integrand>::x3 = 0.236383199662150;
 template <typename Integrand>
-const double Adapt<Integrand>::x[12]={0,-x1,-alpha,-x2,-beta,-x3,0.0,x3,beta,x2,alpha,x1};
+const double Adapt<Integrand>::nodes[12] = {0, -x1, -alpha, -x2, -beta, -x3, 0.0, x3, beta, x2, alpha, x1};
 
 
 #endif //KELDYSH_MFRG_INTEGRATOR_NR_H
