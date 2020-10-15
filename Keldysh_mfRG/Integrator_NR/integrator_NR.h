@@ -124,7 +124,7 @@ auto Adapt<Integrand>::integrate(const double a, const double b, const comp fa, 
     x[3] = m + beta * h;
     x[4] = m + alpha * h;
 
-    for (int i=0; i<4; ++i)
+    for (int i=0; i<5; ++i)
         f[i] = integrand(x[i]);  // integrand values at the Gauss-Kronrod nodes
 
     // first and second estimate using 4-point Gauss-Lobatto and 7-point Gauss-Kronrod
