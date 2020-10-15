@@ -64,10 +64,10 @@ const double glb_w_lower = -glb_w_upper;
 const double glb_v_upper = 50.;
 const double glb_v_lower = -glb_v_upper;
 
-const double glb_W2_scale = 2.;
-const double glb_w2_upper = 20.;
+const double glb_W2_scale = 4.;
+const double glb_w2_upper = 40.;
 const double glb_w2_lower = -glb_w2_upper;
-const double glb_v2_upper = 20.;
+const double glb_v2_upper = 40.;
 const double glb_v2_lower = -glb_v2_upper;
 
 const double glb_W3_scale = 1.;
@@ -219,7 +219,7 @@ rvec flow_grid(nODE);                                                           
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 2
 
 //If defined, the flow of the self_energy is symmetrized, closed above and below
 //#define SYMMETRIZED_SELF_ENERGY_FLOW
