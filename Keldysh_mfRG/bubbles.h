@@ -343,7 +343,7 @@ public:
         rvec Pival_re (nFER);
         rvec Pival_im (nFER);
         for (int i=0; i<nFER; ++i) {
-            double vpp = vertex1[0].avertex.frequencies.f_K1[i];
+            double vpp = vertex1[0].avertex.frequencies.b_K1.w[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -353,7 +353,6 @@ public:
             Pival_im[i] = Pival.imag();
         }
 
-
         string filename = "integrand_K1";
         filename += channel;
         filename += "_i0=" + to_string(i0)
@@ -361,7 +360,7 @@ public:
                   + "_w=" + to_string(w) + ".h5";
         write_h5_rvecs(filename,
                 {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
-                {vertex1[0].avertex.frequencies.f_K1, integrand_re, integrand_im, Pival_re, Pival_im});
+                {vertex1[0].avertex.frequencies.b_K1.w, integrand_re, integrand_im, Pival_re, Pival_im});
     }
 
 };
@@ -458,6 +457,39 @@ public:
         }
         return res;
     }
+
+    void save_integrand() const {
+        int npoints = 1000;
+        rvec freqs (npoints);
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        rvec Pival_re (npoints);
+        rvec Pival_im (npoints);
+        for (int i=0; i<npoints; ++i) {
+            double wl = vertex1[0].avertex.frequencies.f_K2.w_lower;
+            double wu = vertex1[0].avertex.frequencies.f_K2.w_upper;
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            freqs[i] = vpp;
+
+            Q integrand_value = (*this)(vpp);
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+
+            Q Pival = Pi.value(i2, w, vpp, i_in, channel);
+            Pival_re[i] = Pival.real();
+            Pival_im[i] = Pival.imag();
+        }
+
+        string filename = "integrand_K2";
+        filename += channel;
+        filename += "_i0=" + to_string(i0)
+                    + "_i2=" + to_string(i2)
+                    + "_w=" + to_string(w) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
+                       {freqs, integrand_re, integrand_im, Pival_re, Pival_im});
+    }
+
 };
 template <typename Q> class Integrand_K3 {
     const Vertex<Q>& vertex1;
