@@ -22,12 +22,14 @@ double grid_transf(double w, double W_scale);
 double grid_transf_inv(double w, double W_scale);
 
 class FrequencyGrid {
+    char type;
+    unsigned int diag_class;
 public:
     int N_w;
     double w_upper, w_lower, W_scale;
     rvec w;
 
-    FrequencyGrid(char type, unsigned int diag_class) {
+    FrequencyGrid(char type_in, unsigned int diag_class_in) : type(type_in), diag_class(diag_class_in) {
         switch (type) {
             case 'b':
                 switch (diag_class) {
@@ -82,16 +84,23 @@ public:
     };
 
     FrequencyGrid(char type, unsigned int diag_class, double Lambda) : FrequencyGrid(type, diag_class) {
-        w_upper *= (1. + Lambda / glb_Gamma);
-        w_lower *= (1. + Lambda / glb_Gamma);
-        W_scale *= (1. + Lambda / glb_Gamma);
+        w_upper *= scale_factor(Lambda);
+        w_lower *= scale_factor(Lambda);
+        W_scale *= scale_factor(Lambda);
         initialize_grid();
     };
 
+    auto scale_factor(double Lambda) -> double;
     void initialize_grid();
     void rescale_grid(double Lambda1, double Lambda2);
     auto fconv(double w_in) const -> int;
 };
+
+auto FrequencyGrid::scale_factor(double Lambda) -> double {
+    double exponent = 1.;
+    if (diag_class == 2) exponent = 0.7;
+    return pow((1. + Lambda / glb_Gamma), exponent);
+}
 
 void FrequencyGrid::initialize_grid() {
     double W;
@@ -106,9 +115,9 @@ void FrequencyGrid::initialize_grid() {
 }
 
 void FrequencyGrid::rescale_grid(double Lambda1, double Lambda2) {
-    w_upper *= (1. + Lambda2 / glb_Gamma) / (1. + Lambda1 / glb_Gamma);
-    w_lower *= (1. + Lambda2 / glb_Gamma) / (1. + Lambda1 / glb_Gamma);
-    W_scale *= (1. + Lambda2 / glb_Gamma) / (1. + Lambda1 / glb_Gamma);
+    w_upper *= scale_factor(Lambda2) / scale_factor(Lambda1);
+    w_lower *= scale_factor(Lambda2) / scale_factor(Lambda1);
+    W_scale *= scale_factor(Lambda2) / scale_factor(Lambda1);
     initialize_grid();
 }
 
