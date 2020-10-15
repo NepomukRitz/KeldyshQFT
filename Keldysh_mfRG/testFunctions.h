@@ -11,6 +11,7 @@
 #include "hdf5_routines.h"          // writing states to hdf5 file
 #include "perturbation_theory.h"
 
+// TODO: remove glb_w_lower
 
 /**
  * Function that checks causality of self-energy: Im(Sigma^R)<=0.
