@@ -15,6 +15,7 @@
 #include "parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
 
 // TODO: implement new grid also for GRID=1,2,4
+// TODO: comment!
 
 using namespace std;
 
@@ -92,14 +93,13 @@ public:
 
     auto scale_factor(double Lambda) -> double;
     void initialize_grid();
+    void initialize_grid(double scale);
     void rescale_grid(double Lambda1, double Lambda2);
     auto fconv(double w_in) const -> int;
 };
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
-    double exponent = 1.;
-    if (diag_class == 2) exponent = 0.7;
-    return pow((1. + Lambda / glb_Gamma), exponent);
+    return (1. + Lambda / glb_Gamma);
 }
 
 void FrequencyGrid::initialize_grid() {
@@ -112,6 +112,13 @@ void FrequencyGrid::initialize_grid() {
         w[i] = grid_transf_inv(W, W_scale);
     }
     w[(int)N_w/2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+}
+
+void FrequencyGrid::initialize_grid(double scale) {
+    W_scale = scale;
+    w_upper = scale * 15.;
+    w_lower = - w_upper;
+    initialize_grid();
 }
 
 void FrequencyGrid::rescale_grid(double Lambda1, double Lambda2) {
@@ -161,94 +168,6 @@ public:
 };
 
 
-//class Frequencies {
-//public:
-//    vec<rvec> w_upper {{glb_w_upper, glb_w2_upper, glb_w3_upper},
-//                       {glb_v_upper, glb_v2_upper, glb_v3_upper}};
-//    vec<rvec> w_lower {{glb_w_lower, glb_w2_lower, glb_w3_lower},
-//                       {glb_v_lower, glb_v2_lower, glb_v3_lower}};
-//    rvec W_scale {glb_W_scale, glb_W2_scale, glb_W3_scale};
-//    vec<vec<int> > N_w = {{nBOS, nBOS2, nBOS3},
-//                          {nFER, nFER2, nFER3}};
-//
-//    rvec w = rvec (nBOS);
-//    rvec v = rvec (nFER);
-//#if DIAG_CLASS >= 2
-//    rvec w2 = rvec (nBOS2);
-//    rvec v2 = rvec (nFER2);
-//#endif
-//#if DIAG_CLASS >= 3
-//    rvec w3 = rvec (nBOS3);
-//    rvec v3 = rvec (nFER3);
-//#endif
-//
-//    Frequencies(double Lambda) {
-//        for (int i=0; i<2; ++i) {
-//            w_upper[i] *= (1. + Lambda / glb_Gamma);
-//            w_lower[i] *= (1. + Lambda / glb_Gamma);
-//        }
-//        W_scale *= (1. + Lambda/glb_Gamma);
-//        initialize_grid();
-//    }
-//
-//    auto fconv (double w_in, unsigned int type, unsigned int diag_class) const -> int;
-//
-//    void initialize_grid();
-//    void initialize_grid(rvec& freqs, unsigned int type, unsigned int diag_class);
-//    void rescale_grid(double Lambda1, double Lambda2);
-//
-//};
-//
-//void Frequencies::initialize_grid() {
-//    initialize_grid(w, 0, 1);
-//    initialize_grid(v, 1, 1);
-//#if DIAG_CLASS >= 2
-//    initialize_grid(w2, 0, 2);
-//    initialize_grid(v2, 1, 2);
-//#endif
-//#if DIAG_CLASS >= 3
-//    initialize_grid(w3, 0, 3);
-//    initialize_grid(v3, 1, 3);
-//#endif
-//}
-//
-///**
-// * Initialize a frequency grid vector based on parameters in Frequency class.
-// * @param freqs      : frequency grid vector to be initialized
-// * @param type       : 0 = bosonic frequencies, 1 = fermionic frequencies
-// * @param diag_class : diagrammatic class: 1 = K1, 2 = K2, 3 = K3
-// */
-//void Frequencies::initialize_grid(rvec &freqs, unsigned int type, unsigned int diag_class) {
-//    diag_class -= 1; // to go from diag. classes K(1,2,3) to C++ indices (0,1,2).
-//    double W;
-//    double W_upper = grid_transf(w_upper[type][diag_class], W_scale[diag_class]);
-//    double W_lower = grid_transf(w_lower[type][diag_class], W_scale[diag_class]);
-//    double dW = (W_upper - W_lower) / ((double) (N_w[type][diag_class] - 1.));
-//    for(int i=0; i<N_w[type][diag_class]; ++i) {
-//        W = W_lower + i*dW;
-//        freqs[i] = grid_transf_inv(W, W_scale[diag_class]);
-//    }
-//}
-//
-//void Frequencies::rescale_grid(double Lambda1, double Lambda2) {
-//    for (int i=0; i<2; ++i) {
-//        w_upper[i] *= (1. + Lambda2 / glb_Gamma) / (1. + Lambda1 / glb_Gamma);
-//        w_lower[i] *= (1. + Lambda2 / glb_Gamma) / (1. + Lambda1 / glb_Gamma);
-//    }
-//    W_scale *= (1. + Lambda2 / glb_Gamma) / (1. + Lambda1 / glb_Gamma);
-//    initialize_grid();
-//}
-//
-//auto Frequencies::fconv(double w_in, unsigned int type, unsigned int diag_class) const -> int {
-//    diag_class -= 1; // to go from diag. classes K(1,2,3) to C++ indices (0,1,2).
-//    double W = grid_transf(w_in, W_scale[diag_class]);
-//    double W_upper = grid_transf(w_upper[type][diag_class], W_scale[diag_class]);
-//    double W_lower = grid_transf(w_lower[type][diag_class], W_scale[diag_class]);
-//    double dW = (W_upper - W_lower)/((double)(N_w[type][diag_class] - 1.));
-//    W = (W - W_lower)/dW;
-//    auto index = (int)W;
-//    return index;
-//}
 
 
 // Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h

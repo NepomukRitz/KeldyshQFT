@@ -64,10 +64,10 @@ const double glb_w_lower = -glb_w_upper;
 const double glb_v_upper = 50.;
 const double glb_v_lower = -glb_v_upper;
 
-const double glb_W2_scale = 4.;
-const double glb_w2_upper = 40.;
+const double glb_W2_scale = 1.;
+const double glb_w2_upper = 15.;
 const double glb_w2_lower = -glb_w2_upper;
-const double glb_v2_upper = 40.;
+const double glb_v2_upper = 15.;
 const double glb_v2_lower = -glb_v2_upper;
 
 const double glb_W3_scale = 1.;

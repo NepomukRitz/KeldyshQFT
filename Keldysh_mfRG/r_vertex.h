@@ -62,6 +62,12 @@ public:
      */
     void update_grid(double Lambda1, double Lambda2);
 
+    /**
+     * Determine peak width of "data" as a function of frequency by checking at which frequency the values have
+     * decayed to ~max(data)/decay.
+     */
+    auto width(rvec& data, FrequencyGrid& freqs, double decay) -> double;
+
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >= 0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
@@ -100,6 +106,12 @@ public:
      *                    map between channels a <--> t.
      */
     auto K1_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+
+    /**
+     * Determine the width of the central feature of the K1 vertex in frequency space at which absolute values have
+     * decayed to ~1/decay of the maximum value max(abs(K1)). Average over Keldysh index and internal indices.
+     */
+    auto width_K1(double decay) -> double;
 
 
 #endif
@@ -152,6 +164,13 @@ public:
      *                    map between channels a <--> t.
      */
     auto K2b_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+
+    /**
+     * Determine the widths of the central feature of the K2 vertex in frequency space in w- and v-direction,
+     * at which absolute values have decayed to ~1/decay of the maximum value max(abs(K2)).
+     * Average over Keldysh index and internal indices and v (w) frequencies for w (v) direction.
+     */
+    auto width_K2(double decay) -> tuple<double, double>;
 
 #endif
 #if DIAG_CLASS >= 3
@@ -382,9 +401,15 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 }
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2) {
+    double decay = 10.; // decay parameter // TODO: should be fixed or defined globally
+
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
-    frequencies_new.rescale_grid(Lambda1, Lambda2);           // rescale new frequency grid
+    //frequencies_new.rescale_grid(Lambda1, Lambda2);           // rescale new frequency grid  //TODO: remove if unnecessary
 #if DIAG_CLASS >= 1
+    double widthK1 = width_K1(decay); // determine width of central K1 feature in frequency space
+    if (widthK1 > 0)
+        frequencies_new.b_K1.initialize_grid(widthK1); // use peak width to scale new frequency grid
+
     vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
     for (int iK1=0; iK1<nK_K1; ++iK1) {
         for (int iw=0; iw<nw1; ++iw) {
@@ -398,6 +423,13 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2)
     this->K1 = K1_new; // update vertex to new interpolated values
 #endif
 #if DIAG_CLASS >= 2
+    auto widthK2 = width_K2(decay); // determine widths of central K1 feature in frequency space
+    // use peak width to scale new frequency grid, independently for w- and v-grid
+    if (get<0>(widthK2) > 0)
+        frequencies_new.b_K2.initialize_grid(get<0>(widthK2));
+    if (get<1>(widthK2) > 0)
+        frequencies_new.f_K2.initialize_grid(get<1>(widthK2));
+
     vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
     for (int iK2=0; iK2<nK_K2; ++iK2) {
         for (int iw=0; iw<nw2; ++iw) {
@@ -438,6 +470,18 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2)
     this->K3 = K3_new; // update vertex to new interpolated values
 #endif
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
+}
+
+template <typename Q> auto rvert<Q>::width(rvec& data, FrequencyGrid& freqs, double decay) -> double {
+    auto maxval = *max_element(begin(data), end(data)); // maximum value of analyzed data
+    // scan through data values, starting at the tail at w = w_lower
+    for (int i=0; i<data.size(); ++i) {
+        // determine "onset" of the central peak by data exceeding 1/decay of the maximum value,
+        // use the absolute value of the corresponding frequency as peak width
+        if (data[i] > maxval/decay)
+            return abs(freqs.w[i]);
+    }
+    return 0.;
 }
 
 #if DIAG_CLASS >= 0
@@ -483,6 +527,19 @@ template <typename Q> auto rvert<Q>::K1_valsmooth(VertexInput input, const rvert
     if (indices.conjugate) return conj(interpolateK1(indices, *(this))); // conjugation only in t-channel --> no flip necessary
     if (indices.channel != channel) return interpolateK1(indices, vertex_in);
     return interpolateK1(indices, *(this));
+}
+
+template <typename Q> auto rvert<Q>::width_K1(double decay) -> double {
+    rvec b_K1 (nw1); // temporary vector for averaged data
+    // average K1 over Keldysh and internal indices
+    for (int iK=0; iK<nK_K1; ++iK) {
+        for (int iw=0; iw<nw1; ++iw) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                b_K1[iw] += abs(K1_val(iK, iw, i_in)); // take the absolute value
+            }
+        }
+    }
+    return width(b_K1, frequencies.b_K1, decay); // determine the width of the averaged data
 }
 #endif
 
@@ -564,6 +621,25 @@ template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input, const rver
 
     if (indices.conjugate) return conj(valueK2);
     return valueK2;
+}
+
+template <typename Q> auto rvert<Q>::width_K2(double decay) -> tuple<double, double> {
+    rvec b_K2 (nw2); // temporary vector for averaged data in w-direction, averaged over v
+    rvec f_K2 (nv2); // temporary vector for averaged data in v-direction, averaged over w
+    // average K2 over Keldysh and internal indices and frequencies
+    for (int iK=0; iK<nK_K2; ++iK) {
+        for (int iw=0; iw<nw2; ++iw) {
+            for (int iv=0; iv<nv2; ++iv) {
+                for (int i_in=0; i_in<n_in; ++i_in) {
+                    b_K2[iw] += abs(K2_val(iK, iw, iv, i_in)); // take the absolute value
+                    f_K2[iv] += abs(K2_val(iK, iw, iv, i_in));
+                }
+            }
+        }
+    }
+    // determine the width of the averaged data in w- and v-direction
+    return make_tuple(width(b_K2, frequencies.b_K2, decay),
+                      width(f_K2, frequencies.f_K2, decay));
 }
 #endif
 
