@@ -423,7 +423,9 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2)
     this->K1 = K1_new; // update vertex to new interpolated values
 #endif
 #if DIAG_CLASS >= 2
-    auto widthK2 = width_K2(decay); // determine widths of central K1 feature in frequency space
+    auto widthK2 = 2 * width_K2(decay); // determine widths of central K1 feature in frequency space
+                                        // factor 2 due to strong differences between different Keldysh components
+                                        // --> tails of all components should be included
     // use peak width to scale new frequency grid, independently for w- and v-grid
     if (get<0>(widthK2) > 0)
         frequencies_new.b_K2.initialize_grid(get<0>(widthK2));
