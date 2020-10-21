@@ -170,7 +170,7 @@ public:
      * at which absolute values have decayed to ~1/decay of the maximum value max(abs(K2)).
      * Average over Keldysh index and internal indices and v (w) frequencies for w (v) direction.
      */
-    auto width_K2(double decay) -> tuple<double, double>;
+    auto width_K2(double decay) -> rvec;
 
 #endif
 #if DIAG_CLASS >= 3
@@ -423,14 +423,15 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2)
     this->K1 = K1_new; // update vertex to new interpolated values
 #endif
 #if DIAG_CLASS >= 2
-    auto widthK2 = width_K2(decay); // determine widths of central K1 feature in frequency space
-    // use peak width to scale new frequency grid, independently for w- and v-grid
+    auto widthsK2 = width_K2(decay); // determine widths of central K1 feature in frequency space
+    // use peak width to scale new frequency grid, use max of width in w- and v-direction
     // factor 2 due to strong differences between different Keldysh components
     // --> tails of all components should be included
-    if (get<0>(widthK2) > 0)
-        frequencies_new.b_K2.initialize_grid(2. * get<0>(widthK2));
-    if (get<1>(widthK2) > 0)
-        frequencies_new.f_K2.initialize_grid(2. * get<1>(widthK2));
+    if (widthsK2[0] > 0 || widthsK2[1] > 0) {
+        double widthK2 = 2. * max(widthsK2[0], widthsK2[1]);
+        frequencies_new.b_K2.initialize_grid(widthK2);
+        frequencies_new.f_K2.initialize_grid(widthK2);
+    }
 
     vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
     for (int iK2=0; iK2<nK_K2; ++iK2) {
@@ -625,7 +626,7 @@ template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input, const rver
     return valueK2;
 }
 
-template <typename Q> auto rvert<Q>::width_K2(double decay) -> tuple<double, double> {
+template <typename Q> auto rvert<Q>::width_K2(double decay) -> rvec {
     rvec b_K2 (nw2); // temporary vector for averaged data in w-direction, averaged over v
     rvec f_K2 (nv2); // temporary vector for averaged data in v-direction, averaged over w
     // average K2 over Keldysh and internal indices and frequencies
@@ -640,8 +641,8 @@ template <typename Q> auto rvert<Q>::width_K2(double decay) -> tuple<double, dou
         }
     }
     // determine the width of the averaged data in w- and v-direction
-    return make_tuple(width(b_K2, frequencies.b_K2, decay),
-                      width(f_K2, frequencies.f_K2, decay));
+    return rvec {width(b_K2, frequencies.b_K2, decay),
+                 width(f_K2, frequencies.f_K2, decay)};
 }
 #endif
 
