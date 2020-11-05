@@ -594,14 +594,16 @@ void readMatReal(string path, CMat& Mat, const int N1, const int N2) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // state class, which contains all vertices
+// Ip: vertex irreducible in parallel lines, corresponds to gamma_a, vertex reducible in antiparallel lines
+// Iap: vertex irreducible in antiparallel lines, corresponds to gamma_p, vertex reducible in parallel lines
 // move semantics as above, for different MODEs confer main
 
 class State {
 public:
 	CVertex Ip, Iap;   
 
-	CVec PiX, PiY;
-	CMat GammaCDX, GammaCDY;
+	CVec PiX, PiY; // irrel. for purely fermionic system 
+	CMat GammaCDX, GammaCDY; // irrel. for purely fermionic system 
 
 	State(); ~State();
 	State(const State&);
@@ -609,7 +611,7 @@ public:
 	State& operator=(const State&);
 	State operator+(const State&) const&;
 	State operator*(const double) const&;
-#ifndef NOMOVE
+#ifndef NOMOVE 
 	State& operator=(State&&);
 	State& operator+(const State&) &&;
 	State& operator+(State&&) const&;
@@ -617,28 +619,29 @@ public:
 	State& operator*(const double) &&;
 #endif
 
-	Cp getGX(const int) const;
-	Cp getGY(const int) const;
-	Cp getGammaCDX(const int, const int) const;
-	Cp getGammaCDY(const int, const int) const;
+	Cp getGX(const int) const; // irrel. for purely fermionic system 
+	Cp getGY(const int) const; // irrel. for purely fermionic system 
+	Cp getGammaCDX(const int, const int) const; // irrel. for purely fermionic system 
+	Cp getGammaCDY(const int, const int) const; // irrel. for purely fermionic system 
 	
-	void getCorr(CVec&) const;
+	void getCorr(CVec&) const; // get particle-hole susceptibility ("correlator") from vertices 
 	void getCorr(CVec&, const double) const;
-	void getCorrSD(CVec&) const;
-	void getCorrGamma3(CVec&) const;
+	void getCorrSD(CVec&) const; // irrel. for purely fermionic system 
+	void getCorrGamma3(CVec&) const; // irrel. for purely fermionic system 
 	void writeVec(string, const CVec&) const;
     void write(string) const;
 };
 
 State::State() : Ip(), Iap() {
 #if MODE>1
-	PiX = initCVec(NFREQ1); PiY = initCVec(NFREQ1);
-	GammaCDX = initCMat(NFREQ2, 2*NFREQ2, 1.); GammaCDY = initCMat(NFREQ2, 2*NFREQ2, 1.);
+	PiX = initCVec(NFREQ1); PiY = initCVec(NFREQ1); // irrel. for purely fermionic system 
+	GammaCDX = initCMat(NFREQ2, 2*NFREQ2, 1.); GammaCDY = initCMat(NFREQ2, 2*NFREQ2, 1.); // irrel. for purely fermionic system 
 #endif
 }
+
 State::State(const State& rhs) {
 	Ip = CVertex(rhs.Ip); Iap = CVertex(rhs.Iap);
-#if MODE>1
+#if MODE>1 // irrel. for purely fermionic system 
 	PiX = rhs.PiX; PiY = rhs.PiY;
 	GammaCDX = rhs.GammaCDX; GammaCDY = rhs.GammaCDY;
 #endif
@@ -646,7 +649,7 @@ State::State(const State& rhs) {
 State::~State() {}
 State& State::operator=(const State& rhs) {
 	Ip = rhs.Ip; Iap = rhs.Iap;
-#if MODE>1
+#if MODE>1 // irrel. for purely fermionic system 
 	PiX = rhs.PiX; PiY = rhs.PiY;
 	GammaCDX = rhs.GammaCDX; GammaCDY = rhs.GammaCDY;
 #endif
