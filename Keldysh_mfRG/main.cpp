@@ -25,6 +25,47 @@
 
 using namespace std;
 
+auto find_best_Lambda() -> double{
+
+    double tol = 1e-5;
+    bool done = false;
+    double Lambda = 20.;
+    double step = 3.;
+
+    vec<double> Lambdas;
+    vec<double> differences;
+
+    while(!done) {
+        State<comp> state_SOPT;   // create final and initial state
+        state_SOPT.initialize();             // initialize state
+        sopt_state(state_SOPT, Lambda);
+
+        Propagator G(Lambda, state_SOPT.selfenergy, 'g');
+
+        Vertex<comp> bethe_salpeter_L = calculate_Bethe_Salpeter_equation(state_SOPT.vertex, G, 'L');
+        Vertex<comp> bethe_salpeter_R = calculate_Bethe_Salpeter_equation(state_SOPT.vertex, G, 'R');
+        Vertex<comp> bethe_salpeter = (bethe_salpeter_L + bethe_salpeter_R) * 0.5;
+
+        Vertex<comp> diff = state_SOPT.vertex - bethe_salpeter;
+        double diff_norm = diff[0].norm_K1(2);
+
+        if(diff_norm < tol)
+            done = true;
+        else{
+            Lambda += step;
+        }
+        Lambdas.emplace_back(Lambda);
+        differences.emplace_back(diff_norm);
+        print("Current Lambda = " + to_string(Lambda), true);
+        print("Current error = " + to_string(diff_norm), true);
+    }
+
+    write_h5_rvecs("Lambda_finder.h5", {"Lambdas", "diffs"}, {Lambdas, differences});
+
+    return Lambda;
+
+}
+
 
 string generate_filename() {
     string klass = "K" + to_string(DIAG_CLASS) + "_";
@@ -58,30 +99,6 @@ string generate_filename() {
     return filename;
 }
 
-
-string output_filename_BSE_and_SDE() {
-    string klass = "K" + to_string(DIAG_CLASS);
-    string loops = "_" + to_string(N_LOOPS) + "LF";
-    string gamma = "_Gamma=" + to_string(glb_Gamma);
-    string voltage = "_V=" + to_string(glb_V);
-    string temp = "_T=" + to_string(glb_T);
-    string extension = ".h5";
-
-    string filename = "BSE_SDE_" + klass + loops;
-#if defined(STATIC_FEEDBACK)
-    filename += "_static";
-#endif
-    filename += gamma;
-    if(glb_V != 0.)
-        filename += voltage;
-    if(glb_T != 0.01)
-        filename += temp;
-    filename += extension;
-
-    return filename;
-}
-
-
 auto main() -> int {
 
 #ifdef MPI_FLAG
@@ -109,27 +126,22 @@ auto main() -> int {
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
 
-#ifdef BSE_SDE
-//    string dir = "/home/s/Sa.Aguirre/Downloads/Thesis/mfrg/Keldysh_mfRG/data_KCS/";
-    string dir = "/tmp/tmp.0oxEehg9jJ/Data/";
+    string dir = "../Data/";
     string filename = generate_filename();
 
-    print("Bethe-Salpteter run for file: " + filename, true);
+#ifdef BSE_SDE
+    print("Parquet-check for file: " + filename, true);
 
-    string outputFilename = output_filename_BSE_and_SDE();
-
-
-    check_BSE_and_SDE(dir, filename, outputFilename);
+    check_BSE_and_SDE(dir, filename);
 
     return 0;
 #else
 
-    //*
-    string dir = "../Data/";
-    string filename = generate_filename();
-
     n_loop_flow(dir+filename);
 
+//    double Lambda = find_best_Lambda();
+//
+//    cout << "Lambda = " << Lambda << " reduces the error in the first iteration to below 10^-5";
 
 #endif
 

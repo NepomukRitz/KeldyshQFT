@@ -265,7 +265,7 @@ public:
                 case 'a':                                                                       //Contributions: V*Pi*V
                     Pival = Pi.value(i2, vpp - w / 2., vpp + w / 2., i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
 
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = left_diff_bare<Q>(vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = vertex2[0].irred.val(indices[1], i_in, 0);
 
                     res = res_l_V * Pival * res_r_V;
@@ -273,7 +273,7 @@ public:
                 case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
                     Pival = Pi.value(i2, w / 2. + vpp, w / 2. - vpp, i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
 
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = left_diff_bare<Q>(vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = vertex2[0].irred.val(indices[1], i_in, 0);
 
                     res = res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
@@ -281,10 +281,10 @@ public:
                 case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
                     Pival = Pi.value(i2, vpp - w / 2., vpp + w / 2.,i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
 
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = left_diff_bare<Q>(vertex1, indices[0], w, v, vpp, i_in, 0, channel);
                     res_r_V = vertex2[0].irred.val(indices[1], i_in, 0);
 
-                    res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+                    res_l_V = left_diff_bare<Q>(vertex1, indices[0], w, v, vpp, i_in, 1, channel);
                     res_r_Vhat = vertex2[0].irred.val(indices[1], i_in, 1);
 
                     res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
@@ -461,14 +461,15 @@ Vertex<comp> calculate_Bethe_Salpeter_equation(const Vertex<comp>& Gamma, const 
 
 }
 
-void check_BSE_and_SDE(const H5std_string& filename, const string& outputFilename){
+void check_BSE_and_SDE(const string& dir, const H5std_string& filename){
 
     rvec lambdas = reconstruct_grid();
     rvec actual_gird;       //lambdas has length nODE + U_NRG.size() which, for Gamma>0 is larger than needed!
-    rvec K1_diff;
+    rvec K1_diff_rel;
+    rvec K1_diff_abs;
     rvec K2_diff;
-    rvec Sigma_diff_p;
-    rvec Sigma_diff_a;
+    rvec Sigma_diff_rel;
+    rvec Sigma_diff_abs;
 
     bool done = false;
 
@@ -486,23 +487,24 @@ void check_BSE_and_SDE(const H5std_string& filename, const string& outputFilenam
 
         print("Current nLambda = " + to_string(i)+". Represents Lambda = " + to_string(lambdas[i]), true);
 
-        State<comp> state = read_hdf(filename, i, lambdas.size());
+        State<comp> state = read_hdf(dir + filename, i, lambdas.size());
 
         Propagator G (lambdas[i], state.selfenergy, 'g');
 
         //Bethe-Salpeter equation for gamma_r. Due to channel-crossing symmetries, only consider full vertex
         Vertex<comp> bethe_salpeter_L = calculate_Bethe_Salpeter_equation(state.vertex, G, 'L');
         Vertex<comp> bethe_salpeter_R = calculate_Bethe_Salpeter_equation(state.vertex, G, 'R');
-        Vertex<comp> bethe_salpeter = (bethe_salpeter_L + bethe_salpeter_R) * 0.5;
+        Vertex<comp> bethe_salpeter_vertex = (bethe_salpeter_L + bethe_salpeter_R) * 0.5;
 
         Vertex<comp> fRG_vertex = state.vertex;
-        Vertex<comp> vertex_diff = fRG_vertex - bethe_salpeter;
+        Vertex<comp> vertex_diff = fRG_vertex - bethe_salpeter_vertex;
 
         //p of the p-norm
         int p = 2;
 
 #if DIAG_CLASS >= 0
-        K1_diff.emplace_back(vertex_diff[0].norm_K1(p)/fRG_vertex[0].norm_K1(p));
+        K1_diff_rel.emplace_back(vertex_diff[0].norm_K1(p)/fRG_vertex[0].norm_K1(p));
+        K1_diff_abs.emplace_back(vertex_diff[0].norm_K1(p));
 #endif
 #if DIAG_CLASS >= 2
         K2_diff.emplace_back(vertex_diff[0].norm_K2(p)/fRG_vertex[0].norm_K2(p));
@@ -512,18 +514,30 @@ void check_BSE_and_SDE(const H5std_string& filename, const string& outputFilenam
         Vertex<comp> bare_vertex (n_spin);
         bare_vertex[0].initialize(-glb_U/2.);
 
-        Vertex<comp> temp_bubble_p(n_spin);
-        bubble_function(temp_bubble_p, bare_vertex, fRG_vertex, G, G, 'p', false, '.');
-        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false, '.');
-        temp_bubble_p *= 0.5;
-
         Vertex<comp> temp_bubble_a(n_spin);
+        //Calculate K1-contributions. part='.' yields only K1
         bubble_function(temp_bubble_a, bare_vertex, fRG_vertex, G, G, 'a', false, '.');
         bubble_function(temp_bubble_a, fRG_vertex, bare_vertex, G, G, 'a', false, '.');
+
+        //Calculare K2-contributions. part='L' only one to yield non-zero result
+//        bubble_function(temp_bubble_a, bare_vertex, fRG_vertex, G, G, 'a', false, 'R');
+        bubble_function(temp_bubble_a, fRG_vertex, bare_vertex, G, G, 'a', false, 'L');
         temp_bubble_a *= 0.5;
+
+        Vertex<comp> temp_bubble_p(n_spin);
+        //Calculate K1-contributions. part='.' yields only K1
+        bubble_function(temp_bubble_p, bare_vertex, fRG_vertex, G, G, 'p', false, '.');
+        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false, '.');
+
+        //Calculare K2-contributions. part='L' only one to yield non-zero result
+//        bubble_function(temp_bubble_p, bare_vertex, fRG_vertex, G, G, 'p', false, 'R');
+        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false, 'L');
+        temp_bubble_p *= 0.5;
+
 
         SelfEnergy<comp> schwinger_dyson_p;
         SelfEnergy<comp> schwinger_dyson_a;
+        SelfEnergy<comp> schwinger_dyson_self_energy;
         SelfEnergy<comp> fRG_self_energy = state.selfenergy;
 
 
@@ -533,16 +547,27 @@ void check_BSE_and_SDE(const H5std_string& filename, const string& outputFilenam
         schwinger_dyson_a.initialize(glb_U/2., 0.);   //Bare-vertex contribution known analytically for ph-symmetric
         loop(schwinger_dyson_a, temp_bubble_a, G, false);
 
-        SelfEnergy<comp> self_energy_diff_p = fRG_self_energy - schwinger_dyson_p;
-        SelfEnergy<comp> self_energy_diff_a = fRG_self_energy - schwinger_dyson_a;
+        schwinger_dyson_self_energy = (schwinger_dyson_a + schwinger_dyson_p)*0.5;
 
-        Sigma_diff_p.emplace_back(self_energy_diff_p.norm(p)/fRG_self_energy.norm(p));
-        Sigma_diff_a.emplace_back(self_energy_diff_a.norm(p)/fRG_self_energy.norm(p));
+        SelfEnergy<comp> self_energy_diff = fRG_self_energy - schwinger_dyson_self_energy;
+        SelfEnergy<comp> hartree;
+        hartree.initialize(fRG_self_energy.asymp_val_R, 0.);
+
+        Sigma_diff_rel.emplace_back(self_energy_diff.norm(p)/((fRG_self_energy-hartree).norm(p)));
+        Sigma_diff_abs.emplace_back(self_energy_diff.norm(p));
+
+        State<comp> parquet;
+        parquet.vertex = bethe_salpeter_vertex;
+        parquet.selfenergy = schwinger_dyson_self_energy;
+
+        save_to_hdf(dir + "parquet_check_" + filename, i, lambdas.size(), parquet, lambdas, (bool)i);
+
     }
 
 
-    write_h5_rvecs(outputFilename, {"lambdas", "K1_diff", "K2_diff", "Sigma_diff_p", "Sigma_diff_a"},
-                   {actual_gird, K1_diff, K2_diff, Sigma_diff_p, Sigma_diff_a});
+    write_h5_rvecs(dir + "error_analysis_" + filename,
+                   {"lambdas", "K1_diff_rel", "K1_diff_abs", "Sigma_diff_rel", "Sigma_diff_abs"},
+                   {actual_gird, K1_diff_rel, K1_diff_abs, Sigma_diff_rel, Sigma_diff_abs});
 
 }
 

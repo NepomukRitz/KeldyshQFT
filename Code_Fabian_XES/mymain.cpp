@@ -378,7 +378,7 @@ void propagate(State& state, const double Lambda_0, const double Lambda_f_fracti
 
 #include "mytests.h"
 int main(int argc, const char * argv[]) {
-	bool test_only = true; if(test_only) {bool print = true; test_run(print); return 0;}
+	//bool test_only = false; if(test_only) {bool print = true; test_run(print); return 0;}
 	double Time1, Time2;
 	Time1 = omp_get_wtime();
 	
@@ -390,7 +390,7 @@ int main(int argc, const char * argv[]) {
     argc > 5 ? Lambda_f_fraction = strtod(argv[5], NULL) : Lambda_f_fraction=0.002;
 
 	State mystate;
-
+	
 #if MODE==0
 	parquetSolver(mystate, steps);
 #else 

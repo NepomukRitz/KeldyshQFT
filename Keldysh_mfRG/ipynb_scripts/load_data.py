@@ -1,11 +1,11 @@
 import h5py
 import numpy as np
 
-def load_parameters(filename, path="../cmake-build-debug-remote/"):
+def load_parameters(filename):
     """
     Load system parameters from file <filename>
     """
-    with h5py.File(path + filename, 'r') as f:
+    with h5py.File(filename, 'r') as f:
         parameters = np.array(f["parameters"])
         Gamma      = parameters[2]
         DIAG_CLASS = parameters[3]
@@ -18,13 +18,12 @@ def load_parameters(filename, path="../cmake-build-debug-remote/"):
         Lambdas    = np.array(f["lambdas"])
     return DIAG_CLASS, N_LOOPS, T, epsilon, mu, Gamma, U, V, Lambdas
 
-def load_SE_A(filename, path="../cmake-build-debug-remote/", iLambda=0):
+def load_SE_A(filename, iLambda=0):
     """
     Load self-energy and spectral function from hdf5 file.
 
     Parameters:
         filename: name of the file from which data should be read
-        path:     path where to find the file (default: Keldysh_mfRG/cmake-build-debug-remote/)
         iLambda:  Lambda iteration that should be read off (default: 0)
 
     Returns:
@@ -33,32 +32,32 @@ def load_SE_A(filename, path="../cmake-build-debug-remote/", iLambda=0):
         SigmaK:     Keldysh self-energy
         A:          spectral function
     """
-    with h5py.File(path + filename, 'r') as f:
+    with h5py.File(filename, 'r') as f:
         v = np.array(f["ffreqs"])
-        Sigma = np.array(f["selflist"][iLambda])
+        self = np.array(f["selflist"][iLambda])
 
-    _, _, _, epsilon, _, Gamma, U, _, Lambdas = load_parameters(filename, path)
+    _, _, _, epsilon, _, Gamma, U, _, Lambdas = load_parameters(filename)
 
-    SigmaR = []
-    SigmaK = []
-    for i in range(len(v)):
-        SigmaR.append(Sigma[i][0] + 1j*Sigma[i][1])
-        SigmaK.append(Sigma[len(v)+i][0] + 1j*Sigma[len(v)+i][1])
-    SigmaR = np.array(SigmaR)
-    SigmaK = np.array(SigmaK)
+    nv = len(v)
+    Sigma = np.zeros((2, nv), dtype=complex)
+    for iK in range(2):
+        for iv in range(len(v)):
+            Sigma[iK][iv] = self[iK * nv + iv][0] + 1j * self[iK * nv + iv][1]
 
-    G = 1/(v - epsilon/2 + (Gamma+Lambdas[iLambda])/2*1j - SigmaR)
+    G = 1/(v - epsilon + (Gamma+Lambdas[iLambda])/2*1j - Sigma[0])
     A = -np.imag(G)/np.pi
 
-    return v, SigmaR, SigmaK, A
+    for iv in range(len(v)):
+        Sigma[0][iv] -= U/2.
+    
+    return v, Sigma, A
 
-def load_K1(filename, path="../cmake-build-debug-remote/", iLambda=0):
+def load_K1(filename, iLambda=0):
     """
         Load K1 class from hdf5 file.
 
         Parameters:
             filename: name of the file from which data should be read
-            path:     path where to find the file (default: Keldysh_mfRG/cmake-build-debug-remote/)
             iLambda:  Lambda iteration that should be read off (default: 0)
 
         Returns:
@@ -67,7 +66,7 @@ def load_K1(filename, path="../cmake-build-debug-remote/", iLambda=0):
             K1p: K1 in the p channel
             K1t: K1 in the t channel
         """
-    with h5py.File(path + filename, 'r') as f:
+    with h5py.File(filename, 'r') as f:
         w = np.array(f["bfreqs"])
         K1_a = np.array(f["K1_a"][iLambda])
         K1_p = np.array(f["K1_p"][iLambda])
@@ -85,11 +84,11 @@ def load_K1(filename, path="../cmake-build-debug-remote/", iLambda=0):
 
     return w, K1a, K1p, K1t
 
-def load_K2(filename, path="../cmake-build-debug-remote/", iLambda=0):
+def load_K2(filename, iLambda=0):
     """
     Same as load_K1
     """
-    with h5py.File(path + filename, 'r') as f:
+    with h5py.File(filename, 'r') as f:
         w2 = np.array(f["bfreqs2"])
         v2 = np.array(f["ffreqs2"])
         K2_a = np.array(f["K2_a"][iLambda])
@@ -109,25 +108,7 @@ def load_K2(filename, path="../cmake-build-debug-remote/", iLambda=0):
                 K2t[iK][iw][iv] = K2_t[iK * nw2 * nv2 + iw * nv2 + iv][0] + 1j * K2_t[iK * nw2 * nv2 + iw * nv2 + iv][1]
     return w2, v2, K2a, K2p, K2t
 
-def load_SIAM_NRG(U=1):
-    """
-    Load NRG reference data
-    """
-    with h5py.File("../SIAM_NRG.h5", 'r') as f:
-        w_NRG  = np.array(f["w"])
-        Aimp   = np.array(f["U=" + str(U)]["Aimp"])
-        SE_re  = np.array(f["U=" + str(U)]["SE_re"])
-        SE_im  = np.array(f["U=" + str(U)]["SE_im"])
-        K1a_re = np.array(f["U=" + str(U)]["K1a_div_by_U_squared_re"])
-        K1a_im = np.array(f["U=" + str(U)]["K1a_div_by_U_squared_im"])
-        K1p_re = np.array(f["U=" + str(U)]["K1p_div_by_U_squared_re"])
-        K1p_im = np.array(f["U=" + str(U)]["K1p_div_by_U_squared_im"])
-        K1t_re = np.array(f["U=" + str(U)]["K1t_div_by_U_squared_re"])
-        K1t_im = np.array(f["U=" + str(U)]["K1t_div_by_U_squared_im"])
-
-    return w_NRG, Aimp, SE_re, SE_im, K1a_re, K1a_im, K1p_re, K1p_im, K1t_re, K1t_im
-
-def load_data(U_NRG, Delta_NRG, filenames, path="../cmake-build-debug-remote/"):
+def load_data(U_NRG, Delta_NRG, filenames):
     """
     Load all fRG data
     
@@ -135,19 +116,16 @@ def load_data(U_NRG, Delta_NRG, filenames, path="../cmake-build-debug-remote/"):
         U_NRG:     value of the interaction U for NRG data at which to load fRG data
         Delta_NRG: effective hybridization of NRG data (usually Gamma_NRG=1 ==> Delta_NRG=0.5)
         filenames: list of file names from which the data should be obtained
-        path:      path where to find the files (default: Keldysh_mfRG/cmake-build-debug-remote/)
     """
     
     DIAG_CLASS_list, N_LOOPS_list = [], []
     T_list, epsilon_list, mu_list = [], [], []
     Gamma_list, Lambda_list, Delta_list, U_list, V_list = [], [], [], [], []
-    v_list, SigmaR_list, SigmaK_list, A_list = [], [], [], []
+    v_list, Sigma_list, A_list = [], [], []
     w_list, K1a_list, K1p_list, K1t_list = [], [], [], []
     w2_list, v2_list, K2a_list, K2p_list, K2t_list = [], [], [], [], []
 
-    for i in range(len(filenames)):
-        filename = filenames[i]
-
+    for filename in filenames:
         # load parameters
         DIAG_CLASS, N_LOOPS, T, epsilon, mu, Gamma, U, V, Lambdas = load_parameters(filename)
 
@@ -162,7 +140,7 @@ def load_data(U_NRG, Delta_NRG, filenames, path="../cmake-build-debug-remote/"):
         Delta = (Gamma + Lambda) / 2
 
         # load self-energy and spectral function
-        v, SigmaR, SigmaK, A = load_SE_A(filename, iLambda=iLambda)
+        v, Sigma, A = load_SE_A(filename, iLambda=iLambda)
 
         # load K1
         w, K1a, K1p, K1t = load_K1(filename, iLambda=iLambda)
@@ -186,8 +164,7 @@ def load_data(U_NRG, Delta_NRG, filenames, path="../cmake-build-debug-remote/"):
         V_list.append(V)
 
         v_list.append(v)
-        SigmaR_list.append(SigmaR)
-        SigmaK_list.append(SigmaK)
+        Sigma_list.append(Sigma)
         A_list.append(A)
         w_list.append(w)
         K1a_list.append(K1a)
@@ -201,6 +178,26 @@ def load_data(U_NRG, Delta_NRG, filenames, path="../cmake-build-debug-remote/"):
 
     return DIAG_CLASS_list, N_LOOPS_list, \
         T_list, epsilon_list, mu_list, Gamma_list, Lambda_list, Delta_list, U_list, V_list, \
-        v_list, SigmaR_list, SigmaK_list, A_list, \
+        v_list, Sigma_list, A_list, \
         w_list, K1a_list, K1p_list, K1t_list, \
         w2_list, v2_list, K2a_list, K2p_list, K2t_list
+
+
+def load_SIAM_NRG(U, path_NRG):
+    """
+    Load NRG reference data
+    """
+    with h5py.File(path_NRG + "SIAM_NRG.h5", 'r') as f:
+        Gamma_NRG = np.array(f['Gamma'])
+        w_NRG  = np.array(f["w"])
+        Aimp   = np.array(f["U=" + str(U)]["Aimp"])
+        SE_re  = np.array(f["U=" + str(U)]["SE_re"])
+        SE_im  = np.array(f["U=" + str(U)]["SE_im"])
+        K1a_re = np.array(f["U=" + str(U)]["K1a_div_by_U_squared_re"])
+        K1a_im = np.array(f["U=" + str(U)]["K1a_div_by_U_squared_im"])
+        K1p_re = np.array(f["U=" + str(U)]["K1p_div_by_U_squared_re"])
+        K1p_im = np.array(f["U=" + str(U)]["K1p_div_by_U_squared_im"])
+        K1t_re = np.array(f["U=" + str(U)]["K1t_div_by_U_squared_re"])
+        K1t_im = np.array(f["U=" + str(U)]["K1t_div_by_U_squared_im"])
+
+    return Gamma_NRG, w_NRG, Aimp, SE_re, SE_im, K1a_re, K1a_im, K1p_re, K1p_im, K1t_re, K1t_im
