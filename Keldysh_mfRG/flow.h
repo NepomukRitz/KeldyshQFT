@@ -21,8 +21,8 @@ State<comp> n_loop_flow(string outputFileName){
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
     // compute the flow using RK4 solver
-    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,              // use n-loop-flow rhs
-                   sq_substitution, sq_resubstitution,                                             // use substitution for Lambda steps
+    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
+                   log_substitution, log_resubstitution,                                       // use substitution for Lambda steps
                    nODE,
                    outputFileName);                                                                // save state at each step during flow
 

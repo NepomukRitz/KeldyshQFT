@@ -18,17 +18,16 @@
 #include <iostream>
 
 rvec reconstruct_grid(){
-    const double X_ini = sq_substitution(Lambda_ini), X_fin = sq_substitution(Lambda_fin); // substitute limits
+    const double X_ini = log_substitution(Lambda_ini), X_fin = log_substitution(Lambda_fin); // substitute limits
     const double dX = (X_fin-X_ini)/((double)nODE);         // equidistant grid in substituted variable X
 
     // create non-linear integration grid using substitution
     rvec x_vals (nODE+1);               // integration values
     x_vals[0] = Lambda_ini;                          // start with initial value
     for (int i=1; i<=nODE; ++i) {
-        x_vals[i] = sq_resubstitution(X_ini + i*dX);      // value i
+        x_vals[i] = log_resubstitution(X_ini + i*dX);      // value i
     }
     add_points_to_Lambda_grid(x_vals);
-
     return x_vals;
 }
 
@@ -465,9 +464,16 @@ void check_BSE_and_SDE(const string& dir, const H5std_string& filename){
 
     rvec lambdas = reconstruct_grid();
     rvec actual_gird;       //lambdas has length nODE + U_NRG.size() which, for Gamma>0 is larger than needed!
+    rvec norm_K1_fRG;
+    rvec norm_K1_BSE;
+    rvec norm_K2_fRG;
+    rvec norm_K2_BSE;
     rvec K1_diff_rel;
     rvec K1_diff_abs;
-    rvec K2_diff;
+    rvec K2_diff_rel;
+    rvec K2_diff_abs;
+    rvec norm_S_fRG;
+    rvec norm_S_SDE;
     rvec Sigma_diff_rel;
     rvec Sigma_diff_abs;
 
@@ -503,11 +509,16 @@ void check_BSE_and_SDE(const string& dir, const H5std_string& filename){
         int p = 2;
 
 #if DIAG_CLASS >= 0
+        norm_K1_fRG.emplace_back(fRG_vertex[0].norm_K1(p));
+        norm_K1_BSE.emplace_back(bethe_salpeter_vertex[0].norm_K1(p));
         K1_diff_rel.emplace_back(vertex_diff[0].norm_K1(p)/fRG_vertex[0].norm_K1(p));
         K1_diff_abs.emplace_back(vertex_diff[0].norm_K1(p));
 #endif
 #if DIAG_CLASS >= 2
-        K2_diff.emplace_back(vertex_diff[0].norm_K2(p)/fRG_vertex[0].norm_K2(p));
+        norm_K2_fRG.emplace_back(fRG_vertex[0].norm_K2(p));
+        norm_K2_BSE.emplace_back(bethe_salpeter_vertex[0].norm_K2(p));
+        K2_diff_rel.emplace_back(vertex_diff[0].norm_K2(p)/fRG_vertex[0].norm_K2(p));
+        K2_diff_abs.emplace_back(vertex_diff[0].norm_K2(p));
 #endif
 
         //Schwinger-Dyson comparison
@@ -551,8 +562,11 @@ void check_BSE_and_SDE(const string& dir, const H5std_string& filename){
 
         SelfEnergy<comp> self_energy_diff = fRG_self_energy - schwinger_dyson_self_energy;
         SelfEnergy<comp> hartree;
+        fRG_self_energy.asymp_val_R = glb_U/2.;     //Info in sot read off of HDF5 data, must be manually input
         hartree.initialize(fRG_self_energy.asymp_val_R, 0.);
 
+        norm_S_fRG.emplace_back( (fRG_self_energy-hartree).norm(p));
+        norm_S_SDE.emplace_back( (schwinger_dyson_self_energy-hartree).norm(p));
         Sigma_diff_rel.emplace_back(self_energy_diff.norm(p)/((fRG_self_energy-hartree).norm(p)));
         Sigma_diff_abs.emplace_back(self_energy_diff.norm(p));
 
@@ -562,12 +576,24 @@ void check_BSE_and_SDE(const string& dir, const H5std_string& filename){
 
         save_to_hdf(dir + "parquet_check_" + filename, i, lambdas.size(), parquet, lambdas, (bool)i);
 
+        write_h5_rvecs(dir + "error_analysis_" + filename,
+                       {"lambdas", "norm_K1_fRG", "norm_K1_BSE", "K1_diff_rel", "K1_diff_abs",
+                        "norm_K2_fRG", "norm_K2_BSE", "K2_diff_rel", "K2_diff_abs",
+                        "norm_S_fRG",  "norm_S_SDE", "Sigma_diff_rel", "Sigma_diff_abs"},
+                       {actual_gird, norm_K1_fRG, norm_K1_BSE, K1_diff_rel, K1_diff_abs,
+                        norm_K2_fRG, norm_K2_BSE, K2_diff_rel, K2_diff_abs,
+                        norm_S_fRG,  norm_S_SDE,  Sigma_diff_rel, Sigma_diff_abs});
+
     }
 
 
     write_h5_rvecs(dir + "error_analysis_" + filename,
-                   {"lambdas", "K1_diff_rel", "K1_diff_abs", "Sigma_diff_rel", "Sigma_diff_abs"},
-                   {actual_gird, K1_diff_rel, K1_diff_abs, Sigma_diff_rel, Sigma_diff_abs});
+                   {"lambdas", "norm_K1_fRG", "norm_K1_BSE", "K1_diff_rel", "K1_diff_abs",
+                                      "norm_K2_fRG", "norm_K2_BSE", "K2_diff_rel", "K2_diff_abs",
+                                      "norm_S_fRG",  "norm_S_SDE", "Sigma_diff_rel", "Sigma_diff_abs"},
+                   {actual_gird, norm_K1_fRG, norm_K1_BSE, K1_diff_rel, K1_diff_abs,
+                                         norm_K2_fRG, norm_K2_BSE, K2_diff_rel, K2_diff_abs,
+                                         norm_S_fRG,  norm_S_SDE,  Sigma_diff_rel, Sigma_diff_abs});
 
 }
 
