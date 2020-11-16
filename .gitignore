@@ -1,0 +1,12 @@
+*cmake-build*
+try_around*
+hello_world*
+compile_RPA.sh
+compile_try.sh
+integration.h
+RPA_bubble.cpp
+workspace.xml
+Project_Default.xml
+*.idea*
+*.aux
+*.synctex.gz
