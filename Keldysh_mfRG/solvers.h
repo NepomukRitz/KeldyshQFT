@@ -57,10 +57,13 @@ double log_resubstitution(double x) {
 }
 
 double sq_substitution(double x) {
-//    return sqrt((sqrt(pow(x, 4) + 4.*pow(Lambda_scale*x, 2)) - pow(x, 2))/2.)/Lambda_scale;
+    double a = 5.;
+    return sqrt((sqrt(pow(x, 4) + 4.*pow(a*x, 2)) - pow(x, 2))/2.)/a;
+
 }
 double sq_resubstitution(double x) {
-//    return Lambda_scale*pow(x, 2) / sqrt(1. - pow(x, 2));
+    double a = 5.;
+    return a*pow(x, 2) / sqrt(1. - pow(x, 2));
 }
 
 // explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step
