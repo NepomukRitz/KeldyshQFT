@@ -24,11 +24,10 @@
 #endif
 
 int main(int argc, char* argv[]) {
+#ifdef INTEGRATION_TESTS
 #ifdef MPI_FLAG
     MPI_Init(nullptr, nullptr);
 #endif
-
-#ifdef INTEGRATION_TESTS
     // run integration tests
     print("Start integration tests.", true);
 
@@ -48,10 +47,9 @@ int main(int argc, char* argv[]) {
     test_K2_PT4(0.);
     test_K2_correctness(0.);
 #endif
-#endif
-
 #ifdef MPI_FLAG
     MPI_Finalize();
+#endif
 #endif
 
     // run unit tests
