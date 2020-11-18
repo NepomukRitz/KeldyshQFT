@@ -182,7 +182,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lam
     FrequencyGrid frequencies_new = this->frequencies; // new frequency grid
     //frequencies_new.rescale_grid(Lambda1, Lambda2);    // rescale new frequency grid
 
-    double decay = 10.;
+    double decay = 100.;
     double widthSE = width(decay);
     if (widthSE > 0 && widthSE < frequencies.W_scale)
         frequencies_new.initialize_grid(widthSE);

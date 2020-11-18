@@ -401,7 +401,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 }
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2) {
-    double decay = 10.; // decay parameter // TODO: should be fixed or defined globally
+    double decay = 100.; // decay parameter // TODO: should be fixed or defined globally
 
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
     //frequencies_new.rescale_grid(Lambda1, Lambda2);           // rescale new frequency grid  //TODO: remove if unnecessary
