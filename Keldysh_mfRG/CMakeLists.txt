@@ -88,6 +88,7 @@ add_executable(Keldysh_mfRG_testing
         write_data2file.h)
 
 include_directories(/usr/include/mpi/)
+include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
 
 target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
 target_link_libraries(Keldysh_mfRG -lgsl -lgslcblas)
