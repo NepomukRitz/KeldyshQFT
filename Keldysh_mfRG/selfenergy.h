@@ -184,6 +184,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lam
 
     double decay = 100.;
     double widthSE = width(decay);
+    widthSE = 10. * max(glb_U, (Lambda2+glb_Gamma)/2.);
     if (widthSE > 0 && widthSE < frequencies.W_scale)
         frequencies_new.initialize_grid(widthSE);
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector

@@ -407,6 +407,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2)
     //frequencies_new.rescale_grid(Lambda1, Lambda2);           // rescale new frequency grid  //TODO: remove if unnecessary
 #if DIAG_CLASS >= 1
     double widthK1 = width_K1(decay); // determine width of central K1 feature in frequency space
+    widthK1 = 5. * max(glb_U, (Lambda2+glb_Gamma)/2.);
     if (widthK1 > 0 && widthK1 < frequencies.b_K1.W_scale)
         frequencies_new.b_K1.initialize_grid(widthK1); // use peak width to scale new frequency grid
 
@@ -429,10 +430,11 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2)
     // --> tails of all components should be included
     if (widthsK2[0] > 0 || widthsK2[1] > 0) {
         double widthK2 = 2. * max(widthsK2[0], widthsK2[1]);
-        if (widthK2 < frequencies.b_K2.W_scale) {
-            frequencies_new.b_K2.initialize_grid(widthK2);
-            frequencies_new.f_K2.initialize_grid(widthK2);
-        }
+    }
+    double widthK2 = 5. * max(glb_U, (Lambda2+glb_Gamma)/2.);
+    if (widthK2 < frequencies.b_K2.W_scale) {
+        frequencies_new.b_K2.initialize_grid(widthK2);
+        frequencies_new.f_K2.initialize_grid(widthK2);
     }
 
     vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
