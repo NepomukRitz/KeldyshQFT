@@ -58,9 +58,9 @@ public:
     void transfToR(VertexInput& input) const;
 
     /**
-     * Interpolate the vertex to updated grid when rescaling the grid from Lambda1 to Lambda2.
+     * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
-    void update_grid(double Lambda1, double Lambda2);
+    void update_grid(double Lambda);
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >= 0
@@ -380,10 +380,10 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     input.v2 = v2;
 }
 
-template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2) {
+template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
 #if DIAG_CLASS >= 1
-    double widthK1 = 5. * max(glb_U/3., (Lambda2+glb_Gamma)/2.); // typical width estimate depending on U and Delta
+    double widthK1 = 5. * max(glb_U/3., (Lambda+glb_Gamma)/2.); // typical width estimate depending on U and Delta
     if (widthK1 > 0 && widthK1 < frequencies.b_K1.W_scale)
         frequencies_new.b_K1.initialize_grid(widthK1); // use width estimate to scale new frequency grid
 
@@ -400,7 +400,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2)
     this->K1 = K1_new; // update vertex to new interpolated values
 #endif
 #if DIAG_CLASS >= 2
-    double widthK2 = 10. * max(glb_U/3., (Lambda2+glb_Gamma)/2.); // typical width estimate depending on U and Delta
+    double widthK2 = 10. * max(glb_U/3., (Lambda+glb_Gamma)/2.); // typical width estimate depending on U and Delta
     if (widthK2 < frequencies.b_K2.W_scale) {
         frequencies_new.b_K2.initialize_grid(widthK2);
         frequencies_new.f_K2.initialize_grid(widthK2);

@@ -98,7 +98,7 @@ public:
     void initialize(Q val);
 
     // Interpolate vertex to updated grid
-    void update_grid(double Lambda1, double Lambda2);
+    void update_grid(double Lambda);
 
     //Norm of the vertex
     double sum_norm(int);
@@ -233,9 +233,9 @@ public:
         return 1.;
     }
 
-    void update_grid(double Lambda1, double Lambda2) {  // Interpolate vertex to updated grid
+    void update_grid(double Lambda) {  // Interpolate vertex to updated grid
         for (int i=0; i<this->size(); ++i) {
-            (*this)[i].update_grid(Lambda1, Lambda2);
+            (*this)[i].update_grid(Lambda);
         }
     };
 
@@ -506,10 +506,10 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
     this->irred.initialize(val);
 }
 
-template <typename Q> void fullvert<Q>::update_grid(double Lambda1, double Lambda2) {
-    this->avertex.update_grid(Lambda1, Lambda2);
-    this->pvertex.update_grid(Lambda1, Lambda2);
-    this->tvertex.update_grid(Lambda1, Lambda2);
+template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
+    this->avertex.update_grid(Lambda);
+    this->pvertex.update_grid(Lambda);
+    this->tvertex.update_grid(Lambda);
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
