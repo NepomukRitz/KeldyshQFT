@@ -94,7 +94,6 @@ public:
     auto scale_factor(double Lambda) -> double;
     void initialize_grid();
     void initialize_grid(double scale);
-    void rescale_grid(double Lambda1, double Lambda2);
     auto fconv(double w_in) const -> int;
 };
 
@@ -118,13 +117,6 @@ void FrequencyGrid::initialize_grid(double scale) {
     W_scale = scale;
     w_upper = scale * 15.;
     w_lower = - w_upper;
-    initialize_grid();
-}
-
-void FrequencyGrid::rescale_grid(double Lambda1, double Lambda2) {
-    w_upper *= scale_factor(Lambda2) / scale_factor(Lambda1);
-    w_lower *= scale_factor(Lambda2) / scale_factor(Lambda1);
-    W_scale *= scale_factor(Lambda2) / scale_factor(Lambda1);
     initialize_grid();
 }
 
@@ -157,14 +149,6 @@ public:
                                          f_K2('f', 2, Lambda),
                                          b_K3('b', 3, Lambda),
                                          f_K3('f', 3, Lambda) {};
-
-    void rescale_grid(double Lambda1, double Lambda2) {
-        b_K1.rescale_grid(Lambda1, Lambda2);
-        b_K2.rescale_grid(Lambda1, Lambda2);
-        f_K2.rescale_grid(Lambda1, Lambda2);
-        b_K3.rescale_grid(Lambda1, Lambda2);
-        f_K3.rescale_grid(Lambda1, Lambda2);
-    }
 };
 
 
