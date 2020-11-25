@@ -179,10 +179,8 @@ template <typename Q> void SelfEnergy<Q>::addself(int iK, int iv, int i_in, Q va
 
 template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
     FrequencyGrid frequencies_new = this->frequencies; // new frequency grid
+    frequencies_new.rescale_grid(Lambda);              // rescale new frequency grid
 
-    double widthSE = 10. * max(glb_U/3., (Lambda+glb_Gamma)/2.); // typical width estimate depending on U and Delta
-    if (widthSE > 0 && widthSE < frequencies.W_scale)
-        frequencies_new.initialize_grid(widthSE);
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
     for (int iK=0; iK<2; ++iK) {
         for (int iv=0; iv<nSE; ++iv) {

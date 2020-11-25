@@ -382,11 +382,9 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
-#if DIAG_CLASS >= 1
-    double widthK1 = 5. * max(glb_U/3., (Lambda+glb_Gamma)/2.); // typical width estimate depending on U and Delta
-    if (widthK1 > 0 && widthK1 < frequencies.b_K1.W_scale)
-        frequencies_new.b_K1.initialize_grid(widthK1); // use width estimate to scale new frequency grid
+    frequencies_new.rescale_grid(Lambda);                     // rescale new frequency grid
 
+#if DIAG_CLASS >= 1
     vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
     for (int iK1=0; iK1<nK_K1; ++iK1) {
         for (int iw=0; iw<nw1; ++iw) {
@@ -400,12 +398,6 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     this->K1 = K1_new; // update vertex to new interpolated values
 #endif
 #if DIAG_CLASS >= 2
-    double widthK2 = 10. * max(glb_U/3., (Lambda+glb_Gamma)/2.); // typical width estimate depending on U and Delta
-    if (widthK2 < frequencies.b_K2.W_scale) {
-        frequencies_new.b_K2.initialize_grid(widthK2);
-        frequencies_new.f_K2.initialize_grid(widthK2);
-    }
-
     vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
     for (int iK2=0; iK2<nK_K2; ++iK2) {
         for (int iw=0; iw<nw2; ++iw) {
@@ -425,7 +417,6 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     this->K2 = K2_new; // update vertex to new interpolated values
 #endif
 #if DIAG_CLASS >= 3
-    // TODO: implement dynamic grid for K3
     vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
     for (int iK3=0; iK3<nK_K3; ++iK3) {
         for (int iw=0; iw<nw3; ++iw) {
