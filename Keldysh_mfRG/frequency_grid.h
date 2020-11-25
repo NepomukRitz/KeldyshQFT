@@ -89,10 +89,7 @@ public:
     };
 
     FrequencyGrid(char type, unsigned int diag_class, double Lambda) : FrequencyGrid(type, diag_class) {
-        w_upper *= scale_factor(Lambda);
-        w_lower *= scale_factor(Lambda);
-        W_scale *= scale_factor(Lambda);
-        initialize_grid();
+        rescale_grid(Lambda);
     };
 
     auto scale_factor(double Lambda) -> double;
