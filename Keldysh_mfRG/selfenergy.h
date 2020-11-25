@@ -25,7 +25,6 @@ public:
     auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
     void update_grid(double Lambda1, double Lambda2);  // Interpolate self-energy to updated grid
-    auto width(double decay) -> double;  // Determine width of central features of self-energy
     auto norm(int p) -> double;
 
     // operators for self-energy
@@ -180,11 +179,8 @@ template <typename Q> void SelfEnergy<Q>::addself(int iK, int iv, int i_in, Q va
 
 template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lambda2) {
     FrequencyGrid frequencies_new = this->frequencies; // new frequency grid
-    //frequencies_new.rescale_grid(Lambda1, Lambda2);    // rescale new frequency grid
 
-    double decay = 100.;
-    double widthSE = width(decay);
-    widthSE = 10. * max(glb_U/3., (Lambda2+glb_Gamma)/2.);
+    double widthSE = 10. * max(glb_U/3., (Lambda2+glb_Gamma)/2.); // typical width estimate depending on U and Delta
     if (widthSE > 0 && widthSE < frequencies.W_scale)
         frequencies_new.initialize_grid(widthSE);
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
@@ -198,31 +194,6 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lam
     }
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
-}
-
-/**
- * Determine the width of the central features of Sigma^R, at which absolute values have decayed to ~1/decay
- * of the maximum value max(abs(Sigma^R-Sigma^H)) (subtracting the Hartree shift Sigma^H).
- * Average over interal indices.
- */
-// TODO: this is copy+paste from rvert --> combine
-template <typename Q> auto SelfEnergy<Q>::width(double decay) -> double {
-    rvec absSE (nSE); // temporary vector for averaged data
-    // average SE over internal indices
-    for (int iv=0; iv<nSE; ++iv) {
-        for (int i_in=0; i_in<n_in; ++i_in) {
-            // Only consider retarded component for width estimate.
-            // Subtract Hartree value and take the absolute value.
-            absSE[iv] += abs(val(0, iv, i_in) - asymp_val_R);
-        }
-    }
-    // Same as for r_vertex. TODO: define globally
-    auto maxval = *max_element(begin(absSE), end(absSE));
-    for (int i=0; i<absSE.size(); ++i) {
-        if (absSE[i] > maxval/decay)
-            return abs(frequencies.w[i]);
-    }
-    return 0.;
 }
 
 /*
