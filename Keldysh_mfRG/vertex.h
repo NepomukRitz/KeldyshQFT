@@ -74,6 +74,8 @@ public:
     rvert<Q> avertex;
     rvert<Q> pvertex;
     rvert<Q> tvertex;
+    const bool Ir = false; // determines if the vertex is a full vertex or irreducible in channel r
+                           // (r is determined by VertexInput in the readout functions)
 
     fullvert() : avertex('a'),
                  pvertex('p'),
@@ -239,6 +241,12 @@ public:
         }
     };
 
+    void set_Ir(bool Ir) {  // set the Ir flag (irreducible or full) for all spin components
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].Ir = Ir;
+        }
+    }
+
 };
 
 
@@ -365,6 +373,8 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
     }
 #endif
 #endif
+    if (Ir)
+        return gamma0;
     return gamma0 + K1 + K2b;
 }
 
@@ -425,6 +435,8 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
     }
 #endif
 #endif
+    if (Ir)
+        return gamma0;
     return gamma0 + K1 + K2;
 }
 
@@ -462,6 +474,8 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
         default:
             return 0.;
     }
+    if (Ir)
+        return gamma_Rb;
     return K2 + K3 + gamma_Rb;
 }
 
@@ -499,6 +513,8 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
         default:
             return 0.;
     }
+    if (Ir)
+        return gamma_Rb;
     return K2b + K3 + gamma_Rb;
 }
 
