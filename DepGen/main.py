@@ -62,5 +62,16 @@ if __name__ == '__main__':
     for key, value in dependencies.items():
         if len(value) == 1:
             print("{} is independent!".format(key))
+            continue
+        if type(value[0]) == ParityTrafo:
+            key_p = value[1]
+            value = dependencies[key_p]
+
+        if len(value) == 1:
+            print("{} = {}".format(key, key_p))                    
         else:
             print("{} = {} {}".format(key, value[0], value[1]))
+
+
+
+
