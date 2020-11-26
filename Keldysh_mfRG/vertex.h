@@ -74,8 +74,8 @@ public:
     rvert<Q> avertex;
     rvert<Q> pvertex;
     rvert<Q> tvertex;
-    const bool Ir = false; // determines if the vertex is a full vertex or irreducible in channel r
-                           // (r is determined by VertexInput in the readout functions)
+    bool Ir = false; // determines if the vertex is a full vertex or irreducible in channel r
+                     // (r is determined by VertexInput in the readout functions)
 
     fullvert() : avertex('a'),
                  pvertex('p'),
