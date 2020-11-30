@@ -74,8 +74,8 @@ public:
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
-                        U_factor = 15./3.;
-                        Delta_factor = 15.;
+                        U_factor = 25./3.;
+                        Delta_factor = 25.;
                         break;
                     case 3:
                         N_w = nFER3;
