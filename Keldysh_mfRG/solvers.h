@@ -66,23 +66,31 @@ double sq_resubstitution(double x) {
     return a*pow(x, 2) / sqrt(1. - pow(x, 2));
 }
 
+// construct non-linear flow grid via substitution, including additional points at interesting values
+rvec construct_flow_grid(const double x_fin, const double x_ini,
+                         double subst(double x), double resubst(double x),
+                         const int N_ODE) {
+    const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
+    const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
+
+    // create non-linear integration grid using substitution
+    rvec x_vals (N_ODE+1);                      // integration values
+    x_vals[0] = x_ini;                          // start with initial value
+    for (int i=1; i<=N_ODE; ++i) {
+        x_vals[i] = resubst(X_ini + i*dX);      // value i
+    }
+    add_points_to_Lambda_grid(x_vals);      // add points at interesting values
+    return x_vals;
+}
+
 // explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step
 template <typename T>
 void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
                         T rhs (const T& y, const double x),
                         double subst(double x), double resubst(double x),
                         const int N_ODE, string filename) {
-    const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
-    const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
-
-//     create non-linear integration grid using substitution
-    vec<double> x_vals (N_ODE+1);               // integration values
-    x_vals[0] = x_ini;                          // start with initial value
-    for (int i=1; i<=N_ODE; ++i) {
-        x_vals[i] = resubst(X_ini + i*dX);      // value i
-    }
-
-    add_points_to_Lambda_grid(x_vals);
+    // construct non-linear flow grid via substitution
+    rvec x_vals = construct_flow_grid(x_fin, x_ini, subst, resubst, N_ODE);
 
     vec<double> x_diffs (x_vals.size()-1);                // step sizes
     for (int i=1; i<=x_diffs.size(); i++){
