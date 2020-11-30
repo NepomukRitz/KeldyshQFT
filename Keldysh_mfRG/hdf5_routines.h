@@ -976,11 +976,11 @@ void result_set_frequency_grids(State<comp>& result, Buffer& buffer) {
     FrequencyGrid bfreqs ('b', 1);
     FrequencyGrid ffreqs ('f', 1);
     // read grid parameters from buffer
-    bfreqs.N_w = buffer.freq_params[0];
+    bfreqs.N_w = (int)buffer.freq_params[0];
     bfreqs.w_upper = buffer.freq_params[1];
     bfreqs.w_lower = buffer.freq_params[2];
     bfreqs.W_scale = buffer.freq_params[3];
-    ffreqs.N_w = buffer.freq_params[4];
+    ffreqs.N_w = (int)buffer.freq_params[4];
     ffreqs.w_upper = buffer.freq_params[5];
     ffreqs.w_lower = buffer.freq_params[6];
     ffreqs.W_scale = buffer.freq_params[7];
@@ -995,11 +995,11 @@ void result_set_frequency_grids(State<comp>& result, Buffer& buffer) {
 #if DIAG_CLASS >= 2
     FrequencyGrid bfreqs2 ('b', 2);
     FrequencyGrid ffreqs2 ('f', 2);
-    bfreqs2.N_w = buffer.freq_params[8];
+    bfreqs2.N_w = (int)buffer.freq_params[8];
     bfreqs2.w_upper = buffer.freq_params[9];
     bfreqs2.w_lower = buffer.freq_params[10];
     bfreqs2.W_scale = buffer.freq_params[11];
-    ffreqs2.N_w = buffer.freq_params[12];
+    ffreqs2.N_w = (int)buffer.freq_params[12];
     ffreqs2.w_upper = buffer.freq_params[13];
     ffreqs2.w_lower = buffer.freq_params[14];
     ffreqs2.W_scale = buffer.freq_params[15];
@@ -1015,11 +1015,11 @@ void result_set_frequency_grids(State<comp>& result, Buffer& buffer) {
 #if DIAG_CLASS >= 3
     FrequencyGrid bfreqs3 ('b', 3);
     FrequencyGrid ffreqs3 ('f', 3);
-    bfreqs3.N_w = buffer.freq_params[16];
+    bfreqs3.N_w = (int)buffer.freq_params[16];
     bfreqs3.w_upper = buffer.freq_params[17];
     bfreqs3.w_lower = buffer.freq_params[18];
     bfreqs3.W_scale = buffer.freq_params[19];
-    ffreqs3.N_w = buffer.freq_params[20];
+    ffreqs3.N_w = (int)buffer.freq_params[20];
     ffreqs3.w_upper = buffer.freq_params[21];
     ffreqs3.w_lower = buffer.freq_params[22];
     ffreqs3.W_scale = buffer.freq_params[23];
