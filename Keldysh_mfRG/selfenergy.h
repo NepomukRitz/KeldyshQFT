@@ -24,6 +24,7 @@ public:
     void addself(int iK, int iv, int i_in, Q val);  //Adds given input to specified location
     auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
+    void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
     void update_grid(double Lambda);  // Interpolate self-energy to updated grid
     auto norm(int p) -> double;
 
@@ -176,6 +177,10 @@ template <typename Q> void SelfEnergy<Q>::setself(int iK, int iv, int i_in, Q va
 template <typename Q> void SelfEnergy<Q>::addself(int iK, int iv, int i_in, Q val){
     Sigma[iK*nSE + iv*n_in + i_in] += val;
 }
+
+template <typename Q> void SelfEnergy<Q>::set_frequency_grid(const SelfEnergy<Q>& selfEnergy) {
+    this->frequencies = selfEnergy.frequencies;
+};
 
 template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
     FrequencyGrid frequencies_new = this->frequencies; // new frequency grid

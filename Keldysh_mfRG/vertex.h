@@ -99,6 +99,8 @@ public:
     // Initialize vertex
     void initialize(Q val);
 
+    void set_frequency_grid(const fullvert<Q>& vertex);
+
     // Interpolate vertex to updated grid
     void update_grid(double Lambda);
 
@@ -233,6 +235,12 @@ public:
     double norm(){
         //TODO Implement a reasonable norm here
         return 1.;
+    }
+
+    void set_frequency_grid(const Vertex<Q>& vertex) {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].set_frequency_grid(vertex[i]);
+        }
     }
 
     void update_grid(double Lambda) {  // Interpolate vertex to updated grid
@@ -520,6 +528,12 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {
     this->irred.initialize(val);
+}
+
+template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &vertex) {
+    this->avertex.frequencies = vertex.avertex.frequencies;
+    this->pvertex.frequencies = vertex.pvertex.frequencies;
+    this->tvertex.frequencies = vertex.tvertex.frequencies;
 }
 
 template <typename Q> void fullvert<Q>::update_grid(double Lambda) {

@@ -65,12 +65,8 @@ template <typename Q> void State<Q>::initialize() {
 
 // set frequency grids of newly created state to those of existing reference state
 template <typename Q> void State<Q>::set_frequency_grid(const State<Q>& state_in) {
-    this->selfenergy.frequencies = state_in.selfenergy.frequencies;
-    for (int i=0; i<this->vertex.size(); ++i) {
-        this->vertex[i].avertex.frequencies = state_in.vertex[i].avertex.frequencies;
-        this->vertex[i].pvertex.frequencies = state_in.vertex[i].pvertex.frequencies;
-        this->vertex[i].tvertex.frequencies = state_in.vertex[i].tvertex.frequencies;
-    }
+    this->selfenergy.set_frequency_grid(state_in.selfenergy);
+    this->vertex.set_frequency_grid(state_in.vertex);
 }
 
 template <typename Q> void State<Q>::update_grid(double Lambda) {
