@@ -21,6 +21,7 @@
 #include "../frequency_grid.h"
 #include "../testFunctions.h"
 #include "../flow.h"
+#include "../parquet_checks.h"
 #endif
 
 int main(int argc, char* argv[]) {
@@ -44,8 +45,12 @@ int main(int argc, char* argv[]) {
     State<comp> state = n_loop_flow(filename);
     check_FDTs(state);
     check_SE_causality(state.selfenergy);
+
+    /* run parquet checks */
+    parquet_checks(filename);
 #endif
 #if DIAG_CLASS == 2
+    /* further K2 tests */
     test_K2_PT4(0.);
     test_K2_correctness(0.);
 #endif
