@@ -209,6 +209,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
     Vertex<Q> dGammatbar_C(n_spin);
+    dGammatbar_C.set_frequency_grid(Psi.vertex);
 #endif
 
     for(int i=3; i<N_LOOPS; i++){
@@ -260,6 +261,7 @@ void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const 
 template <typename Q>
 auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>{
     Vertex<Q> dGammaL(n_spin);
+    dGammaL.set_frequency_grid(PsiVertex);
     dPsiVertex.set_Ir(true); // only take part irreducible in channel r
 
     bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 'a', false);
@@ -271,6 +273,7 @@ auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const 
 template <typename Q>
 auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>{
     Vertex<Q> dGammaR(n_spin);
+    dGammaR.set_frequency_grid(PsiVertex);
     dPsiVertex.set_Ir(true); // only take part irreducible in channel r
 
     bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 'a', false);
@@ -283,6 +286,7 @@ auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const 
 template <typename Q>
 auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
     Vertex<Q> dGamma_C_ap(n_spin);
+    dGamma_C_ap.set_frequency_grid(PsiVertex);
 
     bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'a', false);
     bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'p', false);
@@ -293,6 +297,7 @@ auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, 
 template <typename Q>
 auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
     Vertex<Q> dGamma_C_t(n_spin);
+    dGamma_C_t.set_frequency_grid(PsiVertex);
     bubble_function(dGamma_C_t, PsiVertex, dGammaL, G, G, 't', false);
     return dGamma_C_t;
 }
