@@ -781,8 +781,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=3
     double tK3 = get_time();
     /*K3 contributions*/
-    n_mpi = nK_K3 * nw3_w * nw3_v;
-    n_omp = nw3_v_p * n_in;
+    n_mpi = 1;
+    n_omp = nK_K3 * nw3_w * nw3_v * nw3_v_p * n_in;
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> K3_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
