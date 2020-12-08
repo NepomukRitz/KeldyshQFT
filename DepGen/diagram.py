@@ -10,12 +10,13 @@ diag_classes = [[1, 1], [0, 1], [1, 0], [0, 0]]
 
 
 class Diagram:
-    def __init__(self, channel: str, diag_class: List[int], indices: List[tuple]):
+    def __init__(self, channel: str, diag_class: List[int], indices: List[tuple], aMF=False):
         """Initizalizes a diagram
             --- Params ---
                 channel: either 'a', 'p' or 't'
                 diag_class: 2-position list with 1's symbolizing bare vertex on corresponding side
                 indices: 4-position list with 2-tuples with Keldysh and spin indices for each leg of the diagram
+                MF: Matsubara formalism? (False for Keldysh formalism)
             --- Returns ---
                 An initialized diagram
 
@@ -24,6 +25,7 @@ class Diagram:
         self.channel = channel
         self.diag_class = diag_class
         self.indices = indices
+        self.MF = aMF
 
     def __str__(self):
         """ Print formatting function. Currently set to print key """
@@ -75,8 +77,10 @@ class Diagram:
             dc = "2'"
         else:
             dc = "3"
-
-        return "K_{}^{} spin_comp = {} kel_comp = {}".format(dc, self.channel, self.get_spin_indices(),
+        if self.MF:
+            return "K_{}^{} spin_comp = {}".format(dc, self.channel, self.get_spin_indices())
+        else:
+            return "K_{}^{} spin_comp = {} kel_comp = {}".format(dc, self.channel, self.get_spin_indices(),
                                                              self.get_keldysh_indices())
 
     def parity_group(self):
@@ -84,15 +88,16 @@ class Diagram:
             --- Returns ---
                 List of ParityTrafo objects """
         completed_group = []
-        L, R = False, False
-        if self.diag_class[0] == 1:
-            L = True
-            completed_group.append(ParityTrafo(self.channel, 'L'))
-        if self.diag_class[1] == 1:
-            R = True
-            completed_group.append(ParityTrafo(self.channel, 'R'))
-        if L and R:
-            completed_group.append(ParityTrafo(self.channel, '.'))
+        if self.MF:
+            L, R = False, False
+            if self.diag_class[0] == 1:
+                L = True
+                completed_group.append(ParityTrafo(self.channel, 'L'))
+            if self. diag_class[1] == 1:
+                R = True
+                completed_group.append(ParityTrafo(self.channel, 'R'))
+            if L and R:
+                completed_group.append(ParityTrafo(self.channel, '.'))
         return completed_group
 
 
@@ -149,23 +154,27 @@ class ParityTrafo:
         new_indices = combine_into_list(new_keldysh_indices, diagram.get_spin_indices())
 
         # Return new, transformed diagram
-        return Diagram(diagram.channel, diagram.diag_class, new_indices)
+        return Diagram(diagram.channel, diagram.diag_class, new_indices,diagram.MF)
 
 
-def generate_diagrams():
+def generate_diagrams(MF=False):
     """ Function that generates the complete set of diagrams
     --- Returns ---
     List of all possible diagrams """
+    if MF:
+        KeldyshComponents = 1
+    else:
+        KeldyshComponents = 16
     result = []
     for diag_class in diag_classes:
         for spin in spin_combinations:
             for channel in ['a', 'p', 't']:
-                for iK in range(16):
+                for iK in range(KeldyshComponents):
                     indices = []
                     for n in range(4, 0, -1):
                         # Generate adequate Keldysh and spin index combination for indices
                         indices.append((str(int(iK % (2 ** n) / (2 ** (n - 1))) + 1), spin[-n]))
-                    diag = Diagram(channel, diag_class, indices)
+                    diag = Diagram(channel, diag_class, indices,MF)
                     result.append(diag)
     return result
 

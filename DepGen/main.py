@@ -1,6 +1,7 @@
 from transformations import Trafo, generate_full_group, CompositeTrafo
 from diagram import generate_diagrams, establish_dictionary, ParityTrafo, spin_combinations
 
+MF = True # Matsubara formalism? (False for Keldysh formalism)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -18,7 +19,7 @@ if __name__ == '__main__':
 
     # Generate full group of T transformations and the full set of diagrams it will operate on
     symmetry_group = generate_full_group(generators)
-    all_diagrams = generate_diagrams()
+    all_diagrams = generate_diagrams(MF)
 
     # Generate a dictionary of all diagrams to store information on dependencies
     dependencies = establish_dictionary(all_diagrams)
@@ -52,6 +53,7 @@ if __name__ == '__main__':
 
                 # Evaluate orbit of the parity group of the transformed diagram
                 for parity_trafo in parity_group:
+
                     pair_diag = parity_trafo.T(transformed)
 
                     # Check if parity-related diagram has already been visited
