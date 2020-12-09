@@ -595,7 +595,7 @@ template <typename Q> auto rvert<Q>::K3_valsmooth(VertexInput input) const -> Q 
     IndicesSymmetryTransformations indices(input.iK, input.w, input.v1, input.v2, input.i_in, channel);
 
     Ti(indices, transformations.K3[input.spin][input.iK]);
-    indices.iK = components.K3[input.iK];
+    indices.iK = components.K3[input.spin][input.iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK3(indices, *(this)));
     return interpolateK3(indices, *(this));
@@ -605,7 +605,7 @@ template <typename Q> auto rvert<Q>::K3_valsmooth(VertexInput input, const rvert
     IndicesSymmetryTransformations indices(input.iK, input.w, input.v1, input.v2, input.i_in, channel);
 
     Ti(indices, transformations.K3[input.spin][input.iK]);
-    indices.iK = components.K3[input.iK];
+    indices.iK = components.K3[input.spin][input.iK];
     if (indices.iK < 0) return 0.;
 
     Q valueK3;

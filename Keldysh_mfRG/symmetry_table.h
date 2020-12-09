@@ -17,7 +17,8 @@
 //  1 = related to component 1
 //  ...
 struct Components {
-    vector<int> K1, K2, K2b, K3;
+    vector<int> K1, K2, K2b;
+    vector<vector<int> > K3;
 
     Components() {};
     Components(const char channel) {
@@ -35,10 +36,14 @@ struct Components {
                        1,  3, -1,  4,
                        2,  0,  3,  1,
                        3,  1,  4, -1};
-                K3 = { 0,  1,  1,  2,
-                       1,  3,  4,  5,
-                       1,  4,  3,  5,
-                       2,  5,  5, -1};
+                K3 = {vector<int> ({ 0,  1,  1,  2,
+                                     1,  3,  4,  5,
+                                     1,  4,  3,  5,
+                                     2,  5,  5, -1}),    // spin comp. V
+                      vector<int> ({ 0,  1,  1,  2,
+                                     1,  4,  3,  5,
+                                     1,  3,  4,  5,
+                                     2,  5,  5, -1})};   // spin comp. Vhat
                 break;
             case 'p':
                 K1 = {-1,  0,  0, -1,
@@ -53,10 +58,14 @@ struct Components {
                        1,  3,  3,  4,
                        1,  3,  3,  4,
                        0,  2,  2, -1};
-                K3 = { 0,  1,  1,  2,
-                       1,  3,  4,  5,
-                       1,  4,  3,  5,
-                       2,  5,  5, -1};
+                K3 = {vector<int> ({ 0,  1,  1,  2,
+                                     1,  3,  4,  5,
+                                     1,  4,  3,  5,
+                                     2,  5,  5, -1}),    // spin comp. V
+                      vector<int> ({ 0,  1,  1,  2,
+                                     1,  4,  3,  5,
+                                     1,  3,  4,  5,
+                                     2,  5,  5, -1})};   // spin comp. Vhat
                 break;
             case 't':
                 K1 = {-1,  0,  0,  1,
@@ -71,10 +80,14 @@ struct Components {
                        2,  0,  3,  1,
                        1,  3, -1,  4,
                        3,  1,  4, -1};
-                K3 = { 0,  1,  1,  2,
-                       1,  3,  4,  5,
-                       1,  4,  3,  5,
-                       2,  5,  5, 0};
+                K3 = {vector<int> ({ 0,  1,  1,  2,
+                                     1,  3,  4,  5,
+                                     1,  4,  3,  5,
+                                     2,  5,  5, -1}),    // spin comp. V
+                      vector<int> ({ 0,  1,  1,  2,
+                                     1,  4,  3,  5,
+                                     1,  3,  4,  5,
+                                     2,  5,  5, -1})};   // spin comp. Vhat
                 break;
             default:;
         }
