@@ -76,7 +76,7 @@ template <typename Q> void check_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Si
     bubble_p.set_frequency_grid(state.vertex);
     bubble_function(bubble_p, Gamma_0, state.vertex, G, G, 'p', false);  // bare vertex on the left
     bubble_function(bubble_p, state.vertex, Gamma_0, G, G, 'p', false);  // bare vertex on the right
-    bubble_a *= 0.5;                                                     // symmetrize
+    bubble_p *= 0.5;                                                     // symmetrize
     loop(Sigma_SDE_p, bubble_p, G, false);
 
     // symmetrize the contributions computed via a-/p-bubble
