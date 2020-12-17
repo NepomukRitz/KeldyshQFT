@@ -48,7 +48,9 @@ add_executable(Keldysh_mfRG
         testFunctions.h
         util.h
         vertex.h
-        write_data2file.h)
+        write_data2file.h
+        multidimensional/multiarray.h
+        multidimensional/ranged_view.h)
 
 # executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
@@ -85,7 +87,9 @@ add_executable(Keldysh_mfRG_testing
         testFunctions.h
         util.h
         vertex.h
-        write_data2file.h)
+        write_data2file.h
+        multidimensional/multiarray.h
+        multidimensional/ranged_view.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
