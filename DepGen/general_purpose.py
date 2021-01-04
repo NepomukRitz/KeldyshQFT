@@ -58,3 +58,10 @@ def str_to_list(word):
     for char in word:
         ans.append(char)
     return ans
+
+def my_sign(number):
+    """Returns string: '+' for positive, '-' for negative"""
+    if (number<0):
+        return "-"
+    else:
+        return "+"

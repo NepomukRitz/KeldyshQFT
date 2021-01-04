@@ -1,5 +1,6 @@
 from typing import List
-from diagram import Diagram, e
+from diagram import Diagram, e, establish_dictionary, spin_combinations
+import networkx as nx
 from general_purpose import conjugate_spin
 
 
@@ -7,7 +8,7 @@ class Trafo:
     def __init__(self, i):
         """ Initialized a Trafo object
         --- Params ---
-            i: integer. 0, 1, 2, 3, 4 and 5 supported
+            i: integer. 0, 1, 2, 3, 4 and 5 and 6 supported
         --- Returns ---
             Initialized Trafo object with a calculated id """
         self.i = i
@@ -26,7 +27,9 @@ class Trafo:
         new_channel = self.transform_channel(diagram.channel)
         new_diag_class = self.transform_diag_class(diagram.diag_class, diagram.channel)
         new_indices = self.transform_indices(diagram.indices)
-        return Diagram(new_channel, new_diag_class, new_indices, diagram.MF)
+        new_sign_omega, new_sign_nu, new_sign_nup, new_exchange_nus = self.transform_freqs(diagram)
+        return Diagram(new_channel, new_diag_class, new_indices, diagram.MF,
+                       new_sign_omega, new_sign_nu, new_sign_nup, new_exchange_nus)
 
     def transform_channel(self, channel):
         """Transforms the channel
@@ -51,7 +54,7 @@ class Trafo:
         if self.i == 1 or self.i == 3:
             if channel == 'a' or channel == 't':
                 return [diag_class[1], diag_class[0]]
-        if self.i == 4:
+        if self.i == 4 or self.i == 6:
             if channel == 'a' or channel == 'p':
                 return [diag_class[1], diag_class[0]]
         return [diag_class[0], diag_class[1]]
@@ -75,7 +78,7 @@ class Trafo:
             new_indices[1] = indices[0]
             new_indices[0] = indices[1]
 
-        if self.i == 4:
+        if self.i == 4 or self.i == 6:
             new_indices[-2:] = indices[:2]
             new_indices[:2] = indices[-2:]
 
@@ -90,6 +93,64 @@ class Trafo:
                 new_indices.append((keldysh_indices[ii], new_spin_indices[ii]))
 
         return new_indices
+
+    def transform_freqs(self, diagram: Diagram):
+        """ Transform frequency arguments (sign)
+        --- Params ---
+
+        --- Returns ---
+        """
+        diag_class = diagram.diag_class
+        channel = diagram.channel
+        new_sign_omega = diagram.sign_omega
+        new_sign_nu = diagram.sign_nu
+        new_sign_nup = diagram.sign_nup
+        new_exchange_nus = diagram.exchange_nus
+
+        if self.i == 1:
+            if channel == 'p':
+                if new_exchange_nus:
+                     new_sign_nu *= -1
+                else:
+                    new_sign_nup *= -1
+            else:
+                new_sign_omega *= -1
+                new_exchange_nus = not new_exchange_nus
+
+        if self.i == 2 and  channel == 'p':
+            if new_exchange_nus:
+                new_sign_nup *= -1
+            else:
+                new_sign_nu *= -1
+
+        if self.i == 3:
+            if channel == 'p':
+                new_sign_nu *= -1
+                new_sign_nup *= -1
+            else:
+                new_sign_omega *= -1
+                new_exchange_nus = not new_exchange_nus
+        if self.i == 4:
+            if channel == 't':
+                new_sign_omega *= -1
+            else:
+                new_exchange_nus = not new_exchange_nus
+            if diagram.MF:
+                new_sign_omega *= -1
+                new_sign_nu *= -1
+                new_sign_nup *= -1
+        if self.i == 6:
+            if channel == 'a' or channel == 'p':
+                new_sign_omega *= -1
+                new_sign_nu *= -1
+                new_sign_nup *= -1
+            else:
+                new_sign_nu *= -1
+                new_sign_nup *= -1
+
+
+
+        return new_sign_omega, new_sign_nu, new_sign_nup, new_exchange_nus
 
 
 class CompositeTrafo:
@@ -151,3 +212,69 @@ def generate_full_group(group: list):
             done = True
 
     return group
+
+
+
+
+def generate_orbit(start_diagram, all_diagrams, symmetry_group, MF):
+    '''
+    Generate a graph containing the diagrammatic contributions which can be obtained from start_diagram
+    by application of the symmetry_group
+    --- Parameters ---
+
+    --- Return ---
+    Dire
+    '''
+    # Create T transformation objects
+    t0 = Trafo(0)
+    t1 = Trafo(1)
+    t2 = Trafo(2)
+    t3 = Trafo(3)
+    tc = Trafo(4)
+    ts = Trafo(5)
+    # Generate a dictionary of all diagrams to store information on dependencies
+    dependencies = establish_dictionary(all_diagrams)
+    G = nx.DiGraph()
+    orbit = [start_diagram]
+    orbit_keys = [start_diagram.generate_key()]
+    indeks = 0
+    leng = 1
+    while indeks < leng:
+            diagram = orbit[indeks]
+            # Act on current diagram with whole T transformation group
+            for trafo in symmetry_group[1:]:
+                transformed = trafo.T(diagram)
+
+                # Assert that spin sector is allowed i.e., spin of the transformed diagram is in the allowed spin combs
+                if transformed.get_spin_indices() not in spin_combinations:
+                    # False evaluation implies need for spin flip.
+                    # Keep track of spin-flip transformation in redefinition of trafo
+                    trafo = CompositeTrafo(trafo, ts)
+                    transformed = trafo.T(diagram)
+
+                # Check if transformed diagram has already been visited
+                if not transformed.generate_key() in orbit_keys:
+                    # If not, mark dependency with both needed transformation and original diagram
+                    dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
+                    orbit.append(transformed)
+                    orbit_keys.append(transformed.generate_key())
+                    leng += 1
+                if diagram.generate_key()!= transformed.generate_key() and not (diagram.generate_key(), transformed.generate_key()) in G.edges and not (transformed.generate_key(), diagram.generate_key()) in G.edges:
+                    G.add_edge(diagram.generate_key(), transformed.generate_key(), label=str(trafo))
+
+                # Generate parity group for the transformed diagram
+                parity_group = transformed.parity_group()
+
+                if not MF:
+                    # Evaluate orbit of the parity group of the transformed diagram
+                    for parity_trafo in parity_group[1::]:
+
+                        pair_diag = parity_trafo.T(transformed)
+
+                        # Check if parity-related diagram has already been visited
+                        if not dependencies[pair_diag.generate_key()]:
+                            # If not, mark it with parity trafo and transformed diagram from mapped
+                            dependencies[pair_diag.generate_key()] = [parity_trafo, transformed.generate_key()]
+                            G.add_edge(transformed.generate_key(), pair_diag.generate_key(), label='P')
+            indeks +=1
+    return G

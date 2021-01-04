@@ -1,5 +1,6 @@
 from typing import List
-from general_purpose import combine_into_list, conjugate_keldysh, str_to_list
+import networkx as nx
+from general_purpose import combine_into_list, conjugate_keldysh, str_to_list, my_sign
 
 # List of allowed spin combinations
 # TODO Automatize generation of this list based on input symmetries
@@ -10,13 +11,19 @@ diag_classes = [[1, 1], [0, 1], [1, 0], [0, 0]]
 
 
 class Diagram:
-    def __init__(self, channel: str, diag_class: List[int], indices: List[tuple], aMF=False):
+    def __init__(self, channel: str, diag_class: List[int], indices: List[tuple], aMF = False,
+                 sign_omega = 1, sign_nu = 1, sign_nup = 1, exchange_nus = False, complconj = False):
         """Initizalizes a diagram
             --- Params ---
                 channel: either 'a', 'p' or 't'
                 diag_class: 2-position list with 1's symbolizing bare vertex on corresponding side
                 indices: 4-position list with 2-tuples with Keldysh and spin indices for each leg of the diagram
                 MF: Matsubara formalism? (False for Keldysh formalism)
+                sign_omega: 1 or -1
+                sign_nu: 1 or -1
+                sign_nup: 1 or -1
+                exchange_nus: True or False (are the frequencies nu and nup to be exchanged?)
+                complconj: True or False (is the diagrammatic contribution to be complex conjugated?)
             --- Returns ---
                 An initialized diagram
 
@@ -26,6 +33,12 @@ class Diagram:
         self.diag_class = diag_class
         self.indices = indices
         self.MF = aMF
+
+        self.sign_omega = sign_omega
+        self.sign_nu = sign_nu
+        self.sign_nup = sign_nup
+        self.exchange_nus = exchange_nus
+        self.complconj = complconj
 
     def __str__(self):
         """ Print formatting function. Currently set to print key """
@@ -69,19 +82,36 @@ class Diagram:
         """ Generates unique key for the diagram
             --- Returns ---
                 String with the unique id of the diagram """
+        if self.exchange_nus==False:
+            nu  = "v"
+            nup = "v\'"
+        else:
+            nup = "v"
+            nu  = "v\'"
+        freqargs =  my_sign(self.sign_omega) + "w"
         if self.diag_class == [1, 1]:
             dc = "1"
+            freqargs += ", , "
         elif self.diag_class == [0, 1]:
             dc = "2"
+            freqargs += ","+my_sign(self.sign_nu)+ nu + ", "
         elif self.diag_class == [1, 0]:
-            dc = "2'"
+            dc = "2\'"
+            freqargs += ", ,"+my_sign(self.sign_nup)+ nup
         else:
             dc = "3"
-        if self.MF:
-            return "K_{}^{} spin_comp = {}".format(dc, self.channel, self.get_spin_indices())
-        else:
-            return "K_{}^{} spin_comp = {} kel_comp = {}".format(dc, self.channel, self.get_spin_indices(),
-                                                             self.get_keldysh_indices())
+            freqargs += ","+my_sign(self.sign_nu)+ nu +", "+my_sign(self.sign_nup)+ nup
+
+        subscript = "{"+dc+", "+self.get_spin_indices() + "}"
+        superscript = "{}".format(self.channel)
+        if not self.MF:
+            superscript += ",{}".format(self.get_keldysh_indices())
+        key = "$K_{}^{}".format("{"+subscript+"}", "{"+superscript+"}")
+        key += " ({})$".format(freqargs)
+        #if self.complconj:
+        #    key += "^*"
+
+        return key
 
     def parity_group(self):
         """ Generates parity group respected by the diagram
@@ -166,7 +196,8 @@ def generate_diagrams(MF=False):
     else:
         KeldyshComponents = 16
     result = []
-    for diag_class in diag_classes:
+    result_keys = []
+    for diag_class in diag_classes[0:4]:
         for spin in spin_combinations:
             for channel in ['a', 'p', 't']:
                 for iK in range(KeldyshComponents):
@@ -174,9 +205,16 @@ def generate_diagrams(MF=False):
                     for n in range(4, 0, -1):
                         # Generate adequate Keldysh and spin index combination for indices
                         indices.append((str(int(iK % (2 ** n) / (2 ** (n - 1))) + 1), spin[-n]))
-                    diag = Diagram(channel, diag_class, indices,MF)
-                    result.append(diag)
+                    for sign_omega in [1, -1]:
+                        for sign_nu in [1, -1]:
+                            for sign_nup in [1, -1]:
+                                for exchange_nus in [False, True]:
+                                    diag = Diagram(channel, diag_class, indices, MF, sign_omega, sign_nu,  sign_nup, exchange_nus )
+                                    if not diag.generate_key() in result_keys:
+                                        result.append(diag)
+                                        result_keys.append(diag.generate_key())
     return result
+
 
 
 def establish_dictionary(diagrams: List[Diagram]):
@@ -187,5 +225,5 @@ def establish_dictionary(diagrams: List[Diagram]):
         A dictionary with empty lists as values for each diagram """
     d = {}
     for diag in diagrams:
-        d[diag.generate_key()] = []
+        d[diag.generate_key()] = {}
     return d
