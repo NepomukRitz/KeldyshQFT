@@ -478,7 +478,9 @@ public:
         filename += channel;
         filename += "_i0=" + to_string(i0)
                     + "_i2=" + to_string(i2)
-                    + "_w=" + to_string(w) + ".h5";
+                    + "_w=" + to_string(w)
+                    + "_v=" + to_string(v)
+                    + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
                        {freqs, integrand_re, integrand_im, Pival_re, Pival_im});
