@@ -1,6 +1,9 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
+// Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
+#define KELDYSH_FORMALISM
+
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include "data_structures.h" // real/complex vector classes, comp as complex double
@@ -166,14 +169,20 @@ const int nv3 = nFER3;
 
 
 /// Keldysh index parameters ///
-
+#ifdef KELDYSH_FORMALISM
 // Number of independent Keldysh components for the respective diagrammatic class
 const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
                             // for channel p components 1 and 5
 const int nK_K2 = 5;        // For channels a, p and t -channel separately
 const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
                             // (independent components in order of appearance)
+#else
+const int nK_K1 = 1;
+const int nK_K2 = 1;
+const int nK_K3 = 1;
+#endif
 
+#ifdef KELDYSH_FORMALISM
 // Vector of indices of independent components of the diagrammatic classes, density channel
 vector<int> non_zero_Keldysh_K1a({1,3});                                                                                // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
@@ -188,6 +197,7 @@ vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                           
 
 // Vector of indices of the non-zero Keldysh components of the bubbles
 vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                                                          // NOLINT(cert-err58-cpp)
+#endif
 
 /// Spin parameters ///
 

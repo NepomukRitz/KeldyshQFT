@@ -53,6 +53,7 @@ public:
     auto value(int iK, double v1, double v2, int i_in) const -> comp{
         comp ans;
         if(dot){
+#ifdef KELDYSH_FORMALISM
             switch (iK) {
                 case 3: //AA
                     ans = conj(g.valsmooth(0, v1, i_in)) * conj(s.valsmooth(0, v2, i_in)) + conj(s.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
@@ -84,8 +85,12 @@ public:
                 default:
                     return 0.;
             }
+#else
+            ans = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
+#endif
         }
         else {
+#ifdef KELDYSH_FORMALISM
             switch (iK){ // labelling propagators from top (t: left) to bottom (t: right); a,t: G(v+w/2)G(v-w/2), p: G(w/2-v)G(w/2+v)
                 case 3: //AA
                     ans = conj(g.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
@@ -117,6 +122,9 @@ public:
                 default:
                     return 0.;
             }
+#else
+            ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
+#endif
         }
         return ans;
     }
@@ -243,6 +251,7 @@ public:
                  , iK_select(iK_select_in), iK_select_bubble(iK_select_bubble_in)
 #endif
     {
+#ifdef KELDYSH_FORMALISM
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
@@ -250,12 +259,21 @@ public:
             case 't': i0 = non_zero_Keldysh_K1t[i0_in]; break;
             default: ;
         }
+#else
+        i0 = 0;
+#endif
+
 #if DIAG_CLASS <= 1
+#ifdef KELDYSH_FORMALISM
         // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
         vector<int> indices = indices_sum(i0, i2, channel);
 
         VertexInput input_l (indices[0], w, 0., 0., i_in, 0, channel);
         VertexInput input_r (indices[1], w, 0., 0., i_in, 0, channel);
+#else
+        VertexInput input_l (0, w, 0., 0., i_in, 0, channel);
+        VertexInput &input_r = input_l;
+#endif
         res_l_V = vertex1[0].left_same_bare(input_l);
         res_r_V = vertex2[0].right_same_bare(input_r);
         if (channel == 't') {
@@ -278,7 +296,7 @@ public:
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         vector<int> indices = indices_sum(i0, i2, channel);
 #endif
-#if DIAG_CLASS <= 1
+#if DIAG_CLASS <= 1 && defined(KELDYSH_FORMALISM)
         if (!diff) {
             // directly return zero in cases that always have to be zero
             switch (channel) {
@@ -316,6 +334,7 @@ public:
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
 #if DIAG_CLASS >= 2
+        vector<int> indices = indices_sum(i0, i2, channel);
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
 
@@ -677,7 +696,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=0
 //    double tK1 = get_time();
     /*K1 contributions*/
+#ifdef KELDYSH_FORMALISM
     int n_mpi = nK_K1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+#endif
     int n_omp = nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
 
     // initialize buffer into which each MPI process writes their results
@@ -691,16 +712,20 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices (TODO: put into extra function(s)?)
                 int iK1 = i_mpi * n_omp + i_omp;
-                int i0 = iK1/(nw1_w*n_in);
-                int iw = iK1/(n_in) - i0*nw1_w;
-                int i_in = iK1 - i0*nw1_w*n_in - iw*n_in;
-                double w = freqs_K1.w[iw];
+                int i0 = iK1/(nw1_w*n_in);      // exterior Keldysh indices of the bubble
+                int iw = iK1/(n_in) - i0*nw1_w; // frequency index
+                int i_in = iK1 - i0*nw1_w*n_in - iw*n_in; // internal index
+                double w = freqs_K1.w[iw];      // frequency acc. to frequency index
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
                 if (!diff && part != '.') value = 0.;
                 else {
+#ifdef KELDYSH_FORMALISM
                     for (auto i2:non_zero_Keldysh_bubble) {
+#else
+                    i2=0;
+#endif
 #ifdef DEBUG_MODE
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
                                                      iK_select, iK_select_bubble);
@@ -716,7 +741,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                                                           channel); //Correction needed for the K1 class
                         }
                         // */
+#ifdef KELDYSH_FORMALISM
                     }
+#endif
                 }
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }

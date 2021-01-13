@@ -8,6 +8,9 @@
 #include "parameters.h"
 #include "Keldysh_symmetries.h"
 
+/**
+ * specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation)
+ */
 struct IndicesSymmetryTransformations{
     int iK;
     double prefactor = 1.;
@@ -85,11 +88,6 @@ void T3 (IndicesSymmetryTransformations& indices){
 
 void TC (IndicesSymmetryTransformations& indices){
 
-    if(isInList(indices.iK, odd_Keldysh))
-        indices.prefactor *= 1.;
-    else
-        indices.prefactor *= -1.;
-
     indices.conjugate ^= true;
 
     if (indices.channel == 't'){ //TC acts differently on t, not on p!!
@@ -107,8 +105,26 @@ void TC (IndicesSymmetryTransformations& indices){
         indices.v2 = temp;
 #endif
     }
+
+#ifdef KELDYSH_FORMALISM
+    if(isInList(indices.iK, odd_Keldysh))
+        indices.prefactor *= 1.;
+    else
+        indices.prefactor *= -1.;
+#else
+    indices.w *= -1;
+    indices.v1 *= -1;
+    indices.v2 *= -1;
+#endif
 }
 
+
+/**
+ * Define symmetry transformations.
+ * The function modifies the indices according to the transformation T_i.
+ * @param indices     : specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation)
+ * @param i           : specities the transformation T_i
+ */
 void Ti (IndicesSymmetryTransformations& indices, const int i) {
     if (i == 0) return;
     switch (i) {

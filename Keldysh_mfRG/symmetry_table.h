@@ -21,6 +21,7 @@ struct Components {
 
     Components() {};
     Components(const char channel) {
+#ifdef KELDYSH_FORMALISM
         switch (channel) {
             case 'a':
                 K1 = {-1,  0,  0,  1,
@@ -78,6 +79,30 @@ struct Components {
                 break;
             default:;
         }
+#else
+        switch (channel) {
+            case 'a':
+                K1 = {0};
+                K2 = {0};
+                K2b = {0};
+                K3 = { 0};
+                break;
+            case 'p':
+                K1 = {0};
+                K2 = {0};
+                K2b = {0};
+                K3 = { 0};
+                break;
+            case 't':
+                K1 = {0};
+                K2 = {0};
+                K2b = {0};
+                K3 = { 0};
+                break;
+            default:;
+        }
+
+#endif
     }
 };
 
@@ -89,6 +114,7 @@ struct Transformations {
 
     Transformations() {};
     Transformations(const char channel) {
+#ifdef KELDYSH_FORMALISM
         switch (channel) {
             case 'a':
                 K1 = {vector<int> ({ 0,  0,  3,  0,
@@ -194,6 +220,41 @@ struct Transformations {
                 break;
             default:;
         }
+#else
+        switch (channel) {
+            case 'a':
+                K1 = {vector<int> ({ 0}),    // spin comp. V
+                      vector<int> ({ 1})};   // spin comp. Vhat
+                K2 = {vector<int> ({ 0}),   // spin comp. V
+                      vector<int> ({ 2})};  // spin comp. Vhat
+                K2b = {vector<int> ({ 3}),   // spin comp. V
+                       vector<int> ({ 1})}; // spin comp. Vhat
+                K3 = {vector<int> ({ 0}),    // spin comp. V
+                      vector<int> ({ 1})};  //spin comp. Vhat
+                break;
+            case 'p':
+                K1 = {vector<int> ({ 0}),        // spin comp. V
+                      vector<int> ({ 1})};    // spin comp. Vhat
+                K2 = {vector<int> ({ 0}),    // spin comp. V
+                      vector<int> ({ 1})};   // spin comp. Vhat
+                K2b = {vector<int> ({ 4}),    // spin comp. V
+                       vector<int> ({41})};   // spin comp. Vhat
+                K3 = {vector<int> ({  0}),    // spin comp. V
+                      vector<int> ({  1})};  // spin comp. Vhat
+                break;
+            case 't':
+                K1 = {vector<int> ({ 0}),        // spin comp. V
+                      vector<int> ({ 1})};       // spin comp. Vhat
+                K2 = {vector<int> ({ 0}),        // spin comp. V
+                      vector<int> ({ 2})};  // spin comp. Vhat
+                K2b = {vector<int> ({ 3}),  // spin comp. V
+                       vector<int> ({ 1})}; // spin comp. Vhat
+                K3 = {vector<int> ({ 0}),    // spin comp. V
+                      vector<int> ({ 1})}; // spin comp. Vhat
+                break;
+            default:;
+        }
+#endif
     }
 };
 

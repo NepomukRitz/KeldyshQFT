@@ -446,7 +446,12 @@ template <typename Integrand> auto integrator(const Integrand& integrand, double
 #endif
 }
 
-// wrapper function, used for bubbles
+/**
+ * wrapper function, used for bubbles.
+ * @param integrand
+ * @param a         :   lower limit for integration
+ * @param b         :   upper limit for integration
+ */
 template <typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> comp {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     return integrator_riemann(integrand, nINT);

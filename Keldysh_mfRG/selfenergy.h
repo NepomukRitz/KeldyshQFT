@@ -9,9 +9,13 @@
 template <typename Q>
 class SelfEnergy{
 public:
-    // TODO: split into two members: Sigma_R, Sigma_K (?)
     FrequencyGrid frequencies;
+#ifdef KELDYSH_FORMALISM
+    // TODO: split into two members: Sigma_R, Sigma_K (?)
     vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
+#else
+    vec<Q> Sigma = vec<Q> (nSE*n_in); // only one component in Matsubara formalism
+#endif
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
     SelfEnergy() : frequencies('f', 1) {};
@@ -79,7 +83,9 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
     for (int iv=0; iv<nSE; ++iv) {
         for (int i_in=0; i_in<n_in; ++i_in) {
             this->setself(0, iv, i_in, valR);
+#ifdef KELDYSH_FORMALISM
             this->setself(1, iv, i_in, valK);
+#endif
         }
     }
     this-> asymp_val_R = valR;
@@ -94,7 +100,11 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
  * @return The value of SigmaR/K at the chosen indices
  */
 template <typename Q> auto SelfEnergy<Q>::val(int iK, int iv, int i_in) const -> Q{
+#ifdef KELDYSH_FORMALISM
     return Sigma[iK*nSE*n_in + iv*n_in + i_in];
+#else
+    return Sigma[iv*n_in + i_in];
+#endif
 }
 
 /**
@@ -187,14 +197,20 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lam
     if (widthSE > 0 && widthSE < frequencies.W_scale)
         frequencies_new.initialize_grid(widthSE);
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
+#ifdef KELDYSH_FORMALISM
     for (int iK=0; iK<2; ++iK) {
+#else
+    iK = 0;
+#endif
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 // interpolate old values to new vector
                 Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.w[iv], i_in);
             }
         }
+#ifdef KELDYSH_FORMALISM
     }
+#endif
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
 }
