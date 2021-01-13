@@ -545,20 +545,40 @@ void test_K2_PT4(double Lambda) {
     bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
     print("Computed K1 in PT2.", true);
     get_time(t0);
+    write_hdf("PT2_K1a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1a);
+    write_hdf("PT2_K1p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1p);
+    write_hdf("PT2_K1t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1t);
 
-    // Compute K1a in PT3, using K1 in PT2
+    // Compute K1 in PT3, using K1 in PT2
     State<comp> PT3_K1a (Lambda);
+    State<comp> PT3_K1p (Lambda);
+    State<comp> PT3_K1t (Lambda);
+
     t0 = get_time();
     bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
+    // for K1t in PT3, need a-vertex in PT2 due to a <-> t symmetry
+    bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false);
     print("Computed K1 in PT3.", true);
     get_time(t0);
+    write_hdf("PT3_K1a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1a);
+    write_hdf("PT3_K1p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1p);
+    write_hdf("PT3_K1t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1t);
 
     // Compute K2a in PT3, using K1p, K1t in PT2
     State<comp> PT3_K2a (Lambda);
+    State<comp> PT3_K2p (Lambda);
+    State<comp> PT3_K2t (Lambda);
+
     t0 = get_time();
-    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
+    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'p', false);   // K2p in PT3
+    bubble_function(PT3_K2t.vertex, PT2_K1a.vertex + PT2_K1p.vertex, bare.vertex, G, G, 't', false);   // K2t in PT3
     print("Computed K2 in PT3.", true);
     get_time(t0);
+    write_hdf("PT3_K2a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2a);
+    write_hdf("PT3_K2p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2p);
+    write_hdf("PT3_K2t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2t);
 
     // Compute K1a contributions in PT4, using
     // (22):   K1a in PT2
