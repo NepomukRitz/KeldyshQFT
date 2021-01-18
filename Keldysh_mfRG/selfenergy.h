@@ -200,7 +200,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lam
 #ifdef KELDYSH_FORMALISM
     for (int iK=0; iK<2; ++iK) {
 #else
-    iK = 0;
+    int iK = 0;
 #endif
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {

@@ -6,6 +6,7 @@
 #define KELDYSH_MFRG_BETHE_SALPETER_H
 
 #include "parameters.h"
+#include "correctionFunctions.h"
 #include "state.h"
 #include "diagrammatic_combinations.h"
 #include "integrator.h"
@@ -15,6 +16,7 @@
 #include "data_structures.h"
 #include "write_data2file.h"
 #include "loop.h"
+#include "vertex.h"
 #include <iostream>
 
 rvec reconstruct_grid(){
@@ -215,6 +217,8 @@ public:
         Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices = indices_sum(i0, i2, channel);
+        VertexInput input_l   (indices[0], w, v, vpp, i_in, 0, channel);
+        VertexInput input_l1  (indices[0], w, v, vpp, i_in, 1, channel);
 
         if(side == 'L') {
             switch (channel) {
@@ -226,8 +230,7 @@ public:
                 case 'a':                                                                       //Contributions: V*Pi*V
                     Pival = Pi.value(i2, vpp - w / 2., vpp + w / 2.,
                                      i_in);                         //vppa-1/2wa, vppa+1/2wa for the a-channel
-
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = vertex1[0].gammaRb(input_l);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w, vpp, i_in, 0, channel);
 
                     res = res_l_V * Pival * res_r_V;
@@ -235,7 +238,7 @@ public:
                 case 'p':                                                                       //Contributions: V*Pi*V// + V^*Pi*V^
                     Pival = Pi.value(i2, w / 2. + vpp, w / 2. - vpp,
                                      i_in);                         //wp/2+vppp, wp/2-vppp for the p-channel
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = vertex1[0].gammaRb(input_l);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w, vpp, i_in, 0, channel);
 
                     res = res_l_V * Pival * res_r_V;// + res_l_Vhat * Pival * res_r_Vhat;
@@ -243,10 +246,10 @@ public:
                 case 't':                                                                       //Contributions: V*Pi*(V+V^) + (V+V^)*Pi*V
                     Pival = Pi.value(i2, vpp - w / 2., vpp + w / 2.,
                                      i_in);                         //vppt-1/2wt, vppt+1/2wt for the t-channel
-                    res_l_V = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 0, channel);
+                    res_l_V = vertex1[0].gammaRb(input_l);
                     res_r_V = right_same_bare<Q>(vertex2, indices[1], w, vpp, i_in, 0, channel);
 
-                    res_l_Vhat = vertex1[0].gammaRb(indices[0], w, v, vpp, i_in, 1, channel);
+                    res_l_Vhat = vertex1[0].gammaRb(input_l1);
                     res_r_Vhat = right_same_bare<Q>(vertex2, indices[1], w, vpp, i_in, 1, channel);
 
                     res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;

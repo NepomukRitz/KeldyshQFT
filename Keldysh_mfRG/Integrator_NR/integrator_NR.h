@@ -98,6 +98,7 @@ auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
     if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)))
         return i2;
     else
+        //printf("Difference of the two estimates: %f\n",abs(i2 - i1));
         return integrate(x[0],  x[2],  f[0],  f[2],  is)  // subdivide interval
              + integrate(x[2],  x[4],  f[2],  f[4],  is)
              + integrate(x[4],  x[6],  f[4],  f[6],  is)
@@ -133,9 +134,10 @@ auto Adapt<Integrand>::integrate(const double a, const double b, const comp fa, 
 
     // if difference between first and second estimate is smaller than absolute or relative tolerance,
     // or nodes lie outside the interval, return second estimate, else subdivide interval
-    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)) || x[0] < a || b < x[4])
+    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)) || x[0] < a || b < x[4] || abs(a-b)<integrator_tol)
         return i2;
     else
+        //printf("Difference of the two estimates: %f\n",abs(i2 - i1));
         return integrate(a,    x[0], fa,   f[0], is)  // subdivide interval
              + integrate(x[0], x[1], f[0], f[1], is)
              + integrate(x[1], x[2], f[1], f[2], is)

@@ -6,6 +6,8 @@
 #define KELDYSH_MFRG_PERTURBATION_THEORY_H
 
 //#include ""
+#include "selfenergy.h"
+#include "frequency_grid.h"
 
 template <typename Q>
 void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, double Lambda){

@@ -2,7 +2,7 @@
 #define KELDYSH_MFRG_PARAMETERS_H
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM
+//#define KELDYSH_FORMALISM
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
@@ -16,7 +16,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 2
 
 #define N_LOOPS 1  // Number of loops
 
@@ -90,8 +90,10 @@ const double glb_v3_upper = 10.;
 const double glb_v3_lower = -glb_v3_upper;
 
 // Number of bosonic and fermionic frequency points
-const int nBOS = 201;
-const int nFER = 201;
+/*const int nBOS = 201;
+const int nFER = 201;*/
+const int nBOS = 200;
+const int nFER = 200;
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
@@ -182,7 +184,7 @@ const int nK_K2 = 1;
 const int nK_K3 = 1;
 #endif
 
-#ifdef KELDYSH_FORMALISM
+//#ifdef KELDYSH_FORMALISM
 // Vector of indices of independent components of the diagrammatic classes, density channel
 vector<int> non_zero_Keldysh_K1a({1,3});                                                                                // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
@@ -197,7 +199,7 @@ vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                           
 
 // Vector of indices of the non-zero Keldysh components of the bubbles
 vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                                                          // NOLINT(cert-err58-cpp)
-#endif
+//#endif
 
 /// Spin parameters ///
 
@@ -254,9 +256,9 @@ const double converged_tol = 1e-7;
 // 1: Simpson
 // 2: Simpson + additional points
 // 3: adaptive Simpson
-// 4: GSL // TODO: code does currently not compile with this integrator
+// 4: GSL //
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
-#define INTEGRATOR_TYPE 5
+#define INTEGRATOR_TYPE 4
 
 //Integrator tolerance
 const double integrator_tol = 1e-6;

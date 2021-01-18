@@ -111,7 +111,9 @@ void FrequencyGrid::initialize_grid() {
         W = W_lower + i*dW;
         w[i] = grid_transf_inv(W, W_scale);
     }
-    w[(int)N_w/2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+    if (N_w % 2 == 1) {
+        w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+    }
 }
 
 void FrequencyGrid::initialize_grid(double scale) {

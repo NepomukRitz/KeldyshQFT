@@ -278,7 +278,7 @@ template <typename Q> void irreducible<Q>::initialize(Q val) {
 #ifdef KELDYSH_FORMALISM
     for (auto i:odd_Keldysh) {
 #else
-    i = 0;
+    int i = 0;
 #endif
         for (int i_in=0; i_in<n_in; ++i_in) {
             this->setvert(i, i_in, val);
@@ -528,7 +528,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
 #ifdef KELDYSH_FORMALISM
         for (int iK = 0; iK < nK_K1; iK++) {
 #else
-        iK = 0;
+        int iK = 0;
 #endif
             for (int iw = 0; iw < nBOS; iw++) {
                 for (int i_in = 0; i_in < n_in; i_in++) {
@@ -560,7 +560,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
 #ifdef KELDYSH_FORMALISM
         for(int iK = 0; iK<nK_K1; iK++){
 #else
-            iK = 0;
+            int iK = 0;
 #endif
             for(int iw=0; iw < nBOS; iw++){
                 for(int i_in=0; i_in<n_in; i_in++){
@@ -584,7 +584,7 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
 #ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K2; iK++) {
 #else
-            iK = 0;
+            int iK = 0;
 #endif
             for (int iw = 0; iw < nBOS2; iw++) {
                 for (int iv = 0; iv < nFER2; iv++) {
@@ -617,7 +617,7 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
 #ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K2; iK++){
 #else
-            iK = 0;
+            int iK = 0;
 #endif
             for(int iw=0; iw < nBOS2; iw++){
                 for(int iv=0; iv < nFER2; iv++) {
@@ -643,7 +643,7 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
 #ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K3; iK++) {
 #else
-            iK = 0;
+            int iK = 0;
 #endif
             for (int iw = 0; iw < nBOS3; iw++) {
                 for (int iv1 = 0; iv1 < nFER3; iv1++) {
@@ -678,7 +678,7 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
 #ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K3; iK++){
 #else
-            iK = 0;
+            int iK = 0;
 #endif
             for(int iw=0; iw < nBOS3; iw++){
                 for(int iv1=0; iv1<nFER3; iv1++) {

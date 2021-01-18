@@ -23,7 +23,7 @@
 #include "mpi_setup.h"                  // mpi parallelization routines
 #include "diagrammatic_combinations.h"  // combinations of diagrammatic classes that go into the left/right vertex
                                         // in the bubble
-#include "correctionFunctions.h"        // correction terms due to finite integration range
+//#include "correctionFunctions.h"        // correction terms due to finite integration range
 #include "write_data2file.h"            // write vectors into hdf5 file
 
 /// Class combining two propagators, either GG or GS+SG
@@ -334,7 +334,7 @@ public:
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
 #if DIAG_CLASS >= 2
-        vector<int> indices = indices_sum(i0, i2, channel);
+        //vector<int> indices = indices_sum(i0, i2, channel);  // already written above
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
 
@@ -372,7 +372,7 @@ public:
             Pival_im[i] = Pival.imag();
         }
 
-        string filename = "integrand_K1";
+        string filename = "../Data/integrand_K1";
         filename += channel;
         filename += "_i0=" + to_string(i0)
                   + "_i2=" + to_string(i2)
@@ -426,6 +426,7 @@ public:
                  , iK_select(iK_select_in), iK_select_bubble(iK_select_bubble_in)
 #endif
     {
+#ifdef KELDYSH_FORMALISM
         // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
@@ -433,6 +434,9 @@ public:
             case 't': i0 = non_zero_Keldysh_K2t[i0_in]; break;
             default: ;
         }
+#else
+        i0=0;
+#endif
     };
 
     /**
@@ -541,7 +545,11 @@ public:
                : vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in),
                  channel(ch_in), part(pt_in), diff(diff_in)
     {
+#ifdef KELDYSH_FORMALISM
         i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
+#else
+        i0 = 0;
+#endif
     };
 
     /**
@@ -555,7 +563,11 @@ public:
         vector<int> indices(2);
 
         //Iterates over all Keldysh components of the bubble which are nonzero
+#ifdef KELDYSH_FORMALISM
         for (auto i2:non_zero_Keldysh_bubble) {
+#else
+            int i2=0;
+#endif
             indices = indices_sum(i0, i2, channel);
             Pival = Pi.value(i2, w, vpp, i_in, channel);
 
@@ -597,7 +609,9 @@ public:
                 }
                 res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
+#ifdef KELDYSH_FORMALISM
         }
+#endif
         return res;
     }
 };
@@ -696,9 +710,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=0
 //    double tK1 = get_time();
     /*K1 contributions*/
-#ifdef KELDYSH_FORMALISM
     int n_mpi = nK_K1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-#endif
     int n_omp = nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
 
     // initialize buffer into which each MPI process writes their results
@@ -724,13 +736,17 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #ifdef KELDYSH_FORMALISM
                     for (auto i2:non_zero_Keldysh_bubble) {
 #else
-                    i2=0;
+                    int i2=0;
 #endif
 #ifdef DEBUG_MODE
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
                                                      iK_select, iK_select_bubble);
 #else
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+                        // save the integrand for manual checks:
+                        /*if (i_omp == 20){
+                            integrand_K1.save_integrand();
+                        }*/
 #endif
                         value += prefactor * (1. / (2. * M_PI * glb_i)) *
                                  integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
@@ -795,7 +811,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 if (!diff && part != 'L') value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
                 // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
                 else {
+#ifdef KELDYSH_FORMALISM
                     for(auto i2:non_zero_Keldysh_bubble) {
+#else
+                        int i2=0;
+#endif
 #ifdef DEBUG_MODE
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff,
                                                      iK_select2, iK_select_bubble2);
@@ -810,7 +830,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                                                           i_in, channel); //Correction needed for the K2 class
                         }
                         // */
+#ifdef KELDYSH_FORMALISM
                     }
+#endif
                 }
                 K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
@@ -867,11 +889,17 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
 
                 if (!diff) {
-                    for (auto i2:non_zero_Keldysh_bubble) {
+#ifdef KELDYSH_FORMALISM
+                    for(auto i2:non_zero_Keldysh_bubble) {
+#else
+                        int i2=0;
+#endif
                         value += prefactor * (1. / (2. * M_PI * glb_i)) *
                                  asymp_corrections_K3(vertex1, vertex2, -vmin, vmax, w, v, vp, i0, i2,
                                                       i_in, channel); //Correction needed for the K3 class
+#ifdef KELDYSH_FORMALISM
                     }
+#endif
                 }
                 K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }

@@ -51,7 +51,7 @@ public:
     double Lambda;
     SelfEnergy<comp> selfenergy;
     SelfEnergy<comp> diff_selfenergy;
-    char type;
+    char type;      // 'g' for propagator, 's' for single scale propagator, 'k' for 's'+'e', 'e' for Katanin extension
 
 public:
     /**

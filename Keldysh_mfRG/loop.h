@@ -151,9 +151,13 @@ public:
             factorAdvancedClosedAbove += pf_select[1] * vertex[0].value(inputAdvancedClosedAbove);
             factorKeldyshClosedAbove  += pf_select[2] * vertex[0].value(inputKeldyshClosedAbove);
 #else
+#ifdef KELDYSH_FORMALISM
             factorRetardedClosedAbove += vertex[0].value(inputRetardedClosedAbove);
             factorAdvancedClosedAbove += vertex[0].value(inputAdvancedClosedAbove);
             factorKeldyshClosedAbove  += vertex[0].value(inputKeldyshClosedAbove);
+#else
+            factorClosedAbove += vertex[0].value(inputClosedAbove);
+#endif
 #endif
 
 #if defined(SYMMETRIZED_SELF_ENERGY_FLOW) and defined(KELDYSH_FORMALISM)
@@ -190,6 +194,24 @@ public:
 #endif
 #endif
     }
+
+    void save_integrand() {
+        rvec integrand_re (nFER);
+        rvec integrand_im (nFER);
+        for (int i=0; i<nFER; ++i) {
+            double vpp = vertex[0].avertex.frequencies.b_K1.w[i];
+            Q integrand_value = (*this)(vpp);
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+
+        }
+
+        string filename = "../Data/integrand_SE";
+        filename +=  "_v=" + to_string(v) + ".h5";
+        write_h5_rvecs(filename,
+                       {"vpp", "integrand_re", "integrand_im"},
+                       {vertex[0].avertex.frequencies.b_K1.w, integrand_re, integrand_im});
+    }
 };
 
 
@@ -208,7 +230,7 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 #endif
           )
 {
-#pragma omp parallel for
+//#pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
         int iv = iSE/n_in;
         int i_in = iSE - iv*n_in;
@@ -221,6 +243,11 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         IntegrandSE<Q> integrandK('k', fullvertex, prop, v, i_in, all_spins, iK_select);
 #else
         IntegrandSE<Q> integrandR('r', fullvertex, prop, v, i_in, all_spins);
+        // save integrand for manual checks:
+        /*if(iSE==90){
+            integrandR.save_integrand();
+        }*/
+
 #ifdef KELDYSH_FORMALISM
         IntegrandSE<Q> integrandK('k', fullvertex, prop, v, i_in, all_spins);
 #endif

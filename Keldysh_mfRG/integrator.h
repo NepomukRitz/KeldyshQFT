@@ -411,7 +411,7 @@ template <typename Integrand> auto integrator_PAID(Integrand& integrand, double 
 /// --- WRAPPER FUNCTIONS: INTERFACE FOR ACCESSING THE INTEGRATOR IN BUBBLES/LOOP --- ///
 
 // old wrapper function
-template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b) -> comp {
+template <typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> comp {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     return integrator_riemann(integrand, nINT);
 #elif INTEGRATOR_TYPE == 1 // Simpson
@@ -429,7 +429,7 @@ template <typename Integrand> auto integrator(const Integrand& integrand, double
 }
 
 // wrapper function, used for loop
-template <typename Integrand> auto integrator(const Integrand& integrand, double a, double b, double w) -> comp {
+template <typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w) -> comp {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     return integrator_riemann(integrand, nINT);
 #elif INTEGRATOR_TYPE == 1 // Simpson
