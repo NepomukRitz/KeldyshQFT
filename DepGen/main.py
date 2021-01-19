@@ -1,7 +1,7 @@
 from transformations import Trafo, generate_full_group, CompositeTrafo, generate_orbit
 import networkx as nx
 import matplotlib.pyplot as plt
-from diagram import generate_diagrams, establish_dictionary, ParityTrafo, spin_combinations
+from diagram import generate_diagrams, establish_dictionary, ParityTrafo, spin_combinations, e
 
 MF = True # Matsubara formalism? (False for Keldysh formalism)
 
@@ -16,9 +16,10 @@ if __name__ == '__main__':
     tc = Trafo(4)
     ts = Trafo(5)
     tph = Trafo(6)
+    tr = Trafo(7)
 
     # Define the set of transformations to generate the group
-    generators = [t0, t1, t2, t3, tc, tph]
+    generators = [t0, t1, t2, t3, tc, tph, tr]
 
     # Generate full group of T transformations and the full set of diagrams it will operate on
     symmetry_group = generate_full_group(generators)
@@ -45,7 +46,7 @@ if __name__ == '__main__':
                 if transformed.get_spin_indices() not in spin_combinations:
                     # False evaluation implies need for spin flip.
                     # Keep track of spin-flip transformation in redefinition of trafo
-                    trafo = CompositeTrafo(trafo, ts)
+                    trafo = CompositeTrafo(ts, trafo)
                     transformed = trafo.T(diagram)
 
                 # Check if transformed diagram has already been visited
@@ -54,10 +55,11 @@ if __name__ == '__main__':
                     dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
                     #G.add_edge(diagram.generate_key(), transformed.generate_key(), label=str(trafo))
 
+
+                if not MF:
                 # Generate parity group for the transformed diagram
                 parity_group = transformed.parity_group()
 
-                if not MF:
                     # Evaluate orbit of the parity group of the transformed diagram
                     for parity_trafo in parity_group[1::]:
 
@@ -71,10 +73,12 @@ if __name__ == '__main__':
 
 
     # Print out dependencies dictionary
+    iter = 0
     for key, value in dependencies.items():
         # If length of list at given key is one, it was marked with T0 and is, hence, independent
         if len(value) == 1:
-            print("{} is independent!".format(key))
+            print(iter, ": {} \t\t is independent!".format(key))
+            iter +=1
             continue
 
         # If first entry of value is a parity transformation, use the transformed diagram as key. Set value at new key
@@ -88,19 +92,38 @@ if __name__ == '__main__':
         # If length of value is 1 at this point, key and key_p are related through a parity trafo AND key_p is
         # independent. Hence, print only equality
         if len(value) == 1:
-            print("{} = {}".format(key, key_p))
+            print(iter, ": {}\t = {}".format(key, key_p))
 
         # If not, key is related either through a P transformation to a diagram beforehand transformed with a T trafo OR
         # it is related through a T transformation to an independent component.
         else:
-            print("{} = {} {}".format(key, value[0], value[1]))
-
+            print(iter, ": {} =\t {} {}".format(key, value[0], value[1]))
+        iter +=1
 
 # print number of independent components:
 print("There are {} independent diagrammatic contributions out of a total of {}.".format(num_indep, len(all_diagrams)))
+print((e.channel, e.diag_class, e.indices, e.sign_omega, e.sign_nu, e.sign_nup, e.exchange_nus))
+if (e.channel, e.diag_class, e.indices, e.sign_omega, e.sign_nu, e.sign_nup, e.exchange_nus) in  [('a', [1, 1], [('a1', 's'), ('a2', 'b'), ('a3', 's'), ('a4', 'b')], 1, 1, 1, False)]:
+    print('yaaas!')
+
+print([str(trafo) for trafo in symmetry_group])
 
 # Generate a graph containing the orbit of a diagram
-diagram = all_diagrams[20]
+plt.figure(1)
+diagram = all_diagrams[42]
+print(diagram)
+G = generate_orbit(diagram,all_diagrams,symmetry_group,MF)
+pos = nx.spring_layout(G)
+for p in pos:  # raise text positions
+    pos[p][1] += 0.07
+nx.draw(G, pos, font_size=16, with_labels=True)
+nx.draw_networkx_edge_labels(G, pos)
+plt.isinteractive()
+#plt.show()
+
+# Generate a graph containing the orbit of a diagram
+plt.figure(2)
+diagram = all_diagrams[48]
 print(diagram)
 G = generate_orbit(diagram,all_diagrams,symmetry_group,MF)
 pos = nx.spring_layout(G)

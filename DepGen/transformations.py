@@ -12,7 +12,14 @@ class Trafo:
         --- Returns ---
             Initialized Trafo object with a calculated id """
         self.i = i
+        self.channel = self.T(e).channel
         self.id = self.T(e).indices
+
+        self.diag_class = self.T(e).diag_class
+        self.sign_omega = self.T(e).sign_omega
+        self.sign_nu = self.T(e).sign_nu
+        self.sign_nup = self.T(e).sign_nup
+        self.exchange_nus = self.T(e).exchange_nus
 
     def __str__(self):
         """ Print formatting. Prints Trafo as Ti """
@@ -147,7 +154,10 @@ class Trafo:
             else:
                 new_sign_nu *= -1
                 new_sign_nup *= -1
-
+        if self.i == 7:
+            new_sign_omega *= -1
+            new_sign_nu *= -1
+            new_sign_nup *= -1
 
 
         return new_sign_omega, new_sign_nu, new_sign_nup, new_exchange_nus
@@ -163,7 +173,14 @@ class CompositeTrafo:
             Initialized CompositeTrafo object, with id set by the action of trafo2 and then of trafo 1 """
         self.trafo1 = trafo1
         self.trafo2 = trafo2
+        self.channel = trafo1.T(trafo2.T(e)).channel
+        self.diag_class = trafo1.T(trafo2.T(e)).diag_class
         self.id = trafo1.T(trafo2.T(e)).indices
+
+        self.sign_omega = trafo1.T(trafo2.T(e)).sign_omega
+        self.sign_nu = trafo1.T(trafo2.T(e)).sign_nu
+        self.sign_nup = trafo1.T(trafo2.T(e)).sign_nup
+        self.exchange_nus = trafo1.T(trafo2.T(e)).exchange_nus
 
     def __str__(self):
         """Print formatting. Prints trafos according to operation order"""
@@ -188,7 +205,10 @@ def generate_full_group(group: list):
         List of all possible, distinct combinations of symmetry transformations """
 
     # List of ids of transformations already in the group
-    ids = [trafo.id for trafo in group]
+    ids = [(trafo.channel, trafo.diag_class, trafo.id ,trafo.sign_omega, trafo.sign_nu, trafo.sign_nup,
+            trafo.exchange_nus) for trafo in group]
+    for i in range(len(ids)):
+        print(ids[i] )
 
     # Group completion step
     done = False
@@ -198,11 +218,19 @@ def generate_full_group(group: list):
         for trafo1 in group:
             for trafo2 in group:
                 new_trafo = CompositeTrafo(trafo1, trafo2)
+                #print(new_trafo.channel, new_trafo.diag_class, new_trafo.id ,new_trafo.sign_omega, new_trafo.sign_nu,
+                #      new_trafo.sign_nup, new_trafo.exchange_nus)
 
                 # If new_trafo is new, add it to to_add list and keep track of finding by adding id to list.
-                if new_trafo.id not in ids:
+                if (new_trafo.channel, new_trafo.diag_class, new_trafo.id, new_trafo.sign_omega, new_trafo.sign_nu,
+                        new_trafo.sign_nup, new_trafo.exchange_nus) not in ids:
                     to_add.append(new_trafo)
-                    ids.append(new_trafo.id)
+                    #print(new_trafo.channel, new_trafo.diag_class, new_trafo.id ,new_trafo.sign_omega, new_trafo.sign_nu,
+                    #  new_trafo.sign_nup, new_trafo.exchange_nus)
+                    print('append ', new_trafo)
+                    ids.append((new_trafo.channel, new_trafo.diag_class, new_trafo.id ,new_trafo.sign_omega,
+                                new_trafo.sign_nu, new_trafo.sign_nup, new_trafo.exchange_nus))
+                    print(ids[-1])
 
         # Extend the group
         group.extend(to_add)
@@ -226,11 +254,6 @@ def generate_orbit(start_diagram, all_diagrams, symmetry_group, MF):
     Dire
     '''
     # Create T transformation objects
-    t0 = Trafo(0)
-    t1 = Trafo(1)
-    t2 = Trafo(2)
-    t3 = Trafo(3)
-    tc = Trafo(4)
     ts = Trafo(5)
     # Generate a dictionary of all diagrams to store information on dependencies
     dependencies = establish_dictionary(all_diagrams)

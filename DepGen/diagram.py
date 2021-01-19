@@ -118,7 +118,7 @@ class Diagram:
             --- Returns ---
                 List of ParityTrafo objects """
         completed_group = []
-        if self.MF:
+        if not self.MF:
             L, R = False, False
             if self.diag_class[0] == 1:
                 L = True
@@ -132,7 +132,7 @@ class Diagram:
 
 
 # Define identity diagram. Useful to determine id of T transformations
-e = Diagram('.', [-1, -1], [('a1', 's'), ('a2', 's'), ('a3', 's'), ('a4', 's')])
+e = Diagram('a', [0, 1], [('a1', 's'), ('a2', 'b'), ('a3', 's'), ('a4', 'b')])
 
 
 class ParityTrafo:
