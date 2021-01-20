@@ -748,7 +748,13 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                             integrand_K1.save_integrand();
                         }*/
 #endif
-                        value += prefactor * (1. / (2. * M_PI * glb_i)) *
+                        value +=
+#ifdef KELDYSH_FORMALISM
+                                prefactor * (1. / (2. * M_PI * glb_i)) *
+#else
+                                prefactor * (1. / (-2. * M_PI)) *
+#endif
+
                                  integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
@@ -825,7 +831,12 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                         value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, vmin, vmax, -w/2., w/2.);
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
-                            value += prefactor * (1. / (2. * M_PI * glb_i)) *
+                            value +=
+#ifdef KELDYSH_FORMALISM
+                                prefactor * (1. / (2. * M_PI * glb_i)) *
+#else
+                                prefactor * (1. / (-2. * M_PI)) *
+#endif
                                      asymp_corrections_K2(vertex1, vertex2, -vmin, vmax, w, v, i0, i2,
                                                           i_in, channel); //Correction needed for the K2 class
                         }
@@ -886,7 +897,13 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 // initialize the integrand object and perform frequency integration
                 Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, part, diff);
 
-                value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
+                value =
+#ifdef KELDYSH_FORMALISM
+                                prefactor * (1. / (2. * M_PI * glb_i)) *
+#else
+                                prefactor * (1. / (-2. * M_PI)) *
+#endif
+                        integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
 
                 if (!diff) {
 #ifdef KELDYSH_FORMALISM

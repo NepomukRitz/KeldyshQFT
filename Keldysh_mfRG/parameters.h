@@ -16,7 +16,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define DIAG_CLASS 1
 
 #define N_LOOPS 1  // Number of loops
 
@@ -26,7 +26,7 @@ using namespace std;
 
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
-const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
+const double glb_mu = 0.0001;                     // Chemical potential // set to zero as energy offset
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 const double glb_Gamma = 1./5.;                // Hybridization of Anderson model
@@ -55,6 +55,7 @@ const double k_w_f = log(1. + glb_v_upper/w_a);
 const int nBOS = 51;
 const int nFER = 51;
 #elif GRID==2
+
 const double glb_w_upper = 20.;//20.;
 const double glb_w_lower = -glb_w_upper;        //Symmetric grid
 const double glb_v_upper = 20.;//20.;
