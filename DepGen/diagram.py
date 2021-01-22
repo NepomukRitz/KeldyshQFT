@@ -216,13 +216,13 @@ def generate_diagrams(mf=False):
         for spin in spin_combinations:
             for channel in channels:
                 for iK in range(KeldyshComponents):
+                    indices = []
+                    # Generate adequate Keldysh and spin index combination for indices
+                    for n in range(4, 0, -1):
+                        indices.append((str(int(iK % (2 ** n) / (2 ** (n - 1))) + 1), spin[-n]))
+
                     for freq in freqs:
-                        indices = []
-                        for n in range(4, 0, -1):
-                            # Generate adequate Keldysh and spin index combination for indices
-                            indices.append((str(int(iK % (2 ** n) / (2 ** (n - 1))) + 1), spin[-n]))
-                        diag = Diagram(channel, diag_class, indices, list(freq), mf)
-                        result.append(diag)
+                        result.append(Diagram(channel, diag_class, indices, list(freq), mf))
     return result
 
 
@@ -236,3 +236,11 @@ def establish_dictionary(diagrams: List[Diagram]):
     for diag in diagrams:
         d[diag.generate_key()] = []
     return d
+
+
+def causality_enforcer(diagrams: List[Diagram]):
+    for diag in diagrams:
+        if diag.get_keldysh_indices() == "2222":
+            return True
+
+    return False
