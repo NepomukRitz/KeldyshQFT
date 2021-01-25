@@ -207,8 +207,8 @@ def generate_full_group(group: list):
     # List of ids of transformations already in the group
     ids = [(trafo.channel, trafo.diag_class, trafo.id ,trafo.sign_omega, trafo.sign_nu, trafo.sign_nup,
             trafo.exchange_nus) for trafo in group]
-    for i in range(len(ids)):
-        print(ids[i] )
+    #for i in range(len(ids)):
+    #    print(ids[i] )
 
     # Group completion step
     done = False
@@ -227,10 +227,10 @@ def generate_full_group(group: list):
                     to_add.append(new_trafo)
                     #print(new_trafo.channel, new_trafo.diag_class, new_trafo.id ,new_trafo.sign_omega, new_trafo.sign_nu,
                     #  new_trafo.sign_nup, new_trafo.exchange_nus)
-                    print('append ', new_trafo)
+                    #print('append ', new_trafo)
                     ids.append((new_trafo.channel, new_trafo.diag_class, new_trafo.id ,new_trafo.sign_omega,
                                 new_trafo.sign_nu, new_trafo.sign_nup, new_trafo.exchange_nus))
-                    print(ids[-1])
+                    #print(ids[-1])
 
         # Extend the group
         group.extend(to_add)
@@ -244,22 +244,31 @@ def generate_full_group(group: list):
 
 
 
-def generate_orbit(start_diagram, all_diagrams, symmetry_group, MF):
+def generate_orbit(start_diagram, all_diagrams, symmetry_group, MF, with_freqs=False, only_diff_freq_args=False):
     '''
     Generate a graph containing the diagrammatic contributions which can be obtained from start_diagram
     by application of the symmetry_group
     --- Parameters ---
-
+    start_diagram:  Diagram
+    all_diagrams:   list of all diagrams
+    symmetry_group: list containing the full group of transformations
+    MF:             bool, True for Matsubara formalism, False for Keldysh formalism
+    with_freqs:     bool, True if the diagrammatic contributions should be distinguished by their frequencies
+                          False if the diagrammatic contributions are only distinguished by channel, diagrammatic class,
+                             and spin indices (in Keldysh: + by Keldysh indices)
+    only_diff_freq_args: bool, False: include in the returnd graph G all diagrammatic contributions,
+                               True:  only include diagrammatic contributions which differs from the start_diagram only
+                                       by the frequency arguments
     --- Return ---
-    Dire
+    G:  Graph representing the orbit of start_diagram under the action of the full group
     '''
     # Create T transformation objects
     ts = Trafo(5)
     # Generate a dictionary of all diagrams to store information on dependencies
-    dependencies = establish_dictionary(all_diagrams)
+    dependencies = establish_dictionary(all_diagrams, with_freqs=with_freqs)
     G = nx.DiGraph()
     orbit = [start_diagram]
-    orbit_keys = [start_diagram.generate_key()]
+    orbit_keys = [start_diagram.generate_key(with_freqs)]
     indeks = 0
     leng = 1
     while indeks < leng:
@@ -276,14 +285,18 @@ def generate_orbit(start_diagram, all_diagrams, symmetry_group, MF):
                     transformed = trafo.T(diagram)
 
                 # Check if transformed diagram has already been visited
-                if not transformed.generate_key() in orbit_keys:
+                if not transformed.generate_key(with_freqs) in orbit_keys \
+                        and not (only_diff_freq_args and transformed.generate_key(False)!=diagram.generate_key(False)):
                     # If not, mark dependency with both needed transformation and original diagram
-                    dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
+                    dependencies[transformed.generate_key(with_freqs)] = [trafo, diagram.generate_key(with_freqs)]
                     orbit.append(transformed)
-                    orbit_keys.append(transformed.generate_key())
+                    orbit_keys.append(transformed.generate_key(with_freqs))
                     leng += 1
-                if diagram.generate_key()!= transformed.generate_key() and not (diagram.generate_key(), transformed.generate_key()) in G.edges and not (transformed.generate_key(), diagram.generate_key()) in G.edges:
-                    G.add_edge(diagram.generate_key(), transformed.generate_key(), label=str(trafo))
+                if diagram.generate_key(with_freqs)!= transformed.generate_key(with_freqs) \
+                        and not (diagram.generate_key(with_freqs), transformed.generate_key(with_freqs)) in G.edges \
+                        and not (transformed.generate_key(with_freqs), diagram.generate_key(with_freqs)) in G.edges \
+                        and not (only_diff_freq_args and transformed.generate_key(False)!=diagram.generate_key(False)):
+                    G.add_edge(diagram.generate_key(with_freqs), transformed.generate_key(with_freqs), label=str(trafo))
 
                 # Generate parity group for the transformed diagram
                 parity_group = transformed.parity_group()
@@ -295,9 +308,10 @@ def generate_orbit(start_diagram, all_diagrams, symmetry_group, MF):
                         pair_diag = parity_trafo.T(transformed)
 
                         # Check if parity-related diagram has already been visited
-                        if not dependencies[pair_diag.generate_key()]:
+                        if not dependencies[pair_diag.generate_key(with_freqs)] \
+                                and not only_diff_freq_args:
                             # If not, mark it with parity trafo and transformed diagram from mapped
-                            dependencies[pair_diag.generate_key()] = [parity_trafo, transformed.generate_key()]
-                            G.add_edge(transformed.generate_key(), pair_diag.generate_key(), label='P')
+                            dependencies[pair_diag.generate_key(with_freqs)] = [parity_trafo, transformed.generate_key(with_freqs)]
+                            G.add_edge(transformed.generate_key(with_freqs), pair_diag.generate_key(with_freqs), label='P')
             indeks +=1
     return G

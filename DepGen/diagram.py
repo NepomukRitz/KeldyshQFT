@@ -4,9 +4,16 @@ from general_purpose import combine_into_list, conjugate_keldysh, str_to_list, m
 
 # List of allowed spin combinations
 # TODO Automatize generation of this list based on input symmetries
-spin_combinations = ["ssss", "sbsb", "sbbs"]
+# non-vanishing spin components (s stands for \sigma; b for the conjugate spin \bar{\sigma})
+spin_combinations = ["sbsb", "sbbs"] # ["ssss", "sbsb", "sbbs"]       <--- ENTER indices which distinguish the particles
 
 # List of diagrammatic classes. A 1 symbolizes a bare vertex on the corresponding side
+# "read as: a 1 on the left means: both legs on the left connect to the same bare vertex (analogous for the right)"
+# Hence we identify
+# [1 1]: K_1 class
+# [0 1]: K_2 class
+# [1 0]: K_2' class
+# [0 0]: K_3 class
 diag_classes = [[1, 1], [0, 1], [1, 0], [0, 0]]
 
 
@@ -78,8 +85,12 @@ class Diagram:
     #         new_indices.append((self.indices[i][0], new_spin_indices[i]))
     #     self.indices = new_indices
 
-    def generate_key(self):
+    def generate_key(self,with_freqs=False):
         """ Generates unique key for the diagram
+            --- Params ---
+            with_freqs: bool, True if the diagrammatic contributions should be distinguished by their frequencies
+                            False if the diagrammatic contributions are only distinguished by channel, diagrammatic class,
+                               and spin indices (in Keldysh: + by Keldysh indices)
             --- Returns ---
                 String with the unique id of the diagram """
         if self.exchange_nus==False:
@@ -102,12 +113,14 @@ class Diagram:
             dc = "3"
             freqargs += ","+my_sign(self.sign_nu)+ nu +", "+my_sign(self.sign_nup)+ nup
 
-        subscript = "{"+dc+", "+self.get_spin_indices() + "}"
+        subscript = dc+", "+self.get_spin_indices()
         superscript = "{}".format(self.channel)
         if not self.MF:
             superscript += ",{}".format(self.get_keldysh_indices())
         key = "$K_{}^{}".format("{"+subscript+"}", "{"+superscript+"}")
-        key += " ({})$".format(freqargs)
+        if with_freqs:
+            key += " ({})".format(freqargs)
+        key += "$"
         #if self.complconj:
         #    key += "^*"
 
@@ -187,8 +200,13 @@ class ParityTrafo:
         return Diagram(diagram.channel, diagram.diag_class, new_indices,diagram.MF)
 
 
-def generate_diagrams(MF=False):
+def generate_diagrams(MF=False, with_freqs=False):
     """ Function that generates the complete set of diagrams
+    --- Params ---
+        MF:         bool, True for Matsubara formalism, False for Keldysh formalism
+        with_freqs: bool, True if the diagrammatic contributions should be distinguished by their frequencies
+                          False if the diagrammatic contributions are only distinguished by channel, diagrammatic class,
+                             and spin indices (in Keldysh: + by Keldysh indices)
     --- Returns ---
     List of all possible diagrams """
     if MF:
@@ -209,21 +227,32 @@ def generate_diagrams(MF=False):
                         for sign_nu in [1, -1]:
                             for sign_nup in [1, -1]:
                                 for exchange_nus in [False, True]:
-                                    diag = Diagram(channel, diag_class, indices, MF, sign_omega, sign_nu,  sign_nup, exchange_nus )
-                                    if not diag.generate_key() in result_keys:
+                                    diag = Diagram(channel, diag_class, indices, MF, sign_omega, sign_nu, sign_nup, exchange_nus)
+                                    if not diag.generate_key(with_freqs) in result_keys:
                                         result.append(diag)
                                         result_keys.append(diag.generate_key())
     return result
 
 
 
-def establish_dictionary(diagrams: List[Diagram]):
+def establish_dictionary(diagrams: List[Diagram], with_freqs=False):
     """Establishes dictionary for storage of dependencies
     --- Params ---
-        diagrams: list of Diagram objects
+        diagrams:   list of Diagram objects
+        with_freqs: bool, True if the diagrammatic contributions should be distinguished by their frequencies
+                          False if the diagrammatic contributions are only distinguished by channel, diagrammatic class,
+                             and spin indices (in Keldysh: + by Keldysh indices)
     --- Returns ---
         A dictionary with empty lists as values for each diagram """
     d = {}
     for diag in diagrams:
-        d[diag.generate_key()] = {}
+        d[diag.generate_key(with_freqs)] = {}
     return d
+
+
+def causality_enforcer(diagrams: List[Diagram]):
+    for diag in diagrams:
+        if diag.get_keldysh_indices() == "2222":
+            return True
+
+    return False
