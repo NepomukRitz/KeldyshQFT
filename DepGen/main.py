@@ -3,7 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from diagram import generate_diagrams, establish_dictionary, ParityTrafo, spin_combinations, e, causality_enforcer
 
-MF = True           # Matsubara formalism? (False for Keldysh formalism)                         <-------ENTER bool !!!
+MF = False           # Matsubara formalism? (False for Keldysh formalism)                         <-------ENTER bool !!!
 WITH_FREQS = False  # Should the diagrammatic contributions be distinguished by their frequency arguments? (And should
                         # they be printed?)
 
@@ -69,6 +69,7 @@ if __name__ == '__main__':
                     transformed = trafo.T(p_diagram)
 
                     # Check if transformed diagram has already been visited
+                    #print(transformed.generate_key(with_freqs=WITH_FREQS))
                     if not dependencies[transformed.generate_key(with_freqs=WITH_FREQS)]:
                         # If not, mark dependency with both needed transformation and original diagram
                         if eq_to_zero:
@@ -104,7 +105,7 @@ print("There are {} independent diagrammatic contributions out of a total of {}.
 
 # Generate a graph containing the orbit of a diagram
 print()
-DiagNumber = 0                      # number of Diagram whose orbit should be generated        <-------ENTER number !!!
+DiagNumber = 304                      # number of Diagram whose orbit should be generated        <-------ENTER number !!!
 plt.figure(1)
 diagram = all_diagrams[DiagNumber]  # Diagram whose orbit should be generated
 print("Figure 1 shows the orbit of the diagrammatic contribution ", diagram, " under the group action of full_group. "
@@ -122,10 +123,10 @@ plt.isinteractive()
 
 # Generate a graph containing the orbit of a diagram
 plt.figure(2)
-diagram = all_diagrams[DiagNumber]
+#diagram = all_diagrams[DiagNumber]
 print("Figure 2 shows the orbit of the diagrammatic contribution ", diagram, " under the group action of full_group. "
                                                                              "(shows all diagrammatic contributions in the orbit)")
-G = generate_orbit(diagram,all_diagrams,symmetry_group, MF, with_freqs=True, only_diff_freq_args=False)
+G = generate_orbit(diagram,all_diagrams,symmetry_group, MF, with_freqs=False, only_diff_freq_args=False)
 pos = nx.spring_layout(G)
 for p in pos:  # raise text positions
     pos[p][1] += 0.07

@@ -1,5 +1,5 @@
 from typing import List
-from diagram import Diagram, e, establish_dictionary, spin_combinations
+from diagram import Diagram, e, establish_dictionary, spin_combinations, causality_enforcer
 import networkx as nx
 from general_purpose import conjugate_spin
 
@@ -262,10 +262,12 @@ def generate_orbit(start_diagram, all_diagrams, symmetry_group, MF, with_freqs=F
     --- Return ---
     G:  Graph representing the orbit of start_diagram under the action of the full group
     '''
+    #if not with_freqs and only_diff_freq_args:
+     #   raise ValueError("only_diff_freq_args and only be True if with_freqs is True!")
     # Create T transformation objects
     ts = Trafo(5)
     # Generate a dictionary of all diagrams to store information on dependencies
-    dependencies = establish_dictionary(all_diagrams, with_freqs=with_freqs)
+    dependencies = establish_dictionary(all_diagrams, with_freqs)
     G = nx.DiGraph()
     orbit = [start_diagram]
     orbit_keys = [start_diagram.generate_key(with_freqs)]
@@ -312,6 +314,12 @@ def generate_orbit(start_diagram, all_diagrams, symmetry_group, MF, with_freqs=F
                                 and not only_diff_freq_args:
                             # If not, mark it with parity trafo and transformed diagram from mapped
                             dependencies[pair_diag.generate_key(with_freqs)] = [parity_trafo, transformed.generate_key(with_freqs)]
+                            orbit.append(pair_diag)
+                            orbit_keys.append(pair_diag.generate_key(with_freqs))
+                            leng += 1
+                        if pair_diag.generate_key(with_freqs) != transformed.generate_key(with_freqs) \
+                                and not (
+                                only_diff_freq_args and transformed.generate_key(False) != pair_diag.generate_key(False)):
                             G.add_edge(transformed.generate_key(with_freqs), pair_diag.generate_key(with_freqs), label='P')
             indeks +=1
     return G

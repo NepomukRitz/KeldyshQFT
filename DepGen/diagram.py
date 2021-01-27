@@ -93,12 +93,16 @@ class Diagram:
                                and spin indices (in Keldysh: + by Keldysh indices)
             --- Returns ---
                 String with the unique id of the diagram """
-        if self.exchange_nus==False:
-            nu  = "v"
-            nup = "v\'"
+        if self.diag_class == [0, 0]:
+            if self.exchange_nus==False:
+                nu  = "v"
+                nup = "v\'"
+            else:
+                nup = "v"
+                nu  = "v\'"
         else:
+            nu = "v"
             nup = "v"
-            nu  = "v\'"
         freqargs =  my_sign(self.sign_omega) + "w"
         if self.diag_class == [1, 1]:
             dc = "1"
@@ -199,6 +203,32 @@ class ParityTrafo:
         # Return new, transformed diagram
         return Diagram(diagram.channel, diagram.diag_class, new_indices,diagram.MF)
 
+def generate_frequencies(diag_class: List[int]):
+    """
+    This function generates frequencies corresponding to input diag_class
+    :param diag_class: list of integers determining the diagrammatic class
+    :return: List of lists of int
+    """
+    # Frequencies handlers
+    no_dep = [+1]
+    pm = [+1, -1]
+
+    freqs = [pm]    # All diag classes depend on plus/minus omega
+
+    # Dependency on nu and nu'
+    for i in range(2):
+        if diag_class[i]:
+            freqs.append(no_dep)
+        else:
+            freqs.append(pm)
+    if diag_class == [0, 0]:
+        freqs.append([False, True])
+    else:
+        freqs.append([False])
+
+
+
+    return freqs
 
 def generate_diagrams(MF=False, with_freqs=False):
     """ Function that generates the complete set of diagrams
@@ -223,14 +253,15 @@ def generate_diagrams(MF=False, with_freqs=False):
                     for n in range(4, 0, -1):
                         # Generate adequate Keldysh and spin index combination for indices
                         indices.append((str(int(iK % (2 ** n) / (2 ** (n - 1))) + 1), spin[-n]))
-                    for sign_omega in [1, -1]:
-                        for sign_nu in [1, -1]:
-                            for sign_nup in [1, -1]:
-                                for exchange_nus in [False, True]:
+                    freqs = generate_frequencies(diag_class)
+                    for sign_omega in freqs[0]:
+                        for sign_nu in freqs[1]:
+                            for sign_nup in freqs[2]:
+                                for exchange_nus in freqs[3]:
                                     diag = Diagram(channel, diag_class, indices, MF, sign_omega, sign_nu, sign_nup, exchange_nus)
                                     if not diag.generate_key(with_freqs) in result_keys:
                                         result.append(diag)
-                                        result_keys.append(diag.generate_key())
+                                        result_keys.append(diag.generate_key(with_freqs))
     return result
 
 
