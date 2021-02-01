@@ -21,8 +21,8 @@ template <typename Q> void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex
 
 template <typename Q> void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammatbar_C, const State<Q>& Psi, const Propagator& G);
 
-template <typename Q> auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>;
-template <typename Q> auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>;
+template <typename Q> auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>;
+template <typename Q> auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>;
 template <typename Q> auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>;
 template <typename Q> auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>;
 
@@ -209,6 +209,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
     Vertex<Q> dGammatbar_C(n_spin);
+    dGammatbar_C.set_frequency_grid(Psi.vertex);
 #endif
 
     for(int i=3; i<N_LOOPS; i++){
@@ -252,28 +253,32 @@ template <typename Q>
 void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G, const Propagator& dG){
 
     // Vertex flow
-    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 'a', true, '.');  // Differentiated bubble in the a-channel
-    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 'p', true, '.');  // Differentiated bubble in the p-channel
-    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 't', true, '.');  // Differentiated bubble in the t-channel
+    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 'a', true);  // Differentiated bubble in the a-channel
+    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 'p', true);  // Differentiated bubble in the p-channel
+    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, 't', true);  // Differentiated bubble in the t-channel
 }
 
 template <typename Q>
-auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>{
+auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>{
     Vertex<Q> dGammaL(n_spin);
+    dGammaL.set_frequency_grid(PsiVertex);
+    dPsiVertex.set_Ir(true); // only take part irreducible in channel r
 
-    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 'a', false, 'L');
-    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 'p', false, 'L');
-    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 't', false, 'L');
+    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 'a', false);
+    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 'p', false);
+    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 't', false);
 
     return dGammaL;
 }
 template <typename Q>
-auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>{
+auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>{
     Vertex<Q> dGammaR(n_spin);
+    dGammaR.set_frequency_grid(PsiVertex);
+    dPsiVertex.set_Ir(true); // only take part irreducible in channel r
 
-    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 'a', false, 'R');
-    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 'p', false, 'R');
-    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 't', false, 'R');
+    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 'a', false);
+    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 'p', false);
+    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 't', false);
 
     return dGammaR;
 }
@@ -281,9 +286,10 @@ auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, 
 template <typename Q>
 auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
     Vertex<Q> dGamma_C_ap(n_spin);
+    dGamma_C_ap.set_frequency_grid(PsiVertex);
 
-    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'a', false, 'L');
-    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'p', false, 'L');
+    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'a', false);
+    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'p', false);
 
     return dGamma_C_ap;
 }
@@ -291,7 +297,8 @@ auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, 
 template <typename Q>
 auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
     Vertex<Q> dGamma_C_t(n_spin);
-    bubble_function(dGamma_C_t, PsiVertex, dGammaL, G, G, 't', false, 'L');
+    dGamma_C_t.set_frequency_grid(PsiVertex);
+    bubble_function(dGamma_C_t, PsiVertex, dGammaL, G, G, 't', false);
     return dGamma_C_t;
 }
 

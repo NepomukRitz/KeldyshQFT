@@ -28,6 +28,8 @@ class FrequencyGrid {
 public:
     int N_w;
     double w_upper, w_lower, W_scale;
+    double U_factor = 10./3.;
+    double Delta_factor = 10.;
     rvec w;
 
     FrequencyGrid(char type_in, unsigned int diag_class_in) : type(type_in), diag_class(diag_class_in) {
@@ -39,12 +41,16 @@ public:
                         w_upper = glb_w_upper;
                         w_lower = glb_w_lower;
                         W_scale = glb_W_scale;
+                        U_factor = 5./3.;
+                        Delta_factor = 5.;
                         break;
                     case 2:
                         N_w = nBOS2;
                         w_upper = glb_w2_upper;
                         w_lower = glb_w2_lower;
                         W_scale = glb_W2_scale;
+                        U_factor = 15./3.;
+                        Delta_factor = 15.;
                         break;
                     case 3:
                         N_w = nBOS3;
@@ -68,6 +74,8 @@ public:
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
+                        U_factor = 20./3.;
+                        Delta_factor = 20.;
                         break;
                     case 3:
                         N_w = nFER3;
@@ -85,21 +93,18 @@ public:
     };
 
     FrequencyGrid(char type, unsigned int diag_class, double Lambda) : FrequencyGrid(type, diag_class) {
-        w_upper *= scale_factor(Lambda);
-        w_lower *= scale_factor(Lambda);
-        W_scale *= scale_factor(Lambda);
-        initialize_grid();
+        rescale_grid(Lambda);
     };
 
     auto scale_factor(double Lambda) -> double;
     void initialize_grid();
     void initialize_grid(double scale);
-    void rescale_grid(double Lambda1, double Lambda2);
+    void rescale_grid(double Lambda);
     auto fconv(double w_in) const -> int;
 };
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
-    return (1. + Lambda / glb_Gamma);
+    return max(U_factor*glb_U, Delta_factor*(Lambda+glb_Gamma)/2.);
 }
 
 void FrequencyGrid::initialize_grid() {
@@ -121,11 +126,8 @@ void FrequencyGrid::initialize_grid(double scale) {
     initialize_grid();
 }
 
-void FrequencyGrid::rescale_grid(double Lambda1, double Lambda2) {
-    w_upper *= scale_factor(Lambda2) / scale_factor(Lambda1);
-    w_lower *= scale_factor(Lambda2) / scale_factor(Lambda1);
-    W_scale *= scale_factor(Lambda2) / scale_factor(Lambda1);
-    initialize_grid();
+void FrequencyGrid::rescale_grid(double Lambda) {
+    initialize_grid(scale_factor(Lambda));
 }
 
 auto FrequencyGrid::fconv(double w_in) const -> int {
@@ -158,12 +160,12 @@ public:
                                          b_K3('b', 3, Lambda),
                                          f_K3('f', 3, Lambda) {};
 
-    void rescale_grid(double Lambda1, double Lambda2) {
-        b_K1.rescale_grid(Lambda1, Lambda2);
-        b_K2.rescale_grid(Lambda1, Lambda2);
-        f_K2.rescale_grid(Lambda1, Lambda2);
-        b_K3.rescale_grid(Lambda1, Lambda2);
-        f_K3.rescale_grid(Lambda1, Lambda2);
+    void rescale_grid(double Lambda) {
+        b_K1.rescale_grid(Lambda);
+        b_K2.rescale_grid(Lambda);
+        f_K2.rescale_grid(Lambda);
+        b_K3.rescale_grid(Lambda);
+        f_K3.rescale_grid(Lambda);
     }
 };
 
