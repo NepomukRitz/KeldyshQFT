@@ -104,21 +104,26 @@ class Trafo:
         new_freqs = freqs.copy()
 
         if len(freqs) > 0:
-
-            if self.i == 1 or self.i == 3:
+            if self.i == 1:
                 if channel == 'a' or channel == 't':
                     new_freqs[0] *= -1
                     new_freqs[1] = freqs[2]
                     new_freqs[2] = freqs[1]
                 else:  # channel p
-                    if self.i == 1:
-                        new_freqs[2] *= -1
-                    elif self.i == 3:
-                        new_freqs[1] *= -1
+                    new_freqs[2] *= -1
 
             elif self.i == 2:
                 if channel == 'p':
                     new_freqs[1] *= -1
+
+            elif self.i == 3:
+                if channel == 'a' or channel == 't':
+                    new_freqs[0] *= -1
+                    new_freqs[1] = freqs[2]
+                    new_freqs[2] = freqs[1]
+                else:  # channel p
+                    new_freqs[1] *= -1
+                    new_freqs[2] *= -1
 
             elif self.i == 4:
                 if channel == 'a' or channel == 'p':

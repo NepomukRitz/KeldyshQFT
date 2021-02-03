@@ -57,6 +57,11 @@ if __name__ == '__main__':
                             dependencies[transformed.generate_key()] = [0]
                         else:
                             dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
+                        continue
+
+                    # If it has been visited but with a more complex trafo, favor a simpler trafo
+                    if type(dependencies[transformed.generate_key()]) == CompositeTrafo and type(trafo) == Trafo:
+                        dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
 
     # Print out dependencies dictionary
     for key, value in dependencies.items():
