@@ -1,7 +1,6 @@
 from transformations import Trafo, generate_full_group, CompositeTrafo
-from diagram import generate_diagrams, establish_dictionary, ParityTrafo, spin_combinations, causality_enforcer
-
-MF = False  # Matsubara formalism? (False for Keldysh formalism)
+from diagram import generate_diagrams, establish_dictionary, ParityTrafo, causality_enforcer
+import global_parameters as gp
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -19,7 +18,7 @@ if __name__ == '__main__':
 
     # Generate full group of T transformations and the full set of diagrams it will operate on
     symmetry_group = generate_full_group(generators)
-    all_diagrams = generate_diagrams(MF)
+    all_diagrams = generate_diagrams()
 
     # Generate a dictionary of all diagrams to store information on dependencies
     dependencies = establish_dictionary(all_diagrams)
@@ -44,7 +43,7 @@ if __name__ == '__main__':
                 # Act on current diagram with whole T transformation group
                 for trafo in symmetry_group:
                     # Assert that spin sector is allowed
-                    if trafo.T(p_diagram).get_spin_indices() not in spin_combinations:
+                    if trafo.T(p_diagram).get_spin_indices() not in gp.spin_combinations:
                         # False evaluation implies need for spin flip.
                         trafo = CompositeTrafo(trafo, ts)
 
@@ -60,7 +59,7 @@ if __name__ == '__main__':
                         continue
 
                     # If it has been visited but with a more complex trafo, favor a simpler trafo
-                    if type(dependencies[transformed.generate_key()]) == CompositeTrafo and type(trafo) == Trafo:
+                    if type(dependencies[transformed.generate_key()][0]) == CompositeTrafo and type(trafo) == Trafo:
                         dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
 
     # Print out dependencies dictionary

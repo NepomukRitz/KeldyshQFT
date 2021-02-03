@@ -27,7 +27,7 @@ class Trafo:
         new_diag_class = self.transform_diag_class(diagram.diag_class, diagram.channel)
         new_indices = self.transform_indices(diagram.indices)
         new_freqs = self.transform_freqs(diagram.freqs, diagram.channel)
-        return Diagram(new_channel, new_diag_class, new_indices, new_freqs, diagram.mf)
+        return Diagram(new_channel, new_diag_class, new_indices, new_freqs)
 
     def transform_channel(self, channel):
         """Transforms the channel
