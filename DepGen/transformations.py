@@ -7,7 +7,7 @@ class Trafo:
     def __init__(self, i):
         """ Initialized a Trafo object
         --- Params ---
-            i: integer. 0, 1, 2, 3, 4 and 5 supported
+            i: integer. 0, 1, 2, 3, 4 and 5 and 6 supported
         --- Returns ---
             Initialized Trafo object with a calculated id """
         self.i = i
@@ -52,7 +52,7 @@ class Trafo:
         if self.i == 1 or self.i == 3:
             if channel == 'a' or channel == 't':
                 return [diag_class[1], diag_class[0]]
-        if self.i == 4:
+        if self.i == 4 or self.i == 6:
             if channel == 'a' or channel == 'p':
                 return [diag_class[1], diag_class[0]]
         return [diag_class[0], diag_class[1]]
@@ -76,7 +76,7 @@ class Trafo:
             new_indices[1] = indices[0]
             new_indices[0] = indices[1]
 
-        if self.i == 4:
+        if self.i == 4 or self.i == 6:
             new_indices[-2:] = indices[:2]
             new_indices[:2] = indices[-2:]
 

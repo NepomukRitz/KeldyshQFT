@@ -7,14 +7,19 @@ if __name__ == '__main__':
 
     # Create T transformation objects
     t0 = Trafo(0)
-    t1 = Trafo(1)
-    t2 = Trafo(2)
-    t3 = Trafo(3)
-    tc = Trafo(4)
-    ts = Trafo(5)
+    t1 = Trafo(1)       # Exchange of incoming legs
+    t2 = Trafo(2)       # Exchange of outgoing legs
+    t3 = Trafo(3)       # Exchange of incoming and outgoing legs
+    tc = Trafo(4)       # Complex conjugation
+    ts = Trafo(5)       # Spin flip
+    tph = Trafo(6)      # Particle-hole symmetry
 
     # Define the set of transformations to generate the group
-    generators = [t0, t1, t2, t3, tc]
+    if gp.matsubara:
+        tr = Trafo(7)  # Hamiltonian is real function of creation and annihilation operators
+        generators = [t0, t1, t2, t3, tc, tr]  # , tph]
+    else:
+        generators = [t0, t1, t2, t3, tc]  # , tph]
 
     # Generate full group of T transformations and the full set of diagrams it will operate on
     symmetry_group = generate_full_group(generators)
@@ -22,10 +27,12 @@ if __name__ == '__main__':
 
     # Generate a dictionary of all diagrams to store information on dependencies
     dependencies = establish_dictionary(all_diagrams)
+    num_indep = 0 
 
     # Erathostenes' Sieve-based labeling of dependencies
     for diagram in all_diagrams:
         if not dependencies[diagram.generate_key()]:
+            num_indep += 1
             # Get first diagrams related through P-trafo's, since they're exactly equal
             parity_group = diagram.parity_group()
 
@@ -63,17 +70,22 @@ if __name__ == '__main__':
                         dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
 
     # Print out dependencies dictionary
+    ii = 0
     for key, value in dependencies.items():
+        ii += 1
         if len(value) == 1:
-            print(f"{key} = 0")
+            print(f"{ii:04}: {key} = 0")
             continue
 
         if type(value[0]) == ParityTrafo:
-            print(f"{key} = {value[1]}")
+            print(f"{ii:04}: {key} = P {value[1]}")
 
         else:
             if value[0] == t0:
-                print(f"{key} is independent!")
+                print(f"{ii:04}: {key} is independent!")
                 continue
             else:
-                print(f"{key} = {value[0]} {value[1]}")
+                print(f"{ii:04}: {key} = {value[0]} {value[1]}")
+
+    # Print number of independent components:
+    print(f"There are {num_indep} independent diagrammatic contributions out of a total of {len(all_diagrams)}.")

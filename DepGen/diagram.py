@@ -1,12 +1,12 @@
 from typing import List
-from general_purpose import combine_into_list, conjugate_keldysh, str_to_list
+from general_purpose import combine_into_list, conjugate_keldysh, str_to_list, my_sign
 import global_parameters as gp
+import networkx as nx
 
 
 class Diagram:
-    # TODO Implement also prefactor ?
     def __init__(self, channel: str, diag_class: List[int], indices: List[tuple], freqs: List[int]):
-        """Initizalizes a diagram
+        """Initializes a diagram
             --- Params ---
                 channel: either 'a', 'p' or 't'
                 diag_class: 2-position list with 1's symbolizing bare vertex on corresponding side
@@ -61,19 +61,28 @@ class Diagram:
         """ Generates unique key for the diagram
             --- Returns ---
                 String with the unique id of the diagram """
+        freqargs = my_sign(self.freqs[0]) + "w"
         if self.diag_class == [1, 1]:
             dc = "1"
+            freqargs += ", , "
         elif self.diag_class == [0, 1]:
             dc = "2"
+            freqargs += ", " + my_sign(self.freqs[1]) + "v, "
         elif self.diag_class == [1, 0]:
-            dc = "2'"
+            dc = "2\'"
+            freqargs += ", ," + my_sign(self.freqs[2]) + "v'"
         else:
             dc = "3"
-        if gp.matsubara:
-            return f"K_{dc}^{self.channel} spin={self.get_spin_indices} freqs={self.freqs}"
-        else:
-            return f"K_{dc}^{self.channel} spin={self.get_spin_indices()} kel={self.get_keldysh_indices()} " \
-                   f"freqs={self.freqs}"
+            freqargs += ", " + my_sign(self.freqs[1]) + "v, " + my_sign(self.freqs[2]) + "v'"
+
+        subscript = "{" + dc + ", "+self.get_spin_indices() + "}"
+
+        superscript = "{" + f"{self.channel}"
+        if not gp.matsubara:
+            superscript += f",{self.get_keldysh_indices()}"
+        superscript += "}"
+
+        return f"$K_{subscript}^{superscript} ({freqargs}) $"
 
     def parity_group(self):
         """ Generates parity group respected by the diagram
