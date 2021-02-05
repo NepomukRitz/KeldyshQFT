@@ -13,3 +13,6 @@ channels = ['a', 'p', 't']
 
 # Matsubara or Keldysh formalism
 matsubara = False
+
+# With/without frequencies
+with_freqs = False

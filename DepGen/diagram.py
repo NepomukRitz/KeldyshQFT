@@ -82,7 +82,10 @@ class Diagram:
             superscript += f",{self.get_keldysh_indices()}"
         superscript += "}"
 
-        return f"$K_{subscript}^{superscript} ({freqargs}) $"
+        if gp.with_freqs:
+            return f"$K_{subscript}^{superscript} ({freqargs}) $"
+        else:
+            return f"$K_{subscript}^{superscript} $"
 
     def parity_group(self):
         """ Generates parity group respected by the diagram
@@ -188,7 +191,10 @@ def generate_frequencies(diag_class: List[int]):
         for v1 in freqs[1]:
             for v2 in freqs[2]:
                 if [w, v1, v2] not in result:
-                    result.append([w, v1, v2])
+                    if gp.with_freqs:
+                        result.append([w, v1, v2])
+                    else:
+                        result.append([0, 0, 0])
 
     return result
 

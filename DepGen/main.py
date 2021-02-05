@@ -27,12 +27,10 @@ if __name__ == '__main__':
 
     # Generate a dictionary of all diagrams to store information on dependencies
     dependencies = establish_dictionary(all_diagrams)
-    num_indep = 0 
 
     # Erathostenes' Sieve-based labeling of dependencies
     for diagram in all_diagrams:
         if not dependencies[diagram.generate_key()]:
-            num_indep += 1
             # Get first diagrams related through P-trafo's, since they're exactly equal
             parity_group = diagram.parity_group()
 
@@ -71,6 +69,7 @@ if __name__ == '__main__':
 
     # Print out dependencies dictionary
     ii = 0
+    num_indep = 0
     for key, value in dependencies.items():
         ii += 1
         if len(value) == 1:
@@ -83,9 +82,10 @@ if __name__ == '__main__':
         else:
             if value[0] == t0:
                 print(f"{ii:04}: {key} is independent!")
+                num_indep += 1
                 continue
             else:
                 print(f"{ii:04}: {key} = {value[0]} {value[1]}")
 
     # Print number of independent components:
-    print(f"There are {num_indep} independent diagrammatic contributions out of a total of {len(all_diagrams)}.")
+    print(f"There are {num_indep} independent diagrammatic contributions out of a total of {ii}.")
