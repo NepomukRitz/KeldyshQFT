@@ -1,6 +1,9 @@
 from transformations import Trafo, generate_full_group, CompositeTrafo
 from diagram import generate_diagrams, establish_dictionary, ParityTrafo, causality_enforcer
+from orbits_plotter import generate_orbit
 import global_parameters as gp
+import matplotlib.pyplot as plt
+import networkx as nx
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -89,3 +92,42 @@ if __name__ == '__main__':
 
     # Print number of independent components:
     print(f"There are {num_indep} independent diagrammatic contributions out of a total of {ii}.")
+
+    if gp.plot_orbits:
+        # Generate a graph containing the orbit of a diagram
+        print("\n")
+        DiagNumber = 304  # number of Diagram whose orbit should be generated        <-------ENTER number !!!
+        plt.figure(1)
+        diag = all_diagrams[DiagNumber]  # Diagram whose orbit should be generated
+        print(f"Figure 1 shows the orbit of the diagrammatic contribution {diag} under the group action of full_group"
+          " (only show diagrammatic contribution which differ from diagram solely by the frequency arguments).")
+
+        G = generate_orbit(diag, all_diagrams, symmetry_group, only_diff_freq_args=True)
+        pos = nx.spring_layout(G)
+        for p in pos:  # raise text positions
+            pos[p][1] += 0.07
+        nx.draw(G, pos, font_size=16, with_labels=True)
+        nx.draw_networkx_edge_labels(G, pos)
+        plt.suptitle(
+            f"Figure 1 shows the orbit of the diagrammatic contribution {diag} under the group action of full_group. "
+            "(only show diagrammatic contribution which differ from diagram solely by the frequency arguments)")
+        plt.isinteractive()
+        plt.show()
+
+        # Generate a graph containing the orbit of a diagram
+        plt.figure(2)
+        # diagram = all_diagrams[DiagNumber]
+        print(f"Figure 2 shows the orbit of the diagrammatic contribution {diag} under the group action of full_group. "
+              "(shows all diagrammatic contributions in the orbit)")
+        G = generate_orbit(diag, all_diagrams, symmetry_group, only_diff_freq_args=False)
+        pos = nx.spring_layout(G)
+        for p in pos:  # raise text positions
+            pos[p][1] += 0.07
+        nx.draw(G, pos, font_size=16, with_labels=True)
+        nx.draw_networkx_edge_labels(G, pos)
+        plt.suptitle(
+            f"Figure 2 shows the orbit of the diagrammatic contribution {diag} under the group action of full_group. "
+            "(shows all diagrammatic contributions in the orbit)")
+
+        plt.isinteractive()
+        plt.show()

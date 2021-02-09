@@ -16,3 +16,6 @@ matsubara = False
 
 # With/without frequencies
 with_freqs = False
+
+# Plot orbits or not
+plot_orbits = False
