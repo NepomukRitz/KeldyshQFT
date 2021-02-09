@@ -1,87 +1,133 @@
 from transformations import Trafo, generate_full_group, CompositeTrafo
-from diagram import generate_diagrams, establish_dictionary, ParityTrafo, spin_combinations
-
-MF = True # Matsubara formalism? (False for Keldysh formalism)
+from diagram import generate_diagrams, establish_dictionary, ParityTrafo, causality_enforcer
+from orbits_plotter import generate_orbit
+import global_parameters as gp
+import matplotlib.pyplot as plt
+import networkx as nx
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
     # Create T transformation objects
     t0 = Trafo(0)
-    t1 = Trafo(1)
-    t2 = Trafo(2)
-    t3 = Trafo(3)
-    tc = Trafo(4)
-    ts = Trafo(5)
+    t1 = Trafo(1)       # Exchange of incoming legs
+    t2 = Trafo(2)       # Exchange of outgoing legs
+    t3 = Trafo(3)       # Exchange of incoming and outgoing legs
+    tc = Trafo(4)       # Complex conjugation
+    ts = Trafo(5)       # Spin flip
+    tph = Trafo(6)      # Particle-hole symmetry
 
     # Define the set of transformations to generate the group
-    generators = [t0, t1, t2, t3, tc]
+    if gp.matsubara:
+        tr = Trafo(7)  # Hamiltonian is real function of creation and annihilation operators
+        generators = [t0, t1, t2, t3, tc, tr]  # , tph]
+    else:
+        generators = [t0, t1, t2, t3, tc]  # , tph]
 
     # Generate full group of T transformations and the full set of diagrams it will operate on
     symmetry_group = generate_full_group(generators)
-    all_diagrams = generate_diagrams(MF)
+    all_diagrams = generate_diagrams()
 
     # Generate a dictionary of all diagrams to store information on dependencies
     dependencies = establish_dictionary(all_diagrams)
 
     # Erathostenes' Sieve-based labeling of dependencies
-    # TODO Multiple visits to same diagram imply  consistency checks that can be checked with Trafo.ids equalities
     for diagram in all_diagrams:
-        # If diagram has not been visited, value at current key is an empty list
         if not dependencies[diagram.generate_key()]:
-            # Mark current diagram as independent i.e., related to itself through T0
-            dependencies[diagram.generate_key()] = [t0]
+            # Get first diagrams related through P-trafo's, since they're exactly equal
+            parity_group = diagram.parity_group()
 
-            # Act on current diagram with whole T transformation group
-            for trafo in symmetry_group:
-                transformed = trafo.T(diagram)
+            parity_diagrams = [diagram]
+            for p_trafo in parity_group:
+                parity_diagrams.append(p_trafo.T(diagram))
 
-                # Assert that spin sector is allowed i.e., spin of the transformed diagram is in the allowed spin combs
-                if transformed.get_spin_indices() not in spin_combinations:
-                    # False evaluation implies need for spin flip.
-                    # Keep track of spin-flip transformation in redefinition of trafo
-                    trafo = CompositeTrafo(trafo, ts)
-                    transformed = trafo.T(diagram)
+            eq_to_zero = causality_enforcer(parity_diagrams)
 
-                # Check if transformed diagram has already been visited
-                if not dependencies[transformed.generate_key()]:
-                    # If not, mark dependency with both needed transformation and original diagram
-                    dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
+            if not eq_to_zero:
+                for p_trafo in parity_group:
+                    dependencies[p_trafo.T(diagram).generate_key()] = [p_trafo, diagram.generate_key()]
 
-                # Generate parity group for the transformed diagram
-                parity_group = transformed.parity_group()
+            for p_diagram in parity_diagrams:
+                # Act on current diagram with whole T transformation group
+                for trafo in symmetry_group:
+                    # Assert that spin sector is allowed
+                    if trafo.T(p_diagram).get_spin_indices() not in gp.spin_combinations:
+                        # False evaluation implies need for spin flip.
+                        trafo = CompositeTrafo(trafo, ts)
 
-                # Evaluate orbit of the parity group of the transformed diagram
-                for parity_trafo in parity_group:
+                    transformed = trafo.T(p_diagram)
 
-                    pair_diag = parity_trafo.T(transformed)
+                    # Check if transformed diagram has already been visited
+                    if not dependencies[transformed.generate_key()]:
+                        # If not, mark dependency with both needed transformation and original diagram
+                        if eq_to_zero:
+                            dependencies[transformed.generate_key()] = [0]
+                        else:
+                            dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
+                        continue
 
-                    # Check if parity-related diagram has already been visited
-                    if not dependencies[pair_diag.generate_key()]:
-                        # If not, mark it with parity trafo and transformed diagram from mapped
-                        dependencies[pair_diag.generate_key()] = [parity_trafo, transformed.generate_key()]
+                    # If it has been visited but with a more complex trafo, favor a simpler trafo
+                    if type(dependencies[transformed.generate_key()][0]) == CompositeTrafo and type(trafo) == Trafo:
+                        dependencies[transformed.generate_key()] = [trafo, diagram.generate_key()]
 
     # Print out dependencies dictionary
+    ii = 0
+    num_indep = 0
     for key, value in dependencies.items():
-        # If length of list at given key is one, it was marked with T0 and is, hence, independent
+        ii += 1
         if len(value) == 1:
-            print("{} is independent!".format(key))
+            print(f"{ii:04}: {key} = 0")
             continue
 
-        # If first entry of value is a parity transformation, use the transformed diagram as key. Set value at new key
-        # to a list only containing the info of the corresponding key
         if type(value[0]) == ParityTrafo:
-            key_p = value[1]
-            # Reassignment of value changes length to either 1 for independent key_p or 2 for a key_p that has been
-            # transformed under a T trafo
-            value = dependencies[key_p]
+            print(f"{ii:04}: {key} = {value[1]}")
 
-        # If length of value is 1 at this point, key and key_p are related through a parity trafo AND key_p is
-        # independent. Hence, print only equality
-        if len(value) == 1:
-            print("{} = {}".format(key, key_p))
-
-        # If not, key is related either through a P transformation to a diagram beforehand transformed with a T trafo OR
-        # it is related through a T transformation to an independent component.
         else:
-            print("{} = {} {}".format(key, value[0], value[1]))
+            if value[0] == t0:
+                print(f"{ii:04}: {key} is independent!")
+                num_indep += 1
+                continue
+            else:
+                print(f"{ii:04}: {key} = {value[0]} {value[1]}")
+
+    # Print number of independent components:
+    print(f"There are {num_indep} independent diagrammatic contributions out of a total of {ii}.")
+
+    if gp.plot_orbits:
+        # Generate a graph containing the orbit of a diagram
+        print("\n")
+        DiagNumber = 304  # number of Diagram whose orbit should be generated        <-------ENTER number !!!
+        plt.figure(1)
+        diag = all_diagrams[DiagNumber]  # Diagram whose orbit should be generated
+        print(f"Figure 1 shows the orbit of the diagrammatic contribution {diag} under the group action of full_group"
+          " (only show diagrammatic contribution which differ from diagram solely by the frequency arguments).")
+
+        G = generate_orbit(diag, all_diagrams, symmetry_group, only_diff_freq_args=True)
+        pos = nx.spring_layout(G)
+        for p in pos:  # raise text positions
+            pos[p][1] += 0.07
+        nx.draw(G, pos, font_size=16, with_labels=True)
+        nx.draw_networkx_edge_labels(G, pos)
+        plt.suptitle(
+            f"Figure 1 shows the orbit of the diagrammatic contribution {diag} under the group action of full_group. "
+            "(only show diagrammatic contribution which differ from diagram solely by the frequency arguments)")
+        plt.isinteractive()
+        plt.show()
+
+        # Generate a graph containing the orbit of a diagram
+        plt.figure(2)
+        # diagram = all_diagrams[DiagNumber]
+        print(f"Figure 2 shows the orbit of the diagrammatic contribution {diag} under the group action of full_group. "
+              "(shows all diagrammatic contributions in the orbit)")
+        G = generate_orbit(diag, all_diagrams, symmetry_group, only_diff_freq_args=False)
+        pos = nx.spring_layout(G)
+        for p in pos:  # raise text positions
+            pos[p][1] += 0.07
+        nx.draw(G, pos, font_size=16, with_labels=True)
+        nx.draw_networkx_edge_labels(G, pos)
+        plt.suptitle(
+            f"Figure 2 shows the orbit of the diagrammatic contribution {diag} under the group action of full_group. "
+            "(shows all diagrammatic contributions in the orbit)")
+
+        plt.isinteractive()
+        plt.show()

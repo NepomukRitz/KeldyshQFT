@@ -1,31 +1,23 @@
 from typing import List
-from general_purpose import combine_into_list, conjugate_keldysh, str_to_list
-
-# List of allowed spin combinations
-# TODO Automatize generation of this list based on input symmetries
-spin_combinations = ["ssss", "sbsb", "sbbs"]
-
-# List of diagrammatic classes. A 1 symbolizes a bare vertex on the corresponding side
-diag_classes = [[1, 1], [0, 1], [1, 0], [0, 0]]
+from general_purpose import combine_into_list, conjugate_keldysh, str_to_list, my_sign
+import global_parameters as gp
+import networkx as nx
 
 
 class Diagram:
-    def __init__(self, channel: str, diag_class: List[int], indices: List[tuple], aMF=False):
-        """Initizalizes a diagram
+    def __init__(self, channel: str, diag_class: List[int], indices: List[tuple], freqs: List[int]):
+        """Initializes a diagram
             --- Params ---
                 channel: either 'a', 'p' or 't'
                 diag_class: 2-position list with 1's symbolizing bare vertex on corresponding side
                 indices: 4-position list with 2-tuples with Keldysh and spin indices for each leg of the diagram
-                MF: Matsubara formalism? (False for Keldysh formalism)
             --- Returns ---
                 An initialized diagram
-
-            --- To Do's ---
-                TODO Implement support of frequencies """
+             """
         self.channel = channel
         self.diag_class = diag_class
         self.indices = indices
-        self.MF = aMF
+        self.freqs = freqs
 
     def __str__(self):
         """ Print formatting function. Currently set to print key """
@@ -69,26 +61,43 @@ class Diagram:
         """ Generates unique key for the diagram
             --- Returns ---
                 String with the unique id of the diagram """
+        freqargs = my_sign(self.freqs[0]) + "w"
         if self.diag_class == [1, 1]:
             dc = "1"
+            freqargs += ", , "
         elif self.diag_class == [0, 1]:
             dc = "2"
+            freqargs += f", {my_sign(self.freqs[1])}v, "
         elif self.diag_class == [1, 0]:
-            dc = "2'"
+            dc = "2\'"
+            freqargs += f", , {my_sign(self.freqs[2])}v'"
         else:
             dc = "3"
-        if self.MF:
-            return "K_{}^{} spin_comp = {}".format(dc, self.channel, self.get_spin_indices())
+            if gp.param == "bosonic":
+                v = 'f'
+            else:
+                v = 'v'
+            freqargs += f", {my_sign(self.freqs[1])}{v}, {my_sign(self.freqs[2])}{v}'"
+
+        subscript = "{" + f"{dc},{self.get_spin_indices()}" + "}"
+
+        superscript = "{" + f"{self.channel}"
+        if not gp.matsubara:
+            superscript += f",{self.get_keldysh_indices()}"
+        superscript += "}"
+
+        if gp.with_freqs:
+            return f"$K_{subscript}^{superscript} ({freqargs}) $"
         else:
-            return "K_{}^{} spin_comp = {} kel_comp = {}".format(dc, self.channel, self.get_spin_indices(),
-                                                             self.get_keldysh_indices())
+            return f"$K_{subscript}^{superscript} $"
 
     def parity_group(self):
         """ Generates parity group respected by the diagram
             --- Returns ---
                 List of ParityTrafo objects """
         completed_group = []
-        if self.MF:
+
+        if not gp.matsubara:  # Parity group exists only in Keldysh formalism!
             L, R = False, False
             if self.diag_class[0] == 1:
                 L = True
@@ -102,7 +111,7 @@ class Diagram:
 
 
 # Define identity diagram. Useful to determine id of T transformations
-e = Diagram('.', [-1, -1], [('a1', 's'), ('a2', 's'), ('a3', 's'), ('a4', 's')])
+e = Diagram('.', [-1, -1], [('a1', 's'), ('a2', 's'), ('a3', 's'), ('a4', 's')], [])
 
 
 class ParityTrafo:
@@ -115,6 +124,10 @@ class ParityTrafo:
                 An initialized ParityTrafo """
         self.channel = channel
         self.side = side
+
+    def __str__(self):
+        """ Print formatting. Prints Trafo as T^r_{side} """
+        return f"P^{self.channel}_{self.side}"
 
     def T(self, diagram: Diagram):
         """Transformation operation. Uses same name as T transformations
@@ -154,28 +167,72 @@ class ParityTrafo:
         new_indices = combine_into_list(new_keldysh_indices, diagram.get_spin_indices())
 
         # Return new, transformed diagram
-        return Diagram(diagram.channel, diagram.diag_class, new_indices,diagram.MF)
+        return Diagram(diagram.channel, diagram.diag_class, new_indices, diagram.freqs)
 
 
-def generate_diagrams(MF=False):
+def generate_frequencies(diag_class: List[int]):
+    """
+    This function generates frequencies corresponding to input diag_class
+    :param diag_class: list of integers determining the diagrammatic class
+    :return: List of lists of int
+    """
+    # Frequencies handlers
+    no_dep = [0, 0]
+    pm = [+1, -1]
+
+    freqs = [pm]    # All diag classes depend on plus/minus omega
+
+    # Dependency on nu and nu'
+    for i in range(2):
+        if diag_class[i]:
+            freqs.append(no_dep)
+        else:
+            freqs.append(pm)
+
+    result = []
+
+    for w in freqs[0]:
+        for v1 in freqs[1]:
+            for v2 in freqs[2]:
+                if [w, v1, v2] not in result:
+                    if gp.with_freqs:
+                        result.append([w, v1, v2])
+                    else:
+                        result.append([0, 0, 0])
+
+    return result
+
+
+def generate_diagrams():
     """ Function that generates the complete set of diagrams
     --- Returns ---
     List of all possible diagrams """
-    if MF:
+
+    # Assignment of the number of Keldysh components
+    if gp.matsubara:
         KeldyshComponents = 1
     else:
         KeldyshComponents = 16
+
+    # Container for all possible diagrams
     result = []
-    for diag_class in diag_classes:
-        for spin in spin_combinations:
-            for channel in ['a', 'p', 't']:
+
+    # Start generation of diagrams
+    for diag_class in gp.diag_classes:
+
+        # Diagrammatic class determines frequencies.
+        freqs = generate_frequencies(diag_class)
+
+        for spin in gp.spin_combinations:
+            for channel in gp.channels:
                 for iK in range(KeldyshComponents):
                     indices = []
+                    # Generate adequate Keldysh and spin index combination for indices
                     for n in range(4, 0, -1):
-                        # Generate adequate Keldysh and spin index combination for indices
                         indices.append((str(int(iK % (2 ** n) / (2 ** (n - 1))) + 1), spin[-n]))
-                    diag = Diagram(channel, diag_class, indices,MF)
-                    result.append(diag)
+
+                    for freq in freqs:
+                        result.append(Diagram(channel, diag_class, indices, freq))
     return result
 
 
@@ -189,3 +246,11 @@ def establish_dictionary(diagrams: List[Diagram]):
     for diag in diagrams:
         d[diag.generate_key()] = []
     return d
+
+
+def causality_enforcer(diagrams: List[Diagram]):
+    for diag in diagrams:
+        if diag.get_keldysh_indices() == "2222":
+            return True
+
+    return False
