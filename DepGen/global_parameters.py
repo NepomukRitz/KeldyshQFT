@@ -15,7 +15,11 @@ channels = ['a', 'p', 't']
 matsubara = False
 
 # With/without frequencies
-with_freqs = False
+with_freqs = True
+
+# If with frequencies, define parametrization
+# Supports "bosonic": w, f, f'. Anything else defaults to standard: w, v, v'
+param = "bosonic"
 
 # Plot orbits or not
 plot_orbits = False

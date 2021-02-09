@@ -80,7 +80,7 @@ if __name__ == '__main__':
             continue
 
         if type(value[0]) == ParityTrafo:
-            print(f"{ii:04}: {key} = P {value[1]}")
+            print(f"{ii:04}: {key} = {value[1]}")
 
         else:
             if value[0] == t0:

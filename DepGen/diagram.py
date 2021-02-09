@@ -67,15 +67,19 @@ class Diagram:
             freqargs += ", , "
         elif self.diag_class == [0, 1]:
             dc = "2"
-            freqargs += ", " + my_sign(self.freqs[1]) + "v, "
+            freqargs += f", {my_sign(self.freqs[1])}v, "
         elif self.diag_class == [1, 0]:
             dc = "2\'"
-            freqargs += ", ," + my_sign(self.freqs[2]) + "v'"
+            freqargs += f", , {my_sign(self.freqs[2])}v'"
         else:
             dc = "3"
-            freqargs += ", " + my_sign(self.freqs[1]) + "v, " + my_sign(self.freqs[2]) + "v'"
+            if gp.param == "bosonic":
+                v = 'f'
+            else:
+                v = 'v'
+            freqargs += f", {my_sign(self.freqs[1])}{v}, {my_sign(self.freqs[2])}{v}'"
 
-        subscript = "{" + dc + ", "+self.get_spin_indices() + "}"
+        subscript = "{" + f"{dc},{self.get_spin_indices()}" + "}"
 
         superscript = "{" + f"{self.channel}"
         if not gp.matsubara:

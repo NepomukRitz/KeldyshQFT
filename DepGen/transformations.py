@@ -1,6 +1,7 @@
 from typing import List
 from diagram import Diagram, e
 from general_purpose import conjugate_spin
+import global_parameters as gp
 
 
 class Trafo:
@@ -26,7 +27,10 @@ class Trafo:
         new_channel = self.transform_channel(diagram.channel)
         new_diag_class = self.transform_diag_class(diagram.diag_class, diagram.channel)
         new_indices = self.transform_indices(diagram.indices)
-        new_freqs = self.transform_freqs(diagram.freqs, diagram.channel)
+        if gp.with_freqs:
+            new_freqs = self.transform_freqs(diagram.freqs, diagram.channel, diagram.diag_class)
+        else:
+            new_freqs = diagram.freqs
         return Diagram(new_channel, new_diag_class, new_indices, new_freqs)
 
     def transform_channel(self, channel):
@@ -92,10 +96,10 @@ class Trafo:
 
         return new_indices
 
-    def transform_freqs(self, freqs: List[int], channel: str):
+    def transform_freqs(self, freqs: List[int], channel: str, diag_class: List[int]):
         """ Transforms the signs of the frequencies
         --- Params ---
-            freqs: List of frequencies to be trandformed
+            freqs: List of frequencies to be transformed
             channel: str indicating the channel
             diag_class: 2-position int-list with info on the position of the bare vertices of the diagram
         --- Returns ---
@@ -107,29 +111,46 @@ class Trafo:
             if self.i == 1:
                 if channel == 'a' or channel == 't':
                     new_freqs[0] *= -1
-                    new_freqs[1] = freqs[2]
-                    new_freqs[2] = freqs[1]
+                    if gp.param == "bosonic" and diag_class == [0, 0]:
+                        new_freqs[2] *= -1
+                    else:
+                        new_freqs[1] = freqs[2]
+                        new_freqs[2] = freqs[1]
                 else:  # channel p
-                    new_freqs[2] *= -1
+                    if gp.param == "bosonic" and diag_class == [0, 0]:
+                        new_freqs[1] = freqs[2]
+                        new_freqs[2] = freqs[1]
+                    else:
+                        new_freqs[2] *= -1
 
             elif self.i == 2:
                 if channel == 'p':
-                    new_freqs[1] *= -1
+                    if gp.param == "bosonic" and diag_class == [0, 0]:
+                        new_freqs[1] = -freqs[2]
+                        new_freqs[2] = -freqs[1]
+                    else:
+                        new_freqs[1] *= -1
 
             elif self.i == 3:
                 if channel == 'a' or channel == 't':
                     new_freqs[0] *= -1
-                    new_freqs[1] = freqs[2]
-                    new_freqs[2] = freqs[1]
-                else:  # channel p
+                    if gp.param == "bosonic" and diag_class == [0, 0]:
+                        new_freqs[2] *= -1
+                    else:
+                        new_freqs[1] = freqs[2]
+                        new_freqs[2] = freqs[1]
+                else:  # channel p      # Same effect on v, v' as on f, f'
                     new_freqs[1] *= -1
                     new_freqs[2] *= -1
 
             elif self.i == 4:
                 if channel == 'a' or channel == 'p':
-                    new_freqs[1] = freqs[2]
-                    new_freqs[2] = freqs[1]
-                else:  # channel t
+                    if gp.param == "bosonic" and diag_class == [0, 0]:
+                        new_freqs[2] *= -1
+                    else:
+                        new_freqs[1] = freqs[2]
+                        new_freqs[2] = freqs[1]
+                else:  # channel t      # No effect on either v, v' or f, f'
                     new_freqs[0] *= -1
 
         return new_freqs
