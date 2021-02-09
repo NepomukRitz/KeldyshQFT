@@ -2,7 +2,10 @@
 #define KELDYSH_MFRG_PARAMETERS_H
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-//#define KELDYSH_FORMALISM
+#define KELDYSH_FORMALISM
+
+// Determines whether particle-hole symmetry is assumed
+#define PARTICLE_HOLE_SYMM
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
@@ -26,7 +29,11 @@ using namespace std;
 
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
-const double glb_mu = 0.0001;                     // Chemical potential // set to zero as energy offset
+#ifdef PARTICLE_HOLE_SYMM
+    const double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
+#else
+    const double glb_mu = 0.0001;                    // Chemical potential // set to zero as energy offset
+#endif
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 const double glb_Gamma = 1./5.;                // Hybridization of Anderson model
@@ -226,7 +233,7 @@ const int n_in = 1;
 const int nODE = 50;
 
 // Limits of the fRG flow
-const double Lambda_ini = 1000.;                // NOLINT(cert-err58-cpp)
+const double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
 const double Lambda_fin = 0.0;
 const double Lambda_scale = 1./200.;             //Scale of the log substitution
 
