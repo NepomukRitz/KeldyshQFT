@@ -21,14 +21,14 @@
 #include "../frequency_grid.h"
 #include "../testFunctions.h"
 #include "../flow.h"
+#include "../parquet_checks.h"
 #endif
 
 int main(int argc, char* argv[]) {
+#ifdef INTEGRATION_TESTS
 #ifdef MPI_FLAG
     MPI_Init(nullptr, nullptr);
 #endif
-
-#ifdef INTEGRATION_TESTS
     // run integration tests
     print("Start integration tests.", true);
 
@@ -37,21 +37,26 @@ int main(int argc, char* argv[]) {
      * Lambda_f = 9.5 corresponds to U/Delta = 0.2 for Gamma = 0.5, U = 1. */
     //test_rhs_bubbles_flow_wstate(10, 20., 9.5);
 
+    //test_K2_in_PT4(20.);
+
 #if DIAG_CLASS >= 1
     /* run a complete flow and check FDTs and causality */
-    string filename = "integration_test_flow_14";
+    string filename = "integration_test_flow_K2_8e";
     State<comp> state = n_loop_flow(filename);
     check_FDTs(state);
     check_SE_causality(state.selfenergy);
+
+    /* run parquet checks */
+    parquet_checks(filename);
 #endif
 #if DIAG_CLASS == 2
+    /* further K2 tests */
     test_K2_PT4(0.);
     test_K2_correctness(0.);
 #endif
-#endif
-
 #ifdef MPI_FLAG
     MPI_Finalize();
+#endif
 #endif
 
     // run unit tests

@@ -10,3 +10,4 @@ Project_Default.xml
 *.idea*
 *.aux
 *.synctex.gz
+Keldysh_mfRG/Documentation/*

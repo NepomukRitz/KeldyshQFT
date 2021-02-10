@@ -36,6 +36,7 @@ add_executable(Keldysh_mfRG
         loop.h
         mpi_setup.h
         parameters.h
+        parquet_checks.h
         perturbation_theory.h
         propagator.h
         right_hand_sides.h
@@ -73,6 +74,7 @@ add_executable(Keldysh_mfRG_testing
         loop.h
         mpi_setup.h
         parameters.h
+        parquet_checks.h
         perturbation_theory.h
         propagator.h
         right_hand_sides.h

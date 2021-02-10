@@ -13,7 +13,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 2
 
 #define N_LOOPS 1  // Number of loops
 
@@ -25,7 +25,8 @@ using namespace std;
 const double glb_T = 0.01;                     // Temperature
 const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
-const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
+const double glb_Vg = glb_mu;                  // Impurity level shift
+const double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 const double glb_Gamma = 1./5.;                // Hybridization of Anderson model
 const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 #define EQUILIBRIUM                            // If defined, use equilibrium FDT's for propagators
@@ -213,7 +214,7 @@ const int n_in = 1;
 const int nODE = 50;
 
 // Limits of the fRG flow
-const double Lambda_ini = 1000.;                // NOLINT(cert-err58-cpp)
+const double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
 const double Lambda_fin = 0.0;
 const double Lambda_scale = 1./200.;             //Scale of the log substitution
 
@@ -249,7 +250,7 @@ const double converged_tol = 1e-7;
 #define INTEGRATOR_TYPE 5
 
 //Integrator tolerance
-const double integrator_tol = 1e-6;
+const double integrator_tol = 1e-4;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));

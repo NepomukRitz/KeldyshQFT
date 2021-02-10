@@ -74,6 +74,8 @@ public:
     rvert<Q> avertex;
     rvert<Q> pvertex;
     rvert<Q> tvertex;
+    bool Ir = false; // determines if the vertex is a full vertex or irreducible in channel r
+                     // (r is determined by VertexInput in the readout functions)
 
     fullvert() : avertex('a'),
                  pvertex('p'),
@@ -97,8 +99,10 @@ public:
     // Initialize vertex
     void initialize(Q val);
 
+    void set_frequency_grid(const fullvert<Q>& vertex);
+
     // Interpolate vertex to updated grid
-    void update_grid(double Lambda1, double Lambda2);
+    void update_grid(double Lambda);
 
     //Norm of the vertex
     double sum_norm(int);
@@ -233,11 +237,23 @@ public:
         return 1.;
     }
 
-    void update_grid(double Lambda1, double Lambda2) {  // Interpolate vertex to updated grid
+    void set_frequency_grid(const Vertex<Q>& vertex) {
         for (int i=0; i<this->size(); ++i) {
-            (*this)[i].update_grid(Lambda1, Lambda2);
+            (*this)[i].set_frequency_grid(vertex[i]);
+        }
+    }
+
+    void update_grid(double Lambda) {  // Interpolate vertex to updated grid
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].update_grid(Lambda);
         }
     };
+
+    void set_Ir(bool Ir) {  // set the Ir flag (irreducible or full) for all spin components
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].Ir = Ir;
+        }
+    }
 
 };
 
@@ -365,6 +381,8 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
     }
 #endif
 #endif
+    if (Ir)
+        return gamma0;
     return gamma0 + K1 + K2b;
 }
 
@@ -425,6 +443,8 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
     }
 #endif
 #endif
+    if (Ir)
+        return gamma0;
     return gamma0 + K1 + K2;
 }
 
@@ -462,6 +482,8 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
         default:
             return 0.;
     }
+    if (Ir)
+        return gamma_Rb;
     return K2 + K3 + gamma_Rb;
 }
 
@@ -499,6 +521,8 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
         default:
             return 0.;
     }
+    if (Ir)
+        return gamma_Rb;
     return K2b + K3 + gamma_Rb;
 }
 
@@ -506,10 +530,16 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
     this->irred.initialize(val);
 }
 
-template <typename Q> void fullvert<Q>::update_grid(double Lambda1, double Lambda2) {
-    this->avertex.update_grid(Lambda1, Lambda2);
-    this->pvertex.update_grid(Lambda1, Lambda2);
-    this->tvertex.update_grid(Lambda1, Lambda2);
+template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &vertex) {
+    this->avertex.frequencies = vertex.avertex.frequencies;
+    this->pvertex.frequencies = vertex.pvertex.frequencies;
+    this->tvertex.frequencies = vertex.tvertex.frequencies;
+}
+
+template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
+    this->avertex.update_grid(Lambda);
+    this->pvertex.update_grid(Lambda);
+    this->tvertex.update_grid(Lambda);
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {

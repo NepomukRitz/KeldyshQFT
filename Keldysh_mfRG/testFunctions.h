@@ -88,7 +88,7 @@ auto rhs_bubbles_flow_wstate(const State<comp>& input, double Lambda) -> State<c
     Propagator g(Lambda, input.selfenergy, 'g');
     Propagator s(Lambda, input.selfenergy, 's');
 
-    bubble_function(ans.vertex, input.vertex, input.vertex, g, s, 'a', true, '.');
+    bubble_function(ans.vertex, input.vertex, input.vertex, g, s, 'a', true);
     return ans;
 }
 
@@ -277,9 +277,9 @@ auto rhs_state_flow_SOPT(const State<comp>& Psi, const double Lambda, const int 
     }
 
     //Vertex flow
-    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 'a', true, '.');  //Differentiated bubble in the a-channel
-    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 'p', true, '.');  //Differentiated bubble in the p-channel
-    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 't', true, '.');  //Differentiated bubble in the t-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 'a', true);  //Differentiated bubble in the a-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 'p', true);  //Differentiated bubble in the p-channel
+    bubble_function(dPsi.vertex, bare.vertex, bare.vertex, G, S, 't', true);  //Differentiated bubble in the t-channel
 
     return dPsi;
 }
@@ -458,9 +458,9 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
     K1t.initialize();
 
     //Calculate K1a, K1p and K1t contributions separately
-    bubble_function(K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
-    bubble_function(K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
-    bubble_function(K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
+    bubble_function(K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
 
     //Create and initialize the K2r-objects to test
     State<comp> test_K2r_with_K1a (Lambda);
@@ -473,17 +473,17 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 
     if(r=='p' ||  r=='t') {
         //Perform TOPT calculation of K2r with K1a
-        bubble_function(test_K2r_with_K1a.vertex, K1a.vertex, bare.vertex, G, G, r, false, 'L');
+        bubble_function(test_K2r_with_K1a.vertex, K1a.vertex, bare.vertex, G, G, r, false);
     }
 
     if(r=='a' || r=='t') {
         //Perform TOPT calculation of K2r with K1p
-        bubble_function(test_K2r_with_K1p.vertex, K1p.vertex, bare.vertex, G, G, r, false, 'L');
+        bubble_function(test_K2r_with_K1p.vertex, K1p.vertex, bare.vertex, G, G, r, false);
     }
 
     if(r=='a' || r=='p') {
         //Perform TOPT calculation of K2r with K1t
-        bubble_function(test_K2r_with_K1t.vertex, K1t.vertex, bare.vertex, G, G, r, false, 'L');
+        bubble_function(test_K2r_with_K1t.vertex, K1t.vertex, bare.vertex, G, G, r, false);
     }
 
 
@@ -540,25 +540,45 @@ void test_K2_PT4(double Lambda) {
     State<comp> PT2_K1t (Lambda);
 
     double t0 = get_time();
-    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
-    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
-    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
+    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
     print("Computed K1 in PT2.", true);
     get_time(t0);
+    write_hdf("PT2_K1a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1a);
+    write_hdf("PT2_K1p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1p);
+    write_hdf("PT2_K1t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1t);
 
-    // Compute K1a in PT3, using K1 in PT2
+    // Compute K1 in PT3, using K1 in PT2
     State<comp> PT3_K1a (Lambda);
+    State<comp> PT3_K1p (Lambda);
+    State<comp> PT3_K1t (Lambda);
+
     t0 = get_time();
-    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false, '.');
+    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
+    // for K1t in PT3, need a-vertex in PT2 due to a <-> t symmetry
+    bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false);
     print("Computed K1 in PT3.", true);
     get_time(t0);
+    write_hdf("PT3_K1a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1a);
+    write_hdf("PT3_K1p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1p);
+    write_hdf("PT3_K1t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1t);
 
     // Compute K2a in PT3, using K1p, K1t in PT2
     State<comp> PT3_K2a (Lambda);
+    State<comp> PT3_K2p (Lambda);
+    State<comp> PT3_K2t (Lambda);
+
     t0 = get_time();
-    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');   // K2a in PT3
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
+    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'p', false);   // K2p in PT3
+    bubble_function(PT3_K2t.vertex, PT2_K1a.vertex + PT2_K1p.vertex, bare.vertex, G, G, 't', false);   // K2t in PT3
     print("Computed K2 in PT3.", true);
     get_time(t0);
+    write_hdf("PT3_K2a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2a);
+    write_hdf("PT3_K2p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2p);
+    write_hdf("PT3_K2t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2t);
 
     // Compute K1a contributions in PT4, using
     // (22):   K1a in PT2
@@ -571,10 +591,10 @@ void test_K2_PT4(double Lambda) {
     State<comp> PT4_K1a31_2 (Lambda);
 
     t0 = get_time();
-    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, 'R');
-    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, 'R');
-    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R');
-    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
+    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
+    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
+    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false);
     print("Computed K1 in PT4.", true);
     get_time(t0);
 
@@ -611,9 +631,9 @@ void test_K2_correctness(double Lambda){
 
     //Save K1-bubbles in separate objects - SOPT
     double t0 = get_time();
-    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, '.');
-    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, '.');
-    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, '.');
+    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
     get_time(t0);
 
     State<comp> PT2_SE_a (Lambda);
@@ -649,7 +669,7 @@ void test_K2_correctness(double Lambda){
     //Do appropriate calculation for K2a with K1p and K1t being fed back into the left vertex. Notice part = 'L' to ensure
     //that the correct contributions are added on both sides. - TOPT
     t0 = get_time();
-    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');   // K2a in PT3
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
 
 #ifdef DEBUG_MODE
     bubble_function(PT3_K2a_ia.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 9, 6);
@@ -660,13 +680,13 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT3_K2a_ivb.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 6, 15);
 #endif
 
-    bubble_function(PT3_K2a_t.vertex, PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L');   // K2a in PT3
+    bubble_function(PT3_K2a_t.vertex, PT2_K1t.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
     //PT3_K2a = read_hdf("PT4_check_of_K2a_K2_switchedcc_adap_m3m9_g501_101_nI1501_state_PT3_K2a", 0, 1);
 
-    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'p', false, 'L');    // K2p  in PT3
-    //bubble_function(PT3_K2t.vertex, PT2_K1a.vertex + PT2_K1p.vertex, bare.vertex, G, G, 't', false, 'L');    // K2t  in PT3
-    bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false, 'L');    // K2t  in PT3
-    bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false, 'L');    // K2t  in PT3
+    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'p', false);    // K2p  in PT3
+    //bubble_function(PT3_K2t.vertex, PT2_K1a.vertex + PT2_K1p.vertex, bare.vertex, G, G, 't', false);    // K2t  in PT3
+    bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false);    // K2t  in PT3
+    bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false);    // K2t  in PT3
     PT3_K2t.vertex = PT3_K2t_a.vertex + PT3_K2t_p.vertex;
     get_time(t0);
 
@@ -716,7 +736,7 @@ void test_K2_correctness(double Lambda){
 
     State<comp> PT3_K1a (Lambda);    //Create state to compare with K1a
     t0 = get_time();
-    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false, '.');
+    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
     get_time(t0);
 
     State<comp> PT123_a = bare + PT2_K1a + PT3_K1a + PT3_K2a;  //Create vertex of the right side of BSE
@@ -738,30 +758,28 @@ void test_K2_correctness(double Lambda){
     State<comp> PT4_K1a13_2_iva (Lambda);
     State<comp> PT4_K1a13_2_ivb (Lambda);
 
-    //Calculate a K1a-object to compare with K1a and NRG-results. Notice part='R', suggesting the "weird" vertex is on the }
-    //right and, thanks to this, no unnecessary K2 calculation is entered in bubble_function
     t0 = get_time();
-    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, 'R');
-    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
+    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
 
-    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R');
-    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, 'R');
+    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
+    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false);
     get_time(t0);
     t0 = get_time();
 #ifdef DEBUG_MODE
-    bubble_function(PT4_K1a13_2_11e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 0, 16, 16, 16); // A
-    bubble_function(PT4_K1a13_2_21e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 1, 16, 16, 16); // B
-    bubble_function(PT4_K1a13_2_11o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 2, 16, 16, 16); // C
-    bubble_function(PT4_K1a13_2_21o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 3, 16, 16, 16); // D
-    bubble_function(PT4_K1a13_2_12o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 10, 16, 16, 16); // TST3TC D
-    bubble_function(PT4_K1a13_2_22o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 'R', 11, 16, 16, 16); // F
+    bubble_function(PT4_K1a13_2_11e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 0, 16, 16, 16); // A
+    bubble_function(PT4_K1a13_2_21e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 1, 16, 16, 16); // B
+    bubble_function(PT4_K1a13_2_11o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 2, 16, 16, 16); // C
+    bubble_function(PT4_K1a13_2_21o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 3, 16, 16, 16); // D
+    bubble_function(PT4_K1a13_2_12o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 10, 16, 16, 16); // TST3TC D
+    bubble_function(PT4_K1a13_2_22o.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 11, 16, 16, 16); // F
 
-    bubble_function(PT4_K1a13_2_ia.vertex, bare.vertex, PT3_K2a_ia.vertex, G, G, 'a', false, 'R', 11, 6, 16, 16);
-    bubble_function(PT4_K1a13_2_ib.vertex, bare.vertex, PT3_K2a_ib.vertex, G, G, 'a', false, 'R', 2, 9, 16, 16);
-    bubble_function(PT4_K1a13_2_iia.vertex, bare.vertex, PT3_K2a_iia.vertex, G, G, 'a', false, 'R', 11, 6, 16, 16);
-    bubble_function(PT4_K1a13_2_iib.vertex, bare.vertex, PT3_K2a_iib.vertex, G, G, 'a', false, 'R', 10, 11, 16, 16);
-    bubble_function(PT4_K1a13_2_iva.vertex, bare.vertex, PT3_K2a_iva.vertex, G, G, 'a', false, 'R', 11, 15, 16, 16);
-    bubble_function(PT4_K1a13_2_ivb.vertex, bare.vertex, PT3_K2a_ivb.vertex, G, G, 'a', false, 'R', 2, 9, 16, 16);
+    bubble_function(PT4_K1a13_2_ia.vertex, bare.vertex, PT3_K2a_ia.vertex, G, G, 'a', false, 11, 6, 16, 16);
+    bubble_function(PT4_K1a13_2_ib.vertex, bare.vertex, PT3_K2a_ib.vertex, G, G, 'a', false, 2, 9, 16, 16);
+    bubble_function(PT4_K1a13_2_iia.vertex, bare.vertex, PT3_K2a_iia.vertex, G, G, 'a', false, 11, 6, 16, 16);
+    bubble_function(PT4_K1a13_2_iib.vertex, bare.vertex, PT3_K2a_iib.vertex, G, G, 'a', false, 10, 11, 16, 16);
+    bubble_function(PT4_K1a13_2_iva.vertex, bare.vertex, PT3_K2a_iva.vertex, G, G, 'a', false, 11, 15, 16, 16);
+    bubble_function(PT4_K1a13_2_ivb.vertex, bare.vertex, PT3_K2a_ivb.vertex, G, G, 'a', false, 2, 9, 16, 16);
 #endif
     get_time(t0);
 
@@ -931,9 +949,9 @@ auto rhs_channel_decomposition(const State<comp>& Psi, const double Lambda) -> S
     loop(dPsi.selfenergy, Psi.vertex, S, true);  // self-energy loop
 
     // Vertex flow
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', true, '.'); // diff. bubble in the a-channel
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'p', true, '.'); // diff. bubble in the p-channel
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 't', true, '.'); // diff. bubble in the t-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', true); // diff. bubble in the a-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'p', true); // diff. bubble in the p-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 't', true); // diff. bubble in the t-channel
 
     return dPsi;
 }
