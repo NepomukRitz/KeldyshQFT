@@ -230,7 +230,7 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 #endif
           )
 {
-//#pragma omp parallel for
+#pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
         int iv = iSE/n_in;
         int i_in = iSE - iv*n_in;

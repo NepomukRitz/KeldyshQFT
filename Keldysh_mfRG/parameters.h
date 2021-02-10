@@ -19,7 +19,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 1
+#define DIAG_CLASS 2
 
 #define N_LOOPS 1  // Number of loops
 
@@ -98,10 +98,13 @@ const double glb_v3_upper = 10.;
 const double glb_v3_lower = -glb_v3_upper;
 
 // Number of bosonic and fermionic frequency points
-/*const int nBOS = 201;
-const int nFER = 201;*/
+#ifdef KELDYSH_FORMALISM
+const int nBOS = 201;
+const int nFER = 201;
+#else
 const int nBOS = 200;
 const int nFER = 200;
+#endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
@@ -266,10 +269,10 @@ const double converged_tol = 1e-7;
 // 3: adaptive Simpson
 // 4: GSL //
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
-#define INTEGRATOR_TYPE 4
+#define INTEGRATOR_TYPE 5
 
 //Integrator tolerance
-const double integrator_tol = 1e-6;
+const double integrator_tol = 1e-4;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
