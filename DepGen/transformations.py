@@ -31,7 +31,19 @@ class Trafo:
             new_freqs = self.transform_freqs(diagram.freqs, diagram.channel, diagram.diag_class)
         else:
             new_freqs = diagram.freqs
-        return Diagram(new_channel, new_diag_class, new_indices, new_freqs)
+        transformed = Diagram(new_channel, new_diag_class, new_indices, new_freqs,
+                              diagram.prefactor, diagram.complex_conjugate)
+
+        if self.i == 1 or self.i == 2:
+            transformed.invert_prefactor()
+        if self.i == 4:
+            transformed.conjugate()
+            try:
+                transformed.prefactor *= gp.tc_sign_change[transformed.get_keldysh_indices()]
+            except KeyError:
+                assert transformed.channel == '.'   # Make sure that a KeyError arises only when establishing T-id's
+
+        return transformed
 
     def transform_channel(self, channel):
         """Transforms the channel
