@@ -569,7 +569,7 @@ public:
             int i2=0;
 #endif
             indices = indices_sum(i0, i2, channel);
-            Pival = Pi.value(i2, w, vpp, i_in, channel);
+            Pival = Pi.value(i2, w, vpp,    i_in, channel);
 
             VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
             VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
@@ -744,7 +744,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #else
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
                         // save the integrand for manual checks:
-                        /*if (i_omp == 20){
+                        /*if (i_omp == 0){
                             integrand_K1.save_integrand();
                         }*/
 #endif
@@ -752,7 +752,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #ifdef KELDYSH_FORMALISM
                         value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
-                        value += prefactor * (1. / (-2. * M_PI)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
+                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                        if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                        }
+                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
 #endif
 
 
@@ -832,7 +836,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #ifdef KELDYSH_FORMALISM
                         value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
 #else
-                        value += prefactor * (1. / (-2. * M_PI)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
+                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                        if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                            value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                        }
+                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
 #endif
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
@@ -902,13 +910,17 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 // initialize the integrand object and perform frequency integration
                 Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, part, diff);
 
-                value =
+
 #ifdef KELDYSH_FORMALISM
-                                prefactor * (1. / (2. * M_PI * glb_i)) *
+                value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
 #else
-                                prefactor * (1. / (-2. * M_PI)) *
+                value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                }
+                value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
 #endif
-                        integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
+
 
                 if (!diff) {
 #ifdef KELDYSH_FORMALISM

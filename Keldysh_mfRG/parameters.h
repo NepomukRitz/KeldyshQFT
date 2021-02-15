@@ -2,7 +2,7 @@
 #define KELDYSH_MFRG_PARAMETERS_H
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM
+//#define KELDYSH_FORMALISM
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
@@ -86,9 +86,9 @@ const double glb_v_upper = 50.;
 const double glb_v_lower = -glb_v_upper;
 
 const double glb_W2_scale = 1.;
-const double glb_w2_upper = 15.;
+const double glb_w2_upper = .5;
 const double glb_w2_lower = -glb_w2_upper;
-const double glb_v2_upper = 15.;
+const double glb_v2_upper = .5;
 const double glb_v2_lower = -glb_v2_upper;
 
 const double glb_W3_scale = 1.;
@@ -101,9 +101,19 @@ const double glb_v3_lower = -glb_v3_upper;
 #ifdef KELDYSH_FORMALISM
 const int nBOS = 201;
 const int nFER = 201;
+// Number of frequency points for K2 and K3 classes
+const int nBOS2 = 51;//nBOS;
+const int nFER2 = 51;//nFER;
+const int nBOS3 = 21; //nBOS;
+const int nFER3 = 21; //nFER;
 #else
-const int nBOS = 200;
+const int nBOS = 201;
 const int nFER = 200;
+// Number of frequency points for K2 and K3 classes
+const int nBOS2 = 51;//nBOS;
+const int nFER2 = 50;//nFER;
+const int nBOS3 = 21; //nBOS;
+const int nFER3 = 21; //nFER;
 #endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
@@ -124,11 +134,6 @@ const double glb_v_lower = -glb_v_upper;
 
 #endif
 
-// Number of frequency points for K2 and K3 classes
-const int nBOS2 = 51;//nBOS;
-const int nFER2 = 51;//nFER;
-const int nBOS3 = 21; //nBOS;
-const int nFER3 = 21; //nFER;
 
 
 // Number of frequency points for the self energy and the susceptibility
