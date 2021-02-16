@@ -812,6 +812,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 
                 value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
 
+                /* asymptotic corrections temporarily commented out --> TODO: fix
                 if (!diff) {
                     for (auto i2:non_zero_Keldysh_bubble) {
                         value += prefactor * (1. / (2. * M_PI * glb_i)) *
@@ -819,6 +820,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                                                       i_in, channel); //Correction needed for the K3 class
                     }
                 }
+                // */
                 K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
             ++iterator;
