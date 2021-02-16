@@ -1057,7 +1057,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             };
 
     // print to log
-    for (int i=0; i<check_labels->size(); ++i) {
+    for (int i=0; i<check_values.size(); ++i) {
         print(check_labels[i], check_values[i], true);
     }
 
