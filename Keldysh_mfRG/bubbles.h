@@ -21,8 +21,6 @@
 #include "integrator.h"                 // integration routines
 #include "util.h"                       // measuring time, printing text output
 #include "mpi_setup.h"                  // mpi parallelization routines
-#include "diagrammatic_combinations.h"  // combinations of diagrammatic classes that go into the left/right vertex
-                                        // in the bubble
 #include "correctionFunctions.h"        // correction terms due to finite integration range
 #include "write_data2file.h"            // write vectors into hdf5 file
 

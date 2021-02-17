@@ -1,3 +1,6 @@
+// ATTENTION: DEPRECATED! FULLY MOVED INTO vertex.h
+// TODO: Remove dependency on this file from correctionFunctions.h, then remove this file.
+
 /**
  * Collect combinations of diagrammatic classes (Gamma0, K1, K2, K3) that contribute to the left or right vertex
  * in bubbles in the flow equations for K1, K2, K3.

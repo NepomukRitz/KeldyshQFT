@@ -1,3 +1,5 @@
+// TODO: remove dependency on diagrammatic_combinations.h (functionality is in vertex.h), then remove diagrammatic_combinations.h.
+
 #ifndef KELDYSH_MFRG_CORRECTIONFUNCTIONS_H
 #define KELDYSH_MFRG_CORRECTIONFUNCTIONS_H
 

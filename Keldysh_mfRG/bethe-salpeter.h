@@ -1,3 +1,5 @@
+// ATTENTION: DEPRECATED! NEWER VERSION: parquet_checks.h
+
 //
 // Created by SAguirre on 15/08/2020.
 //
