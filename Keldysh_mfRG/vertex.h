@@ -300,7 +300,7 @@ template <typename Q> void irreducible<Q>::initialize(Q val) {
 template <typename Q> auto fullvert<Q>::value (VertexInput input) const -> Q {
     return irred.val(input.iK, input.i_in, input.spin)
             + avertex.value(input, tvertex)
-            + pvertex.value(input)
+            + pvertex.value(input, pvertex)
             + tvertex.value(input, avertex);
 }
 
@@ -308,13 +308,13 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
     Q res;
     switch (input.channel){
         case 'a':
-            res = pvertex.value(input)          + tvertex.value(input, avertex);
+            res = pvertex.value(input, pvertex) + tvertex.value(input, avertex);
             break;
         case 'p':
             res = avertex.value(input, tvertex) + tvertex.value(input, avertex);
             break;
         case 't':
-            res = avertex.value(input, tvertex) + pvertex.value(input);
+            res = avertex.value(input, tvertex) + pvertex.value(input, pvertex);
             break;
         default :
             res = 0.;
@@ -340,10 +340,10 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
 
         case 'p':
 #if DIAG_CLASS >=1
-            K1 = pvertex.K1_valsmooth(input);
+            K1 = pvertex.K1_valsmooth(input, pvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2b = pvertex.K2b_valsmooth(input);
+            K2b = pvertex.K2b_valsmooth(input, pvertex);
 #endif
             break;
         case 't' :
@@ -366,7 +366,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
 
     switch (channel) {
         case 'a':
-            K1 += pvertex.K1_valsmooth(input_p)
+            K1 += pvertex.K1_valsmooth(input_p, pvertex)
                   + tvertex.K1_valsmooth(input_at, avertex);
             break;
         case 'p':
@@ -375,7 +375,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
             break;
         case 't':
             K1 += avertex.K1_valsmooth(input_at, tvertex)
-                  + pvertex.K1_valsmooth(input_p);
+                  + pvertex.K1_valsmooth(input_p, pvertex);
             break;
         default: ;
     }
@@ -402,10 +402,10 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
 
         case 'p':
 #if DIAG_CLASS >=1
-            K1 = pvertex.K1_valsmooth(input);
+            K1 = pvertex.K1_valsmooth(input, pvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2 = pvertex.K2_valsmooth(input);
+            K2 = pvertex.K2_valsmooth(input, pvertex);
 #endif
             break;
         case 't' :
@@ -465,10 +465,10 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
             break;
         case 'p':
 #if DIAG_CLASS >=2
-            K2 = pvertex.K2_valsmooth(input);
+            K2 = pvertex.K2_valsmooth(input, pvertex);
 #endif
 #if DIAG_CLASS >=3
-            K3 = pvertex.K3_valsmooth(input);
+            K3 = pvertex.K3_valsmooth(input, pvertex);
 #endif
             break;
         case 't':
@@ -504,10 +504,10 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
             break;
         case 'p':
 #if DIAG_CLASS >= 2
-            K2b = pvertex.K2b_valsmooth(input);
+            K2b = pvertex.K2b_valsmooth(input, pvertex);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = pvertex.K3_valsmooth(input);
+            K3 = pvertex.K3_valsmooth(input, pvertex);
 #endif
             break;
         case 't':
