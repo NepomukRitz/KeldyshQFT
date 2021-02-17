@@ -91,9 +91,13 @@ public:
     // Returns the sum of the contributions of the diagrammatic classes r' =/= r
     auto gammaRb(VertexInput input) const -> Q;
 
+    // Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
     auto left_same_bare(VertexInput input) const -> Q;
+    // Combination of those diagrams that connect to the same bare vertex on the right side: Gamma0, K1, K2
     auto right_same_bare(VertexInput input) const -> Q;
+    // Combination of those diagrams that connect to the different bare vertices on the left side: K2, K3, gamma_bar{r}
     auto left_diff_bare(VertexInput input) const -> Q;
+    // Combination of those diagrams that connect to the different bare vertices on the right side: K2b, K3, gamma_bar{r}
     auto right_diff_bare(VertexInput input) const -> Q;
 
     // Initialize vertex
