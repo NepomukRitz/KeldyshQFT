@@ -23,16 +23,24 @@ public:
                                         // independent ones
     Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
                                         // components to relate them to the independent ones
+    FrequencyComponents freq_components;            // lists providing information on how all frequency domains are
+                                                    // related to the independent ones
+    FrequencyTransformations freq_transformations;  // lists providing information on which transformations to apply on
+                                                    // frequencies to relate them to the independent ones
 
     VertexFrequencyGrid frequencies;    // frequency grid
 
     rvert(const char channel_in) : channel(channel_in), frequencies() {
         components = Components(channel);
         transformations = Transformations(channel);
+        freq_components = FrequencyComponents(channel);
+        freq_transformations = FrequencyTransformations(channel);
     };
     rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda) {
         components = Components(channel);
         transformations = Transformations(channel);
+        freq_components = FrequencyComponents(channel);
+        freq_transformations = FrequencyTransformations(channel);
     };
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
@@ -108,6 +116,13 @@ public:
     auto K1_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
 
     /**
+     * Return the value of the vertex K1 in channel r (by use of symmetry relations between frequency domains).
+     * @param indices : specifies transformations to be applied on the vertex parameters
+     * @param vertex_in : Reducible vertex in the related channel from which a value is to be read out
+     */
+    auto K1_valsmooth_FreqRelations(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) const -> Q;
+
+    /**
      * Determine the width of the central feature of the K1 vertex in frequency space at which absolute values have
      * decayed to ~1/decay of the maximum value max(abs(K1)). Average over Keldysh index and internal indices.
      */
@@ -152,6 +167,13 @@ public:
      *                    map between channels a <--> t.
      */
     auto K2_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const-> Q;
+    /**
+     * Return the value of the vertex K2 in channel r (by use of symmetry relations between frequency domains).
+     * @param indices : specifies transformations to be applied on the vertex parameters
+     * @param vertex_in : Reducible vertex in the related channel from which a value is to be read out
+     */
+    auto K2_valsmooth_FreqRelations(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) const -> Q;
+
     /**
      * Return the value of the vertex K2b in channel r (used for r = p).
      * @param input : Combination of input arguments.
@@ -519,20 +541,39 @@ template <typename Q> auto rvert<Q>::K1_valsmooth(VertexInput input) const -> Q 
     Ti(indices, transformations.K1[input.spin][input.iK]);
     indices.iK = components.K1[input.iK];
     if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK1(indices, *(this))); // conjugation only in t-channel --> no flip necessary
-    return interpolateK1(indices, *(this));
+    //if (indices.conjugate) return conj(K1_valsmooth_FreqRelations(input, *(this))); // conjugation only in t-channel --> no flip necessary
+    return K1_valsmooth_FreqRelations(indices, *(this));
 }
 template <typename Q> auto rvert<Q>::K1_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
 
     IndicesSymmetryTransformations indices(input.iK, input.w, 0., 0., input.i_in, channel);
-
     Ti(indices, transformations.K1[input.spin][input.iK]);
     indices.iK = components.K1[input.iK];
     if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK1(indices, *(this))); // conjugation only in t-channel --> no flip necessary
-    if (indices.channel != channel) return interpolateK1(indices, vertex_in);
-    return interpolateK1(indices, *(this));
+    //if (indices.conjugate) return conj(K1_valsmooth_FreqRelations(input, *(this))); // conjugation only in t-channel --> no flip necessary
+    if (indices.channel != channel) return K1_valsmooth_FreqRelations(indices, vertex_in);
+    return K1_valsmooth_FreqRelations(indices, *(this));
+    }
+
+template<typename Q> auto sign_index(Q freq) -> int {
+    if (freq > 0){
+        return 1;
+    }
+    else {
+        return 0;
+    }
 }
+
+
+template <typename Q> auto rvert<Q>::K1_valsmooth_FreqRelations(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) const -> Q {
+
+    int sign_w = sign_index(indices.w);
+    Ti(indices, freq_transformations.K1[indices.iK][sign_w]);
+    if (indices.conjugate) return conj(interpolateK1(indices, vertex)); // conjugation only in t-channel --> no flip necessary
+    return interpolateK1(indices, vertex);
+}
+
+
 
 template <typename Q> auto rvert<Q>::width_K1(double decay) -> double {
     rvec b_K1 (nw1); // temporary vector for averaged data
@@ -578,8 +619,8 @@ template <typename Q> auto rvert<Q>::K2_valsmooth(VertexInput input) const -> Q 
     Ti(indices, transformations.K2[input.spin][input.iK]);
     indices.iK = components.K2[input.iK];
     if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
-    return interpolateK2(indices, *(this));
+    //if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
+    return K2_valsmooth_FreqRelations(indices, *(this));
 }
 template <typename Q> auto rvert<Q>::K2_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
 
@@ -592,13 +633,22 @@ template <typename Q> auto rvert<Q>::K2_valsmooth(VertexInput input, const rvert
     Q valueK2;
 
     if (indices.channel != channel)  // Applied trafo changes channel a -> t
-        valueK2 = interpolateK2(indices, vertex_in);
+        valueK2 = K2_valsmooth_FreqRelations(indices, vertex_in);
     else
-        valueK2 = interpolateK2(indices, *(this));
+        valueK2 = K2_valsmooth_FreqRelations(indices,  *(this));
 
-    if (indices.conjugate) return conj(valueK2);
+    //if (indices.conjugate) return conj(valueK2);
     return valueK2;
 }
+template <typename Q> auto rvert<Q>::K2_valsmooth_FreqRelations(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) const -> Q {
+
+    int sign_w = sign_index(indices.w);
+    int sign_v1 = sign_index(indices.v1);
+    Ti(indices, freq_transformations.K2[indices.iK][sign_w*2 + sign_v1]);
+    if (indices.conjugate) return conj(interpolateK2(indices, vertex)); // conjugation only in t-channel --> no flip necessary
+    return interpolateK2(indices, vertex);
+}
+
 template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input) const -> Q {
 
     IndicesSymmetryTransformations indices(input.iK, input.w, 0., input.v2, input.i_in, channel);
@@ -606,8 +656,8 @@ template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input) const -> Q
     Ti(indices, transformations.K2b[input.spin][input.iK]);
     indices.iK = components.K2b[input.iK];
     if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
-    return interpolateK2(indices, *(this));
+    //if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
+    return K2_valsmooth_FreqRelations(indices, *(this));
 }
 template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
 
@@ -620,11 +670,11 @@ template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input, const rver
     Q valueK2;
 
     if (indices.channel != channel)  //Applied trafo changes channel a -> t
-        valueK2 = interpolateK2(indices, vertex_in);
+        valueK2 = K2_valsmooth_FreqRelations(indices, vertex_in);
     else
-        valueK2 = interpolateK2(indices, *(this));
+        valueK2 = K2_valsmooth_FreqRelations(indices, *(this));
 
-    if (indices.conjugate) return conj(valueK2);
+    //if (indices.conjugate) return conj(valueK2);
     return valueK2;
 }
 

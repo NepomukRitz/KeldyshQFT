@@ -118,6 +118,16 @@ void TC (IndicesSymmetryTransformations& indices){
 #endif
 }
 
+#ifndef KELDYSH_FORMALISM
+void TR (IndicesSymmetryTransformations& indices){
+    indices.conjugate ^= true;
+    indices.w *= -1;
+#if DIAG_CLASS > 1
+    indices.v1 *= -1;
+    indices.v2 *= -1;
+#endif
+}
+#endif
 
 /**
  * Define symmetry transformations.
@@ -152,6 +162,24 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TC(indices);
             T3(indices);
             break;
+        case 34:
+            TC(indices);
+            T3(indices);
+            break;
+#ifndef KELDYSH_FORMALISM
+        case 7:
+            TR(indices);
+            break;
+        case 37:
+            TR(indices);
+            T3(indices);
+            break;
+        case 347:
+            TR(indices);
+            TC(indices);
+            T3(indices);
+            break;
+#endif
         default: ;
     }
 }

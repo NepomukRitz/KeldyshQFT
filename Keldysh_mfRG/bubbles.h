@@ -16,6 +16,7 @@
 #include <cmath>                        // for using the macro M_PI as pi
 
 #include "vertex.h"                     // vertex class
+#include "r_vertex.h"                   // vertex class
 #include "selfenergy.h"                 // self-energy class
 #include "propagator.h"                 // propagator class
 #include "integrator.h"                 // integration routines
@@ -616,6 +617,15 @@ public:
     }
 };
 
+//size_type multiindex2flatindex(vector<size_type> multi, vector<size_type> dims)
+//{
+//    size_type result;
+//    for(int i=1; i<dims.size(); i++){
+//        result += multi[i-1];
+//        result *= dims[i];
+//    }
+//    return result;
+//}
 
 /**
  * Function that computes the bubble frequency integral for all external parameters,
@@ -730,46 +740,68 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 double w = freqs_K1.w[iw];      // frequency acc. to frequency index
                 Q value;
 
-                // initialize the integrand object and perform frequency integration
-                if (!diff && part != '.') value = 0.;
-                else {
+                int trafo = 1;
+                int sign_w = sign_index<double>(w);
+                switch (channel) {
+                    case 'a':
+                        trafo = TransformaK1a[i0][sign_w];
+                        //cout << "Ping!" << trafo << "\n";
+                        break;
+                    case 'p':
+                        trafo = TransformaK1p[i0][sign_w];
+                        break;
+                    case 't':
+                        trafo = TransformaK1t[i0][sign_w];
+                        break;
+                    default:
+                        cout << "\n Uooooohhh, sth went wrong! \n \n";
+                }
+
+                if (trafo == 0) {
+
+                    // initialize the integrand object and perform frequency integration
+                    if (!diff && part != '.') value = 0.;
+                    else {
 #ifdef KELDYSH_FORMALISM
-                    for (auto i2:non_zero_Keldysh_bubble) {
+                        for (auto i2:non_zero_Keldysh_bubble) {
 #else
-                    int i2=0;
+                        int i2=0;
 #endif
 #ifdef DEBUG_MODE
-                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
+                            Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
                                                      iK_select, iK_select_bubble);
 #else
-                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
-                        // save the integrand for manual checks:
-                        /*if (i_omp == 0){
-                            integrand_K1.save_integrand();
-                        }*/
+
+                           Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+                           // save the integrand for manual checks:
+                           /*if (i_omp == 0){
+                               integrand_K1.save_integrand();
+                           }*/
 #endif
 
 #ifdef KELDYSH_FORMALISM
-                        value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
+                           value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
-                        if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
-                        }
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           }
+                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
 #endif
 
 
-                        /* asymptotic corrections temporarily commented out --> TODO: fix
-                        if (!diff) {
-                            value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                     asymp_corrections_K1(vertex1, vertex2, -vmin, vmax, w, i0, i2, i_in,
-                                                          channel); //Correction needed for the K1 class
-                        }
-                        // */
+                           /* asymptotic corrections temporarily commented out --> TODO: fix
+                           if (!diff) {
+                               value += prefactor * (1. / (2. * M_PI * glb_i)) *
+                                        asymp_corrections_K1(vertex1, vertex2, -vmin, vmax, w, i0, i2, i_in,
+                                                             channel); //Correction needed for the K1 class
+                           }
+                           // */
 #ifdef KELDYSH_FORMALISM
-                    }
+                      }
 #endif
+                    }
+
                 }
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
@@ -809,26 +841,47 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices
                 int iK2 = i_mpi * n_omp + i_omp;
-                int i0 = iK2 /(nw2_w * nw2_v * n_in);
-                int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
-                int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
-                int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
+                int i0 = iK2 / (nw2_w * nw2_v * n_in);
+                int iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
+                int iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
+                int i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
                 double w = bfreqs_K2.w[iw];
                 double v = ffreqs_K2.w[iv];
                 Q value;
 
-                // initialize the integrand object and perform frequency integration
-                if (!diff && part != 'L') value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
-                // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
-                else {
+                int trafo = 1;
+                int sign_w = sign_index<double>(w);
+                int sign_v = sign_index<double>(v);
+                switch (channel) {
+                    case 'a':
+                        trafo = TransformaK2a[i0][sign_w * 2 + sign_v];
+                        //cout << "Ping!" << trafo << "\n";
+                        break;
+                    case 'p':
+                        trafo = TransformaK2p[i0][sign_w * 2 + sign_v];
+                        break;
+                    case 't':
+                        trafo = TransformaK2t[i0][sign_w * 2 + sign_v];
+                        break;
+                    default:
+                        cout << "\n Uooooohhh, sth went wrong! \n \n";
+                }
+
+                if (trafo == 0) {
+
+                    // initialize the integrand object and perform frequency integration
+                    if (!diff && part != 'L')
+                        value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
+                        // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
+                    else {
 #ifdef KELDYSH_FORMALISM
-                    for(auto i2:non_zero_Keldysh_bubble) {
+                        for(auto i2:non_zero_Keldysh_bubble) {
 #else
-                        int i2=0;
+                        int i2 = 0;
 #endif
 #ifdef DEBUG_MODE
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff,
-                                                     iK_select2, iK_select_bubble2);
+                                                    iK_select2, iK_select_bubble2);
 #else
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff);
 #endif
@@ -836,11 +889,15 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #ifdef KELDYSH_FORMALISM
                         value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
 #else
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
-                        if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                            value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                        value += prefactor * (1. / (2. * M_PI)) *
+                                 integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
+                        if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
+                            value += prefactor * (1. / (2. * M_PI)) *
+                                     integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
+                                                -w / 2., w / 2.);
                         }
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                        value += prefactor * (1. / (2. * M_PI)) *
+                                 integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
 #endif
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
@@ -850,13 +907,14 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #else
                                 prefactor * (1. / (-2. * M_PI)) *
 #endif
-                                     asymp_corrections_K2(vertex1, vertex2, -vmin, vmax, w, v, i0, i2,
-                                                          i_in, channel); //Correction needed for the K2 class
+                                    asymp_corrections_K2(vertex1, vertex2, -vmin, vmax, w, v, i0, i2,
+                                                      i_in, channel); //Correction needed for the K2 class
                         }
                         // */
 #ifdef KELDYSH_FORMALISM
-                    }
+                        }
 #endif
+                    }
                 }
                 K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }

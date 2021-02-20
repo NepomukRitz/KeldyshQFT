@@ -258,4 +258,100 @@ struct Transformations {
     }
 };
 
+#ifdef KELDYSH_FORMALISM
+vector<vector<int>> ComponentsK1a = vector<vector<int>>({{0, 1}, {0, 0}});
+vector<vector<int>> ComponentsK1p = vector<vector<int>>({{0, 1}, {0, 1}});
+vector<vector<int>> ComponentsK1t = vector<vector<int>>({{0, 1}, {0, 0}});
+vector<vector<int>> ComponentsK2a = vector<vector<int>>({{0, 1, 0, 1}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}});
+vector<vector<int>> ComponentsK2p = vector<vector<int>>({{0, 0, 2, 2}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}});
+vector<vector<int>> ComponentsK2t = vector<vector<int>>({{0, 1, 0, 1}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}});
+vector<vector<int>> ComponentsK3a = vector<vector<int>>({{0, 0, 2, 2, 0, 0, 2, 2}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 1, 0, 3, 2}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 2, 3, 0, 1, 2, 3}, {0, 1, 2, 3, 4, 5, 6, 7}});
+vector<vector<int>> ComponentsK3p = vector<vector<int>>({{0, 0, 0, 0, 4, 4, 4, 4}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 0, 1, 4, 5, 4, 5}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 1, 0, 4, 5, 5, 4}, {0, 1, 2, 3, 4, 5, 6, 7}});
+vector<vector<int>> ComponentsK3t = vector<vector<int>>({{0, 0, 2, 2, 0, 0, 2, 2}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 1, 0, 3, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 2, 3, 4, 5, 6, 7}});
+vector<vector<int>> TransformaK1a = vector<vector<int>>({{0, 0}, {0, 3}});
+vector<vector<int>> TransformaK1p = vector<vector<int>>({{0, 0}, {0, 0}});
+vector<vector<int>> TransformaK1t = vector<vector<int>>({{0, 0}, {0, 3}});
+vector<vector<int>> TransformaK2a = vector<vector<int>>({{0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}});
+vector<vector<int>> TransformaK2p = vector<vector<int>>({{0, 3, 0, 3}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}});
+vector<vector<int>> TransformaK2t = vector<vector<int>>({{0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}});
+vector<vector<int>> TransformaK3a = vector<vector<int>>({{0, 4, 0, 4, 34, 3, 34, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 3, 3, 3, 3}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 0, 0, 0, 34, 34, 34, 34}, {0, 0, 0, 0, 0, 0, 0, 0}});
+vector<vector<int>> TransformaK3p = vector<vector<int>>({{0, 4, 3, 34, 0, 4, 3, 34}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 3, 3, 0, 0, 3, 3}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 0, 34, 34, 0, 0, 34, 34}, {0, 0, 0, 0, 0, 0, 0, 0}});
+vector<vector<int>> TransformaK3t = vector<vector<int>>({{0, 34, 0, 34, 4, 3, 4, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 3, 3, 3, 3}, {0, 0, 0, 0, 4, 4, 4, 4}, {0, 34, 0, 34, 0, 34, 0, 34}, {0, 0, 0, 0, 0, 0, 0, 0}});
+#else
+vector<vector<int>> ComponentsK1a {{0, 0}};
+vector<vector<int>> ComponentsK1p {{0, 0}};
+vector<vector<int>> ComponentsK1t {{0, 0}};
+vector<vector<int>> ComponentsK2a {{0, 0, 0, 0}};
+vector<vector<int>> ComponentsK2p {{0, 0, 0, 0}};
+vector<vector<int>> ComponentsK2t {{0, 0, 0, 0}};
+vector<vector<int>> ComponentsK3a {{0, 0, 0, 0, 0, 0, 0, 0}};
+vector<vector<int>> ComponentsK3p {{0, 0, 0, 0, 0, 0, 0, 0}};
+vector<vector<int>> ComponentsK3t {{0, 0, 0, 0, 0, 0, 0, 0}};
+vector<vector<int>> TransformaK1a {{0, 3}};
+vector<vector<int>> TransformaK1p {{0, 4}};
+vector<vector<int>> TransformaK1t {{0, 3}};
+vector<vector<int>> TransformaK2a {{0, 34, 347, 7}};
+vector<vector<int>> TransformaK2p {{0, 3, 37, 7}};
+vector<vector<int>> TransformaK2t {{0, 4, 47, 7}};
+vector<vector<int>> TransformaK3a {{0, 47, 34, 37, 347, 3, 7, 4}};
+vector<vector<int>> TransformaK3p {{0, 47, 3, 347, 37, 34, 7, 4}};
+vector<vector<int>> TransformaK3t {{0, 347, 4, 37, 47, 3, 7, 34}};
+#endif
+
+struct FrequencyComponents {
+    vector<vector<int>> K1, K2, K3;
+
+    FrequencyComponents() {};
+    FrequencyComponents(const char channel) {
+
+        switch (channel) {
+            case 'a':
+                K1 = ComponentsK1a;
+                K2 = ComponentsK2a;
+                K3 = ComponentsK3a;
+                break;
+            case 'p':
+                K1 = ComponentsK1p;
+                K2 = ComponentsK2p;
+                K3 = ComponentsK3p;
+                break;
+            case 't':
+                K1 = ComponentsK1t;
+                K2 = ComponentsK2t;
+                K3 = ComponentsK3t;
+                break;
+            default:;
+        }
+
+    }
+};
+
+struct FrequencyTransformations {
+    vector<vector<int>> K1, K2, K3;
+
+FrequencyTransformations() {};
+FrequencyTransformations(const char channel) {
+
+    switch (channel) {
+        case 'a':
+
+            K1 = TransformaK1a;
+            K2 = TransformaK2a;
+            K3 = TransformaK3a;
+            break;
+        case 'p':
+            K1 = TransformaK1p;
+            K2 = TransformaK2p;
+            K3 = TransformaK3p;
+            break;
+        case 't':
+            K1 = TransformaK1t;
+            K2 = TransformaK2t;
+            K3 = TransformaK3t;
+            break;
+        default:;
+    }
+}
+};
+
 #endif //KELDYSH_MFRG_TABLE_H
