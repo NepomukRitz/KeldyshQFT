@@ -345,25 +345,37 @@ void handler (const char * reason,
 // TODO: code does currently not compile when this integrator is used!
 template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in, int Nmax) -> comp {
     gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
+#if not defined(KELDYSH_FORMALISM) and not defined(PARTICLE_HOLE_SYMM)
     gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
+#endif
 
     //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
     //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
 
-    gsl_function F_real, F_imag;
+    gsl_function F_real;
+#if not defined(KELDYSH_FORMALISM) and not defined(PARTICLE_HOLE_SYMM)
+    gsl_function F_imag;
+#endif
 
     F_real.function = &f_real<Integrand>;
     F_real.params = &integrand;
 
+#if not defined(KELDYSH_FORMALISM) and not defined(PARTICLE_HOLE_SYMM)
     F_imag.function = &f_imag<Integrand>;
     F_imag.params = &integrand;
+#endif
 
-    double result_real, result_imag, error_real, error_imag;
+    double result_real, error_real;
+#if not defined(KELDYSH_FORMALISM) and not defined(PARTICLE_HOLE_SYMM)
+    double result_imag, error_imag;
+#endif
 
     gsl_set_error_handler(handler);
 
     gsl_integration_qag(&F_real, a, b, 0, 1e-6, Nmax, 1, W_real, &result_real, &error_real);
+#if not defined(KELDYSH_FORMALISM) and not defined(PARTICLE_HOLE_SYMM)
     gsl_integration_qag(&F_imag, a, b, 0, 1e-6, Nmax, 1, W_imag, &result_imag, &error_imag);
+#endif
 
     //double w1, w2;
     //if (w1_in < w2_in) {
@@ -386,7 +398,11 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a
     //gsl_integration_cquad(&F_real, a, b, 1e-4, 1e-4, W_real, &result_real, &result_imag, &neval);
 
     gsl_integration_workspace_free(W_real);
+#if not defined(KELDYSH_FORMALISM) and not defined(PARTICLE_HOLE_SYMM)
     gsl_integration_workspace_free(W_imag);
+#else
+    double result_imag = 0.;
+#endif
 
     //gsl_integration_cquad_workspace_free(W_real);
     //gsl_integration_cquad_workspace_free(W_imag);

@@ -190,7 +190,7 @@ public:
                                           GA*(factorAdvancedClosedAbove) +
                                           GK*(factorKeldyshClosedAbove ) );
 #else
-        return symmetrization_prefactor*( GM*factorClosedAbove );
+        return symmetrization_prefactor*( GM*factorClosedAbove )* glb_i; // glb_i to make integrand purely real for particle-hole symmetric case
 #endif
 #endif
     }
@@ -271,14 +271,14 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         comp integratedR;
         //print('\n', integratedR);
         if (v<0){
-            integratedR = -1./(2.*M_PI)*integrator(integrandR, v_lower-abs(v),   v-inter_tol , 0.);
-            integratedR+= -1./(2.*M_PI)*integrator(integrandR,    v+inter_tol,     -inter_tol, 0.);
-            integratedR+= -1./(2.*M_PI)*integrator(integrandR,     +inter_tol, v_upper+abs(v), 0.);
+            integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),   v-inter_tol , 0.);
+            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol,     -inter_tol, 0.);
+            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,     +inter_tol, v_upper+abs(v), 0.);
         }
         else{
-            integratedR = -1./(2.*M_PI)*integrator(integrandR, v_lower-abs(v),    -inter_tol , 0.);
-            integratedR+= -1./(2.*M_PI)*integrator(integrandR,     +inter_tol,    v-inter_tol, 0.);
-            integratedR+= -1./(2.*M_PI)*integrator(integrandR,    v+inter_tol, v_upper+abs(v), 0.);
+            integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),    -inter_tol , 0.);
+            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,     +inter_tol,    v-inter_tol, 0.);
+            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol, v_upper+abs(v), 0.);
         }
         self.addself(0, iv, i_in, integratedR);
 
