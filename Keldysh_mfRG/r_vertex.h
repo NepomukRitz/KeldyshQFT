@@ -72,7 +72,11 @@ public:
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
-    void enforce_freqsymmetriesK1(FrequencyGrid frequencyGrid);
+    void enforce_freqsymmetriesK1();
+    /**
+     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
+     */
+    void enforce_freqsymmetriesK2();
 
     /**
      * Determine peak width of "data" as a function of frequency by checking at which frequency the values have
@@ -486,11 +490,11 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
 }
 
-template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(FrequencyGrid frequencyGrid) {
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
 
     for (int itK = 0; itK < nK_K1; itK++) {
         for (int itw = 0; itw < nw1; itw++) {
-            double w_in = frequencyGrid.w[itw];
+            double w_in = this->frequencies.b_K1.w[itw];
             VertexInput input(itK, w_in, 0., 0., 0, 0, channel);
             this->K1[itK*nw1 + itw] = this->K1_valsmooth(input);
 
@@ -498,21 +502,21 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(FrequencyGrid freq
 
     }
 }
-/*
-template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(int i, FrequencyGrid frequencyGrid) {
 
-    for (int itK = 0; itK < nK_K1; itK++){
-        for (int itw = 0; itw < nw1; itw++){
-            for (int itv = 0; itv < nv1; itv++){
-                double w_in = frequencyGrid.w[itw];
-                double v_in = frequencyGrid.v [itv];
-                VertexInput input(itK, w_in, 0., 0., 0, 0, channel);
-                this->K1[itw] = this->K1_valsmooth(input);
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
+
+    for (int itK = 0; itK < nK_K2; itK++){
+        for (int itw = 0; itw < nBOS2; itw++){
+            for (int itv = 0; itv < nFER2; itv++){
+                double w_in = this->frequencies.b_K2.w[itw];
+                double v_in = this->frequencies.f_K2.w[itv];
+                VertexInput input(itK, w_in, v_in, 0., 0, 0, channel);
+                this->K2[itK*nw1*nFER2 + itw * nFER2 + itv] = this->K2_valsmooth(input);
             }
         }
     }
 
-}*/
+}
 
 template <typename Q> auto rvert<Q>::width(rvec& data, FrequencyGrid& freqs, double decay) -> double {
     auto maxval = *max_element(begin(data), end(data)); // maximum value of analyzed data

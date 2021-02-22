@@ -335,6 +335,7 @@ public:
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
 #if DIAG_CLASS >= 2
+        //vector<int> indices = indices_sum(i0, i2, channel);  // already written above
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
 
@@ -735,6 +736,10 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                                                      iK_select, iK_select_bubble);
 #else
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+                        // save the integrand for manual checks:
+                        /*if (i_omp == 20){
+                            integrand_K1.save_integrand();
+                        }*/
 #endif
 
 #ifdef KELDYSH_FORMALISM
@@ -774,15 +779,15 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     switch (channel) {
         case 'a':
             dgamma[0].avertex.K1 += K1_ordered_result;
-            dgamma[0].avertex.enforce_freqsymmetriesK1(freqs_K1);
+            dgamma[0].avertex.enforce_freqsymmetriesK1();
             break;
         case 'p':
             dgamma[0].pvertex.K1 += K1_ordered_result;
-            dgamma[0].pvertex.enforce_freqsymmetriesK1(freqs_K1);
+            dgamma[0].pvertex.enforce_freqsymmetriesK1();
             break;
         case 't':
             dgamma[0].tvertex.K1 += K1_ordered_result;
-            dgamma[0].tvertex.enforce_freqsymmetriesK1(freqs_K1);
+            dgamma[0].tvertex.enforce_freqsymmetriesK1();
             break;
         default: ;
     }
@@ -807,10 +812,10 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices
                 int iK2 = i_mpi * n_omp + i_omp;
-                int i0 = iK2 / (nw2_w * nw2_v * n_in);
-                int iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
-                int iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
-                int i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
+                int i0 = iK2 /(nw2_w * nw2_v * n_in);
+                int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
+                int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
+                int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
                 double w = bfreqs_K2.w[iw];
                 double v = ffreqs_K2.w[iv];
                 Q value;
@@ -893,9 +898,18 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': dgamma[0].avertex.K2 += K2_ordered_result; break;
-        case 'p': dgamma[0].pvertex.K2 += K2_ordered_result; break;
-        case 't': dgamma[0].tvertex.K2 += K2_ordered_result; break;
+        case 'a':
+            dgamma[0].avertex.K2 += K2_ordered_result;
+            dgamma[0].avertex.enforce_freqsymmetriesK2();
+            break;
+        case 'p':
+            dgamma[0].pvertex.K2 += K2_ordered_result;
+            dgamma[0].pvertex.enforce_freqsymmetriesK2();
+            break;
+        case 't':
+            dgamma[0].tvertex.K2 += K2_ordered_result;
+            dgamma[0].tvertex.enforce_freqsymmetriesK2();
+            break;
         default: ;
     }
 

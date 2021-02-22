@@ -174,13 +174,19 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TR(indices);
             T3(indices);
             break;
+        case 47:
+            TC(indices);
+            TR(indices);
+            break;
         case 347:
             TR(indices);
             TC(indices);
             T3(indices);
             break;
 #endif
-        default: ;
+        default:
+            cout << "A Transformation in the symmetry table is not covered in Ti!"
+            ;
     }
 }
 
