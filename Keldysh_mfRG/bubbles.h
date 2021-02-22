@@ -335,6 +335,7 @@ public:
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
 #if DIAG_CLASS >= 2
+        //vector<int> indices = indices_sum(i0, i2, channel);  // already written above
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
 
@@ -458,7 +459,10 @@ public:
 
         VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
-        res_l_V = vertex1[0].left_diff_bare(input_l);
+        if (diff)
+            res_l_V = vertex1[0].left_diff_bare(input_l);
+        else
+            res_l_V = vertex1[0].gammaRb(input_l);
         res_r_V = vertex2[0].right_same_bare(input_r);
 
         if (channel != 't') {
@@ -467,7 +471,10 @@ public:
         else {
             input_l.spin = 1;
             input_r.spin = 1;
-            res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+            if (diff)
+                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+            else
+                res_l_Vhat = vertex1[0].gammaRb(input_l);
             res_r_Vhat = vertex2[0].right_same_bare(input_r);
 
             res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
@@ -501,9 +508,7 @@ public:
         filename += channel;
         filename += "_i0=" + to_string(i0)
                     + "_i2=" + to_string(i2)
-                    + "_w=" + to_string(w)
-                    + "_v=" + to_string(v)
-                    + ".h5";
+                    + "_w=" + to_string(w) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
                        {freqs, integrand_re, integrand_im, Pival_re, Pival_im});
@@ -516,7 +521,7 @@ template <typename Q> class Integrand_K3 {
     const Bubble& Pi;
     int i0;
     const int i_in;
-    const char channel;
+    const char channel, part;
     const double w, v, vp;
     const bool diff;
 public:
@@ -537,9 +542,9 @@ public:
      */
     Integrand_K3(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in,
                  const double w_in, const double v_in, const double vp_in, const int i_in_in,
-                 const char ch_in, const bool diff_in)
+                 const char ch_in, const char pt_in, const bool diff_in)
                : vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in),
-                 channel(ch_in), diff(diff_in)
+                 channel(ch_in), part(pt_in), diff(diff_in)
     {
 #ifdef KELDYSH_FORMALISM
         i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
@@ -570,18 +575,39 @@ public:
             VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
             VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
 
-            res_l_V = vertex1[0].left_diff_bare(input_l);
-            res_r_V = vertex2[0].right_diff_bare(input_r);
-
+            if (diff) {
+                res_l_V = vertex1[0].left_diff_bare(input_l);
+                res_r_V = vertex2[0].right_diff_bare(input_r);
+            }
+            else {
+                if (part == 'L') {
+                    res_l_V = vertex1[0].gammaRb(input_l);
+                    res_r_V = vertex2[0].right_diff_bare(input_r);
+                } else if (part == 'R') {
+                    res_l_V = vertex1[0].left_diff_bare(input_l);
+                    res_r_V = vertex2[0].gammaRb(input_r);
+                } else;
+            }
             if (channel != 't') {
                 res += res_l_V * Pival * res_r_V;
             }
             else {
                 input_l.spin = 1;
                 input_r.spin = 1;
-                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
-                res_r_Vhat = vertex2[0].right_diff_bare(input_r);
 
+                if (diff) {
+                    res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                    res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+                }
+                else {
+                    if (part == 'L') {
+                        res_l_Vhat = vertex1[0].gammaRb(input_l);
+                        res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+                    } else if (part == 'R') {
+                        res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                        res_r_Vhat = vertex2[0].gammaRb(input_r);
+                    } else;
+                }
                 res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
 #ifdef KELDYSH_FORMALISM
@@ -606,10 +632,12 @@ public:
  * @param S       : second propagator of bubble
  * @param channel : diagrammatic channel ('a', 'p', or 't')
  * @param diff    : whether or not the bubble is a differentiated one
+ * @param part    : For multi-loop calculation: specify if one computes left ('L') or right ('R')
+ *                  multi-loop contribution. Use '.' for first loop order.
  */
 template <typename Q>
 void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
-                     const Propagator& G, const Propagator& S, const char channel, const bool diff
+                     const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part
 #ifdef DEBUG_MODE
                      , const int iK_select, const int iK_select_bubble, const int iK_select2, const int iK_select_bubble2
 #endif
@@ -703,40 +731,25 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 double w = freqs_K1.w[iw];      // frequency acc. to frequency index
                 Q value;
 
-                int trafo = 1;
-                int sign_w = sign_index<double>(w);
-                switch (channel) {
-                    case 'a':
-                        trafo = TransformaK1a[i0][sign_w];
-                        //cout << "Ping!" << trafo << "\n";
-                        break;
-                    case 'p':
-                        trafo = TransformaK1p[i0][sign_w];
-                        break;
-                    case 't':
-                        trafo = TransformaK1t[i0][sign_w];
-                        break;
-                    default:
-                        cout << "\n Uooooohhh, sth went wrong! \n \n";
-                }
-
-                if (trafo == 0) {
-
-                    // initialize the integrand object and perform frequency integration
-                    if (vertex1[0].Ir && vertex2[0].Ir) value = 0.;
-                    else {
+                // initialize the integrand object and perform frequency integration
+                if (!diff && part != '.') value = 0.;
+                else {
 #ifdef KELDYSH_FORMALISM
-                        for (auto i2:non_zero_Keldysh_bubble) {
+                    for (auto i2:non_zero_Keldysh_bubble) {
 #else
-                        int i2=0;
+                    int i2=0;
 #endif
 #ifdef DEBUG_MODE
-                            Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
+                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
                                                      iK_select, iK_select_bubble);
 #else
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+                        // save the integrand for manual checks:
+                        /*if (i_omp == 20){
+                            integrand_K1.save_integrand();
+                        }*/
 #endif
-
+                        value +=
 #ifdef KELDYSH_FORMALISM
                            value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
@@ -756,9 +769,8 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                            }
                            // */
 #ifdef KELDYSH_FORMALISM
-                      }
-#endif
                     }
+#endif
                 }
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
@@ -772,18 +784,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a':
-            dgamma[0].avertex.K1 += K1_ordered_result;
-            dgamma[0].avertex.enforce_freqsymmetriesK1(freqs_K1);
-            break;
-        case 'p':
-            dgamma[0].pvertex.K1 += K1_ordered_result;
-            dgamma[0].pvertex.enforce_freqsymmetriesK1(freqs_K1);
-            break;
-        case 't':
-            dgamma[0].tvertex.K1 += K1_ordered_result;
-            dgamma[0].tvertex.enforce_freqsymmetriesK1(freqs_K1);
-            break;
+        case 'a': dgamma[0].avertex.K1 += K1_ordered_result; break;
+        case 'p': dgamma[0].pvertex.K1 += K1_ordered_result; break;
+        case 't': dgamma[0].tvertex.K1 += K1_ordered_result; break;
         default: ;
     }
 //    print("K1", channel, " done: ");
@@ -807,63 +810,30 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices
                 int iK2 = i_mpi * n_omp + i_omp;
-                int i0 = iK2 / (nw2_w * nw2_v * n_in);
-                int iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
-                int iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
-                int i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
+                int i0 = iK2 /(nw2_w * nw2_v * n_in);
+                int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
+                int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
+                int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
                 double w = bfreqs_K2.w[iw];
                 double v = ffreqs_K2.w[iv];
                 Q value;
 
-                int trafo = 1;
-                int sign_w = sign_index<double>(w);
-                int sign_v = sign_index<double>(v);
-                switch (channel) {
-                    case 'a':
-                        trafo = TransformaK2a[i0][sign_w * 2 + sign_v];
-                        //cout << "Ping!" << trafo << "\n";
-                        break;
-                    case 'p':
-                        trafo = TransformaK2p[i0][sign_w * 2 + sign_v];
-                        break;
-                    case 't':
-                        trafo = TransformaK2t[i0][sign_w * 2 + sign_v];
-                        break;
-                    default:
-                        cout << "\n Uooooohhh, sth went wrong! \n \n";
-                }
-
-                if (trafo == 0) {
-
-                    // initialize the integrand object and perform frequency integration
-                    if (vertex2[0].Ir) value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
-                        // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
-                    else {
+                // initialize the integrand object and perform frequency integration
+                if (!diff && part != 'L') value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
+                // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
+                else {
 #ifdef KELDYSH_FORMALISM
-                        for(auto i2:non_zero_Keldysh_bubble) {
+                    for(auto i2:non_zero_Keldysh_bubble) {
 #else
-                        int i2 = 0;
+                        int i2=0;
 #endif
 #ifdef DEBUG_MODE
-                        Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff,
+                        Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff,
                                                      iK_select2, iK_select_bubble2);
 #else
-                        Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
+                        Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, part, diff);
 #endif
-
-#ifdef KELDYSH_FORMALISM
-                        value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
-#else
-                        value += prefactor * (1. / (2. * M_PI)) *
-                                 integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
-                        if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
-                            value += prefactor * (1. / (2. * M_PI)) *
-                                     integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
-                                                -w / 2., w / 2.);
-                        }
-                        value += prefactor * (1. / (2. * M_PI)) *
-                                 integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
-#endif
+                        value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, vmin, vmax, -w/2., w/2.);
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
                             value +=
@@ -872,14 +842,13 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #else
                                 prefactor * (1. / (-2. * M_PI)) *
 #endif
-                                    asymp_corrections_K2(vertex1, vertex2, -vmin, vmax, w, v, i0, i2,
-                                                      i_in, channel); //Correction needed for the K2 class
+                                     asymp_corrections_K2(vertex1, vertex2, -vmin, vmax, w, v, i0, i2,
+                                                          i_in, channel); //Correction needed for the K2 class
                         }
                         // */
 #ifdef KELDYSH_FORMALISM
-                        }
-#endif
                     }
+#endif
                 }
                 K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
@@ -931,18 +900,15 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
-                Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
+                Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, part, diff);
 
+                value =
 #ifdef KELDYSH_FORMALISM
-                value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
+                                prefactor * (1. / (2. * M_PI * glb_i)) *
 #else
-                value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
-                if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
-                }
-                value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                                prefactor * (1. / (-2. * M_PI)) *
 #endif
-
+                        integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
 
                 if (!diff) {
 #ifdef KELDYSH_FORMALISM
@@ -990,9 +956,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #ifdef DEBUG_MODE
 template <typename Q>
 void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
-                     const Propagator& G, const Propagator& S, const char channel, const bool diff)
+                     const Propagator& G, const Propagator& S, const char channel, const bool diff, const char part)
 {
-    bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, 16, 16, 16, 16);
+    bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, part, 16, 16, 16, 16);
 }
 #endif
 

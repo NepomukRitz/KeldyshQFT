@@ -190,7 +190,7 @@ public:
                                           GA*(factorAdvancedClosedAbove) +
                                           GK*(factorKeldyshClosedAbove ) );
 #else
-        return symmetrization_prefactor*( GM*factorClosedAbove )* glb_i; // glb_i to make integrand purely real for particle-hole symmetric case
+        return symmetrization_prefactor*( GM*factorClosedAbove );
 #endif
 #endif
     }
@@ -230,7 +230,7 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 #endif
           )
 {
-#pragma omp parallel for
+//#pragma omp parallel for
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
         int iv = iSE/n_in;
         int i_in = iSE - iv*n_in;
@@ -260,8 +260,20 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         double v_lower = prop.selfenergy.frequencies.w_lower;
         double v_upper = prop.selfenergy.frequencies.w_upper;
 #ifdef KELDYSH_FORMALISM
-        comp integratedR = -1./(2.*M_PI*glb_i)* integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
-        comp integratedK = -1./(2.*M_PI*glb_i)* integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedR =
+#ifdef KELDYSH_FORMALISM
+                -1./(2.*M_PI*glb_i)*
+#else
+                1./(2.*M_PI)*
+#endif
+                integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedK =
+#ifdef KELDYSH_FORMALISM
+            -1./(2.*M_PI*glb_i)*
+#else
+            1./(2.*M_PI)*
+#endif
+            integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
@@ -281,8 +293,6 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
             integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol, v_upper+abs(v), 0.);
         }
         self.addself(0, iv, i_in, integratedR);
-
-
 #endif
     }
 }
