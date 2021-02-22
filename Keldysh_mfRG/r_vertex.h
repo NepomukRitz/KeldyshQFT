@@ -495,8 +495,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
     for (int itK = 0; itK < nK_K1; itK++) {
         for (int itw = 0; itw < nw1; itw++) {
             double w_in = this->frequencies.b_K1.w[itw];
-            VertexInput input(itK, w_in, 0., 0., 0, 0, channel);
-            this->K1[itK*nw1 + itw] = this->K1_valsmooth(input);
+            IndicesSymmetryTransformations indices(itK, w_in, 0., 0., 0, channel);
+
+            this->K1[itK*nw1 + itw] = this->K1_valsmooth_FreqRelations(indices, *(this));
 
         }
 
@@ -510,8 +511,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
             for (int itv = 0; itv < nFER2; itv++){
                 double w_in = this->frequencies.b_K2.w[itw];
                 double v_in = this->frequencies.f_K2.w[itv];
+                IndicesSymmetryTransformations indices(itK, w_in, v_in, 0., 0, channel);
                 VertexInput input(itK, w_in, v_in, 0., 0, 0, channel);
-                this->K2[itK*nw1*nFER2 + itw * nFER2 + itv] = this->K2_valsmooth(input);
+                this->K2[itK*nw1*nFER2 + itw * nFER2 + itv] = this->K2_valsmooth_FreqRelations(indices, *(this));
             }
         }
     }
