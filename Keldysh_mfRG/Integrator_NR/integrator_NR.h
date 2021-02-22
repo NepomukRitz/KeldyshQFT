@@ -93,12 +93,13 @@ auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
     // use absolute value of error estimate
     is = (comp)(fabs(is));
 
-    // if difference between first and second estimate is already smaller than absolute or relative tolerance,
-    // return second estimate, else subdivide interval
-    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)))
+    // If difference between first and second estimate is already smaller than absolute or relative tolerance,
+    // return second estimate, else subdivide interval.
+    // Subdivide also if the integral value is exactly zero, to avoid accidental zero result due to the choice of
+    // evaluation points.
+    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)) && i2 != 0.)
         return i2;
     else
-        //printf("Difference of the two estimates: %f\n",abs(i2 - i1));
         return integrate(x[0],  x[2],  f[0],  f[2],  is)  // subdivide interval
              + integrate(x[2],  x[4],  f[2],  f[4],  is)
              + integrate(x[4],  x[6],  f[4],  f[6],  is)
@@ -134,10 +135,9 @@ auto Adapt<Integrand>::integrate(const double a, const double b, const comp fa, 
 
     // if difference between first and second estimate is smaller than absolute or relative tolerance,
     // or nodes lie outside the interval, return second estimate, else subdivide interval
-    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)) || x[0] < a || b < x[4] || abs(a-b)<integrator_tol)
+    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)) || x[0] < a || b < x[4])
         return i2;
     else
-        //printf("Difference of the two estimates: %f\n",abs(i2 - i1));
         return integrate(a,    x[0], fa,   f[0], is)  // subdivide interval
              + integrate(x[0], x[1], f[0], f[1], is)
              + integrate(x[1], x[2], f[1], f[2], is)

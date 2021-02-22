@@ -19,6 +19,11 @@ auto interpolateK1(IndicesSymmetryTransformations indices, const rvert<Q>& verte
         int index = vertex.frequencies.b_K1.fconv(indices.w);
         double x1 = vertex.frequencies.b_K1.w[index];
         double x2 = vertex.frequencies.b_K1.w[index + 1];
+        if (!(x1 < x2)) { // If not x1<x2, we run out of the box --> shift the index downwards.
+            index -= 1;
+            x1 = vertex.frequencies.b_K1.w[index];
+            x2 = vertex.frequencies.b_K1.w[index + 1];
+        }
         double xd = (indices.w - x1) / (x2 - x1);
 
         auto f1 = vertex.K1_val(indices.iK, index, indices.i_in);
@@ -44,8 +49,18 @@ auto interpolateK2 (IndicesSymmetryTransformations indices, const rvert<Q>& vert
 
         double x1 = vertex.frequencies.b_K2.w[index_b];
         double x2 = vertex.frequencies.b_K2.w[index_b + 1];
+        if (!(x1 < x2)) { // If not x1<x2, we run out of the box --> shift the index downwards.
+            index_b -= 1;
+            x1 = vertex.frequencies.b_K2.w[index_b];
+            x2 = vertex.frequencies.b_K2.w[index_b + 1];
+        }
         double y1 = vertex.frequencies.f_K2.w[index_f];
         double y2 = vertex.frequencies.f_K2.w[index_f + 1];
+        if (!(y1 < y2)) { // If not y1<y2, we run out of the box --> shift the index downwards.
+            index_f -= 1;
+            y1 = vertex.frequencies.f_K2.w[index_f];
+            y2 = vertex.frequencies.f_K2.w[index_f + 1];
+        }
         double xd = (indices.w - x1) / (x2 - x1);
         double yd = (indices.v1 - y1) / (y2 - y1);
 
@@ -77,10 +92,25 @@ auto interpolateK3 (IndicesSymmetryTransformations indices, const rvert<Q>& vert
 
         double x1 = vertex.frequencies.b_K3.w[index_b];
         double x2 = vertex.frequencies.b_K3.w[index_b + 1];
+        if (!(x1 < x2)) { // If not x1<x2, we run out of the box --> shift the index downwards.
+            index_b -= 1;
+            x1 = vertex.frequencies.b_K3.w[index_b];
+            x2 = vertex.frequencies.b_K3.w[index_b + 1];
+        }
         double y1 = vertex.frequencies.f_K3.w[index_f1];
         double y2 = vertex.frequencies.f_K3.w[index_f1 + 1];
+        if (!(y1 < y2)) { // If not y1<y2, we run out of the box --> shift the index downwards.
+            index_f1 -= 1;
+            y1 = vertex.frequencies.f_K3.w[index_f1];
+            y2 = vertex.frequencies.f_K3.w[index_f1 + 1];
+        }
         double z1 = vertex.frequencies.f_K3.w[index_f2];
         double z2 = vertex.frequencies.f_K3.w[index_f2 + 1];
+        if (!(z1 < z2)) { // If not z1<z2, we run out of the box --> shift the index downwards.
+            index_f2 -= 1;
+            z1 = vertex.frequencies.f_K3.w[index_f2];
+            z2 = vertex.frequencies.f_K3.w[index_f2 + 1];
+        }
         double xd = (indices.w - x1) / (x2 - x1);
         double yd = (indices.v1 - y1) / (y2 - y1);
         double zd = (indices.v2 - z1) / (z2 - z1);

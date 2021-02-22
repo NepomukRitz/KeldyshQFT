@@ -66,9 +66,9 @@ public:
     void transfToR(VertexInput& input) const;
 
     /**
-     * Interpolate the vertex to updated grid when rescaling the grid from Lambda1 to Lambda2.
+     * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
-    void update_grid(double Lambda1, double Lambda2);
+    void update_grid(double Lambda);
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
@@ -426,16 +426,11 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     input.v2 = v2;
 }
 
-template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2) {
-    double decay = 10.; // decay parameter // TODO: should be fixed or defined globally
-
+template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
-    //frequencies_new.rescale_grid(Lambda1, Lambda2);           // rescale new frequency grid  //TODO: remove if unnecessary
-#if DIAG_CLASS >= 1
-    double widthK1 = width_K1(decay); // determine width of central K1 feature in frequency space
-    if (widthK1 > 0 && widthK1 < frequencies.b_K1.W_scale)
-        frequencies_new.b_K1.initialize_grid(widthK1); // use peak width to scale new frequency grid
+    frequencies_new.rescale_grid(Lambda);                     // rescale new frequency grid
 
+#if DIAG_CLASS >= 1
     vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
     for (int iK1=0; iK1<nK_K1; ++iK1) {
         for (int iw=0; iw<nw1; ++iw) {
@@ -449,18 +444,6 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda1, double Lambda2)
     this->K1 = K1_new; // update vertex to new interpolated values
 #endif
 #if DIAG_CLASS >= 2
-    auto widthsK2 = width_K2(decay); // determine widths of central K1 feature in frequency space
-    // use peak width to scale new frequency grid, use max of width in w- and v-direction
-    // factor 2 due to strong differences between different Keldysh components
-    // --> tails of all components should be included
-    if (widthsK2[0] > 0 || widthsK2[1] > 0) {
-        double widthK2 = 2. * max(widthsK2[0], widthsK2[1]);
-        if (widthK2 < frequencies.b_K2.W_scale) {
-            frequencies_new.b_K2.initialize_grid(widthK2);
-            frequencies_new.f_K2.initialize_grid(widthK2);
-        }
-    }
-
     vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
     for (int iK2=0; iK2<nK_K2; ++iK2) {
         for (int iw=0; iw<nw2; ++iw) {
@@ -758,7 +741,7 @@ template <typename Q> auto rvert<Q>::K3_valsmooth(VertexInput input) const -> Q 
     IndicesSymmetryTransformations indices(input.iK, input.w, input.v1, input.v2, input.i_in, channel);
 
     Ti(indices, transformations.K3[input.spin][input.iK]);
-    indices.iK = components.K3[input.iK];
+    indices.iK = components.K3[input.spin][input.iK];
     if (indices.iK < 0) return 0.;
     if (indices.conjugate) return conj(interpolateK3(indices, *(this)));
     return interpolateK3(indices, *(this));
@@ -768,7 +751,7 @@ template <typename Q> auto rvert<Q>::K3_valsmooth(VertexInput input, const rvert
     IndicesSymmetryTransformations indices(input.iK, input.w, input.v1, input.v2, input.i_in, channel);
 
     Ti(indices, transformations.K3[input.spin][input.iK]);
-    indices.iK = components.K3[input.iK];
+    indices.iK = components.K3[input.spin][input.iK];
     if (indices.iK < 0) return 0.;
 
     Q valueK3;

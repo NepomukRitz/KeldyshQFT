@@ -28,8 +28,8 @@ public:
     void addself(int iK, int iv, int i_in, Q val);  //Adds given input to specified location
     auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
-    void update_grid(double Lambda1, double Lambda2);  // Interpolate self-energy to updated grid
-    auto width(double decay) -> double;  // Determine width of central features of self-energy
+    void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
+    void update_grid(double Lambda);  // Interpolate self-energy to updated grid
     auto norm(int p) -> double;
 
     // operators for self-energy
@@ -188,14 +188,14 @@ template <typename Q> void SelfEnergy<Q>::addself(int iK, int iv, int i_in, Q va
     Sigma[iK*nSE + iv*n_in + i_in] += val;
 }
 
-template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lambda2) {
-    FrequencyGrid frequencies_new = this->frequencies; // new frequency grid
-    //frequencies_new.rescale_grid(Lambda1, Lambda2);    // rescale new frequency grid
+template <typename Q> void SelfEnergy<Q>::set_frequency_grid(const SelfEnergy<Q>& selfEnergy) {
+    this->frequencies = selfEnergy.frequencies;
+};
 
-    double decay = 10.;
-    double widthSE = width(decay);
-    if (widthSE > 0 && widthSE < frequencies.W_scale)
-        frequencies_new.initialize_grid(widthSE);
+template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
+    FrequencyGrid frequencies_new = this->frequencies; // new frequency grid
+    frequencies_new.rescale_grid(Lambda);              // rescale new frequency grid
+
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
 #ifdef KELDYSH_FORMALISM
     for (int iK=0; iK<2; ++iK) {
@@ -213,31 +213,6 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda1, double Lam
 #endif
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
-}
-
-/**
- * Determine the width of the central features of Sigma^R, at which absolute values have decayed to ~1/decay
- * of the maximum value max(abs(Sigma^R-Sigma^H)) (subtracting the Hartree shift Sigma^H).
- * Average over interal indices.
- */
-// TODO: this is copy+paste from rvert --> combine
-template <typename Q> auto SelfEnergy<Q>::width(double decay) -> double {
-    rvec absSE (nSE); // temporary vector for averaged data
-    // average SE over internal indices
-    for (int iv=0; iv<nSE; ++iv) {
-        for (int i_in=0; i_in<n_in; ++i_in) {
-            // Only consider retarded component for width estimate.
-            // Subtract Hartree value and take the absolute value.
-            absSE[iv] += abs(val(0, iv, i_in) - asymp_val_R);
-        }
-    }
-    // Same as for r_vertex. TODO: define globally
-    auto maxval = *max_element(begin(absSE), end(absSE));
-    for (int i=0; i<absSE.size(); ++i) {
-        if (absSE[i] > maxval/decay)
-            return abs(frequencies.w[i]);
-    }
-    return 0.;
 }
 
 /*

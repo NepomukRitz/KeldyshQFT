@@ -13,9 +13,9 @@ template <typename Q>
 void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, double Lambda){
     Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
-    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'a', false, '.');
-    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'p', false, '.');
-    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 't', false, '.');
+    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'a', false);
+    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'p', false);
+    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 't', false);
 }
 
 template <typename Q>
@@ -23,7 +23,7 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, double 
     Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
     //Do an a-Bubble for the calculation of the self-energy
-    bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'a', false, '.');
+    bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'a', false);
 
     //Calculate the Self-Energy
     loop(PsiSelfEnergy, bareState.vertex, barePropagator, false);

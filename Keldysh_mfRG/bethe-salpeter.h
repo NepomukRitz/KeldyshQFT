@@ -530,22 +530,22 @@ void check_BSE_and_SDE(const string& dir, const H5std_string& filename){
 
         Vertex<comp> temp_bubble_a(n_spin);
         //Calculate K1-contributions. part='.' yields only K1
-        bubble_function(temp_bubble_a, bare_vertex, fRG_vertex, G, G, 'a', false, '.');
-        bubble_function(temp_bubble_a, fRG_vertex, bare_vertex, G, G, 'a', false, '.');
+        bubble_function(temp_bubble_a, bare_vertex, fRG_vertex, G, G, 'a', false);
+        bubble_function(temp_bubble_a, fRG_vertex, bare_vertex, G, G, 'a', false);
 
         //Calculare K2-contributions. part='L' only one to yield non-zero result
 //        bubble_function(temp_bubble_a, bare_vertex, fRG_vertex, G, G, 'a', false, 'R');
-        bubble_function(temp_bubble_a, fRG_vertex, bare_vertex, G, G, 'a', false, 'L');
+        bubble_function(temp_bubble_a, fRG_vertex, bare_vertex, G, G, 'a', false);
         temp_bubble_a *= 0.5;
 
         Vertex<comp> temp_bubble_p(n_spin);
         //Calculate K1-contributions. part='.' yields only K1
-        bubble_function(temp_bubble_p, bare_vertex, fRG_vertex, G, G, 'p', false, '.');
-        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false, '.');
+        bubble_function(temp_bubble_p, bare_vertex, fRG_vertex, G, G, 'p', false);
+        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false);
 
         //Calculare K2-contributions. part='L' only one to yield non-zero result
 //        bubble_function(temp_bubble_p, bare_vertex, fRG_vertex, G, G, 'p', false, 'R');
-        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false, 'L');
+        bubble_function(temp_bubble_p, fRG_vertex, bare_vertex, G, G, 'p', false);
         temp_bubble_p *= 0.5;
 
 

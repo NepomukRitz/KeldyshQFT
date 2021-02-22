@@ -19,7 +19,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define DIAG_CLASS 1
 
 #define N_LOOPS 1  // Number of loops
 
@@ -35,7 +35,8 @@ const double glb_T = 0.01;                     // Temperature
     const double glb_mu = 0.0001;                    // Chemical potential // set to zero as energy offset
 #endif
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
-const double glb_epsilon = glb_mu - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
+const double glb_Vg = glb_mu;                  // Impurity level shift
+const double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 const double glb_Gamma = 1./5.;                // Hybridization of Anderson model
 const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 #define EQUILIBRIUM                            // If defined, use equilibrium FDT's for propagators
@@ -86,9 +87,9 @@ const double glb_v_upper = 50.;
 const double glb_v_lower = -glb_v_upper;
 
 const double glb_W2_scale = 1.;
-const double glb_w2_upper = .5;
+const double glb_w2_upper = 15.;
 const double glb_w2_lower = -glb_w2_upper;
-const double glb_v2_upper = .5;
+const double glb_v2_upper = 15.;
 const double glb_v2_lower = -glb_v2_upper;
 
 const double glb_W3_scale = 1.;

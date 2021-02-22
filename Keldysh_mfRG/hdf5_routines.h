@@ -8,13 +8,16 @@
 #include "util.h"               // printing text
 #include "parameters.h"         // system parameters (necessary for vector lengths etc.)
 #include "data_structures.h"    // comp data type, real/complex vector class
+#include "frequency_grid.h"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
 
 #ifdef MPI_FLAG
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file
 #endif
 
-// TODO: incorporate change of frequency grid: read frequency vectors also
+// TODO: Currently, global parameters are used to set the size of the buffer arrays.
+//  Thus, in order to properly read data from a file, global parameters need to be the same as in the file
+//  --> fix this: read buffer sizes (and dims) from file
 
 /// --- Constants concerning HDF5 data format --- ///
 
@@ -25,6 +28,8 @@ const int RANK_K3 = 2;
 const int RANK_irreducible = 2;
 const int RANK_self = 2;
 const int RANK_freqs = 2;
+
+const int N_freq_params = 24; // number of parameters for frequency grid
 
 // Names of the individual datasets within the hdf5 file
 const H5std_string	DATASET_irred("irred");
@@ -49,6 +54,7 @@ const H5std_string  BFREQS3_LIST("bfreqs3");
 const H5std_string  FFREQS_LIST ("ffreqs");
 const H5std_string  FFREQS2_LIST("ffreqs2");
 const H5std_string  FFREQS3_LIST("ffreqs3");
+const H5std_string  FREQ_PARAMS("freq_params");
 const H5std_string  PARAM_LIST("parameters");
 const H5std_string  RE( "re" );
 const H5std_string  IM( "im" );
@@ -78,6 +84,7 @@ H5::CompType def_mtype_comp() {
  */
 class Buffer {
 public:
+    double * freq_params;
     double * bfreqs_buffer;
     double * ffreqs_buffer;
 #ifdef KELDYSH_FORMALISM
@@ -116,6 +123,7 @@ public:
 #endif
 
     Buffer() {
+        freq_params = new double[N_freq_params];
         bfreqs_buffer = new double[nBOS];                        // create buffer for bosonic frequencies
         ffreqs_buffer = new double[nFER];                        // create buffer for fermionic frequencies
         selfenergy = new h5_comp[self_dim];                           // create buffer for self-energy
@@ -142,6 +150,7 @@ public:
     }
 
     ~Buffer() {
+        delete[] freq_params;
         delete[] bfreqs_buffer;
         delete[] ffreqs_buffer;
         delete[] selfenergy;
@@ -169,11 +178,22 @@ public:
 
     void initialize(State<comp>& state_in) {
         print("Starting to copy to buffer...", true);
+        FrequencyGrid bfreqs = state_in.vertex[0].avertex.frequencies.b_K1;
+        FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
+        freq_params[0] = (double) bfreqs.N_w;
+        freq_params[1] = bfreqs.w_upper;
+        freq_params[2] = bfreqs.w_lower;
+        freq_params[3] = bfreqs.W_scale;
+        freq_params[4] = (double) ffreqs.N_w;
+        freq_params[5] = ffreqs.w_upper;
+        freq_params[6] = ffreqs.w_lower;
+        freq_params[7] = ffreqs.W_scale;
+
         for (int i=0; i<nBOS; ++i) {
-            bfreqs_buffer[i] = state_in.vertex[0].avertex.frequencies.b_K1.w[i];
+            bfreqs_buffer[i] = bfreqs.w[i];
         }
         for (int i=0; i<nFER; ++i) {
-            ffreqs_buffer[i] = state_in.selfenergy.frequencies.w[i];
+            ffreqs_buffer[i] = ffreqs.w[i];
         }
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
             selfenergy[i].re = real(state_in.selfenergy.acc(i));
@@ -196,11 +216,22 @@ public:
         }
 #endif
 #if DIAG_CLASS >= 2
+        FrequencyGrid bfreqs2 = state_in.vertex[0].avertex.frequencies.b_K2;
+        FrequencyGrid ffreqs2 = state_in.vertex[0].avertex.frequencies.f_K2;
+        freq_params[8]  = (double) bfreqs2.N_w;
+        freq_params[9]  = bfreqs2.w_upper;
+        freq_params[10] = bfreqs2.w_lower;
+        freq_params[11] = bfreqs2.W_scale;
+        freq_params[12] = (double) ffreqs2.N_w;
+        freq_params[13] = ffreqs2.w_upper;
+        freq_params[14] = ffreqs2.w_lower;
+        freq_params[15] = ffreqs2.W_scale;
+
         for (int i=0; i<nBOS2; ++i) {
-            bfreqs2_buffer[i] = state_in.vertex[0].avertex.frequencies.b_K2.w[i];
+            bfreqs2_buffer[i] = bfreqs2.w[i];
         }
         for (int i=0; i<nFER2; ++i) {
-            ffreqs2_buffer[i] = state_in.vertex[0].avertex.frequencies.f_K2.w[i];
+            ffreqs2_buffer[i] = ffreqs2.w[i];
         }
         for(int i=0; i<K2_dim; ++i) {                                // write K2 into buffer
             K2_class_a[i].re = real(state_in.vertex[0].avertex.K2_acc(i));
@@ -214,11 +245,22 @@ public:
         }
 #endif
 #if DIAG_CLASS >= 3
+        FrequencyGrid bfreqs3 = state_in.vertex[0].avertex.frequencies.b_K3;
+        FrequencyGrid ffreqs3 = state_in.vertex[0].avertex.frequencies.f_K3;
+        freq_params[16] = (double) bfreqs3.N_w;
+        freq_params[17] = bfreqs3.w_upper;
+        freq_params[18] = bfreqs3.w_lower;
+        freq_params[19] = bfreqs3.W_scale;
+        freq_params[20] = (double) ffreqs3.N_w;
+        freq_params[21] = ffreqs3.w_upper;
+        freq_params[22] = ffreqs3.w_lower;
+        freq_params[23] = ffreqs3.W_scale;
+
         for (int i=0; i<nBOS3; ++i) {
-            bfreqs3_buffer[i] = state_in.vertex[0].avertex.frequencies.b_K3.w[i];
+            bfreqs3_buffer[i] = bfreqs3.w[i];
         }
         for (int i=0; i<nFER3; ++i) {
-            ffreqs3_buffer[i] = state_in.vertex[0].avertex.frequencies.f_K3.w[i];
+            ffreqs3_buffer[i] = ffreqs3.w[i];
         }
         for(int i=0; i<K3_dim; ++i) {                                // write K3 into buffer
             K3_class_a[i].re = real(state_in.vertex[0].avertex.K3_acc(i));
@@ -247,6 +289,8 @@ hsize_t h5_cast(int dim) {
 class Dims {
 public:
     hsize_t Lambda[1];
+    hsize_t freq_params_dims[2];
+    hsize_t freq_params_buffer_dims[2];
     hsize_t bfreqs_dims[2];
     hsize_t ffreqs_dims[2];
     hsize_t bfreqs_buffer_dims[1];
@@ -299,6 +343,8 @@ public:
         K3_buffer {h5_cast(buffer.K3_dim)},
 #endif
         Lambda {h5_cast(Lambda_size)},
+        freq_params_dims {h5_cast(Lambda_size), h5_cast(N_freq_params)},
+        freq_params_buffer_dims {h5_cast(N_freq_params)},
         bfreqs_dims {h5_cast(Lambda_size), h5_cast(nBOS)},
         ffreqs_dims {h5_cast(Lambda_size), h5_cast(nFER)},
         bfreqs_buffer_dims {h5_cast(nBOS)},
@@ -324,6 +370,7 @@ class DataSets {
 public:
     // Data sets for new file: Pointers
     H5::DataSet *lambda_p, *self_p, *irred_p;
+    H5::DataSet *freq_params_p;
     H5::DataSet *bfreqs_p, *ffreqs_p, *params_p;
 #if DIAG_CLASS >= 1
     H5::DataSet *K1_a_p, *K1_p_p, *K1_t_p;
@@ -339,6 +386,7 @@ public:
 
     // Data sets from existing file: Objects
     H5::DataSet lambda, self, irred;
+    H5::DataSet freq_params;
     H5::DataSet bfreqs_dataset, ffreqs_dataset;
 #if DIAG_CLASS >= 1
     H5::DataSet K1_a, K1_p, K1_t;
@@ -366,6 +414,7 @@ public:
              H5::DataSpace& dataSpaces_Lambda,
              H5::DataSpace& dataSpaces_selfenergy,
              H5::DataSpace& dataSpaces_irreducible,
+             H5::DataSpace& dataSpaces_freq_params,
              H5::DataSpace& dataSpaces_bfreqs,
              H5::DataSpace& dataSpaces_ffreqs,
              H5::DataSpace& dataSpaces_params,
@@ -395,6 +444,8 @@ public:
             self_p = new H5::DataSet(file->createDataSet(SELF_LIST, mtype_comp, dataSpaces_selfenergy));
             irred_p = new H5::DataSet(
                     file->createDataSet(DATASET_irred, mtype_comp, dataSpaces_irreducible, plist_vert));
+            freq_params_p = new H5::DataSet(
+                    file->createDataSet(FREQ_PARAMS, H5::PredType::NATIVE_DOUBLE, dataSpaces_freq_params));
             bfreqs_p = new H5::DataSet(
                     file->createDataSet(BFREQS_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs));
             ffreqs_p = new H5::DataSet(
@@ -441,6 +492,7 @@ public:
             lambda = file->openDataSet("lambdas");
             self = file->openDataSet("selflist");
             irred = file->openDataSet("irred");
+            freq_params = file->openDataSet("freq_params");
             bfreqs_dataset = file->openDataSet("bfreqs");
             ffreqs_dataset = file->openDataSet("ffreqs");
 #if DIAG_CLASS >=1
@@ -472,6 +524,12 @@ public:
         lambda = file->openDataSet("lambdas");
         self = file->openDataSet("selflist");
         irred = file->openDataSet("irred");
+        try {   // storing frequency gri parameters was implemented later --> old files do not have it
+            freq_params = file->openDataSet("freq_params");
+        }
+        catch (H5::FileIException error) {
+            error.printErrorStack();
+        }
         bfreqs_dataset = file->openDataSet("bfreqs");
         ffreqs_dataset = file->openDataSet("ffreqs");
 #if DIAG_CLASS >=1
@@ -500,6 +558,7 @@ public:
     void close(bool file_exists) {
         if (!file_exists) {
             lambda_p -> close();
+            freq_params_p -> close();
             bfreqs_p -> close();
             ffreqs_p -> close();
             params_p -> close();
@@ -529,6 +588,7 @@ public:
         else {
             self.close();
             irred.close();
+            freq_params.close();
             bfreqs_dataset.close();
             ffreqs_dataset.close();
 
@@ -597,12 +657,14 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 
         // Create the data spaces for the data sets in file and for buffer objects
         H5::DataSpace dataSpaces_Lambda(1, dims.Lambda);
+        H5::DataSpace dataSpaces_freq_params(RANK_freqs, dims.freq_params_dims);
         H5::DataSpace dataSpaces_bfreqs(RANK_freqs, dims.bfreqs_dims);
         H5::DataSpace dataSpaces_ffreqs(RANK_freqs, dims.ffreqs_dims);
         H5::DataSpace dataSpaces_params(1, dims.params);
         H5::DataSpace dataSpaces_selfenergy(RANK_self, dims.selfenergy);
         H5::DataSpace dataSpaces_irreducible(RANK_irreducible, dims.irreducible);
 
+        H5::DataSpace dataSpaces_freq_params_buffer(RANK_freqs-1, dims.freq_params_buffer_dims);
         H5::DataSpace dataSpaces_bfreqs_buffer(RANK_freqs-1, dims.bfreqs_buffer_dims);
         H5::DataSpace dataSpaces_ffreqs_buffer(RANK_freqs-1, dims.ffreqs_buffer_dims);
         H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
@@ -658,6 +720,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         // Create the data sets for all data to be saved
         DataSets dataSets(file, file_exists,
                           dataSpaces_Lambda, dataSpaces_selfenergy, dataSpaces_irreducible,
+                          dataSpaces_freq_params,
                           dataSpaces_bfreqs, dataSpaces_ffreqs, dataSpaces_params,
 #if DIAG_CLASS >= 1
                           dataSpaces_K1_a, dataSpaces_K1_p, dataSpaces_K1_t,
@@ -693,6 +756,15 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         else
             // overwrite vector containing all values for lambda
             dataSets.lambda.write(Lambdas.data(), H5::PredType::NATIVE_DOUBLE);
+
+        count[1] = N_freq_params;
+        dataSpaces_freq_params.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.freq_params_p -> write(buffer.freq_params, H5::PredType::NATIVE_DOUBLE,
+                                            dataSpaces_freq_params_buffer, dataSpaces_freq_params);
+        else
+            dataSets.freq_params.write(buffer.freq_params, H5::PredType::NATIVE_DOUBLE,
+                                       dataSpaces_freq_params_buffer, dataSpaces_freq_params);
 
         count[1] = nBOS;
         dataSpaces_bfreqs.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
@@ -903,6 +975,74 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 /// --- Functions for reading data from file --- ///
 
 /**
+ * Initialize the frequency grids of the result using the parameters stored in buffer.
+ * @param result : Empty State object into which result is copied.
+ * @param buffer : Buffer from which result is read. Should contain data read from a file.
+ */
+void result_set_frequency_grids(State<comp>& result, Buffer& buffer) {
+    // create new frequency grids
+    FrequencyGrid bfreqs ('b', 1);
+    FrequencyGrid ffreqs ('f', 1);
+    // read grid parameters from buffer
+    bfreqs.N_w = (int)buffer.freq_params[0];
+    bfreqs.w_upper = buffer.freq_params[1];
+    bfreqs.w_lower = buffer.freq_params[2];
+    bfreqs.W_scale = buffer.freq_params[3];
+    ffreqs.N_w = (int)buffer.freq_params[4];
+    ffreqs.w_upper = buffer.freq_params[5];
+    ffreqs.w_lower = buffer.freq_params[6];
+    ffreqs.W_scale = buffer.freq_params[7];
+    // initialize grids
+    bfreqs.initialize_grid();
+    ffreqs.initialize_grid();
+    // copy grids to result
+    result.selfenergy.frequencies = ffreqs;
+    result.vertex[0].avertex.frequencies.b_K1 = bfreqs;
+    result.vertex[0].pvertex.frequencies.b_K1 = bfreqs;
+    result.vertex[0].tvertex.frequencies.b_K1 = bfreqs;
+#if DIAG_CLASS >= 2
+    FrequencyGrid bfreqs2 ('b', 2);
+    FrequencyGrid ffreqs2 ('f', 2);
+    bfreqs2.N_w = (int)buffer.freq_params[8];
+    bfreqs2.w_upper = buffer.freq_params[9];
+    bfreqs2.w_lower = buffer.freq_params[10];
+    bfreqs2.W_scale = buffer.freq_params[11];
+    ffreqs2.N_w = (int)buffer.freq_params[12];
+    ffreqs2.w_upper = buffer.freq_params[13];
+    ffreqs2.w_lower = buffer.freq_params[14];
+    ffreqs2.W_scale = buffer.freq_params[15];
+    bfreqs2.initialize_grid();
+    ffreqs2.initialize_grid();
+    result.vertex[0].avertex.frequencies.b_K2 = bfreqs2;
+    result.vertex[0].pvertex.frequencies.b_K2 = bfreqs2;
+    result.vertex[0].tvertex.frequencies.b_K2 = bfreqs2;
+    result.vertex[0].avertex.frequencies.f_K2 = ffreqs2;
+    result.vertex[0].pvertex.frequencies.f_K2 = ffreqs2;
+    result.vertex[0].tvertex.frequencies.f_K2 = ffreqs2;
+#endif
+#if DIAG_CLASS >= 3
+    FrequencyGrid bfreqs3 ('b', 3);
+    FrequencyGrid ffreqs3 ('f', 3);
+    bfreqs3.N_w = (int)buffer.freq_params[16];
+    bfreqs3.w_upper = buffer.freq_params[17];
+    bfreqs3.w_lower = buffer.freq_params[18];
+    bfreqs3.W_scale = buffer.freq_params[19];
+    ffreqs3.N_w = (int)buffer.freq_params[20];
+    ffreqs3.w_upper = buffer.freq_params[21];
+    ffreqs3.w_lower = buffer.freq_params[22];
+    ffreqs3.W_scale = buffer.freq_params[23];
+    bfreqs3.initialize_grid();
+    ffreqs3.initialize_grid();
+    result.vertex[0].avertex.frequencies.b_K3 = bfreqs3;
+    result.vertex[0].pvertex.frequencies.b_K3 = bfreqs3;
+    result.vertex[0].tvertex.frequencies.b_K3 = bfreqs3;
+    result.vertex[0].avertex.frequencies.f_K3 = ffreqs3;
+    result.vertex[0].pvertex.frequencies.f_K3 = ffreqs3;
+    result.vertex[0].tvertex.frequencies.f_K3 = ffreqs3;
+#endif
+}
+
+/**
  * Copy results that are read from a file to a buffer into a State object.
  * @param result : Empty State object into which result is copied.
  * @param buffer : Buffer from which result is read. Should contain data read from a file.
@@ -966,10 +1106,10 @@ void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
  */
 State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
 #ifdef MPI_FLAG
-    if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
+    if (mpi_world_rank() == 0)  // only the process with ID 0 reads from file to avoid collisions
 #endif
     {
-        State<comp> result (0.); // TODO: read the Lambda value here, and read the frequency vectors from file
+        State<comp> result;
         if (Lambda_it < Lambda_size) {
 
             // Open the file. Access rights: read-only
@@ -990,9 +1130,17 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
 
             // Create the data spaces for the data sets in file and for buffer objects
             H5::DataSpace dataSpaces_Lambda = dataSets.lambda.getSpace();
+            H5::DataSpace dataSpaces_freq_params;
+            try {   // storing frequency gri parameters was implemented later --> old files do not have it
+                dataSpaces_freq_params = dataSets.freq_params.getSpace();
+            }
+            catch (H5::DataSetIException error) {
+                error.printErrorStack();
+            }
             H5::DataSpace dataSpaces_selfenergy = dataSets.self.getSpace();
             H5::DataSpace dataSpaces_irreducible = dataSets.irred.getSpace();
 
+            H5::DataSpace dataSpaces_freq_params_buffer(RANK_freqs-1, dims.freq_params_buffer_dims);
             H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
             H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
 
@@ -1041,6 +1189,16 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
             }
             count[0] = 1;
 
+            count[1] = N_freq_params;
+            try {   // storing frequency gri parameters was implemented later --> old files do not have it
+                dataSpaces_freq_params.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+                dataSets.freq_params.read(buffer.freq_params, H5::PredType::NATIVE_DOUBLE,
+                                          dataSpaces_freq_params_buffer, dataSpaces_freq_params);
+            }
+            catch (H5::DataSpaceIException error) {
+                error.printErrorStack();
+            }
+
             count[1] = buffer.self_dim;
             dataSpaces_selfenergy.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
             dataSets.self.read(buffer.selfenergy, mtype_comp,
@@ -1083,6 +1241,9 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
             dataSets.K3_t.read(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
 
 #endif
+
+            // Initialize the frequency grids of the result State using the parameters stored in buffer
+            result_set_frequency_grids(result, buffer);
 
             // Copy the buffered result into State object
             copy_buffer_to_result(result, buffer);
