@@ -815,9 +815,18 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': dgamma[0].avertex.K1 += K1_ordered_result; break;
-        case 'p': dgamma[0].pvertex.K1 += K1_ordered_result; break;
-        case 't': dgamma[0].tvertex.K1 += K1_ordered_result; break;
+        case 'a':
+            dgamma[0].avertex.K1 += K1_ordered_result;
+            dgamma[0].avertex.enforce_freqsymmetriesK1(freqs_K1);
+            break;
+        case 'p':
+            dgamma[0].pvertex.K1 += K1_ordered_result;
+            dgamma[0].pvertex.enforce_freqsymmetriesK1(freqs_K1);
+            break;
+        case 't':
+            dgamma[0].tvertex.K1 += K1_ordered_result;
+            dgamma[0].tvertex.enforce_freqsymmetriesK1(freqs_K1);
+            break;
         default: ;
     }
 //    print("K1", channel, " done: ");
