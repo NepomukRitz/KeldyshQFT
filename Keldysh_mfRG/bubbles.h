@@ -335,7 +335,6 @@ public:
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
 #if DIAG_CLASS >= 2
-        //vector<int> indices = indices_sum(i0, i2, channel);  // already written above
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
 
@@ -812,10 +811,10 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices
                 int iK2 = i_mpi * n_omp + i_omp;
-                int i0 = iK2 /(nw2_w * nw2_v * n_in);
-                int iw = iK2 /(nw2_v * n_in) - i0*nw2_w;
-                int iv = iK2 / n_in - iw*nw2_v - i0*nw2_w*nw2_v;
-                int i_in = iK2 - iv*n_in - iw*nw2_v*n_in - i0*nw2_w * nw2_v * n_in;
+                int i0 = iK2 / (nw2_w * nw2_v * n_in);
+                int iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
+                int iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
+                int i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
                 double w = bfreqs_K2.w[iw];
                 double v = ffreqs_K2.w[iv];
                 Q value;
