@@ -55,6 +55,12 @@ public:
     template <K_class k>
     auto valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
 
+    /** Parts of the r vertex that connect to the same/different bare vertices on the left/right of an r bubble */
+    auto left_same_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    auto right_same_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    auto left_diff_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    auto right_diff_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+
     /**
      * Transform the frequencies from the frequency convention of input.channel to the frequency convention of
      * this->channel. Necessary when accessing the r vertex from a different channel r'.
@@ -252,6 +258,39 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> 
     if (indices.conjugate) return conj(value);
     return value;
 }
+
+template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
+#if DIAG_CLASS == 1
+    return valsmooth<k1>(input, vertex_in);
+#elif DIAG_CLASS > 1
+    return valsmooth<k1>(input, vertex_in) + valsmooth<k2b>(input, vertex_in);
+#endif
+};
+template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
+#if DIAG_CLASS == 1
+    return valsmooth<k1>(input, vertex_in);
+#elif DIAG_CLASS > 1
+    return valsmooth<k1>(input, vertex_in) + valsmooth<k2>(input, vertex_in);
+#endif
+};
+template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
+#if DIAG_CLASS == 1
+    return 0.;
+#elif DIAG_CLASS == 2
+    return valsmooth<k2>(input, vertex_in);
+#elif DIAG_CLASS == 3
+    return valsmooth<k2>(input, vertex_in) + valsmooth<k3>(input, vertex_in);
+#endif
+};
+template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
+#if DIAG_CLASS == 1
+    return 0.;
+#elif DIAG_CLASS == 2
+    return valsmooth<k2b>(input, vertex_in);
+#elif DIAG_CLASS == 3
+    return valsmooth<k2b>(input, vertex_in) + valsmooth<k3>(input, vertex_in);
+#endif
+};
 
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     double w, v1, v2;

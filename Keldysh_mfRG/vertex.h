@@ -329,34 +329,18 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
 }
 
 template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const -> Q {
-    Q gamma0, K1, K2b;
+    Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
 
     switch (input.channel){
         case 'a':
-#if DIAG_CLASS >=1
-            K1 = avertex.template valsmooth<k1>(input, tvertex);
-#endif
-#if DIAG_CLASS >=2
-            K2b = avertex.template valsmooth<k2b>(input, tvertex);
-#endif
+            K1_K2b = avertex.left_same_bare(input, tvertex);
             break;
-
         case 'p':
-#if DIAG_CLASS >=1
-            K1 = pvertex.template valsmooth<k1>(input, pvertex);
-#endif
-#if DIAG_CLASS >=2
-            K2b = pvertex.template valsmooth<k2b>(input, pvertex);
-#endif
+            K1_K2b = pvertex.left_same_bare(input, pvertex);
             break;
-        case 't' :
-#if DIAG_CLASS >=1
-            K1 = tvertex.template valsmooth<k1>(input, avertex);
-#endif
-#if DIAG_CLASS >=2
-            K2b = tvertex.template valsmooth<k2b>(input, avertex);
-#endif
+        case 't':
+            K1_K2b = tvertex.left_same_bare(input, avertex);
             break;
         default:
             return 0.;
@@ -370,55 +354,40 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
 
     switch (channel) {
         case 'a':
-            K1 += pvertex.template valsmooth<k1>(input_p, pvertex)
-                  + tvertex.template valsmooth<k1>(input_at, avertex);
+            K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
+                    + tvertex.template valsmooth<k1>(input_at, avertex);
             break;
         case 'p':
-            K1 += avertex.template valsmooth<k1>(input_at, tvertex)
-                  + tvertex.template valsmooth<k1>(input_at, avertex);
+            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
+                    + tvertex.template valsmooth<k1>(input_at, avertex);
             break;
         case 't':
-            K1 += avertex.template valsmooth<k1>(input_at, tvertex)
-                  + pvertex.template valsmooth<k1>(input_p, pvertex);
+            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
+                    + pvertex.template valsmooth<k1>(input_p, pvertex);
             break;
         default: ;
     }
-#endif
+    #endif
 #endif
     if (Ir)
         return gamma0;
-    return gamma0 + K1 + K2b;
+    return gamma0 + K1_K2b;
 }
 
 template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const -> Q {
-    Q gamma0, K1, K2;
+    Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
 
     switch (input.channel){
         case 'a':
-#if DIAG_CLASS >=1
-            K1 = avertex.template valsmooth<k1>(input, tvertex);
-#endif
-#if DIAG_CLASS >=2
-            K2 = avertex.template valsmooth<k2>(input, tvertex);
-#endif
+            K1_K2 = avertex.right_same_bare(input, tvertex);
             break;
 
         case 'p':
-#if DIAG_CLASS >=1
-            K1 = pvertex.template valsmooth<k1>(input, pvertex);
-#endif
-#if DIAG_CLASS >=2
-            K2 = pvertex.template valsmooth<k2>(input, pvertex);
-#endif
+            K1_K2 = pvertex.right_same_bare(input, pvertex);
             break;
-        case 't' :
-#if DIAG_CLASS >=1
-            K1 = tvertex.template valsmooth<k1>(input, avertex);
-#endif
-#if DIAG_CLASS >=2
-            K2 = tvertex.template valsmooth<k2>(input, avertex);
-#endif
+        case 't':
+            K1_K2 = tvertex.right_same_bare(input, avertex);
             break;
         default:
             return 0.;
@@ -432,102 +401,72 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
 
     switch (channel) {
         case 'a':
-            K1 += pvertex.template valsmooth<k1>(input_p)
-                  + tvertex.template valsmooth<k1>(input_at, avertex);
+            K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
+                   + tvertex.template valsmooth<k1>(input_at, avertex);
             break;
         case 'p':
-            K1 += avertex.template valsmooth<k1>(input_at, tvertex)
-                  + tvertex.template valsmooth<k1>(input_at, avertex);
+            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
+                   + tvertex.template valsmooth<k1>(input_at, avertex);
             break;
         case 't':
-            K1 += avertex.template valsmooth<k1>(input_at, tvertex)
-                  + pvertex.template valsmooth<k1>(input_p);
+            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
+                   + pvertex.template valsmooth<k1>(input_p, pvertex);
             break;
         default: ;
     }
-#endif
+    #endif
 #endif
     if (Ir)
         return gamma0;
-    return gamma0 + K1 + K2;
+    return gamma0 + K1_K2;
 }
 
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const -> Q {
-    Q K2, K3, gamma_Rb;
+    Q K2_K3, gamma_Rb;
 #if DIAG_CLASS >= 2
     gamma_Rb = gammaRb(input);
 #endif
 
     switch (input.channel){
-        case 'a' :
-#if DIAG_CLASS >=2
-            K2 = avertex.template valsmooth<k2>(input, tvertex);
-#endif
-#if DIAG_CLASS >=3
-            K3 = avertex.template valsmooth<k3>(input, tvertex);
-#endif
+        case 'a':
+            K2_K3 = avertex.left_diff_bare(input, tvertex);
             break;
         case 'p':
-#if DIAG_CLASS >=2
-            K2 = pvertex.template valsmooth<k2>(input, pvertex);
-#endif
-#if DIAG_CLASS >=3
-            K3 = pvertex.template valsmooth<k3>(input, pvertex);
-#endif
+            K2_K3 = pvertex.left_diff_bare(input, pvertex);
             break;
         case 't':
-#if DIAG_CLASS >=2
-            K2 = tvertex.template valsmooth<k2>(input, avertex);
-#endif
-#if DIAG_CLASS >=3
-            K3 = tvertex.template valsmooth<k3>(input, avertex);
-#endif
+            K2_K3 = tvertex.left_diff_bare(input, avertex);
             break;
         default:
             return 0.;
     }
     if (Ir)
         return gamma_Rb;
-    return K2 + K3 + gamma_Rb;
+    return K2_K3 + gamma_Rb;
 }
 
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const -> Q {
-    Q K2b, K3, gamma_Rb;
+    Q K2b_K3, gamma_Rb;
 #if DIAG_CLASS >= 2
     gamma_Rb = gammaRb(input);
 #endif
 
     switch (input.channel){
-        case 'a' :
-#if DIAG_CLASS >= 2
-            K2b = avertex.template valsmooth<k2b>(input, tvertex);
-#endif
-#if DIAG_CLASS >= 3
-            K3 = avertex.template valsmooth<k3>(input, tvertex);
-#endif
+        case 'a':
+            K2b_K3 = avertex.right_diff_bare(input, tvertex);
             break;
         case 'p':
-#if DIAG_CLASS >= 2
-            K2b = pvertex.template valsmooth<k2b>(input, pvertex);
-#endif
-#if DIAG_CLASS >= 3
-            K3 = pvertex.template valsmooth<k3>(input, pvertex);
-#endif
+            K2b_K3 = pvertex.right_diff_bare(input, pvertex);
             break;
         case 't':
-#if DIAG_CLASS >= 2
-            K2b = tvertex.template valsmooth<k2b>(input, avertex);
-#endif
-#if DIAG_CLASS >= 3
-            K3 = tvertex.template valsmooth<k3>(input, avertex);
-#endif
+            K2b_K3 = tvertex.right_diff_bare(input, avertex);
             break;
         default:
             return 0.;
     }
     if (Ir)
         return gamma_Rb;
-    return K2b + K3 + gamma_Rb;
+    return K2b_K3 + gamma_Rb;
 }
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {
