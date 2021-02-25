@@ -17,7 +17,10 @@
 //  1 = related to component 1
 //  ...
 struct Components {
-    vector<vector<vector<int> > > K;
+    vector<vector<vector<int> > > K
+        = vector<vector<vector<int> > > (4,
+                                         vector<vector<int> > (2,
+                                                               vector<int> (16)));
 
     Components() {};
     Components(const char channel) {
@@ -133,7 +136,10 @@ struct Components {
 // 0 = nothing, 1 = T1, 2 = T2, 3 = T3, 4 = TC
 // 43 = first apply 3, then 4 etc. <-- actually reversed, due to special subtlety... // Todo: explain in more detail
 struct Transformations {
-    vector<vector<vector<int> > > K;
+    vector<vector<vector<int> > > K
+            = vector<vector<vector<int> > > (4,
+                                             vector<vector<int> > (2,
+                                                                   vector<int> (16)));
 
     Transformations() {};
     Transformations(const char channel) {
