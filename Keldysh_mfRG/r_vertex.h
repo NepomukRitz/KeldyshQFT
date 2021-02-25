@@ -89,7 +89,8 @@ public:
      * @param vertex_in : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
      *                    symmetry transformations that map between channels a <--> t.
      */
-    auto valsmooth(const K_class k, VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    template <K_class k>
+    auto valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
 
 #endif
 #if DIAG_CLASS >= 2
@@ -220,14 +221,14 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& ve
     Q K1_val, K2_val, K2b_val, K3_val;
 
 #if DIAG_CLASS>=0
-    K1_val = valsmooth(k1, input, vertex_in);
+    K1_val = valsmooth<k1>(input, vertex_in);
 #endif
 #if DIAG_CLASS >=2
-    K2_val  = valsmooth(k2, input, vertex_in);
-    K2b_val = valsmooth(k2b, input, vertex_in);
+    K2_val  = valsmooth<k2>(input, vertex_in);
+    K2b_val = valsmooth<k2b>(input, vertex_in);
 #endif
 #if DIAG_CLASS >=3
-    K3_val = valsmooth(k3, input, vertex_in);
+    K3_val = valsmooth<k3>(input, vertex_in);
 #endif
 
     return K1_val + K2_val + K2b_val + K3_val;
@@ -320,7 +321,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 IndicesSymmetryTransformations indices (iK1, frequencies_new.b_K1.w[iw], 0., 0., i_in, channel);
                 // interpolate old values to new vector
-                K1_new[iK1*nw1*n_in + iw*n_in + i_in] = interpolateK1(indices, *this);
+                K1_new[iK1*nw1*n_in + iw*n_in + i_in] = Interpolate<k1,Q>()(indices, *this);
             }
         }
     }
@@ -338,7 +339,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
                                                             i_in, channel);
                     // interpolate old values to new vector
                     K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
-                        = interpolateK2(indices, *this);
+                        = Interpolate<k2,Q>()(indices, *this);
                 }
             }
         }
@@ -358,7 +359,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
                                                                 i_in, channel);
                         // interpolate old values to new vector
                         K3_new[iK3*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in]
-                            = interpolateK3(indices, *this);
+                            = Interpolate<k3,Q>()(indices, *this);
                     }
                 }
             }
@@ -394,7 +395,8 @@ template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q
 #endif
 
 template <typename Q>
-auto rvert<Q>::valsmooth(const K_class k, VertexInput input, const rvert<Q>& vertex_in) const -> Q {
+template <K_class k>
+auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
 
     IndicesSymmetryTransformations indices (input, channel);
 
@@ -405,9 +407,9 @@ auto rvert<Q>::valsmooth(const K_class k, VertexInput input, const rvert<Q>& ver
     Q value;
 
     if (indices.channel != channel)
-        value = interpolate(k, indices, vertex_in);
+        value = Interpolate<k,Q>()(indices, vertex_in);
     else
-        value = interpolate(k, indices, *(this));
+        value = Interpolate<k,Q>()(indices, *(this));
 
     if (indices.conjugate) return conj(value);
     return value;
