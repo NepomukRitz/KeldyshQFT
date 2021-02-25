@@ -497,7 +497,7 @@ public:
             Pival_im[i] = Pival.imag();
         }
 
-        string filename = "integrand_K2";
+        string filename = "../Data/integrand_K2";
         filename += channel;
         filename += "_i0=" + to_string(i0)
                     + "_i2=" + to_string(i2)
@@ -620,6 +620,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
 
+#ifdef KELDYSH_FORMALISM
     // set channel-specific frequency ranges and prefactor (1, 1, -1 for a, p, t) for sum over spins.
     switch (channel) {
         case 'a':
@@ -651,6 +652,39 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
             break;
         default: ;
     }
+#else
+// set channel-specific frequency ranges and prefactor (1, 1, -1 for a, p, t) for sum over spins.
+    switch (channel) {
+        case 'a':
+            nw1_w = (nw1_a + 1)/2;
+            nw2_w = (nw2_a + 1)/2;
+            nw2_v = (nv2_a + 1)/2;
+            nw3_w = (nw3_a + 1)/2;
+            nw3_v = (nv3_a + 1)/2;
+            nw3_v_p = (nv3_a + 1)/2;
+            prefactor *= 1.;
+            break;
+        case 'p':
+            nw1_w = (nw1_p + 1)/2;
+            nw2_w = (nw2_p + 1)/2;
+            nw2_v = (nv2_p + 1)/2;
+            nw3_w = (nw3_p + 1)/2;
+            nw3_v = (nv3_p + 1)/2;
+            nw3_v_p = (nv3_p + 1)/2;
+            prefactor *= 1.;
+            break;
+        case 't':
+            nw1_w = (nw1_t + 1)/2;
+            nw2_w = (nw2_t + 1)/2;
+            nw2_v = (nv2_t + 1)/2;
+            nw3_w = (nw3_t + 1)/2;
+            nw3_v = (nv3_t + 1)/2;
+            nw3_v_p = (nv3_t + 1)/2;
+            prefactor *= -1.;
+            break;
+        default: ;
+    }
+#endif
 
     int mpi_size = mpi_world_size(); // number of mpi processes
     int mpi_rank = mpi_world_rank(); // number of the current mpi process
@@ -683,11 +717,12 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=0
 //    double tK1 = get_time();
     /*K1 contributions*/
-    int n_mpi = nK_K1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-    int n_omp = nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+    int n_total = nK_K1 * nBOS * n_in;
+    int n_mpi = 1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+    int n_omp = nK_K1 * nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
 
     // initialize buffer into which each MPI process writes their results
-    vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
+    vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_total/n_mpi);
 
     // start for-loop over external arguments, using MPI and OMP
     int iterator = 0;
@@ -736,9 +771,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #else
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
                         // save the integrand for manual checks:
-                        /*if (i_omp == 20){
+                        if (i_omp == (int)n_omp-1){
                             integrand_K1.save_integrand();
-                        }*/
+                        }
 #endif
 
 #ifdef KELDYSH_FORMALISM
@@ -764,16 +799,16 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #endif
                     }
                 }
-                K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
+                K1_buffer[(i0*nBOS + iw)*n_in + i_in] = value; // write result of integration into MPI buffer
             }
             ++iterator;
         }
     }
 
     // collect+combine results from different MPI processes, reorder them appropriately
-    vec<Q> K1_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    mpi_collect(K1_buffer, K1_result, n_mpi, n_omp);
-    vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
+    vec<Q> K1_result = mpi_initialize_result<Q> (n_mpi, n_total/n_mpi);
+    mpi_collect(K1_buffer, K1_result, n_mpi, n_total/n_mpi);
+    vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_total/n_mpi);
 
     switch (channel) {
         case 'a':
@@ -797,11 +832,12 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #if DIAG_CLASS>=2
 //    double tK2 = get_time();
     /*K2 contributions*/
+    n_total = nK_K2 * nBOS2 * nFER2 * n_in;
     n_mpi = 1;
     n_omp = nK_K2 * nw2_w * nw2_v * n_in;
 
     // initialize buffer into which each MPI process writes their results
-    vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
+    vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_total/n_mpi);
 
     // start for-loop over external arguments, using MPI and OMP
     iterator = 0;
@@ -853,6 +889,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                                                      iK_select2, iK_select_bubble2);
 #else
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
+                        if (i_omp == (int)n_omp-1){
+                            integrand_K2.save_integrand();
+                        }
 #endif
 
 #ifdef KELDYSH_FORMALISM
@@ -885,16 +924,16 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #endif
                     }
                 }
-                K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
+                K2_buffer[((i0*nBOS2 + iw)*nFER2 + iv)*n_in + i_in] = value; // write result of integration into MPI buffer
             }
             ++iterator;
         }
     }
 
     // collect+combine results from different MPI processes, reorder them appropriately
-    vec<Q> K2_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    mpi_collect(K2_buffer, K2_result, n_mpi, n_omp);
-    vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
+    vec<Q> K2_result = mpi_initialize_result<Q> (n_mpi, n_total/n_mpi);
+    mpi_collect(K2_buffer, K2_result, n_mpi,  n_total/n_mpi);
+    vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi,  n_total/n_mpi);
 
     switch (channel) {
         case 'a':

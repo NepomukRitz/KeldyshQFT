@@ -2,10 +2,10 @@
 #define KELDYSH_MFRG_PARAMETERS_H
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM
+//#define KELDYSH_FORMALISM
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM
+//#define PARTICLE_HOLE_SYMM
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
@@ -32,7 +32,7 @@ const double glb_T = 0.01;                     // Temperature
 #ifdef PARTICLE_HOLE_SYMM
     const double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
 #else
-    const double glb_mu = 0.0001;                    // Chemical potential // set to zero as energy offset
+    const double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
 #endif
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_Vg = glb_mu;                  // Impurity level shift
