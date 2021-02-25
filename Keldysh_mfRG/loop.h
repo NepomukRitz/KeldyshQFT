@@ -190,7 +190,7 @@ public:
                                           GA*(factorAdvancedClosedAbove) +
                                           GK*(factorKeldyshClosedAbove ) );
 #else
-        return symmetrization_prefactor*( GM*factorClosedAbove );
+        return symmetrization_prefactor*( GM*factorClosedAbove ) * glb_i;
 #endif
 #endif
     }
