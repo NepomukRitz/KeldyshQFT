@@ -288,8 +288,8 @@ template <typename Q> auto asymp_corrections_K3(const Vertex<Q>& vertex1, const 
         case 'a':                                                                       //Flow eq: V*Pi*V
             i0 = non_zero_Keldysh_K1a[i0_in];
             indices = indices_sum(i0, i2, channel);
-            res_l_V = vertex1[0].avertex.K2_valsmooth(input2, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-            res_r_V = vertex1[0].avertex.K2b_valsmooth(input2b, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
+            res_l_V = vertex1[0].avertex.valsmooth(k2, input2, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is K2
+            res_r_V = vertex1[0].avertex.valsmooth(k2b, input2b, vertex1[0].tvertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
 
             res += (res_l_V * res_r_V) * correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);
 
@@ -297,20 +297,20 @@ template <typename Q> auto asymp_corrections_K3(const Vertex<Q>& vertex1, const 
         case 'p':                                                                       //Flow eq: V*Pi*V// + V^*Pi*V^
             i0 = non_zero_Keldysh_K1p[i0_in];
             indices = indices_sum(i0, i2, channel);
-            res_l_V = vertex1[0].pvertex.K2_valsmooth(input2, vertex1[0].pvertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-            res_r_V = vertex1[0].pvertex.K2b_valsmooth(input2b, vertex1[0].pvertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
+            res_l_V = vertex1[0].pvertex.valsmooth(k2, input2, vertex1[0].pvertex); //What remains when taking lim v'' to infinity on the left vertex is K2
+            res_r_V = vertex1[0].pvertex.valsmooth(k2b, input2b, vertex1[0].pvertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
 
             res += (res_l_V  * res_r_V) * correctionFunctionBubbleP(w, a, b, gamma_m, gamma_p); //+ res_l_Vhat * res_r_Vhat
             break;
         case 't':                                                                       //Flow eq: V*Pi*(V+V^) + (V+V^)*Pi*V
             i0 = non_zero_Keldysh_K1t[i0_in];
             indices = indices_sum(i0, i2, channel);
-            res_l_V = vertex1[0].tvertex.K2_valsmooth(input2, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-            res_r_V = vertex1[0].tvertex.K2b_valsmooth(input2b, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
+            res_l_V = vertex1[0].tvertex.valsmooth(k2, input2, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
+            res_r_V = vertex1[0].tvertex.valsmooth(k2b, input2b, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
             input2.spin = 1;
             input2b.spin = 1;
-            res_l_Vhat = vertex1[0].tvertex.K2_valsmooth(input2, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
-            res_r_Vhat = vertex1[0].tvertex.K2b_valsmooth(input2b, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
+            res_l_Vhat = vertex1[0].tvertex.valsmooth(k2, input2, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is K2
+            res_r_Vhat = vertex1[0].tvertex.valsmooth(k2b, input2b, vertex1[0].avertex); //What remains when taking lim v'' to infinity on the left vertex is Gamma0 and K1
 
             res += (res_l_V * (res_r_V+res_r_Vhat) + (res_l_V+res_l_Vhat) * res_r_V) *correctionFunctionBubbleAT(w, a, b, gamma_m, gamma_p);;
             break;

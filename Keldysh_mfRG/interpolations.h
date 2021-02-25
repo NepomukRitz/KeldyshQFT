@@ -13,6 +13,19 @@
 template <typename Q> class rvert;
 
 template <typename Q>
+auto interpolate(K_class k, IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
+    switch (k) {
+        case 0:
+            return interpolateK1(indices, vertex);
+        case 1:
+        case 2:
+            return interpolateK2(indices, vertex);
+        case 3:
+            return interpolateK3(indices, vertex);
+    }
+}
+
+template <typename Q>
 auto interpolateK1(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) -> Q {
 //    assert(vertex.frequencies.b_K1.w_lower <= w && w <= vertex.frequencies.b_K1.w_upper); // give error message if w out of range
     if (fabs(indices.w) + inter_tol < vertex.frequencies.b_K1.w_upper) {

@@ -117,9 +117,9 @@ public:
     // Various operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   += vertex1.irred;
+        this->avertex += vertex1.avertex;
         this->pvertex += vertex1.pvertex;
         this->tvertex += vertex1.tvertex;
-        this->avertex += vertex1.avertex;
         return *this;
     }
     friend fullvert<Q> operator+(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
@@ -335,27 +335,27 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
     switch (input.channel){
         case 'a':
 #if DIAG_CLASS >=1
-            K1 = avertex.K1_valsmooth(input, tvertex);
+            K1 = avertex.valsmooth(k1, input, tvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2b = avertex.K2b_valsmooth(input, tvertex);
+            K2b = avertex.valsmooth(k2b, input, tvertex);
 #endif
             break;
 
         case 'p':
 #if DIAG_CLASS >=1
-            K1 = pvertex.K1_valsmooth(input, pvertex);
+            K1 = pvertex.valsmooth(k1, input, pvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2b = pvertex.K2b_valsmooth(input, pvertex);
+            K2b = pvertex.valsmooth(k2b, input, pvertex);
 #endif
             break;
         case 't' :
 #if DIAG_CLASS >=1
-            K1 = tvertex.K1_valsmooth(input, avertex);
+            K1 = tvertex.valsmooth(k1, input, avertex);
 #endif
 #if DIAG_CLASS >=2
-            K2b = tvertex.K2b_valsmooth(input, avertex);
+            K2b = tvertex.valsmooth(k2b, input, avertex);
 #endif
             break;
         default:
@@ -370,16 +370,16 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
 
     switch (channel) {
         case 'a':
-            K1 += pvertex.K1_valsmooth(input_p, pvertex)
-                  + tvertex.K1_valsmooth(input_at, avertex);
+            K1 += pvertex.valsmooth(k1, input_p, pvertex)
+                  + tvertex.valsmooth(k1, input_at, avertex);
             break;
         case 'p':
-            K1 += avertex.K1_valsmooth(input_at, tvertex)
-                  + tvertex.K1_valsmooth(input_at, avertex);
+            K1 += avertex.valsmooth(k1, input_at, tvertex)
+                  + tvertex.valsmooth(k1, input_at, avertex);
             break;
         case 't':
-            K1 += avertex.K1_valsmooth(input_at, tvertex)
-                  + pvertex.K1_valsmooth(input_p, pvertex);
+            K1 += avertex.valsmooth(k1, input_at, tvertex)
+                  + pvertex.valsmooth(k1, input_p, pvertex);
             break;
         default: ;
     }
@@ -397,27 +397,27 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
     switch (input.channel){
         case 'a':
 #if DIAG_CLASS >=1
-            K1 = avertex.K1_valsmooth(input, tvertex);
+            K1 = avertex.valsmooth(k1, input, tvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2 = avertex.K2_valsmooth(input, tvertex);
+            K2 = avertex.valsmooth(k2, input, tvertex);
 #endif
             break;
 
         case 'p':
 #if DIAG_CLASS >=1
-            K1 = pvertex.K1_valsmooth(input, pvertex);
+            K1 = pvertex.valsmooth(k1, input, pvertex);
 #endif
 #if DIAG_CLASS >=2
-            K2 = pvertex.K2_valsmooth(input, pvertex);
+            K2 = pvertex.valsmooth(k2, input, pvertex);
 #endif
             break;
         case 't' :
 #if DIAG_CLASS >=1
-            K1 = tvertex.K1_valsmooth(input, avertex);
+            K1 = tvertex.valsmooth(k1, input, avertex);
 #endif
 #if DIAG_CLASS >=2
-            K2 = tvertex.K2_valsmooth(input, avertex);
+            K2 = tvertex.valsmooth(k2, input, avertex);
 #endif
             break;
         default:
@@ -432,16 +432,16 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
 
     switch (channel) {
         case 'a':
-            K1 += pvertex.K1_valsmooth(input_p)
-                  + tvertex.K1_valsmooth(input_at, avertex);
+            K1 += pvertex.valsmooth(k1, input_p)
+                  + tvertex.valsmooth(k1, input_at, avertex);
             break;
         case 'p':
-            K1 += avertex.K1_valsmooth(input_at, tvertex)
-                  + tvertex.K1_valsmooth(input_at, avertex);
+            K1 += avertex.valsmooth(k1, input_at, tvertex)
+                  + tvertex.valsmooth(k1, input_at, avertex);
             break;
         case 't':
-            K1 += avertex.K1_valsmooth(input_at, tvertex)
-                  + pvertex.K1_valsmooth(input_p);
+            K1 += avertex.valsmooth(k1, input_at, tvertex)
+                  + pvertex.valsmooth(k1, input_p);
             break;
         default: ;
     }
@@ -461,26 +461,26 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
     switch (input.channel){
         case 'a' :
 #if DIAG_CLASS >=2
-            K2 = avertex.K2_valsmooth(input, tvertex);
+            K2 = avertex.valsmooth(k2, input, tvertex);
 #endif
 #if DIAG_CLASS >=3
-            K3 = avertex.K3_valsmooth(input, tvertex);
+            K3 = avertex.valsmooth(k3, input, tvertex);
 #endif
             break;
         case 'p':
 #if DIAG_CLASS >=2
-            K2 = pvertex.K2_valsmooth(input, pvertex);
+            K2 = pvertex.valsmooth(k2, input, pvertex);
 #endif
 #if DIAG_CLASS >=3
-            K3 = pvertex.K3_valsmooth(input, pvertex);
+            K3 = pvertex.valsmooth(k3, input, pvertex);
 #endif
             break;
         case 't':
 #if DIAG_CLASS >=2
-            K2 = tvertex.K2_valsmooth(input, avertex);
+            K2 = tvertex.valsmooth(k2, input, avertex);
 #endif
 #if DIAG_CLASS >=3
-            K3 = tvertex.K3_valsmooth(input, avertex);
+            K3 = tvertex.valsmooth(k3, input, avertex);
 #endif
             break;
         default:
@@ -500,26 +500,26 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
     switch (input.channel){
         case 'a' :
 #if DIAG_CLASS >= 2
-            K2b = avertex.K2b_valsmooth(input, tvertex);
+            K2b = avertex.valsmooth(k2b, input, tvertex);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = avertex.K3_valsmooth(input, tvertex);
+            K3 = avertex.valsmooth(k3, input, tvertex);
 #endif
             break;
         case 'p':
 #if DIAG_CLASS >= 2
-            K2b = pvertex.K2b_valsmooth(input, pvertex);
+            K2b = pvertex.valsmooth(k2b, input, pvertex);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = pvertex.K3_valsmooth(input, pvertex);
+            K3 = pvertex.valsmooth(k3, input, pvertex);
 #endif
             break;
         case 't':
 #if DIAG_CLASS >= 2
-            K2b = tvertex.K2b_valsmooth(input, avertex);
+            K2b = tvertex.valsmooth(k2b, input, avertex);
 #endif
 #if DIAG_CLASS >= 3
-            K3 = tvertex.K3_valsmooth(input, avertex);
+            K3 = tvertex.valsmooth(k3, input, avertex);
 #endif
             break;
         default:
