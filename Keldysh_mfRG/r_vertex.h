@@ -47,6 +47,15 @@ public:
     auto value(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
 
     /**
+     * Return the value of the vertex Ki in channel r.
+     * @param input     : Combination of input arguments.
+     * @param vertex_in : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
+     *                    symmetry transformations that map between channels a <--> t.
+     */
+    template <K_class k>
+    auto valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+
+    /**
      * Transform the frequencies from the frequency convention of input.channel to the frequency convention of
      * this->channel. Necessary when accessing the r vertex from a different channel r'.
      */
@@ -80,17 +89,6 @@ public:
     /** Return the value of the vector K1 at Keldysh index iK, frequency index iw,
      * internal structure index i_in. */
     auto K1_val(int iK, int iw, int i_in) const -> Q;
-
-    /// Member function for accessing the vertices Ki at arbitrary frequencies by interpolating stored data ///
-
-    /**
-     * Return the value of the vertex Ki in channel r.
-     * @param input     : Combination of input arguments.
-     * @param vertex_in : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
-     *                    symmetry transformations that map between channels a <--> t.
-     */
-    template <K_class k>
-    auto valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
 
 #endif
 #if DIAG_CLASS >= 2
@@ -232,6 +230,27 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& ve
 #endif
 
     return K1_val + K2_val + K2b_val + K3_val;
+}
+
+template <typename Q>
+template <K_class k>
+auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
+
+    IndicesSymmetryTransformations indices (input, channel);
+
+    Ti(indices, transformations.K[k][input.spin][input.iK]);
+    indices.iK = components.K[k][input.spin][input.iK];
+    if (indices.iK < 0) return 0.;
+
+    Q value;
+
+    if (indices.channel != channel)
+        value = Interpolate<k,Q>()(indices, vertex_in);
+    else
+        value = Interpolate<k,Q>()(indices, *(this));
+
+    if (indices.conjugate) return conj(value);
+    return value;
 }
 
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
@@ -393,27 +412,6 @@ template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q
     return K1[iK*nw1*n_in + iw*n_in + i_in];
 }
 #endif
-
-template <typename Q>
-template <K_class k>
-auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
-
-    IndicesSymmetryTransformations indices (input, channel);
-
-    Ti(indices, transformations.K[k][input.spin][input.iK]);
-    indices.iK = components.K[k][input.spin][input.iK];
-    if (indices.iK < 0) return 0.;
-
-    Q value;
-
-    if (indices.channel != channel)
-        value = Interpolate<k,Q>()(indices, vertex_in);
-    else
-        value = Interpolate<k,Q>()(indices, *(this));
-
-    if (indices.conjugate) return conj(value);
-    return value;
-}
 
 #if DIAG_CLASS >= 2
 template <typename Q> auto rvert<Q>::K2_acc(int i) const -> Q {
