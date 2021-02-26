@@ -507,8 +507,7 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 #pragma omp parallel
         //Check parallelized that everything in the K2 vertices is zero.
         for (int index = 0; index < test_K2r_with_K1a.vertex[0].avertex.K2.size(); ++index) {
-            if (test_K2r_with_K1a.vertex[0].avertex.K2_acc(index) != 0. ||
-                test_K2r_with_K1p.vertex[0].avertex.K2_acc(index) != 0.) {
+            if (test_K2r_with_K1p.vertex[0].tvertex.K2_acc(index) != 0.) {
                 empty = false;  //If any one element is not zero, K2 is not empty
                 break;  //Exit the for-loop early
             }
