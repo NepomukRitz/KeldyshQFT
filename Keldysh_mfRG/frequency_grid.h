@@ -145,18 +145,21 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
 class VertexFrequencyGrid {
 public:
     FrequencyGrid b_K1;
+    FrequencyGrid f_K1;     // for saving sample points of bubble integrand (has to avoid zero frequency); otherwise not needed
     FrequencyGrid b_K2;
     FrequencyGrid f_K2;
     FrequencyGrid b_K3;
     FrequencyGrid f_K3;
 
     VertexFrequencyGrid() : b_K1('b', 1),
+                            f_K1('f', 1),
                             b_K2('b', 2),
                             f_K2('f', 2),
                             b_K3('b', 3),
                             f_K3('f', 3) {};
 
     VertexFrequencyGrid(double Lambda) : b_K1('b', 1, Lambda),
+                                         f_K1('f', 1, Lambda),
                                          b_K2('b', 2, Lambda),
                                          f_K2('f', 2, Lambda),
                                          b_K3('b', 3, Lambda),
@@ -164,6 +167,7 @@ public:
 
     void rescale_grid(double Lambda) {
         b_K1.rescale_grid(Lambda);
+        f_K1.rescale_grid(Lambda);
         b_K2.rescale_grid(Lambda);
         f_K2.rescale_grid(Lambda);
         b_K3.rescale_grid(Lambda);
