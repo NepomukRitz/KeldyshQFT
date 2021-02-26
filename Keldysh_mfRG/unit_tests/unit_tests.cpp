@@ -5,7 +5,7 @@
  */
 
 // if defined, also run integration tests (else only unit tests)
-#define INTEGRATION_TESTS
+//#define INTEGRATION_TESTS
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
