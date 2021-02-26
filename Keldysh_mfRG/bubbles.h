@@ -362,7 +362,7 @@ public:
         rvec Pival_re (nFER);
         rvec Pival_im (nFER);
         for (int i=0; i<nFER; ++i) {
-            double vpp = vertex1[0].avertex.frequencies.b_K1.w[i];
+            double vpp = vertex1[0].avertex.frequencies.f_K1.w[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -379,7 +379,7 @@ public:
                   + "_w=" + to_string(w) + ".h5";
         write_h5_rvecs(filename,
                 {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
-                {vertex1[0].avertex.frequencies.b_K1.w, integrand_re, integrand_im, Pival_re, Pival_im});
+                {vertex1[0].avertex.frequencies.f_K1.w, integrand_re, integrand_im, Pival_re, Pival_im});
     }
 
 };
@@ -656,7 +656,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 // set channel-specific frequency ranges and prefactor (1, 1, -1 for a, p, t) for sum over spins.
     switch (channel) {
         case 'a':
-            nw1_w = (nw1_a + 1)/2;
+            nw1_w = (nw1_a + 1)/2;  // number of independent frequencies (rounded up)
             nw2_w = (nw2_a + 1)/2;
             nw2_v = (nv2_a + 1)/2;
             nw3_w = (nw3_a + 1)/2;
@@ -889,9 +889,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                                                      iK_select2, iK_select_bubble2);
 #else
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
-                        if (i_omp == (int)n_omp-1){
+                        /*if (i_omp == (int)n_omp-304){
                             integrand_K2.save_integrand();
-                        }
+                        }*/
 #endif
 
 #ifdef KELDYSH_FORMALISM
