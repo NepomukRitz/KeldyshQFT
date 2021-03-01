@@ -118,6 +118,22 @@ void TC (IndicesSymmetryTransformations& indices){
 #endif
 }
 
+#if  defined(KELDYSH_FORMALISM) and defined(PARTICLE_HOLE_SYMM)
+void Tph (IndicesSymmetryTransformations& indices){
+    indices.conjugate ^= true;
+    if (isInList(indices.iK, odd_Keldysh))
+        indices.prefactor *= 1.;
+    else
+        indices.prefactor *= -1.;
+
+    indices.w *= -1;
+#if DIAG_CLASS > 1
+    indices.v1 *= -1;
+    indices.v2 *= -1;
+#endif
+}
+#endif
+
 #ifndef KELDYSH_FORMALISM
 void TR (IndicesSymmetryTransformations& indices){
     indices.conjugate ^= true;
@@ -166,6 +182,24 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TC(indices);
             T3(indices);
             break;
+#if  defined(KELDYSH_FORMALISM) and defined(PARTICLE_HOLE_SYMM)
+        case 6:
+            Tph(indices);
+            break;
+        case 36:
+            Tph(indices);
+            T3(indices);
+            break;
+        case 46:
+            Tph(indices);
+            TC(indices);
+            break;
+        case 346:
+            Tph(indices);
+            TC(indices);
+            T3(indices);
+            break;
+#endif
 #ifndef KELDYSH_FORMALISM
         case 7:
             TR(indices);

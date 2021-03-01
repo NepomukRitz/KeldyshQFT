@@ -23,8 +23,6 @@ public:
                                         // independent ones
     Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
                                         // components to relate them to the independent ones
-    FrequencyComponents freq_components;            // lists providing information on how all frequency domains are
-                                                    // related to the independent ones
     FrequencyTransformations freq_transformations;  // lists providing information on which transformations to apply on
                                                     // frequencies to relate them to the independent ones
 
@@ -33,13 +31,11 @@ public:
     rvert(const char channel_in) : channel(channel_in), frequencies() {
         components = Components(channel);
         transformations = Transformations(channel);
-        freq_components = FrequencyComponents(channel);
         freq_transformations = FrequencyTransformations(channel);
     };
     rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda) {
         components = Components(channel);
         transformations = Transformations(channel);
-        freq_components = FrequencyComponents(channel);
         freq_transformations = FrequencyTransformations(channel);
     };
 
@@ -507,13 +503,13 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
 
     for (int itK = 0; itK < nK_K2; itK++){
-        for (int itw = 0; itw < nBOS2; itw++){
-            for (int itv = 0; itv < nFER2; itv++){
+        for (int itw = 0; itw < nw2; itw++){
+            for (int itv = 0; itv < nv2; itv++){
                 double w_in = this->frequencies.b_K2.w[itw];
                 double v_in = this->frequencies.f_K2.w[itv];
                 IndicesSymmetryTransformations indices(itK, w_in, v_in, 0., 0, channel);
                 VertexInput input(itK, w_in, v_in, 0., 0, 0, channel);
-                this->K2[itK*nw1*nFER2 + itw * nFER2 + itv] = this->K2_valsmooth_FreqRelations(indices, *(this));
+                this->K2[itK*nw2*nv2 + itw * nv2 + itv] = this->K2_valsmooth_FreqRelations(indices, *(this));
             }
         }
     }
