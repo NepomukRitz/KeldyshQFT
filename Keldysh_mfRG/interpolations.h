@@ -29,6 +29,7 @@ auto interpolateK1(IndicesSymmetryTransformations indices, const rvert<Q>& verte
         auto f1 = vertex.K1_val(indices.iK, index, indices.i_in);
         auto f2 = vertex.K1_val(indices.iK, index + 1, indices.i_in);
 
+        if (indices.conjugate) return conj(indices.prefactor * ((1. - xd) * f1 + xd * f2));
         return indices.prefactor * ((1. - xd) * f1 + xd * f2);
     }
     else {
@@ -69,6 +70,7 @@ auto interpolateK2 (IndicesSymmetryTransformations indices, const rvert<Q>& vert
         auto f21 = vertex.K2_val(indices.iK, index_b + 1, index_f, indices.i_in);
         auto f22 = vertex.K2_val(indices.iK, index_b + 1, index_f + 1, indices.i_in);
 
+        if (indices.conjugate) return conj(indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22)));
         return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
     }
     else {

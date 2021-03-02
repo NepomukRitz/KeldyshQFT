@@ -486,35 +486,74 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
 }
 
+
+template<typename Q> auto sign_index(Q freq) -> int {
+    if (freq > 0){
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
 
     for (int itK = 0; itK < nK_K1; itK++) {
+        int i0_tmp;
+        // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+        switch (channel) {
+            case 'a': i0_tmp = non_zero_Keldysh_K1a[itK]; break;
+            case 'p': i0_tmp = non_zero_Keldysh_K1p[itK]; break;
+            case 't': i0_tmp = non_zero_Keldysh_K1t[itK]; break;
+            default: ;
+        }
         for (int itw = 0; itw < nw1; itw++) {
             double w_in = this->frequencies.b_K1.w[itw];
-            IndicesSymmetryTransformations indices(itK, w_in, 0., 0., 0, channel);
+            IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
+            int sign_w = sign_index(indices.w);
+            Ti(indices, freq_transformations.K1[itK][sign_w]);
+            indices.iK = itK;
 
-            this->K1[itK*nw1 + itw] = this->K1_valsmooth_FreqRelations(indices, *(this));
-
+            //if (indices.conjugate)  this->K1[itK*nw1 + itw] = conj(interpolateK1(indices, *(this))); // conjugation only in t-channel --> no flip necessary
+            this->K1[itK*nw1 + itw] = interpolateK1(indices, *(this));
         }
 
     }
 }
 
+
+
+
+
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
 
     for (int itK = 0; itK < nK_K2; itK++){
+        int i0_tmp;
+        // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+        switch (channel) {
+            case 'a': i0_tmp = non_zero_Keldysh_K2a[itK]; break;
+            case 'p': i0_tmp = non_zero_Keldysh_K2p[itK]; break;
+            case 't': i0_tmp = non_zero_Keldysh_K2t[itK]; break;
+            default: ;
+        }
         for (int itw = 0; itw < nw2; itw++){
             for (int itv = 0; itv < nv2; itv++){
                 double w_in = this->frequencies.b_K2.w[itw];
                 double v_in = this->frequencies.f_K2.w[itv];
-                IndicesSymmetryTransformations indices(itK, w_in, v_in, 0., 0, channel);
-                VertexInput input(itK, w_in, v_in, 0., 0, 0, channel);
-                this->K2[itK*nw2*nv2 + itw * nv2 + itv] = this->K2_valsmooth_FreqRelations(indices, *(this));
+                IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
+                int sign_w = sign_index(w_in);
+                int sign_v1 = sign_index(v_in);
+                Ti(indices, freq_transformations.K2[itK][sign_w*2 + sign_v1]);
+                indices.iK = itK;
+                this->K2[itK*nw2*nv2 + itw * nv2 + itv] = interpolateK2(indices, *(this));
             }
         }
     }
 
 }
+
+
+
 
 template <typename Q> auto rvert<Q>::width(rvec& data, FrequencyGrid& freqs, double decay) -> double {
     auto maxval = *max_element(begin(data), end(data)); // maximum value of analyzed data
@@ -558,7 +597,7 @@ template <typename Q> auto rvert<Q>::K1_valsmooth(VertexInput input) const -> Q 
     Ti(indices, transformations.K1[input.spin][input.iK]);
     indices.iK = components.K1[input.iK];
     if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK1(indices, *(this))); // conjugation only in t-channel --> no flip necessary
+    //if (indices.conjugate) return conj(interpolateK1(indices, *(this))); // conjugation only in t-channel --> no flip necessary
     return interpolateK1(indices, *(this));
 }
 template <typename Q> auto rvert<Q>::K1_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
@@ -567,28 +606,12 @@ template <typename Q> auto rvert<Q>::K1_valsmooth(VertexInput input, const rvert
     Ti(indices, transformations.K1[input.spin][input.iK]);
     indices.iK = components.K1[input.iK];
     if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK1(indices, *(this))); // conjugation only in t-channel --> no flip necessary
+    //if (indices.conjugate) return conj(interpolateK1(indices, *(this))); // conjugation only in t-channel --> no flip necessary
     if (indices.channel != channel) return interpolateK1(indices, vertex_in);
     return interpolateK1(indices, *(this));
     }
 
-template<typename Q> auto sign_index(Q freq) -> int {
-    if (freq > 0){
-        return 1;
-    }
-    else {
-        return 0;
-    }
-}
 
-
-template <typename Q> auto rvert<Q>::K1_valsmooth_FreqRelations(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) const -> Q {
-
-    int sign_w = sign_index(indices.w);
-    Ti(indices, freq_transformations.K1[indices.iK][sign_w]);
-    if (indices.conjugate) return conj(interpolateK1(indices, vertex)); // conjugation only in t-channel --> no flip necessary
-    return interpolateK1(indices, vertex);
-}
 
 
 
@@ -636,7 +659,7 @@ template <typename Q> auto rvert<Q>::K2_valsmooth(VertexInput input) const -> Q 
     Ti(indices, transformations.K2[input.spin][input.iK]);
     indices.iK = components.K2[input.iK];
     if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
+    //if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
     return interpolateK2(indices, *(this));
 }
 template <typename Q> auto rvert<Q>::K2_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
@@ -654,16 +677,8 @@ template <typename Q> auto rvert<Q>::K2_valsmooth(VertexInput input, const rvert
     else
         valueK2 = interpolateK2(indices, *(this));
 
-    if (indices.conjugate) return conj(valueK2);
+    //if (indices.conjugate) return conj(valueK2);
     return valueK2;
-}
-template <typename Q> auto rvert<Q>::K2_valsmooth_FreqRelations(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) const -> Q {
-
-    int sign_w = sign_index(indices.w);
-    int sign_v1 = sign_index(indices.v1);
-    Ti(indices, freq_transformations.K2[indices.iK][sign_w*2 + sign_v1]);
-    if (indices.conjugate) return conj(interpolateK2(indices, vertex)); // conjugation only in t-channel --> no flip necessary
-    return interpolateK2(indices, vertex);
 }
 
 template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input) const -> Q {
@@ -673,7 +688,7 @@ template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input) const -> Q
     Ti(indices, transformations.K2b[input.spin][input.iK]);
     indices.iK = components.K2b[input.iK];
     if (indices.iK < 0) return 0.;
-    if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
+    //if (indices.conjugate) return conj(interpolateK2(indices, *(this)));
     return interpolateK2(indices, *(this));
 }
 template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
@@ -691,7 +706,7 @@ template <typename Q> auto rvert<Q>::K2b_valsmooth(VertexInput input, const rver
     else
         valueK2 = interpolateK2(indices, *(this));
 
-    if (indices.conjugate) return conj(valueK2);
+    //if (indices.conjugate) return conj(valueK2);
     return valueK2;
 }
 

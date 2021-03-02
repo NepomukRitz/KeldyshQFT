@@ -771,7 +771,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #else
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
                         // save the integrand for manual checks:
-                        if (i_omp == (int)n_omp-1){
+                        if (i_omp == 100){
                             integrand_K1.save_integrand();
                         }
 #endif
