@@ -199,9 +199,10 @@ public:
 };
 
 /// Integrand classes for bubble contributing to diagrammatic class K1, K2, K3
-template <typename Q> class Integrand_K1 {
-    const Vertex<Q>& vertex1;
-    const Vertex<Q>& vertex2;
+template <typename Q, template <typename> class container_type>
+class Integrand_K1 {
+    const GeneralVertex<Q, container_type>& vertex1;
+    const GeneralVertex<Q, container_type>& vertex2;
     const Bubble& Pi;
     int i0;
     int i2;
@@ -229,7 +230,9 @@ public:
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      * @param diff_in    : determines whether to compute differentiated or non-differentiated bubble
      */
-    Integrand_K1(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in,
+    Integrand_K1(const GeneralVertex<Q, container_type>& vertex1_in,
+                 const GeneralVertex<Q, container_type>& vertex2_in,
+                 const Bubble& Pi_in,
                  int i0_in, int i2_in, const double w_in, const int i_in_in, const char ch_in, const bool diff_in
 #ifdef DEBUG_MODE
                  , const int iK_select_in, const int iK_select_bubble_in
@@ -341,7 +344,7 @@ public:
         rvec Pival_re (nFER);
         rvec Pival_im (nFER);
         for (int i=0; i<nFER; ++i) {
-            double vpp = vertex1[0].avertex.frequencies.b_K1.w[i];
+            double vpp = vertex1[0].avertex().frequencies.b_K1.w[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -358,13 +361,14 @@ public:
                   + "_w=" + to_string(w) + ".h5";
         write_h5_rvecs(filename,
                 {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
-                {vertex1[0].avertex.frequencies.b_K1.w, integrand_re, integrand_im, Pival_re, Pival_im});
+                {vertex1[0].avertex().frequencies.b_K1.w, integrand_re, integrand_im, Pival_re, Pival_im});
     }
 
 };
-template <typename Q> class Integrand_K2 {
-    const Vertex<Q>& vertex1;
-    const Vertex<Q>& vertex2;
+template <typename Q, template <typename> class container_type>
+class Integrand_K2 {
+    const GeneralVertex<Q, container_type>& vertex1;
+    const GeneralVertex<Q, container_type>& vertex2;
     const Bubble& Pi;
     int i0;
     int i2;
@@ -392,7 +396,9 @@ public:
      *                     multi-loop contribution.
      * @param diff_in    : determines whether to compute differentiated or non-differentiated bubble
      */
-    Integrand_K2(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in,
+    Integrand_K2(const GeneralVertex<Q, container_type>& vertex1_in,
+                 const GeneralVertex<Q, container_type>& vertex2_in,
+                 const Bubble& Pi_in,
                  int i0_in, int i2_in, const double w_in, double v_in, const int i_in_in,
                  const char ch_in, const bool diff_in
 #ifdef DEBUG_MODE
@@ -458,8 +464,8 @@ public:
         rvec Pival_re (npoints);
         rvec Pival_im (npoints);
         for (int i=0; i<npoints; ++i) {
-            double wl = vertex1[0].avertex.frequencies.f_K2.w_lower;
-            double wu = vertex1[0].avertex.frequencies.f_K2.w_upper;
+            double wl = vertex1[0].avertex().frequencies.f_K2.w_lower;
+            double wu = vertex1[0].avertex().frequencies.f_K2.w_upper;
             double vpp = wl + i * (wu-wl)/(npoints-1);
             freqs[i] = vpp;
 
@@ -485,9 +491,10 @@ public:
     }
 
 };
-template <typename Q> class Integrand_K3 {
-    const Vertex<Q>& vertex1;
-    const Vertex<Q>& vertex2;
+template <typename Q, template <typename> class container_type>
+class Integrand_K3 {
+    const GeneralVertex<Q, container_type>& vertex1;
+    const GeneralVertex<Q, container_type>& vertex2;
     const Bubble& Pi;
     int i0;
     const int i_in;
@@ -510,7 +517,9 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K3(const Vertex<Q>& vertex1_in, const Vertex<Q>& vertex2_in, const Bubble& Pi_in, int i0_in,
+    Integrand_K3(const GeneralVertex<Q, container_type>& vertex1_in,
+                 const GeneralVertex<Q, container_type>& vertex2_in,
+                 const Bubble& Pi_in, int i0_in,
                  const double w_in, const double v_in, const double vp_in, const int i_in_in,
                  const char ch_in, const bool diff_in)
                : vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in),
@@ -572,8 +581,9 @@ public:
  * @param channel : diagrammatic channel ('a', 'p', or 't')
  * @param diff    : whether or not the bubble is a differentiated one
  */
-template <typename Q>
-void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
+template <typename Q, template <typename> class container_type>
+void bubble_function(GeneralVertex<Q, container_type>& dgamma,
+                     const GeneralVertex<Q, container_type>& vertex1, const GeneralVertex<Q, container_type>& vertex2,
                      const Propagator& G, const Propagator& S, const char channel, const bool diff
 #ifdef DEBUG_MODE
                      , const int iK_select, const int iK_select_bubble, const int iK_select2, const int iK_select_bubble2
@@ -623,23 +633,23 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >= 0
     // initialize frequency grid to be used for K1
-    FrequencyGrid freqs_K1 = dgamma[0].avertex.frequencies.b_K1;
+    FrequencyGrid freqs_K1 = dgamma[0].avertex().frequencies.b_K1;
     // use min/max of selfenergy/K1 frequency grids as integration limits
     double vmin = min(freqs_K1.w_lower, G.selfenergy.frequencies.w_lower);
     double vmax = max(freqs_K1.w_upper, G.selfenergy.frequencies.w_upper);
 #endif
 #if DIAG_CLASS >= 2
     // initialize frequency grids to be used for K2
-    FrequencyGrid bfreqs_K2 = dgamma[0].avertex.frequencies.b_K2;
-    FrequencyGrid ffreqs_K2 = dgamma[0].avertex.frequencies.f_K2;
+    FrequencyGrid bfreqs_K2 = dgamma[0].avertex().frequencies.b_K2;
+    FrequencyGrid ffreqs_K2 = dgamma[0].avertex().frequencies.f_K2;
     // use min/max of selfenergy/K1/K2 frequency grids as integration limits
     vmin = min(vmin, ffreqs_K2.w_lower);
     vmax = max(vmax, ffreqs_K2.w_upper);
 #endif
 #if DIAG_CLASS >= 3
     // initialize frequency grids to be used for K3
-    FrequencyGrid bfreqs_K3 = dgamma[0].avertex.frequencies.b_K3;
-    FrequencyGrid ffreqs_K3 = dgamma[0].avertex.frequencies.f_K3;
+    FrequencyGrid bfreqs_K3 = dgamma[0].avertex().frequencies.b_K3;
+    FrequencyGrid ffreqs_K3 = dgamma[0].avertex().frequencies.f_K3;
     // use min/max of selfenergy/K1/K2/K3 frequency grids as integration limits
     vmin = min(vmin, ffreqs_K3.w_lower);
     vmax = max(vmax, ffreqs_K3.w_upper);
@@ -669,14 +679,14 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
-                if (vertex1[0].Ir && vertex2[0].Ir) value = 0.; // bubbles with Ir do not contribute to K1
+                if (vertex1[0].Ir() && vertex2[0].Ir()) value = 0.; // bubbles with Ir do not contribute to K1
                 else {
                     for (auto i2:non_zero_Keldysh_bubble) {
 #ifdef DEBUG_MODE
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
                                                      iK_select, iK_select_bubble);
 #else
-                        Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+                        Integrand_K1<Q, container_type> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
 #endif
                         value += prefactor * (1. / (2. * M_PI * glb_i)) *
                                  integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
@@ -701,9 +711,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': dgamma[0].avertex.K1 += K1_ordered_result; break;
-        case 'p': dgamma[0].pvertex.K1 += K1_ordered_result; break;
-        case 't': dgamma[0].tvertex.K1 += K1_ordered_result; break;
+        case 'a': dgamma[0].avertex().K1 += K1_ordered_result; break;
+        case 'p': dgamma[0].pvertex().K1 += K1_ordered_result; break;
+        case 't': dgamma[0].tvertex().K1 += K1_ordered_result; break;
         default: ;
     }
 //    print("K1", channel, " done: ");
@@ -736,7 +746,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
-                if (vertex2[0].Ir) value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
+                if (vertex2[0].Ir()) value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
                 // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
                 else {
                     for(auto i2:non_zero_Keldysh_bubble) {
@@ -744,7 +754,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff,
                                                      iK_select2, iK_select_bubble2);
 #else
-                        Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
+                        Integrand_K2<Q, container_type> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
 #endif
                         value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, vmin, vmax, -w/2., w/2.);
                         /* asymptotic corrections temporarily commented out --> TODO: fix
@@ -768,9 +778,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': dgamma[0].avertex.K2 += K2_ordered_result; break;
-        case 'p': dgamma[0].pvertex.K2 += K2_ordered_result; break;
-        case 't': dgamma[0].tvertex.K2 += K2_ordered_result; break;
+        case 'a': dgamma[0].avertex().K2 += K2_ordered_result; break;
+        case 'p': dgamma[0].pvertex().K2 += K2_ordered_result; break;
+        case 't': dgamma[0].tvertex().K2 += K2_ordered_result; break;
         default: ;
     }
 
@@ -806,7 +816,7 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
-                Integrand_K3<Q> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
+                Integrand_K3<Q, container_type> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
 
                 value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
 
@@ -831,13 +841,11 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
     vec<Q> K3_ordered_result = mpi_reorder_result(K3_result, n_mpi, n_omp);
 
     switch (channel) {
-        case 'a': dgamma[0].avertex.K3 += K3_ordered_result; break;
-        case 'p': dgamma[0].pvertex.K3 += K3_ordered_result; break;
-        case 't': dgamma[0].tvertex.K3 += K3_ordered_result; break;
+        case 'a': dgamma[0].avertex().K3 += K3_ordered_result; break;
+        case 'p': dgamma[0].pvertex().K3 += K3_ordered_result; break;
+        case 't': dgamma[0].tvertex().K3 += K3_ordered_result; break;
         default: ;
     }
-
-    // dgamma[0].pvertex.K3_addvert(i0, iwp, ivp, ivpp, i_in, value); // old version w/o mpi
 
     print("K3", channel, " done: ");
     get_time(tK3);
@@ -850,8 +858,9 @@ void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q
 }
 
 #ifdef DEBUG_MODE
-template <typename Q>
-void bubble_function(Vertex<Q>& dgamma, const Vertex<Q>& vertex1, const Vertex<Q>& vertex2,
+template <typename Q, template <typename> class container_type>
+void bubble_function(GeneralVertex<Q, container_type>& dgamma,
+                     const GeneralVertex<Q, container_type>& vertex1, const GeneralVertex<Q, container_type>& vertex2,
                      const Propagator& G, const Propagator& S, const char channel, const bool diff)
 {
     bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, 16, 16, 16, 16);

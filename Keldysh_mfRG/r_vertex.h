@@ -15,6 +15,8 @@
 #include "symmetry_transformations.h" // symmetry transformations of frequencies
 #include "symmetry_table.h"           // table containing information when to apply which symmetry transformations
 
+template <typename Q> class fullvert; // forward declaration of fullvert
+
 template <typename Q>
 class rvert{
 public:
@@ -45,6 +47,10 @@ public:
      *                    symmetry transformations that map between channels a <--> t.
      */
     auto value(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    /** Overload for accessing non-symmetric vertices, with
+     * @param right_vertex : vertex related to the calling vertex by symmetry, needed for transformations with
+     *                       asymmetry_transform=true */
+    auto value(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q;
 
     /**
      * Return the value of the vertex Ki in channel r.
@@ -54,12 +60,21 @@ public:
      */
     template <K_class k>
     auto valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    /** Overload for accessing non-symmetric vertices, with
+     * @param right_vertex : vertex related to the calling vertex by symmetry, needed for transformations with
+     *                       asymmetry_transform=true */
+    template <K_class k>
+    auto valsmooth(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q;
 
     /** Parts of the r vertex that connect to the same/different bare vertices on the left/right of an r bubble */
     auto left_same_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    auto left_same_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q;
     auto right_same_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    auto right_same_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q;
     auto left_diff_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    auto left_diff_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q;
     auto right_diff_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
+    auto right_diff_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q;
 
     /**
      * Transform the frequencies from the frequency convention of input.channel to the frequency convention of
@@ -237,6 +252,25 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& ve
 
     return K1_val + K2_val + K2b_val + K3_val;
 }
+template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
+
+    transfToR(input);
+
+    Q K1_val, K2_val, K2b_val, K3_val;
+
+#if DIAG_CLASS>=0
+    K1_val = valsmooth<k1>(input, vertex_in, right_vertex);
+#endif
+#if DIAG_CLASS >=2
+    K2_val  = valsmooth<k2>(input, vertex_in, right_vertex);
+    K2b_val = valsmooth<k2b>(input, vertex_in, right_vertex);
+#endif
+#if DIAG_CLASS >=3
+    K3_val = valsmooth<k3>(input, vertex_in, right_vertex);
+#endif
+
+    return K1_val + K2_val + K2b_val + K3_val;
+}
 
 template <typename Q>
 template <K_class k>
@@ -258,6 +292,44 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> 
     if (indices.conjugate) return conj(value);
     return value;
 }
+template <typename Q>
+template <K_class k>
+auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
+
+    IndicesSymmetryTransformations indices (input, channel);
+
+    Ti(indices, transformations.K[k][input.spin][input.iK]);
+    indices.iK = components.K[k][input.spin][input.iK];
+    if (indices.iK < 0) return 0.;
+
+    Q value;
+    rvert<Q>& output_vertex = vertex_in;
+    if (indices.channel != channel)
+        output_vertex = *(this);
+    if (indices.asymmetry_transform) {
+        switch (channel) {
+            case 'a':
+                if (indices.channel == 'a')
+                    output_vertex = right_vertex->avertex;
+                else
+                    output_vertex = right_vertex->tvertex;
+                break;
+            case 'p':
+                output_vertex = right_vertex->pvertex;
+                break;
+            case 't':
+                if (indices.channel == 't')
+                    output_vertex = right_vertex->tvertex;
+                else
+                    output_vertex = right_vertex->avertex;
+                break;
+            default:;
+        }
+    }
+    value = Interpolate<k,Q>()(indices, output_vertex);
+    if (indices.conjugate) return conj(value);
+    return value;
+}
 
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
 #if DIAG_CLASS == 1
@@ -266,11 +338,25 @@ template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rve
     return valsmooth<k1>(input, vertex_in) + valsmooth<k2b>(input, vertex_in);
 #endif
 };
+template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
+#if DIAG_CLASS == 1
+    return valsmooth<k1>(input, vertex_in, right_vertex);
+#elif DIAG_CLASS > 1
+    return valsmooth<k1>(input, vertex_in, right_vertex) + valsmooth<k2b>(input, vertex_in, right_vertex);
+#endif
+};
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
 #if DIAG_CLASS == 1
     return valsmooth<k1>(input, vertex_in);
 #elif DIAG_CLASS > 1
     return valsmooth<k1>(input, vertex_in) + valsmooth<k2>(input, vertex_in);
+#endif
+};
+template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
+#if DIAG_CLASS == 1
+    return valsmooth<k1>(input, vertex_in, right_vertex);
+#elif DIAG_CLASS > 1
+    return valsmooth<k1>(input, vertex_in, right_vertex) + valsmooth<k2>(input, vertex_in, right_vertex);
 #endif
 };
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
@@ -282,6 +368,15 @@ template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rve
     return valsmooth<k2>(input, vertex_in) + valsmooth<k3>(input, vertex_in);
 #endif
 };
+template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
+#if DIAG_CLASS == 1
+    return 0.;
+#elif DIAG_CLASS == 2
+    return valsmooth<k2>(input, vertex_in, right_vertex);
+#elif DIAG_CLASS == 3
+    return valsmooth<k2>(input, vertex_in, right_vertex) + valsmooth<k3>(input, vertex_in, right_vertex);
+#endif
+};
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& vertex_in) const -> Q {
 #if DIAG_CLASS == 1
     return 0.;
@@ -289,6 +384,15 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
     return valsmooth<k2b>(input, vertex_in);
 #elif DIAG_CLASS == 3
     return valsmooth<k2b>(input, vertex_in) + valsmooth<k3>(input, vertex_in);
+#endif
+};
+template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
+#if DIAG_CLASS == 1
+    return 0.;
+#elif DIAG_CLASS == 2
+    return valsmooth<k2b>(input, vertex_in, right_vertex);
+#elif DIAG_CLASS == 3
+    return valsmooth<k2b>(input, vertex_in, right_vertex) + valsmooth<k3>(input, vertex_in, right_vertex);
 #endif
 };
 
