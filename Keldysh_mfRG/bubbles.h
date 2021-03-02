@@ -199,10 +199,12 @@ public:
 };
 
 /// Integrand classes for bubble contributing to diagrammatic class K1, K2, K3
-template <typename Q, template <typename> class container_type>
+template <typename Q,
+          template <typename> class symmetry_left,
+          template <typename> class symmetry_right>
 class Integrand_K1 {
-    const GeneralVertex<Q, container_type>& vertex1;
-    const GeneralVertex<Q, container_type>& vertex2;
+    const GeneralVertex<Q, symmetry_left>& vertex1;
+    const GeneralVertex<Q, symmetry_right>& vertex2;
     const Bubble& Pi;
     int i0;
     int i2;
@@ -230,8 +232,8 @@ public:
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      * @param diff_in    : determines whether to compute differentiated or non-differentiated bubble
      */
-    Integrand_K1(const GeneralVertex<Q, container_type>& vertex1_in,
-                 const GeneralVertex<Q, container_type>& vertex2_in,
+    Integrand_K1(const GeneralVertex<Q, symmetry_left>& vertex1_in,
+                 const GeneralVertex<Q, symmetry_right>& vertex2_in,
                  const Bubble& Pi_in,
                  int i0_in, int i2_in, const double w_in, const int i_in_in, const char ch_in, const bool diff_in
 #ifdef DEBUG_MODE
@@ -365,10 +367,12 @@ public:
     }
 
 };
-template <typename Q, template <typename> class container_type>
+template <typename Q,
+          template <typename> class symmetry_left,
+          template <typename> class symmetry_right>
 class Integrand_K2 {
-    const GeneralVertex<Q, container_type>& vertex1;
-    const GeneralVertex<Q, container_type>& vertex2;
+    const GeneralVertex<Q, symmetry_left>& vertex1;
+    const GeneralVertex<Q, symmetry_right>& vertex2;
     const Bubble& Pi;
     int i0;
     int i2;
@@ -396,8 +400,8 @@ public:
      *                     multi-loop contribution.
      * @param diff_in    : determines whether to compute differentiated or non-differentiated bubble
      */
-    Integrand_K2(const GeneralVertex<Q, container_type>& vertex1_in,
-                 const GeneralVertex<Q, container_type>& vertex2_in,
+    Integrand_K2(const GeneralVertex<Q, symmetry_left>& vertex1_in,
+                 const GeneralVertex<Q, symmetry_right>& vertex2_in,
                  const Bubble& Pi_in,
                  int i0_in, int i2_in, const double w_in, double v_in, const int i_in_in,
                  const char ch_in, const bool diff_in
@@ -491,10 +495,12 @@ public:
     }
 
 };
-template <typename Q, template <typename> class container_type>
+template <typename Q,
+          template <typename> class symmetry_left,
+          template <typename> class symmetry_right>
 class Integrand_K3 {
-    const GeneralVertex<Q, container_type>& vertex1;
-    const GeneralVertex<Q, container_type>& vertex2;
+    const GeneralVertex<Q, symmetry_left>& vertex1;
+    const GeneralVertex<Q, symmetry_right>& vertex2;
     const Bubble& Pi;
     int i0;
     const int i_in;
@@ -517,8 +523,8 @@ public:
      * @param pt_in      : For multi-loop calculation: specify if one computes left ('L') or right ('R')
      *                     multi-loop contribution.
      */
-    Integrand_K3(const GeneralVertex<Q, container_type>& vertex1_in,
-                 const GeneralVertex<Q, container_type>& vertex2_in,
+    Integrand_K3(const GeneralVertex<Q, symmetry_left>& vertex1_in,
+                 const GeneralVertex<Q, symmetry_right>& vertex2_in,
                  const Bubble& Pi_in, int i0_in,
                  const double w_in, const double v_in, const double vp_in, const int i_in_in,
                  const char ch_in, const bool diff_in)
@@ -581,9 +587,13 @@ public:
  * @param channel : diagrammatic channel ('a', 'p', or 't')
  * @param diff    : whether or not the bubble is a differentiated one
  */
-template <typename Q, template <typename> class container_type>
-void bubble_function(GeneralVertex<Q, container_type>& dgamma,
-                     const GeneralVertex<Q, container_type>& vertex1, const GeneralVertex<Q, container_type>& vertex2,
+template <typename Q,
+          template <typename> class symmetry_result,
+          template <typename> class symmetry_left,
+          template <typename> class symmetry_right>
+void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
+                     const GeneralVertex<Q, symmetry_left>& vertex1,
+                     const GeneralVertex<Q, symmetry_right>& vertex2,
                      const Propagator& G, const Propagator& S, const char channel, const bool diff
 #ifdef DEBUG_MODE
                      , const int iK_select, const int iK_select_bubble, const int iK_select2, const int iK_select_bubble2
@@ -686,7 +696,8 @@ void bubble_function(GeneralVertex<Q, container_type>& dgamma,
                         Integrand_K1<Q> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
                                                      iK_select, iK_select_bubble);
 #else
-                        Integrand_K1<Q, container_type> integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+                        Integrand_K1<Q, symmetry_left, symmetry_right>
+                                integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
 #endif
                         value += prefactor * (1. / (2. * M_PI * glb_i)) *
                                  integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
@@ -754,7 +765,8 @@ void bubble_function(GeneralVertex<Q, container_type>& dgamma,
                         Integrand_K2<Q> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff,
                                                      iK_select2, iK_select_bubble2);
 #else
-                        Integrand_K2<Q, container_type> integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
+                        Integrand_K2<Q, symmetry_left, symmetry_right>
+                                integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
 #endif
                         value += prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K2, vmin, vmax, -w/2., w/2.);
                         /* asymptotic corrections temporarily commented out --> TODO: fix
@@ -816,7 +828,8 @@ void bubble_function(GeneralVertex<Q, container_type>& dgamma,
                 Q value;
 
                 // initialize the integrand object and perform frequency integration
-                Integrand_K3<Q, container_type> integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
+                Integrand_K3<Q, symmetry_left, symmetry_right>
+                        integrand_K3 (vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
 
                 value = prefactor*(1./(2.*M_PI*glb_i))*integrator(integrand_K3, vmin, vmax, -w/2., w/2.);
 

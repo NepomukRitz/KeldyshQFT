@@ -313,9 +313,9 @@ public:
 };
 
 /** template vertex container class that can contain either a symmetric or a non-symmetric vertex container */
-template <typename Q, template <typename> class container_type>
+template <typename Q, template <typename> class symmetry_type>
 class vertex_container {
-    container_type<Q> vertex;
+    symmetry_type<Q> vertex;
 
     // return the left and right part
     fullvert<Q>& left() { return vertex.left(); }
@@ -360,7 +360,7 @@ public:
         left().initialize(val);
         right().initialize(val);
     }
-    void set_frequency_grid(const vertex_container<Q, container_type>& vertex) {
+    void set_frequency_grid(const vertex_container<Q, symmetry_type>& vertex) {
         left().set_frequency_grid(left());
         right().set_frequency_grid(right());
     }
@@ -373,112 +373,112 @@ public:
     double norm_K2(int i) { return left().norm_K2(i); }
     double norm_K3(int i) { return left().norm_K3(i); }
 
-    auto operator+= (const vertex_container<Q, container_type>& vertex1) -> vertex_container<Q, container_type> {
+    auto operator+= (const vertex_container<Q, symmetry_type>& vertex1) -> vertex_container<Q, symmetry_type> {
         this->vertex += vertex1.vertex;
         return *this;
     }
-    friend vertex_container<Q, container_type> operator+ (vertex_container<Q, container_type> lhs,
-                                                          const vertex_container<Q, container_type>& rhs) {
+    friend vertex_container<Q, symmetry_type> operator+ (vertex_container<Q, symmetry_type> lhs,
+                                                         const vertex_container<Q, symmetry_type>& rhs) {
         lhs += rhs;
         return lhs;
     }
-    auto operator+= (const double& alpha) -> vertex_container<Q, container_type> {
+    auto operator+= (const double& alpha) -> vertex_container<Q, symmetry_type> {
         this->vertex += alpha;
         return *this;
     }
-    friend vertex_container<Q, container_type> operator+ (vertex_container<Q, container_type> lhs, const double& rhs) {
+    friend vertex_container<Q, symmetry_type> operator+ (vertex_container<Q, symmetry_type> lhs, const double& rhs) {
         lhs += rhs;
         return lhs;
     }
-    auto operator*= (const vertex_container<Q, container_type>& vertex1) -> vertex_container<Q, container_type> {
+    auto operator*= (const vertex_container<Q, symmetry_type>& vertex1) -> vertex_container<Q, symmetry_type> {
         this->vertex *= vertex1.vertex;
         return *this;
     }
-    friend vertex_container<Q, container_type> operator* (vertex_container<Q, container_type> lhs,
-                                                          const vertex_container<Q, container_type>& rhs) {
+    friend vertex_container<Q, symmetry_type> operator* (vertex_container<Q, symmetry_type> lhs,
+                                                         const vertex_container<Q, symmetry_type>& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator*= (const double& alpha) -> vertex_container<Q, container_type> {
+    auto operator*= (const double& alpha) -> vertex_container<Q, symmetry_type> {
         this->vertex *= alpha;
         return *this;
     }
-    friend vertex_container<Q, container_type> operator* (vertex_container<Q, container_type> lhs, const double& rhs) {
+    friend vertex_container<Q, symmetry_type> operator* (vertex_container<Q, symmetry_type> lhs, const double& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator-= (const vertex_container<Q, container_type>& vertex1) -> vertex_container<Q, container_type> {
+    auto operator-= (const vertex_container<Q, symmetry_type>& vertex1) -> vertex_container<Q, symmetry_type> {
         this->vertex -= vertex1.vertex;
         return *this;
     }
-    friend vertex_container<Q, container_type> operator- (vertex_container<Q, container_type> lhs,
-                                                          const vertex_container<Q, container_type>& rhs) {
+    friend vertex_container<Q, symmetry_type> operator- (vertex_container<Q, symmetry_type> lhs,
+                                                         const vertex_container<Q, symmetry_type>& rhs) {
         lhs -= rhs;
         return lhs;
     }
 };
 
 /** Vertex class: vector of vertex_container (one element for each spin component) */
-template <typename Q, template <typename> typename container_type>
-class GeneralVertex : public vec<vertex_container<Q, container_type> > {
+template <typename Q, template <typename> typename symmetry_type>
+class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
-    GeneralVertex() : vec<vertex_container<Q, container_type> > () {};
-    GeneralVertex(int n) : vec<vertex_container<Q, container_type> > (n) {};
-    GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, container_type> > (n, vertex_container<Q, container_type> (fullvert<Q> (Lambda))) {};
-    GeneralVertex(int n, vertex_container<Q, container_type> val) : vec<vertex_container<Q, container_type> > (n, val) {}; // TODO: never used?
+    GeneralVertex() : vec<vertex_container<Q, symmetry_type> > () {};
+    GeneralVertex(int n) : vec<vertex_container<Q, symmetry_type> > (n) {};
+    GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type> > (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
+    GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type> > (n, val) {}; // TODO: never used?
 
-    auto operator+= (const GeneralVertex<Q, container_type>& rhs) -> GeneralVertex<Q, container_type> {
+    auto operator+= (const GeneralVertex<Q, symmetry_type>& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i] += rhs[i];
         }
         return *this;
     }
-    friend GeneralVertex<Q, container_type> operator+ (GeneralVertex<Q, container_type> lhs, const GeneralVertex<Q, container_type>& rhs) {
+    friend GeneralVertex<Q, symmetry_type> operator+ (GeneralVertex<Q, symmetry_type> lhs, const GeneralVertex<Q, symmetry_type>& rhs) {
         lhs += rhs; return lhs;
     }
-    auto operator+= (const double& rhs) -> GeneralVertex<Q, container_type> {
+    auto operator+= (const double& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i] += rhs;
         }
         return *this;
     }
-    friend GeneralVertex<Q, container_type> operator+ (GeneralVertex<Q, container_type> lhs, const double& rhs) {
+    friend GeneralVertex<Q, symmetry_type> operator+ (GeneralVertex<Q, symmetry_type> lhs, const double& rhs) {
         lhs += rhs; return lhs;
     }
-    auto operator*= (const GeneralVertex<Q, container_type>& rhs) -> GeneralVertex<Q, container_type> {
+    auto operator*= (const GeneralVertex<Q, symmetry_type>& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i] *= rhs[i];
         }
         return *this;
     }
-    friend GeneralVertex<Q, container_type> operator* (GeneralVertex<Q, container_type> lhs, const GeneralVertex<Q, container_type>& rhs) {
+    friend GeneralVertex<Q, symmetry_type> operator* (GeneralVertex<Q, symmetry_type> lhs, const GeneralVertex<Q, symmetry_type>& rhs) {
         lhs *= rhs; return lhs;
     }
-    auto operator*= (const double& rhs) -> GeneralVertex<Q, container_type> {
+    auto operator*= (const double& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i] *= rhs;
         }
         return *this;
     }
-    friend GeneralVertex<Q, container_type> operator* (GeneralVertex<Q, container_type> lhs, const double& rhs) {
+    friend GeneralVertex<Q, symmetry_type> operator* (GeneralVertex<Q, symmetry_type> lhs, const double& rhs) {
         lhs *= rhs; return lhs;
     }
-    auto operator-= (const GeneralVertex<Q, container_type>& rhs) -> GeneralVertex<Q, container_type> {
+    auto operator-= (const GeneralVertex<Q, symmetry_type>& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i] -= rhs[i];
         }
         return *this;
     }
-    friend GeneralVertex<Q, container_type> operator- (GeneralVertex<Q, container_type> lhs, const GeneralVertex<Q, container_type>& rhs) {
+    friend GeneralVertex<Q, symmetry_type> operator- (GeneralVertex<Q, symmetry_type> lhs, const GeneralVertex<Q, symmetry_type>& rhs) {
         lhs -= rhs; return lhs;
     }
-    auto operator-= (const double& rhs) -> GeneralVertex<Q, container_type> {
+    auto operator-= (const double& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i] -= rhs;
         }
         return *this;
     }
-    friend GeneralVertex<Q, container_type> operator- (GeneralVertex<Q, container_type> lhs, const double& rhs) {
+    friend GeneralVertex<Q, symmetry_type> operator- (GeneralVertex<Q, symmetry_type> lhs, const double& rhs) {
         lhs -= rhs; return lhs;
     }
 
@@ -487,7 +487,7 @@ public:
         return 1.;
     }
 
-    void set_frequency_grid(const GeneralVertex<Q, container_type>& vertex) {
+    void set_frequency_grid(const GeneralVertex<Q, symmetry_type>& vertex) {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i].set_frequency_grid(vertex[i]);
         }
