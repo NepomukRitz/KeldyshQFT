@@ -357,15 +357,22 @@ public:
     }
 
     void save_integrand() {
-        rvec integrand_re (nFER);
-        rvec integrand_im (nFER);
-        rvec Pival_re (nFER);
-        rvec Pival_im (nFER);
-        for (int i=0; i<nFER; ++i) {
-            double vpp = vertex1[0].avertex.frequencies.f_K1.w[i];
+        int npoints = 1000;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        rvec Pival_re (npoints);
+        rvec Pival_im (npoints);
+        for (int i=0; i<npoints; ++i) {
+            //double vpp = vertex1[0].avertex.frequencies.f_K1.w[i];
+            double wl = vertex1[0].avertex.frequencies.f_K2.w_lower/50.;
+            double wu = vertex1[0].avertex.frequencies.f_K2.w_upper/50.;
+            double vpp = wl + i * (wu-wl)/(npoints-1);
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
+            freqs[i] = vpp;
 
             Q Pival = Pi.value(i2, w, vpp, i_in, channel);
             Pival_re[i] = Pival.real();
@@ -379,7 +386,7 @@ public:
                   + "_w=" + to_string(w) + ".h5";
         write_h5_rvecs(filename,
                 {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
-                {vertex1[0].avertex.frequencies.f_K1.w, integrand_re, integrand_im, Pival_re, Pival_im});
+                {freqs, integrand_re, integrand_im, Pival_re, Pival_im});
     }
 
 };

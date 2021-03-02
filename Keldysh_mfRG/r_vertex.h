@@ -119,12 +119,6 @@ public:
      */
     auto K1_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> Q;
 
-    /**
-     * Return the value of the vertex K1 in channel r (by use of symmetry relations between frequency domains).
-     * @param indices : specifies transformations to be applied on the vertex parameters
-     * @param vertex_in : Reducible vertex in the related channel from which a value is to be read out
-     */
-    auto K1_valsmooth_FreqRelations(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) const -> Q;
 
     /**
      * Determine the width of the central feature of the K1 vertex in frequency space at which absolute values have
@@ -171,12 +165,6 @@ public:
      *                    map between channels a <--> t.
      */
     auto K2_valsmooth(VertexInput input, const rvert<Q>& vertex_in) const-> Q;
-    /**
-     * Return the value of the vertex K2 in channel r (by use of symmetry relations between frequency domains).
-     * @param indices : specifies transformations to be applied on the vertex parameters
-     * @param vertex_in : Reducible vertex in the related channel from which a value is to be read out
-     */
-    auto K2_valsmooth_FreqRelations(IndicesSymmetryTransformations indices, const rvert<Q>& vertex) const -> Q;
 
     /**
      * Return the value of the vertex K2b in channel r (used for r = p).
