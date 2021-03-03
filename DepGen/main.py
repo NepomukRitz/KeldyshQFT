@@ -50,11 +50,13 @@ if __name__ == '__main__':
 
                 # Generate parity group for the transformed diagram
                 parity_group = transformed.parity_group()
+                #print(parity_group)
 
                 # Evaluate orbit of the parity group of the transformed diagram
                 for parity_trafo in parity_group:
 
                     pair_diag = parity_trafo.T(transformed)
+                    #print('parity trafo happened')
 
                     # Check if parity-related diagram has already been visited
                     if not dependencies[pair_diag.generate_key()]:
@@ -63,6 +65,7 @@ if __name__ == '__main__':
 
     # Print out dependencies dictionary
     for key, value in dependencies.items():
+        #print(type(value[0]))
         # If length of list at given key is one, it was marked with T0 and is, hence, independent
         if len(value) == 1:
             print("{} is independent!".format(key))
@@ -75,6 +78,7 @@ if __name__ == '__main__':
             # Reassignment of value changes length to either 1 for independent key_p or 2 for a key_p that has been
             # transformed under a T trafo
             value = dependencies[key_p]
+            #print('parity trafo happened')
 
         # If length of value is 1 at this point, key and key_p are related through a parity trafo AND key_p is
         # independent. Hence, print only equality

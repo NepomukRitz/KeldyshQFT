@@ -8,6 +8,9 @@
 #include "parameters.h"
 #include "Keldysh_symmetries.h"
 
+/**
+ * specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation)
+ */
 struct IndicesSymmetryTransformations{
     int iK;
     double prefactor = 1.;
@@ -89,11 +92,6 @@ void T3 (IndicesSymmetryTransformations& indices){
 
 void TC (IndicesSymmetryTransformations& indices){
 
-    if(isInList(indices.iK, odd_Keldysh))
-        indices.prefactor *= 1.;
-    else
-        indices.prefactor *= -1.;
-
     indices.conjugate ^= true;
 
     if (indices.channel == 't'){ //TC acts differently on t, not on p!!
@@ -111,8 +109,52 @@ void TC (IndicesSymmetryTransformations& indices){
         indices.v2 = temp;
 #endif
     }
+
+#ifdef KELDYSH_FORMALISM
+    if(isInList(indices.iK, odd_Keldysh))
+        indices.prefactor *= 1.;
+    else
+        indices.prefactor *= -1.;
+#else
+    indices.w *= -1;
+    indices.v1 *= -1;
+    indices.v2 *= -1;
+#endif
 }
 
+#if  defined(KELDYSH_FORMALISM) and defined(PARTICLE_HOLE_SYMM)
+void Tph (IndicesSymmetryTransformations& indices){
+    indices.conjugate ^= true;
+    if (isInList(indices.iK, odd_Keldysh))
+        indices.prefactor *= 1.;
+    else
+        indices.prefactor *= -1.;
+
+    indices.w *= -1;
+#if DIAG_CLASS > 1
+    indices.v1 *= -1;
+    indices.v2 *= -1;
+#endif
+}
+#endif
+
+#ifndef KELDYSH_FORMALISM
+void TR (IndicesSymmetryTransformations& indices){
+    indices.conjugate ^= true;
+    indices.w *= -1;
+#if DIAG_CLASS > 1
+    indices.v1 *= -1;
+    indices.v2 *= -1;
+#endif
+}
+#endif
+
+/**
+ * Define symmetry transformations.
+ * The function modifies the indices according to the transformation T_i.
+ * @param indices     : specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation)
+ * @param i           : specities the transformation T_i
+ */
 void Ti (IndicesSymmetryTransformations& indices, const int i) {
     if (i == 0) return;
     switch (i) {
@@ -140,7 +182,49 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TC(indices);
             T3(indices);
             break;
-        default: ;
+        case 34:
+            TC(indices);
+            T3(indices);
+            break;
+#if  defined(KELDYSH_FORMALISM) and defined(PARTICLE_HOLE_SYMM)
+        case 6:
+            Tph(indices);
+            break;
+        case 36:
+            Tph(indices);
+            T3(indices);
+            break;
+        case 46:
+            Tph(indices);
+            TC(indices);
+            break;
+        case 346:
+            Tph(indices);
+            TC(indices);
+            T3(indices);
+            break;
+#endif
+#ifndef KELDYSH_FORMALISM
+        case 7:
+            TR(indices);
+            break;
+        case 37:
+            TR(indices);
+            T3(indices);
+            break;
+        case 47:
+            TC(indices);
+            TR(indices);
+            break;
+        case 347:
+            TR(indices);
+            TC(indices);
+            T3(indices);
+            break;
+#endif
+        default:
+            cout << "A Transformation in the symmetry table is not covered in Ti!"
+            ;
     }
 }
 

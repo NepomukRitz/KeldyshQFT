@@ -88,7 +88,7 @@ class Diagram:
             --- Returns ---
                 List of ParityTrafo objects """
         completed_group = []
-        if self.MF:
+        if not self.MF:
             L, R = False, False
             if self.diag_class[0] == 1:
                 L = True

@@ -1,6 +1,12 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
+// Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
+//#define KELDYSH_FORMALISM
+
+// Determines whether particle-hole symmetry is assumed
+//#define PARTICLE_HOLE_SYMM
+
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include "data_structures.h" // real/complex vector classes, comp as complex double
@@ -23,7 +29,11 @@ using namespace std;
 
 /// Physical parameters ///
 const double glb_T = 0.01;                     // Temperature
-const double glb_mu = 0.0;                     // Chemical potential // set to zero as energy offset
+#ifdef PARTICLE_HOLE_SYMM
+    const double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
+#else
+    const double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
+#endif
 const double glb_U = 1.0;                      // Impurity on-site interaction strength
 const double glb_Vg = glb_mu;                  // Impurity level shift
 const double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
@@ -53,6 +63,7 @@ const double k_w_f = log(1. + glb_v_upper/w_a);
 const int nBOS = 51;
 const int nFER = 51;
 #elif GRID==2
+
 const double glb_w_upper = 20.;//20.;
 const double glb_w_lower = -glb_w_upper;        //Symmetric grid
 const double glb_v_upper = 20.;//20.;
@@ -88,8 +99,23 @@ const double glb_v3_upper = 10.;
 const double glb_v3_lower = -glb_v3_upper;
 
 // Number of bosonic and fermionic frequency points
+#ifdef KELDYSH_FORMALISM
 const int nBOS = 201;
 const int nFER = 201;
+// Number of frequency points for K2 and K3 classes
+const int nBOS2 = 51;//nBOS;
+const int nFER2 = 51;//nFER;
+const int nBOS3 = 21; //nBOS;
+const int nFER3 = 21; //nFER;
+#else
+const int nBOS = 201;
+const int nFER = 200;
+// Number of frequency points for K2 and K3 classes
+const int nBOS2 = 51;//nBOS;
+const int nFER2 = 50;//nFER;
+const int nBOS3 = 21; //nBOS;
+const int nFER3 = 21; //nFER;
+#endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency
@@ -109,11 +135,6 @@ const double glb_v_lower = -glb_v_upper;
 
 #endif
 
-// Number of frequency points for K2 and K3 classes
-const int nBOS2 = 51;//nBOS;
-const int nFER2 = 51;//nFER;
-const int nBOS3 = 21; //nBOS;
-const int nFER3 = 21; //nFER;
 
 
 // Number of frequency points for the self energy and the susceptibility
@@ -167,14 +188,20 @@ const int nv3 = nFER3;
 
 
 /// Keldysh index parameters ///
-
+#ifdef KELDYSH_FORMALISM
 // Number of independent Keldysh components for the respective diagrammatic class
 const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
                             // for channel p components 1 and 5
 const int nK_K2 = 5;        // For channels a, p and t -channel separately
 const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
                             // (independent components in order of appearance)
+#else
+const int nK_K1 = 1;
+const int nK_K2 = 1;
+const int nK_K3 = 1;
+#endif
 
+//#ifdef KELDYSH_FORMALISM
 // Vector of indices of independent components of the diagrammatic classes, density channel
 vector<int> non_zero_Keldysh_K1a({1,3});                                                                                // NOLINT(cert-err58-cpp)
 vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
@@ -189,6 +216,7 @@ vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                           
 
 // Vector of indices of the non-zero Keldysh components of the bubbles
 vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                                                          // NOLINT(cert-err58-cpp)
+//#endif
 
 /// Spin parameters ///
 
@@ -245,7 +273,7 @@ const double converged_tol = 1e-7;
 // 1: Simpson
 // 2: Simpson + additional points
 // 3: adaptive Simpson
-// 4: GSL // TODO: code does currently not compile with this integrator
+// 4: GSL //
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
 #define INTEGRATOR_TYPE 5
 

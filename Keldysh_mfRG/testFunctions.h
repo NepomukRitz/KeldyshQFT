@@ -506,9 +506,8 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
     else if(r=='t'){
 #pragma omp parallel
         //Check parallelized that everything in the K2 vertices is zero.
-        for (int index = 0; index < test_K2r_with_K1a.vertex[0].avertex().K2.size(); ++index) {
-            if (test_K2r_with_K1a.vertex[0].avertex().K2_acc(index) != 0. ||
-                test_K2r_with_K1p.vertex[0].avertex().K2_acc(index) != 0.) {
+        for (int index = 0; index < test_K2r_with_K1a.vertex[0].avertex.K2.size(); ++index) {
+            if (test_K2r_with_K1p.vertex[0].tvertex.K2_acc(index) != 0.) {
                 empty = false;  //If any one element is not zero, K2 is not empty
                 break;  //Exit the for-loop early
             }
@@ -1337,8 +1336,9 @@ void test_K2_correctness(double Lambda){
         K1a_diff[iw] = PT4_K1a22.vertex[0].avertex().K1_val(0, iw, 0) - PT2_K1a.vertex[0].avertex().K1_val(0, iw, 0);
     }
 
-    print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
-    if(write_flag) write_h5_rvecs("PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
+    print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)
+        +", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
+    if(write_flag) write_h5_rvecs("../Data/PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
                                                        "PT2_K1p_R", "PT2_K1p_I",
                                                        "PT2_K1t_R", "PT2_K1t_I",
@@ -1362,6 +1362,9 @@ void test_K2_correctness(double Lambda){
                                                        "PT3_K2t_a_a_R", "PT3_K2t_a_a_I",
                                                        "PT3_K2t_a_p_R", "PT3_K2t_a_p_I",
                                                        "PT3_K2t_a_t_R", "PT3_K2t_a_t_I",
+                                                       "PT3_K2t_p_a_R", "PT3_K2t_p_a_I",
+                                                       "PT3_K2t_p_p_R", "PT3_K2t_p_p_I",
+                                                       "PT3_K2t_p_t_R", "PT3_K2t_p_t_I",
                                                        "PT3_SE_R", "PT3_SE_I",
                                                        "PT3_SE_a_R", "PT3_SE_a_I",
                                                        "PT3_SE_p_R", "PT3_SE_p_I",

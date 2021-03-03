@@ -49,8 +49,13 @@ public:
                         w_upper = glb_w2_upper;
                         w_lower = glb_w2_lower;
                         W_scale = glb_W2_scale;
+#ifdef KELDYSH_FORMALISM
                         U_factor = 15./3.;
                         Delta_factor = 15.;
+#else
+                        U_factor = 4./3.;
+                        Delta_factor = 4.;
+#endif
                         break;
                     case 3:
                         N_w = nBOS3;
@@ -116,7 +121,9 @@ void FrequencyGrid::initialize_grid() {
         W = W_lower + i*dW;
         w[i] = grid_transf_inv(W, W_scale);
     }
-    w[(int)N_w/2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+    if (N_w % 2 == 1) {
+        w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+    }
 }
 
 void FrequencyGrid::initialize_grid(double scale) {

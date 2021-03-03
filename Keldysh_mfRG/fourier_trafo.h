@@ -18,11 +18,7 @@ double Theta(double x) { // Heaviside step function for analytical Fourier trans
     else return 1./2.;
 }
 
-double sign(double x) { // sign function for analytical Fourier transform
-    if (x > 0) return 1.;
-    else if (x < 0) return -1.;
-    else return 0.;
-}
+
 
 // auxiliary function to flip and adjust an array
 void flip_adjust(cvec& Gout, const cvec& Gin) {

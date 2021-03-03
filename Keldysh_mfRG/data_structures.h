@@ -260,7 +260,13 @@ vec<comp> operator* (vec<comp> lhs, const double& rhs) {
 }
 
 
-/** auxiliary struct that contains all input variables of vertices */
+/** auxiliary struct that contains all input variables of vertices
+ * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)
+ * @param w.v1,v2  :   frequency arguments
+ * @param i_in     :   additional internal index (currently unused)
+ * @param spin     :   0 or 1 for the two comfigurations (0 for V, 1 for V^)
+ * @param channel  :   'a', 't' or 'p', or 'f'
+ * */
 struct VertexInput{
     int iK;
     double w, v1, v2;
@@ -269,7 +275,13 @@ struct VertexInput{
     char channel;
 
     VertexInput(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, int spin_in, char channel_in)
-            : iK(iK_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel(channel_in)
+            :
+//#ifdef KELDYSH_FORMALISM
+            iK(iK_in),
+//#else
+//            iK(0),
+//#endif
+            w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel(channel_in)
     {}
 };
 

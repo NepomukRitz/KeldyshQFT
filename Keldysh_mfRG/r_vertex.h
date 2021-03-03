@@ -25,16 +25,20 @@ public:
                                         // independent ones
     Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
                                         // components to relate them to the independent ones
+    FrequencyTransformations freq_transformations;  // lists providing information on which transformations to apply on
+                                                    // frequencies to relate them to the independent ones
 
     VertexFrequencyGrid frequencies;    // frequency grid
 
     rvert(const char channel_in) : channel(channel_in), frequencies() {
         components = Components(channel);
         transformations = Transformations(channel);
+        freq_transformations = FrequencyTransformations(channel);
     };
     rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda) {
         components = Components(channel);
         transformations = Transformations(channel);
+        freq_transformations = FrequencyTransformations(channel);
     };
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
@@ -86,6 +90,14 @@ public:
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
     void update_grid(double Lambda);
+    /**
+     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
+     */
+    void enforce_freqsymmetriesK1();
+    /**
+     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
+     */
+    void enforce_freqsymmetriesK2();
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >= 0
@@ -531,6 +543,76 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
 #endif
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
 }
+
+
+template<typename Q> auto sign_index(Q freq) -> int {
+    if (freq > 0){
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
+
+    for (int itK = 0; itK < nK_K1; itK++) {
+        int i0_tmp;
+        // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+        switch (channel) {
+            case 'a': i0_tmp = non_zero_Keldysh_K1a[itK]; break;
+            case 'p': i0_tmp = non_zero_Keldysh_K1p[itK]; break;
+            case 't': i0_tmp = non_zero_Keldysh_K1t[itK]; break;
+            default: ;
+        }
+        for (int itw = 0; itw < nw1; itw++) {
+            double w_in = this->frequencies.b_K1.w[itw];
+            IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
+            int sign_w = sign_index(indices.w);
+            Ti(indices, freq_transformations.K1[itK][sign_w]);
+            indices.iK = itK;
+
+            if (indices.conjugate)
+                K1[itK*nw1 + itw] = conj(Interpolate<k1,Q>()(indices, *(this))); // conjugation only in t-channel --> no flip necessary
+            K1[itK*nw1 + itw] = Interpolate<k1,Q>()(indices, *(this));
+        }
+
+    }
+}
+
+
+
+
+
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
+
+    for (int itK = 0; itK < nK_K2; itK++){
+        int i0_tmp;
+        // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+        switch (channel) {
+            case 'a': i0_tmp = non_zero_Keldysh_K2a[itK]; break;
+            case 'p': i0_tmp = non_zero_Keldysh_K2p[itK]; break;
+            case 't': i0_tmp = non_zero_Keldysh_K2t[itK]; break;
+            default: ;
+        }
+        for (int itw = 0; itw < nw2; itw++){
+            for (int itv = 0; itv < nv2; itv++){
+                double w_in = this->frequencies.b_K2.w[itw];
+                double v_in = this->frequencies.f_K2.w[itv];
+                IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
+                int sign_w = sign_index(w_in);
+                int sign_v1 = sign_index(v_in);
+                Ti(indices, freq_transformations.K2[itK][sign_w*2 + sign_v1]);
+                indices.iK = itK;
+                if (indices.conjugate)
+                    K2[itK*nw2*nv2 + itw * nv2 + itv] = conj(Interpolate<k2,Q>()(indices, *(this))); // conjugation only in t-channel --> no flip necessary
+                K2[itK*nw2*nv2 + itw * nv2 + itv] = Interpolate<k2,Q>()(indices, *(this));
+            }
+        }
+    }
+
+}
+
 
 #if DIAG_CLASS >= 0
 template <typename Q> auto rvert<Q>::K1_acc(int i) const -> Q {

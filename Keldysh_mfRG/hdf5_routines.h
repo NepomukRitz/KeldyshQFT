@@ -87,9 +87,17 @@ public:
     double * freq_params;
     double * bfreqs_buffer;
     double * ffreqs_buffer;
+#ifdef KELDYSH_FORMALISM
     const int self_dim = 2 * nSE;                                     // length of self-energy buffer
+#else
+    const int self_dim = nSE;
+#endif
     h5_comp * selfenergy;
+#ifdef KELDYSH_FORMALISM
     const int irred_dim = 16 * n_in;                                  // length of irreducible vertex buffer
+#else
+    const int irred_dim = n_in;                                  // length of irreducible vertex buffer
+#endif
     h5_comp * irreducible_class;
 #if DIAG_CLASS >= 1
     const int K1_dim = nK_K1 * nw1_t * n_in;                         // length of K1 buffer
