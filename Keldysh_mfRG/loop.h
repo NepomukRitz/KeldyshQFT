@@ -26,7 +26,7 @@ class IntegrandSE {
     const double v;
     const int i_in;
     const bool all_spins;
-#ifdef DEBUG_MODE
+#if defined(DEBUG_MODE) && defined(KELDYSH_FORMALISM)
     const int iK_select;
 #endif
 
@@ -51,6 +51,7 @@ public:
                 , iK_select(iK_select_in)
 #endif
         {
+#ifdef KELDYSH_FORMALISM
             if(type=='r'){  //Check which kind of contribution is calculated
                 components[0]=3;    //Vertex component associated to Retarded propagator
                 components[1]=6;    //Vertex component associated to Advanced propagator
@@ -67,6 +68,7 @@ public:
                 components[4]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
                 components[5]=10;   //Vertex component associated to Keldysh propagator in symmetrized flow
             }
+#endif
     };
 
     /**
@@ -76,11 +78,15 @@ public:
      *              When summing over spins, the formula for the vertex value is Gammma=(2V+V^). In SOPT, one only requires Gamma=V
      */
     auto operator()(const double vp) const -> Q {
+#ifdef KELDYSH_FORMALISM
         Q GR = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
         Q GA = conj(propagator.valsmooth(0, vp, i_in));  // advanced propagator (full or single scale)
         Q GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
+#else
+        Q GM = propagator.valsmooth(0, vp, i_in);           // Matsubara propagator (full or single scale)
+#endif
 
-#ifdef DEBUG_MODE
+#if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
         // prefactors that select specific Keldysh components
         rvec pf_select = rvec(6);
         for (int i=0; i<6; ++i) {
@@ -90,20 +96,25 @@ public:
 #endif
 
         //In any case, read the value of spin component 0
+#ifdef KELDYSH_FORMALISM
         VertexInput inputRetardedClosedAbove (components[0], v, vp, v, i_in, 0, 'f');
         VertexInput inputAdvancedClosedAbove (components[1], v, vp, v, i_in, 0, 'f');
         VertexInput inputKeldyshClosedAbove  (components[2], v, vp, v, i_in, 0, 'f');
         Q factorRetardedClosedAbove = vertex[0].value(inputRetardedClosedAbove);
         Q factorAdvancedClosedAbove = vertex[0].value(inputAdvancedClosedAbove);
         Q factorKeldyshClosedAbove  = vertex[0].value(inputKeldyshClosedAbove);
-#ifdef DEBUG_MODE
+#else
+        VertexInput inputClosedAbove (0, v, vp, v, i_in, 0, 'f');
+        Q factorClosedAbove = vertex[0].value(inputClosedAbove);
+#endif
+#if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
         factorRetardedClosedAbove *= pf_select[0];
         factorAdvancedClosedAbove *= pf_select[1];
         factorKeldyshClosedAbove  *= pf_select[2];
 #endif
         Q symmetrization_prefactor = 1.;
 
-#ifdef SYMMETRIZED_SELF_ENERGY_FLOW
+#if defined(SYMMETRIZED_SELF_ENERGY_FLOW) and defined(KELDYSH_FORMALISM)
         symmetrization_prefactor = 1./2.;
 
         VertexInput inputRetardedClosedBelow (components[3], vp, v, vp, i_in, 0, 'f');
@@ -122,6 +133,7 @@ public:
 
         //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
         if(all_spins){
+#ifdef KELDYSH_FORMALISM
             factorRetardedClosedAbove *= 2.;
             factorAdvancedClosedAbove *= 2.;
             factorKeldyshClosedAbove  *= 2.;
@@ -129,17 +141,26 @@ public:
             inputRetardedClosedAbove.spin = 1;
             inputAdvancedClosedAbove.spin = 1;
             inputKeldyshClosedAbove.spin = 1;
-#ifdef DEBUG_MODE
+#else
+            factorClosedAbove *= 2.;
+            inputClosedAbove.spin = 1;
+
+#endif
+#if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
             factorRetardedClosedAbove += pf_select[0] * vertex[0].value(inputRetardedClosedAbove);
             factorAdvancedClosedAbove += pf_select[1] * vertex[0].value(inputAdvancedClosedAbove);
             factorKeldyshClosedAbove  += pf_select[2] * vertex[0].value(inputKeldyshClosedAbove);
 #else
+#ifdef KELDYSH_FORMALISM
             factorRetardedClosedAbove += vertex[0].value(inputRetardedClosedAbove);
             factorAdvancedClosedAbove += vertex[0].value(inputAdvancedClosedAbove);
             factorKeldyshClosedAbove  += vertex[0].value(inputKeldyshClosedAbove);
+#else
+            factorClosedAbove += vertex[0].value(inputClosedAbove);
+#endif
 #endif
 
-#ifdef SYMMETRIZED_SELF_ENERGY_FLOW
+#if defined(SYMMETRIZED_SELF_ENERGY_FLOW) and defined(KELDYSH_FORMALISM)
             factorRetardedClosedBelow *= 2.;
             factorAdvancedClosedBelow *= 2.;
             factorKeldyshClosedBelow  *= 2.;
@@ -159,16 +180,37 @@ public:
 #endif
 
         }
-#ifdef SYMMETRIZED_SELF_ENERGY_FLOW
+#if defined(SYMMETRIZED_SELF_ENERGY_FLOW) and defined(KELDYSH_FORMALISM)
         return symmetrization_prefactor*( GR*(factorRetardedClosedAbove + factorRetardedClosedBelow) +
                                           GA*(factorAdvancedClosedAbove + factorAdvancedClosedBelow) +
                                           GK*(factorKeldyshClosedAbove  + factorKeldyshClosedBelow ) );
 #else
+#ifdef KELDYSH_FORMALISM
         return symmetrization_prefactor*( GR*(factorRetardedClosedAbove) +
                                           GA*(factorAdvancedClosedAbove) +
                                           GK*(factorKeldyshClosedAbove ) );
-
+#else
+        return symmetrization_prefactor*( GM*factorClosedAbove ) * glb_i;
 #endif
+#endif
+    }
+
+    void save_integrand() {
+        rvec integrand_re (nFER);
+        rvec integrand_im (nFER);
+        for (int i=0; i<nFER; ++i) {
+            double vpp = vertex[0].avertex.frequencies.f_K1.w[i];
+            Q integrand_value = (*this)(vpp);
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+
+        }
+
+        string filename = "../Data/integrand_SE";
+        filename +=  "_v=" + to_string(v) + ".h5";
+        write_h5_rvecs(filename,
+                       {"vpp", "integrand_re", "integrand_im"},
+                       {vertex[0].avertex.frequencies.f_K1.w, integrand_re, integrand_im});
     }
 };
 
@@ -183,7 +225,7 @@ public:
  */
 template <typename Q>
 void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins
-#ifdef DEBUG_MODE
+#if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
           , const int iK_select
 #endif
           )
@@ -196,12 +238,19 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         double v = self.frequencies.w[iv];
 
         // Integrand objects are declared and created for every input frequency v
-#ifdef DEBUG_MODE
+#if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
         IntegrandSE<Q> integrandR('r', fullvertex, prop, v, i_in, all_spins, iK_select);
         IntegrandSE<Q> integrandK('k', fullvertex, prop, v, i_in, all_spins, iK_select);
 #else
         IntegrandSE<Q> integrandR('r', fullvertex, prop, v, i_in, all_spins);
+        // save integrand for manual checks:
+        /*if(iSE==90){
+            integrandR.save_integrand();
+        }*/
+
+#ifdef KELDYSH_FORMALISM
         IntegrandSE<Q> integrandK('k', fullvertex, prop, v, i_in, all_spins);
+#endif
 #endif
 
         // One integrates the integrands from v_lower-|v| to v_upper+|v|
@@ -210,16 +259,45 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         // The prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
         double v_lower = prop.selfenergy.frequencies.w_lower;
         double v_upper = prop.selfenergy.frequencies.w_upper;
-        comp integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
-        comp integratedK = -1./(2.*M_PI*glb_i)*integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+#ifdef KELDYSH_FORMALISM
+        comp integratedR =
+#ifdef KELDYSH_FORMALISM
+                -1./(2.*M_PI*glb_i)*
+#else
+                1./(2.*M_PI)*
+#endif
+                integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedK =
+#ifdef KELDYSH_FORMALISM
+            -1./(2.*M_PI*glb_i)*
+#else
+            1./(2.*M_PI)*
+#endif
+            integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
         self.addself(1, iv, i_in, integratedK);
+#else
+
+        comp integratedR;
+        //print('\n', integratedR);
+        if (v<0){
+            integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),   v-inter_tol , 0.);
+            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol,     -inter_tol, 0.);
+            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,     +inter_tol, v_upper+abs(v), 0.);
+        }
+        else{
+            integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),    -inter_tol , 0.);
+            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,     +inter_tol,    v-inter_tol, 0.);
+            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol, v_upper+abs(v), 0.);
+        }
+        self.addself(0, iv, i_in, integratedR);
+#endif
     }
 }
 
-#ifdef DEBUG_MODE
+#if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
 template <typename Q>
 void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins) {
     loop(self, fullvertex, prop, all_spins, 16);
