@@ -364,7 +364,8 @@ public:
         left().initialize(val);
         right().initialize(val);
     }
-    void set_frequency_grid(const vertex_container<Q, symmetry_type>& vertex_in) {
+    template <template <typename> class symmetry_type_in>
+    void set_frequency_grid(const vertex_container<Q, symmetry_type_in>& vertex_in) {
         left().set_frequency_grid(vertex_in.left());
         right().set_frequency_grid(vertex_in.right());
     }
