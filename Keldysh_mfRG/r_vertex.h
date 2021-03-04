@@ -322,30 +322,34 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in, const ful
     if (indices.iK < 0) return 0.;
 
     Q value;
-    rvert<Q>& output_vertex = vertex_in;
-    if (indices.channel != channel)
-        output_vertex = *(this);
+
     if (indices.asymmetry_transform) {
         switch (channel) {
             case 'a':
                 if (indices.channel == 'a')
-                    output_vertex = right_vertex->avertex;
+                    value = Interpolate<k,Q>()(indices, right_vertex.avertex);
                 else
-                    output_vertex = right_vertex->tvertex;
+                    value = Interpolate<k,Q>()(indices, right_vertex.tvertex);
                 break;
             case 'p':
-                output_vertex = right_vertex->pvertex;
+                value = Interpolate<k,Q>()(indices, right_vertex.pvertex);
                 break;
             case 't':
                 if (indices.channel == 't')
-                    output_vertex = right_vertex->tvertex;
+                    value = Interpolate<k,Q>()(indices, right_vertex.tvertex);
                 else
-                    output_vertex = right_vertex->avertex;
+                    value = Interpolate<k,Q>()(indices, right_vertex.avertex);
                 break;
             default:;
         }
     }
-    value = Interpolate<k,Q>()(indices, output_vertex);
+    else {
+        if (indices.channel != channel)
+            value = Interpolate<k,Q>()(indices, vertex_in);
+        else
+            value = Interpolate<k,Q>()(indices, *(this));
+    }
+
     if (indices.conjugate) return conj(value);
     return value;
 }
