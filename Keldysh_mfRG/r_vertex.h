@@ -573,8 +573,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
             indices.iK = itK;
 
             if (indices.conjugate)
-                K1[itK*nw1 + itw] = conj(Interpolate<k1,Q>()(indices, *(this))); // conjugation only in t-channel --> no flip necessary
-            K1[itK*nw1 + itw] = Interpolate<k1,Q>()(indices, *(this));
+                K1[itK * nw1 + itw] = conj(Interpolate<k1, Q>()(indices, *(this)));
+            else
+                K1[itK * nw1 + itw] = Interpolate<k1, Q>()(indices, *(this));
         }
 
     }
@@ -605,8 +606,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
                 Ti(indices, freq_transformations.K2[itK][sign_w*2 + sign_v1]);
                 indices.iK = itK;
                 if (indices.conjugate)
-                    K2[itK*nw2*nv2 + itw * nv2 + itv] = conj(Interpolate<k2,Q>()(indices, *(this))); // conjugation only in t-channel --> no flip necessary
-                K2[itK*nw2*nv2 + itw * nv2 + itv] = Interpolate<k2,Q>()(indices, *(this));
+                    K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(Interpolate<k2, Q>()(indices, *(this)));
+                else
+                    K2[itK * nw2 * nv2 + itw * nv2 + itv] = Interpolate<k2, Q>()(indices, *(this));
             }
         }
     }
