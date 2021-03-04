@@ -607,6 +607,33 @@ public:
 #endif
         return res;
     }
+
+    void save_integrand() const {
+        int npoints = 1000;
+        rvec freqs (npoints);
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<npoints; ++i) {
+            double wl = vertex1[0].avertex().frequencies.f_K3.w_lower;
+            double wu = vertex1[0].avertex().frequencies.f_K3.w_upper;
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            freqs[i] = vpp;
+
+            Q integrand_value = (*this)(vpp);
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+        }
+
+        string filename = "../Data/integrand_K2";
+        filename += channel;
+        filename += "_i0=" + to_string(i0)
+                    + "_w=" + to_string(w)
+                    + "_v=" + to_string(v)
+                    + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
 };
 
 
@@ -998,6 +1025,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     // initialize the integrand object and perform frequency integration
                     Integrand_K3<Q, symmetry_left, symmetry_right>
                             integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
+                    if (i_omp == 0){
+                        integrand_K3.save_integrand();
+                    }
 
 #ifdef KELDYSH_FORMALISM
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
