@@ -212,10 +212,30 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     dGammatbar_C.set_frequency_grid(Psi.vertex);
 #endif
 
-    for(int i=3; i<N_LOOPS; i++){
-        Vertex<Q> dGammaC_ap = calculate_dGammaC_ap(Psi.vertex, dGammaL, G);
-        Vertex<Q> dGammaC_t  = calculate_dGammaC_t (Psi.vertex, dGammaL, G);
-        Vertex<Q> dGammaC = dGammaC_ap + dGammaC_t;
+    for (int i=3; i<N_LOOPS; i++) {
+        // create non-symmetric vertex with differentiated vertex on the left
+        GeneralVertex<Q, non_symmetric> non_symmetric_left;
+        non_symmetric_left[0].left()  = dGammaL[0].left();  // assign left part to dGammaL
+        non_symmetric_left[0].right() = dGammaR[0].left();  // assign right part to dGammaR [symmetric -> left()=right()]
+
+        // insert this non-symmetric vertex on the right of the bubble
+        Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, non_symmetric_left, G);
+
+        // create non-symmetric vertex with differentiated vertex on the right (dGammaL/dGammaR switched)
+        GeneralVertex<Q, non_symmetric> non_symmetric_right;
+        non_symmetric_right[0].left()  = dGammaR[0].left(); // assign left part to dGammaR (sic!)
+        non_symmetric_right[0].right() = dGammaL[0].left(); // assign right part to dGammaL (sic!)
+
+        // insert this non-symmetric vertex on the left of the bubble
+        Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(non_symmetric_right, Psi.vertex, G);
+
+        // symmetrize by averaging left and right insertion
+        Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5;
+
+        // TODO: old version -> remove?
+//        Vertex<Q> dGammaC_ap = calculate_dGammaC_ap(Psi.vertex, dGammaL, G);
+//        Vertex<Q> dGammaC_t  = calculate_dGammaC_t (Psi.vertex, dGammaL, G);
+//        Vertex<Q> dGammaC = dGammaC_ap + dGammaC_t;
 
         dGammaL = calculate_dGammaL(dGammaT, Psi.vertex, G);
         dGammaR = calculate_dGammaR(dGammaT, Psi.vertex, G);
@@ -268,6 +288,10 @@ auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const 
     bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 'p', false);
     bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, 't', false);
 
+    dPsiVertex.set_Ir(false); // reset input vertex to original state
+    // TODO: This is not so nice, we manipulate an input object during the calculation (which should be constant,
+    //  and which will be needed later on!!). Consider giving a copy instead of a reference to this function? ...
+
     return dGammaL;
 }
 template <typename Q>
@@ -280,27 +304,56 @@ auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const 
     bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 'p', false);
     bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, 't', false);
 
+    dPsiVertex.set_Ir(false); // reset input vertex to original state // TODO: see above
+
     return dGammaR;
 }
 
 template <typename Q>
-auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
-    Vertex<Q> dGamma_C_ap(n_spin);
-    dGamma_C_ap.set_frequency_grid(PsiVertex);
+auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric>& nonsymVertex,
+                                       const Propagator& G) {
+    Vertex<Q> dGammaC (n_spin);
+    dGammaC.set_frequency_grid(PsiVertex);
 
-    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'a', false);
-    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'p', false);
+    bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, 'a', false);
+    bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, 'p', false);
+    bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, 't', false);
 
-    return dGamma_C_ap;
+    return dGammaC;
 }
 
 template <typename Q>
-auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
-    Vertex<Q> dGamma_C_t(n_spin);
-    dGamma_C_t.set_frequency_grid(PsiVertex);
-    bubble_function(dGamma_C_t, PsiVertex, dGammaL, G, G, 't', false);
-    return dGamma_C_t;
+auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric>& nonsymVertex, const Vertex<Q>& PsiVertex,
+                                      const Propagator& G) {
+    Vertex<Q> dGammaC (n_spin);
+    dGammaC.set_frequency_grid(PsiVertex);
+
+    bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, 'a', false);
+    bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, 'p', false);
+    bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, 't', false);
+
+    return dGammaC;
 }
+
+// TODO: old version -> remove?
+//template <typename Q>
+//auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
+//    Vertex<Q> dGamma_C_ap(n_spin);
+//    dGamma_C_ap.set_frequency_grid(PsiVertex);
+//
+//    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'a', false);
+//    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'p', false);
+//
+//    return dGamma_C_ap;
+//}
+//
+//template <typename Q>
+//auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
+//    Vertex<Q> dGamma_C_t(n_spin);
+//    dGamma_C_t.set_frequency_grid(PsiVertex);
+//    bubble_function(dGamma_C_t, PsiVertex, dGammaL, G, G, 't', false);
+//    return dGamma_C_t;
+//}
 
 template <typename Q>
 void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammatbar_C, const State<Q>& Psi, const Propagator& G){
