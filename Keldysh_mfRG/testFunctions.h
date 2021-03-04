@@ -614,11 +614,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
     State<comp> PT4_31_p_a2 (Lambda);
     State<comp> PT4_31_p_p2 (Lambda);
     State<comp> PT4_31_p_t2 (Lambda);
-//    State<comp> PT4_31_t_at1 (Lambda);/// TODO: Remove??
     State<comp> PT4_31_t_a1 (Lambda);
     State<comp> PT4_31_t_p1 (Lambda);
     State<comp> PT4_31_t_t1 (Lambda);
-//    State<comp> PT4_31_t_at2 (Lambda);
     State<comp> PT4_31_t_a2 (Lambda);
     State<comp> PT4_31_t_p2 (Lambda);
     State<comp> PT4_31_t_t2 (Lambda);
@@ -636,11 +634,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
     State<comp> PT4_13_p_a2 (Lambda);
     State<comp> PT4_13_p_p2 (Lambda);
     State<comp> PT4_13_p_t2 (Lambda);
-//    State<comp> PT4_13_t_at1 (Lambda);
     State<comp> PT4_13_t_a1 (Lambda);
     State<comp> PT4_13_t_p1 (Lambda);
     State<comp> PT4_13_t_t1 (Lambda);
-//    State<comp> PT4_13_t_at2 (Lambda);
     State<comp> PT4_13_t_a2 (Lambda);
     State<comp> PT4_13_t_p2 (Lambda);
     State<comp> PT4_13_t_t2 (Lambda);
@@ -1034,23 +1030,23 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             (PT3_K2p_0[2] - PT3_K2_exact)/PT3_K2_exact,
                             (PT3_K2t_0[2] - PT3_K2_exact)/PT3_K2_exact,
                             (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(abs(PT4_K2a_0_p1[0]) + abs(PT4_K2p_0_a1[0])),
-                            (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(abs(PT4_K2a_0_p1[1]) + abs(PT4_K2p_0_a1[2])),
-                            (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(abs(PT4_K2a_0_p1[2]) + abs(PT4_K2p_0_a1[0])),
+                            (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(abs(PT4_K2a_0_p1[1]) + abs(PT4_K2p_0_a1[1])),
+                            (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(abs(PT4_K2a_0_p1[2]) + abs(PT4_K2p_0_a1[2])),
                             (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(abs(PT4_K2a_0_t1[0]) + abs(PT4_K2p_0_t1[0])),
-                            (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(abs(PT4_K2a_0_t1[1]) + abs(PT4_K2p_0_t1[2])),
-                            (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(abs(PT4_K2a_0_t1[2]) + abs(PT4_K2p_0_t1[0])),
+                            (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(abs(PT4_K2a_0_t1[1]) + abs(PT4_K2p_0_t1[1])),
+                            (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(abs(PT4_K2a_0_t1[2]) + abs(PT4_K2p_0_t1[2])),
                             (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(abs(PT4_K2a_0_a2[0]) + abs(PT4_K2p_0_p2[0])),
-                            (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(abs(PT4_K2a_0_a2[1]) + abs(PT4_K2p_0_p2[2])),
-                            (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(abs(PT4_K2a_0_a2[2]) + abs(PT4_K2p_0_p2[0])),
+                            (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(abs(PT4_K2a_0_a2[1]) + abs(PT4_K2p_0_p2[1])),
+                            (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(abs(PT4_K2a_0_a2[2]) + abs(PT4_K2p_0_p2[2])),
                             (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(abs(PT4_K2a_0_p2[0]) + abs(PT4_K2p_0_a2[0])),
-                            (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(abs(PT4_K2a_0_p2[1]) + abs(PT4_K2p_0_a2[2])),
-                            (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(abs(PT4_K2a_0_p2[2]) + abs(PT4_K2p_0_a2[0])),
+                            (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(abs(PT4_K2a_0_p2[1]) + abs(PT4_K2p_0_a2[1])),
+                            (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(abs(PT4_K2a_0_p2[2]) + abs(PT4_K2p_0_a2[2])),
                             (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(abs(PT4_K2a_0_t2[0]) + abs(PT4_K2p_0_t2[0])),
-                            (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(abs(PT4_K2a_0_t2[1]) + abs(PT4_K2p_0_t2[2])),
-                            (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(abs(PT4_K2a_0_t2[2]) + abs(PT4_K2p_0_t2[0])),
+                            (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(abs(PT4_K2a_0_t2[1]) + abs(PT4_K2p_0_t2[1])),
+                            (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(abs(PT4_K2a_0_t2[2]) + abs(PT4_K2p_0_t2[2])),
                             (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(abs(PT4_K2t_0_a2[0]) + abs(PT4_K2t_0_t2[0])),
-                            (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(abs(PT4_K2t_0_a2[1]) + abs(PT4_K2t_0_t2[2])),
-                            (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(abs(PT4_K2t_0_a2[2]) + abs(PT4_K2t_0_t2[0])),
+                            (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(abs(PT4_K2t_0_a2[1]) + abs(PT4_K2t_0_t2[1])),
+                            (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(abs(PT4_K2t_0_a2[2]) + abs(PT4_K2t_0_t2[2])),
                             (PT4_K3a_0 + PT4_K3p_0)/(abs(PT4_K3a_0) + abs(PT4_K3p_0)),
                             (PT4_K3t_0_aa + PT4_K3t_0_ap + PT4_K3t_0_pa)/(abs(PT4_K3t_0_aa) + abs(PT4_K3t_0_ap) + abs(PT4_K3t_0_pa))
                             };
@@ -1060,6 +1056,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
         print(check_labels[i], check_values[i], true);
     }
 
+    print("----------------------", true);
 
     /*
     // Compute K1a contributions in PT4, using
