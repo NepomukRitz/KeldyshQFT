@@ -90,10 +90,6 @@ public:
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
     void update_grid(double Lambda);
-    /**
-     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
-     */
-    void enforce_freqsymmetriesK2();
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >= 0
@@ -637,20 +633,23 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
 
         for (int itw = 0; itw < nw3; itw++){
             for (int itv = 0; itv < nv3; itv++){
-                for (int itvp = 0; itvp < nv3; itvp++){
+                for (int itvp = 0; itvp < nv3; itvp++) {
                     double w_in = this->frequencies.b_K3.w[itw];
                     double v_in = this->frequencies.f_K3.w[itv];
-                    double vp_in= this->frequencies.f_K3.w[itvp];
+                    double vp_in = this->frequencies.f_K3.w[itvp];
                     IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
                     int sign_w = sign_index(w_in);
                     int sign_f = sign_index(v_in + vp_in);
-                    int sign_fp= sign_index(v_in - vp_in);
-                    Ti(indices, freq_transformations.K3[itK][sign_w*4 + sign_f * 2 + sign_fp]);
+                    int sign_fp = sign_index(v_in - vp_in);
+                    Ti(indices, freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp]);
                     indices.iK = itK;
                     if (indices.conjugate)
-                        K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = conj(Interpolate<k3, Q>()(indices, *(this)));
+                        K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = conj(
+                                Interpolate<k3, Q>()(indices, *(this)));
                     else
-                        K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = Interpolate<k3, Q>()(indices, *(this));
+                        K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = Interpolate<k3, Q>()(indices,
+                                                                                                              *(this));
+                }
             }
         }
     }
