@@ -93,10 +93,6 @@ public:
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
-    void enforce_freqsymmetriesK1();
-    /**
-     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
-     */
     void enforce_freqsymmetriesK2();
 
 #ifdef DIAG_CLASS
@@ -123,6 +119,11 @@ public:
      * internal structure index i_in. */
     auto K1_val(int iK, int iw, int i_in) const -> Q;
 
+    /**
+     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
+     */
+    void enforce_freqsymmetriesK1();
+
 #endif
 #if DIAG_CLASS >= 2
     vec<Q> K2 = vec<Q> (nK_K2 * nw2 * nv2 * n_in);  // data points of K2
@@ -147,6 +148,11 @@ public:
      * internal structure index i_in. */
     auto K2_val(int iK, int iw, int iv, int i_in) const -> Q;
 
+    /**
+     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
+     */
+    void enforce_freqsymmetriesK2();
+
 #endif
 #if DIAG_CLASS >= 3
     vec<Q> K3 = vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);  // data points of K3
@@ -170,6 +176,11 @@ public:
     /** Return the value of the vector K3 at Keldysh index iK, frequency indices iw, iv, ivp,
      * internal structure index i_in. */
     auto K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q;
+
+    /**
+     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
+     */
+    void enforce_freqsymmetriesK3();
 
 #endif
 #endif
@@ -609,6 +620,37 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
                     K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(Interpolate<k2, Q>()(indices, *(this)));
                 else
                     K2[itK * nw2 * nv2 + itw * nv2 + itv] = Interpolate<k2, Q>()(indices, *(this));
+            }
+        }
+    }
+
+}
+#endif
+
+#if DIAG_CLASS >= 3
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
+
+    for (int itK = 0; itK < nK_K3; itK++){
+        int i0_tmp;
+        // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+        i0_tmp = non_zero_Keldysh_K3[itK];
+
+        for (int itw = 0; itw < nw3; itw++){
+            for (int itv = 0; itv < nv3; itv++){
+                for (int itvp = 0; itvp < nv3; itvp++){
+                    double w_in = this->frequencies.b_K3.w[itw];
+                    double v_in = this->frequencies.f_K3.w[itv];
+                    double vp_in= this->frequencies.f_K3.w[itvp];
+                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
+                    int sign_w = sign_index(w_in);
+                    int sign_f = sign_index(v_in + vp_in);
+                    int sign_fp= sign_index(v_in - vp_in);
+                    Ti(indices, freq_transformations.K3[itK][sign_w*4 + sign_f * 2 + sign_fp]);
+                    indices.iK = itK;
+                    if (indices.conjugate)
+                        K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = conj(Interpolate<k3, Q>()(indices, *(this)));
+                    else
+                        K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = Interpolate<k3, Q>()(indices, *(this));
             }
         }
     }
