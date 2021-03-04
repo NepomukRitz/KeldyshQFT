@@ -321,17 +321,17 @@ template <typename Q, template <typename> class symmetry_type>
 class vertex_container {
     symmetry_type<Q> vertex;
 
-    // return the left and right part
-    fullvert<Q>& left() { return vertex.left(); }
-    fullvert<Q>& right() { return vertex.right(); }
-    const fullvert<Q>& left() const { return vertex.left(); }
-    const fullvert<Q>& right() const { return vertex.right(); }
-
 public:
     vertex_container() {}
     vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
     vertex_container(const fullvert<Q>& left_vertex, const fullvert<Q>& right_vertex)
                     : vertex(left_vertex, right_vertex) {}
+
+    // return the left and right part
+    fullvert<Q>& left() { return vertex.left(); }
+    fullvert<Q>& right() { return vertex.right(); }
+    const fullvert<Q>& left() const { return vertex.left(); }
+    const fullvert<Q>& right() const { return vertex.right(); }
 
     // wrappers to access individual members of fullvert
     irreducible<Q>& irred() { return left().irred; }
@@ -364,9 +364,9 @@ public:
         left().initialize(val);
         right().initialize(val);
     }
-    void set_frequency_grid(const vertex_container<Q, symmetry_type>& vertex) {
-        left().set_frequency_grid(left());
-        right().set_frequency_grid(right());
+    void set_frequency_grid(const vertex_container<Q, symmetry_type>& vertex_in) {
+        left().set_frequency_grid(vertex_in.left());
+        right().set_frequency_grid(vertex_in.right());
     }
     void update_grid(double Lambda) {
         left().update_grid(Lambda);
