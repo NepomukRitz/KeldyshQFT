@@ -584,7 +584,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
 
 
 
-
+#if DIAG_CLASS >= 2
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
 
     for (int itK = 0; itK < nK_K2; itK++){
@@ -614,6 +614,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
     }
 
 }
+#endif
 
 
 #if DIAG_CLASS >= 0
