@@ -716,7 +716,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     int iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for
+#pragma omp parallel for schedule(static, 8)
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices (TODO: put into extra function(s)?)
                 int iK1 = i_mpi * n_omp + i_omp;
@@ -833,7 +833,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for
+#pragma omp parallel for schedule(static, 8)
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices
                 int iK2 = i_mpi * n_omp + i_omp;
@@ -960,7 +960,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for
+#pragma omp parallel for schedule(static, 8)
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices
                 int iK3 = i_mpi * n_omp + i_omp;
