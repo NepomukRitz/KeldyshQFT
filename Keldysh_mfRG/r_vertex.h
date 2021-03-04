@@ -90,10 +90,6 @@ public:
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
     void update_grid(double Lambda);
-    /**
-     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
-     */
-    void enforce_freqsymmetriesK2();
 
 #ifdef DIAG_CLASS
 #if DIAG_CLASS >= 0
@@ -655,10 +651,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
                         K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = conj(Interpolate<k3, Q>()(indices, *(this)));
                     else
                         K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = Interpolate<k3, Q>()(indices, *(this));
+                }
             }
         }
     }
-
 }
 #endif
 
