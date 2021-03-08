@@ -58,9 +58,9 @@ void check_FDTs(State<Q>& state) {
     /** 2nd check: real part of Keldysh component of K1 in all channels has to be zero */
 
     // take K1 vertices in all channels
-    vec<Q> K1a = state.vertex[0].avertex.K1;
-    vec<Q> K1p = state.vertex[0].pvertex.K1;
-    vec<Q> K1t = state.vertex[0].tvertex.K1;
+    vec<Q> K1a = state.vertex[0].avertex().K1;
+    vec<Q> K1p = state.vertex[0].pvertex().K1;
+    vec<Q> K1t = state.vertex[0].tvertex().K1;
     // take second half of K1 vertices (Keldysh comp.)
     vec<Q> K1a_K (&K1a[K1a.size()/2], &K1a[K1a.size()]);
     vec<Q> K1p_K (&K1p[K1p.size()/2], &K1p[K1p.size()]);
@@ -111,13 +111,13 @@ void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, b
     sopt_state(state_dir, Lambda_f); // direct calculation of direct K1a
 
     ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
-    cvec K1a_dif = state_dir.vertex[0].avertex.K1 + ( state_fin.vertex[0].avertex.K1*(-1.) ); // difference in results
+    cvec K1a_dif = state_dir.vertex[0].avertex().K1 + ( state_fin.vertex[0].avertex().K1*(-1.) ); // difference in results
     print("Testing ODE for bare K1a_0 with State class. Using " +to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
                                   {"v", "state_dir_R", "state_dir_I", "state_fin_R", "state_fin_I", "state_ini_R", "state_ini_I"},
-                                  {bfreqs, state_dir.vertex[0].avertex.K1.real(), state_dir.vertex[0].avertex.K1.imag(),
-                                                   state_fin.vertex[0].avertex.K1.real(), state_fin.vertex[0].avertex.K1.imag(),
-                                                   state_ini.vertex[0].avertex.K1.real(), state_ini.vertex[0].avertex.K1.imag()});
+                                  {bfreqs, state_dir.vertex[0].avertex().K1.real(), state_dir.vertex[0].avertex().K1.imag(),
+                                                   state_fin.vertex[0].avertex().K1.real(), state_fin.vertex[0].avertex().K1.imag(),
+                                                   state_ini.vertex[0].avertex().K1.real(), state_ini.vertex[0].avertex().K1.imag()});
 }
 
 /**
@@ -217,8 +217,8 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
     sopt_state(state, Lambda);
 
     Vertex<comp> temp_vertex_a (1, Lambda), temp_vertex_p (1, Lambda); //All zeros
-    temp_vertex_a[0].avertex = state.vertex[0].avertex;
-    temp_vertex_p[0].pvertex = state.vertex[0].pvertex;
+    temp_vertex_a[0].avertex() = state.vertex[0].avertex();
+    temp_vertex_p[0].pvertex() = state.vertex[0].pvertex();
 
     loop(state.selfenergy, temp_vertex_a, g, false);//Calculate the SelfEnergy in SOPT
 
@@ -235,12 +235,12 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
     write_h5_rvecs("SOPT_test.h5", {"v", "ReSER", "ImSER", "ReSEK", "ImSEK",
                                   "K1a_R", "K1a_I", "K1p_R", "K1p_I", "K1t_R", "K1t_I"},
                                  {ffreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(),
-                                  state.vertex[0].avertex.K1.real(),
-                                  state.vertex[0].avertex.K1.imag(),
-                                  state.vertex[0].pvertex.K1.real(),
-                                  state.vertex[0].pvertex.K1.imag(),
-                                  state.vertex[0].tvertex.K1.real(),
-                                  state.vertex[0].tvertex.K1.imag()});
+                                  state.vertex[0].avertex().K1.real(),
+                                  state.vertex[0].avertex().K1.imag(),
+                                  state.vertex[0].pvertex().K1.real(),
+                                  state.vertex[0].pvertex().K1.imag(),
+                                  state.vertex[0].tvertex().K1.real(),
+                                  state.vertex[0].tvertex().K1.imag()});
 
 }
 
@@ -359,7 +359,7 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
 
     cvec K1a0_dif(nBOS);
     for(int i=0; i<nBOS; ++i){
-        K1a0_dif[i] = state_dir.vertex[0].avertex.K1_val(0, i, 0) - state_fin.vertex[0].avertex.K1_val(0, i, 0);
+        K1a0_dif[i] = state_dir.vertex[0].avertex().K1_val(0, i, 0) - state_fin.vertex[0].avertex().K1_val(0, i, 0);
     }
     cvec SER_dif(nFER);
     cvec SEK_dif(nFER);
@@ -384,15 +384,15 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
                                    state_dir.selfenergy.Sigma.real(), state_dir.selfenergy.Sigma.imag(),
                                    state_fin.selfenergy.Sigma.real(), state_fin.selfenergy.Sigma.imag(),
                                    state_ini.selfenergy.Sigma.real(), state_ini.selfenergy.Sigma.imag(),
-                                   state_dir.vertex[0].avertex.K1.real(), state_dir.vertex[0].avertex.K1.imag(),
-                                   state_fin.vertex[0].avertex.K1.real(), state_fin.vertex[0].avertex.K1.imag(),
-                                   state_ini.vertex[0].avertex.K1.real(), state_ini.vertex[0].avertex.K1.imag(),
-                                   state_dir.vertex[0].pvertex.K1.real(), state_dir.vertex[0].pvertex.K1.imag(),
-                                   state_fin.vertex[0].pvertex.K1.real(), state_fin.vertex[0].pvertex.K1.imag(),
-                                   state_ini.vertex[0].pvertex.K1.real(), state_ini.vertex[0].pvertex.K1.imag(),
-                                   state_dir.vertex[0].tvertex.K1.real(), state_dir.vertex[0].tvertex.K1.imag(),
-                                   state_fin.vertex[0].tvertex.K1.real(), state_fin.vertex[0].tvertex.K1.imag(),
-                                   state_ini.vertex[0].tvertex.K1.real(), state_ini.vertex[0].tvertex.K1.imag()});
+                                   state_dir.vertex[0].avertex().K1.real(), state_dir.vertex[0].avertex().K1.imag(),
+                                   state_fin.vertex[0].avertex().K1.real(), state_fin.vertex[0].avertex().K1.imag(),
+                                   state_ini.vertex[0].avertex().K1.real(), state_ini.vertex[0].avertex().K1.imag(),
+                                   state_dir.vertex[0].pvertex().K1.real(), state_dir.vertex[0].pvertex().K1.imag(),
+                                   state_fin.vertex[0].pvertex().K1.real(), state_fin.vertex[0].pvertex().K1.imag(),
+                                   state_ini.vertex[0].pvertex().K1.real(), state_ini.vertex[0].pvertex().K1.imag(),
+                                   state_dir.vertex[0].tvertex().K1.real(), state_dir.vertex[0].tvertex().K1.imag(),
+                                   state_fin.vertex[0].tvertex().K1.real(), state_fin.vertex[0].tvertex().K1.imag(),
+                                   state_ini.vertex[0].tvertex().K1.real(), state_ini.vertex[0].tvertex().K1.imag()});
 
 }
 
@@ -493,8 +493,8 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
     if(r=='a' || r=='p') {
 #pragma omp parallel
         //Check parallelized that everything in the K2 vertex is zero.
-        for (int index = 0; index < test_K2r_with_K1t.vertex[0].avertex.K2.size(); ++index) {
-            if (test_K2r_with_K1t.vertex[0].avertex.K2_acc(index) != 0.) {
+        for (int index = 0; index < test_K2r_with_K1t.vertex[0].avertex().K2.size(); ++index) {
+            if (test_K2r_with_K1t.vertex[0].avertex().K2_acc(index) != 0.) {
                 empty = false;  //If any one element is not zero, K2 is not empty
                 break;  //Exit the for-loop early
             }
@@ -506,9 +506,8 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
     else if(r=='t'){
 #pragma omp parallel
         //Check parallelized that everything in the K2 vertices is zero.
-        for (int index = 0; index < test_K2r_with_K1a.vertex[0].avertex.K2.size(); ++index) {
-            if (test_K2r_with_K1a.vertex[0].avertex.K2_acc(index) != 0. ||
-                test_K2r_with_K1p.vertex[0].avertex.K2_acc(index) != 0.) {
+        for (int index = 0; index < test_K2r_with_K1a.vertex[0].avertex().K2.size(); ++index) {
+            if (test_K2r_with_K1p.vertex[0].tvertex().K2_acc(index) != 0.) {
                 empty = false;  //If any one element is not zero, K2 is not empty
                 break;  //Exit the for-loop early
             }
@@ -520,19 +519,19 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 
     return empty;
 }
+#endif
 
 /**
- * Function that computes K1 up to PT4 using K2 in PT3, and performs FDT checks
+ * Function that computes K1 (and K2, K3) up to PT4, and performs FDT checks
  */
-void test_K2_PT4(double Lambda) {
-    print("Test K2 by computing K1 up to PT4, using K2 in PT3.", true);
+void test_PT4(double Lambda, bool write_flag = false) {
+    print("Compute K1 (and K2, K3) up to PT4.", true);
     // Initialize a bare state
     State<comp> bare (Lambda);
     bare.initialize();
 
-    // Initialize a bare normal and single-scale propagator
+    // Initialize a bare propagator
     Propagator G(Lambda, bare.selfenergy, 'g');
-    Propagator S(Lambda, bare.selfenergy, 's');
 
     // Compute K1 in PT2
     State<comp> PT2_K1a (Lambda);
@@ -545,9 +544,11 @@ void test_K2_PT4(double Lambda) {
     bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
     print("Computed K1 in PT2.", true);
     get_time(t0);
-    write_hdf("PT2_K1a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1a);
-    write_hdf("PT2_K1p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1p);
-    write_hdf("PT2_K1t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT2_K1t);
+    if (write_flag) {
+        write_hdf("PT2_K1a_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1a);
+        write_hdf("PT2_K1p_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1p);
+        write_hdf("PT2_K1t_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1t);
+    }
 
     // Compute K1 in PT3, using K1 in PT2
     State<comp> PT3_K1a (Lambda);
@@ -559,27 +560,505 @@ void test_K2_PT4(double Lambda) {
     bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
     // for K1t in PT3, need a-vertex in PT2 due to a <-> t symmetry
     bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false);
+#if DIAG_CLASS >= 2
+    // set K2 part of this vertex to zero
+    PT3_K1t.vertex[0].tvertex().K2 = vec<comp> (PT3_K1t.vertex[0].tvertex().K2.size());
+#endif
     print("Computed K1 in PT3.", true);
     get_time(t0);
-    write_hdf("PT3_K1a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1a);
-    write_hdf("PT3_K1p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1p);
-    write_hdf("PT3_K1t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K1t);
+    if (write_flag) {
+        write_hdf("PT3_K1a_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1a);
+        write_hdf("PT3_K1p_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1p);
+        write_hdf("PT3_K1t_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1t);
+    }
 
-    // Compute K2a in PT3, using K1p, K1t in PT2
+    // Compute K2 in PT3, using K1p, K1t in PT2
     State<comp> PT3_K2a (Lambda);
     State<comp> PT3_K2p (Lambda);
     State<comp> PT3_K2t (Lambda);
+    State<comp> PT3_K2t_a (Lambda);
+    State<comp> PT3_K2t_p (Lambda);
 
     t0 = get_time();
-    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
-    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'p', false);   // K2p in PT3
-    bubble_function(PT3_K2t.vertex, PT2_K1a.vertex + PT2_K1p.vertex, bare.vertex, G, G, 't', false);   // K2t in PT3
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3 (PT2_K1t = 0)
+    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'p', false);   // K2p in PT3 (PT2_K1t = 0)
+    bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false);   // contribution of K2t in PT3 obtained by inserting K1a in PT2
+    bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false);   // contribution of K2t in PT3 obtained by inserting K1p in PT2
+    // PT3_K2t_a should also have a K1-contribution due to a-t symmetry (PT2_K1t implicitly inserted) --> set to zero
+    PT3_K2t_a.vertex[0].tvertex().K1 = vec<comp> (PT3_K2t_a.vertex[0].tvertex().K1.size());
+    PT3_K2t.vertex = PT3_K2t_a.vertex + PT3_K2t_p.vertex; // sum of contributions from a- and p-insertions
+
+    // K2' in PT3 would be obtained by flipping the left and right vertex, but since K2' is not saved, these terms would give zero
     print("Computed K2 in PT3.", true);
     get_time(t0);
-    write_hdf("PT3_K2a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2a);
-    write_hdf("PT3_K2p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2p);
-    write_hdf("PT3_K2t_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, PT3_K2t);
+    if (write_flag) {
+        write_hdf("PT3_K2a_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2a);
+        write_hdf("PT3_K2p_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2p);
+        write_hdf("PT3_K2t_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t);
+        write_hdf("PT3_K2t_a_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_a);
+        write_hdf("PT3_K2t_p_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_p);
+    }
 
+
+    // Compute K3 in PT4, using K1 and K2 in PT2 and PT3
+    State<comp> PT4_31 (Lambda);
+    State<comp> PT4_31_a_a1 (Lambda);
+    State<comp> PT4_31_a_p1 (Lambda);
+    State<comp> PT4_31_a_t1 (Lambda);
+    State<comp> PT4_31_a_a2 (Lambda);
+    State<comp> PT4_31_a_p2 (Lambda);
+    State<comp> PT4_31_a_t2 (Lambda);
+    State<comp> PT4_31_p_a1 (Lambda);
+    State<comp> PT4_31_p_p1 (Lambda);
+    State<comp> PT4_31_p_t1 (Lambda);
+    State<comp> PT4_31_p_a2 (Lambda);
+    State<comp> PT4_31_p_p2 (Lambda);
+    State<comp> PT4_31_p_t2 (Lambda);
+    State<comp> PT4_31_t_a1 (Lambda);
+    State<comp> PT4_31_t_p1 (Lambda);
+    State<comp> PT4_31_t_t1 (Lambda);
+    State<comp> PT4_31_t_a2 (Lambda);
+    State<comp> PT4_31_t_p2 (Lambda);
+    State<comp> PT4_31_t_t2 (Lambda);
+
+    State<comp> PT4_13 (Lambda);
+    State<comp> PT4_13_a_a1 (Lambda);
+    State<comp> PT4_13_a_p1 (Lambda);
+    State<comp> PT4_13_a_t1 (Lambda);
+    State<comp> PT4_13_a_a2 (Lambda);
+    State<comp> PT4_13_a_p2 (Lambda);
+    State<comp> PT4_13_a_t2 (Lambda);
+    State<comp> PT4_13_p_a1 (Lambda);
+    State<comp> PT4_13_p_p1 (Lambda);
+    State<comp> PT4_13_p_t1 (Lambda);
+    State<comp> PT4_13_p_a2 (Lambda);
+    State<comp> PT4_13_p_p2 (Lambda);
+    State<comp> PT4_13_p_t2 (Lambda);
+    State<comp> PT4_13_t_a1 (Lambda);
+    State<comp> PT4_13_t_p1 (Lambda);
+    State<comp> PT4_13_t_t1 (Lambda);
+    State<comp> PT4_13_t_a2 (Lambda);
+    State<comp> PT4_13_t_p2 (Lambda);
+    State<comp> PT4_13_t_t2 (Lambda);
+
+    State<comp> PT4_22 (Lambda);
+    State<comp> PT4_22_a_aa (Lambda);
+    State<comp> PT4_22_a_ap (Lambda);
+    State<comp> PT4_22_a_pa (Lambda);
+    State<comp> PT4_22_a_pp (Lambda);
+    State<comp> PT4_22_p_aa (Lambda);
+    State<comp> PT4_22_p_ap (Lambda);
+    State<comp> PT4_22_p_pa (Lambda);
+    State<comp> PT4_22_p_pp (Lambda);
+    State<comp> PT4_22_t_aa (Lambda);
+    State<comp> PT4_22_t_ap (Lambda);
+    State<comp> PT4_22_t_pa (Lambda);
+    State<comp> PT4_22_t_pp (Lambda);
+
+    t0 = get_time();
+
+    // a-channel:
+    // 3-1: insert all possible PT3 vertices on the left, bare vertex on the right
+    bubble_function(PT4_31_a_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT4_31_a_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT4_31_a_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT4_31_a_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT4_31_a_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT4_31_a_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 'a', false);
+
+    if (write_flag) {
+        write_hdf("PT4_31_a_a1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a1);
+        write_hdf("PT4_31_a_p1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p1);
+        write_hdf("PT4_31_a_t1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t1);
+        write_hdf("PT4_31_a_a2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a2);
+        write_hdf("PT4_31_a_p2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p2);
+        write_hdf("PT4_31_a_t2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t2);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_31.vertex[0].avertex() = PT4_31_a_a1.vertex[0].avertex()
+                             + PT4_31_a_p1.vertex[0].avertex()
+                             + PT4_31_a_t1.vertex[0].avertex()
+                             + PT4_31_a_a2.vertex[0].avertex()
+                             + PT4_31_a_p2.vertex[0].avertex()
+                             + PT4_31_a_t2.vertex[0].avertex();
+
+    // 1-3: insert bare vertex on the left, all possible PT3 vertices on the right
+    // this can only give a K1 contribution, since we do not compute K2'
+    bubble_function(PT4_13_a_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
+    // the following should all give zero
+    bubble_function(PT4_13_a_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'a', false);
+    bubble_function(PT4_13_a_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 'a', false);
+    bubble_function(PT4_13_a_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
+    bubble_function(PT4_13_a_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 'a', false);
+    bubble_function(PT4_13_a_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 'a', false);
+
+    if (write_flag) {
+        write_hdf("PT4_13_a_a1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a1);
+        write_hdf("PT4_13_a_p1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p1);
+        write_hdf("PT4_13_a_t1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t1);
+        write_hdf("PT4_13_a_a2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a2);
+        write_hdf("PT4_13_a_p2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p2);
+        write_hdf("PT4_13_a_t2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t2);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_13.vertex[0].avertex() = PT4_13_a_a1.vertex[0].avertex()
+                             + PT4_13_a_p1.vertex[0].avertex()
+                             + PT4_13_a_t1.vertex[0].avertex()
+                             + PT4_13_a_a2.vertex[0].avertex()
+                             + PT4_13_a_p2.vertex[0].avertex()
+                             + PT4_13_a_t2.vertex[0].avertex();
+
+    // 2-2: insert all possible PT2 vertices on the left and right (PT2_K1t is always zero -> neglect it)
+    bubble_function(PT4_22_a_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
+    bubble_function(PT4_22_a_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 'a', false);
+    bubble_function(PT4_22_a_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 'a', false);
+    bubble_function(PT4_22_a_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'a', false);
+
+    if (write_flag) {
+        write_hdf("PT4_22_a_aa_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_aa);
+        write_hdf("PT4_22_a_ap_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_ap);
+        write_hdf("PT4_22_a_pa_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pa);
+        write_hdf("PT4_22_a_pp_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pp);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_22.vertex[0].avertex() = PT4_22_a_aa.vertex[0].avertex()
+                             + PT4_22_a_ap.vertex[0].avertex()
+                             + PT4_22_a_pa.vertex[0].avertex()
+                             + PT4_22_a_pp.vertex[0].avertex();
+
+    print("Computed a-channel in PT4.", true);
+
+    // p-channel:
+    // 3-1: insert all possible PT3 vertices on the left, bare vertex on the right
+    bubble_function(PT4_31_p_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT4_31_p_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT4_31_p_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT4_31_p_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT4_31_p_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT4_31_p_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 'p', false);
+
+    if (write_flag) {
+        write_hdf("PT4_31_p_a1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a1);
+        write_hdf("PT4_31_p_p1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p1);
+        write_hdf("PT4_31_p_t1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t1);
+        write_hdf("PT4_31_p_a2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a2);
+        write_hdf("PT4_31_p_p2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p2);
+        write_hdf("PT4_31_p_t2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t2);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_31.vertex[0].pvertex() = PT4_31_p_a1.vertex[0].pvertex()
+                             + PT4_31_p_p1.vertex[0].pvertex()
+                             + PT4_31_p_t1.vertex[0].pvertex()
+                             + PT4_31_p_a2.vertex[0].pvertex()
+                             + PT4_31_p_p2.vertex[0].pvertex()
+                             + PT4_31_p_t2.vertex[0].pvertex();
+
+    // 1-3: insert bare vertex on the left, all possible PT3 vertices on the right
+    // this can only give a K1 contribution, since we do not compute K2'
+    bubble_function(PT4_13_p_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'p', false);
+    // the following should all give zero
+    bubble_function(PT4_13_p_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'p', false);
+    bubble_function(PT4_13_p_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 'p', false);
+    bubble_function(PT4_13_p_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'p', false);
+    bubble_function(PT4_13_p_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 'p', false);
+    bubble_function(PT4_13_p_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 'p', false);
+
+    if (write_flag) {
+        write_hdf("PT4_13_p_a1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a1);
+        write_hdf("PT4_13_p_p1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p1);
+        write_hdf("PT4_13_p_t1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t1);
+        write_hdf("PT4_13_p_a2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a2);
+        write_hdf("PT4_13_p_p2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p2);
+        write_hdf("PT4_13_p_t2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t2);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_13.vertex[0].pvertex() = PT4_13_p_a1.vertex[0].pvertex()
+                             + PT4_13_p_p1.vertex[0].pvertex()
+                             + PT4_13_p_t1.vertex[0].pvertex()
+                             + PT4_13_p_a2.vertex[0].pvertex()
+                             + PT4_13_p_p2.vertex[0].pvertex()
+                             + PT4_13_p_t2.vertex[0].pvertex();
+
+    // 2-2: insert all possible PT2 vertices on the left and right (PT2_K1t is always zero -> neglect it)
+    bubble_function(PT4_22_p_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'p', false);
+    bubble_function(PT4_22_p_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 'p', false);
+    bubble_function(PT4_22_p_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 'p', false);
+    bubble_function(PT4_22_p_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'p', false);
+
+    if (write_flag) {
+        write_hdf("PT4_22_p_aa_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_aa);
+        write_hdf("PT4_22_p_ap_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_ap);
+        write_hdf("PT4_22_p_pa_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pa);
+        write_hdf("PT4_22_p_pp_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pp);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_22.vertex[0].pvertex() = PT4_22_p_aa.vertex[0].pvertex()
+                             + PT4_22_p_ap.vertex[0].pvertex()
+                             + PT4_22_p_pa.vertex[0].pvertex()
+                             + PT4_22_p_pp.vertex[0].pvertex();
+
+    print("Computed p-channel in PT4.", true);
+
+    // t-channel:
+    // in the t-channel, we need to insert a and t simultaneously due to a <-> t symmetry // TODO: remove?
+    // (spin sum in the t-channel makes use of this symmetry)                             // TODO: remove?
+
+    // 3-1: insert all possible PT3 vertices on the left, bare vertex on the right
+    bubble_function(PT4_31_t_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT4_31_t_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT4_31_t_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT4_31_t_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT4_31_t_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT4_31_t_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 't', false);
+
+    if (write_flag) {
+        write_hdf("PT4_31_t_a1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a1);
+        write_hdf("PT4_31_t_p1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p1);
+        write_hdf("PT4_31_t_t1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t1);
+        write_hdf("PT4_31_t_a2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a2);
+        write_hdf("PT4_31_t_p2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p2);
+        write_hdf("PT4_31_t_t2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t2);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_31.vertex[0].tvertex() = PT4_31_t_a1.vertex[0].tvertex()
+                             + PT4_31_t_p1.vertex[0].tvertex()
+                             + PT4_31_t_t1.vertex[0].tvertex()
+                             + PT4_31_t_a2.vertex[0].tvertex()
+                             + PT4_31_t_p2.vertex[0].tvertex()
+                             + PT4_31_t_t2.vertex[0].tvertex();
+
+    // 1-3: insert bare vertex on the left, all possible PT3 vertices on the right
+    bubble_function(PT4_13_t_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 't', false);
+    bubble_function(PT4_13_t_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 't', false);
+    bubble_function(PT4_13_t_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 't', false);
+    bubble_function(PT4_13_t_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 't', false);
+    bubble_function(PT4_13_t_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 't', false);
+    bubble_function(PT4_13_t_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 't', false);
+
+    if (write_flag) {
+        write_hdf("PT4_13_t_a1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a1);
+        write_hdf("PT4_13_t_p1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p1);
+        write_hdf("PT4_13_t_t1_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t1);
+        write_hdf("PT4_13_t_a2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a2);
+        write_hdf("PT4_13_t_p2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p2);
+        write_hdf("PT4_13_t_t2_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t2);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_13.vertex[0].tvertex() = PT4_13_t_a1.vertex[0].tvertex()
+                             + PT4_13_t_p1.vertex[0].tvertex()
+                             + PT4_13_t_t1.vertex[0].tvertex()
+                             + PT4_13_t_a2.vertex[0].tvertex()
+                             + PT4_13_t_p2.vertex[0].tvertex()
+                             + PT4_13_t_t2.vertex[0].tvertex();
+
+    // 2-2: insert all possible PT2 vertices on the left and right (PT2_K1t is always zero -> neglect it)
+    bubble_function(PT4_22_t_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 't', false);
+    bubble_function(PT4_22_t_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 't', false);
+    bubble_function(PT4_22_t_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 't', false);
+    bubble_function(PT4_22_t_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 't', false);
+
+    if (write_flag) {
+        write_hdf("PT4_22_t_aa_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_aa);
+        write_hdf("PT4_22_t_ap_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_ap);
+        write_hdf("PT4_22_t_pa_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pa);
+        write_hdf("PT4_22_t_pp_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pp);
+    }
+
+    // sum of contributions obtained from different insertions
+    PT4_22.vertex[0].tvertex() = PT4_22_t_aa.vertex[0].tvertex()
+                             + PT4_22_t_ap.vertex[0].tvertex()
+                             + PT4_22_t_pa.vertex[0].tvertex()
+                             + PT4_22_t_pp.vertex[0].tvertex();
+
+
+    print("Computed t-channel in PT4.", true);
+
+    if (write_flag) {
+        write_hdf("PT4_31_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31);
+        write_hdf("PT4_13_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13);
+        write_hdf("PT4_22_U" + to_string(1. / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22);
+    }
+
+    print("Computed K1, K2, K3 in PT4.", true);
+    get_time(t0);
+
+    /** Make automated checks of all diagrams: Compute the values of all diagrams at all frequencies equal to zero,
+     * and for all pairs of diagrams that should cancel, compute the relative deviation of their sum from zero.
+     * Print all results to log.
+     * */
+
+    print("--- CHECK RESULTS: ---", true);
+    print("--- print relative error of quantities that should be zero ---", true);
+
+    // input variables: all frequencies equal to zero
+    VertexInput input_a (0, 0., 0., 0., 0, 0, 'a');
+    VertexInput input_p (0, 0., 0., 0., 0, 0, 'p');
+    VertexInput input_t (0, 0., 0., 0., 0, 0, 't');
+
+    vec<int> iK2s = {1, 2, 4}; // Keldysh indices of fully retarded components of K2
+
+    // labels to be printed to log
+    string check_labels[] {"PT2: K1a + K1p: ", "PT2: K1t: ",
+                           "PT3: K1a - exact: ", "PT3: K1p - exact: ", "PT3: K1t - exact: ",
+                           "PT3: K2a[1] - exact: ", "PT3: K2p[1] - exact: ", "PT3: K2t[1] - exact: ",
+                           "PT3: K2a[2] - exact: ", "PT3: K2p[2] - exact: ", "PT3: K2t[2] - exact: ",
+                           "PT3: K2a[4] - exact: ", "PT3: K2p[4] - exact: ", "PT3: K2t[4] - exact: ",
+                           "PT4: (K2a[1] <- K1p) + (K2p[1] <- K1a): ",
+                           "PT4: (K2a[2] <- K1p) + (K2p[2] <- K1a): ",
+                           "PT4: (K2a[4] <- K1p) + (K2p[4] <- K1a): ",
+                           "PT4: (K2a[1] <- K1t) + (K2p[1] <- K1t): ",
+                           "PT4: (K2a[2] <- K1t) + (K2p[2] <- K1t): ",
+                           "PT4: (K2a[4] <- K1t) + (K2p[4] <- K1t): ",
+                           "PT4: (K2a[1] <- K2a) + (K2p[1] <- K2p): ",
+                           "PT4: (K2a[2] <- K2a) + (K2p[2] <- K2p): ",
+                           "PT4: (K2a[4] <- K2a) + (K2p[4] <- K2p): ",
+                           "PT4: (K2a[1] <- K2p) + (K2p[1] <- K2a): ",
+                           "PT4: (K2a[2] <- K2p) + (K2p[2] <- K2a): ",
+                           "PT4: (K2a[4] <- K2p) + (K2p[4] <- K2a): ",
+                           "PT4: (K2a[1] <- K2t) + (K2p[1] <- K2t): ",
+                           "PT4: (K2a[2] <- K2t) + (K2p[2] <- K2t): ",
+                           "PT4: (K2a[4] <- K2t) + (K2p[4] <- K2t): ",
+                           "PT4: (K2t[1] <- K2a) + (K2t[1] <- K2t): ",
+                           "PT4: (K2t[2] <- K2a) + (K2t[2] <- K2t): ",
+                           "PT4: (K2t[4] <- K2a) + (K2t[4] <- K2t): ",
+                           "PT4: K3a + K3p: ",
+                           "PT4: K3t (aa) + K3t (ap) + K3t (pa): "
+                           };
+
+    // K1 in PT2
+    comp PT2_K1a_0 = PT2_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT2_K1a.vertex[0].tvertex());
+    comp PT2_K1p_0 = PT2_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT2_K1p.vertex[0].pvertex());
+    comp PT2_K1t_0 = PT2_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT2_K1t.vertex[0].avertex());
+
+    // K1 in PT3
+    comp PT3_K1a_0 = PT3_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT3_K1a.vertex[0].tvertex());
+    comp PT3_K1p_0 = PT3_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT3_K1p.vertex[0].pvertex());
+    comp PT3_K1t_0 = PT3_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT3_K1t.vertex[0].avertex());
+    comp PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+
+    // K1 in PT4
+    comp PT4_K1a_0_ladder = PT4_31_a_a1.vertex[0].avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex[0].tvertex());
+    comp PT4_K1p_0_ladder = PT4_31_p_p1.vertex[0].pvertex().valsmooth<k1>(input_p, PT4_31_p_p1.vertex[0].pvertex());
+    comp PT4_K1a_0_nonladder = PT4_13_a_a2.vertex[0].avertex().valsmooth<k1>(input_a, PT4_13_a_a2.vertex[0].tvertex());
+    comp PT4_K1p_0_nonladder = PT4_13_p_p2.vertex[0].pvertex().valsmooth<k1>(input_p, PT4_13_p_p2.vertex[0].pvertex());
+    comp PT4_K1t_0_nonladder_a = PT4_13_t_a2.vertex[0].tvertex().valsmooth<k1>(input_t, PT4_13_t_a2.vertex[0].avertex());
+    comp PT4_K1t_0_nonladder_t = PT4_13_t_t2.vertex[0].tvertex().valsmooth<k1>(input_t, PT4_13_t_t2.vertex[0].avertex());
+
+    // K2 in PT3
+    vec<comp> PT3_K2a_0 (3);
+    vec<comp> PT3_K2p_0 (3);
+    vec<comp> PT3_K2t_0 (3);
+    // K2 in PT4
+    vec<comp> PT4_K2a_0_p1 (3);
+    vec<comp> PT4_K2p_0_a1 (3);
+    vec<comp> PT4_K2a_0_t1 (3);
+    vec<comp> PT4_K2p_0_t1 (3);
+    vec<comp> PT4_K2a_0_a2 (3);
+    vec<comp> PT4_K2a_0_p2 (3);
+    vec<comp> PT4_K2a_0_t2 (3);
+    vec<comp> PT4_K2p_0_a2 (3);
+    vec<comp> PT4_K2p_0_p2 (3);
+    vec<comp> PT4_K2p_0_t2 (3);
+    vec<comp> PT4_K2t_0_a2 (3);
+    vec<comp> PT4_K2t_0_t2 (3);
+
+#if DIAG_CLASS >= 2
+    for (int iK2=0; iK2<2; ++iK2) {
+        input_a.iK = iK2s[iK2];
+        input_p.iK = iK2s[iK2];
+        input_t.iK = iK2s[iK2];
+        // K2 in PT3
+        PT3_K2a_0[iK2] = PT3_K2a.vertex[0].avertex().valsmooth<k2>(input_a, PT3_K2a.vertex[0].tvertex());
+        PT3_K2p_0[iK2] = PT3_K2p.vertex[0].pvertex().valsmooth<k2>(input_p, PT3_K2p.vertex[0].pvertex());
+        PT3_K2t_0[iK2] = PT3_K2t.vertex[0].tvertex().valsmooth<k2>(input_t, PT3_K2t.vertex[0].avertex());
+        // K2 in PT4
+        PT4_K2a_0_p1[iK2] = PT4_31_a_p1.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_p1.vertex[0].tvertex());
+        PT4_K2p_0_a1[iK2] = PT4_31_p_a1.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_a1.vertex[0].pvertex());
+        PT4_K2a_0_t1[iK2] = PT4_31_a_t1.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_t1.vertex[0].tvertex());
+        PT4_K2p_0_t1[iK2] = PT4_31_p_t1.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t1.vertex[0].pvertex());
+        PT4_K2a_0_a2[iK2] = PT4_31_a_a2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_a2.vertex[0].tvertex());
+        PT4_K2a_0_p2[iK2] = PT4_31_a_p2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_p2.vertex[0].tvertex());
+        PT4_K2a_0_t2[iK2] = PT4_31_a_t2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_t2.vertex[0].tvertex());
+        PT4_K2p_0_a2[iK2] = PT4_31_p_a2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_a2.vertex[0].pvertex());
+        PT4_K2p_0_p2[iK2] = PT4_31_p_p2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_p2.vertex[0].pvertex());
+        PT4_K2p_0_t2[iK2] = PT4_31_p_t2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t2.vertex[0].pvertex());
+        PT4_K2t_0_a2[iK2] = PT4_31_t_a2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_a2.vertex[0].avertex());
+        PT4_K2t_0_t2[iK2] = PT4_31_t_t2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_t2.vertex[0].avertex());
+    }
+#endif
+    comp PT3_K2_exact = -(1./2.) * (2. - M_PI*M_PI/4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+
+    // K3 in PT4
+    input_a.iK = 5;
+    input_p.iK = 5;
+    input_t.iK = 5;
+    comp PT4_K3a_0;
+    comp PT4_K3p_0;
+    comp PT4_K3t_0_aa;
+    comp PT4_K3t_0_ap;
+    comp PT4_K3t_0_pa;
+
+#if DIAG_CLASS == 3
+    PT4_K3a_0 = PT4_22_a_pp.vertex[0].avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex[0].tvertex());
+    PT4_K3p_0 = PT4_22_p_aa.vertex[0].pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex[0].pvertex());
+    PT4_K3t_0_aa = PT4_22_t_aa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex[0].avertex());
+    PT4_K3t_0_ap = PT4_22_t_ap.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex[0].avertex());
+    PT4_K3t_0_pa = PT4_22_t_pa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex[0].avertex());
+#endif
+
+    // values to be printed to log
+    vec<comp> check_values {PT2_K1a_0 + PT2_K1p_0,
+                            PT2_K1t_0,
+                            (PT3_K1a_0 - PT3_K1_exact)/PT3_K1_exact,
+                            (PT3_K1p_0 - PT3_K1_exact)/PT3_K1_exact,
+                            (PT3_K1t_0 - PT3_K1_exact)/PT3_K1_exact,
+                            (PT3_K2a_0[0] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT3_K2p_0[0] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT3_K2t_0[0] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT3_K2a_0[1] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT3_K2p_0[1] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT3_K2t_0[1] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT3_K2a_0[2] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT3_K2p_0[2] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT3_K2t_0[2] - PT3_K2_exact)/PT3_K2_exact,
+                            (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(abs(PT4_K2a_0_p1[0]) + abs(PT4_K2p_0_a1[0])),
+                            (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(abs(PT4_K2a_0_p1[1]) + abs(PT4_K2p_0_a1[1])),
+                            (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(abs(PT4_K2a_0_p1[2]) + abs(PT4_K2p_0_a1[2])),
+                            (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(abs(PT4_K2a_0_t1[0]) + abs(PT4_K2p_0_t1[0])),
+                            (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(abs(PT4_K2a_0_t1[1]) + abs(PT4_K2p_0_t1[1])),
+                            (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(abs(PT4_K2a_0_t1[2]) + abs(PT4_K2p_0_t1[2])),
+                            (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(abs(PT4_K2a_0_a2[0]) + abs(PT4_K2p_0_p2[0])),
+                            (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(abs(PT4_K2a_0_a2[1]) + abs(PT4_K2p_0_p2[1])),
+                            (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(abs(PT4_K2a_0_a2[2]) + abs(PT4_K2p_0_p2[2])),
+                            (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(abs(PT4_K2a_0_p2[0]) + abs(PT4_K2p_0_a2[0])),
+                            (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(abs(PT4_K2a_0_p2[1]) + abs(PT4_K2p_0_a2[1])),
+                            (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(abs(PT4_K2a_0_p2[2]) + abs(PT4_K2p_0_a2[2])),
+                            (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(abs(PT4_K2a_0_t2[0]) + abs(PT4_K2p_0_t2[0])),
+                            (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(abs(PT4_K2a_0_t2[1]) + abs(PT4_K2p_0_t2[1])),
+                            (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(abs(PT4_K2a_0_t2[2]) + abs(PT4_K2p_0_t2[2])),
+                            (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(abs(PT4_K2t_0_a2[0]) + abs(PT4_K2t_0_t2[0])),
+                            (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(abs(PT4_K2t_0_a2[1]) + abs(PT4_K2t_0_t2[1])),
+                            (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(abs(PT4_K2t_0_a2[2]) + abs(PT4_K2t_0_t2[2])),
+                            (PT4_K3a_0 + PT4_K3p_0)/(abs(PT4_K3a_0) + abs(PT4_K3p_0)),
+                            (PT4_K3t_0_aa + PT4_K3t_0_ap + PT4_K3t_0_pa)/(abs(PT4_K3t_0_aa) + abs(PT4_K3t_0_ap) + abs(PT4_K3t_0_pa))
+                            };
+
+    // print to log
+    for (int i=0; i<check_values.size(); ++i) {
+        print(check_labels[i], check_values[i], true);
+    }
+
+    print("----------------------", true);
+
+    /*
     // Compute K1a contributions in PT4, using
     // (22):   K1a in PT2
     // (13_1): K1a in PT3
@@ -607,8 +1086,74 @@ void test_K2_PT4(double Lambda) {
     check_FDTs(PT4_K1a13_2);
     print("Check K1a in PT4 (31_2):", true);
     check_FDTs(PT4_K1a31_2);
+    // */
 }
 
+#if DIAG_CLASS == 3
+/**
+ * Test K3 dynamics by computing SE diagrams in PT4 using different PT4 vertices, which should all give the same result.
+ */
+void test_K3_dynamics_SE_PT4(double Lambda) {
+    // Initialize a bare state
+    State<comp> bare (Lambda);
+    bare.initialize();
+
+    // Initialize a bare propagator
+    Propagator G(Lambda, bare.selfenergy, 'g');
+
+    // Compute K1a and K1p in PT2
+    State<comp> PT2_K1a (Lambda);
+    State<comp> PT2_K1p (Lambda);
+
+    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+
+    // Compute K1a and K1p in PT3
+    State<comp> PT3_K1a (Lambda);
+    State<comp> PT3_K1p (Lambda);
+
+    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
+
+    // Compute K3a, K1p (ladder), K3p, K1a (ladder) in PT4
+    State<comp> PT4_22_a_pp (Lambda);
+    State<comp> PT4_13_p_p1 (Lambda);
+    State<comp> PT4_22_p_aa (Lambda);
+    State<comp> PT4_13_a_a1 (Lambda);
+
+    bubble_function(PT4_22_a_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'a', false);
+    bubble_function(PT4_13_p_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'p', false);
+    bubble_function(PT4_22_p_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'p', false);
+    bubble_function(PT4_13_a_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
+
+    // a-channel:
+    // close K3a (single diagram: PT2_K1p - a-bubble - PT2_K1p)
+    State<comp> SE_K3a (Lambda);
+    loop(SE_K3a.selfenergy, PT4_22_a_pp.vertex, G, false);
+
+    // close K1p ladder (use 1-3 vertex in p-channel, since it contains only p-ladder)
+    State<comp> SE_K1p_ladder (Lambda);
+    loop(SE_K1p_ladder.selfenergy, PT4_13_p_p1.vertex, G, false);
+
+    // p-channel:
+    // close K3p (single diagram: PT2_K1a - p-bubble - PT2_K1a)
+    State<comp> SE_K3p (Lambda);
+    loop(SE_K3p.selfenergy, PT4_22_p_aa.vertex, G, false);
+
+    // close K1a ladder (use 1-3 vertex in a-channel, since it contains only a-ladder)
+    State<comp> SE_K1a_ladder (Lambda);
+    loop(SE_K1a_ladder.selfenergy, PT4_13_a_a1.vertex, G, false);
+
+    write_hdf("SE_K3a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3a);
+    write_hdf("SE_K1p_ladder_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1p_ladder);
+    write_hdf("SE_K3p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3p);
+    write_hdf("SE_K1a_ladder_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1a_ladder);
+}
+#endif
+
+
+
+#if DIAG_CLASS >= 2
 /**
  * Function to test correctness of K2a when calculating a susceptibility (a K1a-object) //Notice that the same calculation
  * can be performed in the p-channel.
@@ -692,9 +1237,9 @@ void test_K2_correctness(double Lambda){
 
     // full K2 in PT3
     State<comp> PT3_K2 (Lambda);
-    PT3_K2.vertex[0].avertex = PT3_K2a_t.vertex[0].avertex;
-    //PT3_K2.vertex[0].pvertex = PT3_K2p.vertex[0].pvertex;
-    PT3_K2.vertex[0].tvertex = PT3_K2t_a.vertex[0].tvertex;
+    PT3_K2.vertex[0].avertex() = PT3_K2a_t.vertex[0].avertex();
+    //PT3_K2.vertex[0].pvertex() = PT3_K2p.vertex[0].pvertex();
+    PT3_K2.vertex[0].tvertex() = PT3_K2t_a.vertex[0].tvertex();
 
     State<comp> PT3_K2at (Lambda);
 
@@ -785,11 +1330,12 @@ void test_K2_correctness(double Lambda){
 
     cvec K1a_diff(nBOS);
     for(int iw=0; iw<nBOS; ++iw){
-        K1a_diff[iw] = PT4_K1a22.vertex[0].avertex.K1_val(0, iw, 0) - PT2_K1a.vertex[0].avertex.K1_val(0, iw, 0);
+        K1a_diff[iw] = PT4_K1a22.vertex[0].avertex().K1_val(0, iw, 0) - PT2_K1a.vertex[0].avertex().K1_val(0, iw, 0);
     }
 
-    print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)+", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
-    if(write_flag) write_h5_rvecs("PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
+    print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)
+        +", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
+    if(write_flag) write_h5_rvecs("../Data/PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
                                                        "PT2_K1p_R", "PT2_K1p_I",
                                                        "PT2_K1t_R", "PT2_K1t_I",
@@ -813,6 +1359,9 @@ void test_K2_correctness(double Lambda){
                                                        "PT3_K2t_a_a_R", "PT3_K2t_a_a_I",
                                                        "PT3_K2t_a_p_R", "PT3_K2t_a_p_I",
                                                        "PT3_K2t_a_t_R", "PT3_K2t_a_t_I",
+                                                       "PT3_K2t_p_a_R", "PT3_K2t_p_a_I",
+                                                       "PT3_K2t_p_p_R", "PT3_K2t_p_p_I",
+                                                       "PT3_K2t_p_t_R", "PT3_K2t_p_t_I",
                                                        "PT3_SE_R", "PT3_SE_I",
                                                        "PT3_SE_a_R", "PT3_SE_a_I",
                                                        "PT3_SE_p_R", "PT3_SE_p_I",
@@ -846,29 +1395,29 @@ void test_K2_correctness(double Lambda){
                                                        "PT4_K1a13_2_ivb_R", "PT4_K1a13_2_ivb_I"
                                                        },
                                   {bfreqs,
-                                   PT2_K1a.vertex[0].avertex.K1.real(), PT2_K1a.vertex[0].avertex.K1.imag(),
-                                   PT2_K1p.vertex[0].pvertex.K1.real(), PT2_K1p.vertex[0].pvertex.K1.imag(),
-                                   PT2_K1t.vertex[0].tvertex.K1.real(), PT2_K1t.vertex[0].tvertex.K1.imag(),
+                                   PT2_K1a.vertex[0].avertex().K1.real(), PT2_K1a.vertex[0].avertex().K1.imag(),
+                                   PT2_K1p.vertex[0].pvertex().K1.real(), PT2_K1p.vertex[0].pvertex().K1.imag(),
+                                   PT2_K1t.vertex[0].tvertex().K1.real(), PT2_K1t.vertex[0].tvertex().K1.imag(),
                                    PT2_SE_a.selfenergy.Sigma.real(), PT2_SE_a.selfenergy.Sigma.imag(),
                                    PT2_SE_p.selfenergy.Sigma.real(), PT2_SE_p.selfenergy.Sigma.imag(),
                                    PT2_SE_t.selfenergy.Sigma.real(), PT2_SE_t.selfenergy.Sigma.imag(),
                                    PT2_SE_p_1.selfenergy.Sigma.real(), PT2_SE_p_1.selfenergy.Sigma.imag(),
                                    PT2_SE_p_4.selfenergy.Sigma.real(), PT2_SE_p_4.selfenergy.Sigma.imag(),
                                    PT2_SE_p_5.selfenergy.Sigma.real(), PT2_SE_p_5.selfenergy.Sigma.imag(),
-                                   PT3_K1a.vertex[0].avertex.K1.real(), PT3_K1a.vertex[0].avertex.K1.imag(),
-                                   PT3_K2a.vertex[0].avertex.K2.real(), PT3_K2a.vertex[0].avertex.K2.imag(),
-                                   PT3_K2a_ia.vertex[0].avertex.K2.real(), PT3_K2a_ia.vertex[0].avertex.K2.imag(),
-                                   PT3_K2a_ib.vertex[0].avertex.K2.real(), PT3_K2a_ib.vertex[0].avertex.K2.imag(),
-                                   PT3_K2a_iia.vertex[0].avertex.K2.real(), PT3_K2a_iia.vertex[0].avertex.K2.imag(),
-                                   PT3_K2a_iib.vertex[0].avertex.K2.real(), PT3_K2a_iib.vertex[0].avertex.K2.imag(),
-                                   PT3_K2a_iva.vertex[0].avertex.K2.real(), PT3_K2a_iva.vertex[0].avertex.K2.imag(),
-                                   PT3_K2a_ivb.vertex[0].avertex.K2.real(), PT3_K2a_ivb.vertex[0].avertex.K2.imag(),
-                                   PT3_K2a_t.vertex[0].avertex.K2.real(), PT3_K2a_t.vertex[0].avertex.K2.imag(),
-                                   PT3_K2p.vertex[0].avertex.K2.real(), PT3_K2p.vertex[0].avertex.K2.imag(),
-                                   PT3_K2t.vertex[0].avertex.K2.real(), PT3_K2t.vertex[0].avertex.K2.imag(),
-                                   PT3_K2t_a.vertex[0].avertex.K2.real(), PT3_K2t_a.vertex[0].avertex.K2.imag(),
-                                   PT3_K2t_a.vertex[0].pvertex.K2.real(), PT3_K2t_a.vertex[0].pvertex.K2.imag(),
-                                   PT3_K2t_a.vertex[0].tvertex.K2.real(), PT3_K2t_a.vertex[0].tvertex.K2.imag(),
+                                   PT3_K1a.vertex[0].avertex().K1.real(), PT3_K1a.vertex[0].avertex().K1.imag(),
+                                   PT3_K2a.vertex[0].avertex().K2.real(), PT3_K2a.vertex[0].avertex().K2.imag(),
+                                   PT3_K2a_ia.vertex[0].avertex().K2.real(), PT3_K2a_ia.vertex[0].avertex().K2.imag(),
+                                   PT3_K2a_ib.vertex[0].avertex().K2.real(), PT3_K2a_ib.vertex[0].avertex().K2.imag(),
+                                   PT3_K2a_iia.vertex[0].avertex().K2.real(), PT3_K2a_iia.vertex[0].avertex().K2.imag(),
+                                   PT3_K2a_iib.vertex[0].avertex().K2.real(), PT3_K2a_iib.vertex[0].avertex().K2.imag(),
+                                   PT3_K2a_iva.vertex[0].avertex().K2.real(), PT3_K2a_iva.vertex[0].avertex().K2.imag(),
+                                   PT3_K2a_ivb.vertex[0].avertex().K2.real(), PT3_K2a_ivb.vertex[0].avertex().K2.imag(),
+                                   PT3_K2a_t.vertex[0].avertex().K2.real(), PT3_K2a_t.vertex[0].avertex().K2.imag(),
+                                   PT3_K2p.vertex[0].avertex().K2.real(), PT3_K2p.vertex[0].avertex().K2.imag(),
+                                   PT3_K2t.vertex[0].avertex().K2.real(), PT3_K2t.vertex[0].avertex().K2.imag(),
+                                   PT3_K2t_a.vertex[0].avertex().K2.real(), PT3_K2t_a.vertex[0].avertex().K2.imag(),
+                                   PT3_K2t_a.vertex[0].pvertex().K2.real(), PT3_K2t_a.vertex[0].pvertex().K2.imag(),
+                                   PT3_K2t_a.vertex[0].tvertex().K2.real(), PT3_K2t_a.vertex[0].tvertex().K2.imag(),
                                    PT3_SE.selfenergy.Sigma.real(), PT3_SE.selfenergy.Sigma.imag(),
                                    PT3_SE_a.selfenergy.Sigma.real(), PT3_SE_a.selfenergy.Sigma.imag(),
                                    PT3_SE_p.selfenergy.Sigma.real(), PT3_SE_p.selfenergy.Sigma.imag(),
@@ -884,22 +1433,22 @@ void test_K2_correctness(double Lambda){
                                    PT3_SE_t_p_1.selfenergy.Sigma.real(), PT3_SE_t_p_1.selfenergy.Sigma.imag(),
                                    PT3_SE_t_p_4.selfenergy.Sigma.real(), PT3_SE_t_p_4.selfenergy.Sigma.imag(),
                                    PT3_SE_t_p_5.selfenergy.Sigma.real(), PT3_SE_t_p_5.selfenergy.Sigma.imag(),
-                                   PT4_K1a22.vertex[0].avertex.K1.real(), PT4_K1a22.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_1.vertex[0].avertex.K1.real(), PT4_K1a13_1.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2.vertex[0].avertex.K1.real(), PT4_K1a13_2.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a31_2.vertex[0].avertex.K1.real(), PT4_K1a31_2.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_11e.vertex[0].avertex.K1.real(), PT4_K1a13_2_11e.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_21e.vertex[0].avertex.K1.real(), PT4_K1a13_2_21e.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_11o.vertex[0].avertex.K1.real(), PT4_K1a13_2_11o.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_21o.vertex[0].avertex.K1.real(), PT4_K1a13_2_21o.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_12o.vertex[0].avertex.K1.real(), PT4_K1a13_2_12o.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_22o.vertex[0].avertex.K1.real(), PT4_K1a13_2_22o.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_ia.vertex[0].avertex.K1.real(), PT4_K1a13_2_ia.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_ib.vertex[0].avertex.K1.real(), PT4_K1a13_2_ib.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_iia.vertex[0].avertex.K1.real(), PT4_K1a13_2_iia.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_iib.vertex[0].avertex.K1.real(), PT4_K1a13_2_iib.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_iva.vertex[0].avertex.K1.real(), PT4_K1a13_2_iva.vertex[0].avertex.K1.imag(),
-                                   PT4_K1a13_2_ivb.vertex[0].avertex.K1.real(), PT4_K1a13_2_ivb.vertex[0].avertex.K1.imag()});
+                                   PT4_K1a22.vertex[0].avertex().K1.real(), PT4_K1a22.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_1.vertex[0].avertex().K1.real(), PT4_K1a13_1.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2.vertex[0].avertex().K1.real(), PT4_K1a13_2.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a31_2.vertex[0].avertex().K1.real(), PT4_K1a31_2.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_11e.vertex[0].avertex().K1.real(), PT4_K1a13_2_11e.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_21e.vertex[0].avertex().K1.real(), PT4_K1a13_2_21e.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_11o.vertex[0].avertex().K1.real(), PT4_K1a13_2_11o.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_21o.vertex[0].avertex().K1.real(), PT4_K1a13_2_21o.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_12o.vertex[0].avertex().K1.real(), PT4_K1a13_2_12o.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_22o.vertex[0].avertex().K1.real(), PT4_K1a13_2_22o.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_ia.vertex[0].avertex().K1.real(), PT4_K1a13_2_ia.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_ib.vertex[0].avertex().K1.real(), PT4_K1a13_2_ib.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_iia.vertex[0].avertex().K1.real(), PT4_K1a13_2_iia.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_iib.vertex[0].avertex().K1.real(), PT4_K1a13_2_iib.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_iva.vertex[0].avertex().K1.real(), PT4_K1a13_2_iva.vertex[0].avertex().K1.imag(),
+                                   PT4_K1a13_2_ivb.vertex[0].avertex().K1.real(), PT4_K1a13_2_ivb.vertex[0].avertex().K1.imag()});
 
     //write_hdf("PT4_check_of_K2a_K2_switchedcc_t_update_symmrev_new11_SE_symm_full_adap_m3m9_gW10_501_101_nI1501_U1_state_PT3_K2a", 0, 1, PT3_K2a);
 }

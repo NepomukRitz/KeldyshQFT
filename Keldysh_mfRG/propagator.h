@@ -37,6 +37,13 @@ auto Eff_fac(double v) -> double {
 #endif
 }
 
+// signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
+double sign(double x) {
+    if (x > 0) return 1.;
+    else if (x < 0) return -1.;
+    else return 0.;
+}
+
 
 /// Propagator class ///
 class Propagator {
@@ -44,7 +51,7 @@ public:
     double Lambda;
     SelfEnergy<comp> selfenergy;
     SelfEnergy<comp> diff_selfenergy;
-    char type;
+    char type;      // 'g' for propagator, 's' for single scale propagator, 'k' for 's'+'e', 'e' for Katanin extension
 
 public:
     /**
@@ -77,11 +84,17 @@ public:
 
     auto valsmooth(int, double, int i_in) const -> comp;
 
+#ifdef KELDYSH_FORMALISM
     auto GR(double v, int i_in) const -> comp;
     auto GA(double v, int i_in) const -> comp;
     auto GK(double v, int i_in) const -> comp;
     auto SR(double v, int i_in) const -> comp;
     auto SK(double v, int i_in) const -> comp;
+#else
+    auto GM(double v, int i_in) const -> comp;
+    auto SM(double v, int i_in) const -> comp;
+#endif
+
 
     auto norm() const -> double;
 };
@@ -203,6 +216,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 
 /////// PROPAGATOR FUNCTIONS ///////
 
+#ifdef KELDYSH_FORMALISM
 auto Propagator::GR(double v, int i_in) const -> comp
 {
     return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
@@ -261,7 +275,20 @@ auto Propagator::SK(double v, int i_in) const -> comp
     return selfenergy.valsmooth(1, v, i_in) * (grn * gri)  -  glb_i * ( grn * Eff_fac(v) * ( 1. + (glb_Gamma+Lambda) * gri ) );
 #endif
 }
+#else
+// full propagator (Matsubara)
+auto Propagator::GM(double v, int i_in) const -> comp
+{
+    return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+}
+// single scale propagator (Matsubara)
+auto Propagator::SM(double v, int i_in) const -> comp
+{
+    comp G = GM(v, i_in);
+    return -0.5*glb_i*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
+}
 
+#endif
 
 
 auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
@@ -269,6 +296,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
     for(int i=0; i<n_in; i++){
         switch (type){
             case 'g' :                              //Good ol' regular propagator
+#ifdef KELDYSH_FORMALISM
                 switch (iK){
                     case 0:
                         return GR(v, i_in);
@@ -277,8 +305,12 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
                     default:
                         return 0.;
                 }
+#else
+                return GM(v, i_in);
+#endif
 
             case 's':
+#ifdef KELDYSH_FORMALISM
                 switch (iK){
                     case 0:
                         return SR(v, i_in);
@@ -287,8 +319,12 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
                     default:
                         return 0.;
                 }
+#else
+                return SM(v, i_in);
+#endif
 
-            case 'k':
+            case 'k': // including the Katanin extension
+#ifdef KELDYSH_FORMALISM
                 switch (iK){
                     case 0:
                         return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
@@ -300,8 +336,13 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
                     default:
                         return 0.;
                 }
+#else
+                return SM(v, i_in)
+                             + GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
+#endif
 
-            case 'e':
+            case 'e': // purely the Katanin extension
+#ifdef KELDYSH_FORMALISM
                 switch (iK){
                     case 0:
                         return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
@@ -312,6 +353,9 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
                     default:
                         return 0.;
                 }
+#else
+                return GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
+#endif
             default:
                 return 0.;
         }
@@ -322,7 +366,11 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 auto Propagator::norm() const -> double{
     double out = 0.;
     for(int i=0; i<nPROP; i++){
+#ifdef KELDYSH_FORMALISM
         out += pow(abs(GR(ffreqs[i], 0)), 2.);
+#else
+        out += pow(abs(GM(ffreqs[i], 0)), 2.);
+#endif
     }
 
     return sqrt(out);
