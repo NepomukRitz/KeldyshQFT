@@ -624,11 +624,12 @@ public:
             integrand_im[i] = integrand_value.imag();
         }
 
-        string filename = "../Data/integrand_K2";
+        string filename = "../Data/integrand_K3";
         filename += channel;
         filename += "_i0=" + to_string(i0)
                     + "_w=" + to_string(w)
                     + "_v=" + to_string(v)
+                    + "_vp=" + to_string(vp)
                     + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
@@ -1025,7 +1026,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     // initialize the integrand object and perform frequency integration
                     Integrand_K3<Q, symmetry_left, symmetry_right>
                             integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
-                    if (i_omp == 0){
+                    if (i_omp == 4189){
                         integrand_K3.save_integrand();
                     }
 
