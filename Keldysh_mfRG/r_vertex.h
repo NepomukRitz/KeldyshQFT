@@ -641,7 +641,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
                     double w_in = this->frequencies.b_K3.w[itw];
                     double v_in = this->frequencies.f_K3.w[itv];
                     double vp_in = this->frequencies.f_K3.w[itvp];
-                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
+                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
                     int sign_w = sign_index(w_in);
                     int sign_f = sign_index(v_in + vp_in);
                     int sign_fp = sign_index(v_in - vp_in);
