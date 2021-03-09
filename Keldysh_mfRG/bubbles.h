@@ -1026,9 +1026,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     // initialize the integrand object and perform frequency integration
                     Integrand_K3<Q, symmetry_left, symmetry_right>
                             integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
-                    if (i_omp == 4189){
-                        integrand_K3.save_integrand();
-                    }
+//                    if (i_omp == 4189){
+//                        integrand_K3.save_integrand();
+//                    }
 
 #ifdef KELDYSH_FORMALISM
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
