@@ -83,7 +83,7 @@ void topt_state(State<Q>& Psi, double Lambda) {
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
     vertexInTOPT(Psi.vertex, bareState, Psi, Lambda);
 
-    Psi.selfenergy = SoptPsi.selfenergy + bareState.selfenergy;
+    Psi.selfenergy = bareState.selfenergy + SoptPsi.selfenergy;
 
 }
 
