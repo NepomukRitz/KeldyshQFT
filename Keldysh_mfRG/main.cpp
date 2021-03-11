@@ -20,11 +20,11 @@
 #include "hdf5_routines.h"
 #include "flow.h"
 #include "tests/omp_test.h"
-#include "bethe-salpeter.h"
+//#include "bethe-salpeter.h"
 #include <cassert>
 
 using namespace std;
-
+/*
 auto find_best_Lambda() -> double{
 
     double tol = 1e-5;
@@ -65,6 +65,7 @@ auto find_best_Lambda() -> double{
     return Lambda;
 
 }
+*/
 
 
 string generate_filename() {

@@ -60,7 +60,11 @@ template <typename Q> void State<Q>::initialize() {
     this->selfenergy.initialize(glb_U/2., 0.);
 
     // Assign initial conditions to bare vertex
+#ifdef KELDYSH_FORMALISM
     this->vertex[0].initialize(-glb_U/2.);
+#else
+    this->vertex[0].initialize(-glb_U);
+#endif
 }
 
 // set frequency grids of newly created state to those of existing reference state

@@ -93,11 +93,12 @@ auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
     // use absolute value of error estimate
     is = (comp)(fabs(is));
 
-    // If difference between first and second estimate is already smaller than absolute or relative tolerance,
-    // return second estimate, else subdivide interval.
+    // If difference between first and second estimate and second and 13-point estimate is already smaller than absolute
+    // or relative tolerance, return second estimate, else subdivide interval.
     // Subdivide also if the integral value is exactly zero, to avoid accidental zero result due to the choice of
     // evaluation points.
-    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)) && i2 != 0.)
+    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is))
+        && abs(i2 - is) < max(EPS, tolerance * fabs(is)) && i2 != 0.)
         return i2;
     else
         return integrate(x[0],  x[2],  f[0],  f[2],  is)  // subdivide interval

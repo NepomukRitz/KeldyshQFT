@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 from general_purpose import combine_into_list, conjugate_keldysh, str_to_list, my_sign
 import global_parameters as gp
-import networkx as nx
 
 
 class Diagram:
-    def __init__(self, channel: str, diag_class: List[int], indices: List[tuple], freqs: List[int]):
+    def __init__(self, channel: str, diag_class: List[int], indices: List[tuple], freqs: List[int],
+                 prefactor: Optional[int] = 1, complex_conjugate: Optional[bool] = False):
         """Initializes a diagram
             --- Params ---
                 channel: either 'a', 'p' or 't'
@@ -18,6 +18,8 @@ class Diagram:
         self.diag_class = diag_class
         self.indices = indices
         self.freqs = freqs
+        self.prefactor = prefactor
+        self.complex_conjugate = complex_conjugate
 
     def __str__(self):
         """ Print formatting function. Currently set to print key """
@@ -48,14 +50,11 @@ class Diagram:
     #         new_indices.append((new_keldysh_indices[i], self.indices[i][1]))
     #     self.indices = new_indices
 
-    # def set_spin_indices(self, new_spin_indices: List[str]):
-    #     """ Sets spin indices to input
-    #         --- Params ---
-    #             new_spin_indices: 4-position list """
-    #     new_indices = []
-    #     for i in range(len(self.indices)):
-    #         new_indices.append((self.indices[i][0], new_spin_indices[i]))
-    #     self.indices = new_indices
+    def invert_prefactor(self):
+        self.prefactor *= -1
+
+    def conjugate(self):
+        self.complex_conjugate ^= True
 
     def generate_key(self):
         """ Generates unique key for the diagram
@@ -109,9 +108,13 @@ class Diagram:
                 completed_group.append(ParityTrafo(self.channel, '.'))
         return completed_group
 
+    def copy(self):
+        copy = Diagram(self.channel, self.diag_class, self.indices, self.freqs, self.prefactor, self.complex_conjugate)
+        return copy
+
 
 # Define identity diagram. Useful to determine id of T transformations
-e = Diagram('.', [-1, -1], [('a1', 's'), ('a2', 's'), ('a3', 's'), ('a4', 's')], [])
+e = Diagram('.', [-1, -1], [('a1', 's'), ('a2', 's'), ('a3', 's'), ('a4', 's')], [], 1, False)
 
 
 class ParityTrafo:
@@ -167,7 +170,8 @@ class ParityTrafo:
         new_indices = combine_into_list(new_keldysh_indices, diagram.get_spin_indices())
 
         # Return new, transformed diagram
-        return Diagram(diagram.channel, diagram.diag_class, new_indices, diagram.freqs)
+        return Diagram(diagram.channel, diagram.diag_class, new_indices, diagram.freqs,
+                       diagram.prefactor, diagram.complex_conjugate)
 
 
 def generate_frequencies(diag_class: List[int]):

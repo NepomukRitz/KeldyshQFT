@@ -15,6 +15,7 @@ auto isInList (T val, const vector<T>& list) -> bool {
     return (std::find(list.begin(), list.end(), val) != list.end());
 }
 
+#ifdef KELDYSH_FORMALISM
 // This function converts indices in the range 0...5 to the actual Keldysh index they correspond to
 // Rule: {0,1,3,5,6,7} -> {0,1,2,3,4,5}
 // The components 0,1,3,5,6 and 7 are the chosen reference components, numerated in the 0...15 convention
@@ -32,6 +33,7 @@ auto convertToIndepIndex(int iK) -> int
         return -1;
     }
 }
+#endif
 
 // This function returns the values of the 4 alphas for a given index in the 0...15 set
 auto alphas(int index) -> vector<int> {
