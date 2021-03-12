@@ -27,6 +27,8 @@ public:
                                         // components to relate them to the independent ones
     FrequencyTransformations freq_transformations;  // lists providing information on which transformations to apply on
                                                     // frequencies to relate them to the independent ones
+    FrequencyComponents freq_components;  // lists providing information on which transformations to apply on
+    // frequencies to relate them to the independent ones
 
     VertexFrequencyGrid frequencies;    // frequency grid
 
@@ -34,11 +36,13 @@ public:
         components = Components(channel);
         transformations = Transformations(channel);
         freq_transformations = FrequencyTransformations(channel);
+        freq_components = FrequencyComponents(channel);
     };
     rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda) {
         components = Components(channel);
         transformations = Transformations(channel);
         freq_transformations = FrequencyTransformations(channel);
+        freq_components = FrequencyComponents(channel);
     };
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
@@ -568,7 +572,7 @@ template<typename Q> auto sign_index(Q freq) -> int {
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
 
     for (int itK = 0; itK < nK_K1; itK++) {
-        int i0_tmp;
+        int i0_tmp = 0;
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0_tmp = non_zero_Keldysh_K1a[itK]; break;
@@ -580,13 +584,19 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
             double w_in = this->frequencies.b_K1.w[itw];
             IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
             int sign_w = sign_index(indices.w);
-            Ti(indices, freq_transformations.K1[itK][sign_w]);
-            indices.iK = itK;
+            if (freq_transformations.K1[itK][sign_w] != 0){
+                Ti(indices, freq_transformations.K1[itK][sign_w]);
+                indices.iK = itK;
 
-            if (indices.conjugate)
-                K1[itK * nw1 + itw] = conj(Interpolate<k1, Q>()(indices, *(this)));
-            else
-                K1[itK * nw1 + itw] = Interpolate<k1, Q>()(indices, *(this));
+                int sign_w_new = freq_components.K1[itK][sign_w];
+                int itw_new = itw + (nBOS - 1 - 2*itw)*(sign_w - sign_w_new);
+                comp result = indices.prefactor * K1[itK * nw1 + itw_new];
+                if (indices.conjugate)
+                    K1[itK * nw1 + itw] = conj(result);
+                else
+                    K1[itK * nw1 + itw] = result;
+            }
+
         }
 
     }
