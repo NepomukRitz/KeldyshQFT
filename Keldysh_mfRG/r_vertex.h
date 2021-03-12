@@ -626,10 +626,17 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
                 int sign_v1 = sign_index(v_in);
                 Ti(indices, freq_transformations.K2[itK][sign_w*2 + sign_v1]);
                 indices.iK = itK;
+
+                int sign_flat = freq_components.K2[itK][sign_w*2 + sign_v1];
+                int sign_w_new = sign_flat/2;
+                int sign_v1_new= sign_flat - sign_w_new*2;
+                int itw_new = itw + (nw2 - 1 - 2*itw)*(sign_w - sign_w_new);
+                int itv_new = itv + (nv2 - 1 - 2*itv)*(sign_v1 - sign_v1_new);
+                comp result = indices.prefactor * K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
                 if (indices.conjugate)
-                    K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(Interpolate<k2, Q>()(indices, *(this)));
+                    K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
                 else
-                    K2[itK * nw2 * nv2 + itw * nv2 + itv] = Interpolate<k2, Q>()(indices, *(this));
+                    K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
             }
         }
     }
