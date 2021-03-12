@@ -627,16 +627,19 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
                 Ti(indices, freq_transformations.K2[itK][sign_w*2 + sign_v1]);
                 indices.iK = itK;
 
-                int sign_flat = freq_components.K2[itK][sign_w*2 + sign_v1];
-                int sign_w_new = sign_flat/2;
-                int sign_v1_new= sign_flat - sign_w_new*2;
-                int itw_new = itw + (nw2 - 1 - 2*itw)*(sign_w - sign_w_new);
-                int itv_new = itv + (nv2 - 1 - 2*itv)*(sign_v1 - sign_v1_new);
-                comp result = indices.prefactor * K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
-                if (indices.conjugate)
-                    K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
-                else
-                    K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
+                if (freq_transformations.K2[itK][sign_w*2 + sign_v1] != 0) {
+
+                    int sign_flat = freq_components.K2[itK][sign_w * 2 + sign_v1];
+                    int sign_w_new = sign_flat / 2;
+                    int sign_v1_new = sign_flat - sign_w_new * 2;
+                    int itw_new = itw + (nw2 - 1 - 2 * itw) * (sign_w - sign_w_new);
+                    int itv_new = itv + (nv2 - 1 - 2 * itv) * (sign_v1 - sign_v1_new);
+                    comp result = indices.prefactor * K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
+                    if (indices.conjugate)
+                        K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
+                    else
+                        K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
+                }
             }
         }
     }
@@ -660,16 +663,39 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
                     double vp_in = this->frequencies.f_K3.w[itvp];
                     IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
                     int sign_w = sign_index(w_in);
+                    int sign_v1 = sign_index(v_in);
+                    int sign_v2 = sign_index(vp_in);
                     int sign_f = sign_index(v_in + vp_in);
                     int sign_fp = sign_index(v_in - vp_in);
                     Ti(indices, freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp]);
                     indices.iK = itK;
-                    if (indices.conjugate)
-                        K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = conj(
-                                Interpolate<k3, Q>()(indices, *(this)));
-                    else
-                        K3[itK * nw3 * nv3 * nv3 + itw * nv3 * nv3 + itv * nv3 + itvp] = Interpolate<k3, Q>()(indices,
-                                                                                                              *(this));
+
+                    if (freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp] != 0) {
+                        int sign_flat = freq_components.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
+                        int sign_w_new = sign_flat / 4;
+                        int sign_f_new = sign_flat / 2 - sign_w_new * 2;
+                        int sign_fp_new = sign_flat - sign_f_new * 2 - sign_w_new * 4;
+                        int sign_v1_new;
+                        int sign_v2_new;
+
+                        int itw_new = itw + (nw3 - 1 - 2 * itw) * (sign_w - sign_w_new);
+                        int itv_new = itv;
+                        int itvp_new = itvp;
+                        if (sign_f_new != sign_f) {
+                            itv_new = itvp + (nv3 - 1 - 2 * itvp) ;
+                            itvp_new = itv + (nv3 - 1 - 2 * itv);
+                        }
+                        if (sign_fp_new != sign_fp) {
+                            int it_temp = itv_new;
+                            itv_new = itvp_new;
+                            itvp_new = it_temp;
+                        }
+                        comp result = indices.prefactor * K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
+                        if (indices.conjugate)
+                            K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = conj(result);
+                        else
+                            K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = result;
+                    }
                 }
             }
         }
