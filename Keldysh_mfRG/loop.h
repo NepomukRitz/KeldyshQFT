@@ -196,10 +196,18 @@ public:
     }
 
     void save_integrand() {
-        rvec integrand_re (nFER);
-        rvec integrand_im (nFER);
-        for (int i=0; i<nFER; ++i) {
-            double vpp = vertex[0].avertex.frequencies.f_K1.w[i];
+        int npoints = 1000; //nFER
+        rvec freqs = (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<npoints; ++i) {
+            //double vpp = vertex[0].avertex().frequencies.b_K1.w[i];
+            double wl = propagator.selfenergy.frequencies.w_lower*2;
+            double wu = propagator.selfenergy.frequencies.w_upper*2;
+            double vpp = wl + i*(wu-wl)/npoints;
+            freqs[i] = vpp;
+
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -210,7 +218,7 @@ public:
         filename +=  "_v=" + to_string(v) + ".h5";
         write_h5_rvecs(filename,
                        {"vpp", "integrand_re", "integrand_im"},
-                       {vertex[0].avertex.frequencies.f_K1.w, integrand_re, integrand_im});
+                       {freqs, integrand_re, integrand_im});
     }
 };
 
@@ -244,7 +252,7 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 #else
         IntegrandSE<Q> integrandR('r', fullvertex, prop, v, i_in, all_spins);
         // save integrand for manual checks:
-        /*if(iSE==90){
+        /*if(iSE==0){
             integrandR.save_integrand();
         }*/
 
@@ -281,17 +289,11 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 #else
 
         comp integratedR;
-        //print('\n', integratedR);
-        if (v<0){
-            integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),   v-inter_tol , 0.);
-            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol,     -inter_tol, 0.);
-            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,     +inter_tol, v_upper+abs(v), 0.);
-        }
-        else{
-            integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),    -inter_tol , 0.);
-            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,     +inter_tol,    v-inter_tol, 0.);
-            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol, v_upper+abs(v), 0.);
-        }
+        // split up the integrand at discontinuities and (possible) kinks:
+        integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),   -abs(v) , 0.);
+        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    -abs(v),     -inter_tol, 0.);
+        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    +inter_tol,     abs(v), 0.);
+        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    abs(v), v_upper+abs(v), 0.);
         self.addself(0, iv, i_in, integratedR);
 #endif
     }
