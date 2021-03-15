@@ -359,7 +359,7 @@ public:
     }
 
     void save_integrand() {
-        int npoints = 1000;
+        int npoints = nBOS;
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);
@@ -367,9 +367,10 @@ public:
         rvec Pival_re (npoints);
         rvec Pival_im (npoints);
         for (int i=0; i<npoints; ++i) {
-            double wl = vertex1[0].avertex().frequencies.b_K1.w_lower/50.;
-            double wu = vertex1[0].avertex().frequencies.b_K1.w_upper/50.;
+            double wl = vertex1[0].avertex().frequencies.b_K1.w_lower*2.;
+            double wu = vertex1[0].avertex().frequencies.b_K1.w_upper*2.;
             double vpp = wl + i * (wu-wl)/(npoints-1);
+            vpp = vertex1[0].avertex().frequencies.b_K1.w[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -1026,9 +1027,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     // initialize the integrand object and perform frequency integration
                     Integrand_K3<Q, symmetry_left, symmetry_right>
                             integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
-                    if (i_omp == 4189){
+                    /*if (i_omp == 4189){
                         integrand_K3.save_integrand();
-                    }
+                    }*/
 
 #ifdef KELDYSH_FORMALISM
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
