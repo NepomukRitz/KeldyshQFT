@@ -771,7 +771,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         cout << "\n Uooooohhh, sth went wrong! \n \n";
                 }
 
-                //if (trafo == 0) { // TODO: comment in once bugs are fixed
+                if (trafo == 0) {
 
                     // initialize the integrand object and perform frequency integration
                     if (vertex1[0].Ir() && vertex2[0].Ir()) value = 0.; // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
@@ -816,7 +816,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                       }
 #endif
-                    //}
+                    }
                 }
                 K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
@@ -832,15 +832,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K1 += K1_ordered_result;
-            //dgamma[0].avertex().enforce_freqsymmetriesK1(); // TODO: see above
+            dgamma[0].avertex().enforce_freqsymmetriesK1();
             break;
         case 'p':
             dgamma[0].pvertex().K1 += K1_ordered_result;
-            //dgamma[0].pvertex().enforce_freqsymmetriesK1();
+            dgamma[0].pvertex().enforce_freqsymmetriesK1();
             break;
         case 't':
             dgamma[0].tvertex().K1 += K1_ordered_result;
-            //dgamma[0].tvertex().enforce_freqsymmetriesK1();
+            dgamma[0].tvertex().enforce_freqsymmetriesK1();
             break;
         default: ;
     }
@@ -891,7 +891,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         cout << "\n Uooooohhh, sth went wrong! \n \n";
                 }
 
-                //if (trafo == 0) {  // TODO: see above
+                if (trafo == 0) {
 
                     // initialize the integrand object and perform frequency integration
                     if (vertex2[0].Ir()) value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
@@ -941,7 +941,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                         }
 #endif
-                    //}
+                    }
                 }
                 K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
@@ -957,15 +957,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2 += K2_ordered_result;
-            //dgamma[0].avertex().enforce_freqsymmetriesK2(); // TODO: see above
+            dgamma[0].avertex().enforce_freqsymmetriesK2();
             break;
         case 'p':
             dgamma[0].pvertex().K2 += K2_ordered_result;
-            //dgamma[0].pvertex().enforce_freqsymmetriesK2();
+            dgamma[0].pvertex().enforce_freqsymmetriesK2();
             break;
         case 't':
             dgamma[0].tvertex().K2 += K2_ordered_result;
-            //dgamma[0].tvertex().enforce_freqsymmetriesK2();
+            dgamma[0].tvertex().enforce_freqsymmetriesK2();
             break;
         default: ;
     }
@@ -1020,7 +1020,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         cout << "\n Uooooohhh, sth went wrong! \n \n";
                 }
 
-                //if (trafo == 0) { // TODO: see above
+                if (trafo == 0) {
 
                     // initialize the integrand object and perform frequency integration
                     Integrand_K3<Q, symmetry_left, symmetry_right>
@@ -1056,7 +1056,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #endif
                     }
                     // */
-                //}
+                }
                 K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
             ++iterator;
@@ -1071,15 +1071,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K3 += K3_ordered_result;
-            //dgamma[0].avertex().enforce_freqsymmetriesK3(); // TODO: see above
+            dgamma[0].avertex().enforce_freqsymmetriesK3();
             break;
         case 'p':
             dgamma[0].pvertex().K3 += K3_ordered_result;
-            //dgamma[0].pvertex().enforce_freqsymmetriesK3();
+            dgamma[0].pvertex().enforce_freqsymmetriesK3();
             break;
         case 't':
             dgamma[0].tvertex().K3 += K3_ordered_result;
-            //dgamma[0].tvertex().enforce_freqsymmetriesK3();
+            dgamma[0].tvertex().enforce_freqsymmetriesK3();
             break;
         default: ;
     }
