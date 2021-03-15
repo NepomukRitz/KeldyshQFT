@@ -212,7 +212,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     dGammatbar_C.set_frequency_grid(Psi.vertex);
 #endif
 
-    for (int i=3; i<N_LOOPS; i++) {
+    for (int i=3; i<=N_LOOPS; i++) {
         // create non-symmetric vertex with differentiated vertex on the left
         GeneralVertex<Q, non_symmetric> non_symmetric_left;
         non_symmetric_left[0].left()  = dGammaL[0].left();  // assign left part to dGammaL
