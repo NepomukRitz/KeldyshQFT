@@ -38,6 +38,7 @@ add_executable(Keldysh_mfRG
         parameters.h
         parquet_checks.h
         perturbation_theory.h
+        postprocessing.h
         propagator.h
         right_hand_sides.h
         r_vertex.h
@@ -78,6 +79,7 @@ add_executable(Keldysh_mfRG_testing
         parameters.h
         parquet_checks.h
         perturbation_theory.h
+        postprocessing.h
         propagator.h
         right_hand_sides.h
         r_vertex.h
