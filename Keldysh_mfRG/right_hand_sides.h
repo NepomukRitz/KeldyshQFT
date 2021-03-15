@@ -214,7 +214,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     for (int i=3; i<=N_LOOPS; i++) {
         // create non-symmetric vertex with differentiated vertex on the left
-        GeneralVertex<Q, non_symmetric> non_symmetric_left;
+        GeneralVertex<Q, non_symmetric> non_symmetric_left (n_spin);
         non_symmetric_left[0].left()  = dGammaL[0].left();  // assign left part to dGammaL
         non_symmetric_left[0].right() = dGammaR[0].left();  // assign right part to dGammaR [symmetric -> left()=right()]
 
@@ -222,7 +222,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, non_symmetric_left, G);
 
         // create non-symmetric vertex with differentiated vertex on the right (dGammaL/dGammaR switched)
-        GeneralVertex<Q, non_symmetric> non_symmetric_right;
+        GeneralVertex<Q, non_symmetric> non_symmetric_right (n_spin);
         non_symmetric_right[0].left()  = dGammaR[0].left(); // assign left part to dGammaR (sic!)
         non_symmetric_right[0].right() = dGammaL[0].left(); // assign right part to dGammaL (sic!)
 
