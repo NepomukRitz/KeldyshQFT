@@ -198,10 +198,12 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     vertexOneLoopFlow(dPsi.vertex, Psi.vertex, G, dG);
 
 #if N_LOOPS>=2
-
-    Vertex<Q> dGammaL = calculate_dGammaL(dPsi.vertex, Psi.vertex, G);
-    Vertex<Q> dGammaR = calculate_dGammaR(dPsi.vertex, Psi.vertex, G);
-    Vertex<Q> dGammaT = dGammaL + dGammaR;
+    // Calculate left and right part of 2-loop contribution.
+    // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric vertex
+    // when inserted in the 3-loop contribution below.
+    Vertex<Q> dGammaL_half1 = calculate_dGammaL(dPsi.vertex, Psi.vertex, G);
+    Vertex<Q> dGammaR_half1 = calculate_dGammaR(dPsi.vertex, Psi.vertex, G);
+    Vertex<Q> dGammaT = dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
     dPsi.vertex += dGammaT;
 #endif
 
@@ -213,34 +215,29 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 #endif
 
     for (int i=3; i<=N_LOOPS; i++) {
-        // create non-symmetric vertex with differentiated vertex on the left
-        GeneralVertex<Q, non_symmetric> non_symmetric_left (n_spin);
-        non_symmetric_left[0].left()  = dGammaL[0].left();  // assign left part to dGammaL
-        non_symmetric_left[0].right() = dGammaR[0].left();  // assign right part to dGammaR [symmetric -> left()=right()]
+        // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
+        GeneralVertex<Q, non_symmetric> dGammaL (n_spin);
+        dGammaL[0].half1() = dGammaL_half1[0].half1();  // assign half 1
+        dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR
 
         // insert this non-symmetric vertex on the right of the bubble
-        Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, non_symmetric_left, G);
+        Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, G);
 
-        // create non-symmetric vertex with differentiated vertex on the right (dGammaL/dGammaR switched)
-        GeneralVertex<Q, non_symmetric> non_symmetric_right (n_spin);
-        non_symmetric_right[0].left()  = dGammaR[0].left(); // assign left part to dGammaR (sic!)
-        non_symmetric_right[0].right() = dGammaL[0].left(); // assign right part to dGammaL (sic!)
+        // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+        GeneralVertex<Q, non_symmetric> dGammaR (n_spin);
+        dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
+        dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
         // insert this non-symmetric vertex on the left of the bubble
-        Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(non_symmetric_right, Psi.vertex, G);
+        Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, G);
 
         // symmetrize by averaging left and right insertion
         Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5;
 
-        // TODO: old version -> remove?
-//        Vertex<Q> dGammaC_ap = calculate_dGammaC_ap(Psi.vertex, dGammaL, G);
-//        Vertex<Q> dGammaC_t  = calculate_dGammaC_t (Psi.vertex, dGammaL, G);
-//        Vertex<Q> dGammaC = dGammaC_ap + dGammaC_t;
+        dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, G);
+        dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, G);
 
-        dGammaL = calculate_dGammaL(dGammaT, Psi.vertex, G);
-        dGammaR = calculate_dGammaR(dGammaT, Psi.vertex, G);
-
-        dGammaT = dGammaL + dGammaC + dGammaR;
+        dGammaT = dGammaL_half1 + dGammaC + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
         dPsi.vertex += dGammaT;
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
         dGammatbar_C += dGammaC_ap;
