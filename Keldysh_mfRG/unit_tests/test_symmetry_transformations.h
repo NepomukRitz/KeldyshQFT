@@ -132,6 +132,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
             }
+#ifdef KELDYSH_FORMALISM
             AND_THEN( "w remains unchanged, v1 and v2 are flipped" ) {
                 REQUIRE( indices_c.w  == indices.w  );
 #if DIAG_CLASS > 1
@@ -139,17 +140,34 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
                 REQUIRE( indices_c.v2 == indices.v1 );
 #endif
             }
+#else
+            AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
+                REQUIRE( indices_c.w  == -indices.w  );
+#if DIAG_CLASS > 1
+                REQUIRE( indices_c.v1 == -indices.v2 );
+                REQUIRE( indices_c.v2 == -indices.v1 );
+#endif
+            }
+#endif
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'a' );
             }
             AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
+#ifdef KELDYSH_FORMALISM
                     THEN( "prefactor is -1" ) {
                         TC(indices);
                         REQUIRE( indices.prefactor == -1. );
                     }
+#else
+                    THEN( "prefactor is 1" ) {
+                        TC(indices);
+                        REQUIRE( indices.prefactor == 1. );
+                    }
+#endif
                 }
+#ifdef KELKELDYSH_FORMALISM
                 AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                     indices.iK = 1;
                     THEN( "prefactor is 1" ) {
@@ -157,6 +175,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
                         REQUIRE( indices.prefactor == 1. );
                     }
                 }
+#endif
                 // TODO: potentially check all combinations?
             }
             AND_THEN( "conjugation is applied" ) {
@@ -299,6 +318,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
             }
+#ifdef KELDYSH_FORMALISM
             AND_THEN( "w remains unchanged, v1 and v2 are flipped" ) {
                 REQUIRE( indices_c.w  == indices.w );
 #if DIAG_CLASS > 1
@@ -306,17 +326,34 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                 REQUIRE( indices_c.v2 == indices.v1 );
 #endif
             }
+#else
+            AND_THEN( "v1 and v2 are flipped, all frequencies are multiplied with -1" ) {
+                REQUIRE( indices_c.w  == -indices.w );
+#if DIAG_CLASS > 1
+                REQUIRE( indices_c.v1 == -indices.v2 );
+                REQUIRE( indices_c.v2 == -indices.v1 );
+#endif
+            }
+#endif
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'p' );
             }
             AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
-                    THEN( "prefactor is -1" ) {
+#ifdef KELDYSH_FORMALISM
+                        THEN( "prefactor is -1" ) {
                         TC(indices);
                         REQUIRE( indices.prefactor == -1. );
                     }
+#else
+                    THEN( "prefactor is 1" ) {
+                        TC(indices);
+                        REQUIRE( indices.prefactor == 1. );
+                    }
+#endif
                 }
+#ifdef KELDYSH_FORMALISM
                 AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                     indices.iK = 1;
                     THEN( "prefactor is 1" ) {
@@ -324,6 +361,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                         REQUIRE( indices.prefactor == 1. );
                     }
                 }
+#endif
                 // TODO: potentially check all combinations?
             }
             AND_THEN( "conjugation is applied" ) {
@@ -466,6 +504,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
             }
+#ifdef KELDYSH_FORMALISM
             AND_THEN( "w gets a minus sign, v1 and v2 remain unchanged" ) {
                 REQUIRE( indices_c.w  == -indices.w );
 #if DIAG_CLASS > 1
@@ -473,17 +512,34 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
                 REQUIRE( indices_c.v2 == indices.v2 );
 #endif
             }
+#else
+                AND_THEN( "v1 and v2 get a minus sign, w remains unchanged" ) {
+                REQUIRE( indices_c.w  == indices.w );
+#if DIAG_CLASS > 1
+                REQUIRE( indices_c.v1 == -indices.v1 );
+                REQUIRE( indices_c.v2 == -indices.v2 );
+#endif
+            }
+#endif
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 't' );
             }
             AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
+#ifdef KELDYSH_FORMALISM
                     THEN( "prefactor is -1" ) {
                         TC(indices);
                         REQUIRE( indices.prefactor == -1. );
                     }
+#else
+                    THEN( "prefactor is 1" ) {
+                        TC(indices);
+                        REQUIRE( indices.prefactor == 1. );
+                    }
+#endif
                 }
+#ifdef KELDYSH_FORMALISM
                 AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                     indices.iK = 1;
                     THEN( "prefactor is 1" ) {
@@ -491,6 +547,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
                         REQUIRE( indices.prefactor == 1. );
                     }
                 }
+#endif
                 // TODO: potentially check all combinations?
             }
             AND_THEN( "conjugation is applied" ) {
