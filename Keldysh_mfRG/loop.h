@@ -190,7 +190,7 @@ public:
                                           GA*(factorAdvancedClosedAbove) +
                                           GK*(factorKeldyshClosedAbove ) );
 #else
-        return symmetrization_prefactor*( GM*factorClosedAbove ) * glb_i;
+        return symmetrization_prefactor*( GM*factorClosedAbove ) * glb_i; // Multiplying the imaginary unit ensures that the integrand is purely real in the particle-hole symmetric case
 #endif
 #endif
     }
