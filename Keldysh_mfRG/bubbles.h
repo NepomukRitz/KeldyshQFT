@@ -591,7 +591,7 @@ public:
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
     auto operator() (double vpp) const -> Q {
-        Q res, res_l_V, res_r_V,  res_l_Vhat, res_r_Vhat;
+        Q res{}, res_l_V, res_r_V,  res_l_Vhat, res_r_Vhat;
         Q Pival;
         vector<int> indices(2);
 
