@@ -1161,12 +1161,8 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
  * @return            : State object containing the result.
  */
 State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
-#ifdef MPI_FLAG
-    if (mpi_world_rank() == 0)  // only the process with ID 0 reads from file to avoid collisions
-#endif
-    {
-        State<state_datatype> result;
-        if (Lambda_it < Lambda_size) {
+    State<state_datatype> result;
+    if (Lambda_it < Lambda_size) {
 
         // Open the file. Access rights: read-only
         H5::H5File *file = 0;
