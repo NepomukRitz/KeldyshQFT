@@ -144,7 +144,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
 
     // solve ODE using step sizes x_diffs
     T y_run = y_ini; // initial y value
-    double x_run = x_vals[0]; // initial x value
+    double x_run = x_vals[it_start]; // initial x value
     double dx;
     for (int i=it_start; i<x_diffs.size(); ++i) {
         dx = x_diffs[i];
