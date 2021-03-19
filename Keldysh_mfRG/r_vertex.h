@@ -659,16 +659,17 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
             for (int itv = 0; itv < nv3; itv++){
                 for (int itvp = 0; itvp < nv3; itvp++) {
                     double w_in = this->frequencies.b_K3.w[itw];
-                    double v_in = this->frequencies.f_K3.w[itv];
-                    double vp_in = this->frequencies.f_K3.w[itvp];
-                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
+                    //double v_in = this->frequencies.f_K3.w[itv];
+                    //double vp_in = this->frequencies.f_K3.w[itvp];
+                    IndicesSymmetryTransformations indices(i0_tmp, 0, 0, 0, 0, channel);
                     int sign_w = sign_index(w_in);
-                    int sign_v1 = sign_index(v_in);
-                    int sign_v2 = sign_index(vp_in);
-                    int sign_f = sign_index(v_in + vp_in);
-                    int sign_fp = sign_index(v_in - vp_in);
+                    //int sign_v1 = sign_index(v_in);
+                    //int sign_v2 = sign_index(vp_in);
+                    int sign_f =  itv+itvp<nFER3? 0 : 1;    // this corresponds to "sign_index(v_in + vp_in)" assuming
+                                                            // that both v and vp use the same fermionic frequency grid
+                    int sign_fp = itv<=itvp? 0 : 1;         // this corresponds to "sign_index(v_in - vp_in)"  assuming
+                                                            // that both v and vp use the same fermionic frequency grid
                     Ti(indices, freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp]);
-                    indices.iK = itK;
 
                     if (freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp] != 0) {
                         int sign_flat = freq_components.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];

@@ -610,7 +610,7 @@ public:
     }
 
     void save_integrand() const {
-        int npoints = 1000;
+        int npoints = 100;
         rvec freqs (npoints);
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
@@ -1005,8 +1005,10 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 
                 int trafo = 1;
                 int sign_w = sign_index<double>(w);
-                int sign_f = sign_index<double>(v+vp);
-                int sign_fp = sign_index<double>(v-vp);
+                int sign_f = iv+ivp<nFER3? 0 : 1;   // this corresponds to "sign_index(v + vp)" assuming
+                                                    // that both v and vp use the same fermionic frequency grid
+                int sign_fp = iv<=ivp? 0 : 1;       // this corresponds to "sign_index(v - vp)"  assuming
+                                                    // that both v and vp use the same fermionic frequency grid
                 switch (channel) {
                     case 'a':
                         trafo = TransformaK3a[i0][sign_w * 4 + sign_f * 2 + sign_fp];
