@@ -122,7 +122,7 @@ public:
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
-    void enforce_freqsymmetriesK1();
+    void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
 #endif
 #if DIAG_CLASS >= 2
@@ -151,7 +151,7 @@ public:
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
-    void enforce_freqsymmetriesK2();
+    void enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated);
 
 #endif
 #if DIAG_CLASS >= 3
@@ -180,7 +180,7 @@ public:
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
-    void enforce_freqsymmetriesK3();
+    void enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated);
 
 #endif
 #endif
@@ -523,12 +523,12 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
             for (int iv=0; iv<nv2; ++iv) {
                 for (int i_in = 0; i_in<n_in; ++i_in) {
                     IndicesSymmetryTransformations indices (iK2, frequencies_new.b_K2.w[iw],
-                                                                 frequencies_new.f_K2.w[iv],
-                                                                 0.,
+                                                            frequencies_new.f_K2.w[iv],
+                                                            0.,
                                                             i_in, channel);
                     // interpolate old values to new vector
                     K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
-                        = Interpolate<k2,Q>()(indices, *this);
+                            = Interpolate<k2,Q>()(indices, *this);
                 }
             }
         }
@@ -543,12 +543,12 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
                 for (int ivp=0; ivp<nv3; ++ivp) {
                     for (int i_in = 0; i_in<n_in; ++i_in) {
                         IndicesSymmetryTransformations indices (iK3, frequencies_new.b_K3.w[iw],
-                                                                     frequencies_new.f_K3.w[iv],
-                                                                     frequencies_new.f_K3.w[ivp],
+                                                                frequencies_new.f_K3.w[iv],
+                                                                frequencies_new.f_K3.w[ivp],
                                                                 i_in, channel);
                         // interpolate old values to new vector
                         K3_new[iK3*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in]
-                            = Interpolate<k3,Q>()(indices, *this);
+                                = Interpolate<k3,Q>()(indices, *this);
                     }
                 }
             }
@@ -569,7 +569,7 @@ template<typename Q> auto sign_index(Q freq) -> int {
     }
 }
 
-template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) {
 
     for (int itK = 0; itK < nK_K1; itK++) {
         int i0_tmp = 0;
@@ -590,7 +590,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
 
                 int sign_w_new = freq_components.K1[itK][sign_w];
                 int itw_new = itw + (nBOS - 1 - 2*itw)*(sign_w - sign_w_new);
-                comp result = indices.prefactor * K1[itK * nw1 + itw_new];
+                Q result;
+                if (indices.asymmetry_transform)
+                    result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
+                else
+                    result = indices.prefactor * K1[itK * nw1 + itw_new];
                 if (indices.conjugate)
                     K1[itK * nw1 + itw] = conj(result);
                 else
@@ -606,7 +610,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1() {
 
 
 #if DIAG_CLASS >= 2
-template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) {
 
     for (int itK = 0; itK < nK_K2; itK++){
         int i0_tmp;
@@ -634,7 +638,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
                     int sign_v1_new = sign_flat - sign_w_new * 2;
                     int itw_new = itw + (nw2 - 1 - 2 * itw) * (sign_w - sign_w_new);
                     int itv_new = itv + (nv2 - 1 - 2 * itv) * (sign_v1 - sign_v1_new);
-                    comp result = indices.prefactor * K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
+                    Q result;
+                    if (indices.asymmetry_transform)
+                        result = indices.prefactor * vertex_symmrelated.K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
+                    else
+                        result = indices.prefactor * K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
                     if (indices.conjugate)
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
                     else
@@ -648,7 +656,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2() {
 #endif
 
 #if DIAG_CLASS >= 3
-template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated) {
 
     for (int itK = 0; itK < nK_K3; itK++){
         int i0_tmp;
@@ -666,9 +674,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
                     //int sign_v1 = sign_index(v_in);
                     //int sign_v2 = sign_index(vp_in);
                     int sign_f =  itv+itvp<nFER3? 0 : 1;    // this corresponds to "sign_index(v_in + vp_in)" assuming
-                                                            // that both v and vp use the same fermionic frequency grid
+                    // that both v and vp use the same fermionic frequency grid
                     int sign_fp = itv<=itvp? 0 : 1;         // this corresponds to "sign_index(v_in - vp_in)"  assuming
-                                                            // that both v and vp use the same fermionic frequency grid
+                    // that both v and vp use the same fermionic frequency grid
                     Ti(indices, freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp]);
 
                     if (freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp] != 0) {
@@ -691,7 +699,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3() {
                             itv_new = itvp_new;
                             itvp_new = it_temp;
                         }
-                        comp result = indices.prefactor * K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
+                        Q result;
+                        if (indices.asymmetry_transform)
+                            result = indices.prefactor * vertex_symmrelated.K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
+                        else
+                            result = indices.prefactor * K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
                         if (indices.conjugate)
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = conj(result);
                         else

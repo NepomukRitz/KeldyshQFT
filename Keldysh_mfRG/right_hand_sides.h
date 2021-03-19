@@ -212,9 +212,16 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     dGammatbar_C.set_frequency_grid(Psi.vertex);
 #endif
 
-    for (int i=3; i<N_LOOPS; i++) {
+    for (int i=3; i<=N_LOOPS; i++) {
+        // subdiagrams don't fulfill the full symmetry of the vertex
+        // the symmetry-related diagram with a differentiated vertex on the left might be one with differentiated vertex on the right (vice versa)
+        // for further evaluation as part of a bigger diagram they need to be reordered to recover the correct dGammaL and dGammaR
+        // acc. to symmetry relations (enforce_symmetry() assumes full symmetry)
+        dGammaL[0].left().reorder_due2antisymmetry(dGammaR[0].left());
+        dGammaR[0].left().reorder_due2antisymmetry(dGammaL[0].left());
+
         // create non-symmetric vertex with differentiated vertex on the left
-        GeneralVertex<Q, non_symmetric> non_symmetric_left;
+        GeneralVertex<Q, non_symmetric> non_symmetric_left(n_spin);
         non_symmetric_left[0].left()  = dGammaL[0].left();  // assign left part to dGammaL
         non_symmetric_left[0].right() = dGammaR[0].left();  // assign right part to dGammaR [symmetric -> left()=right()]
 
@@ -222,7 +229,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, non_symmetric_left, G);
 
         // create non-symmetric vertex with differentiated vertex on the right (dGammaL/dGammaR switched)
-        GeneralVertex<Q, non_symmetric> non_symmetric_right;
+        GeneralVertex<Q, non_symmetric> non_symmetric_right(n_spin);
         non_symmetric_right[0].left()  = dGammaR[0].left(); // assign left part to dGammaR (sic!)
         non_symmetric_right[0].right() = dGammaL[0].left(); // assign right part to dGammaL (sic!)
 

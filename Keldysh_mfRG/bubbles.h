@@ -833,15 +833,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K1 += K1_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK1();
+            dgamma[0].avertex().enforce_freqsymmetriesK1(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K1 += K1_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK1();
+            dgamma[0].pvertex().enforce_freqsymmetriesK1(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K1 += K1_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK1();
+            dgamma[0].tvertex().enforce_freqsymmetriesK1(dgamma[0].tvertex());
             break;
         default: ;
     }
@@ -959,15 +959,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2 += K2_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK2();
+            dgamma[0].avertex().enforce_freqsymmetriesK2(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K2 += K2_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK2();
+            dgamma[0].pvertex().enforce_freqsymmetriesK2(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K2 += K2_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK2();
+            dgamma[0].tvertex().enforce_freqsymmetriesK2(dgamma[0].tvertex());
             break;
         default: ;
     }
@@ -1075,15 +1075,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K3 += K3_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK3();
+            dgamma[0].avertex().enforce_freqsymmetriesK3(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K3 += K3_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK3();
+            dgamma[0].pvertex().enforce_freqsymmetriesK3(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K3 += K3_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK3();
+            dgamma[0].tvertex().enforce_freqsymmetriesK3(dgamma[0].tvertex());
             break;
         default: ;
     }
