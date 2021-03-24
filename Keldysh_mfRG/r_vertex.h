@@ -589,7 +589,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                 indices.iK = itK;
 
                 int sign_w_new = freq_components.K1[itK][sign_w];
-                int itw_new = itw + (nBOS - 1 - 2*itw)*(sign_w - sign_w_new);
+                int itw_new;
+                if (sign_w == sign_w_new)
+                    itw_new = itw;
+                else
+                    itw_new = nw1 - 1 - itw;
                 Q result;
                 if (indices.asymmetry_transform)
                     result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
@@ -636,8 +640,16 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                     int sign_flat = freq_components.K2[itK][sign_w * 2 + sign_v1];
                     int sign_w_new = sign_flat / 2;
                     int sign_v1_new = sign_flat - sign_w_new * 2;
-                    int itw_new = itw + (nw2 - 1 - 2 * itw) * (sign_w - sign_w_new);
-                    int itv_new = itv + (nv2 - 1 - 2 * itv) * (sign_v1 - sign_v1_new);
+                    int itw_new;
+                    int itv_new;
+                    if (sign_w == sign_w_new)
+                        itw_new = itw;
+                    else
+                        itw_new = nw2 - 1 - itw;
+                    if (sign_v1 == sign_v1_new)
+                        itv_new = itv;
+                    else
+                        itv_new = nv2 - 1 - itv;
                     Q result;
                     if (indices.asymmetry_transform)
                         result = indices.prefactor * vertex_symmrelated.K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
@@ -687,7 +699,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                         int sign_v1_new;
                         int sign_v2_new;
 
-                        int itw_new = itw + (nw3 - 1 - 2 * itw) * (sign_w - sign_w_new);
+                        int itw_new;
+                        if (sign_w == sign_w_new)
+                            itw_new = itw;
+                        else
+                            itw_new = nw3 - 1 - itw;
                         int itv_new = itv;
                         int itvp_new = itvp;
                         if (sign_f_new != sign_f) {
