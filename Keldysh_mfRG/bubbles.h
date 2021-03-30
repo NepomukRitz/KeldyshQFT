@@ -731,6 +731,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     vmin = min(vmin, ffreqs_K3.w_lower);
     vmax = max(vmax, ffreqs_K3.w_upper);
 #endif
+    vmin *= 2;
+    vmax  *= 2;
 
 #if DIAG_CLASS >= 0
 //    double tK1 = get_time();
@@ -799,11 +801,25 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                            value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
-                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                           //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //}
+                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+
+                           size_t num_intervals;
+                           vec<vec<double>> intervals;
                            if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                               value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                               intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                               num_intervals = 3;
                            }
-                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                           else {
+                               intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                               num_intervals = 2;
+
+                           }
+                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, intervals, num_intervals);
+
 #endif
 
 
@@ -918,15 +934,29 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                         value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
 #else
-                        value += prefactor * (1. / (2. * M_PI)) *
-                                 integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
-                        if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
-                            value += prefactor * (1. / (2. * M_PI)) *
-                                     integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
-                                                -w / 2., w / 2.);
+                        //value += prefactor * (1. / (2. * M_PI)) *
+                        //         integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
+                        //if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
+                        //    value += prefactor * (1. / (2. * M_PI)) *
+                        //             integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
+                        //                        -w / 2., w / 2.);
+                        //}
+                        //value += prefactor * (1. / (2. * M_PI)) *
+                        //         integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
+
+
+                        size_t num_intervals;
+                        vec<vec<double>> intervals;
+                        if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                            intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                            num_intervals = 3;
                         }
-                        value += prefactor * (1. / (2. * M_PI)) *
-                                 integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
+                        else {
+                            intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                            num_intervals = 2;
+
+                        }
+                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, intervals, num_intervals);
 #endif
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
@@ -1037,11 +1067,24 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
                              integrator(integrand_K3, vmin, vmax, -w / 2., w / 2.);
 #else
-                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                    //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //}
+                    //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+
+                    size_t num_intervals;
+                    vec<vec<double>> intervals;
                     if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                        intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                        num_intervals = 3;
                     }
-                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                    else {
+                        intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                        num_intervals = 2;
+
+                    }
+                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, intervals, num_intervals);
 #endif
 
 
