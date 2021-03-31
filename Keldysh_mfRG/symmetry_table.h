@@ -183,8 +183,8 @@ struct Transformations {
                                          4,  4, 43,  0}),    // spin comp. V
                           vector<int> ({ 1,  2,  1,  1,
                                         14,  1,  1,  1,
-                                        14,  2,  2,  2,            //Uses TCT2 = T1TC
-                                        14, 14, 14,  0})};  //spin comp. Vhat
+                                        41,  2,  2,  2,            //Uses TCT2 = T1TC
+                                        14, 41, 14,  0})};  //spin comp. Vhat
                 break;
             case 'p':
                 K[k1] = {vector<int> ({ 0,  0,  0,  0,
@@ -217,8 +217,8 @@ struct Transformations {
                                         4,  4, 43,  0}),    // spin comp. V
                          vector<int> ({ 1,  2,  1,  1,
                                        14,  1,  1,  1,
-                                       14,  2,  2,  2,
-                                       14, 14, 14,  0})};  // spin comp. Vhat
+                                       41,  2,  2,  2,
+                                       14, 41, 14,  0})};  // spin comp. Vhat
                 break;
             case 't':
                 K[k1] = {vector<int> ({ 0,  0,  3,  0,
@@ -251,8 +251,8 @@ struct Transformations {
                                         4,  4, 43,  0}),    // spin comp. V
                          vector<int> ({ 1,  2,  1,  1,
                                        14,  1,  1,  1,
-                                       14,  2,  2,  2,
-                                       14, 14, 14,  0})}; // spin comp. Vhat
+                                       41,  2,  2,  2,
+                                       14, 41, 14,  0})}; // spin comp. Vhat
                 break;
             default:;
         }
@@ -296,21 +296,21 @@ struct Transformations {
 
 #ifdef KELDYSH_FORMALISM
 #ifndef PARTICLE_HOLE_SYMM
-vector<vector<int>> ComponentsK1a {{0, 1}, {0, 0}};
+vector<vector<int>> ComponentsK1a {{0, 0}, {0, 0}};
 vector<vector<int>> ComponentsK1p {{0, 1}, {0, 1}};
-vector<vector<int>> ComponentsK1t {{0, 1}, {0, 0}};
-vector<vector<int>> ComponentsK2a {{0, 1, 0, 1}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}};
-vector<vector<int>> ComponentsK2p {{0, 0, 2, 2}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}};
-vector<vector<int>> ComponentsK2t {{0, 1, 0, 1}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 1, 2, 3}};
+vector<vector<int>> ComponentsK1t {{0, 0}, {0, 0}};
+vector<vector<int>> ComponentsK2a {{0, 1, 0, 1}, {0, 1, 2, 3}, {0, 1, 0, 1}, {0, 1, 2, 3}, {0, 1, 0, 1}};
+vector<vector<int>> ComponentsK2p {{0, 0, 2, 2}, {0, 0, 2, 2}, {0, 1, 2, 3}, {0, 1, 2, 3}, {0, 0, 2, 2}};
+vector<vector<int>> ComponentsK2t {{0, 1, 0, 1}, {0, 1, 2, 3}, {0, 1, 0, 1}, {0, 1, 2, 3}, {0, 1, 0, 1}};
 vector<vector<int>> ComponentsK3a {{0, 0, 2, 2, 0, 0, 2, 2}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 1, 0, 3, 2}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 2, 3, 0, 1, 2, 3}, {0, 1, 2, 3, 4, 5, 6, 7}};
 vector<vector<int>> ComponentsK3p {{0, 0, 0, 0, 4, 4, 4, 4}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 1, 0, 4, 5, 5, 4}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 0, 1, 4, 5, 4, 5}, {0, 1, 2, 3, 4, 5, 6, 7}};
 vector<vector<int>> ComponentsK3t {{0, 0, 2, 2, 0, 0, 2, 2}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 1, 0, 3, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 2, 3, 4, 5, 6, 7}};
-vector<vector<int>> TransformaK1a {{0, 0}, {0, 3}};
+vector<vector<int>> TransformaK1a {{0, 34}, {0, 3}};
 vector<vector<int>> TransformaK1p {{0, 0}, {0, 0}};
-vector<vector<int>> TransformaK1t {{0, 0}, {0, 3}};
-vector<vector<int>> TransformaK2a {{0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
-vector<vector<int>> TransformaK2p {{0, 3, 0, 3}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
-vector<vector<int>> TransformaK2t {{0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+vector<vector<int>> TransformaK1t {{0, 4}, {0, 3}};
+vector<vector<int>> TransformaK2a {{0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 34, 34}};
+vector<vector<int>> TransformaK2p {{0, 3, 0, 3}, {0, 3, 0, 3}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 3, 0, 3}};
+vector<vector<int>> TransformaK2t {{0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 4, 4}};
 vector<vector<int>> TransformaK3a {{0, 4, 0, 4, 34, 3, 34, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 3, 3, 3, 3}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 0, 0, 0, 34, 34, 34, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
 vector<vector<int>> TransformaK3p {{0, 4, 34, 3, 0, 4, 34, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 3, 3, 0, 0, 3, 3}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 0, 34, 34, 0, 0, 34, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
 vector<vector<int>> TransformaK3t {{0, 34, 0, 34, 4, 3, 4, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 3, 3, 3, 3}, {0, 0, 0, 0, 4, 4, 4, 4}, {0, 34, 0, 34, 0, 34, 0, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
@@ -318,18 +318,18 @@ vector<vector<int>> TransformaK3t {{0, 34, 0, 34, 4, 3, 4, 3}, {0, 0, 0, 0, 0, 0
 vector<vector<int>> ComponentsK1a {{0, 0}, {0, 0}};
 vector<vector<int>> ComponentsK1p {{0, 0}, {0, 0}};
 vector<vector<int>> ComponentsK1t {{0, 0}, {0, 0}};
-vector<vector<int>> ComponentsK2a {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}};
-vector<vector<int>> ComponentsK2p {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}};
-vector<vector<int>> ComponentsK2t {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}};
+vector<vector<int>> ComponentsK2a {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
+vector<vector<int>> ComponentsK2p {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
+vector<vector<int>> ComponentsK2t {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
 vector<vector<int>> ComponentsK3a {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
 vector<vector<int>> ComponentsK3p {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
 vector<vector<int>> ComponentsK3t {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
 vector<vector<int>> TransformaK1a {{0, 6}, {0, 3}};
 vector<vector<int>> TransformaK1p {{0, 6}, {0, 6}};
 vector<vector<int>> TransformaK1t {{0, 6}, {0, 3}};
-vector<vector<int>> TransformaK2a {{0, 346, 34, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}};
-vector<vector<int>> TransformaK2p {{0, 3, 36, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}};
-vector<vector<int>> TransformaK2t {{0, 46, 4, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}};
+vector<vector<int>> TransformaK2a {{0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}};
+vector<vector<int>> TransformaK2p {{0, 3, 36, 6}, {0, 3, 36, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 3, 36, 6}};
+vector<vector<int>> TransformaK2t {{0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}};
 vector<vector<int>> TransformaK3a {{0, 4, 36, 346, 34, 3, 46, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 4, 0, 4, 46, 6, 46, 6}, {0, 0, 346, 346, 34, 34, 6, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
 vector<vector<int>> TransformaK3p {{0, 4, 34, 3, 36, 346, 46, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 3, 3, 36, 36, 6, 6}, {0, 4, 0, 4, 46, 6, 46, 6}, {0, 0, 34, 34, 346, 346, 6, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
 vector<vector<int>> TransformaK3t {{0, 34, 36, 46, 4, 3, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 0, 46, 46, 4, 4, 6, 6}, {0, 34, 0, 34, 346, 6, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
