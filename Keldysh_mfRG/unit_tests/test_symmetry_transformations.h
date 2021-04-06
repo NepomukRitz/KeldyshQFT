@@ -12,7 +12,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 
         IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 'a');
 
-        REQUIRE( indices.prefactor == 1. );
+        REQUIRE(indices.sign_factor == 1. );
         REQUIRE( !indices.conjugate );
         REQUIRE( !indices.asymmetry_transform );
 
@@ -33,8 +33,8 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices1.channel == 't' );
             }
-            AND_THEN( "prefactor is -1" ) {
-                REQUIRE( indices1.prefactor == -1. );
+            AND_THEN( "sign_factor is -1" ) {
+                REQUIRE(indices1.sign_factor == -1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices1.conjugate );
@@ -61,8 +61,8 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices2.channel == 't' );
             }
-            AND_THEN( "prefactor is -1" ) {
-                REQUIRE( indices2.prefactor == -1. );
+            AND_THEN( "sign_factor is -1" ) {
+                REQUIRE(indices2.sign_factor == -1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices2.conjugate );
@@ -89,8 +89,8 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 'a' );
             }
-            AND_THEN( "prefactor is 1" ) {
-                REQUIRE( indices3.prefactor == 1. );
+            AND_THEN( "sign_factor is 1" ) {
+                REQUIRE(indices3.sign_factor == 1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices3.conjugate );
@@ -116,8 +116,8 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 #endif
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
-                REQUIRE( indices3.prefactor == indices21.prefactor );
-                REQUIRE( indices3.prefactor == indices12.prefactor );
+                REQUIRE(indices3.sign_factor == indices21.sign_factor );
+                REQUIRE(indices3.sign_factor == indices12.sign_factor );
                 REQUIRE( indices3.conjugate == indices21.conjugate );
                 REQUIRE( indices3.conjugate == indices12.conjugate );
                 REQUIRE( indices3.asymmetry_transform == indices21.asymmetry_transform );
@@ -142,19 +142,19 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'a' );
             }
-            AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
+            AND_THEN( "sign_factor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
-                    THEN( "prefactor is -1" ) {
+                    THEN( "sign_factor is -1" ) {
                         TC(indices);
-                        REQUIRE( indices.prefactor == -1. );
+                        REQUIRE(indices.sign_factor == -1. );
                     }
                 }
                 AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                     indices.iK = 1;
-                    THEN( "prefactor is 1" ) {
+                    THEN( "sign_factor is 1" ) {
                         TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
+                        REQUIRE(indices.sign_factor == 1. );
                     }
                 }
                 // TODO: potentially check all combinations?
@@ -179,7 +179,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 
         IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 'p');
 
-        REQUIRE( indices.prefactor == 1. );
+        REQUIRE(indices.sign_factor == 1. );
         REQUIRE( !indices.conjugate );
         REQUIRE( !indices.asymmetry_transform );
 
@@ -200,8 +200,8 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices1.channel == 'p' );
             }
-            AND_THEN( "prefactor is -1" ) {
-                REQUIRE( indices1.prefactor == -1. );
+            AND_THEN( "sign_factor is -1" ) {
+                REQUIRE(indices1.sign_factor == -1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices1.conjugate );
@@ -228,8 +228,8 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices2.channel == 'p' );
             }
-            AND_THEN( "prefactor is -1" ) {
-                REQUIRE( indices2.prefactor == -1. );
+            AND_THEN( "sign_factor is -1" ) {
+                REQUIRE(indices2.sign_factor == -1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices2.conjugate );
@@ -256,8 +256,8 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 'p' );
             }
-            AND_THEN( "prefactor is 1" ) {
-                REQUIRE( indices3.prefactor == 1. );
+            AND_THEN( "sign_factor is 1" ) {
+                REQUIRE(indices3.sign_factor == 1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices3.conjugate );
@@ -283,8 +283,8 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 #endif
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
-                REQUIRE( indices3.prefactor == indices21.prefactor );
-                REQUIRE( indices3.prefactor == indices12.prefactor );
+                REQUIRE(indices3.sign_factor == indices21.sign_factor );
+                REQUIRE(indices3.sign_factor == indices12.sign_factor );
                 REQUIRE( indices3.conjugate == indices21.conjugate );
                 REQUIRE( indices3.conjugate == indices12.conjugate );
                 REQUIRE( indices3.asymmetry_transform == indices21.asymmetry_transform );
@@ -309,19 +309,19 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'p' );
             }
-            AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
+            AND_THEN( "sign_factor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
-                    THEN( "prefactor is -1" ) {
+                    THEN( "sign_factor is -1" ) {
                         TC(indices);
-                        REQUIRE( indices.prefactor == -1. );
+                        REQUIRE(indices.sign_factor == -1. );
                     }
                 }
                 AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                     indices.iK = 1;
-                    THEN( "prefactor is 1" ) {
+                    THEN( "sign_factor is 1" ) {
                         TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
+                        REQUIRE(indices.sign_factor == 1. );
                     }
                 }
                 // TODO: potentially check all combinations?
@@ -346,7 +346,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
 
         IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 't');
 
-        REQUIRE( indices.prefactor == 1. );
+        REQUIRE(indices.sign_factor == 1. );
         REQUIRE( !indices.conjugate );
         REQUIRE( !indices.asymmetry_transform );
 
@@ -367,8 +367,8 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices1.channel == 'a' );
             }
-            AND_THEN( "prefactor is -1" ) {
-                REQUIRE( indices1.prefactor == -1. );
+            AND_THEN( "sign_factor is -1" ) {
+                REQUIRE(indices1.sign_factor == -1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices1.conjugate );
@@ -395,8 +395,8 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices2.channel == 'a' );
             }
-            AND_THEN( "prefactor is -1" ) {
-                REQUIRE( indices2.prefactor == -1. );
+            AND_THEN( "sign_factor is -1" ) {
+                REQUIRE(indices2.sign_factor == -1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices2.conjugate );
@@ -423,8 +423,8 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 't' );
             }
-            AND_THEN( "prefactor is 1" ) {
-                REQUIRE( indices3.prefactor == 1. );
+            AND_THEN( "sign_factor is 1" ) {
+                REQUIRE(indices3.sign_factor == 1. );
             }
             AND_THEN( "no conjugation" ) {
                 REQUIRE ( !indices3.conjugate );
@@ -450,8 +450,8 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
 #endif
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
-                REQUIRE( indices3.prefactor == indices21.prefactor );
-                REQUIRE( indices3.prefactor == indices12.prefactor );
+                REQUIRE(indices3.sign_factor == indices21.sign_factor );
+                REQUIRE(indices3.sign_factor == indices12.sign_factor );
                 REQUIRE( indices3.conjugate == indices21.conjugate );
                 REQUIRE( indices3.conjugate == indices12.conjugate );
                 REQUIRE( indices3.asymmetry_transform == indices21.asymmetry_transform );
@@ -476,19 +476,19 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 't' );
             }
-            AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
+            AND_THEN( "sign_factor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
-                    THEN( "prefactor is -1" ) {
+                    THEN( "sign_factor is -1" ) {
                         TC(indices);
-                        REQUIRE( indices.prefactor == -1. );
+                        REQUIRE(indices.sign_factor == -1. );
                     }
                 }
                 AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                     indices.iK = 1;
-                    THEN( "prefactor is 1" ) {
+                    THEN( "sign_factor is 1" ) {
                         TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
+                        REQUIRE(indices.sign_factor == 1. );
                     }
                 }
                 // TODO: potentially check all combinations?

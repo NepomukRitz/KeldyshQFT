@@ -49,7 +49,7 @@ public:
             auto f21 = vertex.K2_val(indices.iK, index_b + 1, index_f, indices.i_in);
             auto f22 = vertex.K2_val(indices.iK, index_b + 1, index_f + 1, indices.i_in);
 
-            return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+            return indices.sign_factor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
         }
         else {
             return 0.;
@@ -77,7 +77,7 @@ public:
             auto f1 = vertex.K1_val(indices.iK, index, indices.i_in);
             auto f2 = vertex.K1_val(indices.iK, index + 1, indices.i_in);
 
-            return indices.prefactor * ((1. - xd) * f1 + xd * f2);
+            return indices.sign_factor * ((1. - xd) * f1 + xd * f2);
         }
         else {
             return 0.;
@@ -143,7 +143,7 @@ public:
             auto c0 = c00 * (1. - yd) + c10 * yd;
             auto c1 = c01 * (1. - yd) + c11 * yd;
 
-            return indices.prefactor * (c0 * (1. - zd) + c1 * zd);
+            return indices.sign_factor * (c0 * (1. - zd) + c1 * zd);
         }
         else {
             return 0.;
