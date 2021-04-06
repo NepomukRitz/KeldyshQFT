@@ -154,6 +154,97 @@ public:
     }
 };
 
+template <typename Q>
+class PrecalculateBubble{
+    const Propagator& g;
+    const Propagator& s;
+    const bool dot;
+    char channel;
+
+    FrequencyGrid bosonic_grid;
+    FrequencyGrid fermionic_grid;
+
+    Bubble Helper_Bubble;
+
+#ifdef KELDYSH_FORMALISM
+    int number_of_Keldysh_components = 9;
+#else
+    int number_of_Keldysh_components = 1;
+#endif
+
+    vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nBOS*nFER*n_in); // 9 non-zero Keldysh components
+public:
+    PrecalculateBubble(const Propagator& G_in, const Propagator& S_in,
+                       const bool dot_in, const char channel_in)
+                       :g(G_in), s(S_in), dot(dot_in), channel(channel_in),
+                       Helper_Bubble(g, s, dot){
+        bosonic_grid = FrequencyGrid('b', 1, g.Lambda);
+        fermionic_grid = FrequencyGrid('f', 1, g.Lambda);
+
+        compute_FermionicBubble();
+    }
+
+    // TODO: Use "Interpolate" from "interpolations.h" for this.
+    Q value(const int iK, const double w, const double vpp, const int i_in){
+        if (    fabs(w) + inter_tol < bosonic_grid.w_upper
+                && fabs(vpp) + inter_tol < fermionic_grid.w_upper) {
+
+            int index_b = bosonic_grid.fconv(w);
+            int index_f = fermionic_grid.fconv(vpp);
+
+            double x1 = bosonic_grid.w[index_b];
+            double x2 = bosonic_grid.w[index_b + 1];
+            if (!(x1 < x2)) { // If not x1<x2, we run out of the box --> shift the index downwards.
+                index_b -= 1;
+                x1 = bosonic_grid.w[index_b];
+                x2 = bosonic_grid.w[index_b + 1];
+            }
+            double y1 = fermionic_grid.w[index_f];
+            double y2 = fermionic_grid.w[index_f + 1];
+            if (!(y1 < y2)) { // If not y1<y2, we run out of the box --> shift the index downwards.
+                index_f -= 1;
+                y1 = fermionic_grid.w[index_f];
+                y2 = fermionic_grid.w[index_f + 1];
+            }
+
+            double xd = (w - x1) / (x2 - x1);
+            double yd = (vpp - y1) / (y2 - y1);
+            auto f11 = FermionicBubble[composite_index(iK, index_b, index_f, i_in)];
+            auto f12 = FermionicBubble[composite_index(iK, index_b, index_f + 1, i_in)];
+            auto f21 = FermionicBubble[composite_index(iK, index_b + 1, index_f, i_in)];
+            auto f22 = FermionicBubble[composite_index(iK, index_b + 1, index_f + 1, i_in)];
+
+            return (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22);
+        }
+        else {
+            return 0.;
+        }
+    };
+
+    void compute_FermionicBubble(){
+        for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
+            for (int iw = 0; iw < nBOS; ++iw) {
+                for (int ivpp = 0; ivpp < nFER; ++ivpp) {
+                    perform_internal_sum(iK, iw, ivpp);
+                }
+            }
+        }
+    };
+
+    void perform_internal_sum(const int iK, const int iw, const int ivpp){
+        double w = bosonic_grid.w[iw];
+        double vpp = fermionic_grid.w[ivpp];
+        for (int i_in = 0; i_in < n_in; ++i_in) {
+            FermionicBubble[composite_index(iK, iw, ivpp, i_in)] =
+                    Helper_Bubble.value(iK, w, vpp, i_in, channel);
+        }
+    };
+
+    int composite_index(const int iK, const int iw, const int ivpp, const int i_in){
+        return iK*nBOS*nFER*n_in + iw*nFER*n_in + ivpp*n_in + i_in;
+    };
+};
+
 //Class created for debugging of the Bubbles
 class IntegrandBubble{
     const Propagator& g1;
@@ -667,6 +758,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                      )
 {
     Bubble Pi(G, S, diff); // initialize bubble object
+    // Alternatively: PrecalculateBubble Pi(G, S, diff, channel);
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
