@@ -6,6 +6,7 @@
 #include "util.h"            // text input/output
 #include "write_data2file.h" // writing data into text or hdf5 files
 #include "parameters.h"      // needed for the vector of grid values to add
+#include "testFunctions.h"   // perform FDT checks at each step of the flow
 
 void add_points_to_Lambda_grid(vector<double>& grid){
     for (auto U : U_NRG){
@@ -58,6 +59,8 @@ void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const
     if (filename != "") {
         add_hdf(filename, iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
     }
+
+    check_FDTs(y_run); // check FDTs for Sigma and K1r at each step of the flow
 }
 
 template <typename T>

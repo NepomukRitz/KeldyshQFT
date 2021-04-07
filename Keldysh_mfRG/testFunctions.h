@@ -46,10 +46,15 @@ void check_SE_causality(SelfEnergy<Q> selfEnergy) {
 
 /**
  * Function that checks FDTs for self-energy and K1 in all channels for given input state: Re(Sigma^K)=0, Re(K1r^K)=0.
+ * If verbose is true, maximum values of Re(Sigma^K) and Re(K1r^K) are always printed. If verbose is false (default),
+ * output is only printed if checks fail.
  */
 template <typename Q>
-void check_FDTs(State<Q>& state) {
-    print("Check of FDTs for self-energy and K1: Re(Sigma^K)=0, Re(K1r^K)=0.", true);
+void check_FDTs(const State<Q>& state, bool verbose=false) {
+    if (verbose)
+        print("Check of FDTs for self-energy and K1: Re(Sigma^K)=0, Re(K1r^K)=0.", true);
+
+    const double EPS = std::numeric_limits<double>::epsilon(); // double precision used as error estimate
 
     /** 1st check: real part of Keldysh component of the selfenergy has to be zero */
 
@@ -57,7 +62,16 @@ void check_FDTs(State<Q>& state) {
     vec<Q> Sigma_K (&Sigma[Sigma.size()/2], &Sigma[Sigma.size()]);  // take second half of self-energy (Keldysh comp.)
     double max_Sigma_K = Sigma_K.real().max_norm();                 // take max. value of Re(Sigma^K)
 
-    print("Maximal value of Re(Sigma^K): ", max_Sigma_K, true);
+    if (verbose) {
+        print("Maximal value of Re(Sigma^K): ", max_Sigma_K, false);
+        if (max_Sigma_K < 10 * EPS) print_add("  --> Check passed.", true);
+        else print_add("  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
+    }
+    else {
+        if (max_Sigma_K > 10 * EPS)
+            print("Maximal value of Re(Sigma^K): ", max_Sigma_K,
+                  "  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
+    }
 
     /** 2nd check: real part of Keldysh component of K1 in all channels has to be zero */
 
@@ -74,9 +88,30 @@ void check_FDTs(State<Q>& state) {
     double max_K1p_K = K1p_K.real().max_norm();
     double max_K1t_K = K1t_K.real().max_norm();
 
-    print("Maximal value of Re(K1a^K):   ", max_K1a_K, true);
-    print("Maximal value of Re(K1p^K):   ", max_K1p_K, true);
-    print("Maximal value of Re(K1t^K):   ", max_K1t_K, true);
+    if (verbose) {
+        print("Maximal value of Re(K1a^K):   ", max_K1a_K, false);
+        if (max_K1a_K < 10 * EPS) print_add("  --> Check passed.", true);
+        else print_add("  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
+
+        print("Maximal value of Re(K1p^K):   ", max_K1p_K, false);
+        if (max_K1p_K < 10 * EPS) print_add("  --> Check passed.", true);
+        else print_add("  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
+
+        print("Maximal value of Re(K1t^K):   ", max_K1t_K, false);
+        if (max_K1t_K < 10 * EPS) print_add("  --> Check passed.", true);
+        else print_add("  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
+    }
+    else {
+        if (max_K1a_K > 10 * EPS)
+            print("Maximal value of Re(K1a^K):   ", max_K1a_K,
+                  "  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
+        if (max_K1p_K > 10 * EPS)
+            print("Maximal value of Re(K1p^K):   ", max_K1p_K,
+                  "  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
+        if (max_K1t_K > 10 * EPS)
+            print("Maximal value of Re(K1t^K):   ", max_K1a_K,
+                  "  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
+    }
 }
 
 /**
