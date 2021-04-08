@@ -177,10 +177,9 @@ public:
     PrecalculateBubble(const Propagator& G_in, const Propagator& S_in,
                        const bool dot_in, const char channel_in)
                        :g(G_in), s(S_in), dot(dot_in), channel(channel_in),
-                       Helper_Bubble(g, s, dot){
-        bosonic_grid = FrequencyGrid('b', 1, g.Lambda);
-        fermionic_grid = FrequencyGrid('f', 1, g.Lambda);
-
+                       Helper_Bubble(g, s, dot),
+                       bosonic_grid('b', 1, g.Lambda),
+                       fermionic_grid('f', 1, g.Lambda){
         compute_FermionicBubble();
     }
 
