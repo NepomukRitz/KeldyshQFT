@@ -11,8 +11,9 @@
 #include "../data_structures.h"
 #include "../state.h"
 #include "../perturbation_theory.h"
-#include "../propagator.h"
 #include "../bubbles.h"
+#include "../propagator.h"
+
 
 
 template<typename Q>
@@ -44,7 +45,7 @@ public:
 
 template<typename Q> void test_PrecalculateBubble<Q>::perform_test(){
     double max_error = iterate_through_channels();
-    if (max_error != 0){
+    if (max_error != 0.){
         string deviation = to_string(max_error);
         std::cout << "The largest deviation is "  << deviation;
     }
@@ -78,6 +79,8 @@ template<typename Q> double test_PrecalculateBubble<Q>::find_largest_deviation_f
                                   - Usual_Bubble.value(iK, w, vpp, i_in, channel);
                     if (abs(deviation) > largest_deviation) {
                         largest_deviation = abs(deviation);
+                        // string dev_string = to_string(largest_deviation);
+                        // std::cout << dev_string << "\n";
                     }
                 }
             }

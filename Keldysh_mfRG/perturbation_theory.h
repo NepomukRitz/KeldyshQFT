@@ -8,6 +8,11 @@
 //#include ""
 #include "selfenergy.h"
 #include "frequency_grid.h"
+#include "propagator.h"
+#include "state.h"
+#include "bubbles.h"
+#include "loop.h"
+
 
 template <typename Q>
 void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, double Lambda){

@@ -16,7 +16,9 @@
 #include "test_data_structures.h"
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"
-// #include "test_PrecalculateBubble.h"
+#include "test_PrecalculateBubble.h"
+#include "../state.h"
+#include "../perturbation_theory.h"
 
 #ifdef INTEGRATION_TESTS
 #include "../frequency_grid.h"
@@ -52,7 +54,7 @@ int main(int argc, char* argv[]) {
 #endif
 #if DIAG_CLASS == 2
     /* further K2 tests */
-    test_K2_PT4(0.);
+    test_PT4(0.);
     test_K2_correctness(0.);
 #endif
 #ifdef MPI_FLAG
@@ -61,9 +63,11 @@ int main(int argc, char* argv[]) {
 #endif
 
     // run unit tests
+    MPI_Init(nullptr, nullptr);
 
-    //test_PrecalculateBubble<comp> test_Bubble ;
-    //test_Bubble.perform_test();
+    test_PrecalculateBubble<comp> test_Bubble ;
+    test_Bubble.perform_test();
 
+    MPI_Finalize();
     return Catch::Session().run(argc, argv);
 }
