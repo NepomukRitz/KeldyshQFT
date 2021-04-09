@@ -456,7 +456,18 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, vec<vec<
     }
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_qag(&F_imag, a, b, 0, integrator_tol, Nmax, 1, W_imag, &result_imag, &error_imag);
+    gsl_integration_qagil(&F_imag, intervals[0][0], 0, integrator_tol, Nmax, W_imag, &result_imag, &error_imag);
+    double result_imag_temp, error_imag_temp;
+    gsl_integration_qagiu(&F_imag, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_imag, &result_imag_temp, &error_imag_temp);
+    result_imag += result_imag_temp;
+    error_imag += error_imag_temp;
+    for (int i = 0; i < num_intervals; i++){
+        result_imag_temp = 0.;
+        error_imag_temp = 0.;
+        gsl_integration_qag(&F_imag, intervals[i][0], intervals[i][1], 0, integrator_tol, Nmax, 1, W_imag, &result_imag_temp, &error_imag_temp);
+        result_imag += result_imag_temp;
+        error_imag += error_imag_temp;
+    }
 #endif
 
     //double w1, w2;
