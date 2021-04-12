@@ -315,8 +315,8 @@ auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const 
 }
 
 template <typename Q>
-auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric>& nonsymVertex,
-                                       const Propagator<Q>& G) {
+auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, GeneralVertex<Q, non_symmetric>& nonsymVertex,
+                                       const Propagator<Q>& G) -> Vertex<Q> {
     Vertex<Q> dGammaC (n_spin);
     dGammaC.set_frequency_grid(PsiVertex);
 
@@ -333,7 +333,7 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const General
 
 template <typename Q>
 auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric>& nonsymVertex, const Vertex<Q>& PsiVertex,
-                                      const Propagator<Q>& G) {
+                                      const Propagator<Q>& G) -> Vertex<Q> {
     Vertex<Q> dGammaC (n_spin);
     dGammaC.set_frequency_grid(PsiVertex);
 
