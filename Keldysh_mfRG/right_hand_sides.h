@@ -12,6 +12,7 @@
 #include "fourier_trafo.h"          // SOPT from Fast Fourier transform (FFT)
 #include "solvers.h"                // ODE solver
 #include "assert.h"
+#include "hdf5_routines.h"
 
 using namespace std;
 
@@ -312,9 +313,13 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const General
     Vertex<Q> dGammaC (n_spin);
     dGammaC.set_frequency_grid(PsiVertex);
 
+    nonsymVertex.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
+
     bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, 'a', false);
     bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, 'p', false);
     bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, 't', false);
+
+    nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
     return dGammaC;
 }
@@ -325,9 +330,13 @@ auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric>& non
     Vertex<Q> dGammaC (n_spin);
     dGammaC.set_frequency_grid(PsiVertex);
 
+    nonsymVertex.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
+
     bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, 'a', false);
     bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, 'p', false);
     bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, 't', false);
+
+    nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
     return dGammaC;
 }
