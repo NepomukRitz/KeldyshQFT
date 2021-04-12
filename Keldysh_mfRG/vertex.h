@@ -80,6 +80,9 @@ public:
     rvert<Q> tvertex;
     bool Ir = false; // determines if the vertex is a full vertex or irreducible in channel r
                      // (r is determined by VertexInput in the readout functions)
+    bool only_same_channel = false; // If this flag is set true, vertex returns only value of channel r when inserted
+                                    // into r bubble (i.e. in left/right_same/diff_bare functions), and no gammaRb. This
+                                    // is needed for correct computation of the central part in multiloop contributions.
 
     fullvert() : avertex('a'),
                  pvertex('p'),
@@ -341,16 +344,22 @@ public:
     rvert<Q>& pvertex() { return half1().pvertex; }
     rvert<Q>& tvertex() { return half1().tvertex; }
     bool Ir() { return half1().Ir; }
+    bool only_same_channel() { return half1().only_same_channel; }
 
     const irreducible<Q>& irred() const { return half1().irred; }
     const rvert<Q>& avertex() const { return half1().avertex; }
     const rvert<Q>& pvertex() const { return half1().pvertex; }
     const rvert<Q>& tvertex() const { return half1().tvertex; }
     const bool Ir() const { return half1().Ir; }
+    const bool only_same_channel() const { return half1().only_same_channel; }
 
     void set_Ir(bool Ir) {
         vertex.half1().Ir = Ir;
         vertex.half2().Ir = Ir;
+    }
+    void set_only_same_channel(bool only_same_channel) {
+        vertex.half1().only_same_channel = only_same_channel;
+        vertex.half2().only_same_channel = only_same_channel;
     }
 
     // wrappers for access functions of fullvert
@@ -511,10 +520,15 @@ public:
             (*this)[i].set_Ir(Ir);
         }
     }
+    void set_only_same_channel(bool only_same_channel) {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].set_only_same_channel(only_same_channel);
+        }
+    }
 
 };
 
-/** Define Vertex as symmetric GeneralVertex */ // TODO: remove this and (globally) rename GeneralVertex -> Vertex
+/** Define Vertex as symmetric GeneralVertex */ // TODO: maybe remove this and (globally) rename GeneralVertex -> Vertex ?
 template <typename Q>
 using Vertex = GeneralVertex<Q, symmetric>;
 
@@ -819,12 +833,14 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
     }
     if (Ir)
         return gamma_Rb;
+    if (only_same_channel)
+        return K2_K3;
     return K2_K3 + gamma_Rb;
 }
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2_K3, gamma_Rb;
 #if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input);
+    gamma_Rb = gammaRb(input, right_vertex);
 #endif
 
     switch (input.channel){
@@ -842,6 +858,8 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const 
     }
     if (Ir)
         return gamma_Rb;
+    if (only_same_channel)
+        return K2_K3;
     return K2_K3 + gamma_Rb;
 }
 
@@ -866,12 +884,14 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
     }
     if (Ir)
         return gamma_Rb;
+    if (only_same_channel)
+        return K2b_K3;
     return K2b_K3 + gamma_Rb;
 }
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2b_K3, gamma_Rb;
 #if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input);
+    gamma_Rb = gammaRb(input, right_vertex);
 #endif
 
     switch (input.channel){
@@ -889,6 +909,8 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const
     }
     if (Ir)
         return gamma_Rb;
+    if (only_same_channel)
+        return K2b_K3;
     return K2b_K3 + gamma_Rb;
 }
 
