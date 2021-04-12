@@ -171,7 +171,7 @@ class PrecalculateBubble{
 #else
     int number_of_Keldysh_components = 1;
 #endif
-
+public:
     vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nBOS*nFER*n_in); // 9 non-zero Keldysh components
 public:
     PrecalculateBubble(const Propagator& G_in, const Propagator& S_in,
@@ -222,6 +222,7 @@ template <typename Q> Q PrecalculateBubble<Q>::value(const int iK, const double 
         return (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22);
     }
     else {
+        //std::cout << "Out of interpolation tolerance! \n";
         return 0.;
     }
 };
