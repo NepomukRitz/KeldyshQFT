@@ -161,7 +161,6 @@ class PrecalculateBubble{
     const bool dot;
     char channel;
 
-    FrequencyGrid bosonic_grid;
     FrequencyGrid fermionic_grid;
 
     Bubble Helper_Bubble;
@@ -178,46 +177,46 @@ public:
                        const bool dot_in, const char channel_in)
                        :g(G_in), s(S_in), dot(dot_in), channel(channel_in),
                        Helper_Bubble(g, s, dot),
-                       bosonic_grid('b', 1, g.Lambda),
                        fermionic_grid('f', 1, g.Lambda){
         compute_FermionicBubble();
     }
 
+    Q value_on_FER_GRID(int iK, double v1, double v2, int i_in);
     Q value(int iK, double w, double vpp, int i_in);
     void compute_FermionicBubble();
-    void perform_internal_sum(int iK, int iw, int ivpp);
-    int composite_index(int iK, int iw, int ivpp, int i_in);
+    void perform_internal_sum(int iK, int iv1, int iv2);
+    int composite_index(int iK, int iv1, int iv2, int i_in);
 };
 
 // TODO: Use "Interpolate" from "interpolations.h" for this.
-template <typename Q> Q PrecalculateBubble<Q>::value(const int iK, const double w, const double vpp, const int i_in){
-    if (    fabs(w) + inter_tol < bosonic_grid.w_upper
-            && fabs(vpp) + inter_tol < fermionic_grid.w_upper) {
+template <typename Q> Q PrecalculateBubble<Q>::value_on_FER_GRID(const int iK, const double v1, const double v2, const int i_in){
+    if (    fabs(v1) + inter_tol < fermionic_grid.w_upper
+            && fabs(v2) + inter_tol < fermionic_grid.w_upper) {
 
-        int index_b = bosonic_grid.fconv(w);
-        int index_f = fermionic_grid.fconv(vpp);
+        int index_f1 = fermionic_grid.fconv(v1);
+        int index_f2 = fermionic_grid.fconv(v2);
 
-        double x1 = bosonic_grid.w[index_b];
-        double x2 = bosonic_grid.w[index_b + 1];
+        double x1 = fermionic_grid.w[index_f1];
+        double x2 = fermionic_grid.w[index_f1 + 1];
         if (!(x1 < x2)) { // If not x1<x2, we run out of the box --> shift the index downwards.
-            index_b -= 1;
-            x1 = bosonic_grid.w[index_b];
-            x2 = bosonic_grid.w[index_b + 1];
+            index_f1 -= 1;
+            x1 = fermionic_grid.w[index_f1];
+            x2 = fermionic_grid.w[index_f1 + 1];
         }
-        double y1 = fermionic_grid.w[index_f];
-        double y2 = fermionic_grid.w[index_f + 1];
+        double y1 = fermionic_grid.w[index_f2];
+        double y2 = fermionic_grid.w[index_f2 + 1];
         if (!(y1 < y2)) { // If not y1<y2, we run out of the box --> shift the index downwards.
-            index_f -= 1;
-            y1 = fermionic_grid.w[index_f];
-            y2 = fermionic_grid.w[index_f + 1];
+            index_f2 -= 1;
+            y1 = fermionic_grid.w[index_f2];
+            y2 = fermionic_grid.w[index_f2 + 1];
         }
 
-        double xd = (w - x1) / (x2 - x1);
-        double yd = (vpp - y1) / (y2 - y1);
-        auto f11 = FermionicBubble[composite_index(iK, index_b, index_f, i_in)];
-        auto f12 = FermionicBubble[composite_index(iK, index_b, index_f + 1, i_in)];
-        auto f21 = FermionicBubble[composite_index(iK, index_b + 1, index_f, i_in)];
-        auto f22 = FermionicBubble[composite_index(iK, index_b + 1, index_f + 1, i_in)];
+        double xd = (v1 - x1) / (x2 - x1);
+        double yd = (v2 - y1) / (y2 - y1);
+        auto f11 = FermionicBubble[composite_index(iK, index_f1, index_f2, i_in)];
+        auto f12 = FermionicBubble[composite_index(iK, index_f1, index_f2 + 1, i_in)];
+        auto f21 = FermionicBubble[composite_index(iK, index_f1 + 1, index_f2, i_in)];
+        auto f22 = FermionicBubble[composite_index(iK, index_f1 + 1, index_f2 + 1, i_in)];
 
         return (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22);
     }
@@ -227,28 +226,47 @@ template <typename Q> Q PrecalculateBubble<Q>::value(const int iK, const double 
     }
 };
 
+template<typename Q>
+Q PrecalculateBubble<Q>::value(int iK, double w, double vpp, int i_in) {
+    Q Pival;
+    switch (channel) {
+        case 'a':
+            Pival = value_on_FER_GRID(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+            break;
+        case 'p':
+            Pival = value_on_FER_GRID(iK, w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+            break;
+        case 't':
+            Pival = value_on_FER_GRID(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+            break;
+        default:;
+    }
+    return Pival;
+};
+
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
     for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
-        for (int iw = 0; iw < nBOS; ++iw) {
-            for (int ivpp = 0; ivpp < nFER; ++ivpp) {
-                perform_internal_sum(iK, iw, ivpp);
+        for (int iv1 = 0; iv1 < nFER; ++iv1) {
+            for (int iv2 = 0; iv2 < nFER; ++iv2) {
+                perform_internal_sum(iK, iv1, iv2);
             }
         }
     }
 };
 
-template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iw, const int ivpp){
-    double w = bosonic_grid.w[iw];
-    double vpp = fermionic_grid.w[ivpp];
+template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
+    double v1 = fermionic_grid.w[iv1];
+    double v2 = fermionic_grid.w[iv2];
     for (int i_in = 0; i_in < n_in; ++i_in) {
-        FermionicBubble[composite_index(iK, iw, ivpp, i_in)] =
-                Helper_Bubble.value(iK, w, vpp, i_in, channel);
+        FermionicBubble[composite_index(iK, iv1, iv2, i_in)] =
+                Helper_Bubble.value(iK, v1, v2, i_in);
     }
 };
 
-template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK, const int iw, const int ivpp, const int i_in){
-    return iK*nBOS*nFER*n_in + iw*nFER*n_in + ivpp*n_in + i_in;
-};
+template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK, const int iv1, const int iv2, const int i_in){
+    return iK*nFER*nFER*n_in + iv1*nFER*n_in + iv2*n_in + i_in;
+}
+
 
 //Class created for debugging of the Bubbles
 class IntegrandBubble{
