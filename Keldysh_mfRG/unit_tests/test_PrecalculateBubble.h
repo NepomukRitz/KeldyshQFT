@@ -35,8 +35,10 @@ public:
         testing_state.initialize();
         sopt_state(testing_state, Lambda_ini);
 
-        g = Propagator(Lambda_ini, testing_state.selfenergy, 's');
-        s = Propagator(Lambda_ini, testing_state.selfenergy, 'g');
+        g = Propagator(Lambda_ini, testing_state.selfenergy, 'g');
+        s = Propagator(Lambda_ini, testing_state.selfenergy, 's');
+        // g = Propagator(Lambda_ini, 'g');
+        // s = Propagator(Lambda_ini, 's');
     }
 
     void perform_test();
@@ -134,7 +136,7 @@ write_h5_rvecs(filename,
 
 template<typename Q>
 string test_PrecalculateBubble<Q>::build_filename(bool dot_in, char channel) {
-    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/test_PrecalculateBubble_";
+    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/true_test_PrecalculateBubble_";
     //string filename = "../../Data/test_PrecalculateBubble_";
     filename += channel;
     if (dot_in) {filename += "_dot";}
