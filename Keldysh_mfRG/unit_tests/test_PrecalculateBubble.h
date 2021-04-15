@@ -14,6 +14,7 @@
 #include "../bubbles.h"
 #include "../propagator.h"
 #include "../write_data2file.h"            // write vectors into hdf5 file
+#include "../util.h"
 
 
 
@@ -163,5 +164,69 @@ void test_PrecalculateBubble<Q>::test_for_zero_value(Q& value, int& number_of_ze
     }
 }
 
+template<typename Q>
+class Runtime_comparison{
+#ifdef KELDYSH_FORMALISM
+    int number_of_Keldysh_components = 9;
+#else
+    int number_of_Keldysh_components = 1;
+#endif
+    Propagator g;
+    Propagator s;
+    PrecalculateBubble<Q> Pre_Bubble; // free versions of the bubbles
+    Bubble Usual_Bubble;
+                     public:
+                         Runtime_comparison(): g (Lambda_ini, 'g'), s (Lambda_ini, 's'),
+                                               Pre_Bubble (g, s, 0, 'a'), Usual_Bubble (g, s, 0){
+                             State<comp> testing_state (Lambda_ini);
+                             testing_state.initialize();
+                             sopt_state(testing_state, Lambda_ini);
+
+                             g = Propagator (Lambda_ini, testing_state.selfenergy,'g'); // this is done to obtain the frequency grid
+                             s = Propagator (Lambda_ini, testing_state.selfenergy,'s');
+                         }
+
+                         void test_runtimes(int max_number_of_iterations);
+                         double run_iterations(int iterations, bool precalculated);
+};
+
+template<typename Q>
+void Runtime_comparison<Q>::test_runtimes(int max_number_of_iterations) {
+    vec<double> times_usual (max_number_of_iterations);
+    vec<double> times_precalculated (max_number_of_iterations);
+    for (int t = 0; t < max_number_of_iterations; ++t) {
+        times_usual[t] = run_iterations(t, 1);
+        times_precalculated[t] = run_iterations(t, 0);
+    }
+    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/runtime_comparisons.h5";
+    write_h5_rvecs(filename,
+                   {"runtimes_usual", "runtimes_precalculated"},
+                   {times_usual, times_precalculated});
+}
+
+template<typename Q>
+double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated) {
+    double starting_time = get_time();
+    for (int iteration = 0; iteration < iterations; ++iteration) {
+        for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
+            for (int iw = 0; iw < nBOS; ++iw) {
+                const double w = g.selfenergy.frequencies.w[iw];
+                for (int ivpp = 0; ivpp < nFER; ++ivpp) {
+                    const double vpp = g.selfenergy.frequencies.w[ivpp];
+                    for (int i_in = 0; i_in < n_in; ++i_in) {
+                        if (precalculated){
+                            Q Pre_Bubble_Value = Pre_Bubble.value(iK, w, vpp, i_in);
+                        }
+                        else {
+                            Q Bubble_Value = Usual_Bubble.value(iK, w, vpp, i_in, 'a');
+                        }
+                    }
+                }
+            }
+        }
+    }
+    double end_time = get_time();
+    return end_time - starting_time; // time given in milliseconds
+}
 
 #endif //KELDYSH_MFRG_TESTING_TEST_PRECALCULATEBUBBLE_H

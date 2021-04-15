@@ -64,8 +64,11 @@ int main(int argc, char* argv[]) {
     // run unit tests
     MPI_Init(nullptr, nullptr);
 
-    test_PrecalculateBubble<comp> test_Bubble ;
-    test_Bubble.perform_test();
+    //test_PrecalculateBubble<comp> test_Bubble ;
+    //test_Bubble.perform_test();
+
+    Runtime_comparison<comp> runtime_tester;
+    runtime_tester.test_runtimes(100);
 
     MPI_Finalize();
     return Catch::Session().run(argc, argv);
