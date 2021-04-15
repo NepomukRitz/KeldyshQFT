@@ -11,7 +11,7 @@
 
 template <typename Q>
 void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, double Lambda){
-    Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
     bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'a', false);
     bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'p', false);
@@ -20,7 +20,7 @@ void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, double Lambda){
 
 template <typename Q>
 void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, double Lambda){
-    Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
     //Do an a-Bubble for the calculation of the self-energy
     bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, 'a', false);
@@ -31,7 +31,7 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, double 
 
 template <typename Q>
 void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, double Lambda){
-    Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
     Vertex<Q> bubblevertex_a(n_spin, Lambda);
     bubblevertex_a[0].initialize(0.);
@@ -47,7 +47,7 @@ void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, 
 
 template <typename Q>
 void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, double Lambda){
-    Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
     Vertex<Q> bubblevertex_a(n_spin, Lambda);
     bubblevertex_a[0].initialize(0.);
@@ -73,7 +73,7 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, double Lambda){
 template<typename Q>
 void sopt_state(State<Q>& Psi, double Lambda) {
 
-    State<comp> bareState (Lambda);
+    State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     //Calculate the bubbles -> Vertex in SOPT saved in Psi
@@ -88,11 +88,11 @@ void sopt_state(State<Q>& Psi, double Lambda) {
 template<typename Q>
 void topt_state(State<Q>& Psi, double Lambda) {
 
-    State<comp> bareState (Lambda);
+    State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
 
-    State<comp> SoptPsi (Lambda);
+    State<Q> SoptPsi (Lambda);
     //SoptPsi.initialize();
     sopt_state(SoptPsi, Lambda);
 
@@ -108,11 +108,11 @@ void topt_state(State<Q>& Psi, double Lambda) {
 template<typename Q>
 void fopt_state(State<Q>& Psi, double Lambda) {
 
-    State<comp> bareState (Lambda);
+    State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
 
-    State<comp> SoptPsi (Lambda);
+    State<Q> SoptPsi (Lambda);
     //SoptPsi.initialize();
     sopt_state(SoptPsi, Lambda);
 

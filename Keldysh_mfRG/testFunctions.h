@@ -27,7 +27,11 @@ void check_SE_causality(SelfEnergy<Q> selfEnergy) {
     int cnt = 0;
     double sum = 0.;
     for (int i=0; i<Sigma_R.size(); ++i) {
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+        double val = Sigma_R[i];
+#else
         double val = Sigma_R[i].imag();
+#endif
         if (val > 0.) {
             cnt += 1;
             sum += val;
@@ -81,12 +85,13 @@ void check_FDTs(State<Q>& state) {
  * @param Lambda    : Lambda at which to calculate the rhs of the eq.
  * @return          : State carrying in the K1 vertex the results of the computation
  */
-auto rhs_bubbles_flow_wstate(const State<comp>& input, double Lambda) -> State<comp>{
-    State<comp> ans (Lambda);    //Initialize the answer-object
+template <typename Q>
+auto rhs_bubbles_flow_wstate(const State<Q>& input, double Lambda) -> State<Q>{
+    State<Q> ans (Lambda);    //Initialize the answer-object
 
     //Calculating propagator objects of the required types
-    Propagator g(Lambda, input.selfenergy, 'g');
-    Propagator s(Lambda, input.selfenergy, 's');
+    Propagator<Q> g(Lambda, input.selfenergy, 'g');
+    Propagator<Q> s(Lambda, input.selfenergy, 's');
 
     bubble_function(ans.vertex, input.vertex, input.vertex, g, s, 'a', true);
     return ans;
@@ -99,13 +104,14 @@ auto rhs_bubbles_flow_wstate(const State<comp>& input, double Lambda) -> State<c
  * @param Lambda_f : final Lambda value of flow
  * @param write_flag : whether to write output in hdf5
  */
+template <typename Q>
 void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, bool write_flag = true) {
-    State<comp> state_dir (Lambda_f), state_fin (Lambda_f), state_ini (Lambda_i); // direct, final, initial K1a_1
+    State<Q> state_dir (Lambda_f), state_fin (Lambda_f), state_ini (Lambda_i); // direct, final, initial K1a_1
     state_dir.initialize(); // initialize
     state_ini.initialize(); // initialize
 
-    Propagator G0ini(Lambda_i, state_ini.selfenergy, 'g'); // initial propagator
-    Propagator G0dir(Lambda_f, state_dir.selfenergy, 'g'); // final propagator
+    Propagator<Q> G0ini(Lambda_i, state_ini.selfenergy, 'g'); // initial propagator
+    Propagator<Q> G0dir(Lambda_f, state_dir.selfenergy, 'g'); // final propagator
 
     sopt_state(state_ini, Lambda_i); // direct calculation of initial K1a
     sopt_state(state_dir, Lambda_f); // direct calculation of direct K1a
@@ -126,25 +132,26 @@ void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, b
  * @param Lambda    : Lambda at which to calculate the rhs of the eq.
  * @return          : The results of the calculation
  */
+template <typename Q>
 auto rhs_bubbles_flow(const cvec& input, double Lambda) -> cvec{
     cvec ans(nw1_a);   //Initialize the answer
 
-    SelfEnergy<comp> selfini (Lambda);   //Initialize self energy
+    SelfEnergy<Q> selfini (Lambda);   //Initialize self energy
     selfini.initialize(glb_U/2., 0.);   //Hartree term
 
-    Propagator g(Lambda, selfini, 'g'); //Regular propagator
-    Propagator s(Lambda, selfini, 's'); //Single-scale propagator
+    Propagator<Q> g(Lambda, selfini, 'g'); //Regular propagator
+    Propagator<Q> s(Lambda, selfini, 's'); //Single-scale propagator
 
     for(int i=0; i<nBOS; i++){
         double w = bfreqs[i];
 
         //Create the objects explicitly designed to return the determined Keldysh component needed
-        IntegrandBubble integrandPia11(g, s, true, w, 11, 'a');     //KA
-        IntegrandBubble integrandPia13(g, s, true, w, 13, 'a');     //RK
+        IntegrandBubble<Q> integrandPia11(g, s, true, w, 11, 'a');     //KA
+        IntegrandBubble<Q> integrandPia13(g, s, true, w, 13, 'a');     //RK
 
         //Calculate the contributions
-        auto cont11 = integrator(integrandPia11, glb_w_lower, glb_w_lower);
-        auto cont13 = integrator(integrandPia13, glb_w_lower, glb_w_lower);
+        auto cont11 = integrator<Q>(integrandPia11, glb_w_lower, glb_w_lower);
+        auto cont13 = integrator<Q>(integrandPia13, glb_w_lower, glb_w_lower);
 
         //Add the respective contributions to the respective bubble
         ans[i] = pow(-glb_U/2., 2.)*(cont11+ cont13);            //11+13 = OE => Keldysh comp0
@@ -157,25 +164,26 @@ auto rhs_bubbles_flow(const cvec& input, double Lambda) -> cvec{
  * Function to call when testing the rhs of the bubbles flow with cvecs
  * @param N_ODE : Number of ODE steps to take between the globally defined Lambda_ini and Lambda_fin
  */
+template <typename Q>
 void test_rhs_bubbles_flow(int N_ODE){
     bool write_flag = true; // whether to write output in hdf5
-    cvec K1a_dir(nw1_a), K1a_fin(nw1_a), K1a_ini(nw1_a); // direct, final, initial K1a_1
-    SelfEnergy<comp> SEin (Lambda_ini); // trivial self-energy
+    vec<Q> K1a_dir(nw1_a), K1a_fin(nw1_a), K1a_ini(nw1_a); // direct, final, initial K1a_1
+    SelfEnergy<Q> SEin (Lambda_ini); // trivial self-energy
     SEin.initialize(glb_U/2., 0.); // initialize with Hartree term
-    Propagator G0ini(Lambda_ini, SEin, 'g'); // initial propagator
-    Propagator G0dir(Lambda_fin, SEin, 'g'); // final propagator
+    Propagator<Q> G0ini(Lambda_ini, SEin, 'g'); // initial propagator
+    Propagator<Q> G0dir(Lambda_fin, SEin, 'g'); // final propagator
 
     // direct calculation of initial K1a
     for(int i=0; i<nw1_a; ++i) {
         double w = bfreqs[i];
 
         //Create the objects explicitly designed to return the determined Keldysh component needed
-        IntegrandBubble integrandPia11(G0ini, G0ini, false, w, 11, 'a');     //KA
-        IntegrandBubble integrandPia13(G0ini, G0ini, false, w, 13, 'a');     //RK
+        IntegrandBubble<Q> integrandPia11(G0ini, G0ini, false, w, 11, 'a');     //KA
+        IntegrandBubble<Q> integrandPia13(G0ini, G0ini, false, w, 13, 'a');     //RK
 
         //Calculate the contributions
-        auto cont11 = integrator(integrandPia11, glb_w_lower, glb_w_lower);
-        auto cont13 = integrator(integrandPia13, glb_w_lower, glb_w_lower);
+        auto cont11 = integrator<Q>(integrandPia11, glb_w_lower, glb_w_lower);
+        auto cont13 = integrator<Q>(integrandPia13, glb_w_lower, glb_w_lower);
 
         K1a_ini[i] = pow(-glb_U/2.,2.)*(cont11 + cont13);
     }
@@ -185,12 +193,12 @@ void test_rhs_bubbles_flow(int N_ODE){
         double w = bfreqs[i];
 
         //Create the objects explicitly designed to return the determined Keldysh component needed
-        IntegrandBubble integrandPia11(G0dir, G0dir, false, w, 11, 'a');     //KA
-        IntegrandBubble integrandPia13(G0dir, G0dir, false, w, 13, 'a');     //RK
+        IntegrandBubble<Q> integrandPia11(G0dir, G0dir, false, w, 11, 'a');     //KA
+        IntegrandBubble<Q> integrandPia13(G0dir, G0dir, false, w, 13, 'a');     //RK
 
         //Calculate the contributions
-        auto cont11 = integrator(integrandPia11, glb_w_lower, glb_w_lower);
-        auto cont13 = integrator(integrandPia13, glb_w_lower, glb_w_lower);
+        auto cont11 = integrator<Q>(integrandPia11, glb_w_lower, glb_w_lower);
+        auto cont13 = integrator<Q>(integrandPia13, glb_w_lower, glb_w_lower);
 
         K1a_dir[i] = pow((-glb_U/2.),2.)*(cont11 + cont13);
     }
@@ -209,14 +217,15 @@ void test_rhs_bubbles_flow(int N_ODE){
  * Function to test the loop function and the calculation of the SelfEnergy
  * @param state : State initialized with initial conditions
  */
-void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
+template <typename Q>
+void testSelfEnergy_and_K1(State<Q>& state, double Lambda){
 
-    Propagator g(Lambda, state.selfenergy, 'g');
+    Propagator<Q> g(Lambda, state.selfenergy, 'g');
 
     //Calculate the vertex
     sopt_state(state, Lambda);
 
-    Vertex<comp> temp_vertex_a (1, Lambda), temp_vertex_p (1, Lambda); //All zeros
+    Vertex<Q> temp_vertex_a (1, Lambda), temp_vertex_p (1, Lambda); //All zeros
     temp_vertex_a[0].avertex() = state.vertex[0].avertex();
     temp_vertex_p[0].pvertex() = state.vertex[0].pvertex();
 
@@ -251,17 +260,18 @@ void testSelfEnergy_and_K1(State<comp>& state, double Lambda){
  * @param Lambda:  Scale at which the calculation is being performed
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
-auto rhs_state_flow_SOPT(const State<comp>& Psi, const double Lambda, const int feedback) -> State<comp>{
-    State<comp> dPsi (Lambda);   //Answer object
+template <typename Q>
+auto rhs_state_flow_SOPT(const State<Q>& Psi, const double Lambda, const int feedback) -> State<Q>{
+    State<Q> dPsi (Lambda);   //Answer object
 
-    State<comp> bare (Lambda);   //Bare state
+    State<Q> bare (Lambda);   //Bare state
     bare.initialize();  //Initialize bare state
-    Propagator G(Lambda, bare.selfenergy,'g');    //Initialization of Propagator objects
-    Propagator S(Lambda, bare.selfenergy,'s');    //Initialization of Propagator objects
+    Propagator<Q> G(Lambda, bare.selfenergy,'g');    //Initialization of Propagator objects
+    Propagator<Q> S(Lambda, bare.selfenergy,'s');    //Initialization of Propagator objects
 
     if(!(feedback==0 || feedback==3)){  //Check whether Self Energy feedback to Propagators is wanted
-        G=Propagator(Lambda, Psi.selfenergy, 'g');
-        S=Propagator(Lambda, Psi.selfenergy, 's');
+        G=Propagator<Q>(Lambda, Psi.selfenergy, 'g');
+        S=Propagator<Q>(Lambda, Psi.selfenergy, 's');
     }
 
     //Self energy loop
@@ -273,7 +283,7 @@ auto rhs_state_flow_SOPT(const State<comp>& Psi, const double Lambda, const int 
     }
 
     if(feedback==2 || feedback==5) {  //These two options make use of the Katanin substitution
-        S=Propagator(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
+        S=Propagator<Q>(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     }
 
     //Vertex flow
@@ -285,32 +295,38 @@ auto rhs_state_flow_SOPT(const State<comp>& Psi, const double Lambda, const int 
 }
 
 //No feedback
-auto rhs_state_flow_SOPT_0(const State<comp>& Psi, const double Lambda) -> State<comp>{
+template <typename Q>
+auto rhs_state_flow_SOPT_0(const State<Q>& Psi, const double Lambda) -> State<Q>{
     return rhs_state_flow_SOPT(Psi, Lambda, 0);
 }
 
 //Self-Energy fed back into Propagators
-auto rhs_state_flow_SOPT_1(const State<comp>& Psi, const double Lambda) -> State<comp>{
+template <typename Q>
+auto rhs_state_flow_SOPT_1(const State<Q>& Psi, const double Lambda) -> State<Q>{
     return rhs_state_flow_SOPT(Psi, Lambda, 1);
 }
 
 //As above + Katanin
-auto rhs_state_flow_SOPT_2(const State<comp>& Psi, const double Lambda) -> State<comp>{
+template <typename Q>
+auto rhs_state_flow_SOPT_2(const State<Q>& Psi, const double Lambda) -> State<Q>{
     return rhs_state_flow_SOPT(Psi, Lambda, 2);
 }
 
 //Vertex feedback, free propagators
-auto rhs_state_flow_SOPT_3(const State<comp>& Psi, const double Lambda) -> State<comp>{
+template <typename Q>
+auto rhs_state_flow_SOPT_3(const State<Q>& Psi, const double Lambda) -> State<Q>{
     return rhs_state_flow_SOPT(Psi, Lambda, 3);
 }
 
 //Self_energy fed back into Propagators + Vertex feedback
-auto rhs_state_flow_SOPT_4(const State<comp>& Psi, const double Lambda) -> State<comp>{
+template <typename Q>
+auto rhs_state_flow_SOPT_4(const State<Q>& Psi, const double Lambda) -> State<Q>{
     return rhs_state_flow_SOPT(Psi, Lambda, 4);
 }
 
 //As above + Katanin
-auto rhs_state_flow_SOPT_5(const State<comp>& Psi, const double Lambda) -> State<comp>{
+template <typename Q>
+auto rhs_state_flow_SOPT_5(const State<Q>& Psi, const double Lambda) -> State<Q>{
     return rhs_state_flow_SOPT(Psi, Lambda, 5);
 }
 
@@ -318,14 +334,15 @@ auto rhs_state_flow_SOPT_5(const State<comp>& Psi, const double Lambda) -> State
  * Function to test the correctness of the flow of the State
  * @param N_ODE : Numbres of ODE-solver steps to be taken
  */
+template <typename Q>
 void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
     bool write_flag = true; // whether to write output in hdf5
-    State<comp> state_dir (Lambda_fin), state_fin (Lambda_fin), state_ini (Lambda_ini); // direct, final, initial K1a_1
+    State<Q> state_dir (Lambda_fin), state_fin (Lambda_fin), state_ini (Lambda_ini); // direct, final, initial K1a_1
     state_dir.initialize(); // initialize state
     state_ini.initialize(); // initialize state
 
-    Propagator G0ini(Lambda_ini, state_ini.selfenergy, 'g'); // initial propagator
-    Propagator G0dir(Lambda_fin, state_dir.selfenergy, 'g'); // final propagator
+    Propagator<Q> G0ini(Lambda_ini, state_ini.selfenergy, 'g'); // initial propagator
+    Propagator<Q> G0dir(Lambda_fin, state_dir.selfenergy, 'g'); // final propagator
 
     sopt_state(state_ini, Lambda_ini); // direct calculation of initial K1a
     sopt_state(state_dir, Lambda_fin); // direct calculation of direct K1a
@@ -402,10 +419,11 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
  * Function that prints out a .h5 file with the value of the rhs of a SOPT flow at the given Lambda for both an FFT and an fRG calculation
  * @param Lambda    : Lambda at which the derivatives are to be calculated
  */
+template <typename Q>
 void test_derivatives_K1a(double Lambda){
-    cvec blah(nw1_a);
-    cvec rhs_SOPT_FFT_K1a = dSOPT_FFT_K1a_rhs(blah, Lambda);
-    cvec rhs_flow = rhs_bubbles_flow(blah, Lambda);
+    vec<Q> blah(nw1_a);
+    vec<Q> rhs_SOPT_FFT_K1a = dSOPT_FFT_K1a_rhs(blah, Lambda);
+    vec<Q> rhs_flow = rhs_bubbles_flow(blah, Lambda);
 
     write_h5_rvecs("derivatives_K1a.h5",
                    {"v", "FFT_R", "FFT_I", "SOPT_R", "SOPT_I"},
@@ -416,14 +434,15 @@ void test_derivatives_K1a(double Lambda){
  * Function that prints out a .h5 file with the value of the rhs of a SOPT flow at the given Lambda for both an FFT and an fRG calculation
  * @param Lambda    : Lambda at which the derivatives are to be calculated
  */
+template <typename Q>
 void test_derivatives_SE(double Lambda){
     cvec blah(nw1_a);
-    State<comp> sopt (Lambda);
+    State<Q> sopt (Lambda);
     sopt.initialize();
     cvec rhs_SOPT_FFT_K1a = dSOPT_FFT_SE_rhs(blah, Lambda);
 
     sopt_state(sopt, Lambda);
-    State<comp> rhs_flow = rhs_state_flow_SOPT_0(sopt, Lambda);
+    State<Q> rhs_flow = rhs_state_flow_SOPT_0(sopt, Lambda);
 
     cvec SER_dif(nFER);
     for(int iv=0; iv<nFER;++iv){
@@ -443,16 +462,17 @@ void test_derivatives_SE(double Lambda){
  * @param Lambda    : Scale
  * @param r         : Channel to be tested i.e. K_2^r
  */
+template <typename Q>
 auto test_K2_consistency(double Lambda, const char r) -> bool{
-    State<comp> bare (Lambda);   //Create a bare state
+    State<Q> bare (Lambda);   //Create a bare state
     bare.initialize();  //Initialize bare state
 
-    Propagator G(Lambda, bare.selfenergy, 'g'); //Bare propagator at scale Lambda>
+    Propagator<Q> G(Lambda, bare.selfenergy, 'g'); //Bare propagator at scale Lambda>
 
     //Create and initialize states to save the channel contributions in
-    State<comp> K1a (Lambda);
-    State<comp> K1p (Lambda);
-    State<comp> K1t (Lambda);
+    State<Q> K1a (Lambda);
+    State<Q> K1p (Lambda);
+    State<Q> K1t (Lambda);
     K1a.initialize();
     K1p.initialize();
     K1t.initialize();
@@ -463,9 +483,9 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
     bubble_function(K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
 
     //Create and initialize the K2r-objects to test
-    State<comp> test_K2r_with_K1a (Lambda);
-    State<comp> test_K2r_with_K1p (Lambda);
-    State<comp> test_K2r_with_K1t (Lambda);
+    State<Q> test_K2r_with_K1a (Lambda);
+    State<Q> test_K2r_with_K1p (Lambda);
+    State<Q> test_K2r_with_K1t (Lambda);
     test_K2r_with_K1a.initialize();
     test_K2r_with_K1p.initialize();
     test_K2r_with_K1t.initialize();
@@ -527,16 +547,16 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 void test_PT4(double Lambda, bool write_flag = false) {
     print("Compute K1 (and K2, K3) up to PT4.", true);
     // Initialize a bare state
-    State<comp> bare (Lambda);
+    State<state_datatype> bare (Lambda);
     bare.initialize();
 
     // Initialize a bare propagator
-    Propagator G(Lambda, bare.selfenergy, 'g');
+    Propagator<state_datatype> G(Lambda, bare.selfenergy, 'g');
 
     // Compute K1 in PT2
-    State<comp> PT2_K1a (Lambda);
-    State<comp> PT2_K1p (Lambda);
-    State<comp> PT2_K1t (Lambda);
+    State<state_datatype> PT2_K1a (Lambda);
+    State<state_datatype> PT2_K1p (Lambda);
+    State<state_datatype> PT2_K1t (Lambda);
 
     double t0 = get_time();
     bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
@@ -551,9 +571,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
     }
 
     // Compute K1 in PT3, using K1 in PT2
-    State<comp> PT3_K1a (Lambda);
-    State<comp> PT3_K1p (Lambda);
-    State<comp> PT3_K1t (Lambda);
+    State<state_datatype> PT3_K1a (Lambda);
+    State<state_datatype> PT3_K1p (Lambda);
+    State<state_datatype> PT3_K1t (Lambda);
 
     t0 = get_time();
     bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
@@ -562,7 +582,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false);
 #if DIAG_CLASS >= 2
     // set K2 part of this vertex to zero
-    PT3_K1t.vertex[0].tvertex().K2 = vec<comp> (PT3_K1t.vertex[0].tvertex().K2.size());
+    PT3_K1t.vertex[0].tvertex().K2 = vec<state_datatype> (PT3_K1t.vertex[0].tvertex().K2.size());
 #endif
     print("Computed K1 in PT3.", true);
     get_time(t0);
@@ -573,11 +593,11 @@ void test_PT4(double Lambda, bool write_flag = false) {
     }
 
     // Compute K2 in PT3, using K1p, K1t in PT2
-    State<comp> PT3_K2a (Lambda);
-    State<comp> PT3_K2p (Lambda);
-    State<comp> PT3_K2t (Lambda);
-    State<comp> PT3_K2t_a (Lambda);
-    State<comp> PT3_K2t_p (Lambda);
+    State<state_datatype> PT3_K2a (Lambda);
+    State<state_datatype> PT3_K2p (Lambda);
+    State<state_datatype> PT3_K2t (Lambda);
+    State<state_datatype> PT3_K2t_a (Lambda);
+    State<state_datatype> PT3_K2t_p (Lambda);
 
     t0 = get_time();
     bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3 (PT2_K1t = 0)
@@ -585,7 +605,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false);   // contribution of K2t in PT3 obtained by inserting K1a in PT2
     bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false);   // contribution of K2t in PT3 obtained by inserting K1p in PT2
     // PT3_K2t_a should also have a K1-contribution due to a-t symmetry (PT2_K1t implicitly inserted) --> set to zero
-    PT3_K2t_a.vertex[0].tvertex().K1 = vec<comp> (PT3_K2t_a.vertex[0].tvertex().K1.size());
+    PT3_K2t_a.vertex[0].tvertex().K1 = vec<state_datatype> (PT3_K2t_a.vertex[0].tvertex().K1.size());
     PT3_K2t.vertex = PT3_K2t_a.vertex + PT3_K2t_p.vertex; // sum of contributions from a- and p-insertions
 
     // K2' in PT3 would be obtained by flipping the left and right vertex, but since K2' is not saved, these terms would give zero
@@ -601,59 +621,59 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
 
     // Compute K3 in PT4, using K1 and K2 in PT2 and PT3
-    State<comp> PT4_31 (Lambda);
-    State<comp> PT4_31_a_a1 (Lambda);
-    State<comp> PT4_31_a_p1 (Lambda);
-    State<comp> PT4_31_a_t1 (Lambda);
-    State<comp> PT4_31_a_a2 (Lambda);
-    State<comp> PT4_31_a_p2 (Lambda);
-    State<comp> PT4_31_a_t2 (Lambda);
-    State<comp> PT4_31_p_a1 (Lambda);
-    State<comp> PT4_31_p_p1 (Lambda);
-    State<comp> PT4_31_p_t1 (Lambda);
-    State<comp> PT4_31_p_a2 (Lambda);
-    State<comp> PT4_31_p_p2 (Lambda);
-    State<comp> PT4_31_p_t2 (Lambda);
-    State<comp> PT4_31_t_a1 (Lambda);
-    State<comp> PT4_31_t_p1 (Lambda);
-    State<comp> PT4_31_t_t1 (Lambda);
-    State<comp> PT4_31_t_a2 (Lambda);
-    State<comp> PT4_31_t_p2 (Lambda);
-    State<comp> PT4_31_t_t2 (Lambda);
+    State<state_datatype> PT4_31 (Lambda);
+    State<state_datatype> PT4_31_a_a1 (Lambda);
+    State<state_datatype> PT4_31_a_p1 (Lambda);
+    State<state_datatype> PT4_31_a_t1 (Lambda);
+    State<state_datatype> PT4_31_a_a2 (Lambda);
+    State<state_datatype> PT4_31_a_p2 (Lambda);
+    State<state_datatype> PT4_31_a_t2 (Lambda);
+    State<state_datatype> PT4_31_p_a1 (Lambda);
+    State<state_datatype> PT4_31_p_p1 (Lambda);
+    State<state_datatype> PT4_31_p_t1 (Lambda);
+    State<state_datatype> PT4_31_p_a2 (Lambda);
+    State<state_datatype> PT4_31_p_p2 (Lambda);
+    State<state_datatype> PT4_31_p_t2 (Lambda);
+    State<state_datatype> PT4_31_t_a1 (Lambda);
+    State<state_datatype> PT4_31_t_p1 (Lambda);
+    State<state_datatype> PT4_31_t_t1 (Lambda);
+    State<state_datatype> PT4_31_t_a2 (Lambda);
+    State<state_datatype> PT4_31_t_p2 (Lambda);
+    State<state_datatype> PT4_31_t_t2 (Lambda);
 
-    State<comp> PT4_13 (Lambda);
-    State<comp> PT4_13_a_a1 (Lambda);
-    State<comp> PT4_13_a_p1 (Lambda);
-    State<comp> PT4_13_a_t1 (Lambda);
-    State<comp> PT4_13_a_a2 (Lambda);
-    State<comp> PT4_13_a_p2 (Lambda);
-    State<comp> PT4_13_a_t2 (Lambda);
-    State<comp> PT4_13_p_a1 (Lambda);
-    State<comp> PT4_13_p_p1 (Lambda);
-    State<comp> PT4_13_p_t1 (Lambda);
-    State<comp> PT4_13_p_a2 (Lambda);
-    State<comp> PT4_13_p_p2 (Lambda);
-    State<comp> PT4_13_p_t2 (Lambda);
-    State<comp> PT4_13_t_a1 (Lambda);
-    State<comp> PT4_13_t_p1 (Lambda);
-    State<comp> PT4_13_t_t1 (Lambda);
-    State<comp> PT4_13_t_a2 (Lambda);
-    State<comp> PT4_13_t_p2 (Lambda);
-    State<comp> PT4_13_t_t2 (Lambda);
+    State<state_datatype> PT4_13 (Lambda);
+    State<state_datatype> PT4_13_a_a1 (Lambda);
+    State<state_datatype> PT4_13_a_p1 (Lambda);
+    State<state_datatype> PT4_13_a_t1 (Lambda);
+    State<state_datatype> PT4_13_a_a2 (Lambda);
+    State<state_datatype> PT4_13_a_p2 (Lambda);
+    State<state_datatype> PT4_13_a_t2 (Lambda);
+    State<state_datatype> PT4_13_p_a1 (Lambda);
+    State<state_datatype> PT4_13_p_p1 (Lambda);
+    State<state_datatype> PT4_13_p_t1 (Lambda);
+    State<state_datatype> PT4_13_p_a2 (Lambda);
+    State<state_datatype> PT4_13_p_p2 (Lambda);
+    State<state_datatype> PT4_13_p_t2 (Lambda);
+    State<state_datatype> PT4_13_t_a1 (Lambda);
+    State<state_datatype> PT4_13_t_p1 (Lambda);
+    State<state_datatype> PT4_13_t_t1 (Lambda);
+    State<state_datatype> PT4_13_t_a2 (Lambda);
+    State<state_datatype> PT4_13_t_p2 (Lambda);
+    State<state_datatype> PT4_13_t_t2 (Lambda);
 
-    State<comp> PT4_22 (Lambda);
-    State<comp> PT4_22_a_aa (Lambda);
-    State<comp> PT4_22_a_ap (Lambda);
-    State<comp> PT4_22_a_pa (Lambda);
-    State<comp> PT4_22_a_pp (Lambda);
-    State<comp> PT4_22_p_aa (Lambda);
-    State<comp> PT4_22_p_ap (Lambda);
-    State<comp> PT4_22_p_pa (Lambda);
-    State<comp> PT4_22_p_pp (Lambda);
-    State<comp> PT4_22_t_aa (Lambda);
-    State<comp> PT4_22_t_ap (Lambda);
-    State<comp> PT4_22_t_pa (Lambda);
-    State<comp> PT4_22_t_pp (Lambda);
+    State<state_datatype> PT4_22 (Lambda);
+    State<state_datatype> PT4_22_a_aa (Lambda);
+    State<state_datatype> PT4_22_a_ap (Lambda);
+    State<state_datatype> PT4_22_a_pa (Lambda);
+    State<state_datatype> PT4_22_a_pp (Lambda);
+    State<state_datatype> PT4_22_p_aa (Lambda);
+    State<state_datatype> PT4_22_p_ap (Lambda);
+    State<state_datatype> PT4_22_p_pa (Lambda);
+    State<state_datatype> PT4_22_p_pp (Lambda);
+    State<state_datatype> PT4_22_t_aa (Lambda);
+    State<state_datatype> PT4_22_t_ap (Lambda);
+    State<state_datatype> PT4_22_t_pa (Lambda);
+    State<state_datatype> PT4_22_t_pp (Lambda);
 
     t0 = get_time();
 
@@ -951,45 +971,45 @@ void test_PT4(double Lambda, bool write_flag = false) {
                            };
 
     // K1 in PT2
-    comp PT2_K1a_0 = PT2_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT2_K1a.vertex[0].tvertex());
-    comp PT2_K1p_0 = PT2_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT2_K1p.vertex[0].pvertex());
-    comp PT2_K1t_0 = PT2_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT2_K1t.vertex[0].avertex());
+    state_datatype PT2_K1a_0 = PT2_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT2_K1a.vertex[0].tvertex());
+    state_datatype PT2_K1p_0 = PT2_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT2_K1p.vertex[0].pvertex());
+    state_datatype PT2_K1t_0 = PT2_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT2_K1t.vertex[0].avertex());
 
     // K1 in PT3
-    comp PT3_K1a_0 = PT3_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT3_K1a.vertex[0].tvertex());
-    comp PT3_K1p_0 = PT3_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT3_K1p.vertex[0].pvertex());
-    comp PT3_K1t_0 = PT3_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT3_K1t.vertex[0].avertex());
+    state_datatype PT3_K1a_0 = PT3_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT3_K1a.vertex[0].tvertex());
+    state_datatype PT3_K1p_0 = PT3_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT3_K1p.vertex[0].pvertex());
+    state_datatype PT3_K1t_0 = PT3_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT3_K1t.vertex[0].avertex());
 #ifdef KELDYSH_FORMALISM
-    comp PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+    state_datatype PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
-    comp PT3_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+    state_datatype PT3_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #endif
 
     // K1 in PT4
-    comp PT4_K1a_0_ladder = PT4_31_a_a1.vertex[0].avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex[0].tvertex());
-    comp PT4_K1p_0_ladder = PT4_31_p_p1.vertex[0].pvertex().valsmooth<k1>(input_p, PT4_31_p_p1.vertex[0].pvertex());
-    comp PT4_K1a_0_nonladder = PT4_13_a_a2.vertex[0].avertex().valsmooth<k1>(input_a, PT4_13_a_a2.vertex[0].tvertex());
-    comp PT4_K1p_0_nonladder = PT4_13_p_p2.vertex[0].pvertex().valsmooth<k1>(input_p, PT4_13_p_p2.vertex[0].pvertex());
-    comp PT4_K1t_0_nonladder_a = PT4_13_t_a2.vertex[0].tvertex().valsmooth<k1>(input_t, PT4_13_t_a2.vertex[0].avertex());
-    comp PT4_K1t_0_nonladder_t = PT4_13_t_t2.vertex[0].tvertex().valsmooth<k1>(input_t, PT4_13_t_t2.vertex[0].avertex());
+    state_datatype PT4_K1a_0_ladder = PT4_31_a_a1.vertex[0].avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex[0].tvertex());
+    state_datatype PT4_K1p_0_ladder = PT4_31_p_p1.vertex[0].pvertex().valsmooth<k1>(input_p, PT4_31_p_p1.vertex[0].pvertex());
+    state_datatype PT4_K1a_0_nonladder = PT4_13_a_a2.vertex[0].avertex().valsmooth<k1>(input_a, PT4_13_a_a2.vertex[0].tvertex());
+    state_datatype PT4_K1p_0_nonladder = PT4_13_p_p2.vertex[0].pvertex().valsmooth<k1>(input_p, PT4_13_p_p2.vertex[0].pvertex());
+    state_datatype PT4_K1t_0_nonladder_a = PT4_13_t_a2.vertex[0].tvertex().valsmooth<k1>(input_t, PT4_13_t_a2.vertex[0].avertex());
+    state_datatype PT4_K1t_0_nonladder_t = PT4_13_t_t2.vertex[0].tvertex().valsmooth<k1>(input_t, PT4_13_t_t2.vertex[0].avertex());
 
     // K2 in PT3
-    vec<comp> PT3_K2a_0 (3);
-    vec<comp> PT3_K2p_0 (3);
-    vec<comp> PT3_K2t_0 (3);
+    vec<state_datatype> PT3_K2a_0 (3);
+    vec<state_datatype> PT3_K2p_0 (3);
+    vec<state_datatype> PT3_K2t_0 (3);
     // K2 in PT4
-    vec<comp> PT4_K2a_0_p1 (3);
-    vec<comp> PT4_K2p_0_a1 (3);
-    vec<comp> PT4_K2a_0_t1 (3);
-    vec<comp> PT4_K2p_0_t1 (3);
-    vec<comp> PT4_K2a_0_a2 (3);
-    vec<comp> PT4_K2a_0_p2 (3);
-    vec<comp> PT4_K2a_0_t2 (3);
-    vec<comp> PT4_K2p_0_a2 (3);
-    vec<comp> PT4_K2p_0_p2 (3);
-    vec<comp> PT4_K2p_0_t2 (3);
-    vec<comp> PT4_K2t_0_a2 (3);
-    vec<comp> PT4_K2t_0_t2 (3);
+    vec<state_datatype> PT4_K2a_0_p1 (3);
+    vec<state_datatype> PT4_K2p_0_a1 (3);
+    vec<state_datatype> PT4_K2a_0_t1 (3);
+    vec<state_datatype> PT4_K2p_0_t1 (3);
+    vec<state_datatype> PT4_K2a_0_a2 (3);
+    vec<state_datatype> PT4_K2a_0_p2 (3);
+    vec<state_datatype> PT4_K2a_0_t2 (3);
+    vec<state_datatype> PT4_K2p_0_a2 (3);
+    vec<state_datatype> PT4_K2p_0_p2 (3);
+    vec<state_datatype> PT4_K2p_0_t2 (3);
+    vec<state_datatype> PT4_K2t_0_a2 (3);
+    vec<state_datatype> PT4_K2t_0_t2 (3);
 
 #if DIAG_CLASS >= 2
 #ifdef KELDYSH_FORMALISM
@@ -1023,9 +1043,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
 #endif
 
 #ifdef KELDYSH_FORMALISM
-    comp PT3_K2_exact = -(1./2.) * (2. - M_PI*M_PI/4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+    state_datatype PT3_K2_exact = -(1./2.) * (2. - M_PI*M_PI/4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
-    comp PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+    state_datatype PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #endif
 
     // K3 in PT4
@@ -1034,11 +1054,11 @@ void test_PT4(double Lambda, bool write_flag = false) {
     input_p.iK = 5;
     input_t.iK = 5;
 #endif
-    comp PT4_K3a_0;
-    comp PT4_K3p_0;
-    comp PT4_K3t_0_aa;
-    comp PT4_K3t_0_ap;
-    comp PT4_K3t_0_pa;
+    state_datatype PT4_K3a_0;
+    state_datatype PT4_K3p_0;
+    state_datatype PT4_K3t_0_aa;
+    state_datatype PT4_K3t_0_ap;
+    state_datatype PT4_K3t_0_pa;
 
 #if DIAG_CLASS == 3
     PT4_K3a_0 = PT4_22_a_pp.vertex[0].avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex[0].tvertex());
@@ -1049,7 +1069,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
 #endif
 
     // values to be printed to log
-    vec<comp> check_values {PT2_K1a_0 + PT2_K1p_0,
+    vec<state_datatype> check_values {PT2_K1a_0 + PT2_K1p_0,
                             PT2_K1t_0,
                             (PT3_K1a_0 - PT3_K1_exact)/PT3_K1_exact,
                             (PT3_K1p_0 - PT3_K1_exact)/PT3_K1_exact,
@@ -1112,10 +1132,10 @@ void test_PT4(double Lambda, bool write_flag = false) {
     // (13_1): K1a in PT3
     // (13_2): K2a in PT3
     // (31_2): K2a in PT3
-    State<comp> PT4_K1a22 (Lambda);
-    State<comp> PT4_K1a13_1 (Lambda);
-    State<comp> PT4_K1a13_2 (Lambda);
-    State<comp> PT4_K1a31_2 (Lambda);
+    State<Q> PT4_K1a22 (Lambda);
+    State<Q> PT4_K1a13_1 (Lambda);
+    State<Q> PT4_K1a13_2 (Lambda);
+    State<Q> PT4_K1a31_2 (Lambda);
 
     t0 = get_time();
     bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
@@ -1141,33 +1161,34 @@ void test_PT4(double Lambda, bool write_flag = false) {
 /**
  * Test K3 dynamics by computing SE diagrams in PT4 using different PT4 vertices, which should all give the same result.
  */
+template <typename Q>
 void test_K3_dynamics_SE_PT4(double Lambda) {
     // Initialize a bare state
-    State<comp> bare (Lambda);
+    State<Q> bare (Lambda);
     bare.initialize();
 
     // Initialize a bare propagator
-    Propagator G(Lambda, bare.selfenergy, 'g');
+    Propagator<Q> G(Lambda, bare.selfenergy, 'g');
 
     // Compute K1a and K1p in PT2
-    State<comp> PT2_K1a (Lambda);
-    State<comp> PT2_K1p (Lambda);
+    State<Q> PT2_K1a (Lambda);
+    State<Q> PT2_K1p (Lambda);
 
     bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
     bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
 
     // Compute K1a and K1p in PT3
-    State<comp> PT3_K1a (Lambda);
-    State<comp> PT3_K1p (Lambda);
+    State<Q> PT3_K1a (Lambda);
+    State<Q> PT3_K1p (Lambda);
 
     bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
     bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
 
     // Compute K3a, K1p (ladder), K3p, K1a (ladder) in PT4
-    State<comp> PT4_22_a_pp (Lambda);
-    State<comp> PT4_13_p_p1 (Lambda);
-    State<comp> PT4_22_p_aa (Lambda);
-    State<comp> PT4_13_a_a1 (Lambda);
+    State<Q> PT4_22_a_pp (Lambda);
+    State<Q> PT4_13_p_p1 (Lambda);
+    State<Q> PT4_22_p_aa (Lambda);
+    State<Q> PT4_13_a_a1 (Lambda);
 
     bubble_function(PT4_22_a_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'a', false);
     bubble_function(PT4_13_p_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'p', false);
@@ -1176,20 +1197,20 @@ void test_K3_dynamics_SE_PT4(double Lambda) {
 
     // a-channel:
     // close K3a (single diagram: PT2_K1p - a-bubble - PT2_K1p)
-    State<comp> SE_K3a (Lambda);
+    State<Q> SE_K3a (Lambda);
     loop(SE_K3a.selfenergy, PT4_22_a_pp.vertex, G, false);
 
     // close K1p ladder (use 1-3 vertex in p-channel, since it contains only p-ladder)
-    State<comp> SE_K1p_ladder (Lambda);
+    State<Q> SE_K1p_ladder (Lambda);
     loop(SE_K1p_ladder.selfenergy, PT4_13_p_p1.vertex, G, false);
 
     // p-channel:
     // close K3p (single diagram: PT2_K1a - p-bubble - PT2_K1a)
-    State<comp> SE_K3p (Lambda);
+    State<Q> SE_K3p (Lambda);
     loop(SE_K3p.selfenergy, PT4_22_p_aa.vertex, G, false);
 
     // close K1a ladder (use 1-3 vertex in a-channel, since it contains only a-ladder)
-    State<comp> SE_K1a_ladder (Lambda);
+    State<Q> SE_K1a_ladder (Lambda);
     loop(SE_K1a_ladder.selfenergy, PT4_13_a_a1.vertex, G, false);
 
     write_hdf("SE_K3a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3a);
@@ -1207,20 +1228,21 @@ void test_K3_dynamics_SE_PT4(double Lambda) {
  * can be performed in the p-channel.
  * @param Lambda : Scale at which the calculation is done.
  */
+template <typename Q>
 void test_K2_correctness(double Lambda){
 
     bool write_flag = true; //Write out results in a HDF5 file
 
-    State<comp> bare (Lambda);   //Bare state
+    State<Q> bare (Lambda);   //Bare state
     bare.initialize();  //Initialize bare state
 
-    Propagator G(Lambda, bare.selfenergy, 'g'); //Bare propagator
-    Propagator S(Lambda, bare.selfenergy, 's'); //Bare single-scale propagator
+    Propagator<Q> G(Lambda, bare.selfenergy, 'g'); //Bare propagator
+    Propagator<Q> S(Lambda, bare.selfenergy, 's'); //Bare single-scale propagator
 
     //Create states for K1-calculations
-    State<comp> PT2_K1a (Lambda);
-    State<comp> PT2_K1p (Lambda);
-    State<comp> PT2_K1t (Lambda);
+    State<Q> PT2_K1a (Lambda);
+    State<Q> PT2_K1p (Lambda);
+    State<Q> PT2_K1t (Lambda);
 
     //Save K1-bubbles in separate objects - SOPT
     double t0 = get_time();
@@ -1229,12 +1251,12 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
     get_time(t0);
 
-    State<comp> PT2_SE_a (Lambda);
-    State<comp> PT2_SE_p (Lambda);
-    State<comp> PT2_SE_t (Lambda);
-    State<comp> PT2_SE_p_1 (Lambda);
-    State<comp> PT2_SE_p_4 (Lambda);
-    State<comp> PT2_SE_p_5 (Lambda);
+    State<Q> PT2_SE_a (Lambda);
+    State<Q> PT2_SE_p (Lambda);
+    State<Q> PT2_SE_t (Lambda);
+    State<Q> PT2_SE_p_1 (Lambda);
+    State<Q> PT2_SE_p_4 (Lambda);
+    State<Q> PT2_SE_p_5 (Lambda);
 
     loop(PT2_SE_a.selfenergy, PT2_K1a.vertex, S, true);
     loop(PT2_SE_p.selfenergy, PT2_K1p.vertex, S, true);
@@ -1245,19 +1267,19 @@ void test_K2_correctness(double Lambda){
     loop(PT2_SE_p_5.selfenergy, PT2_K1p.vertex, S, true, 5);
 #endif
 
-    State<comp> PT3_K2a (Lambda);    //Create state for K2a calculation
-    State<comp> PT3_K2a_ia (Lambda);
-    State<comp> PT3_K2a_ib (Lambda);
-    State<comp> PT3_K2a_iia (Lambda);
-    State<comp> PT3_K2a_iib (Lambda);
-    State<comp> PT3_K2a_iva (Lambda);
-    State<comp> PT3_K2a_ivb (Lambda);
-    State<comp> PT3_K2a_t (Lambda);
+    State<Q> PT3_K2a (Lambda);    //Create state for K2a calculation
+    State<Q> PT3_K2a_ia (Lambda);
+    State<Q> PT3_K2a_ib (Lambda);
+    State<Q> PT3_K2a_iia (Lambda);
+    State<Q> PT3_K2a_iib (Lambda);
+    State<Q> PT3_K2a_iva (Lambda);
+    State<Q> PT3_K2a_ivb (Lambda);
+    State<Q> PT3_K2a_t (Lambda);
 
-    State<comp> PT3_K2p (Lambda);
-    State<comp> PT3_K2t (Lambda);
-    State<comp> PT3_K2t_a (Lambda);
-    State<comp> PT3_K2t_p (Lambda);
+    State<Q> PT3_K2p (Lambda);
+    State<Q> PT3_K2t (Lambda);
+    State<Q> PT3_K2t_a (Lambda);
+    State<Q> PT3_K2t_p (Lambda);
 
     //Do appropriate calculation for K2a with K1p and K1t being fed back into the left vertex. Notice part = 'L' to ensure
     //that the correct contributions are added on both sides. - TOPT
@@ -1284,29 +1306,29 @@ void test_K2_correctness(double Lambda){
     get_time(t0);
 
     // full K2 in PT3
-    State<comp> PT3_K2 (Lambda);
+    State<Q> PT3_K2 (Lambda);
     PT3_K2.vertex[0].avertex() = PT3_K2a_t.vertex[0].avertex();
     //PT3_K2.vertex[0].pvertex() = PT3_K2p.vertex[0].pvertex();
     PT3_K2.vertex[0].tvertex() = PT3_K2t_a.vertex[0].tvertex();
 
-    State<comp> PT3_K2at (Lambda);
+    State<Q> PT3_K2at (Lambda);
 
     // K2 contribution to self-energy flow
-    State<comp> PT3_SE (Lambda);
-    State<comp> PT3_SE_a (Lambda);
-    State<comp> PT3_SE_p (Lambda);
-    State<comp> PT3_SE_t (Lambda);
-    State<comp> PT3_SE_t_1 (Lambda);
-    State<comp> PT3_SE_t_4 (Lambda);
-    State<comp> PT3_SE_t_5 (Lambda);
-    State<comp> PT3_SE_t_a (Lambda);
-    State<comp> PT3_SE_t_a_1 (Lambda);
-    State<comp> PT3_SE_t_a_4 (Lambda);
-    State<comp> PT3_SE_t_a_5 (Lambda);
-    State<comp> PT3_SE_t_p (Lambda);
-    State<comp> PT3_SE_t_p_1 (Lambda);
-    State<comp> PT3_SE_t_p_4 (Lambda);
-    State<comp> PT3_SE_t_p_5 (Lambda);
+    State<Q> PT3_SE (Lambda);
+    State<Q> PT3_SE_a (Lambda);
+    State<Q> PT3_SE_p (Lambda);
+    State<Q> PT3_SE_t (Lambda);
+    State<Q> PT3_SE_t_1 (Lambda);
+    State<Q> PT3_SE_t_4 (Lambda);
+    State<Q> PT3_SE_t_5 (Lambda);
+    State<Q> PT3_SE_t_a (Lambda);
+    State<Q> PT3_SE_t_a_1 (Lambda);
+    State<Q> PT3_SE_t_a_4 (Lambda);
+    State<Q> PT3_SE_t_a_5 (Lambda);
+    State<Q> PT3_SE_t_p (Lambda);
+    State<Q> PT3_SE_t_p_1 (Lambda);
+    State<Q> PT3_SE_t_p_4 (Lambda);
+    State<Q> PT3_SE_t_p_5 (Lambda);
 
     loop(PT3_SE.selfenergy, PT3_K2.vertex, S, true);
     loop(PT3_SE_a.selfenergy, PT3_K2a.vertex, S, true);
@@ -1327,29 +1349,29 @@ void test_K2_correctness(double Lambda){
     loop(PT3_SE_t_p_5.selfenergy, PT3_K2t_p.vertex, S, true, 5);
 #endif
 
-    State<comp> PT3_K1a (Lambda);    //Create state to compare with K1a
+    State<Q> PT3_K1a (Lambda);    //Create state to compare with K1a
     t0 = get_time();
     bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
     get_time(t0);
 
-    State<comp> PT123_a = bare + PT2_K1a + PT3_K1a + PT3_K2a;  //Create vertex of the right side of BSE
+    State<Q> PT123_a = bare + PT2_K1a + PT3_K1a + PT3_K2a;  //Create vertex of the right side of BSE
 
-    State<comp> PT4_K1a22 (Lambda);
-    State<comp> PT4_K1a13_1 (Lambda);
-    State<comp> PT4_K1a13_2 (Lambda);
-    State<comp> PT4_K1a31_2 (Lambda);
-    State<comp> PT4_K1a13_2_11e (Lambda); // A
-    State<comp> PT4_K1a13_2_21e (Lambda); // B
-    State<comp> PT4_K1a13_2_11o (Lambda); // C
-    State<comp> PT4_K1a13_2_21o (Lambda); // D
-    State<comp> PT4_K1a13_2_12o (Lambda); // TST3TC D
-    State<comp> PT4_K1a13_2_22o (Lambda); // F
-    State<comp> PT4_K1a13_2_ia (Lambda);
-    State<comp> PT4_K1a13_2_ib (Lambda);
-    State<comp> PT4_K1a13_2_iia (Lambda);
-    State<comp> PT4_K1a13_2_iib (Lambda);
-    State<comp> PT4_K1a13_2_iva (Lambda);
-    State<comp> PT4_K1a13_2_ivb (Lambda);
+    State<Q> PT4_K1a22 (Lambda);
+    State<Q> PT4_K1a13_1 (Lambda);
+    State<Q> PT4_K1a13_2 (Lambda);
+    State<Q> PT4_K1a31_2 (Lambda);
+    State<Q> PT4_K1a13_2_11e (Lambda); // A
+    State<Q> PT4_K1a13_2_21e (Lambda); // B
+    State<Q> PT4_K1a13_2_11o (Lambda); // C
+    State<Q> PT4_K1a13_2_21o (Lambda); // D
+    State<Q> PT4_K1a13_2_12o (Lambda); // TST3TC D
+    State<Q> PT4_K1a13_2_22o (Lambda); // F
+    State<Q> PT4_K1a13_2_ia (Lambda);
+    State<Q> PT4_K1a13_2_ib (Lambda);
+    State<Q> PT4_K1a13_2_iia (Lambda);
+    State<Q> PT4_K1a13_2_iib (Lambda);
+    State<Q> PT4_K1a13_2_iva (Lambda);
+    State<Q> PT4_K1a13_2_ivb (Lambda);
 
     t0 = get_time();
     bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
@@ -1505,20 +1527,21 @@ void test_K2_correctness(double Lambda){
  * Master function to test both consistency and correctness of K2-class
  * @param Lambda
  */
+template<typename Q>
 void test_K2(double Lambda, bool test_consistency){
 
 
     //First test consistency
     if(test_consistency) {
-        bool K2a = test_K2_consistency(Lambda, 'a');    //Consistency of a-channel
-        bool K2p = test_K2_consistency(Lambda, 'p');    //Consistency of p-channel
-        bool K2t = test_K2_consistency(Lambda, 't');    //Consistency of t-channel
+        bool K2a = test_K2_consistency<Q>(Lambda, 'a');    //Consistency of a-channel
+        bool K2p = test_K2_consistency<Q>(Lambda, 'p');    //Consistency of p-channel
+        bool K2t = test_K2_consistency<Q>(Lambda, 't');    //Consistency of t-channel
 
         if(K2a&&K2p&&K2t)
-            test_K2_correctness(Lambda);
+            test_K2_correctness<Q>(Lambda);
     }
 
-    test_K2_correctness(Lambda);
+    test_K2_correctness<Q>(Lambda);
 
 }
 #endif
@@ -1532,15 +1555,15 @@ void test_K2(double Lambda, bool test_consistency){
  * @param Lambda : Lambda at which to compute right hand side
  * @return       : dPsi (right hand side of flow equation)
  */
-auto rhs_channel_decomposition(const State<comp>& Psi, const double Lambda) -> State<comp> {
-    State<comp> dPsi; // result
+auto rhs_channel_decomposition(const State<Q>& Psi, const double Lambda) -> State<Q> {
+    State<Q> dPsi; // result
 
-    SelfEnergy<comp> selfEnergy;
+    SelfEnergy<Q> selfEnergy;
     comp static_shift = real(Psi.selfenergy.valsmooth(0, glb_mu, 0));  // only use a static level shift as self-energy
     selfEnergy.initialize(static_shift, 0.);
 
-    Propagator G(Lambda, selfEnergy, 'g');    //Initialization of Propagator objects
-    Propagator S(Lambda, selfEnergy, 's');    //Initialization of Propagator objects
+    Propagator<Q> G(Lambda, selfEnergy, 'g');    //Initialization of Propagator objects
+    Propagator<Q> S(Lambda, selfEnergy, 's');    //Initialization of Propagator objects
 
     // Self-energy flow
     loop(dPsi.selfenergy, Psi.vertex, S, true);  // self-energy loop
@@ -1560,7 +1583,7 @@ auto rhs_channel_decomposition(const State<comp>& Psi, const double Lambda) -> S
  * @param N_ODE : number of Runge-Kutta ODE iterations
  */
 void test_channel_decomposition(int N_ODE) {
-    State<comp> state_ini, state_fin;   // create initial and final state
+    State<Q> state_ini, state_fin;   // create initial and final state
     state_ini.initialize();             // initialize initial state
 
 //    sopt_state(state_ini, Lambda_ini);  // set initial state to SOPT (necessary if Lambda_ini is too small)

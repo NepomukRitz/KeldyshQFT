@@ -15,7 +15,11 @@
 template <typename Integrand>
 auto f_real(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     double f_real = integrand(x).real();
+#else
+    double f_real = integrand(x);
+#endif
     return f_real;
 }
 
@@ -343,7 +347,7 @@ void handler (const char * reason,
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 // TODO: code does currently not compile when this integrator is used!
-template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in, int Nmax) -> comp {
+template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in, int Nmax) -> Q {
     gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
@@ -400,42 +404,33 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, double a
     gsl_integration_workspace_free(W_real);
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     gsl_integration_workspace_free(W_imag);
-#else
-    double result_imag = 0.;
 #endif
 
     //gsl_integration_cquad_workspace_free(W_real);
     //gsl_integration_cquad_workspace_free(W_imag);
-
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     return result_real + glb_i*result_imag;
+#else
+    return result_real;
+#endif
 }
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 //
-template <typename Integrand> auto integrator_gsl(Integrand& integrand, vec<vec<double>> intervals, size_t num_intervals, int Nmax) -> comp {
-    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
-#endif
-
+template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, vec<vec<double>> intervals, size_t num_intervals, int Nmax) -> Q {
     //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
     //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
-
+    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
     gsl_function F_real;
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_function F_imag;
-#endif
-
     F_real.function = &f_real<Integrand>;
     F_real.params = &integrand;
+    double result_real, error_real;
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
+    gsl_function F_imag;
     F_imag.function = &f_imag<Integrand>;
     F_imag.params = &integrand;
-#endif
-
-    double result_real, error_real;
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     double result_imag, error_imag;
 #endif
 
@@ -493,14 +488,15 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, vec<vec<
     gsl_integration_workspace_free(W_real);
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     gsl_integration_workspace_free(W_imag);
-#else
-    double result_imag = 0.;
 #endif
 
     //gsl_integration_cquad_workspace_free(W_real);
     //gsl_integration_cquad_workspace_free(W_imag);
-
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     return result_real + glb_i*result_imag;
+#else
+    return result_real;
+#endif
 }
 
 
@@ -523,7 +519,7 @@ template <typename Integrand> auto integrator_PAID(Integrand& integrand, double 
 /// --- WRAPPER FUNCTIONS: INTERFACE FOR ACCESSING THE INTEGRATOR IN BUBBLES/LOOP --- ///
 
 // old wrapper function
-template <typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> comp {
+template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> Q {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     return integrator_riemann(integrand, nINT);
 #elif INTEGRATOR_TYPE == 1 // Simpson
@@ -533,15 +529,15 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
     return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
 #elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl(integrand, a, b, 0., 0., nINT);
+    return integrator_gsl<Q>(integrand, a, b, 0., 0., nINT);
 #elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Integrand> adaptor(integrator_tol, integrand);
+    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
     return adaptor.integrate(a, b);
 #endif
 }
 
 // wrapper function, used for loop
-template <typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w) -> comp {
+template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w) -> Q {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     return integrator_riemann(integrand, nINT);
 #elif INTEGRATOR_TYPE == 1 // Simpson
@@ -551,9 +547,9 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
     return adaptive_simpson_integrator(integrand, a, b, nINT);      // use adaptive Simpson integrator
 #elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl(integrand, a, b, w, w, nINT);
+    return integrator_gsl<Q>(integrand, a, b, w, w, nINT);
 #elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Integrand> adaptor(integrator_tol, integrand);
+    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
     return adaptor.integrate(a, b);
 #endif
 }
@@ -564,7 +560,7 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
  * @param a         :   lower limit for integration
  * @param b         :   upper limit for integration
  */
-template <typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> comp {
+template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> Q {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     return integrator_riemann(integrand, nINT);
 #elif INTEGRATOR_TYPE == 1 // Simpson
@@ -574,48 +570,49 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
     return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
 #elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl(integrand, a, b, w1, w2, nINT);
+    return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
 #elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Integrand> adaptor(integrator_tol, integrand);
+    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
     return adaptor.integrate(a,b);
 #endif
 }
+
 /**
  * wrapper function, used for bubbles.
  * @param integrand
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>> intervals, const size_t num_intervals) -> comp {
+template <typename Q, typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>> intervals, const size_t num_intervals) -> Q {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
-    comp result;
+    Q result;
     for (int i = 0; i < num_intervals; i++){
         integrator_riemann(integrand, nINT);       // only use standard Simpson
     }
     return result;
 #elif INTEGRATOR_TYPE == 1 // Simpson
-    comp result;
+    Q result;
     for (int i = 0; i < num_intervals; i++){
         integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
     }
     return result;
 #elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    comp result;
+    Q result;
     for (int i = 0; i < num_intervals; i++){
         integrator_simpson(integrand, intervals[i][0], intervals[i][1], w1, w2, nINT);        // use standard Simpson plus additional points around +- w/2
     }
     return result;
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    comp result;
+    Q result;
     for (int i = 0; i < num_intervals; i++){
         adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
     }
     return result;
 #elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl(integrand, intervals, num_intervals, nINT);
+    return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT);
 #elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Integrand> adaptor(integrator_tol, integrand);
-    comp result;
+    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+    Q result;
     for (int i = 0; i < num_intervals; i++){
         result += adaptor.integrate(intervals[i][0], intervals[i][1]);
     }

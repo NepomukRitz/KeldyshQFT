@@ -22,7 +22,7 @@ class IntegrandSE {
     const char type;
     vector<int> components = vector<int>(6);
     const Vertex<Q>& vertex;
-    const Propagator& propagator;
+    const Propagator<Q>& propagator;
     const double v;
     const int i_in;
     const bool all_spins;
@@ -40,7 +40,7 @@ public:
      * @param i_in_in   : Internal frequency index
      * @param all_spins_in: Defines the value of the vertex to be taken
      */
-    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in,
+    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator<Q>& prop_in,
                 const double v_in, const int i_in_in, const bool all_spins_in
 #ifdef DEBUG_MODE
                 , const int iK_select_in
@@ -190,11 +190,18 @@ public:
                                           GA*(factorAdvancedClosedAbove) +
                                           GK*(factorKeldyshClosedAbove ) );
 #else
-        return symmetrization_prefactor*( GM*factorClosedAbove ) * glb_i; // Multiplying the imaginary unit ensures that the integrand is purely real in the particle-hole symmetric case
+#ifndef PARTICLE_HOLE_SYMM
+        return symmetrization_prefactor*( GM*factorClosedAbove );
+#else
+        // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy Im(Sigma)
+        // Accordingly the saved propagator is -Im(G)
+        // Hence we need an additional factor of -1
+        return - symmetrization_prefactor*( GM*factorClosedAbove );
+#endif
 #endif
 #endif
     }
-
+/*
     void save_integrand() {
         int npoints = 1000; //nFER
         rvec freqs = (npoints);
@@ -203,15 +210,20 @@ public:
         rvec integrand_im (npoints);
         for (int i=0; i<npoints; ++i) {
             //double vpp = vertex[0].avertex().frequencies.b_K1.w[i];
-            double wl = propagator.selfenergy.frequencies.w_lower*2;
-            double wu = propagator.selfenergy.frequencies.w_upper*2;
+            double wl = propagator.selfenergy.frequencies.w_lower;
+            double wu = propagator.selfenergy.frequencies.w_upper;
             double vpp = wl + i*(wu-wl)/npoints;
             freqs[i] = vpp;
 
             Q integrand_value = (*this)(vpp);
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
-
+#endif
         }
 
         string filename = "../Data/integrand_SE";
@@ -220,6 +232,7 @@ public:
                        {"vpp", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
     }
+*/
 };
 
 
@@ -232,7 +245,7 @@ public:
  * @param all_spins : Wether the calculation of the loop should include all spin components of the vertex
  */
 template <typename Q>
-void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins
+void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>& prop, const bool all_spins
 #if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
           , const int iK_select
 #endif
@@ -268,32 +281,39 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         double v_lower = prop.selfenergy.frequencies.w_lower;
         double v_upper = prop.selfenergy.frequencies.w_upper;
 #ifdef KELDYSH_FORMALISM
-        comp integratedR =
-#ifdef KELDYSH_FORMALISM
-                -1./(2.*M_PI*glb_i)*
-#else
-                1./(2.*M_PI)*
-#endif
-                integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
-        comp integratedK =
-#ifdef KELDYSH_FORMALISM
-            -1./(2.*M_PI*glb_i)*
-#else
-            1./(2.*M_PI)*
-#endif
-            integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+        Q integratedR = -1./(2.*M_PI*glb_i)*integrator<Q>(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
+        Q integratedK = -1./(2.*M_PI*glb_i)* integrator<Q>(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
         self.addself(1, iv, i_in, integratedK);
 #else
 
-        comp integratedR;
+        Q integratedR = 0.;
         // split up the integrand at discontinuities and (possible) kinks:
-        integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),   -abs(v) , 0.);
-        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    -abs(v),     -inter_tol, 0.);
-        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    +inter_tol,     abs(v), 0.);
-        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    abs(v), v_upper+abs(v), 0.);
+
+        //integratedR = -1./(2.*M_PI)*integrator<Q>(integrandR, v_lower-abs(v),   -abs(v) , 0.);
+        //integratedR+= -1./(2.*M_PI)*integrator<Q>(integrandR,    -abs(v),     -inter_tol, 0.);
+        //integratedR+= -1./(2.*M_PI)*integrator<Q>(integrandR,    +inter_tol,     abs(v), 0.);
+        //integratedR+= -1./(2.*M_PI)*integrator<Q>(integrandR,    abs(v), v_upper+abs(v), 0.);
+        //self.addself(0, iv, i_in, integratedR);
+
+        size_t num_intervals;
+        vec<vec<double>> intervals;
+        if( inter_tol < abs(v)){
+            intervals = {{v_lower-abs(v),   -abs(v) },
+                         { -abs(v),     -inter_tol  },
+                         {+inter_tol,     abs(v)    },
+                         {abs(v), v_upper+abs(v)}};
+            num_intervals = 4;
+        }
+        else {
+            intervals = {{v_lower-abs(v), -inter_tol  },
+                         {+inter_tol, v_upper+abs(v)}};
+            num_intervals = 2;
+
+        }
+        integratedR = -1./(2.*M_PI) * integrator<Q>(integrandR, intervals, num_intervals);
         self.addself(0, iv, i_in, integratedR);
 #endif
     }
@@ -301,7 +321,7 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 
 #if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
 template <typename Q>
-void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins) {
+void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>& prop, const bool all_spins) {
     loop(self, fullvertex, prop, all_spins, 16);
 }
 #endif

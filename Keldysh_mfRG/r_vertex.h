@@ -260,7 +260,7 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& ve
 
     transfToR(input);
 
-    Q K1_val, K2_val, K2b_val, K3_val;
+    Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
 #if DIAG_CLASS>=0
     K1_val = valsmooth<k1>(input, vertex_in);
@@ -279,7 +279,7 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& ve
 
     transfToR(input);
 
-    Q K1_val, K2_val, K2b_val, K3_val;
+    Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
 #if DIAG_CLASS>=0
     K1_val = valsmooth<k1>(input, vertex_in, right_vertex);
@@ -305,14 +305,16 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in) const -> 
     indices.iK = components.K[k][input.spin][input.iK];
     if (indices.iK < 0) return 0.;
 
-    Q value;
+    Q value{};
 
     if (indices.channel != channel)
         value = Interpolate<k,Q>()(indices, vertex_in);
     else
         value = Interpolate<k,Q>()(indices, *(this));
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     if (indices.conjugate) return conj(value);
+#endif
     return value;
 }
 template <typename Q>
@@ -354,7 +356,9 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& vertex_in, const ful
             value = Interpolate<k,Q>()(indices, *(this));
     }
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     if (indices.conjugate) return conj(value);
+#endif
     return value;
 }
 
@@ -599,9 +603,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                     result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
                 else
                     result = indices.prefactor * K1[itK * nw1 + itw_new];
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
                 if (indices.conjugate)
                     K1[itK * nw1 + itw] = conj(result);
                 else
+#endif
                     K1[itK * nw1 + itw] = result;
             }
 
@@ -655,9 +661,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                         result = indices.prefactor * vertex_symmrelated.K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
                     else
                         result = indices.prefactor * K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
                     if (indices.conjugate)
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
                     else
+#endif
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
                 }
             }
@@ -720,9 +728,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                             result = indices.prefactor * vertex_symmrelated.K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
                         else
                             result = indices.prefactor * K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
                         if (indices.conjugate)
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = conj(result);
                         else
+#endif
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = result;
                     }
                 }

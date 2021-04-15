@@ -282,7 +282,7 @@ void ft_tau2vn(rvec& vn, cvec& Gvn, const rvec& tau, const cvec& Gtau, const cha
 /// Input arguments: Bare or full propagator Gin, value of interaction Uin (Gamma0 = -Uin/2), FFT parameters
 /// FFT arguments: number of grid points (nFFT), frequency range (-V_FFT/2 ... V_FFT/2), suitable choice: 10000, 80.
 /// Flags: whether to compute SE, K1a, K1p; whether to perform ladder summation
-void SOPT_FFT(cvec& SEout_R, cvec& SEout_K, cvec& K1aout_R, cvec& K1aout_K, cvec& K1pout_R, cvec& K1pout_K, const Propagator& Gin,
+void SOPT_FFT(cvec& SEout_R, cvec& SEout_K, cvec& K1aout_R, cvec& K1aout_K, cvec& K1pout_R, cvec& K1pout_K, const Propagator<comp>& Gin,
         const double Uin, const int nFFT, const double V_FFT, const bool SEflag_FFT, const bool K1aflag_FFT, const bool K1pflag_FFT, const bool ladflag_FFT) {
     bool writeflag_FFT = true; // whether to write data into file
     bool tailflag_FFT = true; // whether to include analytic treatment of tail
@@ -476,7 +476,7 @@ void SOPT_FFT(cvec& SEout_R, cvec& SEout_K, cvec& K1aout_R, cvec& K1aout_K, cvec
     }
 }
 
-void SOPT_FFT_SE_R(cvec& SEout_R, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT) {
+void SOPT_FFT_SE_R(cvec& SEout_R, const Propagator<comp>& Gin, const double Uin, const int nFFT, const double V_FFT) {
     cvec K1a_R, K1a_K, K1p_R, K1p_K; // dummy cvecs for output that is not computed at all
     cvec SE_K(nSE); // dummy cvec for output that is not returned
     SOPT_FFT(SEout_R, SE_K, K1a_R, K1a_K, K1p_R, K1p_K, Gin, Uin, nFFT, V_FFT, true, false, false, false);
@@ -484,19 +484,19 @@ void SOPT_FFT_SE_R(cvec& SEout_R, const Propagator& Gin, const double Uin, const
         SEout_R[iv] += glb_U / 2.;
 }
 
-void SOPT_FFT_K1a_R(cvec& K1aout_R, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT) {
+void SOPT_FFT_K1a_R(cvec& K1aout_R, const Propagator<comp>& Gin, const double Uin, const int nFFT, const double V_FFT) {
     cvec SE_R, SE_K, K1p_R, K1p_K; // dummy cvecs for output that is not computed at all
     cvec K1a_K(nw1_a); // dummy cvec for output that is not returned
     SOPT_FFT(SE_R, SE_K, K1aout_R, K1a_K, K1p_R, K1p_K, Gin, Uin, nFFT, V_FFT, false, true, false, false);
 }
 
-void SOPT_FFT_K1p_R(cvec& K1pout_R, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT) {
+void SOPT_FFT_K1p_R(cvec& K1pout_R, const Propagator<comp>& Gin, const double Uin, const int nFFT, const double V_FFT) {
     cvec SE_R, SE_K, K1a_R, K1a_K; // dummy cvecs for output that is not computed at all
     cvec K1p_K(nw1_p); // dummy cvec for output that is not returned
     SOPT_FFT(SE_R, SE_K, K1a_R, K1a_K, K1pout_R, K1p_K, Gin, Uin, nFFT, V_FFT, false, false, true, false);
 }
 
-void SOPT_FFT(SelfEnergy<comp>& SEout, rvert<comp>& gammaAout, rvert<comp>& gammaPout, const Propagator& Gin,
+void SOPT_FFT(SelfEnergy<comp>& SEout, rvert<comp>& gammaAout, rvert<comp>& gammaPout, const Propagator<comp>& Gin,
         const double Uin, const int nFFT, const double V_FFT, const bool SEflag_FFT, const bool K1aflag_FFT, const bool K1pflag_FFT, const bool ladflag_FFT) {
     /// prepare output ///
     cvec SE_R(nSE), SE_K(nSE); // cvecs for SOPT self-energy
@@ -526,13 +526,13 @@ void SOPT_FFT(SelfEnergy<comp>& SEout, rvert<comp>& gammaAout, rvert<comp>& gamm
     }
 }
 
-void SOPT_FFT(SelfEnergy<comp>& SEout, const Propagator& Gin, const double Uin, const int nFFT, const double V_FFT, const bool ladflag_FFT) {
+void SOPT_FFT(SelfEnergy<comp>& SEout, const Propagator<comp>& Gin, const double Uin, const int nFFT, const double V_FFT, const bool ladflag_FFT) {
     rvert<comp> gammaA ('a'); rvert<comp> gammaP ('p'); // dummy objects for output that is not computed at all
     SOPT_FFT(SEout, gammaA, gammaP, Gin, Uin, nFFT, V_FFT, true, false, false, ladflag_FFT);
 }
 
 /// Compute scale-differentiated second-order perturbation theory (SOPT) using fast Fourier transform (FFT), arguments as above
-void diffSOPT_FFT(cvec& dSEout_R, cvec& dK1aout_R, const Propagator& Gin, const Propagator& Sin,
+void diffSOPT_FFT(cvec& dSEout_R, cvec& dK1aout_R, const Propagator<comp>& Gin, const Propagator<comp>& Sin,
               const double Uin, const int nFFT, const double V_FFT, const bool SEflag_FFT, const bool K1aflag_FFT) {
     bool writeflag_FFT = false; // whether to write data into file
     /// ------------------- READ INPUT --------------------- ///
@@ -604,12 +604,12 @@ void diffSOPT_FFT(cvec& dSEout_R, cvec& dK1aout_R, const Propagator& Gin, const 
     }
 }
 
-void diffSOPT_FFT_SE_R(cvec& dSEout_R, const Propagator& Gin, const Propagator& Sin, const double Uin, const int nFFT, const double V_FFT) {
+void diffSOPT_FFT_SE_R(cvec& dSEout_R, const Propagator<comp>& Gin, const Propagator<comp>& Sin, const double Uin, const int nFFT, const double V_FFT) {
     cvec dK1a_R; // dummy cvecs for output that is not computed at all
     diffSOPT_FFT(dSEout_R, dK1a_R, Gin, Sin, Uin, nFFT, V_FFT, true, false);
 }
 
-void diffSOPT_FFT_K1a_R(cvec& dK1aout_R, const Propagator& Gin, const Propagator& Sin, const double Uin, const int nFFT, const double V_FFT) {
+void diffSOPT_FFT_K1a_R(cvec& dK1aout_R, const Propagator<comp>& Gin, const Propagator<comp>& Sin, const double Uin, const int nFFT, const double V_FFT) {
     cvec dSE_R; // dummy cvecs for output that is not computed at all
     diffSOPT_FFT(dSE_R, dK1aout_R, Gin, Sin, Uin, nFFT, V_FFT, false, true);
 }

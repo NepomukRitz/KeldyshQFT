@@ -5,7 +5,7 @@
  */
 
 // if defined, also run integration tests (else only unit tests)
-//#define INTEGRATION_TESTS
+#define INTEGRATION_TESTS
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 #if DIAG_CLASS >= 1
     /* run a complete flow and check FDTs and causality */
     string filename = "integration_test_flow_K2_8e";
-    State<comp> state = n_loop_flow(filename);
+    State<state_datatype> state = n_loop_flow(filename);
     check_FDTs(state);
     check_SE_causality(state.selfenergy);
 
