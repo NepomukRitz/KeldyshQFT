@@ -25,9 +25,10 @@
 #include "write_data2file.h"            // write vectors into hdf5 file
 
 /// Class combining two propagators, either GG or GS+SG
+template <typename Q>
 class Bubble{
-    const Propagator& g;
-    const Propagator& s;
+    const Propagator<Q>& g;
+    const Propagator<Q>& s;
     const bool dot;
 public:
 
@@ -37,7 +38,7 @@ public:
      * @param propagatorS : second propagator (standard or single-scale/differentiated, depending on "dot_in")
      * @param dot_in      : whether to compute standard (false) or differentiated (true) bubble
      */
-    Bubble(const Propagator& propagatorG, const Propagator& propagatorS, const bool dot_in)
+    Bubble(const Propagator<Q>& propagatorG, const Propagator<Q>& propagatorS, const bool dot_in)
         :g(propagatorG), s(propagatorS), dot(dot_in) {};
 
     /**
@@ -48,8 +49,8 @@ public:
      * @param i_in  : internal structure index
      * @return comp : value of the bubble evaluated at (iK, v1, v2)
      */
-    auto value(int iK, double v1, double v2, int i_in) const -> comp{
-        comp ans;
+    auto value(int iK, double v1, double v2, int i_in) const -> Q{
+        Q ans;
         if(dot){
 #ifdef KELDYSH_FORMALISM
             switch (iK) {
@@ -124,6 +125,9 @@ public:
             ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
 #endif
         }
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+        ans *= -1.;     // -1=glb_i^2; needed for particle-hole symmetry in Matsubara (we only save the imaginary part of self-energy and propagators)
+#endif
         return ans;
     }
 
@@ -134,10 +138,10 @@ public:
      * @param vpp     : bubble integration frequency of the corresponding channel
      * @param i_in    : internal structure index
      * @param channel : channel to which the bubble belongs
-     * @return comp   : value of the bubble evaluated at the arguments described above
+     * @return Q      : value of the bubble evaluated at the arguments described above (usually comp)
      */
-    auto value(int iK, double w, double vpp, int i_in, char channel) const -> comp {
-        comp Pival;
+    auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q {
+        Q Pival;
         switch (channel) {
             case 'a':
                 Pival = value(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
@@ -155,9 +159,10 @@ public:
 };
 
 //Class created for debugging of the Bubbles
+template <typename Q>
 class IntegrandBubble{
-    const Propagator& g1;
-    const Propagator& g2;
+    const Propagator<Q>& g1;
+    const Propagator<Q>& g2;
     bool diff;
     double w;
     int iK;
@@ -173,7 +178,7 @@ public:
      * @param iK_in     : Keldysh index to be taken
      * @param channel_in: Char indicating the channel in which the bubble should be calculated and which determines the frequency transformations
      */
-    IntegrandBubble(const Propagator& g1_in, const Propagator& g2_in, bool diff_in, double w_in, int iK_in, char channel_in)
+    IntegrandBubble(const Propagator<Q>& g1_in, const Propagator<Q>& g2_in, bool diff_in, double w_in, int iK_in, char channel_in)
             : g1(g1_in), g2(g2_in), diff(diff_in), w(w_in), iK(iK_in), channel(channel_in) {};
 
     /**
@@ -182,10 +187,10 @@ public:
      * @return The value g1(v1)*g2(v2), where v1 and v2 are calculated according to the channel. The components of the
      * propagators taken depend on the Keldysh component
      */
-    auto operator() (double vpp) const -> comp {
-        comp ans;
+    auto operator() (double vpp) const -> Q {
+        Q ans;
         double v1, v2;
-        Bubble Pi(g1, g2, diff);
+        Bubble<Q> Pi(g1, g2, diff);
 
         switch(channel){
             case 'p':
@@ -213,7 +218,7 @@ template <typename Q,
 class Integrand_K1 {
     const GeneralVertex<Q, symmetry_left>& vertex1;
     const GeneralVertex<Q, symmetry_right>& vertex2;
-    const Bubble& Pi;
+    const Bubble<Q>& Pi;
     int i0;
     int i2;
 #ifdef DEBUG_MODE
@@ -242,7 +247,7 @@ public:
      */
     Integrand_K1(const GeneralVertex<Q, symmetry_left>& vertex1_in,
                  const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                 const Bubble& Pi_in,
+                 const Bubble<Q>& Pi_in,
                  int i0_in, int i2_in, const double w_in, const int i_in_in, const char ch_in, const bool diff_in
 #ifdef DEBUG_MODE
                  , const int iK_select_in, const int iK_select_bubble_in
@@ -372,13 +377,20 @@ public:
             double vpp = wl + i * (wu-wl)/(npoints-1);
             vpp = vertex1[0].avertex().frequencies.b_K1.w[i];
             Q integrand_value = (*this)(vpp);
-            integrand_re[i] = integrand_value.real();
-            integrand_im[i] = integrand_value.imag();
             freqs[i] = vpp;
 
             Q Pival = Pi.value(i2, w, vpp, i_in, channel);
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+            Pival_re[i] = Pival;
+            Pival_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
             Pival_re[i] = Pival.real();
             Pival_im[i] = Pival.imag();
+#endif
         }
 
         string filename = "../Data/integrand_K1";
@@ -398,7 +410,7 @@ template <typename Q,
 class Integrand_K2 {
     const GeneralVertex<Q, symmetry_left>& vertex1;
     const GeneralVertex<Q, symmetry_right>& vertex2;
-    const Bubble& Pi;
+    const Bubble<Q>& Pi;
     int i0;
     int i2;
 #ifdef DEBUG_MODE
@@ -427,7 +439,7 @@ public:
      */
     Integrand_K2(const GeneralVertex<Q, symmetry_left>& vertex1_in,
                  const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                 const Bubble& Pi_in,
+                 const Bubble<Q>& Pi_in,
                  int i0_in, int i2_in, const double w_in, double v_in, const int i_in_in,
                  const char ch_in, const bool diff_in
 #ifdef DEBUG_MODE
@@ -501,14 +513,20 @@ public:
             double wu = vertex1[0].avertex().frequencies.f_K2.w_upper;
             double vpp = wl + i * (wu-wl)/(npoints-1);
             freqs[i] = vpp;
+            Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
             Q integrand_value = (*this)(vpp);
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+            Pival_re[i] = Pival;
+            Pival_im[i] = 0.;
+#else
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
-
-            Q Pival = Pi.value(i2, w, vpp, i_in, channel);
             Pival_re[i] = Pival.real();
             Pival_im[i] = Pival.imag();
+#endif
         }
 
         string filename = "../Data/integrand_K2";
@@ -530,7 +548,7 @@ template <typename Q,
 class Integrand_K3 {
     const GeneralVertex<Q, symmetry_left>& vertex1;
     const GeneralVertex<Q, symmetry_right>& vertex2;
-    const Bubble& Pi;
+    const Bubble<Q>& Pi;
     int i0;
     const int i_in;
     const char channel;
@@ -554,7 +572,7 @@ public:
      */
     Integrand_K3(const GeneralVertex<Q, symmetry_left>& vertex1_in,
                  const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                 const Bubble& Pi_in, int i0_in,
+                 const Bubble<Q>& Pi_in, int i0_in,
                  const double w_in, const double v_in, const double vp_in, const int i_in_in,
                  const char ch_in, const bool diff_in)
                : vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in),
@@ -621,8 +639,13 @@ public:
             freqs[i] = vpp;
 
             Q integrand_value = (*this)(vpp);
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
+#endif
         }
 
         string filename = "../Data/integrand_K3";
@@ -661,13 +684,13 @@ template <typename Q,
 void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                      const GeneralVertex<Q, symmetry_left>& vertex1,
                      const GeneralVertex<Q, symmetry_right>& vertex2,
-                     const Propagator& G, const Propagator& S, const char channel, const bool diff
+                     const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff
 #ifdef DEBUG_MODE
                      , const int iK_select, const int iK_select_bubble, const int iK_select2, const int iK_select_bubble2
 #endif
                      )
 {
-    Bubble Pi(G, S, diff); // initialize bubble object
+    Bubble<Q> Pi(G, S, diff); // initialize bubble object
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
@@ -755,7 +778,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                 int iw = iK1/(n_in) - i0*nw1_w; // frequency index
                 int i_in = iK1 - i0*nw1_w*n_in - iw*n_in; // internal index
                 double w = freqs_K1.w[iw];      // frequency acc. to frequency index
-                Q value;
+                Q value{};      // force zero initialization
 
                 int trafo = 1;
                 int sign_w = sign_index<double>(w);
@@ -799,7 +822,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #endif
 
 #ifdef KELDYSH_FORMALISM
-                           value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
+                           value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
                            //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
                            //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
@@ -818,7 +841,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                num_intervals = 2;
 
                            }
-                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, intervals, num_intervals);
+                           value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, intervals, num_intervals);
 
 #endif
 
@@ -888,7 +911,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                 int i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
                 double w = bfreqs_K2.w[iw];
                 double v = ffreqs_K2.w[iv];
-                Q value;
+                Q value{};
 
                 int trafo = 1;
                 int sign_w = sign_index<double>(w);
@@ -932,7 +955,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #endif
 
 #ifdef KELDYSH_FORMALISM
-                        value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
+                        value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator<Q>(integrand_K2, vmin, vmax, -w / 2., w / 2.);
 #else
                         //value += prefactor * (1. / (2. * M_PI)) *
                         //         integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
@@ -956,7 +979,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                             num_intervals = 2;
 
                         }
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, intervals, num_intervals);
+                        value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, intervals, num_intervals);
 #endif
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
@@ -1031,7 +1054,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                 double w = bfreqs_K3.w[iw];
                 double v = ffreqs_K3.w[iv];
                 double vp = ffreqs_K3.w[ivp];
-                Q value;
+                Q value{};
 
                 int trafo = 1;
                 int sign_w = sign_index<double>(w);
@@ -1065,7 +1088,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 
 #ifdef KELDYSH_FORMALISM
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                             integrator(integrand_K3, vmin, vmax, -w / 2., w / 2.);
+                             integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2.);
 #else
                     //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
                     //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
@@ -1084,7 +1107,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         num_intervals = 2;
 
                     }
-                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, intervals, num_intervals);
+                    value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, intervals, num_intervals);
 #endif
 
 
@@ -1145,7 +1168,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 template <typename Q, template <typename> class container_type>
 void bubble_function(GeneralVertex<Q, container_type>& dgamma,
                      const GeneralVertex<Q, container_type>& vertex1, const GeneralVertex<Q, container_type>& vertex2,
-                     const Propagator& G, const Propagator& S, const char channel, const bool diff)
+                     const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff)
 {
     bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, 16, 16, 16, 16);
 }

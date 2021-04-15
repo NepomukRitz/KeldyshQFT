@@ -22,7 +22,7 @@ template <typename Q> void check_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_diff
     Vertex<Q> Gamma = state.vertex;  // full vertex
     Vertex<Q> Ir = state.vertex;     // irreducible vertex
     Ir.set_Ir(true);            // (irreducible in the channel of the bubble in which it is evaluated)
-    Propagator G (Lambda, state.selfenergy, 'g'); // full propagator
+    Propagator<Q> G (Lambda, state.selfenergy, 'g'); // full propagator
 
     // compute the BSE by inserting I_r on the left and the full Gamma on the right
     Vertex<Q> Gamma_BSE_L (n_spin);
@@ -55,7 +55,7 @@ template <typename Q> void check_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Si
     Vertex<Q> Gamma_0 (n_spin);                  // bare vertex
     Gamma_0.set_frequency_grid(state.vertex);
     Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
-    Propagator G (Lambda, state.selfenergy, 'g');   // full propagator
+    Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
 
     // compute self-energy via SDE using the a-bubble
     SelfEnergy<Q> Sigma_SDE_a;
@@ -105,22 +105,22 @@ void parquet_checks(const string filename) {
     for (int i=0; i<Lambdas.size(); ++i) {
         print("Iteration ", i, false);
         print_add(", Lambda = ", Lambdas[i], true);
-        State<comp> state = read_hdf(filename, i, Lambdas.size());
+        State<state_datatype> state = read_hdf(filename, i, Lambdas.size());
         state.selfenergy.asymp_val_R = glb_U / 2.;
         print("State read from file.", true);
 
         // compute vertex from BSE
-        Vertex<comp> Gamma_BSE (n_spin), Gamma_diff (n_spin);
+        Vertex<state_datatype> Gamma_BSE (n_spin), Gamma_diff (n_spin);
         check_BSE(Gamma_BSE, Gamma_diff, state, Lambdas[i]);
         print("Computed BSE.", true);
 
         // compute self-energy from SDE
-        SelfEnergy<comp> Sigma_SDE (n_spin), Sigma_diff (n_spin);
+        SelfEnergy<state_datatype> Sigma_SDE (n_spin), Sigma_diff (n_spin);
         check_SDE(Sigma_SDE, Sigma_diff, state, Lambdas[i]);
         print("Computed SDE.", true);
 
         // Hartree self-energy
-        SelfEnergy<comp> Sigma_Hartree;
+        SelfEnergy<state_datatype> Sigma_Hartree;
         Sigma_Hartree.set_frequency_grid(state.selfenergy);
         Sigma_Hartree.initialize(glb_U / 2., 0.);
 
@@ -156,7 +156,7 @@ void parquet_checks(const string filename) {
                         norm_SE_fRG, norm_SE_SDE, norm_SE_diff});
 
         // save results from BSE/SDE as state into HDF5 file
-        State<comp> parquet;
+        State<state_datatype> parquet;
         parquet.vertex = Gamma_BSE;
         parquet.selfenergy = Sigma_SDE;
         if (i == 0)

@@ -11,9 +11,9 @@
 #include "testFunctions.h"      // for initialization with SOPT at the beginning of the flow, using sopt_state // TODO: should this really be in testFunctions?
 #include "right_hand_sides.h"   // to compute right hand side of flow equation
 
-State<comp> n_loop_flow(string outputFileName){
+State<state_datatype> n_loop_flow(string outputFileName){
 
-    State<comp> state_fin (Lambda_fin), state_ini (Lambda_ini);   // create final and initial state
+    State<state_datatype> state_fin (Lambda_fin), state_ini (Lambda_ini);   // create final and initial state
     state_ini.initialize();             // initialize state
 
     sopt_state(state_ini, Lambda_ini);  // initialize the flow with SOPT at Lambda_ini (important!)

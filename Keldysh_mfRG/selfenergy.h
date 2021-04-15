@@ -41,22 +41,24 @@ public:
         lhs += rhs;
         return lhs;
     }
-    auto operator*= (Q alpha) -> SelfEnergy<Q> {
+    template <typename  Qfac>
+    auto operator*= (Qfac alpha) -> SelfEnergy<Q> {
         this->Sigma *= alpha;
         return *this;
     }
-    friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const Q& rhs) {
+    template <typename  Qfac>
+    friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const Qfac& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator*= (double alpha) -> SelfEnergy<Q> {
-        this->Sigma *= alpha;
-        return *this;
-    }
-    friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const double& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
+    //auto operator*= (double alpha) -> SelfEnergy<Q> {
+    //    this->Sigma *= alpha;
+    //    return *this;
+    //}
+    //friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const double& rhs) {
+    //    lhs *= rhs;
+    //    return lhs;
+   // }
     auto operator-= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma -= self1.Sigma;
         return *this;

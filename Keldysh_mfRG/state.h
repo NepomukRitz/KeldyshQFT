@@ -57,7 +57,11 @@ public:
 template <typename Q> void State<Q>::initialize() {
     // Initial conditions
     // Assign initial conditions to self energy
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+    this->selfenergy.initialize(0. , 0.);
+#else
     this->selfenergy.initialize(glb_U/2., 0.);
+#endif
 
     // Assign initial conditions to bare vertex
 #ifdef KELDYSH_FORMALISM
