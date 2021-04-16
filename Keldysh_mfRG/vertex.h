@@ -629,6 +629,8 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input, const fullve
 template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
 
     switch (input.channel){
         case 'a':
@@ -667,13 +669,13 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
     }
     #endif
 #endif
-    if (Ir)
-        return gamma0;
     return gamma0 + K1_K2b;
 }
 template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
 
     switch (input.channel){
         case 'a':
@@ -712,14 +714,14 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
     }
     #endif
 #endif
-    if (Ir)
-        return gamma0;
     return gamma0 + K1_K2b;
 }
 
 template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
 
     switch (input.channel){
         case 'a':
@@ -759,13 +761,13 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
     }
     #endif
 #endif
-    if (Ir)
-        return gamma0;
     return gamma0 + K1_K2;
 }
 template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
 
     switch (input.channel){
         case 'a':
@@ -805,16 +807,17 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
     }
     #endif
 #endif
-    if (Ir)
-        return gamma0;
     return gamma0 + K1_K2;
 }
 
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const -> Q {
     Q K2_K3, gamma_Rb;
+    if (Ir) {
 #if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input);
+        gamma_Rb = gammaRb(input);
 #endif
+        return gamma_Rb;
+    }
 
     switch (input.channel){
         case 'a':
@@ -829,17 +832,20 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
         default:
             return 0.;
     }
-    if (Ir)
-        return gamma_Rb;
     if (only_same_channel)
         return K2_K3;
+
+    gamma_Rb = gammaRb(input);
     return K2_K3 + gamma_Rb;
 }
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2_K3, gamma_Rb;
+    if (Ir) {
 #if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input, right_vertex);
+        gamma_Rb = gammaRb(input, right_vertex);
 #endif
+        return gamma_Rb;
+    }
 
     switch (input.channel){
         case 'a':
@@ -854,18 +860,21 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const 
         default:
             return 0.;
     }
-    if (Ir)
-        return gamma_Rb;
     if (only_same_channel)
         return K2_K3;
+
+    gamma_Rb = gammaRb(input, right_vertex);
     return K2_K3 + gamma_Rb;
 }
 
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const -> Q {
     Q K2b_K3, gamma_Rb;
+    if (Ir) {
 #if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input);
+        gamma_Rb = gammaRb(input);
 #endif
+        return gamma_Rb;
+    }
 
     switch (input.channel){
         case 'a':
@@ -880,18 +889,20 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
         default:
             return 0.;
     }
-    if (Ir)
-        return gamma_Rb;
     if (only_same_channel)
         return K2b_K3;
+
+    gamma_Rb = gammaRb(input);
     return K2b_K3 + gamma_Rb;
 }
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2b_K3, gamma_Rb;
+    if (Ir) {
 #if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input, right_vertex);
+        gamma_Rb = gammaRb(input, right_vertex);
 #endif
-
+        return gamma_Rb;
+    }
     switch (input.channel){
         case 'a':
             K2b_K3 = avertex.right_diff_bare(input, tvertex, right_vertex);
@@ -905,10 +916,10 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const
         default:
             return 0.;
     }
-    if (Ir)
-        return gamma_Rb;
     if (only_same_channel)
         return K2b_K3;
+
+    gamma_Rb = gammaRb(input, right_vertex);
     return K2b_K3 + gamma_Rb;
 }
 
