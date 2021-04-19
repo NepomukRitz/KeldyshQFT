@@ -20,7 +20,7 @@ template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -
 template <typename Q> void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVertex, const Propagator& S);
 template <typename Q> void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& Psi, const Propagator& G, const Propagator& dG);
 
-template <typename Q> void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammatbar_C, const State<Q>& Psi, const Propagator& G);
+template <typename Q> void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammaC_tbar, const State<Q>& Psi, const Propagator& G);
 
 template <typename Q> auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>;
 template <typename Q> auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator& G) -> Vertex<Q>;
@@ -211,8 +211,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 #if N_LOOPS>=3
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
-    Vertex<Q> dGammatbar_C(n_spin);
-    dGammatbar_C.set_frequency_grid(Psi.vertex);
+    // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
+    Vertex<Q> dGammaC_tbar(n_spin);
+    dGammaC_tbar.set_frequency_grid(Psi.vertex);
 #endif
 
     for (int i=3; i<=N_LOOPS; i++) {
@@ -241,14 +242,20 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         dGammaT = dGammaL_half1 + dGammaC + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
         dPsi.vertex += dGammaT;
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
-        dGammatbar_C += dGammaC_ap;
+        // extract central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
+        Vertex<Q> dGammaC_ap (n_spin);                   // initialize new vertex
+        dGammaC_ap.set_frequency_grid(Psi.vertex);
+        dGammaC_ap[0].avertex() = dGammaC[0].avertex();  // copy results from calculations above
+        dGammaC_ap[0].pvertex() = dGammaC[0].pvertex();
+        dGammaC_tbar += dGammaC_ap;                      // add the i-loop contribution to the full dGammaC_tbar
 #endif
         //if(vertexConvergedInLoops(dGammaT, dPsi.vertex))
         //    break;
     }
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
-    selfEnergyFlowCorrections(dPsi.selfenergy, dGammatbar_C, Psi, G);
+    // compute multiloop corrections to self-energy flow
+    selfEnergyFlowCorrections(dPsi.selfenergy, dGammaC_tbar, Psi, G);
 
     //TODO These are supposed to be lines 37-39 of pseudo-code. What do these refer to?
     //if(selfEnergyConverged(Psi.selfenergy, Lambda))
@@ -341,34 +348,19 @@ auto calculate_dGammaC_left_insertion(GeneralVertex<Q, non_symmetric>& nonsymVer
     return dGammaC;
 }
 
-// TODO: old version -> remove?
-//template <typename Q>
-//auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
-//    Vertex<Q> dGamma_C_ap(n_spin);
-//    dGamma_C_ap.set_frequency_grid(PsiVertex);
-//
-//    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'a', false);
-//    bubble_function(dGamma_C_ap, PsiVertex, dGammaL, G, G, 'p', false);
-//
-//    return dGamma_C_ap;
-//}
-//
-//template <typename Q>
-//auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator& G) -> Vertex<Q>{
-//    Vertex<Q> dGamma_C_t(n_spin);
-//    dGamma_C_t.set_frequency_grid(PsiVertex);
-//    bubble_function(dGamma_C_t, PsiVertex, dGammaL, G, G, 't', false);
-//    return dGamma_C_t;
-//}
-
+// compute multiloop corrections to self-energy flow
 template <typename Q>
-void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammatbar_C, const State<Q>& Psi, const Propagator& G){
+void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammaC_tbar, const State<Q>& Psi, const Propagator& G){
+    // TODO: also implement self-energy flow via differentiated SDE
+    // TODO: iterate self-energy corrections (feedback of full SE flow into vertex flow etc.)?
 
     SelfEnergy<Q> dSigma_tbar;
     SelfEnergy<Q> dSigma_t;
 
-    loop(dSigma_tbar, dGammatbar_C, G, false);
+    // compute first multiloop correction to self-energy flow, irreducible in the t channel
+    loop(dSigma_tbar, dGammaC_tbar, G, false);
 
+    // compute second multiloop correction to self-energy flow, reducible in the t channel
     Propagator extension (G.Lambda, Psi.selfenergy, dSigma_tbar, 'e');
     loop(dSigma_t, Psi.vertex, extension, false);
 
