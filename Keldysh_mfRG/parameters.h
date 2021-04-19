@@ -27,6 +27,7 @@ using namespace std;
 #define DIAG_CLASS 2
 
 #define N_LOOPS 1  // Number of loops
+#define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
