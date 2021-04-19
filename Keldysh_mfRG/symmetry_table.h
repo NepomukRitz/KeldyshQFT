@@ -183,8 +183,8 @@ struct Transformations {
                                          4,  4, 43,  0}),    // spin comp. V
                           vector<int> ({ 1,  2,  1,  1,
                                         14,  1,  1,  1,
-                                        14,  2,  2,  2,            //Uses TCT2 = T1TC
-                                        14, 14, 14,  0})};  //spin comp. Vhat
+                                        41,  2,  2,  2,            //Uses TCT2 = T1TC
+                                        14, 41, 14,  0})};  //spin comp. Vhat
                 break;
             case 'p':
                 K[k1] = {vector<int> ({ 0,  0,  0,  0,
@@ -217,8 +217,8 @@ struct Transformations {
                                         4,  4, 43,  0}),    // spin comp. V
                          vector<int> ({ 1,  2,  1,  1,
                                        14,  1,  1,  1,
-                                       14,  2,  2,  2,
-                                       14, 14, 14,  0})};  // spin comp. Vhat
+                                       41,  2,  2,  2,
+                                       14, 41, 14,  0})};  // spin comp. Vhat
                 break;
             case 't':
                 K[k1] = {vector<int> ({ 0,  0,  3,  0,
@@ -251,8 +251,8 @@ struct Transformations {
                                         4,  4, 43,  0}),    // spin comp. V
                          vector<int> ({ 1,  2,  1,  1,
                                        14,  1,  1,  1,
-                                       14,  2,  2,  2,
-                                       14, 14, 14,  0})}; // spin comp. Vhat
+                                       41,  2,  2,  2,
+                                       14, 41, 14,  0})}; // spin comp. Vhat
                 break;
             default:;
         }
