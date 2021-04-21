@@ -1753,39 +1753,4 @@ void test_channel_decomposition(int N_ODE) {
 }
 #endif
 
-void SDE_postprocessing(State<comp> state) {
-//    Vertex<comp> Gamma_0 (n_spin);                  // bare vertex
-//    Gamma_0.set_frequency_grid(state.vertex);
-//    Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
-//    Propagator G (Lambda, state.selfenergy, 'g');   // full propagator
-//
-//    // compute self-energy via SDE using the a-bubble
-//    SelfEnergy<comp> Sigma_SDE_a;
-//    Sigma_SDE_a.set_frequency_grid(state.selfenergy);
-//    Sigma_SDE_a.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
-//    Vertex<comp> bubble_a (n_spin);
-//    bubble_a.set_frequency_grid(state.vertex);
-//    bubble_function(bubble_a, Gamma_0, state.vertex, G, G, 'a', false);  // bare vertex on the left
-//    bubble_function(bubble_a, state.vertex, Gamma_0, G, G, 'a', false);  // bare vertex on the right
-//    bubble_a *= 0.5;                                                     // symmetrize
-//    loop(Sigma_SDE_a, bubble_a, G, false);
-//
-//    // compute self-energy via SDE using the p-bubble
-//    SelfEnergy<comp> Sigma_SDE_p;
-//    Sigma_SDE_p.set_frequency_grid(state.selfenergy);
-//    Sigma_SDE_p.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
-//    Vertex<comp> bubble_p (n_spin);
-//    bubble_p.set_frequency_grid(state.vertex);
-//    bubble_function(bubble_p, Gamma_0, state.vertex, G, G, 'p', false);  // bare vertex on the left
-//    bubble_function(bubble_p, state.vertex, Gamma_0, G, G, 'p', false);  // bare vertex on the right
-//    bubble_p *= 0.5;                                                     // symmetrize
-//    loop(Sigma_SDE_p, bubble_p, G, false);
-//
-//    // symmetrize the contributions computed via a-/p-bubble
-//    Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
-//
-//    // compute the difference between input and SDE
-//    Sigma_diff = state.selfenergy - Sigma_SDE;
-}
-
 #endif //KELDYSH_MFRG_TESTFUNCTIONS_H
