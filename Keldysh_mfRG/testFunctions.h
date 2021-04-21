@@ -450,11 +450,11 @@ auto rhs_PT4_K1a_nonladder_flow(const State<comp>& Psi, const double Lambda) -> 
 
     // contribution to \dot{K1a} where leftmost bubble is differentiated
     State<comp> PT4_K1a_dot_left (Lambda);
-    bubble_function(PT4_K1a_dot_left.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', true);
+    bubble_function(PT4_K1a_dot_left.vertex, bare.vertex, PT3_K2a.vertex, G, S, 'a', true);
 
     // compute differentiated K2a in PT3
     State<comp> PT3_K2a_dot_right (Lambda);
-    bubble_function(PT3_K2a_dot_right.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', true);   // \dot{K2a} in PT3 (PT2_K1t = 0)
+    bubble_function(PT3_K2a_dot_right.vertex, PT2_K1p.vertex, bare.vertex, G, S, 'a', true);   // \dot{K2a} in PT3 (PT2_K1t = 0)
 
     // contribution to \dot{K1a} where rightmost bubble is differentiated
     State<comp> PT4_K1a_dot_right (Lambda);
@@ -531,11 +531,11 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
     // generate Lambda grid
     rvec Lambdas = construct_flow_grid(Lambda_f, Lambda_i, sq_substitution, sq_resubstitution, nODE);
 
-    for (int i=0; i<Lambdas.size(); ++i) {
+    for (int i=1; i<Lambdas.size(); ++i) {
         // compute direct result of PT4 K1a non-ladder at each Lambda step
         State<comp> state_dir = compute_PT4_K1a_nonladder(Lambdas[i]);
         // save result to last layer in hdf5 file
-        add_hdf(filename + "_dir", i + 1, Lambda_size, state_dir, Lambdas);
+        add_hdf(filename + "_dir", i, Lambda_size, state_dir, Lambdas);
     }
 
     // compute flow of PT4 K1a non-ladder from initial to final Lambda
@@ -1676,5 +1676,40 @@ void test_channel_decomposition(int N_ODE) {
     write_hdf("channel_decomposition.h5", 0, 1, state_fin);
 }
 #endif
+
+void SDE_postprocessing(State<comp> state) {
+//    Vertex<comp> Gamma_0 (n_spin);                  // bare vertex
+//    Gamma_0.set_frequency_grid(state.vertex);
+//    Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
+//    Propagator G (Lambda, state.selfenergy, 'g');   // full propagator
+//
+//    // compute self-energy via SDE using the a-bubble
+//    SelfEnergy<comp> Sigma_SDE_a;
+//    Sigma_SDE_a.set_frequency_grid(state.selfenergy);
+//    Sigma_SDE_a.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
+//    Vertex<comp> bubble_a (n_spin);
+//    bubble_a.set_frequency_grid(state.vertex);
+//    bubble_function(bubble_a, Gamma_0, state.vertex, G, G, 'a', false);  // bare vertex on the left
+//    bubble_function(bubble_a, state.vertex, Gamma_0, G, G, 'a', false);  // bare vertex on the right
+//    bubble_a *= 0.5;                                                     // symmetrize
+//    loop(Sigma_SDE_a, bubble_a, G, false);
+//
+//    // compute self-energy via SDE using the p-bubble
+//    SelfEnergy<comp> Sigma_SDE_p;
+//    Sigma_SDE_p.set_frequency_grid(state.selfenergy);
+//    Sigma_SDE_p.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
+//    Vertex<comp> bubble_p (n_spin);
+//    bubble_p.set_frequency_grid(state.vertex);
+//    bubble_function(bubble_p, Gamma_0, state.vertex, G, G, 'p', false);  // bare vertex on the left
+//    bubble_function(bubble_p, state.vertex, Gamma_0, G, G, 'p', false);  // bare vertex on the right
+//    bubble_p *= 0.5;                                                     // symmetrize
+//    loop(Sigma_SDE_p, bubble_p, G, false);
+//
+//    // symmetrize the contributions computed via a-/p-bubble
+//    Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
+//
+//    // compute the difference between input and SDE
+//    Sigma_diff = state.selfenergy - Sigma_SDE;
+}
 
 #endif //KELDYSH_MFRG_TESTFUNCTIONS_H
