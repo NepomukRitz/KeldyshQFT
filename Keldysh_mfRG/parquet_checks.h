@@ -247,6 +247,8 @@ void susceptibilities_postprocessing(Vertex<Q>& chi_a, Vertex<Q>& chi_p, Vertex<
  */
 void parquet_checks(const string filename) {
     rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
+    // TODO: this only works if flow grid of the computation of the file <filename> is the same as the one produced here
+    //  --> also read Lambda grid from file
     int nL = Lambdas.size();
 
     rvec norm_K1_fRG (nL), norm_K1_BSE (nL), norm_K1_diff (nL);
@@ -315,6 +317,31 @@ void parquet_checks(const string filename) {
             write_hdf(filename + "_parquet_checks", i, nL, parquet);
         else
             add_hdf(filename + "_parquet_checks", i, nL, parquet, Lambdas);
+
+
+        // post-processing susceptibilities:
+        Vertex<comp> chi_a (n_spin), chi_p (n_spin), chi_t (n_spin), chi_diff (n_spin);
+        chi_diff.set_frequency_grid(state.vertex);
+
+        susceptibilities_postprocessing(chi_a, chi_p, chi_t, chi_diff, state, Lambdas[i]);
+
+        State<comp> state_chi;
+        state_chi.vertex[0].avertex() = chi_a[0].avertex();
+        state_chi.vertex[0].pvertex() = chi_p[0].pvertex();
+        state_chi.vertex[0].tvertex() = chi_t[0].tvertex();
+
+        State<comp> state_chi_diff;
+        state_chi_diff.vertex = chi_diff;
+
+        if (i == 0) {
+            write_hdf(filename + "_susceptibilities", i, nL, state_chi);
+            write_hdf(filename + "_susceptibilities_diff", i, nL, state_chi_diff);
+        }
+        else {
+            add_hdf(filename + "_susceptibilities", i, nL, state_chi, Lambdas);
+            add_hdf(filename + "_susceptibilities_diff", i, nL, state_chi_diff, Lambdas);
+        }
+
     }
 }
 
