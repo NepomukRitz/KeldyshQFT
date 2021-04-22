@@ -6,6 +6,11 @@
 
 // Determines whether particle-hole symmetry is assumed
 //#define PARTICLE_HOLE_SYMM
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+    using state_datatype = double;
+#else
+    using state_datatype = comp;
+#endif
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
