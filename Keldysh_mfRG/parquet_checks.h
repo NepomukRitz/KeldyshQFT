@@ -129,18 +129,16 @@ template <typename Q> void check_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Si
  /**
   * Compute the susceptibilities chi_r in channel r from the full vertex, and the differences to the flowing
   * susceptibilities (K1r of the input vertex).
-  * @param chi_a      : Post-processed susceptibility in the a channel
-  * @param chi_p      : Post-processed susceptibility in the p channel
-  * @param chi_t      : Post-processed susceptibility in the t channel
-  * @param chi_a_diff : Difference between post-processed and flowing susceptibility in the a channel
-  * @param chi_p_diff : Difference between post-processed and flowing susceptibility in the p channel
-  * @param chi_t_diff : Difference between post-processed and flowing susceptibility in the t channel
-  * @param state      : Input state from which susceptibilities are computed
-  * @param Lambda     : Flow parameter Lambda at which bubbles are evaluated
+  * @param chi_a    : Post-processed susceptibility in the a channel
+  * @param chi_p    : Post-processed susceptibility in the p channel
+  * @param chi_t    : Post-processed susceptibility in the t channel
+  * @param chi_diff : Differences between flowing and post-processed susceptibility in each channel
+  * @param state    : Input state from which susceptibilities are computed
+  * @param Lambda   : Flow parameter Lambda at which bubbles are evaluated
   */
 template <typename Q>
-void susceptibilities_postprocessing(Vertex<Q>& chi_a,      Vertex<Q>& chi_p,      Vertex<Q>& chi_t,
-                                     Vertex<Q>& chi_a_diff, Vertex<Q>& chi_p_diff, Vertex<Q>& chi_t_diff,
+void susceptibilities_postprocessing(Vertex<Q>& chi_a, Vertex<Q>& chi_p, Vertex<Q>& chi_t,
+                                     Vertex<Q>& chi_diff,
                                      const State<Q>& state, const double Lambda) {
     Vertex<Q> Gamma = state.vertex;  // full vertex (just a redefinition
 
@@ -176,8 +174,8 @@ void susceptibilities_postprocessing(Vertex<Q>& chi_a,      Vertex<Q>& chi_p,   
     // symmetrize left/right contributions
     chi_a = (chi_a_l + chi_a_r) * 0.5;
 
-    // compute difference between post-processed susceptibility and K1 from input state
-    chi_a_diff[0].avertex().K1 = Gamma[0].avertex().K1;
+    // compute difference between K1 from input state and post-processed susceptibility
+    chi_diff[0].avertex() = Gamma[0].avertex() - chi_a[0].avertex();
 
     /// compute susceptibility in the p channel
     // contribution from the bare bubble
@@ -206,8 +204,8 @@ void susceptibilities_postprocessing(Vertex<Q>& chi_a,      Vertex<Q>& chi_p,   
     // symmetrize left/right contributions
     chi_p = (chi_p_l + chi_p_r) * 0.5;
 
-    // compute difference between post-processed susceptibility and K1 from input state
-    chi_p_diff[0].pvertex().K1 = Gamma[0].pvertex().K1;
+    // compute difference between K1 from input state and post-processed susceptibility
+    chi_diff[0].pvertex() = Gamma[0].pvertex() - chi_p[0].pvertex();
 
     /// compute susceptibility in the t channel
     // contribution from the bare bubble
@@ -236,8 +234,8 @@ void susceptibilities_postprocessing(Vertex<Q>& chi_a,      Vertex<Q>& chi_p,   
     // symmetrize left/right contributions
     chi_t = (chi_t_l + chi_t_r) * 0.5;
 
-    // compute difference between post-processed susceptibility and K1 from input state
-    chi_t_diff[0].tvertex().K1 = Gamma[0].tvertex().K1;
+    // compute difference between K1 from input state and post-processed susceptibility
+    chi_diff[0].tvertex() = Gamma[0].tvertex() - chi_t[0].tvertex();
 }
 
 /**
