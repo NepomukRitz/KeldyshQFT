@@ -456,7 +456,7 @@ template <typename Integrand> auto integrator_gsl(Integrand& integrand, vec<vec<
     }
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_qag(&F_imag, a, b, 0, integrator_tol, Nmax, 1, W_imag, &result_imag, &error_imag);
+    gsl_integration_qag(&F_imag, intervals[0][0], intervals[0][1], 0, integrator_tol, Nmax, 1, W_imag, &result_imag, &error_imag);
 #endif
 
     //double w1, w2;
