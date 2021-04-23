@@ -220,8 +220,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         // the symmetry-related diagram with a differentiated vertex on the left might be one with differentiated vertex on the right (vice versa)
         // for further evaluation as part of a bigger diagram they need to be reordered to recover the correct dGammaL and dGammaR
         // acc. to symmetry relations (enforce_symmetry() assumes full symmetry)
-        dGammaL_half1[0].left().reorder_due2antisymmetry(dGammaR_half1[0].left());
-        dGammaR_half1[0].left().reorder_due2antisymmetry(dGammaL_half1[0].left());
+        dGammaL_half1[0].half1().reorder_due2antisymmetry(dGammaR_half1[0].half1());
+        dGammaR_half1[0].half1().reorder_due2antisymmetry(dGammaL_half1[0].half1());
 
         // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
         GeneralVertex<Q, non_symmetric> dGammaL (n_spin);
