@@ -11,6 +11,7 @@
 #include "propagator.h"  // propagator class
 #include "parameters.h"  // system parameters (vector lengths etc.)
 #include "integrator.h"  // integration routines
+#include "write_data2file.h"  // save integrand for debugging purposes
 
 /**
  * Class for the integrand of the Retarded SelfEnergy
