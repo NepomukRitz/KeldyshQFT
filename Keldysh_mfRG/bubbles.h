@@ -359,7 +359,7 @@ public:
     }
 
     void save_integrand() {
-        int npoints = 1000;
+        int npoints = nBOS;
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);
@@ -367,9 +367,10 @@ public:
         rvec Pival_re (npoints);
         rvec Pival_im (npoints);
         for (int i=0; i<npoints; ++i) {
-            double wl = vertex1[0].avertex().frequencies.b_K1.w_lower/50.;
-            double wu = vertex1[0].avertex().frequencies.b_K1.w_upper/50.;
+            double wl = vertex1[0].avertex().frequencies.b_K1.w_lower*2.;
+            double wu = vertex1[0].avertex().frequencies.b_K1.w_upper*2.;
             double vpp = wl + i * (wu-wl)/(npoints-1);
+            vpp = vertex1[0].avertex().frequencies.b_K1.w[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -609,7 +610,7 @@ public:
     }
 
     void save_integrand() const {
-        int npoints = 1000;
+        int npoints = 100;
         rvec freqs (npoints);
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
@@ -730,6 +731,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     vmin = min(vmin, ffreqs_K3.w_lower);
     vmax = max(vmax, ffreqs_K3.w_upper);
 #endif
+    vmin *= 2;
+    vmax  *= 2;
 
 #if DIAG_CLASS >= 0
 //    double tK1 = get_time();
@@ -798,11 +801,25 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                            value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
-                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                           //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //}
+                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+
+                           size_t num_intervals;
+                           vec<vec<double>> intervals;
                            if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                               value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                               intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                               num_intervals = 3;
                            }
-                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                           else {
+                               intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                               num_intervals = 2;
+
+                           }
+                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, intervals, num_intervals);
+
 #endif
 
 
@@ -832,15 +849,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K1 += K1_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK1();
+            dgamma[0].avertex().enforce_freqsymmetriesK1(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K1 += K1_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK1();
+            dgamma[0].pvertex().enforce_freqsymmetriesK1(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K1 += K1_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK1();
+            dgamma[0].tvertex().enforce_freqsymmetriesK1(dgamma[0].tvertex());
             break;
         default: ;
     }
@@ -916,15 +933,29 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                         value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
 #else
-                        value += prefactor * (1. / (2. * M_PI)) *
-                                 integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
-                        if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
-                            value += prefactor * (1. / (2. * M_PI)) *
-                                     integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
-                                                -w / 2., w / 2.);
+                        //value += prefactor * (1. / (2. * M_PI)) *
+                        //         integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
+                        //if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
+                        //    value += prefactor * (1. / (2. * M_PI)) *
+                        //             integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
+                        //                        -w / 2., w / 2.);
+                        //}
+                        //value += prefactor * (1. / (2. * M_PI)) *
+                        //         integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
+
+
+                        size_t num_intervals;
+                        vec<vec<double>> intervals;
+                        if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                            intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                            num_intervals = 3;
                         }
-                        value += prefactor * (1. / (2. * M_PI)) *
-                                 integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
+                        else {
+                            intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                            num_intervals = 2;
+
+                        }
+                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, intervals, num_intervals);
 #endif
                         /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
@@ -957,15 +988,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2 += K2_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK2();
+            dgamma[0].avertex().enforce_freqsymmetriesK2(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K2 += K2_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK2();
+            dgamma[0].pvertex().enforce_freqsymmetriesK2(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K2 += K2_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK2();
+            dgamma[0].tvertex().enforce_freqsymmetriesK2(dgamma[0].tvertex());
             break;
         default: ;
     }
@@ -1003,8 +1034,10 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 
                 int trafo = 1;
                 int sign_w = sign_index<double>(w);
-                int sign_f = sign_index<double>(v+vp);
-                int sign_fp = sign_index<double>(v-vp);
+                int sign_f = iv+ivp<nFER3? 0 : 1;   // this corresponds to "sign_index(v + vp)" assuming
+                                                    // that both v and vp use the same fermionic frequency grid
+                int sign_fp = iv<=ivp? 0 : 1;       // this corresponds to "sign_index(v - vp)"  assuming
+                                                    // that both v and vp use the same fermionic frequency grid
                 switch (channel) {
                     case 'a':
                         trafo = TransformaK3a[i0][sign_w * 4 + sign_f * 2 + sign_fp];
@@ -1025,19 +1058,32 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     // initialize the integrand object and perform frequency integration
                     Integrand_K3<Q, symmetry_left, symmetry_right>
                             integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
-//                    if (i_omp == 4189){
-//                        integrand_K3.save_integrand();
-//                    }
+                    /*if (i_omp == 4189){
+                        integrand_K3.save_integrand();
+                    }*/
 
 #ifdef KELDYSH_FORMALISM
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
                              integrator(integrand_K3, vmin, vmax, -w / 2., w / 2.);
 #else
-                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                    //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //}
+                    //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+
+                    size_t num_intervals;
+                    vec<vec<double>> intervals;
                     if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                        intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                        num_intervals = 3;
                     }
-                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                    else {
+                        intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                        num_intervals = 2;
+
+                    }
+                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, intervals, num_intervals);
 #endif
 
 
@@ -1071,15 +1117,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K3 += K3_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK3();
+            dgamma[0].avertex().enforce_freqsymmetriesK3(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K3 += K3_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK3();
+            dgamma[0].pvertex().enforce_freqsymmetriesK3(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K3 += K3_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK3();
+            dgamma[0].tvertex().enforce_freqsymmetriesK3(dgamma[0].tvertex());
             break;
         default: ;
     }
