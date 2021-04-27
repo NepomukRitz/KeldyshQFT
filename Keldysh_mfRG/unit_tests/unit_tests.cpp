@@ -17,6 +17,7 @@
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"
 #include "test_PrecalculateBubble.h"
+#include "test_momentum_grid.h"
 
 
 #ifdef INTEGRATION_TESTS
@@ -67,8 +68,10 @@ int main(int argc, char* argv[]) {
     //test_PrecalculateBubble<comp> test_Bubble ;
     //test_Bubble.perform_test();
 
-    Runtime_comparison<comp> runtime_tester;
-    runtime_tester.test_runtimes(100);
+    //Runtime_comparison<comp> runtime_tester;
+    //runtime_tester.test_runtimes(100);
+
+    test_index_conversions();
 
     MPI_Finalize();
     return Catch::Session().run(argc, argv);

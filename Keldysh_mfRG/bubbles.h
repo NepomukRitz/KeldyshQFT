@@ -171,7 +171,7 @@ class PrecalculateBubble{
     int number_of_Keldysh_components = 1;
 #endif
 public:
-    vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nBOS*nFER*n_in); // 9 non-zero Keldysh components
+    vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nFER*nFER*n_in); // 9 non-zero Keldysh components
 public:
     PrecalculateBubble(const Propagator& G_in, const Propagator& S_in,
                        const bool dot_in, const char channel_in)
