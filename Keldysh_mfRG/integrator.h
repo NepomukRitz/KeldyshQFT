@@ -579,25 +579,25 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     comp result;
     for (int i = 0; i < num_intervals; i++){
-        integrator_riemann(integrand, nINT);       // only use standard Simpson
+        result += integrator_riemann(integrand, nINT);
     }
     return result;
 #elif INTEGRATOR_TYPE == 1 // Simpson
     comp result;
     for (int i = 0; i < num_intervals; i++){
-        integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
+        result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
     }
     return result;
 #elif INTEGRATOR_TYPE == 2 // Simpson + additional points
     comp result;
     for (int i = 0; i < num_intervals; i++){
-        integrator_simpson(integrand, intervals[i][0], intervals[i][1], w1, w2, nINT);        // use standard Simpson plus additional points around +- w/2
+        result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], w1, w2, nINT);        // use standard Simpson plus additional points around +- w/2
     }
     return result;
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
     comp result;
     for (int i = 0; i < num_intervals; i++){
-        adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
+        result += adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
     }
     return result;
 #elif INTEGRATOR_TYPE == 4 // GSL
