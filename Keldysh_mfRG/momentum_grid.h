@@ -7,12 +7,15 @@
 
 #include<tuple>
 #include<cmath>
+#include<complex>
+#include<fftw3.h>
+#include "data_structures.h"
 
 int totalNumberOfTransferMomentumPointsToStore();
 int momentum_index(int n_x, int n_y);
 std::tuple<int, int> get_n_x_and_n_y(int n);
 
-int N_q = 4000; // Number of transfer momentum points in one dimension. TODO: Define this globally in parameters.
+int N_q = 129; // Number of transfer momentum points in one dimension. TODO: Define this globally in parameters.
 int N = totalNumberOfTransferMomentumPointsToStore();
 
 int momentum_index(int n_x, int n_y){
@@ -46,6 +49,47 @@ int totalNumberOfTransferMomentumPointsToStore(){
     auto N_qd = (double) N_q;
     double N_q_full = N_qd * (N_qd + 1) / 2;
     return (int) N_q_full;
+}
+
+void minimal_2D_fft_example(){
+    int points_per_dimension = 2 * (N_q - 1); // N_q set globally
+    int total_number_of_points = points_per_dimension * points_per_dimension;
+    
+    fftw_complex *input_propagator, *output_propagator_in_real_space, *input_bubble, *output_bubble_in_momentum_space;
+    fftw_plan propagator_to_real_space_plan;
+    fftw_plan bubble_to_momentum_space_plan;
+
+    input_propagator = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
+    output_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
+    input_bubble = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
+    output_bubble_in_momentum_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
+
+    propagator_to_real_space_plan = fftw_plan_dft_2d(points_per_dimension, points_per_dimension,
+                                                     input_propagator, output_propagator_in_real_space,
+                                                     FFTW_BACKWARD, FFTW_MEASURE);
+
+    bubble_to_momentum_space_plan = fftw_plan_dft_2d(points_per_dimension, points_per_dimension,
+                                                     input_bubble, output_bubble_in_momentum_space,
+                                                     FFTW_FORWARD, FFTW_MEASURE);
+
+    // Initialize input data
+    for (int x = 0; x < points_per_dimension; ++x) {
+        for (int y = 0; y < points_per_dimension; ++y) {
+            // Currently trivial. This is where the actual values of the propagator have to be accessed! Include normalization factor here!
+            input_propagator[x * points_per_dimension + y][0] = 0; // Real part
+            input_propagator[x * points_per_dimension + y][1] = 0; // Imaginary part
+        }
+    }
+
+    fftw_execute(propagator_to_real_space_plan); // Actual computation of FFT. Fourier-transformed propagator now in output_propagator_in_real_space.
+
+    // Perform element-wise multiplication of the propagators in real space to obtain the s-wave bubble.
+    for (int i = 0; i < total_number_of_points; ++i) {
+        input_bubble[i][0] = output_propagator_in_real_space[i][0] * output_propagator_in_real_space[i][0]; // Real part
+        input_bubble[i][1] = output_propagator_in_real_space[i][1] * output_propagator_in_real_space[i][1]; // Imaginary part
+    }
+
+    fftw_execute(bubble_to_momentum_space_plan); // Bubble in momentum space now in output_bubble_in_momentum_space.
 }
 
 
