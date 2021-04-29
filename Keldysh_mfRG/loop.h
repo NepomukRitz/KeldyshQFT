@@ -11,6 +11,7 @@
 #include "propagator.h"  // propagator class
 #include "parameters.h"  // system parameters (vector lengths etc.)
 #include "integrator.h"  // integration routines
+#include "write_data2file.h"  // save integrand for debugging purposes
 
 /**
  * Class for the integrand of the Retarded SelfEnergy
@@ -199,7 +200,7 @@ public:
         rvec integrand_re (nFER);
         rvec integrand_im (nFER);
         for (int i=0; i<nFER; ++i) {
-            double vpp = vertex[0].avertex.frequencies.f_K1.w[i];
+            double vpp = propagator.selfenergy.frequencies.w[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -210,7 +211,7 @@ public:
         filename +=  "_v=" + to_string(v) + ".h5";
         write_h5_rvecs(filename,
                        {"vpp", "integrand_re", "integrand_im"},
-                       {vertex[0].avertex.frequencies.f_K1.w, integrand_re, integrand_im});
+                       {propagator.selfenergy.frequencies.w, integrand_re, integrand_im});
     }
 };
 
