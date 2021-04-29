@@ -204,18 +204,10 @@ public:
     }
 /*
     void save_integrand() {
-        int npoints = 1000; //nFER
-        rvec freqs = (npoints);
-
-        rvec integrand_re (npoints);
-        rvec integrand_im (npoints);
-        for (int i=0; i<npoints; ++i) {
-            //double vpp = vertex[0].avertex().frequencies.b_K1.w[i];
-            double wl = propagator.selfenergy.frequencies.w_lower;
-            double wu = propagator.selfenergy.frequencies.w_upper;
-            double vpp = wl + i*(wu-wl)/npoints;
-            freqs[i] = vpp;
-
+        rvec integrand_re (nFER);
+        rvec integrand_im (nFER);
+        for (int i=0; i<nFER; ++i) {
+            double vpp = propagator.selfenergy.frequencies.w[i];
             Q integrand_value = (*this)(vpp);
 
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
@@ -231,7 +223,7 @@ public:
         filename +=  "_v=" + to_string(v) + ".h5";
         write_h5_rvecs(filename,
                        {"vpp", "integrand_re", "integrand_im"},
-                       {freqs, integrand_re, integrand_im});
+                       {propagator.selfenergy.frequencies.w, integrand_re, integrand_im});
     }
 */
 };
