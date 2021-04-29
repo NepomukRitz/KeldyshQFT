@@ -19,7 +19,7 @@ void test_index_conversions() {
             assert (n_y - n_y_recalc == 0);
         }
     }
-    std::cout << "All momentum-index recalculations successful!";
+    std::cout << "All momentum-index recalculations successful!" << "\n";
 }
 
 

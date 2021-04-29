@@ -51,19 +51,48 @@ int totalNumberOfTransferMomentumPointsToStore(){
     return (int) N_q_full;
 }
 
-void minimal_2D_fft_example(){
+
+class Minimal_2D_FFT_Machine {
     int points_per_dimension = 2 * (N_q - 1); // N_q set globally
     int total_number_of_points = points_per_dimension * points_per_dimension;
-    
+
     fftw_complex *input_propagator, *output_propagator_in_real_space, *input_bubble, *output_bubble_in_momentum_space;
     fftw_plan propagator_to_real_space_plan;
     fftw_plan bubble_to_momentum_space_plan;
 
+    void allocate_memory();
+
+    void create_plans();
+
+    void initialize_input_data(); // Currently trivial
+    void transform_propagator_to_real_space();
+
+    void calculate_swave_bubble_in_real_space();
+
+    void transform_bubble_to_momentum_space();
+
+    void cleanup();
+
+public:
+    Minimal_2D_FFT_Machine() {
+        allocate_memory();
+        create_plans();
+    }
+    ~Minimal_2D_FFT_Machine(){
+        cleanup();
+    }
+
+    void compute_swave_bubble();
+};
+
+void Minimal_2D_FFT_Machine::allocate_memory() {
     input_propagator = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
     output_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
     input_bubble = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
     output_bubble_in_momentum_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
+}
 
+void Minimal_2D_FFT_Machine::create_plans() {
     propagator_to_real_space_plan = fftw_plan_dft_2d(points_per_dimension, points_per_dimension,
                                                      input_propagator, output_propagator_in_real_space,
                                                      FFTW_BACKWARD, FFTW_MEASURE);
@@ -71,8 +100,9 @@ void minimal_2D_fft_example(){
     bubble_to_momentum_space_plan = fftw_plan_dft_2d(points_per_dimension, points_per_dimension,
                                                      input_bubble, output_bubble_in_momentum_space,
                                                      FFTW_FORWARD, FFTW_MEASURE);
+}
 
-    // Initialize input data
+void Minimal_2D_FFT_Machine::initialize_input_data() {
     for (int x = 0; x < points_per_dimension; ++x) {
         for (int y = 0; y < points_per_dimension; ++y) {
             // Currently trivial. This is where the actual values of the propagator have to be accessed! Include normalization factor here!
@@ -80,16 +110,37 @@ void minimal_2D_fft_example(){
             input_propagator[x * points_per_dimension + y][1] = 0; // Imaginary part
         }
     }
+}
 
-    fftw_execute(propagator_to_real_space_plan); // Actual computation of FFT. Fourier-transformed propagator now in output_propagator_in_real_space.
+void Minimal_2D_FFT_Machine::transform_propagator_to_real_space() {
+    fftw_execute(propagator_to_real_space_plan);
+    // Actual computation of FFT. Fourier-transformed propagator now in output_propagator_in_real_space.
+}
 
+void Minimal_2D_FFT_Machine::calculate_swave_bubble_in_real_space() {
     // Perform element-wise multiplication of the propagators in real space to obtain the s-wave bubble.
     for (int i = 0; i < total_number_of_points; ++i) {
         input_bubble[i][0] = output_propagator_in_real_space[i][0] * output_propagator_in_real_space[i][0]; // Real part
         input_bubble[i][1] = output_propagator_in_real_space[i][1] * output_propagator_in_real_space[i][1]; // Imaginary part
     }
+}
 
+void Minimal_2D_FFT_Machine::transform_bubble_to_momentum_space() {
     fftw_execute(bubble_to_momentum_space_plan); // Bubble in momentum space now in output_bubble_in_momentum_space.
+}
+
+void Minimal_2D_FFT_Machine::compute_swave_bubble() {
+    initialize_input_data();
+    transform_propagator_to_real_space();
+    calculate_swave_bubble_in_real_space();
+    transform_bubble_to_momentum_space();
+    std::cout << "S-wave bubble calculated!" << "\n";
+}
+
+void Minimal_2D_FFT_Machine::cleanup() {
+    fftw_destroy_plan(propagator_to_real_space_plan); fftw_destroy_plan(bubble_to_momentum_space_plan);
+    fftw_free(input_propagator); fftw_free(output_propagator_in_real_space);
+    fftw_free(input_bubble); fftw_free(output_bubble_in_momentum_space);
 }
 
 

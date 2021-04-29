@@ -72,7 +72,9 @@ int main(int argc, char* argv[]) {
     //runtime_tester.test_runtimes(100);
 
     test_index_conversions();
-    minimal_2D_fft_example();
+    //minimal_2D_fft_example();
+    Minimal_2D_FFT_Machine Swave_Bubble_Calculator;
+    Swave_Bubble_Calculator.compute_swave_bubble();
 
     MPI_Finalize();
     return Catch::Session().run(argc, argv);
