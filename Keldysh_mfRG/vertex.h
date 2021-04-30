@@ -184,20 +184,20 @@ public:
     }
 };
 
-/** symmetric vertex container class (left and right part are equal) */
+/** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
 template <typename Q>
 class symmetric {
     fullvert<Q> vertex;
 public:
     symmetric() {}
     symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
-    symmetric(const fullvert<Q>& left_vertex, const fullvert<Q>& right_vertex) : vertex(left_vertex) {}
+    symmetric(const fullvert<Q>& half1, const fullvert<Q>& half2) : vertex(half1) {}
 
-    // return the left and right part (equal for this class)
-    fullvert<Q>& left() { return vertex; }
-    fullvert<Q>& right() { return vertex; }
-    const fullvert<Q>& left() const { return vertex; }
-    const fullvert<Q>& right() const { return vertex; }
+    // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
+    fullvert<Q>& half1() { return vertex; }
+    fullvert<Q>& half2() { return vertex; }
+    const fullvert<Q>& half1() const { return vertex; }
+    const fullvert<Q>& half2() const { return vertex; }
 
     // wrappers for access functions of fullvert
     auto value(VertexInput input) const -> Q           { return vertex.value(input); }
@@ -249,32 +249,32 @@ public:
     }
 };
 
-/** non-symmetric vertex container class (left and right part are different) */
+/** non-symmetric vertex container class (half 1 and half 2 are different) */
 template <typename Q>
 class non_symmetric {
-    fullvert<Q> left_vertex, right_vertex;
+    fullvert<Q> vertex_half1, vertex_half2;
 public:
     non_symmetric() {}
     non_symmetric(const fullvert<Q>& vertex_in)
-            : left_vertex(vertex_in), right_vertex(vertex_in) {
+            : vertex_half1(vertex_in), vertex_half2(vertex_in) {
         print("Warning: non-symmetric vertex initialized with only one fullvert.", true);
     }
-    non_symmetric(const fullvert<Q>& left_vertex_in, const fullvert<Q>& right_vertex_in)
-            : left_vertex(left_vertex_in), right_vertex(right_vertex_in) {}
+    non_symmetric(const fullvert<Q>& half1_in, const fullvert<Q>& half2_in)
+            : vertex_half1(half1_in), vertex_half2(half2_in) {}
 
-    // return the left and right part
-    fullvert<Q>& left() { return left_vertex; }
-    fullvert<Q>& right() { return right_vertex; }
-    const fullvert<Q>& left() const { return left_vertex; }
-    const fullvert<Q>& right() const { return right_vertex; }
+    // return half 1 and half 2
+    fullvert<Q>& half1() { return vertex_half1; }
+    fullvert<Q>& half2() { return vertex_half2; }
+    const fullvert<Q>& half1() const { return vertex_half1; }
+    const fullvert<Q>& half2() const { return vertex_half2; }
 
     // wrappers for access functions of fullvert
-    auto value(VertexInput input) const -> Q           { return left_vertex.value(input, right_vertex); }
-    auto gammaRb(VertexInput input) const -> Q         { return left_vertex.gammaRb(input, right_vertex); }
-    auto left_same_bare(VertexInput input)  const -> Q { return left_vertex.left_same_bare(input, right_vertex); }
-    auto right_same_bare(VertexInput input) const -> Q { return left_vertex.right_same_bare(input, right_vertex); }
-    auto left_diff_bare(VertexInput input)  const -> Q { return left_vertex.left_diff_bare(input, right_vertex); }
-    auto right_diff_bare(VertexInput input) const -> Q { return left_vertex.right_diff_bare(input, right_vertex); }
+    auto value(VertexInput input) const -> Q           { return vertex_half1.value(input, vertex_half2); }
+    auto gammaRb(VertexInput input) const -> Q         { return vertex_half1.gammaRb(input, vertex_half2); }
+    auto left_same_bare(VertexInput input)  const -> Q { return vertex_half1.left_same_bare(input, vertex_half2); }
+    auto right_same_bare(VertexInput input) const -> Q { return vertex_half1.right_same_bare(input, vertex_half2); }
+    auto left_diff_bare(VertexInput input)  const -> Q { return vertex_half1.left_diff_bare(input, vertex_half2); }
+    auto right_diff_bare(VertexInput input) const -> Q { return vertex_half1.right_diff_bare(input, vertex_half2); }
 
     auto operator+= (const non_symmetric<Q>& vertex1) -> non_symmetric<Q> {
         this->vertex += vertex1.vertex;
@@ -326,31 +326,31 @@ class vertex_container {
 public:
     vertex_container() {}
     vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
-    vertex_container(const fullvert<Q>& left_vertex, const fullvert<Q>& right_vertex)
-                    : vertex(left_vertex, right_vertex) {}
+    vertex_container(const fullvert<Q>& half1, const fullvert<Q>& half2)
+                    : vertex(half1, half2) {}
 
-    // return the left and right part
-    fullvert<Q>& left() { return vertex.left(); }
-    fullvert<Q>& right() { return vertex.right(); }
-    const fullvert<Q>& left() const { return vertex.left(); }
-    const fullvert<Q>& right() const { return vertex.right(); }
+    // return half 1 and half 2
+    fullvert<Q>& half1() { return vertex.half1(); }
+    fullvert<Q>& half2() { return vertex.half2(); }
+    const fullvert<Q>& half1() const { return vertex.half1(); }
+    const fullvert<Q>& half2() const { return vertex.half2(); }
 
     // wrappers to access individual members of fullvert
-    irreducible<Q>& irred() { return left().irred; }
-    rvert<Q>& avertex() { return left().avertex; }
-    rvert<Q>& pvertex() { return left().pvertex; }
-    rvert<Q>& tvertex() { return left().tvertex; }
-    bool Ir() { return left().Ir; }
+    irreducible<Q>& irred() { return half1().irred; }
+    rvert<Q>& avertex() { return half1().avertex; }
+    rvert<Q>& pvertex() { return half1().pvertex; }
+    rvert<Q>& tvertex() { return half1().tvertex; }
+    bool Ir() { return half1().Ir; }
 
-    const irreducible<Q>& irred() const { return left().irred; }
-    const rvert<Q>& avertex() const { return left().avertex; }
-    const rvert<Q>& pvertex() const { return left().pvertex; }
-    const rvert<Q>& tvertex() const { return left().tvertex; }
-    const bool Ir() const { return left().Ir; }
+    const irreducible<Q>& irred() const { return half1().irred; }
+    const rvert<Q>& avertex() const { return half1().avertex; }
+    const rvert<Q>& pvertex() const { return half1().pvertex; }
+    const rvert<Q>& tvertex() const { return half1().tvertex; }
+    const bool Ir() const { return half1().Ir; }
 
     void set_Ir(bool Ir) {
-        vertex.left().Ir = Ir;
-        vertex.right().Ir = Ir;
+        vertex.half1().Ir = Ir;
+        vertex.half2().Ir = Ir;
     }
 
     // wrappers for access functions of fullvert
@@ -363,22 +363,22 @@ public:
 
     // wrappers for other functions of fullvert
     void initialize(Q val) {
-        left().initialize(val);
-        right().initialize(val);
+        half1().initialize(val);
+        half2().initialize(val);
     }
     template <template <typename> class symmetry_type_in>
     void set_frequency_grid(const vertex_container<Q, symmetry_type_in>& vertex_in) {
-        left().set_frequency_grid(vertex_in.left());
-        right().set_frequency_grid(vertex_in.right());
+        half1().set_frequency_grid(vertex_in.half1());
+        half2().set_frequency_grid(vertex_in.half2());
     }
     void update_grid(double Lambda) {
-        left().update_grid(Lambda);
-        right().update_grid(Lambda);
+        half1().update_grid(Lambda);
+        half2().update_grid(Lambda);
     }
-    double sum_norm(int i) { return left().sum_norm(i); }
-    double norm_K1(int i) { return left().norm_K1(i); }
-    double norm_K2(int i) { return left().norm_K2(i); }
-    double norm_K3(int i) { return left().norm_K3(i); }
+    double sum_norm(int i) { return half1().sum_norm(i); }
+    double norm_K1(int i) { return half1().norm_K1(i); }
+    double norm_K2(int i) { return half1().norm_K2(i); }
+    double norm_K3(int i) { return half1().norm_K3(i); }
 
     auto operator+= (const vertex_container<Q, symmetry_type>& vertex1) -> vertex_container<Q, symmetry_type> {
         this->vertex += vertex1.vertex;
