@@ -60,6 +60,7 @@ void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const
         add_hdf(filename, iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
     }
 
+    check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
     check_FDTs(y_run); // check FDTs for Sigma and K1r at each step of the flow
 }
 

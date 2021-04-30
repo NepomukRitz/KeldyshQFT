@@ -40,6 +40,12 @@ void check_SE_causality(SelfEnergy<Q> selfEnergy) {
         print("Selfenergy is causal.", true);
 }
 
+// wrapper for the function above, taking a State instead of a SelfEnergy
+template <typename Q>
+void check_SE_causality(State<Q> state) {
+    check_SE_causality(state.selfenergy);
+}
+
 /**
  * Function that checks FDTs for self-energy and K1 in all channels for given input state: Re(Sigma^K)=0, Re(K1r^K)=0.
  * If verbose is true, maximum values of Re(Sigma^K) and Re(K1r^K) are always printed. If verbose is false (default),
