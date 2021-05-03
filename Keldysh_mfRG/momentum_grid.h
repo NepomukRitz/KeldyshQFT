@@ -130,7 +130,7 @@ vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values
 
     calculate_swave_bubble_in_real_space();
     transform_bubble_to_momentum_space();
-    prepare_bubble_values_to_return(channel); // Currently handles only a-channel.
+    prepare_bubble_values_to_return();
     std::cout << "S-wave bubble calculated!" << "\n";
 
     return return_bubble_values;
