@@ -100,7 +100,7 @@ class Minimal_2D_FFT_Machine {
     void transform_propagator_to_real_space();
     void calculate_swave_bubble_in_real_space();
     void transform_bubble_to_momentum_space();
-    void prepare_bubble_values_to_return(char channel);
+    void prepare_bubble_values_to_return();
 
     void cleanup();
 
@@ -113,10 +113,10 @@ public:
         cleanup();
     }
 
-    vec<comp> compute_swave_bubble(vec<comp>& first_g_values, vec<comp>& second_g_values, char channel);
+    vec<comp> compute_swave_bubble(vec<comp>& first_g_values, vec<comp>& second_g_values);
 };
 
-vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values, vec<comp> &second_g_values, char channel) {
+vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values, vec<comp> &second_g_values) {
     initialize_input_data(first_g_values);
     transform_propagator_to_real_space();
     first_propagator_in_real_space = output_propagator_in_real_space; // Copy FFT result. TODO: Does this operation really COPY?
@@ -166,16 +166,12 @@ void Minimal_2D_FFT_Machine::transform_bubble_to_momentum_space() {
     fftw_execute(bubble_to_momentum_space_plan); // Bubble in momentum space now in output_bubble_in_momentum_space.
 }
 
-void Minimal_2D_FFT_Machine::prepare_bubble_values_to_return(char channel) {
+void Minimal_2D_FFT_Machine::prepare_bubble_values_to_return() {
     for (int n_x = 0; n_x < N_q; ++n_x) {
         for (int n_y = 0; n_y < n_x+1; ++n_y) {
             return_bubble_values[momentum_index(n_x, n_y)] =
                     output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][0] + glb_i *
                     output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][1];
-            if (channel == 'a') {return;}
-            else if (channel == 'p') {return_bubble_values[momentum_index(n_x, n_y)] *= 1 / 2; return;} // here we use inversion symmetry w.r.t. the transfer momentum implicitly (see notes!).
-            else if (channel == 't') {return_bubble_values[momentum_index(n_x, n_y)] *= -1; return;}
-            else {std::cout << "WRONG CHANNEL INPUT!";}
         }
     }
 }

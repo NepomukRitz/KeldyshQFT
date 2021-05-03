@@ -288,7 +288,7 @@ void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int
         first_propagator[i_in]  = g.valsmooth(iK, v1, i_in);
         second_propagator[i_in] = g.valsmooth(iK, v2, i_in); // TODO: Currently only undotted Matsubara!
     }
-    bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator, channel);
+    bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
     for (int i_in = 0; i_in < n_in; ++i_in) {
         FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = bubble_values[i_in];
     }
