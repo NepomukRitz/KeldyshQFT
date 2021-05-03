@@ -173,7 +173,7 @@ void Minimal_2D_FFT_Machine::prepare_bubble_values_to_return(char channel) {
                     output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][0] + glb_i *
                     output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][1];
             if (channel == 'a') {return;}
-            else if (channel == 'p') {return_bubble_values[momentum_index(n_x, n_y)] *= 1 / 2; return;} // here we use inversion symmetry w.r.t. the transfer momentum implicitly.
+            else if (channel == 'p') {return_bubble_values[momentum_index(n_x, n_y)] *= 1 / 2; return;} // here we use inversion symmetry w.r.t. the transfer momentum implicitly (see notes!).
             else if (channel == 't') {return_bubble_values[momentum_index(n_x, n_y)] *= -1; return;}
             else {std::cout << "WRONG CHANNEL INPUT!";}
         }

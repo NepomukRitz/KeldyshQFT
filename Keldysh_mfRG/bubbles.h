@@ -23,6 +23,7 @@
 #include "mpi_setup.h"                  // mpi parallelization routines
 #include "correctionFunctions.h"        // correction terms due to finite integration range
 #include "write_data2file.h"            // write vectors into hdf5 file
+#include "momentum_grid.h"              // Momentum grid specific to the 2D Hubbard model
 
 /// Class combining two propagators, either GG or GS+SG
 class Bubble{
@@ -170,6 +171,13 @@ class PrecalculateBubble{
 #else
     int number_of_Keldysh_components = 1;
 #endif
+
+#define HUBBARD_MODEL
+#ifdef HUBBARD_MODEL // TODO: define such a flag
+    Minimal_2D_FFT_Machine Swave_Bubble_Calculator;
+    void perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2);
+#endif
+
 public:
     vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nFER*nFER*n_in); // 9 non-zero Keldysh components
 public:
@@ -186,6 +194,7 @@ public:
     void compute_FermionicBubble();
     void perform_internal_sum(int iK, int iv1, int iv2);
     int composite_index(int iK, int iv1, int iv2, int i_in);
+
 };
 
 // TODO: Use "Interpolate" from "interpolations.h" for this.
@@ -266,6 +275,25 @@ template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int
 template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK, const int iv1, const int iv2, const int i_in){
     return iK*nFER*nFER*n_in + iv1*nFER*n_in + iv2*n_in + i_in;
 }
+
+#ifdef HUBBARD_MODEL
+template<typename Q>
+void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2) {
+    double v1 = fermionic_grid.w[iv1];
+    double v2 = fermionic_grid.w[iv2];
+    vec<comp> first_propagator  = vec<comp> (N);
+    vec<comp> second_propagator = vec<comp> (N);
+    vec<comp> bubble_values = vec<comp> (N);
+    for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
+        first_propagator[i_in]  = g.valsmooth(iK, v1, i_in);
+        second_propagator[i_in] = g.valsmooth(iK, v2, i_in); // TODO: Currently only undotted Matsubara!
+    }
+    bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator, channel);
+    for (int i_in = 0; i_in < n_in; ++i_in) {
+        FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = bubble_values[i_in];
+    }
+}
+#endif
 
 
 //Class created for debugging of the Bubbles
