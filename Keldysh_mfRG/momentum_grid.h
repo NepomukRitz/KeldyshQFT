@@ -84,17 +84,17 @@ int totalNumberOfTransferMomentumPointsToStore(){
 
 class Minimal_2D_FFT_Machine {
     int points_per_dimension = 2 * (N_q - 1); // N_q set globally
-    int total_number_of_points = points_per_dimension * points_per_dimension;
+    int N_FFT = points_per_dimension * points_per_dimension;
 
-    fftw_complex *input_propagator, *output_propagator_in_real_space, *input_bubble, *output_bubble_in_momentum_space;
+    fftw_complex *input_propagator, *output_propagator_in_real_space, *input_bubble, *output_bubble_in_momentum_space,
+                 *first_propagator_in_real_space, *second_propagator_in_real_space;
     fftw_plan propagator_to_real_space_plan;
     fftw_plan bubble_to_momentum_space_plan;
 
     void allocate_memory();
-
     void create_plans();
 
-    void initialize_input_data(const vec<comp>& g_values); // Currently trivial
+    void initialize_input_data(const vec<comp>& g_values);
     void transform_propagator_to_real_space();
     void calculate_swave_bubble_in_real_space();
     void transform_bubble_to_momentum_space();
@@ -110,14 +110,64 @@ public:
         cleanup();
     }
 
-    void compute_swave_bubble(const vec<comp>& g_values);
+    void compute_swave_bubble(vec<comp>& first_g_values, vec<comp>& second_g_values);
 };
 
+void Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values, vec<comp> &second_g_values) {
+    initialize_input_data(first_g_values);
+    transform_propagator_to_real_space();
+    first_propagator_in_real_space = output_propagator_in_real_space; // Copy FFT result. TODO: Does this operation really COPY?
+
+    initialize_input_data(second_g_values);
+    transform_propagator_to_real_space();
+    second_propagator_in_real_space = output_propagator_in_real_space;
+
+    assert (&first_propagator_in_real_space != &second_propagator_in_real_space);
+    // Just to make sure that the arrays really do not point to the same values. TODO: Cover this in unit-test?
+
+    calculate_swave_bubble_in_real_space();
+    transform_bubble_to_momentum_space();
+    std::cout << "S-wave bubble calculated!" << "\n";
+}
+
+void Minimal_2D_FFT_Machine::initialize_input_data(const vec<comp> &g_values) {
+    // TODO: Currently only the s-wave bubble out of two full propagators can be computed. Extend to differentiated bubbles!
+    for (int x = 0; x < points_per_dimension; ++x) {
+        for (int y = 0; y < points_per_dimension; ++y) {
+            int n_x, n_y;
+            std::tie(n_x, n_y) = reduce_index_to_one_eighth_of_BZ(x, y);
+            // This is where the actual values of the propagator have to be accessed! Include normalization factor here!
+            input_propagator[x * points_per_dimension + y][0] = g_values[momentum_index(n_x, n_y)].real() / N_FFT; // Real part
+            input_propagator[x * points_per_dimension + y][1] = g_values[momentum_index(n_x, n_y)].imag() / N_FFT; // Imaginary part
+        }
+    }
+}
+
+void Minimal_2D_FFT_Machine::transform_propagator_to_real_space() {
+    fftw_execute(propagator_to_real_space_plan);
+    // Actual computation of FFT. Fourier-transformed propagator now in output_propagator_in_real_space.
+}
+
+void Minimal_2D_FFT_Machine::calculate_swave_bubble_in_real_space() {
+    // Perform element-wise multiplication of the propagators in real space to obtain the s-wave bubble.
+    for (int i = 0; i < N_FFT; ++i) {
+        input_bubble[i][0] = first_propagator_in_real_space[i][0] * second_propagator_in_real_space[i][0]; // Real part
+        input_bubble[i][1] = first_propagator_in_real_space[i][1] * second_propagator_in_real_space[i][1]; // Imaginary part
+    }
+}
+
+void Minimal_2D_FFT_Machine::transform_bubble_to_momentum_space() {
+    fftw_execute(bubble_to_momentum_space_plan); // Bubble in momentum space now in output_bubble_in_momentum_space.
+}
+
 void Minimal_2D_FFT_Machine::allocate_memory() {
-    input_propagator = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
-    output_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
-    input_bubble = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
-    output_bubble_in_momentum_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * total_number_of_points);
+    input_propagator = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    output_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    input_bubble = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    output_bubble_in_momentum_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+
+    first_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    second_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
 }
 
 void Minimal_2D_FFT_Machine::create_plans() {
@@ -130,49 +180,11 @@ void Minimal_2D_FFT_Machine::create_plans() {
                                                      FFTW_FORWARD, FFTW_MEASURE);
 }
 
-void Minimal_2D_FFT_Machine::initialize_input_data(const vec<comp> &g_values) {
-    // TODO: Currently only the s-wave bubble out of two full propagators can be computed. Extend to differentiated bubbles!
-    for (int x = 0; x < points_per_dimension; ++x) {
-        for (int y = 0; y < points_per_dimension; ++y) {
-            int n_x, n_y;
-            std::tie(n_x, n_y) = reduce_index_to_one_eighth_of_BZ(x, y);
-            // This is where the actual values of the propagator have to be accessed! Include normalization factor here!
-            input_propagator[x * points_per_dimension + y][0] = g_values[momentum_index(n_x, n_y)].real() / total_number_of_points; // Real part
-            input_propagator[x * points_per_dimension + y][1] = g_values[momentum_index(n_x, n_y)].imag() / total_number_of_points; // Imaginary part
-        }
-    }
-}
-
-void Minimal_2D_FFT_Machine::transform_propagator_to_real_space() {
-    fftw_execute(propagator_to_real_space_plan);
-    // Actual computation of FFT. Fourier-transformed propagator now in output_propagator_in_real_space.
-}
-
-void Minimal_2D_FFT_Machine::calculate_swave_bubble_in_real_space() {
-    // Perform element-wise multiplication of the propagators in real space to obtain the s-wave bubble.
-    for (int i = 0; i < total_number_of_points; ++i) {
-        input_bubble[i][0] = output_propagator_in_real_space[i][0] * output_propagator_in_real_space[i][0]; // Real part
-        input_bubble[i][1] = output_propagator_in_real_space[i][1] * output_propagator_in_real_space[i][1]; // Imaginary part
-    }
-}
-
-void Minimal_2D_FFT_Machine::transform_bubble_to_momentum_space() {
-    fftw_execute(bubble_to_momentum_space_plan); // Bubble in momentum space now in output_bubble_in_momentum_space.
-}
-
-void Minimal_2D_FFT_Machine::compute_swave_bubble(const vec<comp> &g_values) {
-    initialize_input_data(g_values);
-    transform_propagator_to_real_space();
-    calculate_swave_bubble_in_real_space();
-    transform_bubble_to_momentum_space();
-    std::cout << "S-wave bubble calculated!" << "\n";
-}
-
 void Minimal_2D_FFT_Machine::cleanup() {
     fftw_destroy_plan(propagator_to_real_space_plan); fftw_destroy_plan(bubble_to_momentum_space_plan);
     fftw_free(input_propagator); fftw_free(output_propagator_in_real_space);
     fftw_free(input_bubble); fftw_free(output_bubble_in_momentum_space);
+    fftw_free(first_propagator_in_real_space); fftw_free(second_propagator_in_real_space);
 }
-
 
 #endif //KELDYSH_MFRG_TESTING_MOMENTUM_GRID_H
