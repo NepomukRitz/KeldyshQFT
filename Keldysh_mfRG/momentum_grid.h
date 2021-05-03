@@ -91,6 +91,8 @@ class Minimal_2D_FFT_Machine {
     fftw_plan propagator_to_real_space_plan;
     fftw_plan bubble_to_momentum_space_plan;
 
+    vec<comp> return_bubble_values = vec<comp> (N);
+
     void allocate_memory();
     void create_plans();
 
@@ -98,6 +100,7 @@ class Minimal_2D_FFT_Machine {
     void transform_propagator_to_real_space();
     void calculate_swave_bubble_in_real_space();
     void transform_bubble_to_momentum_space();
+    void prepare_bubble_values_to_return(char channel);
 
     void cleanup();
 
@@ -110,10 +113,10 @@ public:
         cleanup();
     }
 
-    void compute_swave_bubble(vec<comp>& first_g_values, vec<comp>& second_g_values);
+    vec<comp> compute_swave_bubble(vec<comp>& first_g_values, vec<comp>& second_g_values, char channel);
 };
 
-void Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values, vec<comp> &second_g_values) {
+vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values, vec<comp> &second_g_values, char channel) {
     initialize_input_data(first_g_values);
     transform_propagator_to_real_space();
     first_propagator_in_real_space = output_propagator_in_real_space; // Copy FFT result. TODO: Does this operation really COPY?
@@ -127,7 +130,10 @@ void Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values, vec
 
     calculate_swave_bubble_in_real_space();
     transform_bubble_to_momentum_space();
+    prepare_bubble_values_to_return(channel); // Currently handles only a-channel.
     std::cout << "S-wave bubble calculated!" << "\n";
+
+    return return_bubble_values;
 }
 
 void Minimal_2D_FFT_Machine::initialize_input_data(const vec<comp> &g_values) {
@@ -160,6 +166,20 @@ void Minimal_2D_FFT_Machine::transform_bubble_to_momentum_space() {
     fftw_execute(bubble_to_momentum_space_plan); // Bubble in momentum space now in output_bubble_in_momentum_space.
 }
 
+void Minimal_2D_FFT_Machine::prepare_bubble_values_to_return(char channel) {
+    for (int n_x = 0; n_x < N_q; ++n_x) {
+        for (int n_y = 0; n_y < n_x+1; ++n_y) {
+            return_bubble_values[momentum_index(n_x, n_y)] =
+                    output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][0] + glb_i *
+                    output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][1];
+            if (channel == 'a') {return;}
+            else if (channel == 'p') {return_bubble_values[momentum_index(n_x, n_y)] *= 1 / 2; return;} // here we use inversion symmetry w.r.t. the transfer momentum implicitly.
+            else if (channel == 't') {return_bubble_values[momentum_index(n_x, n_y)] *= -1; return;}
+            else {std::cout << "WRONG CHANNEL INPUT!";}
+        }
+    }
+}
+
 void Minimal_2D_FFT_Machine::allocate_memory() {
     input_propagator = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
     output_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
@@ -182,9 +202,9 @@ void Minimal_2D_FFT_Machine::create_plans() {
 
 void Minimal_2D_FFT_Machine::cleanup() {
     fftw_destroy_plan(propagator_to_real_space_plan); fftw_destroy_plan(bubble_to_momentum_space_plan);
-    fftw_free(input_propagator); fftw_free(output_propagator_in_real_space);
-    fftw_free(input_bubble); fftw_free(output_bubble_in_momentum_space);
-    fftw_free(first_propagator_in_real_space); fftw_free(second_propagator_in_real_space);
+    fftw_free(input_propagator);                      fftw_free(output_propagator_in_real_space);
+    fftw_free(input_bubble);                          fftw_free(output_bubble_in_momentum_space);
+    fftw_free(first_propagator_in_real_space);        fftw_free(second_propagator_in_real_space);
 }
 
 #endif //KELDYSH_MFRG_TESTING_MOMENTUM_GRID_H
