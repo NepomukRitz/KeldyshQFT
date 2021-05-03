@@ -185,11 +185,11 @@ auto asymp_corrections(K_class k,
     // determine the Keldysh indices of left and right vertex
     vector<int> indices = indices_sum(i0, i2, channel);
 
-    // Define the arguments of left and right vertices. The value of the integration variable is set to 2*vmin, which
+    // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
     // TODO: is this correct?
-    VertexInput input_l (indices[0], w, v, 2.*vmin, i_in, 0, channel);
-    VertexInput input_r (indices[1], w, 2.*vmin, vp, i_in, 0, channel);
+    VertexInput input_l (indices[0], w, v, 10.*vmin, i_in, 0, channel);
+    VertexInput input_r (indices[1], w, 10.*vmin, vp, i_in, 0, channel);
 
     // compute values of left/right vertex
     switch (k) {
