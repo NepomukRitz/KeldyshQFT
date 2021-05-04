@@ -172,6 +172,11 @@ class PrecalculateBubble{
     int number_of_Keldysh_components = 1;
 #endif
 
+    // temporary indices to avoid passing them to every function while precomputing.
+    int iK_tmp;
+    double v1_tmp;
+    double v2_tmp;
+
 #define HUBBARD_MODEL
 #ifdef HUBBARD_MODEL // TODO: define such a flag
     vec<comp> first_propagator  = vec<comp> (N); // input for FFT
@@ -180,10 +185,10 @@ class PrecalculateBubble{
 
     Minimal_2D_FFT_Machine Swave_Bubble_Calculator;
     void perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2);
-    void compute_internal_bubble_Matsubara(double v1, double v2);
-    void compute_internal_bubble_Keldysh(int iK, double v1, double v2);
-    void set_Keldysh_propagators(int iK, double v1, double v2,
-                                 Propagator& g1, Propagator& g2);
+    void compute_internal_bubble();
+    void set_propagators(Propagator& g1, Propagator& g2);
+    void set_Matsubara_propagators(Propagator& g1, Propagator& g2);
+    void set_Keldysh_propagators(Propagator& g1, Propagator& g2);
 #endif
 
 public:
@@ -263,20 +268,25 @@ Q PrecalculateBubble<Q>::value(int iK, double w, double vpp, int i_in) {
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
     for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
+        iK_tmp = iK;
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
+            v1_tmp = fermionic_grid.w[iv1];
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
+                v2_tmp = fermionic_grid.w[iv2];
+#ifdef HUBBARD_MODEL
+                perform_internal_sum_2D_Hubbard(iK, iv1, iv2);
+#else
                 perform_internal_sum(iK, iv1, iv2);
+#endif
             }
         }
     }
 };
 
 template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
-    double v1 = fermionic_grid.w[iv1];
-    double v2 = fermionic_grid.w[iv2];
     for (int i_in = 0; i_in < n_in; ++i_in) {
         FermionicBubble[composite_index(iK, iv1, iv2, i_in)] =
-                Helper_Bubble.value(iK, v1, v2, i_in);
+                Helper_Bubble.value(iK_tmp, v1_tmp, v2_tmp, i_in);
     }
 };
 
@@ -292,15 +302,9 @@ void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int
             FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = 0.;
             return;
         }
-    }
+    } // Catch trivial Keldysh indices to avoid unnecessary computations.
 
-    double v1 = fermionic_grid.w[iv1];
-    double v2 = fermionic_grid.w[iv2];
-#ifdef KELDYSH_FORMALISM
-    compute_internal_bubble_Keldysh(iK, v1, v2);
-#else
-    compute_internal_bubble_Matsubara(v1, v2);
-#endif
+    compute_internal_bubble();
 
     for (int i_in = 0; i_in < n_in; ++i_in) {
         FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = bubble_values[i_in];
@@ -308,90 +312,86 @@ void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::compute_internal_bubble_Matsubara(double v1, double v2) {
+void PrecalculateBubble<Q>::compute_internal_bubble() {
     if (dot){
-        for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
-            first_propagator[i_in]  = g.valsmooth(0, v1, i_in);
-            second_propagator[i_in] = s.valsmooth(0, v2, i_in);
-        }
+        set_propagators( g, s);
         bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
-        for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
-            first_propagator[i_in]  = s.valsmooth(0, v1, i_in);
-            second_propagator[i_in] = g.valsmooth(0, v2, i_in);
-        }
+        set_propagators(s, g);
         bubble_values += Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
     }
     else{
-        for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
-            first_propagator[i_in]  = g.valsmooth(0, v1, i_in);
-            second_propagator[i_in] = g.valsmooth(0, v2, i_in);
-        }
+        set_propagators(g, g);
         bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
     }
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::compute_internal_bubble_Keldysh(int iK, double v1, double v2) {
-    if (dot){
-        set_Keldysh_propagators(iK, v1, v2, s, g);
-        bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
-        set_Keldysh_propagators(iK, v1, v2, g, s);
-        bubble_values += Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
-    }
-    else{
-        set_Keldysh_propagators(iK, v1, v2, g, g);
-        bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
+void PrecalculateBubble<Q>::set_propagators(Propagator& g1, Propagator& g2) {
+#ifdef KELDYSH_FORMALISM
+    set_Keldysh_propagators(g1, g2);
+#else
+    set_Matsubara_propagators(g1, g2);
+#endif
+}
+
+template<typename Q>
+void PrecalculateBubble<Q>::set_Matsubara_propagators(Propagator &g1, Propagator &g2) {
+    for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
+        first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
+        second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
     }
 }
 
 template<typename Q>
 void
-PrecalculateBubble<Q>::set_Keldysh_propagators(int iK, double v1, double v2,
-                                               Propagator &g1, Propagator &g2) {
+PrecalculateBubble<Q>::set_Keldysh_propagators(Propagator &g1, Propagator &g2) {
     for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
-        switch (iK) {
+        switch (iK_tmp) {
             case 3: //AA
-                first_propagator[i_in] = conj(g1.valsmooth(0, v1, i_in));
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                first_propagator[i_in]  = conj(g1.valsmooth(0, v1_tmp, i_in));
+                second_propagator[i_in] = conj(g2.valsmooth(0, v2_tmp, i_in));
                 break;
             case 6: //AR
-                first_propagator[i_in] = conj(g1.valsmooth(0, v1, i_in));
-                second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
+                first_propagator[i_in]  = conj(g1.valsmooth(0, v1_tmp, i_in));
+                second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
                 break;
             case 7: //AK
-                first_propagator[i_in] = conj(g1.valsmooth(0, v1, i_in));
-                second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
+                first_propagator[i_in]  = conj(g1.valsmooth(0, v1_tmp, i_in));
+                second_propagator[i_in] = g2.valsmooth(1, v2_tmp, i_in);
                 break;
             case 9: //RA
-                first_propagator[i_in] = g1.valsmooth(0, v1, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
+                second_propagator[i_in] = conj(g2.valsmooth(0, v2_tmp, i_in));
                 break;
             case 11://KA
-                first_propagator[i_in] = g1.valsmooth(1, v1, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                first_propagator[i_in]  = g1.valsmooth(1, v1_tmp, i_in);
+                second_propagator[i_in] = conj(g2.valsmooth(0, v2_tmp, i_in));
                 break;
             case 12://RR
-                first_propagator[i_in] = g1.valsmooth(0, v1, i_in);
-                second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
+                first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
+                second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
                 break;
             case 13://RK
-                first_propagator[i_in] = g1.valsmooth(0, v1, i_in);
-                second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
+                first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
+                second_propagator[i_in] = g2.valsmooth(1, v2_tmp, i_in);
                 break;
             case 14://KR
-                first_propagator[i_in] = g1.valsmooth(1, v1, i_in);
-                second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
+                first_propagator[i_in]  = g1.valsmooth(1, v1_tmp, i_in);
+                second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
                 break;
             case 15://KK
-                first_propagator[i_in] = g1.valsmooth(1, v1, i_in);
-                second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
+                first_propagator[i_in]  = g1.valsmooth(1, v1_tmp, i_in);
+                second_propagator[i_in] = g2.valsmooth(1, v2_tmp, i_in);
                 break;
             default:
-                first_propagator[i_in] = 0.;
+                first_propagator[i_in]  = 0.;
                 second_propagator[i_in] = 0.;
         }
     }
 }
+
+
+
 
 #endif
 
