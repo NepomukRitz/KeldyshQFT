@@ -177,7 +177,11 @@ class PrecalculateBubble{
     double v1_tmp;
     double v2_tmp;
 
-#define HUBBARD_MODEL
+    void compute_FermionicBubble();
+    void perform_internal_sum(int iK, int iv1, int iv2);
+    int composite_index(int iK, int iv1, int iv2, int i_in);
+
+//#define HUBBARD_MODEL
 #ifdef HUBBARD_MODEL // TODO: define such a flag
     vec<comp> first_propagator  = vec<comp> (N); // input for FFT
     vec<comp> second_propagator = vec<comp> (N); // input for FFT
@@ -201,13 +205,25 @@ public:
                        fermionic_grid('f', 1, g.Lambda){
         compute_FermionicBubble();
     }
-
-    Q value_on_FER_GRID(int iK, double v1, double v2, int i_in);
     Q value(int iK, double w, double vpp, int i_in);
-    void compute_FermionicBubble();
-    void perform_internal_sum(int iK, int iv1, int iv2);
-    int composite_index(int iK, int iv1, int iv2, int i_in);
+    Q value_on_FER_GRID(int iK, double v1, double v2, int i_in);
+};
 
+template <typename Q> Q PrecalculateBubble<Q>::value(int iK, double w, double vpp, int i_in) {
+    Q Pival;
+    switch (channel) {
+        case 'a':
+            Pival = value_on_FER_GRID(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+            break;
+        case 'p':
+            Pival = value_on_FER_GRID(iK, w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+            break;
+        case 't':
+            Pival = value_on_FER_GRID(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+            break;
+        default:;
+    }
+    return Pival;
 };
 
 // TODO: Use "Interpolate" from "interpolations.h" for this.
@@ -248,23 +264,6 @@ template <typename Q> Q PrecalculateBubble<Q>::value_on_FER_GRID(const int iK, c
     }
 };
 
-template<typename Q>
-Q PrecalculateBubble<Q>::value(int iK, double w, double vpp, int i_in) {
-    Q Pival;
-    switch (channel) {
-        case 'a':
-            Pival = value_on_FER_GRID(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
-            break;
-        case 'p':
-            Pival = value_on_FER_GRID(iK, w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
-            break;
-        case 't':
-            Pival = value_on_FER_GRID(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
-            break;
-        default:;
-    }
-    return Pival;
-};
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
     for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
@@ -297,7 +296,7 @@ template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK, c
 #ifdef HUBBARD_MODEL
 template<typename Q>
 void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2) {
-    if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10) || (iK == 16)) {
+    if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10)) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
             FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = 0.;
             return;
@@ -390,10 +389,7 @@ PrecalculateBubble<Q>::set_Keldysh_propagators(Propagator &g1, Propagator &g2) {
     }
 }
 
-
-
-
-#endif
+#endif // HUBBARD_MODEL
 
 
 //Class created for debugging of the Bubbles
