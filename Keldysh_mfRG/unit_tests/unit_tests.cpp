@@ -71,12 +71,15 @@ int main(int argc, char* argv[]) {
     //Runtime_comparison<comp> runtime_tester;
     //runtime_tester.test_runtimes(100);
 
-    test_index_conversions();
+    //test_index_conversions();
 
-    Minimal_2D_FFT_Machine Swave_Bubble_Calculator;
-    vec<comp> g1 (N); // trivial for testing purposes
-    vec<comp> g2 (N);
-    vec<comp> test_a_bubble = Swave_Bubble_Calculator.compute_swave_bubble(g1, g2);
+    //Minimal_2D_FFT_Machine Swave_Bubble_Calculator;
+    //vec<comp> g1 (N); // trivial for testing purposes
+    //vec<comp> g2 (N);
+    //vec<comp> test_a_bubble = Swave_Bubble_Calculator.compute_swave_bubble(g1, g2);
+
+    test_Bubble_in_Momentum_Space();
+
     MPI_Finalize();
     return Catch::Session().run(argc, argv);
 }

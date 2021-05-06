@@ -162,8 +162,6 @@ class PrecalculateBubble{
     const bool dot;
     char channel;
 
-    FrequencyGrid fermionic_grid;
-
     Bubble Helper_Bubble;
 
 #ifdef KELDYSH_FORMALISM
@@ -181,8 +179,7 @@ class PrecalculateBubble{
     void perform_internal_sum(int iK, int iv1, int iv2);
     int composite_index(int iK, int iv1, int iv2, int i_in);
 
-//#define HUBBARD_MODEL
-#ifdef HUBBARD_MODEL // TODO: define such a flag
+#ifdef HUBBARD_MODEL
     vec<comp> first_propagator  = vec<comp> (N); // input for FFT
     vec<comp> second_propagator = vec<comp> (N); // input for FFT
     vec<comp> bubble_values = vec<comp> (N);     // output of FFT
@@ -190,12 +187,13 @@ class PrecalculateBubble{
     Minimal_2D_FFT_Machine Swave_Bubble_Calculator;
     void perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2);
     void compute_internal_bubble();
-    void set_propagators(Propagator& g1, Propagator& g2);
-    void set_Matsubara_propagators(Propagator& g1, Propagator& g2);
-    void set_Keldysh_propagators(Propagator& g1, Propagator& g2);
+    void set_propagators(const Propagator& g1, const Propagator& g2);
+    void set_Matsubara_propagators(const Propagator& g1, const Propagator& g2);
+    void set_Keldysh_propagators(const Propagator& g1, const Propagator& g2);
 #endif
 
 public:
+    FrequencyGrid fermionic_grid;
     vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nFER*nFER*n_in); // 9 non-zero Keldysh components
 public:
     PrecalculateBubble(const Propagator& G_in, const Propagator& S_in,
@@ -271,6 +269,7 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
             v1_tmp = fermionic_grid.w[iv1];
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
+                std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << ", iv2 = " << iv2 << "\n";
                 v2_tmp = fermionic_grid.w[iv2];
 #ifdef HUBBARD_MODEL
                 perform_internal_sum_2D_Hubbard(iK, iv1, iv2);
@@ -313,7 +312,7 @@ void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int
 template<typename Q>
 void PrecalculateBubble<Q>::compute_internal_bubble() {
     if (dot){
-        set_propagators( g, s);
+        set_propagators(g, s);
         bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
         set_propagators(s, g);
         bubble_values += Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
@@ -325,7 +324,7 @@ void PrecalculateBubble<Q>::compute_internal_bubble() {
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::set_propagators(Propagator& g1, Propagator& g2) {
+void PrecalculateBubble<Q>::set_propagators(const Propagator &g1, const Propagator &g2) {
 #ifdef KELDYSH_FORMALISM
     set_Keldysh_propagators(g1, g2);
 #else
@@ -334,7 +333,7 @@ void PrecalculateBubble<Q>::set_propagators(Propagator& g1, Propagator& g2) {
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::set_Matsubara_propagators(Propagator &g1, Propagator &g2) {
+void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator &g1, const Propagator &g2) {
     for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
         first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
         second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
@@ -343,7 +342,7 @@ void PrecalculateBubble<Q>::set_Matsubara_propagators(Propagator &g1, Propagator
 
 template<typename Q>
 void
-PrecalculateBubble<Q>::set_Keldysh_propagators(Propagator &g1, Propagator &g2) {
+PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator &g1, const Propagator &g2) {
     for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
         switch (iK_tmp) {
             case 3: //AA

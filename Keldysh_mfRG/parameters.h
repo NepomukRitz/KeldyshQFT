@@ -7,6 +7,9 @@
 // Determines whether particle-hole symmetry is assumed
 //#define PARTICLE_HOLE_SYMM
 
+// Determines whether the 2D Hubbard model shall be studied instead of the SIAM
+#define HUBBARD_MODEL
+
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include "data_structures.h" // real/complex vector classes, comp as complex double
@@ -226,7 +229,17 @@ const int n_spin = 1;
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure
+#ifdef HUBBARD_MODEL
+int N_q = 31; // Number of transfer momentum points in one dimension.
+
+auto N_qd = (double) N_q;
+double N_q_full = N_qd * (N_qd + 1) / 2;
+int N = (int) N_q_full; // Total of transfer momentum points to store
+
+const int n_in = N;
+#else
 const int n_in = 1;
+#endif
 
 /// fRG parameters ///
 

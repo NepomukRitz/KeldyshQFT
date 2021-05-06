@@ -2,9 +2,12 @@
 #define KELDYSH_MFRG_PROPAGATOR_H
 
 #include <cmath>             // exp, tanh
+#include <tuple>
+
 #include "data_structures.h" // real/complex vector classes, imag. unit
 #include "selfenergy.h"      // self-energy class
 #include "parameters.h"      // system parameters (lengths of vectors etc.)
+#include "momentum_grid.h"   // momentum grid and FFT machinery for the 2D Hubbard model
 
 using namespace std;
 
@@ -279,7 +282,13 @@ auto Propagator::SK(double v, int i_in) const -> comp
 // full propagator (Matsubara)
 auto Propagator::GM(double v, int i_in) const -> comp
 {
+#ifdef HUBBARD_MODEL
+    double k_x; double k_y;
+    std::tie(k_x, k_y) = get_k_x_and_k_y(i_in); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+    return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) - selfenergy.valsmooth(0, v, 0)); // TODO: Internal structure in self-energy trivial, because not implemented yet!
+#else
     return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+#endif
 }
 // single scale propagator (Matsubara)
 auto Propagator::SM(double v, int i_in) const -> comp

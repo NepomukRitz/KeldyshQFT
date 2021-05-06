@@ -5,22 +5,21 @@
 #ifndef KELDYSH_MFRG_TESTING_MOMENTUM_GRID_H
 #define KELDYSH_MFRG_TESTING_MOMENTUM_GRID_H
 
-#include<tuple>
+#define _USE_MATH_DEFINES
 #include<cmath>
 #include<complex>
+#include<tuple>
 #include<fftw3.h>
 #include <cassert>
+
 #include "data_structures.h"
 #include "propagator.h"
+#include "parameters.h"
 
 
-int totalNumberOfTransferMomentumPointsToStore();
 int momentum_index(int n_x, int n_y);
 std::tuple<int, int> get_n_x_and_n_y(int n);
 std::tuple<int, int> reduce_index_to_one_eighth_of_BZ(int x, int y);
-
-int N_q = 129; // Number of transfer momentum points in one dimension. TODO: Define this globally in parameters.
-int N = totalNumberOfTransferMomentumPointsToStore();
 
 int momentum_index(int n_x, int n_y){
     // TODO>: Cover assertions in unit test.
@@ -53,6 +52,17 @@ std::tuple<int, int> get_n_x_and_n_y(int n) {
     return std::make_tuple(n_x, n_y);
 }
 
+std::tuple<double, double> get_k_x_and_k_y(int n){
+    int n_x; int n_y;
+    double k_x; double k_y;
+
+    std::tie(n_x, n_y) = get_n_x_and_n_y(n);
+    k_x = M_PI * n_x / (N_q - 1);
+    k_y = M_PI * n_y / (N_q - 1);
+
+    return std::make_tuple(k_x, k_y);
+}
+
 /*
  * Given a pair of indices labelling any point in the square of the BZ,
  * what is the corresponding index in the part that is actually stored?
@@ -61,8 +71,8 @@ std::tuple<int, int> reduce_index_to_one_eighth_of_BZ(int x, int y){
     // TODO: Cover assertions in unit test.
     assert (x >= 0);
     assert (y >= 0);
-    assert (x < 2 * (N_q -1));
-    assert (y < 2 * (N_q -1));
+    assert (x < 2 * (N_q - 1));
+    assert (y < 2 * (N_q - 1));
     int n_x = x;
     int n_y = y;
     if (n_x > (N_q - 1)){n_x = 2 * (N_q - 1) - n_x;} // mirror along x-direction
@@ -74,13 +84,6 @@ std::tuple<int, int> reduce_index_to_one_eighth_of_BZ(int x, int y){
     }
     return std::make_tuple(n_x, n_y);
 };
-
-int totalNumberOfTransferMomentumPointsToStore(){
-    auto N_qd = (double) N_q;
-    double N_q_full = N_qd * (N_qd + 1) / 2;
-    return (int) N_q_full;
-}
-
 
 class Minimal_2D_FFT_Machine {
     int points_per_dimension = 2 * (N_q - 1); // N_q set globally
@@ -131,7 +134,7 @@ vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values
     calculate_swave_bubble_in_real_space();
     transform_bubble_to_momentum_space();
     prepare_bubble_values_to_return();
-    std::cout << "S-wave bubble calculated!" << "\n";
+    //std::cout << "S-wave bubble calculated!" << "\n";
 
     return return_bubble_values;
 }
@@ -197,10 +200,11 @@ void Minimal_2D_FFT_Machine::create_plans() {
 }
 
 void Minimal_2D_FFT_Machine::cleanup() {
-    fftw_destroy_plan(propagator_to_real_space_plan); fftw_destroy_plan(bubble_to_momentum_space_plan);
+    fftw_cleanup();
+    /*fftw_destroy_plan(propagator_to_real_space_plan); fftw_destroy_plan(bubble_to_momentum_space_plan);
     fftw_free(input_propagator);                      fftw_free(output_propagator_in_real_space);
     fftw_free(input_bubble);                          fftw_free(output_bubble_in_momentum_space);
-    fftw_free(first_propagator_in_real_space);        fftw_free(second_propagator_in_real_space);
+    fftw_free(first_propagator_in_real_space);        fftw_free(second_propagator_in_real_space);*/
 }
 
 #endif //KELDYSH_MFRG_TESTING_MOMENTUM_GRID_H
