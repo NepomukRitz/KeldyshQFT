@@ -12,6 +12,7 @@
 #include "parameters.h"  // system parameters (vector lengths etc.)
 #include "integrator.h"  // integration routines
 #include "write_data2file.h"  // save integrand for debugging purposes
+#include "correctionFunctions.h"  // analytical results for the tails of the loop integral
 
 /**
  * Class for the integrand of the Retarded SelfEnergy
@@ -276,6 +277,12 @@ void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>&
 #ifdef KELDYSH_FORMALISM
         Q integratedR = -1./(2.*M_PI*glb_i)*integrator<Q>(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
         Q integratedK = -1./(2.*M_PI*glb_i)* integrator<Q>(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+
+        // add analytical results for the tails
+        integratedR += -1./(2.*M_PI*glb_i)
+                      * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), 0, i_in, all_spins);
+        integratedK += -1./(2.*M_PI*glb_i)
+                      * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), 1, i_in, all_spins);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
