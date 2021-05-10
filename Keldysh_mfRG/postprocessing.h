@@ -103,5 +103,42 @@ void compute_Phi_tilde(const string filename) {
                    {vs, Phi, Phi_integrated, Lambdas});
 }
 
+class Integrand_sum_rule_K1tK {
+    Vertex<comp> vertex;
+public:
+    Integrand_sum_rule_K1tK(Vertex<comp>& vertex_in) : vertex(vertex_in) {}
+
+    auto operator() (double w) const -> comp {
+        comp result;
+        // Keldysh component (Keldysh index 3) in the t channel
+        VertexInput input(3, w, 0., 0., 0, 0, 't');
+
+        // K1_upup = K1_updown + K1_downup --> sum up the two spin components
+        for (int ispin=0; ispin<2; ++ispin) {
+            input.spin = ispin;
+            result += vertex[0].tvertex().valsmooth<k1>(input, vertex[0].avertex());;
+        }
+
+        return result;
+    }
+
+};
+
+void sum_rule_K1tK(const string filename) {
+    int nLambda = nODE + U_NRG.size() + 1;
+
+    rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
+    rvec sum_rule (nLambda);
+
+    for (int iLambda=0; iLambda<nLambda; ++iLambda) {
+        State<comp> state = read_hdf(filename, iLambda, nLambda);           // read state
+        Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
+        double wmax = state.vertex[0].tvertex().frequencies.b_K1.w_upper;   // upper integration boundary
+
+        sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator(integrand, 0, wmax) / (glb_U * glb_U)).real();
+    }
+
+    write_h5_rvecs(filename + "_sum_rule_K1tK", {"Lambdas", "sum_rule"}, {Lambdas, sum_rule});
+}
 
 #endif //KELDYSH_MFRG_TESTING_POSTPROCESSING_H
