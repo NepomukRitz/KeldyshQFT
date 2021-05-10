@@ -11,7 +11,7 @@
 
 /**
  * Helper function for computing the analytical result for the asymptotic tails of the bubble integral in the a and t
- * channel, assuming the self-energy to be decayed to the Hartree value. See the function asymp_corrections below.
+ * channel, assuming the self-energy to be decayed to the Hartree value. See the function asymp_corrections_bubble below.
  * @param w        : Bosonic transfer frequency
  * @param vmin     : Lower limit of the numerically evaluated integral
  * @param vmax     : Upper limit of the numerically evaluated integral
@@ -19,7 +19,7 @@
  * @param Delta    : Hybridization (~ flow parameter) at which the bubble is evaluated
  * @param eta_1    : +1/-1 if first propagator in the bubble is retarded/advanced
  * @param eta_2    : +1/-1 if second propagator in the bubble is retarded/advanced
- * @return
+ * @return         : Analytical result of the integrated tails
  */
 template <typename Q>
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
@@ -248,22 +248,103 @@ auto asymp_corrections_bubble(K_class k,
 // At this point, we work with corrections to bubbles of the kinds KR, KA, AK, RK, KK  being neglected,
 // due to faster decay to zero (O(1/w^2))
 
-/*
-// Correction for the Self Energy implemented but not in use
-auto correctionFunctionSelfEnergy(double prop_iK, double gamma_m, double gamma_p) -> comp{   //prop_iK = 0 for R, =-1 for A and =1 for K
-    double a=0;
-    if(prop_iK==0){
-        a = 1.;
-    } else if(prop_iK==-1){
-        a = -1.;
+/**
+ * Helper function for computing the analytical result for the asymptotic tails of the loop integral, assuming the
+ * self-energy of the propagator to be decayed to the Hartree value. See the function asymp_corrections_loop below.
+ * @param iK       : Type of the loop propagator
+ *                     0: G^R, 1: G^A, 2: G^K
+ * @param vmin     : Lower limit of the numerically evaluated integral
+ * @param vmax     : Upper limit of the numerically evaluated integral
+ * @param Sigma_H  : Hartree self-energy
+ * @param Delta    : Hybridization (~ flow parameter) at which the bubble is evaluated
+ * @param type     : Propagator type ('g': full, 's': single-scale)
+ * @return         : Analytical result of the integrated tails
+ */
+template <typename Q>
+auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, double Delta, char type) -> comp {
+    Q eps_p = glb_epsilon + Sigma_H;
+    switch (type) {
+        case 'g':   // full (non-differentiated) propagator
+            switch (iK) {
+                case 0: // G^R
+                    return log((abs(vmin) + eps_p - glb_i * Delta) / (vmax - eps_p + glb_i * Delta));
+                case 1: // G^A
+                    return log((abs(vmin) + eps_p + glb_i * Delta) / (vmax - eps_p - glb_i * Delta));
+                case 2: // G^K
+                    return 2. * glb_i * (atan((vmax - eps_p) / Delta) - atan((abs(vmin) + eps_p) / Delta));
+            }
+        case 's':   // single-scale propagator
+            switch (iK) {
+                case 0: // G^R
+                    return -glb_i / 2. * (1. / (vmax - eps_p + glb_i * Delta) - 1. / (vmin - eps_p + glb_i * Delta));
+                case 1: // G^A
+                    return  glb_i / 2. * (1. / (vmax - eps_p - glb_i * Delta) - 1. / (vmin - eps_p - glb_i * Delta));
+                case 2: // G^K
+                    return -glb_i * (  (vmax - eps_p) / ((vmax - eps_p) * (vmax - eps_p) + Delta * Delta)
+                                     + (vmin - eps_p) / ((vmin - eps_p) * (vmin - eps_p) + Delta * Delta));
+            }
+        default:;
+    }
+    return 0;
+}
+
+/**
+ * Compute the analytical result for the asymptotic tails of the loop integral, assuming the self-energy of the
+ * propagator to be decayed to the Hartree value. The full result is
+ * (Gamma_0 + K1t(w = 0)) * I_tails(vmin, vmax),
+ * where vmax/vmin are the upper/lower limits of the numerically evaluated integral, I_tails is the loop integral
+ * helper function defined above, containing the result of the analytical integration, and Gamma_0 is the bare vertex.
+ * @param vertex     : Vertex in the loop
+ * @param G          : Loop propagator
+ * @param vmin       : Lower limit of the numerically evaluated integral in loop(...)
+ * @param vmax       : Upper limit of the numerically evaluated integral in loop(...)
+ * @param iK         : Keldysh index of the result (0: retarded component, 1: Keldysh component)
+ * @param i_in       : Internal index
+ * @param all_spins  : Determines if spin sum in loop is performed.
+ * @return
+ */
+template <typename Q>
+auto asymp_corrections_loop(const Vertex<Q>& vertex,
+                            const Propagator& G,
+                            double vmin, double vmax,
+                            int iK, int i_in, const bool all_spins) -> Q {
+
+    Q Sigma_H = G.selfenergy.asymp_val_R;       // Hartree self-energy
+    double Delta = (glb_Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
+
+    // Keldysh components of the vertex needed for retarded and Keldysh self-energy
+    vector<vector<int> > components {{3, 6, 7}, {1, 4, 5}};
+
+    // determine the value of the vertex in the tails (only Gamma_0 and K1t(w = 0) contribute!)
+    VertexInput inputRetarded (components[iK][0], 0., 0., 0., i_in, 0, 't');
+    VertexInput inputAdvanced (components[iK][1], 0., 0., 0., i_in, 0, 't');
+    VertexInput inputKeldysh (components[iK][2], 0., 0., 0., i_in, 0, 't');
+    Q factorRetarded = vertex[0].irred().val(components[iK][0], i_in, 0) // Gamma_0
+                       + vertex[0].tvertex().template valsmooth<k1>(inputRetarded, vertex[0].avertex()); // K1t(w = 0)
+    Q factorAdvanced = vertex[0].irred().val(components[iK][1], i_in, 0) // Gamma_0
+                       + vertex[0].tvertex().template valsmooth<k1>(inputAdvanced, vertex[0].avertex()); // K1t(w = 0)
+    Q factorKeldysh  = vertex[0].irred().val(components[iK][2], i_in, 0) // Gamma_0
+                       + vertex[0].tvertex().template valsmooth<k1>(inputKeldysh, vertex[0].avertex()); // K1t(w = 0)
+
+    // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
+    if (all_spins) {
+        factorRetarded *= 2.;
+        factorAdvanced *= 2.;
+        factorKeldysh  *= 2.;
+        inputRetarded.spin = 1;
+        inputAdvanced.spin = 1;
+        inputKeldysh.spin  = 1;
+        factorRetarded += vertex[0].tvertex().template valsmooth<k1>(inputRetarded, vertex[0].avertex());
+        factorAdvanced += vertex[0].tvertex().template valsmooth<k1>(inputAdvanced, vertex[0].avertex());
+        factorKeldysh  += vertex[0].tvertex().template valsmooth<k1>(inputKeldysh, vertex[0].avertex());
     }
 
-    if(a==1. || a==-1.)           //Advanced or Retarded
-        return log((-gamma_m-glb_epsilon+glb_i*glb_Gamma*a)/(gamma_p-glb_epsilon+glb_i*glb_Gamma*a));
-    else                //Keldysh
-        return 0.; //2.*glb_i*(atan((gamma_m+glb_epsilon)/glb_Gamma) + atan((gamma_p-glb_epsilon)/glb_Gamma)-pi);
-}
-*/
+    // analytical integration of the propagator
+    Q GR = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
+    Q GA = correctionFunctionSelfEnergy(1, vmin, vmax, Sigma_H, Delta, G.type);
+    Q GK = correctionFunctionSelfEnergy(2, vmin, vmax, Sigma_H, Delta, G.type);
 
+    return factorRetarded * GR + factorAdvanced * GA + factorKeldysh * GK;
+}
 
 #endif //KELDYSH_MFRG_CORRECTIONFUNCTIONS_H
