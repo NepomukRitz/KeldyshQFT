@@ -116,12 +116,12 @@ auto correctionFunctionBubble (double w, double vmin, double vmax,
 template <typename Q,
           template <typename> class symmetry_left,
           template <typename> class symmetry_right>
-auto asymp_corrections(K_class k,
-                       const GeneralVertex<Q, symmetry_left>& vertex1,
-                       const GeneralVertex<Q, symmetry_right>& vertex2,
-                       const Propagator& G,
-                       double vmin, double vmax,
-                       double w, double v, double vp, int i0_in, int i2, int i_in, char channel) -> Q {
+auto asymp_corrections_bubble(K_class k,
+                              const GeneralVertex<Q, symmetry_left>& vertex1,
+                              const GeneralVertex<Q, symmetry_right>& vertex2,
+                              const Propagator& G,
+                              double vmin, double vmax,
+                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
