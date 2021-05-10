@@ -261,20 +261,8 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         double v_lower = prop.selfenergy.frequencies.w_lower;
         double v_upper = prop.selfenergy.frequencies.w_upper;
 #ifdef KELDYSH_FORMALISM
-        comp integratedR =
-#ifdef KELDYSH_FORMALISM
-                -1./(2.*M_PI*glb_i)*
-#else
-                1./(2.*M_PI)*
-#endif
-                integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
-        comp integratedK =
-#ifdef KELDYSH_FORMALISM
-            -1./(2.*M_PI*glb_i)*
-#else
-            1./(2.*M_PI)*
-#endif
-            integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedR = -1./(2.*M_PI*glb_i) * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedK = -1./(2.*M_PI*glb_i) * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
