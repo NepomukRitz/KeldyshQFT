@@ -365,11 +365,11 @@ void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& d
     SelfEnergy<Q> dSigma_t;
 
     // compute first multiloop correction to self-energy flow, irreducible in the t channel
-    loop(dSigma_tbar, dGammaC_tbar, G, false);
+    loop(dSigma_tbar, dGammaC_tbar, G, true);
 
     // compute second multiloop correction to self-energy flow, reducible in the t channel
     Propagator extension (G.Lambda, Psi.selfenergy, dSigma_tbar, 'e');
-    loop(dSigma_t, Psi.vertex, extension, false);
+    loop(dSigma_t, Psi.vertex, extension, true);
 
     dPsiSelfEnergy += dSigma_tbar + dSigma_t;
 
