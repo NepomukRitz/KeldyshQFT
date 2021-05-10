@@ -830,7 +830,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #else
                                prefactor * (1. / (-2. * M_PI)) *
 #endif
-                               asymp_corrections(k1, vertex1, vertex2, G, vmin, vmax, w, 0., 0., i0, i2, i_in, channel);
+                               asymp_corrections_bubble(k1, vertex1, vertex2, G,
+                                                        vmin, vmax, w, 0., 0., i0, i2, i_in, channel);
                            }
 #ifdef KELDYSH_FORMALISM
                       }
@@ -966,7 +967,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #else
                                 prefactor * (1. / (-2. * M_PI)) *
 #endif
-                                asymp_corrections(k2, vertex1, vertex2, G, vmin, vmax, w, v, 0., i0, i2, i_in, channel);
+                                asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                                                         vmin, vmax, w, v, 0., i0, i2, i_in, channel);
                         }
 #ifdef KELDYSH_FORMALISM
                         }
@@ -1098,7 +1100,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #else
                             prefactor * (1. / (-2. * M_PI)) *
 #endif
-                            asymp_corrections(k3, vertex1, vertex2, G, vmin, vmax, w, v, vp, i0, i2, i_in, channel);
+                            asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                                                     vmin, vmax, w, v, vp, i0, i2, i_in, channel);
 #ifdef KELDYSH_FORMALISM
                         }
 #endif
