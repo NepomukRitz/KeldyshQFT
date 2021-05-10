@@ -6,6 +6,7 @@
 #include "solvers.h"         // to construct flow grid
 #include "state.h"
 #include "propagator.h"
+#include "KramersKronig.h"   // perform check of Kramers-Kronig relation
 
 template <typename Q>
 class Integrand_Phi_tilde {
@@ -139,6 +140,55 @@ void sum_rule_K1tK(const string filename) {
     }
 
     write_h5_rvecs(filename + "_sum_rule_K1tK", {"Lambdas", "sum_rule"}, {Lambdas, sum_rule});
+}
+
+/**
+ * Check Kramers-Kronig relation for retarded self-energy and retarded component of K1r by computing the real part from
+ * the imaginary part via Kramers-Kronig. The result can be compared to the real part obtained from the flow.
+ */
+void check_Kramers_Kronig(const string filename) {
+    int nLambda = nODE + U_NRG.size() + 1;  // number of Lambda points in <filename>
+    vec<int> iLambdas {0, 4, 12, 24, 34, 40, 44}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
+
+    for (int i=0; i<iLambdas.size(); ++i) {
+        State<comp> state = read_hdf(filename, iLambdas[i], nLambda);  // read data from file
+        // check Kramers-Kronig for retarded self-energy
+        rvec vSigma = state.selfenergy.frequencies.w;  // frequency grid points
+        // get retarded component (first half of stored data points)
+        rvec SigmaR_re = state.selfenergy.Sigma(0, nSE-1).real();  // real part from flow
+        rvec SigmaR_im = state.selfenergy.Sigma(0, nSE-1).imag();  // imaginary part from flow
+        rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im);  // compute real part from imaginary part via KK
+
+        // check Kramers-Kronig for retarded component of K1r
+        rvec wK1 = state.vertex[0].avertex().frequencies.b_K1.w;  // frequency grid points
+        // get retarded component of K1a (first half of stored data points)
+        rvec K1aR_re = state.vertex[0].avertex().K1(0, nw1-1).real();  // real part from flow
+        rvec K1aR_im = state.vertex[0].avertex().K1(0, nw1-1).imag();  // imaginary part from flow
+        rvec K1aR_re_KK = KKi2r(wK1, K1aR_im);  // compute real part from imaginary part via KK
+        // get retarded component of K1p (first half of stored data points)
+        rvec K1pR_re = state.vertex[0].pvertex().K1(0, nw1-1).real();  // real part from flow
+        rvec K1pR_im = state.vertex[0].pvertex().K1(0, nw1-1).imag();  // imaginary part from flow
+        rvec K1pR_re_KK = KKi2r(wK1, K1pR_im);  // compute real part from imaginary part via KK
+        // get retarded component of K1t (first half of stored data points)
+        rvec K1tR_re = state.vertex[0].tvertex().K1(0, nw1-1).real();  // real part from flow
+        rvec K1tR_im = state.vertex[0].tvertex().K1(0, nw1-1).imag();  // imaginary part from flow
+        rvec K1tR_re_KK = KKi2r(wK1, K1tR_im);  // compute real part from imaginary part via KK
+
+        // save data to file
+        write_h5_rvecs(filename + "_KKi2r_i" + to_string(iLambdas[i]),
+                       {"v",
+                        "SigmaR_im", "SigmaR_re", "SigmaR_re_KK",
+                        "w",
+                        "K1aR_im", "K1aR_re", "K1aR_re_KK",
+                        "K1pR_im", "K1pR_re", "K1pR_re_KK",
+                        "K1tR_im", "K1tR_re", "K1tR_re_KK"},
+                       {vSigma,
+                        SigmaR_im, SigmaR_re, SigmaR_re_KK,
+                        wK1,
+                        K1aR_im, K1aR_re, K1aR_re_KK,
+                        K1pR_im, K1pR_re, K1pR_re_KK,
+                        K1tR_im, K1tR_re, K1tR_re_KK});
+    }
 }
 
 #endif //KELDYSH_MFRG_TESTING_POSTPROCESSING_H
