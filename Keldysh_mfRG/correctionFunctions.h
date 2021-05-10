@@ -10,10 +10,11 @@
 // TODO: implement also for Matsubara, and check the prefactor for Matsubara in bubbles.h
 
 /**
- * Helper function f for computing the analytical result for the asymptotic tails of the bubble integral in the a and t
+ * Helper function for computing the analytical result for the asymptotic tails of the bubble integral in the a and t
  * channel, assuming the self-energy to be decayed to the Hartree value. See the function asymp_corrections below.
  * @param w        : Bosonic transfer frequency
- * @param v        : Upper or lower limit of the numerically evaluated integral
+ * @param vmin     : Lower limit of the numerically evaluated integral
+ * @param vmax     : Upper limit of the numerically evaluated integral
  * @param Sigma_H  : Hartree self-energy
  * @param Delta    : Hybridization (~ flow parameter) at which the bubble is evaluated
  * @param eta_1    : +1/-1 if first propagator in the bubble is retarded/advanced
@@ -21,16 +22,18 @@
  * @return
  */
 template <typename Q>
-auto correctionFunctionBubbleAT (double w, double v, Q Sigma_H, double Delta, double eta_1, double eta_2) -> Q {
+auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
+                                 Q Sigma_H, double Delta, double eta_1, double eta_2) -> Q {
 #ifdef KELDYSH_FORMALISM
 #if REG==2
+    Q eps_p = glb_epsilon + Sigma_H;
     if (w == 0. && eta_1 == eta_2)
-        return 1./(v - glb_epsilon - Sigma_H + eta_1 * glb_i * Delta);
+        return  1./(    vmax  - eps_p + eta_1 * glb_i * Delta)
+              + 1./(abs(vmin) + eps_p - eta_1 * glb_i * Delta);
     else
         return 1./(-w + (eta_1 - eta_2) * glb_i * Delta)
-                * (  (eta_1 - eta_2) * glb_i * M_PI / 2. * sign(v)
-                   + log(v - w/2. - glb_epsilon - Sigma_H + eta_1 * glb_i * Delta)
-                   - log(v + w/2. - glb_epsilon - Sigma_H + eta_2 * glb_i * Delta) );
+                * log( (vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta)
+                      /(vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta));
 #else
     return 0.;
 #endif
@@ -41,10 +44,11 @@ auto correctionFunctionBubbleAT (double w, double v, Q Sigma_H, double Delta, do
 }
 
 /**
- * Helper function f for computing the analytical result for the asymptotic tails of the bubble integral in the p
+ * Helper function for computing the analytical result for the asymptotic tails of the bubble integral in the p
  * channel, assuming the self-energy to be decayed to the Hartree value. See the function asymp_corrections below.
  * @param w        : Bosonic transfer frequency
- * @param v        : Upper or lower limit of the numerically evaluated integral
+ * @param vmin     : Lower limit of the numerically evaluated integral
+ * @param vmax     : Upper limit of the numerically evaluated integral
  * @param Sigma_H  : Hartree self-energy
  * @param Delta    : Hybridization (~ flow parameter) at which the bubble is evaluated
  * @param eta_1    : +1/-1 if first propagator in the bubble is retarded/advanced
@@ -52,16 +56,18 @@ auto correctionFunctionBubbleAT (double w, double v, Q Sigma_H, double Delta, do
  * @return
  */
 template <typename Q>
-auto correctionFunctionBubbleP (double w, double v, Q Sigma_H, double Delta, double eta_1, double eta_2) -> Q {
+auto correctionFunctionBubbleP (double w, double vmin, double vmax,
+                                Q Sigma_H, double Delta, double eta_1, double eta_2) -> Q {
 #ifdef KELDYSH_FORMALISM
 #if REG==2
-    if (w == 2.*(glb_epsilon + Sigma_H) && eta_1 == - eta_2)
-        return -1./(v + eta_1 * glb_i * Delta);
+    Q eps_p = glb_epsilon + Sigma_H;
+    if (w == 2. * eps_p && eta_1 == - eta_2)
+        return -1./(    vmax  + eta_1 * glb_i * Delta)
+               -1./(abs(vmin) - eta_1 * glb_i * Delta);
     else
-        return -1./(w - 2.*(glb_epsilon + Sigma_H) + (eta_1 + eta_2) * glb_i * Delta)
-                * (  (eta_1 + eta_2) * glb_i * M_PI / 2. * sign(v)
-                   + log(v + (w/2. - glb_epsilon - Sigma_H) + eta_1 * glb_i * Delta)
-                   - log(v - (w/2. - glb_epsilon - Sigma_H) - eta_2 * glb_i * Delta) );
+        return -1./(w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
+                * log( (vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta)
+                      /(vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta));
 #else
     return 0.;
 #endif
@@ -73,20 +79,21 @@ auto correctionFunctionBubbleP (double w, double v, Q Sigma_H, double Delta, dou
 
 /** Wrapper for the two functions above, distinguishing a/t channels from p channel. */
 template <typename Q>
-auto correctionFunctionBubble (double w, double v, Q Sigma_H, double Delta, double eta_1, double eta_2, char channel) -> Q {
+auto correctionFunctionBubble (double w, double vmin, double vmax,
+                               Q Sigma_H, double Delta, double eta_1, double eta_2, char channel) -> Q {
     if (channel == 'p')
-        return correctionFunctionBubbleP(w, v, Sigma_H, Delta, eta_1, eta_2);
+        return correctionFunctionBubbleP(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2);
     else
-        return correctionFunctionBubbleAT(w, v, Sigma_H, Delta, eta_1, eta_2);
+        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2);
 }
 
 /**
  * Compute the analytical result for the asymptotic tails of the bubble integral, assuming the self-energy to be decayed
  * to the Hartree value. The full result is
- * Gamma_L * (f(vmax) - f(vmin)) * Gamma_R,
- * where vmax/vmin are the upper/lower limits of the numerically evaluated integral, f is the channel-dependent helper
- * function defined above, containing the result of the analytical integration, and Gamma_L, Gamma_R are the left/right
- * vertices, with appropriately chosen arguments.
+ * Gamma_L * I_tails(vmin, vmax) * Gamma_R,
+ * where vmax/vmin are the upper/lower limits of the numerically evaluated integral, I_tails is the channel-dependent
+ * helper function defined above, containing the result of the analytical integration, and Gamma_L, Gamma_R are the
+ * left/right vertices, with appropriately chosen arguments.
  *
  * @tparam Q              : Return data type (comp or double)
  * @tparam symmetry_left  : Symmetry type of the left vertex
@@ -208,9 +215,8 @@ auto asymp_corrections(K_class k,
         default:;
     }
 
-    // compute the value of the (analytically integrated) bubble: f(vmax) - f(vmin)
-    Q Pival =   correctionFunctionBubble(w, vmax, Sigma_H, Delta, eta_1, eta_2, channel)
-              - correctionFunctionBubble(w, vmin, Sigma_H, Delta, eta_1, eta_2, channel);
+    // compute the value of the (analytically integrated) bubble
+    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, channel);
 
     // In the a and p channel, return result. In the t channel, add the other spin component.
     if (channel != 't')
