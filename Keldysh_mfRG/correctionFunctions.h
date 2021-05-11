@@ -291,13 +291,14 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
 /**
  * Compute the analytical result for the asymptotic tails of the loop integral, assuming the self-energy of the
  * propagator to be decayed to the Hartree value. The full result is
- * (Gamma_0 + K1t(w = 0)) * I_tails(vmin, vmax),
+ * (Gamma_0 + K1t(w = 0) + K2't(w = 0, v' = v)) * I_tails(vmin, vmax),
  * where vmax/vmin are the upper/lower limits of the numerically evaluated integral, I_tails is the loop integral
  * helper function defined above, containing the result of the analytical integration, and Gamma_0 is the bare vertex.
  * @param vertex     : Vertex in the loop
  * @param G          : Loop propagator
  * @param vmin       : Lower limit of the numerically evaluated integral in loop(...)
  * @param vmax       : Upper limit of the numerically evaluated integral in loop(...)
+ * @param v          : External fermionic frequency
  * @param iK         : Keldysh index of the result (0: retarded component, 1: Keldysh component)
  * @param i_in       : Internal index
  * @param all_spins  : Determines if spin sum in loop is performed.
@@ -307,7 +308,7 @@ template <typename Q>
 auto asymp_corrections_loop(const Vertex<Q>& vertex,
                             const Propagator& G,
                             double vmin, double vmax,
-                            int iK, int i_in, const bool all_spins) -> Q {
+                            double v, int iK, int i_in, const bool all_spins) -> Q {
 
     Q Sigma_H = G.selfenergy.asymp_val_R;       // Hartree self-energy
     double Delta = (glb_Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
@@ -315,16 +316,16 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
     // Keldysh components of the vertex needed for retarded and Keldysh self-energy
     vector<vector<int> > components {{3, 6, 7}, {1, 4, 5}};
 
-    // determine the value of the vertex in the tails (only Gamma_0 and K1t(w = 0) contribute!)
-    VertexInput inputRetarded (components[iK][0], 0., 0., 0., i_in, 0, 't');
-    VertexInput inputAdvanced (components[iK][1], 0., 0., 0., i_in, 0, 't');
-    VertexInput inputKeldysh (components[iK][2], 0., 0., 0., i_in, 0, 't');
+    // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
+    VertexInput inputRetarded (components[iK][0], 0., 0., v, i_in, 0, 't');
+    VertexInput inputAdvanced (components[iK][1], 0., 0., v, i_in, 0, 't');
+    VertexInput inputKeldysh (components[iK][2], 0., 0., v, i_in, 0, 't');
     Q factorRetarded = vertex[0].irred().val(components[iK][0], i_in, 0) // Gamma_0
-                       + vertex[0].tvertex().template valsmooth<k1>(inputRetarded, vertex[0].avertex()); // K1t(w = 0)
+                       + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
     Q factorAdvanced = vertex[0].irred().val(components[iK][1], i_in, 0) // Gamma_0
-                       + vertex[0].tvertex().template valsmooth<k1>(inputAdvanced, vertex[0].avertex()); // K1t(w = 0)
+                       + vertex[0].tvertex().left_same_bare(inputAdvanced, vertex[0].avertex()); // K1t(0) + K2't(0,v)
     Q factorKeldysh  = vertex[0].irred().val(components[iK][2], i_in, 0) // Gamma_0
-                       + vertex[0].tvertex().template valsmooth<k1>(inputKeldysh, vertex[0].avertex()); // K1t(w = 0)
+                       + vertex[0].tvertex().left_same_bare(inputKeldysh, vertex[0].avertex()); // K1t(0) + K2't(0,v)
 
     // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
     if (all_spins) {
