@@ -32,8 +32,8 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
               + 1./(abs(vmin) + eps_p - eta_1 * glb_i * Delta);
     else
         return 1./(-w + (eta_1 - eta_2) * glb_i * Delta)
-                * log( (vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta)
-                      /(vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta));
+                * log( ((vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta))
+                      /((vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta)));
 #else
     return 0.;
 #endif
@@ -66,8 +66,8 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                -1./(abs(vmin) - eta_1 * glb_i * Delta);
     else
         return -1./(w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
-                * log( (vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta)
-                      /(vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta));
+                * log( ((vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta))
+                      /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
 #else
     return 0.;
 #endif
