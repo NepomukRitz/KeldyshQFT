@@ -42,11 +42,11 @@ State<state_datatype> n_loop_flow(string outputFileName){
  *        computed. (See log file: "Successfully saved in hdf5 file: <inputFileName> in Lambda layer <Nmax>.)
  *        Use this number <Nmax> as input <it_start> for this function.
  */
-State<comp> n_loop_flow(string inputFileName, const int it_start) {
+State<state_datatype> n_loop_flow(string inputFileName, const int it_start) {
     if (it_start < nODE + U_NRG.size() + 1) { // start iteration needs to be within the range of values
 
-        State<comp> state_ini = read_hdf(inputFileName, it_start, nODE + U_NRG.size() + 1); // read initial state
-        State<comp> state_fin (Lambda_fin);
+        State<state_datatype> state_ini = read_hdf(inputFileName, it_start, nODE + U_NRG.size() + 1); // read initial state
+        State<state_datatype> state_fin (Lambda_fin);
 
         // compute the flow using RK4 solver
         ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs

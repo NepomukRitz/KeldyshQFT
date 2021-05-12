@@ -6,7 +6,7 @@
 #include "util.h"            // text input/output
 #include "write_data2file.h" // writing data into text or hdf5 files
 #include "parameters.h"      // needed for the vector of grid values to add
-#include "testFunctions.h"   // perform FDT checks at each step of the flow
+//#include "testFunctions.h"   // perform FDT checks at each step of the flow
 
 void add_points_to_Lambda_grid(vector<double>& grid){
     for (auto U : U_NRG){

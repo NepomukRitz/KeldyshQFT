@@ -454,8 +454,8 @@ auto rhs_PT4_K1a_nonladder_flow(const State<comp>& Psi, const double Lambda) -> 
     State<comp> bare (Lambda); // bare state
     bare.initialize();         // initialize bare state
 
-    Propagator G (Lambda, bare.selfenergy, 'g'); // bare propagator
-    Propagator S (Lambda, bare.selfenergy, 's'); // bare single-scale propagator
+    Propagator<comp> G (Lambda, bare.selfenergy, 'g'); // bare propagator
+    Propagator<comp> S (Lambda, bare.selfenergy, 's'); // bare single-scale propagator
 
     // compute K1p in PT2
     State<comp> PT2_K1p (Lambda);
@@ -516,7 +516,7 @@ auto compute_PT4_K1a_nonladder(const double Lambda) -> State<comp> {
     State<comp> bare (Lambda); // bare state
     bare.initialize();         // initialize bare state
 
-    Propagator G (Lambda, bare.selfenergy, 'g'); // bare propagator
+    Propagator<comp> G (Lambda, bare.selfenergy, 'g'); // bare propagator
 
     // K1p in PT2
     State<comp> PT2_K1p (Lambda);
