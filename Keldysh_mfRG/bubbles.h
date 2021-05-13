@@ -1130,7 +1130,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         }
 #endif
                     }
-                //}
+                }
                 K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
             ++iterator;
