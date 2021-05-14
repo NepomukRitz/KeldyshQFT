@@ -456,58 +456,58 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
 
 // compute differentiated K1a non-ladder diagram in PT4, used to compute flow of this specific diagram
 // (as a check for GeneralVertex class)
-auto rhs_PT4_K1a_nonladder_flow(const State<comp>& Psi, const double Lambda) -> State<comp> {
-    State<comp> bare (Lambda); // bare state
+auto rhs_PT4_K1a_nonladder_flow(const State<state_datatype>& Psi, const double Lambda) -> State<state_datatype> {
+    State<state_datatype> bare (Lambda); // bare state
     bare.initialize();         // initialize bare state
 
-    Propagator<comp> G (Lambda, bare.selfenergy, 'g'); // bare propagator
-    Propagator<comp> S (Lambda, bare.selfenergy, 's'); // bare single-scale propagator
+    Propagator<state_datatype> G (Lambda, bare.selfenergy, 'g'); // bare propagator
+    Propagator<state_datatype> S (Lambda, bare.selfenergy, 's'); // bare single-scale propagator
 
     // compute K1p in PT2
-    State<comp> PT2_K1p (Lambda);
+    State<state_datatype> PT2_K1p (Lambda);
     bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
 
     // compute K2a in PT3
-    State<comp> PT3_K2a (Lambda);
+    State<state_datatype> PT3_K2a (Lambda);
     bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3 (PT2_K1t = 0)
 
     // contribution to \dot{K1a} where leftmost bubble is differentiated
-    State<comp> PT4_K1a_dot_left (Lambda);
+    State<state_datatype> PT4_K1a_dot_left (Lambda);
     bubble_function(PT4_K1a_dot_left.vertex, bare.vertex, PT3_K2a.vertex, G, S, 'a', true);
 
     // compute differentiated K2a in PT3
-    State<comp> PT3_K2a_dot_right (Lambda);
+    State<state_datatype> PT3_K2a_dot_right (Lambda);
     bubble_function(PT3_K2a_dot_right.vertex, PT2_K1p.vertex, bare.vertex, G, S, 'a', true);   // \dot{K2a} in PT3 (PT2_K1t = 0)
 
     // contribution to \dot{K1a} where rightmost bubble is differentiated
-    State<comp> PT4_K1a_dot_right (Lambda);
+    State<state_datatype> PT4_K1a_dot_right (Lambda);
     bubble_function(PT4_K1a_dot_right.vertex, bare.vertex, PT3_K2a_dot_right.vertex, G, G, 'a', false);
 
     // compute differentiated K1p in PT2
-    State<comp> PT2_K1p_dot (Lambda);
+    State<state_datatype> PT2_K1p_dot (Lambda);
     bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, S, 'p', true);
 
     // compute K2a/K2ab with differentiated p bubble in PT3, as an ingredient of the contribution to \dot{K1a} in PT4
     // with differentiated center bubble
-    State<comp> PT3_K2a_dot_half1 (Lambda);
-    State<comp> PT3_K2a_dot_half2 (Lambda);
+    State<state_datatype> PT3_K2a_dot_half1 (Lambda);
+    State<state_datatype> PT3_K2a_dot_half2 (Lambda);
     bubble_function(PT3_K2a_dot_half1.vertex, PT2_K1p_dot.vertex, bare.vertex, G, G, 'a', false);
     bubble_function(PT3_K2a_dot_half2.vertex, bare.vertex, PT2_K1p_dot.vertex, G, G, 'a', false);
 
     // construct non-symmetric K2a with differentiated p bubble
-    GeneralVertex<comp, non_symmetric> PT3_K2a_dot (n_spin);
+    GeneralVertex<state_datatype, non_symmetric> PT3_K2a_dot (n_spin);
     PT3_K2a_dot[0].half1() = PT3_K2a_dot_half1.vertex[0].half1();
     PT3_K2a_dot[0].half2() = PT3_K2a_dot_half2.vertex[0].half1();
 
     // construct non-symmetric K2ab with differentiated p bubble
-    GeneralVertex<comp, non_symmetric> PT3_K2ab_dot (n_spin);
+    GeneralVertex<state_datatype, non_symmetric> PT3_K2ab_dot (n_spin);
     PT3_K2ab_dot[0].half1() = PT3_K2a_dot_half2.vertex[0].half1();
     PT3_K2ab_dot[0].half2() = PT3_K2a_dot_half1.vertex[0].half1();
 
     // contribution to \dot{K1a} where center bubble is differentiated
-    State<comp> PT4_K1a_dot_center (Lambda);
-    State<comp> PT4_K1a_dot_center_left (Lambda);
-    State<comp> PT4_K1a_dot_center_right (Lambda);
+    State<state_datatype> PT4_K1a_dot_center (Lambda);
+    State<state_datatype> PT4_K1a_dot_center_left (Lambda);
+    State<state_datatype> PT4_K1a_dot_center_right (Lambda);
 
     bubble_function(PT4_K1a_dot_center_left.vertex, bare.vertex, PT3_K2a_dot, G, G, 'a', false);
     bubble_function(PT4_K1a_dot_center_right.vertex, PT3_K2ab_dot, bare.vertex, G, G, 'a', false);
@@ -518,22 +518,22 @@ auto rhs_PT4_K1a_nonladder_flow(const State<comp>& Psi, const double Lambda) -> 
 }
 
 // compute K1a non-ladder diagram in PT4 (to compare it to its flow)
-auto compute_PT4_K1a_nonladder(const double Lambda) -> State<comp> {
-    State<comp> bare (Lambda); // bare state
+auto compute_PT4_K1a_nonladder(const double Lambda) -> State<state_datatype> {
+    State<state_datatype> bare (Lambda); // bare state
     bare.initialize();         // initialize bare state
 
-    Propagator<comp> G (Lambda, bare.selfenergy, 'g'); // bare propagator
+    Propagator<state_datatype> G (Lambda, bare.selfenergy, 'g'); // bare propagator
 
     // K1p in PT2
-    State<comp> PT2_K1p (Lambda);
+    State<state_datatype> PT2_K1p (Lambda);
     bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
 
     // K2a in PT3
-    State<comp> PT3_K2a (Lambda);
+    State<state_datatype> PT3_K2a (Lambda);
     bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);
 
     // K1a nonladder in PT4
-    State<comp> PT4_K1a_nonladder (Lambda);
+    State<state_datatype> PT4_K1a_nonladder (Lambda);
     bubble_function(PT4_K1a_nonladder.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
 
     return PT4_K1a_nonladder;
@@ -546,7 +546,7 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
     int Lambda_size = nODE + U_NRG.size() + 1;
 
     // compute PT4 K1a non-ladder at initial Lambda
-    State<comp> state_ini = compute_PT4_K1a_nonladder(Lambda_i);
+    State<state_datatype> state_ini = compute_PT4_K1a_nonladder(Lambda_i);
     // save result to 0-th layer in hdf5 file (for both flow and direct computation)
     write_hdf(filename, 0, Lambda_size, state_ini);
     write_hdf(filename + "_dir", 0, Lambda_size, state_ini);
@@ -556,13 +556,13 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
 
     for (int i=1; i<Lambdas.size(); ++i) {
         // compute direct result of PT4 K1a non-ladder at each Lambda step
-        State<comp> state_dir = compute_PT4_K1a_nonladder(Lambdas[i]);
+        State<state_datatype> state_dir = compute_PT4_K1a_nonladder(Lambdas[i]);
         // save result to last layer in hdf5 file
         add_hdf(filename + "_dir", i, Lambda_size, state_dir, Lambdas);
     }
 
     // compute flow of PT4 K1a non-ladder from initial to final Lambda
-    State<comp> state_fin (Lambda_f);
+    State<state_datatype> state_fin (Lambda_f);
     ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_PT4_K1a_nonladder_flow,
                    sq_substitution, sq_resubstitution, nODE, filename);
 }
