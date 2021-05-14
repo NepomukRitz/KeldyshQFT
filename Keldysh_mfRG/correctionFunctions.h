@@ -92,17 +92,21 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                       /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
 #else
     // TODO: implement REG 2 for Matsubara formalism
-    if (eps_p == 0. and w == 0.)
+#ifdef PARTICLE_HOLE_SYMM
+    if ( w == 0.)
         return + 1. / (vmax + Delta)
                - 1. / (vmin - Delta);
     else
-#ifdef PARTICLE_HOLE_SYMM
         return 1. / w
                * log(
                   ((- vmin + w/2. + Delta) * (vmax + w/2. + Delta))
                 / ((- vmin - w/2. + Delta) * (vmax - w/2. + Delta))
                     );
 #else
+    if (eps_p == 0. and w == 0.)
+        return + 1. / (vmax + Delta)
+               - 1. / (vmin - Delta);
+    else
         return 1. / (w + 2. * glb_i * eps_p)
                * log(
                   ((- vmin + w/2. + glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta))

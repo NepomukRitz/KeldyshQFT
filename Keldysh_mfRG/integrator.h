@@ -612,7 +612,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT);
 #elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
     Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    Q result;
+    Q result {};
     for (int i = 0; i < num_intervals; i++){
         result += adaptor.integrate(intervals[i][0], intervals[i][1]);
     }
