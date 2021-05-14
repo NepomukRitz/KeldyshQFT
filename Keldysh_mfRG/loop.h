@@ -314,6 +314,10 @@ void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>&
 
         }
         integratedR = -1./(2.*M_PI) * integrator<Q>(integrandR, intervals, num_intervals);
+
+        // add analytical results for the tails
+        integratedR += -1./(2.*M_PI)
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
         self.addself(0, iv, i_in, integratedR);
 #endif
     }

@@ -851,7 +851,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                                prefactor * (1. / (2. * M_PI * glb_i)) *
 #else
-                               prefactor * (1. / (-2. * M_PI)) *
+                               prefactor * (1. / (2. * M_PI)) *
 #endif
                                asymp_corrections_bubble(k1, vertex1, vertex2, G,
                                                         vmin, vmax, w, 0., 0., i0, i2, i_in, channel);
