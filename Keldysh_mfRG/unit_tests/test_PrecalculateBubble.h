@@ -233,21 +233,29 @@ void test_Bubble_in_Momentum_Space(){
     Propagator g (0, 'g');
     Propagator s (0, 's');
     vec<comp> prop (nFER * n_in);
+    vec<comp> single_scale (nFER * n_in);
     for (int iv = 0; iv < nFER; ++iv) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
             double v = g.selfenergy.frequencies.w[iv];
-            prop[iv * n_in + i_in] = g.valsmooth(0, v, i_in);
+            prop[iv * n_in + i_in]         = g.valsmooth(0, v, i_in);
+            single_scale[iv * n_in + i_in] = s.valsmooth(0, v, i_in);
         }
     }
+
     PrecalculateBubble<comp> Bubble (g, s, false, 'a');
-    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/bubble_in_mom_space.h5";
+    PrecalculateBubble<comp> DotBubble (g, s, true, 'a');
+    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/full_bubble_in_mom_space_Nq_"
+            + to_string(N_q) + ".h5";
     write_h5_rvecs(filename,
                    {"propagator_frequencies", "bubble_frequencies",
                     "RealValuesOfPropagator", "ImaginaryValuesOfPropagator",
-                    "RealValuesOfBubble", "ImaginaryValuesOfBubble"},
+                    "RealValuesOfSingleScale", "ImaginaryValuesOfSingleScale",
+                    "RealValuesOfBubble", "ImaginaryValuesOfBubble",
+                    "RealValuesOfDottedBubble", "ImaginaryValuesOfDottedBubble"},
                    {g.selfenergy.frequencies.w, Bubble.fermionic_grid.w,
-                    prop.real(), prop.imag(),
-                    Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag()});
+                    prop.real(), prop.imag(), single_scale.real(), single_scale.imag(),
+                    Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
+                    DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});
     };
 
 #endif //KELDYSH_MFRG_TESTING_TEST_PRECALCULATEBUBBLE_H

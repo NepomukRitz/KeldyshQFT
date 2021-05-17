@@ -177,9 +177,10 @@ class PrecalculateBubble{
 
     void compute_FermionicBubble();
     void perform_internal_sum(int iK, int iv1, int iv2);
-    int composite_index(int iK, int iv1, int iv2, int i_in);
 
 #ifdef HUBBARD_MODEL
+    const bool FFT_testing = false;
+
     vec<comp> first_propagator  = vec<comp> (N); // input for FFT
     vec<comp> second_propagator = vec<comp> (N); // input for FFT
     vec<comp> bubble_values = vec<comp> (N);     // output of FFT
@@ -205,6 +206,7 @@ public:
     }
     Q value(int iK, double w, double vpp, int i_in);
     Q value_on_FER_GRID(int iK, double v1, double v2, int i_in);
+    int composite_index(int iK, int iv1, int iv2, int i_in);
 };
 
 template <typename Q> Q PrecalculateBubble<Q>::value(int iK, double w, double vpp, int i_in) {
@@ -267,9 +269,11 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
     for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
         iK_tmp = iK;
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
+            if (FFT_testing && iv1 != 117){continue;}
             v1_tmp = fermionic_grid.w[iv1];
+            std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
-                std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << ", iv2 = " << iv2 << "\n";
+                if (FFT_testing && iv2 != 117){continue;}
                 v2_tmp = fermionic_grid.w[iv2];
 #ifdef HUBBARD_MODEL
                 perform_internal_sum_2D_Hubbard(iK, iv1, iv2);
@@ -313,9 +317,20 @@ template<typename Q>
 void PrecalculateBubble<Q>::compute_internal_bubble() {
     if (dot){
         set_propagators(g, s);
-        bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
+        vec<comp> first_term (N);
+        first_term = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
+        for (int i = 0; i < N; ++i) {
+            bubble_values[i] = first_term[i];
+        }
+        //bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
+
         set_propagators(s, g);
-        bubble_values += Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
+        vec<comp> second_term (N);
+        second_term = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
+        for (int i = 0; i < N; ++i) {
+            bubble_values[i] += second_term[i];
+        }
+        //bubble_values += Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
     }
     else{
         set_propagators(g, g);
@@ -340,6 +355,7 @@ void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator &g1, cons
     }
 }
 
+// TODO: Use this function to calculate the bubble also for the SIAM.
 template<typename Q>
 void
 PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator &g1, const Propagator &g2) {

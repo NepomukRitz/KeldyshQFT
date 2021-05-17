@@ -16,6 +16,8 @@
 #include "propagator.h"
 #include "parameters.h"
 
+#include "write_data2file.h"            // write vectors into hdf5 file (for testing purposes)
+
 
 int momentum_index(int n_x, int n_y);
 std::tuple<int, int> get_n_x_and_n_y(int n);
@@ -121,12 +123,21 @@ public:
 
 vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values, vec<comp> &second_g_values) {
     initialize_input_data(first_g_values);
+
     transform_propagator_to_real_space();
-    first_propagator_in_real_space = output_propagator_in_real_space; // Copy FFT result. TODO: Does this operation really COPY?
+    for (int i = 0; i < N_FFT; ++i) {
+        first_propagator_in_real_space[i][0] = output_propagator_in_real_space[i][0];
+        first_propagator_in_real_space[i][1] = output_propagator_in_real_space[i][1];
+    }
+    //first_propagator_in_real_space = output_propagator_in_real_space; // Copy FFT result. TODO: Does this operation really COPY?
 
     initialize_input_data(second_g_values);
     transform_propagator_to_real_space();
-    second_propagator_in_real_space = output_propagator_in_real_space;
+    for (int i = 0; i < N_FFT; ++i) {
+        second_propagator_in_real_space[i][0] = output_propagator_in_real_space[i][0];
+        second_propagator_in_real_space[i][1] = output_propagator_in_real_space[i][1];
+    }
+    // second_propagator_in_real_space = output_propagator_in_real_space;
 
     assert (&first_propagator_in_real_space != &second_propagator_in_real_space);
     // Just to make sure that the arrays really do not point to the same values. TODO: Cover this in unit-test?
@@ -141,6 +152,9 @@ vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(vec<comp> &first_g_values
 
 void Minimal_2D_FFT_Machine::initialize_input_data(const vec<comp> &g_values) {
     // TODO: Currently only the s-wave bubble out of two full propagators can be computed. Extend to differentiated bubbles!
+    // next declarations for testing purposes only
+    //vec<double> in_real (N_FFT);
+    //vec<double> in_imag (N_FFT);
     for (int x = 0; x < points_per_dimension; ++x) {
         for (int y = 0; y < points_per_dimension; ++y) {
             int n_x, n_y;
@@ -148,21 +162,55 @@ void Minimal_2D_FFT_Machine::initialize_input_data(const vec<comp> &g_values) {
             // This is where the actual values of the propagator have to be accessed! Include normalization factor here!
             input_propagator[x * points_per_dimension + y][0] = g_values[momentum_index(n_x, n_y)].real() / N_FFT; // Real part
             input_propagator[x * points_per_dimension + y][1] = g_values[momentum_index(n_x, n_y)].imag() / N_FFT; // Imaginary part
+
+            //in_real[x * points_per_dimension + y] = g_values[momentum_index(n_x, n_y)].real() / N_FFT; // Real part
+            //in_imag[x * points_per_dimension + y] = g_values[momentum_index(n_x, n_y)].imag() /N_FFT;
         }
     }
+    //string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_testing/FFT_input.h5";
+    //write_h5_rvecs(filename, {"in_real", "in_imag"}, {in_real, in_imag});
+    //std::exit(0);
 }
 
 void Minimal_2D_FFT_Machine::transform_propagator_to_real_space() {
     fftw_execute(propagator_to_real_space_plan);
     // Actual computation of FFT. Fourier-transformed propagator now in output_propagator_in_real_space.
+
+    //Testing:
+    /*vec<double> real_space_prop_real (N_FFT);
+    vec<double> real_space_prop_imag (N_FFT);
+    for (int x = 0; x < points_per_dimension; ++x) {
+        for (int y = 0; y < points_per_dimension; ++y) {
+            real_space_prop_real[x * points_per_dimension + y] = output_propagator_in_real_space[x * points_per_dimension + y][0];
+            real_space_prop_imag[x * points_per_dimension + y] = output_propagator_in_real_space[x * points_per_dimension + y][1];
+        }
+    }
+    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_testing/real_space_prop.h5";
+    write_h5_rvecs(filename, {"real", "imag"}, {real_space_prop_real, real_space_prop_imag});
+    std::exit(0);*/
 }
 
 void Minimal_2D_FFT_Machine::calculate_swave_bubble_in_real_space() {
     // Perform element-wise multiplication of the propagators in real space to obtain the s-wave bubble.
     for (int i = 0; i < N_FFT; ++i) {
-        input_bubble[i][0] = first_propagator_in_real_space[i][0] * second_propagator_in_real_space[i][0]; // Real part
-        input_bubble[i][1] = first_propagator_in_real_space[i][1] * second_propagator_in_real_space[i][1]; // Imaginary part
+        input_bubble[i][0] = first_propagator_in_real_space[i][0] * second_propagator_in_real_space[i][0]
+                           - first_propagator_in_real_space[i][1] * second_propagator_in_real_space[i][1]; // Real part
+        input_bubble[i][1] = first_propagator_in_real_space[i][0] * second_propagator_in_real_space[i][1]
+                           + first_propagator_in_real_space[i][1] * second_propagator_in_real_space[i][0]; // Imaginary part
     }
+
+    //Testing:
+    /*vec<double> real_space_bubble_real (N_FFT);
+    vec<double> real_space_bubble_imag (N_FFT);
+    for (int x = 0; x < points_per_dimension; ++x) {
+        for (int y = 0; y < points_per_dimension; ++y) {
+            real_space_bubble_real[x * points_per_dimension + y] = input_bubble[x * points_per_dimension + y][0];
+            real_space_bubble_imag[x * points_per_dimension + y] = input_bubble[x * points_per_dimension + y][1];
+        }
+    }
+    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_testing/real_space_bubble.h5";
+    write_h5_rvecs(filename, {"real", "imag"}, {real_space_bubble_real, real_space_bubble_imag});
+    std::exit(0);*/
 }
 
 void Minimal_2D_FFT_Machine::transform_bubble_to_momentum_space() {

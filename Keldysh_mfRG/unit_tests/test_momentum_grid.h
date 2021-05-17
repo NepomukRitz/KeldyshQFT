@@ -8,7 +8,7 @@
 #include "../momentum_grid.h"
 #include <cassert>
 
-void test_index_conversions() {
+void test_index_conversions(){
     for (int n_x = 0; n_x < N_q; ++n_x) {
         for (int n_y = 0; n_y < n_x+1; ++n_y) {
             int n = momentum_index(n_x, n_y);
