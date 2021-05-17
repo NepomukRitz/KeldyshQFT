@@ -286,6 +286,7 @@ auto Propagator::GM(double v, int i_in) const -> comp
     double k_x; double k_y;
     std::tie(k_x, k_y) = get_k_x_and_k_y(i_in); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
     return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) - selfenergy.valsmooth(0, v, 0)); // TODO: Internal structure in self-energy trivial, because not implemented yet!
+    // TODO: Implement a regulator.
 #else
     return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
 #endif
@@ -295,6 +296,7 @@ auto Propagator::SM(double v, int i_in) const -> comp
 {
     comp G = GM(v, i_in);
     return -0.5*glb_i*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
+    // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
 
 #endif
