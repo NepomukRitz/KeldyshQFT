@@ -23,7 +23,7 @@
  */
 template <typename Q>
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
-                                 Q Sigma_H, double Delta, double eta_1, double eta_2) -> Q {
+                                 Q Sigma_H, double Delta, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
 #ifdef KELDYSH_FORMALISM
@@ -37,28 +37,44 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
 #else
     // TODO: implement REG 2 for Matsubara formalism
 
-
+    if (diff)
+    {
 #ifdef PARTICLE_HOLE_SYMM
-    if (w == 0.)
-        return - 1. / (vmax + Delta)
-               + 1. / (vmin - Delta);
-    else
+        return 1. / 2. * (
+                  1. / (pow(-vmin + Delta, 2) - pow(w/2., 2))
+                + 1. / (pow( vmax + Delta, 2) - pow(w/2., 2))
+                );
+#else
+        return 1. / 2. * (
+                1. / (pow(-vmin - glb_i * eps_p + Delta, 2) - pow(w/2., 2))
+              + 1. / (pow( vmax + glb_i * eps_p + Delta, 2) - pow(w/2., 2))
+              );
+#endif
+    }
+    else{
+#ifdef PARTICLE_HOLE_SYMM
+
+        if (w == 0.)
+            return - 1. / (vmax + Delta)
+                   + 1. / (vmin - Delta);
+        else
+            return 1. / w
+                   * log(
+                    ((- vmin - w/2. + Delta) * (vmax - w/2.  + Delta))
+                    / ((- vmin + w/2.  + Delta) * (vmax + w/2.  + Delta))
+            );
+#else
+        if (w == 0.)
+        return - 1. / (vmax + glb_i * eps_p + Delta)
+               + 1. / (vmin + glb_i * eps_p - Delta);
+        else
         return 1. / w
                * log(
-                ((- vmin - w/2. + Delta) * (vmax - w/2.  + Delta))
-                / ((- vmin + w/2.  + Delta) * (vmax + w/2.  + Delta))
+                ((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. + glb_i * eps_p + Delta))
+                / ((- vmin + w/2. - glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta))
         );
-#else
-    if (w == 0.)
-    return - 1. / (vmax + glb_i * eps_p + Delta)
-           + 1. / (vmin + glb_i * eps_p - Delta);
-    else
-    return 1. / w
-           * log(
-            ((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. + glb_i * eps_p + Delta))
-            / ((- vmin + w/2. - glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta))
-    );
 #endif
+    }
 #endif
 #else
     return 0.;
@@ -79,7 +95,7 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
  */
 template <typename Q>
 auto correctionFunctionBubbleP (double w, double vmin, double vmax,
-                                Q Sigma_H, double Delta, double eta_1, double eta_2) -> Q {
+                                Q Sigma_H, double Delta, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
 #ifdef KELDYSH_FORMALISM
@@ -92,6 +108,21 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                       /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
 #else
     // TODO: implement REG 2 for Matsubara formalism
+    if (diff)
+    {
+#ifdef PARTICLE_HOLE_SYMM
+        return -1. / 2. * (
+                  1. / (pow(-vmin + Delta, 2) - pow(w/2., 2))
+                + 1. / (pow( vmax + Delta, 2) - pow(w/2., 2))
+                );
+#else
+        return 1. / 2. * (
+                1. / (pow(-vmin + Delta, 2) - pow(w/2. + glb_i * eps_p, 2))
+              + 1. / (pow( vmax + Delta, 2) - pow(w/2. + glb_i * eps_p, 2))
+              );
+#endif
+    }
+    else{
 #ifdef PARTICLE_HOLE_SYMM
     if ( w == 0.)
         return + 1. / (vmax + Delta)
@@ -113,6 +144,7 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                 / ((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. - glb_i * eps_p + Delta))
                     );
 #endif
+    }
 #endif
 #else
     return 0.;
@@ -122,11 +154,11 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
 /** Wrapper for the two functions above, distinguishing a/t channels from p channel. */
 template <typename Q>
 auto correctionFunctionBubble (double w, double vmin, double vmax,
-                               Q Sigma_H, double Delta, double eta_1, double eta_2, char channel) -> Q {
+                               Q Sigma_H, double Delta, double eta_1, double eta_2, char channel, bool diff) -> Q {
     if (channel == 'p')
-        return correctionFunctionBubbleP(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2);
+        return correctionFunctionBubbleP(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, diff);
     else
-        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2);
+        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, diff);
 }
 
 /**
@@ -163,7 +195,7 @@ auto asymp_corrections_bubble(K_class k,
                               const GeneralVertex<Q, symmetry_right>& vertex2,
                               const Propagator<Q>& G,
                               double vmin, double vmax,
-                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel) -> Q {
+                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel, bool diff) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
@@ -260,7 +292,7 @@ auto asymp_corrections_bubble(K_class k,
     }
 
     // compute the value of the (analytically integrated) bubble
-    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, channel);
+    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, channel, diff);
 
     // In the a and p channel, return result. In the t channel, add the other spin component.
     if (channel != 't')
