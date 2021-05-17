@@ -17,7 +17,8 @@
  * Function that checks causality of self-energy: Im(Sigma^R)<=0.
  */
 template <typename Q>
-void check_SE_causality(SelfEnergy<Q> selfEnergy) {
+void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
+#ifdef KELDYSH_FORMALISM
     print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
 
     vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
@@ -27,11 +28,7 @@ void check_SE_causality(SelfEnergy<Q> selfEnergy) {
     int cnt = 0;
     double sum = 0.;
     for (int i=0; i<Sigma_R.size(); ++i) {
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-        double val = Sigma_R[i];
-#else
         double val = Sigma_R[i].imag();
-#endif
         if (val > 0.) {
             cnt += 1;
             sum += val;
@@ -42,11 +39,37 @@ void check_SE_causality(SelfEnergy<Q> selfEnergy) {
         print(cnt, " values of Im(Sigma^R) are positive, with a sum of ", sum, true);
     } else
         print("Selfenergy is causal.", true);
+#else
+    print("Causality check of self-energy: Im[Sigma(w)]*w<=0.", true);
+
+    vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
+
+    // check if Im(Sigma^R) is positive for every data point
+    int cnt = 0;
+    double sum = 0.;
+    for (int i=0; i<nFER; ++i) {
+#ifdef PARTICLE_HOLE_SYMM
+        double val = Sigma[i] * sign(selfEnergy.frequencies.w[i]);
+#else
+        double val = Sigma[i].imag() * sign(selfEnergy.frequencies.w[i]);
+#endif
+        if (val  > 0.) {
+            //cout << "i: " << i << "\t for w = " << selfEnergy.frequencies.w[i] << "; \t Sigma[i] = " << Sigma[i] << "\n";
+            cnt += 1;
+            sum += val;
+        }
+    }
+    if (cnt > 0) {
+        print("Im[Selfenergy] is not negative for positive w (vice versa): ", true);
+        print(cnt, " values of Im(Sigma) have the wrong sign, with a sum of ", sum, true);
+    } else
+        print("Selfenergy has the right sign.", true);
+#endif
 }
 
 // wrapper for the function above, taking a State instead of a SelfEnergy
 template <typename Q>
-void check_SE_causality(State<Q> state) {
+void check_SE_causality(const State<Q>& state) {
     check_SE_causality(state.selfenergy);
 }
 
