@@ -368,9 +368,9 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
 #ifdef PARTICLE_HOLE_SYMM
     switch (type) {
         case 'g':   // full (non-differentiated) propagator
-            return  log((abs(vmin) + Delta) / (vmax + Delta));
+            return  -log((abs(vmin) + Delta) / (vmax + Delta));
         case 's':   // single-scale propagator
-            return 1. / 2. * (1. / (vmax + Delta) - 1. / (vmin - Delta));
+            return -1. / 2. * (-1. / (vmax + Delta) + 1. / (-vmin + Delta));
         default:;
     }
     return 0;
@@ -379,7 +379,7 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
         case 'g':   // full (non-differentiated) propagator
             return -glb_i * log((abs(vmin) - glb_i * eps_p + Delta) / (vmax + glb_i * eps_p + Delta));
         case 's':   // single-scale propagator
-            return -glb_i / 2. * (1. / (vmax + glb_i * eps_p + Delta) - 1. / (vmin + glb_i * eps_p - Delta));
+            return -glb_i / 2. * (-1. / (vmax + glb_i * eps_p + Delta) - 1. / (vmin + glb_i * eps_p - Delta));
         default:;
     }
     return 0;
