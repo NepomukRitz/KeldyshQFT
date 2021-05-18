@@ -31,6 +31,7 @@ public:
     void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
     void update_grid(double Lambda);  // Interpolate self-energy to updated grid
     auto norm(int p) -> double;
+    auto norm() -> double;
 
     // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
@@ -238,6 +239,11 @@ template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
         }
         return pow(result, 1./((double)p));
     }
+}
+
+/* standard norm: 2-norm */
+template <typename Q> auto SelfEnergy<Q>::norm() -> double {
+    return this->norm(2);
 }
 
 

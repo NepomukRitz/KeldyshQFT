@@ -499,8 +499,10 @@ public:
     }
 
     double norm(){
-        //TODO Implement a reasonable norm here
-        return 1.;
+        double result;
+        for (int i=0; i<this->size(); ++i) {
+            result += (*this)[i].sum_norm(2);
+        }
     }
 
     void set_frequency_grid(const GeneralVertex<Q, symmetry_type>& vertex) {
