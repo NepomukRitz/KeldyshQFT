@@ -373,6 +373,7 @@ void parquet_solver(const string filename, State<Q> state_in, const double Lambd
         print("relative difference selfenergy: ", relative_difference_selfenergy, true);
 
         state_in = state_out;  // use output as input for next iteration
+        ++iteration;
     }
 }
 
