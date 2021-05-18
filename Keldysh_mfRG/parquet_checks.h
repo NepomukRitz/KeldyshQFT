@@ -323,5 +323,57 @@ void parquet_checks(const string filename) {
     }
 }
 
+/**
+ * One iteration of the parquet solver: Compute both the Bethe-Salpeter and the Schwinger-Dyson equation for given input.
+ * @param state_out  : Lhs of the BSE and SDE.
+ * @param state_diff : Difference between vertex and selfenergy of input and output (should be zero at perfect parquet
+ *                       self-consistence)
+ * @param state_in   : Input to the rhs of the BSE and SDE
+ * @param Lambda     : Lambda value at which to compute the parquet equations
+ */
+template <typename Q>
+void parquet_iteration(State<Q>& state_out, State<Q>& state_diff, const State<Q>& state_in, const double Lambda) {
+    compute_BSE(state_out.vertex, state_diff.vertex, state_in, Lambda);
+    compute_SDE(state_out.selfenergy, state_diff.selfenergy, state_in, Lambda);
+}
+
+/**
+ * Iterate the parquet equations for a given input state until convergence.
+ * @param filename : File name for result
+ * @param state_in : Input state used as initial input to the parquet equations (e.g. SOPT)
+ * @param Lambda   : Lambda value at which to iterate the parquet equations
+ * @param accuracy : Desired relative accuracy used as convergence criterion for both vertex and selfenergy
+ *                     (default: 0.001)
+ * @param Nmax     : Maximal number of parquet iterations, used as a break condition in case convergence cannot be
+ *                     reached (default: 50)
+ */
+template <typename Q>
+void parquet_solver(const string filename, State<Q> state_in, const double Lambda,
+                    const double accuracy=0.001, const int Nmax=50) {
+    double relative_difference_vertex = 1.;
+    double relative_difference_selfenergy = 1.;
+
+    State<Q> state_out (Lambda);   // lhs of the parquet equations
+    State<Q> state_diff (Lambda);  // difference between input and output of the parquet equations
+
+    write_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
+
+    int iteration = 1;
+    // first check if converged, and also stop if maximal number of iterations is reached
+    while ((relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy) && iteration <= Nmax) {
+        print("iteration ", iteration, true);
+        parquet_iteration(state_out, state_diff, state_in, Lambda);  // compute lhs of parquet equations
+        add_hdf(filename, iteration, Nmax + 1, state_out, Lambdas);  // store result into file
+
+        // compute relative differences between input and output w.r.t. output
+        relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();
+        relative_difference_selfenergy = state_diff.selfenergy.norm() / state_out.selfenergy.norm();
+        print("relative difference vertex:     ", relative_difference_vertex, true);
+        print("relative difference selfenergy: ", relative_difference_selfenergy, true);
+
+        state_in = state_out;  // use output as input for next iteration
+    }
+}
 
 #endif //KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
