@@ -333,8 +333,9 @@ void parquet_checks(const string filename) {
  */
 template <typename Q>
 void parquet_iteration(State<Q>& state_out, State<Q>& state_diff, const State<Q>& state_in, const double Lambda) {
-    compute_BSE(state_out.vertex, state_diff.vertex, state_in, Lambda);
-    compute_SDE(state_out.selfenergy, state_diff.selfenergy, state_in, Lambda);
+    compute_BSE(state_out.vertex, state_diff.vertex, state_in, Lambda);          // compute the gamma_r's via the BSE
+    state_out.vertex[0].irred().initialize(-glb_U/2.);                           // add the irreducible vertex
+    compute_SDE(state_out.selfenergy, state_diff.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
 }
 
 /**
