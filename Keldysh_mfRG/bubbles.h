@@ -179,8 +179,6 @@ class PrecalculateBubble{
     void perform_internal_sum(int iK, int iv1, int iv2);
 
 #ifdef HUBBARD_MODEL
-    const bool FFT_testing = false;
-
     vec<comp> first_propagator  = vec<comp> (N); // input for FFT
     vec<comp> second_propagator = vec<comp> (N); // input for FFT
     vec<comp> bubble_values = vec<comp> (N);     // output of FFT
@@ -269,11 +267,9 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
     for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
         iK_tmp = iK;
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
-            if (FFT_testing && iv1 != 117){continue;}
             v1_tmp = fermionic_grid.w[iv1];
             std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
-                if (FFT_testing && iv2 != 117){continue;}
                 v2_tmp = fermionic_grid.w[iv2];
 #ifdef HUBBARD_MODEL
                 perform_internal_sum_2D_Hubbard(iK, iv1, iv2);
