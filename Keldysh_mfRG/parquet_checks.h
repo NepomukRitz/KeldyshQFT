@@ -20,8 +20,8 @@
  * @param Lambda      : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void check_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_BSE_R, Vertex<Q>& Gamma_diff,
-               const State<Q>& state, const double Lambda) {
+void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_BSE_R, Vertex<Q>& Gamma_diff,
+                 const State<Q>& state, const double Lambda) {
     Vertex<Q> Gamma = state.vertex;  // full vertex
     Vertex<Q> Ir = state.vertex;     // irreducible vertex
     Ir.set_Ir(true);            // (irreducible in the channel of the bubble in which it is evaluated)
@@ -49,11 +49,11 @@ void check_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_BS
  * @param Lambda     : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void check_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_diff,
-               const State<Q>& state, const double Lambda) {
+void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_diff,
+                 const State<Q>& state, const double Lambda) {
     Vertex<Q> Gamma_BSE_L (n_spin);
     Vertex<Q> Gamma_BSE_R (n_spin);
-    check_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, Gamma_diff, state, Lambda);
+    compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, Gamma_diff, state, Lambda);
 }
 
 /**
@@ -69,10 +69,10 @@ void check_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_diff,
  * @param Lambda   : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void check_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
-               SelfEnergy<Q>& Sigma_SDE_a_r, SelfEnergy<Q>& Sigma_SDE_a_l,
-               SelfEnergy<Q>& Sigma_SDE_p_r, SelfEnergy<Q>& Sigma_SDE_p_l,
-               const State<Q>& state, const double Lambda) {
+void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
+                 SelfEnergy<Q>& Sigma_SDE_a_r, SelfEnergy<Q>& Sigma_SDE_a_l,
+                 SelfEnergy<Q>& Sigma_SDE_p_r, SelfEnergy<Q>& Sigma_SDE_p_l,
+                 const State<Q>& state, const double Lambda) {
     Vertex<Q> Gamma_0 (n_spin);                  // bare vertex
     Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
     Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
@@ -128,17 +128,17 @@ void check_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
  * @param Lambda   : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void check_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
-               const State<Q>& state, const double Lambda) {
+void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
+                 const State<Q>& state, const double Lambda) {
     SelfEnergy<Q> Sigma_SDE_a_r;
     SelfEnergy<Q> Sigma_SDE_a_l;
     SelfEnergy<Q> Sigma_SDE_p_r;
     SelfEnergy<Q> Sigma_SDE_p_l;
 
-    check_SDE(Sigma_SDE, Sigma_diff,
-              Sigma_SDE_a_r, Sigma_SDE_a_l,
-              Sigma_SDE_p_r, Sigma_SDE_p_l,
-              state, Lambda);
+    compute_SDE(Sigma_SDE, Sigma_diff,
+                Sigma_SDE_a_r, Sigma_SDE_a_l,
+                Sigma_SDE_p_r, Sigma_SDE_p_l,
+                state, Lambda);
 }
 
  /**
@@ -245,12 +245,12 @@ void parquet_checks(const string filename) {
 
         // compute vertex from BSE
         Vertex<state_datatype> Gamma_BSE (n_spin), Gamma_diff (n_spin);
-        check_BSE(Gamma_BSE, Gamma_diff, state, Lambdas[i]);
+        compute_BSE(Gamma_BSE, Gamma_diff, state, Lambdas[i]);
         print("Computed BSE.", true);
 
         // compute self-energy from SDE
         SelfEnergy<state_datatype> Sigma_SDE (n_spin), Sigma_diff (n_spin);
-        check_SDE(Sigma_SDE, Sigma_diff, state, Lambdas[i]);
+        compute_SDE(Sigma_SDE, Sigma_diff, state, Lambdas[i]);
         print("Computed SDE.", true);
 
         // Hartree self-energy
