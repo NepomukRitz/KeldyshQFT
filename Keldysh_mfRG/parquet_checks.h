@@ -350,7 +350,7 @@ void parquet_iteration(State<Q>& state_out, State<Q>& state_diff, const State<Q>
  */
 template <typename Q>
 void parquet_solver(const string filename, State<Q> state_in, const double Lambda,
-                    const double accuracy=0.001, const int Nmax=50) {
+                    const double accuracy=1e-6, const int Nmax=50) {
     double relative_difference_vertex = 1.;
     double relative_difference_selfenergy = 1.;
 
