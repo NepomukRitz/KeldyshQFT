@@ -24,7 +24,6 @@ add_executable(Keldysh_mfRG
         bubbles.h
         correctionFunctions.h
         data_structures.h
-        diagrammatic_combinations.h
         flow.h
         fourier_trafo.h
         frequency_grid.h
@@ -33,6 +32,7 @@ add_executable(Keldysh_mfRG
         Integrator_NR/integrator_NR.h
         internal_symmetries.h
         Keldysh_symmetries.h
+        KramersKronig.h
         loop.h
         mpi_setup.h
         parameters.h
@@ -63,7 +63,6 @@ add_executable(Keldysh_mfRG_testing
         bethe-salpeter.h
         correctionFunctions.h
         data_structures.h
-        diagrammatic_combinations.h
         flow.h
         fourier_trafo.h
         frequency_grid.h
@@ -72,6 +71,7 @@ add_executable(Keldysh_mfRG_testing
         Integrator_NR/integrator_NR.h
         internal_symmetries.h
         Keldysh_symmetries.h
+        KramersKronig.h
         loop.h
         mpi_setup.h
         parameters.h
