@@ -435,9 +435,12 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
         inputRetarded.spin = 1;
         inputAdvanced.spin = 1;
         inputKeldysh.spin  = 1;
-        factorRetarded += vertex[0].tvertex().template valsmooth<k1>(inputRetarded, vertex[0].avertex());
-        factorAdvanced += vertex[0].tvertex().template valsmooth<k1>(inputAdvanced, vertex[0].avertex());
-        factorKeldysh  += vertex[0].tvertex().template valsmooth<k1>(inputKeldysh, vertex[0].avertex());
+        factorRetarded += vertex[0].irred().val(components[iK][0], i_in, 1) // Gamma_0
+                          + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        factorAdvanced += vertex[0].irred().val(components[iK][1], i_in, 1) // Gamma_0
+                          + vertex[0].tvertex().left_same_bare(inputAdvanced, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        factorKeldysh  += vertex[0].irred().val(components[iK][2], i_in, 1) // Gamma_0
+                          + vertex[0].tvertex().left_same_bare(inputKeldysh, vertex[0].avertex()); // K1t(0) + K2't(0,v)
     }
 
     // analytical integration of the propagator
