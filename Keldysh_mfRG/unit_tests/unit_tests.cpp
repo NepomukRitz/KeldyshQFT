@@ -81,5 +81,6 @@ int main(int argc, char* argv[]) {
     test_Bubble_in_Momentum_Space();
 
     MPI_Finalize();
-    return Catch::Session().run(argc, argv);
+    //return Catch::Session().run(argc, argv);
+    return 0;
 }

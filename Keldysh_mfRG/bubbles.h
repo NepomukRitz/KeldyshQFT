@@ -14,6 +14,7 @@
 #define KELDYSH_MFRG_BUBBLES_H
 
 #include <cmath>                        // for using the macro M_PI as pi
+#include <tuple>
 
 #include "vertex.h"                     // vertex class
 #include "selfenergy.h"                 // self-energy class
@@ -170,25 +171,20 @@ class PrecalculateBubble{
     int number_of_Keldysh_components = 1;
 #endif
 
-    // temporary indices to avoid passing them to every function while precomputing.
-    int iK_tmp;
-    double v1_tmp;
-    double v2_tmp;
-
     void compute_FermionicBubble();
     void perform_internal_sum(int iK, int iv1, int iv2);
 
 #ifdef HUBBARD_MODEL
-    vec<comp> first_propagator  = vec<comp> (N); // input for FFT
-    vec<comp> second_propagator = vec<comp> (N); // input for FFT
-    vec<comp> bubble_values = vec<comp> (N);     // output of FFT
-
-    Minimal_2D_FFT_Machine Swave_Bubble_Calculator;
-    void perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2);
-    void compute_internal_bubble();
-    void set_propagators(const Propagator& g1, const Propagator& g2);
-    void set_Matsubara_propagators(const Propagator& g1, const Propagator& g2);
-    void set_Keldysh_propagators(const Propagator& g1, const Propagator& g2);
+    void perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2,
+                                         Minimal_2D_FFT_Machine& Swave_Bubble_Calculator);
+    vec<comp> compute_internal_bubble(int iK, double v1, double v2,
+                                      Minimal_2D_FFT_Machine& Swave_Bubble_Calculator);
+    std::tuple<vec<comp>, vec<comp>> set_propagators(const Propagator& g1, const Propagator& g2,
+                                                     int iK, double v1, double v2);
+    std::tuple<vec<comp>, vec<comp>> set_Matsubara_propagators(const Propagator& g1, const Propagator& g2,
+                                                               double v1, double v2);
+    std::tuple<vec<comp>, vec<comp>> set_Keldysh_propagators(const Propagator& g1, const Propagator& g2,
+                                                             int iK, double v1, double v2);
 #endif
 
 public:
@@ -264,27 +260,32 @@ template <typename Q> Q PrecalculateBubble<Q>::value_on_FER_GRID(const int iK, c
 
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
-    for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
-        iK_tmp = iK;
-        for (int iv1 = 0; iv1 < nFER; ++iv1) {
-            v1_tmp = fermionic_grid.w[iv1];
-            std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";
-            for (int iv2 = 0; iv2 < nFER; ++iv2) {
-                v2_tmp = fermionic_grid.w[iv2];
 #ifdef HUBBARD_MODEL
-                perform_internal_sum_2D_Hubbard(iK, iv1, iv2);
+    vector<Minimal_2D_FFT_Machine> FFT_Machinery (nFER);
+#endif
+    for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
+        if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10)) {return;} // Catch trivial Keldysh indices to avoid unnecessary computations.
+        for (int iv1 = 0; iv1 < nFER; ++iv1) {
+            std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";
+//#pragma omp parallel for schedule(static, 8)
+            for (int iv2 = 0; iv2 < nFER; ++iv2) {
+#ifdef HUBBARD_MODEL
+                perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[iv2]);
 #else
                 perform_internal_sum(iK, iv1, iv2);
 #endif
             }
+
         }
     }
 };
 
 template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
+    double v1 = fermionic_grid.w[iv1];
+    double v2 = fermionic_grid.w[iv2];
     for (int i_in = 0; i_in < n_in; ++i_in) {
         FermionicBubble[composite_index(iK, iv1, iv2, i_in)] =
-                Helper_Bubble.value(iK_tmp, v1_tmp, v2_tmp, i_in);
+                Helper_Bubble.value(iK, v1, v2, i_in);
     }
 };
 
@@ -294,25 +295,28 @@ template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK, c
 
 #ifdef HUBBARD_MODEL
 template<typename Q>
-void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2) {
-    if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10)) {
-        for (int i_in = 0; i_in < n_in; ++i_in) {
-            FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = 0.;
-            return;
-        }
-    } // Catch trivial Keldysh indices to avoid unnecessary computations.
+void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2,
+                                                            Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
+    double v1 = fermionic_grid.w[iv1];
+    double v2 = fermionic_grid.w[iv2];
 
-    compute_internal_bubble();
+    vec<comp> values_of_bubble (N);
+    values_of_bubble = compute_internal_bubble(iK, v1, v2, Swave_Bubble_Calculator);
 
     for (int i_in = 0; i_in < n_in; ++i_in) {
-        FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = bubble_values[i_in];
+        FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = values_of_bubble[i_in];
     }
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::compute_internal_bubble() {
+vec<comp> PrecalculateBubble<Q>::compute_internal_bubble(int iK, double v1, double v2,
+                                                         Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
+    vec<comp> first_propagator (N); // input for FFT
+    vec<comp> second_propagator (N); // input for FFT
+    vec<comp> bubble_values (N);     // output of FFT
+
     if (dot){
-        set_propagators(g, s);
+        std::tie(first_propagator, second_propagator) = set_propagators(g, s, iK, v1, v2);
         vec<comp> first_term (N);
         first_term = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
         for (int i = 0; i < N; ++i) {
@@ -320,7 +324,7 @@ void PrecalculateBubble<Q>::compute_internal_bubble() {
         }
         //bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
 
-        set_propagators(s, g);
+        std::tie(first_propagator, second_propagator) = set_propagators(s, g, iK, v1, v2);
         vec<comp> second_term (N);
         second_term = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
         for (int i = 0; i < N; ++i) {
@@ -329,75 +333,92 @@ void PrecalculateBubble<Q>::compute_internal_bubble() {
         //bubble_values += Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
     }
     else{
-        set_propagators(g, g);
+        std::tie(first_propagator, second_propagator) = set_propagators(g, g, iK, v1, v2);
         bubble_values = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
     }
+
+    return bubble_values;
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::set_propagators(const Propagator &g1, const Propagator &g2) {
+std::tuple<vec<comp>, vec<comp>> PrecalculateBubble<Q>::set_propagators(const Propagator &g1, const Propagator &g2,
+                                                                        int iK, double v1, double v2) {
+    vec<comp> first_propagator (N);
+    vec<comp> second_propagator (N);
+    std::tuple<vec<comp>, vec<comp>> propagators = std::make_tuple(first_propagator, second_propagator);
 #ifdef KELDYSH_FORMALISM
-    set_Keldysh_propagators(g1, g2);
+    propagators = set_Keldysh_propagators(g1, g2, iK, v1, v2);
 #else
-    set_Matsubara_propagators(g1, g2);
+    propagators = set_Matsubara_propagators(g1, g2, v1, v2);
 #endif
+    return propagators;
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator &g1, const Propagator &g2) {
+std::tuple<vec<comp>, vec<comp>> PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator &g1, const Propagator &g2,
+                                                                                  double v1, double v2) {
+    vec<comp> first_propagator (N);
+    vec<comp> second_propagator (N);
+
     for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
-        first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
-        second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
+        first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
+        second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
     }
+
+    return std::make_tuple(first_propagator, second_propagator);
 }
 
 // TODO: Use this function to calculate the bubble also for the SIAM.
 template<typename Q>
-void
-PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator &g1, const Propagator &g2) {
+std::tuple<vec<comp>, vec<comp>>
+PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator &g1, const Propagator &g2,
+                                               int iK, double v1, double v2) {
+    vec<comp> first_propagator (N);
+    vec<comp> second_propagator (N);
     for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
-        switch (iK_tmp) {
+        switch (iK) {
             case 3: //AA
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1_tmp, i_in));
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2_tmp, i_in));
+                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
                 break;
             case 6: //AR
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1_tmp, i_in));
-                second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
+                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
                 break;
             case 7: //AK
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1_tmp, i_in));
-                second_propagator[i_in] = g2.valsmooth(1, v2_tmp, i_in);
+                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
                 break;
             case 9: //RA
-                first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2_tmp, i_in));
+                first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
+                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
                 break;
             case 11://KA
-                first_propagator[i_in]  = g1.valsmooth(1, v1_tmp, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2_tmp, i_in));
+                first_propagator[i_in]  = g1.valsmooth(1, v1, i_in);
+                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
                 break;
             case 12://RR
-                first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
-                second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
+                first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
+                second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
                 break;
             case 13://RK
-                first_propagator[i_in]  = g1.valsmooth(0, v1_tmp, i_in);
-                second_propagator[i_in] = g2.valsmooth(1, v2_tmp, i_in);
+                first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
+                second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
                 break;
             case 14://KR
-                first_propagator[i_in]  = g1.valsmooth(1, v1_tmp, i_in);
-                second_propagator[i_in] = g2.valsmooth(0, v2_tmp, i_in);
+                first_propagator[i_in]  = g1.valsmooth(1, v1, i_in);
+                second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
                 break;
             case 15://KK
-                first_propagator[i_in]  = g1.valsmooth(1, v1_tmp, i_in);
-                second_propagator[i_in] = g2.valsmooth(1, v2_tmp, i_in);
+                first_propagator[i_in]  = g1.valsmooth(1, v1, i_in);
+                second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
                 break;
             default:
                 first_propagator[i_in]  = 0.;
                 second_propagator[i_in] = 0.;
         }
     }
+    return std::make_tuple(first_propagator, second_propagator);
 }
 
 #endif // HUBBARD_MODEL
