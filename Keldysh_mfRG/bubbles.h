@@ -267,7 +267,7 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
         if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10)) {return;} // Catch trivial Keldysh indices to avoid unnecessary computations.
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
             std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";
-#pragma omp parallel for schedule(static, 8)
+#pragma omp parallel for schedule(guided)
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
 #ifdef HUBBARD_MODEL
                 perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[iv2]);

@@ -246,7 +246,7 @@ void test_Bubble_in_Momentum_Space(){
     PrecalculateBubble<comp> Bubble (g, s, false, 'a');
 
     double end_time = get_time();
-    double diff = 0.001 * (end_time - starting_time); // time given in seconds
+    double diff = (end_time - starting_time); // time given in seconds
     std::cout << "Time for undifferentiated Bubble = " << diff << " s.";
 
     /*PrecalculateBubble<comp> DotBubble (g, s, true, 'a');
