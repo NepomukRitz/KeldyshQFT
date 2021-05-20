@@ -247,8 +247,9 @@ const double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
 const double Lambda_fin = 0.0;
 const double Lambda_scale = 1./200.;             //Scale of the log substitution
 
-//Vector with the values of U for which we have NRG data to compare with (exclude zero!)
-vector<double> U_NRG {0.1, 0.2, 0.5, 1., 1.2, 1.5, 2., 3., 5., 10.};                                                    // NOLINT(cert-err58-cpp)
+// Vector with the values of U for which we have NRG data to compare with (exclude zero!)
+// Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
+vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
 
 
 // Vector with values of Lambda for the fRG flow
@@ -279,7 +280,7 @@ const double converged_tol = 1e-7;
 #define INTEGRATOR_TYPE 5
 
 //Integrator tolerance
-const double integrator_tol = 1e-4;
+const double integrator_tol = 1e-6;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
