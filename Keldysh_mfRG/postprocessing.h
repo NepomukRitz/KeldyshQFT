@@ -11,12 +11,12 @@
 template <typename Q>
 class Integrand_Phi_tilde {
 public:
-    const Propagator& G;
+    const Propagator<Q>& G;
     const Vertex<Q>& vertex;
     const double vp;
     const int i_in;
 
-    Integrand_Phi_tilde(const Propagator& G_in, const Vertex<Q>& vertex_in, const double vp_in, const int i_in_in)
+    Integrand_Phi_tilde(const Propagator<Q>& G_in, const Vertex<Q>& vertex_in, const double vp_in, const int i_in_in)
             : G(G_in), vertex(vertex_in), vp(vp_in), i_in(i_in_in) {}
 
     auto operator() (double v) const -> Q {
@@ -33,11 +33,11 @@ class Integrand_Ward_id_integrated {
 public:
     const FrequencyGrid v;
     const rvec& Phi;
-    const SelfEnergy<comp>& selfEnergy;
+    const SelfEnergy<state_datatype>& selfEnergy;
     const int iLambda;
     const int i_in;
 
-    Integrand_Ward_id_integrated(const FrequencyGrid& v_in, const rvec& Phi_in, const SelfEnergy<comp>& selfEnergy_in,
+    Integrand_Ward_id_integrated(const FrequencyGrid& v_in, const rvec& Phi_in, const SelfEnergy<state_datatype>& selfEnergy_in,
                                  const int iLambda_in, const int i_in_in)
             : v(v_in), Phi(Phi_in), selfEnergy(selfEnergy_in), iLambda(iLambda_in), i_in(i_in_in) {}
 
@@ -71,25 +71,25 @@ void compute_Phi_tilde(const string filename) {
     rvec Phi_integrated (Lambdas.size() * n_in);
 
     for (int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
-        State<comp> state = read_hdf(filename, iLambda, Lambdas.size());
+        State<state_datatype> state = read_hdf(filename, iLambda, Lambdas.size());
         state.selfenergy.asymp_val_R = glb_U / 2.;
 
         double vmin = state.selfenergy.frequencies.w_lower;
         double vmax = state.selfenergy.frequencies.w_upper;
 
-        Propagator G (Lambdas[iLambda], state.selfenergy, 'g');
+        Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
 
         for (int i_in=0; i_in<n_in; ++i_in) {
             for (int iv=0; iv<nFER; ++iv) {
                 double v = state.selfenergy.frequencies.w[iv];
                 vs[iLambda * nFER + iv] = v;
-                Integrand_Phi_tilde<comp> integrand (G, state.vertex, v, i_in);
+                Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);
                 Phi[iLambda * nFER * n_in + iv * n_in + i_in]
-                    = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * integrator(integrand, vmin, vmax).imag();
+                    = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * integrator<state_datatype>(integrand, vmin, vmax).imag();
             }
             Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
                                                                     iLambda, i_in);
-            Phi_integrated[iLambda * n_in + i_in] = integrator(integrandWardIdIntegrated, vmin, vmax).real();
+            Phi_integrated[iLambda * n_in + i_in] = integrator<state_datatype>(integrandWardIdIntegrated, vmin, vmax).real();
         }
     }
 
@@ -105,14 +105,18 @@ void compute_Phi_tilde(const string filename) {
 }
 
 class Integrand_sum_rule_K1tK {
-    Vertex<comp> vertex;
+    Vertex<state_datatype> vertex;
 public:
-    Integrand_sum_rule_K1tK(Vertex<comp>& vertex_in) : vertex(vertex_in) {}
+    Integrand_sum_rule_K1tK(Vertex<state_datatype>& vertex_in) : vertex(vertex_in) {}
 
-    auto operator() (double w) const -> comp {
-        comp result;
+    auto operator() (double w) const -> state_datatype {
+        state_datatype result;
         // Keldysh component (Keldysh index 3) in the t channel
+#ifdef KELDYSH_FORMALISM
         VertexInput input(3, w, 0., 0., 0, 0, 't');
+#else
+        VertexInput input(0, w, 0., 0., 0, 0, 't');
+#endif
 
         // K1_upup = K1_updown + K1_downup --> sum up the two spin components
         for (int ispin=0; ispin<2; ++ispin) {
@@ -126,22 +130,28 @@ public:
 };
 
 void sum_rule_K1tK(const string filename) {
+    print("Checking fullfilment of the sum rule for K1t");
     int nLambda = nODE + U_NRG.size() + 1;
 
     rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
     rvec sum_rule (nLambda);
 
     for (int iLambda=0; iLambda<nLambda; ++iLambda) {
-        State<comp> state = read_hdf(filename, iLambda, nLambda);           // read state
+        State<state_datatype> state = read_hdf(filename, iLambda, nLambda);           // read state
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
         double wmax = state.vertex[0].tvertex().frequencies.b_K1.w_upper;   // upper integration boundary
 
+#ifdef KELDYSH_FORMALISM
         sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator(integrand, 0, wmax) / (glb_U * glb_U)).real();
+#else
+        sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
+#endif
     }
 
     write_h5_rvecs(filename + "_sum_rule_K1tK", {"Lambdas", "sum_rule"}, {Lambdas, sum_rule});
 }
 
+#ifdef KELDYSH_FORMALISM
 /**
  * Check Kramers-Kronig relation for retarded self-energy and retarded component of K1r by computing the real part from
  * the imaginary part via Kramers-Kronig. The result can be compared to the real part obtained from the flow.
@@ -190,5 +200,6 @@ void check_Kramers_Kronig(const string filename) {
                         K1tR_im, K1tR_re, K1tR_re_KK});
     }
 }
+#endif
 
 #endif //KELDYSH_MFRG_TESTING_POSTPROCESSING_H
