@@ -277,7 +277,6 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
                 perform_internal_sum(iK, iv1, iv2);
 #endif
             }
-
         }
     }
 };
@@ -302,7 +301,7 @@ void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(int iK, int iv1, int
     double v1 = fermionic_grid.w[iv1];
     double v2 = fermionic_grid.w[iv2];
 
-    vec<comp> values_of_bubble (N);
+    vec<comp> values_of_bubble (glb_N_transfer);
     compute_internal_bubble(iK, v1, v2, Swave_Bubble_Calculator, values_of_bubble);
 
     for (int i_in = 0; i_in < n_in; ++i_in) {
@@ -314,8 +313,8 @@ template<typename Q>
 void PrecalculateBubble<Q>::compute_internal_bubble(int iK, double v1, double v2,
                                                     Minimal_2D_FFT_Machine& Swave_Bubble_Calculator,
                                                     vec<comp>& values_of_bubble) {
-    vec<comp> first_propagator (N); // input for FFT
-    vec<comp> second_propagator (N); // input for FFT
+    vec<comp> first_propagator (glb_N_transfer); // input for FFT
+    vec<comp> second_propagator (glb_N_transfer); // input for FFT
 
     if (dot){
         set_propagators(g, s, iK, v1, v2, first_propagator, second_propagator);
@@ -347,7 +346,7 @@ template<typename Q>
 void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator &g1, const Propagator &g2,
                                                       double v1, double v2,
                                                       vec<comp>& first_propagator, vec<comp>& second_propagator) {
-    for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
+    for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
         first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
         second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
     }
@@ -359,7 +358,7 @@ void
 PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator &g1, const Propagator &g2,
                                                int iK, double v1, double v2,
                                                vec<comp>& first_propagator, vec<comp>& second_propagator) {
-    for (int i_in = 0; i_in < N; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
+    for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > N!
         switch (iK) {
             case 3: //AA
                 first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));

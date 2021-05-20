@@ -255,7 +255,7 @@ void test_Bubble_in_Momentum_Space(){
     std::cout << "Time for undifferentiated Bubble = " << diff << " s." << "\n";
 
     string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_parrallelized_full_bubble_in_mom_space_Nq_"
-            + to_string(N_q) + ".h5";
+                      + to_string(glb_N_q) + ".h5";
     write_h5_rvecs(filename,
                    {"propagator_frequencies", "bubble_frequencies",
                     "RealValuesOfPropagator", "ImaginaryValuesOfPropagator",

@@ -27,7 +27,7 @@ int momentum_index(int n_x, int n_y){
     // TODO>: Cover assertions in unit test.
     assert (n_x >= 0);
     assert (n_y >= 0);
-    assert (n_x < N_q);
+    assert (n_x < glb_N_q);
     assert (n_y <= n_x);
     auto n_xd = (double) n_x;
     auto n_yd = (double) n_y;
@@ -59,8 +59,8 @@ std::tuple<double, double> get_k_x_and_k_y(int n){
     double k_x; double k_y;
 
     std::tie(n_x, n_y) = get_n_x_and_n_y(n);
-    k_x = M_PI * n_x / (N_q - 1);
-    k_y = M_PI * n_y / (N_q - 1);
+    k_x = M_PI * n_x / (glb_N_q - 1);
+    k_y = M_PI * n_y / (glb_N_q - 1);
 
     return std::make_tuple(k_x, k_y);
 }
@@ -73,12 +73,12 @@ std::tuple<int, int> reduce_index_to_one_eighth_of_BZ(int x, int y){
     // TODO: Cover assertions in unit test.
     assert (x >= 0);
     assert (y >= 0);
-    assert (x < 2 * (N_q - 1));
-    assert (y < 2 * (N_q - 1));
+    assert (x < 2 * (glb_N_q - 1));
+    assert (y < 2 * (glb_N_q - 1));
     int n_x = x;
     int n_y = y;
-    if (n_x > (N_q - 1)){n_x = 2 * (N_q - 1) - n_x;} // mirror along x-direction
-    if (n_y > (N_q - 1)){n_y = 2 * (N_q - 1) - n_y;} // mirror along y-direction
+    if (n_x > (glb_N_q - 1)){ n_x = 2 * (glb_N_q - 1) - n_x;} // mirror along x-direction
+    if (n_y > (glb_N_q - 1)){ n_y = 2 * (glb_N_q - 1) - n_y;} // mirror along y-direction
     if (n_y > n_x){ //mirror along diagonal (i.e. swap)
         int temp_n_x = n_x;
         n_x = n_y;
@@ -88,7 +88,7 @@ std::tuple<int, int> reduce_index_to_one_eighth_of_BZ(int x, int y){
 };
 
 class Minimal_2D_FFT_Machine {
-    int points_per_dimension = 2 * (N_q - 1); // N_q set globally
+    int points_per_dimension = 2 * (glb_N_q - 1); // glb_N_q set globally
     int N_FFT = points_per_dimension * points_per_dimension;
 
     fftw_complex *input_propagator, *output_propagator_in_real_space, *input_bubble, *output_bubble_in_momentum_space,
@@ -96,7 +96,7 @@ class Minimal_2D_FFT_Machine {
     fftw_plan propagator_to_real_space_plan;
     fftw_plan bubble_to_momentum_space_plan;
 
-    vec<comp> return_bubble_values = vec<comp> (N);
+    vec<comp> return_bubble_values = vec<comp> (glb_N_transfer);
 
     void allocate_memory();
     void create_plans();
@@ -175,7 +175,7 @@ void Minimal_2D_FFT_Machine::transform_bubble_to_momentum_space() {
 }
 
 void Minimal_2D_FFT_Machine::prepare_bubble_values_to_return() {
-    for (int n_x = 0; n_x < N_q; ++n_x) {
+    for (int n_x = 0; n_x < glb_N_q; ++n_x) {
         for (int n_y = 0; n_y < n_x+1; ++n_y) {
             return_bubble_values[momentum_index(n_x, n_y)] =
                     output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][0] + glb_i *
