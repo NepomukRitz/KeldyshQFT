@@ -264,21 +264,26 @@ template <typename Q> Q PrecalculateBubble<Q>::value_on_FER_GRID(const int iK, c
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
 #ifdef HUBBARD_MODEL
     vector<Minimal_2D_FFT_Machine> FFT_Machinery (nFER);
-#endif
-    for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
-        if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10)) {return;} // Catch trivial Keldysh indices to avoid unnecessary computations.
+    for (int iK = 0; iK < number_of_Keldysh_components; ++iK) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
+        if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) ||
+            (iK == 10)) { return; } // Catch trivial Keldysh indices to avoid unnecessary computations.
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
             std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";
 #pragma omp parallel for schedule(guided)
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
-#ifdef HUBBARD_MODEL
                 perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[iv2]);
-#else
-                perform_internal_sum(iK, iv1, iv2);
-#endif
             }
         }
     }
+#else
+    for (int iK = 0; iK < number_of_Keldysh_components; ++iK) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
+        for (int iv1 = 0; iv1 < nFER; ++iv1) {
+            for (int iv2 = 0; iv2 < nFER; ++iv2) {
+                perform_internal_sum(iK, iv1, iv2);
+            }
+        }
+    }
+#endif
 };
 
 template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
