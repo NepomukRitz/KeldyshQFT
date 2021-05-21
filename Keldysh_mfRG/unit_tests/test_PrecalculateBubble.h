@@ -232,7 +232,7 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
 void test_Bubble_in_Momentum_Space(){
     Propagator g (0, 'g');
     Propagator s (0, 's');
-    vec<comp> prop (nFER * n_in);
+    /*vec<comp> prop (nFER * n_in);
     vec<comp> single_scale (nFER * n_in);
     for (int iv = 0; iv < nFER; ++iv) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
@@ -240,13 +240,13 @@ void test_Bubble_in_Momentum_Space(){
             prop[iv * n_in + i_in]         = g.valsmooth(0, v, i_in);
             single_scale[iv * n_in + i_in] = s.valsmooth(0, v, i_in);
         }
-    }
+    }*/
 
     double starting_time = get_time();
-    PrecalculateBubble<comp> DotBubble (g, s, true, 'a');
+    //PrecalculateBubble<comp> DotBubble (g, s, true, 'a');
     double end_time = get_time();
     double diff = (end_time - starting_time); // time given in seconds
-    std::cout << "Time for differentiated Bubble = " << diff << " s." << "\n";
+    //std::cout << "Time for differentiated Bubble = " << diff << " s." << "\n";
 
     starting_time =  get_time();
     PrecalculateBubble<comp> Bubble (g, s, false, 'a');
@@ -254,7 +254,7 @@ void test_Bubble_in_Momentum_Space(){
     diff = (end_time - starting_time);
     std::cout << "Time for undifferentiated Bubble = " << diff << " s." << "\n";
 
-    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_parrallelized_full_bubble_in_mom_space_Nq_"
+    /*string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_parrallelized_full_bubble_in_mom_space_Nq_"
                       + to_string(glb_N_q) + ".h5";
     write_h5_rvecs(filename,
                    {"propagator_frequencies", "bubble_frequencies",
@@ -265,7 +265,7 @@ void test_Bubble_in_Momentum_Space(){
                    {g.selfenergy.frequencies.w, Bubble.fermionic_grid.w,
                     prop.real(), prop.imag(), single_scale.real(), single_scale.imag(),
                     Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
-                    DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});
+                    DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});*/
     };
 
 #endif //KELDYSH_MFRG_TESTING_TEST_PRECALCULATEBUBBLE_H
