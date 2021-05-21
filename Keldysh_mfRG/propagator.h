@@ -284,7 +284,7 @@ auto Propagator::GM(double v, int i_in) const -> comp
 {
 #ifdef HUBBARD_MODEL
     double k_x; double k_y;
-    std::tie(k_x, k_y) = get_k_x_and_k_y(i_in); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
     return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) - selfenergy.valsmooth(0, v, 0)); // TODO: Internal structure in self-energy trivial, because not implemented yet!
     // TODO: Implement a regulator.
 #else

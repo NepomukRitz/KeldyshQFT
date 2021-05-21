@@ -12,9 +12,8 @@ void test_index_conversions(){
     for (int n_x = 0; n_x < glb_N_q; ++n_x) {
         for (int n_y = 0; n_y < n_x+1; ++n_y) {
             int n = momentum_index(n_x, n_y);
-            std::tuple<int, int> recalculated_indices = get_n_x_and_n_y(n);
             int n_x_recalc, n_y_recalc;
-            std::tie (n_x_recalc, n_y_recalc) = recalculated_indices;
+            get_n_x_and_n_y(n, n_x_recalc, n_y_recalc);
             assert (n_x - n_x_recalc == 0);
             assert (n_y - n_y_recalc == 0);
         }

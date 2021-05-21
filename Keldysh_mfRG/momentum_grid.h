@@ -18,64 +18,56 @@
 #include "write_data2file.h"            // write vectors into hdf5 file (for testing purposes)
 
 
-int momentum_index(int n_x, int n_y);
-std::tuple<int, int> get_n_x_and_n_y(int n);
-std::tuple<int, int> reduce_index_to_one_eighth_of_BZ(int x, int y);
+int momentum_index(const int n_x, const int n_y);
+void get_n_x_and_n_y(const int n, int& n_x, int& n_y);
+void get_k_x_and_k_y(const int n, double& k_x, double& k_y);
+void reduce_index_to_one_eighth_of_BZ(const int x, const int y, int& n_x, int& n_y);
 
-int momentum_index(int n_x, int n_y){
+int momentum_index(const int n_x, const int n_y){
     // TODO>: Cover assertions in unit test.
     /*assert (n_x >= 0);
     assert (n_y >= 0);
     assert (n_x < glb_N_q);
     assert (n_y <= n_x);*/
-    auto n_xd = (double) n_x;
-    auto n_yd = (double) n_y;
     double n;
-    n = n_yd + n_xd * (n_xd + 1) / 2;
+    n = n_y + n_x * (n_x + 1) / 2.0;
     return (int) n;
 }
 
-std::tuple<int, int> get_n_x_and_n_y(int n) {
-    auto nd = (double) n;
+void get_n_x_and_n_y(const int n, int& n_x, int& n_y) {
+    const auto nd = (double) n;
     double n_xd;
     n_xd = (sqrt(1 + 8 * nd) - 1) / 2;
 
-    int n_x;
     n_x = (int) n_xd; // Always rounds down, i.e. this is a downstairs Gauss-bracket, as required.
 
-    int n_y;
     double n_yd;
     n_xd = (double) n_x;
     n_yd = nd - n_xd * (n_xd + 1) / 2;
     n_y = (int) std::round(n_yd); // n_yd should already be an very close to an integer.
                                   // Use round to obtain this integer and cast to int type.
-
-    return std::make_tuple(n_x, n_y);
 }
 
-std::tuple<double, double> get_k_x_and_k_y(int n){
+void get_k_x_and_k_y(const int n, double& k_x, double& k_y){
     int n_x; int n_y;
-    double k_x; double k_y;
+    get_n_x_and_n_y(n, n_x, n_y);
 
-    std::tie(n_x, n_y) = get_n_x_and_n_y(n);
     k_x = M_PI * n_x / (glb_N_q - 1);
     k_y = M_PI * n_y / (glb_N_q - 1);
-
-    return std::make_tuple(k_x, k_y);
 }
 
 /*
  * Given a pair of indices labelling any point in the square of the BZ,
  * what is the corresponding index in the part that is actually stored?
  */
-std::tuple<int, int> reduce_index_to_one_eighth_of_BZ(int x, int y){
+void reduce_index_to_one_eighth_of_BZ(const int x, const int y, int& n_x, int& n_y){
     // TODO: Cover assertions in unit test.
     /*assert (x >= 0);
     assert (y >= 0);
     assert (x < 2 * (glb_N_q - 1));
     assert (y < 2 * (glb_N_q - 1));*/
-    int n_x = x;
-    int n_y = y;
+    n_x = x;
+    n_y = y;
     if (n_x > (glb_N_q - 1)){ n_x = 2 * (glb_N_q - 1) - n_x;} // mirror along x-direction
     if (n_y > (glb_N_q - 1)){ n_y = 2 * (glb_N_q - 1) - n_y;} // mirror along y-direction
     if (n_y > n_x){ //mirror along diagonal (i.e. swap)
@@ -83,7 +75,6 @@ std::tuple<int, int> reduce_index_to_one_eighth_of_BZ(int x, int y){
         n_x = n_y;
         n_y = temp_n_x;
     }
-    return std::make_tuple(n_x, n_y);
 };
 
 class Minimal_2D_FFT_Machine {
@@ -121,8 +112,8 @@ public:
 vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(const vec<comp>& first_g_values,
                                                        const vec<comp>& second_g_values) {
     initialize_input_data(first_g_values);
-
     transform_propagator_to_real_space();
+
     for (int i = 0; i < N_FFT; ++i) {
         first_propagator_in_real_space[i][0] = output_propagator_in_real_space[i][0];
         first_propagator_in_real_space[i][1] = output_propagator_in_real_space[i][1];
@@ -130,6 +121,7 @@ vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(const vec<comp>& first_g_
 
     initialize_input_data(second_g_values);
     transform_propagator_to_real_space();
+
     for (int i = 0; i < N_FFT; ++i) {
         second_propagator_in_real_space[i][0] = output_propagator_in_real_space[i][0];
         second_propagator_in_real_space[i][1] = output_propagator_in_real_space[i][1];
@@ -146,10 +138,11 @@ void Minimal_2D_FFT_Machine::initialize_input_data(const vec<comp>& g_values) {
     for (int x = 0; x < points_per_dimension; ++x) {
         for (int y = 0; y < points_per_dimension; ++y) {
             int n_x, n_y;
-            std::tie(n_x, n_y) = reduce_index_to_one_eighth_of_BZ(x, y);
+            reduce_index_to_one_eighth_of_BZ(x, y, n_x, n_y);
+            const int mom_index = momentum_index(n_x, n_y);
             // This is where the actual values of the propagator have to be accessed! Include normalization factor here!
-            input_propagator[x * points_per_dimension + y][0] = g_values[momentum_index(n_x, n_y)].real() / N_FFT; // Real part
-            input_propagator[x * points_per_dimension + y][1] = g_values[momentum_index(n_x, n_y)].imag() / N_FFT; // Imaginary part
+            input_propagator[x * points_per_dimension + y][0] = g_values[mom_index].real() / N_FFT; // Real part
+            input_propagator[x * points_per_dimension + y][1] = g_values[mom_index].imag() / N_FFT; // Imaginary part
         }
     }
 }

@@ -263,18 +263,29 @@ template <typename Q> Q PrecalculateBubble<Q>::value_on_FER_GRID(const int iK, c
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
 #ifdef HUBBARD_MODEL
+    double starting_time = get_time();
     vector<Minimal_2D_FFT_Machine> FFT_Machinery (omp_get_max_threads());
+    double end_time = get_time();
+    double diff = (end_time - starting_time); // time given in seconds
+    std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
+
     for (int iK = 0; iK < number_of_Keldysh_components; ++iK) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
         if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) ||
             (iK == 10)) { return; } // Catch trivial Keldysh indices to avoid unnecessary computations.
-#pragma omp parallel for schedule(guided)
-        for (int iv1 = 0; iv1 < nFER; ++iv1) {
+#pragma omp parallel for schedule(dynamic)
+        for (int iv = 0; iv < nFER * nFER; ++iv) {
+            const int iv1 = iv / nFER; // integer division, always rounds down
+            const int iv2 = iv - iv1 * nFER;
+            if (iv2 == 0) {std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";}
+            perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[omp_get_thread_num()]);
+        }
+        /*for (int iv1 = 0; iv1 < nFER; ++iv1) {
             int thread_num = omp_get_thread_num();
             std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << " with thread " << thread_num << "\n";
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
                 perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[thread_num]);
             }
-        }
+        }*/
     }
 #else
     for (int iK = 0; iK < number_of_Keldysh_components; ++iK) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
@@ -310,9 +321,13 @@ void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const 
     vec<comp> values_of_bubble (glb_N_transfer);
     compute_internal_bubble(iK, v1, v2, Swave_Bubble_Calculator, values_of_bubble);
 
+    //double t1; double t2;
+    //t1 = get_time();
     for (int i_in = 0; i_in < n_in; ++i_in) {
         FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = values_of_bubble[i_in];
     }
+    //t2 = get_time();
+    //std::cout << "Time to write results = " << 1000 * (t2 - t1) << " ms\n";
 }
 
 template<typename Q>
@@ -330,8 +345,20 @@ void PrecalculateBubble<Q>::compute_internal_bubble(const int iK, const double v
         values_of_bubble += Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
     }
     else{
+        //double t1; double t2; double t_set; double t_calc;
+
+        //t1 = get_time();
         set_propagators(g, g, iK, v1, v2, first_propagator, second_propagator);
+        //t2 = get_time();
+        //t_set = 1000 * (t2 - t1); //in milliseconds
+
+        //t1 = get_time();
         values_of_bubble = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
+        //t2 = get_time();
+        //t_calc = 1000 * (t2 - t1);
+
+        //std::cout << "Time to set propagators = " << t_set << " ms\n";
+        //std::cout << "Time to do FFT calculation = " << t_calc << " ms\n";
     }
 }
 
