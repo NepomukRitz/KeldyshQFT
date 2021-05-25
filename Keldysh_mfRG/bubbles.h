@@ -160,7 +160,6 @@ class PrecalculateBubble{
     const Propagator& g;
     const Propagator& s;
     const bool dot;
-    char channel;
 
     Bubble Helper_Bubble;
 
@@ -172,6 +171,9 @@ class PrecalculateBubble{
 
     void compute_FermionicBubble();
     void perform_internal_sum(const int iK, const int iv1, const int iv2);
+
+    int get_iK_bubble(const int iK_actual);
+    int get_iK_actual(const int iK_bubble);
 
 #ifdef HUBBARD_MODEL
     void perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
@@ -192,30 +194,35 @@ class PrecalculateBubble{
 public:
     FrequencyGrid fermionic_grid;
     vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nFER*nFER*n_in); // 9 non-zero Keldysh components
-public:
+
     PrecalculateBubble(const Propagator& G_in, const Propagator& S_in,
                        const bool dot_in, const char channel_in)
-                       :g(G_in), s(S_in), dot(dot_in), channel(channel_in),
+                       :g(G_in), s(S_in), dot(dot_in),
                        Helper_Bubble(g, s, dot),
                        fermionic_grid('f', 1, g.Lambda){
         compute_FermionicBubble();
     }
-    Q value(int iK, double w, double vpp, int i_in);
-    Q value_on_FER_GRID(int iK, double v1, double v2, int i_in);
-    int composite_index(int iK, int iv1, int iv2, int i_in);
+    Q value(int iK, double w, double vpp, int i_in, char channel);
+    Q value_on_FER_GRID(int iK_bubble, double v1, double v2, int i_in);
+    int composite_index(int iK_bubble, int iv1, int iv2, int i_in);
 };
 
-template <typename Q> Q PrecalculateBubble<Q>::value(int iK, double w, double vpp, int i_in) {
+template <typename Q> Q PrecalculateBubble<Q>::value(int iK, double w, double vpp, int i_in, char channel) {
+#ifdef KELDYSH_FORMALISM
+    if ((iK == 0) || (iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10)) {
+        return 0;
+    } // Catch trivial Keldysh indices
+#endif
     Q Pival;
     switch (channel) {
         case 'a':
-            Pival = value_on_FER_GRID(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+            Pival = value_on_FER_GRID(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
             break;
         case 'p':
-            Pival = value_on_FER_GRID(iK, w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+            Pival = value_on_FER_GRID(get_iK_bubble(iK), w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
             break;
         case 't':
-            Pival = value_on_FER_GRID(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+            Pival = value_on_FER_GRID(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
             break;
         default:;
     }
@@ -223,7 +230,7 @@ template <typename Q> Q PrecalculateBubble<Q>::value(int iK, double w, double vp
 };
 
 // TODO: Use "Interpolate" from "interpolations.h" for this.
-template <typename Q> Q PrecalculateBubble<Q>::value_on_FER_GRID(const int iK, const double v1, const double v2, const int i_in){
+template <typename Q> Q PrecalculateBubble<Q>::value_on_FER_GRID(const int iK_bubble, const double v1, const double v2, const int i_in){
     if (    fabs(v1) + inter_tol < fermionic_grid.w_upper
             && fabs(v2) + inter_tol < fermionic_grid.w_upper) {
 
@@ -247,10 +254,10 @@ template <typename Q> Q PrecalculateBubble<Q>::value_on_FER_GRID(const int iK, c
 
         double xd = (v1 - x1) / (x2 - x1);
         double yd = (v2 - y1) / (y2 - y1);
-        auto f11 = FermionicBubble[composite_index(iK, index_f1, index_f2, i_in)];
-        auto f12 = FermionicBubble[composite_index(iK, index_f1, index_f2 + 1, i_in)];
-        auto f21 = FermionicBubble[composite_index(iK, index_f1 + 1, index_f2, i_in)];
-        auto f22 = FermionicBubble[composite_index(iK, index_f1 + 1, index_f2 + 1, i_in)];
+        auto f11 = FermionicBubble[composite_index(iK_bubble, index_f1, index_f2, i_in)];
+        auto f12 = FermionicBubble[composite_index(iK_bubble, index_f1, index_f2 + 1, i_in)];
+        auto f21 = FermionicBubble[composite_index(iK_bubble, index_f1 + 1, index_f2, i_in)];
+        auto f22 = FermionicBubble[composite_index(iK_bubble, index_f1 + 1, index_f2 + 1, i_in)];
 
         return (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22);
     }
@@ -269,9 +276,8 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
     double diff = (end_time - starting_time); // time given in seconds
     std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
 
-    for (int iK = 0; iK < number_of_Keldysh_components; ++iK) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
-        if ((iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) ||
-            (iK == 10)) { return; } // Catch trivial Keldysh indices to avoid unnecessary computations.
+    for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
+        int iK = get_iK_actual(iK_bubble);
 #pragma omp parallel for schedule(dynamic)
         for (int iv = 0; iv < nFER * nFER; ++iv) {
             const int iv1 = iv / nFER; // integer division, always rounds down
@@ -288,7 +294,8 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
         }*/
     }
 #else
-    for (int iK = 0; iK < number_of_Keldysh_components; ++iK) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
+    for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
+        int iK = get_iK_actual(iK_bubble);
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
                 perform_internal_sum(iK, iv1, iv2);
@@ -302,13 +309,57 @@ template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int
     double v1 = fermionic_grid.w[iv1];
     double v2 = fermionic_grid.w[iv2];
     for (int i_in = 0; i_in < n_in; ++i_in) {
-        FermionicBubble[composite_index(iK, iv1, iv2, i_in)] =
+        FermionicBubble[composite_index(get_iK_bubble(iK), iv1, iv2, i_in)] =
                 Helper_Bubble.value(iK, v1, v2, i_in);
     }
 };
 
-template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK, const int iv1, const int iv2, const int i_in){
-    return iK*nFER*nFER*n_in + iv1*nFER*n_in + iv2*n_in + i_in;
+template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK_bubble, const int iv1, const int iv2, const int i_in){
+    return iK_bubble*nFER*nFER*n_in + iv1*nFER*n_in + iv2*n_in + i_in;
+}
+
+/* Map the 16 Keldysh indices to the 9 non-trivial ones. */
+template<typename Q>
+int PrecalculateBubble<Q>::get_iK_bubble(const int iK_actual) {
+    int iK_bubble = 0;
+#ifdef KELDYSH_FORMALISM
+    switch (iK_actual) {
+        case 3: iK_bubble = 0; break;
+        case 6: iK_bubble = 1; break;
+        case 7: iK_bubble = 2; break;
+        case 9: iK_bubble = 3; break;
+        case 11: iK_bubble = 4; break;
+        case 12: iK_bubble = 5; break;
+        case 13: iK_bubble = 6; break;
+        case 14: iK_bubble = 7; break;
+        case 15: iK_bubble = 8; break;
+        default:
+            std::cout << "ERROR! Trivial Keldysh index not filtered out yet!!";
+    }
+#endif
+    return iK_bubble;
+}
+
+/* Map the 9 non-trivial Keldysh indices for the bubble to the 16 original ones. */
+template<typename Q>
+int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) {
+    int iK_actual = 0;
+#ifdef KELDYSH_FORMALISM
+    switch (iK_bubble) {
+        case 0: iK_actual = 3; break;
+        case 1: iK_actual = 6; break;
+        case 2: iK_actual = 7; break;
+        case 3: iK_actual = 9; break;
+        case 4: iK_actual = 11; break;
+        case 5: iK_actual = 12; break;
+        case 6: iK_actual = 13; break;
+        case 7: iK_actual = 14; break;
+        case 8: iK_actual = 15; break;
+        default:
+            std::cout << "ERROR! Number of nine non-trivial Keldysh-indices exceeded!";
+    }
+#endif
+    return iK_actual;
 }
 
 #ifdef HUBBARD_MODEL
@@ -324,7 +375,7 @@ void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const 
     //double t1; double t2;
     //t1 = get_time();
     for (int i_in = 0; i_in < n_in; ++i_in) {
-        FermionicBubble[composite_index(iK, iv1, iv2, i_in)] = values_of_bubble[i_in];
+        FermionicBubble[composite_index(get_iK_bubble(iK), iv1, iv2, i_in)] = values_of_bubble[i_in];
     }
     //t2 = get_time();
     //std::cout << "Time to write results = " << 1000 * (t2 - t1) << " ms\n";
