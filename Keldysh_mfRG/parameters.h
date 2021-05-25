@@ -2,7 +2,7 @@
 #define KELDYSH_MFRG_PARAMETERS_H
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-// #define KELDYSH_FORMALISM
+#define KELDYSH_FORMALISM
 
 // Determines whether particle-hole symmetry is assumed
 //#define PARTICLE_HOLE_SYMM
@@ -230,7 +230,7 @@ const int n_spin = 1;
 
 // Dimension of the space defining the internal structure
 #ifdef HUBBARD_MODEL
-int glb_N_q = 129; // Number of transfer momentum points in one dimension.
+int glb_N_q = 33; // Number of transfer momentum points in one dimension.
 
 auto N_qd = (double) glb_N_q;
 double N_q_full = N_qd * (N_qd + 1) / 2;

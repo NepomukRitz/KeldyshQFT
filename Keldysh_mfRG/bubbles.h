@@ -196,7 +196,7 @@ public:
     vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nFER*nFER*n_in); // 9 non-zero Keldysh components
 
     PrecalculateBubble(const Propagator& G_in, const Propagator& S_in,
-                       const bool dot_in, const char channel_in)
+                       const bool dot_in)
                        :g(G_in), s(S_in), dot(dot_in),
                        Helper_Bubble(g, s, dot),
                        fermionic_grid('f', 1, g.Lambda){

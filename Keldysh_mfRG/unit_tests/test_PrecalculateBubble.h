@@ -232,6 +232,50 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
 void test_Bubble_in_Momentum_Space(){
     Propagator g (0, 'g');
     Propagator s (0, 's');
+
+    double starting_time = get_time();
+    PrecalculateBubble<comp> DotBubble (g, s, true);
+    double end_time = get_time();
+    double diff = (end_time - starting_time); // time given in seconds
+    std::cout << "Time for differentiated Bubble = " << diff << " s." << "\n";
+
+    starting_time =  get_time();
+    PrecalculateBubble<comp> Bubble (g, s, false);
+    end_time = get_time();
+    diff = (end_time - starting_time);
+    std::cout << "Time for undifferentiated Bubble = " << diff << " s." << "\n";
+
+#ifdef KELDYSH_FORMALISM
+    vec<comp> g_R (nFER * n_in);
+    vec<comp> g_K (nFER * n_in);
+    vec<comp> s_R (nFER * n_in);
+    vec<comp> s_K (nFER * n_in);
+    for (int iv = 0; iv < nFER; ++iv) {
+        for (int i_in = 0; i_in < n_in; ++i_in) {
+            double v = g.selfenergy.frequencies.w[iv];
+            g_R[iv * n_in + i_in] = g.valsmooth(0, v, i_in);
+            g_K[iv * n_in + i_in] = g.valsmooth(1, v, i_in);
+            s_R[iv * n_in + i_in] = s.valsmooth(0, v, i_in);
+            s_K[iv * n_in + i_in] = s.valsmooth(1, v, i_in);
+        }
+    }
+
+    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/KELDYSH_bubble_in_mom_space_Nq_"
+                      + to_string(glb_N_q) + ".h5";
+    write_h5_rvecs(filename,
+                   {"propagator_frequencies", "bubble_frequencies",
+                    "RealValuesOfRetardedPropagator", "ImaginaryValuesOfRetardedPropagator",
+                    "RealValuesOfKeldyshPropagator", "ImaginaryValuesOfKeldyshPropagator",
+                    "RealValuesOfRetardedSingleScale", "ImaginaryValuesOfRetardedSingleScale",
+                    "RealValuesOfKeldyshSingleScale", "ImaginaryValuesOfKeldyshSingleScale",
+                    "RealValuesOfBubble", "ImaginaryValuesOfBubble",
+                    "RealValuesOfDottedBubble", "ImaginaryValuesOfDottedBubble"},
+                   {g.selfenergy.frequencies.w, Bubble.fermionic_grid.w,
+                    g_R.real(), g_R.imag(), g_K.real(), g_K.imag(),
+                    s_R.real(), s_R.imag(), s_K.real(), s_K.imag(),
+                    Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
+                    DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});
+#else
     vec<comp> prop (nFER * n_in);
     vec<comp> single_scale (nFER * n_in);
     for (int iv = 0; iv < nFER; ++iv) {
@@ -241,18 +285,6 @@ void test_Bubble_in_Momentum_Space(){
             single_scale[iv * n_in + i_in] = s.valsmooth(0, v, i_in);
         }
     }
-
-    double starting_time = get_time();
-    PrecalculateBubble<comp> DotBubble (g, s, true, 'a');
-    double end_time = get_time();
-    double diff = (end_time - starting_time); // time given in seconds
-    std::cout << "Time for differentiated Bubble = " << diff << " s." << "\n";
-
-    starting_time =  get_time();
-    PrecalculateBubble<comp> Bubble (g, s, false, 'a');
-    end_time = get_time();
-    diff = (end_time - starting_time);
-    std::cout << "Time for undifferentiated Bubble = " << diff << " s." << "\n";
 
     string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_parallelized_full_bubble_in_mom_space_Nq_"
                       + to_string(glb_N_q) + ".h5";
@@ -266,6 +298,7 @@ void test_Bubble_in_Momentum_Space(){
                     prop.real(), prop.imag(), single_scale.real(), single_scale.imag(),
                     Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
                     DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});
+#endif
     };
 
 #endif //KELDYSH_MFRG_TESTING_TEST_PRECALCULATEBUBBLE_H

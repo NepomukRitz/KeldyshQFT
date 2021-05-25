@@ -222,11 +222,27 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> comp
 #ifdef KELDYSH_FORMALISM
 auto Propagator::GR(double v, int i_in) const -> comp
 {
+#ifdef HUBBARD_MODEL
+    double k_x, k_y;
+    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - selfenergy.valsmooth(0, v, i_in));
+    // TODO: Implement a regulator.
+    // TODO: Currently only at half filling!
+#else
     return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
+#endif
 }
 auto Propagator::GA(double v, int i_in) const -> comp
 {
+#ifdef HUBBARD_MODEL
+    double k_x, k_y;
+    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - conj(selfenergy.valsmooth(0, v, i_in)));
+    // TODO: Implement a regulator.
+    // TODO: Currently only at half filling!
+#else
     return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
+#endif
 }
 auto Propagator::GK(double v, int i_in) const -> comp
 {
