@@ -74,7 +74,11 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
                  SelfEnergy<Q>& Sigma_SDE_p_r, SelfEnergy<Q>& Sigma_SDE_p_l,
                  const State<Q>& state, const double Lambda) {
     Vertex<Q> Gamma_0 (n_spin);                  // bare vertex
+#ifdef KELDYSH_FORMALISM
     Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
+#else
+    Gamma_0[0].initialize(-glb_U);         // initialize bare vertex
+#endif
     Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
 
     // compute self-energy via SDE using the a-bubble, with full vertex on the right
@@ -156,7 +160,7 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
 
     Vertex<Q> Gamma_0 (n_spin);                     // bare vertex
     Gamma_0[0].initialize(-glb_U / 2.);             // initialize bare vertex
-    Propagator G (Lambda, state.selfenergy, 'g');   // full propagator
+    Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
 
     // compute susceptibilities in all three channels
     for (char r : "apt") {
@@ -300,15 +304,15 @@ void parquet_checks(const string filename) {
 
 
         // post-processing susceptibilities:
-        Vertex<comp> chi (n_spin), chi_diff (n_spin);
+        Vertex<state_datatype> chi (n_spin), chi_diff (n_spin);
         chi_diff.set_frequency_grid(state.vertex);
 
         susceptibilities_postprocessing(chi, chi_diff, state, Lambdas[i]);
 
-        State<comp> state_chi;
+        State<state_datatype> state_chi;
         state_chi.vertex = chi;
 
-        State<comp> state_chi_diff;
+        State<state_datatype> state_chi_diff;
         state_chi_diff.vertex = chi_diff;
 
         if (i == 0) {
@@ -334,7 +338,11 @@ void parquet_checks(const string filename) {
 template <typename Q>
 void parquet_iteration(State<Q>& state_out, State<Q>& state_diff, const State<Q>& state_in, const double Lambda) {
     compute_BSE(state_out.vertex, state_diff.vertex, state_in, Lambda);          // compute the gamma_r's via the BSE
+#ifdef KELDYSH_FORMALISM
     state_out.vertex[0].irred().initialize(-glb_U/2.);                           // add the irreducible vertex
+#else
+    state_out.vertex[0].irred().initialize(-glb_U);                           // add the irreducible vertex
+#endif
     compute_SDE(state_out.selfenergy, state_diff.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
 }
 
