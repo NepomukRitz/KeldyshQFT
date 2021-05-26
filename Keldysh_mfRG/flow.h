@@ -10,6 +10,8 @@
 #include "state.h"              // state including vertex and self-energy
 #include "testFunctions.h"      // for initialization with SOPT at the beginning of the flow, using sopt_state // TODO: should this really be in testFunctions?
 #include "right_hand_sides.h"   // to compute right hand side of flow equation
+#include "parquet_checks.h"
+#include "postprocessing.h"
 
 /**
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
@@ -22,6 +24,8 @@ State<state_datatype> n_loop_flow(string outputFileName){
 
     sopt_state(state_ini, Lambda_ini);  // initialize the flow with SOPT at Lambda_ini (important!)
 
+    parquet_solver("../Data/parqueInit4_n1=" + to_string(nBOS) + "_n2=" + to_string(nBOS2) + "_n3=" + to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
     // compute the flow using RK4 solver
@@ -29,6 +33,8 @@ State<state_datatype> n_loop_flow(string outputFileName){
                    sq_substitution, sq_resubstitution,                                       // use substitution for Lambda steps
                    nODE,
                    outputFileName);                                                                // save state at each step during flow
+
+    //sum_rule_K1tK(outputFileName);    // Check fulfillment of the sum rule
 
     return state_fin;
 }
