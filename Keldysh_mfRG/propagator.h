@@ -225,8 +225,7 @@ auto Propagator::GR(double v, int i_in) const -> comp
 #ifdef HUBBARD_MODEL
     double k_x, k_y;
     get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - selfenergy.valsmooth(0, v, i_in));
-    // TODO: Implement a regulator.
+    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
     // TODO: Currently only at half filling!
 #else
     return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
@@ -237,8 +236,7 @@ auto Propagator::GA(double v, int i_in) const -> comp
 #ifdef HUBBARD_MODEL
     double k_x, k_y;
     get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - conj(selfenergy.valsmooth(0, v, i_in)));
-    // TODO: Implement a regulator.
+    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - glb_i * Lambda / 2. - conj(selfenergy.valsmooth(0, v, i_in)));
     // TODO: Currently only at half filling!
 #else
     return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
@@ -301,8 +299,7 @@ auto Propagator::GM(double v, int i_in) const -> comp
 #ifdef HUBBARD_MODEL
     double k_x; double k_y;
     get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) - selfenergy.valsmooth(0, v, i_in));
-    // TODO: Implement a regulator.
+    return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
     // TODO: Currently only at half filling!
 #else
     return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );

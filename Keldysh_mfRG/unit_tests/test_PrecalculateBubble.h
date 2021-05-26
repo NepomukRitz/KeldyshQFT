@@ -230,8 +230,8 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
 }
 
 void test_Bubble_in_Momentum_Space(){
-    Propagator g (0, 'g');
-    Propagator s (0, 's');
+    Propagator g (1e-10, 'g');
+    Propagator s (1e-10, 's');
 
     double starting_time = get_time();
     PrecalculateBubble<comp> DotBubble (g, s, true);
