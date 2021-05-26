@@ -8,6 +8,7 @@
 #include "propagator.h"
 #include "KramersKronig.h"   // perform check of Kramers-Kronig relation
 
+#ifdef KELDYSH_FORMALISM
 template <typename Q>
 class Integrand_Phi_tilde {
 public:
@@ -103,6 +104,8 @@ void compute_Phi_tilde(const string filename) {
                    {"v", "Phi", "Phi_integrated", "Lambdas"},
                    {vs, Phi, Phi_integrated, Lambdas});
 }
+#endif
+
 
 class Integrand_sum_rule_K1tK {
     Vertex<state_datatype> vertex;
@@ -144,7 +147,11 @@ void sum_rule_K1tK(const string filename) {
 #ifdef KELDYSH_FORMALISM
         sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator(integrand, 0, wmax) / (glb_U * glb_U)).real();
 #else
+#ifdef PARTICLE_HOLE_SYMM
+        sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
+#else
         sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
+#endif
 #endif
     }
 
