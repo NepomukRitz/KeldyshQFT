@@ -59,19 +59,16 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_diff,
 /**
  * Insert the self-energy of input "state" into the rhs of the (symmetrized) Schwinger-Dyson equation.
  * Compute the lhs and the difference to the input self-energy.
- * @param Sigma_SDE     : Self-energy computed as the lhs of the BSE
- * @param Sigma_diff    : Difference between input self-energy (state.selfenergy) and Sigma_SDE
- * @param Sigma_SDE_a_r : self-energy computed from an a bubble with full vertex on the right
- * @param Sigma_SDE_a_l : self-energy computed from an a bubble with full vertex on the left
- * @param Sigma_SDE_p_r : self-energy computed from a p bubble with full vertex on the right
- * @param Sigma_SDE_p_l : self-energy computed from a p bubble with full vertex on the left
- * @param state    : Input state for which to check the SDE
- * @param Lambda   : Flow parameter Lambda at which input state was computed
+ * @param Sigma_SDE   : Self-energy computed as the lhs of the BSE
+ * @param Sigma_diff  : Difference between input self-energy (state.selfenergy) and Sigma_SDE
+ * @param Sigma_SDE_a : self-energy computed from an a bubble (symmetrized w.r.t full vertex on the left/right)
+ * @param Sigma_SDE_p : self-energy computed from a p bubble (symmetrized w.r.t full vertex on the left/right)
+ * @param state       : Input state for which to check the SDE
+ * @param Lambda      : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
-                 SelfEnergy<Q>& Sigma_SDE_a_r, SelfEnergy<Q>& Sigma_SDE_a_l,
-                 SelfEnergy<Q>& Sigma_SDE_p_r, SelfEnergy<Q>& Sigma_SDE_p_l,
+                 SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
                  const State<Q>& state, const double Lambda) {
     Vertex<Q> Gamma_0 (n_spin);                  // bare vertex
 #ifdef KELDYSH_FORMALISM
@@ -81,44 +78,42 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
 #endif
     Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
 
-    // compute self-energy via SDE using the a-bubble, with full vertex on the right
+    // compute the a bubble with full vertex on the right
     Vertex<Q> bubble_a_r (n_spin);
     bubble_a_r.set_frequency_grid(state.vertex);
     bubble_function(bubble_a_r, Gamma_0, state.vertex, G, G, 'a', false);  // full vertex on the right
 
-    Sigma_SDE_a_r.set_frequency_grid(state.selfenergy);
-    Sigma_SDE_a_r.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
-    loop(Sigma_SDE_a_r, bubble_a_r, G, false);
-
-    // compute self-energy via SDE using the a-bubble, with full vertex on the left
+    // compute the a bubble with full vertex on the left
     Vertex<Q> bubble_a_l (n_spin);
     bubble_a_l.set_frequency_grid(state.vertex);
     bubble_function(bubble_a_l, state.vertex, Gamma_0, G, G, 'a', false);  // full vertex on the left
 
-    Sigma_SDE_a_l.set_frequency_grid(state.selfenergy);
-    Sigma_SDE_a_l.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
-    loop(Sigma_SDE_a_l, bubble_a_l, G, false);
+    Vertex<Q> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
 
-    // compute self-energy via SDE using the p-bubble, with full vertex on the right
+    // compute the self-energy via SDE using the a bubble
+    Sigma_SDE_a.set_frequency_grid(state.selfenergy);
+    Sigma_SDE_a.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
+    loop(Sigma_SDE_a, bubble_a, G, false);
+
+    // compute the p bubble with full vertex on the right
     Vertex<Q> bubble_p_r (n_spin);
     bubble_p_r.set_frequency_grid(state.vertex);
     bubble_function(bubble_p_r, Gamma_0, state.vertex, G, G, 'p', false);  // full vertex on the right
 
-    Sigma_SDE_p_r.set_frequency_grid(state.selfenergy);
-    Sigma_SDE_p_r.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
-    loop(Sigma_SDE_p_r, bubble_p_r, G, false);
-
-    // compute self-energy via SDE using the p-bubble, with full vertex on the left
+    // compute the p bubble with full vertex on the left
     Vertex<Q> bubble_p_l (n_spin);
     bubble_p_l.set_frequency_grid(state.vertex);
     bubble_function(bubble_p_l, state.vertex, Gamma_0, G, G, 'p', false);  // full vertex on the left
 
-    Sigma_SDE_p_l.set_frequency_grid(state.selfenergy);
-    Sigma_SDE_p_l.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
-    loop(Sigma_SDE_p_l, bubble_p_l, G, false);
+    Vertex<Q> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
 
-    // symmetrize the contributions computed via a-/p-bubble, with full vertex on the right/left
-    Sigma_SDE = (Sigma_SDE_a_r + Sigma_SDE_a_l + Sigma_SDE_p_r + Sigma_SDE_p_l) * 0.25;
+    // compute the self-energy via SDE using the p bubble
+    Sigma_SDE_p.set_frequency_grid(state.selfenergy);
+    Sigma_SDE_p.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
+    loop(Sigma_SDE_p, bubble_p, G, false);
+
+    // symmetrize the contributions computed via a/p bubble
+    Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
 
     // compute the difference between input and SDE
     Sigma_diff = state.selfenergy - Sigma_SDE;
@@ -134,14 +129,11 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
                  const State<Q>& state, const double Lambda) {
-    SelfEnergy<Q> Sigma_SDE_a_r;
-    SelfEnergy<Q> Sigma_SDE_a_l;
-    SelfEnergy<Q> Sigma_SDE_p_r;
-    SelfEnergy<Q> Sigma_SDE_p_l;
+    SelfEnergy<Q> Sigma_SDE_a;
+    SelfEnergy<Q> Sigma_SDE_p;
 
     compute_SDE(Sigma_SDE, Sigma_diff,
-                Sigma_SDE_a_r, Sigma_SDE_a_l,
-                Sigma_SDE_p_r, Sigma_SDE_p_l,
+                Sigma_SDE_a, Sigma_SDE_p,
                 state, Lambda);
 }
 
