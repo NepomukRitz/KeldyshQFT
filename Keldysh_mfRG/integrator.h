@@ -424,7 +424,7 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
     gsl_function F_real;
     F_real.function = &f_real<Integrand>;
     F_real.params = &integrand;
-    double result_real, error_real;
+    double result_real {}, error_real {};
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
@@ -437,15 +437,15 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
     gsl_set_error_handler(handler);
 
     //gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
-    gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
+    //gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
     double result_real_temp, error_real_temp;
-    gsl_integration_qagiu(&F_real, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_real, &result_real_temp, &error_real_temp);
-    result_real += result_real_temp;
-    error_real += error_real_temp;
+    //gsl_integration_qagiu(&F_real, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_real, &result_real_temp, &error_real_temp);
+    //result_real += result_real_temp;
+    //error_real += error_real_temp;
     for (int i = 0; i < num_intervals; i++){
         result_real_temp = 0.;
         error_real_temp = 0.;
-        gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 0, integrator_tol, Nmax, 1, W_real, &result_real_temp, &error_real_temp);
+        gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real, &result_real_temp, &error_real_temp);
         result_real += result_real_temp;
         error_real += error_real_temp;
     }
