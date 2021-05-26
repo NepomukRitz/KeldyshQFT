@@ -10,22 +10,20 @@
 #include "loop.h"           // compute loop function
 
 /**
- * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation.
- * Compute the lhs and the difference to the input vertex.
+ * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.
  * @param Gamma_BSE   : Vertex computed as the lhs of the BSE
  * @param Gamma_BSE_L : Vertex computed as the lhs of the BSE, with Ir on the left and full Gamma on the right
  * @param Gamma_BSE_R : Vertex computed as the lhs of the BSE, with Ir on the right and full Gamma on the left
- * @param Gamma_diff  : Difference between input vertex (state.vertex) and Gamma_BSE
- * @param state       : Input state for which to check the BSE
+ * @param state_in    : Input state for which to check the BSE
  * @param Lambda      : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_BSE_R, Vertex<Q>& Gamma_diff,
-                 const State<Q>& state, const double Lambda) {
-    Vertex<Q> Gamma = state.vertex;  // full vertex
-    Vertex<Q> Ir = state.vertex;     // irreducible vertex
+void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_BSE_R,
+                 const State<Q>& state_in, const double Lambda) {
+    Vertex<Q> Gamma = state_in.vertex;  // full vertex
+    Vertex<Q> Ir = state_in.vertex;     // irreducible vertex
     Ir.set_Ir(true);            // (irreducible in the channel of the bubble in which it is evaluated)
-    Propagator G (Lambda, state.selfenergy, 'g'); // full propagator
+    Propagator G (Lambda, state_in.selfenergy, 'g'); // full propagator
 
     // compute the BSE by inserting I_r on the left and the full Gamma on the right
     Gamma_BSE_L.set_frequency_grid(Gamma);
@@ -38,99 +36,85 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
         bubble_function(Gamma_BSE_R, Gamma, Ir, G, G, r, false);
 
     Gamma_BSE = (Gamma_BSE_L + Gamma_BSE_R) * 0.5; // symmetrize the BSE
-    Gamma_diff = Gamma - Gamma_BSE;                // compute the difference between input and BSE
 }
 
 /**
- * Wrapper for the above function, with only the symmetrized result Gamma_BSE and the difference Gamma_diff returned.
+ * Wrapper for the above function, with only the symmetrized result Gamma_BSE returned.
  * @param Gamma_BSE  : Vertex computed as the lhs of the BSE
- * @param Gamma_diff : Difference between input vertex (state.vertex) and Gamma_BSE
- * @param state      : Input state for which to check the BSE
+ * @param state_in   : Input state for which to check the BSE
  * @param Lambda     : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_diff,
-                 const State<Q>& state, const double Lambda) {
+void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double Lambda) {
     Vertex<Q> Gamma_BSE_L (n_spin);
     Vertex<Q> Gamma_BSE_R (n_spin);
-    compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, Gamma_diff, state, Lambda);
+    compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, state_in, Lambda);
 }
 
 /**
- * Insert the self-energy of input "state" into the rhs of the (symmetrized) Schwinger-Dyson equation.
- * Compute the lhs and the difference to the input self-energy.
+ * Insert the self-energy of input "state" into the rhs of the (symmetrized) Schwinger-Dyson equation and compute the lhs.
  * @param Sigma_SDE   : Self-energy computed as the lhs of the BSE
- * @param Sigma_diff  : Difference between input self-energy (state.selfenergy) and Sigma_SDE
  * @param Sigma_SDE_a : self-energy computed from an a bubble (symmetrized w.r.t full vertex on the left/right)
  * @param Sigma_SDE_p : self-energy computed from a p bubble (symmetrized w.r.t full vertex on the left/right)
- * @param state       : Input state for which to check the SDE
+ * @param state_in    : Input state for which to check the SDE
  * @param Lambda      : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
-                 SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
-                 const State<Q>& state, const double Lambda) {
+void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
+                 const State<Q>& state_in, const double Lambda) {
     Vertex<Q> Gamma_0 (n_spin);                  // bare vertex
     Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
-    Propagator G (Lambda, state.selfenergy, 'g');   // full propagator
+    Propagator G (Lambda, state_in.selfenergy, 'g');   // full propagator
 
     // compute the a bubble with full vertex on the right
     Vertex<Q> bubble_a_r (n_spin);
-    bubble_a_r.set_frequency_grid(state.vertex);
-    bubble_function(bubble_a_r, Gamma_0, state.vertex, G, G, 'a', false);  // full vertex on the right
+    bubble_a_r.set_frequency_grid(state_in.vertex);
+    bubble_function(bubble_a_r, Gamma_0, state_in.vertex, G, G, 'a', false);  // full vertex on the right
 
     // compute the a bubble with full vertex on the left
     Vertex<Q> bubble_a_l (n_spin);
-    bubble_a_l.set_frequency_grid(state.vertex);
-    bubble_function(bubble_a_l, state.vertex, Gamma_0, G, G, 'a', false);  // full vertex on the left
+    bubble_a_l.set_frequency_grid(state_in.vertex);
+    bubble_function(bubble_a_l, state_in.vertex, Gamma_0, G, G, 'a', false);  // full vertex on the left
 
     Vertex<Q> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
 
     // compute the self-energy via SDE using the a bubble
-    Sigma_SDE_a.set_frequency_grid(state.selfenergy);
+    Sigma_SDE_a.set_frequency_grid(state_in.selfenergy);
     Sigma_SDE_a.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
     loop(Sigma_SDE_a, bubble_a, G, false);
 
     // compute the p bubble with full vertex on the right
     Vertex<Q> bubble_p_r (n_spin);
-    bubble_p_r.set_frequency_grid(state.vertex);
-    bubble_function(bubble_p_r, Gamma_0, state.vertex, G, G, 'p', false);  // full vertex on the right
+    bubble_p_r.set_frequency_grid(state_in.vertex);
+    bubble_function(bubble_p_r, Gamma_0, state_in.vertex, G, G, 'p', false);  // full vertex on the right
 
     // compute the p bubble with full vertex on the left
     Vertex<Q> bubble_p_l (n_spin);
-    bubble_p_l.set_frequency_grid(state.vertex);
-    bubble_function(bubble_p_l, state.vertex, Gamma_0, G, G, 'p', false);  // full vertex on the left
+    bubble_p_l.set_frequency_grid(state_in.vertex);
+    bubble_function(bubble_p_l, state_in.vertex, Gamma_0, G, G, 'p', false);  // full vertex on the left
 
     Vertex<Q> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
 
     // compute the self-energy via SDE using the p bubble
-    Sigma_SDE_p.set_frequency_grid(state.selfenergy);
+    Sigma_SDE_p.set_frequency_grid(state_in.selfenergy);
     Sigma_SDE_p.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
     loop(Sigma_SDE_p, bubble_p, G, false);
 
     // symmetrize the contributions computed via a/p bubble
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
-
-    // compute the difference between input and SDE
-    Sigma_diff = state.selfenergy - Sigma_SDE;
 }
 
 /**
- * Wrapper for the above function, with only the total (symmetrized) result Sigma_SDE and the difference Sigma_diff returned.
- * @param Sigma_SDE   : Self-energy computed as the lhs of the BSE
- * @param Sigma_diff  : Difference between input self-energy (state.selfenergy) and Sigma_SDE
- * @param state    : Input state for which to check the SDE
- * @param Lambda   : Flow parameter Lambda at which input state was computed
+ * Wrapper for the above function, with only the total (symmetrized) result Sigma_SDE returned.
+ * @param Sigma_SDE : Self-energy computed as the lhs of the BSE
+ * @param state_in  : Input state for which to check the SDE
+ * @param Lambda    : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_diff,
-                 const State<Q>& state, const double Lambda) {
+void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
     SelfEnergy<Q> Sigma_SDE_a;
     SelfEnergy<Q> Sigma_SDE_p;
-
-    compute_SDE(Sigma_SDE, Sigma_diff,
-                Sigma_SDE_a, Sigma_SDE_p,
-                state, Lambda);
+    compute_SDE(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
 }
 
  /**
@@ -236,13 +220,15 @@ void parquet_checks(const string filename) {
         print("State read from file.", true);
 
         // compute vertex from BSE
-        Vertex<comp> Gamma_BSE (n_spin), Gamma_diff (n_spin);
-        compute_BSE(Gamma_BSE, Gamma_diff, state, Lambdas[i]);
+        Vertex<comp> Gamma_BSE (n_spin);
+        compute_BSE(Gamma_BSE, state, Lambdas[i]);       // compute the lhs of the BSE
+        Vertex<comp> Gamma_diff = state.vertex - Gamma_BSE;  // compute the difference between input and lhs of BSE
         print("Computed BSE.", true);
 
         // compute self-energy from SDE
-        SelfEnergy<comp> Sigma_SDE (n_spin), Sigma_diff (n_spin);
-        compute_SDE(Sigma_SDE, Sigma_diff, state, Lambdas[i]);
+        SelfEnergy<comp> Sigma_SDE (n_spin);
+        compute_SDE(Sigma_SDE, state, Lambdas[i]);               // compute the lhs of the SDE
+        SelfEnergy<comp> Sigma_diff = state.selfenergy - Sigma_SDE;  // compute the difference between input and lhs of SDE
         print("Computed SDE.", true);
 
         // Hartree self-energy
@@ -318,16 +304,14 @@ void parquet_checks(const string filename) {
 /**
  * One iteration of the parquet solver: Compute both the Bethe-Salpeter and the Schwinger-Dyson equation for given input.
  * @param state_out  : Lhs of the BSE and SDE.
- * @param state_diff : Difference between vertex and selfenergy of input and output (should be zero at perfect parquet
- *                       self-consistence)
  * @param state_in   : Input to the rhs of the BSE and SDE
  * @param Lambda     : Lambda value at which to compute the parquet equations
  */
 template <typename Q>
-void parquet_iteration(State<Q>& state_out, State<Q>& state_diff, const State<Q>& state_in, const double Lambda) {
-    compute_BSE(state_out.vertex, state_diff.vertex, state_in, Lambda);          // compute the gamma_r's via the BSE
-    state_out.vertex[0].irred().initialize(-glb_U/2.);                           // add the irreducible vertex
-    compute_SDE(state_out.selfenergy, state_diff.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
+void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda) {
+    compute_BSE(state_out.vertex, state_in, Lambda);      // compute the gamma_r's via the BSE
+    state_out.vertex[0].irred().initialize(-glb_U/2.);    // add the irreducible vertex
+    compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
 }
 
 /**
@@ -356,7 +340,8 @@ void parquet_solver(const string filename, State<Q> state_in, const double Lambd
     // first check if converged, and also stop if maximal number of iterations is reached
     while ((relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy) && iteration <= Nmax) {
         print("iteration ", iteration, true);
-        parquet_iteration(state_out, state_diff, state_in, Lambda);  // compute lhs of parquet equations
+        parquet_iteration(state_out, state_in, Lambda);  // compute lhs of parquet equations
+        state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
         add_hdf(filename, iteration, Nmax + 1, state_out, Lambdas);  // store result into file
 
         // compute relative differences between input and output w.r.t. output
