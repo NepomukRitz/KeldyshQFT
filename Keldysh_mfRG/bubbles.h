@@ -679,7 +679,7 @@ public:
     }
 
     void save_integrand() {
-        int npoints = 1000;
+        int npoints = nBOS;
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);
@@ -687,9 +687,10 @@ public:
         rvec Pival_re (npoints);
         rvec Pival_im (npoints);
         for (int i=0; i<npoints; ++i) {
-            double wl = vertex1[0].avertex().frequencies.b_K1.w_lower/50.;
-            double wu = vertex1[0].avertex().frequencies.b_K1.w_upper/50.;
+            double wl = vertex1[0].avertex().frequencies.b_K1.w_lower*2.;
+            double wu = vertex1[0].avertex().frequencies.b_K1.w_upper*2.;
             double vpp = wl + i * (wu-wl)/(npoints-1);
+            vpp = vertex1[0].avertex().frequencies.b_K1.w[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -929,7 +930,7 @@ public:
     }
 
     void save_integrand() const {
-        int npoints = 1000;
+        int npoints = 100;
         rvec freqs (npoints);
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
@@ -1051,12 +1052,14 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     vmin = min(vmin, ffreqs_K3.w_lower);
     vmax = max(vmax, ffreqs_K3.w_upper);
 #endif
+    vmin *= 2;
+    vmax  *= 2;
 
 #if DIAG_CLASS >= 0
 //    double tK1 = get_time();
     /*K1 contributions*/
-    int n_mpi = 1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-    int n_omp = nK_K1 * nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+    int n_mpi = nK_K1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+    int n_omp = nw1_w * n_in;   // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
@@ -1095,7 +1098,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                 if (trafo == 0) {
 
                     // initialize the integrand object and perform frequency integration
-                    if (vertex1[0].Ir() && vertex2[0].Ir()) value = 0.; // bubbles with Ir do not contribute to K1
+                    if (vertex1[0].Ir() && vertex2[0].Ir()) value = 0.; // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
                     else {
 #ifdef KELDYSH_FORMALISM
                         for (auto i2:non_zero_Keldysh_bubble) {
@@ -1119,21 +1122,38 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                            value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
-                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                           //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                           //}
+                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+
+                           size_t num_intervals;
+                           vec<vec<double>> intervals;
                            if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                               value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                               intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                               num_intervals = 3;
                            }
-                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                           else {
+                               intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                               num_intervals = 2;
+
+                           }
+                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, intervals, num_intervals);
+
 #endif
 
 
-                           /* asymptotic corrections temporarily commented out --> TODO: fix
                            if (!diff) {
-                               value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                        asymp_corrections_K1(vertex1, vertex2, -vmin, vmax, w, i0, i2, i_in,
-                                                             channel); //Correction needed for the K1 class
+                               value +=
+#ifdef KELDYSH_FORMALISM
+                               prefactor * (1. / (2. * M_PI * glb_i)) *
+#else
+                               prefactor * (1. / (-2. * M_PI)) *
+#endif
+                               asymp_corrections_bubble(k1, vertex1, vertex2, G,
+                                                        vmin, vmax, w, 0., 0., i0, i2, i_in, channel);
                            }
-                           // */
 #ifdef KELDYSH_FORMALISM
                       }
 #endif
@@ -1153,15 +1173,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K1 += K1_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK1();
+            dgamma[0].avertex().enforce_freqsymmetriesK1(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K1 += K1_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK1();
+            dgamma[0].pvertex().enforce_freqsymmetriesK1(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K1 += K1_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK1();
+            dgamma[0].tvertex().enforce_freqsymmetriesK1(dgamma[0].tvertex());
             break;
         default: ;
     }
@@ -1172,8 +1192,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #if DIAG_CLASS >= 2
 //    double tK2 = get_time();
     /*K2 contributions*/
-    n_mpi = 1;
-    n_omp = nK_K2 * nw2_w * nw2_v * n_in;
+    n_mpi = nK_K2 * nw2_w;
+    n_omp = nw2_v * n_in;
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
@@ -1216,7 +1236,6 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 
                     // initialize the integrand object and perform frequency integration
                     if (vertex2[0].Ir()) value = 0.;  // right part of multi-loop contribution does not contribute to K2 class
-                        // TODO: attention: central part does contribute, but we treat it as right part of previous loop --> fix this!! --> ?
                     else {
 #ifdef KELDYSH_FORMALISM
                         for(auto i2:non_zero_Keldysh_bubble) {
@@ -1238,17 +1257,30 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                         value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
 #else
-                        value += prefactor * (1. / (2. * M_PI)) *
-                                 integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
-                        if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
-                            value += prefactor * (1. / (2. * M_PI)) *
-                                     integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
-                                                -w / 2., w / 2.);
+                        //value += prefactor * (1. / (2. * M_PI)) *
+                        //         integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
+                        //if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
+                        //    value += prefactor * (1. / (2. * M_PI)) *
+                        //             integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
+                        //                        -w / 2., w / 2.);
+                        //}
+                        //value += prefactor * (1. / (2. * M_PI)) *
+                        //         integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
+
+
+                        size_t num_intervals;
+                        vec<vec<double>> intervals;
+                        if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                            intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                            num_intervals = 3;
                         }
-                        value += prefactor * (1. / (2. * M_PI)) *
-                                 integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
+                        else {
+                            intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                            num_intervals = 2;
+
+                        }
+                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K2, intervals, num_intervals);
 #endif
-                        /* asymptotic corrections temporarily commented out --> TODO: fix
                         if (!diff) {
                             value +=
 #ifdef KELDYSH_FORMALISM
@@ -1256,10 +1288,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #else
                                 prefactor * (1. / (-2. * M_PI)) *
 #endif
-                                    asymp_corrections_K2(vertex1, vertex2, -vmin, vmax, w, v, i0, i2,
-                                                      i_in, channel); //Correction needed for the K2 class
+                                asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                                                         vmin, vmax, w, v, 0., i0, i2, i_in, channel);
                         }
-                        // */
 #ifdef KELDYSH_FORMALISM
                         }
 #endif
@@ -1279,15 +1310,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2 += K2_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK2();
+            dgamma[0].avertex().enforce_freqsymmetriesK2(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K2 += K2_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK2();
+            dgamma[0].pvertex().enforce_freqsymmetriesK2(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K2 += K2_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK2();
+            dgamma[0].tvertex().enforce_freqsymmetriesK2(dgamma[0].tvertex());
             break;
         default: ;
     }
@@ -1299,8 +1330,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #if DIAG_CLASS >= 3
     double tK3 = get_time();
     /*K3 contributions*/
-    n_mpi = 1;
-    n_omp = nK_K3 * nw3_w * nw3_v * nw3_v_p * n_in;
+    n_mpi = nK_K3 * nw3_w;
+    n_omp = nw3_v * nw3_v_p * n_in;
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> K3_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
@@ -1325,8 +1356,10 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 
                 int trafo = 1;
                 int sign_w = sign_index<double>(w);
-                int sign_f = sign_index<double>(v+vp);
-                int sign_fp = sign_index<double>(v-vp);
+                int sign_f = iv+ivp<nFER3? 0 : 1;   // this corresponds to "sign_index(v + vp)" assuming
+                                                    // that both v and vp use the same fermionic frequency grid
+                int sign_fp = iv<=ivp? 0 : 1;       // this corresponds to "sign_index(v - vp)"  assuming
+                                                    // that both v and vp use the same fermionic frequency grid
                 switch (channel) {
                     case 'a':
                         trafo = TransformaK3a[i0][sign_w * 4 + sign_f * 2 + sign_fp];
@@ -1347,37 +1380,53 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     // initialize the integrand object and perform frequency integration
                     Integrand_K3<Q, symmetry_left, symmetry_right>
                             integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
-//                    if (i_omp == 4189){
-//                        integrand_K3.save_integrand();
-//                    }
+                    /*if (i_omp == 4189){
+                        integrand_K3.save_integrand();
+                    }*/
 
 #ifdef KELDYSH_FORMALISM
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
                              integrator(integrand_K3, vmin, vmax, -w / 2., w / 2.);
 #else
-                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                    //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                    //}
+                    //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+
+                    size_t num_intervals;
+                    vec<vec<double>> intervals;
                     if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                        value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                        intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                        num_intervals = 3;
                     }
-                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+                    else {
+                        intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                        num_intervals = 2;
+
+                    }
+                    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, intervals, num_intervals);
 #endif
 
 
-                    /* asymptotic corrections temporarily commented out --> TODO: fix
                     if (!diff) {
 #ifdef KELDYSH_FORMALISM
-                        for(auto i2:non_zero_Keldysh_bubble) {
+                        for (auto i2:non_zero_Keldysh_bubble) {
 #else
                             int i2=0;
 #endif
-                            value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                                     asymp_corrections_K3(vertex1, vertex2, -vmin, vmax, w, v, vp, i0, i2,
-                                                          i_in, channel); //Correction needed for the K3 class
+                            value +=
+#ifdef KELDYSH_FORMALISM
+                            prefactor * (1. / (2. * M_PI * glb_i)) *
+#else
+                            prefactor * (1. / (-2. * M_PI)) *
+#endif
+                            asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                                                     vmin, vmax, w, v, vp, i0, i2, i_in, channel);
 #ifdef KELDYSH_FORMALISM
                         }
 #endif
                     }
-                    // */
                 }
                 K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
             }
@@ -1393,15 +1442,15 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K3 += K3_ordered_result;
-            dgamma[0].avertex().enforce_freqsymmetriesK3();
+            dgamma[0].avertex().enforce_freqsymmetriesK3(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K3 += K3_ordered_result;
-            dgamma[0].pvertex().enforce_freqsymmetriesK3();
+            dgamma[0].pvertex().enforce_freqsymmetriesK3(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K3 += K3_ordered_result;
-            dgamma[0].tvertex().enforce_freqsymmetriesK3();
+            dgamma[0].tvertex().enforce_freqsymmetriesK3(dgamma[0].tvertex());
             break;
         default: ;
     }

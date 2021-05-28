@@ -40,12 +40,23 @@ void check_SE_causality(SelfEnergy<Q> selfEnergy) {
         print("Selfenergy is causal.", true);
 }
 
+// wrapper for the function above, taking a State instead of a SelfEnergy
+template <typename Q>
+void check_SE_causality(State<Q> state) {
+    check_SE_causality(state.selfenergy);
+}
+
 /**
  * Function that checks FDTs for self-energy and K1 in all channels for given input state: Re(Sigma^K)=0, Re(K1r^K)=0.
+ * If verbose is true, maximum values of Re(Sigma^K) and Re(K1r^K) are always printed. If verbose is false (default),
+ * output is only printed if checks fail.
  */
 template <typename Q>
-void check_FDTs(State<Q>& state) {
-    print("Check of FDTs for self-energy and K1: Re(Sigma^K)=0, Re(K1r^K)=0.", true);
+void check_FDTs(const State<Q>& state, bool verbose=false) {
+    if (verbose)
+        print("Check of FDTs for self-energy and K1: Re(Sigma^K)=0, Re(K1r^K)=0.", true);
+
+    const double EPS = std::numeric_limits<double>::epsilon(); // double precision used as error estimate
 
     /** 1st check: real part of Keldysh component of the selfenergy has to be zero */
 
@@ -53,7 +64,16 @@ void check_FDTs(State<Q>& state) {
     vec<Q> Sigma_K (&Sigma[Sigma.size()/2], &Sigma[Sigma.size()]);  // take second half of self-energy (Keldysh comp.)
     double max_Sigma_K = Sigma_K.real().max_norm();                 // take max. value of Re(Sigma^K)
 
-    print("Maximal value of Re(Sigma^K): ", max_Sigma_K, true);
+    if (verbose) {
+        print("Maximal value of Re(Sigma^K): ", max_Sigma_K, false);
+        if (max_Sigma_K < 10 * EPS) print_add("  --> Check passed.", true);
+        else print_add("  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
+    }
+    else {
+        if (max_Sigma_K > 10 * EPS)
+            print("Maximal value of Re(Sigma^K): ", max_Sigma_K,
+                  "  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
+    }
 
     /** 2nd check: real part of Keldysh component of K1 in all channels has to be zero */
 
@@ -70,9 +90,30 @@ void check_FDTs(State<Q>& state) {
     double max_K1p_K = K1p_K.real().max_norm();
     double max_K1t_K = K1t_K.real().max_norm();
 
-    print("Maximal value of Re(K1a^K):   ", max_K1a_K, true);
-    print("Maximal value of Re(K1p^K):   ", max_K1p_K, true);
-    print("Maximal value of Re(K1t^K):   ", max_K1t_K, true);
+    if (verbose) {
+        print("Maximal value of Re(K1a^K):   ", max_K1a_K, false);
+        if (max_K1a_K < 10 * EPS) print_add("  --> Check passed.", true);
+        else print_add("  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
+
+        print("Maximal value of Re(K1p^K):   ", max_K1p_K, false);
+        if (max_K1p_K < 10 * EPS) print_add("  --> Check passed.", true);
+        else print_add("  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
+
+        print("Maximal value of Re(K1t^K):   ", max_K1t_K, false);
+        if (max_K1t_K < 10 * EPS) print_add("  --> Check passed.", true);
+        else print_add("  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
+    }
+    else {
+        if (max_K1a_K > 10 * EPS)
+            print("Maximal value of Re(K1a^K):   ", max_K1a_K,
+                  "  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
+        if (max_K1p_K > 10 * EPS)
+            print("Maximal value of Re(K1p^K):   ", max_K1p_K,
+                  "  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
+        if (max_K1t_K > 10 * EPS)
+            print("Maximal value of Re(K1t^K):   ", max_K1a_K,
+                  "  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
+    }
 }
 
 /**
@@ -396,6 +437,118 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
 
 }
 
+// compute differentiated K1a non-ladder diagram in PT4, used to compute flow of this specific diagram
+// (as a check for GeneralVertex class)
+auto rhs_PT4_K1a_nonladder_flow(const State<comp>& Psi, const double Lambda) -> State<comp> {
+    State<comp> bare (Lambda); // bare state
+    bare.initialize();         // initialize bare state
+
+    Propagator G (Lambda, bare.selfenergy, 'g'); // bare propagator
+    Propagator S (Lambda, bare.selfenergy, 's'); // bare single-scale propagator
+
+    // compute K1p in PT2
+    State<comp> PT2_K1p (Lambda);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+
+    // compute K2a in PT3
+    State<comp> PT3_K2a (Lambda);
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3 (PT2_K1t = 0)
+
+    // contribution to \dot{K1a} where leftmost bubble is differentiated
+    State<comp> PT4_K1a_dot_left (Lambda);
+    bubble_function(PT4_K1a_dot_left.vertex, bare.vertex, PT3_K2a.vertex, G, S, 'a', true);
+
+    // compute differentiated K2a in PT3
+    State<comp> PT3_K2a_dot_right (Lambda);
+    bubble_function(PT3_K2a_dot_right.vertex, PT2_K1p.vertex, bare.vertex, G, S, 'a', true);   // \dot{K2a} in PT3 (PT2_K1t = 0)
+
+    // contribution to \dot{K1a} where rightmost bubble is differentiated
+    State<comp> PT4_K1a_dot_right (Lambda);
+    bubble_function(PT4_K1a_dot_right.vertex, bare.vertex, PT3_K2a_dot_right.vertex, G, G, 'a', false);
+
+    // compute differentiated K1p in PT2
+    State<comp> PT2_K1p_dot (Lambda);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, S, 'p', true);
+
+    // compute K2a/K2ab with differentiated p bubble in PT3, as an ingredient of the contribution to \dot{K1a} in PT4
+    // with differentiated center bubble
+    State<comp> PT3_K2a_dot_half1 (Lambda);
+    State<comp> PT3_K2a_dot_half2 (Lambda);
+    bubble_function(PT3_K2a_dot_half1.vertex, PT2_K1p_dot.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT3_K2a_dot_half2.vertex, bare.vertex, PT2_K1p_dot.vertex, G, G, 'a', false);
+
+    // construct non-symmetric K2a with differentiated p bubble
+    GeneralVertex<comp, non_symmetric> PT3_K2a_dot (n_spin);
+    PT3_K2a_dot[0].half1() = PT3_K2a_dot_half1.vertex[0].half1();
+    PT3_K2a_dot[0].half2() = PT3_K2a_dot_half2.vertex[0].half1();
+
+    // construct non-symmetric K2ab with differentiated p bubble
+    GeneralVertex<comp, non_symmetric> PT3_K2ab_dot (n_spin);
+    PT3_K2ab_dot[0].half1() = PT3_K2a_dot_half2.vertex[0].half1();
+    PT3_K2ab_dot[0].half2() = PT3_K2a_dot_half1.vertex[0].half1();
+
+    // contribution to \dot{K1a} where center bubble is differentiated
+    State<comp> PT4_K1a_dot_center (Lambda);
+    State<comp> PT4_K1a_dot_center_left (Lambda);
+    State<comp> PT4_K1a_dot_center_right (Lambda);
+
+    bubble_function(PT4_K1a_dot_center_left.vertex, bare.vertex, PT3_K2a_dot, G, G, 'a', false);
+    bubble_function(PT4_K1a_dot_center_right.vertex, PT3_K2ab_dot, bare.vertex, G, G, 'a', false);
+    PT4_K1a_dot_center = (PT4_K1a_dot_center_left + PT4_K1a_dot_center_right) * 0.5;
+
+    // return sum of contributions with left, center, and right differentiated bubble
+    return PT4_K1a_dot_left + PT4_K1a_dot_center + PT4_K1a_dot_right;
+}
+
+// compute K1a non-ladder diagram in PT4 (to compare it to its flow)
+auto compute_PT4_K1a_nonladder(const double Lambda) -> State<comp> {
+    State<comp> bare (Lambda); // bare state
+    bare.initialize();         // initialize bare state
+
+    Propagator G (Lambda, bare.selfenergy, 'g'); // bare propagator
+
+    // K1p in PT2
+    State<comp> PT2_K1p (Lambda);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+
+    // K2a in PT3
+    State<comp> PT3_K2a (Lambda);
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);
+
+    // K1a nonladder in PT4
+    State<comp> PT4_K1a_nonladder (Lambda);
+    bubble_function(PT4_K1a_nonladder.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
+
+    return PT4_K1a_nonladder;
+}
+
+// compute K1a non-ladder diagram in PT4 directly and via its flow, as a test for GeneralVertex class
+void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, const string filename) {
+
+    // number of Lambda layers in hdf5 file
+    int Lambda_size = nODE + U_NRG.size() + 1;
+
+    // compute PT4 K1a non-ladder at initial Lambda
+    State<comp> state_ini = compute_PT4_K1a_nonladder(Lambda_i);
+    // save result to 0-th layer in hdf5 file (for both flow and direct computation)
+    write_hdf(filename, 0, Lambda_size, state_ini);
+    write_hdf(filename + "_dir", 0, Lambda_size, state_ini);
+
+    // generate Lambda grid
+    rvec Lambdas = construct_flow_grid(Lambda_f, Lambda_i, sq_substitution, sq_resubstitution, nODE);
+
+    for (int i=1; i<Lambdas.size(); ++i) {
+        // compute direct result of PT4 K1a non-ladder at each Lambda step
+        State<comp> state_dir = compute_PT4_K1a_nonladder(Lambdas[i]);
+        // save result to last layer in hdf5 file
+        add_hdf(filename + "_dir", i, Lambda_size, state_dir, Lambdas);
+    }
+
+    // compute flow of PT4 K1a non-ladder from initial to final Lambda
+    State<comp> state_fin (Lambda_f);
+    ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_PT4_K1a_nonladder_flow,
+                   sq_substitution, sq_resubstitution, nODE, filename);
+}
 
 
 /**
@@ -903,32 +1056,49 @@ void test_PT4(double Lambda, bool write_flag = false) {
     VertexInput input_p (0, 0., 0., 0., 0, 0, 'p');
     VertexInput input_t (0, 0., 0., 0., 0, 0, 't');
 
+#ifdef KELDYSH_FORMALISM
     vec<int> iK2s = {1, 2, 4}; // Keldysh indices of fully retarded components of K2
+#else
+    vec<int> iK2s = {0}; // Keldysh indices of Matsubara component of K2
+#endif
 
     // labels to be printed to log
     string check_labels[] {"PT2: K1a + K1p: ", "PT2: K1t: ",
                            "PT3: K1a - exact: ", "PT3: K1p - exact: ", "PT3: K1t - exact: ",
                            "PT3: K2a[1] - exact: ", "PT3: K2p[1] - exact: ", "PT3: K2t[1] - exact: ",
                            "PT3: K2a[2] - exact: ", "PT3: K2p[2] - exact: ", "PT3: K2t[2] - exact: ",
-                           "PT3: K2a[4] - exact: ", "PT3: K2p[4] - exact: ", "PT3: K2t[4] - exact: ",
+                           "PT3: K2a[4] - exact: ", "PT3: K2p[4] - exact: ", "PT3: K2t[4] - exact: "
+                            ,
                            "PT4: (K2a[1] <- K1p) + (K2p[1] <- K1a): ",
+#ifdef KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K1p) + (K2p[2] <- K1a): ",
                            "PT4: (K2a[4] <- K1p) + (K2p[4] <- K1a): ",
+#endif
                            "PT4: (K2a[1] <- K1t) + (K2p[1] <- K1t): ",
+#ifdef KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K1t) + (K2p[2] <- K1t): ",
                            "PT4: (K2a[4] <- K1t) + (K2p[4] <- K1t): ",
+#endif
                            "PT4: (K2a[1] <- K2a) + (K2p[1] <- K2p): ",
+#ifdef KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2a) + (K2p[2] <- K2p): ",
                            "PT4: (K2a[4] <- K2a) + (K2p[4] <- K2p): ",
+#endif
                            "PT4: (K2a[1] <- K2p) + (K2p[1] <- K2a): ",
+#ifdef KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2p) + (K2p[2] <- K2a): ",
                            "PT4: (K2a[4] <- K2p) + (K2p[4] <- K2a): ",
+#endif
                            "PT4: (K2a[1] <- K2t) + (K2p[1] <- K2t): ",
+#ifdef KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2t) + (K2p[2] <- K2t): ",
                            "PT4: (K2a[4] <- K2t) + (K2p[4] <- K2t): ",
+#endif
                            "PT4: (K2t[1] <- K2a) + (K2t[1] <- K2t): ",
+#ifdef KELDYSH_FORMALISM
                            "PT4: (K2t[2] <- K2a) + (K2t[2] <- K2t): ",
                            "PT4: (K2t[4] <- K2a) + (K2t[4] <- K2t): ",
+#endif
                            "PT4: K3a + K3p: ",
                            "PT4: K3t (aa) + K3t (ap) + K3t (pa): "
                            };
@@ -942,7 +1112,11 @@ void test_PT4(double Lambda, bool write_flag = false) {
     comp PT3_K1a_0 = PT3_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT3_K1a.vertex[0].tvertex());
     comp PT3_K1p_0 = PT3_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT3_K1p.vertex[0].pvertex());
     comp PT3_K1t_0 = PT3_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT3_K1t.vertex[0].avertex());
+#ifdef KELDYSH_FORMALISM
     comp PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+#else
+    comp PT3_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+#endif
 
     // K1 in PT4
     comp PT4_K1a_0_ladder = PT4_31_a_a1.vertex[0].avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex[0].tvertex());
@@ -971,7 +1145,11 @@ void test_PT4(double Lambda, bool write_flag = false) {
     vec<comp> PT4_K2t_0_t2 (3);
 
 #if DIAG_CLASS >= 2
+#ifdef KELDYSH_FORMALISM
     for (int iK2=0; iK2<2; ++iK2) {
+#else
+      int iK2 = 0;
+#endif
         input_a.iK = iK2s[iK2];
         input_p.iK = iK2s[iK2];
         input_t.iK = iK2s[iK2];
@@ -992,14 +1170,23 @@ void test_PT4(double Lambda, bool write_flag = false) {
         PT4_K2p_0_t2[iK2] = PT4_31_p_t2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t2.vertex[0].pvertex());
         PT4_K2t_0_a2[iK2] = PT4_31_t_a2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_a2.vertex[0].avertex());
         PT4_K2t_0_t2[iK2] = PT4_31_t_t2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_t2.vertex[0].avertex());
+#ifdef KELDYSH_FORMALISM
     }
 #endif
+#endif
+
+#ifdef KELDYSH_FORMALISM
     comp PT3_K2_exact = -(1./2.) * (2. - M_PI*M_PI/4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+#else
+    comp PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+#endif
 
     // K3 in PT4
+#ifdef KELDYSH_FORMALISM
     input_a.iK = 5;
     input_p.iK = 5;
     input_t.iK = 5;
+#endif
     comp PT4_K3a_0;
     comp PT4_K3p_0;
     comp PT4_K3t_0_aa;
@@ -1023,30 +1210,44 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             (PT3_K2a_0[0] - PT3_K2_exact)/PT3_K2_exact,
                             (PT3_K2p_0[0] - PT3_K2_exact)/PT3_K2_exact,
                             (PT3_K2t_0[0] - PT3_K2_exact)/PT3_K2_exact,
+#ifdef KELDYSH_FORMALISM
                             (PT3_K2a_0[1] - PT3_K2_exact)/PT3_K2_exact,
                             (PT3_K2p_0[1] - PT3_K2_exact)/PT3_K2_exact,
                             (PT3_K2t_0[1] - PT3_K2_exact)/PT3_K2_exact,
                             (PT3_K2a_0[2] - PT3_K2_exact)/PT3_K2_exact,
                             (PT3_K2p_0[2] - PT3_K2_exact)/PT3_K2_exact,
                             (PT3_K2t_0[2] - PT3_K2_exact)/PT3_K2_exact,
+#endif
                             (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(abs(PT4_K2a_0_p1[0]) + abs(PT4_K2p_0_a1[0])),
+#ifdef KELDYSH_FORMALISM
                             (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(abs(PT4_K2a_0_p1[1]) + abs(PT4_K2p_0_a1[1])),
                             (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(abs(PT4_K2a_0_p1[2]) + abs(PT4_K2p_0_a1[2])),
+#endif
                             (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(abs(PT4_K2a_0_t1[0]) + abs(PT4_K2p_0_t1[0])),
+#ifdef KELDYSH_FORMALISM
                             (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(abs(PT4_K2a_0_t1[1]) + abs(PT4_K2p_0_t1[1])),
                             (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(abs(PT4_K2a_0_t1[2]) + abs(PT4_K2p_0_t1[2])),
+#endif
                             (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(abs(PT4_K2a_0_a2[0]) + abs(PT4_K2p_0_p2[0])),
+#ifdef KELDYSH_FORMALISM
                             (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(abs(PT4_K2a_0_a2[1]) + abs(PT4_K2p_0_p2[1])),
                             (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(abs(PT4_K2a_0_a2[2]) + abs(PT4_K2p_0_p2[2])),
+#endif
                             (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(abs(PT4_K2a_0_p2[0]) + abs(PT4_K2p_0_a2[0])),
+#ifdef KELDYSH_FORMALISM
                             (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(abs(PT4_K2a_0_p2[1]) + abs(PT4_K2p_0_a2[1])),
                             (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(abs(PT4_K2a_0_p2[2]) + abs(PT4_K2p_0_a2[2])),
+#endif
                             (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(abs(PT4_K2a_0_t2[0]) + abs(PT4_K2p_0_t2[0])),
+#ifdef KELDYSH_FORMALISM
                             (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(abs(PT4_K2a_0_t2[1]) + abs(PT4_K2p_0_t2[1])),
                             (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(abs(PT4_K2a_0_t2[2]) + abs(PT4_K2p_0_t2[2])),
+#endif
                             (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(abs(PT4_K2t_0_a2[0]) + abs(PT4_K2t_0_t2[0])),
+#ifdef KELDYSH_FORMALISM
                             (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(abs(PT4_K2t_0_a2[1]) + abs(PT4_K2t_0_t2[1])),
                             (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(abs(PT4_K2t_0_a2[2]) + abs(PT4_K2t_0_t2[2])),
+#endif
                             (PT4_K3a_0 + PT4_K3p_0)/(abs(PT4_K3a_0) + abs(PT4_K3p_0)),
                             (PT4_K3t_0_aa + PT4_K3t_0_ap + PT4_K3t_0_pa)/(abs(PT4_K3t_0_aa) + abs(PT4_K3t_0_ap) + abs(PT4_K3t_0_pa))
                             };

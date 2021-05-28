@@ -6,6 +6,7 @@
 #include "util.h"            // text input/output
 #include "write_data2file.h" // writing data into text or hdf5 files
 #include "parameters.h"      // needed for the vector of grid values to add
+#include "testFunctions.h"   // perform FDT checks at each step of the flow
 
 void add_points_to_Lambda_grid(vector<double>& grid){
     for (auto U : U_NRG){
@@ -31,18 +32,45 @@ void ODE_solver_Euler(T& y_fin, const double x_fin, const T& y_ini, const double
     y_fin = y_run; // final y value
 }
 
+/** Perform one Runge-Kutta-4 step */
+template <typename T>
+void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const double x)) {
+    T y1 = rhs(y_run, x_run) * dx;
+    T y2 = rhs(y_run + y1*0.5, x_run + dx/2.) * dx;
+    T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
+    T y4 = rhs(y_run + y3, x_run + dx) * dx;
+    y_run += (y1 + y2*2. + y3*2. + y4) * (1./6.); // update y
+    x_run += dx; // update x
+}
+
+/** Perform Runge-Kutta-4 step and write result into output file in a specified Lambda layer, and print info to log */
+template <typename T>
+void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const double x),
+              rvec& x_vals, string filename, const int iteration) {
+    // print iteration number and Lambda to log file
+    print("i: ", iteration, true);
+    print("Lambda: ", x_run, true);
+    double t0 = get_time();
+
+    RK4_step(y_run, x_run, dx, rhs); // compute RK4 step
+
+    get_time(t0); // measure time for one iteration
+
+    if (filename != "") {
+        add_hdf(filename, iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
+    }
+
+    check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
+    check_FDTs(y_run); // check FDTs for Sigma and K1r at each step of the flow
+}
+
 template <typename T>
 void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini, T rhs (const T& y, const double x), const int N_ODE) {
     const double dx = (x_fin-x_ini)/((double)N_ODE); // explicit RK4, equidistant step width dx, N_ODE steps
     T y_run = y_ini; // initial y value
     double x_run = x_ini; // initial x value
     for (int i=0; i<N_ODE; ++i) {
-        T y1 = rhs(y_run, x_run) * dx;
-        T y2 = rhs(y_run + y1*0.5, x_run + dx/2.) * dx;
-        T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
-        T y4 = rhs(y_run + y3, x_run + dx) * dx;
-        y_run += (y1 + y2*2. + y3*2. + y4) * (1./6.); // update y
-        x_run += dx; // update x
+        RK4_step(y_run, x_run, dx, rhs); // perform RK4 step
     }
     y_fin = y_run; // final y value
 }
@@ -83,49 +111,67 @@ rvec construct_flow_grid(const double x_fin, const double x_ini,
     return x_vals;
 }
 
-// explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step
-template <typename T>
-void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
-                        T rhs (const T& y, const double x),
-                        double subst(double x), double resubst(double x),
-                        const int N_ODE, string filename) {
-    // construct non-linear flow grid via substitution
-    rvec x_vals = construct_flow_grid(x_fin, x_ini, subst, resubst, N_ODE);
-
-    vec<double> x_diffs (x_vals.size()-1);                // step sizes
+// compute step sizes for given flow grid
+rvec flow_grid_step_sizes(const rvec& x_vals) {
+    rvec x_diffs (x_vals.size()-1);
     for (int i=1; i<=x_diffs.size(); i++){
         x_diffs[i-1] = x_vals[i] - x_vals[i-1]; // step size i
     }
+    return x_diffs;
+}
+
+/**
+ * Explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step.
+ * Allows for checkpointing: If last parameter it_start is given, ODE solver starts at this iteration (to continue
+ * previously canceled computation). If it_start is not given (see overload below), full flow is computed.
+ * @tparam T        : type of object to be integrated (usually State, will currently only work for state, since
+ *                    result is saved using functions from hdf5_routines.h, which only support State)
+ * @param y_fin     : reference to object into which result is stored (final State)
+ * @param x_fin     : final value of the integration variable (final Lambda)
+ * @param y_ini     : initial value of the integrated object (initial State)
+ * @param x_ini     : initial value of the integration variable (initial Lambda)
+ * @param rhs       : right hand side of the flow equation to be solved
+ * @param subst     : substitution to generate non-equidistant flow grid
+ * @param resubst   : resubstitution
+ * @param N_ODE     : number of ODE steps (will be increased by adding points at interesting Lambda values)
+ * @param filename  : output file name
+ * @param it_start  : Lambda iteration at which to start solving the flow
+ */
+template <typename T>
+void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
+                    T rhs (const T& y, const double x),
+                    double subst(double x), double resubst(double x),
+                    const int N_ODE, string filename, const int it_start) {
+    // construct non-linear flow grid via substitution
+    rvec x_vals  = construct_flow_grid(x_fin, x_ini, subst, resubst, N_ODE);
+    rvec x_diffs = flow_grid_step_sizes(x_vals); // compute step sizes for flow grid
 
     // solve ODE using step sizes x_diffs
     T y_run = y_ini; // initial y value
-    double x_run = x_vals[0]; // initial x value
+    double x_run = x_vals[it_start]; // initial x value
     double dx;
-    for (int i=0; i<x_diffs.size(); ++i) {
+    for (int i=it_start; i<x_diffs.size(); ++i) {
         dx = x_diffs[i];
 
-        // print iteration number and Lambda to log file
-        print("i: ", i, true);
-        print("Lambda: ", x_run, true);
-        double t0 = get_time();
-
-        T y1 = rhs(y_run, x_run) * dx;
-        T y2 = rhs(y_run + y1*0.5, x_run + dx/2.) * dx;
-        T y3 = rhs(y_run + y2*0.5, x_run + dx/2.) * dx;
-        T y4 = rhs(y_run + y3, x_run + dx) * dx;
-        y_run += (y1 + y2*2. + y3*2. + y4) * (1./6.); // update y
-        x_run += dx; // update x
-
-        get_time(t0); // measure time for one iteration
-
-        if (filename != "") {
-            add_hdf(filename, i + 1, x_vals.size(), y_run, x_vals);
-        }
+        // perform RK4 step and write result into output file in
+        RK4_step(y_run, x_run, dx, rhs, x_vals, filename, i);
 
         // update frequency grid, interpolate result to new grid
         y_run.update_grid(x_run);
     }
     y_fin = y_run; // final y value
+}
+
+/** Overload for above function, defining the standard case: Flow is integrated from the first iteration on. */
+template <typename T>
+void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
+                    T rhs (const T& y, const double x),
+                    double subst(double x), double resubst(double x),
+                    const int N_ODE, string filename) {
+    ODE_solver_RK4(y_fin, x_fin, y_ini, x_ini,
+                   rhs,
+                   subst, resubst,
+                   N_ODE, filename, 0); // start at iteration 0 (from Lambda_ini)
 }
 
 // explicit RK4 using non-constant step-width determined by substitution (without saving at each step)

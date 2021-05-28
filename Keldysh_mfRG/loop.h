@@ -11,6 +11,8 @@
 #include "propagator.h"  // propagator class
 #include "parameters.h"  // system parameters (vector lengths etc.)
 #include "integrator.h"  // integration routines
+#include "write_data2file.h"  // save integrand for debugging purposes
+#include "correctionFunctions.h"  // analytical results for the tails of the loop integral
 
 /**
  * Class for the integrand of the Retarded SelfEnergy
@@ -190,7 +192,7 @@ public:
                                           GA*(factorAdvancedClosedAbove) +
                                           GK*(factorKeldyshClosedAbove ) );
 #else
-        return symmetrization_prefactor*( GM*factorClosedAbove ) * glb_i;
+        return symmetrization_prefactor*( GM*factorClosedAbove ) * glb_i; // Multiplying the imaginary unit ensures that the integrand is purely real in the particle-hole symmetric case
 #endif
 #endif
     }
@@ -199,7 +201,7 @@ public:
         rvec integrand_re (nFER);
         rvec integrand_im (nFER);
         for (int i=0; i<nFER; ++i) {
-            double vpp = vertex[0].avertex.frequencies.f_K1.w[i];
+            double vpp = propagator.selfenergy.frequencies.w[i];
             Q integrand_value = (*this)(vpp);
             integrand_re[i] = integrand_value.real();
             integrand_im[i] = integrand_value.imag();
@@ -210,7 +212,7 @@ public:
         filename +=  "_v=" + to_string(v) + ".h5";
         write_h5_rvecs(filename,
                        {"vpp", "integrand_re", "integrand_im"},
-                       {vertex[0].avertex.frequencies.f_K1.w, integrand_re, integrand_im});
+                       {propagator.selfenergy.frequencies.w, integrand_re, integrand_im});
     }
 };
 
@@ -244,7 +246,7 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 #else
         IntegrandSE<Q> integrandR('r', fullvertex, prop, v, i_in, all_spins);
         // save integrand for manual checks:
-        /*if(iSE==90){
+        /*if(iSE==0){
             integrandR.save_integrand();
         }*/
 
@@ -260,20 +262,14 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         double v_lower = prop.selfenergy.frequencies.w_lower;
         double v_upper = prop.selfenergy.frequencies.w_upper;
 #ifdef KELDYSH_FORMALISM
-        comp integratedR =
-#ifdef KELDYSH_FORMALISM
-                -1./(2.*M_PI*glb_i)*
-#else
-                1./(2.*M_PI)*
-#endif
-                integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
-        comp integratedK =
-#ifdef KELDYSH_FORMALISM
-            -1./(2.*M_PI*glb_i)*
-#else
-            1./(2.*M_PI)*
-#endif
-            integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedR = -1./(2.*M_PI*glb_i) * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedK = -1./(2.*M_PI*glb_i) * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+
+        // add analytical results for the tails
+        integratedR += -1./(2.*M_PI*glb_i)
+                      * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
+        integratedK += -1./(2.*M_PI*glb_i)
+                      * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 1, i_in, all_spins);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
@@ -281,17 +277,11 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 #else
 
         comp integratedR;
-        //print('\n', integratedR);
-        if (v<0){
-            integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),   v-inter_tol , 0.);
-            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol,     -inter_tol, 0.);
-            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,     +inter_tol, v_upper+abs(v), 0.);
-        }
-        else{
-            integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),    -inter_tol , 0.);
-            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,     +inter_tol,    v-inter_tol, 0.);
-            integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    v+inter_tol, v_upper+abs(v), 0.);
-        }
+        // split up the integrand at discontinuities and (possible) kinks:
+        integratedR = -1./(2.*M_PI*glb_i)*integrator(integrandR, v_lower-abs(v),   -abs(v) , 0.);
+        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    -abs(v),     -inter_tol, 0.);
+        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    +inter_tol,     abs(v), 0.);
+        integratedR+= -1./(2.*M_PI*glb_i)*integrator(integrandR,    abs(v), v_upper+abs(v), 0.);
         self.addself(0, iv, i_in, integratedR);
 #endif
     }
