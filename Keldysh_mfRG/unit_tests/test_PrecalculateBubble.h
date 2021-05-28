@@ -230,8 +230,9 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
 }
 
 void test_Bubble_in_Momentum_Space(){
-    Propagator g (1e-10, 'g');
-    Propagator s (1e-10, 's');
+    double Lambda = 0.1;
+    Propagator g (Lambda, 'g');
+    Propagator s (Lambda, 's');
 
     double starting_time = get_time();
     PrecalculateBubble<comp> DotBubble (g, s, true);
@@ -261,7 +262,7 @@ void test_Bubble_in_Momentum_Space(){
     }
 
     string filename = "/scratch-local/Nepomuk.Ritz/testing_data/KELDYSH_bubble_in_mom_space_Nq_"
-                      + to_string(glb_N_q) + ".h5";
+                      + to_string(glb_N_q) + "_Lambda_" + to_string(Lambda) + ".h5";
     write_h5_rvecs(filename,
                    {"propagator_frequencies", "bubble_frequencies",
                     "RealValuesOfRetardedPropagator", "ImaginaryValuesOfRetardedPropagator",
