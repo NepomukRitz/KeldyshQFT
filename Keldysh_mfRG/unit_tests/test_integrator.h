@@ -3,6 +3,7 @@
 
 #include "../integrator.h"
 #include "../util.h"
+#include "../Integrator_NR/integrator_NR.h"
 #include <string>
 
 /* Test integrand class with int template parameter to select different test integrand functions */

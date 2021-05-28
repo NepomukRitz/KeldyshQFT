@@ -10,6 +10,7 @@
 #include "state.h"              // state including vertex and self-energy
 #include "testFunctions.h"      // for initialization with SOPT at the beginning of the flow, using sopt_state // TODO: should this really be in testFunctions?
 #include "right_hand_sides.h"   // to compute right hand side of flow equation
+#include "hdf5_routines.h"
 
 /**
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.

@@ -7,18 +7,18 @@
 #ifndef KELDYSH_MFRG_BETHE_SALPETER_H
 #define KELDYSH_MFRG_BETHE_SALPETER_H
 
-#include "parameters.h"
-#include "correctionFunctions.h"
-#include "state.h"
+#include "../parameters.h"
+#include "../correctionFunctions.h"
+#include "../state.h"
 #include "diagrammatic_combinations.h"
-#include "integrator.h"
-#include "bubbles.h"
-#include "solvers.h"
-#include "hdf5_routines.h"
-#include "data_structures.h"
-#include "write_data2file.h"
-#include "loop.h"
-#include "vertex.h"
+#include "../integrator.h"
+#include "../bubbles.h"
+#include "../solvers.h"
+#include "../hdf5_routines.h"
+#include "../data_structures.h"
+#include "../write_data2file.h"
+#include "../loop.h"
+#include "../vertex.h"
 #include <iostream>
 
 rvec reconstruct_grid(){

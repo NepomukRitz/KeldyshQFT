@@ -4,6 +4,7 @@
 #include "parameters.h"
 #include <mpi.h>
 #include "mpi_setup.h"
+#include "testFunctions.h"
 #include "solvers.h"
 #include "frequency_grid.h"
 #include "util.h"
@@ -16,11 +17,9 @@
 #include "state.h"
 #include "loop.h"
 #include "bubbles.h"
-#include "testFunctions.h"
 #include "hdf5_routines.h"
 #include "flow.h"
 #include "tests/omp_test.h"
-//#include "bethe-salpeter.h"
 #include <cassert>
 
 using namespace std;

@@ -16,8 +16,11 @@
 #include "test_data_structures.h"
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"
-#include "test_PrecalculateBubble.h"
+// #include "test_PrecalculateBubble.h"
+
+#ifdef HUBBARD_MODEL
 #include "test_momentum_grid.h"
+#endif
 
 
 #ifdef INTEGRATION_TESTS
@@ -78,9 +81,9 @@ int main(int argc, char* argv[]) {
     //vec<comp> g2 (N);
     //vec<comp> test_a_bubble = Swave_Bubble_Calculator.compute_swave_bubble(g1, g2);
 
-    test_Bubble_in_Momentum_Space();
+    //test_Bubble_in_Momentum_Space();
 
     MPI_Finalize();
-    //return Catch::Session().run(argc, argv);
-    return 0;
+    return Catch::Session().run(argc, argv);
+    //return 0;
 }

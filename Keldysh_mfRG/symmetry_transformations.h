@@ -9,11 +9,11 @@
 #include "Keldysh_symmetries.h"
 
 /**
- * specifies the diagrammatic contribution ( + modifications by sign_factor, complex conjugation)
+ * specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation)
  */
 struct IndicesSymmetryTransformations{
     int iK;
-    double sign_factor = 1.; // fermionic sign factor; comes in effect for T1, T2 (and sometimes Tc)
+    double prefactor = 1.; // fermionic sign factor; comes in effect for T1, T2 (and sometimes Tc)
     bool conjugate = false;
     bool asymmetry_transform = false;
     double w, v1, v2; int i_in;
@@ -42,7 +42,7 @@ void switch_channel(IndicesSymmetryTransformations& indices) {
 
 void T1 (IndicesSymmetryTransformations& indices){
 
-    indices.sign_factor *= -1.;
+    indices.prefactor *= -1.;
     indices.conjugate ^= false;
 
     if(indices.channel == 'p'){
@@ -67,7 +67,7 @@ void T1 (IndicesSymmetryTransformations& indices){
 
 void T2 (IndicesSymmetryTransformations& indices){
 
-    indices.sign_factor *= -1.;
+    indices.prefactor *= -1.;
     indices.conjugate ^= false;
 
     if(indices.channel == 'p'){
@@ -112,9 +112,9 @@ void TC (IndicesSymmetryTransformations& indices){
 
 #ifdef KELDYSH_FORMALISM
     if(isInList(indices.iK, odd_Keldysh))
-        indices.sign_factor *= 1.;
+        indices.prefactor *= 1.;
     else
-        indices.sign_factor *= -1.;
+        indices.prefactor *= -1.;
 #else
     indices.w *= -1;
     indices.v1 *= -1;
@@ -126,9 +126,9 @@ void TC (IndicesSymmetryTransformations& indices){
 void Tph (IndicesSymmetryTransformations& indices){
     indices.conjugate ^= true;
     if (isInList(indices.iK, odd_Keldysh))
-        indices.sign_factor *= 1.;
+        indices.prefactor *= 1.;
     else
-        indices.sign_factor *= -1.;
+        indices.prefactor *= -1.;
 
     indices.w *= -1;
 #if DIAG_CLASS > 1
@@ -152,7 +152,7 @@ void TR (IndicesSymmetryTransformations& indices){
 /**
  * Define symmetry transformations.
  * The function modifies the indices according to the transformation T_i.
- * @param indices     : specifies the diagrammatic contribution ( + modifications by sign_factor, complex conjugation)
+ * @param indices     : specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation)
  * @param i           : specities the transformation T_i
  */
 void Ti (IndicesSymmetryTransformations& indices, const int i) {

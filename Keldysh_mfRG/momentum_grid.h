@@ -12,16 +12,15 @@
 #include <cassert>
 
 #include "data_structures.h"
-#include "propagator.h"
 #include "parameters.h"
 
 #include "write_data2file.h"            // write vectors into hdf5 file (for testing purposes)
 
 
-int momentum_index(const int n_x, const int n_y);
-void get_n_x_and_n_y(const int n, int& n_x, int& n_y);
-void get_k_x_and_k_y(const int n, double& k_x, double& k_y);
-void reduce_index_to_one_eighth_of_BZ(const int x, const int y, int& n_x, int& n_y);
+int momentum_index(int n_x, int n_y);
+void get_n_x_and_n_y(int n, int& n_x, int& n_y);
+void get_k_x_and_k_y(int n, double& k_x, double& k_y);
+void reduce_index_to_one_eighth_of_BZ(int x, int y, int& n_x, int& n_y);
 
 int momentum_index(const int n_x, const int n_y){
     // TODO>: Cover assertions in unit test.
@@ -75,7 +74,7 @@ void reduce_index_to_one_eighth_of_BZ(const int x, const int y, int& n_x, int& n
         n_x = n_y;
         n_y = temp_n_x;
     }
-};
+}
 
 class Minimal_2D_FFT_Machine {
     int points_per_dimension = 2 * (glb_N_q - 1);

@@ -18,7 +18,6 @@
 
 
 
-
 template<typename Q>
 class test_PrecalculateBubble{
 public:
@@ -177,7 +176,7 @@ class Runtime_comparison{
     Bubble Usual_Bubble;
 public:
     Runtime_comparison(): g (Lambda_ini, 'g'), s (Lambda_ini, 's'),
-                       Pre_Bubble (g, s, 0, 'a'), Usual_Bubble (g, s, 0){
+                       Pre_Bubble (g, s, 0, 'a'), Usual_Bubble (g, s, false){
      State<comp> testing_state (Lambda_ini);
      testing_state.initialize();
      sopt_state(testing_state, Lambda_ini);
@@ -229,6 +228,7 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
     return end_time - starting_time; // time given in milliseconds
 }
 
+#ifdef HUBBARD_MODEL
 void test_Bubble_in_Momentum_Space(){
     double Lambda = 0.1;
     Propagator g (Lambda, 'g');
@@ -300,6 +300,7 @@ void test_Bubble_in_Momentum_Space(){
                     Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
                     DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});
 #endif
-    };
+    }
+#endif //HUBBARD_MODEL
 
 #endif //KELDYSH_MFRG_TESTING_TEST_PRECALCULATEBUBBLE_H
