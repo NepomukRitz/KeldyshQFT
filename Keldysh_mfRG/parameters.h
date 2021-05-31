@@ -231,10 +231,7 @@ const int n_spin = 1;
 
 // Dimension of the space defining the internal structure for the Hubbard model
 int glb_N_q = 65; // Number of transfer momentum points in one dimension.
-
-auto N_qd = (double) glb_N_q;
-double N_q_full = N_qd * (N_qd + 1) / 2;
-int glb_N_transfer = (int) N_q_full; // Total of transfer momentum points to store
+int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
 
 #ifdef HUBBARD_MODEL
 const int n_in = glb_N_transfer;

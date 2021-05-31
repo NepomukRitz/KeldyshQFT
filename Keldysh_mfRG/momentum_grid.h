@@ -23,32 +23,19 @@ void get_k_x_and_k_y(int n, double& k_x, double& k_y);
 void reduce_index_to_one_eighth_of_BZ(int x, int y, int& n_x, int& n_y);
 
 int momentum_index(const int n_x, const int n_y){
-    // TODO>: Cover assertions in unit test.
-    /*assert (n_x >= 0);
-    assert (n_y >= 0);
-    assert (n_x < glb_N_q);
-    assert (n_y <= n_x);*/
-    double n;
-    n = n_y + n_x * (n_x + 1) / 2.0;
-    return (int) n;
+    return n_y + n_x * (n_x + 1) / 2; // Integer division fine, because n_x * (n_x + 1) is always even.
 }
 
 void get_n_x_and_n_y(const int n, int& n_x, int& n_y) {
     const auto nd = (double) n;
     double n_xd;
     n_xd = (sqrt(1 + 8 * nd) - 1) / 2;
-
     n_x = (int) n_xd; // Always rounds down, i.e. this is a downstairs Gauss-bracket, as required.
-
-    double n_yd;
-    n_xd = (double) n_x;
-    n_yd = nd - n_xd * (n_xd + 1) / 2;
-    n_y = (int) std::round(n_yd); // n_yd should already be an very close to an integer.
-                                  // Use round to obtain this integer and cast to int type.
+    n_y = n - n_x * (n_x + 1) / 2; // Integer division fine, because n_x * (n_x + 1) is always even.
 }
 
 void get_k_x_and_k_y(const int n, double& k_x, double& k_y){
-    int n_x; int n_y;
+    int n_x, n_y;
     get_n_x_and_n_y(n, n_x, n_y);
 
     k_x = M_PI * n_x / (glb_N_q - 1);
@@ -58,13 +45,12 @@ void get_k_x_and_k_y(const int n, double& k_x, double& k_y){
 /*
  * Given a pair of indices labelling any point in the square of the BZ,
  * what is the corresponding index in the part that is actually stored?
+ *
+ * REQUIREMENTS (not checked by assertions as this part of the code must be very fast!!):
+ * x, y >= 0
+ * x, y < 2 * (glb_N_q - 1)
  */
 void reduce_index_to_one_eighth_of_BZ(const int x, const int y, int& n_x, int& n_y){
-    // TODO: Cover assertions in unit test.
-    /*assert (x >= 0);
-    assert (y >= 0);
-    assert (x < 2 * (glb_N_q - 1));
-    assert (y < 2 * (glb_N_q - 1));*/
     n_x = x;
     n_y = y;
     if (n_x > (glb_N_q - 1)){ n_x = 2 * (glb_N_q - 1) - n_x;} // mirror along x-direction
