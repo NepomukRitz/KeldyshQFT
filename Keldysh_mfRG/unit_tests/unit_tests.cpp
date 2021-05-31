@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
     //vec<comp> g2 (N);
     //vec<comp> test_a_bubble = Swave_Bubble_Calculator.compute_swave_bubble(g1, g2);
 
-    //test_Bubble_in_Momentum_Space();
+    test_Bubble_in_Momentum_Space();
 
     MPI_Finalize();
     return Catch::Session().run(argc, argv);
