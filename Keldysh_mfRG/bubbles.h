@@ -977,19 +977,17 @@ public:
 template <typename Q,
           template <typename> class symmetry_result,
           template <typename> class symmetry_left,
-          template <typename> class symmetry_right>
+          template <typename> class symmetry_right,
+          class Bubble_Object>
 void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                      const GeneralVertex<Q, symmetry_left>& vertex1,
                      const GeneralVertex<Q, symmetry_right>& vertex2,
-                     const Propagator& G, const Propagator& S, const char channel, const bool diff
+                     const Propagator& G, const Propagator& S, const Bubble_Object& Pi, const char channel, const bool diff
 #ifdef DEBUG_MODE
                      , const int iK_select, const int iK_select_bubble, const int iK_select2, const int iK_select_bubble2
 #endif
                      )
 {
-    Bubble Pi(G, S, diff); // initialize bubble object
-    // Alternatively: PrecalculateBubble Pi(G, S, diff, channel);
-
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
 
@@ -1463,6 +1461,19 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     print("Damn son, this is a bad error");
 #endif
 #endif
+}
+
+// Overload for bubble_function in case no Bubble object has been initialized yet. ONLY WORKS FOR SIAM!!
+template <typename Q,
+        template <typename> class symmetry_result,
+        template <typename> class symmetry_left,
+        template <typename> class symmetry_right>
+void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
+                     const GeneralVertex<Q, symmetry_left>& vertex1,
+                     const GeneralVertex<Q, symmetry_right>& vertex2,
+                     const Propagator& G, const Propagator& S, const char channel, const bool diff){
+        Bubble Pi(G, S, diff);
+        bubble_function(dgamma, vertex1, vertex2, G, S, Pi, 'a', false);
 }
 
 #ifdef DEBUG_MODE
