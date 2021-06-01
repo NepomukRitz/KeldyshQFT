@@ -295,11 +295,10 @@ template <typename Q, class Bubble_Object>
 void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
                        const Propagator& G, const Propagator& dG,
                        const Bubble_Object& dPi){
-
     // Vertex flow
-    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, dPi, 'a', true);  // Differentiated bubble in the a-channel
-    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, dPi, 'p', true);  // Differentiated bubble in the p-channel
-    bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, dPi, 't', true);  // Differentiated bubble in the t-channel
+    for (char r: "apt") {
+        bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, dPi, r, true);  // Differentiated bubble in channel r \in {a, p, t}
+    }
 }
 
 template <typename Q, class Bubble_Object>
@@ -309,9 +308,9 @@ auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
     dGammaL.set_frequency_grid(PsiVertex);
     dPsiVertex.set_Ir(true); // only take part irreducible in channel r
 
-    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, Pi, 'a', false);
-    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, Pi, 'p', false);
-    bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, Pi, 't', false);
+    for (char r: "apt") {
+        bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, Pi, r, false);
+    }
 
     dPsiVertex.set_Ir(false); // reset input vertex to original state
     // TODO: This is not so nice, we manipulate an input object during the calculation (which should be constant,
@@ -326,9 +325,9 @@ auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
     dGammaR.set_frequency_grid(PsiVertex);
     dPsiVertex.set_Ir(true); // only take part irreducible in channel r
 
-    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, Pi, 'a', false);
-    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, Pi, 'p', false);
-    bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, Pi, 't', false);
+    for (char r: "apt") {
+        bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, Pi, r, false);
+    }
 
     dPsiVertex.set_Ir(false); // reset input vertex to original state // TODO: see above
 
@@ -343,9 +342,9 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, GeneralVertex
 
     nonsymVertex.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
-    bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, Pi, 'a', false);
-    bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, Pi, 'p', false);
-    bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, Pi, 't', false);
+    for (char r: "apt") {
+        bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, Pi, r, false);
+    }
 
     nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
@@ -360,9 +359,9 @@ auto calculate_dGammaC_left_insertion(GeneralVertex<Q, non_symmetric>& nonsymVer
 
     nonsymVertex.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
-    bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, Pi, 'a', false);
-    bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, Pi, 'p', false);
-    bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, Pi, 't', false);
+    for (char r: "apt") {
+        bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, Pi, r, false);
+    }
 
     nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 

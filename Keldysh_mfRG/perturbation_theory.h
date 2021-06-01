@@ -17,10 +17,9 @@
 template <typename Q, class Bubble_Object>
 void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
     Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
-
-    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 'a', false);
-    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 'p', false);
-    bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 't', false);
+    for (char r: "apt") {
+        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, r, false);
+    }
 }
 
 template <typename Q, class Bubble_Object>
