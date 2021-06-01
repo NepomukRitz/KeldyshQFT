@@ -529,11 +529,12 @@ public:
 /// Integrand classes for bubble contributing to diagrammatic class K1, K2, K3
 template <typename Q,
           template <typename> class symmetry_left,
-          template <typename> class symmetry_right>
+          template <typename> class symmetry_right,
+          class Bubble_Object>
 class Integrand_K1 {
     const GeneralVertex<Q, symmetry_left>& vertex1;
     const GeneralVertex<Q, symmetry_right>& vertex2;
-    const Bubble& Pi;
+    const Bubble_Object& Pi;
     int i0;
     int i2;
 #ifdef DEBUG_MODE
@@ -562,7 +563,7 @@ public:
      */
     Integrand_K1(const GeneralVertex<Q, symmetry_left>& vertex1_in,
                  const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                 const Bubble& Pi_in,
+                 const Bubble_Object& Pi_in,
                  int i0_in, int i2_in, const double w_in, const int i_in_in, const char ch_in, const bool diff_in
 #ifdef DEBUG_MODE
                  , const int iK_select_in, const int iK_select_bubble_in
@@ -714,11 +715,12 @@ public:
 };
 template <typename Q,
           template <typename> class symmetry_left,
-          template <typename> class symmetry_right>
+          template <typename> class symmetry_right,
+          class Bubble_Object>
 class Integrand_K2 {
     const GeneralVertex<Q, symmetry_left>& vertex1;
     const GeneralVertex<Q, symmetry_right>& vertex2;
-    const Bubble& Pi;
+    const Bubble_Object& Pi;
     int i0;
     int i2;
 #ifdef DEBUG_MODE
@@ -747,7 +749,7 @@ public:
      */
     Integrand_K2(const GeneralVertex<Q, symmetry_left>& vertex1_in,
                  const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                 const Bubble& Pi_in,
+                 const Bubble_Object& Pi_in,
                  int i0_in, int i2_in, const double w_in, double v_in, const int i_in_in,
                  const char ch_in, const bool diff_in
 #ifdef DEBUG_MODE
@@ -846,11 +848,12 @@ public:
 };
 template <typename Q,
           template <typename> class symmetry_left,
-          template <typename> class symmetry_right>
+          template <typename> class symmetry_right,
+          class Bubble_Object>
 class Integrand_K3 {
     const GeneralVertex<Q, symmetry_left>& vertex1;
     const GeneralVertex<Q, symmetry_right>& vertex2;
-    const Bubble& Pi;
+    const Bubble_Object& Pi;
     int i0;
     const int i_in;
     const char channel;
@@ -874,7 +877,7 @@ public:
      */
     Integrand_K3(const GeneralVertex<Q, symmetry_left>& vertex1_in,
                  const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                 const Bubble& Pi_in, int i0_in,
+                 const Bubble_Object& Pi_in, int i0_in,
                  const double w_in, const double v_in, const double vp_in, const int i_in_in,
                  const char ch_in, const bool diff_in)
                : vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in),
@@ -1104,11 +1107,11 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         int i2=0;
 #endif
 #ifdef DEBUG_MODE
-                            Integrand_K1<Q, symmetry_left, symmetry_right>
+                            Integrand_K1<Q, symmetry_left, symmetry_right, Bubble_Object>
                                     integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
                                                  iK_select, iK_select_bubble);
 #else
-                        Integrand_K1<Q, symmetry_left, symmetry_right>
+                        Integrand_K1<Q, symmetry_left, symmetry_right, Bubble_Object>
                                 integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
                         /* // save the integrand for manual checks:
                         if (i_omp == 100){
@@ -1241,11 +1244,11 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         int i2 = 0;
 #endif
 #ifdef DEBUG_MODE
-                        Integrand_K2<Q, symmetry_left, symmetry_right>
+                        Integrand_K2<Q, symmetry_left, symmetry_right, Bubble_Object>
                                 integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff,
                                              iK_select2, iK_select_bubble2);
 #else
-                        Integrand_K2<Q, symmetry_left, symmetry_right>
+                        Integrand_K2<Q, symmetry_left, symmetry_right, Bubble_Object>
                                 integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
                         /*if (i_omp == (int)n_omp-304){
                             integrand_K2.save_integrand();
@@ -1376,7 +1379,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                 if (trafo == 0) {
 
                     // initialize the integrand object and perform frequency integration
-                    Integrand_K3<Q, symmetry_left, symmetry_right>
+                    Integrand_K3<Q, symmetry_left, symmetry_right, Bubble_Object>
                             integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
                     /*if (i_omp == 4189){
                         integrand_K3.save_integrand();
