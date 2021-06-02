@@ -974,6 +974,7 @@ public:
  * @param vertex2 : right vertex in bubble
  * @param G       : first propagator of bubble
  * @param S       : second propagator of bubble
+ * @param Pi      : Previously initialized Bubble object. Either of type Bubble or PrecalculateBubble.
  * @param channel : diagrammatic channel ('a', 'p', or 't')
  * @param diff    : whether or not the bubble is a differentiated one
  */
@@ -1488,5 +1489,627 @@ void bubble_function(GeneralVertex<Q, container_type>& dgamma,
     bubble_function(dgamma, vertex1, vertex2, G, S, channel, diff, 16, 16, 16, 16);
 }
 #endif
+
+
+// Refactoring of bubble_function into a new class; TODO: No functionality for DEBUG_MODE yet.
+template <typename Q,
+        template <typename> class symmetry_result,
+        template <typename> class symmetry_left,
+        template <typename> class symmetry_right,
+        class Bubble_Object>
+class BubbleFunctionCalculator{
+    private:
+    const GeneralVertex<Q, symmetry_left>& vertex1;
+    const GeneralVertex<Q, symmetry_right>& vertex2;
+    const Propagator& G;
+    const Propagator& S;
+    const Bubble_Object& Pi;
+    const char channel;
+    const bool diff;
+
+    int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
+    Q prefactor = 1.;
+
+    int mpi_size = mpi_world_size(); // number of mpi processes
+    int mpi_rank = mpi_world_rank(); // number of the current mpi process
+
+    double vmin = 0, vmax = 0;
+
+    FrequencyGrid freqs_K1, bfreqs_K2, ffreqs_K2, bfreqs_K3, ffreqs_K3;
+
+#ifdef KELDYSH_FORMALISM
+    vector<int> nonzero_Keldysh_indices = non_zero_Keldysh_bubble;
+#else
+    vector<int> nonzero_Keldysh_indices {0};
+#endif // KELDYSH_FORMALISM
+
+    double tK1 = 0, tK2 = 0, tK3 = 0;
+
+    void set_channel_specific_freq_ranges_and_prefactor();
+
+    void initialize_frequency_grids();
+    void initialize_frequency_grid_K1();
+    void initialize_frequency_grid_K2();
+    void initialize_frequency_grid_K3();
+
+    void calculate_bubble_function_K1();
+    void calculate_bubble_function_K2();
+    void calculate_bubble_function_K3();
+
+    void calculate_value_K1(Q& value, int i0, int i_in, double w);
+    void calculate_value_K2(Q& value, int i0, int i_in, double w, double v);
+    void calculate_value_K3(Q& value, int i0, int i_in, double w, double v, double vp);
+
+    void write_out_results_K1(const vec<Q>& K1_ordered_result);
+    void write_out_results_K2(const vec<Q>& K2_ordered_result);
+    void write_out_results_K3(const vec<Q>& K3_ordered_result);
+
+    void convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
+                                                                 int i_mpi, int n_omp, int i_omp);
+    void convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& iw, int& iv, int& i_in,
+                                                                 double& w, double& v,
+                                                                 int i_mpi, int n_omp, int i_omp);
+    void convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& iw, int& iv, int& ivp, int& i_in,
+                                                                 double& w, double& v, double& vp,
+                                                                 int i_mpi, int n_omp, int i_omp);
+
+    int get_trafo_K1(int i0, double w);
+    int get_trafo_K2(int i0, double w, double v);
+    int get_trafo_K3(int i0, double w, int iv, int ivp);
+
+    void get_Matsubara_integration_intervals(size_t& num_intervals, vec<vec<double>>& intervals, double w);
+
+    Q bubble_value_prefactor();
+
+    public:
+    GeneralVertex<Q, symmetry_result>& dgamma;
+
+    void perform_computation();
+
+    BubbleFunctionCalculator(GeneralVertex<Q, symmetry_result>& dgamma,
+                             const GeneralVertex<Q, symmetry_left>& vertex1,
+                             const GeneralVertex<Q, symmetry_right>& vertex2,
+                             const Propagator& G, const Propagator& S, const Bubble_Object& Pi,
+                             const char channel, const bool diff)
+                             :dgamma(dgamma), vertex1(vertex1), vertex2(vertex2),
+                             G(G), S(S), Pi(Pi), channel(channel), diff(diff){
+        set_channel_specific_freq_ranges_and_prefactor();
+        initialize_frequency_grids();
+    }
+};
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
+// set channel-specific frequency ranges and prefactor (1, 1, -1 for a, p, t) for sum over spins.
+    switch (channel) {
+        case 'a':
+            nw1_w = nw1_a;
+            nw2_w = nw2_a;
+            nw2_v = nv2_a;
+            nw3_w = nw3_a;
+            nw3_v = nv3_a;
+            nw3_v_p = nv3_a;
+            prefactor *= 1.;
+            break;
+        case 'p':
+            nw1_w = nw1_p;
+            nw2_w = nw2_p;
+            nw2_v = nv2_p;
+            nw3_w = nw3_p;
+            nw3_v = nv3_p;
+            nw3_v_p = nv3_p;
+            prefactor *= 1.;
+            break;
+        case 't':
+            nw1_w = nw1_t;
+            nw2_w = nw2_t;
+            nw2_v = nv2_t;
+            nw3_w = nw3_t;
+            nw3_v = nv3_t;
+            nw3_v_p = nv3_t;
+            prefactor *= -1.;
+            break;
+        default: ;
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+Bubble_Object>::initialize_frequency_grids() {
+#if DIAG_CLASS >= 0
+    initialize_frequency_grid_K1();
+#endif
+#if DIAG_CLASS >= 2
+    initialize_frequency_grid_K2();
+#endif
+#if DIAG_CLASS >= 3
+    initialize_frequency_grid_K3();
+#endif
+    vmin *= 2;
+    vmax  *= 2;
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::initialize_frequency_grid_K1(){
+    freqs_K1 = dgamma[0].avertex().frequencies.b_K1;
+    // use min/max of selfenergy/K1 frequency grids as integration limits
+    vmin = min(freqs_K1.w_lower, G.selfenergy.frequencies.w_lower);
+    vmax = max(freqs_K1.w_upper, G.selfenergy.frequencies.w_upper);
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::initialize_frequency_grid_K2(){
+    bfreqs_K2 = dgamma[0].avertex().frequencies.b_K2;
+    ffreqs_K2 = dgamma[0].avertex().frequencies.f_K2;
+    // use min/max of selfenergy/K1/K2 frequency grids as integration limits
+    vmin = min(vmin, ffreqs_K2.w_lower);
+    vmax = max(vmax, ffreqs_K2.w_upper);
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::initialize_frequency_grid_K3(){
+    bfreqs_K3 = dgamma[0].avertex().frequencies.b_K3;
+    ffreqs_K3 = dgamma[0].avertex().frequencies.f_K3;
+    // use min/max of selfenergy/K1/K2/K3 frequency grids as integration limits
+    vmin = min(vmin, ffreqs_K3.w_lower);
+    vmax = max(vmax, ffreqs_K3.w_upper);
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+                Bubble_Object>::perform_computation(){
+    double t_start = get_time();
+#if DIAG_CLASS >= 0
+    calculate_bubble_function_K1();
+    tK1 = get_time() - t_start;
+#endif
+#if DIAG_CLASS >= 2
+    t_start = get_time();
+    calculate_bubble_function_K2();
+    tK2 = get_time() - t_start;
+#endif
+#if DIAG_CLASS >= 3
+    t_start = get_time();
+    calculate_bubble_function_K3();
+    tK2 = get_time() - t_start;
+#endif
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::calculate_bubble_function_K1(){
+    int n_mpi = nK_K1;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+    int n_omp = nw1_w * n_in; // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+
+    // initialize buffer into which each MPI process writes their results
+    vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
+
+    // start for-loop over external arguments, using MPI and OMP
+    int iterator = 0;
+    for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
+        if (i_mpi % mpi_size == mpi_rank) {
+#pragma omp parallel for schedule(static, 8) default(none)
+            for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
+                int iK1, i0, iw, i_in; double w;
+                convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w, i_mpi, n_omp, i_omp);
+                Q value;
+                int trafo = get_trafo_K1(i0, w);
+                if (trafo == 0) {calculate_value_K1(value, i0, i_in, w);}
+                K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
+            }
+        }
+        ++iterator;
+    }
+    // collect+combine results from different MPI processes, reorder them appropriately
+    vec<Q> K1_result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(K1_buffer, K1_result, n_mpi, n_omp);
+    vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
+
+    write_out_results_K1(K1_ordered_result);
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::calculate_bubble_function_K2(){
+    int n_mpi = nK_K2 * nw2_w; // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+    int n_omp = nw2_v * n_in;  // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+
+    // initialize buffer into which each MPI process writes their results
+    vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
+
+    // start for-loop over external arguments, using MPI and OMP
+    int iterator = 0;
+    for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
+        if (i_mpi % mpi_size == mpi_rank) {
+#pragma omp parallel for schedule(static, 8) default(none)
+            for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
+                int iK2, i0, iw, iv, i_in; double w, v;
+                convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v, i_mpi, n_omp, i_omp);
+                Q value;
+                int trafo = get_trafo_K2(i0, w, v);
+                if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v);}
+                K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
+            }
+        }
+        ++iterator;
+    }
+    // collect+combine results from different MPI processes, reorder them appropriately
+    vec<Q> K2_result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(K2_buffer, K2_result, n_mpi, n_omp);
+    vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
+
+    write_out_results_K2(K2_ordered_result);
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::calculate_bubble_function_K3(){
+    int n_mpi = nK_K3 * nw3_w;
+    int n_omp = nw3_v * nw3_v_p * n_in;
+
+    // initialize buffer into which each MPI process writes their results
+    vec<Q> K3_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
+
+    // start for-loop over external arguments, using MPI and OMP
+    int iterator = 0;
+    for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
+        if (i_mpi % mpi_size == mpi_rank) {
+#pragma omp parallel for schedule(static, 8) default(none)
+            for (int i_omp=0; i_omp<n_omp; ++i_omp) {
+                int iK2, i0, iw, iv, ivp, i_in; double w, v, vp;
+                convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
+                                                                        i_mpi, n_omp, i_omp);
+                Q value;
+                int trafo = get_trafo_K3(i0, w, iv, ivp);
+                if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp);}
+                K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
+            }
+        }
+        ++iterator;
+    }
+    // collect+combine results from different MPI processes, reorder them appropriately
+    vec<Q> K3_result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(K3_buffer, K3_result, n_mpi, n_omp);
+    vec<Q> K3_ordered_result = mpi_reorder_result(K3_result, n_mpi, n_omp);
+
+    write_out_results_K3(K3_ordered_result);
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+                Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
+    if (vertex1[0].Ir() && vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
+    else {
+        for (int i2 : nonzero_Keldysh_indices) {
+            Integrand_K1<Q, symmetry_left, symmetry_right, Bubble_Object>
+                    integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+#ifdef KELDYSH_FORMALISM
+            value += bubble_value_prefactor() * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
+#else
+            size_t num_intervals; vec<vec<double>> intervals;
+            get_Matsubara_integration_intervals(num_intervals, intervals, w);
+            value += bubble_value_prefactor() * integrator(integrand_K1, intervals, num_intervals);
+#endif // KELDYSH_FORMALISM
+            if (!diff) {
+                value += bubble_value_prefactor() *
+                        asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
+                                                 w, 0., 0., i0, i2, i_in, channel);
+            }
+        }
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::calculate_value_K2(Q& value, const int i0, const int i_in, const double w, const double v){
+    if (vertex2[0].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
+    else {
+        for (int i2 : nonzero_Keldysh_indices) {
+            Integrand_K2<Q, symmetry_left, symmetry_right, Bubble_Object>
+                    integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
+#ifdef KELDYSH_FORMALISM
+            value += bubble_value_prefactor() * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
+#else
+            size_t num_intervals; vec<vec<double>> intervals;
+            get_Matsubara_integration_intervals(num_intervals, intervals, w);
+            value += bubble_value_prefactor() * integrator(integrand_K2, intervals, num_intervals);
+#endif // KELDYSH_FORMALISM
+            if (!diff) {
+                value += bubble_value_prefactor() *
+                        asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                                                 vmin, vmax, w, v, 0., i0, i2, i_in, channel);
+            }
+        }
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
+                                                const double w, const double v, const double vp){
+
+    // initialize the integrand object and perform frequency integration
+    Integrand_K3<Q, symmetry_left, symmetry_right, Bubble_Object>
+            integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
+#ifdef KELDYSH_FORMALISM
+    value += bubble_value_prefactor() * integrator(integrand_K3, vmin, vmax, -w / 2., w / 2.);
+#else
+    size_t num_intervals; vec<vec<double>> intervals;
+    get_Matsubara_integration_intervals(num_intervals, intervals, w);
+    value += bubble_value_prefactor() * integrator(integrand_K3, intervals, num_intervals);
+#endif // KELDYSH_FORMALISM
+    if (!diff) {
+        for (int i2 : nonzero_Keldysh_indices) {
+            value += bubble_value_prefactor() *
+                    asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                                             vmin, vmax, w, v, vp, i0, i2, i_in, channel);
+        }
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+                Bubble_Object>::write_out_results_K1(const vec<Q>& K1_ordered_result){
+    switch (channel) {
+        case 'a':
+            dgamma[0].avertex().K1 += K1_ordered_result;
+            dgamma[0].avertex().enforce_freqsymmetriesK1(dgamma[0].avertex());
+            break;
+        case 'p':
+            dgamma[0].pvertex().K1 += K1_ordered_result;
+            dgamma[0].pvertex().enforce_freqsymmetriesK1(dgamma[0].pvertex());
+            break;
+        case 't':
+            dgamma[0].tvertex().K1 += K1_ordered_result;
+            dgamma[0].tvertex().enforce_freqsymmetriesK1(dgamma[0].tvertex());
+            break;
+        default: ;
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
+    switch (channel) {
+        case 'a':
+            dgamma[0].avertex().K2 += K2_ordered_result;
+            dgamma[0].avertex().enforce_freqsymmetriesK2(dgamma[0].avertex());
+            break;
+        case 'p':
+            dgamma[0].pvertex().K2 += K2_ordered_result;
+            dgamma[0].pvertex().enforce_freqsymmetriesK2(dgamma[0].pvertex());
+            break;
+        case 't':
+            dgamma[0].tvertex().K2 += K2_ordered_result;
+            dgamma[0].tvertex().enforce_freqsymmetriesK2(dgamma[0].tvertex());
+            break;
+        default: ;
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::write_out_results_K3(const vec<Q>& K3_ordered_result){
+    switch (channel) {
+        case 'a':
+            dgamma[0].avertex().K3 += K3_ordered_result;
+            dgamma[0].avertex().enforce_freqsymmetriesK3(dgamma[0].avertex());
+            break;
+        case 'p':
+            dgamma[0].pvertex().K3 += K3_ordered_result;
+            dgamma[0].pvertex().enforce_freqsymmetriesK3(dgamma[0].pvertex());
+            break;
+        case 't':
+            dgamma[0].tvertex().K3 += K3_ordered_result;
+            dgamma[0].tvertex().enforce_freqsymmetriesK3(dgamma[0].tvertex());
+            break;
+        default: ;
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
+                                                                                     const int i_mpi, const int n_omp, const int i_omp){
+    iK1 = i_mpi * n_omp + i_omp;
+    i0 = iK1/(nw1_w*n_in);                  // exterior Keldysh indices of the bubble
+    iw = iK1/(n_in) - i0*nw1_w;             // frequency index
+    i_in = iK1 - i0*nw1_w*n_in - iw*n_in;   // internal index
+    w = freqs_K1.w[iw];                     // frequency acc. to frequency index
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& iw, int& iv, int& i_in,
+                                                                                     double& w, double& v,
+                                                                                     const int i_mpi, const int n_omp, const int i_omp){
+    iK2 = i_mpi * n_omp + i_omp;
+    i0 = iK2 / (nw2_w * nw2_v * n_in);
+    iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
+    iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
+    i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
+    w = bfreqs_K2.w[iw];
+    v = ffreqs_K2.w[iv];
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& iw, int& iv, int& ivp, int& i_in,
+                                                                                     double& w, double& v, double& vp,
+                                                                                     const int i_mpi, const int n_omp, const int i_omp){
+    iK3 = i_mpi * n_omp + i_omp;
+    i0 = iK3/(nw3_w * nw3_v * nw3_v_p * n_in);
+    iw = iK3/(nw3_v * nw3_v_p * n_in) - i0*nw3_w;
+    iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
+    ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
+    i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
+    w = bfreqs_K3.w[iw];
+    v = ffreqs_K3.w[iv];
+    vp = ffreqs_K3.w[ivp];
+}
+
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+int
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+                Bubble_Object>::get_trafo_K1(const int i0, const double w){
+    int trafo = 1;
+    int sign_w = sign_index<double>(w);
+    switch (channel) {
+        case 'a':
+            trafo = TransformaK1a[i0][sign_w];
+            //cout << "Ping!" << trafo << "\n";
+            break;
+        case 'p':
+            trafo = TransformaK1p[i0][sign_w];
+            break;
+        case 't':
+            trafo = TransformaK1t[i0][sign_w];
+            break;
+        default:
+            cout << "\n Uooooohhh, sth went wrong! \n \n";
+    }
+    return trafo;
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+int
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::get_trafo_K2(const int i0, const double w, const double v){
+    int trafo = 1;
+    int sign_w = sign_index<double>(w);
+    int sign_v = sign_index<double>(v);
+    switch (channel) {
+        case 'a':
+            trafo = TransformaK2a[i0][sign_w * 2 + sign_v];
+            //cout << "Ping!" << trafo << "\n";
+            break;
+        case 'p':
+            trafo = TransformaK2p[i0][sign_w * 2 + sign_v];
+            break;
+        case 't':
+            trafo = TransformaK2t[i0][sign_w * 2 + sign_v];
+            break;
+        default:
+            cout << "\n Uooooohhh, sth went wrong! \n \n";
+    }
+    return trafo;
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+int
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::get_trafo_K3(const int i0, const double w, const int iv, const int ivp){
+    int trafo = 1;
+    int sign_w = sign_index<double>(w);
+    int sign_f = iv+ivp<nFER3? 0 : 1;   // this corresponds to "sign_index(v + vp)" assuming
+                                        // that both v and vp use the same fermionic frequency grid
+    int sign_fp = iv<=ivp? 0 : 1;       // this corresponds to "sign_index(v - vp)"  assuming
+                                        // that both v and vp use the same fermionic frequency grid
+    switch (channel) {
+        case 'a':
+            trafo = TransformaK3a[i0][sign_w * 4 + sign_f * 2 + sign_fp];
+            //cout << "Ping!" << trafo << "\n";
+            break;
+        case 'p':
+            trafo = TransformaK3p[i0][sign_w * 4 + sign_f * 2 + sign_fp];
+            break;
+        case 't':
+            trafo = TransformaK3t[i0][sign_w * 4 + sign_f * 2 + sign_fp];
+            break;
+        default:
+            cout << "\n Uooooohhh, sth went wrong! \n \n";
+    }
+    return trafo;
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+                Bubble_Object>::get_Matsubara_integration_intervals(size_t& num_intervals, vec<vec<double>>& intervals,
+                                                                 const double w){
+    if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+        intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+        num_intervals = 3;
+    }
+    else {
+        intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+        num_intervals = 2;
+
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+Q
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+                Bubble_Object>::bubble_value_prefactor(){
+#ifdef KELDYSH_FORMALISM
+    return prefactor * (1. / (2. * M_PI * glb_i));
+#else
+    return prefactor * (1. / (-2. * M_PI));
+#endif
+}
+
+
+// bubble_function using the new class BubbleFunctionCalculator
+template <typename Q,
+        template <typename> class symmetry_result,
+        template <typename> class symmetry_left,
+        template <typename> class symmetry_right,
+        class Bubble_Object>
+void bubble_function_refactored(GeneralVertex<Q, symmetry_result>& dgamma,
+                                 const GeneralVertex<Q, symmetry_left>& vertex1,
+                                 const GeneralVertex<Q, symmetry_right>& vertex2,
+                                 const Propagator& G, const Propagator& S, const Bubble_Object& Pi,
+                                 const char channel, const bool diff){
+    BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
+            BubbleComputer (dgamma, vertex1, vertex2, G, S, Pi, channel, diff);
+    BubbleComputer.perform_computation();
+}
 
 #endif //KELDYSH_MFRG_BUBBLES_H
