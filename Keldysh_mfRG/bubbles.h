@@ -1710,7 +1710,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int iterator = 0;
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(static, 8) default(none)
+#pragma omp parallel for schedule(static, 8)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }
