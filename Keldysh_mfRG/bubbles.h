@@ -1518,9 +1518,9 @@ class BubbleFunctionCalculator{
     FrequencyGrid freqs_K1, bfreqs_K2, ffreqs_K2, bfreqs_K3, ffreqs_K3;
 
 #ifdef KELDYSH_FORMALISM
-    vector<int> nonzero_Keldysh_indices = non_zero_Keldysh_bubble;
+    const vector<int> nonzero_Keldysh_indices = non_zero_Keldysh_bubble;
 #else
-    vector<int> nonzero_Keldysh_indices {0};
+    const vector<int> nonzero_Keldysh_indices {0};
 #endif // KELDYSH_FORMALISM
 
     double tK1 = 0, tK2 = 0, tK3 = 0;
@@ -1532,17 +1532,19 @@ class BubbleFunctionCalculator{
     void initialize_frequency_grid_K2();
     void initialize_frequency_grid_K3();
 
-    void calculate_bubble_function_K1();
-    void calculate_bubble_function_K2();
-    void calculate_bubble_function_K3();
+    void calculate_bubble_function(int diag_class);
+    Q get_value(int i_mpi, int i_omp, int n_omp, int diag_class);
 
     void calculate_value_K1(Q& value, int i0, int i_in, double w);
     void calculate_value_K2(Q& value, int i0, int i_in, double w, double v);
     void calculate_value_K3(Q& value, int i0, int i_in, double w, double v, double vp);
 
+    void write_out_results(const vec<Q>& Ordered_result, int diag_class);
     void write_out_results_K1(const vec<Q>& K1_ordered_result);
     void write_out_results_K2(const vec<Q>& K2_ordered_result);
     void write_out_results_K3(const vec<Q>& K3_ordered_result);
+
+    void set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, int diag_class);
 
     void convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
                                                                  int i_mpi, int n_omp, int i_omp);
@@ -1676,17 +1678,17 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
     double t_start = get_time();
 #if DIAG_CLASS >= 0
-    calculate_bubble_function_K1();
+    calculate_bubble_function(1);
     tK1 = get_time() - t_start;
 #endif
 #if DIAG_CLASS >= 2
     t_start = get_time();
-    calculate_bubble_function_K2();
+    calculate_bubble_function(2);
     tK2 = get_time() - t_start;
 #endif
 #if DIAG_CLASS >= 3
     t_start = get_time();
-    calculate_bubble_function_K3();
+    calculate_bubble_function(3);
     tK2 = get_time() - t_start;
 #endif
 }
@@ -1695,12 +1697,14 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::calculate_bubble_function_K1(){
-    int n_mpi = nK_K1;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-    int n_omp = nw1_w * n_in; // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+        Bubble_Object>::calculate_bubble_function(const int diag_class){
+    if (diag_class < 1 || diag_class > 3){std::cout << "Incompatible diagrammatic class!\n"; return;};
+
+    int n_mpi, n_omp;
+    set_external_arguments_for_parallelization(n_mpi, n_omp, diag_class);
 
     // initialize buffer into which each MPI process writes their results
-    vec<Q> K1_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
+    vec<Q> Buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
     // start for-loop over external arguments, using MPI and OMP
     int iterator = 0;
@@ -1708,93 +1712,50 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         if (i_mpi % mpi_size == mpi_rank) {
 #pragma omp parallel for schedule(static, 8) default(none)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
-                int iK1, i0, iw, i_in; double w;
-                convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w, i_mpi, n_omp, i_omp);
-                Q value;
-                int trafo = get_trafo_K1(i0, w);
-                if (trafo == 0) {calculate_value_K1(value, i0, i_in, w);}
-                K1_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
+                Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }
         }
         ++iterator;
     }
     // collect+combine results from different MPI processes, reorder them appropriately
-    vec<Q> K1_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    mpi_collect(K1_buffer, K1_result, n_mpi, n_omp);
-    vec<Q> K1_ordered_result = mpi_reorder_result(K1_result, n_mpi, n_omp);
+    vec<Q> Result = mpi_initialize_result<Q> (n_mpi, n_omp);
+    mpi_collect(Buffer, Result, n_mpi, n_omp);
+    vec<Q> Ordered_result = mpi_reorder_result(Result, n_mpi, n_omp);
 
-    write_out_results_K1(K1_ordered_result);
+    write_out_results(Ordered_result, diag_class);
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
         template <typename> class symmetry_right, class Bubble_Object>
-void
+Q
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::calculate_bubble_function_K2(){
-    int n_mpi = nK_K2 * nw2_w; // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-    int n_omp = nw2_v * n_in;  // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
-
-    // initialize buffer into which each MPI process writes their results
-    vec<Q> K2_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
-
-    // start for-loop over external arguments, using MPI and OMP
-    int iterator = 0;
-    for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
-        if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(static, 8) default(none)
-            for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
-                int iK2, i0, iw, iv, i_in; double w, v;
-                convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v, i_mpi, n_omp, i_omp);
-                Q value;
-                int trafo = get_trafo_K2(i0, w, v);
-                if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v);}
-                K2_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
-            }
-        }
-        ++iterator;
+        Bubble_Object>::get_value(const int i_mpi, const int i_omp, const int n_omp, const int diag_class){
+    Q value;
+    int iK1, iK2, i0, iw, iv, ivp, i_in;
+    double w, v, vp;
+    int trafo;
+    switch (diag_class) {
+        case 1:
+            convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w,
+                                                                    i_mpi, n_omp, i_omp);
+            trafo = get_trafo_K1(i0, w);
+            if (trafo == 0) {calculate_value_K1(value, i0, i_in, w); }
+            break;
+        case 2:
+            convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
+                                                                    i_mpi, n_omp, i_omp);
+            trafo = get_trafo_K2(i0, w, v);
+            if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v); }
+            break;
+        case 3:
+            convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
+                                                                    i_mpi, n_omp, i_omp);
+            trafo = get_trafo_K3(i0, w, iv, ivp);
+            if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp); }
+            break;
+        default:;
     }
-    // collect+combine results from different MPI processes, reorder them appropriately
-    vec<Q> K2_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    mpi_collect(K2_buffer, K2_result, n_mpi, n_omp);
-    vec<Q> K2_ordered_result = mpi_reorder_result(K2_result, n_mpi, n_omp);
-
-    write_out_results_K2(K2_ordered_result);
-}
-
-template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
-        template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::calculate_bubble_function_K3(){
-    int n_mpi = nK_K3 * nw3_w;
-    int n_omp = nw3_v * nw3_v_p * n_in;
-
-    // initialize buffer into which each MPI process writes their results
-    vec<Q> K3_buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
-
-    // start for-loop over external arguments, using MPI and OMP
-    int iterator = 0;
-    for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
-        if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(static, 8) default(none)
-            for (int i_omp=0; i_omp<n_omp; ++i_omp) {
-                int iK2, i0, iw, iv, ivp, i_in; double w, v, vp;
-                convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
-                                                                        i_mpi, n_omp, i_omp);
-                Q value;
-                int trafo = get_trafo_K3(i0, w, iv, ivp);
-                if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp);}
-                K3_buffer[iterator*n_omp + i_omp] = value; // write result of integration into MPI buffer
-            }
-        }
-        ++iterator;
-    }
-    // collect+combine results from different MPI processes, reorder them appropriately
-    vec<Q> K3_result = mpi_initialize_result<Q> (n_mpi, n_omp);
-    mpi_collect(K3_buffer, K3_result, n_mpi, n_omp);
-    vec<Q> K3_ordered_result = mpi_reorder_result(K3_result, n_mpi, n_omp);
-
-    write_out_results_K3(K3_ordered_result);
+    return value;
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1879,6 +1840,25 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::write_out_results(const vec<Q>& Ordered_result, const int diag_class){
+    switch (diag_class) {
+        case 1:
+            write_out_results_K1(Ordered_result);
+            break;
+        case 2:
+            write_out_results_K2(Ordered_result);
+            break;
+        case 3:
+            write_out_results_K3(Ordered_result);
+            break;
+        default: ;
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::write_out_results_K1(const vec<Q>& K1_ordered_result){
     switch (channel) {
         case 'a':
@@ -1936,6 +1916,28 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         case 't':
             dgamma[0].tvertex().K3 += K3_ordered_result;
             dgamma[0].tvertex().enforce_freqsymmetriesK3(dgamma[0].tvertex());
+            break;
+        default: ;
+    }
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+        Bubble_Object>::set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, const int diag_class){
+    switch (diag_class) {
+        case 1:
+            n_mpi = nK_K1;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+            n_omp = nw1_w * n_in; // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+            break;
+        case 2:
+            n_mpi = nK_K2 * nw2_w;
+            n_omp = nw2_v * n_in;
+            break;
+        case 3:
+            n_mpi = nK_K3 * nw3_w;
+            n_omp = nw3_v * nw3_v_p * n_in;
             break;
         default: ;
     }
