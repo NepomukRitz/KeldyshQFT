@@ -49,7 +49,7 @@ public:
      * @param i_in  : internal structure index
      * @return comp : value of the bubble evaluated at (iK, v1, v2)
      */
-    auto value(int iK, double v1, double v2, int i_in) const -> Q{
+    auto value(int iK, freq_dtype v1, freq_dtype v2, int i_in) const -> Q{
         Q ans;
         if(dot){
 #ifdef KELDYSH_FORMALISM
@@ -151,6 +151,31 @@ public:
                 break;
             case 't':
                 Pival = value(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+                break;
+            default:;
+        }
+        return Pival;
+    }
+    /**
+     * Wrapper for value function above, providing the natural arguments for evaluation of the bubble in each channel:
+     * @param iK      : Keldysh index of combined bubble object (0 <= iK <= 15)
+     * @param m       : 2*m     is bubble transfer frequency of the corresponding channel
+     * @param npp     : 2*npp+1 is bubble integration frequency of the corresponding channel
+     * @param i_in    : internal structure index
+     * @param channel : channel to which the bubble belongs
+     * @return Q      : value of the bubble evaluated at the arguments described above (usually comp)
+     */
+    auto value(int iK, int m, int npp, int i_in, char channel) const -> Q {
+        Q Pival;
+        switch (channel) {
+            case 'a':
+                Pival = value(iK, npp - m / 2, npp + m - m / 2, i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+                break;
+            case 'p':
+                Pival = value(iK, m - m / 2 + npp, m / 2 - npp -1, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+                break;
+            case 't':
+                Pival = value(iK, npp - m / 2, npp + m - m / 2, i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
                 break;
             default:;
         }

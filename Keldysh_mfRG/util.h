@@ -204,4 +204,31 @@ void get_time(double t0, std::string prec) {
     }
 }
 
+// round (frequency/(pi*T)) to an even number
+auto floor2bfreq(double w) -> double {
+    double a = (2. * M_PI * glb_T);
+    return floor(w / a) * a;
+}
+auto ceil2bfreq(double w) -> double {
+    double a = (2. * M_PI * glb_T);
+    return ceil(w / a) * a;
+}
+auto round2bfreq(double w) -> double {
+    double a = (2. * M_PI * glb_T);
+    return round(w / a) * a;
+}
+// round (frequency/(pi*T)) to an uneven number
+auto floor2ffreq(double w) -> double {
+    double a = (M_PI * glb_T);
+    return (floor((w / a - 1.) / 2.) * 2. + 1 ) * a;
+}
+auto ceil2ffreq(double w) -> double {
+    double a = (M_PI * glb_T);
+    return (ceil((w / a - 1.) / 2.) * 2. + 1 ) * a;
+}
+auto round2ffreq(double w) -> double {
+    double a = (M_PI * glb_T);
+    return (round((w / a - 1.) / 2.) * 2. + 1 ) * a;
+}
+
 #endif // UTIL_H

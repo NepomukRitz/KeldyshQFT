@@ -443,6 +443,7 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
 #endif
 };
 
+#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     double w, v1, v2;
     switch (channel) {
@@ -518,6 +519,91 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     input.v1 = v1;
     input.v2 = v2;
 }
+#else
+template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
+    double w, v1, v2;
+    double floor2bf_w;
+    double floor2bf_inputw = floor2bfreq(input.w / 2.);
+    switch (channel) {
+        case 'a':
+            switch (input.channel) {
+                case 'a':
+                    return;                                         // do nothing
+                case 'p':
+                    w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;        // input.w  = w_p
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;            // input.v1 = v_p
+                    v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;            // input.v2 = v'_p
+                    break;
+                case 't':
+                    w  = input.v1-input.v2;                         // input.w  = w_t
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;            // input.v1 = v_t
+                    v2 = input.v1 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_t
+                    break;
+                case 'f':
+                    w  = input.v1 - floor2bf_inputw;                    // input.w  = v_1'
+                    v1 = input.w + input.v2 - floor2bf_inputw;   // input.v1 = v_2'
+                    v2 = input.v2 - floor2bf_inputw;              // input.v2 = v_1
+                    break;
+                default:;
+            }
+            break;
+        case 'p':
+            switch (input.channel) {
+                case 'a':
+                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;                    // input.w  = w_a
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;     // input.v1 = v_a
+                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;     // input.v2 = v'_a
+                    break;
+                case 'p':
+                    return;                                    // do nothing
+                case 't':
+                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;                    // input.w  = w_t
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 =           - input.v1 + floor2bf_w + floor2bf_inputw;     // input.v1 = v_t
+                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;     // input.v2 = v'_t
+                    break;
+                case 'f' :
+                    w  = input.w + input.v2 - floor2bf_inputw;                     // input.w  = v_1'
+                    v1 = - input.v2 + floor2bf_inputw;               // input.v1 = v_2'
+                    v2 = input.w + input.v2 - floor2bf_inputw;   // input.v2 = v_1
+                    break;
+                default:;
+            }
+            break;
+        case 't':
+            switch (input.channel) {
+                case 'a':
+                    w  = input.v1-input.v2;                    // input.w  = w_a
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_a
+                    v2 =           input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_a'
+                    break;
+                case 'p':
+                    w  = input.v1-input.v2;                    // input.w  = w_p
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = - input.v1 + floor2bf_w + floor2bf_inputw;      // input.v1 = v_p
+                    v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;      // input.v2 = v'_p
+                    break;
+                case 't':
+                    return;                                    // do nothing
+                case 'f':
+                    w  = input.w + input.v2 - floor2bf_inputw;                     // input.w  = v_1'
+                    v1 = input.v1 - floor2bf_inputw;    // input.v1 = v_2'
+                    v2 = input.v2 - floor2bf_inputw;               // input.v2 = v_1
+                    break;
+                default:;
+            }
+            break;
+        default:;
+    }
+    input.w  = w;
+    input.v1 = v1;
+    input.v2 = v2;
+}
+#endif
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid

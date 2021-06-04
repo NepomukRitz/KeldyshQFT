@@ -112,6 +112,8 @@ auto FrequencyGrid::scale_factor(double Lambda) -> double {
     return max(U_factor*glb_U, Delta_factor*(Lambda+glb_Gamma)/2.);
 }
 
+
+#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
 void FrequencyGrid::initialize_grid() {
     double W;
     double W_upper = grid_transf(w_upper, W_scale);
@@ -125,10 +127,29 @@ void FrequencyGrid::initialize_grid() {
         w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
     }
 }
+#else
+void FrequencyGrid::initialize_grid() {
+    double W;
+    double W_upper = grid_transf(w_upper, W_scale);
+    double W_lower = grid_transf(w_lower, W_scale);
+    double dW = (W_upper - W_lower) / ((double) (N_w - 1.));
+    for(int i=0; i<N_w; ++i) {
+        W = W_lower + i*dW;
+        w[i] = grid_transf_inv(W, W_scale);
+    }
+    if (N_w % 2 == 1) {
+        w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+    }
+}
+#endif
 
 void FrequencyGrid::initialize_grid(double scale) {
     W_scale = scale;
     w_upper = scale * 15.;
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    if (type == 'b') w_upper = round2bfreq(w_upper);
+    else w_upper = round2ffreq(w_upper);
+#endif
     w_lower = - w_upper;
     initialize_grid();
 }
@@ -403,6 +424,7 @@ double sgn(double x) {
     return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
 }
 
+#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
 double grid_transf(double w, double W_scale) {
     // Version 1: linear around w=0
 //    return w/sqrt(W_scale*W_scale + w*w);
@@ -418,6 +440,25 @@ double grid_transf_inv(double W, double W_scale) {
     // Version 2: quadratic around w=0
     return W_scale * W * abs(W) / sqrt(1. - W * W);
 }
+#else
+// Transformation from
+double grid_transf(double w, double W_scale) {
+    // Version 1: linear around w=0
+    return w/sqrt(W_scale*W_scale + w*w);
+
+    // Version 2: quadratic around w=0
+//    double w2 = w * w;
+//    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+}
+double grid_transf_inv(double W, double W_scale) {
+    // Version 1: linear around w=0
+    return W_scale*W/sqrt(1.-W*W);
+
+    // Version 2: quadratic around w=0
+//    return W_scale * W * abs(W) / sqrt(1. - W * W);
+}
+
+#endif
 
 //void setUpBosGrid(rvec& freqs, int nfreqs) {
 //    double W;

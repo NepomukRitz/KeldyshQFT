@@ -94,6 +94,8 @@ public:
 #else
     auto GM(double v, int i_in) const -> Q;
     auto SM(double v, int i_in) const -> Q;
+    auto GM(int n, int i_in) const -> Q;    // for Matsubara frequencies at finite T
+    auto SM(int n, int i_in) const -> Q;    // for Matsubara frequencies at finite T
 #endif
 
 
@@ -298,6 +300,13 @@ auto Propagator<Q>::GM(double v, int i_in) const -> Q
     return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
 #endif
 }
+
+template <typename Q>
+auto Propagator<Q>::GM(int n, int i_in) const -> Q
+{
+    double v = (2 * n + 1) * glb_T * M_PI;
+    return GM(v, i_in);
+}
 // single scale propagator (Matsubara)
 template <typename Q>
 auto Propagator<Q>::SM(double v, int i_in) const -> Q
@@ -308,6 +317,13 @@ auto Propagator<Q>::SM(double v, int i_in) const -> Q
 #else
     return -0.5*glb_i*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
 #endif
+}
+
+template <typename Q>
+auto Propagator<Q>::SM(int n, int i_in) const -> Q
+{
+    double v =  (2 * n + 1) * glb_T * M_PI;
+    return SM(v, n_in);
 }
 
 #endif
