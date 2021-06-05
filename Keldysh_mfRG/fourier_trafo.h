@@ -9,6 +9,7 @@
 #include "propagator.h"             // propagator to perform second-order perturbation theory (SOPT)
 #include "selfenergy.h"             // self-energy filled in SOPT
 #include "r_vertex.h"               // reducible vertex in channel r (for K1a, K1p in SOPT)
+#include "util.h"                   // sign function
 
 using namespace std;
 

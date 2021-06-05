@@ -667,12 +667,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
 
 
 template<typename Q> auto sign_index(Q freq) -> int {
-    if (freq > 0){
-        return 1;
-    }
-    else {
-        return 0;
-    }
+    return (freq > 0);
 }
 
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) {

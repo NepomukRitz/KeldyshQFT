@@ -5,6 +5,7 @@
 #include "data_structures.h" // real/complex vector classes, imag. unit
 #include "selfenergy.h"      // self-energy class
 #include "parameters.h"      // system parameters (lengths of vectors etc.)
+#include "util.h"            // sign - function
 
 using namespace std;
 
@@ -37,12 +38,7 @@ auto Eff_fac(double v) -> double {
 #endif
 }
 
-// signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
-double sign(double x) {
-    if (x > 0) return 1.;
-    else if (x < 0) return -1.;
-    else return 0.;
-}
+
 
 
 /// Propagator class ///
@@ -94,8 +90,6 @@ public:
 #else
     auto GM(double v, int i_in) const -> Q;
     auto SM(double v, int i_in) const -> Q;
-    auto GM(int n, int i_in) const -> Q;    // for Matsubara frequencies at finite T
-    auto SM(int n, int i_in) const -> Q;    // for Matsubara frequencies at finite T
 #endif
 
 
@@ -300,13 +294,6 @@ auto Propagator<Q>::GM(double v, int i_in) const -> Q
     return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
 #endif
 }
-
-template <typename Q>
-auto Propagator<Q>::GM(int n, int i_in) const -> Q
-{
-    double v = (2 * n + 1) * glb_T * M_PI;
-    return GM(v, i_in);
-}
 // single scale propagator (Matsubara)
 template <typename Q>
 auto Propagator<Q>::SM(double v, int i_in) const -> Q
@@ -317,13 +304,6 @@ auto Propagator<Q>::SM(double v, int i_in) const -> Q
 #else
     return -0.5*glb_i*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
 #endif
-}
-
-template <typename Q>
-auto Propagator<Q>::SM(int n, int i_in) const -> Q
-{
-    double v =  (2 * n + 1) * glb_T * M_PI;
-    return SM(v, n_in);
 }
 
 #endif

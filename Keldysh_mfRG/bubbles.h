@@ -140,6 +140,7 @@ public:
      * @param channel : channel to which the bubble belongs
      * @return Q      : value of the bubble evaluated at the arguments described above (usually comp)
      */
+#if defined(KELDYSM_FORMALISM) or defined(ZERO_TEMP)
     auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q {
         Q Pival;
         switch (channel) {
@@ -156,6 +157,24 @@ public:
         }
         return Pival;
     }
+#else
+    auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q {
+        Q Pival;
+        switch (channel) {
+            case 'a':
+                Pival = value(iK, vpp - floor2bfreq(w / 2.), vpp + ceil2bfreq(w / 2.), i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+                break;
+            case 'p':
+                Pival = value(iK, ceil2bfreq(w / 2.) + vpp, floor2bfreq(w / 2.) - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+                break;
+            case 't':
+                Pival = value(iK, vpp - floor2bfreq(w / 2.), vpp + ceil2bfreq(w / 2.), i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+                break;
+            default:;
+        }
+        return Pival;
+    }
+#endif
     /**
      * Wrapper for value function above, providing the natural arguments for evaluation of the bubble in each channel:
      * @param iK      : Keldysh index of combined bubble object (0 <= iK <= 15)

@@ -204,6 +204,30 @@ void get_time(double t0, std::string prec) {
     }
 }
 
+
+// signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
+template <typename T>
+auto sign(T x) -> double {
+    return (T(0) < x) - (x < T(0));
+}
+
+
+
+/**
+ * Functions for rounding to Matsubara frequencies
+ */
+// rounds away from zero to next Integer
+auto round2Infty(double x) -> double {
+    // trunc() rounds towards zero
+    return trunc(x) + sign(x);
+}
+
+// needed for rounding to fermionic frequencies
+auto myround(double x) -> double {
+    if (x < 0.5) return floor(x);
+    else return ceil(x);
+}
+
 // round (frequency/(pi*T)) to an even number
 auto floor2bfreq(double w) -> double {
     double a = (2. * M_PI * glb_T);
@@ -215,7 +239,7 @@ auto ceil2bfreq(double w) -> double {
 }
 auto round2bfreq(double w) -> double {
     double a = (2. * M_PI * glb_T);
-    return round(w / a) * a;
+    return round2Infty(w / a) * a;
 }
 // round (frequency/(pi*T)) to an uneven number
 auto floor2ffreq(double w) -> double {
@@ -228,7 +252,17 @@ auto ceil2ffreq(double w) -> double {
 }
 auto round2ffreq(double w) -> double {
     double a = (M_PI * glb_T);
-    return (round((w / a - 1.) / 2.) * 2. + 1 ) * a;
+    return (myround((w / a - 1.) / 2.) * 2. + 1 ) * a;
 }
+
+// Check whether there are doubly occuring frequencies
+auto is_doubleOccurencies(rvec freqs) -> int {
+    for (int i = 0; i < freqs.size() - 1; i++){
+        if (freqs[i] == freqs[i+1]) return 1;
+    }
+    return 0;
+}
+
+
 
 #endif // UTIL_H
