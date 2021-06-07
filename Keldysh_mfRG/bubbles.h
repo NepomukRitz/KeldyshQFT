@@ -170,10 +170,10 @@ class PrecalculateBubble{
 #endif
 
     void compute_FermionicBubble();
-    void perform_internal_sum(const int iK, const int iv1, const int iv2);
+    void perform_internal_sum(int iK, int iv1, int iv2);
 
-    int get_iK_bubble(const int iK_actual);
-    int get_iK_actual(const int iK_bubble);
+    int get_iK_bubble(int iK_actual);
+    int get_iK_actual(int iK_bubble);
 
 #ifdef HUBBARD_MODEL
     void perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
@@ -276,7 +276,7 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
     double diff = (end_time - starting_time); // time given in seconds
     std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
 
-    for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
+    for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
         std::cout << "Now calculating iK = " << iK << "\n";
 #pragma omp parallel for schedule(dynamic)
@@ -295,7 +295,7 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
         }*/
     }
 #else
-    for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) { // TODO: Calculate between the nine non-zero Keldysh components and the 16 in total!
+    for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
