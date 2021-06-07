@@ -982,7 +982,7 @@ private:
 
     int diag_class;
 
-    Q res_l_V_initial, res_r_V_initial, res_l_Vhat_initial, res_r_Vhat_initial;
+    Q res_l_V_initial, res_r_V_initial, res_l_Vhat_initial, res_r_Vhat_initial; // To be precomputed for K1
 
     void set_Keldysh_index_i0(int i0_in);
     void precompute_vertices();
@@ -1116,13 +1116,9 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(double vpp) const -> Q {
     if (case_always_has_to_be_zero()) {return 0.;}
-    Q res_l_V = res_l_V_initial;
-    Q res_r_V = res_r_V_initial;
-    Q res_l_Vhat = res_l_Vhat_initial;
-    Q res_r_Vhat = res_r_Vhat_initial;
-#if DIAG_CLASS >= 2
+    Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
     compute_vertices(vpp, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat);
-#endif
+
     Q Pival = Pi.value(i2, w, vpp, i_in, channel);
     Q result;
     if (channel != 't')
@@ -1170,6 +1166,12 @@ template<typename Q, template <typename> class symmetry_left, template <typename
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertices(const double vpp,
                                                                                   Q& res_l_V, Q& res_r_V,
                                                                                   Q& res_l_Vhat, Q& res_r_Vhat) const{
+#if DIAG_CLASS <= 1
+    res_l_V = res_l_V_initial;
+    res_r_V = res_r_V_initial;
+    res_l_Vhat = res_l_Vhat_initial;
+    res_r_Vhat = res_r_Vhat_initial;
+#else
     vector<int> indices = indices_sum(i0, i2, channel);
     VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
     VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
@@ -1197,6 +1199,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
         else
             res_r_Vhat = vertex2[0].right_same_bare(input_r);
     }
+#endif // DIAG_CLASS
 };
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -1277,7 +1280,7 @@ template <typename Q,
           template <typename> class symmetry_left,
           template <typename> class symmetry_right,
           class Bubble_Object>
-void bubble_function_OLD(GeneralVertex<Q, symmetry_result>& dgamma,
+void OLD_bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                      const GeneralVertex<Q, symmetry_left>& vertex1,
                      const GeneralVertex<Q, symmetry_right>& vertex2,
                      const Propagator& G, const Propagator& S, const Bubble_Object& Pi,
@@ -1762,18 +1765,6 @@ void bubble_function_OLD(GeneralVertex<Q, symmetry_result>& dgamma,
 #endif
 }
 
-/// Overload for bubble_function in case no Bubble object has been initialized yet. ONLY WORKS FOR SIAM!!
-template <typename Q,
-        template <typename> class symmetry_result,
-        template <typename> class symmetry_left,
-        template <typename> class symmetry_right>
-void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
-                     const GeneralVertex<Q, symmetry_left>& vertex1,
-                     const GeneralVertex<Q, symmetry_right>& vertex2,
-                     const Propagator& G, const Propagator& S, const char channel, const bool diff){
-        Bubble Pi(G, S, diff);
-        bubble_function(dgamma, vertex1, vertex2, G, S, Pi, channel, false);
-}
 
 #ifdef DEBUG_MODE
 template <typename Q, template <typename> class container_type>
@@ -1811,7 +1802,7 @@ class BubbleFunctionCalculator{
 
     double vmin = 0, vmax = 0;
 
-    // Dummy instantiation all with bosonic K1-grids
+    // Dummy instantiation all with bosonic K1-grids - will be set for real in the constructor
     FrequencyGrid freqs_K1  = dgamma[0].avertex().frequencies.b_K1;
     FrequencyGrid bfreqs_K2 = dgamma[0].avertex().frequencies.b_K1;
     FrequencyGrid ffreqs_K2 = dgamma[0].avertex().frequencies.b_K1;
@@ -2416,6 +2407,19 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
             BubbleComputer (dgamma, vertex1, vertex2, G, S, Pi, channel, diff);
     BubbleComputer.perform_computation();
+}
+
+/// Overload for bubble_function in case no Bubble object has been initialized yet. ONLY WORKS FOR SIAM!!
+template <typename Q,
+        template <typename> class symmetry_result,
+        template <typename> class symmetry_left,
+        template <typename> class symmetry_right>
+void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
+                     const GeneralVertex<Q, symmetry_left>& vertex1,
+                     const GeneralVertex<Q, symmetry_right>& vertex2,
+                     const Propagator& G, const Propagator& S, const char channel, const bool diff){
+    Bubble Pi(G, S, diff);
+    bubble_function(dgamma, vertex1, vertex2, G, S, Pi, channel, false);
 }
 
 #endif //KELDYSH_MFRG_BUBBLES_H
