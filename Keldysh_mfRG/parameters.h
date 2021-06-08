@@ -5,11 +5,6 @@
 //#define KELDYSH_FORMALISM
 
 //#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    using freq_dtype = int;
-#else
-    using freq_dtype = double;
-#endif
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
@@ -31,9 +26,9 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 3
+#define DIAG_CLASS 1
 
-#define N_LOOPS 3  // Number of loops
+#define N_LOOPS 1  // Number of loops
 //#define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
@@ -97,22 +92,22 @@ const int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((int)(g
 
 #elif GRID==3
 // parameters for the grid at Lambda = 0
-const double glb_W_scale = 1.;
-const double glb_w_upper = 50.;
+const double glb_W_scale = 1000.;
+const double glb_w_upper = 5000.;
 const double glb_w_lower = -glb_w_upper;
-const double glb_v_upper = 50.;
+const double glb_v_upper = 5000.;
 const double glb_v_lower = -glb_v_upper;
 
-const double glb_W2_scale = 1.;
-const double glb_w2_upper = 15.;
+const double glb_W2_scale = 100.;
+const double glb_w2_upper = 1500.;
 const double glb_w2_lower = -glb_w2_upper;
-const double glb_v2_upper = 15.;
+const double glb_v2_upper = 1500.;
 const double glb_v2_lower = -glb_v2_upper;
 
-const double glb_W3_scale = 1.;
-const double glb_w3_upper = 10.;
+const double glb_W3_scale = 100.;
+const double glb_w3_upper = 1000.;
 const double glb_w3_lower = -glb_w3_upper;
-const double glb_v3_upper = 10.;
+const double glb_v3_upper = 1000.;
 const double glb_v3_lower = -glb_v3_upper;
 
 // Number of bosonic and fermionic frequency points
@@ -125,8 +120,8 @@ const int nFER2 = 51;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 #else
-const int nBOS = 401;
-const int nFER = 400;
+const int nBOS = 201;
+const int nFER = 200;
 // Number of frequency points for K2 and K3 classes
 const int nBOS2 = 51;//nBOS;
 const int nFER2 = 50;//nFER;

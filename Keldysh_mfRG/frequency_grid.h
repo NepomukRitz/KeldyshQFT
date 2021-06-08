@@ -123,8 +123,8 @@ void FrequencyGrid::initialize_grid() {
         W = W_lower + i*dW;
         w[i] = grid_transf_inv(W, W_scale);
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-        if (type == 'b') w_upper = round2bfreq(w_upper);
-    else w_upper = round2ffreq(w_upper);
+        if (type == 'b') w[i] = round2bfreq(w[i]);
+    else w[i] = round2ffreq(w[i]);
 #endif
     }
     if (N_w % 2 == 1) {
@@ -137,7 +137,7 @@ void FrequencyGrid::initialize_grid() {
 }
 
 void FrequencyGrid::initialize_grid(double scale) {
-    W_scale = scale;
+    W_scale = scale * 10;
     w_upper = scale * 15.;
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     if (type == 'b') {
@@ -464,8 +464,8 @@ void wscale_from_wmax(double & Wscale, const double wmax, const int nmin, const 
     double tmin = 1./(N + 1);
     double wmin = nmin * M_PI * glb_T;
     // Version 1: linear around w=0
-    Wscale = max(Wscale, wmax * sqrt(1 - pow(tmax, 2)) / tmax);
-    Wscale = max(Wscale, wmin * sqrt(1 - pow(tmin, 2)) / tmin);
+    Wscale = max(Wscale * 0., wmax * sqrt(1 - pow(tmax, 2)) / tmax);
+    Wscale = max(Wscale, 1. + wmin * sqrt(1 - pow(tmin, 2)) / tmin);
 
 
     // Version 2: quadratic around w=0

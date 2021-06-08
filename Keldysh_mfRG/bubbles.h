@@ -49,7 +49,7 @@ public:
      * @param i_in  : internal structure index
      * @return comp : value of the bubble evaluated at (iK, v1, v2)
      */
-    auto value(int iK, freq_dtype v1, freq_dtype v2, int i_in) const -> Q{
+    auto value(int iK, double v1, double v2, int i_in) const -> Q{
         Q ans;
         if(dot){
 #ifdef KELDYSH_FORMALISM
@@ -172,6 +172,7 @@ public:
                 break;
             default:;
         }
+        assert(isnormal(Pival) == true);
         return Pival;
     }
 #endif
@@ -384,6 +385,7 @@ public:
         }
 #endif
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
+        assert(isnormal(Pival) == true);
 
 #if DIAG_CLASS >= 2
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
@@ -868,6 +870,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                            value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
+#ifdef ZERO_TEMP
                            //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
                            //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
                            //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
@@ -886,7 +889,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 
                            }
                            value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, intervals, num_intervals);
-
+#else
+                           value += prefactor * glb_T * matsubarasum<Q>(integrand_K1, vmin, vmax);
+#endif
 #endif
 
 
@@ -895,7 +900,11 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                                prefactor * (1. / (2. * M_PI * glb_i)) *
 #else
+#ifdef ZERO_TEMP
                                prefactor * (1. / (2. * M_PI)) *
+#else
+                               prefactor * glb_T *
+#endif
 #endif
                                asymp_corrections_bubble(k1, vertex1, vertex2, G,
                                                         vmin, vmax, w, 0., 0., i0, i2, i_in, channel, diff);

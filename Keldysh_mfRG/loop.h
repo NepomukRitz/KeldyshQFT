@@ -288,7 +288,7 @@ void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>&
         self.addself(0, iv, i_in, integratedR);
         self.addself(1, iv, i_in, integratedK);
 #else
-
+#ifdef ZERO_TEMP
         Q integratedR = 0.;
         // split up the integrand at discontinuities and (possible) kinks:
 
@@ -318,6 +318,12 @@ void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>&
         // add analytical results for the tails
         integratedR += -1./(2.*M_PI)
                        * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
+#else
+        Q integratedR = - glb_T * matsubarasum<Q>(integrandR, v_lower, v_upper);
+        // add analytical results for the tails
+        integratedR += - glb_T
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
+#endif
         self.addself(0, iv, i_in, integratedR);
 #endif
     }

@@ -289,6 +289,7 @@ template <typename Q>
 auto Propagator<Q>::GM(double v, int i_in) const -> Q
 {
 #ifdef PARTICLE_HOLE_SYMM
+    assert(v != 0.);
     return 1./(        v                +       (glb_Gamma+Lambda)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
 #else
     return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
@@ -298,6 +299,7 @@ auto Propagator<Q>::GM(double v, int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::SM(double v, int i_in) const -> Q
 {
+    assert(v != 0.);
     Q G = GM(v, i_in);
 #ifdef PARTICLE_HOLE_SYMM
     return -0.5*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)

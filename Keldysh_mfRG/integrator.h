@@ -7,6 +7,7 @@
 #include <gsl/gsl_integration.h>            // for GSL integrator
 #include <gsl/gsl_errno.h>                  // for GSL integrator
 #include "Integrator_NR/integrator_NR.h"    // adaptive Gauss-Lobatto integrator with Kronrod extension
+#include "util.h"                           // for rounding functions
 
 // temporarily necessary to make use of frequency grid bfreqs
 #include "frequency_grid.h"
@@ -618,6 +619,20 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     }
     return result;
 #endif
+}
+
+
+template <typename Q, typename Integrand> auto matsubarasum(Integrand& integrand, double vmin, double vmax) -> Q {
+    vmin = floor2ffreq(vmin);
+    vmax = ceil2ffreq(vmax);
+    int N = (int) ((vmax - vmin) / (2 * M_PI * glb_T)) + 1;
+    double vpp;
+    Q result = 0.;
+    for (int i = 0; i < N; i++) {
+        vpp = vmin + i * (2 * M_PI * glb_T);
+        result += integrand(vpp);
+    }
+    return result;
 }
 
 #endif //KELDYSH_MFRG_INTEGRATOR_H
