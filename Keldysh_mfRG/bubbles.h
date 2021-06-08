@@ -1802,7 +1802,7 @@ class BubbleFunctionCalculator{
 
     double vmin = 0, vmax = 0;
 
-    // Dummy instantiation all with bosonic K1-grids - will be set for real in the constructor
+    // Dummy instantiation all with bosonic K1-grids - will be set for real by the constructor
     FrequencyGrid freqs_K1  = dgamma[0].avertex().frequencies.b_K1;
     FrequencyGrid bfreqs_K2 = dgamma[0].avertex().frequencies.b_K1;
     FrequencyGrid ffreqs_K2 = dgamma[0].avertex().frequencies.b_K1;
@@ -1922,8 +1922,8 @@ Bubble_Object>::initialize_frequency_grids() {
 #if DIAG_CLASS >= 3
     initialize_frequency_grid_K3();
 #endif
-    vmin *= 2;
-    vmax  *= 2;
+    // vmin *= 2;
+    // vmax  *= 2;
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -2000,7 +2000,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int iterator = 0;
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(static, 8)
+#pragma omp parallel for schedule(dynamic)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }
