@@ -172,7 +172,7 @@ public:
                 break;
             default:;
         }
-        assert(isnormal(Pival) == true);
+        assert(isfinite(Pival) == true);
         return Pival;
     }
 #endif
@@ -385,7 +385,7 @@ public:
         }
 #endif
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
-        assert(isnormal(Pival) == true);
+        assert(isfinite(Pival) == true);
 
 #if DIAG_CLASS >= 2
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
@@ -421,7 +421,7 @@ public:
             double wl = vertex1[0].avertex().frequencies.b_K1.w_lower*2.;
             double wu = vertex1[0].avertex().frequencies.b_K1.w_upper*2.;
             double vpp = wl + i * (wu-wl)/(npoints-1);
-            vpp = vertex1[0].avertex().frequencies.b_K1.w[i];
+            vpp = vertex1[0].avertex().frequencies.b_K1.w[i] + M_PI * glb_T; // + M_PI * glb_T   for fermionic frequency
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
@@ -800,8 +800,11 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     vmin = min(vmin, ffreqs_K3.w_lower);
     vmax = max(vmax, ffreqs_K3.w_upper);
 #endif
-    vmin *= 2;
-    vmax  *= 2;
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    // make sure that the limits for the Matsubara sum are fermionic
+    vmin = floor2ffreq(vmin);
+    vmax = ceil2ffreq(vmax);
+#endif
 
 #if DIAG_CLASS >= 0
 //    double tK1 = get_time();

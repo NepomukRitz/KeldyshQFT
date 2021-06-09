@@ -1,6 +1,9 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
+// For production: uncomment the following line to switch off assert()-functions
+//#define NDEBUG
+
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 //#define KELDYSH_FORMALISM
 
@@ -37,7 +40,7 @@ using namespace std;
 
 /// Physical parameters ///
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-const double glb_T = 0.01;                     // Temperature
+const double glb_T = 2./M_PI; //0.01;                     // Temperature
 #else
 const double glb_T = 0.01;                     // Temperature
 #endif
@@ -120,8 +123,8 @@ const int nFER2 = 51;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 #else
-const int nBOS = 201;
-const int nFER = 200;
+const int nBOS = 101;
+const int nFER = 100;
 // Number of frequency points for K2 and K3 classes
 const int nBOS2 = 51;//nBOS;
 const int nFER2 = 50;//nFER;

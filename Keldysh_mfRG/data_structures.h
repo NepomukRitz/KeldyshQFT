@@ -17,6 +17,9 @@
 using namespace std;
 typedef complex<double> comp; // Complex number
 const comp glb_i (0., 1.);    // Imaginary unit
+auto isfinite(comp z) -> bool {
+    return isfinite(real(z)) and isfinite(imag(z));
+}
 
 /// DECLARATIONS ///
 

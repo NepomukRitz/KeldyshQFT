@@ -141,11 +141,11 @@ void FrequencyGrid::initialize_grid(double scale) {
     w_upper = scale * 15.;
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     if (type == 'b') {
-        w_upper = round2bfreq(w_upper);
+        w_upper = max(round2bfreq(w_upper), M_PI*(N_w-1));
         wscale_from_wmax(W_scale, w_upper, 2, N_w);
     }
     else {
-        w_upper = round2ffreq(w_upper);
+        w_upper = max(round2ffreq(w_upper), M_PI*(N_w-1));
         wscale_from_wmax(W_scale, w_upper, 1, N_w);
     }
 #endif
@@ -440,22 +440,22 @@ double grid_transf_inv(double W, double W_scale) {
     return W_scale * W * abs(W) / sqrt(1. - W * W);
 }
 #else
-// Transformation from
-double grid_transf(double w, double W_scale) {
-    // Version 1: linear around w=0
-    return w/sqrt(W_scale*W_scale + w*w);
-
-    // Version 2: quadratic around w=0
-//    double w2 = w * w;
-//    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
-}
-double grid_transf_inv(double W, double W_scale) {
-    // Version 1: linear around w=0
-    return W_scale*W/sqrt(1.-W*W);
-
-    // Version 2: quadratic around w=0
-//    return W_scale * W * abs(W) / sqrt(1. - W * W);
-}
+//// Transformation from
+//double grid_transf(double w, double W_scale) {
+//    // Version 1: linear around w=0
+//    return w/sqrt(W_scale*W_scale + w*w);
+//
+//    // Version 2: quadratic around w=0
+////    double w2 = w * w;
+////    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+//}
+//double grid_transf_inv(double W, double W_scale) {
+//    // Version 1: linear around w=0
+//    return W_scale*W/sqrt(1.-W*W);
+//
+//    // Version 2: quadratic around w=0
+////    return W_scale * W * abs(W) / sqrt(1. - W * W);
+//}
 
 // Picks W_scale such that
 //  *
@@ -471,6 +471,15 @@ void wscale_from_wmax(double & Wscale, const double wmax, const int nmin, const 
     // Version 2: quadratic around w=0
     // Wscale = max(Wscale, wmax * sqrt(1 - pow(tmax, 2)) / pow(tmax, 2));
     // Wscale = max(Wscale, wmin * sqrt(1 - pow(tmin, 2)) / pow(tmin, 2));
+}
+
+// // linear grid
+// Transformation from
+double grid_transf(double w, double W_scale) {
+    return w;
+}
+double grid_transf_inv(double W, double W_scale) {
+    return W;
 }
 #endif
 

@@ -274,6 +274,11 @@ void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>&
         // The prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
         double v_lower = prop.selfenergy.frequencies.w_lower;
         double v_upper = prop.selfenergy.frequencies.w_upper;
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+        // make sure that the limits for the Matsubara sum are fermionic
+        v_lower = floor2ffreq(v_lower);
+        v_upper = ceil2ffreq(v_upper);
+#endif
 #ifdef KELDYSH_FORMALISM
         Q integratedR = -1./(2.*M_PI*glb_i)*integrator<Q>(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
         Q integratedK = -1./(2.*M_PI*glb_i)* integrator<Q>(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);

@@ -622,15 +622,17 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 }
 
 
-template <typename Q, typename Integrand> auto matsubarasum(Integrand& integrand, double vmin, double vmax) -> Q {
-    vmin = floor2ffreq(vmin);
-    vmax = ceil2ffreq(vmax);
+template <typename Q, typename Integrand> auto matsubarasum(const Integrand& integrand, const double vmin, const double vmax) -> Q {
     int N = (int) ((vmax - vmin) / (2 * M_PI * glb_T)) + 1;
+    vector<Q> values(N);
     double vpp;
     Q result = 0.;
     for (int i = 0; i < N; i++) {
         vpp = vmin + i * (2 * M_PI * glb_T);
-        result += integrand(vpp);
+        values[i] = integrand(vpp);
+    }
+    for (int i = 0; i < N; i++) {
+        result += values[i];
     }
     return result;
 }
