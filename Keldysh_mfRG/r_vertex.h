@@ -566,8 +566,8 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
                     v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;     // input.v2 = v'_t
                     break;
                 case 'f' :
-                    w  = input.w + input.v2 - floor2bf_inputw;                     // input.w  = v_1'
-                    v1 = - input.v2 + floor2bf_inputw;               // input.v1 = v_2'
+                    w  = input.w + input.v1 - floor2bf_inputw;                     // input.w  = v_1'
+                    v1 = - input.v1 + floor2bf_inputw;               // input.v1 = v_2'
                     v2 = input.w + input.v2 - floor2bf_inputw;   // input.v2 = v_1
                     break;
                 default:;
