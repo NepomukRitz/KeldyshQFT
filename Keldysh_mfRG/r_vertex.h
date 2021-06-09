@@ -95,8 +95,8 @@ public:
      */
     void update_grid(double Lambda);
 
-#ifdef DIAG_CLASS
-#if DIAG_CLASS >= 0
+#ifdef MAX_DIAG_CLASS
+#if MAX_DIAG_CLASS >= 0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
     /// Member functions for accessing/setting values of the vector K1 ///
@@ -125,7 +125,7 @@ public:
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     vec<Q> K2 = vec<Q> (nK_K2 * nw2 * nv2 * n_in);  // data points of K2
 
     /// Member functions for accessing/setting values of the vector K2 ///
@@ -154,7 +154,7 @@ public:
     void enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated);
 
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     vec<Q> K3 = vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);  // data points of K3
 
     /// Member functions for accessing/setting values of the vector K3 ///
@@ -187,13 +187,13 @@ public:
 
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q>
     {
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
         this->K1 += rhs.K1;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         this->K2 += rhs.K2;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         this->K3 += rhs.K3;
 #endif
         return *this;
@@ -204,13 +204,13 @@ public:
     }
     auto operator*= (double alpha) -> rvert<Q>
     {
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
         this->K1 *= alpha;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         this->K2 *= alpha;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         this->K3 *= alpha;
 #endif
         return *this;
@@ -221,13 +221,13 @@ public:
     }
     auto operator*= (const rvert<Q>& rhs) -> rvert<Q>
     {
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
         this->K1 *= rhs.K1;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         this->K2 *= rhs.K2;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         this->K3 *= rhs.K3;
 #endif
         return *this;
@@ -238,13 +238,13 @@ public:
     }
     auto operator-= (const rvert<Q>& rhs) -> rvert<Q>
     {
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
         this->K1 -= rhs.K1;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         this->K2 -= rhs.K2;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         this->K3 -= rhs.K3;
 #endif
         return *this;
@@ -262,14 +262,14 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rv
 
     Q K1_val, K2_val, K2b_val, K3_val;
 
-#if DIAG_CLASS>=0
+#if MAX_DIAG_CLASS>=0
     K1_val = valsmooth<k1>(input, rvert_crossing);
 #endif
-#if DIAG_CLASS >=2
+#if MAX_DIAG_CLASS >=2
     K2_val  = valsmooth<k2>(input, rvert_crossing);
     K2b_val = valsmooth<k2b>(input, rvert_crossing);
 #endif
-#if DIAG_CLASS >=3
+#if MAX_DIAG_CLASS >=3
     K3_val = valsmooth<k3>(input, rvert_crossing);
 #endif
 
@@ -281,14 +281,14 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rv
 
     Q K1_val, K2_val, K2b_val, K3_val;
 
-#if DIAG_CLASS>=0
+#if MAX_DIAG_CLASS>=0
     K1_val = valsmooth<k1>(input, rvert_crossing, vertex_half2);
 #endif
-#if DIAG_CLASS >=2
+#if MAX_DIAG_CLASS >=2
     K2_val  = valsmooth<k2>(input, rvert_crossing, vertex_half2);
     K2b_val = valsmooth<k2b>(input, rvert_crossing, vertex_half2);
 #endif
-#if DIAG_CLASS >=3
+#if MAX_DIAG_CLASS >=3
     K3_val = valsmooth<k3>(input, rvert_crossing, vertex_half2);
 #endif
 
@@ -375,66 +375,66 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
 }
 
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing);
-#elif DIAG_CLASS > 1
+#elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 #endif
 };
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2);
-#elif DIAG_CLASS > 1
+#elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2b>(input, rvert_crossing, vertex_half2);
 #endif
 };
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing);
-#elif DIAG_CLASS > 1
+#elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
 #endif
 };
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2);
-#elif DIAG_CLASS > 1
+#elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2>(input, rvert_crossing, vertex_half2);
 #endif
 };
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return 0.;
-#elif DIAG_CLASS == 2
+#elif MAX_DIAG_CLASS == 2
     return valsmooth<k2>(input, rvert_crossing);
-#elif DIAG_CLASS == 3
+#elif MAX_DIAG_CLASS == 3
     return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 #endif
 };
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return 0.;
-#elif DIAG_CLASS == 2
+#elif MAX_DIAG_CLASS == 2
     return valsmooth<k2>(input, rvert_crossing, vertex_half2);
-#elif DIAG_CLASS == 3
+#elif MAX_DIAG_CLASS == 3
     return valsmooth<k2>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
 #endif
 };
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return 0.;
-#elif DIAG_CLASS == 2
+#elif MAX_DIAG_CLASS == 2
     return valsmooth<k2b>(input, rvert_crossing);
-#elif DIAG_CLASS == 3
+#elif MAX_DIAG_CLASS == 3
     return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 #endif
 };
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return 0.;
-#elif DIAG_CLASS == 2
+#elif MAX_DIAG_CLASS == 2
     return valsmooth<k2b>(input, rvert_crossing, vertex_half2);
-#elif DIAG_CLASS == 3
+#elif MAX_DIAG_CLASS == 3
     return valsmooth<k2b>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
 #endif
 };
@@ -519,7 +519,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
     frequencies_new.rescale_grid(Lambda);                     // rescale new frequency grid
 
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
     vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
     for (int iK1=0; iK1<nK_K1; ++iK1) {
         for (int iw=0; iw<nw1; ++iw) {
@@ -532,7 +532,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     }
     this->K1 = K1_new; // update vertex to new interpolated values
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
     for (int iK2=0; iK2<nK_K2; ++iK2) {
         for (int iw=0; iw<nw2; ++iw) {
@@ -551,7 +551,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     }
     this->K2 = K2_new; // update vertex to new interpolated values
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
     for (int iK3=0; iK3<nK_K3; ++iK3) {
         for (int iw=0; iw<nw3; ++iw) {
@@ -629,7 +629,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
 
 
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) {
 
     for (int itK = 0; itK < nK_K2; itK++){
@@ -683,7 +683,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 }
 #endif
 
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated) {
 
     for (int itK = 0; itK < nK_K3; itK++){
@@ -750,7 +750,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
 #endif
 
 
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
 template <typename Q> auto rvert<Q>::K1_acc(int i) const -> Q {
     if (i >= 0 && i < K1.size())
         return K1[i];
@@ -774,7 +774,7 @@ template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q
 }
 #endif
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
 template <typename Q> auto rvert<Q>::K2_acc(int i) const -> Q {
     if (i >= 0 && i < K2.size())
         return K2[i];
@@ -798,7 +798,7 @@ template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) co
 }
 #endif
 
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
 template <typename Q> auto rvert<Q>::K3_acc(int i) const -> Q {
     if (i >= 0 && i < K3.size())
         return K3[i];

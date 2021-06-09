@@ -22,7 +22,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define MAX_DIAG_CLASS 2
 
 #define N_LOOPS 1  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
@@ -301,11 +301,11 @@ const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 #if REG==2
 const int param_size = 14;
-const double parameter_list[param_size] = {GRID, REG, glb_Gamma, DIAG_CLASS, N_LOOPS,
+const double parameter_list[param_size] = {GRID, REG, glb_Gamma, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #else
 const int param_size = 13;
-const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, N_LOOPS,
+const double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #endif
 

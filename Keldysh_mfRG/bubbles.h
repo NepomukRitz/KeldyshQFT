@@ -545,7 +545,7 @@ class Integrand_K1 {
     const char channel;
     const double w;
     const bool diff;
-#if DIAG_CLASS <= 1
+#if MAX_DIAG_CLASS <= 1
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
 #endif
 public:
@@ -587,7 +587,7 @@ public:
         i0 = 0;
 #endif
 
-#if DIAG_CLASS <= 1
+#if MAX_DIAG_CLASS <= 1
 #ifdef KELDYSH_FORMALISM
         // For K1 class, left and right vertices do not depend on integration frequency -> precompute them to save time
         vector<int> indices = indices_sum(i0, i2, channel);
@@ -616,11 +616,11 @@ public:
      */
     auto operator() (double vpp) const -> Q {
         Q res;
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
         vector<int> indices = indices_sum(i0, i2, channel);
 #endif
-#if DIAG_CLASS <= 1 && defined(KELDYSH_FORMALISM)
+#if MAX_DIAG_CLASS <= 1 && defined(KELDYSH_FORMALISM)
         if (!diff) {
             // directly return zero in cases that always have to be zero
             switch (channel) {
@@ -657,7 +657,7 @@ public:
 #endif
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         VertexInput input_l (indices[0], w, 0., vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, 0., i_in, 0, channel);
 
@@ -1013,7 +1013,7 @@ public:
               i2(i2_in), w(w_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
         diag_class = 1; // This constructor corresponds to K1
         set_Keldysh_index_i0(i0_in);
-#if DIAG_CLASS <= 1
+#if MAX_DIAG_CLASS <= 1
         precompute_vertices();
 #endif
     }
@@ -1131,7 +1131,7 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 bool Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has_to_be_zero() const {
     bool zero_result = false;
-#if DIAG_CLASS <= 1 && defined(KELDYSH_FORMALISM)
+#if MAX_DIAG_CLASS <= 1 && defined(KELDYSH_FORMALISM)
     if (!diff) {
         switch (channel) {
             case 'a':
@@ -1166,7 +1166,7 @@ template<typename Q, template <typename> class symmetry_left, template <typename
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertices(const double vpp,
                                                                                   Q& res_l_V, Q& res_r_V,
                                                                                   Q& res_l_Vhat, Q& res_r_Vhat) const{
-#if DIAG_CLASS <= 1
+#if MAX_DIAG_CLASS <= 1
     res_l_V = res_l_V_initial;
     res_r_V = res_r_V_initial;
     res_l_Vhat = res_l_Vhat_initial;
@@ -1199,7 +1199,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
         else
             res_r_Vhat = vertex2[0].right_same_bare(input_r);
     }
-#endif // DIAG_CLASS
+#endif // MAX_DIAG_CLASS
 };
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -1328,15 +1328,15 @@ void OLD_bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     int mpi_size = mpi_world_size(); // number of mpi processes
     int mpi_rank = mpi_world_rank(); // number of the current mpi process
 
-#ifdef DIAG_CLASS
-#if DIAG_CLASS >= 0
+#ifdef MAX_DIAG_CLASS
+#if MAX_DIAG_CLASS >= 0
     // initialize frequency grid to be used for K1
     FrequencyGrid freqs_K1 = dgamma[0].avertex().frequencies.b_K1;
     // use min/max of selfenergy/K1 frequency grids as integration limits
     double vmin = min(freqs_K1.w_lower, G.selfenergy.frequencies.w_lower);
     double vmax = max(freqs_K1.w_upper, G.selfenergy.frequencies.w_upper);
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     // initialize frequency grids to be used for K2
     FrequencyGrid bfreqs_K2 = dgamma[0].avertex().frequencies.b_K2;
     FrequencyGrid ffreqs_K2 = dgamma[0].avertex().frequencies.f_K2;
@@ -1344,7 +1344,7 @@ void OLD_bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     vmin = min(vmin, ffreqs_K2.w_lower);
     vmax = max(vmax, ffreqs_K2.w_upper);
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     // initialize frequency grids to be used for K3
     FrequencyGrid bfreqs_K3 = dgamma[0].avertex().frequencies.b_K3;
     FrequencyGrid ffreqs_K3 = dgamma[0].avertex().frequencies.f_K3;
@@ -1355,7 +1355,7 @@ void OLD_bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     vmin *= 2;
     vmax  *= 2;
 
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
 //    double tK1 = get_time();
     /*K1 contributions*/
     int n_mpi = nK_K1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
@@ -1489,7 +1489,7 @@ void OLD_bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 //    get_time(tK1);
 #endif
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
 //    double tK2 = get_time();
     /*K2 contributions*/
     n_mpi = nK_K2 * nw2_w;
@@ -1627,7 +1627,7 @@ void OLD_bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 //    get_time(tK2);
 #endif
 
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     double tK3 = get_time();
     /*K3 contributions*/
     n_mpi = nK_K3 * nw3_w;
@@ -1759,7 +1759,7 @@ void OLD_bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     get_time(tK3);
 #endif
 
-#if DIAG_CLASS>=4
+#if MAX_DIAG_CLASS>=4
     print("Damn son, this is a bad error");
 #endif
 #endif
@@ -1913,13 +1913,13 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 Bubble_Object>::initialize_frequency_grids() {
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
     initialize_frequency_grid_K1();
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     initialize_frequency_grid_K2();
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     initialize_frequency_grid_K3();
 #endif
     // vmin *= 2;
@@ -1967,16 +1967,16 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
     double t_start = get_time();
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
     calculate_bubble_function(1);
     tK1 = get_time() - t_start;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     t_start = get_time();
     calculate_bubble_function(2);
     tK2 = get_time() - t_start;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     t_start = get_time();
     calculate_bubble_function(3);
     tK2 = get_time() - t_start;
@@ -2173,7 +2173,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2 += K2_ordered_result;
@@ -2197,7 +2197,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K3(const vec<Q>& K3_ordered_result){
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K3 += K3_ordered_result;

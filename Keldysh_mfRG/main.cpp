@@ -68,7 +68,7 @@ auto find_best_Lambda() -> double{
 
 
 string generate_filename() {
-    string klass = "K" + to_string(DIAG_CLASS) + "_";
+    string klass = "K" + to_string(MAX_DIAG_CLASS) + "_";
     string loops = to_string(N_LOOPS) + "LF_";
     string n1 = "n1=" + to_string(nBOS) + "_";
     string n2 = "n2=" + to_string(nBOS2) + "_";
@@ -81,12 +81,12 @@ string generate_filename() {
     string extension = ".h5";
 
     string filename = klass + loops + n1;
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     filename += n2;
 #elif defined(STATIC_FEEDBACK)
     filename += "static_";
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     filename += n3;
 #endif
     filename += gamma;
@@ -105,9 +105,9 @@ auto main() -> int {
     MPI_Init(nullptr, nullptr);
 #endif
 #ifdef STATIC_FEEDBACK
-    assert(DIAG_CLASS == 1);
+    assert(MAX_DIAG_CLASS == 1);
 #endif
-#if DIAG_CLASS<2
+#if MAX_DIAG_CLASS<2
     assert(N_LOOPS < 2);
 #endif
 

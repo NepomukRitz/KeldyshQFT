@@ -47,7 +47,7 @@ void T1 (IndicesSymmetryTransformations& indices){
 
     if(indices.channel == 'p'){
         indices.w  *= 1.;
-#if DIAG_CLASS>1
+#if MAX_DIAG_CLASS>1
         indices.v1 *= 1.;
         indices.v2 *= -1.;
 #endif
@@ -56,7 +56,7 @@ void T1 (IndicesSymmetryTransformations& indices){
         indices.asymmetry_transform ^= true;
 
         indices.w  *= -1.;
-#if DIAG_CLASS>1
+#if MAX_DIAG_CLASS>1
         double temp = indices.v1;
         indices.v1 = indices.v2;
         indices.v2 = temp;
@@ -72,7 +72,7 @@ void T2 (IndicesSymmetryTransformations& indices){
 
     if(indices.channel == 'p'){
         indices.w  *= 1.;
-#if DIAG_CLASS>1
+#if MAX_DIAG_CLASS>1
         indices.v1 *= -1.;
         indices.v2 *= 1.;
 #endif
@@ -103,7 +103,7 @@ void TC (IndicesSymmetryTransformations& indices){
         indices.asymmetry_transform ^= true;
 
         indices.w  *= 1.;
-#if DIAG_CLASS>1
+#if MAX_DIAG_CLASS>1
         double temp = indices.v1;
         indices.v1 = indices.v2;
         indices.v2 = temp;
@@ -131,7 +131,7 @@ void Tph (IndicesSymmetryTransformations& indices){
         indices.prefactor *= -1.;
 
     indices.w *= -1;
-#if DIAG_CLASS > 1
+#if MAX_DIAG_CLASS > 1
     indices.v1 *= -1;
     indices.v2 *= -1;
 #endif
@@ -142,7 +142,7 @@ void Tph (IndicesSymmetryTransformations& indices){
 void TR (IndicesSymmetryTransformations& indices){
     indices.conjugate ^= true;
     indices.w *= -1;
-#if DIAG_CLASS > 1
+#if MAX_DIAG_CLASS > 1
     indices.v1 *= -1;
     indices.v2 *= -1;
 #endif
