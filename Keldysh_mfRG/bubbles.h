@@ -228,7 +228,7 @@ template <typename Q> auto PrecalculateBubble<Q>::value(int iK, double w, double
         default:;
     }
     return Pival;
-};
+}
 
 // TODO: Use "Interpolate" from "interpolations.h" for this.
 template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK_bubble, const double v1, const double v2, const int i_in) const -> Q{
@@ -240,14 +240,14 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK
 
         double x1 = fermionic_grid.w[index_f1];
         double x2 = fermionic_grid.w[index_f1 + 1];
-        if (!(x1 < x2)) { // If not x1<x2, we run out of the box --> shift the index downwards.
+        if (x1 >= x2) { // If not x1<x2, we run out of the box --> shift the index downwards.
             index_f1 -= 1;
             x1 = fermionic_grid.w[index_f1];
             x2 = fermionic_grid.w[index_f1 + 1];
         }
         double y1 = fermionic_grid.w[index_f2];
         double y2 = fermionic_grid.w[index_f2 + 1];
-        if (!(y1 < y2)) { // If not y1<y2, we run out of the box --> shift the index downwards.
+        if (y1 >= y2) { // If not y1<y2, we run out of the box --> shift the index downwards.
             index_f2 -= 1;
             y1 = fermionic_grid.w[index_f2];
             y2 = fermionic_grid.w[index_f2 + 1];
@@ -266,7 +266,7 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK
         //std::cout << "Out of interpolation tolerance! \n";
         return 0.;
     }
-};
+}
 
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
@@ -280,7 +280,7 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
     for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
         std::cout << "Now calculating iK = " << iK << "\n";
-#pragma omp parallel for schedule(dynamic)
+#pragma omp parallel for schedule(dynamic) default(none) shared(FFT_Machinery, iK)
         for (int iv = 0; iv < nFER * nFER; ++iv) {
             const int iv1 = iv / nFER; // integer division, always rounds down
             const int iv2 = iv - iv1 * nFER;
@@ -305,7 +305,7 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
         }
     }
 #endif
-};
+}
 
 template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
     double v1 = fermionic_grid.w[iv1];
@@ -314,7 +314,7 @@ template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int
         FermionicBubble[composite_index(get_iK_bubble(iK), iv1, iv2, i_in)] =
                 Helper_Bubble.value(iK, v1, v2, i_in);
     }
-};
+}
 
 template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK_bubble, const int iv1, const int iv2, const int i_in) const{
     return iK_bubble*nFER*nFER*n_in + iv1*nFER*n_in + iv2*n_in + i_in;
@@ -1201,7 +1201,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
             res_r_Vhat = vertex2[0].right_same_bare(input_r);
     }
 #endif // MAX_DIAG_CLASS
-};
+}
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(){
@@ -1989,7 +1989,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_bubble_function(const int diag_class){
-    if (diag_class < 1 || diag_class > 3){std::cout << "Incompatible diagrammatic class!\n"; return;};
+    if (diag_class < 1 || diag_class > 3){std::cout << "Incompatible diagrammatic class!\n"; return;}
 
     int n_mpi, n_omp;
     set_external_arguments_for_parallelization(n_mpi, n_omp, diag_class);
@@ -2001,7 +2001,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int iterator = 0;
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(dynamic)
+#pragma omp parallel for schedule(dynamic) default(none) shared(n_omp, i_mpi, iterator, Buffer)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }
