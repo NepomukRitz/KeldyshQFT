@@ -8,7 +8,7 @@
 //#define PARTICLE_HOLE_SYMM
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-//#define HUBBARD_MODEL
+#define HUBBARD_MODEL
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
