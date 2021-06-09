@@ -145,7 +145,7 @@ void sum_rule_K1tK(const string filename) {
         double wmax = state.vertex[0].tvertex().frequencies.b_K1.w_upper;   // upper integration boundary
 
 #ifdef KELDYSH_FORMALISM
-        sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator(integrand, 0, wmax) / (glb_U * glb_U)).real();
+        sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
 #else
 #ifdef PARTICLE_HOLE_SYMM
         sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));

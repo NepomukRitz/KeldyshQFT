@@ -81,8 +81,11 @@ public:
  * @param valK  : Value for the constant Keldyh self-energy
  */
 template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
-    //Assign self-energy to initial values
+// in particle-hole symmetric case (Matsubara formalism) the self-energy vector only stores the imaginary part -> initialize to zero
+// in all other cases: initialize to the Hartree value
+#if not defined(KELDYSH_FORMALISM) and not defined(PARTICLE_HOLE_SYMM)
 #pragma omp parallel for
+
     for (int iv=0; iv<nSE; ++iv) {
         for (int i_in=0; i_in<n_in; ++i_in) {
             this->setself(0, iv, i_in, valR);
@@ -92,6 +95,7 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
         }
     }
     this-> asymp_val_R = valR;
+#endif
 }
 
 /**
