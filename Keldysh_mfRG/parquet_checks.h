@@ -155,6 +155,7 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
         GeneralVertex<Q, non_symmetric> Gamma0_Gamma (n_spin);
         Gamma0_Gamma[0].half1() = Gamma0_Gamma_half1[0].half1();
         Gamma0_Gamma[0].half2() = Gamma_Gamma0_half1[0].half1();
+        Gamma0_Gamma.set_only_same_channel(true);  // left/right bubble need to be in the same channel
 
         GeneralVertex<Q, non_symmetric> Gamma_Gamma0 (n_spin);
         Gamma_Gamma0[0].half1() = Gamma_Gamma0_half1[0].half1();
@@ -279,6 +280,7 @@ void parquet_checks(const string filename) {
 
         // post-processing susceptibilities:
         Vertex<comp> chi (n_spin), chi_diff (n_spin);
+        chi.set_frequency_grid(state.vertex);
         chi_diff.set_frequency_grid(state.vertex);
 
         susceptibilities_postprocessing(chi, chi_diff, state, Lambdas[i]);
