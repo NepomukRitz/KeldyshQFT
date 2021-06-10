@@ -569,6 +569,48 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
     return adaptor.integrate(a,b);
 #endif
 }
+
+/**
+ * Wrapper function for bubbles and loops, splitting the integration domain along difficult features.
+ * ATTENTION: splitting only done for INTEGRATOR_TYPE == 5.
+ * @param a      : lower limit for integration
+ * @param b      : upper limit for integration
+ * @param w1     : first frequency where features occur
+ * @param w2     : second frequency where features occur
+ * @param Delta  : with of window around the features which should be integrated separately (to be set by hybridization strength)
+ */
+template <typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2, double Delta) -> comp {
+#if INTEGRATOR_TYPE == 0 // Riemann sum
+    return integrator_riemann(integrand, nINT);
+#elif INTEGRATOR_TYPE == 1 // Simpson
+    return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
+#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
+    return integrator_simpson(integrand, a, b, w1, w2, nINT);     // use standard Simpson plus additional points around +- w/2
+#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
+    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+#elif INTEGRATOR_TYPE == 4 // GSL
+    return integrator_gsl(integrand, a, b, w1, w2, nINT);
+#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
+    // define points at which to split the integrals (including lower and upper integration limits)
+    rvec intersections {a, w1-Delta, w1+Delta, w2-Delta, w2+Delta, b};
+    std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
+
+    comp result = 0.; // initialize results
+    // integrate intervals of with 2*Delta around the features at w1, w2
+    Adapt<Integrand> adaptor_peaks(integrator_tol, integrand);
+    result += adaptor_peaks.integrate(intersections[1], intersections[2]);
+    result += adaptor_peaks.integrate(intersections[3], intersections[4]);
+
+    // integrate the tails and the interval between the features, with increased tolerance
+    Adapt<Integrand> adaptor_tails(integrator_tol*10, integrand);
+    result += adaptor_tails.integrate(intersections[0], intersections[1]);
+    result += adaptor_tails.integrate(intersections[2], intersections[3]);
+    result += adaptor_tails.integrate(intersections[4], intersections[5]);
+
+    return result;
+#endif
+}
+
 /**
  * wrapper function, used for bubbles.
  * @param integrand

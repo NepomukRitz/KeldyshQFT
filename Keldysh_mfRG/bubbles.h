@@ -668,6 +668,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                      )
 {
     Bubble Pi(G, S, diff); // initialize bubble object
+    double Delta = (G.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
@@ -731,8 +732,6 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     vmin = min(vmin, ffreqs_K3.w_lower);
     vmax = max(vmax, ffreqs_K3.w_upper);
 #endif
-    vmin *= 2;
-    vmax  *= 2;
 
 #if DIAG_CLASS >= 0
 //    double tK1 = get_time();
@@ -789,52 +788,53 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                     integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff,
                                                  iK_select, iK_select_bubble);
 #else
-                        Integrand_K1<Q, symmetry_left, symmetry_right>
-                                integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
-                        /* // save the integrand for manual checks:
-                        if (i_omp == 100){
-                            integrand_K1.save_integrand();
+                            Integrand_K1<Q, symmetry_left, symmetry_right>
+                                    integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+                            /* // save the integrand for manual checks:
+                            if (i_omp == 100){
+                                integrand_K1.save_integrand();
+                            }
+                            // */
+#endif
+
+#ifdef KELDYSH_FORMALISM
+                            value += prefactor * (1. / (2. * M_PI * glb_i))
+                                    * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
+#else
+                            //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
+                            //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                            //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
+                            //}
+                            //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
+
+                            size_t num_intervals;
+                            vec<vec<double>> intervals;
+                            if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
+                                intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                                num_intervals = 3;
+                            }
+                            else {
+                                intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
+                                num_intervals = 2;
+
+                            }
+                            value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, intervals, num_intervals);
+
+#endif
+
+
+                            if (!diff) {
+                                value +=
+#ifdef KELDYSH_FORMALISM
+                                prefactor * (1. / (2. * M_PI * glb_i)) *
+#else
+                                prefactor * (1. / (-2. * M_PI)) *
+#endif
+                                asymp_corrections_bubble(k1, vertex1, vertex2, G,
+                                                         vmin, vmax, w, 0., 0., i0, i2, i_in, channel);
+                            }
+#ifdef KELDYSH_FORMALISM
                         }
-                        // */
-#endif
-
-#ifdef KELDYSH_FORMALISM
-                           value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
-#else
-                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
-                           //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                           //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
-                           //}
-                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
-
-                           size_t num_intervals;
-                           vec<vec<double>> intervals;
-                           if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                               intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
-                               num_intervals = 3;
-                           }
-                           else {
-                               intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
-                               num_intervals = 2;
-
-                           }
-                           value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, intervals, num_intervals);
-
-#endif
-
-
-                           if (!diff) {
-                               value +=
-#ifdef KELDYSH_FORMALISM
-                               prefactor * (1. / (2. * M_PI * glb_i)) *
-#else
-                               prefactor * (1. / (-2. * M_PI)) *
-#endif
-                               asymp_corrections_bubble(k1, vertex1, vertex2, G,
-                                                        vmin, vmax, w, 0., 0., i0, i2, i_in, channel);
-                           }
-#ifdef KELDYSH_FORMALISM
-                      }
 #endif
                     }
                 }
@@ -926,15 +926,16 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                 integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff,
                                              iK_select2, iK_select_bubble2);
 #else
-                        Integrand_K2<Q, symmetry_left, symmetry_right>
-                                integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
-                        /*if (i_omp == (int)n_omp-304){
-                            integrand_K2.save_integrand();
-                        }*/
+                            Integrand_K2<Q, symmetry_left, symmetry_right>
+                                    integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
+                            /*if (i_omp == (int)n_omp-304){
+                                integrand_K2.save_integrand();
+                            }*/
 #endif
 
 #ifdef KELDYSH_FORMALISM
-                        value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
+                            value += prefactor * (1. / (2. * M_PI * glb_i))
+                                    * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2., Delta);
 #else
                         //value += prefactor * (1. / (2. * M_PI)) *
                         //         integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
@@ -1064,8 +1065,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     }*/
 
 #ifdef KELDYSH_FORMALISM
-                    value += prefactor * (1. / (2. * M_PI * glb_i)) *
-                             integrator(integrand_K3, vmin, vmax, -w / 2., w / 2.);
+                    value += prefactor * (1. / (2. * M_PI * glb_i))
+                            * integrator(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
 #else
                     //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
                     //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){

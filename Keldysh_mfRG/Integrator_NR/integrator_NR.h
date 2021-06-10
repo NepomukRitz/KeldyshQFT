@@ -95,7 +95,9 @@ auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
     // Subdivide also if the integral value is exactly zero, to avoid accidental zero result due to the choice of
     // evaluation points.
     if (abs(i2 - i1) < max(EPS, tolerance * fabs(is))
-        && abs(i2 - is) < max(EPS, tolerance * fabs(is)) && i2 != 0.)
+        && abs(i2 - is) < max(EPS, tolerance * fabs(is))
+        //&& i2 != 0. // shouldn't need this safety check any more if interval is split into subintervals
+        || b-a < EPS) // do not split if the interval is very small
         return i2;
     else
         return integrate(x[0],  x[2],  f[0],  f[2],  is)  // subdivide interval

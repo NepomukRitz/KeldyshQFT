@@ -238,6 +238,7 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         int i_in = iSE - iv*n_in;
 
         double v = self.frequencies.w[iv];
+        double Delta = (prop.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
         // Integrand objects are declared and created for every input frequency v
 #if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
@@ -262,8 +263,8 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
         double v_lower = prop.selfenergy.frequencies.w_lower;
         double v_upper = prop.selfenergy.frequencies.w_upper;
 #ifdef KELDYSH_FORMALISM
-        comp integratedR = -1./(2.*M_PI*glb_i) * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
-        comp integratedK = -1./(2.*M_PI*glb_i) * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+        comp integratedR = -1./(2.*M_PI*glb_i) * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
+        comp integratedK = -1./(2.*M_PI*glb_i) * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
 
         // add analytical results for the tails
         integratedR += -1./(2.*M_PI*glb_i)
