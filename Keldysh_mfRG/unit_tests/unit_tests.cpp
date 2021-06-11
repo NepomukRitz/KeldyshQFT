@@ -16,6 +16,7 @@
 #include "test_data_structures.h"
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"
+#include "test_frequencygrid.h"
 
 #ifdef INTEGRATION_TESTS
 #include "../frequency_grid.h"
