@@ -119,35 +119,41 @@ void FrequencyGrid::initialize_grid() {
     double W_upper = grid_transf(w_upper, W_scale);
     double W_lower = grid_transf(w_lower, W_scale);
     double dW = (W_upper - W_lower) / ((double) (N_w - 1.));
+    cout << "grid initialization: \n";
     for(int i=0; i<N_w; ++i) {
         W = W_lower + i*dW;
         w[i] = grid_transf_inv(W, W_scale);
+        cout << "i: "<< i << "\t" << w[i] << " --> ";
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
         if (type == 'b') w[i] = round2bfreq(w[i]);
-    else w[i] = round2ffreq(w[i]);
+        else w[i] = round2ffreq(w[i]);
+        cout << w[i] ;
 #endif
+        cout << "\n";
     }
     if (N_w % 2 == 1) {
         w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
     }
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    int is = is_doubleOccurencies(w);
-    assert (is == 0);
+    assert (is_doubleOccurencies(w) == 0);
 #endif
 }
 
 void FrequencyGrid::initialize_grid(double scale) {
-    W_scale = scale * 10;
+    W_scale = scale;
     w_upper = scale * 15.;
+    cout << "W_scale = " << W_scale << "\n";
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     if (type == 'b') {
-        w_upper = max(round2bfreq(w_upper), M_PI*(N_w-1));
-        wscale_from_wmax(W_scale, w_upper, 2, N_w);
+        w_upper = max(round2bfreq(w_upper), glb_T * M_PI*N_w);
+        W_scale = max(W_scale, w_upper * sqrt( (pow((N_w-1)/2, 2) -1*2) / (pow(w_upper/(2*M_PI*glb_T), 2) - pow((N_w-1)/2, 2))) );  // Version 1: linear around w=0
     }
     else {
-        w_upper = max(round2ffreq(w_upper), M_PI*(N_w-1));
-        wscale_from_wmax(W_scale, w_upper, 1, N_w);
+        w_upper = max(round2ffreq(w_upper), glb_T * M_PI*N_w);
+        W_scale = max(W_scale, w_upper * sqrt( (pow(N_w-1, 2) -1*2) / (pow(w_upper/(M_PI*glb_T), 2) - pow(N_w-1, 2))) );            // Version 1: linear around w=0
     }
+    cout << "w_upper = " << w_upper << "\n";
+    cout << "W_scale = " << W_scale << "\n";
 #endif
     w_lower = - w_upper;
     initialize_grid();
@@ -441,21 +447,21 @@ double grid_transf_inv(double W, double W_scale) {
 }
 #else
 //// Transformation from
-//double grid_transf(double w, double W_scale) {
-//    // Version 1: linear around w=0
-//    return w/sqrt(W_scale*W_scale + w*w);
-//
-//    // Version 2: quadratic around w=0
-////    double w2 = w * w;
-////    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
-//}
-//double grid_transf_inv(double W, double W_scale) {
-//    // Version 1: linear around w=0
-//    return W_scale*W/sqrt(1.-W*W);
-//
-//    // Version 2: quadratic around w=0
-////    return W_scale * W * abs(W) / sqrt(1. - W * W);
-//}
+double grid_transf(double w, double W_scale) {
+    // Version 1: linear around w=0
+    return w/sqrt(W_scale*W_scale + w*w);
+
+    // Version 2: quadratic around w=0
+//    double w2 = w * w;
+//    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+}
+double grid_transf_inv(double W, double W_scale) {
+    // Version 1: linear around w=0
+    return W_scale*W/sqrt(1.-W*W);
+
+    // Version 2: quadratic around w=0
+//    return W_scale * W * abs(W) / sqrt(1. - W * W);
+}
 
 // Picks W_scale such that
 //  *
@@ -473,14 +479,13 @@ void wscale_from_wmax(double & Wscale, const double wmax, const int nmin, const 
     // Wscale = max(Wscale, wmin * sqrt(1 - pow(tmin, 2)) / pow(tmin, 2));
 }
 
-// // linear grid
-// Transformation from
-double grid_transf(double w, double W_scale) {
-    return w;
-}
-double grid_transf_inv(double W, double W_scale) {
-    return W;
-}
+////    linear grid
+//double grid_transf(double w, double W_scale) {
+//    return w;
+//}
+//double grid_transf_inv(double W, double W_scale) {
+//    return W;
+//}
 #endif
 
 //void setUpBosGrid(rvec& freqs, int nfreqs) {

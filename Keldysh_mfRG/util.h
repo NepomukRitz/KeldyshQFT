@@ -219,12 +219,13 @@ auto sign(T x) -> double {
 // rounds away from zero to next Integer
 auto round2Infty(double x) -> double {
     // trunc() rounds towards zero
-    return trunc(x) + sign(x);
+    if (x <= 0.) return floor(x);
+    else return ceil(x);
 }
 
 // needed for rounding to fermionic frequencies
 auto myround(double x) -> double {
-    if (x < 0.5) return floor(x);
+    if (x <= -0.5) return floor(x);
     else return ceil(x);
 }
 
