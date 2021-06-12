@@ -802,8 +802,10 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #endif
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     // make sure that the limits for the Matsubara sum are fermionic
-    vmin = floor2ffreq(vmin);
-    vmax = ceil2ffreq(vmax);
+    int Nmin = (int) (vmin/(M_PI*glb_T)-1)/2;
+    int Nmax = (int) (vmax/(M_PI*glb_T)-1)/2;
+    vmin = (Nmin*2+1)*(M_PI*glb_T);
+    vmax = (Nmax*2+1)*(M_PI*glb_T);
 #endif
 
 #if DIAG_CLASS >= 0
@@ -893,7 +895,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                            }
                            value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, intervals, num_intervals);
 #else
-                           value += prefactor * glb_T * matsubarasum<Q>(integrand_K1, vmin, vmax);
+                           value += prefactor * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax);
 #endif
 #endif
 
@@ -901,16 +903,18 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                            //if (!diff) {
                                value +=
 #ifdef KELDYSH_FORMALISM
-                               prefactor * (1. / (2. * M_PI * glb_i)) *
+                               prefactor * (1. / (2. * M_PI * glb_i)) *  asymp_corrections_bubble(k1, vertex1, vertex2, G,
+                                      vmin, vmax, w, 0., 0., i0, i2, i_in, channel, diff);
 #else
 #ifdef ZERO_TEMP
-                               prefactor * (1. / (2. * M_PI)) *
+                               prefactor * (1. / (2. * M_PI)) *  asymp_corrections_bubble(k1, vertex1, vertex2, G,
+                                      vmin, vmax, w, 0., 0., i0, i2, i_in, channel, diff);
 #else
-                               prefactor * glb_T *
+                               prefactor * (1. / (2. * M_PI)) *  asymp_corrections_bubble(k1, vertex1, vertex2, G,
+                                      vmin -  M_PI * glb_T, vmax +  M_PI * glb_T, w, 0., 0., i0, i2, i_in, channel, diff);
 #endif
 #endif
-                               asymp_corrections_bubble(k1, vertex1, vertex2, G,
-                                                        vmin, vmax, w, 0., 0., i0, i2, i_in, channel, diff);
+
                            //}
 #ifdef KELDYSH_FORMALISM
                       }
@@ -1016,6 +1020,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #ifdef KELDYSH_FORMALISM
                         value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator<Q>(integrand_K2, vmin, vmax, -w / 2., w / 2.);
 #else
+
+#ifdef ZERO_TEMP
                         //value += prefactor * (1. / (2. * M_PI)) *
                         //         integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
                         //if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
@@ -1039,16 +1045,26 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 
                         }
                         value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, intervals, num_intervals);
+#else
+                        value += prefactor * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax);
+#endif
 #endif
                         //if (!diff) {
                             value +=
 #ifdef KELDYSH_FORMALISM
-                                prefactor * (1. / (2. * M_PI * glb_i)) *
-#else
-                                prefactor * (1. / (2. * M_PI)) *
-#endif
-                                asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                                prefactor * (1. / (2. * M_PI * glb_i)) * asymp_corrections_bubble(k2, vertex1, vertex2, G,
                                                          vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
+#else
+#ifdef ZERO_TEMP
+                                prefactor * (1. / (2. * M_PI)) * asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                                                          vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
+#else
+                                prefactor * (1. / (2. * M_PI)) * asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                                             vmin - M_PI * glb_T, vmax + M_PI * glb_T, w, v, 0., i0, i2, i_in, channel, diff);
+#endif
+#endif
+
+
                         //}
 #ifdef KELDYSH_FORMALISM
                         }
@@ -1147,6 +1163,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
                              integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2.);
 #else
+#ifdef ZERO_TEMP
                     //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
                     //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
                     //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
@@ -1165,6 +1182,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 
                     }
                     value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, intervals, num_intervals);
+#else
+                    value += prefactor * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax);
+#endif
 #endif
 
 
@@ -1176,12 +1196,18 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #endif
                             value +=
 #ifdef KELDYSH_FORMALISM
-                            prefactor * (1. / (2. * M_PI * glb_i)) *
-#else
-                            prefactor * (1. / (2. * M_PI)) *
-#endif
-                            asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                            prefactor * (1. / (2. * M_PI * glb_i)) * asymp_corrections_bubble(k3, vertex1, vertex2, G,
                                                      vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
+#else
+#ifdef ZERO_TEMP
+                            prefactor * (1. / (2. * M_PI)) * asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                                                     vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
+#else
+                            prefactor * (1. / (2. * M_PI)) * asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                                                                         vmin - M_PI*glb_T, vmax + M_PI*glb_T, w, v, vp, i0, i2, i_in, channel, diff);
+#endif
+#endif
+
 #ifdef KELDYSH_FORMALISM
                         }
 #endif

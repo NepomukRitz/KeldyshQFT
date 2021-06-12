@@ -622,19 +622,69 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 }
 
 
-template <typename Q, typename Integrand> auto matsubarasum(const Integrand& integrand, const double vmin, const double vmax) -> Q {
-    int N = (int) ((vmax - vmin) / (2 * M_PI * glb_T)) + 1;
-    vector<Q> values(N);
-    double vpp;
-    Q result = 0.;
-    for (int i = 0; i < N; i++) {
-        vpp = vmin + i * (2 * M_PI * glb_T);
-        values[i] = integrand(vpp);
+template <typename Q, typename Integrand> auto matsubarasum(const Integrand& integrand, const int Nmin, const int Nmax, const int N_tresh = 60,
+        int balance_fac = 2, double reltol = 1e-5, double abstol = 1e-7) -> Q {
+    double freq_step = (2 * M_PI * glb_T);
+    int N = Nmax - Nmin  + 1;
+
+    //// Straightforward summation:
+    //vec<Q> values(N);
+    //double vpp;
+    //for (int i = 0; i < N; i++) {
+    //    vpp = vmin + i * (2 * M_PI * glb_T);
+    //    values[i] = integrand(vpp);
+    //}
+    //return values.sum();
+
+    //// Adaptive summator:
+    if (N_tresh * balance_fac >= N) {
+
+        //cout << "Direct SUMMATION on interval[" << Nmin << ", " << Nmax << "] of length " << N <<  "!!! \n";
+        vec<Q> values(N);
+        double vpp;
+        for (int i = 0; i < N; i++) {
+            vpp = (2*Nmin+1) * (M_PI * glb_T) + i * freq_step;
+            values[i] = integrand(vpp);
+        }
+        return values.sum();
     }
-    for (int i = 0; i < N; i++) {
-        result += values[i];
+    else {
+        //cout << "Adapt on interval[" << vmin << ", " << vmax << "] of length " << N <<  "!!! \n";
+        vec<Q> values(N_tresh);
+        vec<Q> mfreqs(N_tresh);
+        int intstep = (Nmax - Nmin) / (N_tresh-1);
+        for (int i = 0; i < N_tresh-1; i++) {
+            mfreqs[i] = ((Nmin + intstep * i ) * 2 + 1) * (M_PI * glb_T);
+            values[i] = integrand(mfreqs[i]);
+        }
+        mfreqs[N_tresh-1] = (Nmax * 2 + 1) * (M_PI * glb_T);
+        values[N_tresh-1] = integrand(mfreqs[N_tresh-1]);
+
+        Q slope = (values[N_tresh-1] - values[0]) / (mfreqs[N_tresh-1] - mfreqs[0]);
+        vec<Q> linrzd = values[0] + slope * (mfreqs - mfreqs[0]);
+        vec<Q> intermediate = (linrzd - values).abs();
+        Q error_estimate = (values[0] + slope * (mfreqs - mfreqs[0]) - values).abs().sum();
+        //double vmaxn = vmax/(M_PI*glb_T);
+        //double vminn = vmin/(M_PI*glb_T);
+        Q resul_estimate = (values[0] - slope * freq_step/2) * N + freq_step*slope / 2 * N * N;
+        //cout << "error_estimate = " << error_estimate << "\t < tol * sum = " << reltol * values.abs().sum() << " ? \n";
+        if (error_estimate < reltol * abs(values.abs().sum()) or error_estimate < abstol) {
+            //cout << "Accepted estimate! \n";
+            return resul_estimate;
+        }
+        else {
+            //cout << "Recursion step \n";
+            vec<Q> result(N_tresh-1);
+            //cout << "Recursion step with error " << error_estimate << "\t on the interval[" << Nmin << ", " << Nmax << "] of length " << N << "\n";
+            for (int i = 0; i < N_tresh - 2; i++) {
+                result[i] = matsubarasum<Q>(integrand, Nmin + i*intstep, Nmin + (i+1)*intstep - 1, N_tresh, balance_fac, reltol, abstol);
+            }
+            result[N_tresh-2] = matsubarasum<Q>(integrand, Nmin + (N_tresh - 2)*intstep, Nmax, N_tresh, balance_fac, reltol, abstol);
+            return result.sum();
+        }
+
+
     }
-    return result;
 }
 
 #endif //KELDYSH_MFRG_INTEGRATOR_H

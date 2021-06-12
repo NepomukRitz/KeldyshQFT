@@ -276,8 +276,10 @@ void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>&
         double v_upper = prop.selfenergy.frequencies.w_upper;
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
         // make sure that the limits for the Matsubara sum are fermionic
-        v_lower = floor2ffreq(v_lower);
-        v_upper = ceil2ffreq(v_upper);
+        int Nmin = (int) (v_lower/(M_PI*glb_T)-1)/2;
+        int Nmax = (int) (v_upper/(M_PI*glb_T)-1)/2;
+        v_lower = (Nmin*2+1)*(M_PI*glb_T);
+        v_upper = (Nmax*2+1)*(M_PI*glb_T);
 #endif
 #ifdef KELDYSH_FORMALISM
         Q integratedR = -1./(2.*M_PI*glb_i)*integrator<Q>(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
@@ -324,10 +326,10 @@ void loop(SelfEnergy<Q>& self, const Vertex<Q>& fullvertex, const Propagator<Q>&
         integratedR += -1./(2.*M_PI)
                        * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
 #else
-        Q integratedR = - glb_T * matsubarasum<Q>(integrandR, v_lower, v_upper);
+        Q integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin, Nmax);
         // add analytical results for the tails
         integratedR += - glb_T
-                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v) - M_PI*glb_T, v_upper+abs(v) + M_PI*glb_T, v, 0, i_in, all_spins);
 #endif
         self.addself(0, iv, i_in, integratedR);
 #endif

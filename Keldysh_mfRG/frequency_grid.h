@@ -119,17 +119,13 @@ void FrequencyGrid::initialize_grid() {
     double W_upper = grid_transf(w_upper, W_scale);
     double W_lower = grid_transf(w_lower, W_scale);
     double dW = (W_upper - W_lower) / ((double) (N_w - 1.));
-    cout << "grid initialization: \n";
     for(int i=0; i<N_w; ++i) {
         W = W_lower + i*dW;
         w[i] = grid_transf_inv(W, W_scale);
-        cout << "i: "<< i << "\t" << w[i] << " --> ";
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
         if (type == 'b') w[i] = round2bfreq(w[i]);
         else w[i] = round2ffreq(w[i]);
-        cout << w[i] ;
 #endif
-        cout << "\n";
     }
     if (N_w % 2 == 1) {
         w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
@@ -142,18 +138,15 @@ void FrequencyGrid::initialize_grid() {
 void FrequencyGrid::initialize_grid(double scale) {
     W_scale = scale;
     w_upper = scale * 15.;
-    cout << "W_scale = " << W_scale << "\n";
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     if (type == 'b') {
         w_upper = max(round2bfreq(w_upper), glb_T * M_PI*N_w);
-        W_scale = max(W_scale, w_upper * sqrt( (pow((N_w-1)/2, 2) -1*2) / (pow(w_upper/(2*M_PI*glb_T), 2) - pow((N_w-1)/2, 2))) );  // Version 1: linear around w=0
+        W_scale = max(W_scale*0, w_upper * sqrt( (pow((N_w-1)/2, 2) -1*2) / (pow(w_upper/(2*M_PI*glb_T), 2) - pow((N_w-1)/2, 2))) );  // Version 1: linear around w=0
     }
     else {
         w_upper = max(round2ffreq(w_upper), glb_T * M_PI*N_w);
-        W_scale = max(W_scale, w_upper * sqrt( (pow(N_w-1, 2) -1*2) / (pow(w_upper/(M_PI*glb_T), 2) - pow(N_w-1, 2))) );            // Version 1: linear around w=0
+        W_scale = max(W_scale*0, w_upper * sqrt( (pow(N_w-1, 2) -1*2) / (pow(w_upper/(M_PI*glb_T), 2) - pow(N_w-1, 2))) );            // Version 1: linear around w=0
     }
-    cout << "w_upper = " << w_upper << "\n";
-    cout << "W_scale = " << W_scale << "\n";
 #endif
     w_lower = - w_upper;
     initialize_grid();
