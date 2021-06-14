@@ -377,11 +377,11 @@ void LoopCalculator<Q>::compute_Matsubara() {
 
 /**
  * Loop function for calculating the self energy
- * @tparam Q Type of the elements of the vertex, usually comp
+ * @tparam Q        : Type of the elements of the vertex, usually comp
  * @param self      : SelfEnergy<comp> object of which the Retarded and Keldysh components will be updated in the loop
  * @param fullvertex: Vertex object for the calculation of the loop
  * @param prop      : Propagator object for the calculation of the loop
- * @param all_spins : Wether the calculation of the loop should include all spin components of the vertex
+ * @param all_spins : Whether the calculation of the loop should include all spin components of the vertex
  */
 template <typename Q>
 void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop,
