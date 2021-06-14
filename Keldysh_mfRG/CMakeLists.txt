@@ -62,7 +62,6 @@ add_executable(Keldysh_mfRG_testing
         unit_tests/test_integrator.h
         unit_tests/test_PrecalculateBubble.h
         bubbles.h
-        OldFiles/bethe-salpeter.h
         causality_FDT_checks.h
         correctionFunctions.h
         data_structures.h

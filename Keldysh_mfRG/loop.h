@@ -226,7 +226,7 @@ public:
  * @param all_spins : Wether the calculation of the loop should include all spin components of the vertex
  */
 template <typename Q>
-void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins
+void OLDloop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop, const bool all_spins
 #if defined(DEBUG_MODE) and defined(KELDYSH_FORMALISM)
           , const int iK_select
 #endif
@@ -293,5 +293,104 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
     loop(self, fullvertex, prop, all_spins, 16);
 }
 #endif
+
+
+template <typename Q>
+class LoopCalculator{
+    SelfEnergy<comp>& self;
+    const Vertex<Q>& fullvertex;
+    const Propagator& prop;
+    const bool all_spins;
+
+    const int iv;
+    const int i_in;
+
+    const double v = self.frequencies.w[iv];
+
+    /// One integrates the integrands from v_lower-|v| to v_upper+|v|
+    /// The limits of the integral must depend on v
+    /// because of the transformations that must be done on the frequencies
+    /// (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v',
+    /// needing both extensions of the integration domain in both directions
+    double v_lower = prop.selfenergy.frequencies.w_lower;
+    double v_upper = prop.selfenergy.frequencies.w_upper;
+
+    const IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
+#ifdef KELDYSH_FORMALISM
+    const IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins);
+#endif
+
+    // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
+    comp prefactor = -1./(2.*M_PI*glb_i);
+
+    comp integratedR;
+    comp integratedK;
+
+    void compute_Keldysh();
+    void compute_Matsubara();
+
+public:
+    LoopCalculator(SelfEnergy<comp>& self_in, const Vertex<Q>& fullvertex_in, const Propagator& prop_in,
+                   const bool all_spins_in, const int iSE)
+                   : self(self_in), fullvertex(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
+                   iv(iSE/n_in), i_in(iSE - iv*n_in){};
+
+    void perform_computation();
+};
+
+template<typename Q>
+void LoopCalculator<Q>::perform_computation() {
+#ifdef KELDYSH_FORMALISM
+    compute_Keldysh();
+#else
+    compute_Matsubara();
+#endif
+}
+
+template<typename Q>
+void LoopCalculator<Q>::compute_Keldysh() {
+    integratedR = prefactor * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
+    integratedK = prefactor * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+
+    // add analytical results for the tails
+    integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v),
+                                                         v, 0, i_in, all_spins);
+    integratedK += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v),
+                                                         v, 1, i_in, all_spins);
+
+    //The results are emplaced in the right place of the answer object.
+    self.addself(0, iv, i_in, integratedR);
+    self.addself(1, iv, i_in, integratedK);
+}
+
+template<typename Q>
+void LoopCalculator<Q>::compute_Matsubara() {
+    // split up the integrand at discontinuities and (possible) kinks:
+    integratedR  = prefactor * integrator(integrandR,  v_lower-abs(v), -abs(v)        , 0.);
+    integratedR += prefactor * integrator(integrandR, -abs(v)        , -inter_tol     , 0.);
+    integratedR += prefactor * integrator(integrandR, +inter_tol     ,  abs(v)        , 0.);
+    integratedR += prefactor * integrator(integrandR,  abs(v)        ,  v_upper+abs(v), 0.);
+
+    self.addself(0, iv, i_in, integratedR);
+}
+
+
+/**
+ * Loop function for calculating the self energy
+ * @tparam Q Type of the elements of the vertex, usually comp
+ * @param self      : SelfEnergy<comp> object of which the Retarded and Keldysh components will be updated in the loop
+ * @param fullvertex: Vertex object for the calculation of the loop
+ * @param prop      : Propagator object for the calculation of the loop
+ * @param all_spins : Wether the calculation of the loop should include all spin components of the vertex
+ */
+template <typename Q>
+void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop,
+          const bool all_spins){
+#pragma omp parallel for schedule(dynamic) default(none) shared(self, fullvertex, prop)
+    for (int iSE=0; iSE<nSE*n_in; ++iSE){
+        LoopCalculator<Q> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);
+        LoopIntegrationMachine.perform_computation();
+    }
+}
 
 #endif //KELDYSH_MFRG_LOOP_H
