@@ -234,15 +234,15 @@ class IntegrandSE {
     Q Keldysh_value(double vp) const;
     Q Matsubara_value(double vp) const;
 
-    void read_propagator_values(Q& GR, Q& GA, Q& GK, double vp) const;
-    void read_propagator_values(Q& GM, double vp) const; // Matsubara version
+    void evaluate_propagator(Q& GR, Q& GA, Q& GK, double vp) const;
+    void evaluate_propagator(Q& GM, double vp) const; // Matsubara version
 
-    void read_vertex_values(Q& factorRetardedClosedAbove, Q& factorAdvancedClosedAbove, Q& factorKeldyshClosedAbove,
-                            Q& factorRetardedClosedBelow, Q& factorAdvancedClosedBelow, Q& factorKeldyshClosedBelow,
-                            double vp) const; // for symmetrized Keldysh flow
-    void read_vertex_values(Q& factorRetardedClosedAbove, Q& factorAdvancedClosedAbove, Q& factorKeldyshClosedAbove,
-                            double vp) const; // for unsymmetrized Keldysh flow
-    void read_vertex_values(Q& factorClosedAbove, double vp) const; // Matsubara version
+    void evaluate_vertex(Q& factorRetardedClosedAbove, Q& factorAdvancedClosedAbove, Q& factorKeldyshClosedAbove,
+                         Q& factorRetardedClosedBelow, Q& factorAdvancedClosedBelow, Q& factorKeldyshClosedBelow,
+                         double vp) const; // for symmetrized Keldysh flow
+    void evaluate_vertex(Q& factorRetardedClosedAbove, Q& factorAdvancedClosedAbove, Q& factorKeldyshClosedAbove,
+                         double vp) const; // for unsymmetrized Keldysh flow
+    void evaluate_vertex(Q& factorClosedAbove, double vp) const; // Matsubara version
 
     /// Used to set all three Keldysh factors by reading out the vertices
     void set_factors(Q& factorRetardedClosed, Q& factorAdvancedClosed, Q& factorKeldyshClosed,
@@ -288,19 +288,18 @@ void IntegrandSE<Q>::set_Keldysh_components_to_be_calculated() {
 
 template<typename Q>
 auto IntegrandSE<Q>::operator()(const double vp) const -> Q {
-    Q value_to_return;
 #ifdef KELDYSH_FORMALISM
-    value_to_return = Keldysh_value(vp);
+    return Keldysh_value(vp);
 #else
-    value_to_return = Matsubara_value(vp);
+    return Matsubara_value(vp);
 #endif
-    return value_to_return;
+
 }
 
 template<typename Q>
 Q IntegrandSE<Q>::Keldysh_value(const double vp) const {
     Q GR, GA, GK;
-    read_propagator_values(GR, GA, GK, vp);
+    evaluate_propagator(GR, GA, GK, vp);
 
     Q symmetrization_prefactor = 1.;
     Q factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove;
@@ -316,7 +315,7 @@ Q IntegrandSE<Q>::Keldysh_value(const double vp) const {
                                       GA*(factorAdvancedClosedAbove + factorAdvancedClosedBelow) +
                                       GK*(factorKeldyshClosedAbove  + factorKeldyshClosedBelow ) );
 #else
-    read_vertex_values(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove, vp);
+    evaluate_vertex(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove, vp);
 
     return symmetrization_prefactor * ( GR * factorRetardedClosedAbove +
                                         GA * factorAdvancedClosedAbove +
@@ -329,32 +328,32 @@ Q IntegrandSE<Q>::Keldysh_value(const double vp) const {
 template<typename Q>
 Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
     Q GM;
-    read_propagator_values(GM, vp);
+    evaluate_propagator(GM, vp);
 
     Q factorClosedAbove;
-    read_vertex_values(factorClosedAbove, vp);
+    evaluate_vertex(factorClosedAbove, vp);
 
     return GM * factorClosedAbove * glb_i;
     // Multiplying the imaginary unit ensures that the integrand is purely real in the particle-hole symmetric case
 }
 
 template<typename Q>
-void IntegrandSE<Q>::read_propagator_values(Q &GR, Q &GA, Q &GK, const double vp) const {
+void IntegrandSE<Q>::evaluate_propagator(Q &GR, Q &GA, Q &GK, double vp) const {
     GR = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
     GA = conj(GR);  // advanced propagator (full or single scale)
     GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
 }
 
 template<typename Q>
-void IntegrandSE<Q>::read_propagator_values(Q &GM, const double vp) const {
+void IntegrandSE<Q>::evaluate_propagator(Q &GM, double vp) const {
     GM = propagator.valsmooth(0, vp, i_in);           // Matsubara propagator (full or single scale)
 }
 
 template<typename Q>
-void IntegrandSE<Q>::read_vertex_values(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
-                                        Q &factorKeldyshClosedAbove, Q &factorRetardedClosedBelow,
-                                        Q &factorAdvancedClosedBelow, Q &factorKeldyshClosedBelow,
-                                        const double vp) const {
+void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
+                                     Q &factorKeldyshClosedAbove, Q &factorRetardedClosedBelow,
+                                     Q &factorAdvancedClosedBelow, Q &factorKeldyshClosedBelow,
+                                     double vp) const {
     VertexInput inputRetardedClosedAbove (components[0], v, vp, v, i_in, 0, 'f');
     VertexInput inputAdvancedClosedAbove (components[1], v, vp, v, i_in, 0, 'f');
     VertexInput inputKeldyshClosedAbove  (components[2], v, vp, v, i_in, 0, 'f');
@@ -380,8 +379,8 @@ void IntegrandSE<Q>::read_vertex_values(Q &factorRetardedClosedAbove, Q &factorA
 }
 
 template<typename Q>
-void IntegrandSE<Q>::read_vertex_values(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
-                                        Q &factorKeldyshClosedAbove, const double vp) const {
+void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
+                                     Q &factorKeldyshClosedAbove, double vp) const {
     VertexInput inputRetardedClosedAbove (components[0], v, vp, v, i_in, 0, 'f');
     VertexInput inputAdvancedClosedAbove (components[1], v, vp, v, i_in, 0, 'f');
     VertexInput inputKeldyshClosedAbove  (components[2], v, vp, v, i_in, 0, 'f');
@@ -397,7 +396,7 @@ void IntegrandSE<Q>::read_vertex_values(Q &factorRetardedClosedAbove, Q &factorA
 }
 
 template<typename Q>
-void IntegrandSE<Q>::read_vertex_values(Q &factorClosedAbove, double vp) const {
+void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, double vp) const {
     VertexInput inputClosedAbove (0, v, vp, v, i_in, 0, 'f');
     factorClosedAbove = vertex[0].value(inputClosedAbove);
 
