@@ -20,7 +20,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 # standard executable for integration tests and production runs
 add_executable(Keldysh_mfRG
         main.cpp
-        OldFiles/bethe-salpeter.h
         bubbles.h
         causality_FDT_checks.h
         correctionFunctions.h

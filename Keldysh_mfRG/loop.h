@@ -20,7 +20,7 @@
  * @tparam Q Type in which the integrand takes values, usually comp
  */
 template <typename Q>
-class IntegrandSE {
+class OLDIntegrandSE {
     const char type;
     vector<int> components = vector<int>(6);
     const Vertex<Q>& vertex;
@@ -42,7 +42,7 @@ public:
      * @param i_in_in   : Internal frequency index
      * @param all_spins_in: Defines the value of the vertex to be taken
      */
-    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in,
+    OLDIntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in,
                 const double v_in, const int i_in_in, const bool all_spins_in
 #ifdef DEBUG_MODE
                 , const int iK_select_in
@@ -217,6 +217,230 @@ public:
 };
 
 
+template <typename Q>
+class IntegrandSE {
+    const char type;
+    vector<int> components = vector<int>(6);
+
+    const Vertex<Q>& vertex;
+    const Propagator& propagator;
+
+    const double v;
+    const int i_in;
+    const bool all_spins;
+
+    void set_Keldysh_components_to_be_calculated();
+
+    Q Keldysh_value(double vp) const;
+    Q Matsubara_value(double vp) const;
+
+    void read_propagator_values(Q& GR, Q& GA, Q& GK, double vp) const;
+    void read_propagator_values(Q& GM, double vp) const; // Matsubara version
+
+    void read_vertex_values(Q& factorRetardedClosedAbove, Q& factorAdvancedClosedAbove, Q& factorKeldyshClosedAbove,
+                            Q& factorRetardedClosedBelow, Q& factorAdvancedClosedBelow, Q& factorKeldyshClosedBelow,
+                            double vp) const; // for symmetrized Keldysh flow
+    void read_vertex_values(Q& factorRetardedClosedAbove, Q& factorAdvancedClosedAbove, Q& factorKeldyshClosedAbove,
+                            double vp) const; // for unsymmetrized Keldysh flow
+    void read_vertex_values(Q& factorClosedAbove, double vp) const; // Matsubara version
+
+    /// Used to set all three Keldysh factors by reading out the vertices
+    void set_factors(Q& factorRetardedClosed, Q& factorAdvancedClosed, Q& factorKeldyshClosed,
+                     const VertexInput& inputRetardedClosed, const VertexInput& inputAdvancedClosed,
+                     const VertexInput& inputKeldyshClosed) const;
+
+    /// Used to add contribution of all-spins-equal vertex: V -> 2*V + V^ if taking all spins for Keldysh
+    void add_contribution_from_other_spins(Q& factorRetardedClosed, Q& factorAdvancedClosed, Q& factorKeldyshClosed,
+                                           VertexInput& inputRetardedClosed, VertexInput& inputAdvancedClosed,
+                                           VertexInput& inputKeldyshClosed) const;
+
+public:
+    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in,
+                const double v_in, const int i_in_in, const bool all_spins_in)
+                :type(type_in), vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in), all_spins(all_spins_in){
+#ifdef KELDYSH_FORMALISM
+        set_Keldysh_components_to_be_calculated();
+#endif
+    }
+
+    auto operator()(double vp) const -> Q;
+};
+
+template<typename Q>
+void IntegrandSE<Q>::set_Keldysh_components_to_be_calculated() {
+    if(type=='r'){  //Check which kind of contribution is calculated
+        components[0]=3;    //Vertex component associated to Retarded propagator
+        components[1]=6;    //Vertex component associated to Advanced propagator
+        components[2]=7;    //Vertex component associated to Keldysh propagator
+        components[3]=3;    //Vertex component associated to Retarded propagator in symmetrized flow
+        components[4]=9;    //Vertex component associated to Advanced propagator in symmetrized flow
+        components[5]=11;   //Vertex component associated to Keldysh propagator in symmetrized flow
+    }
+    else {
+        components[0]=1;    //Vertex component associated to Retarded propagator
+        components[1]=4;    //Vertex component associated to Advanced propagator
+        components[2]=5;    //Vertex component associated to Keldysh propagator
+        components[3]=2;    //Vertex component associated to Retarded propagator in symmetrized flow
+        components[4]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
+        components[5]=10;   //Vertex component associated to Keldysh propagator in symmetrized flow
+    }
+}
+
+template<typename Q>
+auto IntegrandSE<Q>::operator()(const double vp) const -> Q {
+    Q value_to_return;
+#ifdef KELDYSH_FORMALISM
+    value_to_return = Keldysh_value(vp);
+#else
+    value_to_return = Matsubara_value(vp);
+#endif
+    return value_to_return;
+}
+
+template<typename Q>
+Q IntegrandSE<Q>::Keldysh_value(const double vp) const {
+    Q GR, GA, GK;
+    read_propagator_values(GR, GA, GK, vp);
+
+    Q symmetrization_prefactor = 1.;
+    Q factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove;
+#ifdef SYMMETRIZED_SELF_ENERGY_FLOW
+    symmetrization_prefactor = 1./2.;
+    Q factorRetardedClosedBelow, factorAdvancedClosedBelow, factorKeldyshClosedBelow;
+
+    read_vertex_values(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove,
+                       factorRetardedClosedBelow, factorAdvancedClosedBelow, factorKeldyshClosedBelow,
+                       vp);
+
+    return symmetrization_prefactor*( GR*(factorRetardedClosedAbove + factorRetardedClosedBelow) +
+                                      GA*(factorAdvancedClosedAbove + factorAdvancedClosedBelow) +
+                                      GK*(factorKeldyshClosedAbove  + factorKeldyshClosedBelow ) );
+#else
+    read_vertex_values(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove, vp);
+
+    return symmetrization_prefactor * ( GR * factorRetardedClosedAbove +
+                                        GA * factorAdvancedClosedAbove +
+                                        GK * factorKeldyshClosedAbove );
+#endif
+
+
+}
+
+template<typename Q>
+Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
+    Q GM;
+    read_propagator_values(GM, vp);
+
+    Q factorClosedAbove;
+    read_vertex_values(factorClosedAbove, vp);
+
+    return GM * factorClosedAbove * glb_i;
+    // Multiplying the imaginary unit ensures that the integrand is purely real in the particle-hole symmetric case
+}
+
+template<typename Q>
+void IntegrandSE<Q>::read_propagator_values(Q &GR, Q &GA, Q &GK, const double vp) const {
+    GR = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
+    GA = conj(GR);  // advanced propagator (full or single scale)
+    GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
+}
+
+template<typename Q>
+void IntegrandSE<Q>::read_propagator_values(Q &GM, const double vp) const {
+    GM = propagator.valsmooth(0, vp, i_in);           // Matsubara propagator (full or single scale)
+}
+
+template<typename Q>
+void IntegrandSE<Q>::read_vertex_values(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
+                                        Q &factorKeldyshClosedAbove, Q &factorRetardedClosedBelow,
+                                        Q &factorAdvancedClosedBelow, Q &factorKeldyshClosedBelow,
+                                        const double vp) const {
+    VertexInput inputRetardedClosedAbove (components[0], v, vp, v, i_in, 0, 'f');
+    VertexInput inputAdvancedClosedAbove (components[1], v, vp, v, i_in, 0, 'f');
+    VertexInput inputKeldyshClosedAbove  (components[2], v, vp, v, i_in, 0, 'f');
+
+    VertexInput inputRetardedClosedBelow (components[3], vp, v, vp, i_in, 0, 'f');
+    VertexInput inputAdvancedClosedBelow (components[4], vp, v, vp, i_in, 0, 'f');
+    VertexInput inputKeldyshClosedBelow  (components[5], vp, v, vp, i_in, 0, 'f');
+
+    set_factors(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove,
+                inputRetardedClosedAbove, inputAdvancedClosedAbove, inputKeldyshClosedAbove);
+
+    set_factors(factorRetardedClosedBelow, factorAdvancedClosedBelow, factorKeldyshClosedBelow,
+                inputRetardedClosedBelow, inputAdvancedClosedBelow, inputKeldyshClosedBelow);
+
+    //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
+    if(all_spins){
+        add_contribution_from_other_spins(factorRetardedClosedAbove,factorAdvancedClosedAbove,factorKeldyshClosedAbove,
+                                          inputRetardedClosedAbove,inputAdvancedClosedAbove,inputKeldyshClosedAbove);
+
+        add_contribution_from_other_spins(factorRetardedClosedBelow,factorAdvancedClosedBelow,factorKeldyshClosedBelow,
+                                          inputRetardedClosedBelow,inputAdvancedClosedBelow,inputKeldyshClosedBelow);
+    }
+}
+
+template<typename Q>
+void IntegrandSE<Q>::read_vertex_values(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
+                                        Q &factorKeldyshClosedAbove, const double vp) const {
+    VertexInput inputRetardedClosedAbove (components[0], v, vp, v, i_in, 0, 'f');
+    VertexInput inputAdvancedClosedAbove (components[1], v, vp, v, i_in, 0, 'f');
+    VertexInput inputKeldyshClosedAbove  (components[2], v, vp, v, i_in, 0, 'f');
+
+    set_factors(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove,
+                inputRetardedClosedAbove, inputAdvancedClosedAbove, inputKeldyshClosedAbove);
+
+    //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
+    if(all_spins){
+        add_contribution_from_other_spins(factorRetardedClosedAbove,factorAdvancedClosedAbove,factorKeldyshClosedAbove,
+                                          inputRetardedClosedAbove,inputAdvancedClosedAbove,inputKeldyshClosedAbove);
+    }
+}
+
+template<typename Q>
+void IntegrandSE<Q>::read_vertex_values(Q &factorClosedAbove, double vp) const {
+    VertexInput inputClosedAbove (0, v, vp, v, i_in, 0, 'f');
+    factorClosedAbove = vertex[0].value(inputClosedAbove);
+
+    //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
+    if(all_spins){
+        factorClosedAbove *= 2.;
+        inputClosedAbove.spin = 1;
+        factorClosedAbove += vertex[0].value(inputClosedAbove);
+    }
+}
+
+template<typename Q>
+void IntegrandSE<Q>::set_factors(Q &factorRetardedClosed, Q &factorAdvancedClosed, Q &factorKeldyshClosed,
+                                 const VertexInput &inputRetardedClosed,
+                                 const VertexInput &inputAdvancedClosed,
+                                 const VertexInput &inputKeldyshClosed) const {
+    factorRetardedClosed = vertex[0].value(inputRetardedClosed);
+    factorAdvancedClosed = vertex[0].value(inputAdvancedClosed);
+    factorKeldyshClosed  = vertex[0].value(inputKeldyshClosed);
+}
+
+template<typename Q>
+void IntegrandSE<Q>::add_contribution_from_other_spins(Q &factorRetardedClosed, Q &factorAdvancedClosed,
+                                                       Q &factorKeldyshClosed,
+                                                       VertexInput &inputRetardedClosed,
+                                                       VertexInput &inputAdvancedClosed,
+                                                       VertexInput &inputKeldyshClosed) const {
+    factorRetardedClosed *= 2.;
+    factorAdvancedClosed *= 2.;
+    factorKeldyshClosed  *= 2.;
+
+    inputRetardedClosed.spin = 1;
+    inputAdvancedClosed.spin = 1;
+    inputKeldyshClosed.spin = 1;
+
+    factorRetardedClosed += vertex[0].value(inputRetardedClosed);
+    factorAdvancedClosed += vertex[0].value(inputAdvancedClosed);
+    factorKeldyshClosed  += vertex[0].value(inputKeldyshClosed);
+}
+
+
+
+
 /**
  * Loop function for calculating the self energy
  * @tparam Q Type of the elements of the vertex, usually comp
@@ -294,7 +518,8 @@ void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator&
 }
 #endif
 
-
+/// Class to actually calculate the loop integral for a given external fermionic frequency and internal index.
+/// TODO: DEBUG_MODE not implemented yet!
 template <typename Q>
 class LoopCalculator{
     SelfEnergy<comp>& self;
@@ -349,6 +574,7 @@ void LoopCalculator<Q>::perform_computation() {
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Keldysh() {
+#ifdef KELDYSH_FORMALISM
     integratedR = prefactor * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
     integratedK = prefactor * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
 
@@ -361,7 +587,9 @@ void LoopCalculator<Q>::compute_Keldysh() {
     //The results are emplaced in the right place of the answer object.
     self.addself(0, iv, i_in, integratedR);
     self.addself(1, iv, i_in, integratedK);
+#endif // KELDYSH_FORMALISM
 }
+
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara() {
