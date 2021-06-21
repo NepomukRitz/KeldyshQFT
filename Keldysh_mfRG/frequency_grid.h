@@ -22,7 +22,7 @@ using namespace std;
 
 double grid_transf(double w, double W_scale);
 double grid_transf_inv(double w, double W_scale);
-void wscale_from_wmax(double & Wscale, double wmax, int nmin, int N);
+double wscale_from_wmax(double & Wscale, double w1, double wmax, int N);
 
 class FrequencyGrid {
     char type;
@@ -141,11 +141,11 @@ void FrequencyGrid::initialize_grid(double scale) {
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     if (type == 'b') {
         w_upper = max(round2bfreq(w_upper), glb_T * M_PI*N_w);
-        W_scale = max(W_scale*0, w_upper * sqrt( (pow((N_w-1)/2, 2) -1*2) / (pow(w_upper/(2*M_PI*glb_T), 2) - pow((N_w-1)/2, 2))) );  // Version 1: linear around w=0
+        W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
     }
     else {
         w_upper = max(round2ffreq(w_upper), glb_T * M_PI*N_w);
-        W_scale = max(W_scale*0, w_upper * sqrt( (pow(N_w-1, 2) -1*2) / (pow(w_upper/(M_PI*glb_T), 2) - pow(N_w-1, 2))) );            // Version 1: linear around w=0
+        W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
     }
 #endif
     w_lower = - w_upper;
@@ -442,34 +442,38 @@ double grid_transf_inv(double W, double W_scale) {
 //// Transformation from
 double grid_transf(double w, double W_scale) {
     // Version 1: linear around w=0
-    return w/sqrt(W_scale*W_scale + w*w);
+    //return w/sqrt(W_scale*W_scale + w*w);
 
     // Version 2: quadratic around w=0
-//    double w2 = w * w;
-//    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+    double w2 = w * w;
+    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
 }
 double grid_transf_inv(double W, double W_scale) {
     // Version 1: linear around w=0
-    return W_scale*W/sqrt(1.-W*W);
+    //return W_scale*W/sqrt(1.-W*W);
 
     // Version 2: quadratic around w=0
-//    return W_scale * W * abs(W) / sqrt(1. - W * W);
+    return W_scale * W * abs(W) / sqrt(1. - W * W);
 }
 
-// Picks W_scale such that
-//  *
-void wscale_from_wmax(double & Wscale, const double wmax, const int nmin, const int N) {
-    double tmax = 1 - 1./(N + 1);
-    double tmin = 1./(N + 1);
-    double wmin = nmin * M_PI * glb_T;
+
+/**
+ * Makes sure that lower bound for W_scale fulfilled
+ * Wscale:  current value for W_scale
+ * w1:      smallest positive Matsubara frequency (for bosons: 2*M_PI*glb_T, for fermions: M_PI*glb_T)
+ * wmax:    maximal frequency
+ * N:       relates tmax to t1 by t1=tmax/N (for bosons: (nBOS-1)/2; for fermions: nFER-1)
+*/
+double wscale_from_wmax(double & Wscale, const double w1, const double wmax, const int N) {
+    double Wscale_candidate;
     // Version 1: linear around w=0
-    Wscale = max(Wscale * 0., wmax * sqrt(1 - pow(tmax, 2)) / tmax);
-    Wscale = max(Wscale, 1. + wmin * sqrt(1 - pow(tmin, 2)) / tmin);
+    //Wscale_candidate = wmax * sqrt( (N*N -1*2) / (pow(wmax/w1, 2) - N*N));
 
+    // Version 2: quaadratic around w=0
+    assert(w1 / wmax < 1./(N*N));       // if this fails, then change wmax or use Version 1
+    Wscale_candidate = w1 * wmax * N * sqrt(N*N - 1) *sqrt(wmax*wmax - N*N*w1*w1) / abs(wmax*wmax - w1*w1*N*N*N*N);
 
-    // Version 2: quadratic around w=0
-    // Wscale = max(Wscale, wmax * sqrt(1 - pow(tmax, 2)) / pow(tmax, 2));
-    // Wscale = max(Wscale, wmin * sqrt(1 - pow(tmin, 2)) / pow(tmin, 2));
+    return max(Wscale, Wscale_candidate);
 }
 
 ////    linear grid
