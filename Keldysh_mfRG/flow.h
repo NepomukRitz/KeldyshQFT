@@ -20,7 +20,12 @@ State<comp> n_loop_flow(string outputFileName){
     State<comp> state_fin (Lambda_fin), state_ini (Lambda_ini);   // create final and initial state
     state_ini.initialize();             // initialize state
 
-    sopt_state(state_ini, Lambda_ini);  // initialize the flow with SOPT at Lambda_ini (important!)
+    // initialize the flow with SOPT at Lambda_ini (important!)
+    //sopt_state(state_ini, Lambda_ini);
+
+    // better: read state from converged parquet solution
+    state_ini = read_hdf("parquet_solution_K3_Lambda=20.000000", 5, 51);
+    state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
