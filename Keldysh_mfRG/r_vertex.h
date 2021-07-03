@@ -528,23 +528,24 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
         case 'a':
             switch (input.channel) {
                 case 'a':
-                    return;                                         // do nothing
+                    return;                                                     // do nothing
                 case 'p':
-                    w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;        // input.w  = w_p
+                    w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;    // input.w  = w_p
                     floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;            // input.v1 = v_p
-                    v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;            // input.v2 = v'_p
+                    v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_p
+                    v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
                     break;
                 case 't':
-                    w  = input.v1-input.v2;                         // input.w  = w_t
+                    w  = input.v1-input.v2;                                     // input.w  = w_t
                     floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;            // input.v1 = v_t
-                    v2 = input.v1 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_t
+                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
+                    v2 = input.v1 + floor2bf_w - floor2bf_inputw;               // input.v2 = v'_t
                     break;
                 case 'f':
-                    w  = input.v1 - floor2bf_inputw;                    // input.w  = v_1'
-                    v1 = input.w + input.v2 - floor2bf_inputw;   // input.v1 = v_2'
-                    v2 = input.v2 - floor2bf_inputw;              // input.v2 = v_1
+                    w  = input.v1 - input.v2;                                   // input.w  = v_1'
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.w - floor2bf_w;                                  // input.v1 = v_2'
+                    v2 = input.v2 - floor2bf_w;                                 // input.v2 = v_1
                     break;
                 default:;
             }
@@ -552,23 +553,24 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
         case 'p':
             switch (input.channel) {
                 case 'a':
-                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;                    // input.w  = w_a
+                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_a
                     floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;     // input.v1 = v_a
-                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;     // input.v2 = v'_a
+                    v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_a
+                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_a
                     break;
                 case 'p':
-                    return;                                    // do nothing
+                    return;                                                         // do nothing
                 case 't':
-                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;                    // input.w  = w_t
+                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
                     floor2bf_w = floor2bfreq(w / 2.);
-                    v1 =           - input.v1 + floor2bf_w + floor2bf_inputw;     // input.v1 = v_t
-                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;     // input.v2 = v'_t
+                    v1 =           - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_t
+                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
                     break;
                 case 'f' :
-                    w  = input.w + input.v1 - floor2bf_inputw;                     // input.w  = v_1'
-                    v1 = - input.v1 + floor2bf_inputw;               // input.v1 = v_2'
-                    v2 = input.w + input.v2 - floor2bf_inputw;   // input.v2 = v_1
+                    w  = input.w + input.v1;                                        // input.w  = v_1'
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = - input.v1 + floor2bf_w;                                   // input.v1 = v_2'
+                    v2 = input.v2 - w + floor2bf_w;                                 // input.v2 = v_1
                     break;
                 default:;
             }
@@ -576,23 +578,24 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
         case 't':
             switch (input.channel) {
                 case 'a':
-                    w  = input.v1-input.v2;                    // input.w  = w_a
+                    w  = input.v1-input.v2;                                     // input.w  = w_a
                     floor2bf_w = floor2bfreq(w / 2.);
                     v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_a
                     v2 =           input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_a'
                     break;
                 case 'p':
-                    w  = input.v1-input.v2;                    // input.w  = w_p
+                    w  = input.v1-input.v2;                                     // input.w  = w_p
                     floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = - input.v1 + floor2bf_w + floor2bf_inputw;      // input.v1 = v_p
-                    v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;      // input.v2 = v'_p
+                    v1 = - input.v1 + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
+                    v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
                     break;
                 case 't':
-                    return;                                    // do nothing
+                    return;                                                     // do nothing
                 case 'f':
-                    w  = input.w + input.v2 - floor2bf_inputw;                     // input.w  = v_1'
-                    v1 = input.v1 - floor2bf_inputw;    // input.v1 = v_2'
-                    v2 = input.v2 - floor2bf_inputw;               // input.v2 = v_1
+                    w  = input.w - input.v2;                                    // input.w  = v_1'
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.v1 + floor2bf_w;                                 // input.v1 = v_2'
+                    v2 = input.v2 + floor2bf_w;                                 // input.v2 = v_1
                     break;
                 default:;
             }
@@ -674,6 +677,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
 
     for (int itK = 0; itK < nK_K1; itK++) {
         int i0_tmp = 0;
+        double roundingbuffer_w = frequencies.b_K1.w[(nBOS+1)/2] * 1e-2;
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0_tmp = non_zero_Keldysh_K1a[itK]; break;
@@ -685,16 +689,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             double w_in = this->frequencies.b_K1.w[itw];
             IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
             int sign_w = sign_index(indices.w);
-            if (freq_transformations.K1[itK][sign_w] != 0){
-                Ti(indices, freq_transformations.K1[itK][sign_w]);
-                indices.iK = itK;
+            int trafo_index = freq_transformations.K1[itK][sign_w];
+            if (trafo_index != 0){
+                Ti(indices, trafo_index);
 
-                int sign_w_new = freq_components.K1[itK][sign_w];
-                int itw_new;
-                if (sign_w == sign_w_new)
-                    itw_new = itw;
-                else
-                    itw_new = nw1 - 1 - itw;
+                int itw_new = frequencies.b_K1.fconv(indices.w + roundingbuffer_w);
                 Q result;
                 if (indices.asymmetry_transform)
                     result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
@@ -721,6 +720,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
     for (int itK = 0; itK < nK_K2; itK++){
         int i0_tmp;
+        double roundingbuffer_w = frequencies.b_K2.w[(nBOS2+1)/2] * 1e-2;
+        double roundingbuffer_v = frequencies.f_K2.w[(nFER2+1)/2] * 1e-2;
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0_tmp = non_zero_Keldysh_K2a[itK]; break;
@@ -735,24 +736,15 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                 IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
                 int sign_w = sign_index(w_in);
                 int sign_v1 = sign_index(v_in);
-                Ti(indices, freq_transformations.K2[itK][sign_w*2 + sign_v1]);
+                int trafo_index = freq_transformations.K2[itK][sign_w*2 + sign_v1];
+                Ti(indices, trafo_index);
                 indices.iK = itK;
 
-                if (freq_transformations.K2[itK][sign_w*2 + sign_v1] != 0) {
+                if (trafo_index != 0) {
 
-                    int sign_flat = freq_components.K2[itK][sign_w * 2 + sign_v1];
-                    int sign_w_new = sign_flat / 2;
-                    int sign_v1_new = sign_flat - sign_w_new * 2;
-                    int itw_new;
-                    int itv_new;
-                    if (sign_w == sign_w_new)
-                        itw_new = itw;
-                    else
-                        itw_new = nw2 - 1 - itw;
-                    if (sign_v1 == sign_v1_new)
-                        itv_new = itv;
-                    else
-                        itv_new = nv2 - 1 - itv;
+                    int itw_new = frequencies.b_K2.fconv(indices.w + roundingbuffer_w);
+                    int itv_new = frequencies.f_K2.fconv(indices.v1 + roundingbuffer_v);
+
                     Q result;
                     if (indices.asymmetry_transform)
                         result = indices.prefactor * vertex_symmrelated.K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
@@ -780,46 +772,29 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         i0_tmp = non_zero_Keldysh_K3[itK];
 
+        double roundingbuffer_w = frequencies.b_K3.w[(nBOS3+1)/2] * 1e-2;
+        double roundingbuffer_v = frequencies.f_K3.w[(nFER3+1)/2] * 1e-2;
         for (int itw = 0; itw < nw3; itw++){
             for (int itv = 0; itv < nv3; itv++){
                 for (int itvp = 0; itvp < nv3; itvp++) {
                     double w_in = this->frequencies.b_K3.w[itw];
-                    //double v_in = this->frequencies.f_K3.w[itv];
-                    //double vp_in = this->frequencies.f_K3.w[itvp];
-                    IndicesSymmetryTransformations indices(i0_tmp, 0, 0, 0, 0, channel);
+                    double v_in = this->frequencies.f_K3.w[itv];
+                    double vp_in = this->frequencies.f_K3.w[itvp];
+                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
                     int sign_w = sign_index(w_in);
-                    //int sign_v1 = sign_index(v_in);
-                    //int sign_v2 = sign_index(vp_in);
                     int sign_f =  itv+itvp<nFER3? 0 : 1;    // this corresponds to "sign_index(v_in + vp_in)" assuming
-                    // that both v and vp use the same fermionic frequency grid
+                                                            // that both v and vp use the same fermionic frequency grid
                     int sign_fp = itv<=itvp? 0 : 1;         // this corresponds to "sign_index(v_in - vp_in)"  assuming
-                    // that both v and vp use the same fermionic frequency grid
-                    Ti(indices, freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp]);
+                                                            // that both v and vp use the same fermionic frequency grid
+                    int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
+                    Ti(indices, trafo_index);
 
-                    if (freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp] != 0) {
-                        int sign_flat = freq_components.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
-                        int sign_w_new = sign_flat / 4;
-                        int sign_f_new = sign_flat / 2 - sign_w_new * 2;
-                        int sign_fp_new = sign_flat - sign_f_new * 2 - sign_w_new * 4;
-                        int sign_v1_new;
-                        int sign_v2_new;
+                    if (trafo_index != 0) {
 
-                        int itw_new;
-                        if (sign_w == sign_w_new)
-                            itw_new = itw;
-                        else
-                            itw_new = nw3 - 1 - itw;
-                        int itv_new = itv;
-                        int itvp_new = itvp;
-                        if (sign_f_new != sign_f) {
-                            itv_new = itvp + (nv3 - 1 - 2 * itvp) ;
-                            itvp_new = itv + (nv3 - 1 - 2 * itv);
-                        }
-                        if (sign_fp_new != sign_fp) {
-                            int it_temp = itv_new;
-                            itv_new = itvp_new;
-                            itvp_new = it_temp;
-                        }
+                        int itw_new = frequencies.b_K3.fconv(indices.w + roundingbuffer_w);
+                        int itv_new = frequencies.f_K3.fconv(indices.v1 + roundingbuffer_v);
+                        int itvp_new = frequencies.f_K3.fconv(indices.v2 + roundingbuffer_v);
+
                         Q result;
                         if (indices.asymmetry_transform)
                             result = indices.prefactor * vertex_symmrelated.K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];

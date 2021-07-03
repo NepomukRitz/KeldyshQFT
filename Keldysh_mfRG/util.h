@@ -219,24 +219,25 @@ auto sign(T x) -> double {
 // rounds away from zero to next Integer
 auto round2Infty(double x) -> double {
     // trunc() rounds towards zero
-    if (x <= 0.) return floor(x);
-    else return ceil(x);
+    if (x <= 0.) return floor(x+inter_tol);
+    else return ceil(x-inter_tol);
 }
 
 // needed for rounding to fermionic frequencies
 auto myround(double x) -> double {
-    if (x <= -0.5) return floor(x);
-    else return ceil(x);
+    if (x <= -0.5) return floor(x+inter_tol);
+    else return ceil(x-inter_tol);
 }
 
 // round (frequency/(pi*T)) to an even number
 auto floor2bfreq(double w) -> double {
     double a = (2. * M_PI * glb_T);
-    return floor(w / a) * a;
+    return floor(w / a+inter_tol) * a;
 }
 auto ceil2bfreq(double w) -> double {
     double a = (2. * M_PI * glb_T);
-    return ceil(w / a) * a;
+
+    return ceil(w / a-inter_tol) * a;
 }
 auto round2bfreq(double w) -> double {
     double a = (2. * M_PI * glb_T);
@@ -245,11 +246,11 @@ auto round2bfreq(double w) -> double {
 // round (frequency/(pi*T)) to an uneven number
 auto floor2ffreq(double w) -> double {
     double a = (M_PI * glb_T);
-    return (floor((w / a - 1.) / 2.) * 2. + 1 ) * a;
+    return (floor((w / a - 1.) / 2.+inter_tol) * 2. + 1 ) * a;
 }
 auto ceil2ffreq(double w) -> double {
     double a = (M_PI * glb_T);
-    return (ceil((w / a - 1.) / 2.) * 2. + 1 ) * a;
+    return (ceil((w / a - 1.-inter_tol) / 2.) * 2. + 1 ) * a;
 }
 auto round2ffreq(double w) -> double {
     double a = (M_PI * glb_T);
@@ -262,6 +263,16 @@ auto is_doubleOccurencies(rvec freqs) -> int {
         if (freqs[i] == freqs[i+1]) return 1;
     }
     return 0;
+}
+
+// Check whether the frequency grid is symmetric
+auto is_symmetric(rvec freqs) -> double {
+    double asymmetry = 0;
+    for (int i = 0; i< freqs.size() - 1; i++){
+
+        asymmetry += abs(freqs[i] + freqs[freqs.size()-i-1]);
+    }
+    return asymmetry;
 }
 
 

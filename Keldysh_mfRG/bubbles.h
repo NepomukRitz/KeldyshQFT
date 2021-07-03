@@ -128,6 +128,8 @@ public:
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
         ans *= -1.;     // -1=glb_i^2; needed for particle-hole symmetry in Matsubara (we only save the imaginary part of self-energy and propagators)
 #endif
+
+        assert(isfinite(ans) == true);
         return ans;
     }
 
@@ -176,31 +178,7 @@ public:
         return Pival;
     }
 #endif
-    /**
-     * Wrapper for value function above, providing the natural arguments for evaluation of the bubble in each channel:
-     * @param iK      : Keldysh index of combined bubble object (0 <= iK <= 15)
-     * @param m       : 2*m     is bubble transfer frequency of the corresponding channel
-     * @param npp     : 2*npp+1 is bubble integration frequency of the corresponding channel
-     * @param i_in    : internal structure index
-     * @param channel : channel to which the bubble belongs
-     * @return Q      : value of the bubble evaluated at the arguments described above (usually comp)
-     */
-    auto value(int iK, int m, int npp, int i_in, char channel) const -> Q {
-        Q Pival;
-        switch (channel) {
-            case 'a':
-                Pival = value(iK, npp - m / 2, npp + m - m / 2, i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
-                break;
-            case 'p':
-                Pival = value(iK, m - m / 2 + npp, m / 2 - npp -1, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
-                break;
-            case 't':
-                Pival = value(iK, npp - m / 2, npp + m - m / 2, i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
-                break;
-            default:;
-        }
-        return Pival;
-    }
+
 };
 
 //Class created for debugging of the Bubbles
@@ -447,6 +425,47 @@ public:
         write_h5_rvecs(filename,
                 {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
                 {freqs, integrand_re, integrand_im, Pival_re, Pival_im});
+    }
+
+
+    void save_integrand(int Nmin, int Nmax) {
+        int npoints = Nmax - Nmin + 1;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        rvec Pival_re (npoints);
+        rvec Pival_im (npoints);
+        for (int i=0; i<npoints; ++i) {
+            double wl = vertex1[0].avertex().frequencies.b_K1.w_lower*2.;
+            double wu = vertex1[0].avertex().frequencies.b_K1.w_upper*2.;
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            vpp = ((Nmin + i) * 2 + 1) * M_PI * glb_T; //   for fermionic frequency
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+            Q Pival = Pi.value(i2, w, vpp, i_in, channel);
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+            Pival_re[i] = Pival;
+            Pival_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+            Pival_re[i] = Pival.real();
+            Pival_im[i] = Pival.imag();
+#endif
+        }
+
+        string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_i0=" + to_string(i0)
+                    + "_i2=" + to_string(i2)
+                    + "_w=" + to_string(w) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
+                       {freqs, integrand_re, integrand_im, Pival_re, Pival_im});
     }
 
 };
@@ -865,11 +884,11 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #else
                         Integrand_K1<Q, symmetry_left, symmetry_right>
                                 integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
-                        /* // save the integrand for manual checks:
-                        if (i_omp == 100){
-                            integrand_K1.save_integrand();
-                        }
-                        // */
+                        /*// save the integrand for manual checks:
+                        if (i_omp > 96){
+                            integrand_K1.save_integrand(Nmin, Nmax - ceil2bfreq(w/2) + floor2bfreq(w/2));
+                        }*/
+                        //
 #endif
 
 #ifdef KELDYSH_FORMALISM
@@ -895,7 +914,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                            }
                            value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, intervals, num_intervals);
 #else
-                           value += prefactor * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax);
+                        int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+                           value += prefactor * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
 #endif
 #endif
 
@@ -911,7 +931,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                       vmin, vmax, w, 0., 0., i0, i2, i_in, channel, diff);
 #else
                                prefactor * (1. / (2. * M_PI)) *  asymp_corrections_bubble(k1, vertex1, vertex2, G,
-                                      vmin -  M_PI * glb_T, vmax +  M_PI * glb_T, w, 0., 0., i0, i2, i_in, channel, diff);
+                                      vmin -  M_PI * glb_T, vmax + (M_PI*glb_T) * (1 + 2*interval_correction), w, 0., 0., i0, i2, i_in, channel, diff);
 #endif
 #endif
 
@@ -1046,7 +1066,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         }
                         value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, intervals, num_intervals);
 #else
-                        value += prefactor * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax);
+                        int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2);
+                        value += prefactor * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax + interval_correction);
 #endif
 #endif
                         //if (!diff) {
@@ -1060,7 +1081,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                                           vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
 #else
                                 prefactor * (1. / (2. * M_PI)) * asymp_corrections_bubble(k2, vertex1, vertex2, G,
-                                             vmin - M_PI * glb_T, vmax + M_PI * glb_T, w, v, 0., i0, i2, i_in, channel, diff);
+                                             vmin - M_PI * glb_T, vmax + (M_PI*glb_T) * (1 + 2*interval_correction), w, v, 0., i0, i2, i_in, channel, diff);
 #endif
 #endif
 
@@ -1155,9 +1176,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     // initialize the integrand object and perform frequency integration
                     Integrand_K3<Q, symmetry_left, symmetry_right>
                             integrand_K3(vertex1, vertex2, Pi, i0, w, v, vp, i_in, channel, diff);
-                    /*if (i_omp == 4189){
-                        integrand_K3.save_integrand();
-                    }*/
+                    //if (i_omp == 4190 or i_omp == 4189 or i_omp == 4209 or i_omp == 4210){
+                    //    integrand_K3.save_integrand();
+                    //}
 
 #ifdef KELDYSH_FORMALISM
                     value += prefactor * (1. / (2. * M_PI * glb_i)) *
@@ -1183,7 +1204,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     }
                     value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, intervals, num_intervals);
 #else
-                    value += prefactor * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax);
+                    int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2);
+                    value += prefactor * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax + interval_correction);
 #endif
 #endif
 
@@ -1204,7 +1226,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                                      vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
 #else
                             prefactor * (1. / (2. * M_PI)) * asymp_corrections_bubble(k3, vertex1, vertex2, G,
-                                                                         vmin - M_PI*glb_T, vmax + M_PI*glb_T, w, v, vp, i0, i2, i_in, channel, diff);
+                                vmin - M_PI*glb_T, vmax + (M_PI*glb_T) * (1 + 2*interval_correction), w, v, vp, i0, i2, i_in, channel, diff);
 #endif
 #endif
 
