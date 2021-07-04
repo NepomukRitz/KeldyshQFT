@@ -29,7 +29,7 @@ class FrequencyGrid {
     unsigned int diag_class;
 public:
     int N_w;
-    double w_upper, w_lower, W_scale;
+    double w_upper, w_lower, W_upper, W_lower, W_scale;
     double U_factor = 10./3.;
     double Delta_factor = 10.;
     rvec w;
@@ -116,8 +116,8 @@ auto FrequencyGrid::scale_factor(double Lambda) -> double {
 
 void FrequencyGrid::initialize_grid() {
     double W;
-    double W_upper = grid_transf(w_upper, W_scale);
-    double W_lower = grid_transf(w_lower, W_scale);
+    W_upper = grid_transf(w_upper, W_scale);
+    W_lower = grid_transf(w_lower, W_scale);
     double dW = (W_upper - W_lower) / ((double) (N_w - 1.));
     for(int i=0; i<N_w; ++i) {
         W = W_lower + i*dW;
@@ -158,8 +158,6 @@ void FrequencyGrid::rescale_grid(double Lambda) {
 
 auto FrequencyGrid::fconv(double w_in) const -> int {
     double W = grid_transf(w_in, W_scale);
-    double W_upper = grid_transf(w_upper, W_scale);
-    double W_lower = grid_transf(w_lower, W_scale);
     double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
     W = (W - W_lower) / dW;
     auto index = (int)W;
@@ -442,18 +440,18 @@ double grid_transf_inv(double W, double W_scale) {
 //// Transformation from
 double grid_transf(double w, double W_scale) {
     // Version 1: linear around w=0
-    //return w/sqrt(W_scale*W_scale + w*w);
+    return w/sqrt(W_scale*W_scale + w*w);
 
     // Version 2: quadratic around w=0
-    double w2 = w * w;
-    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+    //double w2 = w * w;
+    //return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
 }
 double grid_transf_inv(double W, double W_scale) {
     // Version 1: linear around w=0
-    //return W_scale*W/sqrt(1.-W*W);
+    return W_scale*W/sqrt(1.-W*W);
 
     // Version 2: quadratic around w=0
-    return W_scale * W * abs(W) / sqrt(1. - W * W);
+    //return W_scale * W * abs(W) / sqrt(1. - W * W);
 }
 
 

@@ -836,7 +836,10 @@ template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q valu
     K1[iK*nw1*n_in + iw*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
-    return K1[iK*nw1*n_in + iw*n_in + i_in];
+    if (iw >= 0) {
+        return K1[iK*nw1*n_in + iw*n_in + i_in];
+    }
+    else return 0.;
 }
 #endif
 
@@ -860,7 +863,10 @@ template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in
     K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
-    return K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in];
+    if (iw >= 0 and iv >= 0) {
+        return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
+    }
+    else return 0.;
 }
 #endif
 
@@ -884,7 +890,10 @@ template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp,
     K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
-    return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
+    if (iw >= 0 and iv >= 0 and ivp >= 0) {
+        return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
+    }
+    else return 0;
 }
 #endif
 
