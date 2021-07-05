@@ -30,9 +30,10 @@ class FrequencyGrid {
 public:
     int N_w;
     double w_upper, w_lower, W_upper, W_lower, W_scale;
-    double U_factor = 10./3.;
-    double Delta_factor = 10.;
+    double U_factor = 1./3.;
+    double Delta_factor = 1.;
     rvec w;
+    rvec Ws;
 
     FrequencyGrid(char type_in, unsigned int diag_class_in) : type(type_in), diag_class(diag_class_in) {
         switch (type) {
@@ -96,6 +97,7 @@ public:
             default:;
         }
         w = rvec (N_w);
+        Ws = rvec (N_w);
         initialize_grid();
     };
 
@@ -108,6 +110,7 @@ public:
     void initialize_grid(double scale);
     void rescale_grid(double Lambda);
     auto fconv(double w_in) const -> int;
+    auto W_val(int index) const -> double;
 };
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
@@ -126,9 +129,11 @@ void FrequencyGrid::initialize_grid() {
         if (type == 'b') w[i] = round2bfreq(w[i]);
         else w[i] = round2ffreq(w[i]);
 #endif
+        Ws[i]= grid_transf(w[i], W_scale);
     }
     if (N_w % 2 == 1) {
         w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+        Ws[(int) N_w / 2] = 0.;
     }
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     assert (is_doubleOccurencies(w) == 0);
@@ -137,7 +142,7 @@ void FrequencyGrid::initialize_grid() {
 
 void FrequencyGrid::initialize_grid(double scale) {
     W_scale = scale;
-    w_upper = scale * 15.;
+    w_upper = scale * 5.;
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     if (type == 'b') {
         w_upper = max(round2bfreq(w_upper), glb_T * M_PI*N_w);
@@ -162,6 +167,11 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     W = (W - W_lower) / dW;
     auto index = (int)W;
     return index;
+}
+
+auto FrequencyGrid::W_val(int index) const -> double {
+    if (index >= 0) return Ws[index];
+    else return 0.;
 }
 
 class VertexFrequencyGrid {
@@ -426,8 +436,8 @@ double grid_transf(double w, double W_scale) {
 //    return w/sqrt(W_scale*W_scale + w*w);
 
     // Version 2: quadratic around w=0
-    double w2 = w * w;
-    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+    //double w2 = w * w;
+    //return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
 }
 double grid_transf_inv(double W, double W_scale) {
     // Version 1: linear around w=0
@@ -454,6 +464,13 @@ double grid_transf_inv(double W, double W_scale) {
     //return W_scale * W * abs(W) / sqrt(1. - W * W);
 }
 
+////    linear grid
+//double grid_transf(double w, double W_scale) {
+//    return w / W_scale;
+//}
+//double grid_transf_inv(double W, double W_scale) {
+//    return W * W_scale;
+//}
 
 /**
  * Makes sure that lower bound for W_scale fulfilled
@@ -465,22 +482,18 @@ double grid_transf_inv(double W, double W_scale) {
 double wscale_from_wmax(double & Wscale, const double w1, const double wmax, const int N) {
     double Wscale_candidate;
     // Version 1: linear around w=0
-    //Wscale_candidate = wmax * sqrt( (N*N -1*2) / (pow(wmax/w1, 2) - N*N));
+        Wscale_candidate = wmax * sqrt( (N*N -1*2) / (pow(wmax/w1, 2) - N*N));
 
     // Version 2: quaadratic around w=0
-    assert(w1 / wmax < 1./(N*N));       // if this fails, then change wmax or use Version 1
-    Wscale_candidate = w1 * wmax * N * sqrt(N*N - 1) *sqrt(wmax*wmax - N*N*w1*w1) / abs(wmax*wmax - w1*w1*N*N*N*N);
+    //assert(w1 / wmax < 1./(N*N));       // if this fails, then change wmax or use Version 1
+    //Wscale_candidate = w1 * wmax * N * sqrt(N*N - 1) *sqrt(wmax*wmax - N*N*w1*w1) / abs(wmax*wmax - w1*w1*N*N*N*N);
+
+    // linear grid
+    //Wscale_candidate = wmax + 2*M_PI*glb_T;
 
     return max(Wscale, Wscale_candidate);
 }
 
-////    linear grid
-//double grid_transf(double w, double W_scale) {
-//    return w;
-//}
-//double grid_transf_inv(double W, double W_scale) {
-//    return W;
-//}
 #endif
 
 //void setUpBosGrid(rvec& freqs, int nfreqs) {

@@ -318,6 +318,7 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     if (indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
 #endif
+    assert(isfinite(value));
     return value;
 }
 template <typename Q>
@@ -375,6 +376,7 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     if (indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
 #endif
+    assert(isfinite(value));
     return value;
 }
 
@@ -677,7 +679,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
 
     for (int itK = 0; itK < nK_K1; itK++) {
         int i0_tmp = 0;
-        double roundingbuffer_w = frequencies.b_K1.w[(nBOS+1)/2] * 1e-2;
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0_tmp = non_zero_Keldysh_K1a[itK]; break;
@@ -692,8 +693,14 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             int trafo_index = freq_transformations.K1[itK][sign_w];
             if (trafo_index != 0){
                 Ti(indices, trafo_index);
+                indices.iK = itK;
 
-                int itw_new = frequencies.b_K1.fconv(indices.w + roundingbuffer_w);
+                int sign_w_new = freq_components.K1[itK][sign_w];
+                int itw_new;
+                if (sign_w == sign_w_new)
+                    itw_new = itw;
+                else
+                    itw_new = nw1 - 1 - itw;
                 Q result;
                 if (indices.asymmetry_transform)
                     result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
@@ -720,8 +727,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
     for (int itK = 0; itK < nK_K2; itK++){
         int i0_tmp;
-        double roundingbuffer_w = frequencies.b_K2.w[(nBOS2+1)/2] * 1e-2;
-        double roundingbuffer_v = frequencies.f_K2.w[(nFER2+1)/2] * 1e-2;
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
             case 'a': i0_tmp = non_zero_Keldysh_K2a[itK]; break;
@@ -729,6 +734,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             case 't': i0_tmp = non_zero_Keldysh_K2t[itK]; break;
             default: ;
         }
+
         for (int itw = 0; itw < nw2; itw++){
             for (int itv = 0; itv < nv2; itv++){
                 double w_in = this->frequencies.b_K2.w[itw];
@@ -742,14 +748,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
                 if (trafo_index != 0) {
 
-                    int itw_new = frequencies.b_K2.fconv(indices.w + roundingbuffer_w);
-                    int itv_new = frequencies.f_K2.fconv(indices.v1 + roundingbuffer_v);
-
                     Q result;
                     if (indices.asymmetry_transform)
-                        result = indices.prefactor * vertex_symmrelated.K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
+                        result = Interpolate<k2,Q>()(indices, vertex_symmrelated);
                     else
-                        result = indices.prefactor * K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
+                        result = Interpolate<k2,Q>()(indices, *(this));
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
                     if (indices.conjugate)
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
@@ -772,8 +775,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         i0_tmp = non_zero_Keldysh_K3[itK];
 
-        double roundingbuffer_w = frequencies.b_K3.w[(nBOS3+1)/2] * 1e-2;
-        double roundingbuffer_v = frequencies.f_K3.w[(nFER3+1)/2] * 1e-2;
         for (int itw = 0; itw < nw3; itw++){
             for (int itv = 0; itv < nv3; itv++){
                 for (int itvp = 0; itvp < nv3; itvp++) {
@@ -791,15 +792,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
 
                     if (trafo_index != 0) {
 
-                        int itw_new = frequencies.b_K3.fconv(indices.w + roundingbuffer_w);
-                        int itv_new = frequencies.f_K3.fconv(indices.v1 + roundingbuffer_v);
-                        int itvp_new = frequencies.f_K3.fconv(indices.v2 + roundingbuffer_v);
-
                         Q result;
                         if (indices.asymmetry_transform)
-                            result = indices.prefactor * vertex_symmrelated.K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
+                            result = Interpolate<k3,Q>()(indices, vertex_symmrelated);
                         else
-                            result = indices.prefactor * K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
+                            result = Interpolate<k3,Q>()(indices, *(this));
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
                         if (indices.conjugate)
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = conj(result);
