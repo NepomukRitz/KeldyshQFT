@@ -10,6 +10,7 @@
 #include "write_data2file.h"        // writing data to txt or hdf5 file
 #include "hdf5_routines.h"          // writing states to hdf5 file
 #include "perturbation_theory.h"
+#include <boost/math/special_functions/polygamma.hpp> // Polygamma function
 
 // TODO: remove glb_w_lower
 
@@ -1110,9 +1111,11 @@ void test_PT4(double Lambda, bool write_flag = false) {
                            "PT2: K1a - exact: ", "PT2: K1p - exact: ",
                            "PT3: K1a - exact: ", "PT3: K1p - exact: ", "PT3: K1t - exact: ",
                            "PT3: K2a[1] - exact: ", "PT3: K2p[1] - exact: ", "PT3: K2t[1] - exact: ",
+#ifdef KELDYSH_FORMALISM
                            "PT3: K2a[2] - exact: ", "PT3: K2p[2] - exact: ", "PT3: K2t[2] - exact: ",
                            "PT3: K2a[4] - exact: ", "PT3: K2p[4] - exact: ", "PT3: K2t[4] - exact: "
                             ,
+#endif
                            "PT4: (K2a[1] <- K1p) + (K2p[1] <- K1a): ",
 #ifdef KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K1p) + (K2p[2] <- K1a): ",
@@ -1160,9 +1163,16 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT2_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 1);
     state_datatype PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
+#ifdef ZERO_TEMP
     state_datatype PT2_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 1);
     state_datatype PT3_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+#else
+    state_datatype PT2_K1_exact = - glb_U * pow(glb_U * boost::math::polygamma(1, (glb_Gamma + Lambda) / 2. / (glb_T * 2.*M_PI) + 0.5) / (glb_T * 2 * M_PI * M_PI), 1);
+    state_datatype PT3_K1_exact = - glb_U * pow(glb_U * boost::math::polygamma(1, (glb_Gamma + Lambda) / 2. / (glb_T * 2.*M_PI) + 0.5) / (glb_T * 2 * M_PI * M_PI), 2);
 #endif
+#endif
+    cout << "PT2 K1 exact: " << PT2_K1_exact << "\n";
+    cout << "Computed value: " << PT2_K1a_0 << "\n";
 
     // K1 in PT4
     state_datatype PT4_K1a_0_ladder = PT4_31_a_a1.vertex[0].avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex[0].tvertex());
@@ -1219,12 +1229,14 @@ void test_PT4(double Lambda, bool write_flag = false) {
 #ifdef KELDYSH_FORMALISM
     }
 #endif
-#endif
 
 #ifdef KELDYSH_FORMALISM
     state_datatype PT3_K2_exact = -(1./2.) * (2. - M_PI*M_PI/4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
     state_datatype PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+    cout << "PT3 K2 exact: " << PT3_K2_exact << "\n";
+    cout << "Computed value: " << PT3_K2t_0[iK2] << "\n";
+#endif
 #endif
 
     // K3 in PT4
@@ -1248,56 +1260,58 @@ void test_PT4(double Lambda, bool write_flag = false) {
 #endif
 
     // values to be printed to log
-    vec<state_datatype> check_values {PT2_K1a_0 + PT2_K1p_0,
-                            PT2_K1t_0,
-                            (PT2_K1a_0 - PT2_K1_exact)/PT2_K1_exact,
-                            (-PT2_K1p_0 - PT2_K1_exact)/PT2_K1_exact,
-                            (PT3_K1a_0 - PT3_K1_exact)/PT3_K1_exact,
-                            (PT3_K1p_0 - PT3_K1_exact)/PT3_K1_exact,
-                            (PT3_K1t_0 - PT3_K1_exact)/PT3_K1_exact,
-                            (PT3_K2a_0[0] - PT3_K2_exact)/PT3_K2_exact,
-                            (PT3_K2p_0[0] - PT3_K2_exact)/PT3_K2_exact,
-                            (PT3_K2t_0[0] - PT3_K2_exact)/PT3_K2_exact,
+    vec<state_datatype> check_values {PT2_K1a_0 + PT2_K1p_0
+                            , PT2_K1t_0
+                            , (PT2_K1a_0 - PT2_K1_exact)/PT2_K1_exact
+                            , (-PT2_K1p_0 - PT2_K1_exact)/PT2_K1_exact
+                            , (PT3_K1a_0 - PT3_K1_exact)/PT3_K1_exact
+                            , (PT3_K1p_0 - PT3_K1_exact)/PT3_K1_exact
+                            , (PT3_K1t_0 - PT3_K1_exact)/PT3_K1_exact
+#if DIAG_CLASS > 1
+                            , (PT3_K2a_0[0] - PT3_K2_exact)/PT3_K2_exact
+                            , (PT3_K2p_0[0] - PT3_K2_exact)/PT3_K2_exact
+                            , (PT3_K2t_0[0] - PT3_K2_exact)/PT3_K2_exact
 #ifdef KELDYSH_FORMALISM
-                            (PT3_K2a_0[1] - PT3_K2_exact)/PT3_K2_exact,
-                            (PT3_K2p_0[1] - PT3_K2_exact)/PT3_K2_exact,
-                            (PT3_K2t_0[1] - PT3_K2_exact)/PT3_K2_exact,
-                            (PT3_K2a_0[2] - PT3_K2_exact)/PT3_K2_exact,
-                            (PT3_K2p_0[2] - PT3_K2_exact)/PT3_K2_exact,
-                            (PT3_K2t_0[2] - PT3_K2_exact)/PT3_K2_exact,
+                            , (PT3_K2a_0[1] - PT3_K2_exact)/PT3_K2_exact
+                            , (PT3_K2p_0[1] - PT3_K2_exact)/PT3_K2_exact
+                            , (PT3_K2t_0[1] - PT3_K2_exact)/PT3_K2_exact
+                            , (PT3_K2a_0[2] - PT3_K2_exact)/PT3_K2_exact
+                            , (PT3_K2p_0[2] - PT3_K2_exact)/PT3_K2_exact
+                            , (PT3_K2t_0[2] - PT3_K2_exact)/PT3_K2_exact
 #endif
-                            (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(abs(PT4_K2a_0_p1[0]) + abs(PT4_K2p_0_a1[0])),
+                            , (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(abs(PT4_K2a_0_p1[0]) + abs(PT4_K2p_0_a1[0]))
 #ifdef KELDYSH_FORMALISM
-                            (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(abs(PT4_K2a_0_p1[1]) + abs(PT4_K2p_0_a1[1])),
-                            (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(abs(PT4_K2a_0_p1[2]) + abs(PT4_K2p_0_a1[2])),
+                            , (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(abs(PT4_K2a_0_p1[1]) + abs(PT4_K2p_0_a1[1]))
+                            , (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(abs(PT4_K2a_0_p1[2]) + abs(PT4_K2p_0_a1[2]))
 #endif
-                            (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(abs(PT4_K2a_0_t1[0]) + abs(PT4_K2p_0_t1[0])),
+                            , (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(abs(PT4_K2a_0_t1[0]) + abs(PT4_K2p_0_t1[0]))
 #ifdef KELDYSH_FORMALISM
-                            (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(abs(PT4_K2a_0_t1[1]) + abs(PT4_K2p_0_t1[1])),
-                            (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(abs(PT4_K2a_0_t1[2]) + abs(PT4_K2p_0_t1[2])),
+                            , (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(abs(PT4_K2a_0_t1[1]) + abs(PT4_K2p_0_t1[1]))
+                            , (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(abs(PT4_K2a_0_t1[2]) + abs(PT4_K2p_0_t1[2]))
 #endif
-                            (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(abs(PT4_K2a_0_a2[0]) + abs(PT4_K2p_0_p2[0])),
+                            , (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(abs(PT4_K2a_0_a2[0]) + abs(PT4_K2p_0_p2[0]))
 #ifdef KELDYSH_FORMALISM
-                            (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(abs(PT4_K2a_0_a2[1]) + abs(PT4_K2p_0_p2[1])),
-                            (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(abs(PT4_K2a_0_a2[2]) + abs(PT4_K2p_0_p2[2])),
+                            , (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(abs(PT4_K2a_0_a2[1]) + abs(PT4_K2p_0_p2[1]))
+                            , (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(abs(PT4_K2a_0_a2[2]) + abs(PT4_K2p_0_p2[2]))
 #endif
-                            (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(abs(PT4_K2a_0_p2[0]) + abs(PT4_K2p_0_a2[0])),
+                            , (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(abs(PT4_K2a_0_p2[0]) + abs(PT4_K2p_0_a2[0]))
 #ifdef KELDYSH_FORMALISM
-                            (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(abs(PT4_K2a_0_p2[1]) + abs(PT4_K2p_0_a2[1])),
-                            (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(abs(PT4_K2a_0_p2[2]) + abs(PT4_K2p_0_a2[2])),
+                            , (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(abs(PT4_K2a_0_p2[1]) + abs(PT4_K2p_0_a2[1]))
+                            , (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(abs(PT4_K2a_0_p2[2]) + abs(PT4_K2p_0_a2[2]))
 #endif
-                            (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(abs(PT4_K2a_0_t2[0]) + abs(PT4_K2p_0_t2[0])),
+                            , (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(abs(PT4_K2a_0_t2[0]) + abs(PT4_K2p_0_t2[0]))
 #ifdef KELDYSH_FORMALISM
-                            (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(abs(PT4_K2a_0_t2[1]) + abs(PT4_K2p_0_t2[1])),
-                            (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(abs(PT4_K2a_0_t2[2]) + abs(PT4_K2p_0_t2[2])),
+                            , (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(abs(PT4_K2a_0_t2[1]) + abs(PT4_K2p_0_t2[1]))
+                            , (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(abs(PT4_K2a_0_t2[2]) + abs(PT4_K2p_0_t2[2]))
 #endif
-                            (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(abs(PT4_K2t_0_a2[0]) + abs(PT4_K2t_0_t2[0])),
+                            , (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(abs(PT4_K2t_0_a2[0]) + abs(PT4_K2t_0_t2[0]))
 #ifdef KELDYSH_FORMALISM
-                            (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(abs(PT4_K2t_0_a2[1]) + abs(PT4_K2t_0_t2[1])),
-                            (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(abs(PT4_K2t_0_a2[2]) + abs(PT4_K2t_0_t2[2])),
+                            , (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(abs(PT4_K2t_0_a2[1]) + abs(PT4_K2t_0_t2[1]))
+                            , (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(abs(PT4_K2t_0_a2[2]) + abs(PT4_K2t_0_t2[2]))
 #endif
-                            (PT4_K3a_0 + PT4_K3p_0)/(abs(PT4_K3a_0) + abs(PT4_K3p_0)),
-                            (PT4_K3t_0_aa + PT4_K3t_0_ap + PT4_K3t_0_pa)/(abs(PT4_K3t_0_aa) + abs(PT4_K3t_0_ap) + abs(PT4_K3t_0_pa))
+                            , (PT4_K3a_0 + PT4_K3p_0)/(abs(PT4_K3a_0) + abs(PT4_K3p_0))
+                            , (PT4_K3t_0_aa + PT4_K3t_0_ap + PT4_K3t_0_pa)/(abs(PT4_K3t_0_aa) + abs(PT4_K3t_0_ap) + abs(PT4_K3t_0_pa))
+#endif
                             };
 
     // print to log
