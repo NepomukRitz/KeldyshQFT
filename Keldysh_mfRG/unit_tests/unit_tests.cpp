@@ -5,11 +5,12 @@
  */
 
 // if defined, also run integration tests (else only unit tests)
-#define INTEGRATION_TESTS
+//#define INTEGRATION_TESTS
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 
+#include "../data_structures.h"
 #include "../parameters.h"  // define system parameters
 
 // include tests that should be run
@@ -17,6 +18,8 @@
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"
 #include "test_frequencygrid.h"
+#include "test_interpolations.h"
+#include "test_rvertex.h"
 
 #ifdef INTEGRATION_TESTS
 #include "../frequency_grid.h"

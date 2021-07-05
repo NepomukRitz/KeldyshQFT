@@ -55,6 +55,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
     }
     avertex.enforce_freqsymmetriesK2(avertex);
 
+    double asymmetry_tolerance = 1e-10;
     double asymmetry = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
@@ -68,14 +69,14 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
                          + correction
                          #endif
                                  ;
-            if (avertex.K2_val(iK, iw, iv, i_in) != avertex.K2_val(iK, nBOS2 - 1 - iw, iv, i_in)) {
+            if (abs(avertex.K2_val(iK, iw, iv, i_in) - avertex.K2_val(iK, nBOS2 - 1 - iw, iv, i_in)) > asymmetry_tolerance) {
                 asymmetry += 1;
             }
             double compare_val = Interpolate<k2, state_datatype>()(indices, avertex);
-            if (abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val) > 1e-4) {
+            if (abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val) > asymmetry_tolerance) {
                 asymmetry += abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val);
             }
-            if (correction == 0 and avertex.K2_val(iK, iw, iv, i_in) != avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) ) {
+            if (correction == 0 and abs(avertex.K2_val(iK, iw, iv, i_in) - avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in)) > asymmetry_tolerance ) {
                 asymmetry += 1;
             }
 
@@ -111,6 +112,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
     }
     avertex.enforce_freqsymmetriesK3(avertex);
 
+    double asymmetry_tolerance = 1e-10;
     double asymmetry = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     for (int iw = 0; iw<=(nBOS3-1)/2; iw++){
@@ -138,7 +140,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                     asymmetry += absdiff;
                 }
 
-                if (correction == 0 and avertex.K3_val(iK, iw, iv, ivp, i_in) != avertex.K3_val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in) ) {
+                if (correction == 0 and abs(avertex.K3_val(iK, iw, iv, ivp, i_in) - avertex.K3_val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in)) > asymmetry_tolerance ) {
                     asymmetry += 1;
                 }
             }

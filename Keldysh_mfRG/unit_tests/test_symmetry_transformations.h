@@ -142,7 +142,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 #endif
             }
 #else
-#if ZERO_TEMP
+#ifdef ZERO_TEMP
             AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
                 REQUIRE( indices_c.w  == -indices.w  );
 #if DIAG_CLASS > 1
