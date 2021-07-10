@@ -718,6 +718,81 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 }
 #endif
 
+// to check central part of multi-loop flow equations:
+// compute diagrams with non-symmetric intermediate results
+void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
+    State<state_datatype> bare (Lambda); // bare state
+    bare.initialize();         // initialize bare state
+
+    Propagator<state_datatype> G (Lambda, bare.selfenergy, 'g'); // bare propagator
+    Propagator<state_datatype> S (Lambda, bare.selfenergy, 's'); // bare differentiated propagator = single scale propagator
+
+    // Psi := K1p in PT2 + bare vertex
+    State<state_datatype> Psi (Lambda);
+    Psi.initialize();         // initialize bare state
+    bubble_function(Psi.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+
+    // K1a_dot in PT2
+    State<state_datatype> PT2_K1adot (Lambda);
+    bubble_function(PT2_K1adot.vertex, bare.vertex, bare.vertex, G, S, 'a', true);
+    // K1p_dot in PT2
+    State<state_datatype> PT2_K1pdot (Lambda);
+    bubble_function(PT2_K1pdot.vertex, bare.vertex, bare.vertex, G, S, 'p', true);
+
+    if (write_flag) {
+        write_hdf("Psi" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
+        write_hdf("PT2_K1a_dot_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
+        write_hdf("PT2_K1p_dot_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
+    }
+
+    vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
+
+    for (int i = 0; i < 2; i++){
+        State<state_datatype> centralstate_dot = central_bubblestates[i];
+
+        // intermediate results
+        State<state_datatype> K1rdot_PIa_K1p (Lambda);
+        bubble_function(K1rdot_PIa_K1p.vertex, centralstate_dot.vertex, Psi.vertex, G, G, 'a', false);
+
+        State<state_datatype> K1p_PIa_K1rdot (Lambda);
+        bubble_function(K1p_PIa_K1rdot.vertex, Psi.vertex, centralstate_dot.vertex, G, G, 'a', false);
+
+        Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
+        Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
+        dGammaL_half1[0].half1().reorder_due2antisymmetry(dGammaR_half1[0].half1());
+        dGammaR_half1[0].half1().reorder_due2antisymmetry(dGammaL_half1[0].half1());
+        K1rdot_PIa_K1p.vertex = dGammaL_half1;
+        K1p_PIa_K1rdot.vertex = dGammaR_half1;
+
+        // create non-symmetric vertex with differentiated vertex on the left
+        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin);
+        dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
+        dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
+
+        // insert this non-symmetric vertex on the right of the bubble
+        State<state_datatype> dGammaC_r(Lambda);
+        bubble_function(dGammaC_r.vertex, Psi.vertex, dGammaL, G, G, 'a', false);
+
+
+        // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin);
+        dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
+        dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+
+        // insert this non-symmetric vertex on the left of the bubble
+        State<state_datatype> dGammaC_l;
+        bubble_function(dGammaC_l.vertex, dGammaR, Psi.vertex, G, G, 'a', false);
+
+
+        if (write_flag) {
+            write_hdf("K1rdot_PIa_K1p_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_hdf("K1p_PIa_K1rdot_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+            write_hdf("dGammaC_r_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
+            write_hdf("dGammaC_l_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
+        }
+    }
+}
+
 /**
  * Function that computes K1 (and K2, K3) up to PT4, and performs FDT checks
  */
