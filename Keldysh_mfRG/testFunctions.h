@@ -740,7 +740,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
     bubble_function(PT2_K1pdot.vertex, bare.vertex, bare.vertex, G, S, 'p', true);
 
     if (write_flag) {
-        write_hdf("Psi" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
+        write_hdf("Psi_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
         write_hdf("PT2_K1a_dot_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
         write_hdf("PT2_K1p_dot_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
     }
@@ -756,6 +756,12 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
 
         State<state_datatype> K1p_PIa_K1rdot (Lambda);
         bubble_function(K1p_PIa_K1rdot.vertex, Psi.vertex, centralstate_dot.vertex, G, G, 'a', false);
+
+
+        if (write_flag) {
+            write_hdf("K1rdot_PIa_K1p_UNREORDERED_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_hdf("K1p_PIa_K1rdot_UNREORDERED_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+        }
 
         Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
         Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
@@ -780,7 +786,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
         dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
         // insert this non-symmetric vertex on the left of the bubble
-        State<state_datatype> dGammaC_l;
+        State<state_datatype> dGammaC_l(Lambda);
         bubble_function(dGammaC_l.vertex, dGammaR, Psi.vertex, G, G, 'a', false);
 
 
