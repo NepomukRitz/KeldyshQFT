@@ -16,6 +16,12 @@
 #include "test_data_structures.h"
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"
+#include "test_PrecalculateBubble.h"
+
+//#ifdef HUBBARD_MODEL
+#include "test_momentum_grid.h"
+//#endif
+
 
 #ifdef INTEGRATION_TESTS
 #include "../frequency_grid.h"
@@ -39,7 +45,7 @@ int main(int argc, char* argv[]) {
 
     //test_K2_in_PT4(20.);
 
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
     /* run a complete flow and check FDTs and causality */
     string filename = "integration_test_flow_K2_8e";
     State<comp> state = n_loop_flow(filename);
@@ -49,9 +55,9 @@ int main(int argc, char* argv[]) {
     /* run parquet checks */
     parquet_checks(filename);
 #endif
-#if DIAG_CLASS == 2
+#if MAX_DIAG_CLASS == 2
     /* further K2 tests */
-    test_K2_PT4(0.);
+    test_PT4(0.);
     test_K2_correctness(0.);
 #endif
 #ifdef MPI_FLAG
@@ -60,5 +66,18 @@ int main(int argc, char* argv[]) {
 #endif
 
     // run unit tests
+    MPI_Init(nullptr, nullptr);
+
+    //test_PrecalculateBubble<comp> test_Bubble ;
+    //test_Bubble.perform_test();
+
+    //Runtime_comparison<comp> runtime_tester;
+    //runtime_tester.test_runtimes(100);
+
+
+    //test_Bubble_in_Momentum_Space();
+
+    MPI_Finalize();
     return Catch::Session().run(argc, argv);
+    //return 0;
 }

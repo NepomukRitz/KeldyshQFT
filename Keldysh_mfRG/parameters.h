@@ -7,6 +7,9 @@
 // Determines whether particle-hole symmetry is assumed
 //#define PARTICLE_HOLE_SYMM
 
+// Determines whether the 2D Hubbard model shall be studied instead of the SIAM
+#define HUBBARD_MODEL
+
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include "data_structures.h" // real/complex vector classes, comp as complex double
@@ -19,7 +22,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define DIAG_CLASS 2
+#define MAX_DIAG_CLASS 2
 
 #define N_LOOPS 1  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
@@ -226,8 +229,15 @@ const int n_spin = 1;
 
 /// Parameters for internal structure ///
 
-// Dimension of the space defining the internal structure
+// Dimension of the space defining the internal structure for the Hubbard model
+int glb_N_q = 65; // Number of transfer momentum points in one dimension.
+int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
+
+#ifdef HUBBARD_MODEL
+const int n_in = glb_N_transfer;
+#else
 const int n_in = 1;
+#endif
 
 /// fRG parameters ///
 
@@ -291,11 +301,11 @@ const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 #if REG==2
 const int param_size = 14;
-const double parameter_list[param_size] = {GRID, REG, glb_Gamma, DIAG_CLASS, N_LOOPS,
+const double parameter_list[param_size] = {GRID, REG, glb_Gamma, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #else
 const int param_size = 13;
-const double parameter_list[param_size] = {GRID, REG, DIAG_CLASS, N_LOOPS,
+const double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #endif
 

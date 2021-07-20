@@ -20,7 +20,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 # standard executable for integration tests and production runs
 add_executable(Keldysh_mfRG
         main.cpp
-        bethe-salpeter.h
         bubbles.h
         causality_FDT_checks.h
         correctionFunctions.h
@@ -51,7 +50,7 @@ add_executable(Keldysh_mfRG
         testFunctions.h
         util.h
         vertex.h
-        write_data2file.h)
+        write_data2file.h momentum_grid.h)
 
 # executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
@@ -60,8 +59,8 @@ add_executable(Keldysh_mfRG_testing
         unit_tests/test_data_structures.h
         unit_tests/test_symmetry_transformations.h
         unit_tests/test_integrator.h
+        unit_tests/test_PrecalculateBubble.h
         bubbles.h
-        bethe-salpeter.h
         causality_FDT_checks.h
         correctionFunctions.h
         data_structures.h
@@ -91,7 +90,7 @@ add_executable(Keldysh_mfRG_testing
         testFunctions.h
         util.h
         vertex.h
-        write_data2file.h)
+        write_data2file.h momentum_grid.h unit_tests/test_momentum_grid.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)

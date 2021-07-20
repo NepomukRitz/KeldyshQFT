@@ -488,7 +488,7 @@ void test_derivatives_SE(double Lambda){
                     rhs_flow.selfenergy.Sigma.real(), rhs_flow.selfenergy.Sigma.imag()});
 }
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
 /**
  * This function checks the consistency of the K2 class
  * @param Lambda    : Scale
@@ -611,7 +611,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
     // for K1t in PT3, need a-vertex in PT2 due to a <-> t symmetry
     bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false);
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     // set K2 part of this vertex to zero
     PT3_K1t.vertex[0].tvertex().K2 = vec<comp> (PT3_K1t.vertex[0].tvertex().K2.size());
 #endif
@@ -1042,7 +1042,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     vec<comp> PT4_K2t_0_a2 (3);
     vec<comp> PT4_K2t_0_t2 (3);
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
 #ifdef KELDYSH_FORMALISM
     for (int iK2=0; iK2<2; ++iK2) {
 #else
@@ -1091,7 +1091,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     comp PT4_K3t_0_ap;
     comp PT4_K3t_0_pa;
 
-#if DIAG_CLASS == 3
+#if MAX_DIAG_CLASS == 3
     PT4_K3a_0 = PT4_22_a_pp.vertex[0].avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex[0].tvertex());
     PT4_K3p_0 = PT4_22_p_aa.vertex[0].pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex[0].pvertex());
     PT4_K3t_0_aa = PT4_22_t_aa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex[0].avertex());
@@ -1188,7 +1188,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     // */
 }
 
-#if DIAG_CLASS == 3
+#if MAX_DIAG_CLASS == 3
 /**
  * Test K3 dynamics by computing SE diagrams in PT4 using different PT4 vertices, which should all give the same result.
  */
@@ -1252,7 +1252,7 @@ void test_K3_dynamics_SE_PT4(double Lambda) {
 
 
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
 /**
  * Function to test correctness of K2a when calculating a susceptibility (a K1a-object) //Notice that the same calculation
  * can be performed in the p-channel.

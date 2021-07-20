@@ -245,12 +245,12 @@ void parquet_checks(const string filename) {
         norm_K1_fRG[i]  = state.vertex[0].norm_K1(2);
         norm_K1_BSE[i]  = Gamma_BSE[0].norm_K1(2);
         norm_K1_diff[i] = Gamma_diff[0].norm_K1(2);
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         norm_K2_fRG[i]  = state.vertex[0].norm_K2(2);
         norm_K2_BSE[i]  = Gamma_BSE[0].norm_K2(2);
         norm_K2_diff[i] = Gamma_diff[0].norm_K2(2);
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         norm_K3_fRG[i]  = state.vertex[0].norm_K3(2);
         norm_K3_BSE[i]  = Gamma_BSE[0].norm_K3(2);
         norm_K3_diff[i] = Gamma_diff[0].norm_K3(2);

@@ -651,7 +651,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if DIAG_CLASS <= 1
+    #if MAX_DIAG_CLASS <= 1
     VertexInput input_p = input;
     VertexInput input_at = input;
     input_p.w = 2*glb_mu;
@@ -696,7 +696,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if DIAG_CLASS <= 1
+    #if MAX_DIAG_CLASS <= 1
     VertexInput input_p = input;
     VertexInput input_at = input;
     input_p.w = 2*glb_mu;
@@ -743,7 +743,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if DIAG_CLASS <= 1
+    #if MAX_DIAG_CLASS <= 1
     VertexInput input_p = input;
     VertexInput input_at = input;
     input_p.w = 2*glb_mu;
@@ -789,7 +789,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if DIAG_CLASS <= 1
+    #if MAX_DIAG_CLASS <= 1
     VertexInput input_p = input;
     VertexInput input_at = input;
     input_p.w = 2*glb_mu;
@@ -818,7 +818,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const -> Q {
     Q K2_K3, gamma_Rb;
     if (Ir) {
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         gamma_Rb = gammaRb(input);
 #endif
         return gamma_Rb;
@@ -846,7 +846,7 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2_K3, gamma_Rb;
     if (Ir) {
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         gamma_Rb = gammaRb(input, right_vertex);
 #endif
         return gamma_Rb;
@@ -875,7 +875,7 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const 
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const -> Q {
     Q K2b_K3, gamma_Rb;
     if (Ir) {
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         gamma_Rb = gammaRb(input);
 #endif
         return gamma_Rb;
@@ -903,7 +903,7 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2b_K3, gamma_Rb;
     if (Ir) {
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         gamma_Rb = gammaRb(input, right_vertex);
 #endif
         return gamma_Rb;
@@ -932,12 +932,12 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(const fullvert<Q
     avertex.enforce_freqsymmetriesK1(right_vertex.avertex);
     pvertex.enforce_freqsymmetriesK1(right_vertex.pvertex);
     tvertex.enforce_freqsymmetriesK1(right_vertex.tvertex);
-#if DIAG_CLASS >1
+#if MAX_DIAG_CLASS >1
     avertex.enforce_freqsymmetriesK2(right_vertex.avertex);
     pvertex.enforce_freqsymmetriesK2(right_vertex.pvertex);
     tvertex.enforce_freqsymmetriesK2(right_vertex.tvertex);
 #endif
-#if DIAG_CLASS >2
+#if MAX_DIAG_CLASS >2
     avertex.enforce_freqsymmetriesK3(right_vertex.avertex);
     pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
     tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
@@ -1143,13 +1143,13 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
 
 template <typename Q> auto fullvert<Q>::sum_norm(const int p) -> double {
     double result = 0.;
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
     result += norm_K1(p);
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     result += norm_K2(p);
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     result += norm_K3(p);
 #endif
     return result;

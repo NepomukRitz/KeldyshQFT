@@ -99,13 +99,13 @@ public:
     const int irred_dim = n_in;                                  // length of irreducible vertex buffer
 #endif
     h5_comp * irreducible_class;
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
     const int K1_dim = nK_K1 * nw1_t * n_in;                         // length of K1 buffer
     h5_comp * K1_class_a;
     h5_comp * K1_class_p;
     h5_comp * K1_class_t;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     double * bfreqs2_buffer;
     double * ffreqs2_buffer;
     const int K2_dim = nK_K2 * nw2_t * nv2_t * n_in;               // length of K2 buffer
@@ -113,7 +113,7 @@ public:
     h5_comp * K2_class_p;
     h5_comp * K2_class_t;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     double * bfreqs3_buffer;
     double * ffreqs3_buffer;
     const int K3_dim = nK_K3 * nw3_t * nv3_t * nv3_t * n_in;    // length of K3 buffer
@@ -128,19 +128,19 @@ public:
         ffreqs_buffer = new double[nFER];                        // create buffer for fermionic frequencies
         selfenergy = new h5_comp[self_dim];                           // create buffer for self-energy
         irreducible_class = new h5_comp[irred_dim];              // create buffer for irreducible vertex
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
         K1_class_a = new h5_comp[K1_dim];                        // create buffer for K1_a
         K1_class_p = new h5_comp[K1_dim];                        // create buffer for K1_p
         K1_class_t = new h5_comp[K1_dim];                        // create buffer for K1_t
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         bfreqs2_buffer = new double[nBOS2];                      // create buffer for bosonic frequencies for K2
         ffreqs2_buffer = new double[nFER2];                      // create buffer for fermionic frequencies for K2
         K2_class_a = new h5_comp[K2_dim];                        // create buffer for K2_a
         K2_class_p = new h5_comp[K2_dim];                        // create buffer for K2_p
         K2_class_t = new h5_comp[K2_dim];                        // create buffer for K2_t
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         bfreqs3_buffer = new double[nBOS3];                      // create buffer for bosonic frequencies for K3
         ffreqs3_buffer = new double[nFER3];                      // create buffer for fermionic frequencies for K3
         K3_class_a = new h5_comp[K3_dim];                        // create buffer for K3_a
@@ -155,19 +155,19 @@ public:
         delete[] ffreqs_buffer;
         delete[] selfenergy;
         delete[] irreducible_class;
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
         delete[] K1_class_a;
         delete[] K1_class_p;
         delete[] K1_class_t;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         delete[] bfreqs2_buffer;
         delete[] ffreqs2_buffer;
         delete[] K2_class_a;
         delete[] K2_class_p;
         delete[] K2_class_t;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         delete[] bfreqs3_buffer;
         delete[] ffreqs3_buffer;
         delete[] K3_class_a;
@@ -203,7 +203,7 @@ public:
             irreducible_class[i].re = real(state_in.vertex[0].irred().acc(i));
             irreducible_class[i].im = imag(state_in.vertex[0].irred().acc(i));
         }
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
         for(int i=0; i<K1_dim; ++i) {                                // write K1 into buffer
             K1_class_a[i].re = real(state_in.vertex[0].avertex().K1_acc(i));
             K1_class_a[i].im = imag(state_in.vertex[0].avertex().K1_acc(i));
@@ -215,7 +215,7 @@ public:
             K1_class_t[i].im = imag(state_in.vertex[0].tvertex().K1_acc(i));
         }
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         FrequencyGrid bfreqs2 = state_in.vertex[0].avertex().frequencies.b_K2;
         FrequencyGrid ffreqs2 = state_in.vertex[0].avertex().frequencies.f_K2;
         freq_params[8]  = (double) bfreqs2.N_w;
@@ -244,7 +244,7 @@ public:
             K2_class_t[i].im = imag(state_in.vertex[0].tvertex().K2_acc(i));
         }
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         FrequencyGrid bfreqs3 = state_in.vertex[0].avertex().frequencies.b_K3;
         FrequencyGrid ffreqs3 = state_in.vertex[0].avertex().frequencies.f_K3;
         freq_params[16] = (double) bfreqs3.N_w;
@@ -300,11 +300,11 @@ public:
     hsize_t selfenergy_buffer[1];
     hsize_t irreducible[2];
     hsize_t irreducible_buffer[1];
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
     hsize_t K1[2];
     hsize_t K1_buffer[1];
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     hsize_t bfreqs2_dims[2];
     hsize_t ffreqs2_dims[2];
     hsize_t bfreqs2_buffer_dims[1];
@@ -312,7 +312,7 @@ public:
     hsize_t K2[2];
     hsize_t K2_buffer[1];
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     hsize_t bfreqs3_dims[2];
     hsize_t ffreqs3_dims[2];
     hsize_t bfreqs3_buffer_dims[1];
@@ -322,11 +322,11 @@ public:
 #endif
 
     Dims (Buffer& buffer, long Lambda_size) :
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
         K1 {h5_cast(Lambda_size), h5_cast(buffer.K1_dim)},
         K1_buffer {h5_cast(buffer.K1_dim)},
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         bfreqs2_dims {h5_cast(Lambda_size), h5_cast(nBOS2)},
         ffreqs2_dims {h5_cast(Lambda_size), h5_cast(nFER2)},
         bfreqs2_buffer_dims {h5_cast(nBOS2)},
@@ -334,7 +334,7 @@ public:
         K2 {h5_cast(Lambda_size), h5_cast(buffer.K2_dim)},
         K2_buffer {h5_cast(buffer.K2_dim)},
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         bfreqs3_dims {h5_cast(Lambda_size), h5_cast(nBOS3)},
         ffreqs3_dims {h5_cast(Lambda_size), h5_cast(nFER3)},
         bfreqs3_buffer_dims {h5_cast(nBOS3)},
@@ -372,14 +372,14 @@ public:
     H5::DataSet *lambda_p, *self_p, *irred_p;
     H5::DataSet *freq_params_p;
     H5::DataSet *bfreqs_p, *ffreqs_p, *params_p;
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
     H5::DataSet *K1_a_p, *K1_p_p, *K1_t_p;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     H5::DataSet *bfreqs2_p, *ffreqs2_p;
     H5::DataSet *K2_a_p, *K2_p_p, *K2_t_p;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     H5::DataSet *bfreqs3_p, *ffreqs3_p;
     H5::DataSet *K3_a_p, *K3_p_p, *K3_t_p;
 #endif
@@ -388,14 +388,14 @@ public:
     H5::DataSet lambda, self, irred;
     H5::DataSet freq_params;
     H5::DataSet bfreqs_dataset, ffreqs_dataset;
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
     H5::DataSet K1_a, K1_p, K1_t;
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     H5::DataSet bfreqs2_dataset, ffreqs2_dataset;
     H5::DataSet K2_a, K2_p, K2_t;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     H5::DataSet bfreqs3_dataset, ffreqs3_dataset;
     H5::DataSet K3_a, K3_p, K3_t;
 #endif
@@ -418,19 +418,19 @@ public:
              H5::DataSpace& dataSpaces_bfreqs,
              H5::DataSpace& dataSpaces_ffreqs,
              H5::DataSpace& dataSpaces_params,
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
              H5::DataSpace& dataSpaces_K1_a,
              H5::DataSpace& dataSpaces_K1_p,
              H5::DataSpace& dataSpaces_K1_t,
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
              H5::DataSpace& dataSpaces_bfreqs2,
              H5::DataSpace& dataSpaces_ffreqs2,
              H5::DataSpace& dataSpaces_K2_a,
              H5::DataSpace& dataSpaces_K2_p,
              H5::DataSpace& dataSpaces_K2_t,
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
              H5::DataSpace& dataSpaces_bfreqs3,
              H5::DataSpace& dataSpaces_ffreqs3,
              H5::DataSpace& dataSpaces_K3_a,
@@ -452,7 +452,7 @@ public:
                     file->createDataSet(FFREQS_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs));
             params_p = new H5::DataSet(
                     file->createDataSet(PARAM_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_params));
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
             // Create the datasets in file:
             K1_a_p = new H5::DataSet(
                     file->createDataSet(DATASET_K1_a, mtype_comp, dataSpaces_K1_a, plist_vert));
@@ -461,7 +461,7 @@ public:
             K1_t_p = new H5::DataSet(
                     file->createDataSet(DATASET_K1_t, mtype_comp, dataSpaces_K1_t, plist_vert));
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
             // Create the datasets in file:
             bfreqs2_p = new H5::DataSet(
                     file->createDataSet(BFREQS2_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs2));
@@ -474,7 +474,7 @@ public:
             K2_t_p = new H5::DataSet(
                     file->createDataSet(DATASET_K2_t, mtype_comp, dataSpaces_K2_t, plist_vert));
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
             // Create the datasets in file:
             bfreqs3_p = new H5::DataSet(
                     file->createDataSet(BFREQS3_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs3));
@@ -495,19 +495,19 @@ public:
             freq_params = file->openDataSet("freq_params");
             bfreqs_dataset = file->openDataSet("bfreqs");
             ffreqs_dataset = file->openDataSet("ffreqs");
-#if DIAG_CLASS >=1
+#if MAX_DIAG_CLASS >=1
             K1_a = file->openDataSet("K1_a");
             K1_p = file->openDataSet("K1_p");
             K1_t = file->openDataSet("K1_t");
 #endif
-#if DIAG_CLASS >=2
+#if MAX_DIAG_CLASS >=2
             bfreqs2_dataset = file->openDataSet("bfreqs2");
             ffreqs2_dataset = file->openDataSet("ffreqs2");
             K2_a = file->openDataSet("K2_a");
             K2_p = file->openDataSet("K2_p");
             K2_t = file->openDataSet("K2_t");
 #endif
-#if DIAG_CLASS >=3
+#if MAX_DIAG_CLASS >=3
             bfreqs3_dataset = file->openDataSet("bfreqs3");
             ffreqs3_dataset = file->openDataSet("ffreqs3");
             K3_a = file->openDataSet("K3_a");
@@ -532,19 +532,19 @@ public:
         }
         bfreqs_dataset = file->openDataSet("bfreqs");
         ffreqs_dataset = file->openDataSet("ffreqs");
-#if DIAG_CLASS >=1
+#if MAX_DIAG_CLASS >=1
         K1_a = file->openDataSet("K1_a");
         K1_p = file->openDataSet("K1_p");
         K1_t = file->openDataSet("K1_t");
 #endif
-#if DIAG_CLASS >=2
+#if MAX_DIAG_CLASS >=2
         bfreqs2_dataset = file->openDataSet("bfreqs2");
         ffreqs2_dataset = file->openDataSet("ffreqs2");
         K2_a = file->openDataSet("K2_a");
         K2_p = file->openDataSet("K2_p");
         K2_t = file->openDataSet("K2_t");
 #endif
-#if DIAG_CLASS >=3
+#if MAX_DIAG_CLASS >=3
         bfreqs3_dataset = file->openDataSet("bfreqs3");
         ffreqs3_dataset = file->openDataSet("ffreqs3");
         K3_a = file->openDataSet("K3_a");
@@ -565,19 +565,19 @@ public:
             irred_p  -> close();
             self_p   -> close();
 
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
             K1_a_p -> close();
             K1_p_p -> close();
             K1_t_p -> close();
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
             bfreqs2_p -> close();
             ffreqs2_p -> close();
             K2_a_p -> close();
             K2_p_p -> close();
             K2_t_p -> close();
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
             bfreqs3_p -> close();
             ffreqs3_p -> close();
             K3_a_p -> close();
@@ -592,19 +592,19 @@ public:
             bfreqs_dataset.close();
             ffreqs_dataset.close();
 
-#if DIAG_CLASS >=1
+#if MAX_DIAG_CLASS >=1
             K1_a.close();
             K1_p.close();
             K1_t.close();
 #endif
-#if DIAG_CLASS >=2
+#if MAX_DIAG_CLASS >=2
             bfreqs2_dataset.close();
             ffreqs2_dataset.close();
             K2_a.close();
             K2_p.close();
             K2_t.close();
 #endif
-#if DIAG_CLASS >=3
+#if MAX_DIAG_CLASS >=3
             bfreqs3_dataset.close();
             ffreqs3_dataset.close();
             K3_a.close();
@@ -670,7 +670,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
         H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
 
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
         H5::DataSpace dataSpaces_K1_a(RANK_K1, dims.K1);
         H5::DataSpace dataSpaces_K1_p(RANK_K1, dims.K1);
         H5::DataSpace dataSpaces_K1_t(RANK_K1, dims.K1);
@@ -679,7 +679,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K1_p_buffer(RANK_K1-1, dims.K1_buffer);
         H5::DataSpace dataSpaces_K1_t_buffer(RANK_K1-1, dims.K1_buffer);
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         H5::DataSpace dataSpaces_bfreqs2(RANK_freqs, dims.bfreqs2_dims);
         H5::DataSpace dataSpaces_ffreqs2(RANK_freqs, dims.ffreqs2_dims);
 
@@ -694,7 +694,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K2_p_buffer(RANK_K2-1, dims.K2_buffer);
         H5::DataSpace dataSpaces_K2_t_buffer(RANK_K2-1, dims.K2_buffer);
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         H5::DataSpace dataSpaces_bfreqs3(RANK_freqs, dims.bfreqs3_dims);
         H5::DataSpace dataSpaces_ffreqs3(RANK_freqs, dims.ffreqs3_dims);
 
@@ -722,14 +722,14 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
                           dataSpaces_Lambda, dataSpaces_selfenergy, dataSpaces_irreducible,
                           dataSpaces_freq_params,
                           dataSpaces_bfreqs, dataSpaces_ffreqs, dataSpaces_params,
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
                           dataSpaces_K1_a, dataSpaces_K1_p, dataSpaces_K1_t,
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
                           dataSpaces_bfreqs2, dataSpaces_ffreqs2,
                           dataSpaces_K2_a, dataSpaces_K2_p, dataSpaces_K2_t,
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
                           dataSpaces_bfreqs3, dataSpaces_ffreqs3,
                           dataSpaces_K3_a, dataSpaces_K3_p, dataSpaces_K3_t,
 #endif
@@ -802,7 +802,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
             dataSets.irred.write(buffer.irreducible_class, mtype_comp,
                                  dataSpaces_irreducible_buffer, dataSpaces_irreducible);
 
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
         count[1]= buffer.K1_dim;
         dataSpaces_K1_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         dataSpaces_K1_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
@@ -820,7 +820,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         }
 #endif
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         count[1] = nBOS2;
         dataSpaces_bfreqs2.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
@@ -856,7 +856,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         }
 #endif
 
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         count[1] = nBOS3;
         dataSpaces_bfreqs3.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
@@ -1000,7 +1000,7 @@ void result_set_frequency_grids(State<comp>& result, Buffer& buffer) {
     result.vertex[0].avertex().frequencies.b_K1 = bfreqs;
     result.vertex[0].pvertex().frequencies.b_K1 = bfreqs;
     result.vertex[0].tvertex().frequencies.b_K1 = bfreqs;
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     FrequencyGrid bfreqs2 ('b', 2);
     FrequencyGrid ffreqs2 ('f', 2);
     bfreqs2.N_w = (int)buffer.freq_params[8];
@@ -1020,7 +1020,7 @@ void result_set_frequency_grids(State<comp>& result, Buffer& buffer) {
     result.vertex[0].pvertex().frequencies.f_K2 = ffreqs2;
     result.vertex[0].tvertex().frequencies.f_K2 = ffreqs2;
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     FrequencyGrid bfreqs3 ('b', 3);
     FrequencyGrid ffreqs3 ('f', 3);
     bfreqs3.N_w = (int)buffer.freq_params[16];
@@ -1058,7 +1058,7 @@ void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
         val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
         result.vertex[0].irred().direct_set(i, val);
     }
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
     for (int i=0; i<buffer.K1_dim; ++i) {
         val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
         result.vertex[0].avertex().K1_direct_set(i, val);
@@ -1070,7 +1070,7 @@ void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
         result.vertex[0].tvertex().K1_direct_set(i, val);
     }
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     for (int i=0; i<buffer.K2_dim; ++i) {
         val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
         result.vertex[0].avertex().K2_direct_set(i, val);
@@ -1082,7 +1082,7 @@ void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
         result.vertex[0].tvertex().K2_direct_set(i, val);
     }
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     for (int i=0; i<buffer.K3_dim; ++i) {
         val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
         result.vertex[0].avertex().K3_direct_set(i, val);
@@ -1140,7 +1140,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
         H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
         H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
 
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
         H5::DataSpace dataSpaces_K1_a = dataSets.K1_a.getSpace();
         H5::DataSpace dataSpaces_K1_p = dataSets.K1_p.getSpace();
         H5::DataSpace dataSpaces_K1_t = dataSets.K1_t.getSpace();
@@ -1150,7 +1150,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
         H5::DataSpace dataSpaces_K1_t_buffer(RANK_K1-1, dims.K1_buffer);
 #endif
 
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         H5::DataSpace dataSpaces_K2_a = dataSets.K2_a.getSpace();
         H5::DataSpace dataSpaces_K2_p = dataSets.K2_p.getSpace();
         H5::DataSpace dataSpaces_K2_t = dataSets.K2_t.getSpace();
@@ -1160,7 +1160,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
         H5::DataSpace dataSpaces_K2_t_buffer(RANK_K2-1, dims.K2_buffer);
 #endif
 
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         H5::DataSpace dataSpaces_K3_a = dataSets.K3_a.getSpace();
         H5::DataSpace dataSpaces_K3_p = dataSets.K3_p.getSpace();
         H5::DataSpace dataSpaces_K3_t = dataSets.K3_t.getSpace();
@@ -1206,7 +1206,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
                             dataSpaces_irreducible_buffer, dataSpaces_irreducible);
 
 
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
         count[1] = buffer.K1_dim;
         dataSpaces_K1_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         dataSpaces_K1_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
@@ -1216,7 +1216,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
         dataSets.K1_p.read(buffer.K1_class_p, mtype_comp, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
         dataSets.K1_t.read(buffer.K1_class_t, mtype_comp, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         count[1] = buffer.K2_dim;
         dataSpaces_K2_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         dataSpaces_K2_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
@@ -1226,7 +1226,7 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
         dataSets.K2_p.read(buffer.K2_class_p, mtype_comp, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
         dataSets.K2_t.read(buffer.K2_class_t, mtype_comp, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
         count[1] = buffer.K3_dim;
         dataSpaces_K3_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         dataSpaces_K3_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
@@ -1274,7 +1274,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
 
     for (int iK=0; iK<nK_K1; ++iK) {
         for (int i_in=0; i_in<n_in; ++i_in) {
-#if DIAG_CLASS >= 1
+#if MAX_DIAG_CLASS >= 1
             for (int iw1=0; iw1<nBOS; ++iw1) {
                 if (state.vertex[0].avertex().K1_val(iK, iw1, i_in) != out.vertex[0].avertex().K1_val(iK, iw1, i_in)) {
                     cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
@@ -1288,7 +1288,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
                     cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
                     cnt += 1;
                 }
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
                 for (int iw2=0; iw2<nFER; ++iw2) {
                     if (state.vertex[0].avertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].avertex().K2_val(iK, iw1, iw2, i_in)) {
                         cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
@@ -1302,7 +1302,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
                         cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
                         cnt += 1;
                     }
-#if DIAG_CLASS == 3
+#if MAX_DIAG_CLASS == 3
                     for (int iw3=0; iw3<nFER; ++iw3) {
                         if (state.vertex[0].avertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].avertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
                             cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
