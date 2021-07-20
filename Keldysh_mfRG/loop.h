@@ -527,6 +527,8 @@ class LoopCalculator{
     const Propagator& prop;
     const bool all_spins;
 
+    const double Delta = (prop.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
+
     const int iv;
     const int i_in;
 
@@ -575,8 +577,8 @@ void LoopCalculator<Q>::perform_computation() {
 template<typename Q>
 void LoopCalculator<Q>::compute_Keldysh() {
 #ifdef KELDYSH_FORMALISM
-    integratedR = prefactor * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), 0.);
-    integratedK = prefactor * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), 0.);
+    integratedR = prefactor * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
+    integratedK = prefactor * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
 
     // add analytical results for the tails
     integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v),
