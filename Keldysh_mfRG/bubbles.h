@@ -1798,6 +1798,8 @@ class BubbleFunctionCalculator{
     const char channel;
     const bool diff;
 
+    const double Delta = (G.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
+
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
 
@@ -1926,8 +1928,6 @@ Bubble_Object>::initialize_frequency_grids() {
 #if MAX_DIAG_CLASS >= 3
     initialize_frequency_grid_K3();
 #endif
-    // vmin *= 2;
-    // vmax  *= 2;
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1983,7 +1983,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #if MAX_DIAG_CLASS >= 3
     t_start = get_time();
     calculate_bubble_function(3);
-    tK2 = get_time() - t_start;
+    tK3 = get_time() - t_start;
 #endif
 }
 
@@ -2024,7 +2024,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 Q
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::get_value(const int i_mpi, const int i_omp, const int n_omp, const int diag_class){
-    Q value;
+    Q value = 0.;
     int iK1, iK2, i0, iw, iv, ivp, i_in;
     double w, v, vp;
     int trafo;
@@ -2063,7 +2063,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
 #ifdef KELDYSH_FORMALISM
-            value += bubble_value_prefactor() * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2.);
+            value += bubble_value_prefactor() * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
 #else
             size_t num_intervals; vec<vec<double>> intervals;
             get_Matsubara_integration_intervals(num_intervals, intervals, w);
@@ -2089,7 +2089,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
 #ifdef KELDYSH_FORMALISM
-            value += bubble_value_prefactor() * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2.);
+            value += bubble_value_prefactor() * integrator(integrand_K2, vmin, vmax, -w / 2., w / 2., Delta);
 #else
             size_t num_intervals; vec<vec<double>> intervals;
             get_Matsubara_integration_intervals(num_intervals, intervals, w);
@@ -2110,13 +2110,12 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
                                                 const double w, const double v, const double vp){
-
     for (int i2 : nonzero_Keldysh_indices) {
         // initialize the integrand object and perform frequency integration
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K3(vertex1, vertex2, Pi, i0, i2, w, v, vp, i_in, channel, diff);
     #ifdef KELDYSH_FORMALISM
-        value += bubble_value_prefactor() * integrator(integrand_K3, vmin, vmax, -w / 2., w / 2.);
+        value += bubble_value_prefactor() * integrator(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
     #else
         size_t num_intervals; vec<vec<double>> intervals;
         get_Matsubara_integration_intervals(num_intervals, intervals, w);
@@ -2380,7 +2379,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     else {
         intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
         num_intervals = 2;
-
     }
 }
 
