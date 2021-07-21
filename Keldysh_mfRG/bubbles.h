@@ -2392,7 +2392,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifdef KELDYSH_FORMALISM
     return prefactor * (1. / (2. * M_PI * glb_i));
 #else
-    return prefactor * (1. / (-2. * M_PI));
+    return prefactor * (1. / (2. * M_PI));
 #endif
 }
 
