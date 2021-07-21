@@ -1984,6 +1984,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     t_start = get_time();
     calculate_bubble_function(3);
     tK3 = get_time() - t_start;
+    print("K3", channel, " done, ");
+    get_time(t_start);
 #endif
 }
 
