@@ -613,12 +613,54 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT);
 #elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
     Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    Q result {};
+    vec<Q> result = vec<Q>(num_intervals);
     for (int i = 0; i < num_intervals; i++){
-        result += adaptor.integrate(intervals[i][0], intervals[i][1]);
+        result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
     }
-    return result;
+    return result.sum();
 #endif
+}
+/**
+ * wrapper function, used for bubbles.
+ * @param integrand
+ * @param intervals         :   list of intervals (lower and upper limit for integrations)
+ * @param num_intervals     :   number of intervals
+ */
+template <typename Q, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const int num_freqs) -> Q {
+    double tol = 1e-10;
+    vec<double> intersections;
+    size_t num_intervals;
+    if (w_half < tol) {
+        w_half = 0.;
+        intersections = {w_half, vmin, vmax};
+        num_intervals = num_freqs*4 + 2;
+    }
+    else {
+        intersections = {-w_half, w_half, vmin, vmax};
+        num_intervals = num_freqs*4 + 3;
+    }
+
+    for (int i = 0; i<num_freqs; i++){
+        for (int sign1:{-1,1}) {
+            for (int sign2:{-1,1}) {
+                intersections.push_back(sign1 * freqs[i] + sign2 * Delta);
+            }
+        }
+    }
+
+    std::sort(intersections.begin(), intersections.end());
+
+    vec<vec<double>> intervals;
+    for (int i = 0; i < num_intervals; i++) {
+        intervals.push_back({intersections[i], intersections[i+1]});
+        if (abs(abs(intersections[i]) - w_half) < tol) {
+            intervals[i][0] += tol;
+            intervals[i-1][1] -= tol;
+        }
+    }
+
+    return integrator<Q>(integrand, intervals, (size_t)num_intervals);
+
 }
 
 

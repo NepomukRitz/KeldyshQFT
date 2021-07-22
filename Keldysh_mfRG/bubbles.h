@@ -755,6 +755,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #endif
                      )
 {
+    double Delta = (G.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
+
     Bubble<Q> Pi(G, S, diff); // initialize bubble object
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
@@ -808,16 +810,16 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     FrequencyGrid bfreqs_K2 = dgamma[0].avertex().frequencies.b_K2;
     FrequencyGrid ffreqs_K2 = dgamma[0].avertex().frequencies.f_K2;
     // use min/max of selfenergy/K1/K2 frequency grids as integration limits
-    vmin = min(vmin, ffreqs_K2.w_lower);
-    vmax = max(vmax, ffreqs_K2.w_upper);
+    vmin = min(vmin, 3*ffreqs_K2.w_lower + bfreqs_K2.w_lower);
+    vmax = max(vmax, 3*ffreqs_K2.w_upper + bfreqs_K2.w_upper);
 #endif
 #if DIAG_CLASS >= 3
     // initialize frequency grids to be used for K3
     FrequencyGrid bfreqs_K3 = dgamma[0].avertex().frequencies.b_K3;
     FrequencyGrid ffreqs_K3 = dgamma[0].avertex().frequencies.f_K3;
     // use min/max of selfenergy/K1/K2/K3 frequency grids as integration limits
-    vmin = min(vmin, ffreqs_K3.w_lower);
-    vmax = max(vmax, ffreqs_K3.w_upper);
+    vmin = min(vmin, 3*ffreqs_K3.w_lower + bfreqs_K3.w_lower);
+    vmax = max(vmax, 3*ffreqs_K3.w_upper + bfreqs_K3.w_upper);
 #endif
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     // make sure that the limits for the Matsubara sum are fermionic
@@ -910,9 +912,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                            else {
                                intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
                                num_intervals = 2;
-
                            }
-                           value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, intervals, num_intervals);
+                           //value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, intervals, num_intervals);
+                           value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta, 0);
 #else
                         int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
                            value += prefactor * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
@@ -1062,9 +1064,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                         else {
                             intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
                             num_intervals = 2;
-
                         }
-                        value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, intervals, num_intervals);
+                        //value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, intervals, num_intervals);
+                        value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, vmin, vmax, abs(w/2), {v, v+w, v-w}, Delta, 3);
 #else
                         int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2);
                         value += prefactor * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax + interval_correction);
@@ -1200,9 +1202,9 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                     else {
                         intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
                         num_intervals = 2;
-
                     }
-                    value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, intervals, num_intervals);
+                    //value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, intervals, num_intervals);
+                    value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, vmin, vmax, abs(w/2), {v, vp, v+w, v-w, vp+w, vp-w}, Delta, 6);
 #else
                     int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2);
                     value += prefactor * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax + interval_correction);
