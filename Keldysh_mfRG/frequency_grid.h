@@ -30,8 +30,8 @@ class FrequencyGrid {
 public:
     int N_w;
     double w_upper, w_lower, W_upper, W_lower, W_scale;
-    double U_factor = 1./3.;
-    double Delta_factor = 1.;
+    double U_factor = 10./3.;
+    double Delta_factor = 10.;
     rvec w;
     rvec Ws;
 
@@ -171,7 +171,8 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
 
 auto FrequencyGrid::W_val(int index) const -> double {
     if (index >= 0) return Ws[index];
-    else return 0.;
+    else if (index == -1) return 1.;
+    else return -1.;
 }
 
 class VertexFrequencyGrid {
@@ -436,8 +437,8 @@ double grid_transf(double w, double W_scale) {
 //    return w/sqrt(W_scale*W_scale + w*w);
 
     // Version 2: quadratic around w=0
-    //double w2 = w * w;
-    //return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+    double w2 = w * w;
+    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
 }
 double grid_transf_inv(double W, double W_scale) {
     // Version 1: linear around w=0

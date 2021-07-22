@@ -35,7 +35,7 @@ public:
 
         if (abs(x_b) >= vertex.frequencies.b_K2.W_upper - inter_tol or abs(x_f) >= vertex.frequencies.f_K2.W_upper - inter_tol) {
             if (x_b < vertex.frequencies.b_K2.W_lower + inter_tol) {
-                index_b = -1;
+                index_b = -2;
                 index_b2 = 0;
                 }
             else if(x_b > vertex.frequencies.b_K2.W_upper - inter_tol){
@@ -44,7 +44,7 @@ public:
                 }
 
             if (x_f < vertex.frequencies.f_K2.W_lower + inter_tol) {
-                index_f = -1;
+                index_f = -2;
                 index_f2 = 0;
             }
             else if(x_f > vertex.frequencies.f_K2.W_upper - inter_tol){
@@ -89,7 +89,7 @@ public:
 
         if (abs(x) >= vertex.frequencies.b_K1.W_upper - inter_tol) {
             if (x < 0) {
-                index = -1;
+                index = -2;
                 index2 = 0;
             } else {
                 index = vertex.frequencies.b_K1.N_w - 1;
@@ -141,7 +141,7 @@ public:
 
         if (abs(x_b) >= vertex.frequencies.b_K3.W_upper - inter_tol or abs(x_f1) >= vertex.frequencies.f_K3.W_upper - inter_tol or abs(x_f2) >= vertex.frequencies.f_K3.W_upper - inter_tol) {
             if (x_b < vertex.frequencies.b_K3.W_lower + inter_tol) {
-                index_b = -1;
+                index_b = -2;
                 index_b2 = 0;
             }
             else if (x_b > vertex.frequencies.b_K3.W_upper - inter_tol){
@@ -150,7 +150,7 @@ public:
             }
 
             if (x_f1 < vertex.frequencies.f_K3.W_lower + inter_tol) {
-                index_f1 = -1;
+                index_f1 = -2;
                 index_f12 = 0;
             }
             else if (x_f1 > vertex.frequencies.f_K3.W_upper - inter_tol){
@@ -159,7 +159,7 @@ public:
             }
 
             if (x_f2 < vertex.frequencies.f_K3.W_lower + inter_tol) {
-                index_f2 = -1;
+                index_f2 = -2;
                 index_f22 = 0;
             }
             else if (x_f2 > vertex.frequencies.f_K3.W_upper - inter_tol){
