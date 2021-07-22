@@ -278,7 +278,7 @@ rvec flow_grid(nODE);                                                           
 #define MPI_FLAG
 
 //Tolerance for closeness to grid points when interpolating
-const double inter_tol = 1e-12;
+const double inter_tol = 1e-10;
 
 //Tolerance for loop convergence
 const double converged_tol = 1e-7;

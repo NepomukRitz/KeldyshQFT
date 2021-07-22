@@ -110,6 +110,7 @@ public:
     void initialize_grid(double scale);
     void rescale_grid(double Lambda);
     auto fconv(double w_in) const -> int;
+    auto fconv(double w_in, double tol) const -> int;
     auto W_val(int index) const -> double;
 };
 
@@ -166,6 +167,14 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
     W = (W - W_lower) / dW;
     auto index = (int)W;
+    return index;
+}
+
+auto FrequencyGrid::fconv(double w_in, double tol) const -> int {
+    double W = grid_transf(w_in, W_scale);
+    double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
+    W = (W - W_lower) / dW;
+    auto index = (int) (W + tol);
     return index;
 }
 
