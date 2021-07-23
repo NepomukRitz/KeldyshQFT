@@ -109,4 +109,236 @@ void check_FDTs(const State<Q>& state, bool verbose=false) {
     }
 }
 
+/**
+ * Function that computes vertex components with the help of fluctuation-dissipation relations.
+ * Components obtainable by FDTs:
+ * K1r[1] (with r = a/p/t)
+ * K2a[0], K2a[2], K2a[3]
+ * K2p[0], K2p[1], K2p[3]
+ * K2t[0], K2t[2], K2t[3]
+ * K3r[0], K3r[1] (with r = a/p/t)
+ *
+ * These components are written into state_out.
+ * The other components are copied to state_out.
+ * CAUTION: For the K2-class the FDTs involve numerically diverging prefactors for zero bosonic frequency
+ */
+template <typename Q>
+void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>& vertex_in, const fullvert<Q>& vertex_half2_in, char channel) {
+    vertex_out = vertex_in;
+
+#if MAX_DIAG_CLASS > 2
+    double w, v, vp, N1, N2, N3, N4;
+    Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+    // compute FDTs for K3-class:
+    for (int itw = 0; itw < nw3; itw++){
+        for (int itv = 0; itv < nv3; itv++){
+            for (int itvp = 0; itvp < nv3; itvp++) {
+                switch (channel) {
+                    case 'a':
+                        // for K3a:
+                        w = vertex_in.avertex.frequencies.b_K3.w[itw];
+                        v = vertex_in.avertex.frequencies.f_K3.w[itv];
+                        vp= vertex_in.avertex.frequencies.f_K3.w[itvp];
+                        N1 = Fermi_fac( v  - w/2, glb_mu);
+                        N2 = Fermi_fac( vp + w/2, glb_mu);
+                        N3 = Fermi_fac(-vp + w/2, glb_mu);
+                        N4 = Fermi_fac(-v  - w/2, glb_mu);
+                        for (int itin = 0; itin < n_in; itin++) {
+                            VertexInput inputG1 ( 7, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG2 (11, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG3 (13, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG4 (14, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG12( 3, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG13( 5, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG14( 6, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG23( 9, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG24(10, w, v, vp, itin, 0, 'a');
+                            VertexInput inputG34(12, w, v, vp, itin, 0, 'a');
+                            G1 = vertex_in.avertex.template valsmooth<k3>(inputG1 , vertex_in.tvertex, vertex_half2_in);
+                            G2 = vertex_in.avertex.template valsmooth<k3>(inputG2 , vertex_in.tvertex, vertex_half2_in);
+                            G3 = vertex_in.avertex.template valsmooth<k3>(inputG3 , vertex_in.tvertex, vertex_half2_in);
+                            G4 = vertex_in.avertex.template valsmooth<k3>(inputG4 , vertex_in.tvertex, vertex_half2_in);
+                            G12= vertex_in.avertex.template valsmooth<k3>(inputG12, vertex_in.tvertex, vertex_half2_in);
+                            G13= vertex_in.avertex.template valsmooth<k3>(inputG13, vertex_in.tvertex, vertex_half2_in);
+                            G14= vertex_in.avertex.template valsmooth<k3>(inputG14, vertex_in.tvertex, vertex_half2_in);
+                            G23= vertex_in.avertex.template valsmooth<k3>(inputG23, vertex_in.tvertex, vertex_half2_in);
+                            G24= vertex_in.avertex.template valsmooth<k3>(inputG24, vertex_in.tvertex, vertex_half2_in);
+                            G34= vertex_in.avertex.template valsmooth<k3>(inputG34, vertex_in.tvertex, vertex_half2_in);
+
+                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * conj(G4)
+                                   - (G1*N2*N3
+                                      +  N1*G2*N3
+                                      +  N1*N2*G3
+                                      +  N1*G23
+                                      +  G12*N3
+                                      +  G13*N2);
+                            G1234 =  G1*N2*N3*N4*2.
+                                     +N1*G2*N3*N4*2.
+                                     +N1*N2*G3*N4*2.
+                                     +N1*N2*N3*G4*2.
+                                     +(N2*N3*N4 + N2 + N3 + N4) * conj(G1)
+                                     +(N1*N3*N4 + N1 + N3 + N4) * conj(G2)
+                                     +(N1*N2*N4 + N1 + N2 + N4) * conj(G3)
+                                     +(N1*N2*N3 + N1 + N2 + N3) * conj(G4)
+                                     +N3*N4*G12
+                                     +N2*N4*G13
+                                     +N2*N3*G14
+                                     +N1*N4*G23
+                                     +N1*N3*G24
+                                     +N1*N2*G34;
+                            vertex_out.avertex.K3_setvert(0, itw, itv, itvp, itin, G1234);
+                            vertex_out.avertex.K3_setvert(1, itw, itv, itvp, itin, G123 );
+                        }
+                        break;
+                    case 'p':
+                        // for K3p:
+                        w = vertex_in.pvertex.frequencies.b_K3.w[itw];
+                        v = vertex_in.pvertex.frequencies.f_K3.w[itv];
+                        vp= vertex_in.pvertex.frequencies.f_K3.w[itvp];
+                        N1 = Fermi_fac( v  + w/2, glb_mu);
+                        N2 = Fermi_fac(-v  + w/2, glb_mu);
+                        N3 = Fermi_fac(-vp - w/2, glb_mu);
+                        N4 = Fermi_fac( vp - w/2, glb_mu);
+                        for (int itin = 0; itin < n_in; itin++) {
+                            VertexInput inputG1 ( 7, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG2 (11, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG3 (13, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG4 (14, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG12( 3, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG13( 5, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG14( 6, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG23( 9, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG24(10, w, v, vp, itin, 0, 'p');
+                            VertexInput inputG34(12, w, v, vp, itin, 0, 'p');
+                            G1 = vertex_in.pvertex.template valsmooth<k3>(inputG1 , vertex_in.pvertex, vertex_half2_in);
+                            G2 = vertex_in.pvertex.template valsmooth<k3>(inputG2 , vertex_in.pvertex, vertex_half2_in);
+                            G3 = vertex_in.pvertex.template valsmooth<k3>(inputG3 , vertex_in.pvertex, vertex_half2_in);
+                            G4 = vertex_in.pvertex.template valsmooth<k3>(inputG4 , vertex_in.pvertex, vertex_half2_in);
+                            G12= vertex_in.pvertex.template valsmooth<k3>(inputG12, vertex_in.pvertex, vertex_half2_in);
+                            G13= vertex_in.pvertex.template valsmooth<k3>(inputG13, vertex_in.pvertex, vertex_half2_in);
+                            G14= vertex_in.pvertex.template valsmooth<k3>(inputG14, vertex_in.pvertex, vertex_half2_in);
+                            G23= vertex_in.pvertex.template valsmooth<k3>(inputG23, vertex_in.pvertex, vertex_half2_in);
+                            G24= vertex_in.pvertex.template valsmooth<k3>(inputG24, vertex_in.pvertex, vertex_half2_in);
+                            G34= vertex_in.pvertex.template valsmooth<k3>(inputG34, vertex_in.pvertex, vertex_half2_in);
+
+                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * conj(G4)
+                                   - (G1*N2*N3
+                                      +  N1*G2*N3
+                                      +  N1*N2*G3
+                                      +  N1*G23
+                                      +  G12*N3
+                                      +  G13*N2);
+                            G1234 =  G1*N2*N3*N4*2.
+                                     +N1*G2*N3*N4*2.
+                                     +N1*N2*G3*N4*2.
+                                     +N1*N2*N3*G4*2.
+                                     +(N2*N3*N4 + N2 + N3 + N4) * conj(G1)
+                                     +(N1*N3*N4 + N1 + N3 + N4) * conj(G2)
+                                     +(N1*N2*N4 + N1 + N2 + N4) * conj(G3)
+                                     +(N1*N2*N3 + N1 + N2 + N3) * conj(G4)
+                                     +N3*N4*G12
+                                     +N2*N4*G13
+                                     +N2*N3*G14
+                                     +N1*N4*G23
+                                     +N1*N3*G24
+                                     +N1*N2*G34;
+                            vertex_out.pvertex.K3_setvert(0, itw, itv, itvp, itin, G1234);
+                            vertex_out.pvertex.K3_setvert(1, itw, itv, itvp, itin, G123 );
+                        }
+                        break;
+
+                    case 't':
+                        // for K3t:
+                        w = vertex_in.tvertex.frequencies.b_K3.w[itw];
+                        v = vertex_in.tvertex.frequencies.f_K3.w[itv];
+                        vp= vertex_in.tvertex.frequencies.f_K3.w[itvp];
+                        N1 = Fermi_fac( vp + w/2, glb_mu);
+                        N2 = Fermi_fac( v  - w/2, glb_mu);
+                        N3 = Fermi_fac(-vp + w/2, glb_mu);
+                        N4 = Fermi_fac(-v  - w/2, glb_mu);
+                        for (int itin = 0; itin < n_in; itin++) {
+                            VertexInput inputG1 ( 7, w, v, vp, itin, 0, 't');
+                            VertexInput inputG2 (11, w, v, vp, itin, 0, 't');
+                            VertexInput inputG3 (13, w, v, vp, itin, 0, 't');
+                            VertexInput inputG4 (14, w, v, vp, itin, 0, 't');
+                            VertexInput inputG12( 3, w, v, vp, itin, 0, 't');
+                            VertexInput inputG13( 5, w, v, vp, itin, 0, 't');
+                            VertexInput inputG14( 6, w, v, vp, itin, 0, 't');
+                            VertexInput inputG23( 9, w, v, vp, itin, 0, 't');
+                            VertexInput inputG24(10, w, v, vp, itin, 0, 't');
+                            VertexInput inputG34(12, w, v, vp, itin, 0, 't');
+                            G1 = vertex_in.tvertex.template valsmooth<k3>(inputG1 , vertex_in.avertex, vertex_half2_in);
+                            G2 = vertex_in.tvertex.template valsmooth<k3>(inputG2 , vertex_in.avertex, vertex_half2_in);
+                            G3 = vertex_in.tvertex.template valsmooth<k3>(inputG3 , vertex_in.avertex, vertex_half2_in);
+                            G4 = vertex_in.tvertex.template valsmooth<k3>(inputG4 , vertex_in.avertex, vertex_half2_in);
+                            G12 =vertex_in.tvertex.template valsmooth<k3>(inputG12, vertex_in.avertex, vertex_half2_in);
+                            G13 =vertex_in.tvertex.template valsmooth<k3>(inputG13, vertex_in.avertex, vertex_half2_in);
+                            G14 =vertex_in.tvertex.template valsmooth<k3>(inputG14, vertex_in.avertex, vertex_half2_in);
+                            G23 =vertex_in.tvertex.template valsmooth<k3>(inputG23, vertex_in.avertex, vertex_half2_in);
+                            G24 =vertex_in.tvertex.template valsmooth<k3>(inputG24, vertex_in.avertex, vertex_half2_in);
+                            G34 =vertex_in.tvertex.template valsmooth<k3>(inputG34, vertex_in.avertex, vertex_half2_in);
+
+                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * conj(G4)
+                                   - (G1*N2*N3
+                                      +  N1*G2*N3
+                                      +  N1*N2*G3
+                                      +  N1*G23
+                                      +  G12*N3
+                                      +  G13*N2);
+                            G1234 =  G1*N2*N3*N4*2.
+                                     +N1*G2*N3*N4*2.
+                                     +N1*N2*G3*N4*2.
+                                     +N1*N2*N3*G4*2.
+                                     +(N2*N3*N4 + N2 + N3 + N4) * conj(G1)
+                                     +(N1*N3*N4 + N1 + N3 + N4) * conj(G2)
+                                     +(N1*N2*N4 + N1 + N2 + N4) * conj(G3)
+                                     +(N1*N2*N3 + N1 + N2 + N3) * conj(G4)
+                                     +N3*N4*G12
+                                     +N2*N4*G13
+                                     +N2*N3*G14
+                                     +N1*N4*G23
+                                     +N1*N3*G24
+                                     +N1*N2*G34;
+                            vertex_out.tvertex.K3_setvert(0, itw, itv, itvp, itin, G1234);
+                            vertex_out.tvertex.K3_setvert(1, itw, itv, itvp, itin, G123 );
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+#endif
+}
+
+/*
+ * Wrapper for above function (here defined for States)
+ */
+template <typename Q>
+void compute_components_through_FDTs(State<Q>& state_out, const State<Q>& state_in) {
+    for (char r:"apt") compute_components_through_FDTs(state_out.vertex[0].half1(), state_in.vertex[0].half1(), state_in.vertex[0].half1(), r);
+}
+
+/*
+ *
+ */
+template <typename Q>
+void compare_with_FDTs(const State<Q> state_in, double Lambda, string filename_extension, bool write_flag = false) {
+    State<Q> state_out;
+    compute_components_through_FDTs(state_out, state_in);
+
+    State<Q> state_diff;
+    state_diff = state_in - state_out;
+    print("2-norm of deviation in K3: ", state_diff.vertex[0].half1().norm_K3(2), true);
+    print("relative deviation in K3: ", state_diff.vertex[0].half1().norm_K3(2)/state_out.vertex[0].half1().norm_K3(2), true);
+    //
+
+    if (write_flag) write_hdf("FDTresult" + filename_extension, Lambda, 1, state_out);
+    if (write_flag) write_hdf("FDTdiff" + filename_extension, Lambda, 1, state_diff);
+
+
+}
+
+
 #endif //KELDYSH_MFRG_TESTING_CAUSALITY_FDT_CHECKS_H
