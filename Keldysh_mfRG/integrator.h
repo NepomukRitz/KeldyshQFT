@@ -584,7 +584,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <typename Q, typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>> intervals, const size_t num_intervals) -> Q {
+template <typename Q, typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>>& intervals, const size_t num_intervals) -> Q {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     Q result;
     for (int i = 0; i < num_intervals; i++){
@@ -620,14 +620,18 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     return result.sum();
 #endif
 }
+#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
 /**
- * wrapper function, used for bubbles.
+ * wrapper function, used for bubbles. Splits up integration interval in suitable pieces for Matsubara T=0
  * @param integrand
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const int num_freqs) -> Q {
     double tol = 1e-10;
+/*
+    // Doesn't work yet (errors accumulate with the current implementation)
+    // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
     vec<double> intersections;
     size_t num_intervals;
     if (w_half < tol) {
@@ -650,18 +654,32 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 
     std::sort(intersections.begin(), intersections.end());
 
-    vec<vec<double>> intervals;
+    vec<vec<double>> intervals(num_freqs*4 + 3, {0.,0.});
     for (int i = 0; i < num_intervals; i++) {
-        intervals.push_back({intersections[i], intersections[i+1]});
+        intervals[i] = {intersections[i], intersections[i+1]};
         if (abs(abs(intersections[i]) - w_half) < tol) {
             intervals[i][0] += tol;
             intervals[i-1][1] -= tol;
         }
     }
+*/
 
-    return integrator<Q>(integrand, intervals, (size_t)num_intervals);
+    size_t num_intervals;
+    vec<vec<double>> intervals;
+    if( -w_half+tol < w_half-tol){
+        intervals = {{vmin, -w_half-tol}, {-w_half+tol, w_half-tol}, {w_half+tol, vmax}};
+        num_intervals = 3;
+    }
+    else {
+        intervals = {{vmin, -w_half-tol}, {w_half+tol, vmax}};
+        num_intervals = 2;
+    }
+
+
+    return integrator<Q>(integrand, intervals, num_intervals);
 
 }
+#endif
 
 
 template <typename Q, typename Integrand> auto matsubarasum(const Integrand& integrand, const int Nmin, const int Nmax, const int N_tresh = 60,

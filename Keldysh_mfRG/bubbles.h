@@ -850,7 +850,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                 int iw = iK1/(n_in) - i0*nw1_w; // frequency index
                 int i_in = iK1 - i0*nw1_w*n_in - iw*n_in; // internal index
                 double w = freqs_K1.w[iw];      // frequency acc. to frequency index
-                Q value{};      // force zero initialization
+                Q value = 0.;      // force zero initialization
 
                 int trafo = 1;
                 int sign_w = sign_index<double>(w);
@@ -897,23 +897,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                            value += prefactor * (1. / (2. * M_PI * glb_i)) * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2.);
 #else
 #ifdef ZERO_TEMP
-                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
-                           //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                           //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
-                           //}
-                           //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K1, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
 
-                           size_t num_intervals;
-                           vec<vec<double>> intervals;
-                           if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                               intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
-                               num_intervals = 3;
-                           }
-                           else {
-                               intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
-                               num_intervals = 2;
-                           }
-                           //value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, intervals, num_intervals);
                            value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta, 0);
 #else
                         int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
@@ -986,7 +970,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     iterator = 0;
     for (int i_mpi=0; i_mpi<n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(static, 8)
+#pragma omp parallel for schedule(static, 16)
             for (int i_omp=0; i_omp<n_omp; ++i_omp) {
                 // converting external MPI/OMP indices to physical indices
                 int iK2 = i_mpi * n_omp + i_omp;
@@ -1044,29 +1028,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
 #else
 
 #ifdef ZERO_TEMP
-                        //value += prefactor * (1. / (2. * M_PI)) *
-                        //         integrator(integrand_K2, vmin, -abs(w / 2) - inter_tol, -w / 2., w / 2.);
-                        //if (-abs(w / 2) + inter_tol < abs(w / 2) - inter_tol) {
-                        //    value += prefactor * (1. / (2. * M_PI)) *
-                        //             integrator(integrand_K2, -abs(w / 2) + inter_tol, abs(w / 2) - inter_tol,
-                        //                        -w / 2., w / 2.);
-                        //}
-                        //value += prefactor * (1. / (2. * M_PI)) *
-                        //         integrator(integrand_K2, abs(w / 2) + inter_tol, vmax, -w / 2., w / 2.);
 
-
-                        size_t num_intervals;
-                        vec<vec<double>> intervals;
-                        if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                            intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
-                            num_intervals = 3;
-                        }
-                        else {
-                            intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
-                            num_intervals = 2;
-                        }
-                        //value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, intervals, num_intervals);
-                        value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, vmin, vmax, abs(w/2), {v, v+w, v-w}, Delta, 3);
+                        value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K2, vmin, vmax, abs(w/2), {}, Delta, 0);
 #else
                         int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2);
                         value += prefactor * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax + interval_correction);
@@ -1187,24 +1150,8 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                              integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2.);
 #else
 #ifdef ZERO_TEMP
-                    //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, vmin, -abs(w/2)-inter_tol, -w / 2., w / 2.);
-                    //if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                    //    value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, -abs(w/2)+inter_tol, abs(w/2)-inter_tol, -w / 2., w / 2.);
-                    //}
-                    //value += prefactor * (1. / (2. * M_PI)) * integrator(integrand_K3, abs(w/2)+inter_tol, vmax, -w / 2., w / 2.);
 
-                    size_t num_intervals;
-                    vec<vec<double>> intervals;
-                    if( -abs(w/2)+inter_tol < abs(w/2)-inter_tol){
-                        intervals = {{vmin, -abs(w/2)-inter_tol}, {-abs(w/2)+inter_tol, abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
-                        num_intervals = 3;
-                    }
-                    else {
-                        intervals = {{vmin, -abs(w/2)-inter_tol}, {abs(w/2)+inter_tol, vmax}};
-                        num_intervals = 2;
-                    }
-                    //value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, intervals, num_intervals);
-                    value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, vmin, vmax, abs(w/2), {v, vp, v+w, v-w, vp+w, vp-w}, Delta, 6);
+                    value += prefactor * (1. / (2. * M_PI)) * integrator<Q>(integrand_K3, vmin, vmax, abs(w/2), {}, Delta, 0);
 #else
                     int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2);
                     value += prefactor * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax + interval_correction);
