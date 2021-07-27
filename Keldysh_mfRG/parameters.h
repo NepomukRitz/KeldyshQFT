@@ -2,13 +2,13 @@
 #define KELDYSH_MFRG_PARAMETERS_H
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-//#define KELDYSH_FORMALISM
+#define KELDYSH_FORMALISM
 
 // Determines whether particle-hole symmetry is assumed
-//#define PARTICLE_HOLE_SYMM
+#define PARTICLE_HOLE_SYMM
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-#define HUBBARD_MODEL
+//#define HUBBARD_MODEL
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
@@ -22,7 +22,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 3
 
 #define N_LOOPS 1  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
@@ -45,7 +45,7 @@ const double glb_Gamma = 1./5.;                // Hybridization of Anderson mode
 const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 #define EQUILIBRIUM                            // If defined, use equilibrium FDT's for propagators
                                                // (only sensible when glb_V = 0)
-
+//#define USE_FDT
 
 /// Frequency grid parameters ///
 
@@ -109,8 +109,8 @@ const int nFER = 201;
 // Number of frequency points for K2 and K3 classes
 const int nBOS2 = 51;//nBOS;
 const int nFER2 = 51;//nFER;
-const int nBOS3 = 21; //nBOS;
-const int nFER3 = 21; //nFER;
+const int nBOS3 = 25; //nBOS;
+const int nFER3 = 25; //nFER;
 #else
 const int nBOS = 201;
 const int nFER = 200;
@@ -259,7 +259,7 @@ const double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+vector<double> U_NRG {0.1}; //{0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
 
 
 // Vector with values of Lambda for the fRG flow

@@ -22,13 +22,16 @@ State<comp> n_loop_flow(string outputFileName){
     state_ini.initialize();             // initialize state
 
     // initialize the flow with SOPT at Lambda_ini (important!)
-    //sopt_state(state_ini, Lambda_ini);
+    fopt_state(state_ini, Lambda_ini);
 
+    parquet_solver("../Data/parqueInit4_n1=" + to_string(nBOS) + "_n2=" + to_string(nBOS2) + "_n3=" + to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
     // better: read state from converged parquet solution
-    state_ini = read_hdf("parquet_solution_K3_Lambda=20.000000", 5, 51);
-    state_ini.selfenergy.asymp_val_R = glb_U / 2.;
+    //state_ini = read_hdf("parquet_solution_K3_Lambda=20.000000", 5, 51);
+    //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+
+    compare_with_FDTs(state_ini, Lambda_ini, "", true);
 
     // compute the flow using RK4 solver
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
@@ -53,6 +56,8 @@ State<comp> n_loop_flow(string inputFileName, const int it_start) {
 
         State<comp> state_ini = read_hdf(inputFileName, it_start, nODE + U_NRG.size() + 1); // read initial state
         State<comp> state_fin (Lambda_fin);
+
+        compare_with_FDTs(state_ini, Lambda_ini, "", true);
 
         // compute the flow using RK4 solver
         ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs

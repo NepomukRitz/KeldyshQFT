@@ -141,8 +141,7 @@ auto main() -> int {
     check_BSE_and_SDE(dir, filename);
 
 #else
-
-    n_loop_flow(dir+filename);
+    n_loop_flow(dir+filename, 0);
 
 //    double Lambda = find_best_Lambda();
 //
