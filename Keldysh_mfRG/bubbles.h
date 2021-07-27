@@ -1626,6 +1626,9 @@ void OLD_bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
             break;
         default: ;
     }
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+    compute_components_through_FDTs(dgamma[0].half1(), dgamma[0].half1(), dgamma[0].half1(), channel);
+#endif
 
 //    print("K2", channel, " done: ");
 //    get_time(tK2);
@@ -2196,6 +2199,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+    compute_components_through_FDTs(dgamma[0].half1(), dgamma[0].half1(), dgamma[0].half1(), channel);
+#endif
 #endif
 }
 
@@ -2342,6 +2348,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         default:
             cout << "\n Uooooohhh, sth went wrong! \n \n";
     }
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+    switch (channel) {
+        case 'a':
+            if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            break;
+        case 'p':
+            if ((i0 == 0 or i0 == 1 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            break;
+        case 't':
+            if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            break;
+        default:
+            break;
+    }
+#endif
     return trafo;
 }
 
