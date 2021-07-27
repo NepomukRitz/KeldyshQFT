@@ -134,7 +134,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
             for (int itv = 0; itv < nv2; itv++){
                 switch (channel) {
                     case 'a':
-                        // for K3a:
+                        // for K2a:
                         w = vertex_in.avertex.frequencies.b_K2.w[itw];
                         v = vertex_in.avertex.frequencies.f_K2.w[itv];
                         if (abs(w) > inter_tol){
@@ -163,7 +163,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         }
                         break;
                     case 'p':
-// for K3a:
+                        // for K2p:
                         w = vertex_in.pvertex.frequencies.b_K2.w[itw];
                         v = vertex_in.pvertex.frequencies.f_K2.w[itv];
                         if (abs(w) > inter_tol){
@@ -171,7 +171,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             N2 = Fermi_fac(-v  + w/2, glb_mu);
                             N3 = 1./Fermi_fac(-w, glb_mu);
                             for (int itin = 0; itin < n_in; itin++) {
-                                VertexInput inputG1 ( 4, w, v, 0, itin, 0, 'p');
+                                VertexInput inputG1 ( 5, w, v, 0, itin, 0, 'p');
                                 VertexInput inputG2 (10, w, v, 0, itin, 0, 'p');
                                 VertexInput inputG3 (12, w, v, 0, itin, 0, 'p');
                                 G1 = vertex_in.pvertex.template valsmooth<k2>(inputG1 , vertex_in.pvertex, vertex_half2_in);
@@ -193,7 +193,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         break;
 
                     case 't':
-// for K3a:
+                        // for K2t:
                         w = vertex_in.tvertex.frequencies.b_K2.w[itw];
                         v = vertex_in.tvertex.frequencies.f_K2.w[itv];
                         if (abs(w) > inter_tol){
