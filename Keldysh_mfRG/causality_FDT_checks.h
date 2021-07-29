@@ -287,8 +287,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                      +N1*N4*G23
                                      +N1*N3*G24
                                      +N1*N2*G34;
-                            vertex_out.avertex.K3_setvert(0, itw, itv, itvp, itin, G1234);
-                            vertex_out.avertex.K3_setvert(1, itw, itv, itvp, itin, G123 );
+                            vertex_out.avertex.K3_setvert(0, itw, itv, itvp, itin, 0.);//G1234);
+                            vertex_out.avertex.K3_setvert(1, itw, itv, itvp, itin, 0.);//G123 );
                         }
                         break;
                     case 'p':
