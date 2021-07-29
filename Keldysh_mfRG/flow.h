@@ -11,6 +11,7 @@
 #include "testFunctions.h"      // for initialization with SOPT at the beginning of the flow, using sopt_state // TODO: should this really be in testFunctions?
 #include "right_hand_sides.h"   // to compute right hand side of flow equation
 #include "hdf5_routines.h"
+#include "parquet_checks.h"
 
 /**
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
@@ -31,7 +32,7 @@ State<comp> n_loop_flow(string outputFileName){
 
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
-    compare_with_FDTs(state_ini, Lambda_ini, "", true);
+    compare_with_FDTs(state_ini, Lambda_ini, outputFileName, true, nODE + U_NRG.size() + 1);
 
     // compute the flow using RK4 solver
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
@@ -57,7 +58,7 @@ State<comp> n_loop_flow(string inputFileName, const int it_start) {
         State<comp> state_ini = read_hdf(inputFileName, it_start, nODE + U_NRG.size() + 1); // read initial state
         State<comp> state_fin (Lambda_fin);
 
-        compare_with_FDTs(state_ini, Lambda_ini, "", true);
+        compare_with_FDTs(state_ini, Lambda_ini, inputFileName, true, nODE + U_NRG.size() + 1);
 
         // compute the flow using RK4 solver
         ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs

@@ -63,7 +63,7 @@ void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const
 #ifdef KELDYSH_FORMALISM
     check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
     check_FDTs(y_run); // check FDTs for Sigma and K1r at each step of the flow
-    compare_with_FDTs(y_run, x_run, ""); // check FDTs for K3 class
+    compare_with_FDTs(y_run, iteration + 1, filename, x_vals, true, x_vals.size()); // check FDTs for K3 class
 #endif
 }
 

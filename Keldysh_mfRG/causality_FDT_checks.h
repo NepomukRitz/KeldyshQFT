@@ -5,6 +5,7 @@
 #include "state.h"                  // State class
 #include "selfenergy.h"             // Self-energy class
 #include "util.h"                   // print output
+#include "hdf5_routines.h"          // read file
 
 /**
  * Function that checks causality of self-energy: Im(Sigma^R)<=0.
@@ -287,8 +288,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                      +N1*N4*G23
                                      +N1*N3*G24
                                      +N1*N2*G34;
-                            vertex_out.avertex.K3_setvert(0, itw, itv, itvp, itin, 0.);//G1234);
-                            vertex_out.avertex.K3_setvert(1, itw, itv, itvp, itin, 0.);//G123 );
+                            vertex_out.avertex.K3_setvert(0, itw, itv, itvp, itin, G1234);
+                            vertex_out.avertex.K3_setvert(1, itw, itv, itvp, itin, G123 );
                         }
                         break;
                     case 'p':
@@ -425,7 +426,7 @@ void compute_components_through_FDTs(State<Q>& state_out, const State<Q>& state_
  *
  */
 template <typename Q>
-void compare_with_FDTs(const State<Q> state_in, double Lambda, string filename_extension, bool write_flag = false) {
+void compare_with_FDTs(const State<Q> state_in, double Lambda, string filename_prefix, bool write_flag = false, int nLambda = 1) {
     State<Q> state_out = state_in;
     compute_components_through_FDTs(state_out, state_in);
 
@@ -444,8 +445,56 @@ void compare_with_FDTs(const State<Q> state_in, double Lambda, string filename_e
     cout << state_out.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
     //
 
-    if (write_flag) write_hdf("FDTresult" + filename_extension, Lambda, 1, state_out);
-    if (write_flag) write_hdf("FDTdiff" + filename_extension, Lambda, 1, state_diff);
+    if (write_flag) write_hdf(filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
+    if (write_flag) write_hdf(filename_prefix + "_FDTdiff", Lambda, nLambda, state_diff);
+
+
+}
+
+/*
+ *
+ */
+template <typename Q>
+void compare_with_FDTs(const State<Q> state_in, int Lambda_it, string filename_prefix, rvec& lambdas, bool write_flag = false, int nLambda = 1) {
+    State<Q> state_out = state_in;
+    compute_components_through_FDTs(state_out, state_in);
+
+    print("Checking the FDTs for Lambda_it", Lambda_it, true);
+    State<Q> state_diff = state_in - state_out;
+    print("K2: 2-norm of deviation = ", false);
+    cout << state_diff.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
+    print("K2: relative deviation = ", false);
+    cout << state_diff.vertex[0].half1().norm_K2(2)/state_out.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
+    print("K2: 2-norm = ", false);
+    cout << state_out.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
+    print("K3: 2-norm of deviation = ", false);
+    cout << state_diff.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
+    print("K3: relative deviation = ", false);
+    cout << state_diff.vertex[0].half1().norm_K3(2)/state_out.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
+    print("K3: 2-norm ", false);
+    cout << state_out.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
+    //
+
+    if (write_flag) add_hdf(filename_prefix + "_FDTresult", Lambda_it, nLambda, state_out , lambdas);
+    if (write_flag) add_hdf(filename_prefix + "_FDTdiff",   Lambda_it, nLambda, state_diff, lambdas);
+
+
+}
+
+/*
+ *
+ */
+template <typename Q>
+void compare_flow_with_FDTs(string filename, bool write_flag = false) {
+    State<Q> state_in = read_hdf(filename, 0, nODE + U_NRG.size() + 1); // read initial state
+    compare_with_FDTs(state_in, Lambda_ini, filename, write_flag, nODE + U_NRG.size() + 1);
+    rvec Lambdas(nODE + U_NRG.size() + 1);
+
+    for (int i = 1; i < nODE + U_NRG.size() + 1; i++) {
+        state_in = read_hdf(filename, i, nODE + U_NRG.size() + 1); // read state
+        compare_with_FDTs(state_in, i, filename, Lambdas, write_flag, nODE + U_NRG.size() + 1);
+    }
+
 
 
 }
