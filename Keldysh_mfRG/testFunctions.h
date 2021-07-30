@@ -10,6 +10,8 @@
 #include "write_data2file.h"        // writing data to txt or hdf5 file
 #include "hdf5_routines.h"          // writing states to hdf5 file
 #include "perturbation_theory.h"
+#include <boost/math/special_functions/polygamma.hpp> // Polygamma function
+#include "integrator.h"
 #include "causality_FDT_checks.h"   // check causality and FDTs
 
 // TODO: remove glb_w_lower
@@ -962,11 +964,14 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
     // labels to be printed to log
     string check_labels[] {"PT2: K1a + K1p: ", "PT2: K1t: ",
+                           "PT2: K1a - exact: ", "PT2: K1p - exact: ",
                            "PT3: K1a - exact: ", "PT3: K1p - exact: ", "PT3: K1t - exact: ",
                            "PT3: K2a[1] - exact: ", "PT3: K2p[1] - exact: ", "PT3: K2t[1] - exact: ",
+#ifdef KELDYSH_FORMALISM
                            "PT3: K2a[2] - exact: ", "PT3: K2p[2] - exact: ", "PT3: K2t[2] - exact: ",
                            "PT3: K2a[4] - exact: ", "PT3: K2p[4] - exact: ", "PT3: K2t[4] - exact: "
                             ,
+#endif
                            "PT4: (K2a[1] <- K1p) + (K2p[1] <- K1a): ",
 #ifdef KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K1p) + (K2p[2] <- K1a): ",
@@ -1013,8 +1018,11 @@ void test_PT4(double Lambda, bool write_flag = false) {
 #ifdef KELDYSH_FORMALISM
     comp PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
+    comp PT2_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 1);
     comp PT3_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #endif
+    cout << "PT2 K1 exact: " << PT2_K1_exact << "\n";
+    cout << "Computed value: " << PT2_K1a_0 << "\n";
 
     // K1 in PT4
     comp PT4_K1a_0_ladder = PT4_31_a_a1.vertex[0].avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex[0].tvertex());
@@ -1077,6 +1085,8 @@ void test_PT4(double Lambda, bool write_flag = false) {
     comp PT3_K2_exact = -(1./2.) * (2. - M_PI*M_PI/4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
     comp PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+    cout << "PT3 K2 exact: " << PT3_K2_exact << "\n";
+    cout << "Computed value: " << PT3_K2t_0[iK2] << "\n";
 #endif
 
     // K3 in PT4
@@ -1102,6 +1112,8 @@ void test_PT4(double Lambda, bool write_flag = false) {
     // values to be printed to log
     vec<comp> check_values {PT2_K1a_0 + PT2_K1p_0,
                             PT2_K1t_0,
+                            (PT2_K1a_0 - PT2_K1_exact)/PT2_K1_exact,
+                            (-PT2_K1p_0 - PT2_K1_exact)/PT2_K1_exact,
                             (PT3_K1a_0 - PT3_K1_exact)/PT3_K1_exact,
                             (PT3_K1p_0 - PT3_K1_exact)/PT3_K1_exact,
                             (PT3_K1t_0 - PT3_K1_exact)/PT3_K1_exact,
@@ -1572,6 +1584,92 @@ void test_K2(double Lambda, bool test_consistency){
     test_K2_correctness(Lambda);
 
 }
+
+template <typename Q>
+class TestIntegrandK1a{
+    public:
+        const double Lambda;
+        const double w, v, vp;
+        const char channel;
+        State<Q> SOPTstate;
+        TestIntegrandK1a(double Lambda_in, char channel_in, double w, double v, double vp)
+        : Lambda(Lambda_in), channel(channel_in), w(w), v(v), vp(vp) {
+            SOPTstate = State<Q>(Lambda);
+            SOPTstate.initialize();             // initialize state
+
+            sopt_state(SOPTstate, Lambda);
+        }
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    void save_state() {
+            write_hdf("SOPT_state.h5", 1.8, 1, SOPTstate);
+        }
+
+    auto operator() (double vpp) const -> Q {
+            VertexInput input(0, vpp, v, vp + vpp, 0, 0, channel);
+            return SOPTstate.vertex[0].half1().avertex.value(input, this->SOPTstate.vertex[0].half1().avertex) / (-2*M_PI);
+            //return vpp*vpp;
+        }
+    };
+
+
+template <typename Q>
+void test_integrate_over_K1(double Lambda) {
+    double v = 1e2;
+    double vp = -1e2;
+    TestIntegrandK1a<comp> IntegrandK1a(Lambda, 'a', 0., v, vp);
+
+    double vmax = 1e4;
+    double result = integrator(IntegrandK1a, -vmax, vmax, v);
+    print("Result of the integration over K1a:", result, true);
+    print("relative difference: ", (result-1./4)*4, true);
+
+
+    TestIntegrandK1a<comp> IntegrandK1a2(Lambda, 't', 0., v, vp);
+    double result2 = integrator(IntegrandK1a2, -vmax, vmax, v);
+    print("Result of the integration over K1a from the t-channel:", result2, true);
+    print("relative difference: ", (result2-1./4)*4, true);
+
+
+    TestIntegrandK1a<comp> IntegrandK1a3(Lambda, 'p', 0., v, vp);
+    double result3 = integrator(IntegrandK1a3, -vmax, vmax, v);
+    print("Result of the integration over K1a from p-channel:", result3, true);
+    print("relative difference: ", (result3-1./4)*4, true);
+
+
+    IntegrandK1a2.save_integrand(vmax);
+    IntegrandK1a.save_state();
+}
+
 #endif
 
 #ifdef STATIC_FEEDBACK

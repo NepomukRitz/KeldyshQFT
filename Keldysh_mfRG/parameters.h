@@ -4,11 +4,13 @@
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 //#define KELDYSH_FORMALISM
 
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+
 // Determines whether particle-hole symmetry is assumed
-//#define PARTICLE_HOLE_SYMM
+#define PARTICLE_HOLE_SYMM
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-#define HUBBARD_MODEL
+//#define HUBBARD_MODEL
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
@@ -22,7 +24,7 @@ using namespace std;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 3
 
 #define N_LOOPS 1  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
@@ -112,13 +114,13 @@ const int nFER2 = 51;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 #else
-const int nBOS = 201;
-const int nFER = 200;
+const int nBOS = 401;
+const int nFER = 400;
 // Number of frequency points for K2 and K3 classes
 const int nBOS2 = 51;//nBOS;
 const int nFER2 = 50;//nFER;
-const int nBOS3 = 21; //nBOS;
-const int nFER3 = 21; //nFER;
+const int nBOS3 = 31; //nBOS;
+const int nFER3 = 30; //nFER;
 #endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
