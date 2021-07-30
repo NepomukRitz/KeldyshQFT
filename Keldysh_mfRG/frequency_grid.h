@@ -19,12 +19,18 @@
 
 using namespace std;
 
-double grid_transf(double w, double W_scale);
-double grid_transf_inv(double w, double W_scale);
+double grid_transf_v1(const double w, const double W_scale);
+double grid_transf_v2(const double w, const double W_scale);
+double grid_transf_v3(const double w, const double W_scale);
+double grid_transf_v4(const double w, const double W_scale);
+double grid_transf_inv_v1(const double w, const double W_scale);
+double grid_transf_inv_v2(const double w, const double W_scale);
+double grid_transf_inv_v3(const double w, const double W_scale);
+double grid_transf_inv_v4(const double w, const double W_scale);
 
 class FrequencyGrid {
-    char type;
-    unsigned int diag_class;
+    const char type;
+    const unsigned int diag_class;
 public:
     int N_w;
     double w_upper, w_lower, W_scale;
@@ -79,8 +85,8 @@ public:
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
-                        U_factor = 20./3.;
-                        Delta_factor = 20.;
+                        U_factor = 4./3.;
+                        Delta_factor = 4.;
                         break;
                     case 3:
                         N_w = nFER3;
@@ -101,11 +107,17 @@ public:
         rescale_grid(Lambda);
     };
 
+    auto operator= (const FrequencyGrid& freqGrid) -> FrequencyGrid& {
+        this->w = freqGrid.w;
+        return *this;
+    }
     auto scale_factor(double Lambda) -> double;
     void initialize_grid();
     void initialize_grid(double scale);
     void rescale_grid(double Lambda);
     auto fconv(double w_in) const -> int;
+    auto grid_transf(double w) const -> double;
+    auto grid_transf_inv(double w) const -> double;
 };
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
@@ -114,12 +126,12 @@ auto FrequencyGrid::scale_factor(double Lambda) -> double {
 
 void FrequencyGrid::initialize_grid() {
     double W;
-    double W_upper = grid_transf(w_upper, W_scale);
-    double W_lower = grid_transf(w_lower, W_scale);
+    double W_upper = grid_transf(w_upper);
+    double W_lower = grid_transf(w_lower);
     double dW = (W_upper - W_lower) / ((double) (N_w - 1.));
     for(int i=0; i<N_w; ++i) {
         W = W_lower + i*dW;
-        w[i] = grid_transf_inv(W, W_scale);
+        w[i] = grid_transf_inv(W);
     }
     if (N_w % 2 == 1) {
         w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
@@ -128,7 +140,8 @@ void FrequencyGrid::initialize_grid() {
 
 void FrequencyGrid::initialize_grid(double scale) {
     W_scale = scale;
-    w_upper = scale * 15.;
+    if (N_w % 2 == 1) w_upper = grid_transf_inv((((double)N_w+1)/((double)N_w+3)));
+    else w_upper = grid_transf_inv((((double)N_w*2-1)/((double)(N_w+1)*2)));
     w_lower = - w_upper;
     initialize_grid();
 }
@@ -138,13 +151,37 @@ void FrequencyGrid::rescale_grid(double Lambda) {
 }
 
 auto FrequencyGrid::fconv(double w_in) const -> int {
-    double W = grid_transf(w_in, W_scale);
-    double W_upper = grid_transf(w_upper, W_scale);
-    double W_lower = grid_transf(w_lower, W_scale);
+    double W = grid_transf(w_in);
+    double W_upper = grid_transf(w_upper);
+    double W_lower = grid_transf(w_lower);
     double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
     W = (W - W_lower) / dW;
     auto index = (int)W;
     return index;
+}
+
+auto FrequencyGrid::grid_transf(double w) const -> double {
+    if (this->type == 'f' and this->diag_class == 1) {
+        return grid_transf_v3(w, this->W_scale);
+    }
+    //else if (this->type == 'b' and this->diag_class == 1) {
+    //    return grid_transf_v2(w, this->W_scale);
+    //}
+    else {
+        return grid_transf_v2(w, this->W_scale);
+    }
+}
+
+auto FrequencyGrid::grid_transf_inv(double w) const -> double {
+    if (this->type == 'f' and this->diag_class == 1) {
+        return grid_transf_inv_v3(w, this->W_scale);
+    }
+    //else if (this->type == 'b' and this->diag_class == 1) {
+    //    return grid_transf_inv_v2(w, this->W_scale);
+    //}
+    else {
+        return grid_transf_inv_v2(w, this->W_scale);
+    }
 }
 
 class VertexFrequencyGrid {
@@ -399,24 +436,68 @@ auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
 #elif GRID==3
 /*******************************************    NON-LINEAR GRID    ****************************************************/
 
-double sgn(double x) {
+double sgn(const double x) {
     return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
 }
 
-double grid_transf(double w, double W_scale) {
-    // Version 1: linear around w=0
-//    return w/sqrt(W_scale*W_scale + w*w);
+/**
+ * Here are several functions which map the real axis to the compact interval [-1,1]
+ * W_scale: sets the scale separating small frequencies (containing interesting structures) and tails
+ */
 
-    // Version 2: quadratic around w=0
+double grid_transf_v1(const double w, const double W_scale) {
+    // Version 1: linear around w=0, good for w^(-2) tails
+    return w/sqrt(W_scale*W_scale + w*w);
+}
+double grid_transf_inv_v1(const double t, const double W_scale) {
+    // Version 1: linear around w=0, good for w^(-2) tails
+    return W_scale*t/sqrt(1.-t*t);
+}
+double integration_measure_v1(const double t, const double W_scale) {
+    double temp = sqrt(1 - t*t);
+    return W_scale / (temp*temp*temp);
+}
+
+
+double grid_transf_v2(const double w, const double W_scale) {
+    // Version 2: quadratic around w=0, good for w^(-2) tails
     double w2 = w * w;
     return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
 }
-double grid_transf_inv(double W, double W_scale) {
-    // Version 1: linear around w=0
-//    return W_scale*W/sqrt(1.-W*W);
+double grid_transf_inv_v2(double t, double W_scale) {
+    // Version 2: quadratic around w=0, good for w^(-2) tails
+    return W_scale * t * abs(t) / sqrt(1. - t * t);
+}
+double integration_measure_v2(const double t, const double W_scale) {
+    double temp = sqrt(1 - t*t);
+    return W_scale * sgn(t) * t * (2 - t*t) / (temp*temp*temp);
+}
 
-    // Version 2: quadratic around w=0
-    return W_scale * W * abs(W) / sqrt(1. - W * W);
+double grid_transf_v3(const double w, const double W_scale) {
+    // Version 3: linear around w=0, good for w^(-1) tails
+    const double almost_zero = 1e-12;
+    return (w < almost_zero) ? 0. : (-W_scale + sqrt(4*w*w + W_scale*W_scale))/2/w;
+}
+double grid_transf_inv_v3(const double t, const double W_scale) {
+    // Version 3: linear around w=0, good for w^(-1) tails
+    return W_scale * t / (1.-t*t);
+}
+double integration_measure_v3(const double t, const double W_scale) {
+    double temp = t*t;
+    return W_scale * (1 + temp) / (1 - temp) / (1 - temp);
+}
+
+double grid_transf_v4(const double w, const double W_scale) {
+    // Version 4: quadratic around w=0, good for w^(-1) tails
+    return sgn(w) * sqrt(abs(w)/(abs(w) + W_scale));
+}
+double grid_transf_inv_v4(const double t, const double W_scale) {
+    // Version 4: quadratic around w=0, good for w^(-1) tails
+    return W_scale * sgn(t) * t*t /(1.-t*t);
+}
+double integration_measure_v4(const double t, const double W_scale) {
+    double temp = 1 - t*t;
+    return 2 * W_scale * sgn(t) * t / temp / temp;
 }
 
 //void setUpBosGrid(rvec& freqs, int nfreqs) {
