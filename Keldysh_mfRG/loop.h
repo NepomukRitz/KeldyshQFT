@@ -314,10 +314,17 @@ void LoopCalculator<Q>::compute_Keldysh() {
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara() {
     // split up the integrand at discontinuities and (possible) kinks:
-    integratedR  = prefactor * integrator(integrandR,  v_lower-abs(v), -abs(v)        , 0.);
-    integratedR += prefactor * integrator(integrandR, -abs(v)        , -inter_tol     , 0.);
-    integratedR += prefactor * integrator(integrandR, +inter_tol     ,  abs(v)        , 0.);
-    integratedR += prefactor * integrator(integrandR,  abs(v)        ,  v_upper+abs(v), 0.);
+    if (abs(v) > inter_tol) {
+        integratedR  = prefactor * integrator(integrandR,  v_lower-abs(v), -abs(v)        , 0.);
+        integratedR += prefactor * integrator(integrandR, -abs(v)        , -inter_tol     , 0.);
+        integratedR += prefactor * integrator(integrandR, +inter_tol     ,  abs(v)        , 0.);
+        integratedR += prefactor * integrator(integrandR,  abs(v)        ,  v_upper+abs(v), 0.);
+    }
+    else {
+        integratedR  = prefactor * integrator(integrandR,  v_lower-abs(v), -inter_tol     , 0.);
+        integratedR += prefactor * integrator(integrandR, +inter_tol     ,  v_upper+abs(v), 0.);
+    }
+
 
     self.addself(0, iv, i_in, integratedR);
 }

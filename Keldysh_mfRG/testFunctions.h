@@ -1614,7 +1614,7 @@ class TestIntegrandK1a{
             freqs[i] = vpp;
 
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-            integrand_re[i] = integrand_value;
+            integrand_re[i] = integrand_value.real();
             integrand_im[i] = 0.;
 #else
             integrand_re[i] = integrand_value.real();
@@ -1649,21 +1649,21 @@ void test_integrate_over_K1(double Lambda) {
     TestIntegrandK1a<comp> IntegrandK1a(Lambda, 'a', 0., v, vp);
 
     double vmax = 1e4;
-    double result = integrator(IntegrandK1a, -vmax, vmax, v);
+    Q result = integrator(IntegrandK1a, -vmax, vmax, v);
     print("Result of the integration over K1a:", result, true);
-    print("relative difference: ", (result-1./4)*4, true);
+    print("relative difference: ", (result-1./4)*4., true);
 
 
     TestIntegrandK1a<comp> IntegrandK1a2(Lambda, 't', 0., v, vp);
-    double result2 = integrator(IntegrandK1a2, -vmax, vmax, v);
+    Q result2 = integrator(IntegrandK1a2, -vmax, vmax, v);
     print("Result of the integration over K1a from the t-channel:", result2, true);
-    print("relative difference: ", (result2-1./4)*4, true);
+    print("relative difference: ", (result2-1./4)*4., true);
 
 
     TestIntegrandK1a<comp> IntegrandK1a3(Lambda, 'p', 0., v, vp);
-    double result3 = integrator(IntegrandK1a3, -vmax, vmax, v);
+    Q result3 = integrator(IntegrandK1a3, -vmax, vmax, v);
     print("Result of the integration over K1a from p-channel:", result3, true);
-    print("relative difference: ", (result3-1./4)*4, true);
+    print("relative difference: ", (result3-1./4)*4., true);
 
 
     IntegrandK1a2.save_integrand(vmax);
