@@ -266,14 +266,15 @@ class LoopCalculator{
     /// because of the transformations that must be done on the frequencies
     /// (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v',
     /// needing both extensions of the integration domain in both directions
+#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
     double v_lower = prop.selfenergy.frequencies.w_lower;
     double v_upper = prop.selfenergy.frequencies.w_upper;
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-        // make sure that the limits for the Matsubara sum are fermionic
-        int Nmin = (int) (v_lower/(M_PI*glb_T)-1)/2;
-        int Nmax = (int) (v_upper/(M_PI*glb_T)-1)/2;
-        v_lower = (Nmin*2+1)*(M_PI*glb_T);
-        v_upper = (Nmax*2+1)*(M_PI*glb_T);
+#else
+    // make sure that the limits for the Matsubara sum are fermionic
+    int Nmin = (int) (prop.selfenergy.frequencies.w_lower/(M_PI*glb_T)-1)/2;
+    int Nmax = (int) (prop.selfenergy.frequencies.w_upper/(M_PI*glb_T)-1)/2;
+    double v_lower = (Nmin*2+1)*(M_PI*glb_T);
+    double v_upper = (Nmax*2+1)*(M_PI*glb_T);
 #endif
 
     const IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
@@ -351,10 +352,10 @@ void LoopCalculator<Q>::compute_Matsubara() {
 
 
 #else
-    int vint = (int) ((abs(v)/(M_PI*glb_T)-1)/2 + 1e-1)
+    int vint = (int) ((abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
     integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin-vint, Nmax+vint);
 
-    integratedR += - glb_T
+    integratedR += - 1./(2.*M_PI)
                        * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
 
 #endif

@@ -1157,8 +1157,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifdef ZERO_TEMP
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta, 0);
 #else
-            int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-            value += bubble_value_prefactor()/(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
+            int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+            value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
             value += bubble_value_prefactor() *
@@ -1185,8 +1185,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifdef ZERO_TEMP
             value += bubble_value_prefactor() * integrator<Q>(integrand_K2, vmin, vmax, abs(w/2), {}, Delta, 0);
 #else
-            int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-            value += bubble_value_prefactor()/(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
+            int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+            value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
 
@@ -1214,8 +1214,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     #ifdef ZERO_TEMP
         value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, abs(w/2), {}, Delta, 0);
     #else
-        int interval_correction =  - ceil2bfreq(w/2) + floor2bfreq(w/2); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-        value += bubble_value_prefactor()/(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
+        int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+        value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
     #endif //ZERO_TEMP
     #endif // KELDYSH_FORMALISM
         value += bubble_value_prefactor() *
