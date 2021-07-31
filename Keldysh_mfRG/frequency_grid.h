@@ -13,6 +13,7 @@
 
 #include <cmath>        // for sqrt, log, exp
 #include "parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
+#include <assert.h>
 
 // TODO: implement new grid also for GRID=1,2,4
 // TODO: comment!
@@ -27,16 +28,18 @@ double grid_transf_inv_v1(const double w, const double W_scale);
 double grid_transf_inv_v2(const double w, const double W_scale);
 double grid_transf_inv_v3(const double w, const double W_scale);
 double grid_transf_inv_v4(const double w, const double W_scale);
+double wscale_from_wmax_v1(double & Wscale, double w1, double wmax, int N);
 
 class FrequencyGrid {
     const char type;
     const unsigned int diag_class;
 public:
     int N_w;
-    double w_upper, w_lower, W_scale;
+    double w_upper, w_lower, W_upper, W_lower, W_scale;
     double U_factor = 10./3.;
     double Delta_factor = 10.;
     rvec w;
+    rvec Ws;
 
     FrequencyGrid(char type_in, unsigned int diag_class_in) : type(type_in), diag_class(diag_class_in) {
         switch (type) {
@@ -100,6 +103,7 @@ public:
             default:;
         }
         w = rvec (N_w);
+        Ws = rvec (N_w);
         initialize_grid();
     };
 
@@ -116,8 +120,11 @@ public:
     void initialize_grid(double scale);
     void rescale_grid(double Lambda);
     auto fconv(double w_in) const -> int;
+    auto fconv(double w_in, double tol) const -> int;
+    auto W_val(int index) const -> double;
     auto grid_transf(double w) const -> double;
     auto grid_transf_inv(double w) const -> double;
+    auto wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double;
 };
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
@@ -126,22 +133,43 @@ auto FrequencyGrid::scale_factor(double Lambda) -> double {
 
 void FrequencyGrid::initialize_grid() {
     double W;
-    double W_upper = grid_transf(w_upper);
-    double W_lower = grid_transf(w_lower);
+    W_upper = grid_transf(w_upper);
+    W_lower = grid_transf(w_lower);
     double dW = (W_upper - W_lower) / ((double) (N_w - 1.));
     for(int i=0; i<N_w; ++i) {
         W = W_lower + i*dW;
         w[i] = grid_transf_inv(W);
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+        if (type == 'b') w[i] = round2bfreq(w[i]);
+        else w[i] = round2ffreq(w[i]);
+#endif
+        Ws[i]= grid_transf(w[i]);
     }
     if (N_w % 2 == 1) {
         w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+        Ws[(int) N_w / 2] = 0.;
     }
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    assert (is_doubleOccurencies(w) == 0);
+#endif
 }
 
 void FrequencyGrid::initialize_grid(double scale) {
+    // Pick the grid parameters in a sensible way
     W_scale = scale;
     if (N_w % 2 == 1) w_upper = grid_transf_inv((((double)N_w+1)/((double)N_w+3)));
     else w_upper = grid_transf_inv((((double)N_w*2-1)/((double)(N_w+1)*2)));
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    // for Matsubara T>0: pick grid such that no frequencies occur twice
+    if (type == 'b') {
+        w_upper = max(round2bfreq(w_upper), glb_T * M_PI*N_w);
+        W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
+    }
+    else {
+        w_upper = max(round2ffreq(w_upper), glb_T * M_PI*N_w);
+        W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
+    }
+#endif
     w_lower = - w_upper;
     initialize_grid();
 }
@@ -152,11 +180,16 @@ void FrequencyGrid::rescale_grid(double Lambda) {
 
 auto FrequencyGrid::fconv(double w_in) const -> int {
     double W = grid_transf(w_in);
-    double W_upper = grid_transf(w_upper);
-    double W_lower = grid_transf(w_lower);
     double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
     W = (W - W_lower) / dW;
     auto index = (int)W;
+    return index;
+}
+auto FrequencyGrid::fconv(double w_in, double tol) const -> int {
+    double W = grid_transf(w_in);
+    double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
+    W = (W - W_lower) / dW;
+    auto index = (int) (W + tol);
     return index;
 }
 
@@ -168,7 +201,11 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
     //    return grid_transf_v2(w, this->W_scale);
     //}
     else {
+        #if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
         return grid_transf_v2(w, this->W_scale);
+        #else
+        return grid_transf_v1(w, this->W_scale);
+        #endif
     }
 }
 
@@ -182,6 +219,16 @@ auto FrequencyGrid::grid_transf_inv(double w) const -> double {
     else {
         return grid_transf_inv_v2(w, this->W_scale);
     }
+}
+
+auto FrequencyGrid::wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double {
+    return wscale_from_wmax_v1(Wscale, w1, wmax, N);
+}
+
+auto FrequencyGrid::W_val(int index) const -> double {
+    if (index >= 0) return Ws[index];
+    else if (index == -1) return 1.;
+    else return -1.;
 }
 
 class VertexFrequencyGrid {
@@ -499,6 +546,38 @@ double integration_measure_v4(const double t, const double W_scale) {
     double temp = 1 - t*t;
     return 2 * W_scale * sgn(t) * t / temp / temp;
 }
+
+
+////    linear grid
+//double grid_transf(double w, double W_scale) {
+//    return w / W_scale;
+//}
+//double grid_transf_inv(double W, double W_scale) {
+//    return W * W_scale;
+//}
+
+/**
+ * Makes sure that lower bound for W_scale fulfilled
+ * Wscale:  current value for W_scale
+ * w1:      smallest positive Matsubara frequency (for bosons: 2*M_PI*glb_T, for fermions: M_PI*glb_T)
+ * wmax:    maximal frequency
+ * N:       relates tmax to t1 by t1=tmax/N (for bosons: (nBOS-1)/2; for fermions: nFER-1)
+*/
+double wscale_from_wmax_v1(double & Wscale, const double w1, const double wmax, const int N) {
+    double Wscale_candidate;
+    // Version 1: linear around w=0
+        Wscale_candidate = wmax * sqrt( (N*N -1*2) / (pow(wmax/w1, 2) - N*N));
+
+    // Version 2: quaadratic around w=0
+    //assert(w1 / wmax < 1./(N*N));       // if this fails, then change wmax or use Version 1
+    //Wscale_candidate = w1 * wmax * N * sqrt(N*N - 1) *sqrt(wmax*wmax - N*N*w1*w1) / abs(wmax*wmax - w1*w1*N*N*N*N);
+
+    // linear grid
+    //Wscale_candidate = wmax + 2*M_PI*glb_T;
+
+    return max(Wscale, Wscale_candidate);
+}
+
 
 //void setUpBosGrid(rvec& freqs, int nfreqs) {
 //    double W;

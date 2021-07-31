@@ -176,7 +176,8 @@ public:
 #endif
     }
 
-    void initialize(State<comp>& state_in) {
+template <typename Q>
+    void initialize(State<Q>& state_in) {
         print("Starting to copy to buffer...", true);
         FrequencyGrid bfreqs = state_in.vertex[0].avertex().frequencies.b_K1;
         FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
@@ -196,8 +197,14 @@ public:
             ffreqs_buffer[i] = ffreqs.w[i];
         }
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
+            selfenergy[i].re = glb_U/2.;
+            selfenergy[i].im = real(state_in.selfenergy.acc(i));
+#else
             selfenergy[i].re = real(state_in.selfenergy.acc(i));
             selfenergy[i].im = imag(state_in.selfenergy.acc(i));
+#endif
         }
         for (int i=0; i<irred_dim; ++i) {                       // write irreducible vertex into buffer
             irreducible_class[i].re = real(state_in.vertex[0].irred().acc(i));
@@ -628,8 +635,9 @@ public:
  *                        - If not, create new file.
  *                        - If yes, write data to existing file at iteration Lambda_it.
  */
+template <typename  Q>
 void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
-                 State<comp>& state_in, rvec& Lambdas, bool file_exists) {
+                 State<Q>& state_in, rvec& Lambdas, bool file_exists) {
     //Try block to detect exceptions raised by any of the calls inside it
     try {
         // Prepare a buffer for writing data into the file
@@ -930,7 +938,8 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
  * @param Lambda_size : Total number of Lambda iterations to be saved in the file.
  * @param state_in    : State to be written to the file.
  */
-void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, State<comp>& state_in) {
+template <typename Q>
+void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, State<Q>& state_in) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -957,8 +966,9 @@ void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, 
  * @param state_in    : State to be written to the file.
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  */
+template <typename Q>
 void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
-             State<comp>& state_in, rvec& Lambdas) {
+             State<Q>& state_in, rvec& Lambdas) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -979,7 +989,8 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
  * @param result : Empty State object into which result is copied.
  * @param buffer : Buffer from which result is read. Should contain data read from a file.
  */
-void result_set_frequency_grids(State<comp>& result, Buffer& buffer) {
+template <typename Q>
+void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     // create new frequency grids
     FrequencyGrid bfreqs ('b', 1);
     FrequencyGrid ffreqs ('f', 1);
@@ -1047,50 +1058,95 @@ void result_set_frequency_grids(State<comp>& result, Buffer& buffer) {
  * @param result : Empty State object into which result is copied.
  * @param buffer : Buffer from which result is read. Should contain data read from a file.
  */
-void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
-    comp val; // buffer value
+template <typename Q>
+void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
+    Q val; // buffer value
 
     for (int i=0; i<buffer.self_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
+#else
+        val = buffer.selfenergy[i].im;
+#endif
         result.selfenergy.direct_set(i, val);
     }
     for (int i=0; i<buffer.irred_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
+#else
+        val = buffer.irreducible_class[i].re;
+#endif
         result.vertex[0].irred().direct_set(i, val);
     }
 #if MAX_DIAG_CLASS >= 1
     for (int i=0; i<buffer.K1_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
+#else
+        val = buffer.K1_class_a[i].re;
+#endif
         result.vertex[0].avertex().K1_direct_set(i, val);
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
+#else
+        val = buffer.K1_class_p[i].re;
+#endif
         result.vertex[0].pvertex().K1_direct_set(i, val);
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
+#else
+        val = buffer.K1_class_t[i].re;
+#endif
         result.vertex[0].tvertex().K1_direct_set(i, val);
     }
 #endif
 #if MAX_DIAG_CLASS >= 2
     for (int i=0; i<buffer.K2_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
+#else
+        val = buffer.K2_class_a[i].re;
+#endif
         result.vertex[0].avertex().K2_direct_set(i, val);
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
+#else
+        val = buffer.K2_class_p[i].re;
+#endif
         result.vertex[0].pvertex().K2_direct_set(i, val);
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
+#else
+        val = buffer.K2_class_t[i].re;
+#endif
         result.vertex[0].tvertex().K2_direct_set(i, val);
     }
 #endif
 #if MAX_DIAG_CLASS >= 3
     for (int i=0; i<buffer.K3_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
+#else
+        val = buffer.K3_class_a[i].re;
+#endif
         result.vertex[0].avertex().K3_direct_set(i, val);
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
+#else
+        val = buffer.K3_class_p[i].re;
+#endif
         result.vertex[0].pvertex().K3_direct_set(i, val);
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
+#else
+        val = buffer.K3_class_t[i].re;
+#endif
         result.vertex[0].tvertex().K3_direct_set(i, val);
     }
 #endif
@@ -1104,8 +1160,8 @@ void copy_buffer_to_result(State<comp>& result, Buffer& buffer) {
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  * @return            : State object containing the result.
  */
-State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
-    State<comp> result;
+State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
+    State<state_datatype> result;
     if (Lambda_it < Lambda_size) {
 
         // Open the file. Access rights: read-only
@@ -1259,10 +1315,10 @@ State<comp> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_si
 /// --- Test function --- ///
 
 // TODO: include i_in!
-void test_hdf5(H5std_string FILE_NAME, int i, State<comp>& state) {
+void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
     // test hdf5: read files and compare to original file
     int cnt = 0;
-    State<comp> out = read_hdf(FILE_NAME, i, nODE);
+    State<state_datatype> out = read_hdf(FILE_NAME, i, nODE);
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
             if (state.selfenergy.val(iK, iSE, 0) != out.selfenergy.val(iK, iSE, 0)) {

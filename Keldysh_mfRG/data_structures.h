@@ -17,6 +17,9 @@
 using namespace std;
 typedef complex<double> comp; // Complex number
 const comp glb_i (0., 1.);    // Imaginary unit
+auto isfinite(comp z) -> bool {
+    return isfinite(real(z)) and isfinite(imag(z));
+}
 
 /// DECLARATIONS ///
 
@@ -73,8 +76,11 @@ public:
     friend vec<T> operator* (vec<T> lhs, const vec<T>& rhs) { // element-wise multiplication of two vectors
         lhs *= rhs; return lhs;
     };
-    friend vec<T> operator* (vec<T> lhs, const T& rhs) {      // multiplication with a constant
+    friend vec<T> operator* (vec<T> lhs, const T& rhs) {      // multiplication with a constant from the right
         lhs *= rhs; return lhs;
+    };
+    friend vec<T> operator* (const T& lhs, vec<T> rhs) {      // multiplication with a constant from the left
+        rhs *= lhs; return rhs;
     };
     friend vec<T> operator/ (vec<T> lhs, const vec<T>& rhs) { // element-wise division of two vectors
         lhs *= rhs.inv(); return lhs;

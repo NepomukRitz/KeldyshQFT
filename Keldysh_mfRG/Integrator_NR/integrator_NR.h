@@ -9,13 +9,13 @@
 #include <limits>
 #include "../data_structures.h"
 
-template <typename Integrand>
+template <typename Q, typename Integrand>
 struct Adapt {
 public:
     double TOL, tolerance; // relative tolerance
     const double EPS = std::numeric_limits<double>::epsilon();  // machine precision, used as absolute tolerance
     static const double alpha, beta, x1, x2, x3, nodes[12];     // relative positions of Gauss-Kronrod nodes
-    const Integrand& integrand;                                 // integrand, needs call operator returning a comp
+    const Integrand& integrand;                                 // integrand, needs call operator returning a Q
 
     Adapt(double tol_in, const Integrand& integrand_in) : TOL(tol_in), integrand(integrand_in) {
         if (TOL < 10.*EPS)  // if absolute tolerance is smaller than 10 * machine precision,
@@ -23,26 +23,29 @@ public:
     }
 
     /** Integrate integrand from a to b. */
-    auto integrate(const double a, const double b) -> comp;
+    auto integrate(const double a, const double b) -> Q;
     /** Helper function for recursion: Integrate integrand in subinterval [a, b],
      *  reusing the boundary values fa, fb and given error estimate is. */
-    auto integrate(const double a, const double b, const comp fa, const comp fb, const comp is) -> comp;
+    auto integrate(const double a, const double b, const Q fa, const Q fb, const Q is) -> Q;
 };
 
 /** 4-point Gauss-Lobatto rule */
-inline auto Gauss_Lobatto_4(double h, comp f1, comp f2, comp f3, comp f4) -> comp {
+template <typename  Q>
+inline auto Gauss_Lobatto_4(double h, Q f1, Q f2, Q f3, Q f4) -> Q {
     return (h / 6.0) * (f1 + f4 + 5.0 * (f2 + f3));
 }
 /** 7-point Gauss-Kronrod rule */
-inline auto Gauss_Kronrod_7(double h, comp f1, comp f2, comp f3, comp f4, comp f5, comp f6, comp f7) -> comp {
+template <typename  Q>
+inline auto Gauss_Kronrod_7(double h, Q f1, Q f2, Q f3, Q f4, Q f5, Q f6, Q f7) -> Q {
     return (h / 1470.0) * (77.0 * (f1 + f7)
                         + 432.0 * (f2 + f6)
                         + 625.0 * (f3 + f5)
                         + 672.0 *  f4);
 }
 /** 13-point Gauss-Kronrod rule */
-inline auto Gauss_Kronrod_13(double h, comp f1, comp f2, comp f3, comp f4, comp f5, comp f6, comp f7,
-                             comp f8, comp f9, comp f10, comp f11, comp f12, comp f13) -> comp {
+template <typename  Q>
+inline auto Gauss_Kronrod_13(double h, Q f1, Q f2, Q f3, Q f4, Q f5, Q f6, Q f7,
+                             Q f8, Q f9, Q f10, Q f11, Q f12, Q f13) -> Q {
     return h * (0.0158271919734802 * (f1 + f13)
               + 0.0942738402188500 * (f2 + f12)
               + 0.155071987336585  * (f3 + f11)
@@ -52,10 +55,10 @@ inline auto Gauss_Kronrod_13(double h, comp f1, comp f2, comp f3, comp f4, comp 
               + 0.242611071901408  *  f7);
 }
 
-template <typename Integrand>
-auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
+template <typename Q, typename Integrand>
+auto Adapt<Q, Integrand>::integrate(const double a, const double b) -> Q {
     double m, h, err_i1, err_i2, r, x[13];
-    comp i1, i2, is, f[13];
+    Q i1, i2, is, f[13];
 
     m = 0.5*(b+a);  // center of the interval
     h = 0.5*(b-a);  // half width of the interval
@@ -87,8 +90,8 @@ auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
     tolerance = (r > 0.0 && r < 1.0) ? TOL / r : TOL;   // if 0 < r < 1, increase relative tolerance by factor 1/r
 
     // if error estimate is zero, set to interval width to avoid infinite recursion
-    if (is == (comp)0.)
-        is = (comp)(b-a);
+    if (is == (Q)0.)
+        is = (Q)(b-a);
 
     // If difference between first and second estimate and second and 13-point estimate is already smaller than absolute
     // or relative tolerance, return second estimate, else subdivide interval.
@@ -108,13 +111,13 @@ auto Adapt<Integrand>::integrate(const double a, const double b) -> comp {
              + integrate(x[10], x[12], f[10], f[12], is);
 }
 
-template <typename Integrand>
-auto Adapt<Integrand>::integrate(const double a, const double b, const comp fa, const comp fb, const comp is) -> comp{
+template <typename Q, typename Integrand>
+auto Adapt<Q, Integrand>::integrate(const double a, const double b, const Q fa, const Q fb, const Q is) -> Q{
 
     double m, h, x[5];
-    comp i1, i2, f[5];
+    Q i1, i2, f[5];
     //double m, h, mll, ml, mr, mrr;
-    //comp fmll, fml, fm, fmr, fmrr, i2, i1;
+    //Q fmll, fml, fm, fmr, fmrr, i2, i1;
 
     m = 0.5*(a+b);  // center of the interval
     h = 0.5*(b-a);  // half width of the interval
@@ -147,18 +150,18 @@ auto Adapt<Integrand>::integrate(const double a, const double b, const comp fa, 
 }
 
 // relative positions of Gauss-Kronrod nodes
-template <typename Integrand>
-const double Adapt<Integrand>::alpha = sqrt(2./3.);
-template <typename Integrand>
-const double Adapt<Integrand>::beta = 1./sqrt(5.);
-template <typename Integrand>
-const double Adapt<Integrand>::x1 = 0.942882415695480;
-template <typename Integrand>
-const double Adapt<Integrand>::x2 = 0.641853342345781;
-template <typename Integrand>
-const double Adapt<Integrand>::x3 = 0.236383199662150;
-template <typename Integrand>
-const double Adapt<Integrand>::nodes[12] = {0, -x1, -alpha, -x2, -beta, -x3, 0.0, x3, beta, x2, alpha, x1};
+template <typename Q, typename Integrand>
+const double Adapt<Q, Integrand>::alpha = sqrt(2./3.);
+template <typename Q, typename Integrand>
+const double Adapt<Q, Integrand>::beta = 1./sqrt(5.);
+template <typename Q, typename Integrand>
+const double Adapt<Q, Integrand>::x1 = 0.942882415695480;
+template <typename Q, typename Integrand>
+const double Adapt<Q, Integrand>::x2 = 0.641853342345781;
+template <typename Q, typename Integrand>
+const double Adapt<Q, Integrand>::x3 = 0.236383199662150;
+template <typename Q, typename Integrand>
+const double Adapt<Q, Integrand>::nodes[12] = {0, -x1, -alpha, -x2, -beta, -x3, 0.0, x3, beta, x2, alpha, x1};
 
 
 #endif //KELDYSH_MFRG_INTEGRATOR_NR_H

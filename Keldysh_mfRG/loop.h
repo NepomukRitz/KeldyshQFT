@@ -14,15 +14,18 @@
 #include "write_data2file.h"  // save integrand for debugging purposes
 #include "correctionFunctions.h"  // analytical results for the tails of the loop integral
 
-
+/**
+ * Class for the integrand of the Retarded SelfEnergy
+ * Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index
+ * @tparam Q Type in which the integrand takes values, usually comp
+ */
 template <typename Q>
 class IntegrandSE {
     const char type;
     vector<int> components = vector<int>(6);
 
     const Vertex<Q>& vertex;
-    const Propagator& propagator;
-
+    const Propagator<Q>& propagator;
     const double v;
     const int i_in;
     const bool all_spins;
@@ -53,7 +56,7 @@ class IntegrandSE {
                                            VertexInput& inputKeldyshClosed) const;
 
 public:
-    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator& prop_in,
+    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator<Q>& prop_in,
                 const double v_in, const int i_in_in, const bool all_spins_in)
                 :type(type_in), vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in), all_spins(all_spins_in){
 #ifdef KELDYSH_FORMALISM
@@ -131,8 +134,14 @@ Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
     Q factorClosedAbove;
     evaluate_vertex(factorClosedAbove, vp);
 
-    return GM * factorClosedAbove * glb_i;
-    // Multiplying the imaginary unit ensures that the integrand is purely real in the particle-hole symmetric case
+#ifndef PARTICLE_HOLE_SYMM
+        return ( GM*factorClosedAbove );
+#else
+        // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy Im(Sigma)
+        // Accordingly the saved propagator is -Im(G)
+        // Hence we need an additional factor of -1
+        return - ( GM*factorClosedAbove );
+#endif
 }
 
 template<typename Q>
@@ -242,7 +251,7 @@ template <typename Q>
 class LoopCalculator{
     SelfEnergy<comp>& self;
     const Vertex<Q>& fullvertex;
-    const Propagator& prop;
+    const Propagator<Q>& prop;
     const bool all_spins;
 
     const double Delta = (prop.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
@@ -259,6 +268,13 @@ class LoopCalculator{
     /// needing both extensions of the integration domain in both directions
     double v_lower = prop.selfenergy.frequencies.w_lower;
     double v_upper = prop.selfenergy.frequencies.w_upper;
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+        // make sure that the limits for the Matsubara sum are fermionic
+        int Nmin = (int) (v_lower/(M_PI*glb_T)-1)/2;
+        int Nmax = (int) (v_upper/(M_PI*glb_T)-1)/2;
+        v_lower = (Nmin*2+1)*(M_PI*glb_T);
+        v_upper = (Nmax*2+1)*(M_PI*glb_T);
+#endif
 
     const IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
 #ifdef KELDYSH_FORMALISM
@@ -266,16 +282,20 @@ class LoopCalculator{
 #endif
 
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
-    comp prefactor = -1./(2.*M_PI*glb_i);
+#ifdef KELDYSH_FORMALISM
+    Q prefactor = -1./(2.*M_PI*glb_i);
+#else
+    Q prefactor = -1./(2*M_PI);
+#endif
 
-    comp integratedR;
-    comp integratedK;
+    Q integratedR;
+    Q integratedK;
 
     void compute_Keldysh();
     void compute_Matsubara();
 
 public:
-    LoopCalculator(SelfEnergy<comp>& self_in, const Vertex<Q>& fullvertex_in, const Propagator& prop_in,
+    LoopCalculator(SelfEnergy<comp>& self_in, const Vertex<Q>& fullvertex_in, const Propagator<Q>& prop_in,
                    const bool all_spins_in, const int iSE)
                    : self(self_in), fullvertex(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){};
@@ -294,9 +314,8 @@ void LoopCalculator<Q>::perform_computation() {
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Keldysh() {
-#ifdef KELDYSH_FORMALISM
-    integratedR = prefactor * integrator(integrandR, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
-    integratedK = prefactor * integrator(integrandK, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
+    integratedR = prefactor * integrator<Q>(integrandR, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
+    integratedK = prefactor * integrator<Q>(integrandK, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
 
     // add analytical results for the tails
     integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v),
@@ -307,25 +326,36 @@ void LoopCalculator<Q>::compute_Keldysh() {
     //The results are emplaced in the right place of the answer object.
     self.addself(0, iv, i_in, integratedR);
     self.addself(1, iv, i_in, integratedK);
-#endif // KELDYSH_FORMALISM
 }
 
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara() {
+#ifdef ZERO_TEMP
     // split up the integrand at discontinuities and (possible) kinks:
     if (abs(v) > inter_tol) {
-        integratedR  = prefactor * integrator(integrandR,  v_lower-abs(v), -abs(v)        , 0.);
-        integratedR += prefactor * integrator(integrandR, -abs(v)        , -inter_tol     , 0.);
-        integratedR += prefactor * integrator(integrandR, +inter_tol     ,  abs(v)        , 0.);
-        integratedR += prefactor * integrator(integrandR,  abs(v)        ,  v_upper+abs(v), 0.);
+        integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-abs(v), -abs(v)        , 0.);
+        integratedR += prefactor * integrator<Q>(integrandR, -abs(v)        , -inter_tol     , 0.);
+        integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  abs(v)        , 0.);
+        integratedR += prefactor * integrator<Q>(integrandR,  abs(v)        ,  v_upper+abs(v), 0.);
     }
     else {
-        integratedR  = prefactor * integrator(integrandR,  v_lower-abs(v), -inter_tol     , 0.);
-        integratedR += prefactor * integrator(integrandR, +inter_tol     ,  v_upper+abs(v), 0.);
+        integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-abs(v), -inter_tol     , 0.);
+        integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  v_upper+abs(v), 0.);
     }
 
+    integratedR += -1./(2.*M_PI)
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
 
+
+#else
+    int vint = (int) ((abs(v)/(M_PI*glb_T)-1)/2 + 1e-1)
+    integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin-vint, Nmax+vint);
+
+    integratedR += - glb_T
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
+
+#endif
     self.addself(0, iv, i_in, integratedR);
 }
 
@@ -339,7 +369,7 @@ void LoopCalculator<Q>::compute_Matsubara() {
  * @param all_spins : Whether the calculation of the loop should include all spin components of the vertex
  */
 template <typename Q>
-void loop(SelfEnergy<comp>& self, const Vertex<Q>& fullvertex, const Propagator& prop,
+void loop(SelfEnergy<state_datatype>& self, const Vertex<Q>& fullvertex, const Propagator<Q>& prop,
           const bool all_spins){
 #pragma omp parallel for schedule(dynamic) default(none) shared(self, fullvertex, prop)
     for (int iSE=0; iSE<nSE*n_in; ++iSE){

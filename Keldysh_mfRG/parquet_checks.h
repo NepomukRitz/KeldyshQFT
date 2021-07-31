@@ -23,7 +23,7 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
     Vertex<Q> Gamma = state_in.vertex;  // full vertex
     Vertex<Q> Ir = state_in.vertex;     // irreducible vertex
     Ir.set_Ir(true);            // (irreducible in the channel of the bubble in which it is evaluated)
-    Propagator G (Lambda, state_in.selfenergy, 'g'); // full propagator
+    Propagator<Q> G (Lambda, state_in.selfenergy, 'g'); // full propagator
 
     // compute the BSE by inserting I_r on the left and the full Gamma on the right
     Gamma_BSE_L.set_frequency_grid(Gamma);
@@ -37,6 +37,7 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
 
     Gamma_BSE = (Gamma_BSE_L + Gamma_BSE_R) * 0.5; // symmetrize the BSE
 }
+
 
 /**
  * Wrapper for the above function, with only the symmetrized result Gamma_BSE returned.
@@ -63,8 +64,12 @@ template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
                  const State<Q>& state_in, const double Lambda) {
     Vertex<Q> Gamma_0 (n_spin);                  // bare vertex
+#ifdef KELDYSH_FORMALISM
     Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
-    Propagator G (Lambda, state_in.selfenergy, 'g');   // full propagator
+#else
+    Gamma_0[0].initialize(-glb_U);         // initialize bare vertex
+#endif
+    Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
 
     // compute the a bubble with full vertex on the right
     Vertex<Q> bubble_a_r (n_spin);
@@ -216,24 +221,24 @@ void parquet_checks(const string filename) {
     for (int i=0; i<Lambdas.size(); ++i) {
         print("Iteration ", i, false);
         print_add(", Lambda = ", Lambdas[i], true);
-        State<comp> state = read_hdf(filename, i, Lambdas.size());
+        State<state_datatype> state = read_hdf(filename, i, Lambdas.size());
         state.selfenergy.asymp_val_R = glb_U / 2.;
         print("State read from file.", true);
 
         // compute vertex from BSE
-        Vertex<comp> Gamma_BSE (n_spin);
+        Vertex<state_datatype> Gamma_BSE (n_spin);
         compute_BSE(Gamma_BSE, state, Lambdas[i]);       // compute the lhs of the BSE
-        Vertex<comp> Gamma_diff = state.vertex - Gamma_BSE;  // compute the difference between input and lhs of BSE
+        Vertex<state_datatype> Gamma_diff = state.vertex - Gamma_BSE;  // compute the difference between input and lhs of BSE
         print("Computed BSE.", true);
 
         // compute self-energy from SDE
-        SelfEnergy<comp> Sigma_SDE (n_spin);
+        SelfEnergy<state_datatype> Sigma_SDE (n_spin);
         compute_SDE(Sigma_SDE, state, Lambdas[i]);               // compute the lhs of the SDE
-        SelfEnergy<comp> Sigma_diff = state.selfenergy - Sigma_SDE;  // compute the difference between input and lhs of SDE
+        SelfEnergy<state_datatype> Sigma_diff = state.selfenergy - Sigma_SDE;  // compute the difference between input and lhs of SDE
         print("Computed SDE.", true);
 
         // Hartree self-energy
-        SelfEnergy<comp> Sigma_Hartree;
+        SelfEnergy<state_datatype> Sigma_Hartree;
         Sigma_Hartree.set_frequency_grid(state.selfenergy);
         Sigma_Hartree.initialize(glb_U / 2., 0.);
 
@@ -269,7 +274,7 @@ void parquet_checks(const string filename) {
                         norm_SE_fRG, norm_SE_SDE, norm_SE_diff});
 
         // save results from BSE/SDE as state into HDF5 file
-        State<comp> parquet;
+        State<state_datatype> parquet;
         parquet.vertex = Gamma_BSE;
         parquet.selfenergy = Sigma_SDE;
         if (i == 0)
@@ -279,16 +284,16 @@ void parquet_checks(const string filename) {
 
 
         // post-processing susceptibilities:
-        Vertex<comp> chi (n_spin), chi_diff (n_spin);
+        Vertex<state_datatype> chi (n_spin), chi_diff (n_spin);
         chi.set_frequency_grid(state.vertex);
         chi_diff.set_frequency_grid(state.vertex);
 
         susceptibilities_postprocessing(chi, chi_diff, state, Lambdas[i]);
 
-        State<comp> state_chi;
+        State<state_datatype> state_chi;
         state_chi.vertex = chi;
 
-        State<comp> state_chi_diff;
+        State<state_datatype> state_chi_diff;
         state_chi_diff.vertex = chi_diff;
 
         if (i == 0) {
@@ -312,7 +317,11 @@ void parquet_checks(const string filename) {
 template <typename Q>
 void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda) {
     compute_BSE(state_out.vertex, state_in, Lambda);      // compute the gamma_r's via the BSE
-    state_out.vertex[0].irred().initialize(-glb_U/2.);    // add the irreducible vertex
+#ifdef KELDYSH_FORMALISM
+    state_out.vertex[0].irred().initialize(-glb_U/2.);                           // add the irreducible vertex
+#else
+    state_out.vertex[0].irred().initialize(-glb_U);                           // add the irreducible vertex
+#endif
     compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
 }
 

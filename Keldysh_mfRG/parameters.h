@@ -1,6 +1,9 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
+// For production: uncomment the following line to switch off assert()-functions
+//#define NDEBUG
+
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 //#define KELDYSH_FORMALISM
 
@@ -8,6 +11,11 @@
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+    using state_datatype = double;
+#else
+    using state_datatype = comp;
+#endif
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD_MODEL
@@ -34,7 +42,11 @@ using namespace std;
 //#define STATIC_FEEDBACK
 
 /// Physical parameters ///
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+const double glb_T = 2./M_PI; //0.01;                     // Temperature
+#else
 const double glb_T = 0.01;                     // Temperature
+#endif
 #ifdef PARTICLE_HOLE_SYMM
     const double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
 #else
@@ -277,7 +289,7 @@ rvec flow_grid(nODE);                                                           
 #define MPI_FLAG
 
 //Tolerance for closeness to grid points when interpolating
-const double inter_tol = 1e-9;
+const double inter_tol = 1e-10;
 
 //Tolerance for loop convergence
 const double converged_tol = 1e-7;

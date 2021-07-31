@@ -63,7 +63,7 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
     // */
 
     WHEN( "adaptive Gauss-Lobatto integrator with Kronrod extension" ) {
-        Adapt<TestIntegrand> adaptor(integrator_tol, integrand);
+        Adapt<comp, TestIntegrand> adaptor(integrator_tol, integrand);
         double res = adaptor.integrate(-50., 50.).real();
         CHECK( res == Approx(exact[i]).epsilon(0.0001) );
     }

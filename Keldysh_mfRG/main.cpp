@@ -1,4 +1,7 @@
 #include <iostream>          // text input/output
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <bits/stdc++.h>
 #include "data_structures.h" // real/complex vector classes
 #include "write_data2file.h" // writing data into text or hdf5 files
 #include "parameters.h"
@@ -116,6 +119,9 @@ auto main() -> int {
 #else
     print("SIAM in Matsubara formalism: \n");
 #endif
+#ifdef PARTICLE_HOLE_SYMM
+    print("Using PARTICLE HOLE Symmetry\n");
+#endif
 
     print("U for this run is: ", glb_U, true);
     print("Lambda flows from ", Lambda_ini);
@@ -132,7 +138,15 @@ auto main() -> int {
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
 
-    string dir = "../Data/";
+    const char* dir = "../Data/";
+    string dir_str = dir;
+    // Creating Data directory
+    if (mkdir(dir, 0777) == -1)
+        cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << endl;
+
+    else
+        cout << "Directory "  << dir << " created \n";
+
     string filename = generate_filename();
 
 #ifdef BSE_SDE
