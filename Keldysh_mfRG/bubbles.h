@@ -1152,7 +1152,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
 #ifdef KELDYSH_FORMALISM
-            value += bubble_value_prefactor() * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
+            value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
 #else
 #ifdef ZERO_TEMP
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta, 0);
