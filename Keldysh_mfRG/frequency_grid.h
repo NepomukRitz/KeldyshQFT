@@ -29,6 +29,8 @@ double grid_transf_inv_v2(const double w, const double W_scale);
 double grid_transf_inv_v3(const double w, const double W_scale);
 double grid_transf_inv_v4(const double w, const double W_scale);
 double wscale_from_wmax_v1(double & Wscale, double w1, double wmax, int N);
+double wscale_from_wmax_v2(double & Wscale, double w1, double wmax, int N);
+double wscale_from_wmax_v3(double & Wscale, double w1, double wmax, int N);
 
 class FrequencyGrid {
     const char type;
@@ -104,7 +106,7 @@ public:
         }
         w = rvec (N_w);
         Ws = rvec (N_w);
-        initialize_grid();
+        //initialize_grid();
     };
 
     FrequencyGrid(char type, unsigned int diag_class, double Lambda) : FrequencyGrid(type, diag_class) {
@@ -217,12 +219,23 @@ auto FrequencyGrid::grid_transf_inv(double w) const -> double {
     //    return grid_transf_inv_v2(w, this->W_scale);
     //}
     else {
+#if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
         return grid_transf_inv_v2(w, this->W_scale);
+#else
+        return grid_transf_inv_v1(w, this->W_scale);
+#endif
     }
 }
 
 auto FrequencyGrid::wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double {
-    return wscale_from_wmax_v1(Wscale, w1, wmax, N);
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    if (this->type == 'f' and this->diag_class == 1) {
+        return wscale_from_wmax_v3(Wscale, w1, wmax, N);
+    }
+    else {
+        return wscale_from_wmax_v1(Wscale, w1, wmax, N);
+    }
+#endif
 }
 
 auto FrequencyGrid::W_val(int index) const -> double {
@@ -265,8 +278,8 @@ public:
 
 // Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
 // TODO: remove!
-FrequencyGrid frequencyGrid_bos ('b', 1);
-FrequencyGrid frequencyGrid_fer ('f', 1);
+FrequencyGrid frequencyGrid_bos ('b', 1, Lambda_ini);
+FrequencyGrid frequencyGrid_fer ('f', 1, Lambda_ini);
 rvec bfreqs = frequencyGrid_bos.w;
 rvec ffreqs = frequencyGrid_fer.w;
 
@@ -523,7 +536,7 @@ double integration_measure_v2(const double t, const double W_scale) {
 double grid_transf_v3(const double w, const double W_scale) {
     // Version 3: linear around w=0, good for w^(-1) tails
     const double almost_zero = 1e-12;
-    return (w < almost_zero) ? 0. : (-W_scale + sqrt(4*w*w + W_scale*W_scale))/2/w;
+    return (abs(w) < almost_zero) ? 0. : (-W_scale + sqrt(4*w*w + W_scale*W_scale))/2/w;
 }
 double grid_transf_inv_v3(const double t, const double W_scale) {
     // Version 3: linear around w=0, good for w^(-1) tails
@@ -549,12 +562,12 @@ double integration_measure_v4(const double t, const double W_scale) {
 
 
 ////    linear grid
-//double grid_transf(double w, double W_scale) {
-//    return w / W_scale;
-//}
-//double grid_transf_inv(double W, double W_scale) {
-//    return W * W_scale;
-//}
+double grid_transf_lin(double w, double W_scale) {
+    return w / W_scale;
+}
+double grid_transf_inv_lin(double W, double W_scale) {
+    return W * W_scale;
+}
 
 /**
  * Makes sure that lower bound for W_scale fulfilled
@@ -565,16 +578,33 @@ double integration_measure_v4(const double t, const double W_scale) {
 */
 double wscale_from_wmax_v1(double & Wscale, const double w1, const double wmax, const int N) {
     double Wscale_candidate;
-    // Version 1: linear around w=0
-        Wscale_candidate = wmax * sqrt( (N*N -1*2) / (pow(wmax/w1, 2) - N*N));
 
-    // Version 2: quaadratic around w=0
-    //assert(w1 / wmax < 1./(N*N));       // if this fails, then change wmax or use Version 1
-    //Wscale_candidate = w1 * wmax * N * sqrt(N*N - 1) *sqrt(wmax*wmax - N*N*w1*w1) / abs(wmax*wmax - w1*w1*N*N*N*N);
+    // Version 1: linear around w=0, good for w^(-2) tails
+    Wscale_candidate = wmax * sqrt( (N*N -1*2) / (pow(wmax/w1, 2) - N*N));
+    return max(Wscale, Wscale_candidate);
+}
+double wscale_from_wmax_v2(double & Wscale, const double w1, const double wmax, const int N) {
+    double Wscale_candidate;
+
+    // Version 2: quaadratic around w=0, good for w^(-2) tails
+    assert(w1 / wmax < 1./(N*N));       // if this fails, then change wmax or use Version 1
+    Wscale_candidate = w1 * wmax * N * sqrt(N*N - 1) *sqrt(wmax*wmax - N*N*w1*w1) / abs(wmax*wmax - w1*w1*N*N*N*N);
+
+    return max(Wscale, Wscale_candidate);
+}
+double wscale_from_wmax_v3(double & Wscale, const double w1, const double wmax, const int N) {
+    double Wscale_candidate;
+
+    // Version 3: quadratic around w=0, good for w^(-1) tails
+    Wscale_candidate = w1 * wmax * (N*N - 1*2.) / sqrt(N * (N * (wmax*wmax + w1*w1) - N*N*w1*wmax - w1*wmax));
+
+    return max(Wscale, Wscale_candidate);
+}
+double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax, const int N) {
+    double Wscale_candidate;
 
     // linear grid
-    //Wscale_candidate = wmax + 2*M_PI*glb_T;
-
+    Wscale_candidate = wmax + 2*M_PI*glb_T;
     return max(Wscale, Wscale_candidate);
 }
 
