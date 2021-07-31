@@ -28,16 +28,18 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
 #ifdef KELDYSH_FORMALISM
-    if (w == 0. && eta_1 == eta_2)
+    if (diff) return 0.;
+    else {
+        if (w == 0. && eta_1 == eta_2)
         return  1./(    vmax  - eps_p + eta_1 * glb_i * Delta)
               + 1./(abs(vmin) + eps_p - eta_1 * glb_i * Delta);
     else
         return 1./(-w + (eta_1 - eta_2) * glb_i * Delta)
                 * log( ((vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta))
                       /((vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta)));
-#else
-    // TODO: implement REG 2 for Matsubara formalism
 
+    }
+    #else
     if (diff)
     {
 #ifdef PARTICLE_HOLE_SYMM
@@ -100,14 +102,18 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
 #ifdef KELDYSH_FORMALISM
-    if (w == 2. * eps_p && eta_1 == - eta_2)
+    if (diff) return 0.;
+    else {
+        if (w == 2. * eps_p && eta_1 == - eta_2)
         return -1./(    vmax  + eta_1 * glb_i * Delta)
                -1./(abs(vmin) - eta_1 * glb_i * Delta);
     else
         return -1./(w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
                 * log( ((vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta))
                       /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
-#else
+
+    }
+    #else
     // TODO: implement REG 2 for Matsubara formalism
     if (diff)
     {

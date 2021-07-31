@@ -75,7 +75,7 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
  */
 template<typename Q, class Bubble_Object>
 void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, double Lambda) {
-    State<comp> bareState (Lambda);
+    State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     //Calculate the bubbles -> Vertex in SOPT saved in Psi
@@ -93,11 +93,11 @@ void sopt_state(State<Q>& Psi, double Lambda) {
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
-    Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 #ifdef HUBBARD_MODEL // Use precalculated bubble in this case
     PrecalculateBubble<comp> Pi(barePropagator, barePropagator, false);
 #else // Otherwise use same type of bubble as before, which directly interpolates
-    Bubble Pi(barePropagator, barePropagator, false);
+    Bubble<Q> Pi(barePropagator, barePropagator, false);
 #endif // HUBBARD_MODEL
     sopt_state(Psi, Pi, Lambda);
 }
@@ -110,11 +110,11 @@ void topt_state(State<Q>& Psi, double Lambda) {
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
-    Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 #ifdef HUBBARD_MODEL // Use precalculated bubble in this case
     PrecalculateBubble<comp> Pi(barePropagator, barePropagator, false);
 #else // Otherwise use same type of bubble as before, which directly interpolates
-    Bubble Pi(barePropagator, barePropagator, false);
+    Bubble<Q> Pi(barePropagator, barePropagator, false);
 #endif // HUBBARD_MODEL
 
     State<Q> SoptPsi (Lambda);
@@ -137,11 +137,11 @@ void fopt_state(State<Q>& Psi, double Lambda) {
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
-    Propagator barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 #ifdef HUBBARD_MODEL // Use precalculated bubble in this case
     PrecalculateBubble<comp> Pi(barePropagator, barePropagator, false);
 #else // Otherwise use same type of bubble as before, which directly interpolates
-    Bubble Pi(barePropagator, barePropagator, false);
+    Bubble<Q> Pi(barePropagator, barePropagator, false);
 #endif // HUBBARD_MODEL
 
     State<Q> SoptPsi (Lambda);

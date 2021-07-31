@@ -188,7 +188,7 @@ class PrecalculateBubble{
     const Propagator<Q>& s;
     const bool dot;
 
-    Bubble Helper_Bubble;
+    Bubble<Q> Helper_Bubble;
 
 #ifdef KELDYSH_FORMALISM
     int number_of_Keldysh_components = 9;
@@ -1146,7 +1146,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
-    if (vertex1[0].Ir() && vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
+    if (vertex1[0].Ir() or vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
     else {
         for (int i2 : nonzero_Keldysh_indices) {
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
@@ -1154,9 +1154,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifdef KELDYSH_FORMALISM
             value += bubble_value_prefactor() * integrator(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
 #else
-            size_t num_intervals; vec<vec<double>> intervals;
-            get_Matsubara_integration_intervals(num_intervals, intervals, w);
-            value += bubble_value_prefactor() * integrator<Q>(integrand_K1, intervals, num_intervals);
 #ifdef ZERO_TEMP
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta, 0);
 #else
@@ -1164,11 +1161,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             value += bubble_value_prefactor()/(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
-            if (!diff) {
-                value += bubble_value_prefactor() *
-                        asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
-                                                 w, 0., 0., i0, i2, i_in, channel);
-            }
+            value += bubble_value_prefactor() *
+                    asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
+                                             w, 0., 0., i0, i2, i_in, channel, diff);
+
         }
     }
 }
@@ -1193,11 +1189,11 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             value += bubble_value_prefactor()/(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
-            if (!diff) {
-                value += bubble_value_prefactor() *
-                        asymp_corrections_bubble(k2, vertex1, vertex2, G,
-                                                 vmin, vmax, w, v, 0., i0, i2, i_in, channel);
-            }
+
+            value += bubble_value_prefactor() *
+                    asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                                             vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
+
         }
     }
 }
@@ -1222,11 +1218,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         value += bubble_value_prefactor()/(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
     #endif //ZERO_TEMP
     #endif // KELDYSH_FORMALISM
-        if (!diff) {
-            value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k3, vertex1, vertex2, G,
-                                             vmin, vmax, w, v, vp, i0, i2, i_in, channel);
-        }
+        value += bubble_value_prefactor() *
+                asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                                         vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
+
     }
 }
 
@@ -1521,7 +1516,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                      const GeneralVertex<Q, symmetry_left>& vertex1,
                      const GeneralVertex<Q, symmetry_right>& vertex2,
                      const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff){
-    Bubble Pi(G, S, diff);
+    Bubble<Q> Pi(G, S, diff);
     bubble_function(dgamma, vertex1, vertex2, G, S, Pi, channel, false);
 }
 

@@ -388,9 +388,9 @@ template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rve
 #endif
 };
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
-#if DIAG_CLASS == 1
+#if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, vertex_in, right_vertex);
-#elif DIAG_CLASS > 1
+#elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, vertex_in, right_vertex) + valsmooth<k2b>(input, vertex_in, right_vertex);
 #endif
 };

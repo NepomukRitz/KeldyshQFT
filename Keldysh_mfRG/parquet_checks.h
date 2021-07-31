@@ -137,7 +137,7 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
 
     Vertex<Q> Gamma_0 (n_spin);                     // bare vertex
     Gamma_0[0].initialize(-glb_U / 2.);             // initialize bare vertex
-    Propagator G (Lambda, state.selfenergy, 'g');   // full propagator
+    Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
 
     // compute susceptibilities in all three channels
     for (char r : "apt") {

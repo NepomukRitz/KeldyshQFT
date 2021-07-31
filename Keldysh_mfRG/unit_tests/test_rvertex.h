@@ -39,7 +39,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
 
 }
 
-#if defined(PARTICLE_HOLE_SYMM) and DIAG_CLASS > 1
+#if defined(PARTICLE_HOLE_SYMM) and MAX_DIAG_CLASS > 1
 
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for K2a?", "[frequency_symmetries]" ) {
 
@@ -93,7 +93,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
 
 }
 
-#if DIAG_CLASS == 3
+#if MAX_DIAG_CLASS == 3
 
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for K3a?", "[frequency_symmetries]" ) {
 
@@ -156,7 +156,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
     }
 
 }
-#endif // DIAG_CLASS == 3
+#endif // MAX_DIAG_CLASS == 3
 
 #endif // PARTICLE_HOLE_SYMM
 

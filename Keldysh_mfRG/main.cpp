@@ -157,9 +157,9 @@ auto main() -> int {
 #else
 
     //test_K2<state_datatype>(Lambda_ini, true);
-    //test_PT4(1.8, true);
+    test_PT4(1.8, true);
     //n_loop_flow(dir_str+filename);
-    test_integrate_over_K1<comp>(1.8);
+    ///test_integrate_over_K1<state_datatype>(1.8);
 
 //    double Lambda = find_best_Lambda();
 //

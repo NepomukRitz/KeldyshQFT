@@ -249,7 +249,7 @@ void IntegrandSE<Q>::add_contribution_from_other_spins(Q &factorRetardedClosed, 
 /// TODO: DEBUG_MODE not implemented yet!
 template <typename Q>
 class LoopCalculator{
-    SelfEnergy<comp>& self;
+    SelfEnergy<Q>& self;
     const Vertex<Q>& fullvertex;
     const Propagator<Q>& prop;
     const bool all_spins;
@@ -295,7 +295,7 @@ class LoopCalculator{
     void compute_Matsubara();
 
 public:
-    LoopCalculator(SelfEnergy<comp>& self_in, const Vertex<Q>& fullvertex_in, const Propagator<Q>& prop_in,
+    LoopCalculator(SelfEnergy<Q>& self_in, const Vertex<Q>& fullvertex_in, const Propagator<Q>& prop_in,
                    const bool all_spins_in, const int iSE)
                    : self(self_in), fullvertex(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){};
@@ -314,6 +314,7 @@ void LoopCalculator<Q>::perform_computation() {
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Keldysh() {
+#ifdef KELDYSH_FORMALISM
     integratedR = prefactor * integrator<Q>(integrandR, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
     integratedK = prefactor * integrator<Q>(integrandK, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
 
@@ -326,6 +327,7 @@ void LoopCalculator<Q>::compute_Keldysh() {
     //The results are emplaced in the right place of the answer object.
     self.addself(0, iv, i_in, integratedR);
     self.addself(1, iv, i_in, integratedK);
+#endif
 }
 
 
@@ -363,7 +365,7 @@ void LoopCalculator<Q>::compute_Matsubara() {
 /**
  * Loop function for calculating the self energy
  * @tparam Q        : Type of the elements of the vertex, usually comp
- * @param self      : SelfEnergy<comp> object of which the Retarded and Keldysh components will be updated in the loop
+ * @param self      : SelfEnergy<Q> object of which the Retarded and Keldysh components will be updated in the loop
  * @param fullvertex: Vertex object for the calculation of the loop
  * @param prop      : Propagator object for the calculation of the loop
  * @param all_spins : Whether the calculation of the loop should include all spin components of the vertex

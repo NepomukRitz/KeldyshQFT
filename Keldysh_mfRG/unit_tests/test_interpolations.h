@@ -40,7 +40,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
 
 }
 
-#if DIAG_CLASS >1
+#if MAX_DIAG_CLASS >1
 
 TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[interpolations]" ) {
 
@@ -80,7 +80,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
 }
 #endif
 
-#if DIAG_CLASS == 3
+#if MAX_DIAG_CLASS == 3
 TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[interpolations]" ) {
 
 
