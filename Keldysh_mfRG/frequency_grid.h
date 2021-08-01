@@ -37,7 +37,7 @@ class FrequencyGrid {
     const unsigned int diag_class;
 public:
     int N_w;
-    double w_upper, w_lower, W_upper, W_lower, W_scale;
+    double w_upper, w_lower, W_upper, W_lower, W_scale, dW;
     double U_factor = 10./3.;
     double Delta_factor = 10.;
     rvec w;
@@ -52,8 +52,8 @@ public:
                         w_upper = glb_w_upper;
                         w_lower = glb_w_lower;
                         W_scale = glb_W_scale;
-                        U_factor = 5./3.;
-                        Delta_factor = 5.;
+                        U_factor = 40./3.;
+                        Delta_factor = 40.;
                         break;
                     case 2:
                         N_w = nBOS2;
@@ -135,10 +135,14 @@ auto FrequencyGrid::scale_factor(double Lambda) -> double {
 
 void FrequencyGrid::initialize_grid() {
     double W;
-    W_upper = grid_transf(w_upper);
-    W_lower = grid_transf(w_lower);
-    double dW = (W_upper - W_lower) / ((double) (N_w - 1.));
-    for(int i=0; i<N_w; ++i) {
+    W_upper = 1.; //grid_transf(w_upper);
+    W_lower =-1.;//grid_transf(w_lower);
+    dW = (W_upper - W_lower) / ((double) (N_w - 1.));
+    // first and last element correspond to -/+ infinity
+    Ws[0] = -1.; Ws[N_w-1] = 1.;
+    w[0] = -std::numeric_limits<double>::infinity();
+    w[N_w-1] = std::numeric_limits<double>::infinity();
+    for(int i=1; i<N_w-1; ++i) {
         W = W_lower + i*dW;
         w[i] = grid_transf_inv(W);
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
@@ -182,14 +186,13 @@ void FrequencyGrid::rescale_grid(double Lambda) {
 
 auto FrequencyGrid::fconv(double w_in) const -> int {
     double W = grid_transf(w_in);
-    double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
+
     W = (W - W_lower) / dW;
     auto index = (int)W;
     return index;
 }
 auto FrequencyGrid::fconv(double w_in, double tol) const -> int {
     double W = grid_transf(w_in);
-    double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
     W = (W - W_lower) / dW;
     auto index = (int) (W + tol);
     return index;

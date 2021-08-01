@@ -277,7 +277,7 @@ class LoopCalculator{
     double v_upper = (Nmax*2+1)*(M_PI*glb_T);
 #endif
 
-    const IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
+    IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
 #ifdef KELDYSH_FORMALISM
     const IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins);
 #endif
@@ -306,11 +306,13 @@ public:
 
 template<typename Q>
 void LoopCalculator<Q>::perform_computation() {
+    if (not isinf(v)) {
 #ifdef KELDYSH_FORMALISM
     compute_Keldysh();
 #else
     compute_Matsubara();
 #endif
+    }
 }
 
 template<typename Q>
@@ -347,8 +349,8 @@ void LoopCalculator<Q>::compute_Matsubara() {
         integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  v_upper+abs(v), 0.);
     }
 
-    integratedR += -1./(2.*M_PI)
-                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
+    //integratedR += -1./(2.*M_PI)
+    //                   * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
 
 
 #else

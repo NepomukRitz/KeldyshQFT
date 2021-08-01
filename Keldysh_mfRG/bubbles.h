@@ -1122,19 +1122,19 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K1(i0, w);
-            if (trafo == 0) {calculate_value_K1(value, i0, i_in, w); }
+            if (trafo == 0 and not isinf(w) and not isinf(v) and not isinf(vp)) {calculate_value_K1(value, i0, i_in, w); }
             break;
         case 2:
             convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K2(i0, w, v);
-            if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v); }
+            if (trafo == 0 and not isinf(w) and not isinf(v) and not isinf(vp)) {calculate_value_K2(value, i0, i_in, w, v); }
             break;
         case 3:
             convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K3(i0, w, iv, ivp);
-            if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp); }
+            if (trafo == 0 and not isinf(w) and not isinf(v) and not isinf(vp)) {calculate_value_K3(value, i0, i_in, w, v, vp); }
             break;
         default:;
     }
@@ -1161,9 +1161,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
-            value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
-                                             w, 0., 0., i0, i2, i_in, channel, diff);
+            //value += bubble_value_prefactor() *
+            //        asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
+            //                                 w, 0., 0., i0, i2, i_in, channel, diff);
 
         }
     }
@@ -1190,9 +1190,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
 
-            value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k2, vertex1, vertex2, G,
-                                             vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
+            //value += bubble_value_prefactor() *
+            //        asymp_corrections_bubble(k2, vertex1, vertex2, G,
+            //                                 vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
 
         }
     }
@@ -1218,9 +1218,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
     #endif //ZERO_TEMP
     #endif // KELDYSH_FORMALISM
-        value += bubble_value_prefactor() *
-                asymp_corrections_bubble(k3, vertex1, vertex2, G,
-                                         vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
+        //value += bubble_value_prefactor() *
+        //        asymp_corrections_bubble(k3, vertex1, vertex2, G,
+        //                                 vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
 
     }
 }

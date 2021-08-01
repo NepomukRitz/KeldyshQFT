@@ -147,28 +147,31 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
  * @return      : Interpolated value using the saved values as basis
  */
 template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
+    double small = 1e-12;
+    double tv = this->frequencies.grid_transf(v);
+    if (fabs(tv) < this->frequencies.W_upper + small) {    //Check the range of frequency. If too large, return Sigma(\infty)
+                                                            //Returns U/2 for retarded and 0. for Keldysh component
+        //if (fabs(v) != this->frequencies.w_upper) {
+        int iv = (int) ((tv - this->frequencies.W_lower) / this->frequencies.dW); // index corresponding to v
 
-    if (abs(v) > this->frequencies.w_upper)    //Check the range of frequency. If too large, return Sigma(\infty)
-        //Returns U/2 for retarded and 0. for Keldysh component
-        return (1.-(double)iK)*(this->asymp_val_R);
-    else {
-        if (fabs(v) != this->frequencies.w_upper) { // linear interpolation
-            int iv = this->frequencies.fconv(v); // index corresponding to v
-            double x1 = this->frequencies.w[iv]; // lower adjacent frequency value
-            double x2 = this->frequencies.w[iv + 1]; // upper adjacent frequency value
-            double xd = (v - x1) / (x2 - x1); // distance between adjacent frequnecy values
+        double x1 = this->frequencies.Ws[iv]; // lower adjacent frequency value
+        double x2 = this->frequencies.Ws[iv + 1]; // upper adjacent frequency value
+        double xd = (tv - x1) / (x2 - x1); // distance between adjacent frequnecy values
 
-            Q f1 = val(iK, iv, i_in); // lower adjacent value
-            Q f2 = val(iK, iv + 1, i_in);  // upper adjacent value
+        Q f1 = val(iK, iv, i_in); // lower adjacent value
+        Q f2 = val(iK, iv + 1, i_in);  // upper adjacent value
 
-            return (1. - xd) * f1 + xd * f2; // interpolated value
-        }
-        else if (v == this->frequencies.w_upper) //Exactly at the upper boundary
-            return val(iK, nSE-1, i_in);
-        else if (v == this->frequencies.w_lower) //Exactly at the lower boundary
-            return val(iK, 0, i_in);
+        Q result = (1. - xd) * f1 + xd * f2;
+        assert(isfinite(result));
+        return result; // interpolated value
+        //}
+        //else if (v == this->frequencies.w_upper) //Exactly at the upper boundary
+        //    return val(iK, nSE-1, i_in);
+        //else if (v == this->frequencies.w_lower) //Exactly at the lower boundary
+        //    return val(iK, 0, i_in);
     }
-
+    else
+        return (1.-(double)iK)*(this->asymp_val_R);
 }
 
 /**
