@@ -21,7 +21,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     double cumul_interpolation_error = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
-    for (int iw = 0; iw<nBOS; iw++){
+    for (int iw = 1; iw<nBOS-1; iw++){
         indices.w = avertex.frequencies.b_K1.w[iw];
 
         cumul_interpolation_error += abs(Interpolate<k1, state_datatype>()(indices, avertex) - avertex.K1_val(iK, iw, i_in));
@@ -49,8 +49,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS2; iw++){
-        for (int iv = 0; iv<nFER2; iv++) {
+    for (int iw = 1; iw<nBOS2-1; iw++){
+        for (int iv = 1; iv<nFER2-1; iv++) {
             avertex.K2_setvert(iK, iw, iv, i_in, value);
             value +=1;
         }
@@ -58,8 +58,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
 
     double cumul_interpolation_error = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    for (int iw = 0; iw<nBOS2; iw++){
-        for (int iv = 0; iv<nFER2; iv++) {
+    for (int iw = 1; iw<nBOS2-1; iw++){
+        for (int iv = 1; iv<nFER2-1; iv++) {
             indices.w  = avertex.frequencies.b_K2.w[iw];
             indices.v1 = avertex.frequencies.f_K2.w[iv];
 
@@ -88,9 +88,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS3; iw++){
-        for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = 0; ivp<nFER3; ivp++) {
+    for (int iw = 1; iw<nBOS3-1; iw++){
+        for (int iv = 1; iv<nFER3-1; iv++) {
+            for (int ivp = 1; ivp<nFER3-1; ivp++) {
                 avertex.K3_setvert(iK, iw, iv, ivp, i_in, value);
                 value += 1;
             }
@@ -99,9 +99,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
 
     double cumul_interpolation_error = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    for (int iw = 0; iw<nBOS3; iw++){
-        for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = 0; ivp<nFER3; ivp++) {
+    for (int iw = 1; iw<nBOS3-1; iw++){
+        for (int iv = 1; iv<nFER3-1; iv++) {
+            for (int ivp = 1; ivp<nFER3-1; ivp++) {
                 indices.w = avertex.frequencies.b_K3.w[iw];
                 indices.v1 = avertex.frequencies.f_K3.w[iv];
                 indices.v2 = avertex.frequencies.f_K3.w[ivp];
