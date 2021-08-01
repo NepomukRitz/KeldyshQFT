@@ -645,7 +645,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
         // create non-symmetric vertex with differentiated vertex on the left
-        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin);
+        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin, Lambda);
         dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
         dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
 
@@ -655,7 +655,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
 
 
         // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin);
+        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin, Lambda);
         dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
         dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
@@ -1695,6 +1695,9 @@ void test_K2(double Lambda, bool test_consistency){
 
 }
 
+/**
+ * test-integrand for below function test_integrate_over_K1()
+ */
 template <typename Q>
 class TestIntegrandK1a{
     public:
@@ -1739,6 +1742,46 @@ class TestIntegrandK1a{
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
     }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
 
     void save_state() {
             write_hdf("SOPT_state.h5", 1.8, 1, SOPTstate);
@@ -1746,37 +1789,49 @@ class TestIntegrandK1a{
 
     auto operator() (double vpp) const -> Q {
             VertexInput input(0, vpp, v, vp + vpp, 0, 0, channel);
-            return SOPTstate.vertex[0].half1().avertex.value(input, this->SOPTstate.vertex[0].half1().avertex) / (-2*M_PI);
+            return SOPTstate.vertex[0].half1().avertex.value(input, this->SOPTstate.vertex[0].half1().avertex) ;
             //return vpp*vpp;
         }
     };
 
 
+/**
+ * test function; can be used to test the integration and the interpolation
+ * @tparam Q
+ * @param Lambda
+ */
 template <typename Q>
 void test_integrate_over_K1(double Lambda) {
     double v = 1e2;
     double vp = -1e2;
     TestIntegrandK1a<Q> IntegrandK1a(Lambda, 'a', 0., v, vp);
+    double exact_result = -glb_U*glb_U/4;
 
-    double vmax = 1e4;
-    Q result = integrator<Q>(IntegrandK1a, -vmax, vmax, v);
+    double vmax = 1e2;
+    //Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const int num_freqs;
+    vec<double> freqs = {};
+    int num_freqs = 0;
+    double Delta = (glb_Gamma+Lambda)/2.;
+    Q result = integrator<Q>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta, num_freqs)/ (2*M_PI);
     print("Result of the integration over K1a:", result, true);
-    print("relative difference: ", (result-1./4)*4., true);
+    print("relative difference: ", (result-exact_result)/exact_result, true);
 
 
-    TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', 0., v, vp);
-    Q result2 = integrator<Q>(IntegrandK1a2, -vmax, vmax, v);
+    TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', (v-vp)*2, v, vp);
+    Q result2 = integrator<Q>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta, num_freqs)/ (2*M_PI);
     print("Result of the integration over K1a from the t-channel:", result2, true);
-    print("relative difference: ", (result2-1./4)*4., true);
+    print("relative difference: ", (result2-exact_result)/exact_result, true);
 
 
-    TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', 0., v, vp);
-    Q result3 = integrator<Q>(IntegrandK1a3, -vmax, vmax, v);
+    TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', (v+vp)*2, v, vp);
+    Q result3 = integrator<Q>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta, num_freqs)/ (2*M_PI);
     print("Result of the integration over K1a from p-channel:", result3, true);
-    print("relative difference: ", (result3-1./4)*4., true);
+    print("relative difference: ", (result3-exact_result)/exact_result, true);
 
 
+    IntegrandK1a.save_integrand();
     IntegrandK1a2.save_integrand(vmax);
+    IntegrandK1a3.save_integrand(vmax);
     IntegrandK1a.save_state();
 }
 
