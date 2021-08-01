@@ -126,13 +126,13 @@ const int nFER2 = 51;//nFER;
 const int nBOS3 = 21; //nBOS;
 const int nFER3 = 21; //nFER;
 #else
-const int nBOS = 401;
-const int nFER = 400;
+const int nBOS = 403;
+const int nFER = 402;
 // Number of frequency points for K2 and K3 classes
-const int nBOS2 = 51;//nBOS;
-const int nFER2 = 50;//nFER;
-const int nBOS3 = 31; //nBOS;
-const int nFER3 = 30; //nFER;
+const int nBOS2 = 53;//nBOS;
+const int nFER2 = 52;//nFER;
+const int nBOS3 = 33; //nBOS;
+const int nFER3 = 32; //nFER;
 #endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
@@ -301,10 +301,16 @@ const double converged_tol = 1e-7;
 // 3: adaptive Simpson
 // 4: GSL //
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
-#define INTEGRATOR_TYPE 5
+#define INTEGRATOR_TYPE 4
 
 //Integrator tolerance
 const double integrator_tol = 1e-6;
+//Interpolation type:
+// 0: linear
+// 1: linear on grid_transformed frequencies
+// 2: quadratic on grid_transformed frequencies
+// 2: cubic on grid_transformed frequencies
+#define INTERPOLATION 0
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
