@@ -1050,10 +1050,15 @@ void test_PT4(double Lambda, bool write_flag = false) {
     print("--- CHECK RESULTS: ---", true);
     print("--- print relative error of quantities that should be zero ---", true);
 
+#ifdef KELDYSH_FORMALISM
+    int iK = 1;
+#else
+    int iK = 0;
+#endif
     // input variables: all frequencies equal to zero
-    VertexInput input_a (0, 0., 0., 0., 0, 0, 'a');
-    VertexInput input_p (0, 0., 0., 0., 0, 0, 'p');
-    VertexInput input_t (0, 0., 0., 0., 0, 0, 't');
+    VertexInput input_a (iK, 0., 0., 0., 0, 0, 'a');
+    VertexInput input_p (iK, 0., 0., 0., 0, 0, 'p');
+    VertexInput input_t (iK, 0., 0., 0., 0, 0, 't');
 
 #ifdef KELDYSH_FORMALISM
     vec<int> iK2s = {1, 2, 4}; // Keldysh indices of fully retarded components of K2
