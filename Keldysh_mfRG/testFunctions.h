@@ -1162,7 +1162,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
 #if MAX_DIAG_CLASS >= 2
 #ifdef KELDYSH_FORMALISM
-    for (int iK2=0; iK2<2; ++iK2) {
+    for (int iK2=0; iK2<3; ++iK2) {
 #else
       int iK2 = 0;
 #endif
