@@ -83,7 +83,7 @@ public:
 template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
 // in particle-hole symmetric case (Matsubara formalism) the self-energy vector only stores the imaginary part -> initialize to zero
 // in all other cases: initialize to the Hartree value
-#if not defined(KELDYSH_FORMALISM) and not defined(PARTICLE_HOLE_SYMM)
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
 #pragma omp parallel for
 
     for (int iv=0; iv<nSE; ++iv) {
