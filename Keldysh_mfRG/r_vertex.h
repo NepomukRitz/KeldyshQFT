@@ -789,6 +789,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                                                             // that both v and vp use the same fermionic frequency grid
                     int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
                     Ti(indices, trafo_index);
+                    indices.iK = itK;
 
                     if (trafo_index != 0) {
 
