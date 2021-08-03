@@ -1155,7 +1155,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
 #else
 #ifdef ZERO_TEMP
-            value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta, 0);
+            value += bubble_value_prefactor() * integrator<Q,0>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta);
 #else
             int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
             value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
@@ -1179,11 +1179,12 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         for (int i2 : nonzero_Keldysh_indices) {
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
+            //if (abs(w + 7.2) < 1e-1 and abs(v + 6.4) < 1e-1) integrand_K2.save_integrand();
 #ifdef KELDYSH_FORMALISM
             value += bubble_value_prefactor() * integrator<Q>(integrand_K2, vmin, vmax, -w / 2., w / 2., Delta);
 #else
 #ifdef ZERO_TEMP
-            value += bubble_value_prefactor() * integrator<Q>(integrand_K2, vmin, vmax, abs(w/2), {}, Delta, 0);
+            value += bubble_value_prefactor() * integrator<Q,1>(integrand_K2, vmin, vmax, abs(w/2), {v}, Delta);
 #else
             int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
             value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
@@ -1208,11 +1209,12 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         // initialize the integrand object and perform frequency integration
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K3(vertex1, vertex2, Pi, i0, i2, w, v, vp, i_in, channel, diff);
+        //if (abs(w + 1.5) < 1e-1 and abs(v + 6.2) < 1e-1 and abs(vp + 0) < 1e-1) integrand_K3.save_integrand();
     #ifdef KELDYSH_FORMALISM
         value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
     #else
     #ifdef ZERO_TEMP
-        value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, abs(w/2), {}, Delta, 0);
+        value += bubble_value_prefactor() * integrator<Q,3>(integrand_K3, vmin, vmax, abs(w/2), {v, vp, abs(v)-abs(vp)}, Delta);
     #else
         int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
         value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);

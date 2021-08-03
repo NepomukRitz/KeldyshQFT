@@ -204,7 +204,7 @@ void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdva
 
 template<typename Q>
 void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, double vp) const {
-    VertexInput inputClosedAbove (0, v, vp, v, i_in, 0, 'f');
+    VertexInput inputClosedAbove (0, 0, vp, v, i_in, 0, 't');
     factorClosedAbove = vertex[0].value(inputClosedAbove);
 
     //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
@@ -336,6 +336,7 @@ void LoopCalculator<Q>::compute_Keldysh() {
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara() {
+#ifndef KELDYSH_FORMALISM
 #ifdef ZERO_TEMP
     // split up the integrand at discontinuities and (possible) kinks:
     if (abs(v) > inter_tol) {
@@ -362,6 +363,7 @@ void LoopCalculator<Q>::compute_Matsubara() {
 
 #endif
     self.addself(0, iv, i_in, integratedR);
+#endif
 }
 
 

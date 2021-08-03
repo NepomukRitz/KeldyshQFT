@@ -438,15 +438,15 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
     gsl_set_error_handler(handler);
 
     //gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
-    gsl_integration_qagil(&F_real, intervals[0][0], 10e-8, integrator_tol, Nmax, W_real, &result_real, &error_real);
+    gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
     double result_real_temp{}, error_real_temp{};
-    gsl_integration_qagiu(&F_real, intervals[num_intervals-1][1], 10e-8, integrator_tol, Nmax, W_real, &result_real_temp, &error_real_temp);
+    gsl_integration_qagiu(&F_real, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_real, &result_real_temp, &error_real_temp);
     result_real += result_real_temp;
     error_real += error_real_temp;
     for (int i = 0; i < num_intervals; i++){
         result_real_temp = 0.;
         error_real_temp = 0.;
-        gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real, &result_real_temp, &error_real_temp);
+        if (intervals[i][0] < intervals[i][1]) gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real, &result_real_temp, &error_real_temp);
         result_real += result_real_temp;
         error_real += error_real_temp;
     }
@@ -668,9 +668,9 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <typename Q, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const int num_freqs) -> Q {
-    double tol = 1e-10;
-/*
+template <typename Q, int num_freqs, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta) -> Q {
+    double tol = inter_tol;
+
     // Doesn't work yet (errors accumulate with the current implementation)
     // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
     vec<double> intersections;
@@ -678,33 +678,37 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     if (w_half < tol) {
         w_half = 0.;
         intersections = {w_half, vmin, vmax};
-        num_intervals = num_freqs*4 + 2;
+        num_intervals = num_freqs*2 + 2;
     }
     else {
         intersections = {-w_half, w_half, vmin, vmax};
-        num_intervals = num_freqs*4 + 3;
+        num_intervals = num_freqs*2 + 3;
     }
 
     for (int i = 0; i<num_freqs; i++){
         for (int sign1:{-1,1}) {
-            for (int sign2:{-1,1}) {
-                intersections.push_back(sign1 * freqs[i] + sign2 * Delta);
-            }
+            //for (int sign2:{-1,1}) {
+            //    intersections.push_back(sign1 * freqs[i] + sign2 * Delta);
+            //}
+            intersections.push_back(sign1 * freqs[i]);
         }
     }
 
     std::sort(intersections.begin(), intersections.end());
 
-    vec<vec<double>> intervals(num_freqs*4 + 3, {0.,0.});
+    vec<vec<double>> intervals(num_freqs*2 + 3, {0.,0.});
     for (int i = 0; i < num_intervals; i++) {
-        intervals[i] = {intersections[i], intersections[i+1]};
-        if (abs(abs(intersections[i]) - w_half) < tol) {
-            intervals[i][0] += tol;
-            intervals[i-1][1] -= tol;
+        if (intersections[i] != intersections[i+1]) {
+            intervals[i] = {intersections[i], intersections[i + 1]};
+            if (abs(abs(intersections[i]) - w_half) < tol) {
+                intervals[i][0] += tol;
+                intervals[i - 1][1] -= tol;
+            }
         }
     }
-*/
 
+
+/*
     size_t num_intervals;
     vec<vec<double>> intervals;
     if( -w_half+tol < w_half-tol){
@@ -715,7 +719,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         intervals = {{vmin, -w_half-tol}, {w_half+tol, vmax}};
         num_intervals = 2;
     }
-
+*/
 
     return integrator<Q>(integrand, intervals, num_intervals);
 
