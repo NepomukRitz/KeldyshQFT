@@ -63,7 +63,7 @@ public:
                 yd = (indices.v1- y1) / (y2 - y1);
             }
 
-#elif INTERPOLATION==1
+#elif INTERPOLATION>=1
             int index_b = (int) ((tw - vertex.frequencies.b_K2.W_lower) / vertex.frequencies.b_K2.dW);
             int index_f = (int) ((tv1- vertex.frequencies.f_K2.W_lower) / vertex.frequencies.f_K2.dW);
             index_b = min(nBOS2-2, index_b);
@@ -260,7 +260,7 @@ public:
                 zd = (indices.v2- z1) / (z2 - z1);
             }
 
-#elif INTERPOLATION==1
+#elif INTERPOLATION>=1
             int index_b = (int) ((tw - vertex.frequencies.b_K3.W_lower) / vertex.frequencies.b_K3.dW);
             int index_f1= (int) ((tv1- vertex.frequencies.f_K3.W_lower) / vertex.frequencies.f_K3.dW);
             int index_f2= (int) ((tv2- vertex.frequencies.f_K3.W_lower) / vertex.frequencies.f_K3.dW);
