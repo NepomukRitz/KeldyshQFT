@@ -68,6 +68,8 @@ public:
             int index_f = (int) ((tv1- vertex.frequencies.f_K2.W_lower) / vertex.frequencies.f_K2.dW);
             index_b = min(nBOS2-2, index_b);
             index_f = min(nFER2-2, index_f);
+            index_b = max(0, index_b);
+            index_f = max(0, index_f);
             assert(index_b >= 0 and index_b < nBOS2-1);
             assert(index_f >= 0 and index_f < nFER2-1);
 
@@ -267,6 +269,9 @@ public:
             index_b = min(nBOS3-2, index_b );
             index_f1= min(nFER3-2, index_f1);
             index_f2= min(nFER3-2, index_f2);
+            index_b = max(0, index_b );
+            index_f1= max(0, index_f1);
+            index_f2= max(0, index_f2);
 
             assert(index_b >= 0 and index_b <nBOS3-1);
             assert(index_f1>= 0 and index_f1<nFER3-1);
