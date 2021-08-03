@@ -69,6 +69,7 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 #else
     Gamma_0[0].initialize(-glb_U);         // initialize bare vertex
 #endif
+    Gamma_0.set_frequency_grid(state_in.vertex);
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
 
     // compute the a bubble with full vertex on the right
