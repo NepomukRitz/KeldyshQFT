@@ -1052,8 +1052,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }
+            ++iterator;
         }
-        ++iterator;
     }
     // collect+combine results from different MPI processes, reorder them appropriately
     vec<Q> Result = mpi_initialize_result<Q> (n_mpi, n_omp);
