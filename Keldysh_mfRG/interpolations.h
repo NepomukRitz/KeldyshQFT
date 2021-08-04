@@ -32,6 +32,8 @@ public:
             int index_f = (int) ((tv1- vertex.frequencies.f_K2.W_lower) / vertex.frequencies.f_K2.dW);
             index_b = min(nBOS2-2, index_b);
             index_f = min(nFER2-2, index_f);
+            index_b = max(0, index_b);
+            index_f = max(0, index_f);
             assert(index_b >= 0 and index_b < nBOS2-1);
             assert(index_f >= 0 and index_f < nFER2-1);
 
@@ -48,8 +50,8 @@ public:
                 xd = (tw - x1) / (x2 - x1);
             }
             else {
-                x1 = vertex.frequencies.b_K2.Ws[index_b];
-                x2 = vertex.frequencies.b_K2.Ws[index_b + 1];
+                x1 = vertex.frequencies.b_K2.w[index_b];
+                x2 = vertex.frequencies.b_K2.w[index_b + 1];
                 xd = (indices.w - x1) / (x2 - x1);
             }
             if (index_f == 0 or index_f == nFER2-2) {
@@ -58,8 +60,8 @@ public:
                 yd = (tv1- y1) / (y2 - y1);
             }
             else {
-                y1 = vertex.frequencies.f_K2.Ws[index_f];
-                y2 = vertex.frequencies.f_K2.Ws[index_f + 1];
+                y1 = vertex.frequencies.f_K2.w[index_f];
+                y2 = vertex.frequencies.f_K2.w[index_f + 1];
                 yd = (indices.v1- y1) / (y2 - y1);
             }
 
@@ -220,6 +222,9 @@ public:
             index_b = min(nBOS3-2, index_b );
             index_f1= min(nFER3-2, index_f1);
             index_f2= min(nFER3-2, index_f2);
+            index_b = max(0, index_b );
+            index_f1= max(0, index_f1);
+            index_f2= max(0, index_f2);
 
 
             double x1;
@@ -237,8 +242,8 @@ public:
                 xd = (tw - x1) / (x2 - x1);
             }
             else {
-                x1 = vertex.frequencies.b_K3.Ws[index_b];
-                x2 = vertex.frequencies.b_K3.Ws[index_b + 1];
+                x1 = vertex.frequencies.b_K3.w[index_b];
+                x2 = vertex.frequencies.b_K3.w[index_b + 1];
                 xd = (indices.w - x1) / (x2 - x1);
             }
             if (index_f1 == 0 or index_f1 == nFER3-2) {
@@ -247,8 +252,8 @@ public:
                 yd = (tv1- y1) / (y2 - y1);
             }
             else {
-                y1 = vertex.frequencies.f_K3.Ws[index_f1];
-                y2 = vertex.frequencies.f_K3.Ws[index_f1 + 1];
+                y1 = vertex.frequencies.f_K3.w[index_f1];
+                y2 = vertex.frequencies.f_K3.w[index_f1 + 1];
                 yd = (indices.v1- y1) / (y2 - y1);
             }
             if (index_f2 == 0 or index_f2 == nFER3-2) {
@@ -257,8 +262,8 @@ public:
                 zd = (tv2- z1) / (z2 - z1);
             }
             else {
-                z1 = vertex.frequencies.f_K3.Ws[index_f2];
-                z2 = vertex.frequencies.f_K3.Ws[index_f2 + 1];
+                z1 = vertex.frequencies.f_K3.w[index_f2];
+                z2 = vertex.frequencies.f_K3.w[index_f2 + 1];
                 zd = (indices.v2- z1) / (z2 - z1);
             }
 
