@@ -1146,7 +1146,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
-    if (vertex1[0].Ir() or vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
+    if (vertex1[0].Ir() and vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
     else {
         for (int i2 : nonzero_Keldysh_indices) {
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
@@ -1155,7 +1155,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
 #else
 #ifdef ZERO_TEMP
-            value += bubble_value_prefactor() * integrator<Q,0>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta);
+            value += bubble_value_prefactor() * integrator<Q,0>(integrand_K1, vmin, vmax, abs(w/2), {}, Delta, true);
 #else
             int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
             value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
@@ -1184,7 +1184,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             value += bubble_value_prefactor() * integrator<Q>(integrand_K2, vmin, vmax, -w / 2., w / 2., Delta);
 #else
 #ifdef ZERO_TEMP
-            value += bubble_value_prefactor() * integrator<Q,1>(integrand_K2, vmin, vmax, abs(w/2), {v}, Delta);
+            value += bubble_value_prefactor() * integrator<Q,3>(integrand_K2, vmin, vmax, abs(w/2), {v, v+w, v-w}, Delta, false);
+            //value += bubble_value_prefactor() * integrator<Q,0>(integrand_K2, vmin, vmax, abs(w/2), {}, Delta);
 #else
             int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
             value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
@@ -1214,7 +1215,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
     #else
     #ifdef ZERO_TEMP
-        value += bubble_value_prefactor() * integrator<Q,3>(integrand_K3, vmin, vmax, abs(w/2), {v, vp, abs(v)-abs(vp)}, Delta);
+        value += bubble_value_prefactor() * integrator<Q,6>(integrand_K3, vmin, vmax, abs(w/2), {v, vp, w-vp, w+vp, w-v, abs(w)+abs(v)}, Delta, false);
+        //value += bubble_value_prefactor() * integrator<Q,0>(integrand_K3, vmin, vmax, abs(w/2), {}, Delta);
     #else
         int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
         value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);

@@ -418,7 +418,7 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 //
-template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, vec<vec<double>> intervals, size_t num_intervals, int Nmax) -> Q {
+template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, const vec<vec<double>> intervals, const size_t num_intervals, const int Nmax, const bool isinf=false) -> Q {
     //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
     //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
     gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
@@ -438,11 +438,14 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
     gsl_set_error_handler(handler);
 
     //gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
-    gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
     double result_real_temp{}, error_real_temp{};
-    gsl_integration_qagiu(&F_real, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_real, &result_real_temp, &error_real_temp);
-    result_real += result_real_temp;
-    error_real += error_real_temp;
+    if (isinf) {
+        gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
+        gsl_integration_qagiu(&F_real, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_real, &result_real_temp, &error_real_temp);
+        result_real += result_real_temp;
+        error_real += error_real_temp;
+    }
+
     for (int i = 0; i < num_intervals; i++){
         result_real_temp = 0.;
         error_real_temp = 0.;
@@ -625,7 +628,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <typename Q, typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>>& intervals, const size_t num_intervals) -> Q {
+template <typename Q, typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>>& intervals, const size_t num_intervals, const bool isinf=false) -> Q {
 #if INTEGRATOR_TYPE == 0 // Riemann sum
     Q result;
     for (int i = 0; i < num_intervals; i++){
@@ -651,7 +654,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     }
     return result;
 #elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT);
+    return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT, isinf);
 #elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
     Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
     vec<Q> result = vec<Q>(num_intervals);
@@ -668,7 +671,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <typename Q, int num_freqs, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta) -> Q {
+template <typename Q, int num_freqs, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> Q {
     double tol = inter_tol;
 
     // Doesn't work yet (errors accumulate with the current implementation)
@@ -721,7 +724,7 @@ template <typename Q, int num_freqs, typename Integrand> auto integrator(Integra
     }
 */
 
-    return integrator<Q>(integrand, intervals, num_intervals);
+    return integrator<Q>(integrand, intervals, num_intervals, isinf);
 
 }
 #endif
