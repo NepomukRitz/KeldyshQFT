@@ -686,7 +686,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             case 't': i0_tmp = non_zero_Keldysh_K1t[itK]; break;
             default: ;
         }
-        for (int itw = 0; itw < nw1; itw++) {
+        for (int itw = 1; itw < nw1-1; itw++) {
             double w_in = this->frequencies.b_K1.w[itw];
             IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
             int sign_w = sign_index(indices.w);
@@ -735,8 +735,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             default: ;
         }
 
-        for (int itw = 0; itw < nw2; itw++){
-            for (int itv = 0; itv < nv2; itv++){
+        for (int itw = 1; itw < nw2-1; itw++){
+            for (int itv = 1; itv < nv2-1; itv++){
                 double w_in = this->frequencies.b_K2.w[itw];
                 double v_in = this->frequencies.f_K2.w[itv];
                 IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
@@ -775,9 +775,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         i0_tmp = non_zero_Keldysh_K3[itK];
 
-        for (int itw = 0; itw < nw3; itw++){
-            for (int itv = 0; itv < nv3; itv++){
-                for (int itvp = 0; itvp < nv3; itvp++) {
+        for (int itw = 1; itw < nw3-1; itw++){
+            for (int itv = 1; itv < nv3-1; itv++){
+                for (int itvp = 1; itvp < nv3-1; itvp++) {
                     double w_in = this->frequencies.b_K3.w[itw];
                     double v_in = this->frequencies.f_K3.w[itv];
                     double vp_in = this->frequencies.f_K3.w[itvp];

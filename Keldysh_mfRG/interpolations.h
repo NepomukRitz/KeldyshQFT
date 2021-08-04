@@ -1,6 +1,8 @@
 #ifndef KELDYSH_MFRG_INTERPOLATIONS_H
 #define KELDYSH_MFRG_INTERPOLATIONS_H
 
+#include <gsl/gsl_interp2d.h>
+#include <gsl/gsl_spline2d.h>
 #include "frequency_grid.h"
 #include "parameters.h"
 #include "data_structures.h"
@@ -24,8 +26,8 @@ public:
 
         double tw = vertex.frequencies.b_K2.grid_transf(indices.w);
         double tv1= vertex.frequencies.f_K2.grid_transf(indices.v1);
-        if (    fabs(tw) < vertex.frequencies.b_K2.W_upper + this->small
-             && fabs(tv1)< vertex.frequencies.f_K2.W_upper + this->small ) {
+        //if (    fabs(tw) < vertex.frequencies.b_K2.W_upper + this->small
+        //     && fabs(tv1)< vertex.frequencies.f_K2.W_upper + this->small ) {
 
 #if INTERPOLATION == 0
             int index_b = (int) ((tw - vertex.frequencies.b_K2.W_lower) / vertex.frequencies.b_K2.dW);
@@ -98,10 +100,10 @@ public:
             Q result = indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
             assert(isfinite(result));
             return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
-        }
-        else {
-            return 0.;
-        }
+        //}
+        //else {
+        //    return 0.;
+        //}
     }
 };
 
@@ -113,7 +115,7 @@ public:
     auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
 //    assert(vertex.frequencies.b_K1.w_lower <= w && w <= vertex.frequencies.b_K1.w_upper); // give error message if w out of range
         double tw = vertex.frequencies.b_K1.grid_transf(indices.w);
-        if (fabs(tw) < vertex.frequencies.b_K1.W_upper + this->small) {
+       // if (fabs(tw) < vertex.frequencies.b_K1.W_upper + this->small) {
             int index = (int) ((tw - vertex.frequencies.b_K1.W_lower) / vertex.frequencies.b_K1.dW);
             //if (index < 0 or index >= nBOS-1) { // If we get close to the boundaries of the box, make sure to stay within the box.
             //    index = vertex.frequencies.b_K1.fconv(vertex.frequencies.b_K1.w_upper*sign(indices.w), -sign(indices.w)*1e-1);
@@ -194,10 +196,10 @@ public:
 
             assert(isfinite(result));
             return result;
-        }
-        else {
-            return 0.;
-        }
+        //}
+        //else {
+        //    return 0.;
+        //}
     };
 };
 
@@ -211,9 +213,9 @@ public:
         double tw = vertex.frequencies.b_K3.grid_transf(indices.w);
         double tv1= vertex.frequencies.f_K3.grid_transf(indices.v1);
         double tv2= vertex.frequencies.f_K3.grid_transf(indices.v2);
-        if (    fabs(tw) < vertex.frequencies.b_K3.W_upper + this->small
-                && fabs(tv1)< vertex.frequencies.f_K3.W_upper + this->small
-                && fabs(tv2)< vertex.frequencies.f_K3.W_upper + this->small) {
+        //if (    fabs(tw) < vertex.frequencies.b_K3.W_upper + this->small
+        //        && fabs(tv1)< vertex.frequencies.f_K3.W_upper + this->small
+        //        && fabs(tv2)< vertex.frequencies.f_K3.W_upper + this->small) {
 
 #if INTERPOLATION == 0
             int index_b = (int) ((tw - vertex.frequencies.b_K3.W_lower) / vertex.frequencies.b_K3.dW);
@@ -319,10 +321,10 @@ public:
             Q result = indices.prefactor * (c0 * (1. - zd) + c1 * zd);
             assert(isfinite(result));
             return result;
-        }
-        else {
-            return 0.;
-        }
+        //}
+        //else {
+        //    return 0.;
+        //}
     }
 };
 
