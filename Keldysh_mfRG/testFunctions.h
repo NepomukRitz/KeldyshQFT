@@ -1730,6 +1730,7 @@ void test_integrate_over_K1(double Lambda) {
     double v = 1e2;
     double vp = -1e2;
     TestIntegrandK1a<Q> IntegrandK1a(Lambda, 'a', 0., v, vp);
+    IntegrandK1a.save_integrand();
     double exact_result = -glb_U*glb_U/4;
 
     double vmax = 1e2;
@@ -1737,24 +1738,23 @@ void test_integrate_over_K1(double Lambda) {
     vec<double> freqs = {};
     int num_freqs = 0;
     double Delta = (glb_Gamma+Lambda)/2.;
-    Q result = integrator<Q>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta, num_freqs)/ (2*M_PI);
+    Q result = integrator<Q,0>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a:", result, true);
     print("relative difference: ", (result-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', (v-vp)*2, v, vp);
-    Q result2 = integrator<Q>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta, num_freqs)/ (2*M_PI);
+    Q result2 = integrator<Q,0>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a from the t-channel:", result2, true);
     print("relative difference: ", (result2-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', (v+vp)*2, v, vp);
-    Q result3 = integrator<Q>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta, num_freqs)/ (2*M_PI);
+    Q result3 = integrator<Q,0>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a from p-channel:", result3, true);
     print("relative difference: ", (result3-exact_result)/exact_result, true);
 
 
-    IntegrandK1a.save_integrand();
     IntegrandK1a2.save_integrand(vmax);
     IntegrandK1a3.save_integrand(vmax);
     IntegrandK1a.save_state();
@@ -1781,6 +1781,7 @@ auto SOPT_K1a_diff(double w, double Lambda) -> double {
                     abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
                    -abs(w) * (2*Delta + abs(w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
                     );
+    return term1 + term2 + term3;
 }
 
 /**
@@ -2061,7 +2062,7 @@ public:
 
 template <typename Q>
 void test_PT_state(string outputFileName, double Lambda, bool diff) {
-    double vmax = 10e3;
+    double vmax = 100;
     double Delta = (glb_Gamma + Lambda) / 2.;
     State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
@@ -2073,7 +2074,7 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
     for (int i = 1; i<nFER-1; i++) {
         double v = PT_state.selfenergy.frequencies.w[i];
         Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
-        Q val_SE = 1./(2*M_PI) * integrator<Q,1>(IntegrandSE, -vmax, vmax, abs(0.), {v}, Delta);
+        Q val_SE = 1./(2*M_PI) * integrator<Q,1>(IntegrandSE, -vmax, vmax, abs(0.), {v}, Delta, false);
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
 
@@ -2092,7 +2093,7 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
             double w = PT_state.vertex[0].avertex().frequencies.b_K2.w[i];
             double v = PT_state.vertex[0].avertex().frequencies.f_K2.w[j];
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
-            Q val_K2 = 1./(2*M_PI) * integrator<Q,1>(IntegrandK2, -vmax, vmax, abs(w/2), {v}, Delta);
+            Q val_K2 = 1./(2*M_PI) * integrator<Q,1>(IntegrandK2, -vmax, vmax, abs(w/2), {v}, Delta, false);
             PT_state.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
             PT_state.vertex[0].pvertex().K2_setvert(0, i, j, 0, val_K2);
             PT_state.vertex[0].tvertex().K2_setvert(0, i, j, 0, val_K2);
@@ -2106,7 +2107,7 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
                 double v = PT_state.vertex[0].avertex().frequencies.f_K3.w[j];
                 double vp= PT_state.vertex[0].avertex().frequencies.f_K3.w[k];
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
-                Q val_K3 = 1./(2*M_PI) * integrator<Q,3>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, abs(v)-abs(vp)}, Delta);
+                Q val_K3 = 1./(2*M_PI) * integrator<Q,3>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, abs(v)-abs(vp)}, Delta, false);
                 PT_state.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
                 PT_state.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, val_K3);
                 PT_state.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, val_K3);
@@ -2146,8 +2147,8 @@ public:
     const char channel = 'a';
     const bool diff;
 
-    Bubble<Q> Pi;
-    K1rdot_PIa_K1p_exact_K2(double Lambda_in, double w, double v, bool diff, Bubble<Q>& Pi)
+    const Bubble<Q> Pi;
+    K1rdot_PIa_K1p_exact_K2(double Lambda_in, double w, double v, bool diff, const Bubble<Q>& Pi)
             : Lambda(Lambda_in), w(w), v(v), diff(diff), Pi(Pi) { }
 
 
@@ -2222,7 +2223,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * glb_U ;
+        return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * glb_U ;
         //return vpp*vpp;
     }
 };
@@ -2239,7 +2240,7 @@ public:
     const bool diff;
 
     Bubble<Q> Pi;
-    K1rdot_PIa_K1p_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, Bubble<Q>& Pi)
+    K1rdot_PIa_K1p_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
             : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) { }
 
 
@@ -2314,7 +2315,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a(vp + vpp, Lambda) ;
+        return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a(vp + vpp, Lambda) ;
         //return vpp*vpp;
     }
 };
@@ -2335,8 +2336,8 @@ public:
     const char channel = 'a';
     const bool diff;
 
-    Bubble<Q> Pi;
-    IntegranddGammaC_exact_K1(double Lambda_in, double w, bool diff, Bubble<Q>& Pi)
+    const Bubble<Q> Pi;
+    IntegranddGammaC_exact_K1(double Lambda_in, double w, bool diff, const Bubble<Q>& Pi)
             : Lambda(Lambda_in), w(w), diff(diff), Pi(Pi) {}
 
 
@@ -2434,7 +2435,7 @@ public:
     const bool diff;
 
     Bubble<Q> Pi;
-    IntegranddGammaC_exact_K2(double Lambda_in, double w, double v, bool diff, Bubble<Q>& Pi)
+    IntegranddGammaC_exact_K2(double Lambda_in, double w, double v, bool diff, const Bubble<Q>& Pi)
             : Lambda(Lambda_in), w(w), v(v), diff(diff), Pi(Pi) {}
 
 
@@ -2532,7 +2533,7 @@ public:
     const bool diff;
 
     Bubble<Q> Pi;
-    IntegranddGammaC_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, Bubble<Q>& Pi)
+    IntegranddGammaC_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
             : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) {}
 
 
@@ -2619,13 +2620,13 @@ public:
 
 // to check central part of multi-loop flow equations:
 // compute diagrams with non-symmetric intermediate results
-void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
+void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, int version=1, bool compute_exact=false) {
     State<state_datatype> bare (Lambda); // bare state
     bare.initialize();         // initialize bare state
 
     Propagator<state_datatype> G (Lambda, bare.selfenergy, 'g'); // bare propagator
     Propagator<state_datatype> S (Lambda, bare.selfenergy, 's'); // bare differentiated propagator = single scale propagator
-    Bubble<state_datatype> Pi(G, S, false);
+    const Bubble<state_datatype> Pi(G, S, false);
     double Delta = (glb_Gamma + Lambda)/2;
 
     // Psi := K1p in PT2 + bare vertex
@@ -2648,7 +2649,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
 
     vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
 
-    for (int i = 0; i < 2; i++){
+    //for (int i = 0; i < 2; i++){
+    int i = version;
         State<state_datatype> centralstate_dot = central_bubblestates[i];
 
         // intermediate results
@@ -2698,84 +2700,134 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
             write_hdf("dGammaC_r_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
             write_hdf("dGammaC_l_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
         }
-    }
+    //}
 
-    /// Now computing vertex for version 1 (K1rdot = K1pdot):
-    double vmax = 1e3;
-    State<state_datatype> K1rdot_PIa_K1p_exact (Lambda);        // intermediate result: contains K2 and K3
-    for (int i = 1; i<nBOS2-1; i++) {
-        for (int j = 1; j<nFER2-1; j++) {
+    if (compute_exact) {
+        /// Now computing vertex for version 1 (K1rdot = K1pdot):
+        double vmax = 1e3;
+        State<state_datatype> K1pdot_exact(Lambda);        // intermediate result: contains K2 and K3
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS - 2); iflat++) {
+            int i = 1 + iflat;
+            //for (int i = 1; i<nBOS2-1; i++) {
+            //    for (int j = 1; j<nFER2-1; j++) {
+            double w = K1pdot_exact.vertex[0].avertex().frequencies.b_K1.w[i];
+            state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda);
+            K1pdot_exact.vertex[0].pvertex().K1_setvert(0, i, 0, val_K1);
+            //    }
+        }
+        write_hdf("K1rdot_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+                  K1pdot_exact);
+
+        State<state_datatype> K1rdot_diff = PT2_K1pdot - K1pdot_exact;        // intermediate result: contains K2 and K3
+        write_hdf("K1rdot_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+                  K1rdot_diff);
+
+
+        State<state_datatype> K1rdot_PIa_K1p_exact(Lambda);        // intermediate result: contains K2 and K3
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS2 - 2) * (nFER2 - 2); iflat++) {
+            int i = 1 + iflat / (nFER2 - 2);
+            int j = 1 + iflat - (i - 1) * (nFER2 - 2);
+            //for (int i = 1; i<nBOS2-1; i++) {
+            //    for (int j = 1; j<nFER2-1; j++) {
             double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K2.w[i];
             double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K2.w[j];
             K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
-            state_datatype val_K2 = 1./(2*M_PI) * integrator<state_datatype ,1>(IntegrandK2, -vmax, vmax, abs(w/2), {v}, Delta);
+            state_datatype val_K2 =
+                    1. / (2 * M_PI) * integrator<state_datatype, 1>(IntegrandK2, -vmax, vmax, abs(w / 2), {v}, Delta);
             K1rdot_PIa_K1p_exact.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
-            K1rdot_PIa_K1p_exact.vertex[0].pvertex().K2_setvert(0, i, j, 0, val_K2);
-            K1rdot_PIa_K1p_exact.vertex[0].tvertex().K2_setvert(0, i, j, 0, val_K2);
+            //    }
         }
-    }
 
 
-    for (int i = 1; i<nBOS3-1; i++) {
-        for (int j = 1; j<nFER3-1; j++) {
-            for (int k = 1; k<nFER3-1; k++) {
-                double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K3.w[i];
-                double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.w[j];
-                double vp= K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.w[k];
-                K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
-                state_datatype val_K3 = 1./(2*M_PI) * integrator<state_datatype,3>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, abs(v)-abs(vp)}, Delta);
-                K1rdot_PIa_K1p_exact.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
-                K1rdot_PIa_K1p_exact.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, val_K3);
-                K1rdot_PIa_K1p_exact.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, val_K3);
-            }
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
+            int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
+            int j = 1 + iflat / (nFER3 - 2) - (i - 1) * (nFER3 - 2);
+            int k = 1 + iflat - (i - 1) * (nFER3 - 2) * (nFER3 - 2) - (j - 1) * (nFER3 - 2);
+            //for (int i = 1; i<nBOS3-1; i++) {
+            //    for (int j = 1; j<nFER3-1; j++) {
+            //        for (int k = 1; k<nFER3-1; k++) {
+            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K3.w[i];
+            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.w[j];
+            double vp = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.w[k];
+            K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
+            state_datatype val_K3 = 1. / (2 * M_PI) *
+                                    integrator<state_datatype, 6>(IntegrandK3, -vmax, vmax, abs(w / 2),
+                                                                  {v, vp, abs(w) - abs(vp), abs(w) + abs(vp),
+                                                                   abs(w) - abs(v), abs(w) + abs(v)}, Delta);
+            K1rdot_PIa_K1p_exact.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
+            K1rdot_PIa_K1p_exact.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, val_K3);
+            K1rdot_PIa_K1p_exact.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, val_K3);
+            //        }
+            //    }
         }
-    }
-    write_hdf("K1rdot_PIa_K1p_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1, K1rdot_PIa_K1p_exact);
+        write_hdf("K1rdot_PIa_K1p_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+                  K1rdot_PIa_K1p_exact);
+
+        State<state_datatype> K1rdot_PIa_K1p_diff =
+                K1rdot_PIa_K1p - K1rdot_PIa_K1p_exact;        // intermediate result: contains K2 and K3
+        write_hdf("K1rdot_PIa_K1p_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+                  K1rdot_PIa_K1p_diff);
 
 
-    State<state_datatype> dGammaC_exact(Lambda);        // final state: contains K1, K2 and K3
+        State<state_datatype> dGammaC_exact(Lambda);        // final state: contains K1, K2 and K3
 
-    #pragma omp parallel for schedule(dynamic) default(none) shared(nBOS, dGammaC_exact, Lambda, vmax, Delta, Pi)
-    for (int i = 1; i<nBOS-1; i++) {
-        double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K1.w[i];
-        IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
-        state_datatype val_K1 = 1./(2*M_PI) * integrator<state_datatype ,0>(IntegrandK1, -vmax, vmax, abs(w/2), {}, Delta);
-        dGammaC_exact.vertex[0].avertex().K1_setvert(0, i, 0, val_K1);
-    }
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+        for (int i = 1; i < nBOS - 1; i++) {
+            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K1.w[i];
+            IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
+            state_datatype val_K1 =
+                    1. / (2 * M_PI) * integrator<state_datatype, 0>(IntegrandK1, -vmax, vmax, abs(w / 2), {}, Delta);
+            dGammaC_exact.vertex[0].avertex().K1_setvert(0, i, 0, val_K1);
+        }
 
-    #pragma omp parallel for schedule(dynamic) default(none) shared(nBOS2, nFER2, dGammaC_exact, Lambda, vmax, Delta, Pi)
-    for (int iflat = 0; iflat < (nBOS2-1)*(nFER2-1); iflat++) {
-        int i = 1 + iflat/(nFER2-1);
-        int j = 1 + iflat - i*(nFER2-1);
-    //for (int i = 1; i<nBOS2-1; i++) {
-    //    for (int j = 1; j<nFER2-1; j++) {
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS2 - 2) * (nFER2 - 2); iflat++) {
+            int i = 1 + iflat / (nFER2 - 2);
+            int j = 1 + iflat - (i - 1) * (nFER2 - 2);
+            //for (int i = 1; i<nBOS2-1; i++) {
+            //    for (int j = 1; j<nFER2-1; j++) {
             double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K2.w[i];
             double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K2.w[j];
             IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
-            state_datatype val_K2 = 1./(2*M_PI) * integrator<state_datatype ,1>(IntegrandK2, -vmax, vmax, abs(w/2), {v}, Delta);
+            state_datatype val_K2 =
+                    1. / (2 * M_PI) * integrator<state_datatype, 1>(IntegrandK2, -vmax, vmax, abs(w / 2), {v}, Delta);
             dGammaC_exact.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
-    //    }
-    }
+            //    }
+        }
 
 
-    #pragma omp parallel for schedule(dynamic) default(none) shared(nBOS3, nFER3, dGammaC_exact, Lambda, vmax, Delta, Pi)
-    for (int iflat = 0; iflat < (nBOS3-1)*(nFER3-1)*(nFER3-1); iflat++) {
-        int i = 1 + iflat/(nFER3-1)/(nFER3-1);
-        int j = 1 + iflat/(nFER3-1) - i*(nFER3-1);
-        int k = 1 + iflat - i*(nFER3-1)*(nFER3-1) - j*(nFER3-1);
-    //for (int i = 1; i<nBOS3-1; i++) {
-    //    for (int j = 1; j<nFER3-1; j++) {
-    //        for (int k = 1; k<nFER3-1; k++) {
-                double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K3.w[i];
-                double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.w[j];
-                double vp= dGammaC_exact.vertex[0].avertex().frequencies.f_K3.w[k];
-                IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
-                state_datatype val_K3 = 1./(2*M_PI) * integrator<state_datatype,3>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, abs(v)-abs(vp)}, Delta);
-                dGammaC_exact.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
-        //    }
-        //}
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
+            int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
+            int j = 1 + iflat / (nFER3 - 2) - (i - 1) * (nFER3 - 2);
+            int k = 1 + iflat - (i - 1) * (nFER3 - 2) * (nFER3 - 2) - (j - 1) * (nFER3 - 2);
+            //for (int i = 1; i<nBOS3-1; i++) {
+            //    for (int j = 1; j<nFER3-1; j++) {
+            //        for (int k = 1; k<nFER3-1; k++) {
+            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K3.w[i];
+            double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.w[j];
+            double vp = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.w[k];
+            IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
+            state_datatype val_K3 = 1. / (2 * M_PI) *
+                                    integrator<state_datatype, 3>(IntegrandK3, -vmax, vmax, abs(w / 2),
+                                                                  {v, vp, abs(v) - abs(vp)}, Delta);
+            dGammaC_exact.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
+            //    }
+            //}
+        }
+        write_hdf("dGammaC_l_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+                  dGammaC_exact);
+
+        State<state_datatype> dGammaC_diff = dGammaC_l - dGammaC_exact;        // final result: contains K1, K2 and K3
+        write_hdf("dGammaC_l_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+                  dGammaC_diff);
     }
-    write_hdf("dGammaC_l_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1, dGammaC_exact);
 }
 
 #endif
