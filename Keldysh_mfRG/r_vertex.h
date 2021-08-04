@@ -153,6 +153,14 @@ public:
      */
     void enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated);
 
+#if INTERPOLATION == 3
+    gsl_spline2d *spline;
+    gsl_interp_accel *xacc;
+    gsl_interp_accel *yacc;
+    void initialize_K2_spline();
+    void free_K2_spline();
+#endif // INTERPOLATIONS
+
 #endif
 #if MAX_DIAG_CLASS >= 3
     vec<Q> K3 = vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);  // data points of K3
@@ -866,7 +874,42 @@ template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) co
     }
     else return 0.;
 }
+
+#if INTERPOLATION == 3
+template <typename Q>
+ void rvert<Q>::initialize_K2_spline() {
+     /// TODO: include Keldysh indices and internal index
+    const gsl_interp2d_type *interpolType = gsl_interp2d_bicubic;
+
+    const double xa[nBOS2] = this->frequencies.b_K2.Ws;
+    const double ya[nFER2] = this->frequencies.f_K2.Ws;
+
+    double *za = malloc(nBOS2 * nFER2 * sizeof(double));
+    spline = gsl_spline2d_alloc(interpolType, nBOS2, nFER2);
+    xacc = gsl_interp_accel_alloc();
+    yacc = gsl_interp_accel_alloc();
+
+    /* set z grid values */
+    for (int i = 0; i<nBOS2; i++) {
+        for (int j = 0; i<nFER2; i++) {
+            gsl_spline2d_set(spline, za, i, j, this->K2_val(0, i, j, 0));  // <--- only for iK=0, i_in = 0 up until now
+        }
+    }
+    /* initialize interpolation */
+    gsl_spline2d_init(spline, xa, ya, za, nBOS2, nFER2);
+    free(za);
+ }
+
+template <typename Q>
+void rvert<Q>::free_K2_spline() {
+    gsl_spline2d_free(spline);
+    gsl_interp_accel_free(xacc);
+    gsl_interp_accel_free(yacc);
+}
 #endif
+
+
+#endif // MAX_DIAG_CLASS
 
 #if MAX_DIAG_CLASS >= 3
 template <typename Q> auto rvert<Q>::K3_acc(int i) const -> Q {
@@ -893,6 +936,6 @@ template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int
     }
     else return 0;
 }
-#endif
+#endif // MAX_DIAG_CLASS
 
 #endif //KELDYSH_MFRG_R_VERTEX_H

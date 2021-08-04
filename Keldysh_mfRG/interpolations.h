@@ -67,7 +67,17 @@ public:
                 yd = (indices.v1- y1) / (y2 - y1);
             }
 
-#elif INTERPOLATION>=1
+
+            auto f11 = vertex.K2_val(indices.iK, index_b, index_f, indices.i_in);
+            auto f12 = vertex.K2_val(indices.iK, index_b, index_f + 1, indices.i_in);
+            auto f21 = vertex.K2_val(indices.iK, index_b + 1, index_f, indices.i_in);
+            auto f22 = vertex.K2_val(indices.iK, index_b + 1, index_f + 1, indices.i_in);
+
+            Q result = indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+            assert(isfinite(result));
+            return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+
+#elif INTERPOLATION==1 or INTERPOLATION == 2
             int index_b = (int) ((tw - vertex.frequencies.b_K2.W_lower) / vertex.frequencies.b_K2.dW);
             int index_f = (int) ((tv1- vertex.frequencies.f_K2.W_lower) / vertex.frequencies.f_K2.dW);
             index_b = min(nBOS2-2, index_b);
@@ -84,12 +94,6 @@ public:
             double y2 = vertex.frequencies.f_K2.Ws[index_f + 1];
             double xd = (tw - x1) / (x2 - x1);
             double yd = (tv1- y1) / (y2 - y1);
-#elif INTERPOLATION==2
-            //TODO: write biquadratic interpolation
-
-#elif INTERPOLATION==3
-            //TODO: write bicubic interpolation
-#endif
 
 
             auto f11 = vertex.K2_val(indices.iK, index_b, index_f, indices.i_in);
@@ -100,6 +104,22 @@ public:
             Q result = indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
             assert(isfinite(result));
             return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+#elif INTERPOLATION==2
+            //TODO: write biquadratic interpolation
+
+#elif INTERPOLATION==3
+            //TODO: write bicubic interpolation
+
+
+        Q result = gsl_spline2d_eval(vertex.spline, tw, tv1, vertex.xacc, vertex.yacc);
+
+
+
+        return result;
+
+#endif
+
+
         //}
         //else {
         //    return 0.;

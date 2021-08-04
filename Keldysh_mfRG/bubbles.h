@@ -1058,6 +1058,10 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
     double t_start = get_time();
+#if INTERPOLATION == 3
+    vertex1.initialize_K2_spline();
+    vertex2.initialize_K2_spline();
+#endif
 #if MAX_DIAG_CLASS >= 0
     calculate_bubble_function(1);
     tK1 = get_time() - t_start;
@@ -1073,6 +1077,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     tK3 = get_time() - t_start;
     print("K3", channel, " done, ");
     get_time(t_start);
+#endif
+#if INTERPOLATION == 3
+    vertex1.free_K2_spline();
+    vertex2.free_K2_spline();
 #endif
 }
 

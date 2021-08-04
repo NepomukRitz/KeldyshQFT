@@ -129,6 +129,11 @@ public:
     double norm_K2(int);
     double norm_K3(int);
 
+#if INTERPOLATION == 3
+    void initialize_K2_spline();
+    void free_K2_spline();
+#endif
+
     // Various operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   += vertex1.irred;
@@ -210,6 +215,11 @@ public:
     auto left_diff_bare(VertexInput input)  const -> Q { return vertex.left_diff_bare(input); }
     auto right_diff_bare(VertexInput input) const -> Q { return vertex.right_diff_bare(input); }
 
+#if INTERPOLATION == 3
+    void initialize_K2_spline() { vertex.initialize_K2_spline(); };
+    void free_K2_spline() { vertex.free_K2_spline(); };
+#endif
+
     auto operator+= (const symmetric<Q>& vertex1) -> symmetric<Q> {
         this->vertex += vertex1.vertex;
         return *this;
@@ -278,6 +288,11 @@ public:
     auto right_same_bare(VertexInput input) const -> Q { return vertex_half1.right_same_bare(input, vertex_half2); }
     auto left_diff_bare(VertexInput input)  const -> Q { return vertex_half1.left_diff_bare(input, vertex_half2); }
     auto right_diff_bare(VertexInput input) const -> Q { return vertex_half1.right_diff_bare(input, vertex_half2); }
+
+#if INTERPOLATION == 3
+    void initialize_K2_spline() { vertex_half1.initialize_K2_spline(); vertex_half2.initialize_K2_spline(); };
+    void free_K2_spline() { vertex_half1.free_K2_spline(); vertex_half2.free_K2_spline(); };
+#endif
 
     auto operator+= (const non_symmetric<Q>& vertex1) -> non_symmetric<Q> {
         this->vertex += vertex1.vertex;
@@ -388,6 +403,12 @@ public:
     double norm_K1(int i) { return half1().norm_K1(i); }
     double norm_K2(int i) { return half1().norm_K2(i); }
     double norm_K3(int i) { return half1().norm_K3(i); }
+
+#if INTERPOLATION == 3
+    void initialize_K2_spline() {vertex.initialize_K2_spline(); }
+    void free_K2_spline() {vertex.free_K2_spline();  }
+#endif
+
 
     auto operator+= (const vertex_container<Q, symmetry_type>& vertex1) -> vertex_container<Q, symmetry_type> {
         this->vertex += vertex1.vertex;
@@ -529,6 +550,19 @@ public:
         }
     }
 
+#if INTERPOLATION == 3
+    void initialize_K2_spline() {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].initialize_K2_spline();
+        }
+    }
+    void free_K2_spline() {
+
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].free_K2_spline();
+        }
+    }
+#endif
 };
 
 /** Define Vertex as symmetric GeneralVertex */ // TODO: maybe remove this and (globally) rename GeneralVertex -> Vertex ?
@@ -1166,5 +1200,20 @@ template <typename Q> auto fullvert<Q>::sum_norm(const int p) -> double {
 #endif
     return result;
 }
+
+#if INTERPOLATION == 3
+template <typename Q>
+void fullvert<Q>::initialize_K2_spline() {
+    avertex.initialize_K2_spline();
+    pvertex.initialize_K2_spline();
+    tvertex.initialize_K2_spline();
+}
+template <typename Q>
+void fullvert<Q>::free_K2_spline() {
+    avertex.free_K2_spline();
+    pvertex.free_K2_spline();
+    tvertex.free_K2_spline();
+}
+#endif // INTERPOLATION
 
 #endif //KELDYSH_MFRG_VERTEX_H
