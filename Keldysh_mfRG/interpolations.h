@@ -27,12 +27,6 @@ public:
             int index_b = vertex.frequencies.b_K2.fconv(indices.w);
             int index_f = vertex.frequencies.f_K2.fconv(indices.v1);
 
-            if (index_b < 0 or index_b >= nBOS2-1) { // If we get close to the boundaries of the box, make sure to stay within the box.
-                index_b = vertex.frequencies.b_K2.fconv(vertex.frequencies.b_K2.w_upper*sign(indices.w), -sign(indices.w)*1e-1);
-            }
-            if (index_f < 0 or index_f >= nFER2-1) { // If we get close to the boundaries of the box, make sure to stay within the box.
-                index_f = vertex.frequencies.f_K2.fconv(vertex.frequencies.f_K2.w_upper*sign(indices.v1), -sign(indices.v1)*1e-1);
-            }
             double x1 = vertex.frequencies.b_K2.w[index_b];
             double x2 = vertex.frequencies.b_K2.w[index_b + 1];
             double y1 = vertex.frequencies.f_K2.w[index_f];
@@ -45,7 +39,10 @@ public:
             auto f21 = vertex.K2_val(indices.iK, index_b + 1, index_f, indices.i_in);
             auto f22 = vertex.K2_val(indices.iK, index_b + 1, index_f + 1, indices.i_in);
 
-            return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+            Q result = indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+            assert(isfinite(result));
+
+            return result;
         }
         else {
             return 0.;
@@ -61,9 +58,6 @@ public:
 //    assert(vertex.frequencies.b_K1.w_lower <= w && w <= vertex.frequencies.b_K1.w_upper); // give error message if w out of range
         if (fabs(indices.w) < vertex.frequencies.b_K1.w_upper + inter_tol) {
             int index = vertex.frequencies.b_K1.fconv(indices.w);
-            if (index < 0 or index >= nBOS-1) { // If we get close to the boundaries of the box, make sure to stay within the box.
-                index = vertex.frequencies.b_K1.fconv(vertex.frequencies.b_K1.w_upper*sign(indices.w), -sign(indices.w)*1e-1);
-            }
 
             double x1 = vertex.frequencies.b_K1.w[index];
             double x2 = vertex.frequencies.b_K1.w[index + 1];
@@ -71,7 +65,10 @@ public:
 
             auto f1 = vertex.K1_val(indices.iK, index, indices.i_in);
             auto f2 = vertex.K1_val(indices.iK, index + 1, indices.i_in);
-            return indices.prefactor * ((1. - xd) * f1 + xd * f2);
+
+            Q result = indices.prefactor * ((1. - xd) * f1 + xd * f2);
+            assert(isfinite(result));
+            return result;
         }
         else {
             return 0.;
@@ -95,16 +92,6 @@ public:
             int index_b =  vertex.frequencies.b_K3.fconv(indices.w);
             int index_f1 = vertex.frequencies.f_K3.fconv(indices.v1);
             int index_f2 = vertex.frequencies.f_K3.fconv(indices.v2);
-
-            if (index_b < 0 or index_b >= nBOS3-1) { // If we get close to the boundaries of the box, make sure to stay within the box.
-                index_b = vertex.frequencies.b_K3.fconv(vertex.frequencies.b_K3.w_upper*sign(indices.w), -sign(indices.w)*1e-1);
-            }
-            if (index_f1 < 0 or index_f1 >= nFER3-1) { // If we get close to the boundaries of the box, make sure to stay within the box.
-                index_f1 = vertex.frequencies.f_K3.fconv(vertex.frequencies.f_K3.w_upper*sign(indices.v1), -sign(indices.v1)*1e-1);
-            }
-            if (index_f2 < 0 or index_f2 >= nFER3-1) { // If we get close to the boundaries of the box, make sure to stay within the box.
-                index_f2 = vertex.frequencies.f_K3.fconv(vertex.frequencies.f_K3.w_upper*sign(indices.v2), -sign(indices.v2)*1e-1);
-            }
 
             double x1 = vertex.frequencies.b_K3.w[index_b];
             double x2 = vertex.frequencies.b_K3.w[index_b + 1];
@@ -133,7 +120,9 @@ public:
             auto c0 = c00 * (1. - yd) + c10 * yd;
             auto c1 = c01 * (1. - yd) + c11 * yd;
 
-            return indices.prefactor * (c0 * (1. - zd) + c1 * zd);
+            Q result = indices.prefactor * (c0 * (1. - zd) + c1 * zd);
+            assert (isfinite(result));
+            return result;
         }
         else {
             return 0.;
