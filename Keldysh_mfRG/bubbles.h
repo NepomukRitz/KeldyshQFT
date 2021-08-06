@@ -1026,6 +1026,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::crossproject_vertices() {
+#ifdef HUBBARD_MODEL
     switch (channel) {
         case 'a':
             #if MAX_DIAG_CLASS >= 0
@@ -1089,6 +1090,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
             break;
             default: ;
     }
+#endif // HUBBARD_MODEL
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
