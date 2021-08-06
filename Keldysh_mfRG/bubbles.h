@@ -832,12 +832,19 @@ template <typename Q,
 class BubbleFunctionCalculator{
     private:
     GeneralVertex<Q, symmetry_result>& dgamma;
-    const GeneralVertex<Q, symmetry_left>& vertex1;
-    const GeneralVertex<Q, symmetry_right>& vertex2;
+    const GeneralVertex<Q, symmetry_left>& vertex1_initial;
+    const GeneralVertex<Q, symmetry_right>& vertex2_initial;
+
+    // Copies of the vertex on the left and on the right, which will be cross-projected as required.
+    GeneralVertex<Q, symmetry_left> vertex1 = vertex1_initial;
+    GeneralVertex<Q, symmetry_right> vertex2 = vertex2_initial;
+    //TODO: How much slower is the code now that these objects, which will be used in the following, are not const anymore?
+    /// Conjecture: Should not be slower, because these objects are only given to the integrand as const objects.
+
     const Propagator& G;
     const Propagator& S;
     const Bubble_Object& Pi;
-    const char channel;
+    const char channel; // TODO: We already know here, in which channel-parametrization we will need the vertices => Perform cross-projections already in the constructor?
     const bool diff;
 
     const double Delta = (G.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
@@ -871,6 +878,8 @@ class BubbleFunctionCalculator{
     void initialize_frequency_grid_K1();
     void initialize_frequency_grid_K2();
     void initialize_frequency_grid_K3();
+
+    void crossproject_vertices();
 
     void calculate_bubble_function(int diag_class);
     Q get_value(int i_mpi, int i_omp, int n_omp, int diag_class);
@@ -911,10 +920,16 @@ class BubbleFunctionCalculator{
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
                              const Propagator& G_in, const Propagator& S_in, const Bubble_Object& Pi_in,
                              const char channel_in, const bool diff_in)
-                             :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
+                             :dgamma(dgamma_in), vertex1_initial(vertex1_in), vertex2_initial(vertex2_in),
                              G(G_in), S(S_in), Pi(Pi_in), channel(channel_in), diff(diff_in){
         set_channel_specific_freq_ranges_and_prefactor();
         initialize_frequency_grids();
+
+        /// As we already know, which channel parametization will be needed,
+        /// we cross-project the vertices with respect to the internal structure already here.
+        crossproject_vertices();
+        // TODO: vertex1 and vertex2 must not point to the same objects! Otherwise it might happen that we project twice!
+        /// Should be solved now as we instantiated two different objects?
     }
 };
 
@@ -1005,6 +1020,75 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     // use min/max of selfenergy/K1/K2/K3 frequency grids as integration limits
     vmin = min(vmin, ffreqs_K3.w_lower);
     vmax = max(vmax, ffreqs_K3.w_upper);
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::crossproject_vertices() {
+    switch (channel) {
+        case 'a':
+            #if MAX_DIAG_CLASS >= 0
+                vertex1[0].pvertex().K1_crossproject('a');
+                vertex1[0].tvertex().K1_crossproject('a');
+                vertex2[0].pvertex().K1_crossproject('a');
+                vertex2[0].tvertex().K1_crossproject('a');
+            #endif
+            #if MAX_DIAG_CLASS >= 2
+                vertex1[0].pvertex().K2_crossproject('a');
+                vertex1[0].tvertex().K2_crossproject('a');
+                vertex2[0].pvertex().K2_crossproject('a');
+                vertex2[0].tvertex().K2_crossproject('a');
+            #endif
+            #if MAX_DIAG_CLASS >= 3
+                vertex1[0].pvertex().K3_crossproject('a');
+                vertex1[0].tvertex().K3_crossproject('a');
+                vertex2[0].pvertex().K3_crossproject('a');
+                vertex2[0].tvertex().K3_crossproject('a');
+            #endif
+            break;
+        case 'p':
+            #if MAX_DIAG_CLASS >= 0
+                vertex1[0].avertex().K1_crossproject('p');
+                vertex1[0].tvertex().K1_crossproject('p');
+                vertex2[0].avertex().K1_crossproject('p');
+                vertex2[0].tvertex().K1_crossproject('p');
+            #endif
+            #if MAX_DIAG_CLASS >= 2
+                vertex1[0].avertex().K2_crossproject('p');
+                vertex1[0].tvertex().K2_crossproject('p');
+                vertex2[0].avertex().K2_crossproject('p');
+                vertex2[0].tvertex().K2_crossproject('p');
+            #endif
+            #if MAX_DIAG_CLASS >= 3
+                vertex1[0].avertex().K3_crossproject('p');
+                vertex1[0].tvertex().K3_crossproject('p');
+                vertex2[0].avertex().K3_crossproject('p');
+                vertex2[0].tvertex().K3_crossproject('p');
+            #endif
+            break;
+        case 't':
+            #if MAX_DIAG_CLASS >= 0
+                vertex1[0].avertex().K1_crossproject('t');
+                vertex1[0].pvertex().K1_crossproject('t');
+                vertex2[0].avertex().K1_crossproject('t');
+                vertex2[0].pvertex().K1_crossproject('t');
+            #endif
+            #if MAX_DIAG_CLASS >= 2
+                vertex1[0].avertex().K2_crossproject('t');
+                vertex1[0].pvertex().K2_crossproject('t');
+                vertex2[0].avertex().K2_crossproject('t');
+                vertex2[0].pvertex().K2_crossproject('t');
+            #endif
+            #if MAX_DIAG_CLASS >= 3
+                vertex1[0].avertex().K3_crossproject('t');
+                vertex1[0].pvertex().K3_crossproject('t');
+                vertex2[0].avertex().K3_crossproject('t');
+                vertex2[0].pvertex().K3_crossproject('t');
+            #endif
+            break;
+            default: ;
+    }
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
