@@ -235,7 +235,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         dGammaR_half1[0].half1().reorder_due2antisymmetry(dGammaL_half1[0].half1());
 
         // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
-        GeneralVertex<Q, non_symmetric> dGammaL(n_spin);
+        GeneralVertex<Q, non_symmetric> dGammaL(n_spin, Lambda);
         dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
         dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
 
@@ -243,15 +243,15 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, G, Pi);
 
         // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<Q, non_symmetric> dGammaR (n_spin);
-        dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
-        dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+        //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
+        //dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
+        //dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
         // insert this non-symmetric vertex on the left of the bubble
-        Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, G, Pi);
+        //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, G, Pi);
 
         // symmetrize by averaging left and right insertion
-        Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5;
+        Vertex<Q> dGammaC = dGammaC_r; //(dGammaC_r + dGammaC_l) * 0.5;
 
         dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, G, Pi);
         dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, G, Pi);
@@ -345,8 +345,6 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, GeneralVertex
     for (char r: "apt") {
         bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, Pi, r, false);
     }
-
-    nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
     nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 

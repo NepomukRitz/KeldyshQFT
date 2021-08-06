@@ -1146,7 +1146,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
-    if (vertex1[0].Ir() or vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
+    if (vertex1[0].Ir() and vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
     else {
         for (int i2 : nonzero_Keldysh_indices) {
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
