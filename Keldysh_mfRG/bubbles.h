@@ -200,7 +200,10 @@ public:
                        :g(G_in), s(S_in), dot(dot_in),
                        Helper_Bubble(g, s, dot),
                        fermionic_grid('f', 1, g.Lambda){
+        if (dot) {print("Precalculating a differentiated bubble...", true);}
+        else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();
+        print("...done.", true);
     }
     auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q;
     auto value_on_FER_GRID(int iK_bubble, double v1, double v2, int i_in) const -> Q;
@@ -271,15 +274,16 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
 #ifdef HUBBARD_MODEL
+
     double starting_time = get_time();
     vector<Minimal_2D_FFT_Machine> FFT_Machinery (omp_get_max_threads());
     double end_time = get_time();
     double diff = (end_time - starting_time); // time given in seconds
-    std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
+    //std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
 
     for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
-        std::cout << "Now calculating iK = " << iK << "\n";
+        //std::cout << "Now calculating iK = " << iK << "\n";
 #pragma omp parallel for schedule(dynamic) default(none) shared(FFT_Machinery, iK)
         for (int iv = 0; iv < nFER * nFER; ++iv) {
             const int iv1 = iv / nFER; // integer division, always rounds down
