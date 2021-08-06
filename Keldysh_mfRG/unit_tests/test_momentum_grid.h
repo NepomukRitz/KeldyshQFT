@@ -7,6 +7,7 @@
 
 #include "../momentum_grid.h"
 #include "../data_structures.h"
+#include "../r_vertex.h"
 #include <random>
 
 TEST_CASE("momentum grid 1", "Test that the conversions between a flat momentum index "
@@ -79,5 +80,21 @@ TEST_CASE("FFT Machine", "Test that the backward FFT followed by the forward FFT
     CHECK (v_diff.max_norm() < 10e-8); // We require precision to 10e-15 measured w.r.t. the largest value.
 }
 
+TEST_CASE("K1 BZ Average", "Test that the q-sum over the reduced BZ is normalized properly for K1."){
+    rvert<comp> test_vertex_comp('a');
+    rvert<double> test_vertex_double('a');
+
+    for (int i_in = 0; i_in < n_in; ++i_in) {
+        test_vertex_comp.K1_setvert(0, 0, i_in, 1.);
+        test_vertex_double.K1_setvert(0, 0, i_in, 1.);
+    }
+
+    comp K1_BZ_sum_comp = test_vertex_comp.K1_BZ_average(0, 0);
+    double K1_BZ_sum_double = test_vertex_double.K1_BZ_average(0, 0);
+
+    CHECK(K1_BZ_sum_comp.real() - 1. < 10e-30);
+    CHECK(K1_BZ_sum_comp.imag() < 10e-30);
+    CHECK(K1_BZ_sum_double - 1. < 10e-30);
+}
 
 #endif //KELDYSH_MFRG_TESTING_TEST_MOMENTUM_GRID_H

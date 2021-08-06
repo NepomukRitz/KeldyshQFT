@@ -14,6 +14,7 @@
 #include "interpolations.h"           // frequency interpolations for vertices
 #include "symmetry_transformations.h" // symmetry transformations of frequencies
 #include "symmetry_table.h"           // table containing information when to apply which symmetry transformations
+#include "momentum_grid.h"            // functionality for the internal structure of the Hubbard model
 
 template <typename Q> class fullvert; // forward declaration of fullvert
 
@@ -125,7 +126,8 @@ public:
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
     // TODO: Implement! Needed for the Hubbard model.
-    void K1_crossproject(char channel_out);
+    void K1_crossproject();
+    Q K1_BZ_average(const int iK, const int iw);
 
 #endif
 #if MAX_DIAG_CLASS >= 2
@@ -635,8 +637,38 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
     }
 }
 
+template<typename Q>
+void rvert<Q>::K1_crossproject() {
+    /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
+    for (int iK = 0; iK < nK_K1; ++iK) {
+#pragma omp parallel for schedule(dynamic) default(none) shared(iK)
+        for (int iw = 0; iw < nw1; ++iw) {
+            Q projected_value = K1_BZ_average(iK, iw);
+            for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
+                K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
+            }
+        }
+    }
+}
 
-
+template<typename Q>
+Q rvert<Q>::K1_BZ_average(const int iK, const int iw) {
+    /// Perform the average over the BZ by calculating the q-sum over the REDUCED BZ (see notes for details!)
+    Q value = 0.;
+    value += K1_val(iK, iw, momentum_index(0, 0));
+    value += K1_val(iK, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
+    value += 2. * K1_val(iK, iw, momentum_index(glb_N_q - 1, 0));
+    for (int n = 1; n < glb_N_q - 1; ++n) {
+        value += 4. * K1_val(iK, iw, momentum_index(n, 0));
+        value += 4. * K1_val(iK, iw, momentum_index(glb_N_q - 1, n));
+        value += 4. * K1_val(iK, iw, momentum_index(n, n));
+        for (int np = 1; np < n; ++np) {
+            value += 8. * K1_val(iK, iw, momentum_index(n, np));
+        }
+    }
+    value /= 4. * (glb_N_q - 1) * (glb_N_q - 1);
+    return value;
+}
 
 #if MAX_DIAG_CLASS >= 2
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) {
@@ -782,11 +814,7 @@ template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q
     return K1[iK*nw1*n_in + iw*n_in + i_in];
 }
 
-template<typename Q>
-void rvert<Q>::K1_crossproject(char channel_out) {
-    return;
-    // TODO: Currently does nothing!
-}
+
 
 #endif
 

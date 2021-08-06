@@ -925,7 +925,7 @@ class BubbleFunctionCalculator{
         set_channel_specific_freq_ranges_and_prefactor();
         initialize_frequency_grids();
 
-        /// As we already know, which channel parametization will be needed,
+        /// As we already know, which channel parametrization will be needed,
         /// we cross-project the vertices with respect to the internal structure already here.
         crossproject_vertices();
         // TODO: vertex1 and vertex2 must not point to the same objects! Otherwise it might happen that we project twice!
@@ -1029,10 +1029,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
     switch (channel) {
         case 'a':
             #if MAX_DIAG_CLASS >= 0
-                vertex1[0].pvertex().K1_crossproject('a');
-                vertex1[0].tvertex().K1_crossproject('a');
-                vertex2[0].pvertex().K1_crossproject('a');
-                vertex2[0].tvertex().K1_crossproject('a');
+                vertex1[0].pvertex().K1_crossproject();
+                vertex1[0].tvertex().K1_crossproject();
+                vertex2[0].pvertex().K1_crossproject();
+                vertex2[0].tvertex().K1_crossproject();
             #endif
             #if MAX_DIAG_CLASS >= 2
                 vertex1[0].pvertex().K2_crossproject('a');
@@ -1049,10 +1049,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
             break;
         case 'p':
             #if MAX_DIAG_CLASS >= 0
-                vertex1[0].avertex().K1_crossproject('p');
-                vertex1[0].tvertex().K1_crossproject('p');
-                vertex2[0].avertex().K1_crossproject('p');
-                vertex2[0].tvertex().K1_crossproject('p');
+                vertex1[0].avertex().K1_crossproject();
+                vertex1[0].tvertex().K1_crossproject();
+                vertex2[0].avertex().K1_crossproject();
+                vertex2[0].tvertex().K1_crossproject();
             #endif
             #if MAX_DIAG_CLASS >= 2
                 vertex1[0].avertex().K2_crossproject('p');
@@ -1069,10 +1069,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
             break;
         case 't':
             #if MAX_DIAG_CLASS >= 0
-                vertex1[0].avertex().K1_crossproject('t');
-                vertex1[0].pvertex().K1_crossproject('t');
-                vertex2[0].avertex().K1_crossproject('t');
-                vertex2[0].pvertex().K1_crossproject('t');
+                vertex1[0].avertex().K1_crossproject();
+                vertex1[0].pvertex().K1_crossproject();
+                vertex2[0].avertex().K1_crossproject();
+                vertex2[0].pvertex().K1_crossproject();
             #endif
             #if MAX_DIAG_CLASS >= 2
                 vertex1[0].avertex().K2_crossproject('t');
