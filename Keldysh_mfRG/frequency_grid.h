@@ -90,8 +90,8 @@ public:
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
-                        U_factor = 4./3.;
-                        Delta_factor = 4.;
+                        U_factor = 20./3.;
+                        Delta_factor = 20.;
                         break;
                     case 3:
                         N_w = nFER3;
@@ -117,6 +117,7 @@ public:
         this->N_w = freqGrid.N_w;
         this->w_upper = freqGrid.w_upper;
         this->w_lower = freqGrid.w_lower;
+        this->W_upper = freqGrid.W_upper;
         this->W_lower = freqGrid.W_lower;
         this->W_scale = freqGrid.W_scale;
         this->U_factor = freqGrid.U_factor;
@@ -167,8 +168,7 @@ void FrequencyGrid::initialize_grid() {
 void FrequencyGrid::initialize_grid(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
-    if (N_w % 2 == 1) w_upper = grid_transf_inv((((double)N_w+1)/((double)N_w+3)));
-    else w_upper = grid_transf_inv((((double)N_w*2-1)/((double)(N_w+1)*2)));
+    w_upper = scale * 15.;
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     // for Matsubara T>0: pick grid such that no frequencies occur twice
     if (type == 'b') {

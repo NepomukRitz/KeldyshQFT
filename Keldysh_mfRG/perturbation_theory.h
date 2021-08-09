@@ -123,7 +123,7 @@ void topt_state(State<Q>& Psi, double Lambda) {
 
     //Calculate the bubbles -> Vertex in TOPT saved in Psi
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
-    vertexInTOPT(Psi.vertex, bareState, Psi, Pi, Lambda);
+    vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Lambda);
 
     Psi.selfenergy = bareState.selfenergy + SoptPsi.selfenergy;
 
@@ -150,7 +150,7 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 
     //Calculate the bubbles -> Vertex in TOPT saved in Psi
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
-    vertexInTOPT(Psi.vertex, bareState, Psi, Pi, Lambda);
+    vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Lambda);
     vertexInFOPT(Psi.vertex, bareState, Pi, Lambda);
 
     Psi.selfenergy = bareState.selfenergy + SoptPsi.selfenergy;
