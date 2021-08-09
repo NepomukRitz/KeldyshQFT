@@ -677,15 +677,15 @@ template <typename Q, int num_freqs, typename Integrand> auto integrator(Integra
     // Doesn't work yet (errors accumulate with the current implementation)
     // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
     vec<double> intersections;
-    size_t num_intervals;
+    size_t num_intervals_max;
     if (w_half < tol) {
         w_half = 0.;
         intersections = {w_half, vmin, vmax};
-        num_intervals = num_freqs*2 + 2;
+        num_intervals_max = num_freqs * 2 + 2;
     }
     else {
         intersections = {-w_half, w_half, vmin, vmax};
-        num_intervals = num_freqs*2 + 3;
+        num_intervals_max = num_freqs * 2 + 3;
     }
 
     for (int i = 0; i<num_freqs; i++){
@@ -698,29 +698,30 @@ template <typename Q, int num_freqs, typename Integrand> auto integrator(Integra
     }
 
     std::sort(intersections.begin(), intersections.end());
-
-    vec<vec<double>> intervals(num_freqs*2 + 3, {0.,0.});
-    for (int i = 0; i < num_intervals; i++) {
+    int num_intervals = 0;
+    vec<vec<double>> intervals(num_freqs*2 + 3, {1.,-1.});
+    for (int i = 0; i < num_intervals_max; i++) {
         if (intersections[i] != intersections[i+1]) {
-            intervals[i] = {intersections[i], intersections[i + 1]};
+            intervals[num_intervals] = {intersections[i], intersections[i + 1]};
             if (abs(abs(intersections[i]) - w_half) < tol) {
-                intervals[i][0] += tol;
-                intervals[i - 1][1] -= tol;
+                intervals[num_intervals][0] += tol;
+                if (num_intervals > 0) intervals[num_intervals - 1][1] -= tol;
             }
+            num_intervals++;
         }
     }
 
 
 /*
-    size_t num_intervals;
+    size_t num_intervals_max;
     vec<vec<double>> intervals;
     if( -w_half+tol < w_half-tol){
         intervals = {{vmin, -w_half-tol}, {-w_half+tol, w_half-tol}, {w_half+tol, vmax}};
-        num_intervals = 3;
+        num_intervals_max = 3;
     }
     else {
         intervals = {{vmin, -w_half-tol}, {w_half+tol, vmax}};
-        num_intervals = 2;
+        num_intervals_max = 2;
     }
 */
 
