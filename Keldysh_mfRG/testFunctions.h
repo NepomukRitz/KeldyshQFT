@@ -2111,8 +2111,10 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
                 Q val_K3 = 1./(2*M_PI) * integrator<Q,6>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
-                PT_state.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, val_K3);
-                PT_state.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, val_K3);
+                PT_state.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, -val_K3);
+                Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
+                Q val_K3_ap = 1./(2*M_PI) * integrator<Q,6>(IntegrandK3_ap, -vmax, vmax, abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                PT_state.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, -2*(val_K3-val_K3_ap));
             }
         }
     }
