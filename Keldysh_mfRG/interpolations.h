@@ -143,6 +143,7 @@ public:
 
 #if INTERPOLATION == 0
             index = min(nBOS-2, index);
+            index = max(0, index);
             assert(index >= 0 and index < nBOS-1);
 
             double x1;
