@@ -1082,7 +1082,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
 #if MAX_DIAG_CLASS >= 2
 #ifdef KELDYSH_FORMALISM
-    for (int iK2=0; iK2<2; ++iK2) {
+    for (int iK2=0; iK2<3; ++iK2) {
 #else
       int iK2 = 0;
 #endif
@@ -2088,18 +2088,20 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
         PT_state.vertex[0].tvertex().K1_setvert(0, i, 0, -val_K1*val_K1/glb_U);
     }
 
+#if MAX_DIAG_CLASS > 1
     for (int i = 1; i<nBOS2-1; i++) {
         for (int j = 1; j<nFER2-1; j++) {
             double w = PT_state.vertex[0].avertex().frequencies.b_K2.w[i];
             double v = PT_state.vertex[0].avertex().frequencies.f_K2.w[j];
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
-            Q val_K2 = 1./(2*M_PI) * integrator<Q,1>(IntegrandK2, -vmax, vmax, abs(w/2), {v}, Delta, false);
+            Q val_K2 = 1./(2*M_PI) * integrator<Q,3>(IntegrandK2, -vmax, vmax, abs(w/2), {v, w+v, w-v}, Delta, true);
             PT_state.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
             PT_state.vertex[0].pvertex().K2_setvert(0, i, j, 0, val_K2);
             PT_state.vertex[0].tvertex().K2_setvert(0, i, j, 0, val_K2);
         }
     }
-
+#endif
+#if MAX_DIAG_CLASS > 2
     for (int i = 1; i<nBOS3-1; i++) {
         for (int j = 1; j<nFER3-1; j++) {
             for (int k = 1; k<nFER3-1; k++) {
@@ -2107,13 +2109,14 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
                 double v = PT_state.vertex[0].avertex().frequencies.f_K3.w[j];
                 double vp= PT_state.vertex[0].avertex().frequencies.f_K3.w[k];
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
-                Q val_K3 = 1./(2*M_PI) * integrator<Q,3>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, abs(v)-abs(vp)}, Delta, false);
+                Q val_K3 = 1./(2*M_PI) * integrator<Q,6>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
                 PT_state.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, val_K3);
                 PT_state.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, val_K3);
             }
         }
     }
+#endif
 
     write_hdf(outputFileName + "_exact", Lambda, 1, PT_state);
 
@@ -2128,6 +2131,13 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
     State<Q> state_diff = state_cpp - PT_state;
 
     write_hdf(outputFileName + "_diff", Lambda, 1, state_diff);
+    print("K1-difference: ", state_diff.vertex[0].half1().norm_K1(0), true);
+#if MAX_DIAG_CLASS > 1
+    print("K2-difference: ", state_diff.vertex[0].half1().norm_K2(0), true);
+#endif
+#if MAX_DIAG_CLASS > 2
+    print("K3-difference: ", state_diff.vertex[0].half1().norm_K3(0), true);
+#endif
 
 }
 

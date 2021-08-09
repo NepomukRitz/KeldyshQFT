@@ -157,7 +157,7 @@ auto main() -> int {
 #else
 
     //test_K2<state_datatype>(Lambda_ini, true);
-    test_PT4(1.8, true);
+    test_PT_state<state_datatype>(dir_str+filename, 1.8, false);
     //n_loop_flow(dir_str+filename);
     ///test_integrate_over_K1<state_datatype>(1.8);
 
