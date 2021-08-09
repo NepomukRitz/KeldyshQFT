@@ -153,6 +153,8 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
                                                             //Returns U/2 for retarded and 0. for Keldysh component
         //if (fabs(v) != this->frequencies.w_upper) {
         int iv = (int) ((tv - this->frequencies.W_lower) / this->frequencies.dW); // index corresponding to v
+        iv = min(iv, nFER-2);
+        iv = max(iv, 0);
 
         double x1 = this->frequencies.Ws[iv]; // lower adjacent frequency value
         double x2 = this->frequencies.Ws[iv + 1]; // upper adjacent frequency value
