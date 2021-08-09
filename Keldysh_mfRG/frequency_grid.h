@@ -114,7 +114,16 @@ public:
     };
 
     auto operator= (const FrequencyGrid& freqGrid) -> FrequencyGrid& {
+        this->N_w = freqGrid.N_w;
+        this->w_upper = freqGrid.w_upper;
+        this->w_lower = freqGrid.w_lower;
+        this->W_upper = freqGrid.W_upper;
+        this->W_lower = freqGrid.W_lower;
+        this->W_scale = freqGrid.W_scale;
+        this->U_factor = freqGrid.U_factor;
+        this->Delta_factor = freqGrid.Delta_factor;
         this->w = freqGrid.w;
+        this->Ws = freqGrid.Ws;
         return *this;
     }
     auto scale_factor(double Lambda) -> double;
@@ -189,6 +198,8 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
 
     W = (W - W_lower) / dW;
     auto index = (int)W;
+    index = max(0, index);
+    index = min(N_w-2, index);
     return index;
 }
 auto FrequencyGrid::fconv(double w_in, double tol) const -> int {
