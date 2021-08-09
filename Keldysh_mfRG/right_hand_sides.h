@@ -378,6 +378,8 @@ void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& d
 
     SelfEnergy<Q> dSigma_tbar;
     SelfEnergy<Q> dSigma_t;
+    dSigma_tbar.set_frequency_grid(Psi.selfenergy);
+    dSigma_t.set_frequency_grid(Psi.selfenergy);
 
     // compute first multiloop correction to self-energy flow, irreducible in the t channel
     loop(dSigma_tbar, dGammaC_tbar, G, true);
