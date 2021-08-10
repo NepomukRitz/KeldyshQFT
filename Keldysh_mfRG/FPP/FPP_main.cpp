@@ -2,16 +2,27 @@
 // Created by Marcel on 14.04.2021.
 //
 
+//#define INTEGRATOR_TYPE 5;
+
 #include <iostream>
 #include <iomanip>
+#include <bits/stdc++.h>
 #include "Coordinates.h"
 #include "Momentum-integral-Bubble.h"
 #include "Differential_Equation.h"
+#include "Ladder-approximation.h"
 #include "Monte-Carlo_Trial.h"
 #include "1D-integrals.h"
 #include "../util.h"
+#include "../solvers.h"
+
+
 
 int main() {
+
+#ifdef MPI_FLAG
+    MPI_Init(nullptr, nullptr);
+#endif
 
     gsl_set_error_handler_off();
 
@@ -59,7 +70,8 @@ int main() {
     glb_mud = 0.0;
     glb_mc = 1.0;
     glb_md = 1.0;
-    glb_prec = 1e-32;
+    glb_ainv = 1.0;
+    glb_prec = 1e-16;
 
     // Cout Bubble
     // =======================================
@@ -176,6 +188,7 @@ int main() {
 
 
     //integral_bubble_w_vpp_list_exact ('c', 'c', 'p', 10., 10., 10., 200, 200, 11);
+    integral_bubble_w_vpp_list_exact ('c', 'c', 'p', 1., 2., 3., 4, 5, 6);
     //integral_bubble_w_vpp_list_exact ('c', 'c', 't', 10., 10., 10., 200, 200, 11);
     //integral_bubble_w_vpp_list_exact ('c', 'c', 'a', 10., 10., 10., 200, 200, 11);
 
@@ -225,7 +238,8 @@ int main() {
     test_heaviside = heaviside(x_zero);
     cout << test_heaviside << "\n";*/
 
-    comp test_sfbb_a, test_sfbb_p, test_sfbb_t;
+
+    /*comp test_sfbb_a, test_sfbb_p, test_sfbb_t;
     test_sfbb_a = sharp_frequency_exact_bare_bubble(-2.3, 0.4, 1.2,'c', 'd', 'a');
     cout << test_sfbb_a << "\n";
     test_sfbb_p = sharp_frequency_exact_bare_bubble(-2.3, 0.4, 1.2,'c', 'd', 'p');
@@ -248,12 +262,13 @@ int main() {
     cout << "K1p = " << outputK1p << "\n";
     cout << "K1a = " << outputK1a << "\n";
     cout << "K1t = " << outputK1t << "\n";
-    /*outputK1p = K1cdcd_solution_nint(0.1, 0.1, -0.1, 10.0, 'p',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
+    *//*outputK1p = K1cdcd_solution_nint(0.1, 0.1, -0.1, 10.0, 'p',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     outputK1a = K1cdcd_solution_nint(0.1, 0.1, -0.1, 10.0, 'a',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     outputK1t = K1cdcd_solution_nint(0.1, 0.1, -0.1, 10.0, 't',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     cout << "K1p = " << outputK1p << "\n";
     cout << "K1a = " << outputK1a << "\n";
     cout << "K1t = " << outputK1t << "\n";*/
+    /*
     cout << "now exact with w = 0 = q: \n";
     outputK1p = K1cdcd_solution(0., 0., -0.1, 10.0, 'p',0.1, 1e-10, 1e-10, 0.0);
     outputK1a = K1cdcd_solution(0., 0., -0.1, 10.0, 'a',0.1, 1e-10, 1e-10, 0.0);
@@ -261,9 +276,9 @@ int main() {
     cout << "K1p = " << outputK1p << "\n";
     cout << "K1a = " << outputK1a << "\n";
     cout << "K1t = " << outputK1t << "\n";
-    K1Lambda (0.0, 0.0, -0.1, 'p', 10.0, 1e-10, 100, 1e-12, 1e-12, 0.0);
-    K1Lambdag(0.0,0.0,-0.1,0.1,'p',10.0,1e-10,100,1e-12,1e-12,0.0);
-    /*outputK1p = K1cdcd_solution_nint(0., 0., -0.1, 10.0, 'p',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
+    //K1Lambda (0.0, 0.0, -0.1, 'p', 10.0, 1e-10, 100, 1e-12, 1e-12, 0.0);
+    //K1Lambdag(0.0,0.0,-0.1,0.1,'p',10.0,1e-10,100,1e-12,1e-12,0.0);
+    *//*outputK1p = K1cdcd_solution_nint(0., 0., -0.1, 10.0, 'p',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     outputK1a = K1cdcd_solution_nint(0., 0., -0.1, 10.0, 'a',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     outputK1t = K1cdcd_solution_nint(0., 0., -0.1, 10.0, 't',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     cout << "K1p = " << outputK1p << "\n";
@@ -299,9 +314,106 @@ int main() {
     /*cout << "now double pendulum: " << "\n";
     solve_double_pendulum(9.81,1.0,2.0,1.0,1.5,0.0,10.0,0.0,30.0,1.0,-2.3);*/
 
+    // ZEROS
+    /*
+    double testroot1 = find_root_divergence (sigmoidal, -1.0, 1., 1000, 10e-10);
+    cout << "x = " << testroot1 << "\n";
+    comp exactvalue = sigmoidal(testroot1);
+    cout << "sigmoid(x) = " << exactvalue << "\n";
+
+    double testroot2 = fine_root_newton (fzeros1, 3, 10e-10, 1000, 10e-10);
+    cout << "x = " << testroot2 << "\n";
+    double exactvalue2 = fzeros1(testroot2);
+    cout << "f1(x) = " << exactvalue2 << "\n";
+
+    double testroot3 = fine_root_newton (fzeros2, -1.0, 1., 1000, 10e-10);
+    cout << "x = " << testroot3 << "\n";
+    double xx0 = pow(M_PI,3)/log(2)/(10*M_EULER);
+    cout << "x_exact " << xx0 << "\n";
+    double exactvalue3 = fzeros2(testroot3);
+    cout << "f2(x) = " << exactvalue3 << "\n";
+    */
+
+    // LADDER APPROXIMATION
+
+    glb_muc = 0.0;
+    glb_mud = 0.0;
+    glb_ainv = 1.0;
+
+    comp bubble1 = perform_Pi0_vpp_integral (0.0, 0.0, 'c', 'd', 'p', 10, 1e-10);
+    double bubble1e = exactzerobubble(10, 1e-10);
+    //comp output2t = perform_vacuum_integral (10, 1e-10);
+    comp bubble2 = perform_Pi0_vpp_integral (0.0, 0.0, 'c', 'd', 'p', 1e4, 1e-10);
+    double bubble2e = exactzerobubble(1e4, 1e-10);
+    //comp output3t = perform_vacuum_integral (1, 1, 1e4, 1e-10);
+    comp bubble3 = perform_Pi0_vpp_integral (0.0, 0.0, 'c', 'd', 'p', 10, 1e-5);
+    double bubble3e = exactzerobubble(10, 1e-5);
+    //comp output4t = perform_vacuum_integral (1, 1, 10, 1e-5);
+    comp bubble4 = perform_Pi0_vpp_integral (0.0, 0.0, 'c', 'd', 'p', 1e4, 1e-5);
+    double bubble4e = exactzerobubble(1e4, 1e-5);
+    //comp output5t = perform_vacuum_integral (1, 1, 1e4, 1e-5); */
+    cout << "Bubble integral = " << bubble1 << ", exact = " << bubble1e << /* ", simplified = " << output2t << */  "\n";
+    //double test1 = 1e4;
+    //double test2 = sqrt(test1);
+    //cout << test1 << " = " << test2 << "\n";
+    cout << "Bubble integral = " << bubble2 << ", exact = " << bubble2e << /* ", simplified = " << output3t << */ "\n";
+    cout << "Bubble integral = " << bubble3 << ", exact = " << bubble3e << /* ", simplified = " << output4t << */ "\n";
+    cout << "Bubble integral = " << bubble4 << ", exact = " << bubble4e << /* ", simplified = " << output5t << */ "\n";
+
+    glb_muc = 0.0;
+    glb_mud = 0.0;
+    glb_ainv = 1.0;
+
+    comp ladder1, ladder2, ladder3, ladder4, ladder5;
+    double laddere;
+    ladder1 = ladder(0.0,0.0,10,1e-10,1);
+    ladder2 = ladder(0.0,0.0,1e4,1e-10,1);
+    ladder3 = ladder(0.0,0.0,10,1e-5,1);
+    ladder4 = ladder(0.0,0.0,1e2,1e-5,1);
+    ladder5 = ladder(0.0,0.0,1e4,1e-5,1);
+    laddere = -4*M_PI;
+    cout << "ladder = " << ladder1 << "\n";
+    cout << "ladder = " << ladder2 << "\n";
+    cout << "ladder = " << ladder3 << "\n";
+    cout << "ladder = " << ladder4 << "\n";
+    cout << "ladder = " << ladder5 << "\n";
+    cout << "exact = " << laddere << "\n";
+
+    // comp testfmu = test_f_mu(0.0,0.0,1e3,1e-4,1,1.0);
+    // cout << "f_mu = " << testfmu << "\n";
+
+    // TEST INTEGRATOR AND SOLVER
+    /*
+    cout << "test integrate \n";
+
+
+    comp integrate_result;
+    integrate_result = perform_SimpleBubble_integral (0.03, -2.0, 0.2, 0.4, 'c', 'c');
+    cout << "x-integral = " << integrate_result << "\n";
+
+
+
+    comp y_fin;
+    const comp y_ini = SimpleBubble(0.03, -2.0, 0.2, 0.4, -1.0, 'c', 'c');
+    const double x_ini = -1.0;
+    const double x_fin = 1.0;
+
+    ODE_solver_RK4(y_fin, x_ini, y_ini, x_fin,
+                   rhs_test, sq_substitution, sq_resubstitution, nODE);
+
+
+
+    cout << "yfin = " << y_fin << "\n";
+    cout << "nODE = " << nODE << "\n";
+     */
+
     get_time(t0);
 
     cout << "Goodbye World! \n";
+
+#ifdef MPI_FLAG
+    MPI_Finalize();
+#endif
 
 }
 

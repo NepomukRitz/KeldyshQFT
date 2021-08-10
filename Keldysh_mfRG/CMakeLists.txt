@@ -101,6 +101,7 @@ add_executable(FPP_mfRG
         FPP/Differential_Equation.h
         FPP/1D-integrals.h
         FPP/Monte-Carlo_Trial.h
+        FPP/Ladder-approximation.h
         bubbles.h
         causality_FDT_checks.h
         correctionFunctions.h

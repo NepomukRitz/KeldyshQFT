@@ -28,25 +28,16 @@
 #include <gsl/gsl_deriv.h>      // numerical derivative
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_odeiv2.h>     // ordinary differential equations
+#include "zeros.h"
+#include "../integrator.h"
+
 
 double glb_muc;
 double glb_mud;
 double glb_mc;
 double glb_md;
 double glb_prec;
-
-double g(double mc, double md, double Lambda_i, double Lambda_f, double a_inv, int reg) {
-    /* reg: 0 = sharp frequency, 1 = sharp momentum */
-    double mr = mc*md/(mc+md);
-    switch (reg) {
-        case 1:
-            return 1./(mr*a_inv/(2*M_PI)-mr/(M_PI*M_PI)*(sqrt(mc)+sqrt(md))*(sqrt(Lambda_i)-sqrt(Lambda_f)));
-        case 2:
-            return 1./(mr*a_inv/(2*M_PI)-mr/(M_PI*M_PI)*(Lambda_i-Lambda_f));
-        default:
-            cout << "wrong regulator type in g\n";
-    }
-}
+double glb_ainv;
 
 comp G0(double v, double ksquared, char particle) {
     switch (particle) {
@@ -482,29 +473,29 @@ comp exact_bare_bubble (double w, double vpp, double q, char i, char j, char r){
 
     if (i == 'c') {
         mi = glb_mc;
-        mui = glb_muc-glb_prec;
+        mui = glb_muc;
     }
     else if (i == 'd') {
         mi = glb_md;
-        mui = glb_mud-glb_prec;
+        mui = glb_mud;
     }
     else {
         mi = 0.;
-        mui = -glb_prec;
+        mui = 0.;
         cout << "wrong particle type 'i'\n";
     }
 
     if (j == 'c') {
         mj = glb_mc;
-        muj = glb_muc-glb_prec;
+        muj = glb_muc;
     }
     else if (j == 'd') {
         mj = glb_md;
-        muj = glb_mud-glb_prec;
+        muj = glb_mud;
     }
     else {
         mj = 0.;
-        muj = -glb_prec;
+        muj = 0.;
         cout << "wrong particle type 'j'\n";
     }
 
@@ -1409,6 +1400,51 @@ void integral_loop_Lambda_vp_list (char i, double Lambdamin, double Lambdamax, d
     {vps, Lambdas, S_int_Re, S_int_Im});
 
 }
+
+// SimpleBubble(double v1, double v2, double q, double kpp, double x, char i, char j)
+
+template <typename Q>
+class Integrand_SimpleBubble {
+private:
+    double v1, v2, q, kpp;
+    char i, j;
+
+public:
+    /**
+     * Constructor:
+     */
+    Integrand_SimpleBubble(double v1_in, double v2_in, double q_in, double kpp_in, char i_in, char j_in)
+            :v1(v1_in), v2(v2_in), q(q_in), kpp(kpp_in), i(i_in), j(j_in){
+    };
+
+    /**
+     * Call operator:
+     * @param x : frequency at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
+    auto operator() (double x) const -> Q {
+        return SimpleBubble(v1, v2, q, kpp, x, i, j);
+    };
+
+    //void save_integrand();
+};
+
+comp perform_SimpleBubble_integral (double v1, double v2, double q, double kpp, char i, char j){
+    Integrand_SimpleBubble<comp> integrandx_SimpleBubble(v1, v2, q, kpp, i, j);
+    return integrator<comp>(integrandx_SimpleBubble, -1.0, 1.0);
+}
+
+/* ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
+        T rhs (const T& y, const double x),
+double subst(double x), double resubst(double x),
+const int N_ODE) */
+
+comp rhs_test(const comp& y, double Lambda) {
+    //comp y;
+    return SimpleBubble(0.03, -2.0, 0.2, 0.4,Lambda, 'c', 'c');
+}
+
+
 
 
 
