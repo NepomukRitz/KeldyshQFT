@@ -334,6 +334,7 @@ void LoopCalculator<Q>::compute_Keldysh() {
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara() {
+#ifndef KELDYSH_FORMALISM
 #ifdef ZERO_TEMP
     // split up the integrand at discontinuities and (possible) kinks:
     if (abs(v) > inter_tol) {
@@ -360,6 +361,7 @@ void LoopCalculator<Q>::compute_Matsubara() {
 
 #endif
     self.addself(0, iv, i_in, integratedR);
+#endif // n KELDYSH_FORMALISM
 }
 
 
