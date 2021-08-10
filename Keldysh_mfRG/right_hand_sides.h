@@ -365,8 +365,6 @@ auto calculate_dGammaC_left_insertion(GeneralVertex<Q, non_symmetric>& nonsymVer
 
     nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
-    nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
-
     return dGammaC;
 }
 
