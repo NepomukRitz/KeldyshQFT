@@ -14,6 +14,7 @@
 #include "interpolations.h"           // frequency interpolations for vertices
 #include "symmetry_transformations.h" // symmetry transformations of frequencies
 #include "symmetry_table.h"           // table containing information when to apply which symmetry transformations
+#include "momentum_grid.h"            // functionality for the internal structure of the Hubbard model
 
 template <typename Q> class fullvert; // forward declaration of fullvert
 
@@ -99,6 +100,7 @@ public:
 #if MAX_DIAG_CLASS >= 0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
+
     /// Member functions for accessing/setting values of the vector K1 ///
 
     /** Return the value of the vector K1 at index i. */
@@ -123,6 +125,10 @@ public:
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
+
+    // TODO: Implement! Needed for the Hubbard model.
+    void K1_crossproject();
+    Q K1_BZ_average(const int iK, const int iw);
 
 #endif
 #if MAX_DIAG_CLASS >= 2
@@ -152,6 +158,9 @@ public:
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
     void enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated);
+
+    // TODO: Implement! Needed for the Hubbard model.
+    void K2_crossproject(char channel_out);
 
 #if INTERPOLATION == 3
     gsl_spline2d *spline;
@@ -189,6 +198,9 @@ public:
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
     void enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated);
+
+    // TODO: Implement! Needed for the Hubbard model.
+    void K3_crossproject(char channel_out);
 
 #endif
 #endif
@@ -266,7 +278,7 @@ public:
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    transfToR(input);
+    transfToR(input); // TODO: Would be possible to perform crossprojections here as well, but not very efficient??
 
     Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
@@ -394,28 +406,28 @@ template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rve
 #elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 #endif
-};
-template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
+}
+template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
-    return valsmooth<k1>(input, vertex_in, right_vertex);
+    return valsmooth<k1>(input, rvert_crossing, vertex_half2);
 #elif MAX_DIAG_CLASS > 1
-    return valsmooth<k1>(input, vertex_in, right_vertex) + valsmooth<k2b>(input, vertex_in, right_vertex);
+    return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2b>(input, rvert_crossing, vertex_half2);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing);
 #elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2);
 #elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2>(input, rvert_crossing, vertex_half2);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return 0.;
@@ -424,7 +436,7 @@ template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rve
 #elif MAX_DIAG_CLASS == 3
     return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return 0.;
@@ -433,7 +445,7 @@ template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rve
 #elif MAX_DIAG_CLASS == 3
     return valsmooth<k2>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return 0.;
@@ -442,7 +454,7 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
 #elif MAX_DIAG_CLASS == 3
     return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return 0.;
@@ -451,7 +463,7 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
 #elif MAX_DIAG_CLASS == 3
     return valsmooth<k2b>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
 #endif
-};
+}
 
 #if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
@@ -727,8 +739,38 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
     }
 }
 
+template<typename Q>
+void rvert<Q>::K1_crossproject() {
+    /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
+    for (int iK = 0; iK < nK_K1; ++iK) {
+#pragma omp parallel for schedule(dynamic) default(none) shared(iK)
+        for (int iw = 0; iw < nw1; ++iw) {
+            Q projected_value = K1_BZ_average(iK, iw);
+            for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
+                K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
+            }
+        }
+    }
+}
 
-
+template<typename Q>
+Q rvert<Q>::K1_BZ_average(const int iK, const int iw) {
+    /// Perform the average over the BZ by calculating the q-sum over the REDUCED BZ (see notes for details!)
+    Q value = 0.;
+    value += K1_val(iK, iw, momentum_index(0, 0));
+    value += K1_val(iK, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
+    value += 2. * K1_val(iK, iw, momentum_index(glb_N_q - 1, 0));
+    for (int n = 1; n < glb_N_q - 1; ++n) {
+        value += 4. * K1_val(iK, iw, momentum_index(n, 0));
+        value += 4. * K1_val(iK, iw, momentum_index(glb_N_q - 1, n));
+        value += 4. * K1_val(iK, iw, momentum_index(n, n));
+        for (int np = 1; np < n; ++np) {
+            value += 8. * K1_val(iK, iw, momentum_index(n, np));
+        }
+    }
+    value /= 4. * (glb_N_q - 1) * (glb_N_q - 1);
+    return value;
+}
 
 #if MAX_DIAG_CLASS >= 2
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) {
@@ -773,6 +815,12 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
     }
 
 }
+
+template<typename Q>
+void rvert<Q>::K2_crossproject(char channel_out) {
+// TODO: Currently does nothing!
+}
+
 #endif
 
 #if MAX_DIAG_CLASS >= 3
@@ -819,6 +867,13 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
     }
 
 }
+
+
+template<typename Q>
+void rvert<Q>::K3_crossproject(char channel_out) {
+    // TODO: Currently does nothing!
+}
+
 #endif
 
 
@@ -842,11 +897,11 @@ template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q valu
     K1[iK*nw1*n_in + iw*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
-    if (iw >= 0) {
         return K1[iK*nw1*n_in + iw*n_in + i_in];
-    }
-    else return 0.;
 }
+
+
+
 #endif
 
 #if MAX_DIAG_CLASS >= 2
@@ -869,10 +924,7 @@ template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in
     K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
-    if (iw >= 0 and iv >= 0) {
         return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
-    }
-    else return 0.;
 }
 
 #if INTERPOLATION == 3
@@ -931,10 +983,7 @@ template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp,
     K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
-    if (iw >= 0 and iv >= 0 and ivp >= 0) {
         return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
-    }
-    else return 0;
 }
 #endif // MAX_DIAG_CLASS
 

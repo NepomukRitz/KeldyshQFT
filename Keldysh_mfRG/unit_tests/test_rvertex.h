@@ -5,9 +5,9 @@
 
 
 
-TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for K1a?", "[frequency_symmetries]" ) {
 
 #ifndef KELDYSH_FORMALISM
+TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for K1a?", "[frequency_symmetries]" ) {
     rvert<state_datatype> avertex('a', Lambda_ini);
     int iK = 0;
     int i_in = 0;

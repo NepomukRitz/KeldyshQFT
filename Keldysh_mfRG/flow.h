@@ -24,7 +24,8 @@ State<state_datatype> n_loop_flow(string outputFileName){
     state_ini.initialize();             // initialize state
 
     // initialize the flow with SOPT at Lambda_ini (important!)
-    //sopt_state(state_ini, Lambda_ini);
+    sopt_state(state_ini, Lambda_ini);
+    // TODO: For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
     //// better: read state from converged parquet solution
     //state_ini = read_hdf("parquet_solution_K3_Lambda=20.000000", 5, 51);

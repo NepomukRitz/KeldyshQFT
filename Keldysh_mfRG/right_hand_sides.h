@@ -190,7 +190,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
 
     //For flow without self-energy, comment out this line
-    selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+    //selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
 
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback
@@ -198,14 +198,15 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     // Initialize bubble objects;
 #ifdef HUBBARD_MODEL // Use precalculated bubble in this case
-    PrecalculateBubble<comp> Pi(G, dG, false);
+    //PrecalculateBubble<comp> Pi(G, dG, false);
     PrecalculateBubble<comp> dPi(G, dG, true);
 #else // Otherwise use same type of bubble as before, which directly interpolates
     Bubble<Q> Pi(G, dG, false);
     Bubble<Q> dPi(G, dG, true);
 #endif // HUBBARD_MODEL
 
-
+    ///TODO: Think about performing cross-projections for Psi.vertex already here,
+    /// as this object is often needed when going to higher loop-orders.
     vertexOneLoopFlow(dPsi.vertex, Psi.vertex, G, dG, dPi);
 
 #if N_LOOPS>=2
@@ -235,23 +236,23 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         dGammaR_half1[0].half1().reorder_due2antisymmetry(dGammaL_half1[0].half1());
 
         // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
-        //GeneralVertex<Q, non_symmetric> dGammaL(n_spin);
-        //dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
-        //dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
+        GeneralVertex<Q, non_symmetric> dGammaL(n_spin, Lambda);
+        dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
+        dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
 
         // insert this non-symmetric vertex on the right of the bubble
-        //Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, G, Pi);
+        Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, G, Pi);
 
         // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<Q, non_symmetric> dGammaR (n_spin);
-        dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
-        dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+        //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
+        //dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
+        //dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
         // insert this non-symmetric vertex on the left of the bubble
-        Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, G, Pi);
+        //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, G, Pi);
 
         // symmetrize by averaging left and right insertion
-        Vertex<Q> dGammaC = dGammaC_l; //(dGammaC_r + dGammaC_l) * 0.5;
+        Vertex<Q> dGammaC = dGammaC_r; //(dGammaC_r + dGammaC_l) * 0.5;
 
         dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, G, Pi);
         dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, G, Pi);
@@ -348,8 +349,6 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, GeneralVertex
 
     nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
-    nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
-
     return dGammaC;
 }
 
@@ -364,8 +363,6 @@ auto calculate_dGammaC_left_insertion(GeneralVertex<Q, non_symmetric>& nonsymVer
     for (char r: "apt") {
         bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, Pi, r, false);
     }
-
-    nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
     nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 

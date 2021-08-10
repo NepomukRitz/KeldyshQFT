@@ -90,8 +90,8 @@ public:
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
-                        U_factor = 4./3.;
-                        Delta_factor = 4.;
+                        U_factor = 20./3.;
+                        Delta_factor = 20.;
                         break;
                     case 3:
                         N_w = nFER3;
@@ -172,8 +172,7 @@ void FrequencyGrid::initialize_grid() {
 void FrequencyGrid::initialize_grid(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
-    if (N_w % 2 == 1) w_upper = grid_transf_inv((((double)N_w+1)/((double)N_w+3)));
-    else w_upper = grid_transf_inv((((double)N_w*2-1)/((double)(N_w+1)*2)));
+    w_upper = scale * 15.;
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     // for Matsubara T>0: pick grid such that no frequencies occur twice
     if (type == 'b') {
@@ -210,35 +209,35 @@ auto FrequencyGrid::fconv(double w_in, double tol) const -> int {
 }
 
 auto FrequencyGrid::grid_transf(double w) const -> double {
-    if (this->type == 'f' and this->diag_class == 1) {
-        return grid_transf_v3(w, this->W_scale);
-    }
+    //if (this->type == 'f' and this->diag_class == 1) {
+    //    return grid_transf_v3(w, this->W_scale);
+    //}
     //else if (this->type == 'b' and this->diag_class == 1) {
     //    return grid_transf_v2(w, this->W_scale);
     //}
-    else {
+    //else {
         #if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
         return grid_transf_v2(w, this->W_scale);
         #else
         return grid_transf_v1(w, this->W_scale);
         #endif
-    }
+    //}
 }
 
 auto FrequencyGrid::grid_transf_inv(double w) const -> double {
-    if (this->type == 'f' and this->diag_class == 1) {
-        return grid_transf_inv_v3(w, this->W_scale);
-    }
+    //if (this->type == 'f' and this->diag_class == 1) {
+    //    return grid_transf_inv_v3(w, this->W_scale);
+    //}
     //else if (this->type == 'b' and this->diag_class == 1) {
     //    return grid_transf_inv_v2(w, this->W_scale);
     //}
-    else {
+    //else {
 #if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
         return grid_transf_inv_v2(w, this->W_scale);
 #else
         return grid_transf_inv_v1(w, this->W_scale);
 #endif
-    }
+    //}
 }
 
 auto FrequencyGrid::wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double {

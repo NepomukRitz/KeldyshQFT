@@ -231,8 +231,8 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
 #ifdef HUBBARD_MODEL
 void test_Bubble_in_Momentum_Space(){
     double Lambda = 0.01;
-    Propagator g (Lambda, 'g');
-    Propagator s (Lambda, 's');
+    Propagator<comp> g (Lambda, 'g');
+    Propagator<comp> s (Lambda, 's');
 
     double starting_time = get_time();
     PrecalculateBubble<comp> DotBubble (g, s, true);

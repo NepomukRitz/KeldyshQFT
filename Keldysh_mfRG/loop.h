@@ -363,7 +363,7 @@ void LoopCalculator<Q>::compute_Matsubara() {
 
 #endif
     self.addself(0, iv, i_in, integratedR);
-#endif
+#endif // KELDYSH_FORMALISM
 }
 
 

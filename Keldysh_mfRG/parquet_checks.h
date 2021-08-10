@@ -64,6 +64,7 @@ template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
                  const State<Q>& state_in, const double Lambda) {
     Vertex<Q> Gamma_0 (n_spin);                  // bare vertex
+    Gamma_0.set_frequency_grid(state_in.vertex);
 #ifdef KELDYSH_FORMALISM
     Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
 #else

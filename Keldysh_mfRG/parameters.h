@@ -5,9 +5,11 @@
 //#define NDEBUG
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-//#define KELDYSH_FORMALISM
+#define KELDYSH_FORMALISM
 
+#ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+#endif
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
@@ -18,7 +20,7 @@
 #endif
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-//#define HUBBARD_MODEL
+#define HUBBARD_MODEL
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
@@ -244,8 +246,8 @@ const int n_spin = 1;
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure for the Hubbard model
-int glb_N_q = 65; // Number of transfer momentum points in one dimension.
-int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
+const int glb_N_q = 9; // Number of transfer momentum points in one dimension.
+const int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
 
 #ifdef HUBBARD_MODEL
 const int n_in = glb_N_transfer;
