@@ -50,6 +50,9 @@ void T1 (IndicesSymmetryTransformations& indices){
 #if MAX_DIAG_CLASS>1
         indices.v1 *= 1.;
         indices.v2 *= -1.;
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)   // Matsubara T>0
+        indices.v2 += floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
+#endif
 #endif
     }
     else {
@@ -75,6 +78,9 @@ void T2 (IndicesSymmetryTransformations& indices){
 #if MAX_DIAG_CLASS>1
         indices.v1 *= -1.;
         indices.v2 *= 1.;
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)   // Matsubara T>0
+        indices.v1 += floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
+#endif
 #endif
     }
     else {
@@ -119,6 +125,11 @@ void TC (IndicesSymmetryTransformations& indices){
     indices.w *= -1;
     indices.v1 *= -1;
     indices.v2 *= -1;
+#ifndef ZERO_TEMP   // Matsubara T>0
+    double rounding_correction = floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
+    indices.v1 += rounding_correction;
+    indices.v2 += rounding_correction;
+#endif // ZERO_TEMP
 #endif
 }
 
@@ -145,6 +156,11 @@ void TR (IndicesSymmetryTransformations& indices){
 #if MAX_DIAG_CLASS > 1
     indices.v1 *= -1;
     indices.v2 *= -1;
+#ifndef ZERO_TEMP   // Matsubara T>0
+    double rounding_correction = floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
+    indices.v1 += rounding_correction;
+    indices.v2 += rounding_correction;
+#endif // ZERO_TEMP
 #endif
 }
 #endif

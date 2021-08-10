@@ -10,6 +10,7 @@
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 
+#include "../data_structures.h"
 #include "../parameters.h"  // define system parameters
 
 // include tests that should be run
@@ -18,6 +19,9 @@
 #include "test_symmetry_transformations.h"
 #include "test_PrecalculateBubble.h"
 
+#include "test_frequencygrid.h"
+#include "test_interpolations.h"
+#include "test_rvertex.h"
 //#ifdef HUBBARD_MODEL
 #include "test_momentum_grid.h"
 //#endif
@@ -48,7 +52,7 @@ int main(int argc, char* argv[]) {
 #if MAX_DIAG_CLASS >= 1
     /* run a complete flow and check FDTs and causality */
     string filename = "integration_test_flow_K2_8e";
-    State<comp> state = n_loop_flow(filename);
+    State<state_datatype> state = n_loop_flow(filename);
     check_FDTs(state);
     check_SE_causality(state.selfenergy);
 
@@ -77,7 +81,8 @@ int main(int argc, char* argv[]) {
 
     //test_Bubble_in_Momentum_Space();
 
-    MPI_Finalize();
+
     return Catch::Session().run(argc, argv);
+    MPI_Finalize();
     //return 0;
 }

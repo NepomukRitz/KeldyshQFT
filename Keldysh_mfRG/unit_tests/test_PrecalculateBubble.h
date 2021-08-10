@@ -21,8 +21,8 @@
 template<typename Q>
 class test_PrecalculateBubble{
 public:
-    Propagator g;
-    Propagator s;
+    Propagator<Q> g;
+    Propagator<Q> s;
 #ifdef KELDYSH_FORMALISM
     int number_of_Keldysh_components = 9;
 #else
@@ -35,8 +35,8 @@ public:
         testing_state.initialize();
         sopt_state(testing_state, Lambda_ini);
 
-        g = Propagator(Lambda_ini, testing_state.selfenergy, 'g');
-        s = Propagator(Lambda_ini, testing_state.selfenergy, 's');
+        g = Propagator<Q>(Lambda_ini, testing_state.selfenergy, 'g');
+        s = Propagator<Q>(Lambda_ini, testing_state.selfenergy, 's');
         // g = Propagator(Lambda_ini, 'g');
         // s = Propagator(Lambda_ini, 's');
     }
@@ -76,7 +76,7 @@ template<typename Q> double test_PrecalculateBubble<Q>::iterate_through_channels
 
 template<typename Q> double test_PrecalculateBubble<Q>::find_largest_deviation_from_bubble(const bool dot_in, const char channel){
     PrecalculateBubble<Q> Pre_Bubble(g, s, dot_in, channel);
-    Bubble Usual_Bubble (g, s, dot_in);
+    Bubble<Q> Usual_Bubble (g, s, dot_in);
 
     vec<Q> ValuesOfPreBubble (number_of_Keldysh_components*nBOS*nFER*n_in);
     vec<Q> ValuesOfUsualBubble (number_of_Keldysh_components*nBOS*nFER*n_in);
@@ -170,10 +170,10 @@ class Runtime_comparison{
 #else
     int number_of_Keldysh_components = 1;
 #endif
-    Propagator g;
-    Propagator s;
+    Propagator<Q> g;
+    Propagator<Q> s;
     PrecalculateBubble<Q> Pre_Bubble; // free versions of the bubbles
-    Bubble Usual_Bubble;
+    Bubble<Q> Usual_Bubble;
 public:
     Runtime_comparison(): g (Lambda_ini, 'g'), s (Lambda_ini, 's'),
                        Pre_Bubble (g, s, 0, 'a'), Usual_Bubble (g, s, false){
@@ -181,8 +181,8 @@ public:
      testing_state.initialize();
      sopt_state(testing_state, Lambda_ini);
 
-     g = Propagator (Lambda_ini, testing_state.selfenergy,'g'); // this is done to obtain the frequency grid
-     s = Propagator (Lambda_ini, testing_state.selfenergy,'s');
+     g = Propagator<Q> (Lambda_ini, testing_state.selfenergy,'g'); // this is done to obtain the frequency grid
+     s = Propagator<Q> (Lambda_ini, testing_state.selfenergy,'s');
     }
 
     void test_runtimes(int max_number_of_iterations);
@@ -231,8 +231,8 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
 #ifdef HUBBARD_MODEL
 void test_Bubble_in_Momentum_Space(){
     double Lambda = 0.01;
-    Propagator g (Lambda, 'g');
-    Propagator s (Lambda, 's');
+    Propagator<comp> g (Lambda, 'g');
+    Propagator<comp> s (Lambda, 's');
 
     double starting_time = get_time();
     PrecalculateBubble<comp> DotBubble (g, s, true);

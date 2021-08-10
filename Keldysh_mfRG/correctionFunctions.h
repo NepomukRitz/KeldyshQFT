@@ -23,22 +23,63 @@
  */
 template <typename Q>
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
-                                 Q Sigma_H, double Delta, double eta_1, double eta_2) -> Q {
-#ifdef KELDYSH_FORMALISM
-#if REG==2
+                                 Q Sigma_H, double Delta, double eta_1, double eta_2, bool diff) -> Q {
+
     Q eps_p = glb_epsilon + Sigma_H;
-    if (w == 0. && eta_1 == eta_2)
+#if REG==2
+#ifdef KELDYSH_FORMALISM
+    if (diff) return 0.;
+    else {
+        if (w == 0. && eta_1 == eta_2)
         return  1./(    vmax  - eps_p + eta_1 * glb_i * Delta)
               + 1./(abs(vmin) + eps_p - eta_1 * glb_i * Delta);
     else
         return 1./(-w + (eta_1 - eta_2) * glb_i * Delta)
                 * log( ((vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta))
                       /((vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta)));
+
+    }
+    #else
+    if (diff)
+    {
+#ifdef PARTICLE_HOLE_SYMM
+        return 1. / 2. * (
+                  1. / (pow(-vmin + Delta, 2) - pow(w/2., 2))
+                + 1. / (pow( vmax + Delta, 2) - pow(w/2., 2))
+                );
 #else
-    return 0.;
+        return 1. / 2. * (
+                1. / (pow(-vmin - glb_i * eps_p + Delta, 2) - pow(w/2., 2))
+              + 1. / (pow( vmax + glb_i * eps_p + Delta, 2) - pow(w/2., 2))
+              );
+#endif
+    }
+    else{
+#ifdef PARTICLE_HOLE_SYMM
+
+        if (w == 0.)
+            return - 1. / (vmax + Delta)
+                   + 1. / (vmin - Delta);
+        else
+            return 1. / w
+                   * log(
+                    ((- vmin - w/2. + Delta) * (vmax - w/2.  + Delta))
+                    / ((- vmin + w/2.  + Delta) * (vmax + w/2.  + Delta))
+            );
+#else
+        if (w == 0.)
+        return - 1. / (vmax + glb_i * eps_p + Delta)
+               + 1. / (vmin + glb_i * eps_p - Delta);
+        else
+        return 1. / w
+               * log(
+                ((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. + glb_i * eps_p + Delta))
+                / ((- vmin + w/2. - glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta))
+        );
+#endif
+    }
 #endif
 #else
-    // TODO: implement
     return 0.;
 #endif
 }
@@ -57,22 +98,62 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
  */
 template <typename Q>
 auto correctionFunctionBubbleP (double w, double vmin, double vmax,
-                                Q Sigma_H, double Delta, double eta_1, double eta_2) -> Q {
-#ifdef KELDYSH_FORMALISM
-#if REG==2
+                                Q Sigma_H, double Delta, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
-    if (w == 2. * eps_p && eta_1 == - eta_2)
+#if REG==2
+#ifdef KELDYSH_FORMALISM
+    if (diff) return 0.;
+    else {
+        if (w == 2. * eps_p && eta_1 == - eta_2)
         return -1./(    vmax  + eta_1 * glb_i * Delta)
                -1./(abs(vmin) - eta_1 * glb_i * Delta);
     else
         return -1./(w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
                 * log( ((vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta))
                       /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
+
+    }
+    #else
+    // TODO: implement REG 2 for Matsubara formalism
+    if (diff)
+    {
+#ifdef PARTICLE_HOLE_SYMM
+        return -1. / 2. * (
+                  1. / (pow(-vmin + Delta, 2) - pow(w/2., 2))
+                + 1. / (pow( vmax + Delta, 2) - pow(w/2., 2))
+                );
 #else
-    return 0.;
+        return 1. / 2. * (
+                1. / (pow(-vmin + Delta, 2) - pow(w/2. + glb_i * eps_p, 2))
+              + 1. / (pow( vmax + Delta, 2) - pow(w/2. + glb_i * eps_p, 2))
+              );
+#endif
+    }
+    else{
+#ifdef PARTICLE_HOLE_SYMM
+    if ( w == 0.)
+        return + 1. / (vmax + Delta)
+               - 1. / (vmin - Delta);
+    else
+        return 1. / w
+               * log(
+                  ((- vmin + w/2. + Delta) * (vmax + w/2. + Delta))
+                / ((- vmin - w/2. + Delta) * (vmax - w/2. + Delta))
+                    );
+#else
+    if (eps_p == 0. and w == 0.)
+        return + 1. / (vmax + Delta)
+               - 1. / (vmin - Delta);
+    else
+        return 1. / (w + 2. * glb_i * eps_p)
+               * log(
+                  ((- vmin + w/2. + glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta))
+                / ((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. - glb_i * eps_p + Delta))
+                    );
+#endif
+    }
 #endif
 #else
-    // TODO: implement
     return 0.;
 #endif
 }
@@ -80,11 +161,11 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
 /** Wrapper for the two functions above, distinguishing a/t channels from p channel. */
 template <typename Q>
 auto correctionFunctionBubble (double w, double vmin, double vmax,
-                               Q Sigma_H, double Delta, double eta_1, double eta_2, char channel) -> Q {
+                               Q Sigma_H, double Delta, double eta_1, double eta_2, char channel, bool diff) -> Q {
     if (channel == 'p')
-        return correctionFunctionBubbleP(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2);
+        return correctionFunctionBubbleP(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, diff);
     else
-        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2);
+        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, diff);
 }
 
 /**
@@ -119,9 +200,9 @@ template <typename Q,
 auto asymp_corrections_bubble(K_class k,
                               const GeneralVertex<Q, symmetry_left>& vertex1,
                               const GeneralVertex<Q, symmetry_right>& vertex2,
-                              const Propagator& G,
+                              const Propagator<Q>& G,
                               double vmin, double vmax,
-                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel) -> Q {
+                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel, bool diff) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
@@ -129,6 +210,7 @@ auto asymp_corrections_bubble(K_class k,
     double Delta = (glb_Gamma + G.Lambda) / 2.;       // Hybridization (~ flow parameter) at which the bubble is evaluated
     Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
 
+#ifdef KELDYSH_FORMALISM
     // initialize the retarded/advanced flags depending on the bubble Keldysh index i2
     switch (i2) {
         // eta = +1  => Retarded
@@ -191,6 +273,9 @@ auto asymp_corrections_bubble(K_class k,
 
     // determine the Keldysh indices of left and right vertex
     vector<int> indices = indices_sum(i0, i2, channel);
+#else
+    vector<int> indices = {0, 0};
+#endif
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
@@ -216,7 +301,7 @@ auto asymp_corrections_bubble(K_class k,
     }
 
     // compute the value of the (analytically integrated) bubble
-    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, channel);
+    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, channel, diff);
 
     // In the a and p channel, return result. In the t channel, add the other spin component.
     if (channel != 't')
@@ -261,8 +346,9 @@ auto asymp_corrections_bubble(K_class k,
  * @return         : Analytical result of the integrated tails
  */
 template <typename Q>
-auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, double Delta, char type) -> comp {
+auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, double Delta, char type) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
+#ifdef KELDYSH_FORMALISM
     switch (type) {
         case 'g':   // full (non-differentiated) propagator
             switch (iK) {
@@ -286,6 +372,28 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
         default:;
     }
     return 0;
+#else
+
+#ifdef PARTICLE_HOLE_SYMM
+    switch (type) {
+        case 'g':   // full (non-differentiated) propagator
+            return  -log((abs(vmin) + Delta) / (vmax + Delta));
+        case 's':   // single-scale propagator
+            return -1. / 2. * (-1. / (vmax + Delta) + 1. / (-vmin + Delta));
+        default:;
+    }
+    return 0;
+#else
+    switch (type) {
+        case 'g':   // full (non-differentiated) propagator
+            return -glb_i * log((abs(vmin) - glb_i * eps_p + Delta) / (vmax + glb_i * eps_p + Delta));
+        case 's':   // single-scale propagator
+            return -glb_i / 2. * (-1. / (vmax + glb_i * eps_p + Delta) - 1. / (vmin + glb_i * eps_p - Delta));
+        default:;
+    }
+    return 0;
+#endif //PARTICLE_HOLE_SYMM
+#endif //KELDYSH_FORMALISM
 }
 
 /**
@@ -306,13 +414,14 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
  */
 template <typename Q>
 auto asymp_corrections_loop(const Vertex<Q>& vertex,
-                            const Propagator& G,
+                            const Propagator<Q>& G,
                             double vmin, double vmax,
                             double v, int iK, int i_in, const bool all_spins) -> Q {
 
     Q Sigma_H = G.selfenergy.asymp_val_R;       // Hartree self-energy
     double Delta = (glb_Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
 
+#ifdef KELDYSH_FORMALISM
     // Keldysh components of the vertex needed for retarded and Keldysh self-energy
     vector<vector<int> > components {{3, 6, 7}, {1, 4, 5}};
 
@@ -349,6 +458,26 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
     Q GK = correctionFunctionSelfEnergy(2, vmin, vmax, Sigma_H, Delta, G.type);
 
     return factorRetarded * GR + factorAdvanced * GA + factorKeldysh * GK;
+
+#else
+
+    // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
+    VertexInput input (0, 0., 0., v, i_in, 0, 't');
+    Q Vertexfactor = vertex[0].irred().val(0, i_in, 0) // Gamma_0
+                       + vertex[0].tvertex().left_same_bare(input, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+
+    // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
+    if (all_spins) {
+        Vertexfactor *= 2.;
+        input.spin = 1;
+        Vertexfactor += vertex[0].tvertex().left_same_bare(input, vertex[0].avertex());
+    }
+    // analytical integration of the propagator
+    Q Gfactor = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
+
+    return Vertexfactor * Gfactor;
+
+#endif
 }
 
 #endif //KELDYSH_MFRG_CORRECTIONFUNCTIONS_H

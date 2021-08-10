@@ -1,11 +1,23 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
+// For production: uncomment the following line to switch off assert()-functions
+//#define NDEBUG
+
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
 
+#ifndef KELDYSH_FORMALISM
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+#endif
+
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+    using state_datatype = double;
+#else
+    using state_datatype = comp;
+#endif
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD_MODEL
@@ -32,7 +44,11 @@ using namespace std;
 //#define STATIC_FEEDBACK
 
 /// Physical parameters ///
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+const double glb_T = 2./M_PI; //0.01;                     // Temperature
+#else
 const double glb_T = 0.01;                     // Temperature
+#endif
 #ifdef PARTICLE_HOLE_SYMM
     const double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
 #else
@@ -112,13 +128,13 @@ const int nFER2 = 51;//nFER;
 const int nBOS3 = 25; //nBOS;
 const int nFER3 = 25; //nFER;
 #else
-const int nBOS = 201;
-const int nFER = 200;
+const int nBOS = 401;
+const int nFER = 400;
 // Number of frequency points for K2 and K3 classes
 const int nBOS2 = 51;//nBOS;
 const int nFER2 = 50;//nFER;
-const int nBOS3 = 21; //nBOS;
-const int nFER3 = 21; //nFER;
+const int nBOS3 = 31; //nBOS;
+const int nFER3 = 30; //nFER;
 #endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
@@ -230,8 +246,8 @@ const int n_spin = 1;
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure for the Hubbard model
-int glb_N_q = 65; // Number of transfer momentum points in one dimension.
-int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
+const int glb_N_q = 9; // Number of transfer momentum points in one dimension.
+const int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
 
 #ifdef HUBBARD_MODEL
 const int n_in = glb_N_transfer;
@@ -275,7 +291,7 @@ rvec flow_grid(nODE);                                                           
 #define MPI_FLAG
 
 //Tolerance for closeness to grid points when interpolating
-const double inter_tol = 1e-9;
+const double inter_tol = 1e-10;
 
 //Tolerance for loop convergence
 const double converged_tol = 1e-7;

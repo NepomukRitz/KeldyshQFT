@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_TESTING_TEST_SYMMETRY_TRANSFORMATIONS_H
 
 #include "../symmetry_transformations.h"
+#include "../util.h"
 
 SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_transformations]") {
 
@@ -141,6 +142,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 #endif
             }
 #else
+#ifdef ZERO_TEMP
             AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
                 REQUIRE( indices_c.w  == -indices.w  );
 #if MAX_DIAG_CLASS > 1
@@ -148,6 +150,15 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
                 REQUIRE( indices_c.v2 == -indices.v1 );
 #endif
             }
+#else
+            AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
+                REQUIRE( indices_c.w  == -indices.w  );
+#if MAX_DIAG_CLASS > 1
+                REQUIRE( abs(-indices_c.v1 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( abs(-indices_c.v2 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+#endif
+            }
+#endif
 #endif
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'a' );
@@ -213,7 +224,11 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                 REQUIRE( indices1.w  == indices.w   );
 #if MAX_DIAG_CLASS > 1
                 REQUIRE( indices1.v1 == indices.v1  );
+#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
                 REQUIRE( indices1.v2 == -indices.v2 );
+#else
+                REQUIRE( abs(-indices1.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+#endif
 #endif
             }
             AND_THEN( "channel remains unchanged" ) {
@@ -240,7 +255,11 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             AND_THEN( "w and v2 are unchanged, v1 gets a minus sign" ) {
                 REQUIRE( indices2.w  == indices.w   );
 #if MAX_DIAG_CLASS > 1
+#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
                 REQUIRE( indices2.v1 == -indices.v1 );
+#else
+                REQUIRE( abs(-indices2.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+#endif
                 REQUIRE( indices2.v2 == indices.v2  );
 #endif
             }
@@ -268,8 +287,13 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             AND_THEN( "w remains unchanged, v1 and v2 get a minus sign" ) {
                 REQUIRE( indices3.w  == indices.w   );
 #if MAX_DIAG_CLASS > 1
+#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
                 REQUIRE( indices3.v1 == -indices.v1 );
                 REQUIRE( indices3.v2 == -indices.v2 );
+#else
+                REQUIRE( abs(-indices3.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( abs(-indices3.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+#endif
 #endif
             }
             AND_THEN( "channel remains unchanged" ) {
@@ -327,6 +351,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 #endif
             }
 #else
+#ifdef ZERO_TEMP
             AND_THEN( "v1 and v2 are flipped, all frequencies are multiplied with -1" ) {
                 REQUIRE( indices_c.w  == -indices.w );
 #if MAX_DIAG_CLASS > 1
@@ -334,6 +359,15 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                 REQUIRE( indices_c.v2 == -indices.v1 );
 #endif
             }
+#else
+            AND_THEN( "v1 and v2 are flipped, all frequencies are multiplied with -1" ) {
+                REQUIRE( indices_c.w  == -indices.w );
+#if MAX_DIAG_CLASS > 1
+                REQUIRE( abs(-indices_c.v1 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( abs(-indices_c.v2 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+#endif
+            }
+#endif
 #endif
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'p' );
@@ -513,6 +547,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
 #endif
             }
 #else
+#ifdef ZERO_TEMP
                 AND_THEN( "v1 and v2 get a minus sign, w remains unchanged" ) {
                 REQUIRE( indices_c.w  == indices.w );
 #if MAX_DIAG_CLASS > 1
@@ -520,6 +555,15 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
                 REQUIRE( indices_c.v2 == -indices.v2 );
 #endif
             }
+#else
+            AND_THEN( "v1 and v2 get a minus sign, w remains unchanged" ) {
+                REQUIRE( indices_c.w  == indices.w );
+#if MAX_DIAG_CLASS > 1
+                REQUIRE( abs(-indices_c.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( abs(-indices_c.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+#endif
+            }
+#endif
 #endif
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 't' );

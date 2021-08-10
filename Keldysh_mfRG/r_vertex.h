@@ -14,6 +14,7 @@
 #include "interpolations.h"           // frequency interpolations for vertices
 #include "symmetry_transformations.h" // symmetry transformations of frequencies
 #include "symmetry_table.h"           // table containing information when to apply which symmetry transformations
+#include "momentum_grid.h"            // functionality for the internal structure of the Hubbard model
 
 template <typename Q> class fullvert; // forward declaration of fullvert
 
@@ -99,6 +100,7 @@ public:
 #if MAX_DIAG_CLASS >= 0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
+
     /// Member functions for accessing/setting values of the vector K1 ///
 
     /** Return the value of the vector K1 at index i. */
@@ -123,6 +125,10 @@ public:
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
+
+    // TODO: Implement! Needed for the Hubbard model.
+    void K1_crossproject();
+    Q K1_BZ_average(const int iK, const int iw);
 
 #endif
 #if MAX_DIAG_CLASS >= 2
@@ -153,6 +159,9 @@ public:
      */
     void enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated);
 
+    // TODO: Implement! Needed for the Hubbard model.
+    void K2_crossproject(char channel_out);
+
 #endif
 #if MAX_DIAG_CLASS >= 3
     vec<Q> K3 = vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);  // data points of K3
@@ -181,6 +190,9 @@ public:
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
     void enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated);
+
+    // TODO: Implement! Needed for the Hubbard model.
+    void K3_crossproject(char channel_out);
 
 #endif
 #endif
@@ -258,9 +270,9 @@ public:
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    transfToR(input);
+    transfToR(input); // TODO: Would be possible to perform crossprojections here as well, but not very efficient??
 
-    Q K1_val, K2_val, K2b_val, K3_val;
+    Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
 #if MAX_DIAG_CLASS>=0
     K1_val = valsmooth<k1>(input, rvert_crossing);
@@ -279,7 +291,7 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rv
 
     transfToR(input);
 
-    Q K1_val, K2_val, K2b_val, K3_val;
+    Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
 #if MAX_DIAG_CLASS>=0
     K1_val = valsmooth<k1>(input, rvert_crossing, vertex_half2);
@@ -305,7 +317,7 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
     indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
     if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 
-    Q value;
+    Q value{};
 
     if (indices.channel != channel)
         // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
@@ -315,7 +327,10 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
         // otherwise return the interpolated value of the calling r vertex
         value = Interpolate<k,Q>()(indices, *(this));
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     if (indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
+#endif
+    assert(isfinite(value));
     return value;
 }
 template <typename Q>
@@ -370,7 +385,10 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
             value = Interpolate<k,Q>()(indices, *(this));
     }
 
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     if (indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
+#endif
+    assert(isfinite(value));
     return value;
 }
 
@@ -380,28 +398,28 @@ template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rve
 #elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2);
 #elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2b>(input, rvert_crossing, vertex_half2);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing);
 #elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2);
 #elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2>(input, rvert_crossing, vertex_half2);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return 0.;
@@ -410,7 +428,7 @@ template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rve
 #elif MAX_DIAG_CLASS == 3
     return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return 0.;
@@ -419,7 +437,7 @@ template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rve
 #elif MAX_DIAG_CLASS == 3
     return valsmooth<k2>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return 0.;
@@ -428,7 +446,7 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
 #elif MAX_DIAG_CLASS == 3
     return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 #endif
-};
+}
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
     return 0.;
@@ -437,8 +455,9 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
 #elif MAX_DIAG_CLASS == 3
     return valsmooth<k2b>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
 #endif
-};
+}
 
+#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     double w, v1, v2;
     switch (channel) {
@@ -514,6 +533,94 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     input.v1 = v1;
     input.v2 = v2;
 }
+#else
+template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
+    double w, v1, v2;
+    double floor2bf_w;
+    double floor2bf_inputw = floor2bfreq(input.w / 2.);
+    switch (channel) {
+        case 'a':
+            switch (input.channel) {
+                case 'a':
+                    return;                                                     // do nothing
+                case 'p':
+                    w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;    // input.w  = w_p
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_p
+                    v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    break;
+                case 't':
+                    w  = input.v1-input.v2;                                     // input.w  = w_t
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
+                    v2 = input.v1 + floor2bf_w - floor2bf_inputw;               // input.v2 = v'_t
+                    break;
+                case 'f':
+                    w  = input.v1 - input.v2;                                   // input.w  = v_1'
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.w - floor2bf_w;                                  // input.v1 = v_2'
+                    v2 = input.v2 - floor2bf_w;                                 // input.v2 = v_1
+                    break;
+                default:;
+            }
+            break;
+        case 'p':
+            switch (input.channel) {
+                case 'a':
+                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_a
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_a
+                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_a
+                    break;
+                case 'p':
+                    return;                                                         // do nothing
+                case 't':
+                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 =           - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_t
+                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
+                    break;
+                case 'f' :
+                    w  = input.w + input.v1;                                        // input.w  = v_1'
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = - input.v1 + floor2bf_w;                                   // input.v1 = v_2'
+                    v2 = input.v2 - w + floor2bf_w;                                 // input.v2 = v_1
+                    break;
+                default:;
+            }
+            break;
+        case 't':
+            switch (input.channel) {
+                case 'a':
+                    w  = input.v1-input.v2;                                     // input.w  = w_a
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_a
+                    v2 =           input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_a'
+                    break;
+                case 'p':
+                    w  = input.v1-input.v2;                                     // input.w  = w_p
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = - input.v1 + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
+                    v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    break;
+                case 't':
+                    return;                                                     // do nothing
+                case 'f':
+                    w  = input.w - input.v2;                                    // input.w  = v_1'
+                    floor2bf_w = floor2bfreq(w / 2.);
+                    v1 = input.v1 + floor2bf_w;                                 // input.v1 = v_2'
+                    v2 = input.v2 + floor2bf_w;                                 // input.v2 = v_1
+                    break;
+                default:;
+            }
+            break;
+        default:;
+    }
+    input.w  = w;
+    input.v1 = v1;
+    input.v2 = v2;
+}
+#endif
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
@@ -577,12 +684,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
 
 
 template<typename Q> auto sign_index(Q freq) -> int {
-    if (freq > 0){
-        return 1;
-    }
-    else {
-        return 0;
-    }
+    return (freq > 0);
 }
 
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) {
@@ -600,8 +702,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             double w_in = this->frequencies.b_K1.w[itw];
             IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
             int sign_w = sign_index(indices.w);
-            if (freq_transformations.K1[itK][sign_w] != 0){
-                Ti(indices, freq_transformations.K1[itK][sign_w]);
+            int trafo_index = freq_transformations.K1[itK][sign_w];
+            if (trafo_index != 0){
+                Ti(indices, trafo_index);
                 indices.iK = itK;
 
                 int sign_w_new = freq_components.K1[itK][sign_w];
@@ -615,9 +718,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                     result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
                 else
                     result = indices.prefactor * K1[itK * nw1 + itw_new];
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
                 if (indices.conjugate)
                     K1[itK * nw1 + itw] = conj(result);
                 else
+#endif
                     K1[itK * nw1 + itw] = result;
             }
 
@@ -626,8 +731,38 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
     }
 }
 
+template<typename Q>
+void rvert<Q>::K1_crossproject() {
+    /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
+    for (int iK = 0; iK < nK_K1; ++iK) {
+#pragma omp parallel for schedule(dynamic) default(none) shared(iK)
+        for (int iw = 0; iw < nw1; ++iw) {
+            Q projected_value = K1_BZ_average(iK, iw);
+            for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
+                K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
+            }
+        }
+    }
+}
 
-
+template<typename Q>
+Q rvert<Q>::K1_BZ_average(const int iK, const int iw) {
+    /// Perform the average over the BZ by calculating the q-sum over the REDUCED BZ (see notes for details!)
+    Q value = 0.;
+    value += K1_val(iK, iw, momentum_index(0, 0));
+    value += K1_val(iK, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
+    value += 2. * K1_val(iK, iw, momentum_index(glb_N_q - 1, 0));
+    for (int n = 1; n < glb_N_q - 1; ++n) {
+        value += 4. * K1_val(iK, iw, momentum_index(n, 0));
+        value += 4. * K1_val(iK, iw, momentum_index(glb_N_q - 1, n));
+        value += 4. * K1_val(iK, iw, momentum_index(n, n));
+        for (int np = 1; np < n; ++np) {
+            value += 8. * K1_val(iK, iw, momentum_index(n, np));
+        }
+    }
+    value /= 4. * (glb_N_q - 1) * (glb_N_q - 1);
+    return value;
+}
 
 #if MAX_DIAG_CLASS >= 2
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) {
@@ -641,6 +776,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             case 't': i0_tmp = non_zero_Keldysh_K2t[itK]; break;
             default: ;
         }
+
         for (int itw = 0; itw < nw2; itw++){
             for (int itv = 0; itv < nv2; itv++){
                 double w_in = this->frequencies.b_K2.w[itw];
@@ -648,32 +784,22 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                 IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
                 int sign_w = sign_index(w_in);
                 int sign_v1 = sign_index(v_in);
-                Ti(indices, freq_transformations.K2[itK][sign_w*2 + sign_v1]);
+                int trafo_index = freq_transformations.K2[itK][sign_w*2 + sign_v1];
+                Ti(indices, trafo_index);
                 indices.iK = itK;
 
-                if (freq_transformations.K2[itK][sign_w*2 + sign_v1] != 0) {
+                if (trafo_index != 0) {
 
-                    int sign_flat = freq_components.K2[itK][sign_w * 2 + sign_v1];
-                    int sign_w_new = sign_flat / 2;
-                    int sign_v1_new = sign_flat - sign_w_new * 2;
-                    int itw_new;
-                    int itv_new;
-                    if (sign_w == sign_w_new)
-                        itw_new = itw;
-                    else
-                        itw_new = nw2 - 1 - itw;
-                    if (sign_v1 == sign_v1_new)
-                        itv_new = itv;
-                    else
-                        itv_new = nv2 - 1 - itv;
                     Q result;
                     if (indices.asymmetry_transform)
-                        result = indices.prefactor * vertex_symmrelated.K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
+                        result = Interpolate<k2,Q>()(indices, vertex_symmrelated);
                     else
-                        result = indices.prefactor * K2[itK * nw2 * nv2 + itw_new * nv2 + itv_new];
+                        result = Interpolate<k2,Q>()(indices, *(this));
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
                     if (indices.conjugate)
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
                     else
+#endif
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
                 }
             }
@@ -681,6 +807,12 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
     }
 
 }
+
+template<typename Q>
+void rvert<Q>::K2_crossproject(char channel_out) {
+// TODO: Currently does nothing!
+}
+
 #endif
 
 #if MAX_DIAG_CLASS >= 3
@@ -695,50 +827,30 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
             for (int itv = 0; itv < nv3; itv++){
                 for (int itvp = 0; itvp < nv3; itvp++) {
                     double w_in = this->frequencies.b_K3.w[itw];
-                    //double v_in = this->frequencies.f_K3.w[itv];
-                    //double vp_in = this->frequencies.f_K3.w[itvp];
-                    IndicesSymmetryTransformations indices(i0_tmp, 0, 0, 0, 0, channel);
+                    double v_in = this->frequencies.f_K3.w[itv];
+                    double vp_in = this->frequencies.f_K3.w[itvp];
+                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
                     int sign_w = sign_index(w_in);
-                    //int sign_v1 = sign_index(v_in);
-                    //int sign_v2 = sign_index(vp_in);
                     int sign_f =  itv+itvp<nFER3? 0 : 1;    // this corresponds to "sign_index(v_in + vp_in)" assuming
-                    // that both v and vp use the same fermionic frequency grid
+                                                            // that both v and vp use the same fermionic frequency grid
                     int sign_fp = itv<=itvp? 0 : 1;         // this corresponds to "sign_index(v_in - vp_in)"  assuming
-                    // that both v and vp use the same fermionic frequency grid
-                    Ti(indices, freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp]);
+                                                            // that both v and vp use the same fermionic frequency grid
+                    int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
+                    Ti(indices, trafo_index);
+                    indices.iK = itK;
 
-                    if (freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp] != 0) {
-                        int sign_flat = freq_components.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
-                        int sign_w_new = sign_flat / 4;
-                        int sign_f_new = sign_flat / 2 - sign_w_new * 2;
-                        int sign_fp_new = sign_flat - sign_f_new * 2 - sign_w_new * 4;
-                        int sign_v1_new;
-                        int sign_v2_new;
+                    if (trafo_index != 0) {
 
-                        int itw_new;
-                        if (sign_w == sign_w_new)
-                            itw_new = itw;
-                        else
-                            itw_new = nw3 - 1 - itw;
-                        int itv_new = itv;
-                        int itvp_new = itvp;
-                        if (sign_f_new != sign_f) {
-                            itv_new = itvp + (nv3 - 1 - 2 * itvp) ;
-                            itvp_new = itv + (nv3 - 1 - 2 * itv);
-                        }
-                        if (sign_fp_new != sign_fp) {
-                            int it_temp = itv_new;
-                            itv_new = itvp_new;
-                            itvp_new = it_temp;
-                        }
                         Q result;
                         if (indices.asymmetry_transform)
-                            result = indices.prefactor * vertex_symmrelated.K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
+                            result = Interpolate<k3,Q>()(indices, vertex_symmrelated);
                         else
-                            result = indices.prefactor * K3[((itK * nw3 + itw_new) * nv3 + itv_new) * nv3 + itvp_new];
+                            result = Interpolate<k3,Q>()(indices, *(this));
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
                         if (indices.conjugate)
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = conj(result);
                         else
+#endif
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = result;
                     }
                 }
@@ -747,6 +859,13 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
     }
 
 }
+
+
+template<typename Q>
+void rvert<Q>::K3_crossproject(char channel_out) {
+    // TODO: Currently does nothing!
+}
+
 #endif
 
 
@@ -770,8 +889,11 @@ template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q valu
     K1[iK*nw1*n_in + iw*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
-    return K1[iK*nw1*n_in + iw*n_in + i_in];
+        return K1[iK*nw1*n_in + iw*n_in + i_in];
 }
+
+
+
 #endif
 
 #if MAX_DIAG_CLASS >= 2
@@ -794,7 +916,7 @@ template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in
     K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
-    return K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in];
+        return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
 }
 #endif
 
@@ -818,8 +940,9 @@ template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp,
     K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
-    return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
+        return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
 }
+
 #endif
 
 #endif //KELDYSH_MFRG_R_VERTEX_H

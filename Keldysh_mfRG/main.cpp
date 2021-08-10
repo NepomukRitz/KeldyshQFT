@@ -1,4 +1,7 @@
 #include <iostream>          // text input/output
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <bits/stdc++.h>
 #include "data_structures.h" // real/complex vector classes
 #include "write_data2file.h" // writing data into text or hdf5 files
 #include "parameters.h"
@@ -112,9 +115,20 @@ auto main() -> int {
 #endif
 
 #ifdef KELDYSH_FORMALISM
+#ifdef HUBBARD_MODEL
+    print("Hubbard model in Keldysh formalism: \n");
+#else
     print("SIAM in Keldysh formalism: \n");
+#endif // HUBBARD_MODEL
+#else
+#ifdef HUBBARD_MODEL
+    print("Hubbard model in Keldysh formalism: \n");
 #else
     print("SIAM in Matsubara formalism: \n");
+#endif // HUBBARD_MODEL
+#endif
+#ifdef PARTICLE_HOLE_SYMM
+    print("Using PARTICLE HOLE Symmetry\n");
 #endif
 
     print("U for this run is: ", glb_U, true);
@@ -131,8 +145,19 @@ auto main() -> int {
     print("nFER1 = ", nFER, true);
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
+#ifdef HUBBARD_MODEL
+    print("n_in = ", n_in, true);
+#endif
 
-    string dir = "../Data/";
+    const char* dir = "../Data/";
+    string dir_str = dir;
+    // Creating Data directory
+    if (mkdir(dir, 0777) == -1)
+        cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << endl;
+
+    else
+        cout << "Directory "  << dir << " created \n";
+
     string filename = generate_filename();
 
 #ifdef BSE_SDE
@@ -141,7 +166,11 @@ auto main() -> int {
     check_BSE_and_SDE(dir, filename);
 
 #else
-    n_loop_flow(dir+filename, 0);
+
+    //test_K2<state_datatype>(Lambda_ini, true);
+    test_PT4(1.8, true);
+    //n_loop_flow(dir_str+filename);
+    ///test_integrate_over_K1<state_datatype>(1.8);
 
 //    double Lambda = find_best_Lambda();
 //
