@@ -80,6 +80,9 @@ public:
     rvert<Q> tvertex;
     bool Ir = false; // determines if the vertex is a full vertex or irreducible in channel r
                      // (r is determined by VertexInput in the readout functions)
+    bool only_same_channel = false; // If this flag is set true, vertex returns only value of channel r when inserted
+                                    // into r bubble (i.e. in left/right_same/diff_bare functions), and no gammaRb. This
+                                    // is needed for correct computation of the central part in multiloop contributions.
 
     fullvert() : avertex('a'),
                  pvertex('p'),
@@ -109,6 +112,8 @@ public:
     // Combination of those diagrams that connect to the different bare vertices on the right side: K2b, K3, gamma_bar{r}
     auto right_diff_bare(VertexInput input) const -> Q;
     auto right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+
+    void reorder_due2antisymmetry(const fullvert<Q>& right_vertex);
 
     // Initialize vertex
     void initialize(Q val);
@@ -182,20 +187,20 @@ public:
     }
 };
 
-/** symmetric vertex container class (left and right part are equal) */
+/** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
 template <typename Q>
 class symmetric {
     fullvert<Q> vertex;
 public:
     symmetric() {}
     symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
-    symmetric(const fullvert<Q>& left_vertex, const fullvert<Q>& right_vertex) : vertex(left_vertex) {}
+    symmetric(const fullvert<Q>& half1, const fullvert<Q>& half2) : vertex(half1) {}
 
-    // return the left and right part (equal for this class)
-    fullvert<Q>& left() { return vertex; }
-    fullvert<Q>& right() { return vertex; }
-    const fullvert<Q>& left() const { return vertex; }
-    const fullvert<Q>& right() const { return vertex; }
+    // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
+    fullvert<Q>& half1() { return vertex; }
+    fullvert<Q>& half2() { return vertex; }
+    const fullvert<Q>& half1() const { return vertex; }
+    const fullvert<Q>& half2() const { return vertex; }
 
     // wrappers for access functions of fullvert
     auto value(VertexInput input) const -> Q           { return vertex.value(input); }
@@ -247,32 +252,32 @@ public:
     }
 };
 
-/** non-symmetric vertex container class (left and right part are different) */
+/** non-symmetric vertex container class (half 1 and half 2 are different) */
 template <typename Q>
 class non_symmetric {
-    fullvert<Q> left_vertex, right_vertex;
+    fullvert<Q> vertex_half1, vertex_half2;
 public:
     non_symmetric() {}
     non_symmetric(const fullvert<Q>& vertex_in)
-            : left_vertex(vertex_in), right_vertex(vertex_in) {
+            : vertex_half1(vertex_in), vertex_half2(vertex_in) {
         print("Warning: non-symmetric vertex initialized with only one fullvert.", true);
     }
-    non_symmetric(const fullvert<Q>& left_vertex_in, const fullvert<Q>& right_vertex_in)
-            : left_vertex(left_vertex_in), right_vertex(right_vertex_in) {}
+    non_symmetric(const fullvert<Q>& half1_in, const fullvert<Q>& half2_in)
+            : vertex_half1(half1_in), vertex_half2(half2_in) {}
 
-    // return the left and right part
-    fullvert<Q>& left() { return left_vertex; }
-    fullvert<Q>& right() { return right_vertex; }
-    const fullvert<Q>& left() const { return left_vertex; }
-    const fullvert<Q>& right() const { return right_vertex; }
+    // return half 1 and half 2
+    fullvert<Q>& half1() { return vertex_half1; }
+    fullvert<Q>& half2() { return vertex_half2; }
+    const fullvert<Q>& half1() const { return vertex_half1; }
+    const fullvert<Q>& half2() const { return vertex_half2; }
 
     // wrappers for access functions of fullvert
-    auto value(VertexInput input) const -> Q           { return left_vertex.value(input, right_vertex); }
-    auto gammaRb(VertexInput input) const -> Q         { return left_vertex.gammaRb(input, right_vertex); }
-    auto left_same_bare(VertexInput input)  const -> Q { return left_vertex.left_same_bare(input, right_vertex); }
-    auto right_same_bare(VertexInput input) const -> Q { return left_vertex.right_same_bare(input, right_vertex); }
-    auto left_diff_bare(VertexInput input)  const -> Q { return left_vertex.left_diff_bare(input, right_vertex); }
-    auto right_diff_bare(VertexInput input) const -> Q { return left_vertex.right_diff_bare(input, right_vertex); }
+    auto value(VertexInput input) const -> Q           { return vertex_half1.value(input, vertex_half2); }
+    auto gammaRb(VertexInput input) const -> Q         { return vertex_half1.gammaRb(input, vertex_half2); }
+    auto left_same_bare(VertexInput input)  const -> Q { return vertex_half1.left_same_bare(input, vertex_half2); }
+    auto right_same_bare(VertexInput input) const -> Q { return vertex_half1.right_same_bare(input, vertex_half2); }
+    auto left_diff_bare(VertexInput input)  const -> Q { return vertex_half1.left_diff_bare(input, vertex_half2); }
+    auto right_diff_bare(VertexInput input) const -> Q { return vertex_half1.right_diff_bare(input, vertex_half2); }
 
     auto operator+= (const non_symmetric<Q>& vertex1) -> non_symmetric<Q> {
         this->vertex += vertex1.vertex;
@@ -324,31 +329,37 @@ class vertex_container {
 public:
     vertex_container() {}
     vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
-    vertex_container(const fullvert<Q>& left_vertex, const fullvert<Q>& right_vertex)
-                    : vertex(left_vertex, right_vertex) {}
+    vertex_container(const fullvert<Q>& half1, const fullvert<Q>& half2)
+                    : vertex(half1, half2) {}
 
-    // return the left and right part
-    fullvert<Q>& left() { return vertex.left(); }
-    fullvert<Q>& right() { return vertex.right(); }
-    const fullvert<Q>& left() const { return vertex.left(); }
-    const fullvert<Q>& right() const { return vertex.right(); }
+    // return half 1 and half 2
+    fullvert<Q>& half1() { return vertex.half1(); }
+    fullvert<Q>& half2() { return vertex.half2(); }
+    const fullvert<Q>& half1() const { return vertex.half1(); }
+    const fullvert<Q>& half2() const { return vertex.half2(); }
 
     // wrappers to access individual members of fullvert
-    irreducible<Q>& irred() { return left().irred; }
-    rvert<Q>& avertex() { return left().avertex; }
-    rvert<Q>& pvertex() { return left().pvertex; }
-    rvert<Q>& tvertex() { return left().tvertex; }
-    bool Ir() { return left().Ir; }
+    irreducible<Q>& irred() { return half1().irred; }
+    rvert<Q>& avertex() { return half1().avertex; }
+    rvert<Q>& pvertex() { return half1().pvertex; }
+    rvert<Q>& tvertex() { return half1().tvertex; }
+    bool Ir() { return half1().Ir; }
+    bool only_same_channel() { return half1().only_same_channel; }
 
-    const irreducible<Q>& irred() const { return left().irred; }
-    const rvert<Q>& avertex() const { return left().avertex; }
-    const rvert<Q>& pvertex() const { return left().pvertex; }
-    const rvert<Q>& tvertex() const { return left().tvertex; }
-    const bool Ir() const { return left().Ir; }
+    const irreducible<Q>& irred() const { return half1().irred; }
+    const rvert<Q>& avertex() const { return half1().avertex; }
+    const rvert<Q>& pvertex() const { return half1().pvertex; }
+    const rvert<Q>& tvertex() const { return half1().tvertex; }
+    const bool Ir() const { return half1().Ir; }
+    const bool only_same_channel() const { return half1().only_same_channel; }
 
     void set_Ir(bool Ir) {
-        vertex.left().Ir = Ir;
-        vertex.right().Ir = Ir;
+        vertex.half1().Ir = Ir;
+        vertex.half2().Ir = Ir;
+    }
+    void set_only_same_channel(bool only_same_channel) {
+        vertex.half1().only_same_channel = only_same_channel;
+        vertex.half2().only_same_channel = only_same_channel;
     }
 
     // wrappers for access functions of fullvert
@@ -361,22 +372,22 @@ public:
 
     // wrappers for other functions of fullvert
     void initialize(Q val) {
-        left().initialize(val);
-        right().initialize(val);
+        half1().initialize(val);
+        half2().initialize(val);
     }
     template <template <typename> class symmetry_type_in>
     void set_frequency_grid(const vertex_container<Q, symmetry_type_in>& vertex_in) {
-        left().set_frequency_grid(vertex_in.left());
-        right().set_frequency_grid(vertex_in.right());
+        half1().set_frequency_grid(vertex_in.half1());
+        half2().set_frequency_grid(vertex_in.half2());
     }
     void update_grid(double Lambda) {
-        left().update_grid(Lambda);
-        right().update_grid(Lambda);
+        half1().update_grid(Lambda);
+        half2().update_grid(Lambda);
     }
-    double sum_norm(int i) { return left().sum_norm(i); }
-    double norm_K1(int i) { return left().norm_K1(i); }
-    double norm_K2(int i) { return left().norm_K2(i); }
-    double norm_K3(int i) { return left().norm_K3(i); }
+    double sum_norm(int i) { return half1().sum_norm(i); }
+    double norm_K1(int i) { return half1().norm_K1(i); }
+    double norm_K2(int i) { return half1().norm_K2(i); }
+    double norm_K3(int i) { return half1().norm_K3(i); }
 
     auto operator+= (const vertex_container<Q, symmetry_type>& vertex1) -> vertex_container<Q, symmetry_type> {
         this->vertex += vertex1.vertex;
@@ -488,8 +499,11 @@ public:
     }
 
     double norm(){
-        //TODO Implement a reasonable norm here
-        return 1.;
+        double result = 0.;
+        for (int i=0; i<this->size(); ++i) {
+            result += (*this)[i].sum_norm(2);
+        }
+        return result;
     }
 
     void set_frequency_grid(const GeneralVertex<Q, symmetry_type>& vertex) {
@@ -509,10 +523,15 @@ public:
             (*this)[i].set_Ir(Ir);
         }
     }
+    void set_only_same_channel(bool only_same_channel) {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].set_only_same_channel(only_same_channel);
+        }
+    }
 
 };
 
-/** Define Vertex as symmetric GeneralVertex */ // TODO: remove this and (globally) rename GeneralVertex -> Vertex
+/** Define Vertex as symmetric GeneralVertex */ // TODO: maybe remove this and (globally) rename GeneralVertex -> Vertex ?
 template <typename Q>
 using Vertex = GeneralVertex<Q, symmetric>;
 
@@ -615,6 +634,8 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input, const fullve
 template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
 
     switch (input.channel){
         case 'a':
@@ -630,7 +651,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if DIAG_CLASS <= 1
+    #if MAX_DIAG_CLASS <= 1
     VertexInput input_p = input;
     VertexInput input_at = input;
     input_p.w = 2*glb_mu;
@@ -653,13 +674,14 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
     }
     #endif
 #endif
-    if (Ir)
-        return gamma0;
+    assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
 }
 template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
 
     switch (input.channel){
         case 'a':
@@ -675,7 +697,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if DIAG_CLASS <= 1
+    #if MAX_DIAG_CLASS <= 1
     VertexInput input_p = input;
     VertexInput input_at = input;
     input_p.w = 2*glb_mu;
@@ -698,14 +720,15 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
     }
     #endif
 #endif
-    if (Ir)
-        return gamma0;
+    assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
 }
 
 template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
 
     switch (input.channel){
         case 'a':
@@ -722,7 +745,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if DIAG_CLASS <= 1
+    #if MAX_DIAG_CLASS <= 1
     VertexInput input_p = input;
     VertexInput input_at = input;
     input_p.w = 2*glb_mu;
@@ -745,13 +768,14 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
     }
     #endif
 #endif
-    if (Ir)
-        return gamma0;
+    assert(isfinite(K1_K2));
     return gamma0 + K1_K2;
 }
 template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
 
     switch (input.channel){
         case 'a':
@@ -768,7 +792,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if DIAG_CLASS <= 1
+    #if MAX_DIAG_CLASS <= 1
     VertexInput input_p = input;
     VertexInput input_at = input;
     input_p.w = 2*glb_mu;
@@ -791,16 +815,19 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
     }
     #endif
 #endif
-    if (Ir)
-        return gamma0;
+    assert(isfinite(K1_K2));
     return gamma0 + K1_K2;
 }
 
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const -> Q {
     Q K2_K3, gamma_Rb;
-#if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input);
+    if (Ir) {
+#if MAX_DIAG_CLASS >= 2
+        gamma_Rb = gammaRb(input);
+        assert(isfinite(gamma_Rb));
 #endif
+        return gamma_Rb;
+    }
 
     switch (input.channel){
         case 'a':
@@ -815,15 +842,22 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
         default:
             return 0.;
     }
-    if (Ir)
-        return gamma_Rb;
+    assert(isfinite(K2_K3));
+    if (only_same_channel)
+        return K2_K3;
+
+    gamma_Rb = gammaRb(input);
     return K2_K3 + gamma_Rb;
 }
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2_K3, gamma_Rb;
-#if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input);
+    if (Ir) {
+#if MAX_DIAG_CLASS >= 2
+        gamma_Rb = gammaRb(input, right_vertex);
+        assert(isfinite(gamma_Rb));
 #endif
+        return gamma_Rb;
+    }
 
     switch (input.channel){
         case 'a':
@@ -838,16 +872,23 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const 
         default:
             return 0.;
     }
-    if (Ir)
-        return gamma_Rb;
+    assert(isfinite(K2_K3));
+    if (only_same_channel)
+        return K2_K3;
+
+    gamma_Rb = gammaRb(input, right_vertex);
     return K2_K3 + gamma_Rb;
 }
 
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const -> Q {
     Q K2b_K3, gamma_Rb;
-#if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input);
+    if (Ir) {
+#if MAX_DIAG_CLASS >= 2
+        gamma_Rb = gammaRb(input);
+        assert(isfinite(gamma_Rb));
 #endif
+        return gamma_Rb;
+    }
 
     switch (input.channel){
         case 'a':
@@ -862,16 +903,22 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
         default:
             return 0.;
     }
-    if (Ir)
-        return gamma_Rb;
+    assert(isfinite(K2b_K3));
+    if (only_same_channel)
+        return K2b_K3;
+
+    gamma_Rb = gammaRb(input);
     return K2b_K3 + gamma_Rb;
 }
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2b_K3, gamma_Rb;
-#if DIAG_CLASS >= 2
-    gamma_Rb = gammaRb(input);
+    if (Ir) {
+#if MAX_DIAG_CLASS >= 2
+        gamma_Rb = gammaRb(input, right_vertex);
+        assert(isfinite(gamma_Rb));
 #endif
-
+        return gamma_Rb;
+    }
     switch (input.channel){
         case 'a':
             K2b_K3 = avertex.right_diff_bare(input, tvertex, right_vertex);
@@ -885,9 +932,29 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const
         default:
             return 0.;
     }
-    if (Ir)
-        return gamma_Rb;
+    assert(isfinite(K2b_K3));
+    if (only_same_channel)
+        return K2b_K3;
+
+    gamma_Rb = gammaRb(input, right_vertex);
     return K2b_K3 + gamma_Rb;
+}
+
+template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(const fullvert<Q>& right_vertex){
+    avertex.enforce_freqsymmetriesK1(right_vertex.avertex);
+    pvertex.enforce_freqsymmetriesK1(right_vertex.pvertex);
+    tvertex.enforce_freqsymmetriesK1(right_vertex.tvertex);
+#if MAX_DIAG_CLASS >1
+    avertex.enforce_freqsymmetriesK2(right_vertex.avertex);
+    pvertex.enforce_freqsymmetriesK2(right_vertex.pvertex);
+    tvertex.enforce_freqsymmetriesK2(right_vertex.tvertex);
+#endif
+#if MAX_DIAG_CLASS >2
+    avertex.enforce_freqsymmetriesK3(right_vertex.avertex);
+    pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
+    tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
+#endif
+
 }
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {
@@ -1088,13 +1155,13 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
 
 template <typename Q> auto fullvert<Q>::sum_norm(const int p) -> double {
     double result = 0.;
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
     result += norm_K1(p);
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     result += norm_K2(p);
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     result += norm_K3(p);
 #endif
     return result;

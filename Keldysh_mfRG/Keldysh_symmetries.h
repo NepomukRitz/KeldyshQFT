@@ -55,6 +55,7 @@ auto alphas(int index) -> vector<int> {
  */
 auto indices_sum(int i0, int i2, const char channel) -> vector<int> {
     vector<int> indices (2);              // Return vector
+#ifdef KELDYSH_FORMALISM
     vector<int> alphas_i0 = alphas(i0);   // Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
     vector<int> alphas_i2 = alphas(i2);   // Calculate the alphas of each input. Refer to these alphas as (34|3'4')
 
@@ -74,6 +75,9 @@ auto indices_sum(int i0, int i2, const char channel) -> vector<int> {
             break;
         default:;
     }
+#else
+    indices = {0, 0};
+#endif
     return indices;
 }
 

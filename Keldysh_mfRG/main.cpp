@@ -1,9 +1,13 @@
 #include <iostream>          // text input/output
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <bits/stdc++.h>
 #include "data_structures.h" // real/complex vector classes
 #include "write_data2file.h" // writing data into text or hdf5 files
 #include "parameters.h"
 #include <mpi.h>
 #include "mpi_setup.h"
+#include "testFunctions.h"
 #include "solvers.h"
 #include "frequency_grid.h"
 #include "util.h"
@@ -16,11 +20,9 @@
 #include "state.h"
 #include "loop.h"
 #include "bubbles.h"
-#include "testFunctions.h"
 #include "hdf5_routines.h"
 #include "flow.h"
 #include "tests/omp_test.h"
-//#include "bethe-salpeter.h"
 #include <cassert>
 
 using namespace std;
@@ -69,7 +71,7 @@ auto find_best_Lambda() -> double{
 
 
 string generate_filename() {
-    string klass = "K" + to_string(DIAG_CLASS) + "_";
+    string klass = "K" + to_string(MAX_DIAG_CLASS) + "_";
     string loops = to_string(N_LOOPS) + "LF_";
     string n1 = "n1=" + to_string(nBOS) + "_";
     string n2 = "n2=" + to_string(nBOS2) + "_";
@@ -82,12 +84,12 @@ string generate_filename() {
     string extension = ".h5";
 
     string filename = klass + loops + n1;
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
     filename += n2;
 #elif defined(STATIC_FEEDBACK)
     filename += "static_";
 #endif
-#if DIAG_CLASS >= 3
+#if MAX_DIAG_CLASS >= 3
     filename += n3;
 #endif
     filename += gamma;
@@ -106,10 +108,27 @@ auto main() -> int {
     MPI_Init(nullptr, nullptr);
 #endif
 #ifdef STATIC_FEEDBACK
-    assert(DIAG_CLASS == 1);
+    assert(MAX_DIAG_CLASS == 1);
 #endif
-#if DIAG_CLASS<2
+#if MAX_DIAG_CLASS<2
     assert(N_LOOPS < 2);
+#endif
+
+#ifdef KELDYSH_FORMALISM
+#ifdef HUBBARD_MODEL
+    print("Hubbard model in Keldysh formalism: \n");
+#else
+    print("SIAM in Keldysh formalism: \n");
+#endif // HUBBARD_MODEL
+#else
+#ifdef HUBBARD_MODEL
+    print("Hubbard model in Keldysh formalism: \n");
+#else
+    print("SIAM in Matsubara formalism: \n");
+#endif // HUBBARD_MODEL
+#endif
+#ifdef PARTICLE_HOLE_SYMM
+    print("Using PARTICLE HOLE Symmetry\n");
 #endif
 
     print("U for this run is: ", glb_U, true);
@@ -126,8 +145,19 @@ auto main() -> int {
     print("nFER1 = ", nFER, true);
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
+#ifdef HUBBARD_MODEL
+    print("n_in = ", n_in, true);
+#endif
 
-    string dir = "../Data/";
+    const char* dir = "../Data/";
+    string dir_str = dir;
+    // Creating Data directory
+    if (mkdir(dir, 0777) == -1)
+        cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << endl;
+
+    else
+        cout << "Directory "  << dir << " created \n";
+
     string filename = generate_filename();
 
 #ifdef BSE_SDE
@@ -137,7 +167,10 @@ auto main() -> int {
 
 #else
 
-    n_loop_flow(dir+filename);
+    //test_K2<state_datatype>(Lambda_ini, true);
+    test_PT4(1.8, true);
+    //n_loop_flow(dir_str+filename);
+    ///test_integrate_over_K1<state_datatype>(1.8);
 
 //    double Lambda = find_best_Lambda();
 //

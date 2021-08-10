@@ -17,6 +17,9 @@
 using namespace std;
 typedef complex<double> comp; // Complex number
 const comp glb_i (0., 1.);    // Imaginary unit
+auto isfinite(comp z) -> bool {
+    return isfinite(real(z)) and isfinite(imag(z));
+}
 
 /// DECLARATIONS ///
 
@@ -29,17 +32,20 @@ public:
     vec(int n, T value) : vector<T> (n, value) {};   // constructor with number of elements and value
     template <class InputIterator>
     vec (InputIterator first, InputIterator last)
-     : vector<T> (first, last) {};                   // constructor from interators to copy parts of existing vector
+     : vector<T> (first, last) {};                   // constructor from iterators to copy parts of existing vector
     vec(initializer_list<T> m) : vector<T> (m) {};   // constructor from initializer list
 
     T operator() (int i) {return (*this)[i]; }	     // operator for element access
+    vec<T> operator() (int i1, int i2);              // get a subvector {x[i1], ..., x[i2]}
 
-    vec<T> inv();         // element-wise inverse
+    vec<T> inv() const;   // element-wise inverse
     vec<double> real();   // element-wise real part
     vec<double> imag();   // element-wise imaginary part
     vec<double> abs();    // element-wise absolute value
     vec<T> conj();        // element-wise complex conjugate
     double max_norm();    // maximum norm
+    vec<T> diff();        // vector of differences between adjacent elements
+    T sum();              // sum of all elements
 
     vec<T> operator+= (const vec<T>& m);     // element-wise addition of two vectors
     vec<T> operator+= (const T& c);          // addition of a constant
@@ -54,17 +60,30 @@ public:
     friend vec<T> operator+ (vec<T> lhs, const T& rhs) {      // addition of a constant
         lhs += rhs; return lhs;
     };
+    friend vec<T> operator+ (const T& lhs, vec<T> rhs) {      // addition of a constant from the left (commutative)
+        rhs += lhs; return rhs;
+    };
     friend vec<T> operator- (vec<T> lhs, const vec<T>& rhs) { // element-wise subtraction of two vectors
         lhs -= rhs; return lhs;
     };
     friend vec<T> operator- (vec<T> lhs, const T& rhs) {      // subtraction of a constant
         lhs -= rhs; return lhs;
     };
+    friend vec<T> operator- (const T& lhs, vec<T> rhs) {      // subtraction of a constant from the left
+        // lhs - rhs = rhs * (-1) + lhs
+        rhs *= -1; rhs += lhs; return rhs;
+    };
     friend vec<T> operator* (vec<T> lhs, const vec<T>& rhs) { // element-wise multiplication of two vectors
         lhs *= rhs; return lhs;
     };
-    friend vec<T> operator* (vec<T> lhs, const T& rhs) {      // multiplication with a constant
+    friend vec<T> operator* (vec<T> lhs, const T& rhs) {      // multiplication with a constant from the right
         lhs *= rhs; return lhs;
+    };
+    friend vec<T> operator* (const T& lhs, vec<T> rhs) {      // multiplication with a constant from the left
+        rhs *= lhs; return rhs;
+    };
+    friend vec<T> operator/ (vec<T> lhs, const vec<T>& rhs) { // element-wise division of two vectors
+        lhs *= rhs.inv(); return lhs;
     };
 };
 
@@ -135,9 +154,19 @@ vec<T> vec<T>::operator*= (const T& c) {
     return *this;
 }
 
+// get a subvector {x[i1], ..., x[i2]}
+// if indices are negative, count from the end
+template <typename T>
+vec<T> vec<T>::operator() (int i1, int i2) {
+    auto it1 = (i1 >= 0) ? this->begin() : this->end();
+    auto it2 = (i2 >= 0) ? this->begin() : this->end();
+    vec<T> subvector (it1 + i1, it2 + i2 + 1);
+    return subvector;
+}
+
 // element-wise inverse
 template <typename T>
-vec<T> vec<T>::inv() {
+vec<T> vec<T>::inv() const {
     vec<T> temp (this->size());
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
@@ -218,6 +247,19 @@ double vec<T>::max_norm() {
     return out;
 }
 
+// vector of differences between adjacent elements
+template <typename T>
+vec<T> vec<T>::diff() {
+    vec<T> xp (this->begin() + 1, this->end()); // second -> last element
+    vec<T> xm (this->begin(), this->end() - 1); // first -> second to last element
+    return xp - xm;                             // compute differences
+}
+
+// sum of all elements
+template <typename T>
+T vec<T>::sum() {
+    return accumulate(this->begin(), this->end(), (T)0);
+}
 
 /// NON-MEMBER FUNCTIONS ///
 

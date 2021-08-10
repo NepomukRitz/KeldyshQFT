@@ -31,6 +31,7 @@ public:
     void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
     void update_grid(double Lambda);  // Interpolate self-energy to updated grid
     auto norm(int p) -> double;
+    auto norm() -> double;
 
     // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
@@ -41,22 +42,24 @@ public:
         lhs += rhs;
         return lhs;
     }
-    auto operator*= (Q alpha) -> SelfEnergy<Q> {
+    template <typename  Qfac>
+    auto operator*= (Qfac alpha) -> SelfEnergy<Q> {
         this->Sigma *= alpha;
         return *this;
     }
-    friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const Q& rhs) {
+    template <typename  Qfac>
+    friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const Qfac& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator*= (double alpha) -> SelfEnergy<Q> {
-        this->Sigma *= alpha;
-        return *this;
-    }
-    friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const double& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
+    //auto operator*= (double alpha) -> SelfEnergy<Q> {
+    //    this->Sigma *= alpha;
+    //    return *this;
+    //}
+    //friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const double& rhs) {
+    //    lhs *= rhs;
+    //    return lhs;
+   // }
     auto operator-= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma -= self1.Sigma;
         return *this;
@@ -78,8 +81,11 @@ public:
  * @param valK  : Value for the constant Keldyh self-energy
  */
 template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
-    //Assign self-energy to initial values
+// in particle-hole symmetric case (Matsubara formalism) the self-energy vector only stores the imaginary part -> initialize to zero
+// in all other cases: initialize to the Hartree value
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
 #pragma omp parallel for
+
     for (int iv=0; iv<nSE; ++iv) {
         for (int i_in=0; i_in<n_in; ++i_in) {
             this->setself(0, iv, i_in, valR);
@@ -89,6 +95,7 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
         }
     }
     this-> asymp_val_R = valR;
+#endif
 }
 
 /**
@@ -236,6 +243,11 @@ template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
         }
         return pow(result, 1./((double)p));
     }
+}
+
+/* standard norm: 2-norm */
+template <typename Q> auto SelfEnergy<Q>::norm() -> double {
+    return this->norm(2);
 }
 
 
