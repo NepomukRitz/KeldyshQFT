@@ -7,18 +7,18 @@
 #ifndef KELDYSH_MFRG_BETHE_SALPETER_H
 #define KELDYSH_MFRG_BETHE_SALPETER_H
 
-#include "parameters.h"
-#include "correctionFunctions.h"
-#include "state.h"
+#include "../parameters.h"
+#include "../correctionFunctions.h"
+#include "../state.h"
 #include "diagrammatic_combinations.h"
-#include "integrator.h"
-#include "bubbles.h"
-#include "solvers.h"
-#include "hdf5_routines.h"
-#include "data_structures.h"
-#include "write_data2file.h"
-#include "loop.h"
-#include "vertex.h"
+#include "../integrator.h"
+#include "../bubbles.h"
+#include "../solvers.h"
+#include "../hdf5_routines.h"
+#include "../data_structures.h"
+#include "../write_data2file.h"
+#include "../loop.h"
+#include "../vertex.h"
 #include <iostream>
 
 rvec reconstruct_grid(){
@@ -344,8 +344,8 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
     int mpi_size = mpi_world_size(); // number of mpi processes
     int mpi_rank = mpi_world_rank(); // number of the current mpi process
 
-#ifdef DIAG_CLASS
-#if DIAG_CLASS>=0
+#ifdef MAX_DIAG_CLASS
+#if MAX_DIAG_CLASS>=0
 //    double tK1 = get_time();
     /*K1 contributions*/
     int n_mpi = 1;                      // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
@@ -395,7 +395,7 @@ void Bethe_Salpeter_bubble(Vertex<Q>& lhs_vertex, const Vertex<Q>& vertex1, cons
 #endif
 
 
-#if DIAG_CLASS>=2
+#if MAX_DIAG_CLASS>=2
 //    double tK2 = get_time();
     /*K2 contributions*/
     n_mpi = nK_K2;
@@ -513,13 +513,13 @@ void check_BSE_and_SDE(const string& dir, const H5std_string& filename){
         //p of the p-norm
         int p = 2;
 
-#if DIAG_CLASS >= 0
+#if MAX_DIAG_CLASS >= 0
         norm_K1_fRG.emplace_back(fRG_vertex[0].norm_K1(p));
         norm_K1_BSE.emplace_back(bethe_salpeter_vertex[0].norm_K1(p));
         K1_diff_rel.emplace_back(vertex_diff[0].norm_K1(p)/fRG_vertex[0].norm_K1(p));
         K1_diff_abs.emplace_back(vertex_diff[0].norm_K1(p));
 #endif
-#if DIAG_CLASS >= 2
+#if MAX_DIAG_CLASS >= 2
         norm_K2_fRG.emplace_back(fRG_vertex[0].norm_K2(p));
         norm_K2_BSE.emplace_back(bethe_salpeter_vertex[0].norm_K2(p));
         K2_diff_rel.emplace_back(vertex_diff[0].norm_K2(p)/fRG_vertex[0].norm_K2(p));
