@@ -190,7 +190,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
 
     //For flow without self-energy, comment out this line
-    selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+    //selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
 
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback
@@ -198,7 +198,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     // Initialize bubble objects;
 #ifdef HUBBARD_MODEL // Use precalculated bubble in this case
-    PrecalculateBubble<comp> Pi(G, dG, false);
+    //PrecalculateBubble<comp> Pi(G, dG, false);
     PrecalculateBubble<comp> dPi(G, dG, true);
 #else // Otherwise use same type of bubble as before, which directly interpolates
     Bubble<Q> Pi(G, dG, false);

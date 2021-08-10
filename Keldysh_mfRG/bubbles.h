@@ -227,7 +227,10 @@ public:
                        :g(G_in), s(S_in), dot(dot_in),
                        Helper_Bubble(g, s, dot),
                        fermionic_grid('f', 1, g.Lambda){
+        if (dot) {print("Precalculating a differentiated bubble...", true);}
+        else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();
+        print("...done.", true);
     }
     auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q;
     auto value_on_FER_GRID(int iK_bubble, double v1, double v2, int i_in) const -> Q;
@@ -298,15 +301,16 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
 #ifdef HUBBARD_MODEL
+
     double starting_time = get_time();
     vector<Minimal_2D_FFT_Machine> FFT_Machinery (omp_get_max_threads());
     double end_time = get_time();
     double diff = (end_time - starting_time); // time given in seconds
-    std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
+    //std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
 
     for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
-        std::cout << "Now calculating iK = " << iK << "\n";
+        //std::cout << "Now calculating iK = " << iK << "\n";
 #pragma omp parallel for schedule(dynamic) default(none) shared(FFT_Machinery, iK)
         for (int iv = 0; iv < nFER * nFER; ++iv) {
             const int iv1 = iv / nFER; // integer division, always rounds down
@@ -867,12 +871,19 @@ template <typename Q,
 class BubbleFunctionCalculator{
     private:
     GeneralVertex<Q, symmetry_result>& dgamma;
-    const GeneralVertex<Q, symmetry_left>& vertex1;
-    const GeneralVertex<Q, symmetry_right>& vertex2;
+    const GeneralVertex<Q, symmetry_left>& vertex1_initial;
+    const GeneralVertex<Q, symmetry_right>& vertex2_initial;
+
+    // Copies of the vertex on the left and on the right, which will be cross-projected as required.
+    GeneralVertex<Q, symmetry_left> vertex1 = vertex1_initial;
+    GeneralVertex<Q, symmetry_right> vertex2 = vertex2_initial;
+    //TODO: How much slower is the code now that these objects, which will be used in the following, are not const anymore?
+    /// Conjecture: Should not be slower, because these objects are only given to the integrand as const objects.
+
     const Propagator<Q>& G;
     const Propagator<Q>& S;
     const Bubble_Object& Pi;
-    const char channel;
+    const char channel; // TODO: We already know here, in which channel-parametrization we will need the vertices => Perform cross-projections already in the constructor?
     const bool diff;
 
     const double Delta = (G.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
@@ -909,6 +920,8 @@ class BubbleFunctionCalculator{
     void initialize_frequency_grid_K1();
     void initialize_frequency_grid_K2();
     void initialize_frequency_grid_K3();
+
+    void crossproject_vertices();
 
     void calculate_bubble_function(int diag_class);
     Q get_value(int i_mpi, int i_omp, int n_omp, int diag_class);
@@ -949,10 +962,16 @@ class BubbleFunctionCalculator{
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
                              const Propagator<Q>& G_in, const Propagator<Q>& S_in, const Bubble_Object& Pi_in,
                              const char channel_in, const bool diff_in)
-                             :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
+                             :dgamma(dgamma_in), vertex1_initial(vertex1_in), vertex2_initial(vertex2_in),
                              G(G_in), S(S_in), Pi(Pi_in), channel(channel_in), diff(diff_in){
         set_channel_specific_freq_ranges_and_prefactor();
         initialize_frequency_grids();
+
+        /// As we already know, which channel parametrization will be needed,
+        /// we cross-project the vertices with respect to the internal structure already here.
+        crossproject_vertices();
+        // TODO: vertex1 and vertex2 must not point to the same objects! Otherwise it might happen that we project twice!
+        /// Should be solved now as we instantiated two different objects?
     }
 };
 
@@ -1055,6 +1074,77 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
         template <typename> class symmetry_right, class Bubble_Object>
 void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::crossproject_vertices() {
+#ifdef HUBBARD_MODEL
+    switch (channel) {
+        case 'a':
+            #if MAX_DIAG_CLASS >= 0
+                vertex1[0].pvertex().K1_crossproject();
+                vertex1[0].tvertex().K1_crossproject();
+                vertex2[0].pvertex().K1_crossproject();
+                vertex2[0].tvertex().K1_crossproject();
+            #endif
+            #if MAX_DIAG_CLASS >= 2
+                vertex1[0].pvertex().K2_crossproject('a');
+                vertex1[0].tvertex().K2_crossproject('a');
+                vertex2[0].pvertex().K2_crossproject('a');
+                vertex2[0].tvertex().K2_crossproject('a');
+            #endif
+            #if MAX_DIAG_CLASS >= 3
+                vertex1[0].pvertex().K3_crossproject('a');
+                vertex1[0].tvertex().K3_crossproject('a');
+                vertex2[0].pvertex().K3_crossproject('a');
+                vertex2[0].tvertex().K3_crossproject('a');
+            #endif
+            break;
+        case 'p':
+            #if MAX_DIAG_CLASS >= 0
+                vertex1[0].avertex().K1_crossproject();
+                vertex1[0].tvertex().K1_crossproject();
+                vertex2[0].avertex().K1_crossproject();
+                vertex2[0].tvertex().K1_crossproject();
+            #endif
+            #if MAX_DIAG_CLASS >= 2
+                vertex1[0].avertex().K2_crossproject('p');
+                vertex1[0].tvertex().K2_crossproject('p');
+                vertex2[0].avertex().K2_crossproject('p');
+                vertex2[0].tvertex().K2_crossproject('p');
+            #endif
+            #if MAX_DIAG_CLASS >= 3
+                vertex1[0].avertex().K3_crossproject('p');
+                vertex1[0].tvertex().K3_crossproject('p');
+                vertex2[0].avertex().K3_crossproject('p');
+                vertex2[0].tvertex().K3_crossproject('p');
+            #endif
+            break;
+        case 't':
+            #if MAX_DIAG_CLASS >= 0
+                vertex1[0].avertex().K1_crossproject();
+                vertex1[0].pvertex().K1_crossproject();
+                vertex2[0].avertex().K1_crossproject();
+                vertex2[0].pvertex().K1_crossproject();
+            #endif
+            #if MAX_DIAG_CLASS >= 2
+                vertex1[0].avertex().K2_crossproject('t');
+                vertex1[0].pvertex().K2_crossproject('t');
+                vertex2[0].avertex().K2_crossproject('t');
+                vertex2[0].pvertex().K2_crossproject('t');
+            #endif
+            #if MAX_DIAG_CLASS >= 3
+                vertex1[0].avertex().K3_crossproject('t');
+                vertex1[0].pvertex().K3_crossproject('t');
+                vertex2[0].avertex().K3_crossproject('t');
+                vertex2[0].pvertex().K3_crossproject('t');
+            #endif
+            break;
+            default: ;
+    }
+#endif // HUBBARD_MODEL
+}
+
+template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
+        template <typename> class symmetry_right, class Bubble_Object>
+void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
     double t_start = get_time();
@@ -1097,8 +1187,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }
+            ++iterator;
         }
-        ++iterator;
     }
     // collect+combine results from different MPI processes, reorder them appropriately
     vec<Q> Result = mpi_initialize_result<Q> (n_mpi, n_omp);
