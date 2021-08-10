@@ -205,7 +205,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     Bubble<Q> dPi(G, dG, true);
 #endif // HUBBARD_MODEL
 
-
+    ///TODO: Think about performing cross-projections for Psi.vertex already here,
+    /// as this object is often needed when going to higher loop-orders.
     vertexOneLoopFlow(dPsi.vertex, Psi.vertex, G, dG, dPi);
 
 #if N_LOOPS>=2

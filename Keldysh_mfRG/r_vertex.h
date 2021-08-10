@@ -100,6 +100,7 @@ public:
 #if MAX_DIAG_CLASS >= 0
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
+
     /// Member functions for accessing/setting values of the vector K1 ///
 
     /** Return the value of the vector K1 at index i. */
@@ -806,6 +807,12 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
     }
 
 }
+
+template<typename Q>
+void rvert<Q>::K2_crossproject(char channel_out) {
+// TODO: Currently does nothing!
+}
+
 #endif
 
 #if MAX_DIAG_CLASS >= 3
@@ -852,6 +859,13 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
     }
 
 }
+
+
+template<typename Q>
+void rvert<Q>::K3_crossproject(char channel_out) {
+    // TODO: Currently does nothing!
+}
+
 #endif
 
 
@@ -928,6 +942,7 @@ template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp,
 template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
         return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
 }
+
 #endif
 
 #endif //KELDYSH_MFRG_R_VERTEX_H

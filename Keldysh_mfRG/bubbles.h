@@ -431,9 +431,9 @@ void PrecalculateBubble<Q>::compute_internal_bubble(const int iK, const double v
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::set_propagators(const Propagator& g1, const Propagator& g2,
+void PrecalculateBubble<Q>::set_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                             const int iK, const double v1, const double v2,
-                                            vec<comp>& first_propagator, vec<comp>& second_propagator) {
+                                            vec<Q>& first_propagator, vec<Q>& second_propagator) {
 
 #ifdef KELDYSH_FORMALISM
     set_Keldysh_propagators(g1, g2, iK, v1, v2, first_propagator, second_propagator);
@@ -443,9 +443,9 @@ void PrecalculateBubble<Q>::set_propagators(const Propagator& g1, const Propagat
 }
 
 template<typename Q>
-void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator& g1, const Propagator& g2,
+void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                                       const double v1, const double v2,
-                                                      vec<comp>& first_propagator, vec<comp>& second_propagator) {
+                                                      vec<Q>& first_propagator, vec<Q>& second_propagator) {
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > glb_N_transfer!
         first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
         second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
@@ -455,9 +455,9 @@ void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator& g1, cons
 // TODO: Use this function to calculate the bubble also for the SIAM.
 template<typename Q>
 void
-PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator& g1, const Propagator& g2,
+PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                                const int iK, const double v1, const double v2,
-                                               vec<comp>& first_propagator, vec<comp>& second_propagator) {
+                                               vec<Q>& first_propagator, vec<Q>& second_propagator) {
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > glb_N_transfer!
         switch (iK) {
             case 3: //AA
@@ -970,8 +970,10 @@ class BubbleFunctionCalculator{
         /// As we already know, which channel parametrization will be needed,
         /// we cross-project the vertices with respect to the internal structure already here.
         crossproject_vertices();
-        // TODO: vertex1 and vertex2 must not point to the same objects! Otherwise it might happen that we project twice!
-        /// Should be solved now as we instantiated two different objects?
+
+        /// TODO: Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
+        ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).
+        ///  The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.
     }
 };
 
@@ -1119,18 +1121,27 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
             break;
         case 't':
             #if MAX_DIAG_CLASS >= 0
+                vertex1[0].tvertex().K1_crossproject(); // Needed for gamma_a_uu
+                vertex2[0].tvertex().K1_crossproject(); // Needed for gamma_a_uu
+
                 vertex1[0].avertex().K1_crossproject();
                 vertex1[0].pvertex().K1_crossproject();
                 vertex2[0].avertex().K1_crossproject();
                 vertex2[0].pvertex().K1_crossproject();
             #endif
             #if MAX_DIAG_CLASS >= 2
+                vertex1[0].tvertex().K2_crossproject('a'); // Needed for gamma_a_uu
+                vertex2[0].tvertex().K2_crossproject('a'); // Needed for gamma_a_uu
+
                 vertex1[0].avertex().K2_crossproject('t');
                 vertex1[0].pvertex().K2_crossproject('t');
                 vertex2[0].avertex().K2_crossproject('t');
                 vertex2[0].pvertex().K2_crossproject('t');
             #endif
             #if MAX_DIAG_CLASS >= 3
+                vertex1[0].tvertex().K3_crossproject('a'); // Needed for gamma_a_uu
+                vertex2[0].tvertex().K3_crossproject('a'); // Needed for gamma_a_uu
+
                 vertex1[0].avertex().K3_crossproject('t');
                 vertex1[0].pvertex().K3_crossproject('t');
                 vertex2[0].avertex().K3_crossproject('t');
