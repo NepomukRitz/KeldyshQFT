@@ -386,12 +386,12 @@ template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rve
 #elif MAX_DIAG_CLASS > 1
     return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 #endif
-};
-template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& vertex_in, const fullvert<Q>& right_vertex) const -> Q {
+}
+template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
 #if MAX_DIAG_CLASS == 1
-    return valsmooth<k1>(input, vertex_in, right_vertex);
+    return valsmooth<k1>(input, rvert_crossing, vertex_half2);
 #elif MAX_DIAG_CLASS > 1
-    return valsmooth<k1>(input, vertex_in, right_vertex) + valsmooth<k2b>(input, vertex_in, right_vertex);
+    return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2b>(input, rvert_crossing, vertex_half2);
 #endif
 };
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
@@ -834,10 +834,7 @@ template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q valu
     K1[iK*nw1*n_in + iw*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
-    if (iw >= 0) {
         return K1[iK*nw1*n_in + iw*n_in + i_in];
-    }
-    else return 0.;
 }
 #endif
 
@@ -861,10 +858,7 @@ template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in
     K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
-    if (iw >= 0 and iv >= 0) {
         return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
-    }
-    else return 0.;
 }
 #endif
 
@@ -888,10 +882,7 @@ template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp,
     K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
-    if (iw >= 0 and iv >= 0 and ivp >= 0) {
         return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
-    }
-    else return 0;
 }
 #endif
 
