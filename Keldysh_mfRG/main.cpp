@@ -26,49 +26,6 @@
 #include <cassert>
 
 using namespace std;
-/*
-auto find_best_Lambda() -> double{
-
-    double tol = 1e-5;
-    bool done = false;
-    double Lambda = 20.;
-    double step = 3.;
-
-    vec<double> Lambdas;
-    vec<double> differences;
-
-    while(!done) {
-        State<comp> state_SOPT;   // create final and initial state
-        state_SOPT.initialize();             // initialize state
-        sopt_state(state_SOPT, Lambda);
-
-        Propagator G(Lambda, state_SOPT.selfenergy, 'g');
-
-        Vertex<comp> bethe_salpeter_L = calculate_Bethe_Salpeter_equation(state_SOPT.vertex, G, 'L');
-        Vertex<comp> bethe_salpeter_R = calculate_Bethe_Salpeter_equation(state_SOPT.vertex, G, 'R');
-        Vertex<comp> bethe_salpeter = (bethe_salpeter_L + bethe_salpeter_R) * 0.5;
-
-        Vertex<comp> diff = state_SOPT.vertex - bethe_salpeter;
-        double diff_norm = diff[0].norm_K1(2);
-
-        if(diff_norm < tol)
-            done = true;
-        else{
-            Lambda += step;
-        }
-        Lambdas.emplace_back(Lambda);
-        differences.emplace_back(diff_norm);
-        print("Current Lambda = " + to_string(Lambda), true);
-        print("Current error = " + to_string(diff_norm), true);
-    }
-
-    write_h5_rvecs("Lambda_finder.h5", {"Lambdas", "diffs"}, {Lambdas, differences});
-
-    return Lambda;
-
-}
-*/
-
 
 string generate_filename() {
     string klass = "K" + to_string(MAX_DIAG_CLASS) + "_";
