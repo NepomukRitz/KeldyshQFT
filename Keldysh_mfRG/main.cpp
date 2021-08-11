@@ -4,6 +4,7 @@
 #include "parameters.h"
 #include <mpi.h>
 #include "mpi_setup.h"
+#include "flow.h"
 #include "testFunctions.h"
 #include "util.h"
 
