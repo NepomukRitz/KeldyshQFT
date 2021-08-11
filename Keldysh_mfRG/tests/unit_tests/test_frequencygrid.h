@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H
 
 #include "../../grids/frequency_grid.h"
+#include "../utilities/util.h"
 
 
 TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[bosonic frequency_grid]" ) {
@@ -14,8 +15,8 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
     for (int i = 0; i < nBOS; i++) {
 
         // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
-        if (abs(Bosfreqs.fconv(Bosfreqs.w[i]) -  i) > 1) isright = false;
-        issymmetric += abs(Bosfreqs.w[i] + Bosfreqs.w[nBOS - i - 1]);
+        if (std::abs(Bosfreqs.fconv(Bosfreqs.w[i]) -  i) > 1) isright = false;
+        issymmetric += std::abs(Bosfreqs.w[i] + Bosfreqs.w[nBOS - i - 1]);
     }
 
     SECTION( "Is the correct index retrieved by fconv()?" ) {
@@ -43,10 +44,10 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
     for (int i = 0; i < nFER; i++) {
 
         // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
-        if (abs(Ferfreqs.fconv(Ferfreqs.w[i]) -  i) > 1) isright = false;
-        issymmetric += abs(Ferfreqs.w[i] + Ferfreqs.w[nFER - i - 1]);
-        if (abs(Ferfreqs.w[i] + Ferfreqs.w[nFER - i - 1]) > symmetry_tolerance) {
-            cout << Ferfreqs.w[i] << " != " << Ferfreqs.w[nFER - i - 1] << "\n";
+        if (std::abs(Ferfreqs.fconv(Ferfreqs.w[i]) -  i) > 1) isright = false;
+        issymmetric += std::abs(Ferfreqs.w[i] + Ferfreqs.w[nFER - i - 1]);
+        if (std::abs(Ferfreqs.w[i] + Ferfreqs.w[nFER - i - 1]) > symmetry_tolerance) {
+            std::cout << Ferfreqs.w[i] << " != " << Ferfreqs.w[nFER - i - 1] << "\n";
         }
     }
 

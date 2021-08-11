@@ -36,7 +36,7 @@ void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const
 /** Perform Runge-Kutta-4 step and write result into output file in a specified Lambda layer, and print info to log */
 template <typename T>
 void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const double x),
-              rvec& x_vals, string filename, const int iteration) {
+              rvec& x_vals, std::string filename, const int iteration) {
     // print iteration number and Lambda to log file
     print("i: ", iteration, true);
     print("Lambda: ", x_run, true);
@@ -89,7 +89,7 @@ template <typename T>
 void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
                     T rhs (const T& y, const double x),
                     double subst(double x), double resubst(double x),
-                    const int N_ODE, string filename, const int it_start) {
+                    const int N_ODE, std::string filename, const int it_start) {
     // construct non-linear flow grid via substitution
     rvec x_vals  = construct_flow_grid(x_fin, x_ini, subst, resubst, N_ODE);
     rvec x_diffs = flow_grid_step_sizes(x_vals); // compute step sizes for flow grid
@@ -115,7 +115,7 @@ template <typename T>
 void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
                     T rhs (const T& y, const double x),
                     double subst(double x), double resubst(double x),
-                    const int N_ODE, string filename) {
+                    const int N_ODE, std::string filename) {
     ODE_solver_RK4(y_fin, x_fin, y_ini, x_ini,
                    rhs,
                    subst, resubst,

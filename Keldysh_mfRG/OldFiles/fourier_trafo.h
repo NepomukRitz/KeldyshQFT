@@ -11,7 +11,6 @@
 #include "../r_vertex.h"               // reducible vertex in channel r (for K1a, K1p in SOPT)
 #include "../utilities/util.h"                   // sign function
 
-using namespace std;
 
 double Theta(double x) { // Heaviside step function for analytical Fourier transform
     if (x > 0) return 1.;
@@ -45,7 +44,7 @@ void interp1_FFT(cvec& Gy, const rvec& y, const cvec& Gx, const rvec& x) {
     double temp_diff; // temporary difference
     for (int i = 1; i < Nx; ++i) {
         temp_diff = x[i] - x[i-1];
-        if(abs(temp_diff - dx) > 1e-12) {
+        if(std::abs(temp_diff - dx) > 1e-12) {
             cout << "Error in interp1_FFT: x grid must be linear. Deviation in difference is: " << (temp_diff-dx) << "." << endl;
             break;
         }
@@ -90,7 +89,7 @@ void ft_v2t(rvec& t, cvec& Gt, const rvec& v, const cvec& Gv, const comp tail_co
         t[i] = -Ttot/2. + (Ttot/(double)N)*(double)i;
     fftw_complex in[N], out[N]; // input and output array in fftw format
     comp temp; // temporary variable to adjust Fourier convention (see above)
-    if(abs(tail_coef)>1e-10) { // include high-frequency decay tail_coef/(v+i*tail_hyb) explicitly
+    if(std::abs(tail_coef)>1e-10) { // include high-frequency decay tail_coef/(v+i*tail_hyb) explicitly
         for (int i = 0; i < N; ++i) { // fill input array
             temp = ( Gv[i] - tail_coef / (v[i] + glb_i * tail_hyb) )
                    * exp(-glb_i * (v[i] - v[0]) * t[0]); // see Fourier convention above
@@ -109,9 +108,9 @@ void ft_v2t(rvec& t, cvec& Gt, const rvec& v, const cvec& Gv, const comp tail_co
     p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
     fftw_execute(p);
     fftw_destroy_plan(p);
-    if(abs(tail_coef)>1e-10) { // FT tail_coef/(v+i*tail_hyb) = -i tail_coef * sign(tail_hyb) Theta(sign(tail_hyb)*t) e^{-tail_hyb*t}
+    if(std::abs(tail_coef)>1e-10) { // FT tail_coef/(v+i*tail_hyb) = -i tail_coef * sign(tail_hyb) Theta(sign(tail_hyb)*t) e^{-tail_hyb*t}
         for (int i = 0; i < N; ++i) // fill output
-            Gt[i] = ( -glb_i * tail_coef * sign(tail_hyb) * Theta(tail_hyb*t[i] + 1e-16) * exp(-abs(tail_hyb*t[i])) ) +
+            Gt[i] = ( -glb_i * tail_coef * sign(tail_hyb) * Theta(tail_hyb*t[i] + 1e-16) * exp(-std::abs(tail_hyb*t[i])) ) +
                     comp(out[i][0], out[i][1]) * exp(-glb_i * v[0] * t[i]) / Ttot; // see Fourier convention above
     }
     else { // standard procedure
@@ -139,9 +138,9 @@ void ft_t2v(rvec& v, cvec& Gv, const rvec& t, const cvec& Gt, const comp tail_co
         v[i] = -Vtot/2. + (Vtot/(double)N)*(double)i;
     fftw_complex in[N], out[N]; // input and output array in fftw format
     comp temp; // temporary variable to adjust Fourier convention (see above)
-    if(abs(tail_coef)>1e-10) { // include long-time decay -i sgn(tail_hyb) tail_coef \Theta(sgn(tail_hyb)*t) e^{-tail_hyb t} explicitly, here enforce Theta(0)=1 via +1e-16
+    if(std::abs(tail_coef)>1e-10) { // include long-time decay -i sgn(tail_hyb) tail_coef \Theta(sgn(tail_hyb)*t) e^{-tail_hyb t} explicitly, here enforce Theta(0)=1 via +1e-16
         for (int i = 0; i < N; ++i) { // fill input array
-            temp = ( Gt[i] + glb_i * tail_coef * sign(tail_hyb) * Theta(tail_hyb*t[i] + 1e-16) * exp(-abs(tail_hyb*t[i])) )
+            temp = ( Gt[i] + glb_i * tail_coef * sign(tail_hyb) * Theta(tail_hyb*t[i] + 1e-16) * exp(-std::abs(tail_hyb*t[i])) )
                    * exp(glb_i * v[0] * (t[i] - t[0])); // see Fourier convention above
             in[i][0] = temp.real(); // real part
             in[i][1] = temp.imag(); // imaginary part
@@ -158,7 +157,7 @@ void ft_t2v(rvec& v, cvec& Gv, const rvec& t, const cvec& Gt, const comp tail_co
     p = fftw_plan_dft_1d(N, in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
     fftw_execute(p);
     fftw_destroy_plan(p);
-    if(abs(tail_coef)>1e-10) { // FT tail_coef/(v+i*tail_hyb) = -i tail_coef * sign(tail_hyb) Theta(sign(tail_hyb)*t) e^{-tail_hyb*t}
+    if(std::abs(tail_coef)>1e-10) { // FT tail_coef/(v+i*tail_hyb) = -i tail_coef * sign(tail_hyb) Theta(sign(tail_hyb)*t) e^{-tail_hyb*t}
         for (int i = 0; i < N; ++i) // fill output
             Gv[i] = tail_coef / (v[i] + glb_i * tail_hyb) +
                     comp(out[i][0], out[i][1]) * exp(glb_i * v[i] * t[0]) * (Ttot / (double) N); // see Fourier convention above

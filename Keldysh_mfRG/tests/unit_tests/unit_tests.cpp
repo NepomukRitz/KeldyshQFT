@@ -71,6 +71,7 @@ int main(int argc, char* argv[]) {
 
     // run unit tests
     MPI_Init(nullptr, nullptr);
+    print(std::abs(1.));
 
     //test_PrecalculateBubble<comp> test_Bubble ;
     //test_Bubble.perform_test();

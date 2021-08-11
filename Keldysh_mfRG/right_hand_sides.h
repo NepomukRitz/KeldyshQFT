@@ -13,7 +13,6 @@
 #include <cassert>
 #include "utilities/hdf5_routines.h"
 
-using namespace std;
 
 template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -> State<Q>;
 template <typename Q> void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVertex, const Propagator<Q>& S);

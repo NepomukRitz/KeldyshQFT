@@ -32,11 +32,11 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
     else {
         if (w == 0. && eta_1 == eta_2)
         return  1./(    vmax  - eps_p + eta_1 * glb_i * Delta)
-              + 1./(abs(vmin) + eps_p - eta_1 * glb_i * Delta);
+              + 1./(std::abs(vmin) + eps_p - eta_1 * glb_i * Delta);
     else
         return 1./(-w + (eta_1 - eta_2) * glb_i * Delta)
-                * log( ((vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta))
-                      /((vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta)));
+                * log( ((vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (std::abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta))
+                      /((vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (std::abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta)));
 
     }
     #else
@@ -106,11 +106,11 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
     else {
         if (w == 2. * eps_p && eta_1 == - eta_2)
         return -1./(    vmax  + eta_1 * glb_i * Delta)
-               -1./(abs(vmin) - eta_1 * glb_i * Delta);
+               -1./(std::abs(vmin) - eta_1 * glb_i * Delta);
     else
         return -1./(w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
-                * log( ((vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta))
-                      /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
+                * log( ((vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (std::abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta))
+                      /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (std::abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
 
     }
     #else
@@ -272,9 +272,9 @@ auto asymp_corrections_bubble(K_class k,
     }
 
     // determine the Keldysh indices of left and right vertex
-    vector<int> indices = indices_sum(i0, i2, channel);
+    std::vector<int> indices = indices_sum(i0, i2, channel);
 #else
-    vector<int> indices = {0, 0};
+    std::vector<int> indices = {0, 0};
 #endif
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
@@ -353,11 +353,11 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
         case 'g':   // full (non-differentiated) propagator
             switch (iK) {
                 case 0: // G^R
-                    return log((abs(vmin) + eps_p - glb_i * Delta) / (vmax - eps_p + glb_i * Delta));
+                    return log((std::abs(vmin) + eps_p - glb_i * Delta) / (vmax - eps_p + glb_i * Delta));
                 case 1: // G^A
-                    return log((abs(vmin) + eps_p + glb_i * Delta) / (vmax - eps_p - glb_i * Delta));
+                    return log((std::abs(vmin) + eps_p + glb_i * Delta) / (vmax - eps_p - glb_i * Delta));
                 case 2: // G^K
-                    return 2. * glb_i * (atan((vmax - eps_p) / Delta) - atan((abs(vmin) + eps_p) / Delta));
+                    return 2. * glb_i * (atan((vmax - eps_p) / Delta) - atan((std::abs(vmin) + eps_p) / Delta));
             }
         case 's':   // single-scale propagator
             switch (iK) {
@@ -377,7 +377,7 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
 #ifdef PARTICLE_HOLE_SYMM
     switch (type) {
         case 'g':   // full (non-differentiated) propagator
-            return  -log((abs(vmin) + Delta) / (vmax + Delta));
+            return  -log((std::abs(vmin) + Delta) / (vmax + Delta));
         case 's':   // single-scale propagator
             return -1. / 2. * (-1. / (vmax + Delta) + 1. / (-vmin + Delta));
         default:;
@@ -386,7 +386,7 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
 #else
     switch (type) {
         case 'g':   // full (non-differentiated) propagator
-            return -glb_i * log((abs(vmin) - glb_i * eps_p + Delta) / (vmax + glb_i * eps_p + Delta));
+            return -glb_i * log((std::abs(vmin) - glb_i * eps_p + Delta) / (vmax + glb_i * eps_p + Delta));
         case 's':   // single-scale propagator
             return -glb_i / 2. * (-1. / (vmax + glb_i * eps_p + Delta) - 1. / (vmin + glb_i * eps_p - Delta));
         default:;
@@ -423,7 +423,7 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
 
 #ifdef KELDYSH_FORMALISM
     // Keldysh components of the vertex needed for retarded and Keldysh self-energy
-    vector<vector<int> > components {{3, 6, 7}, {1, 4, 5}};
+    std::vector<std::vector<int> > components {{3, 6, 7}, {1, 4, 5}};
 
     // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
     VertexInput inputRetarded (components[iK][0], 0., 0., v, i_in, 0, 't');

@@ -154,8 +154,8 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
                 REQUIRE( indices_c.w  == -indices.w  );
 #if MAX_DIAG_CLASS > 1
-                REQUIRE( abs(-indices_c.v1 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-                REQUIRE( abs(-indices_c.v2 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices_c.v1 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices_c.v2 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
 #endif
             }
 #endif
@@ -227,7 +227,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 #if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
                 REQUIRE( indices1.v2 == -indices.v2 );
 #else
-                REQUIRE( abs(-indices1.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices1.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
 #endif
 #endif
             }
@@ -258,7 +258,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 #if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
                 REQUIRE( indices2.v1 == -indices.v1 );
 #else
-                REQUIRE( abs(-indices2.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices2.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
 #endif
                 REQUIRE( indices2.v2 == indices.v2  );
 #endif
@@ -291,8 +291,8 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                 REQUIRE( indices3.v1 == -indices.v1 );
                 REQUIRE( indices3.v2 == -indices.v2 );
 #else
-                REQUIRE( abs(-indices3.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-                REQUIRE( abs(-indices3.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices3.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices3.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
 #endif
 #endif
             }
@@ -363,8 +363,8 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             AND_THEN( "v1 and v2 are flipped, all frequencies are multiplied with -1" ) {
                 REQUIRE( indices_c.w  == -indices.w );
 #if MAX_DIAG_CLASS > 1
-                REQUIRE( abs(-indices_c.v1 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-                REQUIRE( abs(-indices_c.v2 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices_c.v1 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices_c.v2 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
 #endif
             }
 #endif
@@ -559,8 +559,8 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             AND_THEN( "v1 and v2 get a minus sign, w remains unchanged" ) {
                 REQUIRE( indices_c.w  == indices.w );
 #if MAX_DIAG_CLASS > 1
-                REQUIRE( abs(-indices_c.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-                REQUIRE( abs(-indices_c.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices_c.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
+                REQUIRE( std::abs(-indices_c.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
 #endif
             }
 #endif

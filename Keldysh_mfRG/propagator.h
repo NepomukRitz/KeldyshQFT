@@ -9,7 +9,6 @@
 #include "grids/momentum_grid.h"   // momentum grid and FFT machinery for the 2D Hubbard model
 #include "utilities/util.h"            // sign - function
 
-using namespace std;
 
 // Fermi--Dirac distribution function
 auto Fermi_distr(double v, double mu) -> double {
@@ -139,7 +138,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
 
     switch (type){
         case 'g':
-            if (fabs(v) < Lambda) {
+            if (std::fabs(v) < Lambda) {
                 switch (iK){
                     case 0:
                         return GR(v, i_in);
@@ -148,7 +147,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-            } else if (fabs(v) == Lambda) {
+            } else if (std::fabs(v) == Lambda) {
                 switch (iK){
                     case 0:
                         return 1./2.*GR(v, i_in);
@@ -160,7 +159,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
             }
             return 0.;
         case 's':
-            if (fabs(v) == Lambda) {
+            if (std::fabs(v) == Lambda) {
                 switch (iK){
                     case 0:
                         return -GR(v, i_in);
@@ -175,7 +174,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
             diffSelfEneR = diff_selfenergy.valsmooth(0, v, i_in);
             diffSelfEneA = conj(diffSelfEneR);
             diffSelfEneK = diff_selfenergy.valsmooth(1, v, i_in);
-            if(fabs(v)<Lambda){
+            if(std::fabs(v)<Lambda){
                 switch(iK){
                     case 0:
                         return GR(v, i_in) * diffSelfEneR * GR(v, i_in);
@@ -184,7 +183,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-            }else if (fabs(v)==Lambda){
+            }else if (std::fabs(v)==Lambda){
                 switch(iK){
                     case 0:
                         SR = -1.*GR(v, i_in);
@@ -198,7 +197,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
             }
             return 0.;
         case 'e':
-            if(fabs(v, i_in)<=Lambda) {
+            if(std::fabs(v, i_in)<=Lambda) {
                 switch(iK){
                     case 0:
                         return GR(v, i_in) * diffSelfEneR * GR(v, i_in);
@@ -261,7 +260,7 @@ auto Propagator<Q>::GK(double v, int i_in) const -> Q
     //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
     // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
     // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
-    // more efficient: only one interpolation instead of two; std::norm(c)=std::abs(c)^2
+    // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
     return std::norm( GR(v, i_in) ) * ( selfenergy.valsmooth(1, v, i_in) - glb_i* ( (glb_Gamma+Lambda) * Eff_fac(v) ) );
 #endif
 }
@@ -412,9 +411,9 @@ auto Propagator<Q>::norm() const -> double{
     double out = 0.;
     for(int i=0; i<nPROP; i++){
 #ifdef KELDYSH_FORMALISM
-        out += pow(abs(GR(ffreqs[i], 0)), 2.);
+        out += pow(std::abs(GR(ffreqs[i], 0)), 2.);
 #else
-        out += pow(abs(GM(ffreqs[i], 0)), 2.);
+        out += pow(std::abs(GM(ffreqs[i], 0)), 2.);
 #endif
     }
 

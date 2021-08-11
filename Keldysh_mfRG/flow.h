@@ -20,7 +20,7 @@
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
  * Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin.
  */
-State<state_datatype> n_loop_flow(string outputFileName){
+State<state_datatype> n_loop_flow(std::string outputFileName){
 
     State<state_datatype> state_fin (Lambda_fin), state_ini (Lambda_ini);   // create final and initial state
     state_ini.initialize();             // initialize state
@@ -33,7 +33,7 @@ State<state_datatype> n_loop_flow(string outputFileName){
     //state_ini = read_hdf("parquet_solution_K3_Lambda=20.000000", 5, 51);
     //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
-    parquet_solver("../Data/parqueInit4_n1=" + to_string(nBOS) + "_n2=" + to_string(nBOS2) + "_n3=" + to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+    parquet_solver("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
 
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
@@ -57,7 +57,7 @@ State<state_datatype> n_loop_flow(string outputFileName){
  *        computed. (See log file: "Successfully saved in hdf5 file: <inputFileName> in Lambda layer <Nmax>.)
  *        Use this number <Nmax> as input <it_start> for this function.
  */
-State<state_datatype> n_loop_flow(string inputFileName, const int it_start) {
+State<state_datatype> n_loop_flow(std::string inputFileName, const int it_start) {
     if (it_start < nODE + U_NRG.size() + 1) { // start iteration needs to be within the range of values
 
         State<state_datatype> state_ini = read_hdf(inputFileName, it_start, nODE + U_NRG.size() + 1); // read initial state

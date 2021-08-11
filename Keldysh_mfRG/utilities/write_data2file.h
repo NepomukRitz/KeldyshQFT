@@ -6,11 +6,11 @@
 #include "H5Cpp.h"           // HDF5 package
 
 // write vectors of real numbers into text (.dat) file
-void write_dat_rvecs(string path, initializer_list<rvec> rvec_list) {
-    ofstream file; file.open(path); // create file at path
+void write_dat_rvecs(std::string path, std::initializer_list<rvec> rvec_list) {
+    std::ofstream file; file.open(path); // create file at path
     for (auto myvec : rvec_list) { // iterate through vectors
     	for (int i = 0; i<myvec.size(); ++i) file << myvec[i] << " "; // write data into file
-    	file << endl; // newline
+    	file << std::endl; // newline
     }
     file.close(); // close file
 }
@@ -27,9 +27,9 @@ void test_write_dat_rvecs() {
  * @param rvec_list     : List of the vectors to be printed. Must be in the order of key_list
  * Notice the vectors to be stored must be real!
  */
-void write_h5_rvecs(string path, initializer_list<string> key_list, initializer_list<rvec> rvec_list) {
+void write_h5_rvecs(std::string path, std::initializer_list<std::string> key_list, std::initializer_list<rvec> rvec_list) {
 	H5::H5File myfile(path, H5F_ACC_TRUNC); // create file at path
-	vector<string> keys; // store keys in a vector
+	std::vector<std::string> keys; // store keys in a vector
 	for (auto mykey : key_list) keys.push_back(mykey); // fill keys vector
 	int i = 0; // iterator for keys
 	hsize_t dim_vec[1]; // dimension of vector, to be updated

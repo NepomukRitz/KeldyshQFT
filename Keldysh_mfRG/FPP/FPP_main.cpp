@@ -26,7 +26,7 @@ int main() {
 
     gsl_set_error_handler_off();
 
-    cout << "Hello world!\n";
+    std::cout << "Hello world!\n";
 
     double t0 = get_time();
 
@@ -35,14 +35,14 @@ int main() {
 
     /*double x;
     double y;
-    cout << "Type in x.\n";
+    std::cout << "Type in x.\n";
     cin >> x;
-    cout << "Type in y.\n";
+    std::cout << "Type in y.\n";
     cin >> y;
     double angle;
     angle = phi(x, y);
     double angledegree = angle*180/M_PI;
-    cout << "Phi is " << angledegree << ".\n";
+    std::cout << "Phi is " << angledegree << ".\n";
     return 0;*/
     //coordinate_transform();
     //coordinate_transform();
@@ -50,7 +50,7 @@ int main() {
     v_in = {1.0,1.0,1.0};
     vector<double> v_out;
     v_out = cartesion_to_spherical(v_in);
-    cout << v_out << ".\n"; */
+    std::cout << v_out << ".\n"; */
     /* for (int n = 1; n < 100; ++n) {
         vector<double> v_in = {1.1223498, -2.24342338, 3.322433};
         vector<double> v_out;
@@ -58,7 +58,7 @@ int main() {
         double vx = v_out[0];
         double vy = v_out[1];
         double vz = v_out[2];
-        cout << "N = " << n << ": v = {" << setprecision(8) << vx << "," << setprecision(8) << vy << "," << setprecision(8) << vz << "}.\n";
+        std::cout << "N = " << n << ": v = {" << setprecision(8) << vx << "," << setprecision(8) << vy << "," << setprecision(8) << vz << "}.\n";
     } */
 
     //monte_carlo_test1();
@@ -76,15 +76,15 @@ int main() {
     // Cout Bubble
     // =======================================
 
-    /*cout << "Give nu, k^2, i\n";
+    /*std::cout << "Give nu, k^2, i\n";
     double nu;
     double ksquared;
     char i;
     cin >> nu;
     cin >> ksquared;
     cin >> i;
-    cout << "Your bare Green's function is :" << G0(nu, ksquared, i) << "\n";
-    cout << "Give omega, nu, k, q, cos(theta), channel, i, j\n";
+    std::cout << "Your bare Green's function is :" << G0(nu, ksquared, i) << "\n";
+    std::cout << "Give omega, nu, k, q, cos(theta), channel, i, j\n";
     double omega;
     double k;
     double q;
@@ -99,14 +99,14 @@ int main() {
     cin >> channel;
     cin >> i;
     cin >> j;
-    cout << "Your bare bubble is: " << SimpleBubble(omega, nu, q, k, x, channel, i, j) << "\n"; */
+    std::cout << "Your bare bubble is: " << SimpleBubble(omega, nu, q, k, x, channel, i, j) << "\n"; */
 
     // Calculate Bubble integrals
     // =======================================
 
     //integrate_bubble_full_monte_carlo(0.0,0.0,0.0,'c','d','p',1000.,50000,0.1);
     //comp output = integrate_bubble_vegas(0.0,0.0,0.0,'c','d','p',1000.,50000,0.1);
-    //cout << "Result: " << output << "\n";
+    //std::cout << "Result: " << output << "\n";
 
     //IMPORTANT LINE IS FOLLOWING
     // integral_bubble_w_vpp_list ('c', 'c', 'p', 2.0, 2.0, 1.0, 1000., 50000, 0.1, 40, 40, 5);
@@ -143,7 +143,7 @@ int main() {
 
         gsl_monte_plain_free (s);
 
-        cout << "result: " << res << ", error: " << err << "\n";
+        std::cout << "result: " << res << ", error: " << err << "\n";
     }
     //*/
 
@@ -151,10 +151,10 @@ int main() {
     //====================================
     /*
     char c;
-    cout << "Type in character: ";
+    std::cout << "Type in character: ";
     cin >> c;
     double output2 = test2(c);
-    cout << "\n Your value is " << output2 << ".\n";
+    std::cout << "\n Your value is " << output2 << ".\n";
     */
 
     // 1D INTEGRALS
@@ -177,11 +177,11 @@ int main() {
     print_exact_bubble(3.4,-12.3,1.0,'c','d','t');
     print_numerical_bubble(3.4,-12.3,1.0,'c','d','t',0.,0.);
     comp test001 = -1/(2*sqrt(2)*M_PI*sqrt(-1));
-    cout << test001 << "\n";
+    std::cout << test001 << "\n";
     comp test002 = pow(-3.0+glb_i,0.5);
-    cout << test002 << "\n";
+    std::cout << test002 << "\n";
     comp test003 = -1./(2*sqrt(2)*M_PI*pow(-1.0+1e-16*glb_i,0.5));
-    cout << test003 << "\n";
+    std::cout << test003 << "\n";
     print_exact_bubble(0.0,0.0,0.0,'c','d','p');
     print_numerical_bubble(0.1,0.1,0.1,'c','d','p',0.,0.);
     print_numerical_bubble(0.,0.,0.,'c','d','p',0.,0.);
@@ -199,18 +199,18 @@ int main() {
     /*double output1, output2;
     comp output3;
     output1 = bubble_integrate_theta (0.1, 0.1, 0.1, 0.1, 'c', 'c', 0, 0.);
-    cout << "Output 1: " << output1 << "\n";
+    std::cout << "Output 1: " << output1 << "\n";
     output2 = bubble_integrate_kpp (0.1, 0.1, 0.1, 'c', 'c', 0, 0.,0.);
-    cout << "Output 2: " << output2 << "\n";
+    std::cout << "Output 2: " << output2 << "\n";
     output3 = bubble_k_2d_integrated (0.1, 0.1, 0.1, 'c', 'c', 'p', 0, 0);
     double reoutput3, imoutput3;
     reoutput3 = real(output3);
     imoutput3 = imag(output3);
-    cout << "Output 3: " << reoutput3 << " + i " << imoutput3 << "\n";
+    std::cout << "Output 3: " << reoutput3 << " + i " << imoutput3 << "\n";
     print_numerical_bubble(0.1, 0.1, 0.1, 'c', 'c', 'p', 0, 0);*/
 
 
-    //cout << "now new" << "\n";
+    //std::cout << "now new" << "\n";
 
     //print_numerical_bubble(-2.0,2.0,10.,'c','c','p',0,0);
     //print_numerical_bubble(-4.0,-4.0,8.0,'c','d','t',0,0);
@@ -232,58 +232,58 @@ int main() {
     x_neg = -1.3e-16;
     x_zero = 0.000000;
     test_heaviside = heaviside(x_pos);
-    cout << test_heaviside << "\n";
+    std::cout << test_heaviside << "\n";
     test_heaviside = heaviside(x_neg);
-    cout << test_heaviside << "\n";
+    std::cout << test_heaviside << "\n";
     test_heaviside = heaviside(x_zero);
-    cout << test_heaviside << "\n";*/
+    std::cout << test_heaviside << "\n";*/
 
 
     /*comp test_sfbb_a, test_sfbb_p, test_sfbb_t;
     test_sfbb_a = sharp_frequency_exact_bare_bubble(-2.3, 0.4, 1.2,'c', 'd', 'a');
-    cout << test_sfbb_a << "\n";
+    std::cout << test_sfbb_a << "\n";
     test_sfbb_p = sharp_frequency_exact_bare_bubble(-2.3, 0.4, 1.2,'c', 'd', 'p');
-    cout << test_sfbb_p << "\n";
+    std::cout << test_sfbb_p << "\n";
     test_sfbb_t = sharp_frequency_exact_bare_bubble(-2.3, 0.4, 1.2,'c', 'd', 't');
-    cout << test_sfbb_t << "\n";
+    std::cout << test_sfbb_t << "\n";
 
-    cout << "now solving ODE: \n";
+    std::cout << "now solving ODE: \n";
     double w = 3.4, q = 1.2, g = -0.5, Lambda_i = 100.0, Lambda_f = 0.001;
     comp outputK1p = K1cdcd_solution(w, q, g, Lambda_i, 'p',Lambda_f, 1e-10, 1e-10, 0.0);
     comp outputK1a = K1cdcd_solution(w, q, g, Lambda_i, 'a',Lambda_f, 1e-10, 1e-10, 0.0);
     comp outputK1t = K1cdcd_solution(w, q, g, Lambda_i, 't',Lambda_f, 1e-10, 1e-10, 0.0);
-    cout << "K1p = " << outputK1p << "\n";
-    cout << "K1a = " << outputK1a << "\n";
-    cout << "K1t = " << outputK1t << "\n";
+    std::cout << "K1p = " << outputK1p << "\n";
+    std::cout << "K1a = " << outputK1a << "\n";
+    std::cout << "K1t = " << outputK1t << "\n";
     w = 0.0, q = 0.0, g = -0.1, Lambda_i = 100.0, Lambda_f = 1e-10;
     outputK1p = K1cdcd_solution(w, q, g, Lambda_i, 'p',Lambda_f, 1e-10, 1e-10, 0.0);
     outputK1a = K1cdcd_solution(w, q, g, Lambda_i, 'a',Lambda_f, 1e-10, 1e-10, 0.0);
     outputK1t = K1cdcd_solution(w, q, g, Lambda_i, 't',Lambda_f, 1e-10, 1e-10, 0.0);
-    cout << "K1p = " << outputK1p << "\n";
-    cout << "K1a = " << outputK1a << "\n";
-    cout << "K1t = " << outputK1t << "\n";
+    std::cout << "K1p = " << outputK1p << "\n";
+    std::cout << "K1a = " << outputK1a << "\n";
+    std::cout << "K1t = " << outputK1t << "\n";
     *//*outputK1p = K1cdcd_solution_nint(0.1, 0.1, -0.1, 10.0, 'p',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     outputK1a = K1cdcd_solution_nint(0.1, 0.1, -0.1, 10.0, 'a',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     outputK1t = K1cdcd_solution_nint(0.1, 0.1, -0.1, 10.0, 't',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
-    cout << "K1p = " << outputK1p << "\n";
-    cout << "K1a = " << outputK1a << "\n";
-    cout << "K1t = " << outputK1t << "\n";*/
+    std::cout << "K1p = " << outputK1p << "\n";
+    std::cout << "K1a = " << outputK1a << "\n";
+    std::cout << "K1t = " << outputK1t << "\n";*/
     /*
-    cout << "now exact with w = 0 = q: \n";
+    std::cout << "now exact with w = 0 = q: \n";
     outputK1p = K1cdcd_solution(0., 0., -0.1, 10.0, 'p',0.1, 1e-10, 1e-10, 0.0);
     outputK1a = K1cdcd_solution(0., 0., -0.1, 10.0, 'a',0.1, 1e-10, 1e-10, 0.0);
     outputK1t = K1cdcd_solution(0., 0., -0.1, 10.0, 't',0.1, 1e-10, 1e-10, 0.0);
-    cout << "K1p = " << outputK1p << "\n";
-    cout << "K1a = " << outputK1a << "\n";
-    cout << "K1t = " << outputK1t << "\n";
+    std::cout << "K1p = " << outputK1p << "\n";
+    std::cout << "K1a = " << outputK1a << "\n";
+    std::cout << "K1t = " << outputK1t << "\n";
     //K1Lambda (0.0, 0.0, -0.1, 'p', 10.0, 1e-10, 100, 1e-12, 1e-12, 0.0);
     //K1Lambdag(0.0,0.0,-0.1,0.1,'p',10.0,1e-10,100,1e-12,1e-12,0.0);
     *//*outputK1p = K1cdcd_solution_nint(0., 0., -0.1, 10.0, 'p',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     outputK1a = K1cdcd_solution_nint(0., 0., -0.1, 10.0, 'a',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
     outputK1t = K1cdcd_solution_nint(0., 0., -0.1, 10.0, 't',0.1, 1e-10, 1e-10, 0.0, 1e-12,1e-12);
-    cout << "K1p = " << outputK1p << "\n";
-    cout << "K1a = " << outputK1a << "\n";
-    cout << "K1t = " << outputK1t << "\n";*/
+    std::cout << "K1p = " << outputK1p << "\n";
+    std::cout << "K1a = " << outputK1a << "\n";
+    std::cout << "K1t = " << outputK1t << "\n";*/
 
     //K1Lambda (0.1, 0.1, -0.1, 'p', 10.0, 1e-10, 100, 1e-12, 1e-12, 0.0, 1e-12, 1e-12);
 
@@ -294,7 +294,7 @@ int main() {
         outputre = dLsfebb ( 0.1, 1.0, 0.1, 'c', 'c', 'p', 0, 1e-10);
         outputim = dLsfebb ( 0.1, 1.0, 0.1, 'c', 'c', 'p', 1, 1e-10);
         outputcomp = outputre + glb_i * outputim;
-        cout << "Derivative is " << outputcomp << "\n";
+        std::cout << "Derivative is " << outputcomp << "\n";
         ODE_solver_K1p(3.0, 3.0, 0.1, 10.0, -0.1, 10);*/
 
     // Sharp frequency regulator
@@ -303,35 +303,35 @@ int main() {
     /*comp output13 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 'c','d' ,'a');
     comp output14 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 'c','d' ,'p');
     comp output15 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 'c','d' ,'t');
-    cout << "Sharp regulator: " << output13 << ".\n";
-    cout << "Sharp regulator: " << output14 << ".\n";
-    cout << "Sharp regulator: " << output15 << ".\n";*/
+    std::cout << "Sharp regulator: " << output13 << ".\n";
+    std::cout << "Sharp regulator: " << output14 << ".\n";
+    std::cout << "Sharp regulator: " << output15 << ".\n";*/
 
 
     // DOUBLE PENDULUM
     // ===============================
 
-    /*cout << "now double pendulum: " << "\n";
+    /*std::cout << "now double pendulum: " << "\n";
     solve_double_pendulum(9.81,1.0,2.0,1.0,1.5,0.0,10.0,0.0,30.0,1.0,-2.3);*/
 
     // ZEROS
     /*
     double testroot1 = find_root_divergence (sigmoidal, -1.0, 1., 1000, 10e-10);
-    cout << "x = " << testroot1 << "\n";
+    std::cout << "x = " << testroot1 << "\n";
     comp exactvalue = sigmoidal(testroot1);
-    cout << "sigmoid(x) = " << exactvalue << "\n";
+    std::cout << "sigmoid(x) = " << exactvalue << "\n";
 
     double testroot2 = fine_root_newton (fzeros1, 3, 10e-10, 1000, 10e-10);
-    cout << "x = " << testroot2 << "\n";
+    std::cout << "x = " << testroot2 << "\n";
     double exactvalue2 = fzeros1(testroot2);
-    cout << "f1(x) = " << exactvalue2 << "\n";
+    std::cout << "f1(x) = " << exactvalue2 << "\n";
 
     double testroot3 = fine_root_newton (fzeros2, -1.0, 1., 1000, 10e-10);
-    cout << "x = " << testroot3 << "\n";
+    std::cout << "x = " << testroot3 << "\n";
     double xx0 = pow(M_PI,3)/log(2)/(10*M_EULER);
-    cout << "x_exact " << xx0 << "\n";
+    std::cout << "x_exact " << xx0 << "\n";
     double exactvalue3 = fzeros2(testroot3);
-    cout << "f2(x) = " << exactvalue3 << "\n";
+    std::cout << "f2(x) = " << exactvalue3 << "\n";
     */
 
     // LADDER APPROXIMATION
@@ -352,13 +352,13 @@ int main() {
     comp bubble4 = perform_Pi0_vpp_integral (0.0, 0.0, 'c', 'd', 'p', 1e4, 1e-5);
     double bubble4e = exactzerobubble(1e4, 1e-5);
     //comp output5t = perform_vacuum_integral (1, 1, 1e4, 1e-5); */
-    cout << "Bubble integral = " << bubble1 << ", exact = " << bubble1e << /* ", simplified = " << output2t << */  "\n";
+    std::cout << "Bubble integral = " << bubble1 << ", exact = " << bubble1e << /* ", simplified = " << output2t << */  "\n";
     //double test1 = 1e4;
     //double test2 = sqrt(test1);
-    //cout << test1 << " = " << test2 << "\n";
-    cout << "Bubble integral = " << bubble2 << ", exact = " << bubble2e << /* ", simplified = " << output3t << */ "\n";
-    cout << "Bubble integral = " << bubble3 << ", exact = " << bubble3e << /* ", simplified = " << output4t << */ "\n";
-    cout << "Bubble integral = " << bubble4 << ", exact = " << bubble4e << /* ", simplified = " << output5t << */ "\n";
+    //std::cout << test1 << " = " << test2 << "\n";
+    std::cout << "Bubble integral = " << bubble2 << ", exact = " << bubble2e << /* ", simplified = " << output3t << */ "\n";
+    std::cout << "Bubble integral = " << bubble3 << ", exact = " << bubble3e << /* ", simplified = " << output4t << */ "\n";
+    std::cout << "Bubble integral = " << bubble4 << ", exact = " << bubble4e << /* ", simplified = " << output5t << */ "\n";
 
     glb_muc = 0.0;
     glb_mud = 0.0;
@@ -372,24 +372,24 @@ int main() {
     ladder4 = ladder(0.0,0.0,1e2,1e-5,1);
     ladder5 = ladder(0.0,0.0,1e4,1e-5,1);
     laddere = -4*M_PI;
-    cout << "ladder = " << ladder1 << "\n";
-    cout << "ladder = " << ladder2 << "\n";
-    cout << "ladder = " << ladder3 << "\n";
-    cout << "ladder = " << ladder4 << "\n";
-    cout << "ladder = " << ladder5 << "\n";
-    cout << "exact = " << laddere << "\n";
+    std::cout << "ladder = " << ladder1 << "\n";
+    std::cout << "ladder = " << ladder2 << "\n";
+    std::cout << "ladder = " << ladder3 << "\n";
+    std::cout << "ladder = " << ladder4 << "\n";
+    std::cout << "ladder = " << ladder5 << "\n";
+    std::cout << "exact = " << laddere << "\n";
 
     // comp testfmu = test_f_mu(0.0,0.0,1e3,1e-4,1,1.0);
-    // cout << "f_mu = " << testfmu << "\n";
+    // std::cout << "f_mu = " << testfmu << "\n";
 
     // TEST INTEGRATOR AND SOLVER
     /*
-    cout << "test integrate \n";
+    std::cout << "test integrate \n";
 
 
     comp integrate_result;
     integrate_result = perform_SimpleBubble_integral (0.03, -2.0, 0.2, 0.4, 'c', 'c');
-    cout << "x-integral = " << integrate_result << "\n";
+    std::cout << "x-integral = " << integrate_result << "\n";
 
 
 
@@ -403,13 +403,13 @@ int main() {
 
 
 
-    cout << "yfin = " << y_fin << "\n";
-    cout << "nODE = " << nODE << "\n";
+    std::cout << "yfin = " << y_fin << "\n";
+    std::cout << "nODE = " << nODE << "\n";
      */
 
     get_time(t0);
 
-    cout << "Goodbye World! \n";
+    std::cout << "Goodbye World! \n";
 
 #ifdef MPI_FLAG
     MPI_Finalize();

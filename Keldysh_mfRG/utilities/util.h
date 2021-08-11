@@ -9,26 +9,26 @@
 #include <chrono>      // system time
 #include <unistd.h>    // time delay
 #include <iostream>    // text input/output
+#include "../data_structures.h"
 
 #ifdef MPI_FLAG
 #include "mpi_setup.h"
 #endif
 
-using namespace std;
 
 // print a time stamp in the following format: YYYY-MM-DD | hh-mm-ss |
 void print_time_stamp() {
-    time_t tt = chrono::system_clock::to_time_t(chrono::system_clock::now()); // get time stamp
+    time_t tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()); // get time stamp
     tm loc = *localtime(&tt);                                            // convert time stamp to readable format
 
     // get elements of time stamp: Y, M, D, h, m, s
     int tms [6] {loc.tm_year + 1900, loc.tm_mon + 1, loc.tm_mday, loc.tm_hour, loc.tm_min, loc.tm_sec};
     // separators for readable time stamp format
-    string separators [6] {"-", "-", " | ", ":", ":", " | "};
+    std::string separators [6] {"-", "-", " | ", ":", ":", " | "};
 
     for (int i=0; i<6; ++i) {
-        if (tms[i] < 10) cout << "0";     // make sure to use two-digit format: add zero if necessary
-        cout << tms[i] << separators[i];  // print time organized by separators
+        if (tms[i] < 10) std::cout << "0";     // make sure to use two-digit format: add zero if necessary
+        std::cout << tms[i] << separators[i];  // print time organized by separators
     }
 }
 
@@ -38,13 +38,13 @@ void print(T s, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
         print_time_stamp();
-        cout << s;
-        if (endline) cout << endl;
+        std::cout << s;
+        if (endline) std::cout << std::endl;
     }
 #else
     print_time_stamp();
-    cout << s;
-    if (endline) cout << endl;
+    std::cout << s;
+    if (endline) std::cout << std::endl;
 #endif
 }
 
@@ -53,12 +53,12 @@ template <typename T>
 void print_add(T s, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
-        cout << s;
-        if (endline) cout << endl;
+        std::cout << s;
+        if (endline) std::cout << std::endl;
     }
 #else
-    cout << s;
-    if (endline) cout << endl;
+    std::cout << s;
+    if (endline) std::cout << std::endl;
 #endif
 }
 
@@ -68,13 +68,13 @@ void print(T t, U u, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
         print_time_stamp();
-        cout << t << u;
-        if (endline) cout << endl;
+        std::cout << t << u;
+        if (endline) std::cout << std::endl;
     }
 #else
     print_time_stamp();
-    cout << t << u;
-    if (endline) cout << endl;
+    std::cout << t << u;
+    if (endline) std::cout << std::endl;
 #endif
 }
 
@@ -83,12 +83,12 @@ template <typename T, typename U>
 void print_add(T t, U u, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
-        cout << t << u;
-        if (endline) cout << endl;
+        std::cout << t << u;
+        if (endline) std::cout << std::endl;
     }
 #else
-    cout << t << u;
-    if (endline) cout << endl;
+    std::cout << t << u;
+    if (endline) std::cout << std::endl;
 #endif
 }
 
@@ -98,13 +98,13 @@ void print(T t, U u, V v, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
         print_time_stamp();
-        cout << t << u << v;
-        if (endline) cout << endl;
+        std::cout << t << u << v;
+        if (endline) std::cout << std::endl;
     }
 #else
     print_time_stamp();
-    cout << t << u << v;
-    if (endline) cout << endl;
+    std::cout << t << u << v;
+    if (endline) std::cout << std::endl;
 #endif
 }
 
@@ -113,12 +113,12 @@ template <typename T, typename U, typename V>
 void print_add(T t, U u, V v, bool endline) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
-        cout << t << u << v;
-        if (endline) cout << endl;
+        std::cout << t << u << v;
+        if (endline) std::cout << std::endl;
     }
 #else
-    cout << t << u << v;
-    if (endline) cout << endl;
+    std::cout << t << u << v;
+    if (endline) std::cout << std::endl;
 #endif
 }
 
@@ -157,14 +157,14 @@ void get_time(double t0) {
     double t = ms/1000.;
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0) {
-        cout << "time elapsed: ";
+        std::cout << "time elapsed: ";
         printf("%.3f", t-t0);
-        cout << "s" << endl;
+        std::cout << "s" << std::endl;
     }
 #else
-    cout << "time elapsed: ";
+    std::cout << "time elapsed: ";
     printf("%.3f", t-t0);
-    cout << "s" << endl;
+    std::cout << "s" << std::endl;
 #endif
 }
 
@@ -177,14 +177,14 @@ void get_time(double t0, std::string prec) {
         double t = us / 1000000.;
 #ifdef MPI_FLAG
         if (mpi_world_rank() == 0) {
-            cout << "time elapsed: ";
+            std::cout << "time elapsed: ";
             printf("%.6f", t-t0);
-            cout << "s" << endl;
+            std::cout << "s" << std::endl;
         }
 #else
-        cout << "time elapsed: ";
+        std::cout << "time elapsed: ";
         printf("%.6f", t-t0);
-        cout << "s" << endl;
+        std::cout << "s" << std::endl;
 #endif
     }
     else {
@@ -192,14 +192,14 @@ void get_time(double t0, std::string prec) {
         double t = ms / 1000.;
 #ifdef MPI_FLAG
         if (mpi_world_rank() == 0) {
-            cout << "time elapsed: ";
+            std::cout << "time elapsed: ";
             printf("%.3f", t-t0);
-            cout << "s" << endl;
+            std::cout << "s" << std::endl;
         }
 #else
-        cout << "time elapsed: ";
+        std::cout << "time elapsed: ";
         printf("%.3f", t-t0);
-        cout << "s" << endl;
+        std::cout << "s" << std::endl;
 #endif
     }
 }
@@ -258,7 +258,7 @@ auto round2ffreq(double w) -> double {
 }
 
 // Check whether there are doubly occuring frequencies
-auto is_doubleOccurencies(rvec freqs) -> int {
+auto is_doubleOccurencies(const rvec& freqs) -> int {
     for (int i = 0; i < freqs.size() - 1; i++){
         if (freqs[i] == freqs[i+1]) return 1;
     }
@@ -266,7 +266,7 @@ auto is_doubleOccurencies(rvec freqs) -> int {
 }
 
 // Check whether the frequency grid is symmetric
-auto is_symmetric(rvec freqs) -> double {
+auto is_symmetric(const rvec& freqs) -> double {
     double asymmetry = 0;
     for (int i = 0; i< freqs.size() - 1; i++){
 

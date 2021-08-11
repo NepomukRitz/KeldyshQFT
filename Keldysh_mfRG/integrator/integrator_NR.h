@@ -82,8 +82,8 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b) -> Q {
     // use 13-point Gauss-Kronrod rule as error estimate
     is = Gauss_Kronrod_13(h, f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8], f[9], f[10], f[11], f[12]);
 
-    err_i1 = abs(i1 - is);  // error of first estimate compared to 13-point Gauss-Kronrod
-    err_i2 = abs(i2 - is);  // error of second estimate compared to 13-point Gauss-Kronrod
+    err_i1 = std::abs(i1 - is);  // error of first estimate compared to 13-point Gauss-Kronrod
+    err_i2 = std::abs(i2 - is);  // error of second estimate compared to 13-point Gauss-Kronrod
 
     // scale tolerance: if error of i2 is smaller than error of i1 (integral is converging), increase tolerance.
     r = (err_i1 != 0.0) ? err_i2/err_i1 : 1.0;          // scaling factor r
@@ -97,8 +97,8 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b) -> Q {
     // or relative tolerance, return second estimate, else subdivide interval.
     // Subdivide also if the integral value is exactly zero, to avoid accidental zero result due to the choice of
     // evaluation points.
-    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is))
-        && abs(i2 - is) < max(EPS, tolerance * fabs(is))
+    if (std::abs(i2 - i1) < std::max(EPS, tolerance * std::fabs(is))
+        && std::abs(i2 - is) < std::max(EPS, tolerance * std::fabs(is))
         //&& i2 != 0. // shouldn't need this safety check any more if interval is split into subintervals
         || b-a < EPS) // do not split if the interval is very small
         return i2;
@@ -138,7 +138,7 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b, const Q fa, 
 
     // if difference between first and second estimate is smaller than absolute or relative tolerance,
     // or nodes lie outside the interval, return second estimate, else subdivide interval
-    if (abs(i2 - i1) < max(EPS, tolerance * fabs(is)) || x[0] < a || b < x[4])
+    if (std::abs(i2 - i1) < std::max(EPS, tolerance * std::fabs(is)) || x[0] < a || b < x[4])
         return i2;
     else
         return integrate(a,    x[0], fa,   f[0], is)  // subdivide interval

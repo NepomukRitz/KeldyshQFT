@@ -373,7 +373,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     vec<vec<double>> intervals(num_freqs*4 + 3, {0.,0.});
     for (int i = 0; i < num_intervals; i++) {
         intervals[i] = {intersections[i], intersections[i+1]};
-        if (abs(abs(intersections[i]) - w_half) < tol) {
+        if (std::abs(std::abs(intersections[i]) - w_half) < tol) {
             intervals[i][0] += tol;
             intervals[i-1][1] -= tol;
         }
@@ -443,8 +443,8 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
         //double vmaxn = vmax/(M_PI*glb_T);
         //double vminn = vmin/(M_PI*glb_T);
         Q resul_estimate = (values[0] - slope * freq_step/2) * N + freq_step*slope / 2 * N * N;
-        //cout << "error_estimate = " << error_estimate << "\t < tol * sum = " << reltol * values.abs().sum() << " ? \n";
-        if (error_estimate < reltol * abs(values.abs().sum()) or error_estimate < abstol) {
+        //cout << "error_estimate = " << error_estimate << "\t < tol * sum = " << reltol * values.std::abs().sum() << " ? \n";
+        if (error_estimate < reltol * std::abs(values.abs().sum()) or error_estimate < abstol) {
             //cout << "Accepted estimate! \n";
             return resul_estimate;
         }

@@ -26,7 +26,7 @@ rvec log(const rvec& x) {
  *                   0 : All zeros. The y values are assumed to drop sharply at the narrow intervals
  *                       [xi(1)-vsn,xi(1)] and [xi(end),xi(end)+vsn], where vsn = 1e-14.
  *                       (Default)
- *                   1 : 1/x tail such that yi(1)*xi(1)/abs(x) for left, yi(end)*xi(end)/abs(x) for right.
+ *                   1 : 1/x tail such that yi(1)*xi(1)/std::abs(x) for left, yi(end)*xi(end)/std::abs(x) for right.
  *                   2 : 1/x^2 tail.
  * @return       : The real part of a causal function, on the x points specifed by xi.
  *
@@ -48,7 +48,7 @@ rvec KKi2r(rvec& xi, rvec& yi, int gflag = 0) {
 
     // Contribution of a piecewise linear segment y = (a*x+b) over [x1,x2] to the point at x0 is given by the integral
     // of (a*x+b)/(x-x0) over [x1,x2]:
-    // a*(x2-x1) + (a*x0+b)*log(abs((x2-x0)/(x1-x0)))  --- (1)
+    // a*(x2-x1) + (a*x0+b)*log(std::abs((x2-x0)/(x1-x0)))  --- (1)
     // Since a = (y2-y1)/(x2-x1), y1 = a*x1+b, and y2 = a*x2+b, the sum of the first terms will be yi(end)-yi(0).
 
     // contribution from the second term of Eq. (1)
@@ -65,7 +65,7 @@ rvec KKi2r(rvec& xi, rvec& yi, int gflag = 0) {
         }
     }
     for (int i=1; i<n-1; ++i) {
-        yr[i] += yi[i] * log(abs(dxi[i] / dxi[i-1]));
+        yr[i] += yi[i] * log(std::abs(dxi[i] / dxi[i-1]));
     }
 
     // contribution from the first term of Eq. (1)
@@ -76,12 +76,12 @@ rvec KKi2r(rvec& xi, rvec& yi, int gflag = 0) {
             // There are no contributions from the outside of the x interval, since they are zeros. The sharp edges
             // contribute *only* to the boundary. The below contributions to yr(0) and yr(end) can be derived by
             // considering the limiting case of x0 -> x1^- or x0 -> x2^+ in Eq. (1).
-            yr[0]   += yi[0]   * log(abs(dxi[0] / vsn));
-            yr[end] -= yi[end] * log(abs(dxi[end_d] / vsn));
+            yr[0]   += yi[0]   * log(std::abs(dxi[0] / vsn));
+            yr[end] -= yi[end] * log(std::abs(dxi[end_d] / vsn));
             break;
         case 1:
             // Contribution from 1/x tail (= y1*x1/x stretching from the point (x1,y1) at the edge) to the point at x0:
-            // \int_{x1}^{inf} dx (y1*x1/x) * (1/(x-x0)) = (y1*x1/x0)*log(abs(x1/(x1-x0))) --- (2)
+            // \int_{x1}^{inf} dx (y1*x1/x) * (1/(x-x0)) = (y1*x1/x0)*log(std::abs(x1/(x1-x0))) --- (2)
             for (int i=0; i<n; ++i) {
                 if (xi(i) != 0) {
                     // yr(0:end-1)
@@ -105,13 +105,13 @@ rvec KKi2r(rvec& xi, rvec& yi, int gflag = 0) {
             // At the edges: the sum of the second term in Eq.(1) and the term in Eq.(2). The divergent terms are
             // cancelled out.
             yr[end] += yi(end) * log(xi(end)/dxi(end_d));
-            yr[0]   -= yi(0) * log(abs(xi(0) / dxi(0))); // opposite sign similarly as for yr(1:end)
+            yr[0]   -= yi(0) * log(std::abs(xi(0) / dxi(0))); // opposite sign similarly as for yr(1:end)
             break;
         case 2:
             // contribution from 1/x^2 tail (= y1*x1^2/x^2 stretching from the point (x1,y1) at the edge) to point at x0:
             // \int_{x1}^{inf} dx (y1*x1^2/x^2) * (1/(x-x0))
             //      = \int_{x1}^{inf} dx (y1*x1^2)*[ -1/x0/x^2 - 1/x0^2/x + 1/x0^2/(x-x0) ]
-            //      = (-y1*x1^2)*[ 1/x0/x1 + (1/x0^2)*log(abs((x1-x0)/x1)) ]     --- (3)
+            //      = (-y1*x1^2)*[ 1/x0/x1 + (1/x0^2)*log(std::abs((x1-x0)/x1)) ]     --- (3)
             for (int i=0; i<n; ++i) {
                 if (xi(i) != 0) {
                     // yr(0:end-1)
@@ -131,8 +131,8 @@ rvec KKi2r(rvec& xi, rvec& yi, int gflag = 0) {
             }
             // At the edges: the sum of the second term in Eq.(1) and the term in Eq.(3). The divergent terms are
             // cancelled out.
-            yr[end] -= yi(end) * (log(abs(dxi(end_d) / xi(end))) + 1);
-            yr[0]   += yi(0) * (log(abs(dxi(0) / xi(0))) + 1); // opposite sign similarly as for yr(1:end)
+            yr[end] -= yi(end) * (log(std::abs(dxi(end_d) / xi(end))) + 1);
+            yr[0]   += yi(0) * (log(std::abs(dxi(0) / xi(0))) + 1); // opposite sign similarly as for yr(1:end)
             break;
         default:;
     }

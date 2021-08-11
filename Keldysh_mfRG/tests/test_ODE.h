@@ -32,9 +32,9 @@ void test_ODE_solvers() {
     const int N_ODE_Euler = 100; const int N_ODE_RK4 = 10; // number of steps in ODE solver
     ODE_solver_Euler(y_fin_Euler,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE_Euler);
     ODE_solver_RK4(y_fin_RK4,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE_RK4);
-    cout << "Exact result is " << exp(1.) << "." << endl;
-    cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << endl;
-    cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << endl;
+    std::cout << "Exact result is " << exp(1.) << "." << std::endl;
+    std::cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << std::endl;
+    std::cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << std::endl;
 }
 
 double x_t_trafo_quadr(const double t) { // variable transformation x = x(t)
@@ -60,9 +60,9 @@ void test_ODE_solvers_quadr() { // test ODE solvers in solving dy/dt = y*2t from
     const int N_ODE_Euler = 100; const int N_ODE_RK4 = 10; // number of steps in ODE solver
     ODE_solver_Euler(y_fin_Euler,  t_fin, y_ini, t_ini, test_rhs_ODE_exp_quadr, N_ODE_Euler);
     ODE_solver_RK4(y_fin_RK4,  t_fin, y_ini, t_ini, test_rhs_ODE_exp_quadr, N_ODE_RK4);
-    cout << "Exact result is " << exp(1.) << "." << endl;
-    cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << endl;
-    cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << endl;
+    std::cout << "Exact result is " << exp(1.) << "." << std::endl;
+    std::cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << std::endl;
+    std::cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << std::endl;
 }
 
 
@@ -75,7 +75,7 @@ void test_SCE_solver() { // test SCE solvers in solving y=-x/(1-y); solution is 
     y_ini = 0.; x = 1.; // initial y and fixed x
     const int N_SCE = 100; // number of steps in ODE solver
     SCE_solver(y_fin, y_ini, x, test_rhs_SCE_sqrt, N_SCE, 0.);
-    cout << "Exact result is " << (1.-sqrt(5.))/2. << ". Using " << N_SCE << " iterations yields " << y_fin << "." << endl;
+    std::cout << "Exact result is " << (1.-sqrt(5.))/2. << ". Using " << N_SCE << " iterations yields " << y_fin << "." << std::endl;
 }
 
 
@@ -119,7 +119,7 @@ void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, b
 
     ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
     cvec K1a_dif = state_dir.vertex[0].avertex().K1 + ( state_fin.vertex[0].avertex().K1*(-1.) ); // difference in results
-    print("Testing ODE for bare K1a_0 with State class. Using " +to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +to_string(K1a_dif.max_norm())+ ".", true);
+    print("Testing ODE for bare K1a_0 with State class. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
                                   {"v", "state_dir_R", "state_dir_I", "state_fin_R", "state_fin_I", "state_ini_R", "state_ini_I"},
                                   {bfreqs, state_dir.vertex[0].avertex().K1.real(), state_dir.vertex[0].avertex().K1.imag(),
@@ -206,7 +206,7 @@ void test_rhs_bubbles_flow(int N_ODE){
 
     ODE_solver_RK4(K1a_fin, Lambda_fin, K1a_ini, Lambda_ini, rhs_bubbles_flow, N_ODE); // final K1a from ODE
     cvec K1a_dif = K1a_dir + ( K1a_fin*(-1.) ); // difference in results
-    print("Testing ODE for bare K1a_0. Using " +to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +to_string(K1a_dif.max_norm())+ ".", true);
+    print("Testing ODE for bare K1a_0. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow.h5",
                                   {"v", "K1a_dir_R", "K1a_dir_I", "K1a_fin_R", "K1a_fin_I", "K1a_ini_R", "K1a_ini_I"},
                                   {bfreqs, K1a_dir.real(), K1a_dir.imag(), K1a_fin.real(), K1a_fin.imag(), K1a_ini.real(), K1a_ini.imag()});
@@ -306,7 +306,7 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
     sopt_state(state_ini, Lambda_ini); // direct calculation of initial K1a
     sopt_state(state_dir, Lambda_fin); // direct calculation of direct K1a
 
-    string name;
+    std::string name;
     switch (feedback){
         case 1:
             ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_state_flow_SOPT_1, N_ODE); // final K1a from ODE
@@ -345,11 +345,11 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
     }
 
     if(mpi_world_rank()==0) {
-        print("Confirming correctness of the bubbles. The max diff between direct and final results is " +to_string(K1a0_dif.max_norm())+". \n "+
-              "Testing ODE for SelfEnergyR. Using " +to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +
-              to_string(SER_dif.max_norm())+ ". \n" +
-              "Testing ODE for SelfEnergyK. Using " + to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +
-              to_string(SEK_dif.max_norm()) +".", true);
+        print("Confirming correctness of the bubbles. The max diff between direct and final results is " +std::to_string(K1a0_dif.max_norm())+". \n "+
+              "Testing ODE for SelfEnergyR. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +
+              std::to_string(SER_dif.max_norm())+ ". \n" +
+              "Testing ODE for SelfEnergyK. Using " + std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +
+              std::to_string(SEK_dif.max_norm()) +".", true);
     }
     if(write_flag) write_h5_rvecs(name,
                                   {"v", "dir_SE_R", "dir_SE_I", "fin_SE_R", "fin_SE_I", "ini_SE_R", "ini_SE_I",
@@ -459,7 +459,7 @@ auto compute_PT4_K1a_nonladder(const double Lambda) -> State<state_datatype> {
 }
 
 // compute K1a non-ladder diagram in PT4 directly and via its flow, as a test for GeneralVertex class
-void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, const string filename) {
+void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, const std::string filename) {
 
     // number of Lambda layers in hdf5 file
     int Lambda_size = nODE + U_NRG.size() + 1;

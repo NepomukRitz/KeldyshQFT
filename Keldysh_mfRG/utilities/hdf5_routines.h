@@ -5,9 +5,10 @@
 #ifndef KELDYSH_MFRG_HDF5_ROUTINES_H
 #define KELDYSH_MFRG_HDF5_ROUTINES_H
 
+#include <cmath>
 #include "util.h"               // printing text
 #include "../parameters.h"         // system parameters (necessary for vector lengths etc.)
-#include "../data_structures.h"    // comp data type, real/complex vector class
+#include "../data_structures.h"    // comp data type, std::real/complex vector class
 #include "../grids/frequency_grid.h"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
 
@@ -63,7 +64,7 @@ const H5std_string  IM( "im" );
 
 // Define struct to save complex numbers in hdf5 file
 typedef struct h5_comp {
-    double re; // real part
+    double re; // std::real part
     double im; // imaginary part
 } h5_comp;
 
@@ -200,26 +201,26 @@ template <typename Q>
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
             // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
             selfenergy[i].re = glb_U/2.;
-            selfenergy[i].im = real(state_in.selfenergy.acc(i));
+            selfenergy[i].im = state_in.selfenergy.acc(i);
 #else
-            selfenergy[i].re = real(state_in.selfenergy.acc(i));
-            selfenergy[i].im = imag(state_in.selfenergy.acc(i));
+            selfenergy[i].re = std::real(state_in.selfenergy.acc(i));
+            selfenergy[i].im = std::imag(state_in.selfenergy.acc(i));
 #endif
         }
         for (int i=0; i<irred_dim; ++i) {                       // write irreducible vertex into buffer
-            irreducible_class[i].re = real(state_in.vertex[0].irred().acc(i));
-            irreducible_class[i].im = imag(state_in.vertex[0].irred().acc(i));
+            irreducible_class[i].re = std::real(state_in.vertex[0].irred().acc(i));
+            irreducible_class[i].im = std::imag(state_in.vertex[0].irred().acc(i));
         }
 #if MAX_DIAG_CLASS >= 1
         for(int i=0; i<K1_dim; ++i) {                                // write K1 into buffer
-            K1_class_a[i].re = real(state_in.vertex[0].avertex().K1_acc(i));
-            K1_class_a[i].im = imag(state_in.vertex[0].avertex().K1_acc(i));
+            K1_class_a[i].re = std::real(state_in.vertex[0].avertex().K1_acc(i));
+            K1_class_a[i].im = std::imag(state_in.vertex[0].avertex().K1_acc(i));
 
-            K1_class_p[i].re = real(state_in.vertex[0].pvertex().K1_acc(i));
-            K1_class_p[i].im = imag(state_in.vertex[0].pvertex().K1_acc(i));
+            K1_class_p[i].re = std::real(state_in.vertex[0].pvertex().K1_acc(i));
+            K1_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K1_acc(i));
 
-            K1_class_t[i].re = real(state_in.vertex[0].tvertex().K1_acc(i));
-            K1_class_t[i].im = imag(state_in.vertex[0].tvertex().K1_acc(i));
+            K1_class_t[i].re = std::real(state_in.vertex[0].tvertex().K1_acc(i));
+            K1_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K1_acc(i));
         }
 #endif
 #if MAX_DIAG_CLASS >= 2
@@ -241,14 +242,14 @@ template <typename Q>
             ffreqs2_buffer[i] = ffreqs2.w[i];
         }
         for(int i=0; i<K2_dim; ++i) {                                // write K2 into buffer
-            K2_class_a[i].re = real(state_in.vertex[0].avertex().K2_acc(i));
-            K2_class_a[i].im = imag(state_in.vertex[0].avertex().K2_acc(i));
+            K2_class_a[i].re = std::real(state_in.vertex[0].avertex().K2_acc(i));
+            K2_class_a[i].im = std::imag(state_in.vertex[0].avertex().K2_acc(i));
 
-            K2_class_p[i].re = real(state_in.vertex[0].pvertex().K2_acc(i));
-            K2_class_p[i].im = imag(state_in.vertex[0].pvertex().K2_acc(i));
+            K2_class_p[i].re = std::real(state_in.vertex[0].pvertex().K2_acc(i));
+            K2_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K2_acc(i));
 
-            K2_class_t[i].re = real(state_in.vertex[0].tvertex().K2_acc(i));
-            K2_class_t[i].im = imag(state_in.vertex[0].tvertex().K2_acc(i));
+            K2_class_t[i].re = std::real(state_in.vertex[0].tvertex().K2_acc(i));
+            K2_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K2_acc(i));
         }
 #endif
 #if MAX_DIAG_CLASS >= 3
@@ -270,14 +271,14 @@ template <typename Q>
             ffreqs3_buffer[i] = ffreqs3.w[i];
         }
         for(int i=0; i<K3_dim; ++i) {                                // write K3 into buffer
-            K3_class_a[i].re = real(state_in.vertex[0].avertex().K3_acc(i));
-            K3_class_a[i].im = imag(state_in.vertex[0].avertex().K3_acc(i));
+            K3_class_a[i].re = std::real(state_in.vertex[0].avertex().K3_acc(i));
+            K3_class_a[i].im = std::imag(state_in.vertex[0].avertex().K3_acc(i));
 
-            K3_class_p[i].re = real(state_in.vertex[0].pvertex().K3_acc(i));
-            K3_class_p[i].im = imag(state_in.vertex[0].pvertex().K3_acc(i));
+            K3_class_p[i].re = std::real(state_in.vertex[0].pvertex().K3_acc(i));
+            K3_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K3_acc(i));
 
-            K3_class_t[i].re = real(state_in.vertex[0].tvertex().K3_acc(i));
-            K3_class_t[i].im = imag(state_in.vertex[0].tvertex().K3_acc(i));
+            K3_class_t[i].re = std::real(state_in.vertex[0].tvertex().K3_acc(i));
+            K3_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K3_acc(i));
         }
 #endif
         print("Buffer ready. Preparing for saving into Hdf5 file...", true);
@@ -1322,7 +1323,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
             if (state.selfenergy.val(iK, iSE, 0) != out.selfenergy.val(iK, iSE, 0)) {
-                cout << "Self-energy not equal, " << iK << ", " << iSE << endl;
+                std::cout << "Self-energy not equal, " << iK << ", " << iSE << std::endl;
                 cnt += 1;
             }
         }
@@ -1333,43 +1334,43 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
 #if MAX_DIAG_CLASS >= 1
             for (int iw1=0; iw1<nBOS; ++iw1) {
                 if (state.vertex[0].avertex().K1_val(iK, iw1, i_in) != out.vertex[0].avertex().K1_val(iK, iw1, i_in)) {
-                    cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
+                    std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
                 if (state.vertex[0].pvertex().K1_val(iK, iw1, i_in) != out.vertex[0].pvertex().K1_val(iK, iw1, i_in)) {
-                    cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
+                    std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
                 if (state.vertex[0].tvertex().K1_val(iK, iw1, i_in) != out.vertex[0].tvertex().K1_val(iK, iw1, i_in)) {
-                    cout << "Vertex not equal, " << iK << ", " << iw1 << endl;
+                    std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
 #if MAX_DIAG_CLASS >= 2
                 for (int iw2=0; iw2<nFER; ++iw2) {
                     if (state.vertex[0].avertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].avertex().K2_val(iK, iw1, iw2, i_in)) {
-                        cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
+                        std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
                     if (state.vertex[0].pvertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].pvertex().K2_val(iK, iw1, iw2, i_in)) {
-                        cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
+                        std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
                     if (state.vertex[0].tvertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].tvertex().K2_val(iK, iw1, iw2, i_in)) {
-                        cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << endl;
+                        std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
 #if MAX_DIAG_CLASS == 3
                     for (int iw3=0; iw3<nFER; ++iw3) {
                         if (state.vertex[0].avertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].avertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
-                            cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
+                            std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
                         if (state.vertex[0].pvertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].pvertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
-                            cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
+                            std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
                         if (state.vertex[0].tvertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].tvertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
-                            cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << endl;
+                            std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
                     }

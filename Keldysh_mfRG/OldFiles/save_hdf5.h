@@ -9,7 +9,6 @@
 #include <string>
 #include "H5Cpp.h"
 
-using namespace std;
 using namespace H5;
 
 /**

@@ -69,14 +69,14 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
                          + correction
                          #endif
                                  ;
-            if (abs(avertex.K2_val(iK, iw, iv, i_in) - avertex.K2_val(iK, nBOS2 - 1 - iw, iv, i_in)) > asymmetry_tolerance) {
+            if (std::abs(avertex.K2_val(iK, iw, iv, i_in) - avertex.K2_val(iK, nBOS2 - 1 - iw, iv, i_in)) > asymmetry_tolerance) {
                 asymmetry += 1;
             }
             double compare_val = Interpolate<k2, state_datatype>()(indices, avertex);
-            if (abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val) > asymmetry_tolerance) {
-                asymmetry += abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val);
+            if (std::abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val) > asymmetry_tolerance) {
+                asymmetry += std::abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val);
             }
-            if (correction == 0 and abs(avertex.K2_val(iK, iw, iv, i_in) - avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in)) > asymmetry_tolerance ) {
+            if (correction == 0 and std::abs(avertex.K2_val(iK, iw, iv, i_in) - avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in)) > asymmetry_tolerance ) {
                 asymmetry += 1;
             }
 
@@ -135,12 +135,12 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                 //}
                 double compare_val = Interpolate<k3, state_datatype>()(indices, avertex);
                 double savedK3_val = avertex.K3_val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in);
-                double absdiff = abs(compare_val - savedK3_val);
+                double absdiff = std::abs(compare_val - savedK3_val);
                 if (absdiff > 1e-4) {
                     asymmetry += absdiff;
                 }
 
-                if (correction == 0 and abs(avertex.K3_val(iK, iw, iv, ivp, i_in) - avertex.K3_val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in)) > asymmetry_tolerance ) {
+                if (correction == 0 and std::abs(avertex.K3_val(iK, iw, iv, ivp, i_in) - avertex.K3_val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in)) > asymmetry_tolerance ) {
                     asymmetry += 1;
                 }
             }

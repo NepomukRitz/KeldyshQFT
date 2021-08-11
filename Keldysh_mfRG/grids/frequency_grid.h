@@ -18,7 +18,6 @@
 // TODO: implement new grid also for GRID=1,2,4
 // TODO: comment!
 
-using namespace std;
 
 double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
@@ -139,7 +138,7 @@ public:
 };
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
-    return max(U_factor*glb_U, Delta_factor*(Lambda+glb_Gamma)/2.);
+    return std::max(U_factor*glb_U, Delta_factor*(Lambda+glb_Gamma)/2.);
 }
 
 void FrequencyGrid::initialize_grid() {
@@ -172,11 +171,11 @@ void FrequencyGrid::initialize_grid(double scale) {
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     // for Matsubara T>0: pick grid such that no frequencies occur twice
     if (type == 'b') {
-        w_upper = max(round2bfreq(w_upper), glb_T * M_PI*N_w);
+        w_upper = std::max(round2bfreq(w_upper), glb_T * M_PI*N_w);
         W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
     }
     else {
-        w_upper = max(round2ffreq(w_upper), glb_T * M_PI*N_w);
+        w_upper = std::max(round2ffreq(w_upper), glb_T * M_PI*N_w);
         W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
     }
 #endif
@@ -193,8 +192,8 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
     W = (W - W_lower) / dW;
     auto index = (int)W;
-    index = max(0, index);
-    index = min(N_w-2, index);
+    index = std::max(0, index);
+    index = std::min(N_w-2, index);
     return index;
 }
 auto FrequencyGrid::fconv(double w_in, double tol) const -> int {
@@ -339,16 +338,16 @@ double sgn(double x) {
 }
 
 double grid_transf_b(double w) {
-    return sgn(w) * log(1 + abs(w)/w_a) / k_w_b;
+    return sgn(w) * log(1 + std::abs(w)/w_a) / k_w_b;
 }
 double grid_transf_b_inv(double W) {
-    return sgn(W) * w_a * (exp(k_w_b*abs(W)) - 1);
+    return sgn(W) * w_a * (exp(k_w_b*std::abs(W)) - 1);
 }
 double grid_transf_f(double w) {
-    return sgn(w) * log(1 + abs(w)/w_a) / k_w_f;
+    return sgn(w) * log(1 + std::abs(w)/w_a) / k_w_f;
 }
 double grid_transf_f_inv(double W) {
-    return sgn(W) * w_a * (exp(k_w_f*abs(W)) - 1);
+    return sgn(W) * w_a * (exp(k_w_f*std::abs(W)) - 1);
 }
 
 void setUpBosGrid(rvec& freqs, int nfreqs) {
@@ -536,7 +535,7 @@ double grid_transf_v2(const double w, const double W_scale) {
 }
 double grid_transf_inv_v2(double t, double W_scale) {
     // Version 2: quadratic around w=0, good for w^(-2) tails
-    return W_scale * t * abs(t) / sqrt(1. - t * t);
+    return W_scale * t * std::abs(t) / sqrt(1. - t * t);
 }
 double integration_measure_v2(const double t, const double W_scale) {
     double temp = sqrt(1 - t*t);
@@ -546,7 +545,7 @@ double integration_measure_v2(const double t, const double W_scale) {
 double grid_transf_v3(const double w, const double W_scale) {
     // Version 3: linear around w=0, good for w^(-1) tails
     const double almost_zero = 1e-12;
-    return (abs(w) < almost_zero) ? 0. : (-W_scale + sqrt(4*w*w + W_scale*W_scale))/2/w;
+    return (std::abs(w) < almost_zero) ? 0. : (-W_scale + sqrt(4*w*w + W_scale*W_scale))/2/w;
 }
 double grid_transf_inv_v3(const double t, const double W_scale) {
     // Version 3: linear around w=0, good for w^(-1) tails
@@ -559,7 +558,7 @@ double integration_measure_v3(const double t, const double W_scale) {
 
 double grid_transf_v4(const double w, const double W_scale) {
     // Version 4: quadratic around w=0, good for w^(-1) tails
-    return sgn(w) * sqrt(abs(w)/(abs(w) + W_scale));
+    return sgn(w) * sqrt(std::abs(w)/(std::abs(w) + W_scale));
 }
 double grid_transf_inv_v4(const double t, const double W_scale) {
     // Version 4: quadratic around w=0, good for w^(-1) tails
@@ -591,16 +590,16 @@ double wscale_from_wmax_v1(double & Wscale, const double w1, const double wmax, 
 
     // Version 1: linear around w=0, good for w^(-2) tails
     Wscale_candidate = wmax * sqrt( (N*N -1*2) / (pow(wmax/w1, 2) - N*N));
-    return max(Wscale, Wscale_candidate);
+    return std::max(Wscale, Wscale_candidate);
 }
 double wscale_from_wmax_v2(double & Wscale, const double w1, const double wmax, const int N) {
     double Wscale_candidate;
 
     // Version 2: quaadratic around w=0, good for w^(-2) tails
     assert(w1 / wmax < 1./(N*N));       // if this fails, then change wmax or use Version 1
-    Wscale_candidate = w1 * wmax * N * sqrt(N*N - 1) *sqrt(wmax*wmax - N*N*w1*w1) / abs(wmax*wmax - w1*w1*N*N*N*N);
+    Wscale_candidate = w1 * wmax * N * sqrt(N*N - 1) *sqrt(wmax*wmax - N*N*w1*w1) / std::abs(wmax*wmax - w1*w1*N*N*N*N);
 
-    return max(Wscale, Wscale_candidate);
+    return std::max(Wscale, Wscale_candidate);
 }
 double wscale_from_wmax_v3(double & Wscale, const double w1, const double wmax, const int N) {
     double Wscale_candidate;
@@ -608,14 +607,14 @@ double wscale_from_wmax_v3(double & Wscale, const double w1, const double wmax, 
     // Version 3: quadratic around w=0, good for w^(-1) tails
     Wscale_candidate = w1 * wmax * (N*N - 1*2.) / sqrt(N * (N * (wmax*wmax + w1*w1) - N*N*w1*wmax - w1*wmax));
 
-    return max(Wscale, Wscale_candidate);
+    return std::max(Wscale, Wscale_candidate);
 }
 double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax, const int N) {
     double Wscale_candidate;
 
     // linear grid
     Wscale_candidate = wmax + 2*M_PI*glb_T;
-    return max(Wscale, Wscale_candidate);
+    return std::max(Wscale, Wscale_candidate);
 }
 
 
@@ -763,18 +762,18 @@ auto compare(int a, int b) -> bool
     return (a < b);
 }
 
-int fconv(double w){//conversion on combination of linear and log grid. This function can only be called if it is ensured that w is in the range of the frequency grid and that abs(w) >= w0 where w0 is the smallest frequency saved.
+int fconv(double w){//conversion on combination of linear and log grid. This function can only be called if it is ensured that w is in the range of the frequency grid and that std::abs(w) >= w0 where w0 is the smallest frequency saved.
     int i;
 
 
 
-    if(abs(w) > wt){
-        i = static_cast<int>((abs(w)-wt)/delw + nlog/2)-1 ;
+    if(std::abs(w) > wt){
+        i = static_cast<int>((std::abs(w)-wt)/delw + nlog/2)-1 ;
 
     }
-    else if(abs(w) <= wt){
+    else if(std::abs(w) <= wt){
 
-        i = static_cast<int>(log(abs(w)/w0)/log(k));
+        i = static_cast<int>(log(std::abs(w)/w0)/log(k));
     };
 
     if(w>0){
@@ -787,8 +786,8 @@ int fconv(double w){//conversion on combination of linear and log grid. This fun
     };
 
 
-    if(i != nw-1 && abs(w - ffreqs[i+1])<1e-6){i+=1;}//avoid rounding errors:
-    else if(i != 0 && abs( w- ffreqs[i-1])<1e-6){i-=1;};
+    if(i != nw-1 && std::abs(w - ffreqs[i+1])<1e-6){i+=1;}//avoid rounding errors:
+    else if(i != 0 && std::abs( w- ffreqs[i-1])<1e-6){i-=1;};
 
 
     return i;
@@ -799,18 +798,18 @@ int fconv(double w){//conversion on combination of linear and log grid. This fun
 
 //to convert on reduced frequency grid:
 
-int fconv_n(double w, int n){//conversion  on combination of linear and log grid. This function can only be called if it is ensured that w is in the range of the frequency grid and that abs(w) >= w0 where w0 is the smallest frequency saved.
+int fconv_n(double w, int n){//conversion  on combination of linear and log grid. This function can only be called if it is ensured that w is in the range of the frequency grid and that std::abs(w) >= w0 where w0 is the smallest frequency saved.
 
     int i;
 
 
-    if(abs(w) > wt){
-        i = static_cast<int>((abs(w)-wt)/delw + nlog/2)-1 ;
+    if(std::abs(w) > wt){
+        i = static_cast<int>((std::abs(w)-wt)/delw + nlog/2)-1 ;
 
     }
-    else if(abs(w) <= wt){
+    else if(std::abs(w) <= wt){
 
-        i = static_cast<int>(log(abs(w)/w0)/log(k));
+        i = static_cast<int>(log(std::abs(w)/w0)/log(k));
     };
 
     if(w>0){
@@ -821,8 +820,8 @@ int fconv_n(double w, int n){//conversion  on combination of linear and log grid
     };
 
 
-    if(i != n-1 && abs(w - ffreqs[(nw-n)/2+i+1]) <1e-6){i+=1;}//avoid rounding errors:
-    else if(i != 0 && abs(w -ffreqs[(nw-n)/2+i-1])<1e-6){i-=1;};
+    if(i != n-1 && std::abs(w - ffreqs[(nw-n)/2+i+1]) <1e-6){i+=1;}//avoid rounding errors:
+    else if(i != 0 && std::abs(w -ffreqs[(nw-n)/2+i-1])<1e-6){i-=1;};
 
 
 

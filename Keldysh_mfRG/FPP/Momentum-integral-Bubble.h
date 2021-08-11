@@ -16,7 +16,7 @@
 #include <gsl/gsl_integration.h>            // for GSL integrator
 #include <gsl/gsl_errno.h>                  // for GSL integrator
 #include <complex>          // for usage of complex numbers
-#include <cmath>            // for math. operations (real, imag, abs etc.)
+#include <cmath>            // for math. operations (real, imag, std::abs etc.)
 #include <vector>           // vec class is derived from vector class
 #include <initializer_list> // to initialize vec class with initializer list
 #include <gsl/gsl_math.h>
@@ -46,7 +46,7 @@ comp G0(double v, double ksquared, char particle) {
         case 'd':
             return 1./(glb_i*v - ksquared/(2*glb_md)+glb_mud-glb_prec);
         default:
-            cout << "wrong particle type in G0\n";
+            std::cout << "wrong particle type in G0\n";
     }
 }
 
@@ -57,7 +57,7 @@ comp regulator(double Lambda, double v, double  ksquared, char particle) {
         case 'd':
             return 1. - exp(-(pow(ksquared/(2*glb_md)-glb_mud,2.)+v*v)/(Lambda*Lambda));
         default:
-            cout << "wrong particle type in R\n";
+            std::cout << "wrong particle type in R\n";
     }
 }
 
@@ -75,7 +75,7 @@ comp S0Lambda(double Lambda, double v, double ksquared, char particle) {
             dRLambda = -(pow(ksquared/(2*glb_md)-glb_mud,2.)+v*v)/(pow(Lambda, 3.))*exp(-(pow(ksquared/(2*glb_md)-glb_mud,2.)+v*v)/(Lambda*Lambda));
             return dRLambda*G0(v, ksquared, 'd');
         default:
-            cout << "wrong particle type in S\n";
+            std::cout << "wrong particle type in S\n";
     }
 }
 
@@ -153,7 +153,7 @@ double bubble_integrand_MC (double *k, size_t dim, void *params) {
         prefactor = 0.;
         v1 = 0.;
         v2 = 0.;
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     q = fp->q;
@@ -205,7 +205,7 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
 
         gsl_monte_plain_free (s);
 
-        cout << "Re plain result: " << res << ", error: " << err << "\n";
+        std::cout << "Re plain result: " << res << ", error: " << err << "\n";
 
         gsl_monte_plain_state *ss = gsl_monte_plain_alloc (2);
         gsl_monte_plain_integrate (&F_Im, kl, ku, 2, calls, r, ss,
@@ -213,7 +213,7 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
 
         gsl_monte_plain_free (ss);
 
-        cout << "Im plain result: " << res << ", error: " << err << "\n";
+        std::cout << "Im plain result: " << res << ", error: " << err << "\n";
     }
 
     {
@@ -222,14 +222,14 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
                                    &res, &err);
         gsl_monte_miser_free (s);
 
-        cout << "Re miser result: " << res << ", error: " << err << "\n";
+        std::cout << "Re miser result: " << res << ", error: " << err << "\n";
 
         gsl_monte_miser_state *ss = gsl_monte_miser_alloc (2);
         gsl_monte_miser_integrate (&F_Im, kl, ku, 2, calls, r, ss,
                                    &res, &err);
         gsl_monte_miser_free (ss);
 
-        cout << "Im miser result: " << res << ", error: " << err << "\n";
+        std::cout << "Im miser result: " << res << ", error: " << err << "\n";
     }
 
     {
@@ -237,7 +237,7 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
 
         gsl_monte_vegas_integrate (&F_Re, kl, ku, 2, calls/5, r, s,
                                    &res, &err);
-        cout << "Re vegas result: " << res << ", error: " << err << "\n";
+        std::cout << "Re vegas result: " << res << ", error: " << err << "\n";
 
         printf ("converging...\n");
 
@@ -248,9 +248,9 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
             printf ("result = % .6f sigma = % .6f "
                     "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (s));
         }
-        while (fabs (gsl_monte_vegas_chisq (s) - 1.0) > 0.1);
+        while (std::fabs (gsl_monte_vegas_chisq (s) - 1.0) > 0.1);
 
-        cout << "Re vegas result: " << res << ", error: " << err << "\n";
+        std::cout << "Re vegas result: " << res << ", error: " << err << "\n";
 
         gsl_monte_vegas_free (s);
 
@@ -258,7 +258,7 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
 
         gsl_monte_vegas_integrate (&F_Im, kl, ku, 2, calls/5, r, ss,
                                    &res, &err);
-        cout << "Im vegas result: " << res << ", error: " << err << "\n";
+        std::cout << "Im vegas result: " << res << ", error: " << err << "\n";
 
         printf ("converging...\n");
 
@@ -269,9 +269,9 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
             printf ("result = % .6f sigma = % .6f "
                     "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (ss));
         }
-        while (fabs (gsl_monte_vegas_chisq (ss) - 1.0) > vegas_chisq_precision);
+        while (std::fabs (gsl_monte_vegas_chisq (ss) - 1.0) > vegas_chisq_precision);
 
-        cout << "Im vegas result: " << res << ", error: " << err << "\n";
+        std::cout << "Im vegas result: " << res << ", error: " << err << "\n";
 
         gsl_monte_vegas_free (ss);
     }
@@ -310,7 +310,7 @@ comp integrate_bubble_vegas (double w, double vpp, double q, char i, char j, cha
 
         gsl_monte_vegas_integrate (&F_Re, kl, ku, 2, calls/5, r, s,
                                    &res, &err);
-        //cout << "Re vegas result: " << res << ", error: " << err << "\n";
+        //std::cout << "Re vegas result: " << res << ", error: " << err << "\n";
 
         //printf ("converging...\n");
 
@@ -321,9 +321,9 @@ comp integrate_bubble_vegas (double w, double vpp, double q, char i, char j, cha
             //printf ("result = % .6f sigma = % .6f "
             //        "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (s));
         }
-        while (fabs (gsl_monte_vegas_chisq (s) - 1.0) > vegas_chisq_precision);
+        while (std::fabs (gsl_monte_vegas_chisq (s) - 1.0) > vegas_chisq_precision);
 
-        //cout << "Re vegas result: " << res << ", error: " << err << "\n";
+        //std::cout << "Re vegas result: " << res << ", error: " << err << "\n";
 
         res_Re = res;
 
@@ -333,7 +333,7 @@ comp integrate_bubble_vegas (double w, double vpp, double q, char i, char j, cha
 
         gsl_monte_vegas_integrate (&F_Im, kl, ku, 2, calls/5, r, ss,
                                    &res, &err);
-        //cout << "Im vegas result: " << res << ", error: " << err << "\n";
+        //std::cout << "Im vegas result: " << res << ", error: " << err << "\n";
 
         //printf ("converging...\n");
 
@@ -347,9 +347,9 @@ comp integrate_bubble_vegas (double w, double vpp, double q, char i, char j, cha
                 //printf ("result = % .6f sigma = % .6f "
                 //        "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (ss));
             }
-            while (fabs (gsl_monte_vegas_chisq (ss) - 1.0) > vegas_chisq_precision);
+            while (std::fabs (gsl_monte_vegas_chisq (ss) - 1.0) > vegas_chisq_precision);
 
-            //cout << "Im vegas result: " << res << ", error: " << err << "\n";
+            //std::cout << "Im vegas result: " << res << ", error: " << err << "\n";
 
             res_Im = res;
         }
@@ -393,19 +393,19 @@ void integral_bubble_w_vpp_list_MC (char i, char j, char channel, double wmax, d
                         //Pi_int[composite_index_wvq(wi, vppi, nFER, qi, nq)] = result_integral;
                         Pi_int_Re[composite_index_wvq(wi, vppi, nFER, qi, nq)] = real(result_integral);
                         Pi_int_Im[composite_index_wvq(wi, vppi, nFER, qi, nq)] = imag(result_integral);
-                        cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
+                        std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
                     }
         }
     }
 
-    string filename = "../Data/integrated_bubble_MC";
+    std::string filename = "../Data/integrated_bubble_MC";
     filename += "_";
     filename += i;
     filename += j;
     filename += channel;
-    filename += "_nBOS=" + to_string(nBOS)
-                + "_nFER=" + to_string(nFER)
-                + "_nq=" + to_string(nq)
+    filename += "_nBOS=" + std::to_string(nBOS)
+                + "_nFER=" + std::to_string(nFER)
+                + "_nq=" + std::to_string(nq)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
@@ -420,7 +420,7 @@ void integral_bubble_w_vpp_list_MC (char i, char j, char channel, double wmax, d
         times_usual[t] = run_iterations(t, 1);
         times_precalculated[t] = run_iterations(t, 0);
     }
-    string filename = "../Data/runtime_comparisons.h5";
+    std::string filename = "../Data/runtime_comparisons.h5";
     write_h5_rvecs(filename,
                    {"runtimes_usual", "runtimes_precalculated"},
                    {times_usual, times_precalculated});
@@ -468,7 +468,7 @@ comp exact_bare_bubble (double w, double vpp, double q, char i, char j, char r){
         prefactor = 0.;
         v1 = 0.;
         v2 = 0.;
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     if (i == 'c') {
@@ -482,7 +482,7 @@ comp exact_bare_bubble (double w, double vpp, double q, char i, char j, char r){
     else {
         mi = 0.;
         mui = 0.;
-        cout << "wrong particle type 'i'\n";
+        std::cout << "wrong particle type 'i'\n";
     }
 
     if (j == 'c') {
@@ -496,7 +496,7 @@ comp exact_bare_bubble (double w, double vpp, double q, char i, char j, char r){
     else {
         mj = 0.;
         muj = 0.;
-        cout << "wrong particle type 'j'\n";
+        std::cout << "wrong particle type 'j'\n";
     }
 
     if (q == 0.)
@@ -509,7 +509,7 @@ void print_exact_bubble (double w, double vpp, double q, char i, char j, char r)
     comp output_value = exact_bare_bubble(w,vpp,q,i,j,r);
     double real_output_value = real(output_value);
     double imag_output_value = imag(output_value);
-    cout << "The exact bubble is " << real_output_value << " + i " << imag_output_value << "\n";
+    std::cout << "The exact bubble is " << real_output_value << " + i " << imag_output_value << "\n";
 }
 
 void integral_bubble_w_vpp_list_exact (char i, char j, char channel, double wmax, double vppmax, double qmax, int nFER, int nBOS, int nq) {
@@ -535,19 +535,19 @@ void integral_bubble_w_vpp_list_exact (char i, char j, char channel, double wmax
                 result_integral = exact_bare_bubble(w,vpp,q,i,j,channel);
                 Pi_int_Re[composite_index_wvq(wi, vppi, nFER, qi, nq)] = real(result_integral);
                 Pi_int_Im[composite_index_wvq(wi, vppi, nFER, qi, nq)] = imag(result_integral);
-                cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
             }
         }
     }
 
-    string filename = "../Data/exact_bare_bubble";
+    std::string filename = "../Data/exact_bare_bubble";
     filename += "_";
     filename += i;
     filename += j;
     filename += channel;
-    filename += "_nBOS=" + to_string(nBOS)
-                + "_nFER=" + to_string(nFER)
-                + "_nq=" + to_string(nq)
+    filename += "_nBOS=" + std::to_string(nBOS)
+                + "_nFER=" + std::to_string(nFER)
+                + "_nq=" + std::to_string(nq)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
@@ -566,7 +566,7 @@ double heaviside ( double x){
         return 0.5;
     }
     else {
-        cout << "x ill-defined! \n";
+        std::cout << "x ill-defined! \n";
     }
 }
 
@@ -579,8 +579,8 @@ comp sharp_frequency_exact_bare_bubble ( double w, double Lambda, double q, char
     v3 = Lambda + w/2;
     v4 = -Lambda + w/2;
 
-    Th1 = heaviside(abs(Lambda-w)-Lambda);
-    Th2 = heaviside(abs(Lambda+w)-Lambda);
+    Th1 = heaviside(std::abs(Lambda-w)-Lambda);
+    Th2 = heaviside(std::abs(Lambda+w)-Lambda);
 
     result = -1/(2*M_PI)*(Th1*exact_bare_bubble (w, v1, q, i, j, r) + Th2*exact_bare_bubble (w, v2, q, i, j, r) + Th2*exact_bare_bubble (w, v3, q, i, j, r) + Th1*exact_bare_bubble (w, v4, q, i, j, r));
     return result;
@@ -649,7 +649,7 @@ int K1cdcd(double t, const double y[], double f[], void *params) {
     else {
         f[0] = 0.0;
         f[1] = 0.0;
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     return GSL_SUCCESS;
@@ -685,7 +685,7 @@ int solve_K1cdcd(double w, double q, double g, double Lambda_i, char r, double L
         }
     }
     else {
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     return 0;
@@ -727,7 +727,7 @@ comp K1cdcd_solution(double w, double q, double g, double Lambda_i, char r, doub
         result = y[0]+glb_i*y[1];
     }
     else {
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     return result;
@@ -753,12 +753,12 @@ void K1Lambda (double w, double q, double g, char channel, double Lambda_i, doub
 
     }
 
-    string filename = "../Data/K1Lambda";
+    std::string filename = "../Data/K1Lambda";
     filename += "_";
     filename += channel;
-    filename += "_Li=" + to_string(Lambda_i)
-                + "_Lf=" + to_string(Lambda_f)
-                + "_nL=" + to_string(nLambda)
+    filename += "_Li=" + std::to_string(Lambda_i)
+                + "_Lf=" + std::to_string(Lambda_f)
+                + "_nL=" + std::to_string(nLambda)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"Lambdas", "K1Lambda_Re", "K1Lambda_Im"},
@@ -775,7 +775,7 @@ void K1Lambdag (double w, double q, double gmin, double gmax, char channel, doub
     double g;
 
     for (int i = 0; i < ng; i++) {
-        g = gmin + abs(gmax-gmin) / (ng-1);
+        g = gmin + std::abs(gmax-gmin) / (ng-1);
         result_K1 = K1cdcd_solution(w, q, g, Lambda_i, channel, Lambda_f, h, epsabs, epsrel);
 
         gs[i] = g;
@@ -784,12 +784,12 @@ void K1Lambdag (double w, double q, double gmin, double gmax, char channel, doub
 
     }
 
-    string filename = "../Data/K1Lambdag";
+    std::string filename = "../Data/K1Lambdag";
     filename += "_";
     filename += channel;
-    filename += "_gmin=" + to_string(gmin)
-                + "_gmax=" + to_string(gmax)
-                + "_ng=" + to_string(ng)
+    filename += "_gmin=" + std::to_string(gmin)
+                + "_gmax=" + std::to_string(gmax)
+                + "_ng=" + std::to_string(ng)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"gs", "K1Lambda_Re", "K1Lambda_Im"},
@@ -1050,7 +1050,7 @@ comp bubble_k_2d_integrated (double w, double vpp, double q, char i, char j, cha
         prefactor = 0.;
         v1 = 0.;
         v2 = 0.;
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     real_part = prefactor*bubble_integrate_kpp (v1, v2, q, i, j, 0,epsabstheta,epsabskpp);
@@ -1064,7 +1064,7 @@ void print_numerical_bubble (double w, double vpp, double q, char i, char j, cha
     comp output_value = bubble_k_2d_integrated(w,vpp,q,i,j,r, epsabstheta,epsabskpp);
     double real_output_value = real(output_value);
     double imag_output_value = imag(output_value);
-    cout << "The numerical bubble is " << real_output_value << " + i " << imag_output_value << "\n";
+    std::cout << "The numerical bubble is " << real_output_value << " + i " << imag_output_value << "\n";
 }
 
 void integral_bubble_w_vpp_list_2D (char i, char j, char channel, double wmax, double vppmax, double qmax, int nFER, int nBOS, int nq, double epsabstheta, double epsabskpp) {
@@ -1090,19 +1090,19 @@ void integral_bubble_w_vpp_list_2D (char i, char j, char channel, double wmax, d
                 result_integral = bubble_k_2d_integrated(w,vpp,q,i,j,channel,epsabstheta,epsabskpp);
                 Pi_int_Re[composite_index_wvq(wi, vppi, nFER, qi, nq)] = real(result_integral);
                 Pi_int_Im[composite_index_wvq(wi, vppi, nFER, qi, nq)] = imag(result_integral);
-                cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
             }
         }
     }
 
-    string filename = "../Data/integrated_bubble_2D";
+    std::string filename = "../Data/integrated_bubble_2D";
     filename += "_";
     filename += i;
     filename += j;
     filename += channel;
-    filename += "_nBOS=" + to_string(nBOS)
-                + "_nFER=" + to_string(nFER)
-                + "_nq=" + to_string(nq)
+    filename += "_nBOS=" + std::to_string(nBOS)
+                + "_nFER=" + std::to_string(nFER)
+                + "_nq=" + std::to_string(nq)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
@@ -1119,8 +1119,8 @@ comp sharp_frequency_nint_bare_bubble ( double w, double Lambda, double q, char 
     v3 = Lambda + w/2;
     v4 = -Lambda + w/2;
 
-    Th1 = heaviside(abs(Lambda-w)-Lambda);
-    Th2 = heaviside(abs(Lambda+w)-Lambda);
+    Th1 = heaviside(std::abs(Lambda-w)-Lambda);
+    Th2 = heaviside(std::abs(Lambda+w)-Lambda);
 
     result = -Th1*bubble_k_2d_integrated (w, v1, q, i, j, r, epsabstheta, epsabskpp) -Th2*bubble_k_2d_integrated (w, v2, q, i, j, r,epsabstheta, epsabskpp) -Th2*bubble_k_2d_integrated (w, v3, q, i, j, r,epsabstheta, epsabskpp) -Th1*bubble_k_2d_integrated (w, v4, q, i, j, r,epsabstheta, epsabskpp);
     return result;
@@ -1191,7 +1191,7 @@ int K1cdcd_nint(double t, const double y[], double f[], void *params) {
     else {
         f[0] = 0.0;
         f[1] = 0.0;
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     return GSL_SUCCESS;
@@ -1227,7 +1227,7 @@ int solve_K1cdcd_nint(double w, double q, double g, double Lambda_i, char r, dou
         }
     }
     else {
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     return 0;
@@ -1269,7 +1269,7 @@ comp K1cdcd_solution_nint(double w, double q, double g, double Lambda_i, char r,
         result = y[0]+glb_i*y[1];
     }
     else {
-        cout << "wrong channel\n";
+        std::cout << "wrong channel\n";
     }
 
     return result;
@@ -1295,12 +1295,12 @@ void K1Lambda_nint (double w, double q, double g, char channel, double Lambda_i,
 
         }
 
-    string filename = "../Data/K1Lambda";
+    std::string filename = "../Data/K1Lambda";
     filename += "_";
     filename += channel;
-    filename += "_Li=" + to_string(Lambda_i)
-                + "_Lf=" + to_string(Lambda_f)
-                + "_nL=" + to_string(nLambda)
+    filename += "_Li=" + std::to_string(Lambda_i)
+                + "_Lf=" + std::to_string(Lambda_f)
+                + "_nL=" + std::to_string(nLambda)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"Lambdas", "K1Lambda_Re", "K1Lambda_Im"},
@@ -1359,7 +1359,7 @@ void print_numerical_loop (double Lambda, double v, char i, double epsabskp){
     comp output_value = loop_kp_integrated(Lambda,v,i,epsabskp);
     double real_output_value = real(output_value);
     double imag_output_value = imag(output_value);
-    cout << "The numerical loop is " << real_output_value << " + i " << imag_output_value << "\n";
+    std::cout << "The numerical loop is " << real_output_value << " + i " << imag_output_value << "\n";
 }
 
 int composite_index_Lv (int Lambdai, int vpi, int nvp) {
@@ -1385,15 +1385,15 @@ void integral_loop_Lambda_vp_list (char i, double Lambdamin, double Lambdamax, d
             result_integral = loop_kp_integrated(Lambda,vp,i,epsabskp);
             S_int_Re[composite_index_Lv(Lambdai, vpi, nFER)] = real(result_integral);
             S_int_Im[composite_index_Lv(Lambdai, vpi, nFER)] = imag(result_integral);
-            cout << "Lambda = " << Lambda << ", vp = " << vp << ", result = " << result_integral << "\n";
+            std::cout << "Lambda = " << Lambda << ", vp = " << vp << ", result = " << result_integral << "\n";
             }
         }
 
-    string filename = "../Data/integrated_loop_1D";
+    std::string filename = "../Data/integrated_loop_1D";
     filename += "_";
     filename += i;
-    filename += "_nL=" + to_string(nLambda)
-    + "_nFER=" + to_string(nFER)
+    filename += "_nL=" + std::to_string(nLambda)
+    + "_nFER=" + std::to_string(nFER)
     + ".h5";
     write_h5_rvecs(filename,
     {"fermionic_frequencies", "Lambdas", "integrated_loop_Re", "integrated_loop_Im"},

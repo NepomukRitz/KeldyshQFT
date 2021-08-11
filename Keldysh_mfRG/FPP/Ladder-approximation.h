@@ -17,7 +17,7 @@ double gint(double Lambda_i, double Lambda_f, int reg) {
         case 2:
             return 1./(mr*glb_ainv/(2*M_PI)-mr/(M_PI*M_PI)*(Lambda_i-Lambda_f));
         default:
-            cout << "wrong regulator type in g\n";
+            std::cout << "wrong regulator type in g\n";
     }
 }
 

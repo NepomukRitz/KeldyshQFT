@@ -179,12 +179,12 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
     bubble_function(PT2_K1pdot.vertex, bare.vertex, bare.vertex, G, S, 'p', true);
 
     if (write_flag) {
-        write_hdf("Psi_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
-        write_hdf("PT2_K1a_dot_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
-        write_hdf("PT2_K1p_dot_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
+        write_hdf("Psi_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
+        write_hdf("PT2_K1a_dot_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
+        write_hdf("PT2_K1p_dot_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
     }
 
-    vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
+    std::vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
 
     for (int i = 0; i < 2; i++){
         State<state_datatype> centralstate_dot = central_bubblestates[i];
@@ -198,8 +198,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
 
 
         if (write_flag) {
-            write_hdf("K1rdot_PIa_K1p_UNREORDERED_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
-            write_hdf("K1p_PIa_K1rdot_UNREORDERED_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+            write_hdf("K1rdot_PIa_K1p_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_hdf("K1p_PIa_K1rdot_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
         }
 
         Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
@@ -230,10 +230,10 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
 
 
         if (write_flag) {
-            write_hdf("K1rdot_PIa_K1p_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
-            write_hdf("K1p_PIa_K1rdot_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
-            write_hdf("dGammaC_r_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
-            write_hdf("dGammaC_l_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
+            write_hdf("K1rdot_PIa_K1p_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_hdf("K1p_PIa_K1rdot_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+            write_hdf("dGammaC_r_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
+            write_hdf("dGammaC_l_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
         }
     }
 }
@@ -262,9 +262,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
     print("Computed K1 in PT2.", true);
     get_time(t0);
     if (write_flag) {
-        write_hdf("PT2_K1a_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1a);
-        write_hdf("PT2_K1p_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1p);
-        write_hdf("PT2_K1t_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1t);
+        write_hdf("PT2_K1a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1a);
+        write_hdf("PT2_K1p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1p);
+        write_hdf("PT2_K1t_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1t);
     }
 
     // Compute K1 in PT3, using K1 in PT2
@@ -284,9 +284,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
     print("Computed K1 in PT3.", true);
     get_time(t0);
     if (write_flag) {
-        write_hdf("PT3_K1a_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1a);
-        write_hdf("PT3_K1p_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1p);
-        write_hdf("PT3_K1t_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1t);
+        write_hdf("PT3_K1a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1a);
+        write_hdf("PT3_K1p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1p);
+        write_hdf("PT3_K1t_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1t);
     }
 
     // Compute K2 in PT3, using K1p, K1t in PT2
@@ -309,11 +309,11 @@ void test_PT4(double Lambda, bool write_flag = false) {
     print("Computed K2 in PT3.", true);
     get_time(t0);
     if (write_flag) {
-        write_hdf("PT3_K2a_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2a);
-        write_hdf("PT3_K2p_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2p);
-        write_hdf("PT3_K2t_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t);
-        write_hdf("PT3_K2t_a_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_a);
-        write_hdf("PT3_K2t_p_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_p);
+        write_hdf("PT3_K2a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2a);
+        write_hdf("PT3_K2p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2p);
+        write_hdf("PT3_K2t_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t);
+        write_hdf("PT3_K2t_a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_a);
+        write_hdf("PT3_K2t_p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_p);
     }
 
 
@@ -384,12 +384,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_31_a_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 'a', false);
 
     if (write_flag) {
-        write_hdf("PT4_31_a_a1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a1);
-        write_hdf("PT4_31_a_p1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p1);
-        write_hdf("PT4_31_a_t1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t1);
-        write_hdf("PT4_31_a_a2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a2);
-        write_hdf("PT4_31_a_p2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p2);
-        write_hdf("PT4_31_a_t2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t2);
+        write_hdf("PT4_31_a_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a1);
+        write_hdf("PT4_31_a_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p1);
+        write_hdf("PT4_31_a_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t1);
+        write_hdf("PT4_31_a_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a2);
+        write_hdf("PT4_31_a_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p2);
+        write_hdf("PT4_31_a_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -411,12 +411,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_13_a_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 'a', false);
 
     if (write_flag) {
-        write_hdf("PT4_13_a_a1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a1);
-        write_hdf("PT4_13_a_p1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p1);
-        write_hdf("PT4_13_a_t1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t1);
-        write_hdf("PT4_13_a_a2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a2);
-        write_hdf("PT4_13_a_p2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p2);
-        write_hdf("PT4_13_a_t2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t2);
+        write_hdf("PT4_13_a_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a1);
+        write_hdf("PT4_13_a_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p1);
+        write_hdf("PT4_13_a_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t1);
+        write_hdf("PT4_13_a_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a2);
+        write_hdf("PT4_13_a_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p2);
+        write_hdf("PT4_13_a_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -434,10 +434,10 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_22_a_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'a', false);
 
     if (write_flag) {
-        write_hdf("PT4_22_a_aa_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_aa);
-        write_hdf("PT4_22_a_ap_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_ap);
-        write_hdf("PT4_22_a_pa_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pa);
-        write_hdf("PT4_22_a_pp_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pp);
+        write_hdf("PT4_22_a_aa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_aa);
+        write_hdf("PT4_22_a_ap_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_ap);
+        write_hdf("PT4_22_a_pa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pa);
+        write_hdf("PT4_22_a_pp_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pp);
     }
 
     // sum of contributions obtained from different insertions
@@ -458,12 +458,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_31_p_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 'p', false);
 
     if (write_flag) {
-        write_hdf("PT4_31_p_a1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a1);
-        write_hdf("PT4_31_p_p1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p1);
-        write_hdf("PT4_31_p_t1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t1);
-        write_hdf("PT4_31_p_a2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a2);
-        write_hdf("PT4_31_p_p2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p2);
-        write_hdf("PT4_31_p_t2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t2);
+        write_hdf("PT4_31_p_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a1);
+        write_hdf("PT4_31_p_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p1);
+        write_hdf("PT4_31_p_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t1);
+        write_hdf("PT4_31_p_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a2);
+        write_hdf("PT4_31_p_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p2);
+        write_hdf("PT4_31_p_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -485,12 +485,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_13_p_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 'p', false);
 
     if (write_flag) {
-        write_hdf("PT4_13_p_a1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a1);
-        write_hdf("PT4_13_p_p1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p1);
-        write_hdf("PT4_13_p_t1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t1);
-        write_hdf("PT4_13_p_a2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a2);
-        write_hdf("PT4_13_p_p2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p2);
-        write_hdf("PT4_13_p_t2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t2);
+        write_hdf("PT4_13_p_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a1);
+        write_hdf("PT4_13_p_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p1);
+        write_hdf("PT4_13_p_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t1);
+        write_hdf("PT4_13_p_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a2);
+        write_hdf("PT4_13_p_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p2);
+        write_hdf("PT4_13_p_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -508,10 +508,10 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_22_p_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'p', false);
 
     if (write_flag) {
-        write_hdf("PT4_22_p_aa_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_aa);
-        write_hdf("PT4_22_p_ap_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_ap);
-        write_hdf("PT4_22_p_pa_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pa);
-        write_hdf("PT4_22_p_pp_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pp);
+        write_hdf("PT4_22_p_aa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_aa);
+        write_hdf("PT4_22_p_ap_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_ap);
+        write_hdf("PT4_22_p_pa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pa);
+        write_hdf("PT4_22_p_pp_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pp);
     }
 
     // sum of contributions obtained from different insertions
@@ -535,12 +535,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_31_t_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 't', false);
 
     if (write_flag) {
-        write_hdf("PT4_31_t_a1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a1);
-        write_hdf("PT4_31_t_p1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p1);
-        write_hdf("PT4_31_t_t1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t1);
-        write_hdf("PT4_31_t_a2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a2);
-        write_hdf("PT4_31_t_p2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p2);
-        write_hdf("PT4_31_t_t2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t2);
+        write_hdf("PT4_31_t_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a1);
+        write_hdf("PT4_31_t_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p1);
+        write_hdf("PT4_31_t_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t1);
+        write_hdf("PT4_31_t_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a2);
+        write_hdf("PT4_31_t_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p2);
+        write_hdf("PT4_31_t_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -560,12 +560,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_13_t_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 't', false);
 
     if (write_flag) {
-        write_hdf("PT4_13_t_a1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a1);
-        write_hdf("PT4_13_t_p1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p1);
-        write_hdf("PT4_13_t_t1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t1);
-        write_hdf("PT4_13_t_a2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a2);
-        write_hdf("PT4_13_t_p2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p2);
-        write_hdf("PT4_13_t_t2_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t2);
+        write_hdf("PT4_13_t_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a1);
+        write_hdf("PT4_13_t_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p1);
+        write_hdf("PT4_13_t_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t1);
+        write_hdf("PT4_13_t_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a2);
+        write_hdf("PT4_13_t_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p2);
+        write_hdf("PT4_13_t_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -583,10 +583,10 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT4_22_t_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 't', false);
 
     if (write_flag) {
-        write_hdf("PT4_22_t_aa_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_aa);
-        write_hdf("PT4_22_t_ap_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_ap);
-        write_hdf("PT4_22_t_pa_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pa);
-        write_hdf("PT4_22_t_pp_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pp);
+        write_hdf("PT4_22_t_aa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_aa);
+        write_hdf("PT4_22_t_ap_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_ap);
+        write_hdf("PT4_22_t_pa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pa);
+        write_hdf("PT4_22_t_pp_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pp);
     }
 
     // sum of contributions obtained from different insertions
@@ -599,9 +599,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
     print("Computed t-channel in PT4.", true);
 
     if (write_flag) {
-        write_hdf("PT4_31_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31);
-        write_hdf("PT4_13_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13);
-        write_hdf("PT4_22_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22);
+        write_hdf("PT4_31_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31);
+        write_hdf("PT4_13_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13);
+        write_hdf("PT4_22_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22);
     }
 
     print("Computed K1, K2, K3 in PT4.", true);
@@ -632,7 +632,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
 #endif
 
     // labels to be printed to log
-    string check_labels[] {"PT2: K1a + K1p: ", "PT2: K1t: ",
+    std::string check_labels[] {"PT2: K1a + K1p: ", "PT2: K1t: ",
                            "PT2: K1a - exact: ", "PT2: K1p - exact: ",
                            "PT3: K1a - exact: ", "PT3: K1p - exact: ", "PT3: K1t - exact: ",
                            "PT3: K2a[1] - exact: ", "PT3: K2p[1] - exact: ", "PT3: K2t[1] - exact: ",
@@ -696,8 +696,8 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT3_K1_exact = - glb_U * pow(glb_U * boost::math::polygamma(1, (glb_Gamma + Lambda) / 2. / (glb_T * 2.*M_PI) + 0.5) / (glb_T * 2 * M_PI * M_PI), 2);
 #endif
 #endif
-    cout << "PT2 K1 exact: " << PT2_K1_exact << "\n";
-    cout << "Computed value: " << PT2_K1a_0 << "\n";
+    std::cout << "PT2 K1 exact: " << PT2_K1_exact << "\n";
+    std::cout << "Computed value: " << PT2_K1a_0 << "\n";
 
     // K1 in PT4
     state_datatype PT4_K1a_0_ladder = PT4_31_a_a1.vertex[0].avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex[0].tvertex());
@@ -759,8 +759,8 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT3_K2_exact = -(1./2.) * (2. - M_PI*M_PI/4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
     state_datatype PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
-    cout << "PT3 K2 exact: " << PT3_K2_exact << "\n";
-    cout << "Computed value: " << PT3_K2t_0[iK2] << "\n";
+    std::cout << "PT3 K2 exact: " << PT3_K2_exact << "\n";
+    std::cout << "Computed value: " << PT3_K2t_0[iK2] << "\n";
 #endif
 #endif
 
@@ -804,38 +804,38 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             , (PT3_K2p_0[2] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2t_0[2] - PT3_K2_exact)/PT3_K2_exact
 #endif
-                            , (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(abs(PT4_K2a_0_p1[0]) + abs(PT4_K2p_0_a1[0]))
+                            , (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(std::abs(PT4_K2a_0_p1[0]) + std::abs(PT4_K2p_0_a1[0]))
 #ifdef KELDYSH_FORMALISM
-                            , (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(abs(PT4_K2a_0_p1[1]) + abs(PT4_K2p_0_a1[1]))
-                            , (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(abs(PT4_K2a_0_p1[2]) + abs(PT4_K2p_0_a1[2]))
+                            , (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(std::abs(PT4_K2a_0_p1[1]) + std::abs(PT4_K2p_0_a1[1]))
+                            , (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(std::abs(PT4_K2a_0_p1[2]) + std::abs(PT4_K2p_0_a1[2]))
 #endif
-                            , (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(abs(PT4_K2a_0_t1[0]) + abs(PT4_K2p_0_t1[0]))
+                            , (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(std::abs(PT4_K2a_0_t1[0]) + std::abs(PT4_K2p_0_t1[0]))
 #ifdef KELDYSH_FORMALISM
-                            , (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(abs(PT4_K2a_0_t1[1]) + abs(PT4_K2p_0_t1[1]))
-                            , (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(abs(PT4_K2a_0_t1[2]) + abs(PT4_K2p_0_t1[2]))
+                            , (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(std::abs(PT4_K2a_0_t1[1]) + std::abs(PT4_K2p_0_t1[1]))
+                            , (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(std::abs(PT4_K2a_0_t1[2]) + std::abs(PT4_K2p_0_t1[2]))
 #endif
-                            , (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(abs(PT4_K2a_0_a2[0]) + abs(PT4_K2p_0_p2[0]))
+                            , (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(std::abs(PT4_K2a_0_a2[0]) + std::abs(PT4_K2p_0_p2[0]))
 #ifdef KELDYSH_FORMALISM
-                            , (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(abs(PT4_K2a_0_a2[1]) + abs(PT4_K2p_0_p2[1]))
-                            , (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(abs(PT4_K2a_0_a2[2]) + abs(PT4_K2p_0_p2[2]))
+                            , (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(std::abs(PT4_K2a_0_a2[1]) + std::abs(PT4_K2p_0_p2[1]))
+                            , (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(std::abs(PT4_K2a_0_a2[2]) + std::abs(PT4_K2p_0_p2[2]))
 #endif
-                            , (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(abs(PT4_K2a_0_p2[0]) + abs(PT4_K2p_0_a2[0]))
+                            , (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(std::abs(PT4_K2a_0_p2[0]) + std::abs(PT4_K2p_0_a2[0]))
 #ifdef KELDYSH_FORMALISM
-                            , (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(abs(PT4_K2a_0_p2[1]) + abs(PT4_K2p_0_a2[1]))
-                            , (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(abs(PT4_K2a_0_p2[2]) + abs(PT4_K2p_0_a2[2]))
+                            , (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(std::abs(PT4_K2a_0_p2[1]) + std::abs(PT4_K2p_0_a2[1]))
+                            , (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(std::abs(PT4_K2a_0_p2[2]) + std::abs(PT4_K2p_0_a2[2]))
 #endif
-                            , (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(abs(PT4_K2a_0_t2[0]) + abs(PT4_K2p_0_t2[0]))
+                            , (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(std::abs(PT4_K2a_0_t2[0]) + std::abs(PT4_K2p_0_t2[0]))
 #ifdef KELDYSH_FORMALISM
-                            , (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(abs(PT4_K2a_0_t2[1]) + abs(PT4_K2p_0_t2[1]))
-                            , (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(abs(PT4_K2a_0_t2[2]) + abs(PT4_K2p_0_t2[2]))
+                            , (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(std::abs(PT4_K2a_0_t2[1]) + std::abs(PT4_K2p_0_t2[1]))
+                            , (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(std::abs(PT4_K2a_0_t2[2]) + std::abs(PT4_K2p_0_t2[2]))
 #endif
-                            , (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(abs(PT4_K2t_0_a2[0]) + abs(PT4_K2t_0_t2[0]))
+                            , (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(std::abs(PT4_K2t_0_a2[0]) + std::abs(PT4_K2t_0_t2[0]))
 #ifdef KELDYSH_FORMALISM
-                            , (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(abs(PT4_K2t_0_a2[1]) + abs(PT4_K2t_0_t2[1]))
-                            , (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(abs(PT4_K2t_0_a2[2]) + abs(PT4_K2t_0_t2[2]))
+                            , (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(std::abs(PT4_K2t_0_a2[1]) + std::abs(PT4_K2t_0_t2[1]))
+                            , (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(std::abs(PT4_K2t_0_a2[2]) + std::abs(PT4_K2t_0_t2[2]))
 #endif
-                            , (PT4_K3a_0 + PT4_K3p_0)/(abs(PT4_K3a_0) + abs(PT4_K3p_0))
-                            , (PT4_K3t_0_aa + PT4_K3t_0_ap + PT4_K3t_0_pa)/(abs(PT4_K3t_0_aa) + abs(PT4_K3t_0_ap) + abs(PT4_K3t_0_pa))
+                            , (PT4_K3a_0 + PT4_K3p_0)/(std::abs(PT4_K3a_0) + std::abs(PT4_K3p_0))
+                            , (PT4_K3t_0_aa + PT4_K3t_0_ap + PT4_K3t_0_pa)/(std::abs(PT4_K3t_0_aa) + std::abs(PT4_K3t_0_ap) + std::abs(PT4_K3t_0_pa))
 #endif
                             };
 
@@ -933,10 +933,10 @@ void test_K3_dynamics_SE_PT4(double Lambda) {
     State<Q> SE_K1a_ladder (Lambda);
     loop(SE_K1a_ladder.selfenergy, PT4_13_a_a1.vertex, G, false);
 
-    write_hdf("SE_K3a_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3a);
-    write_hdf("SE_K1p_ladder_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1p_ladder);
-    write_hdf("SE_K3p_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3p);
-    write_hdf("SE_K1a_ladder_U" + to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1a_ladder);
+    write_hdf("SE_K3a_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3a);
+    write_hdf("SE_K1p_ladder_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1p_ladder);
+    write_hdf("SE_K3p_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3p);
+    write_hdf("SE_K1a_ladder_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1a_ladder);
 }
 #endif
 
@@ -1123,8 +1123,8 @@ void test_K2_correctness(double Lambda){
         K1a_diff[iw] = PT4_K1a22.vertex[0].avertex().K1_val(0, iw, 0) - PT2_K1a.vertex[0].avertex().K1_val(0, iw, 0);
     }
 
-    print("Testing correctness of K2a. Using U=" +to_string(glb_U)+ " and Lambda="+to_string(Lambda)
-        +", the maximal difference between direct K1a and K1a over integration of K2a is " +to_string(K1a_diff.max_norm())+"." , true);
+    print("Testing correctness of K2a. Using U=" +std::to_string(glb_U)+ " and Lambda="+std::to_string(Lambda)
+        +", the maximal difference between direct K1a and K1a over integration of K2a is " +std::to_string(K1a_diff.max_norm())+"." , true);
     if(write_flag) write_h5_rvecs("../Data/PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
                                                        "PT2_K1p_R", "PT2_K1p_I",
@@ -1302,9 +1302,9 @@ class TestIntegrandK1a{
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});

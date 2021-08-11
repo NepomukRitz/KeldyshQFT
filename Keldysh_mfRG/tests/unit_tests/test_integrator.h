@@ -37,7 +37,7 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
 
     auto i = GENERATE( 0, 1, 2, 3, 4 );
     double exact[] = {-0.5247497074078575, 1.7724538509055159, 100./2501., -0.4013397584445215, -log(1513./1013.)};
-    string types[] = {"Cosine", "Gaussian", "(1-x^2)/(1+x^2)^2", "two sharp peaks", "two less sharp peaks"};
+    std::string types[] = {"Cosine", "Gaussian", "(1-x^2)/(1+x^2)^2", "two sharp peaks", "two less sharp peaks"};
 
     INFO( "Integrand: " << types[i] );
     TestIntegrand integrand (i);

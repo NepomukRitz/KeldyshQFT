@@ -14,26 +14,25 @@
 #include <vector>           // vec class is derived from vector class
 #include <initializer_list> // to initialize vec class with initializer list
 
-using namespace std;
-typedef complex<double> comp; // Complex number
+typedef std::complex<double> comp; // Complex number
 const comp glb_i (0., 1.);    // Imaginary unit
 auto isfinite(comp z) -> bool {
-    return isfinite(real(z)) and isfinite(imag(z));
+    return std::isfinite(real(z)) and std::isfinite(imag(z));
 }
 
 /// DECLARATIONS ///
 
 // General vector class, defining element-wise addition, subtraction and multiplication, as well as real/imag part etc.
 template <typename T>
-class vec : public vector<T> {
+class vec : public std::vector<T> {
 public:
-    vec() : vector<T> () {}; 						 // trivial constructor
-    vec(int n) : vector<T> (n) {};				     // constructor with number of elements
-    vec(int n, T value) : vector<T> (n, value) {};   // constructor with number of elements and value
+    vec() : std::vector<T> () {}; 						 // trivial constructor
+    vec(int n) : std::vector<T> (n) {};				     // constructor with number of elements
+    vec(int n, T value) : std::vector<T> (n, value) {};   // constructor with number of elements and value
     template <class InputIterator>
     vec (InputIterator first, InputIterator last)
-     : vector<T> (first, last) {};                   // constructor from iterators to copy parts of existing vector
-    vec(initializer_list<T> m) : vector<T> (m) {};   // constructor from initializer list
+     : std::vector<T> (first, last) {};                   // constructor from iterators to copy parts of existing vector
+    vec(std::initializer_list<T> m) : std::vector<T> (m) {};   // constructor from initializer list
 
     T operator() (int i) {return (*this)[i]; }	     // operator for element access
     vec<T> operator() (int i1, int i2);              // get a subvector {x[i1], ..., x[i2]}
@@ -242,7 +241,7 @@ template <typename T>
 double vec<T>::max_norm() {
     double out = 0.;
     for (int i=0; i<this->size(); ++i) {
-        out = max(out, std::abs((*this)[i]));
+        out = std::max(out, std::abs((*this)[i]));
     }
     return out;
 }

@@ -4,14 +4,14 @@
 #ifndef KELDYSH_MFRG_KELDYSH_SYMMETRIES_H
 #define KELDYSH_MFRG_KELDYSH_SYMMETRIES_H
 
-#include <vector>     // standard vector
+#include <vector>     // standard std::vector
 #include <algorithm>  // for find function in isInList
 #include "../utilities/util.h"     // printing text output
 
 // Checks if a given variable val is in a list passed by reference.
 // Used to check if a Keldysh index is in a list of indices that should be equal.
 template <typename T>
-auto isInList (T val, const vector<T>& list) -> bool {
+auto isInList (T val, const std::vector<T>& list) -> bool {
     return (std::find(list.begin(), list.end(), val) != list.end());
 }
 
@@ -36,8 +36,8 @@ auto convertToIndepIndex(int iK) -> int
 #endif
 
 // This function returns the values of the 4 alphas for a given index in the 0...15 set
-auto alphas(int index) -> vector<int> {
-    vector<int> alphas (4);
+auto alphas(int index) -> std::vector<int> {
+    std::vector<int> alphas (4);
     alphas[0] = (index % 16)/8 + 1;
     alphas[1] = (index % 8)/4 + 1;
     alphas[2] = (index % 4)/2 + 1;
@@ -53,11 +53,11 @@ auto alphas(int index) -> vector<int> {
  * @param channel : channel of the bubble
  * @return        : Vector of two Keldysh indices for the left [0] and right [1] vertex in a bubble
  */
-auto indices_sum(int i0, int i2, const char channel) -> vector<int> {
-    vector<int> indices (2);              // Return vector
+auto indices_sum(int i0, int i2, const char channel) -> std::vector<int> {
+    std::vector<int> indices (2);              // Return std::vector
 #ifdef KELDYSH_FORMALISM
-    vector<int> alphas_i0 = alphas(i0);   // Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
-    vector<int> alphas_i2 = alphas(i2);   // Calculate the alphas of each input. Refer to these alphas as (34|3'4')
+    std::vector<int> alphas_i0 = alphas(i0);   // Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
+    std::vector<int> alphas_i2 = alphas(i2);   // Calculate the alphas of each input. Refer to these alphas as (34|3'4')
 
     //Distribute the alphas of indices i0 and i2 into i1 and i3
     switch (channel) {

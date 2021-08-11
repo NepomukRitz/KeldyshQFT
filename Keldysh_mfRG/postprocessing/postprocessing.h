@@ -43,7 +43,7 @@ public:
             : v(v_in), Phi(Phi_in), selfEnergy(selfEnergy_in), iLambda(iLambda_in), i_in(i_in_in) {}
 
     auto operator() (double vp) const -> double {
-        if (fabs(vp) < v.w_upper) {
+        if (std::fabs(vp) < v.w_upper) {
             int index = v.fconv(vp);
             double x1 = v.w[index];
             double x2 = v.w[index + 1];
@@ -64,7 +64,7 @@ public:
     }
 };
 
-void compute_Phi_tilde(const string filename) {
+void compute_Phi_tilde(const std::string filename) {
     rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
 
     rvec vs (Lambdas.size() * nFER);
@@ -94,7 +94,7 @@ void compute_Phi_tilde(const string filename) {
         }
     }
 
-    string filename_out;
+    std::string filename_out;
     if (filename.substr(filename.length()-3, 3) == ".h5")
         filename_out = filename.substr(0, filename.length()-3);
     else
@@ -132,7 +132,7 @@ public:
 
 };
 
-void sum_rule_K1tK(const string filename) {
+void sum_rule_K1tK(const std::string filename) {
     print("Checking fullfilment of the sum rule for K1t");
     int nLambda = nODE + U_NRG.size() + 1;
 
@@ -147,7 +147,7 @@ void sum_rule_K1tK(const string filename) {
 #ifdef KELDYSH_FORMALISM
         sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
 #else
-#ifdef PARTICLE_HOLE_SYMM
+#if defined(PARTICLE_HOLE_SYMM) and not defined(HUBBARD_MODEL)
         sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
 #else
         sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
@@ -163,7 +163,7 @@ void sum_rule_K1tK(const string filename) {
  * Check Kramers-Kronig relation for retarded self-energy and retarded component of K1r by computing the real part from
  * the imaginary part via Kramers-Kronig. The result can be compared to the real part obtained from the flow.
  */
-void check_Kramers_Kronig(const string filename) {
+void check_Kramers_Kronig(const std::string filename) {
     int nLambda = nODE + U_NRG.size() + 1;  // number of Lambda points in <filename>
     vec<int> iLambdas {0, 4, 12, 24, 34, 40, 44}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
 
@@ -192,7 +192,7 @@ void check_Kramers_Kronig(const string filename) {
         rvec K1tR_re_KK = KKi2r(wK1, K1tR_im);  // compute real part from imaginary part via KK
 
         // save data to file
-        write_h5_rvecs(filename + "_KKi2r_i" + to_string(iLambdas[i]),
+        write_h5_rvecs(filename + "_KKi2r_i" + std::to_string(iLambdas[i]),
                        {"v",
                         "SigmaR_im", "SigmaR_re", "SigmaR_re_KK",
                         "w",

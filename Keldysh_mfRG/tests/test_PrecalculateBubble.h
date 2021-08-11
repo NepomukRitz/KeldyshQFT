@@ -43,10 +43,10 @@ public:
     void perform_test();
     double iterate_through_channels();
     double find_largest_deviation_from_bubble(bool dot_in, char channel);
-    void save_data(string& filename,
+    void save_data(std::string& filename,
                    vec<Q>& ValuesOfPreBubble, vec<Q>& ValuesOfUsualBubble,
                    vec<double>& AbsoluteDeviations);
-    string build_filename(bool dot_in, char channel);
+    std::string build_filename(bool dot_in, char channel);
     void test_for_zero_value(Q& value, int& number_of_zero_values);
 
 };
@@ -54,7 +54,7 @@ public:
 template<typename Q> void test_PrecalculateBubble<Q>::perform_test(){
     double max_error = iterate_through_channels();
     if (max_error != 0.){
-        string deviation = to_string(max_error);
+        std::string deviation = std::to_string(max_error);
         std::cout << "The largest deviation is "  << deviation;
     }
     else {
@@ -66,7 +66,7 @@ template<typename Q> double test_PrecalculateBubble<Q>::iterate_through_channels
     double max_error = 0;
     const double error_undot =  find_largest_deviation_from_bubble(false, 'a');
     const double error_dot =  find_largest_deviation_from_bubble(true, 'a');
-    double larger_error = max(abs(error_undot), abs(error_dot));
+    double larger_error = std::max(std::abs(error_undot), std::abs(error_dot));
     if (larger_error > max_error){
         max_error = larger_error;
     }
@@ -99,10 +99,10 @@ template<typename Q> double test_PrecalculateBubble<Q>::find_largest_deviation_f
                     ValuesOfUsualBubble[Pre_Bubble.composite_index(iK, iw, ivpp, i_in)] = Bubble_Value;
 
                     Q deviation = Pre_Bubble_Value - Bubble_Value;
-                    AbsoluteDeviations[Pre_Bubble.composite_index(iK, iw, ivpp, i_in)] = abs(deviation);
-                    if (abs(deviation) > largest_deviation) {
-                        largest_deviation = abs(deviation);
-                        // string dev_string = to_string(largest_deviation);
+                    AbsoluteDeviations[Pre_Bubble.composite_index(iK, iw, ivpp, i_in)] = std::abs(deviation);
+                    if (std::abs(deviation) > largest_deviation) {
+                        largest_deviation = std::abs(deviation);
+                        // std::string dev_string = std::to_string(largest_deviation);
                         // std::cout << dev_string << "\n";
                     }
                 }
@@ -110,15 +110,15 @@ template<typename Q> double test_PrecalculateBubble<Q>::find_largest_deviation_f
         }
     }
     std::cout << "Number of zero results encountered for precalculated bubble = "
-    + to_string(number_of_zero_pre_results) + "\n";
-    string filename = build_filename(dot_in, channel);
+    + std::to_string(number_of_zero_pre_results) + "\n";
+    std::string filename = build_filename(dot_in, channel);
     save_data(filename, ValuesOfPreBubble, ValuesOfUsualBubble, AbsoluteDeviations);
     return largest_deviation;
 }
 
 template<typename Q>
 void
-test_PrecalculateBubble<Q>::save_data(string& filename,
+test_PrecalculateBubble<Q>::save_data(std::string& filename,
                                       vec<Q>& ValuesOfPreBubble,
                                       vec<Q>& ValuesOfUsualBubble,
                                       vec<double>& AbsoluteDeviations) {
@@ -134,15 +134,15 @@ write_h5_rvecs(filename,
 }
 
 template<typename Q>
-string test_PrecalculateBubble<Q>::build_filename(bool dot_in, char channel) {
-    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/true_test_PrecalculateBubble_";
-    //string filename = "../../Data/test_PrecalculateBubble_";
+std::string test_PrecalculateBubble<Q>::build_filename(bool dot_in, char channel) {
+    std::string filename = "/scratch-local/Nepomuk.Ritz/testing_data/true_test_PrecalculateBubble_";
+    //std::string filename = "../../Data/test_PrecalculateBubble_";
     filename += channel;
     if (dot_in) {filename += "_dot";}
-    filename += "_nK=" + to_string(number_of_Keldysh_components)
-                + "_nBOS=" + to_string(nBOS)
-                + "_nFER=" + to_string(nFER)
-                + "_n_in=" + to_string(n_in)
+    filename += "_nK=" + std::to_string(number_of_Keldysh_components)
+                + "_nBOS=" + std::to_string(nBOS)
+                + "_nFER=" + std::to_string(nFER)
+                + "_n_in=" + std::to_string(n_in)
                 + ".h5";
     return filename;
 }
@@ -156,9 +156,9 @@ void test_PrecalculateBubble<Q>::test_for_zero_value(Q& value, int& number_of_ze
     }
     else{
         std::cout << "Re Pre-Bubble = "
-                     + to_string(value.real()) + "\n";
+                     + std::to_string(value.real()) + "\n";
         std::cout << "Im Pre-Bubble = "
-                     + to_string(value.imag()) + "\n";
+                     + std::to_string(value.imag()) + "\n";
     }
 }
 
@@ -196,7 +196,7 @@ void Runtime_comparison<Q>::test_runtimes(int max_number_of_iterations) {
         times_usual[t] = run_iterations(t, 1);
         times_precalculated[t] = run_iterations(t, 0);
     }
-    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/runtime_comparisons.h5";
+    std::string filename = "/scratch-local/Nepomuk.Ritz/testing_data/runtime_comparisons.h5";
     write_h5_rvecs(filename,
                    {"runtimes_usual", "runtimes_precalculated"},
                    {times_usual, times_precalculated});
@@ -260,8 +260,8 @@ void test_Bubble_in_Momentum_Space(){
         }
     }
 
-    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/KELDYSH_bubble_in_mom_space_Nq_"
-                      + to_string(glb_N_q) + "_Lambda_" + to_string(Lambda) + ".h5";
+    std::string filename = "/scratch-local/Nepomuk.Ritz/testing_data/KELDYSH_bubble_in_mom_space_Nq_"
+                      + std::to_string(glb_N_q) + "_Lambda_" + std::to_string(Lambda) + ".h5";
     write_h5_rvecs(filename,
                    {"propagator_frequencies", "bubble_frequencies",
                     "RealValuesOfRetardedPropagator", "ImaginaryValuesOfRetardedPropagator",
@@ -286,8 +286,8 @@ void test_Bubble_in_Momentum_Space(){
         }
     }
 
-    string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_parallelized_full_bubble_in_mom_space_Nq_"
-                      + to_string(glb_N_q) + ".h5";
+    std::string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_parallelized_full_bubble_in_mom_space_Nq_"
+                      + std::to_string(glb_N_q) + ".h5";
     write_h5_rvecs(filename,
                    {"propagator_frequencies", "bubble_frequencies",
                     "RealValuesOfPropagator", "ImaginaryValuesOfPropagator",

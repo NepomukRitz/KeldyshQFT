@@ -45,7 +45,7 @@ display_results (char *title, double result, double error)
     printf ("sigma  = % .6f\n", error);
     printf ("exact  = % .6f\n", exact);
     printf ("error  = % .6f = %.2g sigma\n", result - exact,
-            fabs (result - exact) / error);
+            std::fabs (result - exact) / error);
 }
 
 int
@@ -102,7 +102,7 @@ monte_carlo_test1 (void)
             printf ("result = % .6f sigma = % .6f "
                     "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (s));
         }
-        while (fabs (gsl_monte_vegas_chisq (s) - 1.0) > 0.5);
+        while (std::fabs (gsl_monte_vegas_chisq (s) - 1.0) > 0.5);
 
         display_results ("vegas final", res, err);
 

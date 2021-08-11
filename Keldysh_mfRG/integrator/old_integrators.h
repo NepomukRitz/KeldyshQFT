@@ -271,9 +271,9 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
                 // previous result only has a relative error smaller than predefined accuracy,
                 // set convergence flag for both sub-intervals to true, such that they are not split in the next iteration
 
-                //if ((abs(real(result1+result2-result[interval])/real(result1+result2+1e-16)) < accuracy)
-                //    && (abs(imag(result1+result2-result[interval])/imag(result1+result2+glb_i*1e-16)) < accuracy)) {   // add 1e-16 to avoid errors if result is zero
-                if (abs((result1+result2-result[interval])/(result1+result2+1e-16)) < accuracy) {   // add 1e-16 to avoid errors if result is zero
+                //if ((std::abs(real(result1+result2-result[interval])/real(result1+result2+1e-16)) < accuracy)
+                //    && (std::abs(imag(result1+result2-result[interval])/imag(result1+result2+glb_i*1e-16)) < accuracy)) {   // add 1e-16 to avoid errors if result is zero
+                if (std::abs((result1+result2-result[interval])/(result1+result2+1e-16)) < accuracy) {   // add 1e-16 to avoid errors if result is zero
                     converged_next.push_back(true);
                     converged_next.push_back(true);
                 }
@@ -289,8 +289,8 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
 
         // First stop condition: check convergence of the total result w.r.t. predefined accuracy
 
-        //if ((abs(real(res-res_next)/real(res+1e-16)) < total_accuracy) && (abs(imag(res-res_next)/imag(res+glb_i*1e-16)) < total_accuracy) && it>3) {
-        if (abs((res-res_next)/res) < total_accuracy) {
+        //if ((std::abs(real(res-res_next)/real(res+1e-16)) < total_accuracy) && (std::abs(imag(res-res_next)/imag(res+glb_i*1e-16)) < total_accuracy) && it>3) {
+        if (std::abs((res-res_next)/res) < total_accuracy) {
             res = res_next;
             break;
         }
