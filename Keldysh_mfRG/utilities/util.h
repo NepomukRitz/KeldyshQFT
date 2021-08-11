@@ -270,7 +270,7 @@ auto is_symmetric(const rvec& freqs) -> double {
     double asymmetry = 0;
     for (int i = 0; i< freqs.size() - 1; i++){
 
-        asymmetry += abs(freqs[i] + freqs[freqs.size()-i-1]);
+        asymmetry += std::abs(freqs[i] + freqs[freqs.size()-i-1]);
     }
     return asymmetry;
 }
