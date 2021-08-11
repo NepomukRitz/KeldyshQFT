@@ -132,7 +132,9 @@ add_executable(FPP_mfRG
         tests/testFunctions.h
         utilities/util.h
         vertex.h
-        utilities/write_data2file.h grids/momentum_grid.h)
+        utilities/write_data2file.h
+        grids/momentum_grid.h
+        grids/flow_grid.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)

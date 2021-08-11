@@ -9,6 +9,8 @@
 #include "parameters.h"          // system parameters (e.g. initial Lambda)
 #include "state.h"               // state including vertex and self-energy
 #include "perturbation_theory.h" // for initialization with SOPT at the beginning of the flow, using sopt_state
+#include "grids/flow_grid.h"     // for flow grid
+#include "ODE_solvers.h"         // for ODE solver (Runge Kutta 4)
 #include "right_hand_sides.h"    // to compute right hand side of flow equation
 #include "parquet_solver.h"      // to compute the parquet solution as alternative starting point of the flow
 #include "postprocessing/postprocessing.h"      // to check the fulfillment of vertex sum-rules at the end of the flow

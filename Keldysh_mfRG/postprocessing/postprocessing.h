@@ -3,7 +3,7 @@
 
 #include "../utilities/hdf5_routines.h"   // to load data from hdf5 file
 #include "../utilities/write_data2file.h" // to save result
-#include "../ODE_solvers.h"         // to construct flow grid
+#include "../grids/flow_grid.h"              // flow grid
 #include "../state.h"
 #include "../propagator.h"
 #include "KramersKronig.h"   // perform check of Kramers-Kronig relation

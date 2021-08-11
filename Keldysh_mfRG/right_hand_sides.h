@@ -1,16 +1,16 @@
 #ifndef RIGHT_HAND_SIDES_H
 #define RIGHT_HAND_SIDES_H
 
-#include "data_structures.h"        // real/complex vector classes, imag. unit
-#include "utilities/write_data2file.h"        // writing data into text or hdf5 files
-#include "propagator.h"             // propagator to perform second-order perturbation theory (SOPT)
-#include "selfenergy.h"             // self-energy used in SOPT
-#include "state.h"                  // state to perform full flow
-#include "loop.h"                   // compute self-energy loop
-#include "bubbles.h"                // compute vertex bubbles
-#include "parameters.h"             // system parameters (lengths of vectors etc.)
-#include "OldFiles/fourier_trafo.h"          // SOPT from Fast Fourier transform (FFT) TODO: Should be obsolete now.
-#include "ODE_solvers.h"                // ODE solver
+#include "data_structures.h"            // real/complex vector classes, imag. unit
+#include "utilities/write_data2file.h"  // writing data into text or hdf5 files
+#include "propagator.h"                 // propagator to perform second-order perturbation theory (SOPT)
+#include "selfenergy.h"                 // self-energy used in SOPT
+#include "state.h"                      // state to perform full flow
+#include "loop.h"                       // compute self-energy loop
+#include "bubbles.h"                    // compute vertex bubbles
+#include "parameters.h"                 // system parameters (lengths of vectors etc.)
+#include "OldFiles/fourier_trafo.h"     // SOPT from Fast Fourier transform (FFT) TODO: Should be obsolete now.
+#include "ODE_solvers.h"                // ODE solvers
 #include <cassert>
 #include "utilities/hdf5_routines.h"
 
@@ -301,6 +301,8 @@ void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
         bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, dPi, r, true);  // Differentiated bubble in channel r \in {a, p, t}
     }
 }
+
+
 
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
