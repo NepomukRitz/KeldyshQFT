@@ -34,10 +34,10 @@ template <typename Q>Q Susc<Q>::susval(int iK, int i){
 }
 template <typename Q>Q Susc<Q>::susvalsmooth(int iK, double w){//smoothly interpolates for values between discrete frequency values of mesh
 
-    if(std::fabs(w)>w_upper_b)
+    if(std::abs(w)>w_upper_b)
         return 0.;
     else {
-        if(std::fabs(w)!= w_upper_f) {
+        if(std::abs(w)!= w_upper_f) {
             int W = fconv_fer(w);
             double x1 = ffreqs[W];
             double x2 = ffreqs[W] + dv;

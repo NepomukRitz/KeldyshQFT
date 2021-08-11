@@ -138,7 +138,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
 
     switch (type){
         case 'g':
-            if (std::fabs(v) < Lambda) {
+            if (std::abs(v) < Lambda) {
                 switch (iK){
                     case 0:
                         return GR(v, i_in);
@@ -147,7 +147,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-            } else if (std::fabs(v) == Lambda) {
+            } else if (std::abs(v) == Lambda) {
                 switch (iK){
                     case 0:
                         return 1./2.*GR(v, i_in);
@@ -159,7 +159,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
             }
             return 0.;
         case 's':
-            if (std::fabs(v) == Lambda) {
+            if (std::abs(v) == Lambda) {
                 switch (iK){
                     case 0:
                         return -GR(v, i_in);
@@ -174,7 +174,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
             diffSelfEneR = diff_selfenergy.valsmooth(0, v, i_in);
             diffSelfEneA = conj(diffSelfEneR);
             diffSelfEneK = diff_selfenergy.valsmooth(1, v, i_in);
-            if(std::fabs(v)<Lambda){
+            if(std::abs(v)<Lambda){
                 switch(iK){
                     case 0:
                         return GR(v, i_in) * diffSelfEneR * GR(v, i_in);
@@ -183,7 +183,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-            }else if (std::fabs(v)==Lambda){
+            }else if (std::abs(v)==Lambda){
                 switch(iK){
                     case 0:
                         SR = -1.*GR(v, i_in);
@@ -197,7 +197,7 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
             }
             return 0.;
         case 'e':
-            if(std::fabs(v, i_in)<=Lambda) {
+            if(std::abs(v, i_in)<=Lambda) {
                 switch(iK){
                     case 0:
                         return GR(v, i_in) * diffSelfEneR * GR(v, i_in);

@@ -97,8 +97,8 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b) -> Q {
     // or relative tolerance, return second estimate, else subdivide interval.
     // Subdivide also if the integral value is exactly zero, to avoid accidental zero result due to the choice of
     // evaluation points.
-    if (std::abs(i2 - i1) < std::max(EPS, tolerance * std::fabs(is))
-        && std::abs(i2 - is) < std::max(EPS, tolerance * std::fabs(is))
+    if (std::abs(i2 - i1) < std::max(EPS, tolerance * std::abs(is))
+        && std::abs(i2 - is) < std::max(EPS, tolerance * std::abs(is))
         //&& i2 != 0. // shouldn't need this safety check any more if interval is split into subintervals
         || b-a < EPS) // do not split if the interval is very small
         return i2;
@@ -138,7 +138,7 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b, const Q fa, 
 
     // if difference between first and second estimate is smaller than absolute or relative tolerance,
     // or nodes lie outside the interval, return second estimate, else subdivide interval
-    if (std::abs(i2 - i1) < std::max(EPS, tolerance * std::fabs(is)) || x[0] < a || b < x[4])
+    if (std::abs(i2 - i1) < std::max(EPS, tolerance * std::abs(is)) || x[0] < a || b < x[4])
         return i2;
     else
         return integrate(a,    x[0], fa,   f[0], is)  // subdivide interval

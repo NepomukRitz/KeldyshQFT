@@ -248,7 +248,7 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
             printf ("result = % .6f sigma = % .6f "
                     "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (s));
         }
-        while (std::fabs (gsl_monte_vegas_chisq (s) - 1.0) > 0.1);
+        while (std::abs (gsl_monte_vegas_chisq (s) - 1.0) > 0.1);
 
         std::cout << "Re vegas result: " << res << ", error: " << err << "\n";
 
@@ -269,7 +269,7 @@ void integrate_bubble_full_monte_carlo (double w, double vpp, double q, char i, 
             printf ("result = % .6f sigma = % .6f "
                     "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (ss));
         }
-        while (std::fabs (gsl_monte_vegas_chisq (ss) - 1.0) > vegas_chisq_precision);
+        while (std::abs (gsl_monte_vegas_chisq (ss) - 1.0) > vegas_chisq_precision);
 
         std::cout << "Im vegas result: " << res << ", error: " << err << "\n";
 
@@ -321,7 +321,7 @@ comp integrate_bubble_vegas (double w, double vpp, double q, char i, char j, cha
             //printf ("result = % .6f sigma = % .6f "
             //        "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (s));
         }
-        while (std::fabs (gsl_monte_vegas_chisq (s) - 1.0) > vegas_chisq_precision);
+        while (std::abs (gsl_monte_vegas_chisq (s) - 1.0) > vegas_chisq_precision);
 
         //std::cout << "Re vegas result: " << res << ", error: " << err << "\n";
 
@@ -347,7 +347,7 @@ comp integrate_bubble_vegas (double w, double vpp, double q, char i, char j, cha
                 //printf ("result = % .6f sigma = % .6f "
                 //        "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (ss));
             }
-            while (std::fabs (gsl_monte_vegas_chisq (ss) - 1.0) > vegas_chisq_precision);
+            while (std::abs (gsl_monte_vegas_chisq (ss) - 1.0) > vegas_chisq_precision);
 
             //std::cout << "Im vegas result: " << res << ", error: " << err << "\n";
 

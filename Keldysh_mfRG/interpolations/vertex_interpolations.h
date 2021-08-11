@@ -21,8 +21,8 @@ public:
 //    assert(vertex.frequencies.b_K2.w_lower <= w && w <= vertex.frequencies.b_K2.w_upper); // give error message if w out of range
 //    assert(vertex.frequencies.f_K2.w_lower <= v && v <= vertex.frequencies.f_K2.w_upper); // give error message if v out of range
 
-        if (    std::fabs(indices.w ) < vertex.frequencies.b_K2.w_upper + inter_tol
-             && std::fabs(indices.v1) < vertex.frequencies.f_K2.w_upper + inter_tol ) {
+        if (    std::abs(indices.w ) < vertex.frequencies.b_K2.w_upper + inter_tol
+             && std::abs(indices.v1) < vertex.frequencies.f_K2.w_upper + inter_tol ) {
 
             int index_b = vertex.frequencies.b_K2.fconv(indices.w);
             int index_f = vertex.frequencies.f_K2.fconv(indices.v1);
@@ -56,7 +56,7 @@ class Interpolate<k1, Q> {
 public:
     auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
 //    assert(vertex.frequencies.b_K1.w_lower <= w && w <= vertex.frequencies.b_K1.w_upper); // give error message if w out of range
-        if (std::fabs(indices.w) < vertex.frequencies.b_K1.w_upper + inter_tol) {
+        if (std::abs(indices.w) < vertex.frequencies.b_K1.w_upper + inter_tol) {
             int index = vertex.frequencies.b_K1.fconv(indices.w);
 
             double x1 = vertex.frequencies.b_K1.w[index];
@@ -85,9 +85,9 @@ public:
 //    assert(vertex.frequencies.f_K3.w_lower <= v1 && v1 <= vertex.frequencies.f_K3.w_upper); // give error message if v1 out of range
 //    assert(vertex.frequencies.f_K3.w_lower <= v2 && v2 <= vertex.frequencies.f_K3.w_upper); // give error message if v2 out of range
 
-        if (    std::fabs(indices.w) < vertex.frequencies.b_K3.w_upper + inter_tol
-                && std::fabs(indices.v1) < vertex.frequencies.f_K3.w_upper + inter_tol
-                && std::fabs(indices.v2) < vertex.frequencies.f_K3.w_upper + inter_tol) {
+        if (    std::abs(indices.w) < vertex.frequencies.b_K3.w_upper + inter_tol
+                && std::abs(indices.v1) < vertex.frequencies.f_K3.w_upper + inter_tol
+                && std::abs(indices.v2) < vertex.frequencies.f_K3.w_upper + inter_tol) {
 
             int index_b =  vertex.frequencies.b_K3.fconv(indices.w);
             int index_f1 = vertex.frequencies.f_K3.fconv(indices.v1);

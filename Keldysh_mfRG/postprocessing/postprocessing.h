@@ -43,7 +43,7 @@ public:
             : v(v_in), Phi(Phi_in), selfEnergy(selfEnergy_in), iLambda(iLambda_in), i_in(i_in_in) {}
 
     auto operator() (double vp) const -> double {
-        if (std::fabs(vp) < v.w_upper) {
+        if (std::abs(vp) < v.w_upper) {
             int index = v.fconv(vp);
             double x1 = v.w[index];
             double x2 = v.w[index + 1];

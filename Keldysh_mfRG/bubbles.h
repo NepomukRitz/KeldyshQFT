@@ -262,8 +262,8 @@ template <typename Q> auto PrecalculateBubble<Q>::value(int iK, double w, double
 
 // TODO: Use "Interpolate" from "interpolations.h" for this.
 template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK_bubble, const double v1, const double v2, const int i_in) const -> Q{
-    if (    std::fabs(v1) + inter_tol < fermionic_grid.w_upper
-            && std::fabs(v2) + inter_tol < fermionic_grid.w_upper) {
+    if (    std::abs(v1) + inter_tol < fermionic_grid.w_upper
+            && std::abs(v2) + inter_tol < fermionic_grid.w_upper) {
 
         int index_f1 = fermionic_grid.fconv(v1);
         int index_f2 = fermionic_grid.fconv(v2);

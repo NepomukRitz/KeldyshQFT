@@ -152,7 +152,7 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
         //Returns U/2 for retarded and 0. for Keldysh component
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
-        if (std::fabs(v) != this->frequencies.w_upper) { // linear interpolation
+        if (std::abs(v) != this->frequencies.w_upper) { // linear interpolation
             int iv = this->frequencies.fconv(v); // index corresponding to v
             double x1 = this->frequencies.w[iv]; // lower adjacent frequency value
             double x2 = this->frequencies.w[iv + 1]; // upper adjacent frequency value
