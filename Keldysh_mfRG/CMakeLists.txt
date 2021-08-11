@@ -26,7 +26,6 @@ add_executable(Keldysh_mfRG
         correctionFunctions.h
         data_structures.h
         flow.h
-        OldFiles/fourier_trafo.h
         grids/frequency_grid.h
         utilities/hdf5_routines.h
         integrator/integrator.h
@@ -48,10 +47,10 @@ add_executable(Keldysh_mfRG
         state.h
         symmetries/symmetry_transformations.h
         symmetries/symmetry_table.h
-        tests/testFunctions.h
+        tests/test_perturbation_theory.h
         utilities/util.h
         vertex.h
-        utilities/write_data2file.h grids/momentum_grid.h)
+        utilities/write_data2file.h grids/momentum_grid.h tests/test_ODE.h)
 
 # executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
@@ -66,7 +65,6 @@ add_executable(Keldysh_mfRG_testing
         correctionFunctions.h
         data_structures.h
         flow.h
-        OldFiles/fourier_trafo.h
         grids/frequency_grid.h
         utilities/hdf5_routines.h
         integrator/integrator.h
@@ -88,10 +86,10 @@ add_executable(Keldysh_mfRG_testing
         state.h
         symmetries/symmetry_transformations.h
         symmetries/symmetry_table.h
-        tests/testFunctions.h
+        tests/test_perturbation_theory.h
         utilities/util.h
         vertex.h
-        utilities/write_data2file.h grids/momentum_grid.h tests/unit_tests/test_momentum_grid.h)
+        utilities/write_data2file.h grids/momentum_grid.h tests/unit_tests/test_momentum_grid.h tests/test_ODE.h)
 
 # standard executable for integration tests and production runs
 add_executable(FPP_mfRG
@@ -107,7 +105,6 @@ add_executable(FPP_mfRG
         correctionFunctions.h
         data_structures.h
         flow.h
-        OldFiles/fourier_trafo.h
         grids/frequency_grid.h
         utilities/hdf5_routines.h
         integrator/integrator.h
@@ -129,12 +126,12 @@ add_executable(FPP_mfRG
         state.h
         symmetries/symmetry_transformations.h
         symmetries/symmetry_table.h
-        tests/testFunctions.h
+        tests/test_perturbation_theory.h
         utilities/util.h
         vertex.h
         utilities/write_data2file.h
         grids/momentum_grid.h
-        grids/flow_grid.h)
+        grids/flow_grid.h tests/test_ODE.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)

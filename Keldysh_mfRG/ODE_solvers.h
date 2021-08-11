@@ -131,68 +131,12 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
     ODE_solver_RK4(y_fin, x_fin, y_ini, x_ini, rhs, subst, resubst, N_ODE, "");
 }
 
-
-double test_rhs_ODE_exp(const double& y, const double x) {
-    return y;
-}
-
-void test_ODE_solvers() { // test ODE solvers in solving dy/dx = y from x=0 to x=1 with y(0)=1; solution is y(x)=e^x, y(1)=e;
-    double y_ini, y_fin_Euler, y_fin_RK4, x_ini, x_fin; // necessary variables
-    y_ini = 1.; x_ini = 0.; x_fin = 1.; // boundary values
-    const int N_ODE_Euler = 100; const int N_ODE_RK4 = 10; // number of steps in ODE solver
-    ODE_solver_Euler(y_fin_Euler,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE_Euler);
-    ODE_solver_RK4(y_fin_RK4,  x_fin, y_ini, x_ini, test_rhs_ODE_exp, N_ODE_RK4);
-    cout << "Exact result is " << exp(1.) << "." << endl;
-    cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << endl;
-    cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << endl;
-}
-
-double x_t_trafo_quadr(const double t) { // variable transformation x = x(t)
-    return t*t;
-}
-
-double dx_dt_trafo_quadr(const double t) { // variable transformation dx/dt = \dot{x}(t)
-    return 2.*t;
-}
-
-template <typename T> // evaluate any right hand side with any variable transformation
-T rhs_trafo (const T& y, const double t, T rhs (const T& y, const double x), double x_t_trafo(double t), double dx_dt_trafo(double t)) {
-    return rhs(y, x_t_trafo(t)) * dx_dt_trafo(t);
-}
-
-double test_rhs_ODE_exp_quadr(const double& y, const double t) { // test ODE with quadratic variable transformation
-    return rhs_trafo(y, t, test_rhs_ODE_exp, x_t_trafo_quadr, dx_dt_trafo_quadr);
-}
-
-void test_ODE_solvers_quadr() { // test ODE solvers in solving dy/dt = y*2t from t=0 to t=1 with y(0)=1; solution is y(x)=e^{t^2}, y(1)=e;
-    double y_ini, y_fin_Euler, y_fin_RK4, t_ini, t_fin; // necessary variables
-    y_ini = 1.; t_ini = 0.; t_fin = 1.; // boundary values
-    const int N_ODE_Euler = 100; const int N_ODE_RK4 = 10; // number of steps in ODE solver
-    ODE_solver_Euler(y_fin_Euler,  t_fin, y_ini, t_ini, test_rhs_ODE_exp_quadr, N_ODE_Euler);
-    ODE_solver_RK4(y_fin_RK4,  t_fin, y_ini, t_ini, test_rhs_ODE_exp_quadr, N_ODE_RK4);
-    cout << "Exact result is " << exp(1.) << "." << endl;
-    cout << "Using " << N_ODE_Euler << " steps, Euler gives " << y_fin_Euler << "." << endl;
-    cout << "Using " << N_ODE_RK4 << " steps, RK4 gives " << y_fin_RK4 << "." << endl;
-}
-
 template <typename T>
 void SCE_solver(T& y_fin, const T& y_ini, const double x, T rhs (const T& y, const double x), const int N_SCE, const double damp) {
     T y_run = y_ini; // initial y value
     for (int i=0; i<N_SCE; ++i) // iterate N_SCE times
         y_run = rhs(y_run, x) * (1.-damp) + y_run * damp; // update y with damping
     y_fin = y_run; // final y value
-}
-
-double test_rhs_SCE_sqrt(const double& y, const double x) {
-    return -x/(1.-y);
-}
-
-void test_SCE_solver() { // test SCE solvers in solving y=-x/(1-y); solution is y(x)=1/2*(1\pm\sqrt{1+4x}), stable solution: y(x)=1/2*(1-\sqrt{1+4x}), y(1) = 1/2*(1-\sqrt{5})
-    double y_ini, y_fin, x; // necessary variables
-    y_ini = 0.; x = 1.; // initial y and fixed x
-    const int N_SCE = 100; // number of steps in ODE solver
-    SCE_solver(y_fin, y_ini, x, test_rhs_SCE_sqrt, N_SCE, 0.);
-    cout << "Exact result is " << (1.-sqrt(5.))/2. << ". Using " << N_SCE << " iterations yields " << y_fin << "." << endl;
 }
 
 

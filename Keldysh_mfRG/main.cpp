@@ -5,7 +5,7 @@
 #include <mpi.h>
 #include "utilities/mpi_setup.h"
 #include "flow.h"
-#include "tests/testFunctions.h"
+#include "tests/test_perturbation_theory.h"
 #include "utilities/util.h"
 
 using namespace std;
