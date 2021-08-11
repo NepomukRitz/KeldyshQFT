@@ -2,8 +2,11 @@
 #define KELDYSH_MFRG_TESTING_FLOW_GRID_H
 
 
-#include "../parameters.h"            // needed for the vector of grid values to add
+#include "../parameters.h"         // needed for the vector of grid values to add
+#include "../data_structures.h"    // for rvec
+#include <bits/stdc++.h>
 #include <algorithm>               // needed for std::find_if
+#include <cmath>                   // for log10, pow
 
 void add_points_to_Lambda_grid(vector<double>& grid){
     for (auto U : U_NRG){
