@@ -6,8 +6,8 @@
 #include "data_structures.h" // real/complex vector classes, imag. unit
 #include "selfenergy.h"      // self-energy class
 #include "parameters.h"      // system parameters (lengths of vectors etc.)
-#include "momentum_grid.h"   // momentum grid and FFT machinery for the 2D Hubbard model
-#include "util.h"            // sign - function
+#include "grids/momentum_grid.h"   // momentum grid and FFT machinery for the 2D Hubbard model
+#include "utilities/util.h"            // sign - function
 
 using namespace std;
 

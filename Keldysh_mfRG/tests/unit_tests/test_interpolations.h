@@ -1,8 +1,8 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
 #define KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
 
-#include "../interpolations.h"
-#include "../r_vertex.h"
+#include "../../interpolations/vertex_interpolations.h"
+#include "../../r_vertex.h"
 
 
 

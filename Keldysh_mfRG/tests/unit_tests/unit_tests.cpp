@@ -10,14 +10,14 @@
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 
-#include "../data_structures.h"
-#include "../parameters.h"  // define system parameters
+#include "../../data_structures.h"
+#include "../../parameters.h"  // define system parameters
 
 // include tests that should be run
 #include "test_data_structures.h"
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"
-#include "test_PrecalculateBubble.h"
+#include "../test_PrecalculateBubble.h"
 
 #include "test_frequencygrid.h"
 #include "test_interpolations.h"

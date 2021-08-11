@@ -2,12 +2,12 @@
 #define KELDYSH_MFRG_INTEGRATOR_H
 
 #include <numeric>
-#include "data_structures.h"                // real and complex vectors
-#include "parameters.h"                     // system parameters
+#include "../data_structures.h"                // real and complex vectors
+#include "../parameters.h"                     // system parameters
 #include <gsl/gsl_integration.h>            // for GSL integrator
 #include <gsl/gsl_errno.h>                  // for GSL integrator
-#include "Integrator_NR/integrator_NR.h"    // adaptive Gauss-Lobatto integrator with Kronrod extension
-#include "util.h"                           // for rounding functions
+#include "integrator_NR.h"    // adaptive Gauss-Lobatto integrator with Kronrod extension
+#include "../utilities/util.h"                           // for rounding functions
 
 /* compute real part of integrand (for GSL/PAID) */
 template <typename Integrand>

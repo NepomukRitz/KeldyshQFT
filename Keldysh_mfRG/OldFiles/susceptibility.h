@@ -7,7 +7,7 @@
 
 #include "../data_structures.h"
 #include "../parameters.h"
-#include "../frequency_grid.h"
+#include "../grids/frequency_grid.h"
 
 #ifdef SUSC
 

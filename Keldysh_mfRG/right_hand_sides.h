@@ -2,17 +2,17 @@
 #define RIGHT_HAND_SIDES_H
 
 #include "data_structures.h"        // real/complex vector classes, imag. unit
-#include "write_data2file.h"        // writing data into text or hdf5 files
+#include "utilities/write_data2file.h"        // writing data into text or hdf5 files
 #include "propagator.h"             // propagator to perform second-order perturbation theory (SOPT)
 #include "selfenergy.h"             // self-energy used in SOPT
 #include "state.h"                  // state to perform full flow
 #include "loop.h"                   // compute self-energy loop
 #include "bubbles.h"                // compute vertex bubbles
 #include "parameters.h"             // system parameters (lengths of vectors etc.)
-#include "fourier_trafo.h"          // SOPT from Fast Fourier transform (FFT) TODO: Should be obsolete now.
-#include "solvers.h"                // ODE solver
+#include "OldFiles/fourier_trafo.h"          // SOPT from Fast Fourier transform (FFT) TODO: Should be obsolete now.
+#include "ODE_solvers.h"                // ODE solver
 #include <cassert>
-#include "hdf5_routines.h"
+#include "utilities/hdf5_routines.h"
 
 using namespace std;
 

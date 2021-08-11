@@ -13,8 +13,8 @@
 #include "../perturbation_theory.h"
 #include "../bubbles.h"
 #include "../propagator.h"
-#include "../write_data2file.h"            // write vectors into hdf5 file
-#include "../util.h"
+#include "../utilities/write_data2file.h"            // write vectors into hdf5 file
+#include "../utilities/util.h"
 
 
 template<typename Q>

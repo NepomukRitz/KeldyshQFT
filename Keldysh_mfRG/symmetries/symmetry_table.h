@@ -9,7 +9,7 @@
 #ifndef KELDYSH_MFRG_TABLE_H
 #define KELDYSH_MFRG_TABLE_H
 
-#include "data_structures.h"
+#include "../data_structures.h"
 
 // Relate the Keldysh components in each diagrammatic class to the independent ones:
 // -1 = this component is zero

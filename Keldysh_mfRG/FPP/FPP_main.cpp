@@ -13,8 +13,8 @@
 #include "Ladder-approximation.h"
 #include "Monte-Carlo_Trial.h"
 #include "1D-integrals.h"
-#include "../util.h"
-#include "../solvers.h"
+#include "../utilities/util.h"
+#include "../ODE_solvers.h"
 
 
 

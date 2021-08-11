@@ -3,10 +3,10 @@
 #include <bits/stdc++.h>
 #include "parameters.h"
 #include <mpi.h>
-#include "mpi_setup.h"
+#include "utilities/mpi_setup.h"
 #include "flow.h"
-#include "testFunctions.h"
-#include "util.h"
+#include "tests/testFunctions.h"
+#include "utilities/util.h"
 
 using namespace std;
 
@@ -109,7 +109,7 @@ auto main() -> int {
 
     //test_K2<state_datatype>(Lambda_ini, true);
     test_PT4(1.8, true);
-    //n_loop_flow(dir_str+filename);
+    n_loop_flow(dir_str+filename);
     ///test_integrate_over_K1<state_datatype>(1.8);
 
 //    double Lambda = find_best_Lambda();

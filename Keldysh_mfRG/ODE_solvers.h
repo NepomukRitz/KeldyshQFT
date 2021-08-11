@@ -3,10 +3,10 @@
 
 #include <cmath>                   // needed for exponential and sqrt function
 #include <algorithm>               // needed for std::find_if
-#include "util.h"                  // text input/output
-#include "write_data2file.h"       // writing data into text or hdf5 files
+#include "utilities/util.h"                  // text input/output
+#include "utilities/write_data2file.h"       // writing data into text or hdf5 files
 #include "parameters.h"            // needed for the vector of grid values to add
-#include "causality_FDT_checks.h"  // check causality and FDTs at each step in the flow
+#include "postprocessing/causality_FDT_checks.h"  // check causality and FDTs at each step in the flow
 
 void add_points_to_Lambda_grid(vector<double>& grid){
     for (auto U : U_NRG){

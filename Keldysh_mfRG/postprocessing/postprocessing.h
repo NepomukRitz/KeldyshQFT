@@ -1,11 +1,11 @@
 #ifndef KELDYSH_MFRG_TESTING_POSTPROCESSING_H
 #define KELDYSH_MFRG_TESTING_POSTPROCESSING_H
 
-#include "hdf5_routines.h"   // to load data from hdf5 file
-#include "write_data2file.h" // to save result
-#include "solvers.h"         // to construct flow grid
-#include "state.h"
-#include "propagator.h"
+#include "../utilities/hdf5_routines.h"   // to load data from hdf5 file
+#include "../utilities/write_data2file.h" // to save result
+#include "../ODE_solvers.h"         // to construct flow grid
+#include "../state.h"
+#include "../propagator.h"
 #include "KramersKronig.h"   // perform check of Kramers-Kronig relation
 
 #ifdef KELDYSH_FORMALISM

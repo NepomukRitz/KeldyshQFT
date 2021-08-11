@@ -12,7 +12,7 @@
 #define KELDYSH_MFRG_FREQUENCY_GRID_H
 
 #include <cmath>        // for sqrt, log, exp
-#include "parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
+#include "../parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
 #include <cassert>
 
 // TODO: implement new grid also for GRID=1,2,4

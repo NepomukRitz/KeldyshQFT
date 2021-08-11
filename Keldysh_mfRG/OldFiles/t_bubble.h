@@ -7,9 +7,9 @@
 
 #include "../vertex.h"
 #include "../propagator.h"
-#include "../integrator.h"
+#include "../integrator/integrator.h"
 #include "../selfenergy.h"
-#include "../util.h"
+#include "../utilities/util.h"
 
 /*Class defining the t_bubble object with a Keldysh structure*/
 class T_Bubble{

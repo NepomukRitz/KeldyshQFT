@@ -1,10 +1,10 @@
 #ifndef KELDYSH_MFRG_INTERPOLATIONS_H
 #define KELDYSH_MFRG_INTERPOLATIONS_H
 
-#include "frequency_grid.h"
-#include "parameters.h"
-#include "data_structures.h"
-#include "symmetry_transformations.h"
+#include "../grids/frequency_grid.h"
+#include "../parameters.h"
+#include "../data_structures.h"
+#include "../symmetries/symmetry_transformations.h"
 
 //TODO improve to return the edge values
 //TODO: references to indices instead of copy (for speed)??

@@ -10,10 +10,10 @@
 #include<fftw3.h>
 #include <cassert>
 
-#include "data_structures.h"
-#include "parameters.h"
+#include "../data_structures.h"
+#include "../parameters.h"
 
-#include "write_data2file.h"            // write vectors into hdf5 file (for testing purposes)
+#include "../utilities/write_data2file.h"            // write vectors into hdf5 file (for testing purposes)
 
 
 int momentum_index(int n_x, int n_y);

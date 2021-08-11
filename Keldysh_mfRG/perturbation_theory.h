@@ -6,7 +6,7 @@
 #define KELDYSH_MFRG_PERTURBATION_THEORY_H
 
 #include "selfenergy.h"
-#include "frequency_grid.h"
+#include "grids/frequency_grid.h"
 #include "propagator.h"
 #include "state.h"
 #include "bubbles.h"

@@ -2,10 +2,10 @@
 #define KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 
 #include "parameters.h"     // system parameters
-#include "solvers.h"        // to construct flow grid
+#include "ODE_solvers.h"        // to construct flow grid
 #include "state.h"          // use State class
 #include "vertex.h"         // use Vertex class
-#include "hdf5_routines.h"  // read data from HDF5 file
+#include "utilities/hdf5_routines.h"  // read data from HDF5 file
 #include "bubbles.h"        // compute bubble function
 #include "loop.h"           // compute loop function
 

@@ -12,7 +12,7 @@
 #include <numeric>
 #include <string>
 #include "../data_structures.h"                // real and complex vectors
-#include "../write_data2file.h"             // write vectors into hdf5 file
+#include "../utilities/write_data2file.h"             // write vectors into hdf5 file
 #include <gsl/gsl_integration.h>            // for GSL integrator
 #include <gsl/gsl_errno.h>                  // for GSL integrator
 #include <complex>          // for usage of complex numbers
@@ -29,7 +29,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_odeiv2.h>     // ordinary differential equations
 #include "zeros.h"
-#include "../integrator.h"
+#include "../integrator/integrator.h"
 
 
 double glb_muc;

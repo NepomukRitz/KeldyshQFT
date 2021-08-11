@@ -1,7 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_KRAMERSKRONIG_H
 #define KELDYSH_MFRG_TESTING_KRAMERSKRONIG_H
 
-#include "data_structures.h"
+#include "../data_structures.h"
 
 // element-wise log
 rvec log(const rvec& x) {

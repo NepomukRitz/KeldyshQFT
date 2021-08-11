@@ -1,9 +1,9 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_INTEGRATOR_H
 #define KELDYSH_MFRG_TESTING_TEST_INTEGRATOR_H
 
-#include "../integrator.h"
-#include "../util.h"
-#include "../Integrator_NR/integrator_NR.h"
+#include "../../integrator/integrator.h"
+#include "../../utilities/util.h"
+#include "../../integrator/integrator_NR.h"
 #include <string>
 
 /* Test integrand class with int template parameter to select different test integrand functions */

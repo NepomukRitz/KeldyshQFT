@@ -1,7 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H
 #define KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H
 
-#include "../frequency_grid.h"
+#include "../../grids/frequency_grid.h"
 
 
 TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[bosonic frequency_grid]" ) {

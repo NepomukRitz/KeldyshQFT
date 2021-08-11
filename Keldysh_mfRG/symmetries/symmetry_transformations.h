@@ -5,7 +5,7 @@
 #ifndef KELDYSH_MFRG_SYMMETRY_TRANSFORMATIONS_H
 #define KELDYSH_MFRG_SYMMETRY_TRANSFORMATIONS_H
 
-#include "parameters.h"
+#include "../parameters.h"
 #include "Keldysh_symmetries.h"
 
 /**

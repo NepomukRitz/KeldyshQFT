@@ -18,12 +18,12 @@
 #include "vertex.h"                     // vertex class
 #include "selfenergy.h"                 // self-energy class
 #include "propagator.h"                 // propagator class
-#include "integrator.h"                 // integration routines
-#include "util.h"                       // measuring time, printing text output
-#include "mpi_setup.h"                  // mpi parallelization routines
+#include "integrator/integrator.h"                 // integration routines
+#include "utilities/util.h"                       // measuring time, printing text output
+#include "utilities/mpi_setup.h"                  // mpi parallelization routines
 #include "correctionFunctions.h"        // correction terms due to finite integration range
-#include "write_data2file.h"            // write vectors into hdf5 file
-#include "momentum_grid.h"              // Momentum grid specific to the 2D Hubbard model
+#include "utilities/write_data2file.h"            // write vectors into hdf5 file
+#include "grids/momentum_grid.h"              // Momentum grid specific to the 2D Hubbard model
 
 /// Class combining two propagators, either GG or GS+SG
 template <typename Q>

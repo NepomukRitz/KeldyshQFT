@@ -1,7 +1,7 @@
 #ifndef KELDYSH_MFRG_WRITE_DATA2FILE_H
 #define KELDYSH_MFRG_WRITE_DATA2FILE_H
 
-#include "data_structures.h" // real/complex vector classes
+#include "../data_structures.h" // real/complex vector classes
 #include <fstream>           // standard file input/output
 #include "H5Cpp.h"           // HDF5 package
 

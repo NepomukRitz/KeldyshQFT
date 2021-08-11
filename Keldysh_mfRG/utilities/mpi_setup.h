@@ -5,7 +5,7 @@
 #ifndef KELDYSH_MFRG_MPI_SETUP_H
 #define KELDYSH_MFRG_MPI_SETUP_H
 
-#include "data_structures.h" // real/complex vector classes
+#include "../data_structures.h" // real/complex vector classes
 #include <mpi.h>             // basic mpi functionality
 
 // Get the rank(ID) of the current process

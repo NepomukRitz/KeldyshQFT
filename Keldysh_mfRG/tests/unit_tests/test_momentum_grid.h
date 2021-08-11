@@ -5,9 +5,9 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_MOMENTUM_GRID_H
 #define KELDYSH_MFRG_TESTING_TEST_MOMENTUM_GRID_H
 
-#include "../momentum_grid.h"
-#include "../data_structures.h"
-#include "../r_vertex.h"
+#include "../../grids/momentum_grid.h"
+#include "../../data_structures.h"
+#include "../../r_vertex.h"
 #include <random>
 
 TEST_CASE("momentum grid 1", "Test that the conversions between a flat momentum index "

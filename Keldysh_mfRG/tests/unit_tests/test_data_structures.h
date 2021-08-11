@@ -1,7 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_DATA_STRUCTURES_H
 #define KELDYSH_MFRG_TESTING_TEST_DATA_STRUCTURES_H
 
-#include "../data_structures.h"
+#include "../../data_structures.h"
 
 TEST_CASE( "vector operations", "[data_structures]" ) {
 

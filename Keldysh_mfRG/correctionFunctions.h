@@ -4,7 +4,7 @@
 #include "data_structures.h"            // real/complex vector classes
 #include "vertex.h"                     // vertex class
 #include "parameters.h"                 // global system parameters
-#include "util.h"                       // printing text output
+#include "utilities/util.h"                       // printing text output
 #include <cmath>                        // for log function
 
 // TODO: implement also for Matsubara, and check the prefactor for Matsubara in bubbles.h

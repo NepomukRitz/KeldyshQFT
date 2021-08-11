@@ -2,7 +2,7 @@
 #define KELDYSH_MFRG_SELFENERGY_H
 
 #include "data_structures.h" // real/complex vector classes
-#include "frequency_grid.h"  // interpolate self-energy on new frequency grid
+#include "grids/frequency_grid.h"  // interpolate self-energy on new frequency grid
 #include <omp.h>             // parallelize initialization of self-energy
 
 /****************** CLASS FOR SELF-ENERGY *************/

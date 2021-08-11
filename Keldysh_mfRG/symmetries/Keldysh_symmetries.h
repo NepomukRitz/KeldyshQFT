@@ -6,7 +6,7 @@
 
 #include <vector>     // standard vector
 #include <algorithm>  // for find function in isInList
-#include "util.h"     // printing text output
+#include "../utilities/util.h"     // printing text output
 
 // Checks if a given variable val is in a list passed by reference.
 // Used to check if a Keldysh index is in a list of indices that should be equal.

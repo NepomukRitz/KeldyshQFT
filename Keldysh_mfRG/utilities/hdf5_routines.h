@@ -6,9 +6,9 @@
 #define KELDYSH_MFRG_HDF5_ROUTINES_H
 
 #include "util.h"               // printing text
-#include "parameters.h"         // system parameters (necessary for vector lengths etc.)
-#include "data_structures.h"    // comp data type, real/complex vector class
-#include "frequency_grid.h"     // store frequency grid parameters
+#include "../parameters.h"         // system parameters (necessary for vector lengths etc.)
+#include "../data_structures.h"    // comp data type, real/complex vector class
+#include "../grids/frequency_grid.h"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
 
 #ifdef MPI_FLAG

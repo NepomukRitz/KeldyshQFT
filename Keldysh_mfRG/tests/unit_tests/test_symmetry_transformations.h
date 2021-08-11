@@ -1,8 +1,8 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_SYMMETRY_TRANSFORMATIONS_H
 #define KELDYSH_MFRG_TESTING_TEST_SYMMETRY_TRANSFORMATIONS_H
 
-#include "../symmetry_transformations.h"
-#include "../util.h"
+#include "../../symmetries/symmetry_transformations.h"
+#include "../../utilities/util.h"
 
 SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_transformations]") {
 

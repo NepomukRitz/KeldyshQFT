@@ -10,8 +10,8 @@
 #include "vertex.h"                 // vertex class
 #include "propagator.h"             // propagator class
 #include "parameters.h"             // system parameters (vector lengths etc.)
-#include "integrator.h"             // integration routines
-#include "write_data2file.h"        // save integrand for debugging purposes
+#include "integrator/integrator.h"             // integration routines
+#include "utilities/write_data2file.h"        // save integrand for debugging purposes
 #include "correctionFunctions.h"    // analytical results for the tails of the loop integral
 
 /**
