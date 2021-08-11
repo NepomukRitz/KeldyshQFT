@@ -9,9 +9,9 @@
 #include "loop.h"                   // compute self-energy loop
 #include "bubbles.h"                // compute vertex bubbles
 #include "parameters.h"             // system parameters (lengths of vectors etc.)
-#include "fourier_trafo.h"          // SOPT from Fast Fourier transform (FFT)
+#include "fourier_trafo.h"          // SOPT from Fast Fourier transform (FFT) TODO: Should be obsolete now.
 #include "solvers.h"                // ODE solver
-#include "assert.h"
+#include <cassert>
 #include "hdf5_routines.h"
 
 using namespace std;

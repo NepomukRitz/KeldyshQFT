@@ -9,9 +9,6 @@
 #include "Integrator_NR/integrator_NR.h"    // adaptive Gauss-Lobatto integrator with Kronrod extension
 #include "util.h"                           // for rounding functions
 
-// temporarily necessary to make use of frequency grid bfreqs
-#include "frequency_grid.h"
-
 /* compute real part of integrand (for GSL/PAID) */
 template <typename Integrand>
 auto f_real(double x, void* params) -> double {
@@ -48,8 +45,8 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp {
 
 /// --- DIFFERENT INTEGRATION ROUTINES --- ///
 
-/* Integration using Riemann sum -- deprecated, not recommended */
-template <typename Integrand> auto integrator_riemann(const Integrand& integrand, int N) -> comp {
+/// Integration using Riemann sum -- deprecated, not recommended
+/*template <typename Integrand> auto integrator_riemann(const Integrand& integrand, int N) -> comp {
     rvec spacings(N);
     cvec integrand_values(N);
     double w0, w1, w2;
@@ -69,7 +66,7 @@ template <typename Integrand> auto integrator_riemann(const Integrand& integrand
     integrand_values[N-1] = integrand(bfreqs[N-1]);
 
     return 1/2.*dotproduct(integrand_values, spacings);
-}
+}*/
 
 /**
  * Perform an integration using Simpson's rule.

@@ -17,7 +17,6 @@
 #include "../util.h"
 
 
-
 template<typename Q>
 class test_PrecalculateBubble{
 public:

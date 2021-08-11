@@ -2,7 +2,6 @@
 #define KELDYSH_MFRG_PROPAGATOR_H
 
 #include <cmath>             // exp, tanh
-#include <tuple>
 
 #include "data_structures.h" // real/complex vector classes, imag. unit
 #include "selfenergy.h"      // self-energy class

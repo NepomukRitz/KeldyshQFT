@@ -4,7 +4,6 @@
 #include <cmath>
 #include "data_structures.h"    // real/complex vector classes
 #include "parameters.h"         // system parameters (vector lengths etc.)
-#include "Keldysh_symmetries.h" // auxiliary functions for conversions of Keldysh indices
 #include "r_vertex.h"           // reducible vertex in channel r
 
 using namespace std;
@@ -435,7 +434,7 @@ public:
 };
 
 /** Vertex class: vector of vertex_container (one element for each spin component) */
-template <typename Q, template <typename> typename symmetry_type>
+template <typename Q, template <typename> typename symmetry_type> // TODO: the last "typename" requires C++17. Is this a problem?
 class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
     GeneralVertex() : vec<vertex_container<Q, symmetry_type> > () {};

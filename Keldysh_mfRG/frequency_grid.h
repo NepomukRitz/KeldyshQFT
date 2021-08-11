@@ -13,21 +13,21 @@
 
 #include <cmath>        // for sqrt, log, exp
 #include "parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
-#include <assert.h>
+#include <cassert>
 
 // TODO: implement new grid also for GRID=1,2,4
 // TODO: comment!
 
 using namespace std;
 
-double grid_transf_v1(const double w, const double W_scale);
-double grid_transf_v2(const double w, const double W_scale);
-double grid_transf_v3(const double w, const double W_scale);
-double grid_transf_v4(const double w, const double W_scale);
-double grid_transf_inv_v1(const double w, const double W_scale);
-double grid_transf_inv_v2(const double w, const double W_scale);
-double grid_transf_inv_v3(const double w, const double W_scale);
-double grid_transf_inv_v4(const double w, const double W_scale);
+double grid_transf_v1(double w, double W_scale);
+double grid_transf_v2(double w, double W_scale);
+double grid_transf_v3(double w, double W_scale);
+double grid_transf_v4(double w, double W_scale);
+double grid_transf_inv_v1(double t, double W_scale);
+double grid_transf_inv_v2(double t, double W_scale);
+double grid_transf_inv_v3(double t, double W_scale);
+double grid_transf_inv_v4(double t, double W_scale);
 double wscale_from_wmax_v1(double & Wscale, double w1, double wmax, int N);
 double wscale_from_wmax_v2(double & Wscale, double w1, double wmax, int N);
 double wscale_from_wmax_v3(double & Wscale, double w1, double wmax, int N);

@@ -1,6 +1,8 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
+#include "data_structures.h" // to have access to the comp type for the Keldysh formalism
+
 // For production: uncomment the following line to switch off assert()-functions
 //#define NDEBUG
 

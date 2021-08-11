@@ -5,7 +5,6 @@
 #ifndef KELDYSH_MFRG_PERTURBATION_THEORY_H
 #define KELDYSH_MFRG_PERTURBATION_THEORY_H
 
-//#include ""
 #include "selfenergy.h"
 #include "frequency_grid.h"
 #include "propagator.h"

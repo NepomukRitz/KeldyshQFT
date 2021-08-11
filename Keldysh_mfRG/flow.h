@@ -5,14 +5,14 @@
 #ifndef KELDYSH_MFRG_FLOW_H
 #define KELDYSH_MFRG_FLOW_H
 
-#include <string>               // for file name for saving result
-#include "parameters.h"         // system parameters (e.g. initial Lambda)
-#include "state.h"              // state including vertex and self-energy
-#include "testFunctions.h"      // for initialization with SOPT at the beginning of the flow, using sopt_state // TODO: should this really be in testFunctions?
-#include "right_hand_sides.h"   // to compute right hand side of flow equation
-#include "parquet_checks.h"
-#include "postprocessing.h"
-#include "hdf5_routines.h"
+#include <string>                // for file name for saving result
+#include "parameters.h"          // system parameters (e.g. initial Lambda)
+#include "state.h"               // state including vertex and self-energy
+#include "perturbation_theory.h" // for initialization with SOPT at the beginning of the flow, using sopt_state
+#include "right_hand_sides.h"    // to compute right hand side of flow equation
+#include "parquet_checks.h"      // to compute the parquet solution as alternative starting point of the flow
+#include "postprocessing.h"      // to check the fulfillment of vertex sum-rules at the end of the flow
+#include "hdf5_routines.h"       // file management
 
 /**
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
