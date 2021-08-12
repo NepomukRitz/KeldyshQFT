@@ -12,6 +12,7 @@
 #include "Differential_Equation.h"
 #include "Ladder-approximation.h"
 #include "Monte-Carlo_Trial.h"
+#include "fRG-T-matrix-approach.h"
 #include "1D-integrals.h"
 #include "../utilities/util.h"
 #include "../ODE_solvers.h"
@@ -379,8 +380,87 @@ int main() {
     std::cout << "ladder = " << ladder5 << "\n";
     std::cout << "exact = " << laddere << "\n";
 
+    glb_muc = 1.0;
+    glb_ainv = 1.0;
+    glb_mud = -1.24;
+    comp ladder01 = 1./ladder(0.0,0.0,1e4,1e-10,1);
+    cout << "a^(-1) = " << glb_ainv << ", mu_d = " << glb_mud << ": " << ladder01 << "\n";
+    glb_mud = -1.23;
+    ladder01 = 1./ladder(0.0,0.0,1e4,1e-10,1);
+    cout << "a^(-1) = " << glb_ainv << ", mu_d = " << glb_mud << ": " << ladder01 << "\n";
+    glb_mud = -1.2325;
+    ladder01 = 1./ladder(0.0,0.0,1e4,1e-10,1);
+    cout << "a^(-1) = " << glb_ainv << ", mu_d = " << glb_mud << ": " << ladder01 << "\n";
+    double root_test0 = find_root_newton(0.0,0.0,1e4,1e-10,1,-2.,1e-10,100,1e-16);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test0 << "\n";
+
+
+    glb_ainv = 2.0;
+    double root_test1 = find_root_newton(0.0,0.0,1e4,1e-10,1,-2.,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test1 << "\n";
+    glb_ainv = 1.5;
+    double root_test2 = find_root_newton(0.0,0.0,1e4,1e-10,1,root_test1,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test2 << "\n";
+    glb_ainv = 1.0;
+    double root_test3 = find_root_newton(0.0,0.0,1e4,1e-10,1,root_test2,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test3 << "\n";
+    glb_ainv = 0.5;
+    double root_test4 = find_root_newton(0.0,0.0,1e4,1e-10,1,root_test3,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test4 << "\n";
+    glb_ainv = 0.0;
+    double root_test5 = find_root_newton(0.0,0.0,1e4,1e-10,1,root_test4,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test5 << "\n";
+    glb_ainv = -0.5;
+    double root_test6 = find_root_newton(0.0,0.0,1e4,1e-10,1,root_test5,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test6 << "\n";
+    glb_ainv = -1.0;
+    double root_test7 = find_root_newton(0.0,0.0,1e4,1e-10,1,root_test6,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test7 << "\n";
+    glb_ainv = -2.0;
+    double root_test8 = find_root_newton(0.0,0.0,1e4,1e-10,1,root_test7,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test8 << "\n";
+    glb_ainv = 0.282843;
+    double root_test9 = find_root_newton(0.0,0.0,1e4,1e-10,1,-0.342722,1e-10,100,1e-10);
+    cout << "a^(-1) = " << glb_ainv << ": " << root_test9 << "\n";
+
+    cout << "now solver:\n";
+    ladder_p_list (1e4, 1e-10, 1, -2.*sqrt(2), 2.*sqrt(2), -10., 1e-10, 100, 1e-16, 301);
+
     // comp testfmu = test_f_mu(0.0,0.0,1e3,1e-4,1,1.0);
     // std::cout << "f_mu = " << testfmu << "\n";
+
+    // 1-loop fRG
+    glb_ainv = 1.0;
+    glb_muc = 1.0;
+    glb_mud = -5.;
+    comp testrhs = sharp_frequency_exact_bare_bubble(0.,10.,0.1,'c','d','t');
+    cout << "t: " << testrhs << "\n";
+    testrhs = sharp_frequency_exact_bare_bubble(0.,10.,0.1,'c','d','p');
+    cout << "p: " << testrhs << "\n";
+    testrhs = sharp_frequency_exact_bare_bubble(0.,10.,0.1,'c','d','a');
+    cout << "a: " << testrhs << "\n";
+
+    comp yy_fin;
+    const comp yy_ini = 0.0;
+    const double L_ini = 1e4;
+    const double L_fin = 1e-10;
+
+    cout << "solve 1lfRG" << "\n";
+    ODE_solver_RK4(yy_fin, L_fin, yy_ini, L_ini,
+                   rhs_test2, sq_substitution, sq_resubstitution, nODE);
+
+
+    comp ladder_compare = ladder(0.,0.,1e4,1e-10,1);
+    cout << "yfin = " << yy_fin << ", ladder = " << ladder_compare << "\n";
+    cout << "nODE = " << nODE << "\n";
+
+    /*
+    comp solvefRG1 = solve_1lfRG_nsc (0.2, 0.1, 1e1, 1e-4);
+    cout << "fRG solution = " << solvefRG1 << "\n";
+
+    comp test0001 = solve_1lfRG_nsc;
+    cout << "fRG solution = " << test0001 << "\n";
+    */
 
     // TEST INTEGRATOR AND SOLVER
     /*
@@ -391,21 +471,20 @@ int main() {
     integrate_result = perform_SimpleBubble_integral (0.03, -2.0, 0.2, 0.4, 'c', 'c');
     std::cout << "x-integral = " << integrate_result << "\n";
 
-
-
     comp y_fin;
     const comp y_ini = SimpleBubble(0.03, -2.0, 0.2, 0.4, -1.0, 'c', 'c');
     const double x_ini = -1.0;
     const double x_fin = 1.0;
 
     ODE_solver_RK4(y_fin, x_ini, y_ini, x_fin,
-                   rhs_test, sq_substitution, sq_resubstitution, nODE);
+                   rhs_test3, sq_substitution, sq_resubstitution, nODE);
 
 
 
     std::cout << "yfin = " << y_fin << "\n";
     std::cout << "nODE = " << nODE << "\n";
-     */
+    */
+
 
     get_time(t0);
 

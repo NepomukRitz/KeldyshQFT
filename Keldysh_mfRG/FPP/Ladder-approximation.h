@@ -7,6 +7,7 @@
 
 #include "Momentum-integral-Bubble.h"
 #include "zeros.h"
+#include "../write_data2file.h"             // write vectors into hdf5 file
 
 double gint(double Lambda_i, double Lambda_f, int reg) {
     /* reg: 0 = sharp frequency, 1 = sharp momentum */
@@ -51,32 +52,29 @@ double vacuumbubble ( double mi, double mj, double v){
     return 1/(4*M_PI*M_PI*pow(v,0.5));
 }
 
-/* template <typename Q>
-class Integrand_test {
-
-public:
-    auto operator() (double v) const -> Q {
-        return 1./(4*M_PI*M_PI*pow(v,0.5));
-    };
-
-    //void save_integrand();
-}; */
-
-/* comp perform_vacuum_integral (double Lambda_i, double Lambda_f){
-    comp output;
-    Integrand_test<comp> perform_vacuum_integral;
-    output = (integrator(perform_vacuum_integral, -Lambda_i, -Lambda_f) + integrator(perform_vacuum_integral, Lambda_f, Lambda_i));
-    return output;
-} */
-
 double exactzerobubble(double Lambda_i, double Lambda_f){
     return (sqrt(Lambda_i)-sqrt(Lambda_f))/(pow(M_PI,2));
 }
 
 comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, double Lambda_i, double Lambda_f){
-    comp output;
+    comp output1, output2, output3, output4, output5, output6, output;
+    double Lambda_mu, Lambda_ml;
+    if (Lambda_i*Lambda_f > 1) {
+        Lambda_mu = Lambda_i*Lambda_f;
+        Lambda_ml = 1;
+    }
+    else {
+        Lambda_mu = 1;
+        Lambda_ml = Lambda_i*Lambda_f;
+    }
     Integrand_Pi0_vpp<comp> perform_Pi0_vpp_integral(w, q, i, j, chan);
-    output = 1/M_PI*(integrator<comp>(perform_Pi0_vpp_integral, -Lambda_i, -Lambda_f) + integrator<comp>(perform_Pi0_vpp_integral, Lambda_f, Lambda_i));
+    output1 = integrator<comp>(perform_Pi0_vpp_integral, -Lambda_i, -Lambda_mu);
+    output2 = integrator<comp>(perform_Pi0_vpp_integral, -Lambda_mu, -Lambda_ml);
+    output3 = integrator<comp>(perform_Pi0_vpp_integral, -Lambda_ml, -Lambda_f);
+    output4 = integrator<comp>(perform_Pi0_vpp_integral, Lambda_f, Lambda_ml);
+    output5 = integrator<comp>(perform_Pi0_vpp_integral, Lambda_ml, Lambda_mu);
+    output6 = integrator<comp>(perform_Pi0_vpp_integral, Lambda_mu, Lambda_i);
+    output = 1/M_PI*(output1 + output2 + output3 + output4 + output5 + output6);
     return output;
 }
 
@@ -109,43 +107,108 @@ public:
 
     /**
      * Call operator:
-     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
-     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     * @param mu
      */
-    auto operator() (double mu) const -> Q {
-        comp output;
-        double mu_temp = glb_mud;
+    auto mu(double mu) const -> Q {
+        double output;
+        double mu_inter = glb_mud;
         glb_mud = mu;
-        output = ladder(w,q,Lambda_i,Lambda_f,reg);
-        glb_mud = mu_temp;
+        output = 1./real(ladder(w,q,Lambda_i,Lambda_f,reg));
+        glb_mud = mu_inter;
         return output;
     };
 
     //void save_integrand();
 };
 
-comp real_f_mu (double w, double q, double Lambda_i, double Lambda_f, int reg, double mu){
+/* comp real_f_mu (double w, double q, double Lambda_i, double Lambda_f, int reg, double mu){
     f_mu<comp> f2(w,q,Lambda_i,Lambda_f,reg);
     comp output;
     output = real(f2(mu));
     return output;
+}*/
+
+double find_root_newton (double w, double q, double Lambda_i, double Lambda_f, int reg, double start, double dx, int imax, double prec) {
+    double xnew = start;
+    double fold, fold_plus, df;
+    double xold;
+
+    f_mu<double> f(w,q,Lambda_i,Lambda_f,reg);
+
+    for (int i = 1; i < imax + 1; ++i){
+        xold = xnew;
+        fold = f.mu(xold);
+        while (std::abs(fold)>1/prec){ // avoid infinite f
+            fold = f.mu(xold+dx);
+        }
+        fold_plus = f.mu(xold+dx);
+        df = (fold_plus-fold)/dx;
+
+        //cout << "j = " << i << ", x = " << xold << ", f = " << fold << ", fold_plus = " << fold_plus << ", df = " <<   df  << "\n";
+
+        if (std::abs(df) < prec){ // stop if the denominator is too small
+            break;
+            //cout << "denominator too small \n";
+        }
+
+        xnew = xold - fold/df; // Newton's computation
+
+        if (std::abs(xnew-xold)<dx) { // stop when result is within tolerance
+            break;
+            //cout << "result within tolerance \n";
+        }
+
+    }
+    return xnew;
 }
 
-/* double find_root_ladder (double w, double q, double Lambda_i, double Lambda_f, int reg, double md_start, double ainv, double dmu, int imax, double prec){
+double find_root_ladder (double w, double q, double Lambda_i, double Lambda_f, int reg, double md_start, double ainv, double dmu, int imax, double prec){
     glb_muc = 1.0;
     glb_ainv = ainv;
 
-    comp ladder_mu, ladder_mu_inv;
-
-    ladder_mu = real_f_mu(w,q,Lambda_i,Lambda_f,reg,mu);
-    ladder_mu_inv = 1./ladder_mu;
-
     double mud;
-    mud = find_root_newton(f_mu, md_start, dmu,imax,prec);
-} */
+    mud = find_root_newton(w,q,Lambda_i,Lambda_f,reg, md_start, dmu,imax,prec);
+    return mud;
+}
+
+void ladder_p_list (double Lambda_i, double Lambda_f, int reg, double ainv_min, double ainv_max, double mud_start, double dmu, int imax, double prec, int nainv) {
+    vec<double> ainvs(nainv);
+    vec<double> muds(nainv);
+
+    double ainv, mudnew;
+    double mudold = mud_start;
+
+    /*for (int i = 0; i < nainv; ++i) {
+        cout << "N-i-1 = " << nainv-i-1 << ", a^(-1) = " << ainvs[i] << ", mu = " << muds[i] << "\n";
+    }*/
+
+    for (int i = 0; i < nainv ; ++i) {
+        //cout << "i = " << i  << "\n";
+        ainv = ainv_max - i * std::abs(ainv_max-ainv_min)/(nainv-1);
+        //cout << "i = " << i << ", ainv = " << ainv <<"\n";
+        //cout << "mudold = " << mudnew  << "\n";
+        mudnew = find_root_ladder(0.0,0.0,Lambda_i,Lambda_f,reg,mudold,ainv,dmu,imax,prec);
+        //cout << "mudnew = " << mudnew << "\n";
+        //cout << "i = " << i << ", ainv = " << ainv << ", mud = " << mudnew <<"\n";
+
+        ainvs[nainv-i-1] = ainv/sqrt(2);
+        muds[nainv-i-1] = mudnew;
+
+        mudold = mudnew;
+
+        cout << "i = " << i << ", a^(-1) = " << ainvs[nainv-i-1] << ", mu = " << muds[nainv-i-1] << "\n";
+
+    }
 
 
 
+    string filename = "../Data/ladder_p_list";
+    filename += "_nainv=" + to_string(nainv)
+                + ".h5";
+    write_h5_rvecs(filename,
+                   {"inverse scattering length", "chemical potential"},
+                   {ainvs, muds});
 
+}
 
 #endif //MAIN_CPP_LADDER_APPROXIMATION_H
