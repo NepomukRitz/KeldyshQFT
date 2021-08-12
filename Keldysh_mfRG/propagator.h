@@ -413,7 +413,7 @@ auto Propagator<Q>::norm() const -> double{
 #ifdef KELDYSH_FORMALISM
         out += pow(std::abs(GR(ffreqs[i], 0)), 2.);
 #else
-        out += pow(std::abs(GM(ffreqs[i], 0)), 2.);
+        out += pow(std::abs(GM(selfenergy.frequencies.ws[i], 0)), 2.);
 #endif
     }
 

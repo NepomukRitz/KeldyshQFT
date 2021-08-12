@@ -11,7 +11,13 @@
 #include "../utilities/hdf5_routines.h"          // writing states to hdf5 file
 #include "../perturbation_theory.h"
 #include "../integrator/integrator.h"
+#include "../grids/frequency_grid.h"
 
+// Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
+FrequencyGrid frequencyGrid_bos ('b', 1, Lambda_ini);
+FrequencyGrid frequencyGrid_fer ('f', 1, Lambda_ini);
+rvec bfreqs = frequencyGrid_bos.ws;
+rvec ffreqs = frequencyGrid_fer.ws;
 
 /**
  * to be used as rhs in test below --> test_ODE_solvers()

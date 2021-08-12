@@ -5,7 +5,14 @@
 #include <numeric>
 #include "../data_structures.h"                // real and complex vectors
 #include "../parameters.h"                     // system parameters
-#include "../utilities/util.h"                           // for rounding functions
+#include "../utilities/util.h"                 // for rounding functions
+#include "../grids/frequency_grid.h"           // for defining global frequency grids bfreqs and ffreqs
+
+// Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
+FrequencyGrid frequencyGrid_bos ('b', 1, Lambda_ini);
+FrequencyGrid frequencyGrid_fer ('f', 1, Lambda_ini);
+rvec bfreqs = frequencyGrid_bos.ws;
+rvec ffreqs = frequencyGrid_fer.ws;
 
 /* compute the dot product of two vectors (integrand values and weights) */
 auto dotproduct(const cvec& x, const rvec& y) -> comp {

@@ -631,7 +631,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     for (int iK1=0; iK1<nK_K1; ++iK1) {
         for (int iw=0; iw<nw1; ++iw) {
             for (int i_in=0; i_in<n_in; ++i_in) {
-                IndicesSymmetryTransformations indices (iK1, frequencies_new.b_K1.w[iw], 0., 0., i_in, channel);
+                IndicesSymmetryTransformations indices (iK1, frequencies_new.b_K1.ws[iw], 0., 0., i_in, channel);
                 // interpolate old values to new vector
                 K1_new[iK1*nw1*n_in + iw*n_in + i_in] = Interpolate<k1,Q>()(indices, *this);
             }
@@ -645,8 +645,8 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
         for (int iw=0; iw<nw2; ++iw) {
             for (int iv=0; iv<nv2; ++iv) {
                 for (int i_in = 0; i_in<n_in; ++i_in) {
-                    IndicesSymmetryTransformations indices (iK2, frequencies_new.b_K2.w[iw],
-                                                            frequencies_new.f_K2.w[iv],
+                    IndicesSymmetryTransformations indices (iK2, frequencies_new.b_K2.ws[iw],
+                                                            frequencies_new.f_K2.ws[iv],
                                                             0.,
                                                             i_in, channel);
                     // interpolate old values to new vector
@@ -665,9 +665,9 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
             for (int iv=0; iv<nv3; ++iv) {
                 for (int ivp=0; ivp<nv3; ++ivp) {
                     for (int i_in = 0; i_in<n_in; ++i_in) {
-                        IndicesSymmetryTransformations indices (iK3, frequencies_new.b_K3.w[iw],
-                                                                frequencies_new.f_K3.w[iv],
-                                                                frequencies_new.f_K3.w[ivp],
+                        IndicesSymmetryTransformations indices (iK3, frequencies_new.b_K3.ws[iw],
+                                                                frequencies_new.f_K3.ws[iv],
+                                                                frequencies_new.f_K3.ws[ivp],
                                                                 i_in, channel);
                         // interpolate old values to new vector
                         K3_new[iK3*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in]
@@ -699,7 +699,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             default: ;
         }
         for (int itw = 0; itw < nw1; itw++) {
-            double w_in = this->frequencies.b_K1.w[itw];
+            double w_in = this->frequencies.b_K1.ws[itw];
             IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
             int sign_w = sign_index(indices.w);
             int trafo_index = freq_transformations.K1[itK][sign_w];
@@ -779,8 +779,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
         for (int itw = 0; itw < nw2; itw++){
             for (int itv = 0; itv < nv2; itv++){
-                double w_in = this->frequencies.b_K2.w[itw];
-                double v_in = this->frequencies.f_K2.w[itv];
+                double w_in = this->frequencies.b_K2.ws[itw];
+                double v_in = this->frequencies.f_K2.ws[itv];
                 IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
                 int sign_w = sign_index(w_in);
                 int sign_v1 = sign_index(v_in);
@@ -826,9 +826,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         for (int itw = 0; itw < nw3; itw++){
             for (int itv = 0; itv < nv3; itv++){
                 for (int itvp = 0; itvp < nv3; itvp++) {
-                    double w_in = this->frequencies.b_K3.w[itw];
-                    double v_in = this->frequencies.f_K3.w[itv];
-                    double vp_in = this->frequencies.f_K3.w[itvp];
+                    double w_in = this->frequencies.b_K3.ws[itw];
+                    double v_in = this->frequencies.f_K3.ws[itv];
+                    double vp_in = this->frequencies.f_K3.ws[itvp];
                     IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
                     int sign_w = sign_index(w_in);
                     int sign_f =  itv+itvp<nFER3? 0 : 1;    // this corresponds to "sign_index(v_in + vp_in)" assuming

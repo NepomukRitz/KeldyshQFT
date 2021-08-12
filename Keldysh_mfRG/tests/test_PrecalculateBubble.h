@@ -87,9 +87,9 @@ template<typename Q> double test_PrecalculateBubble<Q>::find_largest_deviation_f
 
     for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
         for (int iw = 0; iw < nBOS; ++iw) {
-            const double w = g.selfenergy.frequencies.w[iw];
+            const double w = g.selfenergy.frequencies.ws[iw];
             for (int ivpp = 0; ivpp < nFER; ++ivpp) {
-                const double vpp = g.selfenergy.frequencies.w[ivpp];
+                const double vpp = g.selfenergy.frequencies.ws[ivpp];
                 for (int i_in = 0; i_in < n_in; ++i_in) {
                     Q Bubble_Value = Usual_Bubble.value(iK, w, vpp, i_in, channel);
                     Q Pre_Bubble_Value = Pre_Bubble.value(iK, w, vpp, i_in);
@@ -127,7 +127,7 @@ write_h5_rvecs(filename,
                 "RealValuesOfPrecalculatedBubble", "RealValuesOfUsualBubble",
                 "ImaginaryValuesOfPrecalculatedBubble", "ImaginaryValuesOfUsualBubble",
                 "AbsoluteDeviations"},
-               {g.selfenergy.frequencies.w,
+               {g.selfenergy.frequencies.ws,
                 ValuesOfPreBubble.real(), ValuesOfUsualBubble.real(),
                 ValuesOfPreBubble.imag(), ValuesOfUsualBubble.imag(),
                 AbsoluteDeviations});
@@ -208,9 +208,9 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
     for (int iteration = 0; iteration < iterations; ++iteration) {
         for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
             for (int iw = 0; iw < nBOS; ++iw) {
-                const double w = g.selfenergy.frequencies.w[iw];
+                const double w = g.selfenergy.frequencies.ws[iw];
                 for (int ivpp = 0; ivpp < nFER; ++ivpp) {
-                    const double vpp = g.selfenergy.frequencies.w[ivpp];
+                    const double vpp = g.selfenergy.frequencies.ws[ivpp];
                     for (int i_in = 0; i_in < n_in; ++i_in) {
                         if (precalculated){
                             Q Pre_Bubble_Value = Pre_Bubble.value(iK, w, vpp, i_in);
@@ -252,7 +252,7 @@ void test_Bubble_in_Momentum_Space(){
     vec<comp> s_K (nFER * n_in);
     for (int iv = 0; iv < nFER; ++iv) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
-            double v = g.selfenergy.frequencies.w[iv];
+            double v = g.selfenergy.frequencies.ws[iv];
             g_R[iv * n_in + i_in] = g.valsmooth(0, v, i_in);
             g_K[iv * n_in + i_in] = g.valsmooth(1, v, i_in);
             s_R[iv * n_in + i_in] = s.valsmooth(0, v, i_in);
@@ -270,7 +270,7 @@ void test_Bubble_in_Momentum_Space(){
                     "RealValuesOfKeldyshSingleScale", "ImaginaryValuesOfKeldyshSingleScale",
                     "RealValuesOfBubble", "ImaginaryValuesOfBubble",
                     "RealValuesOfDottedBubble", "ImaginaryValuesOfDottedBubble"},
-                   {g.selfenergy.frequencies.w, Bubble.fermionic_grid.w,
+                   {g.selfenergy.frequencies.ws, Bubble.fermionic_grid.ws,
                     g_R.real(), g_R.imag(), g_K.real(), g_K.imag(),
                     s_R.real(), s_R.imag(), s_K.real(), s_K.imag(),
                     Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
@@ -280,7 +280,7 @@ void test_Bubble_in_Momentum_Space(){
     vec<comp> single_scale (nFER * n_in);
     for (int iv = 0; iv < nFER; ++iv) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
-            double v = g.selfenergy.frequencies.w[iv];
+            double v = g.selfenergy.frequencies.ws[iv];
             prop[iv * n_in + i_in]         = g.valsmooth(0, v, i_in);
             single_scale[iv * n_in + i_in] = s.valsmooth(0, v, i_in);
         }
@@ -294,7 +294,7 @@ void test_Bubble_in_Momentum_Space(){
                     "RealValuesOfSingleScale", "ImaginaryValuesOfSingleScale",
                     "RealValuesOfBubble", "ImaginaryValuesOfBubble",
                     "RealValuesOfDottedBubble", "ImaginaryValuesOfDottedBubble"},
-                   {g.selfenergy.frequencies.w, Bubble.fermionic_grid.w,
+                   {g.selfenergy.frequencies.ws, Bubble.fermionic_grid.ws,
                     prop.real(), prop.imag(), single_scale.real(), single_scale.imag(),
                     Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
                     DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});

@@ -27,10 +27,10 @@ public:
             int index_b = vertex.frequencies.b_K2.fconv(indices.w);
             int index_f = vertex.frequencies.f_K2.fconv(indices.v1);
 
-            double x1 = vertex.frequencies.b_K2.w[index_b];
-            double x2 = vertex.frequencies.b_K2.w[index_b + 1];
-            double y1 = vertex.frequencies.f_K2.w[index_f];
-            double y2 = vertex.frequencies.f_K2.w[index_f + 1];
+            double x1 = vertex.frequencies.b_K2.ws[index_b];
+            double x2 = vertex.frequencies.b_K2.ws[index_b + 1];
+            double y1 = vertex.frequencies.f_K2.ws[index_f];
+            double y2 = vertex.frequencies.f_K2.ws[index_f + 1];
             double xd = (indices.w - x1) / (x2 - x1);
             double yd = (indices.v1 - y1) / (y2 - y1);
 
@@ -59,8 +59,8 @@ public:
         if (std::abs(indices.w) < vertex.frequencies.b_K1.w_upper + inter_tol) {
             int index = vertex.frequencies.b_K1.fconv(indices.w);
 
-            double x1 = vertex.frequencies.b_K1.w[index];
-            double x2 = vertex.frequencies.b_K1.w[index + 1];
+            double x1 = vertex.frequencies.b_K1.ws[index];
+            double x2 = vertex.frequencies.b_K1.ws[index + 1];
             double xd = (indices.w - x1) / (x2 - x1);
 
             auto f1 = vertex.K1_val(indices.iK, index, indices.i_in);
@@ -93,12 +93,12 @@ public:
             int index_f1 = vertex.frequencies.f_K3.fconv(indices.v1);
             int index_f2 = vertex.frequencies.f_K3.fconv(indices.v2);
 
-            double x1 = vertex.frequencies.b_K3.w[index_b];
-            double x2 = vertex.frequencies.b_K3.w[index_b + 1];
-            double y1 = vertex.frequencies.f_K3.w[index_f1];
-            double y2 = vertex.frequencies.f_K3.w[index_f1 + 1];
-            double z1 = vertex.frequencies.f_K3.w[index_f2];
-            double z2 = vertex.frequencies.f_K3.w[index_f2 + 1];
+            double x1 = vertex.frequencies.b_K3.ws[index_b];
+            double x2 = vertex.frequencies.b_K3.ws[index_b + 1];
+            double y1 = vertex.frequencies.f_K3.ws[index_f1];
+            double y2 = vertex.frequencies.f_K3.ws[index_f1 + 1];
+            double z1 = vertex.frequencies.f_K3.ws[index_f2];
+            double z2 = vertex.frequencies.f_K3.ws[index_f2 + 1];
 
             double xd = (indices.w - x1) / (x2 - x1);
             double yd = (indices.v1 - y1) / (y2 - y1);

@@ -1,10 +1,18 @@
 /**
- * Set up the frequency and flow Lambda grid // TODO: make flow grid more flexible
+ * Set up the frequency grid // TODO: make flow grid more flexible
  * Functions that initialize the grid and provide conversion between doubles and grid indices.
  * Three different grid types:
  * GRID=1: log grid -- to be implemented
  * GRID=2: linear grid
- * GRID=3: non-linear grid w/sqrt(W^2 + w^2)
+ * GRID=3: non-linear grid in different versions:
+ *     version 1: w(t) = W_scale t  /sqrt(1 - t^2)
+ *     version 2: w(t) = W_scale t^2/sqrt(1 - t^2)
+ *     version 3: w(t) = W_scale t  /    (1 - t^2)
+ *     version 4: w(t) = W_scale t^2/    (1 - t^2)
+ * The grid points are obtained as follows:
+ *  The values of t are evenly distributed between t_lower and t_upper on a sub-interval of [-1,1].
+ *  The frequencies w(t) are obtained according to the function.
+ *  W_scale determines 'how non-linear' the grid behaves.
  * GRID=4: tangent grid w = c1 * tan( c2 * i + c3 )
  */
 
@@ -36,12 +44,22 @@ class FrequencyGrid {
     const unsigned int diag_class;
 public:
     int N_w;
-    double w_upper, w_lower, W_upper, W_lower, W_scale;
-    double U_factor = 10./3.;
-    double Delta_factor = 10.;
-    rvec w;
-    rvec Ws;
+    double w_upper;             // lower bound of frequency grid
+    double w_lower;             // lower bound of frequency grid
+    double t_upper;             // upper bound of auxiliary grid
+    double t_lower;             // lower bound of auxiliary grid
+    double W_scale;             // non-linearity of grid_transf()
+    double dt;                  // spacing on linear auxiliary grid
+    double U_factor = 10./3.;   // determines scale_factor()
+    double Delta_factor = 10.;  // determines scale_factor()
+    rvec ws;                     // frequency grid
+    rvec ts;                    // linear auxiliary grid (related to ws by ws(ts)=grid_transf_inv(ts))
 
+    /**
+     * This constructor initializes a frequency grid with the global values. This is not needed anymore!    // TODO: Remove
+     * @param type_in
+     * @param diag_class_in
+     */
     FrequencyGrid(char type_in, unsigned int diag_class_in) : type(type_in), diag_class(diag_class_in) {
         switch (type) {
             case 'b':
@@ -103,8 +121,8 @@ public:
                 break;
             default:;
         }
-        w = rvec (N_w);
-        Ws = rvec (N_w);
+        ws = rvec (N_w);
+        ts = rvec (N_w);
         //initialize_grid();
     };
 
@@ -116,13 +134,14 @@ public:
         this->N_w = freqGrid.N_w;
         this->w_upper = freqGrid.w_upper;
         this->w_lower = freqGrid.w_lower;
-        this->W_upper = freqGrid.W_upper;
-        this->W_lower = freqGrid.W_lower;
+        this->t_upper = freqGrid.t_upper;
+        this->t_lower = freqGrid.t_lower;
         this->W_scale = freqGrid.W_scale;
+        this->dt = freqGrid.dt;
         this->U_factor = freqGrid.U_factor;
         this->Delta_factor = freqGrid.Delta_factor;
-        this->w = freqGrid.w;
-        this->Ws = freqGrid.Ws;
+        this->ws = freqGrid.ws;
+        this->ts = freqGrid.ts;
         return *this;
     }
     auto scale_factor(double Lambda) -> double;
@@ -130,10 +149,8 @@ public:
     void initialize_grid(double scale);
     void rescale_grid(double Lambda);
     auto fconv(double w_in) const -> int;
-    auto fconv(double w_in, double tol) const -> int;
-    auto W_val(int index) const -> double;
     auto grid_transf(double w) const -> double;
-    auto grid_transf_inv(double w) const -> double;
+    auto grid_transf_inv(double t) const -> double;
     auto wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double;
 };
 
@@ -141,29 +158,39 @@ auto FrequencyGrid::scale_factor(double Lambda) -> double {
     return std::max(U_factor*glb_U, Delta_factor*(Lambda+glb_Gamma)/2.);
 }
 
+/**
+ * This function initializes the frequency grid according to the grid parameters
+ * w_upper(=-w_lower):  upper limit of frequency box
+ * N_w:                 number of frequency points
+ * W_scale:             non-linearity of the grid_transf function
+ */
 void FrequencyGrid::initialize_grid() {
     double W;
-    W_upper = grid_transf(w_upper);
-    W_lower = grid_transf(w_lower);
-    double dW = (W_upper - W_lower) / ((double) (N_w - 1.));
+    t_upper = grid_transf(w_upper);
+    t_lower = grid_transf(w_lower);
+    dt = (t_upper - t_lower) / ((double) (N_w - 1.));
     for(int i=0; i<N_w; ++i) {
-        W = W_lower + i*dW;
-        w[i] = grid_transf_inv(W);
+        W = t_lower + i * dt;
+        ws[i] = grid_transf_inv(W);
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-        if (type == 'b') w[i] = round2bfreq(w[i]);
-        else w[i] = round2ffreq(w[i]);
+        if (type == 'b') ws[i] = round2bfreq(ws[i]);
+        else ws[i] = round2ffreq(ws[i]);
 #endif
-        Ws[i]= grid_transf(w[i]);
+        ts[i]= grid_transf(ws[i]);
     }
     if (N_w % 2 == 1) {
-        w[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
-        Ws[(int) N_w / 2] = 0.;
+        ws[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+        ts[(int) N_w / 2] = 0.;
     }
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    assert (is_doubleOccurencies(w) == 0);
+    assert (is_doubleOccurencies(ws) == 0);
 #endif
 }
 
+/**
+ * This function sets the grid parameters according to the scale obtained from scale_factor(Lambda)
+ * @param scale
+ */
 void FrequencyGrid::initialize_grid(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
@@ -187,23 +214,24 @@ void FrequencyGrid::rescale_grid(double Lambda) {
     initialize_grid(scale_factor(Lambda));
 }
 
+/** This function returns the index corresponding to the frequency w_in.
+ *  It rounds down due to the narrowing conversion from double to int.
+ *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
+ */
 auto FrequencyGrid::fconv(double w_in) const -> int {
-    double W = grid_transf(w_in);
-    double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
-    W = (W - W_lower) / dW;
-    auto index = (int)W;
+    double t = grid_transf(w_in);
+    t = (t - t_lower) / dt;
+    auto index = (int)t;
     index = std::max(0, index);
     index = std::min(N_w-2, index);
     return index;
 }
-auto FrequencyGrid::fconv(double w_in, double tol) const -> int {
-    double W = grid_transf(w_in);
-    double dW = (W_upper - W_lower) / ((double)(N_w - 1.));
-    W = (W - W_lower) / dW;
-    auto index = (int) (W + tol);
-    return index;
-}
 
+/**
+ * The used grid_transf function is determined here
+ * @param w     frequency
+ * @return
+ */
 auto FrequencyGrid::grid_transf(double w) const -> double {
     //if (this->type == 'f' and this->diag_class == 1) {
     //    return grid_transf_v3(w, this->W_scale);
@@ -220,7 +248,12 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
     //}
 }
 
-auto FrequencyGrid::grid_transf_inv(double w) const -> double {
+/**
+ * The used grid_transf_inv function is determined here
+ * @param t     point on auxiliary grid
+ * @return
+ */
+auto FrequencyGrid::grid_transf_inv(double t) const -> double {
     //if (this->type == 'f' and this->diag_class == 1) {
     //    return grid_transf_inv_v3(w, this->W_scale);
     //}
@@ -229,14 +262,21 @@ auto FrequencyGrid::grid_transf_inv(double w) const -> double {
     //}
     //else {
 #if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
-        return grid_transf_inv_v2(w, this->W_scale);
+        return grid_transf_inv_v2(t, this->W_scale);
 #else
-        return grid_transf_inv_v1(w, this->W_scale);
+        return grid_transf_inv_v1(t, this->W_scale);
 #endif
     //}
 }
 
-auto FrequencyGrid::wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double {
+/**
+ * This function picks a suitable W_scale for a given wmax for Matsubara T>0
+ * @return Wscale    non-linearity of grid_transf()
+ * @param w1        first positive Matsubara frequency
+ * @param wmax      upper bound of frequency grid
+ * @param N         relates tmax to t1 by t1=tmax/N (for bosons: (nBOS-1)/2; for fermions: nFER-1)
+ */
+auto FrequencyGrid::wscale_from_wmax(double & Wscale, const double w1, const double wmax, const int N) -> double {
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     if (this->type == 'f' and this->diag_class == 1) {
         return wscale_from_wmax_v3(Wscale, w1, wmax, N);
@@ -247,12 +287,9 @@ auto FrequencyGrid::wscale_from_wmax(double & Wscale, double w1, double wmax, in
 #endif
 }
 
-auto FrequencyGrid::W_val(int index) const -> double {
-    if (index >= 0) return Ws[index];
-    else if (index == -1) return 1.;
-    else return -1.;
-}
-
+/**
+ * Initializes frequency grids for a vertex
+ */
 class VertexFrequencyGrid {
 public:
     FrequencyGrid b_K1;
@@ -285,12 +322,7 @@ public:
 
 
 
-// Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
-// TODO: remove!
-FrequencyGrid frequencyGrid_bos ('b', 1, Lambda_ini);
-FrequencyGrid frequencyGrid_fer ('f', 1, Lambda_ini);
-rvec bfreqs = frequencyGrid_bos.w;
-rvec ffreqs = frequencyGrid_fer.w;
+
 
 
 
@@ -356,9 +388,9 @@ void setUpBosGrid(rvec& freqs, int nfreqs) {
     double W_upper_b = grid_transf_b(glb_w_upper);
 
     // self-energy and K1
-    double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
+    double dt = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
     for(int i=0; i<nfreqs; ++i) {
-        W = W_lower_b + i*dW;
+        W = W_lower_b + i*dt;
         freqs[i] = grid_transf_b_inv(W);
     }
 }
@@ -369,9 +401,9 @@ void setUpFerGrid(rvec& freqs, int nfreqs) {
     double W_upper_f = grid_transf_f(glb_v_upper);
 
     // self-energy and K1
-    double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
+    double dt = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
     for(int i=0; i<nfreqs; ++i) {
-        W = W_lower_f + i*dW;
+        W = W_lower_f + i*dt;
         freqs[i] =  grid_transf_f_inv(W);
     }
 }

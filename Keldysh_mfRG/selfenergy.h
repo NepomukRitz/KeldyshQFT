@@ -154,8 +154,8 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
     else {
         if (std::abs(v) != this->frequencies.w_upper) { // linear interpolation
             int iv = this->frequencies.fconv(v); // index corresponding to v
-            double x1 = this->frequencies.w[iv]; // lower adjacent frequency value
-            double x2 = this->frequencies.w[iv + 1]; // upper adjacent frequency value
+            double x1 = this->frequencies.ws[iv]; // lower adjacent frequency value
+            double x2 = this->frequencies.ws[iv + 1]; // upper adjacent frequency value
             double xd = (v - x1) / (x2 - x1); // distance between adjacent frequnecy values
 
             Q f1 = val(iK, iv, i_in); // lower adjacent value
@@ -212,7 +212,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 // interpolate old values to new vector
-                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.w[iv], i_in);
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.ws[iv], i_in);
             }
         }
 #ifdef KELDYSH_FORMALISM

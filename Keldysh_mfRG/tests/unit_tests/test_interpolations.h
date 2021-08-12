@@ -23,7 +23,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
     for (int iw = 0; iw<nBOS; iw++){
-        indices.w = avertex.frequencies.b_K1.w[iw];
+        indices.w = avertex.frequencies.b_K1.ws[iw];
 
         cumul_interpolation_error += std::abs(Interpolate<k1, state_datatype>()(indices, avertex) - avertex.K1_val(iK, iw, i_in));
 
@@ -61,8 +61,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     for (int iw = 0; iw<nBOS2; iw++){
         for (int iv = 0; iv<nFER2; iv++) {
-            indices.w  = avertex.frequencies.b_K2.w[iw];
-            indices.v1 = avertex.frequencies.f_K2.w[iv];
+            indices.w  = avertex.frequencies.b_K2.ws[iw];
+            indices.v1 = avertex.frequencies.f_K2.ws[iv];
 
             cumul_interpolation_error += std::abs(Interpolate<k2, state_datatype>()(indices, avertex) -  avertex.K2_val(iK, iw, iv, i_in));
 
@@ -103,9 +103,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     for (int iw = 0; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
-                indices.w = avertex.frequencies.b_K3.w[iw];
-                indices.v1 = avertex.frequencies.f_K3.w[iv];
-                indices.v2 = avertex.frequencies.f_K3.w[ivp];
+                indices.w = avertex.frequencies.b_K3.ws[iw];
+                indices.v1 = avertex.frequencies.f_K3.ws[iv];
+                indices.v2 = avertex.frequencies.f_K3.ws[ivp];
 
                 cumul_interpolation_error += std::abs(
                         Interpolate<k3, state_datatype>()(indices, avertex) - avertex.K3_val(iK, iw, iv, ivp, i_in));

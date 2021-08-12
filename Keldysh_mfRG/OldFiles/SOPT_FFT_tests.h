@@ -8,6 +8,13 @@
 #include "fourier_trafo.h"
 #include "../ODE_solvers.h"
 
+
+// Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
+FrequencyGrid frequencyGrid_bos ('b', 1, Lambda_ini);
+FrequencyGrid frequencyGrid_fer ('f', 1, Lambda_ini);
+rvec bfreqs = frequencyGrid_bos.w;
+rvec ffreqs = frequencyGrid_fer.w;
+
 /// ------ TEST FUNCTIONS ------ ///
 // TODO: Here are also functions that should belong to testFunctions.h. On the other hand side,
 //  in testFunctions.h are functions that would rather belong here.

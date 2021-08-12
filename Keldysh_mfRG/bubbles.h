@@ -268,19 +268,19 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK
         int index_f1 = fermionic_grid.fconv(v1);
         int index_f2 = fermionic_grid.fconv(v2);
 
-        double x1 = fermionic_grid.w[index_f1];
-        double x2 = fermionic_grid.w[index_f1 + 1];
+        double x1 = fermionic_grid.ws[index_f1];
+        double x2 = fermionic_grid.ws[index_f1 + 1];
         if (x1 >= x2) { // If not x1<x2, we run out of the box --> shift the index downwards.
             index_f1 -= 1;
-            x1 = fermionic_grid.w[index_f1];
-            x2 = fermionic_grid.w[index_f1 + 1];
+            x1 = fermionic_grid.ws[index_f1];
+            x2 = fermionic_grid.ws[index_f1 + 1];
         }
-        double y1 = fermionic_grid.w[index_f2];
-        double y2 = fermionic_grid.w[index_f2 + 1];
+        double y1 = fermionic_grid.ws[index_f2];
+        double y2 = fermionic_grid.ws[index_f2 + 1];
         if (y1 >= y2) { // If not y1<y2, we run out of the box --> shift the index downwards.
             index_f2 -= 1;
-            y1 = fermionic_grid.w[index_f2];
-            y2 = fermionic_grid.w[index_f2 + 1];
+            y1 = fermionic_grid.ws[index_f2];
+            y2 = fermionic_grid.ws[index_f2 + 1];
         }
 
         double xd = (v1 - x1) / (x2 - x1);
@@ -339,8 +339,8 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
 }
 
 template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
-    double v1 = fermionic_grid.w[iv1];
-    double v2 = fermionic_grid.w[iv2];
+    double v1 = fermionic_grid.ws[iv1];
+    double v2 = fermionic_grid.ws[iv2];
     for (int i_in = 0; i_in < n_in; ++i_in) {
         FermionicBubble[composite_index(get_iK_bubble(iK), iv1, iv2, i_in)] =
                 Helper_Bubble.value(iK, v1, v2, i_in);
@@ -399,8 +399,8 @@ int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) const {
 template<typename Q>
 void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
                                                             Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
-    double v1 = fermionic_grid.w[iv1];
-    double v2 = fermionic_grid.w[iv2];
+    double v1 = fermionic_grid.ws[iv1];
+    double v2 = fermionic_grid.ws[iv2];
 
     vec<comp> values_of_bubble (glb_N_transfer);
     compute_internal_bubble(iK, v1, v2, Swave_Bubble_Calculator, values_of_bubble);
@@ -829,7 +829,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
             default: ;
         }
         double vpp = wl + i * (wu-wl)/(npoints-1);
-        if (diag_class == 1) {vpp = vertex1[0].avertex().frequencies.b_K1.w[i];}
+        if (diag_class == 1) {vpp = vertex1[0].avertex().frequencies.b_K1.ws[i];}
         freqs[i] = vpp;
 
 
@@ -1448,7 +1448,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     i0 = iK1/(nw1_w*n_in);                  // exterior Keldysh indices of the bubble
     iw = iK1/(n_in) - i0*nw1_w;             // frequency index
     i_in = iK1 - i0*nw1_w*n_in - iw*n_in;   // internal index
-    w = freqs_K1.w[iw];                     // frequency acc. to frequency index
+    w = freqs_K1.ws[iw];                     // frequency acc. to frequency index
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1463,8 +1463,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
     iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
     i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
-    w = bfreqs_K2.w[iw];
-    v = ffreqs_K2.w[iv];
+    w = bfreqs_K2.ws[iw];
+    v = ffreqs_K2.ws[iv];
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1480,9 +1480,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
     ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
     i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
-    w = bfreqs_K3.w[iw];
-    v = ffreqs_K3.w[iv];
-    vp = ffreqs_K3.w[ivp];
+    w = bfreqs_K3.ws[iw];
+    v = ffreqs_K3.ws[iv];
+    vp = ffreqs_K3.ws[ivp];
 }
 
 

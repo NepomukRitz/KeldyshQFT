@@ -45,12 +45,12 @@ public:
     auto operator() (double vp) const -> double {
         if (std::abs(vp) < v.w_upper) {
             int index = v.fconv(vp);
-            double x1 = v.w[index];
-            double x2 = v.w[index + 1];
+            double x1 = v.ws[index];
+            double x2 = v.ws[index + 1];
             if (!(x1 < x2)) {
                 index -= 1;
-                x1 = v.w[index];
-                x2 = v.w[index + 1];
+                x1 = v.ws[index];
+                x2 = v.ws[index + 1];
             }
             double xd = (vp - x1) / (x2 - x1);
 
@@ -82,7 +82,7 @@ void compute_Phi_tilde(const std::string filename) {
 
         for (int i_in=0; i_in<n_in; ++i_in) {
             for (int iv=0; iv<nFER; ++iv) {
-                double v = state.selfenergy.frequencies.w[iv];
+                double v = state.selfenergy.frequencies.ws[iv];
                 vs[iLambda * nFER + iv] = v;
                 Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);
                 Phi[iLambda * nFER * n_in + iv * n_in + i_in]
@@ -170,14 +170,14 @@ void check_Kramers_Kronig(const std::string filename) {
     for (int i=0; i<iLambdas.size(); ++i) {
         State<comp> state = read_hdf(filename, iLambdas[i], nLambda);  // read data from file
         // check Kramers-Kronig for retarded self-energy
-        rvec vSigma = state.selfenergy.frequencies.w;  // frequency grid points
+        rvec vSigma = state.selfenergy.frequencies.ws;  // frequency grid points
         // get retarded component (first half of stored data points)
         rvec SigmaR_re = state.selfenergy.Sigma(0, nSE-1).real();  // real part from flow
         rvec SigmaR_im = state.selfenergy.Sigma(0, nSE-1).imag();  // imaginary part from flow
         rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im);  // compute real part from imaginary part via KK
 
         // check Kramers-Kronig for retarded component of K1r
-        rvec wK1 = state.vertex[0].avertex().frequencies.b_K1.w;  // frequency grid points
+        rvec wK1 = state.vertex[0].avertex().frequencies.b_K1.ws;  // frequency grid points
         // get retarded component of K1a (first half of stored data points)
         rvec K1aR_re = state.vertex[0].avertex().K1(0, nw1-1).real();  // real part from flow
         rvec K1aR_im = state.vertex[0].avertex().K1(0, nw1-1).imag();  // imaginary part from flow

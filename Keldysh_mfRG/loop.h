@@ -259,7 +259,7 @@ class LoopCalculator{
     const int iv;
     const int i_in;
 
-    const double v = self.frequencies.w[iv];
+    const double v = self.frequencies.ws[iv];
 
     /// One integrates the integrands from v_lower-|v| to v_upper+|v|
     /// The limits of the integral must depend on v

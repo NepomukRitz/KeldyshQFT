@@ -192,10 +192,10 @@ template <typename Q>
         freq_params[7] = ffreqs.W_scale;
 
         for (int i=0; i<nBOS; ++i) {
-            bfreqs_buffer[i] = bfreqs.w[i];
+            bfreqs_buffer[i] = bfreqs.ws[i];
         }
         for (int i=0; i<nFER; ++i) {
-            ffreqs_buffer[i] = ffreqs.w[i];
+            ffreqs_buffer[i] = ffreqs.ws[i];
         }
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
@@ -236,10 +236,10 @@ template <typename Q>
         freq_params[15] = ffreqs2.W_scale;
 
         for (int i=0; i<nBOS2; ++i) {
-            bfreqs2_buffer[i] = bfreqs2.w[i];
+            bfreqs2_buffer[i] = bfreqs2.ws[i];
         }
         for (int i=0; i<nFER2; ++i) {
-            ffreqs2_buffer[i] = ffreqs2.w[i];
+            ffreqs2_buffer[i] = ffreqs2.ws[i];
         }
         for(int i=0; i<K2_dim; ++i) {                                // write K2 into buffer
             K2_class_a[i].re = std::real(state_in.vertex[0].avertex().K2_acc(i));
@@ -265,10 +265,10 @@ template <typename Q>
         freq_params[23] = ffreqs3.W_scale;
 
         for (int i=0; i<nBOS3; ++i) {
-            bfreqs3_buffer[i] = bfreqs3.w[i];
+            bfreqs3_buffer[i] = bfreqs3.ws[i];
         }
         for (int i=0; i<nFER3; ++i) {
-            ffreqs3_buffer[i] = ffreqs3.w[i];
+            ffreqs3_buffer[i] = ffreqs3.ws[i];
         }
         for(int i=0; i<K3_dim; ++i) {                                // write K3 into buffer
             K3_class_a[i].re = std::real(state_in.vertex[0].avertex().K3_acc(i));

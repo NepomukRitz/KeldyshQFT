@@ -22,7 +22,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
     for (int iw = 0; iw<(nBOS-1)/2; iw++){
-        indices.w = avertex.frequencies.b_K1.w[iw];
+        indices.w = avertex.frequencies.b_K1.ws[iw];
         if (avertex.K1_val(iK, iw, i_in) != avertex.K1_val(iK, nBOS -1 - iw, i_in)) {
             asymmetry += 1;
         }
@@ -61,10 +61,10 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
     value = 0.;
     ;
     for (int iw = 0; iw<=(nBOS2-1)/2; iw++){
-        double correction = floor2bfreq(avertex.frequencies.b_K2.w[iw]/2) - ceil2bfreq(avertex.frequencies.b_K2.w[iw]/2);
+        double correction = floor2bfreq(avertex.frequencies.b_K2.ws[iw] / 2) - ceil2bfreq(avertex.frequencies.b_K2.ws[iw] / 2);
         for (int iv = 0; iv<(nFER2)/2; iv++) {
-            indices.w = avertex.frequencies.b_K2.w[iw];
-            indices.v1 = avertex.frequencies.f_K2.w[iv]
+            indices.w = avertex.frequencies.b_K2.ws[iw];
+            indices.v1 = avertex.frequencies.f_K2.ws[iv]
                          #ifndef ZERO_TEMP   // Matsubara T>0
                          + correction
                          #endif
@@ -116,16 +116,16 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
     double asymmetry = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     for (int iw = 0; iw<=(nBOS3-1)/2; iw++){
-        double correction = floor2bfreq(avertex.frequencies.b_K3.w[iw]/2) - ceil2bfreq(avertex.frequencies.b_K3.w[iw]/2);
+        double correction = floor2bfreq(avertex.frequencies.b_K3.ws[iw] / 2) - ceil2bfreq(avertex.frequencies.b_K3.ws[iw] / 2);
         for (int iv = 0; iv<(nFER3)/2; iv++) {
             for (int ivp = iv; ivp<(nFER3-1-iv); ivp++) {
-                indices.w = avertex.frequencies.b_K3.w[iw];
-                indices.v1 = avertex.frequencies.f_K3.w[iv]
+                indices.w = avertex.frequencies.b_K3.ws[iw];
+                indices.v1 = avertex.frequencies.f_K3.ws[iv]
                              #ifndef ZERO_TEMP   // Matsubara T>0
                              + correction
                              #endif
                                      ;
-                indices.v2 = avertex.frequencies.f_K3.w[ivp]
+                indices.v2 = avertex.frequencies.f_K3.ws[ivp]
                              #ifndef ZERO_TEMP   // Matsubara T>0
                              + correction
                              #endif
