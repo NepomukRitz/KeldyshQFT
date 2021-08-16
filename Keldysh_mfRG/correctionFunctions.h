@@ -24,7 +24,6 @@
 template <typename Q>
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                                  Q Sigma_H, double Delta, double eta_1, double eta_2, bool diff) -> Q {
-
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
 #ifdef KELDYSH_FORMALISM
@@ -78,7 +77,34 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
         );
 #endif
     }
-#endif
+    #endif
+#elif REG==3
+    Q Lambda = Delta * 2;
+    if (diff) {
+        return 0.;
+    }
+    else {
+        if (w==0.) {
+            return (pow(Lambda, 6)*M_PI + pow(Lambda, 5)*(-1+M_PI)*(vmax-vmin) + Lambda*(1+M_PI)*vmax*vmax*(vmax-vmin)*vmin*vmin
+            - M_PI*vmax*vmax*vmax * vmin*vmin*vmin + Lambda*Lambda*Lambda*M_PI*(vmax-vmin)*(vmax*vmax+vmin*vmin)
+            +Lambda*Lambda*vmax*vmin*((1-M_PI)*vmax*vmax + (2+M_PI)*vmax*vmin + (1-M_PI)*vmin*vmin)
+            +pow(Lambda, 4)*((1+M_PI)*vmax*vmax + (2-M_PI)*vmax*vmin + (1+M_PI)*vmin*vmin)
+            -(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda+vmin*vmin)*(atan(vmax/Lambda) - atan(vmin/Lambda)
+            - 2*log((1+vmax)*(1-vmin)) + log((Lambda*Lambda + vmax*vmax)*(Lambda*Lambda + vmin*vmin)))
+            ) / (4*Lambda*(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda + vmin*vmin));
+        }
+        else {
+            return (2*((2*Lambda*Lambda+2*Lambda*w+w*w)*(4*pow(Lambda,4)-2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax+w)) + atan(2*Lambda/(-2*vmin+w)))
+                    -  (2*Lambda*Lambda-2*Lambda*w+w*w)*(4*pow(Lambda,4)+2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax-w)) - atan(2*Lambda/( 2*vmin+w))))
+                    +4*(8*pow(Lambda,6) - 2*pow(Lambda,4)*w*w + 3*Lambda*Lambda*pow(w,4) + pow(w,6)) * atan(2*w*(2*Lambda+vmax-vmin)/(4*(Lambda+vmax)*(Lambda-vmin)+w*w))
+                    +w*(4*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log((4*(Lambda+vmax)*(Lambda+vmax)-w*w)*(4*(Lambda-vmin)*(Lambda-vmin)-w*w)))
+                    +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log(4*Lambda*Lambda+(-2*vmax+w)*(-2*vmax+w))
+                    +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log((4*Lambda*Lambda+( 2*vmax+w)*( 2*vmax+w))*(4*Lambda*Lambda+(-2*vmin+w)*(-2*vmin+w)))
+                    -2*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log(((4*Lambda*Lambda)+(-2*vmax+w)*(-2*vmax+w))*((4*Lambda*Lambda)+( 2*vmax+w)*( 2*vmax+w))*((4*Lambda*Lambda)+(-2*vmin+w)*(-2*vmin+w)))
+                    -(8*pow(Lambda,5)-2*pow(Lambda,4)*w+2*Lambda*Lambda*Lambda*w*w + Lambda*Lambda*w*w*w + pow(w,5))*log((4*Lambda*Lambda)+( 2*vmin+w)*( 2*vmin+w)))
+                    /(4*w*(16*pow(Lambda,6) + 4*pow(Lambda,4)*w*w + 4*Lambda*Lambda*pow(w,4) + pow(w,6)));
+        }
+    }
 #else
     return 0.;
 #endif
@@ -153,6 +179,34 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
 #endif
     }
 #endif
+#elif REG==3
+
+    Q Lambda = Delta * 2;
+    if (diff) {
+        return 0.;
+    }
+    else {
+        if (w==0.) {
+            return -(pow(Lambda, 6)*M_PI + pow(Lambda, 5)*(-1+M_PI)*(vmax-vmin) + Lambda*(1+M_PI)*vmax*vmax*(vmax-vmin)*vmin*vmin
+                    - M_PI*vmax*vmax*vmax * vmin*vmin*vmin + Lambda*Lambda*Lambda*M_PI*(vmax-vmin)*(vmax*vmax+vmin*vmin)
+                    +Lambda*Lambda*vmax*vmin*((1-M_PI)*vmax*vmax + (2+M_PI)*vmax*vmin + (1-M_PI)*vmin*vmin)
+                    +pow(Lambda, 4)*((1+M_PI)*vmax*vmax + (2-M_PI)*vmax*vmin + (1+M_PI)*vmin*vmin)
+                    -(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda+vmin*vmin)*(atan(vmax/Lambda) - atan(vmin/Lambda)
+                                                                                                        - 2*log((1+vmax)*(1-vmin)) + log((Lambda*Lambda + vmax*vmax)*(Lambda*Lambda + vmin*vmin)))
+                   ) / (4*Lambda*(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda + vmin*vmin));
+        }
+        else {
+            return -(2*((2*Lambda*Lambda+2*Lambda*w+w*w)*(4*pow(Lambda,4)-2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax+w)) + atan(2*Lambda/(-2*vmin+w)))
+                       -  (2*Lambda*Lambda-2*Lambda*w+w*w)*(4*pow(Lambda,4)+2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax-w)) - atan(2*Lambda/( 2*vmin+w))))
+                    +4*(8*pow(Lambda,6) - 2*pow(Lambda,4)*w*w + 3*Lambda*Lambda*pow(w,4) + pow(w,6)) * atan(2*w*(2*Lambda+vmax-vmin)/(4*(Lambda+vmax)*(Lambda-vmin)+w*w))
+                    +w*(4*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log((4*(Lambda+vmax)*(Lambda+vmax)-w*w)*(4*(Lambda-vmin)*(Lambda-vmin)-w*w)))
+                    +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log(4*Lambda*Lambda+(-2*vmax+w)*(-2*vmax+w))
+                    +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log((4*Lambda*Lambda+( 2*vmax+w)*( 2*vmax+w))*(4*Lambda*Lambda+(-2*vmin+w)*(-2*vmin+w)))
+                    -2*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log(((4*Lambda*Lambda)+(-2*vmax+w)*(-2*vmax+w))*((4*Lambda*Lambda)+( 2*vmax+w)*( 2*vmax+w))*((4*Lambda*Lambda)+(-2*vmin+w)*(-2*vmin+w)))
+                    -(8*pow(Lambda,5)-2*pow(Lambda,4)*w+2*Lambda*Lambda*Lambda*w*w + Lambda*Lambda*w*w*w + pow(w,5))*log((4*Lambda*Lambda)+( 2*vmin+w)*( 2*vmin+w)))
+                   /(4*w*(16*pow(Lambda,6) + 4*pow(Lambda,4)*w*w + 4*Lambda*Lambda*pow(w,4) + pow(w,6)));
+        }
+    }
 #else
     return 0.;
 #endif
@@ -207,7 +261,11 @@ auto asymp_corrections_bubble(K_class k,
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
     Q Sigma_H = G.selfenergy.asymp_val_R;             // Hartree self-energy
+#if REG==2
     double Delta = (glb_Gamma + G.Lambda) / 2.;       // Hybridization (~ flow parameter) at which the bubble is evaluated
+#else
+    double Delta = glb_Gamma / 2.;                    // Hybridization (~ flow parameter) at which the bubble is evaluated
+#endif
     Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
 
 #ifdef KELDYSH_FORMALISM
