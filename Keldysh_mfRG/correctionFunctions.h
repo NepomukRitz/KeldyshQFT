@@ -23,7 +23,7 @@
  */
 template <typename Q>
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
-                                 Q Sigma_H, double Delta, double eta_1, double eta_2, bool diff) -> Q {
+                                 Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
 #ifdef KELDYSH_FORMALISM
@@ -79,19 +79,35 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
     }
     #endif
 #elif REG==3
-    Q Lambda = Delta * 2;
     if (diff) {
         return 0.;
     }
     else {
         if (w==0.) {
-            return (pow(Lambda, 6)*M_PI + pow(Lambda, 5)*(-1+M_PI)*(vmax-vmin) + Lambda*(1+M_PI)*vmax*vmax*(vmax-vmin)*vmin*vmin
-            - M_PI*vmax*vmax*vmax * vmin*vmin*vmin + Lambda*Lambda*Lambda*M_PI*(vmax-vmin)*(vmax*vmax+vmin*vmin)
-            +Lambda*Lambda*vmax*vmin*((1-M_PI)*vmax*vmax + (2+M_PI)*vmax*vmin + (1-M_PI)*vmin*vmin)
-            +pow(Lambda, 4)*((1+M_PI)*vmax*vmax + (2-M_PI)*vmax*vmin + (1+M_PI)*vmin*vmin)
-            -(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda+vmin*vmin)*(atan(vmax/Lambda) - atan(vmin/Lambda)
-            - 2*log((1+vmax)*(1-vmin)) + log((Lambda*Lambda + vmax*vmax)*(Lambda*Lambda + vmin*vmin)))
-            ) / (4*Lambda*(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda + vmin*vmin));
+            return -(-4*pow(Delta,7) * (Lambda*Lambda + vmax*vmax) * (Lambda*Lambda + vmin*vmin) +
+                   pow(Lambda,5)*vmax*vmin*( pow(Lambda,4) *M_PI + pow(Lambda,3)*(vmax - vmin) + M_PI*vmax*vmax*vmin*vmin
+                   + Lambda*vmax*vmin*(-vmax + vmin) + Lambda*Lambda*M_PI*(vmax*vmax + vmin*vmin))
+                   - pow(Delta,4)*Lambda*(2*Lambda*Lambda + vmax*vmin)*(3*pow(Lambda,4)*M_PI + Lambda*vmax*(vmax - vmin)*vmin
+                   + 3*M_PI*vmax*vmax*vmin*vmin + pow(Lambda,3)*(-vmax + vmin) + 3*Lambda*Lambda*M_PI*(vmax*vmax + vmin*vmin))
+                   +Delta*pow(Lambda,5)*(pow(Lambda,4)*M_PI*(-vmax + vmin) + M_PI*vmax*vmax*vmin*vmin*(-vmax + vmin) - pow(Lambda,3)*pow(vmax + vmin, 2)
+                   - Lambda*vmax*vmin*pow(vmax + vmin,2)-Lambda*Lambda * M_PI*(vmax - vmin)*(vmax*vmax + vmin*vmin))
+                   +pow(Delta,5)*Lambda*(3*pow(Lambda,4)*M_PI*(vmax - vmin)
+                   +3*M_PI*vmax*vmax*(vmax - vmin)*vmin*vmin - pow(Lambda,3)*pow(vmax + vmin,2)
+                   -Lambda*vmax*vmin*pow(vmax + vmin,2) + 3*Lambda*Lambda* M_PI*(vmax - vmin)*(vmax*vmax + vmin*vmin))
+                   +2*pow(Delta,3)*pow(Lambda,3)*(2*pow(Lambda,5) + pow(Lambda,3)*pow(vmax - vmin,2) + 3*pow(Lambda,4)*M_PI*(-vmax + vmin)
+                   +3*M_PI*vmax*vmax*vmin*vmin*(-vmax + vmin) - 3*Lambda*Lambda*M_PI*(vmax - vmin)*(vmax*vmax + vmin*vmin)
+                   -Lambda*vmax*vmin*(vmax*vmax + vmin*vmin))
+                   + pow(Delta,6)*(3*pow(Lambda,5)*M_PI + 3*Lambda*M_PI*vmax*vmax*vmin*vmin+pow(Lambda,4)*(-vmax + vmin) + 2*vmax*vmax* vmin*vmin * (-vmax + vmin)
+                   + 3*pow(Lambda,3)*M_PI*(vmax*vmax + vmin*vmin) -Lambda*Lambda*(vmax - vmin)*(2*vmax*vmax + vmax*vmin + 2*vmin*vmin))
+                   +Delta*Delta* pow(Lambda,3)* (-pow(Lambda,6)*M_PI + 3*pow(Lambda,5)*(vmax - vmin) +
+                   6*M_PI*pow(vmax,3)* pow(vmin,3) - pow(Lambda,4) * M_PI * (vmax*vmax - 6*vmax*vmin + vmin*vmin) +
+                   pow(Lambda,3)*(vmax - vmin)*(2*vmax*vmax + vmax*vmin + 2*vmin*vmin) +
+                   Lambda*Lambda * M_PI * vmax*vmin*(6*vmax*vmax - vmax*vmin + 6*vmin*vmin)) +
+                    Lambda*(Delta + vmax)*(Lambda*Lambda + vmax*vmax)*(Delta -vmin)*(Lambda*Lambda + vmin*vmin)
+                    *((-3*pow(Delta,4) + 6*Delta*Delta* Lambda*Lambda + pow(Lambda,4))*atan(vmax/Lambda) + (3*pow(Delta,4) - 6*Delta*Delta* Lambda*Lambda -
+                     pow(Lambda,4))* atan(vmin/Lambda) + 4*pow(Delta,3)* Lambda* (-2*log((Delta + vmax)*(Delta - vmin)) + log((Lambda*Lambda + vmax*vmax)*(Lambda*Lambda + vmin*vmin))))
+                     )
+                    /(2*pow(Delta*Delta +  Lambda*Lambda, 3) * (Delta + vmax)*(Lambda*Lambda + vmax*vmax)*(Delta - vmin)*(Lambda*Lambda + vmin*vmin));
         }
         else {
             return (2*((2*Lambda*Lambda+2*Lambda*w+w*w)*(4*pow(Lambda,4)-2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax+w)) + atan(2*Lambda/(-2*vmin+w)))
@@ -102,7 +118,7 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                     +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log((4*Lambda*Lambda+( 2*vmax+w)*( 2*vmax+w))*(4*Lambda*Lambda+(-2*vmin+w)*(-2*vmin+w)))
                     -2*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log(((4*Lambda*Lambda)+(-2*vmax+w)*(-2*vmax+w))*((4*Lambda*Lambda)+( 2*vmax+w)*( 2*vmax+w))*((4*Lambda*Lambda)+(-2*vmin+w)*(-2*vmin+w)))
                     -(8*pow(Lambda,5)-2*pow(Lambda,4)*w+2*Lambda*Lambda*Lambda*w*w + Lambda*Lambda*w*w*w + pow(w,5))*log((4*Lambda*Lambda)+( 2*vmin+w)*( 2*vmin+w)))
-                    /(4*w*(16*pow(Lambda,6) + 4*pow(Lambda,4)*w*w + 4*Lambda*Lambda*pow(w,4) + pow(w,6)));
+                    /(2*M_PI*4*w*(16*pow(Lambda,6) + 4*pow(Lambda,4)*w*w + 4*Lambda*Lambda*pow(w,4) + pow(w,6)));
         }
     }
 #else
@@ -124,7 +140,7 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
  */
 template <typename Q>
 auto correctionFunctionBubbleP (double w, double vmin, double vmax,
-                                Q Sigma_H, double Delta, double eta_1, double eta_2, bool diff) -> Q {
+                                Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
 #ifdef KELDYSH_FORMALISM
@@ -180,8 +196,6 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
     }
 #endif
 #elif REG==3
-
-    Q Lambda = Delta * 2;
     if (diff) {
         return 0.;
     }
@@ -193,7 +207,7 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                     +pow(Lambda, 4)*((1+M_PI)*vmax*vmax + (2-M_PI)*vmax*vmin + (1+M_PI)*vmin*vmin)
                     -(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda+vmin*vmin)*(atan(vmax/Lambda) - atan(vmin/Lambda)
                                                                                                         - 2*log((1+vmax)*(1-vmin)) + log((Lambda*Lambda + vmax*vmax)*(Lambda*Lambda + vmin*vmin)))
-                   ) / (4*Lambda*(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda + vmin*vmin));
+                   ) / (2*M_PI*4*Lambda*(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda + vmin*vmin));
         }
         else {
             return -(2*((2*Lambda*Lambda+2*Lambda*w+w*w)*(4*pow(Lambda,4)-2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax+w)) + atan(2*Lambda/(-2*vmin+w)))
@@ -204,7 +218,7 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                     +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log((4*Lambda*Lambda+( 2*vmax+w)*( 2*vmax+w))*(4*Lambda*Lambda+(-2*vmin+w)*(-2*vmin+w)))
                     -2*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log(((4*Lambda*Lambda)+(-2*vmax+w)*(-2*vmax+w))*((4*Lambda*Lambda)+( 2*vmax+w)*( 2*vmax+w))*((4*Lambda*Lambda)+(-2*vmin+w)*(-2*vmin+w)))
                     -(8*pow(Lambda,5)-2*pow(Lambda,4)*w+2*Lambda*Lambda*Lambda*w*w + Lambda*Lambda*w*w*w + pow(w,5))*log((4*Lambda*Lambda)+( 2*vmin+w)*( 2*vmin+w)))
-                   /(4*w*(16*pow(Lambda,6) + 4*pow(Lambda,4)*w*w + 4*Lambda*Lambda*pow(w,4) + pow(w,6)));
+                   /(2*M_PI*4*w*(16*pow(Lambda,6) + 4*pow(Lambda,4)*w*w + 4*Lambda*Lambda*pow(w,4) + pow(w,6)));
         }
     }
 #else
@@ -215,11 +229,11 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
 /** Wrapper for the two functions above, distinguishing a/t channels from p channel. */
 template <typename Q>
 auto correctionFunctionBubble (double w, double vmin, double vmax,
-                               Q Sigma_H, double Delta, double eta_1, double eta_2, char channel, bool diff) -> Q {
+                               Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, char channel, bool diff) -> Q {
     if (channel == 'p')
-        return correctionFunctionBubbleP(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, diff);
+        return correctionFunctionBubbleP (w, vmin, vmax, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
     else
-        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, diff);
+        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
 }
 
 /**
@@ -359,7 +373,7 @@ auto asymp_corrections_bubble(K_class k,
     }
 
     // compute the value of the (analytically integrated) bubble
-    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, eta_1, eta_2, channel, diff);
+    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
 
     // In the a and p channel, return result. In the t channel, add the other spin component.
     if (channel != 't')
