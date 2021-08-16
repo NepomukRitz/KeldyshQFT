@@ -84,7 +84,7 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
     }
     else {
         if (w==0.) {
-            return -(-4*pow(Delta,7) * (Lambda*Lambda + vmax*vmax) * (Lambda*Lambda + vmin*vmin) +
+            return (-4*pow(Delta,7) * (Lambda*Lambda + vmax*vmax) * (Lambda*Lambda + vmin*vmin) +
                    pow(Lambda,5)*vmax*vmin*( pow(Lambda,4) *M_PI + pow(Lambda,3)*(vmax - vmin) + M_PI*vmax*vmax*vmin*vmin
                    + Lambda*vmax*vmin*(-vmax + vmin) + Lambda*Lambda*M_PI*(vmax*vmax + vmin*vmin))
                    - pow(Delta,4)*Lambda*(2*Lambda*Lambda + vmax*vmin)*(3*pow(Lambda,4)*M_PI + Lambda*vmax*(vmax - vmin)*vmin
@@ -97,7 +97,7 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                    +2*pow(Delta,3)*pow(Lambda,3)*(2*pow(Lambda,5) + pow(Lambda,3)*pow(vmax - vmin,2) + 3*pow(Lambda,4)*M_PI*(-vmax + vmin)
                    +3*M_PI*vmax*vmax*vmin*vmin*(-vmax + vmin) - 3*Lambda*Lambda*M_PI*(vmax - vmin)*(vmax*vmax + vmin*vmin)
                    -Lambda*vmax*vmin*(vmax*vmax + vmin*vmin))
-                   + pow(Delta,6)*(3*pow(Lambda,5)*M_PI + 3*Lambda*M_PI*vmax*vmax*vmin*vmin+pow(Lambda,4)*(-vmax + vmin) + 2*vmax*vmax* vmin*vmin * (-vmax + vmin)
+                   + pow(Delta,6)*(3*pow(Lambda,5)*M_PI + 3*Lambda*M_PI*vmax*vmax*vmin*vmin +pow(Lambda,4)*(-vmax + vmin) + 2*vmax*vmax* vmin*vmin * (-vmax + vmin)
                    + 3*pow(Lambda,3)*M_PI*(vmax*vmax + vmin*vmin) -Lambda*Lambda*(vmax - vmin)*(2*vmax*vmax + vmax*vmin + 2*vmin*vmin))
                    +Delta*Delta* pow(Lambda,3)* (-pow(Lambda,6)*M_PI + 3*pow(Lambda,5)*(vmax - vmin) +
                    6*M_PI*pow(vmax,3)* pow(vmin,3) - pow(Lambda,4) * M_PI * (vmax*vmax - 6*vmax*vmin + vmin*vmin) +
@@ -110,15 +110,66 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                     /(2*pow(Delta*Delta +  Lambda*Lambda, 3) * (Delta + vmax)*(Lambda*Lambda + vmax*vmax)*(Delta - vmin)*(Lambda*Lambda + vmin*vmin));
         }
         else {
-            return (2*((2*Lambda*Lambda+2*Lambda*w+w*w)*(4*pow(Lambda,4)-2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax+w)) + atan(2*Lambda/(-2*vmin+w)))
-                    -  (2*Lambda*Lambda-2*Lambda*w+w*w)*(4*pow(Lambda,4)+2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax-w)) - atan(2*Lambda/( 2*vmin+w))))
-                    +4*(8*pow(Lambda,6) - 2*pow(Lambda,4)*w*w + 3*Lambda*Lambda*pow(w,4) + pow(w,6)) * atan(2*w*(2*Lambda+vmax-vmin)/(4*(Lambda+vmax)*(Lambda-vmin)+w*w))
-                    +w*(4*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log((4*(Lambda+vmax)*(Lambda+vmax)-w*w)*(4*(Lambda-vmin)*(Lambda-vmin)-w*w)))
-                    +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log(4*Lambda*Lambda+(-2*vmax+w)*(-2*vmax+w))
-                    +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log((4*Lambda*Lambda+( 2*vmax+w)*( 2*vmax+w))*(4*Lambda*Lambda+(-2*vmin+w)*(-2*vmin+w)))
-                    -2*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log(((4*Lambda*Lambda)+(-2*vmax+w)*(-2*vmax+w))*((4*Lambda*Lambda)+( 2*vmax+w)*( 2*vmax+w))*((4*Lambda*Lambda)+(-2*vmin+w)*(-2*vmin+w)))
-                    -(8*pow(Lambda,5)-2*pow(Lambda,4)*w+2*Lambda*Lambda*Lambda*w*w + Lambda*Lambda*w*w*w + pow(w,5))*log((4*Lambda*Lambda)+( 2*vmin+w)*( 2*vmin+w)))
-                    /(2*M_PI*4*w*(16*pow(Lambda,6) + 4*pow(Lambda,4)*w*w + 4*Lambda*Lambda*pow(w,4) + pow(w,6)));
+            return (-4*Delta*Delta*(4*Lambda*Lambda + w*w)*(pow(Delta,4) + Delta*Delta *(Lambda*Lambda - 2*w*w)
+                                                            + w*w*(Lambda*Lambda + w*w))*atanh((2*(2*Delta + vmax - vmin)*w)/(
+                    4*(Delta + vmax)*(Delta - vmin) + w*w)) +
+                    Lambda*(-2*(Lambda*Lambda + pow(Delta - w,2))*(-Lambda*Lambda*w*(Lambda*Lambda + w*w)
+                                                                   +Delta*Delta*(3*Lambda*Lambda*w + pow(w,3))
+                                                                   +Delta*(4*pow(Lambda,4) + 3*Lambda*Lambda* w*w + pow(w,4)))*atan((2*Lambda)/(-2*vmax + w))
+                            +2*(Lambda*Lambda + pow(Delta + w,2))*(-Lambda*Lambda* w*(Lambda*Lambda + w*w)
+                                                                   +Delta*Delta* (3*Lambda*Lambda* w + pow(w,3))
+                                                                   -Delta*(4*pow(Lambda,4) + 3*Lambda*Lambda* w*w + pow(w,4)))*atan((2*Lambda)/(2*vmax + w)) -
+                            8*pow(Delta,3)*pow(Lambda,4)*atan((2*Lambda)/(-2*vmin + w)) -
+                            8*Delta*pow(Lambda,6)* atan((2*Lambda)/(-2*vmin + w)) +
+                            6*pow(Delta,4)*Lambda*Lambda* w *atan((2*Lambda)/(-2*vmin + w)) -
+                            12*Delta*Delta* pow(Lambda,4)* w* atan((2*Lambda)/(-2*vmin + w)) -
+                            2*pow(Lambda,6)* w* atan((2*Lambda)/(-2*vmin + w)) +
+                            6*pow(Delta,3)* Lambda*Lambda *w*w *atan((2*Lambda)/(-2*vmin + w)) -
+                            18*Delta*pow(Lambda,4)* w*w *atan((2*Lambda)/(-2*vmin + w)) +
+                            2*pow(Delta,4) *pow(w,3) *atan((2*Lambda)/(-2*vmin + w)) -
+                            6*Delta*Delta *Lambda*Lambda *pow(w,3) *atan((2*Lambda)/(-2*vmin + w)) -
+                            4*pow(Lambda,4) *pow(w,3) *atan((2*Lambda)/(-2*vmin + w)) +
+                            2*pow(Delta,3)*pow(w,4) *atan((2*Lambda)/(-2*vmin + w)) -
+                            12*Delta*Lambda*Lambda *pow(w,4) *atan((2*Lambda)/(-2*vmin + w)) -
+                            2*Delta*Delta *pow(w,5) *atan((2*Lambda)/(-2*vmin + w)) -
+                            2*Lambda*Lambda *pow(w,5) *atan((2*Lambda)/(-2*vmin + w)) -
+                            2*Delta *pow(w,6) *atan((2*Lambda)/(-2*vmin + w)) -
+                            8*pow(Delta,3) *pow(Lambda,4) *atan((2*Lambda)/(2*vmin + w)) -
+                            8*Delta *pow(Lambda,6) *atan((2*Lambda)/(2*vmin + w)) -
+                            6*pow(Delta,4) *Lambda*Lambda *w *atan((2*Lambda)/(2*vmin + w)) +
+                            12*Delta*Delta *pow(Lambda,4) *w *atan((2*Lambda)/(2*vmin + w)) +
+                            2*pow(Lambda,6)* w *atan((2*Lambda)/(2*vmin + w)) +
+                            6*pow(Delta,3)* Lambda*Lambda* w*w* atan((2*Lambda)/(2*vmin + w)) -
+                            18*Delta *pow(Lambda,4) *w*w *atan((2*Lambda)/(2*vmin + w)) -
+                            2*pow(Delta,4) *pow(w,3) *atan((2*Lambda)/(2*vmin + w)) +
+                            6*Delta*Delta *Lambda*Lambda *pow(w,3) *atan((2*Lambda)/(2*vmin + w)) +
+                            4*pow(Lambda,4) *pow(w,3) *atan((2*Lambda)/(2*vmin + w)) +
+                            2*pow(Delta,3) *pow(w,4) *atan((2*Lambda)/(2*vmin + w)) -
+                            12*Delta *Lambda*Lambda *pow(w,4) *atan((2*Lambda)/(2*vmin + w)) +
+                            2*Delta*Delta *pow(w,5) *atan((2*Lambda)/(2*vmin + w)) +
+                            2*Lambda*Lambda *pow(w,5) *atan((2*Lambda)/(2*vmin + w)) -
+                            2*Delta *pow(w,6) *atan((2*Lambda)/(2*vmin + w)) -
+                            16*pow(Delta,3) *pow(Lambda,3) *w *log((2*(Delta + vmax) - w)*(2*Delta - 2*vmin - w)*(2*(Delta + vmax) + w)
+                                                                   *(2*Delta - 2*vmin + w)) - 4*pow(Delta,3) *Lambda *pow(w,3) *log((2*(Delta + vmax) - w)*(2*Delta - 2*vmin - w)
+                                                                                                                                    *(2*(Delta + vmax) + w)*(2*Delta - 2*vmin + w)) -
+                            2*pow(Delta,4)* pow(Lambda,3) *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                            2*pow(Lambda,7)* log(4*Lambda*Lambda + pow(-2*vmax + w,2)) -
+                            7*pow(Delta,2)* pow(Lambda,3) *w*w *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                            5*pow(Lambda,5)* w*w *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) -
+                            3*pow(Delta,2)* Lambda *pow(w,4) *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                            4*pow(Lambda,3)* pow(w,4) *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                            Lambda *pow(w,6) *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                            2 *pow(Delta,4) *pow(Lambda,3) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) -
+                            2*pow(Lambda,7) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                            7*pow(Delta,2) *pow(Lambda,3 ) *w*w *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) -
+                            5*pow(Lambda,5) *w*w *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                            3*pow(Delta,2) *Lambda *pow(w,4) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) -
+                            4*pow(Lambda,3) *pow(w,4) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) -
+                            Lambda *pow(w,6) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                            8*pow(Delta,3)*pow(Lambda,3)*w*log((4*Lambda*Lambda + pow(-2*vmax +w,2))*(4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                            2*pow(Delta,3)*Lambda *pow(w,3)*log((4*Lambda*Lambda + pow(-2*vmax +w,2))*(4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                            Lambda*(Lambda*Lambda + pow(Delta - w,2))*(-2*Delta*Delta*Lambda*Lambda + 2*pow(Lambda,4) + 4*Delta*Lambda*Lambda *w + 3*Lambda*Lambda *w*w + 2*Delta *pow(w,3) + pow(w,4))
+                            *log(4*Lambda*Lambda + pow(2*vmin + w,2))))/(2* (Delta*Delta + Lambda*Lambda)* (Lambda*Lambda + pow(Delta - w,2))*w*(4*Lambda*Lambda + w*w)*(Lambda*Lambda + pow(Delta + w,2)));
         }
     }
 #else
@@ -201,24 +252,92 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
     }
     else {
         if (w==0.) {
-            return -(pow(Lambda, 6)*M_PI + pow(Lambda, 5)*(-1+M_PI)*(vmax-vmin) + Lambda*(1+M_PI)*vmax*vmax*(vmax-vmin)*vmin*vmin
-                    - M_PI*vmax*vmax*vmax * vmin*vmin*vmin + Lambda*Lambda*Lambda*M_PI*(vmax-vmin)*(vmax*vmax+vmin*vmin)
-                    +Lambda*Lambda*vmax*vmin*((1-M_PI)*vmax*vmax + (2+M_PI)*vmax*vmin + (1-M_PI)*vmin*vmin)
-                    +pow(Lambda, 4)*((1+M_PI)*vmax*vmax + (2-M_PI)*vmax*vmin + (1+M_PI)*vmin*vmin)
-                    -(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda+vmin*vmin)*(atan(vmax/Lambda) - atan(vmin/Lambda)
-                                                                                                        - 2*log((1+vmax)*(1-vmin)) + log((Lambda*Lambda + vmax*vmax)*(Lambda*Lambda + vmin*vmin)))
-                   ) / (2*M_PI*4*Lambda*(Lambda+vmax)*(Lambda*Lambda + vmax*vmax)*(Lambda-vmin)*(Lambda*Lambda + vmin*vmin));
+            return -(-4*pow(Delta,7) * (Lambda*Lambda + vmax*vmax) * (Lambda*Lambda + vmin*vmin) +
+                     pow(Lambda,5)*vmax*vmin*( pow(Lambda,4) *M_PI + pow(Lambda,3)*(vmax - vmin) + M_PI*vmax*vmax*vmin*vmin
+                                               + Lambda*vmax*vmin*(-vmax + vmin) + Lambda*Lambda*M_PI*(vmax*vmax + vmin*vmin))
+                     - pow(Delta,4)*Lambda*(2*Lambda*Lambda + vmax*vmin)*(3*pow(Lambda,4)*M_PI + Lambda*vmax*(vmax - vmin)*vmin
+                                                                          + 3*M_PI*vmax*vmax*vmin*vmin + pow(Lambda,3)*(-vmax + vmin) + 3*Lambda*Lambda*M_PI*(vmax*vmax + vmin*vmin))
+                     +Delta*pow(Lambda,5)*(pow(Lambda,4)*M_PI*(-vmax + vmin) + M_PI*vmax*vmax*vmin*vmin*(-vmax + vmin) - pow(Lambda,3)*pow(vmax + vmin, 2)
+                                           - Lambda*vmax*vmin*pow(vmax + vmin,2)-Lambda*Lambda * M_PI*(vmax - vmin)*(vmax*vmax + vmin*vmin))
+                     +pow(Delta,5)*Lambda*(3*pow(Lambda,4)*M_PI*(vmax - vmin)
+                                           +3*M_PI*vmax*vmax*(vmax - vmin)*vmin*vmin - pow(Lambda,3)*pow(vmax + vmin,2)
+                                           -Lambda*vmax*vmin*pow(vmax + vmin,2) + 3*Lambda*Lambda* M_PI*(vmax - vmin)*(vmax*vmax + vmin*vmin))
+                     +2*pow(Delta,3)*pow(Lambda,3)*(2*pow(Lambda,5) + pow(Lambda,3)*pow(vmax - vmin,2) + 3*pow(Lambda,4)*M_PI*(-vmax + vmin)
+                                                    +3*M_PI*vmax*vmax*vmin*vmin*(-vmax + vmin) - 3*Lambda*Lambda*M_PI*(vmax - vmin)*(vmax*vmax + vmin*vmin)
+                                                    -Lambda*vmax*vmin*(vmax*vmax + vmin*vmin))
+                     + pow(Delta,6)*(3*pow(Lambda,5)*M_PI + 3*Lambda*M_PI*vmax*vmax*vmin*vmin+pow(Lambda,4)*(-vmax + vmin) + 2*vmax*vmax* vmin*vmin * (-vmax + vmin)
+                                     + 3*pow(Lambda,3)*M_PI*(vmax*vmax + vmin*vmin) -Lambda*Lambda*(vmax - vmin)*(2*vmax*vmax + vmax*vmin + 2*vmin*vmin))
+                     +Delta*Delta* pow(Lambda,3)* (-pow(Lambda,6)*M_PI + 3*pow(Lambda,5)*(vmax - vmin) +
+                                                   6*M_PI*pow(vmax,3)* pow(vmin,3) - pow(Lambda,4) * M_PI * (vmax*vmax - 6*vmax*vmin + vmin*vmin) +
+                                                   pow(Lambda,3)*(vmax - vmin)*(2*vmax*vmax + vmax*vmin + 2*vmin*vmin) +
+                                                   Lambda*Lambda * M_PI * vmax*vmin*(6*vmax*vmax - vmax*vmin + 6*vmin*vmin)) +
+                     Lambda*(Delta + vmax)*(Lambda*Lambda + vmax*vmax)*(Delta -vmin)*(Lambda*Lambda + vmin*vmin)
+                     *((-3*pow(Delta,4) + 6*Delta*Delta* Lambda*Lambda + pow(Lambda,4))*atan(vmax/Lambda) + (3*pow(Delta,4) - 6*Delta*Delta* Lambda*Lambda -
+                                                                                                             pow(Lambda,4))* atan(vmin/Lambda) + 4*pow(Delta,3)* Lambda* (-2*log((Delta + vmax)*(Delta - vmin)) + log((Lambda*Lambda + vmax*vmax)*(Lambda*Lambda + vmin*vmin))))
+            )
+                   /(2*pow(Delta*Delta +  Lambda*Lambda, 3) * (Delta + vmax)*(Lambda*Lambda + vmax*vmax)*(Delta - vmin)*(Lambda*Lambda + vmin*vmin));
         }
         else {
-            return -(2*((2*Lambda*Lambda+2*Lambda*w+w*w)*(4*pow(Lambda,4)-2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax+w)) + atan(2*Lambda/(-2*vmin+w)))
-                       -  (2*Lambda*Lambda-2*Lambda*w+w*w)*(4*pow(Lambda,4)+2*Lambda*Lambda*Lambda*w+3*Lambda*Lambda*w*w + pow(w,4))*(atan(2*Lambda/(2*vmax-w)) - atan(2*Lambda/( 2*vmin+w))))
-                    +4*(8*pow(Lambda,6) - 2*pow(Lambda,4)*w*w + 3*Lambda*Lambda*pow(w,4) + pow(w,6)) * atan(2*w*(2*Lambda+vmax-vmin)/(4*(Lambda+vmax)*(Lambda-vmin)+w*w))
-                    +w*(4*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log((4*(Lambda+vmax)*(Lambda+vmax)-w*w)*(4*(Lambda-vmin)*(Lambda-vmin)-w*w)))
-                    +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log(4*Lambda*Lambda+(-2*vmax+w)*(-2*vmax+w))
-                    +w*(-2*pow(Lambda,4) + Lambda*Lambda*w*w + pow(w,4))*log((4*Lambda*Lambda+( 2*vmax+w)*( 2*vmax+w))*(4*Lambda*Lambda+(-2*vmin+w)*(-2*vmin+w)))
-                    -2*Lambda*Lambda*Lambda*(4*Lambda*Lambda+w*w)*log(((4*Lambda*Lambda)+(-2*vmax+w)*(-2*vmax+w))*((4*Lambda*Lambda)+( 2*vmax+w)*( 2*vmax+w))*((4*Lambda*Lambda)+(-2*vmin+w)*(-2*vmin+w)))
-                    -(8*pow(Lambda,5)-2*pow(Lambda,4)*w+2*Lambda*Lambda*Lambda*w*w + Lambda*Lambda*w*w*w + pow(w,5))*log((4*Lambda*Lambda)+( 2*vmin+w)*( 2*vmin+w)))
-                   /(2*M_PI*4*w*(16*pow(Lambda,6) + 4*pow(Lambda,4)*w*w + 4*Lambda*Lambda*pow(w,4) + pow(w,6)));
+            return -(-4*Delta*Delta*(4*Lambda*Lambda + w*w)*(pow(Delta,4) + Delta*Delta *(Lambda*Lambda - 2*w*w)
+                + w*w*(Lambda*Lambda + w*w))*atanh((2*(2*Delta + vmax - vmin)*w)/(
+                    4*(Delta + vmax)*(Delta - vmin) + w*w)) +
+                    Lambda*(-2*(Lambda*Lambda + pow(Delta - w,2))*(-Lambda*Lambda*w*(Lambda*Lambda + w*w)
+                    +Delta*Delta*(3*Lambda*Lambda*w + pow(w,3))
+                    +Delta*(4*pow(Lambda,4) + 3*Lambda*Lambda* w*w + pow(w,4)))*atan((2*Lambda)/(-2*vmax + w))
+                    +2*(Lambda*Lambda + pow(Delta + w,2))*(-Lambda*Lambda* w*(Lambda*Lambda + w*w)
+                    +Delta*Delta* (3*Lambda*Lambda* w + pow(w,3))
+                    -Delta*(4*pow(Lambda,4) + 3*Lambda*Lambda* w*w + pow(w,4)))*atan((2*Lambda)/(2*vmax + w)) -
+                    8*pow(Delta,3)*pow(Lambda,4)*atan((2*Lambda)/(-2*vmin + w)) -
+                    8*Delta*pow(Lambda,6)* atan((2*Lambda)/(-2*vmin + w)) +
+                    6*pow(Delta,4)*Lambda*Lambda* w *atan((2*Lambda)/(-2*vmin + w)) -
+                    12*Delta*Delta* pow(Lambda,4)* w* atan((2*Lambda)/(-2*vmin + w)) -
+                    2*pow(Lambda,6)* w* atan((2*Lambda)/(-2*vmin + w)) +
+                    6*pow(Delta,3)* Lambda*Lambda *w*w *atan((2*Lambda)/(-2*vmin + w)) -
+                    18*Delta*pow(Lambda,4)* w*w *atan((2*Lambda)/(-2*vmin + w)) +
+                    2*pow(Delta,4) *pow(w,3) *atan((2*Lambda)/(-2*vmin + w)) -
+                    6*Delta*Delta *Lambda*Lambda *pow(w,3) *atan((2*Lambda)/(-2*vmin + w)) -
+                    4*pow(Lambda,4) *pow(w,3) *atan((2*Lambda)/(-2*vmin + w)) +
+                    2*pow(Delta,3)*pow(w,4) *atan((2*Lambda)/(-2*vmin + w)) -
+                    12*Delta*Lambda*Lambda *pow(w,4) *atan((2*Lambda)/(-2*vmin + w)) -
+                    2*Delta*Delta *pow(w,5) *atan((2*Lambda)/(-2*vmin + w)) -
+                    2*Lambda*Lambda *pow(w,5) *atan((2*Lambda)/(-2*vmin + w)) -
+                    2*Delta *pow(w,6) *atan((2*Lambda)/(-2*vmin + w)) -
+                    8*pow(Delta,3) *pow(Lambda,4) *atan((2*Lambda)/(2*vmin + w)) -
+                    8*Delta *pow(Lambda,6) *atan((2*Lambda)/(2*vmin + w)) -
+                    6*pow(Delta,4) *Lambda*Lambda *w *atan((2*Lambda)/(2*vmin + w)) +
+                    12*Delta*Delta *pow(Lambda,4) *w *atan((2*Lambda)/(2*vmin + w)) +
+                    2*pow(Lambda,6)* w *atan((2*Lambda)/(2*vmin + w)) +
+                    6*pow(Delta,3)* Lambda*Lambda* w*w* atan((2*Lambda)/(2*vmin + w)) -
+                    18*Delta *pow(Lambda,4) *w*w *atan((2*Lambda)/(2*vmin + w)) -
+                    2*pow(Delta,4) *pow(w,3) *atan((2*Lambda)/(2*vmin + w)) +
+                    6*Delta*Delta *Lambda*Lambda *pow(w,3) *atan((2*Lambda)/(2*vmin + w)) +
+                    4*pow(Lambda,4) *pow(w,3) *atan((2*Lambda)/(2*vmin + w)) +
+                    2*pow(Delta,3) *pow(w,4) *atan((2*Lambda)/(2*vmin + w)) -
+                    12*Delta *Lambda*Lambda *pow(w,4) *atan((2*Lambda)/(2*vmin + w)) +
+                    2*Delta*Delta *pow(w,5) *atan((2*Lambda)/(2*vmin + w)) +
+                    2*Lambda*Lambda *pow(w,5) *atan((2*Lambda)/(2*vmin + w)) -
+                    2*Delta *pow(w,6) *atan((2*Lambda)/(2*vmin + w)) -
+                    16*pow(Delta,3) *pow(Lambda,3) *w *log((2*(Delta + vmax) - w)*(2*Delta - 2*vmin - w)*(2*(Delta + vmax) + w)
+                    *(2*Delta - 2*vmin + w)) - 4*pow(Delta,3) *Lambda *pow(w,3) *log((2*(Delta + vmax) - w)*(2*Delta - 2*vmin - w)
+                    *(2*(Delta + vmax) + w)*(2*Delta - 2*vmin + w)) -
+                    2*pow(Delta,4)* pow(Lambda,3) *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                    2*pow(Lambda,7)* log(4*Lambda*Lambda + pow(-2*vmax + w,2)) -
+                    7*pow(Delta,2)* pow(Lambda,3) *w*w *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                    5*pow(Lambda,5)* w*w *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) -
+                    3*pow(Delta,2)* Lambda *pow(w,4) *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                    4*pow(Lambda,3)* pow(w,4) *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                    Lambda *pow(w,6) *log(4*Lambda*Lambda + pow(-2*vmax + w,2)) +
+                    2 *pow(Delta,4) *pow(Lambda,3) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) -
+                    2*pow(Lambda,7) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                    7*pow(Delta,2) *pow(Lambda,3 ) *w*w *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) -
+                    5*pow(Lambda,5) *w*w *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                    3*pow(Delta,2) *Lambda *pow(w,4) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) -
+                    4*pow(Lambda,3) *pow(w,4) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) -
+                    Lambda *pow(w,6) *log((4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                    8*pow(Delta,3)*pow(Lambda,3)*w*log((4*Lambda*Lambda + pow(-2*vmax +w,2))*(4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                    2*pow(Delta,3)*Lambda *pow(w,3)*log((4*Lambda*Lambda + pow(-2*vmax +w,2))*(4*Lambda*Lambda + pow(2*vmax +w,2))*(4*Lambda*Lambda + pow(-2*vmin + w,2))) +
+                    Lambda*(Lambda*Lambda + pow(Delta - w,2))*(-2*Delta*Delta*Lambda*Lambda + 2*pow(Lambda,4) + 4*Delta*Lambda*Lambda *w + 3*Lambda*Lambda *w*w + 2*Delta *pow(w,3) + pow(w,4))
+                    *log(4*Lambda*Lambda + pow(2*vmin + w,2))))/(2* (Delta*Delta + Lambda*Lambda)* (Lambda*Lambda + pow(Delta - w,2))*w*(4*Lambda*Lambda + w*w)*(Lambda*Lambda + pow(Delta + w,2)));
         }
     }
 #else
