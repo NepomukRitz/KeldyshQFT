@@ -107,8 +107,11 @@ auto main() -> int {
 #else
 
     //test_K2<state_datatype>(Lambda_ini, true);
-    //test_PT4(1.8, true);
-    n_loop_flow(dir_str+filename);
+    //test_PT4(0.0, true);
+    //test_PT_state<state_datatype>(dir_str+filename, 0., false);
+
+    std::string job = "";
+    n_loop_flow(dir_str+filename+job, false);
     ///test_integrate_over_K1<state_datatype>(1.8);
 
 //    double Lambda = find_best_Lambda();
