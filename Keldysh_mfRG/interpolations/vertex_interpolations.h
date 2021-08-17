@@ -30,8 +30,8 @@ public:
         //     && fabs(tv1)< vertex.frequencies.f_K2.W_upper + this->small ) {
 
 #if INTERPOLATION == 0
-            int index_b = (int) ((tw - vertex.frequencies.b_K2.W_lower) / vertex.frequencies.b_K2.dW);
-            int index_f = (int) ((tv1- vertex.frequencies.f_K2.W_lower) / vertex.frequencies.f_K2.dW);
+            int index_b = (int) ((tw - vertex.frequencies.b_K2.t_lower) / vertex.frequencies.b_K2.dt);
+            int index_f = (int) ((tv1- vertex.frequencies.f_K2.t_lower) / vertex.frequencies.f_K2.dt);
             index_b = std::min(nBOS2-2, index_b);
             index_f = std::min(nFER2-2, index_f);
             index_b = std::max(0, index_b);
@@ -78,8 +78,8 @@ public:
             return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
 
 #elif INTERPOLATION==1 or INTERPOLATION == 2
-            int index_b = (int) ((tw - vertex.frequencies.b_K2.W_lower) / vertex.frequencies.b_K2.dW);
-            int index_f = (int) ((tv1- vertex.frequencies.f_K2.W_lower) / vertex.frequencies.f_K2.dW);
+            int index_b = (int) ((tw - vertex.frequencies.b_K2.t_lower) / vertex.frequencies.b_K2.dt);
+            int index_f = (int) ((tv1- vertex.frequencies.f_K2.t_lower) / vertex.frequencies.f_K2.dt);
             index_b = std::min(nBOS2-2, index_b);
             index_f = std::min(nFER2-2, index_f);
             index_b = std::max(0, index_b);
@@ -103,23 +103,20 @@ public:
 
             Q result = indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
             assert(isfinite(result));
-            return indices.prefactor * ((1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22));
+
 #elif INTERPOLATION==2
             //TODO: write biquadratic interpolation
 
 #elif INTERPOLATION==3
             //TODO: write bicubic interpolation
-
-
         Q result = gsl_spline2d_eval(vertex.spline, tw, tv1, vertex.xacc, vertex.yacc);
+#endif
 
 
 
-            return result;
-        }
-        else {
-            return 0.;
-        }
+
+        return result;
+
     }
 };
 
@@ -131,7 +128,7 @@ public:
 //    assert(vertex.frequencies.b_K1.w_lower <= w && w <= vertex.frequencies.b_K1.w_upper); // give error message if w out of range
         double tw = vertex.frequencies.b_K1.grid_transf(indices.w);
        // if (fabs(tw) < vertex.frequencies.b_K1.W_upper + this->small) {
-            int index = (int) ((tw - vertex.frequencies.b_K1.W_lower) / vertex.frequencies.b_K1.dW);
+            int index = (int) ((tw - vertex.frequencies.b_K1.t_lower) / vertex.frequencies.b_K1.dt);
             //if (index < 0 or index >= nBOS-1) { // If we get close to the boundaries of the box, make sure to stay within the box.
             //    index = vertex.frequencies.b_K1.fconv(vertex.frequencies.b_K1.w_upper*sign(indices.w), -sign(indices.w)*1e-1);
             //}
@@ -234,9 +231,9 @@ public:
         //        && fabs(tv2)< vertex.frequencies.f_K3.W_upper + this->small) {
 
 #if INTERPOLATION == 0
-            int index_b = (int) ((tw - vertex.frequencies.b_K3.W_lower) / vertex.frequencies.b_K3.dW);
-            int index_f1= (int) ((tv1- vertex.frequencies.f_K3.W_lower) / vertex.frequencies.f_K3.dW);
-            int index_f2= (int) ((tv2- vertex.frequencies.f_K3.W_lower) / vertex.frequencies.f_K3.dW);
+            int index_b = (int) ((tw - vertex.frequencies.b_K3.t_lower) / vertex.frequencies.b_K3.dt);
+            int index_f1= (int) ((tv1- vertex.frequencies.f_K3.t_lower) / vertex.frequencies.f_K3.dt);
+            int index_f2= (int) ((tv2- vertex.frequencies.f_K3.t_lower) / vertex.frequencies.f_K3.dt);
             index_b = std::min(nBOS3-2, index_b );
             index_f1= std::min(nFER3-2, index_f1);
             index_f2= std::min(nFER3-2, index_f2);
@@ -286,9 +283,9 @@ public:
             }
 
 #elif INTERPOLATION>=1
-            int index_b = (int) ((tw - vertex.frequencies.b_K3.W_lower) / vertex.frequencies.b_K3.dW);
-            int index_f1= (int) ((tv1- vertex.frequencies.f_K3.W_lower) / vertex.frequencies.f_K3.dW);
-            int index_f2= (int) ((tv2- vertex.frequencies.f_K3.W_lower) / vertex.frequencies.f_K3.dW);
+            int index_b = (int) ((tw - vertex.frequencies.b_K3.t_lower) / vertex.frequencies.b_K3.dt);
+            int index_f1= (int) ((tv1- vertex.frequencies.f_K3.t_lower) / vertex.frequencies.f_K3.dt);
+            int index_f2= (int) ((tv2- vertex.frequencies.f_K3.t_lower) / vertex.frequencies.f_K3.dt);
             index_b = std::min(nBOS3-2, index_b );
             index_f1= std::min(nFER3-2, index_f1);
             index_f2= std::min(nFER3-2, index_f2);
@@ -307,16 +304,6 @@ public:
             double y2 = vertex.frequencies.f_K3.ts[index_f1 + 1];
             double z1 = vertex.frequencies.f_K3.ts[index_f2];
             double z2 = vertex.frequencies.f_K3.ts[index_f2 + 1];
-        return result;
-
-#endif
-
-
-        //}
-        //else {
-        //    return 0.;
-        //}
-    const double small = 1e-12;
 
             double xd = (tw - x1) / (x2 - x1);
             double yd = (tv1 - y1) / (y2 - y1);

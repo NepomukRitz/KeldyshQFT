@@ -261,7 +261,7 @@ const int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow
-#define REG 2
+#define REG 3
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
@@ -314,7 +314,7 @@ const double integrator_tol = 1e-6;
 // 1: linear on grid_transformed frequencies
 // 2: quadratic on grid_transformed frequencies
 // 2: cubic on grid_transformed frequencies
-#define INTERPOLATION 0
+#define INTERPOLATION 1
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));

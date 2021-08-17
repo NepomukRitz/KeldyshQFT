@@ -173,7 +173,7 @@ void FrequencyGrid::initialize_grid() {
     ts[0] = -1.; ts[N_w-1] = 1.;
     ws[0] = -std::numeric_limits<double>::infinity();
     ws[N_w-1] = std::numeric_limits<double>::infinity();
-    for(int i=0; i<N_w; ++i) {
+    for(int i=1; i<N_w-1; ++i) {
         W = t_lower + i * dt;
         ws[i] = grid_transf_inv(W);
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)

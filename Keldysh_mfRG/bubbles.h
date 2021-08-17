@@ -1264,15 +1264,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
 #else
 #ifdef ZERO_TEMP
-            value += bubble_value_prefactor() * integrator<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, true);
+            value += bubble_value_prefactor() * integrator<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
 #else
             int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
             value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
-            //value += bubble_value_prefactor() *
-            //        asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
-            //                                 w, 0., 0., i0, i2, i_in, channel, diff);
+            value += bubble_value_prefactor() *
+                    asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
+                                             w, 0., 0., i0, i2, i_in, channel, diff);
 
         }
     }
@@ -1301,9 +1301,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
 
-            //value += bubble_value_prefactor() *
-            //        asymp_corrections_bubble(k2, vertex1, vertex2, G,
-            //                                 vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
+            value += bubble_value_prefactor() *
+                    asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                                             vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
 
         }
     }
@@ -1331,9 +1331,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
     #endif //ZERO_TEMP
     #endif // KELDYSH_FORMALISM
-        //value += bubble_value_prefactor() *
-        //        asymp_corrections_bubble(k3, vertex1, vertex2, G,
-        //                                 vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
+        value += bubble_value_prefactor() *
+                asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                                         vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
 
     }
 }

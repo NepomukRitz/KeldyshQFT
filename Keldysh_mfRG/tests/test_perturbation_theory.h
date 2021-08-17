@@ -2,11 +2,11 @@
 #define KELDYSH_MFRG_TESTFUNCTIONS_H
 
 #include <cmath>                    // use M_PI as pi
-#include "propagator.h"                // propagators
+#include "../propagator.h"                // propagators
 #include "../state.h"                  // State class
 #include "../loop.h"                   // self-energy loop
 #include "../bubbles.h"                // bubble function
-#include "ODE_solvers.h"               // ODE solvers
+#include "../ODE_solvers.h"               // ODE solvers
 #include "../right_hand_sides.h"       // compute the right hand sides of flow equations
 #include "../utilities/write_data2file.h"        // writing data to txt or hdf5 file
 #include "../utilities/hdf5_routines.h"          // writing states to hdf5 file
@@ -1321,7 +1321,7 @@ class TestIntegrandK1a{
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1334,7 +1334,7 @@ class TestIntegrandK1a{
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1347,9 +1347,9 @@ class TestIntegrandK1a{
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1470,9 +1470,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1484,7 +1484,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1497,7 +1497,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1510,9 +1510,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1563,9 +1563,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1577,7 +1577,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1590,7 +1590,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1603,9 +1603,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1653,9 +1653,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1667,7 +1667,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1680,7 +1680,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1693,9 +1693,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1708,7 +1708,7 @@ public:
 };
 
 template <typename Q>
-void test_PT_state(string outputFileName, double Lambda, bool diff) {
+void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     double vmax = 100;
     double Delta = (glb_Gamma + Lambda) / 2.;
     State<Q> bareState (Lambda);
@@ -1719,14 +1719,14 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
     State<state_datatype> PT_state(Lambda);
 
     for (int i = 1; i<nFER-1; i++) {
-        double v = PT_state.selfenergy.frequencies.w[i];
+        double v = PT_state.selfenergy.frequencies.ws[i];
         Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
         Q val_SE = 1./(2*M_PI) * integrator<Q,1>(IntegrandSE, -vmax, vmax, abs(0.), {v}, Delta, false);
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
 
     for (int i = 1; i<nBOS-1; i++) {
-        double w = PT_state.vertex[0].avertex().frequencies.b_K1.w[i];
+        double w = PT_state.vertex[0].avertex().frequencies.b_K1.ws[i];
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
@@ -1738,8 +1738,8 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
 #if MAX_DIAG_CLASS > 1
     for (int i = 1; i<nBOS2-1; i++) {
         for (int j = 1; j<nFER2-1; j++) {
-            double w = PT_state.vertex[0].avertex().frequencies.b_K2.w[i];
-            double v = PT_state.vertex[0].avertex().frequencies.f_K2.w[j];
+            double w = PT_state.vertex[0].avertex().frequencies.b_K2.ws[i];
+            double v = PT_state.vertex[0].avertex().frequencies.f_K2.ws[j];
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
             Q val_K2 = 1./(2*M_PI) * integrator<Q,3>(IntegrandK2, -vmax, vmax, abs(w/2), {v, w+v, w-v}, Delta, true);
             PT_state.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
@@ -1752,9 +1752,9 @@ void test_PT_state(string outputFileName, double Lambda, bool diff) {
     for (int i = 1; i<nBOS3-1; i++) {
         for (int j = 1; j<nFER3-1; j++) {
             for (int k = 1; k<nFER3-1; k++) {
-                double w = PT_state.vertex[0].avertex().frequencies.b_K3.w[i];
-                double v = PT_state.vertex[0].avertex().frequencies.f_K3.w[j];
-                double vp= PT_state.vertex[0].avertex().frequencies.f_K3.w[k];
+                double w = PT_state.vertex[0].avertex().frequencies.b_K3.ws[i];
+                double v = PT_state.vertex[0].avertex().frequencies.f_K3.ws[j];
+                double vp= PT_state.vertex[0].avertex().frequencies.f_K3.ws[k];
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
                 Q val_K3 = 1./(2*M_PI) * integrator<Q,6>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
@@ -1833,9 +1833,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1847,7 +1847,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1860,7 +1860,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1873,9 +1873,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1925,9 +1925,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -1939,7 +1939,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1952,7 +1952,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1965,9 +1965,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -2022,9 +2022,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -2036,7 +2036,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -2049,7 +2049,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -2062,9 +2062,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -2120,9 +2120,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -2134,7 +2134,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -2147,7 +2147,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -2160,9 +2160,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -2218,9 +2218,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -2232,7 +2232,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i];
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -2245,7 +2245,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.w[i+1] * (1-frac);
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -2258,9 +2258,9 @@ public:
 #endif
         }
 
-        string filename = "../Data/integrand_K1";
+        std::string filename = "../Data/integrand_K1";
         filename += channel;
-        filename += "_w=" + to_string(w) +"_v" + to_string(v) +  "_vp" + to_string(vp) + ".h5";
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
@@ -2301,12 +2301,12 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     bubble_function(PT2_K1pdot.vertex, bare.vertex, bare.vertex, G, S, 'p', true);
 
     if (write_flag) {
-        write_hdf("Psi_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
-        write_hdf("PT2_K1a_dot_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
-        write_hdf("PT2_K1p_dot_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
+        write_hdf("Psi_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
+        write_hdf("PT2_K1a_dot_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
+        write_hdf("PT2_K1p_dot_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
     }
 
-    vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
+    std::vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
 
     //for (int i = 0; i < 2; i++){
     int i = version;
@@ -2322,8 +2322,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
 
         if (write_flag) {
-            write_hdf("K1rdot_PIa_K1p_UNREORDERED_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
-            write_hdf("K1p_PIa_K1rdot_UNREORDERED_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+            write_hdf("K1rdot_PIa_K1p_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_hdf("K1p_PIa_K1rdot_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
         }
 
         Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
@@ -2354,10 +2354,10 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
 
         if (write_flag) {
-            write_hdf("K1rdot_PIa_K1p_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
-            write_hdf("K1p_PIa_K1rdot_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
-            write_hdf("dGammaC_r_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
-            write_hdf("dGammaC_l_version" + to_string(i) + "_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
+            write_hdf("K1rdot_PIa_K1p_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_hdf("K1p_PIa_K1rdot_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+            write_hdf("dGammaC_r_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
+            write_hdf("dGammaC_l_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
         }
     //}
 
@@ -2371,16 +2371,16 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             int i = 1 + iflat;
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
-            double w = K1pdot_exact.vertex[0].avertex().frequencies.b_K1.w[i];
+            double w = K1pdot_exact.vertex[0].avertex().frequencies.b_K1.ws[i];
             state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda);
             K1pdot_exact.vertex[0].pvertex().K1_setvert(0, i, 0, val_K1);
             //    }
         }
-        write_hdf("K1rdot_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+        write_hdf("K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   K1pdot_exact);
 
         State<state_datatype> K1rdot_diff = PT2_K1pdot - K1pdot_exact;        // intermediate result: contains K2 and K3
-        write_hdf("K1rdot_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+        write_hdf("K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   K1rdot_diff);
 
 
@@ -2392,8 +2392,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             int j = 1 + iflat - (i - 1) * (nFER2 - 2);
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
-            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K2.w[i];
-            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K2.w[j];
+            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K2.ws[i];
+            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K2.ws[j];
             K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
                     1. / (2 * M_PI) * integrator<state_datatype, 1>(IntegrandK2, -vmax, vmax, abs(w / 2), {v}, Delta);
@@ -2410,9 +2410,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //for (int i = 1; i<nBOS3-1; i++) {
             //    for (int j = 1; j<nFER3-1; j++) {
             //        for (int k = 1; k<nFER3-1; k++) {
-            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K3.w[i];
-            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.w[j];
-            double vp = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.w[k];
+            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K3.ws[i];
+            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[j];
+            double vp = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[k];
             K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator<state_datatype, 6>(IntegrandK3, -vmax, vmax, abs(w / 2),
@@ -2424,12 +2424,12 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //        }
             //    }
         }
-        write_hdf("K1rdot_PIa_K1p_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+        write_hdf("K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   K1rdot_PIa_K1p_exact);
 
         State<state_datatype> K1rdot_PIa_K1p_diff =
                 K1rdot_PIa_K1p - K1rdot_PIa_K1p_exact;        // intermediate result: contains K2 and K3
-        write_hdf("K1rdot_PIa_K1p_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+        write_hdf("K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   K1rdot_PIa_K1p_diff);
 
 
@@ -2437,7 +2437,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
         for (int i = 1; i < nBOS - 1; i++) {
-            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K1.w[i];
+            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K1.ws[i];
             IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
             state_datatype val_K1 =
                     1. / (2 * M_PI) * integrator<state_datatype, 0>(IntegrandK1, -vmax, vmax, abs(w / 2), {}, Delta);
@@ -2451,8 +2451,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             int j = 1 + iflat - (i - 1) * (nFER2 - 2);
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
-            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K2.w[i];
-            double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K2.w[j];
+            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K2.ws[i];
+            double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K2.ws[j];
             IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
                     1. / (2 * M_PI) * integrator<state_datatype, 1>(IntegrandK2, -vmax, vmax, abs(w / 2), {v}, Delta);
@@ -2469,9 +2469,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //for (int i = 1; i<nBOS3-1; i++) {
             //    for (int j = 1; j<nFER3-1; j++) {
             //        for (int k = 1; k<nFER3-1; k++) {
-            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K3.w[i];
-            double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.w[j];
-            double vp = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.w[k];
+            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K3.ws[i];
+            double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.ws[j];
+            double vp = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.ws[k];
             IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator<state_datatype, 3>(IntegrandK3, -vmax, vmax, abs(w / 2),
@@ -2480,11 +2480,11 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //    }
             //}
         }
-        write_hdf("dGammaC_l_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+        write_hdf("dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   dGammaC_exact);
 
         State<state_datatype> dGammaC_diff = dGammaC_l - dGammaC_exact;        // final result: contains K1, K2 and K3
-        write_hdf("dGammaC_l_version1_U" + to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+        write_hdf("dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   dGammaC_diff);
     }
 }
@@ -2538,7 +2538,7 @@ void test_channel_decomposition(int N_ODE) {
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_channel_decomposition,
                     log_substitution, log_resubstitution, N_ODE); // compute flow
 
-    string name = "test_channel_decomposition.h5";
+    std::string name = "test_channel_decomposition.h5";
     write_h5_rvecs(name, {"v", "Sigma_re", "Sigma_im", "Sigma_ini_re", "Sigma_ini_im"},
                          {ffreqs,
                           state_fin.selfenergy.Sigma.real(), state_fin.selfenergy.Sigma.imag(),
