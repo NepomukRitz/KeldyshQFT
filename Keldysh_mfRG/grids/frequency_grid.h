@@ -155,7 +155,13 @@ public:
 };
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
+#if REG==2
     return std::max(U_factor*glb_U, Delta_factor*(Lambda+glb_Gamma)/2.);
+#elif REG==3
+    return std::max(U_factor*glb_U, Delta_factor*(glb_Gamma)/2.+Lambda*(Lambda+1));     // TODO: write function that automatically chooses grid parameters
+#else
+    return std::max(U_factor*glb_U, Delta_factor*(glb_Gamma)/2.);
+#endif
 }
 
 /**
