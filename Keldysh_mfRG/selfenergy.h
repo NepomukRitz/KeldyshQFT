@@ -2,7 +2,7 @@
 #define KELDYSH_MFRG_SELFENERGY_H
 
 #include "data_structures.h" // real/complex vector classes
-#include "frequency_grid.h"  // interpolate self-energy on new frequency grid
+#include "grids/frequency_grid.h"  // interpolate self-energy on new frequency grid
 #include <omp.h>             // parallelize initialization of self-energy
 
 /****************** CLASS FOR SELF-ENERGY *************/
@@ -123,7 +123,7 @@ template <typename Q> auto SelfEnergy<Q>::val(int iK, int iv, int i_in) const ->
 template <typename Q> auto SelfEnergy<Q>::acc(int i) -> Q{
     if(i>=0 && i < Sigma.size()){
     return Sigma[i];}
-    else{cout << "Error: Tried to access value outside of self-energy range." << endl;};
+    else{std::cout << "Error: Tried to access value outside of self-energy range." << std::endl;};
 }
 
 /**
@@ -135,7 +135,7 @@ template <typename Q> auto SelfEnergy<Q>::acc(int i) -> Q{
 template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
     if(i>=0 && i < Sigma.size()){
     Sigma[i] = val;}
-    else{cout << "Error: Tried to access value outside of self-energy range." << endl;};
+    else{std::cout << "Error: Tried to access value outside of self-energy range." << std::endl;};
 }
 
 /**
@@ -149,15 +149,15 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
 template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
     double small = 1e-12;
     double tv = this->frequencies.grid_transf(v);
-    if (fabs(tv) < this->frequencies.W_upper + small) {    //Check the range of frequency. If too large, return Sigma(\infty)
+    if (fabs(tv) < this->frequencies.t_upper + small) {    //Check the range of frequency. If too large, return Sigma(\infty)
                                                             //Returns U/2 for retarded and 0. for Keldysh component
         //if (fabs(v) != this->frequencies.w_upper) {
-        int iv = (int) ((tv - this->frequencies.W_lower) / this->frequencies.dW); // index corresponding to v
-        iv = min(iv, nFER-2);
-        iv = max(iv, 0);
+        int iv = (int) ((tv - this->frequencies.t_lower) / this->frequencies.dt); // index corresponding to v
+        iv = std::min(iv, nFER-2);
+        iv = std::max(iv, 0);
 
-        double x1 = this->frequencies.Ws[iv]; // lower adjacent frequency value
-        double x2 = this->frequencies.Ws[iv + 1]; // upper adjacent frequency value
+        double x1 = this->frequencies.ts[iv]; // lower adjacent frequency value
+        double x2 = this->frequencies.ts[iv + 1]; // upper adjacent frequency value
         double xd = (tv - x1) / (x2 - x1); // distance between adjacent frequnecy values
 
         Q f1 = val(iK, iv, i_in); // lower adjacent value
@@ -217,7 +217,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 // interpolate old values to new vector
-                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.w[iv], i_in);
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.ws[iv], i_in);
             }
         }
 #ifdef KELDYSH_FORMALISM
@@ -234,8 +234,8 @@ template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
     if(p==0){ //max norm
         double max = 0.;
         for (auto value : (this->Sigma)){
-            if(abs(value) > max){
-                max = abs(value);
+            if(std::abs(value) > max){
+                max = std::abs(value);
             }
         }
         return max;
@@ -244,7 +244,7 @@ template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
     else{ //p-norm
         double result = 0;
         for (auto value : (this->Sigma)){
-            result += pow(abs(value), (double)p);
+            result += pow(std::abs(value), (double)p);
         }
         return pow(result, 1./((double)p));
     }

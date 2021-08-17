@@ -8,8 +8,7 @@
 #include "vertex.h"                   // vertex class
 #include "selfenergy.h"               // self-energy class
 #include "propagator.h"               // propagator class
-#include "integrator.h"               // integration routines
-#include "util.h"                     // printing text output
+#include "utilities/util.h"                     // printing text output
 
 template <typename Q>
 class State{
