@@ -2401,7 +2401,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //    }
         }
 
-
+#if MAX_DIAG_CLASS>2
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
         for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
             int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
@@ -2424,6 +2424,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //        }
             //    }
         }
+#endif
         write_hdf("K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   K1rdot_PIa_K1p_exact);
 
@@ -2460,7 +2461,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //    }
         }
 
-
+#if MAX_DIAG_CLASS>2
 #pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
         for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
             int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
@@ -2480,6 +2481,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //    }
             //}
         }
+#endif
         write_hdf("dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   dGammaC_exact);
 
