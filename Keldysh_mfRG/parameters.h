@@ -1,11 +1,16 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
+#include "data_structures.h" // to have access to the comp type for the Keldysh formalism
+
 // For production: uncomment the following line to switch off assert()-functions
 //#define NDEBUG
 
+// Determines whether the 2D Hubbard model shall be studied instead of the SIAM
+//#define HUBBARD_MODEL
+
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM
+//#define KELDYSH_FORMALISM
 
 #ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
@@ -13,20 +18,17 @@
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD_MODEL)
     using state_datatype = double;
 #else
     using state_datatype = comp;
 #endif
 
-// Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-//#define HUBBARD_MODEL
 
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include "data_structures.h" // real/complex vector classes, comp as complex double
 
-using namespace std;
 
 /// Data analysis ///
 //#define BSE_SDE
@@ -36,7 +38,7 @@ using namespace std;
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
 
-#define N_LOOPS 1  // Number of loops
+#define N_LOOPS 3  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
@@ -131,10 +133,10 @@ const int nFER3 = 25; //nFER;
 const int nBOS = 401;
 const int nFER = 400;
 // Number of frequency points for K2 and K3 classes
-const int nBOS2 = 51;//nBOS;
-const int nFER2 = 50;//nFER;
-const int nBOS3 = 31; //nBOS;
-const int nFER3 = 30; //nFER;
+const int nBOS2 = 21;//nBOS;
+const int nFER2 = 20;//nFER;
+const int nBOS3 = 11; //nBOS;
+const int nFER3 = 10; //nFER;
 #endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
@@ -223,19 +225,19 @@ const int nK_K3 = 1;
 
 //#ifdef KELDYSH_FORMALISM
 // Vector of indices of independent components of the diagrammatic classes, density channel
-vector<int> non_zero_Keldysh_K1a({1,3});                                                                                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K1p({1,5});                                                                                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});                                                                         // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K1t({1,3});                                                                                // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});                                                                          // NOLINT(cert-err58-cpp)
-vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});                                                                         // NOLINT(cert-err58-cpp)
+std::vector<int> non_zero_Keldysh_K1a({1,3});                                                                                // NOLINT(cert-err58-cpp)
+std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
+std::vector<int> non_zero_Keldysh_K1p({1,5});                                                                                // NOLINT(cert-err58-cpp)
+std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});                                                                         // NOLINT(cert-err58-cpp)
+std::vector<int> non_zero_Keldysh_K1t({1,3});                                                                                // NOLINT(cert-err58-cpp)
+std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});                                                                          // NOLINT(cert-err58-cpp)
+std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});                                                                         // NOLINT(cert-err58-cpp)
 
 // Vector of indices whose respective Keldysh indices add up to an odd number
-vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                                                                   // NOLINT(cert-err58-cpp)
+std::vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                                                                   // NOLINT(cert-err58-cpp)
 
 // Vector of indices of the non-zero Keldysh components of the bubbles
-vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                                                          // NOLINT(cert-err58-cpp)
+std::vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                                                          // NOLINT(cert-err58-cpp)
 //#endif
 
 /// Spin parameters ///
@@ -275,7 +277,7 @@ const double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-vector<double> U_NRG {0.1}; //{0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
 
 
 // Vector with values of Lambda for the fRG flow

@@ -4,10 +4,8 @@
 #include <cmath>
 #include "data_structures.h"    // real/complex vector classes
 #include "parameters.h"         // system parameters (vector lengths etc.)
-#include "Keldysh_symmetries.h" // auxiliary functions for conversions of Keldysh indices
 #include "r_vertex.h"           // reducible vertex in channel r
 
-using namespace std;
 
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
 //Irreducible
@@ -435,7 +433,7 @@ public:
 };
 
 /** Vertex class: vector of vertex_container (one element for each spin component) */
-template <typename Q, template <typename> typename symmetry_type>
+template <typename Q, template <typename> typename symmetry_type> // TODO: the last "typename" requires C++17. Is this a problem?
 class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
     GeneralVertex() : vec<vertex_container<Q, symmetry_type> > () {};
@@ -544,20 +542,20 @@ template <typename Q> auto irreducible<Q>::val(int iK, int i_in, int spin) const
         case 1:
             return -bare[iK*n_in + i_in];
         default:
-            cout << "Problems in irred.val" << endl;
+            std::cout << "Problems in irred.val" << std::endl;
     }
 }
 
 template <typename Q> auto irreducible<Q>::acc(int i) const -> Q {
    if(i>=0 && i<bare.size()){
     return bare[i];}
-   else{cout << "ERROR: Tried to access value outside of range in irreducible vertex" << endl;};
+   else{std::cout << "ERROR: Tried to access value outside of range in irreducible vertex" << std::endl;};
 }
 
 template <typename Q> void irreducible<Q>::direct_set(int i, Q value) {
     if(i>=0 && i<bare.size()){
      bare[i]=value;}
-    else{cout << "ERROR: Tried to access value outside of range in irreducible vertex" << endl;};
+    else{std::cout << "ERROR: Tried to access value outside of range in irreducible vertex" << std::endl;};
 }
 
 template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
@@ -608,7 +606,7 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
             break;
         default :
             res = 0.;
-            cout << "Something's going wrong with gammaRb"<< endl;
+            std::cout << "Something's going wrong with gammaRb"<< std::endl;
     }
     return res;
 }
@@ -626,7 +624,7 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input, const fullve
             break;
         default :
             res = 0.;
-            cout << "Something's going wrong with gammaRb"<< endl;
+            std::cout << "Something's going wrong with gammaRb"<< std::endl;
     }
     return res;
 }
@@ -988,17 +986,17 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
 #endif
             for (int iw = 0; iw < nBOS; iw++) {
                 for (int i_in = 0; i_in < n_in; i_in++) {
-                    double compare = abs(this->avertex.K1_val(iK, iw, i_in));
+                    double compare = std::abs(this->avertex.K1_val(iK, iw, i_in));
                     if (compare > max) {
                         max = compare;
                     }
 
-                    compare = abs(this->pvertex.K1_val(iK, iw, i_in));
+                    compare = std::abs(this->pvertex.K1_val(iK, iw, i_in));
                     if (compare > max) {
                         max = compare;
                     }
 
-                    compare = abs(this->tvertex.K1_val(iK, iw, i_in));
+                    compare = std::abs(this->tvertex.K1_val(iK, iw, i_in));
                     if (compare > max) {
                         max = compare;
                     }
@@ -1021,9 +1019,9 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
             for(int iw=0; iw < nBOS; iw++){
                 for(int i_in=0; i_in<n_in; i_in++){
 
-                    result += pow(abs(this->avertex.K1_val(iK, iw, i_in)), (double)p);
-                    result += pow(abs(this->pvertex.K1_val(iK, iw, i_in)), (double)p);
-                    result += pow(abs(this->tvertex.K1_val(iK, iw, i_in)), (double)p);
+                    result += pow(std::abs(this->avertex.K1_val(iK, iw, i_in)), (double)p);
+                    result += pow(std::abs(this->pvertex.K1_val(iK, iw, i_in)), (double)p);
+                    result += pow(std::abs(this->tvertex.K1_val(iK, iw, i_in)), (double)p);
 
                 }
             }
@@ -1046,17 +1044,17 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
                 for (int iv = 0; iv < nFER2; iv++) {
                     for (int i_in = 0; i_in < n_in; i_in++) {
 
-                        double compare = abs(this->avertex.K2_val(iK, iw, iv, i_in));
+                        double compare = std::abs(this->avertex.K2_val(iK, iw, iv, i_in));
                         if(compare > max){
                             max = compare;
                         }
 
-                        compare = abs(this->pvertex.K2_val(iK, iw, iv, i_in));
+                        compare = std::abs(this->pvertex.K2_val(iK, iw, iv, i_in));
                         if(compare > max){
                             max = compare;
                         }
 
-                        compare = abs(this->tvertex.K2_val(iK, iw, iv, i_in));
+                        compare = std::abs(this->tvertex.K2_val(iK, iw, iv, i_in));
                         if(compare > max){
                             max = compare;
                         }
@@ -1079,9 +1077,9 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
                 for(int iv=0; iv < nFER2; iv++) {
                     for (int i_in = 0; i_in < n_in; i_in++) {
 
-                        result += pow(abs(this->avertex.K2_val(iK, iw, iv, i_in)), (double) p);
-                        result += pow(abs(this->pvertex.K2_val(iK, iw, iv, i_in)), (double) p);
-                        result += pow(abs(this->tvertex.K2_val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(std::abs(this->avertex.K2_val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(std::abs(this->pvertex.K2_val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(std::abs(this->tvertex.K2_val(iK, iw, iv, i_in)), (double) p);
 
                     }
                 }
@@ -1105,17 +1103,17 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
                 for (int iv1 = 0; iv1 < nFER3; iv1++) {
                     for (int iv2 = 0; iv2 < nFER3; iv2++) {
                         for (int i_in = 0; i_in < n_in; i_in++) {
-                            double compare = abs(this->avertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            double compare = std::abs(this->avertex.K3_val(iK, iw, iv1, iv2, i_in));
                             if(compare > max){
                                 max = compare;
                             }
 
-                            compare = abs(this->pvertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            compare = std::abs(this->pvertex.K3_val(iK, iw, iv1, iv2, i_in));
                             if(compare > max){
                                 max = compare;
                             }
 
-                            compare = abs(this->tvertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            compare = std::abs(this->tvertex.K3_val(iK, iw, iv1, iv2, i_in));
                             if(compare > max){
                                 max = compare;
                             }
@@ -1141,9 +1139,9 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
                     for (int iv2 = 0; iv2 < nFER3; iv2++) {
                         for (int i_in = 0; i_in < n_in; i_in++) {
 
-                            result += pow(abs(this->avertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
-                            result += pow(abs(this->pvertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
-                            result += pow(abs(this->tvertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
+                            result += pow(std::abs(this->avertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
+                            result += pow(std::abs(this->pvertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
+                            result += pow(std::abs(this->tvertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
 
                         }
                     }

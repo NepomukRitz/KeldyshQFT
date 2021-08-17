@@ -1,89 +1,28 @@
 #include <iostream>          // text input/output
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <bits/stdc++.h>
-#include "data_structures.h" // real/complex vector classes
-#include "write_data2file.h" // writing data into text or hdf5 files
 #include "parameters.h"
 #include <mpi.h>
-#include "mpi_setup.h"
-#include "testFunctions.h"
-#include "solvers.h"
-#include "frequency_grid.h"
-#include "util.h"
-#include "selfenergy.h"
-#include "propagator.h"
-#include "Keldysh_symmetries.h"
-#include "fourier_trafo.h" // Fourier transforms in physics convention and SOPT using FFT
-#include "right_hand_sides.h"
-#include "vertex.h"
-#include "state.h"
-#include "loop.h"
-#include "bubbles.h"
-#include "hdf5_routines.h"
+#include "utilities/mpi_setup.h"
 #include "flow.h"
-#include "tests/omp_test.h"
-#include <cassert>
-
-using namespace std;
-/*
-auto find_best_Lambda() -> double{
-
-    double tol = 1e-5;
-    bool done = false;
-    double Lambda = 20.;
-    double step = 3.;
-
-    vec<double> Lambdas;
-    vec<double> differences;
-
-    while(!done) {
-        State<comp> state_SOPT;   // create final and initial state
-        state_SOPT.initialize();             // initialize state
-        sopt_state(state_SOPT, Lambda);
-
-        Propagator G(Lambda, state_SOPT.selfenergy, 'g');
-
-        Vertex<comp> bethe_salpeter_L = calculate_Bethe_Salpeter_equation(state_SOPT.vertex, G, 'L');
-        Vertex<comp> bethe_salpeter_R = calculate_Bethe_Salpeter_equation(state_SOPT.vertex, G, 'R');
-        Vertex<comp> bethe_salpeter = (bethe_salpeter_L + bethe_salpeter_R) * 0.5;
-
-        Vertex<comp> diff = state_SOPT.vertex - bethe_salpeter;
-        double diff_norm = diff[0].norm_K1(2);
-
-        if(diff_norm < tol)
-            done = true;
-        else{
-            Lambda += step;
-        }
-        Lambdas.emplace_back(Lambda);
-        differences.emplace_back(diff_norm);
-        print("Current Lambda = " + to_string(Lambda), true);
-        print("Current error = " + to_string(diff_norm), true);
-    }
-
-    write_h5_rvecs("Lambda_finder.h5", {"Lambdas", "diffs"}, {Lambdas, differences});
-
-    return Lambda;
-
-}
-*/
+#include "tests/test_perturbation_theory.h"
+#include "utilities/util.h"
 
 
-string generate_filename() {
-    string klass = "K" + to_string(MAX_DIAG_CLASS) + "_";
-    string loops = to_string(N_LOOPS) + "LF_";
-    string n1 = "n1=" + to_string(nBOS) + "_";
-    string n2 = "n2=" + to_string(nBOS2) + "_";
-    string n3 = "n3=" + to_string(nBOS3) + "_";
-    string gamma = "Gamma=" + to_string(glb_Gamma) + "_";
-    string voltage = "V=" + to_string(glb_V) + "_";
-    string temp = "T=" + to_string(glb_T) + "_";
-    string lambda = "L_ini=" + to_string((int)Lambda_ini)+"_";
-    string ode = "nODE=" + to_string(nODE);
-    string extension = ".h5";
+std::string generate_filename() {
+    std::string klass = "K" + std::to_string(MAX_DIAG_CLASS) + "_";
+    std::string loops = std::to_string(N_LOOPS) + "LF_";
+    std::string n1 = "n1=" + std::to_string(nBOS) + "_";
+    std::string n2 = "n2=" + std::to_string(nBOS2) + "_";
+    std::string n3 = "n3=" + std::to_string(nBOS3) + "_";
+    std::string gamma = "Gamma=" + std::to_string(glb_Gamma) + "_";
+    std::string voltage = "V=" + std::to_string(glb_V) + "_";
+    std::string temp = "T=" + std::to_string(glb_T) + "_";
+    std::string lambda = "L_ini=" + std::to_string((int)Lambda_ini)+"_";
+    std::string ode = "nODE=" + std::to_string(nODE);
+    std::string extension = ".h5";
 
-    string filename = klass + loops + n1;
+    std::string filename = klass + loops + n1;
 #if MAX_DIAG_CLASS >= 2
     filename += n2;
 #elif defined(STATIC_FEEDBACK)
@@ -135,11 +74,11 @@ auto main() -> int {
     print("Lambda flows from ", Lambda_ini);
     print_add(" to ", Lambda_fin, true);
     print("nODE for this run: ", nODE, true);
-    print("MPI World Size = " + to_string(mpi_world_size()), true);
+    print("MPI World Size = " + std::to_string(mpi_world_size()), true);
 #pragma omp parallel default(none)
     {
     #pragma omp master
-        print("OMP Threads = " + to_string(omp_get_num_threads()), true);
+        print("OMP Threads = " + std::to_string(omp_get_num_threads()), true);
     }
     print("nBOS1 = ", nBOS, true);
     print("nFER1 = ", nFER, true);
@@ -150,15 +89,15 @@ auto main() -> int {
 #endif
 
     const char* dir = "../Data/";
-    string dir_str = dir;
+    std::string dir_str = dir;
     // Creating Data directory
     if (mkdir(dir, 0777) == -1)
-        cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << endl;
+        std::cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << std::endl;
 
     else
-        cout << "Directory "  << dir << " created \n";
+        std::cout << "Directory "  << dir << " created \n";
 
-    string filename = generate_filename();
+    std::string filename = generate_filename();
 
 #ifdef BSE_SDE
     print("Parquet-check for file: " + filename, true);
@@ -168,8 +107,11 @@ auto main() -> int {
 #else
 
     //test_K2<state_datatype>(Lambda_ini, true);
-    test_PT4(1.8, true);
-    //n_loop_flow(dir_str+filename);
+    //test_PT4(0.0, true);
+    //test_PT_state<state_datatype>(dir_str+filename, 0., false);
+
+    std::string job = "";
+    n_loop_flow(dir_str+filename+job, false);
     ///test_integrate_over_K1<state_datatype>(1.8);
 
 //    double Lambda = find_best_Lambda();
@@ -178,13 +120,13 @@ auto main() -> int {
 
 #endif
 
-    cout << "Hello world ";
+    std::cout << "Hello world ";
 #ifdef __linux__
-    cout << "on linux.";
+    std::cout << "on linux.";
 #elif __APPLE__
     cout << "on apple.";
 #endif
-    cout << endl;
+    std::cout << std::endl;
 
 
 #ifdef MPI_FLAG

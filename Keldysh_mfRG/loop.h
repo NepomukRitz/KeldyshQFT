@@ -4,15 +4,15 @@
 #ifndef KELDYSH_MFRG_LOOP_H
 #define KELDYSH_MFRG_LOOP_H
 
-#include <cmath>         // for using the macro M_PI as pi
+#include <cmath>                    // for using the macro M_PI as pi
 
-#include "selfenergy.h"  // self-energy class
-#include "vertex.h"      // vertex class
-#include "propagator.h"  // propagator class
-#include "parameters.h"  // system parameters (vector lengths etc.)
-#include "integrator.h"  // integration routines
-#include "write_data2file.h"  // save integrand for debugging purposes
-#include "correctionFunctions.h"  // analytical results for the tails of the loop integral
+#include "selfenergy.h"             // self-energy class
+#include "vertex.h"                 // vertex class
+#include "propagator.h"             // propagator class
+#include "parameters.h"             // system parameters (vector lengths etc.)
+#include "integrator/integrator.h"             // integration routines
+#include "utilities/write_data2file.h"        // save integrand for debugging purposes
+#include "correctionFunctions.h"    // analytical results for the tails of the loop integral
 
 /**
  * Class for the integrand of the Retarded SelfEnergy
@@ -22,7 +22,7 @@
 template <typename Q>
 class IntegrandSE {
     const char type;
-    vector<int> components = vector<int>(6);
+    std::vector<int> components = std::vector<int>(6);
 
     const Vertex<Q>& vertex;
     const Propagator<Q>& propagator;
@@ -259,7 +259,7 @@ class LoopCalculator{
     const int iv;
     const int i_in;
 
-    const double v = self.frequencies.w[iv];
+    const double v = self.frequencies.ws[iv];
 
     /// One integrates the integrands from v_lower-|v| to v_upper+|v|
     /// The limits of the integral must depend on v
@@ -316,13 +316,13 @@ void LoopCalculator<Q>::perform_computation() {
 template<typename Q>
 void LoopCalculator<Q>::compute_Keldysh() {
 #ifdef KELDYSH_FORMALISM
-    integratedR = prefactor * integrator<Q>(integrandR, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
-    integratedK = prefactor * integrator<Q>(integrandK, v_lower-abs(v), v_upper+abs(v), -v, v, Delta);
+    integratedR = prefactor * integrator<Q>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), -v, v, Delta);
+    integratedK = prefactor * integrator<Q>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), -v, v, Delta);
 
     // add analytical results for the tails
-    integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v),
+    integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
                                                          v, 0, i_in, all_spins);
-    integratedK += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v),
+    integratedK += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
                                                          v, 1, i_in, all_spins);
 
     //The results are emplaced in the right place of the answer object.
@@ -337,23 +337,23 @@ void LoopCalculator<Q>::compute_Matsubara() {
 #ifndef KELDYSH_FORMALISM
 #ifdef ZERO_TEMP
     // split up the integrand at discontinuities and (possible) kinks:
-    if (abs(v) > inter_tol) {
-        integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-abs(v), -abs(v)        , 0.);
-        integratedR += prefactor * integrator<Q>(integrandR, -abs(v)        , -inter_tol     , 0.);
-        integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  abs(v)        , 0.);
-        integratedR += prefactor * integrator<Q>(integrandR,  abs(v)        ,  v_upper+abs(v), 0.);
+    if (std::abs(v) > inter_tol) {
+        integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-std::abs(v), -std::abs(v)        , 0.);
+        integratedR += prefactor * integrator<Q>(integrandR, -std::abs(v)        , -inter_tol     , 0.);
+        integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  std::abs(v)        , 0.);
+        integratedR += prefactor * integrator<Q>(integrandR,  std::abs(v)        ,  v_upper+std::abs(v), 0.);
     }
     else {
-        integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-abs(v), -inter_tol     , 0.);
-        integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  v_upper+abs(v), 0.);
+        integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-std::abs(v), -inter_tol     , 0.);
+        integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  v_upper+std::abs(v), 0.);
     }
 
     integratedR += -1./(2.*M_PI)
-                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-abs(v), v_upper+abs(v), v, 0, i_in, all_spins);
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, i_in, all_spins);
 
 
 #else
-    int vint = (int) ((abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
+    int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
     integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin-vint, Nmax+vint);
 
     integratedR += - 1./(2.*M_PI)

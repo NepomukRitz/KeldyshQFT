@@ -22,76 +22,78 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 add_executable(Keldysh_mfRG
         main.cpp
         bubbles.h
-        causality_FDT_checks.h
+        postprocessing/causality_FDT_checks.h
         correctionFunctions.h
         data_structures.h
         flow.h
-        fourier_trafo.h
-        frequency_grid.h
-        hdf5_routines.h
-        integrator.h
-        Integrator_NR/integrator_NR.h
-        internal_symmetries.h
-        Keldysh_symmetries.h
-        KramersKronig.h
+        grids/frequency_grid.h
+        utilities/hdf5_routines.h
+        integrator/integrator.h
+        integrator/integrator_NR.h
+        symmetries/internal_symmetries.h
+        symmetries/Keldysh_symmetries.h
+        postprocessing/KramersKronig.h
         loop.h
-        mpi_setup.h
+        utilities/mpi_setup.h
         parameters.h
-        parquet_checks.h
+        parquet_solver.h
         perturbation_theory.h
-        postprocessing.h
+        postprocessing/postprocessing.h
         propagator.h
         right_hand_sides.h
         r_vertex.h
         selfenergy.h
-        solvers.h
+        ODE_solvers.h
         state.h
-        symmetry_transformations.h
-        symmetry_table.h
-        testFunctions.h
-        util.h
+        symmetries/symmetry_transformations.h
+        symmetries/symmetry_table.h
+        tests/test_perturbation_theory.h
+        utilities/util.h
         vertex.h
-        write_data2file.h momentum_grid.h)
+        utilities/write_data2file.h grids/momentum_grid.h tests/test_ODE.h integrator/old_integrators.h)
 
 # executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
-        unit_tests/unit_tests.cpp
-        unit_tests/catch.hpp
-        unit_tests/test_data_structures.h
-        unit_tests/test_symmetry_transformations.h
-        unit_tests/test_integrator.h
-        unit_tests/test_PrecalculateBubble.h
+        tests/unit_tests/unit_tests.cpp
+        tests/unit_tests/catch.hpp
+        tests/unit_tests/test_data_structures.h
+        tests/unit_tests/test_symmetry_transformations.h
+        tests/unit_tests/test_integrator.h
+        tests/test_PrecalculateBubble.h
         bubbles.h
-        causality_FDT_checks.h
+        postprocessing/causality_FDT_checks.h
         correctionFunctions.h
         data_structures.h
         flow.h
-        fourier_trafo.h
-        frequency_grid.h
-        hdf5_routines.h
-        integrator.h
-        Integrator_NR/integrator_NR.h
-        internal_symmetries.h
-        Keldysh_symmetries.h
-        KramersKronig.h
+        grids/frequency_grid.h
+        utilities/hdf5_routines.h
+        integrator/integrator.h
+        integrator/integrator_NR.h
+        symmetries/internal_symmetries.h
+        symmetries/Keldysh_symmetries.h
+        postprocessing/KramersKronig.h
         loop.h
-        mpi_setup.h
+        utilities/mpi_setup.h
         parameters.h
-        parquet_checks.h
+        parquet_solver.h
         perturbation_theory.h
-        postprocessing.h
+        postprocessing/postprocessing.h
         propagator.h
         right_hand_sides.h
         r_vertex.h
         selfenergy.h
-        solvers.h
+        ODE_solvers.h
         state.h
-        symmetry_transformations.h
-        symmetry_table.h
-        testFunctions.h
-        util.h
+        symmetries/symmetry_transformations.h
+        symmetries/symmetry_table.h
+        tests/test_perturbation_theory.h
+        utilities/util.h
         vertex.h
-        write_data2file.h momentum_grid.h unit_tests/test_momentum_grid.h)
+        utilities/write_data2file.h
+        grids/momentum_grid.h
+        tests/unit_tests/test_momentum_grid.h
+        tests/test_ODE.h
+        integrator/old_integrators.h)
 
 # standard executable for integration tests and production runs
 add_executable(FPP_mfRG
@@ -101,37 +103,41 @@ add_executable(FPP_mfRG
         FPP/Differential_Equation.h
         FPP/1D-integrals.h
         FPP/Monte-Carlo_Trial.h
+        FPP/Ladder-approximation.h
         bubbles.h
-        causality_FDT_checks.h
+        postprocessing/causality_FDT_checks.h
         correctionFunctions.h
         data_structures.h
         flow.h
-        fourier_trafo.h
-        frequency_grid.h
-        hdf5_routines.h
-        integrator.h
-        Integrator_NR/integrator_NR.h
-        internal_symmetries.h
-        Keldysh_symmetries.h
-        KramersKronig.h
+        grids/frequency_grid.h
+        utilities/hdf5_routines.h
+        integrator/integrator.h
+        integrator/integrator_NR.h
+        symmetries/internal_symmetries.h
+        symmetries/Keldysh_symmetries.h
+        postprocessing/KramersKronig.h
         loop.h
-        mpi_setup.h
+        utilities/mpi_setup.h
         parameters.h
-        parquet_checks.h
+        parquet_solver.h
         perturbation_theory.h
-        postprocessing.h
+        postprocessing/postprocessing.h
         propagator.h
         right_hand_sides.h
         r_vertex.h
         selfenergy.h
-        solvers.h
+        ODE_solvers.h
         state.h
-        symmetry_transformations.h
-        symmetry_table.h
-        testFunctions.h
-        util.h
+        symmetries/symmetry_transformations.h
+        symmetries/symmetry_table.h
+        tests/test_perturbation_theory.h
+        utilities/util.h
         vertex.h
-        write_data2file.h momentum_grid.h)
+        utilities/write_data2file.h
+        grids/momentum_grid.h
+        grids/flow_grid.h
+        tests/test_ODE.h
+        integrator/old_integrators.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
