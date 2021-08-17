@@ -109,7 +109,7 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 //
-template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, const vec<vec<double>> intervals, const size_t num_intervals, const int Nmax, const bool isinf=false) -> Q {
+template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, const vec<vec<double>>& intervals, const size_t num_intervals, const int Nmax, const bool isinf=false) -> Q {
     //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
     //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
     gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
