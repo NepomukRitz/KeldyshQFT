@@ -399,7 +399,7 @@ auto asymp_corrections_bubble(K_class k,
 #else
     double Delta = glb_Gamma / 2.;                    // Hybridization (~ flow parameter) at which the bubble is evaluated
 #endif
-    Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
+    Q res{}, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
 
 #ifdef KELDYSH_FORMALISM
     // initialize the retarded/advanced flags depending on the bubble Keldysh index i2
