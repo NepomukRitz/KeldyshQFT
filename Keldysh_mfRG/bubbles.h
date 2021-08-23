@@ -28,11 +28,10 @@
 /// Class combining two propagators, either GG or GS+SG
 template <typename Q>
 class Bubble{
-    const Propagator<Q>& g;
-    const Propagator<Q>& s;
     const bool dot;
+    const Propagator<Q>& s;
 public:
-
+    const Propagator<Q>& g; // Access needed when computing the full bubble
     /**
      * Constructor:
      * @param propagatorG : first propagator (always a standard one)
@@ -184,11 +183,9 @@ public:
 
 template <typename Q>
 class PrecalculateBubble{
-    const Propagator<Q>& g;
-    const Propagator<Q>& s;
     const bool dot;
-
     Bubble<Q> Helper_Bubble;
+    const Propagator<Q>& s;
 
 #ifdef KELDYSH_FORMALISM
     int number_of_Keldysh_components = 9;
@@ -219,14 +216,15 @@ class PrecalculateBubble{
 #endif
 
 public:
+    const Propagator<Q>& g; // Access needed when computing the full bubble
     FrequencyGrid fermionic_grid;
     vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nFER*nFER*n_in); // 9 non-zero Keldysh components
 
     PrecalculateBubble(const Propagator<Q>& G_in, const Propagator<Q>& S_in,
                        const bool dot_in)
                        :g(G_in), s(S_in), dot(dot_in),
-                       Helper_Bubble(g, s, dot),
-                       fermionic_grid('f', 1, g.Lambda){
+                       Helper_Bubble(G_in, S_in, dot),
+                       fermionic_grid('f', 1, G_in.Lambda){
         if (dot) {print("Precalculating a differentiated bubble...", true);}
         else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();
@@ -880,13 +878,11 @@ class BubbleFunctionCalculator{
     //TODO: How much slower is the code now that these objects, which will be used in the following, are not const anymore?
     /// Conjecture: Should not be slower, because these objects are only given to the integrand as const objects.
 
-    const Propagator<Q>& G;
-    const Propagator<Q>& S;
     const Bubble_Object& Pi;
     const char channel; // TODO: We already know here, in which channel-parametrization we will need the vertices => Perform cross-projections already in the constructor?
     const bool diff;
 
-    const double Delta = (G.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
+    const double Delta = (Pi.g.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
@@ -899,14 +895,8 @@ class BubbleFunctionCalculator{
     int Nmin, Nmax;
     #endif
 
-    // Dummy instantiation all with bosonic K1-grids - will be set for real by the constructor
-    FrequencyGrid freqs_K1  = dgamma[0].avertex().frequencies.b_K1;
-    FrequencyGrid bfreqs_K2 = dgamma[0].avertex().frequencies.b_K1;
-    FrequencyGrid ffreqs_K2 = dgamma[0].avertex().frequencies.b_K1;
-    FrequencyGrid bfreqs_K3 = dgamma[0].avertex().frequencies.b_K1;
-    FrequencyGrid ffreqs_K3 = dgamma[0].avertex().frequencies.b_K1;
 
-#ifdef KELDYSH_FORMALISM
+#ifdef KELDYSH_FORMALISM // TODO: Does not have to be a class member. Move this to the parameter file.
     const std::vector<int> nonzero_Keldysh_indices = non_zero_Keldysh_bubble;
 #else
     const std::vector<int> nonzero_Keldysh_indices {0};
@@ -915,12 +905,7 @@ class BubbleFunctionCalculator{
     double tK1 = 0, tK2 = 0, tK3 = 0;
 
     void set_channel_specific_freq_ranges_and_prefactor();
-
-    void initialize_frequency_grids();
-    void initialize_frequency_grid_K1();
-    void initialize_frequency_grid_K2();
-    void initialize_frequency_grid_K3();
-
+    void find_vmin_and_vmax();
     void crossproject_vertices();
 
     void calculate_bubble_function(int diag_class);
@@ -960,12 +945,12 @@ class BubbleFunctionCalculator{
     BubbleFunctionCalculator(GeneralVertex<Q, symmetry_result>& dgamma_in,
                              const GeneralVertex<Q, symmetry_left>& vertex1_in,
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                             const Propagator<Q>& G_in, const Propagator<Q>& S_in, const Bubble_Object& Pi_in,
+                             const Bubble_Object& Pi_in,
                              const char channel_in, const bool diff_in)
                              :dgamma(dgamma_in), vertex1_initial(vertex1_in), vertex2_initial(vertex2_in),
-                             G(G_in), S(S_in), Pi(Pi_in), channel(channel_in), diff(diff_in){
+                             Pi(Pi_in), channel(channel_in), diff(diff_in){
         set_channel_specific_freq_ranges_and_prefactor();
-        initialize_frequency_grids();
+        find_vmin_and_vmax();
 
         /// As we already know, which channel parametrization will be needed,
         /// we cross-project the vertices with respect to the internal structure already here.
@@ -1017,17 +1002,19 @@ Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
         template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-Bubble_Object>::initialize_frequency_grids() {
-#if MAX_DIAG_CLASS >= 0
-    initialize_frequency_grid_K1();
-#endif
+void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
+    // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
+    vmin = std::min(dgamma[0].avertex().frequencies.b_K1.w_lower, Pi.g.selfenergy.frequencies.w_lower);
+    vmax = std::max(dgamma[0].avertex().frequencies.b_K1.w_upper, Pi.g.selfenergy.frequencies.w_upper);
 #if MAX_DIAG_CLASS >= 2
-    initialize_frequency_grid_K2();
+    // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
+    vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K2.w_lower);
+    vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K2.w_upper);
 #endif
 #if MAX_DIAG_CLASS >= 3
-    initialize_frequency_grid_K3();
+    // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
+    vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K3.w_lower);
+    vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K3.w_upper);
 #endif
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     // make sure that the limits for the Matsubara sum are fermionic
@@ -1036,41 +1023,6 @@ Bubble_Object>::initialize_frequency_grids() {
     vmin = (Nmin*2+1)*(M_PI*glb_T);
     vmax = (Nmax*2+1)*(M_PI*glb_T);
 #endif
-}
-
-template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
-        template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::initialize_frequency_grid_K1(){
-    freqs_K1 = dgamma[0].avertex().frequencies.b_K1;
-    // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
-    vmin = std::min(freqs_K1.w_lower, G.selfenergy.frequencies.w_lower);
-    vmax = std::max(freqs_K1.w_upper, G.selfenergy.frequencies.w_upper);
-}
-
-template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
-        template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::initialize_frequency_grid_K2(){
-    bfreqs_K2 = dgamma[0].avertex().frequencies.b_K2;
-    ffreqs_K2 = dgamma[0].avertex().frequencies.f_K2;
-    // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-    vmin = std::min(vmin, ffreqs_K2.w_lower);
-    vmax = std::max(vmax, ffreqs_K2.w_upper);
-}
-
-template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
-        template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::initialize_frequency_grid_K3(){
-    bfreqs_K3 = dgamma[0].avertex().frequencies.b_K3;
-    ffreqs_K3 = dgamma[0].avertex().frequencies.f_K3;
-    // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-    vmin = std::min(vmin, ffreqs_K3.w_lower);
-    vmax = std::max(vmax, ffreqs_K3.w_upper);
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1263,7 +1215,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
             value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
+                    asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
                                              w, 0., 0., i0, i2, i_in, channel, diff);
 
         }
@@ -1293,7 +1245,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif // KELDYSH_FORMALISM
 
             value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                    asymp_corrections_bubble(k2, vertex1, vertex2, Pi.g,
                                              vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
 
         }
@@ -1322,7 +1274,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     #endif //ZERO_TEMP
     #endif // KELDYSH_FORMALISM
         value += bubble_value_prefactor() *
-                asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                asymp_corrections_bubble(k3, vertex1, vertex2, Pi.g,
                                          vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
 
     }
@@ -1447,10 +1399,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK1 = i_mpi * n_omp + i_omp;
-    i0 = iK1/(nw1_w*n_in);                  // exterior Keldysh indices of the bubble
-    iw = iK1/(n_in) - i0*nw1_w;             // frequency index
-    i_in = iK1 - i0*nw1_w*n_in - iw*n_in;   // internal index
-    w = freqs_K1.ws[iw];                     // frequency acc. to frequency index
+    i0 = iK1/(nw1_w*n_in);                              // exterior Keldysh indices of the bubble
+    iw = iK1/(n_in) - i0*nw1_w;                         // frequency index
+    i_in = iK1 - i0*nw1_w*n_in - iw*n_in;               // internal index
+    w = dgamma[0].avertex().frequencies.b_K1.ws[iw];    // frequency acc. to frequency index
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1465,8 +1417,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
     iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
     i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
-    w = bfreqs_K2.ws[iw];
-    v = ffreqs_K2.ws[iv];
+    w = dgamma[0].avertex().frequencies.b_K2.ws[iw];
+    v = dgamma[0].avertex().frequencies.f_K2.ws[iv];
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1482,9 +1434,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
     ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
     i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
-    w = bfreqs_K3.ws[iw];
-    v = ffreqs_K3.ws[iv];
-    vp = ffreqs_K3.ws[ivp];
+    w =  dgamma[0].avertex().frequencies.b_K3.ws[iw];
+    v =  dgamma[0].avertex().frequencies.f_K3.ws[iv];
+    vp = dgamma[0].avertex().frequencies.f_K3.ws[ivp];
 }
 
 
@@ -1594,6 +1546,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 }
 
 
+
 // bubble_function using the new class BubbleFunctionCalculator
 template <typename Q,
         template <typename> class symmetry_result,
@@ -1606,7 +1559,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                  const Propagator<Q>& G, const Propagator<Q>& S, const Bubble_Object& Pi,
                                  const char channel, const bool diff){
     BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
-            BubbleComputer (dgamma, vertex1, vertex2, G, S, Pi, channel, diff);
+            BubbleComputer (dgamma, vertex1, vertex2, Pi, channel, diff);
     BubbleComputer.perform_computation();
 }
 
