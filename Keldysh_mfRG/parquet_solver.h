@@ -275,9 +275,8 @@ void parquet_checks(const std::string filename) {
                         norm_SE_fRG, norm_SE_SDE, norm_SE_diff});
 
         // save results from BSE/SDE as state into HDF5 file
-        State<state_datatype> parquet;
-        parquet.vertex = Gamma_BSE;
-        parquet.selfenergy = Sigma_SDE;
+        State<state_datatype> parquet(Gamma_BSE, Sigma_SDE);
+
         if (i == 0)
             write_hdf(filename + "_parquet_checks", i, nL, parquet);
         else
@@ -291,11 +290,11 @@ void parquet_checks(const std::string filename) {
 
         susceptibilities_postprocessing(chi, chi_diff, state, Lambdas[i]);
 
-        State<state_datatype> state_chi;
-        state_chi.vertex = chi;
+        SelfEnergy<state_datatype> trivial_SE(Lambda_ini); // Trivial self energy to construct new state
 
-        State<state_datatype> state_chi_diff;
-        state_chi_diff.vertex = chi_diff;
+        State<state_datatype> state_chi(chi, trivial_SE);
+
+        State<state_datatype> state_chi_diff(chi_diff, trivial_SE);
 
         if (i == 0) {
             write_hdf(filename + "_susceptibilities", i, nL, state_chi);

@@ -41,8 +41,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     static_assert(N_LOOPS>=1, "");
 
-    State<Q> dPsi; // result
-    dPsi.set_frequency_grid(Psi); // set frequency grids of result state to the one of input state
+    State<Q> dPsi(Psi); // result
+    //dPsi.set_frequency_grid(Psi); // set frequency grids of result state to the one of input state
 
     Propagator<Q> S (Lambda, Psi.selfenergy, 's');
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
@@ -65,7 +65,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     ///TODO: Think about performing cross-projections for Psi.vertex already here,
     /// as this object is often needed when going to higher loop-orders.
-    vertexOneLoopFlow(dPsi.vertex, Psi.vertex, G, dG, dPi);
+    vertexOneLoopFlow(dPsi.vertex, Psi.vertex, G, dG, dPi); // TODO: this function should not need G and dG explicitly
 
 #if N_LOOPS>=2
     // Calculate left and right part of 2-loop contribution.
@@ -157,6 +157,7 @@ void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
     // Vertex flow
     for (char r: "apt") {
         bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, dPi, r, true);  // Differentiated bubble in channel r \in {a, p, t}
+        // TODO: bubble_function should not need G, dG, and diff (== true here) explicitly, as this information is already contained in the bubble object.
     }
 }
 

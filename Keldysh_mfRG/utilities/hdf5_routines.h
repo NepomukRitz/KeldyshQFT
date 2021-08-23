@@ -1162,7 +1162,7 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
  * @return            : State object containing the result.
  */
 State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
-    State<state_datatype> result;
+    State<state_datatype> result(Lambda_ini);
     if (Lambda_it < Lambda_size) {
 
         // Open the file. Access rights: read-only

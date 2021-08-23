@@ -56,7 +56,8 @@ public:
     rvec ts;                    // linear auxiliary grid (related to ws by ws(ts)=grid_transf_inv(ts))
 
     /**
-     * This constructor initializes a frequency grid with the global values. This is not needed anymore!    // TODO: Remove
+     * This constructor initializes a frequency grid with the global values. This is not needed anymore!
+     * TODO: Remove; Edit by Nepomuk: No, that is not true!! The constructor of VertexFrequencyGrid uses this to generate a grid with the global parameters! The bubble is calculated on such a grid!
      * @param type_in
      * @param diag_class_in
      */
