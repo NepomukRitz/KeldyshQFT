@@ -16,8 +16,6 @@ rvec bfreqs = frequencyGrid_bos.w;
 rvec ffreqs = frequencyGrid_fer.w;
 
 /// ------ TEST FUNCTIONS ------ ///
-// TODO: Here are also functions that should belong to testFunctions.h. On the other hand side,
-//  in testFunctions.h are functions that would rather belong here.
 
 cvec dSOPT_FFT_K1a_rhs(const cvec& K1a, const double Lambda) { // return differentiated K1a_1 using SOPT_FFT for testing
     SelfEnergy<comp> SEin (Lambda); // trivial self-energy

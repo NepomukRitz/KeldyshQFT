@@ -125,7 +125,6 @@ public:
      */
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
-    // TODO: Implement! Needed for the Hubbard model.
     void K1_crossproject();
     Q K1_BZ_average(const int iK, const int iw);
 

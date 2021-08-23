@@ -231,7 +231,7 @@ public:
         print("...done.", true);
     }
     auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q;
-    auto value_on_FER_GRID(int iK_bubble, double v1, double v2, int i_in) const -> Q;
+    auto value_on_fermionic_grid(int iK_bubble, double v1, double v2, int i_in) const -> Q;
     int composite_index(int iK_bubble, int iv1, int iv2, int i_in) const;
 };
 
@@ -243,15 +243,16 @@ template <typename Q> auto PrecalculateBubble<Q>::value(int iK, double w, double
     } // Catch trivial Keldysh indices
 #endif
     Q Pival;
-    switch (channel) {
+    switch (channel)
+    {
         case 'a':
-            Pival = value_on_FER_GRID(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+            Pival = value_on_fermionic_grid(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
             break;
         case 'p':
-            Pival = value_on_FER_GRID(get_iK_bubble(iK), w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+            Pival = value_on_fermionic_grid(get_iK_bubble(iK), w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
             break;
         case 't':
-            Pival = value_on_FER_GRID(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+            Pival = value_on_fermionic_grid(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
             break;
         default:;
     }
@@ -259,7 +260,7 @@ template <typename Q> auto PrecalculateBubble<Q>::value(int iK, double w, double
 }
 
 // TODO: Use "Interpolate" from "interpolations.h" for this.
-template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK_bubble, const double v1, const double v2, const int i_in) const -> Q{
+template <typename Q> auto PrecalculateBubble<Q>::value_on_fermionic_grid(const int iK_bubble, const double v1, const double v2, const int i_in) const -> Q{
     if (    std::abs(v1) + inter_tol < fermionic_grid.w_upper
             && std::abs(v2) + inter_tol < fermionic_grid.w_upper) {
 
