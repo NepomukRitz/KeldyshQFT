@@ -18,15 +18,13 @@ public:
     Vertex<Q> vertex;
 
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)) {};
+    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)) {};
 
-    /// Constructor, which gets another state as input, whose frequency grid will be used.
-    State(const State<Q>& state_in) : selfenergy(SelfEnergy<Q> (Lambda_ini)), vertex(Vertex<Q> (n_spin, Lambda_ini)) {
-        set_frequency_grid(state_in);
-    };
+    /// Constructor, which gets a Vertex (whose frequency grid will be copied) and a frequencyGrid for the selfenergy
+    explicit State(const Vertex<Q>& vertex_in, const FrequencyGrid selfenergyFreqs_in) : selfenergy(SelfEnergy<Q> (selfenergyFreqs_in)), vertex(Vertex<Q> (n_spin, vertex_in)) {};
 
     /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
-    State(Vertex<Q>& vertex_in, SelfEnergy<Q>& selfenergy_in) : vertex(vertex_in), selfenergy(selfenergy_in) {};
+    explicit State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in) : vertex(vertex_in), selfenergy(selfenergy_in) {};
 
     void initialize();
     void update_grid(double Lambda);
