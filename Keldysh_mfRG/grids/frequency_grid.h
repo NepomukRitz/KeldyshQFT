@@ -60,7 +60,7 @@ public:
      * @param type_in
      * @param diag_class_in
      */
-    FrequencyGrid(char type_in, unsigned int diag_class_in) : type(type_in), diag_class(diag_class_in) {
+    FrequencyGrid(char type_in, unsigned int diag_class_in, double Lambda) : type(type_in), diag_class(diag_class_in) {
         switch (type) {
             case 'b':
                 switch (diag_class) {
@@ -123,12 +123,11 @@ public:
         }
         ws = rvec (N_w);
         ts = rvec (N_w);
-        //initialize_grid();
-    };
 
-    FrequencyGrid(char type, unsigned int diag_class, double Lambda) : FrequencyGrid(type, diag_class) {
         rescale_grid(Lambda);
     };
+
+
 
     auto operator= (const FrequencyGrid& freqGrid) -> FrequencyGrid& {
         this->N_w = freqGrid.N_w;
@@ -305,11 +304,6 @@ public:
     FrequencyGrid b_K3;
     FrequencyGrid f_K3;
 
-    VertexFrequencyGrid() : b_K1('b', 1),
-                            b_K2('b', 2),
-                            f_K2('f', 2),
-                            b_K3('b', 3),
-                            f_K3('f', 3) {};
 
     VertexFrequencyGrid(double Lambda) : b_K1('b', 1, Lambda),
                                          b_K2('b', 2, Lambda),

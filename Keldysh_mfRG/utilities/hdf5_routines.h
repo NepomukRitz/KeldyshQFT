@@ -995,8 +995,8 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 template <typename Q>
 void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     // create new frequency grids
-    FrequencyGrid bfreqs ('b', 1);
-    FrequencyGrid ffreqs ('f', 1);
+    FrequencyGrid bfreqs ('b', 1, Lambda_ini);
+    FrequencyGrid ffreqs ('f', 1, Lambda_ini);
     // read grid parameters from buffer
     bfreqs.N_w = (int)buffer.freq_params[0];
     bfreqs.w_upper = buffer.freq_params[1];
@@ -1015,8 +1015,8 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     result.vertex[0].pvertex().frequencies.b_K1 = bfreqs;
     result.vertex[0].tvertex().frequencies.b_K1 = bfreqs;
 #if MAX_DIAG_CLASS >= 2
-    FrequencyGrid bfreqs2 ('b', 2);
-    FrequencyGrid ffreqs2 ('f', 2);
+    FrequencyGrid bfreqs2 ('b', 2, Lambda_ini);
+    FrequencyGrid ffreqs2 ('f', 2, Lambda_ini);
     bfreqs2.N_w = (int)buffer.freq_params[8];
     bfreqs2.w_upper = buffer.freq_params[9];
     bfreqs2.w_lower = buffer.freq_params[10];
@@ -1035,8 +1035,8 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     result.vertex[0].tvertex().frequencies.f_K2 = ffreqs2;
 #endif
 #if MAX_DIAG_CLASS >= 3
-    FrequencyGrid bfreqs3 ('b', 3);
-    FrequencyGrid ffreqs3 ('f', 3);
+    FrequencyGrid bfreqs3 ('b', 3, Lambda_ini);
+    FrequencyGrid ffreqs3 ('f', 3, Lambda_ini);
     bfreqs3.N_w = (int)buffer.freq_params[16];
     bfreqs3.w_upper = buffer.freq_params[17];
     bfreqs3.w_lower = buffer.freq_params[18];
