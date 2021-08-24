@@ -56,9 +56,9 @@ public:
 
     /**
      * This constructor initializes a frequency grid with the global values. This is not needed anymore!
-     * TODO(high): Remove!
      * @param type_in
      * @param diag_class_in
+     * @param Lambda
      */
     FrequencyGrid(char type_in, unsigned int diag_class_in, double Lambda) : type(type_in), diag_class(diag_class_in) {
         switch (type) {
