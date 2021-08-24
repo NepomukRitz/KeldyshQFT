@@ -1,7 +1,7 @@
 #ifndef FPP_MFRG_SOPT_FFT_TESTS_H
 #define FPP_MFRG_SOPT_FFT_TESTS_H
 
-#include "../parameters.h"
+#include "../parameters/master_parameters.h"
 #include "../data_structures.h"
 #include "../selfenergy.h"
 #include "../propagator.h"

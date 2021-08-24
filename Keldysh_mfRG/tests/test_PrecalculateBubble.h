@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <string>
-#include "../parameters.h"
+#include "../parameters/master_parameters.h"
 #include "../data_structures.h"
 #include "../state.h"
 #include "../perturbation_theory.h"

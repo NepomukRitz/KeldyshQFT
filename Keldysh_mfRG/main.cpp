@@ -1,7 +1,7 @@
 #include <iostream>          // text input/output
 #include <sys/stat.h>
 #include <bits/stdc++.h>
-#include "parameters.h"
+#include "parameters/master_parameters.h"
 #include <mpi.h>
 #include "utilities/mpi_setup.h"
 #include "flow.h"
@@ -99,12 +99,7 @@ auto main() -> int {
 
     std::string filename = generate_filename();
 
-#ifdef BSE_SDE
-    print("Parquet-check for file: " + filename, true);
 
-    check_BSE_and_SDE(dir, filename);
-
-#else
 
     //test_K2<state_datatype>(Lambda_ini, true);
     //test_PT4(0.0, true);
@@ -118,7 +113,7 @@ auto main() -> int {
 //
 //    cout << "Lambda = " << Lambda << " reduces the error in the first iteration to below 10^-5";
 
-#endif
+
 
     std::cout << "Hello world ";
 #ifdef __linux__

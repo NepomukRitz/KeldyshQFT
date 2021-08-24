@@ -14,7 +14,7 @@
 #define KELDYSH_MFRG_BUBBLES_H
 
 #include <cmath>                        // for using the macro M_PI as pi
-
+#include "symmetries/Keldysh_symmetries.h" // for independent Keldysh components and utilities
 #include "vertex.h"                     // vertex class
 #include "selfenergy.h"                 // self-energy class
 #include "propagator.h"                 // propagator class

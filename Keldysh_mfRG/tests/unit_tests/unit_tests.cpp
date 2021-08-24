@@ -11,7 +11,7 @@
 #include "catch.hpp"
 
 #include "../../data_structures.h"
-#include "../../parameters.h"  // define system parameters
+#include "../../parameters/master_parameters.h"  // define system parameters
 
 // include tests that should be run
 #include "test_data_structures.h"

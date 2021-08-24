@@ -9,7 +9,7 @@
 #include "selfenergy.h"             // self-energy class
 #include "vertex.h"                 // vertex class
 #include "propagator.h"             // propagator class
-#include "parameters.h"             // system parameters (vector lengths etc.)
+#include "parameters/master_parameters.h"             // system parameters (vector lengths etc.)
 #include "integrator/integrator.h"             // integration routines
 #include "utilities/write_data2file.h"        // save integrand for debugging purposes
 #include "correctionFunctions.h"    // analytical results for the tails of the loop integral

@@ -8,6 +8,51 @@
 #include <algorithm>  // for find function in isInList
 #include "../utilities/util.h"     // printing text output
 
+/// Keldysh index parameters ///
+#ifdef KELDYSH_FORMALISM
+// Number of independent Keldysh components for the respective diagrammatic class
+const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
+                            // for channel p components 1 and 5
+const int nK_K2 = 5;        // For channels a, p and t -channel separately
+const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
+                            // (independent components in order of appearance)
+#else
+const int nK_K1 = 1;
+const int nK_K2 = 1;
+const int nK_K3 = 1;
+#endif
+
+
+#ifdef KELDYSH_FORMALISM
+// Vector of indices of the non-zero Keldysh components of the bubbles
+const std::vector<int> glb_non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});
+
+// Vector of indices of independent components of the diagrammatic classes, density channel
+const std::vector<int> non_zero_Keldysh_K1a({1,3});
+const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});
+const std::vector<int> non_zero_Keldysh_K1p({1,5});
+const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});
+const std::vector<int> non_zero_Keldysh_K1t({1,3});
+const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});
+const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
+
+// Vector of indices whose respective Keldysh indices add up to an odd number
+const std::vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});
+#else
+const std::vector<int> glb_non_zero_Keldysh_bubble {0};
+
+// Vector of indices of independent components of the diagrammatic classes, density channel
+const std::vector<int> non_zero_Keldysh_K1a({0});
+const std::vector<int> non_zero_Keldysh_K2a({0});
+const std::vector<int> non_zero_Keldysh_K1p({0});
+const std::vector<int> non_zero_Keldysh_K2p({0});
+const std::vector<int> non_zero_Keldysh_K1t({0});
+const std::vector<int> non_zero_Keldysh_K2t({0});
+const std::vector<int> non_zero_Keldysh_K3({0});
+#endif // KELDYSH_FORMALISM
+
+
+
 // Checks if a given variable val is in a list passed by reference.
 // Used to check if a Keldysh index is in a list of indices that should be equal.
 template <typename T>

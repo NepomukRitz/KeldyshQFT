@@ -7,7 +7,7 @@
 
 #include <cmath>
 #include "util.h"               // printing text
-#include "../parameters.h"         // system parameters (necessary for vector lengths etc.)
+#include "../parameters/master_parameters.h"         // system parameters (necessary for vector lengths etc.)
 #include "../data_structures.h"    // comp data type, std::real/complex vector class
 #include "../grids/frequency_grid.h"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions

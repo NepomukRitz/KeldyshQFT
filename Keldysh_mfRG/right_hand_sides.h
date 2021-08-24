@@ -8,7 +8,7 @@
 #include "state.h"                      // state to perform full flow
 #include "loop.h"                       // compute self-energy loop
 #include "bubbles.h"                    // compute vertex bubbles
-#include "parameters.h"                 // system parameters (lengths of vectors etc.)
+#include "parameters/master_parameters.h"                 // system parameters (lengths of vectors etc.)
 #include "ODE_solvers.h"                // ODE solvers
 #include <cassert>
 #include "utilities/hdf5_routines.h"

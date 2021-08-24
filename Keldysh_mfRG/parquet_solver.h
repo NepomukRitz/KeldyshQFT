@@ -1,7 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 #define KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 
-#include "parameters.h"     // system parameters
+#include "parameters/master_parameters.h"     // system parameters
 #include "grids/flow_grid.h"// flow grid
 #include "state.h"          // use State class
 #include "vertex.h"         // use Vertex class

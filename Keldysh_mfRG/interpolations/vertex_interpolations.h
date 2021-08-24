@@ -2,7 +2,7 @@
 #define KELDYSH_MFRG_INTERPOLATIONS_H
 
 #include "../grids/frequency_grid.h"
-#include "../parameters.h"
+#include "../parameters/master_parameters.h"
 #include "../data_structures.h"
 #include "../symmetries/symmetry_transformations.h"
 

@@ -13,12 +13,19 @@
 #include <cmath>            // for math. operations (real, imag, abs etc.)
 #include <vector>           // vec class is derived from vector class
 #include <initializer_list> // to initialize vec class with initializer list
+#include "parameters/master_parameters.h"
 
 typedef std::complex<double> comp; // Complex number
 const comp glb_i (0., 1.);    // Imaginary unit
 auto isfinite(comp z) -> bool {
     return std::isfinite(real(z)) and std::isfinite(imag(z));
 }
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD_MODEL)
+using state_datatype = double;
+#else
+using state_datatype = comp;
+#endif
 
 /// DECLARATIONS ///
 

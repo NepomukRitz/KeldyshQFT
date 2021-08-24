@@ -6,7 +6,7 @@
 #define KELDYSH_MFRG_FLOW_H
 
 #include <string>                // for file name for saving result
-#include "parameters.h"          // system parameters (e.g. initial Lambda)
+#include "parameters/master_parameters.h"          // system parameters (e.g. initial Lambda)
 #include "state.h"               // state including vertex and self-energy
 #include "perturbation_theory.h" // for initialization with SOPT at the beginning of the flow, using sopt_state
 #include "grids/flow_grid.h"     // for flow grid

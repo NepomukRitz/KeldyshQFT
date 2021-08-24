@@ -5,7 +5,7 @@
 #include "grids/flow_grid.h"                        // flow grid
 #include "utilities/util.h"                         // text input/output
 #include "utilities/write_data2file.h"              // writing data into text or hdf5 files
-#include "parameters.h"                             // needed for the vector of grid values to add
+#include "parameters/master_parameters.h"                             // needed for the vector of grid values to add
 #include "postprocessing/causality_FDT_checks.h"    // check causality and FDTs at each step in the flow
 
 

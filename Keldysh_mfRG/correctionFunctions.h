@@ -3,7 +3,7 @@
 
 #include "data_structures.h"            // real/complex vector classes
 #include "vertex.h"                     // vertex class
-#include "parameters.h"                 // global system parameters
+#include "parameters/master_parameters.h"                 // global system parameters
 #include "utilities/util.h"                       // printing text output
 #include <cmath>                        // for log function
 

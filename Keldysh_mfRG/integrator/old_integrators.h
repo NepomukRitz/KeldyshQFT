@@ -4,7 +4,7 @@
 
 #include <numeric>
 #include "../data_structures.h"                // real and complex vectors
-#include "../parameters.h"                     // system parameters
+#include "../parameters/master_parameters.h"                     // system parameters
 #include "../utilities/util.h"                 // for rounding functions
 #include "../grids/frequency_grid.h"           // for defining global frequency grids bfreqs and ffreqs
 

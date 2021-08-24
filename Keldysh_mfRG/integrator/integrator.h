@@ -3,7 +3,7 @@
 
 #include <numeric>
 #include "../data_structures.h"                 // real and complex vectors
-#include "../parameters.h"                      // system parameters
+#include "../parameters/master_parameters.h"                      // system parameters
 #include <gsl/gsl_integration.h>                // for GSL integrator
 #include <gsl/gsl_errno.h>                      // for GSL integrator
 #include "old_integrators.h"                    // Riemann, Simpson, PAID integrator (should not needed)

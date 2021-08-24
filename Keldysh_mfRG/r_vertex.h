@@ -8,7 +8,7 @@
 #define KELDYSH_MFRG_R_VERTEX_H
 
 #include "data_structures.h"          // real/complex vector classes
-#include "parameters.h"               // system parameters (lengths of vectors etc.)
+#include "parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
 #include "symmetries/Keldysh_symmetries.h"       // transformations on Keldysh indices
 #include "symmetries/internal_symmetries.h"      // symmetry transformations for internal indices (momentum etc.), currently trivial
 #include "interpolations/vertex_interpolations.h"           // frequency interpolations for vertices
