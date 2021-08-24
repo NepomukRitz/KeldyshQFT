@@ -149,10 +149,10 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
 template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
 
     if (std::abs(v) > this->frequencies.w_upper)    //Check the range of frequency. If too large, return Sigma(\infty)
-        //Returns U/2 for retarded and 0. for Keldysh component
+        //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
-        if (std::abs(v) != this->frequencies.w_upper) { // linear interpolation
+        /*if (std::abs(v) != this->frequencies.w_upper) { // linear interpolation
             int iv = this->frequencies.fconv(v); // index corresponding to v
             double x1 = this->frequencies.ws[iv]; // lower adjacent frequency value
             double x2 = this->frequencies.ws[iv + 1]; // upper adjacent frequency value
@@ -166,7 +166,9 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
         else if (v == this->frequencies.w_upper) //Exactly at the upper boundary
             return val(iK, nSE-1, i_in);
         else if (v == this->frequencies.w_lower) //Exactly at the lower boundary
-            return val(iK, 0, i_in);
+            return val(iK, 0, i_in)*/;
+            Q result = interpolate1D<Q>(v, frequencies, [&](int i) -> Q {val(iK, i, i_in);});
+            return result;
     }
 
 }
