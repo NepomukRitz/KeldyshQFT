@@ -1419,7 +1419,7 @@ auto SOPT_K1a(double w, double Lambda) -> double {
 }
 auto SOPT_K1a_diff(double w, double Lambda) -> double {
     double Delta = (glb_Gamma + Lambda) / 2.;
-    if (w == 0.) return - glb_U*glb_U      /2 / M_PI / (Delta*Delta + glb_mu*glb_mu)
+    if (abs(w) < inter_tol) return - glb_U*glb_U      /2 / M_PI / (Delta*Delta + glb_mu*glb_mu)
                         + glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
     double term1 =  - glb_U*glb_U      / 2/M_PI / (abs(w)*(2*Delta + abs(w))) * log(1 + (abs(w)*(2*Delta + abs(w)))/(Delta*Delta + glb_mu*glb_mu));
     double term2 =  + glb_U*glb_U * Delta /M_PI / (abs(w)*(2*Delta + abs(w))) * log(1 + (abs(w)*(2*Delta + abs(w)))/(Delta*Delta + glb_mu*glb_mu)) / (2*Delta + abs(w));
@@ -2367,8 +2367,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> K1pdot_exact(Lambda);        // intermediate result: contains K2 and K3
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta)
-        for (int iflat = 0; iflat < (nBOS - 2); iflat++) {
-            int i = 1 + iflat;
+        for (int iflat = 0; iflat < (nBOS - 1); iflat++) {
+            int i = 0 + iflat;
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
             double w = K1pdot_exact.vertex[0].avertex().frequencies.b_K1.ws[i];
@@ -2387,9 +2387,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> K1rdot_PIa_K1p_exact(Lambda);        // intermediate result: contains K2 and K3
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
-        for (int iflat = 0; iflat < (nBOS2 - 2) * (nFER2 - 2); iflat++) {
-            int i = 1 + iflat / (nFER2 - 2);
-            int j = 1 + iflat - (i - 1) * (nFER2 - 2);
+        for (int iflat = 0; iflat < (nBOS2 - 1) * (nFER2 - 1); iflat++) {
+            int i = 0 + iflat / (nFER2 - 1);
+            int j = 0 + iflat - (i - 0) * (nFER2 - 1);
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
             double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K2.ws[i];
@@ -2403,10 +2403,10 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
 #if MAX_DIAG_CLASS>2
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
-        for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
-            int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
-            int j = 1 + iflat / (nFER3 - 2) - (i - 1) * (nFER3 - 2);
-            int k = 1 + iflat - (i - 1) * (nFER3 - 2) * (nFER3 - 2) - (j - 1) * (nFER3 - 2);
+        for (int iflat = 0; iflat < (nBOS3 - 1) * (nFER3 - 1) * (nFER3 - 1); iflat++) {
+            int i = 0 + iflat / (nFER3 - 1) / (nFER3 - 1);
+            int j = 0 + iflat / (nFER3 - 1) - (i - 0) * (nFER3 - 1);
+            int k = 0 + iflat - (i - 0) * (nFER3 - 1) * (nFER3 - 1) - (j - 0) * (nFER3 - 1);
             //for (int i = 1; i<nBOS3-1; i++) {
             //    for (int j = 1; j<nFER3-1; j++) {
             //        for (int k = 1; k<nFER3-1; k++) {
