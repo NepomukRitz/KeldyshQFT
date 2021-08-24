@@ -83,7 +83,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
     // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
-    Vertex<Q> dGammaC_tbar(n_spin);
+    Vertex<Q> dGammaC_tbar(n_spin, Lambda);
     dGammaC_tbar.set_frequency_grid(Psi.vertex);
 #endif
 
@@ -121,7 +121,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         dPsi.vertex += dGammaT;
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
         // extract central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
-        Vertex<Q> dGammaC_ap (n_spin);                   // initialize new vertex
+        Vertex<Q> dGammaC_ap (n_spin, Lambda);                   // initialize new vertex
         dGammaC_ap.set_frequency_grid(Psi.vertex);
         dGammaC_ap[0].avertex() = dGammaC[0].avertex();  // copy results from calculations above
         dGammaC_ap[0].pvertex() = dGammaC[0].pvertex();
@@ -164,8 +164,7 @@ void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const 
 
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>{
-    Vertex<Q> dGammaL(n_spin);
-    dGammaL.set_frequency_grid(PsiVertex);
+    Vertex<Q> dGammaL(n_spin, PsiVertex);
 
     Vertex<Q> dPsiVertex_calc = dPsiVertex;
     dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
@@ -178,8 +177,7 @@ auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, 
 }
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>{
-    Vertex<Q> dGammaR(n_spin);
-    dGammaR.set_frequency_grid(PsiVertex);
+    Vertex<Q> dGammaR(n_spin, PsiVertex);
 
     Vertex<Q> dPsiVertex_calc = dPsiVertex;
     dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
@@ -194,8 +192,8 @@ auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, 
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric>& nonsymVertex,
                                        const Bubble_Object& Pi) -> Vertex<Q> {
-    Vertex<Q> dGammaC (n_spin);
-    dGammaC.set_frequency_grid(PsiVertex);
+    Vertex<Q> dGammaC (n_spin, PsiVertex);
+
 
     GeneralVertex<Q, non_symmetric> nonsymVertex_calc = nonsymVertex;
     nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
@@ -210,8 +208,7 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const General
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric>& nonsymVertex, const Vertex<Q>& PsiVertex,
                                       const Bubble_Object& Pi) -> Vertex<Q> {
-    Vertex<Q> dGammaC (n_spin);
-    dGammaC.set_frequency_grid(PsiVertex);
+    Vertex<Q> dGammaC (n_spin, PsiVertex);
 
     GeneralVertex<Q, non_symmetric> nonsymVertex_calc = nonsymVertex;
     nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble

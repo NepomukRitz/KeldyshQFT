@@ -81,8 +81,8 @@ TEST_CASE("FFT Machine", "Test that the backward FFT followed by the forward FFT
 }
 
 TEST_CASE("K1 BZ Average", "Test that the q-sum over the reduced BZ is normalized properly for K1."){
-    rvert<comp> test_vertex_comp('a');
-    rvert<double> test_vertex_double('a');
+    rvert<comp> test_vertex_comp('a', Lambda_ini);
+    rvert<double> test_vertex_double('a', Lambda_ini);
 
     for (int i_in = 0; i_in < n_in; ++i_in) {
         test_vertex_comp.K1_setvert(0, 0, i_in, 1.);

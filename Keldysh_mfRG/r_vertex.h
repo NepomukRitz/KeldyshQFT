@@ -33,12 +33,6 @@ public:
 
     VertexFrequencyGrid frequencies;    // frequency grid
 
-    rvert(const char channel_in) : channel (channel_in), frequencies (),
-                                   components (Components(channel_in)),
-                                   transformations (Transformations(channel_in)),
-                                   freq_transformations (FrequencyTransformations(channel_in)),
-                                   freq_components (FrequencyComponents(channel_in)){ };
-
     rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda),
                                                   components (Components(channel_in)),
                                                   transformations (Transformations(channel_in)),

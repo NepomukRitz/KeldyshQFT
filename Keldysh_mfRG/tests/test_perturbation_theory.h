@@ -212,7 +212,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
         // create non-symmetric vertex with differentiated vertex on the left
-        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin);
+        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin, Lambda);
         dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
         dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
 
@@ -222,7 +222,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
 
 
         // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin);
+        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin, Lambda);
         dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
         dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
