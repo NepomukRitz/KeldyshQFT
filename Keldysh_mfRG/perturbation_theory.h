@@ -15,9 +15,8 @@
 
 template <typename Q, class Bubble_Object>
 void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     for (char r: "apt") {
-        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, r, false);
+        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
     }
 }
 
@@ -26,7 +25,7 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const B
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
     //Do an a-Bubble for the calculation of the self-energy
-    bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 'a', false);
+    bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, Pi, 'a');
 
     //Calculate the Self-Energy
     loop(PsiSelfEnergy, bareState.vertex, barePropagator, false);
@@ -34,34 +33,30 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const B
 
 template <typename Q, class Bubble_Object>
 void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, const Bubble_Object& Pi, double Lambda){
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
-
     Vertex<Q> bubblevertex_a(n_spin, Lambda);
     bubblevertex_a[0].initialize(0.);
-    bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 'a', false);
+    bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
     Vertex<Q> bubblevertex_p(n_spin, Lambda);
     bubblevertex_p[0].initialize(0.);
-    bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 'p', false);
-    bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, barePropagator, barePropagator, Pi, 'a', false);
-    bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, barePropagator, barePropagator, Pi, 'p', false);
-    bubble_function(PsiVertex, SoptPsi.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 't', false);
+    bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
+    bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'a');
+    bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'p');
+    bubble_function(PsiVertex, SoptPsi.vertex, bareState.vertex, Pi, 't');
 }
 
 
 template <typename Q, class Bubble_Object>
 void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
-
     Vertex<Q> bubblevertex_a(n_spin, Lambda);
     bubblevertex_a[0].initialize(0.);
-    bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 'a', false);
+    bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
     Vertex<Q> bubblevertex_p(n_spin, Lambda);
     bubblevertex_p[0].initialize(0.);
-    bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, barePropagator, barePropagator, Pi, 'p', false);
+    bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
 
-    bubble_function(PsiVertex, bubblevertex_p, bubblevertex_p, barePropagator, barePropagator, Pi, 'a', false);
-    bubble_function(PsiVertex, bubblevertex_a, bubblevertex_a, barePropagator, barePropagator, Pi, 'p', false);
-    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_p, bubblevertex_a + bubblevertex_p, barePropagator, barePropagator, Pi, 't', false);
+    bubble_function(PsiVertex, bubblevertex_p, bubblevertex_p, Pi, 'a');
+    bubble_function(PsiVertex, bubblevertex_a, bubblevertex_a, Pi, 'p');
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_p, bubblevertex_a + bubblevertex_p, Pi, 't');
 }
 
 /**

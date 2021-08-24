@@ -14,9 +14,9 @@ template <class Q>
 class irreducible{
 public:
 #ifdef KELDYSH_FORMALISM
-    vec<Q> bare = vec<Q>(16*n_in); // TODO: does this need to be public? --> do we need default constructor?
+    vec<Q> bare = vec<Q>(16*n_in); // TODO(medium): does this need to be public? --> do we need default constructor?
 #else
-    vec<Q> bare = vec<Q>(n_in); // TODO: does this need to be public? --> do we need default constructor?
+    vec<Q> bare = vec<Q>(n_in); // TODO(medium): does this need to be public? --> do we need default constructor?
 #endif
 
     irreducible() = default;;
@@ -433,13 +433,13 @@ public:
 };
 
 /** Vertex class: vector of vertex_container (one element for each spin component) */
-template <typename Q, template <typename> typename symmetry_type> // TODO: the last "typename" requires C++17. Is this a problem?
+template <typename Q, template <typename> class symmetry_type>
 class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
-    GeneralVertex() : vec<vertex_container<Q, symmetry_type> > () {};
-    GeneralVertex(int n) : vec<vertex_container<Q, symmetry_type> > (n) {};
-    GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type> > (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
-    GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type> > (n, val) {}; // TODO: never used?
+    GeneralVertex() : vec<vertex_container<Q, symmetry_type>> () {};
+    GeneralVertex(int n) : vec<vertex_container<Q, symmetry_type>> (n) {};
+    GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
+    GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type>> (n, val) {}; // Never used; perhaps useful if no SU(2)-symmetry
 
     auto operator+= (const GeneralVertex<Q, symmetry_type>& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
@@ -529,7 +529,7 @@ public:
 
 };
 
-/** Define Vertex as symmetric GeneralVertex */ // TODO: maybe remove this and (globally) rename GeneralVertex -> Vertex ?
+/** Define Vertex as symmetric GeneralVertex */
 template <typename Q>
 using Vertex = GeneralVertex<Q, symmetric>;
 

@@ -223,22 +223,34 @@ const int nK_K2 = 1;
 const int nK_K3 = 1;
 #endif
 
-//#ifdef KELDYSH_FORMALISM
+
+#ifdef KELDYSH_FORMALISM
+// Vector of indices of the non-zero Keldysh components of the bubbles
+const std::vector<int> glb_non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});
+
 // Vector of indices of independent components of the diagrammatic classes, density channel
-std::vector<int> non_zero_Keldysh_K1a({1,3});                                                                                // NOLINT(cert-err58-cpp)
-std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});                                                                         // NOLINT(cert-err58-cpp)
-std::vector<int> non_zero_Keldysh_K1p({1,5});                                                                                // NOLINT(cert-err58-cpp)
-std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});                                                                         // NOLINT(cert-err58-cpp)
-std::vector<int> non_zero_Keldysh_K1t({1,3});                                                                                // NOLINT(cert-err58-cpp)
-std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});                                                                          // NOLINT(cert-err58-cpp)
-std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});                                                                         // NOLINT(cert-err58-cpp)
+const std::vector<int> non_zero_Keldysh_K1a({1,3});
+const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});
+const std::vector<int> non_zero_Keldysh_K1p({1,5});
+const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});
+const std::vector<int> non_zero_Keldysh_K1t({1,3});
+const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});
+const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
 
 // Vector of indices whose respective Keldysh indices add up to an odd number
-std::vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});                                                                   // NOLINT(cert-err58-cpp)
+const std::vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});
+#else
+const std::vector<int> glb_non_zero_Keldysh_bubble {0};
 
-// Vector of indices of the non-zero Keldysh components of the bubbles
-std::vector<int> non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});                                                          // NOLINT(cert-err58-cpp)
-//#endif
+// Vector of indices of independent components of the diagrammatic classes, density channel
+const std::vector<int> non_zero_Keldysh_K1a({0});
+const std::vector<int> non_zero_Keldysh_K2a({0});
+const std::vector<int> non_zero_Keldysh_K1p({0});
+const std::vector<int> non_zero_Keldysh_K2p({0});
+const std::vector<int> non_zero_Keldysh_K1t({0});
+const std::vector<int> non_zero_Keldysh_K2t({0});
+const std::vector<int> non_zero_Keldysh_K3({0});
+#endif // KELDYSH_FORMALISM
 
 /// Spin parameters ///
 

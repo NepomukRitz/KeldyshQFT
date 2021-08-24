@@ -268,7 +268,7 @@ public:
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    transfToR(input); // TODO: Would be possible to perform crossprojections here as well, but not very efficient??
+    transfToR(input);
 
     Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 

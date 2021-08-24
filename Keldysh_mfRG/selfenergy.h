@@ -11,7 +11,6 @@ class SelfEnergy{
 public:
     FrequencyGrid frequencies;
 #ifdef KELDYSH_FORMALISM
-    // TODO: split into two members: Sigma_R, Sigma_K (?)
     vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
 #else
     vec<Q> Sigma = vec<Q> (nSE*n_in); // only one component in Matsubara formalism

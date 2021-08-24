@@ -86,7 +86,7 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 
     // compute the self-energy via SDE using the a bubble
     Sigma_SDE_a.set_frequency_grid(state_in.selfenergy);
-    Sigma_SDE_a.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
+    Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric case
     loop(Sigma_SDE_a, bubble_a, G, false);
 
     // compute the p bubble with full vertex on the right
@@ -103,7 +103,7 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 
     // compute the self-energy via SDE using the p bubble
     Sigma_SDE_p.set_frequency_grid(state_in.selfenergy);
-    Sigma_SDE_p.initialize(glb_U / 2., 0.); // TODO: only for ph-symmetric case
+    Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric case
     loop(Sigma_SDE_p, bubble_p, G, false);
 
     // symmetrize the contributions computed via a/p bubble
@@ -210,7 +210,7 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
  */
 void parquet_checks(const std::string filename) {
     rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
-    // TODO: this only works if flow grid of the computation of the file <filename> is the same as the one produced here
+    // TODO(low): this only works if flow grid of the computation of the file <filename> is the same as the one produced here
     //  --> also read Lambda grid from file
     int nL = Lambdas.size();
 

@@ -246,7 +246,6 @@ void IntegrandSE<Q>::add_contribution_from_other_spins(Q &factorRetardedClosed, 
 
 
 /// Class to actually calculate the loop integral for a given external fermionic frequency and internal index.
-/// TODO: DEBUG_MODE not implemented yet!
 template <typename Q>
 class LoopCalculator{
     SelfEnergy<Q>& self;
@@ -278,7 +277,8 @@ class LoopCalculator{
 #endif
 
     const IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
-    // TODO: There is a lot of redundancy and duplication here - unify the LoopCalculator and IntegrandSE class?
+    // TODO(medium): There is a lot of redundancy and duplication here - unify the LoopCalculator and IntegrandSE class?
+    //  Note though: The integrator needs an integrand (template there).
 #ifdef KELDYSH_FORMALISM
     const IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins);
 #endif

@@ -8,6 +8,8 @@
 #include <algorithm>               // needed for std::find_if
 #include <cmath>                   // for log10, pow
 
+// TODO(low): make flow grid more flexible (c.f. Marcel; also ask Marc about adaptive flow grid?)
+
 void add_points_to_Lambda_grid(std::vector<double>& grid){
     for (auto U : U_NRG){
         auto y = glb_U/U - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data

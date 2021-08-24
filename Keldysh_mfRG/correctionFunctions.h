@@ -7,8 +7,6 @@
 #include "utilities/util.h"                       // printing text output
 #include <cmath>                        // for log function
 
-// TODO: implement also for Matsubara, and check the prefactor for Matsubara in bubbles.h
-
 /**
  * Helper function for computing the analytical result for the asymptotic tails of the bubble integral in the a and t
  * channel, assuming the self-energy to be decayed to the Hartree value. See the function asymp_corrections_bubble below.
@@ -207,7 +205,6 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
 
     }
     #else
-    // TODO: implement REG 2 for Matsubara formalism
     if (diff)
     {
 #ifdef PARTICLE_HOLE_SYMM
@@ -470,7 +467,6 @@ auto asymp_corrections_bubble(K_class k,
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
-    // TODO: is this correct?
     VertexInput input_l (indices[0], w, v, 10.*vmin, i_in, 0, channel);
     VertexInput input_r (indices[1], w, 10.*vmin, vp, i_in, 0, channel);
 

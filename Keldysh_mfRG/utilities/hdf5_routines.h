@@ -16,9 +16,11 @@
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file
 #endif
 
-// TODO: Currently, global parameters are used to set the size of the buffer arrays.
+// TODO(medium): Currently, global parameters are used to set the size of the buffer arrays.
 //  Thus, in order to properly read data from a file, global parameters need to be the same as in the file
-//  --> fix this: read buffer sizes (and dims) from file
+//  --> fix this: read buffer sizes (and dims) from file (-> Marc; Write this once and use for several projects!)
+//  Also, always save parameters.h and FrequencyGrid.h (and whereever elso global parameters are stored)
+//  for each computation and load it as well.
 
 /// --- Constants concerning HDF5 data format --- ///
 
@@ -719,7 +721,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K3_t_buffer(RANK_K3-1, dims.K3_buffer);
 #endif
 
-        // Initial value for vertex data sets // TODO: remove?
+        // Initial value for vertex data sets // TODO(low): remove?
         h5_comp fillvalue_vert;
         fillvalue_vert.re = 0;
         fillvalue_vert.im = 0;
@@ -947,7 +949,7 @@ void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, 
     {
     int Lambda_it = 0;  // store data as 0th Lambda iteration
 
-    // List with Lambda values where only the first one is non-zero -- TODO: do we need this?
+    // List with Lambda values where only the first one is non-zero
     rvec Lambdas (Lambda_size);
     Lambdas[0] = Lambda_i;
     for (int i = 1; i < Lambda_size; i++) {
@@ -1315,7 +1317,6 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
 
 /// --- Test function --- ///
 
-// TODO: include i_in!
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
     // test hdf5: read files and compare to original file
     int cnt = 0;

@@ -6,9 +6,6 @@
 #include "../data_structures.h"
 #include "../symmetries/symmetry_transformations.h"
 
-//TODO improve to return the edge values
-//TODO: references to indices instead of copy (for speed)??
-
 // forward declaration of rvert from r_vertex.h
 template <typename Q> class rvert;
 

@@ -28,18 +28,18 @@
 /// Class combining two propagators, either GG or GS+SG
 template <typename Q>
 class Bubble{
-    const bool dot;
-    const Propagator<Q>& s;
 public:
     const Propagator<Q>& g; // Access needed when computing the full bubble
+    const Propagator<Q>& s;
+    const bool diff;
     /**
      * Constructor:
      * @param propagatorG : first propagator (always a standard one)
-     * @param propagatorS : second propagator (standard or single-scale/differentiated, depending on "dot_in")
-     * @param dot_in      : whether to compute standard (false) or differentiated (true) bubble
+     * @param propagatorS : second propagator (standard or single-scale/differentiated, depending on "diff_in")
+     * @param diff_in      : whether to compute standard (false) or differentiated (true) bubble
      */
-    Bubble(const Propagator<Q>& propagatorG, const Propagator<Q>& propagatorS, const bool dot_in)
-        :g(propagatorG), s(propagatorS), dot(dot_in) {};
+    Bubble(const Propagator<Q>& propagatorG, const Propagator<Q>& propagatorS, const bool diff_in)
+        :g(propagatorG), s(propagatorS), diff(diff_in) {};
 
     /**
      * Call operator:
@@ -51,7 +51,7 @@ public:
      */
     auto value(int iK, double v1, double v2, int i_in) const -> Q{
         Q ans;
-        if(dot){
+        if(diff){
 #ifdef KELDYSH_FORMALISM
             switch (iK) {
                 case 3: //AA
@@ -183,9 +183,7 @@ public:
 
 template <typename Q>
 class PrecalculateBubble{
-    const bool dot;
     Bubble<Q> Helper_Bubble;
-    const Propagator<Q>& s;
 
 #ifdef KELDYSH_FORMALISM
     int number_of_Keldysh_components = 9;
@@ -217,15 +215,17 @@ class PrecalculateBubble{
 
 public:
     const Propagator<Q>& g; // Access needed when computing the full bubble
+    const Propagator<Q>& s;
+    const bool diff;
     FrequencyGrid fermionic_grid;
     vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nFER*nFER*n_in); // 9 non-zero Keldysh components
 
     PrecalculateBubble(const Propagator<Q>& G_in, const Propagator<Q>& S_in,
-                       const bool dot_in)
-                       :g(G_in), s(S_in), dot(dot_in),
-                       Helper_Bubble(G_in, S_in, dot),
+                       const bool diff_in)
+                       :g(G_in), s(S_in), diff(diff_in),
+                       Helper_Bubble(G_in, S_in, diff),
                        fermionic_grid('f', 1, G_in.Lambda){
-        if (dot) {print("Precalculating a differentiated bubble...", true);}
+        if (diff) {print("Precalculating a differentiated bubble...", true);}
         else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();
         print("...done.", true);
@@ -259,7 +259,7 @@ template <typename Q> auto PrecalculateBubble<Q>::value(int iK, double w, double
     return Pival;
 }
 
-// TODO: Use "Interpolate" from "interpolations.h" for this.
+// TODO(high): Use "Interpolate" from "interpolations.h" for this. Unify all interpolation routines! (Write a class "interpolator")
 template <typename Q> auto PrecalculateBubble<Q>::value_on_fermionic_grid(const int iK_bubble, const double v1, const double v2, const int i_in) const -> Q{
     if (    std::abs(v1) + inter_tol < fermionic_grid.w_upper
             && std::abs(v2) + inter_tol < fermionic_grid.w_upper) {
@@ -346,6 +346,7 @@ template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int
     }
 }
 
+//TODO(high): Write a flexible method for this in utilities which can handle all types of data (bubbles, vertices, self-energies etc.)
 template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK_bubble, const int iv1, const int iv2, const int i_in) const{
     return iK_bubble*nFER*nFER*n_in + iv1*nFER*n_in + iv2*n_in + i_in;
 }
@@ -416,7 +417,7 @@ void PrecalculateBubble<Q>::compute_internal_bubble(const int iK, const double v
     vec<comp> first_propagator (glb_N_transfer); // input for FFT
     vec<comp> second_propagator (glb_N_transfer); // input for FFT
 
-    if (dot){
+    if (diff){
         set_propagators(g, s, iK, v1, v2, first_propagator, second_propagator);
         values_of_bubble = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
 
@@ -451,7 +452,6 @@ void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator<Q>& g1, c
     }
 }
 
-// TODO: Use this function to calculate the bubble also for the SIAM.
 template<typename Q>
 void
 PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
@@ -559,7 +559,6 @@ public:
 };
 
 /// Refactoring of the classes Integrand_K1, Integrand_K2, Integrand_K3 into one single class
-// TODO: Implement DEBUG_MODE
 template <typename Q,
         template <typename> class symmetry_left,
         template <typename> class symmetry_right,
@@ -861,7 +860,6 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
 }
 
 
-// Refactoring of bubble_function into a new class; TODO: No functionality for DEBUG_MODE yet.
 template <typename Q,
         template <typename> class symmetry_result,
         template <typename> class symmetry_left,
@@ -876,12 +874,10 @@ class BubbleFunctionCalculator{
     // Copies of the vertex on the left and on the right, which will be cross-projected as required.
     GeneralVertex<Q, symmetry_left> vertex1 = vertex1_initial;
     GeneralVertex<Q, symmetry_right> vertex2 = vertex2_initial;
-    //TODO: How much slower is the code now that these objects, which will be used in the following, are not const anymore?
-    /// Conjecture: Should not be slower, because these objects are only given to the integrand as const objects.
 
     const Bubble_Object& Pi;
-    const char channel; // TODO: We already know here, in which channel-parametrization we will need the vertices => Perform cross-projections already in the constructor?
-    const bool diff;
+    const char channel; 
+    const bool diff = Pi.diff;
 
     const double Delta = (Pi.g.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
@@ -895,13 +891,6 @@ class BubbleFunctionCalculator{
     #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     int Nmin, Nmax;
     #endif
-
-
-#ifdef KELDYSH_FORMALISM // TODO: Does not have to be a class member. Move this to the parameter file.
-    const std::vector<int> nonzero_Keldysh_indices = non_zero_Keldysh_bubble;
-#else
-    const std::vector<int> nonzero_Keldysh_indices {0};
-#endif // KELDYSH_FORMALISM
 
     double tK1 = 0, tK2 = 0, tK3 = 0;
 
@@ -947,17 +936,17 @@ class BubbleFunctionCalculator{
                              const GeneralVertex<Q, symmetry_left>& vertex1_in,
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
                              const Bubble_Object& Pi_in,
-                             const char channel_in, const bool diff_in)
+                             const char channel_in)
                              :dgamma(dgamma_in), vertex1_initial(vertex1_in), vertex2_initial(vertex2_in),
-                             Pi(Pi_in), channel(channel_in), diff(diff_in){
+                             Pi(Pi_in), channel(channel_in){
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
 
-        /// As we already know, which channel parametrization will be needed,
-        /// we cross-project the vertices with respect to the internal structure already here.
+        // As we already know, which channel parametrization will be needed,
+        // we cross-project the vertices with respect to the internal structure already here.
         crossproject_vertices();
 
-        /// TODO: Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
+        /// TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
         ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).
         ///  The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.
     }
@@ -1200,26 +1189,23 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
-    if (vertex1[0].Ir() and vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
-    else {
-        for (int i2 : nonzero_Keldysh_indices) {
-            Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
-                    integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+    for (int i2 : glb_non_zero_Keldysh_bubble) {
+        Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
+                integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
 #ifdef KELDYSH_FORMALISM
-            value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
+        value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
 #else
 #ifdef ZERO_TEMP
-            value += bubble_value_prefactor() * integrator<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
+        value += bubble_value_prefactor() * integrator<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
 #else
-            int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-            value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
+        int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+        value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
 #endif //ZERO_TEMP
 #endif // KELDYSH_FORMALISM
-            value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
-                                             w, 0., 0., i0, i2, i_in, channel, diff);
+        value += bubble_value_prefactor() *
+                asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
+                                         w, 0., 0., i0, i2, i_in, channel, diff);
 
-        }
     }
 }
 
@@ -1230,7 +1216,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K2(Q& value, const int i0, const int i_in, const double w, const double v){
     if (vertex2[0].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
     else {
-        for (int i2 : nonzero_Keldysh_indices) {
+        for (int i2 : glb_non_zero_Keldysh_bubble) {
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
 #ifdef KELDYSH_FORMALISM
@@ -1259,7 +1245,7 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
                                                 const double w, const double v, const double vp){
-    for (int i2 : nonzero_Keldysh_indices) {
+    for (int i2 : glb_non_zero_Keldysh_bubble) {
         // initialize the integrand object and perform frequency integration
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K3(vertex1, vertex2, Pi, i0, i2, w, v, vp, i_in, channel, diff);
@@ -1557,10 +1543,10 @@ template <typename Q,
 void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                  const GeneralVertex<Q, symmetry_left>& vertex1,
                                  const GeneralVertex<Q, symmetry_right>& vertex2,
-                                 const Propagator<Q>& G, const Propagator<Q>& S, const Bubble_Object& Pi,
-                                 const char channel, const bool diff){
+                                 const Bubble_Object& Pi,
+                                 const char channel){
     BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
-            BubbleComputer (dgamma, vertex1, vertex2, Pi, channel, diff);
+            BubbleComputer (dgamma, vertex1, vertex2, Pi, channel);
     BubbleComputer.perform_computation();
 }
 
@@ -1574,7 +1560,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                      const GeneralVertex<Q, symmetry_right>& vertex2,
                      const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff){
     Bubble<Q> Pi(G, S, diff);
-    bubble_function(dgamma, vertex1, vertex2, G, S, Pi, channel, false);
+    bubble_function(dgamma, vertex1, vertex2, Pi, channel);
 }
 
 #endif //KELDYSH_MFRG_BUBBLES_H

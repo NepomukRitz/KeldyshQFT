@@ -11,11 +11,12 @@
 
 #include "../data_structures.h"
 
-// Relate the Keldysh components in each diagrammatic class to the independent ones:
-// -1 = this component is zero
-//  0 = related to component 0
-//  1 = related to component 1
-//  ...
+/** Relate the Keldysh components in each diagrammatic class to the independent ones:
+* -1 = this component is zero
+*  0 = related to component 0
+*  1 = related to component 1
+*  ...
+*/
 struct Components {
     std::vector<std::vector<std::vector<int> > > K
         = std::vector<std::vector<std::vector<int> > > (4,
@@ -139,9 +140,10 @@ struct Components {
     }
 };
 
-// Transformations that need to be applied to the respective stored components to get the correct actual components:
-// 0 = nothing, 1 = T1, 2 = T2, 3 = T3, 4 = TC
-// 43 = first apply 3, then 4 etc. <-- actually reversed, due to special subtlety... // Todo: explain in more detail
+/** Transformations that need to be applied to the respective stored components to get the correct actual components:
+* 0 = nothing, 1 = T1, 2 = T2, 3 = T3, 4 = TC
+* Convention for composite trafos: 43 = first apply 4, then 3 etc. Careful, some operations do not commute!
+*/
 struct Transformations {
     std::vector<std::vector<std::vector<int> > > K
             = std::vector<std::vector<std::vector<int> > > (4,

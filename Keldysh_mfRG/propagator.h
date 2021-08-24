@@ -334,7 +334,7 @@ auto Propagator<Q>::SM(double v, int i_in) const -> Q
 #endif // KELDYSH_FORMALISM
 
 
-#elif REG ==3
+#elif REG ==3 // TODO(high): Does the w-regulator even make sense for Keldysh?
 
 /////// PROPAGATOR FUNCTIONS ///////
 

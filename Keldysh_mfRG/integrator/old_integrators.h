@@ -23,11 +23,6 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp {
     return res;
 }
 
-//TODO implement the intergration with pragma omp simd for vetorization.
-// Think about the compatibility of the execution flow with declaration of data_structures.h also with omp (simd ) and
-// wether or not it'd make sense to only MPI-parallelize at bubble_function and allow omp to take over the vector or
-// scalar (reduction) operations e.g. integration, vector sums, products and such
-
 /// --- DIFFERENT INTEGRATION ROUTINES --- ///
 
 /// Integration using Riemann sum -- deprecated, not recommended
@@ -324,7 +319,7 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
 /* Integration using the PAID algorithm (not yet properly implemented) */
 template <typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> comp {
     //PAID
-    //TODO Solve issue with the first vertex not being passed completely
+    //Solve issue with the first vertex not being passed completely
 //    Domain1D<comp> D (grid[0], grid[grid.size()-1]);
 //    vector<PAIDInput> inputs;
 //    inputs.emplace_back(D, integrand, 1);
