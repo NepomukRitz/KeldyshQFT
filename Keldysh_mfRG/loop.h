@@ -278,6 +278,7 @@ class LoopCalculator{
 #endif
 
     const IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
+    // TODO: There is a lot of redundancy and duplication here - unify the LoopCalculator and IntegrandSE class?
 #ifdef KELDYSH_FORMALISM
     const IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins);
 #endif

@@ -349,7 +349,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 template <typename Q, int num_freqs, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> Q {
     double tol = inter_tol;
 
-    // Doesn't work yet (errors accumulate with the current implementation)
+    // Doesn't work yet (errors accumulate with the current implementation) //TODO: Sort this out!
     // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
     vec<double> intersections;
     size_t num_intervals_max;
