@@ -85,7 +85,6 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     Vertex<Q> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
 
     // compute the self-energy via SDE using the a bubble
-    Sigma_SDE_a.set_frequency_grid(state_in.selfenergy);
     Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric case
     loop(Sigma_SDE_a, bubble_a, G, false);
 
@@ -102,7 +101,6 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     Vertex<Q> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
 
     // compute the self-energy via SDE using the p bubble
-    Sigma_SDE_p.set_frequency_grid(state_in.selfenergy);
     Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric case
     loop(Sigma_SDE_p, bubble_p, G, false);
 
@@ -118,8 +116,8 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
  */
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
-    SelfEnergy<Q> Sigma_SDE_a;
-    SelfEnergy<Q> Sigma_SDE_p;
+    SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy);
+    SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy);
     compute_SDE(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
 }
 
@@ -239,8 +237,7 @@ void parquet_checks(const std::string filename) {
         print("Computed SDE.", true);
 
         // Hartree self-energy
-        SelfEnergy<state_datatype> Sigma_Hartree;
-        Sigma_Hartree.set_frequency_grid(state.selfenergy);
+        SelfEnergy<state_datatype> Sigma_Hartree(state.selfenergy);
         Sigma_Hartree.initialize(glb_U / 2., 0.);
 
         // compute the norm of various objects

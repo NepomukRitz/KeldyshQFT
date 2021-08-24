@@ -47,18 +47,18 @@ template <typename Q>
 class Propagator {
 public:
     const double Lambda;
-    SelfEnergy<Q> selfenergy;
-    SelfEnergy<Q> diff_selfenergy;
+    const SelfEnergy<Q>& selfenergy;
+    const SelfEnergy<Q>& diff_selfenergy;
     const char type;      // 'g' for propagator, 's' for single scale propagator, 'k' for 's'+'e', 'e' for Katanin extension
 
 public:
     /**
-     * Free Propagator object. SelfEnergy is zero 
+     * Free Propagator object. SelfEnergy and differentiated SelfEnergy are zero
      * @param Lambda_in : Input scale
      * @param type_in   : Type of propagator being handled
      */
     Propagator(double Lambda_in, char type_in)
-            : Lambda(Lambda_in), type(type_in) { }
+            : Lambda(Lambda_in), type(type_in), selfenergy(SelfEnergy<Q> (Lambda_in)), diff_selfenergy(SelfEnergy<Q> (Lambda_in)) { }
 
 
     /**
@@ -67,8 +67,8 @@ public:
      * @param self_in   : SelfEnergy
      * @param type_in   : Type of propagator being handled
      */
-    Propagator(double Lambda_in, SelfEnergy<Q> self_in, char type_in)
-            :Lambda(Lambda_in), selfenergy(self_in), type(type_in) { }
+    Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, char type_in)
+            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(SelfEnergy<Q> (Lambda_in)), type(type_in) { }
 
     /**
      * Dressed propagator for flows. Needs both a SelfEnergy and a Differential SelfEnergy
@@ -77,7 +77,7 @@ public:
      * @param diffSelf_in   : Differential SelfEnergy
      * @param type_in       : Type of propagator being handled
      */
-    Propagator(double Lambda_in, SelfEnergy<Q> self_in, SelfEnergy<Q> diffSelf_in, char type_in)
+    Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, const SelfEnergy<Q>& diffSelf_in, char type_in)
             :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in) { }
 
     auto valsmooth(int, double, int i_in) const -> Q;

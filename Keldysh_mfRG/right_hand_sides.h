@@ -229,10 +229,8 @@ void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& d
     // TODO(low): also implement self-energy flow via differentiated SDE
     // TODO(low): iterate self-energy corrections (feedback of full SE flow into vertex flow etc.)?
 
-    SelfEnergy<Q> dSigma_tbar;
-    SelfEnergy<Q> dSigma_t;
-    dSigma_tbar.set_frequency_grid(Psi.selfenergy);
-    dSigma_t.set_frequency_grid(Psi.selfenergy);
+    SelfEnergy<Q> dSigma_tbar(Psi.selfenergy);
+    SelfEnergy<Q> dSigma_t(Psi.selfenergy);
 
     // compute first multiloop correction to self-energy flow, irreducible in the t channel
     loop(dSigma_tbar, dGammaC_tbar, G, true);

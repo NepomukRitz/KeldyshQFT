@@ -18,10 +18,10 @@ public:
     Vertex<Q> vertex;
 
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    State(double Lambda) : selfenergy(Lambda), vertex(n_spin, Lambda) {};
+    State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)) {};
 
     /// Constructor, which gets another state as input, whose frequency grid will be used.
-    State(const State<Q>& state_in) : selfenergy(), vertex(n_spin) {
+    State(const State<Q>& state_in) : selfenergy(SelfEnergy<Q> (Lambda_ini)), vertex(Vertex<Q> (n_spin, Lambda_ini)) {
         set_frequency_grid(state_in);
     };
 
