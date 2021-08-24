@@ -432,10 +432,13 @@ template <typename Q, template <typename> class symmetry_type>
 class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
     GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
+
+    /// Constructor, which gets another GeneralVertex as input; it ONLY copies its frequency grid!
     GeneralVertex(int n, const GeneralVertex<Q, symmetry_type>& Vertex_in)
       :vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda_ini))) {
         set_frequency_grid(Vertex_in);      // copies frequency grid from Vertex_in
     };
+    /// Constructor, which gets vertex_container as input with which all vector elements are initialized
     GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type>> (n, val) {}; // Never used; perhaps useful if no SU(2)-symmetry
 
     auto operator+= (const GeneralVertex<Q, symmetry_type>& rhs) -> GeneralVertex<Q, symmetry_type> {

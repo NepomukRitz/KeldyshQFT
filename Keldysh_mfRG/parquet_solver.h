@@ -116,8 +116,8 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
  */
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
-    SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy);
-    SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy);
+    SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy.frequencies);
+    SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy.frequencies);
     compute_SDE(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
 }
 
@@ -237,7 +237,7 @@ void parquet_checks(const std::string filename) {
         print("Computed SDE.", true);
 
         // Hartree self-energy
-        SelfEnergy<state_datatype> Sigma_Hartree(state.selfenergy);
+        SelfEnergy<state_datatype> Sigma_Hartree(state.selfenergy.frequencies);
         Sigma_Hartree.initialize(glb_U / 2., 0.);
 
         // compute the norm of various objects
