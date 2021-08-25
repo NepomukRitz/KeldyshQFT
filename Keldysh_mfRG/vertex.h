@@ -320,7 +320,6 @@ class vertex_container {
     symmetry_type<Q> vertex;
 
 public:
-    //vertex_container() {}
     vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
     vertex_container(const fullvert<Q>& half1, const fullvert<Q>& half2)
                     : vertex(half1, half2) {}
