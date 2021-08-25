@@ -22,7 +22,7 @@
 #include "test_frequencygrid.h"
 #include "test_interpolations.h"
 #include "test_rvertex.h"
-//#ifdef HUBBARD_MODEL
+//#ifdef HUBBARD
 #include "test_momentum_grid.h"
 //#endif
 

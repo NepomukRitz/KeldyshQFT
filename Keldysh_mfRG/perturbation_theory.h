@@ -12,6 +12,16 @@
 #include "bubbles.h"
 #include "loop.h"
 
+template <typename Q>
+auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
+#ifdef HUBBARD // Use precalculated bubble in this case
+    PrecalculateBubble<comp> Pi (barePropagator, barePropagator, false);
+    return Pi;
+#else // Otherwise, use same type of bubble as before, which directly interpolates
+    Bubble<Q> Pi (barePropagator, barePropagator, false);
+    return Pi;
+#endif
+}
 
 template <typename Q, class Bubble_Object>
 void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
@@ -88,11 +98,7 @@ void sopt_state(State<Q>& Psi, double Lambda) {
 
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
-#ifdef HUBBARD_MODEL // Use precalculated bubble in this case
-    PrecalculateBubble<comp> Pi(barePropagator, barePropagator, false);
-#else // Otherwise use same type of bubble as before, which directly interpolates
-    Bubble<Q> Pi(barePropagator, barePropagator, false);
-#endif // HUBBARD_MODEL
+    auto Pi = PT_initialize_Bubble(barePropagator);
     sopt_state(Psi, Pi, Lambda);
 }
 
@@ -105,11 +111,7 @@ void topt_state(State<Q>& Psi, double Lambda) {
 
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
-#ifdef HUBBARD_MODEL // Use precalculated bubble in this case
-    PrecalculateBubble<comp> Pi(barePropagator, barePropagator, false);
-#else // Otherwise use same type of bubble as before, which directly interpolates
-    Bubble<Q> Pi(barePropagator, barePropagator, false);
-#endif // HUBBARD_MODEL
+    auto Pi = PT_initialize_Bubble(barePropagator);
 
     State<Q> SoptPsi (Lambda);
     //SoptPsi.initialize();
@@ -132,11 +134,7 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
-#ifdef HUBBARD_MODEL // Use precalculated bubble in this case
-    PrecalculateBubble<comp> Pi(barePropagator, barePropagator, false);
-#else // Otherwise use same type of bubble as before, which directly interpolates
-    Bubble<Q> Pi(barePropagator, barePropagator, false);
-#endif // HUBBARD_MODEL
+    auto Pi = PT_initialize_Bubble(barePropagator);
 
     State<Q> SoptPsi (Lambda);
     //SoptPsi.initialize();

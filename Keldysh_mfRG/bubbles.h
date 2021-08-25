@@ -192,12 +192,14 @@ class PrecalculateBubble{
 #endif
 
     void compute_FermionicBubble();
+    void compute_FermionicBubble_HUBBARD();
+    void compute_FermionicBubble_SIAM();
     void perform_internal_sum(int iK, int iv1, int iv2);
 
     int get_iK_bubble(int iK_actual) const;
     int get_iK_actual(int iK_bubble) const;
 
-#ifdef HUBBARD_MODEL
+    // Hubbard model specific functions
     void perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2,
                                          Minimal_2D_FFT_Machine& Swave_Bubble_Calculator);
     void compute_internal_bubble(int iK, double v1, double v2,
@@ -211,7 +213,6 @@ class PrecalculateBubble{
     void set_Keldysh_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                  int iK, double v1, double v2,
                                  vec<Q>& first_propagator, vec<Q>& second_propagator);
-#endif
 
 public:
     const Propagator<Q>& g; // Access needed when computing the full bubble
@@ -299,13 +300,16 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_fermionic_grid(const 
 
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
-#ifdef HUBBARD_MODEL
+    if (HUBBARD_MODEL) compute_FermionicBubble_HUBBARD();
+    else compute_FermionicBubble_SIAM();
+}
 
+template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble_HUBBARD(){
     double starting_time = get_time();
-    std::vector<Minimal_2D_FFT_Machine> FFT_Machinery (omp_get_max_threads());
+    std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
     double end_time = get_time();
-    double diff = (end_time - starting_time); // time given in seconds
-    //std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
+    double time_diff = (end_time - starting_time); // time given in seconds
+    //std::cout << "Time for FFT initialization = " << time_diff << " s." << "\n";
 
     for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
@@ -317,15 +321,10 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
             //if (iv2 == 0) {std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";}
             perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[omp_get_thread_num()]);
         }
-        /*for (int iv1 = 0; iv1 < nFER; ++iv1) {
-            int thread_num = omp_get_thread_num();
-            std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << " with thread " << thread_num << "\n";
-            for (int iv2 = 0; iv2 < nFER; ++iv2) {
-                perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[thread_num]);
-            }
-        }*/
     }
-#else
+}
+
+template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble_SIAM(){
     for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
@@ -334,7 +333,6 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
             }
         }
     }
-#endif
 }
 
 template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
@@ -395,7 +393,7 @@ int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) const {
     return iK_actual;
 }
 
-#ifdef HUBBARD_MODEL
+// Hubbard model specific functions
 template<typename Q>
 void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
                                                             Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
@@ -501,8 +499,7 @@ PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Pr
         }
     }
 }
-
-#endif // HUBBARD_MODEL
+// End of Hubbard model specific functions
 
 
 //Class created for debugging of the Bubbles
@@ -896,7 +893,7 @@ class BubbleFunctionCalculator{
 
     void set_channel_specific_freq_ranges_and_prefactor();
     void find_vmin_and_vmax();
-    void crossproject_vertices();
+    void crossproject_vertices(); // Only needed for the Hubbard model
 
     void calculate_bubble_function(int diag_class);
     Q get_value(int i_mpi, int i_omp, int n_omp, int diag_class);
@@ -942,6 +939,7 @@ class BubbleFunctionCalculator{
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
 
+        if (HUBBARD_MODEL) {
         // As we already know, which channel parametrization will be needed,
         // we cross-project the vertices with respect to the internal structure already here.
         crossproject_vertices();
@@ -949,6 +947,7 @@ class BubbleFunctionCalculator{
         /// TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
         ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).
         ///  The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.
+        }
     }
 };
 
@@ -1019,7 +1018,6 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::crossproject_vertices() {
-#ifdef HUBBARD_MODEL
     switch (channel) {
         case 'a':
             #if MAX_DIAG_CLASS >= 0
@@ -1092,7 +1090,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
             break;
             default: ;
     }
-#endif // HUBBARD_MODEL
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,

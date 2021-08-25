@@ -10,26 +10,22 @@
 //#define NDEBUG
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-//#define HUBBARD_MODEL
-#ifdef HUBBARD_MODEL
-    const bool HUBBARD_MODEL = true;
+#define HUBBARD
+#ifdef HUBBARD
+    constexpr bool HUBBARD_MODEL = true;
 #else
-    const bool HUBBARD_MODEL = false;
+    constexpr bool HUBBARD_MODEL = false;
 #endif
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-//#define KELDYSH_FORMALISM
+#define KELDYSH_FORMALISM
 
 #ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM
-
-
-
-
+//#define PARTICLE_HOLE_SYMM
 
 
 /// Production runs parameters ///
@@ -70,18 +66,18 @@ const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in e
 /// Spin parameters ///
 
 // Number of independent spin components. n_spin = 1 with SU(2) symmetry.
-const int n_spin = 1;
+constexpr int n_spin = 1;
 
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure for the Hubbard model
-const int glb_N_q = 9; // Number of transfer momentum points in one dimension.
-const int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
+constexpr int glb_N_q = 9; // Number of transfer momentum points in one dimension.
+constexpr int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
 
-#ifdef HUBBARD_MODEL
-const int n_in = glb_N_transfer;
+#ifdef HUBBARD
+constexpr int n_in = glb_N_transfer;
 #else
-const int n_in = 1;
+constexpr int n_in = 1;
 #endif
 
 /// fRG parameters ///

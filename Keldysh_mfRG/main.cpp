@@ -54,17 +54,19 @@ auto main() -> int {
 #endif
 
 #ifdef KELDYSH_FORMALISM
-#ifdef HUBBARD_MODEL
+if (HUBBARD_MODEL){
     print("Hubbard model in Keldysh formalism: \n");
-#else
+}
+else{
     print("SIAM in Keldysh formalism: \n");
-#endif // HUBBARD_MODEL
+}
 #else
-#ifdef HUBBARD_MODEL
-    print("Hubbard model in Keldysh formalism: \n");
-#else
+if (HUBBARD_MODEL){
+    print("Hubbard model in Matsubara formalism: \n");
+}
+else{
     print("SIAM in Matsubara formalism: \n");
-#endif // HUBBARD_MODEL
+}
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     print("Using PARTICLE HOLE Symmetry\n");
@@ -84,9 +86,7 @@ auto main() -> int {
     print("nFER1 = ", nFER, true);
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
-#ifdef HUBBARD_MODEL
-    print("n_in = ", n_in, true);
-#endif
+    if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
     const char* dir = "../Data/";
     std::string dir_str = dir;

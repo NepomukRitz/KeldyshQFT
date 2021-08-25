@@ -57,13 +57,13 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 //    Propagator dG (Lambda, Psi.selfenergy, 's');
 
     // Initialize bubble objects;
-#ifdef HUBBARD_MODEL // Use precalculated bubble in this case
+#ifdef HUBBARD // Use precalculated bubble in this case
     PrecalculateBubble<comp> Pi(G, dG, false);
     PrecalculateBubble<comp> dPi(G, dG, true);
 #else // Otherwise use same type of bubble as before, which directly interpolates
     Bubble<Q> Pi(G, dG, false);
     Bubble<Q> dPi(G, dG, true);
-#endif // HUBBARD_MODEL
+#endif // HUBBARD
 
     //TODO(medium): Think about performing cross-projections for Psi.vertex already here,
     // as this object is often needed when going to higher loop-orders.

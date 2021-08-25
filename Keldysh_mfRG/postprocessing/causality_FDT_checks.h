@@ -41,7 +41,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
     int cnt = 0;
     double sum = 0.;
     for (int i=0; i<nFER; ++i) {
-#if defined(PARTICLE_HOLE_SYMM) and not defined(HUBBARD_MODEL)
+#if defined(PARTICLE_HOLE_SYMM) and not defined(HUBBARD)
         double val = Sigma[i] * sign(selfEnergy.frequencies.ws[i]);
 #else
         double val = Sigma[i].imag() * sign(selfEnergy.frequencies.ws[i]);

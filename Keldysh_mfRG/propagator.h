@@ -224,26 +224,28 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::GR(double v, int i_in) const -> Q
 {
-#ifdef HUBBARD_MODEL
-    double k_x, k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
-    // TODO: Currently only at half filling!
-#else
-    return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
-#endif
+    if (HUBBARD_MODEL){
+        double k_x, k_y;
+        get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+        return 1. / (v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
+        // TODO: Currently only at half filling!
+    }
+    else {
+        return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
+    }
 }
 template <typename Q>
 auto Propagator<Q>::GA(double v, int i_in) const -> Q
 {
-#ifdef HUBBARD_MODEL
-    double k_x, k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - glb_i * Lambda / 2. - conj(selfenergy.valsmooth(0, v, i_in)));
-    // TODO: Currently only at half filling!
-#else
-    return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
-#endif
+    if (HUBBARD_MODEL) {
+        double k_x, k_y;
+        get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+        return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - glb_i * Lambda / 2. - conj(selfenergy.valsmooth(0, v, i_in)));
+        // TODO: Currently only at half filling!
+    }
+    else {
+        return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
+    }
 }
 template <typename Q>
 auto Propagator<Q>::GK(double v, int i_in) const -> Q
@@ -303,19 +305,20 @@ auto Propagator<Q>::SK(double v, int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::GM(double v, int i_in) const -> Q
 {
-#ifdef HUBBARD_MODEL
-    double k_x; double k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
-    // TODO: Currently only at half filling!
-#else
+    if (HUBBARD_MODEL) {
+        double k_x; double k_y;
+        get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+        return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
+        // TODO: Currently only at half filling!
+    }
+    else {
 #ifdef PARTICLE_HOLE_SYMM
-    assert(v != 0.);
+        assert(v != 0.);
     return 1./(        v                +       (glb_Gamma+Lambda)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
 #else
-    return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+        return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
 #endif // PARTICLE_HOLE_SYMM
-#endif // HUBBARD_MODEL
+    }
 }
 // single scale propagator (Matsubara)
 template <typename Q>
@@ -342,20 +345,22 @@ auto Propagator<Q>::SM(double v, int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::GR(double v, int i_in) const -> Q
 {
-#ifdef HUBBARD_MODEL
-    // TODO: write GR for Hubbard model
-#else
-    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
-#endif
+    if (HUBBARD_MODEL) {
+        // TODO: write GR for Hubbard model
+    }
+    else {
+        return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
+    }
 }
 template <typename Q>
 auto Propagator<Q>::GA(double v, int i_in) const -> Q
 {
-#ifdef HUBBARD_MODEL
-    // TODO: write GA for Hubbard model
-#else
-    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
-#endif
+    if (HUBBARD_MODEL) {
+        // TODO: write GR for Hubbard model
+    }
+    else {
+        return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
+    }
 }
 template <typename Q>
 auto Propagator<Q>::GK(double v, int i_in) const -> Q
@@ -415,17 +420,17 @@ auto Propagator<Q>::SK(double v, int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::GM(double v, int i_in) const -> Q
 {
-#ifdef HUBBARD_MODEL
-
-    // TODO: write GM for Hubbard model
-#else
+    if (HUBBARD_MODEL) {
+        // TODO: write GM for Hubbard model
+    }
+    else {
 #ifdef PARTICLE_HOLE_SYMM
-    assert(v != 0.);
+        assert(v != 0.);
     return v*v / (v*v + Lambda*Lambda) * 1./(        v                +       (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
 #else
-    return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+        return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
 #endif // PARTICLE_HOLE_SYMM
-#endif // HUBBARD_MODEL
+    }
 }
 // single scale propagator (Matsubara)
 template <typename Q>

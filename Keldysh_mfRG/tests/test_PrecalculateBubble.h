@@ -227,7 +227,6 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
     return end_time - starting_time; // time given in milliseconds
 }
 
-#ifdef HUBBARD_MODEL
 void test_Bubble_in_Momentum_Space(){
     double Lambda = 0.01;
     Propagator<comp> g (Lambda, 'g');
@@ -300,6 +299,5 @@ void test_Bubble_in_Momentum_Space(){
                     DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});
 #endif
     }
-#endif //HUBBARD_MODEL
 
 #endif //KELDYSH_MFRG_TESTING_TEST_PRECALCULATEBUBBLE_H

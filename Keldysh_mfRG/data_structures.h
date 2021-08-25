@@ -21,7 +21,7 @@ auto isfinite(comp z) -> bool {
     return std::isfinite(real(z)) and std::isfinite(imag(z));
 }
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD_MODEL)
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
 using state_datatype = double;
 #else
 using state_datatype = comp;
