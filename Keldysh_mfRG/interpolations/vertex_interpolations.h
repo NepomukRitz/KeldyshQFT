@@ -43,6 +43,7 @@ public:
         {
             Q result = indices.prefactor * interpolate1D<Q>(indices.w, vertex.frequencies.b_K1,
                                 [&indices, &vertex](int i) -> Q {vertex.K1_val(indices.iK, i, indices.i_in);});
+                                // Lambda function (aka anonymous function) in last argument
             return result;
         } else {
             return 0.;  // asymptotic value

@@ -152,21 +152,6 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
         //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
-        /*if (std::abs(v) != this->frequencies.w_upper) { // linear interpolation
-            int iv = this->frequencies.fconv(v); // index corresponding to v
-            double x1 = this->frequencies.ws[iv]; // lower adjacent frequency value
-            double x2 = this->frequencies.ws[iv + 1]; // upper adjacent frequency value
-            double xd = (v - x1) / (x2 - x1); // distance between adjacent frequnecy values
-
-            Q f1 = val(iK, iv, i_in); // lower adjacent value
-            Q f2 = val(iK, iv + 1, i_in);  // upper adjacent value
-
-            return (1. - xd) * f1 + xd * f2; // interpolated value
-        }
-        else if (v == this->frequencies.w_upper) //Exactly at the upper boundary
-            return val(iK, nSE-1, i_in);
-        else if (v == this->frequencies.w_lower) //Exactly at the lower boundary
-            return val(iK, 0, i_in)*/;
             Q result = interpolate1D<Q>(v, frequencies, [&](int i) -> Q {val(iK, i, i_in);});
             return result;
     }

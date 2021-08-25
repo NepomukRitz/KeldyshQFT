@@ -7,6 +7,7 @@
 
 /**
  * Interpolates linearly in 1D
+ * ATTENTION!: all
  * @tparam Q            double or comp
  * @param x
  * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
@@ -14,7 +15,7 @@
  * @return
  */
 template <typename Q>
-inline auto interpolate1D(const double x, const FrequencyGrid frequencies, const std::function<Q(int)> val) -> Q {
+inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
 
     int index = frequencies.fconv(x);
 
@@ -22,8 +23,8 @@ inline auto interpolate1D(const double x, const FrequencyGrid frequencies, const
     double x2 = frequencies.ws[index + 1];
     double xd = (x - x1) / (x2 - x1);
 
-    auto f1 = val(index);
-    auto f2 = val(index + 1);
+    Q f1 = val(index);
+    Q f2 = val(index + 1);
 
     Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));
@@ -39,7 +40,9 @@ inline auto interpolate1D(const double x, const FrequencyGrid frequencies, const
  * @param y
  * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
  * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
- * @param val           any function that takes two integers and returns a value of type Q
+ * @param val           any function f(i,j) that takes two integers and returns a value of type Q
+ *                      where integer i belongs to x
+ *                        and integer j belongs to y
  * @return
  */
 template <typename Q>
@@ -53,8 +56,8 @@ inline auto interpolate2D(const double x, const double y,
     double x2 = xfrequencies.ws[index + 1];
     double xd = (x - x1) / (x2 - x1);
 
-    auto f1 = interpolate1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {val(index  , i);});
-    auto f2 = interpolate1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {val(index+1, i);});
+    Q f1 = interpolate1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {val(index  , i);});
+    Q f2 = interpolate1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {val(index+1, i);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));
@@ -71,7 +74,10 @@ inline auto interpolate2D(const double x, const double y,
  * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
  * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
  * @param zfrequencies  frequencyGrid with the functions fconv and with z-values in vector ws
- * @param val           any function that takes three integers and returns a value of type Q
+ * @param val           any function f(i,j,k) that takes three integers and returns a value of type Q
+ *                      where integer i belongs to x
+ *                        and integer j belongs to y
+ *                        and integer k belongs to z
  * @return
  */
 template <typename Q>
@@ -85,8 +91,8 @@ inline auto interpolate3D(const double x, const double y, const double z,
     double x2 = xfrequencies.ws[index + 1];
     double xd = (x - x1) / (x2 - x1);
 
-    auto f1 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {val(index  , i, j);});
-    auto f2 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {val(index+1, i, j);});
+    Q f1 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {val(index  , i, j);});
+    Q f2 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {val(index+1, i, j);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));
