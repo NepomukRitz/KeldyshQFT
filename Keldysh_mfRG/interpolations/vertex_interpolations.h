@@ -23,7 +23,7 @@ public:
         {
             Q result = indices.prefactor * interpolate2D<Q>(indices.w, indices.v1,
                                                             vertex.frequencies.b_K2, vertex.frequencies.f_K2,
-                                                            [&indices, &vertex](int i, int j) -> Q {vertex.K2_val(indices.iK, i, j, indices.i_in);});
+                                                            [&indices, &vertex](int i, int j) -> Q {return vertex.K2_val(indices.iK, i, j, indices.i_in);});
             return result;
         }
         else {
@@ -42,7 +42,7 @@ public:
         if (std::abs(indices.w) < vertex.frequencies.b_K1.w_upper + inter_tol)
         {
             Q result = indices.prefactor * interpolate1D<Q>(indices.w, vertex.frequencies.b_K1,
-                                [&indices, &vertex](int i) -> Q {vertex.K1_val(indices.iK, i, indices.i_in);});
+                                [&indices, &vertex](int i) -> Q {return vertex.K1_val(indices.iK, i, indices.i_in);});
                                 // Lambda function (aka anonymous function) in last argument
             return result;
         } else {
@@ -64,7 +64,7 @@ public:
         {
             Q result = indices.prefactor * interpolate3D<Q>(indices.w, indices.v1, indices.v2,
                      vertex.frequencies.b_K3, vertex.frequencies.f_K3, vertex.frequencies.f_K3,
-                     [&indices, &vertex](int i, int j, int k) -> Q {vertex.K3_val(indices.iK, i, j, k, indices.i_in);});
+                     [&indices, &vertex](int i, int j, int k) -> Q {return vertex.K3_val(indices.iK, i, j, k, indices.i_in);});
             return result;
         } else {
             return 0.;  // asymptotic value

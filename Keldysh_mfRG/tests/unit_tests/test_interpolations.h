@@ -1,6 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
 #define KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
 
+#include "../../data_structures.h"
 #include "../../interpolations/vertex_interpolations.h"
 #include "../../r_vertex.h"
 #include "../../symmetries/symmetry_transformations.h"
@@ -127,9 +128,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
 
 namespace {
     // functions to test linear interpolation (below)
-    auto linearFunction1D(state_datatype x) -> state_datatype {return 1 + x;}
-    auto linearFunction2D(state_datatype x, state_datatype y) -> state_datatype {return 1 + x + y;}
-    auto linearFunction3D(state_datatype x, state_datatype y, state_datatype z) -> state_datatype {return 1 + x + y + z;}
+    auto linearFunction1D(double x) -> state_datatype {return 1. + x;}
+    auto linearFunction2D(double x, double y) -> state_datatype {return 1. + x + y;}
+    auto linearFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + y + z;}
 }
 
 TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]" ) {
@@ -155,9 +156,11 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     for (int iw = 0; iw<N; iw++){
         indices.w = avertex.frequencies.b_K1.w_lower + iw*inter;
 
-        state_datatype error = std::abs(Interpolate<k1, state_datatype>()(indices, avertex) - linearFunction1D(indices.w));
+        double error = std::abs(Interpolate<k1, state_datatype>()(indices, avertex) - linearFunction1D(indices.w));
         cumul_interpolation_error += error;
-        if (error >= interpolation_tolerance) geq_interpolation_tolerance = true;
+        if (error >= interpolation_tolerance) {
+            geq_interpolation_tolerance = true;
+        }
 
         value +=1;
     }
@@ -200,7 +203,7 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
 
     double cumul_interpolation_error = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    state_datatype error;
+    double error;
     int N = nBOS2 * 4;
     int M = nFER2 * 4;
     double interb = (avertex.frequencies.b_K2.w_upper - avertex.frequencies.b_K2.w_lower) / double(N-1);
@@ -258,7 +261,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
 
     double cumul_interpolation_error = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    state_datatype error;
+    double error;
     int N = nBOS3 * 4;
     int M = nFER3 * 4;
     double interb = (avertex.frequencies.b_K3.w_upper - avertex.frequencies.b_K3.w_lower) / double(N-1);
