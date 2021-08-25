@@ -11,10 +11,10 @@
 #define MPI_FLAG
 
 //Tolerance for closeness to grid points when interpolating
-const double inter_tol = 1e-10;
+constexpr double inter_tol = 1e-10;
 
 //Tolerance for loop convergence
-const double converged_tol = 1e-7;
+constexpr double converged_tol = 1e-7;
 
 //Integrator type:
 // 0: Riemann sum
@@ -26,10 +26,10 @@ const double converged_tol = 1e-7;
 #define INTEGRATOR_TYPE 5
 
 //Integrator tolerance
-const double integrator_tol = 1e-6;
+constexpr double integrator_tol = 1e-6;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-const int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
+constexpr int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
 
 // Debug mode allows to select specific Keldysh components contributing to loop and bubbles
