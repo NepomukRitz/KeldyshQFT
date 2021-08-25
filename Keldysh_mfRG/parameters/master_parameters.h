@@ -43,20 +43,20 @@
 
 /// Physical parameters ///
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-const double glb_T = 2./M_PI; //0.01;                     // Temperature
+constexpr double glb_T = 2./M_PI; //0.01;                     // Temperature
 #else
-const double glb_T = 0.01;                     // Temperature
+constexpr double glb_T = 0.01;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
-    const double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
+    constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
 #else
-    const double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
+    constexpr double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
 #endif
-const double glb_U = 1.0;                      // Impurity on-site interaction strength
-const double glb_Vg = glb_mu;                  // Impurity level shift
-const double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-const double glb_Gamma = 1./5.;                // Hybridization of Anderson model
-const double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
+constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
+constexpr double glb_Vg = glb_mu;                  // Impurity level shift
+constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
+constexpr double glb_Gamma = 1./5.;                // Hybridization of Anderson model
+constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 #define EQUILIBRIUM                            // If defined, use equilibrium FDT's for propagators
                                                // (only sensible when glb_V = 0)
 
@@ -91,12 +91,12 @@ constexpr int n_in = 1;
 //#define FLOW
 
 
-const int nODE = 50;
+constexpr int nODE = 50;
 
 // Limits of the fRG flow
-const double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
-const double Lambda_fin = 0.0;
-const double Lambda_scale = 1./200.;             //Scale of the log substitution
+constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 0.0;
+constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
@@ -104,12 +104,12 @@ std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 
 
 
 #if REG==2
-const int param_size = 14;
-const double parameter_list[param_size] = {GRID, REG, glb_Gamma, MAX_DIAG_CLASS, N_LOOPS,
+constexpr int param_size = 14;
+constexpr double parameter_list[param_size] = {GRID, REG, glb_Gamma, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #else
-const int param_size = 13;
-const double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOPS,
+constexpr int param_size = 13;
+constexpr double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #endif
 
