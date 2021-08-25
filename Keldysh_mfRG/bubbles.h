@@ -265,32 +265,10 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_fermionic_grid(const 
     if (    std::abs(v1) + inter_tol < fermionic_grid.w_upper
             && std::abs(v2) + inter_tol < fermionic_grid.w_upper) {
 
-        int index_f1 = fermionic_grid.fconv(v1);
-        int index_f2 = fermionic_grid.fconv(v2);
+        Q result = interpolate2D<Q>(v1, v2, fermionic_grid, fermionic_grid,
+                                    [&](int i, int j) -> Q {FermionicBubble[composite_index(iK_bubble, i, j, i_in)];});
+        return result;
 
-        double x1 = fermionic_grid.ws[index_f1];
-        double x2 = fermionic_grid.ws[index_f1 + 1];
-        if (x1 >= x2) { // If not x1<x2, we run out of the box --> shift the index downwards.
-            index_f1 -= 1;
-            x1 = fermionic_grid.ws[index_f1];
-            x2 = fermionic_grid.ws[index_f1 + 1];
-        }
-        double y1 = fermionic_grid.ws[index_f2];
-        double y2 = fermionic_grid.ws[index_f2 + 1];
-        if (y1 >= y2) { // If not y1<y2, we run out of the box --> shift the index downwards.
-            index_f2 -= 1;
-            y1 = fermionic_grid.ws[index_f2];
-            y2 = fermionic_grid.ws[index_f2 + 1];
-        }
-
-        double xd = (v1 - x1) / (x2 - x1);
-        double yd = (v2 - y1) / (y2 - y1);
-        auto f11 = FermionicBubble[composite_index(iK_bubble, index_f1, index_f2, i_in)];
-        auto f12 = FermionicBubble[composite_index(iK_bubble, index_f1, index_f2 + 1, i_in)];
-        auto f21 = FermionicBubble[composite_index(iK_bubble, index_f1 + 1, index_f2, i_in)];
-        auto f22 = FermionicBubble[composite_index(iK_bubble, index_f1 + 1, index_f2 + 1, i_in)];
-
-        return (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22);
     }
     else {
         //std::cout << "Out of interpolation tolerance! \n";

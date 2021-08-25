@@ -334,7 +334,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
     vec<Q> result = vec<Q>(num_intervals);
     for (int i = 0; i < num_intervals; i++){
-        result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
+        if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
     }
     return result.sum();
 #endif
