@@ -17,8 +17,9 @@ public:
 #endif
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
-    SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
-    SelfEnergy(const SelfEnergy<Q>& selfEnergy_in) : frequencies(selfEnergy_in.frequencies) {};
+    explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
+    explicit  SelfEnergy(const FrequencyGrid& frequencies_in) : frequencies(frequencies_in) {};
+
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid

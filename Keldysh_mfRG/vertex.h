@@ -82,7 +82,7 @@ public:
                                     // into r bubble (i.e. in left/right_same/diff_bare functions), and no gammaRb. This
                                     // is needed for correct computation of the central part in multiloop contributions.
 
-    fullvert(double Lambda) : avertex('a', Lambda),
+    explicit fullvert(double Lambda) : avertex('a', Lambda),
                               pvertex('p', Lambda),
                               tvertex('t', Lambda) {}
 
@@ -187,7 +187,7 @@ template <typename Q>
 class symmetric {
     fullvert<Q> vertex;
 public:
-    symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
+    explicit symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
     symmetric(const fullvert<Q>& half1, const fullvert<Q>& half2) : vertex(half1) {}
 
     // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
@@ -251,7 +251,7 @@ template <typename Q>
 class non_symmetric {
     fullvert<Q> vertex_half1, vertex_half2;
 public:
-    non_symmetric(const fullvert<Q>& vertex_in)
+    explicit non_symmetric(const fullvert<Q>& vertex_in)
             : vertex_half1(vertex_in), vertex_half2(vertex_in) {
         print("Warning: non-symmetric vertex initialized with only one fullvert.", true);
     }
@@ -320,8 +320,7 @@ class vertex_container {
     symmetry_type<Q> vertex;
 
 public:
-    //vertex_container() {}
-    vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
+    explicit vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
     vertex_container(const fullvert<Q>& half1, const fullvert<Q>& half2)
                     : vertex(half1, half2) {}
 
@@ -432,10 +431,13 @@ template <typename Q, template <typename> class symmetry_type>
 class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
     GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
+
+    /// Constructor, which gets another GeneralVertex as input; it ONLY copies its frequency grid!
     GeneralVertex(int n, const GeneralVertex<Q, symmetry_type>& Vertex_in)
       :vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda_ini))) {
         set_frequency_grid(Vertex_in);      // copies frequency grid from Vertex_in
     };
+    /// Constructor, which gets vertex_container as input with which all vector elements are initialized
     GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type>> (n, val) {}; // Never used; perhaps useful if no SU(2)-symmetry
 
     auto operator+= (const GeneralVertex<Q, symmetry_type>& rhs) -> GeneralVertex<Q, symmetry_type> {

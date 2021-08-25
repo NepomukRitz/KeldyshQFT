@@ -43,8 +43,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     static_assert(N_LOOPS>=1, "");
 
-    State<Q> dPsi(Psi); // result
-    //dPsi.set_frequency_grid(Psi); // set frequency grids of result state to the one of input state
+    // initialize empty state with frequency grids corresponding to those in Psi:
+    State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
+
 
     Propagator<Q> S (Lambda, Psi.selfenergy, 's');
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
@@ -226,8 +227,8 @@ void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& d
     // TODO(low): also implement self-energy flow via differentiated SDE
     // TODO(low): iterate self-energy corrections (feedback of full SE flow into vertex flow etc.)?
 
-    SelfEnergy<Q> dSigma_tbar(Psi.selfenergy);
-    SelfEnergy<Q> dSigma_t(Psi.selfenergy);
+    SelfEnergy<Q> dSigma_tbar(Psi.selfenergy.frequencies);
+    SelfEnergy<Q> dSigma_t(Psi.selfenergy.frequencies);
 
     // compute first multiloop correction to self-energy flow, irreducible in the t channel
     loop(dSigma_tbar, dGammaC_tbar, G, true);
