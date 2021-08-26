@@ -156,7 +156,7 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
             int iv = this->frequencies.fconv(v); // index corresponding to v
             double x1 = this->frequencies.ws[iv]; // lower adjacent frequency value
             double x2 = this->frequencies.ws[iv + 1]; // upper adjacent frequency value
-            double xd = (v - x1) / (x2 - x1); // distance between adjacent frequnecy values
+            double xd = (v - x1) / (x2 - x1); // distance between adjacent frequency values
 
             Q f1 = val(iK, iv, i_in); // lower adjacent value
             Q f2 = val(iK, iv + 1, i_in);  // upper adjacent value

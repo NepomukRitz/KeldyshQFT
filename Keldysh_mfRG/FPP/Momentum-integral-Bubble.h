@@ -28,9 +28,11 @@
 #include <gsl/gsl_deriv.h>      // numerical derivative
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_odeiv2.h>     // ordinary differential equations
-#include "zeros.h"
+//#include "zeros.h"
 #include "../integrator/integrator.h"
 
+// PARAMETERS
+// =============================================
 
 double glb_muc;
 double glb_mud;
@@ -38,6 +40,13 @@ double glb_mc;
 double glb_md;
 double glb_prec;
 double glb_ainv;
+
+int composite_index_wq (int wi, int qi, int nq) {
+    return wi*nq + qi;
+}
+
+// BARE GREEN'S FUNCTION ETC.
+// =============================================
 
 comp G0(double v, double ksquared, char particle) {
     switch (particle) {
@@ -51,14 +60,31 @@ comp G0(double v, double ksquared, char particle) {
 }
 
 comp regulator(double Lambda, double v, double  ksquared, char particle) {
-    switch (particle) {
-        case 'c':
-            return 1. - exp(-(pow(ksquared/(2*glb_mc)-glb_muc,2.)+v*v)/(Lambda*Lambda));
-        case 'd':
-            return 1. - exp(-(pow(ksquared/(2*glb_md)-glb_mud,2.)+v*v)/(Lambda*Lambda));
-        default:
-            std::cout << "wrong particle type in R\n";
+    double mu_plus, m;
+
+    if (particle == 'c'){
+        m = glb_mc;
+        if (glb_muc > 0.0){
+            mu_plus = glb_muc;
+        }
+        else {
+            mu_plus = 0.0;
+        }
     }
+    else if (particle == 'd') {
+        m = glb_md;
+        if (glb_mud > 0.0){
+            mu_plus = glb_mud;
+        }
+        else {
+            mu_plus = 0.0;
+        }
+    }
+    else {
+        std::cout << "wrong particle type in R\n";
+    }
+
+    return 1. - exp(-(pow(ksquared/(2*m)-mu_plus,2.)+v*v)/(Lambda*Lambda));
 }
 
 comp G0Lambda(double Lambda, double v, double ksquared, char particle) {
@@ -112,6 +138,22 @@ comp DiffBubbleLambda(double Lambda, double v1, double v2, double q, double kpp,
         return 0.0;
     }
 } */
+
+// BARE INTERACTION
+// ==============================
+
+double gint(double Lambda_i, double Lambda_f, int reg) {
+    /* reg: 0 = sharp frequency, 1 = sharp momentum */
+    double mr = glb_mc*glb_md/(glb_mc+glb_md);
+    switch (reg) {
+        case 1:
+            return 1./(mr*glb_ainv/(2*M_PI)-mr/(M_PI*M_PI)*(sqrt(glb_mc)+sqrt(glb_md))*(sqrt(Lambda_i)-sqrt(Lambda_f)));
+        case 2:
+            return 1./(mr*glb_ainv/(2*M_PI)-mr/(M_PI*M_PI)*(Lambda_i-Lambda_f));
+        default:
+            std::cout << "wrong regulator type in g\n";
+    }
+}
 
 // MONTE-CARLO-INTEGRATION BUBBLE
 // ==============================
@@ -426,8 +468,6 @@ void integral_bubble_w_vpp_list_MC (char i, char j, char channel, double wmax, d
                    {times_usual, times_precalculated});
 }*/
 
-
-
 /*double f_Im (double *k, size_t dim, void *params)
 {
     //struct f_struct * fparams = (struct f_struct *) params;
@@ -438,38 +478,14 @@ void integral_bubble_w_vpp_list_MC (char i, char j, char channel, double wmax, d
 } */
 
 // EXACT BARE BUBBLE IN MOMENTUM SPACE
+// =======================================
 
-comp exact_bare_bubble (double w, double vpp, double q, char i, char j, char r){
+comp exact_bare_bubble_v1v2 (double v1, double v2, double q, char i, char j){
 
-    double prefactor;
-    double v1;
-    double v2;
     double mi;
     double mj;
     double mui;
     double muj;
-
-    if (r == 'a') {
-        prefactor = 1.;
-        v1 = vpp + w/2;
-        v2 = vpp - w/2;
-    }
-    else if (r == 'p') {
-        prefactor = 0.5;
-        v1 = w / 2 + vpp;
-        v2 = w / 2 - vpp;
-    }
-    else if (r == 't') {
-        prefactor = -1.;
-        v1 = vpp + w / 2;
-        v2 = vpp - w / 2;
-    }
-    else {
-        prefactor = 0.;
-        v1 = 0.;
-        v2 = 0.;
-        std::cout << "wrong channel\n";
-    }
 
     if (i == 'c') {
         mi = glb_mc;
@@ -499,10 +515,61 @@ comp exact_bare_bubble (double w, double vpp, double q, char i, char j, char r){
         std::cout << "wrong particle type 'j'\n";
     }
 
-    if (q == 0.)
-        return prefactor*mi*mj/(M_PI*(pow(-1./(2*mi*(mui+glb_i*v1)),-0.5)+pow(-1./(2*mj*(muj+glb_i*v2)),-0.5)));
+    comp denominator;
+    if (((2*mi*(mui+glb_i*v1)) != 0.) and ((2*mj*(muj+glb_i*v2)) != 0.)){
+        denominator = pow(-1./(2*mi*(mui+glb_i*v1)),-0.5)+pow(-1./(2*mj*(muj+glb_i*v2)),-0.5);
+    }
+    else if (((2*mi*(mui+glb_i*v1)) == 0.) and ((2*mj*(muj+glb_i*v2)) != 0.)){
+        denominator = pow(-1./(2*mj*(muj+glb_i*v2)),-0.5);
+    }
+    else if (((2*mi*(mui+glb_i*v1)) != 0.) and ((2*mj*(muj+glb_i*v2)) == 0.)){
+        denominator = pow(-1./(2*mi*(mui+glb_i*v1)),-0.5);
+    }
+    else {
+        denominator = 1e-64;
+    }
+
+    if (q == 0.) {
+        return mi*mj/(M_PI*denominator);
+    }
     else
-        return prefactor*mi*mj/(M_PI*q)*atan(q/(pow(-1./(2*mi*(mui+glb_i*v1)),-0.5)+pow(-1./(2*mj*(muj+glb_i*v2)),-0.5)));
+        return mi*mj/(M_PI*q)*atan(q/denominator);
+}
+
+comp exact_bare_bubble (double w, double vpp, double q, char i, char j, char r){
+
+    double prefactor;
+    double v1;
+    double v2;
+    //double mi;
+    //double mj;
+    //double mui;
+    //double muj;
+
+    if (r == 'a') {
+        prefactor = 1.;
+        v1 = vpp + w/2;
+        v2 = vpp - w/2;
+    }
+    else if (r == 'p') {
+        prefactor = 0.5;
+        v1 = w / 2 + vpp;
+        v2 = w / 2 - vpp;
+    }
+    else if (r == 't') {
+        prefactor = -1.;
+        v1 = vpp + w / 2;
+        v2 = vpp - w / 2;
+    }
+    else {
+        prefactor = 0.;
+        v1 = 0.;
+        v2 = 0.;
+        std::cout << "wrong channel\n";
+    }
+
+    return prefactor*exact_bare_bubble_v1v2 (v1, v2, q, i, j);
+
 }
 
 void print_exact_bubble (double w, double vpp, double q, char i, char j, char r){
@@ -512,29 +579,29 @@ void print_exact_bubble (double w, double vpp, double q, char i, char j, char r)
     std::cout << "The exact bubble is " << real_output_value << " + i " << imag_output_value << "\n";
 }
 
-void integral_bubble_w_vpp_list_exact (char i, char j, char channel, double wmax, double vppmax, double qmax, int nFER, int nBOS, int nq) {
-    vec<double> vpps(nFER);
-    vec<double> ws(nBOS);
+void integral_bubble_w_vpp_list_exact (char i, char j, char channel, double wmax, double vppmax, double qmax, int nvpp, int nw, int nq) {
+    vec<double> vpps(nvpp);
+    vec<double> ws(nw);
     vec<double> qs(nq);
-    vec<double> Pi_int_Re(nFER*nBOS*nq);
-    vec<double> Pi_int_Im(nFER*nBOS*nq);
+    vec<double> Pi_int_Re(nvpp*nw*nq);
+    vec<double> Pi_int_Im(nvpp*nw*nq);
     comp result_integral;
     double w;
     double vpp;
     double q;
 
-    for (int wi = 0; wi < nBOS; ++wi) {
-        w = -wmax + 2*wi*wmax/(nBOS-1);
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2*wi*wmax/(nw-1);
         ws[wi] = w;
-        for (int vppi = 0; vppi < nFER; ++vppi) {
-            vpp = -vppmax + 2*vppi*vppmax/(nFER-1);
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = -vppmax + 2*vppi*vppmax/(nvpp-1);
             vpps[vppi] = vpp;
             for (int qi = 0; qi < nq; ++qi) {
                 q = qi*qmax/(nq-1);
                 qs[qi] = q;
                 result_integral = exact_bare_bubble(w,vpp,q,i,j,channel);
-                Pi_int_Re[composite_index_wvq(wi, vppi, nFER, qi, nq)] = real(result_integral);
-                Pi_int_Im[composite_index_wvq(wi, vppi, nFER, qi, nq)] = imag(result_integral);
+                Pi_int_Re[composite_index_wvq(wi, vppi, nvpp, qi, nq)] = real(result_integral);
+                Pi_int_Im[composite_index_wvq(wi, vppi, nvpp, qi, nq)] = imag(result_integral);
                 std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
             }
         }
@@ -545,15 +612,16 @@ void integral_bubble_w_vpp_list_exact (char i, char j, char channel, double wmax
     filename += i;
     filename += j;
     filename += channel;
-    filename += "_nBOS=" + std::to_string(nBOS)
-                + "_nFER=" + std::to_string(nFER)
+    filename += "_nw=" + std::to_string(nw)
+                + "_nvpp=" + std::to_string(nvpp)
                 + "_nq=" + std::to_string(nq)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
                    {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
-
 }
+
+// INTEGRAND FOR LADDER OR FRG FROM EXACT BUBBLE
 
 double heaviside ( double x){
     if (x > 0.0){
@@ -570,7 +638,9 @@ double heaviside ( double x){
     }
 }
 
-comp sharp_frequency_exact_bare_bubble ( double w, double Lambda, double q, char i, char j, char r){
+comp perform_integral_Pi0_kpp_chan (double w, double vpp, double q, char i, char j, char chan);
+
+comp sharp_frequency_bare_bubble ( double w, double Lambda, double q, char i, char j, char r, int inttype){
     double v1, v2, v3, v4, Th1, Th2;
     comp result;
 
@@ -582,9 +652,19 @@ comp sharp_frequency_exact_bare_bubble ( double w, double Lambda, double q, char
     Th1 = heaviside(std::abs(Lambda-w)-Lambda);
     Th2 = heaviside(std::abs(Lambda+w)-Lambda);
 
-    result = -1/(2*M_PI)*(Th1*exact_bare_bubble (w, v1, q, i, j, r) + Th2*exact_bare_bubble (w, v2, q, i, j, r) + Th2*exact_bare_bubble (w, v3, q, i, j, r) + Th1*exact_bare_bubble (w, v4, q, i, j, r));
-    return result;
+    if (inttype == 0) {
+        result = -1/(2*M_PI)*(Th1*exact_bare_bubble (w, v1, q, i, j, r) + Th2*exact_bare_bubble (w, v2, q, i, j, r) + Th2*exact_bare_bubble (w, v3, q, i, j, r) + Th1*exact_bare_bubble (w, v4, q, i, j, r));
+    }
+    else if (inttype == 1){
+        result = -1/(2*M_PI)*(Th1*perform_integral_Pi0_kpp_chan (w, v1, q, i, j, r) + Th2*perform_integral_Pi0_kpp_chan (w, v2, q, i, j, r) + Th2*perform_integral_Pi0_kpp_chan (w, v3, q, i, j, r) + Th1*perform_integral_Pi0_kpp_chan (w, v4, q, i, j, r));
+    }
+    else {
+        std::cout << "wrong k-integral type in bubble\n";
+    }
+        return result;
 }
+
+// TRYING OUT GSL-ODE-SOLVER
 
 struct params_K1{
     double w, q, g, Lambda_i;
@@ -605,14 +685,14 @@ int K1cdcd(double t, const double y[], double f[], void *params) {
     double ImK1 = y[1];
 
 
-    double RePicd = real(sharp_frequency_exact_bare_bubble ( w, Lambda, q, 'c', 'd', r));
-    double ImPicd = imag(sharp_frequency_exact_bare_bubble ( w, Lambda, q, 'c', 'd', r));
-    double RePidc = real(sharp_frequency_exact_bare_bubble ( w, Lambda, q, 'd', 'c', r));
-    double ImPidc = imag(sharp_frequency_exact_bare_bubble ( w, Lambda, q, 'd', 'c', r));
-    double RePicc = real(sharp_frequency_exact_bare_bubble ( w, Lambda, q, 'c', 'c', r));
-    double ImPicc = imag(sharp_frequency_exact_bare_bubble ( w, Lambda, q, 'c', 'c', r));
-    double RePidd = real(sharp_frequency_exact_bare_bubble ( w, Lambda, q, 'd', 'd', r));
-    double ImPidd = imag(sharp_frequency_exact_bare_bubble ( w, Lambda, q, 'd', 'd', r));
+    double RePicd = real(sharp_frequency_bare_bubble ( w, Lambda, q, 'c', 'd', r, 0));
+    double ImPicd = imag(sharp_frequency_bare_bubble ( w, Lambda, q, 'c', 'd', r, 0));
+    double RePidc = real(sharp_frequency_bare_bubble ( w, Lambda, q, 'd', 'c', r, 0));
+    double ImPidc = imag(sharp_frequency_bare_bubble ( w, Lambda, q, 'd', 'c', r, 0));
+    double RePicc = real(sharp_frequency_bare_bubble ( w, Lambda, q, 'c', 'c', r, 0));
+    double ImPicc = imag(sharp_frequency_bare_bubble ( w, Lambda, q, 'c', 'c', r, 0));
+    double RePidd = real(sharp_frequency_bare_bubble ( w, Lambda, q, 'd', 'd', r, 0));
+    double ImPidd = imag(sharp_frequency_bare_bubble ( w, Lambda, q, 'd', 'd', r, 0));
 
     double RegK1squared = g*g - 2*g*ReK1 + ReK1*ReK1 - ImK1*ImK1;
     double ImgK1squared = -2*g*ImK1 +2*ReK1*ImK1;
@@ -948,7 +1028,7 @@ void ODE_solver_K1p(double w, double q, double Lambdai, double Lambdaf, double g
     gsl_odeiv2_driver_free (d);
 }*/
 
-// INTEGRATE BUBBLE IN MOMENTUM SPACE
+// INTEGRATE BUBBLE IN MOMENTUM SPACE FROM GSL
 
 struct params_theta_integration{
     double v1, v2, q, kpp;
@@ -1125,6 +1205,8 @@ comp sharp_frequency_nint_bare_bubble ( double w, double Lambda, double q, char 
     result = -Th1*bubble_k_2d_integrated (w, v1, q, i, j, r, epsabstheta, epsabskpp) -Th2*bubble_k_2d_integrated (w, v2, q, i, j, r,epsabstheta, epsabskpp) -Th2*bubble_k_2d_integrated (w, v3, q, i, j, r,epsabstheta, epsabskpp) -Th1*bubble_k_2d_integrated (w, v4, q, i, j, r,epsabstheta, epsabskpp);
     return result;
 }
+
+// TEST GSL-ODE-SOLVER FOR NUMERICALLY INTEGRATED BUBBLE
 
 struct params_K1_nint{
     double w, q, g, Lambda_i, epsabstheta, epsabskpp;
@@ -1307,6 +1389,8 @@ void K1Lambda_nint (double w, double q, double g, char channel, double Lambda_i,
                    {Lambdas, K1Lambda_Re, K1Lambda_Im});
 
 }
+
+
 // INTEGRATE LOOP IN MOMENTUM SPACE
 // ==================================
 
@@ -1402,6 +1486,756 @@ void integral_loop_Lambda_vp_list (char i, double Lambdamin, double Lambdamax, d
 }
 
 // SimpleBubble(double v1, double v2, double q, double kpp, double x, char i, char j)
+
+
+// INTEGRATE SIMPLE BUBBLE BY KELDYSH-INTEGRATOR
+// ===============================================
+
+double gauss(double x) {
+    return 1. / sqrt(M_PI) * exp(-x * x);
+}
+
+double integrand_infinite_gauss (double t){
+    double result;
+    if (t != 0){
+        result = (gauss((1-t)/t)+gauss(-(1-t)/t))/(t*t);
+    }
+    else {
+        result = 0.0;
+    }
+    return result;
+}
+
+double integrand_semiinfinite_gauss (double t){
+    double result;
+    if (t != 0){
+        result = (gauss((1-t)/t))/(t*t);
+    }
+    else {
+        result = 0.0;
+    }
+    return result;
+}
+
+
+// first theta, then k
+template <typename Q>
+class Integrand_Pi0_theta {
+private:
+    double v1, v2, q, kpp; //Lambda;
+    char i, j;
+
+public:
+    /**
+     * Constructor:
+     */
+    Integrand_Pi0_theta(double v1_in, double v2_in, double q_in, double kpp_in, char i_in, char j_in)
+            :v1(v1_in), v2(v2_in), q(q_in), kpp(kpp_in), i(i_in), j(j_in){
+    };
+
+    /**
+     * Call operator:
+     * @param x : angle variable at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
+    auto operator() (double x) const -> Q {
+        return SimpleBubble(v1, v2, q, kpp, x, i, j);
+    };
+
+    //void save_integrand();
+};
+
+comp perform_integral_Pi0_theta (double v1, double v2, double q, double kpp, char i, char j){
+    comp result;
+    double eps = 1e-12;
+
+    if (q == 0.0) {
+        result = 2*kpp*kpp*SimpleBubble(v1,v2,0,kpp,0,i,j)/(4*M_PI*M_PI);
+    }
+
+    else if ((std::abs(v1) < 1e-15) and (std::abs(v2) > 1e-15) and (q != 0.0)) {
+        comp integral1, integral2;
+
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_upper(v1+eps, v2, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_lower(v1-eps, v2, q, kpp, i, j);
+
+        integral1 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_upper, -1.0, 1.0)/(2*M_PI);
+        integral2 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_lower, -1.0, 1.0)/(2*M_PI);
+
+        result = (integral1 + integral2)/2.;
+    }
+    else if ((std::abs(v1) > 1e-15) and (std::abs(v2) < 1e-15) and (q != 0.0)) {
+        comp integral1, integral2;
+
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_upper(v1, v2+eps, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_lower(v1, v2-eps, q, kpp, i, j);
+
+        integral1 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_upper, -1.0, 1.0)/(2*M_PI);
+        integral2 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_lower, -1.0, 1.0)/(2*M_PI);
+
+        result = (integral1 + integral2)/2.;
+    }
+    else if ((std::abs(v1) < 1e-15) and (std::abs(v2) <  1e-15) and (q != 0.0)) {
+        comp integral1, integral2, integral3, integral4;
+
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_uu(v1+eps, v2+eps, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_ul(v1+eps, v2-eps, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_lu(v1-eps, v2+eps, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_ll(v1-eps, v2-eps, q, kpp, i, j);
+
+        integral1 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_uu, -1.0, 1.0)/(2*M_PI);
+        integral2 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_ul, -1.0, 1.0)/(2*M_PI);
+        integral3 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_lu, -1.0, 1.0)/(2*M_PI);
+        integral4 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_ll, -1.0, 1.0)/(2*M_PI);
+
+
+        result = (integral1 + integral2 + integral3 + integral4)/4.;
+    }
+    else {
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta(v1, v2, q, kpp, i, j);
+        result = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta, -1.0, 1.0)/(2*M_PI);
+    }
+
+    return result;
+}
+
+template <typename Q>
+class Integrand_Pi0_kpp {
+private:
+    double v1, v2, q;
+    char i, j;
+    bool inftylim; // 1 = a to oo, 0 = a to b (t_a = 1/(a+1) )
+
+public:
+    /**
+     * Constructor:
+     */
+    Integrand_Pi0_kpp(double v1_in, double v2_in, double q_in, char i_in, char j_in, bool inftylim_in)
+            :v1(v1_in), v2(v2_in), q(q_in), i(i_in), j(j_in), inftylim(inftylim_in){
+    };
+
+    /**
+     * Call operator:
+     * @param x : angle variable at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
+    auto operator() (double t_kpp) const -> Q {
+        double kpp;
+        if (inftylim == 1){
+            kpp = (1-t_kpp)/t_kpp;
+            if (t_kpp != 0.){
+                return perform_integral_Pi0_theta(v1, v2, q, kpp, i, j)/(t_kpp*t_kpp);
+            }
+            else {
+                return 0.0;
+            }
+        }
+        else {
+            kpp = t_kpp;
+            return perform_integral_Pi0_theta(v1, v2, q, kpp, i, j);
+        }
+
+    };
+
+    //void save_integrand();
+};
+
+comp perform_integral_Pi0_kppt (double v1, double v2, double q, char i, char j){
+
+    // Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_fin(v1, v2, q, i, j,0);
+
+    comp integral; //integral1, integral2, integral3, integral4, integral5, integral6;
+
+    double eps = 1e-10;
+    if ((std::abs(v1) < 1e-15) and  (std::abs(v2) > 1e-15)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_upper(v1+eps, v2, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lower(v1-eps, v2, q, i, j,1);
+
+        comp integral1, integral2;
+
+        std::cout << "v1 = 0 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_upper,0.0,1.0);
+        std::cout << "int_upper = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_lower,0.0,1.0);
+        std::cout << "int_lower = " << integral2 <<"\n";
+
+        integral = (integral1 + integral2)/2.;
+        std::cout << "average = " << integral << "\n";
+
+        //std::cout << "case happened \n";
+        //integral = 0.;
+    }
+    else if ((std::abs(v1) > 1e-15) and (std::abs(v2) < 1e-15)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_upper(v1, v2+eps, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lower(v1, v2-eps, q, i, j,1);
+
+        comp integral1, integral2;
+
+        std::cout << "v2 = 0 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_upper,0.0,1.0);
+        std::cout << "int_upper = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_lower,0.0,1.0);
+        std::cout << "int_lower = " << integral2 <<"\n";
+
+        integral = (integral1 + integral2)/2.;
+        std::cout << "average = " << integral << "\n";
+    }
+    else if ((std::abs(v1) < 1e-15) and (std::abs(v2) < 1e-15)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_uu (v1+eps, v2+eps, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_ul (v1+eps, v2-eps, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lu (v1-eps, v2+eps, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_ll (v1-eps, v2-eps, q, i, j,1);
+
+        comp integral1, integral2, integral3, integral4;
+
+        std::cout << "v1 = 0 = v2 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_uu,0.0,1.0);
+        std::cout << "int_uu = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_ul,0.0,1.0);
+        std::cout << "int_ul = " << integral2 <<"\n";
+        integral3 = integrator<comp>(integrand_Pi0_kpp_lu,0.0,1.0);
+        std::cout << "int_lu = " << integral3 <<"\n";
+        integral4 = integrator<comp>(integrand_Pi0_kpp_ll,0.0,1.0);
+        std::cout << "int_ll = " << integral4 <<"\n";
+
+
+        integral = (integral1 + integral2 + integral3 + integral4)/4.;
+        std::cout << "average = " << integral << "\n";
+    }
+    /*
+    if ((v1 == 0.0) or (v2 == 0.0)){
+        double k_lower, k_upper, delta;
+        delta = (1e-16)/2.;
+        if (glb_mc*glb_muc<glb_md*glb_mud){
+            k_lower = sqrt(2*glb_mc*glb_muc);
+            k_upper = sqrt(2*glb_md*glb_mud);
+        }
+        else {
+            k_upper = sqrt(2*glb_mc*glb_muc);
+            k_lower = sqrt(2*glb_md*glb_mud);
+        }
+
+        comp integral1, integral2, integral3;
+
+        if ((k_lower - delta < 0.0) and (k_upper - k_lower < delta)) {
+            integral1 = 0.0;
+            integral2 = 0.0;
+            integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(delta+1),1.0);
+        }
+        else if ((k_upper - delta < 0.0) and (k_upper - k_lower > delta)) {
+            integral1 = 0.0;
+            integral2 = integrator<comp>(integrand_Pi0_kpp_fin,delta,k_upper - delta);
+            integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+        }
+        else if ((k_upper - delta > 0.0) and (k_upper - k_lower < delta)) {
+            integral1 = integrator<comp>(integrand_Pi0_kpp_fin,0.0,k_lower - delta);
+            integral2 = 0.0;
+            integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+        }
+        else {
+            integral1 = integrator<comp>(integrand_Pi0_kpp_fin,0.0,k_lower - delta);
+            integral2 = integrator<comp>(integrand_Pi0_kpp_fin,k_lower+delta,k_upper - delta);
+            integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+        }
+        integral = integral1 + integral2 + integral3;
+    }
+    */
+    else {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_inf(v1, v2, q, i, j,1);
+        integral = integrator<comp>(integrand_Pi0_kpp_inf,0.0,1.0);
+
+        /*
+        integral1 = integrator<comp>(integrand_Pi0_kpp, 0.0, 1.0);
+        integral2 = integrator<comp>(integrand_Pi0_kpp, 1.0, 10.0);
+        integral3 = integrator<comp>(integrand_Pi0_kpp, 10.0, 100.0);
+        integral4 = integrator<comp>(integrand_Pi0_kpp, 100.0, 1e3);
+        integral5 = integrator<comp>(integrand_Pi0_kpp, 1e3, 1e10);
+        integral6 = integrator<comp>(integrand_Pi0_kpp, 1e10, 1e16);*/
+
+        // std::cout << "1: " << integral1 << ", 2: " << integral2 << ", 3: " << integral3 << ", 4: " << integral4 << ", 5: " << integral5 << ", 6: " << integral6 <<"\n";
+    }
+
+    return integral;
+
+}
+
+// first k then theta
+/*
+template <typename Q>
+class Integrand_Pi0_kpp {
+private:
+    double v1, v2, q, x;
+    char i, j;
+    // bool inftylim; // 1 = a to oo, 0 = a to b (t_a = 1/(a+1) )
+
+public:
+    /**
+     * Constructor:
+     */ /*
+    Integrand_Pi0_kpp(double v1_in, double v2_in, double q_in, double x_in, char i_in, char j_in)
+            :v1(v1_in), v2(v2_in), q(q_in), x(x_in), i(i_in), j(j_in){
+    };
+
+    /**
+     * Call operator:
+     * @param kpp : angle variable at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */ /*
+    auto operator() (double t_kpp) const -> Q {
+        double kpp = (1-t_kpp)/t_kpp;
+            if (t_kpp != 0.){
+                return kpp*kpp/pow(2*M_PI,2)*SimpleBubble(v1, v2, q, kpp, x, i, j)/(t_kpp*t_kpp);
+            }
+            else {
+                return 0.0;
+            }
+    };
+
+    //void save_integrand();
+};
+/*
+comp perform_integral_Pi0_kpp (double v1, double v2, double q, double x, char i, char j){
+
+    comp integral; //integral1, integral2, integral3, integral4, integral5, integral6;
+    /*
+    double eps = 1e-12;
+    if ((v1 == 0.0) and (v2 != 0.0)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_upper(v1+eps, v2, q, x, i, j);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lower(v1-eps, v2, q, x, i, j);
+
+        comp integral1, integral2;
+
+        std::cout << "v1 = 0 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_upper,0.0,1.0);
+        std::cout << "int_upper = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_lower,0.0,1.0);
+        std::cout << "int_lower = " << integral2 <<"\n";
+
+        integral = (integral1 + integral2)/2.;
+        std::cout << "average = " << integral << "\n";
+    }
+    else if ((v1 != 0.0) and (v2 == 0.0)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_upper(v1, v2+eps, q, x, i, j);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lower(v1, v2-eps, q, x, i, j);
+
+        comp integral1, integral2;
+
+        std::cout << "v2 = 0 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_upper,0.0,1.0);
+        std::cout << "int_upper = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_lower,0.0,1.0);
+        std::cout << "int_lower = " << integral2 <<"\n";
+
+        integral = (integral1 + integral2)/2.;
+        std::cout << "average = " << integral << "\n";
+    }
+    else if ((v1 == 0.0) and (v2 == 0.0)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_uu (v1+eps, v2+eps, q, x, i, j);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_ul (v1+eps, v2-eps, q, x, i, j);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lu (v1-eps, v2+eps, q, x, i, j);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_ll (v1-eps, v2-eps, q, x, i, j);
+
+        comp integral1, integral2, integral3, integral4;
+
+        std::cout << "v1 = 0 = v2 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_uu,0.0,1.0);
+        std::cout << "int_uu = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_ul,0.0,1.0);
+        std::cout << "int_ul = " << integral2 <<"\n";
+        integral3 = integrator<comp>(integrand_Pi0_kpp_lu,0.0,1.0);
+        std::cout << "int_lu = " << integral3 <<"\n";
+        integral4 = integrator<comp>(integrand_Pi0_kpp_ll,0.0,1.0);
+        std::cout << "int_ll = " << integral4 <<"\n";
+
+
+        integral = (integral1 + integral2 + integral3 + integral4)/4.;
+        std::cout << "average = " << integral << "\n";
+    }
+        /*
+        if ((v1 == 0.0) or (v2 == 0.0)){
+            double k_lower, k_upper, delta;
+            delta = (1e-16)/2.;
+            if (glb_mc*glb_muc<glb_md*glb_mud){
+                k_lower = sqrt(2*glb_mc*glb_muc);
+                k_upper = sqrt(2*glb_md*glb_mud);
+            }
+            else {
+                k_upper = sqrt(2*glb_mc*glb_muc);
+                k_lower = sqrt(2*glb_md*glb_mud);
+            }
+
+            comp integral1, integral2, integral3;
+
+            if ((k_lower - delta < 0.0) and (k_upper - k_lower < delta)) {
+                integral1 = 0.0;
+                integral2 = 0.0;
+                integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(delta+1),1.0);
+            }
+            else if ((k_upper - delta < 0.0) and (k_upper - k_lower > delta)) {
+                integral1 = 0.0;
+                integral2 = integrator<comp>(integrand_Pi0_kpp_fin,delta,k_upper - delta);
+                integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+            }
+            else if ((k_upper - delta > 0.0) and (k_upper - k_lower < delta)) {
+                integral1 = integrator<comp>(integrand_Pi0_kpp_fin,0.0,k_lower - delta);
+                integral2 = 0.0;
+                integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+            }
+            else {
+                integral1 = integrator<comp>(integrand_Pi0_kpp_fin,0.0,k_lower - delta);
+                integral2 = integrator<comp>(integrand_Pi0_kpp_fin,k_lower+delta,k_upper - delta);
+                integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+            }
+
+            integral = integral1 + integral2 + integral3;
+
+        } */
+    // else {
+    /*
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_inf(v1, v2, q, x, i, j);
+        integral = integrator<comp>(integrand_Pi0_kpp_inf,0.0,1.0);
+
+        /* integral1 = integrator<comp>(integrand_Pi0_kpp, 0.0, 1.0);
+        integral2 = integrator<comp>(integrand_Pi0_kpp, 1.0, 10.0);
+        integral3 = integrator<comp>(integrand_Pi0_kpp, 10.0, 100.0);
+        integral4 = integrator<comp>(integrand_Pi0_kpp, 100.0, 1e3);
+        integral5 = integrator<comp>(integrand_Pi0_kpp, 1e3, 1e10);
+        integral6 = integrator<comp>(integrand_Pi0_kpp, 1e10, 1e16);*/
+
+        // std::cout << "1: " << integral1 << ", 2: " << integral2 << ", 3: " << integral3 << ", 4: " << integral4 << ", 5: " << integral5 << ", 6: " << integral6 <<"\n";
+    // }
+    /*
+
+    return integral;
+
+}
+
+template <typename Q>
+class Integrand_Pi0_theta {
+private:
+    double v1, v2, q; //Lambda;
+    char i, j;
+
+public:
+    /**
+     * Constructor:
+     */ /*
+    Integrand_Pi0_theta(double v1_in, double v2_in, double q_in, char i_in, char j_in)
+            :v1(v1_in), v2(v2_in), q(q_in), i(i_in), j(j_in){
+    };
+
+    /**
+     * Call operator:
+     * @param x : angle variable at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */ /*
+    auto operator() (double x) const -> Q {
+        return perform_integral_Pi0_kpp (v1, v2, q, x, i, j);
+    };
+
+    //void save_integrand();
+};
+     /*
+comp perform_integral_Pi0_theta (double v1, double v2, double q, double kpp, char i, char j){
+    comp result;
+    double eps = 1e-12;
+
+    if (q == 0.0) {
+        result = 2.*perform_integral_Pi0_kpp (v1, v2, 0, 0, i, j);
+    }
+    else if ((v1 == 0.0) and (v2 != 0.0) and (q != 0.0)) {
+        comp integral1, integral2;
+
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_upper(v1+eps, v2, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_lower(v1-eps, v2, q, kpp, i, j);
+
+        integral1 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_upper, -1.0, 1.0)/(2*M_PI);
+        integral2 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_lower, -1.0, 1.0)/(2*M_PI);
+
+        result = (integral1 + integral2)/2.;
+    }
+    else if ((v1 != 0.0) and (v2 == 0.0) and (q != 0.0)) {
+        comp integral1, integral2;
+
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_upper(v1, v2+eps, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_lower(v1, v2-eps, q, kpp, i, j);
+
+        integral1 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_upper, -1.0, 1.0)/(2*M_PI);
+        integral2 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_lower, -1.0, 1.0)/(2*M_PI);
+
+        result = (integral1 + integral2)/2.;
+    }
+    else if ((v1 == 0.0) and (v2 == 0.0) and (q != 0.0)) {
+        comp integral1, integral2, integral3, integral4;
+
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_uu(v1+eps, v2+eps, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_ul(v1+eps, v2-eps, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_lu(v1-eps, v2+eps, q, kpp, i, j);
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta_ll(v1-eps, v2-eps, q, kpp, i, j);
+
+        integral1 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_uu, -1.0, 1.0)/(2*M_PI);
+        integral2 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_ul, -1.0, 1.0)/(2*M_PI);
+        integral3 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_lu, -1.0, 1.0)/(2*M_PI);
+        integral4 = kpp*kpp/(2*M_PI)*integrator<comp>(integrand_Pi0_theta_ll, -1.0, 1.0)/(2*M_PI);
+
+
+        result = (integral1 + integral2 + integral3 + integral4)/4.;
+    }
+    */ /*
+    else {
+        Integrand_Pi0_theta<comp> integrand_Pi0_theta(v1, v2, q, i, j);
+        result = integrator<comp>(integrand_Pi0_theta, -1.0, 1.0);
+    }
+
+    return result;
+}
+
+/*
+
+comp perform_integral_Pi0_kpp (double v1, double v2, double q, char i, char j){
+
+    // Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_fin(v1, v2, q, i, j,0);
+
+    comp integral; //integral1, integral2, integral3, integral4, integral5, integral6;
+
+    double eps = 1e-12;
+    if ((v1 == 0.0) and (v2 != 0.0)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_upper(v1+eps, v2, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lower(v1-eps, v2, q, i, j,1);
+
+        comp integral1, integral2;
+
+        std::cout << "v1 = 0 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_upper,0.0,1.0);
+        std::cout << "int_upper = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_lower,0.0,1.0);
+        std::cout << "int_lower = " << integral2 <<"\n";
+
+        integral = (integral1 + integral2)/2.;
+        std::cout << "average = " << integral << "\n";
+    }
+    else if ((v1 != 0.0) and (v2 == 0.0)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_upper(v1, v2+eps, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lower(v1, v2-eps, q, i, j,1);
+
+        comp integral1, integral2;
+
+        std::cout << "v2 = 0 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_upper,0.0,1.0);
+        std::cout << "int_upper = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_lower,0.0,1.0);
+        std::cout << "int_lower = " << integral2 <<"\n";
+
+        integral = (integral1 + integral2)/2.;
+        std::cout << "average = " << integral << "\n";
+    }
+    else if ((v1 == 0.0) and (v2 == 0.0)) {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_uu (v1+eps, v2+eps, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_ul (v1+eps, v2-eps, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_lu (v1-eps, v2+eps, q, i, j,1);
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_ll (v1-eps, v2-eps, q, i, j,1);
+
+        comp integral1, integral2, integral3, integral4;
+
+        std::cout << "v1 = 0 = v2 \n";
+        integral1 = integrator<comp>(integrand_Pi0_kpp_uu,0.0,1.0);
+        std::cout << "int_uu = " << integral1 <<"\n";
+        integral2 = integrator<comp>(integrand_Pi0_kpp_ul,0.0,1.0);
+        std::cout << "int_ul = " << integral2 <<"\n";
+        integral3 = integrator<comp>(integrand_Pi0_kpp_lu,0.0,1.0);
+        std::cout << "int_lu = " << integral3 <<"\n";
+        integral4 = integrator<comp>(integrand_Pi0_kpp_ll,0.0,1.0);
+        std::cout << "int_ll = " << integral4 <<"\n";
+
+
+        integral = (integral1 + integral2 + integral3 + integral4)/4.;
+        std::cout << "average = " << integral << "\n";
+    }
+    /*
+    if ((v1 == 0.0) or (v2 == 0.0)){
+        double k_lower, k_upper, delta;
+        delta = (1e-16)/2.;
+        if (glb_mc*glb_muc<glb_md*glb_mud){
+            k_lower = sqrt(2*glb_mc*glb_muc);
+            k_upper = sqrt(2*glb_md*glb_mud);
+        }
+        else {
+            k_upper = sqrt(2*glb_mc*glb_muc);
+            k_lower = sqrt(2*glb_md*glb_mud);
+        }
+
+        comp integral1, integral2, integral3;
+
+        if ((k_lower - delta < 0.0) and (k_upper - k_lower < delta)) {
+            integral1 = 0.0;
+            integral2 = 0.0;
+            integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(delta+1),1.0);
+        }
+        else if ((k_upper - delta < 0.0) and (k_upper - k_lower > delta)) {
+            integral1 = 0.0;
+            integral2 = integrator<comp>(integrand_Pi0_kpp_fin,delta,k_upper - delta);
+            integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+        }
+        else if ((k_upper - delta > 0.0) and (k_upper - k_lower < delta)) {
+            integral1 = integrator<comp>(integrand_Pi0_kpp_fin,0.0,k_lower - delta);
+            integral2 = 0.0;
+            integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+        }
+        else {
+            integral1 = integrator<comp>(integrand_Pi0_kpp_fin,0.0,k_lower - delta);
+            integral2 = integrator<comp>(integrand_Pi0_kpp_fin,k_lower+delta,k_upper - delta);
+            integral3 = integrator<comp>(integrand_Pi0_kpp_inf,1./(k_upper+delta+1),1.0);
+        }
+
+        integral = integral1 + integral2 + integral3;
+
+    }
+    */
+    /*
+    else {
+        Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_inf(v1, v2, q, i, j,1);
+        integral = integrator<comp>(integrand_Pi0_kpp_inf,0.0,1.0);
+
+        /* integral1 = integrator<comp>(integrand_Pi0_kpp, 0.0, 1.0);
+        integral2 = integrator<comp>(integrand_Pi0_kpp, 1.0, 10.0);
+        integral3 = integrator<comp>(integrand_Pi0_kpp, 10.0, 100.0);
+        integral4 = integrator<comp>(integrand_Pi0_kpp, 100.0, 1e3);
+        integral5 = integrator<comp>(integrand_Pi0_kpp, 1e3, 1e10);
+        integral6 = integrator<comp>(integrand_Pi0_kpp, 1e10, 1e16);*/
+
+    // std::cout << "1: " << integral1 << ", 2: " << integral2 << ", 3: " << integral3 << ", 4: " << integral4 << ", 5: " << integral5 << ", 6: " << integral6 <<"\n";
+    /*}
+
+    return integral;
+
+}*/
+
+// general further steps
+
+comp perform_integral_Pi0_kpp_chan (double w, double vpp, double q, char i, char j, char chan) {
+    double prefactor, v1, v2;
+
+    if (chan == 'a') {
+        prefactor = 1.;
+        v1 = vpp + w / 2.;
+        v2 = vpp - w / 2.;
+    } else if (chan == 'p') {
+        prefactor = 0.5;
+        v1 = w / 2. + vpp;
+        v2 = w / 2. - vpp;
+    } else if (chan == 't') {
+        prefactor = -1.;
+        v1 = vpp + w / 2.;
+        v2 = vpp - w / 2.;
+    } else {
+        prefactor = 0.;
+        v1 = 0.;
+        v2 = 0.;
+        std::cout << "wrong channel\n";
+    }
+
+    return prefactor * perform_integral_Pi0_kppt(v1, v2, q, i, j);
+}
+
+void integral_bubble_w_vpp_list_integrator (char i, char j, char channel, double wmax, double vppmax, double qmax, int nvpp, int nw, int nq) {
+    vec<double> vpps(nvpp);
+    vec<double> ws(nw);
+    vec<double> qs(nq);
+    vec<double> Pi_int_Re(nvpp*nw*nq);
+    vec<double> Pi_int_Im(nvpp*nw*nq);
+    comp result_integral;
+    double w;
+    double vpp;
+    double q;
+
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2*wi*wmax/(nw-1);
+        ws[wi] = w;
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = -vppmax + 2*vppi*vppmax/(nw-1);
+            vpps[vppi] = vpp;
+            for (int qi = 0; qi < nq; ++qi) {
+                q = qi*qmax/(nq-1);
+                qs[qi] = q;
+                result_integral = perform_integral_Pi0_kpp_chan (w, vpp, q, i, j, channel);
+                Pi_int_Re[composite_index_wvq(wi, vppi, nvpp, qi, nq)] = real(result_integral);
+                Pi_int_Im[composite_index_wvq(wi, vppi, nvpp, qi, nq)] = imag(result_integral);
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
+            }
+        }
+    }
+
+    std::string filename = "../Data/numInt_bare_bubble";
+    filename += "_";
+    filename += i;
+    filename += j;
+    filename += channel;
+    filename += "_nBOS=" + std::to_string(nw)
+                + "_nFER=" + std::to_string(nvpp)
+                + "_nq=" + std::to_string(nq)
+                + ".h5";
+    write_h5_rvecs(filename,
+                   {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
+                   {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
+
+}
+
+
+/* comp perform_integral_Pi0_kpp_vppw (doub)
+
+template <typename Q>
+class Integrand_Pi0_vpp_reg {
+private:
+    double Lambda, w, q;
+    char i, j, chan;
+
+public:
+    /**
+     * Constructor:
+     */ /*
+    Integrand_Pi0_vpp_reg(double Lambda_in, double w_in, double q_in, char i_in, char j_in, char chan_in)
+            :Lambda(Lambda_in), w(w_in), q(q_in), i(i_in), j(j_in), chan(chan_in){
+    };
+
+    /**
+     * Call operator:
+     * @param t_vpp : angle variable at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */ /*
+    auto operator() (double t_vpp) const -> Q {
+        comp result;
+        if (t_vpp != 0.0){
+            double vpp;
+            vpp = (1.-t_vpp)/t_vpp;
+            result = (perform_integral_Pi0_kpp_chan(Lambda, vpp, w, q, i, j, chan)+perform_integral_Pi0_kpp_chan(Lambda, -vpp, w, q, i, j, chan))/(t_vpp*t_vpp);
+        }
+        else {
+            result = 0.0;
+        }
+        return result;
+    };
+
+    //void save_integrand();
+};
+
+
+comp perform_integral_Pi0_vpp (double Lambda, double w, double q, char i, char j, char chan){
+    Integrand_Pi0_vpp_reg<comp> integrand_Pi0_vpp(Lambda, w, q, i, j, chan);
+    comp integral; //integral1, integral2, integral3, integral4, integral5, integral6;
+    integral = integrator<comp>(integrand_Pi0_vpp,0.0,1.0);
+
+    /* integral1 = integrator<comp>(integrand_Pi0_kpp, 0.0, 1.0);
+    integral2 = integrator<comp>(integrand_Pi0_kpp, 1.0, 10.0);
+    integral3 = integrator<comp>(integrand_Pi0_kpp, 10.0, 100.0);
+    integral4 = integrator<comp>(integrand_Pi0_kpp, 100.0, 1e3);
+    integral5 = integrator<comp>(integrand_Pi0_kpp, 1e3, 1e10);
+    integral6 = integrator<comp>(integrand_Pi0_kpp, 1e10, 1e16);*/
+
+    // std::cout << "1: " << integral1 << ", 2: " << integral2 << ", 3: " << integral3 << ", 4: " << integral4 << ", 5: " << integral5 << ", 6: " << integral6 <<"\n";
+    //return integral1+integral2+integral3+integral4+integral5+integral6;
+    /* return integral;
+}
+*/
 
 template <typename Q>
 class Integrand_SimpleBubble {
