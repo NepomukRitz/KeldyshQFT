@@ -7,7 +7,7 @@
 #include "utilities/write_data2file.h"              // writing data into text or hdf5 files
 #include "parameters/master_parameters.h"                             // needed for the vector of grid values to add
 #include "postprocessing/causality_FDT_checks.h"    // check causality and FDTs at each step in the flow
-
+#include "utilities/hdf5_routines.h"
 
 /** Perform one Runge-Kutta-4 step */
 template <typename T>
@@ -47,7 +47,6 @@ void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const
     if (filename != "") {
         add_hdf(filename, iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
     }
-
 }
 
 /**
@@ -102,10 +101,11 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         RK4_step(y_run, x_run, dx, rhs, x_vals, filename, i, save_intermediate_states);
 
         // update frequency grid, interpolate result to new grid
-        y_run.update_grid(x_run);
+        y_run.update_grid(x_run); // specific for state
     }
     y_fin = y_run; // final y value
 }
+
 
 /** Overload for above function, defining the standard case: Flow is integrated from the first iteration on. */
 template <typename T>

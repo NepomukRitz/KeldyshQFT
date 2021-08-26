@@ -9,6 +9,7 @@
 #include "Ladder-approximation.h"
 #include "../utilities/util.h"
 #include "../ODE_solvers.h"
+#include "../grids/flow_grid.h"
 
 comp rhs_test3(const comp& y, double Lambda) {
     //comp y;
@@ -101,6 +102,8 @@ public:
     auto rhs_test2(const comp& y, double Lambda) const -> Q {
         return 2.*pow(-gint(Lambda_i,Lambda_f,1)+y,2)*sharp_frequency_exact_bare_bubble(w,Lambda,q,'c','d',chan);
     }; */
+
+     void update_grid (double x) {}
 
     auto operator+= (const FRG_solvand_nsc& state) -> FRG_solvand_nsc {
         this->value += state.value;
