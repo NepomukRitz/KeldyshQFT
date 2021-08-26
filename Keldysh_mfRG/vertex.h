@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include "data_structures.h"    // real/complex vector classes
-#include "parameters.h"         // system parameters (vector lengths etc.)
+#include "parameters/master_parameters.h"         // system parameters (vector lengths etc.)
 #include "r_vertex.h"           // reducible vertex in channel r
 
 
@@ -14,9 +14,9 @@ template <class Q>
 class irreducible{
 public:
 #ifdef KELDYSH_FORMALISM
-    vec<Q> bare = vec<Q>(16*n_in); // TODO: does this need to be public? --> do we need default constructor?
+    vec<Q> bare = vec<Q>(16*n_in); // TODO(medium): does this need to be public? --> do we need default constructor?
 #else
-    vec<Q> bare = vec<Q>(n_in); // TODO: does this need to be public? --> do we need default constructor?
+    vec<Q> bare = vec<Q>(n_in); // TODO(medium): does this need to be public? --> do we need default constructor?
 #endif
 
     irreducible() = default;;
@@ -82,10 +82,7 @@ public:
                                     // into r bubble (i.e. in left/right_same/diff_bare functions), and no gammaRb. This
                                     // is needed for correct computation of the central part in multiloop contributions.
 
-    fullvert() : avertex('a'),
-                 pvertex('p'),
-                 tvertex('t') {}
-    fullvert(double Lambda) : avertex('a', Lambda),
+    explicit fullvert(double Lambda) : avertex('a', Lambda),
                               pvertex('p', Lambda),
                               tvertex('t', Lambda) {}
 
@@ -190,8 +187,7 @@ template <typename Q>
 class symmetric {
     fullvert<Q> vertex;
 public:
-    symmetric() {}
-    symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
+    explicit symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
     symmetric(const fullvert<Q>& half1, const fullvert<Q>& half2) : vertex(half1) {}
 
     // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
@@ -255,8 +251,7 @@ template <typename Q>
 class non_symmetric {
     fullvert<Q> vertex_half1, vertex_half2;
 public:
-    non_symmetric() {}
-    non_symmetric(const fullvert<Q>& vertex_in)
+    explicit non_symmetric(const fullvert<Q>& vertex_in)
             : vertex_half1(vertex_in), vertex_half2(vertex_in) {
         print("Warning: non-symmetric vertex initialized with only one fullvert.", true);
     }
@@ -325,8 +320,7 @@ class vertex_container {
     symmetry_type<Q> vertex;
 
 public:
-    vertex_container() {}
-    vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
+    explicit vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
     vertex_container(const fullvert<Q>& half1, const fullvert<Q>& half2)
                     : vertex(half1, half2) {}
 
@@ -433,13 +427,18 @@ public:
 };
 
 /** Vertex class: vector of vertex_container (one element for each spin component) */
-template <typename Q, template <typename> typename symmetry_type> // TODO: the last "typename" requires C++17. Is this a problem?
+template <typename Q, template <typename> class symmetry_type>
 class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
-    GeneralVertex() : vec<vertex_container<Q, symmetry_type> > () {};
-    GeneralVertex(int n) : vec<vertex_container<Q, symmetry_type> > (n) {};
-    GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type> > (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
-    GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type> > (n, val) {}; // TODO: never used?
+    GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
+
+    /// Constructor, which gets another GeneralVertex as input; it ONLY copies its frequency grid!
+    GeneralVertex(int n, const GeneralVertex<Q, symmetry_type>& Vertex_in)
+      :vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda_ini))) {
+        set_frequency_grid(Vertex_in);      // copies frequency grid from Vertex_in
+    };
+    /// Constructor, which gets vertex_container as input with which all vector elements are initialized
+    GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type>> (n, val) {}; // Never used; perhaps useful if no SU(2)-symmetry
 
     auto operator+= (const GeneralVertex<Q, symmetry_type>& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
@@ -529,7 +528,7 @@ public:
 
 };
 
-/** Define Vertex as symmetric GeneralVertex */ // TODO: maybe remove this and (globally) rename GeneralVertex -> Vertex ?
+/** Define Vertex as symmetric GeneralVertex */
 template <typename Q>
 using Vertex = GeneralVertex<Q, symmetric>;
 

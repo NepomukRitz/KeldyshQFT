@@ -8,7 +8,7 @@
 #include "state.h"                      // state to perform full flow
 #include "loop.h"                       // compute self-energy loop
 #include "bubbles.h"                    // compute vertex bubbles
-#include "parameters.h"                 // system parameters (lengths of vectors etc.)
+#include "parameters/master_parameters.h"                 // system parameters (lengths of vectors etc.)
 #include "ODE_solvers.h"                // ODE solvers
 #include <cassert>
 #include "utilities/hdf5_routines.h"
@@ -16,14 +16,16 @@
 
 template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -> State<Q>;
 template <typename Q> void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVertex, const Propagator<Q>& S);
-template <typename Q> void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& Psi, const Propagator<Q>& G, const Propagator<Q>& dG);
+template <typename Q, class Bubble_Object> void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& Psi, const Bubble_Object& dPi);
 
 template <typename Q> void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammaC_tbar, const State<Q>& Psi, const Propagator<Q>& G);
 
-template <typename Q> auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator<Q>& G) -> Vertex<Q>;
-template <typename Q> auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Propagator<Q>& G) -> Vertex<Q>;
-template <typename Q> auto calculate_dGammaC_ap(const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator<Q>& G) -> Vertex<Q>;
-template <typename Q> auto calculate_dGammaC_t (const Vertex<Q>& PsiVertex, const Vertex<Q>& dGammaL, const Propagator<Q>& G) -> Vertex<Q>;
+template <typename Q, class Bubble_Object> auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>;
+template <typename Q, class Bubble_Object> auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>;
+template <typename Q, class Bubble_Object> auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric>& nonsymVertex,
+                                                                                  const Bubble_Object& Pi) -> Vertex<Q>;
+template <typename Q, class Bubble_Object> auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric>& nonsymVertex, const Vertex<Q>& PsiVertex,
+                                                                                 const Bubble_Object& Pi) -> Vertex<Q>;
 
 
 template <typename Q> bool vertexConvergedInLoops(Vertex<Q>& dGamma_T, Vertex<Q>&dGamma);
@@ -41,8 +43,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
     static_assert(N_LOOPS>=1, "");
 
-    State<Q> dPsi; // result
-    dPsi.set_frequency_grid(Psi); // set frequency grids of result state to the one of input state
+    // initialize empty state with frequency grids corresponding to those in Psi:
+    State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
+
 
     Propagator<Q> S (Lambda, Psi.selfenergy, 's');
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
@@ -55,24 +58,24 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 //    Propagator dG (Lambda, Psi.selfenergy, 's');
 
     // Initialize bubble objects;
-#ifdef HUBBARD_MODEL // Use precalculated bubble in this case
-    //PrecalculateBubble<comp> Pi(G, dG, false);
+#ifdef HUBBARD // Use precalculated bubble in this case
+    PrecalculateBubble<comp> Pi(G, dG, false);
     PrecalculateBubble<comp> dPi(G, dG, true);
 #else // Otherwise use same type of bubble as before, which directly interpolates
     Bubble<Q> Pi(G, dG, false);
     Bubble<Q> dPi(G, dG, true);
-#endif // HUBBARD_MODEL
+#endif // HUBBARD
 
-    ///TODO: Think about performing cross-projections for Psi.vertex already here,
-    /// as this object is often needed when going to higher loop-orders.
-    vertexOneLoopFlow(dPsi.vertex, Psi.vertex, G, dG, dPi);
+    //TODO(medium): Think about performing cross-projections for Psi.vertex already here,
+    // as this object is often needed when going to higher loop-orders.
+    vertexOneLoopFlow(dPsi.vertex, Psi.vertex, dPi);
 
 #if N_LOOPS>=2
     // Calculate left and right part of 2-loop contribution.
     // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric vertex
     // when inserted in the 3-loop contribution below.
-    Vertex<Q> dGammaL_half1 = calculate_dGammaL(dPsi.vertex, Psi.vertex, G, Pi);
-    Vertex<Q> dGammaR_half1 = calculate_dGammaR(dPsi.vertex, Psi.vertex, G, Pi);
+    Vertex<Q> dGammaL_half1 = calculate_dGammaL(dPsi.vertex, Psi.vertex, Pi);
+    Vertex<Q> dGammaR_half1 = calculate_dGammaR(dPsi.vertex, Psi.vertex, Pi);
     Vertex<Q> dGammaT = dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
     dPsi.vertex += dGammaT;
 #endif
@@ -81,7 +84,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
     // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
-    Vertex<Q> dGammaC_tbar(n_spin);
+    Vertex<Q> dGammaC_tbar(n_spin, Lambda);
     dGammaC_tbar.set_frequency_grid(Psi.vertex);
 #endif
 
@@ -99,7 +102,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
 
         // insert this non-symmetric vertex on the right of the bubble
-        Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, G, Pi);
+        Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
 
         // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
         //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
@@ -107,19 +110,19 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
         //dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
         // insert this non-symmetric vertex on the left of the bubble
-        //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, G, Pi);
+        //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
 
         // symmetrize by averaging left and right insertion
         Vertex<Q> dGammaC = dGammaC_r; //(dGammaC_r + dGammaC_l) * 0.5;
 
-        dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, G, Pi);
-        dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, G, Pi);
+        dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, Pi);
+        dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, Pi);
 
         dGammaT = dGammaL_half1 + dGammaC + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
         dPsi.vertex += dGammaT;
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
         // extract central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
-        Vertex<Q> dGammaC_ap (n_spin);                   // initialize new vertex
+        Vertex<Q> dGammaC_ap (n_spin, Lambda);                   // initialize new vertex
         dGammaC_ap.set_frequency_grid(Psi.vertex);
         dGammaC_ap[0].avertex() = dGammaC[0].avertex();  // copy results from calculations above
         dGammaC_ap[0].pvertex() = dGammaC[0].pvertex();
@@ -133,7 +136,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     // compute multiloop corrections to self-energy flow
     selfEnergyFlowCorrections(dPsi.selfenergy, dGammaC_tbar, Psi, G);
 
-    //TODO These are supposed to be lines 37-39 of pseudo-code. What do these refer to?
+    //TODO(low): Implement self-energy iterations (see lines 37-39 of pseudo-code).
     //if(selfEnergyConverged(Psi.selfenergy, Lambda))
     //    break;
 #endif
@@ -151,80 +154,69 @@ void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVe
 }
 
 template <typename Q, class Bubble_Object>
-void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
-                       const Propagator<Q>& G, const Propagator<Q>& dG,
-                       const Bubble_Object& dPi){
+void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& dPi){
     // Vertex flow
     for (char r: "apt") {
-        bubble_function(dPsiVertex, PsiVertex, PsiVertex, G, dG, dPi, r, true);  // Differentiated bubble in channel r \in {a, p, t}
+        bubble_function(dPsiVertex, PsiVertex, PsiVertex, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
     }
 }
 
 
 
 template <typename Q, class Bubble_Object>
-auto calculate_dGammaL(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
-                       const Propagator<Q>& G, const Bubble_Object& Pi) -> Vertex<Q>{
-    Vertex<Q> dGammaL(n_spin);
-    dGammaL.set_frequency_grid(PsiVertex);
-    dPsiVertex.set_Ir(true); // only take part irreducible in channel r
+auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>{
+    Vertex<Q> dGammaL(n_spin, PsiVertex);
+
+    Vertex<Q> dPsiVertex_calc = dPsiVertex;
+    dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
 
     for (char r: "apt") {
-        bubble_function(dGammaL, dPsiVertex, PsiVertex, G, G, Pi, r, false);
+        bubble_function(dGammaL, dPsiVertex_calc, PsiVertex, Pi, r);
     }
-
-    dPsiVertex.set_Ir(false); // reset input vertex to original state
-    // TODO: This is not so nice, we manipulate an input object during the calculation (which should be constant,
-    //  and which will be needed later on!!). Consider giving a copy instead of a reference to this function? ...
 
     return dGammaL;
 }
 template <typename Q, class Bubble_Object>
-auto calculate_dGammaR(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex,
-                       const Propagator<Q>& G, const Bubble_Object& Pi) -> Vertex<Q>{
-    Vertex<Q> dGammaR(n_spin);
-    dGammaR.set_frequency_grid(PsiVertex);
-    dPsiVertex.set_Ir(true); // only take part irreducible in channel r
+auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>{
+    Vertex<Q> dGammaR(n_spin, PsiVertex);
+
+    Vertex<Q> dPsiVertex_calc = dPsiVertex;
+    dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
 
     for (char r: "apt") {
-        bubble_function(dGammaR, PsiVertex, dPsiVertex, G, G, Pi, r, false);
+        bubble_function(dGammaR, PsiVertex, dPsiVertex_calc, Pi, r);
     }
-
-    dPsiVertex.set_Ir(false); // reset input vertex to original state // TODO: see above
 
     return dGammaR;
 }
 
 template <typename Q, class Bubble_Object>
-auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, GeneralVertex<Q, non_symmetric>& nonsymVertex,
-                                       const Propagator<Q>& G, const Bubble_Object& Pi) -> Vertex<Q> {
-    Vertex<Q> dGammaC (n_spin);
-    dGammaC.set_frequency_grid(PsiVertex);
+auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric>& nonsymVertex,
+                                       const Bubble_Object& Pi) -> Vertex<Q> {
+    Vertex<Q> dGammaC (n_spin, PsiVertex);
 
-    nonsymVertex.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
+
+    GeneralVertex<Q, non_symmetric> nonsymVertex_calc = nonsymVertex;
+    nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
     for (char r: "apt") {
-        bubble_function(dGammaC, PsiVertex, nonsymVertex, G, G, Pi, r, false);
+        bubble_function(dGammaC, PsiVertex, nonsymVertex_calc, Pi, r);
     }
-
-    nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
     return dGammaC;
 }
 
 template <typename Q, class Bubble_Object>
-auto calculate_dGammaC_left_insertion(GeneralVertex<Q, non_symmetric>& nonsymVertex, const Vertex<Q>& PsiVertex,
-                                      const Propagator<Q>& G, const Bubble_Object& Pi) -> Vertex<Q> {
-    Vertex<Q> dGammaC (n_spin);
-    dGammaC.set_frequency_grid(PsiVertex);
+auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric>& nonsymVertex, const Vertex<Q>& PsiVertex,
+                                      const Bubble_Object& Pi) -> Vertex<Q> {
+    Vertex<Q> dGammaC (n_spin, PsiVertex);
 
-    nonsymVertex.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
+    GeneralVertex<Q, non_symmetric> nonsymVertex_calc = nonsymVertex;
+    nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
     for (char r: "apt") {
-        bubble_function(dGammaC, nonsymVertex, PsiVertex, G, G, Pi, r, false);
+        bubble_function(dGammaC, nonsymVertex_calc, PsiVertex, Pi, r);
     }
-
-    nonsymVertex.set_only_same_channel(false); // reset input vertex to original state
 
     return dGammaC;
 }
@@ -232,13 +224,11 @@ auto calculate_dGammaC_left_insertion(GeneralVertex<Q, non_symmetric>& nonsymVer
 // compute multiloop corrections to self-energy flow
 template <typename Q>
 void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammaC_tbar, const State<Q>& Psi, const Propagator<Q>& G){
-    // TODO: also implement self-energy flow via differentiated SDE
-    // TODO: iterate self-energy corrections (feedback of full SE flow into vertex flow etc.)?
+    // TODO(low): also implement self-energy flow via differentiated SDE
+    // TODO(low): iterate self-energy corrections (feedback of full SE flow into vertex flow etc.)?
 
-    SelfEnergy<Q> dSigma_tbar;
-    SelfEnergy<Q> dSigma_t;
-    dSigma_tbar.set_frequency_grid(Psi.selfenergy);
-    dSigma_t.set_frequency_grid(Psi.selfenergy);
+    SelfEnergy<Q> dSigma_tbar(Psi.selfenergy.frequencies);
+    SelfEnergy<Q> dSigma_t(Psi.selfenergy.frequencies);
 
     // compute first multiloop correction to self-energy flow, irreducible in the t channel
     loop(dSigma_tbar, dGammaC_tbar, G, true);

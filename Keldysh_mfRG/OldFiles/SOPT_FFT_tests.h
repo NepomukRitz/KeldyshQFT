@@ -1,7 +1,7 @@
 #ifndef FPP_MFRG_SOPT_FFT_TESTS_H
 #define FPP_MFRG_SOPT_FFT_TESTS_H
 
-#include "../parameters.h"
+#include "../parameters/master_parameters.h"
 #include "../data_structures.h"
 #include "../selfenergy.h"
 #include "../propagator.h"
@@ -16,8 +16,6 @@ rvec bfreqs = frequencyGrid_bos.w;
 rvec ffreqs = frequencyGrid_fer.w;
 
 /// ------ TEST FUNCTIONS ------ ///
-// TODO: Here are also functions that should belong to testFunctions.h. On the other hand side,
-//  in testFunctions.h are functions that would rather belong here.
 
 cvec dSOPT_FFT_K1a_rhs(const cvec& K1a, const double Lambda) { // return differentiated K1a_1 using SOPT_FFT for testing
     SelfEnergy<comp> SEin (Lambda); // trivial self-energy

@@ -5,7 +5,7 @@
 // and
 // Copyright (c) 2016-2018, Aachen Institute for Advanced Study in Computational
 //   Engineering Science, RWTH Aachen University, Germany All rights reserved.
-// License is TODO
+// License is not existent yet
 
 #include <cmath>
 #include <complex>

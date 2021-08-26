@@ -1,7 +1,7 @@
 #include <iostream>          // text input/output
 #include <sys/stat.h>
 #include <bits/stdc++.h>
-#include "parameters.h"
+#include "parameters/master_parameters.h"
 #include <mpi.h>
 #include "utilities/mpi_setup.h"
 #include "flow.h"
@@ -54,17 +54,19 @@ auto main() -> int {
 #endif
 
 #ifdef KELDYSH_FORMALISM
-#ifdef HUBBARD_MODEL
+if (HUBBARD_MODEL){
     print("Hubbard model in Keldysh formalism: \n");
-#else
+}
+else{
     print("SIAM in Keldysh formalism: \n");
-#endif // HUBBARD_MODEL
+}
 #else
-#ifdef HUBBARD_MODEL
-    print("Hubbard model in Keldysh formalism: \n");
-#else
+if (HUBBARD_MODEL){
+    print("Hubbard model in Matsubara formalism: \n");
+}
+else{
     print("SIAM in Matsubara formalism: \n");
-#endif // HUBBARD_MODEL
+}
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     print("Using PARTICLE HOLE Symmetry\n");
@@ -84,9 +86,7 @@ auto main() -> int {
     print("nFER1 = ", nFER, true);
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
-#ifdef HUBBARD_MODEL
-    print("n_in = ", n_in, true);
-#endif
+    if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
     const char* dir = "../Data/";
     std::string dir_str = dir;
@@ -99,23 +99,18 @@ auto main() -> int {
 
     std::string filename = generate_filename();
 
-#ifdef BSE_SDE
-    print("Parquet-check for file: " + filename, true);
 
-    check_BSE_and_SDE(dir, filename);
 
-#else
+    //test_PT4(0.0, true);
+    //test_PT_state<state_datatype>(dir_str+filename, 0., false);
+    //compute_non_symmetric_diags(1.8, true);
+    //test_integrate_over_K1<state_datatype>(1.8);
 
-    //test_K2<state_datatype>(Lambda_ini, true);
-    //test_PT4(1.8, true);
-    n_loop_flow(dir_str+filename);
-    ///test_integrate_over_K1<state_datatype>(1.8);
+    std::string job = "";
+    n_loop_flow(dir_str+filename+job, false);
 
-//    double Lambda = find_best_Lambda();
-//
-//    cout << "Lambda = " << Lambda << " reduces the error in the first iteration to below 10^-5";
 
-#endif
+
 
     std::cout << "Hello world ";
 #ifdef __linux__

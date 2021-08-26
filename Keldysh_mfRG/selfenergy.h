@@ -11,15 +11,15 @@ class SelfEnergy{
 public:
     FrequencyGrid frequencies;
 #ifdef KELDYSH_FORMALISM
-    // TODO: split into two members: Sigma_R, Sigma_K (?)
     vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
 #else
     vec<Q> Sigma = vec<Q> (nSE*n_in); // only one component in Matsubara formalism
 #endif
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
-    SelfEnergy() : frequencies('f', 1) {};
-    SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
+    explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
+    explicit  SelfEnergy(const FrequencyGrid& frequencies_in) : frequencies(frequencies_in) {};
+
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid
@@ -149,24 +149,11 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
 template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
 
     if (std::abs(v) > this->frequencies.w_upper)    //Check the range of frequency. If too large, return Sigma(\infty)
-        //Returns U/2 for retarded and 0. for Keldysh component
+        //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
-        if (std::abs(v) != this->frequencies.w_upper) { // linear interpolation
-            int iv = this->frequencies.fconv(v); // index corresponding to v
-            double x1 = this->frequencies.ws[iv]; // lower adjacent frequency value
-            double x2 = this->frequencies.ws[iv + 1]; // upper adjacent frequency value
-            double xd = (v - x1) / (x2 - x1); // distance between adjacent frequency values
-
-            Q f1 = val(iK, iv, i_in); // lower adjacent value
-            Q f2 = val(iK, iv + 1, i_in);  // upper adjacent value
-
-            return (1. - xd) * f1 + xd * f2; // interpolated value
-        }
-        else if (v == this->frequencies.w_upper) //Exactly at the upper boundary
-            return val(iK, nSE-1, i_in);
-        else if (v == this->frequencies.w_lower) //Exactly at the lower boundary
-            return val(iK, 0, i_in);
+            Q result = interpolate1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+            return result;
     }
 
 }

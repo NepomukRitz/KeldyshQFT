@@ -7,7 +7,7 @@
 
 #include <cmath>
 #include "util.h"               // printing text
-#include "../parameters.h"         // system parameters (necessary for vector lengths etc.)
+#include "../parameters/master_parameters.h"         // system parameters (necessary for vector lengths etc.)
 #include "../data_structures.h"    // comp data type, std::real/complex vector class
 #include "../grids/frequency_grid.h"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
@@ -16,9 +16,11 @@
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file
 #endif
 
-// TODO: Currently, global parameters are used to set the size of the buffer arrays.
+// TODO(medium): Currently, global parameters are used to set the size of the buffer arrays.
 //  Thus, in order to properly read data from a file, global parameters need to be the same as in the file
-//  --> fix this: read buffer sizes (and dims) from file
+//  --> fix this: read buffer sizes (and dims) from file (-> Marc; Write this once and use for several projects!)
+//  Also, always save parameters.h and FrequencyGrid.h (and whereever elso global parameters are stored)
+//  for each computation and load it as well.
 
 /// --- Constants concerning HDF5 data format --- ///
 
@@ -719,7 +721,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K3_t_buffer(RANK_K3-1, dims.K3_buffer);
 #endif
 
-        // Initial value for vertex data sets // TODO: remove?
+        // Initial value for vertex data sets // TODO(low): remove?
         h5_comp fillvalue_vert;
         fillvalue_vert.re = 0;
         fillvalue_vert.im = 0;
@@ -947,7 +949,7 @@ void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, 
     {
     int Lambda_it = 0;  // store data as 0th Lambda iteration
 
-    // List with Lambda values where only the first one is non-zero -- TODO: do we need this?
+    // List with Lambda values where only the first one is non-zero
     rvec Lambdas (Lambda_size);
     Lambdas[0] = Lambda_i;
     for (int i = 1; i < Lambda_size; i++) {
@@ -993,8 +995,8 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 template <typename Q>
 void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     // create new frequency grids
-    FrequencyGrid bfreqs ('b', 1);
-    FrequencyGrid ffreqs ('f', 1);
+    FrequencyGrid bfreqs ('b', 1, Lambda_ini);
+    FrequencyGrid ffreqs ('f', 1, Lambda_ini);
     // read grid parameters from buffer
     bfreqs.N_w = (int)buffer.freq_params[0];
     bfreqs.w_upper = buffer.freq_params[1];
@@ -1013,8 +1015,8 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     result.vertex[0].pvertex().frequencies.b_K1 = bfreqs;
     result.vertex[0].tvertex().frequencies.b_K1 = bfreqs;
 #if MAX_DIAG_CLASS >= 2
-    FrequencyGrid bfreqs2 ('b', 2);
-    FrequencyGrid ffreqs2 ('f', 2);
+    FrequencyGrid bfreqs2 ('b', 2, Lambda_ini);
+    FrequencyGrid ffreqs2 ('f', 2, Lambda_ini);
     bfreqs2.N_w = (int)buffer.freq_params[8];
     bfreqs2.w_upper = buffer.freq_params[9];
     bfreqs2.w_lower = buffer.freq_params[10];
@@ -1033,8 +1035,8 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     result.vertex[0].tvertex().frequencies.f_K2 = ffreqs2;
 #endif
 #if MAX_DIAG_CLASS >= 3
-    FrequencyGrid bfreqs3 ('b', 3);
-    FrequencyGrid ffreqs3 ('f', 3);
+    FrequencyGrid bfreqs3 ('b', 3, Lambda_ini);
+    FrequencyGrid ffreqs3 ('f', 3, Lambda_ini);
     bfreqs3.N_w = (int)buffer.freq_params[16];
     bfreqs3.w_upper = buffer.freq_params[17];
     bfreqs3.w_lower = buffer.freq_params[18];
@@ -1162,7 +1164,7 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
  * @return            : State object containing the result.
  */
 State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
-    State<state_datatype> result;
+    State<state_datatype> result(Lambda_ini);
     if (Lambda_it < Lambda_size) {
 
         // Open the file. Access rights: read-only
@@ -1315,7 +1317,6 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
 
 /// --- Test function --- ///
 
-// TODO: include i_in!
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
     // test hdf5: read files and compare to original file
     int cnt = 0;

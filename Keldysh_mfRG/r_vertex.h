@@ -8,7 +8,7 @@
 #define KELDYSH_MFRG_R_VERTEX_H
 
 #include "data_structures.h"          // real/complex vector classes
-#include "parameters.h"               // system parameters (lengths of vectors etc.)
+#include "parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
 #include "symmetries/Keldysh_symmetries.h"       // transformations on Keldysh indices
 #include "symmetries/internal_symmetries.h"      // symmetry transformations for internal indices (momentum etc.), currently trivial
 #include "interpolations/vertex_interpolations.h"           // frequency interpolations for vertices
@@ -33,18 +33,11 @@ public:
 
     VertexFrequencyGrid frequencies;    // frequency grid
 
-    rvert(const char channel_in) : channel(channel_in), frequencies() {
-        components = Components(channel);
-        transformations = Transformations(channel);
-        freq_transformations = FrequencyTransformations(channel);
-        freq_components = FrequencyComponents(channel);
-    };
-    rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda) {
-        components = Components(channel);
-        transformations = Transformations(channel);
-        freq_transformations = FrequencyTransformations(channel);
-        freq_components = FrequencyComponents(channel);
-    };
+    rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda),
+                                                  components (Components(channel_in)),
+                                                  transformations (Transformations(channel_in)),
+                                                  freq_transformations (FrequencyTransformations(channel_in)),
+                                                  freq_components (FrequencyComponents(channel_in)) { };
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
     /// by interpolating stored data, in all possible channel-dependent frequency representations ///
@@ -126,7 +119,6 @@ public:
      */
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
-    // TODO: Implement! Needed for the Hubbard model.
     void K1_crossproject();
     Q K1_BZ_average(const int iK, const int iw);
 
@@ -270,7 +262,7 @@ public:
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    transfToR(input); // TODO: Would be possible to perform crossprojections here as well, but not very efficient??
+    transfToR(input);
 
     Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 

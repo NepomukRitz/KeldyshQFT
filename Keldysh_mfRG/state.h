@@ -12,15 +12,23 @@
 
 template <typename Q>
 class State{
+    void set_frequency_grid(const State<Q>& state_in);
 public:
     SelfEnergy<Q> selfenergy;
     Vertex<Q> vertex;
 
-    State() : selfenergy(), vertex(n_spin) {};
-    State(double Lambda) : selfenergy(Lambda), vertex(n_spin, Lambda) {};
+    /// Initializes state with frequency grids corresponding to the given value of Lambda.
+    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)) {};
+
+    /// Constructor, which gets a Vertex (whose frequency grid will be copied) and a frequencyGrid for the selfenergy
+    State(const Vertex<Q>& vertex_in, const FrequencyGrid selfenergyFreqs_in)
+    : selfenergy(SelfEnergy<Q> (selfenergyFreqs_in)), vertex(Vertex<Q> (n_spin, vertex_in)) {};
+
+    /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
+    State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in)
+    : vertex(vertex_in), selfenergy(selfenergy_in) {};
 
     void initialize();
-    void set_frequency_grid(const State<Q>& state_in);
     void update_grid(double Lambda);
 
     // operators containing State objects
@@ -53,6 +61,7 @@ public:
     }
 };
 
+
 template <typename Q> void State<Q>::initialize() {
     // Initial conditions
     // Assign initial conditions to self energy
@@ -80,5 +89,7 @@ template <typename Q> void State<Q>::update_grid(double Lambda) {
     this->selfenergy.update_grid(Lambda);
     this->vertex.update_grid(Lambda);
 }
+
+
 
 #endif //KELDYSH_MFRG_STATE_H

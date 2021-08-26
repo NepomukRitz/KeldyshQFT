@@ -2,9 +2,11 @@
 #define KELDYSH_MFRG_TESTFUNCTIONS_H
 
 #include <cmath>                    // use M_PI as pi
+#include "../propagator.h"                // propagators
 #include "../state.h"                  // State class
 #include "../loop.h"                   // self-energy loop
 #include "../bubbles.h"                // bubble function
+#include "../ODE_solvers.h"               // ODE solvers
 #include "../right_hand_sides.h"       // compute the right hand sides of flow equations
 #include "../utilities/write_data2file.h"        // writing data to txt or hdf5 file
 #include "../utilities/hdf5_routines.h"          // writing states to hdf5 file
@@ -210,7 +212,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
         // create non-symmetric vertex with differentiated vertex on the left
-        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin);
+        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin, Lambda);
         dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
         dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
 
@@ -220,7 +222,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
 
 
         // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin);
+        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin, Lambda);
         dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
         dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
@@ -1265,6 +1267,9 @@ void test_K2(double Lambda, bool test_consistency){
 
 }
 
+/**
+ * test-integrand for below function test_integrate_over_K1()
+ */
 template <typename Q>
 class TestIntegrandK1a{
     public:
@@ -1309,6 +1314,46 @@ class TestIntegrandK1a{
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
     }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
 
     void save_state() {
             write_hdf("SOPT_state.h5", 1.8, 1, SOPTstate);
@@ -1316,39 +1361,1137 @@ class TestIntegrandK1a{
 
     auto operator() (double vpp) const -> Q {
             VertexInput input(0, vpp, v, vp + vpp, 0, 0, channel);
-            return SOPTstate.vertex[0].half1().avertex.value(input, this->SOPTstate.vertex[0].half1().avertex) / (-2*M_PI);
+            return SOPTstate.vertex[0].half1().avertex.value(input, this->SOPTstate.vertex[0].half1().avertex) ;
             //return vpp*vpp;
         }
     };
 
 
+/**
+ * test function; can be used to test the integration and the interpolation
+ * @tparam Q
+ * @param Lambda
+ */
 template <typename Q>
 void test_integrate_over_K1(double Lambda) {
     double v = 1e2;
     double vp = -1e2;
     TestIntegrandK1a<Q> IntegrandK1a(Lambda, 'a', 0., v, vp);
+    IntegrandK1a.save_integrand();
+    double exact_result = -glb_U*glb_U/4;
 
-    double vmax = 1e4;
-    Q result = integrator<Q>(IntegrandK1a, -vmax, vmax, v);
+    double vmax = 1e2;
+    //Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const int num_freqs;
+    vec<double> freqs = {};
+    int num_freqs = 0;
+    double Delta = (glb_Gamma+Lambda)/2.;
+    Q result = integrator<Q,0>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a:", result, true);
-    print("relative difference: ", (result-1./4)*4., true);
+    print("relative difference: ", (result-exact_result)/exact_result, true);
 
 
-    TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', 0., v, vp);
-    Q result2 = integrator<Q>(IntegrandK1a2, -vmax, vmax, v);
+    TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', (v-vp)*2, v, vp);
+    Q result2 = integrator<Q,0>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a from the t-channel:", result2, true);
-    print("relative difference: ", (result2-1./4)*4., true);
+    print("relative difference: ", (result2-exact_result)/exact_result, true);
 
 
-    TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', 0., v, vp);
-    Q result3 = integrator<Q>(IntegrandK1a3, -vmax, vmax, v);
+    TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', (v+vp)*2, v, vp);
+    Q result3 = integrator<Q,0>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a from p-channel:", result3, true);
-    print("relative difference: ", (result3-1./4)*4., true);
+    print("relative difference: ", (result3-exact_result)/exact_result, true);
 
 
     IntegrandK1a2.save_integrand(vmax);
+    IntegrandK1a3.save_integrand(vmax);
     IntegrandK1a.save_state();
 }
+
+#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
+auto SOPT_K1a(double w, double Lambda) -> double {
+    double Delta = (glb_Gamma + Lambda) / 2.;
+    double result;
+    if (w == 0.)
+        result = - glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu);
+    else
+        result = - glb_U*glb_U * Delta/M_PI / (std::std::abs(w)*(2*Delta + std::std::abs(w))) * log(1 + (std::std::abs(w)*(2*Delta + std::std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
+    return result;
+}
+auto SOPT_K1a_diff(double w, double Lambda) -> double {
+    double Delta = (glb_Gamma + Lambda) / 2.;
+    if (abs(w) < inter_tol) return - glb_U*glb_U      /2 / M_PI / (Delta*Delta + glb_mu*glb_mu)
+                        + glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
+    double term1 =  - glb_U*glb_U      / 2/M_PI / (std::std::abs(w)*(2*Delta + std::std::abs(w))) * log(1 + (std::std::abs(w)*(2*Delta + std::std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
+    double term2 =  + glb_U*glb_U * Delta /M_PI / (std::std::abs(w)*(2*Delta + std::std::abs(w))) * log(1 + (std::std::abs(w)*(2*Delta + std::std::abs(w)))/(Delta*Delta + glb_mu*glb_mu)) / (2*Delta + std::std::abs(w));
+    double term3 =  - glb_U*glb_U * Delta /M_PI / (std::std::abs(w)*(2*Delta + std::std::abs(w)))     /(   1 + (std::std::abs(w)*(2*Delta + std::std::abs(w)))/(Delta*Delta + glb_mu*glb_mu))
+            *(
+                    std::std::abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
+                   -std::std::abs(w) * (2*Delta + std::std::abs(w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
+                    );
+    return term1 + term2 + term3;
+}
+
+/**
+ * integrand for selfenergy in TOPT (SIAM)
+ */
+template <typename Q>
+class Integrand_TOPT_SE{
+public:
+    const double Lambda;
+    const double w, v;
+    const double vp = 0.;
+    const char channel = 'a';
+    const bool diff;
+
+    Propagator<Q>& barePropagator;
+    Integrand_TOPT_SE(double Lambda_in, double w, double v, bool diff, Propagator<Q>& barePropagator)
+            : Lambda(Lambda_in), w(w), v(v), diff(diff), barePropagator(barePropagator) { }
+
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+        return SOPT_K1a(- v + vpp, Lambda) * barePropagator.valsmooth(0, vpp, 0) ;
+        //return vpp*vpp;
+    }
+};
+
+/**
+ * integrand for K2a in TOPT (SIAM)
+ */
+template <typename Q>
+class Integrand_TOPTK2a{
+public:
+    const double Lambda;
+    const double w, v;
+    const double vp = 0.;
+    const char channel = 'a';
+    const bool diff;
+
+    Bubble<Q> Pi;
+    Integrand_TOPTK2a(double Lambda_in, double w, double v, bool diff, Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), diff(diff), Pi(Pi) { }
+
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+        return SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * glb_U ;
+        //return vpp*vpp;
+    }
+};
+
+/**
+ * integrand for K3a in FOPT (SIAM)
+ */
+template <typename Q>
+class Integrand_FOPTK3a{
+public:
+    const double Lambda;
+    const double w, v, vp;
+    const bool diff;
+    const char channel = 'a';
+    Bubble<Q> Pi;
+    Integrand_FOPTK3a(double Lambda_in, double w, double v, double vp, bool diff, Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) { }
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+        return SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a(vp + vpp, Lambda) ;
+        //return vpp*vpp;
+    }
+};
+
+template <typename Q>
+void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
+    double vmax = 100;
+    double Delta = (glb_Gamma + Lambda) / 2.;
+    State<Q> bareState (Lambda);
+    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Bubble<Q> Pi(barePropagator, barePropagator, diff);
+
+    State<state_datatype> PT_state(Lambda);
+
+    for (int i = 0; i<nFER-0; i++) {
+        double v = PT_state.selfenergy.frequencies.ws[i];
+        Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
+        Q val_SE = 1./(2*M_PI) * integrator<Q,1>(IntegrandSE, -vmax, vmax, std::std::abs(0.), {v}, Delta, false);
+        PT_state.selfenergy.setself(0, i, 0, val_SE);
+    }
+
+    for (int i = 0; i<nBOS-0; i++) {
+        double w = PT_state.vertex[0].avertex().frequencies.b_K1.ws[i];
+        Q val_K1;
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
+        else val_K1 = SOPT_K1a(w, Lambda);
+        PT_state.vertex[0].avertex().K1_setvert(0, i, 0, val_K1);
+        PT_state.vertex[0].pvertex().K1_setvert(0, i, 0, -val_K1);
+        PT_state.vertex[0].tvertex().K1_setvert(0, i, 0, -val_K1*val_K1/glb_U);
+    }
+
+#if MAX_DIAG_CLASS > 1
+    for (int i = 0; i<nBOS2-0; i++) {
+        for (int j = 1; j<nFER2-1; j++) {
+            double w = PT_state.vertex[0].avertex().frequencies.b_K2.ws[i];
+            double v = PT_state.vertex[0].avertex().frequencies.f_K2.ws[j];
+            Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
+            Q val_K2 = 1./(2*M_PI) * integrator<Q,3>(IntegrandK2, -vmax, vmax, std::std::abs(w/2), {v, w+v, w-v}, Delta, true);
+            PT_state.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
+            PT_state.vertex[0].pvertex().K2_setvert(0, i, j, 0, val_K2);
+            PT_state.vertex[0].tvertex().K2_setvert(0, i, j, 0, val_K2);
+        }
+    }
+#endif
+#if MAX_DIAG_CLASS > 2
+    for (int i = 0; i<nBOS3-0; i++) {
+        for (int j = 1; j<nFER3-1; j++) {
+            for (int k = 1; k<nFER3-1; k++) {
+                double w = PT_state.vertex[0].avertex().frequencies.b_K3.ws[i];
+                double v = PT_state.vertex[0].avertex().frequencies.f_K3.ws[j];
+                double vp= PT_state.vertex[0].avertex().frequencies.f_K3.ws[k];
+                Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
+                Q val_K3 = 1./(2*M_PI) * integrator<Q,6>(IntegrandK3, -vmax, vmax, std::std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                PT_state.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
+                PT_state.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, -val_K3);
+                Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
+                Q val_K3_ap = 1./(2*M_PI) * integrator<Q,6>(IntegrandK3_ap, -vmax, vmax, std::std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                PT_state.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, -2*(val_K3-val_K3_ap));
+            }
+        }
+    }
+#endif
+
+    write_hdf(outputFileName + "_exact", Lambda, 1, PT_state);
+
+    State<Q> state_cpp (Lambda);   // create final and initial state
+    state_cpp.initialize();             // initialize state
+
+    fopt_state(state_cpp, Lambda);
+
+    write_hdf(outputFileName + "_cpp", Lambda, 1, state_cpp);
+
+
+    State<Q> state_diff = state_cpp - PT_state;
+
+    write_hdf(outputFileName + "_diff", Lambda, 1, state_diff);
+    print("K1-difference: ", state_diff.vertex[0].half1().norm_K1(0), true);
+#if MAX_DIAG_CLASS > 1
+    print("K2-difference: ", state_diff.vertex[0].half1().norm_K2(0), true);
+#endif
+#if MAX_DIAG_CLASS > 2
+    print("K3-difference: ", state_diff.vertex[0].half1().norm_K3(0), true);
+#endif
+
+}
+
+
+
+
+
+/**
+ * integrand for K2a in TOPT (SIAM)
+ */
+template <typename Q>
+class K1rdot_PIa_K1p_exact_K2{
+public:
+    const double Lambda;
+    const double w, v;
+    const double vp = 0.;
+    const char channel = 'a';
+    const bool diff;
+
+    const Bubble<Q> Pi;
+    K1rdot_PIa_K1p_exact_K2(double Lambda_in, double w, double v, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), diff(diff), Pi(Pi) { }
+
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+        return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * glb_U ;
+        //return vpp*vpp;
+    }
+};
+
+/**
+ * integrand for K2a in TOPT (SIAM)
+ */
+template <typename Q>
+class K1rdot_PIa_K1p_exact_K3{
+public:
+    const double Lambda;
+    const double w, v, vp;
+    const char channel = 'a';
+    const bool diff;
+
+    Bubble<Q> Pi;
+    K1rdot_PIa_K1p_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) { }
+
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+        return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a(vp + vpp, Lambda) ;
+        //return vpp*vpp;
+    }
+};
+
+
+/**
+ * integrand for K2a in TOPT (SIAM)
+ */
+template <typename Q>
+class IntegranddGammaC_exact_K1{
+public:
+    const double Lambda;
+    const double w;
+    const double v = 0.;
+    const double vp = 0.;
+    double vmax = 1e3;
+    const double Delta = (Lambda * glb_Gamma)/2;
+    const char channel = 'a';
+    const bool diff;
+
+    const Bubble<Q> Pi;
+    IntegranddGammaC_exact_K1(double Lambda_in, double w, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), diff(diff), Pi(Pi) {}
+
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+
+        K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
+        state_datatype val_K2 = 1./(2*M_PI) * integrator<state_datatype,2>(IntegrandK2, -vmax, vmax, std::std::abs(w/2), {vpp, vp}, Delta);
+        return -glb_U * Pi.value(0, w, vpp, 0, 'a') * val_K2;
+        //return vpp*vpp;
+    }
+};
+
+/**
+ * integrand for K2a in TOPT (SIAM)
+ */
+template <typename Q>
+class IntegranddGammaC_exact_K2{
+public:
+    const double Lambda;
+    const double w, v;
+    const double vp = 0.;
+    double vmax = 1e3;
+    const double Delta = (Lambda * glb_Gamma)/2;
+    const char channel = 'a';
+    const bool diff;
+
+    Bubble<Q> Pi;
+    IntegranddGammaC_exact_K2(double Lambda_in, double w, double v, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), diff(diff), Pi(Pi) {}
+
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+
+        K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
+        state_datatype val_K2 = 1./(2*M_PI) * integrator<state_datatype,1>(IntegrandK2, -vmax, vmax, std::std::abs(w/2), {vpp}, Delta);
+        return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K2;
+        //return vpp*vpp;
+    }
+};
+
+
+/**
+ * integrand for K2a in TOPT (SIAM)
+ */
+template <typename Q>
+class IntegranddGammaC_exact_K3{
+public:
+    const double Lambda;
+    const double w, v, vp;
+    double vmax = 1e3;
+    const double Delta = (Lambda * glb_Gamma)/2;
+    const char channel = 'a';
+    const bool diff;
+
+    Bubble<Q> Pi;
+    IntegranddGammaC_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) {}
+
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=0; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = "../Data/integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+
+        K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, vpp, vp, false, Pi);
+        state_datatype val_K3 = 1./(2*M_PI) * integrator<state_datatype,3>(IntegrandK3, -vmax, vmax, std::std::abs(w/2), {vpp, vp, std::std::abs(vpp)-std::std::abs(vp)}, Delta);
+        return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K3;
+        //return vpp*vpp;
+    }
+};
+
+
+
+// to check central part of multi-loop flow equations:
+// compute diagrams with non-symmetric intermediate results
+void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, int version=1, bool compute_exact=false) {
+    State<state_datatype> bare (Lambda); // bare state
+    bare.initialize();         // initialize bare state
+
+    Propagator<state_datatype> G (Lambda, bare.selfenergy, 'g'); // bare propagator
+    Propagator<state_datatype> S (Lambda, bare.selfenergy, 's'); // bare differentiated propagator = single scale propagator
+    const Bubble<state_datatype> Pi(G, S, false);
+    double Delta = (glb_Gamma + Lambda)/2;
+
+    // Psi := K1p in PT2 + bare vertex
+    State<state_datatype> Psi (Lambda);
+    Psi.initialize();         // initialize bare state
+    bubble_function(Psi.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+
+    // K1a_dot in PT2
+    State<state_datatype> PT2_K1adot (Lambda);
+    bubble_function(PT2_K1adot.vertex, bare.vertex, bare.vertex, G, S, 'a', true);
+    // K1p_dot in PT2
+    State<state_datatype> PT2_K1pdot (Lambda);
+    bubble_function(PT2_K1pdot.vertex, bare.vertex, bare.vertex, G, S, 'p', true);
+
+    if (write_flag) {
+        write_hdf("Psi_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
+        write_hdf("PT2_K1a_dot_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
+        write_hdf("PT2_K1p_dot_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
+    }
+
+    std::vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
+
+    //for (int i = 0; i < 2; i++){
+    int i = version;
+        State<state_datatype> centralstate_dot = central_bubblestates[i];
+
+        // intermediate results
+        State<state_datatype> K1rdot_PIa_K1p (Lambda);
+        bubble_function(K1rdot_PIa_K1p.vertex, centralstate_dot.vertex, Psi.vertex, G, G, 'a', false);
+
+
+        State<state_datatype> K1p_PIa_K1rdot (Lambda);
+        bubble_function(K1p_PIa_K1rdot.vertex, Psi.vertex, centralstate_dot.vertex, G, G, 'a', false);
+
+
+        if (write_flag) {
+            write_hdf("K1rdot_PIa_K1p_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_hdf("K1p_PIa_K1rdot_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+        }
+
+        Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
+        Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
+        dGammaL_half1[0].half1().reorder_due2antisymmetry(dGammaR_half1[0].half1());
+        dGammaR_half1[0].half1().reorder_due2antisymmetry(dGammaL_half1[0].half1());
+        K1rdot_PIa_K1p.vertex = dGammaL_half1;
+        K1p_PIa_K1rdot.vertex = dGammaR_half1;
+
+        // create non-symmetric vertex with differentiated vertex on the left
+        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin, Lambda);
+        dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
+        dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
+
+        // insert this non-symmetric vertex on the right of the bubble
+        State<state_datatype> dGammaC_r(Lambda);
+        bubble_function(dGammaC_r.vertex, Psi.vertex, dGammaL, G, G, 'a', false);
+
+
+        // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin, Lambda);
+        dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
+        dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+
+        // insert this non-symmetric vertex on the left of the bubble
+        State<state_datatype> dGammaC_l(Lambda);
+        bubble_function(dGammaC_l.vertex, dGammaR, Psi.vertex, G, G, 'a', false);
+
+
+        if (write_flag) {
+            write_hdf("K1rdot_PIa_K1p_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_hdf("K1p_PIa_K1rdot_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+            write_hdf("dGammaC_r_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
+            write_hdf("dGammaC_l_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
+        }
+    //}
+
+    if (compute_exact) {
+        /// Now computing vertex for version 1 (K1rdot = K1pdot):
+        double vmax = 1e3;
+        State<state_datatype> K1pdot_exact(Lambda);        // intermediate result: contains K2 and K3
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS - 1); iflat++) {
+            int i = 0 + iflat;
+            //for (int i = 1; i<nBOS2-1; i++) {
+            //    for (int j = 1; j<nFER2-1; j++) {
+            double w = K1pdot_exact.vertex[0].avertex().frequencies.b_K1.ws[i];
+            state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda);
+            K1pdot_exact.vertex[0].pvertex().K1_setvert(0, i, 0, val_K1);
+            //    }
+        }
+        write_hdf("K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+                  K1pdot_exact);
+
+        State<state_datatype> K1rdot_diff = PT2_K1pdot - K1pdot_exact;        // intermediate result: contains K2 and K3
+        write_hdf("K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+                  K1rdot_diff);
+
+
+        State<state_datatype> K1rdot_PIa_K1p_exact(Lambda);        // intermediate result: contains K2 and K3
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS2 - 1) * (nFER2 - 1); iflat++) {
+            int i = 0 + iflat / (nFER2 - 1);
+            int j = 0 + iflat - (i - 0) * (nFER2 - 1);
+            //for (int i = 1; i<nBOS2-1; i++) {
+            //    for (int j = 1; j<nFER2-1; j++) {
+            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K2.ws[i];
+            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K2.ws[j];
+            K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
+            state_datatype val_K2 =
+                    1. / (2 * M_PI) * integrator<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::std::abs(w / 2), {v}, Delta);
+            K1rdot_PIa_K1p_exact.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
+            //    }
+        }
+
+#if MAX_DIAG_CLASS>2
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS3 - 1) * (nFER3 - 1) * (nFER3 - 1); iflat++) {
+            int i = 0 + iflat / (nFER3 - 1) / (nFER3 - 1);
+            int j = 0 + iflat / (nFER3 - 1) - (i - 0) * (nFER3 - 1);
+            int k = 0 + iflat - (i - 0) * (nFER3 - 1) * (nFER3 - 1) - (j - 0) * (nFER3 - 1);
+            //for (int i = 1; i<nBOS3-1; i++) {
+            //    for (int j = 1; j<nFER3-1; j++) {
+            //        for (int k = 1; k<nFER3-1; k++) {
+            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K3.ws[i];
+            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[j];
+            double vp = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[k];
+            K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
+            state_datatype val_K3 = 1. / (2 * M_PI) *
+                                    integrator<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::std::abs(w / 2),
+                                                                  {v, vp, std::std::abs(w) - std::std::abs(vp), std::std::abs(w) + std::std::abs(vp),
+                                                                   std::std::abs(w) - std::std::abs(v), std::std::abs(w) + std::std::abs(v)}, Delta);
+            K1rdot_PIa_K1p_exact.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
+            K1rdot_PIa_K1p_exact.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, val_K3);
+            K1rdot_PIa_K1p_exact.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, val_K3);
+            //        }
+            //    }
+        }
+#endif
+        write_hdf("K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+                  K1rdot_PIa_K1p_exact);
+
+        State<state_datatype> K1rdot_PIa_K1p_diff =
+                K1rdot_PIa_K1p - K1rdot_PIa_K1p_exact;        // intermediate result: contains K2 and K3
+        write_hdf("K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+                  K1rdot_PIa_K1p_diff);
+
+
+        State<state_datatype> dGammaC_exact(Lambda);        // final state: contains K1, K2 and K3
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+        for (int i = 1; i < nBOS - 1; i++) {
+            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K1.ws[i];
+            IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
+            state_datatype val_K1 =
+                    1. / (2 * M_PI) * integrator<state_datatype, 0>(IntegrandK1, -vmax, vmax, std::std::abs(w / 2), {}, Delta);
+            dGammaC_exact.vertex[0].avertex().K1_setvert(0, i, 0, val_K1);
+        }
+
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS2 - 2) * (nFER2 - 2); iflat++) {
+            int i = 1 + iflat / (nFER2 - 2);
+            int j = 1 + iflat - (i - 1) * (nFER2 - 2);
+            //for (int i = 1; i<nBOS2-1; i++) {
+            //    for (int j = 1; j<nFER2-1; j++) {
+            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K2.ws[i];
+            double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K2.ws[j];
+            IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
+            state_datatype val_K2 =
+                    1. / (2 * M_PI) * integrator<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::std::abs(w / 2), {v}, Delta);
+            dGammaC_exact.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
+            //    }
+        }
+
+#if MAX_DIAG_CLASS>2
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
+            int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
+            int j = 1 + iflat / (nFER3 - 2) - (i - 1) * (nFER3 - 2);
+            int k = 1 + iflat - (i - 1) * (nFER3 - 2) * (nFER3 - 2) - (j - 1) * (nFER3 - 2);
+            //for (int i = 1; i<nBOS3-1; i++) {
+            //    for (int j = 1; j<nFER3-1; j++) {
+            //        for (int k = 1; k<nFER3-1; k++) {
+            double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K3.ws[i];
+            double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.ws[j];
+            double vp = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.ws[k];
+            IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
+            state_datatype val_K3 = 1. / (2 * M_PI) *
+                                    integrator<state_datatype, 3>(IntegrandK3, -vmax, vmax, std::std::abs(w / 2),
+                                                                  {v, vp, std::std::abs(v) - std::std::abs(vp)}, Delta);
+            dGammaC_exact.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
+            //    }
+            //}
+        }
+#endif
+        write_hdf("dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+                  dGammaC_exact);
+
+        State<state_datatype> dGammaC_diff = dGammaC_l - dGammaC_exact;        // final result: contains K1, K2 and K3
+        write_hdf("dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+                  dGammaC_diff);
+    }
+}
+
+#endif
 
 #endif
 
@@ -1397,7 +2540,7 @@ void test_channel_decomposition(int N_ODE) {
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_channel_decomposition,
                     log_substitution, log_resubstitution, N_ODE); // compute flow
 
-    string name = "test_channel_decomposition.h5";
+    std::string name = "test_channel_decomposition.h5";
     write_h5_rvecs(name, {"v", "Sigma_re", "Sigma_im", "Sigma_ini_re", "Sigma_ini_im"},
                          {ffreqs,
                           state_fin.selfenergy.Sigma.real(), state_fin.selfenergy.Sigma.imag(),
