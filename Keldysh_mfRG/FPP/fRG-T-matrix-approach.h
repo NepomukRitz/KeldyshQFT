@@ -224,7 +224,7 @@ double find_root_divergence (double w, double q, double Lambda_i, double Lambda_
         xnew = xold + dxold;
 
         fnew = f.mu(xnew);
-        if ((abs(fnew)<prec)||(xnew > 1)) {
+        if ((abs(fnew)<prec)||(xnew > 1)||isnan(fnew)==true) {
             xnew = xold;
             dxnew = dxold/2.;
         }

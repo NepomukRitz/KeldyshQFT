@@ -530,7 +530,78 @@ int main() {
 
     //fRG_p_list (1e4, 1e-10, 1,0, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 101);
     //ladder_p_list (1e4, 1e-10, 1,0,-2*sqrt(2), 2*sqrt(2), -10.0, 1e-10, 100, 1e-16, 301);
-    fRG_p_list (1e4, 1e-10, 1,1, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 11);
+    fRG_p_list (1e4, 1e-10, 1,1, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 101);
+
+
+    // check fRG-results with numerical integrals
+    glb_muc = 1.0;
+    glb_mud = -1.0;
+    glb_ainv = 0.5*sqrt(2);
+
+    comp testfRG1, testfRG2, testfRG3, testfRG4;
+    comp testfRGn1, testfRGn2, testfRGn3, testfRGn4;
+    comp testladder1, testladder2, testladder3, testladder4;
+    comp testladdern1, testladdern2, testladdern3, testladdern4;
+    testfRG1 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,0);
+    testfRGn1 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,1);
+    testladder1 = ladder(0.,0.,1e4,1e-10,1,0);
+    testladdern1 = ladder(0.,0.,1e4,1e-10,1,1);
+    glb_mud = -0.5;
+    testfRG2 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,0);
+    testfRGn2 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,1);
+    testladder2 = ladder(0.,0.,1e4,1e-10,1,0);
+    testladdern2 = ladder(0.,0.,1e4,1e-10,1,1);
+    /*glb_mud = -0.25;
+    testfRG3 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,0);
+    testladder3 = ladder(0.,0.,1e4,1e-10,1,0);
+    glb_mud = -0.0;
+    testladder4 = ladder(0.,0.,1e4,1e-10,1,0);
+    testfRG4 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,0);*/
+    std::cout << "mu_d = -1.0, Gamma_fRG = " << testfRG1 << ", ladder = " << testladder1 << "\n";
+    std::cout << "mu_d = -0.5, Gamma_fRG = " << testfRG2 << ", ladder = " << testladder2 << "\n";
+    std::cout << "mu_d = -1.0, Gamma_fRGn = " << testfRGn1 << ", laddern = " << testladdern1 << "\n";
+    std::cout << "mu_d = -0.5, Gamma_fRGn = " << testfRGn2 << ", laddern = " << testladdern2 << "\n";
+    //std::cout << "mu_d = -0.25, Gamma_fRG = " << testfRG3 << ", ladder = " << testladder3 << "\n";
+    //std::cout << "mu_d = 0.0, Gamma_fRG = " << testfRG4 << ", ladder = " << testladder4 << "\n";
+
+    glb_ainv = 0.0*sqrt(2);
+    glb_mud = 0.28;
+
+    testfRG1 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,0);
+    testfRGn1 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,1);
+    testladder1 = ladder(0.,0.,1e4,1e-10,1,0);
+    testladdern1 = ladder(0.,0.,1e4,1e-10,1,1);
+    glb_mud = 0.30;
+    testfRG2 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,0);
+    testfRGn2 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,1);
+    testladder2 = ladder(0.,0.,1e4,1e-10,1,0);
+    testladdern2 = ladder(0.,0.,1e4,1e-10,1,1);
+    /*glb_mud = -0.25;
+    testfRG3 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,0);
+    testladder3 = ladder(0.,0.,1e4,1e-10,1,0);
+    glb_mud = -0.0;
+    testladder4 = ladder(0.,0.,1e4,1e-10,1,0);
+    testfRG4 = fRG_solve_nsc(0.,0.,1e4,1e-10,1,0);*/
+    double md_binding1, md_binding2, md_binding3, md_binding4;
+    md_binding1 = find_root_ladder(0.,0.,1e4,1e-10,1,0,0.,0.0,1e-10,100,1e-16);
+    md_binding2 = find_root_ladder(0.,0.,1e4,1e-10,1,1,0.,0.0,1e-10,100,1e-16);
+    md_binding3 = find_root_fRG(0.,0.,1e4,1e-10,1,0,0.,0.0,0.5,100,1e-16);
+    md_binding4 = find_root_fRG(0.,0.,1e4,1e-10,1,1,0.,0.0,0.5,100,1e-16);
+
+    std::cout << "ladder exact bb: " << md_binding1 << "\n";
+    std::cout << "ladder num bb: " << md_binding2 << "\n";
+    std::cout << "fRG exact bb: " << md_binding3 << "\n";
+    std::cout << "fRG num bb: " << md_binding4 << "\n";
+
+    std::cout << "mu_d = 0.28, Gamma_fRG = " << testfRG1 << ", ladder = " << testladder1 << "\n";
+    std::cout << "mu_d = 0.30, Gamma_fRG = " << testfRG2 << ", ladder = " << testladder2 << "\n";
+    std::cout << "mu_d = 0.28, Gamma_fRGn = " << testfRGn1 << ", laddern = " << testladdern1 << "\n";
+    std::cout << "mu_d = 0.30, Gamma_fRGn = " << testfRGn2 << ", laddern = " << testladdern2 << "\n";
+    //std::cout << "mu_d = -0.25, Gamma_fRG = " << testfRG3 << ", ladder = " << testladder3 << "\n";
+    //std::cout << "mu_d = 0.0, Gamma_fRG = " << testfRG4 << ", ladder = " << testladder4 << "\n";
+
+
+
 
     glb_muc = 1.0;
     glb_mud = 0.0;
@@ -610,7 +681,7 @@ int main() {
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================
 
-
+    /*
     comp theta_integral_001 = perform_integral_Pi0_theta (0.0, 0.0, 0., 0.1, 'c', 'd');
     std::cout << "theta-integral = " << theta_integral_001 << "\n";
     comp theta_integral_002 = perform_integral_Pi0_theta (0.0, 0.0, 1e-10, 0.1, 'c', 'd');
@@ -637,7 +708,7 @@ int main() {
     std::cout <<"test result = " << test_integral_Pi0_001 << "\n";
     test_integral_Pi0_001 = perform_integral_Pi0_kpp_chan (-0.2, 0.1, 9, 'c', 'd','p');
     std::cout <<"test result = " << test_integral_Pi0_001 << "\n";
-
+    */
 
     double wmax = 10.;
     double vppmax = 10.;
@@ -711,6 +782,25 @@ int main() {
     get_time(t0);
 
     std::cout << "Goodbye World! \n";
+
+    // REFERENCES
+
+    /*
+    int a = 1;
+    int& ra = a;
+    int b = 2;
+    std::cout << "a = " << a << ", b = " << b << ", ra = " << ra << "\n";
+    a = 3;
+    std::cout << "a = " << a << ", b = " << b << ", ra = " << ra << "\n";
+    b = 4;
+    std::cout << "a = " << a << ", b = " << b << ", ra = " << ra << "\n";
+    ra = b;
+    std::cout << "a = " << a << ", b = " << b << ", ra = " << ra << "\n";
+    a = 5;
+    std::cout << "a = " << a << ", b = " << b << ", ra = " << ra << "\n";
+    b = 6;
+    std::cout << "a = " << a << ", b = " << b << ", ra = " << ra << "\n";
+     */
 
 #ifdef MPI_FLAG
     MPI_Finalize();
