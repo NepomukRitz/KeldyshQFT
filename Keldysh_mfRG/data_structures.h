@@ -308,6 +308,74 @@ vec<comp> operator* (vec<comp> lhs, const double& rhs) {
 }
 
 
+
+
+template<size_t dimensionality>
+size_t getFlatIndex(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality]) {
+    size_t result = indx[0];
+    for (int it = 1; it < dimensionality; it++) {
+        result *= dims [it];
+        result += indx [it];
+    }
+    return result;
+}
+/// Template specialization for special case dimensionality == 1
+template<>
+size_t getFlatIndex<1>(const size_t (&indx) [1], size_t (&dims) [1]) {
+    return dims[0];
+}
+template<size_t dimensionality>
+size_t getFlatIndex(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]) {
+    size_t result = indx[permutation[0]];
+    for (int it = 1; it < dimensionality; it++) {
+        result *= dims [permutation[it]];
+        result += indx [permutation[it]];
+    }
+    return result;
+}
+
+template<size_t idim, size_t jdim, size_t kdim, size_t ldim, size_t mdim>
+size_t getFlatIndex(size_t i, size_t j, size_t k, size_t l, size_t m) {
+    return ((((i * jdim + j) * kdim + k) * ldim + l) * mdim + m);
+}
+template<size_t idim, size_t jdim, size_t kdim, size_t ldim>
+size_t getFlatIndex(size_t i, size_t j, size_t k, size_t l) {
+    return ((((i * jdim + j) * kdim + k) * ldim + l));
+}
+template<size_t idim, size_t jdim, size_t kdim>
+size_t getFlatIndex(size_t i, size_t j, size_t k) {
+    return ((((i * jdim + j) * kdim + k)));
+}
+template<size_t idim, size_t jdim>
+size_t getFlatIndex(size_t i, size_t j) {
+    return ((((i * jdim + j))));
+}
+
+
+template<size_t dimensionality>
+void getMultIndex(size_t (&indx) [dimensionality], size_t iflat, size_t (&dims) [dimensionality]) {
+    size_t temp = iflat;
+    size_t dimtemp = 1;
+    for (int it = 1; it < dimensionality-1; it++) {
+        dimtemp *= dims[it];
+    }
+    indx[0] = temp / dimtemp;
+    temp -= indx[0] * dimtemp;
+    for (int it = 1; it < dimensionality; it++) {
+        dimtemp = dimtemp / dims[it];
+        indx[it] = temp / dimtemp;
+        temp -= indx[it] * dimtemp;
+    }
+}
+/// Template specialization for special case dimensionality == 1
+template<>
+void getMultIndex<1>(size_t (&indx) [1], size_t iflat, size_t (&dims) [1]) {
+    indx[0] = iflat;
+
+}
+
+
+
 /** auxiliary struct that contains all input variables of vertices
  * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)
  * @param w.v1,v2  :   frequency arguments
