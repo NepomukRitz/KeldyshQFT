@@ -420,7 +420,7 @@ size_t rotateFlatIndex(size_t iflat, size_t (&dims) [dimensionality], size_t (&p
  * Computes the derivative of a multi-dimensional vector with the finite-differences method
  * The derivative is computed in the direction of dims[permutation[-1]]
  * @tparam T
- * @tparam dimensionality       number of dimensions
+ * @tparam dimensionality       number of dimensions (only for dimension >= 2 !!)
  * @param vec_in                input vector for which the derivative is to be computed
  * @param dims                  number of grid points in the different directions
  * @param permutation           determines how the dimensions are to be permuted
@@ -460,6 +460,16 @@ template<typename T> vec<T> get_finite_differences(vec<T> vec_in){
     result[dimsum-1] = -0.5 * vec_in[dimsum-2];
     for (int jt = 1; jt < dimsum-1; jt++) {
         result[jt] = -0.5 * vec_in[jt - 1]  + 0.5 * vec_in[jt + 1];
+    }
+    return result;
+}
+template<typename T> vec<T> power2(vec<T> vec_in) {
+    size_t flatdim = vec_in.size();
+    vec <T> result (flatdim);
+    T temp;
+    for (int it = 0; it < flatdim; it++) {
+        temp = vec_in[it];
+        result[it] = temp * temp;
     }
     return result;
 }
