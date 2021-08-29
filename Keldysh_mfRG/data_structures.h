@@ -313,7 +313,13 @@ vec<comp> operator* (vec<comp> lhs, const double& rhs) {
 
 
 
-
+/**
+ * Returns a flattened index of a multi-dimensional vector
+ * @tparam dimensionality   number of dimensions
+ * @param indx              array of multi-dimensional indices
+ * @param dims              number of grid points in the different directions
+ * @return
+ */
 template<size_t dimensionality>
 size_t getFlatIndex(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality]) {
     size_t result = indx[0];
@@ -328,6 +334,18 @@ template<>
 size_t getFlatIndex<1>(const size_t (&indx) [1], size_t (&dims) [1]) {
     return dims[0];
 }
+/**
+ * Returns a flattened index of a multi-dimensional vector
+ * @tparam dimensionality   number of dimensions
+ * @param indx              array of multi-dimensional indices (to address the entries of the vector)
+ * @param dims              number of grid points in the different directions
+ * @param permutation       determines how the dimensions are to be permuted before flattening
+ *                          for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
+ *                          A vector has a native order of dimensions. The permutation allows to express the multi-index
+ *                          in a rotated version. But the permutation needs to picked such that it permutes indx and
+ *                          perms into the native order.
+ * @return
+ */
 template<size_t dimensionality>
 size_t getFlatIndex(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]) {
     size_t result = indx[permutation[0]];
@@ -376,6 +394,74 @@ template<>
 void getMultIndex<1>(size_t (&indx) [1], size_t iflat, size_t (&dims) [1]) {
     indx[0] = iflat;
 
+}
+
+/**
+ * Takes a flat index and returns a flat index for a vector with rotated directions
+ * @tparam dimensionality
+ * @param iflat
+ * @param dims
+ * @param permutation       determines how the dimensions are to be permuted
+ *                          for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
+ *                          A vector has a native order of dimensions. The permutation allows to express the multi-index
+ *                          in a rotated version. But the permutation needs to picked such that it permutes indx and
+ *                          perms into the native order.
+ * @return
+ */
+template<size_t dimensionality>
+size_t rotateFlatIndex(size_t iflat, size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]){
+    size_t multIndx[dimensionality];
+    getMultIndex<dimensionality>(multIndx, iflat, dims);
+    size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]) {
+    return iflat_new;
+}
+
+/**
+ * Computes the derivative of a multi-dimensional vector with the finite-differences method
+ * The derivative is computed in the direction of dims[permutation[-1]]
+ * @tparam T
+ * @tparam dimensionality       number of dimensions
+ * @param vec_in                input vector for which the derivative is to be computed
+ * @param dims                  number of grid points in the different directions
+ * @param permutation           determines how the dimensions are to be permuted
+ *                              for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
+ *                              A vector has a native order of dimensions. The permutation allows to express the multi-index
+ *                              in a rotated version. But the permutation needs to picked such that it permutes indx and
+ *                              perms into the native order.
+ * @return
+ */
+template<typename T, size_t dimensionality>
+vec<T> get_finite_differences(vec<T> vec_in, size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]){
+    size_t flatdim = vec_in.size();
+    size_t dimsum = dims[dimensionality-1];
+    size_t codimsum = flatdim/dimsum;
+
+    vec<T> result(flatdim);
+    for (int it = 0; it < codimsum; it++) {
+        result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
+                +0.5 * vec_in[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
+        result[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] =
+                -0.5 * vec_in[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
+
+        for (int jt = 1; jt < dimsum-1; jt++) {
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] =
+                    -0.5 * vec_in[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)]
+                    +0.5 * vec_in[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)];
+        }
+    }
+     return result;
+}
+/// Template specialization of above function for dimensionality == 1
+template<typename T> vec<T> get_finite_differences(vec<T> vec_in){
+    size_t dimsum = vec_in.size();
+
+    vec<T> result(dimsum);
+    result[0       ] = +0.5 * vec_in[1       ];
+    result[dimsum-1] = -0.5 * vec_in[dimsum-2];
+    for (int jt = 1; jt < dimsum-1; jt++) {
+        result[jt] = -0.5 * vec_in[jt - 1]  + 0.5 * vec_in[jt + 1];
+    }
+    return result;
 }
 
 
