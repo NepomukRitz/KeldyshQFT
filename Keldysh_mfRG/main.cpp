@@ -23,14 +23,11 @@ std::string generate_filename() {
     std::string extension = ".h5";
 
     std::string filename = klass + loops + n1;
-#if MAX_DIAG_CLASS >= 2
-    filename += n2;
-#elif defined(STATIC_FEEDBACK)
+    if (MAX_DIAG_CLASS >= 2) filename += n2;
+#if defined(STATIC_FEEDBACK)
     filename += "static_";
 #endif
-#if MAX_DIAG_CLASS >= 3
-    filename += n3;
-#endif
+    if (MAX_DIAG_CLASS >= 3) filename += n3;
     filename += gamma;
     if(glb_V != 0.)
         filename += voltage;
@@ -49,9 +46,7 @@ auto main() -> int {
 #ifdef STATIC_FEEDBACK
     assert(MAX_DIAG_CLASS == 1);
 #endif
-#if MAX_DIAG_CLASS<2
-    assert(N_LOOPS < 2);
-#endif
+    if (MAX_DIAG_CLASS<2) assert(N_LOOPS < 2);
 
     if (KELDYSH){
         if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");

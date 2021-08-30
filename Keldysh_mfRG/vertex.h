@@ -649,28 +649,28 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if MAX_DIAG_CLASS <= 1
-    VertexInput input_p = input;
-    VertexInput input_at = input;
-    input_p.w = 2*glb_mu;
-    input_at.w = 0.;
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
 
-    switch (channel) {
-        case 'a':
-            K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
-                    + tvertex.template valsmooth<k1>(input_at, avertex);
-            break;
-        case 'p':
-            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
-                    + tvertex.template valsmooth<k1>(input_at, avertex);
-            break;
-        case 't':
-            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
-                    + pvertex.template valsmooth<k1>(input_p, pvertex);
-            break;
-        default: ;
+        switch (channel) {
+            case 'a':
+                K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 'p':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 't':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
+                          + pvertex.template valsmooth<k1>(input_p, pvertex);
+                break;
+            default:;
+        }
     }
-    #endif
 #endif
     assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
@@ -695,28 +695,28 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if MAX_DIAG_CLASS <= 1
-    VertexInput input_p = input;
-    VertexInput input_at = input;
-    input_p.w = 2*glb_mu;
-    input_at.w = 0.;
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
 
-    switch (channel) {
-        case 'a':
-            K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
-                    + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
-            break;
-        case 'p':
-            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
-                    + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
-            break;
-        case 't':
-            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
-                    + pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex);
-            break;
-        default: ;
+        switch (channel) {
+            case 'a':
+                K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
+                break;
+            case 'p':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
+                break;
+            case 't':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
+                          + pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex);
+                break;
+            default:;
+        }
     }
-    #endif
 #endif
     assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
@@ -743,28 +743,28 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if MAX_DIAG_CLASS <= 1
-    VertexInput input_p = input;
-    VertexInput input_at = input;
-    input_p.w = 2*glb_mu;
-    input_at.w = 0.;
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
 
-    switch (channel) {
-        case 'a':
-            K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
-                   + tvertex.template valsmooth<k1>(input_at, avertex);
-            break;
-        case 'p':
-            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
-                   + tvertex.template valsmooth<k1>(input_at, avertex);
-            break;
-        case 't':
-            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
-                   + pvertex.template valsmooth<k1>(input_p, pvertex);
-            break;
-        default: ;
+        switch (channel) {
+            case 'a':
+                K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 'p':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 't':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
+                         + pvertex.template valsmooth<k1>(input_p, pvertex);
+                break;
+            default:;
+        }
     }
-    #endif
 #endif
     assert(isfinite(K1_K2));
     return gamma0 + K1_K2;
@@ -790,28 +790,28 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if MAX_DIAG_CLASS <= 1
-    VertexInput input_p = input;
-    VertexInput input_at = input;
-    input_p.w = 2*glb_mu;
-    input_at.w = 0.;
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
 
-    switch (channel) {
-        case 'a':
-            K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
-                   + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
-            break;
-        case 'p':
-            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
-                   + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
-            break;
-        case 't':
-            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
-                   + pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex);
-            break;
-        default: ;
+        switch (channel) {
+            case 'a':
+                K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
+                break;
+            case 'p':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
+                break;
+            case 't':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
+                         + pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex);
+                break;
+            default:;
+        }
     }
-    #endif
 #endif
     assert(isfinite(K1_K2));
     return gamma0 + K1_K2;
@@ -820,10 +820,10 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const -> Q {
     Q K2_K3, gamma_Rb;
     if (Ir) {
-#if MAX_DIAG_CLASS >= 2
-        gamma_Rb = gammaRb(input);
-        assert(isfinite(gamma_Rb));
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb(input);
+            assert(isfinite(gamma_Rb));
+        }
         return gamma_Rb;
     }
 
@@ -850,10 +850,10 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2_K3, gamma_Rb;
     if (Ir) {
-#if MAX_DIAG_CLASS >= 2
-        gamma_Rb = gammaRb(input, right_vertex);
-        assert(isfinite(gamma_Rb));
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb(input, right_vertex);
+            assert(isfinite(gamma_Rb));
+        }
         return gamma_Rb;
     }
 
@@ -881,10 +881,10 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const 
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const -> Q {
     Q K2b_K3, gamma_Rb;
     if (Ir) {
-#if MAX_DIAG_CLASS >= 2
-        gamma_Rb = gammaRb(input);
-        assert(isfinite(gamma_Rb));
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb(input);
+            assert(isfinite(gamma_Rb));
+        }
         return gamma_Rb;
     }
 
@@ -911,10 +911,10 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2b_K3, gamma_Rb;
     if (Ir) {
-#if MAX_DIAG_CLASS >= 2
-        gamma_Rb = gammaRb(input, right_vertex);
-        assert(isfinite(gamma_Rb));
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb(input, right_vertex);
+            assert(isfinite(gamma_Rb));
+        }
         return gamma_Rb;
     }
     switch (input.channel){
@@ -942,17 +942,16 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(const fullvert<Q
     avertex.enforce_freqsymmetriesK1(right_vertex.avertex);
     pvertex.enforce_freqsymmetriesK1(right_vertex.pvertex);
     tvertex.enforce_freqsymmetriesK1(right_vertex.tvertex);
-#if MAX_DIAG_CLASS >1
-    avertex.enforce_freqsymmetriesK2(right_vertex.avertex);
-    pvertex.enforce_freqsymmetriesK2(right_vertex.pvertex);
-    tvertex.enforce_freqsymmetriesK2(right_vertex.tvertex);
-#endif
-#if MAX_DIAG_CLASS >2
-    avertex.enforce_freqsymmetriesK3(right_vertex.avertex);
-    pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
-    tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
-#endif
-
+    if (MAX_DIAG_CLASS > 1) {
+        avertex.enforce_freqsymmetriesK2(right_vertex.avertex);
+        pvertex.enforce_freqsymmetriesK2(right_vertex.pvertex);
+        tvertex.enforce_freqsymmetriesK2(right_vertex.tvertex);
+    }
+    if (MAX_DIAG_CLASS > 2) {
+        avertex.enforce_freqsymmetriesK3(right_vertex.avertex);
+        pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
+        tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
+    }
 }
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {
@@ -1122,15 +1121,9 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
 
 template <typename Q> auto fullvert<Q>::sum_norm(const int p) -> double {
     double result = 0.;
-#if MAX_DIAG_CLASS >= 0
-    result += norm_K1(p);
-#endif
-#if MAX_DIAG_CLASS >= 2
-    result += norm_K2(p);
-#endif
-#if MAX_DIAG_CLASS >= 3
-    result += norm_K3(p);
-#endif
+    if (MAX_DIAG_CLASS >= 0) result += norm_K1(p);
+    if (MAX_DIAG_CLASS >= 2) result += norm_K2(p);
+    if (MAX_DIAG_CLASS >= 3) result += norm_K3(p);
     return result;
 }
 
