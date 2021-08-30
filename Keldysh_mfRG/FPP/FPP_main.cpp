@@ -22,9 +22,9 @@
 
 int main() {
 
-#ifdef MPI_FLAG
-    MPI_Init(nullptr, nullptr);
-#endif
+    if (MPI_FLAG) {
+        MPI_Init(nullptr, nullptr);
+    }
 
     gsl_set_error_handler_off();
 
@@ -712,9 +712,9 @@ int main() {
 
     std::cout << "Goodbye World! \n";
 
-#ifdef MPI_FLAG
-    MPI_Finalize();
-#endif
+    if (MPI_FLAG) {
+        MPI_Finalize();
+    }
 
 }
 

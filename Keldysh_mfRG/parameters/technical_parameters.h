@@ -8,7 +8,7 @@
 //#define SYMMETRIZED_SELF_ENERGY_FLOW
 
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
-#define MPI_FLAG
+constexpr bool MPI_FLAG = true;
 
 //Tolerance for closeness to grid points when interpolating
 constexpr double inter_tol = 1e-10;

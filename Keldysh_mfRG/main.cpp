@@ -40,9 +40,9 @@ std::string generate_filename() {
 
 auto main() -> int {
 
-#ifdef MPI_FLAG
-    MPI_Init(nullptr, nullptr);
-#endif
+    if (MPI_FLAG) {
+        MPI_Init(nullptr, nullptr);
+    }
 #ifdef STATIC_FEEDBACK
     assert(MAX_DIAG_CLASS == 1);
 #endif
@@ -108,8 +108,8 @@ auto main() -> int {
     std::cout << std::endl;
 
 
-#ifdef MPI_FLAG
-    MPI_Finalize();
-#endif
+    if (MPI_FLAG) {
+        MPI_Finalize();
+    }
     return 0;
 }
