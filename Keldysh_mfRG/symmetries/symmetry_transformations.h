@@ -204,9 +204,9 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TC(indices);
             T3(indices);
             break;
-#if defined(KELDYSH_FORMALISM) and defined(PARTICLE_HOLE_SYMM)
-        case 6:
-            Tph(indices);
+    if (KELDYSH and PARTICLE_HOLE_SYMMETRY) {
+                case 6:
+                    Tph(indices);
             break;
         case 36:
             Tph(indices);
@@ -221,25 +221,25 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TC(indices);
             T3(indices);
             break;
-#endif
-#ifndef KELDYSH_FORMALISM
+    }
+    if (!KELDYSH) {
         case 7:
             TR(indices);
-            break;
+        break;
         case 37:
             TR(indices);
-            T3(indices);
-            break;
+        T3(indices);
+        break;
         case 47:
             TC(indices);
-            TR(indices);
-            break;
+        TR(indices);
+        break;
         case 347:
             TR(indices);
-            TC(indices);
-            T3(indices);
-            break;
-#endif
+        TC(indices);
+        T3(indices);
+        break;
+    }
         default:
             std::cout << "A Transformation in the symmetry table is not covered in Ti!"
             ;

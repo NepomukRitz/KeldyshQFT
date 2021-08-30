@@ -128,14 +128,15 @@ Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
     Q factorClosedAbove;
     evaluate_vertex(factorClosedAbove, vp);
 
-#ifndef PARTICLE_HOLE_SYMM
-        return ( GM*factorClosedAbove );
-#else
+    if (!PARTICLE_HOLE_SYMMETRY) {
+        return (GM * factorClosedAbove);
+    }
+    else {
         // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy Im(Sigma)
         // Accordingly the saved propagator is -Im(G)
         // Hence we need an additional factor of -1
-        return - ( GM*factorClosedAbove );
-#endif
+        return -(GM * factorClosedAbove);
+    }
 }
 
 template<typename Q>

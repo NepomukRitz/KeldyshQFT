@@ -146,11 +146,8 @@ void sum_rule_K1tK(const std::string filename) {
             sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
         }
         else{
-#if defined(PARTICLE_HOLE_SYMM) and not defined(HUBBARD)
-            sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
-#else
-            sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
-#endif
+            sum_rule[iLambda] = (1. / (M_PI) * myreal(integrator<state_datatype>(integrand, 0, wmax)) / (glb_U * glb_U));
+
         }
     }
 

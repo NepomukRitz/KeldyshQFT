@@ -14,7 +14,7 @@
 template <typename Integrand>
 auto f_real(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
-    double f_real = real(integrand(x));
+    double f_real = myreal(integrand(x));
 
     return f_real;
 }
@@ -23,7 +23,7 @@ auto f_real(double x, void* params) -> double {
 template <typename Integrand>
 auto f_imag(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
-    double f = imag(integrand(x));
+    double f = myimag(integrand(x));
     return f;
 }
 
@@ -85,63 +85,94 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 //
 template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, const vec<vec<double>>& intervals, const size_t num_intervals, const int Nmax, const bool isinf=false) -> Q {
-    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
-    gsl_function F_real;
-    F_real.function = &f_real<Integrand>;
-    F_real.params = &integrand;
-    double result_real {}, error_real {};
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
-    gsl_function F_imag;
-    F_imag.function = &f_imag<Integrand>;
-    F_imag.params = &integrand;
-    double result_imag, error_imag;
-#endif
+    if (KELDYSH || ! PARTICLE_HOLE_SYMMETRY) {
+        gsl_integration_workspace *W_real = gsl_integration_workspace_alloc(Nmax);
+        gsl_function F_real;
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        double result_real{}, error_real{};
 
-    gsl_set_error_handler(handler);
+        gsl_set_error_handler(handler);
 
-    double result_real_temp{}, error_real_temp{};
-    if (isinf) {
-        gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
-        gsl_integration_qagiu(&F_real, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_real, &result_real_temp, &error_real_temp);
-        result_real += result_real_temp;
-        error_real += error_real_temp;
+        double result_real_temp{}, error_real_temp{};
+        if (isinf) {
+            gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
+            gsl_integration_qagiu(&F_real, intervals[num_intervals - 1][1], 0, integrator_tol, Nmax, W_real,
+                                  &result_real_temp, &error_real_temp);
+            result_real += result_real_temp;
+            error_real += error_real_temp;
+        }
+        for (int i = 0; i < num_intervals; i++) {
+            result_real_temp = 0.;
+            error_real_temp = 0.;
+            if (intervals[i][0] < intervals[i][1])
+                gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real,
+                                    &result_real_temp, &error_real_temp);
+            result_real += result_real_temp;
+            error_real += error_real_temp;
+        }
+        gsl_integration_workspace_free(W_real);
+
+
+        gsl_integration_workspace *W_imag = gsl_integration_workspace_alloc(Nmax);
+        gsl_function F_imag;
+        F_imag.function = &f_imag<Integrand>;
+        F_imag.params = &integrand;
+        double result_imag, error_imag;
+        double result_imag_temp, error_imag_temp;
+        if (isinf) {
+            gsl_integration_qagil(&F_imag, intervals[0][0], 0, integrator_tol, Nmax, W_imag, &result_imag, &error_imag);
+            gsl_integration_qagiu(&F_imag, intervals[num_intervals - 1][1], 0, integrator_tol, Nmax, W_imag,
+                                  &result_imag_temp, &error_imag_temp);
+            result_imag += result_imag_temp;
+            error_imag += error_imag_temp;
+        }
+        for (int i = 0; i < num_intervals; i++) {
+            result_imag_temp = 0.;
+            error_imag_temp = 0.;
+            if (intervals[i][0] < intervals[i][1])
+                gsl_integration_qag(&F_imag, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_imag,
+                                    &result_imag_temp, &error_imag_temp);
+            result_imag += result_imag_temp;
+            error_imag += error_imag_temp;
+        }
+        gsl_integration_workspace_free(W_imag);
+
+        return result_real + glb_i * result_imag;
     }
+    else {
+        gsl_integration_workspace *W_real = gsl_integration_workspace_alloc(Nmax);
+        gsl_function F_real;
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        double result_real{}, error_real{};
 
-    for (int i = 0; i < num_intervals; i++){
-        result_real_temp = 0.;
-        error_real_temp = 0.;
-        if (intervals[i][0] < intervals[i][1]) gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real, &result_real_temp, &error_real_temp);
-        result_real += result_real_temp;
-        error_real += error_real_temp;
+        gsl_set_error_handler(handler);
+
+        double result_real_temp{}, error_real_temp{};
+        if (isinf) {
+            gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
+            gsl_integration_qagiu(&F_real, intervals[num_intervals - 1][1], 0, integrator_tol, Nmax, W_real,
+                                  &result_real_temp, &error_real_temp);
+            result_real += result_real_temp;
+            error_real += error_real_temp;
+        }
+
+        for (int i = 0; i < num_intervals; i++) {
+            result_real_temp = 0.;
+            error_real_temp = 0.;
+            if (intervals[i][0] < intervals[i][1])
+                gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real,
+                                    &result_real_temp, &error_real_temp);
+            result_real += result_real_temp;
+            error_real += error_real_temp;
+        }
+
+        gsl_integration_workspace_free(W_real);
+
+        return result_real;
     }
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_qagil(&F_imag, intervals[0][0], 0, integrator_tol, Nmax, W_imag, &result_imag, &error_imag);
-    double result_imag_temp, error_imag_temp;
-    gsl_integration_qagiu(&F_imag, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_imag, &result_imag_temp, &error_imag_temp);
-    result_imag += result_imag_temp;
-    error_imag += error_imag_temp;
-    for (int i = 0; i < num_intervals; i++){
-        result_imag_temp = 0.;
-        error_imag_temp = 0.;
-        gsl_integration_qag(&F_imag, intervals[i][0], intervals[i][1], 0, integrator_tol, Nmax, 1, W_imag, &result_imag_temp, &error_imag_temp);
-        result_imag += result_imag_temp;
-        error_imag += error_imag_temp;
-    }
-#endif
-
-    gsl_integration_workspace_free(W_real);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace_free(W_imag);
-#endif
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    return result_real + glb_i*result_imag;
-#else
-    return result_real;
-#endif
 }
 
 

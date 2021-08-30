@@ -198,14 +198,15 @@ template <typename Q>
             ffreqs_buffer[i] = ffreqs.ws[i];
         }
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-            // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
-            selfenergy[i].re = glb_U/2.;
-            selfenergy[i].im = state_in.selfenergy.acc(i);
-#else
-            selfenergy[i].re = std::real(state_in.selfenergy.acc(i));
-            selfenergy[i].im = std::imag(state_in.selfenergy.acc(i));
-#endif
+    if (PARTICLE_HOLE_SYMMETRY and not KELDYSH) {
+        // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
+        selfenergy[i].re = glb_U / 2.;
+        selfenergy[i].im = imag(state_in.selfenergy.acc(i));
+    }
+    else {
+        selfenergy[i].re = std::real(state_in.selfenergy.acc(i));
+        selfenergy[i].im = std::imag(state_in.selfenergy.acc(i));
+    }
         }
         for (int i=0; i<irred_dim; ++i) {                       // write irreducible vertex into buffer
             irreducible_class[i].re = std::real(state_in.vertex[0].irred().acc(i));

@@ -127,10 +127,10 @@ public:
                 ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
             }
         }
-        if (!KELDYSH){
-#ifdef PARTICLE_HOLE_SYMM
-            ans *= -1.;     // -1=glb_i^2; needed for particle-hole symmetry in Matsubara (we only save the imaginary part of self-energy and propagators)
-#endif
+        if (!KELDYSH) {
+            if (PARTICLE_HOLE_SYMMETRY) {
+                ans *= -1.;     // -1=glb_i^2; needed for particle-hole symmetry in Matsubara (we only save the imaginary part of self-energy and propagators)
+            }
         }
 
         assert(isfinite(ans) == true);
