@@ -29,27 +29,29 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     sopt_state(state_ini, Lambda_ini);
     // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
+    state_ini.selfenergy.findBestFreqGrid(Lambda_ini);
+
     //// better: read state from converged parquet solution
     //state_ini = read_hdf("parquet_solution_K3_Lambda=20.000000", 5, 51);
     //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
-    parquet_solver("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+    //parquet_solver("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
 
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-    if (save_intermediate_results) {
-        write_hdf(outputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-        write_hdf(outputFileName+"_RKstep2", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-        write_hdf(outputFileName+"_RKstep3", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-        write_hdf(outputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-    }
+    //if (save_intermediate_results) {
+    //    write_hdf(outputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
+    //    write_hdf(outputFileName+"_RKstep2", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
+    //    write_hdf(outputFileName+"_RKstep3", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
+    //    write_hdf(outputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+    //}
 
 
 
     // compute the flow using RK4 solver
-    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
-                   sq_substitution, sq_resubstitution,                                       // use substitution for Lambda steps
-                   nODE,
-                   outputFileName, save_intermediate_results);                                                                // save state at each step during flow
+    //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
+    //               sq_substitution, sq_resubstitution,                                       // use substitution for Lambda steps
+    //               nODE,
+    //               outputFileName, save_intermediate_results);                                                                // save state at each step during flow
 
     //sum_rule_K1tK(outputFileName);    // Check fulfillment of the sum rule
 

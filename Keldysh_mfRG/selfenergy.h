@@ -3,6 +3,7 @@
 
 #include "data_structures.h" // real/complex vector classes
 #include "grids/frequency_grid.h"  // interpolate self-energy on new frequency grid
+#include "minimizer.h"
 #include <omp.h>             // parallelize initialization of self-energy
 
 /****************** CLASS FOR SELF-ENERGY *************/
@@ -30,6 +31,8 @@ public:
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
     void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
     void update_grid(double Lambda);  // Interpolate self-energy to updated grid
+    void update_grid(FrequencyGrid frequencies_new);   // Interpolate self-energy to updated grid
+    void findBestFreqGrid(double Lambda);       // optimize frequency grid parameters and update self-energy on new grid
     auto norm(int p) -> double;
     auto norm() -> double;
 
@@ -70,6 +73,8 @@ public:
     }
 
     double get_deriv_maxSE() const;
+
+    double cost_wupper(double w_upper_test, void *params);
 };
 
 
@@ -195,7 +200,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
 #ifdef KELDYSH_FORMALISM
     for (int iK=0; iK<2; ++iK) {
 #else
-    int iK = 0;
+        int iK = 0;
 #endif
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
@@ -209,6 +214,71 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
 }
+
+template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new) {
+
+    vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
+#ifdef KELDYSH_FORMALISM
+    for (int iK=0; iK<2; ++iK) {
+#else
+        int iK = 0;
+#endif
+        for (int iv=0; iv<nSE; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                // interpolate old values to new vector
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.ws[iv], i_in);
+            }
+        }
+#ifdef KELDYSH_FORMALISM
+    }
+#endif
+    this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
+    this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
+}
+
+
+
+template<typename Q>
+class Cost_wupper {
+    SelfEnergy<Q> selfEnergy;
+    double rel_tailsize = 1e-3;
+public:
+    explicit Cost_wupper(SelfEnergy<Q> SE_in): selfEnergy(SE_in) {};
+
+    auto operator() (double w_upper_test) -> double {
+        {
+            double max = selfEnergy.norm(0);
+            if (w_upper_test < selfEnergy.frequencies.w_upper) {
+                double result = std::abs((std::abs(selfEnergy.valsmooth(0, w_upper_test, 0)) +
+                                          std::abs(selfEnergy.valsmooth(0, -w_upper_test, 0))) / max - rel_tailsize);
+                return result;
+            }
+            else {
+                double tupper_test = selfEnergy.frequencies.grid_transf(w_upper_test);
+                return std::abs(std::abs(selfEnergy.Sigma[0]) + std::abs(selfEnergy.Sigma[nFER-1]) * (1. - tupper_test/selfEnergy.frequencies.t_upper) / max - rel_tailsize);
+            }
+
+
+        }
+    }
+};
+template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(double Lambda) {
+
+    SelfEnergy<Q> SEtemp = *this;
+    SEtemp.update_grid(Lambda);
+
+
+    double a_wupper = 0.;
+    double m_wupper = SEtemp.frequencies.w_upper;
+    double b_wupper = SEtemp.frequencies.w_upper * 100;
+    Cost_wupper<Q> cost(SEtemp);
+    minimizer(cost, a_wupper, m_wupper, b_wupper, 100);
+
+    update_grid(SEtemp.frequencies);
+
+
+}
+
 
 /*
  * p-norm for the SelfEnergy
