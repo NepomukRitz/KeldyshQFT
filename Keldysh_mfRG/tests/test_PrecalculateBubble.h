@@ -15,6 +15,8 @@
 #include "../propagator.h"
 #include "../utilities/write_data2file.h"            // write vectors into hdf5 file
 #include "../utilities/util.h"
+#include "../symmetries/Keldysh_symmetries.h"
+
 
 
 template<typename Q>
@@ -22,12 +24,6 @@ class test_PrecalculateBubble{
 public:
     Propagator<Q> g;
     Propagator<Q> s;
-#ifdef KELDYSH_FORMALISM
-    int number_of_Keldysh_components = 9;
-#else
-    int number_of_Keldysh_components = 1;
-#endif
-public:
 
     test_PrecalculateBubble(): g(Lambda_ini, 'g'), s(Lambda_ini, 's'){
         State<comp> testing_state (Lambda_ini);
@@ -77,15 +73,15 @@ template<typename Q> double test_PrecalculateBubble<Q>::find_largest_deviation_f
     PrecalculateBubble<Q> Pre_Bubble(g, s, dot_in, channel);
     Bubble<Q> Usual_Bubble (g, s, dot_in);
 
-    vec<Q> ValuesOfPreBubble (number_of_Keldysh_components*nBOS*nFER*n_in);
-    vec<Q> ValuesOfUsualBubble (number_of_Keldysh_components*nBOS*nFER*n_in);
+    vec<Q> ValuesOfPreBubble (glb_number_of_Keldysh_components_bubble * nBOS * nFER * n_in);
+    vec<Q> ValuesOfUsualBubble (glb_number_of_Keldysh_components_bubble * nBOS * nFER * n_in);
 
-    vec<double> AbsoluteDeviations (number_of_Keldysh_components*nBOS*nFER*n_in);
+    vec<double> AbsoluteDeviations (glb_number_of_Keldysh_components_bubble * nBOS * nFER * n_in);
 
     double largest_deviation = 0;
     int number_of_zero_pre_results = 0;
 
-    for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
+    for (int iK = 0; iK < glb_number_of_Keldysh_components_bubble; ++iK) {
         for (int iw = 0; iw < nBOS; ++iw) {
             const double w = g.selfenergy.frequencies.ws[iw];
             for (int ivpp = 0; ivpp < nFER; ++ivpp) {
@@ -139,7 +135,7 @@ std::string test_PrecalculateBubble<Q>::build_filename(bool dot_in, char channel
     //std::string filename = "../../Data/test_PrecalculateBubble_";
     filename += channel;
     if (dot_in) {filename += "_dot";}
-    filename += "_nK=" + std::to_string(number_of_Keldysh_components)
+    filename += "_nK=" + std::to_string(glb_number_of_Keldysh_components_bubble)
                 + "_nBOS=" + std::to_string(nBOS)
                 + "_nFER=" + std::to_string(nFER)
                 + "_n_in=" + std::to_string(n_in)
@@ -167,7 +163,7 @@ class Runtime_comparison{
 #ifdef KELDYSH_FORMALISM
     int number_of_Keldysh_components = 9;
 #else
-    int number_of_Keldysh_components = 1;
+    int glb_number_of_Keldysh_components_bubble = 1;
 #endif
     Propagator<Q> g;
     Propagator<Q> s;

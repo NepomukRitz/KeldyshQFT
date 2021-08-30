@@ -26,6 +26,7 @@ const int nK_K3 = 1;
 #ifdef KELDYSH_FORMALISM
 // Vector of indices of the non-zero Keldysh components of the bubbles
 const std::vector<int> glb_non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});
+constexpr int glb_number_of_Keldysh_components_bubble = 9; // length of the previous vector
 
 // Vector of indices of independent components of the diagrammatic classes, density channel
 const std::vector<int> non_zero_Keldysh_K1a({1,3});
@@ -40,6 +41,8 @@ const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
 const std::vector<int> odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14});
 #else
 const std::vector<int> glb_non_zero_Keldysh_bubble {0};
+constexpr int glb_number_of_Keldysh_components_bubble = 1; // length of the previous vector
+
 
 // Vector of indices of independent components of the diagrammatic classes, density channel
 const std::vector<int> non_zero_Keldysh_K1a({0});

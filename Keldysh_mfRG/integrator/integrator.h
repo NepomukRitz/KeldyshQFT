@@ -339,14 +339,15 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     return result.sum();
 #endif
 }
-#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
+
+//#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
 /**
  * wrapper function, used for bubbles. Splits up integration interval in suitable pieces for Matsubara T=0
  * @param integrand
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <typename Q, int num_freqs, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> Q {
+template <typename Q, int num_freqs, typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> Q {
     double tol = inter_tol;
 
     // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
@@ -402,7 +403,7 @@ template <typename Q, int num_freqs, typename Integrand> auto integrator(Integra
     return integrator<Q>(integrand, intervals, num_intervals, isinf);
 
 }
-#endif
+//#endif
 
 
 template <typename Q, typename Integrand> auto matsubarasum(const Integrand& integrand, const int Nmin, const int Nmax, const int N_tresh = 60,
