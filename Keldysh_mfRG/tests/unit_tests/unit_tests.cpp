@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 
     //test_K2_in_PT4(20.);
 
-#if MAX_DIAG_CLASS >= 1
+    if (MAX_DIAG_CLASS >= 1){
     /* run a complete flow and check FDTs and causality */
     string filename = "integration_test_flow_K2_8e";
     State<state_datatype> state = n_loop_flow(filename);
@@ -58,12 +58,12 @@ int main(int argc, char* argv[]) {
 
     /* run parquet checks */
     parquet_checks(filename);
-#endif
-#if MAX_DIAG_CLASS == 2
+    }
+    if (MAX_DIAG_CLASS == 2){
     /* further K2 tests */
     test_PT4(0.);
     test_K2_correctness(0.);
-#endif
+    }
 #ifdef MPI_FLAG
     MPI_Finalize();
 #endif
