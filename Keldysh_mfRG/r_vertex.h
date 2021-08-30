@@ -319,9 +319,8 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
         // otherwise return the interpolated value of the calling r vertex
         value = Interpolate<k,Q>()(indices, *(this));
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    if (indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
-#endif
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
+
     assert(isfinite(value));
     return value;
 }
@@ -377,9 +376,8 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
             value = Interpolate<k,Q>()(indices, *(this));
     }
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    if (indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
-#endif
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
+
     assert(isfinite(value));
     return value;
 }
@@ -449,109 +447,57 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
 #endif
 }
 
-#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
+
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     double w, v1, v2;
-    switch (channel) {
-        case 'a':
-            switch (input.channel) {
-                case 'a':
-                    return;                                    // do nothing
-                case 'p':
-                    w  = -input.v1-input.v2;                   // input.w  = w_p
-                    v1 = 0.5*(input.w+input.v1-input.v2);      // input.v1 = v_p
-                    v2 = 0.5*(input.w-input.v1+input.v2);      // input.v2 = v'_p
-                    break;
-                case 't':
-                    w  = input.v1-input.v2;                    // input.w  = w_t
-                    v1 = 0.5*( input.w+input.v1+input.v2);     // input.v1 = v_t
-                    v2 = 0.5*(-input.w+input.v1+input.v2);     // input.v2 = v'_t
-                    break;
-                case 'f':
-                    w  = input.v1-input.v2;                    // input.w  = v_1'
-                    v1 = 0.5*(2.*input.w+input.v1-input.v2);   // input.v1 = v_2'
-                    v2 = 0.5*(input.v1+input.v2);              // input.v2 = v_1
-                    break;
-                default:;
-            }
-            break;
-        case 'p':
-            switch (input.channel) {
-                case 'a':
-                    w  = input.v1+input.v2;                    // input.w  = w_a
-                    v1 = 0.5*(-input.w+input.v1-input.v2);     // input.v1 = v_a
-                    v2 = 0.5*(-input.w-input.v1+input.v2);     // input.v2 = v'_a
-                    break;
-                case 'p':
-                    return;                                    // do nothing
-                case 't':
-                    w  = input.v1+input.v2;                    // input.w  = w_t
-                    v1 = 0.5*( input.w-input.v1+input.v2);     // input.v1 = v_t
-                    v2 = 0.5*(-input.w-input.v1+input.v2);     // input.v2 = v'_t
-                    break;
-                case 'f' :
-                    w  = input.w+input.v1;                     // input.w  = v_1'
-                    v1 = 0.5*(input.w-input.v1);               // input.v1 = v_2'
-                    v2 = 0.5*(2.*input.v2-input.w-input.v1);   // input.v2 = v_1
-                    break;
-                default:;
-            }
-            break;
-        case 't':
-            switch (input.channel) {
-                case 'a':
-                    w  = input.v1-input.v2;                    // input.w  = w_a
-                    v1 = 0.5*( input.w+input.v1+input.v2);     // input.v1 = v_a
-                    v2 = 0.5*(-input.w+input.v1+input.v2);     // input.v2 = v'_a'
-                    break;
-                case 'p':
-                    w  = input.v1-input.v2;                    // input.w  = w_p
-                    v1 = 0.5*(input.w-input.v1-input.v2);      // input.v1 = v_p
-                    v2 = 0.5*(input.w+input.v1+input.v2);      // input.v2 = v'_p
-                    break;
-                case 't':
-                    return;                                    // do nothing
-                case 'f':
-                    w  = input.w-input.v2;                     // input.w  = v_1'
-                    v1 = 0.5*(2*input.v1+input.w-input.v2);    // input.v1 = v_2'
-                    v2 = 0.5*(input.w+input.v2);               // input.v2 = v_1
-                    break;
-                default:;
-            }
-            break;
-        default:;
-    }
-    input.w  = w;
-    input.v1 = v1;
-    input.v2 = v2;
-}
-#else
-template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
-    double w, v1, v2;
+
+    // Needed for finite-temperature Matsubara
     double floor2bf_w;
     double floor2bf_inputw = floor2bfreq(input.w / 2.);
     switch (channel) {
         case 'a':
             switch (input.channel) {
                 case 'a':
-                    return;                                                     // do nothing
+                    return;                                    // do nothing
                 case 'p':
-                    w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;    // input.w  = w_p
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_p
-                    v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    if (KELDYSH || ZERO_T){
+                        w  = -input.v1-input.v2;                   // input.w  = w_p
+                        v1 = 0.5*(input.w+input.v1-input.v2);      // input.v1 = v_p
+                        v2 = 0.5*(input.w-input.v1+input.v2);      // input.v2 = v'_p
+                    }
+                    else{
+                        w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;    // input.w  = w_p
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_p
+                        v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    }
                     break;
                 case 't':
-                    w  = input.v1-input.v2;                                     // input.w  = w_t
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
-                    v2 = input.v1 + floor2bf_w - floor2bf_inputw;               // input.v2 = v'_t
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1-input.v2;                    // input.w  = w_t
+                        v1 = 0.5*( input.w+input.v1+input.v2);     // input.v1 = v_t
+                        v2 = 0.5*(-input.w+input.v1+input.v2);     // input.v2 = v'_t
+                    }
+                    else{
+                        w  = input.v1-input.v2;                                     // input.w  = w_t
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
+                        v2 = input.v1 + floor2bf_w - floor2bf_inputw;               // input.v2 = v'_t
+                    }
                     break;
                 case 'f':
-                    w  = input.v1 - input.v2;                                   // input.w  = v_1'
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w - floor2bf_w;                                  // input.v1 = v_2'
-                    v2 = input.v2 - floor2bf_w;                                 // input.v2 = v_1
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1-input.v2;                    // input.w  = v_1'
+                        v1 = 0.5*(2.*input.w+input.v1-input.v2);   // input.v1 = v_2'
+                        v2 = 0.5*(input.v1+input.v2);              // input.v2 = v_1
+                    }
+                    else{
+                        w  = input.v1 - input.v2;                                   // input.w  = v_1'
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.w - floor2bf_w;                                  // input.v1 = v_2'
+                        v2 = input.v2 - floor2bf_w;                                 // input.v2 = v_1
+                    }
+
                     break;
                 default:;
             }
@@ -559,24 +505,44 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
         case 'p':
             switch (input.channel) {
                 case 'a':
-                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_a
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_a
-                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_a
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1+input.v2;                    // input.w  = w_a
+                        v1 = 0.5*(-input.w+input.v1-input.v2);     // input.v1 = v_a
+                        v2 = 0.5*(-input.w-input.v1+input.v2);     // input.v2 = v'_a
+                    }
+                    else{
+                        w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_a
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_a
+                        v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_a
+                    }
                     break;
                 case 'p':
-                    return;                                                         // do nothing
+                    return;                                    // do nothing
                 case 't':
-                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 =           - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_t
-                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1+input.v2;                    // input.w  = w_t
+                        v1 = 0.5*( input.w-input.v1+input.v2);     // input.v1 = v_t
+                        v2 = 0.5*(-input.w-input.v1+input.v2);     // input.v2 = v'_t
+                    }
+                    else {
+                        w = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = -input.v1 + floor2bf_w + floor2bf_inputw;                 // input.v1 = v_t
+                        v2 = -input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
+                    }
                     break;
                 case 'f' :
-                    w  = input.w + input.v1;                                        // input.w  = v_1'
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = - input.v1 + floor2bf_w;                                   // input.v1 = v_2'
-                    v2 = input.v2 - w + floor2bf_w;                                 // input.v2 = v_1
+                    if (KELDYSH || ZERO_T){w  = input.w+input.v1;  // input.w  = v_1'
+                        v1 = 0.5*(input.w-input.v1);               // input.v1 = v_2'
+                        v2 = 0.5*(2.*input.v2-input.w-input.v1);   // input.v2 = v_1
+                    }
+                    else{
+                            w  = input.w + input.v1;                                        // input.w  = v_1'
+                            floor2bf_w = floor2bfreq(w / 2.);
+                            v1 = - input.v1 + floor2bf_w;                                   // input.v1 = v_2'
+                            v2 = input.v2 - w + floor2bf_w;                                 // input.v2 = v_1
+                    }
                     break;
                 default:;
             }
@@ -584,24 +550,45 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
         case 't':
             switch (input.channel) {
                 case 'a':
-                    w  = input.v1-input.v2;                                     // input.w  = w_a
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_a
-                    v2 =           input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_a'
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1-input.v2;                    // input.w  = w_a
+                        v1 = 0.5*( input.w+input.v1+input.v2);     // input.v1 = v_a
+                        v2 = 0.5*(-input.w+input.v1+input.v2);     // input.v2 = v'_a'
+                    }
+                    else{
+                        w  = input.v1-input.v2;                                     // input.w  = w_a
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_a
+                        v2 =           input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_a'
+                    }
                     break;
                 case 'p':
-                    w  = input.v1-input.v2;                                     // input.w  = w_p
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = - input.v1 + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
-                    v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1-input.v2;                    // input.w  = w_p
+                        v1 = 0.5*(input.w-input.v1-input.v2);      // input.v1 = v_p
+                        v2 = 0.5*(input.w+input.v1+input.v2);      // input.v2 = v'_p
+                    }
+                    else{
+                        w  = input.v1-input.v2;                                     // input.w  = w_p
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = - input.v1 + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
+                        v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    }
                     break;
                 case 't':
-                    return;                                                     // do nothing
+                    return;                                    // do nothing
                 case 'f':
-                    w  = input.w - input.v2;                                    // input.w  = v_1'
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.v1 + floor2bf_w;                                 // input.v1 = v_2'
-                    v2 = input.v2 + floor2bf_w;                                 // input.v2 = v_1
+                    if (KELDYSH || ZERO_T){
+                        w  = input.w-input.v2;                     // input.w  = v_1'
+                        v1 = 0.5*(2*input.v1+input.w-input.v2);    // input.v1 = v_2'
+                        v2 = 0.5*(input.w+input.v2);               // input.v2 = v_1
+                    }
+                    else{
+                        w  = input.w - input.v2;                                    // input.w  = v_1'
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.v1 + floor2bf_w;                                 // input.v1 = v_2'
+                        v2 = input.v2 + floor2bf_w;                                 // input.v2 = v_1
+                    }
                     break;
                 default:;
             }
@@ -612,7 +599,6 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     input.v1 = v1;
     input.v2 = v2;
 }
-#endif
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
@@ -710,14 +696,12 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                     result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
                 else
                     result = indices.prefactor * K1[itK * nw1 + itw_new];
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-                if (indices.conjugate)
+
+                if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
                     K1[itK * nw1 + itw] = conj(result);
                 else
-#endif
                     K1[itK * nw1 + itw] = result;
             }
-
         }
 
     }
@@ -787,11 +771,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                         result = Interpolate<k2,Q>()(indices, vertex_symmrelated);
                     else
                         result = Interpolate<k2,Q>()(indices, *(this));
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-                    if (indices.conjugate)
+
+                    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
                     else
-#endif
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
                 }
             }
@@ -838,11 +821,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                             result = Interpolate<k3,Q>()(indices, vertex_symmrelated);
                         else
                             result = Interpolate<k3,Q>()(indices, *(this));
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-                        if (indices.conjugate)
+
+                        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = conj(result);
                         else
-#endif
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = result;
                     }
                 }

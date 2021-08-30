@@ -45,7 +45,7 @@ constexpr bool PARTICLE_HOLE_SYMMETRY = false;
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
 
-#define N_LOOPS 3  // Number of loops
+#define N_LOOPS 1  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
@@ -95,14 +95,14 @@ constexpr int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
-#define REG 3
+#define REG 2
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
 //#define FLOW
 
 
-constexpr int nODE = 500;
+constexpr int nODE = 50;
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
