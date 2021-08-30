@@ -66,6 +66,9 @@ void check_SE_causality(const State<Q>& state) {
     check_SE_causality(state.selfenergy);
 }
 
+template <typename Q>
+void check_SE_causality(const Q& selfEnergy) {}
+
 /**
  * Function that checks FDTs for self-energy and K1 in all channels for given input state: Re(Sigma^K)=0, Re(K1r^K)=0.
  * If verbose is true, maximum values of Re(Sigma^K) and Re(K1r^K) are always printed. If verbose is false (default),
@@ -135,5 +138,8 @@ void check_FDTs(const State<Q>& state, bool verbose=false) {
                   "  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
     }
 }
+
+template <typename Q>
+void check_FDTs(const Q& state, bool verbose=false) {}
 
 #endif //KELDYSH_MFRG_TESTING_CAUSALITY_FDT_CHECKS_H

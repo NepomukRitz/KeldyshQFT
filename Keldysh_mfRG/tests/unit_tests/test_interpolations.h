@@ -181,7 +181,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
 #if MAX_DIAG_CLASS >1
 
 TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]" ) {
-    double interpolation_tolerance = 1e-12;
+    double interpolation_tolerance = 1e-11;
     bool geq_interpolation_tolerance = false;
     double cumul_interpolation_tolerance = 1e-11 * nBOS2*nFER2;
 

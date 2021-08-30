@@ -985,6 +985,12 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
     }
 }
 
+/** overload of add_hdf for non-States, does not do anything */
+template <typename Q>
+void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
+             Q& state_in, rvec& Lambdas) {}
+
+
 /// --- Functions for reading data from file --- ///
 
 /**
