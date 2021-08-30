@@ -82,17 +82,16 @@ public:
 
     auto valsmooth(int, double, int i_in) const -> Q;
 
-#ifdef KELDYSH_FORMALISM
+    // Keldysh propagators
     auto GR(double v, int i_in) const -> Q;
     auto GA(double v, int i_in) const -> Q;
     auto GK(double v, int i_in) const -> Q;
     auto SR(double v, int i_in) const -> Q;
     auto SK(double v, int i_in) const -> Q;
-#else
+
+    // Matsubara propagators
     auto GM(double v, int i_in) const -> Q;
     auto SM(double v, int i_in) const -> Q;
-#endif
-
 
     auto norm() const -> double;
 };
@@ -220,7 +219,6 @@ auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
 
 /////// PROPAGATOR FUNCTIONS ///////
 
-#ifdef KELDYSH_FORMALISM
 template <typename Q>
 auto Propagator<Q>::GR(double v, int i_in) const -> Q
 {
@@ -230,7 +228,7 @@ auto Propagator<Q>::GR(double v, int i_in) const -> Q
         return 1. / (v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
         // TODO: Currently only at half filling!
     }
-    else {
+    else { // SIAM
         return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
     }
 }
@@ -243,7 +241,7 @@ auto Propagator<Q>::GA(double v, int i_in) const -> Q
         return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - glb_i * Lambda / 2. - conj(selfenergy.valsmooth(0, v, i_in)));
         // TODO: Currently only at half filling!
     }
-    else {
+    else { // SIAM
         return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
     }
 }
@@ -300,7 +298,6 @@ auto Propagator<Q>::SK(double v, int i_in) const -> Q
     return selfenergy.valsmooth(1, v, i_in) * (grn * gri)  -  glb_i * ( grn * Eff_fac(v) * ( 1. + (glb_Gamma+Lambda) * gri ) );
 #endif
 }
-#else
 // full propagator (Matsubara)
 template <typename Q>
 auto Propagator<Q>::GM(double v, int i_in) const -> Q
@@ -311,13 +308,14 @@ auto Propagator<Q>::GM(double v, int i_in) const -> Q
         return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
         // TODO: Currently only at half filling!
     }
-    else {
-#ifdef PARTICLE_HOLE_SYMM
-        assert(v != 0.);
-    return 1./(        v                +       (glb_Gamma+Lambda)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
-#else
-        return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
-#endif // PARTICLE_HOLE_SYMM
+    else { // SIAM
+        if (PARTICLE_HOLE_SYMMETRY){
+            assert(v != 0.);
+            return 1. / ( v + (glb_Gamma+Lambda)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+        }
+        else{
+            return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+        }
     }
 }
 // single scale propagator (Matsubara)
@@ -326,26 +324,26 @@ auto Propagator<Q>::SM(double v, int i_in) const -> Q
 {
     assert(v != 0.);
     Q G = GM(v, i_in);
-#ifdef PARTICLE_HOLE_SYMM
-    return -0.5*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
-#else
-    return -0.5*glb_i*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
-#endif
+    if (PARTICLE_HOLE_SYMMETRY){
+        return -0.5*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
+    }
+    else{
+        return -0.5*glb_i*G*G*sign(v);
+    }
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
 
-#endif // KELDYSH_FORMALISM
 
-
+// TODO(high): Put the distinction between regulators also inside the propagator functions!
 #elif REG ==3 // TODO(high): Does the w-regulator even make sense for Keldysh?
 
 /////// PROPAGATOR FUNCTIONS ///////
 
-#ifdef KELDYSH_FORMALISM
 template <typename Q>
 auto Propagator<Q>::GR(double v, int i_in) const -> Q
 {
     if (HUBBARD_MODEL) {
+        return 0.;
         // TODO: write GR for Hubbard model
     }
     else {
@@ -356,6 +354,7 @@ template <typename Q>
 auto Propagator<Q>::GA(double v, int i_in) const -> Q
 {
     if (HUBBARD_MODEL) {
+        return 0.;
         // TODO: write GR for Hubbard model
     }
     else {
@@ -415,21 +414,22 @@ auto Propagator<Q>::SK(double v, int i_in) const -> Q
     return selfenergy.valsmooth(1, v, i_in) * (grn * gri)  -  glb_i * ( grn * Eff_fac(v) * ( 1. + (glb_Gamma+Lambda) * gri ) );
 #endif
 }
-#else
 // full propagator (Matsubara)
 template <typename Q>
 auto Propagator<Q>::GM(double v, int i_in) const -> Q
 {
     if (HUBBARD_MODEL) {
+        return 0.;
         // TODO: write GM for Hubbard model
     }
     else {
-#ifdef PARTICLE_HOLE_SYMM
-        assert(v != 0.);
-    return v*v / (v*v + Lambda*Lambda) * 1./(        v                +       (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
-#else
-        return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
-#endif // PARTICLE_HOLE_SYMM
+        if (PARTICLE_HOLE_SYMMETRY){
+            assert(v != 0.);
+            return v*v / (v*v + Lambda*Lambda) * 1./( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+        }
+        else{
+            return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+        }
     }
 }
 // single scale propagator (Matsubara)
@@ -442,19 +442,15 @@ auto Propagator<Q>::SM(double v, int i_in) const -> Q
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
 
-#endif
-
 #endif //REG
 
 
 
 template <typename Q>
-auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q
-{
-    for(int i=0; i<n_in; i++){
-        switch (type){
-            case 'g' :                              //Good ol' regular propagator
-#ifdef KELDYSH_FORMALISM
+auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q {
+    switch (type){
+        case 'g' :                              //Good ol' regular propagator
+            if (KELDYSH){
                 switch (iK){
                     case 0:
                         return GR(v, i_in);
@@ -463,12 +459,13 @@ auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-#else
+            }
+            else{
                 return GM(v, i_in);
-#endif
+            }
 
-            case 's':
-#ifdef KELDYSH_FORMALISM
+        case 's':
+            if (KELDYSH){
                 switch (iK){
                     case 0:
                         return SR(v, i_in);
@@ -477,30 +474,32 @@ auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-#else
+            }
+            else{
                 return SM(v, i_in);
-#endif
+            }
 
-            case 'k': // including the Katanin extension
-#ifdef KELDYSH_FORMALISM
+        case 'k': // including the Katanin extension
+            if (KELDYSH){
                 switch (iK){
                     case 0:
                         return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
                         return SK(v, i_in)
-                             + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                             + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                             + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
+                               + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                               + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                               + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }
-#else
+            }
+            else{
                 return SM(v, i_in)
                        + GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
-#endif
+            }
 
-            case 'e': // purely the Katanin extension
-#ifdef KELDYSH_FORMALISM
+        case 'e': // purely the Katanin extension
+            if (KELDYSH){
                 switch (iK){
                     case 0:
                         return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
@@ -511,25 +510,22 @@ auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-#else
+            }
+            else{
                 return GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
-#endif
-            default:
-                return 0.;
-        }
-    }
+            }
 
+        default:
+            return 0.;
+    }
 }
 
 template <typename Q>
 auto Propagator<Q>::norm() const -> double {
     double out = 0.;
     for (int i = 0; i < nPROP; i++) {
-#ifdef KELDYSH_FORMALISM
-        out += pow(std::abs(GR(selfenergy.frequencies.ws[i], 0)), 2.);
-#else
-        out += pow(std::abs(GM(selfenergy.frequencies.ws[i], 0)), 2.);
-#endif
+        if (KELDYSH) out += pow(std::abs(GR(selfenergy.frequencies.ws[i], 0)), 2.);
+        else         out += pow(std::abs(GM(selfenergy.frequencies.ws[i], 0)), 2.);
     }
 
     return sqrt(out);

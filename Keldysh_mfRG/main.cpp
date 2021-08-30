@@ -53,24 +53,16 @@ auto main() -> int {
     assert(N_LOOPS < 2);
 #endif
 
-#ifdef KELDYSH_FORMALISM
-if (HUBBARD_MODEL){
-    print("Hubbard model in Keldysh formalism: \n");
-}
-else{
-    print("SIAM in Keldysh formalism: \n");
-}
-#else
-if (HUBBARD_MODEL){
-    print("Hubbard model in Matsubara formalism: \n");
-}
-else{
-    print("SIAM in Matsubara formalism: \n");
-}
-#endif
-#ifdef PARTICLE_HOLE_SYMM
-    print("Using PARTICLE HOLE Symmetry\n");
-#endif
+    if (KELDYSH){
+        if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");
+        else               print("SIAM in Keldysh formalism: \n");
+    }
+    else{
+        if (HUBBARD_MODEL) print("Hubbard model in Matsubara formalism: \n");
+        else               print("SIAM in Matsubara formalism: \n");
+    }
+
+    if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
     print("U for this run is: ", glb_U, true);
     print("Lambda flows from ", Lambda_ini);
