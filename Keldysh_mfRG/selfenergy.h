@@ -69,6 +69,7 @@ public:
         return lhs;
     }
 
+    double get_deriv_maxSE() const;
 };
 
 
@@ -237,5 +238,10 @@ template <typename Q> auto SelfEnergy<Q>::norm() -> double {
     return this->norm(2);
 }
 
+template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE() const -> double {
+    double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
+    return max_SE;
+
+}
 
 #endif //KELDYSH_MFRG_SELFENERGY_H
