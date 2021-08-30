@@ -65,18 +65,13 @@ public:
 template <typename Q> void State<Q>::initialize() {
     // Initial conditions
     // Assign initial conditions to self energy
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-    this->selfenergy.initialize(0. , 0.);
-#else
-    this->selfenergy.initialize(glb_U/2., 0.);
-#endif
+    if (!KELDYSH && PARTICLE_HOLE_SYMMETRY) this->selfenergy.initialize(0. , 0.);
+    else this->selfenergy.initialize(glb_U/2., 0.);
 
     // Assign initial conditions to bare vertex
-#ifdef KELDYSH_FORMALISM
-    this->vertex[0].initialize(-glb_U/2.);
-#else
-    this->vertex[0].initialize(-glb_U);
-#endif
+    if (KELDYSH) this->vertex[0].initialize(-glb_U/2.);
+    else this->vertex[0].initialize(-glb_U);
+
 }
 
 // set frequency grids of newly created state to those of existing reference state

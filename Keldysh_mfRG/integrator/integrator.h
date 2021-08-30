@@ -14,11 +14,10 @@
 template <typename Integrand>
 auto f_real(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    double f_real = integrand(x).real();
-#else
-    double f_real = integrand(x);
-#endif
+    double f_real;
+    if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) f_real = integrand(x).real();
+    else                                    f_real = integrand(x);
+
     return f_real;
 }
 
@@ -40,78 +39,54 @@ void handler (const char * reason,
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in, int Nmax) -> Q {
-    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
-#endif
+    if (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
+        gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
+        gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
 
-    //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
-    //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
+        gsl_function F_real;
+        gsl_function F_imag;
 
-    gsl_function F_real;
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_function F_imag;
-#endif
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        F_imag.function = &f_imag<Integrand>;
+        F_imag.params = &integrand;
 
-    F_real.function = &f_real<Integrand>;
-    F_real.params = &integrand;
+        double result_real, error_real;
+        double result_imag, error_imag;
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    F_imag.function = &f_imag<Integrand>;
-    F_imag.params = &integrand;
-#endif
+        gsl_set_error_handler(handler);
 
-    double result_real, error_real;
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    double result_imag, error_imag;
-#endif
+        gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
+        gsl_integration_qag(&F_imag, a, b, 0, integrator_tol, Nmax, 1, W_imag, &result_imag, &error_imag);
 
-    gsl_set_error_handler(handler);
+        gsl_integration_workspace_free(W_real);
+        gsl_integration_workspace_free(W_imag);
 
-    gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_qag(&F_imag, a, b, 0, integrator_tol, Nmax, 1, W_imag, &result_imag, &error_imag);
-#endif
+        return result_real + glb_i*result_imag;
+    }
+    else{
+        gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
 
-    //double w1, w2;
-    //if (w1_in < w2_in) {
-    //    w1 = w1_in; w2 = w2_in;
-    //}
-    //else {
-    //    w1 = w2_in; w2 = w1_in;
-    //}
-    //
-    //double pts[4] = {a, w1, w2, b};
-    //int npts = 4;
-    //
-    //gsl_integration_qagp(&F_real, pts, npts, 1e-4, 1e-4, Nmax, W_real, &result_real, &error_real);
-    //gsl_integration_qagp(&F_imag, pts, npts, 1e-4, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
+        gsl_function F_real;
 
-    //gsl_integration_qagi(&F_real, 0, 1e-4, Nmax, W_real, &result_real, &error_real);
-    //gsl_integration_qagi(&F_imag, 0, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
 
-    //size_t neval = Nmax;
-    //gsl_integration_cquad(&F_real, a, b, 1e-4, 1e-4, W_real, &result_real, &result_imag, &neval);
+        double result_real, error_real;
 
-    gsl_integration_workspace_free(W_real);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace_free(W_imag);
-#endif
+        gsl_set_error_handler(handler);
 
-    //gsl_integration_cquad_workspace_free(W_real);
-    //gsl_integration_cquad_workspace_free(W_imag);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    return result_real + glb_i*result_imag;
-#else
-    return result_real;
-#endif
+        gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
+
+        gsl_integration_workspace_free(W_real);
+
+        return result_real;
+    }
 }
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 //
 template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, const vec<vec<double>>& intervals, const size_t num_intervals, const int Nmax, const bool isinf=false) -> Q {
-    //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
-    //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
     gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
     gsl_function F_real;
     F_real.function = &f_real<Integrand>;
@@ -128,7 +103,6 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 
     gsl_set_error_handler(handler);
 
-    //gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
     double result_real_temp{}, error_real_temp{};
     if (isinf) {
         gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
@@ -160,33 +134,11 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
     }
 #endif
 
-    //double w1, w2;
-    //if (w1_in < w2_in) {
-    //    w1 = w1_in; w2 = w2_in;
-    //}
-    //else {
-    //    w1 = w2_in; w2 = w1_in;
-    //}
-    //
-    //double pts[4] = {a, w1, w2, b};
-    //int npts = 4;
-    //
-    //gsl_integration_qagp(&F_real, pts, npts, 1e-4, 1e-4, Nmax, W_real, &result_real, &error_real);
-    //gsl_integration_qagp(&F_imag, pts, npts, 1e-4, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
-
-    //gsl_integration_qagi(&F_real, 0, 1e-4, Nmax, W_real, &result_real, &error_real);
-    //gsl_integration_qagi(&F_imag, 0, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
-
-    //size_t neval = Nmax;
-    //gsl_integration_cquad(&F_real, a, b, 1e-4, 1e-4, W_real, &result_real, &result_imag, &neval);
-
     gsl_integration_workspace_free(W_real);
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     gsl_integration_workspace_free(W_imag);
 #endif
 
-    //gsl_integration_cquad_workspace_free(W_real);
-    //gsl_integration_cquad_workspace_free(W_imag);
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
     return result_real + glb_i*result_imag;
 #else

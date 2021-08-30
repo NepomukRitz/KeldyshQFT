@@ -63,7 +63,6 @@ auto isInList (T val, const std::vector<T>& list) -> bool {
     return (std::find(list.begin(), list.end(), val) != list.end());
 }
 
-#ifdef KELDYSH_FORMALISM
 // This function converts indices in the range 0...5 to the actual Keldysh index they correspond to
 // Rule: {0,1,3,5,6,7} -> {0,1,2,3,4,5}
 // The components 0,1,3,5,6 and 7 are the chosen reference components, numerated in the 0...15 convention
@@ -81,7 +80,6 @@ auto convertToIndepIndex(int iK) -> int
         return -1;
     }
 }
-#endif
 
 // This function returns the values of the 4 alphas for a given index in the 0...15 set
 auto alphas(int index) -> std::vector<int> {
@@ -102,30 +100,28 @@ auto alphas(int index) -> std::vector<int> {
  * @return        : Vector of two Keldysh indices for the left [0] and right [1] vertex in a bubble
  */
 auto indices_sum(int i0, int i2, const char channel) -> std::vector<int> {
-    std::vector<int> indices (2);              // Return std::vector
-#ifdef KELDYSH_FORMALISM
-    std::vector<int> alphas_i0 = alphas(i0);   // Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
-    std::vector<int> alphas_i2 = alphas(i2);   // Calculate the alphas of each input. Refer to these alphas as (34|3'4')
+    std::vector<int> indices ({0, 0});           // Return std::vector, already correct for Matsubara
+    if (KELDYSH){
+        std::vector<int> alphas_i0 = alphas(i0);   // Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
+        std::vector<int> alphas_i2 = alphas(i2);   // Calculate the alphas of each input. Refer to these alphas as (34|3'4')
 
-    //Distribute the alphas of indices i0 and i2 into i1 and i3
-    switch (channel) {
-        case 'a':
-            indices[0] = 8*(alphas_i0[0]-1) + 4*(alphas_i2[3]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i0[3]-1);  // i1 = (1'4'|32)
-            indices[1] = 8*(alphas_i2[2]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i2[1]-1);  // i3 = (3'2'|14)
-            break;
-        case 'p':
-            indices[0] = 8*(alphas_i0[0]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i2[1]-1);  // i1 = (1'2'|34)
-            indices[1] = 8*(alphas_i2[2]-1) + 4*(alphas_i2[3]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i0[3]-1);  // i3 = (3'4'|12)
-            break;
-        case 't':
-            indices[0] = 8*(alphas_i2[3]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i0[3]-1);  // i1 = (4'2'|32)
-            indices[1] = 8*(alphas_i0[0]-1) + 4*(alphas_i2[2]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i2[1]-1);  // i3 = (1'3'|14)
-            break;
-        default:;
+        //Distribute the alphas of indices i0 and i2 into i1 and i3
+        switch (channel) {
+            case 'a':
+                indices[0] = 8*(alphas_i0[0]-1) + 4*(alphas_i2[3]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i0[3]-1);  // i1 = (1'4'|32)
+                indices[1] = 8*(alphas_i2[2]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i2[1]-1);  // i3 = (3'2'|14)
+                break;
+            case 'p':
+                indices[0] = 8*(alphas_i0[0]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i2[1]-1);  // i1 = (1'2'|34)
+                indices[1] = 8*(alphas_i2[2]-1) + 4*(alphas_i2[3]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i0[3]-1);  // i3 = (3'4'|12)
+                break;
+            case 't':
+                indices[0] = 8*(alphas_i2[3]-1) + 4*(alphas_i0[1]-1) + 2*(alphas_i2[0]-1) + 1*(alphas_i0[3]-1);  // i1 = (4'2'|32)
+                indices[1] = 8*(alphas_i0[0]-1) + 4*(alphas_i2[2]-1) + 2*(alphas_i0[2]-1) + 1*(alphas_i2[1]-1);  // i3 = (1'3'|14)
+                break;
+            default:;
+        }
     }
-#else
-    indices = {0, 0};
-#endif
     return indices;
 }
 

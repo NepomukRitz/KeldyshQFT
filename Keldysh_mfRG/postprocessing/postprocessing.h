@@ -8,7 +8,6 @@
 #include "../propagator.h"
 #include "KramersKronig.h"   // perform check of Kramers-Kronig relation
 
-#ifdef KELDYSH_FORMALISM
 template <typename Q>
 class Integrand_Phi_tilde {
 public:
@@ -104,7 +103,6 @@ void compute_Phi_tilde(const std::string filename) {
                    {"v", "Phi", "Phi_integrated", "Lambdas"},
                    {vs, Phi, Phi_integrated, Lambdas});
 }
-#endif
 
 
 class Integrand_sum_rule_K1tK {
@@ -144,21 +142,21 @@ void sum_rule_K1tK(const std::string filename) {
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
         double wmax = state.vertex[0].tvertex().frequencies.b_K1.w_upper;   // upper integration boundary
 
-#ifdef KELDYSH_FORMALISM
-        sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
-#else
+        if (KELDYSH){
+            sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
+        }
+        else{
 #if defined(PARTICLE_HOLE_SYMM) and not defined(HUBBARD)
-        sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
+            sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
 #else
-        sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
+            sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
 #endif
-#endif
+        }
     }
 
     write_h5_rvecs(filename + "_sum_rule_K1tK", {"Lambdas", "sum_rule"}, {Lambdas, sum_rule});
 }
 
-#ifdef KELDYSH_FORMALISM
 /**
  * Check Kramers-Kronig relation for retarded self-energy and retarded component of K1r by computing the real part from
  * the imaginary part via Kramers-Kronig. The result can be compared to the real part obtained from the flow.
@@ -207,6 +205,5 @@ void check_Kramers_Kronig(const std::string filename) {
                         K1tR_im, K1tR_re, K1tR_re_KK});
     }
 }
-#endif
 
 #endif //KELDYSH_MFRG_TESTING_POSTPROCESSING_H

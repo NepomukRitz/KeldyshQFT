@@ -562,17 +562,18 @@ template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
 }
 
 template <typename Q> void irreducible<Q>::initialize(Q val) {
-#ifdef KELDYSH_FORMALISM
-    for (auto i:odd_Keldysh) {
-#else
-    int i = 0;
-#endif
-        for (int i_in=0; i_in<n_in; ++i_in) {
-            this->setvert(i, i_in, val);
+    if (KELDYSH){
+        for (auto i:odd_Keldysh) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                this->setvert(i, i_in, val);
+            }
         }
-#ifdef KELDYSH_FORMALISM
     }
-#endif
+    else{
+        for (int i_in=0; i_in<n_in; ++i_in) {
+            this->setvert(0, i_in, val);
+        }
+    }
 }
 
 
@@ -973,11 +974,8 @@ template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
     if(p==0) {//infinity (max) norm
         double max = 0;
-#ifdef KELDYSH_FORMALISM
         for (int iK = 0; iK < nK_K1; iK++) {
-#else
-        int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for (int iw = 0; iw < nBOS; iw++) {
                 for (int i_in = 0; i_in < n_in; i_in++) {
                     double compare = std::abs(this->avertex.K1_val(iK, iw, i_in));
@@ -996,20 +994,14 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
-
         return max;
     }
 
     else {//p-norm
         double result = 0;
-#ifdef KELDYSH_FORMALISM
         for(int iK = 0; iK<nK_K1; iK++){
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for(int iw=0; iw < nBOS; iw++){
                 for(int i_in=0; i_in<n_in; i_in++){
 
@@ -1019,9 +1011,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
 
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return pow(result, 1./((double)p));
     }
 }
@@ -1029,11 +1019,8 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
 template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
     if(p==0) { //infinity (max) norm
         double max = 0.;
-#ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K2; iK++) {
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for (int iw = 0; iw < nBOS2; iw++) {
                 for (int iv = 0; iv < nFER2; iv++) {
                     for (int i_in = 0; i_in < n_in; i_in++) {
@@ -1055,18 +1042,13 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return max;
     }
     else{//p-norm
         double result = 0.;
-#ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K2; iK++){
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for(int iw=0; iw < nBOS2; iw++){
                 for(int iv=0; iv < nFER2; iv++) {
                     for (int i_in = 0; i_in < n_in; i_in++) {
@@ -1078,9 +1060,7 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return pow(result, 1./((double)p));
     }
 }
@@ -1088,11 +1068,8 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
 template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
     if(p==0) {
         double max = 0.;
-#ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K3; iK++) {
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for (int iw = 0; iw < nBOS3; iw++) {
                 for (int iv1 = 0; iv1 < nFER3; iv1++) {
                     for (int iv2 = 0; iv2 < nFER3; iv2++) {
@@ -1115,19 +1092,14 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return max;
     }
 
     else { //p-norm
         double result = 0.;
-#ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K3; iK++){
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for(int iw=0; iw < nBOS3; iw++){
                 for(int iv1=0; iv1<nFER3; iv1++) {
                     for (int iv2 = 0; iv2 < nFER3; iv2++) {
@@ -1141,9 +1113,7 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return pow(result, 1./((double)p));
     }
 
