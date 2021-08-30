@@ -14,9 +14,7 @@
 template <typename Integrand>
 auto f_real(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
-    double f_real;
-    if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) f_real = integrand(x).real();
-    else                                    f_real = integrand(x);
+    double f_real = real(integrand(x));
 
     return f_real;
 }
@@ -25,7 +23,7 @@ auto f_real(double x, void* params) -> double {
 template <typename Integrand>
 auto f_imag(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
-    double f = integrand(x).imag();
+    double f = imag(integrand(x));
     return f;
 }
 
@@ -159,11 +157,14 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     return integrator_simpson(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
     return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, a, b, 0., 0., nINT);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    return adaptor.integrate(a, b);
+#else
+    if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, a, b, 0., 0., nINT);
+    }
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+        return adaptor.integrate(a, b);
+    }
 #endif
 }
 
@@ -177,11 +178,14 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     return integrator_simpson(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
     return adaptive_simpson_integrator(integrand, a, b, nINT);      // use adaptive Simpson integrator
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, a, b, w, w, nINT);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    return adaptor.integrate(a, b);
+#else
+    if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, a, b, w, w, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+        return adaptor.integrate(a, b);
+    }
 #endif
 }
 
@@ -200,11 +204,14 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     return integrator_simpson(integrand, a, b, w1, w2, nINT);     // use standard Simpson plus additional points around +- w/2
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
     return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    return adaptor.integrate(a,b);
+#else
+    if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+        return adaptor.integrate(a, b);
+    }
 #endif
 }
 
@@ -226,26 +233,29 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     return integrator_simpson(integrand, a, b, w1, w2, nINT);     // use standard Simpson plus additional points around +- w/2
 #elif INTEGRATOR_TYPE == 3 // adaptive Simpson
     return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    // define points at which to split the integrals (including lower and upper integration limits)
-    rvec intersections {a, w1-Delta, w1+Delta, w2-Delta, w2+Delta, b};
-    std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
+#else
+    if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        // define points at which to split the integrals (including lower and upper integration limits)
+        rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
+        std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
 
-    comp result = 0.; // initialize results
-    // integrate intervals of with 2*Delta around the features at w1, w2
-    Adapt<Q, Integrand> adaptor_peaks(integrator_tol, integrand);
-    result += adaptor_peaks.integrate(intersections[1], intersections[2]);
-    result += adaptor_peaks.integrate(intersections[3], intersections[4]);
+        comp result = 0.; // initialize results
+        // integrate intervals of with 2*Delta around the features at w1, w2
+        Adapt<Q, Integrand> adaptor_peaks(integrator_tol, integrand);
+        result += adaptor_peaks.integrate(intersections[1], intersections[2]);
+        result += adaptor_peaks.integrate(intersections[3], intersections[4]);
 
-    // integrate the tails and the interval between the features, with increased tolerance
-    Adapt<Q, Integrand> adaptor_tails(integrator_tol*10, integrand);
-    result += adaptor_tails.integrate(intersections[0], intersections[1]);
-    result += adaptor_tails.integrate(intersections[2], intersections[3]);
-    result += adaptor_tails.integrate(intersections[4], intersections[5]);
+        // integrate the tails and the interval between the features, with increased tolerance
+        Adapt<Q, Integrand> adaptor_tails(integrator_tol * 10, integrand);
+        result += adaptor_tails.integrate(intersections[0], intersections[1]);
+        result += adaptor_tails.integrate(intersections[2], intersections[3]);
+        result += adaptor_tails.integrate(intersections[4], intersections[5]);
 
-    return result;
+        return result;
+    }
 #endif
 }
 
@@ -280,15 +290,18 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         result += adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
     }
     return result;
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT, isinf);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    vec<Q> result = vec<Q>(num_intervals);
-    for (int i = 0; i < num_intervals; i++){
-        if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
+#else
+    if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT, isinf);
     }
-    return result.sum();
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+        vec<Q> result = vec<Q>(num_intervals);
+        for (int i = 0; i < num_intervals; i++){
+            if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
+        }
+        return result.sum();
+    }
 #endif
 }
 
