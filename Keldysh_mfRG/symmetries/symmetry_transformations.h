@@ -47,23 +47,23 @@ void T1 (IndicesSymmetryTransformations& indices){
 
     if(indices.channel == 'p'){
         indices.w  *= 1.;
-#if MAX_DIAG_CLASS>1
-        indices.v1 *= 1.;
-        indices.v2 *= -1.;
-        if (!KELDYSH && !ZERO_T)
-            indices.v2 += floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);
+        if (MAX_DIAG_CLASS > 1) {
+            indices.v1 *= 1.;
+            indices.v2 *= -1.;
+            if (!KELDYSH && !ZERO_T)
+                indices.v2 += floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2);
             // correction due to rounding towards Matsubara frequencies
-#endif
+        }
     }
     else {
         indices.asymmetry_transform ^= true;
 
         indices.w  *= -1.;
-#if MAX_DIAG_CLASS>1
-        double temp = indices.v1;
-        indices.v1 = indices.v2;
-        indices.v2 = temp;
-#endif
+        if (MAX_DIAG_CLASS > 1) {
+            double temp = indices.v1;
+            indices.v1 = indices.v2;
+            indices.v2 = temp;
+        }
     }
     switch_channel(indices);
 }
@@ -75,13 +75,13 @@ void T2 (IndicesSymmetryTransformations& indices){
 
     if(indices.channel == 'p'){
         indices.w  *= 1.;
-#if MAX_DIAG_CLASS>1
-        indices.v1 *= -1.;
-        indices.v2 *= 1.;
-        if (!KELDYSH && !ZERO_T)
-            indices.v1 += floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);
+        if (MAX_DIAG_CLASS > 1) {
+            indices.v1 *= -1.;
+            indices.v2 *= 1.;
+            if (!KELDYSH && !ZERO_T)
+                indices.v1 += floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2);
             // correction due to rounding towards Matsubara frequencies
-#endif
+        }
     }
     else {
 //        indices.w  *= 1.;
@@ -109,11 +109,11 @@ void TC (IndicesSymmetryTransformations& indices){
         indices.asymmetry_transform ^= true;
 
         indices.w  *= 1.;
-#if MAX_DIAG_CLASS>1
-        double temp = indices.v1;
-        indices.v1 = indices.v2;
-        indices.v2 = temp;
-#endif
+        if (MAX_DIAG_CLASS > 1) {
+            double temp = indices.v1;
+            indices.v1 = indices.v2;
+            indices.v2 = temp;
+        }
     }
 
     if (KELDYSH){
@@ -143,10 +143,10 @@ void Tph (IndicesSymmetryTransformations& indices){
             indices.prefactor *= -1.;
 
         indices.w *= -1;
-#if MAX_DIAG_CLASS > 1
-        indices.v1 *= -1;
-        indices.v2 *= -1;
-#endif
+        if (MAX_DIAG_CLASS > 1) {
+            indices.v1 *= -1;
+            indices.v2 *= -1;
+        }
     }
 }
 
@@ -154,15 +154,16 @@ void TR (IndicesSymmetryTransformations& indices){
     if (!KELDYSH){ // used only for Matsubara calculations
         indices.conjugate ^= true;
         indices.w *= -1;
-#if MAX_DIAG_CLASS > 1
-        indices.v1 *= -1;
-        indices.v2 *= -1;
-        if (!ZERO_T){ // Matsubara T>0
-            double rounding_correction = floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
-            indices.v1 += rounding_correction;
-            indices.v2 += rounding_correction;
+        if (MAX_DIAG_CLASS > 1) {
+            indices.v1 *= -1;
+            indices.v2 *= -1;
+            if (!ZERO_T) { // Matsubara T>0
+                double rounding_correction = floor2bfreq(indices.w / 2) - ceil2bfreq(
+                        indices.w / 2);  // correction due to rounding towards Matsubara frequencies
+                indices.v1 += rounding_correction;
+                indices.v2 += rounding_correction;
+            }
         }
-#endif
     }
 }
 
