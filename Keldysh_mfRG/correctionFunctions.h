@@ -19,64 +19,59 @@
  * @param eta_2    : +1/-1 if second propagator in the bubble is retarded/advanced
  * @return         : Analytical result of the integrated tails
  */
-template <typename Q>
+template <typename Q> // TODO(medium): Split up into several functions?
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                                  Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
-#ifdef KELDYSH_FORMALISM
-    if (diff) return 0.;
-    else {
-        if (w == 0. && eta_1 == eta_2)
-        return  1./(    vmax  - eps_p + eta_1 * glb_i * Delta)
-              + 1./(std::abs(vmin) + eps_p - eta_1 * glb_i * Delta);
-    else
-        return 1./(-w + (eta_1 - eta_2) * glb_i * Delta)
-                * log( ((vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (std::abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta))
-                      /((vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (std::abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta)));
+    if (KELDYSH){
+        if (diff) return 0.;
+        else {
+            if (w == 0. && eta_1 == eta_2)
+                return  1./(    vmax  - eps_p + eta_1 * glb_i * Delta)
+                        + 1./(std::abs(vmin) + eps_p - eta_1 * glb_i * Delta);
+            else // TODO(very high): ???
+                return 1./(-w + (eta_1 - eta_2) * glb_i * Delta)
+                       * log( ((vmax - w/2. - eps_p + eta_1 * glb_i * Delta) * (std::abs(vmin) - w/2. + eps_p - eta_2 * glb_i * Delta))
+                              /((vmax + w/2. - eps_p + eta_2 * glb_i * Delta) * (std::abs(vmin) + w/2. + eps_p - eta_1 * glb_i * Delta)));
 
-    }
-    #else
-    if (diff)
-    {
-#ifdef PARTICLE_HOLE_SYMM
-        return 1. / 2. * (
-                  1. / (pow(-vmin + Delta, 2) - pow(w/2., 2))
-                + 1. / (pow( vmax + Delta, 2) - pow(w/2., 2))
-                );
-#else
-        return 1. / 2. * (
-                1. / (pow(-vmin - glb_i * eps_p + Delta, 2) - pow(w/2., 2))
-              + 1. / (pow( vmax + glb_i * eps_p + Delta, 2) - pow(w/2., 2))
-              );
-#endif
+        }
     }
     else{
-#ifdef PARTICLE_HOLE_SYMM
-
-        if (w == 0.)
-            return - 1. / (vmax + Delta)
-                   + 1. / (vmin - Delta);
-        else
-            return 1. / w
-                   * log(
-                    ((- vmin - w/2. + Delta) * (vmax - w/2.  + Delta))
-                    / ((- vmin + w/2.  + Delta) * (vmax + w/2.  + Delta))
-            );
-#else
-        if (w == 0.)
-        return - 1. / (vmax + glb_i * eps_p + Delta)
-               + 1. / (vmin + glb_i * eps_p - Delta);
-        else
-        return 1. / w
-               * log(
-                ((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. + glb_i * eps_p + Delta))
-                / ((- vmin + w/2. - glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta))
-        );
-#endif
+        if (diff){
+            if (PARTICLE_HOLE_SYMMETRY){
+                return 1. / 2. * ( 1. / (pow(-vmin + Delta, 2) - pow(w/2., 2))
+                                 + 1. / (pow( vmax + Delta, 2) - pow(w/2., 2)));
+            }
+            else{
+                return 1. / 2. * (1. / (pow(-vmin - glb_i * eps_p + Delta, 2) - pow(w/2., 2))
+                                + 1. / (pow( vmax + glb_i * eps_p + Delta, 2) - pow(w/2., 2)));
+            }
+        }
+        else{
+            if (PARTICLE_HOLE_SYMMETRY){
+                if (w == 0.){
+                    return - 1. / (vmax + Delta)
+                           + 1. / (vmin - Delta);
+                }
+                else{
+                    return 1. / w * log(((- vmin - w/2. + Delta) * (vmax - w/2.  + Delta))
+                                        / ((- vmin + w/2.  + Delta) * (vmax + w/2.  + Delta)));
+                }
+            }
+            else{
+                if (w == 0.){
+                    return - 1. / (vmax + glb_i * eps_p + Delta)
+                           + 1. / (vmin + glb_i * eps_p - Delta);
+                }
+                else{
+                    return 1. / w * log(((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. + glb_i * eps_p + Delta))
+                                        / ((- vmin + w/2. - glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta)));
+                }
+            }
+        }
     }
-    #endif
-#elif REG==3
+#elif REG==3 // TODO(high): Make this more readable!
     if (diff) {
         return 0.;
     }
@@ -192,57 +187,54 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                                 Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
 #if REG==2
-#ifdef KELDYSH_FORMALISM
-    if (diff) return 0.;
-    else {
-        if (w == 2. * eps_p && eta_1 == - eta_2)
-        return -1./(    vmax  + eta_1 * glb_i * Delta)
-               -1./(std::abs(vmin) - eta_1 * glb_i * Delta);
-    else
-        return -1./(w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
-                * log( ((vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (std::abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta))
-                      /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (std::abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
+    if (KELDYSH){
+        if (diff) return 0.;
+        else {
+            if (w == 2. * eps_p && eta_1 == - eta_2)
+                return -1./(    vmax  + eta_1 * glb_i * Delta)
+                       -1./(std::abs(vmin) - eta_1 * glb_i * Delta);
+            else
+                return -1./(w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
+                       * log( ((vmax + w/2. - eps_p + eta_1 * glb_i * Delta) * (std::abs(vmin) + w/2. - eps_p + eta_2 * glb_i * Delta))
+                             /((vmax - w/2. + eps_p - eta_2 * glb_i * Delta) * (std::abs(vmin) - w/2. + eps_p - eta_1 * glb_i * Delta)));
 
-    }
-    #else
-    if (diff)
-    {
-#ifdef PARTICLE_HOLE_SYMM
-        return -1. / 2. * (
-                  1. / (pow(-vmin + Delta, 2) - pow(w/2., 2))
-                + 1. / (pow( vmax + Delta, 2) - pow(w/2., 2))
-                );
-#else
-        return 1. / 2. * (
-                1. / (pow(-vmin + Delta, 2) - pow(w/2. + glb_i * eps_p, 2))
-              + 1. / (pow( vmax + Delta, 2) - pow(w/2. + glb_i * eps_p, 2))
-              );
-#endif
+        }
     }
     else{
-#ifdef PARTICLE_HOLE_SYMM
-    if ( w == 0.)
-        return + 1. / (vmax + Delta)
-               - 1. / (vmin - Delta);
-    else
-        return 1. / w
-               * log(
-                  ((- vmin + w/2. + Delta) * (vmax + w/2. + Delta))
-                / ((- vmin - w/2. + Delta) * (vmax - w/2. + Delta))
-                    );
-#else
-    if (eps_p == 0. and w == 0.)
-        return + 1. / (vmax + Delta)
-               - 1. / (vmin - Delta);
-    else
-        return 1. / (w + 2. * glb_i * eps_p)
-               * log(
-                  ((- vmin + w/2. + glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta))
-                / ((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. - glb_i * eps_p + Delta))
-                    );
-#endif
+        if (diff){
+            if (PARTICLE_HOLE_SYMMETRY){
+                return -1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w/2., 2))
+                                 + 1. / (pow( vmax + Delta, 2) - pow(w/2., 2)));
+            }
+            else{
+                return 1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w/2. + glb_i * eps_p, 2))
+                                + 1. / (pow( vmax + Delta, 2) - pow(w/2. + glb_i * eps_p, 2)));
+            }
+        }
+        else{
+            if (PARTICLE_HOLE_SYMMETRY){
+                if ( w == 0.){
+                    return + 1. / (vmax + Delta)
+                           - 1. / (vmin - Delta);
+                }
+                else{
+                    return 1. / w * log(((- vmin + w/2. + Delta) * (vmax + w/2. + Delta))
+                                        / ((- vmin - w/2. + Delta) * (vmax - w/2. + Delta)));
+                }
+            }
+            else{
+                if (eps_p == 0. and w == 0.){
+                    return + 1. / (vmax + Delta)
+                           - 1. / (vmin - Delta);
+                }
+                else{
+                    return 1. / (w + 2. * glb_i * eps_p)
+                           * log(((- vmin + w/2. + glb_i * eps_p + Delta) * (vmax + w/2. + glb_i * eps_p + Delta))
+                                 / ((- vmin - w/2. - glb_i * eps_p + Delta) * (vmax - w/2. - glb_i * eps_p + Delta)));
+                }
+            }
+        }
     }
-#endif
 #elif REG==3
     if (diff) {
         return 0.;
@@ -398,72 +390,71 @@ auto asymp_corrections_bubble(K_class k,
 #endif
     Q res{}, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
 
-#ifdef KELDYSH_FORMALISM
-    // initialize the retarded/advanced flags depending on the bubble Keldysh index i2
-    switch (i2) {
-        // eta = +1  => Retarded
-        // eta = -1  => Advanced
-        case 3:     //AA
-            eta_1 = -1.;
-            eta_2 = -1.;
-            break;
-        case 6:     //AR
-            eta_1 = -1.;
-            eta_2 =  1.;
-            break;
-        case 9:     //RA
-            eta_1 =  1.;
-            eta_2 = -1.;
-            break;
-        case 12:    //RR
-            eta_1 = 1.;
-            eta_2 = 1.;
-            break;
-        default:
-            return 0.;
-    }
+    std::vector<int> indices = {0, 0}; // Already right for Matsubara
+    if (KELDYSH){
+        // initialize the retarded/advanced flags depending on the bubble Keldysh index i2
+        switch (i2) {
+            // eta = +1  => Retarded
+            // eta = -1  => Advanced
+            case 3:     //AA
+                eta_1 = -1.;
+                eta_2 = -1.;
+                break;
+            case 6:     //AR
+                eta_1 = -1.;
+                eta_2 =  1.;
+                break;
+            case 9:     //RA
+                eta_1 =  1.;
+                eta_2 = -1.;
+                break;
+            case 12:    //RR
+                eta_1 = 1.;
+                eta_2 = 1.;
+                break;
+            default:
+                return 0.;
+        }
 
-    // convert the input external Keldysh index from reduced set to [0,...,15]
-    switch (k) {
-        case k1:
-            switch (channel) {
-                case 'a':
-                    i0 = non_zero_Keldysh_K1a[i0_in];
-                    break;
-                case 'p':
-                    i0 = non_zero_Keldysh_K1p[i0_in];
-                    break;
-                case 't':
-                    i0 = non_zero_Keldysh_K1t[i0_in];
-                    break;
-                default:;
-            }
-            break;
-        case k2:
-            switch (channel) {
-                case 'a':
-                    i0 = non_zero_Keldysh_K2a[i0_in];
-                    break;
-                case 'p':
-                    i0 = non_zero_Keldysh_K2p[i0_in];
-                    break;
-                case 't':
-                    i0 = non_zero_Keldysh_K2t[i0_in];
-                    break;
-                default:;
-            }
-            break;
-        case k3:
-            i0 = non_zero_Keldysh_K3[i0_in];
-            break;
-        default:;
-    }
+        // convert the input external Keldysh index from reduced set to [0,...,15]
+        switch (k) {
+            case k1:
+                switch (channel) {
+                    case 'a':
+                        i0 = non_zero_Keldysh_K1a[i0_in];
+                        break;
+                    case 'p':
+                        i0 = non_zero_Keldysh_K1p[i0_in];
+                        break;
+                    case 't':
+                        i0 = non_zero_Keldysh_K1t[i0_in];
+                        break;
+                    default:;
+                }
+                break;
+            case k2:
+                switch (channel) {
+                    case 'a':
+                        i0 = non_zero_Keldysh_K2a[i0_in];
+                        break;
+                    case 'p':
+                        i0 = non_zero_Keldysh_K2p[i0_in];
+                        break;
+                    case 't':
+                        i0 = non_zero_Keldysh_K2t[i0_in];
+                        break;
+                    default:;
+                }
+                break;
+            case k3:
+                i0 = non_zero_Keldysh_K3[i0_in];
+                break;
+            default:;
+        }
 
-    // determine the Keldysh indices of left and right vertex
-    std::vector<int> indices = indices_sum(i0, i2, channel);
-#else
-    std::vector<int> indices = {0, 0};
-#endif
+        // determine the Keldysh indices of left and right vertex
+        indices = indices_sum(i0, i2, channel);
+    }
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
@@ -535,52 +526,55 @@ auto asymp_corrections_bubble(K_class k,
 template <typename Q>
 auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, double Delta, char type) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
-#ifdef KELDYSH_FORMALISM
-    switch (type) {
-        case 'g':   // full (non-differentiated) propagator
-            switch (iK) {
-                case 0: // G^R
-                    return log((std::abs(vmin) + eps_p - glb_i * Delta) / (vmax - eps_p + glb_i * Delta));
-                case 1: // G^A
-                    return log((std::abs(vmin) + eps_p + glb_i * Delta) / (vmax - eps_p - glb_i * Delta));
-                case 2: // G^K
-                    return 2. * glb_i * (atan((vmax - eps_p) / Delta) - atan((std::abs(vmin) + eps_p) / Delta));
+    if (KELDYSH){
+        switch (type) {
+            case 'g':   // full (non-differentiated) propagator
+                switch (iK) {
+                    case 0: // G^R
+                        return log((std::abs(vmin) + eps_p - glb_i * Delta) / (vmax - eps_p + glb_i * Delta));
+                    case 1: // G^A
+                        return log((std::abs(vmin) + eps_p + glb_i * Delta) / (vmax - eps_p - glb_i * Delta));
+                    case 2: // G^K
+                        return 2. * glb_i * (atan((vmax - eps_p) / Delta) - atan((std::abs(vmin) + eps_p) / Delta));
+                    default:;
+                }
+            case 's':   // single-scale propagator
+                switch (iK) {
+                    case 0: // G^R
+                        return -glb_i / 2. * (1. / (vmax - eps_p + glb_i * Delta) - 1. / (vmin - eps_p + glb_i * Delta));
+                    case 1: // G^A
+                        return  glb_i / 2. * (1. / (vmax - eps_p - glb_i * Delta) - 1. / (vmin - eps_p - glb_i * Delta));
+                    case 2: // G^K
+                        return -glb_i * (  (vmax - eps_p) / ((vmax - eps_p) * (vmax - eps_p) + Delta * Delta)
+                                           + (vmin - eps_p) / ((vmin - eps_p) * (vmin - eps_p) + Delta * Delta));
+                    default:;
+                }
+            default:;
+        }
+        return 0;
+    }
+    else{
+        if (PARTICLE_HOLE_SYMMETRY){
+            switch (type) {
+                case 'g':   // full (non-differentiated) propagator
+                    return  -log((std::abs(vmin) + Delta) / (vmax + Delta));
+                case 's':   // single-scale propagator
+                    return -1. / 2. * (-1. / (vmax + Delta) + 1. / (-vmin + Delta));
+                default:;
             }
-        case 's':   // single-scale propagator
-            switch (iK) {
-                case 0: // G^R
-                    return -glb_i / 2. * (1. / (vmax - eps_p + glb_i * Delta) - 1. / (vmin - eps_p + glb_i * Delta));
-                case 1: // G^A
-                    return  glb_i / 2. * (1. / (vmax - eps_p - glb_i * Delta) - 1. / (vmin - eps_p - glb_i * Delta));
-                case 2: // G^K
-                    return -glb_i * (  (vmax - eps_p) / ((vmax - eps_p) * (vmax - eps_p) + Delta * Delta)
-                                     + (vmin - eps_p) / ((vmin - eps_p) * (vmin - eps_p) + Delta * Delta));
+            return 0;
+        }
+        else{
+            switch (type) {
+                case 'g':   // full (non-differentiated) propagator
+                    return -glb_i * log((std::abs(vmin) - glb_i * eps_p + Delta) / (vmax + glb_i * eps_p + Delta));
+                case 's':   // single-scale propagator
+                    return -glb_i / 2. * (-1. / (vmax + glb_i * eps_p + Delta) - 1. / (vmin + glb_i * eps_p - Delta));
+                default:;
             }
-        default:;
+            return 0;
+        }
     }
-    return 0;
-#else
-
-#ifdef PARTICLE_HOLE_SYMM
-    switch (type) {
-        case 'g':   // full (non-differentiated) propagator
-            return  -log((std::abs(vmin) + Delta) / (vmax + Delta));
-        case 's':   // single-scale propagator
-            return -1. / 2. * (-1. / (vmax + Delta) + 1. / (-vmin + Delta));
-        default:;
-    }
-    return 0;
-#else
-    switch (type) {
-        case 'g':   // full (non-differentiated) propagator
-            return -glb_i * log((std::abs(vmin) - glb_i * eps_p + Delta) / (vmax + glb_i * eps_p + Delta));
-        case 's':   // single-scale propagator
-            return -glb_i / 2. * (-1. / (vmax + glb_i * eps_p + Delta) - 1. / (vmin + glb_i * eps_p - Delta));
-        default:;
-    }
-    return 0;
-#endif //PARTICLE_HOLE_SYMM
-#endif //KELDYSH_FORMALISM
 }
 
 /**
@@ -599,7 +593,7 @@ auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, d
  * @param all_spins  : Determines if spin sum in loop is performed.
  * @return
  */
-template <typename Q>
+template <typename Q> // TODO(medium): split up into two functions
 auto asymp_corrections_loop(const Vertex<Q>& vertex,
                             const Propagator<Q>& G,
                             double vmin, double vmax,
@@ -608,63 +602,61 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
     Q Sigma_H = G.selfenergy.asymp_val_R;       // Hartree self-energy
     double Delta = (glb_Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
 
-#ifdef KELDYSH_FORMALISM
-    // Keldysh components of the vertex needed for retarded and Keldysh self-energy
-    std::vector<std::vector<int> > components {{3, 6, 7}, {1, 4, 5}};
+    if (KELDYSH){
+        // Keldysh components of the vertex needed for retarded and Keldysh self-energy
+        std::vector<std::vector<int> > components {{3, 6, 7}, {1, 4, 5}};
 
-    // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
-    VertexInput inputRetarded (components[iK][0], 0., 0., v, i_in, 0, 't');
-    VertexInput inputAdvanced (components[iK][1], 0., 0., v, i_in, 0, 't');
-    VertexInput inputKeldysh (components[iK][2], 0., 0., v, i_in, 0, 't');
-    Q factorRetarded = vertex[0].irred().val(components[iK][0], i_in, 0) // Gamma_0
-                       + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-    Q factorAdvanced = vertex[0].irred().val(components[iK][1], i_in, 0) // Gamma_0
-                       + vertex[0].tvertex().left_same_bare(inputAdvanced, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-    Q factorKeldysh  = vertex[0].irred().val(components[iK][2], i_in, 0) // Gamma_0
-                       + vertex[0].tvertex().left_same_bare(inputKeldysh, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
+        VertexInput inputRetarded (components[iK][0], 0., 0., v, i_in, 0, 't');
+        VertexInput inputAdvanced (components[iK][1], 0., 0., v, i_in, 0, 't');
+        VertexInput inputKeldysh (components[iK][2], 0., 0., v, i_in, 0, 't');
+        Q factorRetarded = vertex[0].irred().val(components[iK][0], i_in, 0) // Gamma_0
+                           + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        Q factorAdvanced = vertex[0].irred().val(components[iK][1], i_in, 0) // Gamma_0
+                           + vertex[0].tvertex().left_same_bare(inputAdvanced, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        Q factorKeldysh  = vertex[0].irred().val(components[iK][2], i_in, 0) // Gamma_0
+                           + vertex[0].tvertex().left_same_bare(inputKeldysh, vertex[0].avertex()); // K1t(0) + K2't(0,v)
 
-    // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
-    if (all_spins) {
-        factorRetarded *= 2.;
-        factorAdvanced *= 2.;
-        factorKeldysh  *= 2.;
-        inputRetarded.spin = 1;
-        inputAdvanced.spin = 1;
-        inputKeldysh.spin  = 1;
-        factorRetarded += vertex[0].irred().val(components[iK][0], i_in, 1) // Gamma_0
-                          + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-        factorAdvanced += vertex[0].irred().val(components[iK][1], i_in, 1) // Gamma_0
-                          + vertex[0].tvertex().left_same_bare(inputAdvanced, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-        factorKeldysh  += vertex[0].irred().val(components[iK][2], i_in, 1) // Gamma_0
-                          + vertex[0].tvertex().left_same_bare(inputKeldysh, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
+        if (all_spins) {
+            factorRetarded *= 2.;
+            factorAdvanced *= 2.;
+            factorKeldysh  *= 2.;
+            inputRetarded.spin = 1;
+            inputAdvanced.spin = 1;
+            inputKeldysh.spin  = 1;
+            factorRetarded += vertex[0].irred().val(components[iK][0], i_in, 1) // Gamma_0
+                              + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+            factorAdvanced += vertex[0].irred().val(components[iK][1], i_in, 1) // Gamma_0
+                              + vertex[0].tvertex().left_same_bare(inputAdvanced, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+            factorKeldysh  += vertex[0].irred().val(components[iK][2], i_in, 1) // Gamma_0
+                              + vertex[0].tvertex().left_same_bare(inputKeldysh, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        }
+
+        // analytical integration of the propagator
+        Q GR = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
+        Q GA = correctionFunctionSelfEnergy(1, vmin, vmax, Sigma_H, Delta, G.type);
+        Q GK = correctionFunctionSelfEnergy(2, vmin, vmax, Sigma_H, Delta, G.type);
+
+        return factorRetarded * GR + factorAdvanced * GA + factorKeldysh * GK;
     }
+    else{
+        // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
+        VertexInput input (0, 0., 0., v, i_in, 0, 't');
+        Q Vertexfactor = vertex[0].irred().val(0, i_in, 0) // Gamma_0
+                         + vertex[0].tvertex().left_same_bare(input, vertex[0].avertex()); // K1t(0) + K2't(0,v)
 
-    // analytical integration of the propagator
-    Q GR = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
-    Q GA = correctionFunctionSelfEnergy(1, vmin, vmax, Sigma_H, Delta, G.type);
-    Q GK = correctionFunctionSelfEnergy(2, vmin, vmax, Sigma_H, Delta, G.type);
+        // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
+        if (all_spins) {
+            Vertexfactor *= 2.;
+            input.spin = 1;
+            Vertexfactor += vertex[0].tvertex().left_same_bare(input, vertex[0].avertex());
+        }
+        // analytical integration of the propagator
+        Q Gfactor = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
 
-    return factorRetarded * GR + factorAdvanced * GA + factorKeldysh * GK;
-
-#else
-
-    // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
-    VertexInput input (0, 0., 0., v, i_in, 0, 't');
-    Q Vertexfactor = vertex[0].irred().val(0, i_in, 0) // Gamma_0
-                       + vertex[0].tvertex().left_same_bare(input, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-
-    // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
-    if (all_spins) {
-        Vertexfactor *= 2.;
-        input.spin = 1;
-        Vertexfactor += vertex[0].tvertex().left_same_bare(input, vertex[0].avertex());
+        return Vertexfactor * Gfactor;
     }
-    // analytical integration of the propagator
-    Q Gfactor = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
-
-    return Vertexfactor * Gfactor;
-
-#endif
 }
 
 #endif //KELDYSH_MFRG_CORRECTIONFUNCTIONS_H

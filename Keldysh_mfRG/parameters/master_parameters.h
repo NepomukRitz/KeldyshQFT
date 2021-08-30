@@ -94,7 +94,7 @@ constexpr int n_in = 1;
 /// fRG parameters ///
 
 // Regulator
-// 1: sharp cutoff, 2: hybridization flow
+// 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
 #define REG 2
 
 // Computation is flowing or not (determines the value of the vertex).
