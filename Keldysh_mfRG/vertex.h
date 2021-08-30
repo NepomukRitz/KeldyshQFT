@@ -12,12 +12,12 @@
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
 template <class Q>
 class irreducible{
+    vec<Q> empty_bare() {
+        if (KELDYSH) return vec<Q> (16*n_in);
+        else return vec<Q> (n_in);
+    }
 public:
-#ifdef KELDYSH_FORMALISM
-    vec<Q> bare = vec<Q>(16*n_in); // TODO(medium): does this need to be public? --> do we need default constructor?
-#else
-    vec<Q> bare = vec<Q>(n_in); // TODO(medium): does this need to be public? --> do we need default constructor?
-#endif
+    vec<Q> bare = empty_bare(); // TODO(medium): does this need to be public? --> do we need default constructor?
 
     irreducible() = default;;
 

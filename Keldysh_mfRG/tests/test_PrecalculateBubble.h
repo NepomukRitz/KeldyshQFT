@@ -160,11 +160,6 @@ void test_PrecalculateBubble<Q>::test_for_zero_value(Q& value, int& number_of_ze
 
 template<typename Q>
 class Runtime_comparison{
-#ifdef KELDYSH_FORMALISM
-    int number_of_Keldysh_components = 9;
-#else
-    int glb_number_of_Keldysh_components_bubble = 1;
-#endif
     Propagator<Q> g;
     Propagator<Q> s;
     PrecalculateBubble<Q> Pre_Bubble; // free versions of the bubbles
@@ -202,7 +197,7 @@ template<typename Q>
 double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated) {
     double starting_time = get_time();
     for (int iteration = 0; iteration < iterations; ++iteration) {
-        for (int iK = 0; iK < number_of_Keldysh_components; ++iK) {
+        for (int iK = 0; iK < glb_number_of_Keldysh_components_bubble; ++iK) {
             for (int iw = 0; iw < nBOS; ++iw) {
                 const double w = g.selfenergy.frequencies.ws[iw];
                 for (int ivpp = 0; ivpp < nFER; ++ivpp) {

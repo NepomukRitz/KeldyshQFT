@@ -8,13 +8,14 @@
 /****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>
 class SelfEnergy{
+    vec<Q> empty_Sigma() {
+        if (KELDYSH) return vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
+        else return vec<Q> (nSE*n_in);           // only one component in Matsubara formalism
+    }
+
 public:
     FrequencyGrid frequencies;
-#ifdef KELDYSH_FORMALISM
-    vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
-#else
-    vec<Q> Sigma = vec<Q> (nSE*n_in); // only one component in Matsubara formalism
-#endif
+    vec<Q> Sigma = empty_Sigma();
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
     explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
