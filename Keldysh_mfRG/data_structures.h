@@ -374,7 +374,7 @@ template<size_t dimensionality>
 void getMultIndex(size_t (&indx) [dimensionality], size_t iflat, size_t (&dims) [dimensionality]) {
     size_t temp = iflat;
     size_t dimtemp = 1;
-    for (int it = 1; it < dimensionality-1; it++) {
+    for (int it = 1; it < dimensionality; it++) {
         dimtemp *= dims[it];
     }
     indx[0] = temp / dimtemp;
