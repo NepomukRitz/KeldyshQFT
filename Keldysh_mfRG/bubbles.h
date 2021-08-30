@@ -566,9 +566,7 @@ public:
               i2(i2_in), w(w_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
         diag_class = 1; // This constructor corresponds to K1
         set_Keldysh_index_i0(i0_in);
-#if MAX_DIAG_CLASS <= 1
-        precompute_vertices();
-#endif
+        if (MAX_DIAG_CLASS <= 1) precompute_vertices();
     }
 
     /**
@@ -685,8 +683,7 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 bool Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has_to_be_zero() const {
     bool zero_result = false;
-    if (KELDYSH){
-#if MAX_DIAG_CLASS <= 1
+    if (KELDYSH && (MAX_DIAG_CLASS <= 1)){
         if (!diff) {
             switch (channel) {
                 case 'a':
@@ -713,7 +710,6 @@ bool Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has
                 default:;
             }
         }
-#endif
     }
     return zero_result;
 }
@@ -722,40 +718,41 @@ template<typename Q, template <typename> class symmetry_left, template <typename
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertices(const double vpp,
                                                                                   Q& res_l_V, Q& res_r_V,
                                                                                   Q& res_l_Vhat, Q& res_r_Vhat) const{
-#if MAX_DIAG_CLASS <= 1
-    res_l_V = res_l_V_initial;
-    res_r_V = res_r_V_initial;
-    res_l_Vhat = res_l_Vhat_initial;
-    res_r_Vhat = res_r_Vhat_initial;
-#else
-    std::vector<int> indices = indices_sum(i0, i2, channel);
-    VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
-    VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
+    if (MAX_DIAG_CLASS <= 1){
+        res_l_V = res_l_V_initial;
+        res_r_V = res_r_V_initial;
+        res_l_Vhat = res_l_Vhat_initial;
+        res_r_Vhat = res_r_Vhat_initial;
+    }
+    else{
+        std::vector<int> indices = indices_sum(i0, i2, channel);
+        VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
+        VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
 
-    if (diag_class == 1)
-        res_l_V = vertex1[0].left_same_bare(input_l);
-    else
-        res_l_V = vertex1[0].left_diff_bare(input_l);
-
-    if (diag_class == 3)
-        res_r_V = vertex2[0].right_diff_bare(input_r);
-    else
-        res_r_V = vertex2[0].right_same_bare(input_r);
-
-    if (channel == 't') {
-        input_l.spin = 1;
-        input_r.spin = 1;
         if (diag_class == 1)
-            res_l_Vhat = vertex1[0].left_same_bare(input_l);
+            res_l_V = vertex1[0].left_same_bare(input_l);
         else
-            res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+            res_l_V = vertex1[0].left_diff_bare(input_l);
 
         if (diag_class == 3)
-            res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+            res_r_V = vertex2[0].right_diff_bare(input_r);
         else
-            res_r_Vhat = vertex2[0].right_same_bare(input_r);
+            res_r_V = vertex2[0].right_same_bare(input_r);
+
+        if (channel == 't') {
+            input_l.spin = 1;
+            input_r.spin = 1;
+            if (diag_class == 1)
+                res_l_Vhat = vertex1[0].left_same_bare(input_l);
+            else
+                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+
+            if (diag_class == 3)
+                res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+            else
+                res_r_Vhat = vertex2[0].right_same_bare(input_r);
+        }
     }
-#endif // MAX_DIAG_CLASS
 }
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -958,16 +955,16 @@ void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
     vmin = std::min(dgamma[0].avertex().frequencies.b_K1.w_lower, Pi.g.selfenergy.frequencies.w_lower);
     vmax = std::max(dgamma[0].avertex().frequencies.b_K1.w_upper, Pi.g.selfenergy.frequencies.w_upper);
-#if MAX_DIAG_CLASS >= 2
-    // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-    vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K2.w_lower);
-    vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K2.w_upper);
-#endif
-#if MAX_DIAG_CLASS >= 3
-    // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-    vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K3.w_lower);
-    vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K3.w_upper);
-#endif
+    if (MAX_DIAG_CLASS >= 2){
+        // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
+        vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K2.w_lower);
+        vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K2.w_upper);
+    }
+    if (MAX_DIAG_CLASS >= 3){
+        // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
+        vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K3.w_lower);
+        vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K3.w_upper);
+    }
     if ((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
         Nmin = (int) (vmin/(M_PI*glb_T)-1)/2;
@@ -983,47 +980,47 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::crossproject_vertices() {
     switch (channel) {
         case 'a':
-            #if MAX_DIAG_CLASS >= 0
+            if (MAX_DIAG_CLASS >= 0){
                 vertex1[0].pvertex().K1_crossproject();
                 vertex1[0].tvertex().K1_crossproject();
                 vertex2[0].pvertex().K1_crossproject();
                 vertex2[0].tvertex().K1_crossproject();
-            #endif
-            #if MAX_DIAG_CLASS >= 2
+            }
+            if (MAX_DIAG_CLASS >= 2){
                 vertex1[0].pvertex().K2_crossproject('a');
                 vertex1[0].tvertex().K2_crossproject('a');
                 vertex2[0].pvertex().K2_crossproject('a');
                 vertex2[0].tvertex().K2_crossproject('a');
-            #endif
-            #if MAX_DIAG_CLASS >= 3
+            }
+            if (MAX_DIAG_CLASS >= 3){
                 vertex1[0].pvertex().K3_crossproject('a');
                 vertex1[0].tvertex().K3_crossproject('a');
                 vertex2[0].pvertex().K3_crossproject('a');
                 vertex2[0].tvertex().K3_crossproject('a');
-            #endif
+            }
             break;
         case 'p':
-            #if MAX_DIAG_CLASS >= 0
+            if (MAX_DIAG_CLASS >= 0) {
                 vertex1[0].avertex().K1_crossproject();
                 vertex1[0].tvertex().K1_crossproject();
                 vertex2[0].avertex().K1_crossproject();
                 vertex2[0].tvertex().K1_crossproject();
-            #endif
-            #if MAX_DIAG_CLASS >= 2
+            }
+            if (MAX_DIAG_CLASS >= 2) {
                 vertex1[0].avertex().K2_crossproject('p');
                 vertex1[0].tvertex().K2_crossproject('p');
                 vertex2[0].avertex().K2_crossproject('p');
                 vertex2[0].tvertex().K2_crossproject('p');
-            #endif
-            #if MAX_DIAG_CLASS >= 3
+            }
+            if (MAX_DIAG_CLASS >= 3) {
                 vertex1[0].avertex().K3_crossproject('p');
                 vertex1[0].tvertex().K3_crossproject('p');
                 vertex2[0].avertex().K3_crossproject('p');
                 vertex2[0].tvertex().K3_crossproject('p');
-            #endif
+            }
             break;
         case 't':
-            #if MAX_DIAG_CLASS >= 0
+            if (MAX_DIAG_CLASS >= 0) {
                 vertex1[0].tvertex().K1_crossproject(); // Needed for gamma_a_uu
                 vertex2[0].tvertex().K1_crossproject(); // Needed for gamma_a_uu
 
@@ -1031,8 +1028,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 vertex1[0].pvertex().K1_crossproject();
                 vertex2[0].avertex().K1_crossproject();
                 vertex2[0].pvertex().K1_crossproject();
-            #endif
-            #if MAX_DIAG_CLASS >= 2
+            }
+            if (MAX_DIAG_CLASS >= 2) {
                 vertex1[0].tvertex().K2_crossproject('a'); // Needed for gamma_a_uu
                 vertex2[0].tvertex().K2_crossproject('a'); // Needed for gamma_a_uu
 
@@ -1040,8 +1037,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 vertex1[0].pvertex().K2_crossproject('t');
                 vertex2[0].avertex().K2_crossproject('t');
                 vertex2[0].pvertex().K2_crossproject('t');
-            #endif
-            #if MAX_DIAG_CLASS >= 3
+            }
+            if (MAX_DIAG_CLASS >= 3) {
                 vertex1[0].tvertex().K3_crossproject('a'); // Needed for gamma_a_uu
                 vertex2[0].tvertex().K3_crossproject('a'); // Needed for gamma_a_uu
 
@@ -1049,7 +1046,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 vertex1[0].pvertex().K3_crossproject('t');
                 vertex2[0].avertex().K3_crossproject('t');
                 vertex2[0].pvertex().K3_crossproject('t');
-            #endif
+            }
             break;
             default: ;
     }
@@ -1061,22 +1058,22 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
     double t_start = get_time();
-#if MAX_DIAG_CLASS >= 0
-    calculate_bubble_function(1);
-    tK1 = get_time() - t_start;
-#endif
-#if MAX_DIAG_CLASS >= 2
-    t_start = get_time();
-    calculate_bubble_function(2);
-    tK2 = get_time() - t_start;
-#endif
-#if MAX_DIAG_CLASS >= 3
-    t_start = get_time();
-    calculate_bubble_function(3);
-    tK3 = get_time() - t_start;
-    print("K3", channel, " done, ");
-    get_time(t_start);
-#endif
+    if (MAX_DIAG_CLASS >= 0) {
+        calculate_bubble_function(1);
+        tK1 = get_time() - t_start;
+    }
+    if (MAX_DIAG_CLASS >= 2) {
+        t_start = get_time();
+        calculate_bubble_function(2);
+        tK2 = get_time() - t_start;
+    }
+    if (MAX_DIAG_CLASS >= 3) {
+        t_start = get_time();
+        calculate_bubble_function(3);
+        tK3 = get_time() - t_start;
+        print("K3", channel, " done, ");
+        get_time(t_start);
+    }
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1287,7 +1284,6 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
-#if MAX_DIAG_CLASS >= 2
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2 += K2_ordered_result;
@@ -1303,7 +1299,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
-#endif
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1311,7 +1306,6 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K3(const vec<Q>& K3_ordered_result){
-#if MAX_DIAG_CLASS >= 3
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K3 += K3_ordered_result;
@@ -1327,7 +1321,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
-#endif
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
