@@ -281,11 +281,11 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
 
 
 template<typename Q>
-class Cost_wupper {
+class CostSE_wupper {
     SelfEnergy<Q> selfEnergy;
     double rel_tailsize = 1e-2;
 public:
-    explicit Cost_wupper(SelfEnergy<Q> SE_in): selfEnergy(SE_in) {
+    explicit CostSE_wupper(SelfEnergy<Q> SE_in): selfEnergy(SE_in) {
         // remove Hartree contribution
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
@@ -314,11 +314,11 @@ public:
 };
 
 template<typename Q>
-class Cost_Wscale {
+class CostSE_Wscale {
     SelfEnergy<Q> selfEnergy_backup;
 public:
     SelfEnergy<Q> selfEnergy;
-    explicit Cost_Wscale(SelfEnergy<Q> SE_in): selfEnergy(SE_in), selfEnergy_backup(SE_in) {
+    explicit CostSE_Wscale(SelfEnergy<Q> SE_in): selfEnergy(SE_in), selfEnergy_backup(SE_in) {
         // remove Hartree contribution
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
@@ -349,7 +349,7 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(double Lambda) {
     double a_Wscale = SEtemp.frequencies.W_scale / 10.;
     double m_Wscale = SEtemp.frequencies.W_scale;
     double b_Wscale = SEtemp.frequencies.W_scale * 10;
-    Cost_Wscale<Q> cost(SEtemp);
+    CostSE_Wscale<Q> cost(SEtemp);
     minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, true);
     FrequencyGrid frequencies_new = frequencies;
     frequencies_new.initialize_grid(m_Wscale);
