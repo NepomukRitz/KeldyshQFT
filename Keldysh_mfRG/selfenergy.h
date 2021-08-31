@@ -74,7 +74,6 @@ public:
 
     double get_deriv_maxSE() const;
 
-    double cost_wupper(double w_upper_test, void *params);
 };
 
 
@@ -241,9 +240,17 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
 template<typename Q>
 class Cost_wupper {
     SelfEnergy<Q> selfEnergy;
-    double rel_tailsize = 1e-3;
+    double rel_tailsize = 1e-2;
 public:
-    explicit Cost_wupper(SelfEnergy<Q> SE_in): selfEnergy(SE_in) {};
+    explicit Cost_wupper(SelfEnergy<Q> SE_in): selfEnergy(SE_in) {
+        // remove Hartree contribution
+        for (int iv=0; iv<nSE; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                selfEnergy.Sigma[iv*n_in + i_in] -= selfEnergy.asymp_val_R;
+            }
+        }
+        selfEnergy.asymp_val_R = 0.;
+    };
 
     auto operator() (double w_upper_test) -> double {
         {
@@ -255,7 +262,10 @@ public:
             }
             else {
                 double tupper_test = selfEnergy.frequencies.grid_transf(w_upper_test);
-                return std::abs(std::abs(selfEnergy.Sigma[0]) + std::abs(selfEnergy.Sigma[nFER-1]) * (1. - tupper_test/selfEnergy.frequencies.t_upper) / max - rel_tailsize);
+                double result_tmp = std::abs(selfEnergy.Sigma[0]) + std::abs(selfEnergy.Sigma[nFER-1]);
+                double factor = ((1. - tupper_test)/(1.-selfEnergy.frequencies.t_upper));
+                double result = std::abs(result_tmp * factor / max - rel_tailsize);
+                return result;
             }
 
 
@@ -268,7 +278,7 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(double Lambda) {
     SEtemp.update_grid(Lambda);
 
 
-    double a_wupper = 0.;
+    double a_wupper = SEtemp.frequencies.w_upper / 10.;
     double m_wupper = SEtemp.frequencies.w_upper;
     double b_wupper = SEtemp.frequencies.w_upper * 100;
     Cost_wupper<Q> cost(SEtemp);

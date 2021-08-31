@@ -239,19 +239,19 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
  * @return
  */
 auto FrequencyGrid::grid_transf(double w) const -> double {
-    //if (this->type == 'f' and this->diag_class == 1) {
-    //    return grid_transf_v3(w, this->W_scale);
-    //}
+    if (this->type == 'f' and this->diag_class == 1) {
+        return grid_transf_v3(w, this->W_scale);
+    }
     //else if (this->type == 'b' and this->diag_class == 1) {
     //    return grid_transf_v2(w, this->W_scale);
     //}
-    //else {
+    else {
         #if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
         return grid_transf_v2(w, this->W_scale);
         #else
         return grid_transf_v1(w, this->W_scale);
         #endif
-    //}
+    }
 }
 
 /**
@@ -260,19 +260,19 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
  * @return
  */
 auto FrequencyGrid::grid_transf_inv(double t) const -> double {
-    //if (this->type == 'f' and this->diag_class == 1) {
-    //    return grid_transf_inv_v3(w, this->W_scale);
-    //}
+    if (this->type == 'f' and this->diag_class == 1) {
+        return grid_transf_inv_v3(t, this->W_scale);
+    }
     //else if (this->type == 'b' and this->diag_class == 1) {
     //    return grid_transf_inv_v2(w, this->W_scale);
     //}
-    //else {
+    else {
 #if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
         return grid_transf_inv_v2(t, this->W_scale);
 #else
         return grid_transf_inv_v1(t, this->W_scale);
 #endif
-    //}
+    }
 }
 
 /**
