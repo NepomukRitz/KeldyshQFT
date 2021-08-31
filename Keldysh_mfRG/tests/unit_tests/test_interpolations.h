@@ -23,7 +23,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     double cumul_interpolation_error = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
-    for (int iw = 0; iw<nBOS; iw++){
+    for (int iw = 1; iw<nBOS-1; iw++){
         indices.w = avertex.frequencies.b_K1.ws[iw];
 
         cumul_interpolation_error += std::abs(Interpolate<k1, state_datatype>()(indices, avertex) - avertex.K1_val(iK, iw, i_in));
@@ -51,8 +51,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS2; iw++){
-        for (int iv = 0; iv<nFER2; iv++) {
+    for (int iw = 1; iw<nBOS2-1; iw++){
+        for (int iv = 1; iv<nFER2-1; iv++) {
             avertex.K2_setvert(iK, iw, iv, i_in, value);
             value +=1;
         }
@@ -60,8 +60,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
 
     double cumul_interpolation_error = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    for (int iw = 0; iw<nBOS2; iw++){
-        for (int iv = 0; iv<nFER2; iv++) {
+    for (int iw = 1; iw<nBOS2-1; iw++){
+        for (int iv = 1; iv<nFER2-1; iv++) {
             indices.w  = avertex.frequencies.b_K2.ws[iw];
             indices.v1 = avertex.frequencies.f_K2.ws[iv];
 
@@ -90,9 +90,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS3; iw++){
-        for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = 0; ivp<nFER3; ivp++) {
+    for (int iw = 1; iw<nBOS3-1; iw++){
+        for (int iv = 1; iv<nFER3-1; iv++) {
+            for (int ivp = 1; ivp<nFER3-1; ivp++) {
                 avertex.K3_setvert(iK, iw, iv, ivp, i_in, value);
                 value += 1;
             }
@@ -101,9 +101,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
 
     double cumul_interpolation_error = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    for (int iw = 0; iw<nBOS3; iw++){
-        for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = 0; ivp<nFER3; ivp++) {
+    for (int iw = 1; iw<nBOS3-1; iw++){
+        for (int iv = 1; iv<nFER3-1; iv++) {
+            for (int ivp = 1; ivp<nFER3-1; ivp++) {
                 indices.w = avertex.frequencies.b_K3.ws[iw];
                 indices.v1 = avertex.frequencies.f_K3.ws[iv];
                 indices.v2 = avertex.frequencies.f_K3.ws[ivp];
@@ -142,8 +142,8 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS; iw++){
-        double w = avertex.frequencies.b_K1.ws[iw];
+    for (int iw = 1; iw<nBOS-1; iw++){
+        double w = avertex.frequencies.b_K1.ts[iw];
         value = linearFunction1D(w);
         avertex.K1_setvert(iK, iw, i_in, value);
     }
@@ -156,7 +156,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     for (int iw = 0; iw<N; iw++){
         indices.w = avertex.frequencies.b_K1.w_lower + iw*inter;
 
-        double error = std::abs(Interpolate<k1, state_datatype>()(indices, avertex) - linearFunction1D(indices.w));
+        double error = std::abs(Interpolate<k1, state_datatype>()(indices, avertex) - linearFunction1D(avertex.frequencies.b_K1.grid_transf(indices.w)));
         cumul_interpolation_error += error;
         if (error >= interpolation_tolerance) {
             geq_interpolation_tolerance = true;
@@ -190,11 +190,11 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS2; iw++){
-        for (int iv = 0; iv<nFER2; iv++) {
+    for (int iw = 1; iw<nBOS2-1; iw++){
+        for (int iv = 1; iv<nFER2-1; iv++) {
 
-            double w = avertex.frequencies.b_K2.ws[iw];
-            double v = avertex.frequencies.f_K2.ws[iv];
+            double w = avertex.frequencies.b_K2.ts[iw];
+            double v = avertex.frequencies.f_K2.ts[iv];
             value = linearFunction2D(w, v);
             avertex.K2_setvert(iK, iw, iv, i_in, value);
             value +=1;
@@ -213,7 +213,7 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
             indices.w  = avertex.frequencies.b_K2.w_lower + iw*interb;
             indices.v1 = avertex.frequencies.f_K2.w_lower + iv*interf;
 
-            error = std::abs(Interpolate<k2, state_datatype>()(indices, avertex) -  linearFunction2D(indices.w, indices.v1));
+            error = std::abs(Interpolate<k2, state_datatype>()(indices, avertex) -  linearFunction2D(avertex.frequencies.b_K2.grid_transf(indices.w), avertex.frequencies.f_K2.grid_transf(indices.v1)));
             cumul_interpolation_error += error;
             if (error >= interpolation_tolerance) {
                 geq_interpolation_tolerance = true;
@@ -246,13 +246,13 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS3; iw++){
-        for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = 0; ivp<nFER3; ivp++) {
+    for (int iw = 1; iw<nBOS3-1; iw++){
+        for (int iv = 1; iv<nFER3-1; iv++) {
+            for (int ivp = 1; ivp<nFER3-1; ivp++) {
 
-                double w = avertex.frequencies.b_K3.ws[iw];
-                double v = avertex.frequencies.f_K3.ws[iv];
-                double vp= avertex.frequencies.f_K3.ws[ivp];
+                double w = avertex.frequencies.b_K3.ts[iw];
+                double v = avertex.frequencies.f_K3.ts[iv];
+                double vp= avertex.frequencies.f_K3.ts[ivp];
                 value = linearFunction3D(w, v, vp);
                 avertex.K3_setvert(iK, iw, iv, ivp, i_in, value);
             }
@@ -274,7 +274,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
                 indices.v2 = avertex.frequencies.f_K3.w_lower + ivp*interf;
 
                 error = std::abs(
-                        Interpolate<k3, state_datatype>()(indices, avertex) - linearFunction3D(indices.w, indices.v1, indices.v2));
+                        Interpolate<k3, state_datatype>()(indices, avertex) - linearFunction3D(avertex.frequencies.b_K3.grid_transf(indices.w), avertex.frequencies.f_K3.grid_transf(indices.v1), avertex.frequencies.f_K3.grid_transf(indices.v2)));
                 cumul_interpolation_error += error;
                 if (error >= interpolation_tolerance) {
                     geq_interpolation_tolerance = true;
