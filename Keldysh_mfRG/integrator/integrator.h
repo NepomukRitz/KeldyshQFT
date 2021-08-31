@@ -180,44 +180,48 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 
 // old wrapper function
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> Q {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    return integrator_riemann(integrand, nINT);
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    return integrator_simpson(integrand, a, b, nINT);
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    return integrator_simpson(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#else
-    if (INTEGRATOR_TYPE == 4) { // GSL
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return integrator_riemann(integrand, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        return integrator_simpson(integrand, a, b, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 2) {// Simpson + additional points
+        return integrator_simpson(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
+    }
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+    }
+    else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, a, b, 0., 0., nINT);
     }
     else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
         Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
         return adaptor.integrate(a, b);
     }
-#endif
 }
 
 // wrapper function, used for loop
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w) -> Q {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    return integrator_riemann(integrand, nINT);
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    return integrator_simpson(integrand, a, b, nINT);       // only use standard Simpson
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    return integrator_simpson(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    return adaptive_simpson_integrator(integrand, a, b, nINT);      // use adaptive Simpson integrator
-#else
-    if (INTEGRATOR_TYPE == 4) { // GSL
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return integrator_riemann(integrand, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        return integrator_simpson(integrand, a, b, nINT);       // only use standard Simpson
+    }
+    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        return integrator_simpson(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
+    }
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return adaptive_simpson_integrator(integrand, a, b, nINT);      // use adaptive Simpson integrator
+    }
+    else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, a, b, w, w, nINT);
     }
     else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
         Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
         return adaptor.integrate(a, b);
     }
-#endif
 }
 
 /**
@@ -227,23 +231,26 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param b         :   upper limit for integration
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> Q {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    return integrator_riemann(integrand, nINT);
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    return integrator_simpson(integrand, a, b, w1, w2, nINT);     // use standard Simpson plus additional points around +- w/2
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#else
-    if (INTEGRATOR_TYPE == 4) { // GSL
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return integrator_riemann(integrand, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
+    }
+    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        return integrator_simpson(integrand, a, b, w1, w2,
+                                  nINT);     // use standard Simpson plus additional points around +- w/2
+    }
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+    }
+    else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
     }
     else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
         Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
         return adaptor.integrate(a, b);
     }
-#endif
 }
 
 /**
@@ -256,16 +263,20 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param Delta  : with of window around the features which should be integrated separately (to be set by hybridization strength)
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2, double Delta) -> comp {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    return integrator_riemann(integrand, nINT);
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    return integrator_simpson(integrand, a, b, w1, w2, nINT);     // use standard Simpson plus additional points around +- w/2
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#else
-    if (INTEGRATOR_TYPE == 4) { // GSL
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return integrator_riemann(integrand, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
+    }
+    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        return integrator_simpson(integrand, a, b, w1, w2,
+                                  nINT);     // use standard Simpson plus additional points around +- w/2
+    }
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+    }
+    else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
     }
     else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
@@ -287,7 +298,6 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 
         return result;
     }
-#endif
 }
 
 /**
@@ -297,32 +307,35 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param num_intervals     :   number of intervals
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>>& intervals, const size_t num_intervals, const bool isinf=false) -> Q {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    Q result;
-    for (int i = 0; i < num_intervals; i++){
-        result += integrator_riemann(integrand, nINT);
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        Q result;
+        for (int i = 0; i < num_intervals; i++) {
+            result += integrator_riemann(integrand, nINT);
+        }
+        return result;
     }
-    return result;
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    Q result;
-    for (int i = 0; i < num_intervals; i++){
-        result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        Q result;
+        for (int i = 0; i < num_intervals; i++){
+            result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
+        }
+        return result;
     }
-    return result;
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    Q result;
-    for (int i = 0; i < num_intervals; i++){
-        result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], w1, w2, nINT);        // use standard Simpson plus additional points around +- w/2
+    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        Q result;
+        for (int i = 0; i < num_intervals; i++){
+            result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);        // use standard Simpson plus additional points around +- w/2
+        }
+        return result;
     }
-    return result;
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    Q result;
-    for (int i = 0; i < num_intervals; i++){
-        result += adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        Q result;
+        for (int i = 0; i < num_intervals; i++){
+            result += adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
+        }
+        return result;
     }
-    return result;
-#else
-    if (INTEGRATOR_TYPE == 4) { // GSL
+    else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT, isinf);
     }
     else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
@@ -333,7 +346,6 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         }
         return result.sum();
     }
-#endif
 }
 
 //#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)

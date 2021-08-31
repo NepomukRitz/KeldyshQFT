@@ -26,7 +26,7 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp {
 /// --- DIFFERENT INTEGRATION ROUTINES --- ///
 
 /// Integration using Riemann sum -- deprecated, not recommended
-/*template <typename Integrand> auto integrator_riemann(const Integrand& integrand, int N) -> comp {
+template <typename Integrand> auto integrator_riemann(const Integrand& integrand, int N) -> comp {
     rvec spacings(N);
     cvec integrand_values(N);
     double w0, w1, w2;
@@ -46,7 +46,7 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp {
     integrand_values[N-1] = integrand(bfreqs[N-1]);
 
     return 1/2.*dotproduct(integrand_values, spacings);
-}*/
+}
 
 /**
  * Perform an integration using Simpson's rule.
