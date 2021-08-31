@@ -15,7 +15,7 @@ auto costval(double x, void* params) -> double {
 }
 
 /**
- *
+ * Wrapper for GSl minimizer
  * @param a             left bound of interval
  * @param m             initial guess of parameter
  * @param b             right bound of interval
@@ -34,7 +34,7 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
     F.function = &costval<CostFunction>;
     F.params = &cost;
 
-    T = gsl_min_fminimizer_quad_golden;       // best convergence: gsl_min_fminimizer_brent,  alternatively:  gsl_min_fminimizer_quad_golden
+    T = gsl_min_fminimizer_brent;       // best convergence: gsl_min_fminimizer_brent,  alternatively:  gsl_min_fminimizer_quad_golden
     s = gsl_min_fminimizer_alloc (T);
     gsl_min_fminimizer_set (s, &F, m, a, b);
 

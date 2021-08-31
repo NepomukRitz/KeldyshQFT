@@ -30,10 +30,17 @@ public:
     auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
     void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
-    void update_grid(double Lambda);  // Interpolate self-energy to updated grid
+
+    /// Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + glb_Gamma)/2
+    void update_grid(double Lambda);
+    /// Interpolate self-energy to input grid
     void update_grid(FrequencyGrid frequencies_new);   // Interpolate self-energy to updated grid
+    /// Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma
     void update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma);
+    /// finds optimal grid parameters with minimizer()
     void findBestFreqGrid(double Lambda);       // optimize frequency grid parameters and update self-energy on new grid
+    /// computes finite differences of Sigma
+    double get_deriv_maxSE() const;
     auto norm(int p) -> double;
     auto norm() -> double;
 
@@ -73,7 +80,6 @@ public:
         return lhs;
     }
 
-    double get_deriv_maxSE() const;
 
 };
 
