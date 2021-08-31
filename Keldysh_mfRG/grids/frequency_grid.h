@@ -338,6 +338,14 @@ public:
         b_K3.rescale_grid(Lambda);
         f_K3.rescale_grid(Lambda);
     }
+
+    void initialize_grid(double scale) {
+        b_K1.initialize_grid(scale);
+        b_K2.initialize_grid(scale);
+        f_K2.initialize_grid(scale);
+        b_K3.initialize_grid(scale);
+        f_K3.initialize_grid(scale);
+    }
 };
 
 

@@ -88,6 +88,8 @@ public:
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
     void update_grid(double Lambda);
+    void update_grid(const VertexFrequencyGrid &frequencies_new);
+    void update_grid(const VertexFrequencyGrid &frequencyGrid_in, const rvert<Q>& rvert4data);
 
 #ifdef MAX_DIAG_CLASS
 #if MAX_DIAG_CLASS >= 0
@@ -621,6 +623,15 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
     frequencies_new.rescale_grid(Lambda);                     // rescale new frequency grid
+    update_grid(frequencies_new);
+}
+
+template <typename Q> void rvert<Q>::update_grid(const VertexFrequencyGrid& frequencies_new) {
+
+    update_grid(frequencies_new, *this);
+}
+
+template <typename Q> void rvert<Q>::update_grid(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
 
 #if MAX_DIAG_CLASS >= 1
     vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
@@ -629,7 +640,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 IndicesSymmetryTransformations indices (iK1, frequencies_new.b_K1.ws[iw], 0., 0., i_in, channel);
                 // interpolate old values to new vector
-                K1_new[iK1*nw1*n_in + iw*n_in + i_in] = Interpolate<k1,Q>()(indices, *this);
+                K1_new[iK1*nw1*n_in + iw*n_in + i_in] = Interpolate<k1,Q>()(indices, rvert4data);
             }
         }
     }
@@ -647,7 +658,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
                                                             i_in, channel);
                     // interpolate old values to new vector
                     K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
-                            = Interpolate<k2,Q>()(indices, *this);
+                            = Interpolate<k2,Q>()(indices, rvert4data);
                 }
             }
         }
@@ -667,7 +678,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
                                                                 i_in, channel);
                         // interpolate old values to new vector
                         K3_new[iK3*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in]
-                                = Interpolate<k3,Q>()(indices, *this);
+                                = Interpolate<k3,Q>()(indices, rvert4data);
                     }
                 }
             }
@@ -945,17 +956,27 @@ template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {
 
 }
 template <typename Q> auto rvert<Q>::get_deriv_maxK2() const -> double {
-    double max_K2 = (::power2(::get_finite_differences<Q,2>(K2, {nBOS2, nFER2}, {0, 1}))
-                   + ::power2(::get_finite_differences<Q,2>(K2, {nFER2}, {1, 0}))
+    size_t dims1[2] = {nBOS2, nFER2};
+    size_t dims2[2] = {nFER2, nBOS2};
+    size_t perm1[2] = {0, 1};
+    size_t perm2[2] = {1, 0};
+    double max_K2 = (::power2(::get_finite_differences<Q,2>(K2, dims1, perm1))
+                   + ::power2(::get_finite_differences<Q,2>(K2, dims2, perm2))
     ).max_norm();
     return max_K2;
 
 }
 
 template <typename Q> auto rvert<Q>::get_deriv_maxK3() const -> double {
-    double max_K3 = (::power2(::get_finite_differences<Q,3>(K3, {nBOS3, nFER3, nFER3}, {0, 1, 2}))
-                   + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nBOS3, nFER3}, {1, 2, 0}))
-                   + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nFER3, nBOS3}, {2, 0, 1}))
+    size_t dims1[3] = {nBOS3, nFER3, nFER3};
+    size_t dims2[3] = {nFER3, nBOS3, nFER3};
+    size_t dims3[3] = {nFER3, nFER3, nBOS3};
+    size_t perm1[3] = {0, 1, 2};
+    size_t perm2[3] = {1, 2, 0};
+    size_t perm3[3] = {2, 0, 1};
+    double max_K3 = (::power2(::get_finite_differences<Q,3>(K3, dims1, perm1))
+                   + ::power2(::get_finite_differences<Q,3>(K3, dims2, perm2))
+                   + ::power2(::get_finite_differences<Q,3>(K3, dims3, perm3))
     ).max_norm();
     return max_K3;
 
