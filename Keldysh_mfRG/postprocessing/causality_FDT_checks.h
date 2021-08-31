@@ -40,7 +40,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
     // check if Im(Sigma^R) is positive for every data point
     int cnt = 0;
     double sum = 0.;
-    for (int i=0; i<nFER; ++i) {
+    for (int i=1; i<nFER-1; ++i) {
 #if defined(PARTICLE_HOLE_SYMM) and not defined(HUBBARD)
         double val = Sigma[i] * sign(selfEnergy.frequencies.ws[i]);
 #else

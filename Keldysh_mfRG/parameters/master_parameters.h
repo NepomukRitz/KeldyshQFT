@@ -91,7 +91,7 @@ constexpr int n_in = 1;
 //#define FLOW
 
 
-constexpr int nODE = 500;
+constexpr int nODE = 5;
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)

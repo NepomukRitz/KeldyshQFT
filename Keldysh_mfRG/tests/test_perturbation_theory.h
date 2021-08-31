@@ -1320,7 +1320,7 @@ class TestIntegrandK1a{
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1483,7 +1483,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1576,7 +1576,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1666,7 +1666,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1718,14 +1718,14 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 
     State<state_datatype> PT_state(Lambda);
 
-    for (int i = 0; i<nFER-0; i++) {
+    for (int i = 1; i<nFER-1; i++) {
         double v = PT_state.selfenergy.frequencies.ws[i];
         Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
         Q val_SE = 1./(2*M_PI) * integrator<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, false);
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
 
-    for (int i = 0; i<nBOS-0; i++) {
+    for (int i = 1; i<nBOS-1; i++) {
         double w = PT_state.vertex[0].avertex().frequencies.b_K1.ws[i];
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
@@ -1736,7 +1736,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     }
 
 #if MAX_DIAG_CLASS > 1
-    for (int i = 0; i<nBOS2-0; i++) {
+    for (int i = 1; i<nBOS2-1; i++) {
         for (int j = 1; j<nFER2-1; j++) {
             double w = PT_state.vertex[0].avertex().frequencies.b_K2.ws[i];
             double v = PT_state.vertex[0].avertex().frequencies.f_K2.ws[j];
@@ -1749,7 +1749,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     }
 #endif
 #if MAX_DIAG_CLASS > 2
-    for (int i = 0; i<nBOS3-0; i++) {
+    for (int i = 1; i<nBOS3-1; i++) {
         for (int j = 1; j<nFER3-1; j++) {
             for (int k = 1; k<nFER3-1; k++) {
                 double w = PT_state.vertex[0].avertex().frequencies.b_K3.ws[i];
@@ -1846,7 +1846,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1938,7 +1938,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -2035,7 +2035,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -2133,7 +2133,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -2231,7 +2231,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -2367,8 +2367,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> K1pdot_exact(Lambda);        // intermediate result: contains K2 and K3
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta)
-        for (int iflat = 0; iflat < (nBOS - 1); iflat++) {
-            int i = 0 + iflat;
+        for (int iflat = 0; iflat < (nBOS - 2); iflat++) {
+            int i = 1 + iflat;
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
             double w = K1pdot_exact.vertex[0].avertex().frequencies.b_K1.ws[i];
@@ -2387,9 +2387,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> K1rdot_PIa_K1p_exact(Lambda);        // intermediate result: contains K2 and K3
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
-        for (int iflat = 0; iflat < (nBOS2 - 1) * (nFER2 - 1); iflat++) {
-            int i = 0 + iflat / (nFER2 - 1);
-            int j = 0 + iflat - (i - 0) * (nFER2 - 1);
+        for (int iflat = 0; iflat < (nBOS2 - 2) * (nFER2 - 2); iflat++) {
+            int i = 1 + iflat / (nFER2 - 2);
+            int j = 1 + iflat - (i - 1) * (nFER2 - 2);
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
             double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K2.ws[i];
@@ -2403,10 +2403,10 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
 #if MAX_DIAG_CLASS>2
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
-        for (int iflat = 0; iflat < (nBOS3 - 1) * (nFER3 - 1) * (nFER3 - 1); iflat++) {
-            int i = 0 + iflat / (nFER3 - 1) / (nFER3 - 1);
-            int j = 0 + iflat / (nFER3 - 1) - (i - 0) * (nFER3 - 1);
-            int k = 0 + iflat - (i - 0) * (nFER3 - 1) * (nFER3 - 1) - (j - 0) * (nFER3 - 1);
+        for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
+            int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
+            int j = 1 + iflat / (nFER3 - 2) - (i - 1) * (nFER3 - 2);
+            int k = 1 + iflat - (i - 1) * (nFER3 - 1) * (nFER3 - 2) - (j - 1) * (nFER3 - 2);
             //for (int i = 1; i<nBOS3-1; i++) {
             //    for (int j = 1; j<nFER3-1; j++) {
             //        for (int k = 1; k<nFER3-1; k++) {

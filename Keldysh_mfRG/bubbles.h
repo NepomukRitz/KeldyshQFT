@@ -1140,19 +1140,19 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K1(i0, w);
-            if (trafo == 0) {calculate_value_K1(value, i0, i_in, w); }
+            if (trafo == 0 and isfinite(w)) {calculate_value_K1(value, i0, i_in, w); }
             break;
         case 2:
             convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K2(i0, w, v);
-            if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v); }
+            if (trafo == 0 and isfinite(w) and isfinite(v)) {calculate_value_K2(value, i0, i_in, w, v); }
             break;
         case 3:
             convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K3(i0, w, iv, ivp);
-            if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp); }
+            if (trafo == 0 and isfinite(w) and isfinite(v) and isfinite(vp)) {calculate_value_K3(value, i0, i_in, w, v, vp); }
             break;
         default:;
     }

@@ -81,7 +81,7 @@ void compute_Phi_tilde(const std::string filename) {
         Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
 
         for (int i_in=0; i_in<n_in; ++i_in) {
-            for (int iv=0; iv<nFER; ++iv) {
+            for (int iv=1; iv<nFER-1; ++iv) {
                 double v = state.selfenergy.frequencies.ws[iv];
                 vs[iLambda * nFER + iv] = v;
                 Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);

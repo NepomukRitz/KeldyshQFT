@@ -6,7 +6,7 @@
 #include "../grids/frequency_grid.h"
 
 /**
- * Interpolates linearly in 1D
+ * Interpolates linearly in 1D (on linear, auxiliary frequency grid)
  * ATTENTION!: all
  * @tparam Q            double or comp
  * @param x
@@ -17,11 +17,12 @@
 template <typename Q>
 inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
 
-    int index = frequencies.fconv(x);
+    double t;
+    int index = frequencies.fconv(t, x);
 
-    double x1 = frequencies.ws[index];
-    double x2 = frequencies.ws[index + 1];
-    double xd = (x - x1) / (x2 - x1);
+    double x1 = frequencies.ts[index];
+    double x2 = frequencies.ts[index + 1];
+    double xd = (t - x1) / (x2 - x1);
 
     Q f1 = val(index);
     Q f2 = val(index + 1);
@@ -34,7 +35,7 @@ inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, cons
 }
 
 /**
- * Interpolates linearly in 2D
+ * Interpolates linearly in 2D (on linear, auxiliary frequency grid)
  * @tparam Q            double or comp
  * @param x
  * @param y
@@ -50,11 +51,12 @@ inline auto interpolate2D(const double x, const double y,
                           const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
                           const std::function<Q(int, int)> val) -> Q {
 
-    int index = xfrequencies.fconv(x);
+    double t;
+    int index = xfrequencies.fconv(t, x);
 
-    double x1 = xfrequencies.ws[index];
-    double x2 = xfrequencies.ws[index + 1];
-    double xd = (x - x1) / (x2 - x1);
+    double x1 = xfrequencies.ts[index];
+    double x2 = xfrequencies.ts[index + 1];
+    double xd = (t - x1) / (x2 - x1);
 
     Q f1 = interpolate1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
     Q f2 = interpolate1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index+1, i);});
@@ -66,7 +68,7 @@ inline auto interpolate2D(const double x, const double y,
 }
 
 /**
- * Interpolates linearly in 2D
+ * Interpolates linearly in 3D (on linear, auxiliary frequency grid)
  * @tparam Q            double or comp
  * @param x
  * @param y
@@ -85,11 +87,12 @@ inline auto interpolate3D(const double x, const double y, const double z,
                           const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
                           const std::function<Q(int, int, int)> val) -> Q {
 
-    int index = xfrequencies.fconv(x);
+    double t;
+    int index = xfrequencies.fconv(t, x);
 
-    double x1 = xfrequencies.ws[index];
-    double x2 = xfrequencies.ws[index + 1];
-    double xd = (x - x1) / (x2 - x1);
+    double x1 = xfrequencies.ts[index];
+    double x2 = xfrequencies.ts[index + 1];
+    double xd = (t - x1) / (x2 - x1);
 
     Q f1 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
     Q f2 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index+1, i, j);});

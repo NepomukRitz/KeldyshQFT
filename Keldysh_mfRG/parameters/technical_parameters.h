@@ -23,7 +23,7 @@ constexpr double converged_tol = 1e-7;
 // 3: adaptive Simpson
 // 4: GSL //
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
-#define INTEGRATOR_TYPE 5
+#define INTEGRATOR_TYPE 4
 
 //Integrator tolerance
 constexpr double integrator_tol = 1e-6;

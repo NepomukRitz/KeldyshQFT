@@ -101,6 +101,8 @@ public:
                         w_upper = glb_v_upper;
                         w_lower = glb_v_lower;
                         W_scale = glb_W_scale;
+                        U_factor = 20./3.;
+                        Delta_factor = 20.;
                         break;
                     case 2:
                         N_w = nFER2;
@@ -151,6 +153,8 @@ public:
     auto grid_transf(double w) const -> double;
     auto grid_transf_inv(double t) const -> double;
     auto wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double;
+
+    int fconv(double &t, double w_in) const;
 };
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
@@ -174,9 +178,12 @@ void FrequencyGrid::initialize_grid() {
     double W;
     t_upper = grid_transf(w_upper);
     t_lower = grid_transf(w_lower);
-    dt = (t_upper - t_lower) / ((double) (N_w - 1.));
-    for(int i=0; i<N_w; ++i) {
-        W = t_lower + i * dt;
+    dt = (t_upper - t_lower) / ((double) (N_w - 3.));
+    ts[0] = -1.; ts[N_w-1] = 1.;
+    ws[0] = -std::numeric_limits<double>::infinity();
+    ws[N_w-1] = std::numeric_limits<double>::infinity();
+    for(int i=1; i<N_w-1; ++i) {
+        W = t_lower + (i-1) * dt;
         ws[i] = grid_transf_inv(W);
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
         if (type == 'b') ws[i] = round2bfreq(ws[i]);
@@ -200,7 +207,7 @@ void FrequencyGrid::initialize_grid() {
 void FrequencyGrid::initialize_grid(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
-    w_upper = scale * 15.;
+    w_upper = grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
     // for Matsubara T>0: pick grid such that no frequencies occur twice
     if (type == 'b') {
@@ -227,7 +234,20 @@ void FrequencyGrid::rescale_grid(double Lambda) {
 auto FrequencyGrid::fconv(double w_in) const -> int {
     double t = grid_transf(w_in);
     t = (t - t_lower) / dt;
-    auto index = (int)t;
+    auto index = (int)t + 1; // zero-th element is left of t_lower: ts[0]=-1
+    index = std::max(0, index);
+    index = std::min(N_w-2, index);
+    return index;
+}
+
+/** This function returns the index corresponding to the frequency w_in.
+ *  It rounds down due to the narrowing conversion from double to int.
+ *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
+ */
+auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
+    t = grid_transf(w_in);
+    double t_rescaled = (t - t_lower) / dt;
+    auto index = (int)t_rescaled + 1;
     index = std::max(0, index);
     index = std::min(N_w-2, index);
     return index;

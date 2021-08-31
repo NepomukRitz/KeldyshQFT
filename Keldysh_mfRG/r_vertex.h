@@ -625,7 +625,7 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
 #if MAX_DIAG_CLASS >= 1
     vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
     for (int iK1=0; iK1<nK_K1; ++iK1) {
-        for (int iw=0; iw<nw1; ++iw) {
+        for (int iw=1; iw<nw1-1; ++iw) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 IndicesSymmetryTransformations indices (iK1, frequencies_new.b_K1.ws[iw], 0., 0., i_in, channel);
                 // interpolate old values to new vector
@@ -638,8 +638,8 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
 #if MAX_DIAG_CLASS >= 2
     vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
     for (int iK2=0; iK2<nK_K2; ++iK2) {
-        for (int iw=0; iw<nw2; ++iw) {
-            for (int iv=0; iv<nv2; ++iv) {
+        for (int iw=1; iw<nw2-1; ++iw) {
+            for (int iv=1; iv<nv2-1; ++iv) {
                 for (int i_in = 0; i_in<n_in; ++i_in) {
                     IndicesSymmetryTransformations indices (iK2, frequencies_new.b_K2.ws[iw],
                                                             frequencies_new.f_K2.ws[iv],
@@ -657,9 +657,9 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
 #if MAX_DIAG_CLASS >= 3
     vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
     for (int iK3=0; iK3<nK_K3; ++iK3) {
-        for (int iw=0; iw<nw3; ++iw) {
-            for (int iv=0; iv<nv3; ++iv) {
-                for (int ivp=0; ivp<nv3; ++ivp) {
+        for (int iw=1; iw<nw3-1; ++iw) {
+            for (int iv=1; iv<nv3-1; ++iv) {
+                for (int ivp=1; ivp<nv3-1; ++ivp) {
                     for (int i_in = 0; i_in<n_in; ++i_in) {
                         IndicesSymmetryTransformations indices (iK3, frequencies_new.b_K3.ws[iw],
                                                                 frequencies_new.f_K3.ws[iv],
@@ -694,7 +694,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             case 't': i0_tmp = non_zero_Keldysh_K1t[itK]; break;
             default: ;
         }
-        for (int itw = 0; itw < nw1; itw++) {
+        for (int itw = 1; itw < nw1-1; itw++) {
             double w_in = this->frequencies.b_K1.ws[itw];
             IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
             int sign_w = sign_index(indices.w);
@@ -732,7 +732,7 @@ void rvert<Q>::K1_crossproject() {
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
     for (int iK = 0; iK < nK_K1; ++iK) {
 #pragma omp parallel for schedule(dynamic) default(none) shared(iK)
-        for (int iw = 0; iw < nw1; ++iw) {
+        for (int iw = 1; iw < nw1-1; ++iw) {
             Q projected_value = K1_BZ_average(iK, iw);
             for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
                 K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
@@ -773,8 +773,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             default: ;
         }
 
-        for (int itw = 0; itw < nw2; itw++){
-            for (int itv = 0; itv < nv2; itv++){
+        for (int itw = 1; itw < nw2-1; itw++){
+            for (int itv = 1; itv < nv2-1; itv++){
                 double w_in = this->frequencies.b_K2.ws[itw];
                 double v_in = this->frequencies.f_K2.ws[itv];
                 IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
@@ -819,9 +819,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         i0_tmp = non_zero_Keldysh_K3[itK];
 
-        for (int itw = 0; itw < nw3; itw++){
-            for (int itv = 0; itv < nv3; itv++){
-                for (int itvp = 0; itvp < nv3; itvp++) {
+        for (int itw = 1; itw < nw3-1; itw++){
+            for (int itv = 1; itv < nv3-1; itv++){
+                for (int itvp = 1; itvp < nv3-1; itvp++) {
                     double w_in = this->frequencies.b_K3.ws[itw];
                     double v_in = this->frequencies.f_K3.ws[itv];
                     double vp_in = this->frequencies.f_K3.ws[itvp];
