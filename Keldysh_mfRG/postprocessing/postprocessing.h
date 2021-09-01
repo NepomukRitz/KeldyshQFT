@@ -37,7 +37,7 @@ public:
     const int iLambda;
     const int i_in;
 
-    Integrand_Ward_id_integrated(const FrequencyGrid& v_in, const rvec& Phi_in, const SelfEnergy<comp>& selfEnergy_in,
+    Integrand_Ward_id_integrated(const FrequencyGrid& v_in, const rvec& Phi_in, const SelfEnergy<state_datatype>& selfEnergy_in,
                                  const int iLambda_in, const int i_in_in)
             : v(v_in), Phi(Phi_in), selfEnergy(selfEnergy_in), iLambda(iLambda_in), i_in(i_in_in) {}
 
@@ -56,7 +56,7 @@ public:
             double f1 = Phi[iLambda * nFER * n_in + index * n_in + i_in];
             double f2 = Phi[iLambda * nFER * n_in + (index + 1) * n_in + i_in];
 
-            return (1. - xd) * f1 + xd * f2 + 2 * selfEnergy.valsmooth(0, vp, i_in).imag();
+            return myimag((1. - xd) * f1 + xd * f2 + 2 * selfEnergy.valsmooth(0, vp, i_in));
         }
         else
             return 0.;
@@ -85,11 +85,11 @@ void compute_Phi_tilde(const std::string filename) {
                 vs[iLambda * nFER + iv] = v;
                 Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);
                 Phi[iLambda * nFER * n_in + iv * n_in + i_in]
-                    = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * integrator<state_datatype>(integrand, vmin, vmax).imag();
+                    = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
             }
             Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
                                                                     iLambda, i_in);
-            Phi_integrated[iLambda * n_in + i_in] = integrator<state_datatype>(integrandWardIdIntegrated, vmin, vmax).real();
+            Phi_integrated[iLambda * n_in + i_in] = myreal(integrator<state_datatype>(integrandWardIdIntegrated, vmin, vmax));
         }
     }
 
@@ -143,10 +143,10 @@ void sum_rule_K1tK(const std::string filename) {
         double wmax = state.vertex[0].tvertex().frequencies.b_K1.w_upper;   // upper integration boundary
 
         if (KELDYSH){
-            sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
+            sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
         }
         else{
-            sum_rule[iLambda] = (1. / (M_PI) * myreal(integrator<state_datatype>(integrand, 0, wmax)) / (glb_U * glb_U));
+            sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax)) / (glb_U * glb_U);
 
         }
     }
@@ -163,7 +163,7 @@ void check_Kramers_Kronig(const std::string filename) {
     vec<int> iLambdas {0, 4, 12, 24, 34, 40, 44}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
 
     for (int i=0; i<iLambdas.size(); ++i) {
-        State<comp> state = read_hdf(filename, iLambdas[i], nLambda);  // read data from file
+        State<state_datatype> state = read_hdf(filename, iLambdas[i], nLambda);  // read data from file
         // check Kramers-Kronig for retarded self-energy
         rvec vSigma = state.selfenergy.frequencies.ws;  // frequency grid points
         // get retarded component (first half of stored data points)

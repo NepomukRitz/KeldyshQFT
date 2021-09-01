@@ -55,19 +55,19 @@ public:
             if (KELDYSH){
                 switch (iK) {
                     case 3: //AA
-                        ans = conj(g.valsmooth(0, v1, i_in)) * conj(s.valsmooth(0, v2, i_in)) + conj(s.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * myconj(s.valsmooth(0, v2, i_in)) + myconj(s.valsmooth(0, v1, i_in)) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 6: //AR
-                        ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(0, v2, i_in) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * s.valsmooth(0, v2, i_in) + myconj(s.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
                         break;
                     case 7: //AK
-                        ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(1, v2, i_in) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * s.valsmooth(1, v2, i_in) + myconj(s.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
                         break;
                     case 9: //RA
-                        ans = g.valsmooth(0, v1, i_in) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(0, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
+                        ans = g.valsmooth(0, v1, i_in) * myconj(s.valsmooth(0, v2, i_in)) + s.valsmooth(0, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 11://KA
-                        ans = g.valsmooth(1, v1, i_in) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(1, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
+                        ans = g.valsmooth(1, v1, i_in) * myconj(s.valsmooth(0, v2, i_in)) + s.valsmooth(1, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 12://RR
                         ans = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
@@ -93,19 +93,19 @@ public:
             if (KELDYSH){
                 switch (iK){ // labelling propagators from top (t: left) to bottom (t: right); a,t: G(v+w/2)G(v-w/2), p: G(w/2-v)G(w/2+v)
                     case 3: //AA
-                        ans = conj(g.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 6: //AR
-                        ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
                         break;
                     case 7: //AK
-                        ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
                         break;
                     case 9: //RA
-                        ans = g.valsmooth(0, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
+                        ans = g.valsmooth(0, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 11://KA
-                        ans = g.valsmooth(1, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
+                        ans = g.valsmooth(1, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 12://RR
                         ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
@@ -419,24 +419,24 @@ PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Pr
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > glb_N_transfer!
         switch (iK) {
             case 3: //AA
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 6: //AR
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
                 second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
                 break;
             case 7: //AK
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
                 second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
                 break;
             case 9: //RA
                 first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 11://KA
                 first_propagator[i_in]  = g1.valsmooth(1, v1, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 12://RR
                 first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
