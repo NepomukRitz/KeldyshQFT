@@ -898,7 +898,13 @@ template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q valu
 template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
         return K1[iK*nw1*n_in + iw*n_in + i_in];
 }
+template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {
+    const size_t dims1[3] = {n_in, nK_K1, nBOS};
+    const size_t perm1[3] = {2, 0, 1};
+    double max_K1 = (::power2(::get_finite_differences<Q,3>(K1, dims1, perm1))).max_norm();
+    return max_K1;
 
+}
 
 
 #endif
@@ -925,6 +931,17 @@ template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in
 template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
         return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
 }
+template <typename Q> auto rvert<Q>::get_deriv_maxK2() const -> double {
+    const size_t dims1[4] = {n_in, nK_K2, nBOS2, nFER2};
+    const size_t dims2[4] = {nFER2, n_in, nK_K2, nBOS2};
+    const size_t perm1[4] = {2, 3, 0, 1};
+    const size_t perm2[4] = {3, 0, 1, 2};
+    double max_K2 = (::power2(::get_finite_differences<Q,4>(K2, dims1, perm1))
+                     + ::power2(::get_finite_differences<Q,4>(K2, dims2, perm2))
+    ).max_norm();
+    return max_K2;
+
+}
 #endif
 
 #if MAX_DIAG_CLASS >= 3
@@ -949,34 +966,16 @@ template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp,
 template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
         return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
 }
-
-template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {
-    double max_K1 = ::power2(::get_finite_differences(K1)).max_norm();
-    return max_K1;
-
-}
-template <typename Q> auto rvert<Q>::get_deriv_maxK2() const -> double {
-    size_t dims1[2] = {nBOS2, nFER2};
-    size_t dims2[2] = {nFER2, nBOS2};
-    size_t perm1[2] = {0, 1};
-    size_t perm2[2] = {1, 0};
-    double max_K2 = (::power2(::get_finite_differences<Q,2>(K2, dims1, perm1))
-                   + ::power2(::get_finite_differences<Q,2>(K2, dims2, perm2))
-    ).max_norm();
-    return max_K2;
-
-}
-
 template <typename Q> auto rvert<Q>::get_deriv_maxK3() const -> double {
-    size_t dims1[3] = {nBOS3, nFER3, nFER3};
-    size_t dims2[3] = {nFER3, nBOS3, nFER3};
-    size_t dims3[3] = {nFER3, nFER3, nBOS3};
-    size_t perm1[3] = {0, 1, 2};
-    size_t perm2[3] = {1, 2, 0};
-    size_t perm3[3] = {2, 0, 1};
-    double max_K3 = (::power2(::get_finite_differences<Q,3>(K3, dims1, perm1))
-                   + ::power2(::get_finite_differences<Q,3>(K3, dims2, perm2))
-                   + ::power2(::get_finite_differences<Q,3>(K3, dims3, perm3))
+    const size_t dims1[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
+    const size_t dims2[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    const size_t dims3[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
+    const size_t perm1[5] = {2, 3, 4, 0, 1};
+    const size_t perm2[5] = {3, 4, 0, 1, 2};
+    const size_t perm3[5] = {4, 0, 1, 2, 3};
+    double max_K3 = (::power2(::get_finite_differences<Q,5>(K3, dims1, perm1))
+                   + ::power2(::get_finite_differences<Q,5>(K3, dims2, perm2))
+                   + ::power2(::get_finite_differences<Q,5>(K3, dims3, perm3))
     ).max_norm();
     return max_K3;
 

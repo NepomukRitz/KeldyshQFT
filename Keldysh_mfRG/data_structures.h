@@ -317,7 +317,7 @@ vec<comp> operator* (vec<comp> lhs, const double& rhs) {
  * @return
  */
 template<size_t dimensionality>
-size_t getFlatIndex(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality]) {
+size_t getFlatIndex(const size_t (&indx) [dimensionality], const size_t (&dims) [dimensionality]) {
     size_t result = indx[0];
     for (int it = 1; it < dimensionality; it++) {
         result *= dims [it];
@@ -327,7 +327,7 @@ size_t getFlatIndex(const size_t (&indx) [dimensionality], size_t (&dims) [dimen
 }
 /// Template specialization for special case dimensionality == 1
 template<>
-size_t getFlatIndex<1>(const size_t (&indx) [1], size_t (&dims) [1]) {
+size_t getFlatIndex<1>(const size_t (&indx) [1], const size_t (&dims) [1]) {
     return dims[0];
 }
 /**
@@ -343,7 +343,7 @@ size_t getFlatIndex<1>(const size_t (&indx) [1], size_t (&dims) [1]) {
  * @return
  */
 template<size_t dimensionality>
-size_t getFlatIndex(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]) {
+size_t getFlatIndex(const size_t (&indx) [dimensionality], const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]) {
     size_t result = indx[permutation[0]];
     for (int it = 1; it < dimensionality; it++) {
         result *= dims [permutation[it]];
@@ -371,7 +371,7 @@ size_t getFlatIndex(size_t i, size_t j) {
 
 
 template<size_t dimensionality>
-void getMultIndex(size_t (&indx) [dimensionality], size_t iflat, size_t (&dims) [dimensionality]) {
+void getMultIndex(size_t (&indx) [dimensionality], const size_t iflat, const size_t (&dims) [dimensionality]) {
     size_t temp = iflat;
     size_t dimtemp = 1;
     for (int it = 1; it < dimensionality; it++) {
@@ -387,7 +387,7 @@ void getMultIndex(size_t (&indx) [dimensionality], size_t iflat, size_t (&dims) 
 }
 /// Template specialization for special case dimensionality == 1
 template<>
-void getMultIndex<1>(size_t (&indx) [1], size_t iflat, size_t (&dims) [1]) {
+void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims) [1]) {
     indx[0] = iflat;
 
 }
@@ -405,7 +405,7 @@ void getMultIndex<1>(size_t (&indx) [1], size_t iflat, size_t (&dims) [1]) {
  * @return
  */
 template<size_t dimensionality>
-size_t rotateFlatIndex(size_t iflat, size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]){
+size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
     size_t multIndx[dimensionality];
     getMultIndex<dimensionality>(multIndx, iflat, dims);
     size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]) {
@@ -427,7 +427,7 @@ size_t rotateFlatIndex(size_t iflat, size_t (&dims) [dimensionality], size_t (&p
  * @return
  */
 template<typename T, size_t dimensionality>
-vec<T> get_finite_differences(vec<T> vec_in, size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]){
+vec<T> get_finite_differences(const vec<T> vec_in, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
     size_t flatdim = vec_in.size();
     size_t dimsum = dims[dimensionality-1];
     size_t codimsum = flatdim/dimsum;
@@ -448,7 +448,7 @@ vec<T> get_finite_differences(vec<T> vec_in, size_t (&dims) [dimensionality], si
      return result;
 }
 /// Template specialization of above function for dimensionality == 1
-template<typename T> vec<T> get_finite_differences(vec<T> vec_in){
+template<typename T> vec<T> get_finite_differences(const vec<T> vec_in){
     size_t dimsum = vec_in.size();
 
     vec<T> result(dimsum);

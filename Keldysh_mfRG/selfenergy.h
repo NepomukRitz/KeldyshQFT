@@ -389,9 +389,12 @@ template <typename Q> auto SelfEnergy<Q>::norm() -> double {
 }
 
 template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE() const -> double {
-    double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
+    //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
+    //return max_SE;
+    const size_t dims1[3] = {n_in, nSE, nFER};
+    const size_t perm1[3] = {2, 0, 1};
+    double max_SE = (::power2(::get_finite_differences<Q,3>(Sigma, dims1, perm1))).max_norm();
     return max_SE;
-
 }
 
 #endif //KELDYSH_MFRG_SELFENERGY_H
