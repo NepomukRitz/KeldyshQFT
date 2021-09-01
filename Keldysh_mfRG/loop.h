@@ -362,12 +362,12 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara_finiteT() {
     int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
-#ifndef KELDYSH_FORMALISM // TODO(high): Figure out type problems in matsubarasum
+//#ifndef KELDYSH_FORMALISM // TODO(high): Figure out type problems in matsubarasum
     integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin-vint, Nmax+vint);
 
     integratedR += - 1./(2.*M_PI)
                        * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
-#endif
+//#endif
     self.addself(0, iv, i_in, integratedR);
 }
 

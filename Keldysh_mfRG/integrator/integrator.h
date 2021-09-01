@@ -443,7 +443,7 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
     else {
         //cout << "Adapt on interval[" << vmin << ", " << vmax << "] of length " << N <<  "!!! \n";
         vec<Q> values(N_tresh);
-        vec<Q> mfreqs(N_tresh);
+        vec<double> mfreqs(N_tresh);    // linear grid of sample points
         int intstep = (Nmax - Nmin) / (N_tresh-1);
         for (int i = 0; i < N_tresh-1; i++) {
             mfreqs[i] = ((Nmin + intstep * i ) * 2 + 1) * (M_PI * glb_T);
@@ -453,12 +453,12 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
         values[N_tresh-1] = integrand(mfreqs[N_tresh-1]);
 
         Q slope = (values[N_tresh-1] - values[0]) / (mfreqs[N_tresh-1] - mfreqs[0]);
-        vec<Q> linrzd = values[0] + slope * (mfreqs - mfreqs[0]);
-        vec<Q> intermediate = (linrzd - values).abs();
-        Q error_estimate = (values[0] + slope * (mfreqs - mfreqs[0]) - values).abs().sum();
+        vec<Q> linrzd = values[0] + (mfreqs - mfreqs[0]) * slope;   // linear approximation
+        vec<Q> intermediate = (linrzd - values).abs() * (1. + 0.j); // deviation of linear approximation from function values
+        double error_estimate = (values[0] + (mfreqs - mfreqs[0]) * slope - values).abs().sum();
         //double vmaxn = vmax/(M_PI*glb_T);
         //double vminn = vmin/(M_PI*glb_T);
-        Q resul_estimate = (values[0] - slope * freq_step/2) * N + freq_step*slope / 2 * N * N;
+        Q resul_estimate = (values[0] - freq_step/.2 * slope) * (double)N + freq_step*slope / 2. * (double)N * (double)N;
         //cout << "error_estimate = " << error_estimate << "\t < tol * sum = " << reltol * values.std::abs().sum() << " ? \n";
         if (error_estimate < reltol * std::abs(values.abs().sum()) or error_estimate < abstol) {
             //cout << "Accepted estimate! \n";
