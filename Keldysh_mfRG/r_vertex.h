@@ -910,27 +910,7 @@ template <typename Q> auto rvert<Q>::get_deriv_maxK3() const -> double {
 
 }
 
-template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {
-    double max_K1 = ::power2(::get_finite_differences(K1)).max_norm();
-    return max_K1;
 
-}
-template <typename Q> auto rvert<Q>::get_deriv_maxK2() const -> double {
-    double max_K2 = (::power2(::get_finite_differences<Q,2>(K2, {nBOS2, nFER2}, {0, 1}))
-                   + ::power2(::get_finite_differences<Q,2>(K2, {nFER2}, {1, 0}))
-    ).max_norm();
-    return max_K2;
-
-}
-
-template <typename Q> auto rvert<Q>::get_deriv_maxK3() const -> double {
-    double max_K3 = (::power2(::get_finite_differences<Q,3>(K3, {nBOS3, nFER3, nFER3}, {0, 1, 2}))
-                   + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nBOS3, nFER3}, {1, 2, 0}))
-                   + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nFER3, nBOS3}, {2, 0, 1}))
-    ).max_norm();
-    return max_K3;
-
-}
 
 
 #endif //KELDYSH_MFRG_R_VERTEX_H
