@@ -70,78 +70,81 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     // as this object is often needed when going to higher loop-orders.
     vertexOneLoopFlow(dPsi.vertex, Psi.vertex, dPi);
 
-#if N_LOOPS>=2
-    // Calculate left and right part of 2-loop contribution.
-    // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric vertex
-    // when inserted in the 3-loop contribution below.
-    Vertex<Q> dGammaL_half1 = calculate_dGammaL(dPsi.vertex, Psi.vertex, Pi);
-    Vertex<Q> dGammaR_half1 = calculate_dGammaR(dPsi.vertex, Psi.vertex, Pi);
-    Vertex<Q> dGammaT = dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
-    dPsi.vertex += dGammaT;
-#endif
-
-#if N_LOOPS>=3
-
-#ifdef SELF_ENERGY_FLOW_CORRECTIONS
-    // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
-    Vertex<Q> dGammaC_tbar(n_spin, Lambda);
-    dGammaC_tbar.set_frequency_grid(Psi.vertex);
-#endif
-
-    for (int i=3; i<=N_LOOPS; i++) {
-        // subdiagrams don't fulfill the full symmetry of the vertex
-        // the symmetry-related diagram with a differentiated vertex on the left might be one with differentiated vertex on the right (vice versa)
-        // for further evaluation as part of a bigger diagram they need to be reordered to recover the correct dGammaL and dGammaR
-        // acc. to symmetry relations (enforce_symmetry() assumes full symmetry)
-        dGammaL_half1[0].half1().reorder_due2antisymmetry(dGammaR_half1[0].half1());
-        dGammaR_half1[0].half1().reorder_due2antisymmetry(dGammaL_half1[0].half1());
-
-        // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
-        GeneralVertex<Q, non_symmetric> dGammaL(n_spin, Lambda);
-        dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
-        dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
-
-        // insert this non-symmetric vertex on the right of the bubble
-        Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
-
-        // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
-        //dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
-        //dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
-
-        // insert this non-symmetric vertex on the left of the bubble
-        //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
-
-        // symmetrize by averaging left and right insertion
-        Vertex<Q> dGammaC = dGammaC_r; //(dGammaC_r + dGammaC_l) * 0.5;
-
-        dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, Pi);
-        dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, Pi);
-
-        dGammaT = dGammaL_half1 + dGammaC + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
+    if (N_LOOPS>=2) {
+        // Calculate left and right part of 2-loop contribution.
+        // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric vertex
+        // when inserted in the 3-loop contribution below.
+        Vertex<Q> dGammaL_half1 = calculate_dGammaL(dPsi.vertex, Psi.vertex, Pi);
+        Vertex<Q> dGammaR_half1 = calculate_dGammaR(dPsi.vertex, Psi.vertex, Pi);
+        Vertex<Q> dGammaT =
+                dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
         dPsi.vertex += dGammaT;
+
+
+        if (N_LOOPS >= 3) {
+
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
-        // extract central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
-        Vertex<Q> dGammaC_ap (n_spin, Lambda);                   // initialize new vertex
-        dGammaC_ap.set_frequency_grid(Psi.vertex);
-        dGammaC_ap[0].avertex() = dGammaC[0].avertex();  // copy results from calculations above
-        dGammaC_ap[0].pvertex() = dGammaC[0].pvertex();
-        dGammaC_tbar += dGammaC_ap;                      // add the i-loop contribution to the full dGammaC_tbar
+            // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
+            Vertex<Q> dGammaC_tbar(n_spin, Lambda);
+            dGammaC_tbar.set_frequency_grid(Psi.vertex);
 #endif
-        //if(vertexConvergedInLoops(dGammaT, dPsi.vertex))
-        //    break;
+
+            for (int i = 3; i <= N_LOOPS; i++) {
+                // subdiagrams don't fulfill the full symmetry of the vertex
+                // the symmetry-related diagram with a differentiated vertex on the left might be one with differentiated vertex on the right (vice versa)
+                // for further evaluation as part of a bigger diagram they need to be reordered to recover the correct dGammaL and dGammaR
+                // acc. to symmetry relations (enforce_symmetry() assumes full symmetry)
+                dGammaL_half1[0].half1().reorder_due2antisymmetry(dGammaR_half1[0].half1());
+                dGammaR_half1[0].half1().reorder_due2antisymmetry(dGammaL_half1[0].half1());
+
+                // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
+                GeneralVertex<Q, non_symmetric> dGammaL(n_spin, Lambda);
+                dGammaL[0].half1() = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
+                dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
+
+                // insert this non-symmetric vertex on the right of the bubble
+                Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
+
+                // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+                //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
+                //dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
+                //dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+
+                // insert this non-symmetric vertex on the left of the bubble
+                //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
+
+                // symmetrize by averaging left and right insertion
+                Vertex<Q> dGammaC = dGammaC_r; //(dGammaC_r + dGammaC_l) * 0.5;
+
+                dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, Pi);
+                dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, Pi);
+
+                dGammaT = dGammaL_half1 + dGammaC +
+                          dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
+                dPsi.vertex += dGammaT;
+#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+                // extract central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
+                Vertex<Q> dGammaC_ap(n_spin, Lambda);                   // initialize new vertex
+                dGammaC_ap.set_frequency_grid(Psi.vertex);
+                dGammaC_ap[0].avertex() = dGammaC[0].avertex();  // copy results from calculations above
+                dGammaC_ap[0].pvertex() = dGammaC[0].pvertex();
+                dGammaC_tbar += dGammaC_ap;                      // add the i-loop contribution to the full dGammaC_tbar
+#endif
+                //if(vertexConvergedInLoops(dGammaT, dPsi.vertex))
+                //    break;
+            }
+
+#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+            // compute multiloop corrections to self-energy flow
+            selfEnergyFlowCorrections(dPsi.selfenergy, dGammaC_tbar, Psi, G);
+
+            //TODO(low): Implement self-energy iterations (see lines 37-39 of pseudo-code).
+            //if(selfEnergyConverged(Psi.selfenergy, Lambda))
+            //    break;
+#endif
+
+        }
     }
-
-#ifdef SELF_ENERGY_FLOW_CORRECTIONS
-    // compute multiloop corrections to self-energy flow
-    selfEnergyFlowCorrections(dPsi.selfenergy, dGammaC_tbar, Psi, G);
-
-    //TODO(low): Implement self-energy iterations (see lines 37-39 of pseudo-code).
-    //if(selfEnergyConverged(Psi.selfenergy, Lambda))
-    //    break;
-#endif
-
-#endif
 
     return dPsi;
 

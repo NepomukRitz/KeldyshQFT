@@ -23,20 +23,22 @@ auto Fermi_fac(double v, double mu) -> double {
 
 // effective distribution function
 auto Eff_distr(double v) -> double {
-#ifdef EQUILIBRIUM
-    return Fermi_distr(v, glb_mu);
-#else
-    return 0.5 * (Fermi_distr(v, glb_mu + glb_V/2.) + Fermi_distr(v, glb_mu - glb_V/2.));
-#endif
+    if (EQUILIBRIUM) {
+        return Fermi_distr(v, glb_mu);
+    }
+    else {
+        return 0.5 * (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
+    }
 }
 
 // effective distribution factor: 1. - 2. * Eff_distr
 auto Eff_fac(double v) -> double {
-#ifdef EQUILIBRIUM
-    return Fermi_fac(v, glb_mu);
-#else
-    return 1. - (Fermi_distr(v, glb_mu + glb_V/2.) + Fermi_distr(v, glb_mu - glb_V/2.));
-#endif
+    if (EQUILIBRIUM) {
+        return Fermi_fac(v, glb_mu);
+    }
+    else {
+        return 1. - (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
+    }
 }
 
 
@@ -248,21 +250,22 @@ auto Propagator<Q>::GA(double v, int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::GK(double v, int i_in) const -> Q
 {
-#ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
-    //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
-    return glb_i * ( Eff_fac(v) * 2. * imag(GR(v, i_in)) ); // more efficient: only one interpolation instead of two
-#else
-    // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
-    // Derivation of equilibrium form:
-    // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
-    // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
-    //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
-    // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
-    // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
-    // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
-    return std::norm( GR(v, i_in) ) * ( selfenergy.valsmooth(1, v, i_in) - glb_i* ( (glb_Gamma+Lambda) * Eff_fac(v) ) );
-#endif
+    if (EQUILIBRIUM) {
+        // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
+        //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
+        return glb_i * (Eff_fac(v) * 2. * imag(GR(v, i_in))); // more efficient: only one interpolation instead of two
+    }
+    else {
+        // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
+        // Derivation of equilibrium form:
+        // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
+        // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
+        //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
+        // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
+        // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
+        // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
+        return std::norm(GR(v, i_in)) * (selfenergy.valsmooth(1, v, i_in) - glb_i * ((glb_Gamma + Lambda) * Eff_fac(v)));
+    }
 }
 template <typename Q>
 auto Propagator<Q>::SR(double v, int i_in) const -> Q
@@ -275,28 +278,30 @@ auto Propagator<Q>::SR(double v, int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::SK(double v, int i_in) const -> Q
 {
-#ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
-    //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - conj(SR(v, i_in)));
-    return glb_i * ( Eff_fac(v) * 2. * imag(SR(v, i_in)) );
-#else
-    // Derivation of general matrix form:
-    // S = - G * ( \partial_\Lambda G_0^{-1} ) * G
-    // where G = (0, G^A; G^R, G^K), G_0^{-1} = (Ginv0K, G_0^{A,-1}; G_0^{R,-1}, 0), Ginv0K = - \Sigma^K_res, \dot{Ginv0K} = i (1-2n_F)
-    // Thus, S^K = - G^R \dot{G_0^{R,-1}} G^K - G^K \dot{G_0^{A,-1}} G^A - G^R Ginv0K G^A
-    // Upon inserting G^K = (1-2n_F) (G^R-G^A), one recovers the equilibrium formula
-    //Q retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
-    //Q advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
-    //Q extra    = -glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in);
-    //return retarded + advanced + extra;
-    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in); // more efficient
-    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(Eff_fac(v)) * std::norm( GR(v, i_in) ); // more efficient
-    // most efficient: insert GK, factor out, combine real factors
-    Q gr = GR(v, i_in);
-    double gri = imag(gr);
-    double grn = std::norm(gr);
-    return selfenergy.valsmooth(1, v, i_in) * (grn * gri)  -  glb_i * ( grn * Eff_fac(v) * ( 1. + (glb_Gamma+Lambda) * gri ) );
-#endif
+    if (EQUILIBRIUM) {
+        // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
+        //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - conj(SR(v, i_in)));
+        return glb_i * (Eff_fac(v) * 2. * imag(SR(v, i_in)));
+    }
+    else {
+        // Derivation of general matrix form:
+        // S = - G * ( \partial_\Lambda G_0^{-1} ) * G
+        // where G = (0, G^A; G^R, G^K), G_0^{-1} = (Ginv0K, G_0^{A,-1}; G_0^{R,-1}, 0), Ginv0K = - \Sigma^K_res, \dot{Ginv0K} = i (1-2n_F)
+        // Thus, S^K = - G^R \dot{G_0^{R,-1}} G^K - G^K \dot{G_0^{A,-1}} G^A - G^R Ginv0K G^A
+        // Upon inserting G^K = (1-2n_F) (G^R-G^A), one recovers the equilibrium formula
+        //Q retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
+        //Q advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
+        //Q extra    = -glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in);
+        //return retarded + advanced + extra;
+        //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in); // more efficient
+        //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(Eff_fac(v)) * std::norm( GR(v, i_in) ); // more efficient
+        // most efficient: insert GK, factor out, combine real factors
+        Q gr = GR(v, i_in);
+        double gri = imag(gr);
+        double grn = std::norm(gr);
+        return selfenergy.valsmooth(1, v, i_in) * (grn * gri) -
+               glb_i * (grn * Eff_fac(v) * (1. + (glb_Gamma + Lambda) * gri));
+    }
 }
 // full propagator (Matsubara)
 template <typename Q>
@@ -364,21 +369,22 @@ auto Propagator<Q>::GA(double v, int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::GK(double v, int i_in) const -> Q
 {
-#ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
-    //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
-    return glb_i * ( Eff_fac(v) * 2. * imag(GR(v, i_in)) ); // more efficient: only one interpolation instead of two
-#else
-    // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
-    // Derivation of equilibrium form:
-    // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
-    // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
-    //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
-    // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
-    // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
-    // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
-    return std::norm( GR(v, i_in) ) * ( selfenergy.valsmooth(1, v, i_in) - glb_i* ( (glb_Gamma+Lambda) * Eff_fac(v) ) );
-#endif
+    if (EQUILIBRIUM) {
+        // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
+        //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
+        return 0; // TODO: write GK, does it make sense for Keldysh?
+    }
+    else {
+        // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
+        // Derivation of equilibrium form:
+        // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
+        // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
+        //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
+        // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
+        // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
+        // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
+        return 0; // TODO: write GK, does it make sense for Keldysh?
+    }
 }
 template <typename Q>
 auto Propagator<Q>::SR(double v, int i_in) const -> Q
@@ -386,33 +392,34 @@ auto Propagator<Q>::SR(double v, int i_in) const -> Q
     //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
     //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
     Q G = GR(v, i_in);
-    return -2 * Lambda / (v*v + Lambda*Lambda) * G; // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
+    return 0; // TODO: write SR, does it make sense for Keldysh?
 }
 template <typename Q>
 auto Propagator<Q>::SK(double v, int i_in) const -> Q
 {
-#ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
-    //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - conj(SR(v, i_in)));
-    return glb_i * ( Eff_fac(v) * 2. * imag(SR(v, i_in)) );
-#else
-    // Derivation of general matrix form:
-    // S = - G * ( \partial_\Lambda G_0^{-1} ) * G
-    // where G = (0, G^A; G^R, G^K), G_0^{-1} = (Ginv0K, G_0^{A,-1}; G_0^{R,-1}, 0), Ginv0K = - \Sigma^K_res, \dot{Ginv0K} = i (1-2n_F)
-    // Thus, S^K = - G^R \dot{G_0^{R,-1}} G^K - G^K \dot{G_0^{A,-1}} G^A - G^R Ginv0K G^A
-    // Upon inserting G^K = (1-2n_F) (G^R-G^A), one recovers the equilibrium formula
-    //Q retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
-    //Q advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
-    //Q extra    = -glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in);
-    //return retarded + advanced + extra;
-    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in); // more efficient
-    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(Eff_fac(v)) * std::norm( GR(v, i_in) ); // more efficient
-    // most efficient: insert GK, factor out, combine real factors
-    Q gr = GR(v, i_in);
-    double gri = imag(gr);
-    double grn = std::norm(gr);
-    return selfenergy.valsmooth(1, v, i_in) * (grn * gri)  -  glb_i * ( grn * Eff_fac(v) * ( 1. + (glb_Gamma+Lambda) * gri ) );
-#endif
+    if (EQUILIBRIUM) {
+        // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
+        //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - conj(SR(v, i_in)));
+        return 0; // TODO: write SK, does it make sense for Keldysh?
+    }
+    else {
+        // Derivation of general matrix form:
+        // S = - G * ( \partial_\Lambda G_0^{-1} ) * G
+        // where G = (0, G^A; G^R, G^K), G_0^{-1} = (Ginv0K, G_0^{A,-1}; G_0^{R,-1}, 0), Ginv0K = - \Sigma^K_res, \dot{Ginv0K} = i (1-2n_F)
+        // Thus, S^K = - G^R \dot{G_0^{R,-1}} G^K - G^K \dot{G_0^{A,-1}} G^A - G^R Ginv0K G^A
+        // Upon inserting G^K = (1-2n_F) (G^R-G^A), one recovers the equilibrium formula
+        //Q retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
+        //Q advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
+        //Q extra    = -glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in);
+        //return retarded + advanced + extra;
+        //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in); // more efficient
+        //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(Eff_fac(v)) * std::norm( GR(v, i_in) ); // more efficient
+        // most efficient: insert GK, factor out, combine real factors
+        Q gr = GR(v, i_in);
+        double gri = imag(gr);
+        double grn = std::norm(gr);
+        return 0; // TODO: write SK, does it make sense for Keldysh?
+    }
 }
 // full propagator (Matsubara)
 template <typename Q>

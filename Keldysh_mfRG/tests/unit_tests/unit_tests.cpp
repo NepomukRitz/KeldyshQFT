@@ -5,7 +5,7 @@
  */
 
 // if defined, also run integration tests (else only unit tests)
-//#define INTEGRATION_TESTS
+#define INTEGRATION_TESTS
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
@@ -36,9 +36,9 @@
 
 int main(int argc, char* argv[]) {
 #ifdef INTEGRATION_TESTS
-#ifdef MPI_FLAG
-    MPI_Init(nullptr, nullptr);
-#endif
+    if (MPI_FLAG){
+        MPI_Init(nullptr, nullptr);
+    }
     // run integration tests
     print("Start integration tests.", true);
 
@@ -64,9 +64,9 @@ int main(int argc, char* argv[]) {
     test_PT4(0.);
     test_K2_correctness(0.);
     }
-#ifdef MPI_FLAG
-    MPI_Finalize();
-#endif
+    if (MPI_FLAG) {
+        MPI_Finalize();
+    }
 #endif
 
     // run unit tests
