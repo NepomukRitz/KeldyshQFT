@@ -327,18 +327,21 @@ void LoopCalculator<Q>::perform_computation() {
 template<typename Q>
 void LoopCalculator<Q>::compute_Keldysh() {
     if (isfinite(v)) {
-        integratedR = prefactor * integrator<Q>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), -v, v, Delta);
-        integratedK = prefactor * integrator<Q>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), -v, v, Delta);
+        integratedR = prefactor * integrator<Q>(integrandR, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta);
+        integratedK = prefactor * integrator<Q>(integrandK, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta);
 
         // add analytical results for the tails
-        integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
-                                                             v, 0, i_in, all_spins);
-        integratedK += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
-                                                             v, 1, i_in, all_spins);
+        integratedR +=
+                prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower - std::abs(v), v_upper + std::abs(v),
+                                                      v, 0, i_in, all_spins);
+        integratedK +=
+                prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower - std::abs(v), v_upper + std::abs(v),
+                                                      v, 1, i_in, all_spins);
 
         //The results are emplaced in the right place of the answer object.
         self.addself(0, iv, i_in, integratedR);
         self.addself(1, iv, i_in, integratedK);
+    }
     else {
         self.setself(0, iv, i_in, self.asymp_val_R);
     }

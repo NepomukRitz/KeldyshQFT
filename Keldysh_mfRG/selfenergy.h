@@ -211,9 +211,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
             Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
             Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
         }
-#ifdef KELDYSH_FORMALISM
     }
-#endif
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
 }
@@ -221,25 +219,20 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new) {
 
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
-#ifdef KELDYSH_FORMALISM
     for (int iK=0; iK<2; ++iK) {
-#else
-    int iK = 0;
-#endif
-    for (int iv=1; iv<nSE-1; ++iv) {
+        if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
+        for (int iv=1; iv<nSE-1; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                // interpolate old values to new vector
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.ws[iv], i_in);
+            }
+        }
         for (int i_in=0; i_in<n_in; ++i_in) {
-            // interpolate old values to new vector
-            Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.ws[iv], i_in);
+            // set asymptotic values
+            Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
+            Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
         }
     }
-    for (int i_in=0; i_in<n_in; ++i_in) {
-        // set asymptotic values
-        Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
-        Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
-    }
-#ifdef KELDYSH_FORMALISM
-    }
-#endif
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
 }
@@ -247,23 +240,20 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma) {
 
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
-#ifdef KELDYSH_FORMALISM
+
     for (int iK=0; iK<2; ++iK) {
-#else
-    int iK = 0;
-#endif
-    for (int iv=1; iv<nSE-1; ++iv) {
-        for (int i_in=0; i_in<n_in; ++i_in) {
-            // interpolate old values to new vector
-            Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = selfEnergy4Sigma.valsmooth(iK, frequencies_new.ws[iv], i_in);
+        if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
+        for (int iv=1; iv<nSE-1; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                // interpolate old values to new vector
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = selfEnergy4Sigma.valsmooth(iK, frequencies_new.ws[iv], i_in);
+            }
         }
-    }
-    for (int i_in=0; i_in<n_in; ++i_in) {
-        // set asymptotic values
-        Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
-        Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
-    }
-#ifdef KELDYSH_FORMALISM
+        for (int i_in=0; i_in<n_in; ++i_in) {
+            // set asymptotic values
+            Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
+            Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
+        }
     }
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
