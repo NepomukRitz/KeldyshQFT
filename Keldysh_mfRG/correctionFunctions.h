@@ -30,7 +30,7 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                 if (w == 0. && eta_1 == eta_2)
                     return 1. / (vmax - eps_p + eta_1 * glb_i * Delta)
                            + 1. / (std::abs(vmin) + eps_p - eta_1 * glb_i * Delta);
-                else // TODO(very high): ???
+                else
                     return 1. / (-w + (eta_1 - eta_2) * glb_i * Delta)
                            * log(((vmax - w / 2. - eps_p + eta_1 * glb_i * Delta) *
                                   (std::abs(vmin) - w / 2. + eps_p - eta_2 * glb_i * Delta))
@@ -38,7 +38,8 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                                     (std::abs(vmin) + w / 2. + eps_p - eta_1 * glb_i * Delta)));
 
             }
-        } else {
+        }
+        else {
             if (diff) {
                 if (PARTICLE_HOLE_SYMMETRY) {
                     return 1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2., 2))
@@ -69,7 +70,8 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                 }
             }
         }
-    } else if (REG == 3) {// TODO(high): Make this more readable!
+    }
+    else if (REG == 3) {// TODO(medium): Make this more readable!
         if (diff) {
             return 0.;
         } else {

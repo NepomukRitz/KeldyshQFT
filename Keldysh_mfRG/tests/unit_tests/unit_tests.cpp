@@ -28,10 +28,10 @@
 
 
 #ifdef INTEGRATION_TESTS
-#include "../frequency_grid.h"
-#include "../testFunctions.h"
-#include "../flow.h"
-#include "../parquet_checks.h"
+#include "../../grids/frequency_grid.h"
+#include "../test_perturbation_theory.h"
+#include "../../flow.h"
+#include "../../parquet_solver.h"
 #endif
 
 int main(int argc, char* argv[]) {
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 
     if (MAX_DIAG_CLASS >= 1){
     /* run a complete flow and check FDTs and causality */
-    string filename = "integration_test_flow_K2_8e";
+    std::string filename = "integration_test_flow_K2_8e";
     State<state_datatype> state = n_loop_flow(filename);
     check_FDTs(state);
     check_SE_causality(state.selfenergy);
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
     if (MAX_DIAG_CLASS == 2){
     /* further K2 tests */
     test_PT4(0.);
-    test_K2_correctness(0.);
+    test_K2_correctness<state_datatype>(0.);
     }
     if (MPI_FLAG) {
         MPI_Finalize();
