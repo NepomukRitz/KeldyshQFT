@@ -77,13 +77,14 @@ public:
                         w_upper = glb_w2_upper;
                         w_lower = glb_w2_lower;
                         W_scale = glb_W2_scale;
-#ifdef KELDYSH_FORMALISM
-                        U_factor = 15./3.;
-                        Delta_factor = 15.;
-#else
-                        U_factor = 4./3.;
-                        Delta_factor = 4.;
-#endif
+                        if (KELDYSH){
+                            U_factor = 15./3.;
+                            Delta_factor = 15.;
+                        }
+                        else{
+                            U_factor = 4./3.;
+                            Delta_factor = 4.;
+                        }
                         break;
                     case 3:
                         N_w = nBOS3;
@@ -159,13 +160,15 @@ public:
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
 // TODO(medium): write function that automatically chooses grid parameters U_factor and Delta_factor (-> Marc, Julian)
-#if REG==2
-    return std::max(U_factor*glb_U, Delta_factor*(Lambda+glb_Gamma)/2.);
-#elif REG==3
-    return std::max(U_factor*glb_U, Delta_factor*(glb_Gamma)/2.+Lambda*(Lambda+1));
-#else
-    return std::max(U_factor*glb_U, Delta_factor*(glb_Gamma)/2.);
-#endif
+    if (REG==2) {
+        return std::max(U_factor * glb_U, Delta_factor * (Lambda + glb_Gamma) / 2.);
+    }
+    else if (REG==3) {
+        return std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2. + Lambda * (Lambda + 1));
+    }
+    else {
+        return std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2.);
+    }
 }
 
 /**
@@ -185,19 +188,17 @@ void FrequencyGrid::initialize_grid() {
     for(int i=1; i<N_w-1; ++i) {
         W = t_lower + (i-1) * dt;
         ws[i] = grid_transf_inv(W);
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-        if (type == 'b') ws[i] = round2bfreq(ws[i]);
-        else ws[i] = round2ffreq(ws[i]);
-#endif
+        if (!KELDYSH && !ZERO_T){
+            if (type == 'b') ws[i] = round2bfreq(ws[i]);
+            else             ws[i] = round2ffreq(ws[i]);
+        }
         ts[i]= grid_transf(ws[i]);
     }
     if (N_w % 2 == 1) {
         ws[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
         ts[(int) N_w / 2] = 0.;
     }
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    assert (is_doubleOccurencies(ws) == 0);
-#endif
+    if (!KELDYSH && !ZERO_T) assert (is_doubleOccurencies(ws) == 0);
 }
 
 /**
@@ -208,17 +209,19 @@ void FrequencyGrid::initialize_grid(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
     w_upper = grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    // for Matsubara T>0: pick grid such that no frequencies occur twice
-    if (type == 'b') {
-        w_upper = std::max(round2bfreq(w_upper), glb_T * M_PI*N_w);
-        W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
+
+    if (!KELDYSH && !ZERO_T){
+        // for Matsubara T>0: pick grid such that no frequencies occur twice
+        if (type == 'b') {
+            w_upper = std::max(round2bfreq(w_upper), glb_T * M_PI*N_w);
+            W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
+        }
+        else {
+            w_upper = std::max(round2ffreq(w_upper), glb_T * M_PI*N_w);
+            W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
+        }
     }
-    else {
-        w_upper = std::max(round2ffreq(w_upper), glb_T * M_PI*N_w);
-        W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
-    }
-#endif
+
     w_lower = - w_upper;
     initialize_grid();
 }
@@ -266,11 +269,8 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
     //    return grid_transf_v2(w, this->W_scale);
     //}
     else {
-        #if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
-        return grid_transf_v2(w, this->W_scale);
-        #else
-        return grid_transf_v1(w, this->W_scale);
-        #endif
+        if (KELDYSH || ZERO_T) return grid_transf_v2(w, this->W_scale);
+        else                   return grid_transf_v1(w, this->W_scale);
     }
 }
 
@@ -286,12 +286,9 @@ auto FrequencyGrid::grid_transf_inv(double t) const -> double {
     //else if (this->type == 'b' and this->diag_class == 1) {
     //    return grid_transf_inv_v2(w, this->W_scale);
     //}
-    else {
-#if defined(KELDYSH_FORMALISM) or defined (ZERO_TEMP)
-        return grid_transf_inv_v2(t, this->W_scale);
-#else
-        return grid_transf_inv_v1(t, this->W_scale);
-#endif
+    else { // TODO(medium): Remove commented part?
+        if (KELDYSH || ZERO_T) return grid_transf_inv_v2(t, this->W_scale);
+        else return grid_transf_inv_v1(t, this->W_scale);
     }
 }
 
@@ -303,14 +300,14 @@ auto FrequencyGrid::grid_transf_inv(double t) const -> double {
  * @param N         relates tmax to t1 by t1=tmax/N (for bosons: (nBOS-1)/2; for fermions: nFER-1)
  */
 auto FrequencyGrid::wscale_from_wmax(double & Wscale, const double w1, const double wmax, const int N) -> double {
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    if (this->type == 'f' and this->diag_class == 1) {
-        return wscale_from_wmax_v3(Wscale, w1, wmax, N);
+    if (!KELDYSH && !ZERO_T){
+        if (this->type == 'f' and this->diag_class == 1) {
+            return wscale_from_wmax_v3(Wscale, w1, wmax, N);
+        }
+        else {
+            return wscale_from_wmax_v1(Wscale, w1, wmax, N);
+        }
     }
-    else {
-        return wscale_from_wmax_v1(Wscale, w1, wmax, N);
-    }
-#endif
 }
 
 /**

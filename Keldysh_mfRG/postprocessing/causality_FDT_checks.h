@@ -11,53 +11,52 @@
 */
 template <typename Q>
 void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
-#ifdef KELDYSH_FORMALISM
-    print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
+    if (KELDYSH) {
+        print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
 
-    vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
-    vec<Q> Sigma_R (&Sigma[0], &Sigma[Sigma.size()/2]);     // take first half of self-energy (retarded comp.)
+        vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
+        vec<Q> Sigma_R(&Sigma[0], &Sigma[Sigma.size() / 2]);     // take first half of self-energy (retarded comp.)
 
-    // check if Im(Sigma^R) is positive for every data point
-    int cnt = 0;
-    double sum = 0.;
-    for (int i=0; i<Sigma_R.size(); ++i) {
-        double val = Sigma_R[i].imag();
-        if (val > 0.) {
-            cnt += 1;
-            sum += val;
+        // check if Im(Sigma^R) is positive for every data point
+        int cnt = 0;
+        double sum = 0.;
+        for (int i = 0; i < Sigma_R.size(); ++i) {
+            double val = Sigma_R[i].imag();
+            if (val > 0.) {
+                cnt += 1;
+                sum += val;
+            }
         }
+        if (cnt > 0) {
+            print("Selfenergy is non-causal: ", true);
+            print(cnt, " values of Im(Sigma^R) are positive, with a sum of ", sum, true);
+        } else
+            print("Selfenergy is causal.", true);
     }
-    if (cnt > 0) {
-        print("Selfenergy is non-causal: ", true);
-        print(cnt, " values of Im(Sigma^R) are positive, with a sum of ", sum, true);
-    } else
-        print("Selfenergy is causal.", true);
-#else
-    print("Causality check of self-energy: Im[Sigma(w)]*w<=0.", true);
+    else {
+        print("Causality check of self-energy: Im[Sigma(w)]*w<=0.", true);
 
-    vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
+        vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
 
-    // check if Im(Sigma^R) is positive for every data point
-    int cnt = 0;
-    double sum = 0.;
-    for (int i=1; i<nFER-1; ++i) {
-#if defined(PARTICLE_HOLE_SYMM) and not defined(HUBBARD)
-        double val = Sigma[i] * sign(selfEnergy.frequencies.ws[i]);
-#else
-        double val = Sigma[i].imag() * sign(selfEnergy.frequencies.ws[i]);
-#endif //PARTICLE_HOLE_SYMM
-        if (val  > 0.) {
-            //cout << "i: " << i << "\t for w = " << selfEnergy.frequencies.ws[i] << "; \t Sigma[i] = " << Sigma[i] << "\n";
-            cnt += 1;
-            sum += val;
+        // check if Im(Sigma^R) is positive for every data point
+        int cnt = 0;
+        double sum = 0.;
+        for (int i = 1; i < nFER-1; ++i) {
+
+            double val = imag(Sigma[i]) * sign(selfEnergy.frequencies.ws[i]);
+
+            if (val > 0.) {
+                //cout << "i: " << i << "\t for w = " << selfEnergy.frequencies.ws[i] << "; \t Sigma[i] = " << Sigma[i] << "\n";
+                cnt += 1;
+                sum += val;
+            }
         }
+        if (cnt > 0) {
+            print("Im[Selfenergy] is not negative for positive w (vice versa): ", true);
+            print(cnt, " values of Im(Sigma) have the wrong sign, with a sum of ", sum, true);
+        } else
+            print("Selfenergy has the right sign.", true);
     }
-    if (cnt > 0) {
-        print("Im[Selfenergy] is not negative for positive w (vice versa): ", true);
-        print(cnt, " values of Im(Sigma) have the wrong sign, with a sum of ", sum, true);
-    } else
-        print("Selfenergy has the right sign.", true);
-#endif //KELDYSH_FORMALISM
 }
 
 // wrapper for the function above, taking a State instead of a SelfEnergy

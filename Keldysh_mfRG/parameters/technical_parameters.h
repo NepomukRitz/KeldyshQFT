@@ -8,7 +8,7 @@
 //#define SYMMETRIZED_SELF_ENERGY_FLOW
 
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
-#define MPI_FLAG
+constexpr bool MPI_FLAG = true;
 
 //Tolerance for closeness to grid points when interpolating
 constexpr double inter_tol = 1e-10;
@@ -23,7 +23,7 @@ constexpr double converged_tol = 1e-7;
 // 3: adaptive Simpson
 // 4: GSL //
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
-#define INTEGRATOR_TYPE 4
+constexpr int INTEGRATOR_TYPE = 5;
 
 //Integrator tolerance
 constexpr double integrator_tol = 1e-6;

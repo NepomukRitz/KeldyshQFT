@@ -23,14 +23,11 @@ std::string generate_filename() {
     std::string extension = ".h5";
 
     std::string filename = klass + loops + n1;
-#if MAX_DIAG_CLASS >= 2
-    filename += n2;
-#elif defined(STATIC_FEEDBACK)
+    if (MAX_DIAG_CLASS >= 2) filename += n2;
+#if defined(STATIC_FEEDBACK)
     filename += "static_";
 #endif
-#if MAX_DIAG_CLASS >= 3
-    filename += n3;
-#endif
+    if (MAX_DIAG_CLASS >= 3) filename += n3;
     filename += gamma;
     if(glb_V != 0.)
         filename += voltage;
@@ -43,34 +40,24 @@ std::string generate_filename() {
 
 auto main() -> int {
 
-#ifdef MPI_FLAG
-    MPI_Init(nullptr, nullptr);
-#endif
+    if (MPI_FLAG) {
+        MPI_Init(nullptr, nullptr);
+    }
 #ifdef STATIC_FEEDBACK
     assert(MAX_DIAG_CLASS == 1);
 #endif
-#if MAX_DIAG_CLASS<2
-    assert(N_LOOPS < 2);
-#endif
+    if (MAX_DIAG_CLASS<2) assert(N_LOOPS < 2);
 
-#ifdef KELDYSH_FORMALISM
-if (HUBBARD_MODEL){
-    print("Hubbard model in Keldysh formalism: \n");
-}
-else{
-    print("SIAM in Keldysh formalism: \n");
-}
-#else
-if (HUBBARD_MODEL){
-    print("Hubbard model in Matsubara formalism: \n");
-}
-else{
-    print("SIAM in Matsubara formalism: \n");
-}
-#endif
-#ifdef PARTICLE_HOLE_SYMM
-    print("Using PARTICLE HOLE Symmetry\n");
-#endif
+    if (KELDYSH){
+        if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");
+        else               print("SIAM in Keldysh formalism: \n");
+    }
+    else{
+        if (HUBBARD_MODEL) print("Hubbard model in Matsubara formalism: \n");
+        else               print("SIAM in Matsubara formalism: \n");
+    }
+
+    if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
     print("U for this run is: ", glb_U, true);
     print("Lambda flows from ", Lambda_ini);
@@ -121,8 +108,8 @@ else{
     std::cout << std::endl;
 
 
-#ifdef MPI_FLAG
-    MPI_Finalize();
-#endif
+    if (MPI_FLAG) {
+        MPI_Finalize();
+    }
     return 0;
 }

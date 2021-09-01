@@ -5,7 +5,7 @@
  */
 
 // if defined, also run integration tests (else only unit tests)
-//#define INTEGRATION_TESTS
+#define INTEGRATION_TESTS
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
@@ -29,17 +29,17 @@
 
 
 #ifdef INTEGRATION_TESTS
-#include "../frequency_grid.h"
-#include "../testFunctions.h"
-#include "../flow.h"
-#include "../parquet_checks.h"
+#include "../../grids/frequency_grid.h"
+#include "../test_perturbation_theory.h"
+#include "../../flow.h"
+#include "../../parquet_solver.h"
 #endif
 
 int main(int argc, char* argv[]) {
 #ifdef INTEGRATION_TESTS
-#ifdef MPI_FLAG
-    MPI_Init(nullptr, nullptr);
-#endif
+    if (MPI_FLAG){
+        MPI_Init(nullptr, nullptr);
+    }
     // run integration tests
     print("Start integration tests.", true);
 
@@ -50,24 +50,24 @@ int main(int argc, char* argv[]) {
 
     //test_K2_in_PT4(20.);
 
-#if MAX_DIAG_CLASS >= 1
+    if (MAX_DIAG_CLASS >= 1){
     /* run a complete flow and check FDTs and causality */
-    string filename = "integration_test_flow_K2_8e";
+    std::string filename = "integration_test_flow_K2_8e";
     State<state_datatype> state = n_loop_flow(filename);
     check_FDTs(state);
     check_SE_causality(state.selfenergy);
 
     /* run parquet checks */
     parquet_checks(filename);
-#endif
-#if MAX_DIAG_CLASS == 2
+    }
+    if (MAX_DIAG_CLASS == 2){
     /* further K2 tests */
     test_PT4(0.);
-    test_K2_correctness(0.);
-#endif
-#ifdef MPI_FLAG
-    MPI_Finalize();
-#endif
+    test_K2_correctness<state_datatype>(0.);
+    }
+    if (MPI_FLAG) {
+        MPI_Finalize();
+    }
 #endif
 
     // run unit tests

@@ -14,11 +14,8 @@
 template <typename Integrand>
 auto f_real(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    double f_real = integrand(x).real();
-#else
-    double f_real = integrand(x);
-#endif
+    double f_real = myreal(integrand(x));
+
     return f_real;
 }
 
@@ -26,7 +23,7 @@ auto f_real(double x, void* params) -> double {
 template <typename Integrand>
 auto f_imag(double x, void* params) -> double {
     Integrand integrand = *(Integrand*) params;
-    double f = integrand(x).imag();
+    double f = myimag(integrand(x));
     return f;
 }
 
@@ -40,158 +37,142 @@ void handler (const char * reason,
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in, int Nmax) -> Q {
-    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
-#endif
+    if (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
+        gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
+        gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
 
-    //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
-    //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
+        gsl_function F_real;
+        gsl_function F_imag;
 
-    gsl_function F_real;
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_function F_imag;
-#endif
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        F_imag.function = &f_imag<Integrand>;
+        F_imag.params = &integrand;
 
-    F_real.function = &f_real<Integrand>;
-    F_real.params = &integrand;
+        double result_real, error_real;
+        double result_imag, error_imag;
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    F_imag.function = &f_imag<Integrand>;
-    F_imag.params = &integrand;
-#endif
+        gsl_set_error_handler(handler);
 
-    double result_real, error_real;
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    double result_imag, error_imag;
-#endif
+        gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
+        gsl_integration_qag(&F_imag, a, b, 0, integrator_tol, Nmax, 1, W_imag, &result_imag, &error_imag);
 
-    gsl_set_error_handler(handler);
+        gsl_integration_workspace_free(W_real);
+        gsl_integration_workspace_free(W_imag);
 
-    gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_qag(&F_imag, a, b, 0, integrator_tol, Nmax, 1, W_imag, &result_imag, &error_imag);
-#endif
+        return result_real + glb_i*result_imag;
+    }
+    else{
+        gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
 
-    //double w1, w2;
-    //if (w1_in < w2_in) {
-    //    w1 = w1_in; w2 = w2_in;
-    //}
-    //else {
-    //    w1 = w2_in; w2 = w1_in;
-    //}
-    //
-    //double pts[4] = {a, w1, w2, b};
-    //int npts = 4;
-    //
-    //gsl_integration_qagp(&F_real, pts, npts, 1e-4, 1e-4, Nmax, W_real, &result_real, &error_real);
-    //gsl_integration_qagp(&F_imag, pts, npts, 1e-4, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
+        gsl_function F_real;
 
-    //gsl_integration_qagi(&F_real, 0, 1e-4, Nmax, W_real, &result_real, &error_real);
-    //gsl_integration_qagi(&F_imag, 0, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
 
-    //size_t neval = Nmax;
-    //gsl_integration_cquad(&F_real, a, b, 1e-4, 1e-4, W_real, &result_real, &result_imag, &neval);
+        double result_real, error_real;
 
-    gsl_integration_workspace_free(W_real);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace_free(W_imag);
-#endif
+        gsl_set_error_handler(handler);
 
-    //gsl_integration_cquad_workspace_free(W_real);
-    //gsl_integration_cquad_workspace_free(W_imag);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    return result_real + glb_i*result_imag;
-#else
-    return result_real;
-#endif
+        gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
+
+        gsl_integration_workspace_free(W_real);
+
+        return result_real;
+    }
 }
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 //
 template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, const vec<vec<double>>& intervals, const size_t num_intervals, const int Nmax, const bool isinf=false) -> Q {
-    //gsl_integration_cquad_workspace* W_real = gsl_integration_cquad_workspace_alloc(Nmax);
-    //gsl_integration_cquad_workspace* W_imag = gsl_integration_cquad_workspace_alloc(Nmax);
-    gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
-    gsl_function F_real;
-    F_real.function = &f_real<Integrand>;
-    F_real.params = &integrand;
-    double result_real {}, error_real {};
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
-    gsl_function F_imag;
-    F_imag.function = &f_imag<Integrand>;
-    F_imag.params = &integrand;
-    double result_imag, error_imag;
-#endif
+    if (KELDYSH || ! PARTICLE_HOLE_SYMMETRY) {
+        gsl_integration_workspace *W_real = gsl_integration_workspace_alloc(Nmax);
+        gsl_function F_real;
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        double result_real{}, error_real{};
 
-    gsl_set_error_handler(handler);
+        gsl_set_error_handler(handler);
 
-    //gsl_integration_qag(&F_real, a, b, 0, integrator_tol, Nmax, 1, W_real, &result_real, &error_real);
-    double result_real_temp{}, error_real_temp{};
-    if (isinf) {
-        gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
-        gsl_integration_qagiu(&F_real, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_real, &result_real_temp, &error_real_temp);
-        result_real += result_real_temp;
-        error_real += error_real_temp;
+        double result_real_temp{}, error_real_temp{};
+        if (isinf) {
+            gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
+            gsl_integration_qagiu(&F_real, intervals[num_intervals - 1][1], 0, integrator_tol, Nmax, W_real,
+                                  &result_real_temp, &error_real_temp);
+            result_real += result_real_temp;
+            error_real += error_real_temp;
+        }
+        for (int i = 0; i < num_intervals; i++) {
+            result_real_temp = 0.;
+            error_real_temp = 0.;
+            if (intervals[i][0] < intervals[i][1])
+                gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real,
+                                    &result_real_temp, &error_real_temp);
+            result_real += result_real_temp;
+            error_real += error_real_temp;
+        }
+        gsl_integration_workspace_free(W_real);
+
+
+        gsl_integration_workspace *W_imag = gsl_integration_workspace_alloc(Nmax);
+        gsl_function F_imag;
+        F_imag.function = &f_imag<Integrand>;
+        F_imag.params = &integrand;
+        double result_imag, error_imag;
+        double result_imag_temp, error_imag_temp;
+        if (isinf) {
+            gsl_integration_qagil(&F_imag, intervals[0][0], 0, integrator_tol, Nmax, W_imag, &result_imag, &error_imag);
+            gsl_integration_qagiu(&F_imag, intervals[num_intervals - 1][1], 0, integrator_tol, Nmax, W_imag,
+                                  &result_imag_temp, &error_imag_temp);
+            result_imag += result_imag_temp;
+            error_imag += error_imag_temp;
+        }
+        for (int i = 0; i < num_intervals; i++) {
+            result_imag_temp = 0.;
+            error_imag_temp = 0.;
+            if (intervals[i][0] < intervals[i][1])
+                gsl_integration_qag(&F_imag, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_imag,
+                                    &result_imag_temp, &error_imag_temp);
+            result_imag += result_imag_temp;
+            error_imag += error_imag_temp;
+        }
+        gsl_integration_workspace_free(W_imag);
+
+        return result_real + glb_i * result_imag;
     }
+    else {
+        gsl_integration_workspace *W_real = gsl_integration_workspace_alloc(Nmax);
+        gsl_function F_real;
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        double result_real{}, error_real{};
 
-    for (int i = 0; i < num_intervals; i++){
-        result_real_temp = 0.;
-        error_real_temp = 0.;
-        if (intervals[i][0] < intervals[i][1]) gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real, &result_real_temp, &error_real_temp);
-        result_real += result_real_temp;
-        error_real += error_real_temp;
+        gsl_set_error_handler(handler);
+
+        double result_real_temp{}, error_real_temp{};
+        if (isinf) {
+            gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
+            gsl_integration_qagiu(&F_real, intervals[num_intervals - 1][1], 0, integrator_tol, Nmax, W_real,
+                                  &result_real_temp, &error_real_temp);
+            result_real += result_real_temp;
+            error_real += error_real_temp;
+        }
+
+        for (int i = 0; i < num_intervals; i++) {
+            result_real_temp = 0.;
+            error_real_temp = 0.;
+            if (intervals[i][0] < intervals[i][1])
+                gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real,
+                                    &result_real_temp, &error_real_temp);
+            result_real += result_real_temp;
+            error_real += error_real_temp;
+        }
+
+        gsl_integration_workspace_free(W_real);
+
+        return result_real;
     }
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_qagil(&F_imag, intervals[0][0], 0, integrator_tol, Nmax, W_imag, &result_imag, &error_imag);
-    double result_imag_temp, error_imag_temp;
-    gsl_integration_qagiu(&F_imag, intervals[num_intervals-1][1], 0, integrator_tol, Nmax, W_imag, &result_imag_temp, &error_imag_temp);
-    result_imag += result_imag_temp;
-    error_imag += error_imag_temp;
-    for (int i = 0; i < num_intervals; i++){
-        result_imag_temp = 0.;
-        error_imag_temp = 0.;
-        gsl_integration_qag(&F_imag, intervals[i][0], intervals[i][1], 0, integrator_tol, Nmax, 1, W_imag, &result_imag_temp, &error_imag_temp);
-        result_imag += result_imag_temp;
-        error_imag += error_imag_temp;
-    }
-#endif
-
-    //double w1, w2;
-    //if (w1_in < w2_in) {
-    //    w1 = w1_in; w2 = w2_in;
-    //}
-    //else {
-    //    w1 = w2_in; w2 = w1_in;
-    //}
-    //
-    //double pts[4] = {a, w1, w2, b};
-    //int npts = 4;
-    //
-    //gsl_integration_qagp(&F_real, pts, npts, 1e-4, 1e-4, Nmax, W_real, &result_real, &error_real);
-    //gsl_integration_qagp(&F_imag, pts, npts, 1e-4, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
-
-    //gsl_integration_qagi(&F_real, 0, 1e-4, Nmax, W_real, &result_real, &error_real);
-    //gsl_integration_qagi(&F_imag, 0, 1e-4, Nmax, W_imag, &result_imag, &error_imag);
-
-    //size_t neval = Nmax;
-    //gsl_integration_cquad(&F_real, a, b, 1e-4, 1e-4, W_real, &result_real, &result_imag, &neval);
-
-    gsl_integration_workspace_free(W_real);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    gsl_integration_workspace_free(W_imag);
-#endif
-
-    //gsl_integration_cquad_workspace_free(W_real);
-    //gsl_integration_cquad_workspace_free(W_imag);
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    return result_real + glb_i*result_imag;
-#else
-    return result_real;
-#endif
 }
 
 
@@ -199,38 +180,48 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 
 // old wrapper function
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> Q {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    return integrator_riemann(integrand, nINT);
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    return integrator_simpson(integrand, a, b, nINT);
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    return integrator_simpson(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, a, b, 0., 0., nINT);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    return adaptor.integrate(a, b);
-#endif
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return integrator_riemann(integrand, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        return integrator_simpson(integrand, a, b, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 2) {// Simpson + additional points
+        return integrator_simpson(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
+    }
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+    }
+    else if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, a, b, 0., 0., nINT);
+    }
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+        return adaptor.integrate(a, b);
+    }
 }
 
 // wrapper function, used for loop
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w) -> Q {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    return integrator_riemann(integrand, nINT);
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    return integrator_simpson(integrand, a, b, nINT);       // only use standard Simpson
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    return integrator_simpson(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    return adaptive_simpson_integrator(integrand, a, b, nINT);      // use adaptive Simpson integrator
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, a, b, w, w, nINT);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    return adaptor.integrate(a, b);
-#endif
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return integrator_riemann(integrand, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        return integrator_simpson(integrand, a, b, nINT);       // only use standard Simpson
+    }
+    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        return integrator_simpson(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
+    }
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return adaptive_simpson_integrator(integrand, a, b, nINT);      // use adaptive Simpson integrator
+    }
+    else if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, a, b, w, w, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+        return adaptor.integrate(a, b);
+    }
 }
 
 /**
@@ -240,20 +231,26 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param b         :   upper limit for integration
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> Q {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    return integrator_riemann(integrand, nINT);
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    return integrator_simpson(integrand, a, b, w1, w2, nINT);     // use standard Simpson plus additional points around +- w/2
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    return adaptor.integrate(a,b);
-#endif
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return integrator_riemann(integrand, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
+    }
+    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        return integrator_simpson(integrand, a, b, w1, w2,
+                                  nINT);     // use standard Simpson plus additional points around +- w/2
+    }
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+    }
+    else if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+        return adaptor.integrate(a, b);
+    }
 }
 
 /**
@@ -266,35 +263,41 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param Delta  : with of window around the features which should be integrated separately (to be set by hybridization strength)
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2, double Delta) -> comp {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    return integrator_riemann(integrand, nINT);
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    return integrator_simpson(integrand, a, b, w1, w2, nINT);     // use standard Simpson plus additional points around +- w/2
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    // define points at which to split the integrals (including lower and upper integration limits)
-    rvec intersections {a, w1-Delta, w1+Delta, w2-Delta, w2+Delta, b};
-    std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return integrator_riemann(integrand, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
+    }
+    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        return integrator_simpson(integrand, a, b, w1, w2,
+                                  nINT);     // use standard Simpson plus additional points around +- w/2
+    }
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+    }
+    else if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
+    }
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        // define points at which to split the integrals (including lower and upper integration limits)
+        rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
+        std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
 
-    comp result = 0.; // initialize results
-    // integrate intervals of with 2*Delta around the features at w1, w2
-    Adapt<Q, Integrand> adaptor_peaks(integrator_tol, integrand);
-    result += adaptor_peaks.integrate(intersections[1], intersections[2]);
-    result += adaptor_peaks.integrate(intersections[3], intersections[4]);
+        comp result = 0.; // initialize results
+        // integrate intervals of with 2*Delta around the features at w1, w2
+        Adapt<Q, Integrand> adaptor_peaks(integrator_tol, integrand);
+        result += adaptor_peaks.integrate(intersections[1], intersections[2]);
+        result += adaptor_peaks.integrate(intersections[3], intersections[4]);
 
-    // integrate the tails and the interval between the features, with increased tolerance
-    Adapt<Q, Integrand> adaptor_tails(integrator_tol*10, integrand);
-    result += adaptor_tails.integrate(intersections[0], intersections[1]);
-    result += adaptor_tails.integrate(intersections[2], intersections[3]);
-    result += adaptor_tails.integrate(intersections[4], intersections[5]);
+        // integrate the tails and the interval between the features, with increased tolerance
+        Adapt<Q, Integrand> adaptor_tails(integrator_tol * 10, integrand);
+        result += adaptor_tails.integrate(intersections[0], intersections[1]);
+        result += adaptor_tails.integrate(intersections[2], intersections[3]);
+        result += adaptor_tails.integrate(intersections[4], intersections[5]);
 
-    return result;
-#endif
+        return result;
+    }
 }
 
 /**
@@ -304,49 +307,55 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param num_intervals     :   number of intervals
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>>& intervals, const size_t num_intervals, const bool isinf=false) -> Q {
-#if INTEGRATOR_TYPE == 0 // Riemann sum
-    Q result;
-    for (int i = 0; i < num_intervals; i++){
-        result += integrator_riemann(integrand, nINT);
+    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+        Q result;
+        for (int i = 0; i < num_intervals; i++) {
+            result += integrator_riemann(integrand, nINT);
+        }
+        return result;
     }
-    return result;
-#elif INTEGRATOR_TYPE == 1 // Simpson
-    Q result;
-    for (int i = 0; i < num_intervals; i++){
-        result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
+    else if (INTEGRATOR_TYPE == 1) { // Simpson
+        Q result;
+        for (int i = 0; i < num_intervals; i++){
+            result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
+        }
+        return result;
     }
-    return result;
-#elif INTEGRATOR_TYPE == 2 // Simpson + additional points
-    Q result;
-    for (int i = 0; i < num_intervals; i++){
-        result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], w1, w2, nINT);        // use standard Simpson plus additional points around +- w/2
+    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        Q result;
+        for (int i = 0; i < num_intervals; i++){
+            result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);        // use standard Simpson plus additional points around +- w/2
+        }
+        return result;
     }
-    return result;
-#elif INTEGRATOR_TYPE == 3 // adaptive Simpson
-    Q result;
-    for (int i = 0; i < num_intervals; i++){
-        result += adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
+    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        Q result;
+        for (int i = 0; i < num_intervals; i++){
+            result += adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
+        }
+        return result;
     }
-    return result;
-#elif INTEGRATOR_TYPE == 4 // GSL
-    return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT, isinf);
-#elif INTEGRATOR_TYPE == 5 // adaptive Gauss-Lobatto with Kronrod extension
-    Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
-    vec<Q> result = vec<Q>(num_intervals);
-    for (int i = 0; i < num_intervals; i++){
-        if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
+    else if (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl<Q>(integrand, intervals, num_intervals, nINT, isinf);
     }
-    return result.sum();
-#endif
+    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+        Adapt<Q, Integrand> adaptor(integrator_tol, integrand);
+        vec<Q> result = vec<Q>(num_intervals);
+        for (int i = 0; i < num_intervals; i++){
+            if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
+        }
+        return result.sum();
+    }
 }
-#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
+
+//#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
 /**
  * wrapper function, used for bubbles. Splits up integration interval in suitable pieces for Matsubara T=0
  * @param integrand
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <typename Q, int num_freqs, typename Integrand> auto integrator(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> Q {
+template <typename Q, int num_freqs, typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> Q {
     double tol = inter_tol;
 
     // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
@@ -402,7 +411,7 @@ template <typename Q, int num_freqs, typename Integrand> auto integrator(Integra
     return integrator<Q>(integrand, intervals, num_intervals, isinf);
 
 }
-#endif
+//#endif
 
 
 template <typename Q, typename Integrand> auto matsubarasum(const Integrand& integrand, const int Nmin, const int Nmax, const int N_tresh = 60,
