@@ -11,33 +11,15 @@
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 #define HUBBARD
-#ifdef HUBBARD
-constexpr bool HUBBARD_MODEL = true;
-#else
-constexpr bool HUBBARD_MODEL = false;
-#endif
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
 #ifdef KELDYSH_FORMALISM
-constexpr bool KELDYSH = true;
-constexpr bool ZERO_T = false; // only needed for Matsubara
-#else
-constexpr bool KELDYSH = false;
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
-#ifdef ZERO_TEMP
-constexpr bool ZERO_T = true;
-#endif
 #endif
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
-#ifdef PARTICLE_HOLE_SYMM
-constexpr bool PARTICLE_HOLE_SYMMETRY = true;
-#else
-constexpr bool PARTICLE_HOLE_SYMMETRY = false;
-#endif
-
 
 /// Production runs parameters ///
 
@@ -70,8 +52,6 @@ constexpr double glb_Gamma = 1./5.;                // Hybridization of Anderson 
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
-
-
 
 
 /// Spin parameters ///
@@ -124,5 +104,29 @@ constexpr double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOP
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
 #endif
 
+
+/// Set flags used in code; DO NOT TOUCH!!!///
+
+#ifdef HUBBARD
+constexpr bool HUBBARD_MODEL = true;
+#else
+constexpr bool HUBBARD_MODEL = false;
+#endif
+
+#ifdef KELDYSH_FORMALISM
+constexpr bool KELDYSH = true;
+constexpr bool ZERO_T = false; // only needed for Matsubara
+#else
+constexpr bool KELDYSH = false;
+#ifdef ZERO_TEMP
+constexpr bool ZERO_T = true;
+#endif
+#endif
+
+#ifdef PARTICLE_HOLE_SYMM
+constexpr bool PARTICLE_HOLE_SYMMETRY = true;
+#else
+constexpr bool PARTICLE_HOLE_SYMMETRY = false;
+#endif
 
 #endif //KELDYSH_MFRG_PARAMETERS_H
