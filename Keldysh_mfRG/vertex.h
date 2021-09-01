@@ -16,9 +16,8 @@ class irreducible{
         if (KELDYSH) return vec<Q> (16*n_in);
         else return vec<Q> (n_in);
     }
+    vec<Q> bare = empty_bare();
 public:
-    vec<Q> bare = empty_bare(); // TODO(medium): does this need to be public? --> do we need default constructor?
-
     irreducible() = default;;
 
     // All three functions return the value of the bare vertex. Since this value is, this far, independent of everything,
