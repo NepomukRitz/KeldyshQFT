@@ -298,7 +298,7 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
         // otherwise return the interpolated value of the calling r vertex
         value = Interpolate<k,Q>()(indices, *(this));
 
-    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
 
     assert(isfinite(value));
     return value;
@@ -355,7 +355,7 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
             value = Interpolate<k,Q>()(indices, *(this));
     }
 
-    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
 
     assert(isfinite(value));
     return value;
@@ -670,7 +670,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                     result = indices.prefactor * K1[itK * nw1 + itw_new];
 
                 if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                    K1[itK * nw1 + itw] = conj(result);
+                    K1[itK * nw1 + itw] = myconj(result);
                 else
                     K1[itK * nw1 + itw] = result;
             }
@@ -744,7 +744,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                         result = Interpolate<k2,Q>()(indices, *(this));
 
                     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                        K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
+                        K2[itK * nw2 * nv2 + itw * nv2 + itv] = myconj(result);
                     else
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
                 }
@@ -792,7 +792,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                             result = Interpolate<k3,Q>()(indices, *(this));
 
                         if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                            K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = conj(result);
+                            K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = myconj(result);
                         else
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = result;
                     }
@@ -909,5 +909,28 @@ template <typename Q> auto rvert<Q>::get_deriv_maxK3() const -> double {
     return max_K3;
 
 }
+
+template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {
+    double max_K1 = ::power2(::get_finite_differences(K1)).max_norm();
+    return max_K1;
+
+}
+template <typename Q> auto rvert<Q>::get_deriv_maxK2() const -> double {
+    double max_K2 = (::power2(::get_finite_differences<Q,2>(K2, {nBOS2, nFER2}, {0, 1}))
+                   + ::power2(::get_finite_differences<Q,2>(K2, {nFER2}, {1, 0}))
+    ).max_norm();
+    return max_K2;
+
+}
+
+template <typename Q> auto rvert<Q>::get_deriv_maxK3() const -> double {
+    double max_K3 = (::power2(::get_finite_differences<Q,3>(K3, {nBOS3, nFER3, nFER3}, {0, 1, 2}))
+                   + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nBOS3, nFER3}, {1, 2, 0}))
+                   + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nFER3, nBOS3}, {2, 0, 1}))
+    ).max_norm();
+    return max_K3;
+
+}
+
 
 #endif //KELDYSH_MFRG_R_VERTEX_H

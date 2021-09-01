@@ -142,7 +142,7 @@ Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
 template<typename Q>
 void IntegrandSE<Q>::evaluate_propagator(Q &GR, Q &GA, Q &GK, double vp) const {
     GR = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
-    GA = conj(GR);  // advanced propagator (full or single scale)
+    GA = myconj(GR);  // advanced propagator (full or single scale)
     GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
 }
 
@@ -262,9 +262,9 @@ class LoopCalculator{
     IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
     // TODO(medium): There is a lot of redundancy and duplication here - unify the LoopCalculator and IntegrandSE class?
     //  Note though: The integrator needs an integrand (template there).
-#ifdef KELDYSH_FORMALISM
+//#ifdef KELDYSH_FORMALISM
     IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins);
-#endif
+//#endif
 
     Q set_prefactor();
     Q prefactor = set_prefactor();
@@ -375,15 +375,14 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara_finiteT() {
     if (isfinite(v)) {
-        int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
-    #ifndef KELDYSH_FORMALISM // TODO(high): Figure out type problems in matsubarasum
-        integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin-vint, Nmax+vint);
+    int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
+//#ifndef KELDYSH_FORMALISM // TODO(high): Figure out type problems in matsubarasum
+    integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin-vint, Nmax+vint);
 
-        integratedR += - 1./(2.*M_PI)
-                           * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
-    #endif
-        self.addself(0, iv, i_in, integratedR);
-
+    integratedR += - 1./(2.*M_PI)
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
+//#endif
+    self.addself(0, iv, i_in, integratedR);
     }
     else {
         self.setself(0, iv, i_in, self.asymp_val_R);
