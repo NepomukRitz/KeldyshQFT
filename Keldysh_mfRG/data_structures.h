@@ -355,22 +355,22 @@ size_t getFlatIndex(const size_t (&indx) [dimensionality], size_t (&dims) [dimen
     }
     return result;
 }
-
-template<size_t idim, size_t jdim, size_t kdim, size_t ldim, size_t mdim>
-size_t getFlatIndex(size_t i, size_t j, size_t k, size_t l, size_t m) {
-    return ((((i * jdim + j) * kdim + k) * ldim + l) * mdim + m);
+/// Overloads of above function for 5, 4, 3 or 2 indices (with the array dims containing number of grids points in each direction)
+size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const  size_t m, const size_t (&dims) [5]) {
+    size_t indx [5] = {i, j, k ,l ,m};
+    return getFlatIndex<5>(indx, dims);
 }
-template<size_t idim, size_t jdim, size_t kdim, size_t ldim>
-size_t getFlatIndex(size_t i, size_t j, size_t k, size_t l) {
-    return ((((i * jdim + j) * kdim + k) * ldim + l));
+size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const size_t (&dims) [4]) {
+    size_t indx [4] = {i, j, k ,l};
+    return getFlatIndex<4>(indx, dims);
 }
-template<size_t idim, size_t jdim, size_t kdim>
-size_t getFlatIndex(size_t i, size_t j, size_t k) {
-    return ((((i * jdim + j) * kdim + k)));
+size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const size_t (&dims) [3]) {
+    size_t indx [3] = {i, j, k};
+    return getFlatIndex<3>(indx, dims);
 }
-template<size_t idim, size_t jdim>
-size_t getFlatIndex(size_t i, size_t j) {
-    return ((((i * jdim + j))));
+size_t getFlatIndex(const size_t i, const  size_t j, const size_t (&dims) [2]) {
+    size_t indx [2] = {i, j};
+    return getFlatIndex<2>(indx, dims);
 }
 
 
