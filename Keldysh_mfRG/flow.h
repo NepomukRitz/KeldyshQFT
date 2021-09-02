@@ -48,10 +48,10 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
 
     // compute the flow using RK4 solver
-    //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
-    //               sq_substitution, sq_resubstitution,                                       // use substitution for Lambda steps
-    //               nODE,
-    //               outputFileName, save_intermediate_results);                                                                // save state at each step during flow
+    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
+                   sq_substitution, sq_resubstitution,                                       // use substitution for Lambda steps
+                   nODE,
+                   outputFileName, save_intermediate_results);                                                                // save state at each step during flow
 
     //sum_rule_K1tK(outputFileName);    // Check fulfillment of the sum rule
 

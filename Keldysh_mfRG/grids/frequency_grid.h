@@ -69,8 +69,8 @@ public:
                         w_upper = glb_w_upper;
                         w_lower = glb_w_lower;
                         W_scale = glb_W_scale;
-                        U_factor = 5./3.;
-                        Delta_factor = 5.;
+                        U_factor = 20./3.;
+                        Delta_factor = 20.;
                         break;
                     case 2:
                         N_w = nBOS2;
@@ -208,7 +208,7 @@ void FrequencyGrid::initialize_grid() {
 void FrequencyGrid::initialize_grid(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
-    w_upper = grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
+    w_upper = scale * 15.*4; //grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
 
     if (!KELDYSH && !ZERO_T){
         // for Matsubara T>0: pick grid such that no frequencies occur twice
@@ -251,8 +251,14 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
     t = grid_transf(w_in);
     double t_rescaled = (t - t_lower) / dt;
     auto index = (int)t_rescaled + 1;
-    index = std::max(0, index);
-    index = std::min(N_w-2, index);
+    if (INTERPOLATION==1) {
+        index = std::max(0, index);
+        index = std::min(N_w - 2, index);
+    }
+    else if (INTERPOLATION==3) {
+        index = std::max(1, index);
+        index = std::min(N_w - 3, index);
+    }
     return index;
 }
 

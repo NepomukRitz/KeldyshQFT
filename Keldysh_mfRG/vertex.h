@@ -1263,7 +1263,7 @@ public:
 template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
 
     fullvert<Q> fullvert_temp = *this;
-    fullvert_temp.update_grid(Lambda);
+    //fullvert_temp.update_grid(Lambda);
 
 
     double a_Wscale = fullvert_temp.avertex.frequencies.b_K1.W_scale / 10.;
@@ -1272,7 +1272,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(fullvert_temp);
     minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, true);
     VertexFrequencyGrid frequencies_new = avertex.frequencies;
-    frequencies_new.b_K1.initialize_grid(m_Wscale);
+    frequencies_new.b_K1.initialize_grid(m_Wscale*2.);
 
     update_grid(frequencies_new);
 
@@ -1287,7 +1287,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     CostFullvert_Wscale_f_K2<Q> cost_f_K2(fullvert_temp);
     minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 100, true);
     frequencies_new = avertex.frequencies;
-    frequencies_new.f_K2.initialize_grid(m_Wscale);
+    frequencies_new.f_K2.initialize_grid(m_Wscale*2.);
 
     update_grid(frequencies_new);
 
@@ -1298,7 +1298,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     CostFullvert_Wscale_b_K2<Q> cost_bK2(fullvert_temp);
     minimizer(cost_bK2, a_Wscale, m_Wscale, b_Wscale, 100, true);
     frequencies_new = avertex.frequencies;
-    frequencies_new.b_K2.initialize_grid(m_Wscale);
+    frequencies_new.b_K2.initialize_grid(m_Wscale*2.);
 
     update_grid(frequencies_new);
 
@@ -1311,7 +1311,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     CostFullvert_Wscale_b_K3<Q> cost_f_K3(fullvert_temp);
     minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, true);
     frequencies_new = avertex.frequencies;
-    frequencies_new.f_K3.initialize_grid(m_Wscale);
+    frequencies_new.f_K3.initialize_grid(m_Wscale*2.);
 
     update_grid(frequencies_new);
 
@@ -1322,7 +1322,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     CostFullvert_Wscale_b_K3<Q> cost_bK3(fullvert_temp);
     minimizer(cost_bK3, a_Wscale, m_Wscale, b_Wscale, 100, true);
     frequencies_new = avertex.frequencies;
-    frequencies_new.b_K3.initialize_grid(m_Wscale);
+    frequencies_new.b_K3.initialize_grid(m_Wscale*2.);
 
     update_grid(frequencies_new);
 
