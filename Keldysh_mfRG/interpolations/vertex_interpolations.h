@@ -18,17 +18,17 @@ public:
     auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        if (    std::abs(indices.w ) < vertex.frequencies.b_K2.w_upper + inter_tol
-                && std::abs(indices.v1) < vertex.frequencies.f_K2.w_upper + inter_tol )
-        {
+        //if (    std::abs(indices.w ) < vertex.frequencies.b_K2.w_upper + inter_tol
+        //        && std::abs(indices.v1) < vertex.frequencies.f_K2.w_upper + inter_tol )
+        //{
             Q result = indices.prefactor * interpolate2D<Q>(indices.w, indices.v1,
                                                             vertex.frequencies.b_K2, vertex.frequencies.f_K2,
                                                             [&indices, &vertex](int i, int j) -> Q {return vertex.K2_val(indices.iK, i, j, indices.i_in);});
             return result;
-        }
-        else {
-            return 0.;      // asymptotic value
-        }
+        //}
+        //else {
+        //    return 0.;      // asymptotic value
+        //}
     }
 };
 
