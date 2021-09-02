@@ -5,7 +5,7 @@
 #ifndef KELDYSH_MFRG_SYMMETRY_TRANSFORMATIONS_H
 #define KELDYSH_MFRG_SYMMETRY_TRANSFORMATIONS_H
 
-#include "../parameters.h"
+#include "../parameters/master_parameters.h"
 #include "Keldysh_symmetries.h"
 
 /**
@@ -47,23 +47,23 @@ void T1 (IndicesSymmetryTransformations& indices){
 
     if(indices.channel == 'p'){
         indices.w  *= 1.;
-#if MAX_DIAG_CLASS>1
-        indices.v1 *= 1.;
-        indices.v2 *= -1.;
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)   // Matsubara T>0
-        indices.v2 += floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
-#endif
-#endif
+        if (MAX_DIAG_CLASS > 1) {
+            indices.v1 *= 1.;
+            indices.v2 *= -1.;
+            if (!KELDYSH && !ZERO_T)
+                indices.v2 += floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2);
+            // correction due to rounding towards Matsubara frequencies
+        }
     }
     else {
         indices.asymmetry_transform ^= true;
 
         indices.w  *= -1.;
-#if MAX_DIAG_CLASS>1
-        double temp = indices.v1;
-        indices.v1 = indices.v2;
-        indices.v2 = temp;
-#endif
+        if (MAX_DIAG_CLASS > 1) {
+            double temp = indices.v1;
+            indices.v1 = indices.v2;
+            indices.v2 = temp;
+        }
     }
     switch_channel(indices);
 }
@@ -75,13 +75,13 @@ void T2 (IndicesSymmetryTransformations& indices){
 
     if(indices.channel == 'p'){
         indices.w  *= 1.;
-#if MAX_DIAG_CLASS>1
-        indices.v1 *= -1.;
-        indices.v2 *= 1.;
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)   // Matsubara T>0
-        indices.v1 += floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
-#endif
-#endif
+        if (MAX_DIAG_CLASS > 1) {
+            indices.v1 *= -1.;
+            indices.v2 *= 1.;
+            if (!KELDYSH && !ZERO_T)
+                indices.v1 += floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2);
+            // correction due to rounding towards Matsubara frequencies
+        }
     }
     else {
 //        indices.w  *= 1.;
@@ -109,61 +109,63 @@ void TC (IndicesSymmetryTransformations& indices){
         indices.asymmetry_transform ^= true;
 
         indices.w  *= 1.;
-#if MAX_DIAG_CLASS>1
-        double temp = indices.v1;
-        indices.v1 = indices.v2;
-        indices.v2 = temp;
-#endif
+        if (MAX_DIAG_CLASS > 1) {
+            double temp = indices.v1;
+            indices.v1 = indices.v2;
+            indices.v2 = temp;
+        }
     }
 
-#ifdef KELDYSH_FORMALISM
-    if(isInList(indices.iK, odd_Keldysh))
-        indices.prefactor *= 1.;
-    else
-        indices.prefactor *= -1.;
-#else
-    indices.w *= -1;
-    indices.v1 *= -1;
-    indices.v2 *= -1;
-#ifndef ZERO_TEMP   // Matsubara T>0
-    double rounding_correction = floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
-    indices.v1 += rounding_correction;
-    indices.v2 += rounding_correction;
-#endif // ZERO_TEMP
-#endif
+    if (KELDYSH){
+        if(isInList(indices.iK, odd_Keldysh))
+            indices.prefactor *= 1.;
+        else
+            indices.prefactor *= -1.;
+    }
+    else{
+        indices.w *= -1;
+        indices.v1 *= -1;
+        indices.v2 *= -1;
+        if (!ZERO_T){// Matsubara T>0
+            double rounding_correction = floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
+            indices.v1 += rounding_correction;
+            indices.v2 += rounding_correction;
+        }
+    }
 }
 
-#if  defined(KELDYSH_FORMALISM) and defined(PARTICLE_HOLE_SYMM)
 void Tph (IndicesSymmetryTransformations& indices){
-    indices.conjugate ^= true;
-    if (isInList(indices.iK, odd_Keldysh))
-        indices.prefactor *= 1.;
-    else
-        indices.prefactor *= -1.;
+    if (KELDYSH && PARTICLE_HOLE_SYMMETRY){ // Used only for Keldysh calculations with particle-hole symmetry
+        indices.conjugate ^= true;
+        if (isInList(indices.iK, odd_Keldysh))
+            indices.prefactor *= 1.;
+        else
+            indices.prefactor *= -1.;
 
-    indices.w *= -1;
-#if MAX_DIAG_CLASS > 1
-    indices.v1 *= -1;
-    indices.v2 *= -1;
-#endif
+        indices.w *= -1;
+        if (MAX_DIAG_CLASS > 1) {
+            indices.v1 *= -1;
+            indices.v2 *= -1;
+        }
+    }
 }
-#endif
 
-#ifndef KELDYSH_FORMALISM
 void TR (IndicesSymmetryTransformations& indices){
-    indices.conjugate ^= true;
-    indices.w *= -1;
-#if MAX_DIAG_CLASS > 1
-    indices.v1 *= -1;
-    indices.v2 *= -1;
-#ifndef ZERO_TEMP   // Matsubara T>0
-    double rounding_correction = floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
-    indices.v1 += rounding_correction;
-    indices.v2 += rounding_correction;
-#endif // ZERO_TEMP
-#endif
+    if (!KELDYSH){ // used only for Matsubara calculations
+        indices.conjugate ^= true;
+        indices.w *= -1;
+        if (MAX_DIAG_CLASS > 1) {
+            indices.v1 *= -1;
+            indices.v2 *= -1;
+            if (!ZERO_T) { // Matsubara T>0
+                double rounding_correction = floor2bfreq(indices.w / 2) - ceil2bfreq(
+                        indices.w / 2);  // correction due to rounding towards Matsubara frequencies
+                indices.v1 += rounding_correction;
+                indices.v2 += rounding_correction;
+            }
+        }
+    }
 }
-#endif
 
 /**
  * Define symmetry transformations.
@@ -202,9 +204,9 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TC(indices);
             T3(indices);
             break;
-#if  defined(KELDYSH_FORMALISM) and defined(PARTICLE_HOLE_SYMM)
-        case 6:
-            Tph(indices);
+    if (KELDYSH and PARTICLE_HOLE_SYMMETRY) {
+                case 6:
+                    Tph(indices);
             break;
         case 36:
             Tph(indices);
@@ -219,25 +221,25 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             TC(indices);
             T3(indices);
             break;
-#endif
-#ifndef KELDYSH_FORMALISM
+    }
+    if (!KELDYSH) {
         case 7:
             TR(indices);
-            break;
+        break;
         case 37:
             TR(indices);
-            T3(indices);
-            break;
+        T3(indices);
+        break;
         case 47:
             TC(indices);
-            TR(indices);
-            break;
+        TR(indices);
+        break;
         case 347:
             TR(indices);
-            TC(indices);
-            T3(indices);
-            break;
-#endif
+        TC(indices);
+        T3(indices);
+        break;
+    }
         default:
             std::cout << "A Transformation in the symmetry table is not covered in Ti!"
             ;

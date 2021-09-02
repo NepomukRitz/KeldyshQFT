@@ -6,34 +6,23 @@
 #define MAIN_CPP_LADDER_APPROXIMATION_H
 
 #include "Momentum-integral-Bubble.h"
-#include "zeros.h"
-#include "../write_data2file.h"             // write vectors into hdf5 file
-
-double gint(double Lambda_i, double Lambda_f, int reg) {
-    /* reg: 0 = sharp frequency, 1 = sharp momentum */
-    double mr = glb_mc*glb_md/(glb_mc+glb_md);
-    switch (reg) {
-        case 1:
-            return 1./(mr*glb_ainv/(2*M_PI)-mr/(M_PI*M_PI)*(sqrt(glb_mc)+sqrt(glb_md))*(sqrt(Lambda_i)-sqrt(Lambda_f)));
-        case 2:
-            return 1./(mr*glb_ainv/(2*M_PI)-mr/(M_PI*M_PI)*(Lambda_i-Lambda_f));
-        default:
-            std::cout << "wrong regulator type in g\n";
-    }
-}
+//#include "zeros.h"
+#include "../utilities/write_data2file.h"             // write vectors into hdf5 file
+#include "fRG-T-matrix-approach.h"
 
 template <typename Q>
 class Integrand_Pi0_vpp {
 private:
     double w, q;
     char i, j, chan;
+    int inttype; // kint_type = 0 exact, 1 numerical
 
 public:
     /**
      * Constructor:
      */
-    Integrand_Pi0_vpp(double w_in, double q_in, char i_in, char j_in, char chan_in)
-            :w(w_in), q(q_in), i(i_in), j(j_in), chan(chan_in){
+    Integrand_Pi0_vpp(double w_in, double q_in, char i_in, char j_in, char chan_in, int inttype_in)
+            :w(w_in), q(q_in), i(i_in), j(j_in), chan(chan_in), inttype(inttype_in){
     };
 
     /**
@@ -42,7 +31,16 @@ public:
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
     auto operator() (double vpp) const -> Q {
-        return exact_bare_bubble (w, vpp, q, i, j, chan);
+
+        if (inttype == 0) {
+            return exact_bare_bubble (w, vpp, q, i, j, chan);
+        }
+        else if (inttype == 1) {
+            return perform_integral_Pi0_kpp_chan (w, vpp, q, i, j, chan);
+        }
+        else {
+            std::cout << "wrong integrator type for k-integral \n";
+        }
     };
 
     //void save_integrand();
@@ -56,53 +54,136 @@ double exactzerobubble(double Lambda_i, double Lambda_f){
     return (sqrt(Lambda_i)-sqrt(Lambda_f))/(pow(M_PI,2));
 }
 
-comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, double Lambda_i, double Lambda_f){
-    comp output1, output2, output3, output4, output5, output6, output;
-    double Lambda_mu, Lambda_ml;
-    if (Lambda_i*Lambda_f > 1) {
-        Lambda_mu = Lambda_i*Lambda_f;
-        Lambda_ml = 1;
+
+
+comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, double Lambda_i, double Lambda_f, int inttype){
+    comp output1, output2, output3, output4, output5, output6, output7, output8, output;
+    double Lambda_mu, Lambda_mm, Lambda_ml;
+
+    if ((Lambda_i > std::abs(w/2)) and (std::abs(w/2) > Lambda_f)) {
+        double Lambdas[] = {Lambda_i*Lambda_f,1.0,std::abs(w/2)};
+        std::vector<double> Lambdasvec (Lambdas, Lambdas+3);
+        std::sort (Lambdasvec.begin(), Lambdasvec.begin()+3);
+        Lambda_mu = Lambdasvec[2];
+        Lambda_mm = Lambdasvec[1];
+        Lambda_ml = Lambdasvec[0];
     }
     else {
-        Lambda_mu = 1;
-        Lambda_ml = Lambda_i*Lambda_f;
+        double Lambdas[] = {Lambda_i*Lambda_f,1.0};
+        std::vector<double> Lambdasvec (Lambdas, Lambdas+2);
+        std::sort (Lambdasvec.begin(), Lambdasvec.begin()+2);
+        Lambda_mu = Lambdasvec[1];
+        Lambda_mm = Lambda_mu;
+        Lambda_ml = Lambdasvec[0];
     }
-    Integrand_Pi0_vpp<comp> perform_Pi0_vpp_integral(w, q, i, j, chan);
-    output1 = integrator<comp>(perform_Pi0_vpp_integral, -Lambda_i, -Lambda_mu);
-    output2 = integrator<comp>(perform_Pi0_vpp_integral, -Lambda_mu, -Lambda_ml);
-    output3 = integrator<comp>(perform_Pi0_vpp_integral, -Lambda_ml, -Lambda_f);
-    output4 = integrator<comp>(perform_Pi0_vpp_integral, Lambda_f, Lambda_ml);
-    output5 = integrator<comp>(perform_Pi0_vpp_integral, Lambda_ml, Lambda_mu);
-    output6 = integrator<comp>(perform_Pi0_vpp_integral, Lambda_mu, Lambda_i);
-    output = 1/M_PI*(output1 + output2 + output3 + output4 + output5 + output6);
+
+    //double mylist[] = {Lambda_one, Lambdaif};
+    //std::vector<double> myvector (mylist, mylist+2);               // 32 71 12 45 26 80 53 33
+    //std::cout << "finished\n";
+    // using default comparison (operator <):
+    //std::sort (myvector.begin(), myvector.begin()+2);
+
+    /*
+    else if
+        if ((Lambda_i*Lambda_f > std::abs(w/2)) and (Lambda_i*Lambda_f >1)){
+            Lambda_mu = Lambda_i*Lambda_f;
+            if (std::abs(w/2) > 1){
+                Lambda_mm = std::abs(w/2);
+                Lambda_ml = 1;
+            }
+            else {
+                Lambda_mm = 1;
+                Lambda_ml = std::abs(w/2);
+            }
+        }
+        else if ((std::abs(w/2) > Lambda_i*Lambda_f) and (std::abs(w/2) >1)){
+            Lambda_mu = std::abs(w/2);
+            if (Lambda_i*Lambda_f > 1){
+                Lambda_mm = Lambda_i*Lambda_f;
+                Lambda_ml = 1;
+            }
+            else {
+                Lambda_mm = 1;
+                Lambda_ml = Lambda_i*Lambda_f;
+            }
+        }
+        else {
+            Lambda_mu = 1;
+            if (Lambda_i*Lambda_f > std::abs(w/2)){
+                Lambda_mm = Lambda_i*Lambda_f;
+                Lambda_ml = std::abs(w/2);
+            }
+            else {
+                Lambda_mm = std::abs(w/2);
+                Lambda_ml = Lambda_i*Lambda_f;
+            }
+        }
+        */
+        /*
+        if (Lambda_i*Lambda_f > 1) {
+            Lambda_mu = Lambda_i*Lambda_f;
+            Lambda_ml = 1;
+        }
+        else {
+            Lambda_mu = 1;
+            Lambda_ml = Lambda_i*Lambda_f;
+        }
+        */
+
+        while (isnan(std::abs(exact_bare_bubble (w, Lambda_mu, q, i, j, chan)))) {
+            Lambda_mu = Lambda_mu + (Lambda_mu-Lambda_mm)/10.;
+        }
+        while (isnan(std::abs(exact_bare_bubble (w, Lambda_mm, q, i, j, chan)))) {
+            Lambda_mm = Lambda_mm + (Lambda_mm-Lambda_ml)/10.;
+        }
+        while (isnan(std::abs(exact_bare_bubble (w, Lambda_ml, q, i, j, chan)))) {
+            Lambda_ml = Lambda_ml - (Lambda_mm-Lambda_ml)/10.;
+        }
+
+        //Lambda_mm = Lambda_mu;
+    //}*/
+
+    Integrand_Pi0_vpp<comp> integrand_Pi0_vpp(w, q, i, j, chan, inttype);
+    output1 = integrator<comp>(integrand_Pi0_vpp, -Lambda_i, -Lambda_mu);
+    output2 = integrator<comp>(integrand_Pi0_vpp, -Lambda_mu, -Lambda_mm);
+    //output2 = 0.0;
+    output3 = integrator<comp>(integrand_Pi0_vpp, -Lambda_mm, -Lambda_ml);
+    output4 = integrator<comp>(integrand_Pi0_vpp, -Lambda_ml, -Lambda_f);
+    output5 = integrator<comp>(integrand_Pi0_vpp, Lambda_f, Lambda_ml);
+    output6 = integrator<comp>(integrand_Pi0_vpp, Lambda_ml, Lambda_mm);
+    //output6 = 0.0;
+    output7 = integrator<comp>(integrand_Pi0_vpp, Lambda_mm, Lambda_mu);
+    output8 = integrator<comp>(integrand_Pi0_vpp, Lambda_mu, Lambda_i);
+    output = 1/M_PI*(output1 + output2 + output3 + output4 + output5 + output6 + output7 + output8);
     return output;
 }
 
-comp ladder (double w, double q, double Lambda_i, double Lambda_f, int reg) {
+comp ladder (double w, double q, double Lambda_i, double Lambda_f, int reg, int inttype) {
     comp bubble_int;
     double ginv_Lambda;
     comp output;
-    bubble_int = perform_Pi0_vpp_integral (w, q, 'c', 'd', 'p', Lambda_i, Lambda_f);
+    bubble_int = perform_Pi0_vpp_integral (w, q, 'c', 'd', 'p', Lambda_i, Lambda_f, inttype);
     ginv_Lambda = gint(Lambda_i, Lambda_f, reg);
     output = -ginv_Lambda/(1.0 + ginv_Lambda*bubble_int);
-    /* cout << "ginv_Lambda = " << ginv_Lambda << "\n";
-    cout << "bubble_int = " << bubble_int << "\n";
-    cout << "output = " << output << "\n"; */
+    /* std::cout << "ginv_Lambda = " << ginv_Lambda << "\n";
+    std::cout << "bubble_int = " << bubble_int << "\n";
+    std::cout << "output = " << output << "\n"; */
     return output;
 };
 
 template <typename Q>
-class f_mu {
+class F_mu {
 private:
     double w, q, Lambda_i, Lambda_f;
-    int reg;
+    int reg, inttype;
+    // bool fRG;
 
 public:
     /**
      * Constructor:
      */
-    f_mu(double w_in, double q_in, double Lambda_i_in, double Lambda_f_in, int reg_in)
-            :w(w_in), q(q_in), Lambda_i(Lambda_i_in), Lambda_f(Lambda_f_in), reg(reg_in){
+    F_mu(double w_in, double q_in, double Lambda_i_in, double Lambda_f_in, int reg_in, int inttype_in/*, bool fRG_in*/)
+            :w(w_in), q(q_in), Lambda_i(Lambda_i_in), Lambda_f(Lambda_f_in), reg(reg_in), inttype(inttype_in)/*, fRG(fRG_in)*/{
     };
 
     /**
@@ -113,7 +194,12 @@ public:
         double output;
         double mu_inter = glb_mud;
         glb_mud = mu;
-        output = 1./real(ladder(w,q,Lambda_i,Lambda_f,reg));
+        //if (fRG == 0){
+            output = 1./real(ladder(w,q,Lambda_i,Lambda_f,reg, inttype));
+        //}
+        /*else {
+            output = 1./real(fRG_solve_nsc(w,q,Lambda_i,Lambda_f,reg));
+        }*/
         glb_mud = mu_inter;
         return output;
     };
@@ -128,50 +214,58 @@ public:
     return output;
 }*/
 
-double find_root_newton (double w, double q, double Lambda_i, double Lambda_f, int reg, double start, double dx, int imax, double prec) {
+double find_root_newton (double w, double q, double Lambda_i, double Lambda_f, int reg, int inttype, double start, double dx, int imax, double prec) {
     double xnew = start;
     double fold, fold_plus, df;
     double xold;
 
-    f_mu<double> f(w,q,Lambda_i,Lambda_f,reg);
+    F_mu<double> f(w,q,Lambda_i,Lambda_f,reg, inttype);
 
     for (int i = 1; i < imax + 1; ++i){
         xold = xnew;
         fold = f.mu(xold);
         while (std::abs(fold)>1/prec){ // avoid infinite f
-            fold = f.mu(xold+dx);
+            xold = xold + dx;
+            fold = f.mu(xold);
         }
+        /*while (xold>1) { // physical values below 1
+            xold = xold - dx;
+            fold = f.mu(xold);
+        }*/
         fold_plus = f.mu(xold+dx);
         df = (fold_plus-fold)/dx;
 
-        //cout << "j = " << i << ", x = " << xold << ", f = " << fold << ", fold_plus = " << fold_plus << ", df = " <<   df  << "\n";
+        //std::cout << "j = " << i << ", x = " << xold << ", f = " << fold << ", fold_plus = " << fold_plus << ", df = " <<   df  << "\n";
 
         if (std::abs(df) < prec){ // stop if the denominator is too small
             break;
-            //cout << "denominator too small \n";
+            //std::cout << "denominator too small \n";
         }
 
         xnew = xold - fold/df; // Newton's computation
+        if (xnew > 1) {
+            xnew = xold + std::abs(xnew-xold)/10.;
+        }
 
         if (std::abs(xnew-xold)<dx) { // stop when result is within tolerance
             break;
-            //cout << "result within tolerance \n";
+            //std::cout << "result within tolerance \n";
         }
 
     }
     return xnew;
 }
 
-double find_root_ladder (double w, double q, double Lambda_i, double Lambda_f, int reg, double md_start, double ainv, double dmu, int imax, double prec){
+double find_root_ladder (double w, double q, double Lambda_i, double Lambda_f, int reg, int inttype, double md_start, double ainv, double dmu, int imax, double prec){
     glb_muc = 1.0;
     glb_ainv = ainv;
 
     double mud;
-    mud = find_root_newton(w,q,Lambda_i,Lambda_f,reg, md_start, dmu,imax,prec);
+    mud = find_root_newton(w,q,Lambda_i,Lambda_f,reg, inttype, md_start, dmu,imax,prec);
     return mud;
 }
 
-void ladder_p_list (double Lambda_i, double Lambda_f, int reg, double ainv_min, double ainv_max, double mud_start, double dmu, int imax, double prec, int nainv) {
+void ladder_p_list (double Lambda_i, double Lambda_f, int reg, int inttype, double ainv_min, double ainv_max, double mud_start, double dmu, int imax, double prec, int nainv) {
     vec<double> ainvs(nainv);
     vec<double> muds(nainv);
 
@@ -179,35 +273,71 @@ void ladder_p_list (double Lambda_i, double Lambda_f, int reg, double ainv_min, 
     double mudold = mud_start;
 
     /*for (int i = 0; i < nainv; ++i) {
-        cout << "N-i-1 = " << nainv-i-1 << ", a^(-1) = " << ainvs[i] << ", mu = " << muds[i] << "\n";
+        std::cout << "N-i-1 = " << nainv-i-1 << ", a^(-1) = " << ainvs[i] << ", mu = " << muds[i] << "\n";
     }*/
 
     for (int i = 0; i < nainv ; ++i) {
-        //cout << "i = " << i  << "\n";
+        //std::cout << "i = " << i  << "\n";
         ainv = ainv_max - i * std::abs(ainv_max-ainv_min)/(nainv-1);
-        //cout << "i = " << i << ", ainv = " << ainv <<"\n";
-        //cout << "mudold = " << mudnew  << "\n";
-        mudnew = find_root_ladder(0.0,0.0,Lambda_i,Lambda_f,reg,mudold,ainv,dmu,imax,prec);
-        //cout << "mudnew = " << mudnew << "\n";
-        //cout << "i = " << i << ", ainv = " << ainv << ", mud = " << mudnew <<"\n";
+        //std::cout << "i = " << i << ", ainv = " << ainv <<"\n";
+        //std::cout << "mudold = " << mudnew  << "\n";
+        mudnew = find_root_ladder(0.0,0.0,Lambda_i,Lambda_f,reg,inttype,mudold,ainv,dmu,imax,prec);
+        //std::cout << "mudnew = " << mudnew << "\n";
+        //std::cout << "i = " << i << ", ainv = " << ainv << ", mud = " << mudnew <<"\n";
 
         ainvs[nainv-i-1] = ainv/sqrt(2);
         muds[nainv-i-1] = mudnew;
 
         mudold = mudnew;
 
-        cout << "i = " << i << ", a^(-1) = " << ainvs[nainv-i-1] << ", mu = " << muds[nainv-i-1] << "\n";
+        //std::cout << "i = " << i << ", a^(-1) = " << ainvs[nainv-i-1] << ", mu = " << muds[nainv-i-1] << "\n";
 
     }
 
+    for (int i = 0; i < nainv; ++i) {
+        std::cout << "i = " << i << ", a^(-1) = " << ainvs[nainv-i-1] << ", mu = " << muds[nainv-i-1] << "\n";
+    };
 
 
-    string filename = "../Data/ladder_p_list";
-    filename += "_nainv=" + to_string(nainv)
+
+    std::string filename = "../Data/ladder_p_list";
+    filename += "_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"inverse scattering length", "chemical potential"},
                    {ainvs, muds});
+
+}
+
+void ladder_p_list_wq (double wmax, double qmax, double Lambda_i, double Lambda_f, int inttype, int nw, int nq) {
+    vec<double> ws(nw);
+    vec<double> qs(nq);
+    vec<double> Gamma_p_Re(nw*nq);
+    vec<double> Gamma_p_Im(nw*nq);
+    comp Gamma_p_result;
+    double w;
+    double q;
+
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2*wi*wmax/(nw-1);
+        ws[wi] = w;
+        for (int qi = 0; qi < nq; ++qi) {
+            q = qi*qmax/(nq-1);
+            qs[qi] = q;
+            Gamma_p_result = ladder(w, q, Lambda_i, Lambda_f, 1, inttype);
+            Gamma_p_Re[composite_index_wq (wi, qi, nq)] = real(Gamma_p_result);
+            Gamma_p_Im[composite_index_wq (wi, qi, nq)] = imag(Gamma_p_result);
+            std::cout << "w = " << w << ", q = " << q << ", result = " << Gamma_p_result << "\n";
+        }
+    }
+
+    std::string filename = "../Data/ladder_p_list_wq";
+    filename += std::to_string(inttype) + "_nw=" + std::to_string(nw)
+                + "_nq=" + std::to_string(nq)
+                + ".h5";
+    write_h5_rvecs(filename,
+                   {"bosonic_frequencies", "bosonic_momenta", "vertex_Re", "vertex_Im"},
+                   {ws, qs, Gamma_p_Re, Gamma_p_Im});
 
 }
 

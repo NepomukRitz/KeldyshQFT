@@ -8,7 +8,6 @@
 #include "../propagator.h"
 #include "KramersKronig.h"   // perform check of Kramers-Kronig relation
 
-#ifdef KELDYSH_FORMALISM
 template <typename Q>
 class Integrand_Phi_tilde {
 public:
@@ -38,7 +37,7 @@ public:
     const int iLambda;
     const int i_in;
 
-    Integrand_Ward_id_integrated(const FrequencyGrid& v_in, const rvec& Phi_in, const SelfEnergy<comp>& selfEnergy_in,
+    Integrand_Ward_id_integrated(const FrequencyGrid& v_in, const rvec& Phi_in, const SelfEnergy<state_datatype>& selfEnergy_in,
                                  const int iLambda_in, const int i_in_in)
             : v(v_in), Phi(Phi_in), selfEnergy(selfEnergy_in), iLambda(iLambda_in), i_in(i_in_in) {}
 
@@ -57,7 +56,7 @@ public:
             double f1 = Phi[iLambda * nFER * n_in + index * n_in + i_in];
             double f2 = Phi[iLambda * nFER * n_in + (index + 1) * n_in + i_in];
 
-            return (1. - xd) * f1 + xd * f2 + 2 * selfEnergy.valsmooth(0, vp, i_in).imag();
+            return myimag((1. - xd) * f1 + xd * f2 + 2 * selfEnergy.valsmooth(0, vp, i_in));
         }
         else
             return 0.;
@@ -81,16 +80,16 @@ void compute_Phi_tilde(const std::string filename) {
         Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
 
         for (int i_in=0; i_in<n_in; ++i_in) {
-            for (int iv=0; iv<nFER; ++iv) {
+            for (int iv=1; iv<nFER-1; ++iv) {
                 double v = state.selfenergy.frequencies.ws[iv];
                 vs[iLambda * nFER + iv] = v;
                 Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);
                 Phi[iLambda * nFER * n_in + iv * n_in + i_in]
-                    = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * integrator<state_datatype>(integrand, vmin, vmax).imag();
+                    = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
             }
             Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
                                                                     iLambda, i_in);
-            Phi_integrated[iLambda * n_in + i_in] = integrator<state_datatype>(integrandWardIdIntegrated, vmin, vmax).real();
+            Phi_integrated[iLambda * n_in + i_in] = myreal(integrator<state_datatype>(integrandWardIdIntegrated, vmin, vmax));
         }
     }
 
@@ -104,7 +103,6 @@ void compute_Phi_tilde(const std::string filename) {
                    {"v", "Phi", "Phi_integrated", "Lambdas"},
                    {vs, Phi, Phi_integrated, Lambdas});
 }
-#endif
 
 
 class Integrand_sum_rule_K1tK {
@@ -144,21 +142,18 @@ void sum_rule_K1tK(const std::string filename) {
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
         double wmax = state.vertex[0].tvertex().frequencies.b_K1.w_upper;   // upper integration boundary
 
-#ifdef KELDYSH_FORMALISM
-        sum_rule[iLambda] = (1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
-#else
-#if defined(PARTICLE_HOLE_SYMM) and not defined(HUBBARD_MODEL)
-        sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
-#else
-        sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U)).real();
-#endif
-#endif
+        if (KELDYSH){
+            sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
+        }
+        else{
+            sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax)) / (glb_U * glb_U);
+
+        }
     }
 
     write_h5_rvecs(filename + "_sum_rule_K1tK", {"Lambdas", "sum_rule"}, {Lambdas, sum_rule});
 }
 
-#ifdef KELDYSH_FORMALISM
 /**
  * Check Kramers-Kronig relation for retarded self-energy and retarded component of K1r by computing the real part from
  * the imaginary part via Kramers-Kronig. The result can be compared to the real part obtained from the flow.
@@ -168,7 +163,7 @@ void check_Kramers_Kronig(const std::string filename) {
     vec<int> iLambdas {0, 4, 12, 24, 34, 40, 44}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
 
     for (int i=0; i<iLambdas.size(); ++i) {
-        State<comp> state = read_hdf(filename, iLambdas[i], nLambda);  // read data from file
+        State<state_datatype> state = read_hdf(filename, iLambdas[i], nLambda);  // read data from file
         // check Kramers-Kronig for retarded self-energy
         rvec vSigma = state.selfenergy.frequencies.ws;  // frequency grid points
         // get retarded component (first half of stored data points)
@@ -207,6 +202,5 @@ void check_Kramers_Kronig(const std::string filename) {
                         K1tR_im, K1tR_re, K1tR_re_KK});
     }
 }
-#endif
 
 #endif //KELDYSH_MFRG_TESTING_POSTPROCESSING_H

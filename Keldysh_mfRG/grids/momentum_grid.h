@@ -11,7 +11,7 @@
 #include <cassert>
 
 #include "../data_structures.h"
-#include "../parameters.h"
+#include "../parameters/master_parameters.h"
 
 #include "../utilities/write_data2file.h"            // write vectors into hdf5 file (for testing purposes)
 

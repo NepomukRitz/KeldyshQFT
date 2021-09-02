@@ -13,12 +13,26 @@
 #include <cmath>            // for math. operations (real, imag, abs etc.)
 #include <vector>           // vec class is derived from vector class
 #include <initializer_list> // to initialize vec class with initializer list
+#include "parameters/master_parameters.h"
 
 typedef std::complex<double> comp; // Complex number
-const comp glb_i (0., 1.);    // Imaginary unit
 auto isfinite(comp z) -> bool {
     return std::isfinite(real(z)) and std::isfinite(imag(z));
-}
+};
+ inline auto myreal(double x) -> double {return x;};
+ inline  auto myreal(comp x) -> double {return x.real();};
+ inline auto myimag(double x) -> double {return x;};
+ inline auto myimag(comp x) -> double {return x.imag();};
+ inline auto myconj(double x) -> double {return x;};
+ inline auto myconj(comp x) -> comp {return conj(x);};
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
+using state_datatype = double;
+const double glb_i = 0.;    // Imaginary unit
+#else
+using state_datatype = comp;
+const comp glb_i (0., 1.);    // Imaginary unit
+#endif
 
 /// DECLARATIONS ///
 
@@ -265,40 +279,223 @@ T vec<T>::sum() {
 // The functions below are necessary for operations concerning a complex vector and a double constant.
 
 // addition of a double constant to comp vector
-vec<comp> operator+= (vec<comp>& lhs, const double& rhs) {
+template <typename T>
+vec<T> operator+= (vec<T>& lhs, const double& rhs) {
 #pragma omp parallel for
     for (int i=0; i<lhs.size(); ++i) {
         lhs[i] += rhs;
     }
     return lhs;
 }
-vec<comp> operator+ (vec<comp> lhs, const double& rhs) {
+template <typename T>
+vec<T> operator+ (vec<T> lhs, const double& rhs) {
     lhs += rhs; return lhs;
 }
 
 // subtraction of a double constant to comp vector
-vec<comp> operator-= (vec<comp>& lhs, const double& rhs) {
+template <typename T>
+vec<T> operator-= (vec<T>& lhs, const double& rhs) {
 #pragma omp parallel for
     for (int i=0; i<lhs.size(); ++i) {
         lhs[i] -= rhs;
     }
     return lhs;
 }
-vec<comp> operator- (vec<comp> lhs, const double& rhs) {
+template <typename T>
+vec<T> operator- (vec<T> lhs, const double& rhs) {
     lhs -= rhs; return lhs;
 }
 
 // multiplication of a double constant to comp vector
-vec<comp> operator*= (vec<comp>& lhs, const double& rhs) {
+template <typename T>
+vec<T> operator*= (vec<T>& lhs, const double& rhs) {
 #pragma omp parallel for
     for (int i=0; i<lhs.size(); ++i) {
         lhs[i] *= rhs;
     }
     return lhs;
 }
-vec<comp> operator* (vec<comp> lhs, const double& rhs) {
+template <typename T>
+vec<T> operator* (vec<T> lhs, const double& rhs) {
     lhs *= rhs; return lhs;
 }
+
+
+// multiplication of a comp constant to double vector
+template <typename T>
+vec<comp> operator* (vec<T> lhs, const comp& rhs) {
+    size_t size = lhs.size();
+    vec<comp> result(size);
+#pragma omp parallel for
+    for (int i=0; i<lhs.size(); ++i) {
+        result[i] *= lhs[i] * rhs;
+    }
+    return result;
+}
+
+
+
+/**
+ * Returns a flattened index of a multi-dimensional vector
+ * @tparam dimensionality   number of dimensions
+ * @param indx              array of multi-dimensional indices
+ * @param dims              number of grid points in the different directions
+ * @return
+ */
+template<size_t dimensionality>
+size_t getFlatIndex(const size_t (&indx) [dimensionality], const size_t (&dims) [dimensionality]) {
+    size_t result = indx[0];
+    for (int it = 1; it < dimensionality; it++) {
+        result *= dims [it];
+        result += indx [it];
+    }
+    return result;
+}
+/// Template specialization for special case dimensionality == 1
+template<>
+size_t getFlatIndex<1>(const size_t (&indx) [1], const size_t (&dims) [1]) {
+    return dims[0];
+}
+/**
+ * Returns a flattened index of a multi-dimensional vector
+ * @tparam dimensionality   number of dimensions
+ * @param indx              array of multi-dimensional indices (to address the entries of the vector)
+ * @param dims              number of grid points in the different directions
+ * @param permutation       determines how the dimensions are to be permuted before flattening
+ *                          for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
+ *                          A vector has a native order of dimensions. The permutation allows to express the multi-index
+ *                          in a rotated version. But the permutation needs to picked such that it permutes indx and
+ *                          perms into the native order.
+ * @return
+ */
+template<size_t dimensionality>
+size_t getFlatIndex(const size_t (&indx) [dimensionality], const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]) {
+    size_t result = indx[permutation[0]];
+    for (int it = 1; it < dimensionality; it++) {
+        result *= dims [permutation[it]];
+        result += indx [permutation[it]];
+    }
+    return result;
+}
+/// Overloads of above function for 5, 4, 3 or 2 indices (with the array dims containing number of grids points in each direction)
+size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const  size_t m, const size_t (&dims) [5]) {
+    size_t indx [5] = {i, j, k ,l ,m};
+    return getFlatIndex<5>(indx, dims);
+}
+size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const size_t (&dims) [4]) {
+    size_t indx [4] = {i, j, k ,l};
+    return getFlatIndex<4>(indx, dims);
+}
+size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const size_t (&dims) [3]) {
+    size_t indx [3] = {i, j, k};
+    return getFlatIndex<3>(indx, dims);
+}
+size_t getFlatIndex(const size_t i, const  size_t j, const size_t (&dims) [2]) {
+    size_t indx [2] = {i, j};
+    return getFlatIndex<2>(indx, dims);
+}
+
+
+template<size_t dimensionality>
+void getMultIndex(size_t (&indx) [dimensionality], const size_t iflat, const size_t (&dims) [dimensionality]) {
+    size_t temp = iflat;
+    size_t dimtemp = 1;
+    for (int it = 1; it < dimensionality; it++) {
+        dimtemp *= dims[it];
+    }
+    indx[0] = temp / dimtemp;
+    temp -= indx[0] * dimtemp;
+    for (int it = 1; it < dimensionality; it++) {
+        dimtemp = dimtemp / dims[it];
+        indx[it] = temp / dimtemp;
+        temp -= indx[it] * dimtemp;
+    }
+}
+/// Template specialization for special case dimensionality == 1
+template<>
+void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims) [1]) {
+    indx[0] = iflat;
+
+}
+
+/**
+ * Takes a flat index and returns a flat index for a vector with rotated directions
+ * @tparam dimensionality
+ * @param iflat
+ * @param dims
+ * @param permutation       determines how the dimensions are to be permuted
+ *                          for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
+ *                          A vector has a native order of dimensions. The permutation allows to express the multi-index
+ *                          in a rotated version. But the permutation needs to picked such that it permutes indx and
+ *                          perms into the native order.
+ * @return
+ */
+template<size_t dimensionality>
+size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
+    size_t multIndx[dimensionality];
+    getMultIndex<dimensionality>(multIndx, iflat, dims);
+    size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]) {
+    return iflat_new;
+}
+
+/**
+ * Computes the derivative of a multi-dimensional vector with the finite-differences method
+ * The derivative is computed in the direction of dims[permutation[-1]]
+ * @tparam T
+ * @tparam dimensionality       number of dimensions (only for dimension >= 2 !!)
+ * @param vec_in                input vector for which the derivative is to be computed
+ * @param dims                  number of grid points in the different directions
+ * @param permutation           determines how the dimensions are to be permuted
+ *                              for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
+ *                              A vector has a native order of dimensions. The permutation allows to express the multi-index
+ *                              in a rotated version. But the permutation needs to picked such that it permutes indx and
+ *                              perms into the native order.
+ * @return
+ */
+template<typename T, size_t dimensionality>
+vec<T> get_finite_differences(const vec<T> vec_in, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
+    size_t flatdim = vec_in.size();
+    size_t dimsum = dims[dimensionality-1];
+    size_t codimsum = flatdim/dimsum;
+
+    vec<T> result(flatdim);
+    for (int it = 0; it < codimsum; it++) {
+        result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
+                +0.5 * vec_in[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
+        result[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] =
+                -0.5 * vec_in[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
+
+        for (int jt = 1; jt < dimsum-1; jt++) {
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] =
+                    -0.5 * vec_in[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)]
+                    +0.5 * vec_in[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)];
+        }
+    }
+     return result;
+}
+/// Template specialization of above function for dimensionality == 1
+template<typename T> vec<T> get_finite_differences(const vec<T> vec_in){
+    size_t dimsum = vec_in.size();
+
+    vec<T> result(dimsum);
+    result[0       ] = +0.5 * vec_in[1       ];
+    result[dimsum-1] = -0.5 * vec_in[dimsum-2];
+    for (int jt = 1; jt < dimsum-1; jt++) {
+        result[jt] = -0.5 * vec_in[jt - 1]  + 0.5 * vec_in[jt + 1];
+    }
+    return result;
+}
+template<typename T> vec<T> power2(const vec<T> vec_in) {
+    size_t flatdim = vec_in.size();
+    vec <T> result (flatdim);
+    T temp;
+    for (int it = 0; it < flatdim; it++) {
+        temp = vec_in[it];
+        result[it] = temp * temp;
+    }
+    return result;
+}
+
 
 
 /** auxiliary struct that contains all input variables of vertices

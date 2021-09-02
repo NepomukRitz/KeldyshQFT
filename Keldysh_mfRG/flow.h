@@ -6,7 +6,7 @@
 #define KELDYSH_MFRG_FLOW_H
 
 #include <string>                // for file name for saving result
-#include "parameters.h"          // system parameters (e.g. initial Lambda)
+#include "parameters/master_parameters.h"          // system parameters (e.g. initial Lambda)
 #include "state.h"               // state including vertex and self-energy
 #include "perturbation_theory.h" // for initialization with SOPT at the beginning of the flow, using sopt_state
 #include "grids/flow_grid.h"     // for flow grid
@@ -26,22 +26,24 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     state_ini.initialize();             // initialize state
 
     // initialize the flow with SOPT at Lambda_ini (important!)
-    sopt_state(state_ini, Lambda_ini);
-    // TODO: For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
+    fopt_state(state_ini, Lambda_ini);
+    // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
+
+    state_ini.findBestFreqGrid(Lambda_ini); // optimize W_scale
 
     //// better: read state from converged parquet solution
     //state_ini = read_hdf("parquet_solution_K3_Lambda=20.000000", 5, 51);
     //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
-    parquet_solver("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+    //parquet_solver("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
 
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-    if (save_intermediate_results) {
-        write_hdf(outputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-        write_hdf(outputFileName+"_RKstep2", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-        write_hdf(outputFileName+"_RKstep3", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-        write_hdf(outputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-    }
+    //if (save_intermediate_results) {
+    //    write_hdf(outputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
+    //    write_hdf(outputFileName+"_RKstep2", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
+    //    write_hdf(outputFileName+"_RKstep3", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
+    //    write_hdf(outputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+    //}
 
 
 

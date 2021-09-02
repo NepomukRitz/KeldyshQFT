@@ -5,7 +5,7 @@
 
 #include "data_structures.h" // real/complex vector classes, imag. unit
 #include "selfenergy.h"      // self-energy class
-#include "parameters.h"      // system parameters (lengths of vectors etc.)
+#include "parameters/master_parameters.h"      // system parameters (lengths of vectors etc.)
 #include "grids/momentum_grid.h"   // momentum grid and FFT machinery for the 2D Hubbard model
 #include "utilities/util.h"            // sign - function
 
@@ -23,20 +23,22 @@ auto Fermi_fac(double v, double mu) -> double {
 
 // effective distribution function
 auto Eff_distr(double v) -> double {
-#ifdef EQUILIBRIUM
-    return Fermi_distr(v, glb_mu);
-#else
-    return 0.5 * (Fermi_distr(v, glb_mu + glb_V/2.) + Fermi_distr(v, glb_mu - glb_V/2.));
-#endif
+    if (EQUILIBRIUM) {
+        return Fermi_distr(v, glb_mu);
+    }
+    else {
+        return 0.5 * (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
+    }
 }
 
 // effective distribution factor: 1. - 2. * Eff_distr
 auto Eff_fac(double v) -> double {
-#ifdef EQUILIBRIUM
-    return Fermi_fac(v, glb_mu);
-#else
-    return 1. - (Fermi_distr(v, glb_mu + glb_V/2.) + Fermi_distr(v, glb_mu - glb_V/2.));
-#endif
+    if (EQUILIBRIUM) {
+        return Fermi_fac(v, glb_mu);
+    }
+    else {
+        return 1. - (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
+    }
 }
 
 
@@ -47,18 +49,18 @@ template <typename Q>
 class Propagator {
 public:
     const double Lambda;
-    SelfEnergy<Q> selfenergy;
-    SelfEnergy<Q> diff_selfenergy;
+    const SelfEnergy<Q>& selfenergy;
+    const SelfEnergy<Q>& diff_selfenergy;
     const char type;      // 'g' for propagator, 's' for single scale propagator, 'k' for 's'+'e', 'e' for Katanin extension
 
 public:
     /**
-     * Free Propagator object. SelfEnergy is zero 
+     * Free Propagator object. SelfEnergy and differentiated SelfEnergy are zero
      * @param Lambda_in : Input scale
      * @param type_in   : Type of propagator being handled
      */
     Propagator(double Lambda_in, char type_in)
-            : Lambda(Lambda_in), type(type_in) { }
+            : Lambda(Lambda_in), type(type_in), selfenergy(SelfEnergy<Q> (Lambda_in)), diff_selfenergy(SelfEnergy<Q> (Lambda_in)) { }
 
 
     /**
@@ -67,8 +69,8 @@ public:
      * @param self_in   : SelfEnergy
      * @param type_in   : Type of propagator being handled
      */
-    Propagator(double Lambda_in, SelfEnergy<Q> self_in, char type_in)
-            :Lambda(Lambda_in), selfenergy(self_in), type(type_in) { }
+    Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, char type_in)
+            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(SelfEnergy<Q> (Lambda_in)), type(type_in) { }
 
     /**
      * Dressed propagator for flows. Needs both a SelfEnergy and a Differential SelfEnergy
@@ -77,379 +79,257 @@ public:
      * @param diffSelf_in   : Differential SelfEnergy
      * @param type_in       : Type of propagator being handled
      */
-    Propagator(double Lambda_in, SelfEnergy<Q> self_in, SelfEnergy<Q> diffSelf_in, char type_in)
+    Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, const SelfEnergy<Q>& diffSelf_in, char type_in)
             :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in) { }
 
     auto valsmooth(int, double, int i_in) const -> Q;
 
-#ifdef KELDYSH_FORMALISM
+    // Keldysh propagators
     auto GR(double v, int i_in) const -> Q;
     auto GA(double v, int i_in) const -> Q;
     auto GK(double v, int i_in) const -> Q;
     auto SR(double v, int i_in) const -> Q;
     auto SK(double v, int i_in) const -> Q;
-#else
+
+    // Matsubara propagators
     auto GM(double v, int i_in) const -> Q;
     auto SM(double v, int i_in) const -> Q;
-#endif
-
 
     auto norm() const -> double;
+
+    /// propagators for REG == 1
+    Q GR_REG1_SIAM(double v, int i_in) const;
+    Q GA_REG1_SIAM(double v, int i_in) const;
+    Q SR_REG1(double v, int i_in) const;
+
+    /// propagators for REG == 2
+    Q GR_REG2_Hubbard(double v, int i_in) const;
+    Q GR_REG2_SIAM(double v, int i_in) const;
+
+    Q GA_REG2_Hubbard(double v, int i_in) const;
+    Q GA_REG2_SIAM(double v, int i_in) const;
+
+    Q SR_REG2(double v, int i_in) const;
+
+    Q GM_REG2_Hubbard(double v, int i_in) const;
+    Q GM_REG2_SIAM(double v, int i_in) const;
+
+    Q SM_REG2_Hubbard(double v, int i_in) const;
+    Q SM_REG2_SIAM(double v, int i_in) const;
+
+    /// propagators for REG == 3
+    Q GR_REG3_Hubbard(double v, int i_in) const;
+    Q GR_REG3_SIAM(double v, int i_in) const;
+
+    Q GA_REG3_Hubbard(double v, int i_in) const;
+    Q GA_REG3_SIAM(double v, int i_in) const;
+
+    Q SR_REG3_Hubbard(double v, int i_in) const;
+    Q SR_REG3_SIAM(double v, int i_in) const;
+
+    Q GM_REG3_Hubbard(double v, int i_in) const;
+    Q GM_REG3_SIAM(double v, int i_in) const;
+    Q SM_REG3(double v, int i_in) const;
+
+
 };
 
-#if REG==1
-
-/*******PROPAGATOR FUNCTIONS***********/
 template <typename Q>
-auto Propagator::GR(double v, int i_in) const -> Q
+auto Propagator<Q>::GR(double v, int i_in) const -> Q
 {
-    return 1./(v - glb_epsilon - selfenergy.valsmooth(0, v, i_in));
-}
-template <typename Q>
-auto Propagator::GA(double v, int i_in) const -> Q
-{
-    return 1./(v - glb_epsilon - conj(selfenergy.valsmooth(0,v, i_in)));
-}
-template <typename Q>
-auto Propagator::GK(double v, int i_in) const -> Q
-{
-    //FDT in equilibrium. General form is GR*GA*(SigmaK+DeltaK)
-    return (1.-2.*effective_distr_function(v))*(GR(v, i_in)-GA(v, i_in));
-}
-
-template <typename Q>
-auto Propagator::SR(double v, int i_in) const -> Q
-{
-    return 0.;
-}
-template <typename Q>
-auto Propagator::SK(double v, int i_in) const -> Q
-{
-    return 0.;
-}
-
-template <typename Q>
-auto Propagator::valsmooth(int iK, double v, int i_in) const -> Q
-{
-    Q SR, SK;
-    Q diffSelfEneR;
-    Q diffSelfEneA;
-    Q diffSelfEneK;
-
-    switch (type){
-        case 'g':
-            if (std::abs(v) < Lambda) {
-                switch (iK){
-                    case 0:
-                        return GR(v, i_in);
-                    case 1:
-                        return GK(v, i_in);
-                    default:
-                        return 0.;
-                }
-            } else if (std::abs(v) == Lambda) {
-                switch (iK){
-                    case 0:
-                        return 1./2.*GR(v, i_in);
-                    case 1:
-                        return 1./2.*GK(v, i_in);
-                    default:
-                        return 0.;
-                }
-            }
+    if (REG == 1) {
+        if (HUBBARD_MODEL) {
             return 0.;
-        case 's':
-            if (std::abs(v) == Lambda) {
-                switch (iK){
-                    case 0:
-                        return -GR(v, i_in);
-                    case 1:
-                        return -GK(, i_inv);
-                    default:
-                        return 0.;
-                }
-            }
-            return 0.;
-        case 'k':
-            diffSelfEneR = diff_selfenergy.valsmooth(0, v, i_in);
-            diffSelfEneA = conj(diffSelfEneR);
-            diffSelfEneK = diff_selfenergy.valsmooth(1, v, i_in);
-            if(std::abs(v)<Lambda){
-                switch(iK){
-                    case 0:
-                        return GR(v, i_in) * diffSelfEneR * GR(v, i_in);
-                    case 1:
-                        return GR(v, i_in) * diffSelfEneR * GK(v, i_in) + GR(v, i_in) * diffSelfEneK * GA(v, i_in) + GK(v, i_in) * diffSelfEneA * GA(v, i_in);
-                    default:
-                        return 0.;
-                }
-            }else if (std::abs(v)==Lambda){
-                switch(iK){
-                    case 0:
-                        SR = -1.*GR(v, i_in);
-                        return SR + GR(v, i_in) * diffSelfEneR * GR(v, i_in);
-                    case 1:
-                        SK = -1. *GK(v, i_in);
-                        return SK + GR(v, i_in) * diffSelfEneR * GK(v, i_in) + GR(v, i_in) * diffSelfEneK * GA(v, i_in) + GK(v, i_in) * diffSelfEneA * GA(v, i_in);
-                    default:
-                        return 0.;
-                }
-            }
-            return 0.;
-        case 'e':
-            if(std::abs(v, i_in)<=Lambda) {
-                switch(iK){
-                    case 0:
-                        return GR(v, i_in) * diffSelfEneR * GR(v, i_in);
-                    case 1:
-                        return GR(v, i_in) * diffSelfEneR * GK(v, i_in) + GR(v, i_in) * diffSelfEneK * GA(v, i_in) + GK(v, i_in) * diffSelfEneA * GA(v, i_in);
-                    default:
-                        return 0.;
-                }
-            }
-            return 0.;
+        }
+        else {  // SIAM
+            return GR_REG1_SIAM(v, i_in);
+        }
 
-        default:
-            return 0.;
+
     }
+    else if (REG == 2) {
+        if (HUBBARD_MODEL) {
+            return GR_REG2_Hubbard(v, i_in);
+        }
+        else {  // SIAM
+            return GR_REG2_SIAM(v, i_in);
+        }
+    }
+    else if (REG == 3) {
 
-
+        if (HUBBARD_MODEL) {
+            return 0.;
+        }
+        else {  // SIAM
+            return 0.;
+        }
+    }
+    else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
 
-#elif REG==2
 
-/////// PROPAGATOR FUNCTIONS ///////
-
-#ifdef KELDYSH_FORMALISM
-template <typename Q>
-auto Propagator<Q>::GR(double v, int i_in) const -> Q
-{
-#ifdef HUBBARD_MODEL
-    double k_x, k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
-    // TODO: Currently only at half filling!
-#else
-    return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
-#endif
-}
-template <typename Q>
-auto Propagator<Q>::GA(double v, int i_in) const -> Q
-{
-#ifdef HUBBARD_MODEL
-    double k_x, k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - glb_i * Lambda / 2. - conj(selfenergy.valsmooth(0, v, i_in)));
-    // TODO: Currently only at half filling!
-#else
-    return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
-#endif
-}
-template <typename Q>
-auto Propagator<Q>::GK(double v, int i_in) const -> Q
-{
-#ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
-    //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
-    return glb_i * ( Eff_fac(v) * 2. * imag(GR(v, i_in)) ); // more efficient: only one interpolation instead of two
-#else
-    // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
-    // Derivation of equilibrium form:
-    // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
-    // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
-    //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
-    // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
-    // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
-    // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
-    return std::norm( GR(v, i_in) ) * ( selfenergy.valsmooth(1, v, i_in) - glb_i* ( (glb_Gamma+Lambda) * Eff_fac(v) ) );
-#endif
-}
-template <typename Q>
-auto Propagator<Q>::SR(double v, int i_in) const -> Q
-{
-    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
-    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
-    Q G = GR(v, i_in);
-    return -0.5*glb_i*G*G; // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
-}
-template <typename Q>
-auto Propagator<Q>::SK(double v, int i_in) const -> Q
-{
-#ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
-    //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - conj(SR(v, i_in)));
-    return glb_i * ( Eff_fac(v) * 2. * imag(SR(v, i_in)) );
-#else
-    // Derivation of general matrix form:
-    // S = - G * ( \partial_\Lambda G_0^{-1} ) * G
-    // where G = (0, G^A; G^R, G^K), G_0^{-1} = (Ginv0K, G_0^{A,-1}; G_0^{R,-1}, 0), Ginv0K = - \Sigma^K_res, \dot{Ginv0K} = i (1-2n_F)
-    // Thus, S^K = - G^R \dot{G_0^{R,-1}} G^K - G^K \dot{G_0^{A,-1}} G^A - G^R Ginv0K G^A
-    // Upon inserting G^K = (1-2n_F) (G^R-G^A), one recovers the equilibrium formula
-    //Q retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
-    //Q advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
-    //Q extra    = -glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in);
-    //return retarded + advanced + extra;
-    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in); // more efficient
-    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(Eff_fac(v)) * std::norm( GR(v, i_in) ); // more efficient
-    // most efficient: insert GK, factor out, combine real factors
-    Q gr = GR(v, i_in);
-    double gri = imag(gr);
-    double grn = std::norm(gr);
-    return selfenergy.valsmooth(1, v, i_in) * (grn * gri)  -  glb_i * ( grn * Eff_fac(v) * ( 1. + (glb_Gamma+Lambda) * gri ) );
-#endif
-}
-#else
-// full propagator (Matsubara)
-template <typename Q>
-auto Propagator<Q>::GM(double v, int i_in) const -> Q
-{
-#ifdef HUBBARD_MODEL
-    double k_x; double k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
-    // TODO: Currently only at half filling!
-#else
-#ifdef PARTICLE_HOLE_SYMM
-    assert(v != 0.);
-    return 1./(        v                +       (glb_Gamma+Lambda)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
-#else
-    return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
-#endif // PARTICLE_HOLE_SYMM
-#endif // HUBBARD_MODEL
-}
-// single scale propagator (Matsubara)
-template <typename Q>
-auto Propagator<Q>::SM(double v, int i_in) const -> Q
-{
-    assert(v != 0.);
-    Q G = GM(v, i_in);
-#ifdef PARTICLE_HOLE_SYMM
-    return -0.5*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
-#else
-    return -0.5*glb_i*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
-#endif
-// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
-}
-
-#endif // KELDYSH_FORMALISM
-
-
-#elif REG ==3
-
-/////// PROPAGATOR FUNCTIONS ///////
-
-#ifdef KELDYSH_FORMALISM
-template <typename Q>
-auto Propagator<Q>::GR(double v, int i_in) const -> Q
-{
-#ifdef HUBBARD_MODEL
-    // TODO: write GR for Hubbard model
-#else
-    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
-#endif
-}
 template <typename Q>
 auto Propagator<Q>::GA(double v, int i_in) const -> Q
 {
-#ifdef HUBBARD_MODEL
-    // TODO: write GA for Hubbard model
-#else
-    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - conj(selfenergy.valsmooth(0, v, i_in)) );
-#endif
+    if (REG == 1) {
+        if (HUBBARD_MODEL) {
+            return 0.;
+        }
+        else {  // SIAM
+            return GA_REG1_SIAM(v, i_in);
+        }
+
+    }
+    else if (REG == 2) {
+        if (HUBBARD_MODEL) {
+            return GA_REG2_Hubbard(v, i_in);
+        }
+        else {  // SIAM
+            return GA_REG2_SIAM(v, i_in);
+        }
+    }
+    else if (REG == 3) {
+
+        if (HUBBARD_MODEL) {
+            return 0.;
+        }
+        else {  // SIAM
+            return 0.;
+        }
+    }
+    else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
+
+
+
 template <typename Q>
 auto Propagator<Q>::GK(double v, int i_in) const -> Q
 {
-#ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
-    //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
-    return glb_i * ( Eff_fac(v) * 2. * imag(GR(v, i_in)) ); // more efficient: only one interpolation instead of two
-#else
-    // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
-    // Derivation of equilibrium form:
-    // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
-    // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
-    //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
-    // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
-    // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
-    // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
-    return std::norm( GR(v, i_in) ) * ( selfenergy.valsmooth(1, v, i_in) - glb_i* ( (glb_Gamma+Lambda) * Eff_fac(v) ) );
-#endif
+    if (EQUILIBRIUM) {
+        // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
+        //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
+        return glb_i * (Eff_fac(v) * 2. * myimag(GR(v, i_in))); // more efficient: only one interpolation instead of two
+    }
+    else {
+        // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
+        // Derivation of equilibrium form:
+        // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
+        // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
+        //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
+        // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
+        // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
+        // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
+        return std::norm(GR(v, i_in)) * (selfenergy.valsmooth(1, v, i_in) - glb_i * ((glb_Gamma + Lambda) * Eff_fac(v)));
+    }
 }
+
+
 template <typename Q>
 auto Propagator<Q>::SR(double v, int i_in) const -> Q
 {
-    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
-    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
-    Q G = GR(v, i_in);
-    return -2 * Lambda / (v*v + Lambda*Lambda) * G; // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
+    if (REG == 1) {
+        return SR_REG1(v, i_in);
+    }
+    else if (REG == 2) {
+        return SR_REG2(v, i_in);
+
+    }
+    else if (REG == 3) {
+        return 0.;
+
+
+    }
+    else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
+
+
+
 template <typename Q>
 auto Propagator<Q>::SK(double v, int i_in) const -> Q
 {
-#ifdef EQUILIBRIUM
-    // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
-    //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - conj(SR(v, i_in)));
-    return glb_i * ( Eff_fac(v) * 2. * imag(SR(v, i_in)) );
-#else
-    // Derivation of general matrix form:
-    // S = - G * ( \partial_\Lambda G_0^{-1} ) * G
-    // where G = (0, G^A; G^R, G^K), G_0^{-1} = (Ginv0K, G_0^{A,-1}; G_0^{R,-1}, 0), Ginv0K = - \Sigma^K_res, \dot{Ginv0K} = i (1-2n_F)
-    // Thus, S^K = - G^R \dot{G_0^{R,-1}} G^K - G^K \dot{G_0^{A,-1}} G^A - G^R Ginv0K G^A
-    // Upon inserting G^K = (1-2n_F) (G^R-G^A), one recovers the equilibrium formula
-    //Q retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
-    //Q advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
-    //Q extra    = -glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in);
-    //return retarded + advanced + extra;
-    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in); // more efficient
-    //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(Eff_fac(v)) * std::norm( GR(v, i_in) ); // more efficient
-    // most efficient: insert GK, factor out, combine real factors
-    Q gr = GR(v, i_in);
-    double gri = imag(gr);
-    double grn = std::norm(gr);
-    return selfenergy.valsmooth(1, v, i_in) * (grn * gri)  -  glb_i * ( grn * Eff_fac(v) * ( 1. + (glb_Gamma+Lambda) * gri ) );
-#endif
+    if (EQUILIBRIUM) {
+        // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
+        //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - myconj(SR(v, i_in)));
+        return glb_i * (Eff_fac(v) * 2. * myimag(SR(v, i_in)));
+    }
+    else {
+        // Derivation of general matrix form:
+        // S = - G * ( \partial_\Lambda G_0^{-1} ) * G
+        // where G = (0, G^A; G^R, G^K), G_0^{-1} = (Ginv0K, G_0^{A,-1}; G_0^{R,-1}, 0), Ginv0K = - \Sigma^K_res, \dot{Ginv0K} = i (1-2n_F)
+        // Thus, S^K = - G^R \dot{G_0^{R,-1}} G^K - G^K \dot{G_0^{A,-1}} G^A - G^R Ginv0K G^A
+        // Upon inserting G^K = (1-2n_F) (G^R-G^A), one recovers the equilibrium formula
+        //Q retarded = -0.5*glb_i*GR(v, i_in)*GK(v, i_in);
+        //Q advanced = +0.5*glb_i*GK(v, i_in)*GA(v, i_in);
+        //Q extra    = -glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in);
+        //return retarded + advanced + extra;
+        //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(1.-2.*Eff_distr(v))*GR(v, i_in)*GA(v, i_in); // more efficient
+        //return GK(v, i_in)*imag(GR(v, i_in)) - glb_i*(Eff_fac(v)) * std::norm( GR(v, i_in) ); // more efficient
+        // most efficient: insert GK, factor out, combine real factors
+        Q gr = GR(v, i_in);
+        double gri = myimag(gr);
+        double grn = std::norm(gr);
+        return selfenergy.valsmooth(1, v, i_in) * (grn * gri) -
+               glb_i * (grn * Eff_fac(v) * (1. + (glb_Gamma + Lambda) * gri));
+    }
 }
-#else
-// full propagator (Matsubara)
+
+
 template <typename Q>
 auto Propagator<Q>::GM(double v, int i_in) const -> Q
 {
-#ifdef HUBBARD_MODEL
-
-    // TODO: write GM for Hubbard model
-#else
-#ifdef PARTICLE_HOLE_SYMM
-    assert(v != 0.);
-    return v*v / (v*v + Lambda*Lambda) * 1./(        v                +       (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
-#else
-    return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
-#endif // PARTICLE_HOLE_SYMM
-#endif // HUBBARD_MODEL
+    if (REG == 1) {
+        return 0.;
+    }
+    else if (REG == 2) {
+        if (HUBBARD_MODEL) {
+            return GM_REG2_Hubbard(v, i_in);
+        }
+        else {  // SIAM
+            return GM_REG2_SIAM(v, i_in);
+        }
+    }
+    else if (REG == 3) {
+        if (HUBBARD_MODEL) {
+            return GM_REG3_Hubbard(v, i_in);
+        }
+        else {  // SIAM
+            return GM_REG3_SIAM(v, i_in);
+        }
+    }
+    else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
-// single scale propagator (Matsubara)
+
+
 template <typename Q>
 auto Propagator<Q>::SM(double v, int i_in) const -> Q
 {
-    assert(v != 0.);
-    Q G = GM(v, i_in);
-    return -2*Lambda/(v*v + Lambda*Lambda)*G;
-// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+    if (REG == 1) {
+        return 0.;
+    }
+    else if (REG == 2) {
+        if (HUBBARD_MODEL) {
+            return SM_REG2_Hubbard(v, i_in);
+        }
+        else {  // SIAM
+            return SM_REG2_SIAM(v, i_in);
+        }
+    }
+    else if (REG == 3) {
+        return SM_REG3(v, i_in);
+    }
+    else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
 
-#endif
 
-#endif //REG
+
 
 
 
 template <typename Q>
-auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q
-{
-    for(int i=0; i<n_in; i++){
-        switch (type){
-            case 'g' :                              //Good ol' regular propagator
-#ifdef KELDYSH_FORMALISM
+auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q {
+    switch (type){
+        case 'g' :                              //Good ol' regular propagator
+            if (KELDYSH){
                 switch (iK){
                     case 0:
                         return GR(v, i_in);
@@ -458,12 +338,13 @@ auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-#else
+            }
+            else{
                 return GM(v, i_in);
-#endif
+            }
 
-            case 's':
-#ifdef KELDYSH_FORMALISM
+        case 's':
+            if (KELDYSH){
                 switch (iK){
                     case 0:
                         return SR(v, i_in);
@@ -472,63 +353,248 @@ auto Propagator<Q>::valsmooth(int iK, double v, int i_in) const -> Q
                     default:
                         return 0.;
                 }
-#else
+            }
+            else{
                 return SM(v, i_in);
-#endif
+            }
 
-            case 'k': // including the Katanin extension
-#ifdef KELDYSH_FORMALISM
+        case 'k': // including the Katanin extension
+            if (KELDYSH){
                 switch (iK){
                     case 0:
                         return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
                         return SK(v, i_in)
-                             + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                             + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                             + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
+                               + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                               + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                               + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }
-#else
+            }
+            else{
                 return SM(v, i_in)
                        + GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
-#endif
+            }
 
-            case 'e': // purely the Katanin extension
-#ifdef KELDYSH_FORMALISM
+        case 'e': // purely the Katanin extension
+            if (KELDYSH){
                 switch (iK){
                     case 0:
                         return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
                     case 1:
                         return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
                                + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                               + GK(v, i_in) * conj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
+                               + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
                     default:
                         return 0.;
                 }
-#else
+            }
+            else{
                 return GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
-#endif
-            default:
-                return 0.;
-        }
-    }
+            }
 
+        default:
+            return 0.;
+    }
 }
 
 template <typename Q>
 auto Propagator<Q>::norm() const -> double {
     double out = 0.;
     for (int i = 0; i < nPROP; i++) {
-#ifdef KELDYSH_FORMALISM
-        out += pow(std::abs(GR(selfenergy.frequencies.ws[i], 0)), 2.);
-#else
-        out += pow(std::abs(GM(selfenergy.frequencies.ws[i], 0)), 2.);
-#endif
+        if (KELDYSH) out += pow(std::abs(GR(selfenergy.frequencies.ws[i], 0)), 2.);
+        else         out += pow(std::abs(GM(selfenergy.frequencies.ws[i], 0)), 2.);
     }
 
     return sqrt(out);
 }
 
+
+
+
+
+
+/******* PROPAGATOR FUNCTIONS for sharp frequency-cutoff regulator ***********/
+template <typename Q>
+auto Propagator<Q>::GR_REG1_SIAM(double v, int i_in) const -> Q
+{
+    Q GR = 1. / (v - glb_epsilon - selfenergy.valsmooth(0, v, i_in));
+    if (std::abs(v) < Lambda) {
+        return GR;
+    }
+    else if (std::abs(v) == Lambda) {
+        return GR/2.;
+    }
+    else return 0.;
+}
+template <typename Q>
+auto Propagator<Q>::GA_REG1_SIAM(double v, int i_in) const -> Q
+{
+    return 1./(v - glb_epsilon - myconj(selfenergy.valsmooth(0,v, i_in)));
+}
+
+template <typename Q>
+auto Propagator<Q>::SR_REG1(double v, int i_in) const -> Q
+{
+    if (std::abs(v) == Lambda) {
+        return -GR(v, i_in);
+    }
+    else return 0.;
+}
+
+
+
+/////// PROPAGATOR FUNCTIONS for hybridization regulator ///////
+
+template <typename Q>
+inline auto Propagator<Q>::GR_REG2_Hubbard(double v, int i_in) const -> Q
+{
+    double k_x, k_y;
+    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
+    // TODO: Currently only at half filling!
+}
+template <typename Q>
+auto Propagator<Q>::GR_REG2_SIAM(double v, int i_in) const -> Q
+{
+    return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
+}
+template <typename Q>
+auto Propagator<Q>::GA_REG2_Hubbard(double v, int i_in) const -> Q
+{
+    double k_x, k_y;
+    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - glb_i * Lambda / 2. - myconj(selfenergy.valsmooth(0, v, i_in)));
+    // TODO: Currently only at half filling!
+}
+
+template <typename Q>
+auto Propagator<Q>::GA_REG2_SIAM(double v, int i_in) const -> Q
+{
+    return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
+}
+template <typename Q>
+auto Propagator<Q>::SR_REG2(double v, int i_in) const -> Q
+{
+    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
+    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
+    Q G = GR(v, i_in);
+    return -0.5*glb_i*G*G; // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
+}
+// full propagator (Matsubara)
+template <typename Q>
+auto Propagator<Q>::GM_REG2_Hubbard(double v, int i_in) const -> Q
+{
+    double k_x; double k_y;
+    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+    return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
+    // TODO: Currently only at half filling!
+}
+template <typename Q>
+auto Propagator<Q>::GM_REG2_SIAM(double v, int i_in) const -> Q
+{
+    if (PARTICLE_HOLE_SYMMETRY){
+        assert(v != 0.);
+        return 1. / ( v + (glb_Gamma+Lambda)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+    }
+    else{
+        return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+    }
+}
+// single scale propagator (Matsubara)
+template <typename Q>
+auto Propagator<Q>::SM_REG2_Hubbard(double v, int i_in) const -> Q
+{
+    return 0.;
+// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+}
+template <typename Q>
+auto Propagator<Q>::SM_REG2_SIAM(double v, int i_in) const -> Q
+{
+    assert(v != 0.);
+    Q G = GM(v, i_in);
+    if (PARTICLE_HOLE_SYMMETRY){
+        return -0.5*G*G*sign(v); // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
+    }
+    else{
+        return -0.5*glb_i*G*G*sign(v);
+    }
+}
+
+
+
+
+
+// TODO(high): Does the w-regulator even make sense for Keldysh?
+
+/////// PROPAGATOR FUNCTIONS for frequency-regulator ///////
+
+template <typename Q>
+auto Propagator<Q>::GR_REG3_Hubbard(double v, int i_in) const -> Q
+{
+    return 0.;
+    // TODO: write GR for Hubbard model
+
+}
+template <typename Q>
+auto Propagator<Q>::GR_REG3_SIAM(double v, int i_in) const -> Q
+{
+    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
+}
+template <typename Q>
+auto Propagator<Q>::GA_REG3_Hubbard(double v, int i_in) const -> Q
+{
+    return 0.;
+    // TODO: write GR for Hubbard model
+}
+template <typename Q>
+auto Propagator<Q>::GA_REG3_SIAM(double v, int i_in) const -> Q
+{
+    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
+}
+
+template <typename Q>
+auto Propagator<Q>::SR_REG3_Hubbard(double v, int i_in) const -> Q
+{
+    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
+    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
+    Q G = GR(v, i_in);
+    return 0; // TODO: write SR, does it make sense for Keldysh?
+}
+template <typename Q>
+auto Propagator<Q>::SR_REG3_SIAM(double v, int i_in) const -> Q
+{
+    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
+    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
+    Q G = GR(v, i_in);
+    return 0; // TODO: write SR, does it make sense for Keldysh?
+}
+// full propagator (Matsubara)
+template <typename Q>
+auto Propagator<Q>::GM_REG3_Hubbard(double v, int i_in) const -> Q
+{
+    return 0.;
+    // TODO: write GM for Hubbard model
+}
+template <typename Q>
+auto Propagator<Q>::GM_REG3_SIAM(double v, int i_in) const -> Q
+{
+    if (PARTICLE_HOLE_SYMMETRY){
+        assert(v != 0.);
+        return v*v / (v*v + Lambda*Lambda) * 1./( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+    }
+    else{
+        return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+    }
+}
+// single scale propagator (Matsubara)
+template <typename Q>
+auto Propagator<Q>::SM_REG3(double v, int i_in) const -> Q {
+    assert(v != 0.);
+    Q G = GM(v, i_in);
+    return -2 * Lambda / (v * v + Lambda * Lambda) * G;
+// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+}
 
 #endif //KELDYSH_MFRG_PROPAGATOR_H

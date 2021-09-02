@@ -11,286 +11,290 @@
 
 #include "../data_structures.h"
 
-// Relate the Keldysh components in each diagrammatic class to the independent ones:
-// -1 = this component is zero
-//  0 = related to component 0
-//  1 = related to component 1
-//  ...
+/** Relate the Keldysh components in each diagrammatic class to the independent ones:
+* -1 = this component is zero
+*  0 = related to component 0
+*  1 = related to component 1
+*  ...
+*/
 struct Components {
     std::vector<std::vector<std::vector<int> > > K
         = std::vector<std::vector<std::vector<int> > > (4,
                                          std::vector<std::vector<int> > (2,
                                                                std::vector<int> (16)));
 
-    Components() {};
-    Components(const char channel) {
-#ifdef KELDYSH_FORMALISM
-        switch (channel) {
-            case 'a':
-                K[k1] = {std::vector<int> ({-1,  0,  0,  1,
-                                        0,  1, -1,  0,
-                                        0, -1,  1,  0,
-                                        1,  0,  0, -1}),    // spin comp. V
-                         std::vector<int> ({-1,  0,  0,  1,
-                                        0,  1, -1,  0,
-                                        0, -1,  1,  0,
-                                        1,  0,  0, -1})};   // spin comp. Vhat
-                K[k2] = {std::vector<int> ({ 0,  1,  2,  3,
-                                        2,  3,  0,  1,
-                                        1, -1,  3,  4,
-                                        3,  4,  1, -1}),    // spin comp. V
-                         std::vector<int> ({ 0,  1,  2,  3,
-                                        2,  3,  0,  1,
-                                        1, -1,  3,  4,
-                                        3,  4,  1, -1})};   // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({0,  2,  1,  3,
-                                        1,  3, -1,  4,
-                                        2,  0,  3,  1,
-                                        3,  1,  4, -1}),    // spin comp. V
-                          std::vector<int> ({0,  2,  1,  3,
-                                        1,  3, -1,  4,
-                                        2,  0,  3,  1,
-                                        3,  1,  4, -1})};   // spin comp. Vhat
-                K[k3] =  {std::vector<int> ({0,  1,  1,  2,
-                                        1,  3,  4,  5,
-                                        1,  4,  3,  5,
-                                        2,  5,  5, -1}),    // spin comp. V
-                          std::vector<int> ({0,  1,  1,  2,
-                                        1,  4,  3,  5,
-                                        1,  3,  4,  5,
-                                        2,  5,  5, -1})};   // spin comp. Vhat
-                break;
-            case 'p':
-                K[k1] = {std::vector<int> ({-1,  0,  0, -1,
-                                        0,  1,  1,  0,
-                                        0,  1,  1,  0,
-                                       -1,  0,  0, -1}),    // spin comp. V
-                         std::vector<int> ({-1,  0,  0, -1,
-                                        0,  1,  1,  0,
-                                        0,  1,  1,  0,
-                                       -1,  0,  0, -1})};   // spin comp. Vhat
-                K[k2] = {std::vector<int> ({ 0,  1,  1,  0,
-                                        2,  3,  3,  2,
-                                        2,  3,  3,  2,
-                                       -1,  4,  4, -1}),    // spin comp. V
-                         std::vector<int> ({ 0,  1,  1,  0,
-                                        2,  3,  3,  2,
-                                        2,  3,  3,  2,
-                                       -1,  4,  4, -1})};   // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({0,  2,  2, -1,
-                                        1,  3,  3,  4,
-                                        1,  3,  3,  4,
-                                        0,  2,  2, -1}),    // spin comp. V
-                          std::vector<int> ({0,  2,  2, -1,
-                                        1,  3,  3,  4,
-                                        1,  3,  3,  4,
-                                        0,  2,  2, -1})};   // spin comp. Vhat
-                K[k3] =  {std::vector<int> ({0,  1,  1,  2,
-                                        1,  3,  4,  5,
-                                        1,  4,  3,  5,
-                                        2,  5,  5, -1}),    // spin comp. V
-                          std::vector<int> ({0,  1,  1,  2,
-                                        1,  4,  3,  5,
-                                        1,  3,  4,  5,
-                                        2,  5,  5, -1})};   // spin comp. Vhat
-                break;
-            case 't':
-                K[k1] = {std::vector<int> ({-1,  0,  0,  1,
-                                        0, -1,  1,  0,
-                                        0,  1, -1,  0,
-                                        1,  0,  0, -1}),    // spin comp. V
-                         std::vector<int> ({-1,  0,  0,  1,
-                                        0, -1,  1,  0,
-                                        0,  1, -1,  0,
-                                        1,  0,  0, -1})};   // spin comp. Vhat
-                K[k2] = {std::vector<int> ({ 0,  1,  2,  3,
-                                        1, -1,  3,  4,
-                                        2,  3,  0,  1,
-                                        3,  4,  1, -1}),    // spin comp. V
-                         std::vector<int> ({ 0,  1,  2,  3,
-                                        1, -1,  3,  4,
-                                        2,  3,  0,  1,
-                                        3,  4,  1, -1})};   // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({0,  2,  1,  3,
-                                        2,  0,  3,  1,
-                                        1,  3, -1,  4,
-                                        3,  1,  4, -1}),    // spin comp. V
-                          std::vector<int> ({0,  2,  1,  3,
-                                        2,  0,  3,  1,
-                                        1,  3, -1,  4,
-                                        3,  1,  4, -1})};   // spin comp. Vhat
-                K[k3]  = {std::vector<int> ({0,  1,  1,  2,
-                                        1,  3,  4,  5,
-                                        1,  4,  3,  5,
-                                        2,  5,  5, -1}),    // spin comp. V
-                          std::vector<int> ({0,  1,  1,  2,
-                                        1,  4,  3,  5,
-                                        1,  3,  4,  5,
-                                        2,  5,  5, -1})};   // spin comp. Vhat
-                break;
-            default:;
+    Components() = default;
+    explicit Components(const char channel) {
+        if (KELDYSH){
+            switch (channel) {
+                case 'a':
+                    K[k1] = {std::vector<int> ({-1,  0,  0,  1,
+                                                0,  1, -1,  0,
+                                                0, -1,  1,  0,
+                                                1,  0,  0, -1}),    // spin comp. V
+                             std::vector<int> ({-1,  0,  0,  1,
+                                                0,  1, -1,  0,
+                                                0, -1,  1,  0,
+                                                1,  0,  0, -1})};   // spin comp. Vhat
+                    K[k2] = {std::vector<int> ({ 0,  1,  2,  3,
+                                                 2,  3,  0,  1,
+                                                 1, -1,  3,  4,
+                                                 3,  4,  1, -1}),    // spin comp. V
+                             std::vector<int> ({ 0,  1,  2,  3,
+                                                 2,  3,  0,  1,
+                                                 1, -1,  3,  4,
+                                                 3,  4,  1, -1})};   // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({0,  2,  1,  3,
+                                                 1,  3, -1,  4,
+                                                 2,  0,  3,  1,
+                                                 3,  1,  4, -1}),    // spin comp. V
+                              std::vector<int> ({0,  2,  1,  3,
+                                                 1,  3, -1,  4,
+                                                 2,  0,  3,  1,
+                                                 3,  1,  4, -1})};   // spin comp. Vhat
+                    K[k3] =  {std::vector<int> ({0,  1,  1,  2,
+                                                 1,  3,  4,  5,
+                                                 1,  4,  3,  5,
+                                                 2,  5,  5, -1}),    // spin comp. V
+                              std::vector<int> ({0,  1,  1,  2,
+                                                 1,  4,  3,  5,
+                                                 1,  3,  4,  5,
+                                                 2,  5,  5, -1})};   // spin comp. Vhat
+                    break;
+                case 'p':
+                    K[k1] = {std::vector<int> ({-1,  0,  0, -1,
+                                                0,  1,  1,  0,
+                                                0,  1,  1,  0,
+                                                -1,  0,  0, -1}),    // spin comp. V
+                             std::vector<int> ({-1,  0,  0, -1,
+                                                0,  1,  1,  0,
+                                                0,  1,  1,  0,
+                                                -1,  0,  0, -1})};   // spin comp. Vhat
+                    K[k2] = {std::vector<int> ({ 0,  1,  1,  0,
+                                                 2,  3,  3,  2,
+                                                 2,  3,  3,  2,
+                                                 -1,  4,  4, -1}),    // spin comp. V
+                             std::vector<int> ({ 0,  1,  1,  0,
+                                                 2,  3,  3,  2,
+                                                 2,  3,  3,  2,
+                                                 -1,  4,  4, -1})};   // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({0,  2,  2, -1,
+                                                 1,  3,  3,  4,
+                                                 1,  3,  3,  4,
+                                                 0,  2,  2, -1}),    // spin comp. V
+                              std::vector<int> ({0,  2,  2, -1,
+                                                 1,  3,  3,  4,
+                                                 1,  3,  3,  4,
+                                                 0,  2,  2, -1})};   // spin comp. Vhat
+                    K[k3] =  {std::vector<int> ({0,  1,  1,  2,
+                                                 1,  3,  4,  5,
+                                                 1,  4,  3,  5,
+                                                 2,  5,  5, -1}),    // spin comp. V
+                              std::vector<int> ({0,  1,  1,  2,
+                                                 1,  4,  3,  5,
+                                                 1,  3,  4,  5,
+                                                 2,  5,  5, -1})};   // spin comp. Vhat
+                    break;
+                case 't':
+                    K[k1] = {std::vector<int> ({-1,  0,  0,  1,
+                                                0, -1,  1,  0,
+                                                0,  1, -1,  0,
+                                                1,  0,  0, -1}),    // spin comp. V
+                             std::vector<int> ({-1,  0,  0,  1,
+                                                0, -1,  1,  0,
+                                                0,  1, -1,  0,
+                                                1,  0,  0, -1})};   // spin comp. Vhat
+                    K[k2] = {std::vector<int> ({ 0,  1,  2,  3,
+                                                 1, -1,  3,  4,
+                                                 2,  3,  0,  1,
+                                                 3,  4,  1, -1}),    // spin comp. V
+                             std::vector<int> ({ 0,  1,  2,  3,
+                                                 1, -1,  3,  4,
+                                                 2,  3,  0,  1,
+                                                 3,  4,  1, -1})};   // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({0,  2,  1,  3,
+                                                 2,  0,  3,  1,
+                                                 1,  3, -1,  4,
+                                                 3,  1,  4, -1}),    // spin comp. V
+                              std::vector<int> ({0,  2,  1,  3,
+                                                 2,  0,  3,  1,
+                                                 1,  3, -1,  4,
+                                                 3,  1,  4, -1})};   // spin comp. Vhat
+                    K[k3]  = {std::vector<int> ({0,  1,  1,  2,
+                                                 1,  3,  4,  5,
+                                                 1,  4,  3,  5,
+                                                 2,  5,  5, -1}),    // spin comp. V
+                              std::vector<int> ({0,  1,  1,  2,
+                                                 1,  4,  3,  5,
+                                                 1,  3,  4,  5,
+                                                 2,  5,  5, -1})};   // spin comp. Vhat
+                    break;
+                default:;
+            }
         }
-#else
-        K[k1]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
-        K[k2]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
-        K[k2b] = { std::vector<int> ({0}), std::vector<int> ({0}) };
-        K[k3]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
-#endif
+        else{
+            K[k1]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
+            K[k2]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
+            K[k2b] = { std::vector<int> ({0}), std::vector<int> ({0}) };
+            K[k3]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
+        }
     }
 };
 
-// Transformations that need to be applied to the respective stored components to get the correct actual components:
-// 0 = nothing, 1 = T1, 2 = T2, 3 = T3, 4 = TC
-// 43 = first apply 3, then 4 etc. <-- actually reversed, due to special subtlety... // Todo: explain in more detail
+/** Transformations that need to be applied to the respective stored components to get the correct actual components:
+* 0 = nothing, 1 = T1, 2 = T2, 3 = T3, 4 = TC
+* Convention for composite trafos: 43 = first apply 4, then 3 etc. Careful, some operations do not commute!
+*/
 struct Transformations {
     std::vector<std::vector<std::vector<int> > > K
             = std::vector<std::vector<std::vector<int> > > (4,
                                              std::vector<std::vector<int> > (2,
                                                                    std::vector<int> (16)));
 
-    Transformations() {};
-    Transformations(const char channel) {
-#ifdef KELDYSH_FORMALISM
-        switch (channel) {
-            case 'a':
-                K[k1] = {std::vector<int> ({ 0,  0,  3,  0,
-                                        3,  0,  0,  0,
-                                        0,  0,  0,  3,
-                                        0,  3,  0,  0}),    // spin comp. V
-                         std::vector<int> ({ 0,  2,  1,  1,
-                                        1,  1,  0,  2,
-                                        2,  0,  1,  1,
-                                        1,  1,  2,  0})};   // spin comp. Vhat
-                K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
-                                        0,  0,  0,  0,
-                                       43,  0, 43,  0,
-                                       43,  0, 43,  0}),   // spin comp. V
-                         std::vector<int> ({ 2,  2,  2,  2,
-                                        2,  2,  2,  2,
-                                       41,  0, 41,  2,
-                                       41,  2, 41,  0})};  // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({ 3,  3,  3,  3,
-                                         4,  4,  0,  3,
-                                         3,  3,  3,  3,
-                                         4,  4,  3,  0}),   // spin comp. V
-                          std::vector<int> ({ 1,  1,  1,  1,
-                                        14, 14,  0,  1,
-                                         1,  1,  1,  1,
-                                        14, 14,  1,  0})}; // spin comp. Vhat
-                K[k3] =  {std::vector<int> ({ 0,  0,  3,  0,
-                                         4,  0,  0,  0,
-                                        43,  3,  3,  3,
-                                         4,  4, 43,  0}),    // spin comp. V
-                          std::vector<int> ({ 1,  2,  1,  1,
-                                        14,  1,  1,  1,
-                                        41,  2,  2,  2,            //Uses TCT2 = T1TC
-                                        14, 41, 14,  0})};  //spin comp. Vhat
-                break;
-            case 'p':
-                K[k1] = {std::vector<int> ({ 0,  0,  0,  0,
-                                        4,  0,  0,  4,
-                                        4,  0,  0,  4,
-                                        0,  0,  0,  0}),        // spin comp. V
-                         std::vector<int> ({ 0,  1,  1,  0,
-                                       14,  1,  1, 14,
-                                       14,  1,  1, 14,
-                                        0,  1,  1,  0})};    // spin comp. Vhat
-                K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
-                                        0,  0,  0,  0,
-                                        3,  3,  3,  3,
-                                        0,  0,  0,  0}),    // spin comp. V
-                         std::vector<int> ({ 1,  1,  1,  1,
-                                        1,  1,  1,  1,
-                                        2,  2,  2,  2,
-                                        0,  1,  1,  0})};   // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({4,  4, 43,  0,
-                                        4,  4, 43,  4,
-                                        4,  4, 43,  4,
-                                        4,  4, 43,  0}),    // spin comp. V
-                         std::vector<int> ({41, 41, 14,  0,
-                                       14, 41, 14, 41,
-                                       14, 41, 14, 41,
-                                       41, 41, 14,  0})};   // spin comp. Vhat
-                K[k3] = {std::vector<int> ({ 0,  0,  3,  0,
-                                        4,  0,  0,  0,
-                                       43,  3,  3,  3,
-                                        4,  4, 43,  0}),    // spin comp. V
-                         std::vector<int> ({ 1,  2,  1,  1,
-                                       14,  1,  1,  1,
-                                       41,  2,  2,  2,
-                                       14, 41, 14,  0})};  // spin comp. Vhat
-                break;
-            case 't':
-                K[k1] = {std::vector<int> ({ 0,  0,  3,  0,
-                                        0,  0,  0,  3,
-                                        3,  0,  0,  0,
-                                        0,  3,  0,  0}),        // spin comp. V
-                         std::vector<int> ({ 0,  2,  1,  1,
-                                        2,  0,  1,  1,
-                                        1,  1,  0,  2,
-                                        1,  1,  2,  0})};       // spin comp. Vhat
-                K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
-                                        4,  0,  4,  0,
-                                        0,  0,  0,  0,
-                                        4,  0,  4,  0}),        // spin comp. V
-                         std::vector<int> ({ 2,  2,  2,  2,
-                                       14,  0, 14,  2,
-                                        2,  2,  2,  2,
-                                       14,  2, 14,  0})};  // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({3,  3,  3,  3,
-                                        3,  3,  3,  3,
-                                       43, 43,  0,  3,
-                                       43, 43,  3,  0}),  // spin comp. V
-                         std::vector<int> ({ 1,  1,  1,  1,
-                                        1,  1,  1,  1,
-                                       41, 41,  0,  1,
-                                       41, 41,  1,  0})}; // spin comp. Vhat
-                K[k3] = {std::vector<int> ({ 0,  0,  3,  0,
-                                        4,  0,  0,  0,
-                                       43,  3,  3,  3,
-                                        4,  4, 43,  0}),    // spin comp. V
-                         std::vector<int> ({ 1,  2,  1,  1,
-                                       14,  1,  1,  1,
-                                       41,  2,  2,  2,
-                                       14, 41, 14,  0})}; // spin comp. Vhat
-                break;
-            default:;
+    Transformations() = default;
+    explicit Transformations(const char channel) {
+        if (KELDYSH){
+            switch (channel) {
+                case 'a':
+                    K[k1] = {std::vector<int> ({ 0,  0,  3,  0,
+                                                 3,  0,  0,  0,
+                                                 0,  0,  0,  3,
+                                                 0,  3,  0,  0}),    // spin comp. V
+                             std::vector<int> ({ 0,  2,  1,  1,
+                                                 1,  1,  0,  2,
+                                                 2,  0,  1,  1,
+                                                 1,  1,  2,  0})};   // spin comp. Vhat
+                    K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
+                                                 0,  0,  0,  0,
+                                                 43,  0, 43,  0,
+                                                 43,  0, 43,  0}),   // spin comp. V
+                             std::vector<int> ({ 2,  2,  2,  2,
+                                                 2,  2,  2,  2,
+                                                 41,  0, 41,  2,
+                                                 41,  2, 41,  0})};  // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({ 3,  3,  3,  3,
+                                                  4,  4,  0,  3,
+                                                  3,  3,  3,  3,
+                                                  4,  4,  3,  0}),   // spin comp. V
+                              std::vector<int> ({ 1,  1,  1,  1,
+                                                  14, 14,  0,  1,
+                                                  1,  1,  1,  1,
+                                                  14, 14,  1,  0})}; // spin comp. Vhat
+                    K[k3] =  {std::vector<int> ({ 0,  0,  3,  0,
+                                                  4,  0,  0,  0,
+                                                  43,  3,  3,  3,
+                                                  4,  4, 43,  0}),    // spin comp. V
+                              std::vector<int> ({ 1,  2,  1,  1,
+                                                  14,  1,  1,  1,
+                                                  41,  2,  2,  2,            //Uses TCT2 = T1TC
+                                                  14, 41, 14,  0})};  //spin comp. Vhat
+                    break;
+                case 'p':
+                    K[k1] = {std::vector<int> ({ 0,  0,  0,  0,
+                                                 4,  0,  0,  4,
+                                                 4,  0,  0,  4,
+                                                 0,  0,  0,  0}),        // spin comp. V
+                             std::vector<int> ({ 0,  1,  1,  0,
+                                                 14,  1,  1, 14,
+                                                 14,  1,  1, 14,
+                                                 0,  1,  1,  0})};    // spin comp. Vhat
+                    K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
+                                                 0,  0,  0,  0,
+                                                 3,  3,  3,  3,
+                                                 0,  0,  0,  0}),    // spin comp. V
+                             std::vector<int> ({ 1,  1,  1,  1,
+                                                 1,  1,  1,  1,
+                                                 2,  2,  2,  2,
+                                                 0,  1,  1,  0})};   // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({4,  4, 43,  0,
+                                                 4,  4, 43,  4,
+                                                 4,  4, 43,  4,
+                                                 4,  4, 43,  0}),    // spin comp. V
+                              std::vector<int> ({41, 41, 14,  0,
+                                                 14, 41, 14, 41,
+                                                 14, 41, 14, 41,
+                                                 41, 41, 14,  0})};   // spin comp. Vhat
+                    K[k3] = {std::vector<int> ({ 0,  0,  3,  0,
+                                                 4,  0,  0,  0,
+                                                 43,  3,  3,  3,
+                                                 4,  4, 43,  0}),    // spin comp. V
+                             std::vector<int> ({ 1,  2,  1,  1,
+                                                 14,  1,  1,  1,
+                                                 41,  2,  2,  2,
+                                                 14, 41, 14,  0})};  // spin comp. Vhat
+                    break;
+                case 't':
+                    K[k1] = {std::vector<int> ({ 0,  0,  3,  0,
+                                                 0,  0,  0,  3,
+                                                 3,  0,  0,  0,
+                                                 0,  3,  0,  0}),        // spin comp. V
+                             std::vector<int> ({ 0,  2,  1,  1,
+                                                 2,  0,  1,  1,
+                                                 1,  1,  0,  2,
+                                                 1,  1,  2,  0})};       // spin comp. Vhat
+                    K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
+                                                 4,  0,  4,  0,
+                                                 0,  0,  0,  0,
+                                                 4,  0,  4,  0}),        // spin comp. V
+                             std::vector<int> ({ 2,  2,  2,  2,
+                                                 14,  0, 14,  2,
+                                                 2,  2,  2,  2,
+                                                 14,  2, 14,  0})};  // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({3,  3,  3,  3,
+                                                 3,  3,  3,  3,
+                                                 43, 43,  0,  3,
+                                                 43, 43,  3,  0}),  // spin comp. V
+                              std::vector<int> ({ 1,  1,  1,  1,
+                                                  1,  1,  1,  1,
+                                                  41, 41,  0,  1,
+                                                  41, 41,  1,  0})}; // spin comp. Vhat
+                    K[k3] = {std::vector<int> ({ 0,  0,  3,  0,
+                                                 4,  0,  0,  0,
+                                                 43,  3,  3,  3,
+                                                 4,  4, 43,  0}),    // spin comp. V
+                             std::vector<int> ({ 1,  2,  1,  1,
+                                                 14,  1,  1,  1,
+                                                 41,  2,  2,  2,
+                                                 14, 41, 14,  0})}; // spin comp. Vhat
+                    break;
+                default:;
+            }
         }
-#else
-        switch (channel) {
-            case 'a':
-                K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
-                          std::vector<int> ({ 1})};   // spin comp. Vhat
-                K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
-                          std::vector<int> ({ 2})};   // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({ 3}),    // spin comp. V
-                          std::vector<int> ({ 1})};   // spin comp. Vhat
-                K[k3]  = {std::vector<int> ({ 0}),    // spin comp. V
-                          std::vector<int> ({ 1})};   //spin comp. Vhat
-                break;
-            case 'p':
-                K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
-                          std::vector<int> ({ 1})};   // spin comp. Vhat
-                K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
-                          std::vector<int> ({ 1})};   // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({ 4}),    // spin comp. V
-                          std::vector<int> ({41})};   // spin comp. Vhat
-                K[k3]  = {std::vector<int> ({  0}),   // spin comp. V
-                          std::vector<int> ({  1})};  // spin comp. Vhat
-                break;
-            case 't':
-                K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
-                          std::vector<int> ({ 1})};   // spin comp. Vhat
-                K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
-                          std::vector<int> ({ 2})};   // spin comp. Vhat
-                K[k2b] = {std::vector<int> ({ 3}),    // spin comp. V
-                          std::vector<int> ({ 1})};   // spin comp. Vhat
-                K[k3]  = {std::vector<int> ({ 0}),    // spin comp. V
-                          std::vector<int> ({ 1})};   // spin comp. Vhat
-                break;
-            default:;
+        else{
+            switch (channel) {
+                case 'a':
+                    K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
+                              std::vector<int> ({ 1})};   // spin comp. Vhat
+                    K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
+                              std::vector<int> ({ 2})};   // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({ 3}),    // spin comp. V
+                              std::vector<int> ({ 1})};   // spin comp. Vhat
+                    K[k3]  = {std::vector<int> ({ 0}),    // spin comp. V
+                              std::vector<int> ({ 1})};   //spin comp. Vhat
+                    break;
+                case 'p':
+                    K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
+                              std::vector<int> ({ 1})};   // spin comp. Vhat
+                    K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
+                              std::vector<int> ({ 1})};   // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({ 4}),    // spin comp. V
+                              std::vector<int> ({41})};   // spin comp. Vhat
+                    K[k3]  = {std::vector<int> ({  0}),   // spin comp. V
+                              std::vector<int> ({  1})};  // spin comp. Vhat
+                    break;
+                case 't':
+                    K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
+                              std::vector<int> ({ 1})};   // spin comp. Vhat
+                    K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
+                              std::vector<int> ({ 2})};   // spin comp. Vhat
+                    K[k2b] = {std::vector<int> ({ 3}),    // spin comp. V
+                              std::vector<int> ({ 1})};   // spin comp. Vhat
+                    K[k3]  = {std::vector<int> ({ 0}),    // spin comp. V
+                              std::vector<int> ({ 1})};   // spin comp. Vhat
+                    break;
+                default:;
+            }
         }
-#endif
     }
 };
 

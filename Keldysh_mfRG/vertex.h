@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include "data_structures.h"    // real/complex vector classes
-#include "parameters.h"         // system parameters (vector lengths etc.)
+#include "parameters/master_parameters.h"         // system parameters (vector lengths etc.)
 #include "r_vertex.h"           // reducible vertex in channel r
 
 
@@ -12,13 +12,12 @@
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
 template <class Q>
 class irreducible{
+    vec<Q> empty_bare() {
+        if (KELDYSH) return vec<Q> (16*n_in);
+        else return vec<Q> (n_in);
+    }
+    vec<Q> bare = empty_bare();
 public:
-#ifdef KELDYSH_FORMALISM
-    vec<Q> bare = vec<Q>(16*n_in); // TODO: does this need to be public? --> do we need default constructor?
-#else
-    vec<Q> bare = vec<Q>(n_in); // TODO: does this need to be public? --> do we need default constructor?
-#endif
-
     irreducible() = default;;
 
     // All three functions return the value of the bare vertex. Since this value is, this far, independent of everything,
@@ -82,10 +81,7 @@ public:
                                     // into r bubble (i.e. in left/right_same/diff_bare functions), and no gammaRb. This
                                     // is needed for correct computation of the central part in multiloop contributions.
 
-    fullvert() : avertex('a'),
-                 pvertex('p'),
-                 tvertex('t') {}
-    fullvert(double Lambda) : avertex('a', Lambda),
+    explicit fullvert(double Lambda) : avertex('a', Lambda),
                               pvertex('p', Lambda),
                               tvertex('t', Lambda) {}
 
@@ -120,6 +116,8 @@ public:
 
     // Interpolate vertex to updated grid
     void update_grid(double Lambda);
+    void update_grid(VertexFrequencyGrid newFrequencyGrid);
+    void update_grid(VertexFrequencyGrid newFrequencyGrid, fullvert<Q> &Fullvert4data);
 
     //Norm of the vertex
     double sum_norm(int);
@@ -188,6 +186,13 @@ public:
         lhs -= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
+
+    double get_deriv_max_K1();
+    double get_deriv_max_K2();
+    double get_deriv_max_K3();
+
+    void findBestFreqGrid(double Lambda);
+
 };
 
 /** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
@@ -195,8 +200,7 @@ template <typename Q>
 class symmetric {
     fullvert<Q> vertex;
 public:
-    symmetric() {}
-    symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
+    explicit symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
     symmetric(const fullvert<Q>& half1, const fullvert<Q>& half2) : vertex(half1) {}
 
     // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
@@ -265,8 +269,7 @@ template <typename Q>
 class non_symmetric {
     fullvert<Q> vertex_half1, vertex_half2;
 public:
-    non_symmetric() {}
-    non_symmetric(const fullvert<Q>& vertex_in)
+    explicit non_symmetric(const fullvert<Q>& vertex_in)
             : vertex_half1(vertex_in), vertex_half2(vertex_in) {
         print("Warning: non-symmetric vertex initialized with only one fullvert.", true);
     }
@@ -340,8 +343,7 @@ class vertex_container {
     symmetry_type<Q> vertex;
 
 public:
-    vertex_container() {}
-    vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
+    explicit vertex_container(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
     vertex_container(const fullvert<Q>& half1, const fullvert<Q>& half2)
                     : vertex(half1, half2) {}
 
@@ -454,13 +456,18 @@ public:
 };
 
 /** Vertex class: vector of vertex_container (one element for each spin component) */
-template <typename Q, template <typename> typename symmetry_type> // TODO: the last "typename" requires C++17. Is this a problem?
+template <typename Q, template <typename> class symmetry_type>
 class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
-    GeneralVertex() : vec<vertex_container<Q, symmetry_type> > () {};
-    GeneralVertex(int n) : vec<vertex_container<Q, symmetry_type> > (n) {};
-    GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type> > (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
-    GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type> > (n, val) {}; // TODO: never used?
+    GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
+
+    /// Constructor, which gets another GeneralVertex as input; it ONLY copies its frequency grid!
+    GeneralVertex(int n, const GeneralVertex<Q, symmetry_type>& Vertex_in)
+      :vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda_ini))) {
+        set_frequency_grid(Vertex_in);      // copies frequency grid from Vertex_in
+    };
+    /// Constructor, which gets vertex_container as input with which all vector elements are initialized
+    GeneralVertex(int n, vertex_container<Q, symmetry_type> val) : vec<vertex_container<Q, symmetry_type>> (n, val) {}; // Never used; perhaps useful if no SU(2)-symmetry
 
     auto operator+= (const GeneralVertex<Q, symmetry_type>& rhs) -> GeneralVertex<Q, symmetry_type> {
         for (int i=0; i<this->size(); ++i) {
@@ -563,7 +570,7 @@ public:
 #endif
 };
 
-/** Define Vertex as symmetric GeneralVertex */ // TODO: maybe remove this and (globally) rename GeneralVertex -> Vertex ?
+/** Define Vertex as symmetric GeneralVertex */
 template <typename Q>
 using Vertex = GeneralVertex<Q, symmetric>;
 
@@ -597,17 +604,18 @@ template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
 }
 
 template <typename Q> void irreducible<Q>::initialize(Q val) {
-#ifdef KELDYSH_FORMALISM
-    for (auto i:odd_Keldysh) {
-#else
-    int i = 0;
-#endif
-        for (int i_in=0; i_in<n_in; ++i_in) {
-            this->setvert(i, i_in, val);
+    if (KELDYSH){
+        for (auto i:odd_Keldysh) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                this->setvert(i, i_in, val);
+            }
         }
-#ifdef KELDYSH_FORMALISM
     }
-#endif
+    else{
+        for (int i_in=0; i_in<n_in; ++i_in) {
+            this->setvert(0, i_in, val);
+        }
+    }
 }
 
 
@@ -683,28 +691,28 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if MAX_DIAG_CLASS <= 1
-    VertexInput input_p = input;
-    VertexInput input_at = input;
-    input_p.w = 2*glb_mu;
-    input_at.w = 0.;
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
 
-    switch (channel) {
-        case 'a':
-            K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
-                    + tvertex.template valsmooth<k1>(input_at, avertex);
-            break;
-        case 'p':
-            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
-                    + tvertex.template valsmooth<k1>(input_at, avertex);
-            break;
-        case 't':
-            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
-                    + pvertex.template valsmooth<k1>(input_p, pvertex);
-            break;
-        default: ;
+        switch (channel) {
+            case 'a':
+                K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 'p':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 't':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
+                          + pvertex.template valsmooth<k1>(input_p, pvertex);
+                break;
+            default:;
+        }
     }
-    #endif
 #endif
     assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
@@ -729,28 +737,28 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if MAX_DIAG_CLASS <= 1
-    VertexInput input_p = input;
-    VertexInput input_at = input;
-    input_p.w = 2*glb_mu;
-    input_at.w = 0.;
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
 
-    switch (channel) {
-        case 'a':
-            K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
-                    + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
-            break;
-        case 'p':
-            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
-                    + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
-            break;
-        case 't':
-            K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
-                    + pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex);
-            break;
-        default: ;
+        switch (channel) {
+            case 'a':
+                K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
+                break;
+            case 'p':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
+                break;
+            case 't':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
+                          + pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex);
+                break;
+            default:;
+        }
     }
-    #endif
 #endif
     assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
@@ -777,28 +785,28 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if MAX_DIAG_CLASS <= 1
-    VertexInput input_p = input;
-    VertexInput input_at = input;
-    input_p.w = 2*glb_mu;
-    input_at.w = 0.;
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
 
-    switch (channel) {
-        case 'a':
-            K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
-                   + tvertex.template valsmooth<k1>(input_at, avertex);
-            break;
-        case 'p':
-            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
-                   + tvertex.template valsmooth<k1>(input_at, avertex);
-            break;
-        case 't':
-            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
-                   + pvertex.template valsmooth<k1>(input_p, pvertex);
-            break;
-        default: ;
+        switch (channel) {
+            case 'a':
+                K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 'p':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 't':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
+                         + pvertex.template valsmooth<k1>(input_p, pvertex);
+                break;
+            default:;
+        }
     }
-    #endif
 #endif
     assert(isfinite(K1_K2));
     return gamma0 + K1_K2;
@@ -824,28 +832,28 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
             return 0.;
     }
 #ifdef STATIC_FEEDBACK
-    #if MAX_DIAG_CLASS <= 1
-    VertexInput input_p = input;
-    VertexInput input_at = input;
-    input_p.w = 2*glb_mu;
-    input_at.w = 0.;
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
 
-    switch (channel) {
-        case 'a':
-            K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
-                   + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
-            break;
-        case 'p':
-            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
-                   + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
-            break;
-        case 't':
-            K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
-                   + pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex);
-            break;
-        default: ;
+        switch (channel) {
+            case 'a':
+                K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
+                break;
+            case 'p':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
+                break;
+            case 't':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex, right_vertex)
+                         + pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex);
+                break;
+            default:;
+        }
     }
-    #endif
 #endif
     assert(isfinite(K1_K2));
     return gamma0 + K1_K2;
@@ -854,10 +862,10 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const -> Q {
     Q K2_K3, gamma_Rb;
     if (Ir) {
-#if MAX_DIAG_CLASS >= 2
-        gamma_Rb = gammaRb(input);
-        assert(isfinite(gamma_Rb));
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb(input);
+            assert(isfinite(gamma_Rb));
+        }
         return gamma_Rb;
     }
 
@@ -884,10 +892,10 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input) const 
 template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2_K3, gamma_Rb;
     if (Ir) {
-#if MAX_DIAG_CLASS >= 2
-        gamma_Rb = gammaRb(input, right_vertex);
-        assert(isfinite(gamma_Rb));
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb(input, right_vertex);
+            assert(isfinite(gamma_Rb));
+        }
         return gamma_Rb;
     }
 
@@ -915,10 +923,10 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const 
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const -> Q {
     Q K2b_K3, gamma_Rb;
     if (Ir) {
-#if MAX_DIAG_CLASS >= 2
-        gamma_Rb = gammaRb(input);
-        assert(isfinite(gamma_Rb));
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb(input);
+            assert(isfinite(gamma_Rb));
+        }
         return gamma_Rb;
     }
 
@@ -945,10 +953,10 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input) const
 template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2b_K3, gamma_Rb;
     if (Ir) {
-#if MAX_DIAG_CLASS >= 2
-        gamma_Rb = gammaRb(input, right_vertex);
-        assert(isfinite(gamma_Rb));
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb(input, right_vertex);
+            assert(isfinite(gamma_Rb));
+        }
         return gamma_Rb;
     }
     switch (input.channel){
@@ -976,17 +984,16 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(const fullvert<Q
     avertex.enforce_freqsymmetriesK1(right_vertex.avertex);
     pvertex.enforce_freqsymmetriesK1(right_vertex.pvertex);
     tvertex.enforce_freqsymmetriesK1(right_vertex.tvertex);
-#if MAX_DIAG_CLASS >1
-    avertex.enforce_freqsymmetriesK2(right_vertex.avertex);
-    pvertex.enforce_freqsymmetriesK2(right_vertex.pvertex);
-    tvertex.enforce_freqsymmetriesK2(right_vertex.tvertex);
-#endif
-#if MAX_DIAG_CLASS >2
-    avertex.enforce_freqsymmetriesK3(right_vertex.avertex);
-    pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
-    tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
-#endif
-
+    if (MAX_DIAG_CLASS > 1) {
+        avertex.enforce_freqsymmetriesK2(right_vertex.avertex);
+        pvertex.enforce_freqsymmetriesK2(right_vertex.pvertex);
+        tvertex.enforce_freqsymmetriesK2(right_vertex.tvertex);
+    }
+    if (MAX_DIAG_CLASS > 2) {
+        avertex.enforce_freqsymmetriesK3(right_vertex.avertex);
+        pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
+        tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
+    }
 }
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {
@@ -1004,15 +1011,22 @@ template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
     this->pvertex.update_grid(Lambda);
     this->tvertex.update_grid(Lambda);
 }
+template <typename Q> void fullvert<Q>::update_grid(VertexFrequencyGrid newFrequencyGrid) {
+    this->avertex.update_grid(newFrequencyGrid);
+    this->pvertex.update_grid(newFrequencyGrid);
+    this->tvertex.update_grid(newFrequencyGrid);
+}
+template <typename Q> void fullvert<Q>::update_grid(VertexFrequencyGrid newFrequencyGrid, fullvert<Q>& Fullvert4data) {
+    this->avertex.update_grid(newFrequencyGrid, Fullvert4data.avertex);
+    this->pvertex.update_grid(newFrequencyGrid, Fullvert4data.pvertex);
+    this->tvertex.update_grid(newFrequencyGrid, Fullvert4data.tvertex);
+}
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
     if(p==0) {//infinity (max) norm
         double max = 0;
-#ifdef KELDYSH_FORMALISM
         for (int iK = 0; iK < nK_K1; iK++) {
-#else
-        int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for (int iw = 0; iw < nBOS; iw++) {
                 for (int i_in = 0; i_in < n_in; i_in++) {
                     double compare = std::abs(this->avertex.K1_val(iK, iw, i_in));
@@ -1031,20 +1045,14 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
-
         return max;
     }
 
     else {//p-norm
         double result = 0;
-#ifdef KELDYSH_FORMALISM
         for(int iK = 0; iK<nK_K1; iK++){
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for(int iw=0; iw < nBOS; iw++){
                 for(int i_in=0; i_in<n_in; i_in++){
 
@@ -1054,9 +1062,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
 
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return pow(result, 1./((double)p));
     }
 }
@@ -1064,11 +1070,8 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
 template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
     if(p==0) { //infinity (max) norm
         double max = 0.;
-#ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K2; iK++) {
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for (int iw = 0; iw < nBOS2; iw++) {
                 for (int iv = 0; iv < nFER2; iv++) {
                     for (int i_in = 0; i_in < n_in; i_in++) {
@@ -1090,18 +1093,13 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return max;
     }
     else{//p-norm
         double result = 0.;
-#ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K2; iK++){
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for(int iw=0; iw < nBOS2; iw++){
                 for(int iv=0; iv < nFER2; iv++) {
                     for (int i_in = 0; i_in < n_in; i_in++) {
@@ -1113,9 +1111,7 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return pow(result, 1./((double)p));
     }
 }
@@ -1123,11 +1119,8 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
 template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
     if(p==0) {
         double max = 0.;
-#ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K3; iK++) {
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for (int iw = 0; iw < nBOS3; iw++) {
                 for (int iv1 = 0; iv1 < nFER3; iv1++) {
                     for (int iv2 = 0; iv2 < nFER3; iv2++) {
@@ -1150,19 +1143,14 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return max;
     }
 
     else { //p-norm
         double result = 0.;
-#ifdef KELDYSH_FORMALISM
         for(int iK=0; iK < nK_K3; iK++){
-#else
-            int iK = 0;
-#endif
+            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for(int iw=0; iw < nBOS3; iw++){
                 for(int iv1=0; iv1<nFER3; iv1++) {
                     for (int iv2 = 0; iv2 < nFER3; iv2++) {
@@ -1176,9 +1164,7 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
                     }
                 }
             }
-#ifdef KELDYSH_FORMALISM
         }
-#endif
         return pow(result, 1./((double)p));
     }
 
@@ -1187,16 +1173,195 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
 
 template <typename Q> auto fullvert<Q>::sum_norm(const int p) -> double {
     double result = 0.;
-#if MAX_DIAG_CLASS >= 0
-    result += norm_K1(p);
-#endif
-#if MAX_DIAG_CLASS >= 2
-    result += norm_K2(p);
-#endif
-#if MAX_DIAG_CLASS >= 3
-    result += norm_K3(p);
-#endif
+    if (MAX_DIAG_CLASS >= 0) result += norm_K1(p);
+    if (MAX_DIAG_CLASS >= 2) result += norm_K2(p);
+    if (MAX_DIAG_CLASS >= 3) result += norm_K3(p);
     return result;
+}
+
+template<typename Q> auto fullvert<Q>::get_deriv_max_K1() -> double {
+    vec<double> Kderiv_max (3);
+
+
+    Kderiv_max[0] = avertex.get_deriv_maxK1();
+    Kderiv_max[1] = pvertex.get_deriv_maxK1();
+    Kderiv_max[2] = tvertex.get_deriv_maxK1();
+
+    double result = Kderiv_max.max_norm();
+
+    return result;
+}
+
+template<typename Q> auto fullvert<Q>::get_deriv_max_K2() -> double {
+    vec<double> Kderiv_max (3);
+
+
+    Kderiv_max[0] = avertex.get_deriv_maxK2();
+    Kderiv_max[1] = pvertex.get_deriv_maxK2();
+    Kderiv_max[2] = tvertex.get_deriv_maxK2();
+
+    double result = Kderiv_max.max_norm();
+
+    return result;
+}
+
+template<typename Q> auto fullvert<Q>::get_deriv_max_K3() -> double {
+    vec<double> Kderiv_max (3);
+
+
+    Kderiv_max[0] = avertex.get_deriv_maxK3();
+    Kderiv_max[1] = pvertex.get_deriv_maxK3();
+    Kderiv_max[2] = tvertex.get_deriv_maxK3();
+
+    double result = Kderiv_max.max_norm();
+
+    return result;
+}
+
+
+template<typename Q>
+class CostFullvert_Wscale_b_K1 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_b_K1(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies.b_K1.initialize_grid(wscale_test);
+        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        double result = fullVert.get_deriv_max_K1();
+        return result;
+    }
+};
+
+template<typename Q>
+class CostFullvert_Wscale_b_K2 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_b_K2(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies.b_K2.initialize_grid(wscale_test);
+        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        double result = fullVert.get_deriv_max_K2();
+        return result;
+    }
+};
+
+template<typename Q>
+class CostFullvert_Wscale_f_K2 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_f_K2(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies.f_K2.initialize_grid(wscale_test);
+        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        double result = fullVert.get_deriv_max_K2();
+        return result;
+    }
+};
+
+template<typename Q>
+class CostFullvert_Wscale_b_K3 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_b_K3(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies.b_K3.initialize_grid(wscale_test);
+        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        double result = fullVert.get_deriv_max_K3();
+        return result;
+    }
+};
+
+template<typename Q>
+class CostFullvert_Wscale_f_K3 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_f_K3(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies.f_K3.initialize_grid(wscale_test);
+        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        double result = fullVert.get_deriv_max_K3();
+        return result;
+    }
+};
+
+template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
+
+    fullvert<Q> fullvert_temp = *this;
+    //fullvert_temp.update_grid(Lambda);
+
+
+    double a_Wscale = fullvert_temp.avertex.frequencies.b_K1.W_scale / 10.;
+    double m_Wscale = fullvert_temp.avertex.frequencies.b_K1.W_scale;
+    double b_Wscale = fullvert_temp.avertex.frequencies.b_K1.W_scale * 10;
+    CostFullvert_Wscale_b_K1<Q> cost_b_K1(fullvert_temp);
+    minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    VertexFrequencyGrid frequencies_new = avertex.frequencies;
+    frequencies_new.b_K1.initialize_grid(m_Wscale*2.);
+
+    update_grid(frequencies_new);
+
+
+
+
+
+
+    a_Wscale = fullvert_temp.avertex.frequencies.f_K2.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.frequencies.f_K2.W_scale;
+    b_Wscale = fullvert_temp.avertex.frequencies.f_K2.W_scale * 10;
+    CostFullvert_Wscale_f_K2<Q> cost_f_K2(fullvert_temp);
+    minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    frequencies_new = avertex.frequencies;
+    frequencies_new.f_K2.initialize_grid(m_Wscale*2.);
+
+    update_grid(frequencies_new);
+
+
+    a_Wscale = fullvert_temp.avertex.frequencies.b_K2.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.frequencies.b_K2.W_scale;
+    b_Wscale = fullvert_temp.avertex.frequencies.b_K2.W_scale * 10;
+    CostFullvert_Wscale_b_K2<Q> cost_bK2(fullvert_temp);
+    minimizer(cost_bK2, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    frequencies_new = avertex.frequencies;
+    frequencies_new.b_K2.initialize_grid(m_Wscale*2.);
+
+    update_grid(frequencies_new);
+
+
+
+
+    a_Wscale = fullvert_temp.avertex.frequencies.f_K3.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.frequencies.f_K3.W_scale;
+    b_Wscale = fullvert_temp.avertex.frequencies.f_K3.W_scale * 10;
+    CostFullvert_Wscale_b_K3<Q> cost_f_K3(fullvert_temp);
+    minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    frequencies_new = avertex.frequencies;
+    frequencies_new.f_K3.initialize_grid(m_Wscale*2.);
+
+    update_grid(frequencies_new);
+
+
+    a_Wscale = fullvert_temp.avertex.frequencies.b_K3.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.frequencies.b_K3.W_scale;
+    b_Wscale = fullvert_temp.avertex.frequencies.b_K3.W_scale * 10;
+    CostFullvert_Wscale_b_K3<Q> cost_bK3(fullvert_temp);
+    minimizer(cost_bK3, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    frequencies_new = avertex.frequencies;
+    frequencies_new.b_K3.initialize_grid(m_Wscale*2.);
+
+    update_grid(frequencies_new);
+
+
+
 }
 
 #if INTERPOLATION == 3

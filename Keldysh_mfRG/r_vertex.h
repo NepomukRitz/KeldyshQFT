@@ -8,7 +8,7 @@
 #define KELDYSH_MFRG_R_VERTEX_H
 
 #include "data_structures.h"          // real/complex vector classes
-#include "parameters.h"               // system parameters (lengths of vectors etc.)
+#include "parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
 #include "symmetries/Keldysh_symmetries.h"       // transformations on Keldysh indices
 #include "symmetries/internal_symmetries.h"      // symmetry transformations for internal indices (momentum etc.), currently trivial
 #include "interpolations/vertex_interpolations.h"           // frequency interpolations for vertices
@@ -20,6 +20,17 @@ template <typename Q> class fullvert; // forward declaration of fullvert
 
 template <typename Q>
 class rvert{
+
+private:
+    vec<Q> empty_K2() { // for pure K1-calculation no memory should be allocated unnecessarily for K2
+        if (MAX_DIAG_CLASS >= 2) return vec<Q> (nK_K2 * nw2 * nv2 * n_in);  // data points of K2;
+        else                     return vec<Q> (0);                         // empty vector, never used in calculations
+    }
+    vec<Q> empty_K3() { // for  K2-calculation no memory should be allocated unnecessarily for K3
+        if (MAX_DIAG_CLASS >= 3) return vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);    // data points of K3  // data points of K2;
+        else                     return vec<Q> (0);                                 // empty vector, never used in calculations
+    }
+
 public:
     char channel;                       // reducibility channel
     Components components;              // lists providing information on how all Keldysh components are related to the
@@ -33,18 +44,11 @@ public:
 
     VertexFrequencyGrid frequencies;    // frequency grid
 
-    rvert(const char channel_in) : channel(channel_in), frequencies() {
-        components = Components(channel);
-        transformations = Transformations(channel);
-        freq_transformations = FrequencyTransformations(channel);
-        freq_components = FrequencyComponents(channel);
-    };
-    rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda) {
-        components = Components(channel);
-        transformations = Transformations(channel);
-        freq_transformations = FrequencyTransformations(channel);
-        freq_components = FrequencyComponents(channel);
-    };
+    rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda),
+                                                  components (Components(channel_in)),
+                                                  transformations (Transformations(channel_in)),
+                                                  freq_transformations (FrequencyTransformations(channel_in)),
+                                                  freq_components (FrequencyComponents(channel_in)) { };
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
     /// by interpolating stored data, in all possible channel-dependent frequency representations ///
@@ -95,9 +99,13 @@ public:
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
     void update_grid(double Lambda);
+    void update_grid(const VertexFrequencyGrid &frequencies_new);
+    void update_grid(const VertexFrequencyGrid &frequencyGrid_in, const rvert<Q>& rvert4data);
+    void update_grid_K1(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data);
+    void update_grid_K2(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data);
+    void update_grid_K3(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data);
 
-#ifdef MAX_DIAG_CLASS
-#if MAX_DIAG_CLASS >= 0
+    /** K1-functionality */
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
 
@@ -126,13 +134,11 @@ public:
      */
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
-    // TODO: Implement! Needed for the Hubbard model.
     void K1_crossproject();
     Q K1_BZ_average(const int iK, const int iw);
 
-#endif
-#if MAX_DIAG_CLASS >= 2
-    vec<Q> K2 = vec<Q> (nK_K2 * nw2 * nv2 * n_in);  // data points of K2
+    /** K2 functionality */
+    vec<Q> K2 = empty_K2();
 
     /// Member functions for accessing/setting values of the vector K2 ///
 
@@ -162,17 +168,8 @@ public:
     // TODO: Implement! Needed for the Hubbard model.
     void K2_crossproject(char channel_out);
 
-#if INTERPOLATION == 3
-    gsl_spline2d *spline;
-    gsl_interp_accel *xacc;
-    gsl_interp_accel *yacc;
-    void initialize_K2_spline();
-    void free_K2_spline();
-#endif // INTERPOLATIONS
-
-#endif
-#if MAX_DIAG_CLASS >= 3
-    vec<Q> K3 = vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);  // data points of K3
+    /** K3 functionality */
+    vec<Q> K3 = empty_K3();
 
     /// Member functions for accessing/setting values of the vector K3 ///
 
@@ -202,96 +199,66 @@ public:
     // TODO: Implement! Needed for the Hubbard model.
     void K3_crossproject(char channel_out);
 
-#endif
-#endif
 
-    auto operator+= (const rvert<Q>& rhs) -> rvert<Q>
-    {
-#if MAX_DIAG_CLASS >= 0
-        this->K1 += rhs.K1;
-#endif
-#if MAX_DIAG_CLASS >= 2
-        this->K2 += rhs.K2;
-#endif
-#if MAX_DIAG_CLASS >= 3
-        this->K3 += rhs.K3;
-#endif
+    auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) this->K1 += rhs.K1;
+        if (MAX_DIAG_CLASS >= 2) this->K2 += rhs.K2;
+        if (MAX_DIAG_CLASS >= 3) this->K3 += rhs.K3;
         return *this;
     }
     friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs += rhs;
         return lhs;
     }
-    auto operator*= (double alpha) -> rvert<Q>
-    {
-#if MAX_DIAG_CLASS >= 0
-        this->K1 *= alpha;
-#endif
-#if MAX_DIAG_CLASS >= 2
-        this->K2 *= alpha;
-#endif
-#if MAX_DIAG_CLASS >= 3
-        this->K3 *= alpha;
-#endif
+    auto operator*= (double alpha) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) this->K1 *= alpha;
+        if (MAX_DIAG_CLASS >= 2) this->K2 *= alpha;
+        if (MAX_DIAG_CLASS >= 3) this->K3 *= alpha;
         return *this;
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator*= (const rvert<Q>& rhs) -> rvert<Q>
-    {
-#if MAX_DIAG_CLASS >= 0
-        this->K1 *= rhs.K1;
-#endif
-#if MAX_DIAG_CLASS >= 2
-        this->K2 *= rhs.K2;
-#endif
-#if MAX_DIAG_CLASS >= 3
-        this->K3 *= rhs.K3;
-#endif
+    auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) this->K1 *= rhs.K1;
+        if (MAX_DIAG_CLASS >= 2) this->K2 *= rhs.K2;
+        if (MAX_DIAG_CLASS >= 3) this->K3 *= rhs.K3;
         return *this;
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator-= (const rvert<Q>& rhs) -> rvert<Q>
-    {
-#if MAX_DIAG_CLASS >= 0
-        this->K1 -= rhs.K1;
-#endif
-#if MAX_DIAG_CLASS >= 2
-        this->K2 -= rhs.K2;
-#endif
-#if MAX_DIAG_CLASS >= 3
-        this->K3 -= rhs.K3;
-#endif
+    auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) this->K1 -= rhs.K1;
+        if (MAX_DIAG_CLASS >= 2) this->K2 -= rhs.K2;
+        if (MAX_DIAG_CLASS >= 3) this->K3 -= rhs.K3;
         return *this;
     }
     friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs -= rhs;
         return lhs;
     }
+
+    double get_deriv_maxK1() const;
+    double get_deriv_maxK2() const;
+    double get_deriv_maxK3() const;
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    transfToR(input); // TODO: Would be possible to perform crossprojections here as well, but not very efficient??
+    transfToR(input);
 
     Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
-#if MAX_DIAG_CLASS>=0
-    K1_val = valsmooth<k1>(input, rvert_crossing);
-#endif
-#if MAX_DIAG_CLASS >=2
-    K2_val  = valsmooth<k2>(input, rvert_crossing);
-    K2b_val = valsmooth<k2b>(input, rvert_crossing);
-#endif
-#if MAX_DIAG_CLASS >=3
-    K3_val = valsmooth<k3>(input, rvert_crossing);
-#endif
+    if (MAX_DIAG_CLASS >= 0) K1_val = valsmooth<k1>(input, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 2) {
+        K2_val = valsmooth<k2>(input, rvert_crossing);
+        K2b_val = valsmooth<k2b>(input, rvert_crossing);
+    }
+    if (MAX_DIAG_CLASS >= 3) K3_val = valsmooth<k3>(input, rvert_crossing);
 
     return K1_val + K2_val + K2b_val + K3_val;
 }
@@ -301,16 +268,12 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rv
 
     Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
-#if MAX_DIAG_CLASS>=0
-    K1_val = valsmooth<k1>(input, rvert_crossing, vertex_half2);
-#endif
-#if MAX_DIAG_CLASS >=2
-    K2_val  = valsmooth<k2>(input, rvert_crossing, vertex_half2);
-    K2b_val = valsmooth<k2b>(input, rvert_crossing, vertex_half2);
-#endif
-#if MAX_DIAG_CLASS >=3
-    K3_val = valsmooth<k3>(input, rvert_crossing, vertex_half2);
-#endif
+    if (MAX_DIAG_CLASS >= 0) K1_val = valsmooth<k1>(input, rvert_crossing, vertex_half2);
+    if (MAX_DIAG_CLASS >= 2) {
+        K2_val = valsmooth<k2>(input, rvert_crossing, vertex_half2);
+        K2b_val = valsmooth<k2b>(input, rvert_crossing, vertex_half2);
+    }
+    if (MAX_DIAG_CLASS >= 3) K3_val = valsmooth<k3>(input, rvert_crossing, vertex_half2);
 
     return K1_val + K2_val + K2b_val + K3_val;
 }
@@ -335,9 +298,8 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
         // otherwise return the interpolated value of the calling r vertex
         value = Interpolate<k,Q>()(indices, *(this));
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    if (indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
-#endif
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
+
     assert(isfinite(value));
     return value;
 }
@@ -393,181 +355,107 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
             value = Interpolate<k,Q>()(indices, *(this));
     }
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-    if (indices.conjugate) return conj(value);  // apply complex conjugation if T_C has been used
-#endif
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
+
     assert(isfinite(value));
     return value;
 }
 
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-#if MAX_DIAG_CLASS == 1
-    return valsmooth<k1>(input, rvert_crossing);
-#elif MAX_DIAG_CLASS > 1
-    return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
-#endif
-}
-template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-#if MAX_DIAG_CLASS == 1
-    return valsmooth<k1>(input, rvert_crossing, vertex_half2);
-#elif MAX_DIAG_CLASS > 1
-    return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2b>(input, rvert_crossing, vertex_half2);
-#endif
-}
-template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-#if MAX_DIAG_CLASS == 1
-    return valsmooth<k1>(input, rvert_crossing);
-#elif MAX_DIAG_CLASS > 1
-    return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
-#endif
-}
-template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-#if MAX_DIAG_CLASS == 1
-    return valsmooth<k1>(input, rvert_crossing, vertex_half2);
-#elif MAX_DIAG_CLASS > 1
-    return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2>(input, rvert_crossing, vertex_half2);
-#endif
-}
-template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-#if MAX_DIAG_CLASS == 1
-    return 0.;
-#elif MAX_DIAG_CLASS == 2
-    return valsmooth<k2>(input, rvert_crossing);
-#elif MAX_DIAG_CLASS == 3
-    return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
-#endif
-}
-template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-#if MAX_DIAG_CLASS == 1
-    return 0.;
-#elif MAX_DIAG_CLASS == 2
-    return valsmooth<k2>(input, rvert_crossing, vertex_half2);
-#elif MAX_DIAG_CLASS == 3
-    return valsmooth<k2>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
-#endif
-}
-template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-#if MAX_DIAG_CLASS == 1
-    return 0.;
-#elif MAX_DIAG_CLASS == 2
-    return valsmooth<k2b>(input, rvert_crossing);
-#elif MAX_DIAG_CLASS == 3
-    return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
-#endif
-}
-template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-#if MAX_DIAG_CLASS == 1
-    return 0.;
-#elif MAX_DIAG_CLASS == 2
-    return valsmooth<k2b>(input, rvert_crossing, vertex_half2);
-#elif MAX_DIAG_CLASS == 3
-    return valsmooth<k2b>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
-#endif
+    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 }
 
-#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
-template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
-    double w, v1, v2;
-    switch (channel) {
-        case 'a':
-            switch (input.channel) {
-                case 'a':
-                    return;                                    // do nothing
-                case 'p':
-                    w  = -input.v1-input.v2;                   // input.w  = w_p
-                    v1 = 0.5*(input.w+input.v1-input.v2);      // input.v1 = v_p
-                    v2 = 0.5*(input.w-input.v1+input.v2);      // input.v2 = v'_p
-                    break;
-                case 't':
-                    w  = input.v1-input.v2;                    // input.w  = w_t
-                    v1 = 0.5*( input.w+input.v1+input.v2);     // input.v1 = v_t
-                    v2 = 0.5*(-input.w+input.v1+input.v2);     // input.v2 = v'_t
-                    break;
-                case 'f':
-                    w  = input.v1-input.v2;                    // input.w  = v_1'
-                    v1 = 0.5*(2.*input.w+input.v1-input.v2);   // input.v1 = v_2'
-                    v2 = 0.5*(input.v1+input.v2);              // input.v2 = v_1
-                    break;
-                default:;
-            }
-            break;
-        case 'p':
-            switch (input.channel) {
-                case 'a':
-                    w  = input.v1+input.v2;                    // input.w  = w_a
-                    v1 = 0.5*(-input.w+input.v1-input.v2);     // input.v1 = v_a
-                    v2 = 0.5*(-input.w-input.v1+input.v2);     // input.v2 = v'_a
-                    break;
-                case 'p':
-                    return;                                    // do nothing
-                case 't':
-                    w  = input.v1+input.v2;                    // input.w  = w_t
-                    v1 = 0.5*( input.w-input.v1+input.v2);     // input.v1 = v_t
-                    v2 = 0.5*(-input.w-input.v1+input.v2);     // input.v2 = v'_t
-                    break;
-                case 'f' :
-                    w  = input.w+input.v1;                     // input.w  = v_1'
-                    v1 = 0.5*(input.w-input.v1);               // input.v1 = v_2'
-                    v2 = 0.5*(2.*input.v2-input.w-input.v1);   // input.v2 = v_1
-                    break;
-                default:;
-            }
-            break;
-        case 't':
-            switch (input.channel) {
-                case 'a':
-                    w  = input.v1-input.v2;                    // input.w  = w_a
-                    v1 = 0.5*( input.w+input.v1+input.v2);     // input.v1 = v_a
-                    v2 = 0.5*(-input.w+input.v1+input.v2);     // input.v2 = v'_a'
-                    break;
-                case 'p':
-                    w  = input.v1-input.v2;                    // input.w  = w_p
-                    v1 = 0.5*(input.w-input.v1-input.v2);      // input.v1 = v_p
-                    v2 = 0.5*(input.w+input.v1+input.v2);      // input.v2 = v'_p
-                    break;
-                case 't':
-                    return;                                    // do nothing
-                case 'f':
-                    w  = input.w-input.v2;                     // input.w  = v_1'
-                    v1 = 0.5*(2*input.v1+input.w-input.v2);    // input.v1 = v_2'
-                    v2 = 0.5*(input.w+input.v2);               // input.v2 = v_1
-                    break;
-                default:;
-            }
-            break;
-        default:;
-    }
-    input.w  = w;
-    input.v1 = v1;
-    input.v2 = v2;
+template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
+    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2b>(input, rvert_crossing, vertex_half2);
 }
-#else
+
+template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
+    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
+}
+
+template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
+    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2) + valsmooth<k2>(input, rvert_crossing, vertex_half2);
+}
+
+template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
+    if (MAX_DIAG_CLASS == 1)      return 0.;
+    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
+}
+
+template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
+    if (MAX_DIAG_CLASS == 1)      return 0.;
+    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing, vertex_half2);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
+}
+
+template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
+    if (MAX_DIAG_CLASS == 1)      return 0.;
+    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
+}
+
+template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
+    if (MAX_DIAG_CLASS == 1)      return 0.;
+    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing, vertex_half2);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
+}
+
+
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     double w, v1, v2;
+
+    // Needed for finite-temperature Matsubara
     double floor2bf_w;
     double floor2bf_inputw = floor2bfreq(input.w / 2.);
     switch (channel) {
         case 'a':
             switch (input.channel) {
                 case 'a':
-                    return;                                                     // do nothing
+                    return;                                    // do nothing
                 case 'p':
-                    w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;    // input.w  = w_p
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_p
-                    v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    if (KELDYSH || ZERO_T){
+                        w  = -input.v1-input.v2;                   // input.w  = w_p
+                        v1 = 0.5*(input.w+input.v1-input.v2);      // input.v1 = v_p
+                        v2 = 0.5*(input.w-input.v1+input.v2);      // input.v2 = v'_p
+                    }
+                    else{
+                        w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;    // input.w  = w_p
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_p
+                        v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    }
                     break;
                 case 't':
-                    w  = input.v1-input.v2;                                     // input.w  = w_t
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
-                    v2 = input.v1 + floor2bf_w - floor2bf_inputw;               // input.v2 = v'_t
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1-input.v2;                    // input.w  = w_t
+                        v1 = 0.5*( input.w+input.v1+input.v2);     // input.v1 = v_t
+                        v2 = 0.5*(-input.w+input.v1+input.v2);     // input.v2 = v'_t
+                    }
+                    else{
+                        w  = input.v1-input.v2;                                     // input.w  = w_t
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
+                        v2 = input.v1 + floor2bf_w - floor2bf_inputw;               // input.v2 = v'_t
+                    }
                     break;
                 case 'f':
-                    w  = input.v1 - input.v2;                                   // input.w  = v_1'
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w - floor2bf_w;                                  // input.v1 = v_2'
-                    v2 = input.v2 - floor2bf_w;                                 // input.v2 = v_1
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1-input.v2;                    // input.w  = v_1'
+                        v1 = 0.5*(2.*input.w+input.v1-input.v2);   // input.v1 = v_2'
+                        v2 = 0.5*(input.v1+input.v2);              // input.v2 = v_1
+                    }
+                    else{
+                        w  = input.v1 - input.v2;                                   // input.w  = v_1'
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.w - floor2bf_w;                                  // input.v1 = v_2'
+                        v2 = input.v2 - floor2bf_w;                                 // input.v2 = v_1
+                    }
+
                     break;
                 default:;
             }
@@ -575,24 +463,44 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
         case 'p':
             switch (input.channel) {
                 case 'a':
-                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_a
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_a
-                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_a
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1+input.v2;                    // input.w  = w_a
+                        v1 = 0.5*(-input.w+input.v1-input.v2);     // input.v1 = v_a
+                        v2 = 0.5*(-input.w-input.v1+input.v2);     // input.v2 = v'_a
+                    }
+                    else{
+                        w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_a
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_a
+                        v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_a
+                    }
                     break;
                 case 'p':
-                    return;                                                         // do nothing
+                    return;                                    // do nothing
                 case 't':
-                    w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 =           - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_t
-                    v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1+input.v2;                    // input.w  = w_t
+                        v1 = 0.5*( input.w-input.v1+input.v2);     // input.v1 = v_t
+                        v2 = 0.5*(-input.w-input.v1+input.v2);     // input.v2 = v'_t
+                    }
+                    else {
+                        w = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = -input.v1 + floor2bf_w + floor2bf_inputw;                 // input.v1 = v_t
+                        v2 = -input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
+                    }
                     break;
                 case 'f' :
-                    w  = input.w + input.v1;                                        // input.w  = v_1'
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = - input.v1 + floor2bf_w;                                   // input.v1 = v_2'
-                    v2 = input.v2 - w + floor2bf_w;                                 // input.v2 = v_1
+                    if (KELDYSH || ZERO_T){w  = input.w+input.v1;  // input.w  = v_1'
+                        v1 = 0.5*(input.w-input.v1);               // input.v1 = v_2'
+                        v2 = 0.5*(2.*input.v2-input.w-input.v1);   // input.v2 = v_1
+                    }
+                    else{
+                            w  = input.w + input.v1;                                        // input.w  = v_1'
+                            floor2bf_w = floor2bfreq(w / 2.);
+                            v1 = - input.v1 + floor2bf_w;                                   // input.v1 = v_2'
+                            v2 = input.v2 - w + floor2bf_w;                                 // input.v2 = v_1
+                    }
                     break;
                 default:;
             }
@@ -600,24 +508,45 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
         case 't':
             switch (input.channel) {
                 case 'a':
-                    w  = input.v1-input.v2;                                     // input.w  = w_a
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_a
-                    v2 =           input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_a'
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1-input.v2;                    // input.w  = w_a
+                        v1 = 0.5*( input.w+input.v1+input.v2);     // input.v1 = v_a
+                        v2 = 0.5*(-input.w+input.v1+input.v2);     // input.v2 = v'_a'
+                    }
+                    else{
+                        w  = input.v1-input.v2;                                     // input.w  = w_a
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_a
+                        v2 =           input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_a'
+                    }
                     break;
                 case 'p':
-                    w  = input.v1-input.v2;                                     // input.w  = w_p
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = - input.v1 + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
-                    v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    if (KELDYSH || ZERO_T){
+                        w  = input.v1-input.v2;                    // input.w  = w_p
+                        v1 = 0.5*(input.w-input.v1-input.v2);      // input.v1 = v_p
+                        v2 = 0.5*(input.w+input.v1+input.v2);      // input.v2 = v'_p
+                    }
+                    else{
+                        w  = input.v1-input.v2;                                     // input.w  = w_p
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = - input.v1 + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
+                        v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
+                    }
                     break;
                 case 't':
-                    return;                                                     // do nothing
+                    return;                                    // do nothing
                 case 'f':
-                    w  = input.w - input.v2;                                    // input.w  = v_1'
-                    floor2bf_w = floor2bfreq(w / 2.);
-                    v1 = input.v1 + floor2bf_w;                                 // input.v1 = v_2'
-                    v2 = input.v2 + floor2bf_w;                                 // input.v2 = v_1
+                    if (KELDYSH || ZERO_T){
+                        w  = input.w-input.v2;                     // input.w  = v_1'
+                        v1 = 0.5*(2*input.v1+input.w-input.v2);    // input.v1 = v_2'
+                        v2 = 0.5*(input.w+input.v2);               // input.v2 = v_1
+                    }
+                    else{
+                        w  = input.w - input.v2;                                    // input.w  = v_1'
+                        floor2bf_w = floor2bfreq(w / 2.);
+                        v1 = input.v1 + floor2bf_w;                                 // input.v1 = v_2'
+                        v2 = input.v2 + floor2bf_w;                                 // input.v2 = v_1
+                    }
                     break;
                 default:;
             }
@@ -628,30 +557,45 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     input.v1 = v1;
     input.v2 = v2;
 }
-#endif
+
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
     frequencies_new.rescale_grid(Lambda);                     // rescale new frequency grid
+    update_grid(frequencies_new);
+}
 
-#if MAX_DIAG_CLASS >= 1
+template <typename Q> void rvert<Q>::update_grid(const VertexFrequencyGrid& frequencies_new) {
+
+    update_grid(frequencies_new, *this);
+}
+
+template <typename Q> void rvert<Q>::update_grid(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
+    if (MAX_DIAG_CLASS >= 1) update_grid_K1(frequencies_new, rvert4data);
+    if (MAX_DIAG_CLASS >= 2) update_grid_K2(frequencies_new, rvert4data);
+    if (MAX_DIAG_CLASS >= 3) update_grid_K3(frequencies_new, rvert4data);
+
+    this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
+}
+
+template <typename Q> void rvert<Q>::update_grid_K1(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
     vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
     for (int iK1=0; iK1<nK_K1; ++iK1) {
-        for (int iw=0; iw<nw1; ++iw) {
+        for (int iw=1; iw<nw1-1; ++iw) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 IndicesSymmetryTransformations indices (iK1, frequencies_new.b_K1.ws[iw], 0., 0., i_in, channel);
                 // interpolate old values to new vector
-                K1_new[iK1*nw1*n_in + iw*n_in + i_in] = Interpolate<k1,Q>()(indices, *this);
+                K1_new[iK1*nw1*n_in + iw*n_in + i_in] = Interpolate<k1,Q>()(indices, rvert4data);
             }
         }
     }
     this->K1 = K1_new; // update vertex to new interpolated values
-#endif
-#if MAX_DIAG_CLASS >= 2
+}
+template <typename Q> void rvert<Q>::update_grid_K2(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
     vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
     for (int iK2=0; iK2<nK_K2; ++iK2) {
-        for (int iw=0; iw<nw2; ++iw) {
-            for (int iv=0; iv<nv2; ++iv) {
+        for (int iw=1; iw<nw2-1; ++iw) {
+            for (int iv=1; iv<nv2-1; ++iv) {
                 for (int i_in = 0; i_in<n_in; ++i_in) {
                     IndicesSymmetryTransformations indices (iK2, frequencies_new.b_K2.ws[iw],
                                                             frequencies_new.f_K2.ws[iv],
@@ -659,19 +603,19 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
                                                             i_in, channel);
                     // interpolate old values to new vector
                     K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
-                            = Interpolate<k2,Q>()(indices, *this);
+                            = Interpolate<k2,Q>()(indices, rvert4data);
                 }
             }
         }
     }
     this->K2 = K2_new; // update vertex to new interpolated values
-#endif
-#if MAX_DIAG_CLASS >= 3
+}
+template <typename Q> void rvert<Q>::update_grid_K3(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
     vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
     for (int iK3=0; iK3<nK_K3; ++iK3) {
-        for (int iw=0; iw<nw3; ++iw) {
-            for (int iv=0; iv<nv3; ++iv) {
-                for (int ivp=0; ivp<nv3; ++ivp) {
+        for (int iw=1; iw<nw3-1; ++iw) {
+            for (int iv=1; iv<nv3-1; ++iv) {
+                for (int ivp=1; ivp<nv3-1; ++ivp) {
                     for (int i_in = 0; i_in<n_in; ++i_in) {
                         IndicesSymmetryTransformations indices (iK3, frequencies_new.b_K3.ws[iw],
                                                                 frequencies_new.f_K3.ws[iv],
@@ -679,15 +623,13 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
                                                                 i_in, channel);
                         // interpolate old values to new vector
                         K3_new[iK3*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in]
-                                = Interpolate<k3,Q>()(indices, *this);
+                                = Interpolate<k3,Q>()(indices, rvert4data);
                     }
                 }
             }
         }
     }
     this->K3 = K3_new; // update vertex to new interpolated values
-#endif
-    this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
 }
 
 
@@ -726,14 +668,12 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                     result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
                 else
                     result = indices.prefactor * K1[itK * nw1 + itw_new];
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-                if (indices.conjugate)
-                    K1[itK * nw1 + itw] = conj(result);
+
+                if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
+                    K1[itK * nw1 + itw] = myconj(result);
                 else
-#endif
                     K1[itK * nw1 + itw] = result;
             }
-
         }
 
     }
@@ -744,7 +684,7 @@ void rvert<Q>::K1_crossproject() {
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
     for (int iK = 0; iK < nK_K1; ++iK) {
 #pragma omp parallel for schedule(dynamic) default(none) shared(iK)
-        for (int iw = 0; iw < nw1; ++iw) {
+        for (int iw = 1; iw < nw1-1; ++iw) {
             Q projected_value = K1_BZ_average(iK, iw);
             for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
                 K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
@@ -772,7 +712,6 @@ Q rvert<Q>::K1_BZ_average(const int iK, const int iw) {
     return value;
 }
 
-#if MAX_DIAG_CLASS >= 2
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) {
 
     for (int itK = 0; itK < nK_K2; itK++){
@@ -803,11 +742,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                         result = Interpolate<k2,Q>()(indices, vertex_symmrelated);
                     else
                         result = Interpolate<k2,Q>()(indices, *(this));
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-                    if (indices.conjugate)
-                        K2[itK * nw2 * nv2 + itw * nv2 + itv] = conj(result);
+
+                    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
+                        K2[itK * nw2 * nv2 + itw * nv2 + itv] = myconj(result);
                     else
-#endif
                         K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
                 }
             }
@@ -821,9 +759,7 @@ void rvert<Q>::K2_crossproject(char channel_out) {
 // TODO: Currently does nothing!
 }
 
-#endif
 
-#if MAX_DIAG_CLASS >= 3
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated) {
 
     for (int itK = 0; itK < nK_K3; itK++){
@@ -854,11 +790,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                             result = Interpolate<k3,Q>()(indices, vertex_symmrelated);
                         else
                             result = Interpolate<k3,Q>()(indices, *(this));
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-                        if (indices.conjugate)
-                            K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = conj(result);
+
+                        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
+                            K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = myconj(result);
                         else
-#endif
                             K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = result;
                     }
                 }
@@ -874,10 +809,8 @@ void rvert<Q>::K3_crossproject(char channel_out) {
     // TODO: Currently does nothing!
 }
 
-#endif
 
 
-#if MAX_DIAG_CLASS >= 0
 template <typename Q> auto rvert<Q>::K1_acc(int i) const -> Q {
     if (i >= 0 && i < K1.size())
         return K1[i];
@@ -899,12 +832,14 @@ template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q valu
 template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
         return K1[iK*nw1*n_in + iw*n_in + i_in];
 }
+template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {
+    const size_t dims1[3] = {n_in, nK_K1, nBOS};
+    const size_t perm1[3] = {2, 0, 1};
+    double max_K1 = (::power2(::get_finite_differences<Q,3>(K1, dims1, perm1))).max_norm();
+    return max_K1;
 
+}
 
-
-#endif
-
-#if MAX_DIAG_CLASS >= 2
 template <typename Q> auto rvert<Q>::K2_acc(int i) const -> Q {
     if (i >= 0 && i < K2.size())
         return K2[i];
@@ -926,44 +861,19 @@ template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in
 template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
         return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
 }
+template <typename Q> auto rvert<Q>::get_deriv_maxK2() const -> double {
+    const size_t dims1[4] = {n_in, nK_K2, nBOS2, nFER2};
+    const size_t dims2[4] = {nFER2, n_in, nK_K2, nBOS2};
+    const size_t perm1[4] = {2, 3, 0, 1};
+    const size_t perm2[4] = {3, 0, 1, 2};
+    double max_K2 = (::power2(::get_finite_differences<Q,4>(K2, dims1, perm1))
+                     + ::power2(::get_finite_differences<Q,4>(K2, dims2, perm2))
+    ).max_norm();
+    return max_K2;
 
-#if INTERPOLATION == 3
-template <typename Q>
- void rvert<Q>::initialize_K2_spline() {
-     /// TODO: include Keldysh indices and internal index
-    const gsl_interp2d_type *interpolType = gsl_interp2d_bicubic;
-
-    const double xa[nBOS2] = this->frequencies.b_K2.Ws;
-    const double ya[nFER2] = this->frequencies.f_K2.Ws;
-
-    double *za = malloc(nBOS2 * nFER2 * sizeof(double));
-    spline = gsl_spline2d_alloc(interpolType, nBOS2, nFER2);
-    xacc = gsl_interp_accel_alloc();
-    yacc = gsl_interp_accel_alloc();
-
-    /* set z grid values */
-    for (int i = 0; i<nBOS2; i++) {
-        for (int j = 0; i<nFER2; i++) {
-            gsl_spline2d_set(spline, za, i, j, this->K2_val(0, i, j, 0));  // <--- only for iK=0, i_in = 0 up until now
-        }
-    }
-    /* initialize interpolation */
-    gsl_spline2d_init(spline, xa, ya, za, nBOS2, nFER2);
-    free(za);
- }
-
-template <typename Q>
-void rvert<Q>::free_K2_spline() {
-    gsl_spline2d_free(spline);
-    gsl_interp_accel_free(xacc);
-    gsl_interp_accel_free(yacc);
 }
-#endif
 
 
-#endif // MAX_DIAG_CLASS
-
-#if MAX_DIAG_CLASS >= 3
 template <typename Q> auto rvert<Q>::K3_acc(int i) const -> Q {
     if (i >= 0 && i < K3.size())
         return K3[i];
@@ -985,6 +895,22 @@ template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp,
 template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
         return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
 }
-#endif // MAX_DIAG_CLASS
+template <typename Q> auto rvert<Q>::get_deriv_maxK3() const -> double {
+    const size_t dims1[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
+    const size_t dims2[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    const size_t dims3[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
+    const size_t perm1[5] = {2, 3, 4, 0, 1};
+    const size_t perm2[5] = {3, 4, 0, 1, 2};
+    const size_t perm3[5] = {4, 0, 1, 2, 3};
+    double max_K3 = (::power2(::get_finite_differences<Q,5>(K3, dims1, perm1))
+                   + ::power2(::get_finite_differences<Q,5>(K3, dims2, perm2))
+                   + ::power2(::get_finite_differences<Q,5>(K3, dims3, perm3))
+    ).max_norm();
+    return max_K3;
+
+}
+
+
+
 
 #endif //KELDYSH_MFRG_R_VERTEX_H

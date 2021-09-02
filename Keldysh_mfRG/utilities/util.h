@@ -11,9 +11,7 @@
 #include <iostream>    // text input/output
 #include "../data_structures.h"
 
-#ifdef MPI_FLAG
 #include "mpi_setup.h"
-#endif
 
 
 // print a time stamp in the following format: YYYY-MM-DD | hh-mm-ss |
@@ -35,91 +33,97 @@ void print_time_stamp() {
 // print any printable data in standard output and add new line
 template <typename T>
 void print(T s, bool endline) {
-#ifdef MPI_FLAG
-    if (mpi_world_rank() == 0) {
+    if (MPI_FLAG) {
+        if (mpi_world_rank() == 0) {
+            print_time_stamp();
+            std::cout << s;
+            if (endline) std::cout << std::endl;
+        }
+    }
+    else {
         print_time_stamp();
         std::cout << s;
         if (endline) std::cout << std::endl;
     }
-#else
-    print_time_stamp();
-    std::cout << s;
-    if (endline) std::cout << std::endl;
-#endif
 }
 
 // print any printable data in standard output and add new line (without time stamp)
 template <typename T>
 void print_add(T s, bool endline) {
-#ifdef MPI_FLAG
-    if (mpi_world_rank() == 0) {
-        std::cout << s;
-        if (endline) std::cout << std::endl;
+    if (MPI_FLAG) {
+        if (mpi_world_rank() == 0) {
+            std::cout << s;
+            if (endline) std::cout << std::endl;
+        }
     }
-#else
+    else {
     std::cout << s;
     if (endline) std::cout << std::endl;
-#endif
+    }
 }
 
 // print two different data types in standard output and add new line
 template <typename T, typename U>
 void print(T t, U u, bool endline) {
-#ifdef MPI_FLAG
-    if (mpi_world_rank() == 0) {
+    if (MPI_FLAG) {
+        if (mpi_world_rank() == 0) {
+            print_time_stamp();
+            std::cout << t << u;
+            if (endline) std::cout << std::endl;
+        }
+    }
+    else {
         print_time_stamp();
         std::cout << t << u;
         if (endline) std::cout << std::endl;
     }
-#else
-    print_time_stamp();
-    std::cout << t << u;
-    if (endline) std::cout << std::endl;
-#endif
 }
 
 // print two different data types in standard output and add new line (without time stamp)
 template <typename T, typename U>
 void print_add(T t, U u, bool endline) {
-#ifdef MPI_FLAG
-    if (mpi_world_rank() == 0) {
+    if (MPI_FLAG) {
+        if (mpi_world_rank() == 0) {
+            std::cout << t << u;
+            if (endline) std::cout << std::endl;
+        }
+    }
+    else {
         std::cout << t << u;
         if (endline) std::cout << std::endl;
     }
-#else
-    std::cout << t << u;
-    if (endline) std::cout << std::endl;
-#endif
 }
 
 // print three different data types in standard output and add new line
 template <typename T, typename U, typename V>
 void print(T t, U u, V v, bool endline) {
-#ifdef MPI_FLAG
-    if (mpi_world_rank() == 0) {
+    if (MPI_FLAG) {
+        if (mpi_world_rank() == 0) {
+            print_time_stamp();
+            std::cout << t << u << v;
+            if (endline) std::cout << std::endl;
+        }
+    }
+    else {
         print_time_stamp();
         std::cout << t << u << v;
         if (endline) std::cout << std::endl;
     }
-#else
-    print_time_stamp();
-    std::cout << t << u << v;
-    if (endline) std::cout << std::endl;
-#endif
 }
 
 // print three different data types in standard output and add new line (without time stamp)
 template <typename T, typename U, typename V>
 void print_add(T t, U u, V v, bool endline) {
-#ifdef MPI_FLAG
-    if (mpi_world_rank() == 0) {
+    if (MPI_FLAG) {
+        if (mpi_world_rank() == 0) {
+            std::cout << t << u << v;
+            if (endline) std::cout << std::endl;
+        }
+    }
+    else {
         std::cout << t << u << v;
         if (endline) std::cout << std::endl;
     }
-#else
-    std::cout << t << u << v;
-    if (endline) std::cout << std::endl;
-#endif
 }
 
 // print any printable data in standard output
@@ -154,18 +158,19 @@ void get_time(double t0) {
     struct timeval tp;
     gettimeofday(&tp, NULL);
     long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
-    double t = ms/1000.;
-#ifdef MPI_FLAG
-    if (mpi_world_rank() == 0) {
+    double t = ms / 1000.;
+    if (MPI_FLAG) {
+        if (mpi_world_rank() == 0) {
+            std::cout << "time elapsed: ";
+            printf("%.3f", t - t0);
+            std::cout << "s" << std::endl;
+        }
+    }
+    else {
         std::cout << "time elapsed: ";
         printf("%.3f", t-t0);
         std::cout << "s" << std::endl;
     }
-#else
-    std::cout << "time elapsed: ";
-    printf("%.3f", t-t0);
-    std::cout << "s" << std::endl;
-#endif
 }
 
 // display time difference in seconds w.r.t. reference time, with microsecond precision
@@ -175,32 +180,34 @@ void get_time(double t0, std::string prec) {
     if (prec == "us") {
         long int us = tp.tv_sec * 1000000 + tp.tv_usec;
         double t = us / 1000000.;
-#ifdef MPI_FLAG
-        if (mpi_world_rank() == 0) {
+        if (MPI_FLAG) {
+            if (mpi_world_rank() == 0) {
+                std::cout << "time elapsed: ";
+                printf("%.6f", t - t0);
+                std::cout << "s" << std::endl;
+            }
+        }
+        else {
             std::cout << "time elapsed: ";
-            printf("%.6f", t-t0);
+            printf("%.6f", t - t0);
             std::cout << "s" << std::endl;
         }
-#else
-        std::cout << "time elapsed: ";
-        printf("%.6f", t-t0);
-        std::cout << "s" << std::endl;
-#endif
     }
     else {
         long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
         double t = ms / 1000.;
-#ifdef MPI_FLAG
-        if (mpi_world_rank() == 0) {
+        if (MPI_FLAG) {
+            if (mpi_world_rank() == 0) {
+                std::cout << "time elapsed: ";
+                printf("%.3f", t - t0);
+                std::cout << "s" << std::endl;
+            }
+    }
+        else {
             std::cout << "time elapsed: ";
-            printf("%.3f", t-t0);
+            printf("%.3f", t - t0);
             std::cout << "s" << std::endl;
         }
-#else
-        std::cout << "time elapsed: ";
-        printf("%.3f", t-t0);
-        std::cout << "s" << std::endl;
-#endif
     }
 }
 
@@ -275,6 +282,28 @@ auto is_symmetric(const rvec& freqs) -> double {
     return asymmetry;
 }
 
+template<int degreeplus, typename Q>
+inline auto lagrangePoly(const Q x, const double (&xs)[degreeplus], const Q (&ys) [degreeplus]) -> Q {
+    Q result = 0.;
+
+    double denominator, numerator;
+    for (int i = 0; i < degreeplus; i++) {
+        numerator = 1.;
+        denominator = 1.;
+        for (int k = 0; k < i; k++) {
+            denominator *= (xs[i] - xs[k]);
+            numerator *= (x - xs[k]);
+        }
+        for (int k = i+1; k < degreeplus; k++) {
+            denominator *= (xs[i] - xs[k]);
+            numerator *= (x - xs[k]);
+        }
+
+        result += ys[i] * numerator/denominator;
+    }
+
+    return result;
+}
 
 
 #endif // UTIL_H

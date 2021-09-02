@@ -13,34 +13,33 @@
 #ifndef KELDYSH_MFRG_BUBBLES_H
 #define KELDYSH_MFRG_BUBBLES_H
 
-#include <cmath>                        // for using the macro M_PI as pi
-
-#include "vertex.h"                     // vertex class
-#include "selfenergy.h"                 // self-energy class
-#include "propagator.h"                 // propagator class
-#include "integrator/integrator.h"                 // integration routines
-#include "utilities/util.h"                       // measuring time, printing text output
-#include "utilities/mpi_setup.h"                  // mpi parallelization routines
-#include "correctionFunctions.h"        // correction terms due to finite integration range
-#include "utilities/write_data2file.h"            // write vectors into hdf5 file
-#include "grids/momentum_grid.h"              // Momentum grid specific to the 2D Hubbard model
+#include <cmath>                            // for using the macro M_PI as pi
+#include "symmetries/Keldysh_symmetries.h"  // for independent Keldysh components and utilities
+#include "vertex.h"                         // vertex class
+#include "selfenergy.h"                     // self-energy class
+#include "propagator.h"                     // propagator class
+#include "integrator/integrator.h"          // integration routines
+#include "utilities/util.h"                 // measuring time, printing text output
+#include "utilities/mpi_setup.h"            // mpi parallelization routines
+#include "correctionFunctions.h"            // correction terms due to finite integration range
+#include "utilities/write_data2file.h"      // write vectors into hdf5 file
+#include "grids/momentum_grid.h"            // Momentum grid specific to the 2D Hubbard model
 
 /// Class combining two propagators, either GG or GS+SG
 template <typename Q>
 class Bubble{
-    const Propagator<Q>& g;
-    const Propagator<Q>& s;
-    const bool dot;
 public:
-
+    const Propagator<Q>& g; // Access needed when computing the full bubble
+    const Propagator<Q>& s;
+    const bool diff;
     /**
      * Constructor:
      * @param propagatorG : first propagator (always a standard one)
-     * @param propagatorS : second propagator (standard or single-scale/differentiated, depending on "dot_in")
-     * @param dot_in      : whether to compute standard (false) or differentiated (true) bubble
+     * @param propagatorS : second propagator (standard or single-scale/differentiated, depending on "diff_in")
+     * @param diff_in      : whether to compute standard (false) or differentiated (true) bubble
      */
-    Bubble(const Propagator<Q>& propagatorG, const Propagator<Q>& propagatorS, const bool dot_in)
-        :g(propagatorG), s(propagatorS), dot(dot_in) {};
+    Bubble(const Propagator<Q>& propagatorG, const Propagator<Q>& propagatorS, const bool diff_in)
+        :g(propagatorG), s(propagatorS), diff(diff_in) {};
 
     /**
      * Call operator:
@@ -52,83 +51,87 @@ public:
      */
     auto value(int iK, double v1, double v2, int i_in) const -> Q{
         Q ans;
-        if(dot){
-#ifdef KELDYSH_FORMALISM
-            switch (iK) {
-                case 3: //AA
-                    ans = conj(g.valsmooth(0, v1, i_in)) * conj(s.valsmooth(0, v2, i_in)) + conj(s.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
-                    break;
-                case 6: //AR
-                    ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(0, v2, i_in) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
-                    break;
-                case 7: //AK
-                    ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(1, v2, i_in) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
-                    break;
-                case 9: //RA
-                    ans = g.valsmooth(0, v1, i_in) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(0, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
-                    break;
-                case 11://KA
-                    ans = g.valsmooth(1, v1, i_in) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(1, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
-                    break;
-                case 12://RR
-                    ans = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
-                    break;
-                case 13://RK
-                    ans = g.valsmooth(0, v1, i_in) * s.valsmooth(1, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(1, v2, i_in);
-                    break;
-                case 14://KR
-                    ans = g.valsmooth(1, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(1, v1, i_in) *  g.valsmooth(0, v2, i_in);
-                    break;
-                case 15://KK
-                    ans = g.valsmooth(1, v1, i_in) * s.valsmooth(1, v2, i_in) + s.valsmooth(1, v1, i_in) * g.valsmooth(1, v2, i_in);
-                    break;
-                default:
-                    return 0.;
+        if(diff){
+            if (KELDYSH){
+                switch (iK) {
+                    case 3: //AA
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * myconj(s.valsmooth(0, v2, i_in)) + myconj(s.valsmooth(0, v1, i_in)) * myconj(g.valsmooth(0, v2, i_in));
+                        break;
+                    case 6: //AR
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * s.valsmooth(0, v2, i_in) + myconj(s.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
+                        break;
+                    case 7: //AK
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * s.valsmooth(1, v2, i_in) + myconj(s.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
+                        break;
+                    case 9: //RA
+                        ans = g.valsmooth(0, v1, i_in) * myconj(s.valsmooth(0, v2, i_in)) + s.valsmooth(0, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
+                        break;
+                    case 11://KA
+                        ans = g.valsmooth(1, v1, i_in) * myconj(s.valsmooth(0, v2, i_in)) + s.valsmooth(1, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
+                        break;
+                    case 12://RR
+                        ans = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
+                        break;
+                    case 13://RK
+                        ans = g.valsmooth(0, v1, i_in) * s.valsmooth(1, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(1, v2, i_in);
+                        break;
+                    case 14://KR
+                        ans = g.valsmooth(1, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(1, v1, i_in) *  g.valsmooth(0, v2, i_in);
+                        break;
+                    case 15://KK
+                        ans = g.valsmooth(1, v1, i_in) * s.valsmooth(1, v2, i_in) + s.valsmooth(1, v1, i_in) * g.valsmooth(1, v2, i_in);
+                        break;
+                    default:
+                        return 0.;
+                }
             }
-#else
-            ans = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
-#endif
+            else{ // Matsubara
+                ans = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
+            }
         }
         else {
-#ifdef KELDYSH_FORMALISM
-            switch (iK){ // labelling propagators from top (t: left) to bottom (t: right); a,t: G(v+w/2)G(v-w/2), p: G(w/2-v)G(w/2+v)
-                case 3: //AA
-                    ans = conj(g.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
-                    break;
-                case 6: //AR
-                    ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
-                    break;
-                case 7: //AK
-                    ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
-                    break;
-                case 9: //RA
-                    ans = g.valsmooth(0, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
-                    break;
-                case 11://KA
-                    ans = g.valsmooth(1, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
-                    break;
-                case 12://RR
-                    ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
-                    break;
-                case 13://RK
-                    ans = g.valsmooth(0, v1, i_in) * g.valsmooth(1, v2, i_in);
-                    break;
-                case 14://KR
-                    ans =  g.valsmooth(1, v1, i_in) *  g.valsmooth(0, v2, i_in);
-                    break;
-                case 15://KK
-                    ans =  g.valsmooth(1, v1, i_in) *  g.valsmooth(1, v2, i_in);
-                    break;
-                default:
-                    return 0.;
+            if (KELDYSH){
+                switch (iK){ // labelling propagators from top (t: left) to bottom (t: right); a,t: G(v+w/2)G(v-w/2), p: G(w/2-v)G(w/2+v)
+                    case 3: //AA
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * myconj(g.valsmooth(0, v2, i_in));
+                        break;
+                    case 6: //AR
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
+                        break;
+                    case 7: //AK
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
+                        break;
+                    case 9: //RA
+                        ans = g.valsmooth(0, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
+                        break;
+                    case 11://KA
+                        ans = g.valsmooth(1, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
+                        break;
+                    case 12://RR
+                        ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
+                        break;
+                    case 13://RK
+                        ans = g.valsmooth(0, v1, i_in) * g.valsmooth(1, v2, i_in);
+                        break;
+                    case 14://KR
+                        ans =  g.valsmooth(1, v1, i_in) *  g.valsmooth(0, v2, i_in);
+                        break;
+                    case 15://KK
+                        ans =  g.valsmooth(1, v1, i_in) *  g.valsmooth(1, v2, i_in);
+                        break;
+                    default:
+                        return 0.;
+                }
             }
-#else
-            ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
-#endif
+            else{ // Matsubara
+                ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
+            }
         }
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-        ans *= -1.;     // -1=glb_i^2; needed for particle-hole symmetry in Matsubara (we only save the imaginary part of self-energy and propagators)
-#endif
+        if (!KELDYSH) {
+            if (PARTICLE_HOLE_SYMMETRY) {
+                ans *= -1.;     // -1=glb_i^2; needed for particle-hole symmetry in Matsubara (we only save the imaginary part of self-energy and propagators)
+            }
+        }
 
         assert(isfinite(ans) == true);
         return ans;
@@ -143,66 +146,46 @@ public:
      * @param channel : channel to which the bubble belongs
      * @return Q      : value of the bubble evaluated at the arguments described above (usually comp)
      */
-#if defined(KELDYSM_FORMALISM) or defined(ZERO_TEMP)
     auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q {
-        Q Pival;
-        switch (channel) {
-            case 'a':
-                Pival = value(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
-                break;
-            case 'p':
-                Pival = value(iK, w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
-                break;
-            case 't':
-                Pival = value(iK, vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
-                break;
-            default:;
+        double wa_1, wa_2, wp_1, wp_2, wt_1, wt_2;
+        if (KELDYSH || ZERO_T){
+            wa_1 = wa_2 = wp_1 = wp_2 = wt_1 = wt_2 = w / 2.;
         }
-        return Pival;
-    }
-#else
-    auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q {
+        else{ // bosonic frequencies have to be rounded to an integer value for finite-temperature Matsubara calculation
+            wa_1 = wp_2 = wt_1 = floor2bfreq(w / 2.);
+            wa_2 = wp_1 = wt_2 = ceil2bfreq(w / 2.);
+        } // TODO(medium): Put this first part into an extra function?
         Q Pival;
         switch (channel) {
             case 'a':
-                Pival = value(iK, vpp - floor2bfreq(w / 2.), vpp + ceil2bfreq(w / 2.), i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+                Pival = value(iK, vpp - wa_1, vpp + wa_2, i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
                 break;
             case 'p':
-                Pival = value(iK, ceil2bfreq(w / 2.) + vpp, floor2bfreq(w / 2.) - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+                Pival = value(iK, wp_1 + vpp, wp_2 - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
                 break;
             case 't':
-                Pival = value(iK, vpp - floor2bfreq(w / 2.), vpp + ceil2bfreq(w / 2.), i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+                Pival = value(iK, vpp - wt_1, vpp + wt_2, i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
                 break;
             default:;
         }
         assert(isfinite(Pival) == true);
         return Pival;
     }
-#endif
-
 };
 
 template <typename Q>
 class PrecalculateBubble{
-    const Propagator<Q>& g;
-    const Propagator<Q>& s;
-    const bool dot;
-
     Bubble<Q> Helper_Bubble;
 
-#ifdef KELDYSH_FORMALISM
-    int number_of_Keldysh_components = 9;
-#else
-    int number_of_Keldysh_components = 1;
-#endif
-
     void compute_FermionicBubble();
+    void compute_FermionicBubble_HUBBARD();
+    void compute_FermionicBubble_SIAM();
     void perform_internal_sum(int iK, int iv1, int iv2);
 
     int get_iK_bubble(int iK_actual) const;
     int get_iK_actual(int iK_bubble) const;
 
-#ifdef HUBBARD_MODEL
+    // Hubbard model specific functions
     void perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2,
                                          Minimal_2D_FFT_Machine& Swave_Bubble_Calculator);
     void compute_internal_bubble(int iK, double v1, double v2,
@@ -216,81 +199,59 @@ class PrecalculateBubble{
     void set_Keldysh_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                  int iK, double v1, double v2,
                                  vec<Q>& first_propagator, vec<Q>& second_propagator);
-#endif
 
 public:
+    const Propagator<Q>& g; // Access needed when computing the full bubble
+    const Propagator<Q>& s;
+    const bool diff;
     FrequencyGrid fermionic_grid;
-    vec<Q> FermionicBubble = vec<Q> (number_of_Keldysh_components*nFER*nFER*n_in); // 9 non-zero Keldysh components
+    vec<Q> FermionicBubble = vec<Q> (glb_number_of_Keldysh_components_bubble * nFER * nFER * n_in); // 9 non-zero Keldysh components
 
     PrecalculateBubble(const Propagator<Q>& G_in, const Propagator<Q>& S_in,
-                       const bool dot_in)
-                       :g(G_in), s(S_in), dot(dot_in),
-                       Helper_Bubble(g, s, dot),
-                       fermionic_grid('f', 1, g.Lambda){
-        if (dot) {print("Precalculating a differentiated bubble...", true);}
+                       const bool diff_in)
+                       :g(G_in), s(S_in), diff(diff_in),
+                       Helper_Bubble(G_in, S_in, diff),
+                       fermionic_grid('f', 1, G_in.Lambda){
+        if (diff) {print("Precalculating a differentiated bubble...", true);}
         else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();
         print("...done.", true);
     }
     auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q;
-    auto value_on_FER_GRID(int iK_bubble, double v1, double v2, int i_in) const -> Q;
+    auto value_on_fermionic_grid(int iK_bubble, double v1, double v2, int i_in) const -> Q;
     int composite_index(int iK_bubble, int iv1, int iv2, int i_in) const;
 };
 
 template <typename Q> auto PrecalculateBubble<Q>::value(int iK, double w, double vpp,
                                                         int i_in, char channel) const -> Q {
-#ifdef KELDYSH_FORMALISM
-    if ((iK == 0) || (iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10)) {
-        return 0;
+    if (KELDYSH && ((iK == 0) || (iK == 1) || (iK == 2) || (iK == 4) || (iK == 5) || (iK == 8) || (iK == 10))){
+        return 0.;
     } // Catch trivial Keldysh indices
-#endif
     Q Pival;
-    switch (channel) {
+    switch (channel)
+    {
         case 'a':
-            Pival = value_on_FER_GRID(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
+            Pival = value_on_fermionic_grid(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppa-1/2wa, vppa+1/2wa for the a-channel
             break;
         case 'p':
-            Pival = value_on_FER_GRID(get_iK_bubble(iK), w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
+            Pival = value_on_fermionic_grid(get_iK_bubble(iK), w / 2. + vpp, w / 2. - vpp, i_in);    //wp/2+vppp, wp/2-vppp for the p-channel
             break;
         case 't':
-            Pival = value_on_FER_GRID(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
+            Pival = value_on_fermionic_grid(get_iK_bubble(iK), vpp - w / 2., vpp + w / 2., i_in);    //vppt-1/2wt, vppt+1/2wt for the t-channel
             break;
         default:;
     }
     return Pival;
 }
 
-// TODO: Use "Interpolate" from "interpolations.h" for this.
-template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK_bubble, const double v1, const double v2, const int i_in) const -> Q{
+template <typename Q> auto PrecalculateBubble<Q>::value_on_fermionic_grid(const int iK_bubble, const double v1, const double v2, const int i_in) const -> Q{
     if (    std::abs(v1) + inter_tol < fermionic_grid.w_upper
             && std::abs(v2) + inter_tol < fermionic_grid.w_upper) {
 
-        int index_f1 = fermionic_grid.fconv(v1);
-        int index_f2 = fermionic_grid.fconv(v2);
+        Q result = interpolate2D<Q>(v1, v2, fermionic_grid, fermionic_grid,
+                                    [&](int i, int j) -> Q {return FermionicBubble[composite_index(iK_bubble, i, j, i_in)];});
+        return result;
 
-        double x1 = fermionic_grid.ws[index_f1];
-        double x2 = fermionic_grid.ws[index_f1 + 1];
-        if (x1 >= x2) { // If not x1<x2, we run out of the box --> shift the index downwards.
-            index_f1 -= 1;
-            x1 = fermionic_grid.ws[index_f1];
-            x2 = fermionic_grid.ws[index_f1 + 1];
-        }
-        double y1 = fermionic_grid.ws[index_f2];
-        double y2 = fermionic_grid.ws[index_f2 + 1];
-        if (y1 >= y2) { // If not y1<y2, we run out of the box --> shift the index downwards.
-            index_f2 -= 1;
-            y1 = fermionic_grid.ws[index_f2];
-            y2 = fermionic_grid.ws[index_f2 + 1];
-        }
-
-        double xd = (v1 - x1) / (x2 - x1);
-        double yd = (v2 - y1) / (y2 - y1);
-        auto f11 = FermionicBubble[composite_index(iK_bubble, index_f1, index_f2, i_in)];
-        auto f12 = FermionicBubble[composite_index(iK_bubble, index_f1, index_f2 + 1, i_in)];
-        auto f21 = FermionicBubble[composite_index(iK_bubble, index_f1 + 1, index_f2, i_in)];
-        auto f22 = FermionicBubble[composite_index(iK_bubble, index_f1 + 1, index_f2 + 1, i_in)];
-
-        return (1. - yd) * ((1. - xd) * f11 + xd * f21) + yd * ((1. - xd) * f12 + xd * f22);
     }
     else {
         //std::cout << "Out of interpolation tolerance! \n";
@@ -300,15 +261,18 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_FER_GRID(const int iK
 
 
 template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
-#ifdef HUBBARD_MODEL
+    if (HUBBARD_MODEL) compute_FermionicBubble_HUBBARD();
+    else compute_FermionicBubble_SIAM();
+}
 
+template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble_HUBBARD(){
     double starting_time = get_time();
-    std::vector<Minimal_2D_FFT_Machine> FFT_Machinery (omp_get_max_threads());
+    std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
     double end_time = get_time();
-    double diff = (end_time - starting_time); // time given in seconds
-    //std::cout << "Time for FFT initialization = " << diff << " s." << "\n";
+    double time_diff = (end_time - starting_time); // time given in seconds
+    //std::cout << "Time for FFT initialization = " << time_diff << " s." << "\n";
 
-    for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
+    for (int iK_bubble = 0; iK_bubble < glb_number_of_Keldysh_components_bubble; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
         //std::cout << "Now calculating iK = " << iK << "\n";
 #pragma omp parallel for schedule(dynamic) default(none) shared(FFT_Machinery, iK)
@@ -318,16 +282,11 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
             //if (iv2 == 0) {std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << "\n";}
             perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[omp_get_thread_num()]);
         }
-        /*for (int iv1 = 0; iv1 < nFER; ++iv1) {
-            int thread_num = omp_get_thread_num();
-            std::cout << "Now calculating iK = " << iK << ", iv1 = " << iv1 << " with thread " << thread_num << "\n";
-            for (int iv2 = 0; iv2 < nFER; ++iv2) {
-                perform_internal_sum_2D_Hubbard(iK, iv1, iv2, FFT_Machinery[thread_num]);
-            }
-        }*/
     }
-#else
-    for (int iK_bubble = 0; iK_bubble < number_of_Keldysh_components; ++iK_bubble) {
+}
+
+template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble_SIAM(){
+    for (int iK_bubble = 0; iK_bubble < glb_number_of_Keldysh_components_bubble; ++iK_bubble) {
         int iK = get_iK_actual(iK_bubble);
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
@@ -335,7 +294,6 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble(){
             }
         }
     }
-#endif
 }
 
 template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
@@ -347,6 +305,7 @@ template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int
     }
 }
 
+//TODO(high): Write a flexible method for this in utilities which can handle all types of data (bubbles, vertices, self-energies etc.)
 template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK_bubble, const int iv1, const int iv2, const int i_in) const{
     return iK_bubble*nFER*nFER*n_in + iv1*nFER*n_in + iv2*n_in + i_in;
 }
@@ -355,21 +314,21 @@ template <typename Q> int PrecalculateBubble<Q>::composite_index(const int iK_bu
 template<typename Q>
 int PrecalculateBubble<Q>::get_iK_bubble(const int iK_actual) const {
     int iK_bubble = 0;
-#ifdef KELDYSH_FORMALISM
-    switch (iK_actual) {
-        case 3: iK_bubble = 0; break;
-        case 6: iK_bubble = 1; break;
-        case 7: iK_bubble = 2; break;
-        case 9: iK_bubble = 3; break;
-        case 11: iK_bubble = 4; break;
-        case 12: iK_bubble = 5; break;
-        case 13: iK_bubble = 6; break;
-        case 14: iK_bubble = 7; break;
-        case 15: iK_bubble = 8; break;
-        default:
-            std::cout << "ERROR! Trivial Keldysh index not filtered out yet!!";
+    if (KELDYSH){
+        switch (iK_actual) {
+            case 3: iK_bubble = 0; break;
+            case 6: iK_bubble = 1; break;
+            case 7: iK_bubble = 2; break;
+            case 9: iK_bubble = 3; break;
+            case 11: iK_bubble = 4; break;
+            case 12: iK_bubble = 5; break;
+            case 13: iK_bubble = 6; break;
+            case 14: iK_bubble = 7; break;
+            case 15: iK_bubble = 8; break;
+            default:
+                std::cout << "ERROR! Trivial Keldysh index not filtered out yet!!";
+        }
     }
-#endif
     return iK_bubble;
 }
 
@@ -377,25 +336,25 @@ int PrecalculateBubble<Q>::get_iK_bubble(const int iK_actual) const {
 template<typename Q>
 int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) const {
     int iK_actual = 0;
-#ifdef KELDYSH_FORMALISM
-    switch (iK_bubble) {
-        case 0: iK_actual = 3; break;
-        case 1: iK_actual = 6; break;
-        case 2: iK_actual = 7; break;
-        case 3: iK_actual = 9; break;
-        case 4: iK_actual = 11; break;
-        case 5: iK_actual = 12; break;
-        case 6: iK_actual = 13; break;
-        case 7: iK_actual = 14; break;
-        case 8: iK_actual = 15; break;
-        default:
-            std::cout << "ERROR! Number of nine non-trivial Keldysh-indices exceeded!";
+    if (KELDYSH){
+        switch (iK_bubble) {
+            case 0: iK_actual = 3; break;
+            case 1: iK_actual = 6; break;
+            case 2: iK_actual = 7; break;
+            case 3: iK_actual = 9; break;
+            case 4: iK_actual = 11; break;
+            case 5: iK_actual = 12; break;
+            case 6: iK_actual = 13; break;
+            case 7: iK_actual = 14; break;
+            case 8: iK_actual = 15; break;
+            default:
+                std::cout << "ERROR! Number of nine non-trivial Keldysh-indices exceeded!";
+        }
     }
-#endif
     return iK_actual;
 }
 
-#ifdef HUBBARD_MODEL
+// Hubbard model specific functions
 template<typename Q>
 void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
                                                             Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
@@ -417,7 +376,7 @@ void PrecalculateBubble<Q>::compute_internal_bubble(const int iK, const double v
     vec<comp> first_propagator (glb_N_transfer); // input for FFT
     vec<comp> second_propagator (glb_N_transfer); // input for FFT
 
-    if (dot){
+    if (diff){
         set_propagators(g, s, iK, v1, v2, first_propagator, second_propagator);
         values_of_bubble = Swave_Bubble_Calculator.compute_swave_bubble(first_propagator, second_propagator);
 
@@ -434,12 +393,12 @@ template<typename Q>
 void PrecalculateBubble<Q>::set_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                             const int iK, const double v1, const double v2,
                                             vec<Q>& first_propagator, vec<Q>& second_propagator) {
-
-#ifdef KELDYSH_FORMALISM
-    set_Keldysh_propagators(g1, g2, iK, v1, v2, first_propagator, second_propagator);
-#else
-    set_Matsubara_propagators(g1, g2, v1, v2, first_propagator, second_propagator);
-#endif
+    if (KELDYSH){
+        set_Keldysh_propagators(g1, g2, iK, v1, v2, first_propagator, second_propagator);
+    }
+    else{
+        set_Matsubara_propagators(g1, g2, v1, v2, first_propagator, second_propagator);
+    }
 }
 
 template<typename Q>
@@ -452,7 +411,6 @@ void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator<Q>& g1, c
     }
 }
 
-// TODO: Use this function to calculate the bubble also for the SIAM.
 template<typename Q>
 void
 PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
@@ -461,24 +419,24 @@ PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Pr
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > glb_N_transfer!
         switch (iK) {
             case 3: //AA
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 6: //AR
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
                 second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
                 break;
             case 7: //AK
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
                 second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
                 break;
             case 9: //RA
                 first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 11://KA
                 first_propagator[i_in]  = g1.valsmooth(1, v1, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 12://RR
                 first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
@@ -502,8 +460,7 @@ PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Pr
         }
     }
 }
-
-#endif // HUBBARD_MODEL
+// End of Hubbard model specific functions
 
 
 //Class created for debugging of the Bubbles
@@ -560,7 +517,6 @@ public:
 };
 
 /// Refactoring of the classes Integrand_K1, Integrand_K2, Integrand_K3 into one single class
-// TODO: Implement DEBUG_MODE
 template <typename Q,
         template <typename> class symmetry_left,
         template <typename> class symmetry_right,
@@ -610,9 +566,7 @@ public:
               i2(i2_in), w(w_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
         diag_class = 1; // This constructor corresponds to K1
         set_Keldysh_index_i0(i0_in);
-#if MAX_DIAG_CLASS <= 1
-        precompute_vertices();
-#endif
+        if (MAX_DIAG_CLASS <= 1) precompute_vertices();
     }
 
     /**
@@ -659,32 +613,33 @@ public:
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0(const int i0_in) {
-#ifdef KELDYSH_FORMALISM
-    switch (diag_class) {
-        case 1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
-            switch (channel) {
-                case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
-                case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
-                case 't': i0 = non_zero_Keldysh_K1t[i0_in]; break;
-                default: ;
-            }
-            break;
-        case 2: // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
-            switch (channel) {
-                case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
-                case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
-                case 't': i0 = non_zero_Keldysh_K2t[i0_in]; break;
-                default: ;
-            }
-            break;
-        case 3:
-            i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
-            break;
-        default: ;
+    if (KELDYSH){
+        switch (diag_class) {
+            case 1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+                switch (channel) {
+                    case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
+                    case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
+                    case 't': i0 = non_zero_Keldysh_K1t[i0_in]; break;
+                    default: ;
+                }
+                break;
+            case 2: // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
+                switch (channel) {
+                    case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
+                    case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
+                    case 't': i0 = non_zero_Keldysh_K2t[i0_in]; break;
+                    default: ;
+                }
+                break;
+            case 3:
+                i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
+                break;
+            default: ;
+        }
     }
-#else
-    i0 = 0;
-#endif
+    else{
+        i0 = 0;
+    }
 }
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -728,34 +683,34 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 bool Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has_to_be_zero() const {
     bool zero_result = false;
-#if MAX_DIAG_CLASS <= 1 && defined(KELDYSH_FORMALISM)
-    if (!diff) {
-        switch (channel) {
-            case 'a':
-                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;}
-                if (i0 == 3 &&
-                    (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
-                    {zero_result = true;};
-                break;
-            case 'p':
-                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                if (i0 == 1 && (i2 != 7 && i2 != 11)) {zero_result = true;};
-                if (i0 == 5 &&
-                    (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15))
-                    {zero_result = true;};
-                break;
-            case 't':
-                // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;};
-                if (i0 == 3 &&
-                    (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
-                    {zero_result = true;};
-                break;
-            default:;
+    if (KELDYSH && (MAX_DIAG_CLASS <= 1)){
+        if (!diff) {
+            switch (channel) {
+                case 'a':
+                    // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;}
+                    if (i0 == 3 &&
+                        (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
+                        {zero_result = true;};
+                    break;
+                case 'p':
+                    // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if (i0 == 1 && (i2 != 7 && i2 != 11)) {zero_result = true;};
+                    if (i0 == 5 &&
+                        (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15))
+                        {zero_result = true;};
+                    break;
+                case 't':
+                    // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
+                    if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;};
+                    if (i0 == 3 &&
+                        (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
+                        {zero_result = true;};
+                    break;
+                default:;
+            }
         }
     }
-#endif
     return zero_result;
 }
 
@@ -763,40 +718,41 @@ template<typename Q, template <typename> class symmetry_left, template <typename
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertices(const double vpp,
                                                                                   Q& res_l_V, Q& res_r_V,
                                                                                   Q& res_l_Vhat, Q& res_r_Vhat) const{
-#if MAX_DIAG_CLASS <= 1
-    res_l_V = res_l_V_initial;
-    res_r_V = res_r_V_initial;
-    res_l_Vhat = res_l_Vhat_initial;
-    res_r_Vhat = res_r_Vhat_initial;
-#else
-    std::vector<int> indices = indices_sum(i0, i2, channel);
-    VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
-    VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
+    if (MAX_DIAG_CLASS <= 1){
+        res_l_V = res_l_V_initial;
+        res_r_V = res_r_V_initial;
+        res_l_Vhat = res_l_Vhat_initial;
+        res_r_Vhat = res_r_Vhat_initial;
+    }
+    else{
+        std::vector<int> indices = indices_sum(i0, i2, channel);
+        VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
+        VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
 
-    if (diag_class == 1)
-        res_l_V = vertex1[0].left_same_bare(input_l);
-    else
-        res_l_V = vertex1[0].left_diff_bare(input_l);
-
-    if (diag_class == 3)
-        res_r_V = vertex2[0].right_diff_bare(input_r);
-    else
-        res_r_V = vertex2[0].right_same_bare(input_r);
-
-    if (channel == 't') {
-        input_l.spin = 1;
-        input_r.spin = 1;
         if (diag_class == 1)
-            res_l_Vhat = vertex1[0].left_same_bare(input_l);
+            res_l_V = vertex1[0].left_same_bare(input_l);
         else
-            res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+            res_l_V = vertex1[0].left_diff_bare(input_l);
 
         if (diag_class == 3)
-            res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+            res_r_V = vertex2[0].right_diff_bare(input_r);
         else
-            res_r_Vhat = vertex2[0].right_same_bare(input_r);
+            res_r_V = vertex2[0].right_same_bare(input_r);
+
+        if (channel == 't') {
+            input_l.spin = 1;
+            input_r.spin = 1;
+            if (diag_class == 1)
+                res_l_Vhat = vertex1[0].left_same_bare(input_l);
+            else
+                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+
+            if (diag_class == 3)
+                res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+            else
+                res_r_Vhat = vertex2[0].right_same_bare(input_r);
+        }
     }
-#endif // MAX_DIAG_CLASS
 }
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -835,17 +791,18 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
 
         Q Pival = Pi.value(i2, w, vpp, i_in, channel);
         Q integrand_value = (*this)(vpp);
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-        integrand_re[i] = integrand_value;
-        integrand_im[i] = 0.;
-        Pival_re[i] = Pival;
-        Pival_im[i] = 0.;
-#else
-        integrand_re[i] = integrand_value.real();
-        integrand_im[i] = integrand_value.imag();
-        Pival_re[i] = Pival.real();
-        Pival_im[i] = Pival.imag();
-#endif
+        if (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+            Pival_re[i] = Pival;
+            Pival_im[i] = 0.;
+        }
+        else{
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+            Pival_re[i] = Pival.real();
+            Pival_im[i] = Pival.imag();
+        }
     }
 
     std::string filename = "../Data/integrand_K" + std::to_string(diag_class);
@@ -862,7 +819,6 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
 }
 
 
-// Refactoring of bubble_function into a new class; TODO: No functionality for DEBUG_MODE yet.
 template <typename Q,
         template <typename> class symmetry_result,
         template <typename> class symmetry_left,
@@ -877,16 +833,12 @@ class BubbleFunctionCalculator{
     // Copies of the vertex on the left and on the right, which will be cross-projected as required.
     GeneralVertex<Q, symmetry_left> vertex1 = vertex1_initial;
     GeneralVertex<Q, symmetry_right> vertex2 = vertex2_initial;
-    //TODO: How much slower is the code now that these objects, which will be used in the following, are not const anymore?
-    /// Conjecture: Should not be slower, because these objects are only given to the integrand as const objects.
 
-    const Propagator<Q>& G;
-    const Propagator<Q>& S;
     const Bubble_Object& Pi;
-    const char channel; // TODO: We already know here, in which channel-parametrization we will need the vertices => Perform cross-projections already in the constructor?
-    const bool diff;
+    const char channel;
+    const bool diff = Pi.diff;
 
-    const double Delta = (G.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
+    const double Delta = (Pi.g.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
@@ -895,33 +847,13 @@ class BubbleFunctionCalculator{
     int mpi_rank = mpi_world_rank(); // number of the current mpi process
 
     double vmin = 0, vmax = 0;
-    #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    int Nmin, Nmax;
-    #endif
-
-    // Dummy instantiation all with bosonic K1-grids - will be set for real by the constructor
-    FrequencyGrid freqs_K1  = dgamma[0].avertex().frequencies.b_K1;
-    FrequencyGrid bfreqs_K2 = dgamma[0].avertex().frequencies.b_K1;
-    FrequencyGrid ffreqs_K2 = dgamma[0].avertex().frequencies.b_K1;
-    FrequencyGrid bfreqs_K3 = dgamma[0].avertex().frequencies.b_K1;
-    FrequencyGrid ffreqs_K3 = dgamma[0].avertex().frequencies.b_K1;
-
-#ifdef KELDYSH_FORMALISM
-    const std::vector<int> nonzero_Keldysh_indices = non_zero_Keldysh_bubble;
-#else
-    const std::vector<int> nonzero_Keldysh_indices {0};
-#endif // KELDYSH_FORMALISM
+    int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!
 
     double tK1 = 0, tK2 = 0, tK3 = 0;
 
     void set_channel_specific_freq_ranges_and_prefactor();
-
-    void initialize_frequency_grids();
-    void initialize_frequency_grid_K1();
-    void initialize_frequency_grid_K2();
-    void initialize_frequency_grid_K3();
-
-    void crossproject_vertices();
+    void find_vmin_and_vmax();
+    void crossproject_vertices(); // Only needed for the Hubbard model
 
     void calculate_bubble_function(int diag_class);
     Q get_value(int i_mpi, int i_omp, int n_omp, int diag_class);
@@ -960,20 +892,22 @@ class BubbleFunctionCalculator{
     BubbleFunctionCalculator(GeneralVertex<Q, symmetry_result>& dgamma_in,
                              const GeneralVertex<Q, symmetry_left>& vertex1_in,
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                             const Propagator<Q>& G_in, const Propagator<Q>& S_in, const Bubble_Object& Pi_in,
-                             const char channel_in, const bool diff_in)
+                             const Bubble_Object& Pi_in,
+                             const char channel_in)
                              :dgamma(dgamma_in), vertex1_initial(vertex1_in), vertex2_initial(vertex2_in),
-                             G(G_in), S(S_in), Pi(Pi_in), channel(channel_in), diff(diff_in){
+                             Pi(Pi_in), channel(channel_in){
         set_channel_specific_freq_ranges_and_prefactor();
-        initialize_frequency_grids();
+        find_vmin_and_vmax();
 
-        /// As we already know, which channel parametrization will be needed,
-        /// we cross-project the vertices with respect to the internal structure already here.
+        if (HUBBARD_MODEL) {
+        // As we already know, which channel parametrization will be needed,
+        // we cross-project the vertices with respect to the internal structure already here.
         crossproject_vertices();
 
-        /// TODO: Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
+        /// TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
         ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).
         ///  The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.
+        }
     }
 };
 
@@ -1017,110 +951,76 @@ Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
         template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-Bubble_Object>::initialize_frequency_grids() {
-#if MAX_DIAG_CLASS >= 0
-    initialize_frequency_grid_K1();
-#endif
-#if MAX_DIAG_CLASS >= 2
-    initialize_frequency_grid_K2();
-#endif
-#if MAX_DIAG_CLASS >= 3
-    initialize_frequency_grid_K3();
-#endif
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    // make sure that the limits for the Matsubara sum are fermionic
-    Nmin = (int) (vmin/(M_PI*glb_T)-1)/2;
-    Nmax = (int) (vmax/(M_PI*glb_T)-1)/2;
-    vmin = (Nmin*2+1)*(M_PI*glb_T);
-    vmax = (Nmax*2+1)*(M_PI*glb_T);
-#endif
-}
-
-template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
-        template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::initialize_frequency_grid_K1(){
-    freqs_K1 = dgamma[0].avertex().frequencies.b_K1;
+void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
-    vmin = std::min(freqs_K1.w_lower, G.selfenergy.frequencies.w_lower);
-    vmax = std::max(freqs_K1.w_upper, G.selfenergy.frequencies.w_upper);
-}
-
-template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
-        template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::initialize_frequency_grid_K2(){
-    bfreqs_K2 = dgamma[0].avertex().frequencies.b_K2;
-    ffreqs_K2 = dgamma[0].avertex().frequencies.f_K2;
-    // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-    vmin = std::min(vmin, ffreqs_K2.w_lower);
-    vmax = std::max(vmax, ffreqs_K2.w_upper);
-}
-
-template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
-        template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::initialize_frequency_grid_K3(){
-    bfreqs_K3 = dgamma[0].avertex().frequencies.b_K3;
-    ffreqs_K3 = dgamma[0].avertex().frequencies.f_K3;
-    // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-    vmin = std::min(vmin, ffreqs_K3.w_lower);
-    vmax = std::max(vmax, ffreqs_K3.w_upper);
+    vmin = std::min(dgamma[0].avertex().frequencies.b_K1.w_lower, Pi.g.selfenergy.frequencies.w_lower);
+    vmax = std::max(dgamma[0].avertex().frequencies.b_K1.w_upper, Pi.g.selfenergy.frequencies.w_upper);
+    if (MAX_DIAG_CLASS >= 2){
+        // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
+        vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K2.w_lower);
+        vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K2.w_upper);
+    }
+    if (MAX_DIAG_CLASS >= 3){
+        // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
+        vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K3.w_lower);
+        vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K3.w_upper);
+    }
+    if ((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
+        // make sure that the limits for the Matsubara sum are fermionic
+        Nmin = (int) (vmin/(M_PI*glb_T)-1)/2;
+        Nmax = (int) (vmax/(M_PI*glb_T)-1)/2;
+        vmin = (Nmin*2+1)*(M_PI*glb_T);
+        vmax = (Nmax*2+1)*(M_PI*glb_T);
+    }
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::crossproject_vertices() {
-#ifdef HUBBARD_MODEL
     switch (channel) {
         case 'a':
-            #if MAX_DIAG_CLASS >= 0
+            if (MAX_DIAG_CLASS >= 0){
                 vertex1[0].pvertex().K1_crossproject();
                 vertex1[0].tvertex().K1_crossproject();
                 vertex2[0].pvertex().K1_crossproject();
                 vertex2[0].tvertex().K1_crossproject();
-            #endif
-            #if MAX_DIAG_CLASS >= 2
+            }
+            if (MAX_DIAG_CLASS >= 2){
                 vertex1[0].pvertex().K2_crossproject('a');
                 vertex1[0].tvertex().K2_crossproject('a');
                 vertex2[0].pvertex().K2_crossproject('a');
                 vertex2[0].tvertex().K2_crossproject('a');
-            #endif
-            #if MAX_DIAG_CLASS >= 3
+            }
+            if (MAX_DIAG_CLASS >= 3){
                 vertex1[0].pvertex().K3_crossproject('a');
                 vertex1[0].tvertex().K3_crossproject('a');
                 vertex2[0].pvertex().K3_crossproject('a');
                 vertex2[0].tvertex().K3_crossproject('a');
-            #endif
+            }
             break;
         case 'p':
-            #if MAX_DIAG_CLASS >= 0
+            if (MAX_DIAG_CLASS >= 0) {
                 vertex1[0].avertex().K1_crossproject();
                 vertex1[0].tvertex().K1_crossproject();
                 vertex2[0].avertex().K1_crossproject();
                 vertex2[0].tvertex().K1_crossproject();
-            #endif
-            #if MAX_DIAG_CLASS >= 2
+            }
+            if (MAX_DIAG_CLASS >= 2) {
                 vertex1[0].avertex().K2_crossproject('p');
                 vertex1[0].tvertex().K2_crossproject('p');
                 vertex2[0].avertex().K2_crossproject('p');
                 vertex2[0].tvertex().K2_crossproject('p');
-            #endif
-            #if MAX_DIAG_CLASS >= 3
+            }
+            if (MAX_DIAG_CLASS >= 3) {
                 vertex1[0].avertex().K3_crossproject('p');
                 vertex1[0].tvertex().K3_crossproject('p');
                 vertex2[0].avertex().K3_crossproject('p');
                 vertex2[0].tvertex().K3_crossproject('p');
-            #endif
+            }
             break;
         case 't':
-            #if MAX_DIAG_CLASS >= 0
+            if (MAX_DIAG_CLASS >= 0) {
                 vertex1[0].tvertex().K1_crossproject(); // Needed for gamma_a_uu
                 vertex2[0].tvertex().K1_crossproject(); // Needed for gamma_a_uu
 
@@ -1128,8 +1028,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 vertex1[0].pvertex().K1_crossproject();
                 vertex2[0].avertex().K1_crossproject();
                 vertex2[0].pvertex().K1_crossproject();
-            #endif
-            #if MAX_DIAG_CLASS >= 2
+            }
+            if (MAX_DIAG_CLASS >= 2) {
                 vertex1[0].tvertex().K2_crossproject('a'); // Needed for gamma_a_uu
                 vertex2[0].tvertex().K2_crossproject('a'); // Needed for gamma_a_uu
 
@@ -1137,8 +1037,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 vertex1[0].pvertex().K2_crossproject('t');
                 vertex2[0].avertex().K2_crossproject('t');
                 vertex2[0].pvertex().K2_crossproject('t');
-            #endif
-            #if MAX_DIAG_CLASS >= 3
+            }
+            if (MAX_DIAG_CLASS >= 3) {
                 vertex1[0].tvertex().K3_crossproject('a'); // Needed for gamma_a_uu
                 vertex2[0].tvertex().K3_crossproject('a'); // Needed for gamma_a_uu
 
@@ -1146,11 +1046,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 vertex1[0].pvertex().K3_crossproject('t');
                 vertex2[0].avertex().K3_crossproject('t');
                 vertex2[0].pvertex().K3_crossproject('t');
-            #endif
+            }
             break;
             default: ;
     }
-#endif // HUBBARD_MODEL
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1159,30 +1058,22 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
     double t_start = get_time();
-#if INTERPOLATION == 3
-    vertex1.initialize_K2_spline();
-    vertex2.initialize_K2_spline();
-#endif
-#if MAX_DIAG_CLASS >= 0
-    calculate_bubble_function(1);
-    tK1 = get_time() - t_start;
-#endif
-#if MAX_DIAG_CLASS >= 2
-    t_start = get_time();
-    calculate_bubble_function(2);
-    tK2 = get_time() - t_start;
-#endif
-#if MAX_DIAG_CLASS >= 3
-    t_start = get_time();
-    calculate_bubble_function(3);
-    tK3 = get_time() - t_start;
-    print("K3", channel, " done, ");
-    get_time(t_start);
-#endif
-#if INTERPOLATION == 3
-    vertex1.free_K2_spline();
-    vertex2.free_K2_spline();
-#endif
+    if (MAX_DIAG_CLASS >= 0) {
+        calculate_bubble_function(1);
+        tK1 = get_time() - t_start;
+    }
+    if (MAX_DIAG_CLASS >= 2) {
+        t_start = get_time();
+        calculate_bubble_function(2);
+        tK2 = get_time() - t_start;
+    }
+    if (MAX_DIAG_CLASS >= 3) {
+        t_start = get_time();
+        calculate_bubble_function(3);
+        tK3 = get_time() - t_start;
+        print("K3", channel, " done, ");
+        get_time(t_start);
+    }
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1231,19 +1122,19 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K1(i0, w);
-            if (trafo == 0 and not isinf(w) and not isinf(v) and not isinf(vp)) {calculate_value_K1(value, i0, i_in, w); }
+            if (trafo == 0 and isfinite(w)) {calculate_value_K1(value, i0, i_in, w); }
             break;
         case 2:
             convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K2(i0, w, v);
-            if (trafo == 0 and not isinf(w) and not isinf(v) and not isinf(vp)) {calculate_value_K2(value, i0, i_in, w, v); }
+            if (trafo == 0 and isfinite(w) and isfinite(v)) {calculate_value_K2(value, i0, i_in, w, v); }
             break;
         case 3:
             convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K3(i0, w, iv, ivp);
-            if (trafo == 0 and not isinf(w) and not isinf(v) and not isinf(vp)) {calculate_value_K3(value, i0, i_in, w, v, vp); }
+            if (trafo == 0 and isfinite(w) and isfinite(v) and isfinite(vp)) {calculate_value_K3(value, i0, i_in, w, v, vp); }
             break;
         default:;
     }
@@ -1255,26 +1146,27 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
-    if (vertex1[0].Ir() and vertex2[0].Ir()) {value = 0.;} // bubbles with Ir do not contribute to K1 // TODO: rethink... currently useless
-    else {
-        for (int i2 : nonzero_Keldysh_indices) {
-            Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
-                    integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
-#ifdef KELDYSH_FORMALISM
+    for (int i2 : glb_non_zero_Keldysh_bubble) {
+        Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
+                integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+        if (KELDYSH){
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
-#else
-#ifdef ZERO_TEMP
-            value += bubble_value_prefactor() * integrator<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
-#else
-            int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-            value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
-#endif //ZERO_TEMP
-#endif // KELDYSH_FORMALISM
-            value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k1, vertex1, vertex2, G, vmin, vmax,
-                                             w, 0., 0., i0, i2, i_in, channel, diff);
-
         }
+        else{
+            if (ZERO_T){
+                value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
+            }
+            else{
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP) // TODO(high): Figure out type problems in matsubarasum
+                int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+                value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
+#endif
+            }
+        }
+        value += bubble_value_prefactor() *
+                asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
+                                         w, 0., 0., i0, i2, i_in, channel, diff);
+
     }
 }
 
@@ -1285,24 +1177,27 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K2(Q& value, const int i0, const int i_in, const double w, const double v){
     if (vertex2[0].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
     else {
-        for (int i2 : nonzero_Keldysh_indices) {
+        for (int i2 : glb_non_zero_Keldysh_bubble) {
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
-            //if (abs(w + 7.2) < 1e-1 and abs(v + 6.4) < 1e-1) integrand_K2.save_integrand();
-#ifdef KELDYSH_FORMALISM
-            value += bubble_value_prefactor() * integrator<Q>(integrand_K2, vmin, vmax, -w / 2., w / 2., Delta);
-#else
-#ifdef ZERO_TEMP
-            value += bubble_value_prefactor() * integrator<Q,3>(integrand_K2, vmin, vmax, std::abs(w/2), {v, v+w, v-w}, Delta, false);
-            //value += bubble_value_prefactor() * integrator<Q,0>(integrand_K2, vmin, vmax, abs(w/2), {}, Delta);
-#else
-            int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-            value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
-#endif //ZERO_TEMP
-#endif // KELDYSH_FORMALISM
-
+            if (KELDYSH){
+                value += bubble_value_prefactor() * integrator<Q>(integrand_K2, vmin, vmax, -w / 2., w / 2., Delta);
+            }
+            else{
+                if (ZERO_T){
+                    value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,3>(integrand_K2, vmin, vmax, std::abs(w/2), {v, v+w, v-w}, Delta, false);
+                    //value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K2, vmin, vmax, std::abs(w/2), {}, Delta); // TODO(high): Remove?!
+                }
+                else{
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP) // TODO(high): Figure out type problems in matsubarasum
+                    int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T);
+                    // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+                    value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
+#endif
+                }
+            }
             value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k2, vertex1, vertex2, G,
+                    asymp_corrections_bubble(k2, vertex1, vertex2, Pi.g,
                                              vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
 
         }
@@ -1315,24 +1210,28 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
                                                 const double w, const double v, const double vp){
-    for (int i2 : nonzero_Keldysh_indices) {
+    for (int i2 : glb_non_zero_Keldysh_bubble) {
         // initialize the integrand object and perform frequency integration
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K3(vertex1, vertex2, Pi, i0, i2, w, v, vp, i_in, channel, diff);
-        //if (abs(w + 1.5) < 1e-1 and abs(v + 6.2) < 1e-1 and abs(vp + 0) < 1e-1) integrand_K3.save_integrand();
-    #ifdef KELDYSH_FORMALISM
-        value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
-    #else
-    #ifdef ZERO_TEMP
-        value += bubble_value_prefactor() * integrator<Q,6>(integrand_K3, vmin, vmax, std::abs(w/2), {v, vp, w-vp, w+vp, w-v, abs(w)+abs(v)}, Delta, false);
-        //value += bubble_value_prefactor() * integrator<Q,0>(integrand_K3, vmin, vmax, abs(w/2), {}, Delta);
-    #else
-        int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-        value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
-    #endif //ZERO_TEMP
-    #endif // KELDYSH_FORMALISM
+        if (KELDYSH){
+            value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
+        }
+        else{
+            if (ZERO_T){
+                value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,6>(integrand_K3, vmin, vmax, std::abs(w/2), {v, vp, w-vp, w+vp, w-v, abs(w)+abs(v)}, Delta, false);
+                //value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K3, vmin, vmax, std::abs(w/2), {}, Delta); // TODO(high): Remove?!
+            }
+            else{
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP) // TODO(high): Figure out type problems in matsubarasum
+                int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T);
+                // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+                value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
+#endif
+            }
+        }
         value += bubble_value_prefactor() *
-                asymp_corrections_bubble(k3, vertex1, vertex2, G,
+                asymp_corrections_bubble(k3, vertex1, vertex2, Pi.g,
                                          vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
 
     }
@@ -1385,7 +1284,6 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
-#if MAX_DIAG_CLASS >= 2
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2 += K2_ordered_result;
@@ -1401,7 +1299,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
-#endif
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1409,7 +1306,6 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K3(const vec<Q>& K3_ordered_result){
-#if MAX_DIAG_CLASS >= 3
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K3 += K3_ordered_result;
@@ -1425,7 +1321,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
-#endif
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1457,10 +1352,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK1 = i_mpi * n_omp + i_omp;
-    i0 = iK1/(nw1_w*n_in);                  // exterior Keldysh indices of the bubble
-    iw = iK1/(n_in) - i0*nw1_w;             // frequency index
-    i_in = iK1 - i0*nw1_w*n_in - iw*n_in;   // internal index
-    w = freqs_K1.ws[iw];                     // frequency acc. to frequency index
+    i0 = iK1/(nw1_w*n_in);                              // exterior Keldysh indices of the bubble
+    iw = iK1/(n_in) - i0*nw1_w;                         // frequency index
+    i_in = iK1 - i0*nw1_w*n_in - iw*n_in;               // internal index
+    w = dgamma[0].avertex().frequencies.b_K1.ws[iw];    // frequency acc. to frequency index
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1475,8 +1370,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
     iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
     i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
-    w = bfreqs_K2.ws[iw];
-    v = ffreqs_K2.ws[iv];
+    w = dgamma[0].avertex().frequencies.b_K2.ws[iw];
+    v = dgamma[0].avertex().frequencies.f_K2.ws[iv];
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1492,9 +1387,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
     ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
     i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
-    w = bfreqs_K3.ws[iw];
-    v = ffreqs_K3.ws[iv];
-    vp = ffreqs_K3.ws[ivp];
+    w =  dgamma[0].avertex().frequencies.b_K3.ws[iw];
+    v =  dgamma[0].avertex().frequencies.f_K3.ws[iv];
+    vp = dgamma[0].avertex().frequencies.f_K3.ws[ivp];
 }
 
 
@@ -1595,12 +1490,13 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 Q
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-                Bubble_Object>::bubble_value_prefactor(){
-#ifdef KELDYSH_FORMALISM
-    return prefactor * (1. / (2. * M_PI * glb_i));
-#else
-    return prefactor * (1. / (2. * M_PI));
-#endif
+                Bubble_Object>::bubble_value_prefactor(){ // TODO(medium): Define globally?
+    if (KELDYSH){
+        return prefactor * (1. / (2. * M_PI * glb_i));
+    }
+    else{
+        return prefactor * (1. / (2. * M_PI));
+    }
 }
 
 
@@ -1613,10 +1509,10 @@ template <typename Q,
 void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                  const GeneralVertex<Q, symmetry_left>& vertex1,
                                  const GeneralVertex<Q, symmetry_right>& vertex2,
-                                 const Propagator<Q>& G, const Propagator<Q>& S, const Bubble_Object& Pi,
-                                 const char channel, const bool diff){
+                                 const Bubble_Object& Pi,
+                                 const char channel){
     BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
-            BubbleComputer (dgamma, vertex1, vertex2, G, S, Pi, channel, diff);
+            BubbleComputer (dgamma, vertex1, vertex2, Pi, channel);
     BubbleComputer.perform_computation();
 }
 
@@ -1630,7 +1526,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                      const GeneralVertex<Q, symmetry_right>& vertex2,
                      const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff){
     Bubble<Q> Pi(G, S, diff);
-    bubble_function(dgamma, vertex1, vertex2, G, S, Pi, channel, false);
+    bubble_function(dgamma, vertex1, vertex2, Pi, channel);
 }
 
 #endif //KELDYSH_MFRG_BUBBLES_H

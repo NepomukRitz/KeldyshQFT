@@ -74,7 +74,6 @@ void test_derivatives_K1a(double Lambda){
                    {ffreqs, rhs_SOPT_FFT_K1a.real(), rhs_SOPT_FFT_K1a.imag(), rhs_flow.real(), rhs_flow.imag()});
 }
 
-#if MAX_DIAG_CLASS >= 2
 /**
  * This function checks the consistency of the K2 class
  * @param Lambda    : Scale
@@ -157,7 +156,6 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 
     return empty;
 }
-#endif
 
 // to check central part of multi-loop flow equations:
 // compute diagrams with non-symmetric intermediate results
@@ -212,7 +210,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
         // create non-symmetric vertex with differentiated vertex on the left
-        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin);
+        GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin, Lambda);
         dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
         dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
 
@@ -222,7 +220,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false) {
 
 
         // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin);
+        GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin, Lambda);
         dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
         dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
@@ -279,10 +277,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
     // for K1t in PT3, need a-vertex in PT2 due to a <-> t symmetry
     bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false);
-#if MAX_DIAG_CLASS >= 2
-    // set K2 part of this vertex to zero
-    PT3_K1t.vertex[0].tvertex().K2 = vec<state_datatype> (PT3_K1t.vertex[0].tvertex().K2.size());
-#endif
+    if (MAX_DIAG_CLASS >= 2) PT3_K1t.vertex[0].tvertex().K2 = vec<state_datatype> (PT3_K1t.vertex[0].tvertex().K2.size()); // set K2 part of this vertex to zero
     print("Computed K1 in PT3.", true);
     get_time(t0);
     if (write_flag) {
@@ -728,63 +723,59 @@ void test_PT4(double Lambda, bool write_flag = false) {
     vec<state_datatype> PT4_K2t_0_t2 (3);
 
 #if MAX_DIAG_CLASS >= 2
-#ifdef KELDYSH_FORMALISM
-    for (int iK2=0; iK2<3; ++iK2) {
-#else
-      int iK2 = 0;
-#endif
-        input_a.iK = iK2s[iK2];
-        input_p.iK = iK2s[iK2];
-        input_t.iK = iK2s[iK2];
-        // K2 in PT3
-        PT3_K2a_0[iK2] = PT3_K2a.vertex[0].avertex().valsmooth<k2>(input_a, PT3_K2a.vertex[0].tvertex());
-        PT3_K2p_0[iK2] = PT3_K2p.vertex[0].pvertex().valsmooth<k2>(input_p, PT3_K2p.vertex[0].pvertex());
-        PT3_K2t_0[iK2] = PT3_K2t.vertex[0].tvertex().valsmooth<k2>(input_t, PT3_K2t.vertex[0].avertex());
-        // K2 in PT4
-        PT4_K2a_0_p1[iK2] = PT4_31_a_p1.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_p1.vertex[0].tvertex());
-        PT4_K2p_0_a1[iK2] = PT4_31_p_a1.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_a1.vertex[0].pvertex());
-        PT4_K2a_0_t1[iK2] = PT4_31_a_t1.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_t1.vertex[0].tvertex());
-        PT4_K2p_0_t1[iK2] = PT4_31_p_t1.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t1.vertex[0].pvertex());
-        PT4_K2a_0_a2[iK2] = PT4_31_a_a2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_a2.vertex[0].tvertex());
-        PT4_K2a_0_p2[iK2] = PT4_31_a_p2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_p2.vertex[0].tvertex());
-        PT4_K2a_0_t2[iK2] = PT4_31_a_t2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_t2.vertex[0].tvertex());
-        PT4_K2p_0_a2[iK2] = PT4_31_p_a2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_a2.vertex[0].pvertex());
-        PT4_K2p_0_p2[iK2] = PT4_31_p_p2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_p2.vertex[0].pvertex());
-        PT4_K2p_0_t2[iK2] = PT4_31_p_t2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t2.vertex[0].pvertex());
-        PT4_K2t_0_a2[iK2] = PT4_31_t_a2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_a2.vertex[0].avertex());
-        PT4_K2t_0_t2[iK2] = PT4_31_t_t2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_t2.vertex[0].avertex());
-#ifdef KELDYSH_FORMALISM
-    }
-#endif
+        for (int iK2 = 0; iK2 < 3; ++iK2) {
+            if (!KELDYSH && (iK2 > 0)) break;
+            input_a.iK = iK2s[iK2];
+            input_p.iK = iK2s[iK2];
+            input_t.iK = iK2s[iK2];
+            // K2 in PT3
+            PT3_K2a_0[iK2] = PT3_K2a.vertex[0].avertex().valsmooth<k2>(input_a, PT3_K2a.vertex[0].tvertex());
+            PT3_K2p_0[iK2] = PT3_K2p.vertex[0].pvertex().valsmooth<k2>(input_p, PT3_K2p.vertex[0].pvertex());
+            PT3_K2t_0[iK2] = PT3_K2t.vertex[0].tvertex().valsmooth<k2>(input_t, PT3_K2t.vertex[0].avertex());
+            // K2 in PT4
+            PT4_K2a_0_p1[iK2] = PT4_31_a_p1.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_p1.vertex[0].tvertex());
+            PT4_K2p_0_a1[iK2] = PT4_31_p_a1.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_a1.vertex[0].pvertex());
+            PT4_K2a_0_t1[iK2] = PT4_31_a_t1.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_t1.vertex[0].tvertex());
+            PT4_K2p_0_t1[iK2] = PT4_31_p_t1.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t1.vertex[0].pvertex());
+            PT4_K2a_0_a2[iK2] = PT4_31_a_a2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_a2.vertex[0].tvertex());
+            PT4_K2a_0_p2[iK2] = PT4_31_a_p2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_p2.vertex[0].tvertex());
+            PT4_K2a_0_t2[iK2] = PT4_31_a_t2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_t2.vertex[0].tvertex());
+            PT4_K2p_0_a2[iK2] = PT4_31_p_a2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_a2.vertex[0].pvertex());
+            PT4_K2p_0_p2[iK2] = PT4_31_p_p2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_p2.vertex[0].pvertex());
+            PT4_K2p_0_t2[iK2] = PT4_31_p_t2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t2.vertex[0].pvertex());
+            PT4_K2t_0_a2[iK2] = PT4_31_t_a2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_a2.vertex[0].avertex());
+            PT4_K2t_0_t2[iK2] = PT4_31_t_t2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_t2.vertex[0].avertex());
+        }
 
 #ifdef KELDYSH_FORMALISM
-    state_datatype PT3_K2_exact = -(1./2.) * (2. - M_PI*M_PI/4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+        state_datatype PT3_K2_exact =
+                -(1. / 2.) * (2. - M_PI * M_PI / 4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
-    state_datatype PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
-    std::cout << "PT3 K2 exact: " << PT3_K2_exact << "\n";
-    std::cout << "Computed value: " << PT3_K2t_0[iK2] << "\n";
+        state_datatype PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+        std::cout << "PT3 K2 exact: " << PT3_K2_exact << "\n";
+        std::cout << "Computed value: " << PT3_K2t_0[0] << "\n";
 #endif
 #endif
 
     // K3 in PT4
-#ifdef KELDYSH_FORMALISM
-    input_a.iK = 5;
-    input_p.iK = 5;
-    input_t.iK = 5;
-#endif
+    if (KELDYSH) {
+        input_a.iK = 5;
+        input_p.iK = 5;
+        input_t.iK = 5;
+    }
     state_datatype PT4_K3a_0;
     state_datatype PT4_K3p_0;
     state_datatype PT4_K3t_0_aa;
     state_datatype PT4_K3t_0_ap;
     state_datatype PT4_K3t_0_pa;
 
-#if MAX_DIAG_CLASS == 3
-    PT4_K3a_0 = PT4_22_a_pp.vertex[0].avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex[0].tvertex());
-    PT4_K3p_0 = PT4_22_p_aa.vertex[0].pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex[0].pvertex());
-    PT4_K3t_0_aa = PT4_22_t_aa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex[0].avertex());
-    PT4_K3t_0_ap = PT4_22_t_ap.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex[0].avertex());
-    PT4_K3t_0_pa = PT4_22_t_pa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex[0].avertex());
-#endif
+    if (MAX_DIAG_CLASS == 3) {
+        PT4_K3a_0 = PT4_22_a_pp.vertex[0].avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex[0].tvertex());
+        PT4_K3p_0 = PT4_22_p_aa.vertex[0].pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex[0].pvertex());
+        PT4_K3t_0_aa = PT4_22_t_aa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex[0].avertex());
+        PT4_K3t_0_ap = PT4_22_t_ap.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex[0].avertex());
+        PT4_K3t_0_pa = PT4_22_t_pa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex[0].avertex());
+    }
 
     // values to be printed to log
     vec<state_datatype> check_values {PT2_K1a_0 + PT2_K1p_0
@@ -879,7 +870,6 @@ void test_PT4(double Lambda, bool write_flag = false) {
     // */
 }
 
-#if MAX_DIAG_CLASS == 3
 /**
  * Test K3 dynamics by computing SE diagrams in PT4 using different PT4 vertices, which should all give the same result.
  */
@@ -940,11 +930,8 @@ void test_K3_dynamics_SE_PT4(double Lambda) {
     write_hdf("SE_K3p_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3p);
     write_hdf("SE_K1a_ladder_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1a_ladder);
 }
-#endif
 
 
-
-#if MAX_DIAG_CLASS >= 2
 /**
  * Function to test correctness of K2a when calculating a susceptibility (a K1a-object) //Notice that the same calculation
  * can be performed in the p-channel.
@@ -1320,7 +1307,7 @@ class TestIntegrandK1a{
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1385,19 +1372,19 @@ void test_integrate_over_K1(double Lambda) {
     vec<double> freqs = {};
     int num_freqs = 0;
     double Delta = (glb_Gamma+Lambda)/2.;
-    Q result = integrator<Q,0>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
+    Q result = integrator_Matsubara_T0<Q,0>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a:", result, true);
     print("relative difference: ", (result-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', (v-vp)*2, v, vp);
-    Q result2 = integrator<Q,0>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
+    Q result2 = integrator_Matsubara_T0<Q,0>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a from the t-channel:", result2, true);
     print("relative difference: ", (result2-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', (v+vp)*2, v, vp);
-    Q result3 = integrator<Q,0>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
+    Q result3 = integrator_Matsubara_T0<Q,0>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a from p-channel:", result3, true);
     print("relative difference: ", (result3-exact_result)/exact_result, true);
 
@@ -1414,19 +1401,19 @@ auto SOPT_K1a(double w, double Lambda) -> double {
     if (w == 0.)
         result = - glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu);
     else
-        result = - glb_U*glb_U * Delta/M_PI / (abs(w)*(2*Delta + abs(w))) * log(1 + (abs(w)*(2*Delta + abs(w)))/(Delta*Delta + glb_mu*glb_mu));
+        result = - glb_U*glb_U * Delta/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
     return result;
 }
 auto SOPT_K1a_diff(double w, double Lambda) -> double {
     double Delta = (glb_Gamma + Lambda) / 2.;
-    if (w == 0.) return - glb_U*glb_U      /2 / M_PI / (Delta*Delta + glb_mu*glb_mu)
+    if (abs(w) < inter_tol) return - glb_U*glb_U      /2 / M_PI / (Delta*Delta + glb_mu*glb_mu)
                         + glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
-    double term1 =  - glb_U*glb_U      / 2/M_PI / (abs(w)*(2*Delta + abs(w))) * log(1 + (abs(w)*(2*Delta + abs(w)))/(Delta*Delta + glb_mu*glb_mu));
-    double term2 =  + glb_U*glb_U * Delta /M_PI / (abs(w)*(2*Delta + abs(w))) * log(1 + (abs(w)*(2*Delta + abs(w)))/(Delta*Delta + glb_mu*glb_mu)) / (2*Delta + abs(w));
-    double term3 =  - glb_U*glb_U * Delta /M_PI / (abs(w)*(2*Delta + abs(w)))     /(   1 + (abs(w)*(2*Delta + abs(w)))/(Delta*Delta + glb_mu*glb_mu))
+    double term1 =  - glb_U*glb_U      / 2/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
+    double term2 =  + glb_U*glb_U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu)) / (2*Delta + std::abs(w));
+    double term3 =  - glb_U*glb_U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w)))     /(   1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu))
             *(
-                    abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
-                   -abs(w) * (2*Delta + abs(w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
+                    std::abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
+                   -std::abs(w) * (2*Delta + std::abs(w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
                     );
     return term1 + term2 + term3;
 }
@@ -1483,7 +1470,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1576,7 +1563,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1666,7 +1653,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1721,7 +1708,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     for (int i = 1; i<nFER-1; i++) {
         double v = PT_state.selfenergy.frequencies.ws[i];
         Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
-        Q val_SE = 1./(2*M_PI) * integrator<Q,1>(IntegrandSE, -vmax, vmax, abs(0.), {v}, Delta, false);
+        Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, false);
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
 
@@ -1741,7 +1728,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
             double w = PT_state.vertex[0].avertex().frequencies.b_K2.ws[i];
             double v = PT_state.vertex[0].avertex().frequencies.f_K2.ws[j];
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
-            Q val_K2 = 1./(2*M_PI) * integrator<Q,3>(IntegrandK2, -vmax, vmax, abs(w/2), {v, w+v, w-v}, Delta, true);
+            Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
             PT_state.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
             PT_state.vertex[0].pvertex().K2_setvert(0, i, j, 0, val_K2);
             PT_state.vertex[0].tvertex().K2_setvert(0, i, j, 0, val_K2);
@@ -1756,11 +1743,11 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
                 double v = PT_state.vertex[0].avertex().frequencies.f_K3.ws[j];
                 double vp= PT_state.vertex[0].avertex().frequencies.f_K3.ws[k];
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
-                Q val_K3 = 1./(2*M_PI) * integrator<Q,6>(IntegrandK3, -vmax, vmax, abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
                 PT_state.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, -val_K3);
                 Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
-                Q val_K3_ap = 1./(2*M_PI) * integrator<Q,6>(IntegrandK3_ap, -vmax, vmax, abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, -2*(val_K3-val_K3_ap));
             }
         }
@@ -1781,12 +1768,8 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 
     write_hdf(outputFileName + "_diff", Lambda, 1, state_diff);
     print("K1-difference: ", state_diff.vertex[0].half1().norm_K1(0), true);
-#if MAX_DIAG_CLASS > 1
-    print("K2-difference: ", state_diff.vertex[0].half1().norm_K2(0), true);
-#endif
-#if MAX_DIAG_CLASS > 2
-    print("K3-difference: ", state_diff.vertex[0].half1().norm_K3(0), true);
-#endif
+    if (MAX_DIAG_CLASS > 1) print("K2-difference: ", state_diff.vertex[0].half1().norm_K2(0), true);
+    if (MAX_DIAG_CLASS > 2) print("K3-difference: ", state_diff.vertex[0].half1().norm_K3(0), true);
 
 }
 
@@ -1846,7 +1829,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -1938,7 +1921,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -2035,7 +2018,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -2073,7 +2056,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
-        state_datatype val_K2 = 1./(2*M_PI) * integrator<state_datatype,2>(IntegrandK2, -vmax, vmax, abs(w/2), {vpp, vp}, Delta);
+        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,2>(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp, vp}, Delta);
         return -glb_U * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
     }
@@ -2133,7 +2116,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -2171,7 +2154,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
-        state_datatype val_K2 = 1./(2*M_PI) * integrator<state_datatype,1>(IntegrandK2, -vmax, vmax, abs(w/2), {vpp}, Delta);
+        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,1>(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp}, Delta);
         return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
     }
@@ -2231,7 +2214,7 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=0; i<nBOS-1; ++i) {
+        for (int i=1; i<nBOS-1; ++i) {
             double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies.b_K1.ws[i];
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
@@ -2269,7 +2252,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, vpp, vp, false, Pi);
-        state_datatype val_K3 = 1./(2*M_PI) * integrator<state_datatype,3>(IntegrandK3, -vmax, vmax, abs(w/2), {vpp, vp, abs(vpp)-abs(vp)}, Delta);
+        state_datatype val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,3>(IntegrandK3, -vmax, vmax, std::abs(w/2), {vpp, vp, std::abs(vpp)-std::abs(vp)}, Delta);
         return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K3;
         //return vpp*vpp;
     }
@@ -2396,17 +2379,17 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K2.ws[j];
             K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
-                    1. / (2 * M_PI) * integrator<state_datatype, 1>(IntegrandK2, -vmax, vmax, abs(w / 2), {v}, Delta);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta);
             K1rdot_PIa_K1p_exact.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
             //    }
         }
 
-
+#if MAX_DIAG_CLASS>2
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
         for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
             int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
             int j = 1 + iflat / (nFER3 - 2) - (i - 1) * (nFER3 - 2);
-            int k = 1 + iflat - (i - 1) * (nFER3 - 2) * (nFER3 - 2) - (j - 1) * (nFER3 - 2);
+            int k = 1 + iflat - (i - 1) * (nFER3 - 1) * (nFER3 - 2) - (j - 1) * (nFER3 - 2);
             //for (int i = 1; i<nBOS3-1; i++) {
             //    for (int j = 1; j<nFER3-1; j++) {
             //        for (int k = 1; k<nFER3-1; k++) {
@@ -2415,15 +2398,16 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             double vp = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[k];
             K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
-                                    integrator<state_datatype, 6>(IntegrandK3, -vmax, vmax, abs(w / 2),
-                                                                  {v, vp, abs(w) - abs(vp), abs(w) + abs(vp),
-                                                                   abs(w) - abs(v), abs(w) + abs(v)}, Delta);
+                                    integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                                                  {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
+                                                                   std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta);
             K1rdot_PIa_K1p_exact.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
             K1rdot_PIa_K1p_exact.vertex[0].pvertex().K3_setvert(0, i, j, k, 0, val_K3);
             K1rdot_PIa_K1p_exact.vertex[0].tvertex().K3_setvert(0, i, j, k, 0, val_K3);
             //        }
             //    }
         }
+#endif
         write_hdf("K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   K1rdot_PIa_K1p_exact);
 
@@ -2440,7 +2424,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             double w = dGammaC_exact.vertex[0].avertex().frequencies.b_K1.ws[i];
             IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
             state_datatype val_K1 =
-                    1. / (2 * M_PI) * integrator<state_datatype, 0>(IntegrandK1, -vmax, vmax, abs(w / 2), {}, Delta);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 0>(IntegrandK1, -vmax, vmax, std::abs(w / 2), {}, Delta);
             dGammaC_exact.vertex[0].avertex().K1_setvert(0, i, 0, val_K1);
         }
 
@@ -2455,12 +2439,12 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             double v = dGammaC_exact.vertex[0].avertex().frequencies.f_K2.ws[j];
             IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
-                    1. / (2 * M_PI) * integrator<state_datatype, 1>(IntegrandK2, -vmax, vmax, abs(w / 2), {v}, Delta);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta);
             dGammaC_exact.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
             //    }
         }
 
-
+#if MAX_DIAG_CLASS>2
 #pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
         for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
             int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
@@ -2474,12 +2458,13 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             double vp = dGammaC_exact.vertex[0].avertex().frequencies.f_K3.ws[k];
             IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
-                                    integrator<state_datatype, 3>(IntegrandK3, -vmax, vmax, abs(w / 2),
-                                                                  {v, vp, abs(v) - abs(vp)}, Delta);
+                                    integrator_Matsubara_T0<state_datatype, 3>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                                                  {v, vp, std::abs(v) - std::abs(vp)}, Delta);
             dGammaC_exact.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);
             //    }
             //}
         }
+#endif
         write_hdf("dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   dGammaC_exact);
 
@@ -2491,7 +2476,6 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
 #endif
 
-#endif
 
 #ifdef STATIC_FEEDBACK
 /**

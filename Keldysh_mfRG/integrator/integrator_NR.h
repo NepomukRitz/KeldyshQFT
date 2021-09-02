@@ -23,10 +23,10 @@ public:
     }
 
     /** Integrate integrand from a to b. */
-    auto integrate(const double a, const double b) -> Q;
+    auto integrate(double a, double b) -> Q;
     /** Helper function for recursion: Integrate integrand in subinterval [a, b],
      *  reusing the boundary values fa, fb and given error estimate is. */
-    auto integrate(const double a, const double b, const Q fa, const Q fb, const Q is) -> Q;
+    auto integrate(double a, double b, Q fa, Q fb, Q is) -> Q;
 };
 
 /** 4-point Gauss-Lobatto rule */

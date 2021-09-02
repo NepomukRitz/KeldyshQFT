@@ -2,11 +2,13 @@
 #define KELDYSH_MFRG_TESTING_FLOW_GRID_H
 
 
-#include "../parameters.h"         // needed for the vector of grid values to add
+#include "../parameters/master_parameters.h"         // needed for the vector of grid values to add
 #include "../data_structures.h"    // for rvec
 #include <bits/stdc++.h>
 #include <algorithm>               // needed for std::find_if
 #include <cmath>                   // for log10, pow
+
+// TODO(low): make flow grid more flexible (c.f. Marcel; also ask Marc about adaptive flow grid?)
 
 void add_points_to_Lambda_grid(std::vector<double>& grid){
     for (auto U : U_NRG){

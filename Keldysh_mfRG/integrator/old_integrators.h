@@ -4,7 +4,7 @@
 
 #include <numeric>
 #include "../data_structures.h"                // real and complex vectors
-#include "../parameters.h"                     // system parameters
+#include "../parameters/master_parameters.h"                     // system parameters
 #include "../utilities/util.h"                 // for rounding functions
 #include "../grids/frequency_grid.h"           // for defining global frequency grids bfreqs and ffreqs
 
@@ -15,25 +15,21 @@ rvec bfreqs = frequencyGrid_bos.ws;
 rvec ffreqs = frequencyGrid_fer.ws;
 
 /* compute the dot product of two vectors (integrand values and weights) */
-auto dotproduct(const cvec& x, const rvec& y) -> comp {
-    comp res;
+template <typename Q>
+auto dotproduct(const vec<Q>& x, const rvec& y) -> Q {
+    Q res;
 //#pragma acc parallel loop private(i) reduction(+:resp)
     for(int i=0; i<x.size(); ++i)
         res += x[i] * y[i];
     return res;
 }
 
-//TODO implement the intergration with pragma omp simd for vetorization.
-// Think about the compatibility of the execution flow with declaration of data_structures.h also with omp (simd ) and
-// wether or not it'd make sense to only MPI-parallelize at bubble_function and allow omp to take over the vector or
-// scalar (reduction) operations e.g. integration, vector sums, products and such
-
 /// --- DIFFERENT INTEGRATION ROUTINES --- ///
 
 /// Integration using Riemann sum -- deprecated, not recommended
-/*template <typename Integrand> auto integrator_riemann(const Integrand& integrand, int N) -> comp {
+template <typename Q, typename Integrand> auto integrator_riemann(const Integrand& integrand, int N) -> Q {
     rvec spacings(N);
-    cvec integrand_values(N);
+    vec<Q> integrand_values(N);
     double w0, w1, w2;
 
     spacings[0] = bfreqs[1] - bfreqs[0];
@@ -51,7 +47,7 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp {
     integrand_values[N-1] = integrand(bfreqs[N-1]);
 
     return 1/2.*dotproduct(integrand_values, spacings);
-}*/
+}
 
 /**
  * Perform an integration using Simpson's rule.
@@ -62,11 +58,11 @@ auto dotproduct(const cvec& x, const rvec& y) -> comp {
  * @param N          : number of integration points
  * @return           : result of the integration (comp)
  */
-template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, int N) -> comp {
+template <typename Q, typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, int N) -> Q {
     if (N < 3) N = 3;
     double dx = (b-a)/((double)(N-1));
     rvec simpson(N);
-    cvec integrand_values(N);
+    vec<Q> integrand_values(N);
 
 //#pragma acc parallel loop private (i)
     for (int i=0; i<N; ++i)
@@ -87,8 +83,8 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
  *   --> Split up the integration domain into different regions, integrate with higher resolution around the
  *       sharp feature.
  */
-template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w, int N) -> comp {
-    comp result = 0.;   // initialize result
+template <typename Q, typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w, int N) -> Q {
+    Q result = 0.;   // initialize result
 
     double Delta = 2*glb_Gamma;  // half-width of the region around the sharp feature which should get better resolution
     int Nw = N/5;                // number of additional points around the sharp feature
@@ -101,9 +97,9 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
     if (!(Nb % 2)) Nb += 1;                 // number of points needs to be odd
 
     // Compute different contributions
-    result += integrator_simpson(integrand, a, w-Delta, Na);        // interval of frequencies < w
-    result += integrator_simpson(integrand, w-Delta, w+Delta, Nw);  // interval around w
-    result += integrator_simpson(integrand, w+Delta, b, Nb);        // interval of frequencies > w
+    result += integrator_simpson<Q>(integrand, a, w-Delta, Na);        // interval of frequencies < w
+    result += integrator_simpson<Q>(integrand, w-Delta, w+Delta, Nw);  // interval around w
+    result += integrator_simpson<Q>(integrand, w+Delta, b, Nb);        // interval of frequencies > w
     return result;
 }
 
@@ -114,9 +110,9 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
  *   --> Split up the integration domain into different regions, integrate with higher resolution around the
  *       sharp features.
  */
-template <typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w1_in, double w2_in, int N) -> comp {
+template <typename Q, typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w1_in, double w2_in, int N) -> Q {
 
-    comp result = 0.;   // initialize result
+    Q result = 0.;   // initialize result
     int Na, Nb, Nc;     // number of points in different intervals
 
     double Delta = 5*glb_T;  // half-width of the region around the sharp features which should get better resolution
@@ -140,8 +136,8 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
         Nb = (int)(N * (b - w2) / (b - a));  // number of points in the last interval
         if (!(Nb % 2)) Nb += 1;              // number of points needs to be odd
 
-        result += integrator_simpson(integrand, a, w1-Delta, Na);
-        result += integrator_simpson(integrand, w2+Delta, b, Nb);
+        result += integrator_simpson<Q>(integrand, a, w1-Delta, Na);
+        result += integrator_simpson<Q>(integrand, w2+Delta, b, Nb);
 
         // Check if w1 and w2 are too close to consider them separately
         if (w2-w1 > 10*Delta) {   // w1 and w2 are far enough away from each other to consider separate regions around them
@@ -149,24 +145,24 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
             if (!(Nc % 2)) Nc += 1;            // number of points needs to be odd
 
             // Compute contributions of the intervals around w1/w2 and between them
-            result += integrator_simpson(integrand, w1-Delta, w1+Delta, Nw);
-            result += integrator_simpson(integrand, w1+Delta, w2-Delta, Nc);
-            result += integrator_simpson(integrand, w2-Delta, w2+Delta, Nw);
+            result += integrator_simpson<Q>(integrand, w1-Delta, w1+Delta, Nw);
+            result += integrator_simpson<Q>(integrand, w1+Delta, w2-Delta, Nc);
+            result += integrator_simpson<Q>(integrand, w2-Delta, w2+Delta, Nw);
         }
         else { // w1/w2 are close to each other only consider single contribution
             Nc = (int)(Nw * (w2-w1+2*Delta)/(2*Delta)); // number of points in the interval enclosing w1/w2
             // (depends on the distance between w1/w2)
             if (!(Nc % 2)) Nc += 1;                     // number of points needs to be odd
 
-            result += integrator_simpson(integrand, w1-Delta, w2+Delta, Nc);
+            result += integrator_simpson<Q>(integrand, w1-Delta, w2+Delta, Nc);
         }
     }
 
         // Second case: w1/w2 are close to boundaries a/b // currently not necessary since w1/2 = +-w/2
     else {
-        result += integrator_simpson(integrand, a, w1+Delta, Nw);       // interval around w1/a
-        result += integrator_simpson(integrand, w1+Delta, w2-Delta, N); // interval between w1/w2
-        result += integrator_simpson(integrand, w2-Delta, b, Nw);       // interval around w2/b
+        result += integrator_simpson<Q>(integrand, a, w1+Delta, Nw);       // interval around w1/a
+        result += integrator_simpson<Q>(integrand, w1+Delta, w2-Delta, N); // interval between w1/w2
+        result += integrator_simpson<Q>(integrand, w2-Delta, b, Nw);       // interval around w2/b
     }
 
     return result;
@@ -174,12 +170,14 @@ template <typename Integrand> auto integrator_simpson(const Integrand& integrand
 
 
 // compute Simpson rule for 3 given values and given step size dx
-auto simpson_rule_3(comp& val0, comp& val1, comp& val2, double& dx) -> comp {
+template <typename Q>
+auto simpson_rule_3(Q& val0, Q& val1, Q& val2, double& dx) -> Q {
     return dx / 3. * (val0 + 4.*val1 + val2);
 }
 
 // compute Simpson rule for vector of 3 given values and given step size dx
-auto simpson_rule_3(cvec& values, double& dx) -> comp {
+template <typename Q>
+auto simpson_rule_3(vec<Q>& values, double& dx) -> Q {
     return dx / 3. * (values[0] + 4.*values[1] + values[2]);
 }
 
@@ -195,7 +193,7 @@ auto simpson_rule_3(cvec& values, double& dx) -> comp {
  *  - max. number of allowed points (integrand accesses) is reached.
  * During this iterative process, results from the previous step are stored to minimize the number of integrand accesses.
  */
-template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& integrand, double a, double b, int Nmax) -> comp {
+template <typename Q, typename Integrand> auto adaptive_simpson_integrator(const Integrand& integrand, double a, double b, int Nmax) -> Q {
     // accuracy: relative error between successive results for the same interval
     // at which to stop splitting the interval into sub-intervals
     double accuracy = 1e-3; //1e-3;
@@ -207,8 +205,8 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
 
     // Create vectors containing information about each sub-interval. Initially: only one sub-interval.
     rvec points (3);             // vector containing all grid points at which integrand is evaluated
-    cvec values (3);             // vector containing the integrand values for each grid point
-    cvec result (1);             // vector containing the integration result for each sub-interval
+    vec<Q> values (3);             // vector containing the integrand values for each grid point
+    vec<Q> result (1);             // vector containing the integration result for each sub-interval
     vec<bool> converged {false}; // vector of bools containing the information if each sub-interval is converged
 
     double dx = (b-a)/2.;                    // initial step size: half the full interval
@@ -217,7 +215,7 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
         values[i] = integrand(points[i]);    // get the integrand value at those grid points
     }
     result[0] = simpson_rule_3(values[0], values[1], values[2], dx); // compute the integral using 3-point Simpson
-    comp res = result[0];                                            // initialize result
+    Q res = result[0];                                            // initialize result
 
     /// --- loop: successively split intervals into two sub-intervals until converged --- ///
 
@@ -225,8 +223,8 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
         dx /= 2.;                   // in each step, halve the step size
 
         rvec points_next;           // new vector for grid points
-        cvec values_next;           // new vector for integrand values
-        cvec result_next;           // new vector for results of sub-intervals
+        vec<Q> values_next;           // new vector for integrand values
+        vec<Q> result_next;           // new vector for results of sub-intervals
         vec<bool> converged_next;   // new vector for convergence flags of sub-intervals
 
         // add the left boundary and the corresponding integrand value to the new vectors
@@ -257,7 +255,7 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
 
                 // compute integral over the first sub-interval
                 auto val = values_next.end();
-                comp result1 = simpson_rule_3(val[-3], val[-2], val[-1], dx);
+                Q result1 = simpson_rule_3(val[-3], val[-2], val[-1], dx);
 
                 // add center and right points for second sub-interval (left known from first sub-interval)
                 points_next.push_back(points[2*interval+1] + dx);
@@ -268,7 +266,7 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
 
                 // compute integral over the second sub-interval
                 val = values_next.end();
-                comp result2 = simpson_rule_3(val[-3], val[-2], val[-1], dx);
+                Q result2 = simpson_rule_3(val[-3], val[-2], val[-1], dx);
 
                 // add the results to the vector of all intervals, for later checking convergence
                 result_next.push_back(result1);
@@ -292,7 +290,7 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
         }
 
         // compute the total result of the integration after the current splitting step
-        comp res_next = accumulate(result_next.begin(), result_next.end(), (comp)0.);
+        Q res_next = accumulate(result_next.begin(), result_next.end(), (Q)0.);
 
         // First stop condition: check convergence of the total result w.r.t. predefined accuracy
 
@@ -324,7 +322,7 @@ template <typename Integrand> auto adaptive_simpson_integrator(const Integrand& 
 /* Integration using the PAID algorithm (not yet properly implemented) */
 template <typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> comp {
     //PAID
-    //TODO Solve issue with the first vertex not being passed completely
+    //Solve issue with the first vertex not being passed completely
 //    Domain1D<comp> D (grid[0], grid[grid.size()-1]);
 //    vector<PAIDInput> inputs;
 //    inputs.emplace_back(D, integrand, 1);

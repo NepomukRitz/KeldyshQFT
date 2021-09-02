@@ -1,7 +1,7 @@
 #include <iostream>          // text input/output
 #include <sys/stat.h>
 #include <bits/stdc++.h>
-#include "parameters.h"
+#include "parameters/master_parameters.h"
 #include <mpi.h>
 #include "utilities/mpi_setup.h"
 #include "flow.h"
@@ -23,14 +23,11 @@ std::string generate_filename() {
     std::string extension = ".h5";
 
     std::string filename = klass + loops + n1;
-#if MAX_DIAG_CLASS >= 2
-    filename += n2;
-#elif defined(STATIC_FEEDBACK)
+    if (MAX_DIAG_CLASS >= 2) filename += n2;
+#if defined(STATIC_FEEDBACK)
     filename += "static_";
 #endif
-#if MAX_DIAG_CLASS >= 3
-    filename += n3;
-#endif
+    if (MAX_DIAG_CLASS >= 3) filename += n3;
     filename += gamma;
     if(glb_V != 0.)
         filename += voltage;
@@ -43,32 +40,24 @@ std::string generate_filename() {
 
 auto main() -> int {
 
-#ifdef MPI_FLAG
-    MPI_Init(nullptr, nullptr);
-#endif
+    if (MPI_FLAG) {
+        MPI_Init(nullptr, nullptr);
+    }
 #ifdef STATIC_FEEDBACK
     assert(MAX_DIAG_CLASS == 1);
 #endif
-#if MAX_DIAG_CLASS<2
-    assert(N_LOOPS < 2);
-#endif
+    if (MAX_DIAG_CLASS<2) assert(N_LOOPS < 2);
 
-#ifdef KELDYSH_FORMALISM
-#ifdef HUBBARD_MODEL
-    print("Hubbard model in Keldysh formalism: \n");
-#else
-    print("SIAM in Keldysh formalism: \n");
-#endif // HUBBARD_MODEL
-#else
-#ifdef HUBBARD_MODEL
-    print("Hubbard model in Keldysh formalism: \n");
-#else
-    print("SIAM in Matsubara formalism: \n");
-#endif // HUBBARD_MODEL
-#endif
-#ifdef PARTICLE_HOLE_SYMM
-    print("Using PARTICLE HOLE Symmetry\n");
-#endif
+    if (KELDYSH){
+        if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");
+        else               print("SIAM in Keldysh formalism: \n");
+    }
+    else{
+        if (HUBBARD_MODEL) print("Hubbard model in Matsubara formalism: \n");
+        else               print("SIAM in Matsubara formalism: \n");
+    }
+
+    if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
     print("U for this run is: ", glb_U, true);
     print("Lambda flows from ", Lambda_ini);
@@ -84,9 +73,7 @@ auto main() -> int {
     print("nFER1 = ", nFER, true);
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
-#ifdef HUBBARD_MODEL
-    print("n_in = ", n_in, true);
-#endif
+    if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
     const char* dir = "../Data/";
     std::string dir_str = dir;
@@ -99,23 +86,18 @@ auto main() -> int {
 
     std::string filename = generate_filename();
 
-#ifdef BSE_SDE
-    print("Parquet-check for file: " + filename, true);
 
-    check_BSE_and_SDE(dir, filename);
 
-#else
+    //test_PT4(0.0, true);
+    //test_PT_state<state_datatype>(dir_str+filename, 0., false);
+    //compute_non_symmetric_diags(1.8, true);
+    //test_integrate_over_K1<state_datatype>(1.8);
 
-    //test_K2<state_datatype>(Lambda_ini, true);
-    test_PT_state<state_datatype>(dir_str+filename, 0., false);
-    //n_loop_flow(dir_str+filename);
-    ///test_integrate_over_K1<state_datatype>(1.8);
+    std::string job = "";
+    n_loop_flow(dir_str+filename+job, false);
 
-//    double Lambda = find_best_Lambda();
-//
-//    cout << "Lambda = " << Lambda << " reduces the error in the first iteration to below 10^-5";
 
-#endif
+
 
     std::cout << "Hello world ";
 #ifdef __linux__
@@ -126,8 +108,8 @@ auto main() -> int {
     std::cout << std::endl;
 
 
-#ifdef MPI_FLAG
-    MPI_Finalize();
-#endif
+    if (MPI_FLAG) {
+        MPI_Finalize();
+    }
     return 0;
 }
