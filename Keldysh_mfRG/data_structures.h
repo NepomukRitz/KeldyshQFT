@@ -485,6 +485,34 @@ template<typename T> vec<T> get_finite_differences(const vec<T> vec_in){
     }
     return result;
 }
+template<typename T, size_t dimensionality>
+vec<T> compute_partial_derivative(const vec<T> data_in, const vec<T> xs_in, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
+    size_t flatdim = data_in.size();
+    size_t dimsum = dims[dimensionality-1];
+    size_t codimsum = flatdim/dimsum;
+
+    vec<T> result(flatdim);
+    for (int it = 0; it < codimsum; it++) {
+
+        for (int jt = 1; jt < dimsum-1; jt++) {
+            // f'_i = ( f_{i+1} - f_{i-1} ) / ( x_{i+1} - x_{i-1} )
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] =
+                    ( data_in[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)]
+                    - data_in[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] )
+                  / ( xs_in[jt + 1]
+                    - xs_in[jt - 1] );
+        }
+        // gives parabolic boundary condition if plugged into hermite cubic spline interpolation: f'_0 = 2(f_1 - f_0)/(x_1 - x_0) - f'_1
+        result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
+                2* ( data_in[rotateFlatIndex(it*dimsum + 1, dims, permutation)] -  data_in[rotateFlatIndex(it*dimsum + 0, dims, permutation)] )
+                /  ( xs_in[1] - xs_in[0]);
+        // gives parabolic boundary condition if plugged into hermite cubic spline interpolation: f'_0 = 2(f_1 - f_0)/(x_1 - x_0) - f'_1
+        result[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] =
+                2* ( data_in[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] - data_in[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)] )
+                /  ( xs_in[dimsum-1] - xs_in[dimsum-2] );
+    }
+    return result;
+}
 template<typename T> vec<T> power2(const vec<T> vec_in) {
     size_t flatdim = vec_in.size();
     vec <T> result (flatdim);
@@ -495,6 +523,7 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
     }
     return result;
 }
+
 
 
 
