@@ -272,7 +272,7 @@ namespace
 
         // setting up the matrix and right hand side of the equation system
         // for the parameters b[]
-        internal::band_matrix A(n,1,1);
+        internal::band_matrix<Q> A(n,1,1);
         std::vector<double>  rhs(n);
         for(int i=1; i<n-1; i++) {
             A(i,i-1)=1.0/3.0*(x[i]-x[i-1]);
@@ -353,7 +353,7 @@ namespace
             m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+3.0*(m_y[1]-m_y[0])/h);  /// checked
         } else if (m_left==third_deriv) {
             const double h = m_x[1]-m_x[0];
-            m_b[0]=-m_b[1]+m_left_value/6*h*h+2.0*(m_y[1]-m_y[0])/h)  /// added by me
+            m_b[0]=-m_b[1]+m_left_value/6*h*h+2.0*(m_y[1]-m_y[0])/h;  /// added by me
         } else {
             assert(false);
         }
@@ -366,7 +366,7 @@ namespace
             m_c[n-1]=0.5*m_right_value; /// m_d[n-1] is set to 0. Is this correct/necessary?
         } else if (m_right==third_deriv) {
             const double h = m_x[n-1]-m_x[n-2];
-            m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+2.0*(m_y[n-1]-m_y[n-2])/h)  /// added by me
+            m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+2.0*(m_y[n-1]-m_y[n-2])/h;  /// added by me
             m_d[n-1]=m_y[n-1]-m_y[n-2] - m_b[n-2]; /// ???
         } else {
             assert(false);
@@ -446,7 +446,7 @@ namespace
     }
 
     template <typename Q>
-    double spline<Q>::operator() (double x) const
+    Q spline<Q>::operator() (double x) const
     {
     // polynomial evaluation using Horner's scheme
     // TODO: consider more numerically accurate algorithms, e.g.:
