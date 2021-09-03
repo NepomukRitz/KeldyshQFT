@@ -171,25 +171,15 @@ inline auto interpolate_lin3D(const double x, const double y, const double z,
  * @return
  */
 template <typename Q>
-inline auto interpolate_sloppycubic1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
+inline auto interpolate_sloppycubic1D(const double x, const FrequencyGrid& xfrequencies, const std::function<Q(int)> val) -> Q {
 
     double t;
-    int index = frequencies.fconv(t, x);
+    int index = xfrequencies.fconv(t, x);
 
-    //double xs [4] = {frequencies.ts[index - 1]
-    //                ,frequencies.ts[index    ]
-    //                ,frequencies.ts[index + 1]
-    //                ,frequencies.ts[index + 2]};
-    //double ys [4] = {val(index - 1)
-    //                ,val(index    )
-    //                ,val(index + 1)
-    //                ,val(index + 2)};
-    //Q result =  lagrangePoly<4>(x, xs, ys);
-
-    double x0 = frequencies.ts[index - 1];
-    double x1 = frequencies.ts[index    ];
-    double x2 = frequencies.ts[index + 1];
-    double x3 = frequencies.ts[index + 2];
+    double x0 = xfrequencies.ts[index - 1];
+    double x1 = xfrequencies.ts[index    ];
+    double x2 = xfrequencies.ts[index + 1];
+    double x3 = xfrequencies.ts[index + 2];
 
     auto f0 = val(index - 1);
     auto f1 = val(index    );
@@ -197,14 +187,87 @@ inline auto interpolate_sloppycubic1D(const double x, const FrequencyGrid& frequ
     auto f3 = val(index + 2);
 
     Q result = ((t - x1)*(t - x2)*(t - x3)/((x0-x1)*(x0-x2)*(x0-x3)) * f0
-               +(t - x0)*(t - x2)*(t - x3)/((x1-x0)*(x1-x2)*(x1-x3)) * f1
-               +(t - x0)*(t - x1)*(t - x3)/((x2-x0)*(x2-x1)*(x2-x3)) * f2
-               +(t - x0)*(t - x1)*(t - x2)/((x3-x0)*(x3-x1)*(x3-x2)) * f3);
+                +(t - x0)*(t - x2)*(t - x3)/((x1-x0)*(x1-x2)*(x1-x3)) * f1
+                +(t - x0)*(t - x1)*(t - x3)/((x2-x0)*(x2-x1)*(x2-x3)) * f2
+                +(t - x0)*(t - x1)*(t - x2)/((x3-x0)*(x3-x1)*(x3-x2)) * f3);
 
     assert(isfinite(result));
     return result;
 
 
+}
+
+
+/**
+ * Interpolates cubically in 1D (on linear, auxiliary frequency grid)
+ * ATTENTION!: all
+ * @tparam Q            double or comp
+ * @param x
+ * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param val           any function that takes one integer and returns a value of type Q
+ * @return
+ */
+template <typename Q>
+inline auto interpolate_sloppycubic2D(const double x, const double y, const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const std::function<Q(int, int)> val) -> Q {
+
+    double t;
+    int index = xfrequencies.fconv(t, x);
+
+
+    double x0 = xfrequencies.ts[index - 1];
+    double x1 = xfrequencies.ts[index    ];
+    double x2 = xfrequencies.ts[index + 1];
+    double x3 = xfrequencies.ts[index + 2];
+
+    auto f0 = interpolate_sloppycubic1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index - 1, i);});
+    auto f1 = interpolate_sloppycubic1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index    , i);});
+    auto f2 = interpolate_sloppycubic1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index + 1, i);});
+    auto f3 = interpolate_sloppycubic1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index + 2, i);});
+
+    Q result = ((t - x1)*(t - x2)*(t - x3)/((x0-x1)*(x0-x2)*(x0-x3)) * f0
+                +(t - x0)*(t - x2)*(t - x3)/((x1-x0)*(x1-x2)*(x1-x3)) * f1
+                +(t - x0)*(t - x1)*(t - x3)/((x2-x0)*(x2-x1)*(x2-x3)) * f2
+                +(t - x0)*(t - x1)*(t - x2)/((x3-x0)*(x3-x1)*(x3-x2)) * f3);
+
+    assert(isfinite(result));
+    return result;
+}
+
+/**
+ * Interpolates cubically in 1D (on linear, auxiliary frequency grid)
+ * ATTENTION!: all
+ * @tparam Q            double or comp
+ * @param x
+ * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param val           any function that takes one integer and returns a value of type Q
+ * @return
+ */
+template <typename Q>
+inline auto interpolate_sloppycubic3D(const double x, const double y, const double z,
+                                      const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
+                                      const std::function<Q(int, int, int)> val) -> Q {
+
+    double t;
+    int index = xfrequencies.fconv(t, x);
+
+
+    double x0 = xfrequencies.ts[index - 1];
+    double x1 = xfrequencies.ts[index    ];
+    double x2 = xfrequencies.ts[index + 1];
+    double x3 = xfrequencies.ts[index + 2];
+
+    auto f0 = interpolate_sloppycubic2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index - 1, i, j);});
+    auto f1 = interpolate_sloppycubic2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index    , i, j);});
+    auto f2 = interpolate_sloppycubic2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index + 1, i, j);});
+    auto f3 = interpolate_sloppycubic2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index + 2, i, j);});
+
+    Q result = ((t - x1)*(t - x2)*(t - x3)/((x0-x1)*(x0-x2)*(x0-x3)) * f0
+                +(t - x0)*(t - x2)*(t - x3)/((x1-x0)*(x1-x2)*(x1-x3)) * f1
+                +(t - x0)*(t - x1)*(t - x3)/((x2-x0)*(x2-x1)*(x2-x3)) * f2
+                +(t - x0)*(t - x1)*(t - x2)/((x3-x0)*(x3-x1)*(x3-x2)) * f3);
+
+    assert(isfinite(result));
+    return result;
 }
 
 

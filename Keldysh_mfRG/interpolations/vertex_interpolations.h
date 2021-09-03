@@ -8,6 +8,7 @@
 #include "../data_structures.h"
 #include "../symmetries/symmetry_transformations.h"
 #include "interpolation_functions.h"
+#include "InterpolatorSpline1D.h"
 
 // forward declaration of rvert from r_vertex.h
 template <typename Q> class rvert;
