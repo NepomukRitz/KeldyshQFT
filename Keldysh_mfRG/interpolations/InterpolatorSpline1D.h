@@ -63,8 +63,9 @@ namespace
 
         // boundary condition type for the spline end-points
         enum bd_type {
-            first_deriv = 1,
-            second_deriv = 2
+            first_deriv = 1,    /// known first derivative
+            second_deriv = 2,    /// known second derivative
+            third_deriv = 3    /// known third derivative
         };
 
     protected:
@@ -76,7 +77,7 @@ namespace
         double m_c0;                            // for left extrapolation
         spline_type m_type;         /// set const?
         bd_type m_left, m_right;    /// set const?
-        double  m_left_value, m_right_value;
+        double  m_left_value, m_right_value;   /// known values of first or second derivative (corresponding to bd_type)
         bool m_made_monotonic;
         void set_coeffs_from_b();               // calculate c_i, d_i from b_i
         /// given in FrequencyGrid already:
@@ -93,10 +94,10 @@ namespace
             ;
         }
         spline(const std::vector<double>& X, const std::vector<double>& Y,
-               spline_type type = cspline,
+               spline_type type = cspline_hermite,
                bool make_monotonic = false,
-               bd_type left  = second_deriv, double left_value  = 0.0,
-               bd_type right = second_deriv, double right_value = 0.0
+               bd_type left  = third_deriv, double left_value  = 0.0,
+               bd_type right = third_deriv, double right_value = 0.0
         ):
                 m_type(type),
                 m_left(left), m_right(right),
@@ -218,7 +219,7 @@ std::string info() const;
         if(m_d.size()!=n)
             m_d.resize(n);
 
-        for(size_t i=0; i<n-1; i++) {
+        for(size_t i=0; i<n-1; i++) {       /// i=n-1 not treated (only used for extrapolation to the right)
             const double h  = m_x[i+1]-m_x[i];      /// spacing
             // from continuity and differentiability condition
             m_c[i] = ( 3.0*(m_y[i+1]-m_y[i])/h - (2.0*m_b[i]+m_b[i+1]) ) / h;   /// checked
@@ -345,7 +346,10 @@ std::string info() const;
                 m_b[0]=m_left_value;
             } else if(m_left==second_deriv) {
                 const double h = m_x[1]-m_x[0];
-                m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+3.0*(m_y[1]-m_y[0])/h);
+                m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+3.0*(m_y[1]-m_y[0])/h);  /// checked
+            } else if (m_left==third_deriv) {
+                const double h = m_x[1]-m_x[0];
+                m_b[0]=-m_b[1]+m_left_value/6*h*h+2.0*(m_y[1]-m_y[0])/h)  /// added by me
             } else {
                 assert(false);
             }
@@ -354,8 +358,12 @@ std::string info() const;
                 m_c[n-1]=0.0;
             } else if(m_right==second_deriv) {
                 const double h = m_x[n-1]-m_x[n-2];
-                m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+3.0*(m_y[n-1]-m_y[n-2])/h);
-                m_c[n-1]=0.5*m_right_value;
+                m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+3.0*(m_y[n-1]-m_y[n-2])/h); /// checked
+                m_c[n-1]=0.5*m_right_value; /// m_d[n-1] is set to 0. Is this correct/necessary?
+            } else if (m_right==third_deriv) {
+                const double h = m_x[n-1]-m_x[n-2];
+                m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+2.0*(m_y[n-1]-m_y[n-2])/h)  /// added by me
+                m_d[n-1]=m_y[n-1]-m_y[n-2] - m_b[n-2]; /// ???
             } else {
                 assert(false);
             }
