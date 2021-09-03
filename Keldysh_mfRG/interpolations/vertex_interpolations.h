@@ -17,7 +17,6 @@ template <typename Q> class rvert;
 template <K_class k, typename Q>
 class Interpolate {
 public:
-    const double small = 1e-12;
     /** Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below) */
     auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
 
@@ -59,7 +58,6 @@ public:
 template <typename Q>
 class Interpolate<k3, Q> {
 public:
-    const double small = 1e-12;
     auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
@@ -76,5 +74,19 @@ public:
         //}
     };
 };
+
+/**
+ * Contains functions and coefficients to interpolate on vertex components
+ * @tparam Q
+ */
+template<typename Q>
+class VertexInterpolator {
+public:
+    template<K_class k>
+    auto interpolate (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
+        return Interpolate<k,Q>() (indices, vertex);
+    }
+};
+
 
 #endif //KELDYSH_MFRG_INTERPOLATIONS_H

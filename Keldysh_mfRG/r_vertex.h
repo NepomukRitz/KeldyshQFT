@@ -30,6 +30,7 @@ private:
         if (MAX_DIAG_CLASS >= 3) return vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);    // data points of K3  // data points of K2;
         else                     return vec<Q> (0);                                 // empty vector, never used in calculations
     }
+    mutable VertexInterpolator<Q> Interpolator;
 
 public:
     char channel;                       // reducibility channel
@@ -293,10 +294,10 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
     if (indices.channel != channel)
         // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
         // r vertex in the channel related by crossing symmetry
-        value = Interpolate<k,Q>()(indices, rvert_crossing);
+        value = rvert_crossing.Interpolator.template interpolate<k>(indices, rvert_crossing);
     else
         // otherwise return the interpolated value of the calling r vertex
-        value = Interpolate<k,Q>()(indices, *(this));
+        value = this->Interpolator.template interpolate<k>(indices, (*this));
 
     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
 
@@ -323,23 +324,23 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
                 // calling vertex is in channel a
                 if (indices.channel == 'a')
                     // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
-                    value = Interpolate<k,Q>()(indices, vertex_half2.avertex);
+                    value = vertex_half2.avertex.Interpolator.template interpolate<k>(indices, vertex_half2.avertex);
                 else
                     // if they do switch between channels a,t, return t vertex of half 2
-                    value = Interpolate<k,Q>()(indices, vertex_half2.tvertex);
+                    value = vertex_half2.tvertex.Interpolator.template interpolate<k>(indices, vertex_half2.tvertex);
                 break;
             case 'p':
                 // calling vertex is in channel p (no switching between channels -> return p vertex of half 2)
-                value = Interpolate<k,Q>()(indices, vertex_half2.pvertex);
+                value = vertex_half2.pvertex.Interpolator.template interpolate<k>(indices, vertex_half2.pvertex);
                 break;
             case 't':
                 // calling vertex is in channel t
                 if (indices.channel == 't')
                     // if the applied transformation(s) do not switch between channels a,t, return t vertex of half 2
-                    value = Interpolate<k,Q>()(indices, vertex_half2.tvertex);
+                    value = vertex_half2.tvertex.Interpolator.template interpolate<k>(indices, vertex_half2.tvertex);
                 else
                     // if they do switch between channels a,t, return t vertex of half 2
-                    value = Interpolate<k,Q>()(indices, vertex_half2.avertex);
+                    value = vertex_half2.avertex.Interpolator.template interpolate<k>(indices, vertex_half2.avertex);
                 break;
             default:;
         }
@@ -349,10 +350,10 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
         if (indices.channel != channel)
             // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
             // r vertex in the channel related by crossing symmetry
-            value = Interpolate<k,Q>()(indices, rvert_crossing);
+            value = rvert_crossing.Interpolator.template interpolate<k>(indices, rvert_crossing);
         else
             // otherwise return the interpolated value of the calling r vertex
-            value = Interpolate<k,Q>()(indices, *(this));
+            value = this->Interpolator.template interpolate<k>(indices, *(this));
     }
 
     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
