@@ -11,6 +11,9 @@
 #include "../data_structures.h"    // comp data type, std::real/complex vector class
 #include "../grids/frequency_grid.h"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
+#include "../state.h"
+
+//template<typename Q> class State;
 
 #ifdef MPI_FLAG
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file

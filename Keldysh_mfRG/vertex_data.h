@@ -16,9 +16,14 @@
 #include "grids/momentum_grid.h"            // functionality for the internal structure of the Hubbard model
 
 template <typename Q> class fullvert; // forward declaration of fullvert
+template <typename Q> class State; // forward declaration of fullvert
 
 template <typename Q>
 class vertexDataContainer{
+    friend void check_Kramers_Kronig(std::string filename);
+    friend void test_PT4(double Lambda, bool write_flag);
+    //friend void susceptibilities_postprocessing<>(Vertex<Q>& chi, Vertex<Q>& chi_diff,
+    //                                            const State<Q>& state, const double Lambda);
 
 private:
     vec<Q> empty_K2() { // for pure K1-calculation no memory should be allocated unnecessarily for K2
@@ -33,14 +38,13 @@ private:
 
 public:
 
+
     /** K1-functionality */
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
     /** K2 functionality */
     vec<Q> K2 = empty_K2();
     /** K3 functionality */
     vec<Q> K3 = empty_K3();
-    //char channel;                       // reducibility channel
-
     VertexFrequencyGrid frequencies;    // frequency grid
 
     explicit vertexDataContainer(double Lambda) : frequencies(Lambda) { };

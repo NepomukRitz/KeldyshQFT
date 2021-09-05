@@ -64,6 +64,9 @@ public:
     }
 };
 
+// forward declaration of rvert from r_vertex.h
+template <typename Q> class rvert;
+
 /**********************************************************************************************************************/
 //The class fullvert
 //The class defining a vertex with full channel decomposition i.e. irreducible (bare) a, p and t channels

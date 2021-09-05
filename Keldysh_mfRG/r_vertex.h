@@ -19,9 +19,10 @@
 
 template <typename Q> class fullvert; // forward declaration of fullvert
 template <typename Q> class vertexDataContainer; // forward declaration of vertexDataContainer
+template <typename Q> class vertexInterpolator; // forward declaration of vertexInterpolator
 
 template <typename Q>
-class rvert: public vertexDataContainer<Q>{
+class rvert: public vertexInterpolator<Q>{
 
 public:
     char channel;                       // reducibility channel
@@ -36,7 +37,7 @@ public:
 
     //VertexFrequencyGrid frequencies;    // frequency grid
 
-    rvert(const char channel_in, double Lambda) : vertexDataContainer<Q>(Lambda),
+    rvert(const char channel_in, double Lambda) : vertexInterpolator<Q>(Lambda),
                                                   channel(channel_in),
                                                   components (Components(channel_in)),
                                                   transformations (Transformations(channel_in)),
@@ -126,49 +127,6 @@ public:
     void K3_crossproject(char channel_out);
 
 
-    /*
-    auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 += rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 += rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 += rhs.K3;
-        return *this;
-    }
-    friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs += rhs;
-        return lhs;
-    }
-    auto operator*= (double alpha) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 *= alpha;
-        if (MAX_DIAG_CLASS >= 2) this->K2 *= alpha;
-        if (MAX_DIAG_CLASS >= 3) this->K3 *= alpha;
-        return *this;
-    }
-    friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
-    auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 *= rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 *= rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 *= rhs.K3;
-        return *this;
-    }
-    friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
-    auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 -= rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 -= rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 -= rhs.K3;
-        return *this;
-    }
-    friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs -= rhs;
-        return lhs;
-    }
-
-    */
 
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
         if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 += rhs.vertexDataContainer<Q>::K1;
@@ -259,10 +217,10 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
     if (indices.channel != channel)
         // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
         // r vertex in the channel related by crossing symmetry
-        value = Interpolate<k,Q>()(indices, rvert_crossing);
+        value = vertexInterpolator<Q>::template interpolate<k>(indices, rvert_crossing);
     else
         // otherwise return the interpolated value of the calling r vertex
-        value = Interpolate<k,Q>()(indices, *(this));
+        value = vertexInterpolator<Q>::template interpolate<k>(indices, *(this));
 
     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
 
@@ -289,23 +247,23 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
                 // calling vertex is in channel a
                 if (indices.channel == 'a')
                     // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
-                    value = Interpolate<k,Q>()(indices, vertex_half2.avertex);
+                    value = vertexInterpolator<Q>::template interpolate<k>(indices, vertex_half2.avertex);
                 else
                     // if they do switch between channels a,t, return t vertex of half 2
-                    value = Interpolate<k,Q>()(indices, vertex_half2.tvertex);
+                    value = vertexInterpolator<Q>::template interpolate<k>(indices, vertex_half2.tvertex);
                 break;
             case 'p':
                 // calling vertex is in channel p (no switching between channels -> return p vertex of half 2)
-                value = Interpolate<k,Q>()(indices, vertex_half2.pvertex);
+                value = vertexInterpolator<Q>::template interpolate<k>(indices, vertex_half2.pvertex);
                 break;
             case 't':
                 // calling vertex is in channel t
                 if (indices.channel == 't')
                     // if the applied transformation(s) do not switch between channels a,t, return t vertex of half 2
-                    value = Interpolate<k,Q>()(indices, vertex_half2.tvertex);
+                    value = vertexInterpolator<Q>::template interpolate<k>(indices, vertex_half2.tvertex);
                 else
                     // if they do switch between channels a,t, return t vertex of half 2
-                    value = Interpolate<k,Q>()(indices, vertex_half2.avertex);
+                    value = vertexInterpolator<Q>::template interpolate<k>(indices, vertex_half2.avertex);
                 break;
             default:;
         }
@@ -315,10 +273,10 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
         if (indices.channel != channel)
             // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
             // r vertex in the channel related by crossing symmetry
-            value = Interpolate<k,Q>()(indices, rvert_crossing);
+            value = vertexInterpolator<Q>::template interpolate<k>(indices, rvert_crossing);
         else
             // otherwise return the interpolated value of the calling r vertex
-            value = Interpolate<k,Q>()(indices, *(this));
+            value = vertexInterpolator<Q>::template interpolate<k>(indices, *(this));
     }
 
     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
@@ -543,7 +501,7 @@ template <typename Q> void rvert<Q>::update_grid_K1(const VertexFrequencyGrid& f
             for (int i_in = 0; i_in < n_in; ++i_in) {
                 IndicesSymmetryTransformations indices(iK1, frequencies_new.b_K1.ws[iw], 0., 0., i_in, channel);
                 // interpolate old values to new vector
-                K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = Interpolate<k1, Q>()(indices, *this);
+                K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = vertexInterpolator<Q>::template interpolate<k1>(indices, *this);
             }
         }
     }
@@ -562,7 +520,7 @@ template <typename Q> void rvert<Q>::update_grid_K2(const VertexFrequencyGrid& f
                                                            i_in, channel);
                     // interpolate old values to new vector
                     K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
-                            = Interpolate<k2, Q>()(indices, *this);
+                            = vertexInterpolator<Q>::template interpolate<k2>(indices, *this);
                 }
             }
         }
@@ -584,7 +542,7 @@ template <typename Q> void rvert<Q>::update_grid_K3(const VertexFrequencyGrid& f
                         // interpolate old values to new vector
                         K3_new[iK3 * nw3 * nv3 * nv3 * n_in + iw * nv3 * nv3 * n_in + iv * nv3 * n_in + ivp * n_in +
                                i_in]
-                                = Interpolate<k3, Q>()(indices, *this);
+                                = vertexInterpolator<Q>::template interpolate<k3>(indices, *this);
                     }
                 }
             }
@@ -625,7 +583,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                     itw_new = nw1 - 1 - itw;
                 Q result;
                 if (indices.asymmetry_transform)
-                    result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
+                    result = indices.prefactor * vertex_symmrelated.K1_val(itK, itw_new, 0);
                 else
                     result = indices.prefactor * vertexDataContainer<Q>::K1_val(itK, itw_new,0);
 
@@ -699,9 +657,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
                     Q result;
                     if (indices.asymmetry_transform)
-                        result = Interpolate<k2,Q>()(indices, vertex_symmrelated);
+                        result = vertexInterpolator<Q>::template interpolate<k2>(indices, vertex_symmrelated);
                     else
-                        result = Interpolate<k2,Q>()(indices, *(this));
+                        result = vertexInterpolator<Q>::template interpolate<k2>(indices, *(this));
 
                     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
                         vertexDataContainer<Q>::K2_setvert(itK, itw, itv, 0, myconj(result));
@@ -747,9 +705,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
 
                         Q result;
                         if (indices.asymmetry_transform)
-                            result = Interpolate<k3,Q>()(indices, vertex_symmrelated);
+                            result = vertexInterpolator<Q>::template interpolate<k3>(indices, vertex_symmrelated);
                         else
-                            result = Interpolate<k3,Q>()(indices, *(this));
+                            result = vertexInterpolator<Q>::template interpolate<k3>(indices, *(this));
 
                         if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
                             vertexDataContainer<Q>::K3_setvert(itK, itw, itv, itvp, 0,  myconj(result));

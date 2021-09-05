@@ -10,10 +10,10 @@
 //#define NDEBUG
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-#define HUBBARD
+//#define HUBBARD
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM
+//#define KELDYSH_FORMALISM
 #ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
@@ -88,7 +88,7 @@ constexpr int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
-#define REG 3
+#define REG 2
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
