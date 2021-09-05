@@ -34,9 +34,10 @@ public:
     FrequencyComponents freq_components;  // lists providing information on which transformations to apply on
     // frequencies to relate them to the independent ones
 
-    VertexFrequencyGrid frequencies;    // frequency grid
+    //VertexFrequencyGrid frequencies;    // frequency grid
 
-    rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda),
+    rvert(const char channel_in, double Lambda) : vertexDataContainer<Q>(Lambda),
+                                                  channel(channel_in),
                                                   components (Components(channel_in)),
                                                   transformations (Transformations(channel_in)),
                                                   freq_transformations (FrequencyTransformations(channel_in)),
@@ -125,6 +126,90 @@ public:
     void K3_crossproject(char channel_out);
 
 
+    /*
+    auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) this->K1 += rhs.K1;
+        if (MAX_DIAG_CLASS >= 2) this->K2 += rhs.K2;
+        if (MAX_DIAG_CLASS >= 3) this->K3 += rhs.K3;
+        return *this;
+    }
+    friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    auto operator*= (double alpha) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) this->K1 *= alpha;
+        if (MAX_DIAG_CLASS >= 2) this->K2 *= alpha;
+        if (MAX_DIAG_CLASS >= 3) this->K3 *= alpha;
+        return *this;
+    }
+    friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) this->K1 *= rhs.K1;
+        if (MAX_DIAG_CLASS >= 2) this->K2 *= rhs.K2;
+        if (MAX_DIAG_CLASS >= 3) this->K3 *= rhs.K3;
+        return *this;
+    }
+    friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) this->K1 -= rhs.K1;
+        if (MAX_DIAG_CLASS >= 2) this->K2 -= rhs.K2;
+        if (MAX_DIAG_CLASS >= 3) this->K3 -= rhs.K3;
+        return *this;
+    }
+    friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
+
+    */
+
+    auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 += rhs.vertexDataContainer<Q>::K1;
+        if (MAX_DIAG_CLASS >= 2) vertexDataContainer<Q>::K2 += rhs.vertexDataContainer<Q>::K2;
+        if (MAX_DIAG_CLASS >= 3) vertexDataContainer<Q>::K3 += rhs.vertexDataContainer<Q>::K3;
+        return *this;
+    }
+    friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    auto operator*= (double alpha) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 *= alpha;
+        if (MAX_DIAG_CLASS >= 2) vertexDataContainer<Q>::K2 *= alpha;
+        if (MAX_DIAG_CLASS >= 3) vertexDataContainer<Q>::K3 *= alpha;
+        return *this;
+    }
+    friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 *= rhs.vertexDataContainer<Q>::K1;
+        if (MAX_DIAG_CLASS >= 2) vertexDataContainer<Q>::K2 *= rhs.vertexDataContainer<Q>::K2;
+        if (MAX_DIAG_CLASS >= 3) vertexDataContainer<Q>::K3 *= rhs.vertexDataContainer<Q>::K3;
+        return *this;
+    }
+    friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
+        if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 -= rhs.vertexDataContainer<Q>::K1;
+        if (MAX_DIAG_CLASS >= 2) vertexDataContainer<Q>::K2 -= rhs.vertexDataContainer<Q>::K2;
+        if (MAX_DIAG_CLASS >= 3) vertexDataContainer<Q>::K3 -= rhs.vertexDataContainer<Q>::K3;
+        return *this;
+    }
+    friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
@@ -562,7 +647,7 @@ void rvert<Q>::K1_crossproject() {
         for (int iw = 0; iw < nw1; ++iw) {
             Q projected_value = K1_BZ_average(iK, iw);
             for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
-                K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
+                vertexDataContainer<Q>::K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
             }
         }
     }

@@ -30,14 +30,15 @@ private:
         else                     return vec<Q> (0);                                 // empty vector, never used in calculations
     }
 
+
+public:
+
     /** K1-functionality */
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
     /** K2 functionality */
     vec<Q> K2 = empty_K2();
     /** K3 functionality */
     vec<Q> K3 = empty_K3();
-
-public:
     //char channel;                       // reducibility channel
 
     VertexFrequencyGrid frequencies;    // frequency grid
@@ -111,46 +112,6 @@ public:
 
 
 
-    auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 += rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 += rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 += rhs.K3;
-        return *this;
-    }
-    friend vertexDataContainer<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs += rhs;
-        return lhs;
-    }
-    auto operator*= (double alpha) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 *= alpha;
-        if (MAX_DIAG_CLASS >= 2) this->K2 *= alpha;
-        if (MAX_DIAG_CLASS >= 3) this->K3 *= alpha;
-        return *this;
-    }
-    friend vertexDataContainer<Q> operator* (rvert<Q> lhs, const double& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
-    auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 *= rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 *= rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 *= rhs.K3;
-        return *this;
-    }
-    friend vertexDataContainer<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
-    auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 -= rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 -= rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 -= rhs.K3;
-        return *this;
-    }
-    friend vertexDataContainer<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs -= rhs;
-        return lhs;
-    }
 
 
     double get_deriv_maxK1() const;
