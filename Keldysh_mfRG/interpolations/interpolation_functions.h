@@ -17,7 +17,7 @@
 template <typename Q>
 inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
 
-    return interpolate_sloppycubic1D(x, frequencies, val);
+    return interpolate_lin1D(x, frequencies, val);
 }
 
 /**
