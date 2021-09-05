@@ -25,7 +25,7 @@ namespace {
     class Interpolate {
     public:
         /** Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below) */
-        auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
+        auto operator() (IndicesSymmetryTransformations& indices, const vertexInterpolator<Q>& vertex) -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (    std::abs(indices.w ) < vertex.frequencies.b_K2.w_upper + inter_tol
@@ -46,7 +46,7 @@ namespace {
     template <typename Q>
     class Interpolate<k1, Q> {
     public:
-        auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
+        auto operator() (IndicesSymmetryTransformations& indices, const vertexInterpolator<Q>& vertex) -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies.b_K1.w_upper + inter_tol)
@@ -65,7 +65,7 @@ namespace {
     template <typename Q>
     class Interpolate<k3, Q> {
     public:
-        auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
+        auto operator() (IndicesSymmetryTransformations& indices, const vertexInterpolator<Q>& vertex) -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies.b_K3.w_upper + inter_tol
@@ -97,8 +97,8 @@ public:
     explicit vertexInterpolator(double Lambda) : vertexDataContainer<Q>(Lambda) {};
 
     template <K_class k>
-    auto interpolate(IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) const -> Q {
-        Q result = Interpolate<k, Q>() (indices, vertex);
+    auto interpolate(IndicesSymmetryTransformations& indices) const -> Q {
+        Q result = Interpolate<k, Q>() (indices, *this);
         return result;
     }
 };
