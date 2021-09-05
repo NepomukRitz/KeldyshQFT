@@ -15,21 +15,13 @@
 #include "symmetries/symmetry_transformations.h" // symmetry transformations of frequencies
 #include "symmetries/symmetry_table.h"           // table containing information when to apply which symmetry transformations
 #include "grids/momentum_grid.h"            // functionality for the internal structure of the Hubbard model
+#include "vertex_data.h"
 
 template <typename Q> class fullvert; // forward declaration of fullvert
+template <typename Q> class vertexDataContainer; // forward declaration of vertexDataContainer
 
 template <typename Q>
-class rvert{
-
-private:
-    vec<Q> empty_K2() { // for pure K1-calculation no memory should be allocated unnecessarily for K2
-        if (MAX_DIAG_CLASS >= 2) return vec<Q> (nK_K2 * nw2 * nv2 * n_in);  // data points of K2;
-        else                     return vec<Q> (0);                         // empty vector, never used in calculations
-    }
-    vec<Q> empty_K3() { // for  K2-calculation no memory should be allocated unnecessarily for K3
-        if (MAX_DIAG_CLASS >= 3) return vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);    // data points of K3  // data points of K2;
-        else                     return vec<Q> (0);                                 // empty vector, never used in calculations
-    }
+class rvert: public vertexDataContainer<Q>{
 
 public:
     char channel;                       // reducibility channel
@@ -104,28 +96,7 @@ public:
     void update_grid_K3(const VertexFrequencyGrid& frequencies_new);
 
     /** K1-functionality */
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
-
-    /// Member functions for accessing/setting values of the vector K1 ///
-
-    /** Return the value of the vector K1 at index i. */
-    auto K1_acc(int i) const -> Q;
-
-    /** Set the value of the vector K1 at index i to "value". */
-    void K1_direct_set(int i, Q value);
-
-    /** Set the value of the vector K1 at Keldysh index iK, frequency index iw,
-     * internal structure index i_in to "value". */
-    void K1_setvert(int iK, int iw, int i_in, Q value);
-
-    /** Add "value" to the value of the vector K1 at Keldysh index iK, frequency index iw,
-     * internal structure index i_in. */
-    void K1_addvert(int iK, int iw, int i_in, Q value);
-
-    /** Return the value of the vector K1 at Keldysh index iK, frequency index iw,
-     * internal structure index i_in. */
-    auto K1_val(int iK, int iw, int i_in) const -> Q;
 
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
@@ -136,27 +107,6 @@ public:
     Q K1_BZ_average(const int iK, const int iw);
 
     /** K2 functionality */
-    vec<Q> K2 = empty_K2();
-
-    /// Member functions for accessing/setting values of the vector K2 ///
-
-    /** Return the value of the vector K2 at index i. */
-    auto K2_acc(int i) const -> Q;
-
-    /** Set the value of the vector K2 at index i to "value". */
-    void K2_direct_set(int i, Q value);
-
-    /** Set the value of the vector K2 at Keldysh index iK, frequency indices iw, iv,
-     * internal structure index i_in to "value". */
-    void K2_setvert(int iK, int iw, int iv, int i_in, Q value);
-
-    /** Add "value" to the value of the vector K2 at Keldysh index iK, frequency indices iw, iv,
-     * internal structure index i_in. */
-    void K2_addvert(int iK, int iw, int iv, int i_in, Q value);
-
-    /** Return the value of the vector K2 at Keldysh index iK, frequency indices iw, iv,
-     * internal structure index i_in. */
-    auto K2_val(int iK, int iw, int iv, int i_in) const -> Q;
 
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
@@ -165,29 +115,6 @@ public:
 
     // TODO: Implement! Needed for the Hubbard model.
     void K2_crossproject(char channel_out);
-
-    /** K3 functionality */
-    vec<Q> K3 = empty_K3();
-
-    /// Member functions for accessing/setting values of the vector K3 ///
-
-    /** Return the value of the vector K3 at index i. */
-    auto K3_acc(int i) const -> Q;
-
-    /** Set the value of the vector K3 at index i to "value". */
-    void K3_direct_set(int i, Q value);
-
-    /** Set the value of the vector K3 at Keldysh index iK, frequency indices iw, iv, ivp,
-     * internal structure index i_in to "value". */
-    void K3_setvert(int iK, int iw, int iv, int ivp, int i_in, Q);
-
-    /** Add "value" to the value of the vector K3 at Keldysh index iK, frequency indices iw, iv, ivp,
-     * internal structure index i_in. */
-    void K3_addvert(int iK, int iw, int iv, int ivp, int i_in, Q);
-
-    /** Return the value of the vector K3 at Keldysh index iK, frequency indices iw, iv, ivp,
-     * internal structure index i_in. */
-    auto K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q;
 
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
@@ -198,50 +125,6 @@ public:
     void K3_crossproject(char channel_out);
 
 
-    auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 += rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 += rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 += rhs.K3;
-        return *this;
-    }
-    friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs += rhs;
-        return lhs;
-    }
-    auto operator*= (double alpha) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 *= alpha;
-        if (MAX_DIAG_CLASS >= 2) this->K2 *= alpha;
-        if (MAX_DIAG_CLASS >= 3) this->K3 *= alpha;
-        return *this;
-    }
-    friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
-    auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 *= rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 *= rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 *= rhs.K3;
-        return *this;
-    }
-    friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
-    auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) this->K1 -= rhs.K1;
-        if (MAX_DIAG_CLASS >= 2) this->K2 -= rhs.K2;
-        if (MAX_DIAG_CLASS >= 3) this->K3 -= rhs.K3;
-        return *this;
-    }
-    friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
-        lhs -= rhs;
-        return lhs;
-    }
-
-    double get_deriv_maxK1() const;
-    double get_deriv_maxK2() const;
-    double get_deriv_maxK3() const;
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
@@ -659,12 +542,12 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                 if (indices.asymmetry_transform)
                     result = indices.prefactor * vertex_symmrelated.K1[itK * nw1 + itw_new];
                 else
-                    result = indices.prefactor * K1[itK * nw1 + itw_new];
+                    result = indices.prefactor * vertexDataContainer<Q>::K1_val(itK, itw_new,0);
 
                 if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                    K1[itK * nw1 + itw] = myconj(result);
+                    vertexDataContainer<Q>::K1_setvert(itK, itw, 0, myconj(result));
                 else
-                    K1[itK * nw1 + itw] = result;
+                    vertexDataContainer<Q>::K1_setvert(itK, itw, 0, result);
             }
         }
 
@@ -689,15 +572,15 @@ template<typename Q>
 Q rvert<Q>::K1_BZ_average(const int iK, const int iw) {
     /// Perform the average over the BZ by calculating the q-sum over the REDUCED BZ (see notes for details!)
     Q value = 0.;
-    value += K1_val(iK, iw, momentum_index(0, 0));
-    value += K1_val(iK, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
-    value += 2. * K1_val(iK, iw, momentum_index(glb_N_q - 1, 0));
+    value += vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(0, 0));
+    value += vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
+    value += 2. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, 0));
     for (int n = 1; n < glb_N_q - 1; ++n) {
-        value += 4. * K1_val(iK, iw, momentum_index(n, 0));
-        value += 4. * K1_val(iK, iw, momentum_index(glb_N_q - 1, n));
-        value += 4. * K1_val(iK, iw, momentum_index(n, n));
+        value += 4. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(n, 0));
+        value += 4. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, n));
+        value += 4. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(n, n));
         for (int np = 1; np < n; ++np) {
-            value += 8. * K1_val(iK, iw, momentum_index(n, np));
+            value += 8. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(n, np));
         }
     }
     value /= 4. * (glb_N_q - 1) * (glb_N_q - 1);
@@ -736,9 +619,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                         result = Interpolate<k2,Q>()(indices, *(this));
 
                     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                        K2[itK * nw2 * nv2 + itw * nv2 + itv] = myconj(result);
+                        vertexDataContainer<Q>::K2_setvert(itK, itw, itv, 0, myconj(result));
                     else
-                        K2[itK * nw2 * nv2 + itw * nv2 + itv] = result;
+                        vertexDataContainer<Q>::K2_setvert(itK, itw, itv, 0, result);
                 }
             }
         }
@@ -784,9 +667,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                             result = Interpolate<k3,Q>()(indices, *(this));
 
                         if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                            K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = myconj(result);
+                            vertexDataContainer<Q>::K3_setvert(itK, itw, itv, itvp, 0,  myconj(result));
                         else
-                            K3[((itK * nw3 + itw) * nv3 + itv) * nv3 + itvp] = result;
+                            vertexDataContainer<Q>::K3_setvert(itK, itw, itv, itvp, 0,  result);
                     }
                 }
             }
@@ -803,95 +686,6 @@ void rvert<Q>::K3_crossproject(char channel_out) {
 
 
 
-template <typename Q> auto rvert<Q>::K1_acc(int i) const -> Q {
-    if (i >= 0 && i < K1.size())
-        return K1[i];
-    else
-        print("Error: Tried to access value outside of K1 vertex in a-channel", true);
-}
-template <typename Q> void rvert<Q>::K1_direct_set(int i, Q value) {
-    if (i >= 0 && i < K1.size())
-        K1[i] = value;
-    else
-        print("Error: Tried to access value outside of K1 vertex in a-channel", true);
-}
-template <typename Q> void rvert<Q>::K1_setvert(int iK, int iw, int i_in, Q value) {
-    K1[iK*nw1*n_in + iw*n_in + i_in] = value;
-}
-template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q value) {
-    K1[iK*nw1*n_in + iw*n_in + i_in] += value;
-}
-template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
-        return K1[iK*nw1*n_in + iw*n_in + i_in];
-}
-
-
-template <typename Q> auto rvert<Q>::K2_acc(int i) const -> Q {
-    if (i >= 0 && i < K2.size())
-        return K2[i];
-    else
-        print("Error: Tried to access value outside of K2 vertex in a-channel", true);
-}
-template <typename Q> void rvert<Q>::K2_direct_set(int i, Q value) {
-    if (i >= 0 && i < K2.size())
-        K2[i] = value;
-    else
-        print("Error: Tried to access value outside of K2 vertex in a-channel", true);
-}
-template <typename Q> void rvert<Q>::K2_setvert(int iK, int iw, int iv, int i_in, Q value) {
-    K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in] = value;
-}
-template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in, Q value) {
-    K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in] += value;
-}
-template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
-        return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
-}
-
-
-template <typename Q> auto rvert<Q>::K3_acc(int i) const -> Q {
-    if (i >= 0 && i < K3.size())
-        return K3[i];
-    else
-        print("Error: Tried to access value outside of K3 vertex in a-channel", true);
-}
-template <typename Q> void rvert<Q>::K3_direct_set(int i, Q value) {
-    if (i >= 0 && i < K3.size())
-        K3[i] = value;
-    else
-        print("Error: Tried to access value outside of K3 vertex in a-channel", true);
-}
-template <typename Q> void rvert<Q>::K3_setvert(int iK, int iw, int iv, int ivp, int i_in, Q value) {
-    K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in] = value;
-}
-template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp, int i_in, Q value) {
-    K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in] += value;
-}
-template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
-        return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
-}
-
-template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {
-    double max_K1 = ::power2(::get_finite_differences(K1)).max_norm();
-    return max_K1;
-
-}
-template <typename Q> auto rvert<Q>::get_deriv_maxK2() const -> double {
-    double max_K2 = (::power2(::get_finite_differences<Q,2>(K2, {nBOS2, nFER2}, {0, 1}))
-                   + ::power2(::get_finite_differences<Q,2>(K2, {nFER2}, {1, 0}))
-    ).max_norm();
-    return max_K2;
-
-}
-
-template <typename Q> auto rvert<Q>::get_deriv_maxK3() const -> double {
-    double max_K3 = (::power2(::get_finite_differences<Q,3>(K3, {nBOS3, nFER3, nFER3}, {0, 1, 2}))
-                   + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nBOS3, nFER3}, {1, 2, 0}))
-                   + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nFER3, nBOS3}, {2, 0, 1}))
-    ).max_norm();
-    return max_K3;
-
-}
 
 
 #endif //KELDYSH_MFRG_R_VERTEX_H
