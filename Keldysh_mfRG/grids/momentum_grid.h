@@ -62,9 +62,6 @@ void reduce_index_to_one_eighth_of_BZ(const int x, const int y, int& n_x, int& n
 }
 
 class Minimal_2D_FFT_Machine {
-    int points_per_dimension = 2 * (glb_N_q - 1);
-    int N_FFT = points_per_dimension * points_per_dimension;
-
     fftw_complex *input_propagator, *output_propagator_in_real_space, *input_bubble, *output_bubble_in_momentum_space,
                  *first_propagator_in_real_space, *second_propagator_in_real_space;
     fftw_plan propagator_to_real_space_plan;
@@ -98,7 +95,7 @@ vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(const vec<comp>& first_g_
     initialize_input_data(first_g_values);
     transform_propagator_to_real_space();
 
-    for (int i = 0; i < N_FFT; ++i) {
+    for (int i = 0; i < glb_N_FFT_2D; ++i) {
         first_propagator_in_real_space[i][0] = output_propagator_in_real_space[i][0];
         first_propagator_in_real_space[i][1] = output_propagator_in_real_space[i][1];
     }
@@ -106,7 +103,7 @@ vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(const vec<comp>& first_g_
     initialize_input_data(second_g_values);
     transform_propagator_to_real_space();
 
-    for (int i = 0; i < N_FFT; ++i) {
+    for (int i = 0; i < glb_N_FFT_2D; ++i) {
         second_propagator_in_real_space[i][0] = output_propagator_in_real_space[i][0];
         second_propagator_in_real_space[i][1] = output_propagator_in_real_space[i][1];
     }
@@ -119,14 +116,14 @@ vec<comp> Minimal_2D_FFT_Machine::compute_swave_bubble(const vec<comp>& first_g_
 }
 
 void Minimal_2D_FFT_Machine::initialize_input_data(const vec<comp>& g_values) {
-    for (int x = 0; x < points_per_dimension; ++x) {
-        for (int y = 0; y < points_per_dimension; ++y) {
+    for (int x = 0; x < glb_N_FFT_1D; ++x) {
+        for (int y = 0; y < glb_N_FFT_1D; ++y) {
             int n_x, n_y;
             reduce_index_to_one_eighth_of_BZ(x, y, n_x, n_y);
             const int mom_index = momentum_index(n_x, n_y);
             // This is where the actual values of the propagator have to be accessed! Include normalization factor here!
-            input_propagator[x * points_per_dimension + y][0] = g_values[mom_index].real() / N_FFT; // Real part
-            input_propagator[x * points_per_dimension + y][1] = g_values[mom_index].imag() / N_FFT; // Imaginary part
+            input_propagator[x * glb_N_FFT_1D + y][0] = g_values[mom_index].real() / glb_N_FFT_2D; // Real part
+            input_propagator[x * glb_N_FFT_1D + y][1] = g_values[mom_index].imag() / glb_N_FFT_2D; // Imaginary part
         }
     }
 }
@@ -138,7 +135,7 @@ void Minimal_2D_FFT_Machine::transform_propagator_to_real_space() {
 
 void Minimal_2D_FFT_Machine::calculate_swave_bubble_in_real_space() {
     // Perform element-wise multiplication of the propagators in real space to obtain the s-wave bubble.
-    for (int i = 0; i < N_FFT; ++i) {
+    for (int i = 0; i < glb_N_FFT_2D; ++i) {
         input_bubble[i][0] = first_propagator_in_real_space[i][0] * second_propagator_in_real_space[i][0]
                            - first_propagator_in_real_space[i][1] * second_propagator_in_real_space[i][1]; // Real part
         input_bubble[i][1] = first_propagator_in_real_space[i][0] * second_propagator_in_real_space[i][1]
@@ -154,28 +151,28 @@ void Minimal_2D_FFT_Machine::prepare_bubble_values_to_return() {
     for (int n_x = 0; n_x < glb_N_q; ++n_x) {
         for (int n_y = 0; n_y < n_x+1; ++n_y) {
             return_bubble_values[momentum_index(n_x, n_y)] =
-                    output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][0] + glb_i *
-                    output_bubble_in_momentum_space[n_x * points_per_dimension + n_y][1];
+                    output_bubble_in_momentum_space[n_x * glb_N_FFT_1D + n_y][0] + glb_i *
+                    output_bubble_in_momentum_space[n_x * glb_N_FFT_1D + n_y][1];
         }
     }
 }
 
 void Minimal_2D_FFT_Machine::allocate_memory() {
-    input_propagator = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    output_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    input_bubble = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    output_bubble_in_momentum_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    input_propagator = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * glb_N_FFT_2D);
+    output_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * glb_N_FFT_2D);
+    input_bubble = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * glb_N_FFT_2D);
+    output_bubble_in_momentum_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * glb_N_FFT_2D);
 
-    first_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    second_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    first_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * glb_N_FFT_2D);
+    second_propagator_in_real_space = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * glb_N_FFT_2D);
 }
 
 void Minimal_2D_FFT_Machine::create_plans() {
-    propagator_to_real_space_plan = fftw_plan_dft_2d(points_per_dimension, points_per_dimension,
+    propagator_to_real_space_plan = fftw_plan_dft_2d(glb_N_FFT_1D, glb_N_FFT_1D,
                                                      input_propagator, output_propagator_in_real_space,
                                                      FFTW_BACKWARD, FFTW_MEASURE);
 
-    bubble_to_momentum_space_plan = fftw_plan_dft_2d(points_per_dimension, points_per_dimension,
+    bubble_to_momentum_space_plan = fftw_plan_dft_2d(glb_N_FFT_1D, glb_N_FFT_1D,
                                                      input_bubble, output_bubble_in_momentum_space,
                                                      FFTW_FORWARD, FFTW_MEASURE);
 }

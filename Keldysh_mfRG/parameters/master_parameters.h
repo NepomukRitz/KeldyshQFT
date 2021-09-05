@@ -14,7 +14,7 @@
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
-#ifdef KELDYSH_FORMALISM
+#ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
 
@@ -62,12 +62,25 @@ constexpr int n_spin = 1;
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure for the Hubbard model
-constexpr int glb_N_q = 9; // Number of transfer momentum points in one dimension.
-constexpr int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
+constexpr int glb_N_q = 9;                                  // Number of transfer momentum points in one dimension.
+constexpr int glb_N_ff = 1;                                 // Number of form factors. Should be {1, 5, 9, 13, 19, ...} for the n-nearest neighbor interpretation
+
+
+// The remaining part for the internal structure should NOT be changed, as it is derived from the choices on makes above!
+constexpr int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Total number of transfer momentum points considered inside the reduced BZ.
+                                                            // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
+constexpr int glb_N_FFT_1D = 2 * (glb_N_q - 1);             // number of momentum grid points along one axis of the full BZ, used for FFTs.
+constexpr int glb_N_FFT_2D = glb_N_FFT_1D * glb_N_FFT_1D;   // number of momentum grid points inside the full BZ, used for FFTs.
 
 #ifdef HUBBARD
-constexpr int n_in = glb_N_transfer;
+constexpr int n_in_K1 = glb_N_transfer;                         // Number of internal indices needed for K1-objects
+constexpr int n_in_K2 = glb_N_transfer * glb_N_ff;              // Number of internal indices needed for K2-objects
+constexpr int n_in_K3 = glb_N_transfer * glb_N_ff * glb_N_ff;   // Number of internal indices needed for K3-objects
+constexpr int n_in = n_in_K3;                                   // maximal number of internal indices
 #else
+constexpr int n_in_K1 = 1;
+constexpr int n_in_K2 = 1;
+constexpr int n_in_K3 = 1;
 constexpr int n_in = 1;
 #endif
 
