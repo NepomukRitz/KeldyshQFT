@@ -691,21 +691,21 @@ bool Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has
                     if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;}
                     if (i0 == 3 &&
                         (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
-                        {zero_result = true;};
+                        {zero_result = true;}
                     break;
                 case 'p':
                     // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                    if (i0 == 1 && (i2 != 7 && i2 != 11)) {zero_result = true;};
+                    if (i0 == 1 && (i2 != 7 && i2 != 11)) {zero_result = true;}
                     if (i0 == 5 &&
                         (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15))
-                        {zero_result = true;};
+                        {zero_result = true;}
                     break;
                 case 't':
                     // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                    if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;};
+                    if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;}
                     if (i0 == 3 &&
                         (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
-                        {zero_result = true;};
+                        {zero_result = true;}
                     break;
                 default:;
             }
