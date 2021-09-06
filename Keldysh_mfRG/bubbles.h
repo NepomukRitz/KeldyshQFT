@@ -1086,6 +1086,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int n_mpi, n_omp;
     set_external_arguments_for_parallelization(n_mpi, n_omp, diag_class);
 
+    vertex1[0].half1().initialize();
+
     // initialize buffer into which each MPI process writes their results
     vec<Q> Buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
 
@@ -1243,6 +1245,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results(const vec<Q>& Ordered_result, const int diag_class){
+    dgamma[0].half1().initialize();
     switch (diag_class) {
         case 1:
             write_out_results_K1(Ordered_result);

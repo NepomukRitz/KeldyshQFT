@@ -1,12 +1,12 @@
 #ifndef FPP_MFRG_INTERPOLATOR1D_H
 #define FPP_MFRG_INTERPOLATOR1D_H
 
-/// source:    https://kluge.in-chemnitz.de/opensource/spline/spline.h
+/// source:    https://kluge.in-chemnitz.de/opensource/SplineK1/SplineK1.h
 /// alternative: https://github.com/igmhub/likely/blob/master/likely/TriCubicInterpolator.h
 /*
- * spline.h
+ * SplineK1.h
  *
- * simple cubic spline interpolation library without external
+ * simple cubic SplineK1 interpolation library without external
  * dependencies
  *
  * ---------------------------------------------------------------------
@@ -34,6 +34,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include "../vertex_data.h"
 #ifdef HAVE_SSTREAM
 #include <sstream>
 #include <string>
@@ -50,19 +51,19 @@
 //{
 
 
-    // spline interpolation
-    template <typename Q>
-    class spline
+    // SplineK1 interpolation
+    template <class DataContainer, typename Q>
+    class SplineK1 : public DataContainer
     {
     public:
-    // spline types
+    // SplineK1 types
     enum spline_type {
         linear = 10,            // linear interpolation
         cspline = 30,           // cubic splines (classical C^2)
         cspline_hermite = 31    // cubic hermite splines (local, only C^1)
     };
 
-    // boundary condition type for the spline end-points
+    // boundary condition type for the SplineK1 end-points
     enum bd_type {
         first_deriv = 1,    /// known first derivative
         second_deriv = 2,    /// known second derivative
@@ -70,17 +71,17 @@
     };
 
     protected:
-    std::vector<double> m_x;
-    vec<Q> K1;            // x,y coordinates of points
+    std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
+    //vec<Q> K1;            // x,y coordinates of points
     // interpolation parameters
     // f(x) = a_i + b_i*(x-x_i) + c_i*(x-x_i)^2 + d_i*(x-x_i)^3
     // where a_i = y_i, or else it won't go through grid points
-    vec<Q> m_b,m_c,m_d;        // spline coefficients
+    vec<Q> m_b,m_c,m_d;        // SplineK1 coefficients
     Q m_c0;                            // for left extrapolation
-    spline_type m_type;         /// set const?
-    bd_type m_left, m_right;    /// set const?
-    Q  m_left_value, m_right_value;   /// known values of first or second derivative (corresponding to bd_type)
-    bool m_made_monotonic;
+    spline_type m_type = cspline_hermite;         /// set const?
+    bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
+    Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
+    bool m_made_monotonic = false;
     void set_coeffs_from_b();               // calculate c_i, d_i from b_i
     /// given in FrequencyGrid already:
     size_t find_closest(double x) const;    // closest idx so that m_x[idx]<=x
@@ -89,40 +90,30 @@
     // default constructor: set boundary condition to be zero curvature
     // at both ends, i.e. natural splines
     /// Do I need this?
-    spline(): m_type(cspline),
-              m_left(second_deriv), m_right(second_deriv),
-              m_left_value(0.0), m_right_value(0.0), m_made_monotonic(false)
+    //SplineK1(): m_type(cspline),
+    //            m_left(second_deriv), m_right(second_deriv),
+    //            m_left_value(0.0), m_right_value(0.0), m_made_monotonic(false)
+    //{
+    //    ;
+    //}
+    explicit SplineK1(double Lambda)
+        :   DataContainer(Lambda)
     {
-        ;
-    }
-    spline(const std::vector<double>& X, const vec<Q>& Y,
-           spline_type type = cspline_hermite,
-           bool make_monotonic = false,
-           bd_type left  = third_deriv, Q left_value  = 0.0,
-           bd_type right = third_deriv, Q right_value = 0.0
-    ):
-            m_type(type),
-            m_left(left), m_right(right),
-            m_left_value(left_value), m_right_value(right_value),
-            m_made_monotonic(false) // false correct here: make_monotonic() sets it
-    {
-        this->set_points(X,Y,m_type);
-        if(make_monotonic) {
-            this->make_monotonic();
-        }
+        this->initializeK1();
     }
 
 
-    // modify boundary conditions: if called it must be before set_points()
-    void set_boundary(bd_type left, Q left_value,
-                      bd_type right, Q right_value);
+    // modify boundary conditions: if called it must be before initializeK1()
+    //void set_boundary(bd_type left, Q left_value,
+    //                  bd_type right, Q right_value);
 
+    void initializeK1();
     // set all data points (cubic_spline=false means linear interpolation)
-    void set_points(const std::vector<double>& x,
-                    const vec<Q>& y,
-                    spline_type type=cspline_hermite);
+    //void initializeK1(const std::vector<double>& x,
+    //                const vec<Q>& y,
+    //                spline_type type=cspline_hermite);
 
-    // adjust coefficients so that the spline becomes piecewise monotonic
+    // adjust coefficients so that the SplineK1 becomes piecewise monotonic
     // where possible
     //   this is done by adjusting slopes at grid points by a non-negative
     //   factor and this will break C^2
@@ -131,18 +122,18 @@
     // returns false if no adjustments have been made, true otherwise
     bool make_monotonic();
 
-    // evaluates the spline at point x
-    Q operator() (double x) const;
+    // evaluates the SplineK1 at point x
+    Q interpolK1 (double x) const;
     Q deriv(int order, double x) const;
 
     // returns the input data points
-    std::vector<double> get_x() const { return m_x; }
-    vec<Q> get_y() const { return K1; }
-    Q get_x_min() const { assert(!m_x.empty()); return m_x.front(); }
-    Q get_x_max() const { assert(!m_x.empty()); return m_x.back(); }
+    //std::vector<double> get_x() const { return m_x; }
+    //vec<Q> get_y() const { return DataContainer::K1; }
+    //Q get_x_min() const { assert(!m_x.empty()); return m_x.front(); }
+    //Q get_x_max() const { assert(!m_x.empty()); return m_x.back(); }
 
     #ifdef HAVE_SSTREAM
-    // spline info string, i.e. spline type, boundary conditions etc.
+    // SplineK1 info string, i.e. SplineK1 type, boundary conditions etc.
     std::string info() const;
     #endif // HAVE_SSTREAM
 
@@ -196,24 +187,24 @@
     // implementation part, which could be separated into a cpp file
     // ---------------------------------------------------------------------
 
-    // spline implementation
+    // SplineK1 implementation
     // -----------------------
 
-    template <typename Q>
-    void spline<Q>::set_boundary(spline::bd_type left, Q left_value,
-                          spline::bd_type right, Q right_value)
-    {
-    assert(m_x.size()==0);          // set_points() must not have happened yet
-    m_left=left;
-    m_right=right;
-    m_left_value=left_value;
-    m_right_value=right_value;
-    }
+    //template <class DataContainer, typename Q>
+    //void SplineK1<DataContainer,Q>::set_boundary(SplineK1::bd_type left, Q left_value,
+    //                               SplineK1::bd_type right, Q right_value)
+    //{
+    //assert(m_x.size()==0);          // initializeK1() must not have happened yet
+    //m_left=left;
+    //m_right=right;
+    //m_left_value=left_value;
+    //m_right_value=right_value;
+    //}
 
-    template <typename Q>
-    void spline<Q>::set_coeffs_from_b()
+    template <class DataContainer, typename Q>
+    void SplineK1<DataContainer,Q>::set_coeffs_from_b()
     {
-    assert(m_x.size() == K1.size());
+    assert(m_x.size() == (DataContainer::K1).size());
     assert(m_x.size()==m_b.size());
     assert(m_x.size()>2);
     size_t n=m_b.size();
@@ -225,7 +216,7 @@
     for(size_t i=0; i<n-1; i++) {       /// i=n-1 not treated (only used for extrapolation to the right)
         const double h  = m_x[i+1]-m_x[i];      /// spacing
         // from continuity and differentiability condition
-        m_c[i] = (3.0 * (K1[i + 1] - K1[i]) / h - (2.0 * m_b[i] + m_b[i + 1]) ) / h;   /// checked
+        m_c[i] = (3.0 * (DataContainer::K1[i + 1] - DataContainer::K1[i]) / h - (2.0 * m_b[i] + m_b[i + 1]) ) / h;   /// checked
         // from differentiability condition
         m_d[i] = ( (m_b[i+1]-m_b[i])/(3.0*h) - 2.0/3.0*m_c[i] ) / h;
     }
@@ -234,25 +225,23 @@
     m_c0 = (m_left==first_deriv) ? 0.0 : m_c[0];
     }
 
-    template <typename Q>
-    void spline<Q>::set_points(const std::vector<double>& x,
-                        const vec<Q>& y,
-                        spline_type type)
+    template <class DataContainer, typename Q>
+    void SplineK1<DataContainer,Q>::initializeK1()
     {
-    assert(x.size()==y.size());
-    assert(x.size()>2);
-    m_type=type;
-    m_made_monotonic=false;
-    m_x=x;
-        K1=y;
-    int n = (int) x.size();
+    //assert(x.size()==y.size());
+    //assert(x.size()>2);
+    //m_type=type;
+    //m_made_monotonic=false;
+    //m_x=x;
+    //    DataContainer::K1=y;
+    int n = (int) m_x.size();         /// replace with info on dims?
     // check strict monotonicity of input vector x
-    for(int i=0; i<n-1; i++) {
-        assert(m_x[i]<m_x[i+1]);
-    }
+    //for(int i=0; i<n-1; i++) {
+    //    assert(m_x[i]<m_x[i+1]);
+    //}
 
 
-    if(type==linear) {
+    if(m_type==linear) {
         // linear interpolation
         m_d.resize(n);
         m_c.resize(n);
@@ -260,13 +249,14 @@
         for(int i=0; i<n-1; i++) {
             m_d[i]=0.0;
             m_c[i]=0.0;
-            m_b[i]= (K1[i + 1] - K1[i]) / (m_x[i + 1] - m_x[i]);
+            m_b[i]= (DataContainer::K1[i + 1] - DataContainer::K1[i]) / (m_x[i + 1] - m_x[i]);
         }
         // ignore boundary conditions, set slope equal to the last segment
         m_b[n-1]=m_b[n-2];
         m_c[n-1]=0.0;
         m_d[n-1]=0.0;
-    } else if(type==cspline) {
+    }
+    /*else if(m_type==cspline) {
         // classical cubic splines which are C^2 (twice cont differentiable)
         // this requires solving an equation system
 
@@ -275,38 +265,38 @@
         internal::band_matrix<Q> A(n,1,1);
         std::vector<double>  rhs(n);
         for(int i=1; i<n-1; i++) {
-            A(i,i-1)=1.0/3.0*(x[i]-x[i-1]);
-            A(i,i)=2.0/3.0*(x[i+1]-x[i-1]);
-            A(i,i+1)=1.0/3.0*(x[i+1]-x[i]);
-            rhs[i]=(y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+            A(i,i-1)=1.0/3.0*(m_x[i]-m_x[i-1]);
+            A(i,i)=2.0/3.0*(m_x[i+1]-m_x[i-1]);
+            A(i,i+1)=1.0/3.0*(m_x[i+1]-m_x[i]);
+            rhs[i]=(DataContainer::K1[i+1]-DataContainer::K1[i])/(m_x[i+1]-m_x[i]) - (DataContainer::K1[i]-DataContainer::K1[i-1])/(m_x[i]-m_x[i-1]);
         }
         // boundary conditions
-        if(m_left == spline::second_deriv) {
+        if(m_left == SplineK1::second_deriv) {
             // 2*c[0] = f''
             A(0,0)=2.0;
             A(0,1)=0.0;
             rhs[0]=m_left_value;
-        } else if(m_left == spline::first_deriv) {
+        } else if(m_left == SplineK1::first_deriv) {
             // b[0] = f', needs to be re-expressed in terms of c:
             // (2c[0]+c[1])(x[1]-x[0]) = 3 ((y[1]-y[0])/(x[1]-x[0]) - f')
-            A(0,0)=2.0*(x[1]-x[0]);
-            A(0,1)=1.0*(x[1]-x[0]);
-            rhs[0]=3.0*((y[1]-y[0])/(x[1]-x[0])-m_left_value);
+            A(0,0)=2.0*(m_x[1]-m_x[0]);
+            A(0,1)=1.0*(m_x[1]-m_x[0]);
+            rhs[0]=3.0*((DataContainer::K1[1]-DataContainer::K1[0])/(m_x[1]-m_x[0])-m_left_value);
         } else {
             assert(false);
         }
-        if(m_right == spline::second_deriv) {
+        if(m_right == SplineK1::second_deriv) {
             // 2*c[n-1] = f''
             A(n-1,n-1)=2.0;
             A(n-1,n-2)=0.0;
             rhs[n-1]=m_right_value;
-        } else if(m_right == spline::first_deriv) {
+        } else if(m_right == SplineK1::first_deriv) {
             // b[n-1] = f', needs to be re-expressed in terms of c:
             // (c[n-2]+2c[n-1])(x[n-1]-x[n-2])
             // = 3 (f' - (y[n-1]-y[n-2])/(x[n-1]-x[n-2]))
-            A(n-1,n-1)=2.0*(x[n-1]-x[n-2]);
-            A(n-1,n-2)=1.0*(x[n-1]-x[n-2]);
-            rhs[n-1]=3.0*(m_right_value-(y[n-1]-y[n-2])/(x[n-1]-x[n-2]));
+            A(n-1,n-1)=2.0*(m_x[n-1]-m_x[n-2]);
+            A(n-1,n-2)=1.0*(m_x[n-1]-m_x[n-2]);
+            rhs[n-1]=3.0*(m_right_value-(DataContainer::K1[n-1]-DataContainer::K1[n-2])/(m_x[n-1]-m_x[n-2]));
         } else {
             assert(false);
         }
@@ -318,20 +308,22 @@
         m_d.resize(n);
         m_b.resize(n);
         for(int i=0; i<n-1; i++) {
-            m_d[i]=1.0/3.0*(m_c[i+1]-m_c[i])/(x[i+1]-x[i]);
-            m_b[i]=(y[i+1]-y[i])/(x[i+1]-x[i])
-                   - 1.0/3.0*(2.0*m_c[i]+m_c[i+1])*(x[i+1]-x[i]);
+            m_d[i]=1.0/3.0*(m_c[i+1]-m_c[i])/(m_x[i+1]-m_x[i]);
+            m_b[i]=(DataContainer::K1[i+1]-DataContainer::K1[i])/(m_x[i+1]-m_x[i])
+                   - 1.0/3.0*(2.0*m_c[i]+m_c[i+1])*(m_x[i+1]-m_x[i]);
         }
         // for the right extrapolation coefficients (zero cubic term)
         // f_{n-1}(x) = y_{n-1} + b*(x-x_{n-1}) + c*(x-x_{n-1})^2
-        double h=x[n-1]-x[n-2];
+        double h=m_x[n-1]-m_x[n-2];
         // m_c[n-1] is determined by the boundary condition
         m_d[n-1]=0.0;
         m_b[n-1]=3.0*m_d[n-2]*h*h+2.0*m_c[n-2]*h+m_b[n-2];   // = f'_{n-2}(x_{n-1})
         if(m_right==first_deriv)
             m_c[n-1]=0.0;   // force linear extrapolation
 
-    } else if(type==cspline_hermite) {
+    }
+    */
+    else if(m_type==cspline_hermite) {
         // hermite cubic splines which are C^1 (cont. differentiable)
         // and derivatives are specified on each grid point
         // (here we use 3-point finite differences)
@@ -342,18 +334,18 @@
         for(int i=1; i<n-1; i++) {
             const double h  = m_x[i+1]-m_x[i];
             const double hl = m_x[i]-m_x[i-1];
-            m_b[i] = -h / (hl*(hl+h)) * K1[i - 1] + (h - hl) / (hl * h) * K1[i]
-                     + hl / (h*(hl+h)) * K1[i + 1];
+            m_b[i] = -h / (hl*(hl+h)) * DataContainer::K1[i - 1] + (h - hl) / (hl * h) * DataContainer::K1[i]
+                     + hl / (h*(hl+h)) * DataContainer::K1[i + 1];
         }
         // boundary conditions determine b[0] and b[n-1]
         if(m_left==first_deriv) {
             m_b[0]=m_left_value;
         } else if(m_left==second_deriv) {
             const double h = m_x[1]-m_x[0];
-            m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (K1[1] - K1[0]) / h);  /// checked
+            m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h);  /// checked
         } else if (m_left==third_deriv) {
             const double h = m_x[1]-m_x[0];
-            m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (K1[1] - K1[0]) / h;  /// added by me
+            m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
         } else {
             assert(false);
         }
@@ -362,12 +354,12 @@
             m_c[n-1]=0.0;
         } else if(m_right==second_deriv) {
             const double h = m_x[n-1]-m_x[n-2];
-            m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+ 3.0 * (K1[n - 1] - K1[n - 2]) / h); /// checked
+            m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+ 3.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h); /// checked
             m_c[n-1]=0.5*m_right_value; /// m_d[n-1] is set to 0. Is this correct/necessary?
         } else if (m_right==third_deriv) {
             const double h = m_x[n-1]-m_x[n-2];
-            m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (K1[n - 1] - K1[n - 2]) / h;  /// added by me
-            m_d[n-1]= K1[n - 1] - K1[n - 2] - m_b[n - 2]; /// ???
+            m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;  /// added by me
+            m_d[n-1]= DataContainer::K1[n - 1] - DataContainer::K1[n - 2] - m_b[n - 2]; /// ???
         } else {
             assert(false);
         }
@@ -384,10 +376,10 @@
     m_c0 = (m_left==first_deriv) ? 0.0 : m_c[0];
     }
 
-    template <typename Q>
-    bool spline<Q>::make_monotonic()
+    template <class DataContainer, typename Q>
+    bool SplineK1<DataContainer,Q>::make_monotonic()
     {
-    assert(m_x.size() == K1.size());
+    assert(m_x.size() == DataContainer::K1.size());
     assert(m_x.size()==m_b.size());
     assert(m_x.size()>2);
     bool modified = false;
@@ -397,8 +389,8 @@
     for(int i=0; i<n; i++) {
         int im1 = std::max(i-1, 0);
         int ip1 = std::min(i+1, n-1);
-        if(((K1[im1] <= K1[i]) && (K1[i] <= K1[ip1]) && m_b[i] < 0.0) ||
-           ((K1[im1] >= K1[i]) && (K1[i] >= K1[ip1]) && m_b[i] > 0.0) ) {
+        if(((DataContainer::K1[im1] <= DataContainer::K1[i]) && (DataContainer::K1[i] <= DataContainer::K1[ip1]) && m_b[i] < 0.0) ||
+           ((DataContainer::K1[im1] >= DataContainer::K1[i]) && (DataContainer::K1[i] >= DataContainer::K1[ip1]) && m_b[i] > 0.0) ) {
             modified=true;
             m_b[i]=0.0;
         }
@@ -408,7 +400,7 @@
     //     sqrt(b[i]^2+b[i+1]^2) <= 3 |avg|, with avg=(y[i+1]-y[i])/h,
     for(int i=0; i<n-1; i++) {
         double h = m_x[i+1]-m_x[i];
-        double avg = (K1[i + 1] - K1[i]) / h;
+        double avg = (DataContainer::K1[i + 1] - DataContainer::K1[i]) / h;
         if( avg==0.0 && (m_b[i]!=0.0 || m_b[i+1]!=0.0) ) {
             modified=true;
             m_b[i]=0.0;
@@ -436,17 +428,18 @@
     }
 
     // return the closest idx so that m_x[idx] <= x (return 0 if x<m_x[0])
-    template <typename Q>
-    size_t spline<Q>::find_closest(double x) const
+    template <class DataContainer, typename Q>
+    size_t SplineK1<DataContainer,Q>::find_closest(double x) const
     {
-    std::vector<double>::const_iterator it;
-    it=std::upper_bound(m_x.begin(),m_x.end(),x);       // *it > x
-    size_t idx = std::max( int(it-m_x.begin())-1, 0);   // m_x[idx] <= x
-    return idx;
+    //std::vector<double>::const_iterator it;
+    //it=std::upper_bound(m_x.begin(),m_x.end(),x);       // *it > x
+    //size_t idx = std::max( int(it-m_x.begin())-1, 0);   // m_x[idx] <= x
+    //return idx;
+       return vertexDataContainer<k1,Q>::frequencies_K1.b.fconv(x);
     }
 
-    template <typename Q>
-    Q spline<Q>::operator() (double x) const
+    template <class DataContainer, typename Q>
+    Q SplineK1<DataContainer,Q>::interpolK1 (double x) const
     {
     // polynomial evaluation using Horner's scheme
     // TODO: consider more numerically accurate algorithms, e.g.:
@@ -458,21 +451,23 @@
 
     double h=x-m_x[idx];
     Q interpol;
-    if(x<m_x[0]) {
-        // extrapolation to the left
-        interpol=(m_c0*h + m_b[0])*h + K1[0];
-    } else if(x>m_x[n-1]) {
-        // extrapolation to the right
-        interpol=(m_c[n-1]*h + m_b[n-1])*h + K1[n - 1];
-    } else {
+    /// don't support extrapolation
+    //if(x<m_x[0]) {
+    //    // extrapolation to the left
+    //    interpol=(m_c0*h + m_b[0])*h + DataContainer::K1[0];
+    //} else if(x>m_x[n-1]) {
+    //    // extrapolation to the right
+    //    interpol=(m_c[n-1]*h + m_b[n-1])*h + DataContainer::K1[n - 1];
+    //} else {
         // interpolation
-        interpol=((m_d[idx]*h + m_c[idx])*h + m_b[idx])*h + K1[idx];
-    }
+        interpol=((m_d[idx]*h + m_c[idx])*h + m_b[idx])*h + DataContainer::K1[idx];
+    //}
+    assert(isfinite(interpol));
     return interpol;
     }
 
-    template <typename Q>
-    Q spline<Q>::deriv(int order, double x) const
+    template <class DataContainer, typename Q>
+    Q SplineK1<DataContainer,Q>::deriv(int order, double x) const
     {
     assert(order>0);
     size_t n=m_x.size();
@@ -528,14 +523,14 @@
     }
 
     #ifdef HAVE_SSTREAM
-    std::string spline::info() const
+    std::string SplineK1::info() const
     {
     std::stringstream ss;
     ss << "type " << m_type << ", left boundary deriv " << m_left << " = ";
     ss << m_left_value << ", right boundary deriv " << m_right << " = ";
     ss << m_right_value << std::endl;
     if(m_made_monotonic) {
-    ss << "(spline has been adjusted for piece-wise monotonicity)";
+    ss << "(SplineK1 has been adjusted for piece-wise monotonicity)";
     }
     return ss.str();
     }

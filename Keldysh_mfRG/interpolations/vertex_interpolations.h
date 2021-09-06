@@ -112,6 +112,28 @@ public:
 };
 
 
+namespace spline {
+    template<K_class k, typename Q>
+    class Interpolate {};
+
+    template<typename Q>
+    class Interpolate<k1,Q>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
+    public:
+        explicit Interpolate<k1, Q>(double Lambda) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda) {};
+        auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
+
+            // Check if the frequency runs out of the box; if yes: return asymptotic value
+            //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
+            //{
+            Q result = indices.prefactor * SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.w);
+            // Lambda function (aka anonymous function) in last argument
+            return result;
+            //} else {
+            //    return 0.;  // asymptotic value
+            //}
+        };
+    };
+}
 
 
 namespace {
@@ -130,7 +152,9 @@ namespace {
     class Select<k1,Q> {
     public:
         auto operator() (const IndicesSymmetryTransformations &indices, const vertexInterpolator<Q>& vertex) {
-            return vertex.interpolK1(indices);
+            Q value = vertex.interpolK1(indices);
+            assert(isfinite(value));
+            return value;
         }
     };
 
@@ -149,17 +173,25 @@ namespace {
 template <int k, typename Q> class vertexDataContainer; // forward declaration of vertexDataContainer
 
 template<typename Q>
-class vertexInterpolator: public Interpolate<k1,Q>,  public Interpolate<k2,Q>,  public Interpolate<k3,Q>  {
+class vertexInterpolator: public spline::Interpolate<k1,Q>,  public Interpolate<k2,Q>,  public Interpolate<k3,Q>  {
     bool initialized = false;
 
 public:
 
-    explicit vertexInterpolator(double Lambda) : Interpolate<k1,Q>(Lambda), Interpolate<k2,Q>(Lambda), Interpolate<k3,Q>(Lambda) {};
+    explicit vertexInterpolator(double Lambda) : spline::Interpolate<k1,Q>(Lambda), Interpolate<k2,Q>(Lambda), Interpolate<k3,Q>(Lambda) {};
 
     template <K_class k>
     auto interpolate(IndicesSymmetryTransformations& indices) const -> Q {
         Q result = Select<k,Q>() (indices, *this);
         return result;
+    }
+
+    void initialize() {
+        if (not initialized) {
+            spline::Interpolate<k1,Q>::initializeK1();
+
+            initialized = true;
+        }
     }
 
 
