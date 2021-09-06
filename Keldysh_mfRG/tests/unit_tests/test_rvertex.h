@@ -72,7 +72,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
             if (std::abs(avertex.K2_val(iK, iw, iv, i_in) - avertex.K2_val(iK, nBOS2 - 1 - iw, iv, i_in)) > asymmetry_tolerance) {
                 asymmetry += 1;
             }
-            double compare_val = Interpolate<k2, state_datatype>()(indices, avertex);
+            state_datatype compare_val = Interpolate<k2, state_datatype>()(indices, avertex);
             if (std::abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val) > asymmetry_tolerance) {
                 asymmetry += std::abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val);
             }
@@ -133,8 +133,8 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                 //if (avertex.K3_val(iK, iw, iv, ivp, i_in) != avertex.K3_val(iK, nBOS3 - 1 - iw, iv, ivp, i_in)) {
                 //    asymmetry += 1;
                 //}
-                double compare_val = Interpolate<k3, state_datatype>()(indices, avertex);
-                double savedK3_val = avertex.K3_val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in);
+                state_datatype compare_val = Interpolate<k3, state_datatype>()(indices, avertex);
+                state_datatype savedK3_val = avertex.K3_val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in);
                 double absdiff = std::abs(compare_val - savedK3_val);
                 if (absdiff > 1e-4) {
                     asymmetry += absdiff;
