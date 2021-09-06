@@ -8,13 +8,14 @@
 /****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>
 class SelfEnergy{
+    vec<Q> empty_Sigma() {
+        if (KELDYSH) return vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
+        else return vec<Q> (nSE*n_in);           // only one component in Matsubara formalism
+    }
+
 public:
     FrequencyGrid frequencies;
-#ifdef KELDYSH_FORMALISM
-    vec<Q> Sigma = vec<Q> (2*nSE*n_in); // factor 2 for Keldysh components: Sigma^R, Sigma^K
-#else
-    vec<Q> Sigma = vec<Q> (nSE*n_in); // only one component in Matsubara formalism
-#endif
+    vec<Q> Sigma = empty_Sigma();
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
     explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
@@ -81,21 +82,18 @@ public:
  * @param valK  : Value for the constant Keldyh self-energy
  */
 template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
-// in particle-hole symmetric case (Matsubara formalism) the self-energy vector only stores the imaginary part -> initialize to zero
-// in all other cases: initialize to the Hartree value
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+    // in particle-hole symmetric case (Matsubara formalism) the self-energy vector only stores the imaginary part -> initialize to zero
+    // in all other cases: initialize to the Hartree value
+    if (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
 #pragma omp parallel for
-
-    for (int iv=0; iv<nSE; ++iv) {
-        for (int i_in=0; i_in<n_in; ++i_in) {
-            this->setself(0, iv, i_in, valR);
-#ifdef KELDYSH_FORMALISM
-            this->setself(1, iv, i_in, valK);
-#endif
+        for (int iv=0; iv<nSE; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                this->setself(0, iv, i_in, valR);
+                if (KELDYSH) this->setself(1, iv, i_in, valK);
+            }
         }
+        this-> asymp_val_R = valR;
     }
-    this-> asymp_val_R = valR;
-#endif
 }
 
 /**
@@ -107,11 +105,8 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
  * @return The value of SigmaR/K at the chosen indices
  */
 template <typename Q> auto SelfEnergy<Q>::val(int iK, int iv, int i_in) const -> Q{
-#ifdef KELDYSH_FORMALISM
-    return Sigma[iK*nSE*n_in + iv*n_in + i_in];
-#else
-    return Sigma[iv*n_in + i_in];
-#endif
+    if (KELDYSH) return Sigma[iK*nSE*n_in + iv*n_in + i_in];
+    else         return Sigma[iv*n_in + i_in];
 }
 
 /**
@@ -191,20 +186,15 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
     frequencies_new.rescale_grid(Lambda);              // rescale new frequency grid
 
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
-#ifdef KELDYSH_FORMALISM
     for (int iK=0; iK<2; ++iK) {
-#else
-    int iK = 0;
-#endif
+        if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 // interpolate old values to new vector
                 Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.ws[iv], i_in);
             }
         }
-#ifdef KELDYSH_FORMALISM
     }
-#endif
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
 }

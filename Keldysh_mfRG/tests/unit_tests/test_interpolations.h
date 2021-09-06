@@ -59,14 +59,18 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     }
 
     double cumul_interpolation_error = 0;
+    vec<double> errors (nBOS2*nFER2);
+    int iter = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     for (int iw = 0; iw<nBOS2; iw++){
         for (int iv = 0; iv<nFER2; iv++) {
             indices.w  = avertex.frequencies.b_K2.ws[iw];
             indices.v1 = avertex.frequencies.f_K2.ws[iv];
 
-            cumul_interpolation_error += std::abs(Interpolate<k2, state_datatype>()(indices, avertex) -  avertex.K2_val(iK, iw, iv, i_in));
-
+            double error = std::abs(Interpolate<k2, state_datatype>()(indices, avertex) -  avertex.K2_val(iK, iw, iv, i_in));
+            cumul_interpolation_error += error;
+            errors[iter] = error;
+            iter++;
         }
     }
 
@@ -237,9 +241,9 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
 
 #if MAX_DIAG_CLASS == 3
 TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]" ) {
-    double interpolation_tolerance = 1e-11;
+    double interpolation_tolerance = 1e-10;
     bool geq_interpolation_tolerance = false;
-    double cumul_interpolation_tolerance = 1e-11 * nBOS3*nFER3*nFER3;
+    double cumul_interpolation_tolerance = 1e-10 * nBOS3*nFER3*nFER3;
 
 
     rvert<state_datatype> avertex('a', Lambda_ini);

@@ -65,11 +65,8 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
                  const State<Q>& state_in, const double Lambda) {
     Vertex<Q> Gamma_0 (n_spin, Lambda);                  // bare vertex
     Gamma_0.set_frequency_grid(state_in.vertex);
-#ifdef KELDYSH_FORMALISM
-    Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex
-#else
-    Gamma_0[0].initialize(-glb_U);         // initialize bare vertex
-#endif
+    if (KELDYSH) Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
+    else         Gamma_0[0].initialize(-glb_U);              // initialize bare vertex (Matsubara)
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
 
     // compute the a bubble with full vertex on the right
@@ -248,16 +245,16 @@ void parquet_checks(const std::string filename) {
         norm_K1_fRG[i]  = state.vertex[0].norm_K1(2);
         norm_K1_BSE[i]  = Gamma_BSE[0].norm_K1(2);
         norm_K1_diff[i] = Gamma_diff[0].norm_K1(2);
-#if MAX_DIAG_CLASS >= 2
-        norm_K2_fRG[i]  = state.vertex[0].norm_K2(2);
-        norm_K2_BSE[i]  = Gamma_BSE[0].norm_K2(2);
-        norm_K2_diff[i] = Gamma_diff[0].norm_K2(2);
-#endif
-#if MAX_DIAG_CLASS >= 3
-        norm_K3_fRG[i]  = state.vertex[0].norm_K3(2);
-        norm_K3_BSE[i]  = Gamma_BSE[0].norm_K3(2);
-        norm_K3_diff[i] = Gamma_diff[0].norm_K3(2);
-#endif
+        if (MAX_DIAG_CLASS >= 2) {
+            norm_K2_fRG[i] = state.vertex[0].norm_K2(2);
+            norm_K2_BSE[i] = Gamma_BSE[0].norm_K2(2);
+            norm_K2_diff[i] = Gamma_diff[0].norm_K2(2);
+        }
+        if (MAX_DIAG_CLASS >= 3) {
+            norm_K3_fRG[i] = state.vertex[0].norm_K3(2);
+            norm_K3_BSE[i] = Gamma_BSE[0].norm_K3(2);
+            norm_K3_diff[i] = Gamma_diff[0].norm_K3(2);
+        }
         // save the norm vectors
         write_h5_rvecs(filename + "_parquet_checks_norm",
                        {"Lambdas",
@@ -313,12 +310,10 @@ void parquet_checks(const std::string filename) {
  */
 template <typename Q>
 void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda) {
-    compute_BSE(state_out.vertex, state_in, Lambda);      // compute the gamma_r's via the BSE
-#ifdef KELDYSH_FORMALISM
-    state_out.vertex[0].irred().initialize(-glb_U/2.);                           // add the irreducible vertex
-#else
-    state_out.vertex[0].irred().initialize(-glb_U);                           // add the irreducible vertex
-#endif
+    compute_BSE(state_out.vertex, state_in, Lambda);                    // compute the gamma_r's via the BSE
+    if (KELDYSH) state_out.vertex[0].irred().initialize(-glb_U/2.);     // add the irreducible vertex
+    else         state_out.vertex[0].irred().initialize(-glb_U);        // add the irreducible vertex
+
     compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
 }
 

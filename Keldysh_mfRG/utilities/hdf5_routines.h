@@ -92,16 +92,14 @@ public:
     double * ffreqs_buffer;
 #ifdef KELDYSH_FORMALISM
     const int self_dim = 2 * nSE;                                     // length of self-energy buffer
-#else
-    const int self_dim = nSE;
-#endif
-    h5_comp * selfenergy;
-#ifdef KELDYSH_FORMALISM
     const int irred_dim = 16 * n_in;                                  // length of irreducible vertex buffer
 #else
-    const int irred_dim = n_in;                                  // length of irreducible vertex buffer
+    const int self_dim = nSE;                                         // length of self-energy buffer
+    const int irred_dim = n_in;                                       // length of irreducible vertex buffer
 #endif
+    h5_comp * selfenergy;
     h5_comp * irreducible_class;
+
 #if MAX_DIAG_CLASS >= 1
     const int K1_dim = nK_K1 * nw1_t * n_in;                         // length of K1 buffer
     h5_comp * K1_class_a;
@@ -200,14 +198,15 @@ template <typename Q>
             ffreqs_buffer[i] = ffreqs.ws[i];
         }
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-            // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
-            selfenergy[i].re = glb_U/2.;
-            selfenergy[i].im = state_in.selfenergy.acc(i);
-#else
-            selfenergy[i].re = std::real(state_in.selfenergy.acc(i));
-            selfenergy[i].im = std::imag(state_in.selfenergy.acc(i));
-#endif
+    if (PARTICLE_HOLE_SYMMETRY and not KELDYSH) {
+        // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
+        selfenergy[i].re = glb_U / 2.;
+        selfenergy[i].im = imag(state_in.selfenergy.acc(i));
+    }
+    else {
+        selfenergy[i].re = std::real(state_in.selfenergy.acc(i));
+        selfenergy[i].im = std::imag(state_in.selfenergy.acc(i));
+    }
         }
         for (int i=0; i<irred_dim; ++i) {                       // write irreducible vertex into buffer
             irreducible_class[i].re = std::real(state_in.vertex[0].irred().acc(i));
@@ -1072,90 +1071,57 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
     Q val; // buffer value
 
     for (int i=0; i<buffer.self_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
-#else
-        val = buffer.selfenergy[i].im;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
+        else                                    val = buffer.selfenergy[i].im;
         result.selfenergy.direct_set(i, val);
     }
     for (int i=0; i<buffer.irred_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
-#else
-        val = buffer.irreducible_class[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
+        else                                    val = buffer.irreducible_class[i].re;
         result.vertex[0].irred().direct_set(i, val);
     }
 #if MAX_DIAG_CLASS >= 1
     for (int i=0; i<buffer.K1_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
-#else
-        val = buffer.K1_class_a[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
+        else                                    val = buffer.K1_class_a[i].re;
         result.vertex[0].avertex().K1_direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
-#else
-        val = buffer.K1_class_p[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
+        else                                    val = buffer.K1_class_p[i].re;
         result.vertex[0].pvertex().K1_direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
-#else
-        val = buffer.K1_class_t[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
+        else                                    val = buffer.K1_class_t[i].re;
         result.vertex[0].tvertex().K1_direct_set(i, val);
     }
 #endif
 #if MAX_DIAG_CLASS >= 2
     for (int i=0; i<buffer.K2_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
-#else
-        val = buffer.K2_class_a[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
+        else                                    val = buffer.K2_class_a[i].re;
         result.vertex[0].avertex().K2_direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
-#else
-        val = buffer.K2_class_p[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
+        else                                    val = buffer.K2_class_p[i].re;
         result.vertex[0].pvertex().K2_direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
-#else
-        val = buffer.K2_class_t[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
+        else                                    val = buffer.K2_class_t[i].re;
         result.vertex[0].tvertex().K2_direct_set(i, val);
     }
 #endif
 #if MAX_DIAG_CLASS >= 3
     for (int i=0; i<buffer.K3_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
-#else
-        val = buffer.K3_class_a[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
+        else                                    val = buffer.K3_class_a[i].re;
         result.vertex[0].avertex().K3_direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
-#else
-        val = buffer.K3_class_p[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
+        else                                    val = buffer.K3_class_p[i].re;
         result.vertex[0].pvertex().K3_direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
-#else
-        val = buffer.K3_class_t[i].re;
-#endif
+        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
+        else                                    val = buffer.K3_class_t[i].re;
         result.vertex[0].tvertex().K3_direct_set(i, val);
     }
 #endif

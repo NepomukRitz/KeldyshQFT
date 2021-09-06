@@ -26,10 +26,10 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 are flipped" ) {
                 REQUIRE( indices1.w  == -indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices1.v1 == indices.v2 );
-                REQUIRE( indices1.v2 == indices.v1 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices1.v1 == indices.v2);
+                    REQUIRE(indices1.v2 == indices.v1);
+                }
             }
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices1.channel == 't' );
@@ -54,10 +54,10 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             }
             AND_THEN( "frequencies remain unchanged" ) {
                 REQUIRE( indices2.w  == indices.w  );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices2.v1 == indices.v1 );
-                REQUIRE( indices2.v2 == indices.v2 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices2.v1 == indices.v1);
+                    REQUIRE(indices2.v2 == indices.v2);
+                }
             }
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices2.channel == 't' );
@@ -82,10 +82,10 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 are flipped" ) {
                 REQUIRE( indices3.w  == -indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices3.v1 == indices.v2 );
-                REQUIRE( indices3.v2 == indices.v1 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices3.v1 == indices.v2);
+                    REQUIRE(indices3.v2 == indices.v1);
+                }
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 'a' );
@@ -109,12 +109,12 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
                 REQUIRE( indices3.iK == indices12.iK );
                 REQUIRE( indices3.w == indices21.w );
                 REQUIRE( indices3.w == indices12.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices3.v1 == indices21.v1 );
-                REQUIRE( indices3.v1 == indices12.v1 );
-                REQUIRE( indices3.v2 == indices21.v2 );
-                REQUIRE( indices3.v2 == indices12.v2 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices3.v1 == indices21.v1);
+                    REQUIRE(indices3.v1 == indices12.v1);
+                    REQUIRE(indices3.v2 == indices21.v2);
+                    REQUIRE(indices3.v2 == indices12.v2);
+                }
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
                 REQUIRE( indices3.prefactor == indices21.prefactor );
@@ -133,60 +133,67 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
             }
-#ifdef KELDYSH_FORMALISM
-            AND_THEN( "w remains unchanged, v1 and v2 are flipped" ) {
-                REQUIRE( indices_c.w  == indices.w  );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices_c.v1 == indices.v2 );
-                REQUIRE( indices_c.v2 == indices.v1 );
-#endif
+            if (KELDYSH){
+                AND_THEN( "w remains unchanged, v1 and v2 are flipped" ) {
+                    REQUIRE( indices_c.w  == indices.w  );
+                    if (MAX_DIAG_CLASS > 1) {
+                        REQUIRE(indices_c.v1 == indices.v2);
+                        REQUIRE(indices_c.v2 == indices.v1);
+                    }
+                }
             }
-#else
-#ifdef ZERO_TEMP
-            AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
-                REQUIRE( indices_c.w  == -indices.w  );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices_c.v1 == -indices.v2 );
-                REQUIRE( indices_c.v2 == -indices.v1 );
-#endif
+            else{
+                if (ZERO_T){
+                    AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
+                        REQUIRE( indices_c.w  == -indices.w  );
+                        if (MAX_DIAG_CLASS > 1) {
+                            REQUIRE(indices_c.v1 == -indices.v2);
+                            REQUIRE(indices_c.v2 == -indices.v1);
+                        }
+                    }
+                }
+                else{
+                    AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
+                        REQUIRE( indices_c.w  == -indices.w  );
+                        if (MAX_DIAG_CLASS > 1) {
+                            REQUIRE(std::abs(-indices_c.v1 - indices.v2 + floor2bfreq(indices.w / 2) -
+                                             ceil2bfreq(indices.w / 2)) < 1e-10);
+                            REQUIRE(std::abs(-indices_c.v2 - indices.v1 + floor2bfreq(indices.w / 2) -
+                                             ceil2bfreq(indices.w / 2)) < 1e-10);
+                        }
+                    }
+                }
             }
-#else
-            AND_THEN( "v1 and v2 are flipped; w, v1 and v2 are multiplied with -1" ) {
-                REQUIRE( indices_c.w  == -indices.w  );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( std::abs(-indices_c.v1 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-                REQUIRE( std::abs(-indices_c.v2 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-#endif
-            }
-#endif
-#endif
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'a' );
             }
             AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
-#ifdef KELDYSH_FORMALISM
-                    THEN( "prefactor is -1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == -1. );
+
+                    if (KELDYSH){
+                        THEN( "prefactor is -1" ) {
+                            TC(indices);
+                            REQUIRE( indices.prefactor == -1. );
+                        }
                     }
-#else
-                    THEN( "prefactor is 1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
-                    }
-#endif
-                }
-#ifdef KELKELDYSH_FORMALISM
-                AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
-                    indices.iK = 1;
-                    THEN( "prefactor is 1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
+                    else{
+                        THEN( "prefactor is 1" ) {
+                            TC(indices);
+                            REQUIRE( indices.prefactor == 1. );
+                        }
                     }
                 }
-#endif
+
+                if (KELDYSH){
+                    AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
+                        indices.iK = 1;
+                        THEN( "prefactor is 1" ) {
+                            TC(indices);
+                            REQUIRE( indices.prefactor == 1. );
+                        }
+                    }
+                }
                 // TODO: potentially check all combinations?
             }
             AND_THEN( "conjugation is applied" ) {
@@ -222,14 +229,13 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             }
             AND_THEN( "w and v1 are unchanged, v2 gets a minus sign" ) {
                 REQUIRE( indices1.w  == indices.w   );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices1.v1 == indices.v1  );
-#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
-                REQUIRE( indices1.v2 == -indices.v2 );
-#else
-                REQUIRE( std::abs(-indices1.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-#endif
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices1.v1 == indices.v1);
+                    if (KELDYSH || ZERO_T) REQUIRE(indices1.v2 == -indices.v2);
+                    else
+                        REQUIRE(std::abs(
+                                -indices1.v2 - indices.v2 + floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2)) < 1e-10);
+                }
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices1.channel == 'p' );
@@ -254,14 +260,14 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             }
             AND_THEN( "w and v2 are unchanged, v1 gets a minus sign" ) {
                 REQUIRE( indices2.w  == indices.w   );
-#if MAX_DIAG_CLASS > 1
-#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
-                REQUIRE( indices2.v1 == -indices.v1 );
-#else
-                REQUIRE( std::abs(-indices2.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-#endif
-                REQUIRE( indices2.v2 == indices.v2  );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    if (KELDYSH || ZERO_T) REQUIRE(indices2.v1 == -indices.v1);
+                    else
+                        REQUIRE(std::abs(
+                                -indices2.v1 - indices.v1 + floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2)) < 1e-10);
+
+                    REQUIRE(indices2.v2 == indices.v2);
+                }
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices2.channel == 'p' );
@@ -286,15 +292,19 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             }
             AND_THEN( "w remains unchanged, v1 and v2 get a minus sign" ) {
                 REQUIRE( indices3.w  == indices.w   );
-#if MAX_DIAG_CLASS > 1
-#if defined(KELDYSH_FORMALISM) or defined(ZERO_TEMP)
-                REQUIRE( indices3.v1 == -indices.v1 );
-                REQUIRE( indices3.v2 == -indices.v2 );
-#else
-                REQUIRE( std::abs(-indices3.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-                REQUIRE( std::abs(-indices3.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-#endif
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    if (KELDYSH || ZERO_T) {
+                        REQUIRE(indices3.v1 == -indices.v1);
+                        REQUIRE(indices3.v2 == -indices.v2);
+                    } else {
+                        REQUIRE(std::abs(
+                                -indices3.v1 - indices.v1 + floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2)) <
+                                1e-10);
+                        REQUIRE(std::abs(
+                                -indices3.v2 - indices.v2 + floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2)) <
+                                1e-10);
+                    }
+                }
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 'p' );
@@ -318,12 +328,12 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                 REQUIRE( indices3.iK == indices12.iK );
                 REQUIRE( indices3.w == indices21.w );
                 REQUIRE( indices3.w == indices12.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices3.v1 == indices21.v1 );
-                REQUIRE( indices3.v1 == indices12.v1 );
-                REQUIRE( indices3.v2 == indices21.v2 );
-                REQUIRE( indices3.v2 == indices12.v2 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices3.v1 == indices21.v1);
+                    REQUIRE(indices3.v1 == indices12.v1);
+                    REQUIRE(indices3.v2 == indices21.v2);
+                    REQUIRE(indices3.v2 == indices12.v2);
+                }
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
                 REQUIRE( indices3.prefactor == indices21.prefactor );
@@ -342,60 +352,67 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
             }
-#ifdef KELDYSH_FORMALISM
-            AND_THEN( "w remains unchanged, v1 and v2 are flipped" ) {
-                REQUIRE( indices_c.w  == indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices_c.v1 == indices.v2 );
-                REQUIRE( indices_c.v2 == indices.v1 );
-#endif
+
+            if (KELDYSH){
+                AND_THEN( "w remains unchanged, v1 and v2 are flipped" ) {
+                    REQUIRE( indices_c.w  == indices.w );
+                    if (MAX_DIAG_CLASS > 1) {
+                        REQUIRE(indices_c.v1 == indices.v2);
+                        REQUIRE(indices_c.v2 == indices.v1);
+                    }
+                }
             }
-#else
-#ifdef ZERO_TEMP
-            AND_THEN( "v1 and v2 are flipped, all frequencies are multiplied with -1" ) {
-                REQUIRE( indices_c.w  == -indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices_c.v1 == -indices.v2 );
-                REQUIRE( indices_c.v2 == -indices.v1 );
-#endif
+            else{
+                if (ZERO_T){
+                    AND_THEN( "v1 and v2 are flipped, all frequencies are multiplied with -1" ) {
+                        REQUIRE( indices_c.w  == -indices.w );
+                        if (MAX_DIAG_CLASS > 1) {
+                        REQUIRE(indices_c.v1 == -indices.v2);
+                        REQUIRE(indices_c.v2 == -indices.v1);
+                        }
+                    }
+                }
+                else{
+                    AND_THEN( "v1 and v2 are flipped, all frequencies are multiplied with -1" ) {
+                        REQUIRE( indices_c.w  == -indices.w );
+                        if (MAX_DIAG_CLASS > 1) {
+                            REQUIRE(std::abs(-indices_c.v1 - indices.v2 + floor2bfreq(indices.w / 2) -
+                                             ceil2bfreq(indices.w / 2)) < 1e-10);
+                            REQUIRE(std::abs(-indices_c.v2 - indices.v1 + floor2bfreq(indices.w / 2) -
+                                             ceil2bfreq(indices.w / 2)) < 1e-10);
+                        }
+                    }
+                }
             }
-#else
-            AND_THEN( "v1 and v2 are flipped, all frequencies are multiplied with -1" ) {
-                REQUIRE( indices_c.w  == -indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( std::abs(-indices_c.v1 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-                REQUIRE( std::abs(-indices_c.v2 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-#endif
-            }
-#endif
-#endif
+
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 'p' );
             }
             AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
-#ifdef KELDYSH_FORMALISM
+                    if (KELDYSH){
                         THEN( "prefactor is -1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == -1. );
+                            TC(indices);
+                            REQUIRE( indices.prefactor == -1. );
+                        }
                     }
-#else
-                    THEN( "prefactor is 1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
-                    }
-#endif
-                }
-#ifdef KELDYSH_FORMALISM
-                AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
-                    indices.iK = 1;
-                    THEN( "prefactor is 1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
+                    else{
+                        THEN( "prefactor is 1" ) {
+                            TC(indices);
+                            REQUIRE( indices.prefactor == 1. );
+                        }
                     }
                 }
-#endif
+                if (KELDYSH){
+                    AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
+                        indices.iK = 1;
+                        THEN( "prefactor is 1" ) {
+                            TC(indices);
+                            REQUIRE( indices.prefactor == 1. );
+                        }
+                    }
+                }
                 // TODO: potentially check all combinations?
             }
             AND_THEN( "conjugation is applied" ) {
@@ -431,10 +448,10 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 are flipped" ) {
                 REQUIRE( indices1.w  == -indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices1.v1 == indices.v2 );
-                REQUIRE( indices1.v2 == indices.v1 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices1.v1 == indices.v2);
+                    REQUIRE(indices1.v2 == indices.v1);
+                }
             }
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices1.channel == 'a' );
@@ -459,10 +476,10 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             }
             AND_THEN( "frequencies remain unchanged" ) {
                 REQUIRE( indices2.w  == indices.w  );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices2.v1 == indices.v1 );
-                REQUIRE( indices2.v2 == indices.v2 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices2.v1 == indices.v1);
+                    REQUIRE(indices2.v2 == indices.v2);
+                }
             }
             AND_THEN( "channel is switched" ) {
                 REQUIRE( indices2.channel == 'a' );
@@ -487,10 +504,10 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             }
             AND_THEN( "w gets a minus sign, v1 and v2 are flipped" ) {
                 REQUIRE( indices3.w  == -indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices3.v1 == indices.v2 );
-                REQUIRE( indices3.v2 == indices.v1 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices3.v1 == indices.v2);
+                    REQUIRE(indices3.v2 == indices.v1);
+                }
             }
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices3.channel == 't' );
@@ -514,12 +531,12 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
                 REQUIRE( indices3.iK == indices12.iK );
                 REQUIRE( indices3.w == indices21.w );
                 REQUIRE( indices3.w == indices12.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices3.v1 == indices21.v1 );
-                REQUIRE( indices3.v1 == indices12.v1 );
-                REQUIRE( indices3.v2 == indices21.v2 );
-                REQUIRE( indices3.v2 == indices12.v2 );
-#endif
+                if (MAX_DIAG_CLASS > 1) {
+                    REQUIRE(indices3.v1 == indices21.v1);
+                    REQUIRE(indices3.v1 == indices12.v1);
+                    REQUIRE(indices3.v2 == indices21.v2);
+                    REQUIRE(indices3.v2 == indices12.v2);
+                }
                 REQUIRE( indices3.channel == indices21.channel );
                 REQUIRE( indices3.channel == indices12.channel );
                 REQUIRE( indices3.prefactor == indices21.prefactor );
@@ -538,60 +555,66 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
             }
-#ifdef KELDYSH_FORMALISM
-            AND_THEN( "w gets a minus sign, v1 and v2 remain unchanged" ) {
-                REQUIRE( indices_c.w  == -indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices_c.v1 == indices.v1 );
-                REQUIRE( indices_c.v2 == indices.v2 );
-#endif
+            if (KELDYSH){
+                AND_THEN( "w gets a minus sign, v1 and v2 remain unchanged" ) {
+                    REQUIRE( indices_c.w  == -indices.w );
+                    if (MAX_DIAG_CLASS > 1) {
+                        REQUIRE(indices_c.v1 == indices.v1);
+                        REQUIRE(indices_c.v2 == indices.v2);
+                    }
+                }
             }
-#else
-#ifdef ZERO_TEMP
-                AND_THEN( "v1 and v2 get a minus sign, w remains unchanged" ) {
-                REQUIRE( indices_c.w  == indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( indices_c.v1 == -indices.v1 );
-                REQUIRE( indices_c.v2 == -indices.v2 );
-#endif
+            else{
+                if (ZERO_T){
+                    AND_THEN( "v1 and v2 get a minus sign, w remains unchanged" ) {
+                        REQUIRE( indices_c.w  == indices.w );
+                        if (MAX_DIAG_CLASS > 1) {
+                            REQUIRE(indices_c.v1 == -indices.v1);
+                            REQUIRE(indices_c.v2 == -indices.v2);
+                        }
+                    }
+                }
+                else{
+                    AND_THEN( "v1 and v2 get a minus sign, w remains unchanged" ) {
+                        REQUIRE( indices_c.w  == indices.w );
+                        if (MAX_DIAG_CLASS > 1) {
+                            REQUIRE(std::abs(-indices_c.v1 - indices.v1 + floor2bfreq(indices.w / 2) -
+                                             ceil2bfreq(indices.w / 2)) < 1e-10);
+                            REQUIRE(std::abs(-indices_c.v2 - indices.v2 + floor2bfreq(indices.w / 2) -
+                                             ceil2bfreq(indices.w / 2)) < 1e-10);
+                        }
+                    }
+                }
             }
-#else
-            AND_THEN( "v1 and v2 get a minus sign, w remains unchanged" ) {
-                REQUIRE( indices_c.w  == indices.w );
-#if MAX_DIAG_CLASS > 1
-                REQUIRE( std::abs(-indices_c.v1 -indices.v1 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-                REQUIRE( std::abs(-indices_c.v2 -indices.v2 + floor2bfreq(indices.w/2) - ceil2bfreq(indices.w/2)) < 1e-10);
-#endif
-            }
-#endif
-#endif
+
             AND_THEN( "channel remains unchanged" ) {
                 REQUIRE( indices_c.channel == 't' );
             }
             AND_THEN( "prefactor is 1 or -1, depending on Keldysh index" ) {
                 AND_GIVEN( "Keldysh index is 0 = 11|11" ) {
                     indices.iK = 0;
-#ifdef KELDYSH_FORMALISM
-                    THEN( "prefactor is -1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == -1. );
+                    if (KELDYSH){
+                        THEN( "prefactor is -1" ) {
+                            TC(indices);
+                            REQUIRE( indices.prefactor == -1. );
+                        }
                     }
-#else
-                    THEN( "prefactor is 1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
-                    }
-#endif
-                }
-#ifdef KELDYSH_FORMALISM
-                AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
-                    indices.iK = 1;
-                    THEN( "prefactor is 1" ) {
-                        TC(indices);
-                        REQUIRE( indices.prefactor == 1. );
+                    else{
+                        THEN( "prefactor is 1" ) {
+                            TC(indices);
+                            REQUIRE( indices.prefactor == 1. );
+                        }
                     }
                 }
-#endif
+                if (KELDYSH){
+                    AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
+                        indices.iK = 1;
+                        THEN( "prefactor is 1" ) {
+                            TC(indices);
+                            REQUIRE( indices.prefactor == 1. );
+                        }
+                    }
+                }
                 // TODO: potentially check all combinations?
             }
             AND_THEN( "conjugation is applied" ) {
@@ -601,7 +624,6 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
                 REQUIRE( !indices_c.asymmetry_transform );
             }
         }
-
     }
 };
 
