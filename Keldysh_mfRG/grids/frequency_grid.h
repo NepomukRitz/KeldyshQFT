@@ -319,35 +319,62 @@ auto FrequencyGrid::wscale_from_wmax(double & Wscale, const double w1, const dou
 /**
  * Initializes frequency grids for a vertex
  */
-class VertexFrequencyGrid {
+template<K_class>
+class VertexFrequencyGrid {};
+template<>
+class VertexFrequencyGrid<k1> {
 public:
-    FrequencyGrid b_K1;
-    FrequencyGrid b_K2;
-    FrequencyGrid f_K2;
-    FrequencyGrid b_K3;
-    FrequencyGrid f_K3;
+    FrequencyGrid b;
 
 
-    VertexFrequencyGrid(double Lambda) : b_K1('b', 1, Lambda),
-                                         b_K2('b', 2, Lambda),
-                                         f_K2('f', 2, Lambda),
-                                         b_K3('b', 3, Lambda),
-                                         f_K3('f', 3, Lambda) {};
+    VertexFrequencyGrid<k1>(double Lambda) : b('b', 1, Lambda) {};
 
     void rescale_grid(double Lambda) {
-        b_K1.rescale_grid(Lambda);
-        b_K2.rescale_grid(Lambda);
-        f_K2.rescale_grid(Lambda);
-        b_K3.rescale_grid(Lambda);
-        f_K3.rescale_grid(Lambda);
+        b.rescale_grid(Lambda);
     }
 
     void initialize_grid(double scale) {
-        b_K1.initialize_grid(scale);
-        b_K2.initialize_grid(scale);
-        f_K2.initialize_grid(scale);
-        b_K3.initialize_grid(scale);
-        f_K3.initialize_grid(scale);
+        b.initialize_grid(scale);
+    }
+};
+template<>
+class VertexFrequencyGrid<k2> {
+public:
+    FrequencyGrid b;
+    FrequencyGrid f;
+
+
+    VertexFrequencyGrid<k2>(double Lambda) : b('b', 2, Lambda),
+                                         f('f', 2, Lambda) {};
+
+    void rescale_grid(double Lambda) {
+        b.rescale_grid(Lambda);
+        f.rescale_grid(Lambda);
+    }
+
+    void initialize_grid(double scale) {
+        b.initialize_grid(scale);
+        f.initialize_grid(scale);
+    }
+};
+template<>
+class VertexFrequencyGrid<k3> {
+public:
+    FrequencyGrid b;
+    FrequencyGrid f;
+
+
+    VertexFrequencyGrid<k3>(double Lambda) : b('b', 3, Lambda),
+                                         f('f', 3, Lambda) {};
+
+    void rescale_grid(double Lambda) {
+        b.rescale_grid(Lambda);
+        f.rescale_grid(Lambda);
+    }
+
+    void initialize_grid(double scale) {
+        b.initialize_grid(scale);
+        f.initialize_grid(scale);
     }
 };
 

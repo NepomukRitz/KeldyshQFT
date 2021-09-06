@@ -18,7 +18,7 @@
 #include "vertex_data.h"
 
 template <typename Q> class fullvert; // forward declaration of fullvert
-template <typename Q> class vertexDataContainer; // forward declaration of vertexDataContainer
+template <int k, typename Q> class vertexDataContainer; // forward declaration of vertexDataContainer
 template <typename Q> class vertexInterpolator; // forward declaration of vertexInterpolator
 
 template <typename Q>
@@ -93,11 +93,9 @@ public:
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
     void update_grid(double Lambda);
-    void update_grid(const VertexFrequencyGrid &frequencies_new);
-    void update_grid(const VertexFrequencyGrid &frequencyGrid_in, const rvert<Q>& rvert4data);
-    void update_grid_K1(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data);
-    void update_grid_K2(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data);
-    void update_grid_K3(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data);
+
+    template<K_class k>
+    void update_grid(const VertexFrequencyGrid<k> &frequencyGrid_in, const rvert<Q>& rvert4data);
 
     /** K1-functionality */
 
@@ -131,9 +129,9 @@ public:
 
 
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 += rhs.vertexDataContainer<Q>::K1;
-        if (MAX_DIAG_CLASS >= 2) vertexDataContainer<Q>::K2 += rhs.vertexDataContainer<Q>::K2;
-        if (MAX_DIAG_CLASS >= 3) vertexDataContainer<Q>::K3 += rhs.vertexDataContainer<Q>::K3;
+        if (MAX_DIAG_CLASS >= 0) vertexInterpolator<Q>::K1 += rhs.vertexInterpolator<Q>::K1;
+        if (MAX_DIAG_CLASS >= 2) vertexInterpolator<Q>::K2 += rhs.vertexInterpolator<Q>::K2;
+        if (MAX_DIAG_CLASS >= 3) vertexInterpolator<Q>::K3 += rhs.vertexInterpolator<Q>::K3;
         return *this;
     }
     friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
@@ -141,9 +139,9 @@ public:
         return lhs;
     }
     auto operator*= (double alpha) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 *= alpha;
-        if (MAX_DIAG_CLASS >= 2) vertexDataContainer<Q>::K2 *= alpha;
-        if (MAX_DIAG_CLASS >= 3) vertexDataContainer<Q>::K3 *= alpha;
+        if (MAX_DIAG_CLASS >= 0) vertexInterpolator<Q>::K1 *= alpha;
+        if (MAX_DIAG_CLASS >= 2) vertexInterpolator<Q>::K2 *= alpha;
+        if (MAX_DIAG_CLASS >= 3) vertexInterpolator<Q>::K3 *= alpha;
         return *this;
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
@@ -151,9 +149,9 @@ public:
         return lhs;
     }
     auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 *= rhs.vertexDataContainer<Q>::K1;
-        if (MAX_DIAG_CLASS >= 2) vertexDataContainer<Q>::K2 *= rhs.vertexDataContainer<Q>::K2;
-        if (MAX_DIAG_CLASS >= 3) vertexDataContainer<Q>::K3 *= rhs.vertexDataContainer<Q>::K3;
+        if (MAX_DIAG_CLASS >= 0) vertexInterpolator<Q>::K1 *= rhs.vertexInterpolator<Q>::K1;
+        if (MAX_DIAG_CLASS >= 2) vertexInterpolator<Q>::K2 *= rhs.vertexInterpolator<Q>::K2;
+        if (MAX_DIAG_CLASS >= 3) vertexInterpolator<Q>::K3 *= rhs.vertexInterpolator<Q>::K3;
         return *this;
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
@@ -161,9 +159,9 @@ public:
         return lhs;
     }
     auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) vertexDataContainer<Q>::K1 -= rhs.vertexDataContainer<Q>::K1;
-        if (MAX_DIAG_CLASS >= 2) vertexDataContainer<Q>::K2 -= rhs.vertexDataContainer<Q>::K2;
-        if (MAX_DIAG_CLASS >= 3) vertexDataContainer<Q>::K3 -= rhs.vertexDataContainer<Q>::K3;
+        if (MAX_DIAG_CLASS >= 0) vertexInterpolator<Q>::K1 -= rhs.vertexInterpolator<Q>::K1;
+        if (MAX_DIAG_CLASS >= 2) vertexInterpolator<Q>::K2 -= rhs.vertexInterpolator<Q>::K2;
+        if (MAX_DIAG_CLASS >= 3) vertexInterpolator<Q>::K3 -= rhs.vertexInterpolator<Q>::K3;
         return *this;
     }
     friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
@@ -486,78 +484,117 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
-    VertexFrequencyGrid frequencies_new = this->frequencies;  // new frequency grid
-    frequencies_new.rescale_grid(Lambda);                     // rescale new frequency grid
-    update_grid(frequencies_new);
-}
+    if (MAX_DIAG_CLASS >= 1) {
 
-template <typename Q> void rvert<Q>::update_grid(const VertexFrequencyGrid& frequencies_new) {
+        VertexFrequencyGrid<k1> frequenciesK1_new = vertexInterpolator<Q>::frequencies_K1;  // new frequency grid
+        frequenciesK1_new.rescale_grid(Lambda);                     // rescale new frequency grid
+        update_grid<k1>(frequenciesK1_new, *this);
 
-    update_grid(frequencies_new, *this);
-}
-
-template <typename Q> void rvert<Q>::update_grid(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
-    if (MAX_DIAG_CLASS >= 1) update_grid_K1(frequencies_new, rvert4data);
-    if (MAX_DIAG_CLASS >= 2) update_grid_K2(frequencies_new, rvert4data);
-    if (MAX_DIAG_CLASS >= 3) update_grid_K3(frequencies_new, rvert4data);
-
-    this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
-}
-
-template <typename Q> void rvert<Q>::update_grid_K1(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
-    vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
-    for (int iK1=0; iK1<nK_K1; ++iK1) {
-        for (int iw=1; iw<nw1-1; ++iw) {
-            for (int i_in=0; i_in<n_in; ++i_in) {
-                IndicesSymmetryTransformations indices (iK1, frequencies_new.b_K1.ws[iw], 0., 0., i_in, channel);
-                // interpolate old values to new vector
-                K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = vertexInterpolator<Q>::template interpolate<k1>(indices);
-            }
-        }
     }
-    this->K1 = K1_new; // update vertex to new interpolated values
-}
-template <typename Q> void rvert<Q>::update_grid_K2(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
-    vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
-    for (int iK2=0; iK2<nK_K2; ++iK2) {
-        for (int iw=1; iw<nw2-1; ++iw) {
-            for (int iv=1; iv<nv2-1; ++iv) {
-                for (int i_in = 0; i_in<n_in; ++i_in) {
-                    IndicesSymmetryTransformations indices (iK2, frequencies_new.b_K2.ws[iw],
-                                                            frequencies_new.f_K2.ws[iv],
-                                                            0.,
-                                                            i_in, channel);
-                    // interpolate old values to new vector
-                    K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
-                            = vertexInterpolator<Q>::template interpolate<k2>(indices);
-                }
-            }
-        }
+    if (MAX_DIAG_CLASS >= 2) {
+
+        VertexFrequencyGrid<k2> frequenciesK2_new = vertexInterpolator<Q>::frequencies_K2;  // new frequency grid
+        frequenciesK2_new.rescale_grid(Lambda);                     // rescale new frequency grid
+        update_grid<k2>(frequenciesK2_new, *this);
+
     }
-    this->K2 = K2_new; // update vertex to new interpolated values
+    if (MAX_DIAG_CLASS >= 3) {
+        VertexFrequencyGrid<k3> frequenciesK3_new = vertexInterpolator<Q>::frequencies_K3;  // new frequency grid
+        frequenciesK3_new.rescale_grid(Lambda);                     // rescale new frequency grid
+        update_grid<k3>(frequenciesK3_new, *this);
+
+    }
 }
-template <typename Q> void rvert<Q>::update_grid_K3(const VertexFrequencyGrid& frequencies_new, const rvert<Q>& rvert4data) {
-    vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
-    for (int iK3=0; iK3<nK_K3; ++iK3) {
-        for (int iw=1; iw<nw3-1; ++iw) {
-            for (int iv=1; iv<nv3-1; ++iv) {
-                for (int ivp=1; ivp<nv3-1; ++ivp) {
-                    for (int i_in = 0; i_in<n_in; ++i_in) {
-                        IndicesSymmetryTransformations indices (iK3, frequencies_new.b_K3.ws[iw],
-                                                                frequencies_new.f_K3.ws[iv],
-                                                                frequencies_new.f_K3.ws[ivp],
-                                                                i_in, channel);
+
+
+
+
+namespace {
+
+    template <K_class k, typename Q>
+    class UpdateGrid { };
+    template<typename Q>
+    class UpdateGrid<k1,Q> {
+    public:
+        void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k1>& frequencies_new, const rvert<Q>& rvert4data) {
+            vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
+            for (int iK1=0; iK1<nK_K1; ++iK1) {
+                for (int iw=1; iw<nw1-1; ++iw) {
+                    for (int i_in=0; i_in<n_in; ++i_in) {
+                        IndicesSymmetryTransformations indices (iK1, frequencies_new.b.ws[iw], 0., 0., i_in, vertex.channel);
                         // interpolate old values to new vector
-                        K3_new[iK3 * nw3 * nv3 * nv3 * n_in + iw * nv3 * nv3 * n_in + iv * nv3 * n_in + ivp * n_in +
-                               i_in]
-                                = vertexInterpolator<Q>::template interpolate<k3>(indices);
+                        K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = vertex.template interpolate<k1>(indices);
                     }
                 }
             }
+            vertex.K1 = K1_new; // update vertex to new interpolated values
+            vertex.frequencies_K1 = frequencies_new;
         }
-    }
-    this->K3 = K3_new; // update vertex to new interpolated values
+    };
+    template<typename Q>
+    class UpdateGrid<k2,Q> {
+    public:
+         void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k2>& frequencies_new, const rvert<Q>& rvert4data) {
+            vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
+            for (int iK2=0; iK2<nK_K2; ++iK2) {
+                for (int iw=1; iw<nw2-1; ++iw) {
+                    for (int iv=1; iv<nv2-1; ++iv) {
+                        for (int i_in = 0; i_in<n_in; ++i_in) {
+                            IndicesSymmetryTransformations indices (iK2, frequencies_new.b.ws[iw],
+                                                                    frequencies_new.f.ws[iv],
+                                                                    0.,
+                                                                    i_in, vertex.channel);
+                            // interpolate old values to new vector
+                            K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
+                                    = vertex.template interpolate<k2>(indices);
+                        }
+                    }
+                }
+            }
+            vertex.K2 = K2_new; // update vertex to new interpolated values
+             vertex.frequencies_K2 = frequencies_new;
+        }
+    };
+    template<typename Q>
+    class UpdateGrid<k3,Q> {
+    public:
+        void operator() (rvert<Q>& vertex, const VertexFrequencyGrid<k3>& frequencies_new, const rvert<Q>& rvert4data) {
+            vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
+            for (int iK3=0; iK3<nK_K3; ++iK3) {
+                for (int iw=1; iw<nw3-1; ++iw) {
+                    for (int iv=1; iv<nv3-1; ++iv) {
+                        for (int ivp=1; ivp<nv3-1; ++ivp) {
+                            for (int i_in = 0; i_in<n_in; ++i_in) {
+                                IndicesSymmetryTransformations indices (iK3, frequencies_new.b.ws[iw],
+                                                                        frequencies_new.f.ws[iv],
+                                                                        frequencies_new.f.ws[ivp],
+                                                                        i_in, vertex.channel);
+                                // interpolate old values to new vector
+                                K3_new[iK3 * nw3 * nv3 * nv3 * n_in + iw * nv3 * nv3 * n_in + iv * nv3 * n_in + ivp * n_in +
+                                       i_in]
+                                        = vertex.template interpolate<k3>(indices);
+                            }
+                        }
+                    }
+                }
+            }
+            vertex.K3 = K3_new; // update vertex to new interpolated values
+            vertex.frequencies_K3 = frequencies_new;
+        }
+
+    };
 }
+
+
+template <typename Q>
+template<K_class k>
+void rvert<Q>::update_grid(const VertexFrequencyGrid<k>& frequencies_new, const rvert<Q>& rvert4data) {
+    UpdateGrid<k,Q>() (*this, frequencies_new, rvert4data);
+}
+
+
+
+
 
 
 template<typename Q> auto sign_index(Q freq) -> int {
@@ -576,7 +613,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             default: ;
         }
         for (int itw = 1; itw < nw1-1; itw++) {
-            double w_in = this->frequencies.b_K1.ws[itw];
+            double w_in = this->frequencies_K1.b.ws[itw];
             IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
             int sign_w = sign_index(indices.w);
             int trafo_index = freq_transformations.K1[itK][sign_w];
@@ -594,12 +631,12 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                 if (indices.asymmetry_transform)
                     result = indices.prefactor * vertex_symmrelated.K1_val(itK, itw_new, 0);
                 else
-                    result = indices.prefactor * vertexDataContainer<Q>::K1_val(itK, itw_new,0);
+                    result = indices.prefactor * vertexInterpolator<Q>::K1_val(itK, itw_new,0);
 
                 if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                    vertexDataContainer<Q>::K1_setvert(itK, itw, 0, myconj(result));
+                    vertexInterpolator<Q>::K1_setvert(itK, itw, 0, myconj(result));
                 else
-                    vertexDataContainer<Q>::K1_setvert(itK, itw, 0, result);
+                    vertexInterpolator<Q>::K1_setvert(itK, itw, 0, result);
             }
         }
 
@@ -614,7 +651,7 @@ void rvert<Q>::K1_crossproject() {
         for (int iw = 1; iw < nw1-1; ++iw) {
             Q projected_value = K1_BZ_average(iK, iw);
             for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
-                vertexDataContainer<Q>::K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
+                vertexInterpolator<Q>::K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
             }
         }
     }
@@ -624,15 +661,15 @@ template<typename Q>
 Q rvert<Q>::K1_BZ_average(const int iK, const int iw) {
     /// Perform the average over the BZ by calculating the q-sum over the REDUCED BZ (see notes for details!)
     Q value = 0.;
-    value += vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(0, 0));
-    value += vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
-    value += 2. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, 0));
+    value += vertexInterpolator<Q>::K1_val(iK, iw, momentum_index(0, 0));
+    value += vertexInterpolator<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
+    value += 2. * vertexInterpolator<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, 0));
     for (int n = 1; n < glb_N_q - 1; ++n) {
-        value += 4. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(n, 0));
-        value += 4. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, n));
-        value += 4. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(n, n));
+        value += 4. * vertexInterpolator<Q>::K1_val(iK, iw, momentum_index(n, 0));
+        value += 4. * vertexInterpolator<Q>::K1_val(iK, iw, momentum_index(glb_N_q - 1, n));
+        value += 4. * vertexInterpolator<Q>::K1_val(iK, iw, momentum_index(n, n));
         for (int np = 1; np < n; ++np) {
-            value += 8. * vertexDataContainer<Q>::K1_val(iK, iw, momentum_index(n, np));
+            value += 8. * vertexInterpolator<Q>::K1_val(iK, iw, momentum_index(n, np));
         }
     }
     value /= 4. * (glb_N_q - 1) * (glb_N_q - 1);
@@ -653,8 +690,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
         for (int itw = 1; itw < nw2-1; itw++){
             for (int itv = 1; itv < nv2-1; itv++){
-                double w_in = this->frequencies.b_K2.ws[itw];
-                double v_in = this->frequencies.f_K2.ws[itv];
+                double w_in = this->frequencies_K2.b.ws[itw];
+                double v_in = this->frequencies_K2.f.ws[itv];
                 IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
                 int sign_w = sign_index(w_in);
                 int sign_v1 = sign_index(v_in);
@@ -671,9 +708,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                         result = vertexInterpolator<Q>::template interpolate<k2>(indices);
 
                     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                        vertexDataContainer<Q>::K2_setvert(itK, itw, itv, 0, myconj(result));
+                        vertexInterpolator<Q>::K2_setvert(itK, itw, itv, 0, myconj(result));
                     else
-                        vertexDataContainer<Q>::K2_setvert(itK, itw, itv, 0, result);
+                        vertexInterpolator<Q>::K2_setvert(itK, itw, itv, 0, result);
                 }
             }
         }
@@ -697,9 +734,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         for (int itw = 1; itw < nw3-1; itw++){
             for (int itv = 1; itv < nv3-1; itv++){
                 for (int itvp = 1; itvp < nv3-1; itvp++) {
-                    double w_in = this->frequencies.b_K3.ws[itw];
-                    double v_in = this->frequencies.f_K3.ws[itv];
-                    double vp_in = this->frequencies.f_K3.ws[itvp];
+                    double w_in = this->frequencies_K3.b.ws[itw];
+                    double v_in = this->frequencies_K3.f.ws[itv];
+                    double vp_in = this->frequencies_K3.f.ws[itvp];
                     IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
                     int sign_w = sign_index(w_in);
                     int sign_f =  itv+itvp<nFER3? 0 : 1;    // this corresponds to "sign_index(v_in + vp_in)" assuming
@@ -719,9 +756,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                             result = vertexInterpolator<Q>::template interpolate<k3>(indices);
 
                         if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                            vertexDataContainer<Q>::K3_setvert(itK, itw, itv, itvp, 0,  myconj(result));
+                            vertexInterpolator<Q>::K3_setvert(itK, itw, itv, itvp, 0,  myconj(result));
                         else
-                            vertexDataContainer<Q>::K3_setvert(itK, itw, itv, itvp, 0,  result);
+                            vertexInterpolator<Q>::K3_setvert(itK, itw, itv, itvp, 0,  result);
                     }
                 }
             }

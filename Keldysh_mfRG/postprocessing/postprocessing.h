@@ -140,7 +140,7 @@ void sum_rule_K1tK(const std::string filename) {
     for (int iLambda=0; iLambda<nLambda; ++iLambda) {
         State<state_datatype> state = read_hdf(filename, iLambda, nLambda);           // read state
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
-        double wmax = state.vertex[0].tvertex().frequencies.b_K1.w_upper;   // upper integration boundary
+        double wmax = state.vertex[0].tvertex().frequencies_K1.b.w_upper;   // upper integration boundary
 
         if (KELDYSH){
             sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
@@ -172,7 +172,7 @@ void check_Kramers_Kronig(const std::string filename) {
         rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im);  // compute real part from imaginary part via KK
 
         // check Kramers-Kronig for retarded component of K1r
-        rvec wK1 = state.vertex[0].avertex().frequencies.b_K1.ws;  // frequency grid points
+        rvec wK1 = state.vertex[0].avertex().frequencies_K1.b.ws;  // frequency grid points
         // get retarded component of K1a (first half of stored data points)
         rvec K1aR_re = state.vertex[0].avertex().K1(0, nw1-1).real();  // real part from flow
         rvec K1aR_im = state.vertex[0].avertex().K1(0, nw1-1).imag();  // imaginary part from flow

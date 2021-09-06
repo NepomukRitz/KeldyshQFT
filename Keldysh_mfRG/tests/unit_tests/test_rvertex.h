@@ -22,7 +22,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
     for (int iw = 1; iw<(nBOS-1)/2; iw++){
-        indices.w = avertex.frequencies.b_K1.ws[iw];
+        indices.w = avertex.frequencies_K1.b.ws[iw];
         if (avertex.K1_val(iK, iw, i_in) != avertex.K1_val(iK, nBOS -1 - iw, i_in)) {
             asymmetry += 1;
         }
@@ -61,10 +61,10 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
     value = 0.;
     ;
     for (int iw = 1; iw<=(nBOS2-1)/2; iw++){
-        double correction = floor2bfreq(avertex.frequencies.b_K2.ws[iw] / 2) - ceil2bfreq(avertex.frequencies.b_K2.ws[iw] / 2);
+        double correction = floor2bfreq(avertex.frequencies_K2.b.ws[iw] / 2) - ceil2bfreq(avertex.frequencies_K2.b.ws[iw] / 2);
         for (int iv = 1; iv<(nFER2)/2; iv++) {
-            indices.w = avertex.frequencies.b_K2.ws[iw];
-            indices.v1 = avertex.frequencies.f_K2.ws[iv]
+            indices.w = avertex.frequencies_K2.b.ws[iw];
+            indices.v1 = avertex.frequencies_K2.f.ws[iv]
                          #ifndef ZERO_TEMP   // Matsubara T>0
                          + correction
                          #endif
@@ -72,7 +72,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
             if (std::abs(avertex.K2_val(iK, iw, iv, i_in) - avertex.K2_val(iK, nBOS2 - 1 - iw, iv, i_in)) > asymmetry_tolerance) {
                 asymmetry += 1;
             }
-            double compare_val = Interpolate<k2, state_datatype>()(indices, avertex);
+            double compare_val = avertex.template interpolate<k2>(indices);
             if (std::abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val) > asymmetry_tolerance) {
                 asymmetry += std::abs(avertex.K2_val(iK, iw, nFER2 - 1 - iv, i_in) - compare_val);
             }
@@ -116,16 +116,16 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
     double asymmetry = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     for (int iw = 1; iw<=(nBOS3-1)/2; iw++){
-        double correction = floor2bfreq(avertex.frequencies.b_K3.ws[iw] / 2) - ceil2bfreq(avertex.frequencies.b_K3.ws[iw] / 2);
+        double correction = floor2bfreq(avertex.frequencies_K3.b.ws[iw] / 2) - ceil2bfreq(avertex.frequencies_K3.b.ws[iw] / 2);
         for (int iv = 1; iv<(nFER3)/2; iv++) {
             for (int ivp = iv; ivp<(nFER3-1-iv); ivp++) {
-                indices.w = avertex.frequencies.b_K3.ws[iw];
-                indices.v1 = avertex.frequencies.f_K3.ws[iv]
+                indices.w = avertex.frequencies_K3.b.ws[iw];
+                indices.v1 = avertex.frequencies_K3.f.ws[iv]
                              #ifndef ZERO_TEMP   // Matsubara T>0
                              + correction
                              #endif
                                      ;
-                indices.v2 = avertex.frequencies.f_K3.ws[ivp]
+                indices.v2 = avertex.frequencies_K3.f.ws[ivp]
                              #ifndef ZERO_TEMP   // Matsubara T>0
                              + correction
                              #endif
@@ -133,7 +133,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                 //if (avertex.K3_val(iK, iw, iv, ivp, i_in) != avertex.K3_val(iK, nBOS3 - 1 - iw, iv, ivp, i_in)) {
                 //    asymmetry += 1;
                 //}
-                double compare_val = Interpolate<k3, state_datatype>()(indices, avertex);
+                double compare_val = avertex.template interpolate<k3>(indices);
                 double savedK3_val = avertex.K3_val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in);
                 double absdiff = std::abs(compare_val - savedK3_val);
                 if (absdiff > 1e-4) {

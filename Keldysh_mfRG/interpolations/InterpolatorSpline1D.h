@@ -46,8 +46,8 @@
 
 // unnamed namespace only because the implementation is in this
 // header file and we don't want to export symbols to the obj files
-namespace
-{
+//namespace
+//{
 
 
     // spline interpolation
@@ -71,7 +71,7 @@ namespace
 
     protected:
     std::vector<double> m_x;
-    vec<Q> m_y;            // x,y coordinates of points
+    vec<Q> K1;            // x,y coordinates of points
     // interpolation parameters
     // f(x) = a_i + b_i*(x-x_i) + c_i*(x-x_i)^2 + d_i*(x-x_i)^3
     // where a_i = y_i, or else it won't go through grid points
@@ -137,7 +137,7 @@ namespace
 
     // returns the input data points
     std::vector<double> get_x() const { return m_x; }
-    vec<Q> get_y() const { return m_y; }
+    vec<Q> get_y() const { return K1; }
     Q get_x_min() const { assert(!m_x.empty()); return m_x.front(); }
     Q get_x_max() const { assert(!m_x.empty()); return m_x.back(); }
 
@@ -213,7 +213,7 @@ namespace
     template <typename Q>
     void spline<Q>::set_coeffs_from_b()
     {
-    assert(m_x.size()==m_y.size());
+    assert(m_x.size() == K1.size());
     assert(m_x.size()==m_b.size());
     assert(m_x.size()>2);
     size_t n=m_b.size();
@@ -225,7 +225,7 @@ namespace
     for(size_t i=0; i<n-1; i++) {       /// i=n-1 not treated (only used for extrapolation to the right)
         const double h  = m_x[i+1]-m_x[i];      /// spacing
         // from continuity and differentiability condition
-        m_c[i] = ( 3.0*(m_y[i+1]-m_y[i])/h - (2.0*m_b[i]+m_b[i+1]) ) / h;   /// checked
+        m_c[i] = (3.0 * (K1[i + 1] - K1[i]) / h - (2.0 * m_b[i] + m_b[i + 1]) ) / h;   /// checked
         // from differentiability condition
         m_d[i] = ( (m_b[i+1]-m_b[i])/(3.0*h) - 2.0/3.0*m_c[i] ) / h;
     }
@@ -244,7 +244,7 @@ namespace
     m_type=type;
     m_made_monotonic=false;
     m_x=x;
-    m_y=y;
+        K1=y;
     int n = (int) x.size();
     // check strict monotonicity of input vector x
     for(int i=0; i<n-1; i++) {
@@ -260,7 +260,7 @@ namespace
         for(int i=0; i<n-1; i++) {
             m_d[i]=0.0;
             m_c[i]=0.0;
-            m_b[i]=(m_y[i+1]-m_y[i])/(m_x[i+1]-m_x[i]);
+            m_b[i]= (K1[i + 1] - K1[i]) / (m_x[i + 1] - m_x[i]);
         }
         // ignore boundary conditions, set slope equal to the last segment
         m_b[n-1]=m_b[n-2];
@@ -342,18 +342,18 @@ namespace
         for(int i=1; i<n-1; i++) {
             const double h  = m_x[i+1]-m_x[i];
             const double hl = m_x[i]-m_x[i-1];
-            m_b[i] = -h/(hl*(hl+h))*m_y[i-1] + (h-hl)/(hl*h)*m_y[i]
-                     +  hl/(h*(hl+h))*m_y[i+1];
+            m_b[i] = -h / (hl*(hl+h)) * K1[i - 1] + (h - hl) / (hl * h) * K1[i]
+                     + hl / (h*(hl+h)) * K1[i + 1];
         }
         // boundary conditions determine b[0] and b[n-1]
         if(m_left==first_deriv) {
             m_b[0]=m_left_value;
         } else if(m_left==second_deriv) {
             const double h = m_x[1]-m_x[0];
-            m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+3.0*(m_y[1]-m_y[0])/h);  /// checked
+            m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (K1[1] - K1[0]) / h);  /// checked
         } else if (m_left==third_deriv) {
             const double h = m_x[1]-m_x[0];
-            m_b[0]=-m_b[1]+m_left_value/6*h*h+2.0*(m_y[1]-m_y[0])/h;  /// added by me
+            m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (K1[1] - K1[0]) / h;  /// added by me
         } else {
             assert(false);
         }
@@ -362,12 +362,12 @@ namespace
             m_c[n-1]=0.0;
         } else if(m_right==second_deriv) {
             const double h = m_x[n-1]-m_x[n-2];
-            m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+3.0*(m_y[n-1]-m_y[n-2])/h); /// checked
+            m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+ 3.0 * (K1[n - 1] - K1[n - 2]) / h); /// checked
             m_c[n-1]=0.5*m_right_value; /// m_d[n-1] is set to 0. Is this correct/necessary?
         } else if (m_right==third_deriv) {
             const double h = m_x[n-1]-m_x[n-2];
-            m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+2.0*(m_y[n-1]-m_y[n-2])/h;  /// added by me
-            m_d[n-1]=m_y[n-1]-m_y[n-2] - m_b[n-2]; /// ???
+            m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (K1[n - 1] - K1[n - 2]) / h;  /// added by me
+            m_d[n-1]= K1[n - 1] - K1[n - 2] - m_b[n - 2]; /// ???
         } else {
             assert(false);
         }
@@ -387,7 +387,7 @@ namespace
     template <typename Q>
     bool spline<Q>::make_monotonic()
     {
-    assert(m_x.size()==m_y.size());
+    assert(m_x.size() == K1.size());
     assert(m_x.size()==m_b.size());
     assert(m_x.size()>2);
     bool modified = false;
@@ -397,8 +397,8 @@ namespace
     for(int i=0; i<n; i++) {
         int im1 = std::max(i-1, 0);
         int ip1 = std::min(i+1, n-1);
-        if( ((m_y[im1]<=m_y[i]) && (m_y[i]<=m_y[ip1]) && m_b[i]<0.0) ||
-            ((m_y[im1]>=m_y[i]) && (m_y[i]>=m_y[ip1]) && m_b[i]>0.0) ) {
+        if(((K1[im1] <= K1[i]) && (K1[i] <= K1[ip1]) && m_b[i] < 0.0) ||
+           ((K1[im1] >= K1[i]) && (K1[i] >= K1[ip1]) && m_b[i] > 0.0) ) {
             modified=true;
             m_b[i]=0.0;
         }
@@ -408,7 +408,7 @@ namespace
     //     sqrt(b[i]^2+b[i+1]^2) <= 3 |avg|, with avg=(y[i+1]-y[i])/h,
     for(int i=0; i<n-1; i++) {
         double h = m_x[i+1]-m_x[i];
-        double avg = (m_y[i+1]-m_y[i])/h;
+        double avg = (K1[i + 1] - K1[i]) / h;
         if( avg==0.0 && (m_b[i]!=0.0 || m_b[i+1]!=0.0) ) {
             modified=true;
             m_b[i]=0.0;
@@ -460,13 +460,13 @@ namespace
     Q interpol;
     if(x<m_x[0]) {
         // extrapolation to the left
-        interpol=(m_c0*h + m_b[0])*h + m_y[0];
+        interpol=(m_c0*h + m_b[0])*h + K1[0];
     } else if(x>m_x[n-1]) {
         // extrapolation to the right
-        interpol=(m_c[n-1]*h + m_b[n-1])*h + m_y[n-1];
+        interpol=(m_c[n-1]*h + m_b[n-1])*h + K1[n - 1];
     } else {
         // interpolation
-        interpol=((m_d[idx]*h + m_c[idx])*h + m_b[idx])*h + m_y[idx];
+        interpol=((m_d[idx]*h + m_c[idx])*h + m_b[idx])*h + K1[idx];
     }
     return interpol;
     }
@@ -701,7 +701,7 @@ namespace
 
 
 
-} // namespace
+//} // namespace
 
 
 

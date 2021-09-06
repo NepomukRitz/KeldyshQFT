@@ -119,8 +119,10 @@ public:
 
     // Interpolate vertex to updated grid
     void update_grid(double Lambda);
-    void update_grid(VertexFrequencyGrid newFrequencyGrid);
-    void update_grid(VertexFrequencyGrid newFrequencyGrid, fullvert<Q> &Fullvert4data);
+    template<K_class k>
+    void update_grid(VertexFrequencyGrid<k> newFrequencyGrid);
+    template<K_class k>
+    void update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data);
 
     //Norm of the vertex
     double sum_norm(int);
@@ -1004,9 +1006,15 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
 }
 
 template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &vertex) {
-    this->avertex.frequencies = vertex.avertex.frequencies;
-    this->pvertex.frequencies = vertex.pvertex.frequencies;
-    this->tvertex.frequencies = vertex.tvertex.frequencies;
+    this->avertex.frequencies_K1 = vertex.avertex.frequencies_K1;
+    this->avertex.frequencies_K2 = vertex.avertex.frequencies_K2;
+    this->avertex.frequencies_K3 = vertex.avertex.frequencies_K3;
+    this->pvertex.frequencies_K1 = vertex.pvertex.frequencies_K1;
+    this->pvertex.frequencies_K2 = vertex.pvertex.frequencies_K2;
+    this->pvertex.frequencies_K3 = vertex.pvertex.frequencies_K3;
+    this->tvertex.frequencies_K1 = vertex.tvertex.frequencies_K1;
+    this->tvertex.frequencies_K2 = vertex.tvertex.frequencies_K2;
+    this->tvertex.frequencies_K3 = vertex.tvertex.frequencies_K3;
 }
 
 template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
@@ -1014,15 +1022,19 @@ template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
     this->pvertex.update_grid(Lambda);
     this->tvertex.update_grid(Lambda);
 }
-template <typename Q> void fullvert<Q>::update_grid(VertexFrequencyGrid newFrequencyGrid) {
-    this->avertex.update_grid(newFrequencyGrid);
-    this->pvertex.update_grid(newFrequencyGrid);
-    this->tvertex.update_grid(newFrequencyGrid);
+template <typename Q>
+template<K_class k>
+void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid) {
+    this->avertex.template update_grid<k>(newFrequencyGrid, this->avertex);
+    this->pvertex.template update_grid<k>(newFrequencyGrid, this->pvertex);
+    this->tvertex.template update_grid<k>(newFrequencyGrid, this->tvertex);
 }
-template <typename Q> void fullvert<Q>::update_grid(VertexFrequencyGrid newFrequencyGrid, fullvert<Q>& Fullvert4data) {
-    this->avertex.update_grid(newFrequencyGrid, Fullvert4data.avertex);
-    this->pvertex.update_grid(newFrequencyGrid, Fullvert4data.pvertex);
-    this->tvertex.update_grid(newFrequencyGrid, Fullvert4data.tvertex);
+template <typename Q>
+template<K_class k>
+void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data) {
+    this->avertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.avertex);
+    this->pvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.pvertex);
+    this->tvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.tvertex);
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
@@ -1230,8 +1242,8 @@ public:
     explicit CostFullvert_Wscale_b_K1(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
 
     auto operator() (double wscale_test) -> double {
-        fullVert.avertex.frequencies.b_K1.initialize_grid(wscale_test);
-        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        fullVert.avertex.frequencies_K1.b.initialize_grid(wscale_test);
+        fullVert.template update_grid<k1>(fullVert.avertex.frequencies_K1, fullVert_backup);
         double result = fullVert.get_deriv_max_K1();
         return result;
     }
@@ -1245,8 +1257,8 @@ public:
     explicit CostFullvert_Wscale_b_K2(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
 
     auto operator() (double wscale_test) -> double {
-        fullVert.avertex.frequencies.b_K2.initialize_grid(wscale_test);
-        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        fullVert.avertex.frequencies_K2.b.initialize_grid(wscale_test);
+        fullVert.template update_grid<k2>(fullVert.avertex.frequencies_K2, fullVert_backup);
         double result = fullVert.get_deriv_max_K2();
         return result;
     }
@@ -1260,8 +1272,8 @@ public:
     explicit CostFullvert_Wscale_f_K2(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
 
     auto operator() (double wscale_test) -> double {
-        fullVert.avertex.frequencies.f_K2.initialize_grid(wscale_test);
-        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        fullVert.avertex.frequencies_K2.f.initialize_grid(wscale_test);
+        fullVert.template update_grid<k2>(fullVert.avertex.frequencies_K2, fullVert_backup);
         double result = fullVert.get_deriv_max_K2();
         return result;
     }
@@ -1275,8 +1287,8 @@ public:
     explicit CostFullvert_Wscale_b_K3(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
 
     auto operator() (double wscale_test) -> double {
-        fullVert.avertex.frequencies.b_K3.initialize_grid(wscale_test);
-        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        fullVert.avertex.frequencies_K3.b.initialize_grid(wscale_test);
+        fullVert.template update_grid<k3>(fullVert.avertex.frequencies_K3, fullVert_backup);
         double result = fullVert.get_deriv_max_K3();
         return result;
     }
@@ -1290,8 +1302,8 @@ public:
     explicit CostFullvert_Wscale_f_K3(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
 
     auto operator() (double wscale_test) -> double {
-        fullVert.avertex.frequencies.f_K3.initialize_grid(wscale_test);
-        fullVert.update_grid(fullVert.avertex.frequencies, fullVert_backup);
+        fullVert.avertex.frequencies_K3.f.initialize_grid(wscale_test);
+        fullVert.template update_grid<k3>(fullVert.avertex.frequencies_K3, fullVert_backup);
         double result = fullVert.get_deriv_max_K3();
         return result;
     }
@@ -1303,65 +1315,67 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     //fullvert_temp.update_grid(Lambda);
 
 
-    double a_Wscale = fullvert_temp.avertex.frequencies.b_K1.W_scale / 10.;
-    double m_Wscale = fullvert_temp.avertex.frequencies.b_K1.W_scale;
-    double b_Wscale = fullvert_temp.avertex.frequencies.b_K1.W_scale * 10;
+    double a_Wscale = fullvert_temp.avertex.frequencies_K1.b.W_scale / 10.;
+    double m_Wscale = fullvert_temp.avertex.frequencies_K1.b.W_scale;
+    double b_Wscale = fullvert_temp.avertex.frequencies_K1.b.W_scale * 10;
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(fullvert_temp);
     minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, true);
-    VertexFrequencyGrid frequencies_new = avertex.frequencies;
-    frequencies_new.b_K1.initialize_grid(m_Wscale*2.);
+    VertexFrequencyGrid<k1> frequenciesK1_new = avertex.frequencies_K1;
+    frequenciesK1_new.b.initialize_grid(m_Wscale*2.);
 
-    update_grid(frequencies_new);
-
-
+    update_grid<k1>(frequenciesK1_new);
 
 
 
 
-    a_Wscale = fullvert_temp.avertex.frequencies.f_K2.W_scale / 10.;
-    m_Wscale = fullvert_temp.avertex.frequencies.f_K2.W_scale;
-    b_Wscale = fullvert_temp.avertex.frequencies.f_K2.W_scale * 10;
+
+
+    VertexFrequencyGrid<k2> frequenciesK2_new = avertex.frequencies_K2;
+    a_Wscale = fullvert_temp.avertex.frequencies_K2.f.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.frequencies_K2.f.W_scale;
+    b_Wscale = fullvert_temp.avertex.frequencies_K2.f.W_scale * 10;
     CostFullvert_Wscale_f_K2<Q> cost_f_K2(fullvert_temp);
     minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 100, true);
-    frequencies_new = avertex.frequencies;
-    frequencies_new.f_K2.initialize_grid(m_Wscale*2.);
+    frequenciesK2_new = avertex.frequencies_K2;
+    frequenciesK2_new.f.initialize_grid(m_Wscale*2.);
 
-    update_grid(frequencies_new);
+    update_grid<k2>(frequenciesK2_new);
 
 
-    a_Wscale = fullvert_temp.avertex.frequencies.b_K2.W_scale / 10.;
-    m_Wscale = fullvert_temp.avertex.frequencies.b_K2.W_scale;
-    b_Wscale = fullvert_temp.avertex.frequencies.b_K2.W_scale * 10;
+    a_Wscale = fullvert_temp.avertex.frequencies_K2.b.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.frequencies_K2.b.W_scale;
+    b_Wscale = fullvert_temp.avertex.frequencies_K2.b.W_scale * 10;
     CostFullvert_Wscale_b_K2<Q> cost_bK2(fullvert_temp);
     minimizer(cost_bK2, a_Wscale, m_Wscale, b_Wscale, 100, true);
-    frequencies_new = avertex.frequencies;
-    frequencies_new.b_K2.initialize_grid(m_Wscale*2.);
+    frequenciesK2_new = avertex.frequencies_K2;
+    frequenciesK2_new.b.initialize_grid(m_Wscale*2.);
 
-    update_grid(frequencies_new);
-
-
+    update_grid(frequenciesK2_new);
 
 
-    a_Wscale = fullvert_temp.avertex.frequencies.f_K3.W_scale / 10.;
-    m_Wscale = fullvert_temp.avertex.frequencies.f_K3.W_scale;
-    b_Wscale = fullvert_temp.avertex.frequencies.f_K3.W_scale * 10;
+
+
+    VertexFrequencyGrid<k3> frequenciesK3_new = avertex.frequencies_K3;
+    a_Wscale = fullvert_temp.avertex.frequencies_K3.f.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.frequencies_K3.f.W_scale;
+    b_Wscale = fullvert_temp.avertex.frequencies_K3.f.W_scale * 10;
     CostFullvert_Wscale_b_K3<Q> cost_f_K3(fullvert_temp);
     minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, true);
-    frequencies_new = avertex.frequencies;
-    frequencies_new.f_K3.initialize_grid(m_Wscale*2.);
+    frequenciesK3_new = avertex.frequencies_K3;
+    frequenciesK3_new.f.initialize_grid(m_Wscale*2.);
 
-    update_grid(frequencies_new);
+    update_grid(frequenciesK3_new);
 
 
-    a_Wscale = fullvert_temp.avertex.frequencies.b_K3.W_scale / 10.;
-    m_Wscale = fullvert_temp.avertex.frequencies.b_K3.W_scale;
-    b_Wscale = fullvert_temp.avertex.frequencies.b_K3.W_scale * 10;
+    a_Wscale = fullvert_temp.avertex.frequencies_K3.b.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.frequencies_K3.b.W_scale;
+    b_Wscale = fullvert_temp.avertex.frequencies_K3.b.W_scale * 10;
     CostFullvert_Wscale_b_K3<Q> cost_bK3(fullvert_temp);
     minimizer(cost_bK3, a_Wscale, m_Wscale, b_Wscale, 100, true);
-    frequencies_new = avertex.frequencies;
-    frequencies_new.b_K3.initialize_grid(m_Wscale*2.);
+    frequenciesK3_new = avertex.frequencies_K3;
+    frequenciesK3_new.b.initialize_grid(m_Wscale*2.);
 
-    update_grid(frequencies_new);
+    update_grid(frequenciesK3_new);
 
 
 

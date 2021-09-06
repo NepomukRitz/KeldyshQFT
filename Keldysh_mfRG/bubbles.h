@@ -771,21 +771,21 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
         double wl, wu;
         switch (diag_class) {
             case 1:
-                wl = vertex1[0].avertex().frequencies.b_K1.w_lower*2.;
-                wu = vertex1[0].avertex().frequencies.b_K1.w_upper*2.;
+                wl = vertex1[0].avertex().frequencies_K1.b.w_lower*2.;
+                wu = vertex1[0].avertex().frequencies_K1.b.w_upper*2.;
                 break;
             case 2:
-                wl = vertex1[0].avertex().frequencies.f_K2.w_lower;
-                wu = vertex1[0].avertex().frequencies.f_K2.w_upper;
+                wl = vertex1[0].avertex().frequencies_K2.f.w_lower;
+                wu = vertex1[0].avertex().frequencies_K2.f.w_upper;
                 break;
             case 3:
-                wl = vertex1[0].avertex().frequencies.f_K3.w_lower;
-                wu = vertex1[0].avertex().frequencies.f_K3.w_upper;
+                wl = vertex1[0].avertex().frequencies_K3.f.w_lower;
+                wu = vertex1[0].avertex().frequencies_K3.f.w_upper;
                 break;
             default: ;
         }
         double vpp = wl + i * (wu-wl)/(npoints-1);
-        if (diag_class == 1) {vpp = vertex1[0].avertex().frequencies.b_K1.ws[i];}
+        if (diag_class == 1) {vpp = vertex1[0].avertex().frequencies_K1.b.ws[i];}
         freqs[i] = vpp;
 
 
@@ -953,17 +953,17 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
-    vmin = std::min(dgamma[0].avertex().frequencies.b_K1.w_lower, Pi.g.selfenergy.frequencies.w_lower);
-    vmax = std::max(dgamma[0].avertex().frequencies.b_K1.w_upper, Pi.g.selfenergy.frequencies.w_upper);
+    vmin = std::min(dgamma[0].avertex().frequencies_K1.b.w_lower, Pi.g.selfenergy.frequencies.w_lower);
+    vmax = std::max(dgamma[0].avertex().frequencies_K1.b.w_upper, Pi.g.selfenergy.frequencies.w_upper);
     if (MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K2.w_lower);
-        vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K2.w_upper);
+        vmin = std::min(vmin, dgamma[0].avertex().frequencies_K2.f.w_lower);
+        vmax = std::max(vmax, dgamma[0].avertex().frequencies_K2.f.w_upper);
     }
     if (MAX_DIAG_CLASS >= 3){
         // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma[0].avertex().frequencies.f_K3.w_lower);
-        vmax = std::max(vmax, dgamma[0].avertex().frequencies.f_K3.w_upper);
+        vmin = std::min(vmin, dgamma[0].avertex().frequencies_K3.f.w_lower);
+        vmax = std::max(vmax, dgamma[0].avertex().frequencies_K3.f.w_upper);
     }
     if ((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
@@ -1355,7 +1355,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     i0 = iK1/(nw1_w*n_in);                              // exterior Keldysh indices of the bubble
     iw = iK1/(n_in) - i0*nw1_w;                         // frequency index
     i_in = iK1 - i0*nw1_w*n_in - iw*n_in;               // internal index
-    w = dgamma[0].avertex().frequencies.b_K1.ws[iw];    // frequency acc. to frequency index
+    w = dgamma[0].avertex().frequencies_K1.b.ws[iw];    // frequency acc. to frequency index
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1370,8 +1370,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
     iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
     i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
-    w = dgamma[0].avertex().frequencies.b_K2.ws[iw];
-    v = dgamma[0].avertex().frequencies.f_K2.ws[iv];
+    w = dgamma[0].avertex().frequencies_K2.b.ws[iw];
+    v = dgamma[0].avertex().frequencies_K2.f.ws[iv];
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1387,9 +1387,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
     ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
     i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
-    w =  dgamma[0].avertex().frequencies.b_K3.ws[iw];
-    v =  dgamma[0].avertex().frequencies.f_K3.ws[iv];
-    vp = dgamma[0].avertex().frequencies.f_K3.ws[ivp];
+    w =  dgamma[0].avertex().frequencies_K3.b.ws[iw];
+    v =  dgamma[0].avertex().frequencies_K3.f.ws[iv];
+    vp = dgamma[0].avertex().frequencies_K3.f.ws[ivp];
 }
 
 
