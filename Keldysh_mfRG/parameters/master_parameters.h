@@ -10,7 +10,7 @@
 //#define NDEBUG
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-//#define HUBBARD
+#define HUBBARD
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 //#define KELDYSH_FORMALISM
@@ -25,7 +25,7 @@
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+constexpr int MAX_DIAG_CLASS = 3;
 
 constexpr int N_LOOPS = 1;  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
