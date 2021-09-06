@@ -753,7 +753,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
 #else
         state_datatype PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
         std::cout << "PT3 K2 exact: " << PT3_K2_exact << "\n";
-        std::cout << "Computed value: " << PT3_K2t_0[iK2] << "\n";
+        // std::cout << "Computed value: " << PT3_K2t_0[iK2] << "\n"; // TODO(low): How/why reference summation index which is out of scope?
 #endif
 #endif
 
