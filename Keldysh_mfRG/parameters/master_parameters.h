@@ -10,12 +10,12 @@
 //#define NDEBUG
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-#define HUBBARD
+//#define HUBBARD
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM
+//#define KELDYSH_FORMALISM
 #ifndef KELDYSH_FORMALISM
-#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
 
 // Determines whether particle-hole symmetry is assumed
@@ -133,8 +133,10 @@ constexpr bool ZERO_T = false; // only needed for Matsubara
 constexpr bool KELDYSH = false;
 #ifdef ZERO_TEMP
 constexpr bool ZERO_T = true;
-#endif
-#endif
+#else
+constexpr bool ZERO_T = false;
+#endif // ZERO_TEMP
+#endif // KELDYSH_FORMALISM
 
 #ifdef PARTICLE_HOLE_SYMM
 constexpr bool PARTICLE_HOLE_SYMMETRY = true;

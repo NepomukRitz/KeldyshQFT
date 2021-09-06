@@ -181,16 +181,16 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 // old wrapper function
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> Q {
     if (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return integrator_riemann(integrand, nINT);
+        return integrator_riemann<Q>(integrand, nINT);
     }
     else if (INTEGRATOR_TYPE == 1) { // Simpson
-        return integrator_simpson(integrand, a, b, nINT);
+        return integrator_simpson<Q>(integrand, a, b, nINT);
     }
     else if (INTEGRATOR_TYPE == 2) {// Simpson + additional points
-        return integrator_simpson(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
+        return integrator_simpson<Q>(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
     }
     else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+        return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);          // use adaptive Simpson integrator
     }
     else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, a, b, 0., 0., nINT);
@@ -204,16 +204,16 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 // wrapper function, used for loop
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w) -> Q {
     if (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return integrator_riemann(integrand, nINT);
+        return integrator_riemann<Q>(integrand, nINT);
     }
     else if (INTEGRATOR_TYPE == 1) { // Simpson
-        return integrator_simpson(integrand, a, b, nINT);       // only use standard Simpson
+        return integrator_simpson<Q>(integrand, a, b, nINT);       // only use standard Simpson
     }
     else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
-        return integrator_simpson(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
+        return integrator_simpson<Q>(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
     }
     else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return adaptive_simpson_integrator(integrand, a, b, nINT);      // use adaptive Simpson integrator
+        return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);      // use adaptive Simpson integrator
     }
     else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, a, b, w, w, nINT);
@@ -232,17 +232,17 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> Q {
     if (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return integrator_riemann(integrand, nINT);
+        return integrator_riemann<Q>(integrand, nINT);
     }
     else if (INTEGRATOR_TYPE == 1) { // Simpson
-        return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
+        return integrator_simpson<Q>(integrand, a, b, nINT);           // only use standard Simpson
     }
     else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
-        return integrator_simpson(integrand, a, b, w1, w2,
+        return integrator_simpson<Q>(integrand, a, b, w1, w2,
                                   nINT);     // use standard Simpson plus additional points around +- w/2
     }
     else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+        return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);          // use adaptive Simpson integrator
     }
     else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
@@ -264,17 +264,17 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2, double Delta) -> comp {
     if (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return integrator_riemann(integrand, nINT);
+        return integrator_riemann<Q>(integrand, nINT);
     }
     else if (INTEGRATOR_TYPE == 1) { // Simpson
-        return integrator_simpson(integrand, a, b, nINT);           // only use standard Simpson
+        return integrator_simpson<Q>(integrand, a, b, nINT);           // only use standard Simpson
     }
     else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
-        return integrator_simpson(integrand, a, b, w1, w2,
+        return integrator_simpson<Q>(integrand, a, b, w1, w2,
                                   nINT);     // use standard Simpson plus additional points around +- w/2
     }
     else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return adaptive_simpson_integrator(integrand, a, b, nINT);          // use adaptive Simpson integrator
+        return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);          // use adaptive Simpson integrator
     }
     else if (INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
@@ -310,28 +310,28 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     if (INTEGRATOR_TYPE == 0) { // Riemann sum
         Q result;
         for (int i = 0; i < num_intervals; i++) {
-            result += integrator_riemann(integrand, nINT);
+            result += integrator_riemann<Q>(integrand, nINT);
         }
         return result;
     }
     else if (INTEGRATOR_TYPE == 1) { // Simpson
         Q result;
         for (int i = 0; i < num_intervals; i++){
-            result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
+            result += integrator_simpson<Q>(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
         }
         return result;
     }
     else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
         Q result;
         for (int i = 0; i < num_intervals; i++){
-            result += integrator_simpson(integrand, intervals[i][0], intervals[i][1], nINT);        // use standard Simpson plus additional points around +- w/2
+            result += integrator_simpson<Q>(integrand, intervals[i][0], intervals[i][1], nINT);        // use standard Simpson plus additional points around +- w/2
         }
         return result;
     }
     else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
         Q result;
         for (int i = 0; i < num_intervals; i++){
-            result += adaptive_simpson_integrator(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
+            result += adaptive_simpson_integrator<Q>(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
         }
         return result;
     }
