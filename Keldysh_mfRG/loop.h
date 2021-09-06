@@ -262,9 +262,8 @@ class LoopCalculator{
     IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
     // TODO(medium): There is a lot of redundancy and duplication here - unify the LoopCalculator and IntegrandSE class?
     //  Note though: The integrator needs an integrand (template there).
-#ifdef KELDYSH_FORMALISM
-    IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins);
-#endif
+
+    IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins); // Only ever needed in Keldysh, but has to be declared also for Matsubara
 
     Q set_prefactor();
     Q prefactor = set_prefactor();
