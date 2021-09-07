@@ -462,6 +462,7 @@ inline auto Propagator<Q>::GR_REG2_Hubbard(double v, int i_in) const -> Q
 template <>
 inline auto Propagator<double>::GR_REG2_Hubbard(double v, int i_in) const -> double {
     print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
+    assert(false);
     return 0.;
 }
 
@@ -473,6 +474,7 @@ auto Propagator<Q>::GR_REG2_SIAM(double v, int i_in) const -> Q
 template <>
 auto Propagator<double>::GR_REG2_SIAM(double v, int i_in) const -> double {
     print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
+    assert(false);
     return 0.;
 }
 
@@ -489,6 +491,7 @@ template <>
 auto Propagator<double>::GA_REG2_Hubbard(double v, int i_in) const -> double
 {
     print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
+    assert(false);
     return 0.;
 }
 
@@ -500,6 +503,7 @@ auto Propagator<Q>::GA_REG2_SIAM(double v, int i_in) const -> Q
 template <>
 auto Propagator<double>::GA_REG2_SIAM(double v, int i_in) const -> double {
     print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
+    assert(false);
     return 0.;
 }
 
@@ -515,6 +519,7 @@ template <>
 auto Propagator<double>::SR_REG2(double v, int i_in) const -> double
 {
     print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
+    assert(false);
     return 0.;
 }
 
@@ -531,6 +536,7 @@ template <>
 auto Propagator<double>::GM_REG2_Hubbard(double v, int i_in) const -> double
 {
     print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
+    assert(false);
     return 0.;
 }
 
@@ -557,6 +563,7 @@ auto Propagator<Q>::GM_REG2_SIAM_NoPHS(double v, int i_in) const -> Q {
 template <>
 auto Propagator<double>::GM_REG2_SIAM_NoPHS(double v, int i_in) const -> double {
     print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
+    assert(false);
     return 0.;
 }
 
@@ -593,6 +600,7 @@ auto Propagator<Q>::SM_REG2_SIAM_NoPHS(double v, int i_in) const -> Q {
 template <>
 auto Propagator<double>::SM_REG2_SIAM_NoPHS(double v, int i_in) const -> double {
     print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
+    assert(false);
     return 0.;
 }
 
