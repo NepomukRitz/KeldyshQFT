@@ -262,7 +262,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param w2     : second frequency where features occur
  * @param Delta  : with of window around the features which should be integrated separately (to be set by hybridization strength)
  */
-template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2, double Delta) -> comp {
+template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2, double Delta) -> Q {
     if (INTEGRATOR_TYPE == 0) { // Riemann sum
         return integrator_riemann<Q>(integrand, nINT);
     }
@@ -284,7 +284,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
         std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
 
-        comp result = 0.; // initialize results
+        Q result = 0.; // initialize results
         // integrate intervals of with 2*Delta around the features at w1, w2
         Adapt<Q, Integrand> adaptor_peaks(integrator_tol, integrand);
         result += adaptor_peaks.integrate(intersections[1], intersections[2]);
@@ -454,7 +454,7 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
 
         Q slope = (values[N_tresh-1] - values[0]) / (mfreqs[N_tresh-1] - mfreqs[0]);
         vec<Q> linrzd = values[0] + (mfreqs - mfreqs[0]) * slope;   // linear approximation
-        vec<Q> intermediate = (linrzd - values).abs() * (1. + 0.j); // deviation of linear approximation from function values
+        //vec<double> intermediate = (linrzd - values).abs(); // deviation of linear approximation from function values
         double error_estimate = (values[0] + (mfreqs - mfreqs[0]) * slope - values).abs().sum();
         //double vmaxn = vmax/(M_PI*glb_T);
         //double vminn = vmin/(M_PI*glb_T);

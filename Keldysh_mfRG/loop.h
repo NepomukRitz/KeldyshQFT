@@ -142,7 +142,7 @@ Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
 template<typename Q>
 void IntegrandSE<Q>::evaluate_propagator(Q &GR, Q &GA, Q &GK, double vp) const {
     GR = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
-    GA = conj(GR);  // advanced propagator (full or single scale)
+    GA = myconj(GR);  // advanced propagator (full or single scale)
     GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
 }
 
