@@ -788,9 +788,15 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
         if (diag_class == 1) {vpp = vertex1[0].avertex().frequencies.b_K1.ws[i];}
         freqs[i] = vpp;
 
-
-        Q Pival = Pi.value(i2, w, vpp, i_in, channel);
-        Q integrand_value = (*this)(vpp);
+        Q Pival, integrand_value;
+        if (not KELDYSH and std::abs(std::abs(w/2)-std::abs(vpp)) < 1e-6) {
+            Pival = std::numeric_limits<Q>::infinity();
+            integrand_value = std::numeric_limits<Q>::infinity();
+        }
+        else {
+            Pival = Pi.value(i2, w, vpp, i_in, channel);
+            integrand_value = (*this)(vpp);
+        }
         if (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
@@ -798,10 +804,10 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
             Pival_im[i] = 0.;
         }
         else{
-            integrand_re[i] = integrand_value.real();
-            integrand_im[i] = integrand_value.imag();
-            Pival_re[i] = Pival.real();
-            Pival_im[i] = Pival.imag();
+            integrand_re[i] = myreal(integrand_value);
+            integrand_im[i] = myimag(integrand_value);
+            Pival_re[i] = myreal(Pival);
+            Pival_im[i] = myimag(Pival);
         }
     }
 
@@ -1154,6 +1160,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         }
         else{
             if (ZERO_T){
+                if (std::abs(w) < 1e-2) integrand_K1.save_integrand();
                 value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
             }
             else{

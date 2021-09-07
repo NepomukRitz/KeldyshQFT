@@ -56,7 +56,7 @@ public:
             double f1 = Phi[iLambda * nFER * n_in + index * n_in + i_in];
             double f2 = Phi[iLambda * nFER * n_in + (index + 1) * n_in + i_in];
 
-            return myimag((1. - xd) * f1 + xd * f2 + 2 * selfEnergy.valsmooth(0, vp, i_in));
+            return myimag((1. - xd) * f1 + xd * f2 + 2. * selfEnergy.valsmooth(0, vp, i_in));
         }
         else
             return 0.;
@@ -146,7 +146,7 @@ void sum_rule_K1tK(const std::string filename) {
             sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
         }
         else{
-            sum_rule[iLambda] = (1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax)) / (glb_U * glb_U);
+            sum_rule[iLambda] = myreal((1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax)) / (glb_U * glb_U));
 
         }
     }
