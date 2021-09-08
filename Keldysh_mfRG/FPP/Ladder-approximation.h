@@ -54,8 +54,6 @@ double exactzerobubble(double Lambda_i, double Lambda_f){
     return (sqrt(Lambda_i)-sqrt(Lambda_f))/(pow(M_PI,2));
 }
 
-
-
 comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, double Lambda_i, double Lambda_f, int inttype){
     comp output1, output2, output3, output4, output5, output6, output7, output8, output;
     double Lambda_mu, Lambda_mm, Lambda_ml;
@@ -77,6 +75,7 @@ comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, do
         Lambda_ml = Lambdasvec[0];
     }
 
+    /*
     //double mylist[] = {Lambda_one, Lambdaif};
     //std::vector<double> myvector (mylist, mylist+2);               // 32 71 12 45 26 80 53 33
     //std::cout << "finished\n";

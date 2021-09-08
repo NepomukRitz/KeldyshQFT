@@ -41,7 +41,6 @@ public:
 template <typename Q> auto set_rhs_1lfRG(const rhs_1lfRG<comp>& rhs1LfRG_p, double Lambda) -> rhs_1lfRG<comp>{
      flow_rhs(Lambda);
 }; */
-
      /*
 template <typename Q>
 class FRG_solvand {
@@ -73,6 +72,169 @@ public:
 //fRG_solvand<comp> solvand2(0.,0.,1e4,1e-10,'p');
 //solvand2
 
+// class for the vpp-integral for soft v-regulator
+template <typename Q>
+class Integrand_dL_Pi0_vpp {
+private:
+    double Lambda, w, q, lim;
+    char i, j, chan;
+    int inttype; // kint_type = 0 exact, 1 numerical
+    int inftylim; // 0: [a,b], 1: [a,oo], 2: [-oo,b]
+
+public:
+    /**
+     * Constructor:
+     */
+    Integrand_dL_Pi0_vpp(double Lambda_in, double w_in, double q_in, double lim_in, char i_in, char j_in, char chan_in, int inttype_in, int inftylim_in)
+            :Lambda(Lambda_in), w(w_in), q(q_in), lim(lim_in), i(i_in), j(j_in), chan(chan_in), inttype(inttype_in), inftylim(inftylim_in){
+    };
+
+    /**
+     * Call operator:
+     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
+    auto operator() (double t_vpp) const -> Q {
+        double vpp;
+        double regulator_prefactor;
+        double denominator_substitution;
+        if (inftylim == 0) {
+            vpp = t_vpp;
+            denominator_substitution = 1;
+        }
+        else if (inftylim == 1) {
+            if (t_vpp == 0.) {
+                return 0.0;
+            }
+            else {
+                vpp = lim + (1. - t_vpp) / t_vpp;
+                denominator_substitution = t_vpp * t_vpp;
+            }
+        }
+        else if (inftylim == 2){
+            if (t_vpp == 0.) {
+                return 0.0;
+            }
+            else {
+                vpp = lim - (1. - t_vpp) / t_vpp;
+                denominator_substitution = t_vpp * t_vpp;
+            }
+        }
+        else {
+            std::cout << "wrong integral limit type \n";
+        }
+
+        regulator_prefactor = -(16. * Lambda * pow(-4. * vpp * vpp + w * w, 2.) * (4. * (Lambda * Lambda + vpp * vpp) + w * w)) /
+                              pow(16. * pow(Lambda * Lambda + vpp * vpp, 2.) + 8. * (Lambda * Lambda - vpp * vpp) * w * w + pow(w, 4.),2.);
+        if (inttype == 0) {
+            return regulator_prefactor*exact_bare_bubble (w, vpp, q, i, j, chan)/denominator_substitution;
+        }
+        else if (inttype == 1) {
+            return regulator_prefactor*perform_integral_Pi0_kpp_chan (w, vpp, q, i, j, chan)/denominator_substitution;
+        }
+        else {
+            std::cout << "wrong integrator type for k-integral \n";
+        }
+
+    };
+
+    //void save_integrand();
+};
+
+template <typename Q>
+class Test_soft_v_function {
+private:
+    double Lambda, w, lim;
+    int inftylim; // 0: [a,b], 1: [a,oo], 2: [-oo,b]
+
+public:
+    /**
+     * Constructor:
+     */
+    Test_soft_v_function(double Lambda_in, double w_in, double lim_in, int inftylim_in)
+            :Lambda(Lambda_in), w(w_in), lim(lim_in), inftylim(inftylim_in){
+    };
+
+    /**
+     * Call operator:
+     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
+    auto operator() (double t_vpp) const -> Q {
+        double vpp;
+        double regulator_prefactor;
+        double denominator_substitution;
+        if (inftylim == 0) {
+            vpp = t_vpp;
+            denominator_substitution = 1;
+        } else if (inftylim == 1) {
+            if (t_vpp == 0.) {
+                return 0.0;
+            } else {
+                vpp = lim + (1. - t_vpp) / t_vpp;
+                denominator_substitution = t_vpp * t_vpp;
+            }
+        } else if (inftylim == 2) {
+            if (t_vpp == 0.) {
+                return 0.0;
+            } else {
+                vpp = lim - (1. - t_vpp) / t_vpp;
+                denominator_substitution = t_vpp * t_vpp;
+            }
+        } else {
+            std::cout << "wrong integral limit type \n";
+        }
+
+        regulator_prefactor =
+                -(16. * Lambda * pow(-4. * vpp * vpp + w * w, 2.) * (4. * (Lambda * Lambda + vpp * vpp) + w * w)) /
+                pow(16. * pow(Lambda * Lambda + vpp * vpp, 2.) + 8. * (Lambda * Lambda - vpp * vpp) * w * w + pow(w, 4.),2.);
+        return regulator_prefactor / denominator_substitution;
+    }
+    //void save_integrand();
+};
+comp functiontestsoft(double vpp, double Lambda, double w) {
+    return -(16. * Lambda * pow(-4. * vpp * vpp + w * w, 2.) * (4. * (Lambda * Lambda + vpp * vpp) + w * w)) /
+           pow(16. * pow(Lambda * Lambda + vpp * vpp, 2.) + 8. * (Lambda * Lambda - vpp * vpp) * w * w + pow(w, 4.),2.);
+};
+
+
+comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, char j, char chan, int inttype){
+    comp output1, output2, output3, output4, output5, output6, output7, output8, output;
+    double vpp_mu, vpp_mm, vpp_ml;
+    double vpp_ms[] = {Lambda, std::abs(w/2), 1.0};
+    std::vector<double> vpp_msvec (vpp_ms, vpp_ms+3);
+    std::sort (vpp_msvec.begin(), vpp_msvec.begin()+3);
+    vpp_mu = vpp_msvec[2];
+    vpp_mm = vpp_msvec[1];
+    vpp_ml = vpp_msvec[0];
+
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_ab(Lambda, w, q, 0, i, j, chan, inttype, 0);
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_aoo(Lambda, w, q, vpp_mu, i, j, chan, inttype, 1);
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_oob(Lambda, w, q, -vpp_mu, i, j, chan, inttype, 2);
+
+    while (isnan(std::abs(integrand_dL_Pi0_vpp_ab(vpp_mu)))) {
+        vpp_mu = vpp_mu + (vpp_mu-vpp_mm)/100.;
+    }
+    while (isnan(std::abs(integrand_dL_Pi0_vpp_ab(vpp_mm)))) {
+        vpp_mm = vpp_mm + (vpp_mm-vpp_ml)/100.;
+    }
+    while (isnan(std::abs(integrand_dL_Pi0_vpp_ab(vpp_ml)))) {
+        vpp_ml = vpp_ml - (vpp_mm-vpp_ml)/100.;
+    }
+
+    output1 = integrator<comp>(integrand_dL_Pi0_vpp_oob, 0, 1);
+    output2 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_mu, -vpp_mm);
+    //output2 = 0.0;
+    output3 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_mm, -vpp_ml);
+    output4 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_ml, 0);
+    output5 = integrator<comp>(integrand_dL_Pi0_vpp_ab, 0, vpp_ml);
+    output6 = integrator<comp>(integrand_dL_Pi0_vpp_ab, vpp_ml, vpp_mm);
+    //output6 = 0.0;
+    output7 = integrator<comp>(integrand_dL_Pi0_vpp_ab, vpp_mm, vpp_mu);
+    output8 = integrator<comp>(integrand_dL_Pi0_vpp_aoo, 0, 1);
+    output = 1/(2*M_PI)*(output1 + output2 + output3 + output4 + output5 + output6 + output7 + output8);
+    return output;
+}
 
 template <typename Q>
 class FRG_solvand_nsc {
@@ -103,7 +265,7 @@ public:
         return 2.*pow(-gint(Lambda_i,Lambda_f,1)+y,2)*sharp_frequency_exact_bare_bubble(w,Lambda,q,'c','d',chan);
     }; */
 
-     void update_grid (double x) {}
+    void update_grid (double x) {}
 
     auto operator+= (const FRG_solvand_nsc& state) -> FRG_solvand_nsc {
         this->value += state.value;
@@ -131,9 +293,14 @@ public:
     }
 };
 
-FRG_solvand_nsc<comp> rhs_test2(const FRG_solvand_nsc<comp>& y, double Lambda) {
+FRG_solvand_nsc<comp> rhs_K1l1fRG(const FRG_solvand_nsc<comp>& y, double Lambda) {
     FRG_solvand_nsc<comp> y_result = y;
-    y_result.value = 2.*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*sharp_frequency_bare_bubble(y.w,Lambda,y.q,'c','d',y.chan,y.inttype);
+    if (y.reg == 1) { // sharp frequency
+        y_result.value = 2.*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*sharp_frequency_bare_bubble(y.w,Lambda,y.q,'c','d',y.chan,y.inttype);
+    }
+    else if (y.reg == 3) {
+        y_result.value = 2.*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*perform_dL_Pi0_vpp_integral (Lambda, y.w, y.q, 'c', 'd', y.chan, y.inttype);
+    }
     return y_result;
 }
 
@@ -144,7 +311,7 @@ comp fRG_solve_nsc(double w, double q, const double Lambda_i, const double Lambd
 
 
     ODE_solver_RK4(y_fin, Lambda_f, y_ini, Lambda_i,
-                   rhs_test2, log_substitution, log_resubstitution, nODE);
+                   rhs_K1l1fRG, log_substitution, log_resubstitution, nODE);
 
     return y_fin.value - gint(Lambda_i,Lambda_f,reg);
 }
@@ -154,7 +321,6 @@ comp fRG_solve_nsc(double w, double q, const double Lambda_i, const double Lambd
     //comp y;
     return 2.*pow(-gint(1e4,1e-10,1)+y,2)*sharp_frequency_exact_bare_bubble(0.0,Lambda,0.0,'c','d','p');
 }*/
-
 /*
 comp solve_1lfRG_nsc {
     //rhs_1lfRG<comp> rhs_p(w,q,Lambda_i,Lambda_f,'c','d','p');

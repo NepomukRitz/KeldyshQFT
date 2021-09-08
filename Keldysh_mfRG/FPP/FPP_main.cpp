@@ -17,6 +17,7 @@
 #include "../utilities/util.h"
 #include "../ODE_solvers.h"
 #include "../grids/flow_grid.h"
+#include "../data_structures.h"
 
 
 
@@ -494,7 +495,7 @@ int main() {
     std::cout << "p: " << testrhs << "\n";
     testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,'c','d','a',1);
     std::cout << "a: " << testrhs << "\n";
-
+    /*
     comp Gamma_fRG_exact = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 0);
     comp Gamma_fRG_num = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 1);
     comp Gamma_ladder_exact = ladder(0.1,0.1,1e4,1e-10,1,0);
@@ -504,7 +505,7 @@ int main() {
     std::cout << "Gamma_fRG numerical k-integral: " << Gamma_fRG_num << "\n";
     std::cout << "Gamma_ladder exact k-integral: " << Gamma_ladder_exact << "\n";
     std::cout << "Gamma_ladder numerical k-integral: " << Gamma_ladder_num << "\n";
-
+    */
     /*
     comp yy_fin;
     const comp yy_ini = 0.0; // (11.3834,-1.14485e-15) + gint(1e4,1e-10,1);
@@ -530,7 +531,7 @@ int main() {
 
     //fRG_p_list (1e4, 1e-10, 1,0, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 101);
     //ladder_p_list (1e4, 1e-10, 1,0,-2*sqrt(2), 2*sqrt(2), -10.0, 1e-10, 100, 1e-16, 301);
-    fRG_p_list (1e4, 1e-10, 1,1, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 11);
+    // fRG_p_list (1e4, 1e-10, 1,1, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 11);
 
     glb_muc = 1.0;
     glb_mud = 0.0;
@@ -607,10 +608,54 @@ int main() {
         */
     //
 
+    // 1-LOOP FRG WITH SOFT REGULATOR
+
+    comp Gamm_fRG_exact_sharp = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 0);
+    comp Gamm_fRG_num_sharp = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 1);
+    comp Gamm_ladder_exact = ladder(0.1,0.1,1e4,1e-10,1,0);
+    comp Gamm_ladder_num = ladder(0.1,0.1,1e4,1e-10,1,1);
+    comp Gamm_fRG_exact_soft = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 3, 0);
+    //comp Gamm_fRG_num_soft = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 3, 1);
+    std::cout << "ladder: int = analytical, reg = sharp: " << Gamm_ladder_exact << "\n";
+    std::cout << "ladder: int = numerical, reg = sharp: " << Gamm_ladder_num << "\n";
+    std::cout << "fRG: int = analytical, reg = sharp: " << Gamm_fRG_exact_sharp << "\n";
+    std::cout << "fRG: int = numerical, reg = sharp: " << Gamm_fRG_num_sharp << "\n";
+    std::cout << "fRG: int = analytical, reg = soft: " << Gamm_fRG_exact_soft << "\n";
+    //std::cout << "fRG: int = numerical, reg = soft: " << Gamm_fRG_num_soft << "\n";
+
+    /*
+    comp integral_dlPi0_1 = perform_dL_Pi0_vpp_integral (1e4, 0.1, 0.1, 'c', 'd', 'p', 0);
+    comp integral_dlPi0_2 = perform_dL_Pi0_vpp_integral (1, 0.1, 0.1, 'c', 'd', 'p', 0);
+    comp integral_dlPi0_3 = perform_dL_Pi0_vpp_integral (1e-6, 0.1, 0.1, 'c', 'd', 'p', 0);
+    comp integral_dlPi0_4 = perform_dL_Pi0_vpp_integral (1e-7, 0.1, 0.1, 'c', 'd', 'p', 0);
+    std::cout << "soft v integral, Lambda = 1e4: " << integral_dlPi0_1 << "\n";
+    std::cout << "soft v integral, Lambda = 1: " << integral_dlPi0_2 << "\n";
+    std::cout << "soft v integral, Lambda = 1e-6: " << integral_dlPi0_3 << "\n";
+    std::cout << "soft v integral, Lambda = 1e-7: " << integral_dlPi0_4 << "\n";
+    */
+
+    /*
+    Test_soft_v_function<comp> test_soft_v_function(1.0,0.1,0,0);
+    Test_soft_v_function<comp> test_soft_v_functionuoo(1.0,0.1,1,1);
+    Test_soft_v_function<comp> test_soft_v_functionloo(1.0,0.1,-1,2);
+    comp test_soft_v_f_integral = integrator<comp>(test_soft_v_function, -1, 1);
+    comp test_soft_v_f_integraluoo = integrator<comp>(test_soft_v_functionuoo, 0, 1);
+    comp test_soft_v_f_integralloo = integrator<comp>(test_soft_v_functionloo, 0, 1);
+    comp test_soft_v_f_total = test_soft_v_f_integral+test_soft_v_f_integraluoo+test_soft_v_f_integralloo;
+    std::cout << "Lambda = 1, w = 0.1: " << test_soft_v_f_total << "\n";
+
+    comp function001 = functiontestsoft(-10.0, 1.0,0.1);
+    std::cout << "function: " << function001 << "\n";
+    */
+
+
+
+
+
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================
 
-
+    /*
     comp theta_integral_001 = perform_integral_Pi0_theta (0.0, 0.0, 0., 0.1, 'c', 'd');
     std::cout << "theta-integral = " << theta_integral_001 << "\n";
     comp theta_integral_002 = perform_integral_Pi0_theta (0.0, 0.0, 1e-10, 0.1, 'c', 'd');
@@ -647,7 +692,7 @@ int main() {
     int nq = 11;
     double vpp;
     comp result_integral;
-
+    */
     /*
     for (int wi = 0; wi < nw; ++wi) {
         w = -wmax + 2*wi*wmax/(nw-1);
@@ -675,10 +720,10 @@ int main() {
     //integral_bubble_w_vpp_list_integrator('c','d','p',10.0,10.0,10.0,201,201,6);
 
     // test Gauss as integral with infinite intervals
-    double result_gauss = integrator<double>(integrand_infinite_gauss, 0.0, 1.0);
+    /*comp result_gauss = integrator<comp>(integrand_infinite_gauss, 0.0, 1.0);
     std::cout << "Gauss integral = " << result_gauss << "\n";
-    result_gauss = integrator<double>(integrand_semiinfinite_gauss, 0.0, 1.0);
-    std::cout << "Gauss integral = " << result_gauss << "\n";
+    result_gauss = integrator<comp>(integrand_semiinfinite_gauss, 0.0, 1.0);
+    std::cout << "Gauss integral = " << result_gauss << "\n"; */
 
     // integrate bare bubble with regulator
     //comp test_regulated_integral = perform_integral_Pi0_vpp (1.0, 0.0, 0.0, 'c', 'd', 'p');
