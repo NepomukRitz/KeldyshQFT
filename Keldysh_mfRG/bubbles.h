@@ -55,19 +55,19 @@ public:
             if (KELDYSH){
                 switch (iK) {
                     case 3: //AA
-                        ans = conj(g.valsmooth(0, v1, i_in)) * conj(s.valsmooth(0, v2, i_in)) + conj(s.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * myconj(s.valsmooth(0, v2, i_in)) + myconj(s.valsmooth(0, v1, i_in)) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 6: //AR
-                        ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(0, v2, i_in) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * s.valsmooth(0, v2, i_in) + myconj(s.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
                         break;
                     case 7: //AK
-                        ans = conj(g.valsmooth(0, v1, i_in)) * s.valsmooth(1, v2, i_in) + conj(s.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * s.valsmooth(1, v2, i_in) + myconj(s.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
                         break;
                     case 9: //RA
-                        ans = g.valsmooth(0, v1, i_in) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(0, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
+                        ans = g.valsmooth(0, v1, i_in) * myconj(s.valsmooth(0, v2, i_in)) + s.valsmooth(0, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 11://KA
-                        ans = g.valsmooth(1, v1, i_in) * conj(s.valsmooth(0, v2, i_in)) + s.valsmooth(1, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
+                        ans = g.valsmooth(1, v1, i_in) * myconj(s.valsmooth(0, v2, i_in)) + s.valsmooth(1, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 12://RR
                         ans = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
@@ -93,19 +93,19 @@ public:
             if (KELDYSH){
                 switch (iK){ // labelling propagators from top (t: left) to bottom (t: right); a,t: G(v+w/2)G(v-w/2), p: G(w/2-v)G(w/2+v)
                     case 3: //AA
-                        ans = conj(g.valsmooth(0, v1, i_in)) * conj(g.valsmooth(0, v2, i_in));
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 6: //AR
-                        ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * g.valsmooth(0, v2, i_in);
                         break;
                     case 7: //AK
-                        ans = conj(g.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
+                        ans = myconj(g.valsmooth(0, v1, i_in)) * g.valsmooth(1, v2, i_in);
                         break;
                     case 9: //RA
-                        ans = g.valsmooth(0, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
+                        ans = g.valsmooth(0, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 11://KA
-                        ans = g.valsmooth(1, v1, i_in) * conj(g.valsmooth(0, v2, i_in));
+                        ans = g.valsmooth(1, v1, i_in) * myconj(g.valsmooth(0, v2, i_in));
                         break;
                     case 12://RR
                         ans = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
@@ -419,24 +419,24 @@ PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Pr
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > glb_N_transfer!
         switch (iK) {
             case 3: //AA
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 6: //AR
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
                 second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
                 break;
             case 7: //AK
-                first_propagator[i_in]  = conj(g1.valsmooth(0, v1, i_in));
+                first_propagator[i_in]  = myconj(g1.valsmooth(0, v1, i_in));
                 second_propagator[i_in] = g2.valsmooth(1, v2, i_in);
                 break;
             case 9: //RA
                 first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 11://KA
                 first_propagator[i_in]  = g1.valsmooth(1, v1, i_in);
-                second_propagator[i_in] = conj(g2.valsmooth(0, v2, i_in));
+                second_propagator[i_in] = myconj(g2.valsmooth(0, v2, i_in));
                 break;
             case 12://RR
                 first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
@@ -691,21 +691,21 @@ bool Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has
                     if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;}
                     if (i0 == 3 &&
                         (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
-                        {zero_result = true;};
+                        {zero_result = true;}
                     break;
                 case 'p':
                     // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                    if (i0 == 1 && (i2 != 7 && i2 != 11)) {zero_result = true;};
+                    if (i0 == 1 && (i2 != 7 && i2 != 11)) {zero_result = true;}
                     if (i0 == 5 &&
                         (i2 != 3 && i2 != 7 && i2 != 11 && i2 != 12 && i2 != 13 && i2 != 14 && i2 != 15))
-                        {zero_result = true;};
+                        {zero_result = true;}
                     break;
                 case 't':
                     // only nonzero combinations of \int dvpp Gamma_0 Pi(vpp) Gamma_0
-                    if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;};
+                    if (i0 == 1 && (i2 != 11 && i2 != 13)) {zero_result = true;}
                     if (i0 == 3 &&
                         (i2 != 6 && i2 != 7 && i2 != 9 && i2 != 11 && i2 != 13 && i2 != 14 && i2 != 15))
-                        {zero_result = true;};
+                        {zero_result = true;}
                     break;
                 default:;
             }
@@ -788,9 +788,15 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
         if (diag_class == 1) {vpp = vertex1[0].avertex().frequencies.b_K1.ws[i];}
         freqs[i] = vpp;
 
-
-        Q Pival = Pi.value(i2, w, vpp, i_in, channel);
-        Q integrand_value = (*this)(vpp);
+        Q Pival, integrand_value;
+        if (not KELDYSH and std::abs(std::abs(w/2)-std::abs(vpp)) < 1e-6) {
+            Pival = std::numeric_limits<Q>::infinity();
+            integrand_value = std::numeric_limits<Q>::infinity();
+        }
+        else {
+            Pival = Pi.value(i2, w, vpp, i_in, channel);
+            integrand_value = (*this)(vpp);
+        }
         if (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
@@ -798,10 +804,10 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
             Pival_im[i] = 0.;
         }
         else{
-            integrand_re[i] = integrand_value.real();
-            integrand_im[i] = integrand_value.imag();
-            Pival_re[i] = Pival.real();
-            Pival_im[i] = Pival.imag();
+            integrand_re[i] = myreal(integrand_value);
+            integrand_im[i] = myimag(integrand_value);
+            Pival_re[i] = myreal(Pival);
+            Pival_im[i] = myimag(Pival);
         }
     }
 
@@ -1154,6 +1160,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         }
         else{
             if (ZERO_T){
+                if (std::abs(w) < 1e-2) integrand_K1.save_integrand();
                 value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
             }
             else{

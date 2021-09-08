@@ -52,6 +52,8 @@ const std::vector<int> non_zero_Keldysh_K2p({0});
 const std::vector<int> non_zero_Keldysh_K1t({0});
 const std::vector<int> non_zero_Keldysh_K2t({0});
 const std::vector<int> non_zero_Keldysh_K3({0});
+
+const std::vector<int> odd_Keldysh({1});    // trivial, never used in Matsubara
 #endif // KELDYSH_FORMALISM
 
 

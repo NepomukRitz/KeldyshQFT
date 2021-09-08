@@ -21,7 +21,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         int cnt = 0;
         double sum = 0.;
         for (int i = 0; i < Sigma_R.size(); ++i) {
-            double val = Sigma_R[i].imag();
+            double val = myimag(Sigma_R[i]);
             if (val > 0.) {
                 cnt += 1;
                 sum += val;
@@ -43,7 +43,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         double sum = 0.;
         for (int i = 0; i < nFER; ++i) {
 
-            double val = imag(Sigma[i]) * sign(selfEnergy.frequencies.ws[i]);
+            double val = myimag(Sigma[i]) * sign(selfEnergy.frequencies.ws[i]);
 
             if (val > 0.) {
                 //cout << "i: " << i << "\t for w = " << selfEnergy.frequencies.ws[i] << "; \t Sigma[i] = " << Sigma[i] << "\n";

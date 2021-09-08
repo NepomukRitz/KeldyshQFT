@@ -16,19 +16,22 @@
 #include "parameters/master_parameters.h"
 
 typedef std::complex<double> comp; // Complex number
-const comp glb_i (0., 1.);    // Imaginary unit
 auto isfinite(comp z) -> bool {
     return std::isfinite(real(z)) and std::isfinite(imag(z));
-}
-template<typename Q> auto myreal(Q x) -> double {return x;}
-template<> auto myreal<comp>(comp x) -> double {return x.real();}
-template<typename Q> auto myimag(Q x) -> double {return x;}
-template<> auto myimag<comp>(comp x) -> double {return x.imag();}
+};
+ inline auto myreal(double x) -> double {return x;};
+ inline  auto myreal(comp x) -> double {return x.real();};
+ inline auto myimag(double x) -> double {return x;};
+ inline auto myimag(comp x) -> double {return x.imag();};
+ inline auto myconj(double x) -> double {return x;};
+ inline auto myconj(comp x) -> comp {return conj(x);};
 
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
 using state_datatype = double;
+const double glb_i = 0.;    // Imaginary unit
 #else
 using state_datatype = comp;
+const comp glb_i (0., 1.);    // Imaginary unit
 #endif
 
 /// DECLARATIONS ///
