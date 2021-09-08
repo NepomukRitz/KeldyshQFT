@@ -32,11 +32,9 @@ public:
         rvec integrand_im (npoints);
         rvec integrand_diff_re (npoints);
         rvec integrand_diff_im (npoints);
-        double wl = -vmax;
-        double wu = vmax;
-        double spacing = (bfreqs.t_upper - bfreqs.t_lower) / (double)npoints;
-        for (int i=0; i<npoints; ++i) {
-            double vpp = bfreqs.grid_transf_inv(bfreqs.t_lower + i * spacing);
+        double spacing = 2. / (double)npoints;
+        for (int i=1; i<npoints-1; ++i) {
+            double vpp = bfreqs.grid_transf_inv(-1 + i * spacing);
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
