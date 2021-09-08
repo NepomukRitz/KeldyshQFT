@@ -438,12 +438,20 @@ size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [dimensionality]
     return iflat_new;
 }
 
+// boundary condition type for the SplineK1 end-points
+enum bd_type {
+    first_deriv = 1,    /// known first derivative
+    second_deriv = 2,    /// known second derivative
+    third_deriv = 3    /// known third derivative
+};
+
 /**
  * Computes the derivative of a multi-dimensional vector with the finite-differences method
  * The derivative is computed in the direction of dims[permutation[-1]]
  * @tparam T
  * @tparam dimensionality       number of dimensions (only for dimension >= 2 !!)
- * @param vec_in                input vector for which the derivative is to be computed
+ * @param data                  input vector for which the derivative is to be computed
+ * @param xs                    frequency points in the direction of dims[permutation[-1]]
  * @param dims                  number of grid points in the different directions
  * @param permutation           determines how the dimensions are to be permuted
  *                              for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
@@ -453,8 +461,9 @@ size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [dimensionality]
  * @return
  */
 template<typename T, size_t dimensionality>
-vec<T> get_finite_differences(const vec<T> data, const vec<double> xs, const size_t (&dims) [dimensionality],
-                              const size_t (&permutation) [dimensionality], T left_value=0.0, T right_value=0.0){
+vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const size_t (&dims) [dimensionality],
+                              const size_t (&permutation) [dimensionality],
+                              const bd_type left=third_deriv, const bd_type right=third_deriv, const T left_value=0.0, const T right_value=0.0){
     size_t flatdim = data.size();
     size_t dimsum = dims[dimensionality-1];
     assert(dimsum==xs.size());
@@ -473,17 +482,45 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double> xs, const siz
         }
 
         // set boundary values
-        double h = xs[1]-xs[0];
-        result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
-                - result[rotateFlatIndex(it*dimsum + 1, dims, permutation)] + left_value/6*h*h
-                + 2.0 * (data[rotateFlatIndex(it*dimsum + 1, dims, permutation)] - data[rotateFlatIndex(it*dimsum + 0, dims, permutation)]) / h;
-                //+0.5 * data[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
-        //m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
-        h = xs[dimsum-1]-xs[dimsum-2];
-        result[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] =
-                -result[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)] - right_value/6*h*h + 2.0 * (data[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] - data[rotateFlatIndex(it*dimsum +dimsum-2, dims, permutation)]) / h;
-        //      -0.5 * data[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
-        //m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;
+        if (left==first_deriv) {
+            result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] = left_value;
+        }else if (left==second_deriv) {
+            double h = xs[1]-xs[0];
+            result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
+                    0.5*(-result[rotateFlatIndex(it * dimsum + 1, dims, permutation)]
+                    -0.5*left_value*h
+                    + 3.0 * (data[rotateFlatIndex(it * dimsum + 1, dims, permutation)] - data[rotateFlatIndex(it * dimsum + 0, dims, permutation)]) / h);
+            //const double h = m_x[1]-m_x[0];
+            //m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h);  /// checked
+        } else if (left==third_deriv) {
+            double h = xs[1] - xs[0];
+            result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
+                    -result[rotateFlatIndex(it * dimsum + 1, dims, permutation)] + left_value / 6 * h * h
+                    + 2.0 * (data[rotateFlatIndex(it * dimsum + 1, dims, permutation)] -
+                             data[rotateFlatIndex(it * dimsum + 0, dims, permutation)]) / h;
+            //+0.5 * data[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
+            //m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
+        }
+
+        if (right==first_deriv) {
+            result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] = right_value;
+        } else if (right==second_deriv) {
+            double h = xs[dimsum-1]-xs[dimsum-2];
+            result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
+                    0.5*(-result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]
+                    +0.5*right_value*h
+                    + 3.0 * (data[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] -data[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]) / h);
+            //const double h = m_x[n-1]-m_x[n-2];
+            //m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+ 3.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h); /// checked
+        } else if (right==third_deriv) {
+            double h = xs[dimsum - 1] - xs[dimsum - 2];
+            result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
+                    -result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)] - right_value / 6 * h * h +
+                    2.0 * (data[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] -
+                           data[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]) / h;
+            //      -0.5 * data[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
+            //m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;
+        }
     }
      return result;
 }

@@ -74,6 +74,8 @@ auto main() -> int {
     print("nFER1 = ", nFER, true);
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
+    print("nBOS3 = ", nBOS3, true);
+    print("nFER3 = ", nFER3, true);
     if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
     const char* dir = "../Data/";
@@ -90,9 +92,9 @@ auto main() -> int {
 
 
     //test_PT4(0.0, true);
-    //test_PT_state<state_datatype>(dir_str+filename, 1.8, false);
+    test_PT_state<state_datatype>(dir_str+filename, 1.8, false);
     //compute_non_symmetric_diags(1.8, true);
-    test_interpolate_K1<state_datatype>(1.8);
+    //test_interpolate_K1<state_datatype>(1.8);
 
     std::string job = "";
     //n_loop_flow(dir_str+filename+job, false);

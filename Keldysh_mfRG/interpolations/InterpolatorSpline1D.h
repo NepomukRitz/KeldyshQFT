@@ -63,12 +63,7 @@
         cspline_hermite = 31    // cubic hermite splines (local, only C^1)
     };
 
-    // boundary condition type for the SplineK1 end-points
-    enum bd_type {
-        first_deriv = 1,    /// known first derivative
-        second_deriv = 2,    /// known second derivative
-        third_deriv = 3    /// known third derivative
-    };
+
 
     protected:
     std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
@@ -331,6 +326,7 @@
         m_c.resize(n);
         m_d.resize(n);
         // set b to match 1st order derivative finite difference
+        /*
         for(int i=1; i<n-1; i++) {
             const double h  = m_x[i+1]-m_x[i];
             const double hl = m_x[i]-m_x[i-1];
@@ -364,6 +360,8 @@
             assert(false);
         }
         m_d[n-1]=0.0;
+         */
+        m_b = DataContainer::get_deriv_K1_x(m_left, m_right, m_left_value, m_right_value);
 
         // parameters c and d are determined by continuity and differentiability
         set_coeffs_from_b();

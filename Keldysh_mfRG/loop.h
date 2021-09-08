@@ -244,7 +244,8 @@ void IntegrandSE<Q>::add_contribution_from_other_spins(Q &factorRetardedClosed, 
 template <typename Q>
 class LoopCalculator{
     SelfEnergy<Q>& self;
-    const Vertex<Q>& fullvertex;
+    const Vertex<Q>& fullvertex_initial;
+    Vertex<Q> fullvertex = fullvertex_initial;;
     const Propagator<Q>& prop;
     const bool all_spins;
 
@@ -280,9 +281,10 @@ class LoopCalculator{
 public:
     LoopCalculator(SelfEnergy<Q>& self_in, const Vertex<Q>& fullvertex_in, const Propagator<Q>& prop_in,
                    const bool all_spins_in, const int iSE)
-                   : self(self_in), fullvertex(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
+                   : self(self_in), fullvertex_initial(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){
         set_v_limits();
+        fullvertex[0].half1().initializeInterpol();
     };
 
     void perform_computation();

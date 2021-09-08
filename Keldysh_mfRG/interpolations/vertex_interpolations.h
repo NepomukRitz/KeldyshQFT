@@ -202,6 +202,7 @@ template <int k, typename Q> class vertexDataContainer; // forward declaration o
 
 template<typename Q>
 class vertexInterpolator: public Interpolate<k1,Q>,  public Interpolate<k2,Q>,  public Interpolate<k3,Q>  {
+    friend fullvert<Q>;
     bool initialized = false;
 
 public:

@@ -1264,7 +1264,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
-    dgamma[0].half1().initialized = false;      // above initialization of the Interpolator is with the symmetry-reduced sector only (rest = zero)
+    dgamma[0].half1().set_initializedInterpol(false);      // above initialization of the Interpolator is with the symmetry-reduced sector only (rest = zero)
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
