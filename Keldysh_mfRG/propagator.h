@@ -133,6 +133,8 @@ public:
 
     Q GM_REG3_Hubbard(double v, int i_in) const;
     Q GM_REG3_SIAM(double v, int i_in) const;
+    Q GM_REG3_SIAM_PHS(double v, int i_in) const;
+    Q GM_REG3_SIAM_NoPHS(double v, int i_in) const;
     Q SM_REG3(double v, int i_in) const;
 
 
@@ -226,6 +228,12 @@ auto Propagator<Q>::GK(double v, int i_in) const -> Q
         return std::norm(GR(v, i_in)) * (selfenergy.valsmooth(1, v, i_in) - glb_i * ((glb_Gamma + Lambda) * Eff_fac(v)));
     }
 }
+template <>
+auto Propagator<double>::GK(double v, int i_in) const -> double {
+    print("Error! Keldysh computations require complex numbers! Abort.");
+    assert(false);
+    return 0.;
+}
 
 
 template <typename Q>
@@ -275,6 +283,12 @@ auto Propagator<Q>::SK(double v, int i_in) const -> Q
         return selfenergy.valsmooth(1, v, i_in) * (grn * gri) -
                glb_i * (grn * Eff_fac(v) * (1. + (glb_Gamma + Lambda) * gri));
     }
+}
+template <>
+auto Propagator<double>::SK(double v, int i_in) const -> double {
+    print("Error! Keldysh computations require complex numbers! Abort.");
+    assert(false);
+    return 0.;
 }
 
 
@@ -617,11 +631,19 @@ auto Propagator<Q>::GR_REG3_Hubbard(double v, int i_in) const -> Q
     // TODO: write GR for Hubbard model
 
 }
+
 template <typename Q>
 auto Propagator<Q>::GR_REG3_SIAM(double v, int i_in) const -> Q
 {
     return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
 }
+template <>
+auto Propagator<double>::GR_REG3_SIAM(double v, int i_in) const -> double {
+    print("Error! Keldysh computations require complex numbers! Abort.");
+    assert(false);
+    return 0.;
+}
+
 template <typename Q>
 auto Propagator<Q>::GA_REG3_Hubbard(double v, int i_in) const -> Q
 {
@@ -632,6 +654,12 @@ template <typename Q>
 auto Propagator<Q>::GA_REG3_SIAM(double v, int i_in) const -> Q
 {
     return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
+}
+template <>
+auto Propagator<double>::GA_REG3_SIAM(double v, int i_in) const -> double {
+    print("Error! Keldysh computations require complex numbers! Abort.");
+    assert(false);
+    return 0.;
 }
 
 template <typename Q>
@@ -657,17 +685,38 @@ auto Propagator<Q>::GM_REG3_Hubbard(double v, int i_in) const -> Q
     return 0.;
     // TODO: write GM for Hubbard model
 }
+
 template <typename Q>
 auto Propagator<Q>::GM_REG3_SIAM(double v, int i_in) const -> Q
 {
     if (PARTICLE_HOLE_SYMMETRY){
-        assert(v != 0.);
-        return v*v / (v*v + Lambda*Lambda) * 1./( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+        return GM_REG3_SIAM_PHS(v, i_in);
     }
     else{
-        return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+        return GM_REG3_SIAM_NoPHS(v, i_in);
     }
 }
+
+template <typename Q>
+auto Propagator<Q>::GM_REG3_SIAM_PHS(double v, int i_in) const -> Q
+{
+    assert(v != 0.);
+    return v*v / (v*v + Lambda*Lambda) * 1./( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+}
+
+template <typename Q>
+auto Propagator<Q>::GM_REG3_SIAM_NoPHS(double v, int i_in) const -> Q
+{
+    return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+}
+template <>
+auto Propagator<double>::GM_REG3_SIAM_NoPHS(double v, int i_in) const -> double
+{
+    print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
+    assert(false);
+    return 0.;
+}
+
 // single scale propagator (Matsubara)
 template <typename Q>
 auto Propagator<Q>::SM_REG3(double v, int i_in) const -> Q {
