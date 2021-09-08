@@ -143,7 +143,10 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
     }
 
     SECTION ( "Compute finite differences along last dimension" ) {
-        vec<double> dlinvals = ::get_finite_differences(linvals);
+        vec<double> xs = {0,1,2,3,4,5,6};
+        size_t permutation[dimensionality] = {1, 2, 3, 0};
+        size_t dims_temp[dimensionality] = {1, 3, 5, 7};
+        vec<double> dlinvals = ::get_finite_differences<double,4>(linvals, xs, dims_temp, permutation);
 
         int errorcount = 0;
         for (size_t i=1; i<dims[0]-1; i++) {
@@ -161,9 +164,10 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
 
 
     SECTION ( "Compute finite differences along last dimension (with permutation)" ) {
+        vec<double> xs = {0,1,2,3,4,5,6};
         size_t permutation[dimensionality] = {1, 2, 3, 0};
         size_t dims_temp[dimensionality] = {1, 3, 5, 7};
-        vec<double> dlinvals = ::get_finite_differences(linvals, dims_temp, permutation);
+        vec<double> dlinvals = ::get_finite_differences(linvals, xs, dims_temp, permutation);
 
 
         int errorcount = 0;
@@ -182,9 +186,10 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
 
 
     SECTION ( "Compute finite differences along second dimension (with permutation)" ) {
+        vec<double> xs = {0,1,2,3,4};
         size_t permutation[dimensionality] = {2, 3, 0, 1};
         size_t dims_temp[dimensionality] = {7, 1, 3, 5};
-        vec<double> dlinvals = ::get_finite_differences(linvals, dims_temp, permutation);
+        vec<double> dlinvals = ::get_finite_differences(linvals, xs, dims_temp, permutation);
 
 
         int errorcount = 0;
@@ -203,9 +208,10 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
 
 
     SECTION ( "Compute finite differences along first dimension (with permutation)" ) {
+        vec<double> xs = {0,1,2};
         size_t permutation[dimensionality] = {3, 0, 1, 2};
         size_t dims_temp[dimensionality] = {5, 7, 1, 3};
-        vec<double> dlinvals = ::get_finite_differences(linvals, dims_temp, permutation);
+        vec<double> dlinvals = ::get_finite_differences(linvals, xs, dims_temp, permutation);
 
 
         int errorcount = 0;

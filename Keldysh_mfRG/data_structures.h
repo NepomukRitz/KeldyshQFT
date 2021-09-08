@@ -453,23 +453,37 @@ size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [dimensionality]
  * @return
  */
 template<typename T, size_t dimensionality>
-vec<T> get_finite_differences(const vec<T> vec_in, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
-    size_t flatdim = vec_in.size();
+vec<T> get_finite_differences(const vec<T> data, const vec<double> xs, const size_t (&dims) [dimensionality],
+                              const size_t (&permutation) [dimensionality], T left_value=0.0, T right_value=0.0){
+    size_t flatdim = data.size();
     size_t dimsum = dims[dimensionality-1];
+    assert(dimsum==xs.size());
     size_t codimsum = flatdim/dimsum;
 
     vec<T> result(flatdim);
     for (int it = 0; it < codimsum; it++) {
-        result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
-                +0.5 * vec_in[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
-        result[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] =
-                -0.5 * vec_in[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
 
         for (int jt = 1; jt < dimsum-1; jt++) {
+            double hl = xs[jt  ]-xs[jt-1];
+            double h  = xs[jt+1]-xs[jt  ];
             result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] =
-                    -0.5 * vec_in[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)]
-                    +0.5 * vec_in[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)];
+                    - data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * h / (hl*(hl+h))
+                    + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (h - hl) / (hl * h)
+                    + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * hl / (h*(hl+h));
         }
+
+        // set boundary values
+        double h = xs[1]-xs[0];
+        result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
+                - result[rotateFlatIndex(it*dimsum + 1, dims, permutation)] + left_value/6*h*h
+                + 2.0 * (data[rotateFlatIndex(it*dimsum + 1, dims, permutation)] - data[rotateFlatIndex(it*dimsum + 0, dims, permutation)]) / h;
+                //+0.5 * data[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
+        //m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
+        h = xs[dimsum-1]-xs[dimsum-2];
+        result[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] =
+                -result[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)] - right_value/6*h*h + 2.0 * (data[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] - data[rotateFlatIndex(it*dimsum +dimsum-2, dims, permutation)]) / h;
+        //      -0.5 * data[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
+        //m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;
     }
      return result;
 }

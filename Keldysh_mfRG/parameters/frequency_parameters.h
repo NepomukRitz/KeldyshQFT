@@ -67,8 +67,8 @@ constexpr int nFER2 = 51;//nFER;
 constexpr int nBOS3 = 21; //nBOS;
 constexpr int nFER3 = 21; //nFER;
 #else
-constexpr int nBOS = 401;
-constexpr int nFER = 400;
+constexpr int nBOS = 101;
+constexpr int nFER = 100;
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 21;//nBOS;
 constexpr int nFER2 = 20;//nFER;

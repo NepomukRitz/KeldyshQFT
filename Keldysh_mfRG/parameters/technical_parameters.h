@@ -13,7 +13,7 @@ constexpr bool MPI_FLAG = true;
 //Tolerance for closeness to grid points when interpolating
 constexpr double inter_tol = 1e-8;
 
-constexpr int INTERPOLATION = 1;
+#define INTERPOLATION 4
 
 //Tolerance for loop convergence
 constexpr double converged_tol = 1e-7;

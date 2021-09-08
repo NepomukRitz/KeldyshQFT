@@ -345,7 +345,7 @@
             m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h);  /// checked
         } else if (m_left==third_deriv) {
             const double h = m_x[1]-m_x[0];
-            m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
+            m_b[0]=-m_b[1]+m_left_value/6.*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
         } else {
             assert(false);
         }
@@ -358,7 +358,7 @@
             m_c[n-1]=0.5*m_right_value; /// m_d[n-1] is set to 0. Is this correct/necessary?
         } else if (m_right==third_deriv) {
             const double h = m_x[n-1]-m_x[n-2];
-            m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;  /// added by me
+            m_b[n-1]=-m_b[n-2]-m_right_value/6.*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;  /// added by me
             m_d[n-1]= DataContainer::K1[n - 1] - DataContainer::K1[n - 2] - m_b[n - 2]; /// ???
         } else {
             assert(false);
@@ -435,7 +435,7 @@
     //it=std::upper_bound(m_x.begin(),m_x.end(),x);       // *it > x
     //size_t idx = std::max( int(it-m_x.begin())-1, 0);   // m_x[idx] <= x
     //return idx;
-       return vertexDataContainer<k1,Q>::frequencies_K1.b.fconv(x);
+       return DataContainer::frequencies_K1.b.fconv(x);
     }
 
     template <class DataContainer, typename Q>
@@ -449,7 +449,7 @@
     size_t n=m_x.size();
     size_t idx=find_closest(x);
 
-    double h=x-m_x[idx];
+    double h=DataContainer::frequencies_K1.b.grid_transf(x) - m_x[idx];
     Q interpol;
     /// don't support extrapolation
     //if(x<m_x[0]) {

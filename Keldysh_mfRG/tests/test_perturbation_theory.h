@@ -1264,9 +1264,9 @@ class TestIntegrandK1a{
         const double w, v, vp;
         const char channel;
         State<Q> SOPTstate;
-        TestIntegrandK1a(double Lambda_in, char channel_in, double w, double v, double vp)
-        : Lambda(Lambda_in), channel(channel_in), w(w), v(v), vp(vp) {
-            SOPTstate = State<Q>(Lambda);
+        TestIntegrandK1a(const double Lambda_in, const char channel_in, const double w, const double v, const double vp)
+        : Lambda(Lambda_in), channel(channel_in), w(w), v(v), vp(vp), SOPTstate(Lambda) {
+            //SOPTstate = State<Q>(Lambda);
             SOPTstate.initialize();             // initialize state
 
             sopt_state(SOPTstate, Lambda);
@@ -1274,14 +1274,16 @@ class TestIntegrandK1a{
 
     void save_integrand(double vmax) {
         int npoints = 1e5;
+        FrequencyGrid bfreqs('b', 1, Lambda);
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         double wl = -vmax;
         double wu = vmax;
+        double spacing = (bfreqs.t_upper - bfreqs.t_lower) / (double)npoints;
         for (int i=0; i<npoints; ++i) {
-            double vpp = wl + i * (wu-wl)/(npoints-1);
+            double vpp = bfreqs.grid_transf_inv(bfreqs.t_lower + i * spacing);
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
@@ -1364,7 +1366,7 @@ void test_integrate_over_K1(double Lambda) {
     double v = 1e2;
     double vp = -1e2;
     TestIntegrandK1a<Q> IntegrandK1a(Lambda, 'a', 0., v, vp);
-    IntegrandK1a.save_integrand();
+    IntegrandK1a.save_integrand(1e4);
     double exact_result = -glb_U*glb_U/4;
 
     double vmax = 1e2;

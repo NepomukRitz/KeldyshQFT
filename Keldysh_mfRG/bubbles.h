@@ -757,7 +757,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(){
-    int npoints = nBOS;
+    int npoints = nBOS*100;
     if (diag_class == 2) {npoints = 1000;}
     else if (diag_class == 3) {npoints = 100;}
 
@@ -767,7 +767,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
     rvec integrand_im (npoints);
     rvec Pival_re (npoints);
     rvec Pival_im (npoints);
-    for (int i=0; i<npoints; ++i) {
+    for (int i=1; i<npoints-1; ++i) {
         double wl, wu;
         switch (diag_class) {
             case 1:
@@ -798,10 +798,10 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
             Pival_im[i] = 0.;
         }
         else{
-            integrand_re[i] = integrand_value.real();
-            integrand_im[i] = integrand_value.imag();
-            Pival_re[i] = Pival.real();
-            Pival_im[i] = Pival.imag();
+            integrand_re[i] = myreal(integrand_value);
+            integrand_im[i] = myimag(integrand_value);
+            Pival_re[i] = myreal(Pival);
+            Pival_im[i] = myimag(Pival);
         }
     }
 
@@ -1086,7 +1086,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int n_mpi, n_omp;
     set_external_arguments_for_parallelization(n_mpi, n_omp, diag_class);
 
-    vertex1[0].half1().initialize();
+    vertex1[0].half1().initializeInterpol();
+    vertex1[0].half2().initializeInterpol();
+    vertex2[0].half1().initializeInterpol();
+    vertex2[0].half2().initializeInterpol();
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> Buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
@@ -1156,6 +1159,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         }
         else{
             if (ZERO_T){
+                //if (std::abs(w+1.034) < 1e-2) integrand_K1.save_integrand();
                 value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
             }
             else{
@@ -1187,6 +1191,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             }
             else{
                 if (ZERO_T){
+                    //if (std::abs(w) < 1e-2 or std::abs(w+0.54) < 1e-2) integrand_K2.save_integrand();
                     value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,3>(integrand_K2, vmin, vmax, std::abs(w/2), {v, v+w, v-w}, Delta, false);
                     //value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K2, vmin, vmax, std::abs(w/2), {}, Delta); // TODO(high): Remove?!
                 }
@@ -1245,7 +1250,8 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results(const vec<Q>& Ordered_result, const int diag_class){
-    dgamma[0].half1().initialize();
+    dgamma[0].half1().initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
+                                                /// TODO: does cubic interpolation overshoot at the edges of the symmetry-reduced sector?
     switch (diag_class) {
         case 1:
             write_out_results_K1(Ordered_result);
@@ -1258,6 +1264,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
+    dgamma[0].half1().initialized = false;      // above initialization of the Interpolator is with the symmetry-reduced sector only (rest = zero)
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,

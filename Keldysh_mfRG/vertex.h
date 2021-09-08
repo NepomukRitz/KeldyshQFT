@@ -198,6 +198,7 @@ public:
 
     void findBestFreqGrid(double Lambda);
 
+    void initializeInterpol();
 };
 
 /** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
@@ -1379,6 +1380,13 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
 
 
 
+}
+
+template<typename Q>
+void fullvert<Q>::initializeInterpol() {
+    avertex.initInterpolator();
+    pvertex.initInterpolator();
+    tvertex.initInterpolator();
 }
 
 #if INTERPOLATION == 3

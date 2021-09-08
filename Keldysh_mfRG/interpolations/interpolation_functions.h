@@ -16,8 +16,9 @@
  */
 template <typename Q>
 inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
-
-    return interpolate_lin1D(x, frequencies, val);
+    if (INTERPOLATION == 1 or INTERPOLATION==4) return interpolate_lin1D(x, frequencies, val);
+    else return interpolate_sloppycubic1D(x, frequencies, val);
+    //else assert(false);
 }
 
 /**
@@ -36,8 +37,9 @@ template <typename Q>
 inline auto interpolate2D(const double x, const double y,
                           const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
                           const std::function<Q(int, int)> val) -> Q {
-
-    return interpolate_lin2D(x, y , xfrequencies, yfrequencies, val);
+    if (INTERPOLATION == 1 or INTERPOLATION==4) return interpolate_lin2D(x, y , xfrequencies, yfrequencies, val);
+    else return interpolate_sloppycubic2D(x, y , xfrequencies, yfrequencies, val);
+    //else assert(false);
 }
 
 /**
@@ -60,7 +62,10 @@ inline auto interpolate3D(const double x, const double y, const double z,
                           const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
                           const std::function<Q(int, int, int)> val) -> Q {
 
-    return interpolate_lin3D(x, y, z, xfrequencies, yfrequencies, zfrequencies, val);
+    if (INTERPOLATION == 1 or INTERPOLATION==4) return interpolate_lin3D(x, y, z, xfrequencies, yfrequencies, zfrequencies, val);
+    else return interpolate_sloppycubic3D(x, y, z, xfrequencies, yfrequencies, zfrequencies, val);
+    //else assert(false);
+
 
 }
 

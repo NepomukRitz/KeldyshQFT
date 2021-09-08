@@ -53,6 +53,7 @@ public:
      * internal structure index i_in. */
     auto K1_val(int iK, int iw, int i_in) const -> Q;
 
+    vec<Q> get_deriv_K1_x() const;
     double get_deriv_maxK1() const;
 };
 
@@ -175,6 +176,18 @@ template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_maxK1() const ->
 
 }
 
+
+
+template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x() const -> vec<Q> {
+    const size_t dims_x[3] = {n_in, nK_K1, nBOS};
+    const size_t perm_x[3] = {1, 2, 0};
+    vec<Q> result = ::get_finite_differences<Q,3>(K1, dims_x, perm_x);
+    return result;
+
+}
+
+
+
 template <typename Q> auto vertexDataContainer<k2,Q>::K2_acc(int i) const -> Q {
     if (i >= 0 && i < K2.size())
         return K2[i];
@@ -199,8 +212,12 @@ template <typename Q> auto vertexDataContainer<k2,Q>::K2_val(int iK, int iw, int
 
 
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_maxK2() const -> double {
-    double max_K2 = (::power2(::get_finite_differences<Q,2>(K2, {nBOS2, nFER2}, {0, 1}))
-                     + ::power2(::get_finite_differences<Q,2>(K2, {nFER2}, {1, 0}))
+    size_t dims1[4] = {n_in, nK_K2, nBOS2, nFER2};
+    size_t dims2[4] = {nFER2, n_in, nK_K2, nBOS2};
+    size_t perm1[4] = {1, 2, 3, 0};
+    size_t perm2[4] = {2, 3, 0, 1};
+    double max_K2 = (::power2(::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims1, perm1))
+                   + ::power2(::get_finite_differences<Q,4>(K2, frequencies_K2.b.ts, dims2, perm2))
     ).max_norm();
     return max_K2;
 
@@ -231,9 +248,16 @@ template <typename Q> auto vertexDataContainer<k3,Q>::K3_val(int iK, int iw, int
 
 
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_maxK3() const -> double {
-    double max_K3 = (::power2(::get_finite_differences<Q,3>(K3, {nBOS3, nFER3, nFER3}, {0, 1, 2}))
-                     + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nBOS3, nFER3}, {1, 2, 0}))
-                     + ::power2(::get_finite_differences<Q,3>(K3, {nFER3, nFER3, nBOS3}, {2, 0, 1}))
+    size_t dims1[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
+    size_t dims2[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    size_t dims3[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
+    size_t perm1[5] = {1, 2, 3, 4, 0};
+    size_t perm2[5] = {2, 3, 4, 0, 1};
+    size_t perm3[5] = {3, 4, 0, 1, 2};
+
+    double max_K3 = (::power2(::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims1, perm1))
+                   + ::power2(::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims2, perm2))
+                   + ::power2(::get_finite_differences<Q,5>(K3, frequencies_K3.b.ts, dims3, perm3))
     ).max_norm();
     return max_K3;
 

@@ -250,12 +250,15 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
 auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
     t = grid_transf(w_in);
     double t_rescaled = (t - t_lower) / dt;
-    auto index = (int)t_rescaled + 1;
-    if (INTERPOLATION==1) {
+    auto index = (int) (t_rescaled + 1.);
+    if (INTERPOLATION==1 or INTERPOLATION==4) {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
+        assert(ws[index] - w_in  <= 1e-5);
+        if (ws[index+1] < w_in) index++;
+        assert(w_in - ws[index+1] < 1e-5);
     }
-    else if (INTERPOLATION==3) {
+    else {
         index = std::max(1, index);
         index = std::min(N_w - 3, index);
     }

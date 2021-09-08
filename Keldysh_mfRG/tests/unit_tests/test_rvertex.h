@@ -16,6 +16,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
         avertex.K1_setvert(iK, iw, i_in, value);
         value +=1;
     }
+    avertex.initInterpolator();
     avertex.enforce_freqsymmetriesK1(avertex);
 
     double asymmetry = 0;
@@ -53,6 +54,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
             value += 1;
         }
     }
+    avertex.initInterpolator();
     avertex.enforce_freqsymmetriesK2(avertex);
 
     double asymmetry_tolerance = 1e-10;
@@ -110,6 +112,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
             }
         }
     }
+    avertex.initInterpolator();
     avertex.enforce_freqsymmetriesK3(avertex);
 
     double asymmetry_tolerance = 1e-10;
