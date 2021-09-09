@@ -71,7 +71,8 @@
     // interpolation parameters
     // f(x) = a_i + b_i*(x-x_i) + c_i*(x-x_i)^2 + d_i*(x-x_i)^3
     // where a_i = y_i, or else it won't go through grid points
-    vec<Q> m_b,m_c,m_d;        // SplineK1 coefficients
+    size_t n;
+    vec<Q> m_b = vec<Q>(n),m_c= vec<Q>(n),m_d= vec<Q>(n);        // SplineK1 coefficients
     Q m_c0;                            // for left extrapolation
     spline_type m_type = cspline_hermite;         /// set const?
     bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
@@ -92,7 +93,7 @@
     //    ;
     //}
     explicit SplineK1(double Lambda)
-        :   DataContainer(Lambda)
+        :   DataContainer(Lambda), n(DataContainer::K1.size())
     {
         this->initializeK1();
     }
@@ -118,7 +119,7 @@
     bool make_monotonic();
 
     // evaluates the SplineK1 at point x
-    Q interpolK1 (double x) const;
+    Q interpolK1 (int iK, double x, int i_in) const;
     Q deriv(int order, double x) const;
 
     // returns the input data points
@@ -202,11 +203,6 @@
     assert(m_x.size() == (DataContainer::K1).size());
     assert(m_x.size()==m_b.size());
     assert(m_x.size()>2);
-    size_t n=m_b.size();
-    if(m_c.size()!=n)
-        m_c.resize(n);
-    if(m_d.size()!=n)
-        m_d.resize(n);
 
     for(size_t i=0; i<n-1; i++) {       /// i=n-1 not treated (only used for extrapolation to the right)
         const double h  = m_x[i+1]-m_x[i];      /// spacing
@@ -229,7 +225,6 @@
     //m_made_monotonic=false;
     //m_x=x;
     //    DataContainer::K1=y;
-    int n = (int) m_x.size();         /// replace with info on dims?
     // check strict monotonicity of input vector x
     //for(int i=0; i<n-1; i++) {
     //    assert(m_x[i]<m_x[i+1]);
@@ -238,9 +233,6 @@
 
     if(m_type==linear) {
         // linear interpolation
-        m_d.resize(n);
-        m_c.resize(n);
-        m_b.resize(n);
         for(int i=0; i<n-1; i++) {
             m_d[i]=0.0;
             m_c[i]=0.0;
@@ -322,9 +314,6 @@
         // hermite cubic splines which are C^1 (cont. differentiable)
         // and derivatives are specified on each grid point
         // (here we use 3-point finite differences)
-        m_b.resize(n);
-        m_c.resize(n);
-        m_d.resize(n);
         // set b to match 1st order derivative finite difference
         /*
         for(int i=1; i<n-1; i++) {
@@ -374,6 +363,7 @@
     m_c0 = (m_left==first_deriv) ? 0.0 : m_c[0];
     }
 
+    /*
     template <class DataContainer, typename Q>
     bool SplineK1<DataContainer,Q>::make_monotonic()
     {
@@ -381,7 +371,6 @@
     assert(m_x.size()==m_b.size());
     assert(m_x.size()>2);
     bool modified = false;
-    const int n=(int)m_x.size();
     // make sure: input data monotonic increasing --> b_i>=0
     //            input data monotonic decreasing --> b_i<=0
     for(int i=0; i<n; i++) {
@@ -424,6 +413,7 @@
 
     return modified;
     }
+     */
 
     // return the closest idx so that m_x[idx] <= x (return 0 if x<m_x[0])
     template <class DataContainer, typename Q>
@@ -437,17 +427,17 @@
     }
 
     template <class DataContainer, typename Q>
-    Q SplineK1<DataContainer,Q>::interpolK1 (double x) const
+    Q SplineK1<DataContainer,Q>::interpolK1 (int iK, double x, int i_in) const
     {
     // polynomial evaluation using Horner's scheme
     // TODO: consider more numerically accurate algorithms, e.g.:
     //   - Clenshaw
     //   - Even-Odd method by A.C.R. Newbery
     //   - Compensated Horner Scheme
-    size_t n=m_x.size();
-    size_t idx=find_closest(x);
+    double t;
+    size_t idx=DataContainer::frequencies_K1.b.fconv(t, x);
 
-    double h=DataContainer::frequencies_K1.b.grid_transf(x) - m_x[idx];
+    double h = t - m_x[idx];
     Q interpol;
     /// don't support extrapolation
     //if(x<m_x[0]) {
@@ -468,7 +458,6 @@
     Q SplineK1<DataContainer,Q>::deriv(int order, double x) const
     {
     assert(order>0);
-    size_t n=m_x.size();
     size_t idx = find_closest(x);
 
     double h=x-m_x[idx];

@@ -150,7 +150,7 @@ namespace spline {
             // Check if the frequency runs out of the box; if yes: return asymptotic value
             //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
             //{
-            Q result = indices.prefactor * SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.w);
+            Q result = indices.prefactor * SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.iK, indices.w, indices.i_in);
             // Lambda function (aka anonymous function) in last argument
             return result;
             //} else {
