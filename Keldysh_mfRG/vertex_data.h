@@ -70,6 +70,7 @@ private:
     /// by interpolating stored data, in all possible channel-dependent frequency representations ///
 
 public:
+    size_t dimsK2[4] = {nK_K2, nBOS2, nFER2, n_in};
     VertexFrequencyGrid<k2> frequencies_K2;    // frequency grid
 
     explicit vertexDataContainer(double Lambda) : frequencies_K2(Lambda) { };
@@ -99,6 +100,7 @@ public:
 
     vec<Q> get_deriv_K2_x(bd_type left, bd_type right, Q value_left, Q value_right) const;
     vec<Q> get_deriv_K2_y(bd_type left, bd_type right, Q value_left, Q value_right) const;
+    vec<Q> get_deriv_K2_xy(bd_type left, bd_type right, Q value_left, Q value_right) const;
     double get_deriv_maxK2() const;
 };
 
@@ -147,6 +149,8 @@ public:
     vec<Q> get_deriv_K3_x(bd_type left, bd_type right, Q value_left, Q value_right) const;
     vec<Q> get_deriv_K3_y(bd_type left, bd_type right, Q value_left, Q value_right) const;
     vec<Q> get_deriv_K3_z(bd_type left, bd_type right, Q value_left, Q value_right) const;
+    vec<Q> get_deriv_K3_xy(bd_type left, bd_type right, Q value_left, Q value_right) const;
+    vec<Q> get_deriv_K3_xz(bd_type left, bd_type right, Q value_left, Q value_right) const;
     double get_deriv_maxK3() const;
 };
 
@@ -229,6 +233,15 @@ template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_y(const bd_ty
     vec<Q> result = ::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
     return result;
 }
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_xy(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
+    const size_t dims_y[4] = {n_in, nK_K2, nBOS2, nFER2};
+    const size_t perm_y[4] = {1, 2, 3, 0};
+    vec<Q> inter_result = ::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+    const size_t dims_x[4] = {nFER2, n_in, nK_K2, nBOS2};
+    const size_t perm_x[4] = {2, 3, 0, 1};
+    vec<Q> result = ::get_finite_differences<Q,4>(inter_result, frequencies_K2.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+    return result;
+}
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_maxK2() const -> double {
     size_t dims1[4] = {n_in, nK_K2, nBOS2, nFER2};
     size_t dims2[4] = {nFER2, n_in, nK_K2, nBOS2};
@@ -281,6 +294,24 @@ template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_z(const bd_ty
     const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
     const size_t perm_z[5] = {1, 2, 3, 4, 0};
     vec<Q> result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_z, perm_z, left, right, value_left, value_right);
+    return result;
+}
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xy(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
+    const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    const size_t perm_y[5] = {2, 3, 4, 0, 1};
+    vec<Q> inter_result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+    const size_t dims_x[5] = {nFER3, n_in, nK_K3, nBOS3};
+    const size_t perm_x[5] = {3, 4, 0, 1, 2};
+    vec<Q> result = ::get_finite_differences<Q,5>(inter_result, frequencies_K3.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+    return result;
+}
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xz(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
+    const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    const size_t perm_y[5] = {2, 3, 4, 0, 1};
+    vec<Q> inter_result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+    const size_t dims_x[5] = {nFER2, n_in, nK_K2, nBOS2};
+    const size_t perm_x[5] = {3, 4, 0, 1, 2};
+    vec<Q> result = ::get_finite_differences<Q,5>(inter_result, frequencies_K3.b.ts, dims_x, perm_x, left, right, value_left, value_right);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_maxK3() const -> double {
