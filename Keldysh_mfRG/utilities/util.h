@@ -225,7 +225,7 @@ auto sign(T x) -> double {
  */
 // rounds away from zero to next Integer
 auto round2Infty(double x) -> double {
-    double tol = 0.1;
+    const double tol = 0.1;
     // trunc() rounds towards zero
     if (x <= 0.) return floor(x+tol);
     else return ceil(x-tol);
@@ -233,20 +233,20 @@ auto round2Infty(double x) -> double {
 
 // needed for rounding to fermionic frequencies
 auto myround(double x) -> double {
-    double tol = 0.1;
+    const double tol = 0.1;
     if (x <= -0.5) return floor(x+tol);
     else return ceil(x-tol);
 }
 
 // round (frequency/(pi*T)) to an even number
 auto floor2bfreq(double w) -> double {
-    double tol = 0.1;
+    const double tol = 0.1;
     double a = (2. * M_PI * glb_T);
     return floor(w / a+tol) * a;
 }
 auto ceil2bfreq(double w) -> double {
     double a = (2. * M_PI * glb_T);
-    double tol = 0.1;
+    const double tol = 0.1;
     return ceil(w / a-tol) * a;
 }
 auto round2bfreq(double w) -> double {
@@ -255,12 +255,12 @@ auto round2bfreq(double w) -> double {
 }
 // round (frequency/(pi*T)) to an uneven number
 auto floor2ffreq(double w) -> double {
-    double tol = 0.1;
+    const double tol = 0.1;
     double a = (M_PI * glb_T);
     return (floor((w / a - 1.) / 2.+tol) * 2. + 1 ) * a;
 }
 auto ceil2ffreq(double w) -> double {
-    double tol = 0.1;
+    const double tol = 0.1;
     double a = (M_PI * glb_T);
     return (ceil((w / a - 1.-tol) / 2.) * 2. + 1 ) * a;
 }
