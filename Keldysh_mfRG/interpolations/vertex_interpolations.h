@@ -72,6 +72,7 @@ namespace linOrSloppy {
     public:
         explicit Interpolate<k2, Q>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
 
+        void initializeK2() {};
         // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
         auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
 

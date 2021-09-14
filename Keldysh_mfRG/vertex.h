@@ -110,7 +110,7 @@ public:
     auto right_diff_bare(VertexInput input) const -> Q;
     auto right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
-    void reorder_due2antisymmetry(const fullvert<Q>& right_vertex);
+    void reorder_due2antisymmetry(fullvert<Q>& right_vertex);
 
     // Initialize vertex
     void initialize(Q val);
@@ -988,7 +988,9 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const
     return K2b_K3 + gamma_Rb;
 }
 
-template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(const fullvert<Q>& right_vertex){
+template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(fullvert<Q>& right_vertex){
+    initializeInterpol();
+    right_vertex.initializeInterpol();
     avertex.enforce_freqsymmetriesK1(right_vertex.avertex);
     pvertex.enforce_freqsymmetriesK1(right_vertex.pvertex);
     tvertex.enforce_freqsymmetriesK1(right_vertex.tvertex);
@@ -1002,6 +1004,8 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(const fullvert<Q
         pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
         tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
     }
+    set_initializedInterpol(false);
+    right_vertex.set_initializedInterpol(false);
 }
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {
