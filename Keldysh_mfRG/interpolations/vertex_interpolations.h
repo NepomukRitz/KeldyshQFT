@@ -4,6 +4,7 @@
 //#include <gsl/gsl_interp2d.h>
 //#include <gsl/gsl_spline2d.h>
 #include "InterpolatorSpline1D.h"
+#include "InterpolatorSpline2D.h"
 #include "../grids/frequency_grid.h"
 #include "../parameters/master_parameters.h"
 #include "../data_structures.h"
@@ -66,10 +67,6 @@ namespace linOrSloppy {
         };
     };
 
-#if INTERPOLATION!=1 and INTERPOLATION!=3
-}
-#endif
-
     template<typename Q>
     class Interpolate<k2, Q> : public vertexDataContainer<k2, Q> {
     public:
@@ -97,6 +94,11 @@ namespace linOrSloppy {
             //}
         }
     };
+
+#if INTERPOLATION!=1 and INTERPOLATION!=3
+}
+#endif
+
 
 /** Template specialization for K3 */
     template<typename Q>
@@ -158,6 +160,27 @@ namespace spline {
             //}
         };
     };
+
+
+
+    template<typename Q>
+    class Interpolate<k2,Q>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
+    public:
+        explicit Interpolate<k2, Q>(double Lambda) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda) {};
+        auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
+
+            // Check if the frequency runs out of the box; if yes: return asymptotic value
+            //if (std::abs(indices.w) < vertex.frequencies_K2.b.w_upper + inter_tol)
+            //{
+            Q result = indices.prefactor * SplineK2<vertexDataContainer<k2,Q>, Q>::interpolK2 (indices.iK, indices.w, indices.v1, indices.i_in);
+            // Lambda function (aka anonymous function) in last argument
+            return result;
+            //} else {
+            //    return 0.;  // asymptotic value
+            //}
+        };
+    };
+
 
 #if INTERPOLATION!=4
 }
@@ -223,6 +246,7 @@ public:
             double t_start = get_time();
             //double tK3 = get_time() - t_start;
             Interpolate<k1,Q>::initializeK1();
+            Interpolate<k2,Q>::initializeK2();
             //print("K1 Interpolator initialized");
             //get_time(t_start);
 
