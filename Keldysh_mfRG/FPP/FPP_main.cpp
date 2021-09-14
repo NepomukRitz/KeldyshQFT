@@ -166,6 +166,7 @@ int main() {
     //integral_1D_with_singularity();
     //integral_1D_with_infinite_range();
 
+    /*
     // Exact bubble and numerical bubble
     print_exact_bubble(3.4,-12.3,0.0,'c','d','a');
     print_numerical_bubble(3.4,-12.3,0.0,'c','d','a',0.,0.);
@@ -198,6 +199,7 @@ int main() {
     //integral_bubble_w_vpp_list_2D ('c', 'c', 'p', 10., 10., 10., 200, 200, 11,10e-12,10e-12);
     //integral_bubble_w_vpp_list_2D ('c', 'c', 't', 10., 10., 10., 200, 200, 11,10e-12,10e-12);
     //integral_bubble_w_vpp_list_2D ('c', 'c', 'a', 10., 10., 10., 200, 200, 11,10e-12,10e-12);
+    */
 
     /*double output1, output2;
     comp output3;
@@ -365,7 +367,7 @@ int main() {
     }*/
 
 
-
+    /*
     comp bubble1 = perform_Pi0_vpp_integral (0.0, 0.0, 'c', 'd', 'p', 10, 1e-10, 0);
     double bubble1e = exactzerobubble(10, 1e-10);
     //comp output2t = perform_vacuum_integral (10, 1e-10);
@@ -378,13 +380,14 @@ int main() {
     comp bubble4 = perform_Pi0_vpp_integral (0.0, 0.0, 'c', 'd', 'p', 1e4, 1e-5,0);
     double bubble4e = exactzerobubble(1e4, 1e-5);
     //comp output5t = perform_vacuum_integral (1, 1, 1e4, 1e-5); */
-    std::cout << "Bubble integral = " << bubble1 << ", exact = " << bubble1e << /* ", simplified = " << output2t << */  "\n";
+    /*
+    std::cout << "Bubble integral = " << bubble1 << ", exact = " << bubble1e << "\n";
     //double test1 = 1e4;
     //double test2 = sqrt(test1);
     //std::cout << test1 << " = " << test2 << "\n";
-    std::cout << "Bubble integral = " << bubble2 << ", exact = " << bubble2e << /* ", simplified = " << output3t << */ "\n";
-    std::cout << "Bubble integral = " << bubble3 << ", exact = " << bubble3e << /* ", simplified = " << output4t << */ "\n";
-    std::cout << "Bubble integral = " << bubble4 << ", exact = " << bubble4e << /* ", simplified = " << output5t << */ "\n";
+    std::cout << "Bubble integral = " << bubble2 << ", exact = " << bubble2e << "\n";
+    std::cout << "Bubble integral = " << bubble3 << ", exact = " << bubble3e << "\n";
+    std::cout << "Bubble integral = " << bubble4 << ", exact = " << bubble4e << "\n";
     std::cout << "test now \n";
     glb_muc = 0.0;
     glb_mud = 0.0;
@@ -393,11 +396,11 @@ int main() {
     comp ladder1, ladder2, ladder3, ladder4, ladder5;
     double laddere;
     std::cout << "k integral exact\n";
-    ladder1 = ladder(0.0,0.0,10,1e-10,1,0);
-    ladder2 = ladder(0.0,0.0,1e4,1e-10,1,0);
-    ladder3 = ladder(0.0,0.0,10,1e-5,1,0);
-    ladder4 = ladder(0.0,0.0,1e2,1e-5,1,0);
-    ladder5 = ladder(0.0,0.0,1e4,1e-5,1,0);
+    ladder1 = ladder(0.0,0.0,'p',10,1e-10,1,0);
+    ladder2 = ladder(0.0,0.0,'p',1e4,1e-10,1,0);
+    ladder3 = ladder(0.0,0.0,'p',10,1e-5,1,0);
+    ladder4 = ladder(0.0,0.0,'p',1e2,1e-5,1,0);
+    ladder5 = ladder(0.0,0.0,'p',1e4,1e-5,1,0);
     laddere = -4*M_PI;
     std::cout << "ladder = " << ladder1 << "\n";
     std::cout << "ladder = " << ladder2 << "\n";
@@ -409,11 +412,11 @@ int main() {
 
 
     std::cout << "k integral numerical\n";
-    ladder1 = ladder(0.0,0.0,10,1e-10,1,1);
-    ladder2 = ladder(0.0,0.0,1e4,1e-10,1,1);
-    ladder3 = ladder(0.0,0.0,10,1e-5,1,1);
-    ladder4 = ladder(0.0,0.0,1e2,1e-5,1,1);
-    ladder5 = ladder(0.0,0.0,1e4,1e-5,1,1);
+    ladder1 = ladder(0.0,0.0,'p',10,1e-10,1,1);
+    ladder2 = ladder(0.0,0.0,'p',1e4,1e-10,1,1);
+    ladder3 = ladder(0.0,0.0,'p',10,1e-5,1,1);
+    ladder4 = ladder(0.0,0.0,'p',1e2,1e-5,1,1);
+    ladder5 = ladder(0.0,0.0,'p',1e4,1e-5,1,1);
     laddere = -4*M_PI;
     std::cout << "ladder = " << ladder1 << "\n";
     std::cout << "ladder = " << ladder2 << "\n";
@@ -425,58 +428,58 @@ int main() {
     glb_muc = 1.0;
     glb_ainv = 1.0;
     glb_mud = -1.24;
-    comp ladder01 = 1./ladder(0.0,0.0,1e4,1e-10,1,0);
+    comp ladder01 = 1./ladder(0.0,0.0,'p',1e4,1e-10,1,0);
     std::cout << "a^(-1) = " << glb_ainv << ", mu_d = " << glb_mud << ": " << ladder01 << "\n";
     glb_mud = -1.23;
-    ladder01 = 1./ladder(0.0,0.0,1e4,1e-10,1,0);
+    ladder01 = 1./ladder(0.0,0.0,'p',1e4,1e-10,1,0);
     std::cout << "a^(-1) = " << glb_ainv << ", mu_d = " << glb_mud << ": " << ladder01 << "\n";
     glb_mud = -1.2325;
-    ladder01 = 1./ladder(0.0,0.0,1e4,1e-10,1,0);
+    ladder01 = 1./ladder(0.0,0.0,'p',1e4,1e-10,1,0);
     std::cout << "a^(-1) = " << glb_ainv << ", mu_d = " << glb_mud << ": " << ladder01 << "\n";
-    double root_test0 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,-2.,1e-10,100,1e-16);
+    double root_test0 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,-2.,1e-10,100,1e-16);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test0 << "\n";
 
 
     glb_ainv = 2.0;
-    double root_test1 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,-2.,1e-10,100,1e-10);
+    double root_test1 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,-2.,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test1 << "\n";
     glb_ainv = 1.5;
-    double root_test2 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,root_test1,1e-10,100,1e-10);
+    double root_test2 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,root_test1,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test2 << "\n";
     glb_ainv = 1.0;
-    double root_test3 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,root_test2,1e-10,100,1e-10);
+    double root_test3 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,root_test2,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test3 << "\n";
     glb_ainv = 0.5;
-    double root_test4 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,root_test3,1e-10,100,1e-10);
+    double root_test4 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,root_test3,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test4 << "\n";
     glb_ainv = 0.0;
-    double root_test5 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,root_test4,1e-10,100,1e-10);
+    double root_test5 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,root_test4,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test5 << "\n";
     glb_ainv = -0.5;
-    double root_test6 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,root_test5,1e-10,100,1e-10);
+    double root_test6 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,root_test5,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test6 << "\n";
     glb_ainv = -1.0;
-    double root_test7 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,root_test6,1e-10,100,1e-10);
+    double root_test7 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,root_test6,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test7 << "\n";
     glb_ainv = -2.0;
-    double root_test8 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,root_test7,1e-10,100,1e-10);
+    double root_test8 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,root_test7,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test8 << "\n";
     glb_ainv = 0.282843;
-    double root_test9 = find_root_newton(0.0,0.0,1e4,1e-10,1,0,-0.342722,1e-10,100,1e-10);
+    double root_test9 = find_root_newton(0.0,0.0,'p',1e4,1e-10,1,0,-0.342722,1e-10,100,1e-10);
     std::cout << "a^(-1) = " << glb_ainv << ": " << root_test9 << "\n";
 
     std::cout << "now solver with exact momentum integral:\n";
-    ladder_p_list (1e4, 1e-10, 1, 0, -2.*sqrt(2), 2.*sqrt(2), -10., 1e-10, 100, 1e-16, 301);
+    ladder_list ('p',1e4, 1e-10, 1, 0, -2.*sqrt(2), 2.*sqrt(2), -10., 1e-10, 100, 1e-16, 301);
     std::cout << "now solver with numerical momentum integral:\n";
-    //ladder_p_list (1e4,1e-10,1,1,-2*sqrt(2),2*sqrt(2),-10.,1e-10,100,1e-16,101);
-
+    //ladder_list ('p',1e4,1e-10,1,1,-2*sqrt(2),2*sqrt(2),-10.,1e-10,100,1e-16,101);
+    */
 
     // comp testfmu = test_f_mu(0.0,0.0,1e3,1e-4,1,1.0);
     // std::cout << "f_mu = " << testfmu << "\n";
 
     // 1-LOOP FRG
     // ==================================
-
+    /*
     glb_ainv = 1.0;
     glb_muc = 1.0;
     glb_mud = -5.;
@@ -495,6 +498,7 @@ int main() {
     std::cout << "p: " << testrhs << "\n";
     testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,'c','d','a',1);
     std::cout << "a: " << testrhs << "\n";
+     */
     /*
     comp Gamma_fRG_exact = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 0);
     comp Gamma_fRG_num = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 1);
@@ -606,32 +610,36 @@ int main() {
         comp test0001 = solve_1lfRG_nsc;
         std::cout << "fRG solution = " << test0001 << "\n";
         */
+
     //
 
     // 1-LOOP FRG WITH SOFT REGULATOR
-
-    comp Gamm_fRG_exact_sharp = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 0);
-    comp Gamm_fRG_num_sharp = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 1);
-    comp Gamm_ladder_exact = ladder(0.1,0.1,1e4,1e-10,1,0);
-    comp Gamm_ladder_num = ladder(0.1,0.1,1e4,1e-10,1,1);
-    comp Gamm_fRG_exact_soft = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 3, 0);
-    //comp Gamm_fRG_num_soft = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 3, 1);
+    /*
+    comp Gamm_fRG_exact_sharp = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-6, 1, 0);
+    comp Gamm_fRG_num_sharp = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-6, 1, 1);
+    comp Gamm_ladder_exact = ladder(0.1,0.1,'p',1e4,1e-6,1,0);
+    comp Gamm_ladder_num = ladder(0.1,0.1,'p',1e4,1e-6,1,1);
+    comp Gamm_fRG_exact_soft = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-6, 3, 0);
+    //comp Gamm_fRG_num_soft = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-6, 3, 1);
     std::cout << "ladder: int = analytical, reg = sharp: " << Gamm_ladder_exact << "\n";
     std::cout << "ladder: int = numerical, reg = sharp: " << Gamm_ladder_num << "\n";
     std::cout << "fRG: int = analytical, reg = sharp: " << Gamm_fRG_exact_sharp << "\n";
     std::cout << "fRG: int = numerical, reg = sharp: " << Gamm_fRG_num_sharp << "\n";
     std::cout << "fRG: int = analytical, reg = soft: " << Gamm_fRG_exact_soft << "\n";
     //std::cout << "fRG: int = numerical, reg = soft: " << Gamm_fRG_num_soft << "\n";
-
+    */
     /*
     comp integral_dlPi0_1 = perform_dL_Pi0_vpp_integral (1e4, 0.1, 0.1, 'c', 'd', 'p', 0);
     comp integral_dlPi0_2 = perform_dL_Pi0_vpp_integral (1, 0.1, 0.1, 'c', 'd', 'p', 0);
     comp integral_dlPi0_3 = perform_dL_Pi0_vpp_integral (1e-6, 0.1, 0.1, 'c', 'd', 'p', 0);
     comp integral_dlPi0_4 = perform_dL_Pi0_vpp_integral (1e-7, 0.1, 0.1, 'c', 'd', 'p', 0);
+
     std::cout << "soft v integral, Lambda = 1e4: " << integral_dlPi0_1 << "\n";
     std::cout << "soft v integral, Lambda = 1: " << integral_dlPi0_2 << "\n";
     std::cout << "soft v integral, Lambda = 1e-6: " << integral_dlPi0_3 << "\n";
     std::cout << "soft v integral, Lambda = 1e-7: " << integral_dlPi0_4 << "\n";
+    //comp integral_dlPi0_5 = perform_dL_Pi0_vpp_integral (1e-10, 0.1, 0.1, 'c', 'd', 'p', 0);
+    //std::cout << "soft v integral, Lambda = 0: " << integral_dlPi0_5 << "\n";
     */
 
     /*
@@ -648,9 +656,44 @@ int main() {
     std::cout << "function: " << function001 << "\n";
     */
 
+    /*
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp13(10000,0.1,0.0,0.0,'c','d','p',0,0);
+    comp integrand_test = integrand_dL_Pi0_vpp13(1.0);
+    std::cout << "test integrand1: " << integrand_test << "\n";
+    comp integral_test = perform_dL_Pi0_vpp_integral (10000, 0.1, 0.0, 'c', 'd', 'p', 0);
+    std::cout << "test integral2: " << integral_test << "\n";
+    integral_test = perform_dL_Pi0_vpp_integral (10000, 0.0, 0.0, 'c', 'd', 'p', 0);
+    std::cout << "test integral3: " << integral_test << "\n";
+    integral_test = perform_dL_Pi0_vpp_integral (1e-6, 0.0, 0.0, 'c', 'd', 'p', 0);
+    std::cout << "test integral4: " << integral_test << "\n";
+    */
 
+    /*
+    glb_mud = -8.0;
+    glb_ainv = 0.0;
+    Gamm_fRG_exact_soft = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-6, 3, 0);
+    std::cout << "fRG: int = analytical, reg = soft: " << Gamm_fRG_exact_soft << "\n";
 
+    Gamm_ladder_exact = ladder(0.1,0.1,'p',1e4,1e-6,1,0);
+    std::cout << "ladder: int = analytical, reg = sharp: " << Gamm_ladder_exact << "\n";
+    */
 
+    double t1 = get_time();
+    glb_ainv = sqrt(2.);
+    glb_mud = -4.;
+    //ladder_list('p',1e4,1e-6,1,0,-2.*sqrt(2),2.*sqrt(2),-10.,1e-10,100,1e-14,51);
+    //ladder_list('p',1e4,1e-6,1,1,-2.*sqrt(2),2.*sqrt(2),-10.,1e-10,100,1e-14,51);
+    //fRG_p_list(1e4,1e-6,1,0,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,51);
+    //fRG_p_list(1e4,1e-6,1,1,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,51);
+    //fRG_p_list(1e4,1e-6,3,0,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,51);
+    fRG_p_list(1e4,1e-6,3,1,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,27);
+    //comp ladder_test = ladder(0.,0.1,'p',1e4,1e-6,1,1);
+    //std::cout << "ladder: " << ladder_test << "\n";
+    //comp Gamm_fRG_num_soft = fRG_solve_nsc(0., 0.1, 1e4, 1e-6, 3, 1);
+    //std::cout << "fRG: int = numerical, reg = soft: " << Gamm_fRG_num_soft << "\n";
+    //double find_root_fRG_test_reg3 = find_root_fRG (0., 0., 1e4, 1e-6, 3, 0, -3.0, sqrt(2.0), 0.5, 100, 1e-10);
+    //std::cout << "mu_d = " << find_root_fRG_test_reg3 << "\n";
+    get_time(t1);
 
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================

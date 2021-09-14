@@ -213,7 +213,7 @@ double gint(double Lambda_i, double Lambda_f, int reg) {
         case 2:
             return 1./(mr*glb_ainv/(2*M_PI)-mr/(M_PI*M_PI)*(Lambda_i-Lambda_f));
         case 3:
-            return 1./(mr*glb_ainv/(2*M_PI)-mr/(M_PI*M_PI)*(sqrt(glb_mc)+sqrt(glb_md))*(sqrt(Lambda_i)-sqrt(Lambda_f)));
+            return 1./(mr*glb_ainv/(2*M_PI)-5./(8*sqrt(2.)*M_PI)*mr*(sqrt(glb_mc)+sqrt(glb_md))*(sqrt(Lambda_i)-sqrt(Lambda_f)));
         case 4:
             std::cout << "Gauss regulator not yet implemented\n";
         default:
@@ -573,7 +573,7 @@ comp perform_integral_Pi0_kppt (double v1, double v2, double q, char i, char j){
 
         comp integral1, integral2;
 
-        std::cout << "v1 = 0 \n";
+        std::cout << "v1 = " << v1 << "\n";
         integral1 = integrator<comp>(integrand_Pi0_kpp_upper,0.0,1.0);
         std::cout << "int_upper = " << integral1 <<"\n";
         integral2 = integrator<comp>(integrand_Pi0_kpp_lower,0.0,1.0);
@@ -591,7 +591,7 @@ comp perform_integral_Pi0_kppt (double v1, double v2, double q, char i, char j){
 
         comp integral1, integral2;
 
-        std::cout << "v2 = 0 \n";
+        std::cout << "v2 = " << v2 << "\n";
         integral1 = integrator<comp>(integrand_Pi0_kpp_upper,0.0,1.0);
         std::cout << "int_upper = " << integral1 <<"\n";
         integral2 = integrator<comp>(integrand_Pi0_kpp_lower,0.0,1.0);
@@ -608,7 +608,7 @@ comp perform_integral_Pi0_kppt (double v1, double v2, double q, char i, char j){
 
         comp integral1, integral2, integral3, integral4;
 
-        std::cout << "v1 = 0 = v2 \n";
+        std::cout << "v1 = " << v1 << ", v2 = " << v2 << "\n";
         integral1 = integrator<comp>(integrand_Pi0_kpp_uu,0.0,1.0);
         std::cout << "int_uu = " << integral1 <<"\n";
         integral2 = integrator<comp>(integrand_Pi0_kpp_ul,0.0,1.0);

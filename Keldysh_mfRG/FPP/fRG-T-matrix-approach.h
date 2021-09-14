@@ -97,10 +97,9 @@ public:
     auto operator() (double t_vpp) const -> Q {
         double vpp;
         double regulator_prefactor;
-        double denominator_substitution;
+        double denominator_substitution = 1.;
         if (inftylim == 0) {
             vpp = t_vpp;
-            denominator_substitution = 1;
         }
         else if (inftylim == 1) {
             if (t_vpp == 0.) {
@@ -197,7 +196,6 @@ comp functiontestsoft(double vpp, double Lambda, double w) {
            pow(16. * pow(Lambda * Lambda + vpp * vpp, 2.) + 8. * (Lambda * Lambda - vpp * vpp) * w * w + pow(w, 4.),2.);
 };
 
-
 comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, char j, char chan, int inttype){
     comp output1, output2, output3, output4, output5, output6, output7, output8, output;
     double vpp_mu, vpp_mm, vpp_ml;
@@ -208,10 +206,25 @@ comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, cha
     vpp_mm = vpp_msvec[1];
     vpp_ml = vpp_msvec[0];
 
-    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_ab(Lambda, w, q, 0, i, j, chan, inttype, 0);
-    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_aoo(Lambda, w, q, vpp_mu, i, j, chan, inttype, 1);
-    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_oob(Lambda, w, q, -vpp_mu, i, j, chan, inttype, 2);
+    double d_mu, d_mm, d_ml, d_m0; // cut out |vpp|=|w|/2 from the integral range
+    d_mu = 0.;
+    d_mm = 0.;
+    d_ml = 0.;
+    if (std::abs(std::abs(w/2)-vpp_mu)<1e-10) {
+        d_mu = 1e-10;
+    }
+    if (std::abs(std::abs(w/2)-vpp_mm)<1e-10) {
+        d_mm = 1e-10;
+    }
+    if (std::abs(std::abs(w/2)-vpp_ml)<1e-10) {
+        d_ml = 1e-10;
+    }
 
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_ab(Lambda, w, q, 0, i, j, chan, inttype, 0);
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_aoo(Lambda, w, q, vpp_mu+d_mu, i, j, chan, inttype, 1);
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_oob(Lambda, w, q, -vpp_mu-d_mu, i, j, chan, inttype, 2);
+
+    /*
     while (isnan(std::abs(integrand_dL_Pi0_vpp_ab(vpp_mu)))) {
         vpp_mu = vpp_mu + (vpp_mu-vpp_mm)/100.;
     }
@@ -221,18 +234,35 @@ comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, cha
     while (isnan(std::abs(integrand_dL_Pi0_vpp_ab(vpp_ml)))) {
         vpp_ml = vpp_ml - (vpp_mm-vpp_ml)/100.;
     }
+    */
 
     output1 = integrator<comp>(integrand_dL_Pi0_vpp_oob, 0, 1);
-    output2 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_mu, -vpp_mm);
-    //output2 = 0.0;
-    output3 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_mm, -vpp_ml);
-    output4 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_ml, 0);
-    output5 = integrator<comp>(integrand_dL_Pi0_vpp_ab, 0, vpp_ml);
-    output6 = integrator<comp>(integrand_dL_Pi0_vpp_ab, vpp_ml, vpp_mm);
-    //output6 = 0.0;
-    output7 = integrator<comp>(integrand_dL_Pi0_vpp_ab, vpp_mm, vpp_mu);
+    output2 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_mu+d_mu, -vpp_mm-d_mm);
+    output3 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_mm+d_mm, -vpp_ml-d_ml);
+    if (std::abs(w/2)<1e-10) {
+        output4 = 0.;
+        output5 = 0.;
+    }
+    else {
+        output4 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_ml+d_ml, 0.);
+        output5 = integrator<comp>(integrand_dL_Pi0_vpp_ab, 0., vpp_ml-d_ml);
+    }
+    output6 = integrator<comp>(integrand_dL_Pi0_vpp_ab, vpp_ml+d_ml, vpp_mm-d_mm);
+    output7 = integrator<comp>(integrand_dL_Pi0_vpp_ab, vpp_mm+d_mm, vpp_mu-d_mu);
     output8 = integrator<comp>(integrand_dL_Pi0_vpp_aoo, 0, 1);
     output = 1/(2*M_PI)*(output1 + output2 + output3 + output4 + output5 + output6 + output7 + output8);
+
+    /*
+    std::cout << "output1 = " << output1 << "\n";
+    std::cout << "output2 = " << output2 << "\n";
+    std::cout << "output3 = " << output3 << "\n";
+    std::cout << "output4 = " << output4 << "\n";
+    std::cout << "output5 = " << output5 << "\n";
+    std::cout << "output6 = " << output6 << "\n";
+    std::cout << "output7 = " << output7 << "\n";
+    std::cout << "output8 = " << output8 << "\n";
+    */
+
     return output;
 }
 
@@ -295,11 +325,15 @@ public:
 
 FRG_solvand_nsc<comp> rhs_K1l1fRG(const FRG_solvand_nsc<comp>& y, double Lambda) {
     FRG_solvand_nsc<comp> y_result = y;
-    if (y.reg == 1) { // sharp frequency
-        y_result.value = 2.*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*sharp_frequency_bare_bubble(y.w,Lambda,y.q,'c','d',y.chan,y.inttype);
+    double prefactor_p = 1.;
+    if (y.chan == 'p'){
+        prefactor_p = 2.;
     }
-    else if (y.reg == 3) {
-        y_result.value = 2.*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*perform_dL_Pi0_vpp_integral (Lambda, y.w, y.q, 'c', 'd', y.chan, y.inttype);
+    if (y.reg == 1) { // sharp frequency
+        y_result.value = prefactor_p*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*sharp_frequency_bare_bubble(y.w,Lambda,y.q,'c','d',y.chan,y.inttype);
+    }
+    else if (y.reg == 3) { // soft frequency
+        y_result.value = prefactor_p*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'c', 'd', y.chan, y.inttype);
     }
     return y_result;
 }
@@ -314,6 +348,28 @@ comp fRG_solve_nsc(double w, double q, const double Lambda_i, const double Lambd
                    rhs_K1l1fRG, log_substitution, log_resubstitution, nODE);
 
     return y_fin.value - gint(Lambda_i,Lambda_f,reg);
+}
+
+comp fRG_solve_K1r(double w, double q, char chan, const double Lambda_i, const double Lambda_f, int reg, int inttype) {
+    FRG_solvand_nsc<comp> y_fin(w,q,Lambda_i,Lambda_f,chan,reg,inttype);
+    FRG_solvand_nsc<comp> y_ini(w,q,Lambda_i,Lambda_f,chan,reg,inttype);
+    y_ini.value = (comp) 0.0;
+
+
+    ODE_solver_RK4(y_fin, Lambda_f, y_ini, Lambda_i,
+                   rhs_K1l1fRG, log_substitution, log_resubstitution, nODE);
+
+    return y_fin.value;
+}
+
+comp fRG_solve_K1full(double w, double q, const double Lambda_i, const double Lambda_f, int reg, int inttype) {
+    comp K1p, K1a, result;
+    double Gamma0;
+    K1p = fRG_solve_K1r(w, q, 'p', Lambda_i, Lambda_f, reg, inttype);
+    K1a = fRG_solve_K1r(w, q, 'a', Lambda_i, Lambda_f, reg, inttype);
+    Gamma0 = - gint(Lambda_i,Lambda_f,reg);
+    result = Gamma0 + K1p + K1a;
+    return result;
 }
 
 
@@ -378,11 +434,13 @@ double find_root_divergence (double w, double q, double Lambda_i, double Lambda_
     double fold, fnew;
 
     FfRG_mu<double> f(w,q,Lambda_i,Lambda_f,reg, inttype);
+    //fold = f.mu(xnew);
 
     for (int i = 1; i < imax + 1; ++i){
         xold = xnew;
         dxold = dxnew;
         fold = f.mu(xold);
+        //fold = fnew
         while (std::abs(fold)>1/prec){ // avoid infinite f
             fold = f.mu(xold-dxold);
         }
@@ -398,13 +456,16 @@ double find_root_divergence (double w, double q, double Lambda_i, double Lambda_
             break;
         }
 
+        std::cout << "i = " << i << ": mu = " << xold << ", f_mu = " << fold << "\n";
+
         mus[i] = xold;
         fmus[i] = fold;
     }
     /*
     for (int i = 0; i<imax; ++i){
         std::cout << "i = " << i << ": mu = " << mus[i] << ", f_mu = " << fmus[i] << "\n";
-    }*/
+    }
+     */
 
     return xold;
 }
@@ -452,7 +513,7 @@ void fRG_p_list (double Lambda_i, double Lambda_f, int reg, int inttype, double 
     };
 
     std::string filename = "../Data/fRG_p_list";
-    filename += "_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
+    filename += "_reg=" + std::to_string(reg) + "_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"inverse scattering length", "chemical potential"},

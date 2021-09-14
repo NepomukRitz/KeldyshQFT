@@ -19,13 +19,13 @@
 #endif
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM
+// #define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 1
 
 constexpr int N_LOOPS = 1;  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
@@ -104,7 +104,7 @@ constexpr double Lambda_scale = 1./200.;             //Scale of the log substitu
 
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+std::vector<double> U_NRG {};//{0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
 
 
 #if REG==2
