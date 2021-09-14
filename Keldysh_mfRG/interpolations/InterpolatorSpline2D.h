@@ -34,7 +34,7 @@ private:
             { 1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
             { 0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
             {-3,  3,  0,  0, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-            { 2, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
+            { 2, -2,  0,  0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
             { 0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0},
             { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0},
             { 0,  0,  0,  0,  0,  0,  0,  0, -3,  3,  0,  0, -2, -1,  0,  0},
@@ -57,8 +57,9 @@ public:
 
 
 protected:
-    std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
-    std::vector<double> m_y = DataContainer::frequencies_K1.b.ts;
+    mutable vec<Q> coeffs = vec<Q>(16);
+    std::vector<double> m_x = DataContainer::frequencies_K2.b.ts;
+    std::vector<double> m_y = DataContainer::frequencies_K2.b.ts;
     //vec<Q> K1;            // x,y coordinates of points
     // interpolation parameters
     // f(x) = a_i + b_i*(x-x_i) + c_i*(x-x_i)^2 + d_i*(x-x_i)^3
@@ -70,8 +71,8 @@ protected:
     bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
     Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
     //bool m_made_monotonic = false;
-    vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t i_in);               // calculate c_i, d_i from b_i
-
+    //vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t i_in);               // calculate c_i, d_i from b_i
+    vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t i_in, double dw, double dv) const;  // calculate c_i, d_i from b_i
 public:
     // default constructor: set boundary condition to be zero curvature
     // at both ends, i.e. natural splines
@@ -108,7 +109,7 @@ public:
 
 
 template <class DataContainer, typename Q>
-vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t i_in, double dw, double dv)
+vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t i_in, const double dw, const double dv) const
 {
 
     vec<Q> fs = {
@@ -130,7 +131,7 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
             dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dimsK2)],
     };
 
-    vec<Q> coeffs = vec<Q> (16);
+    //vec<Q> coeffs = vec<Q> (16);
     for (int i = 0; i<16; i++) {
         coeffs[i] = 0.;
         for (int j = 0; j<16; j++) {
@@ -191,20 +192,22 @@ Q SplineK2<DataContainer,Q>::interpolK2 (int iK, double w, double v, int i_in) c
     double hv = (tv - DataContainer::frequencies_K2.f.ts[iv]) / dv;
 
 
-    vec<Q> coeffs = get_coeffs_from_derivs(iK, iw, iv, i_in);
+    vec<Q> coeffs = get_coeffs_from_derivs(iK, iw, iv, i_in, dw, dv);
 
     Q result = 0.;
-    size_t dims[2] = {2,2};
+    size_t dims[2] = {4,4};
+    //double dwpow(1);
+    double dwpow[4] = {1, hw, hw*hw, hw*hw*hw};
+    double dvpow[4] = {1, hv, hv*hv, hv*hv*hv};
     for (int i = 0; i<4; i++) {
-        double dwpow(1);
-        double dvpow(1);
+        //double dvpow(1);
 
         for (int j = 0; j<4; j++) {
 
-            result += dwpow * coeffs[::getFlatIndex(i, j, dims)] * dvpow;
-            dvpow *= hv;
+            result += dvpow[i] * coeffs[::getFlatIndex(i, j, dims)] * dwpow[j];
+            //dvpow *= hv;
         }
-        dwpow *= hw;
+        //dwpow *= hw;
     }
 
     //}

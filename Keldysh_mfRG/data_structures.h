@@ -495,7 +495,7 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
         } else if (left==third_deriv) {
             double h = xs[1] - xs[0];
             result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
-                    -result[rotateFlatIndex(it * dimsum + 1, dims, permutation)] + left_value / 6 * h * h
+                    -result[rotateFlatIndex(it * dimsum + 1, dims, permutation)] + left_value / 6. * h * h
                     + 2.0 * (data[rotateFlatIndex(it * dimsum + 1, dims, permutation)] -
                              data[rotateFlatIndex(it * dimsum + 0, dims, permutation)]) / h;
             //+0.5 * data[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
@@ -515,7 +515,7 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
         } else if (right==third_deriv) {
             double h = xs[dimsum - 1] - xs[dimsum - 2];
             result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
-                    -result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)] - right_value / 6 * h * h +
+                    -result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)] - right_value / 6. * h * h +
                     2.0 * (data[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] -
                            data[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]) / h;
             //      -0.5 * data[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
