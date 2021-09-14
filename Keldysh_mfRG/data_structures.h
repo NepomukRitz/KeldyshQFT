@@ -26,13 +26,12 @@ auto isfinite(comp z) -> bool {
  inline auto myconj(double x) -> double {return x;};
  inline auto myconj(comp x) -> comp {return conj(x);};
 
+constexpr comp glb_i (0., 1.);    // Imaginary unit
+
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
 using state_datatype = double;
-const comp glb_i (0., 1.);    // Imaginary unit
-//const double glb_i = 0.;    // Imaginary unit
 #else
 using state_datatype = comp;
-const comp glb_i (0., 1.);    // Imaginary unit
 #endif
 
 /// DECLARATIONS ///
