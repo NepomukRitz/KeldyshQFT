@@ -58,8 +58,8 @@ public:
 
 protected:
     //mutable vec<Q> coeffs = vec<Q>(16);
-    std::vector<double> m_x = DataContainer::frequencies_K2.b.ts;
-    std::vector<double> m_y = DataContainer::frequencies_K2.b.ts;
+    //std::vector<double> m_x = DataContainer::frequencies_K2.b.ts;
+    //std::vector<double> m_y = DataContainer::frequencies_K2.f.ts;
     //vec<Q> K1;            // x,y coordinates of points
     // interpolation parameters
     // f(x) = a_i + b_i*(x-x_i) + c_i*(x-x_i)^2 + d_i*(x-x_i)^3

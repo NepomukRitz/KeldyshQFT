@@ -89,9 +89,14 @@ double TriCubicInterpolator::operator()(double x, double y, double z) const {
         // Extract the local vocal values and calculate partial derivatives.
         double x[64] = {
                 // values of f(x,y,z) at each corner.
-                _data[_index(xi,yi,zi)],_data[_index(xi+1,yi,zi)],_data[_index(xi,yi+1,zi)],
-                _data[_index(xi+1,yi+1,zi)],_data[_index(xi,yi,zi+1)],_data[_index(xi+1,yi,zi+1)],
-                _data[_index(xi,yi+1,zi+1)],_data[_index(xi+1,yi+1,zi+1)],
+                _data[_index(xi,yi,zi)],
+                _data[_index(xi+1,yi,zi)],
+                _data[_index(xi,yi+1,zi)],
+                _data[_index(xi+1,yi+1,zi)],
+                _data[_index(xi,yi,zi+1)],
+                _data[_index(xi+1,yi,zi+1)],
+                _data[_index(xi,yi+1,zi+1)],
+                _data[_index(xi+1,yi+1,zi+1)],
                 // values of df/dx at each corner.
                 0.5*(_data[_index(xi+1,yi,zi)]-_data[_index(xi-1,yi,zi)]),
                 0.5*(_data[_index(xi+2,yi,zi)]-_data[_index(xi,yi,zi)]),
