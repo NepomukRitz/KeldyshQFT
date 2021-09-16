@@ -21,12 +21,15 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     }
 
     double cumul_interpolation_error = 0;
+    vec<double> errors (nBOS);
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
     for (int iw = 0; iw<nBOS; iw++){
         indices.w = avertex.frequencies.b_K1.ws[iw];
 
-        cumul_interpolation_error += std::abs(Interpolate<k1, state_datatype>()(indices, avertex) - avertex.K1_val(iK, iw, i_in));
+        double error = std::abs(Interpolate<k1, state_datatype>()(indices, avertex) - avertex.K1_val(iK, iw, i_in));
+        cumul_interpolation_error += error;
+        errors[iw] = error;
 
         value +=1;
     }
