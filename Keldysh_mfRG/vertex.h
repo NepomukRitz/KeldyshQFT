@@ -654,7 +654,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (channel) {
+        switch (input.channel) {
             case 'a':
                 K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
                           + tvertex.template valsmooth<k1>(input_at, avertex);
@@ -700,7 +700,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (channel) {
+        switch (input.channel) {
             case 'a':
                 K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
                           + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
@@ -748,7 +748,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (channel) {
+        switch (input.channel) {
             case 'a':
                 K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
                          + tvertex.template valsmooth<k1>(input_at, avertex);
@@ -795,7 +795,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (channel) {
+        switch (input.channel) {
             case 'a':
                 K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
                          + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
