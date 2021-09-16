@@ -57,7 +57,7 @@ public:
 
 
 protected:
-    mutable vec<Q> coeffs = vec<Q>(16);
+    //mutable vec<Q> coeffs = vec<Q>(16);
     std::vector<double> m_x = DataContainer::frequencies_K2.b.ts;
     std::vector<double> m_y = DataContainer::frequencies_K2.b.ts;
     //vec<Q> K1;            // x,y coordinates of points
@@ -131,7 +131,7 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
             dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dimsK2)],
     };
 
-    //vec<Q> coeffs = vec<Q> (16);
+    vec<Q> coeffs = vec<Q> (16);
     for (int i = 0; i<16; i++) {
         coeffs[i] = 0.;
         for (int j = 0; j<16; j++) {

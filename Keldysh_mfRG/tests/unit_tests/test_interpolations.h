@@ -142,6 +142,9 @@ namespace {
     auto linearFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + y + z;}
 
     auto quadFunction2D(double x, double y) -> state_datatype {return 1. + x + y  + x*y + x*x + y*y;}
+
+    auto cubicFunction1D(double x) -> state_datatype {return 1. + x*x*x;}
+    auto cubicFunction2D(double x, double y) -> state_datatype {return 1. + y + y*y*x + x*y*y + x*x*x;}
 }
 
 TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]" ) {
@@ -192,6 +195,62 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
 
 }
 
+//#if INTERPOLATION == 4
+
+TEST_CASE( "Does cubic interpolation work reliably for K1?", "[interpolations]" ) {
+    double interpolation_tolerance = 1e-12;
+    bool geq_interpolation_tolerance = false;
+    double cumul_interpolation_tolerance = 1e-12 * nBOS;
+
+    rvert<state_datatype> avertex('a', Lambda_ini);
+    int iK = 0;
+    int i_in = 0;
+    state_datatype value = 0.;
+    for (int iw = 0; iw<nBOS; iw++){
+        double w = avertex.frequencies_K1.b.ts[iw];
+        value = cubicFunction1D(w);
+        avertex.K1_setvert(iK, iw, i_in, value);
+    }
+
+    double cumul_interpolation_error = 0;
+    avertex.initInterpolator();
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    value = 0.;
+    int N = nBOS * 5;
+    vec<double> values (N);
+    vec<double> errors (N);
+    double inter = 2. / double(N-1);
+    for (int iw = 1; iw<N-1; iw++){
+        indices.w = avertex.frequencies_K1.b.grid_transf_inv(-1. + iw*inter);
+
+        values[iw] = avertex.template interpolate<k1>(indices);
+        double error = std::abs(avertex.template interpolate<k1>(indices) - cubicFunction1D(avertex.frequencies_K1.b.grid_transf(indices.w)));
+        cumul_interpolation_error += error;
+        errors[iw] = error;
+        if (error >= interpolation_tolerance) {
+            geq_interpolation_tolerance = true;
+        }
+
+        value +=1;
+    }
+
+    write_h5_rvecs("../Data/unittest_interpolK1.h5",
+                   {"values", "errors"},
+                   {values, errors});
+
+
+
+
+    SECTION( "Is the cumulative error within the tolerance for K1?" ) {
+        REQUIRE( cumul_interpolation_error < cumul_interpolation_tolerance );
+    }
+    SECTION( "Is the maximal error within the tolerance for K1?" ) {
+        REQUIRE( not geq_interpolation_tolerance );
+    }
+
+}
+
+//#endif
 #if MAX_DIAG_CLASS >1
 
 TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]" ) {
@@ -267,7 +326,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
 
             double w = avertex.frequencies_K2.b.ts[iw];
             double v = avertex.frequencies_K2.f.ts[iv];
-            value = quadFunction2D(w, v);
+            value = cubicFunction2D(w, v);
             avertex.K2_setvert(iK, iw, iv, i_in, value);
             value +=1;
         }
@@ -280,6 +339,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
     int N = (nBOS2 - 2) * 4 - 3;
     int M = (nFER2 - 2) * 4 - 3;
     vec<double> errors (N*M);
+    vec<double> values (N*M);
     double interb = (avertex.frequencies_K2.b.t_upper - avertex.frequencies_K2.b.t_lower) / double(N-1);
     double interf = (avertex.frequencies_K2.f.t_upper - avertex.frequencies_K2.f.t_lower) / double(M-1);
     for (int iw = 0; iw<N; iw++){
@@ -287,7 +347,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
             indices.w  = avertex.frequencies_K2.b.grid_transf_inv(avertex.frequencies_K2.b.t_lower + iw*interb);
             indices.v1 = avertex.frequencies_K2.f.grid_transf_inv(avertex.frequencies_K2.f.t_lower + iv*interf);
 
-            error = std::abs(avertex.template interpolate<k2>(indices) -  quadFunction2D(avertex.frequencies_K2.b.grid_transf(indices.w), avertex.frequencies_K2.f.grid_transf(indices.v1)));
+            values[iw*M+iv] = avertex.template interpolate<k2>(indices);
+            error = std::abs(avertex.template interpolate<k2>(indices) -  cubicFunction2D(avertex.frequencies_K2.b.grid_transf(indices.w), avertex.frequencies_K2.f.grid_transf(indices.v1)));
             cumul_interpolation_error += error;
             errors[iw*M+iv] = error;
             if (error >= interpolation_tolerance) {
@@ -295,6 +356,14 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
             }
         }
     }
+
+    write_h5_rvecs("../Data/unittest_interpolK2.h5",
+                   {"values", "errors"},
+                   {values, errors});
+
+
+
+
 
 
 

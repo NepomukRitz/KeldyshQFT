@@ -248,7 +248,7 @@ public:
             //double tK3 = get_time() - t_start;
             Interpolate<k1,Q>::initializeK1();
             Interpolate<k2,Q>::initializeK2();
-            //print("K1 Interpolator initialized");
+            //print("K1 and K2 Interpolator initialized");
             //get_time(t_start);
 
             initialized = true;

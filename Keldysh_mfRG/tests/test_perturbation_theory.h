@@ -1881,7 +1881,8 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a(vp + vpp, Lambda) ;
+        if (isfinite(vpp)) return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a(vp + vpp, Lambda) ;
+        else return 0.;
         //return vpp*vpp;
     }
 };
