@@ -1497,13 +1497,14 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 Q
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-                Bubble_Object>::bubble_value_prefactor(){ // TODO(medium): Define globally?
-    if (KELDYSH){
-        return prefactor * (1. / (2. * M_PI * glb_i));
-    }
-    else{
-        return prefactor * (1. / (2. * M_PI));
-    }
+                Bubble_Object>::bubble_value_prefactor(){
+    return prefactor * (1. / (2. * M_PI
+#ifdef KELDYSH_FORMALISM
+    * glb_i
+#endif
+    ));
+// Getting rid of this flag and making this code more readable is sadly not possible,
+// because there is no partial template specialization for functions in C++
 }
 
 
