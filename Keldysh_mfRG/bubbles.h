@@ -798,9 +798,9 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
             integrand_value = (*this)(vpp);
         }
         if (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
-            integrand_re[i] = integrand_value;
+            integrand_re[i] = myreal(integrand_value);
             integrand_im[i] = 0.;
-            Pival_re[i] = Pival;
+            Pival_re[i] = myreal(Pival);
             Pival_im[i] = 0.;
         }
         else{
