@@ -272,8 +272,8 @@ public:
             Interpolate<k1,Q>::initializeK1();
             Interpolate<k2,Q>::initializeK2();
             Interpolate<k3,Q>::initializeK3();
-            //print("K1 and K2 Interpolator initialized");
-            //get_time(t_start);
+            print("K1 and K2 Interpolator initialized - ");
+            get_time(t_start);
 
             initialized = true;
         }

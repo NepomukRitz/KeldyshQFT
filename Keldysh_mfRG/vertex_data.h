@@ -332,7 +332,7 @@ template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xyz(const bd_
     vec<Q> inter_result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_z, perm_z, left, right, value_left, value_right);
     const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
     const size_t perm_y[5] = {2, 3, 4, 0, 1};
-    vec<Q> inter_result2= ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+    vec<Q> inter_result2= ::get_finite_differences<Q,5>(inter_result, frequencies_K3.f.ts, dims_y, perm_y, left, right, value_left, value_right);
     const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
     const size_t perm_x[5] = {3, 4, 0, 1, 2};
     vec<Q> result = ::get_finite_differences<Q,5>(inter_result2, frequencies_K3.b.ts, dims_x, perm_x, left, right, value_left, value_right);
