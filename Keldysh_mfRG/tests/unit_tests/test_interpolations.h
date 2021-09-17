@@ -196,7 +196,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
 
 }
 
-//#if INTERPOLATION == 4
+#if INTERPOLATION == 4
 
 TEST_CASE( "Does cubic interpolation work reliably for K1?", "[interpolations]" ) {
     double interpolation_tolerance = 1e-12;
@@ -251,7 +251,7 @@ TEST_CASE( "Does cubic interpolation work reliably for K1?", "[interpolations]" 
 
 }
 
-//#endif
+#endif
 #if MAX_DIAG_CLASS >1
 
 TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]" ) {

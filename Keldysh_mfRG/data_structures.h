@@ -448,6 +448,7 @@ enum bd_type {
 /**
  * Computes the derivative of a multi-dimensional vector with the finite-differences method
  * The derivative is computed in the direction of dims[permutation[-1]]
+ * Currently assuming equal spacing in xs                                                   /// TODO: generalize formula to non-equal spacing
  * @tparam T
  * @tparam dimensionality       number of dimensions (only for dimension >= 2 !!)
  * @param data                  input vector for which the derivative is to be computed
@@ -472,6 +473,7 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
     vec<T> result(flatdim);
     for (int it = 0; it < codimsum; it++) {
 
+        /// Compute derivative with Central finite difference
         for (int jt = 2; jt < dimsum-2; jt++) {
             double h  = xs[jt+1]-xs[jt  ];
             result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
@@ -481,7 +483,7 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
                     - data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)]
                     ) / (12. * h);
         }
-
+        /// Compute boundary values: with non-central finite difference
         size_t jt = 1;
         double hl = xs[jt  ]-xs[jt-1];
         double h  = xs[jt+1]-xs[jt  ];
@@ -528,9 +530,9 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
 
         /*
         // set boundary values
-        if (left==first_deriv) {
+        if (left==first_deriv) {        // "known first derivative at left boundary"
             result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] = left_value;
-        }else if (left==second_deriv) {
+        }else if (left==second_deriv) {        // "known second derivative at left boundary"
             double h = xs[1]-xs[0];
             result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
                     0.5*(-result[rotateFlatIndex(it * dimsum + 1, dims, permutation)]
@@ -538,7 +540,7 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
                     + 3.0 * (data[rotateFlatIndex(it * dimsum + 1, dims, permutation)] - data[rotateFlatIndex(it * dimsum + 0, dims, permutation)]) / h);
             //const double h = m_x[1]-m_x[0];
             //m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h);  /// checked
-        } else if (left==third_deriv) {
+        } else if (left==third_deriv) {        // "known third derivative at left boundary"
             double h = xs[1] - xs[0];
             result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
                     -result[rotateFlatIndex(it * dimsum + 1, dims, permutation)] + left_value / 6. * h * h
@@ -547,9 +549,9 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
             //+0.5 * data[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
             //m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
         }
-        if (right==first_deriv) {
+        if (right==first_deriv) {        // "known first derivative at right boundary"
             result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] = right_value;
-        } else if (right==second_deriv) {
+        } else if (right==second_deriv) {        // "known second derivative at right boundary"
             double h = xs[dimsum-1]-xs[dimsum-2];
             result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
                     0.5*(-result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]
@@ -557,7 +559,7 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
                     + 3.0 * (data[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] -data[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]) / h);
             //const double h = m_x[n-1]-m_x[n-2];
             //m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+ 3.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h); /// checked
-        } else if (right==third_deriv) {
+        } else if (right==third_deriv) {        // "known third derivative at right boundary"
             double h = xs[dimsum - 1] - xs[dimsum - 2];
             result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
                     -result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)] - right_value / 6. * h * h +
@@ -567,18 +569,6 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
             //m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;
         }
         */
-    }
-    return result;
-}
-/// Template specialization of above function for dimensionality == 1
-template<typename T> vec<T> get_finite_differences(const vec<T> vec_in){
-    size_t dimsum = vec_in.size();
-
-    vec<T> result(dimsum);
-    result[0       ] = +0.5 * vec_in[1       ];
-    result[dimsum-1] = -0.5 * vec_in[dimsum-2];
-    for (int jt = 1; jt < dimsum-1; jt++) {
-        result[jt] = -0.5 * vec_in[jt - 1]  + 0.5 * vec_in[jt + 1];
     }
     return result;
 }

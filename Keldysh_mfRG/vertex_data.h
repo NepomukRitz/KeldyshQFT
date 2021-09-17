@@ -182,7 +182,7 @@ template <typename Q> auto vertexDataContainer<k1,Q>::K1_val(int iK, int iw, int
 
 
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_maxK1() const -> double {
-    double max_K1 = ::power2(::get_finite_differences(K1)).max_norm();
+    double max_K1 = ::power2(get_deriv_K1_x(third_deriv, third_deriv, 0., 0.)).max_norm();
     return max_K1;
 
 }
