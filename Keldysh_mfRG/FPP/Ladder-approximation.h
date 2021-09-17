@@ -57,6 +57,10 @@ double exactzerobubble(double Lambda_i, double Lambda_f){
 comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, double Lambda_i, double Lambda_f, int inttype){
     comp output1, output2, output3, output4, output5, output6, output7, output8, output;
     double Lambda_mu, Lambda_mm, Lambda_ml;
+    double prefactor = 1.;
+    if (chan == 'p') {
+        prefactor = 2.;
+    }
 
     if ((Lambda_i > std::abs(w/2)) and (std::abs(w/2) > Lambda_f)) {
         double Lambdas[] = {Lambda_i*Lambda_f,1.0,std::abs(w/2)};
@@ -168,7 +172,7 @@ comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, do
     //output6 = 0.0;
     output7 = integrator<comp>(integrand_Pi0_vpp, Lambda_mm+d_mm, Lambda_mu-d_mu);
     output8 = integrator<comp>(integrand_Pi0_vpp, Lambda_mu+d_mu, Lambda_i);
-    output = 1/M_PI*(output1 + output2 + output3 + output4 + output5 + output6 + output7 + output8);
+    output = prefactor/(2.*M_PI)*(output1 + output2 + output3 + output4 + output5 + output6 + output7 + output8);
     return output;
 }
 
@@ -232,12 +236,21 @@ public:
         double output;
         double mu_inter = glb_mud;
         glb_mud = mu;
-        //if (fRG == 0){
+        if ((chan == 'p') or (chan == 'a')) {
+            //if (fRG == 0){
             output = 1./real(ladder(w,q,chan,Lambda_i,Lambda_f,reg, inttype));
-        //}
-        /*else {
-            output = 1./real(fRG_solve_nsc(w,q,Lambda_i,Lambda_f,reg));
-        }*/
+            //}
+            /*else {
+                output = 1./real(fRG_solve_nsc(w,q,Lambda_i,Lambda_f,reg));
+            }*/
+        }
+        else if (chan == 'f') {
+            output = 1./real(ladder_full(w,q,Lambda_i,Lambda_f,reg,inttype));
+        }
+        else {
+            std::cout << "wrong channel in F_mu ladder\n";
+        }
+
         glb_mud = mu_inter;
         return output;
     };
@@ -339,7 +352,7 @@ void ladder_list (char chan, double Lambda_i, double Lambda_f, int reg, int intt
 
 
     std::string filename = "../Data/ladder_";
-    filename += std::to_string(chan) + "_list_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
+    filename += std::string(1,chan) + "_list_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"inverse scattering length", "chemical potential"},
@@ -347,7 +360,7 @@ void ladder_list (char chan, double Lambda_i, double Lambda_f, int reg, int intt
 
 }
 
-void ladder_list_wq (double wmax, double qmax, char chan, double Lambda_i, double Lambda_f, int inttype, int nw, int nq) {
+void ladder_list_wq (double wmax, double qmax, char chan, double Lambda_i, double Lambda_f, int reg, int inttype, int nw, int nq) {
     vec<double> ws(nw);
     vec<double> qs(nq);
     vec<double> Gamma_p_Re(nw*nq);
@@ -362,7 +375,7 @@ void ladder_list_wq (double wmax, double qmax, char chan, double Lambda_i, doubl
         for (int qi = 0; qi < nq; ++qi) {
             q = qi*qmax/(nq-1);
             qs[qi] = q;
-            Gamma_p_result = ladder(w, q, 'p',Lambda_i, Lambda_f, 1, inttype);
+            Gamma_p_result = ladder_K1r(w, q, chan,Lambda_i, Lambda_f, reg, inttype);
             Gamma_p_Re[composite_index_wq (wi, qi, nq)] = real(Gamma_p_result);
             Gamma_p_Im[composite_index_wq (wi, qi, nq)] = imag(Gamma_p_result);
             std::cout << "w = " << w << ", q = " << q << ", result = " << Gamma_p_result << "\n";
@@ -370,8 +383,8 @@ void ladder_list_wq (double wmax, double qmax, char chan, double Lambda_i, doubl
     }
 
     std::string filename = "../Data/ladder_";
-    filename += std::to_string(chan) + "_list_wq_kint=" + std::to_string(inttype) + "_nw=" + std::to_string(nw)
-                + "_nq=" + std::to_string(nq)
+    filename += std::string(1,chan) + "_list_wq_nw=" + std::to_string(nw)
+                + "_nq=" + std::to_string(nq) + "_reg=" + std::to_string(reg) + "_kint=" + std::to_string(inttype)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"bosonic_frequencies", "bosonic_momenta", "vertex_Re", "vertex_Im"},

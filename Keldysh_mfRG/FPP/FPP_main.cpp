@@ -11,6 +11,7 @@
 #include "Momentum-integral-Bubble.h"
 #include "Differential_Equation.h"
 #include "Ladder-approximation.h"
+#include "selfenergy_loop.h"
 #include "Monte-Carlo_Trial.h"
 #include "fRG-T-matrix-approach.h"
 #include "1D-integrals.h"
@@ -74,7 +75,7 @@ int main() {
     glb_mc = 1.0;
     glb_md = 1.0;
     glb_ainv = 1.0;
-    glb_prec = 1e-16;
+    glb_prec = 0.;
 
     // std::cout Bubble
     // =======================================
@@ -594,10 +595,49 @@ int main() {
     }
     */
 
-
+    double t_par = get_time();
+    /*
     std::cout << "now list fRG: \n";
-    //fRG_p_list_wq(10.,10.,1e4,1e-10,201,101);
+    fRG_list_wq(10.,10.,'p',1e4,1e-10,1,0,201,101);
+    fRG_list_wq(10.,10.,'a',1e4,1e-10,1,0,201,101);
+    get_time(t_par);
     std::cout << "now list ladder: \n";
+    */
+    std::cout << "vacuum Gamma:\n";
+    glb_ainv = -2*sqrt(2.);
+    glb_muc = 0.9;
+    glb_mud = 1.;
+    comp K1p_vac, K1a_vac, Gamma_T, Gamma_K1;
+    double Gam0;
+    K1p_vac = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,3,0);
+    K1a_vac = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,3,0);
+    Gamma_T = - 2*M_PI/(glb_mc*glb_md/(glb_mc+glb_md)*glb_ainv);
+    Gam0 = -gint(1e4,1e-8,3);
+    Gamma_K1 = Gam0 + K1p_vac + K1a_vac;
+    //Gamma_K1 = fRG_solve_K1full(0.,0.,1e4,1e-8,1,0);
+    std::cout << "K1p = " << K1p_vac << "\n";
+    std::cout << "K1a = " << K1a_vac << "\n";
+    std::cout << "Gamma_0 = " << Gam0 << "\n";
+    //std::cout << "Gamma_K1 = " << Gamma_K1 << "\n";
+    std::cout << "Gamma_T = " << Gamma_T << "\n";
+    K1p_vac = ladder_K1r(0.,0.,'p',1e4,1e-8,1,0);
+    K1a_vac = ladder_K1r(0.,0.,'a',1e4,1e-8,1,0);
+    Gamma_T = - 2*M_PI/(glb_mc*glb_md/(glb_mc+glb_md)*glb_ainv);
+    Gam0 = -gint(1e4,1e-8,1);
+    Gamma_K1 = Gam0 + K1p_vac + K1a_vac;
+    //Gamma_K1 = fRG_solve_K1full(0.,0.,1e4,1e-8,1,0);
+    std::cout << "K1p = " << K1p_vac << "\n";
+    std::cout << "K1a = " << K1a_vac << "\n";
+    std::cout << "Gamma_0 = " << Gam0 << "\n";
+    //std::cout << "Gamma_K1 = " << Gamma_K1 << "\n";
+    std::cout << "Gamma_T = " << Gamma_T << "\n";
+    glb_muc = 1.;
+
+    //ladder_list('f',1e4,1e-10,1,0,-2*sqrt(2),2*sqrt(2),-5,1e-10,100,1e-15,301);
+    //ladder_list('p',1e4,1e-10,1,0,-2*sqrt(2),2*sqrt(2),-5,1e-10,100,1e-15,301);
+    //ladder_list('a',1e4,1e-10,1,0,-2*sqrt(2),2*sqrt(2),-5,1e-10,100,1e-15,21);
+
+
     //ladder_p_list_wq(10.,10.,1e4,1e-10,6,6);
 
 
@@ -686,7 +726,7 @@ int main() {
     //fRG_p_list(1e4,1e-6,1,0,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,51);
     //fRG_p_list(1e4,1e-6,1,1,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,51);
     //fRG_p_list(1e4,1e-6,3,0,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,51);
-    fRG_p_list(1e4,1e-6,3,1,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,27);
+    //fRG_p_list(1e4,1e-6,3,1,-2.*sqrt(2),2.*sqrt(2),-10.,0.5,100,1e-14,27);
     //comp ladder_test = ladder(0.,0.1,'p',1e4,1e-6,1,1);
     //std::cout << "ladder: " << ladder_test << "\n";
     //comp Gamm_fRG_num_soft = fRG_solve_nsc(0., 0.1, 1e4, 1e-6, 3, 1);
@@ -694,6 +734,173 @@ int main() {
     //double find_root_fRG_test_reg3 = find_root_fRG (0., 0., 1e4, 1e-6, 3, 0, -3.0, sqrt(2.0), 0.5, 100, 1e-10);
     //std::cout << "mu_d = " << find_root_fRG_test_reg3 << "\n";
     get_time(t1);
+
+    // A-CHANNEL
+    // ======================================
+    glb_ainv = -1.0;
+    glb_mud = 0.0;
+    comp gamma_p, gamma_a, Gamma;
+    double Gamma0, dt;
+    dt = get_time();
+
+    // zero bosonic momentum
+    /*
+    std::cout << "ladder with analytical bubble integral:\n";
+    gamma_p = ladder_K1r(0.,0.,'p',1e4,1e-8,1,0);
+    gamma_a = ladder_K1r(0.,0.,'a',1e4,1e-8,1,0);
+    Gamma0 = -gint(1e4,1e-8,1);
+    Gamma = ladder_full(0.,0.,1e4,1e-8,1,0);
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+    /*
+    comp bubble_intp = perform_Pi0_vpp_integral (0., 0., 'd', 'c', 'p', 1e4, 1e-8, 0);
+    comp bubble_inta = perform_Pi0_vpp_integral (0., 0., 'd', 'c', 'a', 1e4, 1e-8, 0);
+    std::cout << "bubble_a = " << bubble_inta << "\n";
+    std::cout << "bubble_p = " << bubble_intp << "\n";
+    comp exact_bubble_a = exact_bare_bubble (1., -3., 0., 'd', 'c', 'a');
+    comp exact_bubble_p = exact_bare_bubble (1., -3., 0., 'd', 'c', 'p');
+    std::cout << "exact bubble_a = " << exact_bubble_a << "\n";
+    std::cout << "exact bubble_p = " << exact_bubble_p << "\n";
+    */ /*
+    dt = get_time();
+    gamma_p = ladder_K1r(0.,0.,'p',1e4,1e-8,1,1);
+    gamma_a = ladder_K1r(0.,0.,'a',1e4,1e-8,1,1);
+    Gamma0 = -gint(1e4,1e-8,1);
+    Gamma = ladder_full(0.,0.,1e4,1e-8,1,1);
+    std::cout << "ladder with numerical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,1,0);
+    gamma_a = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,1,0);
+    Gamma0 = -gint(1e4,1e-8,1);
+    Gamma = fRG_solve_K1full(0.,0.,1e4,1e-8,1,0);
+    std::cout << "fRG with sharp regulator and analytical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,1,1);
+    gamma_a = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,1,1);
+    Gamma0 = -gint(1e4,1e-8,1);
+    Gamma = fRG_solve_K1full(0.,0.,1e4,1e-8,1,1);
+    std::cout << "fRG with sharp regulator and numerical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,3,0);
+    gamma_a = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,3,0);
+    Gamma0 = -gint(1e4,1e-8,3);
+    Gamma = fRG_solve_K1full(0.,0.,1e4,1e-8,3,0);
+    std::cout << "fRG with soft regulator and analytical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,3,1);
+    gamma_a = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,3,1);
+    Gamma0 = -gint(1e4,1e-8,3);
+    Gamma = fRG_solve_K1full(0.,0.,1e4,1e-8,3,1);
+    std::cout << "fRG with soft regulator and analytical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+    */
+    // finite bosonic momentum q != 0
+    /*
+    dt = get_time();
+    std::cout << "ladder with analytical bubble integral:\n";
+    gamma_p = ladder_K1r(0.,0.1,'p',1e4,1e-8,1,0);
+    gamma_a = ladder_K1r(0.,0.1,'a',1e4,1e-8,1,0);
+    Gamma0 = -gint(1e4,1e-8,1);
+    Gamma = ladder_full(0.,0.1,1e4,1e-8,1,0);
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = ladder_K1r(0.,0.1,'p',1e4,1e-8,1,1);
+    gamma_a = ladder_K1r(0.,0.1,'a',1e4,1e-8,1,1);
+    Gamma0 = -gint(1e4,1e-8,1);
+    Gamma = ladder_full(0.,0.1,1e4,1e-8,1,1);
+    std::cout << "ladder with numerical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = fRG_solve_K1r(0.,0.1,'p',1e4,1e-8,1,0);
+    gamma_a = fRG_solve_K1r(0.,0.1,'a',1e4,1e-8,1,0);
+    Gamma0 = -gint(1e4,1e-8,1);
+    Gamma = fRG_solve_K1full(0.,0.1,1e4,1e-8,1,0);
+    std::cout << "fRG with sharp regulator and analytical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = fRG_solve_K1r(0.,0.1,'p',1e4,1e-8,1,1);
+    gamma_a = fRG_solve_K1r(0.,0.1,'a',1e4,1e-8,1,1);
+    Gamma0 = -gint(1e4,1e-8,1);
+    Gamma = fRG_solve_K1full(0.,0.1,1e4,1e-8,1,1);
+    std::cout << "fRG with sharp regulator and numerical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = fRG_solve_K1r(0.,0.1,'p',1e4,1e-8,3,0);
+    gamma_a = fRG_solve_K1r(0.,0.1,'a',1e4,1e-8,3,0);
+    Gamma0 = -gint(1e4,1e-8,3);
+    Gamma = fRG_solve_K1full(0.,0.1,1e4,1e-8,3,0);
+    std::cout << "fRG with soft regulator and analytical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
+    gamma_p = fRG_solve_K1r(0.,0.1,'p',1e4,1e-8,3,1);
+    gamma_a = fRG_solve_K1r(0.,0.1,'a',1e4,1e-8,3,1);
+    Gamma0 = -gint(1e4,1e-8,3);
+    Gamma = fRG_solve_K1full(0.,0.1,1e4,1e-8,3,1);
+    std::cout << "fRG with soft regulator and analytical bubble integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+    */
+
+
 
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================
@@ -795,6 +1002,16 @@ int main() {
     std::cout << "nODE = " << nODE << "\n";
     */
 
+    // LOOP INTEGRAL SELFENERGY
+    glb_mud = 0.0;
+    glb_ainv = 1.0;
+
+    comp testloop001 = selfenergy_ladder (0.1, 0.0,1e4,1e-10);
+    comp testloop002 = selfenergy_ladder (0.0, 0.0,1e4,1e-10);
+    std::cout << "loop selfenergy test = " << testloop001 << "\n";
+    std::cout << "loop selfenergy test = " << testloop002 << "\n";
+
+    selfenergy_ladder_list_vk(10.,10.,1e4,1e-10,51,27);
 
     get_time(t0);
 

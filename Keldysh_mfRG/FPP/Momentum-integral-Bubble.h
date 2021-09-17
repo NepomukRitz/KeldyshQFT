@@ -353,9 +353,9 @@ void integral_bubble_w_vpp_list_exact (char i, char j, char channel, double wmax
 
     std::string filename = "../Data/exact_bare_bubble";
     filename += "_";
-    filename += i;
-    filename += j;
-    filename += channel;
+    filename += std::string(1,i);
+    filename += std::string(1,j);
+    filename += std::string(1,channel);
     filename += "_nw=" + std::to_string(nw)
                 + "_nvpp=" + std::to_string(nvpp)
                 + "_nq=" + std::to_string(nq)

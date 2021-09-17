@@ -330,10 +330,10 @@ FRG_solvand_nsc<comp> rhs_K1l1fRG(const FRG_solvand_nsc<comp>& y, double Lambda)
         prefactor_p = 2.;
     }
     if (y.reg == 1) { // sharp frequency
-        y_result.value = prefactor_p*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*sharp_frequency_bare_bubble(y.w,Lambda,y.q,'c','d',y.chan,y.inttype);
+        y_result.value = prefactor_p*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*sharp_frequency_bare_bubble(y.w,Lambda,y.q,'d','c',y.chan,y.inttype);
     }
     else if (y.reg == 3) { // soft frequency
-        y_result.value = prefactor_p*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'c', 'd', y.chan, y.inttype);
+        y_result.value = prefactor_p*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'd', 'c', y.chan, y.inttype);
     }
     return y_result;
 }
@@ -530,6 +530,7 @@ void fRG_p_list_wq (double wmax, double qmax, double Lambda_i, double Lambda_f, 
     double w;
     double q;
 
+//#pragma omp parallel for
     for (int wi = 0; wi < nw; ++wi) {
         w = -wmax + 2*wi*wmax/(nw-1);
         ws[wi] = w;
@@ -554,6 +555,48 @@ void fRG_p_list_wq (double wmax, double qmax, double Lambda_i, double Lambda_f, 
     std::string filename = "../Data/fRG_p_list_wq";
     filename += "_nw=" + std::to_string(nw)
                 + "_nq=" + std::to_string(nq)
+                + ".h5";
+    write_h5_rvecs(filename,
+                   {"bosonic_frequencies", "bosonic_momenta", "vertex_Re", "vertex_Im"},
+                   {ws, qs, Gamma_p_Re, Gamma_p_Im});
+
+}
+
+void fRG_list_wq (double wmax, double qmax, char chan, double Lambda_i, double Lambda_f, int reg, int inttype, int nw, int nq) {
+    vec<double> ws(nw);
+    vec<double> qs(nq);
+    vec<double> Gamma_p_Re(nw*nq);
+    vec<double> Gamma_p_Im(nw*nq);
+    comp Gamma_p_result;
+    double w;
+    double q;
+
+//#pragma omp parallel for
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2*wi*wmax/(nw-1);
+        ws[wi] = w;
+        for (int qi = 0; qi < nq; ++qi) {
+            q = qi*qmax/(nq-1);
+            qs[qi] = q;
+            Gamma_p_result = fRG_solve_K1r(w, q, chan, Lambda_i, Lambda_f, reg,inttype);
+            Gamma_p_Re[composite_index_wq (wi, qi, nq)] = real(Gamma_p_result);
+            Gamma_p_Im[composite_index_wq (wi, qi, nq)] = imag(Gamma_p_result);
+            // std::cout << "w = " << w << ", q = " << q << ", result = " << Gamma_p_result << "\n";
+        }
+    }
+
+    comp result;
+    for (int wi = 0; wi < nw; ++wi) {
+        for (int qi = 0; qi < nq; ++qi) {
+            result = Gamma_p_Re[composite_index_wq (wi, qi, nq)] + glb_i*Gamma_p_Im[composite_index_wq (wi, qi, nq)];
+            std::cout << "w = " << ws[wi] << ", q = " << qs[qi] << ", Gamma = " << result << "\n";
+        }
+    }
+
+    std::string filename = "../Data/fRG_";
+    filename += std::string(1,chan);
+    filename += "_list_nw=" + std::to_string(nw)
+                + "_nq=" + std::to_string(nq) + "_reg=" + std::to_string(reg) + "_kint=" + std::to_string(inttype)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"bosonic_frequencies", "bosonic_momenta", "vertex_Re", "vertex_Im"},
