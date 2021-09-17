@@ -208,7 +208,7 @@ void FrequencyGrid::initialize_grid() {
 void FrequencyGrid::initialize_grid(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
-    w_upper = scale * 15.*4; //grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
+    w_upper = grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
 
     if (!KELDYSH && !ZERO_T){
         // for Matsubara T>0: pick grid such that no frequencies occur twice
@@ -278,7 +278,7 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
     //    return grid_transf_v2(w, this->W_scale);
     //}
     else {
-        if (KELDYSH || ZERO_T) return grid_transf_v2(w, this->W_scale);
+        if (KELDYSH || ZERO_T) return grid_transf_v4(w, this->W_scale);
         else                   return grid_transf_v1(w, this->W_scale);
     }
 }
@@ -296,7 +296,7 @@ auto FrequencyGrid::grid_transf_inv(double t) const -> double {
     //    return grid_transf_inv_v2(w, this->W_scale);
     //}
     else { // TODO(medium): Remove commented part?
-        if (KELDYSH || ZERO_T) return grid_transf_inv_v2(t, this->W_scale);
+        if (KELDYSH || ZERO_T) return grid_transf_inv_v4(t, this->W_scale);
         else return grid_transf_inv_v1(t, this->W_scale);
     }
 }
