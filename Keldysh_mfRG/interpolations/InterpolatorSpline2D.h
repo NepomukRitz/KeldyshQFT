@@ -132,7 +132,7 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
     };
 
     vec<Q> coeffs = vec<Q> (16);
-    //for (int i = 6; i<16; i++) {
+    //for (int i = 0; i<16; i++) {
     //    coeffs[i] = 0.;
     //    for (int j = 0; j<16; j++) {
     //        coeffs[i] += A[i][j] * fs[j];
