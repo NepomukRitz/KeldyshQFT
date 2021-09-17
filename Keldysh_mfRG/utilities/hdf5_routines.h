@@ -183,7 +183,7 @@ public:
 template <typename Q>
     void initialize(State<Q>& state_in) {
         print("Starting to copy to buffer...", true);
-        FrequencyGrid bfreqs = state_in.vertex[0].avertex().frequencies.b_K1;
+        FrequencyGrid bfreqs = state_in.vertex[0].avertex().K1_get_freqGrid();
         FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
         freq_params[0] = (double) bfreqs.N_w;
         freq_params[1] = bfreqs.w_upper;
@@ -228,8 +228,8 @@ template <typename Q>
         }
 #endif
 #if MAX_DIAG_CLASS >= 2
-        FrequencyGrid bfreqs2 = state_in.vertex[0].avertex().frequencies.b_K2;
-        FrequencyGrid ffreqs2 = state_in.vertex[0].avertex().frequencies.f_K2;
+        FrequencyGrid bfreqs2 = state_in.vertex[0].avertex().K2_get_freqGrid_b();
+        FrequencyGrid ffreqs2 = state_in.vertex[0].avertex().K2_get_freqGrid_f();
         freq_params[8]  = (double) bfreqs2.N_w;
         freq_params[9]  = bfreqs2.w_upper;
         freq_params[10] = bfreqs2.w_lower;
@@ -257,8 +257,8 @@ template <typename Q>
         }
 #endif
 #if MAX_DIAG_CLASS >= 3
-        FrequencyGrid bfreqs3 = state_in.vertex[0].avertex().frequencies.b_K3;
-        FrequencyGrid ffreqs3 = state_in.vertex[0].avertex().frequencies.f_K3;
+        FrequencyGrid bfreqs3 = state_in.vertex[0].avertex().K3_get_freqGrid_b();
+        FrequencyGrid ffreqs3 = state_in.vertex[0].avertex().K3_get_freqGrid_f();
         freq_params[16] = (double) bfreqs3.N_w;
         freq_params[17] = bfreqs3.w_upper;
         freq_params[18] = bfreqs3.w_lower;

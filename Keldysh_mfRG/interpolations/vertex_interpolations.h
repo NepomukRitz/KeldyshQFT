@@ -25,11 +25,11 @@ namespace {
         auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
 
             // Check if the frequency runs out of the box; if yes: return asymptotic value
-            if (    std::abs(indices.w ) < vertex.frequencies.b_K2.w_upper + inter_tol
-                    && std::abs(indices.v1) < vertex.frequencies.f_K2.w_upper + inter_tol )
+            if (    std::abs(indices.w ) < vertex.K2_get_wupper_b() + inter_tol
+                    && std::abs(indices.v1) < vertex.K2_get_wupper_f() + inter_tol )
             {
                 Q result = indices.prefactor * interpolate2D<Q>(indices.w, indices.v1,
-                                                                vertex.frequencies.b_K2, vertex.frequencies.f_K2,
+                                                                vertex.K2_get_freqGrid_b(), vertex.K2_get_freqGrid_f(),
                                                                 [&indices, &vertex](int i, int j) -> Q {return vertex.K2_val(indices.iK, i, j, indices.i_in);});
                 return result;
             }
@@ -46,9 +46,9 @@ namespace {
         auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
 
             // Check if the frequency runs out of the box; if yes: return asymptotic value
-            if (std::abs(indices.w) < vertex.frequencies.b_K1.w_upper + inter_tol)
+            if (std::abs(indices.w) < vertex.K1_get_wupper() + inter_tol)
             {
-                Q result = indices.prefactor * interpolate1D<Q>(indices.w, vertex.frequencies.b_K1,
+                Q result = indices.prefactor * interpolate1D<Q>(indices.w, vertex.K1_get_freqGrid(),
                                     [&indices, &vertex](int i) -> Q {return vertex.K1_val(indices.iK, i, indices.i_in);});
                                     // Lambda function (aka anonymous function) in last argument
                 return result;
@@ -65,12 +65,12 @@ namespace {
         auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
 
             // Check if the frequency runs out of the box; if yes: return asymptotic value
-            if (std::abs(indices.w) < vertex.frequencies.b_K3.w_upper + inter_tol
-                && std::abs(indices.v1) < vertex.frequencies.f_K3.w_upper + inter_tol
-                && std::abs(indices.v2) < vertex.frequencies.f_K3.w_upper + inter_tol)
+            if (std::abs(indices.w) < vertex.K3_get_wupper_b() + inter_tol
+                && std::abs(indices.v1) < vertex.K3_get_wupper_f() + inter_tol
+                && std::abs(indices.v2) < vertex.K3_get_wupper_f() + inter_tol)
             {
                 Q result = indices.prefactor * interpolate3D<Q>(indices.w, indices.v1, indices.v2,
-                         vertex.frequencies.b_K3, vertex.frequencies.f_K3, vertex.frequencies.f_K3,
+                         vertex.K3_get_freqGrid_b(), vertex.K3_get_freqGrid_f(), vertex.K3_get_freqGrid_f(),
                          [&indices, &vertex](int i, int j, int k) -> Q {return vertex.K3_val(indices.iK, i, j, k, indices.i_in);});
                 return result;
             } else {

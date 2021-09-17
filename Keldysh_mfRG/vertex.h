@@ -961,9 +961,9 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
 }
 
 template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &vertex) {
-    this->avertex.frequencies = vertex.avertex.frequencies;
-    this->pvertex.frequencies = vertex.pvertex.frequencies;
-    this->tvertex.frequencies = vertex.tvertex.frequencies;
+    this->avertex.set_VertexFreqGrid( vertex.avertex.get_VertexFreqGrid() );
+    this->pvertex.set_VertexFreqGrid( vertex.pvertex.get_VertexFreqGrid() );
+    this->tvertex.set_VertexFreqGrid( vertex.tvertex.get_VertexFreqGrid() );
 }
 
 template <typename Q> void fullvert<Q>::update_grid(double Lambda) {

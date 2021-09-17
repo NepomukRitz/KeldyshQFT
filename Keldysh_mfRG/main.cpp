@@ -89,12 +89,12 @@ auto main() -> int {
 
 
     //test_PT4(0.0, true);
-    test_PT_state<state_datatype>(dir_str+filename, 1.8, false);
+    //test_PT_state<state_datatype>(dir_str+filename, 1.8, false);
     //compute_non_symmetric_diags(1.8, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";
-    //n_loop_flow(dir_str+filename+job, false);
+    n_loop_flow(dir_str+filename+job, false);
 
 
 

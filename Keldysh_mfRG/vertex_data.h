@@ -17,13 +17,19 @@
 
 template <typename Q> class fullvert; // forward declaration of fullvert
 template <typename Q> class State; // forward declaration of fullvert
+template <typename Q, template <typename> class symmetry_type> class GeneralVertex;
+template <typename Q>class symmetric;
+template <typename Q>using Vertex = GeneralVertex<Q, symmetric>;
+class Buffer;
+
 
 template <typename Q>
 class vertexDataContainer{
     friend void check_Kramers_Kronig(std::string filename);
     friend void test_PT4(double Lambda, bool write_flag);
-    //friend void susceptibilities_postprocessing<>(Vertex<Q>& chi, Vertex<Q>& chi_diff,
-    //                                            const State<Q>& state, const double Lambda);
+    template<typename T> friend void susceptibilities_postprocessing(Vertex<T>& chi, Vertex<T>& chi_diff, const State<T>& state, double Lambda);
+    template<typename T> friend void check_FDTs(const State<T>& state, bool verbose);
+    template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
 
 private:
     vec<Q> empty_K2() { // for pure K1-calculation no memory should be allocated unnecessarily for K2
@@ -34,20 +40,25 @@ private:
         if (MAX_DIAG_CLASS >= 3) return vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);    // data points of K3  // data points of K2;
         else                     return vec<Q> (0);                                 // empty vector, never used in calculations
     }
+    VertexFrequencyGrid frequencies;    // frequency grid
 
-
-public:
-
-
+protected:
     /** K1-functionality */
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
     /** K2 functionality */
     vec<Q> K2 = empty_K2();
     /** K3 functionality */
     vec<Q> K3 = empty_K3();
-    VertexFrequencyGrid frequencies;    // frequency grid
+
+
+public:
+
+
 
     explicit vertexDataContainer(double Lambda) : frequencies(Lambda) { };
+
+    auto get_VertexFreqGrid() const -> VertexFrequencyGrid;
+    void set_VertexFreqGrid(const VertexFrequencyGrid &frequencyGrid);
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
     /// by interpolating stored data, in all possible channel-dependent frequency representations ///
@@ -72,6 +83,12 @@ public:
      * internal structure index i_in. */
     auto K1_val(int iK, int iw, int i_in) const -> Q;
 
+    void K1_add(vec<Q> summand);
+    double K1_get_wlower() const;
+    double K1_get_wupper() const;
+    auto K1_get_freqGrid() const -> FrequencyGrid;
+    void K1_get_freq_w(double& w, int i) const;
+    auto K2_get_correction_MFfiniteT(int iw) const -> double;
 
     /// Member functions for accessing/setting values of the vector K2 ///
 
@@ -93,6 +110,14 @@ public:
      * internal structure index i_in. */
     auto K2_val(int iK, int iw, int iv, int i_in) const -> Q;
 
+    void K2_add(vec<Q> summand);
+    double K2_get_wlower_b() const;
+    double K2_get_wupper_b() const;
+    double K2_get_wlower_f() const;
+    double K2_get_wupper_f() const;
+    FrequencyGrid K2_get_freqGrid_b() const;
+    FrequencyGrid K2_get_freqGrid_f() const;
+    void K2_get_freqs_w(double& w, double& v, int iw, int iv) const;
 
     /// Member functions for accessing/setting values of the vector K3 ///
 
@@ -114,16 +139,36 @@ public:
      * internal structure index i_in. */
     auto K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q;
 
+    void K3_add(vec<Q> summand);
+    double K3_get_wlower_b() const;
+    double K3_get_wupper_b() const;
+    double K3_get_wlower_f() const;
+    double K3_get_wupper_f() const;
+    FrequencyGrid K3_get_freqGrid_b() const;
+    FrequencyGrid K3_get_freqGrid_f() const;
+    void K3_get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
 
+    auto K3_get_correction_MFfiniteT(int iw) const -> double;
 
 
 
     double get_deriv_maxK1() const;
     double get_deriv_maxK2() const;
     double get_deriv_maxK3() const;
+
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
+
+template<typename Q>
+auto vertexDataContainer<Q>::get_VertexFreqGrid() const -> VertexFrequencyGrid {
+    return frequencies;
+}
+template<typename Q>
+void vertexDataContainer<Q>::set_VertexFreqGrid(const VertexFrequencyGrid& frequencyGrid) {
+    frequencies = frequencyGrid;
+}
+
 template <typename Q> auto vertexDataContainer<Q>::K1_acc(int i) const -> Q {
     if (i >= 0 && i < K1.size())
         return K1[i];
@@ -145,6 +190,28 @@ template <typename Q> void vertexDataContainer<Q>::K1_addvert(int iK, int iw, in
 template <typename Q> auto vertexDataContainer<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
     return K1[iK*nw1*n_in + iw*n_in + i_in];
 }
+template<typename Q>
+void vertexDataContainer<Q>::K1_add(vec<Q> summand) {
+    K1 += summand;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K1_get_wlower() const {
+    return frequencies.b_K1.w_lower;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K1_get_wupper() const {
+    return frequencies.b_K1.w_upper;
+}
+template<typename Q>
+auto vertexDataContainer<Q>::K1_get_freqGrid() const -> FrequencyGrid {
+    return frequencies.b_K1;
+}
+template<typename Q>
+void vertexDataContainer<Q>::K1_get_freq_w(double& w, const int i) const {
+    w = frequencies.b_K1.ws[i];
+}
+
+
 
 
 template <typename Q> auto vertexDataContainer<Q>::K2_acc(int i) const -> Q {
@@ -168,7 +235,43 @@ template <typename Q> void vertexDataContainer<Q>::K2_addvert(int iK, int iw, in
 template <typename Q> auto vertexDataContainer<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
     return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
 }
-
+template<typename Q>
+void vertexDataContainer<Q>::K2_add(vec<Q> summand) {
+    K2 += summand;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K2_get_wlower_b() const {
+    return frequencies.b_K2.w_lower;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K2_get_wupper_b() const {
+    return frequencies.b_K2.w_upper;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K2_get_wlower_f() const {
+    return frequencies.f_K2.w_lower;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K2_get_wupper_f() const {
+    return frequencies.f_K2.w_upper;
+}
+template<typename Q>
+auto vertexDataContainer<Q>::K2_get_freqGrid_b() const -> FrequencyGrid {
+    return frequencies.b_K2;
+}
+template<typename Q>
+auto vertexDataContainer<Q>::K2_get_freqGrid_f() const -> FrequencyGrid {
+    return frequencies.f_K2;
+}
+template<typename Q>
+void vertexDataContainer<Q>::K2_get_freqs_w(double &w, double &v, const int iw, const int iv) const {
+    w = frequencies.b_K2.ws[iw];
+    v = frequencies.f_K2.ws[iv];
+}
+template<typename Q>
+auto vertexDataContainer<Q>::K2_get_correction_MFfiniteT(int iw) const -> double {
+    return floor2bfreq(frequencies.b_K2.ws[iw] / 2) - ceil2bfreq(frequencies.b_K2.ws[iw] / 2);
+}
 
 template <typename Q> auto vertexDataContainer<Q>::K3_acc(int i) const -> Q {
     if (i >= 0 && i < K3.size())
@@ -191,7 +294,44 @@ template <typename Q> void vertexDataContainer<Q>::K3_addvert(int iK, int iw, in
 template <typename Q> auto vertexDataContainer<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
     return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
 }
-
+template<typename Q>
+void vertexDataContainer<Q>::K3_add(vec<Q> summand) {
+    K3 += summand;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K3_get_wlower_b() const {
+    return frequencies.b_K3.w_lower;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K3_get_wupper_b() const {
+    return frequencies.b_K3.w_upper;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K3_get_wlower_f() const {
+    return frequencies.f_K3.w_lower;
+}
+template<typename Q>
+double vertexDataContainer<Q>::K3_get_wupper_f() const {
+    return frequencies.f_K3.w_upper;
+}
+template<typename Q>
+auto vertexDataContainer<Q>::K3_get_freqGrid_b() const -> FrequencyGrid {
+    return frequencies.b_K3;
+}
+template<typename Q>
+auto vertexDataContainer<Q>::K3_get_freqGrid_f() const -> FrequencyGrid {
+    return frequencies.f_K3;
+}
+template<typename Q>
+void vertexDataContainer<Q>::K3_get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
+    w = frequencies.b_K3.ws[iw];
+    v = frequencies.f_K3.ws[iv];
+    vp= frequencies.f_K3.ws[ivp];
+}
+template<typename Q>
+auto vertexDataContainer<Q>::K3_get_correction_MFfiniteT(int iw) const -> double {
+    return floor2bfreq(frequencies.b_K3.ws[iw] / 2) - ceil2bfreq(frequencies.b_K3.ws[iw] / 2);
+}
 
 template <typename Q> auto vertexDataContainer<Q>::get_deriv_maxK1() const -> double {
     double max_K1 = ::power2(::get_finite_differences(K1)).max_norm();
@@ -214,5 +354,7 @@ template <typename Q> auto vertexDataContainer<Q>::get_deriv_maxK3() const -> do
     return max_K3;
 
 }
+
+
 
 #endif //FPP_MFRG_VERTEX_DATA_H
