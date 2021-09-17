@@ -7,6 +7,8 @@
 #include "utilities/util.h"                       // printing text output
 #include <cmath>                        // for log function
 
+// TODO(medium) Write a class containing functions for all correction functions to minimize the number of times that many arguments have to be given to functions.
+
 /**
  * Helper function for computing the analytical result for the asymptotic tails of the bubble integral in the a and t
  * channel, assuming the self-energy to be decayed to the Hartree value. See the function asymp_corrections_bubble below.
@@ -19,55 +21,36 @@
  * @param eta_2    : +1/-1 if second propagator in the bubble is retarded/advanced
  * @return         : Analytical result of the integrated tails
  */
+
+// Begin forward declarations
+template <typename Q>
+auto correctionFunctionBubbleAT_REG2_Keldysh(double w, double vmin, double vmax,
+                                             Q eps_p, double Delta, double Lambda,
+                                             double eta_1, double eta_2, bool diff) -> Q;
+template <typename Q>
+auto correctionFunctionBubbleAT_REG2_Matsubara_PHS(double w, double vmin, double vmax,
+                                                   Q eps_p, double Delta, double Lambda,
+                                                   double eta_1, double eta_2, bool diff) -> Q;
+template <typename Q>
+auto correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
+                                                     Q eps_p, double Delta, double Lambda,
+                                                     double eta_1, double eta_2, bool diff) -> Q;
+// End forward declarations
+
 template <typename Q> // TODO(medium): Split up into several functions?
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                                  Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
     if (REG == 2) {
         if (KELDYSH) {
-            if (diff) return 0.;
-            else {
-                if (w == 0. && eta_1 == eta_2)
-                    return 1. / (vmax - eps_p + eta_1 * glb_i * Delta)
-                           + 1. / (std::abs(vmin) + eps_p - eta_1 * glb_i * Delta);
-                else
-                    return 1. / (-w + (eta_1 - eta_2) * glb_i * Delta)
-                           * log(((vmax - w / 2. - eps_p + eta_1 * glb_i * Delta) *
-                                  (std::abs(vmin) - w / 2. + eps_p - eta_2 * glb_i * Delta))
-                                 / ((vmax + w / 2. - eps_p + eta_2 * glb_i * Delta) *
-                                    (std::abs(vmin) + w / 2. + eps_p - eta_1 * glb_i * Delta)));
-
-            }
+            return correctionFunctionBubbleAT_REG2_Keldysh(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
         }
         else {
-            if (diff) {
-                if (PARTICLE_HOLE_SYMMETRY) {
-                    return 1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2., 2))
-                                      + 1. / (pow(vmax + Delta, 2) - pow(w / 2., 2)));
-                } else {
-                    return 1. / 2. * (1. / (pow(-vmin - glb_i * eps_p + Delta, 2) - pow(w / 2., 2))
-                                      + 1. / (pow(vmax + glb_i * eps_p + Delta, 2) - pow(w / 2., 2)));
-                }
-            } else {
-                if (PARTICLE_HOLE_SYMMETRY) {
-                    if (w == 0.) {
-                        return -1. / (vmax + Delta)
-                               + 1. / (vmin - Delta);
-                    } else {
-                        return 1. / w * log(((-vmin - w / 2. + Delta) * (vmax - w / 2. + Delta))
-                                            / ((-vmin + w / 2. + Delta) * (vmax + w / 2. + Delta)));
-                    }
-                } else {
-                    if (w == 0.) {
-                        return -1. / (vmax + glb_i * eps_p + Delta)
-                               + 1. / (vmin + glb_i * eps_p - Delta);
-                    } else {
-                        return 1. / w *
-                               log(((-vmin - w / 2. - glb_i * eps_p + Delta) * (vmax - w / 2. + glb_i * eps_p + Delta))
-                                   / ((-vmin + w / 2. - glb_i * eps_p + Delta) *
-                                      (vmax + w / 2. + glb_i * eps_p + Delta)));
-                    }
-                }
+            if (PARTICLE_HOLE_SYMMETRY) {
+                return correctionFunctionBubbleAT_REG2_Matsubara_PHS(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
+            }
+            else {
+                return correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
             }
         }
     }
@@ -229,6 +212,84 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
     }
 }
 
+template <typename Q>
+auto correctionFunctionBubbleAT_REG2_Keldysh(double w, double vmin, double vmax,
+                                             Q eps_p, double Delta, double Lambda,
+                                             double eta_1, double eta_2, bool diff) -> Q {
+    if (diff) return 0.;
+    else {
+        if (w == 0. && eta_1 == eta_2)
+            return 1. / (vmax - eps_p + eta_1 * glb_i * Delta)
+                   + 1. / (std::abs(vmin) + eps_p - eta_1 * glb_i * Delta);
+        else
+            return 1. / (-w + (eta_1 - eta_2) * glb_i * Delta)
+                   * log(((vmax - w / 2. - eps_p + eta_1 * glb_i * Delta) *
+                          (std::abs(vmin) - w / 2. + eps_p - eta_2 * glb_i * Delta))
+                         / ((vmax + w / 2. - eps_p + eta_2 * glb_i * Delta) *
+                            (std::abs(vmin) + w / 2. + eps_p - eta_1 * glb_i * Delta)));
+
+    }
+}
+template <>
+auto correctionFunctionBubbleAT_REG2_Keldysh(double w, double vmin, double vmax,
+                                             double eps_p, double Delta, double Lambda,
+                                             double eta_1, double eta_2, bool diff) -> double {
+    print("Error! Keldysh computations require complex numbers! Abort.");
+    assert(false);
+    return 0.;
+}
+
+template <typename Q>
+auto correctionFunctionBubbleAT_REG2_Matsubara_PHS(double w, double vmin, double vmax,
+                                                   Q eps_p, double Delta, double Lambda,
+                                                   double eta_1, double eta_2, bool diff) -> Q {
+    if (diff){
+        return 1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2., 2))
+                          + 1. / (pow(vmax + Delta, 2) - pow(w / 2., 2)));
+    }
+    else{
+        if (w == 0.) {
+            return -1. / (vmax + Delta)
+                   + 1. / (vmin - Delta);
+        }
+        else {
+            return 1. / w * log(((-vmin - w / 2. + Delta) * (vmax - w / 2. + Delta))
+                                / ((-vmin + w / 2. + Delta) * (vmax + w / 2. + Delta)));
+        }
+    }
+}
+
+template <typename Q>
+auto correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
+                                                     Q eps_p, double Delta, double Lambda,
+                                                     double eta_1, double eta_2, bool diff) -> Q {
+    if (diff){
+        return 1. / 2. * (1. / (pow(-vmin - glb_i * eps_p + Delta, 2) - pow(w / 2., 2))
+                          + 1. / (pow(vmax + glb_i * eps_p + Delta, 2) - pow(w / 2., 2)));
+    }
+    else{
+        if (w == 0.) {
+            return -1. / (vmax + glb_i * eps_p + Delta)
+                   + 1. / (vmin + glb_i * eps_p - Delta);
+        }
+        else {
+            return 1. / w *
+                   log(((-vmin - w / 2. - glb_i * eps_p + Delta) * (vmax - w / 2. + glb_i * eps_p + Delta))
+                       / ((-vmin + w / 2. - glb_i * eps_p + Delta) *
+                          (vmax + w / 2. + glb_i * eps_p + Delta)));
+        }
+    }
+}
+template <>
+auto correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
+                                                     double eps_p, double Delta, double Lambda,
+                                                     double eta_1, double eta_2, bool diff) -> double {
+    print("Error! Computations without particle hole symmetry require complex numbers! Abort.");
+    assert(false);
+    return 0.;
+}
+
+
 /**
  * Helper function for computing the analytical result for the asymptotic tails of the bubble integral in the p
  * channel, assuming the self-energy to be decayed to the Hartree value. See the function asymp_corrections below.
@@ -241,54 +302,39 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
  * @param eta_2    : +1/-1 if second propagator in the bubble is retarded/advanced
  * @return
  */
+
+// begin forward declarations
+template <typename Q>
+auto correctionFunctionBubbleP_REG2_Keldysh(double w, double vmin, double vmax,
+                                            Q eps_p, double Delta, double Lambda,
+                                            double eta_1, double eta_2, bool diff) -> Q;
+
+template <typename Q>
+auto correctionFunctionBubbleP_REG2_Matsubara_PHS(double w, double vmin, double vmax,
+                                                  Q eps_p, double Delta, double Lambda,
+                                                  double eta_1, double eta_2, bool diff) -> Q;
+
+template <typename Q>
+auto correctionFunctionBubbleP_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
+                                                    Q eps_p, double Delta, double Lambda,
+                                                    double eta_1, double eta_2, bool diff) -> Q;
+// end forward declarations
+
+
 template <typename Q>
 auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                                 Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
     if (REG==2) {
         if (KELDYSH) {
-            if (diff) return 0.;
-            else {
-                if (w == 2. * eps_p && eta_1 == -eta_2)
-                    return -1. / (vmax + eta_1 * glb_i * Delta)
-                           - 1. / (std::abs(vmin) - eta_1 * glb_i * Delta);
-                else
-                    return -1. / (w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
-                           * log(((vmax + w / 2. - eps_p + eta_1 * glb_i * Delta) *
-                                  (std::abs(vmin) + w / 2. - eps_p + eta_2 * glb_i * Delta))
-                                 / ((vmax - w / 2. + eps_p - eta_2 * glb_i * Delta) *
-                                    (std::abs(vmin) - w / 2. + eps_p - eta_1 * glb_i * Delta)));
-
+            return correctionFunctionBubbleP_REG2_Keldysh(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
+        }
+        else {
+            if (PARTICLE_HOLE_SYMMETRY) {
+                return correctionFunctionBubbleP_REG2_Matsubara_PHS(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
             }
-        } else {
-            if (diff) {
-                if (PARTICLE_HOLE_SYMMETRY) {
-                    return -1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2., 2))
-                                       + 1. / (pow(vmax + Delta, 2) - pow(w / 2., 2)));
-                } else {
-                    return 1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2. + glb_i * eps_p, 2))
-                                      + 1. / (pow(vmax + Delta, 2) - pow(w / 2. + glb_i * eps_p, 2)));
-                }
-            } else {
-                if (PARTICLE_HOLE_SYMMETRY) {
-                    if (w == 0.) {
-                        return +1. / (vmax + Delta)
-                               - 1. / (vmin - Delta);
-                    } else {
-                        return 1. / w * log(((-vmin + w / 2. + Delta) * (vmax + w / 2. + Delta))
-                                            / ((-vmin - w / 2. + Delta) * (vmax - w / 2. + Delta)));
-                    }
-                } else {
-                    if (eps_p == 0. and w == 0.) {
-                        return +1. / (vmax + Delta)
-                               - 1. / (vmin - Delta);
-                    } else {
-                        return 1. / (w + 2. * glb_i * eps_p)
-                               * log(((-vmin + w / 2. + glb_i * eps_p + Delta) * (vmax + w / 2. + glb_i * eps_p + Delta))
-                                     /
-                                     ((-vmin - w / 2. - glb_i * eps_p + Delta) * (vmax - w / 2. - glb_i * eps_p + Delta)));
-                    }
-                }
+            else {
+                return correctionFunctionBubbleP_REG2_Matsubara_NoPHS(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
             }
         }
     }
@@ -445,6 +491,79 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
         return 0.;
     }
 }
+
+template <typename Q>
+auto correctionFunctionBubbleP_REG2_Keldysh(double w, double vmin, double vmax,
+                                            Q eps_p, double Delta, double Lambda,
+                                            double eta_1, double eta_2, bool diff) -> Q {
+    if (diff) return 0.;
+    else {
+        if (w == 2. * eps_p && eta_1 == -eta_2)
+            return -1. / (vmax + eta_1 * glb_i * Delta) - 1. / (std::abs(vmin) - eta_1 * glb_i * Delta);
+        else
+            return -1. / (w - 2. * eps_p + (eta_1 + eta_2) * glb_i * Delta)
+                   * log(((vmax + w / 2. - eps_p + eta_1 * glb_i * Delta) *
+                          (std::abs(vmin) + w / 2. - eps_p + eta_2 * glb_i * Delta))
+                         / ((vmax - w / 2. + eps_p - eta_2 * glb_i * Delta) *
+                            (std::abs(vmin) - w / 2. + eps_p - eta_1 * glb_i * Delta)));
+    }
+}
+template <>
+auto correctionFunctionBubbleP_REG2_Keldysh(double w, double vmin, double vmax,
+                                            double eps_p, double Delta, double Lambda,
+                                            double eta_1, double eta_2, bool diff) -> double {
+    print("Error! Keldysh computations require complex numbers! Abort.");
+    assert(false);
+    return 0.;
+}
+
+template <typename Q>
+auto correctionFunctionBubbleP_REG2_Matsubara_PHS(double w, double vmin, double vmax,
+                                                  Q eps_p, double Delta, double Lambda,
+                                                  double eta_1, double eta_2, bool diff) -> Q {
+    if (diff){
+        return -1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2., 2))
+                   + 1. / (pow(vmax + Delta, 2) - pow(w / 2., 2)));
+    }
+    else{
+        if (w == 0.) {
+            return +1. / (vmax + Delta) - 1. / (vmin - Delta);
+        } else {
+            return 1. / w * log(((-vmin + w / 2. + Delta) * (vmax + w / 2. + Delta))
+                                / ((-vmin - w / 2. + Delta) * (vmax - w / 2. + Delta)));
+        }
+    }
+}
+
+template <typename Q>
+auto correctionFunctionBubbleP_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
+                                                    Q eps_p, double Delta, double Lambda,
+                                                    double eta_1, double eta_2, bool diff) -> Q {
+    if (diff){
+        return 1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2. + glb_i * eps_p, 2))
+                  + 1. / (pow(vmax + Delta, 2) - pow(w / 2. + glb_i * eps_p, 2)));
+    }
+    else{
+        if (eps_p == 0. and w == 0.) {
+            return +1. / (vmax + Delta) - 1. / (vmin - Delta);
+        } else {
+            return 1. / (w + 2. * glb_i * eps_p)
+                   * log(((-vmin + w / 2. + glb_i * eps_p + Delta) * (vmax + w / 2. + glb_i * eps_p + Delta))
+                         /
+                         ((-vmin - w / 2. - glb_i * eps_p + Delta) * (vmax - w / 2. - glb_i * eps_p + Delta)));
+        }
+    }
+}
+template <>
+auto correctionFunctionBubbleP_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
+                                                    double eps_p, double Delta, double Lambda,
+                                                    double eta_1, double eta_2, bool diff) -> double {
+    print("Error! Computations without particle hole symmetry require complex numbers! Abort.");
+    assert(false);
+    return 0.;
+}
+
+
 
 /** Wrapper for the two functions above, distinguishing a/t channels from p channel. */
 template <typename Q>
@@ -637,58 +756,92 @@ auto asymp_corrections_bubble(K_class k,
  * @param type     : Propagator type ('g': full, 's': single-scale)
  * @return         : Analytical result of the integrated tails
  */
+
+// begin forward declarations
+template <typename Q>
+auto correctionFunctionSelfEnergy_Keldysh(int iK, double vmin, double vmax, Q eps_p, double Delta, char type) -> Q;
+
+template <typename Q>
+auto correctionFunctionSelfEnergy_Matsubara_PHS(int iK, double vmin, double vmax, Q eps_p, double Delta, char type) -> Q;
+
+template <typename Q>
+auto correctionFunctionSelfEnergy_Matsubara_NoPHS(int iK, double vmin, double vmax, Q eps_p, double Delta, char type) -> Q;
+// end forward declarations
+
+
 template <typename Q>
 auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, double Delta, char type) -> Q {
     Q eps_p = glb_epsilon + Sigma_H;
-    if (KELDYSH){
-        switch (type) {
-            case 'g':   // full (non-differentiated) propagator
-                switch (iK) {
-                    case 0: // G^R
-                        return log((std::abs(vmin) + eps_p - glb_i * Delta) / (vmax - eps_p + glb_i * Delta));
-                    case 1: // G^A
-                        return log((std::abs(vmin) + eps_p + glb_i * Delta) / (vmax - eps_p - glb_i * Delta));
-                    case 2: // G^K
-                        return 2. * glb_i * (atan((vmax - eps_p) / Delta) - atan((std::abs(vmin) + eps_p) / Delta));
-                    default:;
-                }
-            case 's':   // single-scale propagator
-                switch (iK) {
-                    case 0: // G^R
-                        return -glb_i / 2. * (1. / (vmax - eps_p + glb_i * Delta) - 1. / (vmin - eps_p + glb_i * Delta));
-                    case 1: // G^A
-                        return  glb_i / 2. * (1. / (vmax - eps_p - glb_i * Delta) - 1. / (vmin - eps_p - glb_i * Delta));
-                    case 2: // G^K
-                        return -glb_i * (  (vmax - eps_p) / ((vmax - eps_p) * (vmax - eps_p) + Delta * Delta)
-                                           + (vmin - eps_p) / ((vmin - eps_p) * (vmin - eps_p) + Delta * Delta));
-                    default:;
-                }
-            default:;
-        }
-        return 0;
-    }
+    if (KELDYSH)                    return correctionFunctionSelfEnergy_Keldysh(iK, vmin, vmax, eps_p, Delta, type);
     else{
-        if (PARTICLE_HOLE_SYMMETRY){
-            switch (type) {
-                case 'g':   // full (non-differentiated) propagator
-                    return  -log((std::abs(vmin) + Delta) / (vmax + Delta));
-                case 's':   // single-scale propagator
-                    return -1. / 2. * (-1. / (vmax + Delta) + 1. / (-vmin + Delta));
-                default:;
-            }
-            return 0;
-        }
-        else{
-            switch (type) {
-                case 'g':   // full (non-differentiated) propagator
-                    return -glb_i * log((std::abs(vmin) - glb_i * eps_p + Delta) / (vmax + glb_i * eps_p + Delta));
-                case 's':   // single-scale propagator
-                    return -glb_i / 2. * (-1. / (vmax + glb_i * eps_p + Delta) - 1. / (vmin + glb_i * eps_p - Delta));
-                default:;
-            }
-            return 0;
-        }
+        if (PARTICLE_HOLE_SYMMETRY) return correctionFunctionSelfEnergy_Matsubara_PHS(iK, vmin, vmax, eps_p, Delta, type);
+        else                        return correctionFunctionSelfEnergy_Matsubara_NoPHS(iK, vmin, vmax, eps_p, Delta, type);
     }
+}
+
+template <typename Q>
+auto correctionFunctionSelfEnergy_Keldysh(int iK, double vmin, double vmax, Q eps_p, double Delta, char type) -> Q {
+    switch (type) {
+        case 'g':   // full (non-differentiated) propagator
+            switch (iK) {
+                case 0: // G^R
+                    return log((std::abs(vmin) + eps_p - glb_i * Delta) / (vmax - eps_p + glb_i * Delta));
+                case 1: // G^A
+                    return log((std::abs(vmin) + eps_p + glb_i * Delta) / (vmax - eps_p - glb_i * Delta));
+                case 2: // G^K
+                    return 2. * glb_i * (atan((vmax - eps_p) / Delta) - atan((std::abs(vmin) + eps_p) / Delta));
+                default:;
+            }
+        case 's':   // single-scale propagator
+            switch (iK) {
+                case 0: // G^R
+                    return -glb_i / 2. * (1. / (vmax - eps_p + glb_i * Delta) - 1. / (vmin - eps_p + glb_i * Delta));
+                case 1: // G^A
+                    return  glb_i / 2. * (1. / (vmax - eps_p - glb_i * Delta) - 1. / (vmin - eps_p - glb_i * Delta));
+                case 2: // G^K
+                    return -glb_i * (  (vmax - eps_p) / ((vmax - eps_p) * (vmax - eps_p) + Delta * Delta)
+                                       + (vmin - eps_p) / ((vmin - eps_p) * (vmin - eps_p) + Delta * Delta));
+                default:;
+            }
+        default:;
+    }
+    return 0;
+}
+template <>
+auto correctionFunctionSelfEnergy_Keldysh(int iK, double vmin, double vmax, double eps_p, double Delta, char type) -> double {
+    print("Error! Keldysh computations require complex numbers! Abort.");
+    assert(false);
+    return 0.;
+}
+
+template <typename Q>
+auto correctionFunctionSelfEnergy_Matsubara_PHS(int iK, double vmin, double vmax, Q eps_p, double Delta, char type) -> Q {
+    switch (type) {
+        case 'g':   // full (non-differentiated) propagator
+            return  -log((std::abs(vmin) + Delta) / (vmax + Delta));
+        case 's':   // single-scale propagator
+            return -1. / 2. * (-1. / (vmax + Delta) + 1. / (-vmin + Delta));
+        default:;
+    }
+    return 0;
+}
+
+template <typename Q>
+auto correctionFunctionSelfEnergy_Matsubara_NoPHS(int iK, double vmin, double vmax, Q eps_p, double Delta, char type) -> Q {
+    switch (type) {
+        case 'g':   // full (non-differentiated) propagator
+            return -glb_i * log((std::abs(vmin) - glb_i * eps_p + Delta) / (vmax + glb_i * eps_p + Delta));
+        case 's':   // single-scale propagator
+            return -glb_i / 2. * (-1. / (vmax + glb_i * eps_p + Delta) - 1. / (vmin + glb_i * eps_p - Delta));
+        default:;
+    }
+    return 0;
+}
+template <>
+auto correctionFunctionSelfEnergy_Matsubara_NoPHS(int iK, double vmin, double vmax, double eps_p, double Delta, char type) -> double {
+    print("Error! Computations without particle hole symmetry require complex numbers! Abort.");
+    assert(false);
+    return 0.;
 }
 
 /**

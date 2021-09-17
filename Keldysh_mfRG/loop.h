@@ -262,11 +262,12 @@ class LoopCalculator{
     IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
     // TODO(medium): There is a lot of redundancy and duplication here - unify the LoopCalculator and IntegrandSE class?
     //  Note though: The integrator needs an integrand (template there).
-//#ifdef KELDYSH_FORMALISM
-    IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins);
-//#endif
+
+    IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins); // Only ever needed in Keldysh, but has to be declared also for Matsubara
 
     Q set_prefactor();
+    Q Keldysh_prefactor();
+    Q Matsubara_prefactor();
     Q prefactor = set_prefactor();
 
 
@@ -311,16 +312,34 @@ void LoopCalculator<Q>::set_v_limits() {
 template<typename Q>
 Q LoopCalculator<Q>::set_prefactor() {
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
-    if (KELDYSH) {return -1./(2.*M_PI*glb_i);}
-    else {return -1./(2*M_PI);}
+    if (KELDYSH) return Keldysh_prefactor();
+    else         return Matsubara_prefactor();
+}
+
+template<typename Q>
+Q LoopCalculator<Q>::Keldysh_prefactor() {
+    // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
+    return -1./(2.*M_PI*glb_i);
+}
+template<>
+double LoopCalculator<double>::Keldysh_prefactor() {
+    print("Error! Keldysh computations require complex numbers! Abort.");
+    assert(false);
+    return 0;
+}
+
+template<typename Q>
+Q LoopCalculator<Q>::Matsubara_prefactor() {
+    // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi))
+   return -1./(2*M_PI);
 }
 
 template<typename Q>
 void LoopCalculator<Q>::perform_computation() {
-    if (KELDYSH)   {compute_Keldysh();}
+    if (KELDYSH)    compute_Keldysh();
     else{
-        if (ZERO_T){compute_Matsubara_zeroT()  ;}
-        else       {compute_Matsubara_finiteT();}
+        if (ZERO_T) compute_Matsubara_zeroT();
+        else        compute_Matsubara_finiteT();
     }
 }
 

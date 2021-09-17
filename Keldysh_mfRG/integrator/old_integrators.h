@@ -46,7 +46,7 @@ template <typename Q, typename Integrand> auto integrator_riemann(const Integran
     spacings[N-1] = bfreqs[N-1] - bfreqs[N-2];
     integrand_values[N-1] = integrand(bfreqs[N-1]);
 
-    return 1/2.*dotproduct(integrand_values, spacings);
+    return 1/2.*dotproduct<Q>(integrand_values, spacings);
 }
 
 /**
@@ -73,7 +73,7 @@ template <typename Q, typename Integrand> auto integrator_simpson(const Integran
     simpson[0] = 1.;
     simpson[N-1]=1.;
 
-    return dx/3.*dotproduct(integrand_values, simpson);
+    return dx/3.*dotproduct<Q>(integrand_values, simpson);
 }
 
 /**
@@ -320,7 +320,7 @@ template <typename Q, typename Integrand> auto adaptive_simpson_integrator(const
 
 
 /* Integration using the PAID algorithm (not yet properly implemented) */
-template <typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> comp {
+template <typename Q, typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> Q {
     //PAID
     //Solve issue with the first vertex not being passed completely
 //    Domain1D<comp> D (grid[0], grid[grid.size()-1]);
