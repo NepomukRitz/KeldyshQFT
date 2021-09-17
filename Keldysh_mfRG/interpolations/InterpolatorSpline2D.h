@@ -112,7 +112,7 @@ template <class DataContainer, typename Q>
 vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t i_in, const double dw, const double dv) const
 {
 
-    vec<Q> fs = {
+    const vec<Q> fs = {
             DataContainer::K2[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dimsK2)],
             DataContainer::K2[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dimsK2)],
             DataContainer::K2[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dimsK2)],
@@ -131,7 +131,7 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
             dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dimsK2)],
     };
 
-    vec<Q> coeffs = vec<Q> (16);
+    //vec<Q> coeffs = vec<Q> (16);
     //for (int i = 0; i<16; i++) {
     //    coeffs[i] = 0.;
     //    for (int j = 0; j<16; j++) {
@@ -139,23 +139,24 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
     //    }
     //}
     // Same as double for-loop above (matrix-vector multiplication):
-    coeffs[0] = fs[0];
-    coeffs[1] = fs[4];
-    coeffs[2] = 3.*(-fs[0]+fs[1]) -2.*fs[4] -fs[5];
-    coeffs[3] = 2.*(fs[0]-fs[1]) +fs[4] +fs[5];
-    coeffs[4] = fs[8];
-    coeffs[5] = fs[12];
-    coeffs[6] = -3.*(fs[8]-fs[9]) -2.*fs[12] -fs[13];
-    coeffs[7] = 2.*(fs[8]-fs[9]) +fs[12] +fs[13];
-    coeffs[8] = -3.*(fs[0]-fs[2]) -2.*fs[8] -fs[10];
-    coeffs[9] = -3.*(fs[4]-fs[6]) -2.*fs[12] -fs[14];
-    coeffs[10] = 9.*(fs[0]-fs[1]-fs[2]+fs[3]) + 6.*(fs[4]-fs[6]+fs[8]-fs[9]) + 3.*(fs[5]-fs[7]+fs[10]-fs[11]) + 4.*fs[12] + 2.*(fs[13]+fs[14]) + fs[15];
-    coeffs[11] = 6.*(-fs[0]+fs[1]+fs[2]-fs[3]) +3.*(-fs[4]-fs[5]+fs[6]+fs[7]) +4.*(-fs[8]+fs[9]) +2.*(-fs[10]+fs[11]-fs[12]-fs[13]) +(-fs[14]-fs[15]);
-    coeffs[12] = 2.*(fs[0]-fs[2]) +fs[8] +fs[10];
-    coeffs[13] = 2.*(fs[4]-fs[6]) +fs[12] +fs[14];
-    coeffs[14] = 6.*(-fs[0]+fs[1]+fs[2]-fs[3]) +4.*(-fs[4]+fs[6]) +2.*(-fs[5]+fs[7]-fs[12]-fs[14]) +3.*(-fs[8]+fs[9]-fs[10]+fs[11]) +(-fs[13]-fs[15]);
-    coeffs[15] = 4.*(fs[0]-fs[1]-fs[2]+fs[3]) +2.*(fs[4]+fs[5]-fs[6]-fs[7]+fs[8]-fs[9]+fs[10]-fs[11]) + fs[12]+fs[13]+fs[14]+fs[15];
-
+    vec<Q> coeffs = {
+            fs[0]
+            , fs[4]
+            , 3.*(-fs[0]+fs[1]) -2.*fs[4] -fs[5]
+            , 2.*(fs[0]-fs[1]) +fs[4] +fs[5]
+            , fs[8]
+            , fs[12]
+            , -3.*(fs[8]-fs[9]) -2.*fs[12] -fs[13]
+            , 2.*(fs[8]-fs[9]) +fs[12] +fs[13]
+            , -3.*(fs[0]-fs[2]) -2.*fs[8] -fs[10]
+            , -3.*(fs[4]-fs[6]) -2.*fs[12] -fs[14]
+            , 9.*(fs[0]-fs[1]-fs[2]+fs[3]) + 6.*(fs[4]-fs[6]+fs[8]-fs[9]) + 3.*(fs[5]-fs[7]+fs[10]-fs[11]) + 4.*fs[12] + 2.*(fs[13]+fs[14]) + fs[15]
+            , 6.*(-fs[0]+fs[1]+fs[2]-fs[3]) +3.*(-fs[4]-fs[5]+fs[6]+fs[7]) +4.*(-fs[8]+fs[9]) +2.*(-fs[10]+fs[11]-fs[12]-fs[13]) +(-fs[14]-fs[15])
+            , 2.*(fs[0]-fs[2]) +fs[8] +fs[10]
+            , 2.*(fs[4]-fs[6]) +fs[12] +fs[14]
+            , 6.*(-fs[0]+fs[1]+fs[2]-fs[3]) +4.*(-fs[4]+fs[6]) +2.*(-fs[5]+fs[7]-fs[12]-fs[14]) +3.*(-fs[8]+fs[9]-fs[10]+fs[11]) +(-fs[13]-fs[15])
+            , 4.*(fs[0]-fs[1]-fs[2]+fs[3]) +2.*(fs[4]+fs[5]-fs[6]-fs[7]+fs[8]-fs[9]+fs[10]-fs[11]) + fs[12]+fs[13]+fs[14]+fs[15]
+    };
     return coeffs;
 }
 
