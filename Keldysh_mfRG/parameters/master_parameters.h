@@ -133,8 +133,10 @@ constexpr bool ZERO_T = false; // only needed for Matsubara
 constexpr bool KELDYSH = false;
 #ifdef ZERO_TEMP
 constexpr bool ZERO_T = true;
-#endif
-#endif
+#else
+constexpr bool ZERO_T = false;
+#endif // ZERO_TEMP
+#endif // KELDYSH_FORMALISM
 
 #ifdef PARTICLE_HOLE_SYMM
 constexpr bool PARTICLE_HOLE_SYMMETRY = true;

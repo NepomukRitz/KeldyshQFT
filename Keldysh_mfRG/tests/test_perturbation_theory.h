@@ -157,8 +157,6 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
     return empty;
 }
 
-// to check central part of multi-loop flow equations:
-// compute diagrams with non-symmetric intermediate results
 
 /**
  * Function that computes K1 (and K2, K3) up to PT4, and performs FDT checks
@@ -2279,7 +2277,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             int i = 1 + iflat;
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
-            double w = K1pdot_exact.vertex[0].avertex().frequencies_K1.b.ws[i];
+            double w;
+            K1pdot_exact.vertex[0].avertex().K1_get_freq_w(w, i);
             state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda);
             K1pdot_exact.vertex[0].pvertex().K1_setvert(0, i, 0, val_K1);
             //    }
@@ -2300,8 +2299,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             int j = 1 + iflat - (i - 1) * (nFER2 - 2);
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
-            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies_K2.b.ws[i];
-            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies_K2.f.ws[j];
+            double w; // = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K2.ws[i];
+            double v; // = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K2.ws[j];
+            K1rdot_PIa_K1p_exact.vertex[0].avertex().K2_get_freqs_w(w, v, i, j);
             K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta);
@@ -2318,9 +2318,10 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //for (int i = 1; i<nBOS3-1; i++) {
             //    for (int j = 1; j<nFER3-1; j++) {
             //        for (int k = 1; k<nFER3-1; k++) {
-            double w = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies_K3.b.ws[i];
-            double v = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies_K3.f.ws[j];
-            double vp = K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies_K3.f.ws[k];
+            double w ; //= K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K3.ws[i];
+            double v ; //= K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[j];
+            double vp; //= K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[k];
+            K1rdot_PIa_K1p_exact.vertex[0].avertex().K3_get_freqs_w(w, v, vp, i, j, k);
             K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
@@ -2346,7 +2347,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
         for (int i = 1; i < nBOS - 1; i++) {
-            double w = dGammaC_exact.vertex[0].avertex().frequencies_K1.b.ws[i];
+            double w; // = dGammaC_exact.vertex[0].avertex().frequencies.b_K1.ws[i];
+            dGammaC_exact.vertex[0].avertex().K1_get_freq_w(w, i);
             IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
             state_datatype val_K1 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 0>(IntegrandK1, -vmax, vmax, std::abs(w / 2), {}, Delta);
@@ -2360,8 +2362,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             int j = 1 + iflat - (i - 1) * (nFER2 - 2);
             //for (int i = 1; i<nBOS2-1; i++) {
             //    for (int j = 1; j<nFER2-1; j++) {
-            double w = dGammaC_exact.vertex[0].avertex().frequencies_K2.b.ws[i];
-            double v = dGammaC_exact.vertex[0].avertex().frequencies_K2.f.ws[j];
+            double w; // = dGammaC_exact.vertex[0].avertex().frequencies.b_K2.ws[i];
+            double v; // = dGammaC_exact.vertex[0].avertex().frequencies.f_K2.ws[j];
+            dGammaC_exact.vertex[0].avertex().K2_get_freqs_w(w, v, i, j);
             IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta);
@@ -2378,9 +2381,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //for (int i = 1; i<nBOS3-1; i++) {
             //    for (int j = 1; j<nFER3-1; j++) {
             //        for (int k = 1; k<nFER3-1; k++) {
-            double w = dGammaC_exact.vertex[0].avertex().frequencies_K3.b.ws[i];
-            double v = dGammaC_exact.vertex[0].avertex().frequencies_K3.f.ws[j];
-            double vp = dGammaC_exact.vertex[0].avertex().frequencies_K3.f.ws[k];
+            double w, v, vp;
+            dGammaC_exact.vertex[0].avertex().K3_get_freqs_w(w, v, vp, i, j, k);
             IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator_Matsubara_T0<state_datatype, 3>(IntegrandK3, -vmax, vmax, std::abs(w / 2),

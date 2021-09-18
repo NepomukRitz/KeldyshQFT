@@ -26,7 +26,7 @@
  */
 template <typename Q>
 inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
-    if (INTERPOLATION == 1) return interpolate_lin1D(x, frequencies, val);
+    if (INTERPOLATION == 1 or INTERPOLATION == 4) return interpolate_lin1D(x, frequencies, val);
     else if (INTERPOLATION == 3) return interpolate_sloppycubic1D(x, frequencies, val);
     else assert(false);
 }
@@ -319,7 +319,7 @@ namespace linOrSloppy {
             // Check if the frequency runs out of the box; if yes: return asymptotic value
             //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
             //{
-            Q result = indices.prefactor * interpolate1D<Q>(indices.w, vertexDataContainer<k1, Q>::frequencies_K1.b,
+            Q result = indices.prefactor * interpolate1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
                                                             [&](int i) -> Q {
                                                                 return vertexDataContainer<k1, Q>::K1_val(indices.iK, i,
                                                                                                           indices.i_in);
@@ -347,8 +347,8 @@ namespace linOrSloppy {
             //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
             //{
             Q result = indices.prefactor * interpolate2D<Q>(indices.w, indices.v1,
-                                                            vertexDataContainer<k2, Q>::frequencies_K2.b,
-                                                            vertexDataContainer<k2, Q>::frequencies_K2.f,
+                                                            vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
+                                                            vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                             [&](int i, int j) -> Q {
                                                                 return vertexDataContainer<k2, Q>::K2_val(indices.iK, i,
                                                                                                           j,
@@ -379,9 +379,9 @@ namespace linOrSloppy {
             //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
             //{
             Q result = indices.prefactor * interpolate3D<Q>(indices.w, indices.v1, indices.v2,
-                                                            vertexDataContainer<k3, Q>::frequencies_K3.b,
-                                                            vertexDataContainer<k3, Q>::frequencies_K3.f,
-                                                            vertexDataContainer<k3, Q>::frequencies_K3.f,
+                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
+                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
                                                             [&](int i, int j, int k) -> Q {
                                                                 return vertexDataContainer<k3, Q>::K3_val(indices.iK, i,
                                                                                                           j, k,

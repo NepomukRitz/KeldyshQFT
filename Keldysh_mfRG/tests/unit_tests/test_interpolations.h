@@ -26,11 +26,13 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
     for (int iw = 1; iw<nBOS-1; iw++){
-        indices.w = avertex.frequencies_K1.b.ws[iw];
+        //indices.w = avertex.frequencies.b_K1.ws[iw];
+        avertex.K1_get_freq_w(indices.w, iw);
 
         double error = std::abs(avertex.template interpolate<k1>(indices) - avertex.K1_val(iK, iw, i_in));
         cumul_interpolation_error += error;
         errors[iw] = error;
+
         value +=1;
     }
 
@@ -68,8 +70,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     for (int iw = 1; iw<nBOS2-1; iw++){
         for (int iv = 1; iv<nFER2-1; iv++) {
-            indices.w  = avertex.frequencies_K2.b.ws[iw];
-            indices.v1 = avertex.frequencies_K2.f.ws[iv];
+            //indices.w  = avertex.frequencies.b_K2.ws[iw];
+            //indices.v1 = avertex.frequencies.f_K2.ws[iv];
+            avertex.K2_get_freqs_w(indices.w, indices.v1, iw, iv);
 
             double error = std::abs(avertex.template interpolate<k2>(indices) -  avertex.K2_val(iK, iw, iv, i_in));
             cumul_interpolation_error += error;
@@ -113,9 +116,10 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     for (int iw = 1; iw<nBOS3-1; iw++){
         for (int iv = 1; iv<nFER3-1; iv++) {
             for (int ivp = 1; ivp<nFER3-1; ivp++) {
-                indices.w = avertex.frequencies_K3.b.ws[iw];
-                indices.v1 = avertex.frequencies_K3.f.ws[iv];
-                indices.v2 = avertex.frequencies_K3.f.ws[ivp];
+                //indices.w = avertex.frequencies.b_K3.ws[iw];
+                //indices.v1 = avertex.frequencies.f_K3.ws[iv];
+                //indices.v2 = avertex.frequencies.f_K3.ws[ivp];
+                avertex.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
 
                 cumul_interpolation_error += std::abs(
                         avertex.template interpolate<k3>(indices) - avertex.K3_val(iK, iw, iv, ivp, i_in));
@@ -158,7 +162,8 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0; iw<nBOS; iw++){
-        double w = avertex.frequencies_K1.b.ts[iw];
+        double w;// = avertex.frequencies.b_K1.ws[iw];
+        avertex.K1_get_freq_aux(w, iw);
         value = linearFunction1D(w);
         avertex.K1_setvert(iK, iw, i_in, value);
     }
@@ -169,11 +174,11 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     value = 0.;
     int N = nBOS * 4;
     vec<double> errors (N);
-    double inter = (avertex.frequencies_K1.b.w_upper - avertex.frequencies_K1.b.w_lower) / double(N-1);
+    double inter = (avertex.K1_get_wupper() - avertex.K1_get_wlower()) / double(N-1);
     for (int iw = 0; iw<N; iw++){
-        indices.w = avertex.frequencies_K1.b.w_lower + iw*inter;
+        indices.w = avertex.K1_get_wlower() + iw*inter;
 
-        double error = std::abs(avertex.template interpolate<k1>(indices) - linearFunction1D(avertex.frequencies_K1.b.grid_transf(indices.w)));
+        double error = std::abs(avertex.template interpolate<k1>(indices) - linearFunction1D(avertex.K1_gridtransf(indices.w)));
         cumul_interpolation_error += error;
         errors[iw] = error;
         if (error >= interpolation_tolerance) {
@@ -267,8 +272,9 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     for (int iw = 0; iw<nBOS2; iw++){
         for (int iv = 0; iv<nFER2; iv++) {
 
-            double w = avertex.frequencies_K2.b.ts[iw];
-            double v = avertex.frequencies_K2.f.ts[iv];
+            double w; // = avertex.frequencies.b_K2.ws[iw];
+            double v; // = avertex.frequencies.f_K2.ws[iv];
+            avertex.K2_get_freqs_aux(w, v, iw, iv);
             value = linearFunction2D(w, v);
             avertex.K2_setvert(iK, iw, iv, i_in, value);
             value +=1;
@@ -282,14 +288,14 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     int N = (nBOS2 - 2) * 4 - 3;
     int M = (nFER2 - 2) * 4 - 3;
     vec<double> errors (N*M);
-    double interb = (avertex.frequencies_K2.b.t_upper - avertex.frequencies_K2.b.t_lower) / double(N-1);
-    double interf = (avertex.frequencies_K2.f.t_upper - avertex.frequencies_K2.f.t_lower) / double(M-1);
+    double interb = (avertex.K2_get_tupper_b_aux() - avertex.K2_get_tlower_b_aux()) / double(N-1);
+    double interf = (avertex.K2_get_tupper_f_aux() - avertex.K2_get_tlower_f_aux()) / double(M-1);
     for (int iw = 0; iw<N; iw++){
         for (int iv = 0; iv<M; iv++) {
-            indices.w  = avertex.frequencies_K2.b.grid_transf_inv(avertex.frequencies_K2.b.t_lower + iw*interb);
-            indices.v1 = avertex.frequencies_K2.f.grid_transf_inv(avertex.frequencies_K2.f.t_lower + iv*interf);
+            indices.w  = avertex.K2_gridtransf_inv_b(avertex.K2_get_tlower_b_aux() + iw*interb);
+            indices.v1 = avertex.K2_gridtransf_inv_f(avertex.K2_get_tlower_f_aux() + iv*interf);
 
-            error = std::abs(avertex.template interpolate<k2>(indices) -  linearFunction2D(avertex.frequencies_K2.b.grid_transf(indices.w), avertex.frequencies_K2.f.grid_transf(indices.v1)));
+            error = std::abs(avertex.template interpolate<k2>(indices) -  linearFunction2D(avertex.K2_gridtransf_b(indices.w), avertex.K2_gridtransf_f(indices.v1)));
             cumul_interpolation_error += error;
             errors[iw*M+iv] = error;
             if (error >= interpolation_tolerance) {
@@ -342,12 +348,12 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
     int M = (nFER2 - 2) * 4 - 3;
     vec<double> errors (N*M);
     vec<double> values (N*M);
-    double interb = (avertex.frequencies_K2.b.t_upper - avertex.frequencies_K2.b.t_lower) / double(N-1);
-    double interf = (avertex.frequencies_K2.f.t_upper - avertex.frequencies_K2.f.t_lower) / double(M-1);
+    double interb = (avertex.K2_get_tupper_b() - avertex.K2_get_tlower_b()) / double(N-1);
+    double interf = (avertex.K2_get_tupper_f() - avertex.K2_get_tlower_f()) / double(M-1);
     for (int iw = 0; iw<N; iw++){
         for (int iv = 0; iv<M; iv++) {
-            indices.w  = avertex.frequencies_K2.b.grid_transf_inv(avertex.frequencies_K2.b.t_lower + iw*interb);
-            indices.v1 = avertex.frequencies_K2.f.grid_transf_inv(avertex.frequencies_K2.f.t_lower + iv*interf);
+            indices.w  = avertex.frequencies_K2.b.grid_transf_inv(avertex.K2_get_tlower_b() + iw*interb);
+            indices.v1 = avertex.frequencies_K2.f.grid_transf_inv(avertex.K2_get_tlower_f() + iv*interf);
 
             values[iw*M+iv] = avertex.template interpolate<k2>(indices);
             error = std::abs(avertex.template interpolate<k2>(indices) -  cubicFunction2D(avertex.frequencies_K2.b.grid_transf(indices.w), avertex.frequencies_K2.f.grid_transf(indices.v1)));
@@ -400,9 +406,10 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
 
-                double w = avertex.frequencies_K3.b.ts[iw];
-                double v = avertex.frequencies_K3.f.ts[iv];
-                double vp= avertex.frequencies_K3.f.ts[ivp];
+                double w ; //= avertex.frequencies.b_K3.ws[iw];
+                double v ; //= avertex.frequencies.f_K3.ws[iv];
+                double vp; //= avertex.frequencies.f_K3.ws[ivp];
+                avertex.K3_get_freqs_aux(w, v, vp, iw, iv, ivp);
                 value = linearFunction3D(w, v, vp);
                 avertex.K3_setvert(iK, iw, iv, ivp, i_in, value);
             }
@@ -416,17 +423,17 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     int N = nBOS3 * 4;
     int M = nFER3 * 4;
     vec<double> errors (N*M*M);
-    double interb = (avertex.frequencies_K3.b.w_upper - avertex.frequencies_K3.b.w_lower) / double(N-1);
-    double interf = (avertex.frequencies_K3.f.w_upper - avertex.frequencies_K3.f.w_lower) / double(M-1);
+    double interb = (avertex.K3_get_wupper_b() - avertex.K3_get_wlower_b()) / double(N-1);
+    double interf = (avertex.K3_get_wupper_f() - avertex.K3_get_wlower_f()) / double(M-1);
     for (int iw = 0; iw<N; iw++){
         for (int iv = 0; iv<M; iv++) {
             for (int ivp = 0; ivp<M; ivp++) {
-                indices.w  = avertex.frequencies_K3.b.w_lower + iw*interb;
-                indices.v1 = avertex.frequencies_K3.f.w_lower + iv*interf;
-                indices.v2 = avertex.frequencies_K3.f.w_lower + ivp*interf;
+                indices.w  = avertex.K3_get_wlower_b() + iw*interb;
+                indices.v1 = avertex.K3_get_wlower_f() + iv*interf;
+                indices.v2 = avertex.K3_get_wlower_f() + ivp*interf;
 
                 error = std::abs(
-                        avertex.template interpolate<k3>(indices) - linearFunction3D(avertex.frequencies_K3.b.grid_transf(indices.w), avertex.frequencies_K3.f.grid_transf(indices.v1), avertex.frequencies_K3.f.grid_transf(indices.v2)));
+                        avertex.template interpolate<k3>(indices) - linearFunction3D(avertex.K3_gridtransf_b(indices.w), avertex.K3_gridtransf_f(indices.v1), avertex.K3_gridtransf_f(indices.v2)));
                 cumul_interpolation_error += error;
                 errors[(iw*nFER3 + iv)*nFER3 + ivp] = error;
                 if (error >= interpolation_tolerance) {

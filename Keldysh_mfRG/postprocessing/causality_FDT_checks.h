@@ -100,9 +100,9 @@ void check_FDTs(const State<Q>& state, bool verbose=false) {
     /** 2nd check: real part of Keldysh component of K1 in all channels has to be zero */
 
     // take K1 vertices in all channels
-    vec<Q> K1a = state.vertex[0].avertex().K1;
-    vec<Q> K1p = state.vertex[0].pvertex().K1;
-    vec<Q> K1t = state.vertex[0].tvertex().K1;
+    vec<Q> K1a = state.vertex[0].avertex().get_K1();
+    vec<Q> K1p = state.vertex[0].pvertex().get_K1();
+    vec<Q> K1t = state.vertex[0].tvertex().get_K1();
     // take second half of K1 vertices (Keldysh comp.)
     vec<Q> K1a_K (&K1a[K1a.size()/2], &K1a[K1a.size()]);
     vec<Q> K1p_K (&K1p[K1p.size()/2], &K1p[K1p.size()]);

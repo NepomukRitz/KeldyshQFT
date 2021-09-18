@@ -89,11 +89,11 @@ private:
     };
 
 protected:
-    const size_t n;
+    size_t n;
     vec<Q> m_deriv_x = vec<Q>(n),m_deriv_y= vec<Q>(n),m_deriv_z= vec<Q>(n),m_deriv_xy= vec<Q>(n),m_deriv_xz= vec<Q>(n),m_deriv_yz= vec<Q>(n),m_deriv_xyz= vec<Q>(n);        // SplineK3 coefficients
     //Q m_c0;                            // for left extrapolation
-    const bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
-    const Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
+    bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
+    Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
     //bool m_made_monotonic = false;
     vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t ivp, size_t i_in, double dw, double dv, double dvp) const;  // calculate c_i, d_i from b_i
 public:

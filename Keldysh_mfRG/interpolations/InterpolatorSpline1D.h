@@ -54,11 +54,11 @@ public:
 
 protected:
     std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
-    const size_t n;
+    size_t n;
     vec<Q> m_b = vec<Q>(n),m_c= vec<Q>(n),m_d= vec<Q>(n);        // SplineK1 coefficients
     //Q m_c0;                            // for left extrapolation
-    const bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
-    const Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
+    bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
+    Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
     //bool m_made_monotonic = false;
     void set_coeffs_from_b();               // calculate c_i, d_i from b_i
 

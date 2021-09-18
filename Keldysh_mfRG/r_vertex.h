@@ -486,20 +486,20 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     if (MAX_DIAG_CLASS >= 1) {
 
-        VertexFrequencyGrid<k1> frequenciesK1_new = vertexInterpolator<Q>::frequencies_K1;  // new frequency grid
+        VertexFrequencyGrid<k1> frequenciesK1_new = vertexInterpolator<Q>::K1_get_VertexFreqGrid();  // new frequency grid
         frequenciesK1_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k1>(frequenciesK1_new, *this);
 
     }
     if (MAX_DIAG_CLASS >= 2) {
 
-        VertexFrequencyGrid<k2> frequenciesK2_new = vertexInterpolator<Q>::frequencies_K2;  // new frequency grid
+        VertexFrequencyGrid<k2> frequenciesK2_new = vertexInterpolator<Q>::K2_get_VertexFreqGrid();  // new frequency grid
         frequenciesK2_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k2>(frequenciesK2_new, *this);
 
     }
     if (MAX_DIAG_CLASS >= 3) {
-        VertexFrequencyGrid<k3> frequenciesK3_new = vertexInterpolator<Q>::frequencies_K3;  // new frequency grid
+        VertexFrequencyGrid<k3> frequenciesK3_new = vertexInterpolator<Q>::K3_get_VertexFreqGrid();  // new frequency grid
         frequenciesK3_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k3>(frequenciesK3_new, *this);
 
@@ -612,8 +612,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             case 't': i0_tmp = non_zero_Keldysh_K1t[itK]; break;
             default: ;
         }
-        for (int itw = 1; itw < nw1-1; itw++) {
-            double w_in = this->frequencies_K1.b.ws[itw];
+        for (int itw = 0; itw < nw1; itw++) {
+            double w_in;
+            vertexDataContainer<k1,Q>::K1_get_freq_w(w_in, itw);
             IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
             int sign_w = sign_index(indices.w);
             int trafo_index = freq_transformations.K1[itK][sign_w];
@@ -690,8 +691,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
         for (int itw = 1; itw < nw2-1; itw++){
             for (int itv = 1; itv < nv2-1; itv++){
-                double w_in = this->frequencies_K2.b.ws[itw];
-                double v_in = this->frequencies_K2.f.ws[itv];
+                double w_in, v_in;
+                vertexDataContainer<k2,Q>::K2_get_freqs_w(w_in, v_in, itw, itv);
                 IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
                 int sign_w = sign_index(w_in);
                 int sign_v1 = sign_index(v_in);
@@ -734,9 +735,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         for (int itw = 1; itw < nw3-1; itw++){
             for (int itv = 1; itv < nv3-1; itv++){
                 for (int itvp = 1; itvp < nv3-1; itvp++) {
-                    double w_in = this->frequencies_K3.b.ws[itw];
-                    double v_in = this->frequencies_K3.f.ws[itv];
-                    double vp_in = this->frequencies_K3.f.ws[itvp];
+                    double w_in, v_in, vp_in;
+                    vertexDataContainer<k3,Q>::K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp);
                     IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
                     int sign_w = sign_index(w_in);
                     int sign_f =  itv+itvp<nFER3? 0 : 1;    // this corresponds to "sign_index(v_in + vp_in)" assuming

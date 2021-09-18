@@ -31,6 +31,7 @@ template <typename Q> class rvert;
 #if INTERPOLATION!=4
 namespace spline {
 
+
     /* linearly interpolate vertices */
     template<int k, typename Q>
     class Interpolate {
@@ -42,10 +43,10 @@ namespace spline {
 
     template<typename Q>
     class Interpolate<k1,Q>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
+
     public:
         explicit Interpolate<k1, Q>(double Lambda) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda) {};
         auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
-
             // Check if the frequency runs out of the box; if yes: return asymptotic value
             //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
             //{
