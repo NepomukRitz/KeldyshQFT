@@ -69,8 +69,8 @@ public:
                         w_upper = glb_w_upper;
                         w_lower = glb_w_lower;
                         W_scale = glb_W_scale;
-                        U_factor = 5./3.;
-                        Delta_factor = 5.;
+                        U_factor = 20./3.;
+                        Delta_factor = 20.;
                         break;
                     case 2:
                         N_w = nBOS2;
@@ -82,8 +82,8 @@ public:
                             Delta_factor = 15.;
                         }
                         else{
-                            U_factor = 4./3.;
-                            Delta_factor = 4.;
+                            U_factor = 40./3.;
+                            Delta_factor = 40.;
                         }
                         break;
                     case 3:
@@ -108,8 +108,8 @@ public:
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
-                        U_factor = 20./3.;
-                        Delta_factor = 20.;
+                        U_factor = 40./3.;
+                        Delta_factor = 40.;
                         break;
                     case 3:
                         N_w = nFER3;
@@ -249,7 +249,7 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
     //    return grid_transf_v2(w, this->W_scale);
     //}
     //else {
-    if (KELDYSH || ZERO_T) return grid_transf_v2(w, this->W_scale);
+    if (KELDYSH || ZERO_T) return grid_transf_v4(w, this->W_scale);
     else                   return grid_transf_v1(w, this->W_scale);
     //}
 }
@@ -267,7 +267,7 @@ auto FrequencyGrid::grid_transf_inv(double t) const -> double {
     //    return grid_transf_inv_v2(w, this->W_scale);
     //}
     //else { TODO(medium): Remove commented part?
-    if (KELDYSH || ZERO_T) return grid_transf_inv_v2(t, this->W_scale);
+    if (KELDYSH || ZERO_T) return grid_transf_inv_v4(t, this->W_scale);
     else return grid_transf_inv_v1(t, this->W_scale);
     //}
 }

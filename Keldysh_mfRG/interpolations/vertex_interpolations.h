@@ -23,7 +23,7 @@ namespace {
     public:
         /** Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below) */
         auto operator() (IndicesSymmetryTransformations& indices, const rvert<Q>& vertex) -> Q {
-
+            vertex.K2_convert2internalFreqs(indices.w, indices.v1);
             // Check if the frequency runs out of the box; if yes: return asymptotic value
             if (    std::abs(indices.w ) < vertex.K2_get_wupper_b() + inter_tol
                     && std::abs(indices.v1) < vertex.K2_get_wupper_f() + inter_tol )

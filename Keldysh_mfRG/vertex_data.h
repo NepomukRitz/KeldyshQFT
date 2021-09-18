@@ -30,6 +30,7 @@ class vertexDataContainer{
     template<typename T> friend void susceptibilities_postprocessing(Vertex<T>& chi, Vertex<T>& chi_diff, const State<T>& state, double Lambda);
     template<typename T> friend void check_FDTs(const State<T>& state, bool verbose);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
+    template <K_class k, typename T> friend class Interpolate;
 
 private:
     vec<Q> empty_K2() { // for pure K1-calculation no memory should be allocated unnecessarily for K2
@@ -50,6 +51,8 @@ protected:
     /** K3 functionality */
     vec<Q> K3 = empty_K3();
 
+    void K2_convert2internalFreqs(double& w, double& v) const;
+    void K2_convert2naturalFreqs(double& w, double& v) const;
 
 public:
 
@@ -267,11 +270,27 @@ template<typename Q>
 void vertexDataContainer<Q>::K2_get_freqs_w(double &w, double &v, const int iw, const int iv) const {
     w = frequencies.b_K2.ws[iw];
     v = frequencies.f_K2.ws[iv];
+    K2_convert2naturalFreqs(w, v);
 }
 template<typename Q>
 auto vertexDataContainer<Q>::K2_get_correction_MFfiniteT(int iw) const -> double {
     return floor2bfreq(frequencies.b_K2.ws[iw] / 2) - ceil2bfreq(frequencies.b_K2.ws[iw] / 2);
 }
+template<typename Q>
+void vertexDataContainer<Q>::K2_convert2internalFreqs(double &w, double &v) const {
+    //const double w_tmp = w/2. + v;
+    //const double v_tmp = w/2. - v;
+    //w = w_tmp;
+    //v = v_tmp;
+}
+template<typename Q>
+void vertexDataContainer<Q>::K2_convert2naturalFreqs(double &w, double &v) const {
+    //const double w_tmp = w + v;
+    //const double v_tmp =(w - v)/2.;
+    //w = w_tmp;
+    //v = v_tmp;
+}
+
 
 template <typename Q> auto vertexDataContainer<Q>::K3_acc(int i) const -> Q {
     if (i >= 0 && i < K3.size())
