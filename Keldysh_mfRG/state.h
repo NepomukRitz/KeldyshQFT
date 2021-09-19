@@ -86,5 +86,13 @@ template <typename Q> void State<Q>::update_grid(double Lambda) {
 }
 
 
+template<typename Q>
+auto max_rel_err(const State<Q>& err, const State<Q>& scale, const double minimum_value_considered) -> double {
+    double max_vert = err.vertex[0].half1().sum_norm(0) / scale.vertex[0].half1().sum_norm(0);
+    double max_self = err.selfenergy.norm(0) /scale.selfenergy.norm(0);
+    return std::max(max_self, max_vert);
+
+}
+
 
 #endif //KELDYSH_MFRG_STATE_H

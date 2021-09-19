@@ -47,7 +47,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
     // compute the flow using RK4 solver
     ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
-                   sq_substitution, sq_resubstitution,                                       // use substitution for Lambda steps
+                   flowgrid::sq_substitution, flowgrid::sq_resubstitution,                                       // use substitution for Lambda steps
                    nODE,
                    outputFileName, save_intermediate_results);                                                                // save state at each step during flow
 
@@ -79,7 +79,7 @@ State<state_datatype> n_loop_flow(std::string inputFileName, const int it_start,
 
         // compute the flow using RK4 solver
         ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
-                       sq_substitution, sq_resubstitution,      // use substitution for Lambda steps
+                       flowgrid::sq_substitution, flowgrid::sq_resubstitution,      // use substitution for Lambda steps
                        nODE,
                        inputFileName,                           // save state at each step during flow
                        it_start, save_intermediate_results);                               // start from iteration it_start

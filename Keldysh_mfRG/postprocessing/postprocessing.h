@@ -64,7 +64,7 @@ public:
 };
 
 void compute_Phi_tilde(const std::string filename) {
-    rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
+    rvec Lambdas = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE);
 
     rvec vs (Lambdas.size() * nFER);
     rvec Phi (Lambdas.size() * nFER * n_in);
@@ -134,7 +134,7 @@ void sum_rule_K1tK(const std::string filename) {
     print("Checking fullfilment of the sum rule for K1t");
     int nLambda = nODE + U_NRG.size() + 1;
 
-    rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
+    rvec Lambdas = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE);
     rvec sum_rule (nLambda);
 
     for (int iLambda=0; iLambda<nLambda; ++iLambda) {

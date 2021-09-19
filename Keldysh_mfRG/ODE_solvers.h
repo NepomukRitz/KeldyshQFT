@@ -8,6 +8,7 @@
 #include "parameters/master_parameters.h"                             // needed for the vector of grid values to add
 #include "postprocessing/causality_FDT_checks.h"    // check causality and FDTs at each step in the flow
 #include "utilities/hdf5_routines.h"
+#include "state.h"
 
 /** Perform one Runge-Kutta-4 step */
 template <typename T>
@@ -85,8 +86,8 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
                     double subst(double x), double resubst(double x),
                     const int N_ODE, std::string filename, const int it_start, bool save_intermediate_states) {
     // construct non-linear flow grid via substitution
-    rvec x_vals  = construct_flow_grid(x_fin, x_ini, subst, resubst, N_ODE);
-    rvec x_diffs = flow_grid_step_sizes(x_vals); // compute step sizes for flow grid
+    rvec x_vals  = flowgrid::construct_flow_grid(x_fin, x_ini, subst, resubst, N_ODE);
+    rvec x_diffs = flowgrid::flow_grid_step_sizes(x_vals); // compute step sizes for flow grid
 
     // solve ODE using step sizes x_diffs
     T y_run = y_ini; // initial y value
@@ -150,6 +151,300 @@ void SCE_solver(T& y_fin, const T& y_ini, const double x, T rhs (const T& y, con
     y_fin = y_run; // final y value
 }
 
+
+
+
+
+namespace ode_solver_impl
+{
+
+
+    // Use this to define RK methods
+    template <size_t stages>
+    struct butcher_tableau
+    {
+        // Runge-Kutta Matrix (the 0th row and the last stage are always 0)
+        const std::array<double, (stages - 1) * (stages - 1)> a;
+        // weights for the two different orders
+        const std::array<double, stages> b_high;
+        const std::array<double, stages> b_low;
+        // nodes (the 0th node is always 0)
+        const std::array<double, stages - 1> c;
+
+        //butcher_tableau(const std::array<double, (stages - 1) * (stages - 1)> a_in, const std::array<double, stages> b_high_in,
+        //                const std::array<double, stages> b_low_in, const std::array<double, stages - 1> c_in) :
+        //        a(a_in), b_high(b_high_in), b_low(b_low_in), c(c_in) {};
+        double get_a(size_t row_index, size_t column_index) const
+        {
+            // 0th row and last column are 0.
+            if (row_index == 0 || column_index == stages)
+            {
+                return 0.;
+            }
+
+            return a[row_index - 1 * (stages - 1) + column_index];
+        }
+
+        double get_node(size_t stage) const
+        {
+            if (stage == 0)
+            {
+                return 0.;
+            }
+
+            return c[stage - 1];
+        }
+
+        double get_error_b(size_t stage) const
+        {
+            return b_high[stage] - b_low[stage];
+        }
+    };
+
+    // Cash, J. R., & Karp, A. H. (1990). A variable order Runge-Kutta method for initial value problems with rapidly varying right-hand sides. ACM Transactions on Mathematical Software, 16(3), 201–222. https://doi.org/10.1145/79505.79507
+    const butcher_tableau<6> cash_carp{
+            // a (Runge-Kutta Matrix)
+            .a = {1. / 5.,           0.,             0.,             0.,                 0.,
+                  3. / 40.,          9. / 40.,       0.,             0.,                 0.,
+                  3. / 10.,          -9. / 10.,      6. / 5.,        0.,                 0.,
+                  -11. / 54.,        5. / 2.,        -70. / 27.,     35. / 27.,          0.,
+                  1631. / 55296.,    175. / 512.,    575. / 13824.,  44275. / 110592.,   253. / 4096.},
+            // b (weights) for the 5th order solution
+            .b_high = {37. / 378., 0., 250. / 621., 125. / 594., 0., 512. / 1771.},
+            // b (weights) for the 4th order solution
+            .b_low = {2825. / 27648., 0., 18575. / 48384., 13525. / 55296., 277. / 14336., 1. / 4.},
+            // c (nodes)
+            .c = {1. / 5., 3. / 10., 3. / 5., 1., 7. / 8.}};
+
+    const butcher_tableau<4> RK4basic{
+            // a (Runge-Kutta Matrix)
+            .a = {1. / 2.,     0.,          0.,
+                  0.,          1. / 2.,     0.,
+                  0.,          0.,          1.},
+            // b (weights) for the 5th order solution
+            .b_high = {1./6., 1./3., 1./3., 1./6.},
+            // b (weights) for the 4th order solution
+            .b_low = {1./6., 1./3., 1./3., 1./6.},
+            // c (nodes)
+            .c = {0., 1./2, 1./2., 1.}};
+
+
+
+    /**
+     * Runge Kutta solver for methods that can be represented by a butcher tableau
+     * @tparam Y                datatype of y, in fRG: State<Q>
+     * @tparam FlowGrid         used to determine Lambdas from t (where t is the x used by the (adaptive) ODE solver)
+     * @tparam stages           number of stages for the Runge-Kutta method specified in tableau
+     * @param tableau           butcher tableau
+     * @param y_init            initial state
+     * @param result            (returned) result of Runge-Kutte step
+     * @param t_value           gives initial x via FlowGrid
+     * @param t_step            step size in x
+     * @param maxrel_error      (returned) maximal relative deviation between 5-point and 4-point rule
+     * @param rhs               function that computes the right-hand side of the flow equation
+     */
+    template <typename Y, typename FlowGrid, size_t stages>
+    void rk_step(const butcher_tableau<stages> &tableau, const Y &y_init,// const Y &dydx,
+                   Y &result, const double t_value, const double t_step, double &maxrel_error, const std::function<Y(Y, double)> rhs)
+    {
+        const int world_rank = mpi_world_rank();
+
+        Y state_stage=y_init; // temporary state
+        const Y dydx = rhs(state_stage, FlowGrid::lambda_from_t(t_value));
+        std::vector<Y> k{FlowGrid::dlambda_dt(t_value) * dydx};             /// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
+        k.reserve(stages);
+
+        double t_stage;
+        // Start at 1 because 0th stage is already contained in dydx parameter
+        for (size_t stage = 1; stage < stages; stage++)
+        {
+#if DEBUG > 0
+            if (stage != k.size())
+            {
+                throw std::logic_error("Inconsistency in RK solver.");
+            }
+#endif
+            t_stage = t_value + t_step * tableau.get_node(stage);
+
+            state_stage = y_init;
+            for (size_t col_index = 0; col_index < stage; col_index++)
+            {
+                state_stage += t_step * tableau.get_a(stage, col_index) * k[col_index];
+            }
+
+            k.push_back(
+                    FlowGrid::dlambda_dt(t_stage) * rhs(state_stage, FlowGrid::lambda_from_t(t_stage)));/// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
+        }
+
+        result = y_init;
+        for (size_t stage = 0; stage < stages; stage++)
+        {
+            result += t_step * tableau.b_high[stage] * k[stage];
+        }
+
+        err = t_step * tableau.get_error_b(0) * k[0];
+        for (size_t stage = 1; stage < stages; stage++)
+        {
+            err += t_step * tableau.get_error_b(stage) * k[stage];
+        }
+        maxrel_error = max_rel_err(result, dydx, 1e-6);
+    }
+
+
+} // namespace ode_solver_impl
+
+/**
+ *
+ * @tparam FlowGrid
+ * @param state_i
+ * @param dydx
+ * @param yscal             defines scale for relative error in y
+ * @param parquet_state
+ * @param Lambda_i
+ * @param htry
+ * @param hdid
+ * @param hnext
+ * @param eps
+ * @param n_loops
+ * @param min_t_step
+ * @param max_t_step
+ * @param lambda_checkpoints
+ * @param rhs
+ */
+template <typename Y, typename FlowGrid = flowgrid::exp_parametrization>
+void rkqs(Y &state_i,// const State<state_datatype> &dydx, const State<state_datatype> &yscal,
+          double &Lambda_i, double htry,
+          double &hdid, double &hnext, const double eps=0.05, double min_t_step, double max_t_step,
+          const std::vector<double> &lambda_checkpoints, std::function<Y(Y, double)> rhs)
+{
+    // quality-controlled RK-step (cf. Numerical recipes in C, page 723)
+
+    // To use a different method, just need to put a different tableau here.
+    // Except for FSAL (e.g. Dormand-Prince), which is not supported yet.
+    const auto tableau = ode_solver_impl::cash_carp;
+
+    // Safety intentionally chosen smaller than in Numerical recipes, because the step
+    // size estimates were consistently too large and repeated steps are very expensive
+    const double SAFETY = 0.8, PGROW = -0.2, PSHRINK = -0.25, MAXGROW = 2.;
+
+    int world_rank = mpi_world_rank();
+
+    // === Checkpoints ===
+
+    const double Lambda_next = Lambda_i + htry;
+    for (const double checkpoint : lambda_checkpoints)
+    {
+        // Guard against float arithmetic fails
+        if ((Lambda_i - checkpoint) * (Lambda_next - checkpoint) < -1e-14)
+        {
+            htry = checkpoint - Lambda_i;
+            break;
+        }
+    }
+
+    const double t_value = FlowGrid::t_from_lambda(Lambda_i);
+    double t_step = FlowGrid::t_from_lambda(Lambda_i + htry) - t_value;
+    bool rejected = false;
+    double errmax;
+
+    //const auto &lattice = state_i.vertex.lattice;
+    Y temporary(Lambda_i);
+    for (;;)    // infinite loop
+    {
+        // === Evaluation ===
+        if (world_rank == 0)
+        {
+            std::cout << "Try stepsize " << t_step << " (from Lambda / J = " << Lambda_i
+                      << " to " << FlowGrid::lambda_from_t(t_value + t_step)
+                      << ")." << std::endl;
+        };
+        ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, temporary, t_value, t_step, errmax, rhs);
+
+        //// compute parquet checks
+        //if (world_rank == 0)
+        //{
+        //    std::cout << "Make parquet check: (Lambda = " << FlowGrid::lambda_from_t(t_value + t_step) << "): " << std::endl;
+        //};
+//
+        //parquet_state = temporary;
+        //initial_sd(parquet_state, FlowGrid::lambda_from_t(t_value + t_step));
+        //initial_bs(parquet_state, FlowGrid::lambda_from_t(t_value + t_step));
+        //State<state_datatype> parquet_check_diff = temporary + (-1) * parquet_state;
+        //double errmax_parquet = max_err(parquet_check_diff, temporary);
+
+        /// === Error checking ===
+        //errmax = max_rel_err<state_datatype>(err, yscal, 1.e-6);
+        // compute relative error over error tolerance
+        errmax = errmax / eps; //std::max(errmax / eps, 0. // 0.1 * errmax_parquet
+                                //);
+
+        if (world_rank == 0)
+        {
+            std::cout << "errmax: " << errmax << std::endl;
+            if (abs(t_step) <= min_t_step)
+            {
+                std::cout << "Step was taken with minimal step size " << -min_t_step
+                          << "(from Lambda / J = " << Lambda_i
+                          << " to " << FlowGrid::lambda_from_t(t_value + t_step)
+                          << ") and will be accepted regardless of the error." << std::endl;
+            }
+        }
+
+        // accept result
+        // if step was minimal step size, accept step in any case. This keeps program from crashing
+        if (errmax <= 1. || t_step <= min_t_step)
+        {
+            break;
+        }
+
+        // === Resize t_step ===
+
+        if (world_rank == 0)
+        {
+            std::cout << "Stepsize too big. Readjust.." << std::endl;
+        }
+
+        rejected = true;
+        const double t_step_resized = SAFETY * t_step * pow(errmax, PSHRINK);
+        t_step = std::max({t_step_resized, 0.1 * t_step, min_t_step});
+
+        if (t_value + t_step == t_value)
+        {
+            // At this point, recovery is impossible. Emergency abort.
+            std::stringstream s;
+            s << "Fatal: Stepsize underflow in adaptive Runge-Kutta routine rkqs. Current value of t is "
+              << t_value << "and the desired step size is " << t_step
+              << ". It is likely that the chosen value of t_step_min is too small. Will now abort.";
+            std::cout << s.str();
+            throw std::runtime_error(s.str());
+        }
+    }
+
+    double t_next_step;
+    if (errmax > std::pow(MAXGROW/SAFETY, PGROW))
+    {
+        t_next_step = SAFETY * t_step * std::pow(errmax, PGROW);
+    }
+    else
+    {
+        t_next_step = MAXGROW * t_step;
+    }
+
+    // Don't increase step size immediately after rejecting a step; further shrinking is ok
+    if (rejected)
+    {
+        t_next_step = std::min(t_next_step, t_step);
+    }
+
+    // clip to interval [min_t_step, max_t_step]
+    t_next_step = std::min(std::max(min_t_step, t_next_step), max_t_step);
+
+    // === Update output ref's ===
+    Lambda_i = FlowGrid::lambda_from_t(t_value + t_step);
+    hdid = Lambda_i - FlowGrid::lambda_from_t(t_value);
+    hnext = FlowGrid::lambda_from_t(t_value + t_step + t_next_step) - Lambda_i;
+    state_i = temporary;
+}
 
 
 #endif //KELDYSH_MFRG_SOLVERS_H

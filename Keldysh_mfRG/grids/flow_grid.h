@@ -10,62 +10,112 @@
 
 // TODO(low): make flow grid more flexible (c.f. Marcel; also ask Marc about adaptive flow grid?)
 
-void add_points_to_Lambda_grid(std::vector<double>& grid){
-    for (auto U : U_NRG){
-        auto y = glb_U/U - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
-        if(y<0){
-            break;
+namespace flowgrid {
+
+
+    void add_points_to_Lambda_grid(std::vector<double>& grid){
+        for (auto U : U_NRG){
+            auto y = glb_U/U - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
+            if(y<0){
+                break;
+            }
+            auto it = grid.begin();
+            auto pos = std::find_if(it, grid.end(), [y](double x) {return x<y;});
+            grid.insert(pos, y);
         }
-        auto it = grid.begin();
-        auto pos = std::find_if(it, grid.end(), [y](double x) {return x<y;});
-        grid.insert(pos, y);
     }
-}
 
 
-double log_substitution(double x) {
-    return log10(1 + x/Lambda_scale);
-    //return x/sqrt(5*5+x*x);
-}
-double log_resubstitution(double x) {
-    return Lambda_scale*(pow(10, x) - 1);
-    //return 5*x/sqrt(1-x*x);
-}
-
-double sq_substitution(double x) {
-    double a = 5.;
-    return sqrt((sqrt(pow(x, 4) + 4.*pow(a*x, 2)) - pow(x, 2))/2.)/a;
-
-}
-double sq_resubstitution(double x) {
-    double a = 5.;
-    return a*pow(x, 2) / sqrt(1. - pow(x, 2));
-}
-
-// construct non-linear flow grid via substitution, including additional points at interesting values
-rvec construct_flow_grid(const double x_fin, const double x_ini,
-                         double subst(double x), double resubst(double x),
-                         const int N_ODE) {
-    const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
-    const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
-
-    // create non-linear integration grid using substitution
-    rvec x_vals (N_ODE+1);                      // integration values
-    x_vals[0] = x_ini;                          // start with initial value
-    for (int i=1; i<=N_ODE; ++i) {
-        x_vals[i] = resubst(X_ini + i*dX);      // value i
+    double log_substitution(double x) {
+        return log10(1 + x/Lambda_scale);
+        //return x/sqrt(5*5+x*x);
     }
-    add_points_to_Lambda_grid(x_vals);      // add points at interesting values
-    return x_vals;
-}
-
-// compute step sizes for given flow grid
-rvec flow_grid_step_sizes(const rvec& x_vals) {
-    rvec x_diffs (x_vals.size()-1);
-    for (int i=1; i<=x_diffs.size(); i++){
-        x_diffs[i-1] = x_vals[i] - x_vals[i-1]; // step size i
+    double log_resubstitution(double x) {
+        return Lambda_scale*(pow(10, x) - 1);
+        //return 5*x/sqrt(1-x*x);
     }
-    return x_diffs;
+
+    double sq_substitution(double x) {
+        double a = 5.;
+        return sqrt((sqrt(pow(x, 4) + 4.*pow(a*x, 2)) - pow(x, 2))/2.)/a;
+
+    }
+    double sq_resubstitution(double x) {
+        double a = 5.;
+        return a*pow(x, 2) / sqrt(1. - pow(x, 2));
+    }
+
+    // construct non-linear flow grid via substitution, including additional points at interesting values
+    rvec construct_flow_grid(const double x_fin, const double x_ini,
+                             double subst(double x), double resubst(double x),
+                             const int N_ODE) {
+        const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
+        const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
+
+        // create non-linear integration grid using substitution
+        rvec x_vals (N_ODE+1);                      // integration values
+        x_vals[0] = x_ini;                          // start with initial value
+        for (int i=1; i<=N_ODE; ++i) {
+            x_vals[i] = resubst(X_ini + i*dX);      // value i
+        }
+        add_points_to_Lambda_grid(x_vals);      // add points at interesting values
+        return x_vals;
+    }
+
+    // compute step sizes for given flow grid
+    rvec flow_grid_step_sizes(const rvec& x_vals) {
+        rvec x_diffs (x_vals.size()-1);
+        for (int i=1; i<=x_diffs.size(); i++){
+            x_diffs[i-1] = x_vals[i] - x_vals[i-1]; // step size i
+        }
+        return x_diffs;
+    }
+
+    // Use this to define parametrizations of Lambda in some other quantity t that is easier on the integrator.
+    class exp_parametrization
+    {
+    public:
+        inline static double lambda_from_t(double t)
+        {
+            return std::exp(-t);
+        }
+
+        inline static double t_from_lambda(double Lambda)
+        {
+            return -std::log(Lambda);
+        }
+
+        inline static double dlambda_dt(double t)
+        {
+            return -lambda_from_t(t);
+        }
+    };
+
+
+    // Use this to define parametrizations of Lambda in some other quantity t that is easier on the integrator.
+    class sqrt_parametrization
+    {
+    public:
+        inline static double lambda_from_t(double t)
+        {
+            double a = 5.;
+            return a*t*t / sqrt(1. - t*t);
+        }
+
+        inline static double t_from_lambda(double Lambda)
+        {
+            double a = 5.;
+            return sqrt((sqrt(pow(Lambda, 4) + 4.*pow(a*Lambda, 2)) - pow(Lambda, 2))/2.)/a;
+        }
+
+        inline static double dlambda_dt(double t)
+        {
+            assert(false); /// TODO: implement
+            return 0.;
+        }
+    };
+
+
 }
 
 #endif //KELDYSH_MFRG_TESTING_FLOW_GRID_H
