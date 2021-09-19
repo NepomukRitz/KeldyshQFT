@@ -77,17 +77,21 @@ namespace flowgrid {
     public:
         inline static double lambda_from_t(double t)
         {
-            return std::exp(-t);
+            double value = std::exp(-t);
+            assert (isfinite(value));
+            return value; // -t;//
         }
 
         inline static double t_from_lambda(double Lambda)
         {
-            return -std::log(Lambda);
+            double value = -std::log(Lambda);
+            assert (isfinite(value));
+            return value; // -Lambda;//
         }
 
         inline static double dlambda_dt(double t)
         {
-            return -lambda_from_t(t);
+            return -std::exp(-t);//lambda_from_t(t); // -1.;
         }
     };
 
