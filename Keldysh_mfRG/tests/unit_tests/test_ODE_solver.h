@@ -32,7 +32,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
     double y_ini = 1.;
     double result;
-    ode_solver<double>(result, Lambda_f, y_ini, Lambda_i, lambda_checkpoints, rhs_lin);
+    ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, lambda_checkpoints, rhs_lin);
 
 
     double result_exact = 0.;
@@ -42,7 +42,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
 }
 
-
+/*
 TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
 
     double Lambda_i = 1.;
@@ -60,7 +60,7 @@ TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
     }
 
 }
-
+*/
 
 
 #endif //FPP_MFRG_TEST_ODE_SOLVER_H

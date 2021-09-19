@@ -99,23 +99,42 @@ namespace flowgrid {
     // Use this to define parametrizations of Lambda in some other quantity t that is easier on the integrator.
     class sqrt_parametrization
     {
+        static constexpr double a = 5.;
     public:
         inline static double lambda_from_t(double t)
         {
-            double a = 5.;
-            return a*t*t / sqrt(1. - t*t);
+            return -a*t*t / sqrt(1. - t*t);
         }
 
         inline static double t_from_lambda(double Lambda)
         {
-            double a = 5.;
-            return sqrt((sqrt(pow(Lambda, 4) + 4.*pow(a*Lambda, 2)) - pow(Lambda, 2))/2.)/a;
+            return -sqrt((sqrt(pow(Lambda, 4) + 4.*pow(a*Lambda, 2)) - pow(Lambda, 2))/2.)/a;
         }
 
         inline static double dlambda_dt(double t)
         {
-            assert(false); /// TODO: implement
-            return 0.;
+            double temp = sqrt(1-t*t);
+            return a*t*(t*t-2.) / (temp*temp*temp);
+        }
+    };
+
+    // Use this to define parametrizations of Lambda in some other quantity t that is easier on the integrator.
+    class linear_parametrization
+    {
+    public:
+        inline static double lambda_from_t(double t)
+        {
+            return -t;
+        }
+
+        inline static double t_from_lambda(double Lambda)
+        {
+            return -Lambda;
+        }
+
+        inline static double dlambda_dt(double t)
+        {
+            return -1.;
         }
     };
 
