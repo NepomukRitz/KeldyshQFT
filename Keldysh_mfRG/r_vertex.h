@@ -23,11 +23,11 @@ class rvert{
 
 private:
     vec<Q> empty_K2() { // for pure K1-calculation no memory should be allocated unnecessarily for K2
-        if (MAX_DIAG_CLASS >= 2) return vec<Q> (nK_K2 * nw2 * nv2 * n_in);  // data points of K2;
+        if (MAX_DIAG_CLASS >= 2) return vec<Q> (nK_K2 * nw2 * nv2 * n_in_K2);  // data points of K2;
         else                     return vec<Q> (0);                         // empty vector, never used in calculations
     }
     vec<Q> empty_K3() { // for  K2-calculation no memory should be allocated unnecessarily for K3
-        if (MAX_DIAG_CLASS >= 3) return vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);    // data points of K3  // data points of K2;
+        if (MAX_DIAG_CLASS >= 3) return vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in_K3);    // data points of K3  // data points of K2;
         else                     return vec<Q> (0);                                 // empty vector, never used in calculations
     }
 
@@ -44,7 +44,7 @@ public:
 
     VertexFrequencyGrid frequencies;    // frequency grid
 
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1 which will be accessed if not specified otherwise
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in_K1);  // data points of K1 which will be accessed if not specified otherwise
 
     // Vectors containing (cross-) projected values w.r.t. the internal structure. Needed for the Hubbard model.
     vec<Q> K1_a_proj;
@@ -53,14 +53,20 @@ public:
 
     vec<Q> K2 = empty_K2();
 
+    vec<Q> K2_a_proj;
+    vec<Q> K2_p_proj;
+    vec<Q> K2_t_proj;
+
     vec<Q> K3 = empty_K3();
+
+    vec<Q> K3_a_proj;
+    vec<Q> K3_p_proj;
+    vec<Q> K3_t_proj;
 
     bool calculated_crossprojections = false;
     char current_projection = channel;          // Initially the "natural" parametrization is used.
-    void calculate_all_cross_projections();
+    void cross_project();
     void use_projection(char r);                // Use projection w.r.t. channel r in the following
-
-    // TODO (high): Define crossprojected vectors similarly to the K1 case. Do this also for K3.
 
     rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda),
                                                   components (Components(channel_in)),
@@ -179,7 +185,7 @@ public:
     void enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated);
 
     // TODO: Implement! Needed for the Hubbard model.
-    void K2_crossproject(char channel_out);
+    vec<Q> K2_crossproject(char channel_out);
 
     /** K3 functionality */
 
@@ -209,7 +215,7 @@ public:
     void enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated);
 
     // TODO: Implement! Needed for the Hubbard model.
-    void K3_crossproject(char channel_out);
+    vec<Q> K3_crossproject(char channel_out);
 
 
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
@@ -418,23 +424,53 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
 }
 
 template<typename Q>
-void rvert<Q>::calculate_all_cross_projections() {
+void rvert<Q>::cross_project() {
     if (!calculated_crossprojections){
-        switch (channel) { // TODO(high): Also for K2 and K3!
+        switch (channel) {
             case 'a':
-                K1_a_proj = K1;
-                K1_p_proj = K1_crossproject();
-                K1_t_proj = K1_crossproject();
+                    K1_a_proj = K1;
+                    K1_p_proj = K1_crossproject();
+                    K1_t_proj = K1_crossproject();
+                if (MAX_DIAG_CLASS >= 2){
+                    K2_a_proj = K2;
+                    K2_p_proj = K2_crossproject('p');
+                    K2_t_proj = K2_crossproject('t');
+                }
+                if (MAX_DIAG_CLASS == 3){
+                    K3_a_proj = K3;
+                    K3_p_proj = K3_crossproject('p');
+                    K3_t_proj = K3_crossproject('t');
+                }
                 break;
             case 'p':
-                K1_a_proj = K1_crossproject();
-                K1_p_proj = K1;
-                K1_t_proj = K1_crossproject();
+                    K1_a_proj = K1_crossproject();
+                    K1_p_proj = K1;
+                    K1_t_proj = K1_crossproject();
+                if (MAX_DIAG_CLASS >= 2){
+                    K2_a_proj = K2_crossproject('a');
+                    K2_p_proj = K2;
+                    K2_t_proj = K2_crossproject('t');
+                }
+                if (MAX_DIAG_CLASS == 3){
+                    K3_a_proj = K3_crossproject('a');
+                    K3_p_proj = K3;
+                    K3_t_proj = K3_crossproject('t');
+                }
                 break;
             case 't':
-                K1_a_proj = K1_crossproject();
-                K1_p_proj = K1_crossproject();
-                K1_t_proj = K1;
+                    K1_a_proj = K1_crossproject();
+                    K1_p_proj = K1_crossproject();
+                    K1_t_proj = K1;
+                if (MAX_DIAG_CLASS >= 2){
+                    K2_a_proj = K2_crossproject('a');
+                    K2_p_proj = K2_crossproject('p');
+                    K2_t_proj = K2;
+                }
+                if (MAX_DIAG_CLASS == 3){
+                    K3_a_proj = K3_crossproject('a');
+                    K3_p_proj = K3_crossproject('p');
+                    K3_t_proj = K3;
+                }
                 break;
             default:
                 print("Error! Invalid channel index!"); assert(false);
@@ -450,16 +486,28 @@ void rvert<Q>::calculate_all_cross_projections() {
 template<typename Q>
 void rvert<Q>::use_projection(const char r) {
     if (calculated_crossprojections && (r != current_projection)){
-        switch (r) { // TODO(high): Also for K2 and K3!
-            case 'a': K1 = K1_a_proj; break;
-            case 'p': K1 = K1_p_proj; break;
-            case 't': K1 = K1_t_proj; break;
+        switch (r) {
+            case 'a':
+                K1 = K1_a_proj;
+                K2 = K2_a_proj;
+                K3 = K3_a_proj;
+                break;
+            case 'p':
+                K1 = K1_p_proj;
+                K2 = K2_p_proj;
+                K3 = K3_p_proj;
+                break;
+            case 't':
+                K1 = K1_t_proj;
+                K2 = K2_t_proj;
+                K3 = K3_t_proj;
+                break;
             default: print("Error! Invalid channel index!"); assert(false);
         }
         current_projection = r;
     }
     else if (calculated_crossprojections && (r == current_projection)){
-        return; // Do nothing.
+        return; // Already correct projection. Do nothing.
     }
     else{
         print("Error! Crossprojections have not yet been calculated!");
@@ -632,13 +680,13 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
 }
 
 template <typename Q> void rvert<Q>::update_grid_K1(const VertexFrequencyGrid& frequencies_new){
-    vec<Q> K1_new(nK_K1 * nw1 * n_in);  // temporary K1 vector
+    vec<Q> K1_new(nK_K1 * nw1 * n_in_K1);  // temporary K1 vector
     for (int iK1 = 0; iK1 < nK_K1; ++iK1) {
         for (int iw = 0; iw < nw1; ++iw) {
-            for (int i_in = 0; i_in < n_in; ++i_in) {
+            for (int i_in = 0; i_in < n_in_K1; ++i_in) {
                 IndicesSymmetryTransformations indices(iK1, frequencies_new.b_K1.ws[iw], 0., 0., i_in, channel);
                 // interpolate old values to new vector
-                K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = Interpolate<k1, Q>()(indices, *this);
+                K1_new[iK1 * nw1 * n_in_K1 + iw * n_in_K1 + i_in] = Interpolate<k1, Q>()(indices, *this);
             }
         }
     }
@@ -646,17 +694,17 @@ template <typename Q> void rvert<Q>::update_grid_K1(const VertexFrequencyGrid& f
 }
 
 template <typename Q> void rvert<Q>::update_grid_K2(const VertexFrequencyGrid& frequencies_new){
-    vec<Q> K2_new(nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
+    vec<Q> K2_new(nK_K2 * nw2 * nv2 * n_in_K2);  // temporary K2 vector
     for (int iK2 = 0; iK2 < nK_K2; ++iK2) {
         for (int iw = 0; iw < nw2; ++iw) {
             for (int iv = 0; iv < nv2; ++iv) {
-                for (int i_in = 0; i_in < n_in; ++i_in) {
+                for (int i_in = 0; i_in < n_in_K2; ++i_in) {
                     IndicesSymmetryTransformations indices(iK2, frequencies_new.b_K2.ws[iw],
                                                            frequencies_new.f_K2.ws[iv],
                                                            0.,
                                                            i_in, channel);
                     // interpolate old values to new vector
-                    K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
+                    K2_new[iK2 * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in]
                             = Interpolate<k2, Q>()(indices, *this);
                 }
             }
@@ -666,18 +714,18 @@ template <typename Q> void rvert<Q>::update_grid_K2(const VertexFrequencyGrid& f
 }
 
 template <typename Q> void rvert<Q>::update_grid_K3(const VertexFrequencyGrid& frequencies_new){
-    vec<Q> K3_new(nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
+    vec<Q> K3_new(nK_K3 * nw3 * nv3 * nv3 * n_in_K3);  // temporary K3 vector
     for (int iK3 = 0; iK3 < nK_K3; ++iK3) {
         for (int iw = 0; iw < nw3; ++iw) {
             for (int iv = 0; iv < nv3; ++iv) {
                 for (int ivp = 0; ivp < nv3; ++ivp) {
-                    for (int i_in = 0; i_in < n_in; ++i_in) {
+                    for (int i_in = 0; i_in < n_in_K3; ++i_in) {
                         IndicesSymmetryTransformations indices(iK3, frequencies_new.b_K3.ws[iw],
                                                                frequencies_new.f_K3.ws[iv],
                                                                frequencies_new.f_K3.ws[ivp],
                                                                i_in, channel);
                         // interpolate old values to new vector
-                        K3_new[iK3 * nw3 * nv3 * nv3 * n_in + iw * nv3 * nv3 * n_in + iv * nv3 * n_in + ivp * n_in +
+                        K3_new[iK3 * nw3 * nv3 * nv3 * n_in_K3 + iw * nv3 * nv3 * n_in_K3 + iv * nv3 * n_in_K3 + ivp * n_in_K3 +
                                i_in]
                                 = Interpolate<k3, Q>()(indices, *this);
                     }
@@ -736,14 +784,14 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
 
 template<typename Q>
 vec<Q> rvert<Q>::K1_crossproject() {
-    vec<Q> K1_proj = vec<Q> (nK_K1 * nw1 * n_in); // result
+    vec<Q> K1_proj = vec<Q> (nK_K1 * nw1 * n_in_K1); // result
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
     for (int iK = 0; iK < nK_K1; ++iK) {
-#pragma omp parallel for schedule(dynamic) default(none) shared(iK)
+#pragma omp parallel for schedule(dynamic) default(none) shared(iK, K1_proj)
         for (int iw = 0; iw < nw1; ++iw) {
             Q projected_value = K1_BZ_average(iK, iw);
-            for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
-                K1_proj[iK*nw1*n_in + iw*n_in + i_in] = projected_value;; // All internal arguments get the same value for K1!
+            for (int i_in = 0; i_in < n_in_K1; ++i_in) {
+                K1_proj[iK*nw1*n_in_K1 + iw*n_in_K1 + i_in] = projected_value;; // All internal arguments get the same value for K1!
             }
         }
     }
@@ -812,8 +860,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 }
 
 template<typename Q>
-void rvert<Q>::K2_crossproject(char channel_out) {
+vec<Q> rvert<Q>::K2_crossproject(const char channel_out) {
 // TODO: Currently does nothing!
+vec<Q> K2_proj = vec<Q> (nK_K2 * nw2 * nv2 * n_in_K2);
+return K2_proj;
 }
 
 
@@ -862,8 +912,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
 
 
 template<typename Q>
-void rvert<Q>::K3_crossproject(char channel_out) {
+vec<Q> rvert<Q>::K3_crossproject(const char channel_out) {
     // TODO: Currently does nothing!
+    vec<Q> K3_proj = vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in_K3);
+    return K3_proj;
 }
 
 
@@ -881,13 +933,13 @@ template <typename Q> void rvert<Q>::K1_direct_set(int i, Q value) {
         print("Error: Tried to access value outside of K1 vertex in a-channel", true);
 }
 template <typename Q> void rvert<Q>::K1_setvert(int iK, int iw, int i_in, Q value) {
-    K1[iK*nw1*n_in + iw*n_in + i_in] = value;
+    K1[iK*nw1*n_in_K1 + iw*n_in_K1 + i_in] = value;
 }
 template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q value) {
-    K1[iK*nw1*n_in + iw*n_in + i_in] += value;
+    K1[iK*nw1*n_in_K1 + iw*n_in_K1 + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
-        return K1[iK*nw1*n_in + iw*n_in + i_in];
+        return K1[iK*nw1*n_in_K1 + iw*n_in_K1 + i_in];
 }
 
 
@@ -904,13 +956,13 @@ template <typename Q> void rvert<Q>::K2_direct_set(int i, Q value) {
         print("Error: Tried to access value outside of K2 vertex in a-channel", true);
 }
 template <typename Q> void rvert<Q>::K2_setvert(int iK, int iw, int iv, int i_in, Q value) {
-    K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in] = value;
+    K2[iK*nw2*nv2*n_in_K2 + iw*nv2*n_in_K2 + iv*n_in_K2 + i_in] = value;
 }
 template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in, Q value) {
-    K2[iK*nw2*nv2*n_in + iw*nv2*n_in + iv*n_in + i_in] += value;
+    K2[iK*nw2*nv2*n_in_K2 + iw*nv2*n_in_K2 + iv*n_in_K2 + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
-        return K2[iK * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in];
+        return K2[iK * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in];
 }
 
 
@@ -927,13 +979,13 @@ template <typename Q> void rvert<Q>::K3_direct_set(int i, Q value) {
         print("Error: Tried to access value outside of K3 vertex in a-channel", true);
 }
 template <typename Q> void rvert<Q>::K3_setvert(int iK, int iw, int iv, int ivp, int i_in, Q value) {
-    K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in] = value;
+    K3[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in] = value;
 }
 template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp, int i_in, Q value) {
-    K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in] += value;
+    K3[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in] += value;
 }
 template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
-        return K3[iK*nw3*nv3*nv3*n_in + iw*nv3*nv3*n_in + iv*nv3*n_in + ivp*n_in + i_in];
+        return K3[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in];
 }
 
 template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {

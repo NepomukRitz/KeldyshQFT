@@ -81,6 +81,8 @@ public:
                                     // into r bubble (i.e. in left/right_same/diff_bare functions), and no gammaRb. This
                                     // is needed for correct computation of the central part in multiloop contributions.
 
+    bool completely_crossprojected = false; // Have all reducible parts fully been cross-projected? Needed for the Hubbard model.
+
     explicit fullvert(double Lambda) : avertex('a', Lambda),
                               pvertex('p', Lambda),
                               tvertex('t', Lambda) {}
@@ -116,6 +118,10 @@ public:
 
     // Interpolate vertex to updated grid
     void update_grid(double Lambda);
+
+    //Crossprojection functionality (used for the Hubbard model)
+    void calculate_all_cross_projections();
+    void use_projection(char r);
 
     //Norm of the vertex
     double sum_norm(int);
@@ -375,6 +381,16 @@ public:
         half1().update_grid(Lambda);
         half2().update_grid(Lambda);
     }
+
+    void calculate_all_cross_projections(){
+        half1().calculate_all_cross_projections();
+        half2().calculate_all_cross_projections();
+    }
+    void use_projection(const char r){
+        half1().use_projection(r);
+        half2().use_projection(r);
+    }
+
     double sum_norm(int i) { return half1().sum_norm(i); }
     double norm_K1(int i) { return half1().norm_K1(i); }
     double norm_K2(int i) { return half1().norm_K2(i); }
@@ -525,6 +541,17 @@ public:
         }
     }
 
+    void calculate_all_cross_projections() {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].calculate_all_cross_projections();
+        }
+    }
+
+    void use_projection(const char r){
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].use_projection(r);
+        }
+    }
 };
 
 /** Define Vertex as symmetric GeneralVertex */
@@ -967,6 +994,21 @@ template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
     this->avertex.update_grid(Lambda);
     this->pvertex.update_grid(Lambda);
     this->tvertex.update_grid(Lambda);
+}
+
+template<class Q>
+void fullvert<Q>::calculate_all_cross_projections() {
+    avertex.cross_project();
+    pvertex.cross_project();
+    tvertex.cross_project();
+    completely_crossprojected = true;
+}
+
+template<class Q>
+void fullvert<Q>::use_projection(const char r) {
+    avertex.use_projection(r);
+    pvertex.use_projection(r);
+    tvertex.use_projection(r);
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
