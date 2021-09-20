@@ -170,6 +170,8 @@ namespace ode_solver_impl
         const std::array<double, stages> b_low;
         // nodes (the 0th node is always 0)
         const std::array<double, stages - 1> c;
+        const bool adaptive;
+        const std::string name;
 
         //butcher_tableau(const std::array<double, (stages - 1) * (stages - 1)> a_in, const std::array<double, stages> b_high_in,
         //                const std::array<double, stages> b_low_in, const std::array<double, stages - 1> c_in) :
@@ -214,19 +216,42 @@ namespace ode_solver_impl
             // b (weights) for the 4th order solution
             .b_low = {2825. / 27648., 0., 18575. / 48384., 13525. / 55296., 277. / 14336., 1. / 4.},
             // c (nodes)
-            .c = {1. / 5., 3. / 10., 3. / 5., 1., 7. / 8.}};
+            .c = {1. / 5., 3. / 10., 3. / 5., 1., 7. / 8.},
+            .adaptive = true,
+            .name = "Cash-Carp"
+    };
 
     const butcher_tableau<4> RK4basic{
             // a (Runge-Kutta Matrix)
             .a = {1. / 2.,     0.,          0.,
                   0.,          1. / 2.,     0.,
                   0.,          0.,          1.},
-            // b (weights) for the 5th order solution
+            // b (weights) for the 4th order solution
             .b_high = {1./6., 1./3., 1./3., 1./6.},
             // b (weights) for the 4th order solution
             .b_low = {1./6., 1./3., 1./3., 1./6.},
             // c (nodes)
-            .c = {1./2, 1./2., 1.}};
+            .c = {1./2, 1./2., 1.},
+            .adaptive = false,
+            .name = "basic Runge-Kutta 4"
+    };
+
+
+
+    const butcher_tableau<4> BogaSha{
+            // a (Runge-Kutta Matrix)
+            .a = {1. / 2.,     0.,     0.,
+                  0.,          3. / 4.,0.,
+                  2./9.,       1./3.,  4./9.},
+            // b (weights) for the 3rd order solution
+            .b_high = {2./9., 1./3., 4./9., 0.},
+            // b (weights) for the 2nd order solution
+            .b_low = {7./24., 1./4., 1./3., 1./8.},
+            // c (nodes)
+            .c = {1./2., 3./4., 1.},
+            .adaptive = true,
+            .name = "Bogacki–Shampine"
+    };
 
 
 
@@ -251,8 +276,9 @@ namespace ode_solver_impl
 
         Y state_stage=y_init; // temporary state
         //
-        vec<Y> k{FlowGrid::dlambda_dt(t_value) * dydx};             /// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
-        k.reserve(stages);
+        vec<Y> k(stages);
+        k[0] = FlowGrid::dlambda_dt(t_value) * dydx;             /// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
+        //k.reserve(stages);
 
         double t_stage;
         // Start at 1 because 0th stage is already contained in dydx parameter
@@ -273,8 +299,7 @@ namespace ode_solver_impl
                 assert(isfinite(state_stage));
             }
 
-            k.push_back(
-                    FlowGrid::dlambda_dt(t_stage) * rhs(state_stage, FlowGrid::lambda_from_t(t_stage)));/// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
+            k[stage] = FlowGrid::dlambda_dt(t_stage) * rhs(state_stage, FlowGrid::lambda_from_t(t_stage));
         }
 
         result = y_init;
@@ -306,16 +331,12 @@ namespace ode_solver_impl
  * @param lambda_checkpoints
  * @param rhs
  */
-    template <typename Y, typename FlowGrid>
-    void rkqs(Y &state_i, double &Lambda_i, double htry, double &hdid, double &hnext,
+    template <typename Y, typename FlowGrid, size_t stages>
+    void rkqs(butcher_tableau<stages> tableau, Y &state_i, double &Lambda_i, double htry, double &hdid, double &hnext,
               double min_t_step, double max_t_step,
               const std::vector<double> &lambda_checkpoints, std::function<Y(Y, double)> rhs)
     {
-        // quality-controlled RK-step (cf. Numerical recipes in C, page 723)
 
-        // To use a different method, just need to put a different tableau here.
-        // Except for FSAL (e.g. Dormand-Prince), which is not supported yet.
-        const auto tableau = ode_solver_impl::cash_carp;
 
         // Safety intentionally chosen smaller than in Numerical recipes, because the step
         // size estimates were consistently too large and repeated steps are very expensive
@@ -355,6 +376,7 @@ namespace ode_solver_impl
             };
             ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs);
 
+            if (not tableau.adaptive) break;
             //// compute parquet checks
             //if (world_rank == 0)
             //{
@@ -461,25 +483,47 @@ template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype> y_
     }
 }
 
-template <typename Y, typename FlowGrid = flowgrid::exp_parametrization>
-void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, std::vector<double> lambda_checkpoints,
-                std::function<Y(Y,double)> rhs, std::string filename = "", int iter_start=0) {
+
+template <typename Y, typename FlowGrid = flowgrid::sqrt_parametrization>
+void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, std::function<Y(Y,double)> rhs,
+                std::vector<double> lambda_checkpoints = {}, std::string filename = "", int iter_start=0, const int N_ODE=nODE+U_NRG.size()) {
     int world_rank = mpi_world_rank();
 
 
-    const int MAXSTP = nODE + lambda_checkpoints.size(); //maximal number of steps that is computed
-    vec<double> lambdas (MAXSTP);
+    // quality-controlled RK-step (cf. Numerical recipes in C, page 723)
 
-    // const double hmin = 0.5 * 1.e-3; // do not allow for step size smaller than this value.
-    const double max_t_step = 5e-1;// * (FlowGrid::t_from_lambda(Lambda_f) - FlowGrid::t_from_lambda(Lambda_i));
+    // To use a different method, just need to put a different tableau here.
+    // Except for FSAL (e.g. Dormand-Prince), which is not supported yet.
+#if ODEsolver == 1
+    const auto tableau = ode_solver_impl::RK4basic;
+#elif ODEsolver == 2
+    const auto tableau = ode_solver_impl::BogaSha;
+#elif ODEsolver == 3
+    const auto tableau = ode_solver_impl::cash_carp;
+#endif
+    if (world_rank == 0) {
+        const std::string message =
+                "\n-------------------------------------------------------------------------\n\tStarting ODE solver with method: " + tableau.name + " \n"
+               +"-------------------------------------------------------------------------\n";
+        std::cout << message;
+    }
+
+
+    const int MAXSTP = N_ODE + lambda_checkpoints.size(); //maximal number of steps that is computed
+    vec<double> lambdas (MAXSTP+1); // contains all lambdas (including starting point)
+    lambdas[0] = Lambda_i;
+
+    // get lambdas according to FlowGrid (for hybridization flow: + checkpoints acc. to U_NRG  ) -> for non-adaptive method
+    const vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_f, Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, N_ODE);
+
+    const double max_t_step = 1e1;// * (FlowGrid::t_from_lambda(Lambda_f) - FlowGrid::t_from_lambda(Lambda_i));
     const double min_t_step = 1e-5;//* (FlowGrid::t_from_lambda(Lambda_f) - FlowGrid::t_from_lambda(Lambda_i));
 
-    int nok = 0, nbad = 0;
-    double h = (Lambda_f-Lambda_i)/double(nODE), Lambda = Lambda_i;  /// TODO: choose h more sensibly
-    double hnext, hdid;
+    double h = lambdas_try[1]-lambdas_try[0], Lambda = Lambda_i;    // step size to try
+    double hnext, hdid; // step size to try next; actually performed step size
     result = state_ini;
 
-    for (int i = iter_start + 1; i < MAXSTP; i++)
+    for (int i = iter_start; i < MAXSTP; i++)
     {
         if (world_rank == 0)
         {
@@ -489,8 +533,10 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
 
         double t0 = get_time();
 
+        //if next step would get us outside the interval [Lambda_f, Lambda_i]
         if ((Lambda + h - Lambda_f) * (Lambda + h - Lambda_i) > 0.0)
-        { //if next step would exceed Lambda_f
+        {
+            // if remaining Lambda step is negligibly small
             if (std::abs(Lambda_f - Lambda) / Lambda_f < 1e-8)
             {
                 if (world_rank == 0)
@@ -504,13 +550,18 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
                 h = Lambda_f - Lambda;
             };
         };
-        ode_solver_impl::rkqs<Y, FlowGrid>(result, Lambda, h, hdid, hnext, min_t_step, max_t_step, lambda_checkpoints, rhs);
-        h = hnext;
+        // fix step size for non-adaptive methods
+        if (not tableau.adaptive) h = lambdas_try[i+1] - lambdas_try[i];
+        ode_solver_impl::rkqs<Y, FlowGrid>(tableau, result, Lambda, h, hdid, hnext, min_t_step, max_t_step, lambda_checkpoints, rhs);
+        // Pick h for next iteration
+        if (tableau.adaptive) h = hnext;
 
         get_time(t0); // measure time for one iteration
 
 
         lambdas[i] = Lambda;
+
+        // if Y == State: save state in hdf5
         postRKstep_stuff<Y>(result, lambdas, i, filename);
 
 

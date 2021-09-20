@@ -16,6 +16,12 @@ namespace {
     double rhs_lin(double y, double x) {
         return x*2.;
     }
+    double rhs_quadr(double y, double x) {
+        return x*x*3.;
+    }
+    double rhs_cubic(double y, double x) {
+        return x*x*x*4.;
+    }
     double rhs_quartic(double y, double x) {
         return x*x*x*x*5.;
     }
@@ -32,7 +38,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
     double y_ini = 1.;
     double result;
-    ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, lambda_checkpoints, rhs_lin);
+    ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, rhs_lin, lambda_checkpoints);
 
 
     double result_exact = 0.;

@@ -7,7 +7,7 @@
 #include <vector>            // standard vector for Keldysh indices
 
 // For production: uncomment the following line to switch off assert()-functions
-//#define NDEBUG
+#define NDEBUG
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD
@@ -88,7 +88,7 @@ constexpr int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
-#define REG 2
+#define REG 3
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
@@ -96,16 +96,25 @@ constexpr int n_in = 1;
 
 
 constexpr int nODE = 50;
+constexpr double epsODE = 1e-8;
+// ODE solvers:
+// 1 -> basic Runge-Kutta 4;
+// 2 -> Bogacki–Shampine
+// 3 -> Cash-Carp
+#define ODEsolver 2
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 0.0;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
+#if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
-
+const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+#else
+const std::vector<double> U_NRG {};
+#endif
 
 #if REG==2
 constexpr int param_size = 14;

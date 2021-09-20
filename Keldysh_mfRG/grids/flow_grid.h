@@ -4,6 +4,7 @@
 
 #include "../parameters/master_parameters.h"         // needed for the vector of grid values to add
 #include "../data_structures.h"    // for rvec
+#include "../utilities/util.h"
 #include <bits/stdc++.h>
 #include <algorithm>               // needed for std::find_if
 #include <cmath>                   // for log10, pow
@@ -14,6 +15,7 @@ namespace flowgrid {
 
 
     void add_points_to_Lambda_grid(std::vector<double>& grid){
+#if REG == 2
         for (auto U : U_NRG){
             auto y = glb_U/U - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
             if(y<0){
@@ -21,9 +23,12 @@ namespace flowgrid {
             }
             auto it = grid.begin();
             auto pos = std::find_if(it, grid.end(), [y](double x) {return x<y;});
-            grid.insert(pos, y);
+            if (y<=grid[0])  grid.insert(pos, y);
         }
+#endif
     }
+
+
 
 
     double log_substitution(double x) {
@@ -103,18 +108,18 @@ namespace flowgrid {
     public:
         inline static double lambda_from_t(double t)
         {
-            return -a*t*t / sqrt(1. - t*t);
+            return -a*t*t / sqrt(1. - t*t) * sign(t);
         }
 
         inline static double t_from_lambda(double Lambda)
         {
-            return -sqrt((sqrt(pow(Lambda, 4) + 4.*pow(a*Lambda, 2)) - pow(Lambda, 2))/2.)/a;
+            return -sqrt((sqrt(pow(Lambda, 4) + 4.*pow(a*Lambda, 2)) - pow(Lambda, 2))/2.)/a * sign(Lambda);
         }
 
         inline static double dlambda_dt(double t)
         {
             double temp = sqrt(1-t*t);
-            return a*t*(t*t-2.) / (temp*temp*temp);
+            return -a*std::abs(t)*(t*t-2.) / (temp*temp*temp);
         }
     };
 
