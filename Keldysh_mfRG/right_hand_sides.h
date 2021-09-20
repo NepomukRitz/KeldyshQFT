@@ -6,6 +6,7 @@
 #include "propagator.h"                 // propagator to perform second-order perturbation theory (SOPT)
 #include "selfenergy.h"                 // self-energy used in SOPT
 #include "state.h"                      // state to perform full flow
+#include "vertex.h"                     // Vertices to put into bubbles
 #include "loop.h"                       // compute self-energy loop
 #include "bubbles.h"                    // compute vertex bubbles
 #include "parameters/master_parameters.h"                 // system parameters (lengths of vectors etc.)
@@ -66,9 +67,13 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     Bubble<Q> dPi(G, dG, true);
 #endif // HUBBARD
 
+    State<Q> Psi_comp = Psi; // Input state to do computations with. Cannot be const, because it has to be modified in computations for the Hubbard model.
+    // Calculate all possible cross-projections already here to save time later.
+    if (HUBBARD_MODEL) Psi_comp.vertex.calculate_all_cross_projections();
+
     //TODO(medium): Think about performing cross-projections for Psi.vertex already here,
     // as this object is often needed when going to higher loop-orders.
-    vertexOneLoopFlow(dPsi.vertex, Psi.vertex, dPi);
+    vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi);
 
     if (N_LOOPS>=2) {
         // Calculate left and right part of 2-loop contribution.
@@ -157,9 +162,10 @@ void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVe
 }
 
 template <typename Q, class Bubble_Object>
-void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& dPi){
+void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, Vertex<Q>& PsiVertex, const Bubble_Object& dPi){
     // Vertex flow
     for (char r: "apt") {
+        if (HUBBARD_MODEL) PsiVertex.use_projection('r');
         bubble_function(dPsiVertex, PsiVertex, PsiVertex, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
     }
 }
