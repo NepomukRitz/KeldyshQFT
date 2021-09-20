@@ -44,11 +44,29 @@ public:
 
     VertexFrequencyGrid frequencies;    // frequency grid
 
+    vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1 which will be accessed if not specified otherwise
+
+    // Vectors containing (cross-) projected values w.r.t. the internal structure. Needed for the Hubbard model.
+    vec<Q> K1_a_proj;
+    vec<Q> K1_p_proj;
+    vec<Q> K1_t_proj;
+
+    vec<Q> K2 = empty_K2();
+
+    vec<Q> K3 = empty_K3();
+
+    bool calculated_crossprojections = false;
+    char current_projection = channel;          // Initially the "natural" parametrization is used.
+    void calculate_all_cross_projections();
+    void use_projection(char r);                // Use projection w.r.t. channel r in the following
+
+    // TODO (high): Define crossprojected vectors similarly to the K1 case. Do this also for K3.
+
     rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda),
                                                   components (Components(channel_in)),
                                                   transformations (Transformations(channel_in)),
                                                   freq_transformations (FrequencyTransformations(channel_in)),
-                                                  freq_components (FrequencyComponents(channel_in)) { };
+                                                  freq_components (FrequencyComponents(channel_in)) {};
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
     /// by interpolating stored data, in all possible channel-dependent frequency representations ///
@@ -104,8 +122,6 @@ public:
     void update_grid_K3(const VertexFrequencyGrid& frequencies_new);
 
     /** K1-functionality */
-    vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
-
 
     /// Member functions for accessing/setting values of the vector K1 ///
 
@@ -132,11 +148,10 @@ public:
      */
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
-    void K1_crossproject();
+    vec<Q> K1_crossproject();
     Q K1_BZ_average(const int iK, const int iw);
 
     /** K2 functionality */
-    vec<Q> K2 = empty_K2();
 
     /// Member functions for accessing/setting values of the vector K2 ///
 
@@ -167,7 +182,6 @@ public:
     void K2_crossproject(char channel_out);
 
     /** K3 functionality */
-    vec<Q> K3 = empty_K3();
 
     /// Member functions for accessing/setting values of the vector K3 ///
 
@@ -403,6 +417,55 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
     else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2) + valsmooth<k3>(input, rvert_crossing, vertex_half2);
 }
 
+template<typename Q>
+void rvert<Q>::calculate_all_cross_projections() {
+    if (!calculated_crossprojections){
+        switch (channel) { // TODO(high): Also for K2 and K3!
+            case 'a':
+                K1_a_proj = K1;
+                K1_p_proj = K1_crossproject();
+                K1_t_proj = K1_crossproject();
+                break;
+            case 'p':
+                K1_a_proj = K1_crossproject();
+                K1_p_proj = K1;
+                K1_t_proj = K1_crossproject();
+                break;
+            case 't':
+                K1_a_proj = K1_crossproject();
+                K1_p_proj = K1_crossproject();
+                K1_t_proj = K1;
+                break;
+            default:
+                print("Error! Invalid channel index!"); assert(false);
+        }
+        calculated_crossprojections = true;
+    }
+    else{
+        print("Error! Crossprojections have already been calculated!");
+        assert(false);
+    }
+}
+
+template<typename Q>
+void rvert<Q>::use_projection(const char r) {
+    if (calculated_crossprojections && (r != current_projection)){
+        switch (r) { // TODO(high): Also for K2 and K3!
+            case 'a': K1 = K1_a_proj; break;
+            case 'p': K1 = K1_p_proj; break;
+            case 't': K1 = K1_t_proj; break;
+            default: print("Error! Invalid channel index!"); assert(false);
+        }
+        current_projection = r;
+    }
+    else if (calculated_crossprojections && (r == current_projection)){
+        return; // Do nothing.
+    }
+    else{
+        print("Error! Crossprojections have not yet been calculated!");
+        assert(false);
+    }
+}
 
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     double w, v1, v2;
@@ -672,17 +735,19 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
 }
 
 template<typename Q>
-void rvert<Q>::K1_crossproject() {
+vec<Q> rvert<Q>::K1_crossproject() {
+    vec<Q> K1_proj = vec<Q> (nK_K1 * nw1 * n_in); // result
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
     for (int iK = 0; iK < nK_K1; ++iK) {
 #pragma omp parallel for schedule(dynamic) default(none) shared(iK)
         for (int iw = 0; iw < nw1; ++iw) {
             Q projected_value = K1_BZ_average(iK, iw);
             for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
-                K1_setvert(iK, iw, i_in, projected_value); // All internal arguments get the same value for K1!
+                K1_proj[iK*nw1*n_in + iw*n_in + i_in] = projected_value;; // All internal arguments get the same value for K1!
             }
         }
     }
+    return K1_proj;
 }
 
 template<typename Q>
