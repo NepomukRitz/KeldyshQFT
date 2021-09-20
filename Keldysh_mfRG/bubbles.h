@@ -833,12 +833,8 @@ template <typename Q,
 class BubbleFunctionCalculator{
     private:
     GeneralVertex<Q, symmetry_result>& dgamma;
-    const GeneralVertex<Q, symmetry_left>& vertex1_initial;
-    const GeneralVertex<Q, symmetry_right>& vertex2_initial;
-
-    // Copies of the vertex on the left and on the right, which will be cross-projected as required.
-    GeneralVertex<Q, symmetry_left> vertex1 = vertex1_initial;
-    GeneralVertex<Q, symmetry_right> vertex2 = vertex2_initial;
+    const GeneralVertex<Q, symmetry_left>& vertex1;
+    const GeneralVertex<Q, symmetry_right>& vertex2;
 
     const Bubble_Object& Pi;
     const char channel; 
@@ -859,7 +855,8 @@ class BubbleFunctionCalculator{
 
     void set_channel_specific_freq_ranges_and_prefactor();
     void find_vmin_and_vmax();
-    void crossproject_vertices(); // Only needed for the Hubbard model
+
+    bool wrong_cross_projection(); // Needed for the Hubbard model.
 
     void calculate_bubble_function(int diag_class);
     Q get_value(int i_mpi, int i_omp, int n_omp, int diag_class);
@@ -900,20 +897,20 @@ class BubbleFunctionCalculator{
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
                              const Bubble_Object& Pi_in,
                              const char channel_in)
-                             :dgamma(dgamma_in), vertex1_initial(vertex1_in), vertex2_initial(vertex2_in),
+                             :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
                              Pi(Pi_in), channel(channel_in){
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
 
-        if (HUBBARD_MODEL) {
-        // As we already know, which channel parametrization will be needed,
-        // we cross-project the vertices with respect to the internal structure already here.
-        crossproject_vertices();
+        // For Hubbard model computations, make sure that the internal structures of the vertices are parametrized correctly.
+        if (HUBBARD_MODEL && wrong_cross_projection()) {
+            print("Error! Needed crossprojection still has to be computed. Abort.");
+            assert(false);
+        }
 
         /// TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
         ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).
         ///  The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.
-        }
     }
 };
 
@@ -980,82 +977,63 @@ void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     }
 }
 
-template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
-        template <typename> class symmetry_right, class Bubble_Object>
-void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::crossproject_vertices() {
+template<typename Q,
+        template <typename> class symmetry_result,
+        template <typename> class symmetry_left,
+        template <typename> class symmetry_right,
+        class Bubble_Object>
+bool
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::wrong_cross_projection() {
+    bool cross_projection_missing = false;
     switch (channel) {
         case 'a':
-            if (MAX_DIAG_CLASS >= 0){
-                vertex1[0].pvertex().K1_crossproject();
-                vertex1[0].tvertex().K1_crossproject();
-                vertex2[0].pvertex().K1_crossproject();
-                vertex2[0].tvertex().K1_crossproject();
-            }
-            if (MAX_DIAG_CLASS >= 2){
-                vertex1[0].pvertex().K2_crossproject('a');
-                vertex1[0].tvertex().K2_crossproject('a');
-                vertex2[0].pvertex().K2_crossproject('a');
-                vertex2[0].tvertex().K2_crossproject('a');
-            }
-            if (MAX_DIAG_CLASS >= 3){
-                vertex1[0].pvertex().K3_crossproject('a');
-                vertex1[0].tvertex().K3_crossproject('a');
-                vertex2[0].pvertex().K3_crossproject('a');
-                vertex2[0].tvertex().K3_crossproject('a');
+            if ((vertex1[0].avertex().current_projection != 'a')  ||
+                (vertex1[0].pvertex().current_projection != 'a')  ||
+                !vertex1[0].pvertex().calculated_crossprojections ||
+                (vertex1[0].tvertex().current_projection != 'a')  ||
+                !vertex1[0].tvertex().calculated_crossprojections ||
+                (vertex2[0].avertex().current_projection != 'a')  ||
+                (vertex2[0].pvertex().current_projection != 'a')  ||
+                !vertex2[0].pvertex().calculated_crossprojections ||
+                (vertex2[0].tvertex().current_projection != 'a')  ||
+                !vertex2[0].tvertex().calculated_crossprojections)
+            {
+                cross_projection_missing = true;
             }
             break;
         case 'p':
-            if (MAX_DIAG_CLASS >= 0) {
-                vertex1[0].avertex().K1_crossproject();
-                vertex1[0].tvertex().K1_crossproject();
-                vertex2[0].avertex().K1_crossproject();
-                vertex2[0].tvertex().K1_crossproject();
-            }
-            if (MAX_DIAG_CLASS >= 2) {
-                vertex1[0].avertex().K2_crossproject('p');
-                vertex1[0].tvertex().K2_crossproject('p');
-                vertex2[0].avertex().K2_crossproject('p');
-                vertex2[0].tvertex().K2_crossproject('p');
-            }
-            if (MAX_DIAG_CLASS >= 3) {
-                vertex1[0].avertex().K3_crossproject('p');
-                vertex1[0].tvertex().K3_crossproject('p');
-                vertex2[0].avertex().K3_crossproject('p');
-                vertex2[0].tvertex().K3_crossproject('p');
+            if ((vertex1[0].avertex().current_projection != 'p')  ||
+                !vertex1[0].avertex().calculated_crossprojections ||
+                (vertex1[0].pvertex().current_projection != 'p')  ||
+                (vertex1[0].tvertex().current_projection != 'p')  ||
+                !vertex1[0].tvertex().calculated_crossprojections ||
+                (vertex2[0].avertex().current_projection != 'p')  ||
+                !vertex2[0].avertex().calculated_crossprojections ||
+                (vertex2[0].pvertex().current_projection != 'p')  ||
+                (vertex2[0].tvertex().current_projection != 'p')  ||
+                !vertex2[0].tvertex().calculated_crossprojections)
+            {
+                cross_projection_missing = true;
             }
             break;
         case 't':
-            if (MAX_DIAG_CLASS >= 0) {
-                vertex1[0].tvertex().K1_crossproject(); // Needed for gamma_a_uu
-                vertex2[0].tvertex().K1_crossproject(); // Needed for gamma_a_uu
-
-                vertex1[0].avertex().K1_crossproject();
-                vertex1[0].pvertex().K1_crossproject();
-                vertex2[0].avertex().K1_crossproject();
-                vertex2[0].pvertex().K1_crossproject();
-            }
-            if (MAX_DIAG_CLASS >= 2) {
-                vertex1[0].tvertex().K2_crossproject('a'); // Needed for gamma_a_uu
-                vertex2[0].tvertex().K2_crossproject('a'); // Needed for gamma_a_uu
-
-                vertex1[0].avertex().K2_crossproject('t');
-                vertex1[0].pvertex().K2_crossproject('t');
-                vertex2[0].avertex().K2_crossproject('t');
-                vertex2[0].pvertex().K2_crossproject('t');
-            }
-            if (MAX_DIAG_CLASS >= 3) {
-                vertex1[0].tvertex().K3_crossproject('a'); // Needed for gamma_a_uu
-                vertex2[0].tvertex().K3_crossproject('a'); // Needed for gamma_a_uu
-
-                vertex1[0].avertex().K3_crossproject('t');
-                vertex1[0].pvertex().K3_crossproject('t');
-                vertex2[0].avertex().K3_crossproject('t');
-                vertex2[0].pvertex().K3_crossproject('t');
+            if ((vertex1[0].avertex().current_projection != 't')  ||
+                !vertex1[0].avertex().calculated_crossprojections ||
+                (vertex1[0].pvertex().current_projection != 't')  ||
+                !vertex1[0].pvertex().calculated_crossprojections ||
+                (vertex1[0].tvertex().current_projection != 't')  ||
+                (vertex2[0].avertex().current_projection != 't')  ||
+                !vertex2[0].avertex().calculated_crossprojections ||
+                (vertex2[0].pvertex().current_projection != 't')  ||
+                !vertex2[0].pvertex().calculated_crossprojections ||
+                (vertex2[0].tvertex().current_projection != 't'))
+            {
+                cross_projection_missing = true;
             }
             break;
-            default: ;
+        default:;
     }
+    return cross_projection_missing;
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1160,7 +1138,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         }
         else{
             if (ZERO_T){
-                if (std::abs(w) < 1e-2) integrand_K1.save_integrand();
+                //if (std::abs(w) < 1e-2) integrand_K1.save_integrand();
                 value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
             }
             else{
