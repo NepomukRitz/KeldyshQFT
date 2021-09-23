@@ -174,4 +174,83 @@ void test_interpolate_K12(double Lambda) {
 }
 
 
+namespace {
+
+    template<typename Q>
+    class Cost_pick_Wscale_4_K1 {
+        State<Q> bareState;
+        State<Q> K2aexact;
+        Bubble<Q> Pi;
+        double Lambda;
+    public:
+        explicit Cost_pick_Wscale_4_K1(double Lambda, Bubble<Q>& Pi) : Lambda(Lambda),  bareState(Lambda), K2aexact(Lambda), Pi(Pi) {
+            bareState.initialize();
+
+
+            // compute TOPT K2 (eye diagrams) (numerically exact)
+            for (int i = 1; i<nBOS2-1; i++) {
+                for (int j = 1; j<nFER2-1; j++) {
+                    double w, v;
+                    K2aexact.vertex[0].avertex().K2_get_freqs_w(w, v, i, j); //frequencies_K2.b.ws[i];
+                    //double v = PT_state.vertex[0].avertex().frequencies_K2.f.ws[j];
+                    Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, false, Pi);
+                    double vmax = 100.;
+                    double Delta = (glb_Gamma+Lambda)/2.;
+                    Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
+                    K2aexact.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
+                    K2aexact.vertex[0].pvertex().K2_setvert(0, i, j, 0, val_K2);
+                    K2aexact.vertex[0].tvertex().K2_setvert(0, i, j, 0, val_K2);
+                }
+            }
+            print("Finished computing exact result for K2.", true);
+
+            write_hdf("Cost_pick_Wscale_4_K1_K2aexact", Lambda, 1, K2aexact);
+        };
+
+        auto operator() (double wscale_test) -> double {
+            // set freqgrid parameter and update SOPTvertex on the new grid
+
+            State<Q> SOPTstate(Lambda);
+            VertexFrequencyGrid<k1> bfreq = SOPTstate.vertex[0].half1().avertex.K1_get_VertexFreqGrid();
+            bfreq.b.initialize_grid(wscale_test);
+            SOPTstate.vertex[0].half1().template update_grid<k1>(bfreq, SOPTstate.vertex[0].half1());
+            vertexInSOPT(SOPTstate.vertex, bareState, Pi, Lambda);
+
+            write_hdf("Cost_pick_Wscale_4_K1_SOPTstate", Lambda, 1, SOPTstate);
+
+            State<Q> TOPTstate(Lambda);
+            // set freqgrid parameter and update TOPTvertex on the new grid
+            TOPTstate.vertex[0].half1().template update_grid<k1>(bfreq, TOPTstate.vertex[0].half1());
+
+            print("Starting to compute Vertex in TOPT: ", true);
+            vertexInTOPT(TOPTstate.vertex, bareState, SOPTstate, Pi, Lambda);
+            print("Finished computing Vertex in TOPT: ", true);
+
+
+            State<Q> diff = TOPTstate-K2aexact;
+            write_hdf("Cost_pick_Wscale_4_K1_K2diff", Lambda, 1, diff);
+            write_hdf("Cost_pick_Wscale_4_K1_K2cpp", Lambda, 1, TOPTstate);
+            double result = diff.vertex[0].half1().norm_K2(0);
+            print("!!!!!!!! Maximal deviation in K2: ", result, true);
+            return result;
+        }
+    };
+
+}
+
+template <typename Q>
+void findBestWscale4K1(double Lambda) {
+
+    double a_Wscale = Lambda;
+    double m_Wscale = Lambda * 10;
+    double b_Wscale = Lambda * 100;
+    // Initialize bubble objects
+    State<Q> bareState(Lambda);
+    bareState.initialize();
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Bubble<Q> Pi = PT_initialize_Bubble(barePropagator);
+    Cost_pick_Wscale_4_K1<Q> cost_b_K1(Lambda, Pi);
+    minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, true);
+}
+
 #endif //FPP_MFRG_TEST_INTERPOLATION_H

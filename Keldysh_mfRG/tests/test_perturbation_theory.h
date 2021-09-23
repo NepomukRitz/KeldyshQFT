@@ -1627,6 +1627,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 
     State<state_datatype> PT_state(Lambda);
 
+    // compute SOPT self-energy (numerically exact)
     for (int i = 1; i<nFER-1; i++) {
         double v = PT_state.selfenergy.frequencies.ws[i];
         Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
@@ -1634,8 +1635,10 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
 
+    // get SOPT K1 (exact)
     for (int i = 1; i<nBOS-1; i++) {
-        double w = PT_state.vertex[0].avertex().frequencies_K1.b.ws[i];
+        double w;
+        PT_state.vertex[0].avertex().K1_get_freq_w(w, i); //frequencies_K1.b.ws[i];
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
@@ -1645,10 +1648,12 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     }
 
 #if MAX_DIAG_CLASS > 1
+    // compute TOPT K2 (eye diagrams) (numerically exact)
     for (int i = 1; i<nBOS2-1; i++) {
         for (int j = 1; j<nFER2-1; j++) {
-            double w = PT_state.vertex[0].avertex().frequencies_K2.b.ws[i];
-            double v = PT_state.vertex[0].avertex().frequencies_K2.f.ws[j];
+            double w, v;
+            PT_state.vertex[0].avertex().K2_get_freqs_w(w, v, i, j); //frequencies_K2.b.ws[i];
+            //double v = PT_state.vertex[0].avertex().frequencies_K2.f.ws[j];
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
             Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
             PT_state.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
@@ -1658,12 +1663,13 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     }
 #endif
 #if MAX_DIAG_CLASS > 2
+    // compute FOPT K3 (numerically exact)
     for (int i = 1; i<nBOS3-1; i++) {
         for (int j = 1; j<nFER3-1; j++) {
             for (int k = 1; k<nFER3-1; k++) {
-                double w = PT_state.vertex[0].avertex().frequencies_K3.b.ws[i];
-                double v = PT_state.vertex[0].avertex().frequencies_K3.f.ws[j];
-                double vp= PT_state.vertex[0].avertex().frequencies_K3.f.ws[k];
+                double w, v, vp; // = PT_state.vertex[0].avertex().frequencies_K3.b.ws[i];
+                PT_state.vertex[0].avertex().K3_get_freqs_w(w, v, vp, i, j, k); //frequencies_K3.f.ws[j];
+                //double vp= PT_state.vertex[0].avertex().frequencies_K3.f.ws[k];
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
                 Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex[0].avertex().K3_setvert(0, i, j, k, 0, val_K3);

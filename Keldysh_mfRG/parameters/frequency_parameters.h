@@ -73,7 +73,7 @@ constexpr int nFER = 200;
 constexpr int nBOS2 = 101;//nBOS;
 constexpr int nFER2 = 101;//nFER;
 constexpr int nBOS3 = 21; //nBOS;
-constexpr int nFER3 = 20; //nFER;
+constexpr int nFER3 = 21; //nFER;
 #endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
