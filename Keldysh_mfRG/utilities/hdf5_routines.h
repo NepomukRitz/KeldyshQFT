@@ -87,6 +87,7 @@ H5::CompType def_mtype_comp() {
  */
 class Buffer {
 public:
+    double * lambda;
     double * freq_params;
     double * bfreqs_buffer;
     double * ffreqs_buffer;
@@ -1069,6 +1070,8 @@ template <typename Q>
 void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
     Q val; // buffer value
 
+    result.Lambda = *buffer.lambda;
+
     for (int i=0; i<buffer.self_dim; ++i) {
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
@@ -1199,6 +1202,7 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
         H5::DataSpace dataSpaces_selfenergy = dataSets.self.getSpace();
         H5::DataSpace dataSpaces_irreducible = dataSets.irred.getSpace();
 
+        H5::DataSpace dataSpaces_Lambda_buffer(1, dims.Lambda);
         H5::DataSpace dataSpaces_freq_params_buffer(RANK_freqs-1, dims.freq_params_buffer_dims);
         H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
         H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
@@ -1247,6 +1251,14 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
             block[i] = 1;
         }
         count[0] = 1;
+
+        /// load data into buffer
+
+        count[1] = 1;
+        dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSets.lambda.read(buffer.lambda, mtype_comp,
+                           dataSpaces_Lambda_buffer, dataSpaces_Lambda);
+
 
         count[1] = N_freq_params;
         try {   // storing frequency gri parameters was implemented later --> old files do not have it

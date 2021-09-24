@@ -16,9 +16,10 @@ class State{
 public:
     SelfEnergy<Q> selfenergy;
     Vertex<Q> vertex;
+    double Lambda;
 
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)) {};
+    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)), Lambda(Lambda) {};
 
     /// Constructor, which gets a Vertex (whose frequency grid will be copied) and a frequencyGrid for the selfenergy
     State(const Vertex<Q>& vertex_in, const FrequencyGrid selfenergyFreqs_in)
