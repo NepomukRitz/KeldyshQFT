@@ -17,7 +17,7 @@
 
 template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -> State<Q>;
 template <typename Q> void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVertex, const Propagator<Q>& S);
-template <typename Q, class Bubble_Object> void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& Psi, const Bubble_Object& dPi);
+template <typename Q, class Bubble_Object> void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, Vertex<Q>& Psi, const Bubble_Object& dPi);
 
 template <typename Q> void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& dGammaC_tbar, const State<Q>& Psi, const Propagator<Q>& G);
 
@@ -165,7 +165,7 @@ template <typename Q, class Bubble_Object>
 void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, Vertex<Q>& PsiVertex, const Bubble_Object& dPi){
     // Vertex flow
     for (char r: "apt") {
-        if (HUBBARD_MODEL) PsiVertex.use_projection('r');
+        if (HUBBARD_MODEL) PsiVertex.use_projection(r);
         bubble_function(dPsiVertex, PsiVertex, PsiVertex, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
     }
 }
