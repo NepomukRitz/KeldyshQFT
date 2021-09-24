@@ -608,7 +608,9 @@ public:
      */
     auto operator() (double vpp) const -> Q;
 
-    void save_integrand();
+    void save_integrand() const;
+    void save_integrand(const rvec& freqs) const;
+    void get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im)  const;
 };
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -755,38 +757,14 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
     }
 }
 
+
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(){
-    int npoints = nBOS;
-    if (diag_class == 2) {npoints = 1000;}
-    else if (diag_class == 3) {npoints = 100;}
-
-    rvec freqs (npoints);
-
-    rvec integrand_re (npoints);
-    rvec integrand_im (npoints);
-    rvec Pival_re (npoints);
-    rvec Pival_im (npoints);
+void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im) const {
+    int npoints = freqs.size();
     for (int i=0; i<npoints; ++i) {
-        double wl, wu;
-        switch (diag_class) {
-            case 1:
-                wl = vertex1[0].avertex().frequencies.b_K1.w_lower*2.;
-                wu = vertex1[0].avertex().frequencies.b_K1.w_upper*2.;
-                break;
-            case 2:
-                wl = vertex1[0].avertex().frequencies.f_K2.w_lower;
-                wu = vertex1[0].avertex().frequencies.f_K2.w_upper;
-                break;
-            case 3:
-                wl = vertex1[0].avertex().frequencies.f_K3.w_lower;
-                wu = vertex1[0].avertex().frequencies.f_K3.w_upper;
-                break;
-            default: ;
-        }
-        double vpp = wl + i * (wu-wl)/(npoints-1);
-        if (diag_class == 1) {vpp = vertex1[0].avertex().frequencies.b_K1.ws[i];}
-        freqs[i] = vpp;
+
+        double vpp = freqs[i];
+
 
         Q Pival, integrand_value;
         if (not KELDYSH and std::abs(std::abs(w/2)-std::abs(vpp)) < 1e-6) {
@@ -811,6 +789,58 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
         }
     }
 
+
+}
+
+template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
+void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
+    /// Define standard frequency points on which to evaluate the integrand
+    int npoints = nBOS;
+    if (diag_class == 2) {npoints = 1000;}
+    else if (diag_class == 3) {npoints = 100;}
+
+    rvec freqs (npoints);
+
+    for (int i=0; i<npoints; ++i) {
+        double wl, wu;
+        switch (diag_class) {
+            case 1:
+                wl = vertex1[0].avertex().frequencies.b_K1.w_lower * 2.;
+                wu = vertex1[0].avertex().frequencies.b_K1.w_upper * 2.;
+                break;
+            case 2:
+                wl = vertex1[0].avertex().frequencies.f_K2.w_lower;
+                wu = vertex1[0].avertex().frequencies.f_K2.w_upper;
+                break;
+            case 3:
+                wl = vertex1[0].avertex().frequencies.f_K3.w_lower;
+                wu = vertex1[0].avertex().frequencies.f_K3.w_upper;
+                break;
+            default:;
+        }
+        double vpp = wl + i * (wu - wl) / (npoints - 1);
+        if (diag_class == 1) { vpp = vertex1[0].avertex().frequencies.b_K1.ws[i]; }
+        freqs[i] = vpp;
+    }
+
+    save_integrand(freqs);
+
+}
+
+
+
+template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
+void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(const rvec& freqs) const {
+    /// evaluate the integrand on frequency points in freqs
+    int npoints = freqs.size();
+
+    rvec integrand_re (npoints);
+    rvec integrand_im (npoints);
+    rvec Pival_re (npoints);
+    rvec Pival_im (npoints);
+
+    get_integrand_vals(freqs, integrand_re, integrand_im, Pival_re, Pival_im)
+
     std::string filename = "../Data/integrand_K" + std::to_string(diag_class);
     filename += channel;
     filename += "_i0=" + std::to_string(i0)
@@ -823,7 +853,6 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
                    {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
                    {freqs, integrand_re, integrand_im, Pival_re, Pival_im});
 }
-
 
 template <typename Q,
         template <typename> class symmetry_result,
