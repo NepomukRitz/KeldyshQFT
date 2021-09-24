@@ -39,9 +39,12 @@ template <typename Q> bool selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, Se
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
 template <typename Q>
-auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
+auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{  //, const bool save_intermediate=false
 
     static_assert(N_LOOPS>=1, "");
+    std::string dir_str = "../intermediateResults/";
+    makedir(dir_str);
+    bool save_intermediate = true;
 
     // initialize empty state with frequency grids corresponding to those in Psi:
     State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
@@ -51,7 +54,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
 
     //For flow without self-energy, comment out this line
-    //selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+    selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
 
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback
