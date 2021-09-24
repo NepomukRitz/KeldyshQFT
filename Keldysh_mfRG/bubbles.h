@@ -250,7 +250,7 @@ template <typename Q> auto PrecalculateBubble<Q>::value_on_fermionic_grid(const 
     if (    std::abs(v1) + inter_tol < fermionic_grid.w_upper
             && std::abs(v2) + inter_tol < fermionic_grid.w_upper) {
 
-        Q result = interpolate2D<Q>(v1, v2, fermionic_grid, fermionic_grid,
+        Q result = interpolate_lin2D<Q>(v1, v2, fermionic_grid, fermionic_grid,
                                     [&](int i, int j) -> Q {return FermionicBubble[composite_index(iK_bubble, i, j, i_in)];});
         return result;
 

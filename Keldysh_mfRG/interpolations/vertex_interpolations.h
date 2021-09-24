@@ -3,7 +3,7 @@
 
 
 /// Interpolator class
-template<int k, typename Q>
+template<int k, typename Q, interpolMethod inter>
 class Interpolate {
     explicit Interpolate(double Lambda) {
         assert(false);
@@ -28,42 +28,30 @@ template <typename Q> class rvert;
 
 
 
-#if INTERPOLATION!=4
-namespace spline {
 
+template<typename Q>
+class Interpolate<k1,Q, cubic>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
 
-    /* linearly interpolate vertices */
-    template<int k, typename Q>
-    class Interpolate {
-        explicit Interpolate(double Lambda) {
-            assert(false);
-        }
+public:
+    explicit Interpolate<k1, Q, cubic>(double Lambda) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda) {};
+    auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.iK, indices.w, indices.i_in);
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
     };
-#endif
-
-    template<typename Q>
-    class Interpolate<k1,Q>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
-
-    public:
-        explicit Interpolate<k1, Q>(double Lambda) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda) {};
-        auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
-            // Check if the frequency runs out of the box; if yes: return asymptotic value
-            //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
-            //{
-            Q result = indices.prefactor * SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.iK, indices.w, indices.i_in);
-            return result;
-            //} else {
-            //    return 0.;  // asymptotic value
-            //}
-        };
-    };
+};
 
 
 
 template<typename Q>
-class Interpolate<k2,Q>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
+class Interpolate<k2,Q, cubic>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
 public:
-    explicit Interpolate<k2, Q>(double Lambda) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda) {};
+    explicit Interpolate<k2, Q, cubic>(double Lambda) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda) {};
     auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
@@ -79,9 +67,9 @@ public:
 
 
 template<typename Q>
-class Interpolate<k3,Q>: public SplineK3<vertexDataContainer<k3,Q>, Q> {
+class Interpolate<k3,Q, cubic>: public SplineK3<vertexDataContainer<k3,Q>, Q> {
 public:
-    explicit Interpolate<k3, Q>(double Lambda) : SplineK3<vertexDataContainer<k3,Q>, Q>(Lambda) {};
+    explicit Interpolate<k3, Q, cubic>(double Lambda) : SplineK3<vertexDataContainer<k3,Q>, Q>(Lambda) {};
     auto interpolK3(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
@@ -96,36 +84,33 @@ public:
 };
 
 
-#if INTERPOLATION!=4
-}
-#endif
 
 
 namespace {
 
 
-    template<K_class k, typename Q>
+    template<K_class k, typename Q, interpolMethod interp>
     class Select {
     public:
-        auto operator() (const IndicesSymmetryTransformations &indices, const vertexInterpolator<Q>& vertex) {
+        auto operator() (const IndicesSymmetryTransformations &indices, const vertexInterpolator<Q,interp>& vertex) {
             return vertex.interpolK2(indices);
         }
     };
 
-    template<typename Q>
-    class Select<k1,Q> {
+    template<typename Q, interpolMethod interp>
+    class Select<k1,Q,interp> {
     public:
-        auto operator() (const IndicesSymmetryTransformations &indices, const vertexInterpolator<Q>& vertex) {
+        auto operator() (const IndicesSymmetryTransformations &indices, const vertexInterpolator<Q,interp>& vertex) {
             Q value = vertex.interpolK1(indices);
             assert(isfinite(value));
             return value;
         }
     };
 
-    template<typename Q>
-    class Select<k3,Q> {
+    template<typename Q, interpolMethod interp>
+    class Select<k3,Q,interp> {
     public:
-        auto operator() (const IndicesSymmetryTransformations &indices, const vertexInterpolator<Q>& vertex) {
+        auto operator() (const IndicesSymmetryTransformations &indices, const vertexInterpolator<Q,interp>& vertex) {
             return vertex.interpolK3(indices);
         }
     };
@@ -136,20 +121,21 @@ namespace {
 
 template <int k, typename Q> class vertexDataContainer; // forward declaration of vertexDataContainer
 
-template<typename Q>
-class vertexInterpolator: public Interpolate<k1,Q>,  public Interpolate<k2,Q>,  public Interpolate<k3,Q>  {
+template<typename Q, interpolMethod interp=INTERPOLATION>
+class vertexInterpolator: public Interpolate<k1,Q, interp>,  public Interpolate<k2,Q, interp>,  public Interpolate<k3,Q, interp>  {
     friend fullvert<Q>;
     bool initialized = false;
 
 public:
 
-    explicit vertexInterpolator(double Lambda) : Interpolate<k1,Q>(Lambda), Interpolate<k2,Q>(Lambda), Interpolate<k3,Q>(Lambda) {};
+    explicit vertexInterpolator(double Lambda)
+    : Interpolate<k1,Q,interp>(Lambda), Interpolate<k2,Q,interp>(Lambda), Interpolate<k3,Q,interp>(Lambda) {};
 
     template <K_class k>
     auto interpolate(IndicesSymmetryTransformations& indices) const -> Q {
 
         assert(initialized);
-        Q result = Select<k,Q>() (indices, *this);
+        Q result = Select<k,Q,interp>() (indices, *this);
         return result;
     }
 
@@ -160,9 +146,9 @@ public:
                                     /// Currently initialization takes < 1 second
             double t_start = get_time();
             //double tK3 = get_time() - t_start;
-            Interpolate<k1,Q>::initializeK1();
-            Interpolate<k2,Q>::initializeK2();
-            Interpolate<k3,Q>::initializeK3();
+            Interpolate<k1,Q,interp>::initializeK1();
+            Interpolate<k2,Q,interp>::initializeK2();
+            Interpolate<k3,Q,interp>::initializeK3();
             //print("K1 and K2 Interpolator initialized - ");
             //get_time(t_start);
 

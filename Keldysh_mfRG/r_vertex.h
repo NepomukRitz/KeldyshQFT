@@ -19,7 +19,7 @@
 
 template <typename Q> class fullvert; // forward declaration of fullvert
 template <int k, typename Q> class vertexDataContainer; // forward declaration of vertexDataContainer
-template <typename Q> class vertexInterpolator; // forward declaration of vertexInterpolator
+template <typename Q, interpolMethod interp> class vertexInterpolator; // forward declaration of vertexInterpolator
 
 template <typename Q>
 class rvert: public vertexInterpolator<Q>{
