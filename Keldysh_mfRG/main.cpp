@@ -75,14 +75,9 @@ auto main() -> int {
     print("nFER2 = ", nFER2, true);
     if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
-    const char* dir = "../Data/";
-    std::string dir_str = dir;
-    // Creating Data directory
-    if (mkdir(dir, 0777) == -1)
-        std::cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << std::endl;
+    std::string dir_str = "../Data/";
+    makedir(dir_str);
 
-    else
-        std::cout << "Directory "  << dir << " created \n";
 
     std::string filename = generate_filename();
 
@@ -94,7 +89,7 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";
-    n_loop_flow(dir_str+filename+job, false);
+    //n_loop_flow(dir_str+filename+job, false);
 
 
 
