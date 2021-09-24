@@ -484,6 +484,7 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
                     ) / (12. * h);
         }
         /// Compute boundary values: with non-central finite difference
+        /// TODO currently only implemented for equidistant grid
         size_t jt = 1;
         double hl = xs[jt  ]-xs[jt-1];
         double h  = xs[jt+1]-xs[jt  ];
@@ -589,6 +590,7 @@ vec<T> compute_partial_derivative(const vec<T> data_in, const vec<T> xs_in, cons
                   / ( xs_in[jt + 1]
                     - xs_in[jt - 1] );
         }
+
         // gives parabolic boundary condition if plugged into hermite cubic spline interpolation: f'_0 = 2(f_1 - f_0)/(x_1 - x_0) - f'_1
         result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
                 2* ( data_in[rotateFlatIndex(it*dimsum + 1, dims, permutation)] -  data_in[rotateFlatIndex(it*dimsum + 0, dims, permutation)] )
