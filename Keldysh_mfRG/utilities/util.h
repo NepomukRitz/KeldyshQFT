@@ -212,6 +212,17 @@ void get_time(double t0, std::string prec) {
 }
 
 
+void makedir(const std::string& dir_str) {
+    const char* dir = dir_str.c_str();
+    // Creating Data directory
+    if (mkdir(dir, 0777) == -1)
+        std::cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << std::endl;
+
+    else
+        std::cout << "Directory "  << dir << " created \n";
+}
+
+
 // signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
 template <typename T>
 auto sign(T x) -> double {
