@@ -754,7 +754,7 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    get_time(dt); */
     /*
     comp bubble_intp = perform_Pi0_vpp_integral (0., 0., 'd', 'c', 'p', 1e4, 1e-8, 0);
     comp bubble_inta = perform_Pi0_vpp_integral (0., 0., 'd', 'c', 'a', 1e4, 1e-8, 0);
@@ -823,8 +823,8 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
-    */
+    get_time(dt); */
+
     // finite bosonic momentum q != 0
     /*
     dt = get_time();
@@ -886,13 +886,13 @@ int main() {
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
     get_time(dt);
-
+    */ /*
     dt = get_time();
     gamma_p = fRG_solve_K1r(0.,0.1,'p',1e4,1e-8,3,1);
     gamma_a = fRG_solve_K1r(0.,0.1,'a',1e4,1e-8,3,1);
     Gamma0 = -gint(1e4,1e-8,3);
     Gamma = fRG_solve_K1full(0.,0.1,1e4,1e-8,3,1);
-    std::cout << "fRG with soft regulator and analytical bubble integral:\n";
+    std::cout << "fRG with soft regulator and numerical bubble integral:\n";
     std::cout << "K1_a = " << gamma_a << "\n";
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
@@ -900,10 +900,41 @@ int main() {
     get_time(dt);
     */
 
+    double gint_test;
+    glb_sharpness = 2.0;
+    gint_test = gint(1e4, 1e-10, 1);
+    std::cout << "reg = 1, g = " << gint_test << "\n";
+    gint_test = gint(1e4, 1e-10, 2);
+    std::cout << "reg = 2, g = " << gint_test << "\n";
+    gint_test = gint(1e4, 1e-10, 3);
+    std::cout << "reg = 3, g = " << gint_test << "\n";
+    gint_test = gint(1e4, 1e-10, 4);
+    std::cout << "reg = 4, g = " << gint_test << "\n";
+    gint_test = gint(1e4, 1e-10, 5);
+    std::cout << "reg = 5, g = " << gint_test << "\n";
+    gint_test = gint(1e4, 1e-10, 6);
+    std::cout << "reg = 6, g = " << gint_test << "\n";
 
+    double test33 = std::tgamma(0.25)*(4.-pow(2.,3./4.))/(8*M_PI*M_PI);
+    std::cout << "test = " << test33 << "\n";
+
+    // TEST GORKOV (CONST. GAMMA)
+
+    glb_muc = 1.0;
+    glb_mud = -10.0;
+    glb_ainv = 0.0;
+    comp gorkov_test = fRG_solve_K1r(0., 0., 'c', 1e4, 1e-10, 1, 0);
+    std::cout << "Gamma = " << gorkov_test << "\n";
+
+    std::vector<double> myvec{3.12,3.23,42.564,43.23,567.75,23.54};
+    //std::vector<double>::iterator test_begin = myvec.begin();
+    std::cout<< "begin = " << myvec.begin() << "\n";
 
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================
+
+    //list_bubble_int_theta (-2.0, 1.0, 0.01, 0.1, 'c', 'd', 100);
+    //list_bubble_int_kpp (10.,10.,-5,1,'c','d',100,13,13,13);
 
     /*
     comp theta_integral_001 = perform_integral_Pi0_theta (0.0, 0.0, 0., 0.1, 'c', 'd');
@@ -1006,12 +1037,12 @@ int main() {
     glb_mud = 0.0;
     glb_ainv = 1.0;
 
-    comp testloop001 = selfenergy_ladder (0.1, 0.0,1e4,1e-10);
-    comp testloop002 = selfenergy_ladder (0.0, 0.0,1e4,1e-10);
-    std::cout << "loop selfenergy test = " << testloop001 << "\n";
-    std::cout << "loop selfenergy test = " << testloop002 << "\n";
+    //comp testloop001 = selfenergy_ladder (0.1, 0.0,1e4,1e-10);
+    //comp testloop002 = selfenergy_ladder (0.0, 0.0,1e4,1e-10);
+    //std::cout << "loop selfenergy test = " << testloop001 << "\n";
+    //std::cout << "loop selfenergy test = " << testloop002 << "\n";
 
-    selfenergy_ladder_list_vk(10.,10.,1e4,1e-10,51,27);
+    //selfenergy_ladder_list_vk(10.,10.,1e4,1e-10,11,6);
 
     get_time(t0);
 

@@ -63,20 +63,18 @@ comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, do
     }
 
     if ((Lambda_i > std::abs(w/2)) and (std::abs(w/2) > Lambda_f)) {
-        double Lambdas[] = {Lambda_i*Lambda_f,1.0,std::abs(w/2)};
-        std::vector<double> Lambdasvec (Lambdas, Lambdas+3);
-        std::sort (Lambdasvec.begin(), Lambdasvec.begin()+3);
-        Lambda_mu = Lambdasvec[2];
-        Lambda_mm = Lambdasvec[1];
-        Lambda_ml = Lambdasvec[0];
+        rvec Lambdas{Lambda_i*Lambda_f,1.0,std::abs(w/2)};
+        std::sort (Lambdas.begin(), Lambdas.end());
+        Lambda_mu = Lambdas[2];
+        Lambda_mm = Lambdas[1];
+        Lambda_ml = Lambdas[0];
     }
     else {
-        double Lambdas[] = {Lambda_i*Lambda_f,1.0};
-        std::vector<double> Lambdasvec (Lambdas, Lambdas+2);
-        std::sort (Lambdasvec.begin(), Lambdasvec.begin()+2);
-        Lambda_mu = Lambdasvec[1];
+        rvec Lambdas{Lambda_i*Lambda_f,1.0};
+        std::sort (Lambdas.begin(), Lambdas.begin()+2);
+        Lambda_mu = Lambdas[1];
         Lambda_mm = Lambda_mu;
-        Lambda_ml = Lambdasvec[0];
+        Lambda_ml = Lambdas[0];
     }
 
     double d_mu, d_mm, d_ml; // cut out |vpp|=|w|/2 from the integral range

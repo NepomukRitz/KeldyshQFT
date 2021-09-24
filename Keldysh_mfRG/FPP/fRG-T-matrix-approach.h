@@ -197,7 +197,24 @@ comp functiontestsoft(double vpp, double Lambda, double w) {
 };
 
 comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, char j, char chan, int inttype){
-    comp output1, output2, output3, output4, output5, output6, output7, output8, output;
+    comp output, output1, output2, output3, output4, output5, output6, output7, output8, output9, output10;
+
+    double vm = std::max(std::abs(Lambda + w/2),std::abs(Lambda - w/2));
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_ab(Lambda, w, q, 0.0, i, j, chan, inttype, 0);
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_ooa(Lambda, w, q, -10*vm, i, j, chan, inttype, 2);
+    Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_boo(Lambda, w, q, 10*vm, i, j, chan, inttype, 1);
+
+    output1 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -10000*vm, -10*vm);; //integrator<comp>(integrand_dL_Pi0_vpp_ooa,0.0,1.0);
+    output2 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -10*vm, -vm);
+    output3 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vm, -std::abs(w/2));
+    output4 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -std::abs(w/2),0.0);
+    output5 = integrator<comp>(integrand_dL_Pi0_vpp_ab, 0.0, std::abs(w/2));
+    output6 = integrator<comp>(integrand_dL_Pi0_vpp_ab, std::abs(w/2),vm);
+    output7 = integrator<comp>(integrand_dL_Pi0_vpp_ab, vm,10*vm);
+    output8 = integrator<comp>(integrand_dL_Pi0_vpp_ab, 10*vm,10000*vm); // integrator<comp>(integrand_dL_Pi0_vpp_boo, 0.0,1.0);
+
+    output = 1/(2*M_PI)*(output1 + output2 + output3 + output4 + output5 + output6 + output7 + output8);
+    /*
     double vpp_mu, vpp_mm, vpp_ml;
     double vpp_ms[] = {Lambda, std::abs(w/2), 1.0};
     std::vector<double> vpp_msvec (vpp_ms, vpp_ms+3);
@@ -223,6 +240,8 @@ comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, cha
     Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_ab(Lambda, w, q, 0, i, j, chan, inttype, 0);
     Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_aoo(Lambda, w, q, vpp_mu+d_mu, i, j, chan, inttype, 1);
     Integrand_dL_Pi0_vpp<comp> integrand_dL_Pi0_vpp_oob(Lambda, w, q, -vpp_mu-d_mu, i, j, chan, inttype, 2);
+    */
+
 
     /*
     while (isnan(std::abs(integrand_dL_Pi0_vpp_ab(vpp_mu)))) {
@@ -235,7 +254,7 @@ comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, cha
         vpp_ml = vpp_ml - (vpp_mm-vpp_ml)/100.;
     }
     */
-
+    /*
     output1 = integrator<comp>(integrand_dL_Pi0_vpp_oob, 0, 1);
     output2 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_mu+d_mu, -vpp_mm-d_mm);
     output3 = integrator<comp>(integrand_dL_Pi0_vpp_ab, -vpp_mm+d_mm, -vpp_ml-d_ml);
@@ -251,7 +270,7 @@ comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, cha
     output7 = integrator<comp>(integrand_dL_Pi0_vpp_ab, vpp_mm+d_mm, vpp_mu-d_mu);
     output8 = integrator<comp>(integrand_dL_Pi0_vpp_aoo, 0, 1);
     output = 1/(2*M_PI)*(output1 + output2 + output3 + output4 + output5 + output6 + output7 + output8);
-
+    */
     /*
     std::cout << "output1 = " << output1 << "\n";
     std::cout << "output2 = " << output2 << "\n";
@@ -326,14 +345,32 @@ public:
 FRG_solvand_nsc<comp> rhs_K1l1fRG(const FRG_solvand_nsc<comp>& y, double Lambda) {
     FRG_solvand_nsc<comp> y_result = y;
     double prefactor_p = 1.;
-    if (y.chan == 'p'){
-        prefactor_p = 2.;
+    if (y.chan != 'c') {
+        if (y.chan == 'p') {
+            prefactor_p = 2.;
+        }
+        if (y.reg == 1) { // sharp frequency
+            y_result.value = prefactor_p * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
+                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 'd', 'c', y.chan, y.inttype);
+        }
+        else if (y.reg == 3) { // soft frequency
+            y_result.value = prefactor_p * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
+                             perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'd', 'c', y.chan, y.inttype);
+        }
     }
-    if (y.reg == 1) { // sharp frequency
-        y_result.value = prefactor_p*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*sharp_frequency_bare_bubble(y.w,Lambda,y.q,'d','c',y.chan,y.inttype);
-    }
-    else if (y.reg == 3) { // soft frequency
-        y_result.value = prefactor_p*pow(-gint(y.Lambda_i,y.Lambda_f,y.reg)+y.value,2)*perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'd', 'c', y.chan, y.inttype);
+    else { // constant value for Gamma (not only K1)
+        if (y.reg == 1) {
+            y_result.value = 2. * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
+                             sharp_frequency_bare_bubble(0., Lambda, 0., 'd', 'c', 'p', y.inttype)
+                             + pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
+                             sharp_frequency_bare_bubble(0., Lambda, 0., 'd', 'c', 'a', y.inttype);
+        }
+        else if (y.reg == 3) { // soft frequency
+            y_result.value = 2. * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
+                             perform_dL_Pi0_vpp_integral(Lambda, 0., 0., 'd', 'c', 'p', y.inttype)
+                             + pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
+                               perform_dL_Pi0_vpp_integral(Lambda, 0., 0., 'd', 'c', 'a', y.inttype);
+        }
     }
     return y_result;
 }
@@ -371,7 +408,6 @@ comp fRG_solve_K1full(double w, double q, const double Lambda_i, const double La
     result = Gamma0 + K1p + K1a;
     return result;
 }
-
 
 /*comp rhs_test2(const comp& y, double Lambda) {
     //comp y;
