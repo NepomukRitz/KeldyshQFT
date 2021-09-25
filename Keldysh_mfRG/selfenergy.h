@@ -27,7 +27,7 @@ public:
     auto valsmooth(int iK, double v, int i_in) const -> Q;  //Returns interpolated value at given input
     void setself(int iK, int iv, int i_in, Q val);  //Sets value of SE at given input
     void addself(int iK, int iv, int i_in, Q val);  //Adds given input to specified location
-    auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
+    auto acc(int i) const -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
     void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
     void update_grid(double Lambda);  // Interpolate self-energy to updated grid
@@ -115,7 +115,7 @@ template <typename Q> auto SelfEnergy<Q>::val(int iK, int iv, int i_in) const ->
  * @param i  : Index
  * @return Sigma[i]
  */
-template <typename Q> auto SelfEnergy<Q>::acc(int i) -> Q{
+template <typename Q> auto SelfEnergy<Q>::acc(int i) const -> Q{
     if(i>=0 && i < Sigma.size()){
     return Sigma[i];}
     else{std::cout << "Error: Tried to access value outside of self-energy range." << std::endl;};

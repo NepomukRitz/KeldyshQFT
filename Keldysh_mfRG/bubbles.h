@@ -1189,7 +1189,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         }
         else{
             if (ZERO_T){
-                if (std::abs(w) < 1e-2) integrand_K1.save_integrand();
+                //if (std::abs(w) < 1e-2) integrand_K1.save_integrand();
                 value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
             }
             else{

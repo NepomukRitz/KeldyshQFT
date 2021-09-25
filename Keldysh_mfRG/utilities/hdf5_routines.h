@@ -179,7 +179,7 @@ public:
     }
 
 template <typename Q>
-    void initialize(State<Q>& state_in) {
+    void initialize(const State<Q>& state_in) {
         print("Starting to copy to buffer...", true);
         FrequencyGrid bfreqs = state_in.vertex[0].avertex().frequencies.b_K1;
         FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
@@ -639,7 +639,7 @@ public:
  */
 template <typename  Q>
 void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
-                 State<Q>& state_in, rvec& Lambdas, bool file_exists) {
+                 const State<Q>& state_in, rvec& Lambdas, bool file_exists) {
     //Try block to detect exceptions raised by any of the calls inside it
     try {
         // Prepare a buffer for writing data into the file
@@ -941,7 +941,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
  * @param state_in    : State to be written to the file.
  */
 template <typename Q>
-void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, State<Q>& state_in) {
+void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, const State<Q>& state_in) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif

@@ -43,9 +43,16 @@ template <typename Q>
 auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> opt) -> State<Q>{  //, const bool save_intermediate=false
 
     static_assert(N_LOOPS>=1, "");
-    std::string dir_str = "../intermediateResults/";
+    std::string dir_str = "../Data/intermediateResults/";
     makedir(dir_str);
-    bool save_intermediate = true;
+    int iteration=-1;
+    int rkStep=-1;
+    bool save_intermediate = false;
+    if (opt.size() > 1) {
+         iteration = opt[0];
+         rkStep = opt[1];
+         save_intermediate = true and (rkStep == 1);
+    }
 
     // initialize empty state with frequency grids corresponding to those in Psi:
     State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
@@ -75,7 +82,10 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> op
     vertexOneLoopFlow(dPsi.vertex, Psi.vertex, dPi);
 
     /// save intermediate states:
-
+    if (save_intermediate) {
+        write_hdf<Q>( "Psi_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, Psi);
+        write_hdf<Q>("dPsi_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, dPsi);
+    }
 
     if (N_LOOPS>=2) {
         // Calculate left and right part of 2-loop contribution.
@@ -86,6 +96,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> op
         Vertex<Q> dGammaT =
                 dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
         dPsi.vertex += dGammaT;
+
+
 
 
         if (N_LOOPS >= 3) {
@@ -123,6 +135,16 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> op
                 // symmetrize by averaging left and right insertion
                 Vertex<Q> dGammaC = dGammaC_r; //(dGammaC_r + dGammaC_l) * 0.5;
 
+                /// save intermediate states:
+                if (save_intermediate) {
+                    State<Q> dPsi_L(dGammaL_half1, dPsi.selfenergy);
+                    State<Q> dPsi_R(dGammaR_half1, dPsi.selfenergy);
+                    State<Q> dPsi_T(dGammaT, dPsi.selfenergy);
+                    write_hdf<Q>("dPsi_L_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_L);
+                    write_hdf<Q>("dPsi_R_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_R);
+                    write_hdf<Q>("dPsi_T"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_T);
+                }
+
                 dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, Pi);
                 dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, Pi);
 
@@ -144,7 +166,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> op
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
             // compute multiloop corrections to self-energy flow
             selfEnergyFlowCorrections(dPsi.selfenergy, dGammaC_tbar, Psi, G);
-
+/// save intermediate states:
+            if (save_intermediate) {
+                State<Q> dPsi_C_tbar(dGammaC_tbar, dPsi.selfenergy);
+                write_hdf<Q>("dPsi_C_tbar_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, dPsi_C_tbar);
+            }
             //TODO(low): Implement self-energy iterations (see lines 37-39 of pseudo-code).
             //if(selfEnergyConverged(Psi.selfenergy, Lambda))
             //    break;
