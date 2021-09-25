@@ -83,8 +83,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> op
 
     /// save intermediate states:
     if (save_intermediate) {
-        write_hdf<Q>( "Psi_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, Psi);
-        write_hdf<Q>("dPsi_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, dPsi);
+        write_hdf<Q>(dir_str+ "Psi_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, Psi);
+        write_hdf<Q>(dir_str+"dPsi_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, dPsi);
     }
 
     if (N_LOOPS>=2) {
@@ -140,9 +140,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> op
                     State<Q> dPsi_L(dGammaL_half1, dPsi.selfenergy);
                     State<Q> dPsi_R(dGammaR_half1, dPsi.selfenergy);
                     State<Q> dPsi_T(dGammaT, dPsi.selfenergy);
-                    write_hdf<Q>("dPsi_L_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_L);
-                    write_hdf<Q>("dPsi_R_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_R);
-                    write_hdf<Q>("dPsi_T"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_T);
+                    write_hdf<Q>(dir_str+"dPsi_L_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_L);
+                    write_hdf<Q>(dir_str+"dPsi_R_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_R);
+                    write_hdf<Q>(dir_str+"dPsi_T"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_T);
                 }
 
                 dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, Pi);
@@ -169,7 +169,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> op
 /// save intermediate states:
             if (save_intermediate) {
                 State<Q> dPsi_C_tbar(dGammaC_tbar, dPsi.selfenergy);
-                write_hdf<Q>("dPsi_C_tbar_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, dPsi_C_tbar);
+                write_hdf<Q>(dir_str+"dPsi_C_tbar_iLambda"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep), Psi.Lambda, 1, dPsi_C_tbar);
             }
             //TODO(low): Implement self-energy iterations (see lines 37-39 of pseudo-code).
             //if(selfEnergyConverged(Psi.selfenergy, Lambda))

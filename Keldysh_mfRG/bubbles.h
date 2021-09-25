@@ -609,7 +609,7 @@ public:
     auto operator() (double vpp) const -> Q;
 
     void save_integrand() const;
-    void save_integrand(const rvec& freqs) const;
+    void save_integrand(const rvec& freqs, const std::string& filename_prefix) const;
     void get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im)  const;
 };
 
@@ -823,14 +823,14 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
         freqs[i] = vpp;
     }
 
-    save_integrand(freqs);
+    save_integrand(freqs, "");
 
 }
 
 
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(const rvec& freqs) const {
+void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
     /// evaluate the integrand on frequency points in freqs
     int npoints = freqs.size();
 
@@ -841,7 +841,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
 
     get_integrand_vals(freqs, integrand_re, integrand_im, Pival_re, Pival_im);
 
-    std::string filename = "../Data/integrand_K" + std::to_string(diag_class);
+    std::string filename = "../Data/"+filename_prefix+"integrand_K" + std::to_string(diag_class);
     filename += channel;
     filename += "_i0=" + std::to_string(i0)
                 + "_i2=" + std::to_string(i2)
