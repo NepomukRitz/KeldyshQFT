@@ -125,6 +125,7 @@ public:
 #endif
 
     Buffer() {
+        lambda = new double [1];
         freq_params = new double[N_freq_params];
         bfreqs_buffer = new double[nBOS];                        // create buffer for bosonic frequencies
         ffreqs_buffer = new double[nFER];                        // create buffer for fermionic frequencies
@@ -1170,7 +1171,7 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  * @return            : State object containing the result.
  */
-State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
+State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it, long Lambda_size){
     State<state_datatype> result(Lambda_ini);
     if (Lambda_it < Lambda_size) {
 
@@ -1254,9 +1255,12 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
 
         /// load data into buffer
 
-        count[1] = 1;
-        dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSets.lambda.read(buffer.lambda, mtype_comp,
+        hsize_t start_1D[1] = {Lambda_it};
+        hsize_t stride_1D[1]= {1};
+        hsize_t count_1D[1] = {1};
+        hsize_t block_1D[1] = {1};
+        dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+        dataSets.lambda.read(buffer.lambda, H5::PredType::NATIVE_DOUBLE,
                            dataSpaces_Lambda_buffer, dataSpaces_Lambda);
 
 
