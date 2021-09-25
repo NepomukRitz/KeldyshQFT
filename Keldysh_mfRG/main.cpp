@@ -7,6 +7,7 @@
 #include "flow.h"
 #include "tests/test_perturbation_theory.h"
 #include "utilities/util.h"
+#include "tests/saveIntegrand.h"
 
 
 std::string generate_filename() {
@@ -90,6 +91,7 @@ auto main() -> int {
 
     std::string job = "";
     n_loop_flow(dir_str+filename+job, true);
+    //get_integrand_dGamma_1Loop<state_datatype>(1, 1);
 
 
 

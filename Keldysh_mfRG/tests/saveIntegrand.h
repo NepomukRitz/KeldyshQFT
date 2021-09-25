@@ -207,7 +207,7 @@ namespace saveIntegrand {
 
     template <typename Q>
     void dSigma(const std::string& filename_prefix, const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda,
-                      const K_class k_class, const char channel, const int i0, const int i2, const double v, const int i_in) {
+                      const int i2, const double v, const int i_in) {
 
         // read Psi for vertex
         State<Q> Psi = read_hdf(file_Psi, it_Lambda, nODE + U_NRG.size() + 1); // read Psi
@@ -235,6 +235,13 @@ namespace saveIntegrand {
 
 }   // namespace saveIntegrand
 
+/**
+ * Takes two files with Psi and dPsi to return a HDF5-file with an integrand for the 1-loop contribution to dGamma
+ * frequency points are chosen in the above function dGamma_1Loop<Q>(...)
+ * @tparam Q
+ * @param it_Lambda     Lambda iteration
+ * @param rkStep        Runge-Kutta substep (for Runge-Kutta 4: reStep in [1,...,4])
+ */
 template <typename Q>
 void get_integrand_dGamma_1Loop(const int it_Lambda, const int rkStep) {
 
@@ -245,15 +252,158 @@ void get_integrand_dGamma_1Loop(const int it_Lambda, const int rkStep) {
 
     K_class k_class = k1;
     char channel = 'a';
-    const int i0 = 0;
-    const int i2 = 0;
-    const double w = 1.;
-    const double v = 1.;
-    const double vp= 1.;
-    const int i_in = 0;
+    int i0 = 0;         // external Keldysh indices ranging in [0,...,15]
+    int i2 = 0;         // internal Keldysh indices ranging in [0,..., 9] (--> directly corresponding to non-zero components of the BubbleObject)
+    double w = 1.;      // frequencies in the natural parametrization of channel
+    double v = 1.;      // frequencies in the natural parametrization of channel
+    double vp= 1.;      // frequencies in the natural parametrization of channel
+    int i_in = 0;
+
+    /// In the following you can also iterate over different i0/i2/etc:
 
     const std::string filename_prefix = "dGamma1Loop_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_1Loop<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+
+}
+
+
+/**
+ * Takes two files with Psi and dPsi to return a HDF5-file with an integrand for to dGamma_L
+ * frequency points are chosen in the above function dGamma_1Loop<Q>(...)
+ * @tparam Q
+ * @param it_Lambda     Lambda iteration
+ * @param rkStep        Runge-Kutta substep (for Runge-Kutta 4: reStep in [1,...,4])
+ * @param i_loop        loop iteration (i_loop in [1,...,N_LOOPS])
+ */
+template <typename Q>
+void get_integrand_dGammaL(const int it_Lambda, const int rkStep, const int i_loop) {
+
+    std::string dir_str = "../Data/intermediateResults/";
+    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    std::string file_dPsi;
+    if (i_loop < 2) assert(false);
+    else if (i_loop == 2) {
+        file_dPsi = dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    }
+    else {
+        file_dPsi = dir_str +"dPsi_T"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+    }
+    K_class k_class = k1;
+    char channel = 'a';
+    int i0 = 0;
+    int i2 = 0;
+    double w = 1.;
+    double v = 1.;
+    double vp= 1.;
+    int i_in = 0;
+
+    /// In the following you can also iterate over different i0/i2/etc:
+
+    const std::string filename_prefix = "dGammaL_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    saveIntegrand::dGamma_L<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+
+}
+
+
+template <typename Q>
+void get_integrand_dGammaR(const int it_Lambda, const int rkStep, const int i_loop) {
+
+    std::string dir_str = "../Data/intermediateResults/";
+    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    std::string file_dPsi;
+    if (i_loop < 2) assert(false);
+    else if (i_loop == 2) {
+        file_dPsi = dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    }
+    else {
+        file_dPsi = dir_str +"dPsi_T"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+    }
+
+    K_class k_class = k1;
+    char channel = 'a';
+    int i0 = 0;
+    int i2 = 0;
+    double w = 1.;
+    double v = 1.;
+    double vp= 1.;
+    int i_in = 0;
+
+    /// In the following you can also iterate over different i0/i2/etc:
+
+    const std::string filename_prefix = "dGammaR_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    saveIntegrand::dGamma_R<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+
+}
+
+
+template <typename Q>
+void get_integrand_dGammaC_left(const int it_Lambda, const int rkStep, const int i_loop) {
+
+    std::string dir_str = "../Data/intermediateResults/";
+    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    if (i_loop < 3) assert(false);
+    std::string file_dPsi_L = dir_str+"dPsi_L_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+    std::string file_dPsi_R = dir_str+"dPsi_R_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+
+
+    K_class k_class = k1;
+    char channel = 'a';
+    int i0 = 0;
+    int i2 = 0;
+    double w = 1.;
+    double v = 1.;
+    double vp= 1.;
+    int i_in = 0;
+
+    /// In the following you can also iterate over different i0/i2/etc:
+
+    const std::string filename_prefix = "dGammaC_left_insertion_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    saveIntegrand::dGamma_C_left_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+
+}
+
+template <typename Q>
+void get_integrand_dGammaC_right(const int it_Lambda, const int rkStep, const int i_loop) {
+
+    std::string dir_str = "../Data/intermediateResults/";
+    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    if (i_loop < 3) assert(false);
+    std::string file_dPsi_L = dir_str+"dPsi_L_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+    std::string file_dPsi_R = dir_str+"dPsi_R_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+
+
+    K_class k_class = k1;
+    char channel = 'a';
+    int i0 = 0;
+    int i2 = 0;
+    double w = 1.;
+    double v = 1.;
+    double vp= 1.;
+    int i_in = 0;
+
+    /// In the following you can also iterate over different i0/i2/etc:
+
+    const std::string filename_prefix = "dGammaC_right_insertion_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    saveIntegrand::dGamma_C_right_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+
+}
+
+template <typename Q>
+void get_integrand_Sigma(const int it_Lambda, const int rkStep) {
+
+    std::string dir_str = "../Data/intermediateResults/";
+    const std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string file_dPsi= dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+
+
+    int i2 = 0;         /// currently not supported --> wait until order of sum and integration are interchanged by Elias
+    double v = 1.;
+    int i_in = 0;
+
+    /// In the following you can also iterate over different v/etc:
+
+    const std::string filename_prefix = "dSigma_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    saveIntegrand::dSigma<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, i2, v, i_in);
 
 }
 
