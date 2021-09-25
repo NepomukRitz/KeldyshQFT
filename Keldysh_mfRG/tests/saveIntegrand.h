@@ -4,6 +4,7 @@
 #include <cassert>
 #include "../state.h"
 #include "../bubbles.h"
+#include "../loop.h"
 
 /**
  * Functions to plot Integrands in the bubble or the loop
@@ -42,7 +43,7 @@ namespace saveIntegrand {
     }
 
     template <typename Q>
-    void dPsi_1Loop(const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda, const rvec& freqs,
+    void dGamma_1Loop(const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda, const rvec& freqs,
                     const K_class k_class, const char channel, const int i0, const int i2, const double w,
                     const double v=0., const double vp=0.) {
 
@@ -65,7 +66,7 @@ namespace saveIntegrand {
     }
 
     template <typename Q>
-    void dPsi_L(const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda, const rvec& freqs,
+    void dGamma_L(const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda, const rvec& freqs,
                 const K_class k_class, const char channel, const int i0, const int i2, const double w,
                 const double v=0., const double vp=0.) {
         // read Psi for vertex
@@ -80,15 +81,15 @@ namespace saveIntegrand {
         Propagator<Q> dG(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
 
         const bool diff = false;
-        Bubble<Q> dPi(G, dG, diff);
+        Bubble<Q> Pi(G, dG, diff);
 
         dPsi.vertex.set_Ir(true);
-        saveIntegrandBubble(dPsi.vertex, Psi.vertex, dPi, diff, freqs, k_class, i0, i2, w, v, vp);
+        saveIntegrandBubble(dPsi.vertex, Psi.vertex, Pi, diff, freqs, k_class, i0, i2, w, v, vp);
 
     }
 
     template <typename Q>
-    void dPsi_R(const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda, const rvec& freqs,
+    void dGamma_R(const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda, const rvec& freqs,
                 const K_class k_class, const char channel, const int i0, const int i2, const double w,
                 const double v=0., const double vp=0.) {
         /// TODO: Sanity check for input parameters
@@ -105,16 +106,16 @@ namespace saveIntegrand {
         Propagator<Q> dG(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
 
         const bool diff = false;
-        Bubble<Q> dPi(G, dG, diff);
+        Bubble<Q> Pi(G, dG, diff);
 
         dPsi.vertex.set_Ir(true);
-        saveIntegrandBubble(Psi.vertex, dPsi.vertex, dPi, diff, freqs, k_class, i0, i2, w, v, vp);
+        saveIntegrandBubble(Psi.vertex, dPsi.vertex, Pi, diff, freqs, k_class, i0, i2, w, v, vp);
 
     }
 
 
     template <typename Q>
-    void dPsi_C_left_insertion(const std::string& file_Psi, const std::string& file_dGammaL, const std::string& file_dGammaR, const int it_Lambda, const rvec& freqs,
+    void dGamma_C_left_insertion(const std::string& file_Psi, const std::string& file_dGammaL, const std::string& file_dGammaR, const int it_Lambda, const rvec& freqs,
                 const K_class k_class, const char channel, const int i0, const int i2, const double w,
                 const double v=0., const double vp=0.) {
         // read Psi for vertex
@@ -127,8 +128,8 @@ namespace saveIntegrand {
 
         // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
         GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
-        dGammaR[0].half1() = dPsi_L.vertex[0].half1();  // assign half 1
-        dGammaR[0].half2() = dPsi_R.vertex[0].half1();  // assign half 2 as half 1 of dGammaL
+        dGammaR[0].half1() = dPsi_R.vertex[0].half1();  // assign half 1
+        dGammaR[0].half2() = dPsi_L.vertex[0].half1();  // assign half 2 as half 1 of dGammaL
 
 
 
@@ -137,11 +138,69 @@ namespace saveIntegrand {
         Propagator<Q> dG(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
 
         const bool diff = false;
-        Bubble<Q> dPi(G, dG, diff);
+        Bubble<Q> Pi(G, dG, diff);
 
         dGammaR.set_only_same_channel(true);
-        saveIntegrandBubble(dGammaR, Psi.vertex, dPi, diff, freqs, k_class, i0, i2, w, v, vp);
+        saveIntegrandBubble(dGammaR, Psi.vertex, Pi, diff, freqs, k_class, i0, i2, w, v, vp);
 
+    }
+
+    template <typename Q>
+    void dGamma_C_right_insertion(const std::string& file_Psi, const std::string& file_dGammaL, const std::string& file_dGammaR, const int it_Lambda, const rvec& freqs,
+        const K_class k_class, const char channel, const int i0, const int i2, const double w,
+        const double v=0., const double vp=0.) {
+        // read Psi for vertex
+        State<Q> Psi = read_hdf(file_Psi, it_Lambda, nODE + U_NRG.size() + 1); // read Psi
+        // read dPsi for differentiated selfenergy
+        State<Q>dPsi_L= read_hdf(file_dGammaL,it_Lambda, nODE + U_NRG.size() + 1); // read Psi
+        State<Q>dPsi_R= read_hdf(file_dGammaR,it_Lambda, nODE + U_NRG.size() + 1); // read Psi
+
+        double Lambda = Psi.Lambda;
+
+        // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+        GeneralVertex<Q, non_symmetric> dGammaL (n_spin, Lambda);
+        dGammaL[0].half1() = dPsi_L.vertex[0].half1();  // assign half 1
+        dGammaL[0].half2() = dPsi_R.vertex[0].half1();  // assign half 2 as half 1 of dGammaL
+
+
+
+        Propagator<Q> S (Lambda, Psi.selfenergy, 's');
+        Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+        Propagator<Q> dG(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
+
+        const bool diff = false;
+        Bubble<Q> Pi(G, dG, diff);
+
+        dGammaL.set_only_same_channel(true);
+        saveIntegrandBubble(Psi.vertex, dGammaL, Pi, diff, freqs, k_class, i0, i2, w, v, vp);
+
+    }
+
+
+    template <typename Q>
+    void dSigma(const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda, const rvec& freqs,
+                      const K_class k_class, const char channel, const int i0, const int i2, const double w,
+                      const double v=0., const double vp=0.) {
+
+        // read Psi for vertex
+        State<Q> Psi = read_hdf(file_Psi, it_Lambda, nODE + U_NRG.size() + 1); // read Psi
+        // read dPsi for differentiated selfenergy
+        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda, nODE + U_NRG.size() + 1); // read Psi
+
+        double Lambda = Psi.Lambda;
+
+        Propagator<Q> S (Lambda, Psi.selfenergy, 's');
+        Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+        Propagator<Q> dG(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
+
+        const bool diff = true;
+        const int i_in = 0;
+        const bool all_spins = true;
+
+        IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', Psi.vertex, S, v, i_in, all_spins);
+        if (KELDYSH) {
+            IntegrandSE<Q> integrandK = IntegrandSE<Q>('k', Psi.vertex, S, v, i_in, all_spins);
+        }
     }
 
 }   // namespace saveIntegrand

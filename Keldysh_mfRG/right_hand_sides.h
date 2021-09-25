@@ -12,6 +12,7 @@
 #include "ODE_solvers.h"                // ODE solvers
 #include <cassert>
 #include "utilities/hdf5_routines.h"
+#include "utilities/util.h"
 
 
 template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -> State<Q>;
@@ -39,7 +40,7 @@ template <typename Q> bool selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, Se
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
 template <typename Q>
-auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{  //, const bool save_intermediate=false
+auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> opt) -> State<Q>{  //, const bool save_intermediate=false
 
     static_assert(N_LOOPS>=1, "");
     std::string dir_str = "../intermediateResults/";
@@ -72,6 +73,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{  //,
     //TODO(medium): Think about performing cross-projections for Psi.vertex already here,
     // as this object is often needed when going to higher loop-orders.
     vertexOneLoopFlow(dPsi.vertex, Psi.vertex, dPi);
+
+    /// save intermediate states:
+
 
     if (N_LOOPS>=2) {
         // Calculate left and right part of 2-loop contribution.

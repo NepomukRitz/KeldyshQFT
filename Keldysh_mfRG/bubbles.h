@@ -839,7 +839,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
     rvec Pival_re (npoints);
     rvec Pival_im (npoints);
 
-    get_integrand_vals(freqs, integrand_re, integrand_im, Pival_re, Pival_im)
+    get_integrand_vals(freqs, integrand_re, integrand_im, Pival_re, Pival_im);
 
     std::string filename = "../Data/integrand_K" + std::to_string(diag_class);
     filename += channel;
