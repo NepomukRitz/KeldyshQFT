@@ -308,7 +308,7 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
 
     Q value{};
 
-    if (indices.channel != channel)
+    if (indices.channel != channel) // TODO(high): Here, cross-projected contributions should be accessed!!
         // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
         // r vertex in the channel related by crossing symmetry
         value = Interpolate<k,Q>()(indices, rvert_crossing);
