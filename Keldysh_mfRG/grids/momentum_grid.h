@@ -41,7 +41,7 @@ void get_k_x_and_k_y(const int n, double& k_x, double& k_y){
     k_y = M_PI * n_y / (glb_N_q - 1);
 }
 
-/*
+/**
  * Given a pair of indices labelling any point in the square of the BZ,
  * what is the corresponding index in the part that is actually stored?
  *
