@@ -25,10 +25,10 @@
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 1
 
 constexpr int N_LOOPS = 1;  // Number of loops
-#define SELF_ENERGY_FLOW_CORRECTIONS
+//#define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
@@ -64,6 +64,22 @@ constexpr int n_spin = 1;
 // Dimension of the space defining the internal structure for the Hubbard model
 constexpr int glb_N_q = 9;                                  // Number of transfer momentum points in one dimension.
 constexpr int glb_N_ff = 1;                                 // Number of form factors. Should be {1, 5, 9, 13, 19, ...} for the n-nearest neighbor interpretation
+
+/** Parities of form factors under the three symmetry operations of the Hubbard model dispersion:
+ * ff_swap:      Swap k_x and k_x
+ * ff_mirror_kx: Let k_x -> - k_x
+ * ff_mirror_ky: Let k_y -> - k_y
+ *
+ * Ordered w.r.t. the form factor index. Currently at most 9 form factors are supported.
+ *
+ * The entries mean the following:
+ * 1 : Multiply by one (nothing happens; form factor is symmetric
+ * -1: Multiply by minus one (form factor is antisymmetric)
+ * i > 1: Need to access the i'th form factor component instead
+ * i < 1: Need to access the |i|'th form factor component instead AND multiply by -1.*/
+const std::vector<int> ff_swap     {1, 1, -1,  4,  3, 1,  1,  1, -1};
+const std::vector<int> ff_mirror_kx{1, 1,  1, -1,  1, 1, -1,  8,  7};
+const std::vector<int> ff_mirror_ky{1, 1,  1,  1, -1, 1, -1, -8, -7};
 
 
 // The remaining part for the internal structure should NOT be changed, as it is derived from the choices on makes above!
