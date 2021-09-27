@@ -175,7 +175,7 @@ public:
 
 template <typename Q>
 class PrecalculateBubble{
-    Bubble<Q> Helper_Bubble;
+    const Bubble<Q> Helper_Bubble;
 
     void compute_FermionicBubble();
     void compute_FermionicBubble_HUBBARD();
@@ -189,16 +189,16 @@ class PrecalculateBubble{
     void perform_internal_sum_2D_Hubbard(int iK, int iv1, int iv2,
                                          Minimal_2D_FFT_Machine& Swave_Bubble_Calculator);
     void compute_internal_bubble(int iK, double v1, double v2,
-                                 Minimal_2D_FFT_Machine& Swave_Bubble_Calculator, vec<comp>& values_of_bubble);
+                                 Minimal_2D_FFT_Machine& Swave_Bubble_Calculator, vec<comp>& values_of_bubble) const;
     void set_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                          int iK, double v1, double v2,
-                         vec<Q>& first_propagator, vec<Q>& second_propagator);
+                         vec<Q>& first_propagator, vec<Q>& second_propagator) const;
     void set_Matsubara_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                    double v1, double v2,
-                                   vec<Q>& first_propagator, vec<Q>& second_propagator);
+                                   vec<Q>& first_propagator, vec<Q>& second_propagator) const;
     void set_Keldysh_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                  int iK, double v1, double v2,
-                                 vec<Q>& first_propagator, vec<Q>& second_propagator);
+                                 vec<Q>& first_propagator, vec<Q>& second_propagator) const;
 
 public:
     const Propagator<Q>& g; // Access needed when computing the full bubble
@@ -372,7 +372,7 @@ void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const 
 template<typename Q>
 void PrecalculateBubble<Q>::compute_internal_bubble(const int iK, const double v1, const double v2,
                                                     Minimal_2D_FFT_Machine& Swave_Bubble_Calculator,
-                                                    vec<comp>& values_of_bubble) {
+                                                    vec<comp>& values_of_bubble) const {
     vec<comp> first_propagator (glb_N_transfer); // input for FFT
     vec<comp> second_propagator (glb_N_transfer); // input for FFT
 
@@ -392,7 +392,7 @@ void PrecalculateBubble<Q>::compute_internal_bubble(const int iK, const double v
 template<typename Q>
 void PrecalculateBubble<Q>::set_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                             const int iK, const double v1, const double v2,
-                                            vec<Q>& first_propagator, vec<Q>& second_propagator) {
+                                            vec<Q>& first_propagator, vec<Q>& second_propagator) const {
     if (KELDYSH){
         set_Keldysh_propagators(g1, g2, iK, v1, v2, first_propagator, second_propagator);
     }
@@ -404,7 +404,7 @@ void PrecalculateBubble<Q>::set_propagators(const Propagator<Q>& g1, const Propa
 template<typename Q>
 void PrecalculateBubble<Q>::set_Matsubara_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                                       const double v1, const double v2,
-                                                      vec<Q>& first_propagator, vec<Q>& second_propagator) {
+                                                      vec<Q>& first_propagator, vec<Q>& second_propagator) const {
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > glb_N_transfer!
         first_propagator[i_in]  = g1.valsmooth(0, v1, i_in);
         second_propagator[i_in] = g2.valsmooth(0, v2, i_in);
@@ -415,7 +415,7 @@ template<typename Q>
 void
 PrecalculateBubble<Q>::set_Keldysh_propagators(const Propagator<Q>& g1, const Propagator<Q>& g2,
                                                const int iK, const double v1, const double v2,
-                                               vec<Q>& first_propagator, vec<Q>& second_propagator) {
+                                               vec<Q>& first_propagator, vec<Q>& second_propagator) const {
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) { //TODO: Careful! This only works for s-wave. Otherwise n_in > glb_N_transfer!
         switch (iK) {
             case 3: //AA
@@ -533,7 +533,7 @@ private:
     const double w, v = 0., vp = 0.;
     const bool diff;
 
-    int diag_class;
+    unsigned int diag_class;
 
     Q res_l_V_initial, res_r_V_initial, res_l_Vhat_initial, res_r_Vhat_initial; // To be precomputed for K1
 
@@ -608,7 +608,7 @@ public:
      */
     auto operator() (double vpp) const -> Q;
 
-    void save_integrand();
+    void save_integrand() const;
 };
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -644,9 +644,9 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_ind
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vertices(){
-#ifdef KELDYSH_FORMALISM
     // For K1 class, left and right vertices do not depend on integration frequency
     // -> precompute them to save time
+#ifdef KELDYSH_FORMALISM
     std::vector<int> indices = indices_sum(i0, i2, channel);
 
     VertexInput input_l (indices[0], w, 0., 0., i_in, 0, channel);
@@ -756,7 +756,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
 }
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(){
+void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
     int npoints = nBOS;
     if (diag_class == 2) {npoints = 1000;}
     else if (diag_class == 3) {npoints = 100;}
