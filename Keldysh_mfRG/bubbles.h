@@ -316,10 +316,10 @@ int PrecalculateBubble<Q>::get_iK_bubble(const int iK_actual) const {
     int iK_bubble = 0;
     if (KELDYSH){
         switch (iK_actual) {
-            case 3: iK_bubble = 0; break;
-            case 6: iK_bubble = 1; break;
-            case 7: iK_bubble = 2; break;
-            case 9: iK_bubble = 3; break;
+            case  3: iK_bubble = 0; break;
+            case  6: iK_bubble = 1; break;
+            case  7: iK_bubble = 2; break;
+            case  9: iK_bubble = 3; break;
             case 11: iK_bubble = 4; break;
             case 12: iK_bubble = 5; break;
             case 13: iK_bubble = 6; break;
@@ -338,10 +338,10 @@ int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) const {
     int iK_actual = 0;
     if (KELDYSH){
         switch (iK_bubble) {
-            case 0: iK_actual = 3; break;
-            case 1: iK_actual = 6; break;
-            case 2: iK_actual = 7; break;
-            case 3: iK_actual = 9; break;
+            case 0: iK_actual =  3; break;
+            case 1: iK_actual =  6; break;
+            case 2: iK_actual =  7; break;
+            case 3: iK_actual =  9; break;
             case 4: iK_actual = 11; break;
             case 5: iK_actual = 12; break;
             case 6: iK_actual = 13; break;
@@ -987,46 +987,28 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
     bool cross_projection_missing = false;
     switch (channel) {
         case 'a':
-            if ((vertex1[0].avertex().current_projection != 'a')  ||
-                (vertex1[0].pvertex().current_projection != 'a')  ||
-                !vertex1[0].pvertex().calculated_crossprojections ||
-                (vertex1[0].tvertex().current_projection != 'a')  ||
+            if (!vertex1[0].pvertex().calculated_crossprojections ||
                 !vertex1[0].tvertex().calculated_crossprojections ||
-                (vertex2[0].avertex().current_projection != 'a')  ||
-                (vertex2[0].pvertex().current_projection != 'a')  ||
                 !vertex2[0].pvertex().calculated_crossprojections ||
-                (vertex2[0].tvertex().current_projection != 'a')  ||
                 !vertex2[0].tvertex().calculated_crossprojections)
             {
                 cross_projection_missing = true;
             }
             break;
         case 'p':
-            if ((vertex1[0].avertex().current_projection != 'p')  ||
-                !vertex1[0].avertex().calculated_crossprojections ||
-                (vertex1[0].pvertex().current_projection != 'p')  ||
-                (vertex1[0].tvertex().current_projection != 'p')  ||
+            if (!vertex1[0].avertex().calculated_crossprojections ||
                 !vertex1[0].tvertex().calculated_crossprojections ||
-                (vertex2[0].avertex().current_projection != 'p')  ||
                 !vertex2[0].avertex().calculated_crossprojections ||
-                (vertex2[0].pvertex().current_projection != 'p')  ||
-                (vertex2[0].tvertex().current_projection != 'p')  ||
                 !vertex2[0].tvertex().calculated_crossprojections)
             {
                 cross_projection_missing = true;
             }
             break;
         case 't':
-            if ((vertex1[0].avertex().current_projection != 't')  ||
-                !vertex1[0].avertex().calculated_crossprojections ||
-                (vertex1[0].pvertex().current_projection != 't')  ||
+            if (!vertex1[0].avertex().calculated_crossprojections ||
                 !vertex1[0].pvertex().calculated_crossprojections ||
-                (vertex1[0].tvertex().current_projection != 't')  ||
-                (vertex2[0].avertex().current_projection != 't')  ||
                 !vertex2[0].avertex().calculated_crossprojections ||
-                (vertex2[0].pvertex().current_projection != 't')  ||
-                !vertex2[0].pvertex().calculated_crossprojections ||
-                (vertex2[0].tvertex().current_projection != 't'))
+                !vertex2[0].pvertex().calculated_crossprojections)
             {
                 cross_projection_missing = true;
             }
@@ -1162,7 +1144,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K2(Q& value, const int i0, const int i_in, const double w, const double v){
     if (vertex2[0].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
     else {
-        for (int i2 : glb_non_zero_Keldysh_bubble) {
+        for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add a sum over form factors here, as well. (the integrand class will need to take another index.)
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
             if (KELDYSH){
@@ -1195,7 +1177,7 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
                                                 const double w, const double v, const double vp){
-    for (int i2 : glb_non_zero_Keldysh_bubble) {
+    for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add two sums over form factors here, as well. (the integrand class will need to take another index.)
         // initialize the integrand object and perform frequency integration
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K3(vertex1, vertex2, Pi, i0, i2, w, v, vp, i_in, channel, diff);
@@ -1316,15 +1298,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     switch (diag_class) {
         case 1:
             n_mpi = nK_K1;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-            n_omp = nw1_w * n_in; // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+            n_omp = nw1_w * n_in_K1; // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
             break;
         case 2:
             n_mpi = nK_K2 * nw2_w;
-            n_omp = nw2_v * n_in;
+            n_omp = nw2_v * n_in_K2;
             break;
         case 3:
             n_mpi = nK_K3 * nw3_w;
-            n_omp = nw3_v * nw3_v_p * n_in;
+            n_omp = nw3_v * nw3_v_p * n_in_K3;
             break;
         default: ;
     }
@@ -1337,9 +1319,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK1 = i_mpi * n_omp + i_omp;
-    i0 = iK1/(nw1_w*n_in);                              // exterior Keldysh indices of the bubble
-    iw = iK1/(n_in) - i0*nw1_w;                         // frequency index
-    i_in = iK1 - i0*nw1_w*n_in - iw*n_in;               // internal index
+    i0 = iK1/(nw1_w*n_in_K1);                              // exterior Keldysh indices of the bubble
+    iw = iK1/(n_in_K1) - i0*nw1_w;                         // frequency index
+    i_in = iK1 - i0*nw1_w*n_in_K1 - iw*n_in_K1;               // internal index
     w = dgamma[0].avertex().frequencies.b_K1.ws[iw];    // frequency acc. to frequency index
 }
 
@@ -1351,10 +1333,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                                                                                      double& w, double& v,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK2 = i_mpi * n_omp + i_omp;
-    i0 = iK2 / (nw2_w * nw2_v * n_in);
-    iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
-    iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
-    i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
+    i0 = iK2 / (nw2_w * nw2_v * n_in_K2);
+    iw = iK2 / (nw2_v * n_in_K2) - i0 * nw2_w;
+    iv = iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
+    i_in = iK2 - iv * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
     w = dgamma[0].avertex().frequencies.b_K2.ws[iw];
     v = dgamma[0].avertex().frequencies.f_K2.ws[iv];
 }
@@ -1367,11 +1349,11 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                                                                                      double& w, double& v, double& vp,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK3 = i_mpi * n_omp + i_omp;
-    i0 = iK3/(nw3_w * nw3_v * nw3_v_p * n_in);
-    iw = iK3/(nw3_v * nw3_v_p * n_in) - i0*nw3_w;
-    iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
-    ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
-    i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
+    i0 = iK3/(nw3_w * nw3_v * nw3_v_p * n_in_K3);
+    iw = iK3/(nw3_v * nw3_v_p * n_in_K3) - i0*nw3_w;
+    iv = iK3/(nw3_v * n_in_K3) - i0*nw3_w*nw3_v - iw*nw3_v;
+    ivp =iK3/(n_in_K3) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
+    i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in_K3 - iw*nw3_v*nw3_v_p*n_in_K3 - iv*nw3_v_p*n_in_K3 - ivp*n_in_K3;
     w =  dgamma[0].avertex().frequencies.b_K3.ws[iw];
     v =  dgamma[0].avertex().frequencies.f_K3.ws[iv];
     vp = dgamma[0].avertex().frequencies.f_K3.ws[ivp];
@@ -1476,13 +1458,8 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 Q
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::bubble_value_prefactor(){
-    return prefactor * (1. / (2. * M_PI
-#ifdef KELDYSH_FORMALISM
-    * glb_i
-#endif
-    ));
-// Getting rid of this flag and making this code more readable is sadly not possible,
-// because there is no partial template specialization for functions in C++
+    if constexpr (KELDYSH) return prefactor * (1. / (2. * M_PI * glb_i));
+    else                   return prefactor * (1. / (2. * M_PI));
 }
 
 
