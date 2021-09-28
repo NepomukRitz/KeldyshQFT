@@ -32,7 +32,7 @@ private:
     }
 
 public:
-    char channel;                       // reducibility channel
+    char channel;                       // reducibility channel TODO: Can we make this const?
     Components components;              // lists providing information on how all Keldysh components are related to the
                                         // independent ones
     Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
@@ -64,9 +64,7 @@ public:
     vec<Q> K3_t_proj;
 
     bool calculated_crossprojections = false;
-    char current_projection = channel;          // Initially the "natural" parametrization is used.
     void cross_project();
-    void use_projection(char r);                // Use projection w.r.t. channel r in the following
 
     rvert(const char channel_in, double Lambda) : channel(channel_in), frequencies(Lambda),
                                                   components (Components(channel_in)),
@@ -148,6 +146,7 @@ public:
     /** Return the value of the vector K1 at Keldysh index iK, frequency index iw,
      * internal structure index i_in. */
     auto K1_val(int iK, int iw, int i_in) const -> Q;
+    auto K1_val(int iK, int iw, int i_in, char channel_parametrization) const -> Q; // Overload used non-trivially for the Hubbard model
 
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
@@ -178,6 +177,8 @@ public:
     /** Return the value of the vector K2 at Keldysh index iK, frequency indices iw, iv,
      * internal structure index i_in. */
     auto K2_val(int iK, int iw, int iv, int i_in) const -> Q;
+    auto K2_val(int iK, int iw, int iv, int i_in, char channel_parametrization) const -> Q; // Overload used non-trivially for the Hubbard model
+
 
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
@@ -208,6 +209,7 @@ public:
     /** Return the value of the vector K3 at Keldysh index iK, frequency indices iw, iv, ivp,
      * internal structure index i_in. */
     auto K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q;
+    auto K3_val(int iK, int iw, int iv, int ivp, int i_in, char channel_parametrization) const -> Q; // Overload used non-trivially for the Hubbard model
 
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
@@ -302,6 +304,7 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) cons
 
     IndicesSymmetryTransformations indices (input, channel);  // write input indices into transformable data structure
 
+    // TODO(high): Ti should also take care of i_in and channel_parametrization for the Hubbard model.
     Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
     indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
     if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
@@ -380,8 +383,8 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
 }
 
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
+    if      (MAX_DIAG_CLASS == 1) return valsmooth<k1>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS  > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
@@ -483,37 +486,6 @@ void rvert<Q>::cross_project() {
     }
 }
 
-template<typename Q>
-void rvert<Q>::use_projection(const char r) {
-    if (calculated_crossprojections && (r != current_projection)){
-        switch (r) {
-            case 'a':
-                K1 = K1_a_proj;
-                K2 = K2_a_proj;
-                K3 = K3_a_proj;
-                break;
-            case 'p':
-                K1 = K1_p_proj;
-                K2 = K2_p_proj;
-                K3 = K3_p_proj;
-                break;
-            case 't':
-                K1 = K1_t_proj;
-                K2 = K2_t_proj;
-                K3 = K3_t_proj;
-                break;
-            default: print("Error! Invalid channel index!"); assert(false);
-        }
-        current_projection = r;
-    }
-    else if (calculated_crossprojections && (r == current_projection)){
-        return; // Already correct projection. Do nothing.
-    }
-    else{
-        print("Error! Crossprojections have not yet been calculated!");
-        assert(false);
-    }
-}
 
 template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     double w, v1, v2;
@@ -920,72 +892,145 @@ vec<Q> rvert<Q>::K3_crossproject(const char channel_out) {
 
 
 
-template <typename Q> auto rvert<Q>::K1_acc(int i) const -> Q {
+template <typename Q> auto rvert<Q>::K1_acc(const int i) const -> Q {
     if (i >= 0 && i < K1.size())
         return K1[i];
     else
         print("Error: Tried to access value outside of K1 vertex in a-channel", true);
 }
-template <typename Q> void rvert<Q>::K1_direct_set(int i, Q value) {
-    if (i >= 0 && i < K1.size())
+template <typename Q> void rvert<Q>::K1_direct_set(const int i, const Q value) {
+    if (i >= 0 && i < K1.size()) {
         K1[i] = value;
-    else
-        print("Error: Tried to access value outside of K1 vertex in a-channel", true);
+        calculated_crossprojections = false; // After modifying K1, the cross-projected parts are not up-to-date anymore
+    }
+    else {print("Error: Tried to access value outside of K1 vertex in a-channel", true); assert(false);}
 }
-template <typename Q> void rvert<Q>::K1_setvert(int iK, int iw, int i_in, Q value) {
+template <typename Q> void rvert<Q>::K1_setvert(const int iK, const int iw, const int i_in, const Q value) {
     K1[iK*nw1*n_in_K1 + iw*n_in_K1 + i_in] = value;
+    calculated_crossprojections = false; // After modifying K1, the cross-projected parts are not up-to-date anymore
+
 }
-template <typename Q> void rvert<Q>::K1_addvert(int iK, int iw, int i_in, Q value) {
+template <typename Q> void rvert<Q>::K1_addvert(const int iK, const int iw, const int i_in, const Q value) {
     K1[iK*nw1*n_in_K1 + iw*n_in_K1 + i_in] += value;
+    calculated_crossprojections = false; // After modifying K1, the cross-projected parts are not up-to-date anymore
 }
-template <typename Q> auto rvert<Q>::K1_val(int iK, int iw, int i_in) const -> Q {
-        return K1[iK*nw1*n_in_K1 + iw*n_in_K1 + i_in];
+
+template <typename Q> auto rvert<Q>::K1_val(const int iK, const int iw, const int i_in) const -> Q {
+    return K1_val(iK, iw, i_in, channel); // By default, return the channel in its natural parametrization
+}
+// TODO(medium): Write such function overloads also for K2 and K3 (and make all arguments const).
+template <typename Q> auto rvert<Q>::K1_val(const int iK, const int iw, const int i_in,
+                                            const char channel_parametrization) const -> Q {
+    if constexpr (HUBBARD_MODEL) { // if constexpr used for optimal performance for the SIAM
+        if (channel_parametrization == channel) {
+                    return K1[iK * nw1 * n_in_K1 + iw * n_in_K1 + i_in];
+        }
+        else{
+            switch (channel_parametrization) {
+                case 'a':
+                    return K1_a_proj[iK * nw1 * n_in_K1 + iw * n_in_K1 + i_in];
+                case 'p':
+                    return K1_p_proj[iK * nw1 * n_in_K1 + iw * n_in_K1 + i_in];
+                case 't':
+                    return K1_t_proj[iK * nw1 * n_in_K1 + iw * n_in_K1 + i_in];
+                default:;
+            }
+        }
+    }
+    else {          return K1[iK * nw1 * n_in_K1 + iw * n_in_K1 + i_in]; } // For the SIAM,
 }
 
 
-template <typename Q> auto rvert<Q>::K2_acc(int i) const -> Q {
+
+template <typename Q> auto rvert<Q>::K2_acc(const int i) const -> Q {
     if (i >= 0 && i < K2.size())
         return K2[i];
     else
         print("Error: Tried to access value outside of K2 vertex in a-channel", true);
 }
-template <typename Q> void rvert<Q>::K2_direct_set(int i, Q value) {
-    if (i >= 0 && i < K2.size())
+template <typename Q> void rvert<Q>::K2_direct_set(const int i, const Q value) {
+    if (i >= 0 && i < K2.size()){
         K2[i] = value;
-    else
-        print("Error: Tried to access value outside of K2 vertex in a-channel", true);
+        calculated_crossprojections = false; // After modifying K2, the cross-projected parts are not up-to-date anymore
+    }
+    else{print("Error: Tried to access value outside of K2 vertex in a-channel", true); assert(false);}
 }
-template <typename Q> void rvert<Q>::K2_setvert(int iK, int iw, int iv, int i_in, Q value) {
+template <typename Q> void rvert<Q>::K2_setvert(const int iK, const int iw, const int iv, const int i_in, const Q value) {
     K2[iK*nw2*nv2*n_in_K2 + iw*nv2*n_in_K2 + iv*n_in_K2 + i_in] = value;
+    calculated_crossprojections = false; // After modifying K2, the cross-projected parts are not up-to-date anymore
 }
-template <typename Q> void rvert<Q>::K2_addvert(int iK, int iw, int iv, int i_in, Q value) {
+template <typename Q> void rvert<Q>::K2_addvert(const int iK, const int iw, const int iv, const int i_in, const Q value) {
     K2[iK*nw2*nv2*n_in_K2 + iw*nv2*n_in_K2 + iv*n_in_K2 + i_in] += value;
+    calculated_crossprojections = false; // After modifying K2, the cross-projected parts are not up-to-date anymore
 }
-template <typename Q> auto rvert<Q>::K2_val(int iK, int iw, int iv, int i_in) const -> Q {
-        return K2[iK * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in];
+template <typename Q> auto rvert<Q>::K2_val(const int iK, const int iw, const int iv, const int i_in) const -> Q {
+        return K2_val(iK, iw, iv, i_in, channel); // By default, return the channel in its natural parametrization
+}
+template <typename Q> auto rvert<Q>::K2_val(const int iK, const int iw, const int iv, const int i_in,
+                                            const char channel_parametrization) const -> Q {
+    if constexpr (HUBBARD_MODEL) { // if constexpr used for optimal performance for the SIAM
+        if (channel_parametrization == channel) {
+                    return K2[iK * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in];
+        }
+        else{
+            switch (channel_parametrization) {
+                case 'a':
+                    return K2_a_proj[iK * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in];
+                case 'p':
+                    return K2_p_proj[iK * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in];
+                case 't':
+                    return K2_t_proj[iK * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in];
+                default:;
+            }
+        }
+    }
+    else {          return K2[iK * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in]; } // For the SIAM,
 }
 
 
-template <typename Q> auto rvert<Q>::K3_acc(int i) const -> Q {
+template <typename Q> auto rvert<Q>::K3_acc(const int i) const -> Q {
     if (i >= 0 && i < K3.size())
         return K3[i];
     else
         print("Error: Tried to access value outside of K3 vertex in a-channel", true);
 }
-template <typename Q> void rvert<Q>::K3_direct_set(int i, Q value) {
-    if (i >= 0 && i < K3.size())
+template <typename Q> void rvert<Q>::K3_direct_set(const int i, const Q value) {
+    if (i >= 0 && i < K3.size()){
         K3[i] = value;
-    else
-        print("Error: Tried to access value outside of K3 vertex in a-channel", true);
+        calculated_crossprojections = false; // After modifying K3, the cross-projected parts are not up-to-date anymore
+    }
+    else {print("Error: Tried to access value outside of K3 vertex in a-channel", true); assert(false);}
 }
-template <typename Q> void rvert<Q>::K3_setvert(int iK, int iw, int iv, int ivp, int i_in, Q value) {
+template <typename Q> void rvert<Q>::K3_setvert(const int iK, const int iw, const int iv, const int ivp, const int i_in, const Q value) {
     K3[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in] = value;
+    calculated_crossprojections = false; // After modifying K3, the cross-projected parts are not up-to-date anymore
 }
-template <typename Q> void rvert<Q>::K3_addvert(int iK, int iw, int iv, int ivp, int i_in, Q value) {
+template <typename Q> void rvert<Q>::K3_addvert(const int iK, const int iw, const int iv, const int ivp, const int i_in, const Q value) {
     K3[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in] += value;
+    calculated_crossprojections = false; // After modifying K3, the cross-projected parts are not up-to-date anymore
 }
-template <typename Q> auto rvert<Q>::K3_val(int iK, int iw, int iv, int ivp, int i_in) const -> Q {
-        return K3[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in];
+template <typename Q> auto rvert<Q>::K3_val(const int iK, const int iw, const int iv, const int ivp, const int i_in) const -> Q {
+        return K3_val(iK, iw, iv, ivp, i_in, channel); // By default, return the channel in its natural parametrization
+}
+template <typename Q> auto rvert<Q>::K3_val(const int iK, const int iw, const int iv, const int ivp, const int i_in,
+                                            const char channel_parametrization) const -> Q {
+    if constexpr (HUBBARD_MODEL) { // if constexpr used for optimal performance for the SIAM
+        if (channel_parametrization == channel) {
+                    return K3[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in];
+        }
+        else{
+            switch (channel_parametrization) {
+                case 'a':
+                    return K3_a_proj[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in];
+                case 'p':
+                    return K3_p_proj[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in];
+                case 't':
+                    return K3_t_proj[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in];
+                default:;
+            }
+        }
+    }
+    else {          return K3[iK*nw3*nv3*nv3*n_in_K3 + iw*nv3*nv3*n_in_K3 + iv*nv3*n_in_K3 + ivp*n_in_K3 + i_in]; } // For the SIAM,
 }
 
 template <typename Q> auto rvert<Q>::get_deriv_maxK1() const -> double {
