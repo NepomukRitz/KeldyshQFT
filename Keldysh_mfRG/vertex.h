@@ -121,7 +121,6 @@ public:
 
     //Crossprojection functionality (used for the Hubbard model)
     void calculate_all_cross_projections();
-    void use_projection(char r);
 
     //Norm of the vertex
     double sum_norm(int);
@@ -620,7 +619,7 @@ template <typename Q> auto fullvert<Q>::value (VertexInput input, const fullvert
 
 template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
     Q res;
-    switch (input.channel){
+    switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
             res = pvertex.value(input, pvertex) + tvertex.value(input, avertex);
             break;
@@ -638,7 +637,7 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
 }
 template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q res;
-    switch (input.channel){
+    switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
             res = pvertex.value(input, pvertex, right_vertex) + tvertex.value(input, avertex, right_vertex);
             break;
@@ -1004,12 +1003,6 @@ void fullvert<Q>::calculate_all_cross_projections() {
     completely_crossprojected = true;
 }
 
-template<class Q>
-void fullvert<Q>::use_projection(const char r) {
-    avertex.use_projection(r);
-    pvertex.use_projection(r);
-    tvertex.use_projection(r);
-}
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
     if(p==0) {//infinity (max) norm
