@@ -42,8 +42,10 @@ public:
         if (std::abs(indices.w) < vertex.frequencies.b_K1.w_upper + inter_tol)
         {
             Q result = indices.prefactor * interpolate1D<Q>(indices.w, vertex.frequencies.b_K1,
-                                [&indices, &vertex](int i) -> Q {return vertex.K1_val(indices.iK, i, indices.i_in);});
-                                // Lambda function (aka anonymous function) in last argument
+                                [&indices, &vertex](int i) -> Q {
+                return vertex.K1_val(indices.iK, i, indices.i_in, indices.channel_parametrization);});
+                // Lambda function (aka anonymous function) in last argument
+                // TODO(medium): Include indices.channel_parametrization also for K2 and K3.
             return result;
         } else {
             return 0.;  // asymptotic value
