@@ -28,7 +28,7 @@ public:
     auto operator() (double x) const -> Q {
         double sqrtk;
         sqrtk = sqrt(k*k+2.*k*kp*x+kp*kp);
-        return ladder_K1r(vp+v,sqrtk,'p',Lambda_i,Lambda_f,1,0)*G0(vp,kp*kp,'c');
+        return 1./(2*M_PI)*ladder_K1r(vp+v,sqrtk,'p',Lambda_i,Lambda_f,1,0)*G0(vp,kp*kp,'c');
     };
 
     //void save_integrand();
@@ -39,12 +39,15 @@ comp perform_loopintegral_theta (double v, double vp, double k, double kp, doubl
     double eps = 1e-12;
 
     if (k == 0.0) {
-        result = 2.*ladder_K1r(vp+v,kp*kp,'p',Lambda_i,Lambda_f,1,0)*G0(vp,kp*kp,'c');
-        ;
+        result = 1./M_PI*ladder_K1r(vp+v,kp,'p',Lambda_i,Lambda_f,1,0)*G0(vp,kp*kp,'c');
     }
 
     else {
         comp integral;
+
+        if (std::abs(vp)-std::abs(v)<eps){
+            vp = vp + eps;
+        }
 
         Loopintegrand_theta<comp> loopintegrand_theta(v, vp, k, kp, Lambda_i, Lambda_f);
 
@@ -77,10 +80,11 @@ public:
      */
     auto operator() (double t_kp) const -> Q {
         double kp;
+        double denominator_substitution = 1.0;
         if (inftylim == 1){
             kp = lim + (1-t_kp)/t_kp;
             if (t_kp != 0.){
-                return kp*kp/(2.*M_PI)+perform_loopintegral_theta(v, vp, k, kp, Lambda_i, Lambda_f)/(t_kp*t_kp);
+                denominator_substitution = t_kp*t_kp;
             }
             else {
                 return 0.0;
@@ -88,9 +92,8 @@ public:
         }
         else {
             kp = t_kp;
-            return perform_loopintegral_theta(v, vp, k, kp,Lambda_i, Lambda_f);
         }
-
+        return kp*kp/(2.*M_PI)*perform_loopintegral_theta(v, vp, k, kp,Lambda_i, Lambda_f)/denominator_substitution;
     };
 
     //void save_integrand();
@@ -101,7 +104,7 @@ comp perform_loopintegral_kp (double v, double vp, double k, double Lambda_i, do
     double eps = 1e-10;
 
     //Loopintegrand_kp<comp> loopintegrand_kp_ab(v, vp, k,Lambda_i, Lambda_f, 0, 0);
-    Loopintegrand_kp<comp> loopintegrand_kp_aoo(v, vp, k, Lambda_i, Lambda_f, 1,eps);
+    Loopintegrand_kp<comp> loopintegrand_kp_aoo(v, vp, k, Lambda_i, Lambda_f, eps,1);
 
     comp integral1, integral2, integral3, integral4, integral5, integral6;
 
@@ -167,16 +170,17 @@ comp selfenergy_ladder (double v, double k, double Lambda_i, double Lambda_f){
     comp result;
     double eps = 1e-10;
 
-    //Loopintegrand_kp<comp> loopintegrand_kp_ab(v, vp, k,0, 0);
-    Loopintegrand_vp<comp> loopintegrand_vp_boo(v, k,Lambda_i, Lambda_f, 1,-eps);
-    Loopintegrand_vp<comp> loopintegrand_vp_ooa(v, k,Lambda_i, Lambda_f,2,eps);
+    Loopintegrand_vp<comp> loopintegrand_vp_ab(v, k,Lambda_i, Lambda_f, 0.0, 0);
+    Loopintegrand_vp<comp> loopintegrand_vp_boo(v, k,Lambda_i, Lambda_f, std::abs(v)+eps,1);
+    Loopintegrand_vp<comp> loopintegrand_vp_ooa(v, k,Lambda_i, Lambda_f,-std::abs(v)-eps,2);
 
     comp integral1, integral2, integral3, integral4, integral5, integral6;
 
     integral1 = integrator<comp>(loopintegrand_vp_ooa, 0.0, 1.0);
-    integral2 = integrator<comp>(loopintegrand_vp_boo, 0.0, 1.0);
+    integral2 = integrator<comp>(loopintegrand_vp_ab, -std::abs(v)+eps,std::abs(v)-eps);
+    integral3 = integrator<comp>(loopintegrand_vp_boo, 0.0, 1.0);
 
-    result = integral1 + integral2;
+    result = integral1 + integral2 + integral3;
 
     return result;
 }

@@ -922,13 +922,13 @@ int main() {
 
     glb_muc = 1.0;
     glb_mud = -10.0;
-    glb_ainv = 0.0;
-    comp gorkov_test = fRG_solve_K1r(0., 0., 'c', 1e4, 1e-10, 1, 0);
+    glb_ainv = -1.0;
+    comp gorkov_test = fRG_solve_K1r(0., sqrt(2.*glb_muc), 'c', 1e4, 1e-10, 1, 0);
     std::cout << "Gamma = " << gorkov_test << "\n";
 
-    std::vector<double> myvec{3.12,3.23,42.564,43.23,567.75,23.54};
+    //std::vector<double> myvec{3.12,3.23,42.564,43.23,567.75,23.54};
     //std::vector<double>::iterator test_begin = myvec.begin();
-    std::cout<< "begin = " << myvec.begin() << "\n";
+    //std::cout<< "begin = " << myvec.begin() << "\n";
 
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================
@@ -1034,13 +1034,13 @@ int main() {
     */
 
     // LOOP INTEGRAL SELFENERGY
-    glb_mud = 0.0;
-    glb_ainv = 1.0;
+    glb_mud = -2.5;
+    glb_ainv = sqrt(2.);
 
-    //comp testloop001 = selfenergy_ladder (0.1, 0.0,1e4,1e-10);
-    //comp testloop002 = selfenergy_ladder (0.0, 0.0,1e4,1e-10);
-    //std::cout << "loop selfenergy test = " << testloop001 << "\n";
-    //std::cout << "loop selfenergy test = " << testloop002 << "\n";
+    comp testloop001 = selfenergy_ladder (0.1, 0.0,1e4,1e-10);
+    std::cout << "loop selfenergy test = " << testloop001 << "\n";
+    comp testloop002 = selfenergy_ladder (0.0, 0.0,1e4,1e-10);
+    std::cout << "loop selfenergy test = " << testloop002 << "\n";
 
     //selfenergy_ladder_list_vk(10.,10.,1e4,1e-10,11,6);
 

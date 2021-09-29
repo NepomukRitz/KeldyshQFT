@@ -361,15 +361,15 @@ FRG_solvand_nsc<comp> rhs_K1l1fRG(const FRG_solvand_nsc<comp>& y, double Lambda)
     else { // constant value for Gamma (not only K1)
         if (y.reg == 1) {
             y_result.value = 2. * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                             sharp_frequency_bare_bubble(0., Lambda, 0., 'd', 'c', 'p', y.inttype)
+                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 'd', 'c', 'p', y.inttype)
                              + pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                             sharp_frequency_bare_bubble(0., Lambda, 0., 'd', 'c', 'a', y.inttype);
+                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 'd', 'c', 'a', y.inttype);
         }
         else if (y.reg == 3) { // soft frequency
             y_result.value = 2. * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                             perform_dL_Pi0_vpp_integral(Lambda, 0., 0., 'd', 'c', 'p', y.inttype)
+                             perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'd', 'c', 'p', y.inttype)
                              + pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                               perform_dL_Pi0_vpp_integral(Lambda, 0., 0., 'd', 'c', 'a', y.inttype);
+                               perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'd', 'c', 'a', y.inttype);
         }
     }
     return y_result;
