@@ -206,11 +206,11 @@ void FrequencyGrid::initialize_grid(double scale) {
     if (!KELDYSH && !ZERO_T){
         // for Matsubara T>0: pick grid such that no frequencies occur twice
         if (type == 'b') {
-            w_upper = std::max(round2bfreq(w_upper), glb_T * M_PI*N_w);
+            w_upper = std::max(round2bfreq(w_upper), glb_T * M_PI*(N_w+1));
             W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
         }
         else {
-            w_upper = std::max(round2ffreq(w_upper), glb_T * M_PI*N_w);
+            w_upper = std::max(round2ffreq(w_upper), glb_T * M_PI*(N_w+1));
             W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
         }
     }
