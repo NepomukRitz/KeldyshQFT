@@ -138,12 +138,51 @@ The compile script can then simply be executed by
 
 ### Submitting jobs
 
-The job handling of the cluster is organized by SLURM. To submit a job, one needs to provide 
-a corresponding shell script, e.g. named `batchfile_loc.sh` **TODO: Where should one put it?**
+The job handling of the cluster is organized by SLURM. For basic information on SLURM see https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html.
+To submit a job, one needs to provide 
+a corresponding shell script, e.g. by modifying `mfrg/Keldysh_mfRG/scripts/batchfile.sh`:
 
-**TODO:** 
-- Elias will provide an example script for this.
-- a paragraph about the e-mails sent out by SLURM
+```
+#!/bin/bash
+#
+#SBATCH --job-name=jobname
+#SBATCH --mem=2040
+#SBATCH --time=2-20:00:00
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=<username>@physik.uni-muenchen.de
+#SBATCH --chdir=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG/
+#SBATCH --output=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG/runs/jobname.%j.%N.out
+#SBATCH --error=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG/runs/jobname.%j.%N.err
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=1
+
+echo $HOSTNAME
+echo $SLURM_ARRAY_JOB_ID
+echo $SLURM_NTASKS
+
+export OMP_NUM_THREADS=32
+mpiexec -n $SLURM_NTASKS ./main.o
+```
+
+#### Description:
+
+| option | explanation |
+|---|---|
+| `job-name` | Name of job in slurm queue. |
+| `mem` | Requested memory (minimum) in MB. |
+| `time` | Job wall time: after this time, the job will be killed by slurm. Maximum runtime is 3 days. |
+| `mail-type` | Settings for slurm status emails (see below). |
+| `chdir` | Directory in which the batchfile will be executed (=path to executable). |
+| `output` | Name of log file. `%j` = job-ID, `%N` = node-ID. |
+| `error` | Name of error log file. |
+| `nodes` | Number of (MPI) nodes on which to execute the job. |
+| `ntasks-per-node` | Number of MPI tasks per node. When using OpenMP, set to 1 (only use MPI for inter-node parallelization). |
+| `OMP_NUM_THREADS` | Number of OpenMP threads. Should be equal to the number of available cores per node (=32 on KCS). |
+| `main.o` | Job executable. |
+
+#### SLURM status emails
+
+If activated, Slurm informs per email when jobs start/finish/fail etc. Deactivate Slurm emails if you are submitting many jobs, and do NOT forward these emails to another email account (see https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html).
 
 ### Useful SLURM commands
 
