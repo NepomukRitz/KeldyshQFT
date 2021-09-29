@@ -10,31 +10,30 @@ Project name for LS vonDelft: **pn34vu**
 - 150 nodes, 32 cores/node on 2 sockets
 - memory configurations: 180 GB, 370 GB, 760 GB (2x)
 - standard queue: runtime: 72h
-- long-runner queue: runtime: 30 days, only 1 job/user
-
-**TODO:** How to access the long-runner queue?
+- long-runner queue: runtime: 30 days, only 1 job/user (Slurm: partition kcs_long, see below)
 
 
 ### File System
 
  - GPFS file system, efficient for large files 
-   - page size 16 MB -> **Do not save data in smaller files!**
+   - page size 16 MB -> **Do not use many small files!**
    - quota: 100 TB for the chair 
    
 
-- DSS storage, organized in containers 
+- LRZ DSS (data science storage), organized in containers 
     - LRZ documentation:
       https://doku.lrz.de/display/PUBLIC/Data+Science+Storage
-    - Web interface for storage management: https://dssweb.dss.lrz.de
+    - Web interface for storage management: https://dssweb.dss.lrz.de (only accessible for chair admins)
     - default container 0000
-      - quota (can be changed via web interface): \
+      - quota (can be changed via web interface -> ask chair admin): \
       1 TB for chair, 64 GB/user, 65000 files/user
       - daily backup
       - path of "home" directory:
         `/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/\<lrz-ID>`
     - can create new containers, some settings cannot be changed afterwards (see LRZ
       documentation)
-    - share containers via globus
+        - useful for new projects that need a lot of storage (ask chair admin)
+    - share containers via globus (https://doku.lrz.de/display/PUBLIC/DSS+How+Globus+Data+Transfer+and+Globus+Sharing+for+DSS+works)
 
 **TODO:**
 - What do GPFS and DSS stand for?
@@ -140,7 +139,7 @@ The compile script can then simply be executed by
 
 The job handling of the cluster is organized by SLURM. For basic information on SLURM see https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html.
 To submit a job, one needs to provide 
-a corresponding shell script, e.g. by modifying `mfrg/Keldysh_mfRG/scripts/batchfile.sh`:
+a corresponding shell script, e.g. by modifying `mfrg/Keldysh_mfRG/scripts/batchfile.sh` (see official Slurm documentation https://slurm.schedmd.com/sbatch.html for details):
 
 ```
 #!/bin/bash
@@ -166,7 +165,7 @@ mpiexec -n $SLURM_NTASKS ./main.o
 
 #### Description:
 
-| option | explanation |
+| Option | Explanation |
 |---|---|
 | `job-name` | Name of job in slurm queue. |
 | `mem` | Requested memory (minimum) in MB. |
@@ -180,7 +179,11 @@ mpiexec -n $SLURM_NTASKS ./main.o
 | `OMP_NUM_THREADS` | Number of OpenMP threads. Should be equal to the number of available cores per node (=32 on KCS). |
 | `main.o` | Job executable. |
 
-#### SLURM status emails
+#### Optional settings:
+
+`#SBATCH --partition=kcs_long` : Submit the job to the KCS long-runner queue (wall time < 30 days).
+
+#### SLURM status emails:
 
 If activated, Slurm informs per email when jobs start/finish/fail etc. Deactivate Slurm emails if you are submitting many jobs, and do NOT forward these emails to another email account (see https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html).
 
@@ -195,6 +198,15 @@ If activated, Slurm informs per email when jobs start/finish/fail etc. Deactivat
 | `scancel <job-ID>`  | cancel the job \<job-ID> |
 
 ### Accessing the data
+
+Data can be downloaded from KCS to `<local-path>` on your workstation/laptop using rsync:
+`rsync -auvh <lrz-ID>@kcs-login.cos.lrz.de:/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG/<path-to-result-file> <local-path>`
+
+Hint: if you have defined e.g.
+`kcs=<lrz-ID>@kcs-login.cos.lrz.de` and
+`kcshome=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG`
+in your local .bashrc (on the workstation/laptop), the command simplifies:
+`rsync -auvh $kcs:$kcshome/<path-to-result-file> <local-path>`
 
 ### Running unit tests
 
