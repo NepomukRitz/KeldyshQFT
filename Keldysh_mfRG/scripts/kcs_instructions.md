@@ -211,7 +211,9 @@ Hint: if you have defined e.g.
 
 in your local .bashrc (on the workstation/laptop), the command simplifies:
 
-`rsync -auvh $kcs:$kcshome/<path-to-result-file> <local-path>`
+`rsync -auvh $kcs:$kcshome/<path-to-result-file> <local-path>`.
+
+(If the command is executed from within the destination directory `<local-path>`, then simply replace `<local-path>`=`.` )
 
 ### Running unit tests
 
