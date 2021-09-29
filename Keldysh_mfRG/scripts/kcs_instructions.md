@@ -1,0 +1,163 @@
+#Introduction to the KCS-Cluster
+
+Project name for LS vonDelft: **pn34vu**
+
+###Overview
+
+- Login node: kcs-login (`$ ssh <lrz-ID>@kcs-login.cos.lrz.de`)
+- Need to have an established VPN connection to the MWN (or be physically connected to it).
+- slurm jobs can only request whole machines -> **Always use all 32 cores on each node!**
+- 150 nodes, 32 cores/node on 2 sockets
+- memory configurations: 180 GB, 370 GB, 760 GB (2x)
+- standard queue: runtime: 72h
+- long-runner queue: runtime: 30 days, only 1 job/user
+
+**TODO:** How to access the long-runner queue?
+
+
+###File System
+
+ - GPFS file system, efficient for large files 
+   - page size 16 MB -> **Do not save data in smaller files!**
+   - quota: 100 TB for the chair 
+   
+
+- DSS storage, organized in containers 
+    - LRZ documentation:
+      https://doku.lrz.de/display/PUBLIC/Data+Science+Storage
+    - Web interface for storage management: https://dssweb.dss.lrz.de
+    - default container 0000
+      - quota (can be changed via web interface): \
+      1 TB for chair, 64 GB/user, 65000 files/user
+      - daily backup
+      - path of "home" directory:
+        `/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/\<lrz-ID>`
+    - can create new containers, some settings cannot be changed afterwards (see LRZ
+      documentation)
+    - share containers via globus
+
+**TODO:**
+- What do GPFS and DSS stand for?
+- What is a container?
+- What is globus?
+
+###Setting up a .bashrc file
+It is highly recommended to set up a `.bashrc` file to configure shortcuts 
+and load some modules automatically on login.\
+In the home-directory entered when logging onto KCS (`/dss/dsshome1/lxc09/<lrz-ID>`), create a `.bashrc`
+file using a command-line text editor like vim or nano (nano has to be loaded first using 
+the module system, see below).\
+A good starting point is the following file (comments start with a `#`):
+
+```
+# set up an alias for the "home" directory used for computations
+alias kcshome="cd /dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>"
+
+# useful to get all information about all files in a given directory in human-readable form
+alias ll="ls -lah"
+
+# simplifies navigation through the command-line history
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+# load some modules by default
+module load nano                # Beginner-friendly command-line text editor
+module load gsl                 # TODO: Better to be included in the compile script!
+module load mkl                 # TODO: Do we need this?
+module load boost/1.61_icc      # TODO: Warning that this module is scheduled for retirement by end of 2019 (!)
+
+module load hdf5/1.8.20-cxx-frt-threadsafe # NOT SUFFICIENT to load in compile script! Needed here as well!
+```
+After creating or modifying the `.bashrc` file, one has to reload it using `# source .bashrc`. 
+Alternatively, one can log off an log on to KCS again, 
+as the `.bashrc` file is always automatically loaded upon login.
+
+###Module System
+
+Grants access to pre-installed packages. Useful commands:
+
+| command| functionality |
+|----|---|
+| `module avail` | shows available modules |
+| `module list`  | shows the currently loaded modules |
+| `module load <module_name>`  | loads the module \<module_name> |
+| `module unload <module_name>`  | unloads the module \<module_name> |
+
+###Cloning the code (to the right place)
+
+The code should be placed into the "home" directory used for computations, for which the shortcut `kcshome`
+was set up in the `.bashrc` file above. It is then simply a matter of navigating to the "home" 
+directory and cloning the correct git repository:
+```
+$ kcshome
+$ git clone https://gitlab.physik.uni-muenchen.de/LDAP_ls-vondelft/<project>.git
+```
+It is easiest to clone the git repo via https and not ssh. 
+Otherwise one would have to set up a ssh-key-pair.
+
+
+
+###Compiling the code
+
+Depending on the setup used, there should already be a makefile or a compile script in the code base
+of the git repository. As of September 2021, the compile script for the Keldysh mfRG code is located at
+(starting from `kcshome`) `mfrg/Keldysh_mfRG/scripts/compile_kcs.sh` and reads
+
+```
+#!/bin/bash
+#  environment variable KELDYSH_MFRG needs to point to the "Keldysh_mfRG" directory of the repository:
+#  in ~/.bashrc:
+#  export KELDYSH_MFRG="/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG"
+
+module load gcc
+module load hdf5/1.8.20-cxx-frt-threadsafe
+module load fftw
+module load gsl
+module load boost/1.61_icc
+
+export LANG=C
+export LC_ALL=C
+
+HDF5="$HDF5_INC $HDF5_CPP_SHLIB $HDF5_SHLIB $SZIP_LIB -lz"
+FFTW="$FFTW_INC $FFTW_LIB"
+GSL="$GSL_INC $GSL_LIB"
+BOOST="$BOOST_INC -L$BOOST_LIBDIR$"
+
+mpiCC -std=c++17 $KELDYSH_MFRG/main.cpp -o $KELDYSH_MFRG/main.o -fopenmp $FFTW $HDF5 $GSL $BOOST
+```
+
+As one can already tell from this file, before it can be executed, one has to define another shortcut
+to set the correct absolute path to the directory of the code.
+To do that, access the `.bashrc` file via `$ nano ~/.bashrc` and add the line 
+
+`export KELDYSH_MFRG="/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG"`
+
+The compile script can then simply be executed by 
+
+`$ ./mfrg/Keldysh_mfRG/scripts/compile_kcs.sh`.
+
+###Submitting jobs
+
+The job handling of the cluster is organized by SLURM. To submit a job, one needs to provide 
+a corresponding shell script, e.g. named `batchfile_loc.sh` **TODO: Where should one put it?**
+
+**TODO:** 
+- Elias will provide an example script for this.
+- a paragraph about the e-mails sent out by SLURM
+
+### Useful SLURM commands
+
+| command| functionality |
+|---|---|
+| `sinfo` | view information about SLURM nodes and partitions.  |
+| `squeue`  | show all information about pending and running jobs |
+| `squeue -u <lrz-ID>`  | show all information about pending and running jobs of \<lrz-ID> |
+| `sbatch batchfile_loc.sh`  | submit a job configured in `batchfile_loc.sh`  |
+| `scancel <job-ID>`  | cancel the job \<job-ID> |
+
+### Accessing the data
+
+###Running unit tests
+
+As long as unit test really are just unit test and do not take much time to execute, 
+it should be alright to run them even on the login node. 
