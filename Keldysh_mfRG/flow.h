@@ -30,7 +30,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
     //// better: read state from converged parquet solution
-    //state_ini = read_hdf("parquet_solution_K3_Lambda=20.000000", 5, 51);
+    //state_ini = read_hdf("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", 4, 51);
     //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
     parquet_solver("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
@@ -46,11 +46,13 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
 
     // compute the flow using RK4 solver
-    ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
-                   flowgrid::sq_substitution, flowgrid::sq_resubstitution,                                       // use substitution for Lambda steps
-                   nODE,
-                   outputFileName, save_intermediate_results);                                                                // save state at each step during flow
-
+    //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
+    //               flowgrid::sq_substitution, flowgrid::sq_resubstitution,                                       // use substitution for Lambda steps
+    //               nODE,
+    //               outputFileName, save_intermediate_results);                                                                // save state at each step during flow
+    std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
+    ode_solver<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
+                              Lambda_checkpoints, outputFileName);
     //sum_rule_K1tK(outputFileName);    // Check fulfillment of the sum rule
 
     return state_fin;

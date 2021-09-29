@@ -1,8 +1,8 @@
 #ifndef FPP_MFRG_TEST_ODE_SOLVER_H
 #define FPP_MFRG_TEST_ODE_SOLVER_H
 
-double max_rel_err(double x, double scale, double tiny) {
-    return std::abs(x/scale);
+double max_rel_err(double x, vec<double> scale, double tiny) {
+    return std::abs(x/scale.max_norm());
 }
 
 
@@ -13,19 +13,19 @@ template<> void postRKstep_stuff<double>(double y, vec<double> x_vals, int itera
 }
 
 namespace {
-    double rhs_lin(double y, double x) {
+    double rhs_lin(const double& y, const double x) {
         return x*2.;
     }
-    double rhs_quadr(double y, double x) {
+    double rhs_quadr(const double& y, const double x) {
         return x*x*3.;
     }
-    double rhs_cubic(double y, double x) {
+    double rhs_cubic(const double& y, const double x) {
         return x*x*x*4.;
     }
-    double rhs_quartic(double y, double x) {
+    double rhs_quartic(const double& y, const double x) {
         return x*x*x*x*5.;
     }
-    double rhs_exp(double y, double x) {
+    double rhs_exp(const double& y, const double x) {
         return y;
     }
 }
@@ -38,7 +38,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
     double y_ini = 1.;
     double result;
-    ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, rhs_lin, lambda_checkpoints);
+    ode_solver<double>(result, Lambda_f, y_ini, Lambda_i, rhs_quartic, lambda_checkpoints);
 
 
     double result_exact = 0.;

@@ -15,7 +15,7 @@
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 //#define KELDYSH_FORMALISM
 #ifndef KELDYSH_FORMALISM
-//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
 
 // Determines whether particle-hole symmetry is assumed
@@ -88,7 +88,7 @@ constexpr int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
-#define REG 3
+#define REG 2
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
@@ -96,12 +96,12 @@ constexpr int n_in = 1;
 
 
 constexpr int nODE = 50;
-constexpr double epsODE = 1e-8;
+constexpr double epsODE = 1e-4;
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
-#define ODEsolver 2
+#define ODEsolver 3
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)

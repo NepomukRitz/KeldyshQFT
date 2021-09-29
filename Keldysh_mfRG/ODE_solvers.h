@@ -86,7 +86,8 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
                     double subst(double x), double resubst(double x),
                     const int N_ODE, std::string filename, const int it_start, bool save_intermediate_states) {
     // construct non-linear flow grid via substitution
-    rvec x_vals  = flowgrid::construct_flow_grid(x_fin, x_ini, subst, resubst, N_ODE);
+    std::vector<double> lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
+    rvec x_vals  = flowgrid::construct_flow_grid(x_fin, x_ini, subst, resubst, N_ODE, lambda_checkpoints);
     rvec x_diffs = flowgrid::flow_grid_step_sizes(x_vals); // compute step sizes for flow grid
 
     // solve ODE using step sizes x_diffs
@@ -270,17 +271,19 @@ namespace ode_solver_impl
      */
     template <typename Y, typename FlowGrid, size_t stages>
     void rk_step(const butcher_tableau<stages> &tableau, const Y &y_init, const Y &dydx,
-                   Y &result, const double t_value, const double t_step, double &maxrel_error, const std::function<Y(Y, double)> rhs)
+                   Y &result, const double t_value, const double t_step, double &maxrel_error, Y rhs (const Y& y, const double x))
     {
         const int world_rank = mpi_world_rank();
 
         Y state_stage=y_init; // temporary state
         //
-        vec<Y> k(stages);
-        k[0] = FlowGrid::dlambda_dt(t_value) * dydx;             /// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
-        //k.reserve(stages);
+        vec<Y> k; // stores the pure right-hand-sides ( without multiplication with an step size )
+        double Lambda = FlowGrid::lambda_from_t(t_value);
+        double dLambda = FlowGrid::lambda_from_t(t_value + t_step) - Lambda;
+        k.reserve(stages);
+        k.push_back( dydx );             /// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
 
-        double t_stage;
+        double Lambda_stage;
         // Start at 1 because 0th stage is already contained in dydx parameter
         for (size_t stage = 1; stage < stages; stage++)
         {
@@ -290,30 +293,30 @@ namespace ode_solver_impl
                 throw std::logic_error("Inconsistency in RK solver.");
             }
 #endif
-            t_stage = t_value + t_step * tableau.get_node(stage);
+            Lambda_stage = Lambda + dLambda * tableau.get_node(stage);
 
             state_stage = y_init;
             for (size_t col_index = 0; col_index < stage; col_index++)
             {
-                state_stage += t_step * tableau.get_a(stage, col_index) * k[col_index];
+                state_stage += k[col_index] * dLambda * tableau.get_a(stage, col_index);
                 assert(isfinite(state_stage));
             }
 
-            k[stage] = FlowGrid::dlambda_dt(t_stage) * rhs(state_stage, FlowGrid::lambda_from_t(t_stage));
+            k.push_back( rhs(state_stage, Lambda_stage)  );
         }
 
         result = y_init;
         for (size_t stage = 0; stage < stages; stage++)
         {
-            result += t_step * tableau.b_high[stage] * k[stage];
+            result += k[stage] * dLambda * tableau.b_high[stage];
         }
 
-        Y err = t_step * tableau.get_error_b(0) * k[0];
+        Y err = k[0] * dLambda * tableau.get_error_b(0);
         for (size_t stage = 1; stage < stages; stage++)
         {
-            err += t_step * tableau.get_error_b(stage) * k[stage];
+            err += k[stage] * dLambda * tableau.get_error_b(stage);
         }
-        maxrel_error = max_rel_err(err, k.max_norm(), 1e-6); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
+        maxrel_error = max_rel_err(err, k, 1e-6); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
         assert(isfinite(result));
         assert(isfinite(maxrel_error));
     }
@@ -334,7 +337,7 @@ namespace ode_solver_impl
     template <typename Y, typename FlowGrid, size_t stages>
     void rkqs(butcher_tableau<stages> tableau, Y &state_i, double &Lambda_i, double htry, double &hdid, double &hnext,
               double min_t_step, double max_t_step,
-              const std::vector<double> &lambda_checkpoints, std::function<Y(Y, double)> rhs)
+              const std::vector<double> &lambda_checkpoints, Y rhs (const Y& y, const double x))
     {
 
 
@@ -485,8 +488,8 @@ template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype> y_
 
 
 template <typename Y, typename FlowGrid = flowgrid::sqrt_parametrization>
-void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, std::function<Y(Y,double)> rhs,
-                std::vector<double> lambda_checkpoints = {}, std::string filename = "", int iter_start=0, const int N_ODE=nODE+U_NRG.size()) {
+void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, Y rhs (const Y& y, const double x),
+                std::vector<double> lambda_checkpoints = {}, std::string filename = "", int iter_start=0, const int N_ODE=nODE) {
     int world_rank = mpi_world_rank();
 
 
@@ -514,7 +517,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
     lambdas[0] = Lambda_i;
 
     // get lambdas according to FlowGrid (for hybridization flow: + checkpoints acc. to U_NRG  ) -> for non-adaptive method
-    const vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_f, Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, N_ODE);
+    const vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_f, Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, N_ODE, lambda_checkpoints);
 
     const double max_t_step = 1e1;// * (FlowGrid::t_from_lambda(Lambda_f) - FlowGrid::t_from_lambda(Lambda_i));
     const double min_t_step = 1e-5;//* (FlowGrid::t_from_lambda(Lambda_f) - FlowGrid::t_from_lambda(Lambda_i));
