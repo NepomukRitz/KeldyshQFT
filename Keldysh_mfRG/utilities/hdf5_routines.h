@@ -6,6 +6,7 @@
 #define KELDYSH_MFRG_HDF5_ROUTINES_H
 
 #include <cmath>
+#include <vector>
 #include "util.h"               // printing text
 #include "../parameters/master_parameters.h"         // system parameters (necessary for vector lengths etc.)
 #include "../data_structures.h"    // comp data type, std::real/complex vector class
@@ -87,6 +88,7 @@ H5::CompType def_mtype_comp() {
  */
 class Buffer {
 public:
+    double * lambda;
     double * freq_params;
     double * bfreqs_buffer;
     double * ffreqs_buffer;
@@ -124,6 +126,7 @@ public:
 #endif
 
     Buffer() {
+        lambda = new double [1];
         freq_params = new double[N_freq_params];
         bfreqs_buffer = new double[nBOS];                        // create buffer for bosonic frequencies
         ffreqs_buffer = new double[nFER];                        // create buffer for fermionic frequencies
@@ -1070,6 +1073,8 @@ template <typename Q>
 void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
     Q val; // buffer value
 
+    result.Lambda = *buffer.lambda;
+
     for (int i=0; i<buffer.self_dim; ++i) {
         if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.selfenergy[i].re, buffer.selfenergy[i].im);
         else                                    val = buffer.selfenergy[i].im;
@@ -1135,7 +1140,7 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  * @return            : State object containing the result.
  */
-State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
+State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it, long Lambda_size){
     State<state_datatype> result(Lambda_ini);
     if (Lambda_it < Lambda_size) {
 
@@ -1167,6 +1172,7 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
         H5::DataSpace dataSpaces_selfenergy = dataSets.self.getSpace();
         H5::DataSpace dataSpaces_irreducible = dataSets.irred.getSpace();
 
+        H5::DataSpace dataSpaces_Lambda_buffer(1, dims.Lambda);
         H5::DataSpace dataSpaces_freq_params_buffer(RANK_freqs-1, dims.freq_params_buffer_dims);
         H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
         H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
@@ -1215,6 +1221,17 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
             block[i] = 1;
         }
         count[0] = 1;
+
+        /// load data into buffer
+
+        hsize_t start_1D[1] = {Lambda_it};
+        hsize_t stride_1D[1]= {1};
+        hsize_t count_1D[1] = {1};
+        hsize_t block_1D[1] = {1};
+        dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+        dataSets.lambda.read(buffer.lambda, H5::PredType::NATIVE_DOUBLE,
+                           dataSpaces_Lambda_buffer, dataSpaces_Lambda);
+
 
         count[1] = N_freq_params;
         try {   // storing frequency gri parameters was implemented later --> old files do not have it
@@ -1286,6 +1303,76 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
         print("Cannot read from file ", FILE_NAME, " since Lambda layer out of range", true);
     }
 }
+
+/**
+ * Read Lambdas from an existing file
+ * @param FILE_NAME   : File name.
+ * @return            : Lambdas
+ */
+rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
+
+
+
+    // Open the file. Access rights: read-only
+    H5::H5File *file = 0;
+    file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
+
+    H5::DataSet lambda_dataset = file->openDataSet("lambdas");
+
+    // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
+    //Buffer buffer;
+
+    // Create the memory data type for storing complex numbers in file
+    //H5::CompType mtype_comp = def_mtype_comp();
+
+    // Create the dimension arrays for objects in file and in buffer
+    //Dims dims(buffer, Lambda_size);
+
+    // Read the data sets from the file to copy their content into the buffer
+    //DataSets dataSets(file);
+
+    // Create the data spaces for the data sets in file and for buffer objects
+    H5::DataSpace dataSpace_Lambda = lambda_dataset.getSpace();
+    /*
+     * Get the number of dimensions in the dataspace.
+     */
+    int rank = dataSpace_Lambda.getSimpleExtentNdims();
+    /*
+     * Get the dimension size of each dimension in the dataspace and
+     * display them.
+     */
+    hsize_t dims_out[2];
+    int ndims = dataSpace_Lambda.getSimpleExtentDims( dims_out, NULL);
+    //std::cout << "rank " << rank << ", dimensions " <<
+    //     (unsigned long)(dims_out[0]) << " x " <<
+    //     (unsigned long)(dims_out[1]) << std::endl;
+
+
+    H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
+
+    /// load data into buffer
+
+    //hsize_t start_1D[1] = {Lambda_it};
+    //hsize_t stride_1D[1]= {1};
+    //hsize_t count_1D[1] = {1};
+    //hsize_t block_1D[1] = {1};
+    //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+    double Lambdas_arr[dims_out[0]];
+    lambda_dataset.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
+                         dataSpace_Lambda_buffer, dataSpace_Lambda);
+
+    rvec Lambdas (Lambdas_arr, Lambdas_arr + sizeof(Lambdas_arr) / sizeof(double));
+
+    // Terminate
+    lambda_dataset.close();
+    file->close();
+    delete file;
+
+    return Lambdas;
+
+
+}
+
 
 /// --- Test function --- ///
 

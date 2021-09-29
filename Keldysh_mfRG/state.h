@@ -14,6 +14,7 @@ template <typename Q>
 class State{
     void set_frequency_grid(const State<Q>& state_in);
 public:
+    double Lambda;
     SelfEnergy<Q> selfenergy;
     Vertex<Q> vertex;
 
