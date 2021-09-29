@@ -200,12 +200,17 @@ If activated, Slurm informs per email when jobs start/finish/fail etc. Deactivat
 ### Accessing the data
 
 Data can be downloaded from KCS to `<local-path>` on your workstation/laptop using rsync:
+
 `rsync -auvh <lrz-ID>@kcs-login.cos.lrz.de:/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG/<path-to-result-file> <local-path>`
 
 Hint: if you have defined e.g.
+
 `kcs=<lrz-ID>@kcs-login.cos.lrz.de` and
+
 `kcshome=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/<lrz-ID>/mfrg/Keldysh_mfRG`
+
 in your local .bashrc (on the workstation/laptop), the command simplifies:
+
 `rsync -auvh $kcs:$kcshome/<path-to-result-file> <local-path>`
 
 ### Running unit tests
