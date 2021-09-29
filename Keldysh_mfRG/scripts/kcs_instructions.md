@@ -1,8 +1,8 @@
-#Introduction to the KCS-Cluster
+# Introduction to the KCS-Cluster
 
 Project name for LS vonDelft: **pn34vu**
 
-###Overview
+### Overview
 
 - Login node: kcs-login (`$ ssh <lrz-ID>@kcs-login.cos.lrz.de`)
 - Need to have an established VPN connection to the MWN (or be physically connected to it).
@@ -15,7 +15,7 @@ Project name for LS vonDelft: **pn34vu**
 **TODO:** How to access the long-runner queue?
 
 
-###File System
+### File System
 
  - GPFS file system, efficient for large files 
    - page size 16 MB -> **Do not save data in smaller files!**
@@ -41,7 +41,7 @@ Project name for LS vonDelft: **pn34vu**
 - What is a container?
 - What is globus?
 
-###Setting up a .bashrc file
+### Setting up a .bashrc file
 It is highly recommended to set up a `.bashrc` file to configure shortcuts 
 and load some modules automatically on login.\
 In the home-directory entered when logging onto KCS (`/dss/dsshome1/lxc09/<lrz-ID>`), create a `.bashrc`
@@ -72,7 +72,7 @@ After creating or modifying the `.bashrc` file, one has to reload it using `# so
 Alternatively, one can log off an log on to KCS again, 
 as the `.bashrc` file is always automatically loaded upon login.
 
-###Module System
+### Module System
 
 Grants access to pre-installed packages. Useful commands:
 
@@ -83,7 +83,7 @@ Grants access to pre-installed packages. Useful commands:
 | `module load <module_name>`  | loads the module \<module_name> |
 | `module unload <module_name>`  | unloads the module \<module_name> |
 
-###Cloning the code (to the right place)
+### Cloning the code (to the right place)
 
 The code should be placed into the "home" directory used for computations, for which the shortcut `kcshome`
 was set up in the `.bashrc` file above. It is then simply a matter of navigating to the "home" 
@@ -97,7 +97,7 @@ Otherwise one would have to set up a ssh-key-pair.
 
 
 
-###Compiling the code
+### Compiling the code
 
 Depending on the setup used, there should already be a makefile or a compile script in the code base
 of the git repository. As of September 2021, the compile script for the Keldysh mfRG code is located at
@@ -136,7 +136,7 @@ The compile script can then simply be executed by
 
 `$ ./mfrg/Keldysh_mfRG/scripts/compile_kcs.sh`.
 
-###Submitting jobs
+### Submitting jobs
 
 The job handling of the cluster is organized by SLURM. To submit a job, one needs to provide 
 a corresponding shell script, e.g. named `batchfile_loc.sh` **TODO: Where should one put it?**
@@ -157,7 +157,7 @@ a corresponding shell script, e.g. named `batchfile_loc.sh` **TODO: Where should
 
 ### Accessing the data
 
-###Running unit tests
+### Running unit tests
 
 As long as unit test really are just unit test and do not take much time to execute, 
 it should be alright to run them even on the login node. 
