@@ -329,7 +329,7 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
  *                     reached (default: 50)
  */
 template <typename Q>
-void parquet_solver(const std::string filename, State<Q> state_in, const double Lambda,
+void parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda,
                     const double accuracy=1e-6, const int Nmax=50) {
     double relative_difference_vertex = 1.;
     double relative_difference_selfenergy = 1.;
