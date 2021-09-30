@@ -261,13 +261,13 @@ vec<Q> SplineK3<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
 template <class DataContainer, typename Q>
 void SplineK3<DataContainer,Q>::initializeK3()
 {
-    m_deriv_x =  DataContainer::get_deriv_K3_x(m_left, m_right, m_left_value, m_right_value);
-    m_deriv_y =  DataContainer::get_deriv_K3_y(m_left, m_right, m_left_value, m_right_value);
-    m_deriv_z =  DataContainer::get_deriv_K3_z(m_left, m_right, m_left_value, m_right_value);
-    m_deriv_xy = DataContainer::get_deriv_K3_xy(m_left, m_right, m_left_value, m_right_value);
-    m_deriv_xz = DataContainer::get_deriv_K3_xz(m_left, m_right, m_left_value, m_right_value);
-    m_deriv_yz = DataContainer::get_deriv_K3_yz(m_left, m_right, m_left_value, m_right_value);
-    m_deriv_xyz = DataContainer::get_deriv_K3_xyz(m_left, m_right, m_left_value, m_right_value);
+    m_deriv_x =  DataContainer::get_deriv_K3_x();
+    m_deriv_y =  DataContainer::get_deriv_K3_y();
+    m_deriv_z =  DataContainer::get_deriv_K3_z();
+    m_deriv_xy = DataContainer::get_deriv_K3_xy();
+    m_deriv_xz = DataContainer::get_deriv_K3_xz();
+    m_deriv_yz = DataContainer::get_deriv_K3_yz();
+    m_deriv_xyz = DataContainer::get_deriv_K3_xyz();
 }
 
 

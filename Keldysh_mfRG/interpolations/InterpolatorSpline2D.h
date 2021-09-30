@@ -133,9 +133,9 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
 template <class DataContainer, typename Q>
 void SplineK2<DataContainer,Q>::initializeK2()
 {
-    m_deriv_x =  DataContainer::get_deriv_K2_x(m_left, m_right, m_left_value, m_right_value);
-    m_deriv_y =  DataContainer::get_deriv_K2_y(m_left, m_right, m_left_value, m_right_value);
-    m_deriv_xy = DataContainer::get_deriv_K2_xy(m_left, m_right, m_left_value, m_right_value);
+    m_deriv_x =  DataContainer::get_deriv_K2_x();
+    m_deriv_y =  DataContainer::get_deriv_K2_y();
+    m_deriv_xy = DataContainer::get_deriv_K2_xy();
 }
 
 

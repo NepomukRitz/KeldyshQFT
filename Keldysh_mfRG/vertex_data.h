@@ -37,11 +37,13 @@ class vertexDataContainer<k1, Q> {
     template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
     template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
 
+
 protected:
     vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
     VertexFrequencyGrid<k1> frequencies_K1;    // frequency grid
 public:
+    size_t dimsK1[3] = {nK_K1, nBOS, n_in};
 
     explicit vertexDataContainer(double Lambda) : frequencies_K1(Lambda) { };
 
@@ -84,8 +86,9 @@ public:
     auto K1_gridtransf_inv(double w) const -> double;
 
 
-    vec<Q> get_deriv_K1_x(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    double get_deriv_maxK1() const;
+    vec<Q> get_deriv_K1_x() const;
+    double get_gradient_maxK1() const;
+    double get_curvature_maxK1() const;
 };
 
 template<typename Q>
@@ -172,9 +175,9 @@ public:
     auto K2_get_correction_MFfiniteT(int iw) const -> double;
 
 
-    vec<Q> get_deriv_K2_x(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    vec<Q> get_deriv_K2_y(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    vec<Q> get_deriv_K2_xy(bd_type left, bd_type right, Q value_left, Q value_right) const;
+    vec<Q> get_deriv_K2_x () const;
+    vec<Q> get_deriv_K2_y () const;
+    vec<Q> get_deriv_K2_xy() const;
     double get_deriv_maxK2() const;
 };
 
@@ -260,13 +263,13 @@ public:
     auto K3_get_correction_MFfiniteT(int iw) const -> double;
 
 
-    vec<Q> get_deriv_K3_x(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    vec<Q> get_deriv_K3_y(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    vec<Q> get_deriv_K3_z(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    vec<Q> get_deriv_K3_xy(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    vec<Q> get_deriv_K3_xz(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    vec<Q> get_deriv_K3_yz(bd_type left, bd_type right, Q value_left, Q value_right) const;
-    vec<Q> get_deriv_K3_xyz(bd_type left, bd_type right, Q value_left, Q value_right) const;
+    vec<Q> get_deriv_K3_x  () const;
+    vec<Q> get_deriv_K3_y  () const;
+    vec<Q> get_deriv_K3_z  () const;
+    vec<Q> get_deriv_K3_xy () const;
+    vec<Q> get_deriv_K3_xz () const;
+    vec<Q> get_deriv_K3_yz () const;
+    vec<Q> get_deriv_K3_xyz() const;
     double get_deriv_maxK3() const;
 
 };
@@ -368,18 +371,21 @@ auto vertexDataContainer<k1,Q>::K1_gridtransf_inv(double w) const -> double {
 
 
 
-template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_maxK1() const -> double {
-    double max_K1 = ::power2(get_deriv_K1_x(third_deriv, third_deriv, 0., 0.)).max_norm();
+template <typename Q> auto vertexDataContainer<k1,Q>::get_gradient_maxK1() const -> double {
+    double max_K1 = ::power2(get_deriv_K1_x()).max_norm();
     return max_K1;
-
+}
+template <typename Q> auto vertexDataContainer<k1,Q>::get_curvature_maxK1() const -> double {
+    double max_K1 = ::power2(get_deriv_K1_x().get_deriv_K1_x).max_norm();
+    return max_K1;
 }
 
 
 
-template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_x[3] = {n_in, nK_K1, nBOS};
-    const size_t perm_x[3] = {1, 2, 0};
-    vec<Q> result = ::get_finite_differences<Q,3>(K1, frequencies_K1.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x() const -> vec<Q> {
+    //const size_t dims_x[3] = {n_in, nK_K1, nBOS};
+    //const size_t perm_x[3] = {1, 2, 0};
+    vec<Q> result = ::partial_deriv<Q,3>(K1, frequencies_K1.b.ts, dimsK1, 1);
     return result;
 
 }
@@ -508,34 +514,36 @@ void vertexDataContainer<k2,Q>::K2_convert2naturalFreqs(double &w, double &v) co
 
 
 
-template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_x(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_x[4] = {nFER2, n_in, nK_K2, nBOS2};
-    const size_t perm_x[4] = {2, 3, 0, 1};
-    vec<Q> result = ::get_finite_differences<Q,4>(K2, frequencies_K2.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_x() const -> vec<Q> {
+    //const size_t dims_x[4] = {nFER2, n_in, nK_K2, nBOS2};
+    //const size_t perm_x[4] = {2, 3, 0, 1};
+    vec<Q> result = ::partial_deriv<Q,4>(K2, frequencies_K2.b.ts, dimsK2, 1);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_y(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_y[4] = {n_in, nK_K2, nBOS2, nFER2};
-    const size_t perm_y[4] = {1, 2, 3, 0};
-    vec<Q> result = ::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_y() const -> vec<Q> {
+    //const size_t dims_y[4] = {n_in, nK_K2, nBOS2, nFER2};
+    //const size_t perm_y[4] = {1, 2, 3, 0};
+    vec<Q> result = ::partial_deriv<Q,4>(K2, frequencies_K2.f.ts, dimsK2, 2);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_xy(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_y[4] = {n_in, nK_K2, nBOS2, nFER2};
-    const size_t perm_y[4] = {1, 2, 3, 0};
-    vec<Q> inter_result = ::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
-    const size_t dims_x[4] = {nFER2, n_in, nK_K2, nBOS2};
-    const size_t perm_x[4] = {2, 3, 0, 1};
-    vec<Q> result = ::get_finite_differences<Q,4>(inter_result, frequencies_K2.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_xy() const -> vec<Q> {
+    //const size_t dims_y[4] = {n_in, nK_K2, nBOS2, nFER2};
+    //const size_t perm_y[4] = {1, 2, 3, 0};
+    //vec<Q> inter_result = ::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+    vec<Q> inter_result = ::partial_deriv<Q,4>(K2, frequencies_K2.f.ts, dimsK2, 2);
+    //const size_t dims_x[4] = {nFER2, n_in, nK_K2, nBOS2};
+    //const size_t perm_x[4] = {2, 3, 0, 1};
+    //vec<Q> result = ::get_finite_differences<Q,4>(inter_result, frequencies_K2.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+    vec<Q> result = ::partial_deriv<Q,4>(inter_result, frequencies_K2.b.ts, dimsK2, 1);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_maxK2() const -> double {
-    const size_t dims1[4] = {n_in, nK_K2, nBOS2, nFER2};
-    const size_t dims2[4] = {nFER2, n_in, nK_K2, nBOS2};
-    const size_t perm1[4] = {1, 2, 3, 0};
-    const size_t perm2[4] = {2, 3, 0, 1};
-    double max_K2 = (::power2(::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims1, perm1))
-                   + ::power2(::get_finite_differences<Q,4>(K2, frequencies_K2.b.ts, dims2, perm2))
+    //const size_t dims1[4] = {n_in, nK_K2, nBOS2, nFER2};
+    //const size_t dims2[4] = {nFER2, n_in, nK_K2, nBOS2};
+    //const size_t perm1[4] = {1, 2, 3, 0};
+    //const size_t perm2[4] = {2, 3, 0, 1};
+    double max_K2 = (::power2(::partial_deriv<Q,4>(K2, frequencies_K2.f.ts, dimsK2, 2))
+                   + ::power2(::partial_deriv<Q,4>(K2, frequencies_K2.b.ts, dimsK2, 1))
     ).max_norm();
     return max_K2;
 
@@ -648,61 +656,61 @@ auto vertexDataContainer<k3,Q>::K3_get_correction_MFfiniteT(int iw) const -> dou
 }
 
 
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_x(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
-    const size_t perm_x[5] = {3, 4, 0, 1, 2};
-    vec<Q> result = ::get_finite_differences<Q,5>(K3, frequencies_K3.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_x() const -> vec<Q> {
+    //const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
+    //const size_t perm_x[5] = {3, 4, 0, 1, 2};
+    vec<Q> result = ::partial_deriv<Q,5>(K3, frequencies_K3.b.ts, dimsK3, 1);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_y(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
-    const size_t perm_y[5] = {2, 3, 4, 0, 1};
-    vec<Q> result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_y() const -> vec<Q> {
+    //const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    //const size_t perm_y[5] = {2, 3, 4, 0, 1};
+    vec<Q> result = ::partial_deriv<Q,5>(K3, frequencies_K3.f.ts, dimsK3, 2);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_z(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
-    const size_t perm_z[5] = {1, 2, 3, 4, 0};
-    vec<Q> result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_z, perm_z, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_z() const -> vec<Q> {
+    //const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
+    //const size_t perm_z[5] = {1, 2, 3, 4, 0};
+    vec<Q> result = ::partial_deriv<Q,5>(K3, frequencies_K3.f.ts, dimsK3, 3);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xy(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
-    const size_t perm_y[5] = {2, 3, 4, 0, 1};
-    vec<Q> inter_result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_y, perm_y, left, right, value_left, value_right);
-    const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
-    const size_t perm_x[5] = {3, 4, 0, 1, 2};
-    vec<Q> result = ::get_finite_differences<Q,5>(inter_result, frequencies_K3.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xy() const -> vec<Q> {
+    //const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    //const size_t perm_y[5] = {2, 3, 4, 0, 1};
+    vec<Q> inter_result = ::partial_deriv<Q,5>(K3, frequencies_K3.f.ts, dimsK3, 2);
+    //const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
+    //const size_t perm_x[5] = {3, 4, 0, 1, 2};
+    vec<Q> result = ::partial_deriv<Q,5>(inter_result, frequencies_K3.b.ts, dimsK3, 1);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xz(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
-    const size_t perm_z[5] = {1, 2, 3, 4, 0};
-    vec<Q> inter_result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_z, perm_z, left, right, value_left, value_right);
-    const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
-    const size_t perm_x[5] = {3, 4, 0, 1, 2};
-    vec<Q> result = ::get_finite_differences<Q,5>(inter_result, frequencies_K3.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xz() const -> vec<Q> {
+    //const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
+    //const size_t perm_z[5] = {1, 2, 3, 4, 0};
+    vec<Q> inter_result = ::partial_deriv<Q,5>(K3, frequencies_K3.f.ts, dimsK3, 3);
+    //const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
+    //const size_t perm_x[5] = {3, 4, 0, 1, 2};
+    vec<Q> result = ::partial_deriv<Q,5>(inter_result, frequencies_K3.b.ts, dimsK3, 1);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_yz(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
-    const size_t perm_y[5] = {2, 3, 4, 0, 1};
-    vec<Q> inter_result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_y, perm_y, left, right, value_left, value_right);
-    const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
-    const size_t perm_z[5] = {1, 2, 3, 4, 0};
-    vec<Q> result = ::get_finite_differences<Q,5>(inter_result, frequencies_K3.f.ts, dims_z, perm_z, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_yz() const -> vec<Q> {
+    //const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    //const size_t perm_y[5] = {2, 3, 4, 0, 1};
+    vec<Q> inter_result = ::partial_deriv<Q,5>(K3, frequencies_K3.f.ts, dimsK3, 2);
+    //const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
+    //const size_t perm_z[5] = {1, 2, 3, 4, 0};
+    vec<Q> result = ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, dimsK3, 3);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xyz(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
-    const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
-    const size_t perm_z[5] = {1, 2, 3, 4, 0};
-    vec<Q> inter_result = ::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims_z, perm_z, left, right, value_left, value_right);
-    const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
-    const size_t perm_y[5] = {2, 3, 4, 0, 1};
-    vec<Q> inter_result2= ::get_finite_differences<Q,5>(inter_result, frequencies_K3.f.ts, dims_y, perm_y, left, right, value_left, value_right);
-    const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
-    const size_t perm_x[5] = {3, 4, 0, 1, 2};
-    vec<Q> result = ::get_finite_differences<Q,5>(inter_result2, frequencies_K3.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xyz() const -> vec<Q> {
+    //const size_t dims_z[5] = {n_in, nK_K3, nBOS3, nFER3, nFER3};
+    //const size_t perm_z[5] = {1, 2, 3, 4, 0};
+    vec<Q> inter_result = ::partial_deriv<Q,5>(K3, frequencies_K3.f.ts, dimsK3, 3);
+    //const size_t dims_y[5] = {nFER3, n_in, nK_K3, nBOS3, nFER3};
+    //const size_t perm_y[5] = {2, 3, 4, 0, 1};
+    vec<Q> inter_result2= ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, dimsK3, 2);
+    //const size_t dims_x[5] = {nFER3, nFER3, n_in, nK_K3, nBOS3};
+    //const size_t perm_x[5] = {3, 4, 0, 1, 2};
+    vec<Q> result = ::partial_deriv<Q,5>(inter_result2, frequencies_K3.b.ts, dimsK3, 1);
     return result;
 }
 
@@ -714,9 +722,9 @@ template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_maxK3() const ->
     size_t perm2[5] = {2, 3, 4, 0, 1};
     size_t perm3[5] = {3, 4, 0, 1, 2};
 
-    double max_K3 = (::power2(::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims1, perm1))
-                   + ::power2(::get_finite_differences<Q,5>(K3, frequencies_K3.f.ts, dims2, perm2))
-                   + ::power2(::get_finite_differences<Q,5>(K3, frequencies_K3.b.ts, dims3, perm3))
+    double max_K3 = (::power2(::partial_deriv<Q,5>(K3, frequencies_K3.f.ts, dimsK3, 3))
+                   + ::power2(::partial_deriv<Q,5>(K3, frequencies_K3.f.ts, dimsK3, 2))
+                   + ::power2(::partial_deriv<Q,5>(K3, frequencies_K3.b.ts, dimsK3, 1))
     ).max_norm();
     return max_K3;
 

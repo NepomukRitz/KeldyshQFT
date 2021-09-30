@@ -146,7 +146,7 @@ public:
     }
     m_d[n-1]=0.0;
      */
-    m_b = DataContainer::get_deriv_K1_x(m_left, m_right, m_left_value, m_right_value);
+    m_b = DataContainer::get_deriv_K1_x();
 
     // parameters c and d are determined by continuity and differentiability
     set_coeffs_from_b();
