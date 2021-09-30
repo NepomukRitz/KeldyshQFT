@@ -798,9 +798,9 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
             integrand_value = (*this)(vpp);
         }
         if (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
-            integrand_re[i] = integrand_value;
+            integrand_re[i] = myreal(integrand_value);
             integrand_im[i] = 0.;
-            Pival_re[i] = Pival;
+            Pival_re[i] = myreal(Pival);
             Pival_im[i] = 0.;
         }
         else{
@@ -1099,7 +1099,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int iterator = 0;
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(dynamic) default(none) shared(n_omp, i_mpi, iterator, Buffer)
+#pragma omp parallel for schedule(dynamic) default(none) shared(n_omp, i_mpi, iterator, Buffer, diag_class)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }

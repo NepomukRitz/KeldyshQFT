@@ -1,8 +1,6 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
-#include "frequency_parameters.h"
-#include "technical_parameters.h"
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 
@@ -105,6 +103,11 @@ constexpr double Lambda_scale = 1./200.;             //Scale of the log substitu
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
 std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+
+
+// specific parameters of the frequency grid and integrator etc.
+#include "frequency_parameters.h" // need to put this here since it needs to know about the KELDYSH_FORMALISM flag
+#include "technical_parameters.h"
 
 
 #if REG==2
