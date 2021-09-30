@@ -135,7 +135,6 @@ void sum_rule_K1tK(const std::string filename) {
     print("Checking fullfilment of the sum rule for K1t");
     int nLambda = nODE + U_NRG.size() + 1;
 
-    //rvec Lambdas = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE);
     rvec Lambdas = read_Lambdas_from_hdf(filename);
 
     rvec sum_rule (nLambda);

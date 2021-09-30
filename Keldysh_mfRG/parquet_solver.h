@@ -204,10 +204,7 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
  * resulting from the parquet equations.
  */
 void parquet_checks(const std::string filename) {
-    //rvec Lambdas = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE);
     rvec Lambdas = read_Lambdas_from_hdf(filename);
-    // TODO(low): this only works if flow grid of the computation of the file <filename> is the same as the one produced here
-    //  --> also read Lambda grid from file
     int nL = Lambdas.size();
 
     rvec norm_K1_fRG (nL), norm_K1_BSE (nL), norm_K1_diff (nL);
