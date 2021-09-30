@@ -51,7 +51,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     //               nODE,
     //               outputFileName, save_intermediate_results);                                                                // save state at each step during flow
     std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
-    ode_solver<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
+    ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
                               Lambda_checkpoints, outputFileName);
     //sum_rule_K1tK(outputFileName);    // Check fulfillment of the sum rule
 
@@ -80,11 +80,14 @@ State<state_datatype> n_loop_flow(std::string inputFileName, const int it_start,
         }
 
         // compute the flow using RK4 solver
-        ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
-                       flowgrid::sq_substitution, flowgrid::sq_resubstitution,      // use substitution for Lambda steps
-                       nODE,
-                       inputFileName,                           // save state at each step during flow
-                       it_start, save_intermediate_results);                               // start from iteration it_start
+        //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs
+        //               flowgrid::sq_substitution, flowgrid::sq_resubstitution,      // use substitution for Lambda steps
+        //               nODE,
+        //               inputFileName,                           // save state at each step during flow
+        //               it_start, save_intermediate_results);                               // start from iteration it_start
+        std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
+        ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
+                Lambda_checkpoints, inputFileName, it_start);
 
         return state_fin;
     }
