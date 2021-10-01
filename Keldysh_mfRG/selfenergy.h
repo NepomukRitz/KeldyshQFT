@@ -197,7 +197,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
     FrequencyGrid frequencies_new = this->frequencies; // new frequency grid
     frequencies_new.rescale_grid(Lambda);              // rescale new frequency grid
 
-    vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
+    vec<Q> Sigma_new = empty_Sigma();                     // temporary self-energy vector
     for (int iK=0; iK<2; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=1; iv<nSE-1; ++iv) {
