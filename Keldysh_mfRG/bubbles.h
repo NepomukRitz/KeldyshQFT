@@ -856,7 +856,7 @@ class BubbleFunctionCalculator{
     void set_channel_specific_freq_ranges_and_prefactor();
     void find_vmin_and_vmax();
 
-    bool wrong_cross_projection(); // Needed for the Hubbard model.
+    bool missing_cross_projection(); // Needed for the Hubbard model.
 
     void calculate_bubble_function(int diag_class);
     Q get_value(int i_mpi, int i_omp, int n_omp, int diag_class);
@@ -903,7 +903,7 @@ class BubbleFunctionCalculator{
         find_vmin_and_vmax();
 
         // For Hubbard model computations, make sure that the internal structures of the vertices are parametrized correctly.
-        if (HUBBARD_MODEL && wrong_cross_projection()) {
+        if (HUBBARD_MODEL && (MAX_DIAG_CLASS > 1) && missing_cross_projection()) { // Cross projected parts are only needed for the Hubbard model in K2 and K3.
             print("Error! Needed crossprojection still has to be computed. Abort.");
             assert(false);
         }
@@ -983,8 +983,7 @@ template<typename Q,
         template <typename> class symmetry_right,
         class Bubble_Object>
 bool
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::wrong_cross_projection() {
-    bool cross_projection_missing = false;
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::missing_cross_projection() {
     switch (channel) {
         case 'a':
             if (!vertex1[0].pvertex().calculated_crossprojections ||
@@ -992,7 +991,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 !vertex2[0].pvertex().calculated_crossprojections ||
                 !vertex2[0].tvertex().calculated_crossprojections)
             {
-                cross_projection_missing = true;
+                return true;
             }
             break;
         case 'p':
@@ -1001,7 +1000,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 !vertex2[0].avertex().calculated_crossprojections ||
                 !vertex2[0].tvertex().calculated_crossprojections)
             {
-                cross_projection_missing = true;
+                return true;
             }
             break;
         case 't':
@@ -1010,12 +1009,11 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
                 !vertex2[0].avertex().calculated_crossprojections ||
                 !vertex2[0].pvertex().calculated_crossprojections)
             {
-                cross_projection_missing = true;
+                return true;
             }
             break;
         default:;
     }
-    return cross_projection_missing;
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
