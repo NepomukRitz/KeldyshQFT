@@ -420,9 +420,9 @@ void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims
 
 /**
  * Takes a flat index and returns a flat index for a vector with rotated directions
- * @tparam rank
- * @param iflat
- * @param dims
+ * @tparam rank             rank of tensor (number of "directions")
+ * @param iflat             flat index in row-major acc. to dims
+ * @param dims              contains number of points in each direction
  * @param permutation       determines how the dimensions are to be permuted
  *                          for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
  *                          A vector has a native order of dimensions. The permutation allows to express the multi-index
@@ -437,6 +437,22 @@ size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], const si
     size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [rank], size_t (&dims) [rank], size_t (&permutation) [rank]) {
     return iflat_new;
 }
+/**
+ * Wraps above function to rotate the i_dim-th element of dims to the trailing dimension;
+ * permutation is a cyclic permutation: elements of of dims are shifted to the right until i_dim is the trailing dimension
+ *                                      of the rotated flat index
+ */
+template<size_t rank>
+size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], const size_t i_dim){
+    assert(i_dim <= rank);
+    size_t permutation[rank];
+    // just make sure that permutation[-1] == i_dim
+    for (size_t i = 0; i < rank-i_dim-1; i++) permutation[i] = i + 1 + i_dim;
+    for (size_t i = rank-i_dim-1; i < rank; i++) permutation[i] = i - rank + 1 + i_dim;
+
+    size_t iflat_new = rotateFlatIndex(iflat, dims, permutation);
+    return iflat_new;
+}
 
 // boundary condition type for the SplineK1 end-points
 enum bd_type {
@@ -449,6 +465,7 @@ enum bd_type {
 namespace { // hide the following to the outside world
     /**
      * Permutes the array arr cyclically by n_shift
+     * convention for cyclic permutation: elements of of dims are shifted to the right by n_shift
      * @tparam rank   number of entries of array
      * @param arr               array to be permuted
      * @param n_shift           determines how far arr is permuted
@@ -619,6 +636,43 @@ vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const size_t (&d
     for (size_t i = i_dim+1; i < rank; i++) permutation[i] = i - i_dim - 1;
 
     return get_finite_differences<T,rank>(data, xs, dims_permuted, permutation);
+}
+
+template<typename Q, typename T, size_t rank>
+vec<T> elementwise(const Q& op, const vec<T> data, const size_t (&dims) [rank]) {
+    size_t dimsflat = 1;
+    for (size_t i = 0; i < rank; i++) dimsflat*=dims[i];
+    vec<T> result(dimsflat);
+    for (size_t i = 0; i < dimsflat; i++) result[i] = op(data[i]);
+
+    return result;
+}
+
+template<typename Q, typename T, size_t rank>
+vec<T> collapse(const vec<T> data, const Q& op, const size_t (&dims) [rank], const size_t i_dim) {
+    size_t dim_collapse = dims[i_dim];
+    size_t dimsflat_new = 1;
+    vec<size_t> dims_new(rank-1);
+    for (size_t i = 0; i < i_dim; i++) {
+        dims_new[i] = dims[i];
+        dimflat_new*= dims[i];
+    }
+    for (size_t i = i_dim; i < rank-1; i++) {
+        dims_new[i] = dims[i+1];
+        dimflat_new*= dims[i+1];
+    }
+    vec<T> result(dimsflat_new);
+    for (size_t i = 0; i < dimsflat_new; i++) {
+        result[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)];
+        for (size_t j = 1; j < dim_collapse; j++) {
+            result[rotateFlatIndex(i*dim_collapse + j, dims, i_dim)] = op(result[rotateFlatIndex(i*dim_collapse + j-1, dims, i_dim)]
+                                                                          , data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim)]
+                                                                          );
+
+        }
+    }
+
+    return result;
 }
 
 template<typename T> vec<T> power2(const vec<T> vec_in) {
