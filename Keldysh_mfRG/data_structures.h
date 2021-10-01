@@ -19,12 +19,6 @@ typedef std::complex<double> comp; // Complex number
 auto isfinite(comp z) -> bool {
     return std::isfinite(real(z)) and std::isfinite(imag(z));
 };
- inline auto myreal(double x) -> double {return x;};
- inline  auto myreal(comp x) -> double {return x.real();};
- inline auto myimag(double x) -> double {return x;};
- inline auto myimag(comp x) -> double {return x.imag();};
- inline auto myconj(double x) -> double {return x;};
- inline auto myconj(comp x) -> comp {return conj(x);};
 
 constexpr comp glb_i (0., 1.);    // Imaginary unit
 

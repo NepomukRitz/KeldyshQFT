@@ -21,6 +21,7 @@
 
 #include <cmath>        // for sqrt, log, exp
 #include "../parameters/master_parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
+#include "../utilities/math_utils.h"
 #include <cassert>
 
 // TODO(low): implement functions used for GRID=3 also for GRID=1,2,4
