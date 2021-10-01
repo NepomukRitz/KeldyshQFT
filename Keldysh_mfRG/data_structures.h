@@ -315,62 +315,6 @@ T vec<T>::sum() const {
 
 /// NON-MEMBER FUNCTIONS ///
 
-// The functions below are necessary for operations concerning a complex vector and a double constant.
-
-// addition of a double constant to comp vector
-template <typename T>
-vec<T> operator+= (vec<T>& lhs, const double& rhs) {
-#pragma omp parallel for
-    for (int i=0; i<lhs.size(); ++i) {
-        lhs[i] += rhs;
-    }
-    return lhs;
-}
-template <typename T>
-vec<T> operator+ (vec<T> lhs, const double& rhs) {
-    lhs += rhs; return lhs;
-}
-
-// subtraction of a double constant to comp vector
-template <typename T>
-vec<T> operator-= (vec<T>& lhs, const double& rhs) {
-#pragma omp parallel for
-    for (int i=0; i<lhs.size(); ++i) {
-        lhs[i] -= rhs;
-    }
-    return lhs;
-}
-template <typename T>
-vec<T> operator- (vec<T> lhs, const double& rhs) {
-    lhs -= rhs; return lhs;
-}
-
-// multiplication of a double constant to comp vector
-template <typename T>
-vec<T> operator*= (vec<T>& lhs, const double& rhs) {
-#pragma omp parallel for
-    for (int i=0; i<lhs.size(); ++i) {
-        lhs[i] *= rhs;
-    }
-    return lhs;
-}
-template <typename T>
-vec<T> operator* (vec<T> lhs, const double& rhs) {
-    lhs *= rhs; return lhs;
-}
-
-
-// multiplication of a comp constant to double vector
-template <typename T>
-vec<comp> operator* (vec<T> lhs, const comp& rhs) {
-    size_t size = lhs.size();
-    vec<comp> result(size);
-#pragma omp parallel for
-    for (int i=0; i<lhs.size(); ++i) {
-        result[i] *= lhs[i] * rhs;
-    }
-    return result;
-}
 
 
 
