@@ -14,6 +14,7 @@
 #include <vector>           // vec class is derived from vector class
 #include <initializer_list> // to initialize vec class with initializer list
 #include "parameters/master_parameters.h"
+//#include "utilities/math_utils.h"
 
 typedef std::complex<double> comp; // Complex number
 auto isfinite(comp z) -> bool {
@@ -27,15 +28,29 @@ using state_datatype = double;
 #else
 using state_datatype = comp;
 #endif
+template<typename Q>
+inline auto myreal(const Q x) -> double {return x.real();};
+template<>
+inline auto myreal<double>(const double x) -> double {return x;};
+template<typename Q>
+inline auto myimag(const Q x) -> double {return x.imag();};
+template<>
+inline auto myimag<double>(const double x) -> double {return x;};
+template<typename Q>
+inline auto myconj(const Q x) -> Q {return conj(x);};
+template<>
+inline auto myconj<double>(const double x) -> double {return x;};
+
+
 
 /// DECLARATIONS ///
 
-// General vector class, defining element-wise addition, subtraction and multiplication, as well as real/imag part etc.
+/// General vector class, defining element-wise addition, subtraction and multiplication, as well as real/imag part etc.
 template <typename T>
 class vec : public std::vector<T> {
 public:
     vec() : std::vector<T> () {}; 						 // trivial constructor
-    vec(int n) : std::vector<T> (n) {};				     // constructor with number of elements
+    explicit vec(int n) : std::vector<T> (n) {};				     // constructor with number of elements
     vec(int n, T value) : std::vector<T> (n, value) {};   // constructor with number of elements and value
     template <class InputIterator>
     vec (InputIterator first, InputIterator last)
@@ -46,53 +61,99 @@ public:
     vec<T> operator() (int i1, int i2);              // get a subvector {x[i1], ..., x[i2]}
 
     vec<T> inv() const;   // element-wise inverse
-    vec<double> real();   // element-wise real part
-    vec<double> imag();   // element-wise imaginary part
-    vec<double> abs();    // element-wise absolute value
-    vec<T> conj();        // element-wise complex conjugate
-    double max_norm();    // maximum norm
-    vec<T> diff();        // vector of differences between adjacent elements
-    T sum();              // sum of all elements
+    vec<double> real() const;   // element-wise real part
+    vec<double> imag() const;   // element-wise imaginary part
+    vec<double> abs() const;    // element-wise absolute value
+    vec<T> conj() const;        // element-wise complex conjugate
+    double max_norm() const;    // maximum norm
+    vec<T> diff() const;        // vector of differences between adjacent elements
+    T sum() const;              // sum of all elements
 
-    vec<T> operator+= (const vec<T>& m);     // element-wise addition of two vectors
-    vec<T> operator+= (const T& c);          // addition of a constant
-    vec<T> operator-= (const vec<T>& m);     // element-wise subtraction of two vectors
-    vec<T> operator-= (const T& c);          // subtraction of a constant
-    vec<T> operator*= (const vec<T>& m);     // element-wise multiplication of two vectors
-    vec<T> operator*= (const T& c);          // multiplication with a constant
+    template<typename Q>
+    vec<T> & operator+= (const vec<Q>& m);     // element-wise addition of two vectors
+    template<typename Q>
+    vec<T> & operator+= (const Q& c);          // addition of a constant
+    template<typename Q>
+    vec<T> & operator-= (const vec<Q>& m);     // element-wise subtraction of two vectors
+    template<typename Q>
+    vec<T> & operator-= (const Q& c);          // subtraction of a constant
+    template<typename Q>
+    vec<T> & operator*= (const vec<Q>& m);     // element-wise multiplication of two vectors
+    template<typename Q>
+    vec<T> & operator*= (const Q& c);          // multiplication with a constant
 
-    friend vec<T> operator+ (vec<T> lhs, const vec<T>& rhs) { // element-wise addition of two vectors
-        lhs += rhs; return lhs;
-    };
-    friend vec<T> operator+ (vec<T> lhs, const T& rhs) {      // addition of a constant
-        lhs += rhs; return lhs;
-    };
-    friend vec<T> operator+ (const T& lhs, vec<T> rhs) {      // addition of a constant from the left (commutative)
-        rhs += lhs; return rhs;
-    };
-    friend vec<T> operator- (vec<T> lhs, const vec<T>& rhs) { // element-wise subtraction of two vectors
-        lhs -= rhs; return lhs;
-    };
-    friend vec<T> operator- (vec<T> lhs, const T& rhs) {      // subtraction of a constant
-        lhs -= rhs; return lhs;
-    };
-    friend vec<T> operator- (const T& lhs, vec<T> rhs) {      // subtraction of a constant from the left
-        // lhs - rhs = rhs * (-1) + lhs
-        rhs *= -1; rhs += lhs; return rhs;
-    };
-    friend vec<T> operator* (vec<T> lhs, const vec<T>& rhs) { // element-wise multiplication of two vectors
-        lhs *= rhs; return lhs;
-    };
-    friend vec<T> operator* (vec<T> lhs, const T& rhs) {      // multiplication with a constant from the right
-        lhs *= rhs; return lhs;
-    };
-    friend vec<T> operator* (const T& lhs, vec<T> rhs) {      // multiplication with a constant from the left
-        rhs *= lhs; return rhs;
-    };
-    friend vec<T> operator/ (vec<T> lhs, const vec<T>& rhs) { // element-wise division of two vectors
-        lhs *= rhs.inv(); return lhs;
-    };
+    // elementwise arithmetics-assignment op's
+    template <typename Q, typename R>
+    vec<T> &elementwise_map_assign(
+            const Q &op,
+            const vec<R> &rhs)
+    {
+        if (rhs.size() != this->size())
+        {
+            throw std::length_error("Cannot perform pairwise operations on vectors of different size.");
+        }
+        for (size_t i = 0; i < this->size(); i++)
+        {
+            (*this)[i] = op((*this)[i], rhs[i]);
+        }
+        return *this;
+    }
+    // scalar arithmetics-assignment op's
+    template <typename Q, typename R>
+    vec<T> &scalar_map_assign(
+            const Q &op,
+            const R &rhs)
+    {
+        for (size_t i = 0; i < this->size(); i++)
+        {
+            (*this)[i] = op((*this)[i], rhs);
+        }
+        return *this;
+    }
+
 };
+
+
+template <typename Q, typename L, typename R>
+auto scalar_map(const Q &op, const vec<L> &lhs, const R &rhs)
+{
+    vec<decltype(op(std::declval<L>(), std::declval<R>()))> res(lhs.size());
+    for (size_t i = 0; i < lhs.size(); i++)
+    {
+        res[i] = op(lhs[i], rhs);
+    }
+    return res;
+}
+
+
+template <typename binaryOp, typename L, typename R>
+auto elementwise(const binaryOp &op, const vec<L> &lhs, const vec<R> &rhs) {
+    if (lhs.size() != rhs.size())
+    {
+        throw std::length_error("Cannot perform pairwise operations on vectors of different size.");
+    }
+    vec<decltype(op(std::declval<L>(), std::declval<R>()))> res(lhs.size());
+    for (size_t i = 0; i < res.size(); i++)
+    {
+        res[i] = op(lhs[i], rhs[i]);
+    }
+    assert(res.size() == lhs.size());
+    return res;
+}
+
+template <typename T, typename O>
+auto transform_vec(const std::function<O(T)> &op, const vec<T> &vect) {
+    vec<O> res(vect.size());
+    for (size_t i = 0; i < vect.size(); i++)
+    {
+        res[i] = op(vect[i]);
+    }
+    assert(res.size() == vect.size());
+    return res;
+}
+
+
+
 
 // define aliases for real and complex vector
 typedef vec<double> rvec;
@@ -102,63 +163,42 @@ typedef vec<comp> cvec;
 /// DEFINITIONS -- MEMBER FUNCTIONS ///
 
 // element-wise addition of two vectors
-template <typename T>
-vec<T> vec<T>::operator+= (const vec<T>& m) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] += m[i];
-    }
-    return *this;
+template <typename T> template<typename Q>
+vec<T> & vec<T>::operator+= (const vec<Q>& m) {
+    return elementwise_map_assign([](const T &l, const Q &r) { return l + r; }, m);
 }
 
 // addition of a constant
-template <typename T>
-vec<T> vec<T>::operator+= (const T& c) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] += c;
-    }
-    return *this;
+template <typename T> template<typename Q>
+vec<T> & vec<T>::operator+= (const Q& c) {
+    return scalar_map_assign([](const T &l, const Q &r) { return l + r; }, c);
 }
 
 // element-wise subtraction of two vectors
-template <typename T>
-vec<T> vec<T>::operator-= (const vec<T>& m) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] -= m[i];
-    }
-    return *this;
+template <typename T> template<typename Q>
+vec<T> & vec<T>::operator-= (const vec<Q>& m) {
+    return elementwise_map_assign([](const T &l, const Q &r) { return l - r; }, m);
 }
 
 // subtraction of a constant
-template <typename T>
-vec<T> vec<T>::operator-= (const T& c) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] -= c;
-    }
-    return *this;
+template <typename T> template<typename Q>
+vec<T> & vec<T>::operator-= (const Q& c) {
+    return scalar_map_assign([](const T &l, const Q &r) { return l - r; }, c);
+
 }
 
 // element-wise multiplication of two vectors
-template <typename T>
-vec<T> vec<T>::operator*= (const vec<T>& m) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] *= m[i];
-    }
-    return *this;
+template <typename T> template<typename Q>
+vec<T> & vec<T>::operator*= (const vec<Q>& m) {
+    return elementwise_map_assign([](const T &l, const Q &r) { return l * r; }, m);
+
 }
 
 // multiplication with a constant
-template <typename T>
-vec<T> vec<T>::operator*= (const T& c) {
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        (*this)[i] *= c;
-    }
-    return *this;
+template <typename T> template<typename Q>
+vec<T> & vec<T>::operator*= (const Q& c) {
+    return scalar_map_assign([](const T &l, const Q &r) { return l * r; }, c);
+
 }
 
 // get a subvector {x[i1], ..., x[i2]}
@@ -171,56 +211,69 @@ vec<T> vec<T>::operator() (int i1, int i2) {
     return subvector;
 }
 
+template<typename L, typename R>
+auto operator+ (const vec<L>& lhs, const vec<R>& rhs) { // element-wise addition of two vectors
+    return elementwise([](const L &l, const R &r) { return l + r; }, lhs, rhs);
+};
+template<typename L, typename R>
+auto operator+ (const vec<L>& lhs, const R& rhs) {      // addition of a constant
+    return scalar_map([](const L &l, const R &r) { return l + r; }, lhs, rhs);
+};
+template<typename L, typename R>
+auto operator+ (const L& lhs, const vec<R>& rhs) {      // addition of a constant from the left (commutative)
+    return scalar_map([](const R &r, const L &l) { return l + r; }, rhs, lhs);
+};
+template<typename L, typename R>
+auto operator- (const vec<L>& lhs, const vec<R>& rhs) { // element-wise subtraction of two vectors
+    return elementwise([](const L &l, const R &r) { return l - r; }, lhs, rhs);
+};
+template<typename L, typename R>
+auto operator- (const vec<L>& lhs, const R& rhs) {      // subtraction of a constant
+    return scalar_map([](const L &l, const R &r) { return l - r; }, lhs, rhs);
+};
+template<typename L, typename R>
+auto operator- (const L& lhs, const vec<R>& rhs) {      // subtraction of a constant from the left
+    return scalar_map([](const R &r, const L &l) { return l - r; }, rhs, lhs);
+};
+template<typename L, typename R>
+auto operator* (const vec<L> lhs, const vec<R>& rhs) { // element-wise multiplication of two vectors
+    return elementwise([](const L &l, const R &r) { return l * r; }, lhs, rhs);
+};
+template<typename L, typename R>
+auto operator* (const vec<L> lhs, const R& rhs) {      // scalar multiplication with a constant from the right
+    return scalar_map([](const L &l, const R &r) { return l * r; }, lhs, rhs);
+};
+template<typename L, typename R>
+auto operator* (const L& lhs, const vec<R> rhs) {      // scalar multiplication with a constant from the left
+    return scalar_map([](const R &r, const L &l) { return l * r; }, rhs, lhs);
+};
+template<typename L, typename R>
+auto operator/ (const vec<L> lhs, const vec<R>& rhs) { // element-wise division of two vectors
+    return elementwise([](const L &l, const R &r) { return l / r; }, lhs, rhs);
+};
+
 // element-wise inverse
 template <typename T>
 vec<T> vec<T>::inv() const {
-    vec<T> temp (this->size());
-#pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
-        temp[i] = 1./(*this)[i];
-    }
-    return temp;
+    return transform_vec<T,T>([](const T& x) -> T {return 1./x;}, *this);
 }
 
 // element-wise real part
 template <typename T>
-vec<double> vec<T>::real() {                    // if T != comp or double, vector of zeros is returned
-    vec<double> temp (this->size());
-    return temp;
-}
-template <>
-vec<double> vec<double>::real() {               // if T == double, return input
-    return *this;
-}
-template <>
-vec<double> vec<comp>::real() {                 // if T == comp, get real part
-    vec<double> temp (this->size());
-#pragma omp parallel for
-    for (int i = 0; i < this->size(); ++i) {
-        temp[i] = (*this)[i].real();
-    }
-    return temp;
+vec<double> vec<T>::real() const {                    // if T != comp or double, vector of zeros is returned
+    return transform_vec<T,double>(myreal<T>, *this);
 }
 
 // element-wise imaginary part
 template <typename T>
-vec<double> vec<T>::imag() {                    // if T != comp, vector of zeros is returned
-    vec<double> temp (this->size());
-    return temp;
+vec<double> vec<T>::imag() const {                    // if T != comp, vector of zeros is returned
+    return transform_vec<T,double>(myimag<T>, *this);
 }
-template <>
-vec<double> vec<comp>::imag() {                 // if T == comp, get imag. part
-    vec<double> temp (this->size());
-#pragma omp parallel for
-    for (int i = 0; i < this->size(); ++i) {
-        temp[i] = (*this)[i].imag();
-    }
-    return temp;
-}
+
 
 // element-wise absolute value
 template <typename T>
-vec<double> vec<T>::abs() {
+vec<double> vec<T>::abs() const {
     vec<double> temp (this->size());
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
@@ -231,22 +284,14 @@ vec<double> vec<T>::abs() {
 
 // element-wise complex conjugate
 template <typename T>
-vec<T> vec<T>::conj() {                         // if T != comp, return input
-    return *this;
+vec<T> vec<T>::conj() const {                         // if T != comp, return input
+    return transform_vec<T,T>(myconj<T>, *this);
 }
-template <>
-vec<comp> vec<comp>::conj() {                   // if T == comp, get conjugate
-    vec<comp> temp(this->size());
-#pragma omp parallel for
-    for (int i = 0; i < this->size(); ++i) {
-        temp[i] = std::conj((*this)[i]);
-    }
-    return temp;
-}
+
 
 // maximum norm
 template <typename T>
-double vec<T>::max_norm() {
+double vec<T>::max_norm() const {
     double out = 0.;
     for (int i=0; i<this->size(); ++i) {
         out = std::max(out, std::abs((*this)[i]));
@@ -256,7 +301,7 @@ double vec<T>::max_norm() {
 
 // vector of differences between adjacent elements
 template <typename T>
-vec<T> vec<T>::diff() {
+vec<T> vec<T>::diff() const {
     vec<T> xp (this->begin() + 1, this->end()); // second -> last element
     vec<T> xm (this->begin(), this->end() - 1); // first -> second to last element
     return xp - xm;                             // compute differences
@@ -264,7 +309,7 @@ vec<T> vec<T>::diff() {
 
 // sum of all elements
 template <typename T>
-T vec<T>::sum() {
+T vec<T>::sum() const {
     return accumulate(this->begin(), this->end(), (T)0);
 }
 

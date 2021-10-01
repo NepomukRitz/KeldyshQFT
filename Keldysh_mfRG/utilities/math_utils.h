@@ -19,13 +19,6 @@ template<typename Q> auto sign_index(Q freq) -> int {
     return (freq > 0);
 }
 
-inline auto myreal(double x) -> double {return x;};
-inline  auto myreal(comp x) -> double {return x.real();};
-inline auto myimag(double x) -> double {return x;};
-inline auto myimag(comp x) -> double {return x.imag();};
-inline auto myconj(double x) -> double {return x;};
-inline auto myconj(comp x) -> comp {return conj(x);};
-
 
 
 /**
