@@ -34,6 +34,7 @@ void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const
     // print iteration number and Lambda to log file
     print("i: ", iteration, true);
     print("Lambda: ", x_run, true);
+    print("y: ", y_run.value, true);
     double t0 = get_time();
 
     RK4_step(y_run, x_run, dx, rhs, save_intermediate_states, x_vals, filename, iteration); // compute RK4 step
