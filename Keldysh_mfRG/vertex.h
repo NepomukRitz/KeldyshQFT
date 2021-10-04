@@ -341,8 +341,8 @@ public:
     const rvert<Q>& avertex() const { return half1().avertex; }
     const rvert<Q>& pvertex() const { return half1().pvertex; }
     const rvert<Q>& tvertex() const { return half1().tvertex; }
-    const bool Ir() const { return half1().Ir; }
-    const bool only_same_channel() const { return half1().only_same_channel; }
+    bool Ir() const { return half1().Ir; }
+    bool only_same_channel() const { return half1().only_same_channel; }
 
     void set_Ir(bool Ir) {
         vertex.half1().Ir = Ir;
@@ -654,7 +654,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input) const 
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (channel) {
+        switch (input.channel) {
             case 'a':
                 K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
                           + tvertex.template valsmooth<k1>(input_at, avertex);
@@ -700,7 +700,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (channel) {
+        switch (input.channel) {
             case 'a':
                 K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
                           + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
@@ -748,7 +748,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input) const
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (channel) {
+        switch (input.channel) {
             case 'a':
                 K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
                          + tvertex.template valsmooth<k1>(input_at, avertex);
@@ -795,7 +795,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (channel) {
+        switch (input.channel) {
             case 'a':
                 K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
                          + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
