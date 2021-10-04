@@ -15,6 +15,8 @@ class Domain {
 template <typename T>
 class Domain1D {
  public:
+    double left_;
+    double right_;
   // typedef T value_type ;
   // typedef std::function<T(Base<T>)> f_type;
   using value_type = T;
@@ -31,8 +33,8 @@ class Domain1D {
     return std::vector<Domain1D>({{left_, middle}, {middle, right_}});
   }
 
-  f_type transform(f_type f) const {
-    return [&](Base<T> x) {
+  f_type transform(f_type &f) const {
+    return  [&](Base<T> x) -> T {
       double dmc = 0.5 * (right_ - left_);
       double dpc = 0.5 * (right_ + left_);
 
@@ -46,6 +48,5 @@ class Domain1D {
   Base<T> size() const { return right_ - left_; }
 
  private:
-  double left_;
-  double right_;
+
 };

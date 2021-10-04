@@ -19,7 +19,7 @@
 #include "../ODE_solvers.h"
 #include "../grids/flow_grid.h"
 #include "../data_structures.h"
-
+//#include "../OldFiles/paid.hpp"
 
 
 int main() {
@@ -899,7 +899,7 @@ int main() {
     std::cout << "K1 = " << Gamma << "\n";
     get_time(dt);
     */
-
+    /*
     double gint_test;
     glb_sharpness = 2.0;
     gint_test = gint(1e4, 1e-10, 1);
@@ -917,18 +917,103 @@ int main() {
 
     double test33 = std::tgamma(0.25)*(4.-pow(2.,3./4.))/(8*M_PI*M_PI);
     std::cout << "test = " << test33 << "\n";
-
+    */
     // TEST GORKOV (CONST. GAMMA)
 
     glb_muc = 1.0;
     glb_mud = -10.0;
     glb_ainv = -1.0;
-    comp gorkov_test = fRG_solve_K1r(0., sqrt(2.*glb_muc), 'c', 1e4, 1e-10, 1, 0);
-    std::cout << "Gamma = " << gorkov_test << "\n";
+    // comp gorkov_test = fRG_solve_K1r(0., sqrt(2.*glb_muc), 'c', 1e4, 1e-10, 1, 0);
+    // std::cout << "Gamma = " << gorkov_test << "\n";
 
     //std::vector<double> myvec{3.12,3.23,42.564,43.23,567.75,23.54};
     //std::vector<double>::iterator test_begin = myvec.begin();
     //std::cout<< "begin = " << myvec.begin() << "\n";
+
+    // TEST PAID-INTEGRATOR
+    // =================================s
+    /*
+    std::cout << "\nTest the PAID-integrator: \n";
+    Domain1D<comp> am(0.,0.5);
+    Domain1D<comp> mb(0.5, 1.);
+    PAIDInput test_integrand_paid1 (am, f_testpaid, 0);
+    PAIDInput test_integrand_paid2 (mb, f_testpaid, 0);
+
+    //f_testpard(3.0+2.0);
+    std::vector<PAIDInput> test_integrands_paid = {test_integrand_paid1, test_integrand_paid2};
+
+    PAID test_integral_paid(test_integrands_paid);
+
+
+    std::cout << "integral test: \n";
+    auto paid_solution = test_integral_paid.solve()[0];
+    std::cout << "integral test: \n";
+    std::cout << "integral = " << paid_solution << "\n";
+
+    Domain1D<comp> ab01(0.,1.);
+    PAIDInput integrand_paid_gauss (ab01,integrand_semiinfinite_gauss,0);
+    PAID integral_paid_gauss({integrand_paid_gauss});
+    std::cout << "gauss-integral = " << integral_paid_gauss.solve()[0] << "\n";
+
+    std::pair<int, double> pair_test = {1, 2.3};
+    std::cout << pair_test.first  << " and " << pair_test.second << "\n";
+    std::map<int, double> m { {0, 1.0}, {1,exp(1.)},{2,exp(2.)}, {3,exp(3.)}, };
+    std::cout << "m(3) = " << m[3] << "\n";
+
+    Domain1D<comp> abm11(-1.,1.);
+    Integrand_Pi0_theta<comp> integrandPi0Theta_paid(0.5,-0.1,0.3,0.4,'c','d');
+    PAIDInput integrandPi0Theta_paid_input(abm11,integrandPi0Theta_paid,0);
+    PAID integralPi0Theta_paid({integrandPi0Theta_paid_input});
+    std::cout << "theta-integral paid = " << 1./(4.*M_PI*M_PI)*0.4*0.4*integralPi0Theta_paid.solve()[0] << "\n";
+    comp keldysh_theta_integral_result = perform_integral_Pi0_theta (0.5,-0.1,0.3,0.4,'c','d',1);
+    std::cout << "theta-integral gauss-lobatto = " << keldysh_theta_integral_result << "\n";
+    */
+    glb_mud = 0.0;
+    double wmax = 10., vppmax = 10., qmax = 10., kmax = 10., vpp, kpp;
+    int nw = 6, nvpp = 6, nq = 3, nk = 6;
+    comp exact, lobatto, paid;
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2*wi*wmax/(nw-1);
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = -vppmax + 2*vppi*vppmax/(nw-1);
+            //for (int qi = 0; qi < nq; ++qi) {
+                q = 0; //qi*qmax/(nq-1);
+                /*
+                for (int kppi = 0; kppi < nk; ++kppi){
+                    kpp = kppi*kmax/(nk-1);
+                    lobatto = perform_integral_Pi0_theta(w,vpp,q,kpp,'c','d',1);
+                    std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", k = " << kpp << ", lobatto = " << lobatto << "\n";
+                    paid = perform_integral_Pi0_theta(w,vpp,q,kpp,'c','d',2);
+                    std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", k = " << kpp << ", paid = " << paid << "\n";
+                }
+                 */
+                exact = exact_bare_bubble(w, vpp, q, 'c', 'd','a');
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", exact = " << exact << "\n";
+                lobatto = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',1,'a');
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
+                paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'p');
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
+            //}
+        }
+    }
+    /*
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2*wi*wmax/(nw-1);
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = -vppmax + 2*vppi*vppmax/(nw-1);
+            for (int qi = 0; qi < nq; ++qi) {
+                q = qi*qmax/(nq-1);
+                //exact = exact_bare_bubble(w, vpp, q, 'c', 'd','a');
+                //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", exact = " << exact << "\n";
+                //lobatto = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',1,'a');
+                //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
+                paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'p');
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
+            }
+        }
+    }
+     */
+
 
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================
@@ -1036,12 +1121,12 @@ int main() {
     // LOOP INTEGRAL SELFENERGY
     glb_mud = -2.5;
     glb_ainv = sqrt(2.);
-
+    /*
     comp testloop001 = selfenergy_ladder (0.1, 0.0,1e4,1e-10);
     std::cout << "loop selfenergy test = " << testloop001 << "\n";
     comp testloop002 = selfenergy_ladder (0.0, 0.0,1e4,1e-10);
     std::cout << "loop selfenergy test = " << testloop002 << "\n";
-
+    */
     //selfenergy_ladder_list_vk(10.,10.,1e4,1e-10,11,6);
 
     get_time(t0);

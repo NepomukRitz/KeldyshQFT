@@ -35,8 +35,8 @@ public:
         if (inttype == 0) {
             return exact_bare_bubble (w, vpp, q, i, j, chan);
         }
-        else if (inttype == 1) {
-            return perform_integral_Pi0_kpp_chan (w, vpp, q, i, j, chan);
+        else if ((inttype == 1) or (inttype == 2)) {
+            return perform_integral_Pi0_kpp_chan (w, vpp, q, i, j, inttype, chan);
         }
         else {
             std::cout << "wrong integrator type for k-integral \n";

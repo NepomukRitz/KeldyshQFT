@@ -57,10 +57,11 @@ class PAID {
  public:
   using T = Domain1D<std::complex<double>>;
 
-  PAID(std::vector<PAIDInput> inputs) : fevals(0), rule(16) {
+  PAID(const std::vector<PAIDInput> & inputs) : fevals(0), rule(16) {
     for (auto input : inputs) {
       // construct task:
       auto new_f = input.d.transform(input.f);
+      // auto new_f = input.f;
       auto res = rule.apply(new_f);
       fevals += res.fevals;
       q.put({input.d, input.f, res.value, res.error, input.idx});
@@ -69,8 +70,9 @@ class PAID {
 
   std::map< std::size_t, T::value_type > solve() {
     int done = 0;
-
-    while (!done && q.sum().first > 1e-12) {
+    assert(isfinite(q.sum().first));
+    int maxsplit = 0;
+    while (!done && q.sum().first > 1e-12, maxsplit < 1000) {
       // if (i == 0) std::cout << "current error: " << q.sum().first << "\n";
       if (q.empty()) {
         done++;
@@ -78,7 +80,8 @@ class PAID {
       }
       auto task = q.pop();
       auto doms = task.d.split();
-
+      maxsplit = maxsplit + 1;
+      // std::cout << "left = " << task.d.left_ << ", right = " << task.d.right_ << "\n";
       for (auto dom : doms) {
         auto new_f = dom.transform(task.f);
         auto res = rule.apply(new_f);

@@ -128,8 +128,8 @@ public:
         if (inttype == 0) {
             return regulator_prefactor*exact_bare_bubble (w, vpp, q, i, j, chan)/denominator_substitution;
         }
-        else if (inttype == 1) {
-            return regulator_prefactor*perform_integral_Pi0_kpp_chan (w, vpp, q, i, j, chan)/denominator_substitution;
+        else if ((inttype == 1) or (inttype == 2)) {
+            return regulator_prefactor*perform_integral_Pi0_kpp_chan (w, vpp, q, i, j, inttype, chan)/denominator_substitution;
         }
         else {
             std::cout << "wrong integrator type for k-integral \n";
