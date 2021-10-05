@@ -1625,7 +1625,14 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
 
-    State<state_datatype> PT_state(Lambda);
+    State<Q> state_cpp (Lambda);   // create final and initial state
+    state_cpp.initialize();             // initialize state
+
+    fopt_state(state_cpp, Lambda);
+
+    write_hdf(outputFileName + "_cpp", Lambda, 1, state_cpp);
+
+    State<state_datatype> PT_state(state_cpp.vertex, state_cpp.selfenergy.frequencies);
 
     // compute SOPT self-energy (numerically exact)
     for (int i = 1; i<nFER-1; i++) {
@@ -1683,13 +1690,6 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 #endif
 
     write_hdf(outputFileName + "_exact", Lambda, 1, PT_state);
-
-    State<Q> state_cpp (Lambda);   // create final and initial state
-    state_cpp.initialize();             // initialize state
-
-    fopt_state(state_cpp, Lambda);
-
-    write_hdf(outputFileName + "_cpp", Lambda, 1, state_cpp);
 
 
     State<Q> state_diff = state_cpp - PT_state;
