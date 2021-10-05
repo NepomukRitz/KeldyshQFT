@@ -41,7 +41,8 @@ public:
     /// finds optimal grid parameters with minimizer()
     void findBestFreqGrid(double Lambda);       // optimize frequency grid parameters and update self-energy on new grid
     /// computes finite differences of Sigma
-    double get_deriv_maxSE() const;
+    double get_deriv_maxSE(bool verbose) const;
+    double get_curvature_maxSE(bool verbose) const;
     auto norm(int p) -> double;
     auto norm() -> double;
 
@@ -198,7 +199,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
     frequencies_new.rescale_grid(Lambda);              // rescale new frequency grid
 
     vec<Q> Sigma_new = empty_Sigma();                     // temporary self-energy vector
-    for (int iK=0; iK<2; ++iK) {
+    for (int iK=0; iK<nK_SE; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=1; iv<nSE-1; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
@@ -218,8 +219,8 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
 
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new) {
 
-    vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
-    for (int iK=0; iK<2; ++iK) {
+    vec<Q> Sigma_new (nK_SE*nSE*n_in);                     // temporary self-energy vector
+    for (int iK=0; iK<nK_SE; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=1; iv<nSE-1; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
@@ -239,9 +240,9 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
 
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma) {
 
-    vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
+    vec<Q> Sigma_new (nK_SE*nSE*n_in);                     // temporary self-energy vector
 
-    for (int iK=0; iK<2; ++iK) {
+    for (int iK=0; iK<nK_SE; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=1; iv<nSE-1; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
@@ -297,9 +298,10 @@ public:
 template<typename Q>
 class CostSE_Wscale {
     SelfEnergy<Q> selfEnergy_backup;
+    bool verbose;
 public:
     SelfEnergy<Q> selfEnergy;
-    explicit CostSE_Wscale(SelfEnergy<Q> SE_in): selfEnergy(SE_in), selfEnergy_backup(SE_in) {
+    explicit CostSE_Wscale(SelfEnergy<Q> SE_in, bool verbose): selfEnergy(SE_in), selfEnergy_backup(SE_in), verbose(verbose) {
         // remove Hartree contribution
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
@@ -310,9 +312,9 @@ public:
     };
 
     auto operator() (double wscale_test) -> double {
-        selfEnergy.frequencies.initialize_grid(wscale_test);
+        selfEnergy.frequencies.update_Wscale(wscale_test);
         selfEnergy.update_grid(selfEnergy.frequencies, selfEnergy_backup);
-        double result = selfEnergy.get_deriv_maxSE();
+        double result = selfEnergy.get_curvature_maxSE(verbose);
         return result;
 
 
@@ -326,14 +328,14 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(double Lambda) {
     SelfEnergy<Q> SEtemp = *this;
     //SEtemp.update_grid(Lambda);
 
-
+    double wmax_current = SEtemp.frequencies.w_upper;
     double a_Wscale = SEtemp.frequencies.W_scale / 10.;
     double m_Wscale = SEtemp.frequencies.W_scale;
     double b_Wscale = SEtemp.frequencies.W_scale * 10;
-    CostSE_Wscale<Q> cost(SEtemp);
+    CostSE_Wscale<Q> cost(SEtemp, true);
     minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, true);
     FrequencyGrid frequencies_new = frequencies;
-    frequencies_new.initialize_grid(m_Wscale);
+    frequencies_new.initialize_grid(m_Wscale, wmax_current);
 
     update_grid(frequencies_new);
 
@@ -369,12 +371,32 @@ template <typename Q> auto SelfEnergy<Q>::norm() -> double {
     return this->norm(2);
 }
 
-template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE() const -> double {
+template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) const -> double {
     //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
     //return max_SE;
-    const size_t dims1[3] = {n_in, 2, nFER};
+    const size_t dims1[3] = {n_in, nK_SE, nFER};
     const size_t perm1[3] = {2, 0, 1};
     double max_SE = (::power2(::get_finite_differences<Q,3>(Sigma, frequencies.ts, dims1, perm1))).max_norm();
+
+    if (verbose) {
+        std::cout << "max. Derivative in selfenergy:" << std::endl;
+        std::cout << "\t  \t" << max_SE << std::endl;
+    }
+
+    return max_SE;
+}
+template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose) const -> double {
+    //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
+    //return max_SE;
+    const size_t dims1[3] = {n_in, nK_SE, nFER};
+    const size_t perm1[3] = {2, 0, 1};
+    double max_SE = (::power2(::get_finite_differences<Q,3>(::get_finite_differences<Q,3>(Sigma, frequencies.ts, dims1, perm1), frequencies.ts, dims1, perm1))).max_norm();
+
+    if (verbose) {
+        std::cout << "max. Curvature in selfenergy:" << std::endl;
+        std::cout << "\t  \t" << max_SE << std::endl;
+    }
+
     return max_SE;
 }
 
