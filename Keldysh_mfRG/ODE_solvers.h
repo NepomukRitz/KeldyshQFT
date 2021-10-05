@@ -15,10 +15,10 @@ namespace rk_impl {
     template <typename T>
     void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const double x, const vec<int> opt), bool save_intermediate_results, rvec& x_vals, const std::string& filename, const int iteration) {
         if (save_intermediate_results) {
-            T y1 = rhs(y_run, x_run, {iteration, 1}) * dx;
-            T y2 = rhs(y_run + y1*0.5, x_run + dx/2., {iteration, 2}) * dx;
-            T y3 = rhs(y_run + y2*0.5, x_run + dx/2., {iteration, 3}) * dx;
-            T y4 = rhs(y_run + y3, x_run + dx, {iteration, 4}) * dx;
+            T y1 = rhs(y_run, x_run, {iteration, 0}) * dx;
+            T y2 = rhs(y_run + y1*0.5, x_run + dx/2., {iteration, 1}) * dx;
+            T y3 = rhs(y_run + y2*0.5, x_run + dx/2., {iteration, 2}) * dx;
+            T y4 = rhs(y_run + y3, x_run + dx, {iteration, 3}) * dx;
             y_run += (y1 + y2*2. + y3*2. + y4) * (1./6.); // update y
         }
         else {

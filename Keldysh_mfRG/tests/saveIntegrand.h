@@ -70,6 +70,8 @@ namespace saveIntegrand {
                     const K_class k_class, const char channel, const int i0, const int i2, const double w,
                     const double v, const double vp, const int i_in) {
 
+
+
         // read Psi for vertex
         State<Q> Psi = read_hdf(file_Psi, 0, 1); // read Psi
         // read dPsi for differentiated selfenergy
@@ -243,27 +245,39 @@ namespace saveIntegrand {
  * @param rkStep        Runge-Kutta substep (for Runge-Kutta 4: reStep in [1,...,4])
  */
 template <typename Q>
-void get_integrand_dGamma_1Loop(const int it_Lambda, const int rkStep) {
+void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const int rkStep) {
 
-    std::string dir_str = "../Data/intermediateResults/";
+    dir_str = dir_str + "intermediateResults/";
     const std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     const std::string file_dPsi= dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
 
 
-    K_class k_class = k1;
+    K_class k_class = k2;
     char channel = 'a';
     int i0 = 0;         // external Keldysh indices ranging in [0,...,15]
     int i2 = 0;         // internal Keldysh indices ranging in [0,..., 9] (--> directly corresponding to non-zero components of the BubbleObject)
-    double w = 1.;      // frequencies in the natural parametrization of channel
-    double v = 1.;      // frequencies in the natural parametrization of channel
-    double vp= 1.;      // frequencies in the natural parametrization of channel
+    double w = 0.;      // frequencies in the natural parametrization of channel
+    double v = 0.;      // frequencies in the natural parametrization of channel
+    double vp= 0.;      // frequencies in the natural parametrization of channel
     int i_in = 0;
+
+    vec<double> ws = {0., 5., 100.};
+    vec<double> vs = {0., 5., 100.};
+    vec<int> i2s = {0,1,2,3,4,5,6,7,8,9};
 
     /// In the following you can also iterate over different i0/i2/etc:
 
-    const std::string filename_prefix = "dGamma1Loop_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
-    saveIntegrand::dGamma_1Loop<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+    std::string dir_integrand_str = dir_str + "integrands/";
+    makedir(dir_integrand_str);
+    const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
 
+    for (double w_temp: ws) {
+        for (double v_temp: vs) {
+            saveIntegrand::dGamma_1Loop<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w_temp, v_temp, vp, i_in);
+
+
+        }
+    }
 }
 
 
@@ -276,9 +290,10 @@ void get_integrand_dGamma_1Loop(const int it_Lambda, const int rkStep) {
  * @param i_loop        loop iteration (i_loop in [1,...,N_LOOPS])
  */
 template <typename Q>
-void get_integrand_dGammaL(const int it_Lambda, const int rkStep, const int i_loop) {
+void get_integrand_dGammaL(std::string dir_str, const int it_Lambda, const int rkStep, const int i_loop) {
 
-    std::string dir_str = "../Data/intermediateResults/";
+
+    dir_str = dir_str + "intermediateResults/";
     std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     std::string file_dPsi;
     if (i_loop < 2) assert(false);
@@ -299,6 +314,8 @@ void get_integrand_dGammaL(const int it_Lambda, const int rkStep, const int i_lo
 
     /// In the following you can also iterate over different i0/i2/etc:
 
+    std::string dir_integrand_str = dir_str + "integrands/";
+    makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaL_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_L<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
 
@@ -306,9 +323,9 @@ void get_integrand_dGammaL(const int it_Lambda, const int rkStep, const int i_lo
 
 
 template <typename Q>
-void get_integrand_dGammaR(const int it_Lambda, const int rkStep, const int i_loop) {
+void get_integrand_dGammaR(std::string dir_str, const int it_Lambda, const int rkStep, const int i_loop) {
 
-    std::string dir_str = "../Data/intermediateResults/";
+    dir_str = dir_str + "intermediateResults/";
     std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     std::string file_dPsi;
     if (i_loop < 2) assert(false);
@@ -330,6 +347,8 @@ void get_integrand_dGammaR(const int it_Lambda, const int rkStep, const int i_lo
 
     /// In the following you can also iterate over different i0/i2/etc:
 
+    std::string dir_integrand_str = dir_str + "integrands/";
+    makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaR_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_R<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
 
@@ -337,9 +356,9 @@ void get_integrand_dGammaR(const int it_Lambda, const int rkStep, const int i_lo
 
 
 template <typename Q>
-void get_integrand_dGammaC_left(const int it_Lambda, const int rkStep, const int i_loop) {
+void get_integrand_dGammaC_left(std::string dir_str, const int it_Lambda, const int rkStep, const int i_loop) {
 
-    std::string dir_str = "../Data/intermediateResults/";
+    dir_str = dir_str + "intermediateResults/";
     std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     if (i_loop < 3) assert(false);
     std::string file_dPsi_L = dir_str+"dPsi_L_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
@@ -357,15 +376,17 @@ void get_integrand_dGammaC_left(const int it_Lambda, const int rkStep, const int
 
     /// In the following you can also iterate over different i0/i2/etc:
 
+    std::string dir_integrand_str = dir_str + "integrands/";
+    makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaC_left_insertion_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_C_left_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
 
 }
 
 template <typename Q>
-void get_integrand_dGammaC_right(const int it_Lambda, const int rkStep, const int i_loop) {
+void get_integrand_dGammaC_right(std::string dir_str, const int it_Lambda, const int rkStep, const int i_loop) {
 
-    std::string dir_str = "../Data/intermediateResults/";
+    dir_str = dir_str + "intermediateResults/";
     std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     if (i_loop < 3) assert(false);
     std::string file_dPsi_L = dir_str+"dPsi_L_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
@@ -383,15 +404,17 @@ void get_integrand_dGammaC_right(const int it_Lambda, const int rkStep, const in
 
     /// In the following you can also iterate over different i0/i2/etc:
 
+    std::string dir_integrand_str = dir_str + "integrands/";
+    makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaC_right_insertion_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_C_right_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
 
 }
 
 template <typename Q>
-void get_integrand_Sigma(const int it_Lambda, const int rkStep) {
+void get_integrand_Sigma(std::string dir_str, const int it_Lambda, const int rkStep) {
 
-    std::string dir_str = "../Data/intermediateResults/";
+    dir_str = dir_str + "intermediateResults/";
     const std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     const std::string file_dPsi= dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
 
@@ -402,6 +425,8 @@ void get_integrand_Sigma(const int it_Lambda, const int rkStep) {
 
     /// In the following you can also iterate over different v/etc:
 
+    std::string dir_integrand_str = dir_str + "integrands/";
+    makedir(dir_integrand_str);
     const std::string filename_prefix = "dSigma_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
     saveIntegrand::dSigma<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, i2, v, i_in);
 

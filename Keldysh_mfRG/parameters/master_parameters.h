@@ -13,7 +13,7 @@
 //#define HUBBARD
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-//#define KELDYSH_FORMALISM
+#define KELDYSH_FORMALISM
 #ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
@@ -27,7 +27,7 @@
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
 
-constexpr int N_LOOPS = 1;  // Number of loops
+constexpr int N_LOOPS = 4;  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
@@ -142,6 +142,13 @@ constexpr bool ZERO_T = false;
 constexpr bool PARTICLE_HOLE_SYMMETRY = true;
 #else
 constexpr bool PARTICLE_HOLE_SYMMETRY = false;
+#endif
+
+
+#ifdef KELDYSH_FORMALISM
+const std::string data_dir = "../Data_KF/";
+#else
+const std::string data_dir = "../Data_MF/";
 #endif
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

@@ -74,10 +74,13 @@ auto main() -> int {
     print("nFER1 = ", nFER, true);
     print("nBOS2 = ", nBOS2, true);
     print("nFER2 = ", nFER2, true);
+    print("nBOS3 = ", nBOS3, true);
+    print("nFER3 = ", nFER3, true);
     if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
-    std::string dir_str = "../Data/";
-    makedir(dir_str);
+
+
+    makedir(data_dir);
 
 
     std::string filename = generate_filename();
@@ -90,8 +93,8 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";
-    n_loop_flow(dir_str+filename+job, true);
-    //get_integrand_dGamma_1Loop<state_datatype>(1, 1);
+    n_loop_flow(data_dir+filename+job, true);
+    //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
 
 

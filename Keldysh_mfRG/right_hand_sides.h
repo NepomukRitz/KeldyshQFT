@@ -43,7 +43,7 @@ template <typename Q>
 auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> opt) -> State<Q>{  //, const bool save_intermediate=false
 
     static_assert(N_LOOPS>=1, "");
-    std::string dir_str = "../Data/intermediateResults/";
+    std::string dir_str = data_dir + "intermediateResults/";
     makedir(dir_str);
     int iteration=-1;
     int rkStep=-1;
@@ -51,7 +51,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> op
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
-         save_intermediate = true and (rkStep == 1);
+         save_intermediate = true and (rkStep == 0);
     }
 
     // initialize empty state with frequency grids corresponding to those in Psi:
