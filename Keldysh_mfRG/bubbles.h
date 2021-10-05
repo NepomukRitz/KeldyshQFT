@@ -775,7 +775,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_v
             Pival = Pi.value(i2, w, vpp, i_in, channel);
             integrand_value = (*this)(vpp);
         }
-        if (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
+        if constexpr (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
             Pival_re[i] = Pival;
