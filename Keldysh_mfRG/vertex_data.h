@@ -181,7 +181,7 @@ public:
     vec<Q> get_deriv_K2_xx() const;
     vec<Q> get_deriv_K2_yy() const;
     double get_deriv_maxK2() const;
-    auto get_curvature_maxK2() const -> double
+    auto get_curvature_maxK2() const -> double;
 };
 
 template <typename Q>
