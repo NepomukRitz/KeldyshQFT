@@ -96,7 +96,7 @@ public:
     void update_grid(double Lambda);
 
     template<K_class k>
-    void update_grid(const VertexFrequencyGrid<k> &frequencyGrid_in, const rvert<Q>& rvert4data);
+    void update_grid(const VertexFrequencyGrid<k> &frequencyGrid_in, rvert<Q>& rvert4data);
 
     /** K1-functionality */
 
@@ -524,7 +524,7 @@ namespace {
                     for (int i_in=0; i_in<n_in; ++i_in) {
                         IndicesSymmetryTransformations indices (iK1, frequencies_new.b.ws[iw], 0., 0., i_in, vertex.channel);
                         // interpolate old values to new vector
-                        K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = vertex.template interpolate<k1>(indices);
+                        K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = rvert4data.template interpolate<k1>(indices);
                     }
                 }
             }
@@ -547,7 +547,7 @@ namespace {
                                                                     i_in, vertex.channel);
                             // interpolate old values to new vector
                             K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
-                                    = vertex.template interpolate<k2>(indices);
+                                    = rvert4data.template interpolate<k2>(indices);
                         }
                     }
                 }
@@ -573,7 +573,7 @@ namespace {
                                 // interpolate old values to new vector
                                 K3_new[iK3 * nw3 * nv3 * nv3 * n_in + iw * nv3 * nv3 * n_in + iv * nv3 * n_in + ivp * n_in +
                                        i_in]
-                                        = vertex.template interpolate<k3>(indices);
+                                        = rvert4data.template interpolate<k3>(indices);
                             }
                         }
                     }
@@ -589,8 +589,10 @@ namespace {
 
 template <typename Q>
 template<K_class k>
-void rvert<Q>::update_grid(const VertexFrequencyGrid<k>& frequencies_new, const rvert<Q>& rvert4data) {
+void rvert<Q>::update_grid(const VertexFrequencyGrid<k>& frequencies_new, rvert<Q>& rvert4data) {
+    rvert4data.initInterpolator();
     UpdateGrid<k,Q>() (*this, frequencies_new, rvert4data);
+    rvert4data.initialized = false;
 }
 
 

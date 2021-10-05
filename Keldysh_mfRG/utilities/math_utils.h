@@ -403,11 +403,11 @@ vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims) [ran
     vec<size_t> dims_new(rank-1);
     for (size_t i = 0; i < i_dim; i++) {
         dims_new[i] = dims[i];
-        dimflat_new*= dims[i];
+        dimsflat_new*= dims[i];
     }
     for (size_t i = i_dim; i < rank-1; i++) {
         dims_new[i] = dims[i+1];
-        dimflat_new*= dims[i+1];
+        dimsflat_new*= dims[i+1];
     }
     vec<T> result(dimsflat_new);
     for (size_t i = 0; i < dimsflat_new; i++) {
@@ -428,7 +428,7 @@ template<typename binaryOp, typename T, size_t rank>
 vec<T> collapse_rev(const vec<T> data, const binaryOp& op, const size_t (&dims) [rank], const size_t i_dim) {
     size_t dim_collapse = 1;
     size_t dimsflat_new = dims[i_dim];
-    vec<size_t> dims_new(1) = {dimsflat_new};
+    vec<size_t> dims_new = {dimsflat_new};
     for (size_t i = 0; i < i_dim; i++) {
         dim_collapse*= dims[i];
     }
@@ -463,8 +463,8 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
 }
 
 /// Computes maximum along axis i_dim
-template<typename T> vec<T> maxabs(const vec<T> data, const size_t (&dims) [rank], const size_t i_dim) {
-    vec<T> result = collapse_rev(data, [](T& l, T& r) -> T {return std::max(std::abs(l),std::abs(r))}, dims, i_dim)
+template<size_t rank, typename T> vec<T> maxabs(const vec<T> data, const size_t (&dims) [rank], const size_t i_dim) {
+    vec<T> result = collapse_rev(data, [](T& l, T& r) -> T {return std::max(std::abs(l),std::abs(r));}, dims, i_dim);
     return result;
 }
 
