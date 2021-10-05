@@ -212,7 +212,7 @@ namespace {
 
             State<Q> SOPTstate(Lambda);
             VertexFrequencyGrid<k1> bfreq = SOPTstate.vertex[0].half1().avertex.K1_get_VertexFreqGrid();
-            bfreq.b.initialize_grid(wscale_test);
+            bfreq.b.update_Wscale(wscale_test);
             SOPTstate.vertex[0].half1().template update_grid<k1>(bfreq, SOPTstate.vertex[0].half1());
             vertexInSOPT(SOPTstate.vertex, bareState, Pi, Lambda);
 
