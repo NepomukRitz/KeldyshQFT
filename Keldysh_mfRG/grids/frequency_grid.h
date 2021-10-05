@@ -339,6 +339,18 @@ public:
     void initialize_grid(double scale) {
         b.initialize_grid(scale);
     }
+
+    //auto get_freqGrid_b() const -> FrequencyGrid {return b;};
+//
+    //double get_wlower_b() const {return b.w_lower;};
+    //double get_wupper_b() const {return b.w_upper;};
+    //double get_tlower_aux() const {return b.t_lower;};
+    //double get_tupper_aux() const {return b.t_upper;};
+    //auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
+    //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
+//
+    //void get_freqs_w(double& w, int i) const {w = b.ws[i];};
+    //void get_freqs_aux(double& w, int iw) const {w = b.ts[iw];};
 };
 template<>
 class VertexFrequencyGrid<k2> {
@@ -359,6 +371,25 @@ public:
         b.initialize_grid(scale);
         f.initialize_grid(scale);
     }
+
+    //auto get_freqGrid_b() const -> FrequencyGrid {return b;};
+    //auto get_freqGrid_f() const -> FrequencyGrid {return f;};
+//
+    //double get_wlower_b() const {return b.w_lower;};
+    //double get_wupper_b() const {return b.w_upper;};
+    //double get_wlower_f() const {return f.w_lower;};
+    //double get_wupper_f() const {return f.w_upper;};
+    //double get_tlower_b_aux() const {return b.t_lower;};
+    //double get_tupper_b_aux() const {return b.t_upper;};
+    //double get_tlower_f_aux() const {return f.t_lower;};
+    //double get_tupper_f_aux() const {return f.t_upper;};
+    //auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
+    //auto gridtransf_f(double w) const -> double {return f.grid_transf(w);};
+    //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
+    //auto gridtransf_inv_f(double t) const -> double {return f.grid_transf_inv(t);};
+//
+    //void get_freqs_w(double& w, double& v, int iw, int iv) const {w = b.ws[iw]; v = f.ws[iv];};
+    //void get_freqs_aux(double& w, double& v, int iw, int iv) const {w = b.ts[iw]; v = f.ts[iv];};
 };
 template<>
 class VertexFrequencyGrid<k3> {
@@ -379,6 +410,25 @@ public:
         b.initialize_grid(scale);
         f.initialize_grid(scale);
     }
+
+    //auto get_freqGrid_b() const -> FrequencyGrid {return b;};
+    //auto get_freqGrid_f() const -> FrequencyGrid {return f;};
+//
+    //double get_wlower_b() const {return b.w_lower;};
+    //double get_wupper_b() const {return b.w_upper;};
+    //double get_wlower_f() const {return f.w_lower;};
+    //double get_wupper_f() const {return f.w_upper;};
+    //double get_tlower_b_aux() const {return b.t_lower;};
+    //double get_tupper_b_aux() const {return b.t_upper;};
+    //double get_tlower_f_aux() const {return f.t_lower;};
+    //double get_tupper_f_aux() const {return f.t_upper;};
+    //auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
+    //auto gridtransf_f(double w) const -> double {return f.grid_transf(w);};
+    //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
+    //auto gridtransf_inv_f(double t) const -> double {return f.grid_transf_inv(t);};
+//
+    //void get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp) const {w = b.ws[iw]; v = f.ws[iv]; vp = f.ws[ivp];};
+    //void get_freqs_aux(double& w, double& v, double& vp, int iw, int iv, int ivp) const {w = b.ts[iw]; v = f.ts[iv]; vp = f.ts[ivp];};
 };
 
 

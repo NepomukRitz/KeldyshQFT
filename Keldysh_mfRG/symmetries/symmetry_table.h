@@ -11,6 +11,8 @@
 
 #include "../data_structures.h"
 
+/// TODO: flatten below vectors of vectors
+
 /** Relate the Keldysh components in each diagrammatic class to the independent ones:
 * -1 = this component is zero
 *  0 = related to component 0

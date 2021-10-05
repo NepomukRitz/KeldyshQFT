@@ -641,7 +641,8 @@ struct VertexInput{
     {}
 };
 
-enum K_class {k1=0, k2=1, k2b=1, k3=2};
+enum K_class {k1=0, k2=1, k2b=2, k3=3};
+
 
 
 #endif // DATA_STRUCTURES_H
