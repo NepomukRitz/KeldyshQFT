@@ -192,15 +192,19 @@ public:
         return lhs; // return the result by value (uses move constructor)
     }
 
-    double get_deriv_max_K1();
-    double get_deriv_max_K2();
-    double get_deriv_max_K3();
+    double get_deriv_max_K1(bool verbose) const;
+    double get_deriv_max_K2(bool verbose) const;
+    double get_deriv_max_K3(bool verbose) const;
+    double get_curvature_max_K1(bool verbose) const;
+    double get_curvature_max_K2(bool verbose) const;
+    double get_curvature_max_K3(bool verbose) const;
 
     void findBestFreqGrid(double Lambda);
 
     void initializeInterpol();
 
     void set_initializedInterpol(bool is_init);
+
 };
 
 /** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
@@ -1039,11 +1043,11 @@ void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid) {
 template <typename Q>
 template<K_class k>
 void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data) {
-    Fullvert4data.initializeInterpol();
+    //Fullvert4data.initializeInterpol();
     this->avertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.avertex);
     this->pvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.pvertex);
     this->tvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.tvertex);
-    Fullvert4data.set_initializedInterpol(false);
+    //Fullvert4data.set_initializedInterpol(false);
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
@@ -1203,7 +1207,7 @@ template <typename Q> auto fullvert<Q>::sum_norm(const int p) -> double {
     return result;
 }
 
-template<typename Q> auto fullvert<Q>::get_deriv_max_K1() -> double {
+template<typename Q> auto fullvert<Q>::get_deriv_max_K1(const bool verbose) const -> double {
     vec<double> Kderiv_max (3);
 
 
@@ -1211,12 +1215,19 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K1() -> double {
     Kderiv_max[1] = pvertex.get_deriv_maxK1();
     Kderiv_max[2] = tvertex.get_deriv_maxK1();
 
+    if (verbose) {
+        std::cout << "max. Derivative in K1" << std::endl;
+        std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kderiv_max[2] << std::endl;
+    }
+
     double result = Kderiv_max.max_norm();
 
     return result;
 }
 
-template<typename Q> auto fullvert<Q>::get_deriv_max_K2() -> double {
+template<typename Q> auto fullvert<Q>::get_deriv_max_K2(const bool verbose) const -> double {
     vec<double> Kderiv_max (3);
 
 
@@ -1224,12 +1235,19 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K2() -> double {
     Kderiv_max[1] = pvertex.get_deriv_maxK2();
     Kderiv_max[2] = tvertex.get_deriv_maxK2();
 
+    if (verbose) {
+        std::cout << "max. Derivative in K2" << std::endl;
+        std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kderiv_max[2] << std::endl;
+    }
+
     double result = Kderiv_max.max_norm();
 
     return result;
 }
 
-template<typename Q> auto fullvert<Q>::get_deriv_max_K3() -> double {
+template<typename Q> auto fullvert<Q>::get_deriv_max_K3(const bool verbose) const -> double {
     vec<double> Kderiv_max (3);
 
 
@@ -1237,7 +1255,74 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K3() -> double {
     Kderiv_max[1] = pvertex.get_deriv_maxK3();
     Kderiv_max[2] = tvertex.get_deriv_maxK3();
 
+    if (verbose) {
+        std::cout << "max. Derivative in K3" << std::endl;
+        std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kderiv_max[2] << std::endl;
+    }
+
     double result = Kderiv_max.max_norm();
+
+    return result;
+}
+
+template<typename Q> auto fullvert<Q>::get_curvature_max_K1(const bool verbose) const -> double {
+    vec<double> Kcurv_max (3);
+
+
+    Kcurv_max[0] = avertex.get_curvature_maxK1();
+    Kcurv_max[1] = pvertex.get_curvature_maxK1();
+    Kcurv_max[2] = tvertex.get_curvature_maxK1();
+
+    if (verbose) {
+        std::cout << "max. Curvature in K1" << std::endl;
+        std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kcurv_max[2] << std::endl;
+    }
+
+    double result = Kcurv_max.max_norm();
+
+    return result;
+}
+
+template<typename Q> auto fullvert<Q>::get_curvature_max_K2(const bool verbose) const -> double {
+    vec<double> Kcurv_max (3);
+
+
+    Kcurv_max[0] = avertex.get_curvature_maxK2();
+    Kcurv_max[1] = pvertex.get_curvature_maxK2();
+    Kcurv_max[2] = tvertex.get_curvature_maxK2();
+
+    if (verbose) {
+        std::cout << "max. Curvature in K2" << std::endl;
+        std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kcurv_max[2] << std::endl;
+    }
+
+    double result = Kcurv_max.max_norm();
+
+    return result;
+}
+
+template<typename Q> auto fullvert<Q>::get_curvature_max_K3(const bool verbose) const -> double {
+    vec<double> Kcurv_max (3);
+
+
+    Kcurv_max[0] = avertex.get_curvature_maxK3();
+    Kcurv_max[1] = pvertex.get_curvature_maxK3();
+    Kcurv_max[2] = tvertex.get_curvature_maxK3();
+
+    if (verbose) {
+        std::cout << "max. Curvature in K3" << std::endl;
+        std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kcurv_max[2] << std::endl;
+    }
+
+    double result = Kcurv_max.max_norm();
 
     return result;
 }
@@ -1247,14 +1332,15 @@ namespace {
     template<typename Q>
     class CostFullvert_Wscale_b_K1 {
         fullvert<Q> fullVert_backup;
+        bool verbose;
     public:
         fullvert<Q> fullVert;
-        explicit CostFullvert_Wscale_b_K1(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+        explicit CostFullvert_Wscale_b_K1(fullvert<Q> fullVert_in, bool verbose) : fullVert(fullVert_in), fullVert_backup(fullVert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            fullVert.avertex.frequencies_K1.b.initialize_grid(wscale_test);
+            fullVert.avertex.frequencies_K1.b.update_Wscale(wscale_test);
             fullVert.template update_grid<k1>(fullVert.avertex.frequencies_K1, fullVert_backup);
-            double result = fullVert.get_deriv_max_K1();
+            double result = fullVert.get_curvature_max_K1(verbose);
             return result;
         }
     };
@@ -1262,14 +1348,15 @@ namespace {
     template<typename Q>
     class CostFullvert_Wscale_b_K2 {
         fullvert<Q> fullVert_backup;
+        bool verbose;
     public:
         fullvert<Q> fullVert;
-        explicit CostFullvert_Wscale_b_K2(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+        explicit CostFullvert_Wscale_b_K2(fullvert<Q> fullVert_in, bool verbose) : fullVert(fullVert_in), fullVert_backup(fullVert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            fullVert.avertex.frequencies_K2.b.initialize_grid(wscale_test);
+            fullVert.avertex.frequencies_K2.b.update_Wscale(wscale_test);
             fullVert.template update_grid<k2>(fullVert.avertex.frequencies_K2, fullVert_backup);
-            double result = fullVert.get_deriv_max_K2();
+            double result = fullVert.get_curvature_max_K2(verbose);
             return result;
         }
     };
@@ -1277,14 +1364,15 @@ namespace {
     template<typename Q>
     class CostFullvert_Wscale_f_K2 {
         fullvert<Q> fullVert_backup;
+        bool verbose;
     public:
         fullvert<Q> fullVert;
-        explicit CostFullvert_Wscale_f_K2(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+        explicit CostFullvert_Wscale_f_K2(fullvert<Q> fullVert_in, bool verbose) : fullVert(fullVert_in), fullVert_backup(fullVert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            fullVert.avertex.frequencies_K2.f.initialize_grid(wscale_test);
+            fullVert.avertex.frequencies_K2.f.update_Wscale(wscale_test);
             fullVert.template update_grid<k2>(fullVert.avertex.frequencies_K2, fullVert_backup);
-            double result = fullVert.get_deriv_max_K2();
+            double result = fullVert.get_curvature_max_K2(verbose);
             return result;
         }
     };
@@ -1292,14 +1380,15 @@ namespace {
     template<typename Q>
     class CostFullvert_Wscale_b_K3 {
         fullvert<Q> fullVert_backup;
+        bool verbose;
     public:
         fullvert<Q> fullVert;
-        explicit CostFullvert_Wscale_b_K3(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+        explicit CostFullvert_Wscale_b_K3(fullvert<Q> fullVert_in, bool verbose) : fullVert(fullVert_in), fullVert_backup(fullVert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            fullVert.avertex.frequencies_K3.b.initialize_grid(wscale_test);
+            fullVert.avertex.frequencies_K3.b.update_Wscale(wscale_test);
             fullVert.template update_grid<k3>(fullVert.avertex.frequencies_K3, fullVert_backup);
-            double result = fullVert.get_deriv_max_K3();
+            double result = fullVert.get_curvature_max_K3(verbose);
             return result;
         }
     };
@@ -1307,14 +1396,15 @@ namespace {
     template<typename Q>
     class CostFullvert_Wscale_f_K3 {
         fullvert<Q> fullVert_backup;
+        bool verbose;
     public:
         fullvert<Q> fullVert;
-        explicit CostFullvert_Wscale_f_K3(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+        explicit CostFullvert_Wscale_f_K3(fullvert<Q> fullVert_in, bool verbose) : fullVert(fullVert_in), fullVert_backup(fullVert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            fullVert.avertex.frequencies_K3.f.initialize_grid(wscale_test);
+            fullVert.avertex.frequencies_K3.f.update_Wscale(wscale_test);
             fullVert.template update_grid<k3>(fullVert.avertex.frequencies_K3, fullVert_backup);
-            double result = fullVert.get_deriv_max_K3();
+            double result = fullVert.get_curvature_max_K3(verbose);
             return result;
         }
     };
@@ -1325,27 +1415,27 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     fullvert<Q> fullvert_temp = *this;
     //fullvert_temp.update_grid(Lambda);
 
-
+    double wmaxK1_current = fullvert_temp.avertex.K1_get_VertexFreqGrid().b.w_upper;
     double a_Wscale = fullvert_temp.avertex.K1_get_VertexFreqGrid().b.W_scale / 10.;
     double m_Wscale = fullvert_temp.avertex.K1_get_VertexFreqGrid().b.W_scale;
     double b_Wscale = fullvert_temp.avertex.K1_get_VertexFreqGrid().b.W_scale * 10;
-    CostFullvert_Wscale_b_K1<Q> cost_b_K1(fullvert_temp);
+    CostFullvert_Wscale_b_K1<Q> cost_b_K1(fullvert_temp, true);
     minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, true);
     VertexFrequencyGrid<k1> frequenciesK1_new = avertex.K1_get_VertexFreqGrid();
-    frequenciesK1_new.b.initialize_grid(m_Wscale*2.);
+    frequenciesK1_new.b.initialize_grid(m_Wscale*2., wmaxK1_current);
 
     update_grid<k1>(frequenciesK1_new);
 
 
 
 
-
+/*
 
     VertexFrequencyGrid<k2> frequenciesK2_new = avertex.K2_get_VertexFreqGrid();
     a_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().f.W_scale / 10.;
     m_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().f.W_scale;
     b_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().f.W_scale * 10;
-    CostFullvert_Wscale_f_K2<Q> cost_f_K2(fullvert_temp);
+    CostFullvert_Wscale_f_K2<Q> cost_f_K2(fullvert_temp, true);
     minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 100, true);
     frequenciesK2_new = avertex.K2_get_VertexFreqGrid();
     frequenciesK2_new.f.initialize_grid(m_Wscale*2.);
@@ -1356,7 +1446,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     a_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().b.W_scale / 10.;
     m_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().b.W_scale;
     b_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().b.W_scale * 10;
-    CostFullvert_Wscale_b_K2<Q> cost_bK2(fullvert_temp);
+    CostFullvert_Wscale_b_K2<Q> cost_bK2(fullvert_temp, true);
     minimizer(cost_bK2, a_Wscale, m_Wscale, b_Wscale, 100, true);
     frequenciesK2_new = avertex.K2_get_VertexFreqGrid();
     frequenciesK2_new.b.initialize_grid(m_Wscale*2.);
@@ -1370,7 +1460,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     a_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().f.W_scale / 10.;
     m_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().f.W_scale;
     b_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().f.W_scale * 10;
-    CostFullvert_Wscale_b_K3<Q> cost_f_K3(fullvert_temp);
+    CostFullvert_Wscale_b_K3<Q> cost_f_K3(fullvert_temp, true);
     minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, true);
     frequenciesK3_new = avertex.K3_get_VertexFreqGrid();
     frequenciesK3_new.f.initialize_grid(m_Wscale*2.);
@@ -1381,14 +1471,14 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     a_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().b.W_scale / 10.;
     m_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().b.W_scale;
     b_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().b.W_scale * 10;
-    CostFullvert_Wscale_b_K3<Q> cost_bK3(fullvert_temp);
+    CostFullvert_Wscale_b_K3<Q> cost_bK3(fullvert_temp, true);
     minimizer(cost_bK3, a_Wscale, m_Wscale, b_Wscale, 100, true);
     frequenciesK3_new = avertex.K3_get_VertexFreqGrid();
     frequenciesK3_new.b.initialize_grid(m_Wscale*2.);
 
     update_grid(frequenciesK3_new);
 
-
+*/
 
 }
 
