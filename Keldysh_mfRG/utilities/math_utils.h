@@ -395,6 +395,7 @@ vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const size_t (&d
 }
 
 
+/// Collapses the i_dim-th dimension of a vector using an operator op
 template<typename binaryOp, typename T, size_t rank>
 vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims) [rank], const size_t i_dim) {
     size_t dim_collapse = dims[i_dim];
@@ -413,7 +414,35 @@ vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims) [ran
         result[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)];
         for (size_t j = 1; j < dim_collapse; j++) {
             result[rotateFlatIndex(i*dim_collapse + j, dims, i_dim)] = op(result[rotateFlatIndex(i*dim_collapse + j-1, dims, i_dim)]
-                                                                          , data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim)]
+                    , data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim)]
+            );
+
+        }
+    }
+
+    return result;
+}
+
+/// Collapses all but the i_dim-th dimension of a vector using an operator op
+template<typename binaryOp, typename T, size_t rank>
+vec<T> collapse_rev(const vec<T> data, const binaryOp& op, const size_t (&dims) [rank], const size_t i_dim) {
+    size_t dim_collapse = 1;
+    size_t dimsflat_new = dims[i_dim];
+    vec<size_t> dims_new(1) = {dimsflat_new};
+    for (size_t i = 0; i < i_dim; i++) {
+        dim_collapse*= dims[i];
+    }
+    for (size_t i = i_dim; i < rank-1; i++) {
+        dim_collapse*= dims[i+1];
+    }
+
+    size_t i_dim_minus1 = (i_dim == 0 ? rank-1 : i_dim-1);
+    vec<T> result(dimsflat_new);
+    for (size_t i = 0; i < dimsflat_new; i++) {
+        result[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim_minus1)] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim_minus1)];
+        for (size_t j = 1; j < dim_collapse; j++) {
+            result[rotateFlatIndex(i*dim_collapse + j, dims, i_dim_minus1)] = op(result[rotateFlatIndex(i*dim_collapse + j-1, dims, i_dim_minus1)]
+                    , data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim_minus1)]
             );
 
         }
@@ -432,6 +461,14 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
     }
     return result;
 }
+
+/// Computes maximum along axis i_dim
+template<typename T> vec<T> maxabs(const vec<T> data, const size_t (&dims) [rank], const size_t i_dim) {
+    vec<T> result = collapse_rev(data, [](T& l, T& r) -> T {return std::max(std::abs(l),std::abs(r))}, dims, i_dim)
+    return result;
+}
+
+
 
 
 
