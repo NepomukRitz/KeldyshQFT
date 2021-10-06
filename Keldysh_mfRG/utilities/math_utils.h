@@ -199,14 +199,24 @@ inline size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], c
  *                                      of the rotated flat index
  */
 template<size_t rank>
-inline size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], const size_t i_dim){
+inline size_t rotateFlatIndex(const size_t iflat, const size_t (&dims_native) [rank], const size_t i_dim){
     assert(i_dim <= rank);
     size_t permutation[rank];
+    size_t dims_rot[rank];
     // just make sure that permutation[-1] == i_dim
-    for (size_t i = 0; i < rank-i_dim-1; i++) permutation[i] = i + 1 + i_dim;
-    for (size_t i = rank-i_dim-1; i < rank; i++) permutation[i] = i - rank + 1 + i_dim;
+    for (size_t i = 0; i < rank-i_dim-1; i++) {
+        //permutation[i] = i + 1 + i_dim;
+        dims_rot[i] = dims_native[i + 1 + i_dim];
+    }
+    for (size_t i = rank-i_dim-1; i < rank; i++) {
+        //permutation[i] = i - rank + 1 + i_dim;
+        dims_rot[i] = dims_native[i - rank + 1 + i_dim]; // dims_rot[rank-1] = dims_native[i_dim]
+    }
 
-    size_t iflat_new = rotateFlatIndex(iflat, dims, permutation);
+    for (size_t i = 0      ; i <=i_dim; i++) permutation[i] = i + rank - 1 - i_dim;   // permutation[i_dim] = rank - 1
+    for (size_t i = i_dim+1; i < rank ; i++) permutation[i] = i - 1 - i_dim;
+
+    size_t iflat_new = rotateFlatIndex(iflat, dims_rot, permutation);
     return iflat_new;
 }
 
@@ -400,7 +410,7 @@ template<typename binaryOp, typename T, size_t rank>
 vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims) [rank], const size_t i_dim) {
     size_t dim_collapse = dims[i_dim];
     size_t dimsflat_new = 1;
-    vec<size_t> dims_new(rank-1);
+    vec<size_t> dims_new(rank-1);   // dims for the result
     for (size_t i = 0; i < i_dim; i++) {
         dims_new[i] = dims[i];
         dimsflat_new*= dims[i];
@@ -411,10 +421,9 @@ vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims) [ran
     }
     vec<T> result(dimsflat_new);
     for (size_t i = 0; i < dimsflat_new; i++) {
-        result[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)];
+        result[i] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)];
         for (size_t j = 1; j < dim_collapse; j++) {
-            result[rotateFlatIndex(i*dim_collapse + j, dims, i_dim)] = op(result[rotateFlatIndex(i*dim_collapse + j-1, dims, i_dim)]
-                    , data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim)]
+            result[i] = op(result[i], data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim)]
             );
 
         }
@@ -439,10 +448,9 @@ vec<T> collapse_rev(const vec<T> data, const binaryOp& op, const size_t (&dims) 
     size_t i_dim_minus1 = (i_dim == 0 ? rank-1 : i_dim-1);
     vec<T> result(dimsflat_new);
     for (size_t i = 0; i < dimsflat_new; i++) {
-        result[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim_minus1)] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim_minus1)];
+        result[i] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim_minus1)];
         for (size_t j = 1; j < dim_collapse; j++) {
-            result[rotateFlatIndex(i*dim_collapse + j, dims, i_dim_minus1)] = op(result[rotateFlatIndex(i*dim_collapse + j-1, dims, i_dim_minus1)]
-                    , data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim_minus1)]
+            result[i] = op(result[i], data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim_minus1)]
             );
 
         }
@@ -463,8 +471,11 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
 }
 
 /// Computes maximum along axis i_dim
-template<size_t rank, typename T> vec<T> maxabs(const vec<T> data, const size_t (&dims) [rank], const size_t i_dim) {
-    vec<T> result = collapse_rev(data, [](T& l, T& r) -> T {return std::max(std::abs(l),std::abs(r));}, dims, i_dim);
+template<size_t rank, typename T> vec<double> maxabs(const vec<T> data, const size_t (&dims) [rank], const size_t i_dim) {
+    vec<double> result (dims[i_dim]);
+    if (data.size() == dims[i_dim]) result = data.abs(); // no other dimensions to collapse
+    else result = collapse_rev(data, [](const T& l, const T& r) -> T {return static_cast<T>(std::max(std::abs(l),std::abs(r)));}, dims, i_dim).abs();
+    //else result = collapse_rev(data, [](const T& l, const T& r) -> T {return l + r;}, dims, i_dim).abs();
     return result;
 }
 

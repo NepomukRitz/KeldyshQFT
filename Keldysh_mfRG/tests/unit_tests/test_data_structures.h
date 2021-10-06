@@ -120,6 +120,28 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
 
         REQUIRE( errorcount == 0);
     }
+    SECTION( "Rotate flat index cyclically" ) {
+        int errorcount = 0;
+        size_t dimstmp[rank] = {5, 7, 1, 3};
+        size_t permutation [rank] = {3, 0, 1, 2};
+
+        int flatidx_unrot = 0;
+        for (size_t i=0; i<dimstmp[0]; i++) {
+            for (size_t j=0; j<dimstmp[1]; j++) {
+                for (size_t k = 0; k < dimstmp[2]; k++) {
+                    for (size_t l = 0; l < dimstmp[3]; l++) {
+                        size_t test = ::rotateFlatIndex<rank>(flatidx_unrot, dims, 0);
+                        size_t multiindex[rank] = {i,j,k,l};
+                        size_t multiindex_permd[rank] = {multiindex[permutation[0]], multiindex[permutation[1]], multiindex[permutation[2]], multiindex[permutation[3]]};
+                        if (test != ::getFlatIndex<rank>(multiindex_permd, dims)) errorcount++;
+                        flatidx_unrot++;
+                    }
+                }
+            }
+        }
+
+        REQUIRE( errorcount == 0);
+    }
 
 }
 
