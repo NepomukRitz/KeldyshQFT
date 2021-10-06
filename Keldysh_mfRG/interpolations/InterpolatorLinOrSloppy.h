@@ -129,8 +129,8 @@ inline auto interpolate_lin_on_aux1D(const double x, const FrequencyGrid& freque
     double t;
     int index = frequencies.fconv(t, x);
 
-    double x1 = frequencies.ws[index];
-    double x2 = frequencies.ws[index + 1];
+    double x1 = frequencies.ts[index];
+    double x2 = frequencies.ts[index + 1];
     double xd = (t - x1) / (x2 - x1);
 
     Q f1 = val(index);
