@@ -2,6 +2,7 @@
 #define FPP_MFRG_MATH_UTILS_H
 
 #include "../data_structures.h"
+#include "RuntimeError.h"
 
 // signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
 template <typename T>
@@ -252,6 +253,22 @@ namespace { // hide the following to the outside world
     }
 
     /**
+     * get inverse of a permutation
+     * @tparam rank
+     * @param perm      e.g. with perm = {3,2,0,1} the standard sequence arr={0,1,2,3} is permuted to {arr[perm[0]],..,arr[perm[3]]}
+     * @return          inverse of perm
+     */
+    template<size_t rank>
+    vec<size_t> get_inverse_permutation(const size_t (&perm) [rank]) {
+        vec<size_t> perm_inv(rank);
+        for (size_t i = 0; i < rank; i++) {
+            perm_inv[perm[i]] = i;
+        }
+
+        return perm_inv;
+    }
+
+    /**
      * Computes the derivative of a multi-dimensional vector with the finite-differences method
      * The derivative is computed in the direction of dims[permutation[-1]]
      * Currently assuming equal spacing in xs                                                   /// TODO: generalize formula to non-equal spacing
@@ -405,12 +422,73 @@ vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const size_t (&d
 }
 
 
+/**
+ *  Collapses the dimensions of a vector using an operator op
+ * @tparam binaryOp
+ * @tparam T
+ * @tparam rank         rank of the data tensor
+ * @param data          multi-dimensional tensor
+ * @param op            binary operator used to collapse the dimensions that are not contained in i_dims
+ * @param dims_native   native dimensions of data
+ * @param i_dims        indices of the dimensions that should be kept, in the order in which data should be returned
+ * @param dims_new      dimensions of result corresponding to i_dims
+ * @return
+ */
+template<typename binaryOp, typename T, size_t rank, size_t rank_new>
+vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims_native) [rank], const size_t (&i_dims) [rank_new], const size_t (&dims_new) [rank_new]) {
+    size_t dim_collapse = 1; // flat dimension of dimensions that are to be collapsed
+    size_t dimsflat_new = 1; // flat dimension of result
+    for (size_t i = 0; i < rank_new; i++) dimsflat_new *= dims_native[i_dims[i]];
+    for (size_t i = 0; i < rank; i++) dim_collapse *= dims_native[i];
+    dim_collapse /= dimsflat_new;
+
+    size_t perm_rot[rank]; // permutation to rotate dims_native to dims_rot
+    size_t dims_rot[rank]; // array of dimensions, rotated such that the trailing dimensions are to be collapsed
+    size_t iter_new;
+    size_t iter_col = 0;
+    for (size_t i = 0; i < rank; i++) {
+        bool is_new = false;
+        size_t j;
+        for (j = 0; j < rank_new; j++) {
+            if (i == i_dims[j]) is_new = true; iter_new = j; // break;
+        }
+        if (is_new) {
+            perm_rot[iter_new] = i;
+            dims_rot[iter_new] = dims_native[i];
+        }
+        else {
+            perm_rot[rank-iter_col-1] = i;
+            dims_rot[rank-iter_col-1] = dims_native[i];
+            iter_col++;
+        }
+    }
+    vec<size_t> perm_inv_vec = get_inverse_permutation(perm_rot);
+    size_t perm_inv[rank];
+    std::copy(perm_inv_vec.begin(), perm_inv_vec.end(), perm_inv);
+
+
+    vec<T> result(dimsflat_new);
+    for (size_t i = 0; i < dimsflat_new; i++) {
+        result[i] = data[rotateFlatIndex(i*dim_collapse + 0, dims_rot, perm_inv)];
+        for (size_t j = 1; j < dim_collapse; j++) {
+            result[i] = op(result[i], data[rotateFlatIndex(i*dim_collapse + j  , dims_rot, perm_inv)]
+            );
+
+        }
+    }
+
+    return result;
+}
+
+/*
 /// Collapses the i_dim-th dimension of a vector using an operator op
 template<typename binaryOp, typename T, size_t rank>
 vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims) [rank], const size_t i_dim) {
+    ///  TODO: check
+    if (dims[i_dim] <= 1) std::length_error("Dimension too small to collapse"); // nothing to collapse
     size_t dim_collapse = dims[i_dim];
     size_t dimsflat_new = 1;
-    vec<size_t> dims_new(rank-1);   // dims for the result
+    size_t dims_new[rank-1];   // dims for the result
     for (size_t i = 0; i < i_dim; i++) {
         dims_new[i] = dims[i];
         dimsflat_new*= dims[i];
@@ -420,10 +498,11 @@ vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims) [ran
         dimsflat_new*= dims[i+1];
     }
     vec<T> result(dimsflat_new);
+    size_t i_dim_new = (i_dim > 0) ? i_dim-1 : rank-2;
     for (size_t i = 0; i < dimsflat_new; i++) {
-        result[i] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)];
+        result[rotateFlatIndex(i, dims_new, i_dim_new)] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)];
         for (size_t j = 1; j < dim_collapse; j++) {
-            result[i] = op(result[i], data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim)]
+            result[rotateFlatIndex(i, dims_new, i_dim_new)] = op(result[rotateFlatIndex(i, dims_new, i_dim_new)], data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim)]
             );
 
         }
@@ -458,6 +537,7 @@ vec<T> collapse_rev(const vec<T> data, const binaryOp& op, const size_t (&dims) 
 
     return result;
 }
+*/
 
 template<typename T> vec<T> power2(const vec<T> vec_in) {
     size_t flatdim = vec_in.size();
@@ -473,9 +553,13 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
 /// Computes maximum along axis i_dim
 template<size_t rank, typename T> vec<double> maxabs(const vec<T> data, const size_t (&dims) [rank], const size_t i_dim) {
     vec<double> result (dims[i_dim]);
+    size_t i_dims[1] = {i_dim};
+    size_t dims_new[1] = {dims[i_dim]};
     if (data.size() == dims[i_dim]) result = data.abs(); // no other dimensions to collapse
-    else result = collapse_rev(data, [](const T& l, const T& r) -> T {return static_cast<T>(std::max(std::abs(l),std::abs(r)));}, dims, i_dim).abs();
-    //else result = collapse_rev(data, [](const T& l, const T& r) -> T {return l + r;}, dims, i_dim).abs();
+    //else result = collapse_rev(data, [](const T& l, const T& r) -> T {return static_cast<T>(std::max(std::abs(l),std::abs(r)));}, dims, i_dim).abs();
+    else result = collapse(data, [](const T& l, const T& r) -> T {return static_cast<T>(std::max(std::abs(l),std::abs(r)));}, dims, i_dims, dims_new).abs();
+
+        //else result = collapse_rev(data, [](const T& l, const T& r) -> T {return l + r;}, dims, i_dim).abs();
     return result;
 }
 
