@@ -31,8 +31,8 @@ public:
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
     void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
     void update_grid(double Lambda);  // Interpolate self-energy to updated grid
-    auto norm(int p) -> double;
-    auto norm() -> double;
+    auto norm(int p) const -> double;
+    auto norm() const -> double;
 
     // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
@@ -202,7 +202,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
 /*
  * p-norm for the SelfEnergy
  */
-template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
+template <typename Q> auto SelfEnergy<Q>::norm(const int p) const -> double {
     if(p==0){ //max norm
         double max = 0.;
         for (auto value : (this->Sigma)){
@@ -223,7 +223,7 @@ template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
 }
 
 /* standard norm: 2-norm */
-template <typename Q> auto SelfEnergy<Q>::norm() -> double {
+template <typename Q> auto SelfEnergy<Q>::norm() const -> double {
     return this->norm(2);
 }
 

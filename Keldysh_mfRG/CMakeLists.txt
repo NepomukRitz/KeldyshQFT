@@ -50,8 +50,15 @@ add_executable(Keldysh_mfRG
         tests/test_perturbation_theory.h
         utilities/util.h
         vertex.h
-        utilities/write_data2file.h grids/momentum_grid.h tests/test_ODE.h integrator/old_integrators.h
-        parameters/frequency_parameters.h parameters/technical_parameters.h interpolations/interpolation_functions.h tests/saveIntegrand.h)
+        utilities/write_data2file.h
+        grids/momentum_grid.h
+        tests/test_ODE.h
+        integrator/old_integrators.h
+        parameters/frequency_parameters.h
+        parameters/technical_parameters.h
+        interpolations/interpolation_functions.h
+        tests/unit_tests/test_ODE_solver.h
+        tests/saveIntegrand.h)
 
 # executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
@@ -94,7 +101,12 @@ add_executable(Keldysh_mfRG_testing
         grids/momentum_grid.h
         tests/unit_tests/test_momentum_grid.h
         tests/test_ODE.h
-        integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h interpolations/interpolation_functions.h tests/saveIntegrand.h)
+        integrator/old_integrators.h
+        parameters/frequency_parameters.h
+        parameters/technical_parameters.h
+        interpolations/interpolation_functions.h
+        tests/unit_tests/test_ODE_solver.h
+        tests/saveIntegrand.h)
 
 # standard executable for integration tests and production runs
 add_executable(FPP_mfRG
@@ -138,7 +150,12 @@ add_executable(FPP_mfRG
         grids/momentum_grid.h
         grids/flow_grid.h
         tests/test_ODE.h
-        integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h interpolations/interpolation_functions.h tests/saveIntegrand.h)
+        integrator/old_integrators.h
+        parameters/frequency_parameters.h
+        parameters/technical_parameters.h
+        interpolations/interpolation_functions.h
+        tests/unit_tests/test_ODE_solver.h
+        tests/saveIntegrand.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)

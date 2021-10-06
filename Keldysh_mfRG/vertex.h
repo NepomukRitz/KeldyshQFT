@@ -118,10 +118,10 @@ public:
     void update_grid(double Lambda);
 
     //Norm of the vertex
-    double sum_norm(int);
-    double norm_K1(int);
-    double norm_K2(int);
-    double norm_K3(int);
+    double sum_norm(int) const;
+    double norm_K1(int) const ;
+    double norm_K2(int) const ;
+    double norm_K3(int) const ;
 
     // Various operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
@@ -969,7 +969,7 @@ template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
     this->tvertex.update_grid(Lambda);
 }
 
-template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
+template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
     if(p==0) {//infinity (max) norm
         double max = 0;
         for (int iK = 0; iK < nK_K1; iK++) {
@@ -1014,7 +1014,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) -> double {
     }
 }
 
-template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
+template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
     if(p==0) { //infinity (max) norm
         double max = 0.;
         for(int iK=0; iK < nK_K2; iK++) {
@@ -1063,7 +1063,7 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) -> double {
     }
 }
 
-template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
+template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
     if(p==0) {
         double max = 0.;
         for(int iK=0; iK < nK_K3; iK++) {
@@ -1118,7 +1118,7 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) -> double {
 
 }
 
-template <typename Q> auto fullvert<Q>::sum_norm(const int p) -> double {
+template <typename Q> auto fullvert<Q>::sum_norm(const int p) const -> double {
     double result = 0.;
     if (MAX_DIAG_CLASS >= 0) result += norm_K1(p);
     if (MAX_DIAG_CLASS >= 2) result += norm_K2(p);
