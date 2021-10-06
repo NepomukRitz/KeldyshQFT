@@ -198,6 +198,12 @@ public:
     double get_curvature_max_K1(bool verbose) const;
     double get_curvature_max_K2(bool verbose) const;
     double get_curvature_max_K3(bool verbose) const;
+    double analyze_tails_K1(bool verbose) const;
+    double analyze_tails_K2w(bool verbose) const;
+    double analyze_tails_K2v(bool verbose) const;
+    double analyze_tails_K3w(bool verbose) const;
+    double analyze_tails_K3v(bool verbose) const;
+    double analyze_tails_K3vp(bool verbose) const;
 
     void findBestFreqGrid(double Lambda);
 
@@ -1327,6 +1333,122 @@ template<typename Q> auto fullvert<Q>::get_curvature_max_K3(const bool verbose) 
     return result;
 }
 
+template<typename Q> auto fullvert<Q>::analyze_tails_K1(bool verbose) const -> double {
+    vec<double> Ktails_rel (3);
+
+
+    Ktails_rel[0] = avertex.analyze_tails_K1();
+    Ktails_rel[1] = pvertex.analyze_tails_K1();
+    Ktails_rel[2] = tvertex.analyze_tails_K1();
+
+    if (verbose) {
+        std::cout << "rel. magnitude of tails in K1" << std::endl;
+        std::cout << "\t a: \t" << Ktails_rel[0] << std::endl;
+        std::cout << "\t p: \t" << Ktails_rel[1] << std::endl;
+        std::cout << "\t t: \t" << Ktails_rel[2] << std::endl;
+    }
+
+    double result = Ktails_rel.max_norm();
+
+    return result;
+}
+
+template<typename Q> auto fullvert<Q>::analyze_tails_K2w(bool verbose) const -> double {
+    vec<double> Ktails_relx (3);
+
+
+    Ktails_relx[0] = avertex.analyze_tails_K2_x();
+    Ktails_relx[1] = pvertex.analyze_tails_K2_x();
+    Ktails_relx[2] = tvertex.analyze_tails_K2_x();
+
+    if (verbose) {
+        std::cout << "rel. magnitude of tails in K2" << std::endl;
+        std::cout << "\t a -> along w: \t" << Ktails_relx[0] << std::endl;
+        std::cout << "\t p -> along w: \t" << Ktails_relx[1] << std::endl;
+        std::cout << "\t t -> along w: \t" << Ktails_relx[2] << std::endl;
+    }
+
+    double result = Ktails_relx.max_norm();
+
+    return result;
+}
+template<typename Q> auto fullvert<Q>::analyze_tails_K2v(bool verbose) const -> double {
+    vec<double> Ktails_rely (3);
+
+
+    Ktails_rely[0] = avertex.analyze_tails_K2_y();
+    Ktails_rely[1] = pvertex.analyze_tails_K2_y();
+    Ktails_rely[2] = tvertex.analyze_tails_K2_y();
+
+    if (verbose) {
+        std::cout << "rel. magnitude of tails in K2" << std::endl;
+        std::cout << "\t a -> along v: \t" << Ktails_rely[0] << std::endl;
+        std::cout << "\t p -> along v: \t" << Ktails_rely[1] << std::endl;
+        std::cout << "\t t -> along v: \t" << Ktails_rely[2] << std::endl;
+    }
+
+    double result = Ktails_rely.max_norm();
+
+    return result;
+}
+template<typename Q> auto fullvert<Q>::analyze_tails_K3w(bool verbose) const -> double {
+    vec<double> Ktails_relx (3);
+
+
+    Ktails_relx[0] = avertex.analyze_tails_K3_x();
+    Ktails_relx[1] = pvertex.analyze_tails_K3_x();
+    Ktails_relx[2] = tvertex.analyze_tails_K3_x();
+
+    if (verbose) {
+        std::cout << "rel. magnitude of tails in K3" << std::endl;
+        std::cout << "\t a -> along w: \t" << Ktails_relx[0] << std::endl;
+        std::cout << "\t p -> along w: \t" << Ktails_relx[1] << std::endl;
+        std::cout << "\t t -> along w: \t" << Ktails_relx[2] << std::endl;
+    }
+
+    double result = Ktails_relx.max_norm();
+
+    return result;
+}
+template<typename Q> auto fullvert<Q>::analyze_tails_K3v(bool verbose) const -> double {
+    vec<double> Ktails_rely (3);
+
+
+    Ktails_rely[0] = avertex.analyze_tails_K3_y();
+    Ktails_rely[1] = pvertex.analyze_tails_K3_y();
+    Ktails_rely[2] = tvertex.analyze_tails_K3_y();
+
+    if (verbose) {
+        std::cout << "rel. magnitude of tails in K3" << std::endl;
+        std::cout << "\t a -> along v: \t" << Ktails_rely[0] << std::endl;
+        std::cout << "\t p -> along v: \t" << Ktails_rely[1] << std::endl;
+        std::cout << "\t t -> along v: \t" << Ktails_rely[2] << std::endl;
+    }
+
+    double result = Ktails_rely.max_norm();
+
+    return result;
+}
+template<typename Q> auto fullvert<Q>::analyze_tails_K3vp(bool verbose) const -> double {
+    vec<double> Ktails_rely (3);
+
+
+    Ktails_rely[0] = avertex.analyze_tails_K3_z();
+    Ktails_rely[1] = pvertex.analyze_tails_K3_z();
+    Ktails_rely[2] = tvertex.analyze_tails_K3_z();
+
+    if (verbose) {
+        std::cout << "rel. magnitude of tails in K3" << std::endl;
+        std::cout << "\t a -> along vp:\t" << Ktails_rely[0] << std::endl;
+        std::cout << "\t p -> along vp:\t" << Ktails_rely[1] << std::endl;
+        std::cout << "\t t -> along vp:\t" << Ktails_rely[2] << std::endl;
+    }
+
+    double result = Ktails_rely.max_norm();
+
+    return result;
+}
+
 namespace {
 
     template<typename Q>
@@ -1340,6 +1462,7 @@ namespace {
         auto operator() (double wscale_test) -> double {
             fullVert.avertex.frequencies_K1.b.update_Wscale(wscale_test);
             fullVert.template update_grid<k1>(fullVert.avertex.frequencies_K1, fullVert_backup);
+            fullVert.analyze_tails_K1(true);
             double result = fullVert.get_curvature_max_K1(verbose);
             return result;
         }

@@ -89,6 +89,8 @@ public:
     vec<Q> get_deriv_K1_x() const;
     double get_deriv_maxK1() const;
     double get_curvature_maxK1() const;
+
+    double analyze_tails_K1() const;
 };
 
 template<typename Q>
@@ -182,6 +184,10 @@ public:
     vec<Q> get_deriv_K2_yy() const;
     double get_deriv_maxK2() const;
     auto get_curvature_maxK2() const -> double;
+
+    double analyze_tails_K2_x() const;
+
+    double analyze_tails_K2_y() const;
 };
 
 template <typename Q>
@@ -278,6 +284,9 @@ public:
     vec<Q> get_deriv_K3_xyz() const;
     double get_deriv_maxK3() const;
     auto get_curvature_maxK3() const -> double;
+    double analyze_tails_K3_x() const;
+    double analyze_tails_K3_y() const;
+    double analyze_tails_K3_z() const;
 
 };
 
@@ -392,6 +401,12 @@ template <typename Q> auto vertexDataContainer<k1,Q>::get_curvature_maxK1() cons
 }
 
 
+template <typename Q> double vertexDataContainer<k1,Q>::analyze_tails_K1() const {
+    double maxabs_K1_total = K1.max_norm();
+    vec<double> maxabsK1_along_w = maxabs(K1, dimsK1, 1);
+
+    return maxabsK1_along_w[1] / maxabs_K1_total;
+}
 
 
 
@@ -553,6 +568,20 @@ template <typename Q> auto vertexDataContainer<k2,Q>::get_curvature_maxK2() cons
                     ).max_norm();
     return max_K1;
 }
+
+template <typename Q> double vertexDataContainer<k2,Q>::analyze_tails_K2_x() const {
+    double maxabs_K2_total = K2.max_norm();
+    vec<double> maxabsK2_along_w = maxabs(K2, dimsK2, 1);
+
+    return maxabsK2_along_w[1] / maxabs_K2_total;
+}
+template <typename Q> double vertexDataContainer<k2,Q>::analyze_tails_K2_y() const {
+    double maxabs_K2_total = K2.max_norm();
+    vec<double> maxabsK2_along_v = maxabs(K2, dimsK2, 2);
+
+    return maxabsK2_along_v[1] / maxabs_K2_total;
+}
+
 
 template <typename Q> auto vertexDataContainer<k3,Q>::K3_acc(int i) const -> Q {
     if (i >= 0 && i < K3.size())
@@ -728,6 +757,24 @@ template <typename Q> auto vertexDataContainer<k3,Q>::get_curvature_maxK3() cons
     return max_K3;
 }
 
+template <typename Q> double vertexDataContainer<k3,Q>::analyze_tails_K3_x() const {
+    double maxabs_K3_total = K3.max_norm();
+    vec<double> maxabsK3_along_w = maxabs(K3, dimsK3, 1);
+
+    return maxabsK3_along_w[1] / maxabs_K3_total;
+}
+template <typename Q> double vertexDataContainer<k3,Q>::analyze_tails_K3_y() const {
+    double maxabs_K3_total = K3.max_norm();
+    vec<double> maxabsK3_along_v = maxabs(K3, dimsK3, 2);
+
+    return maxabsK3_along_v[1] / maxabs_K3_total;
+}
+template <typename Q> double vertexDataContainer<k3,Q>::analyze_tails_K3_z() const {
+    double maxabs_K3_total = K3.max_norm();
+    vec<double> maxabsK3_along_vp = maxabs(K3, dimsK3, 3);
+
+    return maxabsK3_along_vp[1] / maxabs_K3_total;
+}
 
 
 #endif //FPP_MFRG_VERTEX_DATA_H
