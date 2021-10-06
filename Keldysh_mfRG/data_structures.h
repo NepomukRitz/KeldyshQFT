@@ -438,12 +438,21 @@ size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [dimensionality]
     return iflat_new;
 }
 
+// boundary condition type for the SplineK1 end-points
+enum bd_type {
+    first_deriv = 1,    /// known first derivative
+    second_deriv = 2,    /// known second derivative
+    third_deriv = 3    /// known third derivative
+};
+
 /**
  * Computes the derivative of a multi-dimensional vector with the finite-differences method
  * The derivative is computed in the direction of dims[permutation[-1]]
+ * Currently assuming equal spacing in xs                                                   /// TODO: generalize formula to non-equal spacing
  * @tparam T
  * @tparam dimensionality       number of dimensions (only for dimension >= 2 !!)
- * @param vec_in                input vector for which the derivative is to be computed
+ * @param data                  input vector for which the derivative is to be computed
+ * @param xs                    frequency points in the direction of dims[permutation[-1]]
  * @param dims                  number of grid points in the different directions
  * @param permutation           determines how the dimensions are to be permuted
  *                              for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
@@ -453,35 +462,143 @@ size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [dimensionality]
  * @return
  */
 template<typename T, size_t dimensionality>
-vec<T> get_finite_differences(const vec<T> vec_in, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
-    size_t flatdim = vec_in.size();
+vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const size_t (&dims) [dimensionality],
+                              const size_t (&permutation) [dimensionality],
+                              const bd_type left=third_deriv, const bd_type right=third_deriv, const T left_value=0.0, const T right_value=0.0){
+    size_t flatdim = data.size();
+    size_t dimsum = dims[dimensionality-1];
+    assert(dimsum==xs.size());
+    size_t codimsum = flatdim/dimsum;
+
+    vec<T> result(flatdim);
+    for (int it = 0; it < codimsum; it++) {
+
+        /// Compute derivative with Central finite difference
+        for (int jt = 2; jt < dimsum-2; jt++) {
+            double h  = xs[jt+1]-xs[jt  ];
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                    + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)]
+                    - data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * 8.
+                    + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * 8.
+                    - data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)]
+                    ) / (12. * h);
+        }
+        /// Compute boundary values: with non-central finite difference
+        /// TODO currently only implemented for equidistant grid
+        size_t jt = 1;
+        double hl = xs[jt  ]-xs[jt-1];
+        double h  = xs[jt+1]-xs[jt  ];
+        result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                  data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-3.)
+                + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (-10.)
+                + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (18.)
+                + data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)] * (-6.)
+                + data[rotateFlatIndex(it*dimsum + jt + 3, dims, permutation)]
+                ) / (h*12.);
+
+
+        jt = dimsum - 2;
+        h = xs[jt  ]-xs[jt-1];
+        result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                  data[rotateFlatIndex(it*dimsum + jt - 3, dims, permutation)] * (-1.)
+                + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)] * (6.)
+                + data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-18.)
+                + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (10.)
+                + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (3.)
+                ) / (h*12.);
+
+
+        jt = 0;
+        h  = xs[jt+1]-xs[jt  ];
+        result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (-25.)
+                + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (48.)
+                + data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)] * (-36.)
+                + data[rotateFlatIndex(it*dimsum + jt + 3, dims, permutation)] * (16.)
+                + data[rotateFlatIndex(it*dimsum + jt + 4, dims, permutation)] * (-3.)
+                ) / (h*12.);
+
+
+        jt = dimsum - 1;
+        h = xs[jt  ]-xs[jt-1];
+        result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                + data[rotateFlatIndex(it*dimsum + jt - 4, dims, permutation)] * (3.)
+                + data[rotateFlatIndex(it*dimsum + jt - 3, dims, permutation)] * (-16.)
+                + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)] * (36.)
+                + data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-48.)
+                + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (25.)
+                ) / (h*12.);
+
+        /*
+        // set boundary values
+        if (left==first_deriv) {        // "known first derivative at left boundary"
+            result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] = left_value;
+        }else if (left==second_deriv) {        // "known second derivative at left boundary"
+            double h = xs[1]-xs[0];
+            result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
+                    0.5*(-result[rotateFlatIndex(it * dimsum + 1, dims, permutation)]
+                    -0.5*left_value*h
+                    + 3.0 * (data[rotateFlatIndex(it * dimsum + 1, dims, permutation)] - data[rotateFlatIndex(it * dimsum + 0, dims, permutation)]) / h);
+            //const double h = m_x[1]-m_x[0];
+            //m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h);  /// checked
+        } else if (left==third_deriv) {        // "known third derivative at left boundary"
+            double h = xs[1] - xs[0];
+            result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
+                    -result[rotateFlatIndex(it * dimsum + 1, dims, permutation)] + left_value / 6. * h * h
+                    + 2.0 * (data[rotateFlatIndex(it * dimsum + 1, dims, permutation)] -
+                             data[rotateFlatIndex(it * dimsum + 0, dims, permutation)]) / h;
+            //+0.5 * data[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
+            //m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
+        }
+        if (right==first_deriv) {        // "known first derivative at right boundary"
+            result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] = right_value;
+        } else if (right==second_deriv) {        // "known second derivative at right boundary"
+            double h = xs[dimsum-1]-xs[dimsum-2];
+            result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
+                    0.5*(-result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]
+                    +0.5*right_value*h
+                    + 3.0 * (data[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] -data[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]) / h);
+            //const double h = m_x[n-1]-m_x[n-2];
+            //m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+ 3.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h); /// checked
+        } else if (right==third_deriv) {        // "known third derivative at right boundary"
+            double h = xs[dimsum - 1] - xs[dimsum - 2];
+            result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
+                    -result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)] - right_value / 6. * h * h +
+                    2.0 * (data[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] -
+                           data[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]) / h;
+            //      -0.5 * data[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
+            //m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;
+        }
+        */
+    }
+    return result;
+}
+template<typename T, size_t dimensionality>
+vec<T> compute_partial_derivative(const vec<T> data_in, const vec<T> xs_in, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
+    size_t flatdim = data_in.size();
     size_t dimsum = dims[dimensionality-1];
     size_t codimsum = flatdim/dimsum;
 
     vec<T> result(flatdim);
     for (int it = 0; it < codimsum; it++) {
-        result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
-                +0.5 * vec_in[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
-        result[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] =
-                -0.5 * vec_in[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
 
         for (int jt = 1; jt < dimsum-1; jt++) {
+            // f'_i = ( f_{i+1} - f_{i-1} ) / ( x_{i+1} - x_{i-1} )
             result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] =
-                    -0.5 * vec_in[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)]
-                    +0.5 * vec_in[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)];
+                    ( data_in[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)]
+                    - data_in[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] )
+                  / ( xs_in[jt + 1]
+                    - xs_in[jt - 1] );
         }
-    }
-     return result;
-}
-/// Template specialization of above function for dimensionality == 1
-template<typename T> vec<T> get_finite_differences(const vec<T> vec_in){
-    size_t dimsum = vec_in.size();
 
-    vec<T> result(dimsum);
-    result[0       ] = +0.5 * vec_in[1       ];
-    result[dimsum-1] = -0.5 * vec_in[dimsum-2];
-    for (int jt = 1; jt < dimsum-1; jt++) {
-        result[jt] = -0.5 * vec_in[jt - 1]  + 0.5 * vec_in[jt + 1];
+        // gives parabolic boundary condition if plugged into hermite cubic spline interpolation: f'_0 = 2(f_1 - f_0)/(x_1 - x_0) - f'_1
+        result[rotateFlatIndex(it*dimsum + 0       , dims, permutation)] =
+                2* ( data_in[rotateFlatIndex(it*dimsum + 1, dims, permutation)] -  data_in[rotateFlatIndex(it*dimsum + 0, dims, permutation)] )
+                /  ( xs_in[1] - xs_in[0]);
+        // gives parabolic boundary condition if plugged into hermite cubic spline interpolation: f'_0 = 2(f_1 - f_0)/(x_1 - x_0) - f'_1
+        result[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] =
+                2* ( data_in[rotateFlatIndex(it*dimsum + dimsum-1, dims, permutation)] - data_in[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)] )
+                /  ( xs_in[dimsum-1] - xs_in[dimsum-2] );
     }
     return result;
 }
@@ -495,6 +612,7 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
     }
     return result;
 }
+
 
 
 
@@ -523,6 +641,8 @@ struct VertexInput{
     {}
 };
 
-enum K_class {k1, k2, k2b, k3};
+enum K_class {k1=0, k2=1, k2b=2, k3=3};
+
+
 
 #endif // DATA_STRUCTURES_H

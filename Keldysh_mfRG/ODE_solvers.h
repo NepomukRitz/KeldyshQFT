@@ -116,6 +116,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
 
         // update frequency grid, interpolate result to new grid
         y_run.update_grid(x_run); // specific for state
+        y_run.findBestFreqGrid(x_run); // specific for state
     }
     y_fin = y_run; // final y value
 }

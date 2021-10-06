@@ -3,6 +3,7 @@
 
 #include "data_structures.h" // real/complex vector classes
 #include "grids/frequency_grid.h"  // interpolate self-energy on new frequency grid
+#include "minimizer.h"
 #include <omp.h>             // parallelize initialization of self-energy
 
 /****************** CLASS FOR SELF-ENERGY *************/
@@ -30,9 +31,21 @@ public:
     auto acc(int i) const -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
     void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
-    void update_grid(double Lambda);  // Interpolate self-energy to updated grid
     auto norm(int p) const -> double;
     auto norm() const -> double;
+
+    /// Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + glb_Gamma)/2
+    void update_grid(double Lambda);
+    /// Interpolate self-energy to input grid
+    void update_grid(FrequencyGrid frequencies_new);   // Interpolate self-energy to updated grid
+    /// Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma
+    void update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma);
+    /// finds optimal grid parameters with minimizer()
+    void findBestFreqGrid(double Lambda);       // optimize frequency grid parameters and update self-energy on new grid
+    /// computes finite differences of Sigma
+    double get_deriv_maxSE() const;
+    auto norm(int p) -> double;
+    auto norm() -> double;
 
     // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
@@ -69,6 +82,7 @@ public:
         lhs -= rhs;
         return lhs;
     }
+
 
 };
 
@@ -143,13 +157,13 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
  */
 template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
 
-    if (std::abs(v) > this->frequencies.w_upper)    //Check the range of frequency. If too large, return Sigma(\infty)
-        //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
-        return (1.-(double)iK)*(this->asymp_val_R);
-    else {
-            Q result = interpolate1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+    //if (std::abs(v) > this->frequencies.w_upper)    //Check the range of frequency. If too large, return Sigma(\infty)
+    //    //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
+    //    return (1.-(double)iK)*(this->asymp_val_R);
+    //else {
+            Q result = interpolate_lin1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
             return result;
-    }
+    //}
 
 }
 
@@ -188,16 +202,146 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
     vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
     for (int iK=0; iK<2; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
-        for (int iv=0; iv<nSE; ++iv) {
+        for (int iv=1; iv<nSE-1; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 // interpolate old values to new vector
                 Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.ws[iv], i_in);
             }
         }
+        for (int i_in=0; i_in<n_in; ++i_in) {
+            // set asymptotic values
+            Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
+            Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
+        }
     }
     this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
     this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
 }
+
+template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new) {
+
+    vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
+    for (int iK=0; iK<2; ++iK) {
+        if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
+        for (int iv=1; iv<nSE-1; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                // interpolate old values to new vector
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = this->valsmooth(iK, frequencies_new.ws[iv], i_in);
+            }
+        }
+        for (int i_in=0; i_in<n_in; ++i_in) {
+            // set asymptotic values
+            Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
+            Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
+        }
+    }
+    this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
+    this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
+}
+
+template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma) {
+
+    vec<Q> Sigma_new (2*nSE*n_in);                     // temporary self-energy vector
+
+    for (int iK=0; iK<2; ++iK) {
+        if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
+        for (int iv=1; iv<nSE-1; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                // interpolate old values to new vector
+                Sigma_new[iK*nSE*n_in + iv*n_in + i_in] = selfEnergy4Sigma.valsmooth(iK, frequencies_new.ws[iv], i_in);
+            }
+        }
+        for (int i_in=0; i_in<n_in; ++i_in) {
+            // set asymptotic values
+            Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
+            Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
+        }
+    }
+    this->frequencies = frequencies_new; // update frequency grid to new rescaled grid
+    this->Sigma = Sigma_new;             // update selfenergy to new interpolated values
+}
+
+
+
+template<typename Q>
+class CostSE_wupper {
+    SelfEnergy<Q> selfEnergy;
+    double rel_tailsize = 1e-2;
+public:
+    explicit CostSE_wupper(SelfEnergy<Q> SE_in): selfEnergy(SE_in) {
+        // remove Hartree contribution
+        for (int iv=0; iv<nSE; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                selfEnergy.Sigma[iv*n_in + i_in] -= selfEnergy.asymp_val_R;
+            }
+        }
+        selfEnergy.asymp_val_R = 0.;
+    };
+
+    auto operator() (double w_upper_test) -> double {
+
+        double max = selfEnergy.norm(0);
+        if (w_upper_test < selfEnergy.frequencies.w_upper) {
+            double result = std::abs((std::abs(selfEnergy.valsmooth(0, w_upper_test, 0)) +
+                                      std::abs(selfEnergy.valsmooth(0, -w_upper_test, 0))) / max - rel_tailsize);
+            return result;
+        }
+        else {
+            double tupper_test = selfEnergy.frequencies.grid_transf(w_upper_test);
+            double result_tmp = std::abs(selfEnergy.Sigma[0]) + std::abs(selfEnergy.Sigma[nFER-1]);
+            double factor = ((1. - tupper_test)/(1.-selfEnergy.frequencies.t_upper));
+            double result = std::abs(result_tmp * factor / max - rel_tailsize);
+            return result;
+        }
+    }
+};
+
+template<typename Q>
+class CostSE_Wscale {
+    SelfEnergy<Q> selfEnergy_backup;
+public:
+    SelfEnergy<Q> selfEnergy;
+    explicit CostSE_Wscale(SelfEnergy<Q> SE_in): selfEnergy(SE_in), selfEnergy_backup(SE_in) {
+        // remove Hartree contribution
+        for (int iv=0; iv<nSE; ++iv) {
+            for (int i_in=0; i_in<n_in; ++i_in) {
+                selfEnergy.Sigma[iv*n_in + i_in] -= selfEnergy.asymp_val_R;
+            }
+        }
+        selfEnergy.asymp_val_R = 0.;
+    };
+
+    auto operator() (double wscale_test) -> double {
+        selfEnergy.frequencies.initialize_grid(wscale_test);
+        selfEnergy.update_grid(selfEnergy.frequencies, selfEnergy_backup);
+        double result = selfEnergy.get_deriv_maxSE();
+        return result;
+
+
+
+    }
+
+};
+
+template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(double Lambda) {
+
+    SelfEnergy<Q> SEtemp = *this;
+    //SEtemp.update_grid(Lambda);
+
+
+    double a_Wscale = SEtemp.frequencies.W_scale / 10.;
+    double m_Wscale = SEtemp.frequencies.W_scale;
+    double b_Wscale = SEtemp.frequencies.W_scale * 10;
+    CostSE_Wscale<Q> cost(SEtemp);
+    minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    FrequencyGrid frequencies_new = frequencies;
+    frequencies_new.initialize_grid(m_Wscale);
+
+    update_grid(frequencies_new);
+
+
+}
+
 
 /*
  * p-norm for the SelfEnergy
@@ -227,5 +371,13 @@ template <typename Q> auto SelfEnergy<Q>::norm() const -> double {
     return this->norm(2);
 }
 
+template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE() const -> double {
+    //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
+    //return max_SE;
+    const size_t dims1[3] = {n_in, 2, nFER};
+    const size_t perm1[3] = {2, 0, 1};
+    double max_SE = (::power2(::get_finite_differences<Q,3>(Sigma, frequencies.ts, dims1, perm1))).max_norm();
+    return max_SE;
+}
 
 #endif //KELDYSH_MFRG_SELFENERGY_H

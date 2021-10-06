@@ -56,9 +56,18 @@ add_executable(Keldysh_mfRG
         integrator/old_integrators.h
         parameters/frequency_parameters.h
         parameters/technical_parameters.h
-        interpolations/interpolation_functions.h
         tests/unit_tests/test_ODE_solver.h
-        tests/saveIntegrand.h)
+        tests/saveIntegrand.h
+        minimizer.h tests/unit_tests/test_minimizer.h
+        utilities/RuntimeError.h
+        vertex_data.h
+        tests/test_interpolation.h
+        interpolations/InterpolatorLinOrSloppy.h
+        interpolations/InterpolatorSpline1D.h
+        interpolations/InterpolatorSpline2D.h
+        interpolations/InterpolatorSpline3D.h
+        )
+)
 
 # executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
@@ -104,9 +113,17 @@ add_executable(Keldysh_mfRG_testing
         integrator/old_integrators.h
         parameters/frequency_parameters.h
         parameters/technical_parameters.h
-        interpolations/interpolation_functions.h
         tests/unit_tests/test_ODE_solver.h
-        tests/saveIntegrand.h)
+        tests/saveIntegrand.h
+        minimizer.h
+        tests/unit_tests/test_minimizer.h
+        utilities/RuntimeError.h
+        vertex_data.h
+        tests/test_interpolation.h
+        interpolations/InterpolatorLinOrSloppy.h
+        interpolations/InterpolatorSpline1D.h
+        interpolations/InterpolatorSpline2D.h
+        interpolations/InterpolatorSpline3D.h)
 
 # standard executable for integration tests and production runs
 add_executable(FPP_mfRG
@@ -153,9 +170,17 @@ add_executable(FPP_mfRG
         integrator/old_integrators.h
         parameters/frequency_parameters.h
         parameters/technical_parameters.h
-        interpolations/interpolation_functions.h
         tests/unit_tests/test_ODE_solver.h
-        tests/saveIntegrand.h)
+        tests/saveIntegrand.h
+        minimizer.h
+        tests/unit_tests/test_minimizer.h
+        utilities/RuntimeError.h
+        vertex_data.h
+        tests/test_interpolation.h
+        interpolations/InterpolatorLinOrSloppy.h
+        interpolations/InterpolatorSpline1D.h
+        interpolations/InterpolatorSpline2D.h
+        interpolations/InterpolatorSpline3D.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)

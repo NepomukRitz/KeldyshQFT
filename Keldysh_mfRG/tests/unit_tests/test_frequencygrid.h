@@ -12,7 +12,7 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
     double symmetry_tolerance = 1e-10;
     FrequencyGrid Bosfreqs('b', 1, 0.);
     bool existNoDoubleOccurencies = not is_doubleOccurencies(Bosfreqs.ws);
-    for (int i = 0; i < nBOS; i++) {
+    for (int i = 1; i < nBOS-1; i++) {
 
         // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
         if (std::abs(Bosfreqs.fconv(Bosfreqs.ws[i]) - i) > 1) isright = false;
@@ -41,7 +41,7 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
     double symmetry_tolerance = 1e-10;
     FrequencyGrid Ferfreqs('f', 1, 0.);
     bool existNoDoubleOccurencies = not is_doubleOccurencies(Ferfreqs.ws);
-    for (int i = 0; i < nFER; i++) {
+    for (int i = 1; i < nFER-1; i++) {
 
         // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
         if (std::abs(Ferfreqs.fconv(Ferfreqs.ws[i]) - i) > 1) isright = false;

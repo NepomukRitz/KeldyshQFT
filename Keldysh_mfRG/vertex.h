@@ -64,6 +64,9 @@ public:
     }
 };
 
+// forward declaration of rvert from r_vertex.h
+template <typename Q> class rvert;
+
 /**********************************************************************************************************************/
 //The class fullvert
 //The class defining a vertex with full channel decomposition i.e. irreducible (bare) a, p and t channels
@@ -107,7 +110,7 @@ public:
     auto right_diff_bare(VertexInput input) const -> Q;
     auto right_diff_bare(VertexInput input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
-    void reorder_due2antisymmetry(const fullvert<Q>& right_vertex);
+    void reorder_due2antisymmetry(fullvert<Q>& right_vertex);
 
     // Initialize vertex
     void initialize(Q val);
@@ -116,12 +119,21 @@ public:
 
     // Interpolate vertex to updated grid
     void update_grid(double Lambda);
+    template<K_class k>
+    void update_grid(VertexFrequencyGrid<k> newFrequencyGrid);
+    template<K_class k>
+    void update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data);
 
     //Norm of the vertex
     double sum_norm(int) const;
     double norm_K1(int) const ;
     double norm_K2(int) const ;
     double norm_K3(int) const ;
+
+#if INTERPOLATION == 3
+    void initialize_K2_spline();
+    void free_K2_spline();
+#endif
 
     // Various operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
@@ -179,6 +191,16 @@ public:
         lhs -= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
+
+    double get_deriv_max_K1();
+    double get_deriv_max_K2();
+    double get_deriv_max_K3();
+
+    void findBestFreqGrid(double Lambda);
+
+    void initializeInterpol();
+
+    void set_initializedInterpol(bool is_init);
 };
 
 /** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
@@ -202,6 +224,11 @@ public:
     auto right_same_bare(VertexInput input) const -> Q { return vertex.right_same_bare(input); }
     auto left_diff_bare(VertexInput input)  const -> Q { return vertex.left_diff_bare(input); }
     auto right_diff_bare(VertexInput input) const -> Q { return vertex.right_diff_bare(input); }
+
+#if INTERPOLATION == 3
+    void initialize_K2_spline() { vertex.initialize_K2_spline(); };
+    void free_K2_spline() { vertex.free_K2_spline(); };
+#endif
 
     auto operator+= (const symmetric<Q>& vertex1) -> symmetric<Q> {
         this->vertex += vertex1.vertex;
@@ -270,6 +297,11 @@ public:
     auto right_same_bare(VertexInput input) const -> Q { return vertex_half1.right_same_bare(input, vertex_half2); }
     auto left_diff_bare(VertexInput input)  const -> Q { return vertex_half1.left_diff_bare(input, vertex_half2); }
     auto right_diff_bare(VertexInput input) const -> Q { return vertex_half1.right_diff_bare(input, vertex_half2); }
+
+#if INTERPOLATION == 3
+    void initialize_K2_spline() { vertex_half1.initialize_K2_spline(); vertex_half2.initialize_K2_spline(); };
+    void free_K2_spline() { vertex_half1.free_K2_spline(); vertex_half2.free_K2_spline(); };
+#endif
 
     auto operator+= (const non_symmetric<Q>& vertex1) -> non_symmetric<Q> {
         this->vertex += vertex1.vertex;
@@ -379,6 +411,12 @@ public:
     double norm_K1(int i) { return half1().norm_K1(i); }
     double norm_K2(int i) { return half1().norm_K2(i); }
     double norm_K3(int i) { return half1().norm_K3(i); }
+
+#if INTERPOLATION == 3
+    void initialize_K2_spline() {vertex.initialize_K2_spline(); }
+    void free_K2_spline() {vertex.free_K2_spline();  }
+#endif
+
 
     auto operator+= (const vertex_container<Q, symmetry_type>& vertex1) -> vertex_container<Q, symmetry_type> {
         this->vertex += vertex1.vertex;
@@ -525,6 +563,19 @@ public:
         }
     }
 
+#if INTERPOLATION == 3
+    void initialize_K2_spline() {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].initialize_K2_spline();
+        }
+    }
+    void free_K2_spline() {
+
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].free_K2_spline();
+        }
+    }
+#endif
 };
 
 /** Define Vertex as symmetric GeneralVertex */
@@ -937,7 +988,9 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const
     return K2b_K3 + gamma_Rb;
 }
 
-template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(const fullvert<Q>& right_vertex){
+template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(fullvert<Q>& right_vertex){
+    initializeInterpol();
+    right_vertex.initializeInterpol();
     avertex.enforce_freqsymmetriesK1(right_vertex.avertex);
     pvertex.enforce_freqsymmetriesK1(right_vertex.pvertex);
     tvertex.enforce_freqsymmetriesK1(right_vertex.tvertex);
@@ -951,6 +1004,8 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(const fullvert<Q
         pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
         tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
     }
+    set_initializedInterpol(false);
+    right_vertex.set_initializedInterpol(false);
 }
 
 template <typename Q> void fullvert<Q>::initialize(Q val) {
@@ -958,15 +1013,35 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
 }
 
 template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &vertex) {
-    this->avertex.frequencies = vertex.avertex.frequencies;
-    this->pvertex.frequencies = vertex.pvertex.frequencies;
-    this->tvertex.frequencies = vertex.tvertex.frequencies;
+    this->avertex.K1_set_VertexFreqGrid( vertex.avertex.K1_get_VertexFreqGrid() );
+    this->pvertex.K1_set_VertexFreqGrid( vertex.pvertex.K1_get_VertexFreqGrid() );
+    this->tvertex.K1_set_VertexFreqGrid( vertex.tvertex.K1_get_VertexFreqGrid() );
+    this->avertex.K2_set_VertexFreqGrid( vertex.avertex.K2_get_VertexFreqGrid() );
+    this->pvertex.K2_set_VertexFreqGrid( vertex.pvertex.K2_get_VertexFreqGrid() );
+    this->tvertex.K2_set_VertexFreqGrid( vertex.tvertex.K2_get_VertexFreqGrid() );
+    this->avertex.K3_set_VertexFreqGrid( vertex.avertex.K3_get_VertexFreqGrid() );
+    this->pvertex.K3_set_VertexFreqGrid( vertex.pvertex.K3_get_VertexFreqGrid() );
+    this->tvertex.K3_set_VertexFreqGrid( vertex.tvertex.K3_get_VertexFreqGrid() );
 }
 
 template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
     this->avertex.update_grid(Lambda);
     this->pvertex.update_grid(Lambda);
     this->tvertex.update_grid(Lambda);
+}
+template <typename Q>
+template<K_class k>
+void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid) {
+    this->avertex.template update_grid<k>(newFrequencyGrid, this->avertex);
+    this->pvertex.template update_grid<k>(newFrequencyGrid, this->pvertex);
+    this->tvertex.template update_grid<k>(newFrequencyGrid, this->tvertex);
+}
+template <typename Q>
+template<K_class k>
+void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data) {
+    this->avertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.avertex);
+    this->pvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.pvertex);
+    this->tvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.tvertex);
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
@@ -1125,5 +1200,222 @@ template <typename Q> auto fullvert<Q>::sum_norm(const int p) const -> double {
     if (MAX_DIAG_CLASS >= 3) result += norm_K3(p);
     return result;
 }
+
+template<typename Q> auto fullvert<Q>::get_deriv_max_K1() -> double {
+    vec<double> Kderiv_max (3);
+
+
+    Kderiv_max[0] = avertex.get_deriv_maxK1();
+    Kderiv_max[1] = pvertex.get_deriv_maxK1();
+    Kderiv_max[2] = tvertex.get_deriv_maxK1();
+
+    double result = Kderiv_max.max_norm();
+
+    return result;
+}
+
+template<typename Q> auto fullvert<Q>::get_deriv_max_K2() -> double {
+    vec<double> Kderiv_max (3);
+
+
+    Kderiv_max[0] = avertex.get_deriv_maxK2();
+    Kderiv_max[1] = pvertex.get_deriv_maxK2();
+    Kderiv_max[2] = tvertex.get_deriv_maxK2();
+
+    double result = Kderiv_max.max_norm();
+
+    return result;
+}
+
+template<typename Q> auto fullvert<Q>::get_deriv_max_K3() -> double {
+    vec<double> Kderiv_max (3);
+
+
+    Kderiv_max[0] = avertex.get_deriv_maxK3();
+    Kderiv_max[1] = pvertex.get_deriv_maxK3();
+    Kderiv_max[2] = tvertex.get_deriv_maxK3();
+
+    double result = Kderiv_max.max_norm();
+
+    return result;
+}
+
+
+template<typename Q>
+class CostFullvert_Wscale_b_K1 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_b_K1(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies_K1.b.initialize_grid(wscale_test);
+        fullVert.template update_grid<k1>(fullVert.avertex.frequencies_K1, fullVert_backup);
+        double result = fullVert.get_deriv_max_K1();
+        return result;
+    }
+};
+
+template<typename Q>
+class CostFullvert_Wscale_b_K2 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_b_K2(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies_K2.b.initialize_grid(wscale_test);
+        fullVert.template update_grid<k2>(fullVert.avertex.frequencies_K2, fullVert_backup);
+        double result = fullVert.get_deriv_max_K2();
+        return result;
+    }
+};
+
+template<typename Q>
+class CostFullvert_Wscale_f_K2 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_f_K2(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies_K2.f.initialize_grid(wscale_test);
+        fullVert.template update_grid<k2>(fullVert.avertex.frequencies_K2, fullVert_backup);
+        double result = fullVert.get_deriv_max_K2();
+        return result;
+    }
+};
+
+template<typename Q>
+class CostFullvert_Wscale_b_K3 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_b_K3(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies_K3.b.initialize_grid(wscale_test);
+        fullVert.template update_grid<k3>(fullVert.avertex.frequencies_K3, fullVert_backup);
+        double result = fullVert.get_deriv_max_K3();
+        return result;
+    }
+};
+
+template<typename Q>
+class CostFullvert_Wscale_f_K3 {
+    fullvert<Q> fullVert_backup;
+public:
+    fullvert<Q> fullVert;
+    explicit CostFullvert_Wscale_f_K3(fullvert<Q> fullVert_in) : fullVert(fullVert_in), fullVert_backup(fullVert_in) {};
+
+    auto operator() (double wscale_test) -> double {
+        fullVert.avertex.frequencies_K3.f.initialize_grid(wscale_test);
+        fullVert.template update_grid<k3>(fullVert.avertex.frequencies_K3, fullVert_backup);
+        double result = fullVert.get_deriv_max_K3();
+        return result;
+    }
+};
+
+template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
+
+    fullvert<Q> fullvert_temp = *this;
+    //fullvert_temp.update_grid(Lambda);
+
+
+    double a_Wscale = fullvert_temp.avertex.K1_get_VertexFreqGrid().b.W_scale / 10.;
+    double m_Wscale = fullvert_temp.avertex.K1_get_VertexFreqGrid().b.W_scale;
+    double b_Wscale = fullvert_temp.avertex.K1_get_VertexFreqGrid().b.W_scale * 10;
+    CostFullvert_Wscale_b_K1<Q> cost_b_K1(fullvert_temp);
+    minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    VertexFrequencyGrid<k1> frequenciesK1_new = avertex.K1_get_VertexFreqGrid();
+    frequenciesK1_new.b.initialize_grid(m_Wscale*2.);
+
+    update_grid<k1>(frequenciesK1_new);
+
+
+
+
+
+
+    VertexFrequencyGrid<k2> frequenciesK2_new = avertex.K2_get_VertexFreqGrid();
+    a_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().f.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().f.W_scale;
+    b_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().f.W_scale * 10;
+    CostFullvert_Wscale_f_K2<Q> cost_f_K2(fullvert_temp);
+    minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    frequenciesK2_new = avertex.K2_get_VertexFreqGrid();
+    frequenciesK2_new.f.initialize_grid(m_Wscale*2.);
+
+    update_grid<k2>(frequenciesK2_new);
+
+
+    a_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().b.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().b.W_scale;
+    b_Wscale = fullvert_temp.avertex.K2_get_VertexFreqGrid().b.W_scale * 10;
+    CostFullvert_Wscale_b_K2<Q> cost_bK2(fullvert_temp);
+    minimizer(cost_bK2, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    frequenciesK2_new = avertex.K2_get_VertexFreqGrid();
+    frequenciesK2_new.b.initialize_grid(m_Wscale*2.);
+
+    update_grid(frequenciesK2_new);
+
+
+
+
+    VertexFrequencyGrid<k3> frequenciesK3_new = avertex.K3_get_VertexFreqGrid();
+    a_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().f.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().f.W_scale;
+    b_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().f.W_scale * 10;
+    CostFullvert_Wscale_b_K3<Q> cost_f_K3(fullvert_temp);
+    minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    frequenciesK3_new = avertex.K3_get_VertexFreqGrid();
+    frequenciesK3_new.f.initialize_grid(m_Wscale*2.);
+
+    update_grid(frequenciesK3_new);
+
+
+    a_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().b.W_scale / 10.;
+    m_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().b.W_scale;
+    b_Wscale = fullvert_temp.avertex.K3_get_VertexFreqGrid().b.W_scale * 10;
+    CostFullvert_Wscale_b_K3<Q> cost_bK3(fullvert_temp);
+    minimizer(cost_bK3, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    frequenciesK3_new = avertex.K3_get_VertexFreqGrid();
+    frequenciesK3_new.b.initialize_grid(m_Wscale*2.);
+
+    update_grid(frequenciesK3_new);
+
+
+
+}
+
+template<typename Q>
+void fullvert<Q>::initializeInterpol() {
+    avertex.initInterpolator();
+    pvertex.initInterpolator();
+    tvertex.initInterpolator();
+}
+
+template<typename Q>
+void fullvert<Q>::set_initializedInterpol(const bool is_init) {
+    avertex.initialized = is_init;
+    pvertex.initialized = is_init;
+    tvertex.initialized = is_init;
+}
+
+
+#if INTERPOLATION == 3
+template <typename Q>
+void fullvert<Q>::initialize_K2_spline() {
+    avertex.initialize_K2_spline();
+    pvertex.initialize_K2_spline();
+    tvertex.initialize_K2_spline();
+}
+template <typename Q>
+void fullvert<Q>::free_K2_spline() {
+    avertex.free_K2_spline();
+    pvertex.free_K2_spline();
+    tvertex.free_K2_spline();
+}
+#endif // INTERPOLATION
 
 #endif //KELDYSH_MFRG_VERTEX_H

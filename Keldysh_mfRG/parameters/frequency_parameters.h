@@ -67,13 +67,13 @@ constexpr int nFER2 = 51;//nFER;
 constexpr int nBOS3 = 21; //nBOS;
 constexpr int nFER3 = 21; //nFER;
 #else
-constexpr int nBOS = 401;
-constexpr int nFER = 400;
+constexpr int nBOS = 201;
+constexpr int nFER = 200;
 // Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 21;//nBOS;
-constexpr int nFER2 = 20;//nFER;
-constexpr int nBOS3 = 11; //nBOS;
-constexpr int nFER3 = 10; //nFER;
+constexpr int nBOS2 = 101;//nBOS;
+constexpr int nFER2 = 101;//nFER;
+constexpr int nBOS3 = 21; //nBOS;
+constexpr int nFER3 = 20; //nFER;
 #endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )

@@ -271,7 +271,7 @@ void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdva
 
 template<typename Q>
 void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, double vp) const {
-    VertexInput inputClosedAbove (0, v, vp, v, i_in, 0, 'f');
+    VertexInput inputClosedAbove (0, 0, vp, v, i_in, 0, 't');
     factorClosedAbove = vertex[0].value(inputClosedAbove);
 
     //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
@@ -316,7 +316,8 @@ void IntegrandSE<Q>::add_contribution_from_other_spins(Q &factorRetardedClosed, 
 template <typename Q>
 class LoopCalculator{
     SelfEnergy<Q>& self;
-    const Vertex<Q>& fullvertex;
+    const Vertex<Q>& fullvertex_initial;
+    Vertex<Q> fullvertex = fullvertex_initial;;
     const Propagator<Q>& prop;
     const bool all_spins;
 
@@ -353,9 +354,10 @@ class LoopCalculator{
 public:
     LoopCalculator(SelfEnergy<Q>& self_in, const Vertex<Q>& fullvertex_in, const Propagator<Q>& prop_in,
                    const bool all_spins_in, const int iSE)
-                   : self(self_in), fullvertex(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
+                   : self(self_in), fullvertex_initial(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){
         set_v_limits();
+        fullvertex[0].half1().initializeInterpol();
     };
 
     void perform_computation();
@@ -417,41 +419,55 @@ void LoopCalculator<Q>::perform_computation() {
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Keldysh() {
-    integratedR = prefactor * integrator<Q>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), -v, v, Delta);
-    integratedK = prefactor * integrator<Q>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), -v, v, Delta);
+    if (isfinite(v)) {
+        integratedR = prefactor * integrator<Q>(integrandR, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta);
+        integratedK = prefactor * integrator<Q>(integrandK, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta);
 
-    // add analytical results for the tails
-    integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
-                                                         v, 0, i_in, all_spins);
-    integratedK += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
-                                                         v, 1, i_in, all_spins);
+        // add analytical results for the tails
+        integratedR +=
+                prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower - std::abs(v), v_upper + std::abs(v),
+                                                      v, 0, i_in, all_spins);
+        integratedK +=
+                prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower - std::abs(v), v_upper + std::abs(v),
+                                                      v, 1, i_in, all_spins);
 
-    //The results are emplaced in the right place of the answer object.
-    self.addself(0, iv, i_in, integratedR);
-    self.addself(1, iv, i_in, integratedK);
+        //The results are emplaced in the right place of the answer object.
+        self.addself(0, iv, i_in, integratedR);
+        self.addself(1, iv, i_in, integratedK);
+    }
+    else {
+        self.setself(0, iv, i_in, self.asymp_val_R);
+    }
 }
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara_zeroT() {
-    // split up the integrand at discontinuities and (possible) kinks:
-    if (std::abs(v) > inter_tol) {
-        integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-std::abs(v), -std::abs(v)        , 0.);
-        integratedR += prefactor * integrator<Q>(integrandR, -std::abs(v)        , -inter_tol     , 0.);
-        integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  std::abs(v)        , 0.);
-        integratedR += prefactor * integrator<Q>(integrandR,  std::abs(v)        ,  v_upper+std::abs(v), 0.);
+    if (isfinite(v)) {
+        // split up the integrand at discontinuities and (possible) kinks:
+        if (std::abs(v) > inter_tol) {
+            integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-std::abs(v), -std::abs(v)   , 0.);
+            integratedR += prefactor * integrator<Q>(integrandR, -std::abs(v)        , -inter_tol     , 0.);
+            integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  std::abs(v)        , 0.);
+            integratedR += prefactor * integrator<Q>(integrandR,  std::abs(v)        ,  v_upper+std::abs(v), 0.);
+        }
+        else {
+            integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-std::abs(v), -inter_tol     , 0.);
+            integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  v_upper+std::abs(v), 0.);
+        }
+
+        integratedR += -1./(2.*M_PI)
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, i_in, all_spins);
+        self.addself(0, iv, i_in, integratedR);
+
     }
     else {
-        integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-std::abs(v), -inter_tol     , 0.);
-        integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  v_upper+std::abs(v), 0.);
+        self.setself(0, iv, i_in, self.asymp_val_R);
     }
-
-    integratedR += -1./(2.*M_PI)
-                   * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, i_in, all_spins);
-    self.addself(0, iv, i_in, integratedR);
 }
 
 template<typename Q>
 void LoopCalculator<Q>::compute_Matsubara_finiteT() {
+    if (isfinite(v)) {
     int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
 //#ifndef KELDYSH_FORMALISM // TODO(high): Figure out type problems in matsubarasum
     integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin-vint, Nmax+vint);
@@ -460,6 +476,10 @@ void LoopCalculator<Q>::compute_Matsubara_finiteT() {
                        * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
 //#endif
     self.addself(0, iv, i_in, integratedR);
+    }
+    else {
+        self.setself(0, iv, i_in, self.asymp_val_R);
+    }
 }
 
 

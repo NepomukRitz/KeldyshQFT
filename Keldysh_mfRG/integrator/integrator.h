@@ -356,7 +356,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param num_intervals     :   number of intervals
  */
 template <typename Q, int num_freqs, typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> Q {
-    double tol = inter_tol;
+    double tol = 1e-11;
 
     // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
     vec<double> intersections;

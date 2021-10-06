@@ -300,6 +300,28 @@ auto is_symmetric(const rvec& freqs) -> double {
     return asymmetry;
 }
 
+template<int degreeplus, typename Q>
+inline auto lagrangePoly(const Q x, const double (&xs)[degreeplus], const Q (&ys) [degreeplus]) -> Q {
+    Q result = 0.;
+
+    double denominator, numerator;
+    for (int i = 0; i < degreeplus; i++) {
+        numerator = 1.;
+        denominator = 1.;
+        for (int k = 0; k < i; k++) {
+            denominator *= (xs[i] - xs[k]);
+            numerator *= (x - xs[k]);
+        }
+        for (int k = i+1; k < degreeplus; k++) {
+            denominator *= (xs[i] - xs[k]);
+            numerator *= (x - xs[k]);
+        }
+
+        result += ys[i] * numerator/denominator;
+    }
+
+    return result;
+}
 
 
 #endif // UTIL_H
