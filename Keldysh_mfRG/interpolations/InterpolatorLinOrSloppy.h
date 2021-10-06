@@ -566,7 +566,7 @@ public:
         //    && std::abs(indices.v1) < vertex.frequencies_K3.f.w_upper + inter_tol
         //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
         //{
-        Q result = indices.prefactor * interpolate_sloppycubic1D<Q>(indices.w, indices.v1, indices.v2,
+        Q result = indices.prefactor * interpolate_sloppycubic3D<Q>(indices.w, indices.v1, indices.v2,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
