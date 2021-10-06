@@ -140,6 +140,9 @@ void fopt_state(State<Q>& Psi, double Lambda) {
     //SoptPsi.initialize();
     sopt_state(SoptPsi, Pi, Lambda);
 
+
+    //SoptPsi.findBestFreqGrid(Lambda);
+
     //Calculate the bubbles -> Vertex in TOPT saved in Psi
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
     vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Lambda);
