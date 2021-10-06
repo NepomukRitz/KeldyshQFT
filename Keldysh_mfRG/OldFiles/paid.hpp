@@ -7,6 +7,9 @@
 //   Engineering Science, RWTH Aachen University, Germany All rights reserved.
 // License is not existent yet
 
+#ifndef PAID_HPP
+#define PAID_HPP
+
 #include <cmath>
 #include <complex>
 #include <functional>
@@ -55,6 +58,8 @@ class PAIDInput {
 
 class PAID {
  public:
+    int maxsplits = 1e3;
+    double abs_error = 1e-12;
   using T = Domain1D<std::complex<double>>;
 
   PAID(const std::vector<PAIDInput> & inputs) : fevals(0), rule(16) {
@@ -70,9 +75,9 @@ class PAID {
 
   std::map< std::size_t, T::value_type > solve() {
     int done = 0;
-    assert(isfinite(q.sum().first));
-    int maxsplit = 0;
-    while (!done && q.sum().first > 1e-12, maxsplit < 1000) {
+    //assert(isfinite(q.sum().first));
+    int splits = 0;
+    while (!done && q.sum().first > abs_error, splits < maxsplits) {
       // if (i == 0) std::cout << "current error: " << q.sum().first << "\n";
       if (q.empty()) {
         done++;
@@ -80,8 +85,8 @@ class PAID {
       }
       auto task = q.pop();
       auto doms = task.d.split();
-      maxsplit = maxsplit + 1;
-      // std::cout << "left = " << task.d.left_ << ", right = " << task.d.right_ << "\n";
+        splits = splits + 1;
+      //std::cout << "left = " << task.d.left_ << ", right = " << task.d.right_ << "\n"; // only for public left/right
       for (auto dom : doms) {
         auto new_f = dom.transform(task.f);
         auto res = rule.apply(new_f);
@@ -100,3 +105,5 @@ class PAID {
   ClenshawCurtis<typename T::value_type> rule;
   std::size_t fevals;
 };
+
+#endif //PAID_HPP

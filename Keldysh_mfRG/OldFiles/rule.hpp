@@ -1,3 +1,6 @@
+#ifndef RULE_HPP
+#define RULE_HPP
+
 #pragma once
 
 // an integration rule
@@ -117,3 +120,5 @@ class ClenshawCurtis : public IntegrationRule {
   std::vector<double> t2;
   std::vector<T> cache_;
 };
+
+#endif //RULE_HPP

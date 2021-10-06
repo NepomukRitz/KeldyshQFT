@@ -21,12 +21,13 @@ constexpr double converged_tol = 1e-7;
 // 1: Simpson
 // 2: Simpson + additional points
 // 3: adaptive Simpson
-// 4: GSL //
+// 4: GSL
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
-constexpr int INTEGRATOR_TYPE = 5;
+// 6: PAID with Clenshaw-Curtis rule
+constexpr int INTEGRATOR_TYPE = 6;
 
 //Integrator tolerance
-constexpr double integrator_tol = 1e-5;
+constexpr double integrator_tol = 1e-6;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 constexpr int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));

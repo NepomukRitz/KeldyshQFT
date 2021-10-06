@@ -1,3 +1,6 @@
+#ifndef QUEUE_HPP
+#define QUEUE_HPP
+
 #pragma once
 #include <map>
 
@@ -71,3 +74,5 @@ class Queue {
   std::vector<Task<T>> small_tasks;
   // static const array_size = 5;
 };
+
+# endif //QUEUE_HPP
