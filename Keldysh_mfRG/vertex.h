@@ -373,8 +373,8 @@ public:
     const rvert<Q>& avertex() const { return half1().avertex; }
     const rvert<Q>& pvertex() const { return half1().pvertex; }
     const rvert<Q>& tvertex() const { return half1().tvertex; }
-    const bool Ir() const { return half1().Ir; }
-    const bool only_same_channel() const { return half1().only_same_channel; }
+    bool Ir() const { return half1().Ir; }
+    bool only_same_channel() const { return half1().only_same_channel; }
 
     void set_Ir(bool Ir) {
         vertex.half1().Ir = Ir;
