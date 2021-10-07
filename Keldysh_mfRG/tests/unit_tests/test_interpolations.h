@@ -247,7 +247,7 @@ TEST_CASE( "Does cubic interpolation work reliably for K1?", "[interpolations]" 
         value +=1;
     }
 
-    write_h5_rvecs("../Data/unittest_interpolK1.h5",
+    write_h5_rvecs(data_dir + "unittest_interpolK1.h5",
                    {"values", "errors"},
                    {values, errors});
 
@@ -383,7 +383,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
     print("K2 Interpolation performed - ");
     get_time(t_start);
 
-    write_h5_rvecs("../Data/unittest_interpolK2.h5",
+    write_h5_rvecs(data_dir + "unittest_interpolK2.h5",
                    {"values", "errors"},
                    {values, errors});
 
@@ -532,7 +532,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
     print("K3 Interpolation performed - ");
     get_time(t_start);
 
-    write_h5_rvecs("../Data/unittest_interpolK3.h5",
+    write_h5_rvecs(data_dir + "unittest_interpolK3.h5",
                    {"values", "errors"},
                    {values, errors});
 

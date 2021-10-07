@@ -54,14 +54,14 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im"},
                        {freqs, integrand_re, integrand_im});
 
-        std::string filename_diff = "../Data/integrand_diff_K1";
+        std::string filename_diff = data_dir + "integrand_diff_K1";
         filename_diff += channel;
         filename_diff += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename_diff,
@@ -98,7 +98,7 @@ public:
             }
         }
 
-        std::string filenameK2 = "../Data/integrand_K2";
+        std::string filenameK2 = data_dir + "/integrand_K2";
         filename += channel;
         filename += ".h5";
         write_h5_rvecs(filenameK2,
@@ -139,7 +139,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "/integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,

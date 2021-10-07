@@ -1034,7 +1034,7 @@ void test_K2_correctness(double Lambda){
 
     print("Testing correctness of K2a. Using U=" +std::to_string(glb_U)+ " and Lambda="+std::to_string(Lambda)
         +", the maximal difference between direct K1a and K1a over integration of K2a is " +std::to_string(K1a_diff.max_norm())+"." , true);
-    if(write_flag) write_h5_rvecs("../Data/PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
+    if(write_flag) write_h5_rvecs( data_dir + "/PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
                                                        "PT2_K1p_R", "PT2_K1p_I",
                                                        "PT2_K1t_R", "PT2_K1t_I",
@@ -1216,7 +1216,7 @@ class TestIntegrandK1a{
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1256,7 +1256,7 @@ class TestIntegrandK1a{
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1379,7 +1379,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1419,7 +1419,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1472,7 +1472,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1512,7 +1512,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1562,7 +1562,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1602,7 +1602,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1738,7 +1738,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1778,7 +1778,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1830,7 +1830,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1870,7 +1870,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1928,7 +1928,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -1968,7 +1968,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -2026,7 +2026,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -2066,7 +2066,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -2124,7 +2124,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
@@ -2164,7 +2164,7 @@ public:
 #endif
         }
 
-        std::string filename = "../Data/integrand_K1";
+        std::string filename = data_dir + "integrand_K1";
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
