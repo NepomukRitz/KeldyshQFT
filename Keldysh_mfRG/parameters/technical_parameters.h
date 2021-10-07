@@ -1,7 +1,7 @@
 #ifndef FPP_MFRG_TECHNICAL_PARAMETERS_H
 #define FPP_MFRG_TECHNICAL_PARAMETERS_H
 
-#include "../data_structures.h"
+//#include "../data_structures.h"
 
 /// Technical parameters ///
 
