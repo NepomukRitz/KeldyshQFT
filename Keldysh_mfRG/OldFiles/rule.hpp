@@ -12,7 +12,7 @@ class IntegrationRule {
   virtual ~IntegrationRule(){};
 };
 
-template <typename T>
+template <typename Q, typename Integrand>
 class ClenshawCurtis : public IntegrationRule {
  public:
   ClenshawCurtis(std::size_t N)
@@ -87,9 +87,10 @@ class ClenshawCurtis : public IntegrationRule {
     }
   }
 
-  IntegrationResult<T> apply(std::function<T(Base<T>)> f) {
-    T val1 = 0;
-    T val2 = 0;
+  template<typename TransformedIntegrand>
+  IntegrationResult<Q> apply(const TransformedIntegrand &f) {
+    Q val1 = 0;
+    Q val2 = 0;
     std::size_t nEvals = 2 * (N_ + 1);
 
     for (auto k = 0; k <= N_; ++k) {
@@ -118,7 +119,7 @@ class ClenshawCurtis : public IntegrationRule {
   std::vector<double> w2;
   std::vector<double> t;
   std::vector<double> t2;
-  std::vector<T> cache_;
+  std::vector<Q> cache_;
 };
 
 #endif //RULE_HPP

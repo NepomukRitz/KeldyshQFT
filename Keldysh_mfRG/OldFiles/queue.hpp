@@ -4,12 +4,12 @@
 #pragma once
 #include <map>
 
-template <class T>
+template <class T> // T needs functions f_type and value_type
 struct Task {
   T d;
   typename T::f_type f;
   typename T::value_type val;
-  Base<typename T::value_type> error;
+  double error;
   std::size_t idx;
 
   bool operator<(const Task& rhs) { return error > rhs.error; }
@@ -25,6 +25,10 @@ std::ostream& operator<<(std::ostream& oss_, const Task<T>& rhs) {
 
 template <class T>
 class Queue {
+private:
+    std::vector<Task<T>> tasks;
+    std::vector<Task<T>> small_tasks;
+    // static const array_size = 5;
  public:
   bool empty() { return tasks.empty(); }
 
@@ -48,13 +52,12 @@ class Queue {
     std::push_heap(tasks.begin(), tasks.end());
   }
 
-  std::pair<Base<typename T::value_type>,
-            std::map<std::size_t, typename T::value_type>>
+  std::pair<double, std::map<std::size_t, typename T::value_type>>
   sum() {
     // std::cout << "size queue: " << tasks.size() << " size small queue " <<
     // small_tasks.size() << "\n";
     std::map<std::size_t, typename T::value_type> valmap;
-    Base<typename T::value_type> error = 0;
+    double error = 0;
     typename T::value_type value = 0;
 
     for (auto task : small_tasks) {
@@ -68,11 +71,6 @@ class Queue {
     }
     return {error, valmap};
   }
-
- private:
-  std::vector<Task<T>> tasks;
-  std::vector<Task<T>> small_tasks;
-  // static const array_size = 5;
 };
 
 # endif //QUEUE_HPP

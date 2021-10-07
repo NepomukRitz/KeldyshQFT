@@ -31,6 +31,7 @@ int main() {
     gsl_set_error_handler_off();
 
     std::cout << "Hello world!\n";
+    std::cout << "test \n";
 
     double t0 = get_time();
 
@@ -602,7 +603,7 @@ int main() {
     fRG_list_wq(10.,10.,'a',1e4,1e-10,1,0,201,101);
     get_time(t_par);
     std::cout << "now list ladder: \n";
-    */
+    */ /*
     std::cout << "vacuum Gamma:\n";
     glb_ainv = -2*sqrt(2.);
     glb_muc = 0.9;
@@ -632,6 +633,7 @@ int main() {
     //std::cout << "Gamma_K1 = " << Gamma_K1 << "\n";
     std::cout << "Gamma_T = " << Gamma_T << "\n";
     glb_muc = 1.;
+    */
 
     //ladder_list('f',1e4,1e-10,1,0,-2*sqrt(2),2*sqrt(2),-5,1e-10,100,1e-15,301);
     //ladder_list('p',1e4,1e-10,1,0,-2*sqrt(2),2*sqrt(2),-5,1e-10,100,1e-15,301);
@@ -968,16 +970,47 @@ int main() {
     comp keldysh_theta_integral_result = perform_integral_Pi0_theta (0.5,-0.1,0.3,0.4,'c','d',1);
     std::cout << "theta-integral gauss-lobatto = " << keldysh_theta_integral_result << "\n";
     */
+
+    Domain1D<comp,TestIntegrand2> d(-50.,50.);
+
+    TestIntegrand2 f0(0,0.1,1.0);
+    TestIntegrand2 f1(1,0.1,1.0);
+    TestIntegrand2 f2(2,0.1,1.0);
+    TestIntegrand2 f3(3,0.1,1.0);
+    TestIntegrand2 f4(4,0.1,1.0);
+    PAIDInput<comp,TestIntegrand2> paid_integrand0(d,f0,0);
+    PAIDInput<comp,TestIntegrand2> paid_integrand1(d,f1,0);
+    PAIDInput<comp,TestIntegrand2> paid_integrand2(d,f2,0);
+    PAIDInput<comp,TestIntegrand2> paid_integrand3(d,f3,0);
+    PAIDInput<comp,TestIntegrand2> paid_integrand4(d,f4,0);
+    PAID<comp,TestIntegrand2> paid_integral0({paid_integrand0});
+    PAID<comp,TestIntegrand2> paid_integral1({paid_integrand1});
+    PAID<comp,TestIntegrand2> paid_integral2({paid_integrand2});
+    PAID<comp,TestIntegrand2> paid_integral3({paid_integrand3});
+    PAID<comp,TestIntegrand2> paid_integral4({paid_integrand4});
+    comp res0 = paid_integral0.solve()[0];
+    comp res1 = paid_integral1.solve()[0];
+    comp res2 = paid_integral2.solve()[0];
+    comp res3 = paid_integral3.solve()[0];
+    comp res4 = paid_integral4.solve()[0];
+    std::cout << "result = " << res0 << "\n";
+    std::cout << "result = " << res1 << "\n";
+    std::cout << "result = " << res2 << "\n";
+    std::cout << "result = " << res3 << "\n";
+    std::cout << "result = " << res4 << "\n";
+
+
+    /*
     glb_mud = 0.0;
-    double wmax = 10., vppmax = 10., qmax = 10., kmax = 10., vpp, kpp;
-    int nw = 6, nvpp = 6, nq = 3, nk = 6;
+    double wmax = 10., vppmax = 10., qmax = 10., kmax = 10., vpp, kpp, t_kpp;
+    int nw = 6, nvpp = 6, nq = 3, nk = 51;
     comp exact, lobatto, paid;
     for (int wi = 0; wi < nw; ++wi) {
         w = -wmax + 2*wi*wmax/(nw-1);
         for (int vppi = 0; vppi < nvpp; ++vppi) {
             vpp = -vppmax + 2*vppi*vppmax/(nw-1);
-            //for (int qi = 0; qi < nq; ++qi) {
-                q = 0; //qi*qmax/(nq-1);
+            for (int qi = 1; qi < nq; ++qi) {
+                q = qi*qmax/(nq-1);
                 /*
                 for (int kppi = 0; kppi < nk; ++kppi){
                     kpp = kppi*kmax/(nk-1);
@@ -986,16 +1019,28 @@ int main() {
                     paid = perform_integral_Pi0_theta(w,vpp,q,kpp,'c','d',2);
                     std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", k = " << kpp << ", paid = " << paid << "\n";
                 }
-                 */
+
+                for (int ti = 0; ti < nk; ++ti){
+                    t_kpp = ti/(nk-1.);
+                    Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_0oo_lobatto(w, vpp, q, 0.0, 'c', 'd',1,1);
+                    Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_0oo_paid(w, vpp, q, 0.0, 'c', 'd',2,1);
+
+                    lobatto = integrand_Pi0_kpp_0oo_lobatto(t_kpp);
+                    std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", t = " << t_kpp << ", lobatto = " << lobatto << "\n";
+                    paid = integrand_Pi0_kpp_0oo_paid(t_kpp);
+                    std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", t = " << t_kpp << ", paid = " << paid << "\n";
+                } */
+                /*
                 exact = exact_bare_bubble(w, vpp, q, 'c', 'd','a');
                 std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", exact = " << exact << "\n";
                 lobatto = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',1,'a');
                 std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
                 paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'p');
                 std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
-            //}
+
+            }
         }
-    }
+    } //*/
     /*
     for (int wi = 0; wi < nw; ++wi) {
         w = -wmax + 2*wi*wmax/(nw-1);
@@ -1014,6 +1059,8 @@ int main() {
     }
      */
 
+    //list_bubble_int_tkpp(10.,1.,1,-5.,1.,'c','d',101,11,11,6);
+    //list_bubble_int_tkpp(10.,1.,2,-5.,1.,'c','d',101,11,11,6);
 
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================

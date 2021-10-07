@@ -67,6 +67,13 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
         double res = adaptor.integrate(-50., 50.).real();
         CHECK( res == Approx(exact[i]).epsilon(0.0001) );
     }
+    WHEN( "PAID integrator with Clenshaw-Curtis" ) {
+        Domain1D<comp,TestIntegrand > d(-50.,50.);
+        PAIDInput<comp,TestIntegrand> paid_integrand(d,integrand,0);
+        PAID<comp,TestIntegrand> paid_integral({paid_integrand});
+        double res = real(paid_integral.solve()[0]);
+        CHECK( res == Approx(exact[i]).epsilon(0.0001));
+    }
 }
 
 #endif //KELDYSH_MFRG_TESTING_TEST_INTEGRATOR_H

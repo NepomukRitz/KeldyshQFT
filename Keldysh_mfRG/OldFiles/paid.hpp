@@ -20,6 +20,7 @@
 // What we want is that
 // Base< std::complex< double > > -> double
 // Base<               double   > -> double
+/*
 template <class Q>
 struct Base_Class {
   typedef Q type;
@@ -32,12 +33,12 @@ struct Base_Class<std::complex<Q>> {
 
 template <typename Q>
 using Base = typename Base_Class<Q>::type;
-
-template <typename T>
+*/
+template <typename Q>
 struct IntegrationResult {
   std::size_t fevals;
-  T value;
-  Base<T> error;
+  Q value;
+  double error;
 };
 
 #include "domain.hpp"
@@ -46,24 +47,26 @@ struct IntegrationResult {
 //
 // typedef std::function<T(Base<T>, Base<T>)> F;
 
+template <typename Q, typename Integrand>
 class PAIDInput {
  public:
-  PAIDInput(Domain1D<std::complex<double>> d_,
-            std::function<std::complex<double>(double)> f_, std::size_t idx_)
+  PAIDInput(Domain1D<Q, Integrand> d_,
+            Integrand f_, std::size_t idx_)
       : d(d_), f(f_), idx(idx_) {}
-  Domain1D<std::complex<double>> d;
-  std::function<std::complex<double>(double)> f;
+  Domain1D<Q, Integrand> d;
+  Integrand f;
   std::size_t idx;
 };
 
+template <typename Q, typename Integrand>
 class PAID {
  public:
     int maxsplits = 1e3;
     double abs_error = 1e-12;
-  using T = Domain1D<std::complex<double>>;
+  using T = Domain1D<Q, Integrand>;
 
-  PAID(const std::vector<PAIDInput> & inputs) : fevals(0), rule(16) {
-    for (auto input : inputs) {
+  PAID(const std::vector<PAIDInput<Q,Integrand>> & inputs) : fevals(0), rule(16) {
+    for (PAIDInput<Q,Integrand> input : inputs) {
       // construct task:
       auto new_f = input.d.transform(input.f);
       // auto new_f = input.f;
@@ -73,7 +76,7 @@ class PAID {
     }
   }
 
-  std::map< std::size_t, T::value_type > solve() {
+  std::map< std::size_t, Q > solve() {
     int done = 0;
     //assert(isfinite(q.sum().first));
     int splits = 0;
@@ -102,7 +105,7 @@ class PAID {
 
  private:
   Queue<T> q;
-  ClenshawCurtis<typename T::value_type> rule;
+  ClenshawCurtis<Q, Integrand> rule;
   std::size_t fevals;
 };
 

@@ -201,9 +201,9 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        Domain1D<Q> d(a, b); // domain
-        PAIDInput paid_integrand(d,integrand,0);
-        PAID paid_integral({paid_integrand});
+        Domain1D<Q,Integrand> d(a, b); // domain
+        PAIDInput<Q, Integrand> paid_integrand(d,integrand,0);
+        PAID<Q, Integrand> paid_integral({paid_integrand});
         return paid_integral.solve()[0];
     }
 }
@@ -230,9 +230,9 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        Domain1D<Q> d(a, b); // domain
-        PAIDInput paid_integrand(d,integrand,0);
-        PAID paid_integral({paid_integrand});
+        Domain1D<Q,Integrand> d(a, b); // domain
+        PAIDInput<Q, Integrand> paid_integrand(d,integrand,0);
+        PAID<Q, Integrand> paid_integral({paid_integrand});
         return paid_integral.solve()[0];
     }
 }
@@ -265,9 +265,9 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        Domain1D<Q> d(a, b); // domain
-        PAIDInput paid_integrand(d,integrand,0);
-        PAID paid_integral({paid_integrand});
+        Domain1D<Q,Integrand> d(a, b); // domain
+        PAIDInput<Q, Integrand> paid_integrand(d,integrand,0);
+        PAID<Q, Integrand> paid_integral({paid_integrand});
         return paid_integral.solve()[0];
     }
 }
@@ -324,19 +324,19 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 
         Q result = 0.; // initialize results
 
-        Domain1D<Q> d1(intersections[0], intersections[1]); // domains
-        Domain1D<Q> d2(intersections[1], intersections[2]);
-        Domain1D<Q> d3(intersections[2], intersections[3]);
-        Domain1D<Q> d4(intersections[3], intersections[4]);
-        Domain1D<Q> d5(intersections[4], intersections[5]);
+        Domain1D<Q, Integrand> d1(intersections[0], intersections[1]); // domains
+        Domain1D<Q, Integrand> d2(intersections[1], intersections[2]);
+        Domain1D<Q, Integrand> d3(intersections[2], intersections[3]);
+        Domain1D<Q, Integrand> d4(intersections[3], intersections[4]);
+        Domain1D<Q, Integrand> d5(intersections[4], intersections[5]);
 
-        PAIDInput paid_integrand1(d1,integrand,0);
-        PAIDInput paid_integrand2(d2,integrand,0);
-        PAIDInput paid_integrand3(d3,integrand,0);
-        PAIDInput paid_integrand4(d4,integrand,0);
-        PAIDInput paid_integrand5(d5,integrand,0);
+        PAIDInput<Q, Integrand> paid_integrand1(d1,integrand,0);
+        PAIDInput<Q, Integrand> paid_integrand2(d2,integrand,0);
+        PAIDInput<Q, Integrand> paid_integrand3(d3,integrand,0);
+        PAIDInput<Q, Integrand> paid_integrand4(d4,integrand,0);
+        PAIDInput<Q, Integrand> paid_integrand5(d5,integrand,0);
 
-        PAID paid_integral({paid_integrand1,paid_integrand2,paid_integrand3,paid_integrand4,paid_integrand5});
+        PAID<Q, Integrand> paid_integral({paid_integrand1,paid_integrand2,paid_integrand3,paid_integrand4,paid_integrand5});
         return paid_integral.solve()[0];
     }
 }
@@ -388,19 +388,21 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return result.sum();
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        vec<Domain1D<Q>> domains = vec<Domain1D<Q>>(num_intervals);
-        Domain1D<Q> d;
-        vec<PAIDInput> integrands = vec<PAIDInput>(num_intervals);
+        vec<Domain1D<Q,Integrand>> domains;
+        domains.reserve(num_intervals);
+        vec<PAIDInput<Q, Integrand>> integrands;
+        integrands.reserve(num_intervals);
 
         for (int i = 0; i < num_intervals; i++){
             if (intervals[i][0] < intervals[i][1]) {
-                domains[i] = d(intervals[i][0],intervals[i][1]);
-                PAIDInput integrand(d,integrand,0);
-                integrands[i] = integrand;
+                Domain1D<Q, Integrand> d(intervals[i][0],intervals[i][1]);
+                domains.push_back(d);
+                PAIDInput<Q, Integrand> paid_integrand(d,integrand,0);
+                integrands.push_back(paid_integrand);
             }
         }
 
-        PAID integral(integrands);
+        PAID<Q, Integrand> integral(integrands);
         return integral.solve()[0];
     }
 }
