@@ -153,7 +153,7 @@ void IntegrandSE<Q>::save_integrand(const rvec& freqs) const {
 
     get_integrand_vals(freqs, integrand_re, integrand_im);
 
-    std::string filename = "../Data/integrand_SE";
+    std::string filename = data_dir + "integrand_SE";
     filename += //"_i0=" + std::to_string(i0)       /// TODO: add this when Elias interchanged order of integration and Keldysh sum
                 //+ "_i2=" + std::to_string(i2)
                 + "_v=" + std::to_string(v);

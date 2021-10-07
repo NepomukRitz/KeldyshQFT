@@ -2,6 +2,7 @@
 #define FPP_MFRG_PLOTINTEGRAND_H
 
 #include <cassert>
+#include "../utilities/hdf5_routines.h"
 #include "../state.h"
 #include "../bubbles.h"
 #include "../loop.h"
@@ -39,9 +40,12 @@ namespace saveIntegrand {
     }
 
     template <typename Q,template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
-    void saveIntegrandBubble(const std::string& filename_prefix, const GeneralVertex<Q, symmetry_left>& vertex1, const GeneralVertex<Q, symmetry_right>& vertex2,
+    void saveIntegrandBubble(const std::string& filename_prefix, GeneralVertex<Q, symmetry_left>& vertex1, GeneralVertex<Q, symmetry_right>& vertex2,
                        const Bubble_Object& Pi, const bool diff, const rvec& freqs, const K_class k_class, const char channel,
                        const int i0, const int i2, const double w, const double v, const double vp, const int i_in) {
+
+        vertex1.initializeInterpol();
+        vertex2.initializeInterpol();
         switch (k_class) {
             case k1: {
                 Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
@@ -62,6 +66,9 @@ namespace saveIntegrand {
                 Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrand(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
                 assert(false);
         }
+
+        vertex1.set_initializedInterpol(false);
+        vertex2.set_initializedInterpol(false);
 
     }
 
@@ -267,7 +274,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
 
     /// In the following you can also iterate over different i0/i2/etc:
 
-    std::string dir_integrand_str = dir_str + "integrands/";
+    std::string dir_integrand_str = "integrands/";
     makedir(dir_integrand_str);
     const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
 

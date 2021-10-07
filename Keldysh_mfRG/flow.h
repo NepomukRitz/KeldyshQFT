@@ -26,7 +26,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     state_ini.initialize();             // initialize state
 
     // initialize the flow with SOPT at Lambda_ini (important!)
-    fopt_state(state_ini, Lambda_ini);
+    sopt_state(state_ini, Lambda_ini);
     // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
     //state_ini.findBestFreqGrid(Lambda_ini); // optimize W_scale
@@ -35,7 +35,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     //state_ini = read_hdf("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", 4, 51);
     //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
-    parquet_solver("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+    //parquet_solver("../Data/parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
 
     write_hdf(outputFileName, Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
     //if (save_intermediate_results) {
@@ -51,7 +51,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     // compute the flow using an ODE solver
     ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
                               Lambda_checkpoints, outputFileName);
-    //sum_rule_K1tK(outputFileName);    // Check fulfillment of the sum rule
+
 
     return state_fin;
 }

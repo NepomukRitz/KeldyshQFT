@@ -412,6 +412,10 @@ public:
     double norm_K2(int i) { return half1().norm_K2(i); }
     double norm_K3(int i) { return half1().norm_K3(i); }
 
+    void initializeInterpol() {half1().initializeInterpol(); half2().initializeInterpol();}
+    void set_initializedInterpol(bool initialized) {half1().set_initializedInterpol(initialized); half2().set_initializedInterpol(initialized);}
+
+
 #if INTERPOLATION == 3
     void initialize_K2_spline() {vertex.initialize_K2_spline(); }
     void free_K2_spline() {vertex.free_K2_spline();  }
@@ -560,6 +564,17 @@ public:
     void set_only_same_channel(bool only_same_channel) {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i].set_only_same_channel(only_same_channel);
+        }
+    }
+
+    void initializeInterpol() {
+        for (int i = 0; i < this->size(); i++) {
+            (*this)[i].initializeInterpol();
+        }
+    }
+    void set_initializedInterpol(bool initialized) {
+        for (int i = 0; i < this->size(); i++) {
+            (*this)[i].set_initializedInterpol(initialized);
         }
     }
 
