@@ -40,7 +40,7 @@ template <typename Q> bool selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, Se
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
 template <typename Q>
-auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<int> opt) -> State<Q>{  //, const bool save_intermediate=false
+auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t> opt) -> State<Q>{  //, const bool save_intermediate=false
 
     static_assert(N_LOOPS>=1, "");
     std::string dir_str = data_dir + "intermediateResults/";

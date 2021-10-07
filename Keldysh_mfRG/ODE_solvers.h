@@ -302,7 +302,7 @@ namespace ode_solver_impl
      */
     template <typename Y, typename FlowGrid, size_t stages>
     void rk_step(const butcher_tableau<stages> &tableau, const Y &y_init, const Y &dydx,
-                   Y &result, const double t_value, const double t_step, double &maxrel_error, Y rhs (const Y& y, const double x))
+                   Y &result, const double t_value, const double t_step, double &maxrel_error, Y rhs (const Y& y, const double x, const vec<size_t> opt), size_t iteration)
     {
         const int world_rank = mpi_world_rank();
 
@@ -333,7 +333,7 @@ namespace ode_solver_impl
                 assert(isfinite(state_stage));
             }
 
-            k.push_back( rhs(state_stage, Lambda_stage)  );
+            k.push_back( rhs(state_stage, Lambda_stage, {iteration, stage})  );
         }
 
         result = y_init;
@@ -368,7 +368,7 @@ namespace ode_solver_impl
     template <typename Y, typename FlowGrid, size_t stages>
     void rkqs(butcher_tableau<stages> tableau, Y &state_i, double &Lambda_i, double htry, double &hdid, double &hnext,
               double min_t_step, double max_t_step,
-              const std::vector<double> &lambda_checkpoints, Y rhs (const Y& y, const double x))
+              const std::vector<double> &lambda_checkpoints, Y rhs (const Y& y, const double x, const vec<size_t> opt), size_t iteration)
     {
 
 
@@ -393,7 +393,7 @@ namespace ode_solver_impl
 
         const double t_value = FlowGrid::t_from_lambda(Lambda_i);
         double t_step = FlowGrid::t_from_lambda(Lambda_i + htry) - t_value;
-        const Y dydx = rhs(state_i, Lambda_i);
+        const Y dydx = rhs(state_i, Lambda_i, {iteration, 0});
         bool rejected = false;
         double errmax;
 
@@ -408,7 +408,7 @@ namespace ode_solver_impl
                           << " to " << FlowGrid::lambda_from_t(t_value + t_step)
                           << ")." << std::endl;
             };
-            ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs);
+            ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs, iteration);
 
             if (not tableau.adaptive) break;
             //// compute parquet checks
@@ -543,7 +543,7 @@ template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype> y_
  * @param N_ODE                 number of ODE steps (true number of steps is N_ODE + U_NRG for hybridization flow)
  */
 template <typename Y, typename FlowGrid = flowgrid::sqrt_parametrization>
-void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, Y rhs (const Y& y, const double x),
+void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, Y rhs (const Y& y, const double x, const vec<size_t> opt),
                 std::vector<double> lambda_checkpoints = {}, std::string filename = "", int iter_start=0, const int N_ODE=nODE) {
     int world_rank = mpi_world_rank();
 
@@ -581,7 +581,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
     double hnext, hdid; // step size to try next; actually performed step size
     result = state_ini;
 
-    for (int i = iter_start; i < MAXSTP; i++)
+    for (size_t i = iter_start; i < MAXSTP; i++)
     {
         if (world_rank == 0)
         {
@@ -610,7 +610,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
         };
         // fix step size for non-adaptive methods
         if (not tableau.adaptive) h = lambdas_try[i+1] - lambdas_try[i];
-        ode_solver_impl::rkqs<Y, FlowGrid>(tableau, result, Lambda, h, hdid, hnext, min_t_step, max_t_step, lambda_checkpoints, rhs);
+        ode_solver_impl::rkqs<Y, FlowGrid>(tableau, result, Lambda, h, hdid, hnext, min_t_step, max_t_step, lambda_checkpoints, rhs, i);
         // Pick h for next iteration
         if (tableau.adaptive) h = hnext;
 
