@@ -44,8 +44,6 @@ public:
     void findBestFreqGrid(double Lambda);       // optimize frequency grid parameters and update self-energy on new grid
     /// computes finite differences of Sigma
     double get_deriv_maxSE() const;
-    auto norm(int p) -> double;
-    auto norm() -> double;
 
     // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
