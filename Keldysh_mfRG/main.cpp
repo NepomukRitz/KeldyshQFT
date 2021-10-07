@@ -89,8 +89,8 @@ auto main() -> int {
 
 
     //test_PT4(0.0, true);
-    //test_PT_state<state_datatype>(dir_str+filename, 1.8, false);
-    compute_non_symmetric_diags(1.8, true, 1, true);
+    //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
+    //compute_non_symmetric_diags(1.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";

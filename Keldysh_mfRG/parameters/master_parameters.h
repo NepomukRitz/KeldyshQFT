@@ -27,7 +27,7 @@
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
 
-constexpr int N_LOOPS = 4;  // Number of loops
+constexpr int N_LOOPS = 3;  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
@@ -101,7 +101,7 @@ constexpr double epsODE = 1e-4;
 // 1 -> basic Runge-Kutta 4;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
-#define ODEsolver 3
+#define ODEsolver 1
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)

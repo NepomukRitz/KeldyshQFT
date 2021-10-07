@@ -1558,7 +1558,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                  const char channel){
     BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
             BubbleComputer (dgamma, vertex1, vertex2, Pi, channel);
-    BubbleComputer.perform_computation();
+    if (channel == 'a' or channel == 'p' or channel == 't') BubbleComputer.perform_computation();
 }
 
 /// Overload for bubble_function in case no Bubble object has been initialized yet. ONLY WORKS FOR SIAM!!
