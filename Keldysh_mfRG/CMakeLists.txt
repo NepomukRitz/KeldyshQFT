@@ -181,8 +181,8 @@ add_executable(FPP_mfRG
         interpolations/InterpolatorSpline2D.h
         interpolations/InterpolatorSpline3D.h)
 
-add_executable(get_integrand_dGamma_1loop
-        tests/get_integrand_dGamma_1loop.cpp
+add_executable(get_integrand_dGammaL
+        tests/get_integrand_dGammaL.cpp
         bubbles.h
         postprocessing/causality_FDT_checks.h
         correctionFunctions.h
@@ -247,6 +247,6 @@ target_link_libraries(FPP_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib
 target_link_libraries(FPP_mfRG -lgsl -lgslcblas)
 target_link_libraries(FPP_mfRG fftw3)
 
-target_link_libraries(get_integrand_dGamma_1loop -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
-target_link_libraries(get_integrand_dGamma_1loop -lgsl -lgslcblas)
-target_link_libraries(get_integrand_dGamma_1loop fftw3)
+target_link_libraries(get_integrand_dGammaL -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
+target_link_libraries(get_integrand_dGammaL fftw3)
