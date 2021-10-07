@@ -4,6 +4,7 @@
 #include "../state.h"
 #include "test_perturbation_theory.h"
 
+#ifndef KELDYSH_FORMALISM
 /**
  * test-integrand for below function test_integrate_over_K1()
  */
@@ -172,6 +173,6 @@ void test_interpolate_K12(double Lambda) {
     InterpolantK1a.save_integrand(1e4);
 
 }
-
+#endif
 
 #endif //FPP_MFRG_TEST_INTERPOLATION_H
