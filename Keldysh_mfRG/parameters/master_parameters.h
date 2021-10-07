@@ -7,7 +7,7 @@
 #include <vector>            // standard vector for Keldysh indices
 
 // For production: uncomment the following line to switch off assert()-functions
-#define NDEBUG
+//#define NDEBUG
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD
