@@ -330,7 +330,7 @@ namespace ode_solver_impl
             for (size_t col_index = 0; col_index < stage; col_index++)
             {
                 state_stage += k[col_index] * dLambda * tableau.get_a(stage, col_index);
-                assert(isfinite(state_stage));
+                //assert(isfinite(state_stage));
             }
 
             k.push_back( rhs(state_stage, Lambda_stage, {iteration, stage})  );
@@ -348,7 +348,7 @@ namespace ode_solver_impl
             err += k[stage] * dLambda * tableau.get_error_b(stage);
         }
         maxrel_error = max_rel_err(err, k, 1e-6); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
-        assert(isfinite(result));
+        //assert(isfinite(result));
         assert(isfinite(maxrel_error));
     }
 
