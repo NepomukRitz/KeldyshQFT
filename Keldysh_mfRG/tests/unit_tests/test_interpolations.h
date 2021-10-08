@@ -215,7 +215,9 @@ if (INTERPOLATION == cubic) {
     double cumul_interpolation_tolerance = 1e-12 * nBOS;
 
     rvert<state_datatype> avertex('a', Lambda_ini);
-    int iK = 0;
+    int iK;
+    if (KELDYSH) iK = 1;
+    else iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0; iw < nBOS; iw++) {
@@ -272,7 +274,9 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
 
 
     rvert<state_datatype> avertex('a', Lambda_ini);
-    int iK = 0;
+    int iK;
+    if (KELDYSH) iK = 1;
+    else iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0; iw<nBOS2; iw++){
@@ -337,7 +341,9 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
 
 
         rvert<state_datatype> avertex('a', Lambda_ini);
-        int iK = 0;
+        int iK;
+        if (KELDYSH) iK = 1;
+        else iK = 0;
         int i_in = 0;
         state_datatype value = 0.;
         for (int iw = 0; iw < nBOS2; iw++) {
@@ -412,7 +418,9 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
 
 
     rvert<state_datatype> avertex('a', Lambda_ini);
-    int iK = 0;
+    int iK;
+    if (KELDYSH) iK = 1;
+    else iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0; iw<nBOS3; iw++){
@@ -480,7 +488,9 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
 
 
         rvert<state_datatype> avertex('a', Lambda_ini);
-        int iK = 0;
+        int iK;
+        if (KELDYSH) iK = 1;
+        else iK = 0;
         int i_in = 0;
         state_datatype value = 0.;
         for (int iw = 0; iw < nBOS3; iw++) {
