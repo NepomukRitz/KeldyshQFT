@@ -51,10 +51,10 @@ class SplineK1 : public DataContainer
 public:
 
 
+    bool initialized = false;
 
 protected:
     //std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
-    bool initialized = false;
     size_t n;   // flat size of data vector (and interpolation coefficients)
     size_t i_x; // index of w dimension in DataContainer::dims
     vec<Q> m_b = vec<Q>(n),m_c= vec<Q>(n),m_d= vec<Q>(n);        // SplineK1 coefficients

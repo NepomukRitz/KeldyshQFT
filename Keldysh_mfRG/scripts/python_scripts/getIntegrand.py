@@ -76,7 +76,7 @@ MPI="-I/usr/include/mpi/"
 HDF5="-I/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp"
 FFTW="-lfftw3"
 
-mpiCC --std=c++17  ../tests/get_integrand_dGamma_1loop_fromFlow.cpp -o ../tests/get_integrand_dGamma_1loop_fromFlow.o -fopenmp $MPI $HDF5 $FFTW
+mpiCC --std=c++17  ../tests/get_integrand_dGamma_1loop_fromFlow.cpp -o ../tests/get_integrand_dGamma_1loop_fromFlow.o -fopenmp $MPI $HDF5 $FFTW -lgsl -lgslcblas
 
     """
     f = open("./compile_asc_saveIntegrand.sh", "w")
@@ -221,7 +221,7 @@ if __name__ == '__main__':
     i_in = 0
 
 
-    #compile_get_integrand_dGamma_1loop_fromFlow_Cpp()
+    compile_get_integrand_dGamma_1loop_fromFlow_Cpp()
     get_integrand_dGamma_1loop(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)
 
     integrandFilename = get_integrand_filename_dGamma_1loop(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)

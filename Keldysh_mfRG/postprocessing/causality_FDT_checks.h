@@ -74,7 +74,7 @@ void check_SE_causality(const Q& selfEnergy) {}
  * output is only printed if checks fail.
  */
 template <typename Q>
-void check_FDTs(const State<Q>& state, bool verbose=false) {
+void check_FDTs(const State<Q>& state, bool verbose) {
     if (verbose)
         print("Check of FDTs for self-energy and K1: Re(Sigma^K)=0, Re(K1r^K)=0.", true);
 
@@ -139,6 +139,6 @@ void check_FDTs(const State<Q>& state, bool verbose=false) {
 }
 
 template <typename Q>
-void check_FDTs(const Q& state, bool verbose=false) {}
+void check_FDTs(const Q& state) {}
 
 #endif //KELDYSH_MFRG_TESTING_CAUSALITY_FDT_CHECKS_H
