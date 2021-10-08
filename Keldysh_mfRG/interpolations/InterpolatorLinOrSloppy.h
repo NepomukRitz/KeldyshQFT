@@ -421,7 +421,7 @@ public:
 
     void initInterpolator() {initialized = true;};
 
-    auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
@@ -448,7 +448,7 @@ public:
 
     void initInterpolator() {initialized = true;};
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
-    auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
@@ -480,7 +480,7 @@ public:
     void initInterpolator() {initialized = true;};
     explicit Interpolate<k3, Q, linear_on_aux>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
 
-    auto interpolK3(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol
@@ -516,7 +516,7 @@ public:
 
     void initInterpolator() {initialized = true;};
 
-    auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
@@ -542,7 +542,7 @@ public:
 
     void initInterpolator() {initialized = true;};
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
-    auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
@@ -570,7 +570,7 @@ public:
     void initInterpolator() {initialized = true;};
     explicit Interpolate<k3, Q, sloppycubic>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
 
-    auto interpolK3(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol

@@ -98,6 +98,8 @@ protected:
     vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t ivp, size_t i_in, double dw, double dv, double dvp) const;  // calculate c_i, d_i from b_i
 public:
 
+    bool initialized = false;
+
     explicit SplineK3(double Lambda) :   DataContainer(Lambda), n(DataContainer::data.size()) {}
 
 
@@ -268,12 +270,14 @@ void SplineK3<DataContainer,Q>::initInterpolator()
     m_deriv_xz = DataContainer::get_deriv_K3_xz(m_left, m_right, m_left_value, m_right_value);
     m_deriv_yz = DataContainer::get_deriv_K3_yz(m_left, m_right, m_left_value, m_right_value);
     m_deriv_xyz = DataContainer::get_deriv_K3_xyz(m_left, m_right, m_left_value, m_right_value);
+    initialized = true;
 }
 
 
 template <class DataContainer, typename Q>
 Q SplineK3<DataContainer,Q>::interpolK3 (int iK, double w, double v, double vp, int i_in) const
 {
+    assert(initialized);
     double tw;
     const size_t iw=DataContainer::frequencies_K3.b.fconv(tw, w);
     double tv;

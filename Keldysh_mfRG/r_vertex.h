@@ -46,7 +46,7 @@ public:
     rvert(const char channel_in, double Lambda)
     : channel(channel_in), //components (Components(channel_in)), transformations (Transformations(channel_in)),
       freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
-      K1(channel, Lambda), K2(channel, Lambda), K2b(channel), K3(channel, Lambda)
+      K1(channel_in, Lambda), K2(channel_in, Lambda), K2b(channel_in), K3(channel_in, Lambda)
       {K1.reserve(); K2.reserve(); K3.reserve(); };
     rvert() = delete;
 

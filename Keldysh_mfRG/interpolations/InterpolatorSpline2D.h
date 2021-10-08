@@ -50,7 +50,7 @@ private:
     };
 public:
 
-
+    bool initialized = false;
 
 
 protected:
@@ -136,6 +136,7 @@ void SplineK2<DataContainer,Q>::initInterpolator()
     m_deriv_x =  DataContainer::get_deriv_K2_x(m_left, m_right, m_left_value, m_right_value);
     m_deriv_y =  DataContainer::get_deriv_K2_y(m_left, m_right, m_left_value, m_right_value);
     m_deriv_xy = DataContainer::get_deriv_K2_xy(m_left, m_right, m_left_value, m_right_value);
+    initialized = true;
 }
 
 
@@ -143,6 +144,7 @@ template <class DataContainer, typename Q>
 Q SplineK2<DataContainer,Q>::interpolK2 (int iK, double w, double v, int i_in) const
 {
 
+    assert(initialized);
     double tw;
     const size_t iw=DataContainer::frequencies_K2.b.fconv(tw, w);
     double tv;

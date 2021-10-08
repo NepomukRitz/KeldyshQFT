@@ -6,6 +6,7 @@
 #include "../state.h"
 #include "../bubbles.h"
 #include "../loop.h"
+#include "../right_hand_sides.h"
 
 /**
  * Functions to plot Integrands in the bubble or the loop

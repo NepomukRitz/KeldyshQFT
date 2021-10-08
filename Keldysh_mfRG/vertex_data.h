@@ -83,7 +83,7 @@ class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,3>{
 protected:
     //vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
-    size_t dims[3] = {nK_K1, nBOS, n_in};
+    //size_t dims[3] = {nK_K1, nBOS, n_in};
 
     VertexFrequencyGrid<k1> frequencies_K1;    // frequency grid
 public:
@@ -158,7 +158,7 @@ private:
 
 protected:
     //vec<Q> K2 = empty_K2();
-    size_t dims[4] = {nK_K2, nBOS2, nFER2, n_in};
+    //size_t dims[4] = {nK_K2, nBOS2, nFER2, n_in};
     VertexFrequencyGrid<k2> frequencies_K2;    // frequency grid
 public:
     explicit vertexDataContainer(double Lambda) : frequencies_K2(Lambda), vertexContainerBase<Q,4>(dimsK2) { };
@@ -252,7 +252,7 @@ protected:
 
 
 public:
-    size_t dims[5] = {nK_K3, nBOS3, nFER3, nFER3, n_in};
+    //size_t dims[5] = {nK_K3, nBOS3, nFER3, nFER3, n_in};
 
     explicit vertexDataContainer(double Lambda) : frequencies_K3(Lambda), vertexContainerBase<Q,5>(dimsK3) { };
 
