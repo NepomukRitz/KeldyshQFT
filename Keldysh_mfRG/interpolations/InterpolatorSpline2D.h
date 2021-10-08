@@ -21,8 +21,8 @@
 
 /**
  * SplineK2 interpolation
- * @tparam DataContainer  contains vertex data K2 and frequency grids frequencies_K2.b and frequencies_K2.f
- *                          computes partial derivative of K2 in x, y and x&y direction
+ * @tparam DataContainer  contains vertex data and frequency grids frequencies_K2.b and frequencies_K2.f
+ *                          computes partial derivative of data in x, y and x&y direction
  * @tparam Q              double or comp
  */
 template <class DataContainer, typename Q>
@@ -63,13 +63,13 @@ protected:
     vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t i_in, double dw, double dv) const;  // calculate c_i, d_i from b_i
 public:
     explicit SplineK2(double Lambda)
-            :   DataContainer(Lambda), n(DataContainer::K2.size())
+            :   DataContainer(Lambda), n(DataContainer::data.size())
     {
         //this->initializeK2();
     }
 
 
-    void initializeK2();
+    void initInterpolator();
 
     // evaluates the SplineK2 at point x
     Q interpolK2 (int iK, double w, double v, int i_in) const;
@@ -83,22 +83,22 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
 {
 
     const vec<Q> fs = {
-            DataContainer::K2[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dimsK2)],
-            DataContainer::K2[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dimsK2)],
-            DataContainer::K2[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dimsK2)],
-            DataContainer::K2[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dimsK2)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dimsK2)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dimsK2)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dimsK2)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dimsK2)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dimsK2)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dimsK2)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dimsK2)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dimsK2)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dimsK2)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dimsK2)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dimsK2)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dimsK2)],
+            DataContainer::data[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dims)],
     };
 
     //vec<Q> coeffs = vec<Q> (16);
@@ -131,7 +131,7 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
 }
 
 template <class DataContainer, typename Q>
-void SplineK2<DataContainer,Q>::initializeK2()
+void SplineK2<DataContainer,Q>::initInterpolator()
 {
     m_deriv_x =  DataContainer::get_deriv_K2_x(m_left, m_right, m_left_value, m_right_value);
     m_deriv_y =  DataContainer::get_deriv_K2_y(m_left, m_right, m_left_value, m_right_value);

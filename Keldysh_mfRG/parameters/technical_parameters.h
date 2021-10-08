@@ -15,7 +15,7 @@ constexpr bool MPI_FLAG = true;
 constexpr double inter_tol = 1e-8;
 
 enum interpolMethod {linear=0, linear_on_aux=1, sloppycubic=2, cubic=4};
-constexpr interpolMethod INTERPOLATION = linear;
+constexpr interpolMethod INTERPOLATION = cubic;
 
 //Tolerance for loop convergence
 constexpr double converged_tol = 1e-7;

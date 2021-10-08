@@ -425,9 +425,9 @@ void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims
 
 /**
  * Takes a flat index and returns a flat index for a vector with rotated directions
- * @tparam rank
- * @param iflat
- * @param dims
+ * @tparam rank             rank of tensor (number of "directions")
+ * @param iflat             flat index in row-major acc. to dims
+ * @param dims              contains number of points in each direction
  * @param permutation       determines how the dimensions are to be permuted
  *                          for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
  *                          A vector has a native order of dimensions. The permutation allows to express the multi-index
@@ -436,13 +436,38 @@ void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims
  * @return
  */
 template<size_t rank>
-size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], const size_t (&permutation) [rank]){
+inline size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], const size_t (&permutation) [rank]){
     size_t multIndx[rank];
     getMultIndex<rank>(multIndx, iflat, dims);
     size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [rank], size_t (&dims) [rank], size_t (&permutation) [rank]) {
     return iflat_new;
 }
+/**
+ * Wraps above function to rotate the i_dim-th element of dims to the trailing dimension;
+ * permutation is a cyclic permutation: elements of of dims are shifted to the right until i_dim is the trailing dimension
+ *                                      of the rotated flat index
+ */
+template<size_t rank>
+inline size_t rotateFlatIndex(const size_t iflat, const size_t (&dims_native) [rank], const size_t i_dim){
+    assert(i_dim <= rank);
+    size_t permutation[rank];
+    size_t dims_rot[rank];
+    // just make sure that permutation[-1] == i_dim
+    for (size_t i = 0; i < rank-i_dim-1; i++) {
+        //permutation[i] = i + 1 + i_dim;
+        dims_rot[i] = dims_native[i + 1 + i_dim];
+    }
+    for (size_t i = rank-i_dim-1; i < rank; i++) {
+        //permutation[i] = i - rank + 1 + i_dim;
+        dims_rot[i] = dims_native[i - rank + 1 + i_dim]; // dims_rot[rank-1] = dims_native[i_dim]
+    }
 
+    for (size_t i = 0      ; i <=i_dim; i++) permutation[i] = i + rank - 1 - i_dim;   // permutation[i_dim] = rank - 1
+    for (size_t i = i_dim+1; i < rank ; i++) permutation[i] = i - 1 - i_dim;
+
+    size_t iflat_new = rotateFlatIndex(iflat, dims_rot, permutation);
+    return iflat_new;
+}
 // boundary condition type for the SplineK1 end-points
 enum bd_type {
     first_deriv = 1,    /// known first derivative

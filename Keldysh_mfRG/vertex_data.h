@@ -39,7 +39,9 @@ public:
     explicit vertexContainerBase(const Types &... dims) : vertexContainerBase(std::vector<size_t>({static_cast<size_t>(dims)...})) {};
     vertexContainerBase(const size_t dims_in[rank], const vec<Q> &data_in) : data(data_in) {};
 
-    void reserve() {data.reserve(getFlatSize<rank>(dims));}
+    void reserve() {//data.reserve(getFlatSize<rank>(dims));
+        data = vec<Q>(getFlatSize<rank>(dims));
+         }
 
     Q acc(const size_t flatIndex) const {return data[flatIndex];}
     void direct_set(const size_t flatIndex, Q value) {data[flatIndex] = value;}
@@ -81,7 +83,7 @@ class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,3>{
 protected:
     //vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
-    //size_t dimsK1[3] = {nK_K1, nBOS, n_in};
+    size_t dims[3] = {nK_K1, nBOS, n_in};
 
     VertexFrequencyGrid<k1> frequencies_K1;    // frequency grid
 public:
@@ -147,13 +149,16 @@ class vertexDataContainer<k2, Q>: public vertexContainerBase<Q,4> {
     template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
 
 private:
+    /*
     vec<Q> empty_K2() { // for pure K1-calculation no memory should be allocated unnecessarily for K2
         if (MAX_DIAG_CLASS >= 2) return vec<Q> (nK_K2 * nw2 * nv2 * n_in);  // data points of K2;
         else                     return vec<Q> (0);                         // empty vector, never used in calculations
     }
+    */
 
 protected:
-    vec<Q> K2 = empty_K2();
+    //vec<Q> K2 = empty_K2();
+    size_t dims[4] = {nK_K2, nBOS2, nFER2, n_in};
     VertexFrequencyGrid<k2> frequencies_K2;    // frequency grid
 public:
     explicit vertexDataContainer(double Lambda) : frequencies_K2(Lambda), vertexContainerBase<Q,4>(dimsK2) { };
@@ -236,10 +241,10 @@ class vertexDataContainer<k3, Q>: public vertexContainerBase<Q,5> {
     template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
 
 private:
-    vec<Q> empty_K3() { // for  K2-calculation no memory should be allocated unnecessarily for K3
+    /*vec<Q> empty_K3() { // for  K2-calculation no memory should be allocated unnecessarily for K3
         if (MAX_DIAG_CLASS >= 3) return vec<Q> (nK_K3 * nw3 * nv3 * nv3 * n_in);    // data points of K3  // data points of K2;
         else                     return vec<Q> (0);                                 // empty vector, never used in calculations
-    }
+    }*/
 
 protected:
     //vec<Q> K3 = empty_K3();
@@ -247,7 +252,7 @@ protected:
 
 
 public:
-    //size_t dimsK3[5] = {nK_K3, nBOS3, nFER3, nFER3, n_in};
+    size_t dims[5] = {nK_K3, nBOS3, nFER3, nFER3, n_in};
 
     explicit vertexDataContainer(double Lambda) : frequencies_K3(Lambda), vertexContainerBase<Q,5>(dimsK3) { };
 
@@ -555,19 +560,19 @@ void vertexDataContainer<k2,Q>::K2_convert2naturalFreqs(double &w, double &v) co
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_x(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
     const size_t dims_x[4] = {nFER2, n_in, nK_K2, nBOS2};
     const size_t perm_x[4] = {2, 3, 0, 1};
-    vec<Q> result = ::get_finite_differences<Q,4>(K2, frequencies_K2.b.ts, dims_x, perm_x, left, right, value_left, value_right);
+    vec<Q> result = ::get_finite_differences<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.b.ts, dims_x, perm_x, left, right, value_left, value_right);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_y(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
     const size_t dims_y[4] = {n_in, nK_K2, nBOS2, nFER2};
     const size_t perm_y[4] = {1, 2, 3, 0};
-    vec<Q> result = ::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+    vec<Q> result = ::get_finite_differences<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_xy(const bd_type left, const bd_type right, const Q value_left, const Q value_right) const -> vec<Q> {
     const size_t dims_y[4] = {n_in, nK_K2, nBOS2, nFER2};
     const size_t perm_y[4] = {1, 2, 3, 0};
-    vec<Q> inter_result = ::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
+    vec<Q> inter_result = ::get_finite_differences<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, dims_y, perm_y, left, right, value_left, value_right);
     const size_t dims_x[4] = {nFER2, n_in, nK_K2, nBOS2};
     const size_t perm_x[4] = {2, 3, 0, 1};
     vec<Q> result = ::get_finite_differences<Q,4>(inter_result, frequencies_K2.b.ts, dims_x, perm_x, left, right, value_left, value_right);
@@ -578,8 +583,8 @@ template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_maxK2() const ->
     const size_t dims2[4] = {nFER2, n_in, nK_K2, nBOS2};
     const size_t perm1[4] = {1, 2, 3, 0};
     const size_t perm2[4] = {2, 3, 0, 1};
-    double max_K2 = (::power2(::get_finite_differences<Q,4>(K2, frequencies_K2.f.ts, dims1, perm1))
-                   + ::power2(::get_finite_differences<Q,4>(K2, frequencies_K2.b.ts, dims2, perm2))
+    double max_K2 = (::power2(::get_finite_differences<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, dims1, perm1))
+                   + ::power2(::get_finite_differences<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.b.ts, dims2, perm2))
     ).max_norm();
     return max_K2;
 

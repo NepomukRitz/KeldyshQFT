@@ -13,19 +13,19 @@ template<> void postRKstep_stuff<double>(double y, vec<double> x_vals, int itera
 }
 
 namespace {
-    double rhs_lin(const double& y, const double x) {
+    double rhs_lin(const double& y, const double x, const vec<size_t> opt) {
         return x*2.;
     }
-    double rhs_quadr(const double& y, const double x) {
+    double rhs_quadr(const double& y, const double x, const vec<size_t> opt) {
         return x*x*3.;
     }
-    double rhs_cubic(const double& y, const double x) {
+    double rhs_cubic(const double& y, const double x, const vec<size_t> opt) {
         return x*x*x*4.;
     }
-    double rhs_quartic(const double& y, const double x) {
+    double rhs_quartic(const double& y, const double x, const vec<size_t> opt) {
         return x*x*x*x*5.;
     }
-    double rhs_exp(const double& y, const double x) {
+    double rhs_exp(const double& y, const double x, const vec<size_t> opt) {
         return y;
     }
 }
