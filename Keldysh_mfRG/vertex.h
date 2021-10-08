@@ -652,9 +652,9 @@ template <typename Q> auto fullvert<Q>::value (VertexInput input) const -> Q {
 }
 template <typename Q> auto fullvert<Q>::value (VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     return irred.val(input.iK, input.i_in, input.spin)
-           + avertex.value(input, tvertex, right_vertex)
-           + pvertex.value(input, pvertex, right_vertex)
-           + tvertex.value(input, avertex, right_vertex);
+           + avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex)
+           + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex)
+           + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
 }
 
 template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
@@ -679,13 +679,13 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input, const fullve
     Q res;
     switch (input.channel){
         case 'a':
-            res = pvertex.value(input, pvertex, right_vertex) + tvertex.value(input, avertex, right_vertex);
+            res = pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex) + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
             break;
         case 'p':
-            res = avertex.value(input, tvertex, right_vertex) + tvertex.value(input, avertex, right_vertex);
+            res = avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         case 't':
-            res = avertex.value(input, tvertex, right_vertex) + pvertex.value(input, pvertex, right_vertex);
+            res = avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex) + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
             break;
         default :
             res = 0.;
@@ -748,13 +748,13 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput input, const 
 
     switch (input.channel){
         case 'a':
-            K1_K2b = avertex.left_same_bare(input, tvertex, right_vertex);
+            K1_K2b = avertex.left_same_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex);
             break;
         case 'p':
-            K1_K2b = pvertex.left_same_bare(input, pvertex, right_vertex);
+            K1_K2b = pvertex.left_same_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
             break;
         case 't':
-            K1_K2b = tvertex.left_same_bare(input, avertex, right_vertex);
+            K1_K2b = tvertex.left_same_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         default:
             return 0.;
@@ -842,14 +842,14 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput input, const
 
     switch (input.channel){
         case 'a':
-            K1_K2 = avertex.right_same_bare(input, tvertex, right_vertex);
+            K1_K2 = avertex.right_same_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex);
             break;
 
         case 'p':
-            K1_K2 = pvertex.right_same_bare(input, pvertex, right_vertex);
+            K1_K2 = pvertex.right_same_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
             break;
         case 't':
-            K1_K2 = tvertex.right_same_bare(input, avertex, right_vertex);
+            K1_K2 = tvertex.right_same_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         default:
             return 0.;
@@ -924,13 +924,13 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput input, const 
 
     switch (input.channel){
         case 'a':
-            K2_K3 = avertex.left_diff_bare(input, tvertex, right_vertex);
+            K2_K3 = avertex.left_diff_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex);
             break;
         case 'p':
-            K2_K3 = pvertex.left_diff_bare(input, pvertex, right_vertex);
+            K2_K3 = pvertex.left_diff_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
             break;
         case 't':
-            K2_K3 = tvertex.left_diff_bare(input, avertex, right_vertex);
+            K2_K3 = tvertex.left_diff_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         default:
             return 0.;
@@ -984,13 +984,13 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput input, const
     }
     switch (input.channel){
         case 'a':
-            K2b_K3 = avertex.right_diff_bare(input, tvertex, right_vertex);
+            K2b_K3 = avertex.right_diff_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex);
             break;
         case 'p':
-            K2b_K3 = pvertex.right_diff_bare(input, pvertex, right_vertex);
+            K2b_K3 = pvertex.right_diff_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
             break;
         case 't':
-            K2b_K3 = tvertex.right_diff_bare(input, avertex, right_vertex);
+            K2b_K3 = tvertex.right_diff_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         default:
             return 0.;
@@ -1028,15 +1028,15 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
 }
 
 template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &vertex) {
-    this->avertex.K1_set_VertexFreqGrid( vertex.avertex.K1_get_VertexFreqGrid() );
-    this->pvertex.K1_set_VertexFreqGrid( vertex.pvertex.K1_get_VertexFreqGrid() );
-    this->tvertex.K1_set_VertexFreqGrid( vertex.tvertex.K1_get_VertexFreqGrid() );
-    this->avertex.K2_set_VertexFreqGrid( vertex.avertex.K2_get_VertexFreqGrid() );
-    this->pvertex.K2_set_VertexFreqGrid( vertex.pvertex.K2_get_VertexFreqGrid() );
-    this->tvertex.K2_set_VertexFreqGrid( vertex.tvertex.K2_get_VertexFreqGrid() );
-    this->avertex.K3_set_VertexFreqGrid( vertex.avertex.K3_get_VertexFreqGrid() );
-    this->pvertex.K3_set_VertexFreqGrid( vertex.pvertex.K3_get_VertexFreqGrid() );
-    this->tvertex.K3_set_VertexFreqGrid( vertex.tvertex.K3_get_VertexFreqGrid() );
+    this->avertex.K1.K1_set_VertexFreqGrid( vertex.avertex.K1.K1_get_VertexFreqGrid() );
+    this->pvertex.K1.K1_set_VertexFreqGrid( vertex.pvertex.K1.K1_get_VertexFreqGrid() );
+    this->tvertex.K1.K1_set_VertexFreqGrid( vertex.tvertex.K1.K1_get_VertexFreqGrid() );
+    this->avertex.K2.K2_set_VertexFreqGrid( vertex.avertex.K2.K2_get_VertexFreqGrid() );
+    this->pvertex.K2.K2_set_VertexFreqGrid( vertex.pvertex.K2.K2_get_VertexFreqGrid() );
+    this->tvertex.K2.K2_set_VertexFreqGrid( vertex.tvertex.K2.K2_get_VertexFreqGrid() );
+    this->avertex.K3.K3_set_VertexFreqGrid( vertex.avertex.K3.K3_get_VertexFreqGrid() );
+    this->pvertex.K3.K3_set_VertexFreqGrid( vertex.pvertex.K3.K3_get_VertexFreqGrid() );
+    this->tvertex.K3.K3_set_VertexFreqGrid( vertex.tvertex.K3.K3_get_VertexFreqGrid() );
 }
 
 template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
@@ -1066,17 +1066,17 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
             if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
             for (int iw = 0; iw < nBOS; iw++) {
                 for (int i_in = 0; i_in < n_in; i_in++) {
-                    double compare = std::abs(this->avertex.K1_val(iK, iw, i_in));
+                    double compare = std::abs(this->avertex.K1.val(iK, iw, i_in));
                     if (compare > max) {
                         max = compare;
                     }
 
-                    compare = std::abs(this->pvertex.K1_val(iK, iw, i_in));
+                    compare = std::abs(this->pvertex.K1.val(iK, iw, i_in));
                     if (compare > max) {
                         max = compare;
                     }
 
-                    compare = std::abs(this->tvertex.K1_val(iK, iw, i_in));
+                    compare = std::abs(this->tvertex.K1.val(iK, iw, i_in));
                     if (compare > max) {
                         max = compare;
                     }
@@ -1093,9 +1093,9 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
             for(int iw=0; iw < nBOS; iw++){
                 for(int i_in=0; i_in<n_in; i_in++){
 
-                    result += pow(std::abs(this->avertex.K1_val(iK, iw, i_in)), (double)p);
-                    result += pow(std::abs(this->pvertex.K1_val(iK, iw, i_in)), (double)p);
-                    result += pow(std::abs(this->tvertex.K1_val(iK, iw, i_in)), (double)p);
+                    result += pow(std::abs(this->avertex.K1.val(iK, iw, i_in)), (double)p);
+                    result += pow(std::abs(this->pvertex.K1.val(iK, iw, i_in)), (double)p);
+                    result += pow(std::abs(this->tvertex.K1.val(iK, iw, i_in)), (double)p);
 
                 }
             }
@@ -1113,17 +1113,17 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
                 for (int iv = 0; iv < nFER2; iv++) {
                     for (int i_in = 0; i_in < n_in; i_in++) {
 
-                        double compare = std::abs(this->avertex.K2_val(iK, iw, iv, i_in));
+                        double compare = std::abs(this->avertex.K2.val(iK, iw, iv, i_in));
                         if(compare > max){
                             max = compare;
                         }
 
-                        compare = std::abs(this->pvertex.K2_val(iK, iw, iv, i_in));
+                        compare = std::abs(this->pvertex.K2.val(iK, iw, iv, i_in));
                         if(compare > max){
                             max = compare;
                         }
 
-                        compare = std::abs(this->tvertex.K2_val(iK, iw, iv, i_in));
+                        compare = std::abs(this->tvertex.K2.val(iK, iw, iv, i_in));
                         if(compare > max){
                             max = compare;
                         }
@@ -1141,9 +1141,9 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
                 for(int iv=0; iv < nFER2; iv++) {
                     for (int i_in = 0; i_in < n_in; i_in++) {
 
-                        result += pow(std::abs(this->avertex.K2_val(iK, iw, iv, i_in)), (double) p);
-                        result += pow(std::abs(this->pvertex.K2_val(iK, iw, iv, i_in)), (double) p);
-                        result += pow(std::abs(this->tvertex.K2_val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(std::abs(this->avertex.K2.val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(std::abs(this->pvertex.K2.val(iK, iw, iv, i_in)), (double) p);
+                        result += pow(std::abs(this->tvertex.K2.val(iK, iw, iv, i_in)), (double) p);
 
                     }
                 }
@@ -1162,17 +1162,17 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
                 for (int iv1 = 0; iv1 < nFER3; iv1++) {
                     for (int iv2 = 0; iv2 < nFER3; iv2++) {
                         for (int i_in = 0; i_in < n_in; i_in++) {
-                            double compare = std::abs(this->avertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            double compare = std::abs(this->avertex.K3.val(iK, iw, iv1, iv2, i_in));
                             if(compare > max){
                                 max = compare;
                             }
 
-                            compare = std::abs(this->pvertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            compare = std::abs(this->pvertex.K3.val(iK, iw, iv1, iv2, i_in));
                             if(compare > max){
                                 max = compare;
                             }
 
-                            compare = std::abs(this->tvertex.K3_val(iK, iw, iv1, iv2, i_in));
+                            compare = std::abs(this->tvertex.K3.val(iK, iw, iv1, iv2, i_in));
                             if(compare > max){
                                 max = compare;
                             }
@@ -1193,9 +1193,9 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
                     for (int iv2 = 0; iv2 < nFER3; iv2++) {
                         for (int i_in = 0; i_in < n_in; i_in++) {
 
-                            result += pow(std::abs(this->avertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
-                            result += pow(std::abs(this->pvertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
-                            result += pow(std::abs(this->tvertex.K3_val(iK, iw, iv1, iv2, i_in)), (double) p);
+                            result += pow(std::abs(this->avertex.K3.val(iK, iw, iv1, iv2, i_in)), (double) p);
+                            result += pow(std::abs(this->pvertex.K3.val(iK, iw, iv1, iv2, i_in)), (double) p);
+                            result += pow(std::abs(this->tvertex.K3.val(iK, iw, iv1, iv2, i_in)), (double) p);
 
                         }
                     }
@@ -1412,9 +1412,9 @@ void fullvert<Q>::initializeInterpol() {
 
 template<typename Q>
 void fullvert<Q>::set_initializedInterpol(const bool is_init) {
-    avertex.initialized = is_init;
-    pvertex.initialized = is_init;
-    tvertex.initialized = is_init;
+    avertex.set_initializedInterpol(is_init);
+    pvertex.set_initializedInterpol(is_init);
+    tvertex.set_initializedInterpol(is_init);
 }
 
 

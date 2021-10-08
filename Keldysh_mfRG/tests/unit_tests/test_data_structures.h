@@ -46,25 +46,25 @@ TEST_CASE( "vector operations", "[data_structures]" ) {
 }
 
 TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
-    const size_t dimensionality = 4;
-    size_t dims[dimensionality] = {3, 5, 7, 1}; // last dimension is trivial "internal" index
+    const size_t rank = 4;
+    size_t dims[rank] = {3, 5, 7, 1}; // last dimension is trivial "internal" index
     size_t dimflat = 1;
-    for (int i=0; i<dimensionality; i++) {
+    for (int i=0; i<rank; i++) {
         dimflat *= dims[i];
     }
 
 
     SECTION( "Get flat index" ) {
         int errorcount = 0;
-        size_t dimstmp[dimensionality] = {3, 5, 7, 1};
+        size_t dimstmp[rank] = {3, 5, 7, 1};
 
         int flatidx_unrot = 0;
         for (size_t i=0; i<dimstmp[0]; i++) {
             for (size_t j=0; j<dimstmp[1]; j++) {
                 for (size_t k = 0; k < dimstmp[2]; k++) {
                     for (size_t l = 0; l < dimstmp[3]; l++) {
-                        size_t multiindex[dimensionality] = {i,j,k,l};
-                        size_t test = ::getFlatIndex<dimensionality>(multiindex, dimstmp);
+                        size_t multiindex[rank] = {i,j,k,l};
+                        size_t test = ::getFlatIndex<rank>(multiindex, dimstmp);
                         if (test != flatidx_unrot) errorcount++;
                         flatidx_unrot++;
                     }
@@ -77,17 +77,17 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
 
     SECTION( "Get rotated flat index" ) {
         int errorcount = 0;
-        size_t dimstmp[dimensionality] = {5, 7, 3, 1};
-        size_t permutation [dimensionality] = {2, 0, 1, 3};
+        size_t dimstmp[rank] = {5, 7, 3, 1};
+        size_t permutation [rank] = {2, 0, 1, 3};
 
         for (size_t i=0; i<dimstmp[0]; i++) {
             for (size_t j=0; j<dimstmp[1]; j++) {
                 for (size_t k = 0; k < dimstmp[2]; k++) {
                     for (size_t l = 0; l < dimstmp[3]; l++) {
-                        size_t multiindex[dimensionality] = {i,j,k,l};
-                        size_t test = ::getFlatIndex<dimensionality>(multiindex, dimstmp, permutation);
-                        size_t multiindex_permd[dimensionality] = {multiindex[permutation[0]], multiindex[permutation[1]], multiindex[permutation[2]], multiindex[permutation[3]]};
-                        if (test != ::getFlatIndex<dimensionality>(multiindex_permd, dims)) errorcount++;
+                        size_t multiindex[rank] = {i,j,k,l};
+                        size_t test = ::getFlatIndex<rank>(multiindex, dimstmp, permutation);
+                        size_t multiindex_permd[rank] = {multiindex[permutation[0]], multiindex[permutation[1]], multiindex[permutation[2]], multiindex[permutation[3]]};
+                        if (test != ::getFlatIndex<rank>(multiindex_permd, dims)) errorcount++;
                     }
                 }
             }
@@ -99,18 +99,18 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
 
     SECTION( "Rotate flat index" ) {
         int errorcount = 0;
-        size_t dimstmp[dimensionality] = {5, 7, 3, 1};
-        size_t permutation [dimensionality] = {2, 0, 1, 3};
+        size_t dimstmp[rank] = {5, 7, 3, 1};
+        size_t permutation [rank] = {2, 0, 1, 3};
 
         int flatidx_unrot = 0;
         for (size_t i=0; i<dimstmp[0]; i++) {
             for (size_t j=0; j<dimstmp[1]; j++) {
                 for (size_t k = 0; k < dimstmp[2]; k++) {
                     for (size_t l = 0; l < dimstmp[3]; l++) {
-                        size_t test = ::rotateFlatIndex<dimensionality>(flatidx_unrot, dimstmp, permutation);
-                        size_t multiindex[dimensionality] = {i,j,k,l};
-                        size_t multiindex_permd[dimensionality] = {multiindex[permutation[0]], multiindex[permutation[1]], multiindex[permutation[2]], multiindex[permutation[3]]};
-                        if (test != ::getFlatIndex<dimensionality>(multiindex_permd, dims)) errorcount++;
+                        size_t test = ::rotateFlatIndex<rank>(flatidx_unrot, dimstmp, permutation);
+                        size_t multiindex[rank] = {i,j,k,l};
+                        size_t multiindex_permd[rank] = {multiindex[permutation[0]], multiindex[permutation[1]], multiindex[permutation[2]], multiindex[permutation[3]]};
+                        if (test != ::getFlatIndex<rank>(multiindex_permd, dims)) errorcount++;
                         flatidx_unrot++;
                     }
                 }
@@ -128,32 +128,32 @@ namespace {
     }
 }
 TEST_CASE( "Compute finite differences", "[finite_differences]") {
-    const size_t dimensionality = 4;
-    size_t dims[dimensionality] = {3, 5, 7, 1}; // last dimension is trivial "internal" index
+    const size_t rank = 4;
+    size_t dims[rank] = {3, 5, 7, 1}; // last dimension is trivial "internal" index
     size_t dimflat = 1;
-    for (int i=0; i<dimensionality; i++) {
+    for (int i=0; i<rank; i++) {
         dimflat *= dims[i];
     }
 
     vec<double> linvals(dimflat);
-    size_t multiindex[dimensionality] = {0,0,0,0};
+    size_t multiindex[rank] = {0,0,0,0};
     for (size_t i = 0; i<dimflat; i++) {
-        ::getMultIndex<dimensionality>(multiindex, i, dims);
+        ::getMultIndex<rank>(multiindex, i, dims);
         linvals[i] = linfunc(multiindex[0], multiindex[1], multiindex[2]);
     }
 
     SECTION ( "Compute finite differences along last dimension" ) {
         vec<double> xs = {0,1,2,3,4,5,6};
-        size_t permutation[dimensionality] = {1, 2, 3, 0};
-        size_t dims_temp[dimensionality] = {1, 3, 5, 7};
+        size_t permutation[rank] = {1, 2, 3, 0};
+        size_t dims_temp[rank] = {1, 3, 5, 7};
         vec<double> dlinvals = ::get_finite_differences<double,4>(linvals, xs, dims_temp, permutation);
 
         int errorcount = 0;
         for (size_t i=1; i<dims[0]-1; i++) {
             for (size_t j=1; j<dims[1]-1; j++) {
                 for (size_t k=1; k<dims[2]-1; k++) {
-                    size_t multidx_temp[dimensionality] = {i,j,k,0};
-                    if (dlinvals[::getFlatIndex<dimensionality>(multidx_temp, dims)] != 3.) errorcount ++;
+                    size_t multidx_temp[rank] = {i,j,k,0};
+                    if (dlinvals[::getFlatIndex<rank>(multidx_temp, dims)] != 3.) errorcount ++;
                 }
             }
         }
@@ -165,8 +165,8 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
 
     SECTION ( "Compute finite differences along last dimension (with permutation)" ) {
         vec<double> xs = {0,1,2,3,4,5,6};
-        size_t permutation[dimensionality] = {1, 2, 3, 0};
-        size_t dims_temp[dimensionality] = {1, 3, 5, 7};
+        size_t permutation[rank] = {1, 2, 3, 0};
+        size_t dims_temp[rank] = {1, 3, 5, 7};
         vec<double> dlinvals = ::get_finite_differences(linvals, xs, dims_temp, permutation);
 
 
@@ -174,8 +174,8 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
         for (size_t i = 1; i < dims[0] - 1; i++) {
             for (size_t j = 1; j < dims[1] - 1; j++) {
                 for (size_t k = 1; k < dims[2] - 1; k++) {
-                    size_t multidx_temp[dimensionality] = {i, j, k, 0};
-                    if (dlinvals[::getFlatIndex<dimensionality>(multidx_temp, dims)] != 3.) errorcount++;
+                    size_t multidx_temp[rank] = {i, j, k, 0};
+                    if (dlinvals[::getFlatIndex<rank>(multidx_temp, dims)] != 3.) errorcount++;
                 }
             }
         }
@@ -187,8 +187,8 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
 
     SECTION ( "Compute finite differences along second dimension (with permutation)" ) {
         vec<double> xs = {0,1,2,3,4};
-        size_t permutation[dimensionality] = {2, 3, 0, 1};
-        size_t dims_temp[dimensionality] = {7, 1, 3, 5};
+        size_t permutation[rank] = {2, 3, 0, 1};
+        size_t dims_temp[rank] = {7, 1, 3, 5};
         vec<double> dlinvals = ::get_finite_differences(linvals, xs, dims_temp, permutation);
 
 
@@ -196,8 +196,8 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
         for (size_t i = 1; i < dims[0] - 1; i++) {
             for (size_t j = 1; j < dims[1] - 1; j++) {
                 for (size_t k = 1; k < dims[2] - 1; k++) {
-                    size_t multidx_temp[dimensionality] = {i, j, k, 0};
-                    if (dlinvals[::getFlatIndex<dimensionality>(multidx_temp, dims)] != 2.) errorcount++;
+                    size_t multidx_temp[rank] = {i, j, k, 0};
+                    if (dlinvals[::getFlatIndex<rank>(multidx_temp, dims)] != 2.) errorcount++;
                 }
             }
         }
@@ -210,8 +210,8 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
  *  // Current implementation of cubic interpolation scheme requires at least five grid points
     SECTION ( "Compute finite differences along first dimension (with permutation)" ) {
         vec<double> xs = {0,1,2};
-        size_t permutation[dimensionality] = {3, 0, 1, 2};
-        size_t dims_temp[dimensionality] = {5, 7, 1, 3};
+        size_t permutation[rank] = {3, 0, 1, 2};
+        size_t dims_temp[rank] = {5, 7, 1, 3};
         vec<double> dlinvals = ::get_finite_differences(linvals, xs, dims_temp, permutation);
 
 
@@ -219,8 +219,8 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
         for (size_t i = 1; i < dims[0] - 1; i++) {
             for (size_t j = 1; j < dims[1] - 1; j++) {
                 for (size_t k = 1; k < dims[2] - 1; k++) {
-                    size_t multidx_temp[dimensionality] = {i, j, k, 0};
-                    if (dlinvals[::getFlatIndex<dimensionality>(multidx_temp, dims)] != 1.) errorcount++;
+                    size_t multidx_temp[rank] = {i, j, k, 0};
+                    if (dlinvals[::getFlatIndex<rank>(multidx_temp, dims)] != 1.) errorcount++;
                 }
             }
         }

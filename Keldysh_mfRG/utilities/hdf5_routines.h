@@ -186,7 +186,7 @@ public:
 template <typename Q>
     void initialize(const State<Q>& state_in) {
         print("Starting to copy to buffer...", true);
-        FrequencyGrid bfreqs = state_in.vertex[0].avertex().K1_get_freqGrid();
+        FrequencyGrid bfreqs = state_in.vertex[0].avertex().K1.K1_get_freqGrid();
         FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
         freq_params[0] = (double) bfreqs.N_w;
         freq_params[1] = bfreqs.w_upper;
@@ -219,19 +219,19 @@ template <typename Q>
         }
 #if MAX_DIAG_CLASS >= 1
         for(int i=0; i<K1_dim; ++i) {                                // write K1 into buffer
-            K1_class_a[i].re = std::real(state_in.vertex[0].avertex().K1_acc(i));
-            K1_class_a[i].im = std::imag(state_in.vertex[0].avertex().K1_acc(i));
+            K1_class_a[i].re = std::real(state_in.vertex[0].avertex().K1.acc(i));
+            K1_class_a[i].im = std::imag(state_in.vertex[0].avertex().K1.acc(i));
 
-            K1_class_p[i].re = std::real(state_in.vertex[0].pvertex().K1_acc(i));
-            K1_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K1_acc(i));
+            K1_class_p[i].re = std::real(state_in.vertex[0].pvertex().K1.acc(i));
+            K1_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K1.acc(i));
 
-            K1_class_t[i].re = std::real(state_in.vertex[0].tvertex().K1_acc(i));
-            K1_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K1_acc(i));
+            K1_class_t[i].re = std::real(state_in.vertex[0].tvertex().K1.acc(i));
+            K1_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K1.acc(i));
         }
 #endif
 #if MAX_DIAG_CLASS >= 2
-        FrequencyGrid bfreqs2 = state_in.vertex[0].avertex().K2_get_freqGrid_b();
-        FrequencyGrid ffreqs2 = state_in.vertex[0].avertex().K2_get_freqGrid_f();
+        FrequencyGrid bfreqs2 = state_in.vertex[0].avertex().K2.K2_get_freqGrid_b();
+        FrequencyGrid ffreqs2 = state_in.vertex[0].avertex().K2.K2_get_freqGrid_f();
         freq_params[8]  = (double) bfreqs2.N_w;
         freq_params[9]  = bfreqs2.w_upper;
         freq_params[10] = bfreqs2.w_lower;
@@ -248,19 +248,19 @@ template <typename Q>
             ffreqs2_buffer[i] = ffreqs2.ws[i];
         }
         for(int i=0; i<K2_dim; ++i) {                                // write K2 into buffer
-            K2_class_a[i].re = std::real(state_in.vertex[0].avertex().K2_acc(i));
-            K2_class_a[i].im = std::imag(state_in.vertex[0].avertex().K2_acc(i));
+            K2_class_a[i].re = std::real(state_in.vertex[0].avertex().K2.acc(i));
+            K2_class_a[i].im = std::imag(state_in.vertex[0].avertex().K2.acc(i));
 
-            K2_class_p[i].re = std::real(state_in.vertex[0].pvertex().K2_acc(i));
-            K2_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K2_acc(i));
+            K2_class_p[i].re = std::real(state_in.vertex[0].pvertex().K2.acc(i));
+            K2_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K2.acc(i));
 
-            K2_class_t[i].re = std::real(state_in.vertex[0].tvertex().K2_acc(i));
-            K2_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K2_acc(i));
+            K2_class_t[i].re = std::real(state_in.vertex[0].tvertex().K2.acc(i));
+            K2_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K2.acc(i));
         }
 #endif
 #if MAX_DIAG_CLASS >= 3
-        FrequencyGrid bfreqs3 = state_in.vertex[0].avertex().K3_get_freqGrid_b();
-        FrequencyGrid ffreqs3 = state_in.vertex[0].avertex().K3_get_freqGrid_f();
+        FrequencyGrid bfreqs3 = state_in.vertex[0].avertex().K3.K3_get_freqGrid_b();
+        FrequencyGrid ffreqs3 = state_in.vertex[0].avertex().K3.K3_get_freqGrid_f();
         freq_params[16] = (double) bfreqs3.N_w;
         freq_params[17] = bfreqs3.w_upper;
         freq_params[18] = bfreqs3.w_lower;
@@ -277,14 +277,14 @@ template <typename Q>
             ffreqs3_buffer[i] = ffreqs3.ws[i];
         }
         for(int i=0; i<K3_dim; ++i) {                                // write K3 into buffer
-            K3_class_a[i].re = std::real(state_in.vertex[0].avertex().K3_acc(i));
-            K3_class_a[i].im = std::imag(state_in.vertex[0].avertex().K3_acc(i));
+            K3_class_a[i].re = std::real(state_in.vertex[0].avertex().K3.acc(i));
+            K3_class_a[i].im = std::imag(state_in.vertex[0].avertex().K3.acc(i));
 
-            K3_class_p[i].re = std::real(state_in.vertex[0].pvertex().K3_acc(i));
-            K3_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K3_acc(i));
+            K3_class_p[i].re = std::real(state_in.vertex[0].pvertex().K3.acc(i));
+            K3_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K3.acc(i));
 
-            K3_class_t[i].re = std::real(state_in.vertex[0].tvertex().K3_acc(i));
-            K3_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K3_acc(i));
+            K3_class_t[i].re = std::real(state_in.vertex[0].tvertex().K3.acc(i));
+            K3_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K3.acc(i));
         }
 #endif
         print("Buffer ready. Preparing for saving into Hdf5 file...", true);
@@ -1021,9 +1021,9 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs.initialize_grid();
     // copy grids to result
     result.selfenergy.frequencies = ffreqs;
-    result.vertex[0].avertex().frequencies_K1.b = bfreqs;
-    result.vertex[0].pvertex().frequencies_K1.b = bfreqs;
-    result.vertex[0].tvertex().frequencies_K1.b = bfreqs;
+    result.vertex[0].avertex().K1.frequencies_K1.b = bfreqs;
+    result.vertex[0].pvertex().K1.frequencies_K1.b = bfreqs;
+    result.vertex[0].tvertex().K1.frequencies_K1.b = bfreqs;
 #if MAX_DIAG_CLASS >= 2
     FrequencyGrid bfreqs2 ('b', 2, Lambda_ini);
     FrequencyGrid ffreqs2 ('f', 2, Lambda_ini);
@@ -1037,12 +1037,12 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs2.W_scale = buffer.freq_params[15];
     bfreqs2.initialize_grid();
     ffreqs2.initialize_grid();
-    result.vertex[0].avertex().frequencies_K2.b = bfreqs2;
-    result.vertex[0].pvertex().frequencies_K2.b = bfreqs2;
-    result.vertex[0].tvertex().frequencies_K2.b = bfreqs2;
-    result.vertex[0].avertex().frequencies_K2.f = ffreqs2;
-    result.vertex[0].pvertex().frequencies_K2.f = ffreqs2;
-    result.vertex[0].tvertex().frequencies_K2.f = ffreqs2;
+    result.vertex[0].avertex().K2.frequencies_K2.b = bfreqs2;
+    result.vertex[0].pvertex().K2.frequencies_K2.b = bfreqs2;
+    result.vertex[0].tvertex().K2.frequencies_K2.b = bfreqs2;
+    result.vertex[0].avertex().K2.frequencies_K2.f = ffreqs2;
+    result.vertex[0].pvertex().K2.frequencies_K2.f = ffreqs2;
+    result.vertex[0].tvertex().K2.frequencies_K2.f = ffreqs2;
 #endif
 #if MAX_DIAG_CLASS >= 3
     FrequencyGrid bfreqs3 ('b', 3, Lambda_ini);
@@ -1057,12 +1057,12 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs3.W_scale = buffer.freq_params[23];
     bfreqs3.initialize_grid();
     ffreqs3.initialize_grid();
-    result.vertex[0].avertex().frequencies_K3.b = bfreqs3;
-    result.vertex[0].pvertex().frequencies_K3.b = bfreqs3;
-    result.vertex[0].tvertex().frequencies_K3.b = bfreqs3;
-    result.vertex[0].avertex().frequencies_K3.f = ffreqs3;
-    result.vertex[0].pvertex().frequencies_K3.f = ffreqs3;
-    result.vertex[0].tvertex().frequencies_K3.f = ffreqs3;
+    result.vertex[0].avertex().K3.frequencies_K3.b = bfreqs3;
+    result.vertex[0].pvertex().K3.frequencies_K3.b = bfreqs3;
+    result.vertex[0].tvertex().K3.frequencies_K3.b = bfreqs3;
+    result.vertex[0].avertex().K3.frequencies_K3.f = ffreqs3;
+    result.vertex[0].pvertex().K3.frequencies_K3.f = ffreqs3;
+    result.vertex[0].tvertex().K3.frequencies_K3.f = ffreqs3;
 #endif
 }
 
@@ -1100,21 +1100,21 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
 #else
         val = buffer.K1_class_a[i].re;
 #endif
-        result.vertex[0].avertex().K1_direct_set(i, val);
+        result.vertex[0].avertex().K1.direct_set(i, val);
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
 #else
         val = buffer.K1_class_p[i].re;
 #endif
-        result.vertex[0].pvertex().K1_direct_set(i, val);
+        result.vertex[0].pvertex().K1.direct_set(i, val);
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
 #else
         val = buffer.K1_class_t[i].re;
 #endif
-        result.vertex[0].tvertex().K1_direct_set(i, val);
+        result.vertex[0].tvertex().K1.direct_set(i, val);
     }
 #endif
 #if MAX_DIAG_CLASS >= 2
@@ -1124,21 +1124,21 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
 #else
         val = buffer.K2_class_a[i].re;
 #endif
-        result.vertex[0].avertex().K2_direct_set(i, val);
+        result.vertex[0].avertex().K2.direct_set(i, val);
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
 #else
         val = buffer.K2_class_p[i].re;
 #endif
-        result.vertex[0].pvertex().K2_direct_set(i, val);
+        result.vertex[0].pvertex().K2.direct_set(i, val);
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
 #else
         val = buffer.K2_class_t[i].re;
 #endif
-        result.vertex[0].tvertex().K2_direct_set(i, val);
+        result.vertex[0].tvertex().K2.direct_set(i, val);
     }
 #endif
 #if MAX_DIAG_CLASS >= 3
@@ -1148,21 +1148,21 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
 #else
         val = buffer.K3_class_a[i].re;
 #endif
-        result.vertex[0].avertex().K3_direct_set(i, val);
+        result.vertex[0].avertex().K3.direct_set(i, val);
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
 #else
         val = buffer.K3_class_p[i].re;
 #endif
-        result.vertex[0].pvertex().K3_direct_set(i, val);
+        result.vertex[0].pvertex().K3.direct_set(i, val);
 
 #if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
 #else
         val = buffer.K3_class_t[i].re;
 #endif
-        result.vertex[0].tvertex().K3_direct_set(i, val);
+        result.vertex[0].tvertex().K3.direct_set(i, val);
     }
 #endif
 }
@@ -1428,43 +1428,43 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
         for (int i_in=0; i_in<n_in; ++i_in) {
 #if MAX_DIAG_CLASS >= 1
             for (int iw1=0; iw1<nBOS; ++iw1) {
-                if (state.vertex[0].avertex().K1_val(iK, iw1, i_in) != out.vertex[0].avertex().K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].avertex().K1.val(iK, iw1, i_in) != out.vertex[0].avertex().K1.val(iK, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
-                if (state.vertex[0].pvertex().K1_val(iK, iw1, i_in) != out.vertex[0].pvertex().K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].pvertex().K1.val(iK, iw1, i_in) != out.vertex[0].pvertex().K1.val(iK, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
-                if (state.vertex[0].tvertex().K1_val(iK, iw1, i_in) != out.vertex[0].tvertex().K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].tvertex().K1.val(iK, iw1, i_in) != out.vertex[0].tvertex().K1.val(iK, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
 #if MAX_DIAG_CLASS >= 2
                 for (int iw2=0; iw2<nFER; ++iw2) {
-                    if (state.vertex[0].avertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].avertex().K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].avertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].avertex().K2.val(iK, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
-                    if (state.vertex[0].pvertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].pvertex().K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].pvertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].pvertex().K2.val(iK, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
-                    if (state.vertex[0].tvertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].tvertex().K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].tvertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].tvertex().K2.val(iK, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
 #if MAX_DIAG_CLASS == 3
                     for (int iw3=0; iw3<nFER; ++iw3) {
-                        if (state.vertex[0].avertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].avertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].avertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].avertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
-                        if (state.vertex[0].pvertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].pvertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].pvertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].pvertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
-                        if (state.vertex[0].tvertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].tvertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].tvertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].tvertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }

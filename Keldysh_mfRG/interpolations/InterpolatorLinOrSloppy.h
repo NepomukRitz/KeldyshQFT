@@ -335,16 +335,16 @@ template<typename Q>
 class Interpolate<k1, Q, linear> : public vertexDataContainer<k1, Q> {
 public:
     explicit Interpolate<k1, Q, linear>(double Lambda) : vertexDataContainer<k1, Q>(Lambda) {};
+    bool initialized = false;
+    void initInterpolator() {initialized = true;};
 
-    void initializeK1() {};
-
-    auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
         //{
         Q result = indices.prefactor * interpolate_lin1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
-            [&](int i) -> Q {return vertexDataContainer<k1, Q>::K1_val(indices.iK, i, indices.i_in);});
+            [&](int i) -> Q {return vertexDataContainer<k1, Q>::val(indices.iK, i, indices.i_in);});
         // Lambda function (aka anonymous function) in last argument
         return result;
         //} else {
@@ -358,10 +358,11 @@ template<typename Q>
 class Interpolate<k2, Q, linear> : public vertexDataContainer<k2, Q> {
 public:
     explicit Interpolate<k2, Q, linear>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
+    bool initialized = false;
 
-    void initializeK2() {};
+    void initInterpolator() {initialized = true;};
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
-    auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
@@ -370,7 +371,7 @@ public:
         Q result = indices.prefactor * interpolate_lin2D<Q>(indices.w, indices.v1,
             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
-            [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::K2_val(indices.iK, i, j, indices.i_in);});
+            [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
         return result;
         //}
         //else {
@@ -384,10 +385,12 @@ public:
 template<typename Q>
 class Interpolate<k3, Q, linear> : public vertexDataContainer<k3, Q> {
 public:
-    void initializeK3() {};
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
     explicit Interpolate<k3, Q, linear>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
 
-    auto interpolK3(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol
@@ -398,7 +401,7 @@ public:
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
-            [&](int i, int j, int k) -> Q {return vertexDataContainer<k3, Q>::K3_val(indices.iK, i, j, k, indices.i_in);});
+            [&](int i, int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, j, k, indices.i_in);});
         return result;
         //} else {
         //    return 0.;  // asymptotic value
@@ -414,8 +417,9 @@ template<typename Q>
 class Interpolate<k1, Q, linear_on_aux> : public vertexDataContainer<k1, Q> {
 public:
     explicit Interpolate<k1, Q, linear_on_aux>(double Lambda) : vertexDataContainer<k1, Q>(Lambda) {};
+    bool initialized = false;
 
-    void initializeK1() {};
+    void initInterpolator() {initialized = true;};
 
     auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
 
@@ -424,7 +428,7 @@ public:
         //{
         Q result = indices.prefactor * interpolate_lin_on_aux1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
                                                                    [&](int i) -> Q {
-                                                                       return vertexDataContainer<k1, Q>::K1_val(indices.iK, i,
+                                                                       return vertexDataContainer<k1, Q>::val(indices.iK, i,
                                                                                                                  indices.i_in);
                                                                    });
         // Lambda function (aka anonymous function) in last argument
@@ -440,8 +444,9 @@ template<typename Q>
 class Interpolate<k2, Q, linear_on_aux> : public vertexDataContainer<k2, Q> {
 public:
     explicit Interpolate<k2, Q, linear_on_aux>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
+    bool initialized = false;
 
-    void initializeK2() {};
+    void initInterpolator() {initialized = true;};
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
     auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
 
@@ -453,7 +458,7 @@ public:
                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                                    [&](int i, int j) -> Q {
-                                                                       return vertexDataContainer<k2, Q>::K2_val(indices.iK, i,
+                                                                       return vertexDataContainer<k2, Q>::val(indices.iK, i,
                                                                                                                  j,
                                                                                                                  indices.i_in);
                                                                    });
@@ -470,7 +475,9 @@ public:
 template<typename Q>
 class Interpolate<k3, Q, linear_on_aux> : public vertexDataContainer<k3, Q> {
 public:
-    void initializeK3() {};
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
     explicit Interpolate<k3, Q, linear_on_aux>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
 
     auto interpolK3(const IndicesSymmetryTransformations &indices) const -> Q {
@@ -485,7 +492,7 @@ public:
                                                                    vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
                                                                    vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
                                                                    [&](int i, int j, int k) -> Q {
-                                                                       return vertexDataContainer<k3, Q>::K3_val(indices.iK, i,
+                                                                       return vertexDataContainer<k3, Q>::val(indices.iK, i,
                                                                                                                  j, k,
                                                                                                                  indices.i_in);
                                                                    });
@@ -505,8 +512,9 @@ template<typename Q>
 class Interpolate<k1, Q, sloppycubic> : public vertexDataContainer<k1, Q> {
 public:
     explicit Interpolate<k1, Q, sloppycubic>(double Lambda) : vertexDataContainer<k1, Q>(Lambda) {};
+    bool initialized = false;
 
-    void initializeK1() {};
+    void initInterpolator() {initialized = true;};
 
     auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
 
@@ -514,7 +522,7 @@ public:
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
         //{
         Q result = indices.prefactor * interpolate_sloppycubic1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
-              [&](int i) -> Q {return vertexDataContainer<k1, Q>::K1_val(indices.iK, i, indices.i_in);
+              [&](int i) -> Q {return vertexDataContainer<k1, Q>::val(indices.iK, i, indices.i_in);
 
         });
         // Lambda function (aka anonymous function) in last argument
@@ -530,8 +538,9 @@ template<typename Q>
 class Interpolate<k2, Q, sloppycubic> : public vertexDataContainer<k2, Q> {
 public:
     explicit Interpolate<k2, Q, sloppycubic>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
+    bool initialized = false;
 
-    void initializeK2() {};
+    void initInterpolator() {initialized = true;};
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
     auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
 
@@ -542,7 +551,7 @@ public:
         Q result = indices.prefactor * interpolate_sloppycubic2D<Q>(indices.w, indices.v1,
               vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
               vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
-              [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::K2_val(indices.iK, i, j, indices.i_in);});
+              [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
         return result;
         //}
         //else {
@@ -556,7 +565,9 @@ public:
 template<typename Q>
 class Interpolate<k3, Q, sloppycubic> : public vertexDataContainer<k3, Q> {
 public:
-    void initializeK3() {};
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
     explicit Interpolate<k3, Q, sloppycubic>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
 
     auto interpolK3(const IndicesSymmetryTransformations &indices) const -> Q {
@@ -570,7 +581,7 @@ public:
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
-            [&](int i, int j, int k) -> Q {return vertexDataContainer<k3, Q>::K3_val(indices.iK, i,j, k,indices.i_in);});
+            [&](int i, int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i,j, k,indices.i_in);});
         return result;
         //} else {
         //    return 0.;  // asymptotic value

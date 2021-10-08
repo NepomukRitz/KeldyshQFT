@@ -334,31 +334,36 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 }
 
 
-
+template<size_t rank>
+size_t getFlatSize(size_t (&dims) [rank]) {
+    size_t flatSize = 1;
+    for (size_t i = 0; i < rank; i++) flatSize *= dims[i];
+    return flatSize;
+}
 /**
  * Returns a flattened index of a multi-dimensional vector
- * @tparam dimensionality   number of dimensions
+ * @tparam rank   number of dimensions
  * @param indx              array of multi-dimensional indices
  * @param dims              number of grid points in the different directions
  * @return
  */
-template<size_t dimensionality>
-size_t getFlatIndex(const size_t (&indx) [dimensionality], const size_t (&dims) [dimensionality]) {
+template<size_t rank>
+size_t getFlatIndex(const size_t (&indx) [rank], const size_t (&dims) [rank]) {
     size_t result = indx[0];
-    for (int it = 1; it < dimensionality; it++) {
+    for (int it = 1; it < rank; it++) {
         result *= dims [it];
         result += indx [it];
     }
     return result;
 }
-/// Template specialization for special case dimensionality == 1
+/// Template specialization for special case rank == 1
 template<>
 size_t getFlatIndex<1>(const size_t (&indx) [1], const size_t (&dims) [1]) {
     return dims[0];
 }
 /**
  * Returns a flattened index of a multi-dimensional vector
- * @tparam dimensionality   number of dimensions
+ * @tparam rank   number of dimensions
  * @param indx              array of multi-dimensional indices (to address the entries of the vector)
  * @param dims              number of grid points in the different directions
  * @param permutation       determines how the dimensions are to be permuted before flattening
@@ -368,10 +373,10 @@ size_t getFlatIndex<1>(const size_t (&indx) [1], const size_t (&dims) [1]) {
  *                          perms into the native order.
  * @return
  */
-template<size_t dimensionality>
-size_t getFlatIndex(const size_t (&indx) [dimensionality], const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]) {
+template<size_t rank>
+size_t getFlatIndex(const size_t (&indx) [rank], const size_t (&dims) [rank], const size_t (&permutation) [rank]) {
     size_t result = indx[permutation[0]];
-    for (int it = 1; it < dimensionality; it++) {
+    for (int it = 1; it < rank; it++) {
         result *= dims [permutation[it]];
         result += indx [permutation[it]];
     }
@@ -396,22 +401,22 @@ size_t getFlatIndex(const size_t i, const  size_t j, const size_t (&dims) [2]) {
 }
 
 
-template<size_t dimensionality>
-void getMultIndex(size_t (&indx) [dimensionality], const size_t iflat, const size_t (&dims) [dimensionality]) {
+template<size_t rank>
+void getMultIndex(size_t (&indx) [rank], const size_t iflat, const size_t (&dims) [rank]) {
     size_t temp = iflat;
     size_t dimtemp = 1;
-    for (int it = 1; it < dimensionality; it++) {
+    for (int it = 1; it < rank; it++) {
         dimtemp *= dims[it];
     }
     indx[0] = temp / dimtemp;
     temp -= indx[0] * dimtemp;
-    for (int it = 1; it < dimensionality; it++) {
+    for (int it = 1; it < rank; it++) {
         dimtemp = dimtemp / dims[it];
         indx[it] = temp / dimtemp;
         temp -= indx[it] * dimtemp;
     }
 }
-/// Template specialization for special case dimensionality == 1
+/// Template specialization for special case rank == 1
 template<>
 void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims) [1]) {
     indx[0] = iflat;
@@ -420,7 +425,7 @@ void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims
 
 /**
  * Takes a flat index and returns a flat index for a vector with rotated directions
- * @tparam dimensionality
+ * @tparam rank
  * @param iflat
  * @param dims
  * @param permutation       determines how the dimensions are to be permuted
@@ -430,11 +435,11 @@ void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims
  *                          perms into the native order.
  * @return
  */
-template<size_t dimensionality>
-size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
-    size_t multIndx[dimensionality];
-    getMultIndex<dimensionality>(multIndx, iflat, dims);
-    size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [dimensionality], size_t (&dims) [dimensionality], size_t (&permutation) [dimensionality]) {
+template<size_t rank>
+size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], const size_t (&permutation) [rank]){
+    size_t multIndx[rank];
+    getMultIndex<rank>(multIndx, iflat, dims);
+    size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [rank], size_t (&dims) [rank], size_t (&permutation) [rank]) {
     return iflat_new;
 }
 
@@ -450,7 +455,7 @@ enum bd_type {
  * The derivative is computed in the direction of dims[permutation[-1]]
  * Currently assuming equal spacing in xs                                                   /// TODO: generalize formula to non-equal spacing
  * @tparam T
- * @tparam dimensionality       number of dimensions (only for dimension >= 2 !!)
+ * @tparam rank       number of dimensions (only for dimension >= 2 !!)
  * @param data                  input vector for which the derivative is to be computed
  * @param xs                    frequency points in the direction of dims[permutation[-1]]
  * @param dims                  number of grid points in the different directions
@@ -461,12 +466,12 @@ enum bd_type {
  *                              perms into the native order.
  * @return
  */
-template<typename T, size_t dimensionality>
-vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const size_t (&dims) [dimensionality],
-                              const size_t (&permutation) [dimensionality],
+template<typename T, size_t rank>
+vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const size_t (&dims) [rank],
+                              const size_t (&permutation) [rank],
                               const bd_type left=third_deriv, const bd_type right=third_deriv, const T left_value=0.0, const T right_value=0.0){
     size_t flatdim = data.size();
-    size_t dimsum = dims[dimensionality-1];
+    size_t dimsum = dims[rank-1];
     assert(dimsum==xs.size());
     size_t codimsum = flatdim/dimsum;
 
@@ -573,10 +578,10 @@ vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const si
     }
     return result;
 }
-template<typename T, size_t dimensionality>
-vec<T> compute_partial_derivative(const vec<T> data_in, const vec<T> xs_in, const size_t (&dims) [dimensionality], const size_t (&permutation) [dimensionality]){
+template<typename T, size_t rank>
+vec<T> compute_partial_derivative(const vec<T> data_in, const vec<T> xs_in, const size_t (&dims) [rank], const size_t (&permutation) [rank]){
     size_t flatdim = data_in.size();
-    size_t dimsum = dims[dimensionality-1];
+    size_t dimsum = dims[rank-1];
     size_t codimsum = flatdim/dimsum;
 
     vec<T> result(flatdim);

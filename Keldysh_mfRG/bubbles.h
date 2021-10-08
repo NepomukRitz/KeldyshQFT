@@ -990,17 +990,17 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
-    vmin = std::min(dgamma[0].avertex().K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
-    vmax = std::max(dgamma[0].avertex().K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
+    vmin = std::min(dgamma[0].avertex().K1.K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
+    vmax = std::max(dgamma[0].avertex().K1.K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
     if (MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma[0].avertex().K2_get_wlower_f());
-        vmax = std::max(vmax, dgamma[0].avertex().K2_get_wupper_f());
+        vmin = std::min(vmin, dgamma[0].avertex().K2.K2_get_wlower_f());
+        vmax = std::max(vmax, dgamma[0].avertex().K2.K2_get_wupper_f());
     }
     if (MAX_DIAG_CLASS >= 3){
         // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma[0].avertex().K3_get_wlower_f());
-        vmax = std::max(vmax, dgamma[0].avertex().K3_get_wupper_f());
+        vmin = std::min(vmin, dgamma[0].avertex().K3.K3_get_wlower_f());
+        vmax = std::max(vmax, dgamma[0].avertex().K3.K3_get_wupper_f());
     }
     if ((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
@@ -1311,15 +1311,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::write_out_results_K1(const vec<Q>& K1_ordered_result){
     switch (channel) {
         case 'a':
-            dgamma[0].avertex().K1_add(K1_ordered_result);
+            dgamma[0].avertex().K1.add_vec(K1_ordered_result);
             dgamma[0].avertex().enforce_freqsymmetriesK1(dgamma[0].avertex());
             break;
         case 'p':
-            dgamma[0].pvertex().K1_add(K1_ordered_result);
+            dgamma[0].pvertex().K1.add_vec(K1_ordered_result);
             dgamma[0].pvertex().enforce_freqsymmetriesK1(dgamma[0].pvertex());
             break;
         case 't':
-            dgamma[0].tvertex().K1_add(K1_ordered_result);
+            dgamma[0].tvertex().K1.add_vec(K1_ordered_result);
             dgamma[0].tvertex().enforce_freqsymmetriesK1(dgamma[0].tvertex());
             break;
         default: ;
@@ -1333,15 +1333,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
     switch (channel) {
         case 'a':
-            dgamma[0].avertex().K2_add(K2_ordered_result);
+            dgamma[0].avertex().K2.add_vec(K2_ordered_result);
             dgamma[0].avertex().enforce_freqsymmetriesK2(dgamma[0].avertex());
             break;
         case 'p':
-            dgamma[0].pvertex().K2_add(K2_ordered_result);
+            dgamma[0].pvertex().K2.add_vec(K2_ordered_result);
             dgamma[0].pvertex().enforce_freqsymmetriesK2(dgamma[0].pvertex());
             break;
         case 't':
-            dgamma[0].tvertex().K2_add(K2_ordered_result);
+            dgamma[0].tvertex().K2.add_vec(K2_ordered_result);
             dgamma[0].tvertex().enforce_freqsymmetriesK2(dgamma[0].tvertex());
             break;
         default: ;
@@ -1355,15 +1355,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K3(const vec<Q>& K3_ordered_result){
     switch (channel) {
         case 'a':
-            dgamma[0].avertex().K3_add(K3_ordered_result);
+            dgamma[0].avertex().K3.add_vec(K3_ordered_result);
             dgamma[0].avertex().enforce_freqsymmetriesK3(dgamma[0].avertex());
             break;
         case 'p':
-            dgamma[0].pvertex().K3_add(K3_ordered_result);
+            dgamma[0].pvertex().K3.add_vec(K3_ordered_result);
             dgamma[0].pvertex().enforce_freqsymmetriesK3(dgamma[0].pvertex());
             break;
         case 't':
-            dgamma[0].tvertex().K3_add(K3_ordered_result);
+            dgamma[0].tvertex().K3.add_vec(K3_ordered_result);
             dgamma[0].tvertex().enforce_freqsymmetriesK3(dgamma[0].tvertex());
             break;
         default: ;
@@ -1402,7 +1402,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     i0 = iK1/(nw1_w*n_in);                              // exterior Keldysh indices of the bubble
     iw = iK1/(n_in) - i0*nw1_w;                         // frequency index
     i_in = iK1 - i0*nw1_w*n_in - iw*n_in;               // internal index
-    dgamma[0].avertex().K1_get_freq_w(w, iw);    // frequency acc. to frequency index
+    dgamma[0].avertex().K1.K1_get_freq_w(w, iw);    // frequency acc. to frequency index
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1417,7 +1417,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iw = iK2 / (nw2_v * n_in) - i0 * nw2_w;
     iv = iK2 / n_in - iw * nw2_v - i0 * nw2_w * nw2_v;
     i_in = iK2 - iv * n_in - iw * nw2_v * n_in - i0 * nw2_w * nw2_v * n_in;
-    dgamma[0].avertex().K2_get_freqs_w(w, v, iw, iv);
+    dgamma[0].avertex().K2.K2_get_freqs_w(w, v, iw, iv);
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1433,7 +1433,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iv = iK3/(nw3_v * n_in) - i0*nw3_w*nw3_v - iw*nw3_v;
     ivp =iK3/(n_in) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
     i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in - iw*nw3_v*nw3_v_p*n_in - iv*nw3_v_p*n_in - ivp*n_in;
-    dgamma[0].avertex().K3_get_freqs_w(w, v, vp, iw, iv, ivp);
+    dgamma[0].avertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
 }
 
 

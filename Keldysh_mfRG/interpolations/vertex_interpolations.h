@@ -3,7 +3,7 @@
 
 
 /// Interpolator class
-template<int k, typename Q, interpolMethod inter>
+template<K_class k, typename Q, interpolMethod inter>
 class Interpolate {
     explicit Interpolate(double Lambda) {
         assert(false);
@@ -34,7 +34,7 @@ class Interpolate<k1,Q, cubic>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
 
 public:
     explicit Interpolate<k1, Q, cubic>(double Lambda) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda) {};
-    auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
         //{
@@ -52,7 +52,7 @@ template<typename Q>
 class Interpolate<k2,Q, cubic>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
 public:
     explicit Interpolate<k2, Q, cubic>(double Lambda) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda) {};
-    auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K2.b.w_upper + inter_tol)
@@ -70,7 +70,7 @@ template<typename Q>
 class Interpolate<k3,Q, cubic>: public SplineK3<vertexDataContainer<k3,Q>, Q> {
 public:
     explicit Interpolate<k3, Q, cubic>(double Lambda) : SplineK3<vertexDataContainer<k3,Q>, Q>(Lambda) {};
-    auto interpolK3(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol)
