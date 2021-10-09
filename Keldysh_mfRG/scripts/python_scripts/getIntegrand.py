@@ -135,8 +135,8 @@ mpiCC --std=c++17  ../tests/get_integrand_dGammaC.cpp -o ../tests/get_integrand_
     os.system("rm ./compile_asc_saveIntegrand.sh")
 
 
-def get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in):
-    cmd = exe_dir + 'get_integrand_dGamma_1loop_fromFlow.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in)
+def get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in):
+    cmd = exe_dir + 'get_integrand_dGamma_1loop_fromFlow.o ' + data_dir + " " + filename + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in)
     os.system(cmd)
 
 def get_integrand_dGamma_1loop(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in):
@@ -208,8 +208,8 @@ if __name__ == '__main__':
     exe_dir = "/tmp/tmp.0CYjLbB99I/tests/"  # directory where the C++ executable is / will be compiled
     os.chdir(exe_dir)
 
-    data_dir = "/tmp/tmp.0CYjLbB99I/Data_MF/"
-    it_Lambda = 1 # iteration of ODE solver
+    data_dir = "/tmp/tmp.0CYjLbB99I/Data_KF/"
+    it_Lambda = 10 # iteration of ODE solver
     rkStep = 0 # Runge-Kutta step >= 0
     k_class_int = 3 # K1->0; K2->1; K3->3
     channel = 'a'
@@ -222,11 +222,13 @@ if __name__ == '__main__':
 
 
     compile_get_integrand_dGamma_1loop_fromFlow_Cpp()
-    get_integrand_dGamma_1loop(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)
+    filename = "flow_K3_3l_i6_freq_sym_asymp_corr_parquet_intersections2"
+    get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)
 
     integrandFilename = get_integrand_filename_dGamma_1loop(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)
     fig0, axs0 = plt.subplots(num=0, nrows=1, ncols=1)
     plot_integrand(axs0, integrandFilename, {"label": "testtest", "ls": "--"})
+    axs0.set_xlim([-100,100])
     fig0.savefig(integrandFilename[:-3]+".png")
 
     '''

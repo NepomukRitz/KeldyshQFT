@@ -107,7 +107,7 @@ namespace saveIntegrand {
 
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, it_Lambda, nODE+U_NRG.size()); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, it_Lambda, 67); // read Psi
         // read dPsi for differentiated selfenergy
 
         State<Q>dPsi = Psi; // copy Psi

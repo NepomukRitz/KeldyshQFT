@@ -6,7 +6,7 @@
 #include "saveIntegrand.h"
 
 auto main(int argc, char * argv[]) -> int {
-    std::string dir_str;
+    std::string dir_str, filename;
     char channel;
     int it_Lambda, k_class_int, rkStep, i0, i2, i_in;
     double w, v, vp;
@@ -24,6 +24,7 @@ auto main(int argc, char * argv[]) -> int {
     //std::cin >> dir_str >> it_Lambda >> k_class_int >> channel >> i0 >> i2 >> w >> v >> vp >> i_in;
     /// Parse input:
     dir_str = argv[1];
+    filename = argv[2];
     it_Lambda = atoi(argv[2]);
     rkStep = atoi(argv[3]);
     k_class_int = atoi(argv[4]);
@@ -43,8 +44,7 @@ auto main(int argc, char * argv[]) -> int {
     << ", w: " << w << ", v: " << v << ", vp: " << vp << ", i_in: " << i_in << std::endl;
 
     dir_str = dir_str + "intermediateResults/";
-    const std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
-    const std::string file_dPsi= dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string file_Psi = dir_str + filename;
 
 
     std::string dir_integrand_str = "integrands/";
