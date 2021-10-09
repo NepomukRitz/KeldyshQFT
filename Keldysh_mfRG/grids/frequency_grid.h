@@ -20,6 +20,7 @@
 #define KELDYSH_MFRG_FREQUENCY_GRID_H
 
 #include <cmath>        // for sqrt, log, exp
+#include "../utilities/util.h"
 #include "../parameters/master_parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
 #include <cassert>
 

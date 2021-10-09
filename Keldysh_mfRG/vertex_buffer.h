@@ -43,7 +43,7 @@ public:
     auto valsmooth(VertexInput input, const vertexBuffer<k,Q>& rvert_crossing) const -> Q {
 
         IndicesSymmetryTransformations indices = symmetry_reduce(input);
-        assert(not indices.asymmetry_transform);
+        if (k == k2) assert(not indices.asymmetry_transform);
 
         if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 

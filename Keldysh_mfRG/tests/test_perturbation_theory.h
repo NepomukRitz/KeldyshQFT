@@ -1641,9 +1641,9 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        PT_state.vertex[0].avertex().K1.setvert(0, i, 0, val_K1);
-        PT_state.vertex[0].pvertex().K1.setvert(0, i, 0, -val_K1);
-        PT_state.vertex[0].tvertex().K1.setvert(0, i, 0, -val_K1*val_K1/glb_U);
+        PT_state.vertex[0].avertex().K1.setvert( val_K1, 0, i, 0);
+        PT_state.vertex[0].pvertex().K1.setvert( -val_K1, 0, i, 0);
+        PT_state.vertex[0].tvertex().K1.setvert( -val_K1*val_K1/glb_U, 0, i, 0);
     }
 
 #if MAX_DIAG_CLASS > 1
@@ -1653,9 +1653,9 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
             double v = PT_state.vertex[0].avertex().K2.frequencies_K2.f.ws[j];
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
             Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
-            PT_state.vertex[0].avertex().K2.setvert(0, i, j, 0, val_K2);
-            PT_state.vertex[0].pvertex().K2.setvert(0, i, j, 0, val_K2);
-            PT_state.vertex[0].tvertex().K2.setvert(0, i, j, 0, val_K2);
+            PT_state.vertex[0].avertex().K2.setvert(val_K2, 0, i, j, 0);
+            PT_state.vertex[0].pvertex().K2.setvert(val_K2, 0, i, j, 0);
+            PT_state.vertex[0].tvertex().K2.setvert(val_K2, 0, i, j, 0);
         }
     }
 #endif
@@ -1668,11 +1668,11 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
                 double vp= PT_state.vertex[0].avertex().K3.frequencies_K3.f.ws[k];
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
                 Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
-                PT_state.vertex[0].avertex().K3.setvert(0, i, j, k, 0, val_K3);
-                PT_state.vertex[0].pvertex().K3.setvert(0, i, j, k, 0, -val_K3);
+                PT_state.vertex[0].avertex().K3.setvert(val_K3, 0, i, j, k, 0);
+                PT_state.vertex[0].pvertex().K3.setvert(-val_K3, 0, i, j, k, 0);
                 Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
                 Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
-                PT_state.vertex[0].tvertex().K3.setvert(0, i, j, k, 0, -2*(val_K3-val_K3_ap));
+                PT_state.vertex[0].tvertex().K3.setvert(-2*(val_K3-val_K3_ap), 0, i, j, k, 0);
             }
         }
     }
