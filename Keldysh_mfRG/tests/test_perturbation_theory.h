@@ -1887,6 +1887,99 @@ public:
     }
 };
 
+/**
+ * integrand for K2a in TOPT (SIAM)
+ */
+template <typename Q>
+class K1p_PIa_K1rdot_exact_K3{
+public:
+    const double Lambda;
+    const double w, v, vp;
+    const char channel = 'a';
+    const bool diff;
+
+    Bubble<Q> Pi;
+    K1p_PIa_K1rdot_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) { }
+
+
+    void save_integrand(double vmax) {
+        int npoints = 1e5;
+        rvec freqs (npoints);
+
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        double wl = -vmax;
+        double wu = vmax;
+        for (int i=0; i<npoints; ++i) {
+            double vpp = wl + i * (wu-wl)/(npoints-1);
+            Q integrand_value = (*this)(vpp);
+            freqs[i] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = data_dir + "integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+    void save_integrand() {
+        int npoints =nBOS*2-1;
+        rvec freqs (npoints);
+        double frac = 0.5;
+        rvec integrand_re (npoints);
+        rvec integrand_im (npoints);
+        for (int i=1; i<nBOS-1; ++i) {
+            double vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies_K1.b.ws[i];
+            Q integrand_value = (*this)(vpp);
+            freqs[i*2] = vpp;
+
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2] = integrand_value;
+            integrand_im[i*2] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+
+            vpp = this->SOPTstate.vertex[0].half1().avertex.frequencies_K1.b.ws[i] * (frac) + this->SOPTstate.vertex[0].half1().avertex.frequencies_K1.b.ws[i+1] * (1-frac);
+            integrand_value = (*this)(vpp);
+            freqs[i*2+1] = vpp;
+
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            integrand_re[i*2+1] = integrand_value;
+            integrand_im[i*2+1] = 0.;
+#else
+            integrand_re[i] = integrand_value.real();
+            integrand_im[i] = integrand_value.imag();
+#endif
+        }
+
+        std::string filename = data_dir + "integrand_K1";
+        filename += channel;
+        filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
+        write_h5_rvecs(filename,
+                       {"v", "integrand_re", "integrand_im"},
+                       {freqs, integrand_re, integrand_im});
+    }
+
+    auto operator() (double vpp) const -> Q {
+        if (isfinite(vpp)) return SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(vp + vpp, Lambda);
+        else return 0.;
+        //return vpp*vpp;
+    }
+};
+
 
 /**
  * integrand for K2a in TOPT (SIAM)
@@ -2248,6 +2341,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         // insert this non-symmetric vertex on the right of the bubble
         State<state_datatype> dGammaC_r(Lambda);
+
+        dGammaL.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
         bubble_function(dGammaC_r.vertex, Psi.vertex, dGammaL, G, G, 'a', false);
 
 
@@ -2258,6 +2353,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         // insert this non-symmetric vertex on the left of the bubble
         State<state_datatype> dGammaC_l(Lambda);
+        dGammaR.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
+
         bubble_function(dGammaC_l.vertex, dGammaR, Psi.vertex, G, G, 'a', false);
 
 
@@ -2328,8 +2425,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
-                                                                  {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
-                                                                   std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta);
+                                                                               {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
+                                                                                std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta);
             K1rdot_PIa_K1p_exact.vertex[0].avertex().K3.setvert(val_K3, 0, i, j, k, 0);
             K1rdot_PIa_K1p_exact.vertex[0].pvertex().K3.setvert(val_K3, 0, i, j, k, 0);
             K1rdot_PIa_K1p_exact.vertex[0].tvertex().K3.setvert(val_K3, 0, i, j, k, 0);
@@ -2344,6 +2441,42 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
                 K1rdot_PIa_K1p - K1rdot_PIa_K1p_exact;        // intermediate result: contains K2 and K3
         write_hdf(data_dir + "K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   K1rdot_PIa_K1p_diff);
+
+
+        State<state_datatype> K1p_PIa_K1rdot_exact(Lambda);        // intermediate result: contains K2 and K3
+
+#if MAX_DIAG_CLASS>2
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1p_PIa_K1rdot_exact, vmax, Delta)
+        for (int iflat = 0; iflat < (nBOS3 - 2) * (nFER3 - 2) * (nFER3 - 2); iflat++) {
+            int i = 1 + iflat / (nFER3 - 2) / (nFER3 - 2);
+            int j = 1 + iflat / (nFER3 - 2) - (i - 1) * (nFER3 - 2);
+            int k = 1 + iflat - (i - 1) * (nFER3 - 2) * (nFER3 - 2) - (j - 1) * (nFER3 - 2);
+            //for (int i = 1; i<nBOS3-1; i++) {
+            //    for (int j = 1; j<nFER3-1; j++) {
+            //        for (int k = 1; k<nFER3-1; k++) {
+            double w ; //= K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.b_K3.ws[i];
+            double v ; //= K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[j];
+            double vp; //= K1rdot_PIa_K1p_exact.vertex[0].avertex().frequencies.f_K3.ws[k];
+            K1p_PIa_K1rdot_exact.vertex[0].avertex().K3.K3_get_freqs_w(w, v, vp, i, j, k);
+            K1p_PIa_K1rdot_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
+            state_datatype val_K3 = 1. / (2 * M_PI) *
+                                    integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                                                               {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
+                                                                                std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta);
+            K1p_PIa_K1rdot_exact.vertex[0].avertex().K3.setvert(val_K3, 0, i, j, k, 0);
+            K1p_PIa_K1rdot_exact.vertex[0].pvertex().K3.setvert(val_K3, 0, i, j, k, 0);
+            K1p_PIa_K1rdot_exact.vertex[0].tvertex().K3.setvert(val_K3, 0, i, j, k, 0);
+            //        }
+            //    }
+        }
+#endif
+        write_hdf(data_dir + "K1p_PIa_K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+                  K1p_PIa_K1rdot_exact);
+
+        State<state_datatype> K1p_PIa_K1rdot_diff =
+                K1p_PIa_K1rdot - K1p_PIa_K1rdot_exact;        // intermediate result: contains K2 and K3
+        write_hdf(data_dir + "K1p_PIa_K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+                  K1p_PIa_K1rdot_diff);
 
 
         State<state_datatype> dGammaC_exact(Lambda);        // final state: contains K1, K2 and K3
@@ -2395,12 +2528,16 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //}
         }
 #endif
-        write_hdf(data_dir + "dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+        write_hdf(data_dir + "dGammaC_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   dGammaC_exact);
 
-        State<state_datatype> dGammaC_diff = dGammaC_l - dGammaC_exact;        // final result: contains K1, K2 and K3
+        State<state_datatype> dGammaC_l_diff = dGammaC_l - dGammaC_exact;        // final result: contains K1, K2 and K3
         write_hdf(data_dir + "dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
-                  dGammaC_diff);
+                  dGammaC_l_diff);
+
+        State<state_datatype> dGammaC_r_diff = dGammaC_r - dGammaC_exact;        // final result: contains K1, K2 and K3
+        write_hdf(data_dir + "dGammaC_r_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+                  dGammaC_r_diff);
     }
 }
 
