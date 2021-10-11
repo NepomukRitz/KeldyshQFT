@@ -157,7 +157,7 @@ namespace {
 
     auto cubicFunction1D(double x) -> state_datatype {return 1. + x*x*x;}
     auto cubicFunction2D(double x, double y) -> state_datatype {return 1. + y + y*y*x + x*y*y + x*x*x;}
-    auto cubicFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + z + x*y +y*y*z + z*z*z + x*x*x + y*y*y;}
+    auto cubicFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 0.5*z + x*y + 2.*y*y*z + 3.*z*z*z + x*x*x + y*y*y;}
 }
 
 TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]" ) {
@@ -348,7 +348,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
 
         rvert<state_datatype> avertex('a', Lambda_ini);
         int iK;
-        if (KELDYSH) iK = 1;
+        if (KELDYSH) iK = 4;
         else iK = 0;
         int i_in = 0;
         state_datatype value = 0.;
@@ -495,7 +495,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
 
         rvert<state_datatype> avertex('a', Lambda_ini);
         int iK;
-        if (KELDYSH) iK = 1;
+        if (KELDYSH) iK = 5;
         else iK = 0;
         int i_in = 0;
         state_datatype value = 0.;
@@ -519,8 +519,8 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         avertex.initInterpolator();
         IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
         double error;
-        int N = nBOS3 * 4;
-        int M = nFER3 * 4;
+        int N = nBOS3 * 5;
+        int M = nFER3 * 5;
         vec<state_datatype> values(N * M * M);
         vec<double> errors(N * M * M);
         double interb = (2.) / double(N - 1);
