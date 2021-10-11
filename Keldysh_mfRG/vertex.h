@@ -566,20 +566,18 @@ template <typename Q> auto irreducible<Q>::val(int iK, int i_in, int spin) const
         case 1:
             return -bare[iK*n_in + i_in];
         default:
-            std::cout << "Problems in irred.val" << std::endl;
+            print("Problems in irred.val. Abort."); assert(false);
     }
 }
 
 template <typename Q> auto irreducible<Q>::acc(int i) const -> Q {
-   if(i>=0 && i<bare.size()){
-    return bare[i];}
-   else{std::cout << "ERROR: Tried to access value outside of range in irreducible vertex" << std::endl;};
+   if(i>=0 && i<bare.size()) return bare[i];
+   else {print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
 }
 
 template <typename Q> void irreducible<Q>::direct_set(int i, Q value) {
-    if(i>=0 && i<bare.size()){
-     bare[i]=value;}
-    else{std::cout << "ERROR: Tried to access value outside of range in irreducible vertex" << std::endl;};
+    if(i>=0 && i<bare.size()) bare[i]=value;
+    else {print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
 }
 
 template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
@@ -631,7 +629,7 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
             break;
         default :
             res = 0.;
-            std::cout << "Something's going wrong with gammaRb"<< std::endl;
+            print("Something's going wrong with gammaRb. Abort."); assert(false);
     }
     return res;
 }
@@ -649,7 +647,7 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input, const fullve
             break;
         default :
             res = 0.;
-            std::cout << "Something's going wrong with gammaRb"<< std::endl;
+            print("Something's going wrong with gammaRb. Abort."); assert(false);
     }
     return res;
 }

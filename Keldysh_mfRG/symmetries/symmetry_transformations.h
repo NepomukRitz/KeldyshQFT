@@ -242,8 +242,7 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
         break;
     }
         default:
-            std::cout << "A Transformation in the symmetry table is not covered in Ti!"
-            ;
+            print("A Transformation in the symmetry table is not covered in Ti! Abort."); assert(false);
     }
 }
 

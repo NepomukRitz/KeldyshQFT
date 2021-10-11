@@ -82,7 +82,7 @@ auto main() -> int {
         std::cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << std::endl;
 
     else
-        std::cout << "Directory "  << dir << " created \n";
+        print("Directory "  + dir_str + " created \n");
 
     std::string filename = generate_filename();
 
@@ -99,14 +99,12 @@ auto main() -> int {
 
 
 
-    std::cout << "Hello world ";
+    print("Hello world ");
 #ifdef __linux__
-    std::cout << "on linux.";
+    print("on linux.\n");
 #elif __APPLE__
-    cout << "on apple.";
+    print("on apple.\n");
 #endif
-    std::cout << std::endl;
-
 
     if (MPI_FLAG) {
         MPI_Finalize();

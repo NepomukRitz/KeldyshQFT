@@ -326,7 +326,7 @@ int PrecalculateBubble<Q>::get_iK_bubble(const int iK_actual) const {
             case 14: iK_bubble = 7; break;
             case 15: iK_bubble = 8; break;
             default:
-                std::cout << "ERROR! Trivial Keldysh index not filtered out yet!!";
+                print("ERROR! Trivial Keldysh index not filtered out yet! Abort."); assert(false);
         }
     }
     return iK_bubble;
@@ -348,7 +348,7 @@ int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) const {
             case 7: iK_actual = 14; break;
             case 8: iK_actual = 15; break;
             default:
-                std::cout << "ERROR! Number of nine non-trivial Keldysh-indices exceeded!";
+                print("ERROR! Number of nine non-trivial Keldysh-indices exceeded! Abort."); assert(false);
         }
     }
     return iK_actual;
@@ -509,7 +509,8 @@ public:
             default:
                 v1 = 0.;
                 v2 = 0.;
-                std::cout << "Error in IntegrandBubble";
+                print("Error in IntegrandBubble! Abort.");
+                assert(false);
         }
         //Make reference to the Bubble object of the actual code, making this into a useful test of code correctnes and compliance
         return Pi.value(iK, v1, v2, 0)/(2.*M_PI*glb_i);
@@ -1045,7 +1046,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_bubble_function(const int diag_class){
-    if (diag_class < 1 || diag_class > 3){std::cout << "Incompatible diagrammatic class!\n"; return;}
+    if (diag_class < 1 || diag_class > 3){print("Incompatible diagrammatic class! Abort."); assert(false); return;}
 
     int n_mpi, n_omp;
     set_external_arguments_for_parallelization(n_mpi, n_omp, diag_class);
@@ -1377,7 +1378,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             trafo = TransformaK1t[i0][sign_w];
             break;
         default:
-            std::cout << "\n Sth went wrong in get_trafo_K1! \n \n";
+            print("Something went wrong in get_trafo_K1! Abort."); assert(false);
     }
     return trafo;
 }
@@ -1402,7 +1403,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             trafo = TransformaK2t[i0][sign_w * 2 + sign_v];
             break;
         default:
-            std::cout << "\n Sth went wrong in get_trafo_K2 \n \n";
+            print("Something went wrong in get_trafo_K2! Abort."); assert(false);
     }
     return trafo;
 }
@@ -1430,7 +1431,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             trafo = TransformaK3t[i0][sign_w * 4 + sign_f * 2 + sign_fp];
             break;
         default:
-            std::cout << "\n Sth went wrong in get_trafo_K3 \n \n";
+            print("Something went wrong in get_trafo_K3! Abort."); assert(false);
     }
     return trafo;
 }
