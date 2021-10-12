@@ -2,218 +2,340 @@
 #define FPP_MFRG_VERTEX_BUFFER_H
 
 #include <cassert>
-#include "interpolations/vertex_interpolations.h"
+//#include "interpolations/vertex_interpolations.h"
+#include "interpolations/InterpolatorSpline1D.h"
+#include "interpolations/InterpolatorSpline2D.h"
+#include "interpolations/InterpolatorSpline3D.h"
 #include "interpolations/InterpolatorLinOrSloppy.h"
 #include "symmetries/symmetry_table.h"
 #include "symmetries/symmetry_transformations.h"
 
-//template <typename Q, K_class k>
-//class vertexBuffer : Interpolate<k, Q, INTERPOLATION> {};
 
 
-template <K_class k, typename Q, interpolMethod inter=INTERPOLATION>
-class vertexBuffer : public Interpolate<k, Q, inter> {
-    char channel;
-    Components components;              // lists providing information on how all Keldysh components are related to the
-                                        // independent ones
-    Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
-                                        // components to relate them to the independent ones
+template<K_class k, typename Q, interpolMethod inter>
+class vertexBuffer {
+    explicit vertexBuffer(double Lambda) {
+        assert(false);
+    }
+};
+
+template<typename Q>
+class vertexBuffer<k1,Q, cubic>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
+
 public:
-    vertexBuffer(const char channel_in, const double Lambda_in) : Interpolate<k,Q,inter>(Lambda_in),
-                                                              channel(channel_in),
-                                                              components (Components(channel_in)),
-                                                              transformations (Transformations(channel_in)) {};
-
-    auto symmetry_reduce(const VertexInput &input) const -> IndicesSymmetryTransformations {
-
-        IndicesSymmetryTransformations indices (input, channel);  // write input indices into transformable data structure
-
-        Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
-        indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
-
-        return indices;
-    }
-
-    /**
-     * Return the value of the vertex Ki in channel r.
-     * @param input          : Combination of input arguments.
-     * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
-     *                         symmetry transformations that map between channels a <--> t.
-     */
-    auto valsmooth(VertexInput input, const vertexBuffer<k,Q>& rvert_crossing) const -> Q {
-
-        IndicesSymmetryTransformations indices = symmetry_reduce(input);
-        if (k == k2) assert(not indices.asymmetry_transform);
-
-        if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
-
-        Q value{};
-
-        if (indices.channel != channel)
-            // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
-            // r vertex in the channel related by crossing symmetry
-            value = rvert_crossing.interpolate(indices);
-        else
-            // otherwise return the interpolated value of the calling r vertex
-            value = Interpolate<k,Q,inter>::interpolate(indices);
-
-        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
-
-        assert(isfinite(value));
-        return value;
-
-    }
-    /** Overload for accessing non-symmetric vertices, with
-     * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
-     *                       asymmetry_transform=true */
-    auto valsmooth(VertexInput input, const vertexBuffer<k,Q>& rvert_switchedchannel,
-                   const vertexBuffer<k,Q>& vertex_half2_samechannel, const vertexBuffer<k,Q>& vertex_half2_switchedchannel) const -> Q {
+    explicit vertexBuffer<k1, Q, cubic>(double Lambda) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda) {};
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.iK, indices.w, indices.i_in);
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
+    };
+};
 
 
-        IndicesSymmetryTransformations indices = symmetry_reduce(input);
 
-        if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
+template<typename Q>
+class vertexBuffer<k2,Q, cubic>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
+public:
+    explicit vertexBuffer<k2, Q, cubic>(double Lambda) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda) {};
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
-        Q value;
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K2.b.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * SplineK2<vertexDataContainer<k2,Q>, Q>::interpolK2 (indices.iK, indices.w, indices.v1, indices.i_in);
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
+    };
+};
 
-        // first check if the applied transformations switch between half 1 and half 2 of the vertex
-        if (indices.asymmetry_transform) {
-            // if yes, return the interpolated value of half 2 in the appropriate channel
-            if (channel == indices.channel) {
-                // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
-                value = vertex_half2_samechannel.interpolate(indices);
-            }
-            else {
-                // if they do switch between channels a,t, return t vertex of half 2
-                value = vertex_half2_switchedchannel.interpolate(indices);
-            }
 
-        }
-        else {
-            // if no, return the interpolated value of half 1 in the appropriate channel
-            if (indices.channel != channel)
-                // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
-                // r vertex in the channel related by crossing symmetry
-                value = rvert_switchedchannel.interpolate(indices);
-            else
-                // otherwise return the interpolated value of the calling r vertex
-                value = Interpolate<k,Q,inter>::interpolate(indices);
-        }
+template<typename Q>
+class vertexBuffer<k3,Q, cubic>: public SplineK3<vertexDataContainer<k3,Q>, Q> {
+public:
+    explicit vertexBuffer<k3, Q, cubic>(double Lambda) : SplineK3<vertexDataContainer<k3,Q>, Q>(Lambda) {};
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
-        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * SplineK3<vertexDataContainer<k3,Q>, Q>::interpolK3 (indices.iK, indices.w, indices.v1, indices.v2, indices.i_in);
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
+    };
+};
 
-        assert(isfinite(value));
-        return value;
-    }
 
-    auto operator+= (const vertexBuffer<k,Q,inter>& rhs) -> vertexBuffer {Interpolate<k,Q,inter>::data += rhs.data; return *this;}
-    auto operator-= (const vertexBuffer<k,Q,inter>& rhs) -> vertexBuffer {Interpolate<k,Q,inter>::data -= rhs.data; return *this;}
-    friend vertexBuffer<k,Q,inter>& operator+ (vertexBuffer<k,Q,inter>& lhs, const vertexBuffer<k,Q,inter>& rhs) {
-        lhs += rhs;
-        return lhs;
-    }
-    friend vertexBuffer<k,Q,inter>& operator- (vertexBuffer<k,Q,inter>& lhs, const vertexBuffer<k,Q,inter>& rhs) {
-        lhs -= rhs;
-        return lhs;
+/// Interpolator class
+
+
+/** Template specialization for K1 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k1, Q, linear> : public vertexDataContainer<k1, Q> {
+public:
+    explicit vertexBuffer<k1, Q, linear>(double Lambda) : vertexDataContainer<k1, Q>(Lambda) {};
+    bool initialized = false;
+    void initInterpolator() {initialized = true;};
+
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * interpolate_lin1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
+                                                            [&](int i) -> Q {return vertexDataContainer<k1, Q>::val(indices.iK, i, indices.i_in);});
+        // Lambda function (aka anonymous function) in last argument
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
+    };
+};
+
+/** Template specialization for K2 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k2, Q, linear> : public vertexDataContainer<k2, Q> {
+public:
+    explicit vertexBuffer<k2, Q, linear>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
+    // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
+        //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
+        //{
+        Q result = indices.prefactor * interpolate_lin2D<Q>(indices.w, indices.v1,
+                                                            vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
+                                                            vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
+                                                            [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
+        return result;
+        //}
+        //else {
+        //    return 0.;      // asymptotic value
+        //}
     }
 };
 
 
-template <typename Q>
-class vertexBuffer<k2b,Q> {
-    char channel;
-    Components components;              // lists providing information on how all Keldysh components are related to the
-    // independent ones
-    Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
-    // components to relate them to the independent ones
+/** Template specialization for K3 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k3, Q, linear> : public vertexDataContainer<k3, Q> {
 public:
-    vertexBuffer<k2b,Q>(const char channel_in)
-            : channel(channel_in), components (Components(channel_in)), transformations (Transformations(channel_in)) {};
+    bool initialized = false;
 
-    auto symmetry_reduce(const VertexInput &input) const -> IndicesSymmetryTransformations {
+    void initInterpolator() {initialized = true;};
+    explicit vertexBuffer<k3, Q, linear>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
 
-        IndicesSymmetryTransformations indices (input, channel);  // write input indices into transformable data structure
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
-        Ti(indices, transformations.K[k2b][input.spin][input.iK]);  // apply necessary symmetry transformations
-        indices.iK = components.K[k2b][input.spin][input.iK];  // check which symmetry-transformed component should be read
-
-        return indices;
-    }
-
-    /**
-     * Return the value of the vertex Ki in channel r.
-     * @param input          : Combination of input arguments.
-     * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
-     *                         symmetry transformations that map between channels a <--> t.
-     */
-    auto valsmooth(VertexInput input, const vertexBuffer<k2,Q>& thisK2, const vertexBuffer<k2,Q>& rvert_crossing) const -> Q {
-
-        IndicesSymmetryTransformations indices = symmetry_reduce(input);
-        assert(indices.asymmetry_transform or indices.iK < 0);
-        if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
-
-        Q value{};
-
-        if (indices.channel != channel)
-            // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
-            // r vertex in the channel related by crossing symmetry
-            value = rvert_crossing.interpolate(indices);
-        else
-            // otherwise return the interpolated value of the calling r vertex
-            value = thisK2.interpolate(indices);
-
-        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
-
-        assert(isfinite(value));
-        return value;
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol
+        //    && std::abs(indices.v1) < vertex.frequencies_K3.f.w_upper + inter_tol
+        //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * interpolate_lin3D<Q>(indices.w, indices.v1, indices.v2,
+                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
+                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
+                                                            [&](int i, int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, j, k, indices.i_in);});
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
 
     }
-    /** Overload for accessing non-symmetric vertices, with
-     * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
-     *                       asymmetry_transform=true */
-    auto valsmooth(VertexInput input, const vertexBuffer<k2,Q>& thisK2, const vertexBuffer<k2,Q>& rvert_switchedchannel,
-                   const vertexBuffer<k2,Q>& vertex_half2_samechannel, const vertexBuffer<k2,Q>& vertex_half2_switchedchannel) const -> Q {
-
-
-        IndicesSymmetryTransformations indices = symmetry_reduce(input);
-        assert(indices.asymmetry_transform or indices.iK < 0);
-
-        if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
-
-        Q value;
-
-        // first check if the applied transformations switch between half 1 and half 2 of the vertex
-        if (indices.asymmetry_transform) {
-            // if yes, return the interpolated value of half 2 in the appropriate channel
-            if (channel == indices.channel) {
-                // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
-                value = vertex_half2_samechannel.interpolate(indices);
-            }
-            else {
-                // if they do switch between channels a,t, return t vertex of half 2
-                value = vertex_half2_switchedchannel.interpolate(indices);
-            }
-
-        }
-        else {
-            // if no, return the interpolated value of half 1 in the appropriate channel
-            if (indices.channel != channel)
-                // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
-                // r vertex in the channel related by crossing symmetry
-                value = rvert_switchedchannel.interpolate(indices);
-            else
-                // otherwise return the interpolated value of the calling r vertex
-                value = thisK2.interpolate(indices);
-        }
-
-        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
-
-        assert(isfinite(value));
-        return value;
-    }
-
 };
 
+
+
+/** Template specialization for K1 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k1, Q, linear_on_aux> : public vertexDataContainer<k1, Q> {
+public:
+    explicit vertexBuffer<k1, Q, linear_on_aux>(double Lambda) : vertexDataContainer<k1, Q>(Lambda) {};
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
+
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * interpolate_lin_on_aux1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
+                                                                   [&](int i) -> Q {
+                                                                       return vertexDataContainer<k1, Q>::val(indices.iK, i,
+                                                                                                              indices.i_in);
+                                                                   });
+        // Lambda function (aka anonymous function) in last argument
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
+    };
+};
+
+/** Template specialization for K2 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k2, Q, linear_on_aux> : public vertexDataContainer<k2, Q> {
+public:
+    explicit vertexBuffer<k2, Q, linear_on_aux>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
+    // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
+        //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
+        //{
+        Q result = indices.prefactor * interpolate_lin_on_aux2D<Q>(indices.w, indices.v1,
+                                                                   vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
+                                                                   vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
+                                                                   [&](int i, int j) -> Q {
+                                                                       return vertexDataContainer<k2, Q>::val(indices.iK, i,
+                                                                                                              j,
+                                                                                                              indices.i_in);
+                                                                   });
+        return result;
+        //}
+        //else {
+        //    return 0.;      // asymptotic value
+        //}
+    }
+};
+
+
+/** Template specialization for K3 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k3, Q, linear_on_aux> : public vertexDataContainer<k3, Q> {
+public:
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
+    explicit vertexBuffer<k3, Q, linear_on_aux>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
+
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol
+        //    && std::abs(indices.v1) < vertex.frequencies_K3.f.w_upper + inter_tol
+        //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * interpolate_lin_on_aux3D<Q>(indices.w, indices.v1, indices.v2,
+                                                                   vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                   vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
+                                                                   vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
+                                                                   [&](int i, int j, int k) -> Q {
+                                                                       return vertexDataContainer<k3, Q>::val(indices.iK, i,
+                                                                                                              j, k,
+                                                                                                              indices.i_in);
+                                                                   });
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
+
+    }
+};
+
+
+
+
+/** Template specialization for K1 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k1, Q, sloppycubic> : public vertexDataContainer<k1, Q> {
+public:
+    explicit vertexBuffer<k1, Q, sloppycubic>(double Lambda) : vertexDataContainer<k1, Q>(Lambda) {};
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
+
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * interpolate_sloppycubic1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
+                                                                    [&](int i) -> Q {return vertexDataContainer<k1, Q>::val(indices.iK, i, indices.i_in);
+
+                                                                    });
+        // Lambda function (aka anonymous function) in last argument
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
+    };
+};
+
+/** Template specialization for K2 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k2, Q, sloppycubic> : public vertexDataContainer<k2, Q> {
+public:
+    explicit vertexBuffer<k2, Q, sloppycubic>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
+    // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
+        //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
+        //{
+        Q result = indices.prefactor * interpolate_sloppycubic2D<Q>(indices.w, indices.v1,
+                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
+                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
+                                                                    [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
+        return result;
+        //}
+        //else {
+        //    return 0.;      // asymptotic value
+        //}
+    }
+};
+
+
+/** Template specialization for K3 (linear or sloppy cubic interpolation) */
+template<typename Q>
+class vertexBuffer<k3, Q, sloppycubic> : public vertexDataContainer<k3, Q> {
+public:
+    bool initialized = false;
+
+    void initInterpolator() {initialized = true;};
+    explicit vertexBuffer<k3, Q, sloppycubic>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
+
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol
+        //    && std::abs(indices.v1) < vertex.frequencies_K3.f.w_upper + inter_tol
+        //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
+        //{
+        Q result = indices.prefactor * interpolate_sloppycubic3D<Q>(indices.w, indices.v1, indices.v2,
+                                                                    vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                    vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
+                                                                    vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
+                                                                    [&](int i, int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i,j, k,indices.i_in);});
+        return result;
+        //} else {
+        //    return 0.;  // asymptotic value
+        //}
+
+    }
+};
 
 
 

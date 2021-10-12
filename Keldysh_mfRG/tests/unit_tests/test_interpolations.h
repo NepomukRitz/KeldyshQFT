@@ -2,7 +2,7 @@
 #define KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
 
 #include "../../data_structures.h"
-#include "../../interpolations/vertex_interpolations.h"
+#include "../../vertex_buffer.h"
 #include "../../r_vertex.h"
 #include "../../symmetries/symmetry_transformations.h"
 

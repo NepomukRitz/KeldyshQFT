@@ -11,7 +11,7 @@
 #include "parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
 #include "symmetries/Keldysh_symmetries.h"       // transformations on Keldysh indices
 #include "symmetries/internal_symmetries.h"      // symmetry transformations for internal indices (momentum etc.), currently trivial
-#include "interpolations/vertex_interpolations.h"           // frequency interpolations for vertices
+//#include "interpolations/vertex_interpolations.h"           // frequency interpolations for vertices
 #include "symmetries/symmetry_transformations.h" // symmetry transformations of frequencies
 #include "symmetries/symmetry_table.h"           // table containing information when to apply which symmetry transformations
 #include "grids/momentum_grid.h"            // functionality for the internal structure of the Hubbard model
@@ -27,15 +27,17 @@ class rvert {
 
 
 public:
-    vertexBuffer<k1,Q> K1;
-    vertexBuffer<k2,Q> K2;
-    vertexBuffer<k2b,Q> K2b;
-    vertexBuffer<k3,Q> K3;
+    vertexBuffer<k1,Q,INTERPOLATION> K1;
+    vertexBuffer<k1,Q,INTERPOLATION> K1_a_proj = K1;
+    vertexBuffer<k1,Q,INTERPOLATION> K1_p_proj = K1;
+    vertexBuffer<k1,Q,INTERPOLATION> K1_t_proj = K1;
+    vertexBuffer<k2,Q,INTERPOLATION> K2;
+    vertexBuffer<k3,Q,INTERPOLATION> K3;
     char channel;                       // reducibility channel
-    //Components components;              // lists providing information on how all Keldysh components are related to the
-    //                                    // independent ones
-    //Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
-    //                                    // components to relate them to the independent ones
+    Components components;              // lists providing information on how all Keldysh components are related to the
+                                        // independent ones
+    Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
+                                        // components to relate them to the independent ones
     FrequencyTransformations freq_transformations;  // lists providing information on which transformations to apply on
                                                     // frequencies to relate them to the independent ones
     FrequencyComponents freq_components;  // lists providing information on which transformations to apply on
@@ -44,9 +46,9 @@ public:
     //VertexFrequencyGrid frequencies;    // frequency grid
 
     rvert(const char channel_in, double Lambda)
-    : channel(channel_in), //components (Components(channel_in)), transformations (Transformations(channel_in)),
+    : channel(channel_in), components (Components(channel_in)), transformations (Transformations(channel_in)),
       freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
-      K1(channel_in, Lambda), K2(channel_in, Lambda), K2b(channel_in), K3(channel_in, Lambda)
+      K1(Lambda), K2(Lambda), K3(Lambda)
       {K1.reserve(); K2.reserve(); K3.reserve(); };
     rvert() = delete;
 
@@ -65,23 +67,79 @@ public:
      *                       asymmetry_transform=true */
     auto value(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
+
+    template <K_class k>
+    const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing) const {
+
+        Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
+        indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
+
+        if (indices.channel != channel)
+            // if the symmetry transformation switches between channels (a <--> t), return the
+            // r vertex in the channel related by crossing symmetry
+            return rvert_crossing;
+        else
+            // otherwise return the calling r vertex
+            return (*this);
+    }
+
+    template <K_class k>
+    const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
+
+        Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
+        indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
+
+        if (indices.channel != channel)
+            // if the symmetry transformation switches between channels (a <--> t), return the
+            // r vertex in the channel related by crossing symmetry
+            return rvert_crossing;
+        else
+            // otherwise return the calling r vertex
+            return (*this);
+
+
+        // first check if the applied transformations switch between half 1 and half 2 of the vertex
+        if (indices.asymmetry_transform) {
+            // if yes, return the interpolated value of half 2 in the appropriate channel
+            if (channel == indices.channel) {
+                // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
+                return vertex_half2_samechannel;
+            }
+            else {
+                // if they do switch between channels a,t, return t vertex of half 2
+                return vertex_half2_switchedchannel;
+            }
+
+        }
+        else {
+            // if no, return the interpolated value of half 1 in the appropriate channel
+            if (indices.channel != channel)
+                // if the symmetry transformation switches between channels (a <--> t), return the
+                // r vertex in the channel related by crossing symmetry
+                return rvert_crossing;
+            else
+                // otherwise return the calling r vertex
+                return (*this);
+        }
+    }
+
     /**
      * Return the value of the vertex Ki in channel r.
      * @param input          : Combination of input arguments.
      * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
      *                         symmetry transformations that map between channels a <--> t.
      */
-     /*
+
     template <K_class k>
     auto valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q;
-    */
+
     /** Overload for accessing non-symmetric vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true */
-     /*
+
     template <K_class k>
-    auto valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q;
-    */
+    auto valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+
     /** Parts of the r vertex that connect to the same/different bare vertices on the left/right of an r bubble */
     auto left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q;
     auto left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
@@ -181,18 +239,133 @@ public:
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
+
+
+/**
+ * Return the value of the vertex Ki in channel r.
+ * @param input          : Combination of input arguments.
+ * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
+ *                         symmetry transformations that map between channels a <--> t.
+ */
+template <typename Q>
+template<K_class k>auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
+    IndicesSymmetryTransformations indices (input, channel);
+    const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing);
+
+    if constexpr (k == k2) assert(not indices.asymmetry_transform);
+    if constexpr (k == k2b) assert(indices.asymmetry_transform);
+
+    if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
+
+    Q value {}; //= readMe.interpolate(indices);
+
+    if constexpr (k==k1) {
+        if constexpr (HUBBARD_MODEL) {
+
+            switch (indices.channel_parametrization) {
+                case 'a':
+                    value = readMe.K1_a_proj.interpolate(indices);
+                    break;
+                case 'p':
+                    value = readMe.K1_p_proj.interpolate(indices);
+                    break;
+                case 't':
+                    value = readMe.K1_t_proj.interpolate(indices);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        else {
+            value = readMe.K1.interpolate(indices);
+        }
+
+    }
+    else  if (k==k3) {
+        value = readMe.K3.interpolate(indices);
+    }
+    else { // for both k2 and k2b we need to interpolate K2
+        value = readMe.K2.interpolate(indices);
+    }
+
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
+
+    assert(isfinite(value));
+    return value;
+
+}
+
+/**
+ * Return the value of the vertex Ki in channel r.
+ * @param input          : Combination of input arguments.
+ * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
+ *                         symmetry transformations that map between channels a <--> t.
+ * @param vertex_half2   : vertex related to the calling vertex by symmetry, needed for transformations with
+     *                       asymmetry_transform=true
+ */
+template <typename Q>
+template<K_class k>auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+    IndicesSymmetryTransformations indices (input, channel);
+    const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+
+    if constexpr (k == k2) assert(not indices.asymmetry_transform);
+    if constexpr (k == k2b) assert(indices.asymmetry_transform);
+
+    if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
+
+    Q value {}; //= readMe.interpolate(indices);
+
+    if constexpr (k==k1) {
+        if constexpr (HUBBARD_MODEL) {
+
+            switch (indices.channel_parametrization) {
+                case 'a':
+                    value = readMe.K1_a_proj.interpolate(indices);
+                    break;
+                case 'p':
+                    value = readMe.K1_p_proj.interpolate(indices);
+                    break;
+                case 't':
+                    value = readMe.K1_t_proj.interpolate(indices);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        else {
+            value = readMe.K1.interpolate(indices);
+        }
+
+    }
+    else  if (k==k3) {
+        value = readMe.K3.interpolate(indices);
+    }
+    else { // for both k2 and k2b we need to interpolate K2
+        value = readMe.K2.interpolate(indices);
+    }
+
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
+
+    assert(isfinite(value));
+    return value;
+
+}
+
+
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
     transfToR(input);
 
     Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) K1_val = K1.valsmooth(input, rvert_crossing.K1);
+    if (MAX_DIAG_CLASS >= 0) K1_val = valsmooth<k1>(input, rvert_crossing);
     if (MAX_DIAG_CLASS >= 2) {
-        K2_val = K2.valsmooth(input, rvert_crossing.K2);
-        K2b_val = K2b.valsmooth(input, this->K2, rvert_crossing.K2);
+        K2_val = valsmooth<k2>(input, rvert_crossing);
+        K2b_val = valsmooth<k2b>(input, rvert_crossing);
     }
-    if (MAX_DIAG_CLASS >= 3) K3_val = K3.valsmooth(input, rvert_crossing.K3);
+    if (MAX_DIAG_CLASS >= 3) K3_val = valsmooth<k3>(input, rvert_crossing);
 
     return K1_val + K2_val + K2b_val + K3_val;
 }
@@ -203,12 +376,12 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rv
 
     Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) K1_val = K1.valsmooth(input, rvert_crossing.K1, vertex_half2_samechannel.K1, vertex_half2_switchedchannel.K1);
+    if (MAX_DIAG_CLASS >= 0) K1_val = valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     if (MAX_DIAG_CLASS >= 2) {
-        K2_val = K2.valsmooth(input, rvert_crossing.K2, vertex_half2_samechannel.K2, vertex_half2_switchedchannel.K2);
-        K2b_val=K2b.valsmooth(input, this->K2, rvert_crossing.K2, vertex_half2_samechannel.K2, vertex_half2_switchedchannel.K2);
+        K2_val = valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        K2b_val= valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     }
-    if (MAX_DIAG_CLASS >= 3) K3_val = K3.valsmooth(input, rvert_crossing.K3, vertex_half2_samechannel.K3, vertex_half2_switchedchannel.K3);
+    if (MAX_DIAG_CLASS >= 3) K3_val = valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
     return K1_val + K2_val + K2b_val + K3_val;
 }
@@ -297,47 +470,47 @@ auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, cons
 }
 */
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return K1.valsmooth(input, rvert_crossing.K1);
-    else if (MAX_DIAG_CLASS > 1) return K1.valsmooth(input, rvert_crossing.K1) + K2b.valsmooth(input, this->K2, rvert_crossing.K2);
+    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return K1.valsmooth(input, rvert_crossing.K1, vertex_half2_samechannel.K1, vertex_half2_switchedchannel.K1);
-    else if (MAX_DIAG_CLASS > 1) return K1.valsmooth(input, rvert_crossing.K1, vertex_half2_samechannel.K1, vertex_half2_switchedchannel.K1) + K2b.valsmooth(input, this->K2, rvert_crossing.K2, vertex_half2_samechannel.K2, vertex_half2_switchedchannel.K2);
+    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return K1.valsmooth(input, rvert_crossing.K1);
-    else if (MAX_DIAG_CLASS > 1) return K1.valsmooth(input, rvert_crossing.K1) + K2.valsmooth(input, rvert_crossing.K2);
+    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::right_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return K1.valsmooth(input, rvert_crossing.K1, vertex_half2_samechannel.K1, vertex_half2_switchedchannel.K1);
-    else if (MAX_DIAG_CLASS > 1) return K1.valsmooth(input, rvert_crossing.K1, vertex_half2_samechannel.K1, vertex_half2_switchedchannel.K1) + K2.valsmooth(input, rvert_crossing.K2, vertex_half2_samechannel.K2, vertex_half2_switchedchannel.K2);
+    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
     if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return K2.valsmooth(input, rvert_crossing.K2);
-    else if (MAX_DIAG_CLASS == 3) return K2.valsmooth(input, rvert_crossing.K2) + K3.valsmooth(input, rvert_crossing.K3);
+    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return K2.valsmooth(input, rvert_crossing.K2, vertex_half2_samechannel.K2, vertex_half2_switchedchannel.K2);
-    else if (MAX_DIAG_CLASS == 3) return K2.valsmooth(input, rvert_crossing.K2, vertex_half2_samechannel.K2, vertex_half2_switchedchannel.K2) + K3.valsmooth(input, rvert_crossing.K3, vertex_half2_samechannel.K3, vertex_half2_switchedchannel.K3);
+    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
     if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return K2b.valsmooth(input, this->K2, rvert_crossing.K2);
-    else if (MAX_DIAG_CLASS == 3) return K2b.valsmooth(input, this->K2, rvert_crossing.K2) + K3.valsmooth(input, rvert_crossing.K3);
+    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return K2b.valsmooth(input, this->K2, rvert_crossing.K2, vertex_half2_samechannel.K2, vertex_half2_switchedchannel.K2);
-    else if (MAX_DIAG_CLASS == 3) return K2b.valsmooth(input, this->K2, rvert_crossing.K2, vertex_half2_samechannel.K2, vertex_half2_switchedchannel.K2) + K3.valsmooth(input, rvert_crossing.K3, vertex_half2_samechannel.K3, vertex_half2_switchedchannel.K3);
+    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
 
@@ -497,20 +670,20 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     if (MAX_DIAG_CLASS >= 1) {
 
-        VertexFrequencyGrid<k1> frequenciesK1_new = vertexInterpolator<Q>::K1_get_VertexFreqGrid();  // new frequency grid
+        VertexFrequencyGrid<k1> frequenciesK1_new = K1.K1_get_VertexFreqGrid();  // new frequency grid
         frequenciesK1_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k1>(frequenciesK1_new, *this);
 
     }
     if (MAX_DIAG_CLASS >= 2) {
 
-        VertexFrequencyGrid<k2> frequenciesK2_new = vertexInterpolator<Q>::K2_get_VertexFreqGrid();  // new frequency grid
+        VertexFrequencyGrid<k2> frequenciesK2_new = K2.K2_get_VertexFreqGrid();  // new frequency grid
         frequenciesK2_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k2>(frequenciesK2_new, *this);
 
     }
     if (MAX_DIAG_CLASS >= 3) {
-        VertexFrequencyGrid<k3> frequenciesK3_new = vertexInterpolator<Q>::K3_get_VertexFreqGrid();  // new frequency grid
+        VertexFrequencyGrid<k3> frequenciesK3_new = K3.K3_get_VertexFreqGrid();  // new frequency grid
         frequenciesK3_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k3>(frequenciesK3_new, *this);
 

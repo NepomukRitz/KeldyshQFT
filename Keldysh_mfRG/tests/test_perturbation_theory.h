@@ -595,14 +595,14 @@ void test_PT4(double Lambda, bool write_flag = false) {
                            };
 
     // K1 in PT2
-    state_datatype PT2_K1a_0 = PT2_K1a.vertex[0].avertex().K1.valsmooth(input_a, PT2_K1a.vertex[0].tvertex().K1);
-    state_datatype PT2_K1p_0 = PT2_K1p.vertex[0].pvertex().K1.valsmooth(input_p, PT2_K1p.vertex[0].pvertex().K1);
-    state_datatype PT2_K1t_0 = PT2_K1t.vertex[0].tvertex().K1.valsmooth(input_t, PT2_K1t.vertex[0].avertex().K1);
+    state_datatype PT2_K1a_0 = PT2_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT2_K1a.vertex[0].tvertex());
+    state_datatype PT2_K1p_0 = PT2_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT2_K1p.vertex[0].pvertex());
+    state_datatype PT2_K1t_0 = PT2_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT2_K1t.vertex[0].avertex());
 
     // K1 in PT3
-    state_datatype PT3_K1a_0 = PT3_K1a.vertex[0].avertex().K1.valsmooth(input_a, PT3_K1a.vertex[0].tvertex().K1);
-    state_datatype PT3_K1p_0 = PT3_K1p.vertex[0].pvertex().K1.valsmooth(input_p, PT3_K1p.vertex[0].pvertex().K1);
-    state_datatype PT3_K1t_0 = PT3_K1t.vertex[0].tvertex().K1.valsmooth(input_t, PT3_K1t.vertex[0].avertex().K1);
+    state_datatype PT3_K1a_0 = PT3_K1a.vertex[0].avertex().valsmooth<k1>(input_a, PT3_K1a.vertex[0].tvertex());
+    state_datatype PT3_K1p_0 = PT3_K1p.vertex[0].pvertex().valsmooth<k1>(input_p, PT3_K1p.vertex[0].pvertex());
+    state_datatype PT3_K1t_0 = PT3_K1t.vertex[0].tvertex().valsmooth<k1>(input_t, PT3_K1t.vertex[0].avertex());
 #ifdef KELDYSH_FORMALISM
     state_datatype PT2_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 1);
     state_datatype PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
@@ -619,12 +619,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     std::cout << "Computed value: " << PT2_K1a_0 << "\n";
 
     // K1 in PT4
-    state_datatype PT4_K1a_0_ladder =      PT4_31_a_a1.vertex[0].avertex().K1.valsmooth(input_a, PT4_31_a_a1.vertex[0].tvertex().K1);
-    state_datatype PT4_K1p_0_ladder =      PT4_31_p_p1.vertex[0].pvertex().K1.valsmooth(input_p, PT4_31_p_p1.vertex[0].pvertex().K1);
-    state_datatype PT4_K1a_0_nonladder =   PT4_13_a_a2.vertex[0].avertex().K1.valsmooth(input_a, PT4_13_a_a2.vertex[0].tvertex().K1);
-    state_datatype PT4_K1p_0_nonladder =   PT4_13_p_p2.vertex[0].pvertex().K1.valsmooth(input_p, PT4_13_p_p2.vertex[0].pvertex().K1);
-    state_datatype PT4_K1t_0_nonladder_a = PT4_13_t_a2.vertex[0].tvertex().K1.valsmooth(input_t, PT4_13_t_a2.vertex[0].avertex().K1);
-    state_datatype PT4_K1t_0_nonladder_t = PT4_13_t_t2.vertex[0].tvertex().K1.valsmooth(input_t, PT4_13_t_t2.vertex[0].avertex().K1);
+    state_datatype PT4_K1a_0_ladder =      PT4_31_a_a1.vertex[0].avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex[0].tvertex());
+    state_datatype PT4_K1p_0_ladder =      PT4_31_p_p1.vertex[0].pvertex().valsmooth<k1>(input_p, PT4_31_p_p1.vertex[0].pvertex());
+    state_datatype PT4_K1a_0_nonladder =   PT4_13_a_a2.vertex[0].avertex().valsmooth<k1>(input_a, PT4_13_a_a2.vertex[0].tvertex());
+    state_datatype PT4_K1p_0_nonladder =   PT4_13_p_p2.vertex[0].pvertex().valsmooth<k1>(input_p, PT4_13_p_p2.vertex[0].pvertex());
+    state_datatype PT4_K1t_0_nonladder_a = PT4_13_t_a2.vertex[0].tvertex().valsmooth<k1>(input_t, PT4_13_t_a2.vertex[0].avertex());
+    state_datatype PT4_K1t_0_nonladder_t = PT4_13_t_t2.vertex[0].tvertex().valsmooth<k1>(input_t, PT4_13_t_t2.vertex[0].avertex());
 
     // K2 in PT3
     vec<state_datatype> PT3_K2a_0 (3);
@@ -651,22 +651,22 @@ void test_PT4(double Lambda, bool write_flag = false) {
             input_p.iK = iK2s[iK2];
             input_t.iK = iK2s[iK2];
             // K2 in PT3
-            PT3_K2a_0[iK2] = PT3_K2a.vertex[0].avertex().K2.valsmooth(input_a, PT3_K2a.vertex[0].tvertex().K2);
-            PT3_K2p_0[iK2] = PT3_K2p.vertex[0].pvertex().K2.valsmooth(input_p, PT3_K2p.vertex[0].pvertex().K2);
-            PT3_K2t_0[iK2] = PT3_K2t.vertex[0].tvertex().K2.valsmooth(input_t, PT3_K2t.vertex[0].avertex().K2);
+            PT3_K2a_0[iK2] = PT3_K2a.vertex[0].avertex().valsmooth<k2>(input_a, PT3_K2a.vertex[0].tvertex());
+            PT3_K2p_0[iK2] = PT3_K2p.vertex[0].pvertex().valsmooth<k2>(input_p, PT3_K2p.vertex[0].pvertex());
+            PT3_K2t_0[iK2] = PT3_K2t.vertex[0].tvertex().valsmooth<k2>(input_t, PT3_K2t.vertex[0].avertex());
             // K2 in PT4
-            PT4_K2a_0_p1[iK2] = PT4_31_a_p1.vertex[0].avertex().K2.valsmooth(input_a, PT4_31_a_p1.vertex[0].tvertex().K2);
-            PT4_K2p_0_a1[iK2] = PT4_31_p_a1.vertex[0].pvertex().K2.valsmooth(input_p, PT4_31_p_a1.vertex[0].pvertex().K2);
-            PT4_K2a_0_t1[iK2] = PT4_31_a_t1.vertex[0].avertex().K2.valsmooth(input_a, PT4_31_a_t1.vertex[0].tvertex().K2);
-            PT4_K2p_0_t1[iK2] = PT4_31_p_t1.vertex[0].pvertex().K2.valsmooth(input_p, PT4_31_p_t1.vertex[0].pvertex().K2);
-            PT4_K2a_0_a2[iK2] = PT4_31_a_a2.vertex[0].avertex().K2.valsmooth(input_a, PT4_31_a_a2.vertex[0].tvertex().K2);
-            PT4_K2a_0_p2[iK2] = PT4_31_a_p2.vertex[0].avertex().K2.valsmooth(input_a, PT4_31_a_p2.vertex[0].tvertex().K2);
-            PT4_K2a_0_t2[iK2] = PT4_31_a_t2.vertex[0].avertex().K2.valsmooth(input_a, PT4_31_a_t2.vertex[0].tvertex().K2);
-            PT4_K2p_0_a2[iK2] = PT4_31_p_a2.vertex[0].pvertex().K2.valsmooth(input_p, PT4_31_p_a2.vertex[0].pvertex().K2);
-            PT4_K2p_0_p2[iK2] = PT4_31_p_p2.vertex[0].pvertex().K2.valsmooth(input_p, PT4_31_p_p2.vertex[0].pvertex().K2);
-            PT4_K2p_0_t2[iK2] = PT4_31_p_t2.vertex[0].pvertex().K2.valsmooth(input_p, PT4_31_p_t2.vertex[0].pvertex().K2);
-            PT4_K2t_0_a2[iK2] = PT4_31_t_a2.vertex[0].tvertex().K2.valsmooth(input_t, PT4_31_t_a2.vertex[0].avertex().K2);
-            PT4_K2t_0_t2[iK2] = PT4_31_t_t2.vertex[0].tvertex().K2.valsmooth(input_t, PT4_31_t_t2.vertex[0].avertex().K2);
+            PT4_K2a_0_p1[iK2] = PT4_31_a_p1.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_p1.vertex[0].tvertex());
+            PT4_K2p_0_a1[iK2] = PT4_31_p_a1.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_a1.vertex[0].pvertex());
+            PT4_K2a_0_t1[iK2] = PT4_31_a_t1.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_t1.vertex[0].tvertex());
+            PT4_K2p_0_t1[iK2] = PT4_31_p_t1.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t1.vertex[0].pvertex());
+            PT4_K2a_0_a2[iK2] = PT4_31_a_a2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_a2.vertex[0].tvertex());
+            PT4_K2a_0_p2[iK2] = PT4_31_a_p2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_p2.vertex[0].tvertex());
+            PT4_K2a_0_t2[iK2] = PT4_31_a_t2.vertex[0].avertex().valsmooth<k2>(input_a, PT4_31_a_t2.vertex[0].tvertex());
+            PT4_K2p_0_a2[iK2] = PT4_31_p_a2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_a2.vertex[0].pvertex());
+            PT4_K2p_0_p2[iK2] = PT4_31_p_p2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_p2.vertex[0].pvertex());
+            PT4_K2p_0_t2[iK2] = PT4_31_p_t2.vertex[0].pvertex().valsmooth<k2>(input_p, PT4_31_p_t2.vertex[0].pvertex());
+            PT4_K2t_0_a2[iK2] = PT4_31_t_a2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_a2.vertex[0].avertex());
+            PT4_K2t_0_t2[iK2] = PT4_31_t_t2.vertex[0].tvertex().valsmooth<k2>(input_t, PT4_31_t_t2.vertex[0].avertex());
         }
 
 #ifdef KELDYSH_FORMALISM
@@ -692,11 +692,11 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT4_K3t_0_pa;
 
     if (MAX_DIAG_CLASS == 3) {
-        PT4_K3a_0 =    PT4_22_a_pp.vertex[0].avertex().K3.valsmooth(input_a, PT4_22_a_pp.vertex[0].tvertex().K3);
-        PT4_K3p_0 =    PT4_22_p_aa.vertex[0].pvertex().K3.valsmooth(input_p, PT4_22_p_aa.vertex[0].pvertex().K3);
-        PT4_K3t_0_aa = PT4_22_t_aa.vertex[0].tvertex().K3.valsmooth(input_t, PT4_22_t_aa.vertex[0].avertex().K3);
-        PT4_K3t_0_ap = PT4_22_t_ap.vertex[0].tvertex().K3.valsmooth(input_t, PT4_22_t_ap.vertex[0].avertex().K3);
-        PT4_K3t_0_pa = PT4_22_t_pa.vertex[0].tvertex().K3.valsmooth(input_t, PT4_22_t_pa.vertex[0].avertex().K3);
+        PT4_K3a_0 =    PT4_22_a_pp.vertex[0].avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex[0].tvertex());
+        PT4_K3p_0 =    PT4_22_p_aa.vertex[0].pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex[0].pvertex());
+        PT4_K3t_0_aa = PT4_22_t_aa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex[0].avertex());
+        PT4_K3t_0_ap = PT4_22_t_ap.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex[0].avertex());
+        PT4_K3t_0_pa = PT4_22_t_pa.vertex[0].tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex[0].avertex());
     }
 
     // values to be printed to log

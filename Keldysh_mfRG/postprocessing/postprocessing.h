@@ -123,7 +123,7 @@ public:
         // K1_upup = K1_updown + K1_downup --> sum up the two spin components
         for (int ispin=0; ispin<2; ++ispin) {
             input.spin = ispin;
-            result += vertex[0].tvertex().K1.valsmooth(input, vertex[0].avertex().K1);;
+            result += vertex[0].tvertex().valsmooth<k1>(input, vertex[0].avertex());;
         }
 
         return result;
