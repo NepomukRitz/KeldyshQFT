@@ -77,10 +77,10 @@ public:
     template<K_class k>
     Q read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const {
 
+        if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
+
         if constexpr (k == k2) assert(not indices.asymmetry_transform);
         if constexpr (k == k2b) assert(indices.asymmetry_transform);
-
-        if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 
         Q value {}; //= readMe.interpolate(indices);
 
@@ -114,10 +114,10 @@ public:
             value = readMe.K2.interpolate(indices);
         }
 
-        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
+        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) value = myconj(value);  // apply complex conjugation if T_C has been used
 
         assert(isfinite(value));
-        return value;
+        return indices.prefactor * value;
     }
 
     /**

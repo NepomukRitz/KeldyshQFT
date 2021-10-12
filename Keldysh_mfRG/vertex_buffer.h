@@ -28,7 +28,7 @@ public:
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
         //{
-        Q result = indices.prefactor * SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.iK, indices.w, indices.i_in);
+        Q result =  SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.iK, indices.w, indices.i_in);
         return result;
         //} else {
         //    return 0.;  // asymptotic value
@@ -58,7 +58,7 @@ public:
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K2.b.w_upper + inter_tol)
         //{
-        Q result = indices.prefactor * SplineK2<vertexDataContainer<k2,Q>, Q>::interpolK2 (indices.iK, indices.w, indices.v1, indices.i_in);
+        Q result =  SplineK2<vertexDataContainer<k2,Q>, Q>::interpolK2 (indices.iK, indices.w, indices.v1, indices.i_in);
         return result;
         //} else {
         //    return 0.;  // asymptotic value
@@ -87,7 +87,7 @@ public:
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol)
         //{
-        Q result = indices.prefactor * SplineK3<vertexDataContainer<k3,Q>, Q>::interpolK3 (indices.iK, indices.w, indices.v1, indices.v2, indices.i_in);
+        Q result =  SplineK3<vertexDataContainer<k3,Q>, Q>::interpolK3 (indices.iK, indices.w, indices.v1, indices.v2, indices.i_in);
         return result;
         //} else {
         //    return 0.;  // asymptotic value
@@ -123,7 +123,7 @@ public:
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (std::abs(indices.w) < vertexDataContainer<k1, Q>::frequencies_K1.b.w_upper + inter_tol)
         {
-        Q result = indices.prefactor * interpolate_lin1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
+        Q result =  interpolate_lin1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
                                                             [&](int i) -> Q {return vertexDataContainer<k1, Q>::val(indices.iK, i, indices.i_in);});
         // Lambda function (aka anonymous function) in last argument
         return result;
@@ -132,8 +132,8 @@ public:
         }
     };
 
-    auto operator+= (const vertexBuffer<k1,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k1,Q>::data += rhs.data; return *this;}
-    auto operator-= (const vertexBuffer<k1,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k1,Q>::data -= rhs.data; return *this;}
+    auto operator+= (const vertexBuffer<k1,Q,linear>& rhs) -> vertexBuffer<k1,Q,linear> {vertexDataContainer<k1,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k1,Q,linear>& rhs) -> vertexBuffer<k1,Q,linear> {vertexDataContainer<k1,Q>::data -= rhs.data; return *this;}
     friend vertexBuffer<k1,Q,linear>& operator+ (vertexBuffer<k1,Q,linear>& lhs, const vertexBuffer<k1,Q,linear>& rhs) {
         lhs += rhs;
         return lhs;
@@ -159,7 +159,7 @@ public:
         if (    std::abs(indices.w ) < vertexDataContainer<k2, Q>::frequencies_K2.b.w_upper + inter_tol
                 && std::abs(indices.v1) < vertexDataContainer<k2, Q>::frequencies_K2.f.w_upper + inter_tol )
         {
-        Q result = indices.prefactor * interpolate_lin2D<Q>(indices.w, indices.v1,
+        Q result =  interpolate_lin2D<Q>(indices.w, indices.v1,
                                                             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                             [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
@@ -170,8 +170,8 @@ public:
         }
     }
 
-    auto operator+= (const vertexBuffer<k2,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k2,Q>::data += rhs.data; return *this;}
-    auto operator-= (const vertexBuffer<k2,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k2,Q>::data -= rhs.data; return *this;}
+    auto operator+= (const vertexBuffer<k2,Q,linear>& rhs) -> vertexBuffer<k2,Q,linear> {vertexDataContainer<k2,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k2,Q,linear>& rhs) -> vertexBuffer<k2,Q,linear> {vertexDataContainer<k2,Q>::data -= rhs.data; return *this;}
     friend vertexBuffer<k2,Q,linear>& operator+ (vertexBuffer<k2,Q,linear>& lhs, const vertexBuffer<k2,Q,linear>& rhs) {
         lhs += rhs;
         return lhs;
@@ -199,7 +199,7 @@ public:
             && std::abs(indices.v1) < vertexDataContainer<k2, Q>::frequencies_K3.f.w_upper + inter_tol
             && std::abs(indices.v2) < vertexDataContainer<k2, Q>::frequencies_K3.f.w_upper + inter_tol)
         {
-        Q result = indices.prefactor * interpolate_lin3D<Q>(indices.w, indices.v1, indices.v2,
+        Q result =  interpolate_lin3D<Q>(indices.w, indices.v1, indices.v2,
                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
@@ -211,8 +211,8 @@ public:
 
     }
 
-    auto operator+= (const vertexBuffer<k3,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k3,Q>::data += rhs.data; return *this;}
-    auto operator-= (const vertexBuffer<k3,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k3,Q>::data -= rhs.data; return *this;}
+    auto operator+= (const vertexBuffer<k3,Q,linear>& rhs) -> vertexBuffer<k3,Q,linear> {vertexDataContainer<k3,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k3,Q,linear>& rhs) -> vertexBuffer<k3,Q,linear> {vertexDataContainer<k3,Q>::data -= rhs.data; return *this;}
     friend vertexBuffer<k3,Q,linear>& operator+ (vertexBuffer<k3,Q,linear>& lhs, const vertexBuffer<k3,Q,linear>& rhs) {
         lhs += rhs;
         return lhs;
@@ -239,7 +239,7 @@ public:
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
         //{
-        Q result = indices.prefactor * interpolate_lin_on_aux1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
+        Q result =  interpolate_lin_on_aux1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
                                                                    [&](int i) -> Q {
                                                                        return vertexDataContainer<k1, Q>::val(indices.iK, i,
                                                                                                               indices.i_in);
@@ -251,8 +251,8 @@ public:
         //}
     };
 
-    auto operator+= (const vertexBuffer<k1,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k1,Q>::data += rhs.data; return *this;}
-    auto operator-= (const vertexBuffer<k1,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k1,Q>::data -= rhs.data; return *this;}
+    auto operator+= (const vertexBuffer<k1,Q,linear_on_aux>& rhs) -> vertexBuffer<k1,Q,linear_on_aux> {vertexDataContainer<k1,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k1,Q,linear_on_aux>& rhs) -> vertexBuffer<k1,Q,linear_on_aux> {vertexDataContainer<k1,Q>::data -= rhs.data; return *this;}
     friend vertexBuffer<k1,Q,linear_on_aux>& operator+ (vertexBuffer<k1,Q,linear_on_aux>& lhs, const vertexBuffer<k1,Q,linear_on_aux>& rhs) {
         lhs += rhs;
         return lhs;
@@ -278,7 +278,7 @@ public:
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
         //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
         //{
-        Q result = indices.prefactor * interpolate_lin_on_aux2D<Q>(indices.w, indices.v1,
+        Q result =  interpolate_lin_on_aux2D<Q>(indices.w, indices.v1,
                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                                    [&](int i, int j) -> Q {
@@ -293,8 +293,8 @@ public:
         //}
     }
 
-    auto operator+= (const vertexBuffer<k2,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k2,Q>::data += rhs.data; return *this;}
-    auto operator-= (const vertexBuffer<k2,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k2,Q>::data -= rhs.data; return *this;}
+    auto operator+= (const vertexBuffer<k2,Q,linear_on_aux>& rhs) -> vertexBuffer<k2,Q,linear_on_aux> {vertexDataContainer<k2,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k2,Q,linear_on_aux>& rhs) -> vertexBuffer<k2,Q,linear_on_aux> {vertexDataContainer<k2,Q>::data -= rhs.data; return *this;}
     friend vertexBuffer<k2,Q,linear_on_aux>& operator+ (vertexBuffer<k2,Q,linear_on_aux>& lhs, const vertexBuffer<k2,Q,linear_on_aux>& rhs) {
         lhs += rhs;
         return lhs;
@@ -322,7 +322,7 @@ public:
         //    && std::abs(indices.v1) < vertex.frequencies_K3.f.w_upper + inter_tol
         //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
         //{
-        Q result = indices.prefactor * interpolate_lin_on_aux3D<Q>(indices.w, indices.v1, indices.v2,
+        Q result =  interpolate_lin_on_aux3D<Q>(indices.w, indices.v1, indices.v2,
                                                                    vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
                                                                    vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
                                                                    vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
@@ -338,8 +338,8 @@ public:
 
     }
 
-    auto operator+= (const vertexBuffer<k3,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k3,Q>::data += rhs.data; return *this;}
-    auto operator-= (const vertexBuffer<k3,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k3,Q>::data -= rhs.data; return *this;}
+    auto operator+= (const vertexBuffer<k3,Q,linear_on_aux>& rhs) -> vertexBuffer<k3,Q,linear_on_aux> {vertexDataContainer<k3,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k3,Q,linear_on_aux>& rhs) -> vertexBuffer<k3,Q,linear_on_aux> {vertexDataContainer<k3,Q>::data -= rhs.data; return *this;}
     friend vertexBuffer<k3,Q,linear_on_aux>& operator+ (vertexBuffer<k3,Q,linear_on_aux>& lhs, const vertexBuffer<k3,Q,linear_on_aux>& rhs) {
         lhs += rhs;
         return lhs;
@@ -367,7 +367,7 @@ public:
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
         //{
-        Q result = indices.prefactor * interpolate_sloppycubic1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
+        Q result =  interpolate_sloppycubic1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
                                                                     [&](int i) -> Q {return vertexDataContainer<k1, Q>::val(indices.iK, i, indices.i_in);
 
                                                                     });
@@ -405,7 +405,7 @@ public:
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
         //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
         //{
-        Q result = indices.prefactor * interpolate_sloppycubic2D<Q>(indices.w, indices.v1,
+        Q result = interpolate_sloppycubic2D<Q>(indices.w, indices.v1,
                                                                     vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                                     vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                                     [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
@@ -445,7 +445,7 @@ public:
         //    && std::abs(indices.v1) < vertex.frequencies_K3.f.w_upper + inter_tol
         //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
         //{
-        Q result = indices.prefactor * interpolate_sloppycubic3D<Q>(indices.w, indices.v1, indices.v2,
+        Q result = interpolate_sloppycubic3D<Q>(indices.w, indices.v1, indices.v2,
                                                                     vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
                                                                     vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
                                                                     vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
