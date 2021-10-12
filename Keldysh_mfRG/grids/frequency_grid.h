@@ -48,7 +48,7 @@ inline void locate(const vec<double> xx, const size_t n, const double x, size_t 
     j = jl;
 }
 
-//#define PARAMETRIZED_GRID
+#define PARAMETRIZED_GRID
 
 double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
@@ -264,22 +264,23 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
 
     t = (t - t_lower) / dt;
     auto index = (int)t + 1;
-    if (INTERPOLATION==1 or INTERPOLATION==4) {
+    if (INTERPOLATION==linear) {
+        index = std::max(1, index);
+        index = std::min(N_w - 3, index);
+    }
+    else {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
         assert(ws[index] - w_in  <= 1e-5);
         if (ws[index+1] < w_in) index++;
         assert(w_in - ws[index+1] < 1e-5);
     }
-    else {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
-    }
     return index;
 
 #else
     size_t j;
-    locate(ws, N_w, w_in, j, 1, N_w-2); // we cannot interpolate with infinity
+    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 1, N_w-2);} // we cannot interpolate with infinity
+    else {locate(ts, N_w, t, j, 0, N_w-1); }
     return j;
 #endif
 }
@@ -294,22 +295,23 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
 
     double t_rescaled = (t - t_lower) / dt;
     auto index = (int) (t_rescaled + 1.);
-    if (INTERPOLATION==1 or INTERPOLATION==4) {
+    if (INTERPOLATION==linear) {
+        index = std::max(1, index);
+        index = std::min(N_w - 3, index);
+    }
+    else {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
         assert(ws[index] - w_in  <= 1e-5);
         if (ws[index+1] < w_in) index++;
         assert(w_in - ws[index+1] < 1e-5);
     }
-    else {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
-    }
     return index;
 
 #else
     size_t j;
-    locate(ts, N_w, t, j, 0, N_w-1);
+    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 1, N_w-2);} // we cannot interpolate with infinity
+    else {locate(ts, N_w, t, j, 0, N_w-1); }
     return j;
 #endif
 
