@@ -30,8 +30,7 @@
 template <typename Q>
 static auto interpolate_lin1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
 
-    double t;
-    int index = frequencies.fconv(t, x);
+    int index = frequencies.fconv(x);
 
     double x1 = frequencies.ws[index];
     double x2 = frequencies.ws[index + 1];
@@ -62,8 +61,7 @@ static auto interpolate_lin2D(const double x, const double y,
                                      const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
                                      const std::function<Q(int, int)> val) -> Q {
 
-    double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.fconv(x);
 
     double x1 = xfrequencies.ws[index];
     double x2 = xfrequencies.ws[index + 1];
@@ -97,8 +95,7 @@ static auto interpolate_lin3D(const double x, const double y, const double z,
                                      const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
                                      const std::function<Q(int, int, int)> val) -> Q {
 
-    double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.fconv(x);
 
     double x1 = xfrequencies.ws[index];
     double x2 = xfrequencies.ws[index + 1];
@@ -341,15 +338,15 @@ public:
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
-        //{
+        if (std::abs(indices.w) < vertexDataContainer<k1, Q>::K1_get_wupper_b() + inter_tol)
+        {
         Q result = indices.prefactor * interpolate_lin1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
             [&](int i) -> Q {return vertexDataContainer<k1, Q>::val(indices.iK, i, indices.i_in);});
         // Lambda function (aka anonymous function) in last argument
         return result;
-        //} else {
-        //    return 0.;  // asymptotic value
-        //}
+        } else {
+            return 0.;  // asymptotic value
+        }
     };
 };
 
@@ -365,18 +362,18 @@ public:
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
-        //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
-        //{
+        if (    std::abs(indices.w ) < vertexDataContainer<k2, Q>::K2_get_wupper_b() + inter_tol
+                && std::abs(indices.v1) < vertexDataContainer<k2, Q>::K2_get_wupper_f() + inter_tol )
+        {
         Q result = indices.prefactor * interpolate_lin2D<Q>(indices.w, indices.v1,
             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
             [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
         return result;
-        //}
-        //else {
-        //    return 0.;      // asymptotic value
-        //}
+        }
+        else {
+            return 0.;      // asymptotic value
+        }
     }
 };
 
@@ -393,19 +390,19 @@ public:
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol
-        //    && std::abs(indices.v1) < vertex.frequencies_K3.f.w_upper + inter_tol
-        //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
-        //{
+        if (std::abs(indices.w) < vertexDataContainer<k3, Q>::K3_get_wupper_b() + inter_tol
+            && std::abs(indices.v1) < vertexDataContainer<k3, Q>::K3_get_wupper_f() + inter_tol
+            && std::abs(indices.v2) < vertexDataContainer<k3, Q>::K3_get_wupper_f() + inter_tol)
+        {
         Q result = indices.prefactor * interpolate_lin3D<Q>(indices.w, indices.v1, indices.v2,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
             [&](int i, int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, j, k, indices.i_in);});
         return result;
-        //} else {
-        //    return 0.;  // asymptotic value
-        //}
+        } else {
+            return 0.;  // asymptotic value
+        }
 
     }
 };
