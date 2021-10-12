@@ -34,6 +34,17 @@ public:
         //    return 0.;  // asymptotic value
         //}
     };
+
+    auto operator+= (const vertexBuffer<k1,Q,cubic>& rhs) -> vertexBuffer<k1,Q,cubic> {SplineK1<vertexDataContainer<k1,Q>,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k1,Q,cubic>& rhs) -> vertexBuffer<k1,Q,cubic> {SplineK1<vertexDataContainer<k1,Q>,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k1,Q,cubic>& operator+ (vertexBuffer<k1,Q,cubic>& lhs, const vertexBuffer<k1,Q,cubic>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k1,Q,cubic>& operator- (vertexBuffer<k1,Q,cubic>& lhs, const vertexBuffer<k1,Q,cubic>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 
@@ -53,6 +64,17 @@ public:
         //    return 0.;  // asymptotic value
         //}
     };
+
+    auto operator+= (const vertexBuffer<k2,Q,cubic>& rhs) -> vertexBuffer<k2,Q,cubic> {SplineK1<vertexDataContainer<k2,Q>,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k2,Q,cubic>& rhs) -> vertexBuffer<k2,Q,cubic> {SplineK1<vertexDataContainer<k2,Q>,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k2,Q,cubic>& operator+ (vertexBuffer<k2,Q,cubic>& lhs, const vertexBuffer<k2,Q,cubic>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k2,Q,cubic>& operator- (vertexBuffer<k2,Q,cubic>& lhs, const vertexBuffer<k2,Q,cubic>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 
@@ -71,6 +93,17 @@ public:
         //    return 0.;  // asymptotic value
         //}
     };
+
+    auto operator+= (const vertexBuffer<k3,Q,cubic>& rhs) -> vertexBuffer<k3,Q,cubic> {SplineK1<vertexDataContainer<k3,Q>,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k3,Q,cubic>& rhs) -> vertexBuffer<k3,Q,cubic> {SplineK1<vertexDataContainer<k3,Q>,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k3,Q,cubic>& operator+ (vertexBuffer<k3,Q,cubic>& lhs, const vertexBuffer<k3,Q,cubic>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k3,Q,cubic>& operator- (vertexBuffer<k3,Q,cubic>& lhs, const vertexBuffer<k3,Q,cubic>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 
@@ -98,6 +131,17 @@ public:
             return 0.;  // asymptotic value
         }
     };
+
+    auto operator+= (const vertexBuffer<k1,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k1,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k1,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k1,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k1,Q,linear>& operator+ (vertexBuffer<k1,Q,linear>& lhs, const vertexBuffer<k1,Q,linear>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k1,Q,linear>& operator- (vertexBuffer<k1,Q,linear>& lhs, const vertexBuffer<k1,Q,linear>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 /** Template specialization for K2 (linear or sloppy cubic interpolation) */
@@ -124,6 +168,17 @@ public:
         else {
             return 0.;      // asymptotic value
         }
+    }
+
+    auto operator+= (const vertexBuffer<k2,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k2,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k2,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k2,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k2,Q,linear>& operator+ (vertexBuffer<k2,Q,linear>& lhs, const vertexBuffer<k2,Q,linear>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k2,Q,linear>& operator- (vertexBuffer<k2,Q,linear>& lhs, const vertexBuffer<k2,Q,linear>& rhs) {
+        lhs -= rhs;
+        return lhs;
     }
 };
 
@@ -155,6 +210,17 @@ public:
         }
 
     }
+
+    auto operator+= (const vertexBuffer<k3,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k3,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k3,Q,linear>& rhs) -> vertexBuffer {vertexDataContainer<k3,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k3,Q,linear>& operator+ (vertexBuffer<k3,Q,linear>& lhs, const vertexBuffer<k3,Q,linear>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k3,Q,linear>& operator- (vertexBuffer<k3,Q,linear>& lhs, const vertexBuffer<k3,Q,linear>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 
@@ -184,6 +250,17 @@ public:
         //    return 0.;  // asymptotic value
         //}
     };
+
+    auto operator+= (const vertexBuffer<k1,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k1,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k1,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k1,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k1,Q,linear_on_aux>& operator+ (vertexBuffer<k1,Q,linear_on_aux>& lhs, const vertexBuffer<k1,Q,linear_on_aux>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k1,Q,linear_on_aux>& operator- (vertexBuffer<k1,Q,linear_on_aux>& lhs, const vertexBuffer<k1,Q,linear_on_aux>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 /** Template specialization for K2 (linear or sloppy cubic interpolation) */
@@ -214,6 +291,17 @@ public:
         //else {
         //    return 0.;      // asymptotic value
         //}
+    }
+
+    auto operator+= (const vertexBuffer<k2,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k2,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k2,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k2,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k2,Q,linear_on_aux>& operator+ (vertexBuffer<k2,Q,linear_on_aux>& lhs, const vertexBuffer<k2,Q,linear_on_aux>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k2,Q,linear_on_aux>& operator- (vertexBuffer<k2,Q,linear_on_aux>& lhs, const vertexBuffer<k2,Q,linear_on_aux>& rhs) {
+        lhs -= rhs;
+        return lhs;
     }
 };
 
@@ -249,6 +337,17 @@ public:
         //}
 
     }
+
+    auto operator+= (const vertexBuffer<k3,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k3,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k3,Q,linear_on_aux>& rhs) -> vertexBuffer {vertexDataContainer<k3,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k3,Q,linear_on_aux>& operator+ (vertexBuffer<k3,Q,linear_on_aux>& lhs, const vertexBuffer<k3,Q,linear_on_aux>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k3,Q,linear_on_aux>& operator- (vertexBuffer<k3,Q,linear_on_aux>& lhs, const vertexBuffer<k3,Q,linear_on_aux>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 
@@ -278,6 +377,17 @@ public:
         //    return 0.;  // asymptotic value
         //}
     };
+
+    auto operator+= (const vertexBuffer<k1,Q,sloppycubic>& rhs) -> vertexBuffer<k1,Q,sloppycubic> {vertexDataContainer<k1,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k1,Q,sloppycubic>& rhs) -> vertexBuffer<k1,Q,sloppycubic> {vertexDataContainer<k1,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k1,Q,sloppycubic>& operator+ (vertexBuffer<k1,Q,sloppycubic>& lhs, const vertexBuffer<k1,Q,sloppycubic>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k1,Q,sloppycubic>& operator- (vertexBuffer<k1,Q,sloppycubic>& lhs, const vertexBuffer<k1,Q,sloppycubic>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
 };
 
 /** Template specialization for K2 (linear or sloppy cubic interpolation) */
@@ -304,6 +414,17 @@ public:
         //else {
         //    return 0.;      // asymptotic value
         //}
+    }
+
+    auto operator+= (const vertexBuffer<k2,Q,sloppycubic>& rhs) -> vertexBuffer<k2,Q,sloppycubic> {vertexDataContainer<k2,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k2,Q,sloppycubic>& rhs) -> vertexBuffer<k2,Q,sloppycubic> {vertexDataContainer<k2,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k2,Q,sloppycubic>& operator+ (vertexBuffer<k2,Q,sloppycubic>& lhs, const vertexBuffer<k2,Q,sloppycubic>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k2,Q,sloppycubic>& operator- (vertexBuffer<k2,Q,sloppycubic>& lhs, const vertexBuffer<k2,Q,sloppycubic>& rhs) {
+        lhs -= rhs;
+        return lhs;
     }
 };
 
@@ -334,6 +455,17 @@ public:
         //    return 0.;  // asymptotic value
         //}
 
+    }
+
+    auto operator+= (const vertexBuffer<k3,Q,sloppycubic>& rhs) -> vertexBuffer<k3,Q,sloppycubic> {vertexDataContainer<k3,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k3,Q,sloppycubic>& rhs) -> vertexBuffer<k3,Q,sloppycubic> {vertexDataContainer<k3,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k3,Q,sloppycubic>& operator+ (vertexBuffer<k3,Q,sloppycubic>& lhs, const vertexBuffer<k3,Q,sloppycubic>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k3,Q,sloppycubic>& operator- (vertexBuffer<k3,Q,sloppycubic>& lhs, const vertexBuffer<k3,Q,sloppycubic>& rhs) {
+        lhs -= rhs;
+        return lhs;
     }
 };
 
