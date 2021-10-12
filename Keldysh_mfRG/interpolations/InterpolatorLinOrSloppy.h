@@ -30,8 +30,7 @@
 template <typename Q>
 static auto interpolate_lin1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
 
-    double t;
-    int index = frequencies.fconv(t, x);
+    int index = frequencies.fconv(x);
 
     double x1 = frequencies.ws[index];
     double x2 = frequencies.ws[index + 1];
@@ -62,8 +61,7 @@ static auto interpolate_lin2D(const double x, const double y,
                                      const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
                                      const std::function<Q(int, int)> val) -> Q {
 
-    double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.fconv(x);
 
     double x1 = xfrequencies.ws[index];
     double x2 = xfrequencies.ws[index + 1];
@@ -97,8 +95,7 @@ static auto interpolate_lin3D(const double x, const double y, const double z,
                                      const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
                                      const std::function<Q(int, int, int)> val) -> Q {
 
-    double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.fconv(x);
 
     double x1 = xfrequencies.ws[index];
     double x2 = xfrequencies.ws[index + 1];
