@@ -69,58 +69,55 @@ public:
 
 
     template <K_class k>
-    const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing) const {
-
-        Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
-        indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
-
-        if (indices.channel != channel)
-            // if the symmetry transformation switches between channels (a <--> t), return the
-            // r vertex in the channel related by crossing symmetry
-            return rvert_crossing;
-        else
-            // otherwise return the calling r vertex
-            return (*this);
-    }
+    const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing) const;
 
     template <K_class k>
-    const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
+    const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const;
 
-        Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
-        indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
+    template<K_class k>
+    Q read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const {
 
-        if (indices.channel != channel)
-            // if the symmetry transformation switches between channels (a <--> t), return the
-            // r vertex in the channel related by crossing symmetry
-            return rvert_crossing;
-        else
-            // otherwise return the calling r vertex
-            return (*this);
+        if constexpr (k == k2) assert(not indices.asymmetry_transform);
+        if constexpr (k == k2b) assert(indices.asymmetry_transform);
 
+        if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 
-        // first check if the applied transformations switch between half 1 and half 2 of the vertex
-        if (indices.asymmetry_transform) {
-            // if yes, return the interpolated value of half 2 in the appropriate channel
-            if (channel == indices.channel) {
-                // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
-                return vertex_half2_samechannel;
+        Q value {}; //= readMe.interpolate(indices);
+
+        if constexpr (k==k1) {
+            if constexpr (HUBBARD_MODEL) {
+
+                switch (indices.channel_parametrization) {
+                    case 'a':
+                        value = readMe.K1_a_proj.interpolate(indices);
+                        break;
+                    case 'p':
+                        value = readMe.K1_p_proj.interpolate(indices);
+                        break;
+                    case 't':
+                        value = readMe.K1_t_proj.interpolate(indices);
+                        break;
+                    default:
+                        break;
+                }
+
             }
             else {
-                // if they do switch between channels a,t, return t vertex of half 2
-                return vertex_half2_switchedchannel;
+                value = readMe.K1.interpolate(indices);
             }
 
         }
-        else {
-            // if no, return the interpolated value of half 1 in the appropriate channel
-            if (indices.channel != channel)
-                // if the symmetry transformation switches between channels (a <--> t), return the
-                // r vertex in the channel related by crossing symmetry
-                return rvert_crossing;
-            else
-                // otherwise return the calling r vertex
-                return (*this);
+        else  if constexpr (k==k3) {
+            value = readMe.K3.interpolate(indices);
         }
+        else { // for both k2 and k2b we need to interpolate K2
+            value = readMe.K2.interpolate(indices);
+        }
+
+        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
+
+        assert(isfinite(value));
+        return value;
     }
 
     /**
@@ -129,14 +126,12 @@ public:
      * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
      *                         symmetry transformations that map between channels a <--> t.
      */
-
     template <K_class k>
     auto valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q;
 
     /** Overload for accessing non-symmetric vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true */
-
     template <K_class k>
     auto valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
@@ -240,6 +235,54 @@ public:
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
 
+template <typename Q>
+template <K_class k>
+const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing) const {
+
+    Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
+    indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
+
+    if (indices.channel != channel)
+        // if the symmetry transformation switches between channels (a <--> t), return the
+        // r vertex in the channel related by crossing symmetry
+        return rvert_crossing;
+    else
+        // otherwise return the calling r vertex
+        return (*this);
+}
+
+template <typename Q>
+template <K_class k>
+const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
+
+    Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
+    indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
+
+    // first check if the applied transformations switch between half 1 and half 2 of the vertex
+    if (indices.asymmetry_transform) {
+        // if yes, return the interpolated value of half 2 in the appropriate channel
+        if (channel == indices.channel) {
+            // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
+            return vertex_half2_samechannel;
+        }
+        else {
+            // if they do switch between channels a,t, return t vertex of half 2
+            return vertex_half2_switchedchannel;
+        }
+
+    }
+    else {
+        // if no, return the interpolated value of half 1 in the appropriate channel
+        if (indices.channel != channel)
+            // if the symmetry transformation switches between channels (a <--> t), return the
+            // r vertex in the channel related by crossing symmetry
+            return rvert_crossing;
+        else
+            // otherwise return the calling r vertex
+            return (*this);
+    }
+}
+
 
 /**
  * Return the value of the vertex Ki in channel r.
@@ -252,48 +295,7 @@ template<K_class k>auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& r
     IndicesSymmetryTransformations indices (input, channel);
     const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing);
 
-    if constexpr (k == k2) assert(not indices.asymmetry_transform);
-    if constexpr (k == k2b) assert(indices.asymmetry_transform);
-
-    if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
-
-    Q value {}; //= readMe.interpolate(indices);
-
-    if constexpr (k==k1) {
-        if constexpr (HUBBARD_MODEL) {
-
-            switch (indices.channel_parametrization) {
-                case 'a':
-                    value = readMe.K1_a_proj.interpolate(indices);
-                    break;
-                case 'p':
-                    value = readMe.K1_p_proj.interpolate(indices);
-                    break;
-                case 't':
-                    value = readMe.K1_t_proj.interpolate(indices);
-                    break;
-                default:
-                    break;
-            }
-
-        }
-        else {
-            value = readMe.K1.interpolate(indices);
-        }
-
-    }
-    else  if (k==k3) {
-        value = readMe.K3.interpolate(indices);
-    }
-    else { // for both k2 and k2b we need to interpolate K2
-        value = readMe.K2.interpolate(indices);
-    }
-
-    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
-
-    assert(isfinite(value));
-    return value;
-
+    return read_symmetryreduced_rvert<k>(indices, readMe);
 }
 
 /**
@@ -309,47 +311,7 @@ template<K_class k>auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& r
     IndicesSymmetryTransformations indices (input, channel);
     const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
-    if constexpr (k == k2) assert(not indices.asymmetry_transform);
-    if constexpr (k == k2b) assert(indices.asymmetry_transform);
-
-    if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
-
-    Q value {}; //= readMe.interpolate(indices);
-
-    if constexpr (k==k1) {
-        if constexpr (HUBBARD_MODEL) {
-
-            switch (indices.channel_parametrization) {
-                case 'a':
-                    value = readMe.K1_a_proj.interpolate(indices);
-                    break;
-                case 'p':
-                    value = readMe.K1_p_proj.interpolate(indices);
-                    break;
-                case 't':
-                    value = readMe.K1_t_proj.interpolate(indices);
-                    break;
-                default:
-                    break;
-            }
-
-        }
-        else {
-            value = readMe.K1.interpolate(indices);
-        }
-
-    }
-    else  if (k==k3) {
-        value = readMe.K3.interpolate(indices);
-    }
-    else { // for both k2 and k2b we need to interpolate K2
-        value = readMe.K2.interpolate(indices);
-    }
-
-    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
-
-    assert(isfinite(value));
-    return value;
+    return read_symmetryreduced_rvert<k>(indices, readMe);
 
 }
 
