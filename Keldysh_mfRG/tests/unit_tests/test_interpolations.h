@@ -300,6 +300,7 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
         }
     }
 
+    double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
@@ -327,6 +328,8 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     }
 
 
+    print("K2 Interpolation performed - ");
+    get_time(t_start);
 
 
 
@@ -442,6 +445,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
         }
     }
 
+    double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
@@ -472,6 +476,9 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
             }
         }
     }
+
+    print("K3 Interpolation performed - ");
+    get_time(t_start);
 
 
 
