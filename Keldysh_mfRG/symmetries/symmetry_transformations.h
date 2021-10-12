@@ -18,6 +18,7 @@ struct IndicesSymmetryTransformations{
     bool asymmetry_transform = false;
     double w, v1, v2; int i_in;
     char channel;
+    char channel_parametrization = channel;
 
     IndicesSymmetryTransformations(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, char channel_in)
             : iK(iK_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), channel(channel_in)

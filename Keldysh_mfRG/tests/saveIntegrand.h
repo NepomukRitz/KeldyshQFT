@@ -6,6 +6,7 @@
 #include "../state.h"
 #include "../bubbles.h"
 #include "../loop.h"
+#include "../right_hand_sides.h"
 
 /**
  * Functions to plot Integrands in the bubble or the loop
@@ -74,8 +75,8 @@ namespace saveIntegrand {
 
     template <typename Q>
     void dGamma_1Loop(const std::string& filename_prefix, const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda,
-                    const K_class k_class, const char channel, const int i0, const int i2, const double w,
-                    const double v, const double vp, const int i_in) {
+                      const K_class k_class, const char channel, const int i0, const int i2, const double w,
+                      const double v, const double vp, const int i_in) {
 
 
 
@@ -88,6 +89,37 @@ namespace saveIntegrand {
 
         Propagator<Q> S (Lambda, Psi.selfenergy, 's');
         Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+        Propagator<Q> dG(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
+
+        const bool diff = true;
+        Bubble<Q> dPi(G, dG, diff);
+
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
+        saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, w, v, vp, i_in);
+
+    }
+
+    template <typename Q>
+    void dGamma_1Loop_fromFlow(const std::string& filename_prefix, const std::string& file_Psi, const int it_Lambda,
+                      const K_class k_class, const char channel, const int i0, const int i2, const double w,
+                      const double v, const double vp, const int i_in) {
+
+
+
+        // read Psi for vertex
+        State<Q> Psi = read_hdf(file_Psi, it_Lambda, 67); // read Psi
+        // read dPsi for differentiated selfenergy
+
+        State<Q>dPsi = Psi; // copy Psi
+
+
+        double Lambda = Psi.Lambda;
+
+        Propagator<Q> S (Lambda, Psi.selfenergy, 's');
+        Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+
+        selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S); // compute differentiated selfenergy
+
         Propagator<Q> dG(Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
 
         const bool diff = true;

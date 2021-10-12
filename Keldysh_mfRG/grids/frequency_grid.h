@@ -20,11 +20,35 @@
 #define KELDYSH_MFRG_FREQUENCY_GRID_H
 
 #include <cmath>        // for sqrt, log, exp
+#include "../utilities/util.h"
 #include "../parameters/master_parameters.h" // for frequency/Lambda limits and number of frequency/Lambda points
 #include <cassert>
 
 // TODO(low): implement functions used for GRID=3 also for GRID=1,2,4
 
+/// Given an array xx[0..n-1], and given a value x, returns a value j such that x is between xx[j] and xx[j+1].
+/// xx must be monotonically increasing.
+inline void locate(const vec<double> xx, const size_t n, const double x, size_t &j, const size_t jl_start, const size_t ju_start)
+{
+    size_t ju, jm, jl;
+
+    //Initialize lower and upper limits.
+    jl = jl_start;
+    ju = ju_start;
+    //int ascnd = (xx[n-1] >= xx[0]); // +1 for monotonically increasing xx; -1 for decreasing xx
+
+    //If we are not yet done, compute a midpoint; and replace either the lower limit or the upper limit
+    while (ju - jl > 1) {
+        jm = (ju + jl)/2;
+        if (x >= xx[jm])
+            jl = jm;
+        else
+            ju = jm;
+    }
+    j = jl;
+}
+
+#define PARAMETRIZED_GRID
 
 double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
@@ -235,12 +259,30 @@ void FrequencyGrid::rescale_grid(double Lambda) {
  *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
  */
 auto FrequencyGrid::fconv(double w_in) const -> int {
+#ifdef PARAMETRIZED_GRID
     double t = grid_transf(w_in);
+
     t = (t - t_lower) / dt;
-    auto index = (int)t + 1; // zero-th element is left of t_lower: ts[0]=-1
-    index = std::max(0, index);
-    index = std::min(N_w-2, index);
+    auto index = (int)t + 1;
+    if (INTERPOLATION==linear) {
+        index = std::max(1, index);
+        index = std::min(N_w - 3, index);
+    }
+    else {
+        index = std::max(0, index);
+        index = std::min(N_w - 2, index);
+        assert(ws[index] - w_in  <= 1e-5);
+        if (ws[index+1] < w_in) index++;
+        assert(w_in - ws[index+1] < 1e-5);
+    }
     return index;
+
+#else
+    size_t j;
+    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 1, N_w-2);} // we cannot interpolate with infinity
+    else {locate(ts, N_w, t, j, 0, N_w-1); }
+    return j;
+#endif
 }
 
 /** This function returns the index corresponding to the frequency w_in.
@@ -249,20 +291,30 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
  */
 auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
     t = grid_transf(w_in);
+#ifdef PARAMETRIZED_GRID
+
     double t_rescaled = (t - t_lower) / dt;
     auto index = (int) (t_rescaled + 1.);
-    if (INTERPOLATION==1 or INTERPOLATION==4) {
+    if (INTERPOLATION==linear) {
+        index = std::max(1, index);
+        index = std::min(N_w - 3, index);
+    }
+    else {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
         assert(ws[index] - w_in  <= 1e-5);
         if (ws[index+1] < w_in) index++;
         assert(w_in - ws[index+1] < 1e-5);
     }
-    else {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
-    }
     return index;
+
+#else
+    size_t j;
+    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 1, N_w-2);} // we cannot interpolate with infinity
+    else {locate(ts, N_w, t, j, 0, N_w-1); }
+    return j;
+#endif
+
 }
 
 /**
@@ -721,6 +773,7 @@ double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax,
     Wscale_candidate = wmax + 2*M_PI*glb_T;
     return std::max(Wscale, Wscale_candidate);
 }
+
 
 
 //void setUpBosGrid(rvec& freqs, int nfreqs) {

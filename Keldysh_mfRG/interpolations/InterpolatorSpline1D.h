@@ -51,6 +51,7 @@ class SplineK1 : public DataContainer
 public:
 
 
+    bool initialized = false;
 
 protected:
     //std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
@@ -161,6 +162,7 @@ public:
     // parameters c and d are determined by continuity and differentiability
     set_coeffs_from_b();
 
+    initialized = true;
 
     }
 
@@ -219,7 +221,7 @@ public:
     template <class DataContainer, typename Q>
     Q SplineK1<DataContainer,Q>::interpolK1 (int iK, double x, int i_in) const
     {
-
+    assert(initialized);
     double t;
     size_t idx=DataContainer::frequencies_K1.b.fconv(t, x);
 

@@ -17,6 +17,6 @@ FFTW="$FFTW_INC $FFTW_LIB"
 GSL="$GSL_INC $GSL_LIB"
 BOOST="$BOOST_INC -L$BOOST_LIBDIR$"
 
-mpiCC -std=c++17 $KELDYSH_MFRG/main.cpp -o $KELDYSH_MFRG/main.o -fopenmp $FFTW $HDF5 $GSL $BOOST
+mpiCC -std=c++17 $KELDYSH_MFRG/main.cpp -o $KELDYSH_MFRG/main.o -O3 -fopenmp $FFTW $HDF5 $GSL $BOOST
 
 

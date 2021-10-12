@@ -6,10 +6,12 @@
  */
 
 #include "utilities/template_utils.h"
+#include "symmetries/Keldysh_symmetries.h"
 #include "data_structures.h"          // real/complex vector classes
 #include "parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
 #include "parameters/frequency_parameters.h"
 #include "grids/frequency_grid.h"            // functionality for the internal structure of the Hubbard model
+
 
 const std::vector<size_t> dimsK1 = {nK_K1, nBOS, n_in};
 const std::vector<size_t> dimsK2 = {nK_K2, nBOS2, nFER2, n_in};
@@ -71,6 +73,7 @@ class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,3>{
     template<typename T> friend class CostFullvert_Wscale_b_K1;
     friend void check_Kramers_Kronig(std::string filename);
     friend void test_PT4(double Lambda, bool write_flag);
+    template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void susceptibilities_postprocessing(Vertex<T>& chi, Vertex<T>& chi_diff, const State<T>& state, double Lambda);
     template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
@@ -83,7 +86,7 @@ class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,3>{
 protected:
     //vec<Q> K1 = vec<Q> (nK_K1 * nw1 * n_in);  // data points of K1
 
-    size_t dims[3] = {nK_K1, nBOS, n_in};
+    //size_t dims[3] = {nK_K1, nBOS, n_in};
 
     VertexFrequencyGrid<k1> frequencies_K1;    // frequency grid
 public:
@@ -139,6 +142,7 @@ class vertexDataContainer<k2, Q>: public vertexContainerBase<Q,4> {
     template<typename T> friend class CostFullvert_Wscale_b_K2;
     template<typename T> friend class CostFullvert_Wscale_f_K2;
     friend void test_PT4(double Lambda, bool write_flag);
+    template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void check_FDTs(const State<T>& state, bool verbose);
     template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
@@ -158,7 +162,7 @@ private:
 
 protected:
     //vec<Q> K2 = empty_K2();
-    size_t dims[4] = {nK_K2, nBOS2, nFER2, n_in};
+    //size_t dims[4] = {nK_K2, nBOS2, nFER2, n_in};
     VertexFrequencyGrid<k2> frequencies_K2;    // frequency grid
 public:
     explicit vertexDataContainer(double Lambda) : frequencies_K2(Lambda), vertexContainerBase<Q,4>(dimsK2) { };
@@ -231,6 +235,7 @@ class vertexDataContainer<k3, Q>: public vertexContainerBase<Q,5> {
     template<typename T> friend class CostFullvert_Wscale_b_K3;
     template<typename T> friend class CostFullvert_Wscale_f_K3;
     friend void test_PT4(double Lambda, bool write_flag);
+    template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void check_FDTs(const State<T>& state, bool verbose);
     template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
@@ -252,7 +257,7 @@ protected:
 
 
 public:
-    size_t dims[5] = {nK_K3, nBOS3, nFER3, nFER3, n_in};
+    //size_t dims[5] = {nK_K3, nBOS3, nFER3, nFER3, n_in};
 
     explicit vertexDataContainer(double Lambda) : frequencies_K3(Lambda), vertexContainerBase<Q,5>(dimsK3) { };
 
@@ -537,7 +542,9 @@ auto vertexDataContainer<k2,Q>::K2_gridtransf_inv_f(double w) const -> double {
 }
 template<typename Q>
 auto vertexDataContainer<k2,Q>::K2_get_correction_MFfiniteT(int iw) const -> double {
-    return floor2bfreq(frequencies_K2.b.ws[iw] / 2) - ceil2bfreq(frequencies_K2.b.ws[iw] / 2);
+    if (not KELDYSH and not ZERO_T)
+        return floor2bfreq(frequencies_K2.b.ws[iw] / 2) - ceil2bfreq(frequencies_K2.b.ws[iw] / 2);
+    else return 0.;
 }
 template<typename Q>
 void vertexDataContainer<k2,Q>::K2_convert2internalFreqs(double &w, double &v) const {
@@ -695,7 +702,9 @@ auto vertexDataContainer<k3,Q>::K3_gridtransf_inv_f(double w) const -> double {
 }
 template<typename Q>
 auto vertexDataContainer<k3,Q>::K3_get_correction_MFfiniteT(int iw) const -> double {
+    if (not KELDYSH and not ZERO_T)
     return floor2bfreq(frequencies_K3.b.ws[iw] / 2) - ceil2bfreq(frequencies_K3.b.ws[iw] / 2);
+    else return 0.;
 }
 
 
