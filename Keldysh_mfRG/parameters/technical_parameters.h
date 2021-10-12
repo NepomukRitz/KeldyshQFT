@@ -1,6 +1,7 @@
 #ifndef FPP_MFRG_TECHNICAL_PARAMETERS_H
 #define FPP_MFRG_TECHNICAL_PARAMETERS_H
 
+//#include "../data_structures.h"
 
 /// Technical parameters ///
 
@@ -13,7 +14,8 @@ constexpr bool MPI_FLAG = true;
 //Tolerance for closeness to grid points when interpolating
 constexpr double inter_tol = 1e-8;
 
-#define INTERPOLATION 4
+enum interpolMethod {linear=0, linear_on_aux=1, sloppycubic=2, cubic=4};
+constexpr interpolMethod INTERPOLATION = cubic;
 
 //Tolerance for loop convergence
 constexpr double converged_tol = 1e-7;

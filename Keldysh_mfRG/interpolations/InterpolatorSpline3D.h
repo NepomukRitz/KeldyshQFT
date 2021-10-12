@@ -12,8 +12,8 @@
 
 /**
  * SplineK3 interpolation
- * @tparam DataContainer  contains vertex data K3 and frequency grids frequencies_K3.b and frequencies_K3.f
- *                          computes partial derivative of K3 in x, y, z direction (and combinations of x/y/z)
+ * @tparam DataContainer  contains vertex data and frequency grids frequencies_K3.b and frequencies_K3.f
+ *                          computes partial derivative of data in x, y, z direction (and combinations of x/y/z)
  * @tparam Q              double or comp
  */
 template <class DataContainer, typename Q>
@@ -120,10 +120,12 @@ protected:
     vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t ivp, size_t i_in, double dw, double dv, double dvp) const;  // calculate c_i, d_i from b_i
 public:
 
-    explicit SplineK3(double Lambda) :   DataContainer(Lambda), n(DataContainer::K3.size()) {}
+    bool initialized = false;
+
+    explicit SplineK3(double Lambda) :   DataContainer(Lambda), n(DataContainer::data.size()) {}
 
 
-    void initializeK3();
+    void initInterpolator();
 
     // evaluates the SplineK3 at point x
     Q interpolK3 (int iK, double w, double v, double vp, int i_in) const;
@@ -137,70 +139,70 @@ vec<Q> SplineK3<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
 {
 
     const vec<Q> fs = {
-            DataContainer::K3[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dimsK3)],
-            DataContainer::K3[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dimsK3)],
-            DataContainer::K3[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            DataContainer::K3[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            DataContainer::K3[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            DataContainer::K3[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            DataContainer::K3[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            DataContainer::K3[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dimsK3)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dimsK3)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dimsK3)],
+            DataContainer::data[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dvp* m_deriv_z[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dims)],
+            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dims)],
+            dvp* m_deriv_z[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dims)],
+            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dims)],
+            dvp* m_deriv_z[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dims)],
+            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dims)],
+            dvp* m_deriv_z[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dims)],
+            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dims)],
+            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dims)],
+            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dims)],
+            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dims)],
+            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dims)],
+            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dims)],
+            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dims)],
+            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dims)],
+            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dims)],
+            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dims)],
+            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dims)],
+            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw    , iv    , ivp    , i_in, DataContainer::dims)],
+            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1, iv    , ivp    , i_in, DataContainer::dims)],
+            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw    , iv + 1, ivp    , i_in, DataContainer::dims)],
+            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1, iv + 1, ivp    , i_in, DataContainer::dims)],
+            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw    , iv    , ivp + 1, i_in, DataContainer::dims)],
+            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1, iv    , ivp + 1, i_in, DataContainer::dims)],
+            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw    , iv + 1, ivp + 1, i_in, DataContainer::dims)],
+            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1, iv + 1, ivp + 1, i_in, DataContainer::dims)],
     };
 
     //vec<Q> coeffs = vec<Q> (64);
@@ -282,7 +284,7 @@ vec<Q> SplineK3<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
 }
 
 template <class DataContainer, typename Q>
-void SplineK3<DataContainer,Q>::initializeK3()
+void SplineK3<DataContainer,Q>::initInterpolator()
 {
     m_deriv_x =  DataContainer::get_deriv_K3_x();
     m_deriv_y =  DataContainer::get_deriv_K3_y();
@@ -291,12 +293,14 @@ void SplineK3<DataContainer,Q>::initializeK3()
     m_deriv_xz = DataContainer::get_deriv_K3_xz();
     m_deriv_yz = DataContainer::get_deriv_K3_yz();
     m_deriv_xyz = DataContainer::get_deriv_K3_xyz();
+    initialized = true;
 }
 
 
 template <class DataContainer, typename Q>
 Q SplineK3<DataContainer,Q>::interpolK3 (int iK, double w, double v, double vp, int i_in) const
 {
+    assert(initialized);
     double tw;
     const size_t iw=DataContainer::frequencies_K3.b.fconv(tw, w);
     double tv;

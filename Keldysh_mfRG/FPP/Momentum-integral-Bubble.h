@@ -440,7 +440,7 @@ void integral_bubble_w_vpp_list_MC (char i, char j, char channel, double wmax, d
         }
     }
 
-    std::string filename = "../Data/integrated_bubble_MC";
+    std::string filename = data_dir + "integrated_bubble_MC";
     filename += "_";
     filename += i;
     filename += j;
@@ -462,7 +462,7 @@ void integral_bubble_w_vpp_list_MC (char i, char j, char channel, double wmax, d
         times_usual[t] = run_iterations(t, 1);
         times_precalculated[t] = run_iterations(t, 0);
     }
-    std::string filename = "../Data/runtime_comparisons.h5";
+    std::string filename = data_dir + "runtime_comparisons.h5";
     write_h5_rvecs(filename,
                    {"runtimes_usual", "runtimes_precalculated"},
                    {times_usual, times_precalculated});
@@ -607,7 +607,7 @@ void integral_bubble_w_vpp_list_exact (char i, char j, char channel, double wmax
         }
     }
 
-    std::string filename = "../Data/exact_bare_bubble";
+    std::string filename = data_dir + "exact_bare_bubble";
     filename += "_";
     filename += i;
     filename += j;
@@ -833,7 +833,7 @@ void K1Lambda (double w, double q, double g, char channel, double Lambda_i, doub
 
     }
 
-    std::string filename = "../Data/K1Lambda";
+    std::string filename = data_dir + "K1Lambda";
     filename += "_";
     filename += channel;
     filename += "_Li=" + std::to_string(Lambda_i)
@@ -864,7 +864,7 @@ void K1Lambdag (double w, double q, double gmin, double gmax, char channel, doub
 
     }
 
-    std::string filename = "../Data/K1Lambdag";
+    std::string filename = data_dir + "K1Lambdag";
     filename += "_";
     filename += channel;
     filename += "_gmin=" + std::to_string(gmin)
@@ -1175,7 +1175,7 @@ void integral_bubble_w_vpp_list_2D (char i, char j, char channel, double wmax, d
         }
     }
 
-    std::string filename = "../Data/integrated_bubble_2D";
+    std::string filename = data_dir + "integrated_bubble_2D";
     filename += "_";
     filename += i;
     filename += j;
@@ -1377,7 +1377,7 @@ void K1Lambda_nint (double w, double q, double g, char channel, double Lambda_i,
 
         }
 
-    std::string filename = "../Data/K1Lambda";
+    std::string filename = data_dir + "K1Lambda";
     filename += "_";
     filename += channel;
     filename += "_Li=" + std::to_string(Lambda_i)
@@ -1473,7 +1473,7 @@ void integral_loop_Lambda_vp_list (char i, double Lambdamin, double Lambdamax, d
             }
         }
 
-    std::string filename = "../Data/integrated_loop_1D";
+    std::string filename = data_dir + "integrated_loop_1D";
     filename += "_";
     filename += i;
     filename += "_nL=" + std::to_string(nLambda)
@@ -2165,7 +2165,7 @@ void integral_bubble_w_vpp_list_integrator (char i, char j, char channel, double
         }
     }
 
-    std::string filename = "../Data/numInt_bare_bubble";
+    std::string filename = data_dir + "numInt_bare_bubble";
     filename += "_";
     filename += i;
     filename += j;

@@ -63,6 +63,11 @@ public:
     }
 
     auto operator()(double vp) const -> Q;
+
+    void save_integrand() const;
+    void save_integrand(const rvec& freqs) const;
+    void get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im)  const;
+
 };
 
 template<typename Q>
@@ -89,6 +94,73 @@ template<typename Q>
 auto IntegrandSE<Q>::operator()(const double vp) const -> Q {
     if (KELDYSH){return Keldysh_value(vp);}
     else{return Matsubara_value(vp);}
+}
+
+template<typename Q>
+void IntegrandSE<Q>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im) const {
+    int npoints = freqs.size();
+    for (int i=0; i<npoints; ++i) {
+
+        double vpp = freqs[i];
+
+
+        Q integrand_value;
+
+        integrand_value = (*this)(vpp);
+
+        if (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
+            integrand_re[i] = integrand_value;
+            integrand_im[i] = 0.;
+        }
+        else{
+            integrand_re[i] = myreal(integrand_value);
+            integrand_im[i] = myimag(integrand_value);
+        }
+    }
+
+
+}
+
+template<typename Q>
+void IntegrandSE<Q>::save_integrand() const {
+    /// Define standard frequency points on which to evaluate the integrand
+    int npoints = 1e5;
+
+    rvec freqs (npoints);
+
+    for (int i=0; i<npoints; ++i) {
+        double wl, wu;
+
+        wl = propagator.selfenergy.frequencies.w_lower * 2.;
+        wu = propagator.selfenergy.frequencies.w_upper * 2.;
+
+        double vpp = wl + i * (wu - wl) / (npoints - 1);
+        freqs[i] = vpp;
+    }
+
+    save_integrand(freqs);
+
+}
+
+
+
+template<typename Q>
+void IntegrandSE<Q>::save_integrand(const rvec& freqs) const {
+    int npoints = freqs.size();
+
+    rvec integrand_re (npoints);
+    rvec integrand_im (npoints);
+
+    get_integrand_vals(freqs, integrand_re, integrand_im);
+
+    std::string filename = data_dir + "integrand_SE";
+    filename += //"_i0=" + std::to_string(i0)       /// TODO: add this when Elias interchanged order of integration and Keldysh sum
+                //+ "_i2=" + std::to_string(i2)
+                + "_v=" + std::to_string(v);
+    filename += + ".h5";
+    write_h5_rvecs(filename,
+                   {"v", "integrand_re", "integrand_im"},
+                   {freqs, integrand_re, integrand_im});
 }
 
 template<typename Q>

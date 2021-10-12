@@ -9,9 +9,12 @@
 /**
  * Interpolation functions:
  *  --> linear interpolation
+ *  --> linear interpolation on auxiliary (linear) frequency grid
  *  --> sloppy cubic interpolation (constructs Lagrange polynomial with points at positions i-1, i, i+1 and i+2 for the
  *      interval between i and i+1)
  */
+
+
 
 
 
@@ -25,10 +28,20 @@
  * @return
  */
 template <typename Q>
-inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
-    if (INTERPOLATION == 1 or INTERPOLATION == 4) return interpolate_lin1D(x, frequencies, val);
-    else if (INTERPOLATION == 3) return interpolate_sloppycubic1D(x, frequencies, val);
-    else assert(false);
+static auto interpolate_lin1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
+
+    int index = frequencies.fconv(x);
+
+    double x1 = frequencies.ws[index];
+    double x2 = frequencies.ws[index + 1];
+    double xd = (x - x1) / (x2 - x1);
+
+    Q f1 = val(index);
+    Q f2 = val(index + 1);
+
+    Q result = ((1. - xd) * f1 + xd * f2);
+    assert(isfinite(result));
+    return result;
 }
 
 /**
@@ -44,12 +57,22 @@ inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, cons
  * @return
  */
 template <typename Q>
-inline auto interpolate2D(const double x, const double y,
-                          const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
-                          const std::function<Q(int, int)> val) -> Q {
-    if (INTERPOLATION == 1) return interpolate_lin2D(x, y , xfrequencies, yfrequencies, val);
-    else if (INTERPOLATION == 3) return interpolate_sloppycubic2D(x, y , xfrequencies, yfrequencies, val);
-    else assert(false);
+static auto interpolate_lin2D(const double x, const double y,
+                                     const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
+                                     const std::function<Q(int, int)> val) -> Q {
+
+    int index = xfrequencies.fconv(x);
+
+    double x1 = xfrequencies.ws[index];
+    double x2 = xfrequencies.ws[index + 1];
+    double xd = (x - x1) / (x2 - x1);
+
+    Q f1 = interpolate_lin1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
+    Q f2 = interpolate_lin1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index+1, i);});
+
+    Q result = ((1. - xd) * f1 + xd * f2);
+    assert(isfinite(result));
+    return result;
 }
 
 /**
@@ -68,15 +91,22 @@ inline auto interpolate2D(const double x, const double y,
  * @return
  */
 template <typename Q>
-inline auto interpolate3D(const double x, const double y, const double z,
-                          const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
-                          const std::function<Q(int, int, int)> val) -> Q {
+static auto interpolate_lin3D(const double x, const double y, const double z,
+                                     const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
+                                     const std::function<Q(int, int, int)> val) -> Q {
 
-    if (INTERPOLATION == 1) return interpolate_lin3D(x, y, z, xfrequencies, yfrequencies, zfrequencies, val);
-    else if (INTERPOLATION == 3) return interpolate_sloppycubic3D(x, y, z, xfrequencies, yfrequencies, zfrequencies, val);
-    else assert(false);
+    int index = xfrequencies.fconv(x);
 
+    double x1 = xfrequencies.ws[index];
+    double x2 = xfrequencies.ws[index + 1];
+    double xd = (x - x1) / (x2 - x1);
 
+    Q f1 = interpolate_lin2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
+    Q f2 = interpolate_lin2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index+1, i, j);});
+
+    Q result = ((1. - xd) * f1 + xd * f2);
+    assert(isfinite(result));
+    return result;
 }
 
 
@@ -91,7 +121,7 @@ inline auto interpolate3D(const double x, const double y, const double z,
  * @return
  */
 template <typename Q>
-inline auto interpolate_lin1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
+inline auto interpolate_lin_on_aux1D(const double x, const FrequencyGrid& frequencies, const std::function<Q(int)> val) -> Q {
 
     double t;
     int index = frequencies.fconv(t, x);
@@ -121,7 +151,7 @@ inline auto interpolate_lin1D(const double x, const FrequencyGrid& frequencies, 
  * @return
  */
 template <typename Q>
-inline auto interpolate_lin2D(const double x, const double y,
+inline auto interpolate_lin_on_aux2D(const double x, const double y,
                           const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
                           const std::function<Q(int, int)> val) -> Q {
 
@@ -132,8 +162,8 @@ inline auto interpolate_lin2D(const double x, const double y,
     double x2 = xfrequencies.ts[index + 1];
     double xd = (t - x1) / (x2 - x1);
 
-    Q f1 = interpolate1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
-    Q f2 = interpolate1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index+1, i);});
+    Q f1 = interpolate_lin_on_aux1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
+    Q f2 = interpolate_lin_on_aux1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index+1, i);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));
@@ -156,7 +186,7 @@ inline auto interpolate_lin2D(const double x, const double y,
  * @return
  */
 template <typename Q>
-inline auto interpolate_lin3D(const double x, const double y, const double z,
+inline auto interpolate_lin_on_aux3D(const double x, const double y, const double z,
                           const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
                           const std::function<Q(int, int, int)> val) -> Q {
 
@@ -167,8 +197,8 @@ inline auto interpolate_lin3D(const double x, const double y, const double z,
     double x2 = xfrequencies.ts[index + 1];
     double xd = (t - x1) / (x2 - x1);
 
-    Q f1 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
-    Q f2 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index+1, i, j);});
+    Q f1 = interpolate_lin_on_aux2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
+    Q f2 = interpolate_lin_on_aux2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index+1, i, j);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));
@@ -223,7 +253,8 @@ inline auto interpolate_sloppycubic1D(const double x, const FrequencyGrid& xfreq
  * @return
  */
 template <typename Q>
-inline auto interpolate_sloppycubic2D(const double x, const double y, const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const std::function<Q(int, int)> val) -> Q {
+inline auto interpolate_sloppycubic2D(const double x, const double y, const FrequencyGrid& xfrequencies,
+                                      const FrequencyGrid& yfrequencies, const std::function<Q(int, int)> val) -> Q {
 
     double t;
     int index = xfrequencies.fconv(t, x);
@@ -286,117 +317,6 @@ inline auto interpolate_sloppycubic3D(const double x, const double y, const doub
 }
 
 
-// forward declaration of rvert from r_vertex.h
-template <typename Q> class rvert;
-// forward declaration of vertexInterpolator (see below)
-template <typename Q> class vertexInterpolator;
 
-
-
-/// Interpolator class
-#if INTERPOLATION!=1 and INTERPOLATION!=3
-namespace linOrSloppy {
-
-    /* linearly interpolate vertices */
-    template<int k, typename Q>
-    class Interpolate {
-        explicit Interpolate(double Lambda) {
-            assert(false);
-        }
-    };
-#endif
-
-/** Template specialization for K1 (linear or sloppy cubic interpolation) */
-    template<typename Q>
-    class Interpolate<k1, Q> : public vertexDataContainer<k1, Q> {
-    public:
-        explicit Interpolate<k1, Q>(double Lambda) : vertexDataContainer<k1, Q>(Lambda) {};
-
-        void initializeK1() {};
-
-        auto interpolK1(const IndicesSymmetryTransformations &indices) const -> Q {
-
-            // Check if the frequency runs out of the box; if yes: return asymptotic value
-            //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
-            //{
-            Q result = indices.prefactor * interpolate1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
-                                                            [&](int i) -> Q {
-                                                                return vertexDataContainer<k1, Q>::K1_val(indices.iK, i,
-                                                                                                          indices.i_in);
-                                                            });
-            // Lambda function (aka anonymous function) in last argument
-            return result;
-            //} else {
-            //    return 0.;  // asymptotic value
-            //}
-        };
-    };
-
-/** Template specialization for K2 (linear or sloppy cubic interpolation) */
-    template<typename Q>
-    class Interpolate<k2, Q> : public vertexDataContainer<k2, Q> {
-    public:
-        explicit Interpolate<k2, Q>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
-
-        void initializeK2() {};
-        // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
-        auto interpolK2(const IndicesSymmetryTransformations &indices) const -> Q {
-
-            // Check if the frequency runs out of the box; if yes: return asymptotic value
-            //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
-            //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
-            //{
-            Q result = indices.prefactor * interpolate2D<Q>(indices.w, indices.v1,
-                                                            vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
-                                                            vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
-                                                            [&](int i, int j) -> Q {
-                                                                return vertexDataContainer<k2, Q>::K2_val(indices.iK, i,
-                                                                                                          j,
-                                                                                                          indices.i_in);
-                                                            });
-            return result;
-            //}
-            //else {
-            //    return 0.;      // asymptotic value
-            //}
-        }
-    };
-
-
-
-/** Template specialization for K3 (linear or sloppy cubic interpolation) */
-    template<typename Q>
-    class Interpolate<k3, Q> : public vertexDataContainer<k3, Q> {
-    public:
-        void initializeK3() {};
-        explicit Interpolate<k3, Q>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
-
-        auto interpolK3(const IndicesSymmetryTransformations &indices) const -> Q {
-
-            // Check if the frequency runs out of the box; if yes: return asymptotic value
-            //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol
-            //    && std::abs(indices.v1) < vertex.frequencies_K3.f.w_upper + inter_tol
-            //    && std::abs(indices.v2) < vertex.frequencies_K3.f.w_upper + inter_tol)
-            //{
-            Q result = indices.prefactor * interpolate3D<Q>(indices.w, indices.v1, indices.v2,
-                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
-                                                            vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().f,
-                                                            [&](int i, int j, int k) -> Q {
-                                                                return vertexDataContainer<k3, Q>::K3_val(indices.iK, i,
-                                                                                                          j, k,
-                                                                                                          indices.i_in);
-                                                            });
-            return result;
-            //} else {
-            //    return 0.;  // asymptotic value
-            //}
-
-        }
-    };
-
-#if INTERPOLATION!=1 and INTERPOLATION!=3
-}
-#endif
 
 #endif //FPP_MFRG_INTERPOLATORLINORSLOPPY_H

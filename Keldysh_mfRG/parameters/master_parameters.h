@@ -27,7 +27,7 @@
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
 
-constexpr int N_LOOPS = 1;  // Number of loops
+constexpr int N_LOOPS = 3;  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
@@ -96,16 +96,25 @@ constexpr int n_in = 1;
 
 
 constexpr int nODE = 50;
+constexpr double epsODE = 1e-4;
+// ODE solvers:
+// 1 -> basic Runge-Kutta 4;
+// 2 -> Bogacki–Shampine
+// 3 -> Cash-Carp
+#define ODEsolver 1
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 0.0;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
+#if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
-
+const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+#else
+const std::vector<double> U_NRG {};
+#endif
 
 #if REG==2
 constexpr int param_size = 14;
@@ -142,6 +151,13 @@ constexpr bool ZERO_T = false;
 constexpr bool PARTICLE_HOLE_SYMMETRY = true;
 #else
 constexpr bool PARTICLE_HOLE_SYMMETRY = false;
+#endif
+
+
+#ifdef KELDYSH_FORMALISM
+const std::string data_dir = "../Data_KF/";
+#else
+const std::string data_dir = "../Data_MF/";
 #endif
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

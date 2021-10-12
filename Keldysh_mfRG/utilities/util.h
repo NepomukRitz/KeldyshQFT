@@ -9,6 +9,8 @@
 #include <chrono>      // system time
 #include <unistd.h>    // time delay
 #include <iostream>    // text input/output
+#include <bits/stdc++.h>
+#include <sys/stat.h>
 #include "../data_structures.h"
 
 #include "mpi_setup.h"
@@ -212,29 +214,20 @@ void get_time(double t0, std::string prec) {
 }
 
 
+void makedir(const std::string& dir_str) {
+    const char* dir = dir_str.c_str();
+    // Creating Data directory
+    if (mkdir(dir, 0777) == -1)
+        std::cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << std::endl;
 
-template<int degreeplus, typename Q>
-inline auto lagrangePoly(const Q x, const double (&xs)[degreeplus], const Q (&ys) [degreeplus]) -> Q {
-    Q result = 0.;
-
-    double denominator, numerator;
-    for (int i = 0; i < degreeplus; i++) {
-        numerator = 1.;
-        denominator = 1.;
-        for (int k = 0; k < i; k++) {
-            denominator *= (xs[i] - xs[k]);
-            numerator *= (x - xs[k]);
-        }
-        for (int k = i+1; k < degreeplus; k++) {
-            denominator *= (xs[i] - xs[k]);
-            numerator *= (x - xs[k]);
-        }
-
-        result += ys[i] * numerator/denominator;
-    }
-
-    return result;
+    else
+        std::cout << "Directory "  << dir << " created \n";
 }
+
+
+
+
+
 
 
 #endif // UTIL_H

@@ -28,9 +28,11 @@ public:
     auto valsmooth(int iK, double v, int i_in) const -> Q;  //Returns interpolated value at given input
     void setself(int iK, int iv, int i_in, Q val);  //Sets value of SE at given input
     void addself(int iK, int iv, int i_in, Q val);  //Adds given input to specified location
-    auto acc(int i) -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
+    auto acc(int i) const -> Q;// access to the ith element of the vector "Sigma" (hdf5-relevant)
     void direct_set(int i, Q val);  //Direct set value to i-th location (hdf5-relevant)
     void set_frequency_grid(const SelfEnergy<Q>& selfEnergy);
+    auto norm(int p) const -> double;
+    auto norm() const -> double;
 
     /// Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + glb_Gamma)/2
     void update_grid(double Lambda);
@@ -43,8 +45,6 @@ public:
     /// computes finite differences of Sigma
     double get_deriv_maxSE(bool verbose) const;
     double get_curvature_maxSE(bool verbose) const;
-    auto norm(int p) -> double;
-    auto norm() -> double;
 
     // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
@@ -128,7 +128,7 @@ template <typename Q> auto SelfEnergy<Q>::val(int iK, int iv, int i_in) const ->
  * @param i  : Index
  * @return Sigma[i]
  */
-template <typename Q> auto SelfEnergy<Q>::acc(int i) -> Q{
+template <typename Q> auto SelfEnergy<Q>::acc(int i) const -> Q{
     if(i>=0 && i < Sigma.size()){
     return Sigma[i];}
     else{std::cout << "Error: Tried to access value outside of self-energy range." << std::endl;};
@@ -160,8 +160,10 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
     //    //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
     //    return (1.-(double)iK)*(this->asymp_val_R);
     //else {
-            Q result = interpolate1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
-            return result;
+    Q result;
+    if (INTERPOLATION == linear) result = interpolate_lin1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+    else result = interpolate_lin_on_aux1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+    return result;
     //}
 
 }
@@ -346,7 +348,7 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(double Lambda) {
 /*
  * p-norm for the SelfEnergy
  */
-template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
+template <typename Q> auto SelfEnergy<Q>::norm(const int p) const -> double {
     if(p==0){ //max norm
         double max = 0.;
         for (auto value : (this->Sigma)){
@@ -367,7 +369,7 @@ template <typename Q> auto SelfEnergy<Q>::norm(const int p) -> double {
 }
 
 /* standard norm: 2-norm */
-template <typename Q> auto SelfEnergy<Q>::norm() -> double {
+template <typename Q> auto SelfEnergy<Q>::norm() const -> double {
     return this->norm(2);
 }
 

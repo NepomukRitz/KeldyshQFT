@@ -5,8 +5,8 @@ project(FPP_mfRG)
 
 set(CMAKE_CXX_STANDARD 17)
 
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
-#set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3")
 
 set(CMAKE_CXX_COMPILER mpicxx)
 
@@ -50,11 +50,26 @@ add_executable(Keldysh_mfRG
         tests/test_perturbation_theory.h
         utilities/util.h
         vertex.h
-        utilities/write_data2file.h grids/momentum_grid.h tests/test_ODE.h integrator/old_integrators.h
-        parameters/frequency_parameters.h parameters/technical_parameters.h
-        utilities/math_utils.h
-        interpolations/InterpolatorLinOrSloppy.h minimizer.h tests/unit_tests/test_minimizer.h interpolations/InterpolatorSpline1D.h utilities/RuntimeError.h
-        vertex_data.h tests/test_interpolation.h interpolations/InterpolatorSpline2D.h interpolations/InterpolatorSpline3D.h)
+        utilities/write_data2file.h
+        grids/momentum_grid.h
+        tests/test_ODE.h
+        integrator/old_integrators.h
+        parameters/frequency_parameters.h
+        parameters/technical_parameters.h
+        tests/unit_tests/test_ODE_solver.h
+        tests/saveIntegrand.h
+        minimizer.h tests/unit_tests/test_minimizer.h
+        utilities/RuntimeError.h
+        vertex_data.h
+        tests/test_interpolation.h
+        interpolations/InterpolatorLinOrSloppy.h
+        interpolations/InterpolatorSpline1D.h
+        interpolations/InterpolatorSpline2D.h
+        interpolations/InterpolatorSpline3D.h
+        vertex_buffer.h
+        utilities/template_utils.h
+        utilities/math_utils.h)
+
 
 # executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
@@ -97,10 +112,23 @@ add_executable(Keldysh_mfRG_testing
         grids/momentum_grid.h
         tests/unit_tests/test_momentum_grid.h
         tests/test_ODE.h
-        integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h
-        utilities/math_utils.h
-        interpolations/InterpolatorLinOrSloppy.h minimizer.h tests/unit_tests/test_minimizer.h interpolations/InterpolatorSpline1D.h utilities/RuntimeError.h
-        vertex_data.h tests/test_interpolation.h interpolations/InterpolatorSpline2D.h interpolations/InterpolatorSpline3D.h)
+        integrator/old_integrators.h
+        parameters/frequency_parameters.h
+        parameters/technical_parameters.h
+        tests/unit_tests/test_ODE_solver.h
+        tests/saveIntegrand.h
+        minimizer.h
+        tests/unit_tests/test_minimizer.h
+        utilities/RuntimeError.h
+        vertex_data.h
+        tests/test_interpolation.h
+        interpolations/InterpolatorLinOrSloppy.h
+        interpolations/InterpolatorSpline1D.h
+        interpolations/InterpolatorSpline2D.h
+        interpolations/InterpolatorSpline3D.h
+        vertex_buffer.h
+        utilities/template_utils.h
+        utilities/math_utils.h)
 
 # standard executable for integration tests and production runs
 add_executable(FPP_mfRG
@@ -144,10 +172,74 @@ add_executable(FPP_mfRG
         grids/momentum_grid.h
         grids/flow_grid.h
         tests/test_ODE.h
-        integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h
-        utilities/math_utils.h
-        interpolations/InterpolatorLinOrSloppy.h minimizer.h tests/unit_tests/test_minimizer.h interpolations/InterpolatorSpline1D.h utilities/RuntimeError.h
-        vertex_data.h tests/test_interpolation.h interpolations/InterpolatorSpline2D.h interpolations/InterpolatorSpline3D.h)
+        integrator/old_integrators.h
+        parameters/frequency_parameters.h
+        parameters/technical_parameters.h
+        tests/unit_tests/test_ODE_solver.h
+        tests/saveIntegrand.h
+        minimizer.h
+        tests/unit_tests/test_minimizer.h
+        utilities/RuntimeError.h
+        vertex_data.h
+        tests/test_interpolation.h
+        interpolations/InterpolatorLinOrSloppy.h
+        interpolations/InterpolatorSpline1D.h
+        interpolations/InterpolatorSpline2D.h
+        interpolations/InterpolatorSpline3D.h
+        vertex_buffer.h
+        utilities/template_utils.h
+        utilities/math_utils.h)
+
+add_executable(get_integrand_dGammaL
+        tests/get_integrand_dGammaL.cpp
+        bubbles.h
+        postprocessing/causality_FDT_checks.h
+        correctionFunctions.h
+        data_structures.h
+        flow.h
+        grids/frequency_grid.h
+        utilities/hdf5_routines.h
+        integrator/integrator.h
+        integrator/integrator_NR.h
+        symmetries/internal_symmetries.h
+        symmetries/Keldysh_symmetries.h
+        postprocessing/KramersKronig.h
+        loop.h
+        utilities/mpi_setup.h
+        parameters/master_parameters.h
+        parquet_solver.h
+        perturbation_theory.h
+        postprocessing/postprocessing.h
+        propagator.h
+        right_hand_sides.h
+        r_vertex.h
+        selfenergy.h
+        ODE_solvers.h
+        state.h
+        symmetries/symmetry_transformations.h
+        symmetries/symmetry_table.h
+        tests/test_perturbation_theory.h
+        utilities/util.h
+        vertex.h
+        utilities/write_data2file.h
+        grids/momentum_grid.h
+        tests/unit_tests/test_momentum_grid.h
+        tests/test_ODE.h
+        integrator/old_integrators.h
+        parameters/frequency_parameters.h
+        parameters/technical_parameters.h
+        tests/unit_tests/test_ODE_solver.h
+        tests/saveIntegrand.h
+        minimizer.h
+        tests/unit_tests/test_minimizer.h
+        utilities/RuntimeError.h
+        vertex_data.h
+        tests/test_interpolation.h
+        interpolations/InterpolatorLinOrSloppy.h
+        interpolations/InterpolatorSpline1D.h
+        interpolations/InterpolatorSpline2D.h
+        interpolations/InterpolatorSpline3D.h
+        vertex_buffer.h utilities/template_utils.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
@@ -163,3 +255,7 @@ target_link_libraries(Keldysh_mfRG_testing fftw3)
 target_link_libraries(FPP_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
 target_link_libraries(FPP_mfRG -lgsl -lgslcblas)
 target_link_libraries(FPP_mfRG fftw3)
+
+target_link_libraries(get_integrand_dGammaL -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
+target_link_libraries(get_integrand_dGammaL fftw3)

@@ -14,6 +14,7 @@
 #include "../../parameters/master_parameters.h"  // define system parameters
 
 // include tests that should be run
+#include "test_ODE_solver.h"
 #include "test_data_structures.h"
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"

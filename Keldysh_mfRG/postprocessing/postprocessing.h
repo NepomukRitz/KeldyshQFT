@@ -64,7 +64,8 @@ public:
 };
 
 void compute_Phi_tilde(const std::string filename) {
-    rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
+    //rvec Lambdas = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE);
+    rvec Lambdas = read_Lambdas_from_hdf(filename);
 
     rvec vs (Lambdas.size() * nFER);
     rvec Phi (Lambdas.size() * nFER * n_in);
@@ -134,13 +135,14 @@ void sum_rule_K1tK(const std::string filename) {
     print("Checking fullfilment of the sum rule for K1t");
     int nLambda = nODE + U_NRG.size() + 1;
 
-    rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
+    rvec Lambdas = read_Lambdas_from_hdf(filename);
+
     rvec sum_rule (nLambda);
 
     for (int iLambda=0; iLambda<nLambda; ++iLambda) {
         State<state_datatype> state = read_hdf(filename, iLambda, nLambda);           // read state
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
-        double wmax = state.vertex[0].tvertex().K1_get_wupper();   // upper integration boundary
+        double wmax = state.vertex[0].tvertex().K1.K1_get_wupper();   // upper integration boundary
 
         if (KELDYSH){
             sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
@@ -172,18 +174,18 @@ void check_Kramers_Kronig(const std::string filename) {
         rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im);  // compute real part from imaginary part via KK
 
         // check Kramers-Kronig for retarded component of K1r
-        rvec wK1 = state.vertex[0].avertex().K1_get_VertexFreqGrid().b.ws;  // frequency grid points
+        rvec wK1 = state.vertex[0].avertex().K1.K1_get_VertexFreqGrid().b.ws;  // frequency grid points
         // get retarded component of K1a (first half of stored data points)
-        rvec K1aR_re = state.vertex[0].avertex().K1(0, nw1-1).real();  // real part from flow
-        rvec K1aR_im = state.vertex[0].avertex().K1(0, nw1-1).imag();  // imaginary part from flow
+        rvec K1aR_re = state.vertex[0].avertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
+        rvec K1aR_im = state.vertex[0].avertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
         rvec K1aR_re_KK = KKi2r(wK1, K1aR_im);  // compute real part from imaginary part via KK
         // get retarded component of K1p (first half of stored data points)
-        rvec K1pR_re = state.vertex[0].pvertex().K1(0, nw1-1).real();  // real part from flow
-        rvec K1pR_im = state.vertex[0].pvertex().K1(0, nw1-1).imag();  // imaginary part from flow
+        rvec K1pR_re = state.vertex[0].pvertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
+        rvec K1pR_im = state.vertex[0].pvertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
         rvec K1pR_re_KK = KKi2r(wK1, K1pR_im);  // compute real part from imaginary part via KK
         // get retarded component of K1t (first half of stored data points)
-        rvec K1tR_re = state.vertex[0].tvertex().K1(0, nw1-1).real();  // real part from flow
-        rvec K1tR_im = state.vertex[0].tvertex().K1(0, nw1-1).imag();  // imaginary part from flow
+        rvec K1tR_re = state.vertex[0].tvertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
+        rvec K1tR_im = state.vertex[0].tvertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
         rvec K1tR_re_KK = KKi2r(wK1, K1tR_im);  // compute real part from imaginary part via KK
 
         // save data to file

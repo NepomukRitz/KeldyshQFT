@@ -8,6 +8,7 @@
 #include "tests/test_perturbation_theory.h"
 #include "tests/test_interpolation.h"
 #include "utilities/util.h"
+#include "tests/saveIntegrand.h"
 
 
 std::string generate_filename() {
@@ -78,32 +79,26 @@ auto main() -> int {
     print("nFER3 = ", nFER3, true);
     if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
-    const char* dir = "../Data/";
-    std::string dir_str = dir;
-    // Creating Data directory
-    if (mkdir(dir, 0777) == -1)
-        std::cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << std::endl;
 
-    else
-        std::cout << "Directory "  << dir << " created \n";
+
+    makedir(data_dir);
+
 
     std::string filename = generate_filename();
 
 
 
     //test_PT4(0.0, true);
-    //test_PT_state<state_datatype>(dir_str+filename, 1.8, false);
+    //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
     //findBestWscale4K1<state_datatype>(1.8);
-    //compute_non_symmetric_diags(1.8, true, 1, true);
+    compute_non_symmetric_diags(1.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";
-    //n_loop_flow(dir_str+filename+job, false);
+    //n_loop_flow(data_dir+filename+job, true);
+    //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
-    vec<int> testint = {1,2,3,4};
-    for (int i : testint) {
-        for
-    }
+
 
 
 
