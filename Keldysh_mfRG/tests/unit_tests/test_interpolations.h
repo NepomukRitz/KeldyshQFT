@@ -147,7 +147,7 @@ namespace {
 
     auto quadFunction2D(double x, double y) -> state_datatype {return 1. + x + y  + x*y + x*x + y*y;}
 
-    auto cubicFunction1D(double x) -> state_datatype {return 1. + x*x*x;}
+    auto cubicFunction1D(double x) -> state_datatype {return 1. + x;}
     auto cubicFunction2D(double x, double y) -> state_datatype {return 1. + y + y*y*x + x*y*y + x*x*x;}
     auto cubicFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + z + x*y +y*y*z + z*z*z + x*x*x + y*y*y;}
 }
@@ -241,7 +241,7 @@ TEST_CASE( "Does cubic interpolation work reliably for K1?", "[interpolations]" 
         value +=1;
     }
 
-    write_h5_rvecs("../Data/unittest_interpolK1.h5",
+    write_h5_rvecs("unittest_interpolK1.h5",
                    {"values", "errors"},
                    {values, errors});
 
@@ -371,7 +371,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
     print("K2 Interpolation performed - ");
     get_time(t_start);
 
-    write_h5_rvecs("../Data/unittest_interpolK2.h5",
+    write_h5_rvecs("unittest_interpolK2.h5",
                    {"values", "errors"},
                    {values, errors});
 
@@ -517,7 +517,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
     print("K3 Interpolation performed - ");
     get_time(t_start);
 
-    write_h5_rvecs("../Data/unittest_interpolK3.h5",
+    write_h5_rvecs("unittest_interpolK3.h5",
                    {"values", "errors"},
                    {values, errors});
 

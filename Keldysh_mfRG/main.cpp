@@ -98,8 +98,12 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";
-    n_loop_flow(dir_str+filename+job, false);
+    //n_loop_flow(dir_str+filename+job, false);
 
+    vec<int> testint = {1,2,3,4};
+    for (int i : testint) {
+        for
+    }
 
 
 

@@ -315,7 +315,7 @@ Q SplineK3<DataContainer,Q>::interpolK3 (int iK, double w, double v, double vp, 
     const vec<Q> coeffs = get_coeffs_from_derivs(iK, iw, iv, ivp, i_in, dw, dv, dvp);
 
     Q result = 0.;
-    const size_t dims[3] = {4,4,4};
+    const std::array<size_t,3> dims = {4,4,4};
 
     const double dwpow[4] = {1, hw , hw*hw  , hw*hw*hw  };
     const double dvpow[4] = {1, hv , hv*hv  , hv*hv*hv  };

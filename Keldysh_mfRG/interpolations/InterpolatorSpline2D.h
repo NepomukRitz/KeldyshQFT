@@ -157,7 +157,7 @@ Q SplineK2<DataContainer,Q>::interpolK2 (int iK, double w, double v, int i_in) c
     vec<Q> coeffs = get_coeffs_from_derivs(iK, iw, iv, i_in, dw, dv);
 
     Q result = 0.;
-    const size_t dims[2] = {4,4};
+    const std::array<size_t,2> dims = {4,4};
 
     const double dwpow[4] = {1, hw, hw*hw, hw*hw*hw};
     const double dvpow[4] = {1, hv, hv*hv, hv*hv*hv};

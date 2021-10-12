@@ -43,7 +43,7 @@ protected:
 
     VertexFrequencyGrid<k1> frequencies_K1;    // frequency grid
 public:
-    size_t dimsK1[3] = {nK_K1, nBOS, n_in};
+    std::array<size_t,3> dimsK1 = {nK_K1, nBOS, n_in};
 
     explicit vertexDataContainer(double Lambda) : frequencies_K1(Lambda) { };
 
@@ -118,7 +118,7 @@ protected:
     vec<Q> K2 = empty_K2();
     VertexFrequencyGrid<k2> frequencies_K2;    // frequency grid
 public:
-    size_t dimsK2[4] = {nK_K2, nBOS2, nFER2, n_in};
+    std::array<size_t,4> dimsK2 = {nK_K2, nBOS2, nFER2, n_in};
     explicit vertexDataContainer(double Lambda) : frequencies_K2(Lambda) { };
 
 
@@ -217,7 +217,7 @@ protected:
 
 
 public:
-    size_t dimsK3[5] = {nK_K3, nBOS3, nFER3, nFER3, n_in};
+    std::array<size_t,5> dimsK3 = {nK_K3, nBOS3, nFER3, nFER3, n_in};
 
     explicit vertexDataContainer(double Lambda) : frequencies_K3(Lambda) { };
 

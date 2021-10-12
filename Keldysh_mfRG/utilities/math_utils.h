@@ -100,7 +100,7 @@ auto is_symmetric(const rvec& freqs) -> double {
  * @return
  */
 template<size_t rank>
-inline size_t getFlatIndex(const size_t (&indx) [rank], const size_t (&dims) [rank]) {
+inline size_t getFlatIndex(const std::array<size_t,rank>&  indx, const std::array<size_t,rank>&  dims) {
     size_t result = indx[0];
     for (int it = 1; it < rank; it++) {
         result *= dims [it];
@@ -110,7 +110,7 @@ inline size_t getFlatIndex(const size_t (&indx) [rank], const size_t (&dims) [ra
 }
 /// Template specialization for special case rank == 1
 template<>
-inline size_t getFlatIndex<1>(const size_t (&indx) [1], const size_t (&dims) [1]) {
+inline size_t getFlatIndex<1>(const std::array<size_t,1>&  indx, const std::array<size_t,1>&  dims) {
     return dims[0];
 }
 /**
@@ -126,7 +126,7 @@ inline size_t getFlatIndex<1>(const size_t (&indx) [1], const size_t (&dims) [1]
  * @return
  */
 template<size_t rank>
-inline size_t getFlatIndex(const size_t (&indx) [rank], const size_t (&dims) [rank], const size_t (&permutation) [rank]) {
+inline size_t getFlatIndex(const std::array<size_t,rank>&  indx, const std::array<size_t,rank>&  dims, const std::array<size_t,rank>&  permutation) {
     size_t result = indx[permutation[0]];
     for (int it = 1; it < rank; it++) {
         result *= dims [permutation[it]];
@@ -135,26 +135,26 @@ inline size_t getFlatIndex(const size_t (&indx) [rank], const size_t (&dims) [ra
     return result;
 }
 /// Overloads of above function for 5, 4, 3 or 2 indices (with the array dims containing number of grids points in each direction)
-inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const  size_t m, const size_t (&dims) [5]) {
-    size_t indx [5] = {i, j, k ,l ,m};
+inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const  size_t m, const std::array<size_t,5>&  dims) {
+    std::array<size_t,5>  indx = {i, j, k ,l ,m};
     return getFlatIndex<5>(indx, dims);
 }
-inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const size_t (&dims) [4]) {
-    size_t indx [4] = {i, j, k ,l};
+inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const std::array<size_t,4>& dims) {
+    std::array<size_t,4>  indx = {i, j, k ,l};
     return getFlatIndex<4>(indx, dims);
 }
-inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const size_t (&dims) [3]) {
-    size_t indx [3] = {i, j, k};
+inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const std::array<size_t,3>& dims) {
+    std::array<size_t,3>  indx = {i, j, k};
     return getFlatIndex<3>(indx, dims);
 }
-inline size_t getFlatIndex(const size_t i, const  size_t j, const size_t (&dims) [2]) {
-    size_t indx [2] = {i, j};
+inline size_t getFlatIndex(const size_t i, const  size_t j, const std::array<size_t,2> & dims) {
+    std::array<size_t,2>  indx = {i, j};
     return getFlatIndex<2>(indx, dims);
 }
 
 
 template<size_t rank>
-inline void getMultIndex(size_t (&indx) [rank], const size_t iflat, const size_t (&dims) [rank]) {
+inline void getMultIndex(std::array<size_t,rank>&  indx, const size_t iflat, const std::array<size_t,rank>&  dims) {
     size_t temp = iflat;
     size_t dimtemp = 1;
     for (int it = 1; it < rank; it++) {
@@ -170,7 +170,7 @@ inline void getMultIndex(size_t (&indx) [rank], const size_t iflat, const size_t
 }
 /// Template specialization for special case rank == 1
 template<>
-inline void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t (&dims) [1]) {
+inline void getMultIndex<1>(std::array<size_t,1>& indx, const size_t iflat, const std::array<size_t,1>&  dims) {
     indx[0] = iflat;
 
 }
@@ -188,8 +188,8 @@ inline void getMultIndex<1>(size_t (&indx) [1], const size_t iflat, const size_t
  * @return
  */
 template<size_t rank>
-inline size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], const size_t (&permutation) [rank]){
-    size_t multIndx[rank];
+size_t rotateFlatIndex(const size_t iflat, const std::array<size_t,rank>& dims, const std::array<size_t,rank>& permutation){
+    std::array<size_t,rank> multIndx;
     getMultIndex<rank>(multIndx, iflat, dims);
     size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [rank], size_t (&dims) [rank], size_t (&permutation) [rank]) {
     return iflat_new;
@@ -200,10 +200,10 @@ inline size_t rotateFlatIndex(const size_t iflat, const size_t (&dims) [rank], c
  *                                      of the rotated flat index
  */
 template<size_t rank>
-inline size_t rotateFlatIndex(const size_t iflat, const size_t (&dims_native) [rank], const size_t i_dim){
+size_t rotateFlatIndex(const size_t iflat, const std::array<size_t,rank>&  dims_native, const size_t i_dim){
     assert(i_dim <= rank);
-    size_t permutation[rank];
-    size_t dims_rot[rank];
+    std::array<size_t,rank>  permutation;
+    std::array<size_t,rank>  dims_rot;
     // just make sure that permutation[-1] == i_dim
     for (size_t i = 0; i < rank-i_dim-1; i++) {
         //permutation[i] = i + 1 + i_dim;
@@ -240,7 +240,7 @@ namespace { // hide the following to the outside world
      *                          e.g.: arr = {a,b,c,d}, n_shift = 1      => return {d,a,b,c}
      */
     template<size_t rank>
-    vec<size_t> permuteCyclic(const size_t (&arr) [rank], const size_t n_shift) {
+    vec<size_t> permuteCyclic(const std::array<size_t,rank>&  arr, const size_t n_shift) {
         vec<size_t> result(rank);
         if (n_shift >= rank) assert(false);
         for (size_t i = 0;  i < rank - n_shift; i++) {
@@ -259,7 +259,7 @@ namespace { // hide the following to the outside world
      * @return          inverse of perm
      */
     template<size_t rank>
-    vec<size_t> get_inverse_permutation(const size_t (&perm) [rank]) {
+    vec<size_t> get_inverse_permutation(const std::array<size_t,rank>& perm) {
         vec<size_t> perm_inv(rank);
         for (size_t i = 0; i < rank; i++) {
             perm_inv[perm[i]] = i;
@@ -285,8 +285,8 @@ namespace { // hide the following to the outside world
      * @return
      */
     template<typename T, size_t rank>
-    vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const size_t (&dims) [rank],
-                                  const size_t (&permutation) [rank],
+    vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+                                  const std::array<size_t,rank>& permutation,
                                   const bd_type left=third_deriv, const bd_type right=third_deriv, const T left_value=0.0, const T right_value=0.0){
         size_t flatdim = data.size();
         size_t dimsum = dims[rank-1];
@@ -396,6 +396,89 @@ namespace { // hide the following to the outside world
         }
         return result;
     }
+    template <typename T, size_t rank>
+    T get_finite_differences_helper(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+                                    const std::array<size_t,rank>& permutation, size_t it_dimsum, size_t jt, vec<int>& no_i, int lower, int upper) {
+        T result = 0;
+        double prefactor_data0 = 0.;
+        for (int i : no_i) {
+            double numerator=1.;
+            double denominator = 1.;
+            for (int j = lower; j < i; j++) {
+                denominator *= (xs[jt + i] - xs[jt + j]);
+                assert(std::abs(denominator) > 1e-15);
+            }
+            for (int j =i+1; j <=upper; j++) {
+                denominator *= (xs[jt + i]-xs[jt + j]);
+                assert(std::abs(denominator) > 1e-15);
+            }
+            for (int j : no_i) numerator *= (xs[jt    ]-xs[jt + j]);
+            numerator /= (xs[jt    ]-xs[jt + i]);
+            result += numerator / denominator * data[rotateFlatIndex(it_dimsum + jt + i, dims, permutation)];
+
+
+            prefactor_data0 += 1./(xs[jt    ]-xs[jt + i]);
+        }
+        result += prefactor_data0 * data[rotateFlatIndex(it_dimsum + jt, dims, permutation)];
+        return result;
+    }
+
+    /**
+     * Computes the derivative of a multi-dimensional vector with the finite-differences method
+     * The derivative is computed in the direction of dims[permutation[-1]]
+     * Currently assuming equal spacing in xs                                                   /// TODO: generalize formula to non-equal spacing
+     * @tparam T
+     * @tparam rank       number of dimensions (only for dimension >= 2 !!)
+     * @param data                  input vector for which the derivative is to be computed
+     * @param xs                    frequency points in the direction of dims[permutation[-1]]
+     * @param dims                  number of grid points in the different directions
+     * @param permutation           determines how the dimensions are to be permuted
+     *                              for permutation = {a, b, c} dims is permuted to {dims[a], dims[b], dims[c]}
+     *                              A vector has a native order of dimensions. The permutation allows to express the multi-index
+     *                              in a rotated version. But the permutation needs to picked such that it permutes indx and
+     *                              perms into the native order.
+     * @return
+     */
+    template<typename T, size_t rank>
+    vec<T> get_finite_differences_v2(const vec<T> data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+                                  const std::array<size_t,rank>& permutation){
+        size_t flatdim = data.size();
+        size_t dimsum = dims[rank-1];
+        assert(dimsum==xs.size());
+        assert(dimsum>=5);   // with the current implementation we need at least five points
+        size_t codimsum = flatdim/dimsum;
+
+        vec<T> result(flatdim);
+        vec<int> centered = {-2, -1, 1, 2};
+        vec<int> left1 = {-1, 1, 2, 3};
+        vec<int> left2 = {1, 2, 3, 4};
+        vec<int> right1 = {-3, -2, -1, 1};
+        vec<int> right2 = {-4, -3, -2, -1};
+        for (int it = 0; it < codimsum; it++) {
+
+            /// Compute derivative with Central finite difference
+            for (int jt = 2; jt < dimsum-2; jt++) {
+
+                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, centered, -2, 2);
+            }
+            /// Compute boundary values: with non-central finite difference
+            size_t jt = 1;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left1, -1, 3);
+
+
+            jt = dimsum - 2;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right1, -3, 1);
+
+
+            jt = 0;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left2, 0, 4);
+
+
+            jt = dimsum - 1;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right2, -4, 0);
+        }
+        return result;
+    }
 }
 
 /**
@@ -409,16 +492,16 @@ namespace { // hide the following to the outside world
  * @return
  */
 template<typename T, size_t rank>
-vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const size_t (&dims) [rank], const size_t i_dim) {
+vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim) {
     if (i_dim >= rank) assert(false);
-    size_t dims_permuted[rank];
+    std::array<size_t,rank> dims_permuted;
     vec<size_t> dims_temp = permuteCyclic<rank>(dims, rank - i_dim - 1);
-    std::copy(dims_temp.begin(), dims_temp.end(), dims_permuted);
-    size_t permutation[rank];
+    for (size_t i = 0; i < rank; i++) dims_permuted[i] = dims_temp[i];
+    std::array<size_t,rank> permutation;
     for (size_t i = 0; i <= i_dim; i++) permutation[i] = i + rank - i_dim - 1;
     for (size_t i = i_dim+1; i < rank; i++) permutation[i] = i - i_dim - 1;
 
-    return get_finite_differences<T,rank>(data, xs, dims_permuted, permutation);
+    return get_finite_differences_v2<T,rank>(data, xs, dims_permuted, permutation);
 }
 
 
@@ -435,15 +518,15 @@ vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const size_t (&d
  * @return
  */
 template<typename binaryOp, typename T, size_t rank, size_t rank_new>
-vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims_native) [rank], const size_t (&i_dims) [rank_new], const size_t (&dims_new) [rank_new]) {
+vec<T> collapse(const vec<T> data, const binaryOp& op, const std::array<size_t,rank>& dims_native, const std::array<size_t,rank_new>& i_dims, const std::array<size_t,rank_new>& dims_new) {
     size_t dim_collapse = 1; // flat dimension of dimensions that are to be collapsed
     size_t dimsflat_new = 1; // flat dimension of result
     for (size_t i = 0; i < rank_new; i++) dimsflat_new *= dims_native[i_dims[i]];
     for (size_t i = 0; i < rank; i++) dim_collapse *= dims_native[i];
     dim_collapse /= dimsflat_new;
 
-    size_t perm_rot[rank]; // permutation to rotate dims_native to dims_rot
-    size_t dims_rot[rank]; // array of dimensions, rotated such that the trailing dimensions are to be collapsed
+    std::array<size_t,rank>  perm_rot; // permutation to rotate dims_native to dims_rot
+    std::array<size_t,rank>  dims_rot; // array of dimensions, rotated such that the trailing dimensions are to be collapsed
     size_t iter_new;
     size_t iter_col = 0;
     for (size_t i = 0; i < rank; i++) {
@@ -463,7 +546,7 @@ vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims_nativ
         }
     }
     vec<size_t> perm_inv_vec = get_inverse_permutation(perm_rot);
-    size_t perm_inv[rank];
+    std::array<size_t,rank> perm_inv;
     std::copy(perm_inv_vec.begin(), perm_inv_vec.end(), perm_inv);
 
 
@@ -551,7 +634,7 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
 }
 
 /// Computes maximum along axis i_dim
-template<size_t rank, typename T> vec<double> maxabs(const vec<T> data, const size_t (&dims) [rank], const size_t i_dim) {
+template<size_t rank, typename T> vec<double> maxabs(const vec<T> data, const std::array<size_t,rank>& dims, const size_t i_dim) {
     vec<double> result (dims[i_dim]);
     size_t i_dims[1] = {i_dim};
     size_t dims_new[1] = {dims[i_dim]};
