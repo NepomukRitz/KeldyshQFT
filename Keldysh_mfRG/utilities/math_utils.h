@@ -547,7 +547,8 @@ vec<T> collapse(const vec<T> data, const binaryOp& op, const std::array<size_t,r
     }
     vec<size_t> perm_inv_vec = get_inverse_permutation(perm_rot);
     std::array<size_t,rank> perm_inv;
-    std::copy(perm_inv_vec.begin(), perm_inv_vec.end(), perm_inv);
+    //std::copy(perm_inv_vec.begin(), perm_inv_vec.end(), perm_inv);
+    for (int j = 0; j < rank; j++) perm_inv[j] = perm_inv_vec[j];
 
 
     vec<T> result(dimsflat_new);
@@ -636,8 +637,8 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
 /// Computes maximum along axis i_dim
 template<size_t rank, typename T> vec<double> maxabs(const vec<T> data, const std::array<size_t,rank>& dims, const size_t i_dim) {
     vec<double> result (dims[i_dim]);
-    size_t i_dims[1] = {i_dim};
-    size_t dims_new[1] = {dims[i_dim]};
+    std::array<size_t,1> i_dims = {i_dim};
+    std::array<size_t,1> dims_new = {dims[i_dim]};
     if (data.size() == dims[i_dim]) result = data.abs(); // no other dimensions to collapse
     //else result = collapse_rev(data, [](const T& l, const T& r) -> T {return static_cast<T>(std::max(std::abs(l),std::abs(r)));}, dims, i_dim).abs();
     else result = collapse(data, [](const T& l, const T& r) -> T {return static_cast<T>(std::max(std::abs(l),std::abs(r)));}, dims, i_dims, dims_new).abs();

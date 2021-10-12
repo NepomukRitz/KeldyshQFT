@@ -200,9 +200,9 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
             for (size_t j = 1; j < dims[1] - 1; j++) {
                 for (size_t k = 1; k < dims[2] - 1; k++) {
                     std::array<size_t,rank>  multidx_temp = {i, j, k, 0};
-                    if (dlinvals [::getFlatIndex<rank>(multidx_temp, dims)] != 3.) errorcount++;
-                    if (dlinvals2[::getFlatIndex<rank>(multidx_temp, dims)] != 3.) errorcount++;
-                    if (dlinvals3[::getFlatIndex<rank>(multidx_temp, dims)] != 3.) errorcount++;
+                    if (std::abs(dlinvals [::getFlatIndex<rank>(multidx_temp, dims)] - 3.) > 1e-10) errorcount++;
+                    if (std::abs(dlinvals2[::getFlatIndex<rank>(multidx_temp, dims)] - 3.) > 1e-10) errorcount++;
+                    if (std::abs(dlinvals3[::getFlatIndex<rank>(multidx_temp, dims)] - 3.) > 1e-10) errorcount++;
                 }
             }
         }
@@ -225,8 +225,8 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
             for (size_t j = 1; j < dims[1] - 1; j++) {
                 for (size_t k = 1; k < dims[2] - 1; k++) {
                     std::array<size_t,rank>  multidx_temp = {i, j, k, 0};
-                    if (dlinvals [::getFlatIndex<rank>(multidx_temp, dims)] != 2.) errorcount++;
-                    if (dlinvals2[::getFlatIndex<rank>(multidx_temp, dims)] != 2.) errorcount++;
+                    if (std::abs(dlinvals [::getFlatIndex<rank>(multidx_temp, dims)] - 2.) > 1e-10) errorcount++;
+                    if (std::abs(dlinvals2[::getFlatIndex<rank>(multidx_temp, dims)] - 2.) > 1e-10) errorcount++;
                 }
             }
         }

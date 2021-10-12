@@ -1545,7 +1545,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(double Lambda) {
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(fullvert_temp, true);
     minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, true);
     VertexFrequencyGrid<k1> frequenciesK1_new = avertex.K1_get_VertexFreqGrid();
-    frequenciesK1_new.b.initialize_grid(m_Wscale*2., wmaxK1_current);
+    frequenciesK1_new.b.update_Wscale(m_Wscale*2.);
 
     update_grid<k1>(frequenciesK1_new);
 

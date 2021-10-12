@@ -335,7 +335,7 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(double Lambda) {
     CostSE_Wscale<Q> cost(SEtemp, true);
     minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, true);
     FrequencyGrid frequencies_new = frequencies;
-    frequencies_new.initialize_grid(m_Wscale, wmax_current);
+    frequencies_new.update_Wscale(m_Wscale);
 
     update_grid(frequencies_new);
 
@@ -374,8 +374,8 @@ template <typename Q> auto SelfEnergy<Q>::norm() -> double {
 template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) const -> double {
     //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
     //return max_SE;
-    const size_t dims1[3] = {n_in, nK_SE, nFER};
-    const size_t perm1[3] = {2, 0, 1};
+    const std::array<size_t,3> dims1= {n_in, nK_SE, nFER};
+    const std::array<size_t,3> perm1= {2, 0, 1};
     double max_SE = (::power2(::get_finite_differences<Q,3>(Sigma, frequencies.ts, dims1, perm1))).max_norm();
 
     if (verbose) {
@@ -388,8 +388,8 @@ template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) co
 template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose) const -> double {
     //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
     //return max_SE;
-    const size_t dims1[3] = {n_in, nK_SE, nFER};
-    const size_t perm1[3] = {2, 0, 1};
+    const std::array<size_t,3> dims1 = {n_in, nK_SE, nFER};
+    const std::array<size_t,3> perm1 = {2, 0, 1};
     double max_SE = (::power2(::get_finite_differences<Q,3>(::get_finite_differences<Q,3>(Sigma, frequencies.ts, dims1, perm1), frequencies.ts, dims1, perm1))).max_norm();
 
     if (verbose) {

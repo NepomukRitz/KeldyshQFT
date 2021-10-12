@@ -172,7 +172,8 @@ public:
     }
     auto scale_factor(double Lambda) -> double;
     void initialize_grid();
-    void initialize_grid(double scale, double wmax);
+    void set_W_scale(double scale);
+    void set_w_upper(double wmax);
     void rescale_grid(double Lambda);
     void update_Wscale(double Wscale);
     auto fconv(double w_in) const -> int;
@@ -226,37 +227,55 @@ void FrequencyGrid::initialize_grid() {
     if (!KELDYSH && !ZERO_T) assert (is_doubleOccurencies(ws) == 0);
 }
 
+
 /**
  * This function sets the grid parameters according to the scale obtained from scale_factor(Lambda)
  * @param scale
  */
-void FrequencyGrid::initialize_grid(double scale, double wmax) {
+void FrequencyGrid::set_W_scale(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
-    w_upper = grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) ); //wmax;
+    if (!KELDYSH && !ZERO_T){
+        // for Matsubara T>0: pick grid such that no frequencies occur twice
+        if (type == 'b') {
+            W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
+        }
+        else {
+            W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
+        }
+    }
+}
+/**
+ * This function sets the grid parameters according to the scale obtained from scale_factor(Lambda)
+ * @param scale
+ */
+void FrequencyGrid::set_w_upper(double wmax) {
+    // Pick the grid parameters in a sensible way
+    w_upper = wmax; // grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
 
     if (!KELDYSH && !ZERO_T){
         // for Matsubara T>0: pick grid such that no frequencies occur twice
         if (type == 'b') {
             w_upper = std::max(round2bfreq(w_upper), glb_T * M_PI*(N_w+1));
-            W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
         }
         else {
             w_upper = std::max(round2ffreq(w_upper), glb_T * M_PI*(N_w+1));
-            W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
         }
     }
 
     w_lower = - w_upper;
-    initialize_grid();
 }
 
 void FrequencyGrid::rescale_grid(double Lambda) {
-    initialize_grid(scale_factor(Lambda), scale_factor(Lambda)*15);
+    double scale = scale_factor(Lambda);
+    set_W_scale(scale);
+    set_w_upper(scale*15);
+    initialize_grid();
 }
 
 void FrequencyGrid::update_Wscale(double Wscale) {
-    initialize_grid(Wscale, w_upper);
+    set_W_scale(Wscale);
+    initialize_grid();
 }
 
 
@@ -385,7 +404,10 @@ public:
     }
 
     void initialize_grid(double scale) {
-        b.initialize_grid(scale, scale*15.);
+
+        b.set_W_scale(scale);
+        b.set_w_upper(scale*15.);
+        b.initialize_grid();
     }
 };
 template<>
@@ -404,8 +426,13 @@ public:
     }
 
     void initialize_grid(double scale) {
-        b.initialize_grid(scale, scale*15.);
-        f.initialize_grid(scale, scale*15.);
+
+        b.set_W_scale(scale);
+        b.set_w_upper(scale*15.);
+        b.initialize_grid();
+        f.set_W_scale(scale);
+        f.set_w_upper(scale*15.);
+        f.initialize_grid();
     }
 };
 template<>
@@ -424,8 +451,13 @@ public:
     }
 
     void initialize_grid(double scale) {
-        b.initialize_grid(scale, scale*15.);
-        f.initialize_grid(scale, scale*15.);
+
+        b.set_W_scale(scale);
+        b.set_w_upper(scale*15.);
+        b.initialize_grid();
+        f.set_W_scale(scale);
+        f.set_w_upper(scale*15.);
+        f.initialize_grid();
     }
 };
 

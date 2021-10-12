@@ -351,8 +351,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
     int M = (nFER2 - 2) * 4 - 3;
     vec<double> errors (N*M);
     vec<double> values (N*M);
-    double interb = (avertex.K2_get_tupper_b_aux() - avertex.K2_get_tlower_b_aux()) / double(N-1);
-    double interf = (avertex.K2_get_tupper_f_aux() - avertex.K2_get_tlower_f_aux()) / double(M-1);
+    double interb = 2. / double(N-1); // (avertex.K2_get_tupper_b_aux() - avertex.K2_get_tlower_b_aux()) / double(N-1);
+    double interf = 2. / double(M-1); // (avertex.K2_get_tupper_f_aux() - avertex.K2_get_tlower_f_aux()) / double(M-1);
     for (int iw = 0; iw<N; iw++){
         for (int iv = 0; iv<M; iv++) {
             indices.w  = avertex.K2_gridtransf_inv_b(avertex.K2_get_tlower_b_aux() + iw*interb);
