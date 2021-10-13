@@ -88,7 +88,7 @@ class PAID {
       }
       auto task = q.pop();
       auto doms = task.d.split();
-        splits = splits + 1;
+      splits = splits + 1;
       //std::cout << "left = " << task.d.left_ << ", right = " << task.d.right_ << "\n"; // only for public left/right
       for (auto dom : doms) {
         auto new_f = dom.transform(task.f);

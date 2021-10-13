@@ -28,7 +28,7 @@ public:
     auto operator() (double x) const -> Q {
         double sqrtk;
         sqrtk = sqrt(k*k+2.*k*kp*x+kp*kp);
-        return 1./(2*M_PI)*ladder_K1r(vp+v,sqrtk,'p',Lambda_i,Lambda_f,1,0)*G0(vp,kp*kp,'c');
+        return 1./(2*M_PI)*ladder_K1r(vp+v,sqrtk,'p',Lambda_i,Lambda_f,1,1,0)*G0(vp,kp*kp,'c');
     };
 
     //void save_integrand();
@@ -39,7 +39,7 @@ comp perform_loopintegral_theta (double v, double vp, double k, double kp, doubl
     double eps = 1e-12;
 
     if (k == 0.0) {
-        result = 1./M_PI*ladder_K1r(vp+v,kp,'p',Lambda_i,Lambda_f,1,0)*G0(vp,kp*kp,'c');
+        result = 1./M_PI*ladder_K1r(vp+v,kp,'p',Lambda_i,Lambda_f,1,1,0)*G0(vp,kp*kp,'c');
     }
 
     else {

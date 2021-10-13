@@ -9,7 +9,7 @@
 #include "old_integrators.h"                    // Riemann, Simpson, PAID integrator (should not needed)
 #include "integrator_NR.h"                      // adaptive Gauss-Lobatto integrator with Kronrod extension
 #include "../utilities/util.h"                  // for rounding functions
-#include "../OldFiles/paid.hpp"                 // for PAID integrator
+#include "../paid-integrator/paid.hpp"                 // for PAID integrator
 
 /* compute real part of integrand (for GSL/PAID) */
 template <typename Integrand>
@@ -201,10 +201,11 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        Domain1D<Q,Integrand> d(a, b); // domain
-        PAIDInput<Q, Integrand> paid_integrand(d,integrand,0);
-        PAID<Q, Integrand> paid_integral({paid_integrand});
-        return paid_integral.solve()[0];
+        paid::Domain<1> d(a, b); // domain
+        paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
+        paid::PAIDConfig config;
+        paid::PAID<1, Integrand, Q, int,double> paid_integral(config);
+        return paid_integral.solve({paid_integrand})[0];
     }
 }
 
@@ -230,9 +231,9 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        Domain1D<Q,Integrand> d(a, b); // domain
-        PAIDInput<Q, Integrand> paid_integrand(d,integrand,0);
-        PAID<Q, Integrand> paid_integral({paid_integrand});
+        paid::Domain<1> d(a, b); // domain
+        paid::PAIDInput<1, Integrand, int> paid_integrand(d,integrand,0);
+        paid::PAID<1,Integrand, Q, int,double> paid_integral({paid_integrand});
         return paid_integral.solve()[0];
     }
 }
@@ -265,9 +266,9 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        Domain1D<Q,Integrand> d(a, b); // domain
-        PAIDInput<Q, Integrand> paid_integrand(d,integrand,0);
-        PAID<Q, Integrand> paid_integral({paid_integrand});
+        paid::Domain<1> d(a, b); // domain
+        paid::PAIDInput<1, Integrand, int> paid_integrand(d,integrand,0);
+        paid::PAID<1, Integrand, Q, int,double> paid_integral({paid_integrand});
         return paid_integral.solve()[0];
     }
 }
@@ -319,25 +320,25 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
         // define points at which to split the integrals (including lower and upper integration limits)
+        vec<paid::Domain<1>> domains;
+        domains.reserve(5);
+        vec<paid::PAIDInput<1, Integrand, int>> integrands;
+        integrands.reserve(5);
+
         rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
         std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
 
-        Q result = 0.; // initialize results
+        for (int i = 0; i < 5; i++){
+            if (intersections[i] < intersections[i+1]) {
+                paid::Domain<1> d(intersections[i],intersections[i+1]);
+                domains.push_back(d);
+                paid::PAIDInput<1, Integrand, int> paid_integrand(d,integrand,0);
+                integrands.push_back(paid_integrand);
+            }
+        }
 
-        Domain1D<Q, Integrand> d1(intersections[0], intersections[1]); // domains
-        Domain1D<Q, Integrand> d2(intersections[1], intersections[2]);
-        Domain1D<Q, Integrand> d3(intersections[2], intersections[3]);
-        Domain1D<Q, Integrand> d4(intersections[3], intersections[4]);
-        Domain1D<Q, Integrand> d5(intersections[4], intersections[5]);
-
-        PAIDInput<Q, Integrand> paid_integrand1(d1,integrand,0);
-        PAIDInput<Q, Integrand> paid_integrand2(d2,integrand,0);
-        PAIDInput<Q, Integrand> paid_integrand3(d3,integrand,0);
-        PAIDInput<Q, Integrand> paid_integrand4(d4,integrand,0);
-        PAIDInput<Q, Integrand> paid_integrand5(d5,integrand,0);
-
-        PAID<Q, Integrand> paid_integral({paid_integrand1,paid_integrand2,paid_integrand3,paid_integrand4,paid_integrand5});
-        return paid_integral.solve()[0];
+        paid::PAID<1, Integrand, Q, int,double> integral(integrands);
+        return integral.solve()[0];
     }
 }
 
@@ -388,21 +389,21 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return result.sum();
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        vec<Domain1D<Q,Integrand>> domains;
+        vec<paid::Domain<1>> domains;
         domains.reserve(num_intervals);
-        vec<PAIDInput<Q, Integrand>> integrands;
+        vec<paid::PAIDInput<1, Integrand, int>> integrands;
         integrands.reserve(num_intervals);
 
         for (int i = 0; i < num_intervals; i++){
             if (intervals[i][0] < intervals[i][1]) {
-                Domain1D<Q, Integrand> d(intervals[i][0],intervals[i][1]);
+                paid::Domain<1> d(intervals[i][0],intervals[i][1]);
                 domains.push_back(d);
-                PAIDInput<Q, Integrand> paid_integrand(d,integrand,0);
+                paid::PAIDInput<1, Integrand, int> paid_integrand(d,integrand,0);
                 integrands.push_back(paid_integrand);
             }
         }
 
-        PAID<Q, Integrand> integral(integrands);
+        paid::PAID<1, Integrand, Q, int, double> integral(integrands);
         return integral.solve()[0];
     }
 }

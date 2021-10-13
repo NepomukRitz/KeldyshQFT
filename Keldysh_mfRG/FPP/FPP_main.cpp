@@ -12,7 +12,6 @@
 #include "Differential_Equation.h"
 #include "Ladder-approximation.h"
 #include "selfenergy_loop.h"
-#include "Monte-Carlo_Trial.h"
 #include "fRG-T-matrix-approach.h"
 #include "1D-integrals.h"
 #include "../utilities/util.h"
@@ -20,6 +19,7 @@
 #include "../grids/flow_grid.h"
 #include "../data_structures.h"
 //#include "../OldFiles/paid.hpp"
+//#include "zeros.h"
 
 
 int main() {
@@ -971,36 +971,7 @@ int main() {
     std::cout << "theta-integral gauss-lobatto = " << keldysh_theta_integral_result << "\n";
     */
 
-    Domain1D<comp,TestIntegrand2> d(-50.,50.);
 
-    TestIntegrand2 f0(0,0.1,1.0);
-    TestIntegrand2 f1(1,0.1,1.0);
-    TestIntegrand2 f2(2,0.1,1.0);
-    TestIntegrand2 f3(3,0.1,1.0);
-    TestIntegrand2 f4(4,0.1,1.0);
-    PAIDInput<comp,TestIntegrand2> paid_integrand0(d,f0,0);
-    PAIDInput<comp,TestIntegrand2> paid_integrand1(d,f1,0);
-    PAIDInput<comp,TestIntegrand2> paid_integrand2(d,f2,0);
-    PAIDInput<comp,TestIntegrand2> paid_integrand3(d,f3,0);
-    PAIDInput<comp,TestIntegrand2> paid_integrand4(d,f4,0);
-    PAID<comp,TestIntegrand2> paid_integral0({paid_integrand0});
-    PAID<comp,TestIntegrand2> paid_integral1({paid_integrand1});
-    PAID<comp,TestIntegrand2> paid_integral2({paid_integrand2});
-    PAID<comp,TestIntegrand2> paid_integral3({paid_integrand3});
-    PAID<comp,TestIntegrand2> paid_integral4({paid_integrand4});
-    comp res0 = paid_integral0.solve()[0];
-    comp res1 = paid_integral1.solve()[0];
-    comp res2 = paid_integral2.solve()[0];
-    comp res3 = paid_integral3.solve()[0];
-    comp res4 = paid_integral4.solve()[0];
-    std::cout << "result = " << res0 << "\n";
-    std::cout << "result = " << res1 << "\n";
-    std::cout << "result = " << res2 << "\n";
-    std::cout << "result = " << res3 << "\n";
-    std::cout << "result = " << res4 << "\n";
-
-
-    /*
     glb_mud = 0.0;
     double wmax = 10., vppmax = 10., qmax = 10., kmax = 10., vpp, kpp, t_kpp;
     int nw = 6, nvpp = 6, nq = 3, nk = 51;
@@ -1009,7 +980,7 @@ int main() {
         w = -wmax + 2*wi*wmax/(nw-1);
         for (int vppi = 0; vppi < nvpp; ++vppi) {
             vpp = -vppmax + 2*vppi*vppmax/(nw-1);
-            for (int qi = 1; qi < nq; ++qi) {
+            for (int qi = 0; qi < nq; ++qi) {
                 q = qi*qmax/(nq-1);
                 /*
                 for (int kppi = 0; kppi < nk; ++kppi){
@@ -1030,37 +1001,20 @@ int main() {
                     paid = integrand_Pi0_kpp_0oo_paid(t_kpp);
                     std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", t = " << t_kpp << ", paid = " << paid << "\n";
                 } */
-                /*
+
                 exact = exact_bare_bubble(w, vpp, q, 'c', 'd','a');
                 std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", exact = " << exact << "\n";
                 lobatto = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',1,'a');
                 std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
-                paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'p');
+                paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'a');
                 std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
 
             }
         }
     } //*/
-    /*
-    for (int wi = 0; wi < nw; ++wi) {
-        w = -wmax + 2*wi*wmax/(nw-1);
-        for (int vppi = 0; vppi < nvpp; ++vppi) {
-            vpp = -vppmax + 2*vppi*vppmax/(nw-1);
-            for (int qi = 0; qi < nq; ++qi) {
-                q = qi*qmax/(nq-1);
-                //exact = exact_bare_bubble(w, vpp, q, 'c', 'd','a');
-                //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", exact = " << exact << "\n";
-                //lobatto = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',1,'a');
-                //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
-                paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'p');
-                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
-            }
-        }
-    }
-     */
 
-    //list_bubble_int_tkpp(10.,1.,1,-5.,1.,'c','d',101,11,11,6);
-    //list_bubble_int_tkpp(10.,1.,2,-5.,1.,'c','d',101,11,11,6);
+    list_bubble_int_tkpp(10.,1.,1,-5.,1.,'c','d',101,11,11,6);
+    list_bubble_int_tkpp(10.,1.,2,-5.,1.,'c','d',101,11,11,6);
 
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================
