@@ -6,11 +6,15 @@
 #define KELDYSH_MFRG_HDF5_ROUTINES_H
 
 #include <cmath>
+#include <vector>
 #include "util.h"               // printing text
 #include "../parameters/master_parameters.h"         // system parameters (necessary for vector lengths etc.)
 #include "../data_structures.h"    // comp data type, std::real/complex vector class
 #include "../grids/frequency_grid.h"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
+#include "../state.h"
+
+//template<typename Q> class State;
 
 #ifdef MPI_FLAG
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file
@@ -87,6 +91,7 @@ H5::CompType def_mtype_comp() {
  */
 class Buffer {
 public:
+    double * lambda;
     double * freq_params;
     double * bfreqs_buffer;
     double * ffreqs_buffer;
@@ -124,6 +129,7 @@ public:
 #endif
 
     Buffer() {
+        lambda = new double [1];
         freq_params = new double[N_freq_params];
         bfreqs_buffer = new double[nBOS];                        // create buffer for bosonic frequencies
         ffreqs_buffer = new double[nFER];                        // create buffer for fermionic frequencies
@@ -178,9 +184,9 @@ public:
     }
 
 template <typename Q>
-    void initialize(State<Q>& state_in) {
+    void initialize(const State<Q>& state_in) {
         print("Starting to copy to buffer...", true);
-        FrequencyGrid bfreqs = state_in.vertex[0].avertex().frequencies.b_K1;
+        FrequencyGrid bfreqs = state_in.vertex[0].avertex().K1.K1_get_freqGrid();
         FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
         freq_params[0] = (double) bfreqs.N_w;
         freq_params[1] = bfreqs.w_upper;
@@ -198,15 +204,14 @@ template <typename Q>
             ffreqs_buffer[i] = ffreqs.ws[i];
         }
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
-    if (PARTICLE_HOLE_SYMMETRY and not KELDYSH) {
-        // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
-        selfenergy[i].re = glb_U / 2.;
-        selfenergy[i].im = myimag(state_in.selfenergy.acc(i));
-    }
-    else {
-        selfenergy[i].re = std::real(state_in.selfenergy.acc(i));
-        selfenergy[i].im = std::imag(state_in.selfenergy.acc(i));
-    }
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+            // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
+            selfenergy[i].re = glb_U/2.;
+            selfenergy[i].im = state_in.selfenergy.acc(i);
+#else
+            selfenergy[i].re = std::real(state_in.selfenergy.acc(i));
+            selfenergy[i].im = std::imag(state_in.selfenergy.acc(i));
+#endif
         }
         for (int i=0; i<irred_dim; ++i) {                       // write irreducible vertex into buffer
             irreducible_class[i].re = std::real(state_in.vertex[0].irred().acc(i));
@@ -214,19 +219,19 @@ template <typename Q>
         }
 #if MAX_DIAG_CLASS >= 1
         for(int i=0; i<K1_dim; ++i) {                                // write K1 into buffer
-            K1_class_a[i].re = std::real(state_in.vertex[0].avertex().K1_acc(i));
-            K1_class_a[i].im = std::imag(state_in.vertex[0].avertex().K1_acc(i));
+            K1_class_a[i].re = std::real(state_in.vertex[0].avertex().K1.acc(i));
+            K1_class_a[i].im = std::imag(state_in.vertex[0].avertex().K1.acc(i));
 
-            K1_class_p[i].re = std::real(state_in.vertex[0].pvertex().K1_acc(i));
-            K1_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K1_acc(i));
+            K1_class_p[i].re = std::real(state_in.vertex[0].pvertex().K1.acc(i));
+            K1_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K1.acc(i));
 
-            K1_class_t[i].re = std::real(state_in.vertex[0].tvertex().K1_acc(i));
-            K1_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K1_acc(i));
+            K1_class_t[i].re = std::real(state_in.vertex[0].tvertex().K1.acc(i));
+            K1_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K1.acc(i));
         }
 #endif
 #if MAX_DIAG_CLASS >= 2
-        FrequencyGrid bfreqs2 = state_in.vertex[0].avertex().frequencies.b_K2;
-        FrequencyGrid ffreqs2 = state_in.vertex[0].avertex().frequencies.f_K2;
+        FrequencyGrid bfreqs2 = state_in.vertex[0].avertex().K2.K2_get_freqGrid_b();
+        FrequencyGrid ffreqs2 = state_in.vertex[0].avertex().K2.K2_get_freqGrid_f();
         freq_params[8]  = (double) bfreqs2.N_w;
         freq_params[9]  = bfreqs2.w_upper;
         freq_params[10] = bfreqs2.w_lower;
@@ -243,19 +248,19 @@ template <typename Q>
             ffreqs2_buffer[i] = ffreqs2.ws[i];
         }
         for(int i=0; i<K2_dim; ++i) {                                // write K2 into buffer
-            K2_class_a[i].re = std::real(state_in.vertex[0].avertex().K2_acc(i));
-            K2_class_a[i].im = std::imag(state_in.vertex[0].avertex().K2_acc(i));
+            K2_class_a[i].re = std::real(state_in.vertex[0].avertex().K2.acc(i));
+            K2_class_a[i].im = std::imag(state_in.vertex[0].avertex().K2.acc(i));
 
-            K2_class_p[i].re = std::real(state_in.vertex[0].pvertex().K2_acc(i));
-            K2_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K2_acc(i));
+            K2_class_p[i].re = std::real(state_in.vertex[0].pvertex().K2.acc(i));
+            K2_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K2.acc(i));
 
-            K2_class_t[i].re = std::real(state_in.vertex[0].tvertex().K2_acc(i));
-            K2_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K2_acc(i));
+            K2_class_t[i].re = std::real(state_in.vertex[0].tvertex().K2.acc(i));
+            K2_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K2.acc(i));
         }
 #endif
 #if MAX_DIAG_CLASS >= 3
-        FrequencyGrid bfreqs3 = state_in.vertex[0].avertex().frequencies.b_K3;
-        FrequencyGrid ffreqs3 = state_in.vertex[0].avertex().frequencies.f_K3;
+        FrequencyGrid bfreqs3 = state_in.vertex[0].avertex().K3.K3_get_freqGrid_b();
+        FrequencyGrid ffreqs3 = state_in.vertex[0].avertex().K3.K3_get_freqGrid_f();
         freq_params[16] = (double) bfreqs3.N_w;
         freq_params[17] = bfreqs3.w_upper;
         freq_params[18] = bfreqs3.w_lower;
@@ -272,14 +277,14 @@ template <typename Q>
             ffreqs3_buffer[i] = ffreqs3.ws[i];
         }
         for(int i=0; i<K3_dim; ++i) {                                // write K3 into buffer
-            K3_class_a[i].re = std::real(state_in.vertex[0].avertex().K3_acc(i));
-            K3_class_a[i].im = std::imag(state_in.vertex[0].avertex().K3_acc(i));
+            K3_class_a[i].re = std::real(state_in.vertex[0].avertex().K3.acc(i));
+            K3_class_a[i].im = std::imag(state_in.vertex[0].avertex().K3.acc(i));
 
-            K3_class_p[i].re = std::real(state_in.vertex[0].pvertex().K3_acc(i));
-            K3_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K3_acc(i));
+            K3_class_p[i].re = std::real(state_in.vertex[0].pvertex().K3.acc(i));
+            K3_class_p[i].im = std::imag(state_in.vertex[0].pvertex().K3.acc(i));
 
-            K3_class_t[i].re = std::real(state_in.vertex[0].tvertex().K3_acc(i));
-            K3_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K3_acc(i));
+            K3_class_t[i].re = std::real(state_in.vertex[0].tvertex().K3.acc(i));
+            K3_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K3.acc(i));
         }
 #endif
         print("Buffer ready. Preparing for saving into Hdf5 file...", true);
@@ -639,7 +644,7 @@ public:
  */
 template <typename  Q>
 void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
-                 State<Q>& state_in, rvec& Lambdas, bool file_exists) {
+                 const State<Q>& state_in, rvec& Lambdas, bool file_exists) {
     //Try block to detect exceptions raised by any of the calls inside it
     try {
         // Prepare a buffer for writing data into the file
@@ -941,7 +946,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
  * @param state_in    : State to be written to the file.
  */
 template <typename Q>
-void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, State<Q>& state_in) {
+void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, const State<Q>& state_in) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -1016,9 +1021,9 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs.initialize_grid();
     // copy grids to result
     result.selfenergy.frequencies = ffreqs;
-    result.vertex[0].avertex().frequencies.b_K1 = bfreqs;
-    result.vertex[0].pvertex().frequencies.b_K1 = bfreqs;
-    result.vertex[0].tvertex().frequencies.b_K1 = bfreqs;
+    result.vertex[0].avertex().K1.frequencies_K1.b = bfreqs;
+    result.vertex[0].pvertex().K1.frequencies_K1.b = bfreqs;
+    result.vertex[0].tvertex().K1.frequencies_K1.b = bfreqs;
 #if MAX_DIAG_CLASS >= 2
     FrequencyGrid bfreqs2 ('b', 2, Lambda_ini);
     FrequencyGrid ffreqs2 ('f', 2, Lambda_ini);
@@ -1032,12 +1037,12 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs2.W_scale = buffer.freq_params[15];
     bfreqs2.initialize_grid();
     ffreqs2.initialize_grid();
-    result.vertex[0].avertex().frequencies.b_K2 = bfreqs2;
-    result.vertex[0].pvertex().frequencies.b_K2 = bfreqs2;
-    result.vertex[0].tvertex().frequencies.b_K2 = bfreqs2;
-    result.vertex[0].avertex().frequencies.f_K2 = ffreqs2;
-    result.vertex[0].pvertex().frequencies.f_K2 = ffreqs2;
-    result.vertex[0].tvertex().frequencies.f_K2 = ffreqs2;
+    result.vertex[0].avertex().K2.frequencies_K2.b = bfreqs2;
+    result.vertex[0].pvertex().K2.frequencies_K2.b = bfreqs2;
+    result.vertex[0].tvertex().K2.frequencies_K2.b = bfreqs2;
+    result.vertex[0].avertex().K2.frequencies_K2.f = ffreqs2;
+    result.vertex[0].pvertex().K2.frequencies_K2.f = ffreqs2;
+    result.vertex[0].tvertex().K2.frequencies_K2.f = ffreqs2;
 #endif
 #if MAX_DIAG_CLASS >= 3
     FrequencyGrid bfreqs3 ('b', 3, Lambda_ini);
@@ -1052,12 +1057,12 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs3.W_scale = buffer.freq_params[23];
     bfreqs3.initialize_grid();
     ffreqs3.initialize_grid();
-    result.vertex[0].avertex().frequencies.b_K3 = bfreqs3;
-    result.vertex[0].pvertex().frequencies.b_K3 = bfreqs3;
-    result.vertex[0].tvertex().frequencies.b_K3 = bfreqs3;
-    result.vertex[0].avertex().frequencies.f_K3 = ffreqs3;
-    result.vertex[0].pvertex().frequencies.f_K3 = ffreqs3;
-    result.vertex[0].tvertex().frequencies.f_K3 = ffreqs3;
+    result.vertex[0].avertex().K3.frequencies_K3.b = bfreqs3;
+    result.vertex[0].pvertex().K3.frequencies_K3.b = bfreqs3;
+    result.vertex[0].tvertex().K3.frequencies_K3.b = bfreqs3;
+    result.vertex[0].avertex().K3.frequencies_K3.f = ffreqs3;
+    result.vertex[0].pvertex().K3.frequencies_K3.f = ffreqs3;
+    result.vertex[0].tvertex().K3.frequencies_K3.f = ffreqs3;
 #endif
 }
 
@@ -1070,59 +1075,94 @@ template <typename Q>
 void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
     Q val; // buffer value
 
+    result.Lambda = *buffer.lambda;
+
     for (int i=0; i<buffer.self_dim; ++i) {
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.selfenergy[i].re, buffer.selfenergy[i].im);
-        else                                    val = buffer.selfenergy[i].im;
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
+#else
+        val = buffer.selfenergy[i].im;
+#endif
         result.selfenergy.direct_set(i, val);
     }
     for (int i=0; i<buffer.irred_dim; ++i) {
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.irreducible_class[i].re, buffer.irreducible_class[i].im);
-        else                                    val = buffer.irreducible_class[i].re;
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
+#else
+        val = buffer.irreducible_class[i].re;
+#endif
         result.vertex[0].irred().direct_set(i, val);
     }
 #if MAX_DIAG_CLASS >= 1
     for (int i=0; i<buffer.K1_dim; ++i) {
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K1_class_a[i].re, buffer.K1_class_a[i].im);
-        else                                    val = buffer.K1_class_a[i].re;
-        result.vertex[0].avertex().K1_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
+#else
+        val = buffer.K1_class_a[i].re;
+#endif
+        result.vertex[0].avertex().K1.direct_set(i, val);
 
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K1_class_p[i].re, buffer.K1_class_p[i].im);
-        else                                    val = buffer.K1_class_p[i].re;
-        result.vertex[0].pvertex().K1_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
+#else
+        val = buffer.K1_class_p[i].re;
+#endif
+        result.vertex[0].pvertex().K1.direct_set(i, val);
 
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K1_class_t[i].re, buffer.K1_class_t[i].im);
-        else                                    val = buffer.K1_class_t[i].re;
-        result.vertex[0].tvertex().K1_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
+#else
+        val = buffer.K1_class_t[i].re;
+#endif
+        result.vertex[0].tvertex().K1.direct_set(i, val);
     }
 #endif
 #if MAX_DIAG_CLASS >= 2
     for (int i=0; i<buffer.K2_dim; ++i) {
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K2_class_a[i].re, buffer.K2_class_a[i].im);
-        else                                    val = buffer.K2_class_a[i].re;
-        result.vertex[0].avertex().K2_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
+#else
+        val = buffer.K2_class_a[i].re;
+#endif
+        result.vertex[0].avertex().K2.direct_set(i, val);
 
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K2_class_p[i].re, buffer.K2_class_p[i].im);
-        else                                    val = buffer.K2_class_p[i].re;
-        result.vertex[0].pvertex().K2_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
+#else
+        val = buffer.K2_class_p[i].re;
+#endif
+        result.vertex[0].pvertex().K2.direct_set(i, val);
 
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K2_class_t[i].re, buffer.K2_class_t[i].im);
-        else                                    val = buffer.K2_class_t[i].re;
-        result.vertex[0].tvertex().K2_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
+#else
+        val = buffer.K2_class_t[i].re;
+#endif
+        result.vertex[0].tvertex().K2.direct_set(i, val);
     }
 #endif
 #if MAX_DIAG_CLASS >= 3
     for (int i=0; i<buffer.K3_dim; ++i) {
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K3_class_a[i].re, buffer.K3_class_a[i].im);
-        else                                    val = buffer.K3_class_a[i].re;
-        result.vertex[0].avertex().K3_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
+#else
+        val = buffer.K3_class_a[i].re;
+#endif
+        result.vertex[0].avertex().K3.direct_set(i, val);
 
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K3_class_p[i].re, buffer.K3_class_p[i].im);
-        else                                    val = buffer.K3_class_p[i].re;
-        result.vertex[0].pvertex().K3_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
+#else
+        val = buffer.K3_class_p[i].re;
+#endif
+        result.vertex[0].pvertex().K3.direct_set(i, val);
 
-        if (KELDYSH || !PARTICLE_HOLE_SYMMETRY) val = (buffer.K3_class_t[i].re, buffer.K3_class_t[i].im);
-        else                                    val = buffer.K3_class_t[i].re;
-        result.vertex[0].tvertex().K3_direct_set(i, val);
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
+#else
+        val = buffer.K3_class_t[i].re;
+#endif
+        result.vertex[0].tvertex().K3.direct_set(i, val);
     }
 #endif
 }
@@ -1135,7 +1175,7 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  * @return            : State object containing the result.
  */
-State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size){
+State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it, long Lambda_size){
     State<state_datatype> result(Lambda_ini);
     if (Lambda_it < Lambda_size) {
 
@@ -1167,6 +1207,7 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
         H5::DataSpace dataSpaces_selfenergy = dataSets.self.getSpace();
         H5::DataSpace dataSpaces_irreducible = dataSets.irred.getSpace();
 
+        H5::DataSpace dataSpaces_Lambda_buffer(1, dims.Lambda);
         H5::DataSpace dataSpaces_freq_params_buffer(RANK_freqs-1, dims.freq_params_buffer_dims);
         H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
         H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
@@ -1215,6 +1256,17 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
             block[i] = 1;
         }
         count[0] = 1;
+
+        /// load data into buffer
+
+        hsize_t start_1D[1] = {Lambda_it};
+        hsize_t stride_1D[1]= {1};
+        hsize_t count_1D[1] = {1};
+        hsize_t block_1D[1] = {1};
+        dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+        dataSets.lambda.read(buffer.lambda, H5::PredType::NATIVE_DOUBLE,
+                           dataSpaces_Lambda_buffer, dataSpaces_Lambda);
+
 
         count[1] = N_freq_params;
         try {   // storing frequency gri parameters was implemented later --> old files do not have it
@@ -1287,6 +1339,76 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, int Lambda_it, long
     }
 }
 
+/**
+ * Read Lambdas from an existing file
+ * @param FILE_NAME   : File name.
+ * @return            : Lambdas
+ */
+rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
+
+
+
+    // Open the file. Access rights: read-only
+    H5::H5File *file = 0;
+    file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
+
+    H5::DataSet lambda_dataset = file->openDataSet("lambdas");
+
+    // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
+    //Buffer buffer;
+
+    // Create the memory data type for storing complex numbers in file
+    //H5::CompType mtype_comp = def_mtype_comp();
+
+    // Create the dimension arrays for objects in file and in buffer
+    //Dims dims(buffer, Lambda_size);
+
+    // Read the data sets from the file to copy their content into the buffer
+    //DataSets dataSets(file);
+
+    // Create the data spaces for the data sets in file and for buffer objects
+    H5::DataSpace dataSpace_Lambda = lambda_dataset.getSpace();
+    /*
+     * Get the number of dimensions in the dataspace.
+     */
+    int rank = dataSpace_Lambda.getSimpleExtentNdims();
+    /*
+     * Get the dimension size of each dimension in the dataspace and
+     * display them.
+     */
+    hsize_t dims_out[2];
+    int ndims = dataSpace_Lambda.getSimpleExtentDims( dims_out, NULL);
+    //std::cout << "rank " << rank << ", dimensions " <<
+    //     (unsigned long)(dims_out[0]) << " x " <<
+    //     (unsigned long)(dims_out[1]) << std::endl;
+
+
+    H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
+
+    /// load data into buffer
+
+    //hsize_t start_1D[1] = {Lambda_it};
+    //hsize_t stride_1D[1]= {1};
+    //hsize_t count_1D[1] = {1};
+    //hsize_t block_1D[1] = {1};
+    //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+    double Lambdas_arr[dims_out[0]];
+    lambda_dataset.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
+                         dataSpace_Lambda_buffer, dataSpace_Lambda);
+
+    rvec Lambdas (Lambdas_arr, Lambdas_arr + sizeof(Lambdas_arr) / sizeof(double));
+
+    // Terminate
+    lambda_dataset.close();
+    file->close();
+    delete file;
+
+    return Lambdas;
+
+
+}
+
+
 /// --- Test function --- ///
 
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
@@ -1306,43 +1428,43 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
         for (int i_in=0; i_in<n_in; ++i_in) {
 #if MAX_DIAG_CLASS >= 1
             for (int iw1=0; iw1<nBOS; ++iw1) {
-                if (state.vertex[0].avertex().K1_val(iK, iw1, i_in) != out.vertex[0].avertex().K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].avertex().K1.val(iK, iw1, i_in) != out.vertex[0].avertex().K1.val(iK, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
-                if (state.vertex[0].pvertex().K1_val(iK, iw1, i_in) != out.vertex[0].pvertex().K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].pvertex().K1.val(iK, iw1, i_in) != out.vertex[0].pvertex().K1.val(iK, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
-                if (state.vertex[0].tvertex().K1_val(iK, iw1, i_in) != out.vertex[0].tvertex().K1_val(iK, iw1, i_in)) {
+                if (state.vertex[0].tvertex().K1.val(iK, iw1, i_in) != out.vertex[0].tvertex().K1.val(iK, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
 #if MAX_DIAG_CLASS >= 2
                 for (int iw2=0; iw2<nFER; ++iw2) {
-                    if (state.vertex[0].avertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].avertex().K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].avertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].avertex().K2.val(iK, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
-                    if (state.vertex[0].pvertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].pvertex().K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].pvertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].pvertex().K2.val(iK, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
-                    if (state.vertex[0].tvertex().K2_val(iK, iw1, iw2, i_in) != out.vertex[0].tvertex().K2_val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].tvertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].tvertex().K2.val(iK, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
 #if MAX_DIAG_CLASS == 3
                     for (int iw3=0; iw3<nFER; ++iw3) {
-                        if (state.vertex[0].avertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].avertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].avertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].avertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
-                        if (state.vertex[0].pvertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].pvertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].pvertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].pvertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
-                        if (state.vertex[0].tvertex().K3_val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].tvertex().K3_val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].tvertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].tvertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }

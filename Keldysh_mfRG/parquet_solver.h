@@ -204,9 +204,7 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
  * resulting from the parquet equations.
  */
 void parquet_checks(const std::string filename) {
-    rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
-    // TODO(low): this only works if flow grid of the computation of the file <filename> is the same as the one produced here
-    //  --> also read Lambda grid from file
+    rvec Lambdas = read_Lambdas_from_hdf(filename);
     int nL = Lambdas.size();
 
     rvec norm_K1_fRG (nL), norm_K1_BSE (nL), norm_K1_diff (nL);
@@ -328,7 +326,7 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
  *                     reached (default: 50)
  */
 template <typename Q>
-void parquet_solver(const std::string filename, State<Q> state_in, const double Lambda,
+void parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda,
                     const double accuracy=1e-6, const int Nmax=50) {
     double relative_difference_vertex = 1.;
     double relative_difference_selfenergy = 1.;

@@ -14,6 +14,7 @@
 #include "../../parameters/master_parameters.h"  // define system parameters
 
 // include tests that should be run
+#include "test_ODE_solver.h"
 #include "test_data_structures.h"
 #include "test_integrator.h"
 #include "test_symmetry_transformations.h"
@@ -21,6 +22,7 @@
 
 #include "test_frequencygrid.h"
 #include "test_interpolations.h"
+#include "test_minimizer.h"
 #include "test_rvertex.h"
 //#ifdef HUBBARD
 #include "test_momentum_grid.h"

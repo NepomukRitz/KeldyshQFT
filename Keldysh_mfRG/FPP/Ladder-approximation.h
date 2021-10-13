@@ -300,7 +300,7 @@ void ladder_p_list (double Lambda_i, double Lambda_f, int reg, int inttype, doub
 
 
 
-    std::string filename = "../Data/ladder_p_list";
+    std::string filename = data_dir + "ladder_p_list";
     filename += "_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
                 + ".h5";
     write_h5_rvecs(filename,
@@ -331,7 +331,7 @@ void ladder_p_list_wq (double wmax, double qmax, double Lambda_i, double Lambda_
         }
     }
 
-    std::string filename = "../Data/ladder_p_list_wq";
+    std::string filename = data_dir + "ladder_p_list_wq";
     filename += std::to_string(inttype) + "_nw=" + std::to_string(nw)
                 + "_nq=" + std::to_string(nq)
                 + ".h5";

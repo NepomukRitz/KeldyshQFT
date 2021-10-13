@@ -14,11 +14,12 @@ template <typename Q>
 class State{
     void set_frequency_grid(const State<Q>& state_in);
 public:
+    double Lambda;
     SelfEnergy<Q> selfenergy;
     Vertex<Q> vertex;
 
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)) {};
+    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)), Lambda(Lambda) {};
 
     /// Constructor, which gets a Vertex (whose frequency grid will be copied) and a frequencyGrid for the selfenergy
     State(const Vertex<Q>& vertex_in, const FrequencyGrid selfenergyFreqs_in)
@@ -30,6 +31,7 @@ public:
 
     void initialize();
     void update_grid(double Lambda);
+    void findBestFreqGrid(double Lambda);
 
     // operators containing State objects
     auto operator+= (const State& state) -> State {
@@ -85,6 +87,28 @@ template <typename Q> void State<Q>::update_grid(double Lambda) {
     this->vertex.update_grid(Lambda);
 }
 
+
+template <typename Q> void State<Q>::findBestFreqGrid(double Lambda) {
+    this->selfenergy.findBestFreqGrid(Lambda);
+    this->vertex[0].half1().findBestFreqGrid(Lambda);
+}
+
+
+
+
+template<typename Q>
+auto max_rel_err(const State<Q>& err, const vec<State<Q>>& scale_States, const double minimum_value_considered) -> double {
+    double scale_Vert = 0.;
+    for (auto state: scale_States) {scale_Vert += state.vertex[0].half1().sum_norm(0);}
+    double max_vert = err.vertex[0].half1().sum_norm(0) / scale_Vert;
+
+    double scale_SE = 0.;
+    for (auto state: scale_States) {scale_SE += state.selfenergy.norm(0);}
+
+    double max_self = err.selfenergy.norm(0) /scale_SE;
+    return std::max(max_self, max_vert);
+
+}
 
 
 #endif //KELDYSH_MFRG_STATE_H

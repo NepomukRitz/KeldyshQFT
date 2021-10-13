@@ -285,7 +285,7 @@ void fRG_p_list (double Lambda_i, double Lambda_f, int reg, int inttype, double 
         std::cout << "i = " << i << ", a^(-1) = " << ainvs[nainv-i-1] << ", mu = " << muds[nainv-i-1] << "\n";
     };
 
-    std::string filename = "../Data/fRG_p_list";
+    std::string filename = data_dir + "fRG_p_list";
     filename += "_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
                 + ".h5";
     write_h5_rvecs(filename,
@@ -324,7 +324,7 @@ void fRG_p_list_wq (double wmax, double qmax, double Lambda_i, double Lambda_f, 
         }
     }
 
-    std::string filename = "../Data/fRG_p_list_wq";
+    std::string filename = data_dir + "fRG_p_list_wq";
     filename += "_nw=" + std::to_string(nw)
                 + "_nq=" + std::to_string(nq)
                 + ".h5";
