@@ -195,9 +195,9 @@ public:
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        if (std::abs(indices.w) < vertexDataContainer<k2, Q>::frequencies_K3.b.w_upper + inter_tol
-            && std::abs(indices.v1) < vertexDataContainer<k2, Q>::frequencies_K3.f.w_upper + inter_tol
-            && std::abs(indices.v2) < vertexDataContainer<k2, Q>::frequencies_K3.f.w_upper + inter_tol)
+        if (std::abs(indices.w) < vertexDataContainer<k3, Q>::K3_get_wupper_b() + inter_tol
+            && std::abs(indices.v1) < vertexDataContainer<k3, Q>::K3_get_wupper_f() + inter_tol
+            && std::abs(indices.v2) < vertexDataContainer<k3, Q>::K3_get_wupper_f() + inter_tol)
         {
         Q result =  interpolate_lin3D<Q>(indices.w, indices.v1, indices.v2,
                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,

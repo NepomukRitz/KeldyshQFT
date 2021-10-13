@@ -142,7 +142,7 @@ public:
 
     explicit vertexDataContainer(double Lambda) : frequencies_K1(Lambda), vertexContainerBase<Q,3>(dimsK1) { };
 
-    auto K1_get_VertexFreqGrid() const -> VertexFrequencyGrid<k1>;
+    auto K1_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k1>&;
     void K1_set_VertexFreqGrid(const VertexFrequencyGrid<k1> &frequencyGrid);
 
 
@@ -170,12 +170,12 @@ public:
     //void K1_add(vec<Q> summand);
     //auto get_K1() const -> vec<Q>;
     //void set_K1(vec<Q> data);
-    double K1_get_wlower() const;
-    double K1_get_wupper() const;
-    auto K1_get_freqGrid() const -> FrequencyGrid;
+    const double& K1_get_wlower() const;
+    const double& K1_get_wupper() const;
+    auto K1_get_freqGrid() const -> const FrequencyGrid&;
     void K1_get_freq_w(double& w, int i) const;
-    double K1_get_tlower_aux() const;
-    double K1_get_tupper_aux() const;
+    const double& K1_get_tlower_aux() const;
+    const double& K1_get_tupper_aux() const;
     void K1_get_freq_aux(double& w, int i) const;
     auto K1_gridtransf(double w) const -> double;
     auto K1_gridtransf_inv(double w) const -> double;
@@ -228,7 +228,7 @@ public:
 
     /// Member functions for accessing/setting values of the vector K2 ///
 
-    auto K2_get_VertexFreqGrid() const -> VertexFrequencyGrid<k2>;
+    auto K2_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>&;
     void K2_set_VertexFreqGrid(const VertexFrequencyGrid<k2> &frequencyGrid);
 
     /** Return the value of the vector K2 at index i. */
@@ -252,17 +252,17 @@ public:
     //void set_K2(vec<Q> data);
 
     //void K2_add(vec<Q> summand);
-    double K2_get_wlower_b() const;
-    double K2_get_wupper_b() const;
-    double K2_get_wlower_f() const;
-    double K2_get_wupper_f() const;
-    FrequencyGrid K2_get_freqGrid_b() const;
-    FrequencyGrid K2_get_freqGrid_f() const;
+    const double& K2_get_wlower_b() const;
+    const double& K2_get_wupper_b() const;
+    const double& K2_get_wlower_f() const;
+    const double& K2_get_wupper_f() const;
+    const FrequencyGrid& K2_get_freqGrid_b() const;
+    const FrequencyGrid& K2_get_freqGrid_f() const;
     void K2_get_freqs_w(double& w, double& v, int iw, int iv) const;
-    double K2_get_tlower_b_aux() const;
-    double K2_get_tupper_b_aux() const;
-    double K2_get_tlower_f_aux() const;
-    double K2_get_tupper_f_aux() const;
+    const double& K2_get_tlower_b_aux() const;
+    const double& K2_get_tupper_b_aux() const;
+    const double& K2_get_tlower_f_aux() const;
+    const double& K2_get_tupper_f_aux() const;
     void K2_get_freqs_aux(double& w, double& v, int iw, int iv) const;
     auto K2_gridtransf_b(double w) const -> double;
     auto K2_gridtransf_f(double w) const -> double;
@@ -328,7 +328,7 @@ public:
 
     /// Member functions for accessing/setting values of the vector K3 ///
 
-    auto K3_get_VertexFreqGrid() const -> VertexFrequencyGrid<k3>;
+    auto K3_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3>&;
     void K3_set_VertexFreqGrid(const VertexFrequencyGrid<k3> &frequencyGrid);
 
     /** Return the value of the vector K3 at index i. */
@@ -352,17 +352,17 @@ public:
     //auto val(int iK, int iw, int iv, int ivp, int i_in) const -> Q;
 
     //void K3_add(vec<Q> summand);
-    double K3_get_wlower_b() const;
-    double K3_get_wupper_b() const;
-    double K3_get_wlower_f() const;
-    double K3_get_wupper_f() const;
-    FrequencyGrid K3_get_freqGrid_b() const;
-    FrequencyGrid K3_get_freqGrid_f() const;
+    const double& K3_get_wlower_b() const;
+    const double& K3_get_wupper_b() const;
+    const double& K3_get_wlower_f() const;
+    const double& K3_get_wupper_f() const;
+    const FrequencyGrid& K3_get_freqGrid_b() const;
+    const FrequencyGrid& K3_get_freqGrid_f() const;
     void K3_get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
-    double K3_get_tlower_b_aux() const;
-    double K3_get_tupper_b_aux() const;
-    double K3_get_tlower_f_aux() const;
-    double K3_get_tupper_f_aux() const;
+    const double& K3_get_tlower_b_aux() const;
+    const double& K3_get_tupper_b_aux() const;
+    const double& K3_get_tlower_f_aux() const;
+    const double& K3_get_tupper_f_aux() const;
     void K3_get_freqs_aux(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
     auto K3_gridtransf_b(double w) const -> double;
     auto K3_gridtransf_f(double w) const -> double;
@@ -390,9 +390,9 @@ public:
 
 };
 
-/****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
+/************************************ MEMBER FUNCTIONS OF THE VERTEX Data Container************************************/
 template<typename Q>
-auto vertexDataContainer<k1,Q>::K1_get_VertexFreqGrid() const -> VertexFrequencyGrid<k1> {
+auto vertexDataContainer<k1,Q>::K1_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k1>& {
     return frequencies_K1;
 }
 template<typename Q>
@@ -400,7 +400,7 @@ void vertexDataContainer<k1,Q>::K1_set_VertexFreqGrid(const VertexFrequencyGrid<
     frequencies_K1 = frequencyGrid;
 }
 template<typename Q>
-auto vertexDataContainer<k2,Q>::K2_get_VertexFreqGrid() const -> VertexFrequencyGrid<k2> {
+auto vertexDataContainer<k2,Q>::K2_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>& {
     return frequencies_K2;
 }
 template<typename Q>
@@ -408,7 +408,7 @@ void vertexDataContainer<k2,Q>::K2_set_VertexFreqGrid(const VertexFrequencyGrid<
     frequencies_K2 = frequencyGrid;
 }
 template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_get_VertexFreqGrid() const -> VertexFrequencyGrid<k3> {
+auto vertexDataContainer<k3,Q>::K3_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3> & {
     return frequencies_K3;
 }
 template<typename Q>
@@ -450,15 +450,15 @@ template<typename Q> void vertexDataContainer<k1,Q>::set_K1(const vec<Q> data) {
     return K1 = data;
 }*/
 template<typename Q>
-double vertexDataContainer<k1,Q>::K1_get_wlower() const {
+const double& vertexDataContainer<k1,Q>::K1_get_wlower() const {
     return frequencies_K1.b.w_lower;
 }
 template<typename Q>
-double vertexDataContainer<k1,Q>::K1_get_wupper() const {
+const double& vertexDataContainer<k1,Q>::K1_get_wupper() const {
     return frequencies_K1.b.w_upper;
 }
 template<typename Q>
-auto vertexDataContainer<k1,Q>::K1_get_freqGrid() const -> FrequencyGrid {
+auto vertexDataContainer<k1,Q>::K1_get_freqGrid() const -> const FrequencyGrid& {
     return frequencies_K1.b;
 }
 template<typename Q>
@@ -466,11 +466,11 @@ void vertexDataContainer<k1,Q>::K1_get_freq_w(double& w, const int i) const {
     w = frequencies_K1.b.get_ws(i);
 }
 template<typename Q>
-double vertexDataContainer<k1,Q>::K1_get_tlower_aux() const {
+const double& vertexDataContainer<k1,Q>::K1_get_tlower_aux() const {
     return frequencies_K1.b.t_lower;
 }
 template<typename Q>
-double vertexDataContainer<k1,Q>::K1_get_tupper_aux() const {
+const double& vertexDataContainer<k1,Q>::K1_get_tupper_aux() const {
     return frequencies_K1.b.t_upper;
 }
 template<typename Q>
@@ -547,27 +547,27 @@ template<typename Q> void vertexDataContainer<k2,Q>::set_K2(const vec<Q> data) {
     return K2 = data;
 }*/
 template<typename Q>
-double vertexDataContainer<k2,Q>::K2_get_wlower_b() const {
+const double& vertexDataContainer<k2,Q>::K2_get_wlower_b() const {
     return frequencies_K2.b.w_lower;
 }
 template<typename Q>
-double vertexDataContainer<k2,Q>::K2_get_wupper_b() const {
+const double& vertexDataContainer<k2,Q>::K2_get_wupper_b() const {
     return frequencies_K2.b.w_upper;
 }
 template<typename Q>
-double vertexDataContainer<k2,Q>::K2_get_wlower_f() const {
+const double& vertexDataContainer<k2,Q>::K2_get_wlower_f() const {
     return frequencies_K2.f.w_lower;
 }
 template<typename Q>
-double vertexDataContainer<k2,Q>::K2_get_wupper_f() const {
+const double& vertexDataContainer<k2,Q>::K2_get_wupper_f() const {
     return frequencies_K2.f.w_upper;
 }
 template<typename Q>
-auto vertexDataContainer<k2,Q>::K2_get_freqGrid_b() const -> FrequencyGrid {
+auto vertexDataContainer<k2,Q>::K2_get_freqGrid_b() const -> const FrequencyGrid& {
     return frequencies_K2.b;
 }
 template<typename Q>
-auto vertexDataContainer<k2,Q>::K2_get_freqGrid_f() const -> FrequencyGrid {
+auto vertexDataContainer<k2,Q>::K2_get_freqGrid_f() const -> const FrequencyGrid& {
     return frequencies_K2.f;
 }
 template<typename Q>
@@ -578,19 +578,19 @@ void vertexDataContainer<k2,Q>::K2_get_freqs_w(double &w, double &v, const int i
 }
 
 template<typename Q>
-double vertexDataContainer<k2,Q>::K2_get_tlower_b_aux() const {
+const double& vertexDataContainer<k2,Q>::K2_get_tlower_b_aux() const {
     return frequencies_K2.b.t_lower;
 }
 template<typename Q>
-double vertexDataContainer<k2,Q>::K2_get_tupper_b_aux() const {
+const double& vertexDataContainer<k2,Q>::K2_get_tupper_b_aux() const {
     return frequencies_K2.b.t_upper;
 }
 template<typename Q>
-double vertexDataContainer<k2,Q>::K2_get_tlower_f_aux() const {
+const double& vertexDataContainer<k2,Q>::K2_get_tlower_f_aux() const {
     return frequencies_K2.f.t_lower;
 }
 template<typename Q>
-double vertexDataContainer<k2,Q>::K2_get_tupper_f_aux() const {
+const double& vertexDataContainer<k2,Q>::K2_get_tupper_f_aux() const {
     return frequencies_K2.f.t_upper;
 }
 template<typename Q>
@@ -724,27 +724,27 @@ template<typename Q> void vertexDataContainer<k3,Q>::set_K3(const vec<Q> data) {
     return K3 = data;
 }*/
 template<typename Q>
-double vertexDataContainer<k3,Q>::K3_get_wlower_b() const {
+const double& vertexDataContainer<k3,Q>::K3_get_wlower_b() const {
     return frequencies_K3.b.w_lower;
 }
 template<typename Q>
-double vertexDataContainer<k3,Q>::K3_get_wupper_b() const {
+const double& vertexDataContainer<k3,Q>::K3_get_wupper_b() const {
     return frequencies_K3.b.w_upper;
 }
 template<typename Q>
-double vertexDataContainer<k3,Q>::K3_get_wlower_f() const {
+const double& vertexDataContainer<k3,Q>::K3_get_wlower_f() const {
     return frequencies_K3.f.w_lower;
 }
 template<typename Q>
-double vertexDataContainer<k3,Q>::K3_get_wupper_f() const {
+const double& vertexDataContainer<k3,Q>::K3_get_wupper_f() const {
     return frequencies_K3.f.w_upper;
 }
 template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_get_freqGrid_b() const -> FrequencyGrid {
+auto vertexDataContainer<k3,Q>::K3_get_freqGrid_b() const -> const FrequencyGrid& {
     return frequencies_K3.b;
 }
 template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_get_freqGrid_f() const -> FrequencyGrid {
+auto vertexDataContainer<k3,Q>::K3_get_freqGrid_f() const -> const FrequencyGrid& {
     return frequencies_K3.f;
 }
 template<typename Q>
@@ -755,19 +755,19 @@ void vertexDataContainer<k3,Q>::K3_get_freqs_w(double &w, double &v, double& vp,
 }
 
 template<typename Q>
-double vertexDataContainer<k3,Q>::K3_get_tlower_b_aux() const {
+const double& vertexDataContainer<k3,Q>::K3_get_tlower_b_aux() const {
     return frequencies_K3.b.t_lower;
 }
 template<typename Q>
-double vertexDataContainer<k3,Q>::K3_get_tupper_b_aux() const {
+const double& vertexDataContainer<k3,Q>::K3_get_tupper_b_aux() const {
     return frequencies_K3.b.t_upper;
 }
 template<typename Q>
-double vertexDataContainer<k3,Q>::K3_get_tlower_f_aux() const {
+const double& vertexDataContainer<k3,Q>::K3_get_tlower_f_aux() const {
     return frequencies_K3.f.t_lower;
 }
 template<typename Q>
-double vertexDataContainer<k3,Q>::K3_get_tupper_f_aux() const {
+const double& vertexDataContainer<k3,Q>::K3_get_tupper_f_aux() const {
     return frequencies_K3.f.t_upper;
 }
 template<typename Q>

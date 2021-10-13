@@ -308,7 +308,7 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     auto index = ((int) (t+FREQ_PADDING)) - FREQ_PADDING;
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
-        index = std::min(N_w - 2, index);
+        index = std::min(N_w - 2 - 2*FREQ_PADDING, index);
     }
     else {
         index = std::max(-FREQ_PADDING, index);
@@ -339,7 +339,7 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
     auto index = ((int) (t_rescaled+FREQ_PADDING)) - FREQ_PADDING;
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
-        index = std::min(N_w - 2, index);
+        index = std::min(N_w - 2 - 2*FREQ_PADDING, index);
     }
     else {
         index = std::max(-FREQ_PADDING, index);
