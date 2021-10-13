@@ -112,8 +112,8 @@ public:
         double frac = 0.5;
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
-        for (int i=1; i<nBOS-1; ++i) {
-            double vpp = this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.ws[i];
+        for (int i=0; i<nBOS; ++i) {
+            double vpp = this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -126,7 +126,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.ws[i] * (frac) + this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.ws[i+1] * (1-frac);
+            vpp = this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -189,11 +189,10 @@ namespace {
 
 
             // compute TOPT K2 (eye diagrams) (numerically exact)
-            for (int i = 1; i<nBOS2-1; i++) {
-                for (int j = 1; j<nFER2-1; j++) {
+            for (int i = 0; i<nBOS2; i++) {
+                for (int j = 0; j<nFER2; j++) {
                     double w, v;
-                    K2aexact.vertex[0].avertex().K2_get_freqs_w(w, v, i, j); //frequencies_K2.b.ws[i];
-                    //double v = PT_state.vertex[0].avertex().frequencies_K2.f.ws[j];
+                    K2aexact.vertex[0].avertex().K2_get_freqs_w(w, v, i, j);
                     Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, false, Pi);
                     double vmax = 100.;
                     double Delta = (glb_Gamma+Lambda)/2.;

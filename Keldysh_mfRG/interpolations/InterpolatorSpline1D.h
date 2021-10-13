@@ -94,12 +94,12 @@ public:
     template <class DataContainer, typename Q>
     void SplineK1<DataContainer,Q>::set_coeffs_from_b()
     {
-        size_t n_x = DataContainer::frequencies_K1.b.ws.size();
+        size_t n_x = DataContainer::frequencies_K1.b.get_ws_vec().size();
         size_t n_nonx = n/n_x;
 
-    for(size_t i=0; i<n_nonx; i++) {       /// i=n-1 not treated (only used for extrapolation to the right)
-        for (size_t j=0; j<n_x-1; j++) {
-            const double h  = DataContainer::frequencies_K1.b.ts[j+1]-DataContainer::frequencies_K1.b.ts[j];      /// spacing
+    for(size_t i=0; i<n_nonx; i++) {
+        for (size_t j=0; j<n_x-1; j++) { /// i=n_x-1 not treated (only used for extrapolation to the right)
+            const double h  = DataContainer::frequencies_K1.b.get_ts(j+1-FREQ_PADDING)-DataContainer::frequencies_K1.b.get_ts(j-FREQ_PADDING);      /// spacing
             // from continuity and differentiability condition
             m_c[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)] = (3.0 * (DataContainer::data[::rotateFlatIndex(i*n_x+j+1, DataContainer::dims, i_x)] - DataContainer::data[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)]) / h - (2.0 * m_b[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)] + m_b[::rotateFlatIndex(i*n_x+j+1, DataContainer::dims, i_x)]) ) / h;   /// checked
             // from differentiability condition
@@ -223,14 +223,14 @@ public:
     {
     assert(initialized);
     double t;
-    size_t idx=DataContainer::frequencies_K1.b.fconv(t, x);
+    size_t idx=DataContainer::frequencies_K1.b.fconv(t, x); // idx in [-FREQ_PADDING, n-FREQ_PADDING]
 
-    double h = t - DataContainer::frequencies_K1.b.ts[idx];
+    double h = t - DataContainer::frequencies_K1.b.get_ts(idx);
     Q interpol;
-    interpol=((m_d[::getFlatIndex(iK, idx, i_in, DataContainer::dims)]*h
-            + m_c[::getFlatIndex(iK, idx, i_in, DataContainer::dims)])*h
-            + m_b[::getFlatIndex(iK, idx, i_in, DataContainer::dims)])*h
-            + DataContainer::data[::getFlatIndex(iK, idx, i_in, DataContainer::dims)];
+    interpol   =((m_d[::getFlatIndex(iK, idx+FREQ_PADDING, i_in, DataContainer::dims)]*h
+                + m_c[::getFlatIndex(iK, idx+FREQ_PADDING, i_in, DataContainer::dims)])*h
+                + m_b[::getFlatIndex(iK, idx+FREQ_PADDING, i_in, DataContainer::dims)])*h
++ DataContainer::data[::getFlatIndex(iK, idx+FREQ_PADDING, i_in, DataContainer::dims)];
 
     assert(isfinite(interpol));
     return interpol;

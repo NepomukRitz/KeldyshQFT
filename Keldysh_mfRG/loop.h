@@ -326,7 +326,7 @@ class LoopCalculator{
     const int iv;
     const int i_in;
 
-    const double v = self.frequencies.ws[iv];
+    const double v = self.frequencies.get_ws(iv);
 
     double v_lower, v_upper;
     int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!

@@ -25,8 +25,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
-    for (int iw = 1; iw<nBOS-1; iw++){
-        //indices.w = avertex.frequencies.b_K1.ws[iw];
+    for (int iw = 0; iw<nBOS; iw++){
         avertex.K1.K1_get_freq_w(indices.w, iw);
 
         state_datatype result_interpol = avertex.K1.interpolate(indices);
@@ -58,8 +57,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 1; iw<nBOS2-1; iw++){
-        for (int iv = 1; iv<nFER2-1; iv++) {
+    for (int iw = 0; iw<nBOS2; iw++){
+        for (int iv = 0; iv<nFER2; iv++) {
             avertex.K2.setvert(value, iK, iw, iv, i_in);
             value +=1;
         }
@@ -70,10 +69,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     vec<double> errors (nBOS2*nFER2);
     int iter = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    for (int iw = 1; iw<nBOS2-1; iw++){
-        for (int iv = 1; iv<nFER2-1; iv++) {
-            //indices.w  = avertex.frequencies.b_K2.ws[iw];
-            //indices.v1 = avertex.frequencies.f_K2.ws[iv];
+    for (int iw = 0; iw<nBOS2; iw++){
+        for (int iv = 0; iv<nFER2; iv++) {
             avertex.K2.K2_get_freqs_w(indices.w, indices.v1, iw, iv);
 
             double error = std::abs(avertex.K2.interpolate(indices) -  avertex.K2.val(iK, iw, iv, i_in));
@@ -113,16 +110,13 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     }
 
     double cumul_interpolation_error = 0;
-    vec<double> errors ((nBOS3-1)*(nFER3-1)*(nFER3-1));
+    vec<double> errors ((nBOS3)*(nFER3)*(nFER3));
     vec<state_datatype> vals_interp ((nBOS3)*(nFER3)*(nFER3));
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    for (int iw = 1; iw<nBOS3-1; iw++){
-        for (int iv = 1; iv<nFER3-1; iv++) {
-            for (int ivp = 1; ivp<nFER3-1; ivp++) {
-                //indices.w = avertex.frequencies.b_K3.ws[iw];
-                //indices.v1 = avertex.frequencies.f_K3.ws[iv];
-                //indices.v2 = avertex.frequencies.f_K3.ws[ivp];
+    for (int iw = 0; iw<nBOS3; iw++){
+        for (int iv = 0; iv<nFER3; iv++) {
+            for (int ivp = 0; ivp<nFER3; ivp++) {
                 avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
 
                 state_datatype val_interp =  avertex.K3.interpolate(indices);
@@ -169,8 +163,8 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS; iw++){
-        double w;// = avertex.frequencies.b_K1.ws[iw];
+    for (int iw = 0-FREQ_PADDING; iw<nBOS+FREQ_PADDING; iw++){
+        double w;
         if (INTERPOLATION == linear)  avertex.K1.K1_get_freq_w(w, iw);
         else avertex.K1.K1_get_freq_aux(w, iw);
         value = linearFunction1D(w);
@@ -226,7 +220,7 @@ if (INTERPOLATION == cubic) {
     else iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw < nBOS; iw++) {
+    for (int iw = 0-FREQ_PADDING; iw < nBOS+FREQ_PADDING; iw++) {
         double w;
         avertex.K1.K1_get_freq_aux(w, iw);
         value = cubicFunction1D(w);
@@ -285,11 +279,11 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     else iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS2; iw++){
-        for (int iv = 0; iv<nFER2; iv++) {
+    for (int iw = 0-FREQ_PADDING; iw<nBOS2+FREQ_PADDING; iw++){
+        for (int iv = 0-FREQ_PADDING; iv<nFER2+FREQ_PADDING; iv++) {
 
-            double w; // = avertex.frequencies.b_K2.ws[iw];
-            double v; // = avertex.frequencies.f_K2.ws[iv];
+            double w;
+            double v;
 
 
             if (INTERPOLATION == linear)  avertex.K2.K2_get_freqs_w(w, v, iw, iv);
@@ -355,8 +349,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         else iK = 0;
         int i_in = 0;
         state_datatype value = 0.;
-        for (int iw = 0; iw < nBOS2; iw++) {
-            for (int iv = 0; iv < nFER2; iv++) {
+        for (int iw = 0-FREQ_PADDING; iw < nBOS2+FREQ_PADDING; iw++) {
+            for (int iv = 0-FREQ_PADDING; iv < nFER2+FREQ_PADDING; iv++) {
 
                 double w, v;
                 avertex.K2.K2_get_freqs_aux(w, v, iw, iv);
@@ -432,9 +426,9 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     else iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS3; iw++){
-        for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = 0; ivp<nFER3; ivp++) {
+    for (int iw = 0-FREQ_PADDING; iw<nBOS3+FREQ_PADDING; iw++){
+        for (int iv = 0-FREQ_PADDING; iv<nFER3+FREQ_PADDING; iv++) {
+            for (int ivp = 0-FREQ_PADDING; ivp<nFER3+FREQ_PADDING; ivp++) {
 
                 double w, v, vp;
                 if (INTERPOLATION == linear)  avertex.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
@@ -506,9 +500,9 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         else iK = 0;
         int i_in = 0;
         state_datatype value = 0.;
-        for (int iw = 0; iw < nBOS3; iw++) {
-            for (int iv = 0; iv < nFER3; iv++) {
-                for (int ivp = 0; ivp < nFER3; ivp++) {
+        for (int iw = 0-FREQ_PADDING; iw < nBOS3+FREQ_PADDING; iw++) {
+            for (int iv = 0-FREQ_PADDING; iv < nFER3+FREQ_PADDING; iv++) {
+                for (int ivp = 0-FREQ_PADDING; ivp < nFER3+FREQ_PADDING; ivp++) {
 
                     double w, v, vp;
                     avertex.K3.K3_get_freqs_aux(w, v, vp, iw, iv, ivp);

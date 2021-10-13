@@ -95,18 +95,17 @@ public:
     double * freq_params;
     double * bfreqs_buffer;
     double * ffreqs_buffer;
+    const int self_dim = collapse_all(dimsSE, [](const size_t& a, const size_t& b) -> size_t {return a*b;});    // length of self-energy buffer
 #ifdef KELDYSH_FORMALISM
-    const int self_dim = 2 * nSE;                                     // length of self-energy buffer
     const int irred_dim = 16 * n_in;                                  // length of irreducible vertex buffer
 #else
-    const int self_dim = nSE;                                         // length of self-energy buffer
     const int irred_dim = n_in;                                       // length of irreducible vertex buffer
 #endif
     h5_comp * selfenergy;
     h5_comp * irreducible_class;
 
 #if MAX_DIAG_CLASS >= 1
-    const int K1_dim = nK_K1 * nw1_t * n_in;                         // length of K1 buffer
+    const int K1_dim = collapse_all(dimsK1, [](const size_t& a, const size_t& b) -> size_t {return a*b;});                         // length of K1 buffer
     h5_comp * K1_class_a;
     h5_comp * K1_class_p;
     h5_comp * K1_class_t;
@@ -114,7 +113,7 @@ public:
 #if MAX_DIAG_CLASS >= 2
     double * bfreqs2_buffer;
     double * ffreqs2_buffer;
-    const int K2_dim = nK_K2 * nw2_t * nv2_t * n_in;               // length of K2 buffer
+    const int K2_dim = collapse_all(dimsK2, [](const size_t& a, const size_t& b) -> size_t {return a*b;});               // length of K2 buffer
     h5_comp * K2_class_a;
     h5_comp * K2_class_p;
     h5_comp * K2_class_t;
@@ -122,7 +121,7 @@ public:
 #if MAX_DIAG_CLASS >= 3
     double * bfreqs3_buffer;
     double * ffreqs3_buffer;
-    const int K3_dim = nK_K3 * nw3_t * nv3_t * nv3_t * n_in;    // length of K3 buffer
+    const int K3_dim = collapse_all(dimsK3, [](const size_t& a, const size_t& b) -> size_t {return a*b;});    // length of K3 buffer
     h5_comp * K3_class_a;
     h5_comp * K3_class_p;
     h5_comp * K3_class_t;
@@ -131,8 +130,8 @@ public:
     Buffer() {
         lambda = new double [1];
         freq_params = new double[N_freq_params];
-        bfreqs_buffer = new double[nBOS];                        // create buffer for bosonic frequencies
-        ffreqs_buffer = new double[nFER];                        // create buffer for fermionic frequencies
+        bfreqs_buffer = new double[nBOS+FREQ_PADDING*2];                        // create buffer for bosonic frequencies
+        ffreqs_buffer = new double[nFER+FREQ_PADDING*2];                        // create buffer for fermionic frequencies
         selfenergy = new h5_comp[self_dim];                           // create buffer for self-energy
         irreducible_class = new h5_comp[irred_dim];              // create buffer for irreducible vertex
 #if MAX_DIAG_CLASS >= 1
@@ -141,15 +140,15 @@ public:
         K1_class_t = new h5_comp[K1_dim];                        // create buffer for K1_t
 #endif
 #if MAX_DIAG_CLASS >= 2
-        bfreqs2_buffer = new double[nBOS2];                      // create buffer for bosonic frequencies for K2
-        ffreqs2_buffer = new double[nFER2];                      // create buffer for fermionic frequencies for K2
+        bfreqs2_buffer = new double[nBOS2+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K2
+        ffreqs2_buffer = new double[nFER2+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K2
         K2_class_a = new h5_comp[K2_dim];                        // create buffer for K2_a
         K2_class_p = new h5_comp[K2_dim];                        // create buffer for K2_p
         K2_class_t = new h5_comp[K2_dim];                        // create buffer for K2_t
 #endif
 #if MAX_DIAG_CLASS >= 3
-        bfreqs3_buffer = new double[nBOS3];                      // create buffer for bosonic frequencies for K3
-        ffreqs3_buffer = new double[nFER3];                      // create buffer for fermionic frequencies for K3
+        bfreqs3_buffer = new double[nBOS3+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K3
+        ffreqs3_buffer = new double[nFER3+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K3
         K3_class_a = new h5_comp[K3_dim];                        // create buffer for K3_a
         K3_class_p = new h5_comp[K3_dim];                        // create buffer for K3_p
         K3_class_t = new h5_comp[K3_dim];                        // create buffer for K3_t
@@ -197,12 +196,14 @@ template <typename Q>
         freq_params[6] = ffreqs.w_lower;
         freq_params[7] = ffreqs.W_scale;
 
-        for (int i=0; i<nBOS; ++i) {
-            bfreqs_buffer[i] = bfreqs.ws[i];
-        }
-        for (int i=0; i<nFER; ++i) {
-            ffreqs_buffer[i] = ffreqs.ws[i];
-        }
+    convert_vec_to_type(bfreqs.get_ws_vec(), bfreqs_buffer);
+    convert_vec_to_type(ffreqs.get_ws_vec(), ffreqs_buffer);
+        //for (int i=0; i<nBOS+FREQ_PADDING*2; ++i) {
+        //    bfreqs_buffer[i] = bfreqs.ws[i];
+        //}
+        //for (int i=0; i<nFER+FREQ_PADDING*2; ++i) {
+        //    ffreqs_buffer[i] = ffreqs.ws[i];
+        //}
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
             // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
@@ -241,12 +242,14 @@ template <typename Q>
         freq_params[14] = ffreqs2.w_lower;
         freq_params[15] = ffreqs2.W_scale;
 
-        for (int i=0; i<nBOS2; ++i) {
-            bfreqs2_buffer[i] = bfreqs2.ws[i];
-        }
-        for (int i=0; i<nFER2; ++i) {
-            ffreqs2_buffer[i] = ffreqs2.ws[i];
-        }
+    convert_vec_to_type(bfreqs2.get_ws_vec(), bfreqs2_buffer);
+    convert_vec_to_type(ffreqs2.get_ws_vec(), ffreqs2_buffer);
+        //for (int i=0; i<nBOS2+FREQ_PADDING*2; ++i) {
+        //    bfreqs2_buffer[i] = bfreqs2.ws[i];
+        //}
+        //for (int i=0; i<nFER2+FREQ_PADDING*2; ++i) {
+        //    ffreqs2_buffer[i] = ffreqs2.ws[i];
+        //}
         for(int i=0; i<K2_dim; ++i) {                                // write K2 into buffer
             K2_class_a[i].re = std::real(state_in.vertex[0].avertex().K2.acc(i));
             K2_class_a[i].im = std::imag(state_in.vertex[0].avertex().K2.acc(i));
@@ -270,12 +273,14 @@ template <typename Q>
         freq_params[22] = ffreqs3.w_lower;
         freq_params[23] = ffreqs3.W_scale;
 
-        for (int i=0; i<nBOS3; ++i) {
-            bfreqs3_buffer[i] = bfreqs3.ws[i];
-        }
-        for (int i=0; i<nFER3; ++i) {
-            ffreqs3_buffer[i] = ffreqs3.ws[i];
-        }
+    convert_vec_to_type(bfreqs3.get_ws_vec(), bfreqs3_buffer);
+    convert_vec_to_type(ffreqs3.get_ws_vec(), ffreqs3_buffer);
+        //for (int i=0; i<nBOS3+FREQ_PADDING*2; ++i) {
+        //    bfreqs3_buffer[i] = bfreqs3.ws[i];
+        //}
+        //for (int i=0; i<nFER3+FREQ_PADDING*2; ++i) {
+        //    ffreqs3_buffer[i] = ffreqs3.get_ws[i];
+        //}
         for(int i=0; i<K3_dim; ++i) {                                // write K3 into buffer
             K3_class_a[i].re = std::real(state_in.vertex[0].avertex().K3.acc(i));
             K3_class_a[i].im = std::imag(state_in.vertex[0].avertex().K3.acc(i));
@@ -341,28 +346,28 @@ public:
         K1_buffer {h5_cast(buffer.K1_dim)},
 #endif
 #if MAX_DIAG_CLASS >= 2
-        bfreqs2_dims {h5_cast(Lambda_size), h5_cast(nBOS2)},
-        ffreqs2_dims {h5_cast(Lambda_size), h5_cast(nFER2)},
-        bfreqs2_buffer_dims {h5_cast(nBOS2)},
-        ffreqs2_buffer_dims {h5_cast(nFER2)},
+        bfreqs2_dims {h5_cast(Lambda_size), h5_cast(nBOS2+FREQ_PADDING*2)},
+        ffreqs2_dims {h5_cast(Lambda_size), h5_cast(nFER2+FREQ_PADDING*2)},
+        bfreqs2_buffer_dims {h5_cast(nBOS2+FREQ_PADDING*2)},
+        ffreqs2_buffer_dims {h5_cast(nFER2+FREQ_PADDING*2)},
         K2 {h5_cast(Lambda_size), h5_cast(buffer.K2_dim)},
         K2_buffer {h5_cast(buffer.K2_dim)},
 #endif
 #if MAX_DIAG_CLASS >= 3
-        bfreqs3_dims {h5_cast(Lambda_size), h5_cast(nBOS3)},
-        ffreqs3_dims {h5_cast(Lambda_size), h5_cast(nFER3)},
-        bfreqs3_buffer_dims {h5_cast(nBOS3)},
-        ffreqs3_buffer_dims {h5_cast(nFER3)},
+        bfreqs3_dims {h5_cast(Lambda_size), h5_cast(nBOS3+FREQ_PADDING*2)},
+        ffreqs3_dims {h5_cast(Lambda_size), h5_cast(nFER3+FREQ_PADDING*2)},
+        bfreqs3_buffer_dims {h5_cast(nBOS3+FREQ_PADDING*2)},
+        ffreqs3_buffer_dims {h5_cast(nFER3+FREQ_PADDING*2)},
         K3 {h5_cast(Lambda_size), h5_cast(buffer.K3_dim)},
         K3_buffer {h5_cast(buffer.K3_dim)},
 #endif
         Lambda {h5_cast(Lambda_size)},
         freq_params_dims {h5_cast(Lambda_size), h5_cast(N_freq_params)},
         freq_params_buffer_dims {h5_cast(N_freq_params)},
-        bfreqs_dims {h5_cast(Lambda_size), h5_cast(nBOS)},
-        ffreqs_dims {h5_cast(Lambda_size), h5_cast(nFER)},
-        bfreqs_buffer_dims {h5_cast(nBOS)},
-        ffreqs_buffer_dims {h5_cast(nFER)},
+        bfreqs_dims {h5_cast(Lambda_size), h5_cast(nBOS+FREQ_PADDING*2)},
+        ffreqs_dims {h5_cast(Lambda_size), h5_cast(nFER+FREQ_PADDING*2)},
+        bfreqs_buffer_dims {h5_cast(nBOS+FREQ_PADDING*2)},
+        ffreqs_buffer_dims {h5_cast(nFER+FREQ_PADDING*2)},
         params {h5_cast(param_size)},
         selfenergy {h5_cast(Lambda_size), h5_cast(buffer.self_dim)},
         selfenergy_buffer {h5_cast(buffer.self_dim)},
@@ -781,7 +786,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
             dataSets.freq_params.write(buffer.freq_params, H5::PredType::NATIVE_DOUBLE,
                                        dataSpaces_freq_params_buffer, dataSpaces_freq_params);
 
-        count[1] = nBOS;
+        count[1] = nBOS+FREQ_PADDING*2;
         dataSpaces_bfreqs.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
             dataSets.bfreqs_p -> write(buffer.bfreqs_buffer, H5::PredType::NATIVE_DOUBLE,
@@ -790,7 +795,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
             dataSets.bfreqs_dataset.write(buffer.bfreqs_buffer, H5::PredType::NATIVE_DOUBLE,
                                           dataSpaces_bfreqs_buffer, dataSpaces_bfreqs);
 
-        count[1] = nFER;
+        count[1] = nFER+FREQ_PADDING*2;
         dataSpaces_ffreqs.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
             dataSets.ffreqs_p -> write(buffer.ffreqs_buffer, H5::PredType::NATIVE_DOUBLE,
@@ -836,7 +841,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 #endif
 
 #if MAX_DIAG_CLASS >= 2
-        count[1] = nBOS2;
+        count[1] = nBOS2+FREQ_PADDING*2;
         dataSpaces_bfreqs2.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
             dataSets.bfreqs2_p -> write(buffer.bfreqs2_buffer, H5::PredType::NATIVE_DOUBLE,
@@ -845,7 +850,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
             dataSets.bfreqs2_dataset.write(buffer.bfreqs2_buffer, H5::PredType::NATIVE_DOUBLE,
                                            dataSpaces_bfreqs2_buffer, dataSpaces_bfreqs2);
 
-        count[1] = nFER2;
+        count[1] = nFER2+FREQ_PADDING*2;
         dataSpaces_ffreqs2.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
             dataSets.ffreqs2_p -> write(buffer.ffreqs2_buffer, H5::PredType::NATIVE_DOUBLE,
@@ -872,7 +877,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 #endif
 
 #if MAX_DIAG_CLASS >= 3
-        count[1] = nBOS3;
+        count[1] = nBOS3+FREQ_PADDING*2;
         dataSpaces_bfreqs3.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
             dataSets.bfreqs3_p -> write(buffer.bfreqs3_buffer, H5::PredType::NATIVE_DOUBLE,
@@ -881,7 +886,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
             dataSets.bfreqs3_dataset.write(buffer.bfreqs3_buffer, H5::PredType::NATIVE_DOUBLE,
                                            dataSpaces_bfreqs3_buffer, dataSpaces_bfreqs3);
 
-        count[1] = nFER3;
+        count[1] = nFER3+FREQ_PADDING*2;
         dataSpaces_ffreqs3.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
             dataSets.ffreqs3_p -> write(buffer.ffreqs3_buffer, H5::PredType::NATIVE_DOUBLE,
@@ -1427,7 +1432,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
     for (int iK=0; iK<nK_K1; ++iK) {
         for (int i_in=0; i_in<n_in; ++i_in) {
 #if MAX_DIAG_CLASS >= 1
-            for (int iw1=0; iw1<nBOS; ++iw1) {
+            for (int iw1=0; iw1<nBOS+FREQ_PADDING*2; ++iw1) {
                 if (state.vertex[0].avertex().K1.val(iK, iw1, i_in) != out.vertex[0].avertex().K1.val(iK, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
@@ -1441,7 +1446,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
                     cnt += 1;
                 }
 #if MAX_DIAG_CLASS >= 2
-                for (int iw2=0; iw2<nFER; ++iw2) {
+                for (int iw2=0; iw2<nFER+FREQ_PADDING*2; ++iw2) {
                     if (state.vertex[0].avertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].avertex().K2.val(iK, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;

@@ -27,6 +27,9 @@
 
 // TODO(low): implement functions used for GRID=3 also for GRID=1,2,4
 
+template<K_class k, typename Q> class vertexDataContainer; // forward declaration
+
+
 /// Given an array xx[0..n-1], and given a value x, returns a value j such that x is between xx[j] and xx[j+1].
 /// xx must be monotonically increasing.
 inline void locate(const vec<double> xx, const size_t n, const double x, size_t &j, const size_t jl_start, const size_t ju_start)
@@ -50,6 +53,7 @@ inline void locate(const vec<double> xx, const size_t n, const double x, size_t 
 }
 
 #define PARAMETRIZED_GRID
+#define FREQ_PADDING 1  // set to 0 for NO padding
 
 double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
@@ -64,8 +68,12 @@ double wscale_from_wmax_v2(double & Wscale, double w1, double wmax, int N);
 double wscale_from_wmax_v3(double & Wscale, double w1, double wmax, int N);
 
 class FrequencyGrid {
+    template<K_class k, typename Q> friend class vertexDataContainer;
+
     const char type;
     const unsigned int diag_class;
+    rvec ws;                     // frequency grid
+    rvec ts;                    // linear auxiliary grid (related to ws by ws(ts)=grid_transf_inv(ts))
 public:
     int N_w;
     double w_upper;             // lower bound of frequency grid
@@ -76,8 +84,6 @@ public:
     double dt;                  // spacing on linear auxiliary grid
     double U_factor = 10./3.;   // determines scale_factor()
     double Delta_factor = 10.;  // determines scale_factor()
-    rvec ws;                     // frequency grid
-    rvec ts;                    // linear auxiliary grid (related to ws by ws(ts)=grid_transf_inv(ts))
 
     /**
      * This constructor initializes a frequency grid with the global values. This is not needed anymore!
@@ -90,7 +96,7 @@ public:
             case 'b':
                 switch (diag_class) {
                     case 1:
-                        N_w = nBOS;
+                        N_w = nBOS+FREQ_PADDING*2;
                         w_upper = glb_w_upper;
                         w_lower = glb_w_lower;
                         W_scale = glb_W_scale;
@@ -98,7 +104,7 @@ public:
                         Delta_factor = 20.;
                         break;
                     case 2:
-                        N_w = nBOS2;
+                        N_w = nBOS2+FREQ_PADDING*2;
                         w_upper = glb_w2_upper;
                         w_lower = glb_w2_lower;
                         W_scale = glb_W2_scale;
@@ -112,7 +118,7 @@ public:
                         }
                         break;
                     case 3:
-                        N_w = nBOS3;
+                        N_w = nBOS3+FREQ_PADDING*2;
                         w_upper = glb_w3_upper;
                         w_lower = glb_w3_lower;
                         W_scale = glb_W3_scale;
@@ -123,7 +129,7 @@ public:
             case 'f':
                 switch (diag_class) {
                     case 1:
-                        N_w = nFER;
+                        N_w = nFER+FREQ_PADDING*2;
                         w_upper = glb_v_upper;
                         w_lower = glb_v_lower;
                         W_scale = glb_W_scale;
@@ -131,7 +137,7 @@ public:
                         Delta_factor = 20.;
                         break;
                     case 2:
-                        N_w = nFER2;
+                        N_w = nFER2+FREQ_PADDING*2;
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
@@ -139,7 +145,7 @@ public:
                         Delta_factor = 40.;
                         break;
                     case 3:
-                        N_w = nFER3;
+                        N_w = nFER3+FREQ_PADDING*2;
                         w_upper = glb_v3_upper;
                         w_lower = glb_v3_lower;
                         W_scale = glb_W3_scale;
@@ -171,6 +177,10 @@ public:
         this->ts = freqGrid.ts;
         return *this;
     }
+
+    auto get_ws(int index) const -> double {return ws[index+FREQ_PADDING];};
+    auto get_ts(int index) const -> double {return ts[index+FREQ_PADDING];};
+    auto get_ws_vec() const -> vec<double> {return ws;}
     auto scale_factor(double Lambda) -> double;
     void initialize_grid();
     void set_W_scale(double scale);
@@ -184,6 +194,8 @@ public:
 
     int fconv(double &t, double w_in) const;
 };
+
+
 
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
 // TODO(medium): write function that automatically chooses grid parameters U_factor and Delta_factor (-> Marc, Julian)
@@ -208,12 +220,15 @@ void FrequencyGrid::initialize_grid() {
     double W;
     t_upper = grid_transf(w_upper);
     t_lower = grid_transf(w_lower);
-    dt = (t_upper - t_lower) / ((double) (N_w - 3.));
-    ts[0] = -1.; ts[N_w-1] = 1.;
-    ws[0] = -std::numeric_limits<double>::infinity();
-    ws[N_w-1] = std::numeric_limits<double>::infinity();
-    for(int i=1; i<N_w-1; ++i) {
-        W = t_lower + (i-1) * dt;
+    dt = (t_upper - t_lower) / ((double) (N_w - 1. - FREQ_PADDING*2));
+    if (FREQ_PADDING == 1) {
+        ts[0] = -1.;
+        ts[N_w - 1] = 1.;
+        ws[0] = -std::numeric_limits<double>::infinity();
+        ws[N_w - 1] = std::numeric_limits<double>::infinity();
+    }
+    for(int i=FREQ_PADDING; i<N_w-FREQ_PADDING; ++i) {
+        W = t_lower + (i-FREQ_PADDING) * dt;
         ws[i] = grid_transf_inv(W);
         if (!KELDYSH && !ZERO_T){
             if (type == 'b') ws[i] = round2bfreq(ws[i]);
@@ -290,24 +305,24 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     double t = grid_transf(w_in);
 
     t = (t - t_lower) / dt;
-    auto index = (int)t + 1;
+    auto index = ((int) (t+FREQ_PADDING)) - FREQ_PADDING;
     if (INTERPOLATION==linear) {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
-    }
-    else {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
-        assert(ws[index] - w_in  <= 1e-5);
-        if (ws[index+1] < w_in) index++;
-        assert(w_in - ws[index+1] < 1e-5);
+    }
+    else {
+        index = std::max(-FREQ_PADDING, index);
+        index = std::min(N_w - 2 - FREQ_PADDING, index);
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5);
+        if (ws[index+1+FREQ_PADDING] < w_in) index++;
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5);
     }
     return index;
 
 #else
     size_t j;
-    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 1, N_w-2);} // we cannot interpolate with infinity
-    else {locate(ts, N_w, t, j, 0, N_w-1); }
+    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
+    else {locate(ts, N_w, t, j, -1, N_w); }
     return j;
 #endif
 }
@@ -321,24 +336,24 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
 #ifdef PARAMETRIZED_GRID
 
     double t_rescaled = (t - t_lower) / dt;
-    auto index = (int) (t_rescaled + 1.);
+    auto index = ((int) (t_rescaled+FREQ_PADDING)) - FREQ_PADDING;
     if (INTERPOLATION==linear) {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
-    }
-    else {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
-        assert(ws[index] - w_in  <= 1e-5);
-        if (ws[index+1] < w_in) index++;
-        assert(w_in - ws[index+1] < 1e-5);
+    }
+    else {
+        index = std::max(-FREQ_PADDING, index);
+        index = std::min(N_w - 2 - FREQ_PADDING, index);
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5);
+        if (ws[index+1+FREQ_PADDING] < w_in) index++;
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5);
     }
     return index;
 
 #else
     size_t j;
-    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 1, N_w-2);} // we cannot interpolate with infinity
-    else {locate(ts, N_w, t, j, 0, N_w-1); }
+    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
+    else {locate(ts, N_w, t, j, -1, N_w); }
     return j;
 #endif
 

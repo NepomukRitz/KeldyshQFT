@@ -43,10 +43,10 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         double sum = 0.;
         for (int i = 1; i < nFER-1; ++i) {
 
-            double val = myimag(Sigma[i]) * sign(selfEnergy.frequencies.ws[i]);
+            double val = myimag(Sigma[i]) * sign(selfEnergy.frequencies.get_ws(i));
 
             if (val > 0.) {
-                //cout << "i: " << i << "\t for w = " << selfEnergy.frequencies.ws[i] << "; \t Sigma[i] = " << Sigma[i] << "\n";
+                //cout << "i: " << i << "\t for w = " << selfEnergy.frequencies.get_ws(i) << "; \t Sigma[i] = " << Sigma[i] << "\n";
                 cnt += 1;
                 sum += val;
             }

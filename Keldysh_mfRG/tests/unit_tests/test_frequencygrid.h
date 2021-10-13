@@ -11,12 +11,12 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
     double issymmetric = 0.;
     double symmetry_tolerance = 1e-10;
     FrequencyGrid Bosfreqs('b', 1, 0.);
-    bool existNoDoubleOccurencies = not is_doubleOccurencies(Bosfreqs.ws);
-    for (int i = 1; i < nBOS-1; i++) {
+    bool existNoDoubleOccurencies = not is_doubleOccurencies(Bosfreqs.get_ws_vec());
+    for (int i = 0; i < nBOS; i++) {
 
         // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
-        if (std::abs(Bosfreqs.fconv(Bosfreqs.ws[i]) - i) > 1) isright = false;
-        issymmetric += std::abs(Bosfreqs.ws[i] + Bosfreqs.ws[nBOS - i - 1]);
+        if (std::abs(Bosfreqs.fconv(Bosfreqs.get_ws(i)) - i) > 1) isright = false;
+        issymmetric += std::abs(Bosfreqs.get_ws(i) + Bosfreqs.get_ws(nBOS - i - 1));
     }
 
     SECTION( "Is the correct index retrieved by fconv()?" ) {
@@ -40,14 +40,14 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
     double issymmetric = 0.;
     double symmetry_tolerance = 1e-10;
     FrequencyGrid Ferfreqs('f', 1, 0.);
-    bool existNoDoubleOccurencies = not is_doubleOccurencies(Ferfreqs.ws);
-    for (int i = 1; i < nFER-1; i++) {
+    bool existNoDoubleOccurencies = not is_doubleOccurencies(Ferfreqs.get_ws_vec());
+    for (int i = 0; i < nFER; i++) {
 
         // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
-        if (std::abs(Ferfreqs.fconv(Ferfreqs.ws[i]) - i) > 1) isright = false;
-        issymmetric += std::abs(Ferfreqs.ws[i] + Ferfreqs.ws[nFER - i - 1]);
-        if (std::abs(Ferfreqs.ws[i] + Ferfreqs.ws[nFER - i - 1]) > symmetry_tolerance) {
-            print(std::to_string(Ferfreqs.ws[i]) + " != " + std::to_string(Ferfreqs.ws[nFER - i - 1]) + "\n");
+        if (std::abs(Ferfreqs.fconv(Ferfreqs.get_ws(i)) - i) > 1) isright = false;
+        issymmetric += std::abs(Ferfreqs.get_ws(i) + Ferfreqs.get_ws(nFER - i - 1));
+        if (std::abs(Ferfreqs.get_ws(i) + Ferfreqs.get_ws(nFER - i - 1)) > symmetry_tolerance) {
+            print(std::to_string(Ferfreqs.get_ws(i)) + " != " + std::to_string(Ferfreqs.get_ws(nFER - i - 1)) + "\n");
         }
     }
 

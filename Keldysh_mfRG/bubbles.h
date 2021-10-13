@@ -299,8 +299,8 @@ template <typename Q> void PrecalculateBubble<Q>::compute_FermionicBubble_SIAM()
 }
 
 template <typename Q> void PrecalculateBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
-    double v1 = fermionic_grid.ws[iv1];
-    double v2 = fermionic_grid.ws[iv2];
+    double v1 = fermionic_grid.get_ws(iv1);
+    double v2 = fermionic_grid.get_ws(iv2);
     for (int i_in = 0; i_in < n_in; ++i_in) {
         FermionicBubble[composite_index(get_iK_bubble(iK), iv1, iv2, i_in)] =
                 Helper_Bubble.value(iK, v1, v2, i_in);
@@ -360,8 +360,8 @@ int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) const {
 template<typename Q>
 void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
                                                             Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
-    double v1 = fermionic_grid.ws[iv1];
-    double v2 = fermionic_grid.ws[iv2];
+    double v1 = fermionic_grid.get_ws(iv1);
+    double v2 = fermionic_grid.get_ws(iv2);
 
     vec<comp> values_of_bubble (glb_N_transfer);
     compute_internal_bubble(iK, v1, v2, Swave_Bubble_Calculator, values_of_bubble);
@@ -1126,19 +1126,19 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K1(i0, w);
-            if (trafo == 0 and isfinite(w)) {calculate_value_K1(value, i0, i_in, w); }
+            if (trafo == 0) {calculate_value_K1(value, i0, i_in, w); }
             break;
         case 2:
             convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K2(i0, w, v);
-            if (trafo == 0 and isfinite(w) and isfinite(v)) {calculate_value_K2(value, i0, i_in, w, v); }
+            if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v); }
             break;
         case 3:
             convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K3(i0, w, iv, ivp);
-            if (trafo == 0 and isfinite(w) and isfinite(v) and isfinite(vp)) {calculate_value_K3(value, i0, i_in, w, v, vp); }
+            if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp); }
             break;
         default:;
     }
@@ -1293,6 +1293,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
+            assert( K2_ordered_result.size() == nK_K2*nBOS2*nFER2*n_in);
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2.add_vec(K2_ordered_result);
@@ -1516,7 +1517,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
             BubbleComputer (dgamma, vertex1, vertex2, Pi, channel);
     if (channel == 'a' or channel == 'p' or channel == 't') BubbleComputer.perform_computation();
-    else {print("Error! Incompatible channel given to bubble_function. Abort"); assert(false);}
+    else {print("Error! Incompatible channel given to bubble_function. Abort"); }
 }
 
 /// Overload for bubble_function in case no Bubble object has been initialized yet. ONLY WORKS FOR SIAM!!

@@ -25,6 +25,17 @@ template <K_class k, typename Q, interpolMethod inter> class vertexBuffer; // fo
 template <typename Q>
 class rvert{
 
+    char channel;                       // reducibility channel
+
+    Components components = Components(channel);              // lists providing information on how all Keldysh components are related to the
+    // independent ones
+    Transformations transformations = Transformations(channel);    // lists providing information on which transformations to apply on Keldysh
+    // components to relate them to the independent ones
+    FrequencyTransformations freq_transformations = FrequencyTransformations(channel);  // lists providing information on which transformations to apply on
+    // frequencies to relate them to the independent ones
+    FrequencyComponents freq_components = FrequencyComponents(channel);  // lists providing information on which transformations to apply on
+    // frequencies to relate them to the independent ones
+
 public:
     vertexBuffer<k1,Q,INTERPOLATION> K1;
     vertexBuffer<k1,Q,INTERPOLATION> K1_a_proj = K1;
@@ -33,20 +44,9 @@ public:
     vertexBuffer<k2,Q,INTERPOLATION> K2;
     vertexBuffer<k3,Q,INTERPOLATION> K3;
 
-    char channel;                       // reducibility channel
-
-    Components components;              // lists providing information on how all Keldysh components are related to the
-                                        // independent ones
-    Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
-                                        // components to relate them to the independent ones
-    FrequencyTransformations freq_transformations;  // lists providing information on which transformations to apply on
-                                                    // frequencies to relate them to the independent ones
-    FrequencyComponents freq_components;  // lists providing information on which transformations to apply on
-    // frequencies to relate them to the independent ones
-
     rvert(const char channel_in, double Lambda)
-    : channel(channel_in), components (Components(channel_in)), transformations (Transformations(channel_in)),
-      freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
+    : channel(channel_in), //components (Components(channel_in)), transformations (Transformations(channel_in)),
+      //freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
       K1(Lambda), K2(Lambda), K3(Lambda)
       {K1.reserve(); K2.reserve(); K3.reserve(); };
     rvert() = delete;
@@ -647,9 +647,9 @@ namespace {
         void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k1>& frequencies_new, const rvert<Q>& rvert4data) {
             vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
             for (int iK1=0; iK1<nK_K1; ++iK1) {
-                for (int iw=1; iw<nw1-1; ++iw) {
+                for (int iw=0; iw<nw1; ++iw) {
                     for (int i_in=0; i_in<n_in; ++i_in) {
-                        IndicesSymmetryTransformations indices (iK1, frequencies_new.b.ws[iw], 0., 0., i_in, vertex.channel);
+                        IndicesSymmetryTransformations indices (iK1, frequencies_new.b.get_ws(iw), 0., 0., i_in, vertex.channel);
                         // interpolate old values to new vector
                         K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = rvert4data.template interpolate<k1>(indices);
                     }
@@ -665,11 +665,11 @@ namespace {
          void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k2>& frequencies_new, const rvert<Q>& rvert4data) {
             vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
             for (int iK2=0; iK2<nK_K2; ++iK2) {
-                for (int iw=1; iw<nw2-1; ++iw) {
-                    for (int iv=1; iv<nv2-1; ++iv) {
+                for (int iw=0; iw<nw2; ++iw) {
+                    for (int iv=0; iv<nv2; ++iv) {
                         for (int i_in = 0; i_in<n_in; ++i_in) {
-                            IndicesSymmetryTransformations indices (iK2, frequencies_new.b.ws[iw],
-                                                                    frequencies_new.f.ws[iv],
+                            IndicesSymmetryTransformations indices (iK2, frequencies_new.b.get_ws(iw),
+                                                                    frequencies_new.f.get_ws(iv),
                                                                     0.,
                                                                     i_in, vertex.channel);
                             // interpolate old values to new vector
@@ -689,14 +689,14 @@ namespace {
         void operator() (rvert<Q>& vertex, const VertexFrequencyGrid<k3>& frequencies_new, const rvert<Q>& rvert4data) {
             vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
             for (int iK3=0; iK3<nK_K3; ++iK3) {
-                for (int iw=1; iw<nw3-1; ++iw) {
-                    for (int iv=1; iv<nv3-1; ++iv) {
-                        for (int ivp=1; ivp<nv3-1; ++ivp) {
+                for (int iw=0; iw<nw3; ++iw) {
+                    for (int iv=0; iv<nv3; ++iv) {
+                        for (int ivp=0; ivp<nv3; ++ivp) {
                             for (int i_in = 0; i_in<n_in; ++i_in) {
-                                IndicesSymmetryTransformations indices (iK3, frequencies_new.b.ws[iw],
-                                                                        frequencies_new.f.ws[iv],
-                                                                        frequencies_new.f.ws[ivp],
-                                                                        i_in, vertex.channel);
+                                IndicesSymmetryTransformations indices (iK3, frequencies_new.b.get_ws(iw),
+                                                                             frequencies_new.f.get_ws(iv),
+                                                                             frequencies_new.f.get_ws(ivp),
+                                                                             i_in, vertex.channel);
                                 // interpolate old values to new vector
                                 K3_new[iK3 * nw3 * nv3 * nv3 * n_in + iw * nv3 * nv3 * n_in + iv * nv3 * n_in + ivp * n_in +
                                        i_in]
@@ -779,7 +779,7 @@ void rvert<Q>::K1_crossproject() {
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
     for (int iK = 0; iK < nK_K1; ++iK) {
 #pragma omp parallel for schedule(dynamic) default(none) shared(iK)
-        for (int iw = 1; iw < nw1-1; ++iw) { // TODO(high): Why not from 0 to < nw1 as previously?
+        for (int iw = 0; iw < nw1; ++iw) { // TODO(high): Why not from 0 to < nw1 as previously?
             Q projected_value = K1_BZ_average(iK, iw);
             for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
                 K1.setvert(projected_value, iK, iw, i_in); // All internal arguments get the same value for K1!
@@ -819,8 +819,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             default: ;
         }
 
-        for (int itw = 1; itw < nw2-1; itw++){
-            for (int itv = 1; itv < nv2-1; itv++){
+        for (int itw = 0; itw < nw2; itw++){
+            for (int itv = 0; itv < nv2; itv++){
                 double w_in, v_in;
                 K2.K2_get_freqs_w(w_in, v_in, itw, itv);
                 IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
@@ -862,9 +862,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         i0_tmp = non_zero_Keldysh_K3[itK];
 
-        for (int itw = 1; itw < nw3-1; itw++){
-            for (int itv = 1; itv < nv3-1; itv++){
-                for (int itvp = 1; itvp < nv3-1; itvp++) {
+        for (int itw = 0; itw < nw3; itw++){
+            for (int itv = 0; itv < nv3; itv++){
+                for (int itvp = 0; itvp < nv3; itvp++) {
                     double w_in, v_in, vp_in;
                     K3.K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp);
                     IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);

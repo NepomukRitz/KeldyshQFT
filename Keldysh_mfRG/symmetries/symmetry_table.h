@@ -386,7 +386,8 @@ struct FrequencyComponents {
                 K2 = ComponentsK2t;
                 K3 = ComponentsK3t;
                 break;
-            default:;
+            default:
+                assert(false);
         }
     }
 };
@@ -415,7 +416,8 @@ struct FrequencyTransformations {
                 K2 = TransformaK2t;
                 K3 = TransformaK3t;
                 break;
-            default:;
+            default:
+                assert(false);
         }
     }
 };

@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 #include <bits/stdc++.h>
 #include "parameters/master_parameters.h"
+#include "symmetries/Keldysh_symmetries.h"
 #include <mpi.h>
 #include "utilities/mpi_setup.h"
 #include "flow.h"
@@ -91,7 +92,7 @@ auto main() -> int {
     //test_PT4(0.0, true);
     //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
     //findBestWscale4K1<state_datatype>(1.8);
-    compute_non_symmetric_diags(1.8, true, 1, true);
+    //compute_non_symmetric_diags(1.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";
@@ -101,7 +102,7 @@ auto main() -> int {
 
 
 
-    print("Hello world ");
+    print("Hello world \n");
 #ifdef __linux__
     print("on linux.\n");
 #elif __APPLE__

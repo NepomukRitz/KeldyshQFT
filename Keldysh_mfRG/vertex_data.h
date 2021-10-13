@@ -14,9 +14,6 @@
 #include "grids/frequency_grid.h"            // functionality for the internal structure of the Hubbard model
 
 
-const std::vector<size_t> dimsK1 = {nK_K1, nBOS, n_in};
-const std::vector<size_t> dimsK2 = {nK_K2, nBOS2, nFER2, n_in};
-const std::vector<size_t> dimsK3 = {nK_K3, nBOS3, nFER3, nFER3, n_in};
 
 template <typename Q> class rvert; // forward declaration of rvert
 template <typename Q> class fullvert; // forward declaration of fullvert
@@ -28,6 +25,22 @@ class Buffer;
 
 template <typename Q, size_t rank>
 class vertexContainerBase {
+private:
+    template <typename... Types,
+            typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
+    size_t flattenIndex(const Types &... i) const {
+#if FREQ_PADDING == 0
+        return getFlatIndex({static_cast<size_t>(i)...}, dims);
+#else
+        std::array<size_t,rank> idx = {static_cast<size_t>(i+1)...};
+        idx[0] -= 1; idx[rank-1] -= 1;
+
+        size_t flatidx = getFlatIndex(idx, dims);
+        assert(flatidx < data.size());
+        return flatidx;
+#endif
+    }
+
 protected:
     std::array<size_t,rank> dims;
     vec<Q> data;
@@ -42,30 +55,63 @@ public:
     explicit vertexContainerBase(const Types &... dims) : vertexContainerBase(std::vector<size_t>({static_cast<size_t>(dims)...})) {};
     vertexContainerBase(const size_t dims_in[rank], const vec<Q> &data_in) : data(data_in) {};
 
-    void reserve() {//data.reserve(getFlatSize<rank>(dims));
-        data = vec<Q>(getFlatSize<rank>(dims));
-         }
+    void reserve() { data = vec<Q>(getFlatSize<rank>(dims)); }
 
     Q acc(const size_t flatIndex) const {return data[flatIndex];}
-    void direct_set(const size_t flatIndex, Q value) {data[flatIndex] = value;}
+    void direct_set(const size_t flatIndex, Q value) {assert(flatIndex < data.size()); data[flatIndex] = value;}
+
 
     template <typename... Types,
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
-    Q val(const Types &... i) const {return acc(getFlatIndex({static_cast<size_t>(i)...}, dims));}
+    Q val(const Types &... i) const {return acc(flattenIndex(i...));}
     template <typename... Types
             ,typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true
                     >
-    void setvert(const Q value, const Types &... i) {data[getFlatIndex({static_cast<size_t>(i)...}, dims)] = value;
+    void setvert(const Q value, const Types &... i) {data[flattenIndex(i...)] = value;
     }
 
     vec<Q> get_vec() const {return data;}
+    /*
+    vec<Q> add_padding(const vec<Q> &data_in) {
+        std::array<size_t,rank> dims_no_padding = dims;
+        for (size_t i = 1; i < rank-1; i++) dims_no_padding[i] -= 2*FREQ_PADDING;
+        assert(getFlatSize<rank>(dims_no_padding) == data_in.size());
+
+        vec<Q> data_new (getFlatSize<rank>(dims));
+        for (size_t i = 0; i < data_in.size(); i++) {
+            std::array<size_t,rank> multIndex;
+            getMultIndex(multIndex, i, dims_no_padding);
+            for (size_t j = 0; j < rank; j++) multIndex[j] += FREQ_PADDING;
+            data_new[getFlatIndex(multIndex, dims)] = data_in[i];
+        }
+        return data_new;
+    }
+     */
     void set_vec(const vec<Q> &data_in) {assert(data.size() == data_in.size()); data = data_in;}
-    void add_vec(const vec<Q> &summand) {data += summand;}
+    void add_vec(const vec<Q> &summand) {
+#if FREQ_PADDING == 0
+        data += summand;
+#else
+        std::array<size_t,rank> dims_no_padding = dims;
+        for (size_t i = 1; i < rank-1; i++) dims_no_padding[i] -= 2*FREQ_PADDING;
+        assert(getFlatSize<rank>(dims_no_padding) == summand.size());
+
+        //vec<Q> data_new (getFlatSize<rank>(dims));
+        for (size_t i = 0; i < summand.size(); i++) {
+            std::array<size_t,rank> multIndex;
+            getMultIndex(multIndex, i, dims_no_padding);
+            for (size_t j = 1; j < rank-1; j++) multIndex[j] += FREQ_PADDING;
+            size_t idx = getFlatIndex(multIndex, dims);
+            assert(idx < data.size());
+            data[idx] += summand[i];
+        }
+#endif
+    }
 
 
 };
 
-template <int k, typename Q>
+template <K_class k, typename Q>
 class vertexDataContainer{};
 
 template<typename Q>
@@ -417,7 +463,7 @@ auto vertexDataContainer<k1,Q>::K1_get_freqGrid() const -> FrequencyGrid {
 }
 template<typename Q>
 void vertexDataContainer<k1,Q>::K1_get_freq_w(double& w, const int i) const {
-    w = frequencies_K1.b.ws[i];
+    w = frequencies_K1.b.get_ws(i);
 }
 template<typename Q>
 double vertexDataContainer<k1,Q>::K1_get_tlower_aux() const {
@@ -429,7 +475,7 @@ double vertexDataContainer<k1,Q>::K1_get_tupper_aux() const {
 }
 template<typename Q>
 void vertexDataContainer<k1,Q>::K1_get_freq_aux(double& w, const int i) const {
-    w = frequencies_K1.b.ts[i];
+    w = frequencies_K1.b.get_ts(i);
 }
 template<typename Q>
 auto vertexDataContainer<k1,Q>::K1_gridtransf(double w) const -> double {
@@ -526,8 +572,8 @@ auto vertexDataContainer<k2,Q>::K2_get_freqGrid_f() const -> FrequencyGrid {
 }
 template<typename Q>
 void vertexDataContainer<k2,Q>::K2_get_freqs_w(double &w, double &v, const int iw, const int iv) const {
-    w = frequencies_K2.b.ws[iw];
-    v = frequencies_K2.f.ws[iv];
+    w = frequencies_K2.b.get_ws(iw);
+    v = frequencies_K2.f.get_ws(iv);
     K2_convert2naturalFreqs(w, v);
 }
 
@@ -549,8 +595,8 @@ double vertexDataContainer<k2,Q>::K2_get_tupper_f_aux() const {
 }
 template<typename Q>
 void vertexDataContainer<k2,Q>::K2_get_freqs_aux(double &w, double &v, const int iw, const int iv) const {
-    w = frequencies_K2.b.ts[iw];
-    v = frequencies_K2.f.ts[iv];
+    w = frequencies_K2.b.get_ts(iw);
+    v = frequencies_K2.f.get_ts(iv);
 }
 template<typename Q>
 auto vertexDataContainer<k2,Q>::K2_gridtransf_b(double w) const -> double {
@@ -571,7 +617,7 @@ auto vertexDataContainer<k2,Q>::K2_gridtransf_inv_f(double w) const -> double {
 template<typename Q>
 auto vertexDataContainer<k2,Q>::K2_get_correction_MFfiniteT(int iw) const -> double {
     if (not KELDYSH and not ZERO_T)
-        return floor2bfreq(frequencies_K2.b.ws[iw] / 2) - ceil2bfreq(frequencies_K2.b.ws[iw] / 2);
+        return floor2bfreq(frequencies_K2.b.get_ws(iw) / 2) - ceil2bfreq(frequencies_K2.b.get_ws(iw) / 2);
     else return 0.;
 }
 template<typename Q>
@@ -703,9 +749,9 @@ auto vertexDataContainer<k3,Q>::K3_get_freqGrid_f() const -> FrequencyGrid {
 }
 template<typename Q>
 void vertexDataContainer<k3,Q>::K3_get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
-    w = frequencies_K3.b.ws[iw];
-    v = frequencies_K3.f.ws[iv];
-    vp= frequencies_K3.f.ws[ivp];
+    w = frequencies_K3.b.get_ws(iw);
+    v = frequencies_K3.f.get_ws(iv);
+    vp= frequencies_K3.f.get_ws(ivp);
 }
 
 template<typename Q>
@@ -726,9 +772,9 @@ double vertexDataContainer<k3,Q>::K3_get_tupper_f_aux() const {
 }
 template<typename Q>
 void vertexDataContainer<k3,Q>::K3_get_freqs_aux(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
-    w = frequencies_K3.b.ts[iw];
-    v = frequencies_K3.f.ts[iv];
-    vp= frequencies_K3.f.ts[ivp];
+    w = frequencies_K3.b.get_ts(iw);
+    v = frequencies_K3.f.get_ts(iv);
+    vp= frequencies_K3.f.get_ts(ivp);
 }
 template<typename Q>
 auto vertexDataContainer<k3,Q>::K3_gridtransf_b(double w) const -> double {
@@ -749,7 +795,7 @@ auto vertexDataContainer<k3,Q>::K3_gridtransf_inv_f(double w) const -> double {
 template<typename Q>
 auto vertexDataContainer<k3,Q>::K3_get_correction_MFfiniteT(int iw) const -> double {
     if (not KELDYSH and not ZERO_T)
-    return floor2bfreq(frequencies_K3.b.ws[iw] / 2) - ceil2bfreq(frequencies_K3.b.ws[iw] / 2);
+    return floor2bfreq(frequencies_K3.b.get_ws(iw) / 2) - ceil2bfreq(frequencies_K3.b.get_ws(iw) / 2);
     else return 0.;
 }
 

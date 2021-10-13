@@ -7,6 +7,7 @@
 #include <vector>     // standard std::vector
 #include <algorithm>  // for find function in isInList
 #include "../utilities/util.h"     // printing text output
+#include "../grids/frequency_grid.h"
 
 /// Keldysh index parameters ///
 #ifdef KELDYSH_FORMALISM
@@ -23,6 +24,11 @@ const int nK_K1 = 1;
 const int nK_K2 = 1;
 const int nK_K3 = 1;
 #endif
+
+const vec<size_t> dimsSE = vec<size_t>({nK_SE, FREQ_PADDING*2+nFER, n_in});
+const vec<size_t> dimsK1 = vec<size_t>({nK_K1, FREQ_PADDING*2+nBOS, n_in});
+const vec<size_t> dimsK2 = vec<size_t>({nK_K2, FREQ_PADDING*2+nBOS2, FREQ_PADDING*2+nFER2, n_in});
+const vec<size_t> dimsK3 = vec<size_t>({nK_K3, FREQ_PADDING*2+nBOS3, FREQ_PADDING*2+nFER3, FREQ_PADDING*2+nFER3, n_in});
 
 
 #ifdef KELDYSH_FORMALISM

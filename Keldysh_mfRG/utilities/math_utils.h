@@ -596,6 +596,18 @@ vec<T> collapse(const vec<T> data, const binaryOp& op, const std::array<size_t,r
     return result;
 }
 
+/**
+ *  Collapses all dimensions of a vector using an operator op
+ */
+template<typename binaryOp, typename T>
+T collapse_all(const vec<T> data, const binaryOp& op) {
+    size_t dim_collapse = data.size(); // flat dimension of dimensions that are to be collapsed
+    assert(dim_collapse > 1); //otherwise nothing to collapse with binary operator
+    T result = data[0];
+    for (size_t j = 1; j < dim_collapse; j++) result = op(result, data[j]);
+    return result;
+}
+
 /*
 /// Collapses the i_dim-th dimension of a vector using an operator op
 template<typename binaryOp, typename T, size_t rank>

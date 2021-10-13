@@ -152,6 +152,14 @@ auto transform_vec(const std::function<O(T)> &op, const vec<T> &vect) {
     return res;
 }
 
+template <typename T, typename R>
+void convert_vec_to_type(const vec<T> &vect, R& res) {
+    for (size_t i = 0; i < vect.size(); i++)
+    {
+        res[i] = vect[i];
+    }
+}
+
 
 
 

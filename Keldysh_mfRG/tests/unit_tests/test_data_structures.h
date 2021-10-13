@@ -172,9 +172,9 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
         vec<double> dlinvals = ::get_finite_differences<double,4>(linvals, xs, dims_temp, permutation);
 
         int errorcount = 0;
-        for (size_t i=1; i<dims[0]-1; i++) {
-            for (size_t j=1; j<dims[1]-1; j++) {
-                for (size_t k=1; k<dims[2]-1; k++) {
+        for (size_t i=0; i<dims[0]; i++) {
+            for (size_t j=0; j<dims[1]; j++) {
+                for (size_t k=0; k<dims[2]; k++) {
                     std::array<size_t,rank>  multidx_temp = {i,j,k,0};
                     if (dlinvals[::getFlatIndex<rank>(multidx_temp, dims)] != 3.) errorcount ++;
                 }
@@ -196,9 +196,9 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
 
 
         int errorcount = 0;
-        for (size_t i = 1; i < dims[0] - 1; i++) {
-            for (size_t j = 1; j < dims[1] - 1; j++) {
-                for (size_t k = 1; k < dims[2] - 1; k++) {
+        for (size_t i = 0; i < dims[0]; i++) {
+            for (size_t j = 0; j < dims[1]; j++) {
+                for (size_t k = 0; k < dims[2]; k++) {
                     std::array<size_t,rank>  multidx_temp = {i, j, k, 0};
                     if (std::abs(dlinvals [::getFlatIndex<rank>(multidx_temp, dims)] - 3.) > 1e-10) errorcount++;
                     if (std::abs(dlinvals2[::getFlatIndex<rank>(multidx_temp, dims)] - 3.) > 1e-10) errorcount++;
@@ -221,9 +221,9 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
 
 
         int errorcount = 0;
-        for (size_t i = 1; i < dims[0] - 1; i++) {
-            for (size_t j = 1; j < dims[1] - 1; j++) {
-                for (size_t k = 1; k < dims[2] - 1; k++) {
+        for (size_t i = 0; i < dims[0] ; i++) {
+            for (size_t j = 0; j < dims[1] ; j++) {
+                for (size_t k = 0; k < dims[2] ; k++) {
                     std::array<size_t,rank>  multidx_temp = {i, j, k, 0};
                     if (std::abs(dlinvals [::getFlatIndex<rank>(multidx_temp, dims)] - 2.) > 1e-10) errorcount++;
                     if (std::abs(dlinvals2[::getFlatIndex<rank>(multidx_temp, dims)] - 2.) > 1e-10) errorcount++;

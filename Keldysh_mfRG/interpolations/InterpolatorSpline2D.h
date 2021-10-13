@@ -83,22 +83,22 @@ vec<Q> SplineK2<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
 {
 
     const vec<Q> fs = {
-            DataContainer::data[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv    , i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv    , i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw    , iv + 1, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1, iv + 1, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            dw * m_deriv_x[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            dv * m_deriv_y[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
     };
 
     //vec<Q> coeffs = vec<Q> (16);
@@ -150,10 +150,10 @@ Q SplineK2<DataContainer,Q>::interpolK2 (int iK, double w, double v, int i_in) c
     double tv;
     const size_t iv=DataContainer::frequencies_K2.f.fconv(tv, v);
 
-    const double dw = DataContainer::frequencies_K2.b.ts[iw+1] - DataContainer::frequencies_K2.b.ts[iw];
-    const double dv = DataContainer::frequencies_K2.f.ts[iv+1] - DataContainer::frequencies_K2.f.ts[iv];
-    const double hw = (tw - DataContainer::frequencies_K2.b.ts[iw]) / dw;
-    const double hv = (tv - DataContainer::frequencies_K2.f.ts[iv]) / dv;
+    const double dw = DataContainer::frequencies_K2.b.get_ts(iw+1) - DataContainer::frequencies_K2.b.get_ts(iw);
+    const double dv = DataContainer::frequencies_K2.f.get_ts(iv+1) - DataContainer::frequencies_K2.f.get_ts(iv);
+    const double hw = (tw - DataContainer::frequencies_K2.b.get_ts(iw)) / dw;
+    const double hv = (tv - DataContainer::frequencies_K2.f.get_ts(iv)) / dv;
 
 
     vec<Q> coeffs = get_coeffs_from_derivs(iK, iw, iv, i_in, dw, dv);
