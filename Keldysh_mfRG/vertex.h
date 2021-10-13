@@ -84,6 +84,8 @@ public:
                                     // into r bubble (i.e. in left/right_same/diff_bare functions), and no gammaRb. This
                                     // is needed for correct computation of the central part in multiloop contributions.
 
+    bool completely_crossprojected = false; // Have all reducible parts fully been cross-projected? Needed for the Hubbard model.
+
     explicit fullvert(double Lambda) : avertex('a', Lambda),
                               pvertex('p', Lambda),
                               tvertex('t', Lambda) {}
@@ -123,6 +125,9 @@ public:
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid);
     template<K_class k>
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data);
+
+    //Crossprojection functionality (used for the Hubbard model)
+    void calculate_all_cross_projections();
 
     //Norm of the vertex
     double sum_norm(int) const;
@@ -417,6 +422,16 @@ public:
         half1().update_grid(Lambda);
         half2().update_grid(Lambda);
     }
+
+    void calculate_all_cross_projections(){
+        half1().calculate_all_cross_projections();
+        half2().calculate_all_cross_projections();
+    }
+    void use_projection(const char r){
+        half1().use_projection(r);
+        half2().use_projection(r);
+    }
+
     double sum_norm(int i) { return half1().sum_norm(i); }
     double norm_K1(int i) { return half1().norm_K1(i); }
     double norm_K2(int i) { return half1().norm_K2(i); }
@@ -577,6 +592,12 @@ public:
         }
     }
 
+    void calculate_all_cross_projections() {
+        for (int i=0; i<this->size(); ++i) {
+            (*this)[i].calculate_all_cross_projections();
+        }
+    }
+
     void initializeInterpol() {
         for (int i = 0; i < this->size(); i++) {
             (*this)[i].initializeInterpol();
@@ -616,20 +637,18 @@ template <typename Q> auto irreducible<Q>::val(int iK, int i_in, int spin) const
         case 1:
             return -bare[iK*n_in + i_in];
         default:
-            std::cout << "Problems in irred.val" << std::endl;
+            print("Problems in irred.val. Abort."); assert(false);
     }
 }
 
 template <typename Q> auto irreducible<Q>::acc(int i) const -> Q {
-   if(i>=0 && i<bare.size()){
-    return bare[i];}
-   else{std::cout << "ERROR: Tried to access value outside of range in irreducible vertex" << std::endl;};
+   if(i>=0 && i<bare.size()) return bare[i];
+   else {print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
 }
 
 template <typename Q> void irreducible<Q>::direct_set(int i, Q value) {
-    if(i>=0 && i<bare.size()){
-     bare[i]=value;}
-    else{std::cout << "ERROR: Tried to access value outside of range in irreducible vertex" << std::endl;};
+    if(i>=0 && i<bare.size()) bare[i]=value;
+    else {print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
 }
 
 template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
@@ -669,7 +688,7 @@ template <typename Q> auto fullvert<Q>::value (VertexInput input, const fullvert
 
 template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
     Q res;
-    switch (input.channel){
+    switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
             res = pvertex.value(input, pvertex) + tvertex.value(input, avertex);
             break;
@@ -681,13 +700,13 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input) const -> Q {
             break;
         default :
             res = 0.;
-            std::cout << "Something's going wrong with gammaRb"<< std::endl;
+            print("Something's going wrong with gammaRb. Abort."); assert(false);
     }
     return res;
 }
 template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input, const fullvert<Q>& right_vertex) const -> Q {
     Q res;
-    switch (input.channel){
+    switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
             res = pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex) + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
             break;
@@ -699,7 +718,7 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput input, const fullve
             break;
         default :
             res = 0.;
-            std::cout << "Something's going wrong with gammaRb"<< std::endl;
+            print("Something's going wrong with gammaRb. Abort."); assert(false);
     }
     return res;
 }
@@ -1069,6 +1088,14 @@ void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<
     this->pvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.pvertex);
     this->tvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.tvertex);
     //Fullvert4data.set_initializedInterpol(false);
+}
+
+template<class Q>
+void fullvert<Q>::calculate_all_cross_projections() {
+    avertex.cross_project();
+    pvertex.cross_project();
+    tvertex.cross_project();
+    completely_crossprojected = true;
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {

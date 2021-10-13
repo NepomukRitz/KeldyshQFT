@@ -6,6 +6,7 @@
 #include "propagator.h"                 // propagator to perform second-order perturbation theory (SOPT)
 #include "selfenergy.h"                 // self-energy used in SOPT
 #include "state.h"                      // state to perform full flow
+#include "vertex.h"                     // Vertices to put into bubbles
 #include "loop.h"                       // compute self-energy loop
 #include "bubbles.h"                    // compute vertex bubbles
 #include "parameters/master_parameters.h"                 // system parameters (lengths of vectors etc.)
@@ -77,9 +78,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     Bubble<Q> dPi(G, dG, true);
 #endif // HUBBARD
 
-    //TODO(medium): Think about performing cross-projections for Psi.vertex already here,
-    // as this object is often needed when going to higher loop-orders.
-    vertexOneLoopFlow(dPsi.vertex, Psi.vertex, dPi);
+    State<Q> Psi_comp = Psi; // Input state to do computations with. Cannot be const, because it has to be modified in computations for the Hubbard model.
+    // Calculate all possible cross-projections already here to save time later.
+    if (HUBBARD_MODEL) Psi_comp.vertex.calculate_all_cross_projections();
+
+    vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi);
 
     /// save intermediate states:
     if (save_intermediate) {

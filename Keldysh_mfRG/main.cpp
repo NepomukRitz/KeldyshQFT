@@ -101,15 +101,12 @@ auto main() -> int {
 
 
 
-
-    std::cout << "Hello world ";
+    print("Hello world ");
 #ifdef __linux__
-    std::cout << "on linux.";
+    print("on linux.\n");
 #elif __APPLE__
-    cout << "on apple.";
+    print("on apple.\n");
 #endif
-    std::cout << std::endl;
-
 
     if (MPI_FLAG) {
         MPI_Finalize();

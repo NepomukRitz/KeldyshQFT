@@ -11,7 +11,6 @@
 #include "parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
 #include "symmetries/Keldysh_symmetries.h"       // transformations on Keldysh indices
 #include "symmetries/internal_symmetries.h"      // symmetry transformations for internal indices (momentum etc.), currently trivial
-//#include "interpolations/vertex_interpolations.h"           // frequency interpolations for vertices
 #include "symmetries/symmetry_transformations.h" // symmetry transformations of frequencies
 #include "symmetries/symmetry_table.h"           // table containing information when to apply which symmetry transformations
 #include "grids/momentum_grid.h"            // functionality for the internal structure of the Hubbard model
@@ -24,8 +23,7 @@ template <K_class k, typename Q, interpolMethod inter> class vertexBuffer; // fo
 //template <typename Q, interpolMethod interp> class vertexInterpolator; // forward declaration of vertexInterpolator
 
 template <typename Q>
-class rvert {
-
+class rvert{
 
 public:
     vertexBuffer<k1,Q,INTERPOLATION> K1;
@@ -34,7 +32,9 @@ public:
     vertexBuffer<k1,Q,INTERPOLATION> K1_t_proj = K1;
     vertexBuffer<k2,Q,INTERPOLATION> K2;
     vertexBuffer<k3,Q,INTERPOLATION> K3;
+
     char channel;                       // reducibility channel
+
     Components components;              // lists providing information on how all Keldysh components are related to the
                                         // independent ones
     Transformations transformations;    // lists providing information on which transformations to apply on Keldysh
@@ -44,14 +44,15 @@ public:
     FrequencyComponents freq_components;  // lists providing information on which transformations to apply on
     // frequencies to relate them to the independent ones
 
-    //VertexFrequencyGrid frequencies;    // frequency grid
-
     rvert(const char channel_in, double Lambda)
     : channel(channel_in), components (Components(channel_in)), transformations (Transformations(channel_in)),
       freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
       K1(Lambda), K2(Lambda), K3(Lambda)
       {K1.reserve(); K2.reserve(); K3.reserve(); };
     rvert() = delete;
+
+    bool calculated_crossprojections = false;
+    void cross_project();
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
     /// by interpolating stored data, in all possible channel-dependent frequency representations ///
@@ -348,93 +349,11 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rv
 
     return K1_val + K2_val + K2b_val + K3_val;
 }
-/*
-template <typename Q>
-template <K_class k>
-auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    IndicesSymmetryTransformations indices (input, channel);  // write input indices into transformable data structure
 
-    Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
-    indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
-    if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
-
-    Q value{};
-
-    if (indices.channel != channel)
-        // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
-        // r vertex in the channel related by crossing symmetry
-        value = rvert_crossing.template interpolate<k>(indices);
-    else
-        // otherwise return the interpolated value of the calling r vertex
-        value = vertexInterpolator<Q>::template interpolate<k>(indices);
-
-    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
-
-    assert(isfinite(value));
-    return value;
-}
-template <typename Q>
-template <K_class k>
-auto rvert<Q>::valsmooth(VertexInput input, const rvert<Q>& rvert_crossing, const fullvert<Q>& vertex_half2) const -> Q {
-
-    IndicesSymmetryTransformations indices (input, channel);  // write input indices into transformable data structure
-
-    Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
-    indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
-    if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
-
-    Q value;
-
-    // first check if the applied transformations switch between half 1 and half 2 of the vertex
-    if (indices.asymmetry_transform) {
-        // if yes, return the interpolated value of half 2 in the appropriate channel
-        switch (channel) {
-            case 'a':
-                // calling vertex is in channel a
-                if (indices.channel == 'a')
-                    // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
-                    value = vertex_half2.avertex.vertexInterpolator<Q>::template interpolate<k>(indices);
-                else
-                    // if they do switch between channels a,t, return t vertex of half 2
-                    value = vertex_half2.tvertex.vertexInterpolator<Q>::template interpolate<k>(indices);
-                break;
-            case 'p':
-                // calling vertex is in channel p (no switching between channels -> return p vertex of half 2)
-                value = vertex_half2.pvertex.template interpolate<k>(indices);
-                break;
-            case 't':
-                // calling vertex is in channel t
-                if (indices.channel == 't')
-                    // if the applied transformation(s) do not switch between channels a,t, return t vertex of half 2
-                    value = vertex_half2.tvertex.template interpolate<k>(indices);
-                else
-                    // if they do switch between channels a,t, return t vertex of half 2
-                    value = vertex_half2.avertex.template interpolate<k>(indices);
-                break;
-            default:;
-        }
-    }
-    else {
-        // if no, return the interpolated value of half 1 in the appropriate channel
-        if (indices.channel != channel)
-            // if the symmetry transformation switches between channels (a <--> t), return the interpolated value of the
-            // r vertex in the channel related by crossing symmetry
-            value = rvert_crossing.template interpolate<k>(indices);
-        else
-            // otherwise return the interpolated value of the calling r vertex
-            value = vertexInterpolator<Q>::template interpolate<k>(indices);
-    }
-
-    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) return myconj(value);  // apply complex conjugation if T_C has been used
-
-    assert(isfinite(value));
-    return value;
-}
-*/
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
+    if      (MAX_DIAG_CLASS == 1) return valsmooth<k1>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS  > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::left_same_bare(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
@@ -474,6 +393,68 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
     if (MAX_DIAG_CLASS == 1)      return 0.;
     else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+}
+
+template<typename Q>
+void rvert<Q>::cross_project() {
+    /* TODO(high): Rewrite and update!!
+    if (!calculated_crossprojections){
+        switch (channel) {
+            case 'a':
+                    K1_a_proj = K1;
+                    K1_p_proj = K1_crossproject();
+                    K1_t_proj = K1_crossproject();
+                if (MAX_DIAG_CLASS >= 2){
+                    K2_a_proj = K2;
+                    K2_p_proj = K2_crossproject('p');
+                    K2_t_proj = K2_crossproject('t');
+                }
+                if (MAX_DIAG_CLASS == 3){
+                    K3_a_proj = K3;
+                    K3_p_proj = K3_crossproject('p');
+                    K3_t_proj = K3_crossproject('t');
+                }
+                break;
+            case 'p':
+                    K1_a_proj = K1_crossproject();
+                    K1_p_proj = K1;
+                    K1_t_proj = K1_crossproject();
+                if (MAX_DIAG_CLASS >= 2){
+                    K2_a_proj = K2_crossproject('a');
+                    K2_p_proj = K2;
+                    K2_t_proj = K2_crossproject('t');
+                }
+                if (MAX_DIAG_CLASS == 3){
+                    K3_a_proj = K3_crossproject('a');
+                    K3_p_proj = K3;
+                    K3_t_proj = K3_crossproject('t');
+                }
+                break;
+            case 't':
+                    K1_a_proj = K1_crossproject();
+                    K1_p_proj = K1_crossproject();
+                    K1_t_proj = K1;
+                if (MAX_DIAG_CLASS >= 2){
+                    K2_a_proj = K2_crossproject('a');
+                    K2_p_proj = K2_crossproject('p');
+                    K2_t_proj = K2;
+                }
+                if (MAX_DIAG_CLASS == 3){
+                    K3_a_proj = K3_crossproject('a');
+                    K3_p_proj = K3_crossproject('p');
+                    K3_t_proj = K3;
+                }
+                break;
+            default:
+                print("Error! Invalid channel index!"); assert(false);
+        }
+        calculated_crossprojections = true;
+    }
+    else{
+        print("Error! Crossprojections have already been calculated!");
+        assert(false);
+    }
+     */
 }
 
 
@@ -798,7 +779,7 @@ void rvert<Q>::K1_crossproject() {
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
     for (int iK = 0; iK < nK_K1; ++iK) {
 #pragma omp parallel for schedule(dynamic) default(none) shared(iK)
-        for (int iw = 1; iw < nw1-1; ++iw) {
+        for (int iw = 1; iw < nw1-1; ++iw) { // TODO(high): Why not from 0 to < nw1 as previously?
             Q projected_value = K1_BZ_average(iK, iw);
             for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
                 K1.setvert(projected_value, iK, iw, i_in); // All internal arguments get the same value for K1!
