@@ -219,7 +219,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
 
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new) {
 
-    vec<Q> Sigma_new (nK_SE*nSE*n_in);                     // temporary self-energy vector
+    vec<Q> Sigma_new (nK_SE*(nSE+2*FREQ_PADDING)*n_in);                     // temporary self-energy vector
     for (int iK=0; iK<nK_SE; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=0; iv<nSE; ++iv) {
@@ -394,9 +394,9 @@ template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) co
 template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose) const -> double {
     //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
     //return max_SE;
-    const std::array<size_t,3> dims1 = {n_in, nK_SE, nFER};
+    const std::array<size_t,3> dims1 = {n_in, nK_SE, nFER+2*FREQ_PADDING};
     const std::array<size_t,3> perm1 = {2, 0, 1};
-    double max_SE = (::power2(::get_finite_differences<Q,3>(::get_finite_differences<Q,3>(Sigma, frequencies.ts, dims1, perm1), frequencies.ts, dims1, perm1))).max_norm();
+    double max_SE = (::power2(::get_finite_differences<Q,3>(::get_finite_differences<Q,3>(Sigma, frequencies.get_ts_vec(), dims1, perm1), frequencies.get_ws_vec(), dims1, perm1))).max_norm();
 
     if (verbose) {
         std::cout << "max. Curvature in selfenergy:" << std::endl;

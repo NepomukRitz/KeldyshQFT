@@ -90,7 +90,7 @@ template <typename Q> void State<Q>::update_grid(double Lambda) {
 
 template <typename Q> void State<Q>::findBestFreqGrid(double Lambda) {
     this->selfenergy.findBestFreqGrid(Lambda);
-    this->vertex[0].half1().findBestFreqGrid(Lambda);
+    this->vertex[0].half1().findBestFreqGrid();
 }
 
 

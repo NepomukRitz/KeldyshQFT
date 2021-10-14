@@ -109,8 +109,8 @@ public:
                         w_lower = glb_w2_lower;
                         W_scale = glb_W2_scale;
                         if (KELDYSH){
-                            U_factor = 15./3.;
-                            Delta_factor = 15.;
+                            U_factor = 150./3.;
+                            Delta_factor = 150.;
                         }
                         else{
                             U_factor = 40./3.;
@@ -181,6 +181,7 @@ public:
     auto get_ws(int index) const -> double {return ws[index+FREQ_PADDING];};
     auto get_ts(int index) const -> double {return ts[index+FREQ_PADDING];};
     auto get_ws_vec() const -> vec<double> {return ws;}
+    auto get_ts_vec() const -> vec<double> {return ts;}
     auto scale_factor(double Lambda) -> double;
     void initialize_grid();
     void set_W_scale(double scale);
@@ -285,7 +286,7 @@ void FrequencyGrid::set_w_upper(double wmax) {
 void FrequencyGrid::rescale_grid(double Lambda) {
     double scale = scale_factor(Lambda);
     set_W_scale(scale);
-    set_w_upper(scale*15);
+    set_w_upper(scale*150.);
     initialize_grid();
 }
 
@@ -441,7 +442,7 @@ public:
     void initialize_grid(double scale) {
 
         b.set_W_scale(scale);
-        b.set_w_upper(scale*15.);
+        b.set_w_upper(scale*150.);
         b.initialize_grid();
     }
 
@@ -475,10 +476,10 @@ public:
     void initialize_grid(double scale) {
 
         b.set_W_scale(scale);
-        b.set_w_upper(scale*15.);
+        b.set_w_upper(scale*150.);
         b.initialize_grid();
         f.set_W_scale(scale);
-        f.set_w_upper(scale*15.);
+        f.set_w_upper(scale*150.);
         f.initialize_grid();
     }
 
@@ -519,10 +520,10 @@ public:
     void initialize_grid(double scale) {
 
         b.set_W_scale(scale);
-        b.set_w_upper(scale*15.);
+        b.set_w_upper(scale*150.);
         b.initialize_grid();
         f.set_W_scale(scale);
-        f.set_w_upper(scale*15.);
+        f.set_w_upper(scale*150.);
         f.initialize_grid();
     }
 

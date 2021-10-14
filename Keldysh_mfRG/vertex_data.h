@@ -149,27 +149,6 @@ public:
     /** K1-functionality */
     /// Member functions for accessing/setting values of the vector K1 ///
 
-    /** Return the value of the vector K1 at index i. */
-    //auto K1_acc(int i) const -> Q;
-
-    /** Set the value of the vector K1 at index i to "value". */
-    //void K1_direct_set(int i, Q value);
-
-    /** Set the value of the vector K1 at Keldysh index iK, frequency index iw,
-     * internal structure index i_in to "value". */
-    //void K1_setvert(int iK, int iw, int i_in, Q value);
-
-    /** Add "value" to the value of the vector K1 at Keldysh index iK, frequency index iw,
-     * internal structure index i_in. */
-    //void K1_addvert(int iK, int iw, int i_in, Q value);
-
-    /** Return the value of the vector K1 at Keldysh index iK, frequency index iw,
-     * internal structure index i_in. */
-    //auto val(int iK, int iw, int i_in) const -> Q;
-
-    //void K1_add(vec<Q> summand);
-    //auto get_K1() const -> vec<Q>;
-    //void set_K1(vec<Q> data);
     const double& K1_get_wlower() const;
     const double& K1_get_wupper() const;
     auto K1_get_freqGrid() const -> const FrequencyGrid&;
@@ -186,6 +165,9 @@ public:
     double get_curvature_maxK1() const;
 
     double analyze_tails_K1() const;
+
+    auto shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k1>;
+    //void  findBestFreqGrid(double Lambda);
 };
 
 template<typename Q>
@@ -287,6 +269,8 @@ public:
     double analyze_tails_K2_x() const;
 
     double analyze_tails_K2_y() const;
+    auto shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k2>;
+
 };
 
 template <typename Q>
@@ -387,6 +371,8 @@ public:
     double analyze_tails_K3_x() const;
     double analyze_tails_K3_y() const;
     double analyze_tails_K3_z() const;
+
+    auto shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k3>;
 
 };
 
@@ -506,10 +492,26 @@ template <typename Q> double vertexDataContainer<k1,Q>::analyze_tails_K1() const
     double maxabs_K1_total = vertexContainerBase<Q,3>::data.max_norm();
     vec<double> maxabsK1_along_w = maxabs(vertexContainerBase<Q,3>::data, vertexContainerBase<Q,3>::dims, 1);
 
-    return maxabsK1_along_w[1] / maxabs_K1_total;
+    return maxabsK1_along_w[FREQ_PADDING] / maxabs_K1_total;
 }
 
+template <typename Q> auto vertexDataContainer<k1,Q>::shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k1> {
+    vec<double> maxabsK1_along_w = maxabs(vertexContainerBase<Q,3>::data, vertexContainerBase<Q,3>::dims, 1);
+    double maxmax = maxabsK1_along_w.max_norm();
 
+    VertexFrequencyGrid<k1> frequencies_new = frequencies_K1;
+
+    //const double rel_tail_threshold = 1e-4;
+    size_t index = 0;
+    while (true) {
+        if (maxabsK1_along_w[index] > rel_tail_threshold * maxmax) break;
+        index++;
+    }
+    frequencies_new.b.set_w_upper(std::abs(frequencies_K1.b.get_ws(index)));
+    frequencies_new.b.initialize_grid();
+
+    return frequencies_new;
+}
 
 
 /*
@@ -679,15 +681,46 @@ template <typename Q> double vertexDataContainer<k2,Q>::analyze_tails_K2_x() con
     double maxabs_K2_total = vertexContainerBase<Q,4>::data.max_norm();
     vec<double> maxabsK2_along_w = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 1);
 
-    return maxabsK2_along_w[1] / maxabs_K2_total;
+    return maxabsK2_along_w[FREQ_PADDING] / maxabs_K2_total;
 }
 template <typename Q> double vertexDataContainer<k2,Q>::analyze_tails_K2_y() const {
     double maxabs_K2_total = vertexContainerBase<Q,4>::data.max_norm();
     vec<double> maxabsK2_along_v = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 2);
 
-    return maxabsK2_along_v[1] / maxabs_K2_total;
+    return maxabsK2_along_v[FREQ_PADDING] / maxabs_K2_total;
 }
 
+template <typename Q> auto vertexDataContainer<k2,Q>::shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k2> {
+
+    VertexFrequencyGrid<k2> frequencies_new = frequencies_K2;
+
+    vec<double> maxabsK2_along_w = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 1);
+    double maxmax = maxabsK2_along_w.max_norm();
+
+    //const double rel_tail_threshold = 1e-4;
+    size_t index = 0;
+    while (true) {
+        if (maxabsK2_along_w[index] > rel_tail_threshold * maxmax) break;
+        index++;
+    }
+    frequencies_new.b.set_w_upper(std::abs(frequencies_K2.b.get_ws(index)));
+    frequencies_new.b.initialize_grid();
+
+
+
+    vec<double> maxabsK2_along_v = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 2);
+
+    //const double rel_tail_threshold = 1e-4;
+    index = 0;
+    while (true) {
+        if (maxabsK2_along_v[index] > rel_tail_threshold * maxmax) break;
+        index++;
+    }
+    frequencies_new.f.set_w_upper(std::abs(frequencies_K2.f.get_ws(index)));
+    frequencies_new.f.initialize_grid();
+
+    return frequencies_new;
+}
 
 /*
 template <typename Q> auto vertexDataContainer<k3,Q>::K3_acc(int i) const -> Q {
@@ -886,5 +919,38 @@ template <typename Q> double vertexDataContainer<k3,Q>::analyze_tails_K3_z() con
     return maxabsK3_along_vp[1] / maxabs_K3_total;
 }
 
+template <typename Q> auto vertexDataContainer<k3,Q>::shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k3> {
+
+    VertexFrequencyGrid<k3> frequencies_new = frequencies_K3;
+
+    vec<double> maxabsK3_along_w = maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 1);
+    double maxmax = maxabsK3_along_w.max_norm();
+
+    //const double rel_tail_threshold = 1e-4;
+    size_t index = 0;
+    while (true) {
+        if (maxabsK3_along_w[index] > rel_tail_threshold * maxmax) break;
+        index++;
+    }
+    frequencies_new.b.set_w_upper(std::abs(frequencies_K3.b.get_ws(index)));
+    frequencies_new.b.initialize_grid();
+
+
+
+    vec<double> maxabsK3_along_v = maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 2);
+    vec<double> maxabsK3_along_vp= maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 3);
+    vec<double> maxabsK3_along_f = elementwise([](const double& l, const double & r) -> double {return std::max(l, r);}, maxabsK3_along_v, maxabsK3_along_vp);
+
+            //const double rel_tail_threshold = 1e-4;
+    index = 0;
+    while (true) {
+        if (maxabsK3_along_f[index] > rel_tail_threshold * maxmax) break;
+        index++;
+    }
+    frequencies_new.f.set_w_upper(std::abs(frequencies_K3.f.get_ws(index)));
+    frequencies_new.f.initialize_grid();
+
+    return frequencies_new;
+}
 
 #endif //FPP_MFRG_VERTEX_DATA_H
