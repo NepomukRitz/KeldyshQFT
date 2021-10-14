@@ -191,8 +191,8 @@ public:
     // TODO: Implement! Needed for the Hubbard model.
     void K3_crossproject(char channel_out);
 
-    void initInterpolator() {K1.initInterpolator(); K2.initInterpolator(); K3.initInterpolator(); }
-    void set_initializedInterpol(const bool is_init) {K1.initialized = is_init; K2.initialized = is_init; K3.initialized = is_init; }
+    void initInterpolator() const {K1.initInterpolator(); K2.initInterpolator(); K3.initInterpolator(); }
+    void set_initializedInterpol(const bool is_init) const {K1.initialized = is_init; K2.initialized = is_init; K3.initialized = is_init; }
 
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
         if (MAX_DIAG_CLASS >= 0) K1.data += rhs.K1.data;

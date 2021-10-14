@@ -109,8 +109,8 @@ public:
                         w_lower = glb_w2_lower;
                         W_scale = glb_W2_scale;
                         if (KELDYSH){
-                            U_factor = 150./3.;
-                            Delta_factor = 150.;
+                            U_factor = 15./3.;
+                            Delta_factor = 15.;
                         }
                         else{
                             U_factor = 40./3.;
@@ -286,7 +286,7 @@ void FrequencyGrid::set_w_upper(double wmax) {
 void FrequencyGrid::rescale_grid(double Lambda) {
     double scale = scale_factor(Lambda);
     set_W_scale(scale);
-    set_w_upper(scale*150.);
+    set_w_upper(scale*15);
     initialize_grid();
 }
 
@@ -442,7 +442,7 @@ public:
     void initialize_grid(double scale) {
 
         b.set_W_scale(scale);
-        b.set_w_upper(scale*150.);
+        b.set_w_upper(scale*15.);
         b.initialize_grid();
     }
 
@@ -476,10 +476,10 @@ public:
     void initialize_grid(double scale) {
 
         b.set_W_scale(scale);
-        b.set_w_upper(scale*150.);
+        b.set_w_upper(scale*15.);
         b.initialize_grid();
         f.set_W_scale(scale);
-        f.set_w_upper(scale*150.);
+        f.set_w_upper(scale*15.);
         f.initialize_grid();
     }
 
@@ -520,10 +520,10 @@ public:
     void initialize_grid(double scale) {
 
         b.set_W_scale(scale);
-        b.set_w_upper(scale*150.);
+        b.set_w_upper(scale*15.);
         b.initialize_grid();
         f.set_W_scale(scale);
-        f.set_w_upper(scale*150.);
+        f.set_w_upper(scale*15.);
         f.initialize_grid();
     }
 

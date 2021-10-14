@@ -51,27 +51,27 @@ class SplineK1 : public DataContainer
 public:
 
 
-    bool initialized = false;
+    mutable bool initialized = false;
 
 protected:
     //std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
     size_t n;   // flat size of data vector (and interpolation coefficients)
     size_t i_x; // index of w dimension in DataContainer::dims
-    vec<Q> m_b = vec<Q>(n),m_c= vec<Q>(n),m_d= vec<Q>(n);        // SplineK1 coefficients
+    mutable vec<Q> m_b = vec<Q>(n),m_c= vec<Q>(n),m_d= vec<Q>(n);        // SplineK1 coefficients
     //Q m_c0;                            // for left extrapolation
     bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
     Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
     //bool m_made_monotonic = false;
-    void set_coeffs_from_b();               // calculate c_i, d_i from b_i
+    void set_coeffs_from_b() const;               // calculate c_i, d_i from b_i
 
 public:
     explicit SplineK1(double Lambda)
-            :   DataContainer(Lambda), n(DataContainer::data.size()), i_x(1)
+            :   DataContainer(Lambda), n(getFlatSize(DataContainer::dims)), i_x(1)
     {
         //this->initializeK1();
     }
 
-    void initInterpolator();
+    void initInterpolator() const;
 
     // adjust coefficients so that the SplineK1 becomes piecewise monotonic
     // where possible
@@ -92,7 +92,7 @@ public:
 
 
     template <class DataContainer, typename Q>
-    void SplineK1<DataContainer,Q>::set_coeffs_from_b()
+    void SplineK1<DataContainer,Q>::set_coeffs_from_b() const
     {
         size_t n_x = DataContainer::frequencies_K1.b.get_ws_vec().size();
         size_t n_nonx = n/n_x;
@@ -111,7 +111,7 @@ public:
     }
 
     template <class DataContainer, typename Q>
-    void SplineK1<DataContainer,Q>::initInterpolator()
+    void SplineK1<DataContainer,Q>::initInterpolator() const
     {
 
     // hermite cubic splines which are C^1 (cont. differentiable)
@@ -153,7 +153,7 @@ public:
     }
     m_d[n-1]=0.0;
      */
-    n = DataContainer::data.size();
+    //n = DataContainer::data.size();
         m_b = vec<Q>(n);
         m_c = vec<Q>(n);
         m_d = vec<Q>(n);

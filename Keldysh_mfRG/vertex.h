@@ -213,7 +213,7 @@ public:
 
     void findBestFreqGrid(bool verbose=true);
 
-    void initializeInterpol();
+    void initializeInterpol() const;
 
     void set_initializedInterpol(bool is_init);
 
@@ -1501,7 +1501,7 @@ template <typename Q> void fullvert<Q>::findBestFreqGrid(const bool verbose) {
 }
 
 template<typename Q>
-void fullvert<Q>::initializeInterpol() {
+void fullvert<Q>::initializeInterpol() const {
     avertex.initInterpolator();
     pvertex.initInterpolator();
     tvertex.initInterpolator();
