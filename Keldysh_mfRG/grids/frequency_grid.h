@@ -53,7 +53,7 @@ inline void locate(const vec<double> xx, const size_t n, const double x, size_t 
 }
 
 #define PARAMETRIZED_GRID
-#define FREQ_PADDING 1  // set to 0 for NO padding
+#define FREQ_PADDING 1  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
 
 double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
@@ -318,9 +318,9 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     else {
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5);
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
         if (ws[index+1+FREQ_PADDING] < w_in) index++;
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5);
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
 
@@ -353,9 +353,9 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
     else {
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5);
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
         if (ws[index+1+FREQ_PADDING] < w_in) index++;
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5);
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
 
