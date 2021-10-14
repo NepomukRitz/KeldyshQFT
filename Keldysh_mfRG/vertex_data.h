@@ -507,6 +507,8 @@ template <typename Q> auto vertexDataContainer<k1,Q>::shrink_freq_box(const doub
         if (maxabsK1_along_w[index] > rel_tail_threshold * maxmax) break;
         index++;
     }
+    index -= FREQ_PADDING;
+    if (index > 0) index--;
     frequencies_new.b.set_w_upper(std::abs(frequencies_K1.b.get_ws(index)));
     frequencies_new.b.initialize_grid();
 
@@ -703,6 +705,8 @@ template <typename Q> auto vertexDataContainer<k2,Q>::shrink_freq_box(const doub
         if (maxabsK2_along_w[index] > rel_tail_threshold * maxmax) break;
         index++;
     }
+    index -= FREQ_PADDING;
+    if (index > 0) index--;
     frequencies_new.b.set_w_upper(std::abs(frequencies_K2.b.get_ws(index)));
     frequencies_new.b.initialize_grid();
 
@@ -716,6 +720,8 @@ template <typename Q> auto vertexDataContainer<k2,Q>::shrink_freq_box(const doub
         if (maxabsK2_along_v[index] > rel_tail_threshold * maxmax) break;
         index++;
     }
+    index -= FREQ_PADDING;
+    if (index > 0) index--;
     frequencies_new.f.set_w_upper(std::abs(frequencies_K2.f.get_ws(index)));
     frequencies_new.f.initialize_grid();
 
@@ -932,6 +938,8 @@ template <typename Q> auto vertexDataContainer<k3,Q>::shrink_freq_box(const doub
         if (maxabsK3_along_w[index] > rel_tail_threshold * maxmax) break;
         index++;
     }
+    index -= FREQ_PADDING;
+    if (index > 0) index--;
     frequencies_new.b.set_w_upper(std::abs(frequencies_K3.b.get_ws(index)));
     frequencies_new.b.initialize_grid();
 
@@ -947,6 +955,8 @@ template <typename Q> auto vertexDataContainer<k3,Q>::shrink_freq_box(const doub
         if (maxabsK3_along_f[index] > rel_tail_threshold * maxmax) break;
         index++;
     }
+    index -= FREQ_PADDING;
+    if (index > 0) index--;
     frequencies_new.f.set_w_upper(std::abs(frequencies_K3.f.get_ws(index)));
     frequencies_new.f.initialize_grid();
 
