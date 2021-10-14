@@ -507,14 +507,16 @@ namespace ode_solver_impl
 
 
 template <typename Y>
-void postRKstep_stuff(Y y, vec<double> x_vals, int iteration, std::string filename) {}
-template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype> y_run, vec<double> x_vals, int iteration, std::string filename) {
+void postRKstep_stuff(Y y, double x, vec<double> x_vals, int iteration, std::string filename) {}
+template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype> y_run, double x_run, vec<double> x_vals, int iteration, std::string filename) {
 
     check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
     if (KELDYSH) check_FDTs(y_run); // check FDTs for Sigma and K1r at each step of the flow
     if (filename != "") {
     add_hdf(filename, iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
     }
+    //y_run.update_grid(x_run); // rescales grid with Delta or U
+    y_run.findBestFreqGrid();
 }
 
 
@@ -620,7 +622,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
         lambdas[i] = Lambda;
 
         // if Y == State: save state in hdf5
-        postRKstep_stuff<Y>(result, lambdas, i, filename);
+        postRKstep_stuff<Y>(result, Lambda, lambdas, i, filename);
 
 
 
