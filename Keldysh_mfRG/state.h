@@ -31,7 +31,7 @@ public:
 
     void initialize();
     void update_grid(double Lambda);
-    void findBestFreqGrid();
+    void findBestFreqGrid(bool verbose);
 
     // operators containing State objects
     auto operator+= (const State& state) -> State {
@@ -88,9 +88,9 @@ template <typename Q> void State<Q>::update_grid(double Lambda) {
 }
 
 
-template <typename Q> void State<Q>::findBestFreqGrid() {
-    this->selfenergy.findBestFreqGrid();
-    this->vertex[0].half1().findBestFreqGrid();
+template <typename Q> void State<Q>::findBestFreqGrid(const bool verbose) {
+    this->selfenergy.findBestFreqGrid(verbose);
+    this->vertex[0].half1().findBestFreqGrid(verbose);
 }
 
 

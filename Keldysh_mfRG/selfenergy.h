@@ -40,7 +40,7 @@ public:
     /// Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma
     void update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma);
     /// finds optimal grid parameters with minimizer()
-    void findBestFreqGrid();       // optimize frequency grid parameters and update self-energy on new grid
+    void findBestFreqGrid(bool verbose);       // optimize frequency grid parameters and update self-energy on new grid
     /// computes finite differences of Sigma
     double get_deriv_maxSE(bool verbose) const;
     double get_curvature_maxSE(bool verbose) const;
@@ -329,7 +329,7 @@ public:
 
 };
 
-template <typename Q> void SelfEnergy<Q>::findBestFreqGrid() {
+template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
 
     SelfEnergy<Q> SEtemp = *this;
     //SEtemp.update_grid(Lambda);
@@ -338,8 +338,8 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid() {
     double a_Wscale = SEtemp.frequencies.W_scale / 10.;
     double m_Wscale = SEtemp.frequencies.W_scale;
     double b_Wscale = SEtemp.frequencies.W_scale * 10;
-    CostSE_Wscale<Q> cost(SEtemp, true);
-    minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, true);
+    CostSE_Wscale<Q> cost(SEtemp, verbose);
+    minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
     FrequencyGrid frequencies_new = frequencies;
     frequencies_new.update_Wscale(m_Wscale);
 
