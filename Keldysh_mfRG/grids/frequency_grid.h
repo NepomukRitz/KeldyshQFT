@@ -178,8 +178,8 @@ public:
         return *this;
     }
 
-    auto get_ws(int index) const -> double {return ws[index+FREQ_PADDING];};
-    auto get_ts(int index) const -> double {return ts[index+FREQ_PADDING];};
+    auto get_ws(int index) const -> double {assert(isfinite(ws[index+FREQ_PADDING])); return ws[index+FREQ_PADDING];};
+    auto get_ts(int index) const -> double {assert(isfinite(ts[index+FREQ_PADDING])); return ts[index+FREQ_PADDING];};
     auto get_ws_vec() const -> vec<double> {return ws;}
     auto get_ts_vec() const -> vec<double> {return ts;}
     auto scale_factor(double Lambda) -> double;

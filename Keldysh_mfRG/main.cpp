@@ -74,10 +74,14 @@ auto main() -> int {
     }
     print("nBOS1 = ", nBOS, true);
     print("nFER1 = ", nFER, true);
-    print("nBOS2 = ", nBOS2, true);
-    print("nFER2 = ", nFER2, true);
-    print("nBOS3 = ", nBOS3, true);
-    print("nFER3 = ", nFER3, true);
+    if(MAX_DIAG_CLASS > 1) {
+        print("nBOS2 = ", nBOS2, true);
+        print("nFER2 = ", nFER2, true);
+    }
+    if(MAX_DIAG_CLASS > 2) {
+        print("nBOS3 = ", nBOS3, true);
+        print("nFER3 = ", nFER3, true);
+    }
     if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
 
