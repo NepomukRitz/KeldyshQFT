@@ -872,52 +872,53 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     update_grid<k1>(frequenciesK1_new, *this);
 
 
-    /// for K2:
-    VertexFrequencyGrid<k2> frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
-    update_grid<k2>(frequenciesK2_new, *this);
+    if(MAX_DIAG_CLASS>1) {
+        /// for K2:
+        VertexFrequencyGrid<k2> frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
+        update_grid<k2>(frequenciesK2_new, *this);
 
-    // in w-direction:
-    a_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale / 10.;
-    m_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale;
-    b_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale * 10;
-    CostFullvert_Wscale_b_K2<Q> cost_b_K2(*this, verbose);
-    minimizer(cost_b_K2, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
-    frequenciesK2_new.b.update_Wscale(m_Wscale);
-    update_grid<k2>(frequenciesK2_new, *this);
+        // in w-direction:
+        a_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale / 10.;
+        m_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale;
+        b_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale * 10;
+        CostFullvert_Wscale_b_K2<Q> cost_b_K2(*this, verbose);
+        minimizer(cost_b_K2, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+        frequenciesK2_new.b.update_Wscale(m_Wscale);
+        update_grid<k2>(frequenciesK2_new, *this);
 
-    // in v-direction:
-    a_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale / 10.;
-    m_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale;
-    b_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale * 10;
-    CostFullvert_Wscale_f_K2<Q> cost_f_K2(*this, verbose);
-    minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
-    frequenciesK2_new.f.update_Wscale(m_Wscale);
-    update_grid<k2>(frequenciesK2_new, *this);
+        // in v-direction:
+        a_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale / 10.;
+        m_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale;
+        b_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale * 10;
+        CostFullvert_Wscale_f_K2<Q> cost_f_K2(*this, verbose);
+        minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+        frequenciesK2_new.f.update_Wscale(m_Wscale);
+        update_grid<k2>(frequenciesK2_new, *this);
+    }
 
+    if(MAX_DIAG_CLASS>2) {
+        /// for K3:
+        VertexFrequencyGrid<k3> frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
+        update_grid<k3>(frequenciesK3_new, *this);
 
+        // in w-direction:
+        a_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale / 10.;
+        m_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale;
+        b_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale * 10;
+        CostFullvert_Wscale_b_K3<Q> cost_b_K3(*this, verbose);
+        minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+        frequenciesK3_new.b.update_Wscale(m_Wscale);
+        update_grid<k3>(frequenciesK3_new, *this);
 
-    /// for K3:
-    VertexFrequencyGrid<k3> frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
-    update_grid<k3>(frequenciesK3_new, *this);
-
-    // in w-direction:
-    a_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale / 10.;
-    m_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale;
-    b_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale * 10;
-    CostFullvert_Wscale_b_K3<Q> cost_b_K3(*this, verbose);
-    minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
-    frequenciesK3_new.b.update_Wscale(m_Wscale);
-    update_grid<k3>(frequenciesK3_new, *this);
-
-    // in v-direction:
-    a_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale / 10.;
-    m_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale;
-    b_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale * 10;
-    CostFullvert_Wscale_f_K3<Q> cost_f_K3(*this, verbose);
-    minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
-    frequenciesK3_new.f.update_Wscale(m_Wscale);
-    update_grid<k3>(frequenciesK3_new, *this);
-
+        // in v-direction:
+        a_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale / 10.;
+        m_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale;
+        b_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale * 10;
+        CostFullvert_Wscale_f_K3<Q> cost_f_K3(*this, verbose);
+        minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+        frequenciesK3_new.f.update_Wscale(m_Wscale);
+        update_grid<k3>(frequenciesK3_new, *this);
+    }
 
 
 }

@@ -52,9 +52,10 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
     parquet_solver(data_dir + "parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
-    state_ini.findBestFreqGrid(Lambda_ini);
-
     write_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+    state_ini.findBestFreqGrid(Lambda_ini);
+    //write_hdf(outputFileName+"_postOpt", Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+
     //if (save_intermediate_results) {
     //    write_hdf(outputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
     //    write_hdf(outputFileName+"_RKstep2", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
