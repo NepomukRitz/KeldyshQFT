@@ -37,7 +37,7 @@ TEST_CASE( "Minimize different cost functions", "[minimizer]" ) {
     WHEN( "adaptive Gauss-Lobatto integrator with Kronrod extension" ) {
         double a = -6, b = 6.;
         double res = 1.;
-        minimizer<TestCost>(cost, a, res, b);
+        minimizer<TestCost>(cost, a, res, b, 1e5, false, 1e-5, 0.);
         CHECK( std::abs(res -  exact[i]) < 0.0001 );
     }
 }

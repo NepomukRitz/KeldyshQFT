@@ -8,7 +8,7 @@ double max_rel_err(double x, vec<double> scale, double tiny) {
 
 #include "../../ODE_solvers.h"
 
-template<> void postRKstep_stuff<double>(double y, vec<double> x_vals, int iteration, std::string filename) {
+template<> void postRKstep_stuff<double>(double& y, double x, vec<double> x_vals, int iteration, std::string filename) {
     std::cout <<"Intermediate result of ODE solver: " << y << std::endl;
 }
 
