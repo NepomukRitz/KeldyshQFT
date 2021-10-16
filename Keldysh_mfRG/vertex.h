@@ -1034,6 +1034,7 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput& input, cons
 }
 
 template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(fullvert<Q>& right_vertex){
+    /// TODO: Better reorder both at once
     initializeInterpol();
     right_vertex.initializeInterpol();
     avertex.enforce_freqsymmetriesK1(right_vertex.avertex);

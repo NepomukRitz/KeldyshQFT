@@ -57,7 +57,8 @@ public:
     /// by interpolating stored data, in all possible channel-dependent frequency representations ///
 
     /**
-     * Return the value of the reducible vertex in channel r.
+     * Return the value of the reducible vertex in channel r = sum of all K_classes K1, K2, K2b and K3.
+     * This version of value() is used for the symmetric vertex
      * @param input          : Combination of input arguments.
      * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
      *                         symmetry transformations that map between channels a <--> t.
@@ -65,16 +66,27 @@ public:
     auto value(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
     /** Overload for accessing non-symmetric vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
-     *                       asymmetry_transform=true */
+     *                       asymmetry_transform=true
+     */
     auto value(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
-
+    /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
+    /// This version is used for a symmetric vertex
     template <K_class k>
     const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing) const;
 
+    /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
+    /// This version is used for an Asymmetric vertex
     template <K_class k>
     const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const;
 
+    /**
+     * Reads out a symmetry reduced vertex component. Hence symmetry_reduce must be called before!
+     * @tparam k        K_class
+     * @param indices   contains information for reading out the symmetry reduced vertex component
+     * @param readMe    vertex to be read
+     * @return
+     */
     template<K_class k>
     Q read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const {
 
@@ -157,9 +169,19 @@ public:
      */
     void update_grid(double Lambda);
 
+    /**
+     * Interpolate the vertex to updated grid.
+     * @tparam k
+     * @param frequencyGrid_in  new frequency grid
+     * @param rvert4data        vertex to be interpolated
+     *                          can be different from *this, so we can backup a vertex and interpolate the backup
+     */
     template<K_class k>
     void update_grid(const VertexFrequencyGrid<k> &frequencyGrid_in, rvert<Q>& rvert4data);
 
+    /**
+     * Optimizes the frequency grids and updates the grids accordingly
+     */
     void findBestFreqGrid(bool verbose=true);
 
     /** K1-functionality */
@@ -182,6 +204,8 @@ public:
 
     // TODO: Implement! Needed for the Hubbard model.
     void K2_crossproject(char channel_out);
+
+    /** K3 functionality */
 
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.

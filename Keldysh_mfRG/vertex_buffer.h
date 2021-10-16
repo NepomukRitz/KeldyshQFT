@@ -11,7 +11,9 @@
 #include "symmetries/symmetry_transformations.h"
 
 
-
+/**
+ * Vertex buffers store the vertex data and frequency grids and interpolates data points on the grid.
+ */
 template<K_class k, typename Q, interpolMethod inter>
 class vertexBuffer {
     explicit vertexBuffer(double Lambda) {
@@ -19,6 +21,7 @@ class vertexBuffer {
     }
 };
 
+/** Template specialization for K1 (cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k1,Q, cubic>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
 
@@ -47,8 +50,7 @@ public:
     }
 };
 
-
-
+/** Template specialization for K2 (cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k2,Q, cubic>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
 public:
@@ -77,7 +79,7 @@ public:
     }
 };
 
-
+/** Template specialization for K3 (cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k3,Q, cubic>: public SplineK3<vertexDataContainer<k3,Q>, Q> {
 public:
@@ -107,10 +109,9 @@ public:
 };
 
 
-/// Interpolator class
 
 
-/** Template specialization for K1 (linear or sloppy cubic interpolation) */
+/** Template specialization for K1 (linear interpolation) */
 template<typename Q>
 class vertexBuffer<k1, Q, linear> : public vertexDataContainer<k1, Q> {
 public:
@@ -144,7 +145,7 @@ public:
     }
 };
 
-/** Template specialization for K2 (linear or sloppy cubic interpolation) */
+/** Template specialization for K2 (linear interpolation) */
 template<typename Q>
 class vertexBuffer<k2, Q, linear> : public vertexDataContainer<k2, Q> {
 public:
@@ -183,7 +184,7 @@ public:
 };
 
 
-/** Template specialization for K3 (linear or sloppy cubic interpolation) */
+/** Template specialization for K3 (linear interpolation) */
 template<typename Q>
 class vertexBuffer<k3, Q, linear> : public vertexDataContainer<k3, Q> {
 public:
@@ -225,7 +226,7 @@ public:
 
 
 
-/** Template specialization for K1 (linear or sloppy cubic interpolation) */
+/** Template specialization for K1 (linear interpolation on the auxiliary grid) */
 template<typename Q>
 class vertexBuffer<k1, Q, linear_on_aux> : public vertexDataContainer<k1, Q> {
 public:
@@ -263,7 +264,7 @@ public:
     }
 };
 
-/** Template specialization for K2 (linear or sloppy cubic interpolation) */
+/** Template specialization for K2 (linear interpolation on the auxiliary grid) */
 template<typename Q>
 class vertexBuffer<k2, Q, linear_on_aux> : public vertexDataContainer<k2, Q> {
 public:
@@ -306,7 +307,7 @@ public:
 };
 
 
-/** Template specialization for K3 (linear or sloppy cubic interpolation) */
+/** Template specialization for K3 (linear interpolation on the auxiliary grid) */
 template<typename Q>
 class vertexBuffer<k3, Q, linear_on_aux> : public vertexDataContainer<k3, Q> {
 public:
@@ -353,7 +354,7 @@ public:
 
 
 
-/** Template specialization for K1 (linear or sloppy cubic interpolation) */
+/** Template specialization for K1 (sloppy cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k1, Q, sloppycubic> : public vertexDataContainer<k1, Q> {
 public:
@@ -390,7 +391,7 @@ public:
     }
 };
 
-/** Template specialization for K2 (linear or sloppy cubic interpolation) */
+/** Template specialization for K2 (sloppy cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k2, Q, sloppycubic> : public vertexDataContainer<k2, Q> {
 public:
@@ -429,7 +430,7 @@ public:
 };
 
 
-/** Template specialization for K3 (linear or sloppy cubic interpolation) */
+/** Template specialization for K3 (sloppy cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k3, Q, sloppycubic> : public vertexDataContainer<k3, Q> {
 public:
