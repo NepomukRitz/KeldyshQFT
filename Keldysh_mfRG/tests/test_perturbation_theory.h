@@ -1695,9 +1695,19 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     State<Q> state_diff = state_cpp - PT_state;
 
     write_hdf(outputFileName + "_diff", Lambda, 1, state_diff);
-    print("K1-difference: ", state_diff.vertex[0].half1().norm_K1(0), true);
-    if (MAX_DIAG_CLASS > 1) print("K2-difference: ", state_diff.vertex[0].half1().norm_K2(0), true);
-    if (MAX_DIAG_CLASS > 2) print("K3-difference: ", state_diff.vertex[0].half1().norm_K3(0), true);
+    print("K1a-difference: ", state_diff.vertex[0].avertex().K1.get_vec().max_norm(), true);
+    print("K1p-difference: ", state_diff.vertex[0].pvertex().K1.get_vec().max_norm(), true);
+    print("K1t-difference: ", state_diff.vertex[0].tvertex().K1.get_vec().max_norm(), true);
+    if (MAX_DIAG_CLASS > 1) {
+        print("K2a-difference: ", state_diff.vertex[0].avertex().K2.get_vec().max_norm(), true);
+        print("K2p-difference: ", state_diff.vertex[0].pvertex().K2.get_vec().max_norm(), true);
+        print("K2t-difference: ", state_diff.vertex[0].tvertex().K2.get_vec().max_norm(), true);
+    }
+    if (MAX_DIAG_CLASS > 2) {
+        print("K3a-difference: ", state_diff.vertex[0].avertex().K3.get_vec().max_norm(), true);
+        print("K3p-difference: ", state_diff.vertex[0].pvertex().K3.get_vec().max_norm(), true);
+        print("K3t-difference: ", state_diff.vertex[0].tvertex().K3.get_vec().max_norm(), true);
+    }
 
 }
 
