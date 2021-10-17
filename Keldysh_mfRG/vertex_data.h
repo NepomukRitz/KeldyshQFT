@@ -79,7 +79,7 @@ public:
     void reserve() { data = vec<Q>(getFlatSize<rank>(dims)); }
 
     /// Access vertex data via flattened index. Only use this if you know what you are doing.
-    Q acc(const size_t flatIndex) const {return data[flatIndex];}
+    Q acc(const size_t flatIndex) const {assert(flatIndex<data.size()); return data[flatIndex];}
 
     void direct_set(const size_t flatIndex, Q value) {assert(flatIndex < data.size()); data[flatIndex] = value;}
 

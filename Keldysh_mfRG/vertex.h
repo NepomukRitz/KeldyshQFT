@@ -101,11 +101,11 @@ public:
     auto gammaRb(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
     // Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
-    auto left_same_bare(VertexInput& input) const -> Q;
-    auto left_same_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+    auto left_same_bare(const VertexInput& input) const -> Q;
+    auto left_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
     // Combination of those diagrams that connect to the same bare vertex on the right side: Gamma0, K1, K2
-    auto right_same_bare(VertexInput& input) const -> Q;
-    auto right_same_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+    auto right_same_bare(const VertexInput& input) const -> Q;
+    auto right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
     // Combination of those diagrams that connect to the different bare vertices on the left side: K2, K3, gamma_bar{r}
     auto left_diff_bare(VertexInput& input) const -> Q;
     auto left_diff_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
@@ -724,7 +724,7 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput& input, const fullv
     return res;
 }
 
-template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput& input) const -> Q {
+template <typename Q> auto fullvert<Q>::left_same_bare(const VertexInput& input) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
@@ -770,7 +770,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput& input) const
     assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
 }
-template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
+template <typename Q> auto fullvert<Q>::left_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
@@ -817,7 +817,7 @@ template <typename Q> auto fullvert<Q>::left_same_bare(VertexInput& input, const
     return gamma0 + K1_K2b;
 }
 
-template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput& input) const -> Q {
+template <typename Q> auto fullvert<Q>::right_same_bare(const VertexInput& input) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
@@ -864,7 +864,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput& input) cons
     assert(isfinite(K1_K2));
     return gamma0 + K1_K2;
 }
-template <typename Q> auto fullvert<Q>::right_same_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
+template <typename Q> auto fullvert<Q>::right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)

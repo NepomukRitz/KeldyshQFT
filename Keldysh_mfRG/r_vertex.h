@@ -63,12 +63,12 @@ public:
      * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
      *                         symmetry transformations that map between channels a <--> t.
      */
-    auto value(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q;
     /** Overload for accessing non-symmetric vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true
      */
-    auto value(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto value(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
     /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
     /// This version is used for a symmetric vertex
@@ -140,23 +140,23 @@ public:
      *                         symmetry transformations that map between channels a <--> t.
      */
     template <K_class k>
-    auto valsmooth(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
 
     /** Overload for accessing non-symmetric vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true */
     template <K_class k>
-    auto valsmooth(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
     /** Parts of the r vertex that connect to the same/different bare vertices on the left/right of an r bubble */
-    auto left_same_bare(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
-    auto left_same_bare(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
-    auto right_same_bare(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
-    auto right_same_bare(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
-    auto left_diff_bare(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
-    auto left_diff_bare(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
-    auto right_diff_bare(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
-    auto right_diff_bare(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto left_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto left_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
     /**
      * Transform the frequencies from the frequency convention of input.channel to the frequency convention of
@@ -318,7 +318,7 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
  *                         symmetry transformations that map between channels a <--> t.
  */
 template <typename Q>
-template<K_class k>auto rvert<Q>::valsmooth(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     IndicesSymmetryTransformations indices (input, channel);
     const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing);
 
@@ -334,7 +334,7 @@ template<K_class k>auto rvert<Q>::valsmooth(VertexInput& input, const rvert<Q>& 
      *                       asymmetry_transform=true
  */
 template <typename Q>
-template<K_class k>auto rvert<Q>::valsmooth(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     IndicesSymmetryTransformations indices (input, channel);
     const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
@@ -343,9 +343,9 @@ template<K_class k>auto rvert<Q>::valsmooth(VertexInput& input, const rvert<Q>& 
 }
 
 
-template <typename Q> auto rvert<Q>::value(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    transfToR(input);
+    transfToR(input); // input manipulated here => input needs to be called by value
 
     Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
 
@@ -358,7 +358,7 @@ template <typename Q> auto rvert<Q>::value(VertexInput& input, const rvert<Q>& r
 
     return K1_val + K2_val + K2b_val + K3_val;
 }
-template <typename Q> auto rvert<Q>::value(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
 
     transfToR(input);   // input might be in different channel parametrization
 
@@ -376,45 +376,45 @@ template <typename Q> auto rvert<Q>::value(VertexInput& input, const rvert<Q>& r
 }
 
 
-template <typename Q> auto rvert<Q>::left_same_bare(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if      (MAX_DIAG_CLASS == 1) return valsmooth<k1>(input, rvert_crossing);
     else if (MAX_DIAG_CLASS  > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 }
 
-template <typename Q> auto rvert<Q>::left_same_bare(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
-template <typename Q> auto rvert<Q>::right_same_bare(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+template <typename Q> auto rvert<Q>::right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
     else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
 }
 
-template <typename Q> auto rvert<Q>::right_same_bare(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+template <typename Q> auto rvert<Q>::right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
-template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+template <typename Q> auto rvert<Q>::left_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if (MAX_DIAG_CLASS == 1)      return 0.;
     else if (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing);
     else if (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 }
 
-template <typename Q> auto rvert<Q>::left_diff_bare(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+template <typename Q> auto rvert<Q>::left_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if (MAX_DIAG_CLASS == 1)      return 0.;
     else if (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     else if (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
-template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if (MAX_DIAG_CLASS == 1)      return 0.;
     else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing);
     else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 }
 
-template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if (MAX_DIAG_CLASS == 1)      return 0.;
     else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
