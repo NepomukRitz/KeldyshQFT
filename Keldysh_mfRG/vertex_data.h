@@ -440,8 +440,14 @@ template <typename Q> auto vertexDataContainer<k1,Q>::shrink_freq_box(const doub
         index++;
     }
     index -= FREQ_PADDING;
-    if (index > 0) index--;
-    frequencies_new.b.set_w_upper(std::abs(frequencies_K1.b.get_ws(index)));
+    if (index > 0) {
+        index--;
+        frequencies_new.b.set_w_upper(std::abs(frequencies_K1.b.get_ws(index)));
+    }
+    else if (index = -FREQ_PADDING){ // if data on outermost grid point is too big, then enlarge the box
+        double w_upper_new;
+        double t_upper_new = K1_get_tupper_aux() + std::abs();
+    }
     frequencies_new.b.initialize_grid();
 
     return frequencies_new;
