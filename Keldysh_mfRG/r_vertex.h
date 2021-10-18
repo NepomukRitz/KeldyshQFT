@@ -38,11 +38,22 @@ class rvert{
 
 public:
     vertexBuffer<k1,Q,INTERPOLATION> K1;
-    vertexBuffer<k1,Q,INTERPOLATION> K1_a_proj = K1;
-    vertexBuffer<k1,Q,INTERPOLATION> K1_p_proj = K1;
-    vertexBuffer<k1,Q,INTERPOLATION> K1_t_proj = K1;
+
+    /// cross-projected contributions, needed for the Hubbard model;
+    /// have to be mutable to allow us to compute them at a stage where the vertex should be const.
+    mutable vertexBuffer<k1,Q,INTERPOLATION> K1_a_proj = K1;
+    mutable vertexBuffer<k1,Q,INTERPOLATION> K1_p_proj = K1;
+    mutable vertexBuffer<k1,Q,INTERPOLATION> K1_t_proj = K1;
+
     vertexBuffer<k2,Q,INTERPOLATION> K2;
+    mutable vertexBuffer<k2,Q,INTERPOLATION> K2_a_proj = K2;
+    mutable vertexBuffer<k2,Q,INTERPOLATION> K2_p_proj = K2;
+    mutable vertexBuffer<k2,Q,INTERPOLATION> K2_t_proj = K2;
+
     vertexBuffer<k3,Q,INTERPOLATION> K3;
+    mutable vertexBuffer<k3,Q,INTERPOLATION> K3_a_proj = K3;
+    mutable vertexBuffer<k3,Q,INTERPOLATION> K3_p_proj = K3;
+    mutable vertexBuffer<k3,Q,INTERPOLATION> K3_t_proj = K3;
 
     rvert(const char channel_in, double Lambda)
     : channel(channel_in), //components (Components(channel_in)), transformations (Transformations(channel_in)),
@@ -51,7 +62,7 @@ public:
       {K1.reserve(); K2.reserve(); K3.reserve(); };
     rvert() = delete;
 
-    bool calculated_crossprojections = false;
+    mutable bool calculated_crossprojections = false;
     void cross_project();
 
     /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
@@ -77,50 +88,10 @@ public:
     const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const;
 
     template<K_class k>
-    Q read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const {
+    auto read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q;
 
-        if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
-
-        if constexpr (k == k2) assert(not indices.asymmetry_transform);
-        if constexpr (k == k2b) assert(indices.asymmetry_transform);
-
-        Q value {}; //= readMe.interpolate(indices);
-
-        if constexpr (k==k1) {
-            if constexpr (HUBBARD_MODEL) {
-
-                switch (indices.channel_parametrization) {
-                    case 'a':
-                        value = readMe.K1_a_proj.interpolate(indices);
-                        break;
-                    case 'p':
-                        value = readMe.K1_p_proj.interpolate(indices);
-                        break;
-                    case 't':
-                        value = readMe.K1_t_proj.interpolate(indices);
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-            else {
-                value = readMe.K1.interpolate(indices);
-            }
-
-        }
-        else  if constexpr (k==k3) {
-            value = readMe.K3.interpolate(indices);
-        }
-        else { // for both k2 and k2b we need to interpolate K2
-            value = readMe.K2.interpolate(indices);
-        }
-
-        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) value = myconj(value);  // apply complex conjugation if T_C has been used
-
-        assert(isfinite(value));
-        return indices.prefactor * value;
-    }
+    template<K_class k>
+    auto read_value(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q;
 
     /**
      * Return the value of the vertex Ki in channel r.
@@ -169,7 +140,7 @@ public:
      */
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
-    void K1_crossproject();
+    void K1_crossproject(char channel_out);
     Q K1_BZ_average(const int iK, const int iw);
 
     /** K2 functionality */
@@ -285,6 +256,49 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
     }
 }
 
+template <typename Q>
+template <K_class k>
+auto rvert<Q>::read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q {
+    if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
+
+    if constexpr (k == k2) assert(not indices.asymmetry_transform);
+    if constexpr (k == k2b) assert(indices.asymmetry_transform);
+
+    Q value = read_value<k>(indices, readMe);
+
+    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) value = myconj(value);  // apply complex conjugation if T_C has been used
+
+    assert(isfinite(value));
+    return indices.prefactor * value;
+}
+
+template <typename Q>
+template <K_class k>
+auto rvert<Q>::read_value(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q {
+    if constexpr (HUBBARD_MODEL) {
+        switch (indices.channel_parametrization) {
+            case 'a':
+                if      constexpr(k==k1) return readMe.K1_a_proj.interpolate(indices);
+                else if constexpr(k==k3) return readMe.K3_a_proj.interpolate(indices);
+                else                     return readMe.K2_a_proj.interpolate(indices); // for both k2 and k2b we need to interpolate K2
+            case 'p':
+                if      constexpr(k==k1) return readMe.K1_p_proj.interpolate(indices);
+                else if constexpr(k==k3) return readMe.K3_p_proj.interpolate(indices);
+                else                     return readMe.K2_p_proj.interpolate(indices); // for both k2 and k2b we need to interpolate K2
+            case 't':
+                if      constexpr(k==k1) return readMe.K1_t_proj.interpolate(indices);
+                else if constexpr(k==k3) return readMe.K3_t_proj.interpolate(indices);
+                else                     return readMe.K2_t_proj.interpolate(indices); // for both k2 and k2b we need to interpolate K2
+            default:
+                break;
+        }
+    }
+    else {
+        if      constexpr(k==k1) return readMe.K1.interpolate(indices);
+        else if constexpr(k==k3) return readMe.K3.interpolate(indices);
+        else                     return readMe.K2.interpolate(indices); // for both k2 and k2b we need to interpolate K2
+    }
+}
 
 /**
  * Return the value of the vertex Ki in channel r.
@@ -397,51 +411,51 @@ template <typename Q> auto rvert<Q>::right_diff_bare(VertexInput input, const rv
 
 template<typename Q>
 void rvert<Q>::cross_project() {
-    /* TODO(high): Rewrite and update!!
+    // TODO(high): Rewrite and update!!
     if (!calculated_crossprojections){
         switch (channel) {
             case 'a':
                     K1_a_proj = K1;
-                    K1_p_proj = K1_crossproject();
-                    K1_t_proj = K1_crossproject();
+                    K1_crossproject('p');
+                    K1_crossproject('t');
                 if (MAX_DIAG_CLASS >= 2){
                     K2_a_proj = K2;
-                    K2_p_proj = K2_crossproject('p');
-                    K2_t_proj = K2_crossproject('t');
+                    K2_crossproject('p');
+                    K2_crossproject('t');
                 }
                 if (MAX_DIAG_CLASS == 3){
                     K3_a_proj = K3;
-                    K3_p_proj = K3_crossproject('p');
-                    K3_t_proj = K3_crossproject('t');
+                    K3_crossproject('p');
+                    K3_crossproject('t');
                 }
                 break;
             case 'p':
-                    K1_a_proj = K1_crossproject();
+                    K1_crossproject('a');
                     K1_p_proj = K1;
-                    K1_t_proj = K1_crossproject();
+                    K1_crossproject('t');
                 if (MAX_DIAG_CLASS >= 2){
-                    K2_a_proj = K2_crossproject('a');
+                    K2_crossproject('a');
                     K2_p_proj = K2;
-                    K2_t_proj = K2_crossproject('t');
+                    K2_crossproject('t');
                 }
                 if (MAX_DIAG_CLASS == 3){
-                    K3_a_proj = K3_crossproject('a');
+                    K3_crossproject('a');
                     K3_p_proj = K3;
-                    K3_t_proj = K3_crossproject('t');
+                    K3_crossproject('t');
                 }
                 break;
             case 't':
-                    K1_a_proj = K1_crossproject();
-                    K1_p_proj = K1_crossproject();
+                    K1_crossproject('a');
+                    K1_crossproject('p');
                     K1_t_proj = K1;
                 if (MAX_DIAG_CLASS >= 2){
-                    K2_a_proj = K2_crossproject('a');
-                    K2_p_proj = K2_crossproject('p');
+                    K2_crossproject('a');
+                    K2_crossproject('p');
                     K2_t_proj = K2;
                 }
                 if (MAX_DIAG_CLASS == 3){
-                    K3_a_proj = K3_crossproject('a');
-                    K3_p_proj = K3_crossproject('p');
+                    K3_crossproject('a');
+                    K3_crossproject('p');
                     K3_t_proj = K3;
                 }
                 break;
@@ -454,7 +468,6 @@ void rvert<Q>::cross_project() {
         print("Error! Crossprojections have already been calculated!");
         assert(false);
     }
-     */
 }
 
 
@@ -724,11 +737,6 @@ void rvert<Q>::update_grid(const VertexFrequencyGrid<k>& frequencies_new, rvert<
 
 
 
-
-
-
-
-
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) {
 
     for (int itK = 0; itK < nK_K1; itK++) {
@@ -775,14 +783,19 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
 }
 
 template<typename Q>
-void rvert<Q>::K1_crossproject() {
+void rvert<Q>::K1_crossproject(const char channel_out) {
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
     for (int iK = 0; iK < nK_K1; ++iK) {
 #pragma omp parallel for schedule(dynamic) default(none) shared(iK)
-        for (int iw = 0; iw < nw1; ++iw) { // TODO(high): Why not from 0 to < nw1 as previously?
+        for (int iw = 0; iw < nw1; ++iw) {
             Q projected_value = K1_BZ_average(iK, iw);
-            for (int i_in = 0; i_in < n_in; ++i_in) { // TODO: Only works if internal structure does not include form-factors!
-                K1.setvert(projected_value, iK, iw, i_in); // All internal arguments get the same value for K1!
+            for (int i_in = 0; i_in < n_in_K1; ++i_in) {
+                switch (channel_out) {
+                    case 'a': K1_a_proj.setvert(projected_value, iK, iw, i_in); break; // All internal arguments get the same value for K1!
+                    case 'p': K1_p_proj.setvert(projected_value, iK, iw, i_in); break;
+                    case 't': K1_t_proj.setvert(projected_value, iK, iw, i_in); break;
+                    default: print("Incompatible channel for K1 cross-projection!");
+                }
             }
         }
     }
