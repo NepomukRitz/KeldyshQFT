@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_INTEGRATOR_H
 
 #include <numeric>
+#include <type_traits>
 #include "../data_structures.h"                 // real and complex vectors
 #include "../parameters/master_parameters.h"                      // system parameters
 #include <gsl/gsl_integration.h>                // for GSL integrator
@@ -38,7 +39,7 @@ void handler (const char * reason,
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in, int Nmax) -> Q {
-    if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
+    if constexpr (std::is_same<Q, std::complex<double>>::value){
         gsl_integration_workspace* W_real = gsl_integration_workspace_alloc(Nmax);
         gsl_integration_workspace* W_imag = gsl_integration_workspace_alloc(Nmax);
 
@@ -87,7 +88,7 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 //
 template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, const vec<vec<double>>& intervals, const size_t num_intervals, const int Nmax, const bool isinf=false) -> Q {
 
-    if constexpr (KELDYSH || ! PARTICLE_HOLE_SYMMETRY) {
+    if constexpr (std::is_same<Q, std::complex<double>>::value) {
         gsl_integration_workspace *W_real = gsl_integration_workspace_alloc(Nmax);
         gsl_function F_real;
         F_real.function = &f_real<Integrand>;
