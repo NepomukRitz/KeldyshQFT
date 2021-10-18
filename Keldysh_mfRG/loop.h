@@ -281,17 +281,17 @@ void LoopCalculator<Q>::compute_Keldysh() {
         // V component
         IntegrandSE<Q> integrandR ('r', fullvertex, prop, iK, v, i_in, 0);
         IntegrandSE<Q> integrandK ('k', fullvertex, prop, iK, v, i_in, 0);
-        integratedR = prefactor * integrator<Q>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0, 0, glb_T);
-        integratedK = prefactor * integrator<Q>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0, 0, glb_T);
+        integratedR = prefactor * integrator<Q>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+        integratedK = prefactor * integrator<Q>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
 
         // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
         if (all_spins) {
             IntegrandSE<Q> integrandR_Vhat ('r', fullvertex, prop, iK, v, i_in, 1);
             IntegrandSE<Q> integrandK_Vhat ('k', fullvertex, prop, iK, v, i_in, 1);
             integratedR = 2. * integratedR
-                    + prefactor * integrator<Q>(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0, 0, glb_T);
+                    + prefactor * integrator<Q>(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
             integratedK = 2. * integratedK
-                    + prefactor * integrator<Q>(integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0, 0, glb_T);
+                    + prefactor * integrator<Q>(integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
         }
 
         // add analytical results for the tails
