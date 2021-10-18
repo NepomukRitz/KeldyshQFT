@@ -630,20 +630,17 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
         VertexFrequencyGrid<k1> frequenciesK1_new = K1.K1_get_VertexFreqGrid();  // new frequency grid
         frequenciesK1_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k1>(frequenciesK1_new, *this);
-
     }
     if (MAX_DIAG_CLASS >= 2) {
 
         VertexFrequencyGrid<k2> frequenciesK2_new = K2.K2_get_VertexFreqGrid();  // new frequency grid
         frequenciesK2_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k2>(frequenciesK2_new, *this);
-
     }
     if (MAX_DIAG_CLASS >= 3) {
         VertexFrequencyGrid<k3> frequenciesK3_new = K3.K3_get_VertexFreqGrid();  // new frequency grid
         frequenciesK3_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k3>(frequenciesK3_new, *this);
-
     }
 }
 
@@ -653,18 +650,18 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
 namespace {
 
     template <K_class k, typename Q>
-    class UpdateGrid { };
+    class UpdateGrid { }; // TODO(high): Make the UpdateGrid functionality also update the cross-projected parts.
     template<typename Q>
     class UpdateGrid<k1,Q> {
     public:
         void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k1>& frequencies_new, const rvert<Q>& rvert4data) {
-            vec<Q> K1_new (nK_K1 * nw1 * n_in);  // temporary K1 vector
+            vec<Q> K1_new (nK_K1 * nw1 * n_in_K1);  // temporary K1 vector
             for (int iK1=0; iK1<nK_K1; ++iK1) {
                 for (int iw=0; iw<nw1; ++iw) {
-                    for (int i_in=0; i_in<n_in; ++i_in) {
+                    for (int i_in=0; i_in<n_in_K1; ++i_in) {
                         IndicesSymmetryTransformations indices (iK1, frequencies_new.b.get_ws(iw), 0., 0., i_in, vertex.channel);
                         // interpolate old values to new vector
-                        K1_new[iK1 * nw1 * n_in + iw * n_in + i_in] = rvert4data.template interpolate<k1>(indices);
+                        K1_new[iK1 * nw1 * n_in_K1 + iw * n_in_K1 + i_in] = rvert4data.template interpolate<k1>(indices);
                     }
                 }
             }
@@ -676,17 +673,17 @@ namespace {
     class UpdateGrid<k2,Q> {
     public:
          void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k2>& frequencies_new, const rvert<Q>& rvert4data) {
-            vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in);  // temporary K2 vector
+            vec<Q> K2_new (nK_K2 * nw2 * nv2 * n_in_K2);  // temporary K2 vector
             for (int iK2=0; iK2<nK_K2; ++iK2) {
                 for (int iw=0; iw<nw2; ++iw) {
                     for (int iv=0; iv<nv2; ++iv) {
-                        for (int i_in = 0; i_in<n_in; ++i_in) {
+                        for (int i_in = 0; i_in<n_in_K2; ++i_in) {
                             IndicesSymmetryTransformations indices (iK2, frequencies_new.b.get_ws(iw),
                                                                     frequencies_new.f.get_ws(iv),
                                                                     0.,
                                                                     i_in, vertex.channel);
                             // interpolate old values to new vector
-                            K2_new[iK2 * nw2 * nv2 * n_in + iw * nv2 * n_in + iv * n_in + i_in]
+                            K2_new[iK2 * nw2 * nv2 * n_in_K2 + iw * nv2 * n_in_K2 + iv * n_in_K2 + i_in]
                                     = rvert4data.template interpolate<k2>(indices);
                         }
                     }
@@ -700,18 +697,18 @@ namespace {
     class UpdateGrid<k3,Q> {
     public:
         void operator() (rvert<Q>& vertex, const VertexFrequencyGrid<k3>& frequencies_new, const rvert<Q>& rvert4data) {
-            vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in);  // temporary K3 vector
+            vec<Q> K3_new (nK_K3 * nw3 * nv3 * nv3 * n_in_K3);  // temporary K3 vector
             for (int iK3=0; iK3<nK_K3; ++iK3) {
                 for (int iw=0; iw<nw3; ++iw) {
                     for (int iv=0; iv<nv3; ++iv) {
                         for (int ivp=0; ivp<nv3; ++ivp) {
-                            for (int i_in = 0; i_in<n_in; ++i_in) {
+                            for (int i_in = 0; i_in<n_in_K3; ++i_in) {
                                 IndicesSymmetryTransformations indices (iK3, frequencies_new.b.get_ws(iw),
                                                                              frequencies_new.f.get_ws(iv),
                                                                              frequencies_new.f.get_ws(ivp),
                                                                              i_in, vertex.channel);
                                 // interpolate old values to new vector
-                                K3_new[iK3 * nw3 * nv3 * nv3 * n_in + iw * nv3 * nv3 * n_in + iv * nv3 * n_in + ivp * n_in +
+                                K3_new[iK3 * nw3 * nv3 * nv3 * n_in_K3 + iw * nv3 * nv3 * n_in_K3 + iv * nv3 * n_in_K3 + ivp * n_in_K3 +
                                        i_in]
                                         = rvert4data.template interpolate<k3>(indices);
                             }
@@ -737,7 +734,7 @@ void rvert<Q>::update_grid(const VertexFrequencyGrid<k>& frequencies_new, rvert<
 
 
 
-template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) {
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
 
     for (int itK = 0; itK < nK_K1; itK++) {
         int i0_tmp = 0;
@@ -820,7 +817,7 @@ Q rvert<Q>::K1_BZ_average(const int iK, const int iw) {
     return value;
 }
 
-template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) {
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
 
     for (int itK = 0; itK < nK_K2; itK++){
         int i0_tmp;
@@ -868,7 +865,7 @@ void rvert<Q>::K2_crossproject(char channel_out) {
 }
 
 
-template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated) {
+template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
 
     for (int itK = 0; itK < nK_K3; itK++){
         int i0_tmp;
