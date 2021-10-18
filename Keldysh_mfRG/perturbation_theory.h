@@ -7,6 +7,8 @@
 
 #include "selfenergy.h"
 #include "grids/frequency_grid.h"
+#include "grids/momentum_grid.h"
+#include "data_structures.h"
 #include "propagator.h"
 #include "state.h"
 #include "bubbles.h"
@@ -39,6 +41,58 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const B
 
     //Calculate the Self-Energy
     loop(PsiSelfEnergy, bareState.vertex, barePropagator, false);
+}
+
+class Integrand_SE_SOPT_Hubbard{
+    const vec<comp>& integrand;
+
+    const int iK;
+    const double v;
+    const int i_in;
+public:
+    Integrand_SE_SOPT_Hubbard(const vec<comp>& integrand_in,
+                              const int iK_in, const double v_in, const int i_in_in)
+                              : integrand(integrand_in), iK(iK_in), v(v_in), i_in(i_in_in){};
+
+    auto operator()(double w_a) const -> comp;
+};
+
+SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT, double Lambda){
+    Propagator<comp> barePropagator(Lambda, bareState.selfenergy, 'g');     // bare propagator
+    SelfEnergy<comp> SOPT_SE_Hubbard(Lambda);                                       // result
+
+    for (int iK = 0; iK < nK_SE; ++iK) {
+        ///Compute the integrand for the frequency integration using FFTs in momentum space.
+        vec<comp> integrand (nFER * nBOS * glb_N_transfer);
+        std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
+#pragma omp parallel for schedule(dynamic) default(none) shared(barePropagator, vertex_in_SOPT, \
+                                                                FFT_Machinery, integrand, iK)
+        for (int iv1 = 0; iv1 < nFER; ++iv1) {
+            for (int iw1 = 0; iw1 < nBOS; ++iw1) {
+                vec<comp> g_values      (glb_N_transfer);
+                vec<comp> vertex_values (glb_N_transfer);
+                for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
+                    g_values[i_in]      = barePropagator.GR(barePropagator.selfenergy.frequencies.get_ws(iv1), i_in); // TODO: Correct Keldysh component? Correctly accessed the frequency (-> Anxiang)?
+                    //VertexInput input(iK, vertex_in_SOPT[0].avertex().)
+                    //vertex_values[i_in] = vertex_in_SOPT[0].avertex(). TODO: read out the vertex values on its bosonic grid.
+                }
+                vec<comp> integrand_iv1_iw1 = FFT_Machinery[omp_get_thread_num()].compute_swave_bubble(g_values, vertex_values);
+                for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
+                    integrand[iv1 * nBOS * glb_N_transfer + iw1 * glb_N_transfer + i_in] = integrand_iv1_iw1[i_in];
+                }
+            }
+        }
+        //Compute the frequency integrals:
+        for (int iv = 0; iv < nFER; ++iv) {
+            for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
+                Integrand_SE_SOPT_Hubbard integrand_w (integrand, iK, SOPT_SE_Hubbard.frequencies.get_ws(iv), i_in);
+                auto val {0.}; // TODO(high): Calculate this value using the frequency integrator!
+                SOPT_SE_Hubbard.setself(iK, iv, i_in, val);
+            }
+        }
+    }
+
+    return SOPT_SE_Hubbard;
 }
 
 template <typename Q, class Bubble_Object>
