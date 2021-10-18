@@ -11,7 +11,7 @@
 namespace paid {
 
 template <std::size_t N, typename F, typename T, typename... Args>
-struct Invoker {
+struct Invoker { // invoker of the function without an applicator
   static T apply(const F&, std::array<double, N>) {
     /// no specialization exists!.
     /// Probably your function dimension N is too high
@@ -20,14 +20,14 @@ struct Invoker {
 };
 
 template <typename F, typename T>
-struct Invoker<1, F, T, double> {
+struct Invoker<1, F, T, double> { // invoker of the integrand function
   static T apply(const F& f, std::array<double, 1> input) {
     return f(input[0]);
   }
 };
 
 template <std::size_t N, typename F, typename T>
-struct Invoker<N, F, T, std::array<double, N>> {
+struct Invoker<N, F, T, std::array<double, N>> { // invoker of higher-dimensional integrand function
   static T apply(const F& f, std::array<double, N> input) { return f(input); }
 };
 

@@ -16,7 +16,7 @@ struct PAIDConfig {
         max_iterations(-1),
         check_error([](double error) -> bool { return error < 1e-10; }),
         integration_rule(IntegrationRule::ClenshawCurtis),
-        order(64),
+        order(8),
         ntasks_per_iteration(25),
         check_every_iteration(200),
         check_below_iteration(10),

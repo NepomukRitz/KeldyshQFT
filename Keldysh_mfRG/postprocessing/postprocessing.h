@@ -89,7 +89,7 @@ void compute_Phi_tilde(const std::string filename) {
             }
             Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
                                                                     iLambda, i_in);
-            Phi_integrated[iLambda * n_in + i_in] = myreal(integrator<state_datatype>(integrandWardIdIntegrated, vmin, vmax));
+            Phi_integrated[iLambda * n_in + i_in] = myreal(integrator<double>(integrandWardIdIntegrated, vmin, vmax));
         }
     }
 

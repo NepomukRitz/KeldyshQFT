@@ -14,7 +14,7 @@ class TestIntegrand {
 public:
     TestIntegrand(unsigned int N_in) : N(N_in) {}
 
-    auto operator() (double x) const -> comp {
+    auto operator() (double x) const -> double {
         switch (N) {
             case 0:
                 return cos(x);
@@ -68,10 +68,11 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
         CHECK( res == Approx(exact[i]).epsilon(0.0001) );
     }
     WHEN( "PAID integrator with Clenshaw-Curtis" ) {
-        Domain1D<comp,TestIntegrand > d(-50.,50.);
-        PAIDInput<comp,TestIntegrand> paid_integrand(d,integrand,0);
-        PAID<comp,TestIntegrand> paid_integral({paid_integrand});
-        double res = real(paid_integral.solve()[0]);
+        paid::Domain<1> d(-50.,50.);
+        paid::PAIDInput<1,TestIntegrand,int> paid_integrand{d,integrand,0};
+        paid::PAIDConfig config;
+        paid::PAID<1, TestIntegrand, double, int,double> paid_integral(config);
+        double res = paid_integral.solve({paid_integrand})[0];
         CHECK( res == Approx(exact[i]).epsilon(0.0001));
     }
 }

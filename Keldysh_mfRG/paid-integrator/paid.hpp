@@ -30,7 +30,7 @@ namespace paid {
 template <typename T, typename Key>
 struct PAIDOutput {
  public:
-  std::complex<double> operator[](std::size_t key) const {
+  T operator[](std::size_t key) const { // gives "value" of a certain "key"
     auto search = valmap_.find(key);
     if (search == valmap_.cend()) throw new std::out_of_range("key not found");
     return search->second;
@@ -215,7 +215,7 @@ class PAID {
             }
 
             if (termination_reason != TerminationReason::Unknown) {
-              std::cout << "termination reason: " << termination_reason << "\n";
+            //  std::cout << "termination reason: " << termination_reason << "\n";
               done = true;
 #pragma omp flush(done)
             }

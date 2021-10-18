@@ -976,6 +976,8 @@ int main() {
     double wmax = 10., vppmax = 10., qmax = 10., kmax = 10., vpp, kpp, t_kpp;
     int nw = 6, nvpp = 6, nq = 3, nk = 51;
     comp exact, lobatto, paid;
+    double dt_inttype;
+    dt_inttype = get_time();
     for (int wi = 0; wi < nw; ++wi) {
         w = -wmax + 2*wi*wmax/(nw-1);
         for (int vppi = 0; vppi < nvpp; ++vppi) {
@@ -989,32 +991,103 @@ int main() {
                     std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", k = " << kpp << ", lobatto = " << lobatto << "\n";
                     paid = perform_integral_Pi0_theta(w,vpp,q,kpp,'c','d',2);
                     std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", k = " << kpp << ", paid = " << paid << "\n";
-                }
+                }*/
 
                 for (int ti = 0; ti < nk; ++ti){
                     t_kpp = ti/(nk-1.);
                     Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_0oo_lobatto(w, vpp, q, 0.0, 'c', 'd',1,1);
-                    Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_0oo_paid(w, vpp, q, 0.0, 'c', 'd',2,1);
+                    //Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_0oo_paid(w, vpp, q, 0.0, 'c', 'd',2,1);
 
                     lobatto = integrand_Pi0_kpp_0oo_lobatto(t_kpp);
                     std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", t = " << t_kpp << ", lobatto = " << lobatto << "\n";
-                    paid = integrand_Pi0_kpp_0oo_paid(t_kpp);
-                    std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", t = " << t_kpp << ", paid = " << paid << "\n";
-                } */
+                    //paid = integrand_Pi0_kpp_0oo_paid(t_kpp);
+                    //std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", t = " << t_kpp << ", paid = " << paid << "\n";
+                }
 
                 exact = exact_bare_bubble(w, vpp, q, 'c', 'd','a');
                 std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", exact = " << exact << "\n";
-                lobatto = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',1,'a');
-                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
-                paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'a');
-                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
-
+                //lobatto = perform_integral_Pi0_kpp_chan(w, vpp, q, 'c', 'd', 1, 'a');
+                //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
+                //paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'a');
+                //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
             }
         }
     } //*/
+    get_time(dt_inttype);
+    dt_inttype = get_time();
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2*wi*wmax/(nw-1);
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = -vppmax + 2*vppi*vppmax/(nw-1);
+            for (int qi = 0; qi < nq; ++qi) {
+                q = qi*qmax/(nq-1);
 
-    list_bubble_int_tkpp(10.,1.,1,-5.,1.,'c','d',101,11,11,6);
-    list_bubble_int_tkpp(10.,1.,2,-5.,1.,'c','d',101,11,11,6);
+                for (int ti = 0; ti < nk; ++ti){
+                    t_kpp = ti/(nk-1.);
+                    //Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_0oo_lobatto(w, vpp, q, 0.0, 'c', 'd',1,1);
+                    Integrand_Pi0_kpp<comp> integrand_Pi0_kpp_0oo_paid(w, vpp, q, 0.0, 'c', 'd',2,1);
+
+                    //lobatto = integrand_Pi0_kpp_0oo_lobatto(t_kpp);
+                    //std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", t = " << t_kpp << ", lobatto = " << lobatto << "\n";
+                    paid = integrand_Pi0_kpp_0oo_paid(t_kpp);
+                    std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", t = " << t_kpp << ", paid = " << paid << "\n";
+                }
+
+                exact = exact_bare_bubble(w, vpp, q, 'c', 'd','a');
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", exact = " << exact << "\n";
+                //lobatto = perform_integral_Pi0_kpp_chan(w, vpp, q, 'c', 'd', 1, 'a');
+                //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
+                //paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'a');
+                //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
+            }
+        }
+    } //*/
+    get_time(dt_inttype);
+    dt_inttype = get_time();
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2 * wi * wmax / (nw - 1);
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = -vppmax + 2 * vppi * vppmax / (nw - 1);
+            for (int qi = 0; qi < nq; ++qi) {
+                q = qi * qmax / (nq - 1);
+                lobatto = perform_integral_Pi0_kpp_chan(w, vpp, q, 'c', 'd', 1, 'a');
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", lobatto = " << lobatto << "\n";
+            }
+        }
+    }
+    get_time(dt_inttype);
+    dt_inttype = get_time();
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2 * wi * wmax / (nw - 1);
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = -vppmax + 2 * vppi * vppmax / (nw - 1);
+            for (int qi = 0; qi < nq; ++qi) {
+                q = qi * qmax / (nq - 1);
+                paid = perform_integral_Pi0_kpp_chan(w,vpp,q,'c','d',2,'a');
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
+            }
+        }
+    }
+    get_time(dt_inttype);
+
+    std::vector<double> v(8,1.0);
+    std::cout << "v1 = (" << v[0];
+    for (int i=1; i<v.size(); ++i){
+        std::cout << ", " << v[i];
+    }
+    std::cout << ")\n";
+
+    std::vector<double> v2{5,21,3,1,3,43,2,5,6,2,35,6};
+    std::pop_heap(v2.begin(),v2.end());
+    std::cout << "v2 = (" << v2[0];
+    for (int i=1; i<v2.size(); ++i){
+        std::cout << ", " << v2[i] ;
+    }
+    std::cout << ")\n";
+
+
+    //list_bubble_int_tkpp(10.,1.,1,-5.,1.,'c','d',101,11,11,6);
+    //list_bubble_int_tkpp(10.,1.,2,-5.,1.,'c','d',101,11,11,6);
 
     // INTEGRATE BARE BUBBLE NUMERICALLY
     // =================================

@@ -23,7 +23,7 @@ class IntegrationRule {
 
 class ClenshawCurtis {
  public:
-  explicit ClenshawCurtis(std::size_t N) noexcept
+  explicit ClenshawCurtis(std::size_t N) noexcept // constructor calculates points t, t2 where to evaluate integrand with correpsonding weights w, w2
       : N_(N), w(N + 1), w2(2 * N + 1), t(N + 1), t2(2 * N + 1) {
     std::size_t j, k;
 
@@ -127,6 +127,7 @@ class ClenshawCurtis {
     assert(!std::isnan(std::abs(val2)));
     assert(!std::isnan(std::abs(val1)));
 
+    // due to affine transformation there is a factor (right-left)/2 for the integral value which corresponds to af[0](1)-af[0](0)
     return {nEvals, val2 * (af[0](1) - af[0](0)), std::abs(val2 - val1)};
   };
 

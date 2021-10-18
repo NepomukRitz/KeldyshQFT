@@ -84,12 +84,14 @@ class Domain<1> {
         {Domain{left_, middle}, Domain{middle, right_}}};
   }
 
+  // transforms general integration interval to specific one from the integration rule
   std::array<AffineTransform1D, 1> getTransform() const {
     double dmc = 0.5 * (right_ - left_);
     double dpc = 0.5 * (right_ + left_);
     return std::array<AffineTransform1D, 1>{{AffineTransform1D{dmc, dpc}}};
   }
 
+  // width of the integration interval
   double size() const {
     assert(right_ - left_ > 0);
     return right_ - left_;
@@ -99,6 +101,7 @@ class Domain<1> {
   double right_;
 };
 
+// print "Domain" as "(left,right)"
 std::ostream& operator<<(std::ostream& oss_, const Domain<1>& rhs) {
   std::ostringstream oss;
   oss << rhs.left_ << "," << rhs.right_ << " (" << rhs.size() << ")";

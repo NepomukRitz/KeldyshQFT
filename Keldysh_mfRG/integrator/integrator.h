@@ -204,7 +204,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         paid::Domain<1> d(a, b); // domain
         paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
         paid::PAIDConfig config;
-        paid::PAID<1, Integrand, Q, int,double> paid_integral(config);
+        paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
         return paid_integral.solve({paid_integrand})[0];
     }
 }
@@ -232,9 +232,10 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
         paid::Domain<1> d(a, b); // domain
-        paid::PAIDInput<1, Integrand, int> paid_integrand(d,integrand,0);
-        paid::PAID<1,Integrand, Q, int,double> paid_integral({paid_integrand});
-        return paid_integral.solve()[0];
+        paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
+        paid::PAIDConfig config;
+        paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
+        return paid_integral.solve({paid_integrand})[0];
     }
 }
 
@@ -267,9 +268,10 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
         paid::Domain<1> d(a, b); // domain
-        paid::PAIDInput<1, Integrand, int> paid_integrand(d,integrand,0);
-        paid::PAID<1, Integrand, Q, int,double> paid_integral({paid_integrand});
-        return paid_integral.solve()[0];
+        paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
+        paid::PAIDConfig config;
+        paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
+        return paid_integral.solve({paid_integrand})[0];
     }
 }
 
@@ -332,13 +334,13 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
             if (intersections[i] < intersections[i+1]) {
                 paid::Domain<1> d(intersections[i],intersections[i+1]);
                 domains.push_back(d);
-                paid::PAIDInput<1, Integrand, int> paid_integrand(d,integrand,0);
+                paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
                 integrands.push_back(paid_integrand);
             }
         }
-
-        paid::PAID<1, Integrand, Q, int,double> integral(integrands);
-        return integral.solve()[0];
+        paid::PAIDConfig config;
+        paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
+        return paid_integral.solve(integrands)[0];
     }
 }
 
@@ -398,13 +400,13 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
             if (intervals[i][0] < intervals[i][1]) {
                 paid::Domain<1> d(intervals[i][0],intervals[i][1]);
                 domains.push_back(d);
-                paid::PAIDInput<1, Integrand, int> paid_integrand(d,integrand,0);
+                paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
                 integrands.push_back(paid_integrand);
             }
         }
-
-        paid::PAID<1, Integrand, Q, int, double> integral(integrands);
-        return integral.solve()[0];
+        paid::PAIDConfig config;
+        paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
+        return paid_integral.solve(integrands)[0];
     }
 }
 

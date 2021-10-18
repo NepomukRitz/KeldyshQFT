@@ -9,6 +9,7 @@
 
 namespace paid {
 
+// error_type depends on the compiler
 #define PAID_USE_QUAD 1
 
 #if defined(PAID_USE_QUAD) && defined(__INTEL_COMPILER)
@@ -37,8 +38,9 @@ struct IntegrationResult {
   double error;
 };
 
+// substitution of a general variable to x running in the interval of integration rule
 struct AffineTransform1D {
- public:
+public:
   double inline operator()(double x) const noexcept { return x * dmc + dpc; }
 
   double dmc;

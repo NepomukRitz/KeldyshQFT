@@ -28,16 +28,17 @@ class Queue {
       : min_size_(min_size), min_error_(min_error), tasks_(), small_tasks_() {}
 
   bool empty() const { return tasks_.empty(); }
-  std::size_t size() const { return tasks_.size(); }
+  std::size_t size() const { return tasks_.size(); } // how many tasks
 
-  void pop() noexcept {
+  void pop() noexcept { // removes first element from "tasks_"
     assert(!tasks_.empty());
     std::pop_heap(tasks_.begin(), tasks_.end());
     tasks_.pop_back();
   }
 
-  Task<N, F, T>& top() noexcept { return tasks_.front(); }
+  Task<N, F, T>& top() noexcept { return tasks_.front(); } // first element of "tasks"
 
+  // "task" is moved to "small_tasks_" for small size/error or moved to the beginning of "tasks"
   void push(Task<N, F, T>&& task) noexcept {
     if (task.d.size() < min_size_ ||
         task.error < min_error_) {  // TODO min value?
@@ -48,6 +49,7 @@ class Queue {
     }
   }
 
+  // sums up errors and value maps of tasks and small_tasks, returns {error, valmap}
   std::pair<error_type, std::unordered_map<Key, T>> sum() const noexcept {
     std::unordered_map<Key, T> valmap;
     error_type error = 0;
@@ -71,7 +73,7 @@ class Queue {
   const double min_error_;
 
   // std::priority_queue does not have .cbegin()
-  std::deque<Task<N, F, T>> tasks_;
+  std::deque<Task<N, F, T>> tasks_; // "deque" is a container with fast insertion and deletion of first and last element
   std::deque<Task<N, F, T>> small_tasks_;
 };
 

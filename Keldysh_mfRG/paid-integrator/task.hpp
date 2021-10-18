@@ -30,6 +30,7 @@ struct Task {
   Task& operator=(const Task<N, F, T>&) & = default;  // Copy assignement
   Task& operator=(Task<N, F, T>&&) & = default;       // Move assignment
 
+  // is updated error smaller?
   bool operator<(const Task& rhs) const noexcept { return error < rhs.error; }
 
   Domain<N> d;
@@ -39,6 +40,7 @@ struct Task {
   std::size_t idx;
 };
 
+// print “Task” as “[domain, value, error]”
 template <std::size_t N, typename F, typename T>
 std::ostream& operator<<(std::ostream& oss_, const Task<N, F, T>& rhs) {
   std::ostringstream oss;
