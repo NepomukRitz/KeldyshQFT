@@ -41,6 +41,8 @@ public:
     void update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma);
     /// finds optimal grid parameters with minimizer()
     void findBestFreqGrid(bool verbose);       // optimize frequency grid parameters and update self-energy on new grid
+    auto shrink_freq_box(double rel_tail_threshold) const -> FrequencyGrid;       // optimize frequency grid parameters and update self-energy on new grid
+    double analyze_tails(bool verbose) const;
     /// computes finite differences of Sigma
     double get_deriv_maxSE(bool verbose) const;
     double get_curvature_maxSE(bool verbose) const;
@@ -330,9 +332,12 @@ public:
 };
 
 template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
+    double rel_tail_threshold = 1e-4;
 
     SelfEnergy<Q> SEtemp = *this;
     //SEtemp.update_grid(Lambda);
+
+    FrequencyGrid frequencies_new = shrink_freq_box(rel_tail_threshold);
 
     //double wmax_current = SEtemp.frequencies.w_upper;
     double a_Wscale = SEtemp.frequencies.W_scale / 10.;
@@ -340,14 +345,57 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
     double b_Wscale = SEtemp.frequencies.W_scale * 10;
     CostSE_Wscale<Q> cost(SEtemp, verbose);
     minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
-    FrequencyGrid frequencies_new = frequencies;
+    //FrequencyGrid frequencies_new = frequencies;
     frequencies_new.update_Wscale(m_Wscale);
 
     update_grid(frequencies_new);
 
 
 }
+template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> FrequencyGrid {
+    std::array<size_t,3> dims;
+    for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];
+    vec<double> maxabsSE_along_w = maxabs(Sigma, dims, 1);
+    double maxmax = maxabsSE_along_w.max_norm();
 
+    FrequencyGrid frequencies_new = frequencies;
+
+    //const double rel_tail_threshold = 1e-4;
+    size_t index = 0;
+    while (true) {
+        if (maxabsSE_along_w[index] > rel_tail_threshold * maxmax) break;
+        index++;
+    }
+    index -= FREQ_PADDING;
+    if (index > 0) {
+        index--;
+        frequencies_new.set_w_upper(std::abs(frequencies.get_ws(index)));
+    }
+    else if (index == -FREQ_PADDING){ // if data on outermost grid point is too big, then enlarge the box
+        double w_upper_new;
+        double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-frequencies.t_upper) / (maxabsSE_along_w[dims[1]-FREQ_PADDING-1]);
+        frequencies_new.set_w_upper(frequencies.grid_transf_inv(t_upper_new));
+    }
+    frequencies_new.initialize_grid();
+
+    return frequencies_new;
+}
+
+template <typename Q> double SelfEnergy<Q>::analyze_tails(bool verbose) const {
+    double maxabs_SE_total = Sigma.max_norm();
+    std::array<size_t,3> dims;
+    for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];
+    vec<double> maxabsSE_along_w = maxabs(Sigma, dims, 1);
+
+
+    if (verbose) {
+        std::cout << "rel. magnitude of tails in SE";
+        std::cout << "\t \t" << maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total << std::endl;
+    }
+
+
+    return maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total;
+}
 
 /*
  * p-norm for the SelfEnergy

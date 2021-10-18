@@ -52,7 +52,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
-         save_intermediate = true;
+         save_intermediate = false;//true;
     }
 
     // initialize empty state with frequency grids corresponding to those in Psi:
