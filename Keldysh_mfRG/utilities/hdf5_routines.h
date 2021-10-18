@@ -205,7 +205,7 @@ template <typename Q>
         //    ffreqs_buffer[i] = ffreqs.ws[i];
         //}
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
             // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
             selfenergy[i].re = glb_U/2.;
             selfenergy[i].im = state_in.selfenergy.acc(i);

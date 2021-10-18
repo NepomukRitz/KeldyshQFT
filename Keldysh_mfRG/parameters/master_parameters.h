@@ -10,7 +10,7 @@
 //#define NDEBUG
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-//#define HUBBARD
+#define HUBBARD
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 //#define KELDYSH_FORMALISM
