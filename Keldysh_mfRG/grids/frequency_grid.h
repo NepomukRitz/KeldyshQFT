@@ -53,7 +53,7 @@ inline void locate(const vec<double> xx, const size_t n, const double x, size_t 
 }
 
 #define PARAMETRIZED_GRID
-#define FREQ_PADDING 1  // set to 0 for NO padding
+#define FREQ_PADDING 1  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
 
 double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
@@ -178,9 +178,10 @@ public:
         return *this;
     }
 
-    auto get_ws(int index) const -> double {return ws[index+FREQ_PADDING];};
-    auto get_ts(int index) const -> double {return ts[index+FREQ_PADDING];};
+    auto get_ws(int index) const -> double {assert(index>=-FREQ_PADDING); assert(index<N_w-FREQ_PADDING); assert(isfinite(ws[index+FREQ_PADDING])); return ws[index+FREQ_PADDING];};
+    auto get_ts(int index) const -> double {assert(index>=-FREQ_PADDING); assert(index<N_w-FREQ_PADDING); assert(isfinite(ts[index+FREQ_PADDING])); return ts[index+FREQ_PADDING];};
     auto get_ws_vec() const -> vec<double> {return ws;}
+    auto get_ts_vec() const -> vec<double> {return ts;}
     auto scale_factor(double Lambda) -> double;
     void initialize_grid();
     void set_W_scale(double scale);
@@ -308,14 +309,18 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     auto index = ((int) (t+FREQ_PADDING)) - FREQ_PADDING;
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
-        index = std::min(N_w - 2, index);
+        index = std::min(N_w - 2 - 2*FREQ_PADDING, index);
+    }
+    else if (INTERPOLATION==sloppycubic) {
+        index = std::max(1-FREQ_PADDING, index);
+        index = std::min(N_w - 3 - FREQ_PADDING, index);
     }
     else {
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5);
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
         if (ws[index+1+FREQ_PADDING] < w_in) index++;
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5);
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
 
@@ -336,17 +341,21 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
 #ifdef PARAMETRIZED_GRID
 
     double t_rescaled = (t - t_lower) / dt;
-    auto index = ((int) (t_rescaled+FREQ_PADDING)) - FREQ_PADDING;
+    auto index = ((int) (t_rescaled+FREQ_PADDING)) - FREQ_PADDING;  // round down
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
-        index = std::min(N_w - 2, index);
+        index = std::min(N_w - 2 - 2*FREQ_PADDING, index);
+    }
+    else if (INTERPOLATION==sloppycubic) {
+        index = std::max(1-FREQ_PADDING, index);
+        index = std::min(N_w - 3 - FREQ_PADDING, index);
     }
     else {
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5);
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
         if (ws[index+1+FREQ_PADDING] < w_in) index++;
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5);
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
 

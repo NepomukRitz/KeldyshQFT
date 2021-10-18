@@ -29,14 +29,21 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     sopt_state(state_ini, Lambda_ini);
     // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
-    state_ini.vertex[0].half1().analyze_tails_K1(true);
-    state_ini.vertex[0].half1().analyze_tails_K2w(true);
-    state_ini.vertex[0].half1().analyze_tails_K2v(true);
-    state_ini.vertex[0].half1().analyze_tails_K3w(true);
-    state_ini.vertex[0].half1().analyze_tails_K3v(true);
-    state_ini.vertex[0].half1().analyze_tails_K3vp(true);
-    print("Bleeb", true);
+    //write_hdf(outputFileName, Lambda_ini,  2, state_ini);  // save the initial state to hdf5 file
 
+    //state_ini.findBestFreqGrid(Lambda_ini);
+
+    //state_ini.vertex[0].half1().analyze_tails_K1(true);
+    //state_ini.vertex[0].half1().analyze_tails_K2w(true);
+    //state_ini.vertex[0].half1().analyze_tails_K2v(true);
+    //state_ini.vertex[0].half1().analyze_tails_K3w(true);
+    //state_ini.vertex[0].half1().analyze_tails_K3v(true);
+    //state_ini.vertex[0].half1().analyze_tails_K3vp(true);
+    //print("Bleeb", true);
+
+
+    //rvec Lambdas_deleteme = {Lambda_ini, Lambda_ini};
+    //add_hdf(outputFileName, 1, 2, state_ini, Lambdas_deleteme);
 
     //state_ini.findBestFreqGrid(Lambda_ini); // optimize W_scale
 
@@ -45,8 +52,10 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
     parquet_solver(data_dir + "parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+    write_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+    state_ini.findBestFreqGrid(Lambda_ini);
+    //write_hdf(outputFileName+"_postOpt", Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
-    write_hdf(outputFileName, Lambda_ini,  1, state_ini);  // save the initial state to hdf5 file
     //if (save_intermediate_results) {
     //    write_hdf(outputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
     //    write_hdf(outputFileName+"_RKstep2", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);

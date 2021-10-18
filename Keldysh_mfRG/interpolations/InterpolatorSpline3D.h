@@ -112,7 +112,7 @@ private:
 
 protected:
     size_t n;
-    vec<Q> m_deriv_x = vec<Q>(n),m_deriv_y= vec<Q>(n),m_deriv_z= vec<Q>(n),m_deriv_xy= vec<Q>(n),m_deriv_xz= vec<Q>(n),m_deriv_yz= vec<Q>(n),m_deriv_xyz= vec<Q>(n);        // SplineK3 coefficients
+    mutable vec<Q> m_deriv_x = vec<Q>(n),m_deriv_y= vec<Q>(n),m_deriv_z= vec<Q>(n),m_deriv_xy= vec<Q>(n),m_deriv_xz= vec<Q>(n),m_deriv_yz= vec<Q>(n),m_deriv_xyz= vec<Q>(n);        // SplineK3 coefficients
     //Q m_c0;                            // for left extrapolation
     bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
     Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
@@ -120,12 +120,12 @@ protected:
     vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t ivp, size_t i_in, double dw, double dv, double dvp) const;  // calculate c_i, d_i from b_i
 public:
 
-    bool initialized = false;
+    mutable bool initialized = false;
 
     explicit SplineK3(double Lambda) :   DataContainer(Lambda), n(DataContainer::data.size()) {}
 
 
-    void initInterpolator();
+    void initInterpolator() const;
 
     // evaluates the SplineK3 at point x
     Q interpolK3 (int iK, double w, double v, double vp, int i_in) const;
@@ -284,7 +284,7 @@ vec<Q> SplineK3<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, s
 }
 
 template <class DataContainer, typename Q>
-void SplineK3<DataContainer,Q>::initInterpolator()
+void SplineK3<DataContainer,Q>::initInterpolator() const
 {
     m_deriv_x =  DataContainer::get_deriv_K3_x();
     m_deriv_y =  DataContainer::get_deriv_K3_y();

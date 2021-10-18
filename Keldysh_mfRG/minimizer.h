@@ -23,7 +23,7 @@ auto costval(double x, void* params) -> double {
  * @param max_iter      maximal number iterations
  */
 template<typename CostFunction>
-void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_iter = 100, const bool verbose = false)
+void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_iter = 10, const bool verbose = false, double epsabs=1., double epsrel=0.0)
 {
     int status;
     int iter = 0;
@@ -61,7 +61,7 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
         b = gsl_min_fminimizer_x_upper (s);
 
         status
-                = gsl_min_test_interval (a, b, 0.001, 0.0);
+                = gsl_min_test_interval (a, b, epsabs, epsrel);
 
         if (verbose) {
             if (status == GSL_SUCCESS)

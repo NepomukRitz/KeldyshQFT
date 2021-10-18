@@ -865,11 +865,9 @@ template <typename Q,
 class BubbleFunctionCalculator{
     private:
     GeneralVertex<Q, symmetry_result>& dgamma;
-    const GeneralVertex<Q, symmetry_left>& vertex1_initial;
-    const GeneralVertex<Q, symmetry_right>& vertex2_initial;
 
-    GeneralVertex<Q, symmetry_left> vertex1 = vertex1_initial;  //TODO(high): The vertices should be const. But in calculate_bubble_function their interpolations have to be initialized. Figure out a solution!
-    GeneralVertex<Q, symmetry_right> vertex2 = vertex2_initial;
+    const GeneralVertex<Q, symmetry_left>& vertex1;
+    const GeneralVertex<Q, symmetry_right>& vertex2;
 
     const Bubble_Object& Pi;
     const char channel;
@@ -932,7 +930,7 @@ class BubbleFunctionCalculator{
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
                              const Bubble_Object& Pi_in,
                              const char channel_in)
-                             :dgamma(dgamma_in), vertex1_initial(vertex1_in), vertex2_initial(vertex2_in),
+                             :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
                              Pi(Pi_in), channel(channel_in){
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
@@ -1060,11 +1058,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function(1);
         tK1 = get_time() - t_start;
+        //print("K1", channel, " done, ");
+        //get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 2) {
         t_start = get_time();
         calculate_bubble_function(2);
         tK2 = get_time() - t_start;
+        print("K2", channel, " done, ");
+        get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 3) {
         t_start = get_time();

@@ -47,8 +47,8 @@ class IntegrandSE {
 
     /// Used to set all three Keldysh factors by reading out the vertices
     void set_factors(Q& factorRetardedClosed, Q& factorAdvancedClosed, Q& factorKeldyshClosed,
-                     const VertexInput& inputRetardedClosed, const VertexInput& inputAdvancedClosed,
-                     const VertexInput& inputKeldyshClosed) const;
+                      VertexInput& inputRetardedClosed, VertexInput& inputAdvancedClosed,
+                      VertexInput& inputKeldyshClosed) const;
 
     /// Used to add contribution of all-spins-equal vertex: V -> 2*V + V^ if taking all spins for Keldysh
     void add_contribution_from_other_spins(Q& factorRetardedClosed, Q& factorAdvancedClosed, Q& factorKeldyshClosed,
@@ -284,9 +284,9 @@ void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, double vp) const {
 
 template<typename Q>
 void IntegrandSE<Q>::set_factors(Q &factorRetardedClosed, Q &factorAdvancedClosed, Q &factorKeldyshClosed,
-                                 const VertexInput &inputRetardedClosed,
-                                 const VertexInput &inputAdvancedClosed,
-                                 const VertexInput &inputKeldyshClosed) const {
+                                 VertexInput &inputRetardedClosed,
+                                 VertexInput &inputAdvancedClosed,
+                                 VertexInput &inputKeldyshClosed) const {
     factorRetardedClosed = vertex[0].value(inputRetardedClosed);
     factorAdvancedClosed = vertex[0].value(inputAdvancedClosed);
     factorKeldyshClosed  = vertex[0].value(inputKeldyshClosed);

@@ -74,10 +74,14 @@ auto main() -> int {
     }
     print("nBOS1 = ", nBOS, true);
     print("nFER1 = ", nFER, true);
-    print("nBOS2 = ", nBOS2, true);
-    print("nFER2 = ", nFER2, true);
-    print("nBOS3 = ", nBOS3, true);
-    print("nFER3 = ", nFER3, true);
+    if(MAX_DIAG_CLASS > 1) {
+        print("nBOS2 = ", nBOS2, true);
+        print("nFER2 = ", nFER2, true);
+    }
+    if(MAX_DIAG_CLASS > 2) {
+        print("nBOS3 = ", nBOS3, true);
+        print("nFER3 = ", nFER3, true);
+    }
     if (HUBBARD_MODEL) print("n_in = ", n_in, true);
 
 
@@ -96,7 +100,7 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";
-    //n_loop_flow(data_dir+filename+job, true);
+    n_loop_flow(data_dir+filename+job, true);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
 
