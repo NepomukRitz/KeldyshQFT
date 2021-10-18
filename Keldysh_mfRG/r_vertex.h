@@ -27,6 +27,7 @@ template <typename Q>
 class rvert{
 public:
     char channel;                       // reducibility channel
+private:
     Components components = Components(channel);              // lists providing information on how all Keldysh components are related to the
     // independent ones
     Transformations transformations = Transformations(channel);    // lists providing information on which transformations to apply on Keldysh
@@ -35,7 +36,7 @@ public:
     // frequencies to relate them to the independent ones
     FrequencyComponents freq_components = FrequencyComponents(channel);  // lists providing information on which transformations to apply on
     // frequencies to relate them to the independent ones
-
+public:
     vertexBuffer<k1,Q,INTERPOLATION> K1;
 
     /// cross-projected contributions, needed for the Hubbard model;
