@@ -39,10 +39,10 @@ class Queue {
   Task<N, F, T>& top() noexcept { return tasks_.front(); } // first element of "tasks"
 
   // "task" is moved to "small_tasks_" for small size/error or moved to the beginning of "tasks"
-  void push(Task<N, F, T>&& task) noexcept {
+  void push(Task<N, F, T>& task) noexcept {
     if (task.d.size() < min_size_ ||
         task.error < min_error_) {  // TODO min value?
-      push_small(std::move(task));
+      push_small(task);
     } else {
       tasks_.push_back(task);
       std::push_heap(tasks_.begin(), tasks_.end());
@@ -67,7 +67,7 @@ class Queue {
   }
 
  private:
-  void push_small(Task<N, F, T>&& task) { small_tasks_.push_back(task); }
+  void push_small(Task<N, F, T>& task) { small_tasks_.push_back(task); }
 
   const double min_size_;
   const double min_error_;

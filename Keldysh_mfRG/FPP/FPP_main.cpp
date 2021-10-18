@@ -971,7 +971,12 @@ int main() {
     std::cout << "theta-integral gauss-lobatto = " << keldysh_theta_integral_result << "\n";
     */
 
-
+    std::vector<double> v_test(10,0.0);
+    std::cout << "v_test = (" << v_test[0];
+    for (int i = 1; i<v_test.size(); i++){
+        std::cout << ", " << v_test[i];
+    }
+    std::cout << ")\n";
     glb_mud = 0.0;
     double wmax = 10., vppmax = 10., qmax = 10., kmax = 10., vpp, kpp, t_kpp;
     int nw = 6, nvpp = 6, nq = 3, nk = 51;

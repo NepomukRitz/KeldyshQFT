@@ -51,7 +51,7 @@ struct PAIDInput {
   Key idx;
 };
 
-template <std::size_t N, typename F, typename T, typename Key = std::size_t,
+template <std::size_t N, typename F, typename T, typename Key,
           typename... Args>
 class PAID {
  public:
@@ -118,7 +118,7 @@ class PAID {
         error_out = 0;
         for (auto& task : out_queue) {
           error_out += task.error;
-          q_.push(std::move(task));
+          q_.push(task);
         }
         error_estimate += error_out;
       }
@@ -132,7 +132,7 @@ class PAID {
 #pragma omp critical(tasks)
         {
           for (auto& task : out_queue) {
-            q_.push(std::move(task));
+            q_.push(task);
           }
 
           // instead of dealing with errors for tasks in flight---those that
@@ -243,7 +243,7 @@ class PAID {
       {
         // We have still have work_size items, so we store them!
         for (auto& task : out_queue) {
-          q_.push(std::move(task));
+          q_.push(task);
         }
         out_queue.clear();
       }

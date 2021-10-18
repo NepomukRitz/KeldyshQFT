@@ -76,6 +76,29 @@ comp G0(double v, double ksquared, char particle) {
     }
     return 1./denominator;
 }
+/*
+class G0 {
+private:
+    char i;
+public:
+    G0(char i_): i_(i) {};
+    auto operator() (double v, double ksquared) -> const comp {
+        comp denominator;
+        if (i == 'c') {
+            denominator = glb_i * v - ksquared / (2 * glb_mc) + glb_muc;
+        }
+        else if (i == 'd') {
+            denominator = glb_i * v - ksquared / (2 * glb_md) + glb_mud;
+        }
+        else {
+            std::cout << "wrong particle type in G0\n";
+        }
+        if (std::abs(denominator)<1e-20){
+            denominator = 1e-20;
+        }
+        return 1./denominator;
+    }
+};*/
 
 comp regulator_gauss(double Lambda, double v){
     return 1.0 - exp(-v*v/(Lambda*Lambda));
@@ -212,6 +235,20 @@ comp SimpleBubble(double v1, double v2, double q, double kpp, double x, char i, 
     double ksquared2 = kpp*kpp - kpp*x*q + q*q/4;
     return G0(v1,ksquared1,i)*G0(v2,ksquared2,j);
 }
+/*
+class SimpleBubble {
+private:
+    char i, j;
+    const G0 gi();
+    const G0 gj();
+public:
+    SimpleBubble(const G0& gi_, const G0& gj_): gi(gi_), gj(gj_){};
+    auto operator() (double v1, double v2, double q, double kpp, double x, char i, char j) -> comp {
+        double ksquared1 = kpp*kpp + kpp*x*q + q*q/4;
+        double ksquared2 = kpp*kpp - kpp*x*q + q*q/4;
+        return gi(v1,ksquared1,i)*gj(v2,ksquared2,j);
+    }
+};*/
 
 comp SimpleBubbleLambda(double Lambda, double v1, double v2, double q, double kpp, double x, char i, char j, int reg){
     double ksquared1 = kpp*kpp + kpp*x*q + q*q/4;
@@ -578,13 +615,14 @@ class Integrand_Pi0_theta {
 private:
     double v1, v2, q, kpp; //Lambda;
     char i, j;
+    //const double& w;
 
 public:
     /**
      * Constructor:
      */
-    Integrand_Pi0_theta(double v1_in, double v2_in, double q_in, double kpp_in, char i_in, char j_in)
-            :v1(v1_in), v2(v2_in), q(q_in), kpp(kpp_in), i(i_in), j(j_in){
+    Integrand_Pi0_theta(double v1_in, double v2_in, double q_in, double kpp_in, char i_in, char j_in)//, const double& w_in)
+            :v1(v1_in), v2(v2_in), q(q_in), kpp(kpp_in), i(i_in), j(j_in){//}, w(w_in){
     };
 
     /**
@@ -598,9 +636,9 @@ public:
 
     //void save_integrand();
 };
-
+/*
 void list_bubble_int_theta (double v1, double v2, double q, double kpp, char i, char j, int nx) {
-    Integrand_Pi0_theta<comp> integrand_Pi0_theta(v1, v2, q, kpp, i, j);
+    Integrand_Pi0_theta<comp> integrand_Pi0_theta(v1, v2, q, kpp, i, j, w);
     vec<double> xs(nx);
     vec<double> integrands_Re(nx);
     vec<double> integrands_Im(nx);
@@ -627,10 +665,10 @@ void list_bubble_int_theta (double v1, double v2, double q, double kpp, char i, 
                    {"thetas", "integrand_bubble_Re", "integrand_bubble_Im"},
                    {xs, integrands_Re, integrands_Im});
 }
-
+*/
 comp perform_integral_Pi0_theta (double v1, double v2, double q, double kpp, char i, char j, int inttype){
     comp result = 0.; //, int01, int02, int03, int04, int05, int06, int07;
-
+    double w = 3.0;
     double eps = 1e-10;
 
     if (std::abs(v1) < eps){
@@ -640,7 +678,7 @@ comp perform_integral_Pi0_theta (double v1, double v2, double q, double kpp, cha
         v2 = v2 + eps;
     }
 
-    Integrand_Pi0_theta<comp> integrand_Pi0_theta(v1, v2, q, kpp, i, j);
+    Integrand_Pi0_theta<comp> integrand_Pi0_theta(v1, v2, q, kpp, i, j);//, w);
 
     double mi, mj, mui, muj;
 
@@ -711,6 +749,20 @@ comp perform_integral_Pi0_theta (double v1, double v2, double q, double kpp, cha
                     }
                 }
                 else if (inttype == 2) {
+                    /*
+                    vec<Domain1D<comp,Integrand_Pi0_theta<comp>>> domains;
+                    domains.reserve(xs.size());
+                    vec<PAIDInput<comp, Integrand_Pi0_theta<comp>>> ints_paid;
+                    ints_paid.reserve(xs.size());
+                    for (int idx = 0; idx < xs.size() - 1; ++idx) {
+                        Domain1D<comp,Integrand_Pi0_theta<comp>> d(xs[idx], xs[idx + 1]);
+                        domains.push_back(d);
+                        PAIDInput<comp, Integrand_Pi0_theta<comp>> paid_integrand(d, integrand_Pi0_theta, 0);
+                        ints_paid.push_back(paid_integrand);
+                    }
+                    //paid::PAIDConfig config;
+                    PAID<comp, Integrand_Pi0_theta<comp>> integralPi0Theta_paid(ints_paid);
+                    result = integralPi0Theta_paid.solve()[0]; */
                     vec<paid::Domain<1>> domains;
                     domains.reserve(xs.size());
                     vec<paid::PAIDInput<1, Integrand_Pi0_theta<comp>, int>> ints_paid;
