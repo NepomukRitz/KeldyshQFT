@@ -38,7 +38,7 @@ public:
         for (int i=1; i<npoints-1; ++i) {
             double vpp = bfreqs.grid_transf_inv(-1 + i * spacing);
             IndicesSymmetryTransformations indices (0, vpp, 0, 0., 0, 'a');
-            Q integrand_value = FOPTstate.vertex[0].half1().avertex.template interpolate<k1>(indices);
+            Q integrand_value = FOPTstate.vertex[0].half1().avertex.K1.interpolate(indices);
             freqs[i] = vpp;
 
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
@@ -84,7 +84,7 @@ public:
                 double w = bfreqs2.grid_transf_inv(-1 + i * spacing);
                 double v = ffreqs2.grid_transf_inv(-1 + j * spacing);
                 IndicesSymmetryTransformations indices (0, w, v, 0., 0, 'a');
-                Q integrand_value = FOPTstate.vertex[0].half1().avertex.template interpolate<k2>(indices);
+                Q integrand_value = FOPTstate.vertex[0].half1().avertex.K2.interpolate(indices);
                 bfreqsK2[i] = w;
                 ffreqsK2[i] = v;
 
