@@ -473,7 +473,7 @@ namespace { // hide the following to the outside world
      */
     template<typename T, size_t rank>
     vec<T> get_finite_differences_v2(const vec<T> data, const vec<double>& xs, const std::array<size_t,rank>& dims,
-                                  const std::array<size_t,rank>& permutation){
+                                     const std::array<size_t,rank>& permutation){
         size_t flatdim = data.size();
         size_t dimsum = dims[rank-1];
         assert(dimsum==xs.size());
@@ -511,6 +511,65 @@ namespace { // hide the following to the outside world
         }
         return result;
     }
+
+
+    template<typename T, size_t rank>
+    vec<T> get_finite_differences_v3(const vec<T> data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+                                     const std::array<size_t,rank>& permutation, const int order)
+        {
+        //const int order = 5;
+        assert(order%2 == 1); // only admit odd order (otherwise asymmetric)
+        size_t flatdim = data.size();
+        size_t dimsum = dims[rank-1];
+        assert(dimsum==xs.size());
+        assert(dimsum>=order);   // with the current implementation we need at least five points
+        size_t codimsum = flatdim/dimsum;
+
+        vec<T> result(flatdim);
+        vec<int> left2 =  {1, 2, 3, 4};
+        vec<int> left1 =  {-1, 1, 2, 3};
+        vec<int> centered={-2, -1, 1, 2};
+        vec<int> right1 = {-3, -2, -1, 1};
+        vec<int> right2 = {-4, -3, -2, -1};
+
+        vec<vec<int>> no_is;
+        for (int i = 0; i < order; i++) {
+            vec<int> vec_temp(order-1);
+            int iter = 0;
+            for (int j = -i; j < 0; j++) { vec_temp[iter] = j; iter++;}
+            for (int j =  1; j < order-i; j++) { vec_temp[iter] = j; iter++;}
+            no_is.push_back(vec_temp);
+        }
+
+        for (int it = 0; it < codimsum; it++) {
+
+            /// Compute derivative with Central finite difference
+            for (int jt = (order-1)/2; jt < dimsum-(order-1)/2; jt++) {
+                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[(order-1)/2], -2, 2);
+            }
+
+            /// Compute boundary values: with non-central finite difference
+            for (int jt = 0; jt < (order-1)/2; jt++) {
+                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[jt], -jt, 4-jt);
+                result[rotateFlatIndex(it*dimsum + dimsum - 1 - jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, dimsum-1-jt, no_is[order-1-jt], -4+jt, jt);
+            }
+
+            /*
+            size_t jt = 0;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left2, 0, 4);
+
+            jt = 1;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left1, -1, 3);
+
+            jt = dimsum - 2;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right1, -3, 1);
+
+            jt = dimsum - 1;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right2, -4, 0);
+             */
+        }
+        return result;
+    }
 }
 
 /**
@@ -524,7 +583,7 @@ namespace { // hide the following to the outside world
  * @return
  */
 template<typename T, size_t rank>
-vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim) {
+vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const order=5) {
     if (i_dim >= rank) assert(false);
     std::array<size_t,rank> dims_permuted;
     vec<size_t> dims_temp = permuteCyclic<rank>(dims, rank - i_dim - 1);
@@ -533,7 +592,7 @@ vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const std::array
     for (size_t i = 0; i <= i_dim; i++) permutation[i] = i + rank - i_dim - 1;
     for (size_t i = i_dim+1; i < rank; i++) permutation[i] = i - i_dim - 1;
 
-    return get_finite_differences_v2<T,rank>(data, xs, dims_permuted, permutation);
+    return get_finite_differences_v3<T,rank>(data, xs, dims_permuted, permutation, order);
 }
 
 
