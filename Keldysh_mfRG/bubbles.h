@@ -529,6 +529,7 @@ private:
     int i0 = 0;
     const int i2;
     const int i_in;
+    const int i_spin;
     const char channel;
     const double w, v = 0., vp = 0.;
     const bool diff;
@@ -561,9 +562,9 @@ public:
               const GeneralVertex<Q, symmetry_right>& vertex2_in,
               const Bubble_Object& Pi_in,
               int i0_in, int i2_in, const double w_in, const int i_in_in,
-              const char ch_in, const bool diff_in)
+              const int i_spin_in, const char ch_in, const bool diff_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
-              i2(i2_in), w(w_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
+              i2(i2_in), w(w_in), i_in(i_in_in), i_spin(i_spin_in), channel(ch_in), diff(diff_in){
         diag_class = 1; // This constructor corresponds to K1
         set_Keldysh_index_i0(i0_in);
         if (MAX_DIAG_CLASS <= 1) precompute_vertices();
@@ -578,9 +579,9 @@ public:
               const GeneralVertex<Q, symmetry_right>& vertex2_in,
               const Bubble_Object& Pi_in,
               int i0_in, int i2_in, const double w_in, const double v_in, const int i_in_in,
-              const char ch_in, const bool diff_in)
+              const int i_spin_in, const char ch_in, const bool diff_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
-              i2(i2_in), w(w_in), v(v_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
+              i2(i2_in), w(w_in), v(v_in), i_in(i_in_in), i_spin(i_spin_in), channel(ch_in), diff(diff_in){
         diag_class = 2; // This constructor corresponds to K2
         set_Keldysh_index_i0(i0_in);
     }
@@ -594,9 +595,9 @@ public:
               const GeneralVertex<Q, symmetry_right>& vertex2_in,
               const Bubble_Object& Pi_in,
               int i0_in, int i2_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
-              const char ch_in, const bool diff_in)
+              const int i_spin_in, const char ch_in, const bool diff_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
-              i2(i2_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
+              i2(i2_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), channel(ch_in), diff(diff_in){
         diag_class = 3; // This constructor corresponds to K3
         set_Keldysh_index_i0(i0_in);
     }
@@ -675,8 +676,23 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
     Q result;
     if (channel != 't')
         result = res_l_V * Pival * res_r_V;
-    else
-        result = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+    else {
+        // in t channel, spin sum has 3 terms:
+        // result = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+        //        = 2. * res_l_V * Pival * res_r_V + res_l_V * Pival * res_r_Vhat + res_l_Vhat * Pival * res_r_V;
+        switch (i_spin) {
+            case 0:
+                result = 2. * res_l_V * Pival * res_r_V;
+                break;
+            case 1:
+                result = res_l_V * Pival * res_r_Vhat;
+                break;
+            case 2:
+                result = res_l_Vhat * Pival * res_r_V;
+                break;
+            default:;
+        }
+    }
     return result;
 }
 
@@ -729,28 +745,44 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
         VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
 
-        if (diag_class == 1)
-            res_l_V = vertex1[0].left_same_bare(input_l);
-        else
-            res_l_V = vertex1[0].left_diff_bare(input_l);
-
-        if (diag_class == 3)
-            res_r_V = vertex2[0].right_diff_bare(input_r);
-        else
-            res_r_V = vertex2[0].right_same_bare(input_r);
-
-        if (channel == 't') {
-            input_l.spin = 1;
-            input_r.spin = 1;
+        if (channel != 't' || i_spin == 0) {
             if (diag_class == 1)
-                res_l_Vhat = vertex1[0].left_same_bare(input_l);
+                res_l_V = vertex1[0].left_same_bare(input_l);
             else
-                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                res_l_V = vertex1[0].left_diff_bare(input_l);
 
             if (diag_class == 3)
-                res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+                res_r_V = vertex2[0].right_diff_bare(input_r);
             else
-                res_r_Vhat = vertex2[0].right_same_bare(input_r);
+                res_r_V = vertex2[0].right_same_bare(input_r);
+        }
+        else {                  // channel == t, i_spin != 0
+            if (i_spin == 1) {  // res_l_V * Pival * res_r_Vhat
+                // compute res_l_V
+                if (diag_class == 1)
+                    res_l_V = vertex1[0].left_same_bare(input_l);
+                else
+                    res_l_V = vertex1[0].left_diff_bare(input_l);
+                // compute res_r_Vhat
+                input_r.spin = 1;
+                if (diag_class == 3)
+                    res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+                else
+                    res_r_Vhat = vertex2[0].right_same_bare(input_r);
+            }
+            else {              // res_l_Vhat * Pival * res_r_V
+                // compute res_r_V
+                if (diag_class == 3)
+                    res_r_V = vertex2[0].right_diff_bare(input_r);
+                else
+                    res_r_V = vertex2[0].right_same_bare(input_r);
+                // compute res_l_Vhat
+                input_l.spin = 1;
+                if (diag_class == 1)
+                    res_l_Vhat = vertex1[0].left_same_bare(input_l);
+                else
+                    res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+            }
         }
     }
 }
@@ -1153,23 +1185,29 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
     for (int i2 : glb_non_zero_Keldysh_bubble) {
-        Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
-                integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
-        if (KELDYSH){
-            value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
-        }
-        else{
-            if (ZERO_T){
-                //if (std::abs(w) < 1e-2) integrand_K1.save_integrand();
-                value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K1, vmin, vmax, std::abs(w/2), {}, Delta, false);
+        int n_spin_sum = 1;                  // number of summands in spin sum
+        if (channel == 't') n_spin_sum = 3;  // only in the t channel, spin sum includes three terms
+        for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
+            Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
+                    integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, i_spin, channel, diff);
+            if (KELDYSH) {
+                value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
             }
-            else{
+            else {
+                if (ZERO_T) {
+                    //if (std::abs(w) < 1e-2) integrand_K1.save_integrand();
+                    value += bubble_value_prefactor() *
+                             integrator_Matsubara_T0<Q, 0>(integrand_K1, vmin, vmax, std::abs(w / 2), {}, Delta, false);
+                }
+                else {
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP) // TODO(high): Figure out type problems in matsubarasum
-                int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-                value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
+                    int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T); // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+                    value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K1, Nmin, Nmax  + interval_correction);
 #endif
+                }
             }
         }
+        // asymptotic corrections include spin sum
         value += bubble_value_prefactor() *
                 asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
                                          w, 0., 0., i0, i2, i_in, channel, diff);
@@ -1185,24 +1223,31 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (vertex2[0].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
     else {
         for (int i2 : glb_non_zero_Keldysh_bubble) {
-            Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
-                    integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, channel, diff);
-            if (KELDYSH){
-                value += bubble_value_prefactor() * integrator<Q>(integrand_K2, vmin, vmax, -w / 2., w / 2., Delta);
-            }
-            else{
-                if (ZERO_T){
-                    value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,3>(integrand_K2, vmin, vmax, std::abs(w/2), {v, v+w, v-w}, Delta, false);
-                    //value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K2, vmin, vmax, std::abs(w/2), {}, Delta); // TODO(high): Remove?!
+            int n_spin_sum = 1;                  // number of summands in spin sum
+            if (channel == 't') n_spin_sum = 3;  // only in the t channel, spin sum includes three terms
+            for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
+                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
+                        integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, i_spin, channel, diff);
+                if (KELDYSH) {
+                    value += bubble_value_prefactor() * integrator<Q>(integrand_K2, vmin, vmax, -w / 2., w / 2., Delta);
                 }
-                else{
+                else {
+                    if (ZERO_T) {
+                        value += bubble_value_prefactor() *
+                                 integrator_Matsubara_T0<Q, 3>(integrand_K2, vmin, vmax, std::abs(w / 2),
+                                                               {v, v + w, v - w}, Delta, false);
+                        //value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K2, vmin, vmax, std::abs(w/2), {}, Delta); // TODO(high): Remove?!
+                    }
+                    else {
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP) // TODO(high): Figure out type problems in matsubarasum
-                    int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T);
-                    // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-                    value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
+                        int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T);
+                        // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+                        value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
 #endif
+                    }
                 }
             }
+            // asymptotic corrections include spin sum
             value += bubble_value_prefactor() *
                     asymp_corrections_bubble(k2, vertex1, vertex2, Pi.g,
                                              vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
@@ -1218,25 +1263,33 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
                                                 const double w, const double v, const double vp){
     for (int i2 : glb_non_zero_Keldysh_bubble) {
-        // initialize the integrand object and perform frequency integration
-        Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
-                integrand_K3(vertex1, vertex2, Pi, i0, i2, w, v, vp, i_in, channel, diff);
-        if (KELDYSH){
-            value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
-        }
-        else{
-            if (ZERO_T){
-                value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,6>(integrand_K3, vmin, vmax, std::abs(w/2), {v, vp, w-vp, w+vp, w-v, abs(w)+abs(v)}, Delta, false);
-                //value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K3, vmin, vmax, std::abs(w/2), {}, Delta); // TODO(high): Remove?!
+        int n_spin_sum = 1;                  // number of summands in spin sum
+        if (channel == 't') n_spin_sum = 3;  // only in the t channel, spin sum includes three terms
+        for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
+            // initialize the integrand object and perform frequency integration
+            Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
+                    integrand_K3(vertex1, vertex2, Pi, i0, i2, w, v, vp, i_in, i_spin, channel, diff);
+            if (KELDYSH) {
+                value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
             }
-            else{
+            else {
+                if (ZERO_T) {
+                    value += bubble_value_prefactor() *
+                             integrator_Matsubara_T0<Q, 6>(integrand_K3, vmin, vmax, std::abs(w / 2),
+                                                           {v, vp, w - vp, w + vp, w - v, abs(w) + abs(v)}, Delta,
+                                                           false);
+                    //value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,0>(integrand_K3, vmin, vmax, std::abs(w/2), {}, Delta); // TODO(high): Remove?!
+                }
+                else {
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP) // TODO(high): Figure out type problems in matsubarasum
-                int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T);
-                // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-                value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
+                    int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T);
+                    // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
+                    value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K3, Nmin, Nmax  + interval_correction);
 #endif
+                }
             }
         }
+        // asymptotic corrections include spin sum
         value += bubble_value_prefactor() *
                 asymp_corrections_bubble(k3, vertex1, vertex2, Pi.g,
                                          vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
