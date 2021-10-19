@@ -411,15 +411,17 @@ template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x() const -> 
     return result;
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_maxK1() const -> double {
+    int order = 3;
     double dt = K1_get_freqGrid().dt;
     double Kmax = vertexContainerBase<Q,3>::get_vec().max_norm();
-    double max_K1 = ::power2(get_deriv_K1_x()*dt*(1/Kmax)).max_norm();  // normalize by magnitude of vertex contribution and grid spacing
+    double max_K1 = ::power2(::partial_deriv<Q,3>(vertexContainerBase<Q,3>::data, frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1, order)*dt*(1/Kmax)).max_norm();  // normalize by magnitude of vertex contribution and grid spacing
     return max_K1;
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_curvature_maxK1() const -> double {
+    int order = 3;
     double dt = K1_get_freqGrid().dt;
     double Kmax = vertexContainerBase<Q,3>::get_vec().max_norm();
-    double max_K1 = ::power2( ::partial_deriv<Q,3>(get_deriv_K1_x(), frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1)*dt*dt*(1/Kmax)).max_norm();
+    double max_K1 = ::power2( ::partial_deriv<Q,3>(::partial_deriv<Q,3>(vertexContainerBase<Q,3>::data, frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1, order), frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1, order)*dt*dt*(1/Kmax)).max_norm();
     return max_K1;
 }
 
@@ -436,9 +438,8 @@ template <typename Q> auto vertexDataContainer<k1,Q>::shrink_freq_box(const doub
         {
     vec<double> maxabsK1_along_w = maxabs(vertexContainerBase<Q,3>::data, vertexContainerBase<Q,3>::dims, 1);
     double maxmax = maxabsK1_along_w.max_norm();
-
-    VertexFrequencyGrid<k1> frequencies_new = frequencies_K1;
-    frequencies_new.b = freqGrid::shrink_freq_box(frequencies_K1.b, rel_tail_threshold, maxabsK1_along_w, maxmax);
+            VertexFrequencyGrid<k1> frequencies_new = frequencies_K1;
+    if (std::abs(maxmax) > 1e-30) { frequencies_new.b = freqGrid::shrink_freq_box(frequencies_K1.b, rel_tail_threshold, maxabsK1_along_w, maxmax); }
 
     return frequencies_new;
 }

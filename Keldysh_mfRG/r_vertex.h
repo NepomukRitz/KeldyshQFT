@@ -772,7 +772,15 @@ namespace {
 
                 }
             }
-
+            /*
+            std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
+            rvec v = rVert.K1.K1_get_freqGrid().get_ws_vec();
+            rvec SE_re = rVert.K1.get_vec().real();
+            rvec SE_im = rVert.K1.get_vec().imag();
+            write_h5_rvecs(filename,
+                           {"v", "SE_re", "SE_im"},
+                           {v, SE_re, SE_im});
+            */
             return result;
         }
     };
@@ -888,7 +896,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     VertexFrequencyGrid<k1> frequenciesK1_new = K1.shrink_freq_box(rel_tail_threshold);
     update_grid<k1>(frequenciesK1_new, *this);
 
-    double a_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale / 10.;
+    double a_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale / 20.;
     double m_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale;
     double b_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale * 10;
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(*this, verbose);

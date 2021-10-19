@@ -100,8 +100,14 @@ public:
                         w_upper = glb_w_upper;
                         w_lower = glb_w_lower;
                         W_scale = glb_W_scale;
-                        U_factor = 20./3.;
-                        Delta_factor = 20.;
+                        if (KELDYSH) {
+                            U_factor = 5. / 3.;
+                            Delta_factor = 5.;
+                        }
+                        else {
+                            U_factor = 20./3.;
+                            Delta_factor = 20.;
+                        }
                         break;
                     case 2:
                         N_w = nBOS2+FREQ_PADDING*2;
@@ -133,16 +139,28 @@ public:
                         w_upper = glb_v_upper;
                         w_lower = glb_v_lower;
                         W_scale = glb_W_scale;
-                        U_factor = 20./3.;
-                        Delta_factor = 20.;
+                        if (KELDYSH) {
+                            U_factor = 40. / 3.;
+                            Delta_factor = 40.;
+                        }
+                        else {
+                            U_factor = 20./3.;
+                            Delta_factor = 20.;
+                        }
                         break;
                     case 2:
                         N_w = nFER2+FREQ_PADDING*2;
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
-                        U_factor = 40./3.;
-                        Delta_factor = 40.;
+                        if (KELDYSH) {
+                            U_factor = 20. / 3.;
+                            Delta_factor = 20.;
+                        }
+                        else {
+                            U_factor = 40./3.;
+                            Delta_factor = 40.;
+                        }
                         break;
                     case 3:
                         N_w = nFER3+FREQ_PADDING*2;
@@ -231,6 +249,7 @@ void FrequencyGrid::initialize_grid() {
     for(int i=FREQ_PADDING; i<N_w-FREQ_PADDING; ++i) {
         W = t_lower + (i-FREQ_PADDING) * dt;
         ws[i] = grid_transf_inv(W);
+        assert(isfinite(ws[i]));
         if (!KELDYSH && !ZERO_T){
             if (type == 'b') ws[i] = round2bfreq(ws[i]);
             else             ws[i] = round2ffreq(ws[i]);
@@ -353,7 +372,7 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
     else {
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0);
         if (ws[index+1+FREQ_PADDING] < w_in) index++;
         assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
@@ -374,14 +393,15 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
  * @return
  */
 auto FrequencyGrid::grid_transf(double w) const -> double {
-    if (this->type == 'f' and this->diag_class == 1) {
+    if (KELDYSH) return grid_transf_v2(w, this->W_scale);
+    else if (this->type == 'f' and this->diag_class == 1) {
         return grid_transf_v3(w, this->W_scale);
     }
     //else if (this->type == 'b' and this->diag_class == 1) {
     //    return grid_transf_v2(w, this->W_scale);
     //}
     else {
-        if (KELDYSH || ZERO_T) return grid_transf_v4(w, this->W_scale);
+        if (ZERO_T) return grid_transf_v4(w, this->W_scale);
         else                   return grid_transf_v1(w, this->W_scale);
     }
 }
@@ -392,7 +412,8 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
  * @return
  */
 auto FrequencyGrid::grid_transf_inv(double t) const -> double {
-    if (this->type == 'f' and this->diag_class == 1) {
+    if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
+    else if (this->type == 'f' and this->diag_class == 1) {
         return grid_transf_inv_v3(t, this->W_scale);
     }
     //else if (this->type == 'b' and this->diag_class == 1) {
@@ -843,17 +864,16 @@ namespace freqGrid {
 
         FrequencyGrid frequencies_new = freqGrid;
 
-        size_t index = 0;
+        int index = -1+FREQ_PADDING;
         while (true) {
-            if (maxabs_along_x[index] > rel_tail_threshold * maxmax) break;
+            if (maxabs_along_x[index+1] >= rel_tail_threshold * maxmax) break;
             index++;
         }
         index -= FREQ_PADDING;
-        if (index > 0) {
-            index--;
+        if (index > -1) {
             frequencies_new.set_w_upper(std::abs(freqGrid.get_ws(index)));
         }
-        else if (index == -FREQ_PADDING){ // if data on outermost grid point is too big, then enlarge the box
+        else if (index == -1){ // if data on outermost grid point is too big, then enlarge the box
             double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-freqGrid.t_upper) / (maxabs_along_x[maxabs_along_x.size() -1 - FREQ_PADDING]);
             double w_upper_new = frequencies_new.grid_transf_inv(t_upper_new);
             frequencies_new.set_w_upper(w_upper_new);
