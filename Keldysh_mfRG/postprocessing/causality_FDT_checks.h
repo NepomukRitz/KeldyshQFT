@@ -15,7 +15,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
 
         vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
-        vec<Q> Sigma_R(&Sigma[0], &Sigma[Sigma.size() / 2]);     // take first half of self-energy (retarded comp.)
+        vec<Q> Sigma_R(&Sigma[0 + FREQ_PADDING], &Sigma[Sigma.size() / 2 - FREQ_PADDING]);     // take first half of self-energy (retarded comp.)
 
         // check if Im(Sigma^R) is positive for every data point
         int cnt = 0;
@@ -41,9 +41,9 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         // check if Im(Sigma^R) is positive for every data point
         int cnt = 0;
         double sum = 0.;
-        for (int i = 1; i < nFER-1; ++i) {
+        for (int i = 0; i < nFER; ++i) {
 
-            double val = myimag(Sigma[i]) * sign(selfEnergy.frequencies.get_ws(i));
+            double val = myimag(Sigma[i+FREQ_PADDING]) * sign(selfEnergy.frequencies.get_ws(i));
 
             if (val > 0.) {
                 //cout << "i: " << i << "\t for w = " << selfEnergy.frequencies.get_ws(i) << "; \t Sigma[i] = " << Sigma[i] << "\n";
