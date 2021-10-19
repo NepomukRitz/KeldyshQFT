@@ -157,7 +157,11 @@ public:
 auto FrequencyGrid::scale_factor(double Lambda) -> double {
 // TODO(medium): write function that automatically chooses grid parameters U_factor and Delta_factor (-> Marc, Julian)
     if (REG==2) {
-        return std::max(U_factor * glb_U, Delta_factor * (Lambda + glb_Gamma) / 2.);
+        // scale the grid with Delta until Delta = T_K (Kondo temperature), then scale with T_K
+        double Delta = (Lambda + glb_Gamma) / 2.;
+        double TK = std::sqrt(glb_U * Delta / 2.) * std::exp(M_PI * (Delta / (2. * glb_U) - glb_U / (8. * Delta)));
+        return Delta_factor * std::min(Delta, TK);
+        //return std::max(U_factor * glb_U, Delta_factor * (Lambda + glb_Gamma) / 2.);
     }
     else if (REG==3) {
         return std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2. + Lambda * (Lambda + 1));
