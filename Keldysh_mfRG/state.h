@@ -61,6 +61,10 @@ public:
         lhs -= rhs;
         return lhs;
     }
+
+    void check_resolution() const;
+
+    void analyze_tails() const;
 };
 
 
@@ -93,7 +97,15 @@ template <typename Q> void State<Q>::findBestFreqGrid(const bool verbose) {
     this->vertex[0].half1().findBestFreqGrid(verbose);
 }
 
+template <typename Q> void State<Q>::check_resolution() const {
+    vertex[0].half1().check_resolution();
+    selfenergy.check_resolution();
+}
 
+template <typename Q> void State<Q>::analyze_tails() const {
+    selfenergy.analyze_tails(true);
+    vertex[0].half1().analyze_tails_K1(true);
+}
 
 
 template<typename Q>

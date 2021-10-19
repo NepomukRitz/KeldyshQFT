@@ -411,11 +411,15 @@ template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x() const -> 
     return result;
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_maxK1() const -> double {
-    double max_K1 = ::power2(get_deriv_K1_x()).max_norm();
+    double dt = K1_get_freqGrid().dt;
+    double Kmax = vertexContainerBase<Q,3>::get_vec().max_norm();
+    double max_K1 = ::power2(get_deriv_K1_x()*dt*(1/Kmax)).max_norm();  // normalize by magnitude of vertex contribution and grid spacing
     return max_K1;
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_curvature_maxK1() const -> double {
-    double max_K1 = ::power2( ::partial_deriv<Q,3>(get_deriv_K1_x(), frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1)).max_norm();
+    double dt = K1_get_freqGrid().dt;
+    double Kmax = vertexContainerBase<Q,3>::get_vec().max_norm();
+    double max_K1 = ::power2( ::partial_deriv<Q,3>(get_deriv_K1_x(), frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1)*dt*dt*(1/Kmax)).max_norm();
     return max_K1;
 }
 
@@ -445,9 +449,9 @@ template <typename Q> auto vertexDataContainer<k1,Q>::shrink_freq_box(const doub
         frequencies_new.b.set_w_upper(std::abs(frequencies_K1.b.get_ws(index)));
     }
     else if (index == -FREQ_PADDING){ // if data on outermost grid point is too big, then enlarge the box
-        double w_upper_new;
         double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-K1_get_tupper_aux()) / (maxabsK1_along_w[vertexContainerBase<Q,3>::dims[1]-FREQ_PADDING-1]);
-        frequencies_new.b.set_w_upper(t_upper_new);
+        double w_upper_new = frequencies_new.b.grid_transf_inv(t_upper_new);
+        frequencies_new.b.set_w_upper(w_upper_new);
     }
     frequencies_new.b.initialize_grid();
 
@@ -570,8 +574,9 @@ template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_yy() const ->
     return result;
 }
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_maxK2() const -> double {
-    double max_K2 = (     ::power2(get_deriv_K2_x())
-                        + ::power2(get_deriv_K2_y())
+    double dt = K2_get_freqGrid_b().dt;
+    double max_K2 = (     ::power2(get_deriv_K2_x()*dt) // multiply by dt to make the result independent of the grid spacing
+                        + ::power2(get_deriv_K2_y()*dt)
                     ).max_norm();
     return max_K2;
 }

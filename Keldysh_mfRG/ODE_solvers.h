@@ -517,8 +517,9 @@ template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y
     }
     //y_run.update_grid(x_run); // rescales grid with Delta or U
     y_run.findBestFreqGrid(false);
+    y_run.analyze_tails();
     if (filename != "") {
-        //add_hdf(filename+"_postOpt", iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
+        add_hdf(filename+"_postOpt", iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
     }
 }
 

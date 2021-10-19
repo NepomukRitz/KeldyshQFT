@@ -45,15 +45,17 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
     static_assert(N_LOOPS>=1, "");
     std::string dir_str = data_dir + "intermediateResults/";
-    makedir(dir_str);
     int iteration=-1;
     int rkStep=-1;
     bool save_intermediate = false;
+    /*
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
          save_intermediate = true;
+         makedir(dir_str);
     }
+    */
 
     // initialize empty state with frequency grids corresponding to those in Psi:
     State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
@@ -64,6 +66,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
     //For flow without self-energy, comment out this line
     selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+    dPsi.selfenergy.check_resolution();
 
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback

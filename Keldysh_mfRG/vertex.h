@@ -1261,21 +1261,16 @@ template <typename Q> auto fullvert<Q>::sum_norm(const int p) const -> double {
 
 template<typename Q> auto fullvert<Q>::get_deriv_max_K1(const bool verbose) const -> double {
     vec<double> Kderiv_max (3);
-    vec<double> Kmax (3);
-
 
     Kderiv_max[0] = avertex.K1.get_deriv_maxK1();
     Kderiv_max[1] = pvertex.K1.get_deriv_maxK1();
     Kderiv_max[2] = tvertex.K1.get_deriv_maxK1();
-    Kmax[0] = avertex.K1.get_vec().max_norm();
-    Kmax[1] = pvertex.K1.get_vec().max_norm();
-    Kmax[2] = tvertex.K1.get_vec().max_norm();
 
     if (verbose) {
         std::cout << "max. Derivative in K1" << std::endl;
-        std::cout << "\t a: \t" << Kderiv_max[0] / Kmax[0] << std::endl;
-        std::cout << "\t p: \t" << Kderiv_max[1] / Kmax[1] << std::endl;
-        std::cout << "\t t: \t" << Kderiv_max[2] / Kmax[2] << std::endl;
+        std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kderiv_max[2] << std::endl;
     }
 
     double result = Kderiv_max.max_norm();
@@ -1297,9 +1292,9 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K2(const bool verbose) cons
 
     if (verbose) {
         std::cout << "max. Derivative in K2" << std::endl;
-        std::cout << "\t a: \t" << Kderiv_max[0] / Kmax[0] << std::endl;
-        std::cout << "\t p: \t" << Kderiv_max[1] / Kmax[1] << std::endl;
-        std::cout << "\t t: \t" << Kderiv_max[2] / Kmax[2] << std::endl;
+        std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kderiv_max[2] << std::endl;
     }
 
     double result = Kderiv_max.max_norm();
@@ -1411,7 +1406,7 @@ template <typename Q> void fullvert<Q>:: check_vertex_resolution() const {
     if (MAX_DIAG_CLASS>1) double curvmax_K2 = get_curvature_max_K2(true);
     if (MAX_DIAG_CLASS>2) double curvmax_K3 = get_curvature_max_K3(true);
 
-    /// TODO: dump state in file if certain thresholds are excided
+    /// TODO: dump state in file if certain thresholds are exceeded
 }
 
 template<typename Q> auto fullvert<Q>::analyze_tails_K1(bool verbose) const -> double {

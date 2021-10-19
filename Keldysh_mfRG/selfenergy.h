@@ -14,13 +14,17 @@ class SelfEnergy{
         return vec<Q> (collapse_all(dimsSE, [](const size_t& a, const size_t& b) -> size_t {return a*b;}));           // only one component in Matsubara formalism
     }
 
+    std::array<size_t,3> dims;
+
 public:
     FrequencyGrid frequencies;
     vec<Q> Sigma = empty_Sigma();
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
-    explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
-    explicit  SelfEnergy(const FrequencyGrid& frequencies_in) : frequencies(frequencies_in) {};
+    explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {
+        for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];};
+    explicit  SelfEnergy(const FrequencyGrid& frequencies_in) : frequencies(frequencies_in) {
+        for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];};
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid
@@ -81,6 +85,11 @@ public:
         return lhs;
     }
 
+    FrequencyGrid shrink_freq_box(double rel_tail_threshold) const;
+
+    double analyze_tails(bool verbose) const;
+
+    void check_resolution() const;
 };
 
 
@@ -330,6 +339,10 @@ public:
 };
 
 template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
+    double rel_tail_threshold = 1e-2;
+
+    FrequencyGrid frequencies_new = shrink_freq_box(rel_tail_threshold);
+    update_grid(frequencies_new);
 
     SelfEnergy<Q> SEtemp = *this;
     //SEtemp.update_grid(Lambda);
@@ -340,7 +353,6 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
     double b_Wscale = SEtemp.frequencies.W_scale * 10;
     CostSE_Wscale<Q> cost(SEtemp, verbose);
     minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
-    FrequencyGrid frequencies_new = frequencies;
     frequencies_new.update_Wscale(m_Wscale);
 
     update_grid(frequencies_new);
@@ -348,7 +360,52 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
 
 }
 
+template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> FrequencyGrid {
 
+    vec<double> maxabsK1_along_w = maxabs(Sigma, dims, 1);
+    double maxmax = maxabsK1_along_w.max_norm();
+
+    FrequencyGrid frequencies_new = frequencies;
+
+    size_t index = 0;
+    while (true)
+    {
+        if (maxabsK1_along_w[index] > rel_tail_threshold * maxmax) break;
+        index++;
+    }
+    index -= FREQ_PADDING;
+    if (index > 0)
+    {
+        index--;
+        frequencies_new.set_w_upper(std::abs(frequencies.get_ws(index)));
+    }
+    else if (index == -FREQ_PADDING)
+    { // if data on outermost grid point is too big, then enlarge the box
+        double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-frequencies.t_upper) / (maxabsK1_along_w[dims[1]-FREQ_PADDING-1]);
+        double w_upper_new = frequencies_new.grid_transf_inv(t_upper_new);
+        frequencies_new.set_w_upper(w_upper_new);
+    }
+    frequencies_new.initialize_grid();
+
+    return frequencies_new;
+}
+
+
+template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) const {
+
+    double maxabs_SE_total = Sigma.max_norm();
+    vec<double> maxabsSE_along_w = maxabs(Sigma, dims, 1);
+
+    double result = maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total;
+
+    if (verbose)
+    {
+        std::cout << "rel. magnitude of tails in self energy :";
+        std::cout << "\t\t" << result << std::endl;
+    }
+
+    return result;
+}
 /*
  * p-norm for the SelfEnergy
  */
@@ -378,11 +435,10 @@ template <typename Q> auto SelfEnergy<Q>::norm() const -> double {
 }
 
 template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) const -> double {
-    //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
-    //return max_SE;
-    const std::array<size_t,3> dims1= {n_in, nK_SE, nFER+2*FREQ_PADDING};
-    const std::array<size_t,3> perm1= {2, 0, 1};
-    double max_SE = (::power2(::get_finite_differences<Q,3>(Sigma, frequencies.ts, dims1, perm1))).max_norm();
+    double maxmax = Sigma.max_norm();
+    double dt = frequencies.dt;
+
+    double max_SE = (::power2(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1)*dt*(1/maxmax))).max_norm();
 
     if (verbose) {
         std::cout << "max. Derivative in selfenergy:" << std::endl;
@@ -392,11 +448,13 @@ template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) co
     return max_SE;
 }
 template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose) const -> double {
+    double maxmax = Sigma.max_norm();
+    double dt = frequencies.dt;
     //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
     //return max_SE;
     const std::array<size_t,3> dims1 = {n_in, nK_SE, nFER+2*FREQ_PADDING};
     const std::array<size_t,3> perm1 = {2, 0, 1};
-    double max_SE = (::power2(::get_finite_differences<Q,3>(::get_finite_differences<Q,3>(Sigma, frequencies.get_ts_vec(), dims1, perm1), frequencies.get_ws_vec(), dims1, perm1))).max_norm();
+    double max_SE = (::power2(::partial_deriv<Q,3>(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1), frequencies.get_ts_vec(), dims, 1)*dt*dt*(1/maxmax))).max_norm();
 
     if (verbose) {
         std::cout << "max. Curvature in selfenergy:" << std::endl;
@@ -404,6 +462,17 @@ template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose
     }
 
     return max_SE;
+
+
+}
+
+
+template <typename Q> void SelfEnergy<Q>:: check_resolution() const
+{
+    double derivmax_SE = get_deriv_maxSE(true);
+    double curvmax_SE = get_curvature_maxSE(true);
+
+    /// TODO: dump state in file if certain thresholds are exceeded
 }
 
 #endif //KELDYSH_MFRG_SELFENERGY_H
