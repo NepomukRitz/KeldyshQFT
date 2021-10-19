@@ -15,6 +15,7 @@
 #include "../state.h"
 
 //template<typename Q> class State;
+/// TODO: Save frequency grids and frequency parameters for each channel individually
 
 #ifdef MPI_FLAG
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file
@@ -184,7 +185,7 @@ public:
 
 template <typename Q>
     void initialize(const State<Q>& state_in) {
-        print("Starting to copy to buffer...", true);
+        //print("Starting to copy to buffer...", true);
         FrequencyGrid bfreqs = state_in.vertex[0].avertex().K1.K1_get_freqGrid();
         FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
         freq_params[0] = (double) bfreqs.N_w;
@@ -292,7 +293,7 @@ template <typename Q>
             K3_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K3.acc(i));
         }
 #endif
-        print("Buffer ready. Preparing for saving into Hdf5 file...", true);
+        //print("Buffer ready. Preparing for saving into Hdf5 file...", true);
     }
 };
 

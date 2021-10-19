@@ -347,32 +347,32 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rv
 
     transfToR(input); // input manipulated here => input needs to be called by value
 
-    Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
+    Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) K1_val = valsmooth<k1>(input, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing);
     if (MAX_DIAG_CLASS >= 2) {
-        K2_val = valsmooth<k2>(input, rvert_crossing);
-        K2b_val = valsmooth<k2b>(input, rvert_crossing);
+        val += valsmooth<k2> (input, rvert_crossing);
+        val += valsmooth<k2b>(input, rvert_crossing);
     }
-    if (MAX_DIAG_CLASS >= 3) K3_val = valsmooth<k3>(input, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing);
 
-    return K1_val + K2_val + K2b_val + K3_val;
+    return val;
 }
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
 
     transfToR(input);   // input might be in different channel parametrization
 
 
-    Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
+    Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) K1_val = valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     if (MAX_DIAG_CLASS >= 2) {
-        K2_val = valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-        K2b_val= valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        val += valsmooth<k2> (input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        val += valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     }
-    if (MAX_DIAG_CLASS >= 3) K3_val = valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
-    return K1_val + K2_val + K2b_val + K3_val;
+    return val;
 }
 
 

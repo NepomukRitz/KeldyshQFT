@@ -9,6 +9,8 @@
 // For production: uncomment the following line to switch off assert()-functions
 //#define NDEBUG
 
+constexpr bool VERBOSE = true;
+
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD
 
