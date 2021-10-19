@@ -171,11 +171,12 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
         avertex.K1.setvert(value, iK, iw, i_in);
     }
 
+    double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
-    int N = nBOS * 4;
+    int N = nBOS * 500;
     vec<double> errors (N);
     double inter = (avertex.K1.K1_get_wupper() - avertex.K1.K1_get_wlower()) / double(N-1);
     for (int iw = 0; iw<N; iw++){
@@ -193,6 +194,8 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
 
         value +=1;
     }
+    print("K1 Interpolation performed - ");
+    get_time(t_start);
 
 
 
@@ -227,11 +230,12 @@ if (INTERPOLATION == cubic) {
         avertex.K1.setvert(value, iK, iw, i_in);
     }
 
+    double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
-    int N = nBOS * 5;
+    int N = nBOS * 500;
     vec<state_datatype> values(N);
     vec<double> errors(N);
     double inter = 2. / double(N - 1);
@@ -249,6 +253,8 @@ if (INTERPOLATION == cubic) {
 
         value += 1;
     }
+    print("K1 Interpolation performed - ");
+    get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK1.h5",
                    {"values", "errors"},

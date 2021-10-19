@@ -327,8 +327,8 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
 #else
     size_t j;
     if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
-    else {locate(ts, N_w, t, j, -1, N_w); }
-    return j;
+    else {locate(ws, N_w, w_in, j, 0, N_w-1); }
+    return j-1;
 #endif
 }
 
@@ -362,8 +362,8 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
 #else
     size_t j;
     if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
-    else {locate(ts, N_w, t, j, -1, N_w); }
-    return j;
+    else {locate(ts, N_w, t, j, 0, N_w-1); }
+    return j-FREQ_PADDING;
 #endif
 
 }
