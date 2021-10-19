@@ -362,30 +362,10 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
 
 template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> FrequencyGrid {
 
-    vec<double> maxabsK1_along_w = maxabs(Sigma, dims, 1);
-    double maxmax = maxabsK1_along_w.max_norm();
+    vec<double> maxabsSE_along_w = maxabs(Sigma, dims, 1);
+    double maxmax = maxabsSE_along_w.max_norm();
 
-    FrequencyGrid frequencies_new = frequencies;
-
-    size_t index = 0;
-    while (true)
-    {
-        if (maxabsK1_along_w[index] > rel_tail_threshold * maxmax) break;
-        index++;
-    }
-    index -= FREQ_PADDING;
-    if (index > 0)
-    {
-        index--;
-        frequencies_new.set_w_upper(std::abs(frequencies.get_ws(index)));
-    }
-    else if (index == -FREQ_PADDING)
-    { // if data on outermost grid point is too big, then enlarge the box
-        double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-frequencies.t_upper) / (maxabsK1_along_w[dims[1]-FREQ_PADDING-1]);
-        double w_upper_new = frequencies_new.grid_transf_inv(t_upper_new);
-        frequencies_new.set_w_upper(w_upper_new);
-    }
-    frequencies_new.initialize_grid();
+    FrequencyGrid frequencies_new = freqGrid::shrink_freq_box(frequencies, rel_tail_threshold, maxabsSE_along_w, maxmax);
 
     return frequencies_new;
 }

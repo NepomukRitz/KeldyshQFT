@@ -838,7 +838,31 @@ double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax,
     return std::max(Wscale, Wscale_candidate);
 }
 
+namespace freqGrid {
+    auto shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, const double maxmax) -> FrequencyGrid {
 
+        FrequencyGrid frequencies_new = freqGrid;
+
+        size_t index = 0;
+        while (true) {
+            if (maxabs_along_x[index] > rel_tail_threshold * maxmax) break;
+            index++;
+        }
+        index -= FREQ_PADDING;
+        if (index > 0) {
+            index--;
+            frequencies_new.set_w_upper(std::abs(freqGrid.get_ws(index)));
+        }
+        else if (index == -FREQ_PADDING){ // if data on outermost grid point is too big, then enlarge the box
+            double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-freqGrid.t_upper) / (maxabs_along_x[maxabs_along_x.size() -1 - FREQ_PADDING]);
+            double w_upper_new = frequencies_new.grid_transf_inv(t_upper_new);
+            frequencies_new.set_w_upper(w_upper_new);
+        }
+        frequencies_new.initialize_grid();
+
+        return frequencies_new;
+    }
+}
 
 //void setUpBosGrid(rvec& freqs, int nfreqs) {
 //    double W;

@@ -1280,15 +1280,10 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K1(const bool verbose) cons
 
 template<typename Q> auto fullvert<Q>::get_deriv_max_K2(const bool verbose) const -> double {
     vec<double> Kderiv_max (3);
-    vec<double> Kmax (3);
-
 
     Kderiv_max[0] = avertex.K2.get_deriv_maxK2();
     Kderiv_max[1] = pvertex.K2.get_deriv_maxK2();
     Kderiv_max[2] = tvertex.K2.get_deriv_maxK2();
-    Kmax[0] = avertex.K2.get_vec().max_norm();
-    Kmax[1] = pvertex.K2.get_vec().max_norm();
-    Kmax[2] = tvertex.K2.get_vec().max_norm();
 
     if (verbose) {
         std::cout << "max. Derivative in K2" << std::endl;
@@ -1304,21 +1299,16 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K2(const bool verbose) cons
 
 template<typename Q> auto fullvert<Q>::get_deriv_max_K3(const bool verbose) const -> double {
     vec<double> Kderiv_max (3);
-    vec<double> Kmax (3);
-
 
     Kderiv_max[0] = avertex.K3.get_deriv_maxK3();
     Kderiv_max[1] = pvertex.K3.get_deriv_maxK3();
     Kderiv_max[2] = tvertex.K3.get_deriv_maxK3();
-    Kmax[0] = avertex.K3.get_vec().max_norm();
-    Kmax[1] = pvertex.K3.get_vec().max_norm();
-    Kmax[2] = tvertex.K3.get_vec().max_norm();
 
     if (verbose) {
         std::cout << "max. Derivative in K3" << std::endl;
-        std::cout << "\t a: \t" << Kderiv_max[0] / Kmax[0] << std::endl;
-        std::cout << "\t p: \t" << Kderiv_max[1] / Kmax[1] << std::endl;
-        std::cout << "\t t: \t" << Kderiv_max[2] / Kmax[2] << std::endl;
+        std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kderiv_max[2] << std::endl;
     }
 
     double result = Kderiv_max.max_norm();
@@ -1328,21 +1318,16 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K3(const bool verbose) cons
 
 template<typename Q> auto fullvert<Q>::get_curvature_max_K1(const bool verbose) const -> double {
     vec<double> Kcurv_max (3);
-    vec<double> Kmax (3);
-
 
     Kcurv_max[0] = avertex.K1.get_curvature_maxK1();
     Kcurv_max[1] = pvertex.K1.get_curvature_maxK1();
     Kcurv_max[2] = tvertex.K1.get_curvature_maxK1();
-    Kmax[0] = avertex.K1.get_vec().max_norm();
-    Kmax[1] = pvertex.K1.get_vec().max_norm();
-    Kmax[2] = tvertex.K1.get_vec().max_norm();
 
     if (verbose) {
         std::cout << "max. Curvature in K1" << std::endl;
-        std::cout << "\t a: \t" << Kcurv_max[0] / Kmax[0] << std::endl;
-        std::cout << "\t p: \t" << Kcurv_max[1] / Kmax[1] << std::endl;
-        std::cout << "\t t: \t" << Kcurv_max[2] / Kmax[2] << std::endl;
+        std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kcurv_max[2] << std::endl;
     }
 
     double result = Kcurv_max.max_norm();
@@ -1352,21 +1337,16 @@ template<typename Q> auto fullvert<Q>::get_curvature_max_K1(const bool verbose) 
 
 template<typename Q> auto fullvert<Q>::get_curvature_max_K2(const bool verbose) const -> double {
     vec<double> Kcurv_max (3);
-    vec<double> Kmax (3);
-
 
     Kcurv_max[0] = avertex.K2.get_curvature_maxK2();
     Kcurv_max[1] = pvertex.K2.get_curvature_maxK2();
     Kcurv_max[2] = tvertex.K2.get_curvature_maxK2();
-    Kmax[0] = avertex.K2.get_vec().max_norm();
-    Kmax[1] = pvertex.K2.get_vec().max_norm();
-    Kmax[2] = tvertex.K2.get_vec().max_norm();
 
     if (verbose) {
         std::cout << "max. Curvature in K2" << std::endl;
-        std::cout << "\t a: \t" << Kcurv_max[0] / Kmax[0] << std::endl;
-        std::cout << "\t p: \t" << Kcurv_max[1] / Kmax[1] << std::endl;
-        std::cout << "\t t: \t" << Kcurv_max[2] / Kmax[2] << std::endl;
+        std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kcurv_max[2] << std::endl;
     }
 
     double result = Kcurv_max.max_norm();
@@ -1376,21 +1356,16 @@ template<typename Q> auto fullvert<Q>::get_curvature_max_K2(const bool verbose) 
 
 template<typename Q> auto fullvert<Q>::get_curvature_max_K3(const bool verbose) const -> double {
     vec<double> Kcurv_max (3);
-    vec<double> Kmax (3);
-
 
     Kcurv_max[0] = avertex.K3.get_curvature_maxK3();
     Kcurv_max[1] = pvertex.K3.get_curvature_maxK3();
     Kcurv_max[2] = tvertex.K3.get_curvature_maxK3();
-    Kmax[0] = avertex.K3.get_vec().max_norm();
-    Kmax[1] = pvertex.K3.get_vec().max_norm();
-    Kmax[2] = tvertex.K3.get_vec().max_norm();
 
     if (verbose) {
         std::cout << "max. Curvature in K3" << std::endl;
-        std::cout << "\t a: \t" << Kcurv_max[0] / Kmax[0] << std::endl;
-        std::cout << "\t p: \t" << Kcurv_max[1] / Kmax[1] << std::endl;
-        std::cout << "\t t: \t" << Kcurv_max[2] / Kmax[2] << std::endl;
+        std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
+        std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
+        std::cout << "\t t: \t" << Kcurv_max[2] << std::endl;
     }
 
     double result = Kcurv_max.max_norm();
