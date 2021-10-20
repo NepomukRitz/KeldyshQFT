@@ -46,23 +46,43 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const B
 class Integrand_SE_SOPT_Hubbard{
     const vec<comp>& integrand;
 
-    const int iK;
     const double v;
     const int i_in;
+
+    const FrequencyGrid& prop_grid;
+    const FrequencyGrid& vertex_grid;
+
+    int composite_index(int iv1, int iw_1) const;
+
 public:
     Integrand_SE_SOPT_Hubbard(const vec<comp>& integrand_in,
-                              const int iK_in, const double v_in, const int i_in_in)
-                              : integrand(integrand_in), iK(iK_in), v(v_in), i_in(i_in_in){};
+                              const double v_in, const int i_in_in,
+                              const FrequencyGrid& prop_grid_in, const FrequencyGrid& vertex_grid_in)
+                              : integrand(integrand_in), v(v_in), i_in(i_in_in),
+                                prop_grid(prop_grid_in), vertex_grid(vertex_grid_in){};
 
     auto operator()(double w_a) const -> comp;
 };
 
+auto Integrand_SE_SOPT_Hubbard::operator()(double w_a) const -> comp {
+    double v1 = v + w_a;
+    return interpolate_lin2D<comp>(v1, w_a, prop_grid, vertex_grid,
+                                [&](int i, int j) -> comp {return integrand[composite_index(i, j)];}); // TODO: correct?
+}
+
+int Integrand_SE_SOPT_Hubbard::composite_index(const int iv1, const int iw_1) const {
+    return iv1 * nBOS * glb_N_transfer + iw_1 * glb_N_transfer + i_in;
+}
+
+
 SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT, double Lambda){
-    Propagator<comp> barePropagator(Lambda, bareState.selfenergy, 'g');     // bare propagator
-    SelfEnergy<comp> SOPT_SE_Hubbard(Lambda);                                       // result
+    const Propagator<comp> barePropagator(Lambda, bareState.selfenergy, 'g');     // bare propagator
+    SelfEnergy<comp> SOPT_SE_Hubbard(Lambda);                                             // result
+
+    const double Delta = (Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
     for (int iK = 0; iK < nK_SE; ++iK) {
-        ///Compute the integrand for the frequency integration using FFTs in momentum space.
+        /// Compute the integrand for the frequency integration using FFTs in momentum space. // TODO: Another loop for the internal Keldysh sum.
         vec<comp> integrand (nFER * nBOS * glb_N_transfer);
         std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
 #pragma omp parallel for schedule(dynamic) default(none) shared(barePropagator, vertex_in_SOPT, \
@@ -72,9 +92,10 @@ SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Ve
                 vec<comp> g_values      (glb_N_transfer);
                 vec<comp> vertex_values (glb_N_transfer);
                 for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
-                    g_values[i_in]      = barePropagator.GR(barePropagator.selfenergy.frequencies.get_ws(iv1), i_in); // TODO: Correct Keldysh component? Correctly accessed the frequency (-> Anxiang)?
-                    //VertexInput input(iK, vertex_in_SOPT[0].avertex().)
-                    //vertex_values[i_in] = vertex_in_SOPT[0].avertex(). TODO: read out the vertex values on its bosonic grid.
+                    g_values[i_in] = barePropagator.GR(barePropagator.selfenergy.frequencies.get_ws(iv1), i_in); // TODO: Correct Keldysh component? Correctly accessed the frequency (-> Anxiang)?
+                    double w1 {0.}; vertex_in_SOPT[0].avertex().K1.K1_get_freq_w(w1, iw1);
+                    VertexInput input(iK, w1, 0., 0., i_in, 0, 'a');
+                    //vertex_values[i_in] = vertex_in_SOPT[0].avertex().K1.interpolate(); // TODO: read out the vertex values on its bosonic grid. Also, interpolations should not be necessary!
                 }
                 vec<comp> integrand_iv1_iw1 = FFT_Machinery[omp_get_thread_num()].compute_swave_bubble(g_values, vertex_values);
                 for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
@@ -82,16 +103,22 @@ SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Ve
                 }
             }
         }
-        //Compute the frequency integrals:
+        /// Compute the frequency integrals:
+        const double v_lower = SOPT_SE_Hubbard.frequencies.w_lower;
+        const double v_upper = SOPT_SE_Hubbard.frequencies.w_upper;
+#pragma omp parallel for schedule(dynamic) default(none) shared(barePropagator, vertex_in_SOPT, SOPT_SE_Hubbard, integrand, v_lower, v_upper, Delta, iK)
         for (int iv = 0; iv < nFER; ++iv) {
+            const double v = SOPT_SE_Hubbard.frequencies.get_ws(iv);
             for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
-                Integrand_SE_SOPT_Hubbard integrand_w (integrand, iK, SOPT_SE_Hubbard.frequencies.get_ws(iv), i_in);
-                auto val {0.}; // TODO(high): Calculate this value using the frequency integrator!
+                const Integrand_SE_SOPT_Hubbard integrand_w (integrand, v, i_in,
+                                                             barePropagator.selfenergy.frequencies,                 // frequency grid of propagator
+                                                             vertex_in_SOPT[0].avertex().K1.K1_get_freqGrid());     // frequency grid of SOPT vertex
+                // TODO: What about asymptotic corrections?
+                auto val = integrator<comp>(integrand_w, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta); // TODO: correct?
                 SOPT_SE_Hubbard.setself(iK, iv, i_in, val);
             }
         }
     }
-
     return SOPT_SE_Hubbard;
 }
 
