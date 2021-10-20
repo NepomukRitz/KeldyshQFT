@@ -45,15 +45,17 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
     static_assert(N_LOOPS>=1, "");
     std::string dir_str = data_dir + "intermediateResults/";
-    makedir(dir_str);
     int iteration=-1;
     int rkStep=-1;
     bool save_intermediate = false;
+    /*
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
-         save_intermediate = false;//true;
+         save_intermediate = true;
+         makedir(dir_str);
     }
+    */
 
     // initialize empty state with frequency grids corresponding to those in Psi:
     State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
@@ -64,6 +66,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
     //For flow without self-energy, comment out this line
     selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+    dPsi.selfenergy.check_resolution();
 
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback
@@ -82,7 +85,10 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     // Calculate all possible cross-projections already here to save time later.
     if (HUBBARD_MODEL) Psi_comp.vertex.calculate_all_cross_projections();
 
+    if (VERBOSE) print("Compute 1-loop contribution: ", true);
     vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi);
+    if(VERBOSE) dPsi.vertex[0].half1().check_vertex_resolution();
+
 
     /// save intermediate states:
     if (save_intermediate) {
@@ -94,8 +100,14 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
         // Calculate left and right part of 2-loop contribution.
         // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric vertex
         // when inserted in the 3-loop contribution below.
+
+        if (VERBOSE) print("Compute dGammaL (2-loop): ", true);
         Vertex<Q> dGammaL_half1 = calculate_dGammaL(dPsi.vertex, Psi.vertex, Pi);
+        if(VERBOSE) dGammaL_half1[0].half1().check_vertex_resolution();
+
+        if (VERBOSE) print("Compute dGammaR (2-loop):", true);
         Vertex<Q> dGammaR_half1 = calculate_dGammaR(dPsi.vertex, Psi.vertex, Pi);
+        if(VERBOSE) dGammaR_half1[0].half1().check_vertex_resolution();
         Vertex<Q> dGammaT =
                 dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
         dPsi.vertex += dGammaT;
@@ -125,7 +137,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
 
                 // insert this non-symmetric vertex on the right of the bubble
+                if (VERBOSE) print("Compute dGammaC (right insertion) ( ", i,"-loop): \n");
                 Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
+                if(VERBOSE) dGammaC_r[0].half1().check_vertex_resolution();
 
                 // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
                 //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
@@ -148,8 +162,12 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                     write_hdf<Q>(dir_str+"dPsi_T"+std::to_string(iteration)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, 1, dPsi_T);
                 }
 
+                if (VERBOSE) print("Compute dGammaL ( ", i,"-loop): \n");
                 dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, Pi);
+                if(VERBOSE) dGammaL_half1[0].half1().check_vertex_resolution();
+                if (VERBOSE) print("Compute dGammaR ( ", i,"-loop): \n");
                 dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, Pi);
+                if(VERBOSE) dGammaR_half1[0].half1().check_vertex_resolution();
 
                 dGammaT = dGammaL_half1 + dGammaC +
                           dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient

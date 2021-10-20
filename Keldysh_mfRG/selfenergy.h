@@ -6,6 +6,7 @@
 #include "minimizer.h"
 #include <omp.h>             // parallelize initialization of self-energy
 #include "symmetries/Keldysh_symmetries.h"
+#include "utilities/write_data2file.h"
 
 /****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>
@@ -14,13 +15,17 @@ class SelfEnergy{
         return vec<Q> (collapse_all(dimsSE, [](const size_t& a, const size_t& b) -> size_t {return a*b;}));           // only one component in Matsubara formalism
     }
 
+    std::array<size_t,3> dims;
+
 public:
     FrequencyGrid frequencies;
     vec<Q> Sigma = empty_Sigma();
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
-    explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
-    explicit  SelfEnergy(const FrequencyGrid& frequencies_in) : frequencies(frequencies_in) {};
+    explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {
+        for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];};
+    explicit  SelfEnergy(const FrequencyGrid& frequencies_in) : frequencies(frequencies_in) {
+        for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];};
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid
@@ -83,6 +88,11 @@ public:
         return lhs;
     }
 
+    FrequencyGrid shrink_freq_box(double rel_tail_threshold) const;
+
+    double analyze_tails(bool verbose) const;
+
+    void check_resolution() const;
 };
 
 
@@ -258,7 +268,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
         for (int i_in=0; i_in<n_in; ++i_in) {
             // set asymptotic values
             Sigma_new[0*nSE*n_in + 0*n_in + i_in] = asymp_val_R;
-            Sigma_new[0*nSE*n_in + (nSE-1)*n_in + i_in] = asymp_val_R;
+            Sigma_new[0*nSE*n_in + (nSE+FREQ_PADDING)*n_in + i_in] = asymp_val_R;
         }
 #endif
     }
@@ -275,7 +285,7 @@ class CostSE_wupper {
 public:
     explicit CostSE_wupper(SelfEnergy<Q> SE_in): selfEnergy(SE_in) {
         // remove Hartree contribution
-        for (int iv=0; iv<nSE; ++iv) {
+        for (int iv=0; iv<nSE+2*FREQ_PADDING; ++iv) {
             for (int i_in=0; i_in<n_in; ++i_in) {
                 selfEnergy.Sigma[iv*n_in + i_in] -= selfEnergy.asymp_val_R;
             }
@@ -309,20 +319,39 @@ public:
     SelfEnergy<Q> selfEnergy;
     explicit CostSE_Wscale(SelfEnergy<Q> SE_in, bool verbose): selfEnergy(SE_in), selfEnergy_backup(SE_in), verbose(verbose) {
         // remove Hartree contribution
-        for (int iK = 0; iK < nK_SE; iK++) {
-            for (int iv = 0; iv < nSE + 2*FREQ_PADDING; ++iv) {
-                for (int i_in = 0; i_in < n_in; ++i_in) {
-                    selfEnergy.Sigma[iK*(nSE+2*FREQ_PADDING)*n_in + iv * n_in + i_in] -= selfEnergy.asymp_val_R;
-                }
+        for (int iv = 0; iv < nSE + 2*FREQ_PADDING; ++iv) {
+            for (int i_in = 0; i_in < n_in; ++i_in) {
+                selfEnergy.Sigma[iv * n_in + i_in] -= selfEnergy.asymp_val_R;
             }
         }
+
         selfEnergy.asymp_val_R = 0.;
+
+        for (int iv = 0; iv < nSE + 2*FREQ_PADDING; ++iv) {
+            for (int i_in = 0; i_in < n_in; ++i_in) {
+                selfEnergy_backup.Sigma[iv * n_in + i_in] -= selfEnergy_backup.asymp_val_R;
+            }
+        }
+
+        selfEnergy_backup.asymp_val_R = 0.;
+
     };
 
     auto operator() (double wscale_test) -> double {
         selfEnergy.frequencies.update_Wscale(wscale_test);
         selfEnergy.update_grid(selfEnergy.frequencies, selfEnergy_backup);
         double result = selfEnergy.get_curvature_maxSE(verbose);
+        /*
+        std::string filename = "SE_costCurvature_" + std::to_string(wscale_test) + ".h5";
+        rvec v = selfEnergy.frequencies.get_ws_vec();
+
+        rvec SE_re = selfEnergy.Sigma.real();
+        rvec SE_im = selfEnergy.Sigma.imag();
+        write_h5_rvecs(filename,
+                       {"v", "SE_re", "SE_im"},
+                       {v, SE_re, SE_im});
+        */
+
         return result;
 
 
@@ -332,7 +361,10 @@ public:
 };
 
 template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
-    double rel_tail_threshold = 1e-4;
+    double rel_tail_threshold = 1e-2;
+
+    FrequencyGrid frequencies_new = shrink_freq_box(rel_tail_threshold);
+    update_grid(frequencies_new);
 
     SelfEnergy<Q> SEtemp = *this;
     //SEtemp.update_grid(Lambda);
@@ -345,58 +377,50 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
     double b_Wscale = SEtemp.frequencies.W_scale * 10;
     CostSE_Wscale<Q> cost(SEtemp, verbose);
     minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
-    //FrequencyGrid frequencies_new = frequencies;
     frequencies_new.update_Wscale(m_Wscale);
 
     update_grid(frequencies_new);
 
 
 }
+
 template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> FrequencyGrid {
-    std::array<size_t,3> dims;
-    for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];
-    vec<double> maxabsSE_along_w = maxabs(Sigma, dims, 1);
+    vec<Q> Sigma_temp = Sigma;
+    if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp[i] -= asymp_val_R;
+    else for (int i = 0; i < Sigma.size(); i++) Sigma_temp[i] -= asymp_val_R;
+
+    vec<double> maxabsSE_along_w = maxabs(Sigma_temp, dims, 1);
     double maxmax = maxabsSE_along_w.max_norm();
 
-    FrequencyGrid frequencies_new = frequencies;
-
-    //const double rel_tail_threshold = 1e-4;
-    size_t index = 0;
-    while (true) {
-        if (maxabsSE_along_w[index] > rel_tail_threshold * maxmax) break;
-        index++;
-    }
-    index -= FREQ_PADDING;
-    if (index > 0) {
-        index--;
-        frequencies_new.set_w_upper(std::abs(frequencies.get_ws(index)));
-    }
-    else if (index == -FREQ_PADDING){ // if data on outermost grid point is too big, then enlarge the box
-        double w_upper_new;
-        double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-frequencies.t_upper) / (maxabsSE_along_w[dims[1]-FREQ_PADDING-1]);
-        frequencies_new.set_w_upper(frequencies.grid_transf_inv(t_upper_new));
-    }
-    frequencies_new.initialize_grid();
+    FrequencyGrid frequencies_new = freqGrid::shrink_freq_box(frequencies, rel_tail_threshold, maxabsSE_along_w, maxmax);
 
     return frequencies_new;
 }
 
-template <typename Q> double SelfEnergy<Q>::analyze_tails(bool verbose) const {
-    double maxabs_SE_total = Sigma.max_norm();
-    std::array<size_t,3> dims;
-    for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];
-    vec<double> maxabsSE_along_w = maxabs(Sigma, dims, 1);
 
+template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) const {
+    vec<Q> Sigma_temp = Sigma;
+    if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp[i] -= asymp_val_R;
+    else for (int i = 0; i < Sigma.size(); i++) Sigma_temp[i] -= asymp_val_R;
+
+    double maxabs_SE_total = Sigma_temp.max_norm();
+    vec<double> maxabsSE_along_w = maxabs(Sigma_temp, dims, 1);
 
     if (verbose) {
         std::cout << "rel. magnitude of tails in SE";
         std::cout << "\t \t" << maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total << std::endl;
     }
 
+    double result = maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total;
 
-    return maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total;
+    if (verbose)
+    {
+        std::cout << "rel. magnitude of tails in self energy :";
+        std::cout << "\t\t" << result << std::endl;
+    }
+
+    return result;
 }
-
 /*
  * p-norm for the SelfEnergy
  */
@@ -426,11 +450,14 @@ template <typename Q> auto SelfEnergy<Q>::norm() const -> double {
 }
 
 template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) const -> double {
-    //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
-    //return max_SE;
-    const std::array<size_t,3> dims1= {n_in, nK_SE, nFER+2*FREQ_PADDING};
-    const std::array<size_t,3> perm1= {2, 0, 1};
-    double max_SE = (::power2(::get_finite_differences<Q,3>(Sigma, frequencies.ts, dims1, perm1))).max_norm();
+    //vec<Q> Sigma_temp = Sigma;
+    //if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp -= asymp_val_R;
+    //else for (int i = 0; i < Sigma.size(); i++) Sigma_temp -= asymp_val_R;
+
+    double maxmax = Sigma.max_norm();
+    double dt = frequencies.dt;
+
+    double max_SE = (::power2(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1)*dt*(1/maxmax))).max_norm();
 
     if (verbose) {
         std::cout << "max. Derivative in selfenergy:" << std::endl;
@@ -440,11 +467,17 @@ template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) co
     return max_SE;
 }
 template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose) const -> double {
+    //vec<Q> Sigma_temp = Sigma;
+    //if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp -= asymp_val_R;
+    //else for (int i = 0; i < Sigma.size(); i++) Sigma_temp -= asymp_val_R;
+
+    double maxmax = Sigma.max_norm();
+    double dt = frequencies.dt;
     //double max_SE = ::power2(::get_finite_differences(Sigma)).max_norm();
     //return max_SE;
     const std::array<size_t,3> dims1 = {n_in, nK_SE, nFER+2*FREQ_PADDING};
     const std::array<size_t,3> perm1 = {2, 0, 1};
-    double max_SE = (::power2(::get_finite_differences<Q,3>(::get_finite_differences<Q,3>(Sigma, frequencies.get_ts_vec(), dims1, perm1), frequencies.get_ws_vec(), dims1, perm1))).max_norm();
+    double max_SE = (::power2(::partial_deriv<Q,3>(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1), frequencies.get_ts_vec(), dims, 1)*dt*dt*(1/maxmax))).max_norm();
 
     if (verbose) {
         std::cout << "max. Curvature in selfenergy:" << std::endl;
@@ -452,6 +485,17 @@ template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose
     }
 
     return max_SE;
+
+
+}
+
+
+template <typename Q> void SelfEnergy<Q>:: check_resolution() const
+{
+    double derivmax_SE = get_deriv_maxSE(true);
+    double curvmax_SE = get_curvature_maxSE(true);
+
+    /// TODO: dump state in file if certain thresholds are exceeded
 }
 
 #endif //KELDYSH_MFRG_SELFENERGY_H

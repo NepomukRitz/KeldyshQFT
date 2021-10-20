@@ -216,7 +216,7 @@ public:
     // TODO: Implement! Needed for the Hubbard model.
     void K3_crossproject(char channel_out);
 
-    void initInterpolator() const {K1.initInterpolator(); if(MAX_DIAG_CLASS>1) K2.initInterpolator(); if(MAX_DIAG_CLASS>2) K3.initInterpolator(); }
+    void initInterpolator() const {K1.initInterpolator(); if(MAX_DIAG_CLASS>1) K2.initInterpolator(); if(MAX_DIAG_CLASS>1) K3.initInterpolator(); }
     void set_initializedInterpol(const bool is_init) const {K1.initialized = is_init; K2.initialized = is_init; K3.initialized = is_init; }
 
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
@@ -348,32 +348,32 @@ template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rv
 
     transfToR(input); // input manipulated here => input needs to be called by value
 
-    Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
+    Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) K1_val = valsmooth<k1>(input, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing);
     if (MAX_DIAG_CLASS >= 2) {
-        K2_val = valsmooth<k2>(input, rvert_crossing);
-        K2b_val = valsmooth<k2b>(input, rvert_crossing);
+        val += valsmooth<k2> (input, rvert_crossing);
+        val += valsmooth<k2b>(input, rvert_crossing);
     }
-    if (MAX_DIAG_CLASS >= 3) K3_val = valsmooth<k3>(input, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing);
 
-    return K1_val + K2_val + K2b_val + K3_val;
+    return val;
 }
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
 
     transfToR(input);   // input might be in different channel parametrization
 
 
-    Q K1_val, K2_val, K2b_val, K3_val {};   // force zero initialization
+    Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) K1_val = valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     if (MAX_DIAG_CLASS >= 2) {
-        K2_val = valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-        K2b_val= valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        val += valsmooth<k2> (input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        val += valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     }
-    if (MAX_DIAG_CLASS >= 3) K3_val = valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
-    return K1_val + K2_val + K2b_val + K3_val;
+    return val;
 }
 
 
@@ -772,7 +772,15 @@ namespace {
 
                 }
             }
-
+            /*
+            std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
+            rvec v = rVert.K1.K1_get_freqGrid().get_ws_vec();
+            rvec SE_re = rVert.K1.get_vec().real();
+            rvec SE_im = rVert.K1.get_vec().imag();
+            write_h5_rvecs(filename,
+                           {"v", "SE_re", "SE_im"},
+                           {v, SE_re, SE_im});
+            */
             return result;
         }
     };
@@ -888,7 +896,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     VertexFrequencyGrid<k1> frequenciesK1_new = K1.shrink_freq_box(rel_tail_threshold);
     update_grid<k1>(frequenciesK1_new, *this);
 
-    double a_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale / 10.;
+    double a_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale / 20.;
     double m_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale;
     double b_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale * 10;
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(*this, verbose);

@@ -15,6 +15,7 @@
 #include "../state.h"
 
 //template<typename Q> class State;
+/// TODO: Save frequency grids and frequency parameters for each channel individually
 
 #ifdef MPI_FLAG
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file
@@ -184,7 +185,7 @@ public:
 
 template <typename Q>
     void initialize(const State<Q>& state_in) {
-        print("Starting to copy to buffer...", true);
+        //print("Starting to copy to buffer...", true);
         FrequencyGrid bfreqs = state_in.vertex[0].avertex().K1.K1_get_freqGrid();
         FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
         freq_params[0] = (double) bfreqs.N_w;
@@ -292,7 +293,7 @@ template <typename Q>
             K3_class_t[i].im = std::imag(state_in.vertex[0].tvertex().K3.acc(i));
         }
 #endif
-        print("Buffer ready. Preparing for saving into Hdf5 file...", true);
+        //print("Buffer ready. Preparing for saving into Hdf5 file...", true);
     }
 };
 
@@ -1264,13 +1265,33 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it, l
 
         /// load data into buffer
 
-        hsize_t start_1D[1] = {Lambda_it};
-        hsize_t stride_1D[1]= {1};
-        hsize_t count_1D[1] = {1};
-        hsize_t block_1D[1] = {1};
-        dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
-        dataSets.lambda.read(buffer.lambda, H5::PredType::NATIVE_DOUBLE,
-                           dataSpaces_Lambda_buffer, dataSpaces_Lambda);
+        //hsize_t start_1D[1] = {Lambda_it};
+        //hsize_t stride_1D[1]= {1};
+        //hsize_t count_1D[1] = {1};
+        //hsize_t block_1D[1] = {1};
+        //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+        //dataSets.lambda.read(buffer.lambda, H5::PredType::NATIVE_DOUBLE,
+        //                   dataSpaces_Lambda_buffer, dataSpaces_Lambda);
+
+        int rank = dataSpaces_Lambda.getSimpleExtentNdims();
+        /*
+         * Get the dimension size of each dimension in the dataspace and
+         * display them.
+         */
+        hsize_t dims_out[2];
+        int ndims = dataSpaces_Lambda.getSimpleExtentDims( dims_out, NULL);
+        //std::cout << "rank " << rank << ", dimensions " <<
+        //     (unsigned long)(dims_out[0]) << " x " <<
+        //     (unsigned long)(dims_out[1]) << std::endl;
+
+
+        H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
+
+        /// load data into buffer
+        double Lambdas_arr[dims_out[0]];
+        dataSets.lambda.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
+                            dataSpace_Lambda_buffer, dataSpaces_Lambda);
+        *buffer.lambda = Lambdas_arr[Lambda_it];
 
 
         count[1] = N_freq_params;

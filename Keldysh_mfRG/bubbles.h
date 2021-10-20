@@ -1072,8 +1072,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         t_start = get_time();
         calculate_bubble_function(3);
         tK3 = get_time() - t_start;
-        print("K3", channel, " done, ");
-        get_time(t_start);
+        //print("K3", channel, " done, ");
+        //get_time(t_start);
     }
 }
 
@@ -1519,7 +1519,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
     BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
             BubbleComputer (dgamma, vertex1, vertex2, Pi, channel);
     if (channel == 'a' or channel == 'p' or channel == 't') BubbleComputer.perform_computation();
-    else {print("Error! Incompatible channel given to bubble_function. Abort"); }
+    //else {print("Error! Incompatible channel given to bubble_function. Abort"); }
 }
 
 /// Overload for bubble_function in case no Bubble object has been initialized yet. ONLY WORKS FOR SIAM!!

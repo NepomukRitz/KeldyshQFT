@@ -317,7 +317,7 @@ namespace { // hide the following to the outside world
      * @return
      */
     template<typename T, size_t rank>
-    vec<T> get_finite_differences(const vec<T> data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+    vec<T> get_finite_differences(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
                                   const std::array<size_t,rank>& permutation,
                                   const bd_type left=third_deriv, const bd_type right=third_deriv, const T left_value=0.0, const T right_value=0.0){
         size_t flatdim = data.size();
@@ -472,8 +472,8 @@ namespace { // hide the following to the outside world
      * @return
      */
     template<typename T, size_t rank>
-    vec<T> get_finite_differences_v2(const vec<T> data, const vec<double>& xs, const std::array<size_t,rank>& dims,
-                                  const std::array<size_t,rank>& permutation){
+    vec<T> get_finite_differences_v2(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+                                     const std::array<size_t,rank>& permutation){
         size_t flatdim = data.size();
         size_t dimsum = dims[rank-1];
         assert(dimsum==xs.size());
@@ -511,6 +511,65 @@ namespace { // hide the following to the outside world
         }
         return result;
     }
+
+
+    template<typename T, size_t rank>
+    vec<T> get_finite_differences_v3(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+                                     const std::array<size_t,rank>& permutation, const int order)
+        {
+        //const int order = 5;
+        assert(order%2 == 1); // only admit odd order (otherwise asymmetric)
+        size_t flatdim = data.size();
+        size_t dimsum = dims[rank-1];
+        assert(dimsum==xs.size());
+        assert(dimsum>=order);   // with the current implementation we need at least five points
+        size_t codimsum = flatdim/dimsum;
+
+        vec<T> result(flatdim);
+        vec<int> left2 =  {1, 2, 3, 4};
+        vec<int> left1 =  {-1, 1, 2, 3};
+        vec<int> centered={-2, -1, 1, 2};
+        vec<int> right1 = {-3, -2, -1, 1};
+        vec<int> right2 = {-4, -3, -2, -1};
+
+        vec<vec<int>> no_is;
+        for (int i = 0; i < order; i++) {
+            vec<int> vec_temp(order-1);
+            int iter = 0;
+            for (int j = -i; j < 0; j++) { vec_temp[iter] = j; iter++;}
+            for (int j =  1; j < order-i; j++) { vec_temp[iter] = j; iter++;}
+            no_is.push_back(vec_temp);
+        }
+
+        for (int it = 0; it < codimsum; it++) {
+
+            /// Compute derivative with Central finite difference
+            for (int jt = (order-1)/2; jt < dimsum-(order-1)/2; jt++) {
+                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[(order-1)/2], -2, 2);
+            }
+
+            /// Compute boundary values: with non-central finite difference
+            for (int jt = 0; jt < (order-1)/2; jt++) {
+                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[jt], -jt, 4-jt);
+                result[rotateFlatIndex(it*dimsum + dimsum - 1 - jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, dimsum-1-jt, no_is[order-1-jt], -4+jt, jt);
+            }
+
+            /*
+            size_t jt = 0;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left2, 0, 4);
+
+            jt = 1;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left1, -1, 3);
+
+            jt = dimsum - 2;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right1, -3, 1);
+
+            jt = dimsum - 1;
+            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right2, -4, 0);
+             */
+        }
+        return result;
+    }
 }
 
 /**
@@ -521,10 +580,11 @@ namespace { // hide the following to the outside world
  * @param xs        frequency values in data (currently only equidistant grids allowed)
  * @param dims      number of points in the respective directions of data, in column-major (as implemented in the flat index of data)
  * @param i_dim     direction in which the derivative is computed; needs to be 0 <= i_dim < rank
+ * @param order     determines exactness
  * @return
  */
 template<typename T, size_t rank>
-vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim) {
+vec<T> partial_deriv(const vec<T>& data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
     if (i_dim >= rank) assert(false);
     std::array<size_t,rank> dims_permuted;
     vec<size_t> dims_temp = permuteCyclic<rank>(dims, rank - i_dim - 1);
@@ -550,7 +610,7 @@ vec<T> partial_deriv(const vec<T> data, const  vec<double>& xs, const std::array
  * @return
  */
 template<typename binaryOp, typename T, size_t rank, size_t rank_new>
-vec<T> collapse(const vec<T> data, const binaryOp& op, const std::array<size_t,rank>& dims_native, const std::array<size_t,rank_new>& i_dims, const std::array<size_t,rank_new>& dims_new) {
+vec<T> collapse(const vec<T>& data, const binaryOp& op, const std::array<size_t,rank>& dims_native, const std::array<size_t,rank_new>& i_dims, const std::array<size_t,rank_new>& dims_new) {
     size_t dim_collapse = 1; // flat dimension of dimensions that are to be collapsed
     size_t dimsflat_new = 1; // flat dimension of result
     for (size_t i = 0; i < rank_new; i++) dimsflat_new *= dims_native[i_dims[i]];
@@ -600,7 +660,7 @@ vec<T> collapse(const vec<T> data, const binaryOp& op, const std::array<size_t,r
  *  Collapses all dimensions of a vector using an operator op
  */
 template<typename binaryOp, typename T>
-T collapse_all(const vec<T> data, const binaryOp& op) {
+T collapse_all(const vec<T>& data, const binaryOp& op) {
     size_t dim_collapse = data.size(); // flat dimension of dimensions that are to be collapsed
     assert(dim_collapse > 1); //otherwise nothing to collapse with binary operator
     T result = data[0];
@@ -667,7 +727,7 @@ vec<T> collapse_rev(const vec<T> data, const binaryOp& op, const size_t (&dims) 
 }
 */
 
-template<typename T> vec<T> power2(const vec<T> vec_in) {
+template<typename T> vec<T> power2(const vec<T>& vec_in) {
     size_t flatdim = vec_in.size();
     vec <T> result (flatdim);
     T temp;
@@ -679,7 +739,7 @@ template<typename T> vec<T> power2(const vec<T> vec_in) {
 }
 
 /// Computes maximum along axis i_dim
-template<size_t rank, typename T> vec<double> maxabs(const vec<T> data, const std::array<size_t,rank>& dims, const size_t i_dim) {
+template<size_t rank, typename T> vec<double> maxabs(const vec<T>& data, const std::array<size_t,rank>& dims, const size_t i_dim) {
     vec<double> result (dims[i_dim]);
     std::array<size_t,1> i_dims = {i_dim};
     std::array<size_t,1> dims_new = {dims[i_dim]};

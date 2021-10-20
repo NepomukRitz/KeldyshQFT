@@ -81,6 +81,19 @@ void print(T t, U u, bool endline) {
     }
 }
 
+template<typename ...Args>
+void print(Args ... args) {
+    if (MPI_FLAG) {
+        if (mpi_world_rank() == 0) {
+            print_time_stamp();
+            (std::cout << ... << args);
+        }
+    } else {
+        print_time_stamp();
+        (std::cout << ... << args);
+    }
+}
+
 // print two different data types in standard output and add new line (without time stamp)
 template <typename T, typename U>
 void print_add(T t, U u, bool endline) {

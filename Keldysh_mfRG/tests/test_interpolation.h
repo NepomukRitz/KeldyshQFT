@@ -173,7 +173,6 @@ void test_interpolate_K12(double Lambda) {
     InterpolantK1a.save_integrand(1e4);
 
 }
-#endif
 
 namespace {
 
@@ -252,5 +251,6 @@ void findBestWscale4K1(double Lambda) {
     Cost_pick_Wscale_4_K1<Q> cost_b_K1(Lambda, Pi);
     minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, true);
 }
+#endif
 
 #endif //FPP_MFRG_TEST_INTERPOLATION_H
