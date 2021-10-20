@@ -2344,7 +2344,6 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
         Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
         dGammaL_half1[0].half1().reorder_due2antisymmetry(dGammaR_half1[0].half1());
-        dGammaR_half1[0].half1().reorder_due2antisymmetry(dGammaL_half1[0].half1());
         K1rdot_PIa_K1p.vertex = dGammaL_half1;
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 

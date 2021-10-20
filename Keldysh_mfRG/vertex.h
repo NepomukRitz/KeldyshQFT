@@ -1052,6 +1052,19 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(fullvert<Q>& rig
         pvertex.enforce_freqsymmetriesK3(right_vertex.pvertex);
         tvertex.enforce_freqsymmetriesK3(right_vertex.tvertex);
     }
+    right_vertex.avertex.enforce_freqsymmetriesK1(avertex);
+    right_vertex.pvertex.enforce_freqsymmetriesK1(pvertex);
+    right_vertex.tvertex.enforce_freqsymmetriesK1(tvertex);
+    if (MAX_DIAG_CLASS > 1) {
+        right_vertex.avertex.enforce_freqsymmetriesK2(avertex);
+        right_vertex.pvertex.enforce_freqsymmetriesK2(pvertex);
+        right_vertex.tvertex.enforce_freqsymmetriesK2(tvertex);
+    }
+    if (MAX_DIAG_CLASS > 2) {
+        right_vertex.avertex.enforce_freqsymmetriesK3(avertex);
+        right_vertex.pvertex.enforce_freqsymmetriesK3(pvertex);
+        right_vertex.tvertex.enforce_freqsymmetriesK3(tvertex);
+    }
     set_initializedInterpol(false);
     right_vertex.set_initializedInterpol(false);
 }
