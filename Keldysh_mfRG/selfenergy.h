@@ -88,9 +88,9 @@ public:
         return lhs;
     }
 
-    FrequencyGrid shrink_freq_box(double rel_tail_threshold) const;
-
-    double analyze_tails(bool verbose) const;
+    //FrequencyGrid shrink_freq_box(double rel_tail_threshold) const;
+//
+    //double analyze_tails(bool verbose) const;
 
     void check_resolution() const;
 };
@@ -368,8 +368,6 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
 
     SelfEnergy<Q> SEtemp = *this;
     //SEtemp.update_grid(Lambda);
-
-    FrequencyGrid frequencies_new = shrink_freq_box(rel_tail_threshold);
 
     //double wmax_current = SEtemp.frequencies.w_upper;
     double a_Wscale = SEtemp.frequencies.W_scale / 10.;
