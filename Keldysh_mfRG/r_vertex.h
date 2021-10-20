@@ -682,7 +682,7 @@ namespace {
                 }
             }
             vertex.K1.set_vec(K1_new); // update vertex to new interpolated values
-            vertex.K1.frequencies_K1 = frequencies_new;
+            vertex.K1.K1_set_VertexFreqGrid(frequencies_new);
         }
     };
     template<typename Q>
@@ -705,7 +705,7 @@ namespace {
                 }
             }
             vertex.K2.set_vec(K2_new); // update vertex to new interpolated values
-            vertex.K2.frequencies_K2 = frequencies_new;
+            vertex.K2.K2_set_VertexFreqGrid(frequencies_new);
         }
     };
     template<typename Q>
@@ -734,7 +734,7 @@ namespace {
                 }
             }
             vertex.K3.set_vec(K3_new); // update vertex to new interpolated values
-            vertex.K3.frequencies_K3 = frequencies_new;
+            vertex.K3.K3_set_VertexFreqGrid(frequencies_new);
         }
 
     };
@@ -757,11 +757,12 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
+        VertexFrequencyGrid<k1> frequencies = rVert.K1.K1_get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K1(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            rVert.K1.frequencies_K1.b.update_Wscale(wscale_test);
-            rVert.template update_grid<k1>(rVert.K1.frequencies_K1, rVert_backup);
+            frequencies.b.update_Wscale(wscale_test);
+            rVert.template update_grid<k1>(frequencies, rVert_backup);
             //rVert.K1.analyze_tails_K1();
             double result = rVert.K1.get_curvature_maxK1();
 
@@ -791,11 +792,12 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
+        VertexFrequencyGrid<k2> frequencies = rVert.K2.K2_get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            rVert.K2.frequencies_K2.b.update_Wscale(wscale_test);
-            rVert.template update_grid<k2>(rVert.K2.frequencies_K2, rVert_backup);
+            frequencies.b.update_Wscale(wscale_test);
+            rVert.template update_grid<k2>(frequencies, rVert_backup);
             //rVert.K2.analyze_tails_K2_b();
             double result = rVert.K2.get_curvature_maxK2();
 
@@ -817,11 +819,12 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
+        VertexFrequencyGrid<k2> frequencies = rVert.K2.K2_get_VertexFreqGrid();
         explicit CostFullvert_Wscale_f_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            rVert.K2.frequencies_K2.f.update_Wscale(wscale_test);
-            rVert.template update_grid<k2>(rVert.K2.frequencies_K2, rVert_backup);
+            frequencies.f.update_Wscale(wscale_test);
+            rVert.template update_grid<k2>(frequencies, rVert_backup);
             //rVert.K2.analyze_tails_K2_f();
             double result = rVert.K2.get_curvature_maxK2();
 
@@ -843,11 +846,12 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
+        VertexFrequencyGrid<k3> frequencies = rVert.K3.K3_get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            rVert.K3.frequencies_K3.b.update_Wscale(wscale_test);
-            rVert.template update_grid<k3>(rVert.K3.frequencies_K3, rVert_backup);
+            frequencies.b.update_Wscale(wscale_test);
+            rVert.template update_grid<k3>(frequencies, rVert_backup);
             //rVert.K3.analyze_tails_K3_b();
             double result = rVert.K3.get_curvature_maxK3();
 
@@ -869,11 +873,12 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
+        VertexFrequencyGrid<k3> frequencies = rVert.K3.K3_get_VertexFreqGrid();
         explicit CostFullvert_Wscale_f_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-            rVert.K3.frequencies_K3.f.update_Wscale(wscale_test);
-            rVert.template update_grid<k3>(rVert.K3.frequencies_K3, rVert_backup);
+            frequencies.f.update_Wscale(wscale_test);
+            rVert.template update_grid<k3>(frequencies, rVert_backup);
             //rVert.K3.analyze_tails_K3_b();
             double result = rVert.K3.get_curvature_maxK3();
 

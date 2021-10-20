@@ -136,8 +136,6 @@ class vertexDataContainer{};
  */
 template<typename Q>
 class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,3>{
-    template <K_class k, typename T> friend class UpdateGrid;
-    template<typename T> friend class CostFullvert_Wscale_b_K1;
     friend void check_Kramers_Kronig(std::string filename);
     friend void test_PT4(double Lambda, bool write_flag);
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
@@ -199,9 +197,6 @@ public:
 
 template<typename Q>
 class vertexDataContainer<k2, Q>: public vertexContainerBase<Q,4> {
-    template <K_class k, typename T> friend class UpdateGrid;
-    template<typename T> friend class CostFullvert_Wscale_b_K2;
-    template<typename T> friend class CostFullvert_Wscale_f_K2;
     friend void test_PT4(double Lambda, bool write_flag);
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
@@ -272,9 +267,6 @@ public:
 
 template <typename Q>
 class vertexDataContainer<k3, Q>: public vertexContainerBase<Q,5> {
-    template <K_class k, typename T> friend class UpdateGrid;
-    template<typename T> friend class CostFullvert_Wscale_b_K3;
-    template<typename T> friend class CostFullvert_Wscale_f_K3;
     friend void test_PT4(double Lambda, bool write_flag);
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
