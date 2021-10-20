@@ -105,6 +105,8 @@ template <typename Q> void State<Q>::check_resolution() const {
 template <typename Q> void State<Q>::analyze_tails() const {
     selfenergy.analyze_tails(true);
     vertex[0].half1().analyze_tails_K1(true);
+    if (MAX_DIAG_CLASS > 1) vertex[0].half1().analyze_tails_K2w(true); vertex[0].half1().analyze_tails_K2v(true);
+    if (MAX_DIAG_CLASS > 2) vertex[0].half1().analyze_tails_K3w(true); vertex[0].half1().analyze_tails_K3v(true); vertex[0].half1().analyze_tails_K3vp(true);
 }
 
 
