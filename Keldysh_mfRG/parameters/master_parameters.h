@@ -13,7 +13,7 @@
 #define HUBBARD
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-//#define KELDYSH_FORMALISM
+#define KELDYSH_FORMALISM
 #ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
