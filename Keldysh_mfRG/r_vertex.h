@@ -1071,14 +1071,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
                     Q result;
                     if (indices.asymmetry_transform)
-                        result = read_symmetryreduced_rvert<k3>(indices, vertex_symmrelated);
+                        result = read_symmetryreduced_rvert<k2>(indices, vertex_symmrelated);
                     else
                         result = read_symmetryreduced_rvert<k2>(indices, *this);
 
-                    if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                        K2.setvert(myconj(result), itK, itw, itv, 0);
-                    else
-                        K2.setvert(result, itK, itw, itv, 0);
+                    K2.setvert(result, itK, itw, itv, 0);
                 }
             }
         }
@@ -1122,10 +1119,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                         else
                             result = read_symmetryreduced_rvert<k3>(indices, *this);
 
-                        if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                            K3.setvert(myconj(result), itK, itw, itv, itvp, 0);
-                        else
-                            K3.setvert(result, itK, itw, itv, itvp, 0);
+                        K3.setvert(result, itK, itw, itv, itvp, 0);
                     }
                 }
             }
