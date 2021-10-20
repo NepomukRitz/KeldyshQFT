@@ -2,6 +2,15 @@
 #define FPP_MFRG_HUBBARD_SOPT_SELFENERGY_H
 
 class Integrand_SE_SOPT_Hubbard{
+public:
+    Integrand_SE_SOPT_Hubbard(const vec<comp>& integrand_in,
+                              const double v_in, const int i_in_in,
+                              const FrequencyGrid& prop_grid_in, const FrequencyGrid& vertex_grid_in)
+            : integrand(integrand_in), v(v_in), i_in(i_in_in),
+              prop_grid(prop_grid_in), vertex_grid(vertex_grid_in){};
+
+    auto operator()(double w_a) const -> comp;
+private:
     const vec<comp>& integrand;
 
     const double v;
@@ -11,15 +20,6 @@ class Integrand_SE_SOPT_Hubbard{
     const FrequencyGrid& vertex_grid;
 
     int composite_index(int iv1, int iw_1) const;
-
-public:
-    Integrand_SE_SOPT_Hubbard(const vec<comp>& integrand_in,
-                              const double v_in, const int i_in_in,
-                              const FrequencyGrid& prop_grid_in, const FrequencyGrid& vertex_grid_in)
-            : integrand(integrand_in), v(v_in), i_in(i_in_in),
-              prop_grid(prop_grid_in), vertex_grid(vertex_grid_in){};
-
-    auto operator()(double w_a) const -> comp;
 };
 
 auto Integrand_SE_SOPT_Hubbard::operator()(double w_a) const -> comp {
