@@ -35,6 +35,106 @@ void handler (const char * reason,
     //print(reason, true);
 }
 
+auto integrator_gsl_qag_helper(gsl_function& F, double a, double b, int Nmax) -> double {
+    gsl_integration_workspace* W = gsl_integration_workspace_alloc(Nmax);
+
+    double result, error;
+
+    gsl_set_error_handler(handler);
+
+    const double epsabs = 0.;
+    int key = 1; // 1: GSL_INTEG_GAUSS15
+                 // 2: GSL_INTEG_GAUSS21
+                 // 3: GSL_INTEG_GAUSS31
+                 // 4: GSL_INTEG_GAUSS41
+                 // 5: GSL_INTEG_GAUSS51
+                 // 6: GSL_INTEG_GAUSS61
+    gsl_integration_qag(&F, a, b, epsabs, integrator_tol, Nmax, key, W, &result, &error);
+
+    gsl_integration_workspace_free(W);
+
+    return result;
+    /// If needed: more information can be extracted, e.g. error, number of interval subdivisions
+}
+
+auto integrator_gsl_qagp_helper(gsl_function& F, double* pts, size_t npts, int Nmax) -> double {
+    gsl_integration_workspace* W = gsl_integration_workspace_alloc(Nmax);
+
+    double result, error;
+
+    gsl_set_error_handler(handler);
+
+    const double epsabs = 0.;
+    gsl_integration_qagp(&F, pts, npts, epsabs, integrator_tol, Nmax, W, &result, &error);
+
+    gsl_integration_workspace_free(W);
+
+    return result;
+    /// If needed: more information can be extracted, e.g. error, number of interval subdivisions
+}
+
+
+/* Integration using routines from the GSL library (many different routines available, would need more testing) */
+template <typename Q, typename Integrand> auto integrator_gsl_qag_v2(Integrand& integrand, double a, double b, int Nmax) -> Q {
+    if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
+
+        gsl_function F_real;
+        gsl_function F_imag;
+
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        F_imag.function = &f_imag<Integrand>;
+        F_imag.params = &integrand;
+
+        double result_real = integrator_gsl_qag_helper(F_real, a, b, Nmax);
+        double result_imag = integrator_gsl_qag_helper(F_imag, a, b, Nmax);
+
+
+        return result_real + glb_i*result_imag;
+    }
+    else{
+        gsl_function F_real;
+
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+
+        double result_real = integrator_gsl_qag_helper(F_real, a, b, Nmax);
+
+        return result_real;
+    }
+}
+
+/* Integration using routines from the GSL library (many different routines available, would need more testing) */
+template <typename Q, typename Integrand> auto integrator_gsl_qagp_v2(Integrand& integrand, double* pts, int npts, int Nmax) -> Q {
+    if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
+
+        gsl_function F_real;
+        gsl_function F_imag;
+
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        F_imag.function = &f_imag<Integrand>;
+        F_imag.params = &integrand;
+
+        double result_real = integrator_gsl_qagp_helper(F_real, pts, npts, Nmax);
+        double result_imag = integrator_gsl_qagp_helper(F_imag, pts, npts, Nmax);
+
+
+        return result_real + glb_i*result_imag;
+    }
+    else{
+        gsl_function F_real;
+
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+
+        double result_real = integrator_gsl_qagp_helper(F_real, pts, npts, Nmax);
+
+        return result_real;
+    }
+}
+
+
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integrand, double a, double b, double w1_in, double w2_in, int Nmax) -> Q {
     if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
@@ -229,6 +329,8 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param integrand
  * @param a         :   lower limit for integration
  * @param b         :   upper limit for integration
+ * @param w1        :   unused
+ * @param w2        :   unused
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> Q {
     if (INTEGRATOR_TYPE == 0) { // Riemann sum
@@ -263,6 +365,11 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param Delta  : with of window around the features which should be integrated separately (to be set by hybridization strength)
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2, double Delta) -> Q {
+
+    // define points at which to split the integrals (including lower and upper integration limits)
+    rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
+    std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
+
     if (INTEGRATOR_TYPE == 0) { // Riemann sum
         return integrator_riemann<Q>(integrand, nINT);
     }
@@ -277,12 +384,9 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);          // use adaptive Simpson integrator
     }
     else if (INTEGRATOR_TYPE == 4) { // GSL
-        return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
+        return integrator_gsl_qagp_v2<Q>(integrand, intersections.data(), intersections.size(), nINT);
     }
     else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
-        // define points at which to split the integrals (including lower and upper integration limits)
-        rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
-        std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
 
         Q result = 0.; // initialize results
         // integrate intervals of with 2*Delta around the features at w1, w2
