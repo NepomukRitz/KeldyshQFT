@@ -26,7 +26,7 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 }
 
 template <typename Q, class Bubble_Object>
-void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
+void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
     for (char r: "apt") {
         bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
     }
@@ -82,7 +82,7 @@ SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Ve
     const double Delta = (Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
     for (int iK = 0; iK < nK_SE; ++iK) {
-        /// Compute the integrand for the frequency integration using FFTs in momentum space. // TODO: Another loop for the internal Keldysh sum.
+        /// Compute the integrand for the frequency integration using FFTs in momentum space. // TODO: Another loop for the internal Keldysh sum and for the spin sum
         vec<comp> integrand (nFER * nBOS * glb_N_transfer);
         std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
 #pragma omp parallel for schedule(dynamic) default(none) shared(barePropagator, vertex_in_SOPT, \
@@ -92,10 +92,11 @@ SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Ve
                 vec<comp> g_values      (glb_N_transfer);
                 vec<comp> vertex_values (glb_N_transfer);
                 for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
-                    g_values[i_in] = barePropagator.GR(barePropagator.selfenergy.frequencies.get_ws(iv1), i_in); // TODO: Correct Keldysh component? Correctly accessed the frequency (-> Anxiang)?
+                    g_values[i_in] = barePropagator.GR(barePropagator.selfenergy.frequencies.get_ws(iv1), i_in); // TODO: Correct Keldysh component?
                     double w1 {0.}; vertex_in_SOPT[0].avertex().K1.K1_get_freq_w(w1, iw1);
-                    VertexInput input(iK, w1, 0., 0., i_in, 0, 'a');
-                    //vertex_values[i_in] = vertex_in_SOPT[0].avertex().K1.interpolate(); // TODO: read out the vertex values on its bosonic grid. Also, interpolations should not be necessary!
+                    int iK2_internal; int i_spin = 0;
+                    VertexInput input(iK2_internal, w1, 0., 0., i_in, i_spin, 'a'); // TODO: Spin sum!
+                    vertex_values[i_in] = vertex_in_SOPT[0].value(input);
                 }
                 vec<comp> integrand_iv1_iw1 = FFT_Machinery[omp_get_thread_num()].compute_swave_bubble(g_values, vertex_values);
                 for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
@@ -106,7 +107,8 @@ SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Ve
         /// Compute the frequency integrals:
         const double v_lower = SOPT_SE_Hubbard.frequencies.w_lower;
         const double v_upper = SOPT_SE_Hubbard.frequencies.w_upper;
-#pragma omp parallel for schedule(dynamic) default(none) shared(barePropagator, vertex_in_SOPT, SOPT_SE_Hubbard, integrand, v_lower, v_upper, Delta, iK)
+#pragma omp parallel for schedule(dynamic) default(none) shared(barePropagator, vertex_in_SOPT, SOPT_SE_Hubbard, \
+                                                                integrand, v_lower, v_upper, Delta, iK)
         for (int iv = 0; iv < nFER; ++iv) {
             const double v = SOPT_SE_Hubbard.frequencies.get_ws(iv);
             for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
@@ -115,7 +117,7 @@ SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Ve
                                                              vertex_in_SOPT[0].avertex().K1.K1_get_freqGrid());     // frequency grid of SOPT vertex
                 // TODO: What about asymptotic corrections?
                 auto val = integrator<comp>(integrand_w, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta); // TODO: correct?
-                SOPT_SE_Hubbard.setself(iK, iv, i_in, val);
+                SOPT_SE_Hubbard.addself(iK, iv, i_in, val);
             }
         }
     }
