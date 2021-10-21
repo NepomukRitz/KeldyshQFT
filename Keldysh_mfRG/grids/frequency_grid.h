@@ -105,8 +105,8 @@ public:
                             Delta_factor = 5.;
                         }
                         else {
-                            U_factor = 20./3.;
-                            Delta_factor = 20.;
+                            U_factor = 5./3.;
+                            Delta_factor = 5.;
                         }
                         break;
                     case 2:
@@ -115,12 +115,12 @@ public:
                         w_lower = glb_w2_lower;
                         W_scale = glb_W2_scale;
                         if (KELDYSH){
-                            U_factor = 15./3.;
-                            Delta_factor = 15.;
+                            U_factor = 5./3.;
+                            Delta_factor = 5.;
                         }
                         else{
-                            U_factor = 40./3.;
-                            Delta_factor = 40.;
+                            U_factor = 20./3.;
+                            Delta_factor = 20.;
                         }
                         break;
                     case 3:
@@ -144,8 +144,8 @@ public:
                             Delta_factor = 40.;
                         }
                         else {
-                            U_factor = 20./3.;
-                            Delta_factor = 20.;
+                            U_factor = 2./3.;
+                            Delta_factor = 2.;
                         }
                         break;
                     case 2:
@@ -158,8 +158,8 @@ public:
                             Delta_factor = 20.;
                         }
                         else {
-                            U_factor = 40./3.;
-                            Delta_factor = 40.;
+                            U_factor = 4./3.;
+                            Delta_factor = 4.;
                         }
                         break;
                     case 3:
@@ -305,7 +305,7 @@ void FrequencyGrid::set_w_upper(double wmax) {
 void FrequencyGrid::rescale_grid(double Lambda) {
     double scale = scale_factor(Lambda);
     set_W_scale(scale);
-    set_w_upper(scale*15);
+    set_w_upper(scale*50);
     initialize_grid();
 }
 
@@ -860,23 +860,29 @@ double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax,
 }
 
 namespace freqGrid {
-    auto shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, const double maxmax) -> FrequencyGrid {
+    auto shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, const bool verbose=true) -> FrequencyGrid {
+        assert(freqGrid.get_ws_vec().size() == maxabs_along_x.size());
 
         FrequencyGrid frequencies_new = freqGrid;
 
         int index = -1+FREQ_PADDING;
         while (true) {
-            if (maxabs_along_x[index+1] >= rel_tail_threshold * maxmax) break;
+            if (maxabs_along_x[index+1] >= rel_tail_threshold) break;
             index++;
         }
         index -= FREQ_PADDING;
-        if (index > -1) {
-            frequencies_new.set_w_upper(std::abs(freqGrid.get_ws(index)));
+        if (index > -1) { // if the frequency box is too big, shrink to appropriate size
+            if (verbose and mpi_world_rank() == 0) std::cout << "Shrinking frequency box ";
+            double t_belowthresh = freqGrid.get_ts(index); // auxiliary frequency point before passing threshold
+            double t_abovethresh = freqGrid.get_ts(index+1); // auxiliary frequency point after  passing threshold
+            double h = (rel_tail_threshold - maxabs_along_x[index+FREQ_PADDING]) * (t_abovethresh - t_belowthresh) / (maxabs_along_x[index+1+FREQ_PADDING] - maxabs_along_x[index+FREQ_PADDING]);
+            const double safety = 0.9;
+            frequencies_new.set_w_upper(std::abs(freqGrid.grid_transf_inv(t_belowthresh + h*safety)));
         }
-        else if (index == -1){ // if data on outermost grid point is too big, then enlarge the box
-            double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-freqGrid.t_upper) / (maxabs_along_x[maxabs_along_x.size() -1 - FREQ_PADDING]);
-            double w_upper_new = frequencies_new.grid_transf_inv(t_upper_new);
-            frequencies_new.set_w_upper(w_upper_new);
+        else if (index == -1){ // if data on outermost grid point is too big, then enlarge the box OR print warning
+            //double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-freqGrid.t_upper) / (maxabs_along_x[maxabs_along_x.size() -1 - FREQ_PADDING]);
+            //double w_upper_new = frequencies_new.grid_transf_inv(t_upper_new);
+            //frequencies_new.set_w_upper(w_upper_new);
         }
         frequencies_new.initialize_grid();
 
