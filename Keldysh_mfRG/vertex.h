@@ -437,7 +437,9 @@ public:
     GeneralVertex(int n, double Lambda) : vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda))) {};
 
     /// Constructor, which gets another GeneralVertex as input; it ONLY copies its frequency grid!
-    GeneralVertex(int n, const GeneralVertex<Q, symmetry_type>& Vertex_in)
+    /// Allows to copy frequency grid e.g. from symmetric to non-symmetic vertex.
+    template <template <typename> class symmetry_type_in>
+    GeneralVertex(int n, const GeneralVertex<Q, symmetry_type_in>& Vertex_in)
       :vec<vertex_container<Q, symmetry_type>> (n, vertex_container<Q, symmetry_type> (fullvert<Q> (Lambda_ini))) {
         set_frequency_grid(Vertex_in);      // copies frequency grid from Vertex_in
     };
@@ -507,7 +509,8 @@ public:
         return result;
     }
 
-    void set_frequency_grid(const GeneralVertex<Q, symmetry_type>& vertex) {
+    template <template <typename> class symmetry_type_in>
+    void set_frequency_grid(const GeneralVertex<Q, symmetry_type_in>& vertex) {
         for (int i=0; i<this->size(); ++i) {
             (*this)[i].set_frequency_grid(vertex[i]);
         }
