@@ -767,11 +767,9 @@ namespace {
             double result = rVert.K1.get_curvature_maxK1();
 
             if (verbose) {
-                if (verbose) {
-                    std::cout << "max. Curvature in K1" << rVert.channel; // << std::endl;
-                    std::cout << "\t \t" << result << std::endl;
+                std::cout << "max. Curvature in K1" << rVert.channel; // << std::endl;
+                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
 
-                }
             }
             /*
             std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
@@ -802,11 +800,9 @@ namespace {
             double result = rVert.K2.get_curvature_maxK2();
 
             if (verbose) {
-                if (verbose) {
-                    std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
-                    std::cout << "\t \t" << result << std::endl;
+                std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
+                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
 
-                }
             }
 
             return result;
@@ -829,11 +825,9 @@ namespace {
             double result = rVert.K2.get_curvature_maxK2();
 
             if (verbose) {
-                if (verbose) {
                     std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
-                    std::cout << "\t \t" << result << std::endl;
+                    std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
 
-                }
             }
 
             return result;
@@ -856,11 +850,8 @@ namespace {
             double result = rVert.K3.get_curvature_maxK3();
 
             if (verbose) {
-                if (verbose) {
-                    std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
-                    std::cout << "\t \t" << result << std::endl;
-
-                }
+                std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
+                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
             }
 
             return result;
@@ -883,11 +874,9 @@ namespace {
             double result = rVert.K3.get_curvature_maxK3();
 
             if (verbose) {
-                if (verbose) {
-                    std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
-                    std::cout << "\t \t" << result << std::endl;
+                std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
+                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
 
-                }
             }
 
             return result;
@@ -895,41 +884,51 @@ namespace {
 }
 
 template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
-    const double rel_tail_threshold = 1e-4;
+    const double rel_tail_threshold = 1e-3;
 
     /// for K1:
+    if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K1" << channel << " grid in direction w:\n";
     VertexFrequencyGrid<k1> frequenciesK1_new = K1.shrink_freq_box(rel_tail_threshold);
     update_grid<k1>(frequenciesK1_new, *this);
+    if (verbose and mpi_world_rank() == 0) {
+        std::cout << "K1 rel.tail height in direction w: " << K1.analyze_tails_K1() << std::endl;
+    }
 
-    double a_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale / 20.;
+    double a_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale / 2.;
     double m_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale;
-    double b_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale * 10;
+    double b_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale * 2;
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(*this, verbose);
-    minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+    minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 1., 0.);
     frequenciesK1_new.b.update_Wscale(m_Wscale);
     update_grid<k1>(frequenciesK1_new, *this);
 
 
     if(MAX_DIAG_CLASS>1) {
         /// for K2:
+        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w:\n";
         VertexFrequencyGrid<k2> frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
         update_grid<k2>(frequenciesK2_new, *this);
+        if (verbose and mpi_world_rank() == 0) {
+            std::cout << "K2 rel.tail height in direction w: " << K2.analyze_tails_K2_x() << std::endl;
+            std::cout << "K2 rel.tail height in direction v: " << K2.analyze_tails_K2_y() << std::endl;
+        }
 
         // in w-direction:
-        a_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale / 10.;
+        a_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale / 2.;
         m_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale;
-        b_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale * 10;
+        b_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale * 2;
         CostFullvert_Wscale_b_K2<Q> cost_b_K2(*this, verbose);
-        minimizer(cost_b_K2, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+        minimizer(cost_b_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
         frequenciesK2_new.b.update_Wscale(m_Wscale);
         update_grid<k2>(frequenciesK2_new, *this);
 
         // in v-direction:
-        a_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale / 10.;
+        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction v:\n";
+        a_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale / 2.;
         m_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale;
-        b_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale * 10;
+        b_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale * 2;
         CostFullvert_Wscale_f_K2<Q> cost_f_K2(*this, verbose);
-        minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+        minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
         frequenciesK2_new.f.update_Wscale(m_Wscale);
         update_grid<k2>(frequenciesK2_new, *this);
     }
@@ -938,22 +937,29 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         /// for K3:
         VertexFrequencyGrid<k3> frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
         update_grid<k3>(frequenciesK3_new, *this);
+        if (verbose and mpi_world_rank() == 0) {
+            std::cout << "K3 rel.tail height in direction w: " << K3.analyze_tails_K3_x() << std::endl;
+            std::cout << "K3 rel.tail height in direction v: " << K3.analyze_tails_K3_y() << std::endl;
+            std::cout << "K3 rel.tail height in direction vp:" << K3.analyze_tails_K3_z() << std::endl;
+        }
 
         // in w-direction:
-        a_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale / 10.;
+        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K3" << channel << " grid in direction w:\n";
+        a_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale / 2.;
         m_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale;
-        b_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale * 10;
+        b_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale * 2;
         CostFullvert_Wscale_b_K3<Q> cost_b_K3(*this, verbose);
-        minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+        minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 100, verbose, false, 1., 0.);
         frequenciesK3_new.b.update_Wscale(m_Wscale);
         update_grid<k3>(frequenciesK3_new, *this);
 
         // in v-direction:
-        a_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale / 10.;
+        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K3" << channel << " grid in direction v:\n";
+        a_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale / 2.;
         m_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale;
-        b_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale * 10;
+        b_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale * 2;
         CostFullvert_Wscale_f_K3<Q> cost_f_K3(*this, verbose);
-        minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+        minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 100, verbose, false, 1., 0.);
         frequenciesK3_new.f.update_Wscale(m_Wscale);
         update_grid<k3>(frequenciesK3_new, *this);
     }

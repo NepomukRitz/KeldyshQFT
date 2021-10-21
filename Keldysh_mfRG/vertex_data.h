@@ -261,7 +261,7 @@ public:
     double analyze_tails_K2_x() const;
 
     double analyze_tails_K2_y() const;
-    auto shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k2>;
+    auto shrink_freq_box(const double rel_tail_threshold, bool verbose=true) const -> VertexFrequencyGrid<k2>;
 
 };
 
@@ -427,11 +427,11 @@ template <typename Q> double vertexDataContainer<k1,Q>::analyze_tails_K1() const
 
 
 template <typename Q> auto vertexDataContainer<k1,Q>::shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k1>
-        {
-    vec<double> maxabsK1_along_w = maxabs(vertexContainerBase<Q,3>::data, vertexContainerBase<Q,3>::dims, 1);
-    double maxmax = maxabsK1_along_w.max_norm();
-            VertexFrequencyGrid<k1> frequencies_new = frequencies_K1;
-    if (std::abs(maxmax) > 1e-30) { frequencies_new.b = freqGrid::shrink_freq_box(frequencies_K1.b, rel_tail_threshold, maxabsK1_along_w, maxmax); }
+{
+    double maxmax = vertexContainerBase<Q,3>::data.max_norm();
+    vec<double> maxabsK1_along_w = maxabs(vertexContainerBase<Q,3>::data, vertexContainerBase<Q,3>::dims, 1) * (1/maxmax);
+    VertexFrequencyGrid<k1> frequencies_new = frequencies_K1;
+    if (std::abs(maxmax) > 1e-30) { frequencies_new.b = freqGrid::shrink_freq_box(frequencies_K1.b, rel_tail_threshold, maxabsK1_along_w); }
 
     return frequencies_new;
 }
@@ -566,35 +566,37 @@ template <typename Q> auto vertexDataContainer<k2,Q>::get_curvature_maxK2() cons
     double dtf = K2_get_freqGrid_f().dt;
     double max_K1 = (    ::power2( get_deriv_K2_xx()*dtb*dtb*(1/Kmax))
                         +::power2( get_deriv_K2_yy()*dtf*dtf*(1/Kmax))
-                        +::power2( get_deriv_K2_xy()*dtb*dtf*(1/Kmax))
+                        +::power2( get_deriv_K2_xy()*dtb*dtf*(1/Kmax)*2)
                     ).max_norm();
     return max_K1;
 }
 
 template <typename Q> double vertexDataContainer<k2,Q>::analyze_tails_K2_x() const {
-    double maxabs_K2_total = vertexContainerBase<Q,4>::data.max_norm();
-    vec<double> maxabsK2_along_w = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 1);
+    double maxmax = vertexContainerBase<Q,4>::data.max_norm();
+    vec<double> maxabsK2_along_w = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 1) * (1/maxmax);
 
-    return maxabsK2_along_w[FREQ_PADDING] / maxabs_K2_total;
+    return maxabsK2_along_w[FREQ_PADDING];
 }
 template <typename Q> double vertexDataContainer<k2,Q>::analyze_tails_K2_y() const {
-    double maxabs_K2_total = vertexContainerBase<Q,4>::data.max_norm();
-    vec<double> maxabsK2_along_v = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 2);
+    double maxmax = vertexContainerBase<Q,4>::data.max_norm();
+    vec<double> maxabsK2_along_v = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 2) * (1/maxmax);
 
-    return maxabsK2_along_v[FREQ_PADDING] / maxabs_K2_total;
+    return maxabsK2_along_v[FREQ_PADDING];
 }
 
-template <typename Q> auto vertexDataContainer<k2,Q>::shrink_freq_box(const double rel_tail_threshold) const -> VertexFrequencyGrid<k2> {
+template <typename Q> auto vertexDataContainer<k2,Q>::shrink_freq_box(const double rel_tail_threshold, const bool verbose) const -> VertexFrequencyGrid<k2> {
 
     VertexFrequencyGrid<k2> frequencies_new = frequencies_K2;
 
-    vec<double> maxabsK2_along_w = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 1);
-    vec<double> maxabsK2_along_v = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 2);
-    double maxmax = maxabsK2_along_w.max_norm();
+    double maxmax = vertexContainerBase<Q,4>::data.max_norm();
+    vec<double> maxabsK2_along_w = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 1) * (1/maxmax);
+    vec<double> maxabsK2_along_v = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 2) * (1/maxmax);
 
 
-    frequencies_new.b = freqGrid::shrink_freq_box(frequencies_K2.b, rel_tail_threshold, maxabsK2_along_w, maxmax);
-    frequencies_new.f = freqGrid::shrink_freq_box(frequencies_K2.f, rel_tail_threshold, maxabsK2_along_v, maxmax);
+    frequencies_new.b = freqGrid::shrink_freq_box(frequencies_K2.b, rel_tail_threshold, maxabsK2_along_w, verbose);
+    if (verbose and mpi_world_rank() == 0) std::cout << "in direction w to " << frequencies_new.b.w_upper << std::endl;
+    frequencies_new.f = freqGrid::shrink_freq_box(frequencies_K2.f, rel_tail_threshold, maxabsK2_along_v, verbose);
+    if (verbose and mpi_world_rank() == 0) std::cout << "in direction v to " << frequencies_new.f.w_upper << std::endl;
 
     return frequencies_new;
 }
@@ -775,12 +777,12 @@ template <typename Q> auto vertexDataContainer<k3,Q>::shrink_freq_box(const doub
 
     VertexFrequencyGrid<k3> frequencies_new = frequencies_K3;
 
-    vec<double> maxabsK3_along_w = maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 1);
-    vec<double> maxabsK3_along_v = maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 2);
-    double maxmax = maxabsK3_along_w.max_norm();
+    double maxmax = vertexContainerBase<Q,5>::data.max_norm();
+    vec<double> maxabsK3_along_w = maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 1) * (1/maxmax);
+    vec<double> maxabsK3_along_v = maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 2) * (1/maxmax);
 
-    frequencies_new.b = freqGrid::shrink_freq_box(frequencies_K3.b, rel_tail_threshold, maxabsK3_along_w, maxmax);
-    frequencies_new.f = freqGrid::shrink_freq_box(frequencies_K3.f, rel_tail_threshold, maxabsK3_along_v, maxmax);
+    frequencies_new.b = freqGrid::shrink_freq_box(frequencies_K3.b, rel_tail_threshold, maxabsK3_along_w);
+    frequencies_new.f = freqGrid::shrink_freq_box(frequencies_K3.f, rel_tail_threshold, maxabsK3_along_v);
 
     return frequencies_new;
 }

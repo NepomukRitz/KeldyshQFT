@@ -1279,7 +1279,7 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K1(const bool verbose) cons
     Kderiv_max[1] = pvertex.K1.get_deriv_maxK1();
     Kderiv_max[2] = tvertex.K1.get_deriv_maxK1();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "max. Derivative in K1" << std::endl;
         std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
         std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
@@ -1298,7 +1298,7 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K2(const bool verbose) cons
     Kderiv_max[1] = pvertex.K2.get_deriv_maxK2();
     Kderiv_max[2] = tvertex.K2.get_deriv_maxK2();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "max. Derivative in K2" << std::endl;
         std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
         std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
@@ -1317,7 +1317,7 @@ template<typename Q> auto fullvert<Q>::get_deriv_max_K3(const bool verbose) cons
     Kderiv_max[1] = pvertex.K3.get_deriv_maxK3();
     Kderiv_max[2] = tvertex.K3.get_deriv_maxK3();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "max. Derivative in K3" << std::endl;
         std::cout << "\t a: \t" << Kderiv_max[0] << std::endl;
         std::cout << "\t p: \t" << Kderiv_max[1] << std::endl;
@@ -1336,7 +1336,7 @@ template<typename Q> auto fullvert<Q>::get_curvature_max_K1(const bool verbose) 
     Kcurv_max[1] = pvertex.K1.get_curvature_maxK1();
     Kcurv_max[2] = tvertex.K1.get_curvature_maxK1();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "max. Curvature in K1" << std::endl;
         std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
         std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
@@ -1355,7 +1355,7 @@ template<typename Q> auto fullvert<Q>::get_curvature_max_K2(const bool verbose) 
     Kcurv_max[1] = pvertex.K2.get_curvature_maxK2();
     Kcurv_max[2] = tvertex.K2.get_curvature_maxK2();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "max. Curvature in K2" << std::endl;
         std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
         std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
@@ -1374,7 +1374,7 @@ template<typename Q> auto fullvert<Q>::get_curvature_max_K3(const bool verbose) 
     Kcurv_max[1] = pvertex.K3.get_curvature_maxK3();
     Kcurv_max[2] = tvertex.K3.get_curvature_maxK3();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "max. Curvature in K3" << std::endl;
         std::cout << "\t a: \t" << Kcurv_max[0] << std::endl;
         std::cout << "\t p: \t" << Kcurv_max[1] << std::endl;
@@ -1405,7 +1405,7 @@ template<typename Q> auto fullvert<Q>::analyze_tails_K1(bool verbose) const -> d
     Ktails_rel[1] = pvertex.K1.analyze_tails_K1();
     Ktails_rel[2] = tvertex.K1.analyze_tails_K1();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "rel. magnitude of tails in K1" << std::endl;
         std::cout << "\t a: \t" << Ktails_rel[0] << std::endl;
         std::cout << "\t p: \t" << Ktails_rel[1] << std::endl;
@@ -1425,7 +1425,7 @@ template<typename Q> auto fullvert<Q>::analyze_tails_K2w(bool verbose) const -> 
     Ktails_relx[1] = pvertex.K2.analyze_tails_K2_x();
     Ktails_relx[2] = tvertex.K2.analyze_tails_K2_x();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "rel. magnitude of tails in K2" << std::endl;
         std::cout << "\t a -> along w: \t" << Ktails_relx[0] << std::endl;
         std::cout << "\t p -> along w: \t" << Ktails_relx[1] << std::endl;
@@ -1444,7 +1444,7 @@ template<typename Q> auto fullvert<Q>::analyze_tails_K2v(bool verbose) const -> 
     Ktails_rely[1] = pvertex.K2.analyze_tails_K2_y();
     Ktails_rely[2] = tvertex.K2.analyze_tails_K2_y();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "rel. magnitude of tails in K2" << std::endl;
         std::cout << "\t a -> along v: \t" << Ktails_rely[0] << std::endl;
         std::cout << "\t p -> along v: \t" << Ktails_rely[1] << std::endl;
@@ -1463,7 +1463,7 @@ template<typename Q> auto fullvert<Q>::analyze_tails_K3w(bool verbose) const -> 
     Ktails_relx[1] = pvertex.K3.analyze_tails_K3_x();
     Ktails_relx[2] = tvertex.K3.analyze_tails_K3_x();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "rel. magnitude of tails in K3" << std::endl;
         std::cout << "\t a -> along w: \t" << Ktails_relx[0] << std::endl;
         std::cout << "\t p -> along w: \t" << Ktails_relx[1] << std::endl;
@@ -1482,7 +1482,7 @@ template<typename Q> auto fullvert<Q>::analyze_tails_K3v(bool verbose) const -> 
     Ktails_rely[1] = pvertex.K3.analyze_tails_K3_y();
     Ktails_rely[2] = tvertex.K3.analyze_tails_K3_y();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "rel. magnitude of tails in K3" << std::endl;
         std::cout << "\t a -> along v: \t" << Ktails_rely[0] << std::endl;
         std::cout << "\t p -> along v: \t" << Ktails_rely[1] << std::endl;
@@ -1501,7 +1501,7 @@ template<typename Q> auto fullvert<Q>::analyze_tails_K3vp(bool verbose) const ->
     Ktails_rely[1] = pvertex.K3.analyze_tails_K3_z();
     Ktails_rely[2] = tvertex.K3.analyze_tails_K3_z();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank()==0) {
         std::cout << "rel. magnitude of tails in K3" << std::endl;
         std::cout << "\t a -> along vp:\t" << Ktails_rely[0] << std::endl;
         std::cout << "\t p -> along vp:\t" << Ktails_rely[1] << std::endl;
