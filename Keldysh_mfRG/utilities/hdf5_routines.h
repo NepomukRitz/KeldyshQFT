@@ -37,7 +37,7 @@ const int RANK_irreducible = 2;
 const int RANK_self = 2;
 const int RANK_freqs = 2;
 
-const int N_freq_params = 24; // number of parameters for frequency grid
+const int N_freq_params = 64; // number of parameters for frequency grid
 
 // Names of the individual datasets within the hdf5 file
 const H5std_string	DATASET_irred("irred");
@@ -186,18 +186,28 @@ public:
 template <typename Q>
     void initialize(const State<Q>& state_in) {
         //print("Starting to copy to buffer...", true);
-        FrequencyGrid bfreqs = state_in.vertex[0].avertex().K1.K1_get_freqGrid();
+        FrequencyGrid bfreqsa = state_in.vertex[0].avertex().K1.K1_get_freqGrid();
+        FrequencyGrid bfreqsp = state_in.vertex[0].pvertex().K1.K1_get_freqGrid();
+        FrequencyGrid bfreqst = state_in.vertex[0].tvertex().K1.K1_get_freqGrid();
         FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
-        freq_params[0] = (double) bfreqs.N_w;
-        freq_params[1] = bfreqs.w_upper;
-        freq_params[2] = bfreqs.w_lower;
-        freq_params[3] = bfreqs.W_scale;
+        freq_params[0] = (double) bfreqsa.N_w;
+        freq_params[1] = bfreqsa.w_upper;
+        freq_params[2] = bfreqsa.w_lower;
+        freq_params[3] = bfreqsa.W_scale;
         freq_params[4] = (double) ffreqs.N_w;
         freq_params[5] = ffreqs.w_upper;
         freq_params[6] = ffreqs.w_lower;
         freq_params[7] = ffreqs.W_scale;
+        freq_params[24] = (double) bfreqsp.N_w;
+        freq_params[25] = bfreqsp.w_upper;
+        freq_params[26] = bfreqsp.w_lower;
+        freq_params[27] = bfreqsp.W_scale;
+        freq_params[28] = (double) bfreqst.N_w;
+        freq_params[29] = bfreqst.w_upper;
+        freq_params[30] = bfreqst.w_lower;
+        freq_params[31] = bfreqst.W_scale;
 
-    convert_vec_to_type(bfreqs.get_ws_vec(), bfreqs_buffer);
+    convert_vec_to_type(bfreqsa.get_ws_vec(), bfreqs_buffer);
     convert_vec_to_type(ffreqs.get_ws_vec(), ffreqs_buffer);
         //for (int i=0; i<nBOS+FREQ_PADDING*2; ++i) {
         //    bfreqs_buffer[i] = bfreqs.ws[i];
@@ -232,19 +242,39 @@ template <typename Q>
         }
 #endif
 #if MAX_DIAG_CLASS >= 2
-        FrequencyGrid bfreqs2 = state_in.vertex[0].avertex().K2.K2_get_freqGrid_b();
-        FrequencyGrid ffreqs2 = state_in.vertex[0].avertex().K2.K2_get_freqGrid_f();
-        freq_params[8]  = (double) bfreqs2.N_w;
-        freq_params[9]  = bfreqs2.w_upper;
-        freq_params[10] = bfreqs2.w_lower;
-        freq_params[11] = bfreqs2.W_scale;
-        freq_params[12] = (double) ffreqs2.N_w;
-        freq_params[13] = ffreqs2.w_upper;
-        freq_params[14] = ffreqs2.w_lower;
-        freq_params[15] = ffreqs2.W_scale;
+    FrequencyGrid bfreqs2a = state_in.vertex[0].avertex().K2.K2_get_freqGrid_b();
+    FrequencyGrid ffreqs2a = state_in.vertex[0].avertex().K2.K2_get_freqGrid_f();
+    FrequencyGrid bfreqs2p = state_in.vertex[0].pvertex().K2.K2_get_freqGrid_b();
+    FrequencyGrid ffreqs2p = state_in.vertex[0].pvertex().K2.K2_get_freqGrid_f();
+    FrequencyGrid bfreqs2t = state_in.vertex[0].tvertex().K2.K2_get_freqGrid_b();
+    FrequencyGrid ffreqs2t = state_in.vertex[0].tvertex().K2.K2_get_freqGrid_f();
+    freq_params[8]  = (double) bfreqs2a.N_w;
+    freq_params[9]  = bfreqs2a.w_upper;
+    freq_params[10] = bfreqs2a.w_lower;
+    freq_params[11] = bfreqs2a.W_scale;
+    freq_params[12] = (double) ffreqs2a.N_w;
+    freq_params[13] = ffreqs2a.w_upper;
+    freq_params[14] = ffreqs2a.w_lower;
+    freq_params[15] = ffreqs2a.W_scale;
+    freq_params[32]  = (double) bfreqs2p.N_w;
+    freq_params[33]  = bfreqs2p.w_upper;
+    freq_params[34] = bfreqs2p.w_lower;
+    freq_params[35] = bfreqs2p.W_scale;
+    freq_params[36] = (double) ffreqs2p.N_w;
+    freq_params[37] = ffreqs2p.w_upper;
+    freq_params[38] = ffreqs2p.w_lower;
+    freq_params[39] = ffreqs2p.W_scale;
+    freq_params[40]  = (double) bfreqs2t.N_w;
+    freq_params[41]  = bfreqs2t.w_upper;
+    freq_params[42] = bfreqs2t.w_lower;
+    freq_params[43] = bfreqs2t.W_scale;
+    freq_params[44] = (double) ffreqs2t.N_w;
+    freq_params[45] = ffreqs2t.w_upper;
+    freq_params[46] = ffreqs2t.w_lower;
+    freq_params[47] = ffreqs2t.W_scale;
 
-    convert_vec_to_type(bfreqs2.get_ws_vec(), bfreqs2_buffer);
-    convert_vec_to_type(ffreqs2.get_ws_vec(), ffreqs2_buffer);
+    convert_vec_to_type(bfreqs2a.get_ws_vec(), bfreqs2_buffer);
+    convert_vec_to_type(ffreqs2a.get_ws_vec(), ffreqs2_buffer);
         //for (int i=0; i<nBOS2+FREQ_PADDING*2; ++i) {
         //    bfreqs2_buffer[i] = bfreqs2.ws[i];
         //}
@@ -263,19 +293,39 @@ template <typename Q>
         }
 #endif
 #if MAX_DIAG_CLASS >= 3
-        FrequencyGrid bfreqs3 = state_in.vertex[0].avertex().K3.K3_get_freqGrid_b();
-        FrequencyGrid ffreqs3 = state_in.vertex[0].avertex().K3.K3_get_freqGrid_f();
-        freq_params[16] = (double) bfreqs3.N_w;
-        freq_params[17] = bfreqs3.w_upper;
-        freq_params[18] = bfreqs3.w_lower;
-        freq_params[19] = bfreqs3.W_scale;
-        freq_params[20] = (double) ffreqs3.N_w;
-        freq_params[21] = ffreqs3.w_upper;
-        freq_params[22] = ffreqs3.w_lower;
-        freq_params[23] = ffreqs3.W_scale;
+        FrequencyGrid bfreqs3a = state_in.vertex[0].avertex().K3.K3_get_freqGrid_b();
+        FrequencyGrid ffreqs3a = state_in.vertex[0].avertex().K3.K3_get_freqGrid_f();
+        FrequencyGrid bfreqs3p = state_in.vertex[0].pvertex().K3.K3_get_freqGrid_b();
+        FrequencyGrid ffreqs3p = state_in.vertex[0].pvertex().K3.K3_get_freqGrid_f();
+        FrequencyGrid bfreqs3t = state_in.vertex[0].tvertex().K3.K3_get_freqGrid_b();
+        FrequencyGrid ffreqs3t = state_in.vertex[0].tvertex().K3.K3_get_freqGrid_f();
+        freq_params[16] = (double) bfreqs3a.N_w;
+        freq_params[17] = bfreqs3a.w_upper;
+        freq_params[18] = bfreqs3a.w_lower;
+        freq_params[19] = bfreqs3a.W_scale;
+        freq_params[20] = (double) ffreqs3a.N_w;
+        freq_params[21] = ffreqs3a.w_upper;
+        freq_params[22] = ffreqs3a.w_lower;
+        freq_params[23] = ffreqs3a.W_scale;
+        freq_params[48] = (double) bfreqs3p.N_w;
+        freq_params[49] = bfreqs3p.w_upper;
+        freq_params[50] = bfreqs3p.w_lower;
+        freq_params[51] = bfreqs3p.W_scale;
+        freq_params[52] = (double) ffreqs3p.N_w;
+        freq_params[53] = ffreqs3p.w_upper;
+        freq_params[54] = ffreqs3p.w_lower;
+        freq_params[55] = ffreqs3p.W_scale;
+        freq_params[56] = (double) bfreqs3t.N_w;
+        freq_params[57] = bfreqs3t.w_upper;
+        freq_params[58] = bfreqs3t.w_lower;
+        freq_params[59] = bfreqs3t.W_scale;
+        freq_params[60] = (double) ffreqs3t.N_w;
+        freq_params[61] = ffreqs3t.w_upper;
+        freq_params[62] = ffreqs3t.w_lower;
+        freq_params[63] = ffreqs3t.W_scale;
 
-    convert_vec_to_type(bfreqs3.get_ws_vec(), bfreqs3_buffer);
-    convert_vec_to_type(ffreqs3.get_ws_vec(), ffreqs3_buffer);
+    convert_vec_to_type(bfreqs3a.get_ws_vec(), bfreqs3_buffer);
+    convert_vec_to_type(ffreqs3a.get_ws_vec(), ffreqs3_buffer);
         //for (int i=0; i<nBOS3+FREQ_PADDING*2; ++i) {
         //    bfreqs3_buffer[i] = bfreqs3.ws[i];
         //}
@@ -1011,64 +1061,124 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 template <typename Q>
 void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     // create new frequency grids
-    FrequencyGrid bfreqs ('b', 1, Lambda_ini);
+    FrequencyGrid bfreqsa ('b', 1, Lambda_ini);
+    FrequencyGrid bfreqsp ('b', 1, Lambda_ini);
+    FrequencyGrid bfreqst ('b', 1, Lambda_ini);
     FrequencyGrid ffreqs ('f', 1, Lambda_ini);
     // read grid parameters from buffer
-    bfreqs.N_w = (int)buffer.freq_params[0];
-    bfreqs.w_upper = buffer.freq_params[1];
-    bfreqs.w_lower = buffer.freq_params[2];
-    bfreqs.W_scale = buffer.freq_params[3];
+    bfreqsa.N_w = (int)buffer.freq_params[0];
+    bfreqsa.w_upper = buffer.freq_params[1];
+    bfreqsa.w_lower = buffer.freq_params[2];
+    bfreqsa.W_scale = buffer.freq_params[3];
     ffreqs.N_w = (int)buffer.freq_params[4];
     ffreqs.w_upper = buffer.freq_params[5];
     ffreqs.w_lower = buffer.freq_params[6];
     ffreqs.W_scale = buffer.freq_params[7];
+    bfreqsp.N_w = (int)buffer.freq_params[24];
+    bfreqsp.w_upper = buffer.freq_params[25];
+    bfreqsp.w_lower = buffer.freq_params[26];
+    bfreqsp.W_scale = buffer.freq_params[27];
+    bfreqst.N_w = (int)buffer.freq_params[28];
+    bfreqst.w_upper = buffer.freq_params[29];
+    bfreqst.w_lower = buffer.freq_params[30];
+    bfreqst.W_scale = buffer.freq_params[31];
     // initialize grids
-    bfreqs.initialize_grid();
+    bfreqsa.initialize_grid();
+    bfreqsp.initialize_grid();
+    bfreqst.initialize_grid();
     ffreqs.initialize_grid();
     // copy grids to result
     result.selfenergy.frequencies = ffreqs;
-    result.vertex[0].avertex().K1.frequencies_K1.b = bfreqs;
-    result.vertex[0].pvertex().K1.frequencies_K1.b = bfreqs;
-    result.vertex[0].tvertex().K1.frequencies_K1.b = bfreqs;
+    result.vertex[0].avertex().K1.frequencies_K1.b = bfreqsa;
+    result.vertex[0].pvertex().K1.frequencies_K1.b = bfreqsp;
+    result.vertex[0].tvertex().K1.frequencies_K1.b = bfreqst;
 #if MAX_DIAG_CLASS >= 2
-    FrequencyGrid bfreqs2 ('b', 2, Lambda_ini);
-    FrequencyGrid ffreqs2 ('f', 2, Lambda_ini);
-    bfreqs2.N_w = (int)buffer.freq_params[8];
-    bfreqs2.w_upper = buffer.freq_params[9];
-    bfreqs2.w_lower = buffer.freq_params[10];
-    bfreqs2.W_scale = buffer.freq_params[11];
-    ffreqs2.N_w = (int)buffer.freq_params[12];
-    ffreqs2.w_upper = buffer.freq_params[13];
-    ffreqs2.w_lower = buffer.freq_params[14];
-    ffreqs2.W_scale = buffer.freq_params[15];
-    bfreqs2.initialize_grid();
-    ffreqs2.initialize_grid();
-    result.vertex[0].avertex().K2.frequencies_K2.b = bfreqs2;
-    result.vertex[0].pvertex().K2.frequencies_K2.b = bfreqs2;
-    result.vertex[0].tvertex().K2.frequencies_K2.b = bfreqs2;
-    result.vertex[0].avertex().K2.frequencies_K2.f = ffreqs2;
-    result.vertex[0].pvertex().K2.frequencies_K2.f = ffreqs2;
-    result.vertex[0].tvertex().K2.frequencies_K2.f = ffreqs2;
+    FrequencyGrid bfreqs2a ('b', 2, Lambda_ini);
+    FrequencyGrid ffreqs2a ('f', 2, Lambda_ini);
+    FrequencyGrid bfreqs2p ('b', 2, Lambda_ini);
+    FrequencyGrid ffreqs2p ('f', 2, Lambda_ini);
+    FrequencyGrid bfreqs2t ('b', 2, Lambda_ini);
+    FrequencyGrid ffreqs2t ('f', 2, Lambda_ini);
+    bfreqs2a.N_w = (int)buffer.freq_params[8];
+    bfreqs2a.w_upper = buffer.freq_params[9];
+    bfreqs2a.w_lower = buffer.freq_params[10];
+    bfreqs2a.W_scale = buffer.freq_params[11];
+    ffreqs2a.N_w = (int)buffer.freq_params[12];
+    ffreqs2a.w_upper = buffer.freq_params[13];
+    ffreqs2a.w_lower = buffer.freq_params[14];
+    ffreqs2a.W_scale = buffer.freq_params[15];
+    bfreqs2p.N_w = (int)buffer.freq_params[32];
+    bfreqs2p.w_upper = buffer.freq_params[33];
+    bfreqs2p.w_lower = buffer.freq_params[34];
+    bfreqs2p.W_scale = buffer.freq_params[35];
+    ffreqs2p.N_w = (int)buffer.freq_params[36];
+    ffreqs2p.w_upper = buffer.freq_params[37];
+    ffreqs2p.w_lower = buffer.freq_params[38];
+    ffreqs2p.W_scale = buffer.freq_params[39];
+    bfreqs2t.N_w = (int)buffer.freq_params[40];
+    bfreqs2t.w_upper = buffer.freq_params[41];
+    bfreqs2t.w_lower = buffer.freq_params[42];
+    bfreqs2t.W_scale = buffer.freq_params[43];
+    ffreqs2t.N_w = (int)buffer.freq_params[44];
+    ffreqs2t.w_upper = buffer.freq_params[45];
+    ffreqs2t.w_lower = buffer.freq_params[46];
+    ffreqs2t.W_scale = buffer.freq_params[47];
+    bfreqs2a.initialize_grid();
+    ffreqs2a.initialize_grid();
+    bfreqs2p.initialize_grid();
+    ffreqs2p.initialize_grid();
+    bfreqs2t.initialize_grid();
+    ffreqs2t.initialize_grid();
+    result.vertex[0].avertex().K2.frequencies_K2.b = bfreqs2a;
+    result.vertex[0].pvertex().K2.frequencies_K2.b = bfreqs2a;
+    result.vertex[0].tvertex().K2.frequencies_K2.b = bfreqs2p;
+    result.vertex[0].avertex().K2.frequencies_K2.f = ffreqs2p;
+    result.vertex[0].pvertex().K2.frequencies_K2.f = ffreqs2t;
+    result.vertex[0].tvertex().K2.frequencies_K2.f = ffreqs2t;
 #endif
 #if MAX_DIAG_CLASS >= 3
-    FrequencyGrid bfreqs3 ('b', 3, Lambda_ini);
-    FrequencyGrid ffreqs3 ('f', 3, Lambda_ini);
-    bfreqs3.N_w = (int)buffer.freq_params[16];
-    bfreqs3.w_upper = buffer.freq_params[17];
-    bfreqs3.w_lower = buffer.freq_params[18];
-    bfreqs3.W_scale = buffer.freq_params[19];
-    ffreqs3.N_w = (int)buffer.freq_params[20];
-    ffreqs3.w_upper = buffer.freq_params[21];
-    ffreqs3.w_lower = buffer.freq_params[22];
-    ffreqs3.W_scale = buffer.freq_params[23];
-    bfreqs3.initialize_grid();
-    ffreqs3.initialize_grid();
-    result.vertex[0].avertex().K3.frequencies_K3.b = bfreqs3;
-    result.vertex[0].pvertex().K3.frequencies_K3.b = bfreqs3;
-    result.vertex[0].tvertex().K3.frequencies_K3.b = bfreqs3;
-    result.vertex[0].avertex().K3.frequencies_K3.f = ffreqs3;
-    result.vertex[0].pvertex().K3.frequencies_K3.f = ffreqs3;
-    result.vertex[0].tvertex().K3.frequencies_K3.f = ffreqs3;
+    FrequencyGrid bfreqs3a ('b', 3, Lambda_ini);
+    FrequencyGrid ffreqs3a ('f', 3, Lambda_ini);
+    FrequencyGrid bfreqs3p ('b', 3, Lambda_ini);
+    FrequencyGrid ffreqs3p ('f', 3, Lambda_ini);
+    FrequencyGrid bfreqs3t ('b', 3, Lambda_ini);
+    FrequencyGrid ffreqs3t ('f', 3, Lambda_ini);
+    bfreqs3a.N_w = (int)buffer.freq_params[16];
+    bfreqs3a.w_upper = buffer.freq_params[17];
+    bfreqs3a.w_lower = buffer.freq_params[18];
+    bfreqs3a.W_scale = buffer.freq_params[19];
+    ffreqs3a.N_w = (int)buffer.freq_params[20];
+    ffreqs3a.w_upper = buffer.freq_params[21];
+    ffreqs3a.w_lower = buffer.freq_params[22];
+    ffreqs3a.W_scale = buffer.freq_params[23];
+    bfreqs3p.N_w = (int)buffer.freq_params[48];
+    bfreqs3p.w_upper = buffer.freq_params[49];
+    bfreqs3p.w_lower = buffer.freq_params[50];
+    bfreqs3p.W_scale = buffer.freq_params[51];
+    ffreqs3p.N_w = (int)buffer.freq_params[52];
+    ffreqs3p.w_upper = buffer.freq_params[53];
+    ffreqs3p.w_lower = buffer.freq_params[54];
+    ffreqs3p.W_scale = buffer.freq_params[55];
+    bfreqs3t.N_w = (int)buffer.freq_params[56];
+    bfreqs3t.w_upper = buffer.freq_params[57];
+    bfreqs3t.w_lower = buffer.freq_params[58];
+    bfreqs3t.W_scale = buffer.freq_params[59];
+    ffreqs3t.N_w = (int)buffer.freq_params[60];
+    ffreqs3t.w_upper = buffer.freq_params[61];
+    ffreqs3t.w_lower = buffer.freq_params[62];
+    ffreqs3t.W_scale = buffer.freq_params[63];
+    bfreqs3a.initialize_grid();
+    ffreqs3a.initialize_grid();
+    bfreqs3p.initialize_grid();
+    ffreqs3p.initialize_grid();
+    bfreqs3t.initialize_grid();
+    ffreqs3t.initialize_grid();
+    result.vertex[0].avertex().K3.frequencies_K3.b = bfreqs3a;
+    result.vertex[0].pvertex().K3.frequencies_K3.b = bfreqs3a;
+    result.vertex[0].tvertex().K3.frequencies_K3.b = bfreqs3p;
+    result.vertex[0].avertex().K3.frequencies_K3.f = ffreqs3p;
+    result.vertex[0].pvertex().K3.frequencies_K3.f = ffreqs3t;
+    result.vertex[0].tvertex().K3.frequencies_K3.f = ffreqs3t;
 #endif
 }
 
