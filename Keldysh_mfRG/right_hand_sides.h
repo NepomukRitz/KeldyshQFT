@@ -51,7 +51,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
 
     //For flow without self-energy, comment out this line
-    //selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+    selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
 
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback
@@ -106,15 +106,15 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
                 Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
 
                 // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-                //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
-                //dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
-                //dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+                GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
+                dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
+                dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 
                 // insert this non-symmetric vertex on the left of the bubble
-                //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
+                Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
 
                 // symmetrize by averaging left and right insertion
-                Vertex<Q> dGammaC = dGammaC_r; //(dGammaC_r + dGammaC_l) * 0.5;
+                Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5;
 
                 dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, Pi);
                 dGammaR_half1 = calculate_dGammaR(dGammaT, Psi.vertex, Pi);
