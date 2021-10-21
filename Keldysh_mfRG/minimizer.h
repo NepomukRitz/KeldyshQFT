@@ -23,13 +23,33 @@ auto costval(double x, void* params) -> double {
  * @param max_iter      maximal number iterations
  */
 template<typename CostFunction>
-void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_iter = 10, const bool verbose = false, double epsabs=1., double epsrel=0.0)
+void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_iter = 10, const bool verbose = false, const bool superverbose=false, double epsabs=0.0, double epsrel=0.01)
 {
+    if (verbose and mpi_world_rank() == 0) std::cout << "-----   Starting minimizer   -----\n";
     int status;
     int iter = 0;
     const gsl_min_fminimizer_type *T;
     gsl_min_fminimizer *s;
     gsl_function F;
+
+    // make sure that minimizer gets nice values
+    if (verbose and mpi_world_rank() == 0) std::cout << "Make sure that minimizer gets nice intervals: \n";
+    double costa, costb, costm;
+    while (true) {
+        if (verbose and mpi_world_rank() == 0) printf( "a: %.3f  --  m: %.3f  --  b: %.3f \n", a, m ,b);
+        costa = cost(a);
+        costb = cost(b);
+        costm = cost(m);
+        if (costa > costm and costb > costm) break;
+        if (costa < costm) {
+            b = m; m = a; a /= 2.;
+            print("down");
+        }
+        else if (costb < costm) {
+            a = m; m = b; b *= 2.;
+            print("up");
+        }
+    }
 
     F.function = &costval<CostFunction>;
     F.params = &cost;
@@ -41,6 +61,8 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
     if (verbose) {
         printf("using %s method\n",
                gsl_min_fminimizer_name(s));
+    }
+    if(superverbose) {
 
         printf("%5s [%9s, %9s] %9s %10s %9s\n",
                "iter", "lower", "upper", "min",
@@ -63,7 +85,7 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
         status
                 = gsl_min_test_interval (a, b, epsabs, epsrel);
 
-        if (verbose) {
+        if (superverbose) {
             if (status == GSL_SUCCESS)
                 printf("Converged:\n");
 
