@@ -46,7 +46,7 @@ class IntegrandSE {
                          const int iK, const double vp) const; // for unsymmetrized Keldysh/Matsubara flow
 
 public:
-    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator<Q>& prop_in,
+    IntegrandSE(const char type_in, const GeneralVertex<Q, symmetry>& vertex_in, const Propagator<Q>& prop_in,
                 const int iK_in, const double v_in, const int i_in_in, const int i_spin_in)
                 :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), v(v_in), i_in(i_in_in), i_spin(i_spin_in){
         if (KELDYSH){set_Keldysh_components_to_be_calculated();}

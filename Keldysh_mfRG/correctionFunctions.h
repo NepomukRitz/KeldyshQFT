@@ -860,8 +860,8 @@ auto correctionFunctionSelfEnergy_Matsubara_NoPHS(int iK, double vmin, double vm
  * @param all_spins  : Determines if spin sum in loop is performed.
  * @return
  */
-template <typename Q> // TODO(medium): split up into two functions
-auto asymp_corrections_loop(const Vertex<Q>& vertex,
+template <typename Q, template <typename> class symmetry> // TODO(medium): split up into two functions
+auto asymp_corrections_loop(const GeneralVertex<Q, symmetry>& vertex,
                             const Propagator<Q>& G,
                             double vmin, double vmax,
                             double v, int iK, int i_in, const bool all_spins) -> Q {
