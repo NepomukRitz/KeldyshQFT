@@ -374,7 +374,7 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
     double m_Wscale = SEtemp.frequencies.W_scale;
     double b_Wscale = SEtemp.frequencies.W_scale * 10;
     CostSE_Wscale<Q> cost(SEtemp, verbose);
-    minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose);
+    minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose, false, 1., 0.);
     frequencies_new.update_Wscale(m_Wscale);
 
     update_grid(frequencies_new);
@@ -387,10 +387,10 @@ template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_
     if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp[i] -= asymp_val_R;
     else for (int i = 0; i < Sigma.size(); i++) Sigma_temp[i] -= asymp_val_R;
 
-    vec<double> maxabsSE_along_w = maxabs(Sigma_temp, dims, 1);
-    double maxmax = maxabsSE_along_w.max_norm();
+    double maxmax = Sigma.max_norm();
+    vec<double> maxabsSE_along_w = maxabs(Sigma_temp, dims, 1) * (1/maxmax);
 
-    FrequencyGrid frequencies_new = freqGrid::shrink_freq_box(frequencies, rel_tail_threshold, maxabsSE_along_w, maxmax);
+    FrequencyGrid frequencies_new = freqGrid::shrink_freq_box(frequencies, rel_tail_threshold, maxabsSE_along_w);
 
     return frequencies_new;
 }
@@ -478,7 +478,7 @@ template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose
     double max_SE = (::power2(::partial_deriv<Q,3>(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1), frequencies.get_ts_vec(), dims, 1)*dt*dt*(1/maxmax))).max_norm();
 
     if (verbose) {
-        std::cout << "max. Curvature in selfenergy:" << std::endl;
+        std::cout << "max. Curvature in SE:";
         std::cout << "\t  \t" << max_SE << std::endl;
     }
 
