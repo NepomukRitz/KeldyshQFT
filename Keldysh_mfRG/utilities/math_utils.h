@@ -545,13 +545,13 @@ namespace { // hide the following to the outside world
 
             /// Compute derivative with Central finite difference
             for (int jt = (order-1)/2; jt < dimsum-(order-1)/2; jt++) {
-                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[(order-1)/2], -2, 2);
+                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[(order-1)/2], -(order-1)/2, (order-1)/2);
             }
 
             /// Compute boundary values: with non-central finite difference
             for (int jt = 0; jt < (order-1)/2; jt++) {
-                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[jt], -jt, 4-jt);
-                result[rotateFlatIndex(it*dimsum + dimsum - 1 - jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, dimsum-1-jt, no_is[order-1-jt], -4+jt, jt);
+                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[jt], -jt, order-1-jt);
+                result[rotateFlatIndex(it*dimsum + dimsum - 1 - jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, dimsum-1-jt, no_is[order-1-jt], -order+1+jt, jt);
             }
 
             /*

@@ -192,7 +192,7 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
         std::array<size_t,rank>  dims_temp = {1, 3, 5, 7};
         vec<double> dlinvals = ::get_finite_differences(linvals, xs, dims_temp, permutation);
         vec<double> dlinvals2 = ::get_finite_differences_v2(linvals, xs, dims_temp, permutation);
-        vec<double> dlinvals3= ::partial_deriv(linvals, xs, dims, 2);
+        vec<double> dlinvals3= ::partial_deriv(linvals, xs, dims, 2, 3);
 
 
         int errorcount = 0;
