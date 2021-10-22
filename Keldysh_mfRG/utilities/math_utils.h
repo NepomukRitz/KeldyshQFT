@@ -593,7 +593,7 @@ vec<T> partial_deriv(const vec<T>& data, const  vec<double>& xs, const std::arra
     for (size_t i = 0; i <= i_dim; i++) permutation[i] = i + rank - i_dim - 1;
     for (size_t i = i_dim+1; i < rank; i++) permutation[i] = i - i_dim - 1;
 
-    return get_finite_differences_v2<T,rank>(data, xs, dims_permuted, permutation);
+    return get_finite_differences_v3<T,rank>(data, xs, dims_permuted, permutation, order);
 }
 
 

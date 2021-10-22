@@ -183,7 +183,7 @@ public:
     auto K1_gridtransf_inv(double w) const -> double;
 
     /// Compute derivative in w-direction using a finite-differences method
-    vec<Q> get_deriv_K1_x() const;
+    vec<Q> get_deriv_K1_x(int order=5) const;
     /// Compute the maximum norm of the gradient
     double get_deriv_maxK1() const;
     /// Compute the maximum norm of the curvature
@@ -250,11 +250,11 @@ public:
     auto K2_get_correction_MFfiniteT(int iw) const -> double;
 
 
-    vec<Q> get_deriv_K2_x () const;
-    vec<Q> get_deriv_K2_y () const;
-    vec<Q> get_deriv_K2_xy() const;
-    vec<Q> get_deriv_K2_xx() const;
-    vec<Q> get_deriv_K2_yy() const;
+    vec<Q> get_deriv_K2_x (int order=5) const;
+    vec<Q> get_deriv_K2_y (int order=5) const;
+    vec<Q> get_deriv_K2_xy(int order=5) const;
+    vec<Q> get_deriv_K2_xx(int order=5) const;
+    vec<Q> get_deriv_K2_yy(int order=5) const;
     double get_deriv_maxK2() const;
     auto get_curvature_maxK2() const -> double;
 
@@ -311,16 +311,16 @@ public:
     auto K3_get_correction_MFfiniteT(int iw) const -> double;
 
 
-    vec<Q> get_deriv_K3_x  () const;
-    vec<Q> get_deriv_K3_y  () const;
-    vec<Q> get_deriv_K3_z  () const;
-    vec<Q> get_deriv_K3_xy () const;
-    vec<Q> get_deriv_K3_xz () const;
-    vec<Q> get_deriv_K3_yz () const;
-    vec<Q> get_deriv_K3_xx () const;
-    vec<Q> get_deriv_K3_yy () const;
-    vec<Q> get_deriv_K3_zz () const;
-    vec<Q> get_deriv_K3_xyz() const;
+    vec<Q> get_deriv_K3_x  (int order=5) const;
+    vec<Q> get_deriv_K3_y  (int order=5) const;
+    vec<Q> get_deriv_K3_z  (int order=5) const;
+    vec<Q> get_deriv_K3_xy (int order=5) const;
+    vec<Q> get_deriv_K3_xz (int order=5) const;
+    vec<Q> get_deriv_K3_yz (int order=5) const;
+    vec<Q> get_deriv_K3_xx (int order=5) const;
+    vec<Q> get_deriv_K3_yy (int order=5) const;
+    vec<Q> get_deriv_K3_zz (int order=5) const;
+    vec<Q> get_deriv_K3_xyz(int order=5) const;
     double get_deriv_maxK3() const;
     auto get_curvature_maxK3() const -> double;
     double analyze_tails_K3_x() const;
@@ -398,15 +398,15 @@ auto vertexDataContainer<k1,Q>::K1_gridtransf_inv(double w) const -> double {
 }
 
 
-template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x() const -> vec<Q> {
-    vec<Q> result = ::partial_deriv<Q,3>(vertexContainerBase<Q,3>::data, frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1);
+template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x(const int order) const -> vec<Q> {
+    vec<Q> result = ::partial_deriv<Q,3>(vertexContainerBase<Q,3>::data, frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_maxK1() const -> double {
     int order = 3;
     double dt = K1_get_freqGrid().dt;
     double Kmax = vertexContainerBase<Q,3>::get_vec().max_norm();
-    double max_K1 = ::power2(::partial_deriv<Q,3>(vertexContainerBase<Q,3>::data, frequencies_K1.b.ts, vertexContainerBase<Q,3>::dims, 1, order)*dt*(1/Kmax)).max_norm();  // normalize by magnitude of vertex contribution and grid spacing
+    double max_K1 = ::power2(get_deriv_K1_x(order)*dt*(1/Kmax)).max_norm();  // normalize by magnitude of vertex contribution and grid spacing
     return max_K1;
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_curvature_maxK1() const -> double {
@@ -528,45 +528,49 @@ void vertexDataContainer<k2,Q>::K2_convert2naturalFreqs(double &w, double &v) co
     //v = v_tmp;
 }
 
-template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_x() const -> vec<Q> {
-    vec<Q> result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.b.ts, vertexContainerBase<Q,4>::dims, 1);
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_x(const int order) const -> vec<Q> {
+    vec<Q> result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.b.ts, vertexContainerBase<Q,4>::dims, 1, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_y() const -> vec<Q> {
-    vec<Q> result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, vertexContainerBase<Q,4>::dims, 2);
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_y(const int order) const -> vec<Q> {
+    vec<Q> result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, vertexContainerBase<Q,4>::dims, 2, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_xy() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, vertexContainerBase<Q,4>::dims, 2);
-    vec<Q> result       = ::partial_deriv<Q,4>(inter_result, frequencies_K2.b.ts, vertexContainerBase<Q,4>::dims, 1);
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_xy(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, vertexContainerBase<Q,4>::dims, 2, order);
+    vec<Q> result       = ::partial_deriv<Q,4>(inter_result, frequencies_K2.b.ts, vertexContainerBase<Q,4>::dims, 1, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_xx() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.b.ts, vertexContainerBase<Q,4>::dims, 1);
-    vec<Q> result       = ::partial_deriv<Q,4>(inter_result, frequencies_K2.b.ts, vertexContainerBase<Q,4>::dims, 1);
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_xx(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.b.ts, vertexContainerBase<Q,4>::dims, 1, order);
+    vec<Q> result       = ::partial_deriv<Q,4>(inter_result, frequencies_K2.b.ts, vertexContainerBase<Q,4>::dims, 1, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_yy() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, vertexContainerBase<Q,4>::dims, 2);
-    vec<Q> result       = ::partial_deriv<Q,4>(inter_result, frequencies_K2.f.ts, vertexContainerBase<Q,4>::dims, 2);
+template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_yy(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,4>(vertexContainerBase<Q,4>::data, frequencies_K2.f.ts, vertexContainerBase<Q,4>::dims, 2, order);
+    vec<Q> result       = ::partial_deriv<Q,4>(inter_result, frequencies_K2.f.ts, vertexContainerBase<Q,4>::dims, 2, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_maxK2() const -> double {
+    const int order = 3;
+
     double Kmax = vertexContainerBase<Q,4>::get_vec().max_norm();
     double dtb = K2_get_freqGrid_b().dt;
     double dtf = K2_get_freqGrid_f().dt;
-    double max_K2 = (     ::power2(get_deriv_K2_x()*dtb*(1/Kmax)) // multiply by dt to make the result independent of the grid spacing
-                        + ::power2(get_deriv_K2_y()*dtf*(1/Kmax))
+    double max_K2 = (     ::power2(get_deriv_K2_x(order)*dtb*(1/Kmax)) // multiply by dt to make the result independent of the grid spacing
+                        + ::power2(get_deriv_K2_y(order)*dtf*(1/Kmax))
                     ).max_norm();
     return max_K2;
 }
 template <typename Q> auto vertexDataContainer<k2,Q>::get_curvature_maxK2() const -> double {
+    const int order = 3;
+
     double Kmax = vertexContainerBase<Q,4>::get_vec().max_norm();
     double dtb = K2_get_freqGrid_b().dt;
     double dtf = K2_get_freqGrid_f().dt;
-    double max_K1 = (    ::power2( get_deriv_K2_xx()*dtb*dtb*(1/Kmax))
-                        +::power2( get_deriv_K2_yy()*dtf*dtf*(1/Kmax))
-                        +::power2( get_deriv_K2_xy()*dtb*dtf*(1/Kmax)*2)
+    double max_K1 = (    ::power2( get_deriv_K2_xx(order)*dtb*dtb*(1/Kmax))
+                        +::power2( get_deriv_K2_yy(order)*dtf*dtf*(1/Kmax))
+                        +::power2( get_deriv_K2_xy(order)*dtb*dtf*(1/Kmax))*2
                     ).max_norm();
     return max_K1;
 }
@@ -681,75 +685,79 @@ auto vertexDataContainer<k3,Q>::K3_get_correction_MFfiniteT(int iw) const -> dou
 }
 
 
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_x() const -> vec<Q> {
-    vec<Q> result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_x(const int order) const -> vec<Q> {
+    vec<Q> result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_y() const -> vec<Q> {
-    vec<Q> result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_y(const int order) const -> vec<Q> {
+    vec<Q> result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_z() const -> vec<Q> {
-    vec<Q> result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_z(const int order) const -> vec<Q> {
+    vec<Q> result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xy() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2);
-    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xy(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2, order);
+    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xz() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3);
-    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xz(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3, order);
+    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_yz() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2);
-    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_yz(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2, order);
+    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xx() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1);
-    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xx(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1, order);
+    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_yy() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2);
-    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_yy(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2, order);
+    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_zz() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3);
-    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_zz(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3, order);
+    vec<Q> result       = ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3, order);
     return result;
 }
-template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xyz() const -> vec<Q> {
-    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3);
-    vec<Q> inter_result2= ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2);
-    vec<Q> result       = ::partial_deriv<Q,5>(inter_result2, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1);
+template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xyz(const int order) const -> vec<Q> {
+    vec<Q> inter_result = ::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3, order);
+    vec<Q> inter_result2= ::partial_deriv<Q,5>(inter_result, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2, order);
+    vec<Q> result       = ::partial_deriv<Q,5>(inter_result2, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1, order);
     return result;
 }
 
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_maxK3() const -> double {
+    const int order = 3;
+
     double Kmax = vertexContainerBase<Q,5>::get_vec().max_norm();
     double dtb = K3_get_freqGrid_b().dt;
     double dtf = K3_get_freqGrid_f().dt;
-    double max_K3 = (::power2(::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 3) * dtf * (1/Kmax))
-                   + ::power2(::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.f.ts, vertexContainerBase<Q,5>::dims, 2) * dtf * (1/Kmax))
-                   + ::power2(::partial_deriv<Q,5>(vertexContainerBase<Q,5>::data, frequencies_K3.b.ts, vertexContainerBase<Q,5>::dims, 1) * dtb * (1/Kmax))
+    double max_K3 = (::power2(get_deriv_K3_z(order) * dtf * (1/Kmax))
+                   + ::power2(get_deriv_K3_y(order) * dtf * (1/Kmax))
+                   + ::power2(get_deriv_K3_x(order) * dtb * (1/Kmax))
     ).max_norm();
     return max_K3;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_curvature_maxK3() const -> double {
+    const int order = 3;
+
     double Kmax = vertexContainerBase<Q,5>::get_vec().max_norm();
     double dtb = K3_get_freqGrid_b().dt;
     double dtf = K3_get_freqGrid_f().dt;
-    double max_K3 = (   ::power2(get_deriv_K3_xx()*dtb*dtb*(1/Kmax))
-                      + ::power2(get_deriv_K3_yy()*dtf*dtf*(1/Kmax))
-                      + ::power2(get_deriv_K3_zz()*dtf*dtf*(1/Kmax))
-                      + ::power2(get_deriv_K3_xy()*dtb*dtf*(1/Kmax))
-                      + ::power2(get_deriv_K3_xz()*dtb*dtf*(1/Kmax))
-                      + ::power2(get_deriv_K3_yz()*dtf*dtf*(1/Kmax))
+    double max_K3 = (   ::power2(get_deriv_K3_xx(order)*dtb*dtb*(1/Kmax))
+                      + ::power2(get_deriv_K3_yy(order)*dtf*dtf*(1/Kmax))
+                      + ::power2(get_deriv_K3_zz(order)*dtf*dtf*(1/Kmax))
+                      +(::power2(get_deriv_K3_xy(order)*dtb*dtf*(1/Kmax))
+                      + ::power2(get_deriv_K3_xz(order)*dtb*dtf*(1/Kmax))
+                      + ::power2(get_deriv_K3_yz(order)*dtf*dtf*(1/Kmax))*2)
                     ).max_norm();
     return max_K3;
 }

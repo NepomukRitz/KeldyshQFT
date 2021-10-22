@@ -1387,6 +1387,7 @@ template<typename Q> auto fullvert<Q>::get_curvature_max_K3(const bool verbose) 
 }
 
 template <typename Q> void fullvert<Q>:: check_vertex_resolution() const {
+    if (mpi_world_rank() == 0) {std::cout << "--> Check vertex resolution: " << std::endl;}
     double derivmax_K1 = get_deriv_max_K1(true);
     if (MAX_DIAG_CLASS>1) double derivmax_K2 = get_deriv_max_K2(true);
     if (MAX_DIAG_CLASS>2) double derivmax_K3 = get_deriv_max_K3(true);

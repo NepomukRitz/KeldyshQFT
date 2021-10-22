@@ -41,14 +41,15 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
         costb = cost(b);
         costm = cost(m);
         if (costa > costm and costb > costm) break;
-        if (costa < costm) {
+        if (costa < costm) {    // if left interval bound gives smaller cost than m, shift the interval to the left (shrinking parameter range)
             b = m; m = a; a /= 2.;
-            print("down");
+            //print("shrink", true);
         }
-        else if (costb < costm) {
+        else if (costb < costm) {    // if right interval bound gives smaller cost than m, shift the interval to the right (growing parameter range)
             a = m; m = b; b *= 2.;
-            print("up");
+            //print("grow", true);
         }
+        // if both left and right interval bounds give smaller cost than m, prefer shift to the left (shrinking parameter range)
     }
 
     F.function = &costval<CostFunction>;
