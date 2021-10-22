@@ -5,6 +5,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_min.h>
+#include <gsl/gsl_multimin.h>
+#include "../utilities/mpi_setup.h"
 
 /* compute real part of integrand (for GSL/PAID) */
 template <typename CostFunction>
@@ -13,9 +15,19 @@ auto costval(double x, void* params) -> double {
     double costval = cost(x);
     return costval;
 }
+template <typename CostFunction>
+auto costval_nD(const gsl_vector *v, void* params) -> double {
+    CostFunction cost = *(CostFunction*) params;
+    size_t size = v->size;
+    //std::vector<double> input(size);
+    //for (size_t i = 0; i < v->size; i++) input[i] = gsl_vector_get(v, i);
+    std::vector<double> input(v->data, v->data + size);
+    double costval = cost(input);
+    return costval;
+}
 
 /**
- * Wrapper for GSl minimizer
+ * Wrapper for GSl minimizer (minimization in 1D)
  * @param a             left bound of interval
  * @param m             initial guess of parameter
  * @param b             right bound of interval
@@ -23,7 +35,8 @@ auto costval(double x, void* params) -> double {
  * @param max_iter      maximal number iterations
  */
 template<typename CostFunction>
-void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_iter = 10, const bool verbose = false, const bool superverbose=false, double epsabs=0.0, double epsrel=0.01)
+void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_iter = 10, const bool verbose = false,
+                const bool superverbose=false, double epsabs=0.0, double epsrel=0.01)
 {
     if (verbose and mpi_world_rank() == 0) std::cout << "-----   Starting minimizer   -----\n";
     int status;
@@ -102,6 +115,92 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
 
     //return status;
 }
+
+
+
+/*
+ * Wrapper for GSl minimizer (multi-dimensional minimization)
+ * @param cost:         multi-dimensional cost function, takes a vector
+ * @param start_param
+ * @param ini_stepsize
+ * @param max_iter
+ * @param verbose
+ * @param superverbose
+ * @param epsabs
+ * @param epsrel
+ */
+template<typename CostFunction>
+vec<double> minimizer_nD (CostFunction& cost, const vec<double>& start_params, const double ini_stepsize,
+                                  int max_iter = 100, const bool verbose = false, const bool superverbose=false,
+                                  double epsabs=0.1, double epsrel=0.01)
+{
+    if (verbose and mpi_world_rank() == 0) std::cout << "-----   Starting minimizer   -----\n";
+
+    const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2; // options: gsl_multimin_fminimizer_nmsimplex, gsl_multimin_fminimizer_nmsimplex2
+    gsl_multimin_fminimizer *s = NULL;
+    gsl_vector *ss, *x; // ss: stepsize, x: starting point
+    gsl_multimin_function minex_func;
+
+    int iter = 0;
+    int status;
+    double size;
+
+    size_t n_params = start_params.size();
+    /* Starting point */
+    x = gsl_vector_alloc (n_params);
+    for (size_t i = 0; i < n_params; i++) { gsl_vector_set (x, i, start_params[i]);}
+
+    /* Set initial step sizes to 1 */
+    ss = gsl_vector_alloc (n_params);
+    gsl_vector_set_all (ss, ini_stepsize);
+
+    /* Initialize method and iterate */
+    minex_func.n = n_params;   // number of optimization parameters
+    minex_func.f = &costval_nD<CostFunction>;
+    minex_func.params = &cost;
+
+    s = gsl_multimin_fminimizer_alloc (T, n_params);
+    gsl_multimin_fminimizer_set (s, &minex_func, x, ss);
+
+    do
+    {
+        iter++;
+        status = gsl_multimin_fminimizer_iterate(s);
+
+        if (status)
+            break;
+
+        size = gsl_multimin_fminimizer_size (s);
+        status = gsl_multimin_test_size (size, epsabs);
+
+        if (status == GSL_SUCCESS and verbose and mpi_world_rank() == 0)
+        {
+            printf ("converged to minimum at\n");
+        }
+
+        if (verbose and mpi_world_rank() == 0) {
+            // verbose output currently only for 2 parameters
+            printf ("%5d %10.3e %10.3e f() = %7.3f size = %.3f\n",
+                    iter,
+                    gsl_vector_get (s->x, 0),
+                    gsl_vector_get (s->x, 1),
+                    s->fval, size);
+        }
+    }
+    while (status == GSL_CONTINUE && iter < max_iter);
+
+    vec<double> result_params(n_params);
+    for (size_t i = 0; i < n_params; i++) {result_params[i] = gsl_vector_get (s->x, i);}
+
+
+    gsl_vector_free(x);
+    gsl_vector_free(ss);
+    gsl_multimin_fminimizer_free (s);
+
+    //return status;
+    return result_params;
+}
+
 
 
 #endif //FPP_MFRG_MINIMIZER_H
