@@ -15,7 +15,7 @@ constexpr bool MPI_FLAG = true;
 constexpr double inter_tol = 1e-8;
 
 enum interpolMethod {linear=0, linear_on_aux=1, sloppycubic=2, cubic=4};
-constexpr interpolMethod INTERPOLATION = cubic;
+constexpr interpolMethod INTERPOLATION = linear_on_aux;
 
 //Tolerance for loop convergence
 constexpr double converged_tol = 1e-7;
@@ -27,7 +27,7 @@ constexpr double converged_tol = 1e-7;
 // 3: adaptive Simpson
 // 4: GSL //
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
-constexpr int INTEGRATOR_TYPE = 4;
+constexpr int INTEGRATOR_TYPE = 5;
 
 //Integrator tolerance
 constexpr double integrator_tol = 1e-6;

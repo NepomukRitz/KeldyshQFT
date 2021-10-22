@@ -516,8 +516,9 @@ template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y
     add_hdf(filename, iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
     }
     //y_run.update_grid(x_run); // rescales grid with Delta or U
-    y_run.findBestFreqGrid(false);
+    y_run.findBestFreqGrid(true);
     y_run.analyze_tails();
+    y_run.vertex[0].half1().check_vertex_resolution();
     if (filename != "") {
         add_hdf(filename+"_postOpt", iteration + 1, x_vals.size(), y_run, x_vals); // save result to hdf5 file
     }

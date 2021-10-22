@@ -48,14 +48,14 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     int iteration=-1;
     int rkStep=-1;
     bool save_intermediate = false;
-    /*
+
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
          save_intermediate = true;
          makedir(dir_str);
     }
-    */
+
 
     // initialize empty state with frequency grids corresponding to those in Psi:
     State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
