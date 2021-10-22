@@ -368,7 +368,7 @@ namespace ode_solver_impl
     template <typename Y, typename FlowGrid, size_t stages>
     void rkqs(butcher_tableau<stages> tableau, Y &state_i, double &Lambda_i, double htry, double &hdid, double &hnext,
               double min_t_step, double max_t_step,
-              const std::vector<double> &lambda_checkpoints, Y rhs (const Y& y, const double x, const vec<size_t> opt), size_t iteration)
+              const std::vector<double> &lambda_checkpoints, Y rhs (const Y& y, const double x, const vec<size_t> opt), size_t iteration, const bool verbose)
     {
 
 
@@ -402,9 +402,9 @@ namespace ode_solver_impl
         for (;;)    // infinite loop
         {
             // === Evaluation ===
-            if (world_rank == 0)
+            if (verbose and world_rank == 0)
             {
-                std::cout << "Try stepsize " << t_step << " (from Lambda / J = " << Lambda_i
+                std::cout << "Try stepsize t " << t_step << " (from Lambda / J = " << Lambda_i
                           << " to " << FlowGrid::lambda_from_t(t_value + t_step)
                           << ")." << std::endl;
             };
@@ -429,7 +429,7 @@ namespace ode_solver_impl
             errmax /= epsODE; //std::max(errmax / epsODE, 0. // 0.1 * errmax_parquet
             //);
 
-            if (world_rank == 0)
+            if (verbose and world_rank == 0)
             {
                 std::cout << "errmax: " << errmax << std::endl;
                 if (std::abs(t_step) <= min_t_step)
@@ -450,7 +450,7 @@ namespace ode_solver_impl
 
             // === Resize t_step ===
 
-            if (world_rank == 0)
+            if (verbose and world_rank == 0)
             {
                 std::cout << "Stepsize too big. Readjust.." << std::endl;
             }
@@ -507,8 +507,8 @@ namespace ode_solver_impl
 
 
 template <typename Y>
-void postRKstep_stuff(Y& y, double x, vec<double> x_vals, int iteration, std::string filename) {}
-template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y_run, double x_run, vec<double> x_vals, int iteration, std::string filename) {
+void postRKstep_stuff(Y& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {}
+template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y_run, double x_run, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
 
     check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
     if (KELDYSH) check_FDTs(y_run); // check FDTs for Sigma and K1r at each step of the flow
@@ -551,7 +551,7 @@ template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y
  */
 template <typename Y, typename FlowGrid = flowgrid::sqrt_parametrization>
 void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, Y rhs (const Y& y, const double x, const vec<size_t> opt),
-                std::vector<double> lambda_checkpoints = {}, std::string filename = "", int iter_start=0, const int N_ODE=nODE) {
+                std::vector<double> lambda_checkpoints = {}, std::string filename = "", int iter_start=0, const int N_ODE=nODE, const bool verbose=true) {
     int world_rank = mpi_world_rank();
 
 
@@ -566,7 +566,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
 #elif ODEsolver == 3
     const auto tableau = ode_solver_impl::cash_carp;
 #endif
-    if (world_rank == 0) {
+    if (verbose and world_rank == 0) {
         const std::string message =
                 "\n-------------------------------------------------------------------------\n\tStarting ODE solver with method: " + tableau.name + " \n"
                +"-------------------------------------------------------------------------\n";
@@ -590,7 +590,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
 
     for (size_t i = iter_start; i < MAXSTP; i++)
     {
-        if (world_rank == 0)
+        if (verbose and world_rank == 0)
         {
             print("i: ", i, true);
             print("Lambda: ", Lambda, true);
@@ -604,7 +604,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
             // if remaining Lambda step is negligibly small
             if (std::abs(Lambda_f - Lambda) / Lambda_f < 1e-8)
             {
-                if (world_rank == 0)
+                if (verbose and world_rank == 0)
                 {
                     std::cout << "Final Lambda=Lambda_f reached. Program terminated." << std::endl;
                 };
@@ -617,17 +617,17 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
         };
         // fix step size for non-adaptive methods
         if (not tableau.adaptive) h = lambdas_try[i+1] - lambdas_try[i];
-        ode_solver_impl::rkqs<Y, FlowGrid>(tableau, result, Lambda, h, hdid, hnext, min_t_step, max_t_step, lambda_checkpoints, rhs, i);
+        ode_solver_impl::rkqs<Y, FlowGrid>(tableau, result, Lambda, h, hdid, hnext, min_t_step, max_t_step, lambda_checkpoints, rhs, i, verbose);
         // Pick h for next iteration
         if (tableau.adaptive) h = hnext;
 
-        get_time(t0); // measure time for one iteration
+        if (verbose and mpi_world_rank() == 0) get_time(t0); // measure time for one iteration
 
 
         lambdas[i] = Lambda;
 
         // if Y == State: save state in hdf5
-        postRKstep_stuff<Y>(result, Lambda, lambdas, i, filename);
+        postRKstep_stuff<Y>(result, Lambda, lambdas, i, filename, verbose);
 
 
 

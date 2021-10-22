@@ -8,8 +8,8 @@ double max_rel_err(double x, vec<double> scale, double tiny) {
 
 #include "../../ODE_solvers.h"
 
-template<> void postRKstep_stuff<double>(double& y, double x, vec<double> x_vals, int iteration, std::string filename) {
-    std::cout <<"Intermediate result of ODE solver: " << y << std::endl;
+template<> void postRKstep_stuff<double>(double& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
+    if (verbose) std::cout <<"Intermediate result of ODE solver: " << y << std::endl;
 }
 
 namespace {
@@ -38,7 +38,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
     double y_ini = 1.;
     double result;
-    ode_solver<double>(result, Lambda_f, y_ini, Lambda_i, rhs_quartic, lambda_checkpoints);
+    ode_solver<double>(result, Lambda_f, y_ini, Lambda_i, rhs_quartic, lambda_checkpoints, "", 0, nODE, false);
 
 
     double result_exact = 0.;
