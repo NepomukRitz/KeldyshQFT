@@ -56,12 +56,22 @@ const H5std_string	DATASET_K3_t("K3_t");
 
 const H5std_string	SELF_LIST("selflist");
 const H5std_string	LAMBDA_LIST("lambdas");
-const H5std_string  BFREQS_LIST ("bfreqs");
-const H5std_string  BFREQS2_LIST("bfreqs2");
-const H5std_string  BFREQS3_LIST("bfreqs3");
+const H5std_string  BFREQS_LISTa ("bfreqs_a");
+const H5std_string  BFREQS_LISTp ("bfreqs_p");
+const H5std_string  BFREQS_LISTt ("bfreqs_t");
+const H5std_string  BFREQS2_LISTa("bfreqs2_a");
+const H5std_string  BFREQS2_LISTp("bfreqs2_p");
+const H5std_string  BFREQS2_LISTt("bfreqs2_t");
+const H5std_string  BFREQS3_LISTa("bfreqs3_a");
+const H5std_string  BFREQS3_LISTp("bfreqs3_p");
+const H5std_string  BFREQS3_LISTt("bfreqs3_t");
 const H5std_string  FFREQS_LIST ("ffreqs");
-const H5std_string  FFREQS2_LIST("ffreqs2");
-const H5std_string  FFREQS3_LIST("ffreqs3");
+const H5std_string  FFREQS2_LISTa("ffreqs2_a");
+const H5std_string  FFREQS2_LISTp("ffreqs2_p");
+const H5std_string  FFREQS2_LISTt("ffreqs2_t");
+const H5std_string  FFREQS3_LISTa("ffreqs3_a");
+const H5std_string  FFREQS3_LISTp("ffreqs3_p");
+const H5std_string  FFREQS3_LISTt("ffreqs3_t");
 const H5std_string  FREQ_PARAMS("freq_params");
 const H5std_string  PARAM_LIST("parameters");
 const H5std_string  RE( "re" );
@@ -94,7 +104,9 @@ class Buffer {
 public:
     double * lambda;
     double * freq_params;
-    double * bfreqs_buffer;
+    double * bfreqsa_buffer;
+    double * bfreqsp_buffer;
+    double * bfreqst_buffer;
     double * ffreqs_buffer;
     const int self_dim = collapse_all(dimsSE, [](const size_t& a, const size_t& b) -> size_t {return a*b;});    // length of self-energy buffer
 #ifdef KELDYSH_FORMALISM
@@ -112,16 +124,24 @@ public:
     h5_comp * K1_class_t;
 #endif
 #if MAX_DIAG_CLASS >= 2
-    double * bfreqs2_buffer;
-    double * ffreqs2_buffer;
+    double * bfreqs2a_buffer;
+    double * ffreqs2a_buffer;
+    double * bfreqs2p_buffer;
+    double * ffreqs2p_buffer;
+    double * bfreqs2t_buffer;
+    double * ffreqs2t_buffer;
     const int K2_dim = collapse_all(dimsK2, [](const size_t& a, const size_t& b) -> size_t {return a*b;});               // length of K2 buffer
     h5_comp * K2_class_a;
     h5_comp * K2_class_p;
     h5_comp * K2_class_t;
 #endif
 #if MAX_DIAG_CLASS >= 3
-    double * bfreqs3_buffer;
-    double * ffreqs3_buffer;
+    double * bfreqs3a_buffer;
+    double * ffreqs3a_buffer;
+    double * bfreqs3p_buffer;
+    double * ffreqs3p_buffer;
+    double * bfreqs3t_buffer;
+    double * ffreqs3t_buffer;
     const int K3_dim = collapse_all(dimsK3, [](const size_t& a, const size_t& b) -> size_t {return a*b;});    // length of K3 buffer
     h5_comp * K3_class_a;
     h5_comp * K3_class_p;
@@ -131,7 +151,9 @@ public:
     Buffer() {
         lambda = new double [1];
         freq_params = new double[N_freq_params];
-        bfreqs_buffer = new double[nBOS+FREQ_PADDING*2];                        // create buffer for bosonic frequencies
+        bfreqsa_buffer = new double[nBOS+FREQ_PADDING*2];                        // create buffer for bosonic frequencies
+        bfreqsp_buffer = new double[nBOS+FREQ_PADDING*2];                        // create buffer for bosonic frequencies
+        bfreqst_buffer = new double[nBOS+FREQ_PADDING*2];                        // create buffer for bosonic frequencies
         ffreqs_buffer = new double[nFER+FREQ_PADDING*2];                        // create buffer for fermionic frequencies
         selfenergy = new h5_comp[self_dim];                           // create buffer for self-energy
         irreducible_class = new h5_comp[irred_dim];              // create buffer for irreducible vertex
@@ -141,15 +163,23 @@ public:
         K1_class_t = new h5_comp[K1_dim];                        // create buffer for K1_t
 #endif
 #if MAX_DIAG_CLASS >= 2
-        bfreqs2_buffer = new double[nBOS2+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K2
-        ffreqs2_buffer = new double[nFER2+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K2
+        bfreqs2a_buffer = new double[nBOS2+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K2
+        ffreqs2a_buffer = new double[nFER2+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K2
+        bfreqs2p_buffer = new double[nBOS2+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K2
+        ffreqs2p_buffer = new double[nFER2+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K2
+        bfreqs2t_buffer = new double[nBOS2+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K2
+        ffreqs2t_buffer = new double[nFER2+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K2
         K2_class_a = new h5_comp[K2_dim];                        // create buffer for K2_a
         K2_class_p = new h5_comp[K2_dim];                        // create buffer for K2_p
         K2_class_t = new h5_comp[K2_dim];                        // create buffer for K2_t
 #endif
 #if MAX_DIAG_CLASS >= 3
-        bfreqs3_buffer = new double[nBOS3+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K3
-        ffreqs3_buffer = new double[nFER3+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K3
+        bfreqs3a_buffer = new double[nBOS3+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K3
+        ffreqs3a_buffer = new double[nFER3+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K3
+        bfreqs3p_buffer = new double[nBOS3+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K3
+        ffreqs3p_buffer = new double[nFER3+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K3
+        bfreqs3t_buffer = new double[nBOS3+FREQ_PADDING*2];                      // create buffer for bosonic frequencies for K3
+        ffreqs3t_buffer = new double[nFER3+FREQ_PADDING*2];                      // create buffer for fermionic frequencies for K3
         K3_class_a = new h5_comp[K3_dim];                        // create buffer for K3_a
         K3_class_p = new h5_comp[K3_dim];                        // create buffer for K3_p
         K3_class_t = new h5_comp[K3_dim];                        // create buffer for K3_t
@@ -158,7 +188,9 @@ public:
 
     ~Buffer() {
         delete[] freq_params;
-        delete[] bfreqs_buffer;
+        delete[] bfreqsa_buffer;
+        delete[] bfreqsp_buffer;
+        delete[] bfreqst_buffer;
         delete[] ffreqs_buffer;
         delete[] selfenergy;
         delete[] irreducible_class;
@@ -168,15 +200,23 @@ public:
         delete[] K1_class_t;
 #endif
 #if MAX_DIAG_CLASS >= 2
-        delete[] bfreqs2_buffer;
-        delete[] ffreqs2_buffer;
+        delete[] bfreqs2a_buffer;
+        delete[] ffreqs2a_buffer;
+        delete[] bfreqs2p_buffer;
+        delete[] ffreqs2p_buffer;
+        delete[] bfreqs2t_buffer;
+        delete[] ffreqs2t_buffer;
         delete[] K2_class_a;
         delete[] K2_class_p;
         delete[] K2_class_t;
 #endif
 #if MAX_DIAG_CLASS >= 3
-        delete[] bfreqs3_buffer;
-        delete[] ffreqs3_buffer;
+        delete[] bfreqs3a_buffer;
+        delete[] ffreqs3a_buffer;
+        delete[] bfreqs3p_buffer;
+        delete[] ffreqs3p_buffer;
+        delete[] bfreqs3t_buffer;
+        delete[] ffreqs3t_buffer;
         delete[] K3_class_a;
         delete[] K3_class_p;
         delete[] K3_class_t;
@@ -207,7 +247,9 @@ template <typename Q>
         freq_params[30] = bfreqst.w_lower;
         freq_params[31] = bfreqst.W_scale;
 
-    convert_vec_to_type(bfreqsa.get_ws_vec(), bfreqs_buffer);
+    convert_vec_to_type(bfreqsa.get_ws_vec(), bfreqsa_buffer);
+    convert_vec_to_type(bfreqsp.get_ws_vec(), bfreqsp_buffer);
+    convert_vec_to_type(bfreqst.get_ws_vec(), bfreqst_buffer);
     convert_vec_to_type(ffreqs.get_ws_vec(), ffreqs_buffer);
         //for (int i=0; i<nBOS+FREQ_PADDING*2; ++i) {
         //    bfreqs_buffer[i] = bfreqs.ws[i];
@@ -273,8 +315,12 @@ template <typename Q>
     freq_params[46] = ffreqs2t.w_lower;
     freq_params[47] = ffreqs2t.W_scale;
 
-    convert_vec_to_type(bfreqs2a.get_ws_vec(), bfreqs2_buffer);
-    convert_vec_to_type(ffreqs2a.get_ws_vec(), ffreqs2_buffer);
+    convert_vec_to_type(bfreqs2a.get_ws_vec(), bfreqs2a_buffer);
+    convert_vec_to_type(ffreqs2a.get_ws_vec(), ffreqs2a_buffer);
+    convert_vec_to_type(bfreqs2p.get_ws_vec(), bfreqs2p_buffer);
+    convert_vec_to_type(ffreqs2p.get_ws_vec(), ffreqs2p_buffer);
+    convert_vec_to_type(bfreqs2t.get_ws_vec(), bfreqs2t_buffer);
+    convert_vec_to_type(ffreqs2t.get_ws_vec(), ffreqs2t_buffer);
         //for (int i=0; i<nBOS2+FREQ_PADDING*2; ++i) {
         //    bfreqs2_buffer[i] = bfreqs2.ws[i];
         //}
@@ -324,8 +370,12 @@ template <typename Q>
         freq_params[62] = ffreqs3t.w_lower;
         freq_params[63] = ffreqs3t.W_scale;
 
-    convert_vec_to_type(bfreqs3a.get_ws_vec(), bfreqs3_buffer);
-    convert_vec_to_type(ffreqs3a.get_ws_vec(), ffreqs3_buffer);
+    convert_vec_to_type(bfreqs3a.get_ws_vec(), bfreqs3a_buffer);
+    convert_vec_to_type(ffreqs3a.get_ws_vec(), ffreqs3a_buffer);
+    convert_vec_to_type(bfreqs3p.get_ws_vec(), bfreqs3p_buffer);
+    convert_vec_to_type(ffreqs3p.get_ws_vec(), ffreqs3p_buffer);
+    convert_vec_to_type(bfreqs3t.get_ws_vec(), bfreqs3t_buffer);
+    convert_vec_to_type(ffreqs3t.get_ws_vec(), ffreqs3t_buffer);
         //for (int i=0; i<nBOS3+FREQ_PADDING*2; ++i) {
         //    bfreqs3_buffer[i] = bfreqs3.ws[i];
         //}
@@ -441,32 +491,32 @@ public:
     // Data sets for new file: Pointers
     H5::DataSet *lambda_p, *self_p, *irred_p;
     H5::DataSet *freq_params_p;
-    H5::DataSet *bfreqs_p, *ffreqs_p, *params_p;
+    H5::DataSet *bfreqsa_p, *bfreqsp_p, *bfreqst_p, *ffreqs_p, *params_p;
 #if MAX_DIAG_CLASS >= 1
     H5::DataSet *K1_a_p, *K1_p_p, *K1_t_p;
 #endif
 #if MAX_DIAG_CLASS >= 2
-    H5::DataSet *bfreqs2_p, *ffreqs2_p;
+    H5::DataSet *bfreqs2a_p, *bfreqs2p_p, *bfreqs2t_p, *ffreqs2a_p, *ffreqs2p_p, *ffreqs2t_p;
     H5::DataSet *K2_a_p, *K2_p_p, *K2_t_p;
 #endif
 #if MAX_DIAG_CLASS >= 3
-    H5::DataSet *bfreqs3_p, *ffreqs3_p;
+    H5::DataSet *bfreqs3a_p, *bfreqs3p_p, *bfreqs3t_p, *ffreqs3a_p, *ffreqs3p_p, *ffreqs3t_p;
     H5::DataSet *K3_a_p, *K3_p_p, *K3_t_p;
 #endif
 
     // Data sets from existing file: Objects
     H5::DataSet lambda, self, irred;
     H5::DataSet freq_params;
-    H5::DataSet bfreqs_dataset, ffreqs_dataset;
+    H5::DataSet bfreqsa_dataset, bfreqsp_dataset, bfreqst_dataset, ffreqs_dataset;
 #if MAX_DIAG_CLASS >= 1
     H5::DataSet K1_a, K1_p, K1_t;
 #endif
 #if MAX_DIAG_CLASS >= 2
-    H5::DataSet bfreqs2_dataset, ffreqs2_dataset;
+    H5::DataSet bfreqs2a_dataset, bfreqs2p_dataset, bfreqs2t_dataset, ffreqs2a_dataset, ffreqs2p_dataset, ffreqs2t_dataset;
     H5::DataSet K2_a, K2_p, K2_t;
 #endif
 #if MAX_DIAG_CLASS >= 3
-    H5::DataSet bfreqs3_dataset, ffreqs3_dataset;
+    H5::DataSet bfreqs3a_dataset, bfreqs3p_dataset, bfreqs3t_dataset, ffreqs3a_dataset, ffreqs3p_dataset, ffreqs3t_dataset;
     H5::DataSet K3_a, K3_p, K3_t;
 #endif
 
@@ -485,7 +535,9 @@ public:
              H5::DataSpace& dataSpaces_selfenergy,
              H5::DataSpace& dataSpaces_irreducible,
              H5::DataSpace& dataSpaces_freq_params,
-             H5::DataSpace& dataSpaces_bfreqs,
+             H5::DataSpace& dataSpaces_bfreqsa,
+             H5::DataSpace& dataSpaces_bfreqsp,
+             H5::DataSpace& dataSpaces_bfreqst,
              H5::DataSpace& dataSpaces_ffreqs,
              H5::DataSpace& dataSpaces_params,
 #if MAX_DIAG_CLASS >= 1
@@ -494,15 +546,23 @@ public:
              H5::DataSpace& dataSpaces_K1_t,
 #endif
 #if MAX_DIAG_CLASS >= 2
-             H5::DataSpace& dataSpaces_bfreqs2,
-             H5::DataSpace& dataSpaces_ffreqs2,
+             H5::DataSpace& dataSpaces_bfreqs2a,
+             H5::DataSpace& dataSpaces_ffreqs2a,
+             H5::DataSpace& dataSpaces_bfreqs2p,
+             H5::DataSpace& dataSpaces_ffreqs2p,
+             H5::DataSpace& dataSpaces_bfreqs2t,
+             H5::DataSpace& dataSpaces_ffreqs2t,
              H5::DataSpace& dataSpaces_K2_a,
              H5::DataSpace& dataSpaces_K2_p,
              H5::DataSpace& dataSpaces_K2_t,
 #endif
 #if MAX_DIAG_CLASS >= 3
-             H5::DataSpace& dataSpaces_bfreqs3,
-             H5::DataSpace& dataSpaces_ffreqs3,
+             H5::DataSpace& dataSpaces_bfreqs3a,
+             H5::DataSpace& dataSpaces_ffreqs3a,
+             H5::DataSpace& dataSpaces_bfreqs3p,
+             H5::DataSpace& dataSpaces_ffreqs3p,
+             H5::DataSpace& dataSpaces_bfreqs3t,
+             H5::DataSpace& dataSpaces_ffreqs3t,
              H5::DataSpace& dataSpaces_K3_a,
              H5::DataSpace& dataSpaces_K3_p,
              H5::DataSpace& dataSpaces_K3_t,
@@ -516,8 +576,12 @@ public:
                     file->createDataSet(DATASET_irred, mtype_comp, dataSpaces_irreducible, plist_vert));
             freq_params_p = new H5::DataSet(
                     file->createDataSet(FREQ_PARAMS, H5::PredType::NATIVE_DOUBLE, dataSpaces_freq_params));
-            bfreqs_p = new H5::DataSet(
-                    file->createDataSet(BFREQS_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs));
+            bfreqsa_p = new H5::DataSet(
+                    file->createDataSet(BFREQS_LISTa, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqsa));
+            bfreqsp_p = new H5::DataSet(
+                    file->createDataSet(BFREQS_LISTp, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqsp));
+            bfreqst_p = new H5::DataSet(
+                    file->createDataSet(BFREQS_LISTt, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqst));
             ffreqs_p = new H5::DataSet(
                     file->createDataSet(FFREQS_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs));
             params_p = new H5::DataSet(
@@ -533,10 +597,18 @@ public:
 #endif
 #if MAX_DIAG_CLASS >= 2
             // Create the datasets in file:
-            bfreqs2_p = new H5::DataSet(
-                    file->createDataSet(BFREQS2_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs2));
-            ffreqs2_p = new H5::DataSet(
-                    file->createDataSet(FFREQS2_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs2));
+            bfreqs2a_p = new H5::DataSet(
+                    file->createDataSet(BFREQS2_LISTa, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs2a));
+            bfreqs2p_p = new H5::DataSet(
+                    file->createDataSet(BFREQS2_LISTp, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs2p));
+            bfreqs2t_p = new H5::DataSet(
+                    file->createDataSet(BFREQS2_LISTt, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs2t));
+            ffreqs2a_p = new H5::DataSet(
+                    file->createDataSet(FFREQS2_LISTa, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs2a));
+            ffreqs2p_p = new H5::DataSet(
+                    file->createDataSet(FFREQS2_LISTp, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs2p));
+            ffreqs2t_p = new H5::DataSet(
+                    file->createDataSet(FFREQS2_LISTt, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs2t));
             K2_a_p = new H5::DataSet(
                     file->createDataSet(DATASET_K2_a, mtype_comp, dataSpaces_K2_a, plist_vert));
             K2_p_p = new H5::DataSet(
@@ -546,10 +618,18 @@ public:
 #endif
 #if MAX_DIAG_CLASS >= 3
             // Create the datasets in file:
-            bfreqs3_p = new H5::DataSet(
-                    file->createDataSet(BFREQS3_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs3));
-            ffreqs3_p = new H5::DataSet(
-                    file->createDataSet(FFREQS3_LIST, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs3));
+            bfreqs3a_p = new H5::DataSet(
+                    file->createDataSet(BFREQS3_LISTa, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs3a));
+            bfreqs3p_p = new H5::DataSet(
+                    file->createDataSet(BFREQS3_LISTp, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs3p));
+            bfreqs3t_p = new H5::DataSet(
+                    file->createDataSet(BFREQS3_LISTt, H5::PredType::NATIVE_DOUBLE, dataSpaces_bfreqs3t));
+            ffreqs3a_p = new H5::DataSet(
+                    file->createDataSet(FFREQS3_LISTa, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs3a));
+            ffreqs3p_p = new H5::DataSet(
+                    file->createDataSet(FFREQS3_LISTp, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs3p));
+            ffreqs3t_p = new H5::DataSet(
+                    file->createDataSet(FFREQS3_LISTt, H5::PredType::NATIVE_DOUBLE, dataSpaces_ffreqs3t));
             K3_a_p = new H5::DataSet(
                     file->createDataSet(DATASET_K3_a, mtype_comp, dataSpaces_K3_a, plist_vert));
             K3_p_p = new H5::DataSet(
@@ -563,7 +643,9 @@ public:
             self = file->openDataSet("selflist");
             irred = file->openDataSet("irred");
             freq_params = file->openDataSet("freq_params");
-            bfreqs_dataset = file->openDataSet("bfreqs");
+            bfreqsa_dataset = file->openDataSet("bfreqs_a");
+            bfreqsp_dataset = file->openDataSet("bfreqs_p");
+            bfreqst_dataset = file->openDataSet("bfreqs_t");
             ffreqs_dataset = file->openDataSet("ffreqs");
 #if MAX_DIAG_CLASS >=1
             K1_a = file->openDataSet("K1_a");
@@ -571,15 +653,23 @@ public:
             K1_t = file->openDataSet("K1_t");
 #endif
 #if MAX_DIAG_CLASS >=2
-            bfreqs2_dataset = file->openDataSet("bfreqs2");
-            ffreqs2_dataset = file->openDataSet("ffreqs2");
+            bfreqs2a_dataset = file->openDataSet("bfreqs2_a");
+            ffreqs2a_dataset = file->openDataSet("ffreqs2_a");
+            bfreqs2p_dataset = file->openDataSet("bfreqs2_p");
+            ffreqs2p_dataset = file->openDataSet("ffreqs2_p");
+            bfreqs2t_dataset = file->openDataSet("bfreqs2_t");
+            ffreqs2t_dataset = file->openDataSet("ffreqs2_t");
             K2_a = file->openDataSet("K2_a");
             K2_p = file->openDataSet("K2_p");
             K2_t = file->openDataSet("K2_t");
 #endif
 #if MAX_DIAG_CLASS >=3
-            bfreqs3_dataset = file->openDataSet("bfreqs3");
-            ffreqs3_dataset = file->openDataSet("ffreqs3");
+            bfreqs3a_dataset = file->openDataSet("bfreqs3_a");
+            ffreqs3a_dataset = file->openDataSet("ffreqs3_a");
+            bfreqs3p_dataset = file->openDataSet("bfreqs3_p");
+            ffreqs3p_dataset = file->openDataSet("ffreqs3_p");
+            bfreqs3t_dataset = file->openDataSet("bfreqs3_t");
+            ffreqs3t_dataset = file->openDataSet("ffreqs3_t");
             K3_a = file->openDataSet("K3_a");
             K3_p = file->openDataSet("K3_p");
             K3_t = file->openDataSet("K3_t");
@@ -600,7 +690,9 @@ public:
         catch (H5::FileIException error) {
             error.printErrorStack();
         }
-        bfreqs_dataset = file->openDataSet("bfreqs");
+        bfreqsa_dataset = file->openDataSet("bfreqs_a");
+        bfreqsp_dataset = file->openDataSet("bfreqs_p");
+        bfreqst_dataset = file->openDataSet("bfreqs_t");
         ffreqs_dataset = file->openDataSet("ffreqs");
 #if MAX_DIAG_CLASS >=1
         K1_a = file->openDataSet("K1_a");
@@ -608,15 +700,23 @@ public:
         K1_t = file->openDataSet("K1_t");
 #endif
 #if MAX_DIAG_CLASS >=2
-        bfreqs2_dataset = file->openDataSet("bfreqs2");
-        ffreqs2_dataset = file->openDataSet("ffreqs2");
+        bfreqs2a_dataset = file->openDataSet("bfreqs2_a");
+        ffreqs2a_dataset = file->openDataSet("ffreqs2_a");
+        bfreqs2p_dataset = file->openDataSet("bfreqs2_p");
+        ffreqs2p_dataset = file->openDataSet("ffreqs2_p");
+        bfreqs2t_dataset = file->openDataSet("bfreqs2_t");
+        ffreqs2t_dataset = file->openDataSet("ffreqs2_t");
         K2_a = file->openDataSet("K2_a");
         K2_p = file->openDataSet("K2_p");
         K2_t = file->openDataSet("K2_t");
 #endif
 #if MAX_DIAG_CLASS >=3
-        bfreqs3_dataset = file->openDataSet("bfreqs3");
-        ffreqs3_dataset = file->openDataSet("ffreqs3");
+        bfreqs3a_dataset = file->openDataSet("bfreqs3_a");
+        ffreqs3a_dataset = file->openDataSet("ffreqs3_a");
+        bfreqs3p_dataset = file->openDataSet("bfreqs3_p");
+        ffreqs3p_dataset = file->openDataSet("ffreqs3_p");
+        bfreqs3t_dataset = file->openDataSet("bfreqs3_t");
+        ffreqs3t_dataset = file->openDataSet("ffreqs3_t");
         K3_a = file->openDataSet("K3_a");
         K3_p = file->openDataSet("K3_p");
         K3_t = file->openDataSet("K3_t");
@@ -629,7 +729,9 @@ public:
         if (!file_exists) {
             lambda_p -> close();
             freq_params_p -> close();
-            bfreqs_p -> close();
+            bfreqsa_p -> close();
+            bfreqsp_p -> close();
+            bfreqst_p -> close();
             ffreqs_p -> close();
             params_p -> close();
             irred_p  -> close();
@@ -641,15 +743,23 @@ public:
             K1_t_p -> close();
 #endif
 #if MAX_DIAG_CLASS >= 2
-            bfreqs2_p -> close();
-            ffreqs2_p -> close();
+            bfreqs2a_p -> close();
+            ffreqs2a_p -> close();
+            bfreqs2p_p -> close();
+            ffreqs2p_p -> close();
+            bfreqs2t_p -> close();
+            ffreqs2t_p -> close();
             K2_a_p -> close();
             K2_p_p -> close();
             K2_t_p -> close();
 #endif
 #if MAX_DIAG_CLASS >= 3
-            bfreqs3_p -> close();
-            ffreqs3_p -> close();
+            bfreqs3a_p -> close();
+            ffreqs3a_p -> close();
+            bfreqs3p_p -> close();
+            ffreqs3p_p -> close();
+            bfreqs3t_p -> close();
+            ffreqs3t_p -> close();
             K3_a_p -> close();
             K3_p_p -> close();
             K3_t_p -> close();
@@ -659,7 +769,9 @@ public:
             self.close();
             irred.close();
             freq_params.close();
-            bfreqs_dataset.close();
+            bfreqsa_dataset.close();
+            bfreqsp_dataset.close();
+            bfreqst_dataset.close();
             ffreqs_dataset.close();
 
 #if MAX_DIAG_CLASS >=1
@@ -668,15 +780,23 @@ public:
             K1_t.close();
 #endif
 #if MAX_DIAG_CLASS >=2
-            bfreqs2_dataset.close();
-            ffreqs2_dataset.close();
+            bfreqs2a_dataset.close();
+            ffreqs2a_dataset.close();
+            bfreqs2p_dataset.close();
+            ffreqs2p_dataset.close();
+            bfreqs2t_dataset.close();
+            ffreqs2t_dataset.close();
             K2_a.close();
             K2_p.close();
             K2_t.close();
 #endif
 #if MAX_DIAG_CLASS >=3
-            bfreqs3_dataset.close();
-            ffreqs3_dataset.close();
+            bfreqs3a_dataset.close();
+            ffreqs3a_dataset.close();
+            bfreqs3p_dataset.close();
+            ffreqs3p_dataset.close();
+            bfreqs3t_dataset.close();
+            ffreqs3t_dataset.close();
             K3_a.close();
             K3_p.close();
             K3_t.close();
@@ -729,14 +849,18 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         // Create the data spaces for the data sets in file and for buffer objects
         H5::DataSpace dataSpaces_Lambda(1, dims.Lambda);
         H5::DataSpace dataSpaces_freq_params(RANK_freqs, dims.freq_params_dims);
-        H5::DataSpace dataSpaces_bfreqs(RANK_freqs, dims.bfreqs_dims);
+        H5::DataSpace dataSpaces_bfreqsa(RANK_freqs, dims.bfreqs_dims);
+        H5::DataSpace dataSpaces_bfreqsp(RANK_freqs, dims.bfreqs_dims);
+        H5::DataSpace dataSpaces_bfreqst(RANK_freqs, dims.bfreqs_dims);
         H5::DataSpace dataSpaces_ffreqs(RANK_freqs, dims.ffreqs_dims);
         H5::DataSpace dataSpaces_params(1, dims.params);
         H5::DataSpace dataSpaces_selfenergy(RANK_self, dims.selfenergy);
         H5::DataSpace dataSpaces_irreducible(RANK_irreducible, dims.irreducible);
 
         H5::DataSpace dataSpaces_freq_params_buffer(RANK_freqs-1, dims.freq_params_buffer_dims);
-        H5::DataSpace dataSpaces_bfreqs_buffer(RANK_freqs-1, dims.bfreqs_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqsa_buffer(RANK_freqs-1, dims.bfreqs_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqsp_buffer(RANK_freqs-1, dims.bfreqs_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqst_buffer(RANK_freqs-1, dims.bfreqs_buffer_dims);
         H5::DataSpace dataSpaces_ffreqs_buffer(RANK_freqs-1, dims.ffreqs_buffer_dims);
         H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
         H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
@@ -751,11 +875,19 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K1_t_buffer(RANK_K1-1, dims.K1_buffer);
 #endif
 #if MAX_DIAG_CLASS >= 2
-        H5::DataSpace dataSpaces_bfreqs2(RANK_freqs, dims.bfreqs2_dims);
-        H5::DataSpace dataSpaces_ffreqs2(RANK_freqs, dims.ffreqs2_dims);
+        H5::DataSpace dataSpaces_bfreqs2a(RANK_freqs, dims.bfreqs2_dims);
+        H5::DataSpace dataSpaces_ffreqs2a(RANK_freqs, dims.ffreqs2_dims);
+        H5::DataSpace dataSpaces_bfreqs2p(RANK_freqs, dims.bfreqs2_dims);
+        H5::DataSpace dataSpaces_ffreqs2p(RANK_freqs, dims.ffreqs2_dims);
+        H5::DataSpace dataSpaces_bfreqs2t(RANK_freqs, dims.bfreqs2_dims);
+        H5::DataSpace dataSpaces_ffreqs2t(RANK_freqs, dims.ffreqs2_dims);
 
-        H5::DataSpace dataSpaces_bfreqs2_buffer(RANK_freqs-1, dims.bfreqs2_buffer_dims);
-        H5::DataSpace dataSpaces_ffreqs2_buffer(RANK_freqs-1, dims.ffreqs2_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqs2a_buffer(RANK_freqs-1, dims.bfreqs2_buffer_dims);
+        H5::DataSpace dataSpaces_ffreqs2a_buffer(RANK_freqs-1, dims.ffreqs2_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqs2p_buffer(RANK_freqs-1, dims.bfreqs2_buffer_dims);
+        H5::DataSpace dataSpaces_ffreqs2p_buffer(RANK_freqs-1, dims.ffreqs2_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqs2t_buffer(RANK_freqs-1, dims.bfreqs2_buffer_dims);
+        H5::DataSpace dataSpaces_ffreqs2t_buffer(RANK_freqs-1, dims.ffreqs2_buffer_dims);
 
         H5::DataSpace dataSpaces_K2_a(RANK_K2, dims.K2);
         H5::DataSpace dataSpaces_K2_p(RANK_K2, dims.K2);
@@ -766,11 +898,19 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_K2_t_buffer(RANK_K2-1, dims.K2_buffer);
 #endif
 #if MAX_DIAG_CLASS >= 3
-        H5::DataSpace dataSpaces_bfreqs3(RANK_freqs, dims.bfreqs3_dims);
-        H5::DataSpace dataSpaces_ffreqs3(RANK_freqs, dims.ffreqs3_dims);
+        H5::DataSpace dataSpaces_bfreqs3a(RANK_freqs, dims.bfreqs3_dims);
+        H5::DataSpace dataSpaces_ffreqs3a(RANK_freqs, dims.ffreqs3_dims);
+        H5::DataSpace dataSpaces_bfreqs3p(RANK_freqs, dims.bfreqs3_dims);
+        H5::DataSpace dataSpaces_ffreqs3p(RANK_freqs, dims.ffreqs3_dims);
+        H5::DataSpace dataSpaces_bfreqs3t(RANK_freqs, dims.bfreqs3_dims);
+        H5::DataSpace dataSpaces_ffreqs3t(RANK_freqs, dims.ffreqs3_dims);
 
-        H5::DataSpace dataSpaces_bfreqs3_buffer(RANK_freqs-1, dims.bfreqs3_buffer_dims);
-        H5::DataSpace dataSpaces_ffreqs3_buffer(RANK_freqs-1, dims.ffreqs3_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqs3abuffer(RANK_freqs-1, dims.bfreqs3_buffer_dims);
+        H5::DataSpace dataSpaces_ffreqs3abuffer(RANK_freqs-1, dims.ffreqs3_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqs3p_buffer(RANK_freqs-1, dims.bfreqs3_buffer_dims);
+        H5::DataSpace dataSpaces_ffreqs3p_buffer(RANK_freqs-1, dims.ffreqs3_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqs3t_buffer(RANK_freqs-1, dims.bfreqs3_buffer_dims);
+        H5::DataSpace dataSpaces_ffreqs3t_buffer(RANK_freqs-1, dims.ffreqs3_buffer_dims);
 
         H5::DataSpace dataSpaces_K3_a(RANK_K3, dims.K3);
         H5::DataSpace dataSpaces_K3_p(RANK_K3, dims.K3);
@@ -792,16 +932,20 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         DataSets dataSets(file, file_exists,
                           dataSpaces_Lambda, dataSpaces_selfenergy, dataSpaces_irreducible,
                           dataSpaces_freq_params,
-                          dataSpaces_bfreqs, dataSpaces_ffreqs, dataSpaces_params,
+                          dataSpaces_bfreqsp, dataSpaces_bfreqsp, dataSpaces_bfreqst, dataSpaces_ffreqs, dataSpaces_params,
 #if MAX_DIAG_CLASS >= 1
                           dataSpaces_K1_a, dataSpaces_K1_p, dataSpaces_K1_t,
 #endif
 #if MAX_DIAG_CLASS >= 2
-                          dataSpaces_bfreqs2, dataSpaces_ffreqs2,
+                          dataSpaces_bfreqs2a, dataSpaces_ffreqs2a,
+                          dataSpaces_bfreqs2p, dataSpaces_ffreqs2p,
+                          dataSpaces_bfreqs2t, dataSpaces_ffreqs2t,
                           dataSpaces_K2_a, dataSpaces_K2_p, dataSpaces_K2_t,
 #endif
 #if MAX_DIAG_CLASS >= 3
-                          dataSpaces_bfreqs3, dataSpaces_ffreqs3,
+                          dataSpaces_bfreqs3a, dataSpaces_ffreqs3a,
+                          dataSpaces_bfreqs3p, dataSpaces_ffreqs3p,
+                          dataSpaces_bfreqs3t, dataSpaces_ffreqs3t,
                           dataSpaces_K3_a, dataSpaces_K3_p, dataSpaces_K3_t,
 #endif
                           mtype_comp, plist_vert);
@@ -837,14 +981,32 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
             dataSets.freq_params.write(buffer.freq_params, H5::PredType::NATIVE_DOUBLE,
                                        dataSpaces_freq_params_buffer, dataSpaces_freq_params);
 
+
         count[1] = nBOS+FREQ_PADDING*2;
-        dataSpaces_bfreqs.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_bfreqsa.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
-            dataSets.bfreqs_p -> write(buffer.bfreqs_buffer, H5::PredType::NATIVE_DOUBLE,
-                                       dataSpaces_bfreqs_buffer, dataSpaces_bfreqs);
+            dataSets.bfreqsa_p -> write(buffer.bfreqsa_buffer, H5::PredType::NATIVE_DOUBLE,
+                                       dataSpaces_bfreqsa_buffer, dataSpaces_bfreqsa);
         else
-            dataSets.bfreqs_dataset.write(buffer.bfreqs_buffer, H5::PredType::NATIVE_DOUBLE,
-                                          dataSpaces_bfreqs_buffer, dataSpaces_bfreqs);
+            dataSets.bfreqsa_dataset.write(buffer.bfreqsa_buffer, H5::PredType::NATIVE_DOUBLE,
+                                          dataSpaces_bfreqsa_buffer, dataSpaces_bfreqsa);
+
+        dataSpaces_bfreqsp.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.bfreqsp_p -> write(buffer.bfreqsp_buffer, H5::PredType::NATIVE_DOUBLE,
+                                       dataSpaces_bfreqsp_buffer, dataSpaces_bfreqsp);
+        else
+            dataSets.bfreqsp_dataset.write(buffer.bfreqsp_buffer, H5::PredType::NATIVE_DOUBLE,
+                                          dataSpaces_bfreqsp_buffer, dataSpaces_bfreqsp);
+
+        dataSpaces_bfreqst.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.bfreqst_p -> write(buffer.bfreqst_buffer, H5::PredType::NATIVE_DOUBLE,
+                                       dataSpaces_bfreqst_buffer, dataSpaces_bfreqst);
+        else
+            dataSets.bfreqst_dataset.write(buffer.bfreqst_buffer, H5::PredType::NATIVE_DOUBLE,
+                                          dataSpaces_bfreqst_buffer, dataSpaces_bfreqst);
+
 
         count[1] = nFER+FREQ_PADDING*2;
         dataSpaces_ffreqs.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
@@ -893,22 +1055,59 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 
 #if MAX_DIAG_CLASS >= 2
         count[1] = nBOS2+FREQ_PADDING*2;
-        dataSpaces_bfreqs2.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_bfreqs2a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
-            dataSets.bfreqs2_p -> write(buffer.bfreqs2_buffer, H5::PredType::NATIVE_DOUBLE,
-                                        dataSpaces_bfreqs2_buffer, dataSpaces_bfreqs2);
+            dataSets.bfreqs2a_p -> write(buffer.bfreqs2a_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_bfreqs2a_buffer, dataSpaces_bfreqs2a);
         else
-            dataSets.bfreqs2_dataset.write(buffer.bfreqs2_buffer, H5::PredType::NATIVE_DOUBLE,
-                                           dataSpaces_bfreqs2_buffer, dataSpaces_bfreqs2);
+            dataSets.bfreqs2a_dataset.write(buffer.bfreqs2a_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_bfreqs2a_buffer, dataSpaces_bfreqs2a);
+
+        count[1] = nBOS2+FREQ_PADDING*2;
+        dataSpaces_bfreqs2p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.bfreqs2p_p -> write(buffer.bfreqs2p_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_bfreqs2p_buffer, dataSpaces_bfreqs2p);
+        else
+            dataSets.bfreqs2p_dataset.write(buffer.bfreqs2p_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_bfreqs2p_buffer, dataSpaces_bfreqs2p);
+
+        count[1] = nBOS2+FREQ_PADDING*2;
+        dataSpaces_bfreqs2t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.bfreqs2t_p -> write(buffer.bfreqs2t_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_bfreqs2t_buffer, dataSpaces_bfreqs2t);
+        else
+            dataSets.bfreqs2t_dataset.write(buffer.bfreqs2t_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_bfreqs2t_buffer, dataSpaces_bfreqs2t);
+
 
         count[1] = nFER2+FREQ_PADDING*2;
-        dataSpaces_ffreqs2.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_ffreqs2a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
-            dataSets.ffreqs2_p -> write(buffer.ffreqs2_buffer, H5::PredType::NATIVE_DOUBLE,
-                                        dataSpaces_ffreqs2_buffer, dataSpaces_ffreqs2);
+            dataSets.ffreqs2a_p -> write(buffer.ffreqs2a_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_ffreqs2a_buffer, dataSpaces_ffreqs2a);
         else
-            dataSets.ffreqs2_dataset.write(buffer.ffreqs2_buffer, H5::PredType::NATIVE_DOUBLE,
-                                           dataSpaces_ffreqs2_buffer, dataSpaces_ffreqs2);
+            dataSets.ffreqs2a_dataset.write(buffer.ffreqs2a_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_ffreqs2a_buffer, dataSpaces_ffreqs2a);
+
+        count[1] = nFER2+FREQ_PADDING*2;
+        dataSpaces_ffreqs2p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.ffreqs2p_p -> write(buffer.ffreqs2p_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_ffreqs2p_buffer, dataSpaces_ffreqs2p);
+        else
+            dataSets.ffreqs2p_dataset.write(buffer.ffreqs2p_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_ffreqs2p_buffer, dataSpaces_ffreqs2p);
+
+        count[1] = nFER2+FREQ_PADDING*2;
+        dataSpaces_ffreqs2t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.ffreqs2t_p -> write(buffer.ffreqs2t_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_ffreqs2t_buffer, dataSpaces_ffreqs2t);
+        else
+            dataSets.ffreqs2t_dataset.write(buffer.ffreqs2t_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_ffreqs2t_buffer, dataSpaces_ffreqs2t);
 
         count[1]= buffer.K2_dim;
         dataSpaces_K2_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
@@ -929,22 +1128,59 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 
 #if MAX_DIAG_CLASS >= 3
         count[1] = nBOS3+FREQ_PADDING*2;
-        dataSpaces_bfreqs3.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_bfreqs3a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
-            dataSets.bfreqs3_p -> write(buffer.bfreqs3_buffer, H5::PredType::NATIVE_DOUBLE,
-                                        dataSpaces_bfreqs3_buffer, dataSpaces_bfreqs3);
+            dataSets.bfreqs3a_p -> write(buffer.bfreqs3a_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_bfreqs3a_buffer, dataSpaces_bfreqs3a);
         else
-            dataSets.bfreqs3_dataset.write(buffer.bfreqs3_buffer, H5::PredType::NATIVE_DOUBLE,
-                                           dataSpaces_bfreqs3_buffer, dataSpaces_bfreqs3);
+            dataSets.bfreqs3a_dataset.write(buffer.bfreqs3a_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_bfreqs3a_buffer, dataSpaces_bfreqs3a);
+
+        count[1] = nBOS3+FREQ_PADDING*2;
+        dataSpaces_bfreqs3p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.bfreqs3p_p -> write(buffer.bfreqs3p_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_bfreqs3p_buffer, dataSpaces_bfreqs3p);
+        else
+            dataSets.bfreqs3p_dataset.write(buffer.bfreqs3p_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_bfreqs3p_buffer, dataSpaces_bfreqs3p);
+
+        count[1] = nBOS3+FREQ_PADDING*2;
+        dataSpaces_bfreqs3t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.bfreqs3t_p -> write(buffer.bfreqs3t_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_bfreqs3t_buffer, dataSpaces_bfreqs3t);
+        else
+            dataSets.bfreqs3t_dataset.write(buffer.bfreqs3t_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_bfreqs3t_buffer, dataSpaces_bfreqs3t);
+
 
         count[1] = nFER3+FREQ_PADDING*2;
-        dataSpaces_ffreqs3.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_ffreqs3a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
         if (!file_exists)
-            dataSets.ffreqs3_p -> write(buffer.ffreqs3_buffer, H5::PredType::NATIVE_DOUBLE,
-                                        dataSpaces_ffreqs3_buffer, dataSpaces_ffreqs3);
+            dataSets.ffreqs3a_p -> write(buffer.ffreqs3a_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_ffreqs3a_buffer, dataSpaces_ffreqs3a);
         else
-            dataSets.ffreqs3_dataset.write(buffer.ffreqs3_buffer, H5::PredType::NATIVE_DOUBLE,
-                                           dataSpaces_ffreqs3_buffer, dataSpaces_ffreqs3);
+            dataSets.ffreqs3a_dataset.write(buffer.ffreqs3a_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_ffreqs3a_buffer, dataSpaces_ffreqs3a);
+
+        count[1] = nFER3+FREQ_PADDING*2;
+        dataSpaces_ffreqs3p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.ffreqs3p_p -> write(buffer.ffreqs3p_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_ffreqs3p_buffer, dataSpaces_ffreqs3p);
+        else
+            dataSets.ffreqs3p_dataset.write(buffer.ffreqs3p_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_ffreqs3p_buffer, dataSpaces_ffreqs3p);
+
+        count[1] = nFER3+FREQ_PADDING*2;
+        dataSpaces_ffreqs3t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        if (!file_exists)
+            dataSets.ffreqs3t_p -> write(buffer.ffreqs3t_buffer, H5::PredType::NATIVE_DOUBLE,
+                                        dataSpaces_ffreqs3t_buffer, dataSpaces_ffreqs3t);
+        else
+            dataSets.ffreqs3t_dataset.write(buffer.ffreqs3t_buffer, H5::PredType::NATIVE_DOUBLE,
+                                           dataSpaces_ffreqs3t_buffer, dataSpaces_ffreqs3t);
 
         count[1]= buffer.K3_dim;
         dataSpaces_K3_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
