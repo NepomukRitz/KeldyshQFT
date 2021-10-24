@@ -404,11 +404,6 @@ template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) co
     double maxabs_SE_total = Sigma_temp.max_norm();
     vec<double> maxabsSE_along_w = maxabs(Sigma_temp, dims, 1);
 
-    if (verbose) {
-        std::cout << "rel. magnitude of tails in SE";
-        std::cout << "\t \t" << maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total << std::endl;
-    }
-
     double result = maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total;
 
     if (verbose)

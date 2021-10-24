@@ -905,8 +905,8 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         H5::DataSpace dataSpaces_bfreqs3t(RANK_freqs, dims.bfreqs3_dims);
         H5::DataSpace dataSpaces_ffreqs3t(RANK_freqs, dims.ffreqs3_dims);
 
-        H5::DataSpace dataSpaces_bfreqs3abuffer(RANK_freqs-1, dims.bfreqs3_buffer_dims);
-        H5::DataSpace dataSpaces_ffreqs3abuffer(RANK_freqs-1, dims.ffreqs3_buffer_dims);
+        H5::DataSpace dataSpaces_bfreqs3a_buffer(RANK_freqs-1, dims.bfreqs3_buffer_dims);
+        H5::DataSpace dataSpaces_ffreqs3a_buffer(RANK_freqs-1, dims.ffreqs3_buffer_dims);
         H5::DataSpace dataSpaces_bfreqs3p_buffer(RANK_freqs-1, dims.bfreqs3_buffer_dims);
         H5::DataSpace dataSpaces_ffreqs3p_buffer(RANK_freqs-1, dims.ffreqs3_buffer_dims);
         H5::DataSpace dataSpaces_bfreqs3t_buffer(RANK_freqs-1, dims.bfreqs3_buffer_dims);

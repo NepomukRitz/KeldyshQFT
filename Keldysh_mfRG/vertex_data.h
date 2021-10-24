@@ -570,7 +570,7 @@ template <typename Q> auto vertexDataContainer<k2,Q>::get_curvature_maxK2() cons
     double dtf = K2_get_freqGrid_f().dt;
     double max_K1 = (    ::power2( get_deriv_K2_xx(order)*dtb*dtb*(1/Kmax))
                         +::power2( get_deriv_K2_yy(order)*dtf*dtf*(1/Kmax))
-                        +::power2( get_deriv_K2_xy(order)*dtb*dtf*(1/Kmax))*2
+                        +::power2( get_deriv_K2_xy(order)*dtb*dtf*(1/Kmax))*2.
                     ).max_norm();
     return max_K1;
 }
@@ -757,7 +757,7 @@ template <typename Q> auto vertexDataContainer<k3,Q>::get_curvature_maxK3() cons
                       + ::power2(get_deriv_K3_zz(order)*dtf*dtf*(1/Kmax))
                       +(::power2(get_deriv_K3_xy(order)*dtb*dtf*(1/Kmax))
                       + ::power2(get_deriv_K3_xz(order)*dtb*dtf*(1/Kmax))
-                      + ::power2(get_deriv_K3_yz(order)*dtf*dtf*(1/Kmax))*2)
+                      + ::power2(get_deriv_K3_yz(order)*dtf*dtf*(1/Kmax)))*2.
                     ).max_norm();
     return max_K3;
 }
