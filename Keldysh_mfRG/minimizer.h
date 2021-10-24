@@ -6,7 +6,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_min.h>
 #include <gsl/gsl_multimin.h>
-#include "../utilities/mpi_setup.h"
+#include "utilities/mpi_setup.h"
 
 /* compute real part of integrand (for GSL/PAID) */
 template <typename CostFunction>
@@ -53,13 +53,25 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
         costa = cost(a);
         costb = cost(b);
         costm = cost(m);
-        if (costa > costm and costb > costm) break;
-        if (costa < costm) {    // if left interval bound gives smaller cost than m, shift the interval to the left (shrinking parameter range)
+        if (costa > costm  and costb > costm) break; // If m gives smaller cost than left and right interval bound --> Ok. Minimizer can find a minimum.
+        else if (costa == costm) {
+            double temp = (a + m) / 2.;
+            double cost_temp = cost(temp);
+            if (cost_temp <costa) b = m; m = temp;
+            // else: there are local minima on the left AND the right of the interval --> non-trivial choice
+        }
+        else if (costb == costm) {
+            double temp = (m + b) / 2.;
+            double cost_temp = cost(temp);
+            if (cost_temp <costb) a = m; m = temp;
+            // else: there are local minima on the left AND the right of the interval --> non-trivial choice
+        }
+        else if (1e-10 <= costb - costa) {    // if left interval bound gives smaller cost than m, shift the interval to the left (shrinking parameter range)
             b = m; m = a; a /= 2.;
             //print("shrink", true);
         }
-        else if (costb < costm) {    // if right interval bound gives smaller cost than m, shift the interval to the right (growing parameter range)
-            a = m; m = b; b *= 2.;
+        else {    // if right interval bound gives smaller cost than m, shift the interval to the right (growing parameter range)
+            a = m; m = b; b *= 1.5;
             //print("grow", true);
         }
         // if both left and right interval bounds give smaller cost than m, prefer shift to the left (shrinking parameter range)
@@ -96,8 +108,7 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
         a = gsl_min_fminimizer_x_lower (s);
         b = gsl_min_fminimizer_x_upper (s);
 
-        status
-                = gsl_min_test_interval (a, b, epsabs, epsrel);
+        status = gsl_min_test_interval (a, b, epsabs, epsrel);
 
         if (superverbose) {
             if (status == GSL_SUCCESS)
