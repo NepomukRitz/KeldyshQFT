@@ -163,7 +163,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0-FREQ_PADDING; iw<nBOS+FREQ_PADDING; iw++){
+    for (int iw = 0; iw<nBOS; iw++){
         double w;
         if (INTERPOLATION == linear)  avertex.K1.K1_get_freq_w(w, iw);
         else avertex.K1.K1_get_freq_aux(w, iw);
@@ -232,13 +232,13 @@ if (INTERPOLATION == cubic) {
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
     value = 0.;
     int N = nBOS * 5;
-    vec<state_datatype> values(N);
+    vec<double> values(N);
     vec<double> errors(N);
     double inter = 2. / double(N - 1);
     for (int iw = 1; iw < N - 1; iw++) {
         indices.w = avertex.K1.K1_gridtransf_inv(-1. + iw * inter);
 
-        values[iw] = avertex.K1.interpolate(indices);
+        //values[iw] = avertex.K1.interpolate(indices); TODO: Does not always return a double!!
         double error = std::abs(
                 avertex.K1.interpolate(indices) - cubicFunction1D(avertex.K1.K1_gridtransf(indices.w)));
         cumul_interpolation_error += error;
