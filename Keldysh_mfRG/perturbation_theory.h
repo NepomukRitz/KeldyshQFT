@@ -100,13 +100,6 @@ void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, double Lambda) {
     State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
-    if (HUBBARD_MODEL){
-#if not defined(NDEBUG)
-        print("Computing the cross-projections of the bare vertex...", true);
-#endif
-        bareState.vertex.calculate_all_cross_projections(); // Needed to have access to all values which have to be read out in the following
-    }
-
 #if not defined(NDEBUG)
     print("Computing the vertex in SOPT...", true);
 #endif
