@@ -2442,10 +2442,17 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         write_hdf(data_dir + "K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   K1rdot_PIa_K1p_exact);
 
+
+
         State<state_datatype> K1rdot_PIa_K1p_diff =
                 K1rdot_PIa_K1p - K1rdot_PIa_K1p_exact;        // intermediate result: contains K2 and K3
         write_hdf(data_dir + "K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   K1rdot_PIa_K1p_diff);
+
+
+        print("Relative maxabs difference in K1rdot_PIa_K1p --> K1: ", K1rdot_PIa_K1p_diff.vertex[0].half1().norm_K1(0) / K1rdot_PIa_K1p.vertex[0].half1().norm_K1(0) , true);
+        if (MAX_DIAG_CLASS > 1) print("Relative maxabs difference in K1rdot_PIa_K1p --> K2: ", K1rdot_PIa_K1p_diff.vertex[0].half1().norm_K2(0) / K1rdot_PIa_K1p.vertex[0].half1().norm_K2(0) , true );
+        if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in K1rdot_PIa_K1p --> K3: ", K1rdot_PIa_K1p_diff.vertex[0].half1().norm_K3(0) / K1rdot_PIa_K1p.vertex[0].half1().norm_K3(0) , true );
 
 
         State<state_datatype> K1p_PIa_K1rdot_exact(Lambda);        // intermediate result: contains K2 and K3
@@ -2478,6 +2485,10 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         write_hdf(data_dir + "K1p_PIa_K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   K1p_PIa_K1rdot_diff);
 
+
+        print("Relative maxabs difference in K1p_PIa_K1rdot --> K1: ", K1p_PIa_K1rdot_diff.vertex[0].half1().norm_K1(0) / K1p_PIa_K1rdot.vertex[0].half1().norm_K1(0) , true);
+        if (MAX_DIAG_CLASS > 1) print("Relative maxabs difference in K1p_PIa_K1rdot --> K2: ", K1p_PIa_K1rdot_diff.vertex[0].half1().norm_K2(0) / K1p_PIa_K1rdot.vertex[0].half1().norm_K2(0) , true );
+        if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in K1p_PIa_K1rdot --> K3: ", K1p_PIa_K1rdot_diff.vertex[0].half1().norm_K3(0) / K1p_PIa_K1rdot.vertex[0].half1().norm_K3(0) , true );
 
         State<state_datatype> dGammaC_exact(Lambda);        // final state: contains K1, K2 and K3
 
@@ -2533,10 +2544,18 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> dGammaC_r_diff = dGammaC_r - dGammaC_exact;        // final result: contains K1, K2 and K3
         write_hdf(data_dir + "dGammaC_r_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   dGammaC_r_diff);
+
+        print("Relative maxabs difference in dGammaC_l --> K1: ", dGammaC_l_diff.vertex[0].half1().norm_K1(0) / dGammaC_l.vertex[0].half1().norm_K1(0)  , true);
+        if (MAX_DIAG_CLASS > 1) print("Relative maxabs difference in dGammaC_l --> K2: ", dGammaC_l_diff.vertex[0].half1().norm_K2(0) / dGammaC_l.vertex[0].half1().norm_K2(0)  , true);
+        if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in dGammaC_l --> K3: ", dGammaC_l_diff.vertex[0].half1().norm_K3(0) / dGammaC_l.vertex[0].half1().norm_K3(0)  , true);
+
+        print("Relative maxabs difference in dGammaC_r --> K1: ", dGammaC_r_diff.vertex[0].half1().norm_K1(0) / dGammaC_r.vertex[0].half1().norm_K1(0)  , true);
+        if (MAX_DIAG_CLASS > 1) print("Relative maxabs difference in dGammaC_r --> K2: ", dGammaC_r_diff.vertex[0].half1().norm_K2(0) / dGammaC_r.vertex[0].half1().norm_K2(0)  , true);
+        if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in dGammaC_r --> K3: ", dGammaC_r_diff.vertex[0].half1().norm_K3(0) / dGammaC_r.vertex[0].half1().norm_K3(0)  , true);
     }
 }
 
-#endif
+#endif // SIAM Matsubara T=0
 
 
 #ifdef STATIC_FEEDBACK
