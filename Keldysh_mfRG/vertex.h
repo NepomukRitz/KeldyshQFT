@@ -426,7 +426,7 @@ public:
 
     void calculate_all_cross_projections(){
         half1().calculate_all_cross_projections();
-        half2().calculate_all_cross_projections();
+        if (!half2().completely_crossprojected) half2().calculate_all_cross_projections(); // In the case of a symmetric vertex, don't calculate the crossprojections again!
     }
     void use_projection(const char r){
         half1().use_projection(r);
