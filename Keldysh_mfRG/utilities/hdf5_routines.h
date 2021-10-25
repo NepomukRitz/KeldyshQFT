@@ -5,6 +5,7 @@
 #ifndef KELDYSH_MFRG_HDF5_ROUTINES_H
 #define KELDYSH_MFRG_HDF5_ROUTINES_H
 
+#include <stdexcept>
 #include <cmath>
 #include <vector>
 #include "util.h"               // printing text
@@ -1290,6 +1291,75 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 /// --- Functions for reading data from file --- ///
 
 /**
+ * Read Lambdas from an existing file
+ * @param FILE_NAME   : File name
+ * @return            : Lambdas in a vector of doubles
+ */
+rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
+
+
+
+    // Open the file. Access rights: read-only
+    H5::H5File *file = 0;
+    file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
+
+    H5::DataSet lambda_dataset = file->openDataSet("lambdas");
+
+    // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
+    //Buffer buffer;
+
+    // Create the memory data type for storing complex numbers in file
+    //H5::CompType mtype_comp = def_mtype_comp();
+
+    // Create the dimension arrays for objects in file and in buffer
+    //Dims dims(buffer, Lambda_size);
+
+    // Read the data sets from the file to copy their content into the buffer
+    //DataSets dataSets(file);
+
+    // Create the data spaces for the data sets in file and for buffer objects
+    H5::DataSpace dataSpace_Lambda = lambda_dataset.getSpace();
+    /*
+     * Get the number of dimensions in the dataspace.
+     */
+    int rank = dataSpace_Lambda.getSimpleExtentNdims();
+    /*
+     * Get the dimension size of each dimension in the dataspace and
+     * display them.
+     */
+    hsize_t dims_out[2];
+    int ndims = dataSpace_Lambda.getSimpleExtentDims( dims_out, NULL);
+    //std::cout << "rank " << rank << ", dimensions " <<
+    //     (unsigned long)(dims_out[0]) << " x " <<
+    //     (unsigned long)(dims_out[1]) << std::endl;
+
+
+    H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
+
+    /// load data into buffer
+
+    //hsize_t start_1D[1] = {Lambda_it};
+    //hsize_t stride_1D[1]= {1};
+    //hsize_t count_1D[1] = {1};
+    //hsize_t block_1D[1] = {1};
+    //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+    double Lambdas_arr[dims_out[0]];
+    lambda_dataset.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
+                        dataSpace_Lambda_buffer, dataSpace_Lambda);
+
+    rvec Lambdas (Lambdas_arr, Lambdas_arr + sizeof(Lambdas_arr) / sizeof(double));
+
+    // Terminate
+    lambda_dataset.close();
+    file->close();
+    delete file;
+
+    return Lambdas;
+
+
+}
+
+/**
  * Initialize the frequency grids of the result using the parameters stored in buffer.
  * @param result : Empty State object into which result is copied.
  * @param buffer : Buffer from which result is read. Should contain data read from a file.
@@ -1527,8 +1597,9 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  * @return            : State object containing the result.
  */
-State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it, long Lambda_size){
-    State<state_datatype> result(Lambda_ini);
+State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it){
+    State<state_datatype> result(Lambda_ini);   // Initialize with ANY frequency grid, read grid from HDF file later
+    long Lambda_size = read_Lambdas_from_hdf(FILE_NAME).size();
     if (Lambda_it < Lambda_size) {
 
         // Open the file. Access rights: read-only
@@ -1707,78 +1778,10 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it, l
         return result;
 
     } else {
-        print("Cannot read from file ", FILE_NAME, " since Lambda layer out of range", true);
+        throw std::runtime_error("Cannot read from file " + FILE_NAME + " since Lambda layer out of range");
     }
 }
 
-/**
- * Read Lambdas from an existing file
- * @param FILE_NAME   : File name.
- * @return            : Lambdas
- */
-rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
-
-
-
-    // Open the file. Access rights: read-only
-    H5::H5File *file = 0;
-    file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
-
-    H5::DataSet lambda_dataset = file->openDataSet("lambdas");
-
-    // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
-    //Buffer buffer;
-
-    // Create the memory data type for storing complex numbers in file
-    //H5::CompType mtype_comp = def_mtype_comp();
-
-    // Create the dimension arrays for objects in file and in buffer
-    //Dims dims(buffer, Lambda_size);
-
-    // Read the data sets from the file to copy their content into the buffer
-    //DataSets dataSets(file);
-
-    // Create the data spaces for the data sets in file and for buffer objects
-    H5::DataSpace dataSpace_Lambda = lambda_dataset.getSpace();
-    /*
-     * Get the number of dimensions in the dataspace.
-     */
-    int rank = dataSpace_Lambda.getSimpleExtentNdims();
-    /*
-     * Get the dimension size of each dimension in the dataspace and
-     * display them.
-     */
-    hsize_t dims_out[2];
-    int ndims = dataSpace_Lambda.getSimpleExtentDims( dims_out, NULL);
-    //std::cout << "rank " << rank << ", dimensions " <<
-    //     (unsigned long)(dims_out[0]) << " x " <<
-    //     (unsigned long)(dims_out[1]) << std::endl;
-
-
-    H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
-
-    /// load data into buffer
-
-    //hsize_t start_1D[1] = {Lambda_it};
-    //hsize_t stride_1D[1]= {1};
-    //hsize_t count_1D[1] = {1};
-    //hsize_t block_1D[1] = {1};
-    //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
-    double Lambdas_arr[dims_out[0]];
-    lambda_dataset.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
-                         dataSpace_Lambda_buffer, dataSpace_Lambda);
-
-    rvec Lambdas (Lambdas_arr, Lambdas_arr + sizeof(Lambdas_arr) / sizeof(double));
-
-    // Terminate
-    lambda_dataset.close();
-    file->close();
-    delete file;
-
-    return Lambdas;
-
-
-}
 
 
 /// --- Test function --- ///
@@ -1786,7 +1789,7 @@ rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
     // test hdf5: read files and compare to original file
     int cnt = 0;
-    State<state_datatype> out = read_hdf(FILE_NAME, i, nODE);
+    State<state_datatype> out = read_hdf(FILE_NAME, i);
     for (int iK=0; iK<2; ++iK) {
         for (int iSE = 0; iSE < nSE; ++iSE) {
             if (state.selfenergy.val(iK, iSE, 0) != out.selfenergy.val(iK, iSE, 0)) {

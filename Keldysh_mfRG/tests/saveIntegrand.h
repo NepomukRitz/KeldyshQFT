@@ -81,9 +81,9 @@ namespace saveIntegrand {
 
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, 0, 1); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,0, 1); // read Psi
+        State<Q>dPsi = read_hdf(file_dPsi,0); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -107,7 +107,7 @@ namespace saveIntegrand {
 
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, it_Lambda, 67); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
 
         State<Q>dPsi = Psi; // copy Psi
@@ -135,9 +135,9 @@ namespace saveIntegrand {
                 const K_class k_class, const char channel, const int i0, const int i2, const double w,
                 const double v, const double vp, const int i_in) {
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi,  0, 1); // read Psi
+        State<Q> Psi = read_hdf(file_Psi,  0); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,0, 1); // read Psi
+        State<Q>dPsi = read_hdf(file_dPsi,0); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -161,9 +161,9 @@ namespace saveIntegrand {
         /// TODO: Sanity check for input parameters
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi,0, 1); // read Psi
+        State<Q> Psi = read_hdf(file_Psi,0); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,0, 1); // read Psi
+        State<Q>dPsi = read_hdf(file_dPsi,0); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -186,10 +186,10 @@ namespace saveIntegrand {
                 const K_class k_class, const char channel, const int i0, const int i2, const double w,
                 const double v, const double vp, const int i_in) {
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, 0, 1); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi_L= read_hdf(file_dGammaL,0, 1); // read Psi
-        State<Q>dPsi_R= read_hdf(file_dGammaR,0, 1); // read Psi
+        State<Q>dPsi_L= read_hdf(file_dGammaL,0); // read Psi
+        State<Q>dPsi_R= read_hdf(file_dGammaR,0); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -218,10 +218,10 @@ namespace saveIntegrand {
         const K_class k_class, const char channel, const int i0, const int i2, const double w,
         const double v, const double vp, const int i_in) {
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, 0, 1); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi_L= read_hdf(file_dGammaL,0, 1); // read Psi
-        State<Q>dPsi_R= read_hdf(file_dGammaR,0, 1); // read Psi
+        State<Q>dPsi_L= read_hdf(file_dGammaL,0); // read Psi
+        State<Q>dPsi_R= read_hdf(file_dGammaR,0); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -251,9 +251,9 @@ namespace saveIntegrand {
                       const int i2, const double v, const int i_in) {
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, 0, 1); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,0, 1); // read Psi
+        State<Q>dPsi = read_hdf(file_dPsi,0); // read Psi
 
         double Lambda = Psi.Lambda;
 

@@ -216,7 +216,7 @@ void parquet_checks(const std::string filename) {
     for (int i=0; i<Lambdas.size(); ++i) {
         print("Iteration ", i, false);
         print_add(", Lambda = ", Lambdas[i], true);
-        State<state_datatype> state = read_hdf(filename, i, Lambdas.size());
+        State<state_datatype> state = read_hdf(filename, i);
         state.selfenergy.asymp_val_R = glb_U / 2.;
         print("State read from file.", true);
 
