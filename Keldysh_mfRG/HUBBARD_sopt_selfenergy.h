@@ -2,6 +2,7 @@
 #define FPP_MFRG_HUBBARD_SOPT_SELFENERGY_H
 
 #include <cassert>
+#include "utilities/util.h"
 
 class Integrand_SE_SOPT_Hubbard{
 public:
@@ -40,8 +41,9 @@ public:
                              const State<comp>& bareState_in, const Vertex<comp>& vertex_in_SOPT_in)
             : Lambda(Lambda_in), SOPT_SE_Hubbard(SOPT_SE_Hubbard_in),
               bareState(bareState_in), vertex_in_SOPT(vertex_in_SOPT_in){
-        static_assert(HUBBARD_MODEL);
-        static_assert(KELDYSH);         // TODO(low): Extend to Matsubara formalism
+        assert(HUBBARD_MODEL);
+        assert(KELDYSH);         // TODO(low): Extend to Matsubara formalism
+        vertex_in_SOPT[0].half1().initializeInterpol();
     }
 
     void compute_HUBBARD_SE_SOPT();
@@ -79,9 +81,24 @@ void Hubbard_SE_SOPT_Computer::compute_HUBBARD_SE_SOPT() {
         for (int iK_internal = 0; iK_internal < 3; ++iK_internal) {
             // iK_internal : index for Keldysh sum
             // 0: retarded, 1: advanced, 2: Keldysh
+#if not defined(NDEBUG)
+            print("Now computing SOPT SE for iK = " + std::to_string(iK) + ", iK_internal = " + std::to_string(iK_internal),true);
+#endif
             vec<comp> integrand (nFER * nBOS * glb_N_transfer);
+
+            double t_integrand_start = get_time();
+
             compute_frequency_integrands(integrand, iK, iK_internal);
+
+            double t_integrand_end = get_time();
+
             compute_frequency_integrals(integrand, iK, iK_internal);
+
+            double t_integral_end = get_time();
+#if not defined(NDEBUG)
+            print("Computing the integrand took " + std::to_string(t_integrand_end - t_integrand_start) + " s",true);
+            print("Computing the integral  took " + std::to_string(t_integral_end  - t_integrand_end)   + " s",true);
+#endif
         }
     }
 }
