@@ -48,6 +48,8 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const B
 
 SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT,
                                           const double Lambda){
+    static_assert(HUBBARD_MODEL);
+    static_assert(KELDYSH);         // TODO: Matsubara version?
     SelfEnergy<comp> SOPT_SE_Hubbard(Lambda); // result
     Hubbard_SE_SOPT_Computer(Lambda, SOPT_SE_Hubbard, bareState, vertex_in_SOPT).compute_HUBBARD_SE_SOPT();
     return SOPT_SE_Hubbard;
