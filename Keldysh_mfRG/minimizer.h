@@ -54,26 +54,40 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
         costb = cost(b);
         costm = cost(m);
         if (costa > costm  and costb > costm) break; // If m gives smaller cost than left and right interval bound --> Ok. Minimizer can find a minimum.
-        else if (costa == costm) {
-            double temp = (a + m) / 2.;
-            double cost_temp = cost(temp);
-            if (cost_temp <costa) b = m; m = temp;
-            // else: there are local minima on the left AND the right of the interval --> non-trivial choice
-        }
-        else if (costb == costm) {
-            double temp = (m + b) / 2.;
-            double cost_temp = cost(temp);
-            if (cost_temp <costb) a = m; m = temp;
-            // else: there are local minima on the left AND the right of the interval --> non-trivial choice
-        }
-        else if (1e-10 <= costb - costa) {    // if left interval bound gives smaller cost than m, shift the interval to the left (shrinking parameter range)
+
+        else if (costb > costa) {    // if left interval bound gives smaller cost than m, shift the interval to the left (shrinking parameter range)
             b = m; m = a; a /= 2.;
             //print("shrink", true);
         }
-        else {    // if right interval bound gives smaller cost than m, shift the interval to the right (growing parameter range)
+        else if (costa > costb){    // if right interval bound gives smaller cost than m, shift the interval to the right (growing parameter range)
             a = m; m = b; b *= 1.5;
             //print("grow", true);
         }
+        else if (std::abs(costa - costm) < 1e-10) {
+            print("difference in costa and costm: ", std::abs(costb- costm), true);
+            double temp = (a + m) / 2.;
+            double cost_temp = cost(temp);
+            if (cost_temp <costa)
+            {b = m; m = temp;}
+
+            else {
+                // return; // ignore the problem
+                throw std::runtime_error("Minimum not unique."); // else: there are local minima on the left AND the right of the interval --> non-trivial choice
+
+            }
+        }
+        else if (std::abs(costb- costm) < 1e-10) {
+            print("difference in costb and costm: ", std::abs(costb- costm), true);
+            double temp = (m + b) / 2.;
+            double cost_temp = cost(temp);
+            if (cost_temp <costb)
+            {a = m; m = temp;}
+            else {
+                // return;
+                throw std::runtime_error("Minimum not unique.");
+            }
+        }
+        else throw std::runtime_error("Uncaught if-else case in minimizer");
         // if both left and right interval bounds give smaller cost than m, prefer shift to the left (shrinking parameter range)
     }
 
