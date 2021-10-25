@@ -57,13 +57,15 @@ public:
     explicit vertexBuffer<k2, Q, cubic>(double Lambda) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda) {};
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
-        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(indices.w, indices.v1); // convert natural frequency parametrization in channel r to internal parametrization
+        double w_temp = indices.w;
+        double v_temp = indices.v1;
+        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(w_temp, v_temp); // convert natural frequency parametrization in channel r to internal parametrization
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K2.b.w_upper + inter_tol)
         //{
 
-        Q result =  SplineK2<vertexDataContainer<k2,Q>, Q>::interpolK2 (indices.iK, indices.w, indices.v1, indices.i_in);
+        Q result =  SplineK2<vertexDataContainer<k2,Q>, Q>::interpolK2 (indices.iK, w_temp, v_temp, indices.i_in);
         return result;
         //} else {
         //    return 0.;  // asymptotic value
@@ -159,14 +161,16 @@ public:
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
-        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(indices.w, indices.v1); // convert natural frequency parametrization in channel r to internal parametrization
+        double w_temp = indices.w;
+        double v_temp = indices.v1;
+        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(w_temp, v_temp); // convert natural frequency parametrization in channel r to internal parametrization
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (    std::abs(indices.w ) < vertexDataContainer<k2, Q>::frequencies_K2.b.w_upper + inter_tol
                 && std::abs(indices.v1) < vertexDataContainer<k2, Q>::frequencies_K2.f.w_upper + inter_tol )
         {
 
-            Q result =  interpolate_lin2D<Q>(indices.w, indices.v1,
+            Q result =  interpolate_lin2D<Q>(w_temp, w_temp,
                                                             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                             [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
@@ -281,14 +285,16 @@ public:
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
-        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(indices.w, indices.v1); // convert natural frequency parametrization in channel r to internal parametrization
+        double w_temp = indices.w;
+        double v_temp = indices.v1;
+        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(w_temp, v_temp); // convert natural frequency parametrization in channel r to internal parametrization
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
         //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
         //{
 
-        Q result =  interpolate_lin_on_aux2D<Q>(indices.w, indices.v1,
+        Q result =  interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                                    [&](int i, int j) -> Q {
@@ -411,13 +417,15 @@ public:
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
-        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(indices.w, indices.v1); // convert natural frequency parametrization in channel r to internal parametrization
+        double w_temp = indices.w;
+        double v_temp = indices.v1;
+        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(w_temp, w_temp); // convert natural frequency parametrization in channel r to internal parametrization
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
         //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
         //{
-        Q result = interpolate_sloppycubic2D<Q>(indices.w, indices.v1,
+        Q result = interpolate_sloppycubic2D<Q>(w_temp, w_temp,
                                                                     vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                                     vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                                     [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});

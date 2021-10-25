@@ -114,6 +114,16 @@ public:
                         w_upper = glb_w2_upper;
                         w_lower = glb_w2_lower;
                         W_scale = glb_W2_scale;
+#ifdef ROTATEK2
+                        if (KELDYSH){
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
+                        }
+                        else{
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
+                        }
+#else
                         if (KELDYSH){
                             U_factor = 5./3.;
                             Delta_factor = 5.;
@@ -122,6 +132,7 @@ public:
                             U_factor = 20./3.;
                             Delta_factor = 20.;
                         }
+#endif
                         break;
                     case 3:
                         N_w = nBOS3+FREQ_PADDING*2;
@@ -153,6 +164,17 @@ public:
                         w_upper = glb_v2_upper;
                         w_lower = glb_v2_lower;
                         W_scale = glb_W2_scale;
+#ifdef ROTATEK2
+                        /// Needs to be the same as for 'b'!!!
+                        if (KELDYSH) {
+                            U_factor = 10. / 3.;
+                            Delta_factor = 10.;
+                        }
+                        else {
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
+                        }
+#else
                         if (KELDYSH) {
                             U_factor = 20. / 3.;
                             Delta_factor = 20.;
@@ -161,6 +183,7 @@ public:
                             U_factor = 4./3.;
                             Delta_factor = 4.;
                         }
+#endif
                         break;
                     case 3:
                         N_w = nFER3+FREQ_PADDING*2;
@@ -305,7 +328,7 @@ void FrequencyGrid::set_w_upper(double wmax) {
 void FrequencyGrid::rescale_grid(double Lambda) {
     double scale = scale_factor(Lambda);
     set_W_scale(scale);
-    set_w_upper(scale*50);
+    set_w_upper(scale*100);
     initialize_grid();
 }
 

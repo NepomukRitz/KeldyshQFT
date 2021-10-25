@@ -238,7 +238,11 @@ void makedir(const std::string& dir_str) {
 }
 
 
-
+void check_input() {
+#ifdef ROTATEK2
+    assert (nBOS2 == nFER2)
+#endif
+}
 
 
 

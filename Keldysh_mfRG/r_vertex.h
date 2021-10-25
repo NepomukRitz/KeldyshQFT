@@ -795,6 +795,9 @@ namespace {
 
         auto operator() (double wscale_test) -> double {
             frequencies.b.update_Wscale(wscale_test);
+#ifdef ROTATEK2
+            frequencies.f.update_Wscale(wscale_test);
+#endif
             rVert.template update_grid<k2>(frequencies, rVert_backup);
             //rVert.K2.analyze_tails_K2_b();
             double result = rVert.K2.get_curvature_maxK2();
@@ -819,6 +822,9 @@ namespace {
         explicit CostFullvert_Wscale_f_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
+#ifdef ROTATEK2
+            frequencies.b.update_Wscale(wscale_test);
+#endif
             frequencies.f.update_Wscale(wscale_test);
             rVert.template update_grid<k2>(frequencies, rVert_backup);
             //rVert.K2.analyze_tails_K2_f();
@@ -950,7 +956,7 @@ namespace {
 
 template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     //verbose = false;
-    const double rel_tail_threshold = 1e-3;
+    const double rel_tail_threshold = 1e-4;
 
     /// for K1:
     if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K1" << channel << " grid in direction w:\n";
@@ -991,7 +997,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         frequenciesK2_new.f.update_Wscale(m_Wscale);
         update_grid<k2>(frequenciesK2_new, *this);
 
-
+#ifndef ROTATEK2
         // in w-direction:
         a_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale / 2.;
         m_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale;
@@ -1000,7 +1006,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         minimizer(cost_b_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
         frequenciesK2_new.b.update_Wscale(m_Wscale);
         update_grid<k2>(frequenciesK2_new, *this);
-
+#endif
     }
 #else
     /// Using multi-dimensional minimization:
