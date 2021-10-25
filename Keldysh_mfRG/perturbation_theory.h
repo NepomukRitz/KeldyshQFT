@@ -30,7 +30,12 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 
 template <typename Q, class Bubble_Object>
 void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    for (char r: "apt") {
+    std::string channels = "apt";
+    for (char r: channels) {
+#if not defined(NDEBUG)
+        print("Computing the vertex in SOPT in channel ", false);
+        print_add(r, true);
+#endif
         bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
     }
 }
@@ -49,8 +54,8 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const B
 void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
                               const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT,
                               const double Lambda){
-    static_assert(HUBBARD_MODEL);
-    static_assert(KELDYSH);         // TODO: Matsubara version?
+    assert(HUBBARD_MODEL);
+    assert(KELDYSH);         // TODO: Matsubara version?
     Hubbard_SE_SOPT_Computer(Lambda, PsiSelfEnergy, bareState, vertex_in_SOPT).compute_HUBBARD_SE_SOPT();
 }
 
@@ -95,9 +100,22 @@ void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, double Lambda) {
     State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
+    if (HUBBARD_MODEL){
+#if not defined(NDEBUG)
+        print("Computing the cross-projections of the bare vertex...", true);
+#endif
+        bareState.vertex.calculate_all_cross_projections(); // Needed to have access to all values which have to be read out in the following
+    }
+
+#if not defined(NDEBUG)
+    print("Computing the vertex in SOPT...", true);
+#endif
     //Calculate the bubbles -> Vertex in SOPT saved in Psi
     vertexInSOPT(Psi.vertex, bareState, Pi, Lambda);
 
+#if not defined(NDEBUG)
+    print("Computing the self energy in SOPT...", true);
+#endif
     //Calculate the self-energy in SOPT, saved in Psi
     if constexpr(HUBBARD_MODEL) selfEnergyInSOPT_HUBBARD(Psi.selfenergy, bareState, Psi.vertex, Lambda);
     else                        selfEnergyInSOPT(Psi.selfenergy, bareState, Pi, Lambda);
@@ -110,6 +128,9 @@ void sopt_state(State<Q>& Psi, double Lambda) {
     State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
+#if not defined(NDEBUG)
+    print("Start initializing bubble object...", true);
+#endif
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     auto Pi = PT_initialize_Bubble(barePropagator);

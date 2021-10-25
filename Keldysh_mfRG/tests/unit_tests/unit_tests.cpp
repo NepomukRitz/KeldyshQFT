@@ -84,6 +84,9 @@ int main(int argc, char* argv[]) {
 
     //test_Bubble_in_Momentum_Space();
 
+    State<comp> state_ini (Lambda_ini);
+    state_ini.initialize();
+    sopt_state(state_ini, Lambda_ini);
 
     return Catch::Session().run(argc, argv);
     MPI_Finalize();
