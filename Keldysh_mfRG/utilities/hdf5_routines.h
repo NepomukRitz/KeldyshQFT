@@ -806,6 +806,504 @@ public:
     }
 };
 
+
+/// --- Functions for reading data from file --- ///
+
+/**
+ * Read Lambdas from an existing file
+ * @param FILE_NAME   : File name
+ * @return            : Lambdas in a vector of doubles
+ */
+rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
+
+
+
+    // Open the file. Access rights: read-only
+    H5::H5File *file = 0;
+    file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
+
+    H5::DataSet lambda_dataset = file->openDataSet("lambdas");
+
+    // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
+    //Buffer buffer;
+
+    // Create the memory data type for storing complex numbers in file
+    //H5::CompType mtype_comp = def_mtype_comp();
+
+    // Create the dimension arrays for objects in file and in buffer
+    //Dims dims(buffer, Lambda_size);
+
+    // Read the data sets from the file to copy their content into the buffer
+    //DataSets dataSets(file);
+
+    // Create the data spaces for the data sets in file and for buffer objects
+    H5::DataSpace dataSpace_Lambda = lambda_dataset.getSpace();
+    /*
+     * Get the number of dimensions in the dataspace.
+     */
+    int rank = dataSpace_Lambda.getSimpleExtentNdims();
+    /*
+     * Get the dimension size of each dimension in the dataspace and
+     * display them.
+     */
+    hsize_t dims_out[2];
+    int ndims = dataSpace_Lambda.getSimpleExtentDims( dims_out, NULL);
+    //std::cout << "rank " << rank << ", dimensions " <<
+    //     (unsigned long)(dims_out[0]) << " x " <<
+    //     (unsigned long)(dims_out[1]) << std::endl;
+
+
+    H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
+
+    /// load data into buffer
+
+    //hsize_t start_1D[1] = {Lambda_it};
+    //hsize_t stride_1D[1]= {1};
+    //hsize_t count_1D[1] = {1};
+    //hsize_t block_1D[1] = {1};
+    //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+    double Lambdas_arr[dims_out[0]];
+    lambda_dataset.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
+                        dataSpace_Lambda_buffer, dataSpace_Lambda);
+
+    rvec Lambdas (Lambdas_arr, Lambdas_arr + sizeof(Lambdas_arr) / sizeof(double));
+
+    // Terminate
+    lambda_dataset.close();
+    file->close();
+    delete file;
+
+    return Lambdas;
+
+
+}
+
+/**
+ * Initialize the frequency grids of the result using the parameters stored in buffer.
+ * @param result : Empty State object into which result is copied.
+ * @param buffer : Buffer from which result is read. Should contain data read from a file.
+ */
+template <typename Q>
+void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
+    // create new frequency grids
+    FrequencyGrid bfreqsa ('b', 1, Lambda_ini);
+    FrequencyGrid bfreqsp ('b', 1, Lambda_ini);
+    FrequencyGrid bfreqst ('b', 1, Lambda_ini);
+    FrequencyGrid ffreqs ('f', 1, Lambda_ini);
+    // read grid parameters from buffer
+    bfreqsa.N_w = (int)buffer.freq_params[0];
+    bfreqsa.w_upper = buffer.freq_params[1];
+    bfreqsa.w_lower = buffer.freq_params[2];
+    bfreqsa.W_scale = buffer.freq_params[3];
+    ffreqs.N_w = (int)buffer.freq_params[4];
+    ffreqs.w_upper = buffer.freq_params[5];
+    ffreqs.w_lower = buffer.freq_params[6];
+    ffreqs.W_scale = buffer.freq_params[7];
+    bfreqsp.N_w = (int)buffer.freq_params[24];
+    bfreqsp.w_upper = buffer.freq_params[25];
+    bfreqsp.w_lower = buffer.freq_params[26];
+    bfreqsp.W_scale = buffer.freq_params[27];
+    bfreqst.N_w = (int)buffer.freq_params[28];
+    bfreqst.w_upper = buffer.freq_params[29];
+    bfreqst.w_lower = buffer.freq_params[30];
+    bfreqst.W_scale = buffer.freq_params[31];
+    // initialize grids
+    bfreqsa.initialize_grid();
+    bfreqsp.initialize_grid();
+    bfreqst.initialize_grid();
+    ffreqs.initialize_grid();
+    // copy grids to result
+    result.selfenergy.frequencies = ffreqs;
+    result.vertex[0].avertex().K1.frequencies_K1.b = bfreqsa;
+    result.vertex[0].pvertex().K1.frequencies_K1.b = bfreqsp;
+    result.vertex[0].tvertex().K1.frequencies_K1.b = bfreqst;
+#if MAX_DIAG_CLASS >= 2
+    FrequencyGrid bfreqs2a ('b', 2, Lambda_ini);
+    FrequencyGrid ffreqs2a ('f', 2, Lambda_ini);
+    FrequencyGrid bfreqs2p ('b', 2, Lambda_ini);
+    FrequencyGrid ffreqs2p ('f', 2, Lambda_ini);
+    FrequencyGrid bfreqs2t ('b', 2, Lambda_ini);
+    FrequencyGrid ffreqs2t ('f', 2, Lambda_ini);
+    bfreqs2a.N_w = (int)buffer.freq_params[8];
+    bfreqs2a.w_upper = buffer.freq_params[9];
+    bfreqs2a.w_lower = buffer.freq_params[10];
+    bfreqs2a.W_scale = buffer.freq_params[11];
+    ffreqs2a.N_w = (int)buffer.freq_params[12];
+    ffreqs2a.w_upper = buffer.freq_params[13];
+    ffreqs2a.w_lower = buffer.freq_params[14];
+    ffreqs2a.W_scale = buffer.freq_params[15];
+    bfreqs2p.N_w = (int)buffer.freq_params[32];
+    bfreqs2p.w_upper = buffer.freq_params[33];
+    bfreqs2p.w_lower = buffer.freq_params[34];
+    bfreqs2p.W_scale = buffer.freq_params[35];
+    ffreqs2p.N_w = (int)buffer.freq_params[36];
+    ffreqs2p.w_upper = buffer.freq_params[37];
+    ffreqs2p.w_lower = buffer.freq_params[38];
+    ffreqs2p.W_scale = buffer.freq_params[39];
+    bfreqs2t.N_w = (int)buffer.freq_params[40];
+    bfreqs2t.w_upper = buffer.freq_params[41];
+    bfreqs2t.w_lower = buffer.freq_params[42];
+    bfreqs2t.W_scale = buffer.freq_params[43];
+    ffreqs2t.N_w = (int)buffer.freq_params[44];
+    ffreqs2t.w_upper = buffer.freq_params[45];
+    ffreqs2t.w_lower = buffer.freq_params[46];
+    ffreqs2t.W_scale = buffer.freq_params[47];
+    bfreqs2a.initialize_grid();
+    ffreqs2a.initialize_grid();
+    bfreqs2p.initialize_grid();
+    ffreqs2p.initialize_grid();
+    bfreqs2t.initialize_grid();
+    ffreqs2t.initialize_grid();
+    result.vertex[0].avertex().K2.frequencies_K2.b = bfreqs2a;
+    result.vertex[0].pvertex().K2.frequencies_K2.b = bfreqs2a;
+    result.vertex[0].tvertex().K2.frequencies_K2.b = bfreqs2p;
+    result.vertex[0].avertex().K2.frequencies_K2.f = ffreqs2p;
+    result.vertex[0].pvertex().K2.frequencies_K2.f = ffreqs2t;
+    result.vertex[0].tvertex().K2.frequencies_K2.f = ffreqs2t;
+#endif
+#if MAX_DIAG_CLASS >= 3
+    FrequencyGrid bfreqs3a ('b', 3, Lambda_ini);
+    FrequencyGrid ffreqs3a ('f', 3, Lambda_ini);
+    FrequencyGrid bfreqs3p ('b', 3, Lambda_ini);
+    FrequencyGrid ffreqs3p ('f', 3, Lambda_ini);
+    FrequencyGrid bfreqs3t ('b', 3, Lambda_ini);
+    FrequencyGrid ffreqs3t ('f', 3, Lambda_ini);
+    bfreqs3a.N_w = (int)buffer.freq_params[16];
+    bfreqs3a.w_upper = buffer.freq_params[17];
+    bfreqs3a.w_lower = buffer.freq_params[18];
+    bfreqs3a.W_scale = buffer.freq_params[19];
+    ffreqs3a.N_w = (int)buffer.freq_params[20];
+    ffreqs3a.w_upper = buffer.freq_params[21];
+    ffreqs3a.w_lower = buffer.freq_params[22];
+    ffreqs3a.W_scale = buffer.freq_params[23];
+    bfreqs3p.N_w = (int)buffer.freq_params[48];
+    bfreqs3p.w_upper = buffer.freq_params[49];
+    bfreqs3p.w_lower = buffer.freq_params[50];
+    bfreqs3p.W_scale = buffer.freq_params[51];
+    ffreqs3p.N_w = (int)buffer.freq_params[52];
+    ffreqs3p.w_upper = buffer.freq_params[53];
+    ffreqs3p.w_lower = buffer.freq_params[54];
+    ffreqs3p.W_scale = buffer.freq_params[55];
+    bfreqs3t.N_w = (int)buffer.freq_params[56];
+    bfreqs3t.w_upper = buffer.freq_params[57];
+    bfreqs3t.w_lower = buffer.freq_params[58];
+    bfreqs3t.W_scale = buffer.freq_params[59];
+    ffreqs3t.N_w = (int)buffer.freq_params[60];
+    ffreqs3t.w_upper = buffer.freq_params[61];
+    ffreqs3t.w_lower = buffer.freq_params[62];
+    ffreqs3t.W_scale = buffer.freq_params[63];
+    bfreqs3a.initialize_grid();
+    ffreqs3a.initialize_grid();
+    bfreqs3p.initialize_grid();
+    ffreqs3p.initialize_grid();
+    bfreqs3t.initialize_grid();
+    ffreqs3t.initialize_grid();
+    result.vertex[0].avertex().K3.frequencies_K3.b = bfreqs3a;
+    result.vertex[0].pvertex().K3.frequencies_K3.b = bfreqs3a;
+    result.vertex[0].tvertex().K3.frequencies_K3.b = bfreqs3p;
+    result.vertex[0].avertex().K3.frequencies_K3.f = ffreqs3p;
+    result.vertex[0].pvertex().K3.frequencies_K3.f = ffreqs3t;
+    result.vertex[0].tvertex().K3.frequencies_K3.f = ffreqs3t;
+#endif
+}
+
+/**
+ * Copy results that are read from a file to a buffer into a State object.
+ * @param result : Empty State object into which result is copied.
+ * @param buffer : Buffer from which result is read. Should contain data read from a file.
+ */
+template <typename Q>
+void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
+    Q val; // buffer value
+
+    result.Lambda = *buffer.lambda;
+
+    for (int i=0; i<buffer.self_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
+#else
+        val = buffer.selfenergy[i].im;
+#endif
+        result.selfenergy.direct_set(i, val);
+    }
+    for (int i=0; i<buffer.irred_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
+#else
+        val = buffer.irreducible_class[i].re;
+#endif
+        result.vertex[0].irred().direct_set(i, val);
+    }
+#if MAX_DIAG_CLASS >= 1
+    for (int i=0; i<buffer.K1_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
+#else
+        val = buffer.K1_class_a[i].re;
+#endif
+        result.vertex[0].avertex().K1.direct_set(i, val);
+
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
+#else
+        val = buffer.K1_class_p[i].re;
+#endif
+        result.vertex[0].pvertex().K1.direct_set(i, val);
+
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
+#else
+        val = buffer.K1_class_t[i].re;
+#endif
+        result.vertex[0].tvertex().K1.direct_set(i, val);
+    }
+#endif
+#if MAX_DIAG_CLASS >= 2
+    for (int i=0; i<buffer.K2_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
+#else
+        val = buffer.K2_class_a[i].re;
+#endif
+        result.vertex[0].avertex().K2.direct_set(i, val);
+
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
+#else
+        val = buffer.K2_class_p[i].re;
+#endif
+        result.vertex[0].pvertex().K2.direct_set(i, val);
+
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
+#else
+        val = buffer.K2_class_t[i].re;
+#endif
+        result.vertex[0].tvertex().K2.direct_set(i, val);
+    }
+#endif
+#if MAX_DIAG_CLASS >= 3
+    for (int i=0; i<buffer.K3_dim; ++i) {
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
+#else
+        val = buffer.K3_class_a[i].re;
+#endif
+        result.vertex[0].avertex().K3.direct_set(i, val);
+
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
+#else
+        val = buffer.K3_class_p[i].re;
+#endif
+        result.vertex[0].pvertex().K3.direct_set(i, val);
+
+#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+        val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
+#else
+        val = buffer.K3_class_t[i].re;
+#endif
+        result.vertex[0].tvertex().K3.direct_set(i, val);
+    }
+#endif
+}
+
+/**
+ * Read results from an existing file to a State object. Useful when resuming a computation (checkpointing).
+ * @param FILE_NAME   : File name.
+ * @param Lambda_it   : Lambda iteration from which to load result.
+ * @param Lambda_size : Total number of Lambda iterations saved in the file.
+ * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
+ * @return            : State object containing the result.
+ */
+State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it){
+    State<state_datatype> result(Lambda_ini);   // Initialize with ANY frequency grid, read grid from HDF file later
+    long Lambda_size = read_Lambdas_from_hdf(FILE_NAME).size();
+    if (Lambda_it < Lambda_size) {
+
+        // Open the file. Access rights: read-only
+        H5::H5File *file = 0;
+        file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
+
+        // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
+        Buffer buffer;
+
+        // Create the memory data type for storing complex numbers in file
+        H5::CompType mtype_comp = def_mtype_comp();
+
+        // Create the dimension arrays for objects in file and in buffer
+        Dims dims(buffer, Lambda_size);
+
+        // Read the data sets from the file to copy their content into the buffer
+        DataSets dataSets(file);
+
+        // Create the data spaces for the data sets in file and for buffer objects
+        H5::DataSpace dataSpaces_Lambda = dataSets.lambda.getSpace();
+        H5::DataSpace dataSpaces_freq_params;
+        try {   // storing frequency gri parameters was implemented later --> old files do not have it
+            dataSpaces_freq_params = dataSets.freq_params.getSpace();
+        }
+        catch (H5::DataSetIException error) {
+            error.printErrorStack();
+        }
+        H5::DataSpace dataSpaces_selfenergy = dataSets.self.getSpace();
+        H5::DataSpace dataSpaces_irreducible = dataSets.irred.getSpace();
+
+        H5::DataSpace dataSpaces_Lambda_buffer(1, dims.Lambda);
+        H5::DataSpace dataSpaces_freq_params_buffer(RANK_freqs-1, dims.freq_params_buffer_dims);
+        H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
+        H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
+
+#if MAX_DIAG_CLASS >= 1
+        H5::DataSpace dataSpaces_K1_a = dataSets.K1_a.getSpace();
+        H5::DataSpace dataSpaces_K1_p = dataSets.K1_p.getSpace();
+        H5::DataSpace dataSpaces_K1_t = dataSets.K1_t.getSpace();
+
+        H5::DataSpace dataSpaces_K1_a_buffer(RANK_K1-1, dims.K1_buffer);
+        H5::DataSpace dataSpaces_K1_p_buffer(RANK_K1-1, dims.K1_buffer);
+        H5::DataSpace dataSpaces_K1_t_buffer(RANK_K1-1, dims.K1_buffer);
+#endif
+
+#if MAX_DIAG_CLASS >= 2
+        H5::DataSpace dataSpaces_K2_a = dataSets.K2_a.getSpace();
+        H5::DataSpace dataSpaces_K2_p = dataSets.K2_p.getSpace();
+        H5::DataSpace dataSpaces_K2_t = dataSets.K2_t.getSpace();
+
+        H5::DataSpace dataSpaces_K2_a_buffer(RANK_K2-1, dims.K2_buffer);
+        H5::DataSpace dataSpaces_K2_p_buffer(RANK_K2-1, dims.K2_buffer);
+        H5::DataSpace dataSpaces_K2_t_buffer(RANK_K2-1, dims.K2_buffer);
+#endif
+
+#if MAX_DIAG_CLASS >= 3
+        H5::DataSpace dataSpaces_K3_a = dataSets.K3_a.getSpace();
+        H5::DataSpace dataSpaces_K3_p = dataSets.K3_p.getSpace();
+        H5::DataSpace dataSpaces_K3_t = dataSets.K3_t.getSpace();
+
+        H5::DataSpace dataSpaces_K3_a_buffer(RANK_K3-1, dims.K3_buffer);
+        H5::DataSpace dataSpaces_K3_p_buffer(RANK_K3-1, dims.K3_buffer);
+        H5::DataSpace dataSpaces_K3_t_buffer(RANK_K3-1, dims.K3_buffer);
+#endif
+
+
+        //Select hyperslab in the file where the data should be located
+        hsize_t start[2];
+        hsize_t stride[2];
+        hsize_t count[2];
+        hsize_t block[2];
+
+        start[0] = Lambda_it;
+        start[1] = 0;
+        for (int i = 0; i < 2; i++) {
+            stride[i] = 1;
+            block[i] = 1;
+        }
+        count[0] = 1;
+
+        /// load data into buffer
+
+        //hsize_t start_1D[1] = {Lambda_it};
+        //hsize_t stride_1D[1]= {1};
+        //hsize_t count_1D[1] = {1};
+        //hsize_t block_1D[1] = {1};
+        //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
+        //dataSets.lambda.read(buffer.lambda, H5::PredType::NATIVE_DOUBLE,
+        //                   dataSpaces_Lambda_buffer, dataSpaces_Lambda);
+
+        int rank = dataSpaces_Lambda.getSimpleExtentNdims();
+        /*
+         * Get the dimension size of each dimension in the dataspace and
+         * display them.
+         */
+        hsize_t dims_out[2];
+        int ndims = dataSpaces_Lambda.getSimpleExtentDims( dims_out, NULL);
+        //std::cout << "rank " << rank << ", dimensions " <<
+        //     (unsigned long)(dims_out[0]) << " x " <<
+        //     (unsigned long)(dims_out[1]) << std::endl;
+
+
+        H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
+
+        /// load data into buffer
+        double Lambdas_arr[dims_out[0]];
+        dataSets.lambda.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
+                             dataSpace_Lambda_buffer, dataSpaces_Lambda);
+        *buffer.lambda = Lambdas_arr[Lambda_it];
+
+
+        count[1] = N_freq_params;
+        try {   // storing frequency gri parameters was implemented later --> old files do not have it
+            dataSpaces_freq_params.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+            dataSets.freq_params.read(buffer.freq_params, H5::PredType::NATIVE_DOUBLE,
+                                      dataSpaces_freq_params_buffer, dataSpaces_freq_params);
+        }
+        catch (H5::DataSpaceIException error) {
+            error.printErrorStack();
+        }
+
+        count[1] = buffer.self_dim;
+        dataSpaces_selfenergy.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSets.self.read(buffer.selfenergy, mtype_comp,
+                           dataSpaces_selfenergy_buffer, dataSpaces_selfenergy);
+
+        count[1] = buffer.irred_dim;
+        dataSpaces_irreducible.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSets.irred.read(buffer.irreducible_class, mtype_comp,
+                            dataSpaces_irreducible_buffer, dataSpaces_irreducible);
+
+
+#if MAX_DIAG_CLASS >= 1
+        count[1] = buffer.K1_dim;
+        dataSpaces_K1_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_K1_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_K1_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+
+        dataSets.K1_a.read(buffer.K1_class_a, mtype_comp, dataSpaces_K1_a_buffer, dataSpaces_K1_a);
+        dataSets.K1_p.read(buffer.K1_class_p, mtype_comp, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
+        dataSets.K1_t.read(buffer.K1_class_t, mtype_comp, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
+#endif
+#if MAX_DIAG_CLASS >= 2
+        count[1] = buffer.K2_dim;
+        dataSpaces_K2_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_K2_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_K2_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+
+        dataSets.K2_a.read(buffer.K2_class_a, mtype_comp, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
+        dataSets.K2_p.read(buffer.K2_class_p, mtype_comp, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
+        dataSets.K2_t.read(buffer.K2_class_t, mtype_comp, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
+#endif
+#if MAX_DIAG_CLASS >= 3
+        count[1] = buffer.K3_dim;
+        dataSpaces_K3_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_K3_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        dataSpaces_K3_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+
+        dataSets.K3_a.read(buffer.K3_class_a, mtype_comp, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
+        dataSets.K3_p.read(buffer.K3_class_p, mtype_comp, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
+        dataSets.K3_t.read(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
+
+#endif
+
+        // Initialize the frequency grids of the result State using the parameters stored in buffer
+        result_set_frequency_grids(result, buffer);
+
+        // Copy the buffered result into State object
+        copy_buffer_to_result(result, buffer);
+
+        // Terminate
+        dataSets.close(true);
+        file->close();
+        delete file;
+
+        return result;
+
+    } else {
+        throw std::runtime_error("Cannot read from file " + FILE_NAME + " since Lambda layer out of range");
+    }
+}
+
+
+
+
 /// --- Functions for writing data to file --- ///
 
 /**
@@ -1267,12 +1765,12 @@ void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, 
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  */
 template <typename Q>
-void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
-             State<Q>& state_in, rvec& Lambdas) {
+void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_in, rvec& Lambdas) {
 #ifdef MPI_FLAG
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
     {
+        long Lambda_size = read_Lambdas_from_hdf(FILE_NAME).size();
         // write data to file if Lambda iteration number is in allowed range, otherwise print error message
         if (Lambda_it < Lambda_size) {
             save_to_hdf(FILE_NAME, Lambda_it, Lambda_size, state_in, Lambdas, true);
@@ -1281,506 +1779,19 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         }
     }
 }
+/// Overload of above function that only updates the Lambda at iteration Lambda_it
+template <typename Q>
+void add_hdf(const H5std_string FILE_NAME, const double Lambda_now, int Lambda_it, const State<Q>& state_in) {
+    rvec Lambdas = read_Lambdas_from_hdf(FILE_NAME);
+    Lambdas[Lambda_it] = Lambda_now; // update Lambda
+    add_hdf<Q>(FILE_NAME, Lambda_it, state_in, Lambdas);
+}
+
 
 /** overload of add_hdf for non-States, does not do anything */
 template <typename Q>
 void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
              Q& state_in, rvec& Lambdas) {}
-
-
-/// --- Functions for reading data from file --- ///
-
-/**
- * Read Lambdas from an existing file
- * @param FILE_NAME   : File name
- * @return            : Lambdas in a vector of doubles
- */
-rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
-
-
-
-    // Open the file. Access rights: read-only
-    H5::H5File *file = 0;
-    file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
-
-    H5::DataSet lambda_dataset = file->openDataSet("lambdas");
-
-    // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
-    //Buffer buffer;
-
-    // Create the memory data type for storing complex numbers in file
-    //H5::CompType mtype_comp = def_mtype_comp();
-
-    // Create the dimension arrays for objects in file and in buffer
-    //Dims dims(buffer, Lambda_size);
-
-    // Read the data sets from the file to copy their content into the buffer
-    //DataSets dataSets(file);
-
-    // Create the data spaces for the data sets in file and for buffer objects
-    H5::DataSpace dataSpace_Lambda = lambda_dataset.getSpace();
-    /*
-     * Get the number of dimensions in the dataspace.
-     */
-    int rank = dataSpace_Lambda.getSimpleExtentNdims();
-    /*
-     * Get the dimension size of each dimension in the dataspace and
-     * display them.
-     */
-    hsize_t dims_out[2];
-    int ndims = dataSpace_Lambda.getSimpleExtentDims( dims_out, NULL);
-    //std::cout << "rank " << rank << ", dimensions " <<
-    //     (unsigned long)(dims_out[0]) << " x " <<
-    //     (unsigned long)(dims_out[1]) << std::endl;
-
-
-    H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
-
-    /// load data into buffer
-
-    //hsize_t start_1D[1] = {Lambda_it};
-    //hsize_t stride_1D[1]= {1};
-    //hsize_t count_1D[1] = {1};
-    //hsize_t block_1D[1] = {1};
-    //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
-    double Lambdas_arr[dims_out[0]];
-    lambda_dataset.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
-                        dataSpace_Lambda_buffer, dataSpace_Lambda);
-
-    rvec Lambdas (Lambdas_arr, Lambdas_arr + sizeof(Lambdas_arr) / sizeof(double));
-
-    // Terminate
-    lambda_dataset.close();
-    file->close();
-    delete file;
-
-    return Lambdas;
-
-
-}
-
-/**
- * Initialize the frequency grids of the result using the parameters stored in buffer.
- * @param result : Empty State object into which result is copied.
- * @param buffer : Buffer from which result is read. Should contain data read from a file.
- */
-template <typename Q>
-void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
-    // create new frequency grids
-    FrequencyGrid bfreqsa ('b', 1, Lambda_ini);
-    FrequencyGrid bfreqsp ('b', 1, Lambda_ini);
-    FrequencyGrid bfreqst ('b', 1, Lambda_ini);
-    FrequencyGrid ffreqs ('f', 1, Lambda_ini);
-    // read grid parameters from buffer
-    bfreqsa.N_w = (int)buffer.freq_params[0];
-    bfreqsa.w_upper = buffer.freq_params[1];
-    bfreqsa.w_lower = buffer.freq_params[2];
-    bfreqsa.W_scale = buffer.freq_params[3];
-    ffreqs.N_w = (int)buffer.freq_params[4];
-    ffreqs.w_upper = buffer.freq_params[5];
-    ffreqs.w_lower = buffer.freq_params[6];
-    ffreqs.W_scale = buffer.freq_params[7];
-    bfreqsp.N_w = (int)buffer.freq_params[24];
-    bfreqsp.w_upper = buffer.freq_params[25];
-    bfreqsp.w_lower = buffer.freq_params[26];
-    bfreqsp.W_scale = buffer.freq_params[27];
-    bfreqst.N_w = (int)buffer.freq_params[28];
-    bfreqst.w_upper = buffer.freq_params[29];
-    bfreqst.w_lower = buffer.freq_params[30];
-    bfreqst.W_scale = buffer.freq_params[31];
-    // initialize grids
-    bfreqsa.initialize_grid();
-    bfreqsp.initialize_grid();
-    bfreqst.initialize_grid();
-    ffreqs.initialize_grid();
-    // copy grids to result
-    result.selfenergy.frequencies = ffreqs;
-    result.vertex[0].avertex().K1.frequencies_K1.b = bfreqsa;
-    result.vertex[0].pvertex().K1.frequencies_K1.b = bfreqsp;
-    result.vertex[0].tvertex().K1.frequencies_K1.b = bfreqst;
-#if MAX_DIAG_CLASS >= 2
-    FrequencyGrid bfreqs2a ('b', 2, Lambda_ini);
-    FrequencyGrid ffreqs2a ('f', 2, Lambda_ini);
-    FrequencyGrid bfreqs2p ('b', 2, Lambda_ini);
-    FrequencyGrid ffreqs2p ('f', 2, Lambda_ini);
-    FrequencyGrid bfreqs2t ('b', 2, Lambda_ini);
-    FrequencyGrid ffreqs2t ('f', 2, Lambda_ini);
-    bfreqs2a.N_w = (int)buffer.freq_params[8];
-    bfreqs2a.w_upper = buffer.freq_params[9];
-    bfreqs2a.w_lower = buffer.freq_params[10];
-    bfreqs2a.W_scale = buffer.freq_params[11];
-    ffreqs2a.N_w = (int)buffer.freq_params[12];
-    ffreqs2a.w_upper = buffer.freq_params[13];
-    ffreqs2a.w_lower = buffer.freq_params[14];
-    ffreqs2a.W_scale = buffer.freq_params[15];
-    bfreqs2p.N_w = (int)buffer.freq_params[32];
-    bfreqs2p.w_upper = buffer.freq_params[33];
-    bfreqs2p.w_lower = buffer.freq_params[34];
-    bfreqs2p.W_scale = buffer.freq_params[35];
-    ffreqs2p.N_w = (int)buffer.freq_params[36];
-    ffreqs2p.w_upper = buffer.freq_params[37];
-    ffreqs2p.w_lower = buffer.freq_params[38];
-    ffreqs2p.W_scale = buffer.freq_params[39];
-    bfreqs2t.N_w = (int)buffer.freq_params[40];
-    bfreqs2t.w_upper = buffer.freq_params[41];
-    bfreqs2t.w_lower = buffer.freq_params[42];
-    bfreqs2t.W_scale = buffer.freq_params[43];
-    ffreqs2t.N_w = (int)buffer.freq_params[44];
-    ffreqs2t.w_upper = buffer.freq_params[45];
-    ffreqs2t.w_lower = buffer.freq_params[46];
-    ffreqs2t.W_scale = buffer.freq_params[47];
-    bfreqs2a.initialize_grid();
-    ffreqs2a.initialize_grid();
-    bfreqs2p.initialize_grid();
-    ffreqs2p.initialize_grid();
-    bfreqs2t.initialize_grid();
-    ffreqs2t.initialize_grid();
-    result.vertex[0].avertex().K2.frequencies_K2.b = bfreqs2a;
-    result.vertex[0].pvertex().K2.frequencies_K2.b = bfreqs2a;
-    result.vertex[0].tvertex().K2.frequencies_K2.b = bfreqs2p;
-    result.vertex[0].avertex().K2.frequencies_K2.f = ffreqs2p;
-    result.vertex[0].pvertex().K2.frequencies_K2.f = ffreqs2t;
-    result.vertex[0].tvertex().K2.frequencies_K2.f = ffreqs2t;
-#endif
-#if MAX_DIAG_CLASS >= 3
-    FrequencyGrid bfreqs3a ('b', 3, Lambda_ini);
-    FrequencyGrid ffreqs3a ('f', 3, Lambda_ini);
-    FrequencyGrid bfreqs3p ('b', 3, Lambda_ini);
-    FrequencyGrid ffreqs3p ('f', 3, Lambda_ini);
-    FrequencyGrid bfreqs3t ('b', 3, Lambda_ini);
-    FrequencyGrid ffreqs3t ('f', 3, Lambda_ini);
-    bfreqs3a.N_w = (int)buffer.freq_params[16];
-    bfreqs3a.w_upper = buffer.freq_params[17];
-    bfreqs3a.w_lower = buffer.freq_params[18];
-    bfreqs3a.W_scale = buffer.freq_params[19];
-    ffreqs3a.N_w = (int)buffer.freq_params[20];
-    ffreqs3a.w_upper = buffer.freq_params[21];
-    ffreqs3a.w_lower = buffer.freq_params[22];
-    ffreqs3a.W_scale = buffer.freq_params[23];
-    bfreqs3p.N_w = (int)buffer.freq_params[48];
-    bfreqs3p.w_upper = buffer.freq_params[49];
-    bfreqs3p.w_lower = buffer.freq_params[50];
-    bfreqs3p.W_scale = buffer.freq_params[51];
-    ffreqs3p.N_w = (int)buffer.freq_params[52];
-    ffreqs3p.w_upper = buffer.freq_params[53];
-    ffreqs3p.w_lower = buffer.freq_params[54];
-    ffreqs3p.W_scale = buffer.freq_params[55];
-    bfreqs3t.N_w = (int)buffer.freq_params[56];
-    bfreqs3t.w_upper = buffer.freq_params[57];
-    bfreqs3t.w_lower = buffer.freq_params[58];
-    bfreqs3t.W_scale = buffer.freq_params[59];
-    ffreqs3t.N_w = (int)buffer.freq_params[60];
-    ffreqs3t.w_upper = buffer.freq_params[61];
-    ffreqs3t.w_lower = buffer.freq_params[62];
-    ffreqs3t.W_scale = buffer.freq_params[63];
-    bfreqs3a.initialize_grid();
-    ffreqs3a.initialize_grid();
-    bfreqs3p.initialize_grid();
-    ffreqs3p.initialize_grid();
-    bfreqs3t.initialize_grid();
-    ffreqs3t.initialize_grid();
-    result.vertex[0].avertex().K3.frequencies_K3.b = bfreqs3a;
-    result.vertex[0].pvertex().K3.frequencies_K3.b = bfreqs3a;
-    result.vertex[0].tvertex().K3.frequencies_K3.b = bfreqs3p;
-    result.vertex[0].avertex().K3.frequencies_K3.f = ffreqs3p;
-    result.vertex[0].pvertex().K3.frequencies_K3.f = ffreqs3t;
-    result.vertex[0].tvertex().K3.frequencies_K3.f = ffreqs3t;
-#endif
-}
-
-/**
- * Copy results that are read from a file to a buffer into a State object.
- * @param result : Empty State object into which result is copied.
- * @param buffer : Buffer from which result is read. Should contain data read from a file.
- */
-template <typename Q>
-void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
-    Q val; // buffer value
-
-    result.Lambda = *buffer.lambda;
-
-    for (int i=0; i<buffer.self_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
-#else
-        val = buffer.selfenergy[i].im;
-#endif
-        result.selfenergy.direct_set(i, val);
-    }
-    for (int i=0; i<buffer.irred_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
-#else
-        val = buffer.irreducible_class[i].re;
-#endif
-        result.vertex[0].irred().direct_set(i, val);
-    }
-#if MAX_DIAG_CLASS >= 1
-    for (int i=0; i<buffer.K1_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
-#else
-        val = buffer.K1_class_a[i].re;
-#endif
-        result.vertex[0].avertex().K1.direct_set(i, val);
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
-#else
-        val = buffer.K1_class_p[i].re;
-#endif
-        result.vertex[0].pvertex().K1.direct_set(i, val);
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
-#else
-        val = buffer.K1_class_t[i].re;
-#endif
-        result.vertex[0].tvertex().K1.direct_set(i, val);
-    }
-#endif
-#if MAX_DIAG_CLASS >= 2
-    for (int i=0; i<buffer.K2_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
-#else
-        val = buffer.K2_class_a[i].re;
-#endif
-        result.vertex[0].avertex().K2.direct_set(i, val);
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
-#else
-        val = buffer.K2_class_p[i].re;
-#endif
-        result.vertex[0].pvertex().K2.direct_set(i, val);
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
-#else
-        val = buffer.K2_class_t[i].re;
-#endif
-        result.vertex[0].tvertex().K2.direct_set(i, val);
-    }
-#endif
-#if MAX_DIAG_CLASS >= 3
-    for (int i=0; i<buffer.K3_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
-#else
-        val = buffer.K3_class_a[i].re;
-#endif
-        result.vertex[0].avertex().K3.direct_set(i, val);
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
-#else
-        val = buffer.K3_class_p[i].re;
-#endif
-        result.vertex[0].pvertex().K3.direct_set(i, val);
-
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
-        val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
-#else
-        val = buffer.K3_class_t[i].re;
-#endif
-        result.vertex[0].tvertex().K3.direct_set(i, val);
-    }
-#endif
-}
-
-/**
- * Read results from an existing file to a State object. Useful when resuming a computation (checkpointing).
- * @param FILE_NAME   : File name.
- * @param Lambda_it   : Lambda iteration from which to load result.
- * @param Lambda_size : Total number of Lambda iterations saved in the file.
- * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
- * @return            : State object containing the result.
- */
-State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it){
-    State<state_datatype> result(Lambda_ini);   // Initialize with ANY frequency grid, read grid from HDF file later
-    long Lambda_size = read_Lambdas_from_hdf(FILE_NAME).size();
-    if (Lambda_it < Lambda_size) {
-
-        // Open the file. Access rights: read-only
-        H5::H5File *file = 0;
-        file = new H5::H5File(FILE_NAME, H5F_ACC_RDONLY);
-
-        // Prepare a buffer to which data from file is written. Buffer is copied to result eventually.
-        Buffer buffer;
-
-        // Create the memory data type for storing complex numbers in file
-        H5::CompType mtype_comp = def_mtype_comp();
-
-        // Create the dimension arrays for objects in file and in buffer
-        Dims dims(buffer, Lambda_size);
-
-        // Read the data sets from the file to copy their content into the buffer
-        DataSets dataSets(file);
-
-        // Create the data spaces for the data sets in file and for buffer objects
-        H5::DataSpace dataSpaces_Lambda = dataSets.lambda.getSpace();
-        H5::DataSpace dataSpaces_freq_params;
-        try {   // storing frequency gri parameters was implemented later --> old files do not have it
-            dataSpaces_freq_params = dataSets.freq_params.getSpace();
-        }
-        catch (H5::DataSetIException error) {
-            error.printErrorStack();
-        }
-        H5::DataSpace dataSpaces_selfenergy = dataSets.self.getSpace();
-        H5::DataSpace dataSpaces_irreducible = dataSets.irred.getSpace();
-
-        H5::DataSpace dataSpaces_Lambda_buffer(1, dims.Lambda);
-        H5::DataSpace dataSpaces_freq_params_buffer(RANK_freqs-1, dims.freq_params_buffer_dims);
-        H5::DataSpace dataSpaces_selfenergy_buffer(RANK_self-1, dims.selfenergy_buffer);
-        H5::DataSpace dataSpaces_irreducible_buffer(RANK_irreducible-1, dims.irreducible_buffer);
-
-#if MAX_DIAG_CLASS >= 1
-        H5::DataSpace dataSpaces_K1_a = dataSets.K1_a.getSpace();
-        H5::DataSpace dataSpaces_K1_p = dataSets.K1_p.getSpace();
-        H5::DataSpace dataSpaces_K1_t = dataSets.K1_t.getSpace();
-
-        H5::DataSpace dataSpaces_K1_a_buffer(RANK_K1-1, dims.K1_buffer);
-        H5::DataSpace dataSpaces_K1_p_buffer(RANK_K1-1, dims.K1_buffer);
-        H5::DataSpace dataSpaces_K1_t_buffer(RANK_K1-1, dims.K1_buffer);
-#endif
-
-#if MAX_DIAG_CLASS >= 2
-        H5::DataSpace dataSpaces_K2_a = dataSets.K2_a.getSpace();
-        H5::DataSpace dataSpaces_K2_p = dataSets.K2_p.getSpace();
-        H5::DataSpace dataSpaces_K2_t = dataSets.K2_t.getSpace();
-
-        H5::DataSpace dataSpaces_K2_a_buffer(RANK_K2-1, dims.K2_buffer);
-        H5::DataSpace dataSpaces_K2_p_buffer(RANK_K2-1, dims.K2_buffer);
-        H5::DataSpace dataSpaces_K2_t_buffer(RANK_K2-1, dims.K2_buffer);
-#endif
-
-#if MAX_DIAG_CLASS >= 3
-        H5::DataSpace dataSpaces_K3_a = dataSets.K3_a.getSpace();
-        H5::DataSpace dataSpaces_K3_p = dataSets.K3_p.getSpace();
-        H5::DataSpace dataSpaces_K3_t = dataSets.K3_t.getSpace();
-
-        H5::DataSpace dataSpaces_K3_a_buffer(RANK_K3-1, dims.K3_buffer);
-        H5::DataSpace dataSpaces_K3_p_buffer(RANK_K3-1, dims.K3_buffer);
-        H5::DataSpace dataSpaces_K3_t_buffer(RANK_K3-1, dims.K3_buffer);
-#endif
-
-
-        //Select hyperslab in the file where the data should be located
-        hsize_t start[2];
-        hsize_t stride[2];
-        hsize_t count[2];
-        hsize_t block[2];
-
-        start[0] = Lambda_it;
-        start[1] = 0;
-        for (int i = 0; i < 2; i++) {
-            stride[i] = 1;
-            block[i] = 1;
-        }
-        count[0] = 1;
-
-        /// load data into buffer
-
-        //hsize_t start_1D[1] = {Lambda_it};
-        //hsize_t stride_1D[1]= {1};
-        //hsize_t count_1D[1] = {1};
-        //hsize_t block_1D[1] = {1};
-        //dataSpaces_Lambda.selectHyperslab(H5S_SELECT_SET, count_1D, start_1D, stride_1D, block_1D);
-        //dataSets.lambda.read(buffer.lambda, H5::PredType::NATIVE_DOUBLE,
-        //                   dataSpaces_Lambda_buffer, dataSpaces_Lambda);
-
-        int rank = dataSpaces_Lambda.getSimpleExtentNdims();
-        /*
-         * Get the dimension size of each dimension in the dataspace and
-         * display them.
-         */
-        hsize_t dims_out[2];
-        int ndims = dataSpaces_Lambda.getSimpleExtentDims( dims_out, NULL);
-        //std::cout << "rank " << rank << ", dimensions " <<
-        //     (unsigned long)(dims_out[0]) << " x " <<
-        //     (unsigned long)(dims_out[1]) << std::endl;
-
-
-        H5::DataSpace dataSpace_Lambda_buffer(1, dims_out);
-
-        /// load data into buffer
-        double Lambdas_arr[dims_out[0]];
-        dataSets.lambda.read(Lambdas_arr, H5::PredType::NATIVE_DOUBLE,
-                            dataSpace_Lambda_buffer, dataSpaces_Lambda);
-        *buffer.lambda = Lambdas_arr[Lambda_it];
-
-
-        count[1] = N_freq_params;
-        try {   // storing frequency gri parameters was implemented later --> old files do not have it
-            dataSpaces_freq_params.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-            dataSets.freq_params.read(buffer.freq_params, H5::PredType::NATIVE_DOUBLE,
-                                      dataSpaces_freq_params_buffer, dataSpaces_freq_params);
-        }
-        catch (H5::DataSpaceIException error) {
-            error.printErrorStack();
-        }
-
-        count[1] = buffer.self_dim;
-        dataSpaces_selfenergy.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSets.self.read(buffer.selfenergy, mtype_comp,
-                           dataSpaces_selfenergy_buffer, dataSpaces_selfenergy);
-
-        count[1] = buffer.irred_dim;
-        dataSpaces_irreducible.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSets.irred.read(buffer.irreducible_class, mtype_comp,
-                            dataSpaces_irreducible_buffer, dataSpaces_irreducible);
-
-
-#if MAX_DIAG_CLASS >= 1
-        count[1] = buffer.K1_dim;
-        dataSpaces_K1_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSpaces_K1_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSpaces_K1_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-
-        dataSets.K1_a.read(buffer.K1_class_a, mtype_comp, dataSpaces_K1_a_buffer, dataSpaces_K1_a);
-        dataSets.K1_p.read(buffer.K1_class_p, mtype_comp, dataSpaces_K1_p_buffer, dataSpaces_K1_p);
-        dataSets.K1_t.read(buffer.K1_class_t, mtype_comp, dataSpaces_K1_t_buffer, dataSpaces_K1_t);
-#endif
-#if MAX_DIAG_CLASS >= 2
-        count[1] = buffer.K2_dim;
-        dataSpaces_K2_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSpaces_K2_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSpaces_K2_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-
-        dataSets.K2_a.read(buffer.K2_class_a, mtype_comp, dataSpaces_K2_a_buffer, dataSpaces_K2_a);
-        dataSets.K2_p.read(buffer.K2_class_p, mtype_comp, dataSpaces_K2_p_buffer, dataSpaces_K2_p);
-        dataSets.K2_t.read(buffer.K2_class_t, mtype_comp, dataSpaces_K2_t_buffer, dataSpaces_K2_t);
-#endif
-#if MAX_DIAG_CLASS >= 3
-        count[1] = buffer.K3_dim;
-        dataSpaces_K3_a.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSpaces_K3_p.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-        dataSpaces_K3_t.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
-
-        dataSets.K3_a.read(buffer.K3_class_a, mtype_comp, dataSpaces_K3_a_buffer, dataSpaces_K3_a);
-        dataSets.K3_p.read(buffer.K3_class_p, mtype_comp, dataSpaces_K3_p_buffer, dataSpaces_K3_p);
-        dataSets.K3_t.read(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
-
-#endif
-
-        // Initialize the frequency grids of the result State using the parameters stored in buffer
-        result_set_frequency_grids(result, buffer);
-
-        // Copy the buffered result into State object
-        copy_buffer_to_result(result, buffer);
-
-        // Terminate
-        dataSets.close(true);
-        file->close();
-        delete file;
-
-        return result;
-
-    } else {
-        throw std::runtime_error("Cannot read from file " + FILE_NAME + " since Lambda layer out of range");
-    }
-}
 
 
 

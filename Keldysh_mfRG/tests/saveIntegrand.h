@@ -81,9 +81,9 @@ namespace saveIntegrand {
 
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,0); // read Psi
+        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -135,9 +135,9 @@ namespace saveIntegrand {
                 const K_class k_class, const char channel, const int i0, const int i2, const double w,
                 const double v, const double vp, const int i_in) {
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi,  0); // read Psi
+        State<Q> Psi = read_hdf(file_Psi,  it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,0); // read Psi
+        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -161,9 +161,9 @@ namespace saveIntegrand {
         /// TODO: Sanity check for input parameters
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi,0); // read Psi
+        State<Q> Psi = read_hdf(file_Psi,it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,0); // read Psi
+        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -188,8 +188,8 @@ namespace saveIntegrand {
         // read Psi for vertex
         State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi_L= read_hdf(file_dGammaL,0); // read Psi
-        State<Q>dPsi_R= read_hdf(file_dGammaR,0); // read Psi
+        State<Q>dPsi_L= read_hdf(file_dGammaL,it_Lambda); // read Psi
+        State<Q>dPsi_R= read_hdf(file_dGammaR,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -218,10 +218,10 @@ namespace saveIntegrand {
         const K_class k_class, const char channel, const int i0, const int i2, const double w,
         const double v, const double vp, const int i_in) {
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi_L= read_hdf(file_dGammaL,0); // read Psi
-        State<Q>dPsi_R= read_hdf(file_dGammaR,0); // read Psi
+        State<Q>dPsi_L= read_hdf(file_dGammaL,it_Lambda); // read Psi
+        State<Q>dPsi_R= read_hdf(file_dGammaR,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -251,9 +251,9 @@ namespace saveIntegrand {
                       const int i2, const double v, const int i_in) {
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
+        State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,0); // read Psi
+        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -287,8 +287,8 @@ template <typename Q>
 void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const int rkStep) {
 
     dir_str = dir_str + "intermediateResults/";
-    const std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
-    const std::string file_dPsi= dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string file_Psi = dir_str + "Psi_RKstep"+std::to_string(rkStep);
+    const std::string file_dPsi= dir_str +"dPsi_RKstep"+std::to_string(rkStep);
 
 
     K_class k_class = k2;
@@ -308,7 +308,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
 
     std::string dir_integrand_str = "integrands/";
     makedir(dir_integrand_str);
-    const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_RKstep"+std::to_string(rkStep);
 
     for (double w_temp: ws) {
         for (double v_temp: vs) {
@@ -333,14 +333,14 @@ void get_integrand_dGammaL(std::string dir_str, const int it_Lambda, const int r
 
 
     dir_str = dir_str + "intermediateResults/";
-    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    std::string file_Psi = dir_str + "Psi_RKstep"+std::to_string(rkStep);
     std::string file_dPsi;
     if (i_loop < 2) assert(false);
     else if (i_loop == 2) {
-        file_dPsi = dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+        file_dPsi = dir_str + "dPsi_RKstep"+std::to_string(rkStep);
     }
     else {
-        file_dPsi = dir_str +"dPsi_T"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+        file_dPsi = dir_str +"dPsi_T_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
     }
     K_class k_class = k1;
     char channel = 'a';
@@ -355,7 +355,7 @@ void get_integrand_dGammaL(std::string dir_str, const int it_Lambda, const int r
 
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
-    const std::string filename_prefix = "dGammaL_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string filename_prefix = "dGammaL_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_L<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
 
 }
@@ -365,14 +365,14 @@ template <typename Q>
 void get_integrand_dGammaR(std::string dir_str, const int it_Lambda, const int rkStep, const int i_loop) {
 
     dir_str = dir_str + "intermediateResults/";
-    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    std::string file_Psi = dir_str + "Psi_RKstep"+std::to_string(rkStep);
     std::string file_dPsi;
     if (i_loop < 2) assert(false);
     else if (i_loop == 2) {
-        file_dPsi = dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+        file_dPsi = dir_str + "dPsi_RKstep"+std::to_string(rkStep);
     }
     else {
-        file_dPsi = dir_str +"dPsi_T"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+        file_dPsi = dir_str +"dPsi_T_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
     }
 
     K_class k_class = k1;
@@ -388,7 +388,7 @@ void get_integrand_dGammaR(std::string dir_str, const int it_Lambda, const int r
 
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
-    const std::string filename_prefix = "dGammaR_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string filename_prefix = "dGammaR_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_R<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
 
 }
@@ -398,10 +398,10 @@ template <typename Q>
 void get_integrand_dGammaC_left(std::string dir_str, const int it_Lambda, const int rkStep, const int i_loop) {
 
     dir_str = dir_str + "intermediateResults/";
-    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    std::string file_Psi = dir_str + "Psi"+"_RKstep"+std::to_string(rkStep);
     if (i_loop < 3) assert(false);
-    std::string file_dPsi_L = dir_str+"dPsi_L_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
-    std::string file_dPsi_R = dir_str+"dPsi_R_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+    std::string file_dPsi_L = dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+    std::string file_dPsi_R = dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
 
 
     K_class k_class = k1;
@@ -417,7 +417,7 @@ void get_integrand_dGammaC_left(std::string dir_str, const int it_Lambda, const 
 
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
-    const std::string filename_prefix = "dGammaC_left_insertion_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string filename_prefix = "dGammaC_left_insertion_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_C_left_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
 
 }
@@ -426,10 +426,10 @@ template <typename Q>
 void get_integrand_dGammaC_right(std::string dir_str, const int it_Lambda, const int rkStep, const int i_loop) {
 
     dir_str = dir_str + "intermediateResults/";
-    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    std::string file_Psi = dir_str + "Psi_RKstep"+std::to_string(rkStep);
     if (i_loop < 3) assert(false);
-    std::string file_dPsi_L = dir_str+"dPsi_L_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
-    std::string file_dPsi_R = dir_str+"dPsi_R_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+    std::string file_dPsi_L = dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
+    std::string file_dPsi_R = dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);
 
 
     K_class k_class = k1;
@@ -445,7 +445,7 @@ void get_integrand_dGammaC_right(std::string dir_str, const int it_Lambda, const
 
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
-    const std::string filename_prefix = "dGammaC_right_insertion_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string filename_prefix = "dGammaC_right_insertion_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_C_right_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
 
 }
@@ -454,8 +454,8 @@ template <typename Q>
 void get_integrand_Sigma(std::string dir_str, const int it_Lambda, const int rkStep) {
 
     dir_str = dir_str + "intermediateResults/";
-    const std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
-    const std::string file_dPsi= dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string file_Psi = dir_str + "Psi"+"_RKstep"+std::to_string(rkStep);
+    const std::string file_dPsi= dir_str +"dPsi"+"_RKstep"+std::to_string(rkStep);
 
 
     int i2 = 0;         /// currently not supported --> wait until order of sum and integration are interchanged by Elias
@@ -466,7 +466,7 @@ void get_integrand_Sigma(std::string dir_str, const int it_Lambda, const int rkS
 
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
-    const std::string filename_prefix = "dSigma_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string filename_prefix = "dSigma_RKstep"+std::to_string(rkStep);
     saveIntegrand::dSigma<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, i2, v, i_in);
 
 }

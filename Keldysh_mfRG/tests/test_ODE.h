@@ -483,7 +483,7 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
         // compute direct result of PT4 K1a non-ladder at each Lambda step
         State<state_datatype> state_dir = compute_PT4_K1a_nonladder(Lambdas[i]);
         // save result to last layer in hdf5 file
-        add_hdf(filename + "_dir", i, Lambda_size, state_dir, Lambdas);
+        add_hdf(filename + "_dir", i, state_dir, Lambdas);
     }
 
     // compute flow of PT4 K1a non-ladder from initial to final Lambda

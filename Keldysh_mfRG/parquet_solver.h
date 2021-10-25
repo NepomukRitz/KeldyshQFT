@@ -273,7 +273,7 @@ void parquet_checks(const std::string filename) {
         if (i == 0)
             write_hdf(filename + "_parquet_checks", i, nL, parquet);
         else
-            add_hdf(filename + "_parquet_checks", i, nL, parquet, Lambdas);
+            add_hdf(filename + "_parquet_checks", i, parquet, Lambdas);
 
 
         // post-processing susceptibilities:
@@ -294,8 +294,8 @@ void parquet_checks(const std::string filename) {
             write_hdf(filename + "_susceptibilities_diff", i, nL, state_chi_diff);
         }
         else {
-            add_hdf(filename + "_susceptibilities", i, nL, state_chi, Lambdas);
-            add_hdf(filename + "_susceptibilities_diff", i, nL, state_chi_diff, Lambdas);
+            add_hdf(filename + "_susceptibilities", i, state_chi, Lambdas);
+            add_hdf(filename + "_susceptibilities_diff", i, state_chi_diff, Lambdas);
         }
 
     }
@@ -344,7 +344,7 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         print("iteration ", iteration, true);
         parquet_iteration(state_out, state_in, Lambda);  // compute lhs of parquet equations
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
-        add_hdf(filename, iteration, Nmax + 1, state_out, Lambdas);  // store result into file
+        add_hdf(filename, iteration, state_out, Lambdas);  // store result into file
 
         // compute relative differences between input and output w.r.t. output
         relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();
