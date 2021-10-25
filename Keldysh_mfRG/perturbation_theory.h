@@ -46,13 +46,12 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const B
     loop(PsiSelfEnergy, bareState.vertex, barePropagator, false);
 }
 
-SelfEnergy<comp> selfEnergyInSOPT_HUBBARD(const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT,
-                                          const double Lambda){
+void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
+                              const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT,
+                              const double Lambda){
     static_assert(HUBBARD_MODEL);
     static_assert(KELDYSH);         // TODO: Matsubara version?
-    SelfEnergy<comp> SOPT_SE_Hubbard(Lambda); // result
-    Hubbard_SE_SOPT_Computer(Lambda, SOPT_SE_Hubbard, bareState, vertex_in_SOPT).compute_HUBBARD_SE_SOPT();
-    return SOPT_SE_Hubbard;
+    Hubbard_SE_SOPT_Computer(Lambda, PsiSelfEnergy, bareState, vertex_in_SOPT).compute_HUBBARD_SE_SOPT();
 }
 
 template <typename Q, class Bubble_Object>
@@ -100,7 +99,8 @@ void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, double Lambda) {
     vertexInSOPT(Psi.vertex, bareState, Pi, Lambda);
 
     //Calculate the self-energy in SOPT, saved in Psi
-    selfEnergyInSOPT(Psi.selfenergy, bareState, Pi, Lambda);
+    if constexpr(HUBBARD_MODEL) selfEnergyInSOPT_HUBBARD(Psi.selfenergy, bareState, Psi.vertex, Lambda);
+    else                        selfEnergyInSOPT(Psi.selfenergy, bareState, Pi, Lambda);
 
 }
 
