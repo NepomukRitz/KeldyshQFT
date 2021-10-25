@@ -58,8 +58,28 @@ public:
     rvert(const char channel_in, double Lambda)
     : channel(channel_in), //components (Components(channel_in)), transformations (Transformations(channel_in)),
       //freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
-      K1(Lambda), K2(Lambda), K3(Lambda)
-      {K1.reserve(); K2.reserve(); K3.reserve(); };
+      K1(Lambda), K2(Lambda), K3(Lambda) {
+        if (MAX_DIAG_CLASS >= 1) K1.reserve();
+        if (MAX_DIAG_CLASS >= 2) K2.reserve();
+        if (MAX_DIAG_CLASS >= 3) K3.reserve();
+        if constexpr(HUBBARD_MODEL){
+            if (MAX_DIAG_CLASS >= 1){
+                K1_a_proj.reserve();
+                K1_p_proj.reserve();
+                K1_t_proj.reserve();
+            }
+            if (MAX_DIAG_CLASS >= 2){
+                K2_a_proj.reserve();
+                K2_p_proj.reserve();
+                K2_t_proj.reserve();
+            }
+            if (MAX_DIAG_CLASS >= 3){
+                K3_a_proj.reserve();
+                K3_p_proj.reserve();
+                K3_t_proj.reserve();
+            }
+        }
+      };
     rvert() = delete;
 
     mutable bool calculated_crossprojections = false;
@@ -301,7 +321,8 @@ auto rvert<Q>::read_symmetryreduced_rvert(const IndicesSymmetryTransformations& 
 template <typename Q>
 template <K_class k>
 auto rvert<Q>::read_value(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q {
-    if constexpr (HUBBARD_MODEL) {
+    if (HUBBARD_MODEL && indices.channel_parametrization != channel) {
+        assert(calculated_crossprojections);
         switch (indices.channel_parametrization) {
             case 'a':
                 if      constexpr(k==k1) return readMe.K1_a_proj.interpolate(indices);
