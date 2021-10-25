@@ -60,6 +60,9 @@ public:
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K2.b.w_upper + inter_tol)
         //{
+
+        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(indices.w, indices.v1); // convert natural frequency parametrization in channel r to internal parametrization
+
         Q result =  SplineK2<vertexDataContainer<k2,Q>, Q>::interpolK2 (indices.iK, indices.w, indices.v1, indices.i_in);
         return result;
         //} else {
@@ -160,7 +163,10 @@ public:
         if (    std::abs(indices.w ) < vertexDataContainer<k2, Q>::frequencies_K2.b.w_upper + inter_tol
                 && std::abs(indices.v1) < vertexDataContainer<k2, Q>::frequencies_K2.f.w_upper + inter_tol )
         {
-        Q result =  interpolate_lin2D<Q>(indices.w, indices.v1,
+
+            vertexDataContainer<k2, Q>::K2_convert2internalFreqs(indices.w, indices.v1); // convert natural frequency parametrization in channel r to internal parametrization
+
+            Q result =  interpolate_lin2D<Q>(indices.w, indices.v1,
                                                             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                             [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
@@ -279,6 +285,9 @@ public:
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
         //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
         //{
+
+        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(indices.w, indices.v1); // convert natural frequency parametrization in channel r to internal parametrization
+
         Q result =  interpolate_lin_on_aux2D<Q>(indices.w, indices.v1,
                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                                    vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
@@ -406,6 +415,8 @@ public:
         //if (    std::abs(indices.w ) < vertex.frequencies_K2.b.w_upper + inter_tol
         //        && std::abs(indices.v1) < vertex.frequencies_K2.f.w_upper + inter_tol )
         //{
+        vertexDataContainer<k2, Q>::K2_convert2internalFreqs(indices.w, indices.v1); // convert natural frequency parametrization in channel r to internal parametrization
+
         Q result = interpolate_sloppycubic2D<Q>(indices.w, indices.v1,
                                                                     vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
                                                                     vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,

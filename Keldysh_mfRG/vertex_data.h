@@ -515,6 +515,8 @@ auto vertexDataContainer<k2,Q>::K2_get_correction_MFfiniteT(int iw) const -> dou
 }
 template<typename Q>
 void vertexDataContainer<k2,Q>::K2_convert2internalFreqs(double &w, double &v) const {
+    /// need to convert natural parametrization to internal coordinates when interpolating
+
     //const double w_tmp = w/2. + v;
     //const double v_tmp = w/2. - v;
     //w = w_tmp;
@@ -522,6 +524,8 @@ void vertexDataContainer<k2,Q>::K2_convert2internalFreqs(double &w, double &v) c
 }
 template<typename Q>
 void vertexDataContainer<k2,Q>::K2_convert2naturalFreqs(double &w, double &v) const {
+    /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v)
+
     //const double w_tmp = w + v;
     //const double v_tmp =(w - v)/2.;
     //w = w_tmp;
