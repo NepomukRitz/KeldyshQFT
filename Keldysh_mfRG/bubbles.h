@@ -1367,7 +1367,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     i0 = iK1/(nw1_w*n_in_K1);                              // exterior Keldysh indices of the bubble
     iw = iK1/(n_in_K1) - i0*nw1_w;                         // frequency index
     i_in = iK1 - i0*nw1_w*n_in_K1 - iw*n_in_K1;            // internal index
-    dgamma[0].avertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
+    if (channel == 'a') dgamma[0].avertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
+    if (channel == 'p') dgamma[0].pvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
+    if (channel == 't') dgamma[0].tvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1382,7 +1384,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iw = iK2 / (nw2_v * n_in_K2) - i0 * nw2_w;
     iv = iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
     i_in = iK2 - iv * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
-    dgamma[0].avertex().K2.K2_get_freqs_w(w, v, iw, iv);
+    if (channel == 'a') dgamma[0].avertex().K2.K2_get_freqs_w(w, v, iw, iv);
+    if (channel == 'p') dgamma[0].pvertex().K2.K2_get_freqs_w(w, v, iw, iv);
+    if (channel == 't') dgamma[0].tvertex().K2.K2_get_freqs_w(w, v, iw, iv);
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1398,7 +1402,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iv = iK3/(nw3_v * n_in_K3) - i0*nw3_w*nw3_v - iw*nw3_v;
     ivp =iK3/(n_in_K3) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
     i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in_K3 - iw*nw3_v*nw3_v_p*n_in_K3 - iv*nw3_v_p*n_in_K3 - ivp*n_in_K3;
-    dgamma[0].avertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
+    if (channel == 'a') dgamma[0].avertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
+    if (channel == 'p') dgamma[0].pvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
+    if (channel == 't') dgamma[0].tvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
 }
 
 
@@ -1432,8 +1438,18 @@ int
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::get_trafo_K2(const int i0, const double w, const double v){
     int trafo = 1;
+#ifdef ROTATEK2
+    double safety, wtmp, vtmp;
+    if (channel == 'a') dgamma[0].avertex().K2.K2_get_freqs_w(wtmp, vtmp, (nBOS2+1)/2, (nFER2+1)/2); // gets smallest positive frequencies
+    if (channel == 'p') dgamma[0].pvertex().K2.K2_get_freqs_w(wtmp, vtmp, (nBOS2+1)/2, (nFER2+1)/2); // gets smallest positive frequencies
+    if (channel == 't') dgamma[0].tvertex().K2.K2_get_freqs_w(wtmp, vtmp, (nBOS2+1)/2, (nFER2+1)/2); // gets smallest positive frequencies
+    safety = wtmp * wtmp + vtmp * vtmp;
+    int sign_w = sign_index<double>(w - safety); // Better compute a value more to avoid interpolation errors while exploiting frequency symmetries
+    int sign_v = sign_index<double>(v - safety); // Better compute a value more to avoid interpolation errors while exploiting frequency symmetries
+#else
     int sign_w = sign_index<double>(w);
     int sign_v = sign_index<double>(v);
+#endif
     switch (channel) {
         case 'a':
             trafo = TransformaK2a[i0][sign_w * 2 + sign_v];

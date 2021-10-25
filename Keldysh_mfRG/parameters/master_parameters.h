@@ -9,6 +9,8 @@
 // For production: uncomment the following line to switch off assert()-functions
 //#define NDEBUG
 
+//#define NEWFEATURE
+
 constexpr bool VERBOSE = true;
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
@@ -19,6 +21,8 @@ constexpr bool VERBOSE = true;
 #ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
+
+//#define ROTATEK2
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
