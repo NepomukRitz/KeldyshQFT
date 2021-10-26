@@ -1803,7 +1803,12 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * glb_U ;
+        //if (std::abs(std::abs(vpp)-std::abs(w/2.)) < 1e-10) {
+        //    return 0.;
+        //}
+        //else {
+            return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * glb_U ;
+        //}
         //return vpp*vpp;
     }
 };
@@ -2433,8 +2438,6 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
                                                                                 std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta);
             K1rdot_PIa_K1p_exact.vertex[0].avertex().K3.setvert(val_K3, 0, i, j, k, 0);
-            K1rdot_PIa_K1p_exact.vertex[0].pvertex().K3.setvert(val_K3, 0, i, j, k, 0);
-            K1rdot_PIa_K1p_exact.vertex[0].tvertex().K3.setvert(val_K3, 0, i, j, k, 0);
             //        }
             //    }
         }
@@ -2471,8 +2474,6 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
                                                                                 std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta);
             K1p_PIa_K1rdot_exact.vertex[0].avertex().K3.setvert(val_K3, 0, i, j, k, 0);
-            K1p_PIa_K1rdot_exact.vertex[0].pvertex().K3.setvert(val_K3, 0, i, j, k, 0);
-            K1p_PIa_K1rdot_exact.vertex[0].tvertex().K3.setvert(val_K3, 0, i, j, k, 0);
             //        }
             //    }
         }

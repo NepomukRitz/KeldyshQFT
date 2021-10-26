@@ -240,7 +240,11 @@ void makedir(const std::string& dir_str) {
 
 void check_input() {
 #ifdef ROTATEK2
-    assert (nBOS2 == nFER2)
+    assert (nBOS2 == nFER2);
+#endif
+
+#if not defined(KELDYSH_FORMALISM)
+    assert(nFER % 2 == 0);
 #endif
 }
 

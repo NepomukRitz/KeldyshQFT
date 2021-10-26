@@ -517,6 +517,7 @@ template<typename Q>
 void vertexDataContainer<k2,Q>::K2_convert2internalFreqs(double &w, double &v) const {
     /// need to convert natural parametrization to internal coordinates when interpolating
 #ifdef ROTATEK2
+    // The internal parametrization corresponds to the fermionic frequencies at the two fermionic legs of K2
     const double w_tmp = w/2. + v;
     const double v_tmp = w/2. - v;
     w = w_tmp;
