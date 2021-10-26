@@ -683,7 +683,7 @@ namespace {
             for (int iK1=0; iK1<nK_K1; ++iK1) {
                 for (int iw=0; iw<nw1; ++iw) {
                     for (int i_in=0; i_in<n_in; ++i_in) {
-                        IndicesSymmetryTransformations indices (iK1, frequencies_new.b.get_ws(iw), 0., 0., i_in, vertex.channel);
+                        IndicesSymmetryTransformations indices (iK1, frequencies_new.b.get_ws(iw), 0., 0., i_in, vertex.channel, k1, iw, rvert4data.channel);
                         // interpolate old values to new vector
                         K1_new[iK1 * (nw1+2*FREQ_PADDING) * n_in + (iw+FREQ_PADDING) * n_in + i_in] = rvert4data.K1.interpolate(indices);
                     }
@@ -704,7 +704,7 @@ namespace {
                         for (int i_in = 0; i_in<n_in; ++i_in) {
                             IndicesSymmetryTransformations indices (iK2,
                                                                     frequencies_new.b.get_ws(iw), frequencies_new.f.get_ws(iv), 0.,
-                                                                    i_in, vertex.channel);
+                                                                    i_in, vertex.channel, k2, iw, rvert4data.channel);
                             // interpolate old values to new vector
                             K2_new[iK2 * (nw2+2*FREQ_PADDING) * (nv2+2*FREQ_PADDING)* n_in + (iw+FREQ_PADDING) * (nv2+2*FREQ_PADDING)* n_in + (iv+FREQ_PADDING) * n_in + i_in]
                                     = rvert4data.K2.interpolate(indices);
@@ -728,7 +728,7 @@ namespace {
                             for (int i_in = 0; i_in<n_in; ++i_in) {
                                 IndicesSymmetryTransformations indices (iK3,
                                                                         frequencies_new.b.get_ws(iw), frequencies_new.f.get_ws(iv), frequencies_new.f.get_ws(ivp),
-                                                                        i_in, vertex.channel);
+                                                                        i_in, vertex.channel, k3, iw, rvert4data.channel);
                                 // interpolate old values to new vector
                                 K3_new[iK3 * (nw3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in
                                       + (iw+FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in
@@ -1135,7 +1135,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
         for (int itw = 0; itw < nw1; itw++) {
             double w_in;
             K1.K1_get_freq_w(w_in, itw);
-            IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel);
+            IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel, k1, 0, channel);
             int sign_w = sign_index(indices.w);
             int trafo_index = freq_transformations.K1[itK][sign_w];
             if (trafo_index != 0){
@@ -1215,7 +1215,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             for (int itv = 0; itv < nv2; itv++){
                 double w_in, v_in;
                 K2.K2_get_freqs_w(w_in, v_in, itw, itv);
-                IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel);
+                IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel, k2, 0, channel);
                 int sign_w = sign_index(w_in);
                 int sign_v1 = sign_index(v_in);
                 int trafo_index = freq_transformations.K2[itK][sign_w*2 + sign_v1];
@@ -1256,7 +1256,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                 for (int itvp = 0; itvp < nv3; itvp++) {
                     double w_in, v_in, vp_in;
                     K3.K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp, channel);
-                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
+                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel, k2, 0, channel);
                     int sign_w = sign_index(w_in);
                     int sign_f = sign_index(indices.v1 + indices.v2);
                     int sign_fp= sign_index(indices.v1 - indices.v2);

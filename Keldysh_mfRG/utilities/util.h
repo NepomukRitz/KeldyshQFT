@@ -246,6 +246,10 @@ void check_input() {
 #if not defined(KELDYSH_FORMALISM)
     assert(nFER % 2 == 0);
 #endif
+
+#ifdef BOSONIC_PARAM_FOR_K3
+    assert(nBOS3 == nFER3); // Frequency grids must be equal in all three dimensions
+#endif
 }
 
 

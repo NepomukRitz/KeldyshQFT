@@ -383,6 +383,13 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 
 
+enum K_class {k1=0, k2=1, k2b=2, k3=3};
+std::ostream& operator << (std::ostream& out, K_class k) {
+    if (k == k1 or k == k2) {out << "K" << static_cast<int>(k+1);}
+    else if(k == k3) {out << "K" << static_cast<int>(k);}
+    else {out << "K" << static_cast<int>(k) << "'";}
+    return out;
+}
 
 /** auxiliary struct that contains all input variables of vertices
  * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)
@@ -397,19 +404,20 @@ struct VertexInput{
     int i_in;
     int spin;
     char channel;
+    K_class kClass_aim;
+    int iw_r;
 
-    VertexInput(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, int spin_in, char channel_in)
+    VertexInput(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, int spin_in, char channel_in, K_class k_in=k1, int iw_in=0)
             :
 //#ifdef KELDYSH_FORMALISM
             iK(iK_in),
 //#else
 //            iK(0),
 //#endif
-            w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel(channel_in)
+            w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel(channel_in), kClass_aim(k_in), iw_r(iw_in)
     {}
 };
 
-enum K_class {k1=0, k2=1, k2b=2, k3=3};
 
 
 

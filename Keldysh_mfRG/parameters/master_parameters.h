@@ -24,6 +24,9 @@ constexpr bool VERBOSE = true;
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
 #define BOSONIC_PARAM_FOR_K3 // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
+#ifdef BOSONIC_PARAM_FOR_K3
+#define INTERPOL2D_FOR_K3
+#endif
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM

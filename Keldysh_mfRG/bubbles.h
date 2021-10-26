@@ -533,10 +533,11 @@ private:
     const int i2;
     const int i_in;
     const char channel;
+    const int iw=0;
     const double w, v = 0., vp = 0.;
     const bool diff;
 
-    unsigned int diag_class;
+    K_class diag_class;
 
     Q res_l_V_initial, res_r_V_initial, res_l_Vhat_initial, res_r_Vhat_initial; // To be precomputed for K1
 
@@ -567,7 +568,7 @@ public:
               const char ch_in, const bool diff_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
               i2(i2_in), w(w_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
-        diag_class = 1; // This constructor corresponds to K1
+        diag_class = k1; // This constructor corresponds to K1
         set_Keldysh_index_i0(i0_in);
         if (MAX_DIAG_CLASS <= 1) precompute_vertices();
     }
@@ -584,7 +585,7 @@ public:
               const char ch_in, const bool diff_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
               i2(i2_in), w(w_in), v(v_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
-        diag_class = 2; // This constructor corresponds to K2
+        diag_class = k2; // This constructor corresponds to K2
         set_Keldysh_index_i0(i0_in);
     }
 
@@ -596,11 +597,11 @@ public:
     Integrand(const GeneralVertex<Q, symmetry_left>& vertex1_in,
               const GeneralVertex<Q, symmetry_right>& vertex2_in,
               const Bubble_Object& Pi_in,
-              int i0_in, int i2_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
+              int i0_in, int i2_in, const int iw_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
               const char ch_in, const bool diff_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
-              i2(i2_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
-        diag_class = 3; // This constructor corresponds to K3
+              i2(i2_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), channel(ch_in), diff(diff_in){
+        diag_class = k3; // This constructor corresponds to K3
         set_Keldysh_index_i0(i0_in);
     }
 
@@ -620,7 +621,7 @@ template<typename Q, template <typename> class symmetry_left, template <typename
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0(const int i0_in) {
     if (KELDYSH){
         switch (diag_class) {
-            case 1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+            case k1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
                 switch (channel) {
                     case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
                     case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
@@ -628,7 +629,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_ind
                     default: ;
                 }
                 break;
-            case 2: // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
+            case k2: // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
                 switch (channel) {
                     case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
                     case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
@@ -636,7 +637,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_ind
                     default: ;
                 }
                 break;
-            case 3:
+            case k3:
                 i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
                 break;
             default: ;
@@ -731,15 +732,15 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
     }
     else{
         std::vector<int> indices = indices_sum(i0, i2, channel);
-        VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
-        VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
+        VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel, diag_class, iw);
+        VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel, diag_class, iw);
 
-        if (diag_class == 1)
+        if (diag_class == k1)
             res_l_V = vertex1[0].left_same_bare(input_l);
         else
             res_l_V = vertex1[0].left_diff_bare(input_l);
 
-        if (diag_class == 3)
+        if (diag_class == k3)
             res_r_V = vertex2[0].right_diff_bare(input_r);
         else
             res_r_V = vertex2[0].right_same_bare(input_r);
@@ -747,12 +748,12 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
         if (channel == 't') {
             input_l.spin = 1;
             input_r.spin = 1;
-            if (diag_class == 1)
+            if (diag_class == k1)
                 res_l_Vhat = vertex1[0].left_same_bare(input_l);
             else
                 res_l_Vhat = vertex1[0].left_diff_bare(input_l);
 
-            if (diag_class == 3)
+            if (diag_class == k3)
                 res_r_Vhat = vertex2[0].right_diff_bare(input_r);
             else
                 res_r_Vhat = vertex2[0].right_same_bare(input_r);
@@ -799,30 +800,30 @@ template<typename Q, template <typename> class symmetry_left, template <typename
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
     /// Define standard frequency points on which to evaluate the integrand
     int npoints = nBOS;
-    if (diag_class == 2) {npoints = 1000;}
-    else if (diag_class == 3) {npoints = 100;}
+    if (diag_class == k2) {npoints = 1000;}
+    else if (diag_class == k3) {npoints = 100;}
 
     rvec freqs (npoints);
 
     for (int i=0; i<npoints; ++i) {
         double wl, wu;
         switch (diag_class) {
-            case 1:
+            case k1:
                 wl = vertex1[0].avertex().K1_get_wlower() * 2.;
                 wu = vertex1[0].avertex().K1_get_wupper() * 2.;
                 break;
-            case 2:
+            case k2:
                 wl = vertex1[0].avertex().K2_get_wlower_f();
                 wu = vertex1[0].avertex().K2_get_wupper_f();
                 break;
-            case 3:
+            case k3:
                 wl = vertex1[0].avertex().K3_get_wlower_f();
                 wu = vertex1[0].avertex().K3_get_wupper_f();
                 break;
             default:;
         }
         double vpp = wl + i * (wu - wl) / (npoints - 1);
-        if (diag_class == 1) { vpp = vertex1[0].avertex().K1_get_freq_w(vpp, i); }
+        if (diag_class == k1) { vpp = vertex1[0].avertex().K1_get_freq_w(vpp, i); }
         freqs[i] = vpp;
     }
 
@@ -849,8 +850,8 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
     filename += "_i0=" + std::to_string(i0)
                 + "_i2=" + std::to_string(i2)
                 + "_w=" + std::to_string(w);
-    if (diag_class == 2) {filename += "_v=" + std::to_string(v);}
-    else if (diag_class == 3) {filename += "_vp=" + std::to_string(vp);}
+    if (diag_class == k2) {filename += "_v=" + std::to_string(v);}
+    else if (diag_class == k3) {filename += "_vp=" + std::to_string(vp);}
     filename += + ".h5";
     write_h5_rvecs(filename,
                    {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
@@ -891,19 +892,19 @@ class BubbleFunctionCalculator{
 
     bool missing_cross_projection(); // Needed for the Hubbard model.
 
-    void calculate_bubble_function(int diag_class);
-    Q get_value(int i_mpi, int i_omp, int n_omp, int diag_class);
+    void calculate_bubble_function(K_class diag_class);
+    Q get_value(int i_mpi, int i_omp, int n_omp, K_class diag_class);
 
     void calculate_value_K1(Q& value, int i0, int i_in, double w);
     void calculate_value_K2(Q& value, int i0, int i_in, double w, double v);
-    void calculate_value_K3(Q& value, int i0, int i_in, double w, double v, double vp);
+    void calculate_value_K3(Q& value, int i0, int i_in, const int iw, double w, double v, double vp);
 
-    void write_out_results(const vec<Q>& Ordered_result, int diag_class);
+    void write_out_results(const vec<Q>& Ordered_result, K_class diag_class);
     void write_out_results_K1(const vec<Q>& K1_ordered_result);
     void write_out_results_K2(const vec<Q>& K2_ordered_result);
     void write_out_results_K3(const vec<Q>& K3_ordered_result);
 
-    void set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, int diag_class);
+    void set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, K_class diag_class);
 
     void convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
                                                                  int i_mpi, int n_omp, int i_omp);
@@ -1056,21 +1057,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
     double t_start = get_time();
     if (MAX_DIAG_CLASS >= 0) {
-        calculate_bubble_function(1);
+        calculate_bubble_function(k1);
         tK1 = get_time() - t_start;
         //print("K1", channel, " done, ");
         //get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 2) {
         t_start = get_time();
-        calculate_bubble_function(2);
+        calculate_bubble_function(k2);
         tK2 = get_time() - t_start;
         print("K2", channel, " done, ");
         get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 3) {
         t_start = get_time();
-        calculate_bubble_function(3);
+        calculate_bubble_function(k3);
         tK3 = get_time() - t_start;
         print("K3", channel, " done, ");
         get_time(t_start);
@@ -1081,8 +1082,8 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::calculate_bubble_function(const int diag_class){
-    if (diag_class < 1 || diag_class > 3){print("Incompatible diagrammatic class! Abort."); assert(false); return;}
+        Bubble_Object>::calculate_bubble_function(const K_class diag_class){
+    if (diag_class < k1 || diag_class > k3){print("Incompatible diagrammatic class! Abort."); assert(false); return;}
 
     int n_mpi, n_omp;
     set_external_arguments_for_parallelization(n_mpi, n_omp, diag_class);
@@ -1118,29 +1119,33 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 Q
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::get_value(const int i_mpi, const int i_omp, const int n_omp, const int diag_class){
+        Bubble_Object>::get_value(const int i_mpi, const int i_omp, const int n_omp, const K_class diag_class){
     Q value = 0.;
     int iK1, iK2, i0, iw, iv, ivp, i_in;
     double w, v, vp;
     int trafo;
     switch (diag_class) {
-        case 1:
+        case k1:
             convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K1(i0, w);
             if (trafo == 0) {calculate_value_K1(value, i0, i_in, w); }
             break;
-        case 2:
+        case k2:
             convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K2(i0, w, v);
             if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v); }
             break;
-        case 3:
+        case k3:
             convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K3(i0, w, v, vp);
-            if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp); }
+            if (trafo == 0) {
+                if (channel == 'a') {calculate_value_K3(value, i0, i_in, iw, w, v, vp); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
+                if (channel == 'p') {calculate_value_K3(value, i0, i_in, iv, w, v, vp); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
+                if (channel == 't') {calculate_value_K3(value, i0, i_in, ivp,w, v, vp); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
+            }
             break;
         default:;
     }
@@ -1217,11 +1222,11 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
-                                                const double w, const double v, const double vp){
+                                                const int iw, const double w, const double v, const double vp){
     for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add two sums over form factors here, as well. (the integrand class will need to take another index.)
         // initialize the integrand object and perform frequency integration
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
-                integrand_K3(vertex1, vertex2, Pi, i0, i2, w, v, vp, i_in, channel, diff);
+                integrand_K3(vertex1, vertex2, Pi, i0, i2, iw, w, v, vp, i_in, channel, diff);
         if (KELDYSH){
             value += bubble_value_prefactor() * integrator<Q>(integrand_K3, vmin, vmax, -w / 2., w / 2., Delta);
         }
@@ -1250,17 +1255,17 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::write_out_results(const vec<Q>& Ordered_result, const int diag_class){
+        Bubble_Object>::write_out_results(const vec<Q>& Ordered_result, const K_class diag_class){
     dgamma[0].half1().initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
                                                 /// TODO: does cubic interpolation overshoot at the edges of the symmetry-reduced sector?
     switch (diag_class) {
-        case 1:
+        case k1:
             write_out_results_K1(Ordered_result);
             break;
-        case 2:
+        case k2:
             write_out_results_K2(Ordered_result);
             break;
-        case 3:
+        case k3:
             write_out_results_K3(Ordered_result);
             break;
         default: ;
@@ -1339,17 +1344,17 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, const int diag_class){
+        Bubble_Object>::set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, const K_class diag_class){
     switch (diag_class) {
-        case 1:
+        case k1:
             n_mpi = nK_K1;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
             n_omp = nw1_w * n_in_K1; // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
             break;
-        case 2:
+        case k2:
             n_mpi = nK_K2 * nw2_w;
             n_omp = nw2_v * n_in_K2;
             break;
-        case 3:
+        case k3:
             n_mpi = nK_K3 * nw3_w;
             n_omp = nw3_v * nw3_v_p * n_in_K3;
             break;
@@ -1467,15 +1472,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int trafo = 1;
     const double safety = 1e-10;
     int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-//#ifdef BOSONIC_PARAM_FOR_K3
     int sign_f = sign_index(v + vp - safety);
     int sign_fp= sign_index(v - vp - safety);
-//#else
-//    int sign_f = iv+ivp<nFER3? 0 : 1;   // this corresponds to "sign_index(v + vp)" assuming
-//                                        // that both v and vp use the same fermionic frequency grid
-//    int sign_fp = iv<=ivp? 0 : 1;       // this corresponds to "sign_index(v - vp)"  assuming
-//                                        // that both v and vp use the same fermionic frequency grid
-//#endif
     switch (channel) {
         case 'a':
             trafo = TransformaK3a[i0][sign_w * 4 + sign_f * 2 + sign_fp];

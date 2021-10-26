@@ -912,8 +912,8 @@ template<> void switch2naturalFreqs<'p'> (double& w_a, double& w_p, double& w_t)
 template<> void switch2naturalFreqs<'t'> (double& w_a, double& w_p, double& w_t) {
     double w, v1, v2;
     w  = w_t;                             // input.w  = w_a
-    v1 = 0.5*(w_a - w_p);               // input.v1 = w_p
-    v2 = 0.5*(w_a - w_p);               // input.v2 = w_t
+    v1 = 0.5*( w_a + w_p);               // input.v1 = w_p
+    v2 = 0.5*(-w_a + w_p);               // input.v2 = w_t
     w_a  = w;
     w_p = v1;
     w_t = v2;
