@@ -916,7 +916,7 @@ class BubbleFunctionCalculator{
 
     int get_trafo_K1(int i0, double w);
     int get_trafo_K2(int i0, double w, double v);
-    int get_trafo_K3(int i0, double w, int iv, int ivp);
+    int get_trafo_K3(int i0, double w, double v, double vp);
 
     void get_Matsubara_integration_intervals(size_t& num_intervals, vec<vec<double>>& intervals, double w);
 
@@ -1139,7 +1139,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         case 3:
             convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
-            trafo = get_trafo_K3(i0, w, iv, ivp);
+            trafo = get_trafo_K3(i0, w, v, vp);
             if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp); }
             break;
         default:;
@@ -1402,9 +1402,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     iv = iK3/(nw3_v * n_in_K3) - i0*nw3_w*nw3_v - iw*nw3_v;
     ivp =iK3/(n_in_K3) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
     i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in_K3 - iw*nw3_v*nw3_v_p*n_in_K3 - iv*nw3_v_p*n_in_K3 - ivp*n_in_K3;
-    if (channel == 'a') dgamma[0].avertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
-    if (channel == 'p') dgamma[0].pvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
-    if (channel == 't') dgamma[0].tvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
+    if (channel == 'a') dgamma[0].avertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+    if (channel == 'p') dgamma[0].pvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'p');
+    if (channel == 't') dgamma[0].tvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 't');
 }
 
 
@@ -1463,14 +1463,19 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 int
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::get_trafo_K3(const int i0, const double w, const int iv, const int ivp){
+        Bubble_Object>::get_trafo_K3(const int i0, const double w, const double v, const double vp){
     int trafo = 1;
     const double safety = 1e-10;
     int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-    int sign_f = iv+ivp<nFER3? 0 : 1;   // this corresponds to "sign_index(v + vp)" assuming
-                                        // that both v and vp use the same fermionic frequency grid
-    int sign_fp = iv<=ivp? 0 : 1;       // this corresponds to "sign_index(v - vp)"  assuming
-                                        // that both v and vp use the same fermionic frequency grid
+//#ifdef BOSONIC_PARAM_FOR_K3
+    int sign_f = sign_index(v + vp - safety);
+    int sign_fp= sign_index(v - vp - safety);
+//#else
+//    int sign_f = iv+ivp<nFER3? 0 : 1;   // this corresponds to "sign_index(v + vp)" assuming
+//                                        // that both v and vp use the same fermionic frequency grid
+//    int sign_fp = iv<=ivp? 0 : 1;       // this corresponds to "sign_index(v - vp)"  assuming
+//                                        // that both v and vp use the same fermionic frequency grid
+//#endif
     switch (channel) {
         case 'a':
             trafo = TransformaK3a[i0][sign_w * 4 + sign_f * 2 + sign_fp];

@@ -117,11 +117,11 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
     double asymmetry_tolerance = 1e-10;
     double asymmetry = 0;
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
-    for (int iw = 0; iw<=(nBOS3-1)/2; iw++){
+    for (int iw = 0; iw<nBOS3; iw++){
         double correction = avertex.K3.K3_get_correction_MFfiniteT(iw);
-        for (int iv = 0; iv<(nFER3)/2; iv++) {
-            for (int ivp = iv; ivp<(nFER3-1-iv); ivp++) {
-                avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
+        for (int iv = 0; iv<nFER3; iv++) {
+            for (int ivp = iv; ivp<nFER3; ivp++) {
+                avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
 #ifndef ZERO_TEMP   // Matsubara T>0
                 indices.v1 += correction;
 #endif
@@ -131,14 +131,19 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                 //if (avertex.K3_val(iK, iw, iv, ivp, i_in) != avertex.K3_val(iK, nBOS3 - 1 - iw, iv, ivp, i_in)) {
                 //    asymmetry += 1;
                 //}
+#ifdef BOSONIC_PARAM_FOR_K3
+                switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
+#endif
+
                 state_datatype compare_val = avertex.K3.interpolate(indices);
                 state_datatype savedK3_val = avertex.K3.val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in);
+                state_datatype savedK3_val0= avertex.K3.val(iK, iw, iv, ivp, i_in);
                 double absdiff = std::abs(compare_val - savedK3_val);
                 if (absdiff > 1e-4) {
                     asymmetry += absdiff;
                 }
 
-                if (correction == 0 and std::abs(avertex.K3.val(iK, iw, iv, ivp, i_in) - avertex.K3.val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in)) > asymmetry_tolerance ) {
+                if (correction == 0 and std::abs(savedK3_val0 - savedK3_val) > asymmetry_tolerance ) {
                     asymmetry += 1;
                 }
             }

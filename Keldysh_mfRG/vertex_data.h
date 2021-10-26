@@ -287,7 +287,7 @@ public:
     explicit vertexDataContainer(double Lambda) : frequencies_K3(Lambda), vertexContainerBase<Q,5>(dimsK3) { };
 
 
-    void K3_get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
+    void K3_get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp, char channel) const;
     void K3_get_freqs_aux(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
 
     auto K3_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3>&;
@@ -640,10 +640,16 @@ auto vertexDataContainer<k3,Q>::K3_get_freqGrid_f() const -> const FrequencyGrid
     return frequencies_K3.f;
 }
 template<typename Q>
-void vertexDataContainer<k3,Q>::K3_get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
+void vertexDataContainer<k3,Q>::K3_get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp, const char channel) const {
     w = frequencies_K3.b.get_ws(iw);
     v = frequencies_K3.f.get_ws(iv);
     vp= frequencies_K3.f.get_ws(ivp);
+
+#ifdef BOSONIC_PARAM_FOR_K3
+    if (channel == 'a') {switch2naturalFreqs<'a'>(w, v, vp);}
+    else if (channel == 'p') {switch2naturalFreqs<'p'>(w, v, vp);}
+    else if (channel == 't') {switch2naturalFreqs<'t'>(w, v, vp);}
+#endif
 }
 
 template<typename Q>

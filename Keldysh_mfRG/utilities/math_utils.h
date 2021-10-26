@@ -853,7 +853,71 @@ template<size_t rank, typename T> vec<double> maxabs(const vec<T>& data, const s
 }
 
 
+/**
+ * Function to switch from the natural parametrization to the bosonic one
+ */
+/// Base template for a channel
+template<char> void     switch2bosonicFreqs(double& w_in, double& v1_in, double& v2_in) {
+    double w, v1, v2;
+    w  = w_in;                              // input.w  = w_a
+    v1 = v1_in+v2_in;                    // input.v1 = v_a
+    v2 = v1_in-v2_in;                    // input.v2 = v'_a'
+    w_in  = w;
+    v1_in = v1;
+    v2_in = v2;
+}
+template<> void switch2bosonicFreqs<'p'> (double& w_in, double& v1_in, double& v2_in) {
+    double w, v1, v2;
+    w  = -v1_in - v2_in;                    // input.w  = w_p
+    v1 =  w_in;                              // input.v1 = v_p
+    v2 =  v1_in - v2_in;                    // input.v2 = v'_p
+    w_in  = w;
+    v1_in = v1;
+    v2_in = v2;
+}
+template<> void switch2bosonicFreqs<'t'> (double& w_in, double& v1_in, double& v2_in) {
+    double w, v1, v2;
+    w  = v1_in - v2_in;                    // input.w  = w_t
+    v1 = v1_in + v2_in;                    // input.v1 = v_t
+    v2 = w_in;                              // input.v2 = v'_t
+    w_in  = w;
+    v1_in = v1;
+    v2_in = v2;
+}
 
+
+
+/**
+ * Function to switch from the bosonic parametrization to the natural one
+ */
+/// Base template for a channel
+template<char> void switch2naturalFreqs(double& w_a, double& w_p, double& w_t) {
+    double w, v1, v2;
+    w  = w_a;                              // input.w = w_a
+    v1 = 0.5*(w_p + w_t);              // input.w = w_p
+    v2 = 0.5*(w_p - w_t);              // input.w = w_t
+    w_a  = w;
+    w_p = v1;
+    w_t = v2;
+}
+template<> void switch2naturalFreqs<'p'> (double& w_a, double& w_p, double& w_t) {
+    double w, v1, v2;
+    w  = w_p;                             // input.w  = w_a
+    v1 = 0.5*( - w_a + w_t);              // input.v1 = w_p
+    v2 = 0.5*( - w_a - w_t);              // input.v2 = w_t
+    w_a  = w;
+    w_p = v1;
+    w_t = v2;
+}
+template<> void switch2naturalFreqs<'t'> (double& w_a, double& w_p, double& w_t) {
+    double w, v1, v2;
+    w  = w_t;                             // input.w  = w_a
+    v1 = 0.5*(w_a - w_p);               // input.v1 = w_p
+    v2 = 0.5*(w_a - w_p);               // input.v2 = w_t
+    w_a  = w;
+    w_p = v1;
+    w_t = v2;
+}
 
 
 #endif //FPP_MFRG_MATH_UTILS_H

@@ -117,7 +117,10 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     for (int iw = 0; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
-                avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
+                avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
+#ifdef BOSONIC_PARAM_FOR_K3
+                switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
+#endif
 
                 state_datatype val_interp =  avertex.K3.interpolate(indices);
                 vals_interp[iw*(nFER3)*(nFER3) + iv*(nFER3) + ivp] = val_interp;
@@ -163,7 +166,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0-FREQ_PADDING; iw<nBOS+FREQ_PADDING; iw++){
+    for (int iw = 0; iw<nBOS; iw++){
         double w;
         if (INTERPOLATION == linear)  avertex.K1.K1_get_freq_w(w, iw);
         else avertex.K1.K1_get_freq_aux(w, iw);
@@ -437,7 +440,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
             for (int ivp = 0-FREQ_PADDING; ivp<nFER3+FREQ_PADDING; ivp++) {
 
                 double w, v, vp;
-                if (INTERPOLATION == linear)  avertex.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp);
+                if (INTERPOLATION == linear)  avertex.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
                 else avertex.K3.K3_get_freqs_aux(w, v, vp, iw, iv, ivp);
                 value = linearFunction3D(w, v, vp);
                 avertex.K3.setvert(value, iK, iw, iv, ivp, i_in);
@@ -466,6 +469,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
                 double freqw, freqv, freqvp;
                 if (INTERPOLATION == linear) {freqw = indices.w; freqv = indices.v1; freqvp = indices.v2;}
                 else {freqw = avertex.K3.K3_gridtransf_b(indices.w); freqv = avertex.K3.K3_gridtransf_f(indices.v1); freqvp = avertex.K3.K3_gridtransf_f(indices.v2);}
+
                 error = std::abs(
                         avertex.K3.interpolate(indices) - linearFunction3D(freqw, freqv, freqvp));
                 cumul_interpolation_error += error;

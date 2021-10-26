@@ -122,7 +122,15 @@ public:
 
         }
         else  if constexpr (k==k3) {
+#ifdef BOSONIC_PARAM_FOR_K3
+            IndicesSymmetryTransformations indices_rot = indices;
+            if (channel == 'a') {switch2bosonicFreqs<'a'>(indices_rot.w, indices_rot.v1, indices_rot.v2);}
+            else if (channel == 'p') {switch2bosonicFreqs<'p'>(indices_rot.w, indices_rot.v1, indices_rot.v2);}
+            else if (channel == 't') {switch2bosonicFreqs<'t'>(indices_rot.w, indices_rot.v1, indices_rot.v2);}
+            value = readMe.K3.interpolate(indices_rot);
+#else
             value = readMe.K3.interpolate(indices);
+#endif
         }
         else { // for both k2 and k2b we need to interpolate K2
             value = readMe.K2.interpolate(indices);
@@ -907,6 +915,10 @@ namespace {
         explicit CostFullvert_Wscale_f_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
+#ifdef BOSONIC_PARAM_FOR_K3
+            /// grids are identical for bosonic parametrization
+            frequencies.b.update_Wscale(wscale_test);
+#endif
             frequencies.f.update_Wscale(wscale_test);
             rVert.template update_grid<k3>(frequencies, rVert_backup);
             //rVert.K3.analyze_tails_K3_b();
@@ -1060,6 +1072,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         frequenciesK3_new.f.update_Wscale(m_Wscale);
         update_grid<k3>(frequenciesK3_new, *this);
 
+#ifndef BOSONIC_PARAM_FOR_K3
         // in w-direction:
         if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K3" << channel << " grid in direction w:\n";
         a_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale / 2.;
@@ -1069,6 +1082,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
         frequenciesK3_new.b.update_Wscale(m_Wscale);
         update_grid<k3>(frequenciesK3_new, *this);
+#endif
     }
 #else
 
@@ -1241,13 +1255,11 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
             for (int itv = 0; itv < nv3; itv++){
                 for (int itvp = 0; itvp < nv3; itvp++) {
                     double w_in, v_in, vp_in;
-                    K3.K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp);
+                    K3.K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp, channel);
                     IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel);
                     int sign_w = sign_index(w_in);
-                    int sign_f =  itv+itvp<nFER3? 0 : 1;    // this corresponds to "sign_index(v_in + vp_in)" assuming
-                                                            // that both v and vp use the same fermionic frequency grid
-                    int sign_fp = itv<=itvp? 0 : 1;         // this corresponds to "sign_index(v_in - vp_in)"  assuming
-                                                            // that both v and vp use the same fermionic frequency grid
+                    int sign_f = sign_index(indices.v1 + indices.v2);
+                    int sign_fp= sign_index(indices.v1 - indices.v2);
                     int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
                     Ti(indices, trafo_index);
                     indices.iK = itK;
