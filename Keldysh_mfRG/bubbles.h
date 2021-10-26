@@ -1414,7 +1414,8 @@ int
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::get_trafo_K1(const int i0, const double w){
     int trafo = 1;
-    int sign_w = sign_index<double>(w);
+    const double safety = 1e-10;
+    int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
     switch (channel) {
         case 'a':
             trafo = TransformaK1a[i0][sign_w];
@@ -1438,18 +1439,9 @@ int
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::get_trafo_K2(const int i0, const double w, const double v){
     int trafo = 1;
-#ifdef ROTATEK2
-    double safety, wtmp, vtmp;
-    if (channel == 'a') dgamma[0].avertex().K2.K2_get_freqs_w(wtmp, vtmp, (nBOS2+1)/2, (nFER2+1)/2); // gets smallest positive frequencies
-    if (channel == 'p') dgamma[0].pvertex().K2.K2_get_freqs_w(wtmp, vtmp, (nBOS2+1)/2, (nFER2+1)/2); // gets smallest positive frequencies
-    if (channel == 't') dgamma[0].tvertex().K2.K2_get_freqs_w(wtmp, vtmp, (nBOS2+1)/2, (nFER2+1)/2); // gets smallest positive frequencies
-    safety = wtmp * wtmp + vtmp * vtmp;
-    int sign_w = sign_index<double>(w - safety); // Better compute a value more to avoid interpolation errors while exploiting frequency symmetries
-    int sign_v = sign_index<double>(v - safety); // Better compute a value more to avoid interpolation errors while exploiting frequency symmetries
-#else
-    int sign_w = sign_index<double>(w);
-    int sign_v = sign_index<double>(v);
-#endif
+    const double safety = 1e-10;
+    int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+    int sign_v = sign_index<double>(v - safety); // safety to ensure that w=0 gets sign_w=-1
     switch (channel) {
         case 'a':
             trafo = TransformaK2a[i0][sign_w * 2 + sign_v];
@@ -1473,7 +1465,8 @@ int
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::get_trafo_K3(const int i0, const double w, const int iv, const int ivp){
     int trafo = 1;
-    int sign_w = sign_index<double>(w);
+    const double safety = 1e-10;
+    int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
     int sign_f = iv+ivp<nFER3? 0 : 1;   // this corresponds to "sign_index(v + vp)" assuming
                                         // that both v and vp use the same fermionic frequency grid
     int sign_fp = iv<=ivp? 0 : 1;       // this corresponds to "sign_index(v - vp)"  assuming

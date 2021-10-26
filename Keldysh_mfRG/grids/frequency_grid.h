@@ -888,6 +888,8 @@ namespace freqGrid {
 
         FrequencyGrid frequencies_new = freqGrid;
 
+        if (maxabs_along_x.max_norm() < 1e-20) return frequencies_new; // don't shrink if there is no data yet
+
         int index = -1+FREQ_PADDING;
         while (true) {
             if (maxabs_along_x[index+1] >= rel_tail_threshold) break;

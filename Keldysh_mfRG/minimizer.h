@@ -71,8 +71,9 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
             {b = m; m = temp;}
 
             else {
-                // return; // ignore the problem
-                throw std::runtime_error("Minimum not unique."); // else: there are local minima on the left AND the right of the interval --> non-trivial choice
+                print("WARNING!: Minimum not unique!!!");
+                return; // ignore the problem
+                //throw std::runtime_error("Minimum not unique."); // else: there are local minima on the left AND the right of the interval --> non-trivial choice
 
             }
         }
@@ -83,8 +84,9 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
             if (cost_temp <costb)
             {a = m; m = temp;}
             else {
-                // return;
-                throw std::runtime_error("Minimum not unique.");
+                print("WARNING!: Minimum not unique!!!");
+                return;
+                //throw std::runtime_error("Minimum not unique.");
             }
         }
         else throw std::runtime_error("Uncaught if-else case in minimizer");
