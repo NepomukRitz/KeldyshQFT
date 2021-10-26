@@ -358,10 +358,10 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
         index = std::min(N_w - 3 - FREQ_PADDING, index);
     }
     else {
+        if (ws[index+1+FREQ_PADDING] < w_in) index++;
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
         assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
-        if (ws[index+1+FREQ_PADDING] < w_in) index++;
         assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
@@ -393,10 +393,10 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
         index = std::min(N_w - 3 - FREQ_PADDING, index);
     }
     else {
+        if (ws[index+1+FREQ_PADDING] < w_in) index++;
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
         assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0);
-        if (ws[index+1+FREQ_PADDING] < w_in) index++;
         assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
