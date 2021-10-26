@@ -497,6 +497,9 @@ template <typename Q, int num_freqs, typename Integrand> auto integrator_Matsuba
             num_intervals++;
         }
     }
+    if (std::abs(std::abs(intervals[num_intervals-1][1]) - w_half) < tol) {
+        intervals[num_intervals-1][1] -= tol;
+    }
 
 
 /*
