@@ -25,10 +25,10 @@ const int nK_K2 = 1;
 const int nK_K3 = 1;
 #endif
 
-const vec<size_t> dimsSE = vec<size_t>({nK_SE, FREQ_PADDING*2+nFER, n_in});
-const vec<size_t> dimsK1 = vec<size_t>({nK_K1, FREQ_PADDING*2+nBOS, n_in});
-const vec<size_t> dimsK2 = vec<size_t>({nK_K2, FREQ_PADDING*2+nBOS2, FREQ_PADDING*2+nFER2, n_in});
-const vec<size_t> dimsK3 = vec<size_t>({nK_K3, FREQ_PADDING*2+nBOS3, FREQ_PADDING*2+nFER3, FREQ_PADDING*2+nFER3, n_in});
+const vec<size_t> dimsSE = vec<size_t>({nK_SE, FREQ_PADDING*2+nFER, glb_N_transfer});
+const vec<size_t> dimsK1 = vec<size_t>({nK_K1, FREQ_PADDING*2+nBOS, n_in_K1});
+const vec<size_t> dimsK2 = vec<size_t>({nK_K2, FREQ_PADDING*2+nBOS2, FREQ_PADDING*2+nFER2, n_in_K2});
+const vec<size_t> dimsK3 = vec<size_t>({nK_K3, FREQ_PADDING*2+nBOS3, FREQ_PADDING*2+nFER3, FREQ_PADDING*2+nFER3, n_in_K3});
 
 
 #ifdef KELDYSH_FORMALISM
