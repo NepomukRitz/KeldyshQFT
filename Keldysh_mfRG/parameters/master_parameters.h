@@ -38,7 +38,7 @@ constexpr int N_LOOPS = 1;  // Number of loops
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 constexpr double glb_T = 2./M_PI; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 0.01;                     // Temperature
+constexpr double glb_T = 0.1;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
