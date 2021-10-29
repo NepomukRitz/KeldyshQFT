@@ -22,39 +22,45 @@
  */
 State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermediate_results=false){
 
-    State<state_datatype> state_fin (Lambda_fin), state_ini (Lambda_ini);   // create final and initial state
-    state_ini.initialize();             // initialize state
+    State<state_datatype> state_fin (Lambda_fin), state_ini(Lambda_ini);   // create final and initial state
 
+    /// Iterate:
+    /// 1. compute parquet solution
+    /// 2. optimize grid
+    /// 3. restart with optimized grid
+    for (int i = 0; i < 1; i++) {
+
+        State<state_datatype> state_temp = state_ini;
+        state_temp.initialize();             // initialize state with bare vertex and Hartree term in selfenergy
+        // initialize the flow with SOPT at Lambda_ini (important!)
+        sopt_state(state_temp, Lambda_ini);
+        // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
+
+        parquet_solver(data_dir + "parqueInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_temp, Lambda_ini);
+
+        state_temp.vertex[0].half1().check_vertex_resolution();
+        state_temp.findBestFreqGrid(true);
+
+        state_ini.set_frequency_grid(state_temp); // copy frequency grid
+    }
+
+
+    state_ini.initialize();     // initialize state with bare vertex and Hartree term in selfenergy
     // initialize the flow with SOPT at Lambda_ini (important!)
     sopt_state(state_ini, Lambda_ini);
-    // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
-    //write_hdf(outputFileName, Lambda_ini,  2, state_ini);  // save the initial state to hdf5 file
+    parquet_solver(data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
 
-    //state_ini.findBestFreqGrid(Lambda_ini);
-
-    //state_ini.vertex[0].half1().analyze_tails_K1(true);
-    //state_ini.vertex[0].half1().analyze_tails_K2w(true);
-    //state_ini.vertex[0].half1().analyze_tails_K2v(true);
-    //state_ini.vertex[0].half1().analyze_tails_K3w(true);
-    //state_ini.vertex[0].half1().analyze_tails_K3v(true);
-    //state_ini.vertex[0].half1().analyze_tails_K3vp(true);
-    //print("Bleeb", true);
-
-
-    //rvec Lambdas_deleteme = {Lambda_ini, Lambda_ini};
-    //add_hdf(outputFileName, 1, 2, state_ini, Lambdas_deleteme);
-
-    //state_ini.findBestFreqGrid(Lambda_ini); // optimize W_scale
 
     //// better: read state from converged parquet solution
     //state_ini = read_hdf(data_dir + "parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", 4, 51);
     //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
 
-    parquet_solver(data_dir + "parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
-    //state_ini = read_hdf(data_dir + "parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", 4, 51); // read initial state
+
     write_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+    state_ini.vertex[0].half1().check_vertex_resolution();
     state_ini.findBestFreqGrid(true);
+    state_ini.vertex[0].half1().check_vertex_resolution();
     write_hdf(outputFileName+"_postOpt", Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
     //if (save_intermediate_results) {
@@ -87,7 +93,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 State<state_datatype> n_loop_flow(std::string inputFileName, const int it_start, bool save_intermediate_results=false) {
     if (it_start < nODE + U_NRG.size() + 1) { // start iteration needs to be within the range of values
 
-        State<state_datatype> state_ini = read_hdf(inputFileName, it_start, nODE + U_NRG.size() + 1); // read initial state
+        State<state_datatype> state_ini = read_hdf(inputFileName, it_start); // read initial state
         State<state_datatype> state_fin (Lambda_fin);
         if (save_intermediate_results) {
             write_hdf(inputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
@@ -95,6 +101,8 @@ State<state_datatype> n_loop_flow(std::string inputFileName, const int it_start,
             write_hdf(inputFileName+"_RKstep3", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
             write_hdf(inputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
         }
+        state_ini.findBestFreqGrid(true);
+        state_ini.vertex[0].half1().check_vertex_resolution();
 
         std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
