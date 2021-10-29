@@ -1622,20 +1622,40 @@ template <typename Q>
 void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     double vmax = 100;
     double Delta = (glb_Gamma + Lambda) / 2.;
-    State<Q> bareState (Lambda);
-    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    State<Q> bareState (Lambda);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
 
+    const int N_iterations = 0;
     State<Q> state_cpp (Lambda);   // create final and initial state
     state_cpp.initialize();             // initialize state
+    write_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
+    write_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
+
+    for (int it = 0; it < N_iterations; it++) {
+        State<Q> state_temp (state_cpp, Lambda);   // copy frequency grids //
+        state_temp.initialize();             // initialize state
+        fopt_state(state_temp, Lambda);
+
+
+        add_hdf("PTstate_preOpt", Lambda_ini, it+1, state_temp);  // save the initial state to hdf5 file
+        state_temp.vertex[0].half1().check_vertex_resolution();
+        state_temp.vertex[0].half1().findBestFreqGrid(true);
+        state_temp.vertex[0].half1().check_vertex_resolution();
+        state_temp.analyze_tails();
+
+        state_cpp.set_frequency_grid(state_temp);
+        add_hdf("PTstate_postOpt", Lambda_ini, it+1, state_temp);  // save the initial state to hdf5 file
+    }
+
 
     fopt_state(state_cpp, Lambda);
     state_cpp.vertex[0].half1().check_vertex_resolution();
+    state_cpp.analyze_tails();
 
     write_hdf(outputFileName + "_cpp", Lambda, 1, state_cpp);
 
-    State<state_datatype> PT_state(state_cpp.vertex, state_cpp.selfenergy.frequencies);
+    State<state_datatype> PT_state(state_cpp, Lambda);
 
     // compute SOPT self-energy (numerically exact)
     for (int i = 0; i<nFER; i++) {
@@ -1652,7 +1672,13 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         PT_state.vertex[0].avertex().K1.setvert( val_K1, 0, i, 0);
+        w = PT_state.vertex[0].pvertex().K1.frequencies_K1.b.get_ws(i);
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
+        else val_K1 = SOPT_K1a(w, Lambda);
         PT_state.vertex[0].pvertex().K1.setvert( -val_K1, 0, i, 0);
+        w = PT_state.vertex[0].tvertex().K1.frequencies_K1.b.get_ws(i);
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
+        else val_K1 = SOPT_K1a(w, Lambda);
         PT_state.vertex[0].tvertex().K1.setvert( -val_K1*val_K1/glb_U, 0, i, 0);
     }
 
@@ -1681,11 +1707,12 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
                 Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex[0].avertex().K3.setvert(val_K3, 0, i, j, k, 0);
 
-                PT_state.vertex[0].avertex().K3.K3_get_freqs_w(w, v, vp, i, j, k, 'p');
+                PT_state.vertex[0].pvertex().K3.K3_get_freqs_w(w, v, vp, i, j, k, 'p');
                 Integrand_FOPTK3a<Q> IntegrandK3_2(Lambda, w, v, vp, diff, Pi);
                 val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_2, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex[0].pvertex().K3.setvert(-val_K3, 0, i, j, k, 0);
-                PT_state.vertex[0].avertex().K3.K3_get_freqs_w(w, v, vp, i, j, k, 't');
+
+                PT_state.vertex[0].tvertex().K3.K3_get_freqs_w(w, v, vp, i, j, k, 't');
                 Integrand_FOPTK3a<Q> IntegrandK3_3(Lambda, w, v, vp, diff, Pi);
                 val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);

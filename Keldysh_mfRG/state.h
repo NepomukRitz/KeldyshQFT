@@ -12,6 +12,10 @@
 
 template <typename Q>
 class State{
+    friend State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermediate_results);
+    template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool diff);
+
+private:
     void set_frequency_grid(const State<Q>& state_in);
 public:
     double Lambda;
@@ -21,9 +25,9 @@ public:
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
     explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (n_spin, Lambda)), Lambda(Lambda) {};
 
-    /// Constructor, which gets a Vertex (whose frequency grid will be copied) and a frequencyGrid for the selfenergy
-    State(const Vertex<Q>& vertex_in, const FrequencyGrid selfenergyFreqs_in)
-    : selfenergy(SelfEnergy<Q> (selfenergyFreqs_in)), vertex(Vertex<Q> (n_spin, vertex_in)) {};
+    /// Constructor, which gets a State (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!)
+    State(const State<Q>& state_in, const double Lambda_in)
+    : selfenergy(SelfEnergy<Q> (state_in.selfenergy.frequencies)), vertex(Vertex<Q> (n_spin, state_in.vertex)), Lambda(Lambda_in) {};
 
     /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
     State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in)

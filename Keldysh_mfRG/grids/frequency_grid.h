@@ -328,7 +328,7 @@ void FrequencyGrid::set_w_upper(double wmax) {
 void FrequencyGrid::rescale_grid(double Lambda) {
     double scale = scale_factor(Lambda);
     set_W_scale(scale);
-    set_w_upper(scale*100);
+    set_w_upper(scale*500);
     initialize_grid();
 }
 
@@ -490,6 +490,14 @@ public:
         b.initialize_grid();
     }
 
+    void get_freqs_w(double &w, const int iw) const {
+        w = b.get_ws(iw);
+    }
+
+    void get_freqs_aux(double &w, const int iw) const {
+        w = b.get_ts(iw);
+    }
+
     //auto get_freqGrid_b() const -> FrequencyGrid {return b;};
 //
     //double get_wlower_b() const {return b.w_lower;};
@@ -543,8 +551,17 @@ public:
     //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
     //auto gridtransf_inv_f(double t) const -> double {return f.grid_transf_inv(t);};
 //
-    //void get_freqs_w(double& w, double& v, int iw, int iv) const {w = b.ws[iw]; v = f.ws[iv];};
-    //void get_freqs_aux(double& w, double& v, int iw, int iv) const {w = b.ts[iw]; v = f.ts[iv];};
+    void get_freqs_w(double &w, double &v, const int iw, const int iv) const {
+        w = b.get_ws(iw);
+        v = f.get_ws(iv);
+        K2_convert2naturalFreqs(w, v);
+
+    }
+
+    void get_freqs_aux(double &w, double &v, const int iw, const int iv) const {
+        w = b.get_ts(iw);
+        v = f.get_ts(iv);
+    }
 };
 template<>
 class VertexFrequencyGrid<k3> {
@@ -587,8 +604,23 @@ public:
     //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
     //auto gridtransf_inv_f(double t) const -> double {return f.grid_transf_inv(t);};
 //
-    //void get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp) const {w = b.ws[iw]; v = f.ws[iv]; vp = f.ws[ivp];};
-    //void get_freqs_aux(double& w, double& v, double& vp, int iw, int iv, int ivp) const {w = b.ts[iw]; v = f.ts[iv]; vp = f.ts[ivp];};
+    void get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp, const char channel) const {
+        w = b.get_ws(iw);
+        v = f.get_ws(iv);
+        vp= f.get_ws(ivp);
+
+#ifdef BOSONIC_PARAM_FOR_K3
+        if (channel == 'a') {switch2naturalFreqs<'a'>(w, v, vp);}
+        else if (channel == 'p') {switch2naturalFreqs<'p'>(w, v, vp);}
+        else if (channel == 't') {switch2naturalFreqs<'t'>(w, v, vp);}
+#endif
+    }
+
+    void get_freqs_aux(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
+        w = b.get_ts(iw);
+        v = f.get_ts(iv);
+        vp= f.get_ts(ivp);
+    }
 };
 
 

@@ -171,7 +171,7 @@ public:
     void K1_get_freq_aux(double& w, int i) const;   /// returns frequency on the auxiliary grid
 
     auto K1_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k1>&;
-    void K1_set_VertexFreqGrid(const VertexFrequencyGrid<k1> &frequencyGrid);
+    void K1_set_VertexFreqGrid(const VertexFrequencyGrid<k1> frequencyGrid);
 
     auto K1_get_freqGrid() const -> const FrequencyGrid&;
 
@@ -226,7 +226,7 @@ public:
     void K2_get_freqs_aux(double& w, double& v, int iw, int iv) const;
 
     auto K2_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>&;
-    void K2_set_VertexFreqGrid(const VertexFrequencyGrid<k2> &frequencyGrid);
+    void K2_set_VertexFreqGrid(const VertexFrequencyGrid<k2> frequencyGrid);
 
     const double& K2_get_wlower_b() const;
     const double& K2_get_wupper_b() const;
@@ -243,9 +243,6 @@ public:
     auto K2_gridtransf_inv_b(double w) const -> double;
     auto K2_gridtransf_inv_f(double w) const -> double;
 
-    /// converts the frequencies to the parametrization that is used internally, e.g. rotate frequency plane
-    void K2_convert2internalFreqs(double& w, double& v) const; /// Insert this function before interpolation
-    void K2_convert2naturalFreqs(double& w, double& v) const;  /// Insert this function before returning frequency values
 
     auto K2_get_correction_MFfiniteT(int iw) const -> double;
 
@@ -291,7 +288,7 @@ public:
     void K3_get_freqs_aux(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
 
     auto K3_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3>&;
-    void K3_set_VertexFreqGrid(const VertexFrequencyGrid<k3> &frequencyGrid);
+    void K3_set_VertexFreqGrid(const VertexFrequencyGrid<k3> frequencyGrid);
     const FrequencyGrid& K3_get_freqGrid_b() const;
     const FrequencyGrid& K3_get_freqGrid_f() const;
 
@@ -340,7 +337,7 @@ auto vertexDataContainer<k1,Q>::K1_get_VertexFreqGrid() const -> const VertexFre
     return frequencies_K1;
 }
 template<typename Q>
-void vertexDataContainer<k1,Q>::K1_set_VertexFreqGrid(const VertexFrequencyGrid<k1>& frequencyGrid) {
+void vertexDataContainer<k1,Q>::K1_set_VertexFreqGrid(const VertexFrequencyGrid<k1> frequencyGrid) {
     frequencies_K1 = frequencyGrid;
 }
 template<typename Q>
@@ -348,7 +345,7 @@ auto vertexDataContainer<k2,Q>::K2_get_VertexFreqGrid() const -> const VertexFre
     return frequencies_K2;
 }
 template<typename Q>
-void vertexDataContainer<k2,Q>::K2_set_VertexFreqGrid(const VertexFrequencyGrid<k2>& frequencyGrid) {
+void vertexDataContainer<k2,Q>::K2_set_VertexFreqGrid(const VertexFrequencyGrid<k2> frequencyGrid) {
     frequencies_K2 = frequencyGrid;
 }
 template<typename Q>
@@ -356,7 +353,7 @@ auto vertexDataContainer<k3,Q>::K3_get_VertexFreqGrid() const -> const VertexFre
     return frequencies_K3;
 }
 template<typename Q>
-void vertexDataContainer<k3,Q>::K3_set_VertexFreqGrid(const VertexFrequencyGrid<k3>& frequencyGrid) {
+void vertexDataContainer<k3,Q>::K3_set_VertexFreqGrid(const VertexFrequencyGrid<k3> frequencyGrid) {
     frequencies_K3 = frequencyGrid;
 }
 
@@ -465,9 +462,7 @@ auto vertexDataContainer<k2,Q>::K2_get_freqGrid_f() const -> const FrequencyGrid
 }
 template<typename Q>
 void vertexDataContainer<k2,Q>::K2_get_freqs_w(double &w, double &v, const int iw, const int iv) const {
-    w = frequencies_K2.b.get_ws(iw);
-    v = frequencies_K2.f.get_ws(iv);
-    K2_convert2naturalFreqs(w, v);
+    frequencies_K2.get_freqs_w(w, v, iw, iv);
 }
 
 template<typename Q>
@@ -488,8 +483,7 @@ const double& vertexDataContainer<k2,Q>::K2_get_tupper_f_aux() const {
 }
 template<typename Q>
 void vertexDataContainer<k2,Q>::K2_get_freqs_aux(double &w, double &v, const int iw, const int iv) const {
-    w = frequencies_K2.b.get_ts(iw);
-    v = frequencies_K2.f.get_ts(iv);
+    frequencies_K2.get_freqs_aux(w, v, iw, iv);
 }
 template<typename Q>
 auto vertexDataContainer<k2,Q>::K2_gridtransf_b(double w) const -> double {
@@ -512,27 +506,6 @@ auto vertexDataContainer<k2,Q>::K2_get_correction_MFfiniteT(int iw) const -> dou
     if (not KELDYSH and not ZERO_T)
         return floor2bfreq(frequencies_K2.b.get_ws(iw) / 2) - ceil2bfreq(frequencies_K2.b.get_ws(iw) / 2);
     else return 0.;
-}
-template<typename Q>
-void vertexDataContainer<k2,Q>::K2_convert2internalFreqs(double &w, double &v) const {
-    /// need to convert natural parametrization to internal coordinates when interpolating
-#ifdef ROTATEK2
-    // The internal parametrization corresponds to the fermionic frequencies at the two fermionic legs of K2
-    const double w_tmp = w/2. + v;
-    const double v_tmp = w/2. - v;
-    w = w_tmp;
-    v = v_tmp;
-#endif
-}
-template<typename Q>
-void vertexDataContainer<k2,Q>::K2_convert2naturalFreqs(double &w, double &v) const {
-    /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v)
-#ifdef ROTATEK2
-    const double w_tmp = w + v;
-    const double v_tmp =(w - v)/2.;
-    w = w_tmp;
-    v = v_tmp;
-#endif
 }
 
 template <typename Q> auto vertexDataContainer<k2,Q>::get_deriv_K2_x(const int order) const -> vec<Q> {
@@ -641,15 +614,7 @@ auto vertexDataContainer<k3,Q>::K3_get_freqGrid_f() const -> const FrequencyGrid
 }
 template<typename Q>
 void vertexDataContainer<k3,Q>::K3_get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp, const char channel) const {
-    w = frequencies_K3.b.get_ws(iw);
-    v = frequencies_K3.f.get_ws(iv);
-    vp= frequencies_K3.f.get_ws(ivp);
-
-#ifdef BOSONIC_PARAM_FOR_K3
-    if (channel == 'a') {switch2naturalFreqs<'a'>(w, v, vp);}
-    else if (channel == 'p') {switch2naturalFreqs<'p'>(w, v, vp);}
-    else if (channel == 't') {switch2naturalFreqs<'t'>(w, v, vp);}
-#endif
+    frequencies_K3.get_freqs_w(w, v, vp, iw, iv, ivp, channel);
 }
 
 template<typename Q>
@@ -670,9 +635,7 @@ const double& vertexDataContainer<k3,Q>::K3_get_tupper_f_aux() const {
 }
 template<typename Q>
 void vertexDataContainer<k3,Q>::K3_get_freqs_aux(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
-    w = frequencies_K3.b.get_ts(iw);
-    v = frequencies_K3.f.get_ts(iv);
-    vp= frequencies_K3.f.get_ts(ivp);
+    frequencies_K3.get_freqs_aux(w,v,vp, iw, iv, ivp);
 }
 template<typename Q>
 auto vertexDataContainer<k3,Q>::K3_gridtransf_b(double w) const -> double {

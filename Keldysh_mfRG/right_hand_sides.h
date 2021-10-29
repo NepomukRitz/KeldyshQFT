@@ -58,7 +58,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
 
     // initialize empty state with frequency grids corresponding to those in Psi:
-    State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
+    State<Q> dPsi(Psi, Lambda); // result
 
 
     Propagator<Q> S (Lambda, Psi.selfenergy, 's');

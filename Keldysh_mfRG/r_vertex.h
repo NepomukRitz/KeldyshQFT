@@ -93,6 +93,7 @@ public:
 
         if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 
+        assert(indices.channel == readMe.channel);
         if constexpr (k == k2) assert(not indices.asymmetry_transform);
         if constexpr (k == k2b) assert(indices.asymmetry_transform);
 
@@ -122,15 +123,7 @@ public:
 
         }
         else  if constexpr (k==k3) {
-#ifdef BOSONIC_PARAM_FOR_K3
-            IndicesSymmetryTransformations indices_rot = indices;
-            if (channel == 'a') {switch2bosonicFreqs<'a'>(indices_rot.w, indices_rot.v1, indices_rot.v2);}
-            else if (channel == 'p') {switch2bosonicFreqs<'p'>(indices_rot.w, indices_rot.v1, indices_rot.v2);}
-            else if (channel == 't') {switch2bosonicFreqs<'t'>(indices_rot.w, indices_rot.v1, indices_rot.v2);}
-            value = readMe.K3.interpolate(indices_rot);
-#else
             value = readMe.K3.interpolate(indices);
-#endif
         }
         else { // for both k2 and k2b we need to interpolate K2
             value = readMe.K2.interpolate(indices);
@@ -186,7 +179,7 @@ public:
      *                          can be different from *this, so we can backup a vertex and interpolate the backup
      */
     template<K_class k>
-    void update_grid(const VertexFrequencyGrid<k> &frequencyGrid_in, rvert<Q>& rvert4data);
+    void update_grid(const VertexFrequencyGrid<k> frequencyGrid_in, rvert<Q>& rvert4data);
 
     /**
      * Optimizes the frequency grids and updates the grids accordingly
@@ -683,7 +676,9 @@ namespace {
             for (int iK1=0; iK1<nK_K1; ++iK1) {
                 for (int iw=0; iw<nw1; ++iw) {
                     for (int i_in=0; i_in<n_in; ++i_in) {
-                        IndicesSymmetryTransformations indices (iK1, frequencies_new.b.get_ws(iw), 0., 0., i_in, vertex.channel, k1, iw, rvert4data.channel);
+                        double w;
+                        frequencies_new.get_freqs_w(w, iw);
+                        IndicesSymmetryTransformations indices (iK1, w, 0., 0., i_in, vertex.channel, k1, iw, rvert4data.channel);
                         // interpolate old values to new vector
                         K1_new[iK1 * (nw1+2*FREQ_PADDING) * n_in + (iw+FREQ_PADDING) * n_in + i_in] = rvert4data.K1.interpolate(indices);
                     }
@@ -702,8 +697,10 @@ namespace {
                 for (int iw=0; iw<nw2; ++iw) {
                     for (int iv=0; iv<nv2; ++iv) {
                         for (int i_in = 0; i_in<n_in; ++i_in) {
+                            double w, v;
+                            frequencies_new.get_freqs_w(w, v, iw, iv);
                             IndicesSymmetryTransformations indices (iK2,
-                                                                    frequencies_new.b.get_ws(iw), frequencies_new.f.get_ws(iv), 0.,
+                                                                    w, v, 0.,
                                                                     i_in, vertex.channel, k2, iw, rvert4data.channel);
                             // interpolate old values to new vector
                             K2_new[iK2 * (nw2+2*FREQ_PADDING) * (nv2+2*FREQ_PADDING)* n_in + (iw+FREQ_PADDING) * (nv2+2*FREQ_PADDING)* n_in + (iv+FREQ_PADDING) * n_in + i_in]
@@ -720,14 +717,17 @@ namespace {
     class UpdateGrid<k3,Q> {
     public:
         void operator() (rvert<Q>& vertex, const VertexFrequencyGrid<k3>& frequencies_new, const rvert<Q>& rvert4data) {
+            assert(vertex.channel == rvert4data.channel);
             vec<Q> K3_new (nK_K3 * (nw3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in);  // temporary K3 vector
             for (int iK3=0; iK3<nK_K3; ++iK3) {
                 for (int iw=0; iw<nw3; ++iw) {
                     for (int iv=0; iv<nv3; ++iv) {
                         for (int ivp=0; ivp<nv3; ++ivp) {
                             for (int i_in = 0; i_in<n_in; ++i_in) {
+                                double w, v, vp;
+                                frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp, vertex.channel);
                                 IndicesSymmetryTransformations indices (iK3,
-                                                                        frequencies_new.b.get_ws(iw), frequencies_new.f.get_ws(iv), frequencies_new.f.get_ws(ivp),
+                                                                        w, v, vp,
                                                                         i_in, vertex.channel, k3, iw, rvert4data.channel);
                                 // interpolate old values to new vector
                                 K3_new[iK3 * (nw3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in
@@ -751,7 +751,7 @@ namespace {
 
 template <typename Q>
 template<K_class k>
-void rvert<Q>::update_grid(const VertexFrequencyGrid<k>& frequencies_new, rvert<Q>& rvert4data) {
+void rvert<Q>::update_grid(const VertexFrequencyGrid<k> frequencies_new, rvert<Q>& rvert4data) {
     rvert4data.initInterpolator();
     UpdateGrid<k,Q>() (*this, frequencies_new, rvert4data);
     rvert4data.set_initializedInterpol(false);
@@ -982,7 +982,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     double m_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale;
     double b_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale * 2;
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(*this, verbose);
-    minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 1., 0.);
+    minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
     frequenciesK1_new.b.update_Wscale(m_Wscale);
     update_grid<k1>(frequenciesK1_new, *this);
 
@@ -990,7 +990,6 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     /// Using 1-dimensional minimization consecutively:
     if(MAX_DIAG_CLASS>1) {
         /// for K2:
-        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w:\n";
         VertexFrequencyGrid<k2> frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
         update_grid<k2>(frequenciesK2_new, *this);
         if (verbose and mpi_world_rank() == 0) {
@@ -1011,6 +1010,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 
 #ifndef ROTATEK2
         // in w-direction:
+        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w:\n";
         a_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale / 2.;
         m_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale;
         b_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale * 2;
@@ -1051,7 +1051,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     }
 
 #endif
-#ifndef NEWFEATURE
+#ifndef NEWFEATURE // multi-dimensional optimization
     if(MAX_DIAG_CLASS>2) {
         /// for K3:
         VertexFrequencyGrid<k3> frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
@@ -1069,6 +1069,10 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         b_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale * 2;
         CostFullvert_Wscale_f_K3<Q> cost_f_K3(*this, verbose);
         minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
+
+#ifdef BOSONIC_PARAM_FOR_K3
+        frequenciesK3_new.b.update_Wscale(m_Wscale);
+#endif
         frequenciesK3_new.f.update_Wscale(m_Wscale);
         update_grid<k3>(frequenciesK3_new, *this);
 

@@ -920,4 +920,26 @@ template<> void switch2naturalFreqs<'t'> (double& w_a, double& w_p, double& w_t)
 }
 
 
+/// converts the frequencies to the parametrization that is used internally, e.g. rotate frequency plane
+void K2_convert2internalFreqs(double &w, double &v) { /// Insert this function before interpolation
+    /// need to convert natural parametrization to internal coordinates when interpolating
+#ifdef ROTATEK2
+    // The internal parametrization corresponds to the fermionic frequencies at the two fermionic legs of K2
+    const double w_tmp = w/2. + v;
+    const double v_tmp = w/2. - v;
+    w = w_tmp;
+    v = v_tmp;
+#endif
+}
+void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function before returning frequency values
+    /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v)
+#ifdef ROTATEK2
+    const double w_tmp = w + v;
+    const double v_tmp =(w - v)/2.;
+    w = w_tmp;
+    v = v_tmp;
+#endif
+}
+
+
 #endif //FPP_MFRG_MATH_UTILS_H
