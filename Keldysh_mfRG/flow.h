@@ -40,6 +40,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
         state_temp.vertex[0].half1().check_vertex_resolution();
         state_temp.findBestFreqGrid(true);
+        state_temp.vertex[0].half1().check_vertex_resolution();
 
         state_ini.set_frequency_grid(state_temp); // copy frequency grid
     }

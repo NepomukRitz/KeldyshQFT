@@ -728,7 +728,7 @@ namespace {
                                 frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp, vertex.channel);
                                 IndicesSymmetryTransformations indices (iK3,
                                                                         w, v, vp,
-                                                                        i_in, vertex.channel, k3, iw, rvert4data.channel);
+                                                                        i_in, vertex.channel, k3, vertex.channel == 'a' ? iw : (vertex.channel == 'p' ? iv : ivp), rvert4data.channel);
                                 // interpolate old values to new vector
                                 K3_new[iK3 * (nw3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in
                                       + (iw+FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in
