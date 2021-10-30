@@ -9,7 +9,7 @@
 // For production: uncomment the following line to switch off assert()-functions
 //#define NDEBUG
 
-//#define NEWFEATURE
+//#define MULTIDIM_MINIMIZATION
 
 constexpr bool VERBOSE = true;
 

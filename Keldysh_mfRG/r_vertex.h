@@ -986,7 +986,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     frequenciesK1_new.b.update_Wscale(m_Wscale);
     update_grid<k1>(frequenciesK1_new, *this);
 
-#ifndef NEWFEATURE
+#ifndef MULTIDIM_MINIMIZATION
     /// Using 1-dimensional minimization consecutively:
     if(MAX_DIAG_CLASS>1) {
         /// for K2:
@@ -1051,7 +1051,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     }
 
 #endif
-#ifndef NEWFEATURE // multi-dimensional optimization
+#ifndef MULTIDIM_MINIMIZATION // multi-dimensional optimization
     if(MAX_DIAG_CLASS>2) {
         /// for K3:
         VertexFrequencyGrid<k3> frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
