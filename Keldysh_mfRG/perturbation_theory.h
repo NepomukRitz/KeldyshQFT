@@ -49,9 +49,21 @@ void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, 
     Vertex<Q> bubblevertex_p(n_spin, PsiVertex);
     bubblevertex_p[0].initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
+
+#ifdef DEBUG_SYMMETRIES
+    Vertex<Q> bubblevertex_t(n_spin, PsiVertex);
+    bubblevertex_p[0].initialize(0.);
+    bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
+    bubble_function(PsiVertex, bubblevertex_t, bareState.vertex, Pi, 't'); // TOPT diagram for K1t
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_p, bareState.vertex, Pi, 't'); // Eye diagram for K2t
+    bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bareState.vertex, Pi, 'a');
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bareState.vertex, Pi, 'p');
+#else
+    bubble_function(PsiVertex, SoptPsi.vertex, bareState.vertex, Pi, 't'); // Eye diagram for K2t
     bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'a');
     bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'p');
-    bubble_function(PsiVertex, SoptPsi.vertex, bareState.vertex, Pi, 't');
+#endif
+
 }
 
 
@@ -63,9 +75,12 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
     Vertex<Q> bubblevertex_p(n_spin, PsiVertex);
     bubblevertex_p[0].initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
+    Vertex<Q> bubblevertex_t(n_spin, PsiVertex);
+    bubblevertex_p[0].initialize(0.);
+    bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
 
-    bubble_function(PsiVertex, bubblevertex_p, bubblevertex_p, Pi, 'a');
-    bubble_function(PsiVertex, bubblevertex_a, bubblevertex_a, Pi, 'p');
+    bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bubblevertex_p + bubblevertex_t, Pi, 'a');
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bubblevertex_a + bubblevertex_t, Pi, 'p');
     bubble_function(PsiVertex, bubblevertex_a + bubblevertex_p, bubblevertex_a + bubblevertex_p, Pi, 't');
 }
 

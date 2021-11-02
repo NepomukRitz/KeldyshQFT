@@ -609,7 +609,7 @@ auto asymp_corrections_bubble(K_class k,
                               const GeneralVertex<Q, symmetry_right>& vertex2,
                               const Propagator<Q>& G,
                               double vmin, double vmax,
-                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel, bool diff) -> Q {
+                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel, bool diff, int spin) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
@@ -621,7 +621,7 @@ auto asymp_corrections_bubble(K_class k,
     else {
         Delta = glb_Gamma / 2.;                    // Hybridization (~ flow parameter) at which the bubble is evaluated
     }
-    Q res{}, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
+    Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
 
     std::vector<int> indices = {0, 0}; // Already right for Matsubara
     if (KELDYSH){
@@ -691,8 +691,8 @@ auto asymp_corrections_bubble(K_class k,
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
-    VertexInput input_l (indices[0], w, v, 10.*vmin, i_in, 0, channel);
-    VertexInput input_r (indices[1], w, 10.*vmin, vp, i_in, 0, channel);
+    VertexInput input_l (indices[0], w, v, 10.*vmin, i_in, spin, channel);
+    VertexInput input_r (indices[1], w, 10.*vmin, vp, i_in, spin, channel);
 
     // compute values of left/right vertex
     switch (k) {
@@ -715,11 +715,11 @@ auto asymp_corrections_bubble(K_class k,
     Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
 
     // In the a and p channel, return result. In the t channel, add the other spin component.
-    if (channel != 't')
-        res += res_l_V * Pival * res_r_V;
+    if ((channel == 'a' and spin == 0) or (channel == 't' and spin == 1))
+        res = res_l_V * Pival * res_r_V;
     else {
-        input_l.spin = 1;
-        input_r.spin = 1;
+        input_l.spin = 1 - input_l.spin; // switch between V and Vhat
+        input_r.spin = 1 - input_r.spin; // switch between V and Vhat
 
         switch (k) {
             case k1:
@@ -730,13 +730,28 @@ auto asymp_corrections_bubble(K_class k,
                 res_l_Vhat = vertex1.left_diff_bare(input_l);
                 res_r_Vhat = vertex2.right_same_bare(input_r);
                 break;
+            case k2b:
+                res_l_Vhat = vertex1.left_same_bare(input_l);
+                res_r_Vhat = vertex2.right_diff_bare(input_r);
+                break;
             case k3:
                 res_l_Vhat = vertex1.left_diff_bare(input_l);
                 res_r_Vhat = vertex2.right_diff_bare(input_r);
                 break;
             default:;
         }
-        res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+
+        if (channel == 'p' and spin == 0) {
+            res = res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
+        }
+#ifdef DEBUG_SYMMETRIES
+        else if (channel == 'p' and spin == 1) {
+            res = res_l_V * Pival * res_r_Vhat + res_l_Vhat * Pival * res_r_V;
+        }
+#endif
+        else {
+            res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+        }
     }
     return res;
 }

@@ -343,7 +343,7 @@ template <typename Q>
 template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     IndicesSymmetryTransformations indices (input, channel);
 #ifdef DEBUG_SYMMETRIES
-    read_symmetryreduced_rvert<k>(indices, *this);
+    return read_symmetryreduced_rvert<k>(indices, *this);
 #else
     const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing);
 
