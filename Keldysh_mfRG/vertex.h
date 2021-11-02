@@ -217,13 +217,14 @@ public:
 
     void initializeInterpol() const;
 
-    void set_initializedInterpol(bool is_init);
+    void set_initializedInterpol(bool is_init) const;
 
 };
 
 /** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
 template <typename Q>
 class symmetric {
+    template <typename T, template <typename> class symmetry_type> friend class vertex_container;
     fullvert<Q> vertex;
 public:
     explicit symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
@@ -234,7 +235,7 @@ public:
     fullvert<Q>& half2() { return vertex; }
     const fullvert<Q>& half1() const { return vertex; }
     const fullvert<Q>& half2() const { return vertex; }
-
+private:
     // wrappers for access functions of fullvert
     auto value(VertexInput& input) const -> Q           { return vertex.value(input); }
     auto gammaRb(VertexInput& input) const -> Q         { return vertex.gammaRb(input); }
@@ -247,7 +248,7 @@ public:
     void initialize_K2_spline() { vertex.initialize_K2_spline(); };
     void free_K2_spline() { vertex.free_K2_spline(); };
 #endif
-
+public:
     auto operator+= (const symmetric<Q>& vertex1) -> symmetric<Q> {
         this->vertex += vertex1.vertex;
         return *this;
@@ -293,6 +294,7 @@ public:
 /** non-symmetric vertex container class (half 1 and half 2 are different) */
 template <typename Q>
 class non_symmetric {
+    template <typename T, template <typename> class symmetry_type> friend class vertex_container;
     fullvert<Q> vertex_half1, vertex_half2;
 public:
     explicit non_symmetric(const fullvert<Q>& vertex_in)
@@ -307,7 +309,7 @@ public:
     fullvert<Q>& half2() { return vertex_half2; }
     const fullvert<Q>& half1() const { return vertex_half1; }
     const fullvert<Q>& half2() const { return vertex_half2; }
-
+private:
     // wrappers for access functions of fullvert
     auto value(VertexInput& input) const -> Q           { return vertex_half1.value(input, vertex_half2); }
     auto gammaRb(VertexInput& input) const -> Q         { return vertex_half1.gammaRb(input, vertex_half2); }
@@ -320,7 +322,7 @@ public:
     void initialize_K2_spline() { vertex_half1.initialize_K2_spline(); vertex_half2.initialize_K2_spline(); };
     void free_K2_spline() { vertex_half1.free_K2_spline(); vertex_half2.free_K2_spline(); };
 #endif
-
+public:
     auto operator+= (const non_symmetric<Q>& vertex1) -> non_symmetric<Q> {
         this->vertex += vertex1.vertex;
         return *this;
@@ -366,6 +368,7 @@ public:
 /** template vertex container class that can contain either a symmetric or a non-symmetric vertex container */
 template <typename Q, template <typename> class symmetry_type>
 class vertex_container {
+    template <typename T, template <typename> class symm_type> friend class GeneralVertex;
     symmetry_type<Q> vertex;
 
 public:
@@ -403,6 +406,7 @@ public:
         vertex.half2().only_same_channel = only_same_channel;
     }
 
+private:
     // wrappers for access functions of fullvert
     auto value(VertexInput& input) const -> Q           { return vertex.value(input); }
     auto gammaRb(VertexInput& input) const -> Q         { return vertex.gammaRb(input); }
@@ -411,6 +415,7 @@ public:
     auto left_diff_bare(VertexInput& input)  const -> Q { return vertex.left_diff_bare(input); }
     auto right_diff_bare(VertexInput& input) const -> Q { return vertex.right_diff_bare(input); }
 
+public:
     // wrappers for other functions of fullvert
     void initialize(Q val) {
         half1().initialize(val);
@@ -440,8 +445,8 @@ public:
     double norm_K2(int i) { return half1().norm_K2(i); }
     double norm_K3(int i) { return half1().norm_K3(i); }
 
-    void initializeInterpol() {half1().initializeInterpol(); half2().initializeInterpol();}
-    void set_initializedInterpol(bool initialized) {half1().set_initializedInterpol(initialized); half2().set_initializedInterpol(initialized);}
+    void initializeInterpol() const {half1().initializeInterpol(); half2().initializeInterpol();}
+    void set_initializedInterpol(const bool initialized) const {half1().set_initializedInterpol(initialized); half2().set_initializedInterpol(initialized);}
 
 
 #if INTERPOLATION == 3
@@ -601,30 +606,67 @@ public:
         }
     }
 
-    void initializeInterpol() {
+    void initialize(Q val) {
+        for (int i = 0; i < this->size(); i++) {
+            (*this)[i].initialize(val);
+        }
+    }
+
+    void initializeInterpol() const {
         for (int i = 0; i < this->size(); i++) {
             (*this)[i].initializeInterpol();
         }
     }
-    void set_initializedInterpol(bool initialized) {
+    void set_initializedInterpol(const bool initialized) const {
         for (int i = 0; i < this->size(); i++) {
             (*this)[i].set_initializedInterpol(initialized);
         }
     }
 
-#if INTERPOLATION == 3
-    void initialize_K2_spline() {
-        for (int i=0; i<this->size(); ++i) {
-            (*this)[i].initialize_K2_spline();
-        }
-    }
-    void free_K2_spline() {
 
-        for (int i=0; i<this->size(); ++i) {
-            (*this)[i].free_K2_spline();
-        }
-    }
+    auto value(VertexInput& input) const -> Q           {
+#ifdef DEBUG_SYMMETRIES
+        return (*this)[input.spin].value(input);
+#else
+        return (*this)[0].value(input);
 #endif
+    }
+    auto gammaRb(VertexInput& input) const -> Q         {
+#ifdef DEBUG_SYMMETRIES
+        return (*this)[input.spin].gammaRb(input);
+#else
+        return (*this)[0].gammaRb(input);
+#endif
+    }
+    auto left_same_bare(VertexInput& input)  const -> Q {
+#ifdef DEBUG_SYMMETRIES
+        return (*this)[input.spin].left_same_bare(input);
+#else
+        return (*this)[0].left_same_bare(input);
+#endif
+        }
+    auto right_same_bare(VertexInput& input) const -> Q {
+#ifdef DEBUG_SYMMETRIES
+        return (*this)[input.spin].right_same_bare(input);
+#else
+        return (*this)[0].right_same_bare(input);
+#endif
+        }
+    auto left_diff_bare(VertexInput& input)  const -> Q {
+#ifdef DEBUG_SYMMETRIES
+        return (*this)[input.spin].left_diff_bare(input);
+#else
+        return (*this)[0].left_diff_bare(input);
+#endif
+        }
+    auto right_diff_bare(VertexInput& input) const -> Q {
+#ifdef DEBUG_SYMMETRIES
+        return (*this)[input.spin].right_diff_bare(input);
+#else
+        return (*this)[0].right_diff_bare(input);
+#endif
+         }
+
 };
 
 /** Define Vertex as symmetric GeneralVertex */
@@ -1530,7 +1572,7 @@ void fullvert<Q>::initializeInterpol() const {
 }
 
 template<typename Q>
-void fullvert<Q>::set_initializedInterpol(const bool is_init) {
+void fullvert<Q>::set_initializedInterpol(const bool is_init) const {
     avertex.set_initializedInterpol(is_init);
     pvertex.set_initializedInterpol(is_init);
     tvertex.set_initializedInterpol(is_init);

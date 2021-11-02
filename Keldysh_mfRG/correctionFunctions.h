@@ -697,16 +697,16 @@ auto asymp_corrections_bubble(K_class k,
     // compute values of left/right vertex
     switch (k) {
         case k1:
-            res_l_V = vertex1[0].left_same_bare(input_l);
-            res_r_V = vertex2[0].right_same_bare(input_r);
+            res_l_V = vertex1.left_same_bare(input_l);
+            res_r_V = vertex2.right_same_bare(input_r);
             break;
         case k2:
-            res_l_V = vertex1[0].left_diff_bare(input_l);
-            res_r_V = vertex2[0].right_same_bare(input_r);
+            res_l_V = vertex1.left_diff_bare(input_l);
+            res_r_V = vertex2.right_same_bare(input_r);
             break;
         case k3:
-            res_l_V = vertex1[0].left_diff_bare(input_l);
-            res_r_V = vertex2[0].right_diff_bare(input_r);
+            res_l_V = vertex1.left_diff_bare(input_l);
+            res_r_V = vertex2.right_diff_bare(input_r);
             break;
         default:;
     }
@@ -723,16 +723,16 @@ auto asymp_corrections_bubble(K_class k,
 
         switch (k) {
             case k1:
-                res_l_Vhat = vertex1[0].left_same_bare(input_l);
-                res_r_Vhat = vertex2[0].right_same_bare(input_r);
+                res_l_Vhat = vertex1.left_same_bare(input_l);
+                res_r_Vhat = vertex2.right_same_bare(input_r);
                 break;
             case k2:
-                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
-                res_r_Vhat = vertex2[0].right_same_bare(input_r);
+                res_l_Vhat = vertex1.left_diff_bare(input_l);
+                res_r_Vhat = vertex2.right_same_bare(input_r);
                 break;
             case k3:
-                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
-                res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+                res_l_Vhat = vertex1.left_diff_bare(input_l);
+                res_r_Vhat = vertex2.right_diff_bare(input_r);
                 break;
             default:;
         }

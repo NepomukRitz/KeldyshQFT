@@ -79,8 +79,8 @@ template <typename Q> void State<Q>::initialize() {
     else this->selfenergy.initialize(glb_U/2., 0.);
 
     // Assign initial conditions to bare vertex
-    if (KELDYSH) this->vertex[0].initialize(-glb_U/2.);
-    else this->vertex[0].initialize(-glb_U);
+    if (KELDYSH) this->vertex.initialize(-glb_U/2.);
+    else this->vertex.initialize(-glb_U);
 
 }
 

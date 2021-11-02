@@ -355,13 +355,13 @@ public:
 #endif
 
         Q result =  interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
-                                                                   vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
-                                                                   vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
-                                                                   [&](int i, int j) -> Q {
-                                                                       return vertexDataContainer<k2, Q>::val(indices.iK, i,
-                                                                                                              j,
-                                                                                                              indices.i_in);
-                                                                   });
+                                                vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().b,
+                                                vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
+                                                [&](int i, int j) -> Q {
+                                                    return vertexDataContainer<k2, Q>::val(indices.iK, i,
+                                                                                           j,
+                                                                                           indices.i_in);
+                                                });
         assert(std::isfinite(result));
         return result;
 #if FREQ_PADDING == 0
@@ -384,6 +384,59 @@ public:
     }
 };
 
+#ifdef DEBUG_SYMMETRIES
+/** Template specialization for K2 (linear interpolation on the auxiliary grid) */
+template<typename Q>
+class vertexBuffer<k2b, Q, linear_on_aux> : public vertexDataContainer<k2b, Q> {
+public:
+    explicit vertexBuffer<k2b, Q, linear_on_aux>(double Lambda) : vertexDataContainer<k2b, Q>(Lambda) {};
+    mutable bool initialized = false;
+
+    void initInterpolator() const {initialized = true;};
+    // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
+    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+
+        double w_temp = indices.w;
+        double v_temp = indices.v2;
+        K2_convert2internalFreqs(w_temp, v_temp); // convert natural frequency parametrization in channel r to internal parametrization
+
+#if FREQ_PADDING == 0
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        if (    std::abs(indices.w ) < vertexDataContainer<k2b, Q>::frequencies_K2.b.w_upper + inter_tol
+                && std::abs(indices.v2) < vertexDataContainer<k2b, Q>::frequencies_K2.f.w_upper + inter_tol )
+        {
+#endif
+
+        Q result =  interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
+                                                vertexDataContainer<k2b, Q>::K2_get_VertexFreqGrid().b,
+                                                vertexDataContainer<k2b, Q>::K2_get_VertexFreqGrid().f,
+                                                [&](int i, int j) -> Q {
+                                                    return vertexDataContainer<k2b, Q>::val(indices.iK, i,
+                                                                                           j,
+                                                                                           indices.i_in);
+                                                });
+        assert(std::isfinite(result));
+        return result;
+#if FREQ_PADDING == 0
+        }
+        else {
+            return 0.;      // asymptotic value
+        }
+#endif
+    }
+
+    auto operator+= (const vertexBuffer<k2b,Q,linear_on_aux>& rhs) -> vertexBuffer<k2b,Q,linear_on_aux> {vertexDataContainer<k2b,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k2b,Q,linear_on_aux>& rhs) -> vertexBuffer<k2b,Q,linear_on_aux> {vertexDataContainer<k2b,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k2b,Q,linear_on_aux>& operator+ (vertexBuffer<k2b,Q,linear_on_aux>& lhs, const vertexBuffer<k2b,Q,linear_on_aux>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k2b,Q,linear_on_aux>& operator- (vertexBuffer<k2b,Q,linear_on_aux>& lhs, const vertexBuffer<k2b,Q,linear_on_aux>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
+};
+#endif
 
 /** Template specialization for K3 (linear interpolation on the auxiliary grid) */
 template<typename Q>

@@ -42,13 +42,22 @@ public:
     vertexBuffer<k1,Q,INTERPOLATION> K1_p_proj = K1;
     vertexBuffer<k1,Q,INTERPOLATION> K1_t_proj = K1;
     vertexBuffer<k2,Q,INTERPOLATION> K2;
+#ifdef DEBUG_SYMMETRIES
+    vertexBuffer<k2b,Q,INTERPOLATION> K2b;
+#endif
     vertexBuffer<k3,Q,INTERPOLATION> K3;
 
     rvert(const char channel_in, double Lambda)
-    : channel(channel_in), //components (Components(channel_in)), transformations (Transformations(channel_in)),
-      //freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
+    : channel(channel_in),
       K1(Lambda), K2(Lambda), K3(Lambda)
-      {K1.reserve(); K2.reserve(); K3.reserve(); };
+#ifdef DEBUG_SYMMETRIES
+      , K2b(Lambda)
+#endif
+      {K1.reserve(); K2.reserve();
+#ifdef DEBUG_SYMMETRIES
+      K2b.reserve();
+#endif
+      K3.reserve(); };
     rvert() = delete;
 
     bool calculated_crossprojections = false;
@@ -94,8 +103,10 @@ public:
         if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 
         assert(indices.channel == readMe.channel);
+#ifndef DEBUG_SYMMETRIES
         if constexpr (k == k2) assert(not indices.asymmetry_transform);
         if constexpr (k == k2b) assert(indices.asymmetry_transform);
+#endif
 
         Q value {}; //= readMe.interpolate(indices);
 
@@ -125,9 +136,18 @@ public:
         else  if constexpr (k==k3) {
             value = readMe.K3.interpolate(indices);
         }
+#ifndef DEBUG_SYMMETRIES
         else { // for both k2 and k2b we need to interpolate K2
             value = readMe.K2.interpolate(indices);
         }
+#else
+        else if(k==k2){ // for both k2 and k2b we need to interpolate K2
+            value = readMe.K2.interpolate(indices);
+        }
+        else {
+            value = readMe.K2b.interpolate(indices);
+        }
+#endif
 
         if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) value = myconj(value);  // apply complex conjugation if T_C has been used
 
@@ -322,9 +342,13 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
 template <typename Q>
 template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     IndicesSymmetryTransformations indices (input, channel);
+#ifdef DEBUG_SYMMETRIES
+    read_symmetryreduced_rvert<k>(indices, *this);
+#else
     const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing);
 
     return read_symmetryreduced_rvert<k>(indices, readMe);
+#endif
 }
 
 /**
@@ -338,10 +362,13 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
 template <typename Q>
 template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     IndicesSymmetryTransformations indices (input, channel);
+#ifdef DEBUG_SYMMETRIES
+    return read_symmetryreduced_rvert<k>(indices, *this);
+#else
     const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
     return read_symmetryreduced_rvert<k>(indices, readMe);
-
+#endif
 }
 
 

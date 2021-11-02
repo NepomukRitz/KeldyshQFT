@@ -11,6 +11,7 @@
 
 /// Keldysh index parameters ///
 #ifdef KELDYSH_FORMALISM
+#ifdef DEBUG_SYMMETRIES
 // Number of independent Keldysh components for the respective diagrammatic class
 const int nK_SE = 2;
 const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
@@ -18,12 +19,20 @@ const int nK_K1 = 2;        // For channels a and t, these two are components 1 
 const int nK_K2 = 5;        // For channels a, p and t -channel separately
 const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
                             // (independent components in order of appearance)
-#else
+#else // DEBUG_SYMMETRIES
+const int nK_SE = 2;
+const int nK_K1 = 16;       // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
+                            // for channel p components 1 and 5
+const int nK_K2 = 16;       // For channels a, p and t -channel separately
+const int nK_K3 = 16;       // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
+                            // (independent components in order of appearance)
+#endif // DEBUG_SYMMETRIES
+#else // KELDYSH_FORMALISM
 const int nK_SE = 1;
 const int nK_K1 = 1;
 const int nK_K2 = 1;
 const int nK_K3 = 1;
-#endif
+#endif // KELDYSH_FORMALISM
 
 const vec<size_t> dimsSE = vec<size_t>({nK_SE, FREQ_PADDING*2+nFER, n_in});
 const vec<size_t> dimsK1 = vec<size_t>({nK_K1, FREQ_PADDING*2+nBOS, n_in});

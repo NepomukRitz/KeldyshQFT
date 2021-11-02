@@ -11,6 +11,8 @@
 
 //#define MULTIDIM_MINIMIZATION
 
+#define DEBUG_SYMMETRIES
+
 constexpr bool VERBOSE = true;
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
@@ -35,9 +37,9 @@ constexpr bool VERBOSE = true;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 2
 
-constexpr int N_LOOPS = 1;  // Number of loops
+constexpr int N_LOOPS = 3;  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
@@ -67,7 +69,11 @@ constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibriu
 /// Spin parameters ///
 
 // Number of independent spin components. n_spin = 1 with SU(2) symmetry.
+#ifdef DEBUG_SYMMETRIES
+constexpr int n_spin = 2;
+#else
 constexpr int n_spin = 1;
+#endif
 
 /// Parameters for internal structure ///
 

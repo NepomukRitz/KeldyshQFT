@@ -130,16 +130,23 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 #endif
 
             for (int i = 3; i <= N_LOOPS; i++) {
+#ifndef DEBUG_SYMMETRIES
                 // subdiagrams don't fulfill the full symmetry of the vertex
                 // the symmetry-related diagram with a differentiated vertex on the left might be one with differentiated vertex on the right (vice versa)
                 // for further evaluation as part of a bigger diagram they need to be reordered to recover the correct dGammaL and dGammaR
                 // acc. to symmetry relations (enforce_symmetry() assumes full symmetry)
                 dGammaL_half1[0].half1().reorder_due2antisymmetry(dGammaR_half1[0].half1());
+#endif
 
                 // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
                 GeneralVertex<Q, non_symmetric> dGammaL(n_spin, Lambda);
+
                 dGammaL[0].half1() = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
                 dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
+#ifdef DEBUG_SYMMETRIES
+                dGammaL[1].half1() = dGammaL_half1[1].half1();  // assign half 1 to dGammaL
+                dGammaL[1].half2() = dGammaR_half1[1].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
+#endif
 
                 // insert this non-symmetric vertex on the right of the bubble
                 if (VERBOSE) print("Compute dGammaC (right insertion) ( ", i,"-loop): \n");
@@ -150,6 +157,10 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
                 //dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
                 //dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+#ifdef DEBUG_SYMMETRIES
+                //dGammaR[1].half1() = dGammaR_half1[1].half1();  // assign half 1
+                //dGammaR[1].half2() = dGammaL_half1[1].half1();  // assign half 2 as half 1 of dGammaL
+#endif
 
                 // insert this non-symmetric vertex on the left of the bubble
                 //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);

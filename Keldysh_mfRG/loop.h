@@ -272,13 +272,13 @@ void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdva
 template<typename Q>
 void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, double vp) const {
     VertexInput inputClosedAbove (0, 0, vp, v, i_in, 0, 't');
-    factorClosedAbove = vertex[0].value(inputClosedAbove);
+    factorClosedAbove = vertex.value(inputClosedAbove);
 
     //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
     if(all_spins){
         factorClosedAbove *= 2.;
         inputClosedAbove.spin = 1;
-        factorClosedAbove += vertex[0].value(inputClosedAbove);
+        factorClosedAbove += vertex.value(inputClosedAbove);
     }
 }
 
@@ -287,9 +287,9 @@ void IntegrandSE<Q>::set_factors(Q &factorRetardedClosed, Q &factorAdvancedClose
                                  VertexInput &inputRetardedClosed,
                                  VertexInput &inputAdvancedClosed,
                                  VertexInput &inputKeldyshClosed) const {
-    factorRetardedClosed = vertex[0].value(inputRetardedClosed);
-    factorAdvancedClosed = vertex[0].value(inputAdvancedClosed);
-    factorKeldyshClosed  = vertex[0].value(inputKeldyshClosed);
+    factorRetardedClosed = vertex.value(inputRetardedClosed);
+    factorAdvancedClosed = vertex.value(inputAdvancedClosed);
+    factorKeldyshClosed  = vertex.value(inputKeldyshClosed);
 }
 
 template<typename Q>
@@ -306,9 +306,9 @@ void IntegrandSE<Q>::add_contribution_from_other_spins(Q &factorRetardedClosed, 
     inputAdvancedClosed.spin = 1;
     inputKeldyshClosed.spin = 1;
 
-    factorRetardedClosed += vertex[0].value(inputRetardedClosed);
-    factorAdvancedClosed += vertex[0].value(inputAdvancedClosed);
-    factorKeldyshClosed  += vertex[0].value(inputKeldyshClosed);
+    factorRetardedClosed += vertex.value(inputRetardedClosed);
+    factorAdvancedClosed += vertex.value(inputAdvancedClosed);
+    factorKeldyshClosed  += vertex.value(inputKeldyshClosed);
 }
 
 
@@ -357,7 +357,7 @@ public:
                    : self(self_in), fullvertex_initial(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){
         set_v_limits();
-        fullvertex[0].half1().initializeInterpol();
+        fullvertex.initializeInterpol();
     };
 
     void perform_computation();
