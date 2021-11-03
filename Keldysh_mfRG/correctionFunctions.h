@@ -699,14 +699,32 @@ auto asymp_corrections_bubble(K_class k,
         case k1:
             res_l_V = vertex1[0].left_same_bare(input_l);
             res_r_V = vertex2[0].right_same_bare(input_r);
+            if (channel != 'a') {
+                input_l.spin = 1;
+                input_r.spin = 1;
+                res_l_Vhat = vertex1[0].left_same_bare(input_l);
+                res_r_Vhat = vertex2[0].right_same_bare(input_r);
+            }
             break;
         case k2:
             res_l_V = vertex1[0].left_diff_bare(input_l);
             res_r_V = vertex2[0].right_same_bare(input_r);
+            if (channel != 'a') {
+                input_l.spin = 1;
+                input_r.spin = 1;
+                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                res_r_Vhat = vertex2[0].right_same_bare(input_r);
+            }
             break;
         case k3:
             res_l_V = vertex1[0].left_diff_bare(input_l);
             res_r_V = vertex2[0].right_diff_bare(input_r);
+            if (channel != 'a') {
+                input_l.spin = 1;
+                input_r.spin = 1;
+                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+            }
             break;
         default:;
     }
@@ -714,29 +732,18 @@ auto asymp_corrections_bubble(K_class k,
     // compute the value of the (analytically integrated) bubble
     Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
 
-    // In the a and p channel, return result. In the t channel, add the other spin component.
-    if (channel != 't')
-        res += res_l_V * Pival * res_r_V;
-    else {
-        input_l.spin = 1;
-        input_r.spin = 1;
-
-        switch (k) {
-            case k1:
-                res_l_Vhat = vertex1[0].left_same_bare(input_l);
-                res_r_Vhat = vertex2[0].right_same_bare(input_r);
-                break;
-            case k2:
-                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
-                res_r_Vhat = vertex2[0].right_same_bare(input_r);
-                break;
-            case k3:
-                res_l_Vhat = vertex1[0].left_diff_bare(input_l);
-                res_r_Vhat = vertex2[0].right_diff_bare(input_r);
-                break;
-            default:;
-        }
-        res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+    // compute result, with spin sum depending on the channel
+    switch (channel) {
+        case 'a':
+            res += res_l_V * Pival * res_r_V;
+            break;
+        case 'p':
+            res += res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
+            break;
+        case 't':
+            res += res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+            break;
+        default:;
     }
     return res;
 }

@@ -658,7 +658,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 #endif
     res_l_V_initial = vertex1[0].left_same_bare(input_l);
     res_r_V_initial = vertex2[0].right_same_bare(input_r);
-    if (channel == 't') {
+    if (channel != 'a') {
         input_l.spin = 1;
         input_r.spin = 1;
         res_l_Vhat_initial = vertex1[0].left_same_bare(input_l);
@@ -674,8 +674,15 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
 
     Q Pival = Pi.value(i2, w, vpp, i_in, channel);
     Q result;
-    if (channel != 't')
+    if (channel == 'a')  // no spin sum in a channel
         result = res_l_V * Pival * res_r_V;
+    else if (channel == 'p') {
+        // in p channel, spin sum has two terms:
+        // result = 1/2 * (res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat)
+        //  (prefactor 1/2 is defined in class BubbleFunctionCalculator)
+        if (i_spin == 0) result = res_l_V * Pival * res_r_V;
+        else             result = res_l_Vhat * Pival * res_r_Vhat;
+    }
     else {
         // in t channel, spin sum has 3 terms:
         // result = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
@@ -745,7 +752,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
         VertexInput input_l (indices[0], w, v, vpp, i_in, 0, channel);
         VertexInput input_r (indices[1], w, vpp, vp, i_in, 0, channel);
 
-        if (channel != 't' || i_spin == 0) {
+        if (i_spin == 0) { // first summand in all channels is res_l_V * Pival * res_r_V
             if (diag_class == 1)
                 res_l_V = vertex1[0].left_same_bare(input_l);
             else
@@ -756,13 +763,15 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
             else
                 res_r_V = vertex2[0].right_same_bare(input_r);
         }
-        else {                  // channel == t, i_spin != 0
-            if (i_spin == 1) {  // res_l_V * Pival * res_r_Vhat
-                // compute res_l_V
+        else {
+            if (channel == 'p') {  // res_l_Vhat * Pival * res_r_Vhat
+                assert(i_spin == 1);  // only i_spin = 1 remains
+                // compute res_l_Vhat
+                input_l.spin = 1;
                 if (diag_class == 1)
-                    res_l_V = vertex1[0].left_same_bare(input_l);
+                    res_l_Vhat = vertex1[0].left_same_bare(input_l);
                 else
-                    res_l_V = vertex1[0].left_diff_bare(input_l);
+                    res_l_Vhat = vertex1[0].left_diff_bare(input_l);
                 // compute res_r_Vhat
                 input_r.spin = 1;
                 if (diag_class == 3)
@@ -770,18 +779,36 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
                 else
                     res_r_Vhat = vertex2[0].right_same_bare(input_r);
             }
-            else {              // res_l_Vhat * Pival * res_r_V
-                // compute res_r_V
-                if (diag_class == 3)
-                    res_r_V = vertex2[0].right_diff_bare(input_r);
-                else
-                    res_r_V = vertex2[0].right_same_bare(input_r);
-                // compute res_l_Vhat
-                input_l.spin = 1;
-                if (diag_class == 1)
-                    res_l_Vhat = vertex1[0].left_same_bare(input_l);
-                else
-                    res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+            else if (channel == 't') {
+                // channel = t, i_spin = 1
+                if (i_spin == 1) {  // res_l_V * Pival * res_r_Vhat
+                    // compute res_l_V
+                    if (diag_class == 1)
+                        res_l_V = vertex1[0].left_same_bare(input_l);
+                    else
+                        res_l_V = vertex1[0].left_diff_bare(input_l);
+                    // compute res_r_Vhat
+                    input_r.spin = 1;
+                    if (diag_class == 3)
+                        res_r_Vhat = vertex2[0].right_diff_bare(input_r);
+                    else
+                        res_r_Vhat = vertex2[0].right_same_bare(input_r);
+                }
+                // channel = t, i_spin = 2
+                else {              // res_l_Vhat * Pival * res_r_V
+                    assert(i_spin == 2);
+                    // compute res_r_V
+                    if (diag_class == 3)
+                        res_r_V = vertex2[0].right_diff_bare(input_r);
+                    else
+                        res_r_V = vertex2[0].right_same_bare(input_r);
+                    // compute res_l_Vhat
+                    input_l.spin = 1;
+                    if (diag_class == 1)
+                        res_l_Vhat = vertex1[0].left_same_bare(input_l);
+                    else
+                        res_l_Vhat = vertex1[0].left_diff_bare(input_l);
+                }
             }
         }
     }
@@ -972,7 +999,7 @@ Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
             nw3_w = nw3_p;
             nw3_v = nv3_p;
             nw3_v_p = nv3_p;
-            prefactor *= 1.;
+            prefactor *= 0.5;
             break;
         case 't':
             nw1_w = nw1_t;
@@ -1185,8 +1212,9 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
     for (int i2 : glb_non_zero_Keldysh_bubble) {
-        int n_spin_sum = 1;                  // number of summands in spin sum
-        if (channel == 't') n_spin_sum = 3;  // only in the t channel, spin sum includes three terms
+        int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
+        if (channel == 'p') n_spin_sum = 2;  // in the p channel, spin sum includes two terms
+        if (channel == 't') n_spin_sum = 3;  // in the t channel, spin sum includes three terms
         for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, i_spin, channel, diff);
@@ -1223,8 +1251,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (vertex2[0].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
     else {
         for (int i2 : glb_non_zero_Keldysh_bubble) {
-            int n_spin_sum = 1;                  // number of summands in spin sum
-            if (channel == 't') n_spin_sum = 3;  // only in the t channel, spin sum includes three terms
+            int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
+            if (channel == 'p') n_spin_sum = 2;  // in the p channel, spin sum includes two terms
+            if (channel == 't') n_spin_sum = 3;  // in the t channel, spin sum includes three terms
             for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
                 Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                         integrand_K2(vertex1, vertex2, Pi, i0, i2, w, v, i_in, i_spin, channel, diff);
@@ -1263,8 +1292,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
                                                 const double w, const double v, const double vp){
     for (int i2 : glb_non_zero_Keldysh_bubble) {
-        int n_spin_sum = 1;                  // number of summands in spin sum
-        if (channel == 't') n_spin_sum = 3;  // only in the t channel, spin sum includes three terms
+        int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
+        if (channel == 'p') n_spin_sum = 2;  // in the p channel, spin sum includes two terms
+        if (channel == 't') n_spin_sum = 3;  // in the t channel, spin sum includes three terms
         for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
             // initialize the integrand object and perform frequency integration
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
