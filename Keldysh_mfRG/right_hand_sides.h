@@ -46,16 +46,27 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda) -> State<Q>{
     // initialize empty state with frequency grids corresponding to those in Psi:
     State<Q> dPsi(Psi.vertex, Psi.selfenergy.frequencies); // result
 
-
+#ifndef STATIC_FEEDBACK
     Propagator<Q> S (Lambda, Psi.selfenergy, 's');
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+#else
+    SelfEnergy<Q> bareSelfEnergy (Psi.selfenergy.frequencies);
+    bareSelfEnergy.initialize(glb_U/2., 0.);
+
+    Propagator<Q> S (Lambda, bareSelfEnergy, 's');
+    Propagator<Q> G (Lambda, bareSelfEnergy, 'g');
+#endif
 
     //For flow without self-energy, comment out this line
     selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
 
+#ifndef STATIC_FEEDBACK
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback
-//    Propagator dG (Lambda, Psi.selfenergy, 's');
+//    Propagator<Q> dG (Lambda, Psi.selfenergy, 's');
+#else
+    Propagator<Q> dG (Lambda, bareSelfEnergy, 's');
+#endif
 
     // Initialize bubble objects;
 #ifdef HUBBARD // Use precalculated bubble in this case
