@@ -159,8 +159,9 @@ auto FrequencyGrid::scale_factor(double Lambda) -> double {
     if (REG==2) {
         // scale the grid with Delta until Delta = T_K (Kondo temperature), then scale with T_K
         double Delta = (Lambda + glb_Gamma) / 2.;
-        double TK = std::sqrt(glb_U * Delta / 2.) * std::exp(M_PI * (Delta / (2. * glb_U) - glb_U / (8. * Delta)));
-        return Delta_factor * std::min(Delta, TK);
+        return Delta_factor * Delta;
+        //double TK = std::sqrt(glb_U * Delta / 2.) * std::exp(M_PI * (Delta / (2. * glb_U) - glb_U / (8. * Delta)));
+        //return Delta_factor * std::min(Delta, TK);
         //return std::max(U_factor * glb_U, Delta_factor * (Lambda + glb_Gamma) / 2.);
     }
     else if (REG==3) {
@@ -536,6 +537,12 @@ double integration_measure_v2(const double t, const double W_scale) {
     double temp = sqrt(1 - t*t);
     return W_scale * sgn(t) * t * (2 - t*t) / (temp*temp*temp);
 }
+//double grid_transf_v2b(const double w, const double W_scale) {
+//    return sgn(w) * log(1 + std::abs(w)/w_a) / log(1. + glb_w_upper/w_a);
+//}
+//double grid_transf_inv_v2b(const double t, const double W_scale) {
+//    return sgn(t) * w_a * (exp(log(1. + glb_w_upper/w_a) * std::abs(t)) - 1);
+//}
 
 double grid_transf_v3(const double w, const double W_scale) {
     // Version 3: linear around w=0, good for w^(-1) tails
