@@ -1128,19 +1128,19 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K1(i0, w);
-            if (trafo == 0) {calculate_value_K1(value, i0, i_in, w); }
+            if (trafo == 0 || HUBBARD_MODEL) {calculate_value_K1(value, i0, i_in, w); } // TODO: Freqency symmetries for the Hubbard model?
             break;
         case 2:
             convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K2(i0, w, v);
-            if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v); }
+            if (trafo == 0 || HUBBARD_MODEL) {calculate_value_K2(value, i0, i_in, w, v); }
             break;
         case 3:
             convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K3(i0, w, iv, ivp);
-            if (trafo == 0) {calculate_value_K3(value, i0, i_in, w, v, vp); }
+            if (trafo == 0 || HUBBARD_MODEL) {calculate_value_K3(value, i0, i_in, w, v, vp); }
             break;
         default:;
     }
@@ -1170,9 +1170,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
             }
         }
-        value += bubble_value_prefactor() *
-                asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
-                                         w, 0., 0., i0, i2, i_in, channel, diff);
+        // TODO: Asymptotic corrections for the Hubbard model!
+        if (not HUBBARD_MODEL) value += bubble_value_prefactor() *
+                                        asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
+                                                                 w, 0., 0., i0, i2, i_in, channel, diff);
 
     }
 }
@@ -1204,9 +1205,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
                 }
             }
-            value += bubble_value_prefactor() *
-                    asymp_corrections_bubble(k2, vertex1, vertex2, Pi.g,
-                                             vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
+            if (not HUBBARD_MODEL) value += bubble_value_prefactor() *
+                                            asymp_corrections_bubble(k2, vertex1, vertex2, Pi.g,
+                                                                     vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff);
 
         }
     }
@@ -1238,9 +1239,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
             }
         }
-        value += bubble_value_prefactor() *
-                asymp_corrections_bubble(k3, vertex1, vertex2, Pi.g,
-                                         vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
+        if (not HUBBARD_MODEL) value += bubble_value_prefactor() *
+                                        asymp_corrections_bubble(k3, vertex1, vertex2, Pi.g,
+                                                                 vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff);
 
     }
 }
@@ -1276,15 +1277,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K1.add_vec(K1_ordered_result);
-            dgamma[0].avertex().enforce_freqsymmetriesK1(dgamma[0].avertex());
+            if (not HUBBARD_MODEL) dgamma[0].avertex().enforce_freqsymmetriesK1(dgamma[0].avertex()); // TODO: Freqency symmetries for the Hubbard model?
             break;
         case 'p':
             dgamma[0].pvertex().K1.add_vec(K1_ordered_result);
-            dgamma[0].pvertex().enforce_freqsymmetriesK1(dgamma[0].pvertex());
+            if (not HUBBARD_MODEL) dgamma[0].pvertex().enforce_freqsymmetriesK1(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K1.add_vec(K1_ordered_result);
-            dgamma[0].tvertex().enforce_freqsymmetriesK1(dgamma[0].tvertex());
+            if (not HUBBARD_MODEL) dgamma[0].tvertex().enforce_freqsymmetriesK1(dgamma[0].tvertex());
             break;
         default: ;
     }
@@ -1299,15 +1300,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K2.add_vec(K2_ordered_result);
-            dgamma[0].avertex().enforce_freqsymmetriesK2(dgamma[0].avertex());
+            if (not HUBBARD_MODEL) dgamma[0].avertex().enforce_freqsymmetriesK2(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K2.add_vec(K2_ordered_result);
-            dgamma[0].pvertex().enforce_freqsymmetriesK2(dgamma[0].pvertex());
+            if (not HUBBARD_MODEL) dgamma[0].pvertex().enforce_freqsymmetriesK2(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K2.add_vec(K2_ordered_result);
-            dgamma[0].tvertex().enforce_freqsymmetriesK2(dgamma[0].tvertex());
+            if (not HUBBARD_MODEL) dgamma[0].tvertex().enforce_freqsymmetriesK2(dgamma[0].tvertex());
             break;
         default: ;
     }
@@ -1321,15 +1322,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     switch (channel) {
         case 'a':
             dgamma[0].avertex().K3.add_vec(K3_ordered_result);
-            dgamma[0].avertex().enforce_freqsymmetriesK3(dgamma[0].avertex());
+            if (not HUBBARD_MODEL) dgamma[0].avertex().enforce_freqsymmetriesK3(dgamma[0].avertex());
             break;
         case 'p':
             dgamma[0].pvertex().K3.add_vec(K3_ordered_result);
-            dgamma[0].pvertex().enforce_freqsymmetriesK3(dgamma[0].pvertex());
+            if (not HUBBARD_MODEL) dgamma[0].pvertex().enforce_freqsymmetriesK3(dgamma[0].pvertex());
             break;
         case 't':
             dgamma[0].tvertex().K3.add_vec(K3_ordered_result);
-            dgamma[0].tvertex().enforce_freqsymmetriesK3(dgamma[0].tvertex());
+            if (not HUBBARD_MODEL) dgamma[0].tvertex().enforce_freqsymmetriesK3(dgamma[0].tvertex());
             break;
         default: ;
     }
