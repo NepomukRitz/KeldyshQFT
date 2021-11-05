@@ -3,6 +3,9 @@
 //   Forschungszentrum Juelich GmbH, Germany. All rights reserved.
 // License is 3-clause BSD:
 
+# ifndef  PAID_INTEGRATOR_OMP_STUB_HPP
+# define PAID_INTEGRATOR_OMP_STUB_HPP
+
 #pragma once
 
 // A stub for omp
@@ -11,3 +14,5 @@
 int omp_get_num_threads() { return 1; }
 int omp_get_max_threads() { return 1; }
 int omp_get_thread_num() { return 0; }
+
+#endif

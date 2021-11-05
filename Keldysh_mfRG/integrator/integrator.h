@@ -202,7 +202,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        paid::Domain<1> d(a, b); // domain
+        paid::Domain<1> d({a}, {b}); // domain
         paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
         paid::PAIDConfig config;
         paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
@@ -232,7 +232,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        paid::Domain<1> d(a, b); // domain
+        paid::Domain<1> d({a}, {b}); // domain
         paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
         paid::PAIDConfig config;
         paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
@@ -268,7 +268,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptor.integrate(a, b);
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        paid::Domain<1> d(a, b); // domain
+        paid::Domain<1> d({a}, {b}); // domain
         paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
         paid::PAIDConfig config;
         paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
@@ -333,7 +333,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 
         for (int i = 0; i < 5; i++){
             if (intersections[i] < intersections[i+1]) {
-                paid::Domain<1> d(intersections[i],intersections[i+1]);
+                paid::Domain<1> d({intersections[i]},{intersections[i+1]});
                 domains.push_back(d);
                 paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
                 integrands.push_back(paid_integrand);
@@ -399,7 +399,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 
         for (int i = 0; i < num_intervals; i++){
             if (intervals[i][0] < intervals[i][1]) {
-                paid::Domain<1> d(intervals[i][0],intervals[i][1]);
+                paid::Domain<1> d({intervals[i][0]},{intervals[i][1]});
                 domains.push_back(d);
                 paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
                 integrands.push_back(paid_integrand);

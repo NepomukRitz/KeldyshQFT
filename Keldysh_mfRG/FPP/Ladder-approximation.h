@@ -131,7 +131,7 @@ comp perform_Pi0_vpp_integral (double w, double q, char i, char j, char chan, do
         ints_paid.reserve(Lambdas.size());
         paid::PAIDConfig config;
         for (int idx = 0; idx<Lambdas.size()-1; ++idx){
-            paid::Domain<1> d(Lambdas[idx],Lambdas[idx+1]);
+            paid::Domain<1> d({Lambdas[idx]},{Lambdas[idx+1]});
             domains.push_back(d);
             paid::PAIDInput<1,Integrand_Pi0_vpp<comp>,int> paid_integrand{d,integrand_Pi0_vpp,0};
             ints_paid.push_back(paid_integrand);

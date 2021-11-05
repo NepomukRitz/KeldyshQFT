@@ -68,7 +68,7 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
         CHECK( res == Approx(exact[i]).epsilon(0.0001) );
     }
     WHEN( "PAID integrator with Clenshaw-Curtis" ) {
-        paid::Domain<1> d(-50.,50.);
+        paid::Domain<1> d({-50.},{50.});
         paid::PAIDInput<1,TestIntegrand,int> paid_integrand{d,integrand,0};
         paid::PAIDConfig config;
         paid::PAID<1, TestIntegrand, double, int,double> paid_integral(config);

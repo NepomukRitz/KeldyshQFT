@@ -768,7 +768,7 @@ comp perform_integral_Pi0_theta (double v1, double v2, double q, double kpp, cha
                     vec<paid::PAIDInput<1, Integrand_Pi0_theta<comp>, int>> ints_paid;
                     ints_paid.reserve(xs.size());
                     for (int idx = 0; idx < xs.size() - 1; ++idx) {
-                        paid::Domain<1> d(xs[idx], xs[idx + 1]);
+                        paid::Domain<1> d({xs[idx]}, {xs[idx + 1]});
                         domains.push_back(d);
                         paid::PAIDInput<1, Integrand_Pi0_theta<comp>, int> paid_integrand{d, integrand_Pi0_theta, 0};
                         ints_paid.push_back(paid_integrand);
@@ -886,6 +886,48 @@ comp perform_integral_Pi0_theta (double v1, double v2, double q, double kpp, cha
 
     return result;
 }
+
+class Integrand_Gauss {
+private:
+    double x;
+    double y;
+    double a;
+public:
+    Integrand_Gauss(double a_): a(a_) {};
+    auto operator() (double t) const -> double {
+        if (t == 0.) {
+            return 0.;
+        }
+        else {
+            double x = (1.-t)/t; // substitute from infinite interval x in (-oo,oo) to t in (0,1)
+            double result = 1./(sqrt(2*M_PI))*2*exp(-a*x*x/2)/(t*t);
+            return result;
+        }
+
+    }
+    auto operator() (double tx, double ty) const -> double {
+        if (tx == 0. || ty == 0.) {
+            return 0.;
+        }
+        else {
+            double x = (1.-tx)/tx; // substitute from infinite interval x in (-oo,oo) to t in (0,1)
+            double y = (1.-ty)/ty;
+            double result = 1./(sqrt(2*M_PI))*2*exp(-a*(x*x+y*y)/2)/(tx*tx*ty*ty);
+            return result;
+        }
+
+    }
+};
+
+class Integrand_sin2D {
+private:
+    double a;
+public:
+    Integrand_sin2D(double a_): a(a_) {};
+    auto operator() (std::array<double,2> x) const -> double {
+        return std::abs(sin(sin(a*(x[0]+x[1]))));
+    }
+};
 
 template <typename Q>
 class Integrand_Pi0_kpp {
@@ -1107,8 +1149,8 @@ comp perform_integral_Pi0_kpp (double v1, double v2, double q, char i, char j, i
         integral = int01 + int02;
     }
     else if (inttype == 2){
-        paid::Domain<1> d1(0., k_m);
-        paid::Domain<1> d2(0.,1.0);//1./(1.+k_m),1.0);
+        paid::Domain<1> d1({0.}, {k_m});
+        paid::Domain<1> d2({0.},{1.0});//1./(1.+k_m),1.0);
         paid::PAIDInput<1,Integrand_Pi0_kpp<comp>,int> integrand_Pi0_kpp_paid_1{d1,integrand_Pi0_kpp_ab,0};
         paid::PAIDInput<1,Integrand_Pi0_kpp<comp>,int> integrand_Pi0_kpp_paid_2{d2,integrand_Pi0_kpp_boo,0};
         paid::PAIDConfig config;

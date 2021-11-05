@@ -2,6 +2,8 @@
 // Copyright (c) 2015-2021, Simulation and Data Laboratory Quantum Materials,
 //   Forschungszentrum Juelich GmbH, Germany. All rights reserved.
 // License is 3-clause BSD:
+# ifndef  PAID_INTEGRATOR_INVOKER_HPP
+# define PAID_INTEGRATOR_INVOKER_HPP
 
 #pragma once
 
@@ -10,9 +12,9 @@
 
 namespace paid {
 
-template <std::size_t N, typename F, typename T, typename... Args>
+template <std::size_t Dim, typename F, typename T, typename... Args>
 struct Invoker { // invoker of the function without an applicator
-  static T apply(const F&, std::array<double, N>) {
+  static T apply(const F&, std::array<double, Dim>) {
     /// no specialization exists!.
     /// Probably your function dimension N is too high
     return F::this_type_is_missing_an_applicator();
@@ -26,9 +28,11 @@ struct Invoker<1, F, T, double> { // invoker of the integrand function
   }
 };
 
-template <std::size_t N, typename F, typename T>
-struct Invoker<N, F, T, std::array<double, N>> { // invoker of higher-dimensional integrand function
-  static T apply(const F& f, std::array<double, N> input) { return f(input); }
+template <std::size_t Dim, typename F, typename T>
+struct Invoker<Dim, F, T, std::array<double, Dim>> { // invoker of higher-dimensional integrand function
+  static T apply(const F& f, std::array<double, Dim> input) { return f(input); }
 };
 
 }  // namespace paid
+
+#endif

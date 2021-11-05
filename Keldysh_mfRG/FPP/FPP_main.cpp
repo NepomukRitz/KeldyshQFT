@@ -971,6 +971,26 @@ int main() {
     std::cout << "theta-integral gauss-lobatto = " << keldysh_theta_integral_result << "\n";
     */
 
+    paid::Domain<1> d({0.},{1.});
+    double a = 0.1;
+    double exact_result = 1./sqrt(a);
+    Integrand_Gauss gauss(a);
+    paid::PAIDInput<1,Integrand_Gauss, int> paid_integrand{d,gauss,0};
+    paid::PAIDConfig config;
+    paid::PAID<1,Integrand_Gauss,double,int,double> paid_integral(config);
+    std::complex<double> paid_result = paid_integral.solve({paid_integrand})[0];
+    std::cout << "Gauss integral for a = " << a << ": exact: 1/a^0.5 = " << exact_result << ", paid =" << paid_result << "\n";
+
+    paid::Domain<2> d2({-M_PI, -M_PI},{M_PI, M_PI});
+    Integrand_sin2D sinsin(1.);
+    paid::PAIDInput<2,Integrand_sin2D,int> paid_integrand2d{d2,sinsin,0};
+    paid::PAIDConfig config2;
+    paid::PAID<2,Integrand_sin2D,double,int,std::array<double,2>> paid_integral2d(config2);
+    std::complex<double> paid_result2d = paid_integral2d.solve({paid_integrand2d})[0];
+    std::cout << "2D sin integral: " << paid_result2d << "\n";
+
+
+    /*
     std::vector<double> v_test(10,0.0);
     std::cout << "v_test = (" << v_test[0];
     for (int i = 1; i<v_test.size(); i++){
@@ -996,7 +1016,7 @@ int main() {
                     std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", k = " << kpp << ", lobatto = " << lobatto << "\n";
                     paid = perform_integral_Pi0_theta(w,vpp,q,kpp,'c','d',2);
                     std::cout << "v1 = " << w << ", v2 = " << vpp << ", q = " << q << ", k = " << kpp << ", paid = " << paid << "\n";
-                }*/
+                }*/ /*
 
                 for (int ti = 0; ti < nk; ++ti){
                     t_kpp = ti/(nk-1.);
@@ -1017,7 +1037,7 @@ int main() {
                 //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
             }
         }
-    } //*/
+    } //*/ /*
     get_time(dt_inttype);
     dt_inttype = get_time();
     for (int wi = 0; wi < nw; ++wi) {
@@ -1046,7 +1066,7 @@ int main() {
                 //std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", paid = " << paid << "\n";
             }
         }
-    } //*/
+    } //*/ /*
     get_time(dt_inttype);
     dt_inttype = get_time();
     for (int wi = 0; wi < nw; ++wi) {
@@ -1074,7 +1094,7 @@ int main() {
         }
     }
     get_time(dt_inttype);
-
+    */
     std::vector<double> v(8,1.0);
     std::cout << "v1 = (" << v[0];
     for (int i=1; i<v.size(); ++i){
@@ -1082,8 +1102,42 @@ int main() {
     }
     std::cout << ")\n";
 
-    std::vector<double> v2{5,21,3,1,3,43,2,5,6,2,35,6};
+    std::vector<double> v2{5,21,3,1,32,43,2,51,6,20,35,6};
+    std::cout << "v2 = (" << v2[0];
+    for (int i=1; i<v2.size(); ++i){
+        std::cout << ", " << v2[i] ;
+    }
+    std::cout << ")\n";
+    std::cout << "after make_heap:\n";
+    std::make_heap(v2.begin(),v2.end());
+    std::cout << "v2 = (" << v2[0];
+    for (int i=1; i<v2.size(); ++i){
+        std::cout << ", " << v2[i] ;
+    }
+    std::cout << ")\n";
     std::pop_heap(v2.begin(),v2.end());
+    std::cout << "after pop_heap:\n";
+    std::cout << "v2 = (" << v2[0];
+    for (int i=1; i<v2.size(); ++i){
+        std::cout << ", " << v2[i] ;
+    }
+    std::cout << ")\n";
+    v2.pop_back();
+    std::cout << "after pop_back:\n";
+    std::cout << "v2 = (" << v2[0];
+    for (int i=1; i<v2.size(); ++i){
+        std::cout << ", " << v2[i] ;
+    }
+    std::cout << ")\n";
+    v2.push_back(34);
+    std::cout << "push_back:\n";
+    std::cout << "v2 = (" << v2[0];
+    for (int i=1; i<v2.size(); ++i){
+        std::cout << ", " << v2[i] ;
+    }
+    std::cout << ")\n";
+    std::push_heap(v2.begin(), v2.end());
+    std::cout << "push_heap:\n";
     std::cout << "v2 = (" << v2[0];
     for (int i=1; i<v2.size(); ++i){
         std::cout << ", " << v2[i] ;
@@ -1207,6 +1261,40 @@ int main() {
     std::cout << "loop selfenergy test = " << testloop002 << "\n";
     */
     //selfenergy_ladder_list_vk(10.,10.,1e4,1e-10,11,6);
+
+    // Try out things concerning PAID integrator
+
+    std::array<std::size_t,4> i_list{126,0,127, 64};
+    std::size_t composite_index_i_list;
+    composite_index_i_list = paid::get_composite_index<4>(128,i_list);
+    std::cout << "composite_index = " << composite_index_i_list << "\n";
+    std::array<std::size_t,4> i_list_recovered;
+    i_list_recovered = paid::get_each_index<4>(128,composite_index_i_list);
+    std::cout << "i_list_recovered = (";
+    for (std::size_t i = 0; i < size(i_list); ++i){
+        std::cout << i_list_recovered[i] << ",";
+    }
+    std::cout << ")\n";
+
+    std::array<std::size_t,1> i_list1d{126};
+    std::size_t composite_index_i_list1d;
+    composite_index_i_list1d = paid::get_composite_index<1>(128,i_list1d);
+    std::cout << "composite_index = " << composite_index_i_list1d << "\n";
+    std::array<std::size_t,1> i_list_recovered1d;
+    i_list_recovered1d = paid::get_each_index<1>(128,composite_index_i_list1d);
+    std::cout << "i_list_recovered = (";
+    for (std::size_t i = 0; i < size(i_list1d); ++i){
+        std::cout << i_list_recovered1d[i] << ",";
+    }
+    std::cout << "\n";
+
+    std::array<std::size_t,3> k_vector{0,0,0};
+    for (std::size_t k = 0; k < 8; ++k) {
+        k_vector = paid::get_each_index<3>(2,k);
+        std::cout << "k = << " << k << ", k_vector = (" << k_vector[0] << ", " << k_vector[1] << ", " << k_vector[2] << ")\n";
+    }
+
+    std::cout << ")\n";
 
     get_time(t0);
 

@@ -2,6 +2,8 @@
 // Copyright (c) 2015-2021, Simulation and Data Laboratory Quantum Materials,
 //   Forschungszentrum Juelich GmbH, Germany. All rights reserved.
 // License is 3-clause BSD:
+# ifndef  PAID_INTEGRATOR_PAID_HPP
+# define PAID_INTEGRATOR_PAID_HPP
 
 #pragma once
 
@@ -30,7 +32,7 @@ namespace paid {
 template <typename T, typename Key>
 struct PAIDOutput {
  public:
-  T operator[](std::size_t key) const { // gives "value" of a certain "key"
+  T operator[](Key key) const { // gives "value" of a certain "key"
     auto search = valmap_.find(key);
     if (search == valmap_.cend()) throw new std::out_of_range("key not found");
     return search->second;
@@ -43,15 +45,15 @@ struct PAIDOutput {
   TerminationReason termination_reason_;
 };
 
-template <std::size_t N, typename F, typename Key>
+template <std::size_t Dim, typename F, typename Key>
 struct PAIDInput {
  public:
-  Domain<N> d;
+  Domain<Dim> d;
   F f;
   Key idx;
 };
 
-template <std::size_t N, typename F, typename T, typename Key,
+template <std::size_t Dim, typename F, typename T, typename Key,
           typename... Args>
 class PAID {
  public:
@@ -62,7 +64,7 @@ class PAID {
         rule_(config.order),
         config_(config),
         valid_(true) {
-    static_assert(N == sizeof...(Args) || sizeof...(Args) == 1,
+    static_assert(Dim == sizeof...(Args) || sizeof...(Args) == 1,
                   "Wrong number of Arguments for F");
     using T2 = typename std::result_of<F(Args...)>::type;
     static_assert(std::is_same<T2, T>::value,
@@ -75,7 +77,7 @@ class PAID {
   PAID& operator=(PAID&&) & = default;       // Move assignment
   ~PAID() {}
 
-  PAIDOutput<T, Key> solve(const std::vector<PAIDInput<N, F, Key>>& inputs) {
+  PAIDOutput<T, Key> solve(const std::vector<PAIDInput<Dim, F, Key>>& inputs) {
     assert(valid_ == true);  // TODO
     valid_ = false;
 
@@ -92,20 +94,22 @@ class PAID {
 #pragma omp parallel
     {
       // Private variables
-      std::vector<Task<N, F, T>> in_queue;
-      std::vector<Task<N, F, T>> out_queue;
+      std::vector<Task<Dim, F, T, Key>> in_queue;
+      std::vector<Task<Dim, F, T, Key>> out_queue;
       const int thread_id = omp_get_thread_num();
       std::size_t work_size = 0;
       error_type error_out = 0;
 
 #pragma omp for schedule(static), nowait
+      // integration on initial/large intervals
+      // the initial "tasks" are done and put into "out_queue", "fevals" is increased
       for (std::size_t i = 0; i < inputs.size(); ++i) {
         const auto& task = inputs[i];
         const auto af = task.d.getTransform();
-        const auto res = rule_.apply<N, F, T, Args...>(task.f, af);
+        const auto res = rule_.apply<Dim, F, T, Args...>(task.f, af);
 
         out_queue.push_back(
-            Task<N, F, T>{task.d, task.f, res.value, res.error, task.idx});
+            Task<Dim, F, T, Key>{task.d, task.f, res.value, res.error, task.idx});
 
 #pragma omp atomic
         fevals += res.fevals_;
@@ -114,6 +118,7 @@ class PAID {
         // we ensure that all the inital tasks are in the queue before entering
         // the while loop
 #pragma omp critical(tasks)
+        // initial tasks are put in queue
       {
         error_out = 0;
         for (auto& task : out_queue) {
@@ -130,6 +135,7 @@ class PAID {
         assert(fevals >= 0);
 
 #pragma omp critical(tasks)
+        // tasks are moved from "out_queue" to "queue"
         {
           for (auto& task : out_queue) {
             q_.push(task);
@@ -163,6 +169,7 @@ class PAID {
           work_size = std::min(q_.size() / num_threads + 1,
                                config_.ntasks_per_iteration);
           work_size = std::min(q_.size(), work_size);
+          // move tasks from "q_" to "in_queue"
           for (std::size_t i = 0; i < work_size; ++i) {
             in_queue.push_back(q_.top());
             q_.pop();
@@ -225,13 +232,14 @@ class PAID {
         }  // omp critical(tasks)
 
         // Process the tasks
+        // tasks for the split intervals are moved from "in_queue" to "out_queue"
         for (const auto& task : in_queue) {
           const auto doms = task.d.split();
           for (const auto& dom : doms) {
             const auto af = dom.getTransform();
-            const auto res = rule_.apply<N, F, T, Args...>(task.f, af);
+            const auto res = rule_.apply<Dim, F, T, Args...>(task.f, af);
             out_queue.push_back(
-                Task<N, F, T>{dom, task.f, res.value, res.error, task.idx});
+                Task<Dim, F, T, Key>{dom, task.f, res.value, res.error, task.idx});
 #pragma omp atomic
             fevals += res.fevals_;
           }
@@ -241,7 +249,7 @@ class PAID {
 
 #pragma omp critical(tasks)
       {
-        // We have still have work_size items, so we store them!
+        // We still have work_size items, so we store them!
         for (auto& task : out_queue) {
           q_.push(task);
         }
@@ -252,15 +260,18 @@ class PAID {
 
     auto res = q_.sum();
 
+    std::cout << "counter = " << counter << ", fevals = " << fevals << ", error = " << static_cast<double>(res.first) << ", termination reason = " << termination_reason << "\n";
     return PAIDOutput<T, Key>{counter, fevals, static_cast<double>(res.first),
                               res.second, termination_reason};
   }
 
  private:
-  Queue<N, F, T, Key> q_;
+  Queue<Dim, F, T, Key> q_;
   const class ClenshawCurtis rule_;
   const PAIDConfig config_;
   bool valid_;
 };
 
 }  // namespace paid
+
+#endif

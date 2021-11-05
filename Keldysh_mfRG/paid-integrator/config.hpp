@@ -2,6 +2,8 @@
 // Copyright (c) 2015-2021, Simulation and Data Laboratory Quantum Materials,
 //   Forschungszentrum Juelich GmbH, Germany. All rights reserved.
 // License is 3-clause BSD:
+# ifndef  PAID_INTEGRATOR_CONFIG_HPP
+# define PAID_INTEGRATOR_CONFIG_HPP
 
 #pragma once
 
@@ -14,7 +16,7 @@ struct PAIDConfig {
   PAIDConfig()
       : max_f_evals(1e+9),
         max_iterations(-1),
-        check_error([](double error) -> bool { return error < 1e-10; }),
+        check_error([](double error) -> bool { return error < 1e-6; }),
         integration_rule(IntegrationRule::ClenshawCurtis),
         order(8),
         ntasks_per_iteration(25),
@@ -45,3 +47,5 @@ struct PAIDConfig {
 };
 
 }  // namespace paid
+
+#endif
