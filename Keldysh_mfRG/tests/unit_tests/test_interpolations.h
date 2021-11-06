@@ -23,7 +23,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     double cumul_interpolation_error = 0;
     vec<double> errors (nBOS);
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     for (int iw = 0; iw<nBOS; iw++){
         avertex.K1.K1_get_freq_w(indices.w, iw);
@@ -68,7 +68,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     avertex.initInterpolator();
     vec<double> errors (nBOS2*nFER2);
     int iter = 0;
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     for (int iw = 0; iw<nBOS2; iw++){
         for (int iv = 0; iv<nFER2; iv++) {
             avertex.K2.K2_get_freqs_w(indices.w, indices.v1, iw, iv);
@@ -113,7 +113,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     vec<double> errors ((nBOS3)*(nFER3)*(nFER3));
     vec<state_datatype> vals_interp ((nBOS3)*(nFER3)*(nFER3));
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     for (int iw = 0; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
@@ -177,7 +177,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     int N = nBOS * 500;
     vec<double> errors (N);
@@ -236,7 +236,7 @@ if (INTERPOLATION == cubic) {
     double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     int N = nBOS * 500;
     vec<state_datatype> values(N);
@@ -306,7 +306,7 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     double error;
     int N = (nBOS2 - 2) * 4 - 3;
     int M = (nFER2 - 2) * 4 - 3;
@@ -374,7 +374,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         double t_start = get_time();
         double cumul_interpolation_error = 0;
         avertex.initInterpolator();
-        IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+        IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
         double error;
         int N = (nBOS2 - 2) * 4 - 3;
         int M = (nFER2 - 2) * 4 - 3;
@@ -451,7 +451,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     double error;
     int N = nBOS3 * 4;
     int M = nFER3 * 4;
@@ -528,7 +528,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         double t_start = get_time();
         double cumul_interpolation_error = 0;
         avertex.initInterpolator();
-        IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+        IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
         double error;
         int N = nBOS3 * 5;
         int M = nFER3 * 5;

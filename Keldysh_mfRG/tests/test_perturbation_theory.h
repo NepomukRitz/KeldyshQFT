@@ -1671,11 +1671,11 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        PT_state.vertex[0].avertex().K1.setvert( val_K1, 0, i, 0);
+        PT_state.vertex[0].avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         w = PT_state.vertex[0].pvertex().K1.frequencies_K1.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        PT_state.vertex[0].pvertex().K1.setvert( -val_K1, 0, i, 0);
+        PT_state.vertex[0].pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         w = PT_state.vertex[0].tvertex().K1.frequencies_K1.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
@@ -1733,9 +1733,9 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     print("K1p-difference: ", state_diff.vertex[0].pvertex().K1.get_vec().max_norm() / PT_state.vertex[0].pvertex().K1.get_vec().max_norm(), true);
     print("K1t-difference: ", state_diff.vertex[0].tvertex().K1.get_vec().max_norm() / PT_state.vertex[0].tvertex().K1.get_vec().max_norm(), true);
 #ifdef DEBUG_SYMMETRIES
-    print("K1a_hat-difference: ",  state_cpp.vertex[1].avertex().K1.get_vec().max_norm(), true);
+    print("K1a_hat-difference: ", (state_cpp.vertex[1].avertex().K1.get_vec() + state_cpp.vertex[0].tvertex().K1.get_vec()).max_norm() /  state_cpp.vertex[0].tvertex().K1.get_vec().max_norm(), true);
     print("K1p_hat-difference: ", (state_cpp.vertex[1].pvertex().K1.get_vec() + state_cpp.vertex[0].pvertex().K1.get_vec()).max_norm() / PT_state.vertex[0].pvertex().K1.get_vec().max_norm(), true);
-    print("K1t_hat-difference: ", (state_cpp.vertex[1].tvertex().K1.get_vec() + state_cpp.vertex[0].avertex().K1.get_vec() + state_cpp.vertex[0].tvertex().K1.get_vec()).max_norm() / PT_state.vertex[0].avertex().K1.get_vec().max_norm(), true);
+    print("K1t_hat-difference: ", (state_cpp.vertex[1].tvertex().K1.get_vec() + state_cpp.vertex[0].avertex().K1.get_vec()).max_norm() / PT_state.vertex[0].avertex().K1.get_vec().max_norm(), true);
     write_h5_rvecs("../Data_MF/PT_hat.h5", {"K1a_hat", "K1p_hat", "K1t_hat"}, {state_cpp.vertex[1].avertex().K1.get_vec().real(), state_cpp.vertex[1].pvertex().K1.get_vec().real(), state_cpp.vertex[1].tvertex().K1.get_vec().real()});
 
 #endif
@@ -2353,7 +2353,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     // Psi := K1p in PT2 + bare vertex
     State<state_datatype> Psi (Lambda);
     Psi.initialize();         // initialize bare state
-    bubble_function(Psi.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(Psi.vertex, bare.vertex, bare.vertex, G, G, 'p', false); // Psi = Gamma_0 + K1p
 
     // K1a_dot in PT2
     State<state_datatype> PT2_K1adot (Lambda);
@@ -2390,7 +2390,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
         Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
+#ifndef DEBUG_SYMMETRIES
         dGammaL_half1[0].half1().reorder_due2antisymmetry(dGammaR_half1[0].half1());
+#endif
         K1rdot_PIa_K1p.vertex = dGammaL_half1;
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
@@ -2398,6 +2400,10 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         GeneralVertex<state_datatype , non_symmetric> dGammaL(n_spin, Lambda);
         dGammaL[0].half1()  = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
         dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
+#ifdef DEBUG_SYMMETRIES
+    dGammaL[1].half1()  = dGammaL_half1[1].half1();  // assign half 1 to dGammaL
+    dGammaL[1].half2() = dGammaR_half1[1].half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
+#endif
 
         // insert this non-symmetric vertex on the right of the bubble
         State<state_datatype> dGammaC_r(Lambda);
@@ -2410,6 +2416,10 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         GeneralVertex<state_datatype , non_symmetric> dGammaR (n_spin, Lambda);
         dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
         dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+#ifdef DEBUG_SYMMETRIES
+        dGammaR[1].half1() = dGammaR_half1[1].half1();  // assign half 1 to dGammaR
+        dGammaR[1].half2() = dGammaL_half1[1].half1();  // assign half 2 as half 1 to dGammaL [symmetric -> left()=right()]
+#endif
 
         // insert this non-symmetric vertex on the left of the bubble
         State<state_datatype> dGammaC_l(Lambda);

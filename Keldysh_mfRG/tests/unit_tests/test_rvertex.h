@@ -20,7 +20,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
     avertex.enforce_freqsymmetriesK1(avertex);
 
     double asymmetry = 0;
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     for (int iw = 0; iw<(nBOS-1)/2; iw++){
         avertex.K1.K1_get_freq_w(indices.w, iw);
@@ -59,7 +59,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
 
     double asymmetry_tolerance = 1e-10;
     double asymmetry = 0;
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     ;
     for (int iw = 0; iw<=(nBOS2-1)/2; iw++){
@@ -116,7 +116,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
 
     double asymmetry_tolerance = 1e-10;
     double asymmetry = 0;
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a');
+    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     for (int iw = 0; iw<nBOS3; iw++){
         double correction = avertex.K3.K3_get_correction_MFfiniteT(iw);
         for (int iv = 0; iv<nFER3; iv++) {

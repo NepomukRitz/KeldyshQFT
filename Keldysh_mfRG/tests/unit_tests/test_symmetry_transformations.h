@@ -11,7 +11,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
         auto v1 = GENERATE( -100., 0., 1e-16, 1., 100. );
         auto v2 = GENERATE( -100., 0., 1e-16, 1., 100. );
 
-        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 'a');
+        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 'a', k1, 0, 'a');
 
         REQUIRE( indices.prefactor == 1. );
         REQUIRE( !indices.conjugate );
@@ -214,7 +214,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
         auto v1 = GENERATE( -100., 0., 1e-16, 1., 100. );
         auto v2 = GENERATE( -100., 0., 1e-16, 1., 100. );
 
-        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 'p');
+        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 'p', k1, 0, 'p');
 
         REQUIRE( indices.prefactor == 1. );
         REQUIRE( !indices.conjugate );
@@ -433,7 +433,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
         auto v1 = GENERATE( -100., 0., 1e-16, 1., 100. );
         auto v2 = GENERATE( -100., 0., 1e-16, 1., 100. );
 
-        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 't');
+        IndicesSymmetryTransformations indices(0, w, v1, v2, 0, 't', k1, 0, 't');
 
         REQUIRE( indices.prefactor == 1. );
         REQUIRE( !indices.conjugate );
