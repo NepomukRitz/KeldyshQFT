@@ -154,19 +154,19 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 if(VERBOSE) dGammaC_r[0].half1().check_vertex_resolution();
 
                 // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-                //GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
-                //dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
-                //dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+                GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
+                dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
+                dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
 #ifdef DEBUG_SYMMETRIES
-                //dGammaR[1].half1() = dGammaR_half1[1].half1();  // assign half 1
-                //dGammaR[1].half2() = dGammaL_half1[1].half1();  // assign half 2 as half 1 of dGammaL
+                dGammaR[1].half1() = dGammaR_half1[1].half1();  // assign half 1
+                dGammaR[1].half2() = dGammaL_half1[1].half1();  // assign half 2 as half 1 of dGammaL
 #endif
 
                 // insert this non-symmetric vertex on the left of the bubble
-                //Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
+                Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
 
                 // symmetrize by averaging left and right insertion
-                Vertex<Q> dGammaC = dGammaC_r; //(dGammaC_r + dGammaC_l) * 0.5;
+                Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5;
 
                 /// save intermediate states:
                 if (save_intermediate) {
@@ -206,6 +206,25 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 #endif
                 //if(vertexConvergedInLoops(dGammaT, dPsi.vertex))
                 //    break;
+
+                /// save intermediate states:
+                if (save_intermediate) {
+                    State<Q> dPsi_C (dGammaC, dPsi.selfenergy);
+                    State<Q> dPsi_C_left (dGammaC_l, dPsi.selfenergy);
+                    State<Q> dPsi_C_right(dGammaC_r, dPsi.selfenergy);
+                    if (iteration == 0) {
+                        write_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C);
+                        write_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C_left);
+                        write_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C_right);
+                    }
+                    else {
+                        add_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C);
+                        add_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C_left);
+                        add_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C_right);
+
+                    }
+                }
+
             }
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
