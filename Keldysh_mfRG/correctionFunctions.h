@@ -704,6 +704,10 @@ auto asymp_corrections_bubble(K_class k,
             res_l_V = vertex1.left_diff_bare(input_l);
             res_r_V = vertex2.right_same_bare(input_r);
             break;
+        case k2b:
+            res_l_V = vertex1.left_same_bare(input_l);
+            res_r_V = vertex2.right_diff_bare(input_r);
+            break;
         case k3:
             res_l_V = vertex1.left_diff_bare(input_l);
             res_r_V = vertex2.right_diff_bare(input_r);

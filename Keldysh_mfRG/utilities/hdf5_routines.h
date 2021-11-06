@@ -1781,7 +1781,7 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_
 }
 /// Overload of above function that only updates the Lambda at iteration Lambda_it
 template <typename Q>
-void add_hdf(const H5std_string FILE_NAME, const double Lambda_now, int Lambda_it, const State<Q>& state_in) {
+void add_hdf(const H5std_string FILE_NAME, const double Lambda_now, const int Lambda_it, const State<Q>& state_in) {
     rvec Lambdas = read_Lambdas_from_hdf(FILE_NAME);
     Lambdas[Lambda_it] = Lambda_now; // update Lambda
     add_hdf<Q>(FILE_NAME, Lambda_it, state_in, Lambdas);

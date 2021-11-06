@@ -1081,8 +1081,6 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
-    vertex1.initializeInterpol();
-    vertex2.initializeInterpol();
 
     double t_start = get_time();
     if (MAX_DIAG_CLASS >= 0) {
@@ -1114,8 +1112,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         get_time(t_start);
     }
 
-    vertex1.set_initializedInterpol(false);
-    vertex2.set_initializedInterpol(false);
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1131,6 +1127,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 
     // initialize buffer into which each MPI process writes their results
     vec<Q> Buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
+    vertex1.initializeInterpol();
+    vertex2.initializeInterpol();
 
     // start for-loop over external arguments, using MPI and OMP
     int iterator = 0;
@@ -1150,6 +1148,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 
     write_out_results(Ordered_result, diag_class);
 
+    vertex1.set_initializedInterpol(false);
+    vertex2.set_initializedInterpol(false);
 
 }
 
