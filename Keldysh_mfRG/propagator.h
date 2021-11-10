@@ -84,8 +84,8 @@ public:
     auto SK(double v, int i_in) const -> Q;
 
     // Matsubara propagators
-    auto GM(double v, int i_in) const -> Q;
-    auto SM(double v, int i_in) const -> Q;
+    auto GM(double v, double ksquared, int i_in) const -> Q;
+    auto SM(double v, double ksquared, int i_in) const -> Q;
 
     auto norm() const -> double;
 
@@ -93,6 +93,9 @@ public:
     Q GR_REG1_SIAM(double v, int i_in) const;
     Q GA_REG1_SIAM(double v, int i_in) const;
     Q SR_REG1(double v, int i_in) const;
+
+    Q GM_REG1_FPP(double v, double ksquared, int i_in) const;
+    Q SM_REG1_FPP(double v, double ksquared, int i_in) const;
 
     /// propagators for REG == 2
     Q GR_REG2_Hubbard(double v, int i_in) const;
@@ -123,11 +126,13 @@ public:
     Q SR_REG3_Hubbard(double v, int i_in) const;
     Q SR_REG3_SIAM(double v, int i_in) const;
 
+    Q GM_REG3_FPP(double v, double ksquared, int i_in) const;
     Q GM_REG3_Hubbard(double v, int i_in) const;
     Q GM_REG3_SIAM(double v, int i_in) const;
     Q GM_REG3_SIAM_PHS(double v, int i_in) const;
     Q GM_REG3_SIAM_NoPHS(double v, int i_in) const;
     Q SM_REG3(double v, int i_in) const;
+    Q SM_REG3_FPP(double v, double ksquared, int i_in) const;
 
 
 };
@@ -245,29 +250,39 @@ auto Propagator<double>::SK(const double v, const int i_in) const -> double {
 }
 
 template <typename Q>
-auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
+auto Propagator<Q>::GM(const double v, const double ksquared, const int i_in) const -> Q
 {
-    if      (REG == 1)      return 0.;
+    if      (REG == 1) {
+        if (FPP)    return GM_REG1_FPP(v, ksquared, i_in);
+        else        return 0.;
+    }
     else if (REG == 2) {
         if (HUBBARD_MODEL)  return GM_REG2_Hubbard(v, i_in);
         else                return GM_REG2_SIAM(v, i_in);
     }
     else if (REG == 3) {
-        if (HUBBARD_MODEL)  return GM_REG3_Hubbard(v, i_in);
-        else                return GM_REG3_SIAM(v, i_in);
+        if(FPP)                  return GM_REG3_FPP(v,ksquared,i_in);
+        else if (HUBBARD_MODEL)  return GM_REG3_Hubbard(v, i_in);
+        else                     return GM_REG3_SIAM(v, i_in);
     }
     else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
 
 template <typename Q>
-auto Propagator<Q>::SM(const double v, const int i_in) const -> Q
+auto Propagator<Q>::SM(const double v, const double ksquared, const int i_in) const -> Q
 {
-    if      (REG == 1)      return 0.;
+    if      (REG == 1)  {
+        if (FPP)            return SM_REG1_FPP(v,ksquared,i_in);
+        else                return 0.;
+    }
     else if (REG == 2) {
         if (HUBBARD_MODEL)  return SM_REG2_Hubbard(v, i_in);
         else                return SM_REG2_SIAM(v, i_in);
     }
-    else if (REG == 3)      return SM_REG3(v, i_in);
+    else if (REG == 3) {
+        if (FPP)            return SM_REG3_FPP(v,ksquared, i_in);
+        else                return SM_REG3(v, i_in);
+    }
     else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
 
@@ -373,6 +388,31 @@ template <typename Q>
 auto Propagator<Q>::SR_REG1(const double v, const int i_in) const -> Q {
     if (std::abs(v) == Lambda) return -GR(v, i_in);
     else                       return 0.;
+}
+
+template <typename Q>
+auto Propagator<Q>::GM_REG1_FPP(const double v, const double ksquared, const int i_in) const -> Q {
+    double heaviside_theta = heaviside(abs(v)-Lambda);
+    Q denominator;
+    if (i_in == 0) {
+        denominator = glb_i * v - ksquared / (2 * glb_mc) + glb_muc - selfenergy.valsmooth(0,v,i_in);
+    }
+    else if (i_in == 1) {
+        denominator = glb_i * v - ksquared / (2 * glb_md) + glb_mud - selfenergy.valsmooth(0,v,i_in);
+    }
+    else {
+        std::cout << "wrong particle type in GM_REG1_FPP\n";
+    }
+    if (std::abs(denominator)<1e-20){
+        denominator = 1e-20;
+    }
+    return heaviside_theta/denominator;
+}
+
+template <typename Q>
+auto Propagator<Q>::SM_REG1_FPP(const double v, const double ksquared, const int i_in) const -> Q {
+    std::cout << "SM_REG1_FPP not yet implemented\n";
+    return 0;
 }
 
 
@@ -579,6 +619,45 @@ auto Propagator<Q>::SR_REG3_SIAM(const double v, const int i_in) const -> Q {
 }
 
 // full propagator (Matsubara)
+
+template <typename Q>
+auto Propagator<Q>::GM_REG3_FPP(const double v, const double ksquared, const int i_in) const -> Q {
+    double R_soft = v*v/(v*v + Lambda*Lambda);
+    Q denominator;
+    if (i_in == 0) {
+        denominator = glb_i * v - ksquared / (2 * glb_mc) + glb_muc - selfenergy.valsmooth(0,v,i_in);
+    }
+    else if (i_in == 1) {
+        denominator = glb_i * v - ksquared / (2 * glb_md) + glb_mud - selfenergy.valsmooth(0,v,i_in);
+    }
+    else {
+        std::cout << "wrong particle type in GM_REG1_FPP\n";
+    }
+    if (std::abs(denominator)<1e-20){
+        denominator = 1e-20;
+    }
+    return R_soft/denominator;
+}
+
+template <typename Q>
+auto Propagator<Q>::SM_REG3_FPP(const double v, const double ksquared, const int i_in) const -> Q {
+    double dR_soft = -2*Lambda*v*v/pow(v*v + Lambda*Lambda,2);
+    Q denominator;
+    if (i_in == 0) {
+        denominator = glb_i * v - ksquared / (2 * glb_mc) + glb_muc - selfenergy.valsmooth(0,v,i_in);
+    }
+    else if (i_in == 1) {
+        denominator = glb_i * v - ksquared / (2 * glb_md) + glb_mud - selfenergy.valsmooth(0,v,i_in);
+    }
+    else {
+        std::cout << "wrong particle type in GM_REG1_FPP\n";
+    }
+    if (std::abs(denominator)<1e-20){
+        denominator = 1e-20;
+    }
+    return dR_soft/denominator;
+}
+
 template <typename Q>
 auto Propagator<Q>::GM_REG3_Hubbard(const double v, const int i_in) const -> Q {
     return 0.;

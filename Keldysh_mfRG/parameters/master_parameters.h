@@ -10,6 +10,9 @@
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD
 
+// Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
+#define FERMI_POLARON_PROBLEM
+
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 //#define KELDYSH_FORMALISM
 #ifndef KELDYSH_FORMALISM
@@ -57,6 +60,14 @@ constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibriu
 // Number of independent spin components. n_spin = 1 with SU(2) symmetry.
 constexpr int n_spin = 1;
 
+/// Parameters for Fermi-polaron problem ///
+
+double glb_muc = 1.;
+double glb_mud;
+double glb_mc = 1.;
+double glb_md = 1.;
+double glb_ainv;
+
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure for the Hubbard model
@@ -86,7 +97,7 @@ constexpr int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
-#define REG 2
+#define REG 1
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
@@ -96,8 +107,8 @@ constexpr int n_in = 1;
 constexpr int nODE = 50;
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 0.0;
+constexpr double Lambda_ini = 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 1e-8;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
@@ -127,6 +138,12 @@ constexpr double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOP
 constexpr bool HUBBARD_MODEL = true;
 #else
 constexpr bool HUBBARD_MODEL = false;
+#endif
+
+#ifdef FERMI_POLARON_PROBLEM
+constexpr bool FPP = true;
+#else
+constexpr bool FPP = false;
 #endif
 
 #ifdef KELDYSH_FORMALISM

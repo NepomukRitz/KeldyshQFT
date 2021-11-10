@@ -247,8 +247,8 @@ class ClenshawCurtis {
     }
 
     // due to affine transformation there is a factor (right-left)/2 for the integral value which corresponds to af[0](1)-af[0](0)
-    T value_integral = val2*substitution_factor;
-    double error_integral = std::abs(val2-val1);
+    //T value_integral = val2*substitution_factor;
+    //double error_integral = std::abs(val2-val1);
     return {nEvals, val2*substitution_factor, std::abs(val2-val1)};
   };
 

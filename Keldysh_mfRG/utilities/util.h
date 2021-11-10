@@ -218,7 +218,21 @@ auto sign(T x) -> double {
     return (T(0) < x) - (x < T(0));
 }
 
-
+// Heaviside-Theta function for sharp regulator
+auto heaviside (const double x) -> double {
+    if (x > 0.0){
+        return 1.0;
+    }
+    else if (x < 0.0){
+        return 0.0;
+    }
+    else if (x == 0.0){
+        return 0.5;
+    }
+    else {
+        std::cout << "x ill-defined! \n";
+    }
+}
 
 /**
  * Functions for rounding to Matsubara frequencies

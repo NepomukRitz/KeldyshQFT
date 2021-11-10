@@ -260,7 +260,7 @@ class PAID {
 
     auto res = q_.sum();
 
-    std::cout << "counter = " << counter << ", fevals = " << fevals << ", error = " << static_cast<double>(res.first) << ", termination reason = " << termination_reason << "\n";
+    //std::cout << "counter = " << counter << ", fevals = " << fevals << ", error = " << static_cast<double>(res.first) << ", termination reason = " << termination_reason << "\n";
     return PAIDOutput<T, Key>{counter, fevals, static_cast<double>(res.first),
                               res.second, termination_reason};
   }

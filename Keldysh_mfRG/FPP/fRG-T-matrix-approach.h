@@ -11,10 +11,12 @@
 #include "../ODE_solvers.h"
 #include "../grids/flow_grid.h"
 
+/*
 comp rhs_test3(const comp& y, double Lambda) {
     //comp y;
     return SimpleBubble(0.03, -2.0, 0.2, 0.4,Lambda, 'c', 'c');
 }
+*/
 
 /*
 template <typename Q>
@@ -77,7 +79,8 @@ template <typename Q>
 class Integrand_dL_Pi0_vpp {
 private:
     double Lambda, w, q, lim;
-    char i, j, chan;
+    int i, j;
+    char chan;
     int inttype; // kint_type = 0 exact, 1 numerical
     int inftylim; // 0: [a,b], 1: [a,oo], 2: [-oo,b]
 
@@ -85,7 +88,7 @@ public:
     /**
      * Constructor:
      */
-    Integrand_dL_Pi0_vpp(double Lambda_in, double w_in, double q_in, double lim_in, char i_in, char j_in, char chan_in, int inttype_in, int inftylim_in)
+    Integrand_dL_Pi0_vpp(double Lambda_in, double w_in, double q_in, double lim_in, int i_in, int j_in, char chan_in, int inttype_in, int inftylim_in)
             :Lambda(Lambda_in), w(w_in), q(q_in), lim(lim_in), i(i_in), j(j_in), chan(chan_in), inttype(inttype_in), inftylim(inftylim_in){
     };
 
@@ -191,12 +194,13 @@ public:
     }
     //void save_integrand();
 };
+
 comp functiontestsoft(double vpp, double Lambda, double w) {
     return -(16. * Lambda * pow(-4. * vpp * vpp + w * w, 2.) * (4. * (Lambda * Lambda + vpp * vpp) + w * w)) /
            pow(16. * pow(Lambda * Lambda + vpp * vpp, 2.) + 8. * (Lambda * Lambda - vpp * vpp) * w * w + pow(w, 4.),2.);
 };
 
-comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, char i, char j, char chan, int inttype){
+comp perform_dL_Pi0_vpp_integral (double Lambda, double w, double q, int i, int j, char chan, int inttype){
     comp output, output1, output2, output3, output4, output5, output6, output7, output8, output9, output10;
 
     double vm = std::max(std::abs(Lambda + w/2),std::abs(Lambda - w/2));
@@ -292,16 +296,14 @@ public:
 
     double w, q;
     char chan;
-    int reg, inttype;
-    const double Lambda_i;
-    const double Lambda_f;
+    int inttype;
     comp value;
 
     /**
      * Constructor:
      */
-    FRG_solvand_nsc(double w_in, double q_in, const double Lambda_i_in, const double Lambda_f_in, char chan_in, int reg_in, int inttype_in)
-            :w(w_in), q(q_in), Lambda_i(Lambda_i_in), Lambda_f(Lambda_f_in), chan(chan_in), reg(reg_in), inttype(inttype_in){
+    FRG_solvand_nsc(double w_in, double q_in, char chan_in, int inttype_in)
+            :w(w_in), q(q_in), chan(chan_in), inttype(inttype_in){
     };
     /*
     /**
@@ -329,7 +331,6 @@ public:
         this->w = state.w;
         this->q = state.q;
         this->chan = state.chan;
-        this->reg = state.reg;
         return (*this);
     }
     auto operator*= (const double& alpha) -> FRG_solvand_nsc {
@@ -349,62 +350,60 @@ FRG_solvand_nsc<comp> rhs_K1l1fRG(const FRG_solvand_nsc<comp>& y, double Lambda)
         if (y.chan == 'p') {
             prefactor_p = 2.;
         }
-        if (y.reg == 1) { // sharp frequency
-            y_result.value = prefactor_p * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 'd', 'c', y.chan, y.inttype);
-        }
-        else if (y.reg == 3) { // soft frequency
-            y_result.value = prefactor_p * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                             perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'd', 'c', y.chan, y.inttype);
-        }
+#if REG == 1 // sharp frequency
+            y_result.value = prefactor_p * pow(-gint() + y.value, 2) *
+                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 1, 0, y.chan, y.inttype);
+#elif REG ==3  // soft frequency
+            y_result.value = prefactor_p * pow(-gint() + y.value, 2) *
+                             perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 1, 0, y.chan, y.inttype);
+#endif
     }
     else { // constant value for Gamma (not only K1)
-        if (y.reg == 1) {
-            y_result.value = 2. * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 'd', 'c', 'p', y.inttype)
-                             + pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 'd', 'c', 'a', y.inttype);
-        }
-        else if (y.reg == 3) { // soft frequency
-            y_result.value = 2. * pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                             perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'd', 'c', 'p', y.inttype)
-                             + pow(-gint(y.Lambda_i, y.Lambda_f, y.reg) + y.value, 2) *
-                               perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 'd', 'c', 'a', y.inttype);
-        }
+#if REG == 1
+            y_result.value = 2. * pow(-gint() + y.value, 2) *
+                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 1, 0, 'p', y.inttype)
+                             + pow(-gint() + y.value, 2) *
+                             sharp_frequency_bare_bubble(y.w, Lambda, y.q, 1, 0, 'a', y.inttype);
+#elif REG == 3
+            y_result.value = 2. * pow(-gint() + y.value, 2) *
+                             perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 1, 0, 'p', y.inttype)
+                             + pow(-gint() + y.value, 2) *
+                               perform_dL_Pi0_vpp_integral(Lambda, y.w, y.q, 1, 0, 'a', y.inttype);
+#endif
     }
     return y_result;
 }
 
-comp fRG_solve_nsc(double w, double q, const double Lambda_i, const double Lambda_f, int reg, int inttype) {
-    FRG_solvand_nsc<comp> y_fin(w,q,Lambda_i,Lambda_f,'p',reg,inttype);
-    FRG_solvand_nsc<comp> y_ini(w,q,Lambda_i,Lambda_f,'p',reg,inttype);
+comp fRG_solve_nsc(double w, double q, int inttype) {
+    FRG_solvand_nsc<comp> y_fin(w,q,'p',inttype);
+    FRG_solvand_nsc<comp> y_ini(w,q,'p',inttype);
     y_ini.value = (comp) 0.0;
 
 
-    ODE_solver_RK4(y_fin, Lambda_f, y_ini, Lambda_i,
+    ODE_solver_RK4(y_fin, Lambda_fin, y_ini, Lambda_ini,
                    rhs_K1l1fRG, log_substitution, log_resubstitution, nODE);
 
-    return y_fin.value - gint(Lambda_i,Lambda_f,reg);
+    return y_fin.value - gint();
 }
 
-comp fRG_solve_K1r(double w, double q, char chan, const double Lambda_i, const double Lambda_f, int reg, int inttype) {
-    FRG_solvand_nsc<comp> y_fin(w,q,Lambda_i,Lambda_f,chan,reg,inttype);
-    FRG_solvand_nsc<comp> y_ini(w,q,Lambda_i,Lambda_f,chan,reg,inttype);
+comp fRG_solve_K1r(double w, double q, char chan, int inttype) {
+    FRG_solvand_nsc<comp> y_fin(w,q,chan,inttype);
+    FRG_solvand_nsc<comp> y_ini(w,q,chan,inttype);
     y_ini.value = (comp) 0.0;
 
 
-    ODE_solver_RK4(y_fin, Lambda_f, y_ini, Lambda_i,
+    ODE_solver_RK4(y_fin, Lambda_fin, y_ini, Lambda_ini,
                    rhs_K1l1fRG, log_substitution, log_resubstitution, nODE);
 
     return y_fin.value;
 }
 
-comp fRG_solve_K1full(double w, double q, const double Lambda_i, const double Lambda_f, int reg, int inttype) {
+comp fRG_solve_K1full(double w, double q, int inttype) {
     comp K1p, K1a, result;
     double Gamma0;
-    K1p = fRG_solve_K1r(w, q, 'p', Lambda_i, Lambda_f, reg, inttype);
-    K1a = fRG_solve_K1r(w, q, 'a', Lambda_i, Lambda_f, reg, inttype);
-    Gamma0 = - gint(Lambda_i,Lambda_f,reg);
+    K1p = fRG_solve_K1r(w, q, 'p', inttype);
+    K1a = fRG_solve_K1r(w, q, 'a', inttype);
+    Gamma0 = - gint();
     result = Gamma0 + K1p + K1a;
     return result;
 }
@@ -427,16 +426,16 @@ comp solve_1lfRG_nsc {
 template <typename Q>
 class FfRG_mu {
 private:
-    double w, q, Lambda_i, Lambda_f;
-    int reg, inttype;
+    double w, q;
+    int inttype;
     // bool fRG;
 
 public:
     /**
      * Constructor:
      */
-    FfRG_mu(double w_in, double q_in, double Lambda_i_in, double Lambda_f_in, int reg_in, int inttype_in/*, bool fRG_in*/)
-            :w(w_in), q(q_in), Lambda_i(Lambda_i_in), Lambda_f(Lambda_f_in), reg(reg_in), inttype(inttype_in)/*, fRG(fRG_in)*/{
+    FfRG_mu(double w_in, double q_in, int inttype_in/*, bool fRG_in*/)
+            :w(w_in), q(q_in), inttype(inttype_in)/*, fRG(fRG_in)*/{
     };
 
     /**
@@ -451,7 +450,7 @@ public:
         //output = 1./real(ladder(w,q,Lambda_i,Lambda_f,reg));
         //}
         //else {
-            output = 1./real(fRG_solve_nsc(w,q,Lambda_i,Lambda_f,reg, inttype));
+            output = 1./real(fRG_solve_nsc(w,q, inttype));
         //}*/
         glb_mud = mu_inter;
         return output;
@@ -460,7 +459,7 @@ public:
     //void save_integrand();
 };
 
-double find_root_divergence (double w, double q, double Lambda_i, double Lambda_f, int reg, int inttype, double start, double dxstart, int imax, double prec) {
+double find_root_divergence (double w, double q, int inttype, double start, double dxstart, int imax, double prec) {
     double xnew = start;
     double dxnew = dxstart;
     vec<double> mus(imax);
@@ -469,7 +468,7 @@ double find_root_divergence (double w, double q, double Lambda_i, double Lambda_
     double xold, dxold;
     double fold, fnew;
 
-    FfRG_mu<double> f(w,q,Lambda_i,Lambda_f,reg, inttype);
+    FfRG_mu<double> f(w,q, inttype);
     //fold = f.mu(xnew);
 
     for (int i = 1; i < imax + 1; ++i){
@@ -506,16 +505,16 @@ double find_root_divergence (double w, double q, double Lambda_i, double Lambda_
     return xold;
 }
 
-double find_root_fRG (double w, double q, double Lambda_i, double Lambda_f, int reg, int inttype, double md_start, double ainv, double dmu, int imax, double prec){
+double find_root_fRG (double w, double q, int inttype, double md_start, double ainv, double dmu, int imax, double prec){
     glb_muc = 1.0;
     glb_ainv = ainv;
 
     double mud;
-    mud = find_root_divergence(w,q,Lambda_i,Lambda_f,reg,inttype, md_start, dmu,imax,prec);
+    mud = find_root_divergence(w,q,inttype, md_start, dmu,imax,prec);
     return mud;
 }
 
-void fRG_p_list (double Lambda_i, double Lambda_f, int reg, int inttype, double ainv_min, double ainv_max, double mud_start, double dmu, int imax, double prec, int nainv) {
+void fRG_p_list (int inttype, double ainv_min, double ainv_max, double mud_start, double dmu, int imax, double prec, int nainv) {
     vec<double> ainvs(nainv);
     vec<double> muds(nainv);
 
@@ -531,7 +530,7 @@ void fRG_p_list (double Lambda_i, double Lambda_f, int reg, int inttype, double 
         ainv = ainv_max - i * std::abs(ainv_max-ainv_min)/(nainv-1);
         //std::cout << "i = " << i << ", ainv = " << ainv <<"\n";
         //std::cout << "mudold = " << mudnew  << "\n";
-        mudnew = find_root_fRG(0.0,0.0,Lambda_i,Lambda_f,reg,inttype,mudold,ainv,dmu,imax,prec);
+        mudnew = find_root_fRG(0.0,0.0,inttype,mudold,ainv,dmu,imax,prec);
         //std::cout << "mudnew = " << mudnew << "\n";
         //std::cout << "i = " << i << ", ainv = " << ainv << ", mud = " << mudnew <<"\n";
 
@@ -549,7 +548,7 @@ void fRG_p_list (double Lambda_i, double Lambda_f, int reg, int inttype, double 
     };
 
     std::string filename = "../Data/fRG_p_list";
-    filename += "_reg=" + std::to_string(reg) + "_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
+    filename += "_reg=" + std::to_string(REG) + "_kint=" + std::to_string(inttype) + "_nainv=" + std::to_string(nainv)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"inverse scattering length", "chemical potential"},
@@ -557,7 +556,7 @@ void fRG_p_list (double Lambda_i, double Lambda_f, int reg, int inttype, double 
 
 }
 
-void fRG_p_list_wq (double wmax, double qmax, double Lambda_i, double Lambda_f, int nw, int nq) {
+void fRG_p_list_wq (double wmax, double qmax, int nw, int nq) {
     vec<double> ws(nw);
     vec<double> qs(nq);
     vec<double> Gamma_p_Re(nw*nq);
@@ -573,7 +572,7 @@ void fRG_p_list_wq (double wmax, double qmax, double Lambda_i, double Lambda_f, 
         for (int qi = 0; qi < nq; ++qi) {
             q = qi*qmax/(nq-1);
             qs[qi] = q;
-            Gamma_p_result = fRG_solve_nsc(w, q, Lambda_i, Lambda_f, 1,0);
+            Gamma_p_result = fRG_solve_nsc(w, q,0);
             Gamma_p_Re[composite_index_wq (wi, qi, nq)] = real(Gamma_p_result);
             Gamma_p_Im[composite_index_wq (wi, qi, nq)] = imag(Gamma_p_result);
             // std::cout << "w = " << w << ", q = " << q << ", result = " << Gamma_p_result << "\n";
@@ -598,7 +597,7 @@ void fRG_p_list_wq (double wmax, double qmax, double Lambda_i, double Lambda_f, 
 
 }
 
-void fRG_list_wq (double wmax, double qmax, char chan, double Lambda_i, double Lambda_f, int reg, int inttype, int nw, int nq) {
+void fRG_list_wq (double wmax, double qmax, char chan, int inttype, int nw, int nq) {
     vec<double> ws(nw);
     vec<double> qs(nq);
     vec<double> Gamma_p_Re(nw*nq);
@@ -614,7 +613,7 @@ void fRG_list_wq (double wmax, double qmax, char chan, double Lambda_i, double L
         for (int qi = 0; qi < nq; ++qi) {
             q = qi*qmax/(nq-1);
             qs[qi] = q;
-            Gamma_p_result = fRG_solve_K1r(w, q, chan, Lambda_i, Lambda_f, reg,inttype);
+            Gamma_p_result = fRG_solve_K1r(w, q, chan,inttype);
             Gamma_p_Re[composite_index_wq (wi, qi, nq)] = real(Gamma_p_result);
             Gamma_p_Im[composite_index_wq (wi, qi, nq)] = imag(Gamma_p_result);
             // std::cout << "w = " << w << ", q = " << q << ", result = " << Gamma_p_result << "\n";
@@ -632,7 +631,7 @@ void fRG_list_wq (double wmax, double qmax, char chan, double Lambda_i, double L
     std::string filename = "../Data/fRG_";
     filename += std::string(1,chan);
     filename += "_list_nw=" + std::to_string(nw)
-                + "_nq=" + std::to_string(nq) + "_reg=" + std::to_string(reg) + "_kint=" + std::to_string(inttype)
+                + "_nq=" + std::to_string(nq) + "_reg=" + std::to_string(REG) + "_kint=" + std::to_string(inttype)
                 + ".h5";
     write_h5_rvecs(filename,
                    {"bosonic_frequencies", "bosonic_momenta", "vertex_Re", "vertex_Im"},

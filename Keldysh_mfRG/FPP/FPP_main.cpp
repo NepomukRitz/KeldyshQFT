@@ -66,8 +66,6 @@ int main() {
         std::cout << "N = " << n << ": v = {" << setprecision(8) << vx << "," << setprecision(8) << vy << "," << setprecision(8) << vz << "}.\n";
     } */
 
-    //monte_carlo_test1();
-
     // Parameters bare Green's function
     // =======================================
 
@@ -307,9 +305,9 @@ int main() {
     // Sharp frequency regulator
     // =============================
 
-    /*comp output13 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 'c','d' ,'a');
-    comp output14 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 'c','d' ,'p');
-    comp output15 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 'c','d' ,'t');
+    /*comp output13 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 1,0 ,'a');
+    comp output14 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 1,0 ,'p');
+    comp output15 = sharp_frequency_exact_bare_bubble( 2., 3., 4., 1,0 ,'t');
     std::cout << "Sharp regulator: " << output13 << ".\n";
     std::cout << "Sharp regulator: " << output14 << ".\n";
     std::cout << "Sharp regulator: " << output15 << ".\n";*/
@@ -352,11 +350,9 @@ int main() {
     // test sort algorithm
 
     std::cout << "test sort algorithm:\n";
-    double Lambda_i = 1e4;
-    double Lambda_f = 1e-10;
     double Lambdaif = 1000.;
     double Lambda_one = 1.0;
-    double mylist[] = {1.0, Lambda_i*Lambda_f};
+    double mylist[] = {1.0, Lambda_ini*Lambda_fin};
     std::vector<double> myvector (mylist, mylist+2);               // 32 71 12 45 26 80 53 33
     std::cout << "finished\n";
     // using default comparison (operator <):
@@ -481,37 +477,38 @@ int main() {
 
     // 1-LOOP FRG
     // ==================================
-    /*
+
     glb_ainv = 1.0;
     glb_muc = 1.0;
     glb_mud = -5.;
     std::cout << "bare bubble with numerical k-integral:\n";
-    comp testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,'c','d','t',0);
+    comp testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,0, 1,'t',0);
     std::cout << "t: " << testrhs << "\n";
-    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,'c','d','p',0);
+    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,0,1,'p',0);
     std::cout << "p: " << testrhs << "\n";
-    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,'c','d','a',0);
+    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,0,1,'a',0);
     std::cout << "a: " << testrhs << "\n";
 
     std::cout << "bare bubble with exact k-integral:\n";
-    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,'c','d','t',1);
+    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,0,1,'t',1);
     std::cout << "t: " << testrhs << "\n";
-    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,'c','d','p',1);
+    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,0,1,'p',1);
     std::cout << "p: " << testrhs << "\n";
-    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,'c','d','a',1);
+    testrhs = sharp_frequency_bare_bubble(0.,10.,0.1,0,1,'a',1);
     std::cout << "a: " << testrhs << "\n";
-     */
+
     /*
-    comp Gamma_fRG_exact = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 0);
-    comp Gamma_fRG_num = fRG_solve_nsc(0.1, 0.1, 1e4, 1e-10, 1, 1);
-    comp Gamma_ladder_exact = ladder(0.1,0.1,1e4,1e-10,1,0);
-    comp Gamma_ladder_num = ladder(0.1,0.1,1e4,1e-10,1,1);
+    comp Gamma_fRG_exact = fRG_solve_nsc(0.1, 0.1, 0);
+    comp Gamma_fRG_num = fRG_solve_nsc(0.1, 0.1, 1);
+    comp Gamma_ladder_exact = ladder(0.1,0.1,'p',1,0);
+    comp Gamma_ladder_num = ladder(0.1,0.1,'p',1,1);
 
     std::cout << "Gamma_fRG exact k-integral: " << Gamma_fRG_exact << "\n";
     std::cout << "Gamma_fRG numerical k-integral: " << Gamma_fRG_num << "\n";
     std::cout << "Gamma_ladder exact k-integral: " << Gamma_ladder_exact << "\n";
     std::cout << "Gamma_ladder numerical k-integral: " << Gamma_ladder_num << "\n";
     */
+
     /*
     comp yy_fin;
     const comp yy_ini = 0.0; // (11.3834,-1.14485e-15) + gint(1e4,1e-10,1);
@@ -737,6 +734,20 @@ int main() {
     //std::cout << "mu_d = " << find_root_fRG_test_reg3 << "\n";
     get_time(t1);
 
+    comp integral_test;
+    double v1_test, v2_test, q_test;
+
+    double dt_test = get_time();
+    integral_test = perform_integral_Pi0_2D (0.3, -2.1, 4.3, 0,0);
+    std::cout << "test paid Pi0 = " << integral_test << "\n";
+    get_time(dt_test);
+    dt_test = get_time();
+    integral_test = perform_integral_Pi0_kpp(0.3,-2.1,4.3,0,0,1);
+    std::cout << "test Gauss-Lobatto Pi0 = " << integral_test << "\n";
+    get_time(dt_test);
+    integral_test = exact_bare_bubble_v1v2(0.3,-2.1,4.3,0,0);
+    std::cout << "exact = " << integral_test << "\n";
+
     // A-CHANNEL
     // ======================================
     glb_ainv = -1.0;
@@ -746,17 +757,22 @@ int main() {
     dt = get_time();
 
     // zero bosonic momentum
-    /*
+
+    comp integrated_bubble_p = perform_Pi0_vpp_integral(2,0,0,1,'p',0,1);
+    std::cout << "integrated_bubble_p = " << integrated_bubble_p << "\n";
+    comp integrated_bubble_a = perform_Pi0_vpp_integral(2,0,0,1,'a',0,1);
+    std::cout << "integrated_bubble_a = " << integrated_bubble_a << "\n";
+
     std::cout << "ladder with analytical bubble integral:\n";
-    gamma_p = ladder_K1r(0.,0.,'p',1e4,1e-8,1,0);
-    gamma_a = ladder_K1r(0.,0.,'a',1e4,1e-8,1,0);
-    Gamma0 = -gint(1e4,1e-8,1);
-    Gamma = ladder_full(0.,0.,1e4,1e-8,1,0);
+    gamma_p = ladder_K1r(0.,0.,'p',0,1);
+    gamma_a = ladder_K1r(0.,0.,'a',0,1);
+    Gamma0 = -gint();
+    Gamma = ladder_full(0.,0.,0,1);
     std::cout << "K1_a = " << gamma_a << "\n";
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt); */
+    get_time(dt);
     /*
     comp bubble_intp = perform_Pi0_vpp_integral (0., 0., 'd', 'c', 'p', 1e4, 1e-8, 0);
     comp bubble_inta = perform_Pi0_vpp_integral (0., 0., 'd', 'c', 'a', 1e4, 1e-8, 0);
@@ -766,12 +782,12 @@ int main() {
     comp exact_bubble_p = exact_bare_bubble (1., -3., 0., 'd', 'c', 'p');
     std::cout << "exact bubble_a = " << exact_bubble_a << "\n";
     std::cout << "exact bubble_p = " << exact_bubble_p << "\n";
-    */ /*
+    */
     dt = get_time();
-    gamma_p = ladder_K1r(0.,0.,'p',1e4,1e-8,1,1);
-    gamma_a = ladder_K1r(0.,0.,'a',1e4,1e-8,1,1);
-    Gamma0 = -gint(1e4,1e-8,1);
-    Gamma = ladder_full(0.,0.,1e4,1e-8,1,1);
+    gamma_p = ladder_K1r(0.,0.,'p',1,1);
+    gamma_a = ladder_K1r(0.,0.,'a',1,1);
+    Gamma0 = -gint();
+    Gamma = ladder_full(0.,0.,1,1);
     std::cout << "ladder with numerical bubble integral:\n";
     std::cout << "K1_a = " << gamma_a << "\n";
     std::cout << "K1_p = " << gamma_p << "\n";
@@ -780,10 +796,10 @@ int main() {
     get_time(dt);
 
     dt = get_time();
-    gamma_p = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,1,0);
-    gamma_a = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,1,0);
-    Gamma0 = -gint(1e4,1e-8,1);
-    Gamma = fRG_solve_K1full(0.,0.,1e4,1e-8,1,0);
+    gamma_p = fRG_solve_K1r(0.,0.,'p',0);
+    gamma_a = fRG_solve_K1r(0.,0.,'a',0);
+    Gamma0 = -gint();
+    Gamma = fRG_solve_K1full(0.,0.,0);
     std::cout << "fRG with sharp regulator and analytical bubble integral:\n";
     std::cout << "K1_a = " << gamma_a << "\n";
     std::cout << "K1_p = " << gamma_p << "\n";
@@ -792,22 +808,23 @@ int main() {
     get_time(dt);
 
     dt = get_time();
-    gamma_p = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,1,1);
-    gamma_a = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,1,1);
-    Gamma0 = -gint(1e4,1e-8,1);
-    Gamma = fRG_solve_K1full(0.,0.,1e4,1e-8,1,1);
+    gamma_p = fRG_solve_K1r(0.,0.,'p',1);
+    gamma_a = fRG_solve_K1r(0.,0.,'a',1);
+    Gamma0 = -gint();
+    Gamma = fRG_solve_K1full(0.,0.,1);
     std::cout << "fRG with sharp regulator and numerical bubble integral:\n";
     std::cout << "K1_a = " << gamma_a << "\n";
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
     get_time(dt);
-
+    // set REG = 3 for this
+    /*
     dt = get_time();
-    gamma_p = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,3,0);
-    gamma_a = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,3,0);
-    Gamma0 = -gint(1e4,1e-8,3);
-    Gamma = fRG_solve_K1full(0.,0.,1e4,1e-8,3,0);
+    gamma_p = fRG_solve_K1r(0.,0.,'p',0);
+    gamma_a = fRG_solve_K1r(0.,0.,'a',0);
+    Gamma0 = -gint();
+    Gamma = fRG_solve_K1full(0.,0.,0);
     std::cout << "fRG with soft regulator and analytical bubble integral:\n";
     std::cout << "K1_a = " << gamma_a << "\n";
     std::cout << "K1_p = " << gamma_p << "\n";
@@ -816,10 +833,10 @@ int main() {
     get_time(dt);
 
     dt = get_time();
-    gamma_p = fRG_solve_K1r(0.,0.,'p',1e4,1e-8,3,1);
-    gamma_a = fRG_solve_K1r(0.,0.,'a',1e4,1e-8,3,1);
-    Gamma0 = -gint(1e4,1e-8,3);
-    Gamma = fRG_solve_K1full(0.,0.,1e4,1e-8,3,1);
+    gamma_p = fRG_solve_K1r(0.,0.,'p',1);
+    gamma_a = fRG_solve_K1r(0.,0.,'a',1);
+    Gamma0 = -gint();
+    Gamma = fRG_solve_K1full(0.,0.,1);
     std::cout << "fRG with soft regulator and analytical bubble integral:\n";
     std::cout << "K1_a = " << gamma_a << "\n";
     std::cout << "K1_p = " << gamma_p << "\n";
@@ -980,6 +997,20 @@ int main() {
     paid::PAID<1,Integrand_Gauss,double,int,double> paid_integral(config);
     std::complex<double> paid_result = paid_integral.solve({paid_integrand})[0];
     std::cout << "Gauss integral for a = " << a << ": exact: 1/a^0.5 = " << exact_result << ", paid =" << paid_result << "\n";
+
+    paid::Domain<2> d02({0.,0.},{1.,1.});
+    double exact_result2D = 1./a;
+    paid::PAIDInput<2,Integrand_Gauss, int> paid_integrand02{d02,gauss,0};
+    paid::PAID<2,Integrand_Gauss,double,int,std::array<double,2>> paid_integral02(config);
+    std::complex<double> paid_result02 = paid_integral02.solve({paid_integrand02})[0];
+    std::cout << "Gauss integral for a = " << a << ": exact: 1/a = " << exact_result2D << ", paid =" << paid_result02 << "\n";
+
+    paid::Domain<3> d03({0.,0.,0.},{1.,1.,1.});
+    double exact_result3D = 1./(pow(sqrt(a),3));
+    paid::PAIDInput<3,Integrand_Gauss, int> paid_integrand03{d03,gauss,0};
+    paid::PAID<3,Integrand_Gauss,double,int,std::array<double,3>> paid_integral03(config);
+    std::complex<double> paid_result03 = paid_integral03.solve({paid_integrand03})[0];
+    std::cout << "Gauss integral for a = " << a << ": exact: a^-3/2 = " << exact_result3D << ", paid =" << paid_result03 << "\n";
 
     paid::Domain<2> d2({-M_PI, -M_PI},{M_PI, M_PI});
     Integrand_sin2D sinsin(1.);
