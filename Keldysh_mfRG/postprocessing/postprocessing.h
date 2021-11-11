@@ -63,14 +63,19 @@ public:
     }
 };
 
+/*
+ * Ward identity -2 Im Sigma^R = \tilde{\Phi} (Heyder2017, Eqs. (C24), (C26)
+ */
 void compute_Phi_tilde(const std::string filename) {
     rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
 
-    rvec vs (Lambdas.size() * nFER);
+    rvec vs (Lambdas.size() * nFER * n_in);
+    rvec ImSigma (Lambdas.size() * nFER * n_in);
     rvec Phi (Lambdas.size() * nFER * n_in);
     rvec Phi_integrated (Lambdas.size() * n_in);
 
-    for (int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
+    for (int iLambda=0; iLambda<Lambdas.size()-2; ++iLambda) {
+        //print(iLambda, true);
         State<state_datatype> state = read_hdf(filename, iLambda, Lambdas.size());
         state.selfenergy.asymp_val_R = glb_U / 2.;
 
@@ -80,16 +85,28 @@ void compute_Phi_tilde(const std::string filename) {
         Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
 
         for (int i_in=0; i_in<n_in; ++i_in) {
+#pragma omp parallel for
             for (int iv=0; iv<nFER; ++iv) {
                 double v = state.selfenergy.frequencies.ws[iv];
-                vs[iLambda * nFER + iv] = v;
+                vs[iLambda * nFER + iv * n_in + i_in] = v;
+                // lhs of Ward identity
+                ImSigma[iLambda * nFER + iv * n_in + i_in] = -2. * myimag(state.selfenergy.val(0, iv, i_in));
+                // rhs of Ward identity
                 Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);
                 Phi[iLambda * nFER * n_in + iv * n_in + i_in]
                     = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
             }
+            // integrate difference of lhs and rhs of Ward identity
             Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
                                                                     iLambda, i_in);
-            Phi_integrated[iLambda * n_in + i_in] = myreal(integrator<state_datatype>(integrandWardIdIntegrated, vmin, vmax));
+            // integrate lhs of Ward identity (for computing relative error): set Phi to zero (empty vector)
+            rvec Phi_0 (Lambdas.size() * nFER * n_in);
+            Integrand_Ward_id_integrated integrandWardIdIntegrated_0 (state.selfenergy.frequencies, Phi_0, state.selfenergy,
+                                                                      iLambda, i_in);
+            // compute relative error
+            Phi_integrated[iLambda * n_in + i_in]
+                = myreal(integrator<state_datatype>(integrandWardIdIntegrated, vmin, vmax))
+                    / myreal(integrator<state_datatype>(integrandWardIdIntegrated_0, vmin, vmax));
         }
     }
 
@@ -100,8 +117,8 @@ void compute_Phi_tilde(const std::string filename) {
         filename_out = filename;
 
     write_h5_rvecs(filename_out + "_Phi.h5",
-                   {"v", "Phi", "Phi_integrated", "Lambdas"},
-                   {vs, Phi, Phi_integrated, Lambdas});
+                   {"v", "-2ImSigma", "Phi", "Phi_integrated", "Lambdas"},
+                   {vs, ImSigma, Phi, Phi_integrated, Lambdas});
 }
 
 
@@ -131,7 +148,7 @@ public:
 };
 
 void sum_rule_K1tK(const std::string filename) {
-    print("Checking fullfilment of the sum rule for K1t");
+    print("Checking fullfilment of the sum rule for K1t", true);
     int nLambda = nODE + U_NRG.size() + 1;
 
     rvec Lambdas = construct_flow_grid(Lambda_fin, Lambda_ini, sq_substitution, sq_resubstitution, nODE);
@@ -160,7 +177,9 @@ void sum_rule_K1tK(const std::string filename) {
  */
 void check_Kramers_Kronig(const std::string filename) {
     int nLambda = nODE + U_NRG.size() + 1;  // number of Lambda points in <filename>
-    vec<int> iLambdas {0, 4, 12, 24, 34, 40, 44}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
+    vec<int> iLambdas {}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
+    if (nODE == 50) iLambdas = {1,5,13,16,26,32,37,41,44,47,49,51,53,56,65};
+    else if (nODE == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
 
     for (int i=0; i<iLambdas.size(); ++i) {
         State<state_datatype> state = read_hdf(filename, iLambdas[i], nLambda);  // read data from file
