@@ -17,9 +17,6 @@
 //#include "utilities/math_utils.h"
 
 typedef std::complex<double> comp; // Complex number
-auto isfinite(comp z) -> bool {
-    return std::isfinite(real(z)) and std::isfinite(imag(z));
-};
 
 constexpr comp glb_i (0., 1.);    // Imaginary unit
 
@@ -41,6 +38,14 @@ inline auto myconj(const Q x) -> Q {return conj(x);};
 template<>
 inline auto myconj<double>(const double x) -> double {return x;};
 
+auto isfinite(comp z) -> bool {
+    return std::isfinite(real(z)) and std::isfinite(imag(z));
+};
+
+template<typename T, typename std::enable_if<std::is_floating_point<T>::value>::type* = nullptr >
+auto isfinite(T z) -> bool {
+    return std::isfinite(z);
+};
 
 
 /// DECLARATIONS ///

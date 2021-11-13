@@ -140,7 +140,7 @@ public:
         Q result =  interpolate_lin1D<Q>(indices.w, vertexDataContainer<k1, Q>::K1_get_VertexFreqGrid().b,
                                                             [&](int i) -> Q {return vertexDataContainer<k1, Q>::val(indices.iK, i, indices.i_in);});
         // Lambda function (aka anonymous function) in last argument
-            assert(std::isfinite(result));
+            assert(isfinite(result));
         return result;
         } else {
             return 0.;  // asymptotic value
@@ -184,7 +184,7 @@ public:
                                                             vertexDataContainer<k2, Q>::K2_get_VertexFreqGrid().f,
                                                             [&](int i, int j) -> Q {return vertexDataContainer<k2, Q>::val(indices.iK, i, j, indices.i_in);});
 
-            assert(std::isfinite(result));
+            assert(isfinite(result));
             return result;
         }
         else {
@@ -266,7 +266,7 @@ public:
                 }
             }
 #endif
-            assert(std::isfinite(result));
+            assert(isfinite(result));
         return result;
         } else {
             return 0.;  // asymptotic value
@@ -311,7 +311,7 @@ public:
                                                                    });
         // Lambda function (aka anonymous function) in last argument
 
-        assert(std::isfinite(result));
+        assert(isfinite(result));
         return result;
 #if FREQ_PADDING == 0
         } else {
@@ -362,7 +362,7 @@ public:
                                                                                            j,
                                                                                            indices.i_in);
                                                 });
-        assert(std::isfinite(result));
+        assert(isfinite(result));
         return result;
 #if FREQ_PADDING == 0
         }
@@ -415,7 +415,7 @@ public:
                                                                                            j,
                                                                                            indices.i_in);
                                                 });
-        assert(std::isfinite(result));
+        assert(isfinite(result));
         return result;
 #if FREQ_PADDING == 0
         }
@@ -508,7 +508,7 @@ public:
         }
 #endif
 
-        assert(std::isfinite(result));
+        assert(isfinite(result));
         return result;
 
 #if FREQ_PADDING == 0
