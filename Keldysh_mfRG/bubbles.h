@@ -686,16 +686,18 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
 #endif
     )
         result = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-    else if (channel == 'p' and spin == 0) {
-        result = res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
-    }
-#ifdef DEBUG_SYMMETRIES
-    else if (channel == 'p' and spin == 1) {
-        result = res_l_V * Pival * res_r_Vhat + res_l_Vhat * Pival * res_r_V;
-    }
-#endif
     else
         result = res_l_V * Pival * res_r_V;
+
+#ifdef DEBUG_SYMMETRIES
+        if (channel == 'p' and spin == 0) {
+        result = (res_l_V * Pival * res_r_V +  res_l_Vhat * Pival * res_r_Vhat) * 0.5;
+    }
+    else if (channel == 'p' and spin == 1) {
+        result = (res_l_V * Pival * res_r_Vhat + res_l_Vhat * Pival * res_r_V) * 0.5;
+        }
+#endif
+
     return result;
 }
 
@@ -758,11 +760,11 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
         else
             res_r_V = vertex2.right_same_bare(input_r);
 
-        if ((channel == 'p') or (channel == 't' and spin == 0)
+        if ((channel == 't' and spin == 0)
 #ifdef DEBUG_SYMMETRIES
-        or (channel == 'a' and spin == 1)
+        or (channel == 'a' and spin == 1) or (channel == 'p')
 #endif
-        ) {
+        ){
             if(channel == 't') assert(0 == input_l.spin);
             if(channel == 'a') assert(1 == input_l.spin);
             input_l.spin = 1 - input_l.spin;
@@ -997,7 +999,7 @@ Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
             nw3_w = nw3_p;
             nw3_v = nv3_p;
             nw3_v_p = nv3_p;
-            prefactor = 0.5;
+            prefactor = 1.;
             break;
         case 't':
             nw1_w = nw1_t;

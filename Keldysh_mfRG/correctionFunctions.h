@@ -746,11 +746,11 @@ auto asymp_corrections_bubble(K_class k,
         }
 
         if (channel == 'p' and spin == 0) {
-            res = res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat;
+            res = (res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat) * 0.5;
         }
 #ifdef DEBUG_SYMMETRIES
         else if (channel == 'p' and spin == 1) {
-            res = res_l_V * Pival * res_r_Vhat + res_l_Vhat * Pival * res_r_V;
+            res = (res_l_V * Pival * res_r_Vhat + res_l_Vhat * Pival * res_r_V) * 0.5;
         }
 #endif
         else {
