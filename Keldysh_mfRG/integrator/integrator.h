@@ -74,8 +74,42 @@ auto integrator_gsl_qagp_helper(gsl_function& F, double* pts, size_t npts, int N
 }
 
 
+auto integrator_gsl_qagiu_helper(gsl_function& F, double a, int Nmax) -> double {
+    gsl_integration_workspace* W = gsl_integration_workspace_alloc(Nmax);
+
+    double result, error;
+
+    gsl_set_error_handler(handler);
+
+    const double epsabs = 0.;
+    //gsl_integration_qagil(&F_real, intervals[0][0], 0, integrator_tol, Nmax, W_real, &result_real, &error_real);
+    gsl_integration_qagiu(&F, a, epsabs, integrator_tol, Nmax, W, &result, &error);
+
+    gsl_integration_workspace_free(W);
+
+    return result;
+    /// If needed: more information can be extracted, e.g. error, number of interval subdivisions
+}
+
+auto integrator_gsl_qagil_helper(gsl_function& F, double a, int Nmax) -> double {
+    gsl_integration_workspace* W = gsl_integration_workspace_alloc(Nmax);
+
+    double result, error;
+
+    gsl_set_error_handler(handler);
+
+    const double epsabs = 0.;
+    gsl_integration_qagil(&F, a, epsabs, integrator_tol, Nmax, W, &result, &error);
+
+    gsl_integration_workspace_free(W);
+
+    return result;
+    /// If needed: more information can be extracted, e.g. error, number of interval subdivisions
+}
+
+
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
-template <typename Q, typename Integrand> auto integrator_gsl_qag_v2(Integrand& integrand, double a, double b, int Nmax) -> Q {
+template <typename Q, typename Integrand> auto integrator_gsl_qag_v2(Integrand& integrand, double a, double b, int Nmax, const bool isinf) -> Q {
     if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
 
         gsl_function F_real;
@@ -89,6 +123,12 @@ template <typename Q, typename Integrand> auto integrator_gsl_qag_v2(Integrand& 
         double result_real = integrator_gsl_qag_helper(F_real, a, b, Nmax);
         double result_imag = integrator_gsl_qag_helper(F_imag, a, b, Nmax);
 
+        if (isinf) {
+            result_real += integrator_gsl_qagil_helper(F_real, a, Nmax);
+            result_real += integrator_gsl_qagiu_helper(F_real, b, Nmax);
+            result_imag += integrator_gsl_qagil_helper(F_imag, a, Nmax);
+            result_imag += integrator_gsl_qagiu_helper(F_imag, b, Nmax);
+        }
 
         return result_real + glb_i*result_imag;
     }
@@ -100,12 +140,17 @@ template <typename Q, typename Integrand> auto integrator_gsl_qag_v2(Integrand& 
 
         double result_real = integrator_gsl_qag_helper(F_real, a, b, Nmax);
 
+        if (isinf) {
+            result_real += integrator_gsl_qagil_helper(F_real, a, Nmax);
+            result_real += integrator_gsl_qagiu_helper(F_real, b, Nmax);
+        }
+
         return result_real;
     }
 }
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
-template <typename Q, typename Integrand> auto integrator_gsl_qagp_v2(Integrand& integrand, double* pts, int npts, int Nmax) -> Q {
+template <typename Q, typename Integrand> auto integrator_gsl_qagp_v2(Integrand& integrand, double* pts, int npts, int Nmax, const bool isinf) -> Q {
     if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
 
         gsl_function F_real;
@@ -120,6 +165,13 @@ template <typename Q, typename Integrand> auto integrator_gsl_qagp_v2(Integrand&
         double result_imag = integrator_gsl_qagp_helper(F_imag, pts, npts, Nmax);
 
 
+        if (isinf) {
+            result_real += integrator_gsl_qagil_helper(F_real, pts[0]       , Nmax);
+            result_real += integrator_gsl_qagiu_helper(F_real, pts[npts - 1], Nmax);
+            result_imag += integrator_gsl_qagil_helper(F_imag, pts[0]       , Nmax);
+            result_imag += integrator_gsl_qagiu_helper(F_imag, pts[npts - 1], Nmax);
+        }
+
         return result_real + glb_i*result_imag;
     }
     else{
@@ -129,6 +181,12 @@ template <typename Q, typename Integrand> auto integrator_gsl_qagp_v2(Integrand&
         F_real.params = &integrand;
 
         double result_real = integrator_gsl_qagp_helper(F_real, pts, npts, Nmax);
+
+
+        if (isinf) {
+            result_real += integrator_gsl_qagil_helper(F_real, pts[0]       , Nmax);
+            result_real += integrator_gsl_qagiu_helper(F_real, pts[npts - 1], Nmax);
+        }
 
         return result_real;
     }
@@ -246,7 +304,7 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
         gsl_function F_real;
         F_real.function = &f_real<Integrand>;
         F_real.params = &integrand;
-        double result_real{}, error_real{};
+        double result_real = 0., error_real = 0.;
 
         gsl_set_error_handler(handler);
 
@@ -259,17 +317,18 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
             error_real += error_real_temp;
         }
 
+        vec<Q> result = vec<Q>(num_intervals);
         for (int i = 0; i < num_intervals; i++) {
-            result_real_temp = 0.;
             error_real_temp = 0.;
             if (intervals[i][0] < intervals[i][1])
-                gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real,
-                                    &result_real_temp, &error_real_temp);
-            result_real += result_real_temp;
+                gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 0., integrator_tol, Nmax, 1, W_real,
+                                    &(result[i]), &error_real_temp);
             error_real += error_real_temp;
         }
 
         gsl_integration_workspace_free(W_real);
+
+        result_real += result.sum();
 
         return result_real;
     }
@@ -384,7 +443,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);          // use adaptive Simpson integrator
     }
     else if (INTEGRATOR_TYPE == 4) { // GSL
-        return integrator_gsl_qagp_v2<Q>(integrand, intersections.data(), intersections.size(), nINT);
+        return integrator_gsl_qagp_v2<Q>(integrand, intersections.data(), intersections.size(), nINT, false);
     }
     else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
 
@@ -516,6 +575,8 @@ template <typename Q, int num_freqs, typename Integrand> auto integrator_Matsuba
 */
 
     return integrator<Q>(integrand, intervals, num_intervals, isinf);
+
+
 
 }
 //#endif
