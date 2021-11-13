@@ -11,7 +11,7 @@
 
 /// Keldysh index parameters ///
 #ifdef KELDYSH_FORMALISM
-#ifdef DEBUG_SYMMETRIES
+#ifndef DEBUG_SYMMETRIES
 // Number of independent Keldysh components for the respective diagrammatic class
 const int nK_SE = 2;
 const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
