@@ -47,10 +47,17 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
  * @param Lambda     : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double Lambda) {
+void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
     Vertex<Q> Gamma_BSE_L (n_spin, Lambda);
     Vertex<Q> Gamma_BSE_R (n_spin, Lambda);
     compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, state_in, Lambda);
+
+#ifndef NDEBUG
+    State<Q> state_L(Gamma_BSE_L, state_in.selfenergy);
+    State<Q> state_R(Gamma_BSE_R, state_in.selfenergy);
+    add_hdf(data_dir + "Parquet_GammaL", Lambda, it_Lambda, state_L); // save input into 0-th layer of hdf5 file
+    add_hdf(data_dir + "Parquet_GammaR", Lambda, it_Lambda, state_R); // save input into 0-th layer of hdf5 file
+#endif
 }
 
 /**
@@ -222,7 +229,7 @@ void parquet_checks(const std::string filename) {
 
         // compute vertex from BSE
         Vertex<state_datatype> Gamma_BSE (n_spin, Lambdas[i]);
-        compute_BSE(Gamma_BSE, state, Lambdas[i]);       // compute the lhs of the BSE
+        compute_BSE(Gamma_BSE, state, Lambdas[i], i);       // compute the lhs of the BSE
         Vertex<state_datatype> Gamma_diff = state.vertex - Gamma_BSE;  // compute the difference between input and lhs of BSE
         print("Computed BSE.", true);
 
@@ -308,10 +315,10 @@ void parquet_checks(const std::string filename) {
  * @param Lambda     : Lambda value at which to compute the parquet equations
  */
 template <typename Q>
-void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda) {
-    compute_BSE(state_out.vertex, state_in, Lambda);                    // compute the gamma_r's via the BSE
-    if (KELDYSH) state_out.vertex[0].irred().initialize(-glb_U/2.);     // add the irreducible vertex
-    else         state_out.vertex[0].irred().initialize(-glb_U);        // add the irreducible vertex
+void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
+    compute_BSE(state_out.vertex, state_in, Lambda, it_Lambda);                    // compute the gamma_r's via the BSE
+    if (KELDYSH) state_out.vertex.initialize(-glb_U/2.);     // add the irreducible vertex
+    else         state_out.vertex.initialize(-glb_U);        // add the irreducible vertex
 
     compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
 }
@@ -338,11 +345,17 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     write_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
     rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
 
+#ifndef NDEBUG
+    write_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    write_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+#endif
+
+
     int iteration = 1;
     // first check if converged, and also stop if maximal number of iterations is reached
     while ((relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy) && iteration <= Nmax) {
         print("iteration ", iteration, true);
-        parquet_iteration(state_out, state_in, Lambda);  // compute lhs of parquet equations
+        parquet_iteration(state_out, state_in, Lambda, iteration);  // compute lhs of parquet equations
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
         add_hdf(filename, iteration, state_out, Lambdas);  // store result into file
 
