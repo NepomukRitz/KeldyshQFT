@@ -1249,7 +1249,8 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K2(Q& value, const int i0, const int i_in, const double w, const double v){
-    if (vertex2[spin].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
+    if (false and vertex2[spin].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
+                                                    // don't do this; this is a bug for the Parquet solver
     else {
         for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add a sum over form factors here, as well. (the integrand class will need to take another index.)
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
@@ -1285,7 +1286,8 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K2b(Q& value, const int i0, const int i_in, const double w, const double vp){
-    if (vertex1[spin].Ir()) {value = 0.;} // left part of multi-loop contribution does not contribute to K2 class
+    if (false and vertex1[spin].Ir()) {value = 0.;} // left part of multi-loop contribution does not contribute to K2 class
+                                                    // don't do this; this is a bug for the Parquet solver
     else {
         for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add a sum over form factors here, as well. (the integrand class will need to take another index.)
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
