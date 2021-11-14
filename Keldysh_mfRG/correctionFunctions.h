@@ -649,6 +649,7 @@ auto asymp_corrections_bubble(K_class k,
                 return 0.;
         }
 
+#ifndef DEBUG_SYMMETRIES
         // convert the input external Keldysh index from reduced set to [0,...,15]
         switch (k) {
             case k1:
@@ -684,6 +685,9 @@ auto asymp_corrections_bubble(K_class k,
                 break;
             default:;
         }
+#else
+    i0 = i0_in;
+#endif
 
         // determine the Keldysh indices of left and right vertex
         indices = indices_sum(i0, i2, channel);

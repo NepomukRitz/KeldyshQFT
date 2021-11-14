@@ -594,6 +594,7 @@ public:
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0(const int i0_in) {
     if (KELDYSH){
+#ifndef DEBUG_SYMMETRIES
         switch (diag_class) {
             case k1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
                 switch (channel) {
@@ -616,6 +617,9 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_ind
                 break;
             default: ;
         }
+#else
+    i0 = i0_in;
+#endif
     }
     else{
         i0 = 0;
