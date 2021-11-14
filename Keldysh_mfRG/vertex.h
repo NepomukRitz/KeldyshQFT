@@ -1116,12 +1116,18 @@ template <typename Q> void fullvert<Q>::initialize(Q val) {
 }
 
 template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &vertex) {
+    /// TODO: Might need to add FrequencyGrids for crossprojections below
     this->avertex.K1.K1_set_VertexFreqGrid( vertex.avertex.K1.K1_get_VertexFreqGrid() );
     this->pvertex.K1.K1_set_VertexFreqGrid( vertex.pvertex.K1.K1_get_VertexFreqGrid() );
     this->tvertex.K1.K1_set_VertexFreqGrid( vertex.tvertex.K1.K1_get_VertexFreqGrid() );
     this->avertex.K2.K2_set_VertexFreqGrid( vertex.avertex.K2.K2_get_VertexFreqGrid() );
     this->pvertex.K2.K2_set_VertexFreqGrid( vertex.pvertex.K2.K2_get_VertexFreqGrid() );
     this->tvertex.K2.K2_set_VertexFreqGrid( vertex.tvertex.K2.K2_get_VertexFreqGrid() );
+#ifdef DEBUG_SYMMETRIES
+    this->avertex.K2b.K2_set_VertexFreqGrid( vertex.avertex.K2b.K2_get_VertexFreqGrid() );
+    this->pvertex.K2b.K2_set_VertexFreqGrid( vertex.pvertex.K2b.K2_get_VertexFreqGrid() );
+    this->tvertex.K2b.K2_set_VertexFreqGrid( vertex.tvertex.K2b.K2_get_VertexFreqGrid() );
+#endif
     this->avertex.K3.K3_set_VertexFreqGrid( vertex.avertex.K3.K3_get_VertexFreqGrid() );
     this->pvertex.K3.K3_set_VertexFreqGrid( vertex.pvertex.K3.K3_get_VertexFreqGrid() );
     this->tvertex.K3.K3_set_VertexFreqGrid( vertex.tvertex.K3.K3_get_VertexFreqGrid() );
