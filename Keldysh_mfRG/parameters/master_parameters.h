@@ -11,7 +11,7 @@
 
 //#define MULTIDIM_MINIMIZATION
 
-#define DEBUG_SYMMETRIES
+#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = true;
 
@@ -25,7 +25,7 @@ constexpr bool VERBOSE = true;
 #endif
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
-#define BOSONIC_PARAM_FOR_K3 // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
+//#define BOSONIC_PARAM_FOR_K3 // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
 #ifdef BOSONIC_PARAM_FOR_K3
 #define INTERPOL2D_FOR_K3
 #endif
@@ -37,7 +37,7 @@ constexpr bool VERBOSE = true;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 3
 
 constexpr int N_LOOPS = 3;  // Number of loops
 #define SELF_ENERGY_FLOW_CORRECTIONS
@@ -136,7 +136,7 @@ constexpr double epsODE = 1e-4;
 #define ODEsolver 1
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_ini = 5.8;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 0.0;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
@@ -187,9 +187,19 @@ constexpr bool PARTICLE_HOLE_SYMMETRY = false;
 
 
 #ifdef KELDYSH_FORMALISM
+#ifdef DEBUG_SYMMETRIES
+const std::string data_dir = "../Data_KF_debug/";
+
+#else
 const std::string data_dir = "../Data_KF/";
+#endif
+#else
+#ifdef DEBUG_SYMMETRIES
+const std::string data_dir = "../Data_MF_debug/";
+
 #else
 const std::string data_dir = "../Data_MF/";
+#endif
 #endif
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

@@ -10,6 +10,7 @@
 #include "tests/test_interpolation.h"
 #include "utilities/util.h"
 #include "tests/saveIntegrand.h"
+#include "tests/test_symmetries.h"
 
 
 std::string generate_filename() {
@@ -97,11 +98,12 @@ auto main() -> int {
     //test_PT4(0.0, true);
     //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
     //findBestWscale4K1<state_datatype>(1.8);
-    //compute_non_symmetric_diags(1.8, true, 1, true);
+    //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string job = "";
-    n_loop_flow(data_dir+filename+job,true);
+    //n_loop_flow(data_dir+filename+job,true);
+    test_symmetries(1.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
 
