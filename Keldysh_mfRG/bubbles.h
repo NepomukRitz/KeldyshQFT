@@ -213,7 +213,7 @@ public:
                        const bool diff_in)
                        :g(G_in), s(S_in), diff(diff_in),
                        Helper_Bubble(G_in, S_in, diff),
-                       fermionic_grid('f', 1, G_in.Lambda){
+                       fermionic_grid(G_in.selfenergy.frequencies){
         if (diff) {print("Precalculating a differentiated bubble...", true);}
         else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();
@@ -360,10 +360,10 @@ int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) const {
 template<typename Q>
 void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
                                                             Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
-    double v1 = fermionic_grid.get_ws(iv1);
-    double v2 = fermionic_grid.get_ws(iv2);
+    const double v1 = fermionic_grid.get_ws(iv1);
+    const double v2 = fermionic_grid.get_ws(iv2);
 
-    vec<comp> values_of_bubble (glb_N_transfer);
+    vec<comp> values_of_bubble (n_in);
     compute_internal_bubble(iK, v1, v2, Swave_Bubble_Calculator, values_of_bubble);
 
     for (int i_in = 0; i_in < n_in; ++i_in) {
