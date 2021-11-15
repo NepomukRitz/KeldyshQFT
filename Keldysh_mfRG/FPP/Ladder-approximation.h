@@ -137,19 +137,19 @@ comp perform_Pi0_vpp_integral (double w, double q, int i, int j, char chan, int 
         */
     }
     else if (inttypev == 2) {
-        vec<paid::Domain<1>> domains;
-        domains.reserve(Lambdas.size());
         vec<paid::PAIDInput<1, Integrand_Pi0_vpp<comp>,int>> ints_paid;
-        ints_paid.reserve(Lambdas.size());
         paid::PAIDConfig config;
         for (int idx = 0; idx<Lambdas.size()-1; ++idx){
-            paid::Domain<1> d({Lambdas[idx]},{Lambdas[idx+1]});
-            domains.push_back(d);
-            paid::PAIDInput<1,Integrand_Pi0_vpp<comp>,int> paid_integrand{d,integrand_Pi0_vpp,0};
-            ints_paid.push_back(paid_integrand);
+            paid::Domain<1> d_pos({Lambdas[idx]},{Lambdas[idx+1]});
+            paid::Domain<1> d_neg({-Lambdas[idx+1]},{-Lambdas[idx]});
+
+            paid::PAIDInput<1,Integrand_Pi0_vpp<comp>,int> paid_integrand_pos{d_pos,integrand_Pi0_vpp,0};
+            ints_paid.push_back(paid_integrand_pos);
+            paid::PAIDInput<1,Integrand_Pi0_vpp<comp>,int> paid_integrand_neg{d_neg,integrand_Pi0_vpp,0};
+            ints_paid.push_back(paid_integrand_neg);
         }
         paid::PAID<1,Integrand_Pi0_vpp<comp>,comp,int,double> integral_Pi0_vpp_paid(config);
-        output = 1./(2.*M_PI)*integral_Pi0_vpp_paid.solve(ints_paid)[0];
+        output = prefactor*1./(2.*M_PI)*integral_Pi0_vpp_paid.solve(ints_paid)[0];
     }
     else {
         std::cout << "wrong integral type in v-integral\n";
@@ -213,7 +213,7 @@ public:
      * Call operator:
      * @param mu
      */
-    auto mu(double mu) const -> Q {
+    auto operator() (double mu) const -> Q {
         double output;
         double mu_inter = glb_mud;
         glb_mud = mu;
@@ -239,54 +239,13 @@ public:
     //void save_integrand();
 };
 
-double find_root_newton (double w, double q, char chan, int inttypek, int inttypev, double start, double dx, int imax, double prec) {
-    double xnew = start;
-    double fold, fold_plus, df;
-    double xold;
-
-    F_mu<double> f(w,q,chan,inttypek, inttypev);
-
-    for (int i = 1; i < imax + 1; ++i){
-        xold = xnew;
-        fold = f.mu(xold);
-        while (std::abs(fold)>1/prec){ // avoid infinite f
-            xold = xold + dx;
-            fold = f.mu(xold);
-        }
-        /*while (xold>1) { // physical values below 1
-            xold = xold - dx;
-            fold = f.mu(xold);
-        }*/
-        fold_plus = f.mu(xold+dx);
-        df = (fold_plus-fold)/dx;
-
-        //std::cout << "j = " << i << ", x = " << xold << ", f = " << fold << ", fold_plus = " << fold_plus << ", df = " <<   df  << "\n";
-
-        if (std::abs(df) < prec){ // stop if the denominator is too small
-            break;
-            //std::cout << "denominator too small \n";
-        }
-
-        xnew = xold - fold/df; // Newton's computation
-        if (xnew > 1) {
-            xnew = xold + std::abs(xnew-xold)/10.;
-        }
-
-        if (std::abs(xnew-xold)<dx) { // stop when result is within tolerance
-            break;
-            //std::cout << "result within tolerance \n";
-        }
-
-    }
-    return xnew;
-}
-
 double find_root_ladder (double w, double q, char chan, int inttypek, int inttypev, double md_start, double ainv, double dmu, int imax, double prec){
     glb_muc = 1.0;
     glb_ainv = ainv;
 
     double mud;
-    mud = find_root_newton(w,q,chan,inttypek, inttypev, md_start, dmu,imax,prec);
+    F_mu<double> f(w, q, chan, inttypek, inttypev);
+    mud = find_root_newton<F_mu<double>>(f, md_start, dmu,imax,prec);
     return mud;
 }
 

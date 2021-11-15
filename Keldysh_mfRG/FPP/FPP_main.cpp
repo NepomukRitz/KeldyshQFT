@@ -532,8 +532,8 @@ int main() {
     //std::cout << "a^{-1} = " << glb_ainv << ": mu_fRG = " << mufRG1 << ", mu_ladder = " << muladder1 << "\n";
     //std::cout << "mud_i = " << mud_before << ", mud_f = " << glb_mud << "\n";
 
-    //fRG_p_list (1e4, 1e-10, 1,0, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 101);
-    //ladder_p_list (1e4, 1e-10, 1,0,-2*sqrt(2), 2*sqrt(2), -10.0, 1e-10, 100, 1e-16, 301);
+    fRG_p_list(0,-2*sqrt(2),2*sqrt(2),-10.0,0.5,100,1e-10,101);
+    ladder_list('p',0,1,-2*sqrt(2),2*sqrt(2),-10.0,1e-10,100,1e-16,301);
     // fRG_p_list (1e4, 1e-10, 1,1, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 11);
 
     glb_muc = 1.0;
@@ -796,6 +796,18 @@ int main() {
     get_time(dt);
 
     dt = get_time();
+    gamma_p = ladder_K1r(0.,0.,'p',1,2);
+    gamma_a = ladder_K1r(0.,0.,'a',1,2);
+    Gamma0 = -gint();
+    Gamma = ladder_full(0.,0.,1,2);
+    std::cout << "ladder with numerical bubble PAID integral:\n";
+    std::cout << "K1_a = " << gamma_a << "\n";
+    std::cout << "K1_p = " << gamma_p << "\n";
+    std::cout << "Gamma0 = " << Gamma0 << "\n";
+    std::cout << "K1 = " << Gamma << "\n";
+    get_time(dt);
+
+    dt = get_time();
     gamma_p = fRG_solve_K1r(0.,0.,'p',0);
     gamma_a = fRG_solve_K1r(0.,0.,'a',0);
     Gamma0 = -gint();
@@ -818,6 +830,20 @@ int main() {
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
     get_time(dt);
+
+    dt = get_time();
+    integral_bubble_w_vpp_list_PAID(0, 1, 'p', 10, 10, 10, 201, 201, 6);
+    get_time(dt);
+    /*
+    dt = get_time();
+    integral_bubble_w_vpp_list_integrator(0, 1, 1,'p', 10, 10, 10, 201, 201, 6);
+    get_time(dt);
+
+    dt = get_time();
+    integral_bubble_w_vpp_list_integrator(0, 1, 0,'p', 10, 10, 10, 201, 201, 6);
+    get_time(dt);
+    */
+
     // set REG = 3 for this
     /*
     dt = get_time();

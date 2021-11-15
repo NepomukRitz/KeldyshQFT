@@ -20,7 +20,7 @@
 #include "../integrator/integrator.h"
 #include "../paid-integrator/paid.hpp"
 #include "../parameters/master_parameters.h"
-//#include "../propagator.h"
+#include "../propagator.h"
 #include "../utilities/util.h"
 
 // PARAMETERS
@@ -55,6 +55,37 @@ int composite_index_4 (int i1, int i2, int i3, int i4, int n2, int n3, int n4){
 int composite_index_5 (int i1, int i2, int i3, int i4, int i5, int n2, int n3, int n4, int n5){
     return i1*n2*n3*n4*n5 + i2*n3*n4*n5 + i3*n4*n5 + i4*n5 + i5;
 }
+
+// BUBBLE TRANSFORMATION
+// =============================================
+struct Pi_natural {
+    double prefactor, v1, v2;
+};
+
+Pi_natural transform_to_natural(double w, double vpp, char chan) {
+    Pi_natural pi_natural;
+
+    if (chan == 'a') {
+        pi_natural.prefactor = 1.;
+        pi_natural.v1 = vpp + w / 2.;
+        pi_natural.v2 = vpp - w / 2.;
+    } else if (chan == 'p') {
+        pi_natural.prefactor = 0.5;
+        pi_natural.v1 = w / 2. + vpp;
+        pi_natural.v2 = w / 2. - vpp;
+    } else if (chan == 't') {
+        pi_natural.prefactor = -1.;
+        pi_natural.v1 = vpp + w / 2.;
+        pi_natural.v2 = vpp - w / 2.;
+    } else {
+        pi_natural.prefactor = 0.;
+        pi_natural.v1 = 0.;
+        pi_natural.v2 = 0.;
+        std::cout << "wrong channel\n";
+    }
+    return pi_natural;
+}
+
 
 // BARE GREEN'S FUNCTION ETC.
 // =============================================
@@ -282,33 +313,10 @@ comp exact_bare_bubble_v1v2 (double v1, double v2, double q, int i, int j){
 }
 
 comp exact_bare_bubble (double w, double vpp, double q, int i, int j, char r){
-
-    double prefactor;
-    double v1;
-    double v2;
-
-    if (r == 'a') {
-        prefactor = 1.;
-        v1 = vpp + w/2;
-        v2 = vpp - w/2;
-    }
-    else if (r == 'p') {
-        prefactor = 0.5;
-        v1 = w / 2 + vpp;
-        v2 = w / 2 - vpp;
-    }
-    else if (r == 't') {
-        prefactor = -1.;
-        v1 = vpp + w / 2;
-        v2 = vpp - w / 2;
-    }
-    else {
-        prefactor = 0.;
-        v1 = 0.;
-        v2 = 0.;
-        std::cout << "wrong channel\n";
-    }
-
+    Pi_natural pi_frequencies = transform_to_natural(w,vpp,r);
+    double prefactor = pi_frequencies.prefactor;
+    double v1 = pi_frequencies.v1;
+    double v2 = pi_frequencies.v2;
     return prefactor*exact_bare_bubble_v1v2 (v1, v2, q, i, j);
 }
 
@@ -319,6 +327,7 @@ void print_exact_bubble (double w, double vpp, double q, int i, int j, char r){
     std::cout << "The exact bubble is " << real_output_value << " + i " << imag_output_value << "\n";
 }
 
+/*
 void integral_bubble_w_vpp_list_exact (int i, int j, char r, double wmax, double vppmax, double qmax, int nvpp, int nw, int nq) {
     vec<double> vpps(nvpp);
     vec<double> ws(nw);
@@ -360,6 +369,7 @@ void integral_bubble_w_vpp_list_exact (int i, int j, char r, double wmax, double
                    {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
                    {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
 }
+ */
 
 // BARE INTERACTION
 // ==============================
@@ -1046,6 +1056,10 @@ void list_bubble_int_tkpp (double qmax, double vmax, int inttype, double mudmin,
 
 comp perform_integral_Pi0_kpp (double v1, double v2, double q, int i, int j, int inttype){
 
+    if (inttype == 0) {
+        return exact_bare_bubble_v1v2(v1,v2,q,i,j);
+    }
+
     comp integral, int01, int02, int03, int04, int05; //int06, int07, int08; //, int04, int05, int06, int07, int08, int09, int10, int11, int12, int13, int14, int15;
 
     double eps = 1e-10;
@@ -1361,27 +1375,10 @@ comp perform_integral_Pi0_2D (double v1, double v2, double q, int i, int j){
 // general further steps
 
 comp perform_integral_Pi0_kpp_chan (double w, double vpp, double q, int i, int j, int inttype, char chan) {
-    double prefactor, v1, v2;
-
-    if (chan == 'a') {
-        prefactor = 1.;
-        v1 = vpp + w / 2.;
-        v2 = vpp - w / 2.;
-    } else if (chan == 'p') {
-        prefactor = 0.5;
-        v1 = w / 2. + vpp;
-        v2 = w / 2. - vpp;
-    } else if (chan == 't') {
-        prefactor = -1.;
-        v1 = vpp + w / 2.;
-        v2 = vpp - w / 2.;
-    } else {
-        prefactor = 0.;
-        v1 = 0.;
-        v2 = 0.;
-        std::cout << "wrong channel\n";
-    }
-
+    Pi_natural pi_frequencies = transform_to_natural(w,vpp,chan);
+    double prefactor = pi_frequencies.prefactor;
+    double v1 = pi_frequencies.v1;
+    double v2 = pi_frequencies.v2;
     return prefactor * perform_integral_Pi0_kpp(v1, v2, q, i, j, inttype);
 }
 
@@ -1413,7 +1410,14 @@ void integral_bubble_w_vpp_list_integrator (int i, int j, int inttype, char chan
         }
     }
 
-    std::string filename = "../Data/numInt_bare_bubble";
+    std::string filename = "../Data/";
+    if (inttype == 0){
+        filename += "exact_";
+    }
+    else {
+        filename += "numInt_";
+    }
+    filename += "bare_bubble";
     filename += "_";
     filename += std::to_string(i);
     filename += std::to_string(j);
@@ -1427,6 +1431,115 @@ void integral_bubble_w_vpp_list_integrator (int i, int j, int inttype, char chan
                    {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
 
 }
+
+void integral_bubble_w_vpp_list_PAID (int i, int j, char chan, double wmax, double vppmax, double qmax, int nvpp, int nw, int nq) {
+    vec<double> vpps(nvpp);
+    vec<double> ws(nw);
+    vec<double> qs(nq);
+    vec<double> Pi_int_Re(nvpp*nw*nq);
+    vec<double> Pi_int_Im(nvpp*nw*nq);
+    comp result_integral;
+
+    double w;
+    double vpp;
+    double q;
+
+    int idx;
+
+    double v1, v2, prefactor;
+    Pi_natural pi_frequencies = transform_to_natural(w,vpp,chan);
+    prefactor = pi_frequencies.prefactor;
+
+
+    std::vector<paid::PAIDInput<2,Integrand_Pi0_2D,int>> integrals_Pi0_2D{};
+
+    paid::Domain<2> d({0.,-1.}, {1.,1.});
+    paid::PAIDConfig config;
+
+    // fill the PAID input
+    for (int wi = 0; wi < nw; ++wi) {
+        w = -wmax + 2*wi*wmax/(nw-1);
+        ws[wi] = w;
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = -vppmax + 2*vppi*vppmax/(nw-1);
+            vpps[vppi] = vpp;
+
+            pi_frequencies = transform_to_natural(w,vpp,chan);
+            v1 = pi_frequencies.v1;
+            v2 = pi_frequencies.v2;
+
+            double eps = 1e-10;
+            if (std::abs(v1) < eps){
+                v1 = v1 + eps;
+            }
+            if (std::abs(v2) < eps){
+                v2 = v2 + eps;
+            }
+
+            for (int qi = 0; qi < nq; ++qi) {
+                q = qi*qmax/(nq-1);
+                qs[qi] = q;
+
+                idx = composite_index_wvq (wi, vppi, nvpp, qi, nq);
+
+                Integrand_Pi0_2D integrand_Pi0_2D(v1,v2,q,i,j);
+                paid::PAIDInput<2,Integrand_Pi0_2D,int> integrand_Pi0_2D_paid{d,integrand_Pi0_2D,idx};
+
+                /*
+                paid::PAID<2,Integrand_Pi0_2D,comp,int,std::array<double,2>> integral_Pi0_2D_paid(config);
+                paid::PAIDOutput<comp, int> integrals_solution = integral_Pi0_2D_paid.solve({integrand_Pi0_2D_paid});
+
+                result_integral = prefactor*integrals_solution[idx];
+
+                Pi_int_Re[idx] = real(result_integral);
+                Pi_int_Im[idx] = imag(result_integral);
+
+                std::cout << "w = " << ws[wi] << ", vpp = " << vpps[vppi] << ", q = " << qs[qi] << ", result = " << result_integral << "\n";
+                */
+
+                integrals_Pi0_2D.push_back(integrand_Pi0_2D_paid);
+            }
+        }
+    }
+
+
+    // calculate the PAID integral
+    paid::PAID<2,Integrand_Pi0_2D,comp,int,std::array<double,2>> integral_Pi0_2D_paid(config);
+    paid::PAIDOutput<comp, int> integrals_solution = integral_Pi0_2D_paid.solve(integrals_Pi0_2D);
+
+    // write results into vectors
+    for (int wi = 0; wi < nw; ++wi) {
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            for (int qi = 0; qi < nq; ++qi) {
+
+                idx = composite_index_wvq(wi, vppi, nvpp, qi, nq);
+
+                result_integral = prefactor*integrals_solution[idx];
+
+                Pi_int_Re[idx] = real(result_integral);
+                Pi_int_Im[idx] = imag(result_integral);
+
+                std::cout << "w = " << ws[wi] << ", vpp = " << vpps[vppi] << ", q = " << qs[qi] << ", result = " << result_integral << "\n";
+
+            }
+        }
+    }
+
+    std::string filename = "../Data/numPAIDInt_bare_bubble";
+    filename += "_";
+    filename += std::to_string(i);
+    filename += std::to_string(j);
+    filename += chan;
+    filename += "_nBOS=" + std::to_string(nw)
+                + "_nFER=" + std::to_string(nvpp)
+                + "_nq=" + std::to_string(nq)
+                + ".h5";
+    write_h5_rvecs(filename,
+                   {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
+                   {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
+
+}
+
 
 /*
 template <typename Q>

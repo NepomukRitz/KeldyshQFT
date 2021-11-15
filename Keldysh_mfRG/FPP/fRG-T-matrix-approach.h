@@ -10,6 +10,7 @@
 #include "../utilities/util.h"
 #include "../ODE_solvers.h"
 #include "../grids/flow_grid.h"
+#include "zeros.h"
 
 /*
 comp rhs_test3(const comp& y, double Lambda) {
@@ -442,7 +443,7 @@ public:
      * Call operator:
      * @param mu
      */
-    auto mu(double mu) const -> Q {
+    auto operator() (double mu) const -> Q {
         double output;
         double mu_inter = glb_mud;
         glb_mud = mu;
@@ -459,58 +460,13 @@ public:
     //void save_integrand();
 };
 
-double find_root_divergence (double w, double q, int inttype, double start, double dxstart, int imax, double prec) {
-    double xnew = start;
-    double dxnew = dxstart;
-    vec<double> mus(imax);
-    vec<double> fmus(imax);
-
-    double xold, dxold;
-    double fold, fnew;
-
-    FfRG_mu<double> f(w,q, inttype);
-    //fold = f.mu(xnew);
-
-    for (int i = 1; i < imax + 1; ++i){
-        xold = xnew;
-        dxold = dxnew;
-        fold = f.mu(xold);
-        //fold = fnew
-        while (std::abs(fold)>1/prec){ // avoid infinite f
-            fold = f.mu(xold-dxold);
-        }
-        dxold = dxnew;
-        xnew = xold + dxold;
-
-        fnew = f.mu(xnew);
-        if ((abs(fnew)<prec)||(xnew > 1)||isnan(fnew)==true) {
-            xnew = xold;
-            dxnew = dxold/2.;
-        }
-        if (abs(dxnew)<prec){
-            break;
-        }
-
-        std::cout << "i = " << i << ": mu = " << xold << ", f_mu = " << fold << "\n";
-
-        mus[i] = xold;
-        fmus[i] = fold;
-    }
-    /*
-    for (int i = 0; i<imax; ++i){
-        std::cout << "i = " << i << ": mu = " << mus[i] << ", f_mu = " << fmus[i] << "\n";
-    }
-     */
-
-    return xold;
-}
-
 double find_root_fRG (double w, double q, int inttype, double md_start, double ainv, double dmu, int imax, double prec){
     glb_muc = 1.0;
     glb_ainv = ainv;
 
     double mud;
-    mud = find_root_divergence(w,q,inttype, md_start, dmu,imax,prec);
+    FfRG_mu<double> f(w,q,inttype);
+    mud = find_root_divergence<FfRG_mu<double>>(f, md_start, dmu,imax,prec);
     return mud;
 }
 
