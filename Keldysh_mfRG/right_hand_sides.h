@@ -95,6 +95,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
         if (iteration == 0) {
             write_hdf<Q>(dir_str+ "Psi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, nODE + U_NRG.size() + 1, Psi);
             write_hdf<Q>(dir_str+"dPsi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi);
+
+#ifdef DEBUG_SYMMETRIES
+            Psi.vertex.check_symmetries("Psi");
+            dPsi.vertex.check_symmetries("dPsi");
+#endif
         }
         else {
             add_hdf<Q>(dir_str+ "Psi_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, Psi);
@@ -177,6 +182,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                         write_hdf<Q>(dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_L);
                         write_hdf<Q>(dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_R);
                         write_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_T);
+#ifdef DEBUG_SYMMETRIES
+                        // dPsi_L.vertex.check_symmetries("dPsi_L"); // we don't expect these to have the full symmetry of the vertex
+                        // dPsi_R.vertex.check_symmetries("dPsi_R"); // we don't expect these to have the full symmetry of the vertex
+                        dPsi_T.vertex.check_symmetries("dPsi_T");
+#endif
                     }
                     else {
                         add_hdf<Q>(dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_L);
@@ -184,7 +194,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                         add_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_T);
 
                     }
-                     }
+                }
 
                 if (VERBOSE) print("Compute dGammaL ( ", i,"-loop): \n");
                 dGammaL_half1 = calculate_dGammaL(dGammaT, Psi.vertex, Pi);
@@ -213,9 +223,14 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                     State<Q> dPsi_C_left (dGammaC_l, dPsi.selfenergy);
                     State<Q> dPsi_C_right(dGammaC_r, dPsi.selfenergy);
                     if (iteration == 0) {
-                        write_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C);
-                        write_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C_left);
+                        write_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C);
+                        write_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C_left);
                         write_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C_right);
+#ifdef DEBUG_SYMMETRIES
+                        //dPsi_C_left.vertex.check_symmetries("dPsi_C_left");   // we don't expect these to have the full symmetry of the vertex
+                        //dPsi_C_right.vertex.check_symmetries("dPsi_C_right"); // we don't expect these to have the full symmetry of the vertex
+                        dPsi_C.vertex.check_symmetries("dPsi_C");
+#endif
                     }
                     else {
                         add_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C);

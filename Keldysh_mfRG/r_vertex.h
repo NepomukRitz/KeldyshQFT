@@ -400,6 +400,9 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
  * @tparam Q
  */
 template<typename Q> void rvert<Q>::check_symmetries(const std::string identifier, const int spin, const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing) const {
+
+    print("maximal deviation in symmetry in " + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + " (normalized by maximal absolute value of K_i)", "\n");
+
     // K1:
     rvec deviations_K1(getFlatSize(K1.get_dims()));
     for (int iK = 0; iK < nK_K1; iK++) {
@@ -420,10 +423,99 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         }
     }
 
-    print("maximal deviation in symmetry in " + identifier +"_channel" + channel + "_spin" + std::to_string(spin), "\n");
-    print("K1: \t", deviations_K1.max_norm(), "\n");
+    if ( K1.get_vec().max_norm() > 1e-30) print("K1: \t", deviations_K1.max_norm() / K1.get_vec().max_norm(), "\n");
 
-    write_h5_rvecs(data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + ".h5" ,{"K1"}, {deviations_K1});
+
+    // K2:
+    rvec deviations_K2(getFlatSize(K2.get_dims()));
+    for (int iK = 0; iK < nK_K2; iK++) {
+        for (int iw = 0; iw < nBOS2; iw++) {
+            for (int iv = 0; iv < nFER2; iv++) {
+                for (int i_in = 0; i_in < n_in; i_in++) {
+                    double w, v;
+                    K2.K2_get_freqs_w(w, v, iw, iv);
+                    VertexInput input(iK, w, v, 0., i_in, spin, channel);
+                    IndicesSymmetryTransformations indices(input, channel);
+                    Q value_direct = read_symmetryreduced_rvert<k2>(indices, *this);
+
+                    rvert<Q> readMe = symmetry_reduce<k2>(input, indices, rvert_this, rvert_crossing);
+                    Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+
+                    Q deviation = value_direct - value_symmet;
+                    deviations_K2[getFlatIndex(iK, iw, iv, i_in, K2.get_dims())] = std::abs(deviation);
+                }
+            }
+        }
+    }
+
+    if ( K2.get_vec().max_norm() > 1e-30) print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
+
+
+    // K2b:
+    rvec deviations_K2b(getFlatSize(K2b.get_dims()));
+    for (int iK = 0; iK < nK_K2; iK++) {
+        for (int iw = 0; iw < nBOS2; iw++) {
+            for (int iv = 0; iv < nFER2; iv++) {
+                for (int i_in = 0; i_in < n_in; i_in++) {
+                    double w, vp;
+                    K2b.K2_get_freqs_w(w, vp, iw, iv);
+                    VertexInput input(iK, w, 0., vp,  i_in, spin, channel);
+                    IndicesSymmetryTransformations indices(input, channel);
+                    Q value_direct = read_symmetryreduced_rvert<k2b>(indices, *this);
+
+                    rvert<Q> readMe = symmetry_reduce<k2b>(input, indices, rvert_this, rvert_crossing);
+                    Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+
+                    Q deviation = value_direct - value_symmet;
+                    deviations_K2b[getFlatIndex(iK, iw, iv, i_in, K2b.get_dims())] = std::abs(deviation);
+                }
+            }
+        }
+    }
+
+    if ( K2b.get_vec().max_norm() > 1e-30) print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
+
+
+    // K3:
+    rvec deviations_K3(getFlatSize(K3.get_dims()));
+    for (int iK = 0; iK < nK_K3; iK++) {
+        for (int iw = 0; iw < nBOS3; iw++) {
+            for (int iv = 0; iv < nFER3; iv++) {
+                for (int ivp = 0; ivp < nFER3; ivp++) {
+                    for (int i_in = 0; i_in < n_in; i_in++) {
+                        double w, v, vp;
+                        K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
+                        VertexInput input(iK, w, v, vp, i_in, spin, channel);
+                        IndicesSymmetryTransformations indices(input, channel);
+                        Q value_direct = read_symmetryreduced_rvert<k3>(indices, *this);
+
+                        rvert<Q> readMe = symmetry_reduce<k3>(input, indices, rvert_this, rvert_crossing);
+                        Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
+
+                        Q deviation = value_direct - value_symmet;
+                        deviations_K3[getFlatIndex(iK, iw, iv, ivp, i_in, K3.get_dims())] = std::abs(deviation);
+                    }
+                }
+            }
+        }
+    }
+
+    if ( K3.get_vec().max_norm() > 1e-30) print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
+
+
+    write_h5_rvecs(data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + ".h5" ,
+                   {
+                            "K1",
+                            "K2",
+                            "K2b",
+                            "K3"
+                            },
+                   {
+                           deviations_K1,
+                           deviations_K2,
+                           deviations_K2b,
+                           deviations_K3
+                            });
 
 }
 #endif
