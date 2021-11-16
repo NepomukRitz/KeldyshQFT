@@ -90,9 +90,9 @@ int main(int argc, char* argv[]) {
     sopt_state(state_ini, lambda);
 
 
-    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/";
-    const std::string filename  = "SOPT_test_Nq_" + std::to_string(glb_N_q) + "_T_" + std::to_string(glb_T) + "_Lambda_" + std::to_string(lambda);
-    write_hdf<comp>(directory+filename, lambda, 1, state_ini);
+    //const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/";
+    //const std::string filename  = "SOPT_test_Nq_" + std::to_string(glb_N_q) + "_T_" + std::to_string(glb_T) + "_Lambda_" + std::to_string(lambda);
+    //write_hdf<comp>(directory+filename, lambda, 1, state_ini);
 
     //return Catch::Session().run(argc, argv);
 #ifdef INTEGRATION_TESTS

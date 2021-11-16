@@ -62,8 +62,8 @@ constexpr int n_spin = 1;
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure for the Hubbard model
-constexpr int glb_N_q = 51;                                  // Number of transfer momentum points in one dimension.
-constexpr int glb_N_ff = 1;                                 // Number of form factors. Should be {1, 5, 9, 13, 19, ...} for the n-nearest neighbor interpretation
+constexpr int glb_N_q  = 11; //51;                                  // Number of transfer momentum points in one dimension.
+constexpr int glb_N_ff =  1;                                  // Number of form factors. Should be {1, 5, 9, 13, 19, ...} for the n-nearest neighbor interpretation
 
 /** Parities of form factors under the three symmetry operations of the Hubbard model dispersion:
  * ff_swap:      Swap k_x and k_x
