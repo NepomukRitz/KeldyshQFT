@@ -89,6 +89,10 @@ int main(int argc, char* argv[]) {
     state_ini.initialize();
     sopt_state(state_ini, lambda);
 
+    Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
+    auto Pi = PT_initialize_Bubble(barePropagator);
+    save_PreBubble_in_freq_space(Pi, 0);
+
 
     //const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/";
     //const std::string filename  = "SOPT_test_Nq_" + std::to_string(glb_N_q) + "_T_" + std::to_string(glb_T) + "_Lambda_" + std::to_string(lambda);
