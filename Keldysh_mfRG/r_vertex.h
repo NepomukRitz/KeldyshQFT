@@ -46,6 +46,9 @@ public:
     vertexBuffer<k2b,Q,INTERPOLATION> K2b;
 #endif
     vertexBuffer<k3,Q,INTERPOLATION> K3;
+    /// When you add a vertex buffer, also adapt:
+    /// Arithmetic operators (+, *, ...)
+    /// set_frequency_grid()
 
     rvert(const char channel_in, double Lambda)
     : channel(channel_in),
@@ -83,7 +86,11 @@ public:
     /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
     /// This version is used for a symmetric vertex
     template <K_class k>
-    const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing) const;
+    const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices,
+#ifdef DEBUG_SYMMETRIES
+                                    const rvert<Q>& rvert_this,
+#endif
+                                    const rvert<Q>& rvert_crossing) const;
 
     /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
     /// This version is used for an Asymmetric vertex
@@ -246,6 +253,8 @@ public:
         if(MAX_DIAG_CLASS>1) K3.initInterpolator(); }
     void set_initializedInterpol(const bool is_init) const {K1.initialized = is_init; K2.initialized = is_init; K3.initialized = is_init; }
 
+    void check_symmetries(std::string identifier, int spin, const rvert<Q>& rvert_this, const rvert<Q> &rvert_crossing) const;
+
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
         if (MAX_DIAG_CLASS >= 0) K1.data += rhs.K1.data;
         if (MAX_DIAG_CLASS >= 2) K2.data += rhs.K2.data;
@@ -292,7 +301,11 @@ public:
 
 template <typename Q>
 template <K_class k>
-const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing) const {
+const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices,
+#ifdef DEBUG_SYMMETRIES
+                                          const rvert<Q>& rvert_this,
+#endif
+                                          const rvert<Q>& rvert_crossing) const {
 
     Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
     indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
@@ -303,7 +316,11 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
         return rvert_crossing;
     else
         // otherwise return the calling r vertex
+#ifdef DEBUG_SYMMETRIES
+        return rvert_this;
+#else
         return (*this);
+#endif
 }
 
 template <typename Q>
@@ -377,6 +394,39 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
 #endif
 }
 
+#ifdef  DEBUG_SYMMETRIES
+/**
+ * Iterates over all vertex components and compares with the value obtained from application of the symmetry relations
+ * @tparam Q
+ */
+template<typename Q> void rvert<Q>::check_symmetries(const std::string identifier, const int spin, const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing) const {
+    // K1:
+    rvec deviations_K1(getFlatSize(K1.get_dims()));
+    for (int iK = 0; iK < nK_K1; iK++) {
+        for (int iw = 0; iw < nBOS; iw++) {
+            for (int i_in = 0; i_in < n_in; i_in++) {
+                double w;
+                K1.K1_get_freq_w(w, iw);
+                VertexInput input(iK, w, 0., 0., i_in, spin, channel);
+                IndicesSymmetryTransformations indices(input, channel);
+                Q value_direct = read_symmetryreduced_rvert<k1>(indices, *this);
+
+                rvert<Q> readMe = symmetry_reduce<k1>(input, indices, rvert_this, rvert_crossing);
+                Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
+
+                Q deviation = value_direct - value_symmet;
+                deviations_K1[getFlatIndex(iK, iw, i_in, K1.get_dims())] = std::abs(deviation);
+            }
+        }
+    }
+
+    print("maximal deviation in symmetry in " + identifier +"_channel" + channel + "_spin" + std::to_string(spin), "\n");
+    print("K1: \t", deviations_K1.max_norm(), "\n");
+
+    write_h5_rvecs(data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + ".h5" ,{"K1"}, {deviations_K1});
+
+}
+#endif
 
 template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 

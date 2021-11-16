@@ -219,6 +219,7 @@ public:
 
     void set_initializedInterpol(bool is_init) const;
 
+    void check_symmetries(std::string identifier, int spin, const fullvert<Q>& vertex_symred) const;
 };
 
 /** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
@@ -244,10 +245,8 @@ private:
     auto left_diff_bare(VertexInput& input)  const -> Q { return vertex.left_diff_bare(input); }
     auto right_diff_bare(VertexInput& input) const -> Q { return vertex.right_diff_bare(input); }
 
-#if INTERPOLATION == 3
-    void initialize_K2_spline() { vertex.initialize_K2_spline(); };
-    void free_K2_spline() { vertex.free_K2_spline(); };
-#endif
+    void check_symmetries(const std::string identifier, const int spin, const fullvert<Q>& vertex_symred) const {vertex.check_symmetries(identifier, spin, vertex_symred);}
+
 public:
     auto operator+= (const symmetric<Q>& vertex1) -> symmetric<Q> {
         this->vertex += vertex1.vertex;
@@ -318,10 +317,8 @@ private:
     auto left_diff_bare(VertexInput& input)  const -> Q { return vertex_half1.left_diff_bare(input, vertex_half2); }
     auto right_diff_bare(VertexInput& input) const -> Q { return vertex_half1.right_diff_bare(input, vertex_half2); }
 
-#if INTERPOLATION == 3
-    void initialize_K2_spline() { vertex_half1.initialize_K2_spline(); vertex_half2.initialize_K2_spline(); };
-    void free_K2_spline() { vertex_half1.free_K2_spline(); vertex_half2.free_K2_spline(); };
-#endif
+    void check_symmetries(const std::string identifier, const int spin, const fullvert<Q>& vertex_symred) const {vertex_half1.check_symmetries(identifier, spin, vertex_symred);}
+
 public:
     auto operator+= (const non_symmetric<Q>& vertex1) -> non_symmetric<Q> {
         this->vertex += vertex1.vertex;
@@ -414,6 +411,8 @@ private:
     auto right_same_bare(VertexInput& input) const -> Q { return vertex.right_same_bare(input); }
     auto left_diff_bare(VertexInput& input)  const -> Q { return vertex.left_diff_bare(input); }
     auto right_diff_bare(VertexInput& input) const -> Q { return vertex.right_diff_bare(input); }
+
+    void check_symmetries(const std::string identifier, const int spin, const vertex_container<Q, symmetry_type>& vertex_symred) const {vertex.check_symmetries(identifier, spin, vertex_symred.half1());}
 
 public:
     // wrappers for other functions of fullvert
@@ -667,6 +666,11 @@ public:
 #endif
          }
 
+    void check_symmetries(std::string identifier) const {
+        for (int i = 0; i < this->size(); i++) {
+            (*this)[i].check_symmetries(identifier, i, (*this)[0]); // i is the spin index
+        }
+    }
 };
 
 /** Define Vertex as symmetric GeneralVertex */
@@ -1585,19 +1589,10 @@ void fullvert<Q>::set_initializedInterpol(const bool is_init) const {
 }
 
 
-#if INTERPOLATION == 3
-template <typename Q>
-void fullvert<Q>::initialize_K2_spline() {
-    avertex.initialize_K2_spline();
-    pvertex.initialize_K2_spline();
-    tvertex.initialize_K2_spline();
+template <typename Q> void fullvert<Q>::check_symmetries(const std::string identifier, const int spin, const fullvert<Q>& vertex_symred) const {
+    this->avertex.check_symmetries(identifier, spin, vertex_symred.avertex, vertex_symred.tvertex);
+    this->pvertex.check_symmetries(identifier, spin, vertex_symred.pvertex, vertex_symred.pvertex);
+    this->tvertex.check_symmetries(identifier, spin, vertex_symred.tvertex, vertex_symred.avertex);
 }
-template <typename Q>
-void fullvert<Q>::free_K2_spline() {
-    avertex.free_K2_spline();
-    pvertex.free_K2_spline();
-    tvertex.free_K2_spline();
-}
-#endif // INTERPOLATION
 
 #endif //KELDYSH_MFRG_VERTEX_H

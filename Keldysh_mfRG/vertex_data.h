@@ -98,6 +98,8 @@ public:
     void setvert(const Q value, const Types &... i) {data[flattenIndex(i...)] = value;
     }
 
+    auto get_dims() const {return dims;}
+
     /// Returns the vector containing the vertex data
     vec<Q> get_vec() const {return data;}
     /// Sets the data
