@@ -30,27 +30,6 @@
 template<K_class k, typename Q> class vertexDataContainer; // forward declaration
 
 
-/// Given an array xx[0..n-1], and given a value x, returns a value j such that x is between xx[j] and xx[j+1].
-/// xx must be monotonically increasing.
-inline void locate(const vec<double> xx, const size_t n, const double x, size_t &j, const size_t jl_start, const size_t ju_start)
-{
-    size_t ju, jm, jl;
-
-    //Initialize lower and upper limits.
-    jl = jl_start;
-    ju = ju_start;
-    //int ascnd = (xx[n-1] >= xx[0]); // +1 for monotonically increasing xx; -1 for decreasing xx
-
-    //If we are not yet done, compute a midpoint; and replace either the lower limit or the upper limit
-    while (ju - jl > 1) {
-        jm = (ju + jl)/2;
-        if (x >= xx[jm])
-            jl = jm;
-        else
-            ju = jm;
-    }
-    j = jl;
-}
 
 #define PARAMETRIZED_GRID
 #define FREQ_PADDING 0  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf

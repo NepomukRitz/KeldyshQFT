@@ -66,9 +66,11 @@ void T1 (IndicesSymmetryTransformations& indices){
         if (MAX_DIAG_CLASS > 1) {
             indices.v1 *= 1.;
             indices.v2 *= -1.;
-            if (!KELDYSH && !ZERO_T)
-                indices.v2 += floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2);
-            // correction due to rounding towards Matsubara frequencies
+            if (!KELDYSH && !ZERO_T){
+                double rounding_correction = signFlipCorrection_MF(indices.w);  // correction due to rounding towards Matsubara frequencies
+                indices.v2 += rounding_correction;
+                // correction due to rounding towards Matsubara frequencies
+            }
         }
     }
     else {
@@ -100,9 +102,11 @@ void T2 (IndicesSymmetryTransformations& indices){
         if (MAX_DIAG_CLASS > 1) {
             indices.v1 *= -1.;
             indices.v2 *= 1.;
-            if (!KELDYSH && !ZERO_T)
-                indices.v1 += floor2bfreq(indices.w / 2) - ceil2bfreq(indices.w / 2);
-            // correction due to rounding towards Matsubara frequencies
+            if (!KELDYSH && !ZERO_T) {
+                double rounding_correction = signFlipCorrection_MF(indices.w);  // correction due to rounding towards Matsubara frequencies
+                indices.v1 += rounding_correction;
+                // correction due to rounding towards Matsubara frequencies
+            }
         }
     }
     else {
@@ -156,7 +160,7 @@ void TC (IndicesSymmetryTransformations& indices){
         indices.v2 *= -1;
         indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
         if (!ZERO_T){// Matsubara T>0
-            double rounding_correction = floor2bfreq(indices.w/2) -  ceil2bfreq(indices.w/2);  // correction due to rounding towards Matsubara frequencies
+            double rounding_correction = signFlipCorrection_MF(indices.w);  // correction due to rounding towards Matsubara frequencies
             indices.v1 += rounding_correction;
             indices.v2 += rounding_correction;
         }
@@ -194,8 +198,7 @@ void TR (IndicesSymmetryTransformations& indices){
             indices.v1 *= -1;
             indices.v2 *= -1;
             if (!ZERO_T) { // Matsubara T>0
-                double rounding_correction = floor2bfreq(indices.w / 2) - ceil2bfreq(
-                        indices.w / 2);  // correction due to rounding towards Matsubara frequencies
+                double rounding_correction = signFlipCorrection_MF(indices.w);
                 indices.v1 += rounding_correction;
                 indices.v2 += rounding_correction;
             }

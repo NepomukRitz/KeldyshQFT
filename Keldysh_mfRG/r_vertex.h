@@ -419,6 +419,23 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
                 Q deviation = value_direct - value_symmet;
                 deviations_K1[getFlatIndex(iK, iw, i_in, K1.get_dims())] = std::abs(deviation);
+
+                if (transformations.K[k1][input.spin][input.iK] == 0) {
+                    // Check frequency symmetries
+                    IndicesSymmetryTransformations indices(iK, w, 0., 0., 0, channel, k1, 0, channel);
+                    int sign_w = sign_index(indices.w);
+                    size_t itK;
+                    locate((channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p' ? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t)), non_zero_Keldysh_K1t.size(), iK, itK, 0, non_zero_Keldysh_K1t.size());
+                    int trafo_index = freq_transformations.K1[itK][sign_w];
+                    if (trafo_index != 0){
+                        Ti(indices, trafo_index);
+                        indices.iK = itK;
+
+                        Q result_freqsymm = read_symmetryreduced_rvert<k1>(indices, *this);
+                        deviation = value_direct - result_freqsymm;
+                        deviations_K1[getFlatIndex(iK, iw, i_in, K1.get_dims())] = std::abs(deviation);
+                    }
+                }
             }
         }
     }
@@ -443,6 +460,21 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
                     Q deviation = value_direct - value_symmet;
                     deviations_K2[getFlatIndex(iK, iw, iv, i_in, K2.get_dims())] = std::abs(deviation);
+
+                    if (transformations.K[k2][input.spin][input.iK] == 0) {
+                        IndicesSymmetryTransformations indices(iK, w, v, 0., i_in, channel, k2, 0, channel);
+                        int sign_w = sign_index(w);
+                        int sign_v1 = sign_index(v);
+                        size_t itK;
+                        locate((channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p' ? non_zero_Keldysh_K2p : non_zero_Keldysh_K2t)) , non_zero_Keldysh_K2t.size(), iK, itK, 0, non_zero_Keldysh_K2t.size());
+                        int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
+                        Ti(indices, trafo_index);
+                        indices.iK = itK;
+
+                        Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
+                        deviation = value_direct - result_freqsymm;
+                        deviations_K2[getFlatIndex(iK, iw, iv, i_in, K2.get_dims())] = std::abs(deviation);
+                    }
                 }
             }
         }
@@ -494,6 +526,23 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
                         Q deviation = value_direct - value_symmet;
                         deviations_K3[getFlatIndex(iK, iw, iv, ivp, i_in, K3.get_dims())] = std::abs(deviation);
+
+                        if (transformations.K[k3][input.spin][input.iK] == 0) {
+                            IndicesSymmetryTransformations indices(iK, w, v, vp, i_in, channel, k2, 0, channel);
+                            int sign_w = sign_index(w);
+                            int sign_f = sign_index(indices.v1 + indices.v2);
+                            int sign_fp= sign_index(indices.v1 - indices.v2);
+                            size_t itK;
+                            locate(non_zero_Keldysh_K3, non_zero_Keldysh_K3.size(), iK, itK, 0, non_zero_Keldysh_K3.size());
+
+                            int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
+                            Ti(indices, trafo_index);
+                            indices.iK = itK;
+
+                            Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
+                            deviation = value_direct - result_freqsymm;
+                            deviations_K3[getFlatIndex(iK, iw, iv, ivp, i_in, K3.get_dims())] = std::abs(deviation);
+                        }
                     }
                 }
             }
@@ -1321,24 +1370,13 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                 Ti(indices, trafo_index);
                 indices.iK = itK;
 
-                int sign_w_new = freq_components.K1[itK][sign_w];
-                int itw_new;
-                if (sign_w == sign_w_new)
-                    itw_new = itw;
-                else
-                    itw_new = nw1 - 1 - itw;
                 Q result;
                 if (indices.asymmetry_transform)
-                    result = indices.prefactor * vertex_symmrelated.K1.val(itK, itw_new, 0);
+                    result = read_symmetryreduced_rvert<k1>(indices, vertex_symmrelated);
                 else
-                    result = indices.prefactor * K1.val(itK, itw_new,0);
+                    result = read_symmetryreduced_rvert<k1>(indices, *this);
 
-                if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate)
-                    K1.setvert(myconj(result), itK, itw, 0);
-                else{
-                    int i_in = 0;
-                    K1.setvert(result, itK, itw, i_in);
-                }
+                K1.setvert(result, itK, itw, 0);
             }
         }
 

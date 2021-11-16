@@ -71,6 +71,16 @@ auto round2ffreq(double w) -> double {
     return (myround((w / a - 1.) / 2.) * 2. + 1 ) * a;
 }
 
+auto signFlipCorrection_MF(const double w) -> double {
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    double correction = floor2bfreq(w * 0.5) -  ceil2bfreq(w * 0.5);
+    return correction;
+#else
+    assert(false);
+    return 0.;
+#endif
+}
+
 // Check whether there are doubly occuring frequencies
 auto is_doubleOccurencies(const rvec& freqs) -> int {
     for (int i = 0; i < freqs.size() - 1; i++){
@@ -939,6 +949,30 @@ void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function be
     w = w_tmp;
     v = v_tmp;
 #endif
+}
+
+
+/// Given an array xx[0..n-1], and given a value x, returns a value j such that x is between xx[j] and xx[j+1].
+/// xx must be monotonically increasing.
+template<typename T>
+inline void locate(const std::vector<T> xx, const size_t n, const T x, size_t &j, const size_t jl_start, const size_t ju_start)
+{
+    size_t ju, jm, jl;
+
+    //Initialize lower and upper limits.
+    jl = jl_start;
+    ju = ju_start;
+    //int ascnd = (xx[n-1] >= xx[0]); // +1 for monotonically increasing xx; -1 for decreasing xx
+
+    //If we are not yet done, compute a midpoint; and replace either the lower limit or the upper limit
+    while (ju - jl > 1) {
+        jm = (ju + jl)/2;
+        if (x >= xx[jm])
+            jl = jm;
+        else
+            ju = jm;
+    }
+    j = jl;
 }
 
 
