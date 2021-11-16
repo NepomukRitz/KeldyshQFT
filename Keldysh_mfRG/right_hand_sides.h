@@ -132,6 +132,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
             // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
             Vertex<Q> dGammaC_tbar(n_spin, Lambda);
             dGammaC_tbar.set_frequency_grid(Psi.vertex);
+            dGammaC_tbar.set_Ir(true);
 #endif
 
             for (int i = 3; i <= N_LOOPS; i++) {
@@ -208,11 +209,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 dPsi.vertex += dGammaT;
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
                 // extract central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
-                Vertex<Q> dGammaC_ap(n_spin, Lambda);                   // initialize new vertex
-                dGammaC_ap.set_frequency_grid(Psi.vertex);
-                dGammaC_ap[0].avertex() = dGammaC[0].avertex();  // copy results from calculations above
-                dGammaC_ap[0].pvertex() = dGammaC[0].pvertex();
-                dGammaC_tbar += dGammaC_ap;                      // add the i-loop contribution to the full dGammaC_tbar
+                //Vertex<Q> dGammaC_ap(n_spin, Lambda);                   // initialize new vertex
+                //dGammaC_ap.set_frequency_grid(Psi.vertex);
+                //dGammaC_ap[0].avertex() = dGammaC[0].avertex();  // copy results from calculations above
+                //dGammaC_ap[0].pvertex() = dGammaC[0].pvertex();
+                dGammaC_tbar += dGammaC;                      // add the i-loop contribution to the full dGammaC_tbar
 #endif
                 //if(vertexConvergedInLoops(dGammaT, dPsi.vertex))
                 //    break;

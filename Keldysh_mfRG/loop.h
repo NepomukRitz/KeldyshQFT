@@ -228,13 +228,13 @@ void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdva
                                      Q &factorKeldyshClosedAbove, Q &factorRetardedClosedBelow,
                                      Q &factorAdvancedClosedBelow, Q &factorKeldyshClosedBelow,
                                      double vp) const {
-    VertexInput inputRetardedClosedAbove (components[0], v, vp, v, i_in, 0, 'f');
-    VertexInput inputAdvancedClosedAbove (components[1], v, vp, v, i_in, 0, 'f');
-    VertexInput inputKeldyshClosedAbove  (components[2], v, vp, v, i_in, 0, 'f');
+    VertexInput inputRetardedClosedAbove (components[0], 0., vp, v, i_in, 0, 't');
+    VertexInput inputAdvancedClosedAbove (components[1], 0., vp, v, i_in, 0, 't');
+    VertexInput inputKeldyshClosedAbove  (components[2], 0., vp, v, i_in, 0, 't');
 
-    VertexInput inputRetardedClosedBelow (components[3], vp, v, vp, i_in, 0, 'f');
-    VertexInput inputAdvancedClosedBelow (components[4], vp, v, vp, i_in, 0, 'f');
-    VertexInput inputKeldyshClosedBelow  (components[5], vp, v, vp, i_in, 0, 'f');
+    VertexInput inputRetardedClosedBelow (components[3], 0., v, vp, i_in, 0, 't');
+    VertexInput inputAdvancedClosedBelow (components[4], 0., v, vp, i_in, 0, 't');
+    VertexInput inputKeldyshClosedBelow  (components[5], 0., v, vp, i_in, 0, 't');
 
     set_factors(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove,
                 inputRetardedClosedAbove, inputAdvancedClosedAbove, inputKeldyshClosedAbove);
@@ -255,9 +255,9 @@ void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdva
 template<typename Q>
 void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
                                      Q &factorKeldyshClosedAbove, double vp) const {
-    VertexInput inputRetardedClosedAbove (components[0], v, vp, v, i_in, 0, 'f');
-    VertexInput inputAdvancedClosedAbove (components[1], v, vp, v, i_in, 0, 'f');
-    VertexInput inputKeldyshClosedAbove  (components[2], v, vp, v, i_in, 0, 'f');
+    VertexInput inputRetardedClosedAbove (components[0], 0., vp, v, i_in, 0, 't');
+    VertexInput inputAdvancedClosedAbove (components[1], 0., vp, v, i_in, 0, 't');
+    VertexInput inputKeldyshClosedAbove  (components[2], 0., vp, v, i_in, 0, 't');
 
     set_factors(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove,
                 inputRetardedClosedAbove, inputAdvancedClosedAbove, inputKeldyshClosedAbove);
