@@ -4,7 +4,7 @@
 #include "../state.h"
 #include "test_perturbation_theory.h"
 
-#ifndef KELDYSH_FORMALISM
+#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
 /**
  * test-integrand for below function test_integrate_over_K1()
  */

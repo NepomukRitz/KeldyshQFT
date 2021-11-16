@@ -1309,7 +1309,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP) // TODO(high): Figure out type problems in matsubarasum
                     int interval_correction =  (int)(- ceil2bfreq(w/2) + floor2bfreq(w/2))/(2*M_PI*glb_T);
                     // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-                    value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2, Nmin, Nmax  + interval_correction);
+                    value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand_K2b, Nmin, Nmax  + interval_correction);
 #endif
                 }
             }

@@ -53,12 +53,17 @@ inline void locate(const vec<double> xx, const size_t n, const double x, size_t 
 }
 
 #define PARAMETRIZED_GRID
-#define FREQ_PADDING 1  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
+#define FREQ_PADDING 0  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+#define DENSEGRID
+#endif
 
+double grid_transf_lin(double w, double W_scale);
 double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
 double grid_transf_v3(double w, double W_scale);
 double grid_transf_v4(double w, double W_scale);
+double grid_transf_inv_lin(double W, double W_scale);
 double grid_transf_inv_v1(double t, double W_scale);
 double grid_transf_inv_v2(double t, double W_scale);
 double grid_transf_inv_v3(double t, double W_scale);
@@ -295,6 +300,7 @@ void FrequencyGrid::set_W_scale(double scale) {
     // Pick the grid parameters in a sensible way
     W_scale = scale;
     if (!KELDYSH && !ZERO_T){
+#ifndef DENSEGRID
         // for Matsubara T>0: pick grid such that no frequencies occur twice
         if (type == 'b') {
             W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
@@ -302,6 +308,12 @@ void FrequencyGrid::set_W_scale(double scale) {
         else {
             W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
         }
+#else
+        // for Matsubara T>0: pick grid such that no frequencies occur twice
+
+        W_scale = M_PI*glb_T;
+
+#endif
     }
 }
 /**
@@ -313,6 +325,8 @@ void FrequencyGrid::set_w_upper(double wmax) {
     w_upper = wmax; // grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
 
     if (!KELDYSH && !ZERO_T){
+#ifndef DENSEGRID
+
         // for Matsubara T>0: pick grid such that no frequencies occur twice
         if (type == 'b') {
             w_upper = std::max(round2bfreq(w_upper), glb_T * M_PI*(N_w+1));
@@ -320,6 +334,12 @@ void FrequencyGrid::set_w_upper(double wmax) {
         else {
             w_upper = std::max(round2ffreq(w_upper), glb_T * M_PI*(N_w+1));
         }
+#else
+        // for Matsubara T>0: pick grid such that no frequencies occur twice
+
+        w_upper = glb_T * M_PI*(N_w-1);
+
+#endif
     }
 
     w_lower = - w_upper;
@@ -327,8 +347,8 @@ void FrequencyGrid::set_w_upper(double wmax) {
 
 void FrequencyGrid::rescale_grid(double Lambda) {
     double scale = scale_factor(Lambda);
+    set_w_upper(scale*15);
     set_W_scale(scale);
-    set_w_upper(scale*500);
     initialize_grid();
 }
 
@@ -393,11 +413,14 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
         index = std::min(N_w - 3 - FREQ_PADDING, index);
     }
     else {
-        if (ws[index+1+FREQ_PADDING] < w_in) index++;
+        if (ws[index+1+FREQ_PADDING] < w_in and index < N_w-1)
+            index++;
+        if (ws[index+FREQ_PADDING] > w_in and index > 0)
+            index--;
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0);
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
+        //assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0);
+        //assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
 
@@ -418,14 +441,16 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
 auto FrequencyGrid::grid_transf(double w) const -> double {
     if (KELDYSH) return grid_transf_v2(w, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
-        return grid_transf_v3(w, this->W_scale);
+        if (ZERO_T) return grid_transf_v3(w, this->W_scale);
+        else return grid_transf_lin(w, this->W_scale);
+
     }
-    //else if (this->type == 'b' and this->diag_class == 1) {
-    //    return grid_transf_v2(w, this->W_scale);
-    //}
+        //else if (this->type == 'b' and this->diag_class == 1) {
+        //    return grid_transf_v2(w, this->W_scale);
+        //}
     else {
         if (ZERO_T) return grid_transf_v4(w, this->W_scale);
-        else                   return grid_transf_v1(w, this->W_scale);
+        else                   return grid_transf_lin(w, this->W_scale);
     }
 }
 
@@ -437,14 +462,15 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
 auto FrequencyGrid::grid_transf_inv(double t) const -> double {
     if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
-        return grid_transf_inv_v3(t, this->W_scale);
+        if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
+        else return grid_transf_inv_lin(t, this->W_scale);
     }
-    //else if (this->type == 'b' and this->diag_class == 1) {
-    //    return grid_transf_inv_v2(w, this->W_scale);
-    //}
+        //else if (this->type == 'b' and this->diag_class == 1) {
+        //    return grid_transf_inv_v2(w, this->W_scale);
+        //}
     else { // TODO(medium): Remove commented part?
         if (KELDYSH || ZERO_T) return grid_transf_inv_v4(t, this->W_scale);
-        else return grid_transf_inv_v1(t, this->W_scale);
+        else return grid_transf_inv_lin(t, this->W_scale);
     }
 }
 
@@ -518,7 +544,7 @@ public:
 
 
     VertexFrequencyGrid<k2>(double Lambda) : b('b', 2, Lambda),
-                                         f('f', 2, Lambda) {};
+                                             f('f', 2, Lambda) {};
 
     void rescale_grid(double Lambda) {
         b.rescale_grid(Lambda);
@@ -571,7 +597,7 @@ public:
 
 
     VertexFrequencyGrid<k3>(double Lambda) : b('b', 3, Lambda),
-                                         f('f', 3, Lambda) {};
+                                             f('f', 3, Lambda) {};
 
     void rescale_grid(double Lambda) {
         b.rescale_grid(Lambda);
