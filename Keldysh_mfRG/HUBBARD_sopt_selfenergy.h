@@ -25,8 +25,8 @@ private:
     int composite_index(int iv1, int iw_1) const;
 };
 
-auto Integrand_SE_SOPT_Hubbard::operator()(double w_a) const -> comp {
-    double v1 = v + w_a;
+auto Integrand_SE_SOPT_Hubbard::operator()(const double w_a) const -> comp {
+    const double v1 = v + w_a;
     return interpolate_lin2D<comp>(v1, w_a, prop_grid, vertex_grid,
                                    [&](int i, int j) -> comp {return integrand[composite_index(i, j)];});
 }
@@ -62,7 +62,7 @@ private:
     const double v_upper = SOPT_SE_Hubbard.frequencies.w_upper;
 
     // hybridization (needed for proper splitting of the integration domain):
-    const double Delta = (Lambda + glb_Gamma) / 2.;
+    const double Delta = (Lambda + glb_Gamma) / 2.; // TODO(medium): Is this meaningful for the Hubbard model?
 
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
     const comp prefactor = -1./(2.*M_PI*glb_i);
@@ -73,6 +73,8 @@ private:
     void compute_frequency_integrals(const vec<comp>& integrand, int iK, int iK_internal);
 
     int vertex_Keldysh_component(int iK, int iK_internal) const;
+
+    void save_integrand(const vec<comp>& integrand, int iK, int iK_internal) const;
 };
 
 void Hubbard_SE_SOPT_Computer::compute_HUBBARD_SE_SOPT() {
@@ -86,15 +88,17 @@ void Hubbard_SE_SOPT_Computer::compute_HUBBARD_SE_SOPT() {
 #endif
             vec<comp> integrand (nFER * nBOS * glb_N_transfer);
 
-            double t_integrand_start = get_time();
+            const double t_integrand_start = get_time();
 
             compute_frequency_integrands(integrand, iK, iK_internal);
 
-            double t_integrand_end = get_time();
+            const double t_integrand_end = get_time();
+
+            save_integrand(integrand, iK, iK_internal);
 
             compute_frequency_integrals(integrand, iK, iK_internal);
 
-            double t_integral_end = get_time();
+            const double t_integral_end = get_time();
 #if not defined(NDEBUG)
             print("Computing the integrand took " + std::to_string(t_integrand_end - t_integrand_start) + " s",true);
             print("Computing the integral  took " + std::to_string(t_integral_end  - t_integrand_end)   + " s",true);
@@ -106,8 +110,8 @@ void Hubbard_SE_SOPT_Computer::compute_HUBBARD_SE_SOPT() {
 void Hubbard_SE_SOPT_Computer::compute_frequency_integrands(vec<comp>& integrand,
                                                             const int iK, const int iK_internal) {
     std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
-#pragma omp parallel for schedule(dynamic)
-    for (int iv1 = 0; iv1 < nFER; ++iv1) { // loop over propagator frequencies
+//#pragma omp parallel for schedule(dynamic)
+    for (int iv1 = 0; iv1 < nFER; ++iv1) {     // loop over propagator frequencies
         for (int iw1 = 0; iw1 < nBOS; ++iw1) { // loop over vertex frequencies
             vec<comp> g_values      (glb_N_transfer);
             vec<comp> vertex_values (glb_N_transfer);
@@ -128,8 +132,8 @@ void Hubbard_SE_SOPT_Computer::compute_frequency_integrands(vec<comp>& integrand
 void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp>& vertex_values,
                                                    const int iK, const int iK_internal,
                                                    const int iv1, const int iw1) const {
+    const double v1 = barePropagator.selfenergy.frequencies.get_ws(iv1);
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
-        double v1 = barePropagator.selfenergy.frequencies.get_ws(iv1);
         switch (iK_internal) {
             case 0:
                 g_values[i_in] = barePropagator.GR(v1, i_in);
@@ -148,6 +152,8 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
 
         VertexInput input(vertex_Keldysh_component(iK, iK_internal), w1, 0., 0., i_in, 0, 'a'); // TODO: Spin sum!?
         vertex_values[i_in] = vertex_in_SOPT[0].value(input);
+
+        if (iK == 0 && iK_internal == 1 && iv1 == 120 && i_in == 0) print(vertex_values[i_in], true);
     }
 }
 
@@ -161,7 +167,7 @@ void Hubbard_SE_SOPT_Computer::compute_frequency_integrals(const vec<comp>& inte
                 (integrand, v, i_in,
                  barePropagator.selfenergy.frequencies,                              // frequency grid of propagator
                  vertex_in_SOPT[0].avertex().K1.K1_get_freqGrid());     // frequency grid of SOPT vertex
-            auto val = integrator<comp>(integrand_w, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta);
+            auto val = integrator<comp>(integrand_w, v_lower - std::abs(v), v_upper + std::abs(v), -v, 0, Delta);
             // TODO: What about asymptotic corrections?
             SOPT_SE_Hubbard.addself(iK, iv, i_in, prefactor*val);
         }
@@ -187,6 +193,17 @@ int Hubbard_SE_SOPT_Computer::vertex_Keldysh_component(const int iK, const int i
             }
         default: assert(false);
     }
+}
+
+void Hubbard_SE_SOPT_Computer::save_integrand(const vec<comp>& integrand, const int iK, const int iK_internal) const {
+    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/integrands_SE/";
+    const std::string filename  = directory + "SE_integrand_iK_" + std::to_string(iK)+ "_iK_internal_" + std::to_string(iK_internal) + ".h5";
+
+    write_h5_rvecs(filename,
+                   {"prop_freq", "vert_freq", "integrand_re", "integrand_im"},
+                   {barePropagator.selfenergy.frequencies.get_ws_vec(),
+                    vertex_in_SOPT[0].avertex().K1.K1_get_freqGrid().get_ws_vec(),
+                    integrand.real(), integrand.imag()});
 }
 
 

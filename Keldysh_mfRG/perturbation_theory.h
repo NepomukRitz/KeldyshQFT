@@ -96,7 +96,7 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
  * @param state        : State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q, class Bubble_Object>
-void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, double Lambda) {
+void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda) {
     State<Q> bareState (Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
@@ -117,16 +117,22 @@ void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, double Lambda) {
 
 // Overload of sopt_state, in case no Bubble object has been initialized yet.
 template<typename Q>
-void sopt_state(State<Q>& Psi, double Lambda) {
+void sopt_state(State<Q>& Psi, const double Lambda) {
     State<Q> bareState (Lambda);
-    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value (except currently for the Hubbard model)
 
 #if not defined(NDEBUG)
     print("Start initializing bubble object...", true);
 #endif
+
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     auto Pi = PT_initialize_Bubble(barePropagator);
+
+#if not defined(NDEBUG)
+    print("...done.", true);
+#endif
+
     sopt_state(Psi, Pi, Lambda);
 }
 
