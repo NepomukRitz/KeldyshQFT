@@ -27,8 +27,8 @@
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
-template <typename Q>
-static auto interpolate_lin1D(const double& x, const FrequencyGrid& frequencies, const std::function<Q(const int&)> val) -> Q {
+template <typename Q, typename Grid>
+static auto interpolate_lin1D(const double& x, const Grid& frequencies, const std::function<Q(const int&)> val) -> Q {
 
     int index = frequencies.fconv(x);
 
@@ -56,9 +56,9 @@ static auto interpolate_lin1D(const double& x, const FrequencyGrid& frequencies,
  *                        and integer j belongs to y
  * @return
  */
-template <typename Q>
+template <typename Q, typename Grid>
 static auto interpolate_lin2D(const double& x, const double& y,
-                                     const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
+                                     const Grid& xfrequencies, const Grid& yfrequencies,
                                      const std::function<Q(const int&, const int&)> val) -> Q {
 
     int index = xfrequencies.fconv(x);
@@ -90,9 +90,9 @@ static auto interpolate_lin2D(const double& x, const double& y,
  *                        and integer k belongs to z
  * @return
  */
-template <typename Q>
+template <typename Q, typename Grid>
 static auto interpolate_lin3D(const double& x, const double& y, const double& z,
-                                     const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
+                                     const Grid& xfrequencies, const Grid& yfrequencies, const Grid& zfrequencies,
                                      const std::function<Q(const int&, const int&, const int&)> val) -> Q {
 
     int index = xfrequencies.fconv(x);
@@ -120,8 +120,8 @@ static auto interpolate_lin3D(const double& x, const double& y, const double& z,
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
-template <typename Q>
-inline auto interpolate_lin_on_aux1D(const double& x, const FrequencyGrid& frequencies, const std::function<Q(const int&)>& val) -> Q {
+template <typename Q, typename Grid>
+inline auto interpolate_lin_on_aux1D(const double& x, const Grid& frequencies, const std::function<Q(const int&)>& val) -> Q {
 
     double t;
     int index = frequencies.fconv(t, x);
@@ -150,9 +150,9 @@ inline auto interpolate_lin_on_aux1D(const double& x, const FrequencyGrid& frequ
  *                        and integer j belongs to y
  * @return
  */
-template <typename Q>
+template <typename Q, typename Grid>
 inline auto interpolate_lin_on_aux2D(const double& x, const double& y,
-                          const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies,
+                          const Grid& xfrequencies, const Grid& yfrequencies,
                           const std::function<Q(const int&, const int&)>& val) -> Q {
 
     double t;
@@ -185,9 +185,9 @@ inline auto interpolate_lin_on_aux2D(const double& x, const double& y,
  *                        and integer k belongs to z
  * @return
  */
-template <typename Q>
+template <typename Q, typename Grid>
 inline auto interpolate_lin_on_aux3D(const double& x, const double& y, const double& z,
-                          const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
+                          const Grid& xfrequencies, const Grid& yfrequencies, const Grid& zfrequencies,
                           const std::function<Q(const int&, const int&, const int&)>& val) -> Q {
 
     double t;
@@ -215,8 +215,8 @@ inline auto interpolate_lin_on_aux3D(const double& x, const double& y, const dou
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
-template <typename Q>
-inline auto interpolate_sloppycubic1D(const double& x, const FrequencyGrid& xfrequencies, const std::function<Q(const int&)>& val) -> Q {
+template <typename Q, typename Grid>
+inline auto interpolate_sloppycubic1D(const double& x, const Grid& xfrequencies, const std::function<Q(const int&)>& val) -> Q {
 
     double t;
     int index = xfrequencies.fconv(t, x);
@@ -252,9 +252,9 @@ inline auto interpolate_sloppycubic1D(const double& x, const FrequencyGrid& xfre
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
-template <typename Q>
-inline auto interpolate_sloppycubic2D(const double x, const double y, const FrequencyGrid& xfrequencies,
-                                      const FrequencyGrid& yfrequencies, const std::function<Q(const int&, const int&)>& val) -> Q {
+template <typename Q, typename Grid>
+inline auto interpolate_sloppycubic2D(const double x, const double y, const Grid& xfrequencies,
+                                      const Grid& yfrequencies, const std::function<Q(const int&, const int&)>& val) -> Q {
 
     double t;
     int index = xfrequencies.fconv(t, x);
@@ -288,9 +288,9 @@ inline auto interpolate_sloppycubic2D(const double x, const double y, const Freq
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
-template <typename Q>
+template <typename Q, typename Grid>
 inline auto interpolate_sloppycubic3D(const double& x, const double& y, const double& z,
-                                      const FrequencyGrid& xfrequencies, const FrequencyGrid& yfrequencies, const FrequencyGrid& zfrequencies,
+                                      const Grid& xfrequencies, const Grid& yfrequencies, const Grid& zfrequencies,
                                       const std::function<Q(const int&, const int&, const int&)>& val) -> Q {
 
     double t;
