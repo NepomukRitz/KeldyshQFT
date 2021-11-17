@@ -152,6 +152,26 @@ auto indices_sum(int i0, int i2, const char channel) -> std::vector<int> {
 }
 
 
+template<char ch, typename Q, typename Vertex1, typename BubbleObj>
+Q keldyshSum(const std::function<Q(VertexInput&)>& value_vertex1, const BubbleObj& Pi, const std::function<Q(VertexInput&)>& value_vertex2, const VertexInput& input_external, const double vpp) {
+
+    std::vector<int> alphas_external = alphas(input_external.iK);
+    VertexInput input1 = input_external, input2 = input_external;
+    input1.v2 = vpp; input2.v1 = vpp;
+
+    Q result = 0;
+    for (int i = 0; i < 9; i++) {
+
+        int i2 = glb_non_zero_Keldysh_bubble[i];
+        std::vector<int> indices_vertices = indices_sum(input_external.iK, i2, ch);
+        input1.iK = indices_vertices[0];
+        input2.iK = indices_vertices[1];
+        result += value_vertex1(input1) * Pi.value(i2, input_external.w, vpp, input_external.i_in, ch) * value_vertex2(input2);
+
+    }
+
+    return result;
+}
 
 
 
