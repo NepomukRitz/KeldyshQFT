@@ -31,8 +31,8 @@ template<K_class k, typename Q> class vertexDataContainer; // forward declaratio
 
 
 
-#define PARAMETRIZED_GRID
-#define FREQ_PADDING 0  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
+//#define PARAMETRIZED_GRID
+#define FREQ_PADDING 1  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 #define DENSEGRID
 #endif
@@ -369,7 +369,7 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     size_t j;
     if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
     else {locate(ws, N_w, w_in, j, 0, N_w-1); }
-    return j-1;
+    return j-FREQ_PADDING;
 #endif
 }
 

@@ -508,7 +508,7 @@ auto vertexDataContainer<k,Q>::K2_gridtransf_inv_f(double w) const -> double {
 template<K_class k, typename Q>
 auto vertexDataContainer<k,Q>::K2_get_correction_MFfiniteT(int iw) const -> double {
     if (not KELDYSH and not ZERO_T)
-        return floor2bfreq(frequencies_K2.b.get_ws(iw) / 2) - ceil2bfreq(frequencies_K2.b.get_ws(iw) / 2);
+        return signFlipCorrection_MF(frequencies_K2.b.get_ws(iw));
     else return 0.;
 }
 
