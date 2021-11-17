@@ -253,6 +253,15 @@ public:
         if(MAX_DIAG_CLASS>1) K3.initInterpolator(); }
     void set_initializedInterpol(const bool is_init) const {K1.initialized = is_init; K2.initialized = is_init; K3.initialized = is_init; }
 
+    /**
+     * This function is defined if the flag DEBUG_SYMMETRIES is defined.
+     * It iterates over all vertex entries and checks whether symmetry relations are fulfilled.
+     * Deviations from the symmetry relation are stored in a file.
+     * @param identifier        string to distinguish the filename of the stored
+     * @param spin              spin component (currently 0 or 1)
+     * @param rvert_this        rvert of the related vertex with spin 0 (contains symmetry reduced sector of vertex)
+     * @param rvert_crossing    rvert that is related to rvert_this via crossing symmetry
+     */
     void check_symmetries(std::string identifier, int spin, const rvert<Q>& rvert_this, const rvert<Q> &rvert_crossing) const;
 
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
