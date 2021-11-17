@@ -67,4 +67,30 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
 }
 
 
+TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[grid functions]") {
+    std::vector<std::function<double(double, double)>> funcs = {grid_transf_lin, grid_transf_v1, grid_transf_v2, grid_transf_v3, grid_transf_v4};
+    std::vector<std::function<double(double, double)>> inver = {grid_transf_inv_lin, grid_transf_inv_v1, grid_transf_inv_v2, grid_transf_inv_v3, grid_transf_inv_v4};
+    std::vector<double> w_values = {-1e5, -1e3, -1e2, -1., -1e-5, 0., 1e-5, 1, 1e2, 1e3, 1e5};
+
+    const double W_scale = 1.;
+
+    vec<double>  deviations(w_values.size() * funcs.size());
+    vec<double> tdeviations(w_values.size() * funcs.size());
+    for (int i = 0; i < funcs.size(); i++) {
+        for (int j = 0; j < w_values.size(); j++) {
+
+            double t = funcs[i](w_values[j], W_scale);
+            double  deviation = w_values[j] - inver[i](t, W_scale);
+            double tdeviation = t - funcs[i]( inver[i](t, W_scale), W_scale);
+            deviations[i * w_values.size() + j] = deviation;
+            tdeviations[i * w_values.size() + j]=tdeviation;
+        }
+    }
+
+    const double tolerance = 1e-10;
+
+    REQUIRE(tdeviations.max_norm() < tolerance);
+
+}
+
 #endif //KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H
