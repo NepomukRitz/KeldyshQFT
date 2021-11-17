@@ -418,7 +418,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
 
                 Q deviation = value_direct - value_symmet;
-                deviations_K1[getFlatIndex(iK, iw, i_in, K1.get_dims())] = std::abs(deviation);
+                deviations_K1[getFlatIndex(iK, iw+FREQ_PADDING, i_in, K1.get_dims())] = std::abs(deviation);
 
                 if (transformations.K[k1][input.spin][input.iK] == 0) {
                     // Check frequency symmetries
@@ -473,7 +473,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
                         Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
                         deviation = value_direct - result_freqsymm;
-                        deviations_K2[getFlatIndex(iK, iw, iv, i_in, K2.get_dims())] = std::abs(deviation);
+                        deviations_K2[getFlatIndex(iK, iw+FREQ_PADDING, iv+FREQ_PADDING, i_in, K2.get_dims())] = std::abs(deviation);
                     }
                 }
             }
@@ -499,7 +499,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
 
                     Q deviation = value_direct - value_symmet;
-                    deviations_K2b[getFlatIndex(iK, iw, iv, i_in, K2b.get_dims())] = std::abs(deviation);
+                    deviations_K2b[getFlatIndex(iK, iw+FREQ_PADDING, iv+FREQ_PADDING, i_in, K2b.get_dims())] = std::abs(deviation);
                 }
             }
         }
@@ -525,7 +525,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                         Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
 
                         Q deviation = value_direct - value_symmet;
-                        deviations_K3[getFlatIndex(iK, iw, iv, ivp, i_in, K3.get_dims())] = std::abs(deviation);
+                        deviations_K3[getFlatIndex(iK, iw+FREQ_PADDING, iv+FREQ_PADDING, ivp+FREQ_PADDING, i_in, K3.get_dims())] = std::abs(deviation);
 
                         if (transformations.K[k3][input.spin][input.iK] == 0) {
                             IndicesSymmetryTransformations indices(iK, w, v, vp, i_in, channel, k2, 0, channel);
