@@ -808,25 +808,27 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
         double wl, wu;
         switch (diag_class) {
             case 1:
-                wl = vertex1[0].avertex().K1_get_wlower() * 2.;
-                wu = vertex1[0].avertex().K1_get_wupper() * 2.;
+                wl = vertex1[0].avertex().K1.K1_get_wlower() * 2.;
+                wu = vertex1[0].avertex().K1.K1_get_wupper() * 2.;
                 break;
             case 2:
-                wl = vertex1[0].avertex().K2_get_wlower_f();
-                wu = vertex1[0].avertex().K2_get_wupper_f();
+                wl = vertex1[0].avertex().K2.K2_get_wlower_f();
+                wu = vertex1[0].avertex().K2.K2_get_wupper_f();
                 break;
             case 3:
-                wl = vertex1[0].avertex().K3_get_wlower_f();
-                wu = vertex1[0].avertex().K3_get_wupper_f();
+                wl = vertex1[0].avertex().K3.K3_get_wlower_f();
+                wu = vertex1[0].avertex().K3.K3_get_wupper_f();
                 break;
             default:;
         }
         double vpp = wl + i * (wu - wl) / (npoints - 1);
-        if (diag_class == 1) { vpp = vertex1[0].avertex().K1_get_freq_w(vpp, i); }
+        if (diag_class == 1) {vertex1[0].avertex().K1.K1_get_freq_w(vpp, i);}
         freqs[i] = vpp;
     }
 
-    save_integrand(freqs, "");
+    std::string filename_prefix = "";
+    if (HUBBARD_MODEL) filename_prefix = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/integrands/";
+    save_integrand(freqs, filename_prefix);
 
 }
 
@@ -844,13 +846,16 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
 
     get_integrand_vals(freqs, integrand_re, integrand_im, Pival_re, Pival_im);
 
-    std::string filename = data_dir+filename_prefix+"integrand_K" + std::to_string(diag_class);
+    std::string filename = "";
+    if (not HUBBARD_MODEL) filename += data_dir;
+    filename += filename_prefix+"integrand_K" + std::to_string(diag_class);
     filename += channel;
     filename += "_i0=" + std::to_string(i0)
                 + "_i2=" + std::to_string(i2)
                 + "_w=" + std::to_string(w);
     if (diag_class == 2) {filename += "_v=" + std::to_string(v);}
     else if (diag_class == 3) {filename += "_vp=" + std::to_string(vp);}
+    filename += "_i_in=" + std::to_string(i_in);
     filename += + ".h5";
     write_h5_rvecs(filename,
                    {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
@@ -1155,6 +1160,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
+#ifndef NDEBUG
+        //if ((std::abs(w) < 0.001) && (i_in == 0) && (channel != 't') && HUBBARD_MODEL) integrand_K1.save_integrand();
+#endif // NDEBUG
         if (KELDYSH){
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
         }
