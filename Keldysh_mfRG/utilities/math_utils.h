@@ -47,7 +47,7 @@ auto floor2bfreq(double w) -> double {
     double result = floor(w / a+tol) * a;
     assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result <= w);
+    assert(result <= w + 1e-15);
     return result;
 }
 auto ceil2bfreq(double w) -> double {
@@ -56,7 +56,7 @@ auto ceil2bfreq(double w) -> double {
     double result = ceil(w / a-tol) * a;
     assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result >= w);
+    assert(result >= w - 1e-15);
     return result;
 }
 auto round2bfreq(double w) -> double {
@@ -64,7 +64,7 @@ auto round2bfreq(double w) -> double {
     double result = round2Infty(w / a) * a;
     assert(std::abs(result - w) < a); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(std::abs(result) >= std::abs(w));
+    assert(std::abs(result) >= std::abs(w) - 1e-15);
     return result;
 }
 // round (frequency/(pi*T)) to an uneven number
