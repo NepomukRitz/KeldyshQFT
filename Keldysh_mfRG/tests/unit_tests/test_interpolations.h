@@ -260,8 +260,8 @@ if (INTERPOLATION == cubic) {
     get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK1.h5",
-                   {"values", "errors"},
-                   {values, errors});
+                   {"values_re", "errors_re"},
+                   {values.real(), errors});
 
 
 
@@ -402,8 +402,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK2.h5",
-                   {"values", "errors"},
-                   {values, errors});
+                   {"values_re", "errors"},
+                   {values.real(), errors});
 
 
 
@@ -562,7 +562,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
 
     write_h5_rvecs("unittest_interpolK3.h5",
                    {"values", "errors"},
-                   {values, errors});
+                   {values.real(), errors});
 
 
 

@@ -723,7 +723,8 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 
     // Needed for finite-temperature Matsubara
     double floor2bf_w;
-    double floor2bf_inputw = floor2bfreq(input.w / 2.);
+    double floor2bf_inputw;
+    if (!KELDYSH and !ZERO_T){ floor2bf_inputw = floor2bfreq(input.w / 2.);}
     switch (channel) {
         case 'a':
             switch (input.channel) {
