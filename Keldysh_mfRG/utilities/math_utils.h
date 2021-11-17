@@ -27,15 +27,15 @@ template<typename Q> auto sign_index(Q freq) -> int {
  */
 // rounds away from zero to next Integer
 auto round2Infty(double x) -> double {
-    const double tol = 0.1;
+    const double tol = 1e-15;
     // trunc() rounds towards zero
     if (x <= 0.) return floor(x+tol);
     else return ceil(x-tol);
 }
 
-// needed for rounding to fermionic frequencies
+// needed for rounding to fermionic frequencies (rounds towards infinity)
 auto myround(double x) -> double {
-    const double tol = 0.1;
+    const double tol = 1e-15;
     if (x <= -0.5) return floor(x+tol);
     else return ceil(x-tol);
 }
@@ -44,16 +44,28 @@ auto myround(double x) -> double {
 auto floor2bfreq(double w) -> double {
     const double tol = 0.1;
     double a = (2. * M_PI * glb_T);
-    return floor(w / a+tol) * a;
+    double result = floor(w / a+tol) * a;
+    assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
+    assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
+    assert(result <= w);
+    return result;
 }
 auto ceil2bfreq(double w) -> double {
     double a = (2. * M_PI * glb_T);
     const double tol = 0.1;
-    return ceil(w / a-tol) * a;
+    double result = ceil(w / a-tol) * a;
+    assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
+    assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
+    assert(result >= w);
+    return result;
 }
 auto round2bfreq(double w) -> double {
     double a = (2. * M_PI * glb_T);
-    return round2Infty(w / a) * a;
+    double result = round2Infty(w / a) * a;
+    assert(std::abs(result - w) < a); // make sure that result and w are less than (2*pi*T) apart
+    assert((int)(result / a * 2 + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
+    assert(std::abs(result) >= std::abs(w));
+    return result;
 }
 // round (frequency/(pi*T)) to an uneven number
 auto floor2ffreq(double w) -> double {
@@ -67,8 +79,12 @@ auto ceil2ffreq(double w) -> double {
     return (ceil((w / a - 1.-tol) / 2.) * 2. + 1 ) * a;
 }
 auto round2ffreq(double w) -> double {
-    double a = (M_PI * glb_T);
-    return (myround((w / a - 1.) / 2.) * 2. + 1 ) * a;
+    const double a = (M_PI * glb_T);
+    double result = (myround((w / a - 1.) / 2.) * 2. + 1 ) * a;
+    assert(std::abs(result - w) < a*2); // make sure that result and w are less than (2*pi*T) apart
+    assert((int)((result / a - 1.) + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T) apart
+    assert(std::abs(result) >= std::abs(w));
+    return result;
 }
 
 auto signFlipCorrection_MF(const double w) -> double {
