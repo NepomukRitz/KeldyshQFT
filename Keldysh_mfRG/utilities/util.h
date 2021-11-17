@@ -250,6 +250,15 @@ void check_input() {
 #ifdef BOSONIC_PARAM_FOR_K3
     assert(nBOS3 == nFER3); // Frequency grids must be equal in all three dimensions
 #endif
+
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    assert(nBOS %2 == 1);
+    assert(nBOS2%2 == 1);
+    assert(nBOS3%2 == 1);
+    assert(nFER %2 == 0);
+    assert(nFER2%2 == 0);
+    assert(nFER3%2 == 0);
+#endif
 }
 
 
