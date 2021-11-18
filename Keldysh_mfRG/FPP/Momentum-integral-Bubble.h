@@ -22,6 +22,7 @@
 #include "../parameters/master_parameters.h"
 #include "../propagator.h"
 #include "../utilities/util.h"
+#include "FPP_grids.hpp"
 
 // PARAMETERS
 // =============================================
@@ -327,50 +328,6 @@ void print_exact_bubble (double w, double vpp, double q, int i, int j, char r){
     std::cout << "The exact bubble is " << real_output_value << " + i " << imag_output_value << "\n";
 }
 
-/*
-void integral_bubble_w_vpp_list_exact (int i, int j, char r, double wmax, double vppmax, double qmax, int nvpp, int nw, int nq) {
-    vec<double> vpps(nvpp);
-    vec<double> ws(nw);
-    vec<double> qs(nq);
-    vec<double> Pi_int_Re(nvpp*nw*nq);
-    vec<double> Pi_int_Im(nvpp*nw*nq);
-    comp result_integral;
-    double w;
-    double vpp;
-    double q;
-
-    for (int wi = 0; wi < nw; ++wi) {
-        w = -wmax + 2*wi*wmax/(nw-1);
-        ws[wi] = w;
-        for (int vppi = 0; vppi < nvpp; ++vppi) {
-            vpp = -vppmax + 2*vppi*vppmax/(nvpp-1);
-            vpps[vppi] = vpp;
-            for (int qi = 0; qi < nq; ++qi) {
-                q = qi*qmax/(nq-1);
-                qs[qi] = q;
-                result_integral = exact_bare_bubble(w,vpp,q,i,j,r);
-                Pi_int_Re[composite_index_wvq(wi, vppi, nvpp, qi, nq)] = real(result_integral);
-                Pi_int_Im[composite_index_wvq(wi, vppi, nvpp, qi, nq)] = imag(result_integral);
-                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
-            }
-        }
-    }
-
-    std::string filename = "../Data/exact_bare_bubble";
-    filename += "_";
-    filename += std::to_string(i);
-    filename += std::to_string(j);
-    filename += std::string(1,r);
-    filename += "_nw=" + std::to_string(nw)
-                + "_nvpp=" + std::to_string(nvpp)
-                + "_nq=" + std::to_string(nq)
-                + ".h5";
-    write_h5_rvecs(filename,
-                   {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
-                   {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
-}
- */
-
 // BARE INTERACTION
 // ==============================
 
@@ -608,37 +565,6 @@ public:
 
     //void save_integrand();
 };
-
-/*
-void list_bubble_int_theta (double v1, double v2, double q, double kpp, char i, char j, int nx) {
-    Integrand_Pi0_theta<comp> integrand_Pi0_theta(v1, v2, q, kpp, i, j, w);
-    vec<double> xs(nx);
-    vec<double> integrands_Re(nx);
-    vec<double> integrands_Im(nx);
-    double x;
-    comp result_integrand;
-    for (int i_theta = 0; i_theta < nx; ++i_theta){
-        x = -1.0 + i_theta * 2.0/(nx-1);
-        xs[i_theta] = x;
-        result_integrand = integrand_Pi0_theta(x);
-        integrands_Re[i_theta] = real(result_integrand);
-        integrands_Im[i_theta] = imag(result_integrand);
-
-        std::cout << "x = " << x << ", integrand = " << result_integrand << "\n";
-    }
-
-
-    std::string filename = "../Data/bubble_theta_integrand";
-    filename += "_";
-    filename += i;
-    filename += j;
-    filename += "_nx=" + std::to_string(nx)
-                + ".h5";
-    write_h5_rvecs(filename,
-                   {"thetas", "integrand_bubble_Re", "integrand_bubble_Im"},
-                   {xs, integrands_Re, integrands_Im});
-}
-*/
 
 comp perform_integral_Pi0_theta (double v1, double v2, double q, double kpp, int i, int j, int inttype){
     comp result = 0.; //, int01, int02, int03, int04, int05, int06, int07;
@@ -1371,7 +1297,6 @@ comp perform_integral_Pi0_2D (double v1, double v2, double q, int i, int j){
     return integral;
 }
 
-
 // general further steps
 
 comp perform_integral_Pi0_kpp_chan (double w, double vpp, double q, int i, int j, int inttype, char chan) {
@@ -1381,13 +1306,13 @@ comp perform_integral_Pi0_kpp_chan (double w, double vpp, double q, int i, int j
     double v2 = pi_frequencies.v2;
     return prefactor * perform_integral_Pi0_kpp(v1, v2, q, i, j, inttype);
 }
-
+/*
 void integral_bubble_w_vpp_list_integrator (int i, int j, int inttype, char channel, double wmax, double vppmax, double qmax, int nvpp, int nw, int nq) {
-    vec<double> vpps(nvpp);
-    vec<double> ws(nw);
-    vec<double> qs(nq);
-    vec<double> Pi_int_Re(nvpp*nw*nq);
-    vec<double> Pi_int_Im(nvpp*nw*nq);
+    rvec vpps(nvpp);
+    rvec ws(nw);
+    rvec qs(nq);
+    rvec Pi_int_Re(nvpp*nw*nq);
+    rvec Pi_int_Im(nvpp*nw*nq);
     comp result_integral;
     double w;
     double vpp;
@@ -1431,13 +1356,65 @@ void integral_bubble_w_vpp_list_integrator (int i, int j, int inttype, char chan
                    {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
 
 }
+*/
+void integral_bubble_w_vpp_list_integrator (int i, int j, int inttype, char channel, rvec vpps, rvec ws, rvec qs) {
 
-void integral_bubble_w_vpp_list_PAID (int i, int j, char chan, double wmax, double vppmax, double qmax, int nvpp, int nw, int nq) {
-    vec<double> vpps(nvpp);
-    vec<double> ws(nw);
-    vec<double> qs(nq);
-    vec<double> Pi_int_Re(nvpp*nw*nq);
-    vec<double> Pi_int_Im(nvpp*nw*nq);
+    int nvpp = vpps.size();
+    int nw = ws.size();
+    int nq = qs.size();
+
+    rvec Pi_int_Re(nvpp*nw*nq);
+    rvec Pi_int_Im(nvpp*nw*nq);
+    comp result_integral;
+
+    double w;
+    double vpp;
+    double q;
+
+    for (int wi = 0; wi < nw; ++wi) {
+        w = ws[wi];
+        for (int vppi = 0; vppi < nvpp; ++vppi) {
+            vpp = vpps[vppi];
+            for (int qi = 0; qi < nq; ++qi) {
+                q = qs[qi];
+                result_integral = perform_integral_Pi0_kpp_chan (w, vpp, q, i, j, inttype,channel);
+                Pi_int_Re[composite_index_wvq(wi, vppi, nvpp, qi, nq)] = real(result_integral);
+                Pi_int_Im[composite_index_wvq(wi, vppi, nvpp, qi, nq)] = imag(result_integral);
+                std::cout << "w = " << w << ", vpp = " << vpp << ", q = " << q << ", result = " << result_integral << "\n";
+            }
+        }
+    }
+
+    std::string filename = "../Data/";
+    if (inttype == 0){
+        filename += "exact_";
+    }
+    else {
+        filename += "numInt_";
+    }
+    filename += "bare_bubble";
+    filename += "_";
+    filename += std::to_string(i);
+    filename += std::to_string(j);
+    filename += channel;
+    filename += "_nBOS=" + std::to_string(nw)
+                + "_nFER=" + std::to_string(nvpp)
+                + "_nq=" + std::to_string(nq)
+                + ".h5";
+    write_h5_rvecs(filename,
+                   {"fermionic_frequencies", "bosonic_frequencies", "bosonic_momenta", "integrated_bubble_Re", "integrated_bubble_Im"},
+                   {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
+
+}
+
+void integral_bubble_w_vpp_list_PAID (int i, int j, char chan, rvec vpps, rvec ws, rvec qs) {
+
+    int nvpp = vpps.size();
+    int nw = ws.size();
+    int nq = qs.size();
+
+    rvec Pi_int_Re(nvpp*nw*nq);
+    rvec Pi_int_Im(nvpp*nw*nq);
     comp result_integral;
 
     double w;
@@ -1458,11 +1435,9 @@ void integral_bubble_w_vpp_list_PAID (int i, int j, char chan, double wmax, doub
 
     // fill the PAID input
     for (int wi = 0; wi < nw; ++wi) {
-        w = -wmax + 2*wi*wmax/(nw-1);
-        ws[wi] = w;
+        w = ws[wi];
         for (int vppi = 0; vppi < nvpp; ++vppi) {
-            vpp = -vppmax + 2*vppi*vppmax/(nw-1);
-            vpps[vppi] = vpp;
+            vpp = vpps[vppi];
 
             pi_frequencies = transform_to_natural(w,vpp,chan);
             v1 = pi_frequencies.v1;
@@ -1477,8 +1452,7 @@ void integral_bubble_w_vpp_list_PAID (int i, int j, char chan, double wmax, doub
             }
 
             for (int qi = 0; qi < nq; ++qi) {
-                q = qi*qmax/(nq-1);
-                qs[qi] = q;
+                q = qs[qi];
 
                 idx = composite_index_wvq (wi, vppi, nvpp, qi, nq);
 
@@ -1539,47 +1513,6 @@ void integral_bubble_w_vpp_list_PAID (int i, int j, char chan, double wmax, doub
                    {vpps, ws, qs, Pi_int_Re, Pi_int_Im});
 
 }
-
-
-/*
-template <typename Q>
-class Integrand_SimpleBubble {
-private:
-    double v1, v2, q, kpp;
-    int i, j;
-
-public:
-    /**
-     * Constructor:
-     */ /*
-    Integrand_SimpleBubble(double v1_in, double v2_in, double q_in, double kpp_in, int i_in, int j_in)
-            :v1(v1_in), v2(v2_in), q(q_in), kpp(kpp_in), i(i_in), j(j_in){
-    };
-    */
-    /**
-     * Call operator:
-     * @param x : frequency at which to evaluate integrand (to be integrated over)
-     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
-     */ /*
-    auto operator() (double x) const -> Q {
-        return SimpleBubble(v1, v2, q, kpp, x, i, j);
-    };
-
-    //void save_integrand();
-};
-*/
-/*
-comp perform_SimpleBubble_integral (double v1, double v2, double q, double kpp, char i, char j){
-    Integrand_SimpleBubble<comp> integrandx_SimpleBubble(v1, v2, q, kpp, i, j);
-    return integrator<comp>(integrandx_SimpleBubble, -1.0, 1.0);
-}
- */
-/*
-comp rhs_test(const comp& y, double Lambda) {
-    //comp y;
-    return SimpleBubble(0.03, -2.0, 0.2, 0.4,Lambda, 'c', 'c');
-}
- */
 
 // INTEGRATE LOOP IN MOMENTUM SPACE
 // ==================================

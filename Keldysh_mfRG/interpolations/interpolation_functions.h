@@ -29,8 +29,24 @@ inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, cons
     Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));
     return result;
+}
 
+// Grid_Class requires fconv(x) and grid_points, F requires operator(x)
+template <typename Q, typename Grid_Class, typename F>
+inline auto interpolate1D(const double x, const Grid_Class& grid, const F val) -> Q {
 
+    int index = grid.fconv(x);
+
+    double x1 = grid.grid_points[index];
+    double x2 = grid.grid_points[index + 1];
+    double xd = (x - x1) / (x2 - x1);
+
+    Q f1 = val[index];
+    Q f2 = val[index + 1];
+
+    Q result = ((1. - xd) * f1 + xd * f2);
+    assert(isfinite(result));
+    return result;
 }
 
 /**

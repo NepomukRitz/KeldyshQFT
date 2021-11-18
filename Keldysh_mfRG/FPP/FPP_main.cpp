@@ -20,6 +20,7 @@
 #include "../data_structures.h"
 //#include "../OldFiles/paid.hpp"
 //#include "zeros.h"
+#include "FPP_grids.hpp"
 
 
 int main() {
@@ -222,7 +223,24 @@ int main() {
     //print_numerical_bubble(0.0,0.0,0.0,'c','d','t',0,0);
 
     // Loop_Integral
-
+    /*
+    glb_ainv = sqrt(2);
+    glb_mud = -10;
+    comp test_loop = perform_loop_integral_2D(1,2,3);
+    std::cout << "loop integral = " << test_loop << "\n";
+    comp test_loop_v = perform_loop_vpp_integral(0,0);
+    std::cout << "mu_d = -10, loop integral v = " << test_loop_v << "\n";
+    glb_mud = -5;
+    test_loop = perform_loop_integral_2D(1,2,3);
+    std::cout << "loop integral = " << test_loop << "\n";
+    test_loop_v = perform_loop_vpp_integral(0,0);
+    std::cout << "mu_d = -5, loop integral v = " << test_loop_v << "\n";
+    glb_mud = -2;
+    test_loop = perform_loop_integral_2D(1,2,3);
+    std::cout << "loop integral = " << test_loop << "\n";
+    test_loop_v = perform_loop_vpp_integral(0,0);
+    std::cout << "mu_d = -2, loop integral v = " << test_loop_v << "\n";
+    */
     /*print_numerical_loop (0.1, 0.1, 'c', 0);
     print_numerical_loop (0.01, 0.1, 'c', 0);
     print_numerical_loop (0.001, 0.1, 'c', 0);*/
@@ -348,7 +366,7 @@ int main() {
     glb_ainv = 1.0;
 
     // test sort algorithm
-
+    /*
     std::cout << "test sort algorithm:\n";
     double Lambdaif = 1000.;
     double Lambda_one = 1.0;
@@ -477,7 +495,7 @@ int main() {
 
     // 1-LOOP FRG
     // ==================================
-
+    /*
     glb_ainv = 1.0;
     glb_muc = 1.0;
     glb_mud = -5.;
@@ -531,7 +549,7 @@ int main() {
     //double muladder1 = find_root_ladder (0.0,0.0,1e4,1e-10,1,-5.0,0.5,1e-10,100,1e-16);
     //std::cout << "a^{-1} = " << glb_ainv << ": mu_fRG = " << mufRG1 << ", mu_ladder = " << muladder1 << "\n";
     //std::cout << "mud_i = " << mud_before << ", mud_f = " << glb_mud << "\n";
-
+    /*
     fRG_p_list(0,-2*sqrt(2),2*sqrt(2),-10.0,0.5,100,1e-10,101);
     ladder_list('p',0,1,-2*sqrt(2),2*sqrt(2),-10.0,1e-10,100,1e-16,301);
     // fRG_p_list (1e4, 1e-10, 1,1, -2*sqrt(2), 2*sqrt(2), -10.0, 0.5, 100, 1e-16, 11);
@@ -736,7 +754,7 @@ int main() {
 
     comp integral_test;
     double v1_test, v2_test, q_test;
-
+    /*
     double dt_test = get_time();
     integral_test = perform_integral_Pi0_2D (0.3, -2.1, 4.3, 0,0);
     std::cout << "test paid Pi0 = " << integral_test << "\n";
@@ -782,7 +800,7 @@ int main() {
     comp exact_bubble_p = exact_bare_bubble (1., -3., 0., 'd', 'c', 'p');
     std::cout << "exact bubble_a = " << exact_bubble_a << "\n";
     std::cout << "exact bubble_p = " << exact_bubble_p << "\n";
-    */
+    */ /*
     dt = get_time();
     gamma_p = ladder_K1r(0.,0.,'p',1,1);
     gamma_a = ladder_K1r(0.,0.,'a',1,1);
@@ -1013,7 +1031,7 @@ int main() {
     comp keldysh_theta_integral_result = perform_integral_Pi0_theta (0.5,-0.1,0.3,0.4,'c','d',1);
     std::cout << "theta-integral gauss-lobatto = " << keldysh_theta_integral_result << "\n";
     */
-
+    /*
     paid::Domain<1> d({0.},{1.});
     double a = 0.1;
     double exact_result = 1./sqrt(a);
@@ -1151,7 +1169,7 @@ int main() {
         }
     }
     get_time(dt_inttype);
-    */
+    */ /*
     std::vector<double> v(8,1.0);
     std::cout << "v1 = (" << v[0];
     for (int i=1; i<v.size(); ++i){
@@ -1320,7 +1338,7 @@ int main() {
     //selfenergy_ladder_list_vk(10.,10.,1e4,1e-10,11,6);
 
     // Try out things concerning PAID integrator
-
+    /*
     std::array<std::size_t,4> i_list{126,0,127, 64};
     std::size_t composite_index_i_list;
     composite_index_i_list = paid::get_composite_index<4>(128,i_list);
@@ -1352,6 +1370,50 @@ int main() {
     }
 
     std::cout << ")\n";
+    */
+
+    // FPP_GRID
+    // =======================================
+
+    FPP_Grid grid({40,50,30},{1e-3,1e-1,10,100},1, 1,1);
+    //std::cout << "size: " << grid.grid_points.size() << "\n";
+    rvec grid_vec = grid.grid_points;
+    Function_test f;
+    rvec f_vec;
+    for (int i=0; i<grid_vec.size(); ++i){
+        f_vec.push_back(f(grid_vec[i]));
+        std::cout << i << ": " << grid_vec[i] << ", f(x) = " << f_vec[i] << "\n";
+    }
+    std::cout << ")\n";
+    std::cout << "length = " << grid_vec.size() << "\n";
+    double x_val;
+    int index;
+    double f_x;
+    //-100,-99,-0.23,-0.1,-0.05,-0.001,-0.0001,0
+    rvec vec{-100,-99,-0.23,-0.1,-0.05,-0.001,-0.0001,0,0.0001,0.001,0.05,0.1,0.23,99,100};
+    for (int j = 0; j < vec.size(); ++j){
+        x_val = vec[j];
+        index = grid.grid_transf_inv(x_val);
+        f_x = interpolate1D<double,FPP_Grid,rvec>(x_val,grid,f_vec);
+        std::cout << "x = " << x_val << ", index = " << index << ", f(x): interpolated = " << f_x << ", exact = " << f(x_val) << "\n";
+    }
+
+
+
+
+
+
+
+    /*
+    FPP_Grid grid_frequency_simple({99},{0.1,10},1,1);
+    FPP_Grid grid_frequency({40,50,5,4},{1e-3,1e-1,10,100,1e4},1,1);
+    FPP_Grid grid_momentum({5},{1,6},0,1);
+    rvec vpps_ = grid_frequency_simple.grid_points(0);
+    rvec ws_ = grid_frequency_simple.grid_points(0);
+    rvec qs_ = grid_momentum.grid_points(0);
+    integral_bubble_w_vpp_list_integrator(0,1,0,'p',vpps_,ws_,qs_);
+    integral_bubble_w_vpp_list_PAID(0,1,'p',vpps_,ws_,qs_);
+    */
 
     get_time(t0);
 
@@ -1360,7 +1422,6 @@ int main() {
     if (MPI_FLAG) {
         MPI_Finalize();
     }
-
 }
 
 

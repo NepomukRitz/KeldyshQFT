@@ -211,7 +211,7 @@ class PAID {
             if (fevals >= config_.max_f_evals)
               termination_reason = TerminationReason::Max_Evals_Reached;
 
-            if (config_.check_error(error_estimate))
+            if (error_estimate < config_.max_error)
               termination_reason = TerminationReason::Tolerance_Reached;
 
             if (counter >= config_.max_iterations)

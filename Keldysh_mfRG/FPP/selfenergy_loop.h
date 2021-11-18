@@ -7,17 +7,217 @@
 
 #include "fRG-T-matrix-approach.h"
 
-template <typename Q>
-class Loopintegrand_theta {
+comp hartree_term (int particle) { // -g*(2mi*mui)^(3/2)/(6pi^2)
+    double mi, mui, output;
+    if (particle == 0) {
+        mi = glb_mc;
+        mui = heaviside(glb_muc)*glb_muc;
+    }
+    else if (particle == 1){
+        mi = glb_md;
+        mui = heaviside(glb_mud)*glb_mud;
+    }
+    output = -gint()*pow(2*mi*mui,1.5)/(6*M_PI*M_PI);
+    return output;
+}
+
+class Loopintegrand_2D {
 private:
-    double v, vp, k, kp, Lambda_i, Lambda_f; //Lambda;
+    double v, vpp, k;
 
 public:
     /**
      * Constructor:
      */
-    Loopintegrand_theta(double v_in, double vp_in, double k_in, double kp_in, double Lambda_i_in, double Lambda_f_in)
-            :v(v_in), vp(vp_in), k(k_in), kp(kp_in), Lambda_i(Lambda_i_in), Lambda_f(Lambda_f_in){
+    Loopintegrand_2D(double v_in, double vpp_in, double k_in)
+            :v(v_in), vpp(vpp_in), k(k_in){
+    };
+
+    /**
+     * Call operator:
+     * @param x : angle variable at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
+    auto operator() (std::array<double,2> kvec) const -> comp {
+        double kpp, x, ksquared;
+        comp k1pcd, output;
+        if (kvec[0] == 0){
+            output = 0;
+        }
+        else {
+            kpp = (1-kvec[0])/kvec[0];
+            x = kvec[1];
+            ksquared = kpp*kpp - 2*k*kpp*x + k*k;
+            //k1pcd = perform_Pi0_vpp_integral(vpp, kpp, 0, 1, 'p', 0, 1);
+            k1pcd = ladder(vpp,kpp,'p',0,1);
+            output = - 1./(4*M_PI*M_PI)*k1pcd*G0(vpp-v,ksquared,0)/(kvec[0]*kvec[0]);
+        }
+        return output;
+    };
+
+    auto operator() (double tkpp) const -> comp {
+        double kpp;
+        comp k1pcd, output;
+        if (tkpp == 0){
+            output = 0;
+        }
+        else {
+            kpp = (1-tkpp)/tkpp;
+            //k1pcd = perform_Pi0_vpp_integral(vpp, kpp, 0, 1, 'p', 0, 1);
+            k1pcd = ladder(vpp,kpp,'p',0,1);
+            output = - 2./(4*M_PI*M_PI)*k1pcd*G0(vpp-v,kpp*kpp,0)/(tkpp*tkpp);
+        }
+        return output;
+    };
+
+    //void save_integrand();
+};
+
+comp perform_loop_integral_2D (double v, double vpp, double k){
+    comp integral;
+
+    if (k == 0) {
+        Loopintegrand_2D loopintegrand2D(v, vpp, 0);
+
+        paid::Domain<1> d({0.}, {1.});
+        paid::PAIDInput<1, Loopintegrand_2D, int> integrand_loop_2D_paid{d, loopintegrand2D, 0};
+        paid::PAIDConfig config(1e8, 1e-6, 0, 8);
+        paid::PAID<1, Loopintegrand_2D, comp, int, double> loopintegral2D_paid(config);
+        integral = loopintegral2D_paid.solve({integrand_loop_2D_paid})[0];
+    }
+    else {
+        Loopintegrand_2D loopintegrand2D(v, vpp, k);
+
+        paid::Domain<2> d({0., -1.}, {1., 1.});
+        paid::PAIDInput<2, Loopintegrand_2D, int> integrand_loop_2D_paid{d, loopintegrand2D, 0};
+        paid::PAIDConfig config(1e9, 1e-6, 0, 8);
+        paid::PAID<2, Loopintegrand_2D, comp, int, std::array<double, 2>> loopintegral2D_paid(config);
+        integral = loopintegral2D_paid.solve({integrand_loop_2D_paid})[0];
+    }
+    return integral;
+}
+
+class Integrand_loop_vpp {
+private:
+    double v, k;
+    //int inttype; // kint_type = 0 exact, 1 Gauss-Lobatto, 2 PAID Clenshaw-Curtis
+
+public:
+    /**
+     * Constructor:
+     */
+    Integrand_loop_vpp(double v_in, double k_in)//, int inttype_in)
+            :v(v_in), k(k_in){//, inttype(inttype_in){
+    };
+
+    /**
+     * Call operator:
+     * @param vpp : frequency at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
+    auto operator() (double vpp) const -> comp {
+        return perform_loop_integral_2D(v, vpp, k);
+    }
+
+    //void save_integrand();
+};
+
+comp perform_loop_vpp_integral (double v, double k){
+    comp output;
+    double Lambda_mu, Lambda_mm, Lambda_ml;
+    rvec Lambdas;
+
+    if ((Lambda_ini > std::abs(v)) and (std::abs(v) > Lambda_fin)) {
+        Lambdas = {Lambda_fin,Lambda_ini*Lambda_fin,1.0,std::abs(v),Lambda_ini};
+        std::sort (Lambdas.begin(), Lambdas.end());
+        /* Lambda_mu = Lambdas[3];
+        Lambda_mm = Lambdas[2];
+        Lambda_ml = Lambdas[1]; */
+    }
+    else {
+        Lambdas = {Lambda_fin, Lambda_ini*Lambda_fin,1.0,Lambda_ini};
+        std::sort (Lambdas.begin(), Lambdas.begin()+2);
+        /* Lambda_mu = Lambdas[2];
+        Lambda_mm = Lambda_mu;
+        Lambda_ml = Lambdas[1]; */
+    }
+    /*
+    double d_mu, d_mm, d_ml; // cut out |vpp|=|w|/2 from the integral range
+    d_mu = 0;
+    d_mm = 0;
+    d_ml = 0;
+    if (std::abs(std::abs(w/2)-Lambda_mu)<1e-15) {
+        d_mu = 1e-10;
+    }
+    if (std::abs(std::abs(w/2)-Lambda_mm)<1e-15) {
+        d_mm = 1e-10;
+    }
+    if (std::abs(std::abs(w/2)-Lambda_ml)<1e-15) {
+        d_ml = 1e-10;
+    }
+
+    while (isnan(std::abs(exact_bare_bubble (w, Lambda_mu, q, i, j, chan)))) {
+        Lambda_mu = Lambda_mu + (Lambda_mu-Lambda_mm)/10.;
+    }
+    while (isnan(std::abs(exact_bare_bubble (w, Lambda_mm, q, i, j, chan)))) {
+        Lambda_mm = Lambda_mm + (Lambda_mm-Lambda_ml)/10.;
+    }
+    while (isnan(std::abs(exact_bare_bubble (w, Lambda_ml, q, i, j, chan)))) {
+        Lambda_ml = Lambda_ml - (Lambda_mm-Lambda_ml)/10.;
+    }
+
+    if ((Lambda_ini > std::abs(w/2)) and (std::abs(w/2) > Lambda_fin)) {
+        Lambdas[3] = Lambda_mu;
+        Lambdas[2] = Lambda_mm;
+        Lambdas[1] = Lambda_ml;
+    }
+    else {
+        Lambdas[2] = Lambda_mu;
+        Lambdas[1] = Lambda_ml;
+    }*/
+
+    Integrand_loop_vpp integrand_loop_vpp(v, k);
+    /*
+    if (inttypev == 1) {
+        cvec ints_pos(Lambdas.size()), ints_neg(Lambdas.size());
+        for (int idx = 0; idx<Lambdas.size()-1; ++idx){
+            ints_pos[idx] = integrator<comp>(integrand_Pi0_vpp, Lambdas[idx], Lambdas[idx+1]);
+            ints_neg[idx] = integrator<comp>(integrand_Pi0_vpp, -Lambdas[idx+1], -Lambdas[idx]);
+            output += prefactor*1./(2.*M_PI)*(ints_pos[idx]+ints_neg[idx]);
+        }
+    }
+    else if (inttypev == 2) {*/
+        vec<paid::PAIDInput<1, Integrand_loop_vpp,int>> ints_paid;
+        paid::PAIDConfig config(1e7,1e-6,0,8);
+        for (int idx = 0; idx<Lambdas.size()-1; ++idx){
+            paid::Domain<1> d_pos({Lambdas[idx]},{Lambdas[idx+1]});
+            paid::Domain<1> d_neg({-Lambdas[idx+1]},{-Lambdas[idx]});
+
+            paid::PAIDInput<1,Integrand_loop_vpp,int> paid_integrand_pos{d_pos,integrand_loop_vpp,0};
+            ints_paid.push_back(paid_integrand_pos);
+            paid::PAIDInput<1,Integrand_loop_vpp,int> paid_integrand_neg{d_neg,integrand_loop_vpp,0};
+            ints_paid.push_back(paid_integrand_neg);
+        }
+        paid::PAID<1,Integrand_loop_vpp,comp,int,double> integral_Pi0_vpp_paid(config);
+        output = 1./(2.*M_PI)*integral_Pi0_vpp_paid.solve(ints_paid)[0];
+    /*}
+    else {
+        std::cout << "wrong integral type in v-integral\n";
+    }*/
+    return output;
+}
+
+template <typename Q>
+class Loopintegrand_theta {
+private:
+    double v, vp, k, kp;
+
+public:
+    /**
+     * Constructor:
+     */
+    Loopintegrand_theta(double v_in, double vp_in, double k_in, double kp_in)
+            :v(v_in), vp(vp_in), k(k_in), kp(kp_in){
     };
 
     /**
@@ -28,13 +228,13 @@ public:
     auto operator() (double x) const -> Q {
         double sqrtk;
         sqrtk = sqrt(k*k+2.*k*kp*x+kp*kp);
-        return 1./(2*M_PI)*ladder_K1r(vp+v,sqrtk,'p',1,0)*G0(vp,kp*kp,'c');
+        return 1./(2*M_PI)*ladder_K1r(vp,kp,'p',1,0)*G0(vp,kp*kp,'c');
     };
 
     //void save_integrand();
 };
 
-comp perform_loopintegral_theta (double v, double vp, double k, double kp, double Lambda_i, double Lambda_f){
+comp perform_loopintegral_theta (double v, double vp, double k, double kp){
     comp result;
     double eps = 1e-12;
 
@@ -49,7 +249,7 @@ comp perform_loopintegral_theta (double v, double vp, double k, double kp, doubl
             vp = vp + eps;
         }
 
-        Loopintegrand_theta<comp> loopintegrand_theta(v, vp, k, kp, Lambda_i, Lambda_f);
+        Loopintegrand_theta<comp> loopintegrand_theta(v, vp, k, kp);
 
         integral = integrator<comp>(loopintegrand_theta, -1.0, 1.0);
 
@@ -62,7 +262,7 @@ comp perform_loopintegral_theta (double v, double vp, double k, double kp, doubl
 template <typename Q>
 class Loopintegrand_kp {
 private:
-    double v, vp, k, lim, Lambda_i, Lambda_f; //Lambda;
+    double v, vp, k, lim; //Lambda;
     int inftylim;
 
 public:
@@ -70,7 +270,7 @@ public:
      * Constructor:
      */
     Loopintegrand_kp(double v_in, double vp_in, double k_in, double Lambda_i_in, double Lambda_f_in, double lim_in, int inftylim_in)
-            :v(v_in), vp(vp_in), k(k_in), Lambda_i(Lambda_i_in), Lambda_f(Lambda_f_in), lim(lim_in), inftylim(inftylim_in){
+            :v(v_in), vp(vp_in), k(k_in), lim(lim_in), inftylim(inftylim_in){
     };
 
     /**
@@ -93,7 +293,7 @@ public:
         else {
             kp = t_kp;
         }
-        return kp*kp/(2.*M_PI)*perform_loopintegral_theta(v, vp, k, kp,Lambda_i, Lambda_f)/denominator_substitution;
+        return kp*kp/(2.*M_PI)*perform_loopintegral_theta(v, vp, k, kp)/denominator_substitution;
     };
 
     //void save_integrand();
@@ -226,7 +426,5 @@ void selfenergy_ladder_list_vk (double vmax, double kmax, double Lambda_i, doubl
                    {vs, ks, Sigma_Re, Sigma_Im});
 
 }
-
-
 
 #endif //MAIN_CPP_SELFENERGY_LOOP_H

@@ -13,24 +13,42 @@ namespace paid {
 
 struct PAIDConfig {
  public:
-  PAIDConfig()
-      : max_f_evals(1e+9),
-        max_iterations(-1),
-        check_error([](double error) -> bool { return error < 1e-6; }),
-        integration_rule(IntegrationRule::ClenshawCurtis),
-        order(8),
-        ntasks_per_iteration(25),
-        check_every_iteration(200),
-        check_below_iteration(10),
-        min_size(1e-14),
-        min_error(1e-20),
-        correct_error(true),
-        keep_small(true) {}
+    PAIDConfig()
+            : max_f_evals(1e+9), // 1e+9
+              max_iterations(-1), // -1
+              max_error(1e-10), // 1e-10
+              relative_error(0), // 0
+              integration_rule(IntegrationRule::ClenshawCurtis),
+              order(8), // 64
+              ntasks_per_iteration(25),   // 25
+              check_every_iteration(200), // 200
+              check_below_iteration(10),  // 10
+              min_size(1e-14), // 1e-14
+              min_error(1e-20),  // 1e-20
+              correct_error(true),    // true
+              keep_small(true) {} // true
+
+    PAIDConfig(std::ptrdiff_t max_f_evals_, double max_error_, bool relative_error_, std::size_t order_)
+            : max_f_evals(max_f_evals_), // 1e+9
+              max_iterations(-1), // -1
+              max_error(max_error_), // 1e-10
+              relative_error(relative_error_), // 0
+              integration_rule(IntegrationRule::ClenshawCurtis),
+              order(order_), // 64
+              ntasks_per_iteration(25),   // 25
+              check_every_iteration(200), // 200
+              check_below_iteration(10),  // 10
+              min_size(1e-14), // 1e-14
+              min_error(1e-20),  // 1e-20
+              correct_error(true),    // true
+              keep_small(true) {} // true
 
   // maxima or goals
   std::ptrdiff_t max_f_evals;
   std::ptrdiff_t max_iterations;
-  std::function<bool(double)> check_error;
+  double max_error;
+  //std::function<bool(double)> check_error = [](double error) -> bool { return error < max_error; };
+  bool relative_error;
 
   // numerical method config
   IntegrationRule integration_rule;

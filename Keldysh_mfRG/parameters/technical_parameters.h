@@ -5,7 +5,7 @@
 /// Technical parameters ///
 
 //If defined, the flow of the self_energy is symmetrized, closed above and below
-//#define SYMMETRIZED_SELF_ENERGY_FLOW
+#define SYMMETRIZED_SELF_ENERGY_FLOW
 
 // Flag whether to use MPI, comment out following to not use MPI_FLAG
 constexpr bool MPI_FLAG = true;
