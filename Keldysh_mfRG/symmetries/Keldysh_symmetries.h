@@ -8,6 +8,7 @@
 #include <algorithm>  // for find function in isInList
 #include "../utilities/util.h"     // printing text output
 #include "../grids/frequency_grid.h"
+#include "../multidimensional/multiarray.hpp"
 
 /// Keldysh index parameters ///
 #ifdef KELDYSH_FORMALISM
@@ -152,26 +153,224 @@ auto indices_sum(int i0, int i2, const char channel) -> std::vector<int> {
 }
 
 
-template<char ch, typename Q, typename Vertex1, typename BubbleObj>
-Q keldyshSum(const std::function<Q(VertexInput&)>& value_vertex1, const BubbleObj& Pi, const std::function<Q(VertexInput&)>& value_vertex2, const VertexInput& input_external, const double vpp) {
+template<char ch, typename Q, typename VertexValue_l>
+Q load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_l& value_vertex, const VertexInput& input, const int spin_idx) {
+    size_t len_1 = values_vertex.length()[0];
+    assert(len_1 == glb_number_of_Keldysh_components_bubble);
+
+    if (not KELDYSH) {
+        values_vertex(0, spin_idx) =  value_vertex(input);
+    }
+    else {
+
+        VertexInput input_tmp = input;
+        //Q v11, v12, v21, v22;
+        const std::array<size_t,2> dims_vtemp = {2,2};
+        // v_temp contains values for different Keldysh indices:
+        // i.e. in a-channel v_temp(i,j) = v_{1',i |j,2}
+        //      in p-channel v_temp(i,j) = v_{1',2'|j,i}
+        //      in t-channel v_temp(i,j) = v_{i ,2'|j,2}
+        multidimensional::multiarray<Q,2> v_temp(dims_vtemp);
+        std::vector<int> alpha = alphas(input.iK);
+
+        // fill v_temp:
+        const std::array<size_t,4> dims_K = {2,2, 2,2};
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                if constexpr(ch == 'a') {input_tmp.iK = getFlatIndex(alpha[0]-1, i, j, alpha[3]-1, dims_K);}
+                else if constexpr(ch == 'p') {input_tmp.iK = getFlatIndex(alpha[0]-1, alpha[1]-1, j, i, dims_K);}
+                else if constexpr(ch == 't') {input_tmp.iK = getFlatIndex(i, alpha[1]-1, j, alpha[3]-1, dims_K);}
+                else assert(false);
+
+                v_temp.at(i,j) = value_vertex(input_tmp);
+            }
+        }
+
+        // fill values_vertex:
+        if constexpr(ch == 'a' or ch == 't') {
+            values_vertex(1, spin_idx) =  v_temp(0,0);
+            values_vertex(0, spin_idx) = values_vertex(2, spin_idx) = v_temp(1,0);
+            values_vertex(5, spin_idx) = values_vertex(7, spin_idx) = v_temp(0,1);
+            values_vertex(3, spin_idx) = values_vertex(4, spin_idx) = values_vertex(6, spin_idx) = values_vertex(8, spin_idx) = v_temp(1,1);
+        }
+        else if constexpr(ch == 'p') {
+            values_vertex(0, spin_idx) =  v_temp(0,0);
+            values_vertex(1, spin_idx) = values_vertex(2, spin_idx) = v_temp(1,0);
+            values_vertex(3, spin_idx) = values_vertex(4, spin_idx) = v_temp(0,1);
+            values_vertex(5, spin_idx) = values_vertex(6, spin_idx) = values_vertex(7, spin_idx) = values_vertex(8, spin_idx) = v_temp(1,1);
+        }
+        else assert(false);
+
+    }
+
+}
+
+template<char ch, typename Q, typename VertexValue_r>
+Q load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_r& value_vertex, const VertexInput& input, const int spin_idx) {
+    size_t len_1 = values_vertex.length()[0];
+    assert(len_1 == glb_number_of_Keldysh_components_bubble);
+
+    if (not KELDYSH) {
+        values_vertex(0, spin_idx) =  value_vertex(input);
+    }
+    else {
+        VertexInput input_tmp = input;
+        //Q v11, v12, v21, v22;
+        const std::array<size_t, 2> dims_vtemp = {2, 2};
+        // v_temp contains values for different Keldysh indices:
+        // i.e. in a-channel v_temp(i,j) = v_{i ,2'|1,j}
+        //      in p-channel v_temp(i,j) = v_{j ,i |1,2}
+        //      in t-channel v_temp(i,j) = v_{1',i |1,j}
+        multidimensional::multiarray<Q, 2> v_temp(dims_vtemp);
+        std::vector<int> alpha = alphas(input.iK);
+
+        // fill v_temp:
+        const std::array<size_t, 4> dims_K = {2, 2, 2, 2};
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                if constexpr(ch == 'a') { input_tmp.iK = getFlatIndex(i, alpha[1] - 1, alpha[2] - 1, j, dims_K); }
+                else if constexpr(ch == 'p') { input_tmp.iK = getFlatIndex(j, i, alpha[2] - 1, alpha[3] - 1, dims_K); }
+                else if constexpr(ch == 't') { input_tmp.iK = getFlatIndex(alpha[0] - 1, i, alpha[2] - 1, j, dims_K); }
+                else
+                    assert(false);
+
+                v_temp.at(i, j) = value_vertex(input_tmp);
+            }
+        }
+
+        // fill values_vertex:
+        if constexpr(ch == 'a' or ch == 't') {
+            values_vertex(3, spin_idx) = v_temp(0, 0);
+            values_vertex(5, spin_idx) = values_vertex(6, spin_idx) = v_temp(0, 1);
+            values_vertex(0, spin_idx) = values_vertex(4, spin_idx) = v_temp(1, 0);
+            values_vertex(1, spin_idx) = values_vertex(2, spin_idx) = values_vertex(7, spin_idx) = values_vertex(8,
+                                                                                                                 spin_idx) = v_temp(
+                    1, 1);
+        } else if constexpr(ch == 'p') {
+            values_vertex(5, spin_idx) = v_temp(0, 0);
+            values_vertex(3, spin_idx) = values_vertex(6, spin_idx) = v_temp(1, 0);
+            values_vertex(1, spin_idx) = values_vertex(7, spin_idx) = v_temp(0, 1);
+            values_vertex(0, spin_idx) = values_vertex(2, spin_idx) = values_vertex(4, spin_idx) = values_vertex(8,
+                                                                                                                 spin_idx) = v_temp(
+                    1, 1);
+        } else
+            assert(false);
+    }
+}
+
+
+template<char ch, typename Q, typename VertexValue_l, typename BubbleObj, typename VertexValue_r>
+Q sum_over_internal(const VertexValue_l& value_vertex_l, const BubbleObj& Pi, const VertexValue_r& value_vertex_r, const VertexInput& input_external, const double vpp) {
 
     std::vector<int> alphas_external = alphas(input_external.iK);
-    VertexInput input1 = input_external, input2 = input_external;
-    input1.v2 = vpp; input2.v1 = vpp;
+    VertexInput input_l = input_external, input_r = input_external;
+    input_l.v2 = vpp; input_r.v1 = vpp;
 
-    Q result = 0;
-    for (int i = 0; i < 9; i++) {
+    // create multiarrays to store loaded values
+    // in 1st dim: Keldysh indices for 9 nonzero values of bubble
+    // in 2nd dim: spin components
+    multidimensional::multiarray<Q,2> values_vertex_l(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 2})), values_vertex_r(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 2})), values_Pi(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 1}));
 
+    // load vertex values:
+    int spin_idx = 0;
+    load_vertex_keldyshComponents_left <ch,Q>(values_vertex_l, value_vertex_l, input_l, spin_idx);
+    load_vertex_keldyshComponents_right<ch,Q>(values_vertex_r, value_vertex_r, input_r, spin_idx);
+    // load other spin component
+    if ((ch == 't' and input_external.spin == 0)
+        #ifdef DEBUG_SYMMETRIES
+        or (ch == 'a' and input_external.spin == 1) or (ch == 'p')
+        #endif
+            ){
+        input_l.spin = 1 - input_external.spin;
+        input_r.spin = 1 - input_external.spin;
+        spin_idx = 1 - spin_idx;
+
+        load_vertex_keldyshComponents_left <ch,Q>(values_vertex_l, value_vertex_l, input_l, spin_idx);
+        load_vertex_keldyshComponents_right<ch,Q>(values_vertex_r, value_vertex_r, input_r, spin_idx);
+
+    }
+
+    for (int i = 0; i < glb_number_of_Keldysh_components_bubble; i++) {
         int i2 = glb_non_zero_Keldysh_bubble[i];
-        std::vector<int> indices_vertices = indices_sum(input_external.iK, i2, ch);
-        input1.iK = indices_vertices[0];
-        input2.iK = indices_vertices[1];
-        result += value_vertex1(input1) * Pi.value(i2, input_external.w, vpp, input_external.i_in, ch) * value_vertex2(input2);
+        values_Pi.at(i, 0) = Pi.value(i2, input_external.w, vpp, input_external.i_in, ch);
+    }
+
+    if (false) { // set to true for debugging the loading of vertex values
+
+        multidimensional::multiarray<Q,2> values_vertex_l_alt(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 2})), values_vertex_r_alt(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 2}));
+
+        // load values (basic inefficient version):
+        for (int i = 0; i < glb_number_of_Keldysh_components_bubble; i++) {
+
+            VertexInput input_l_alt = input_external, input_r_alt = input_external;
+            input_l_alt.v2 = vpp; input_r_alt.v1 = vpp;
+
+            int i2 = glb_non_zero_Keldysh_bubble[i];
+            std::vector<int> indices_vertices = indices_sum(input_external.iK, i2, ch);
+            input_l_alt.iK = indices_vertices[0];
+            input_r_alt.iK = indices_vertices[1];
+
+            values_vertex_l_alt.at(i,0) = value_vertex_l(input_l_alt);
+            values_vertex_r_alt.at(i,0) = value_vertex_r(input_r_alt);
+
+            // load other spin component
+            if ((ch == 't' and input_external.spin == 0)
+                #ifdef DEBUG_SYMMETRIES
+                or (ch == 'a' and input_external.spin == 1) or (ch == 'p')
+                #endif
+                    ){
+                if(ch == 't') assert(0 == input_external.spin);
+                if(ch == 'a') assert(1 == input_external.spin);
+                input_l_alt.spin = 1 - input_external.spin;
+                input_r_alt.spin = 1 - input_external.spin;
+
+                values_vertex_l_alt.at(i,1) = value_vertex_l(input_l_alt);
+                values_vertex_r_alt.at(i,1) = value_vertex_r(input_r_alt);
+
+            }
+        }
+
+
+
+        multidimensional::multiarray<Q,2> values_vertex_l_diff = values_vertex_l - values_vertex_l_alt;
+        multidimensional::multiarray<Q,2> values_vertex_r_diff = values_vertex_r - values_vertex_r_alt;
+        auto diff_l = transform_multiarray([](Q x) -> double {return std::abs(x);}, values_vertex_l_diff);
+        auto diff_r = transform_multiarray([](Q x) -> double {return std::abs(x);}, values_vertex_r_diff);
+        assert(diff_l.max_norm() < 1e-10);
+        assert(diff_r.max_norm() < 1e-10);
+
+
+    }
+
+    // Assemble result
+    Q result = 0;
+    for (int i = 0; i < glb_number_of_Keldysh_components_bubble; i++) {
+
+        if ((ch == 't' and input_external.spin == 0)
+            #ifdef DEBUG_SYMMETRIES
+            or (ch == 'a' and input_external.spin == 1)
+            #endif
+                )
+            result += values_vertex_l(i,0) * values_Pi(i,0) * (values_vertex_r(i,0) + values_vertex_r(i,1)) + (values_vertex_l(i,0) + values_vertex_l(i,1)) * values_Pi(i,0) * values_vertex_l(i,0);
+        else
+            result += values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,0);
+
+        #ifdef DEBUG_SYMMETRIES
+        if (ch == 'p' and input_external.spin == 0) {
+            result += (values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,0) +  values_vertex_l(i,1) * values_Pi(i,0) * values_vertex_r(i,1)) * 0.5;
+        }
+        else if (ch == 'p' and input_external.spin == 1) {
+            result += (values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,1) + values_vertex_l(i,1) * values_Pi(i,0) * values_vertex_r(i,0)) * 0.5;
+        }
+        #endif
+
 
     }
 
     return result;
 }
+
+
 
 
 

@@ -678,6 +678,8 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(double vpp) const -> Q {
+#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+
     if (case_always_has_to_be_zero()) {return 0.;}
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
     compute_vertices(vpp, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat);
@@ -703,6 +705,32 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
 #endif
 
     return result;
+
+#else
+
+    VertexInput input_external (i0, w, v, vp,  i_in, spin, channel, diag_class, iw);
+
+    if (channel == 'a')
+    sum_over_internal<'a',Q>([&](VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
+                      Pi,
+                      [&](VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
+                      input_external, vpp
+    );
+    else if (channel == 'p') {
+        sum_over_internal<'p',Q>([&](VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
+                               Pi,
+                               [&](VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
+                               input_external, vpp
+        );
+    }
+    else {
+        sum_over_internal<'t',Q>([&](VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
+                               Pi,
+                               [&](VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
+                               input_external, vpp
+        );
+    }
+#endif
 }
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -785,6 +813,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
         }
     }
 }
+
 
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
@@ -1223,7 +1252,11 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
+#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
+#else
+        int i2 = 0;
+#endif
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, channel, diff, spin, k1);
         if (KELDYSH){
@@ -1241,7 +1274,11 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
             }
         }
-        value += bubble_value_prefactor() *
+
+#ifdef SWITCH_KELDYSH_SUM_N_INTEGRAL
+    for (int i2 : glb_non_zero_Keldysh_bubble) {
+#endif
+    value += bubble_value_prefactor() *
                 asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
                                          w, 0., 0., i0, i2, i_in, channel, diff, spin);
 
@@ -1256,7 +1293,11 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (false and vertex2[spin].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
                                                     // don't do this; this is a bug for the Parquet solver
     else {
+#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
         for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add a sum over form factors here, as well. (the integrand class will need to take another index.)
+#else
+            int i2 = 0;
+#endif
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K2(vertex1, vertex2, Pi, i0, i2, 0, w, v, 0., i_in, channel, diff, spin, k2);
             if (KELDYSH){
@@ -1276,6 +1317,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
                 }
             }
+
+#ifdef SWITCH_KELDYSH_SUM_N_INTEGRAL
+            for (int i2 : glb_non_zero_Keldysh_bubble) {
+#endif
             value += bubble_value_prefactor() *
                      asymp_corrections_bubble(k2, vertex1, vertex2, Pi.g,
                                               vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff, spin);
@@ -1293,7 +1338,12 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (false and vertex1[spin].Ir()) {value = 0.;} // left part of multi-loop contribution does not contribute to K2 class
                                                     // don't do this; this is a bug for the Parquet solver
     else {
+#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
         for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add a sum over form factors here, as well. (the integrand class will need to take another index.)
+#else
+            int i2 = 0;
+#endif
+
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand_K2b(vertex1, vertex2, Pi, i0, i2, 0, w, 0., vp, i_in, channel, diff, spin, k2b);
             if (KELDYSH){
@@ -1313,6 +1363,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
                 }
             }
+#ifdef SWITCH_KELDYSH_SUM_N_INTEGRAL
+            for (int i2 : glb_non_zero_Keldysh_bubble) {
+#endif
             value += bubble_value_prefactor() *
                      asymp_corrections_bubble(k2b, vertex1, vertex2, Pi.g,
                                               vmin, vmax, w, vp, 0., i0, i2, i_in, channel, diff, spin);
@@ -1328,8 +1381,12 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in,
                                                 const int iw, const double w, const double v, const double vp){
-    for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add two sums over form factors here, as well. (the integrand class will need to take another index.)
-        // initialize the integrand object and perform frequency integration
+#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+        for (int i2 : glb_non_zero_Keldysh_bubble) { // TODO(medium): Add two sums over form factors here, as well. (the integrand class will need to take another index.)
+#else
+      int i2 = 0;
+#endif
+            // initialize the integrand object and perform frequency integration
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K3(vertex1, vertex2, Pi, i0, i2, iw, w, v, vp, i_in, channel, diff, spin, k3);
         if (KELDYSH){
@@ -1348,6 +1405,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
             }
         }
+#ifdef SWITCH_KELDYSH_SUM_N_INTEGRAL
+        for (int i2 : glb_non_zero_Keldysh_bubble) {
+#endif
         value += bubble_value_prefactor() *
                 asymp_corrections_bubble(k3, vertex1, vertex2, Pi.g,
                                          vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff, spin);
