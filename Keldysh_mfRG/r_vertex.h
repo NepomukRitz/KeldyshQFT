@@ -76,12 +76,12 @@ public:
      * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
      *                         symmetry transformations that map between channels a <--> t.
      */
-    auto value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto value(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
     /** Overload for accessing non-symmetric vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true
      */
-    auto value(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto value(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
     /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
     /// This version is used for a symmetric vertex
@@ -578,34 +578,36 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 }
 #endif
 
-template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
+template <typename Q> auto rvert<Q>::value(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    transfToR(input); // input manipulated here => input needs to be called by value
+    VertexInput input_tmp = input;
+    transfToR(input_tmp); // input manipulated here => input needs to be called by value
 
     Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input_tmp, rvert_crossing);
     if (MAX_DIAG_CLASS >= 2) {
-        val += valsmooth<k2> (input, rvert_crossing);
-        val += valsmooth<k2b>(input, rvert_crossing);
+        val += valsmooth<k2> (input_tmp, rvert_crossing);
+        val += valsmooth<k2b>(input_tmp, rvert_crossing);
     }
-    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input_tmp, rvert_crossing);
 
     return val;
 }
-template <typename Q> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+template <typename Q> auto rvert<Q>::value(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
 
-    transfToR(input);   // input might be in different channel parametrization
+    VertexInput input_tmp = input;
+    transfToR(input_tmp);   // input might be in different channel parametrization
 
 
     Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     if (MAX_DIAG_CLASS >= 2) {
-        val += valsmooth<k2> (input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-        val += valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        val += valsmooth<k2> (input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        val += valsmooth<k2b>(input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     }
-    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
     return val;
 }

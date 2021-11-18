@@ -93,12 +93,12 @@ public:
 
     // Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
     // Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin
-    auto value(VertexInput& input) const -> Q;
-    auto value(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+    auto value(const VertexInput& input) const -> Q;
+    auto value(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
     // Returns the sum of the contributions of the diagrammatic classes r' =/= r
-    auto gammaRb(VertexInput& input) const -> Q;
-    auto gammaRb(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+    auto gammaRb(const VertexInput& input) const -> Q;
+    auto gammaRb(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
     // Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
     auto left_same_bare(const VertexInput& input) const -> Q;
@@ -107,11 +107,11 @@ public:
     auto right_same_bare(const VertexInput& input) const -> Q;
     auto right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
     // Combination of those diagrams that connect to the different bare vertices on the left side: K2, K3, gamma_bar{r}
-    auto left_diff_bare(VertexInput& input) const -> Q;
-    auto left_diff_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+    auto left_diff_bare(const VertexInput& input) const -> Q;
+    auto left_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
     // Combination of those diagrams that connect to the different bare vertices on the right side: K2b, K3, gamma_bar{r}
-    auto right_diff_bare(VertexInput& input) const -> Q;
-    auto right_diff_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+    auto right_diff_bare(const VertexInput& input) const -> Q;
+    auto right_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
     void reorder_due2antisymmetry(fullvert<Q>& right_vertex);
 
@@ -238,12 +238,12 @@ public:
     const fullvert<Q>& half2() const { return vertex; }
 private:
     // wrappers for access functions of fullvert
-    auto value(VertexInput& input) const -> Q           { return vertex.value(input); }
-    auto gammaRb(VertexInput& input) const -> Q         { return vertex.gammaRb(input); }
-    auto left_same_bare(VertexInput& input)  const -> Q { return vertex.left_same_bare(input); }
-    auto right_same_bare(VertexInput& input) const -> Q { return vertex.right_same_bare(input); }
-    auto left_diff_bare(VertexInput& input)  const -> Q { return vertex.left_diff_bare(input); }
-    auto right_diff_bare(VertexInput& input) const -> Q { return vertex.right_diff_bare(input); }
+    auto value(const VertexInput& input) const -> Q           { return vertex.value(input); }
+    auto gammaRb(const VertexInput& input) const -> Q         { return vertex.gammaRb(input); }
+    auto left_same_bare(const VertexInput& input)  const -> Q { return vertex.left_same_bare(input); }
+    auto right_same_bare(const VertexInput& input) const -> Q { return vertex.right_same_bare(input); }
+    auto left_diff_bare(const VertexInput& input)  const -> Q { return vertex.left_diff_bare(input); }
+    auto right_diff_bare(const VertexInput& input) const -> Q { return vertex.right_diff_bare(input); }
 
     void check_symmetries(const std::string identifier, const int spin, const fullvert<Q>& vertex_symred) const {vertex.check_symmetries(identifier, spin, vertex_symred);}
 
@@ -310,12 +310,12 @@ public:
     const fullvert<Q>& half2() const { return vertex_half2; }
 private:
     // wrappers for access functions of fullvert
-    auto value(VertexInput& input) const -> Q           { return vertex_half1.value(input, vertex_half2); }
-    auto gammaRb(VertexInput& input) const -> Q         { return vertex_half1.gammaRb(input, vertex_half2); }
-    auto left_same_bare(VertexInput& input)  const -> Q { return vertex_half1.left_same_bare(input, vertex_half2); }
-    auto right_same_bare(VertexInput& input) const -> Q { return vertex_half1.right_same_bare(input, vertex_half2); }
-    auto left_diff_bare(VertexInput& input)  const -> Q { return vertex_half1.left_diff_bare(input, vertex_half2); }
-    auto right_diff_bare(VertexInput& input) const -> Q { return vertex_half1.right_diff_bare(input, vertex_half2); }
+    auto value(const VertexInput& input) const -> Q           { return vertex_half1.value(input, vertex_half2); }
+    auto gammaRb(const VertexInput& input) const -> Q         { return vertex_half1.gammaRb(input, vertex_half2); }
+    auto left_same_bare(const VertexInput& input)  const -> Q { return vertex_half1.left_same_bare(input, vertex_half2); }
+    auto right_same_bare(const VertexInput& input) const -> Q { return vertex_half1.right_same_bare(input, vertex_half2); }
+    auto left_diff_bare(const VertexInput& input)  const -> Q { return vertex_half1.left_diff_bare(input, vertex_half2); }
+    auto right_diff_bare(const VertexInput& input) const -> Q { return vertex_half1.right_diff_bare(input, vertex_half2); }
 
     void check_symmetries(const std::string identifier, const int spin, const fullvert<Q>& vertex_symred) const {vertex_half1.check_symmetries(identifier, spin, vertex_symred);}
 
@@ -405,12 +405,12 @@ public:
 
 private:
     // wrappers for access functions of fullvert
-    auto value(VertexInput& input) const -> Q           { return vertex.value(input); }
-    auto gammaRb(VertexInput& input) const -> Q         { return vertex.gammaRb(input); }
-    auto left_same_bare(VertexInput& input)  const -> Q { return vertex.left_same_bare(input); }
-    auto right_same_bare(VertexInput& input) const -> Q { return vertex.right_same_bare(input); }
-    auto left_diff_bare(VertexInput& input)  const -> Q { return vertex.left_diff_bare(input); }
-    auto right_diff_bare(VertexInput& input) const -> Q { return vertex.right_diff_bare(input); }
+    auto value(const VertexInput& input) const -> Q           { return vertex.value(input); }
+    auto gammaRb(const VertexInput& input) const -> Q         { return vertex.gammaRb(input); }
+    auto left_same_bare(const VertexInput& input)  const -> Q { return vertex.left_same_bare(input); }
+    auto right_same_bare(const VertexInput& input) const -> Q { return vertex.right_same_bare(input); }
+    auto left_diff_bare(const VertexInput& input)  const -> Q { return vertex.left_diff_bare(input); }
+    auto right_diff_bare(const VertexInput& input) const -> Q { return vertex.right_diff_bare(input); }
 
     void check_symmetries(const std::string identifier, const int spin, const vertex_container<Q, symmetry_type>& vertex_symred) const {vertex.check_symmetries(identifier, spin, vertex_symred.half1());}
 
@@ -623,42 +623,42 @@ public:
     }
 
 
-    auto value(VertexInput& input) const -> Q           {
+    auto value(const VertexInput& input) const -> Q           {
 #ifdef DEBUG_SYMMETRIES
         return (*this)[input.spin].value(input);
 #else
         return (*this)[0].value(input);
 #endif
     }
-    auto gammaRb(VertexInput& input) const -> Q         {
+    auto gammaRb(const VertexInput& input) const -> Q         {
 #ifdef DEBUG_SYMMETRIES
         return (*this)[input.spin].gammaRb(input);
 #else
         return (*this)[0].gammaRb(input);
 #endif
     }
-    auto left_same_bare(VertexInput& input)  const -> Q {
+    auto left_same_bare(const VertexInput& input)  const -> Q {
 #ifdef DEBUG_SYMMETRIES
         return (*this)[input.spin].left_same_bare(input);
 #else
         return (*this)[0].left_same_bare(input);
 #endif
         }
-    auto right_same_bare(VertexInput& input) const -> Q {
+    auto right_same_bare(const VertexInput& input) const -> Q {
 #ifdef DEBUG_SYMMETRIES
         return (*this)[input.spin].right_same_bare(input);
 #else
         return (*this)[0].right_same_bare(input);
 #endif
         }
-    auto left_diff_bare(VertexInput& input)  const -> Q {
+    auto left_diff_bare(const VertexInput& input)  const -> Q {
 #ifdef DEBUG_SYMMETRIES
         return (*this)[input.spin].left_diff_bare(input);
 #else
         return (*this)[0].left_diff_bare(input);
 #endif
         }
-    auto right_diff_bare(VertexInput& input) const -> Q {
+    auto right_diff_bare(const VertexInput& input) const -> Q {
 #ifdef DEBUG_SYMMETRIES
         return (*this)[input.spin].right_diff_bare(input);
 #else
@@ -722,20 +722,20 @@ template <typename Q> void irreducible<Q>::initialize(Q val) {
 
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
 
-template <typename Q> auto fullvert<Q>::value (VertexInput& input) const -> Q {
+template <typename Q> auto fullvert<Q>::value (const VertexInput& input) const -> Q {
     return irred.val(input.iK, input.i_in, input.spin)
             + avertex.value(input, tvertex)
             + pvertex.value(input, pvertex)
             + tvertex.value(input, avertex);
 }
-template <typename Q> auto fullvert<Q>::value (VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
+template <typename Q> auto fullvert<Q>::value (const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
     return irred.val(input.iK, input.i_in, input.spin)
            + avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex)
            + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex)
            + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
 }
 
-template <typename Q> auto fullvert<Q>::gammaRb (VertexInput& input) const -> Q {
+template <typename Q> auto fullvert<Q>::gammaRb (const VertexInput& input) const -> Q {
     Q res;
     switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
@@ -753,7 +753,7 @@ template <typename Q> auto fullvert<Q>::gammaRb (VertexInput& input) const -> Q 
     }
     return res;
 }
-template <typename Q> auto fullvert<Q>::gammaRb (VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
+template <typename Q> auto fullvert<Q>::gammaRb (const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
     Q res;
     switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
@@ -960,7 +960,7 @@ template <typename Q> auto fullvert<Q>::right_same_bare(const VertexInput& input
     return gamma0 + K1_K2;
 }
 
-template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput& input) const -> Q {
+template <typename Q> auto fullvert<Q>::left_diff_bare(const VertexInput& input) const -> Q {
     Q K2_K3, gamma_Rb;
     if (Ir) {
         if (MAX_DIAG_CLASS >= 2) {
@@ -990,7 +990,7 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput& input) const
     gamma_Rb = gammaRb(input);
     return K2_K3 + gamma_Rb;
 }
-template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
+template <typename Q> auto fullvert<Q>::left_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2_K3, gamma_Rb;
     if (Ir) {
         if (MAX_DIAG_CLASS >= 2) {
@@ -1021,7 +1021,7 @@ template <typename Q> auto fullvert<Q>::left_diff_bare(VertexInput& input, const
     return K2_K3 + gamma_Rb;
 }
 
-template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput& input) const -> Q {
+template <typename Q> auto fullvert<Q>::right_diff_bare(const VertexInput& input) const -> Q {
     Q K2b_K3, gamma_Rb;
     if (Ir) {
         if (MAX_DIAG_CLASS >= 2) {
@@ -1051,7 +1051,7 @@ template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput& input) cons
     gamma_Rb = gammaRb(input);
     return K2b_K3 + gamma_Rb;
 }
-template <typename Q> auto fullvert<Q>::right_diff_bare(VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
+template <typename Q> auto fullvert<Q>::right_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
     Q K2b_K3, gamma_Rb;
     if (Ir) {
         if (MAX_DIAG_CLASS >= 2) {
