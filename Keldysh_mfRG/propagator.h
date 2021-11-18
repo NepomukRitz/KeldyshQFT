@@ -84,6 +84,8 @@ public:
     auto SK(double v, int i_in) const -> Q;
 
     // Matsubara propagators
+    auto GM(double v, int i_in) const -> Q;
+    auto SM(double v, int i_in) const -> Q;
     auto GM(double v, double ksquared, int i_in) const -> Q;
     auto SM(double v, double ksquared, int i_in) const -> Q;
 
@@ -250,20 +252,48 @@ auto Propagator<double>::SK(const double v, const int i_in) const -> double {
 }
 
 template <typename Q>
-auto Propagator<Q>::GM(const double v, const double ksquared, const int i_in) const -> Q
+auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
 {
+    assert(!FPP);
     if      (REG == 1) {
-        if (FPP)    return GM_REG1_FPP(v, ksquared, i_in);
-        else        return 0.;
+        return 0.;
     }
     else if (REG == 2) {
         if (HUBBARD_MODEL)  return GM_REG2_Hubbard(v, i_in);
         else                return GM_REG2_SIAM(v, i_in);
     }
     else if (REG == 3) {
-        if(FPP)                  return GM_REG3_FPP(v,ksquared,i_in);
-        else if (HUBBARD_MODEL)  return GM_REG3_Hubbard(v, i_in);
+        if(HUBBARD_MODEL)        return GM_REG3_Hubbard(v, i_in);
         else                     return GM_REG3_SIAM(v, i_in);
+    }
+    else std::cout << "The Regulator " << REG << "is not implemented. \n";
+}
+
+template <typename Q>
+auto Propagator<Q>::GM(const double v, const double ksquared, const int i_in) const -> Q {
+    assert(FPP);
+    if (REG == 1){
+        return GM_REG1_FPP(v,ksquared,i_in);
+    }
+    else if (REG == 3){
+        return GM_REG3_FPP(v,ksquared,i_in);
+    }
+    else std::cout << "The Regulator " << REG << "is not implemented. \n";
+}
+
+template <typename Q>
+auto Propagator<Q>::SM(const double v, const int i_in) const -> Q
+{
+    assert(!FPP);
+    if      (REG == 1)  {
+        return 0.;
+    }
+    else if (REG == 2) {
+        if (HUBBARD_MODEL)  return SM_REG2_Hubbard(v, i_in);
+        else                return SM_REG2_SIAM(v, i_in);
+    }
+    else if (REG == 3) {
+        return SM_REG3(v, i_in);
     }
     else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
@@ -271,17 +301,12 @@ auto Propagator<Q>::GM(const double v, const double ksquared, const int i_in) co
 template <typename Q>
 auto Propagator<Q>::SM(const double v, const double ksquared, const int i_in) const -> Q
 {
+    //assert(FPP);
     if      (REG == 1)  {
-        if (FPP)            return SM_REG1_FPP(v,ksquared,i_in);
-        else                return 0.;
-    }
-    else if (REG == 2) {
-        if (HUBBARD_MODEL)  return SM_REG2_Hubbard(v, i_in);
-        else                return SM_REG2_SIAM(v, i_in);
+        return SM_REG1_FPP(v,ksquared,i_in);
     }
     else if (REG == 3) {
-        if (FPP)            return SM_REG3_FPP(v,ksquared, i_in);
-        else                return SM_REG3(v, i_in);
+        return SM_REG3_FPP(v,ksquared, i_in);
     }
     else std::cout << "The Regulator " << REG << "is not implemented. \n";
 }
@@ -316,7 +341,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                 }
             }
             else{
-                return SM(v, i_in);
+                return SM(v, 0, i_in);
             }
 
         case 'k': // including the Katanin extension
@@ -334,7 +359,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                 }
             }
             else{
-                return SM(v, i_in)
+                return SM(v, 0, i_in)
                        + GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
             }
 

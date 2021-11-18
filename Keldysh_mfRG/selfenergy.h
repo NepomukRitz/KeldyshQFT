@@ -4,6 +4,7 @@
 #include "data_structures.h" // real/complex vector classes
 #include "grids/frequency_grid.h"  // interpolate self-energy on new frequency grid
 #include <omp.h>             // parallelize initialization of self-energy
+#include "interpolations/interpolation_functions.h"
 
 /****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>
