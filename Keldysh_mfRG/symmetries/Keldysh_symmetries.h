@@ -262,7 +262,6 @@ Q load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_
 template<char ch, typename Q, typename VertexValue_l, typename BubbleObj, typename VertexValue_r>
 Q sum_over_internal(const VertexValue_l& value_vertex_l, const BubbleObj& Pi, const VertexValue_r& value_vertex_r, const VertexInput& input_external, const double vpp) {
 
-    std::vector<int> alphas_external = alphas(input_external.iK);
     VertexInput input_l = input_external, input_r = input_external;
     input_l.v2 = vpp; input_r.v1 = vpp;
 
@@ -283,7 +282,7 @@ Q sum_over_internal(const VertexValue_l& value_vertex_l, const BubbleObj& Pi, co
             ){
         input_l.spin = 1 - input_external.spin;
         input_r.spin = 1 - input_external.spin;
-        spin_idx = 1 - spin_idx;
+        spin_idx = 1;
 
         load_vertex_keldyshComponents_left <ch,Q>(values_vertex_l, value_vertex_l, input_l, spin_idx);
         load_vertex_keldyshComponents_right<ch,Q>(values_vertex_r, value_vertex_r, input_r, spin_idx);
@@ -345,25 +344,26 @@ Q sum_over_internal(const VertexValue_l& value_vertex_l, const BubbleObj& Pi, co
     // Assemble result
     Q result = 0;
     for (int i = 0; i < glb_number_of_Keldysh_components_bubble; i++) {
-
+        Q result_tmp;
         if ((ch == 't' and input_external.spin == 0)
             #ifdef DEBUG_SYMMETRIES
             or (ch == 'a' and input_external.spin == 1)
             #endif
                 )
-            result += values_vertex_l(i,0) * values_Pi(i,0) * (values_vertex_r(i,0) + values_vertex_r(i,1)) + (values_vertex_l(i,0) + values_vertex_l(i,1)) * values_Pi(i,0) * values_vertex_l(i,0);
+            result_tmp = values_vertex_l(i,0) * values_Pi(i,0) * (values_vertex_r(i,0) + values_vertex_r(i,1)) + (values_vertex_l(i,0) + values_vertex_l(i,1)) * values_Pi(i,0) * values_vertex_r(i,0);
         else
-            result += values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,0);
+            result_tmp = values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,0);
 
         #ifdef DEBUG_SYMMETRIES
         if (ch == 'p' and input_external.spin == 0) {
-            result += (values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,0) +  values_vertex_l(i,1) * values_Pi(i,0) * values_vertex_r(i,1)) * 0.5;
+            result_tmp = (values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,0) +  values_vertex_l(i,1) * values_Pi(i,0) * values_vertex_r(i,1)) * 0.5;
         }
         else if (ch == 'p' and input_external.spin == 1) {
-            result += (values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,1) + values_vertex_l(i,1) * values_Pi(i,0) * values_vertex_r(i,0)) * 0.5;
+            result_tmp = (values_vertex_l(i,0) * values_Pi(i,0) * values_vertex_r(i,1) + values_vertex_l(i,1) * values_Pi(i,0) * values_vertex_r(i,0)) * 0.5;
         }
         #endif
 
+        result += result_tmp;
 
     }
 
