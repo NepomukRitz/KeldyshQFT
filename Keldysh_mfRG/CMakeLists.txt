@@ -68,7 +68,10 @@ add_executable(Keldysh_mfRG
         interpolations/InterpolatorSpline3D.h
         vertex_buffer.h
         utilities/template_utils.h
-        utilities/math_utils.h tests/test_symmetries.h)
+        utilities/math_utils.h
+        tests/test_symmetries.h
+        multidimensional/multiarray.hpp
+        multidimensional/ranged_view.hpp)
 
 
 # executable for unit tests using Catch
@@ -128,7 +131,10 @@ add_executable(Keldysh_mfRG_testing
         interpolations/InterpolatorSpline3D.h
         vertex_buffer.h
         utilities/template_utils.h
-        utilities/math_utils.h tests/test_symmetries.h)
+        utilities/math_utils.h
+        tests/test_symmetries.h
+        multidimensional/multiarray.hpp
+        multidimensional/ranged_view.hpp)
 
 # standard executable for integration tests and production runs
 add_executable(FPP_mfRG
@@ -188,7 +194,10 @@ add_executable(FPP_mfRG
         interpolations/InterpolatorSpline3D.h
         vertex_buffer.h
         utilities/template_utils.h
-        utilities/math_utils.h tests/test_symmetries.h)
+        utilities/math_utils.h
+        tests/test_symmetries.h
+        multidimensional/multiarray.hpp
+        multidimensional/ranged_view.hpp)
 
 add_executable(get_integrand_dGammaL
         tests/get_integrand_dGammaL.cpp
@@ -239,7 +248,10 @@ add_executable(get_integrand_dGammaL
         interpolations/InterpolatorSpline1D.h
         interpolations/InterpolatorSpline2D.h
         interpolations/InterpolatorSpline3D.h
-        vertex_buffer.h utilities/template_utils.h tests/test_symmetries.h)
+        vertex_buffer.h utilities/template_utils.h
+        tests/test_symmetries.h
+        multidimensional/multiarray.hpp
+        multidimensional/ranged_view.hpp)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
