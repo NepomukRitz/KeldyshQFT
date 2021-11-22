@@ -678,6 +678,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(double vpp) const -> Q {
+    Q result;
 #ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
 
     if (case_always_has_to_be_zero()) {return 0.;}
@@ -685,7 +686,6 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
     compute_vertices(vpp, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat);
 
     Q Pival = Pi.value(i2, w, vpp, i_in, channel);
-    Q result;
     if ((channel == 't' and spin == 0)
 #ifdef DEBUG_SYMMETRIES
     or (channel == 'a' and spin == 1)
@@ -704,33 +704,33 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
         }
 #endif
 
-    return result;
 
 #else
 
     VertexInput input_external (i0, w, v, vp,  i_in, spin, channel, diag_class, iw);
 
     if (channel == 'a')
-    sum_over_internal<'a',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
+        result = sum_over_internal<'a',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
                       Pi,
                       [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
                       input_external, vpp
     );
     else if (channel == 'p') {
-        sum_over_internal<'p',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
+        result = sum_over_internal<'p',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
                                Pi,
                                [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
                                input_external, vpp
         );
     }
     else {
-        sum_over_internal<'t',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
+        result = sum_over_internal<'t',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
                                Pi,
                                [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
                                input_external, vpp
         );
     }
 #endif
+    return result;
 }
 
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>

@@ -971,9 +971,9 @@ void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function be
 /// Given an array xx[0..n-1], and given a value x, returns a value j such that x is between xx[j] and xx[j+1].
 /// xx must be monotonically increasing.
 template<typename T>
-inline void locate(const std::vector<T> xx, const size_t n, const T x, size_t &j, const size_t jl_start, const size_t ju_start)
+inline void locate(const std::vector<T> xx, const size_t n, const T x, int &j, const int jl_start, const int ju_start)
 {
-    size_t ju, jm, jl;
+    int ju, jm, jl;
 
     //Initialize lower and upper limits.
     jl = jl_start;

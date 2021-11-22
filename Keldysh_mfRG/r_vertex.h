@@ -317,8 +317,25 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
                                           const rvert<Q>& rvert_crossing) const {
 
     Ti(indices, transformations.K[k][input.spin][input.iK]);  // apply necessary symmetry transformations
+#ifndef DEBUG_SYMMETRIES
     indices.iK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
+#else
+    int itK = components.K[k][input.spin][input.iK];  // check which symmetry-transformed component should be read
+    //const std::vector<int> all_Keldysh {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    //int res_iK;
+    //locate(all_Keldysh, 16, itK, res_iK, -1, 16);
+    if constexpr (k == k1) {
+        indices.iK = (indices.channel == 'a' ? non_zero_Keldysh_K1a[itK]: indices.channel == 'p' ? non_zero_Keldysh_K1p[itK] : non_zero_Keldysh_K1t[itK]);
+    }
+    else if constexpr (k == k2 or k == k2b) {
+        indices.iK = (indices.channel == 'a' ? non_zero_Keldysh_K2a[itK]: indices.channel == 'p' ? non_zero_Keldysh_K2p[itK] : non_zero_Keldysh_K2t[itK]);
+    }
+    else {
+        indices.iK = non_zero_Keldysh_K3[itK];
+    }
 
+
+#endif
     if (indices.channel != channel)
         // if the symmetry transformation switches between channels (a <--> t), return the
         // r vertex in the channel related by crossing symmetry
@@ -413,7 +430,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
     print("maximal deviation in symmetry in " + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + " (normalized by maximal absolute value of K_i)", "\n");
 
     // K1:
-    rvec deviations_K1(getFlatSize(K1.get_dims()));
+    vec<Q> deviations_K1(getFlatSize(K1.get_dims()));
     for (int iK = 0; iK < nK_K1; iK++) {
         for (int iw = 0; iw < nBOS; iw++) {
             for (int i_in = 0; i_in < n_in; i_in++) {
@@ -427,22 +444,24 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
 
                 Q deviation = value_direct - value_symmet;
-                deviations_K1[getFlatIndex(iK, iw+FREQ_PADDING, i_in, K1.get_dims())] = std::abs(deviation);
+                deviations_K1[getFlatIndex(iK, iw+FREQ_PADDING, i_in, K1.get_dims())] = deviation;
 
-                if (transformations.K[k1][input.spin][input.iK] == 0) {
+                // test frequency symmetries for symmetry-reduced Keldysh components:
+                if (transformations.K[k1][input.spin][input.iK] == 0 and components.K[k1][input.spin][input.iK] != -1 and (channel == 'a' ? isInList(iK, non_zero_Keldysh_K1a) : ( channel == 'p' ? isInList(iK, non_zero_Keldysh_K1p) : isInList(iK, non_zero_Keldysh_K1t) ) )) {
                     // Check frequency symmetries
-                    IndicesSymmetryTransformations indices(iK, w, 0., 0., 0, channel, k1, 0, channel);
+                    IndicesSymmetryTransformations indices(iK, w, 0., 0., i_in, channel, k1, 0, channel);
                     int sign_w = sign_index(indices.w);
-                    size_t itK;
+                    int itK;
+                    // find position of iK and store it in itK:
                     locate((channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p' ? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t)), non_zero_Keldysh_K1t.size(), iK, itK, 0, non_zero_Keldysh_K1t.size());
                     int trafo_index = freq_transformations.K1[itK][sign_w];
                     if (trafo_index != 0){
                         Ti(indices, trafo_index);
-                        indices.iK = itK;
+                        indices.iK = iK;
 
                         Q result_freqsymm = read_symmetryreduced_rvert<k1>(indices, *this);
                         deviation = value_direct - result_freqsymm;
-                        deviations_K1[getFlatIndex(iK, iw, i_in, K1.get_dims())] = std::abs(deviation);
+                        deviations_K1[getFlatIndex(iK, iw, i_in, K1.get_dims())] = deviation;
                     }
                 }
             }
@@ -470,15 +489,16 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     Q deviation = value_direct - value_symmet;
                     deviations_K2[getFlatIndex(iK, iw, iv, i_in, K2.get_dims())] = std::abs(deviation);
 
-                    if (transformations.K[k2][input.spin][input.iK] == 0) {
+                    // test frequency symmetries for symmetry-reduced Keldysh components:
+                    if (transformations.K[k2][input.spin][input.iK] == 0 and components.K[k2][input.spin][input.iK] != -1 and (channel == 'a' ? isInList(iK, non_zero_Keldysh_K2a) : ( channel == 'p' ? isInList(iK, non_zero_Keldysh_K2p) : isInList(iK, non_zero_Keldysh_K2t) ) )) {
                         IndicesSymmetryTransformations indices(iK, w, v, 0., i_in, channel, k2, 0, channel);
                         int sign_w = sign_index(w);
                         int sign_v1 = sign_index(v);
-                        size_t itK;
+                        int itK;
                         locate((channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p' ? non_zero_Keldysh_K2p : non_zero_Keldysh_K2t)) , non_zero_Keldysh_K2t.size(), iK, itK, 0, non_zero_Keldysh_K2t.size());
                         int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
                         Ti(indices, trafo_index);
-                        indices.iK = itK;
+                        //indices.iK = itK;
 
                         Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
                         deviation = value_direct - result_freqsymm;
@@ -536,17 +556,18 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                         Q deviation = value_direct - value_symmet;
                         deviations_K3[getFlatIndex(iK, iw+FREQ_PADDING, iv+FREQ_PADDING, ivp+FREQ_PADDING, i_in, K3.get_dims())] = std::abs(deviation);
 
-                        if (transformations.K[k3][input.spin][input.iK] == 0) {
+                        // test frequency symmetries for symmetry-reduced Keldysh components:
+                        if (transformations.K[k3][input.spin][input.iK] == 0  and components.K[k3][input.spin][input.iK] != -1 and isInList(iK, non_zero_Keldysh_K3)) {
                             IndicesSymmetryTransformations indices(iK, w, v, vp, i_in, channel, k2, 0, channel);
                             int sign_w = sign_index(w);
                             int sign_f = sign_index(indices.v1 + indices.v2);
                             int sign_fp= sign_index(indices.v1 - indices.v2);
-                            size_t itK;
+                            int itK;
                             locate(non_zero_Keldysh_K3, non_zero_Keldysh_K3.size(), iK, itK, 0, non_zero_Keldysh_K3.size());
 
                             int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
                             Ti(indices, trafo_index);
-                            indices.iK = itK;
+                            //indices.iK = itK;
 
                             Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
                             deviation = value_direct - result_freqsymm;
@@ -563,13 +584,15 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
     write_h5_rvecs(data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + ".h5" ,
                    {
-                            "K1",
+                            "K1_re",
+                            "K1_im",
                             "K2",
                             "K2b",
                             "K3"
                             },
                    {
-                           deviations_K1,
+                           deviations_K1.real(),
+                           deviations_K1.imag(),
                            deviations_K2,
                            deviations_K2b,
                            deviations_K3
