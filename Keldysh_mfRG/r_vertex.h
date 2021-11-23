@@ -444,7 +444,9 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
 
                 Q deviation = value_direct - value_symmet;
-                deviations_K1[getFlatIndex(iK, iw+FREQ_PADDING, i_in, K1.get_dims())] = deviation;
+                if (components.K[k1][input.spin][input.iK] != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
+                    deviations_K1[getFlatIndex(iK, iw + FREQ_PADDING, i_in, K1.get_dims())] = deviation;
+                }
 
                 // test frequency symmetries for symmetry-reduced Keldysh components:
                 if (transformations.K[k1][input.spin][input.iK] == 0 and components.K[k1][input.spin][input.iK] != -1 and (channel == 'a' ? isInList(iK, non_zero_Keldysh_K1a) : ( channel == 'p' ? isInList(iK, non_zero_Keldysh_K1p) : isInList(iK, non_zero_Keldysh_K1t) ) )) {
@@ -487,7 +489,9 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
 
                     Q deviation = value_direct - value_symmet;
-                    deviations_K2[getFlatIndex(iK, iw, iv, i_in, K2.get_dims())] = std::abs(deviation);
+                    if (components.K[k2][input.spin][input.iK] != -1) {// zero component is not being computed anyway
+                        deviations_K2[getFlatIndex(iK, iw, iv, i_in, K2.get_dims())] = std::abs(deviation);
+                    }
 
                     // test frequency symmetries for symmetry-reduced Keldysh components:
                     if (transformations.K[k2][input.spin][input.iK] == 0 and components.K[k2][input.spin][input.iK] != -1 and (channel == 'a' ? isInList(iK, non_zero_Keldysh_K2a) : ( channel == 'p' ? isInList(iK, non_zero_Keldysh_K2p) : isInList(iK, non_zero_Keldysh_K2t) ) )) {
@@ -528,7 +532,9 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
 
                     Q deviation = value_direct - value_symmet;
-                    deviations_K2b[getFlatIndex(iK, iw+FREQ_PADDING, iv+FREQ_PADDING, i_in, K2b.get_dims())] = std::abs(deviation);
+                    if (components.K[k2b][input.spin][input.iK] != -1) {// zero component is not being computed anyway
+                        deviations_K2b[getFlatIndex(iK, iw + FREQ_PADDING, iv + FREQ_PADDING, i_in, K2b.get_dims())] = std::abs(deviation);
+                    }
                 }
             }
         }
@@ -554,7 +560,9 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                         Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
 
                         Q deviation = value_direct - value_symmet;
-                        deviations_K3[getFlatIndex(iK, iw+FREQ_PADDING, iv+FREQ_PADDING, ivp+FREQ_PADDING, i_in, K3.get_dims())] = std::abs(deviation);
+                        if (components.K[k1][input.spin][input.iK] != -1) { // zero component is not being computed anyway
+                            deviations_K3[getFlatIndex(iK, iw + FREQ_PADDING, iv + FREQ_PADDING, ivp + FREQ_PADDING, i_in, K3.get_dims())] = std::abs(deviation);
+                        }
 
                         // test frequency symmetries for symmetry-reduced Keldysh components:
                         if (transformations.K[k3][input.spin][input.iK] == 0  and components.K[k3][input.spin][input.iK] != -1 and isInList(iK, non_zero_Keldysh_K3)) {
