@@ -110,7 +110,7 @@ void Hubbard_SE_SOPT_Computer::compute_HUBBARD_SE_SOPT() {
 void Hubbard_SE_SOPT_Computer::compute_frequency_integrands(vec<comp>& integrand,
                                                             const int iK, const int iK_internal) {
     std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
-#pragma omp parallel for schedule(dynamic)
+//#pragma omp parallel for schedule(dynamic)
     for (int iv1 = 0; iv1 < nFER; ++iv1) {     // loop over propagator frequencies
         for (int iw1 = 0; iw1 < nBOS; ++iw1) { // loop over vertex frequencies
             vec<comp> g_values      (glb_N_transfer);
@@ -152,6 +152,10 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
 
         VertexInput input(vertex_Keldysh_component(iK, iK_internal), w1, 0., 0., i_in, 0, 'a'); // TODO: Spin sum!?
         vertex_values[i_in] = vertex_in_SOPT[0].avertex().value(input, vertex_in_SOPT[0].tvertex());
+        if (iK==1 && iK_internal==0 && iv1==0 && i_in==0) {
+            print("iw1 = " +std::to_string(iw1) + ", w1 = " + std::to_string(w1) + ": ", false);
+            print(vertex_values[i_in], true);
+        }
     }
 }
 

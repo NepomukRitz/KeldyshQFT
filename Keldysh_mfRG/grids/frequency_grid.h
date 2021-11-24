@@ -135,6 +135,10 @@ public:
                         W_scale = glb_W_scale;
                         U_factor = 20./3.;
                         Delta_factor = 20.;
+                        if (HUBBARD_MODEL){ //TODO(medium): Just a hotfix for the Hubbard model. Avoids that one runs out of the frequency box when integrating for the bubble.
+                            U_factor *= 1.5;
+                            Delta_factor *= 1.5;
+                        }
                         break;
                     case 2:
                         N_w = nFER2+FREQ_PADDING*2;

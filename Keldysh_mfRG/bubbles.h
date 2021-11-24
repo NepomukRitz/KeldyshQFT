@@ -1104,7 +1104,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int iterator = 0;
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(dynamic) default(none) shared(n_omp, i_mpi, iterator, Buffer)
+//#pragma omp parallel for schedule(dynamic) default(none) shared(n_omp, i_mpi, iterator, Buffer)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }
@@ -1161,7 +1161,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
 #ifndef NDEBUG
-        //if ((std::abs(w) < 0.001) && (i_in == 0) && (channel != 't') && HUBBARD_MODEL) integrand_K1.save_integrand();
+        if (((std::abs(w) < 0.0001) || std::abs(std::abs(w) - 180.0) < 0.01 || std::abs(std::abs(w) - 155.010982) < 0.01 || std::abs(std::abs(w) - 135.862919) < 0.01) && (i_in == 0) && (channel != 't') && HUBBARD_MODEL) integrand_K1.save_integrand();
 #endif // NDEBUG
         if (KELDYSH){
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
