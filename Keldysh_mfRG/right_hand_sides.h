@@ -48,6 +48,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     int iteration=-1;
     int rkStep=-1;
     bool save_intermediate = false;
+    const int nLambda_layers = nODE + U_NRG.size() + 1;
 
     if (opt.size() > 1) {
          iteration = opt[0];
@@ -93,8 +94,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     /// save intermediate states:
     if (save_intermediate) {
         if (iteration == 0) {
-            write_hdf<Q>(dir_str+ "Psi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, nODE + U_NRG.size() + 1, Psi);
-            write_hdf<Q>(dir_str+"dPsi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi);
+            write_hdf<Q>(dir_str+ "Psi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, nLambda_layers, Psi);
+            write_hdf<Q>(dir_str+"dPsi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, nLambda_layers, dPsi);
 
 #ifdef DEBUG_SYMMETRIES
             Psi.vertex.check_symmetries("Psi");
@@ -180,9 +181,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                     State<Q> dPsi_R(dGammaR_half1, dPsi.selfenergy);
                     State<Q> dPsi_T(dGammaT, dPsi.selfenergy);
                     if (iteration == 0) {
-                        write_hdf<Q>(dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_L);
-                        write_hdf<Q>(dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_R);
-                        write_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_T);
+                        write_hdf<Q>(dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nLambda_layers, dPsi_L);
+                        write_hdf<Q>(dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nLambda_layers, dPsi_R);
+                        write_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nLambda_layers, dPsi_T);
 #ifdef DEBUG_SYMMETRIES
                         // dPsi_L.vertex.check_symmetries("dPsi_L"); // we don't expect these to have the full symmetry of the vertex
                         // dPsi_R.vertex.check_symmetries("dPsi_R"); // we don't expect these to have the full symmetry of the vertex
@@ -224,9 +225,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                     State<Q> dPsi_C_left (dGammaC_l, dPsi.selfenergy);
                     State<Q> dPsi_C_right(dGammaC_r, dPsi.selfenergy);
                     if (iteration == 0) {
-                        write_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C);
-                        write_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C_left);
-                        write_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C_right);
+                        write_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       Psi.Lambda, nLambda_layers, dPsi_C);
+                        write_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  Psi.Lambda, nLambda_layers, dPsi_C_left);
+                        write_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, nLambda_layers, dPsi_C_right);
 #ifdef DEBUG_SYMMETRIES
                         //dPsi_C_left.vertex.check_symmetries("dPsi_C_left");   // we don't expect these to have the full symmetry of the vertex
                         //dPsi_C_right.vertex.check_symmetries("dPsi_C_right"); // we don't expect these to have the full symmetry of the vertex
