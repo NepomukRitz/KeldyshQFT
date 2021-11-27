@@ -100,11 +100,11 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
     s = gsl_min_fminimizer_alloc (T);
     gsl_min_fminimizer_set (s, &F, m, a, b);
 
-    if (verbose) {
+    if (verbose and mpi_world_rank() == 0) {
         printf("using %s method\n",
                gsl_min_fminimizer_name(s));
     }
-    if(superverbose) {
+    if(superverbose and mpi_world_rank() == 0) {
 
         printf("%5s [%9s, %9s] %9s %10s %9s\n",
                "iter", "lower", "upper", "min",
@@ -126,7 +126,7 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
 
         status = gsl_min_test_interval (a, b, epsabs, epsrel);
 
-        if (superverbose) {
+        if (superverbose and mpi_world_rank() == 0) {
             if (status == GSL_SUCCESS)
                 printf("Converged:\n");
 

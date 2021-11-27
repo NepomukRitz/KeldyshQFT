@@ -472,7 +472,7 @@ template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose
     const std::array<size_t,3> perm1 = {2, 0, 1};
     double max_SE = (::power2(::partial_deriv<Q,3>(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1), frequencies.get_ts_vec(), dims, 1)*dt*dt*(1/maxmax))).max_norm();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank() == 0) {
         std::cout << "max. Curvature in SE:";
         std::cout << "\t  \t" << max_SE << std::endl;
     }

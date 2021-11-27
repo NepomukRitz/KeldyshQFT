@@ -1041,7 +1041,7 @@ namespace {
             //rVert.K1.analyze_tails_K1();
             double result = rVert.K1.get_curvature_maxK1();
 
-            if (verbose) {
+            if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K1" << rVert.channel; // << std::endl;
                 std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
 
@@ -1077,7 +1077,7 @@ namespace {
             //rVert.K2.analyze_tails_K2_b();
             double result = rVert.K2.get_curvature_maxK2();
 
-            if (verbose) {
+            if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
                 std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
 
@@ -1105,7 +1105,7 @@ namespace {
             //rVert.K2.analyze_tails_K2_f();
             double result = rVert.K2.get_curvature_maxK2();
 
-            if (verbose) {
+            if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
                 std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
 
@@ -1163,7 +1163,7 @@ namespace {
             //rVert.K3.analyze_tails_K3_b();
             double result = rVert.K3.get_curvature_maxK3();
 
-            if (verbose) {
+            if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
                 std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
             }
@@ -1191,7 +1191,7 @@ namespace {
             //rVert.K3.analyze_tails_K3_b();
             double result = rVert.K3.get_curvature_maxK3();
 
-            if (verbose) {
+            if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
                 std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
 
