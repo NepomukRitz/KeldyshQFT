@@ -41,19 +41,19 @@ void switch_channel(IndicesSymmetryTransformations& indices) {
         case 't':
             indices.channel = 'a';
             break;
-        default: ;
+        default:;
     }
-#ifdef INTERPOL2D_FOR_K3
-    switch (indices.channel_bubble) {
-        case 'a':
-            indices.channel_bubble = 't';
-            break;
-        case 't':
-            indices.channel_bubble = 'a';
-            break;
-        default: ;
+    if (INTERPOL2D_FOR_K3) {
+        switch (indices.channel_bubble) {
+            case 'a':
+                indices.channel_bubble = 't';
+                break;
+            case 't':
+                indices.channel_bubble = 'a';
+                break;
+            default: ;
+        }
     }
-#endif
 }
 
 void T1 (IndicesSymmetryTransformations& indices){
@@ -84,11 +84,12 @@ void T1 (IndicesSymmetryTransformations& indices){
         }
     }
 
-#ifdef INTERPOL2D_FOR_K3
-    if(indices.channel_bubble != 'p'){
-        indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+    if (INTERPOL2D_FOR_K3) {
+        if(indices.channel_bubble != 'p'){
+            indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+        }
     }
-#endif
+
     switch_channel(indices);
 }
 
@@ -142,11 +143,11 @@ void TC (IndicesSymmetryTransformations& indices){
         }
     }
 
-#ifdef INTERPOL2D_FOR_K3
-    if (indices.channel_bubble == 't') {
-        indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+    if (INTERPOL2D_FOR_K3) {
+        if (indices.channel_bubble == 't') {
+            indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+        }
     }
-#endif
 
     if (KELDYSH){
         if(isInList(indices.iK, odd_Keldysh))
@@ -181,9 +182,9 @@ void Tph (IndicesSymmetryTransformations& indices){
             indices.v2 *= -1;
         }
 
-#ifdef INTERPOL2D_FOR_K3
-        indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
-#endif
+        if (INTERPOL2D_FOR_K3) {
+            indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+        }
     }
 }
 
@@ -191,9 +192,9 @@ void TR (IndicesSymmetryTransformations& indices){
     if (!KELDYSH){ // used only for Matsubara calculations
         indices.conjugate ^= true;
         indices.w *= -1;
-#ifdef INTERPOL2D_FOR_K3
-        indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
-#endif
+        if (INTERPOL2D_FOR_K3) {
+            indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+        }
         if (MAX_DIAG_CLASS > 1) {
             indices.v1 *= -1;
             indices.v2 *= -1;

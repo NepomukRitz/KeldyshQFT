@@ -26,10 +26,10 @@ constexpr bool VERBOSE = true;
 #endif
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
-//#define BOSONIC_PARAM_FOR_K3 // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
-#ifdef BOSONIC_PARAM_FOR_K3
-#define INTERPOL2D_FOR_K3
-#endif
+constexpr bool BOSONIC_PARAM_FOR_K3 = true; // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
+
+constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
+
 
 // Determines whether particle-hole symmetry is assumed
 #define PARTICLE_HOLE_SYMM
@@ -51,7 +51,7 @@ constexpr int N_LOOPS = 3;  // Number of loops
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 constexpr double glb_T = 2./M_PI; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 0.01;                     // Temperature
+constexpr double glb_T = 0.1;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
@@ -137,7 +137,7 @@ constexpr double epsODE = 1e-4;
 #define ODEsolver 1
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 5.8;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 0.0;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 

@@ -89,6 +89,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     if (VERBOSE) print("Compute 1-loop contribution: ", true);
     vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi);
     if(VERBOSE) dPsi.vertex[0].half1().check_vertex_resolution();
+    if(VERBOSE) dPsi.analyze_tails();
 
 
     /// save intermediate states:
@@ -196,6 +197,14 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                         add_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_T);
 
                     }
+                    if (VERBOSE) {
+                        print("Analyze tails of dPsi_L");
+                        dPsi_L.analyze_tails();
+                        print("Analyze tails of dPsi_R");
+                        dPsi_R.analyze_tails();
+                        print("Analyze tails of dPsi_T");
+                        dPsi_T.analyze_tails();
+                    }
                 }
 
                 if (VERBOSE) print("Compute dGammaL ( ", i,"-loop): \n");
@@ -239,6 +248,10 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                         add_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C_left);
                         add_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C_right);
 
+                    }
+                    if (VERBOSE) {
+                        print("Analyze tails of dPsi_C");
+                        dPsi_C.analyze_tails();
                     }
                 }
 

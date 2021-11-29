@@ -131,9 +131,9 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                 //if (avertex.K3_val(iK, iw, iv, ivp, i_in) != avertex.K3_val(iK, nBOS3 - 1 - iw, iv, ivp, i_in)) {
                 //    asymmetry += 1;
                 //}
-#ifdef BOSONIC_PARAM_FOR_K3
-                switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
-#endif
+                if (BOSONIC_PARAM_FOR_K3) {
+                    switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
+                }
 
                 state_datatype compare_val = avertex.K3.interpolate(indices);
                 state_datatype savedK3_val = avertex.K3.val(iK, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in);

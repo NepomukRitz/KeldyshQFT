@@ -252,12 +252,11 @@ public:
         double w_temp = indices.w;
         double v_temp = indices.v1;
         double vp_temp= indices.v2;
-#ifdef BOSONIC_PARAM_FOR_K3
-
-        if (indices.channel == 'a') {switch2bosonicFreqs<'a'>(w_temp, v_temp, vp_temp);}
-        else if (indices.channel == 'p') {switch2bosonicFreqs<'p'>(w_temp, v_temp, vp_temp);}
-        else if (indices.channel == 't') {switch2bosonicFreqs<'t'>(w_temp, v_temp, vp_temp);}
-#endif
+        if (BOSONIC_PARAM_FOR_K3) {
+            if (indices.channel == 'a') { switch2bosonicFreqs<'a'>(w_temp, v_temp, vp_temp); }
+            else if (indices.channel == 'p') { switch2bosonicFreqs<'p'>(w_temp, v_temp, vp_temp); }
+            else if (indices.channel == 't') { switch2bosonicFreqs<'t'>(w_temp, v_temp, vp_temp); }
+        }
 #if FREQ_PADDING == 0
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (std::abs(indices.w) < vertexDataContainer<k3, Q>::frequencies_K3.b.w_upper + inter_tol
@@ -267,9 +266,9 @@ public:
 #endif
             Q result;
 
-#ifdef INTERPOL2D_FOR_K3
-            if (indices.kClass_aim != k3) {
-#endif
+
+            if (not INTERPOL2D_FOR_K3 or indices.kClass_aim != k3) {
+
                 if constexpr(inter == linear_on_aux) {
                     result = interpolate_lin_on_aux3D<Q>(w_temp, v_temp, vp_temp,
                                                          vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
@@ -305,87 +304,86 @@ public:
                 }
                 else assert(false);
 
-#ifdef INTERPOL2D_FOR_K3
+
             }
 
-        else {
+            else {
 
-            if constexpr(inter == linear_on_aux) {
-                switch (indices.channel_bubble) {
-                    case 'a':
-                        result = interpolate_lin_on_aux2D<Q>(v_temp, vp_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.iw,j, k,indices.i_in);});
-                        break;
-                    case 'p':
-                        result = interpolate_lin_on_aux2D<Q>(w_temp, vp_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, indices.iw, k,indices.i_in);});
+                if constexpr(inter == linear_on_aux) {
+                    switch (indices.channel_bubble) {
+                        case 'a':
+                            result = interpolate_lin_on_aux2D<Q>(v_temp, vp_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.iw,j, k,indices.i_in);});
+                            break;
+                        case 'p':
+                            result = interpolate_lin_on_aux2D<Q>(w_temp, vp_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, indices.iw, k,indices.i_in);});
 
-                        break;
-                    case 't':
+                            break;
+                        case 't':
 
-                        result = interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i,j, indices.iw,indices.i_in);});
-                        break;
-                    default:;
+                            result = interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i,j, indices.iw,indices.i_in);});
+                            break;
+                        default:;
+                    }
                 }
-            }
-            else if constexpr(inter == linear) {
-                switch (indices.channel_bubble) {
-                    case 'a':
-                        result = interpolate_lin2D<Q>(v_temp, vp_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.iw,j, k,indices.i_in);});
-                        break;
-                    case 'p':
-                        result = interpolate_lin2D<Q>(w_temp, vp_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, indices.iw, k,indices.i_in);});
-                        break;
-                    case 't':
+                else if constexpr(inter == linear) {
+                    switch (indices.channel_bubble) {
+                        case 'a':
+                            result = interpolate_lin2D<Q>(v_temp, vp_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.iw,j, k,indices.i_in);});
+                            break;
+                        case 'p':
+                            result = interpolate_lin2D<Q>(w_temp, vp_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, indices.iw, k,indices.i_in);});
+                            break;
+                        case 't':
 
-                        result = interpolate_lin2D<Q>(w_temp, v_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i,j, indices.iw,indices.i_in);});
-                        break;
-                    default:;
+                            result = interpolate_lin2D<Q>(w_temp, v_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i,j, indices.iw,indices.i_in);});
+                            break;
+                        default:;
+                    }
                 }
-            }
-            else if constexpr(inter == sloppycubic) {
-                switch (indices.channel_bubble) {
-                    case 'a':
-                        result = interpolate_sloppycubic2D<Q>(v_temp, vp_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.iw,j, k,indices.i_in);});
-                        break;
-                    case 'p':
-                        result = interpolate_sloppycubic2D<Q>(w_temp, vp_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, indices.iw, k,indices.i_in);});
+                else if constexpr(inter == sloppycubic) {
+                    switch (indices.channel_bubble) {
+                        case 'a':
+                            result = interpolate_sloppycubic2D<Q>(v_temp, vp_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.iw,j, k,indices.i_in);});
+                            break;
+                        case 'p':
+                            result = interpolate_sloppycubic2D<Q>(w_temp, vp_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i, indices.iw, k,indices.i_in);});
 
-                        break;
-                    case 't':
-                        result = interpolate_sloppycubic2D<Q>(w_temp, v_temp,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
-                                                             [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i,j, indices.iw,indices.i_in);});
-                        break;
-                    default:;
+                            break;
+                        case 't':
+                            result = interpolate_sloppycubic2D<Q>(w_temp, v_temp,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 vertexDataContainer<k3, Q>::K3_get_VertexFreqGrid().b,
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, i,j, indices.iw,indices.i_in);});
+                            break;
+                        default:;
+                    }
                 }
+                else assert(false);
             }
-            else assert(false);
-        }
-#endif
 
             assert(isfinite(result));
             return result;

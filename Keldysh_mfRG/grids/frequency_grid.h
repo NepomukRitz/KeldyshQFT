@@ -31,7 +31,7 @@ template<K_class k, typename Q> class vertexDataContainer; // forward declaratio
 
 
 
-//#define PARAMETRIZED_GRID
+#define PARAMETRIZED_GRID
 #define FREQ_PADDING 1  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 #define DENSEGRID
@@ -42,11 +42,13 @@ double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
 double grid_transf_v3(double w, double W_scale);
 double grid_transf_v4(double w, double W_scale);
+double grid_transf_log(double w, double W_scale);
 double grid_transf_inv_lin(double W, double W_scale);
 double grid_transf_inv_v1(double t, double W_scale);
 double grid_transf_inv_v2(double t, double W_scale);
 double grid_transf_inv_v3(double t, double W_scale);
 double grid_transf_inv_v4(double t, double W_scale);
+double grid_transf_inv_log(double t, double W_scale);
 double wscale_from_wmax_v1(double & Wscale, double w1, double wmax, int N);
 double wscale_from_wmax_v2(double & Wscale, double w1, double wmax, int N);
 double wscale_from_wmax_v3(double & Wscale, double w1, double wmax, int N);
@@ -360,16 +362,17 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
         if (ws[index+1+FREQ_PADDING] < w_in) index++;
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
 
 #else
-    size_t j;
+    int j;
     if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
     else {locate(ws, N_w, w_in, j, 0, N_w-1); }
-    return j-FREQ_PADDING;
+    int index = j - FREQ_PADDING;
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
+    return index;
 #endif
 }
 
@@ -398,16 +401,19 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
             index--;
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
-        //assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0);
-        //assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0); /// TODO: If this is not satisfied -> use locate
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
     }
     return index;
 
 #else
-    size_t j;
+    int j;
     if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
     else {locate(ts, N_w, t, j, 0, N_w-1); }
-    return j-FREQ_PADDING;
+    int index = j - FREQ_PADDING;
+        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
+    return index;
 #endif
 
 }
@@ -418,7 +424,7 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
  * @return
  */
 auto FrequencyGrid::grid_transf(double w) const -> double {
-    if (KELDYSH) return grid_transf_v2(w, this->W_scale);
+    if (KELDYSH) return grid_transf_v4(w, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_v3(w, this->W_scale);
         else return grid_transf_lin(w, this->W_scale);
@@ -439,7 +445,7 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
  * @return
  */
 auto FrequencyGrid::grid_transf_inv(double t) const -> double {
-    if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
+    if (KELDYSH) return grid_transf_inv_v4(t, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
         else return grid_transf_inv_lin(t, this->W_scale);
@@ -614,11 +620,11 @@ public:
         v = f.get_ws(iv);
         vp= f.get_ws(ivp);
 
-#ifdef BOSONIC_PARAM_FOR_K3
-        if (channel == 'a') {switch2naturalFreqs<'a'>(w, v, vp);}
-        else if (channel == 'p') {switch2naturalFreqs<'p'>(w, v, vp);}
-        else if (channel == 't') {switch2naturalFreqs<'t'>(w, v, vp);}
-#endif
+        if (BOSONIC_PARAM_FOR_K3) {
+            if (channel == 'a') { switch2naturalFreqs<'a'>(w, v, vp); }
+            else if (channel == 'p') { switch2naturalFreqs<'p'>(w, v, vp); }
+            else if (channel == 't') { switch2naturalFreqs<'t'>(w, v, vp); }
+        }
     }
 
     void get_freqs_aux(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
@@ -871,6 +877,24 @@ double integration_measure_v4(const double t, const double W_scale) {
     return 2 * W_scale * sgn(t) * t / temp / temp;
 }
 
+/*
+//// log grid with linear region
+double grid_transf_log(const double w, const double W_scale) {
+    // linear from -W_scale to +W_scale; logarithmic outside
+    const double portion_small = 0.3;
+    double result;
+    if (std::abs(w) < W_scale) {
+        result = sgn(w) * ();
+    }
+    else {
+
+    }
+    return result;
+}
+double grid_transf_inv_log(const double t, const double W_scale) {
+    return W_scale * sgn(t) * t*t /(1.-t*t);
+}
+*/
 
 ////    linear grid
 double grid_transf_lin(double w, double W_scale) {

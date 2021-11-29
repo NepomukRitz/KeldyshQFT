@@ -1182,10 +1182,10 @@ namespace {
         explicit CostFullvert_Wscale_f_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
-#ifdef BOSONIC_PARAM_FOR_K3
-            /// grids are identical for bosonic parametrization
-            frequencies.b.update_Wscale(wscale_test);
-#endif
+            if (BOSONIC_PARAM_FOR_K3) {
+                /// grids are identical for bosonic parametrization
+                frequencies.b.update_Wscale(wscale_test);
+            }
             frequencies.f.update_Wscale(wscale_test);
             rVert.template update_grid<k3>(frequencies, rVert_backup);
             //rVert.K3.analyze_tails_K3_b();
@@ -1337,23 +1337,24 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         CostFullvert_Wscale_f_K3<Q> cost_f_K3(*this, verbose);
         minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
 
-#ifdef BOSONIC_PARAM_FOR_K3
-        frequenciesK3_new.b.update_Wscale(m_Wscale);
-#endif
+        if (BOSONIC_PARAM_FOR_K3) {
+            frequenciesK3_new.b.update_Wscale(m_Wscale);
+        }
         frequenciesK3_new.f.update_Wscale(m_Wscale);
         update_grid<k3>(frequenciesK3_new, *this);
 
-#ifndef BOSONIC_PARAM_FOR_K3
-        // in w-direction:
-        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K3" << channel << " grid in direction w:\n";
-        a_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale / 2.;
-        m_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale;
-        b_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale * 2;
-        CostFullvert_Wscale_b_K3<Q> cost_b_K3(*this, verbose);
-        minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
-        frequenciesK3_new.b.update_Wscale(m_Wscale);
-        update_grid<k3>(frequenciesK3_new, *this);
-#endif
+        if (not BOSONIC_PARAM_FOR_K3) {
+            // in w-direction:
+            if (verbose and mpi_world_rank() == 0)
+                std::cout << "---> Now Optimize K3" << channel << " grid in direction w:\n";
+            a_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale / 2.;
+            m_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale;
+            b_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale * 2;
+            CostFullvert_Wscale_b_K3<Q> cost_b_K3(*this, verbose);
+            minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
+            frequenciesK3_new.b.update_Wscale(m_Wscale);
+            update_grid<k3>(frequenciesK3_new, *this);
+        }
     }
 #else
 

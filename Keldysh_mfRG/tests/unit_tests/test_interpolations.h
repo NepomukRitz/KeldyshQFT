@@ -118,9 +118,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
                 avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
-#ifdef BOSONIC_PARAM_FOR_K3
-                switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
-#endif
+                if (BOSONIC_PARAM_FOR_K3) {
+                    switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
+                }
 
                 state_datatype val_interp =  avertex.K3.interpolate(indices);
                 vals_interp[iw*(nFER3)*(nFER3) + iv*(nFER3) + ivp] = val_interp;
