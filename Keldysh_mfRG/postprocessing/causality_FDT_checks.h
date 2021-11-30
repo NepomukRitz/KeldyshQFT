@@ -439,71 +439,58 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 }
 
 /*
- * Wrapper for above function (here defined for States)
+ * Wrapper for above function (here defined for GeneralVertex)
  */
-template <typename Q>
-void compute_components_through_FDTs(State<Q>& state_out, const State<Q>& state_in) {
-    for (char r:"apt") compute_components_through_FDTs(state_out.vertex[0].half1(), state_in.vertex[0].half1(), state_in.vertex[0].half1(), r);
+template <typename Q, template <typename> class symmetry_type>
+void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out, const GeneralVertex<Q,symmetry_type>& vertex_in) {
+    for (char r:"apt") compute_components_through_FDTs(vertex_out[0].half1(), vertex_in[0].half1(), vertex_in[0].half1(), r);
 }
 
 /*
  *
  */
-template <typename Q>
-void compare_with_FDTs(const State<Q> state_in, double Lambda, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
-    State<Q> state_out = state_in;
-    compute_components_through_FDTs(state_out, state_in);
-
-    State<Q> state_diff = state_in - state_out;
-    print("K2: 2-norm of deviation = ", false);
-    std::cout << state_diff.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
-    print("K2: relative deviation = ", false);
-    std::cout << state_diff.vertex[0].half1().norm_K2(2)/state_out.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
-    print("K2: 2-norm = ", false);
-    std::cout << state_out.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
-    print("K3: 2-norm of deviation = ", false);
-    std::cout << state_diff.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
-    print("K3: relative deviation = ", false);
-    std::cout << state_diff.vertex[0].half1().norm_K3(2)/state_out.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
-    print("K3: 2-norm ", false);
-    std::cout << state_out.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
-    //
-
-    if (write_flag) write_hdf(filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
-    if (write_flag) write_hdf(filename_prefix + "_FDTdiff", Lambda, nLambda, state_diff);
-
-
-}
-
-/*
- *
- */
-template <typename Q>
-void compare_with_FDTs(const State<Q> state_in, int Lambda_it, std::string filename_prefix, rvec& lambdas, bool write_flag = false, int nLambda = 1) {
-    State<Q> state_out = state_in;
-    compute_components_through_FDTs(state_out, state_in);
+template <typename Q, template <typename> class symmetry_type>
+void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
+    GeneralVertex<Q,symmetry_type> vertex_out = vertex_in;
+    compute_components_through_FDTs(vertex_out, vertex_in);
 
     print("Checking the FDTs for Lambda_it", Lambda_it, true);
-    State<Q> state_diff = state_in - state_out;
+    GeneralVertex<Q,symmetry_type> vertex_diff = vertex_in - vertex_out;
     print("K2: 2-norm of deviation = ", false);
-    std::cout << state_diff.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
+    std::cout << vertex_diff[0].half1().norm_K2(2) << std::scientific << '\n';
     print("K2: relative deviation = ", false);
-    std::cout << state_diff.vertex[0].half1().norm_K2(2)/state_out.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
+    std::cout << vertex_diff[0].half1().norm_K2(2)/vertex_out[0].half1().norm_K2(2) << std::scientific << '\n';
     print("K2: 2-norm = ", false);
-    std::cout << state_out.vertex[0].half1().norm_K2(2) << std::scientific << '\n';
+    std::cout << vertex_out[0].half1().norm_K2(2) << std::scientific << '\n';
     print("K3: 2-norm of deviation = ", false);
-    std::cout << state_diff.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
+    std::cout << vertex_diff[0].half1().norm_K3(2) << std::scientific << '\n';
     print("K3: relative deviation = ", false);
-    std::cout << state_diff.vertex[0].half1().norm_K3(2)/state_out.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
+    std::cout << vertex_diff[0].half1().norm_K3(2)/vertex_out[0].half1().norm_K3(2) << std::scientific << '\n';
     print("K3: 2-norm ", false);
-    std::cout << state_out.vertex[0].half1().norm_K3(2) << std::scientific << '\n';
+    std::cout << vertex_out[0].half1().norm_K3(2) << std::scientific << '\n';
     //
 
-    if (write_flag) add_hdf(filename_prefix + "_FDTresult", Lambda_it, nLambda, state_out , lambdas);
-    if (write_flag) add_hdf(filename_prefix + "_FDTdiff",   Lambda_it, nLambda, state_diff, lambdas);
+    if (write_flag) {
+        SelfEnergy<Q> SE_empty(Lambda);
+        Vertex<Q> temp_diff(n_spin, Lambda);
+        temp_diff[0].half1() = vertex_in[0].half1();
+        Vertex<Q> temp_out(n_spin, Lambda);
+        temp_out[0].half1() = vertex_out[0].half1();
+        State<Q> state_out(temp_out, SE_empty);
+        State<Q> state_diff(temp_diff, SE_empty);
+        if (Lambda_it == 0) {
+            write_hdf(filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
+            write_hdf(filename_prefix + "_FDTdiff"  , Lambda, nLambda, state_diff);
+        }
+        else {
+            add_hdf(filename_prefix + "_FDTresult", Lambda, Lambda_it, state_out);
+            add_hdf(filename_prefix + "_FDTdiff"  , Lambda, Lambda_it, state_diff);
+        }
+    }
 
 
 }
+
 
 /*
  *
@@ -512,12 +499,12 @@ void compare_with_FDTs(const State<Q> state_in, int Lambda_it, std::string filen
 void compare_flow_with_FDTs(const std::string filename, bool write_flag = false) {
     std::size_t Lambda_int = 0;
     State<state_datatype> state_in = read_hdf(filename, Lambda_int); // read initial state
-    compare_with_FDTs(state_in, Lambda_ini, filename, write_flag, nODE + U_NRG.size() + 1);
+    compare_with_FDTs(state_in.vertex, Lambda_ini, Lambda_int, filename, write_flag, nODE + U_NRG.size() + 1);
     rvec Lambdas(nODE + U_NRG.size() + 1);
 
     for (int i = 1; i < nODE + U_NRG.size() + 1; i++) {
         state_in = read_hdf(filename, i); // read state
-        compare_with_FDTs(state_in, i, filename, Lambdas, write_flag, nODE + U_NRG.size() + 1);
+        compare_with_FDTs(state_in.vertex, Lambdas[i], i, filename, write_flag, nODE + U_NRG.size() + 1);
     }
 
 

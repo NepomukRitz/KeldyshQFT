@@ -72,7 +72,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     //}
 
 
-    compare_with_FDTs(state_ini, Lambda_ini, outputFileName, true, nODE + U_NRG.size() + 1);
+    compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, true, nODE + U_NRG.size() + 1);
 
     std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
@@ -109,7 +109,7 @@ State<state_datatype> n_loop_flow(std::string inputFileName, const int it_start,
 
         std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
-        compare_with_FDTs(state_ini, Lambda_ini, inputFileName, true, nODE + U_NRG.size() + 1);
+        compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, inputFileName, true, nODE + U_NRG.size() + 1);
 
         // compute the flow using RK4 solver
         //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs

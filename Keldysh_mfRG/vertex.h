@@ -353,7 +353,8 @@ public:
         return lhs;
     }
     auto operator-= (const non_symmetric<Q>& vertex1) -> non_symmetric<Q> {
-        this->vertex -= vertex1.vertex;
+        this->vertex_half1 -= vertex1.vertex_half1;
+        this->vertex_half2 -= vertex1.vertex_half2;
         return *this;
     }
     friend non_symmetric<Q> operator- (non_symmetric<Q> lhs, const non_symmetric<Q>& rhs) {

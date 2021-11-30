@@ -88,11 +88,16 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
     if (VERBOSE) print("Compute 1-loop contribution: ", true);
     vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi);
-    if(VERBOSE) dPsi.vertex[0].half1().check_vertex_resolution();
-    if(VERBOSE) dPsi.analyze_tails();
+    if(VERBOSE) {
+        dPsi.vertex[0].half1().check_vertex_resolution();
+        dPsi.analyze_tails();
+        compare_with_FDTs(Psi.vertex, Lambda, iteration, "Psi_RKstep"+std::to_string(rkStep), true, nLambda_layers);
+        compare_with_FDTs(dPsi.vertex, Lambda, iteration, "dPsi_RKstep"+std::to_string(rkStep), true, nLambda_layers);
+    }
 
 
-    /// save intermediate states:
+
+            /// save intermediate states:
     if (save_intermediate) {
         if (iteration == 0) {
             write_hdf<Q>(dir_str+ "Psi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, nLambda_layers, Psi);
@@ -116,11 +121,16 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
         if (VERBOSE) print("Compute dGammaL (2-loop): ", true);
         Vertex<Q> dGammaL_half1 = calculate_dGammaL(dPsi.vertex, Psi.vertex, Pi);
-        if(VERBOSE) dGammaL_half1[0].half1().check_vertex_resolution();
+        if(VERBOSE) {
+            dGammaL_half1[0].half1().check_vertex_resolution();
+            compare_with_FDTs(dGammaL_half1, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), true, nLambda_layers);
+        }
 
         if (VERBOSE) print("Compute dGammaR (2-loop):", true);
         Vertex<Q> dGammaR_half1 = calculate_dGammaR(dPsi.vertex, Psi.vertex, Pi);
-        if(VERBOSE) dGammaR_half1[0].half1().check_vertex_resolution();
+        if(VERBOSE) {
+            dGammaR_half1[0].half1().check_vertex_resolution();
+        }
         Vertex<Q> dGammaT =
                 dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
         dPsi.vertex += dGammaT;
@@ -151,6 +161,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
                 dGammaL[0].half1() = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
                 dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
+                if (VERBOSE) {
+                    compare_with_FDTs(dGammaL, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), true, nLambda_layers);
+                }
 #ifdef DEBUG_SYMMETRIES
                 dGammaL[1].half1() = dGammaL_half1[1].half1();  // assign half 1 to dGammaL
                 dGammaL[1].half2() = dGammaR_half1[1].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
@@ -160,11 +173,17 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 if (VERBOSE) print("Compute dGammaC (right insertion) ( ", i,"-loop): \n");
                 Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
                 if(VERBOSE) dGammaC_r[0].half1().check_vertex_resolution();
+                if (VERBOSE) {
+                    compare_with_FDTs(dGammaC_r, Lambda, iteration, "dGammaC_r_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), true, nLambda_layers);
+                }
 
                 // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
                 GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
                 dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
                 dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
+                if (VERBOSE) {
+                    compare_with_FDTs(dGammaR, Lambda, iteration, "dGammaR_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), true, nLambda_layers);
+                }
 #ifdef DEBUG_SYMMETRIES
                 dGammaR[1].half1() = dGammaR_half1[1].half1();  // assign half 1
                 dGammaR[1].half2() = dGammaL_half1[1].half1();  // assign half 2 as half 1 of dGammaL
@@ -172,6 +191,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
                 // insert this non-symmetric vertex on the left of the bubble
                 Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
+                if (VERBOSE) {
+                    compare_with_FDTs(dGammaC_l, Lambda, iteration, "dGammaC_l_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), true, nLambda_layers);
+                }
 
                 // symmetrize by averaging left and right insertion
                 Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5;
