@@ -28,7 +28,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     /// 1. compute parquet solution
     /// 2. optimize grid
     /// 3. restart with optimized grid
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 0; i++) {
 
         State<state_datatype> state_temp = state_ini;
         state_temp.initialize();             // initialize state with bare vertex and Hartree term in selfenergy
@@ -48,9 +48,9 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
     state_ini.initialize();     // initialize state with bare vertex and Hartree term in selfenergy
     // initialize the flow with SOPT at Lambda_ini (important!)
-    sopt_state(state_ini, Lambda_ini);
+    fopt_state(state_ini, Lambda_ini);
 
-    parquet_solver(data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+    //parquet_solver(data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
 
 
     //// better: read state from converged parquet solution
@@ -59,9 +59,9 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
 
     write_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-    state_ini.vertex[0].half1().check_vertex_resolution();
-    state_ini.findBestFreqGrid(true);
-    state_ini.vertex[0].half1().check_vertex_resolution();
+    //state_ini.vertex[0].half1().check_vertex_resolution();
+    //state_ini.findBestFreqGrid(true);
+    //state_ini.vertex[0].half1().check_vertex_resolution();
     write_hdf(outputFileName+"_postOpt", Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
     //if (save_intermediate_results) {
@@ -71,6 +71,8 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
     //    write_hdf(outputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
     //}
 
+
+    compare_with_FDTs(state_ini, Lambda_ini, outputFileName, true, nODE + U_NRG.size() + 1);
 
     std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
@@ -106,6 +108,8 @@ State<state_datatype> n_loop_flow(std::string inputFileName, const int it_start,
         state_ini.vertex[0].half1().check_vertex_resolution();
 
         std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
+
+        compare_with_FDTs(state_ini, Lambda_ini, inputFileName, true, nODE + U_NRG.size() + 1);
 
         // compute the flow using RK4 solver
         //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,   // use one-loop-flow rhs

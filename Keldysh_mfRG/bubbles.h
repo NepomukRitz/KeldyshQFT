@@ -1498,6 +1498,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+    compute_components_through_FDTs(dgamma[0].half1(), dgamma[0].half1(), dgamma[0].half1(), channel);
+#endif
 }
 
 #ifdef DEBUG_SYMMETRIES
@@ -1557,6 +1560,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+    compute_components_through_FDTs(dgamma[0].half1(), dgamma[0].half1(), dgamma[0].half1(), channel);
+#endif
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1700,6 +1706,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         default:
             print("Something went wrong in get_trafo_K2! Abort."); assert(false);
     }
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+    switch (channel) {
+        case 'a':
+            if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            break;
+        case 'p':
+            if ((i0 == 0 or i0 == 1 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            break;
+        case 't':
+            if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            break;
+        default:
+            break;
+    }
+#endif
     return trafo;
 }
 
@@ -1727,6 +1748,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         default:
             print("Something went wrong in get_trafo_K3! Abort."); assert(false);
     }
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+    if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+#endif
     return trafo;
 }
 
