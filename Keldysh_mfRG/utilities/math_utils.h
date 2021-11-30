@@ -346,69 +346,76 @@ namespace { // hide the following to the outside world
     vec<T> get_finite_differences(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
                                   const std::array<size_t,rank>& permutation,
                                   const bd_type left=third_deriv, const bd_type right=third_deriv, const T left_value=0.0, const T right_value=0.0){
-        size_t flatdim = data.size();
-        size_t dimsum = dims[rank-1];
+        const size_t flatdim = data.size();
+        const size_t dimsum = dims[rank-1];
         assert(dimsum==xs.size());
         assert(dimsum>=5);   // with the current implementation we need at least five points
-        size_t codimsum = flatdim/dimsum;
+        const size_t codimsum = flatdim/dimsum;
 
         vec<T> result(flatdim);
+#pragma omp parallel for collapse(2)
         for (int it = 0; it < codimsum; it++) {
 
             /// Compute derivative with Central finite difference
-            for (int jt = 2; jt < dimsum-2; jt++) {
-                double h  = xs[jt+1]-xs[jt  ];
-                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
-                                                                                     + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)]
-                                                                                     - data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * 8.
-                                                                                     + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * 8.
-                                                                                     - data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)]
-                                                                             ) / (12. * h);
+            for (int jt = 0; jt < dimsum; jt++) {
+                double h, hl;
+                /// Compute boundary values: with non-central finite difference
+                if (jt == 0) {
+                    //jt = 0;
+                    h  = xs[jt+1]-xs[jt  ];
+                    result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                            + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (-25.)
+                            + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (48.)
+                            + data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)] * (-36.)
+                            + data[rotateFlatIndex(it*dimsum + jt + 3, dims, permutation)] * (16.)
+                            + data[rotateFlatIndex(it*dimsum + jt + 4, dims, permutation)] * (-3.)
+                            ) / (h*12.);
+                }
+                else if (jt == 1) {
+                    //size_t jt = 1;
+                    hl = xs[jt  ]-xs[jt-1];
+                    h  = xs[jt+1]-xs[jt  ];
+                    result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                            data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-3.)
+                            + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (-10.)
+                            + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (18.)
+                            + data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)] * (-6.)
+                            + data[rotateFlatIndex(it*dimsum + jt + 3, dims, permutation)]
+                            ) / (h*12.);
+                }
+                else if (jt == dimsum - 2) {
+                    //jt = dimsum - 2;
+                    h = xs[jt  ]-xs[jt-1];
+                    result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                            data[rotateFlatIndex(it*dimsum + jt - 3, dims, permutation)] * (-1.)
+                            + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)] * (6.)
+                            + data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-18.)
+                            + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (10.)
+                            + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (3.)
+                            ) / (h*12.);
+                }
+                else if (jt == dimsum - 1) {
+                    //jt = dimsum - 1;
+                    h = xs[jt  ]-xs[jt-1];
+                    result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                            + data[rotateFlatIndex(it*dimsum + jt - 4, dims, permutation)] * (3.)
+                            + data[rotateFlatIndex(it*dimsum + jt - 3, dims, permutation)] * (-16.)
+                            + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)] * (36.)
+                            + data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-48.)
+                            + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (25.)
+                            ) / (h*12.);
+                }
+                /// Compute central values:
+                else {
+                    h  = xs[jt+1]-xs[jt  ];
+                    result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
+                            + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)]
+                            - data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * 8.
+                            + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * 8.
+                            - data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)]
+                            ) / (12. * h);
+                    }
             }
-            /// Compute boundary values: with non-central finite difference
-            size_t jt = 1;
-            double hl = xs[jt  ]-xs[jt-1];
-            double h  = xs[jt+1]-xs[jt  ];
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
-                                                                                 data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-3.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (-10.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (18.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)] * (-6.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt + 3, dims, permutation)]
-                                                                         ) / (h*12.);
-
-
-            jt = dimsum - 2;
-            h = xs[jt  ]-xs[jt-1];
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
-                                                                                 data[rotateFlatIndex(it*dimsum + jt - 3, dims, permutation)] * (-1.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)] * (6.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-18.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (10.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (3.)
-                                                                         ) / (h*12.);
-
-
-            jt = 0;
-            h  = xs[jt+1]-xs[jt  ];
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (-25.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt + 1, dims, permutation)] * (48.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt + 2, dims, permutation)] * (-36.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt + 3, dims, permutation)] * (16.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt + 4, dims, permutation)] * (-3.)
-                                                                         ) / (h*12.);
-
-
-            jt = dimsum - 1;
-            h = xs[jt  ]-xs[jt-1];
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt - 4, dims, permutation)] * (3.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt - 3, dims, permutation)] * (-16.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt - 2, dims, permutation)] * (36.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-48.)
-                                                                                 + data[rotateFlatIndex(it*dimsum + jt    , dims, permutation)] * (25.)
-                                                                         ) / (h*12.);
 
             /*
             // set boundary values
@@ -527,11 +534,11 @@ namespace { // hide the following to the outside world
     template<typename T, size_t rank>
     vec<T> get_finite_differences_v2(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
                                      const std::array<size_t,rank>& permutation){
-        size_t flatdim = data.size();
-        size_t dimsum = dims[rank-1];
+        const size_t flatdim = data.size();
+        const size_t dimsum = dims[rank-1];//
         assert(dimsum==xs.size());
         assert(dimsum>=5);   // with the current implementation we need at least five points
-        size_t codimsum = flatdim/dimsum;
+        const size_t codimsum = flatdim/dimsum;
 
         vec<T> result(flatdim);
         vec<int> centered = {-2, -1, 1, 2};
@@ -539,28 +546,28 @@ namespace { // hide the following to the outside world
         vec<int> left2 = {1, 2, 3, 4};
         vec<int> right1 = {-3, -2, -1, 1};
         vec<int> right2 = {-4, -3, -2, -1};
+
+#pragma omp parallel for collapse(2)
         for (int it = 0; it < codimsum; it++) {
-
             /// Compute derivative with Central finite difference
-            for (int jt = 2; jt < dimsum-2; jt++) {
-
-                result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, centered, -2, 2);
+            for (int jt = 0; jt < dimsum; jt++) {
+                /// Compute boundary values: with non-central finite difference
+                if (jt == 0){
+                    result[rotateFlatIndex(it * dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it * dimsum, jt, left2, 0, 4);
+                }
+                else if (jt == 1) {
+                    result[rotateFlatIndex(it * dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it * dimsum, jt, left1, -1, 3);
+                }
+                else if (jt == dimsum - 2) {
+                    result[rotateFlatIndex(it * dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it * dimsum, jt, right1, -3, 1);
+                }
+                else if (jt == dimsum - 1) {
+                    result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right2, -4, 0);
+                }
+                else {/// Compute central values:
+                    result[rotateFlatIndex(it * dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it * dimsum, jt, centered, -2, 2);
+                }
             }
-            /// Compute boundary values: with non-central finite difference
-            size_t jt = 1;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left1, -1, 3);
-
-
-            jt = dimsum - 2;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right1, -3, 1);
-
-
-            jt = 0;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left2, 0, 4);
-
-
-            jt = dimsum - 1;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right2, -4, 0);
         }
         return result;
     }
@@ -771,6 +778,7 @@ vec<T> collapse(const vec<T>& data, const binaryOp& op, const std::array<size_t,
 
 
     vec<T> result(dimsflat_new);
+#pragma omp parallel for
     for (size_t i = 0; i < dimsflat_new; i++) {
         result[i] = data[rotateFlatIndex(i*dim_collapse + 0, dims_rot, perm_inv)];
         for (size_t j = 1; j < dim_collapse; j++) {
