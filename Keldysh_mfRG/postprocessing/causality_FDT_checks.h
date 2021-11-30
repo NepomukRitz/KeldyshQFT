@@ -181,13 +181,13 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             G2 = vertex_in.avertex.template valsmooth<k2>(inputG2 , vertex_in.tvertex, vertex_half2_in.avertex, vertex_half2_in.tvertex);
                             G3 = vertex_in.avertex.template valsmooth<k2>(inputG3 , vertex_in.tvertex, vertex_half2_in.avertex, vertex_half2_in.tvertex);
 
-                            G123 = conj(G1 + G2 + G3)
-                                   + (G1*N2*N3
+                            G123 = myconj(G1 + G2 + G3)
+                                   + myreal(G1*N2*N3
                                    +  N1*G2*N3
-                                   +  N1*N2*G3).real() * 2.;
-                            G12 =  N2 * (conj(G3) - G1) + N1 * (conj(G3) - G2);
-                            G13 =  N3 * (conj(G2) - G1) + N1 * (conj(G2) - G3);
-                            G23 =  N3 * (conj(G1) - G2) + N2 * (conj(G1) - G3);
+                                   +  N1*N2*G3) * 2.;
+                            G12 =  N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
+                            G13 =  N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                            G23 =  N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
                             vertex_out.avertex.K2.setvert( G12,     0, itw, itv, itin );
                             vertex_out.avertex.K2.setvert( G123,    2, itw, itv, itin);
                             vertex_out.avertex.K2.setvert( G23,     3, itw, itv, itin );
@@ -209,13 +209,13 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             G2 = vertex_in.pvertex.template valsmooth<k2>(inputG2 , vertex_in.pvertex, vertex_half2_in.pvertex, vertex_half2_in.pvertex);
                             G3 = vertex_in.pvertex.template valsmooth<k2>(inputG3 , vertex_in.pvertex, vertex_half2_in.pvertex, vertex_half2_in.pvertex);
 
-                            G123 = conj(G1 + G2 + G3)
-                                   + (G1*N2*N3
+                            G123 = myconj(G1 + G2 + G3)
+                                   + myreal(G1*N2*N3
                                    +  N1*G2*N3
-                                   +  N1*N2*G3).real() * 2.;
-                            G12 =  N2 * (conj(G3) - G1) + N1 * (conj(G3) - G2);
-                            G13 =  N3 * (conj(G2) - G1) + N1 * (conj(G2) - G3);
-                            G23 =  N3 * (conj(G1) - G2) + N2 * (conj(G1) - G3);
+                                   +  N1*N2*G3) * 2.;
+                            G12 =  N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
+                            G13 =  N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                            G23 =  N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
                             vertex_out.pvertex.K2.setvert(G12 , 0, itw, itv, itin);
                             vertex_out.pvertex.K2.setvert(G123, 1, itw, itv, itin);
                             vertex_out.pvertex.K2.setvert(G13 , 3, itw, itv, itin);
@@ -238,13 +238,13 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             G2 = vertex_in.tvertex.template valsmooth<k2>(inputG2 , vertex_in.avertex, vertex_half2_in.tvertex, vertex_half2_in.avertex);
                             G3 = vertex_in.tvertex.template valsmooth<k2>(inputG3 , vertex_in.avertex, vertex_half2_in.tvertex, vertex_half2_in.avertex);
 
-                            G123 = conj(G1 + G2 + G3)
-                                   + (G1*N2*N3
+                            G123 = myconj(G1 + G2 + G3)
+                                   + myreal(G1*N2*N3
                                       +  N1*G2*N3
-                                      +  N1*N2*G3).real() * 2.;
-                            G12 =  N2 * (conj(G3) - G1) + N1 * (conj(G3) - G2);
-                            G13 =  N3 * (conj(G2) - G1) + N1 * (conj(G2) - G3);
-                            G23 =  N3 * (conj(G1) - G2) + N2 * (conj(G1) - G3);
+                                      +  N1*N2*G3) * 2.;
+                            G12 =  N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
+                            G13 =  N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                            G23 =  N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
                             vertex_out.tvertex.K2.setvert(G12 , 0, itw, itv, itin);
                             vertex_out.tvertex.K2.setvert(G123, 2, itw, itv, itin);
                             vertex_out.tvertex.K2.setvert(G23 , 3, itw, itv, itin);
@@ -295,7 +295,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             G24= vertex_in.avertex.template valsmooth<k3>(inputG24, vertex_in.tvertex, vertex_half2_in.avertex, vertex_half2_in.tvertex);
                             G34= vertex_in.avertex.template valsmooth<k3>(inputG34, vertex_in.tvertex, vertex_half2_in.avertex, vertex_half2_in.tvertex);
 
-                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * conj(G4)
+                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * myconj(G4)
                                    - (G1*N2*N3
                                       +  N1*G2*N3
                                       +  N1*N2*G3
@@ -306,10 +306,10 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                      +N1*G2*N3*N4*2.
                                      +N1*N2*G3*N4*2.
                                      +N1*N2*N3*G4*2.
-                                     +(N2*N3*N4 + N2 + N3 + N4) * conj(G1)
-                                     +(N1*N3*N4 + N1 + N3 + N4) * conj(G2)
-                                     +(N1*N2*N4 + N1 + N2 + N4) * conj(G3)
-                                     +(N1*N2*N3 + N1 + N2 + N3) * conj(G4)
+                                     +(N2*N3*N4 + N2 + N3 + N4) * myconj(G1)
+                                     +(N1*N3*N4 + N1 + N3 + N4) * myconj(G2)
+                                     +(N1*N2*N4 + N1 + N2 + N4) * myconj(G3)
+                                     +(N1*N2*N3 + N1 + N2 + N3) * myconj(G4)
                                      +N3*N4*G12
                                      +N2*N4*G13
                                      +N2*N3*G14
@@ -349,7 +349,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             G24= vertex_in.pvertex.template valsmooth<k3>(inputG24, vertex_in.pvertex, vertex_half2_in.pvertex, vertex_half2_in.pvertex);
                             G34= vertex_in.pvertex.template valsmooth<k3>(inputG34, vertex_in.pvertex, vertex_half2_in.pvertex, vertex_half2_in.pvertex);
 
-                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * conj(G4)
+                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * myconj(G4)
                                    - (G1*N2*N3
                                       +  N1*G2*N3
                                       +  N1*N2*G3
@@ -360,10 +360,10 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                      +N1*G2*N3*N4*2.
                                      +N1*N2*G3*N4*2.
                                      +N1*N2*N3*G4*2.
-                                     +(N2*N3*N4 + N2 + N3 + N4) * conj(G1)
-                                     +(N1*N3*N4 + N1 + N3 + N4) * conj(G2)
-                                     +(N1*N2*N4 + N1 + N2 + N4) * conj(G3)
-                                     +(N1*N2*N3 + N1 + N2 + N3) * conj(G4)
+                                     +(N2*N3*N4 + N2 + N3 + N4) * myconj(G1)
+                                     +(N1*N3*N4 + N1 + N3 + N4) * myconj(G2)
+                                     +(N1*N2*N4 + N1 + N2 + N4) * myconj(G3)
+                                     +(N1*N2*N3 + N1 + N2 + N3) * myconj(G4)
                                      +N3*N4*G12
                                      +N2*N4*G13
                                      +N2*N3*G14
@@ -404,7 +404,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             G24 =vertex_in.tvertex.template valsmooth<k3>(inputG24, vertex_in.avertex, vertex_half2_in.tvertex, vertex_half2_in.avertex);
                             G34 =vertex_in.tvertex.template valsmooth<k3>(inputG34, vertex_in.avertex, vertex_half2_in.tvertex, vertex_half2_in.avertex);
 
-                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * conj(G4)
+                            G123 = (1 + N1*N2 + N1*N3 + N2*N3) * myconj(G4)
                                    - (G1*N2*N3
                                       +  N1*G2*N3
                                       +  N1*N2*G3
@@ -415,10 +415,10 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                      +N1*G2*N3*N4*2.
                                      +N1*N2*G3*N4*2.
                                      +N1*N2*N3*G4*2.
-                                     +(N2*N3*N4 + N2 + N3 + N4) * conj(G1)
-                                     +(N1*N3*N4 + N1 + N3 + N4) * conj(G2)
-                                     +(N1*N2*N4 + N1 + N2 + N4) * conj(G3)
-                                     +(N1*N2*N3 + N1 + N2 + N3) * conj(G4)
+                                     +(N2*N3*N4 + N2 + N3 + N4) * myconj(G1)
+                                     +(N1*N3*N4 + N1 + N3 + N4) * myconj(G2)
+                                     +(N1*N2*N4 + N1 + N2 + N4) * myconj(G3)
+                                     +(N1*N2*N3 + N1 + N2 + N3) * myconj(G4)
                                      +N3*N4*G12
                                      +N2*N4*G13
                                      +N2*N3*G14
@@ -451,43 +451,46 @@ void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out,
  */
 template <typename Q, template <typename> class symmetry_type>
 void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
-    GeneralVertex<Q,symmetry_type> vertex_out = vertex_in;
-    compute_components_through_FDTs(vertex_out, vertex_in);
+    if(KELDYSH) {
 
-    print("Checking the FDTs for Lambda_it", Lambda_it, true);
-    GeneralVertex<Q,symmetry_type> vertex_diff = vertex_in - vertex_out;
-    print("K2: 2-norm of deviation = ", false);
-    std::cout << vertex_diff[0].half1().norm_K2(2) << std::scientific << '\n';
-    print("K2: relative deviation = ", false);
-    std::cout << vertex_diff[0].half1().norm_K2(2)/vertex_out[0].half1().norm_K2(2) << std::scientific << '\n';
-    print("K2: 2-norm = ", false);
-    std::cout << vertex_out[0].half1().norm_K2(2) << std::scientific << '\n';
-    print("K3: 2-norm of deviation = ", false);
-    std::cout << vertex_diff[0].half1().norm_K3(2) << std::scientific << '\n';
-    print("K3: relative deviation = ", false);
-    std::cout << vertex_diff[0].half1().norm_K3(2)/vertex_out[0].half1().norm_K3(2) << std::scientific << '\n';
-    print("K3: 2-norm ", false);
-    std::cout << vertex_out[0].half1().norm_K3(2) << std::scientific << '\n';
-    //
+        GeneralVertex<Q,symmetry_type> vertex_out = vertex_in;
+        compute_components_through_FDTs(vertex_out, vertex_in);
 
-    if (write_flag) {
-        SelfEnergy<Q> SE_empty(Lambda);
-        Vertex<Q> temp_diff(n_spin, Lambda);
-        temp_diff[0].half1() = vertex_in[0].half1();
-        Vertex<Q> temp_out(n_spin, Lambda);
-        temp_out[0].half1() = vertex_out[0].half1();
-        State<Q> state_out(temp_out, SE_empty);
-        State<Q> state_diff(temp_diff, SE_empty);
-        if (Lambda_it == 0) {
-            write_hdf(filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
-            write_hdf(filename_prefix + "_FDTdiff"  , Lambda, nLambda, state_diff);
+        print("Checking the FDTs for Lambda_it", Lambda_it, true);
+        GeneralVertex<Q,symmetry_type> vertex_diff = vertex_in - vertex_out;
+        print("K2: 2-norm of deviation = ", false);
+        std::cout << vertex_diff[0].half1().norm_K2(2) << std::scientific << '\n';
+        print("K2: relative deviation = ", false);
+        std::cout << vertex_diff[0].half1().norm_K2(2)/vertex_out[0].half1().norm_K2(2) << std::scientific << '\n';
+        print("K2: 2-norm = ", false);
+        std::cout << vertex_out[0].half1().norm_K2(2) << std::scientific << '\n';
+        print("K3: 2-norm of deviation = ", false);
+        std::cout << vertex_diff[0].half1().norm_K3(2) << std::scientific << '\n';
+        print("K3: relative deviation = ", false);
+        std::cout << vertex_diff[0].half1().norm_K3(2)/vertex_out[0].half1().norm_K3(2) << std::scientific << '\n';
+        print("K3: 2-norm ", false);
+        std::cout << vertex_out[0].half1().norm_K3(2) << std::scientific << '\n';
+        //
+
+        if (write_flag) {
+            SelfEnergy<Q> SE_empty(Lambda);
+            Vertex<Q> temp_diff(n_spin, Lambda);
+            temp_diff[0].half1() = vertex_diff[0].half1();
+            Vertex<Q> temp_out(n_spin, Lambda);
+            temp_out[0].half1() = vertex_out[0].half1();
+            State<Q> state_out(temp_out, SE_empty);
+            State<Q> state_diff(temp_diff, SE_empty);
+            if (Lambda_it == 0) {
+                write_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
+                write_hdf(data_dir + filename_prefix + "_FDTdiff"  , Lambda, nLambda, state_diff);
+            }
+            else {
+                add_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, Lambda_it, state_out);
+                add_hdf(data_dir + filename_prefix + "_FDTdiff"  , Lambda, Lambda_it, state_diff);
+            }
         }
-        else {
-            add_hdf(filename_prefix + "_FDTresult", Lambda, Lambda_it, state_out);
-            add_hdf(filename_prefix + "_FDTdiff"  , Lambda, Lambda_it, state_diff);
-        }
+
     }
-
 
 }
 
