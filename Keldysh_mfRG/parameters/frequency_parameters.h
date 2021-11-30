@@ -38,24 +38,7 @@ constexpr int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((in
 //constexpr int nFER = 20;
 
 #elif GRID==3
-// parameters for the grid at Lambda = 0
-constexpr double glb_W_scale = 5.;
-constexpr double glb_w_upper = 50.;
-constexpr double glb_w_lower = -glb_w_upper;
-constexpr double glb_v_upper = 50.;
-constexpr double glb_v_lower = -glb_v_upper;
 
-constexpr double glb_W2_scale = 1.;
-constexpr double glb_w2_upper = 15.;
-constexpr double glb_w2_lower = -glb_w2_upper;
-constexpr double glb_v2_upper = 15.;
-constexpr double glb_v2_lower = -glb_v2_upper;
-
-constexpr double glb_W3_scale = 1.;
-constexpr double glb_w3_upper = 10.;
-constexpr double glb_w3_lower = -glb_w3_upper;
-constexpr double glb_v3_upper = 10.;
-constexpr double glb_v3_lower = -glb_v3_upper;
 
 // Number of bosonic and fermionic frequency points
 #ifdef KELDYSH_FORMALISM

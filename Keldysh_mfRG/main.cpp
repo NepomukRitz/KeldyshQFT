@@ -88,6 +88,23 @@ auto main() -> int {
     check_input();
 
 
+    /// Data directory
+    std::string job = "fun";
+#ifdef KELDYSH_FORMALISM
+#ifdef DEBUG_SYMMETRIES
+    data_dir = "../Data_KF_debug/";
+#else
+    data_dir = "../Data_KF" + job + "/";
+#endif
+#else
+    #ifdef DEBUG_SYMMETRIES
+    data_dir = "../Data_MF_debug/";
+
+#else
+    data_dir = "../Data_MF"+ job +"/";
+#endif
+#endif
+
     makedir(data_dir);
 
 
@@ -101,7 +118,6 @@ auto main() -> int {
     //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
-    std::string job = "";
     //n_loop_flow(data_dir+filename+job,true);
     test_symmetries(1.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);

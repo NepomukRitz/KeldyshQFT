@@ -83,9 +83,6 @@ public:
                 switch (diag_class) {
                     case 1:
                         N_w = nBOS+FREQ_PADDING*2;
-                        w_upper = glb_w_upper;
-                        w_lower = glb_w_lower;
-                        W_scale = glb_W_scale;
                         if (KELDYSH) {
                             U_factor = 5. / 3.;
                             Delta_factor = 5.;
@@ -97,9 +94,6 @@ public:
                         break;
                     case 2:
                         N_w = nBOS2+FREQ_PADDING*2;
-                        w_upper = glb_w2_upper;
-                        w_lower = glb_w2_lower;
-                        W_scale = glb_W2_scale;
 #ifdef ROTATEK2
                         if (KELDYSH){
                             U_factor = 10./3.;
@@ -122,9 +116,6 @@ public:
                         break;
                     case 3:
                         N_w = nBOS3+FREQ_PADDING*2;
-                        w_upper = glb_w3_upper;
-                        w_lower = glb_w3_lower;
-                        W_scale = glb_W3_scale;
                         break;
                     default:;
                 }
@@ -133,9 +124,6 @@ public:
                 switch (diag_class) {
                     case 1:
                         N_w = nFER+FREQ_PADDING*2;
-                        w_upper = glb_v_upper;
-                        w_lower = glb_v_lower;
-                        W_scale = glb_W_scale;
                         if (KELDYSH) {
                             U_factor = 40. / 3.;
                             Delta_factor = 40.;
@@ -147,9 +135,6 @@ public:
                         break;
                     case 2:
                         N_w = nFER2+FREQ_PADDING*2;
-                        w_upper = glb_v2_upper;
-                        w_lower = glb_v2_lower;
-                        W_scale = glb_W2_scale;
 #ifdef ROTATEK2
                         /// Needs to be the same as for 'b'!!!
                         if (KELDYSH) {
@@ -173,9 +158,6 @@ public:
                         break;
                     case 3:
                         N_w = nFER3+FREQ_PADDING*2;
-                        w_upper = glb_v3_upper;
-                        w_lower = glb_v3_lower;
-                        W_scale = glb_W3_scale;
                         break;
                     default:;
                 }

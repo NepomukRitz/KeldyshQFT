@@ -20,13 +20,13 @@ constexpr bool VERBOSE = true;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
-#define SWITCH_KELDYSH_SUM_N_INTEGRAL
+//#define SWITCH_KELDYSH_SUM_N_INTEGRAL
 #ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
-constexpr bool BOSONIC_PARAM_FOR_K3 = true; // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
+constexpr bool BOSONIC_PARAM_FOR_K3 = false; // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
 
 constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
@@ -137,7 +137,7 @@ constexpr double epsODE = 1e-4;
 #define ODEsolver 1
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_ini = 5.;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 0.0;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
@@ -150,9 +150,9 @@ const std::vector<double> U_NRG {};
 #endif
 
 #if REG==2
-constexpr int param_size = 14;
+constexpr int param_size = 10;
 constexpr double parameter_list[param_size] = {GRID, REG, glb_Gamma, MAX_DIAG_CLASS, N_LOOPS,
-                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
+                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V};
 #else
 constexpr int param_size = 13;
 constexpr double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOPS,
@@ -187,20 +187,7 @@ constexpr bool PARTICLE_HOLE_SYMMETRY = false;
 #endif
 
 
-#ifdef KELDYSH_FORMALISM
-#ifdef DEBUG_SYMMETRIES
-const std::string data_dir = "../Data_KF_debug/";
+inline std::string data_dir;
 
-#else
-const std::string data_dir = "../Data_KF/";
-#endif
-#else
-#ifdef DEBUG_SYMMETRIES
-const std::string data_dir = "../Data_MF_debug/";
-
-#else
-const std::string data_dir = "../Data_MF/";
-#endif
-#endif
 
 #endif //KELDYSH_MFRG_PARAMETERS_H
