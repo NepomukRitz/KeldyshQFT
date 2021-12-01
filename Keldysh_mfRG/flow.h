@@ -23,6 +23,7 @@
 State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermediate_results=false){
 
     State<state_datatype> state_fin (Lambda_fin), state_ini(Lambda_ini);   // create final and initial state
+    nLambda_layers = nODE + U_NRG.size() + 1;
 
     /// Iterate:
     /// 1. compute parquet solution
@@ -48,7 +49,7 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
     state_ini.initialize();     // initialize state with bare vertex and Hartree term in selfenergy
     // initialize the flow with SOPT at Lambda_ini (important!)
-    fopt_state(state_ini, Lambda_ini);
+    sopt_state(state_ini, Lambda_ini);
 
     parquet_solver(data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
 

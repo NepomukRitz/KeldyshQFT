@@ -12,7 +12,7 @@
 constexpr bool MPI_FLAG = true;
 
 //Tolerance for closeness to grid points when interpolating
-constexpr double inter_tol = 1e-8;
+constexpr double inter_tol = 1e-5;
 
 enum interpolMethod {linear=0, linear_on_aux=1, sloppycubic=2, cubic=4};
 constexpr interpolMethod INTERPOLATION = linear_on_aux;
@@ -30,11 +30,12 @@ constexpr double converged_tol = 1e-7;
 constexpr int INTEGRATOR_TYPE = 5;
 
 //Integrator tolerance
-constexpr double integrator_tol = 1e-6;
+constexpr double integrator_tol = 1e-5;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 constexpr int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
 
+inline int nLambda_layers = 1;
 
 // Debug mode allows to select specific Keldysh components contributing to loop and bubbles
 //#define DEBUG_MODE

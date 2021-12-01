@@ -48,7 +48,6 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     int iteration=-1;
     int rkStep=-1;
     bool save_intermediate = false;
-    const int nLambda_layers = nODE + U_NRG.size() + 1;
 
     if (opt.size() > 1) {
          iteration = opt[0];

@@ -84,8 +84,8 @@ public:
                     case 1:
                         N_w = nBOS+FREQ_PADDING*2;
                         if (KELDYSH) {
-                            U_factor = 5. / 3.;
-                            Delta_factor = 5.;
+                            U_factor = 30. / 3.;
+                            Delta_factor = 30.;
                         }
                         else {
                             U_factor = 5./3.;
@@ -105,8 +105,8 @@ public:
                         }
 #else
                         if (KELDYSH){
-                            U_factor = 5./3.;
-                            Delta_factor = 5.;
+                            U_factor = 20./3.;
+                            Delta_factor = 20.;
                         }
                         else{
                             U_factor = 20./3.;
