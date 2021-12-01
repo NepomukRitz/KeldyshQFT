@@ -1709,13 +1709,13 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
     switch (channel) {
         case 'a':
-            if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>glb_T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
             break;
         case 'p':
-            if ((i0 == 0 or i0 == 1 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            if ((i0 == 0 or i0 == 1 or i0 == 3) and abs(w)>glb_T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
             break;
         case 't':
-            if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>inter_tol) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+            if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>glb_T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
             break;
         default:
             break;
