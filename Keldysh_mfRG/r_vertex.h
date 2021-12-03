@@ -268,6 +268,9 @@ public:
         if (MAX_DIAG_CLASS >= 0) K1.data += rhs.K1.data;
         if (MAX_DIAG_CLASS >= 2) K2.data += rhs.K2.data;
         if (MAX_DIAG_CLASS >= 3) K3.data += rhs.K3.data;
+#ifdef DEBUG_SYMMETRIES
+        if (MAX_DIAG_CLASS >= 2) K2b.data += rhs.K2b.data;
+#endif
         return *this;
     }
     friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
@@ -278,6 +281,9 @@ public:
         if (MAX_DIAG_CLASS >= 0) K1.data *= alpha;
         if (MAX_DIAG_CLASS >= 2) K2.data *= alpha;
         if (MAX_DIAG_CLASS >= 3) K3.data *= alpha;
+#ifdef DEBUG_SYMMETRIES
+        if (MAX_DIAG_CLASS >= 2) K2b.data *= alpha;
+#endif
         return *this;
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
@@ -288,6 +294,9 @@ public:
         if (MAX_DIAG_CLASS >= 0) K1.data *= rhs.K1.data;
         if (MAX_DIAG_CLASS >= 2) K2.data *= rhs.K2.data;
         if (MAX_DIAG_CLASS >= 3) K3.data *= rhs.K3.data;
+#ifdef DEBUG_SYMMETRIES
+        if (MAX_DIAG_CLASS >= 2) K2b.data *= rhs.K2b.data;
+#endif
         return *this;
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
@@ -298,6 +307,9 @@ public:
         if (MAX_DIAG_CLASS >= 0) K1.data -= rhs.K1.data;
         if (MAX_DIAG_CLASS >= 2) K2.data -= rhs.K2.data;
         if (MAX_DIAG_CLASS >= 3) K3.data -= rhs.K3.data;
+#ifdef DEBUG_SYMMETRIES
+        if (MAX_DIAG_CLASS >= 2) K2b.data -= rhs.K2b.data;
+#endif
         return *this;
     }
     friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
