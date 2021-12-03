@@ -18,7 +18,7 @@
 //template<typename Q> class State;
 /// TODO: Save frequency grids and frequency parameters for each channel individually
 
-#ifdef MPI_FLAG
+#ifdef USE_MPI
 #include "mpi_setup.h"          // mpi routines: when using mpi, only the process with ID 0 writes into file
 #endif
 
@@ -1738,7 +1738,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
  */
 template <typename Q>
 void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, const State<Q>& state_in) {
-#ifdef MPI_FLAG
+#ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
     {
@@ -1766,7 +1766,7 @@ void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, 
  */
 template <typename Q>
 void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_in, rvec& Lambdas) {
-#ifdef MPI_FLAG
+#ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
     {
@@ -1782,9 +1782,14 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_
 /// Overload of above function that only updates the Lambda at iteration Lambda_it
 template <typename Q>
 void add_hdf(const H5std_string FILE_NAME, const double Lambda_now, const int Lambda_it, const State<Q>& state_in) {
-    rvec Lambdas = read_Lambdas_from_hdf(FILE_NAME);
-    Lambdas[Lambda_it] = Lambda_now; // update Lambda
-    add_hdf<Q>(FILE_NAME, Lambda_it, state_in, Lambdas);
+#ifdef USE_MPI
+    if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
+#endif
+    {
+        rvec Lambdas = read_Lambdas_from_hdf(FILE_NAME);
+        Lambdas[Lambda_it] = Lambda_now; // update Lambda
+        add_hdf<Q>(FILE_NAME, Lambda_it, state_in, Lambdas);
+    }
 }
 
 

@@ -228,13 +228,18 @@ void get_time(double t0, std::string prec) {
 
 
 void makedir(const std::string& dir_str) {
-    const char* dir = dir_str.c_str();
-    // Creating Data directory
-    if (mkdir(dir, 0777) == -1)
-        std::cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << std::endl;
+#ifdef USE_MPI
+    if (mpi_world_rank() == 0 or not MPI_FLAG)  // only the process with ID 0 writes into file to avoid collisions
+#endif
+    {
+        const char *dir = dir_str.c_str();
+        // Creating Data directory
+        if (mkdir(dir, 0777) == -1)
+            std::cerr << "Error when creating directory " << dir << " :  " << strerror(errno) << std::endl;
 
-    else
-        std::cout << "Directory "  << dir << " created \n";
+        else
+            std::cout << "Directory " << dir << " created \n";
+    }
 }
 
 
