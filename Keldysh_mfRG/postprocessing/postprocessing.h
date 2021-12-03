@@ -174,7 +174,7 @@ void check_Kramers_Kronig(const std::string filename) {
         rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im);  // compute real part from imaginary part via KK
 
         // check Kramers-Kronig for retarded component of K1r
-        rvec wK1 = state.vertex[0].avertex().K1.K1_get_VertexFreqGrid().b.get_ws_vec();  // frequency grid points
+        rvec wK1 = state.vertex[0].avertex().K1.get_VertexFreqGrid().b.get_ws_vec();  // frequency grid points
         // get retarded component of K1a (first half of stored data points)
         rvec K1aR_re = state.vertex[0].avertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
         rvec K1aR_im = state.vertex[0].avertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow

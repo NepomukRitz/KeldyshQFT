@@ -5,6 +5,65 @@
 
 // TODO(high): Write unit tests for cross projection functionality!
 
+TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
+
+    rvert<state_datatype> testvertex1('a', Lambda_ini);
+    rvert<state_datatype> testvertex2('a', Lambda_ini);
+
+    state_datatype error = 0.;
+
+
+
+    SECTION( "Is vertex data exactly 0?" ) {
+        REQUIRE( testvertex1.K1.get_vec().max_norm() < 1e-10 );
+        REQUIRE( testvertex1.K2.get_vec().max_norm() < 1e-10 );
+#ifdef DEBUG_SYMMETRIES
+        REQUIRE( testvertex1.K2b.get_vec().max_norm() < 1e-10 );
+#endif
+        REQUIRE( testvertex1.K3.get_vec().max_norm() < 1e-10 );
+    }
+
+    testvertex1 += 1.;
+
+    SECTION( "Is vertex data exactly 1?" ) {
+        REQUIRE( std::abs(testvertex1.K1.get_vec()[0] - 1.)  < 1e-10 );
+        REQUIRE( std::abs(testvertex1.K2.get_vec()[0] - 1.)  < 1e-10 );
+#ifdef DEBUG_SYMMETRIES
+        REQUIRE( std::abs(testvertex1.K2b.get_vec()[0] - 1.)  < 1e-10 );
+#endif
+        REQUIRE( std::abs(testvertex1.K3.get_vec()[0] - 1.) < 1e-10 );
+    }
+
+    testvertex2 += testvertex1;
+
+
+    SECTION( "Is vertex2 data exactly 1?" ) {
+        REQUIRE( std::abs(testvertex2.K1.get_vec()[0] - 1.)  < 1e-10 );
+        REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 1.)  < 1e-10 );
+#ifdef DEBUG_SYMMETRIES
+        REQUIRE( std::abs(testvertex2.K2b.get_vec()[0] - 1.)  < 1e-10 );
+#endif
+        REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 1.) < 1e-10 );
+    }
+
+
+    testvertex2 = testvertex1 + testvertex2 * 2.;
+
+
+    SECTION( "Is vertex2 data exactly 3?" ) {
+        REQUIRE( std::abs(testvertex2.K1.get_vec()[0] - 3.)  < 1e-10 );
+        REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 3.)  < 1e-10 );
+#ifdef DEBUG_SYMMETRIES
+        REQUIRE( std::abs(testvertex2.K2b.get_vec()[0] - 3.)  < 1e-10 );
+#endif
+        REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 3.) < 1e-10 );
+    }
+
+
+
+}
+
+
 
 #ifndef KELDYSH_FORMALISM
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for K1a?", "[frequency_symmetries]" ) {
@@ -24,7 +83,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
     value = 0.;
     for (int iw = 0; iw<(nBOS-1)/2; iw++){
         avertex.K1.K1_get_freq_w(indices.w, iw);
-        if (avertex.K1.val(iK, iw, i_in) != avertex.K1.val(iK, nBOS -1 - iw, i_in)) {
+        if (std::abs(avertex.K1.val(iK, iw, i_in) - avertex.K1.val(iK, nBOS -1 - iw, i_in)) > 1e-10) {
             asymmetry += 1;
         }
     }

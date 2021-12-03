@@ -29,14 +29,17 @@ public:
     char channel;                       // reducibility channel
 private:
     Components components = Components(channel);              // lists providing information on how all Keldysh components are related to the
-    // independent ones
+                                                              // independent ones
     Transformations transformations = Transformations(channel);    // lists providing information on which transformations to apply on Keldysh
-    // components to relate them to the independent ones
+                                                                   // components to relate them to the independent ones
     FrequencyTransformations freq_transformations = FrequencyTransformations(channel);  // lists providing information on which transformations to apply on
-    // frequencies to relate them to the independent ones
+                                                                                        // frequencies to relate them to the independent ones
     FrequencyComponents freq_components = FrequencyComponents(channel);  // lists providing information on which transformations to apply on
-    // frequencies to relate them to the independent ones
+                                                                         // frequencies to relate them to the independent ones
 public:
+    /// When you add a vertex buffer, also adapt the following:
+    /// apply_unary_op_to_all_vertexBuffers()
+    /// apply_binary_op_to_all_vertexBuffers()
     vertexBuffer<k1,Q,INTERPOLATION> K1;
     vertexBuffer<k1,Q,INTERPOLATION> K1_a_proj = K1;
     vertexBuffer<k1,Q,INTERPOLATION> K1_p_proj = K1;
@@ -46,28 +49,88 @@ public:
     vertexBuffer<k2b,Q,INTERPOLATION> K2b;
 #endif
     vertexBuffer<k3,Q,INTERPOLATION> K3;
-    /// When you add a vertex buffer, also adapt:
-    /// Arithmetic operators (+, *, ...)
-    /// set_frequency_grid()
 
+    /**
+     * Applies unary operator f to this rvert
+     * @tparam Func
+     * @param f             f can be given via a lambda expression (for an example see arithmetic operations)
+     * @param other_rvert
+     * @return              returns this
+     */
+    template <typename Func>
+    auto apply_unary_op_to_all_vertexBuffers(Func&& f) {
+        if (MAX_DIAG_CLASS >= 0) f(K1);
+        if (MAX_DIAG_CLASS >= 1) f(K2);
+#ifdef DEBUG_SYMMETRIES
+        if (MAX_DIAG_CLASS >= 1) f(K2b);
+#endif
+        if (MAX_DIAG_CLASS >= 2) f(K3);
+
+        return *this;
+    }
+    /**
+     * Applies unary operator f to this rvert (const member function)
+     * @tparam Func
+     * @param f             f can be given via a lambda expression (for an example see arithmetic operations)
+     * @param other_rvert
+     * @return              returns this
+     */
+    template <typename Func>
+    auto apply_unary_op_to_all_vertexBuffers(Func&& f) const {
+        if (MAX_DIAG_CLASS >= 0) f(K1);
+        if (MAX_DIAG_CLASS >= 1) f(K2);
+#ifdef DEBUG_SYMMETRIES
+        if (MAX_DIAG_CLASS >= 1) f(K2b);
+#endif
+        if (MAX_DIAG_CLASS >= 2) f(K3);
+
+        return *this;
+    }
+
+    /**
+     * Applies binary operator f to this rvert and to another rvertex
+     * @tparam Func
+     * @param f             f can be given via a lambda expression (for an example see arithmetic operations)
+     * @param other_rvert
+     * @return              returns this
+     */
+    template <typename Func>
+    auto apply_binary_op_to_all_vertexBuffers(Func&& f, const rvert<Q>& other_rvert) {
+
+        if (MAX_DIAG_CLASS >= 0) f(K1, other_rvert.K1);
+        if (MAX_DIAG_CLASS >= 1) f(K2, other_rvert.K2);
+#ifdef DEBUG_SYMMETRIES
+        if (MAX_DIAG_CLASS >= 1) f(K2b, other_rvert.K2b);
+#endif
+        if (MAX_DIAG_CLASS >= 2) f(K3, other_rvert.K3);
+
+        return *this;
+    }
+
+
+    /**
+     * Constructor
+     * @param channel_in
+     * @param Lambda
+     */
     rvert(const char channel_in, double Lambda)
     : channel(channel_in),
       K1(Lambda), K2(Lambda), K3(Lambda)
 #ifdef DEBUG_SYMMETRIES
       , K2b(Lambda)
 #endif
-      {K1.reserve(); K2.reserve();
+    {K1.reserve(); K2.reserve();
 #ifdef DEBUG_SYMMETRIES
-      K2b.reserve();
+        K2b.reserve();
 #endif
-      K3.reserve(); };
-    rvert() = delete;
+        K3.reserve(); };
+
+    rvert() = delete; // delete standard constructor
 
     bool calculated_crossprojections = false;
     void cross_project();
 
-    /// Member functions for accessing the reducible vertex in channel r at arbitrary frequencies ///
-    /// by interpolating stored data, in all possible channel-dependent frequency representations ///
+
 
     /**
      * Return the value of the reducible vertex in channel r = sum of all K_classes K1, K2, K2b and K3.
@@ -244,14 +307,12 @@ public:
     // TODO: Implement! Needed for the Hubbard model.
     void K3_crossproject(char channel_out);
 
-    void initInterpolator() const {K1.initInterpolator(); if(MAX_DIAG_CLASS>1) {
-            K2.initInterpolator();
-#ifdef DEBUG_SYMMETRIES
-            K2b.initInterpolator();
-#endif
-        }
-        if(MAX_DIAG_CLASS>1) K3.initInterpolator(); }
-    void set_initializedInterpol(const bool is_init) const {K1.initialized = is_init; K2.initialized = is_init; K3.initialized = is_init; }
+    void initInterpolator() const {
+        apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.initInterpolator(); });
+    }
+    void set_initializedInterpol(const bool is_init) const {
+        apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.initialized = is_init; });
+    }
 
     /**
      * This function is defined if the flag DEBUG_SYMMETRIES is defined.
@@ -264,56 +325,41 @@ public:
      */
     void check_symmetries(std::string identifier, int spin, const rvert<Q>& rvert_this, const rvert<Q> &rvert_crossing) const;
 
+    /// Arithmetric operators act on vertexBuffers:
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) K1.data += rhs.K1.data;
-        if (MAX_DIAG_CLASS >= 2) K2.data += rhs.K2.data;
-        if (MAX_DIAG_CLASS >= 3) K3.data += rhs.K3.data;
-#ifdef DEBUG_SYMMETRIES
-        if (MAX_DIAG_CLASS >= 2) K2b.data += rhs.K2b.data;
-#endif
-        return *this;
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data += right.data;}, rhs);
     }
     friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs += rhs;
         return lhs;
     }
-    auto operator*= (double alpha) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) K1.data *= alpha;
-        if (MAX_DIAG_CLASS >= 2) K2.data *= alpha;
-        if (MAX_DIAG_CLASS >= 3) K3.data *= alpha;
-#ifdef DEBUG_SYMMETRIES
-        if (MAX_DIAG_CLASS >= 2) K2b.data *= alpha;
-#endif
-        return *this;
-    }
-    friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
     auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) K1.data *= rhs.K1.data;
-        if (MAX_DIAG_CLASS >= 2) K2.data *= rhs.K2.data;
-        if (MAX_DIAG_CLASS >= 3) K3.data *= rhs.K3.data;
-#ifdef DEBUG_SYMMETRIES
-        if (MAX_DIAG_CLASS >= 2) K2b.data *= rhs.K2b.data;
-#endif
-        return *this;
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data *= right.data;}, rhs);
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs *= rhs;
         return lhs;
     }
     auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
-        if (MAX_DIAG_CLASS >= 0) K1.data -= rhs.K1.data;
-        if (MAX_DIAG_CLASS >= 2) K2.data -= rhs.K2.data;
-        if (MAX_DIAG_CLASS >= 3) K3.data -= rhs.K3.data;
-#ifdef DEBUG_SYMMETRIES
-        if (MAX_DIAG_CLASS >= 2) K2b.data -= rhs.K2b.data;
-#endif
-        return *this;
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data -= right.data;}, rhs);
     }
     friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs -= rhs;
+        return lhs;
+    }
+
+    auto operator*= (double alpha) -> rvert<Q> {
+        return apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.data *= alpha; });
+    }
+    friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    auto operator+= (double alpha) -> rvert<Q> {
+        return apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.data += alpha; });
+    }
+    friend rvert<Q> operator+ (rvert<Q> lhs, const double& rhs) {
+        lhs += rhs;
         return lhs;
     }
 };
@@ -920,20 +966,20 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     if (MAX_DIAG_CLASS >= 1) {
 
-        VertexFrequencyGrid<k1> frequenciesK1_new = K1.K1_get_VertexFreqGrid();  // new frequency grid
+        VertexFrequencyGrid<k1> frequenciesK1_new = K1.get_VertexFreqGrid();  // new frequency grid
         frequenciesK1_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k1>(frequenciesK1_new, *this);
 
     }
     if (MAX_DIAG_CLASS >= 2) {
 
-        VertexFrequencyGrid<k2> frequenciesK2_new = K2.K2_get_VertexFreqGrid();  // new frequency grid
+        VertexFrequencyGrid<k2> frequenciesK2_new = K2.get_VertexFreqGrid();  // new frequency grid
         frequenciesK2_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k2>(frequenciesK2_new, *this);
 
     }
     if (MAX_DIAG_CLASS >= 3) {
-        VertexFrequencyGrid<k3> frequenciesK3_new = K3.K3_get_VertexFreqGrid();  // new frequency grid
+        VertexFrequencyGrid<k3> frequenciesK3_new = K3.get_VertexFreqGrid();  // new frequency grid
         frequenciesK3_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k3>(frequenciesK3_new, *this);
 
@@ -964,7 +1010,7 @@ namespace {
                 }
             }
             vertex.K1.set_vec(K1_new); // update vertex to new interpolated values
-            vertex.K1.K1_set_VertexFreqGrid(frequencies_new);
+            vertex.K1.set_VertexFreqGrid(frequencies_new);
         }
     };
     template<typename Q>
@@ -989,7 +1035,7 @@ namespace {
                 }
             }
             vertex.K2.set_vec(K2_new); // update vertex to new interpolated values
-            vertex.K2.K2_set_VertexFreqGrid(frequencies_new);
+             vertex.K2.set_VertexFreqGrid(frequencies_new);
         }
     };
     template<typename Q>
@@ -1021,7 +1067,7 @@ namespace {
                 }
             }
             vertex.K3.set_vec(K3_new); // update vertex to new interpolated values
-            vertex.K3.K3_set_VertexFreqGrid(frequencies_new);
+            vertex.K3.set_VertexFreqGrid(frequencies_new);
         }
 
     };
@@ -1044,7 +1090,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k1> frequencies = rVert.K1.K1_get_VertexFreqGrid();
+        VertexFrequencyGrid<k1> frequencies = rVert.K1.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K1(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
@@ -1077,7 +1123,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k2> frequencies = rVert.K2.K2_get_VertexFreqGrid();
+        VertexFrequencyGrid<k2> frequencies = rVert.K2.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
@@ -1105,7 +1151,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k2> frequencies = rVert.K2.K2_get_VertexFreqGrid();
+        VertexFrequencyGrid<k2> frequencies = rVert.K2.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_f_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
@@ -1134,7 +1180,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k2> frequencies = rVert.K2.K2_get_VertexFreqGrid();
+        VertexFrequencyGrid<k2> frequencies = rVert.K2.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (std::vector<double> Wscales) -> double
@@ -1166,7 +1212,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k3> frequencies = rVert.K3.K3_get_VertexFreqGrid();
+        VertexFrequencyGrid<k3> frequencies = rVert.K3.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
@@ -1190,7 +1236,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k3> frequencies = rVert.K3.K3_get_VertexFreqGrid();
+        VertexFrequencyGrid<k3> frequencies = rVert.K3.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_f_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
@@ -1219,7 +1265,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k3> frequencies = rVert.K3.K3_get_VertexFreqGrid();
+        VertexFrequencyGrid<k3> frequencies = rVert.K3.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (std::vector<double> Wscales) -> double
@@ -1257,9 +1303,9 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         std::cout << "K1 rel.tail height in direction w: " << K1.analyze_tails_K1() << std::endl;
     }
 
-    double a_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale / 2.;
-    double m_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale;
-    double b_Wscale = K1.K1_get_VertexFreqGrid().b.W_scale * 2;
+    double a_Wscale = K1.get_VertexFreqGrid().b.W_scale / 2.;
+    double m_Wscale = K1.get_VertexFreqGrid().b.W_scale;
+    double b_Wscale = K1.get_VertexFreqGrid().b.W_scale * 2;
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(*this, verbose);
     minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
     frequenciesK1_new.b.update_Wscale(m_Wscale);
@@ -1279,9 +1325,9 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 
         // in v-direction:
         if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction v:\n";
-        a_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale / 2.;
-        m_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale;
-        b_Wscale = K2.K2_get_VertexFreqGrid().f.W_scale * 2;
+        a_Wscale = K2.get_VertexFreqGrid().f.W_scale / 2.;
+        m_Wscale = K2.get_VertexFreqGrid().f.W_scale;
+        b_Wscale = K2.get_VertexFreqGrid().f.W_scale * 2;
         CostFullvert_Wscale_f_K2<Q> cost_f_K2(*this, verbose);
         minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
         frequenciesK2_new.f.update_Wscale(m_Wscale);
@@ -1290,9 +1336,9 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 #ifndef ROTATEK2
         // in w-direction:
         if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w:\n";
-        a_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale / 2.;
-        m_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale;
-        b_Wscale = K2.K2_get_VertexFreqGrid().b.W_scale * 2;
+        a_Wscale = K2.get_VertexFreqGrid().b.W_scale / 2.;
+        m_Wscale = K2.get_VertexFreqGrid().b.W_scale;
+        b_Wscale = K2.get_VertexFreqGrid().b.W_scale * 2;
         CostFullvert_Wscale_b_K2<Q> cost_b_K2(*this, verbose);
         minimizer(cost_b_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
         frequenciesK2_new.b.update_Wscale(m_Wscale);
@@ -1343,9 +1389,9 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 
         // in v-direction:
         if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K3" << channel << " grid in direction v:\n";
-        a_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale / 2.;
-        m_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale;
-        b_Wscale = K3.K3_get_VertexFreqGrid().f.W_scale * 2;
+        a_Wscale = K3.get_VertexFreqGrid().f.W_scale / 2.;
+        m_Wscale = K3.get_VertexFreqGrid().f.W_scale;
+        b_Wscale = K3.get_VertexFreqGrid().f.W_scale * 2;
         CostFullvert_Wscale_f_K3<Q> cost_f_K3(*this, verbose);
         minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
 
@@ -1359,9 +1405,9 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
             // in w-direction:
             if (verbose and mpi_world_rank() == 0)
                 std::cout << "---> Now Optimize K3" << channel << " grid in direction w:\n";
-            a_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale / 2.;
-            m_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale;
-            b_Wscale = K3.K3_get_VertexFreqGrid().b.W_scale * 2;
+            a_Wscale = K3.get_VertexFreqGrid().b.W_scale / 2.;
+            m_Wscale = K3.get_VertexFreqGrid().b.W_scale;
+            b_Wscale = K3.get_VertexFreqGrid().b.W_scale * 2;
             CostFullvert_Wscale_b_K3<Q> cost_b_K3(*this, verbose);
             minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
             frequenciesK3_new.b.update_Wscale(m_Wscale);

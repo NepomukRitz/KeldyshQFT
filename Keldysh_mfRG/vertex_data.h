@@ -30,6 +30,15 @@ class Buffer;
  */
 template <typename Q, size_t rank>
 class vertexContainerBase {
+    template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
+    template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
+    template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
+    template<typename T> friend rvert<T> rvert<T>::operator-= (const rvert<T>& rhs);
+    template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
+    template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
+    template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const double& alpha);
+    template<typename T> friend rvert<T> rvert<T>::operator+= (double alpha);
+
 private:
     /**
      * Flattens multiIndex
@@ -139,12 +148,6 @@ class vertexDataContainer: public vertexContainerBase<Q,4> {
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void check_FDTs(const State<T>& state, bool verbose);
-    template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
-    template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
-    template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
-    template<typename T> friend rvert<T> rvert<T>::operator-= (const rvert<T>& rhs);
-    template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
-    template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
 
 protected:
     VertexFrequencyGrid<k2> frequencies_K2;    // frequency grid
@@ -163,8 +166,8 @@ public:
     void K2_get_freqs_w(double& w, double& v, int iw, int iv) const;
     void K2_get_freqs_aux(double& w, double& v, int iw, int iv) const;
 
-    auto K2_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>&;
-    void K2_set_VertexFreqGrid(const VertexFrequencyGrid<k2> frequencyGrid);
+    auto get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>&;
+    void set_VertexFreqGrid(const VertexFrequencyGrid<k2> frequencyGrid);
 
     const double& K2_get_wlower_b() const;
     const double& K2_get_wupper_b() const;
@@ -211,12 +214,6 @@ class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,3>{
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void susceptibilities_postprocessing(Vertex<T>& chi, Vertex<T>& chi_diff, const State<T>& state, double Lambda);
-    template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
-    template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
-    template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
-    template<typename T> friend rvert<T> rvert<T>::operator-= (const rvert<T>& rhs);
-    template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
-    template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
 
 
 protected:
@@ -240,8 +237,8 @@ public:
     void K1_get_freq_w(double& w, int i) const;     /// returns regular frequency
     void K1_get_freq_aux(double& w, int i) const;   /// returns frequency on the auxiliary grid
 
-    auto K1_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k1>&;
-    void K1_set_VertexFreqGrid(const VertexFrequencyGrid<k1> frequencyGrid);
+    auto get_VertexFreqGrid() const -> const VertexFrequencyGrid<k1>&;
+    void set_VertexFreqGrid(const VertexFrequencyGrid<k1> frequencyGrid);
 
     auto K1_get_freqGrid() const -> const FrequencyGrid&;
 
@@ -272,12 +269,6 @@ class vertexDataContainer<k3, Q>: public vertexContainerBase<Q,5> {
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void check_FDTs(const State<T>& state, bool verbose);
-    template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
-    template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
-    template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
-    template<typename T> friend rvert<T> rvert<T>::operator-= (const rvert<T>& rhs);
-    template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
-    template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
 
 
 protected:
@@ -291,8 +282,8 @@ public:
     void K3_get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp, char channel) const;
     void K3_get_freqs_aux(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
 
-    auto K3_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3>&;
-    void K3_set_VertexFreqGrid(const VertexFrequencyGrid<k3> frequencyGrid);
+    auto get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3>&;
+    void set_VertexFreqGrid(const VertexFrequencyGrid<k3> frequencyGrid);
     const FrequencyGrid& K3_get_freqGrid_b() const;
     const FrequencyGrid& K3_get_freqGrid_f() const;
 
@@ -337,27 +328,27 @@ public:
 /// K1:
 
 template<typename Q>
-auto vertexDataContainer<k1,Q>::K1_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k1>& {
+auto vertexDataContainer<k1,Q>::get_VertexFreqGrid() const -> const VertexFrequencyGrid<k1>& {
     return frequencies_K1;
 }
 template<typename Q>
-void vertexDataContainer<k1,Q>::K1_set_VertexFreqGrid(const VertexFrequencyGrid<k1> frequencyGrid) {
+void vertexDataContainer<k1,Q>::set_VertexFreqGrid(const VertexFrequencyGrid<k1> frequencyGrid) {
     frequencies_K1 = frequencyGrid;
 }
 template<K_class k, typename Q>
-auto vertexDataContainer<k,Q>::K2_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>& {
+auto vertexDataContainer<k,Q>::get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>& {
     return frequencies_K2;
 }
 template<K_class k, typename Q>
-void vertexDataContainer<k,Q>::K2_set_VertexFreqGrid(const VertexFrequencyGrid<k2> frequencyGrid) {
+void vertexDataContainer<k,Q>::set_VertexFreqGrid(const VertexFrequencyGrid<k2> frequencyGrid) {
     frequencies_K2 = frequencyGrid;
 }
 template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3> & {
+auto vertexDataContainer<k3,Q>::get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3> & {
     return frequencies_K3;
 }
 template<typename Q>
-void vertexDataContainer<k3,Q>::K3_set_VertexFreqGrid(const VertexFrequencyGrid<k3> frequencyGrid) {
+void vertexDataContainer<k3,Q>::set_VertexFreqGrid(const VertexFrequencyGrid<k3> frequencyGrid) {
     frequencies_K3 = frequencyGrid;
 }
 
