@@ -174,7 +174,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                     for (int itin = 0; itin < n_in; itin++) {
                         VertexInput inputG1(1, w, 0, 0, itin, 0, 'a');  // advanced component
                         G1 = vertex_in.avertex.template valsmooth<k1>(inputG1 , vertex_in.tvertex, vertex_half2_in.avertex, vertex_half2_in.tvertex);
-                        G2 = - 2. * glb_i * N1 * myimag(G1);
+                        G2 = N1 * (myconj(G1) - G1);
                         vertex_out.avertex.K1.setvert( G2,     1, itw, itin );
                     }
                 }
@@ -186,7 +186,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                     for (int itin = 0; itin < n_in; itin++) {
                         VertexInput inputG1(1, w, 0, 0, itin, 0, 'a');  // advanced component
                         G1 = vertex_in.pvertex.template valsmooth<k1>(inputG1 , vertex_in.pvertex, vertex_half2_in.pvertex, vertex_half2_in.pvertex);
-                        G2 = - 2. * glb_i * N1 * myimag(G1);
+                        G2 = N1 * (myconj(G1) - G1);
                         vertex_out.pvertex.K1.setvert( G2,     1, itw, itin );
                     }
                 }
@@ -198,7 +198,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                     for (int itin = 0; itin < n_in; itin++) {
                         VertexInput inputG1(1, w, 0, 0, itin, 0, 'a');  // advanced component
                         G1 = vertex_in.tvertex.template valsmooth<k1>(inputG1 , vertex_in.avertex, vertex_half2_in.tvertex, vertex_half2_in.avertex);
-                        G2 = - 2. * glb_i * N1 * myimag(G1);
+                        G2 = N1 * (myconj(G1) - G1);
                         vertex_out.tvertex.K1.setvert( G2,     1, itw, itin );
                     }
                 }
@@ -215,7 +215,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 case 'a':
                     // for K2a:
                     vertex_in.avertex.K2.K2_get_freqs_w(w, v, itw, itv);
-                    if (std::abs(w) > glb_T*25.){
+                    if (std::abs(w) > glb_T){
                         N1 = Fermi_fac(-v  - w/2, glb_mu);
                         N2 = Fermi_fac( v  - w/2, glb_mu);
                         N3 = 1./Fermi_fac(w, glb_mu);
@@ -243,7 +243,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 case 'p':
                     // for K2p:
                     vertex_in.pvertex.K2.K2_get_freqs_w(w, v, itw, itv);
-                    if (abs(w) > glb_T*25.){
+                    if (std::abs(w) > glb_T*1.){//
                         N1 = Fermi_fac( v  + w/2, glb_mu);
                         N2 = Fermi_fac(-v  + w/2, glb_mu);
                         N3 = 1./Fermi_fac(-w, glb_mu);
@@ -272,7 +272,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 case 't':
                     // for K2t:
                     vertex_in.tvertex.K2.K2_get_freqs_w(w, v, itw, itv);
-                    if (abs(w) > glb_T*25.){
+                    if (std::abs(w) > glb_T*1.){
                         N1 = Fermi_fac(-v  - w/2, glb_mu);
                         N2 = Fermi_fac( v  - w/2, glb_mu);
                         N3 = 1./Fermi_fac(w, glb_mu);
