@@ -49,6 +49,9 @@ public:
     vertexBuffer<k2b,Q,INTERPOLATION> K2b;
 #endif
     vertexBuffer<k3,Q,INTERPOLATION> K3;
+    /// When you add a vertex buffer, also adapt the following:
+    /// apply_unary_op_to_all_vertexBuffers()
+    /// apply_binary_op_to_all_vertexBuffers()
 
     /**
      * Applies unary operator f to this rvert
