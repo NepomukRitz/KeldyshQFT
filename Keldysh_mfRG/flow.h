@@ -23,7 +23,7 @@
 State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermediate_results=false){
 
     State<state_datatype> state_fin (Lambda_fin), state_ini(Lambda_ini);   // create final and initial state
-    nLambda_layers = nODE + U_NRG.size() + 1;
+
 
     /// Iterate:
     /// 1. compute parquet solution

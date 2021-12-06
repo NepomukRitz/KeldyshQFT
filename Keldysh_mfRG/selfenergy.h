@@ -406,7 +406,7 @@ template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) co
 
     double result = maxabsSE_along_w[FREQ_PADDING] / maxabs_SE_total;
 
-    if (verbose)
+    if (verbose and mpi_world_rank() == 0)
     {
         std::cout << "rel. magnitude of tails in self energy :";
         std::cout << "\t\t" << result << std::endl;
@@ -452,7 +452,7 @@ template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) co
 
     double max_SE = (::power2(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1)*dt*(1/maxmax))).max_norm();
 
-    if (verbose) {
+    if (verbose and mpi_world_rank() == 0) {
         std::cout << "max. Derivative in selfenergy:" << std::endl;
         std::cout << "\t  \t" << max_SE << std::endl;
     }

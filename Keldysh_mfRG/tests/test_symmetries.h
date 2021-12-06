@@ -20,7 +20,6 @@ void test_symmetries(const double Lambda) {
 
     std::cout << " --- Testing symmetries --- " << std::endl;
 
-    nLambda_layers = 1;
     State<state_datatype> state_ini(Lambda);   // create final and initial state
 
     state_ini.initialize();     // initialize state with bare vertex and Hartree term in selfenergy
