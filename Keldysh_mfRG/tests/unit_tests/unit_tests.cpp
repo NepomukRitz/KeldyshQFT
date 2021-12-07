@@ -89,9 +89,9 @@ int main(int argc, char* argv[]) {
     state_ini.initialize();
     sopt_state(state_ini, lambda);
 
-    //Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
-    //auto Pi = PT_initialize_Bubble(barePropagator);
-    //save_PreBubble_in_freq_space(Pi, 0);
+    Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
+    auto Pi = PT_initialize_Bubble(barePropagator);
+    save_PreBubble_in_freq_space(Pi, 0);
 
 
     const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/";

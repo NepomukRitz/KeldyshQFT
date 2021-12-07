@@ -798,7 +798,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_v
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
     /// Define standard frequency points on which to evaluate the integrand
-    int npoints = nBOS;
+    int npoints = 10000;//nBOS;
     if (diag_class == 2) {npoints = 1000;}
     else if (diag_class == 3) {npoints = 100;}
 
@@ -808,8 +808,10 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
         double wl, wu;
         switch (diag_class) {
             case 1:
-                wl = vertex1[0].avertex().K1.K1_get_wlower() * 2.;
-                wu = vertex1[0].avertex().K1.K1_get_wupper() * 2.;
+                wl = vertex1[0].avertex().K1.K1_get_wlower();
+                wu = vertex1[0].avertex().K1.K1_get_wupper();
+                wl *= 2.;
+                wu *= 2.;
                 break;
             case 2:
                 wl = vertex1[0].avertex().K2.K2_get_wlower_f();
@@ -822,7 +824,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
             default:;
         }
         double vpp = wl + i * (wu - wl) / (npoints - 1);
-        if (diag_class == 1) {vertex1[0].avertex().K1.K1_get_freq_w(vpp, i);}
+        if (diag_class == 1 and not HUBBARD_MODEL) {vertex1[0].avertex().K1.K1_get_freq_w(vpp, i);}
         freqs[i] = vpp;
     }
 
@@ -994,8 +996,15 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
-    vmin = std::min(dgamma[0].avertex().K1.K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
-    vmax = std::max(dgamma[0].avertex().K1.K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
+    if (HUBBARD_MODEL){ // In the HM we have a larger frequency box for the SE and want to limit us to the range of bosonic vertex frequencies.
+        vmin = dgamma[0].avertex().K1.K1_get_wlower();
+        vmax = dgamma[0].avertex().K1.K1_get_wupper();
+    }
+    else{
+        vmin = std::min(dgamma[0].avertex().K1.K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
+        vmax = std::max(dgamma[0].avertex().K1.K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
+    }
+
     if (MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
         vmin = std::min(vmin, dgamma[0].avertex().K2.K2_get_wlower_f());
@@ -1104,7 +1113,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int iterator = 0;
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-//#pragma omp parallel for schedule(dynamic) default(none) shared(n_omp, i_mpi, iterator, Buffer)
+#pragma omp parallel for schedule(dynamic) default(none) shared(n_omp, i_mpi, iterator, Buffer)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value(i_mpi, i_omp, n_omp, diag_class); // write result of integration into MPI buffer
             }
@@ -1160,8 +1169,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K1(vertex1, vertex2, Pi, i0, i2, w, i_in, channel, diff);
-#ifndef NDEBUG
-        if (((std::abs(w) < 0.0001) || std::abs(std::abs(w) - 180.0) < 0.01 || std::abs(std::abs(w) - 155.010982) < 0.01 || std::abs(std::abs(w) - 135.862919) < 0.01) && (i_in == 0) && (channel != 't') && HUBBARD_MODEL) integrand_K1.save_integrand();
+#ifndef NDEBUG // save integrand at some values for w. Only works when this loop is not parallelized.
+        //if (((std::abs(w) < 0.0001) || std::abs(w - 270.0) < 0.01 || std::abs(w - 232.5164) < 0.01 ||
+        //std::abs(w - 203.7943) < 0.01 || std::abs(w - 51.92837) < 0.01 || std::abs(w - 106.15800) < 0.01)
+        //&& (i_in == 0) && (channel != 't') && HUBBARD_MODEL) integrand_K1.save_integrand();
 #endif // NDEBUG
         if (KELDYSH){
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
@@ -1512,6 +1523,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if constexpr (KELDYSH) return prefactor * (1. / (2. * M_PI * glb_i));
     else                   return prefactor * (1. / (2. * M_PI));
 }
+
 
 
 // bubble_function using the new class BubbleFunctionCalculator

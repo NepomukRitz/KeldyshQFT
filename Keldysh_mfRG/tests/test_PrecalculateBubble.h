@@ -293,7 +293,7 @@ void test_Bubble_in_Momentum_Space(){
 
 void save_PreBubble_in_freq_space(const PrecalculateBubble<comp> Pi, const int i_in){
     const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/bare_bubble/";
-    const std::string filename  = directory + "bare_bubble_on_fermionic_grid_in_" + std::to_string(i_in) + ".h5";
+    const std::string filename  = directory + "bare_bubble_on_fermionic_grid_in_" + std::to_string(i_in) + "n_in_" + std::to_string(n_in) + ".h5";
     vec<comp> pi (glb_number_of_Keldysh_components_bubble * nFER * nFER);
     for (int iK_bubble = 0; iK_bubble < glb_number_of_Keldysh_components_bubble; ++iK_bubble) {
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
