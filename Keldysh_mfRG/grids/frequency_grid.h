@@ -859,24 +859,8 @@ double integration_measure_v4(const double t, const double W_scale) {
     return 2 * W_scale * sgn(t) * t / temp / temp;
 }
 
-/*
-//// log grid with linear region
-double grid_transf_log(const double w, const double W_scale) {
-    // linear from -W_scale to +W_scale; logarithmic outside
-    const double portion_small = 0.3;
-    double result;
-    if (std::abs(w) < W_scale) {
-        result = sgn(w) * ();
-    }
-    else {
 
-    }
-    return result;
-}
-double grid_transf_inv_log(const double t, const double W_scale) {
-    return W_scale * sgn(t) * t*t /(1.-t*t);
-}
-*/
+
 
 ////    linear grid
 double grid_transf_lin(double w, double W_scale) {
