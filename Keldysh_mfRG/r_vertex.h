@@ -62,12 +62,12 @@ public:
      */
     template <typename Func>
     auto apply_unary_op_to_all_vertexBuffers(Func&& f) {
-        if (MAX_DIAG_CLASS >= 0) f(K1);
-        if (MAX_DIAG_CLASS >= 1) f(K2);
+        if (MAX_DIAG_CLASS > 0) f(K1);
+        if (MAX_DIAG_CLASS > 1) f(K2);
 #ifdef DEBUG_SYMMETRIES
-        if (MAX_DIAG_CLASS >= 1) f(K2b);
+        if (MAX_DIAG_CLASS > 1) f(K2b);
 #endif
-        if (MAX_DIAG_CLASS >= 2) f(K3);
+        if (MAX_DIAG_CLASS > 2) f(K3);
 
         return *this;
     }
@@ -80,12 +80,12 @@ public:
      */
     template <typename Func>
     auto apply_unary_op_to_all_vertexBuffers(Func&& f) const {
-        if (MAX_DIAG_CLASS >= 0) f(K1);
-        if (MAX_DIAG_CLASS >= 1) f(K2);
+        if (MAX_DIAG_CLASS > 0) f(K1);
+        if (MAX_DIAG_CLASS > 1) f(K2);
 #ifdef DEBUG_SYMMETRIES
-        if (MAX_DIAG_CLASS >= 1) f(K2b);
+        if (MAX_DIAG_CLASS > 1) f(K2b);
 #endif
-        if (MAX_DIAG_CLASS >= 2) f(K3);
+        if (MAX_DIAG_CLASS > 2) f(K3);
 
         return *this;
     }
@@ -100,12 +100,12 @@ public:
     template <typename Func>
     auto apply_binary_op_to_all_vertexBuffers(Func&& f, const rvert<Q>& other_rvert) {
 
-        if (MAX_DIAG_CLASS >= 0) f(K1, other_rvert.K1);
-        if (MAX_DIAG_CLASS >= 1) f(K2, other_rvert.K2);
+        if (MAX_DIAG_CLASS > 0) f(K1, other_rvert.K1);
+        if (MAX_DIAG_CLASS > 1) f(K2, other_rvert.K2);
 #ifdef DEBUG_SYMMETRIES
-        if (MAX_DIAG_CLASS >= 1) f(K2b, other_rvert.K2b);
+        if (MAX_DIAG_CLASS > 1) f(K2b, other_rvert.K2b);
 #endif
-        if (MAX_DIAG_CLASS >= 2) f(K3, other_rvert.K3);
+        if (MAX_DIAG_CLASS > 2) f(K3, other_rvert.K3);
 
         return *this;
     }

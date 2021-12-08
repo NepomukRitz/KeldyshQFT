@@ -32,7 +32,7 @@ template<K_class k, typename Q> class vertexDataContainer; // forward declaratio
 
 
 #define PARAMETRIZED_GRID
-#define FREQ_PADDING 1  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
+#define FREQ_PADDING 0  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 #define DENSEGRID
 #endif
@@ -88,8 +88,8 @@ public:
                             Delta_factor = 30.;
                         }
                         else {
-                            U_factor = 5./3.;
-                            Delta_factor = 5.;
+                            U_factor = 40./3.;
+                            Delta_factor = 40.;
                         }
                         break;
                     case 2:
@@ -377,14 +377,14 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
         index = std::min(N_w - 3 - FREQ_PADDING, index);
     }
     else {
-        if (ws[index+1+FREQ_PADDING] < w_in and index < N_w-1)
-            index++;
-        if (ws[index+FREQ_PADDING] > w_in and index > 0)
-            index--;
+        //if (ws[index+1+FREQ_PADDING] < w_in and index < N_w-1)
+        //    index++;
+        //if (ws[index+FREQ_PADDING] > w_in and index > 0)
+        //    index--;
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
         assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0); /// TODO: If this is not satisfied -> use locate
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
+        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-2-FREQ_PADDING);
     }
     return index;
 

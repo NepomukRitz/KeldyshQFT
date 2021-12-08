@@ -1422,8 +1422,6 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results(const vec<Q>& Ordered_result, const K_class diag_class){
-    dgamma[spin].half1().initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-                                                /// TODO: does cubic interpolation overshoot at the edges of the symmetry-reduced sector?
     switch (diag_class) {
         case k1:
             write_out_results_K1(Ordered_result);
@@ -1441,7 +1439,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default: ;
     }
-    dgamma[spin].half1().set_initializedInterpol(false);      // above initialization of the Interpolator is with the symmetry-reduced sector only (rest = zero)
+    dgamma.set_initializedInterpol(false);      // above initialization of the Interpolator is with the symmetry-reduced sector only (rest = zero)
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
@@ -1453,18 +1451,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         case 'a':
             dgamma[spin].avertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].avertex().enforce_freqsymmetriesK1(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
             dgamma[spin].pvertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].pvertex().enforce_freqsymmetriesK1(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
             dgamma[spin].tvertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].tvertex().enforce_freqsymmetriesK1(dgamma[spin].tvertex());
 #endif
             break;
@@ -1482,18 +1483,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         case 'a':
             dgamma[spin].avertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].avertex().enforce_freqsymmetriesK2(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
             dgamma[spin].pvertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].pvertex().enforce_freqsymmetriesK2(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
             dgamma[spin].tvertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].tvertex().enforce_freqsymmetriesK2(dgamma[spin].tvertex());
 #endif
             break;
@@ -1544,18 +1548,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         case 'a':
             dgamma[spin].avertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].avertex().enforce_freqsymmetriesK3(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
             dgamma[spin].pvertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].pvertex().enforce_freqsymmetriesK3(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
             dgamma[spin].tvertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
+            dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             dgamma[spin].tvertex().enforce_freqsymmetriesK3(dgamma[spin].tvertex());
 #endif
             break;
