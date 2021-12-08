@@ -27,11 +27,11 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
 
     SECTION( "Is vertex data exactly 1?" ) {
         REQUIRE( std::abs(testvertex1.K1.get_vec()[0] - 1.)  < 1e-10 );
-        REQUIRE( std::abs(testvertex1.K2.get_vec()[0] - 1.)  < 1e-10 );
+        if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex1.K2.get_vec()[0] - 1.)  < 1e-10);
 #ifdef DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex1.K2b.get_vec()[0] - 1.)  < 1e-10 );
 #endif
-        REQUIRE( std::abs(testvertex1.K3.get_vec()[0] - 1.) < 1e-10 );
+        if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex1.K3.get_vec()[0] - 1.) < 1e-10);
     }
 
     testvertex2 += testvertex1;
@@ -39,11 +39,11 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
 
     SECTION( "Is vertex2 data exactly 1?" ) {
         REQUIRE( std::abs(testvertex2.K1.get_vec()[0] - 1.)  < 1e-10 );
-        REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 1.)  < 1e-10 );
+        if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 1.)  < 1e-10);
 #ifdef DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex2.K2b.get_vec()[0] - 1.)  < 1e-10 );
 #endif
-        REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 1.) < 1e-10 );
+        if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 1.) < 1e-10);
     }
 
 
@@ -52,11 +52,11 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
 
     SECTION( "Is vertex2 data exactly 3?" ) {
         REQUIRE( std::abs(testvertex2.K1.get_vec()[0] - 3.)  < 1e-10 );
-        REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 3.)  < 1e-10 );
+        if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 3.)  < 1e-10);
 #ifdef DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex2.K2b.get_vec()[0] - 3.)  < 1e-10 );
 #endif
-        REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 3.) < 1e-10 );
+        if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 3.) < 1e-10);
     }
 
 

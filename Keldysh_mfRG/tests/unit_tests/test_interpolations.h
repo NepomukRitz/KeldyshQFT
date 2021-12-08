@@ -166,7 +166,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     int iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0; iw<nBOS; iw++){
+    for (int iw = -FREQ_PADDING; iw<nBOS+FREQ_PADDING; iw++){
         double w;
         if (INTERPOLATION == linear)  avertex.K1.K1_get_freq_w(w, iw);
         else avertex.K1.K1_get_freq_aux(w, iw);
@@ -179,7 +179,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
-    int N = nBOS * 500;
+    int N = nBOS * 3;
     vec<double> errors (N);
     double inter = (avertex.K1.K1_get_wupper() - avertex.K1.K1_get_wlower()) / double(N-1);
     for (int iw = 0; iw<N; iw++){

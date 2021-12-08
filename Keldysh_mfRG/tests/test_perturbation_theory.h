@@ -1671,11 +1671,13 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        PT_state.vertex[0].avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
+        //PT_state.vertex[0].avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
+        PT_state.vertex[0].avertex().K1.setvert( val_K1, 0, i, 0);
         w = PT_state.vertex[0].pvertex().K1.frequencies_K1.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        PT_state.vertex[0].pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
+        //PT_state.vertex[0].pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
+        PT_state.vertex[0].pvertex().K1.setvert( -val_K1, 0, i, 0);
         w = PT_state.vertex[0].tvertex().K1.frequencies_K1.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
