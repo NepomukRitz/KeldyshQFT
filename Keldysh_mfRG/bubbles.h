@@ -577,6 +577,7 @@ public:
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
               i2(i2_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), channel(ch_in), diff(diff_in), spin(spin_in), diag_class(k_in){
         set_Keldysh_index_i0(i0_in);
+        if (MAX_DIAG_CLASS < 2) {precompute_vertices();}
     }
 
     /**
@@ -640,13 +641,13 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
     VertexInput input_l (0, w, 0., 0., i_in, 0, channel);
     VertexInput &input_r = input_l;
 #endif
-    res_l_V_initial = vertex1[spin].left_same_bare(input_l);
-    res_r_V_initial = vertex2[spin].right_same_bare(input_r);
+    res_l_V_initial = vertex1.left_same_bare(input_l);
+    res_r_V_initial = vertex2.right_same_bare(input_r);
     if (channel == 't') {
         input_l.spin = 1;
         input_r.spin = 1;
-        res_l_Vhat_initial = vertex1[spin].left_same_bare(input_l);
-        res_r_Vhat_initial = vertex2[spin].right_same_bare(input_r);
+        res_l_Vhat_initial = vertex1.left_same_bare(input_l);
+        res_r_Vhat_initial = vertex2.right_same_bare(input_r);
     }
 #else // DEBUG_SYMMETRIES
 
@@ -1121,8 +1122,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function(k1);
         tK1 = get_time() - t_start;
-        //print("K1", channel, " done, ");
-        //get_time(t_start);
+        print("K1", channel, " done, ");
+        get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 2) {
         t_start = get_time();
