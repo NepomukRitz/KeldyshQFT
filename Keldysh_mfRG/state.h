@@ -118,12 +118,12 @@ template<typename Q>
 auto max_rel_err(const State<Q>& err, const vec<State<Q>>& scale_States, const double minimum_value_considered) -> double {
     double scale_Vert = 0.;
     for (auto state: scale_States) {scale_Vert += state.vertex[0].half1().sum_norm(0);}
-    double max_vert = err.vertex[0].half1().sum_norm(0) / scale_Vert;
+    double max_vert = err.vertex[0].half1().sum_norm(0) / scale_Vert * scale_States.size();
 
     double scale_SE = 0.;
     for (auto state: scale_States) {scale_SE += state.selfenergy.norm(0);}
 
-    double max_self = err.selfenergy.norm(0) /scale_SE;
+    double max_self = err.selfenergy.norm(0) /scale_SE * scale_States.size();
     return std::max(max_self, max_vert);
 
 }

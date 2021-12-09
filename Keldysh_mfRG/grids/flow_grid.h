@@ -113,6 +113,30 @@ namespace flowgrid {
         }
     };
 
+    class log_parametrization
+    {
+    public:
+        inline static double lambda_from_t(double t)
+        {
+            double value = Lambda_scale*(pow(10, -t) - 1);
+            assert (isfinite(value));
+            return value; // -t;//
+        }
+
+        inline static double t_from_lambda(double Lambda)
+        {
+            double value = -log10(1 + Lambda/Lambda_scale);
+            assert (isfinite(value));
+            return value; // -Lambda;//
+        }
+
+
+        inline static double dlambda_dt(double t)
+        {
+            return -Lambda_scale*pow(10, t) * log(10);
+        }
+    };
+
 
     // Use this to define parametrizations of Lambda in some other quantity t that is easier on the integrator.
     class sqrt_parametrization

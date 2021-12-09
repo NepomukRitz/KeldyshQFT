@@ -7,6 +7,7 @@
 #include <omp.h>             // parallelize initialization of self-energy
 #include "symmetries/Keldysh_symmetries.h"
 #include "utilities/write_data2file.h"
+#include "interpolations/InterpolatorLinOrSloppy.h"
 
 /****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>
@@ -257,6 +258,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
     vec<Q> Sigma_new (nK_SE*(nSE+2*FREQ_PADDING)*n_in_K1);                     // temporary self-energy vector
 
     for (int iK=0; iK<nK_SE; ++iK) {
+    vec<Q> Sigma_new = empty_Sigma();                     // temporary self-energy vector
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in_K1; ++i_in) {

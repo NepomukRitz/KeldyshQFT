@@ -72,8 +72,14 @@ add_executable(Keldysh_mfRG
         tests/test_symmetries.h
         multidimensional/multiarray.hpp
         multidimensional/ranged_view.hpp
-        HUBBARD_sopt_selfenergy.h)
-
+        HUBBARD_sopt_selfenergy.h
+        utilities/write_data2file.h grids/momentum_grid.h tests/test_ODE.h integrator/old_integrators.h
+        parameters/frequency_parameters.h parameters/technical_parameters.h
+        #interpolations/interpolation_functions.h
+        OldFiles/paid.hpp
+        OldFiles/domain.hpp
+        OldFiles/queue.hpp
+        OldFiles/rule.hpp)
 
 # executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
@@ -136,7 +142,13 @@ add_executable(Keldysh_mfRG_testing
         tests/test_symmetries.h
         multidimensional/multiarray.hpp
         multidimensional/ranged_view.hpp
-        HUBBARD_sopt_selfenergy.h)
+        HUBBARD_sopt_selfenergy.h
+        integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h
+        #interpolations/interpolation_functions.h
+        OldFiles/paid.hpp
+        OldFiles/domain.hpp
+        OldFiles/queue.hpp
+        OldFiles/rule.hpp)
 
 # standard executable for integration tests and production runs
 add_executable(FPP_mfRG
@@ -200,7 +212,14 @@ add_executable(FPP_mfRG
         tests/test_symmetries.h
         multidimensional/multiarray.hpp
         multidimensional/ranged_view.hpp
-        HUBBARD_sopt_selfenergy.h)
+        HUBBARD_sopt_selfenergy.h
+        integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h
+        #interpolations/interpolation_functions.h
+        FPP/selfenergy_loop.h
+        OldFiles/paid.hpp
+        OldFiles/domain.hpp
+        OldFiles/queue.hpp
+        OldFiles/rule.hpp)
 
 add_executable(get_integrand_dGammaL
         tests/get_integrand_dGammaL.cpp
@@ -255,7 +274,14 @@ add_executable(get_integrand_dGammaL
         tests/test_symmetries.h
         multidimensional/multiarray.hpp
         multidimensional/ranged_view.hpp
-        HUBBARD_sopt_selfenergy.h)
+        HUBBARD_sopt_selfenergy.h
+        integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h
+        #interpolations/interpolation_functions.h
+        FPP/selfenergy_loop.h
+        OldFiles/paid.hpp
+        OldFiles/domain.hpp
+        OldFiles/queue.hpp
+        OldFiles/rule.hpp)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)

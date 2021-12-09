@@ -38,7 +38,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
     double y_ini = 1.;
     double result;
-    ode_solver<double>(result, Lambda_f, y_ini, Lambda_i, rhs_quartic, lambda_checkpoints, "", 0, nODE, false);
+    ode_solver<double>(result, Lambda_f, y_ini, Lambda_i, rhs_cubic, lambda_checkpoints, "", 0, nODE, true);
 
 
     double result_exact = 0.;

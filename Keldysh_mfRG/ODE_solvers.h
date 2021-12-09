@@ -14,7 +14,7 @@ namespace old_ode_solvers {
 
     /** Perform one Runge-Kutta-4 step */
     template <typename T>
-    void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const double x, const vec<int> opt), bool save_intermediate_results, rvec& x_vals, const std::string& filename, const int iteration) {
+    void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const double x, const vec<size_t> opt), bool save_intermediate_results, rvec& x_vals, const std::string& filename, const int iteration) {
         if (save_intermediate_results) {
             T y1 = rhs(y_run, x_run, {iteration, 0}) * dx;
             T y2 = rhs(y_run + y1*0.5, x_run + dx/2., {iteration, 1}) * dx;
@@ -42,11 +42,12 @@ namespace old_ode_solvers {
 
     /** Perform Runge-Kutta-4 step and write result into output file in a specified Lambda layer, and print info to log */
     template <typename T>
-    void RK4_step(T& y_run, double& x_run, const double dx,  T rhs (const T& y, const double x, const vec<int> opt),
+    void RK4_step(T& y_run, double& x_run, const double dx,  T rhs (const T& y, const double x, const vec<size_t> opt),
                   rvec& x_vals, std::string filename, const int iteration, bool save_intermediate_states) {
         // print iteration number and Lambda to log file
         print("i: ", iteration, true);
         print("Lambda: ", x_run, true);
+        // print("y: ", y_run.value, true);
         double t0 = get_time();
 
         RK4_step(y_run, x_run, dx, rhs, save_intermediate_states, x_vals, filename, iteration); // compute RK4 step
@@ -96,7 +97,7 @@ namespace old_ode_solvers {
  */
 template <typename T>
 void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
-                    T rhs (const T& y, const double x, const vec<int> opt),
+                    T rhs (const T& y, const double x, const vec<size_t> opt),
                     double subst(double x), double resubst(double x),
                     const int N_ODE,
                     const std::vector<double> lambda_checkpoints = {}, std::string filename="", const int it_start=0, bool save_intermediate_states=false) {
@@ -116,7 +117,7 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
 
         // update frequency grid, interpolate result to new grid
         y_run.update_grid(x_run); // specific for state
-        y_run.findBestFreqGrid(x_run); // specific for state
+        //y_run.findBestFreqGrid(x_run); // specific for state
     }
     y_fin = y_run; // final y value
 }
@@ -216,7 +217,7 @@ namespace ode_solver_impl
                 return 0.;
             }
             assert(row_index * (stages - 1) + column_index >= 0);
-            return a[row_index * (stages - 1) + column_index];
+            return a[(row_index -1) * (stages - 1) + column_index];
         }
 
         double get_node(size_t stage) const
@@ -329,7 +330,8 @@ namespace ode_solver_impl
             state_stage = y_init;
             for (size_t col_index = 0; col_index < stage; col_index++)
             {
-                state_stage += k[col_index] * dLambda * tableau.get_a(stage, col_index);
+                double factor = dLambda * tableau.get_a(stage, col_index);
+                state_stage += k[col_index] * factor;
                 //assert(isfinite(state_stage));
             }
 
@@ -349,7 +351,7 @@ namespace ode_solver_impl
         }
         maxrel_error = max_rel_err(err, k, 1e-6); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
         //assert(isfinite(result));
-        assert(isfinite(maxrel_error));
+        //assert(isfinite(maxrel_error));
     }
 
 /**
@@ -398,7 +400,7 @@ namespace ode_solver_impl
         double errmax;
 
         //const auto &lattice = state_i.vertex.lattice;
-        Y temporary(Lambda_i);
+        Y temporary = state_i;
         for (;;)    // infinite loop
         {
             // === Evaluation ===
@@ -507,7 +509,9 @@ namespace ode_solver_impl
 
 
 template <typename Y>
-void postRKstep_stuff(Y& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {}
+void postRKstep_stuff(Y& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
+    std::cout << "current value: " << y.value << std::endl;
+}
 template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y_run, double x_run, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
 
     check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow

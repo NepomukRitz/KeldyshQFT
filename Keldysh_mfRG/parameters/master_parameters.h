@@ -16,7 +16,10 @@
 constexpr bool VERBOSE = true;
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-#define HUBBARD
+//#define HUBBARD
+
+// Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
+#define FERMI_POLARON_PROBLEM
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
@@ -76,6 +79,14 @@ constexpr int n_spin = 2;
 constexpr int n_spin = 1;
 #endif
 
+/// Parameters for Fermi-polaron problem ///
+
+double glb_muc = 1.;
+double glb_mud;
+double glb_mc = 1.;
+double glb_md = 1.;
+double glb_ainv;
+
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure for the Hubbard model
@@ -121,7 +132,7 @@ constexpr int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
-#define REG 2
+#define REG 1
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
@@ -137,8 +148,8 @@ constexpr double epsODE = 1e-4;
 #define ODEsolver 1
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 20.;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 0.0;
+constexpr double Lambda_ini = 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 1e-10;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 #if REG == 2
@@ -150,13 +161,13 @@ const std::vector<double> U_NRG {};
 #endif
 
 #if REG==2
-constexpr int param_size = 10;
-constexpr double parameter_list[param_size] = {GRID, REG, glb_Gamma, MAX_DIAG_CLASS, N_LOOPS,
+constexpr int param_size = 9;
+constexpr double parameter_list[param_size] = {REG, glb_Gamma, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V};
 #else
-constexpr int param_size = 13;
-constexpr double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOPS,
-                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V, glb_w_upper, glb_w_lower, glb_v_upper, glb_v_lower};
+constexpr int param_size = 8;
+constexpr double parameter_list[param_size] = {REG, MAX_DIAG_CLASS, N_LOOPS,
+                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V};
 #endif
 
 
@@ -166,6 +177,12 @@ constexpr double parameter_list[param_size] = {GRID, REG, MAX_DIAG_CLASS, N_LOOP
 constexpr bool HUBBARD_MODEL = true;
 #else
 constexpr bool HUBBARD_MODEL = false;
+#endif
+
+#ifdef FERMI_POLARON_PROBLEM
+constexpr bool FPP = true;
+#else
+constexpr bool FPP = false;
 #endif
 
 #ifdef KELDYSH_FORMALISM

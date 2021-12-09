@@ -7,6 +7,9 @@
 //   Engineering Science, RWTH Aachen University, Germany All rights reserved.
 // License is not existent yet
 
+#ifndef PAID_HPP
+#define PAID_HPP
+
 #include <cmath>
 #include <complex>
 #include <functional>
@@ -17,6 +20,7 @@
 // What we want is that
 // Base< std::complex< double > > -> double
 // Base<               double   > -> double
+/*
 template <class Q>
 struct Base_Class {
   typedef Q type;
@@ -29,12 +33,12 @@ struct Base_Class<std::complex<Q>> {
 
 template <typename Q>
 using Base = typename Base_Class<Q>::type;
-
-template <typename T>
+*/
+template <typename Q>
 struct IntegrationResult {
   std::size_t fevals;
-  T value;
-  Base<T> error;
+  Q value;
+  double error;
 };
 
 #include "domain.hpp"
@@ -43,34 +47,40 @@ struct IntegrationResult {
 //
 // typedef std::function<T(Base<T>, Base<T>)> F;
 
+template <typename Q, typename Integrand>
 class PAIDInput {
  public:
-  PAIDInput(Domain1D<std::complex<double>> d_,
-            std::function<std::complex<double>(double)> f_, std::size_t idx_)
+  PAIDInput(Domain1D<Q, Integrand> d_,
+            Integrand f_, std::size_t idx_)
       : d(d_), f(f_), idx(idx_) {}
-  Domain1D<std::complex<double>> d;
-  std::function<std::complex<double>(double)> f;
+  Domain1D<Q, Integrand> d;
+  Integrand f;
   std::size_t idx;
 };
 
+template <typename Q, typename Integrand>
 class PAID {
  public:
-  using T = Domain1D<std::complex<double>>;
+    int maxsplits = 1e3;
+    double abs_error = 1e-12;
+  using T = Domain1D<Q, Integrand>;
 
-  PAID(std::vector<PAIDInput> inputs) : fevals(0), rule(16) {
-    for (auto input : inputs) {
+  PAID(const std::vector<PAIDInput<Q,Integrand>> & inputs) : fevals(0), rule(16) {
+    for (PAIDInput<Q,Integrand> input : inputs) {
       // construct task:
       auto new_f = input.d.transform(input.f);
+      // auto new_f = input.f;
       auto res = rule.apply(new_f);
       fevals += res.fevals;
       q.put({input.d, input.f, res.value, res.error, input.idx});
     }
   }
 
-  std::map< std::size_t, T::value_type > solve() {
+  std::map< std::size_t, Q > solve() {
     int done = 0;
-
-    while (!done && q.sum().first > 1e-12) {
+    //assert(isfinite(q.sum().first));
+    int splits = 0;
+    while (!done && q.sum().first > abs_error, splits < maxsplits) {
       // if (i == 0) std::cout << "current error: " << q.sum().first << "\n";
       if (q.empty()) {
         done++;
@@ -78,7 +88,8 @@ class PAID {
       }
       auto task = q.pop();
       auto doms = task.d.split();
-
+      splits = splits + 1;
+      //std::cout << "left = " << task.d.left_ << ", right = " << task.d.right_ << "\n"; // only for public left/right
       for (auto dom : doms) {
         auto new_f = dom.transform(task.f);
         auto res = rule.apply(new_f);
@@ -94,6 +105,8 @@ class PAID {
 
  private:
   Queue<T> q;
-  ClenshawCurtis<typename T::value_type> rule;
+  ClenshawCurtis<Q, Integrand> rule;
   std::size_t fevals;
 };
+
+#endif //PAID_HPP

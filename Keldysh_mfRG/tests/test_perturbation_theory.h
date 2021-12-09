@@ -2622,6 +2622,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
  * @param Lambda : Lambda at which to compute right hand side
  * @return       : dPsi (right hand side of flow equation)
  */
+template <typename Q>
 auto rhs_channel_decomposition(const State<Q>& Psi, const double Lambda) -> State<Q> {
     State<Q> dPsi; // result
 
@@ -2649,6 +2650,7 @@ auto rhs_channel_decomposition(const State<Q>& Psi, const double Lambda) -> Stat
  * Only correct if parameter STATIC_FEEDBACK is defined.
  * @param N_ODE : number of Runge-Kutta ODE iterations
  */
+template <typename Q>
 void test_channel_decomposition(int N_ODE) {
     State<Q> state_ini, state_fin;   // create initial and final state
     state_ini.initialize();             // initialize initial state
