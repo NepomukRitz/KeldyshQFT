@@ -279,8 +279,8 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
         gsl_function F_imag;
         F_imag.function = &f_imag<Integrand>;
         F_imag.params = &integrand;
-        double result_imag, error_imag;
-        double result_imag_temp, error_imag_temp;
+        double result_imag{}, error_imag{};
+        double result_imag_temp{}, error_imag_temp{};
         if (isinf) {
             gsl_integration_qagil(&F_imag, intervals[0][0], 0, integrator_tol, Nmax, W_imag, &result_imag, &error_imag);
             gsl_integration_qagiu(&F_imag, intervals[num_intervals - 1][1], 0, integrator_tol, Nmax, W_imag,
