@@ -74,8 +74,6 @@ add_executable(Keldysh_mfRG
         multidimensional/ranged_view.hpp
         HUBBARD_sopt_selfenergy.h
         utilities/write_data2file.h grids/momentum_grid.h tests/test_ODE.h integrator/old_integrators.h
-        parameters/frequency_parameters.h parameters/technical_parameters.h
-        #interpolations/interpolation_functions.h
         OldFiles/paid.hpp
         OldFiles/domain.hpp
         OldFiles/queue.hpp
@@ -143,8 +141,7 @@ add_executable(Keldysh_mfRG_testing
         multidimensional/multiarray.hpp
         multidimensional/ranged_view.hpp
         HUBBARD_sopt_selfenergy.h
-        integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h
-        #interpolations/interpolation_functions.h
+        integrator/old_integrators.h
         OldFiles/paid.hpp
         OldFiles/domain.hpp
         OldFiles/queue.hpp
@@ -214,7 +211,6 @@ add_executable(FPP_mfRG
         multidimensional/ranged_view.hpp
         HUBBARD_sopt_selfenergy.h
         integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h
-        #interpolations/interpolation_functions.h
         FPP/selfenergy_loop.h
         OldFiles/paid.hpp
         OldFiles/domain.hpp
@@ -276,7 +272,6 @@ add_executable(get_integrand_dGammaL
         multidimensional/ranged_view.hpp
         HUBBARD_sopt_selfenergy.h
         integrator/old_integrators.h parameters/frequency_parameters.h parameters/technical_parameters.h
-        #interpolations/interpolation_functions.h
         FPP/selfenergy_loop.h
         OldFiles/paid.hpp
         OldFiles/domain.hpp

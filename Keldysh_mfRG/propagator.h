@@ -666,21 +666,27 @@ auto Propagator<Q>::GM_REG3_FPP(const double v, const double ksquared, const int
 
 template <typename Q>
 auto Propagator<Q>::SM_REG3_FPP(const double v, const double ksquared, const int i_in) const -> Q {
-    double dR_soft = -2*Lambda*v*v/pow(v*v + Lambda*Lambda,2);
-    Q denominator;
-    if (i_in == 0) {
-        denominator = glb_i * v - ksquared / (2 * glb_mc) + glb_muc - selfenergy.valsmooth(0,v,i_in);
-    }
-    else if (i_in == 1) {
-        denominator = glb_i * v - ksquared / (2 * glb_md) + glb_mud - selfenergy.valsmooth(0,v,i_in);
+    if constexpr(std::is_same<Q, std::complex<double>>::value) {
+
+        double dR_soft = -2*Lambda*v*v/pow(v*v + Lambda*Lambda,2);
+        Q denominator;
+        if (i_in == 0) {
+            denominator = glb_i * v - ksquared / (2 * glb_mc) + glb_muc - selfenergy.valsmooth(0,v,i_in);
+        }
+        else if (i_in == 1) {
+            denominator = glb_i * v - ksquared / (2 * glb_md) + glb_mud - selfenergy.valsmooth(0,v,i_in);
+        }
+        else {
+            std::cout << "wrong particle type in GM_REG1_FPP\n";
+        }
+        if (std::abs(denominator)<1e-20){
+            denominator = 1e-20;
+        }
+        return dR_soft/denominator;
     }
     else {
-        std::cout << "wrong particle type in GM_REG1_FPP\n";
+        assert(false);
     }
-    if (std::abs(denominator)<1e-20){
-        denominator = 1e-20;
-    }
-    return dR_soft/denominator;
 }
 
 template <typename Q>
