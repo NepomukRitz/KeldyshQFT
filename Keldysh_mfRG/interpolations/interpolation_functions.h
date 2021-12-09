@@ -31,9 +31,9 @@ inline auto interpolate1D(const double x, const FrequencyGrid& frequencies, cons
     return result;
 }
 
-// Grid_Class requires fconv(x) and grid_points, F requires operator(x)
-template <typename Q, typename Grid_Class, typename F>
-inline auto interpolate1D(const double x, const Grid_Class& grid, const F val) -> Q {
+// Grid_Class requires fconv(x) and grid_points
+template <typename Q, typename Grid_Class>
+inline auto interpolate1D(const double x, const Grid_Class& grid, const std::function<Q(int)> val) -> Q {
 
     int index = grid.fconv(x);
 
@@ -41,8 +41,8 @@ inline auto interpolate1D(const double x, const Grid_Class& grid, const F val) -
     double x2 = grid.grid_points[index + 1];
     double xd = (x - x1) / (x2 - x1);
 
-    Q f1 = val[index];
-    Q f2 = val[index + 1];
+    Q f1 = val(index);
+    Q f2 = val(index + 1);
 
     Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));
@@ -81,8 +81,29 @@ inline auto interpolate2D(const double x, const double y,
 
 }
 
+// Grid_Class requires fconv(x) and grid_points
+template <typename Q, typename Grid_Class>
+inline auto interpolate2D(const double x, const double y,
+                          const Grid_Class& x_grid, const Grid_Class& y_grid,
+                          const std::function<Q(int, int)> val) -> Q {
+
+    int index = x_grid.fconv(x);
+
+    double x1 = x_grid.grid_points[index];
+    double x2 = x_grid.grid_points[index + 1];
+    double xd = (x - x1) / (x2 - x1);
+
+    Q f1 = interpolate1D<Q,Grid_Class>(y, y_grid, [&index, &val](int i) -> Q {return val(index  , i);});
+    Q f2 = interpolate1D<Q,Grid_Class>(y, y_grid, [&index, &val](int i) -> Q {return val(index+1, i);});
+
+    Q result = ((1. - xd) * f1 + xd * f2);
+    assert(isfinite(result));
+    return result;
+
+}
+
 /**
- * Interpolates linearly in 2D
+ * Interpolates linearly in 3D
  * @tparam Q            double or comp
  * @param x
  * @param y
@@ -109,6 +130,26 @@ inline auto interpolate3D(const double x, const double y, const double z,
 
     Q f1 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
     Q f2 = interpolate2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index+1, i, j);});
+
+    Q result = ((1. - xd) * f1 + xd * f2);
+    assert(isfinite(result));
+    return result;
+
+}
+
+template <typename Q, typename Grid_Class>
+inline auto interpolate3D(const double x, const double y, const double z,
+                          const Grid_Class& x_grid, const Grid_Class& y_grid, const Grid_Class& z_grid,
+                          const std::function<Q(int, int, int)> val) -> Q {
+
+    int index = x_grid.fconv(x);
+
+    double x1 = x_grid.grid_points[index];
+    double x2 = x_grid.grid_points[index + 1];
+    double xd = (x - x1) / (x2 - x1);
+
+    Q f1 = interpolate2D<Q>(y, z, y_grid, z_grid, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
+    Q f2 = interpolate2D<Q>(y, z, y_grid, z_grid, [&index, &val](int i, int j) -> Q {return val(index+1, i, j);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));

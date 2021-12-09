@@ -45,6 +45,19 @@ int composite_index_2 (int i1, int i2, int n2){
     return i1*n2 + i2;
 }
 
+struct Two_Indices{
+    int i1, i2;
+};
+
+Two_Indices invert_composite_index_2 (int composite, int n2) {
+    Two_Indices two_indices;
+
+    two_indices.i2 = composite % n2;
+    two_indices.i1 = (composite - two_indices.i2)/n2;
+
+    return two_indices;
+}
+
 int composite_index_3 (int i1, int i2, int i3, int n2, int n3){
     return i1*n2*n3 + i2*n3 + i3;
 }

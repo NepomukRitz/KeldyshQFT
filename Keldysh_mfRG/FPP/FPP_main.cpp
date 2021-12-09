@@ -21,6 +21,7 @@
 //#include "../OldFiles/paid.hpp"
 //#include "zeros.h"
 #include "FPP_grids.hpp"
+#include "Dissipative-Quantum-Wires.hpp"
 
 
 int main() {
@@ -74,7 +75,7 @@ int main() {
     glb_mud = 0.0;
     glb_mc = 1.0;
     glb_md = 1.0;
-    glb_ainv = 1.0;
+    glb_ainv = 0.0;
     glb_prec = 0.;
 
     // std::cout Bubble
@@ -981,7 +982,9 @@ int main() {
     double test33 = std::tgamma(0.25)*(4.-pow(2.,3./4.))/(8*M_PI*M_PI);
     std::cout << "test = " << test33 << "\n";
     */
+
     // TEST GORKOV (CONST. GAMMA)
+    //====================================
 
     glb_muc = 1.0;
     glb_mud = -10.0;
@@ -1375,17 +1378,17 @@ int main() {
     // FPP_GRID
     // =======================================
 
-    FPP_Grid grid({40,50,30},{1e-3,1e-1,10,100},1, 1,1);
+    /*
+    FPP_Grid grid({10,60,15,5},{1e-10,1e-1,5,10,100},1, 1, {1,0,1,1});
     //std::cout << "size: " << grid.grid_points.size() << "\n";
-    rvec grid_vec = grid.grid_points;
+    //rvec grid_vec = grid.grid_points;
     Function_test f;
-    rvec f_vec;
-    for (int i=0; i<grid_vec.size(); ++i){
-        f_vec.push_back(f(grid_vec[i]));
-        std::cout << i << ": " << grid_vec[i] << ", f(x) = " << f_vec[i] << "\n";
+    std::cout << "1 dimension:\n";
+    for (int i=0; i<grid.size(); ++i){
+        std::cout << i << ": " << grid[i] << ", f(x) = " << f(grid[i]) << "\n";
     }
     std::cout << ")\n";
-    std::cout << "length = " << grid_vec.size() << "\n";
+    std::cout << "length = " << grid.size() << "\n";
     double x_val;
     int index;
     double f_x;
@@ -1394,28 +1397,177 @@ int main() {
     for (int j = 0; j < vec.size(); ++j){
         x_val = vec[j];
         index = grid.grid_transf_inv(x_val);
-        f_x = interpolate1D<double,FPP_Grid,rvec>(x_val,grid,f_vec);
+        f_x = interpolate1D<double,FPP_Grid>(x_val,grid,[&](int i) -> double {return f(grid[i]);});
         std::cout << "x = " << x_val << ", index = " << index << ", f(x): interpolated = " << f_x << ", exact = " << f(x_val) << "\n";
     }
 
+    std::cout << "2 dimensions:\n";
+    for (int i=0; i<grid.size(); ++i) {
+        for (int j = 0; j < grid.size(); ++j) {
+            std::cout << "i = " << i << ": " << grid[i] << ", j = " << j << ": " << grid[j] << ", f(x,y) = "
+                      << f(grid[i], grid[j]) << "\n";
+        }
+    }
+    std::cout << ")\n";
+    double y_val;
+    int index_y;
+    for (int i = 0; i < vec.size(); ++i){
+        x_val = vec[i];
+        index = grid.grid_transf_inv(x_val);
+        for (int j = 0; j < vec.size(); ++j) {
+            y_val = vec[j];
+            index_y = grid.grid_transf_inv(y_val);
 
-
-
-
-
-
+            f_x = interpolate2D<double,FPP_Grid>(x_val,y_val,grid,grid,[&](int i, int j) -> double {return f(grid[i],grid[j]);});
+            std::cout << "x = " << x_val << ", index_x = " << index << ", y = " << y_val << ", index_y = " << index_y << ", f(x,y): interpolated = " << f_x << ", exact = " << f(x_val,y_val) << "\n";
+        }
+    } */
     /*
-    FPP_Grid grid_frequency_simple({99},{0.1,10},1,1);
-    FPP_Grid grid_frequency({40,50,5,4},{1e-3,1e-1,10,100,1e4},1,1);
-    FPP_Grid grid_momentum({5},{1,6},0,1);
-    rvec vpps_ = grid_frequency_simple.grid_points(0);
-    rvec ws_ = grid_frequency_simple.grid_points(0);
-    rvec qs_ = grid_momentum.grid_points(0);
-    integral_bubble_w_vpp_list_integrator(0,1,0,'p',vpps_,ws_,qs_);
-    integral_bubble_w_vpp_list_PAID(0,1,'p',vpps_,ws_,qs_);
-    */
+    std::cout << "3 dimensions:\n";
+    for (int i=0; i<grid.size(); ++i) {
+        for (int j = 0; j < grid.size(); ++j) {
+            for (int k = 0; k < grid.size(); ++k) {
+                std::cout << "i = " << i << ": " << grid[i] << ", j = " << j << ": " << grid[j] << ", k = " << k << ": "
+                          << grid[k] << ", f(x,y,z) = "
+                          << f(grid[i], grid[j], grid[k]) << "\n";
+            }
+        }
+    }
+    std::cout << ")\n";
+    double z_val;
+    int index_z;
+    for (int i = 0; i < vec.size(); ++i){
+        x_val = vec[i];
+        index = grid.grid_transf_inv(x_val);
+        for (int j = 0; j < vec.size(); ++j) {
+            y_val = vec[j];
+            index_y = grid.grid_transf_inv(y_val);
+            for (int k = 0; k < vec.size(); ++k) {
+                z_val = vec[k];
+                index_z = grid.grid_transf_inv(z_val);
+                f_x = interpolate3D<double,FPP_Grid>(x_val,y_val,z_val,grid,grid,grid,[&](int i, int j, int k) -> double {return f(grid[i],grid[j],grid[k]);});
+                std::cout << "x = " << x_val << ", index_x = " << index << ", y = " << y_val << ", index_y = " << index_y << ", z = " << z_val << ", index_z = " << index_z <<", f(x,y,z): interpolated = " << f_x << ", exact = " << f(x_val,y_val,z_val) << "\n";
+            }
+        }
+    }
+     */
+
+    // COMPOSITE_INDEX
+    // ========================
+    int compo;
+    std::array<int,2> invert_composite;
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 20; ++j) {
+            compo = composite_index_2(i, j, 20);
+            invert_composite[0] = invert_composite_index_2(compo, 20).i1;
+            invert_composite[1] = invert_composite_index_2(compo, 20).i2;
+            if ((i - invert_composite[0] != 0) and (j - invert_composite[1] != 0)) {
+                std::cout << "i = " << i << ", j = " << j << ", comp = " << compo << ", invert = ("
+                          << invert_composite[0] << ", " << invert_composite[1] << ")\n";
+            }
+        }
+    }
+
+    // K1 ON GRID
+
+    glb_mud = 0;
+    glb_ainv = 0;
+
+    FPP_Grid ws_grid({5,60,20,7,5},{1e-10,0.05,10,50,100,1e6},1, 1, {1,0,1,1,1});
+    FPP_Grid qs_grid({5,60,20,7,5},{1e-10,0.5,5,10,100,1e6},0,1,{1,0,1,1,1});
+
+    //FPP_Grid ws_grid({99},{1e-1,10},1, 1, {0});
+    //FPP_Grid qs_grid({99},{1e-1,10},0,1,{0});
+
+
+    K1_ladder k1p(ws_grid, qs_grid,'p', 0,1);
+
+    /*comp ladder00 = ladder(0,0,'p',0,1);
+    std::cout << "ladder00 = " << ladder00 << "\n";
+    comp bubble00 = perform_Pi0_vpp_integral (0, 0, 1,0, 'p', 0, 1);
+    std::cout << "bubble00 = " << bubble00 << "\n";
+    std::cout << "gint = " << gint() << "\n";*/
+
+    //ladder_list ('p', 0, 1, -2*sqrt(2), 2*sqrt(2), -10, 1e-6, 1000, 1e-16, 100);
+
+    comp interpolated, exact;
+    rvec control_points_w{-100.2,-99,-0.23,-0.1,-0.05,-0.0013,-0.00012,0,0.00012,0.0013,0.05,0.1,0.23,99,100.2};
+    rvec control_points_q{0,0.00012,0.0013,0.05,0.1,0.23,99,100.2};
+    for (int i = 0; i < control_points_w.size(); ++i){
+        w = control_points_w[i];
+        for (int j = 0; j < control_points_q.size(); ++j) {
+            q = control_points_q[j];
+
+            interpolated = k1p.valsmooth(w,q);
+            exact = ladder(w,q,'p',0,1);
+            std::cout << "w = " << w << ", q = " << q << " K1p: interpolated = " << interpolated << ", exact = " << exact << "\n";
+        }
+    }
+    k1p.save();
+    //comp selfenergy00 = perform_loop_vpp_integral(0,0,k1p);
+    //std::cout << "Sigma(0,0) = " << selfenergy00 << "\n";
+
+    comp hartree = hartree_term(0);
+    std::cout << "hartree = " << hartree << "\n";
 
     get_time(t0);
+    /*
+    double t_test_loop_k = get_time();
+    comp test_loop_k = perform_loop_integral_2D (0, 3, 1, k1p);
+    std::cout << "integrated over k :" << test_loop_k << "\n";
+    get_time(t_test_loop_k);
+    */
+
+
+        /*
+        FPP_Grid grid_frequency_simple({99},{0.1,10},1,1);
+        FPP_Grid grid_frequency({40,50,5,4},{1e-3,1e-1,10,100,1e4},1,1);
+        FPP_Grid grid_momentum({5},{1,6},0,1);
+        rvec vpps_ = grid_frequency_simple.grid_points(0);
+        rvec ws_ = grid_frequency_simple.grid_points(0);
+        rvec qs_ = grid_momentum.grid_points(0);
+        integral_bubble_w_vpp_list_integrator(0,1,0,'p',vpps_,ws_,qs_);
+        integral_bubble_w_vpp_list_PAID(0,1,'p',vpps_,ws_,qs_);
+        */
+
+        //DISSIPATIVE QUANTUM WIRES
+        //=====================================
+
+        /*
+    disQW::b = 1;
+    disQW::gamma = 0.1;
+    disQW::m = 1;
+    disQW::g = 100;
+    disQW::d = 0.14;
+    disQW::length = 10000;
+    disQW::mu = 1;
+
+    FPP_Grid volts({201},{0.000001,1.0},false,false,{1});
+
+    for (int i = 0; i < volts.size(); i++) {
+        std::cout << "volt = " << volts[i] << "\n";
+    }
+
+    std::cout << "prefactor = " << disQW::prefactor_anal() << "\n";
+
+    disQW::J_on_grid j_on_grid(volts);
+    j_on_grid.save();
+    j_on_grid.print_Jnet();
+         */
+
+    /*
+    for (int i = 0; i < 100; i++) {
+        volt = i*0.01;
+        J_test0 = disQW::J(0,0,volt);
+        J_test1 = disQW::J(0,1,volt);
+        J_test2 = disQW::J(0,2,volt);
+
+        std::cout << "volt = " << volt << ", J_sing = " << J_test0 << ", J_reg1 = " << J_test1 << ", J_reg2 = " << J_test2 << ", J_reg = " << J_test1 + J_test2 << "\n";
+
+    }*/
+
+
+        get_time(t0);
 
     std::cout << "Goodbye World! \n";
 

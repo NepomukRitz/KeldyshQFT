@@ -16,7 +16,7 @@ private:
     bool negative_values;
     bool zero_included;
 
-    int grid_type; // 0: linear, 1: logarithmic
+    // 0: linear, 1: logarithmic
     std::vector<int> grid_types;
 
 public:
@@ -50,12 +50,14 @@ public:
         return result;
     }
 
-    FPP_Grid(std::vector<int> Ns_grid_in, rvec specific_points_in, bool negative_values_in, bool zero_included_in, bool grid_type_in)
-    :Ns_grid(Ns_grid_in), specific_points(specific_points_in), negative_values(negative_values_in), zero_included(zero_included_in), grid_type(grid_type_in){
+    FPP_Grid(std::vector<int> Ns_grid_in, rvec specific_points_in, bool negative_values_in, bool zero_included_in, std::vector<int> grid_types_in)
+    :Ns_grid(Ns_grid_in), specific_points(specific_points_in), negative_values(negative_values_in), zero_included(zero_included_in), grid_types(grid_types_in){
+        assert(Ns_grid.size() == grid_types.size());
         assert(Ns_grid.size()+1 == specific_points.size());
         double grid_point;
         double upper, lower;
         int N_grid;
+        int grid_type;
         if (negative_values) {
             int j_back;
             for (int j = 0; j < Ns_grid.size(); ++j) {
@@ -63,6 +65,7 @@ public:
                 upper = specific_points[j_back + 1];
                 lower = specific_points[j_back];
                 N_grid = Ns_grid[j_back] + 1;
+                grid_type = grid_types[j_back];
                 /*
                 if (grid_type == 0) {
                     grid_measure = upper-lower;
@@ -98,6 +101,7 @@ public:
             upper = specific_points[j + 1];
             lower = specific_points[j];
             N_grid = Ns_grid[j] + 1;
+            grid_type = grid_types[j];
             /*
             if (grid_type == 1) {
                 grid_measure = log(upper / lower);
@@ -122,10 +126,19 @@ public:
         grid_points.push_back(specific_points[specific_points.size() - 1]);
     };
 
+    auto size() const -> int {
+        return grid_points.size();
+    }
+
+    auto operator[] (int i) const -> double {
+        return grid_points[i];
+    }
+
     auto grid_transf_inv(double x) const -> int {
         double grid_idx;
         double upper, lower;
         int N_grid;
+        int grid_type;
 
         int sum_Ns_neg = 0;
         int sum_Ns_pos = 0;
@@ -140,6 +153,7 @@ public:
                 for (int j = 0; j < Ns_grid.size(); ++j) {
                     j_back = Ns_grid.size() - j - 1;
                     N_grid = Ns_grid[j_back] + 1;
+                    grid_type = grid_types[j_back];
                     upper = specific_points[j_back + 1];
                     lower = specific_points[j_back];
                     if (x >= -upper and x < -lower) {
@@ -167,6 +181,7 @@ public:
             upper = specific_points[j + 1];
             lower = specific_points[j];
             N_grid = Ns_grid[j] + 1;
+            grid_type = grid_types[j];
             if ((x >= lower) and (x < upper)) {
                 grid_idx = sum_Ns_neg + sum_Ns_pos + calculate_grid_idx(upper,lower,x,N_grid,grid_type);
                 return (int) grid_idx;
@@ -235,14 +250,56 @@ public:
     }
 };
 
+/*template<int Dim, typename Q, typename Grid_Class, typename F>
+class Function_on_Grid {
+private:
+    std::array<Grid_Class,Dim> grids;
+    F func;
+
+public:
+    Function_on_Grid(std::array<Grid_Class,Dim> grids_in, F func_in):grids(grids_in), func(func_in){};
+
+    auto operator() (int i) const -> double {
+        return func(grids[0][i]);
+    }
+
+    auto operator() (int i, int j) const -> double {
+        return func(grids[0][i],grids[1][j]);
+    }
+
+    auto operator() (int i, int j, int k) const -> double {
+        return func(grids[0][i],grids[1][j],grids[2][k]);
+    }
+};*/
+
 class Function_test {
 public:
     Function_test() = default;
 
-auto operator() (double x) const -> double {
-    double result = 1./(sqrt(2*M_PI))*2*exp(-x*x/2);
-    return result;
-}
+    auto operator() (double x) const -> double {
+        double result = 1./(sqrt(2*M_PI))*2*exp(-x*x/2);
+        return result;
+    }
+
+    auto operator() (double x, double y) const -> double {
+        double result = 1./(sqrt(2*M_PI))*2*exp(-(x*x+y*y)/2);
+        return result;
+    }
+
+    auto operator() (double x, double y, double z) const -> double {
+        double result = 1./(sqrt(2*M_PI))*2*exp(-(x*x+y*y+z*z)/2);
+        return result;
+    }
+};
+
+class Function2D_test {
+public:
+    Function2D_test() = default;
+
+    auto operator() (double x, double y) const -> double {
+        double result = 1./(sqrt(2*M_PI))*2*exp(-x*x/2);
+        return result;
+    }
 };
 
 #endif //MAIN_CPP_FPP_GRIDS_HPP

@@ -97,7 +97,7 @@ constexpr int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
-#define REG 2
+#define REG 1
 
 // Computation is flowing or not (determines the value of the vertex).
 // Define FLOW for flow and comment out for static calculation
@@ -108,7 +108,7 @@ constexpr int nODE = 50;
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 1e4; // 20;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 1e-8; // 0;
+constexpr double Lambda_fin = 1e-10; // 0;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)

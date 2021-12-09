@@ -193,6 +193,78 @@ comp ladder_full (double w, double q, int inttypek, int inttypev) {
     return output;
 };
 
+
+class K1_ladder {
+private:
+    FPP_Grid ws;
+    FPP_Grid qs;
+    char chan;
+    int inttypek, inttypev;
+
+    int nw = ws.size();
+    int nq = qs.size();
+public:
+    cvec data_points;
+
+    K1_ladder(FPP_Grid ws_in, FPP_Grid qs_in, char chan_in, int inttypek_in, int inttypev_in)
+        :ws(ws_in), qs(qs_in), chan(chan_in), inttypek(inttypek_in), inttypev(inttypev_in){
+        int wi, qi;
+        double w, q;
+        comp result;
+
+        for (int i = 0; i < nw*nq; ++i) {
+            wi = invert_composite_index_2(i, nq).i1;
+            qi = invert_composite_index_2(i, nq).i2;
+
+            w = ws[wi];
+            q = qs[qi];
+
+            result = ladder_K1r (w, q, chan, inttypek, inttypev);
+
+            data_points.push_back(result);
+
+            std::cout << "w = " << wi << ": " << w << ", q = " << qi << ": " << q << ": result = " << result << "\n";
+        }
+    };
+
+    auto valsmooth(double w, double q) const -> comp {
+        int wi, qi;
+        comp result;
+
+        if ((std::abs(w) > ws[ws.size()-1]) or (std::abs(q) > qs[qs.size()-1])){
+            return 0;
+        }
+
+        wi = ws.grid_transf_inv(w);
+        qi = qs.grid_transf_inv(q);
+
+        result = interpolate2D<comp,FPP_Grid>(w,q,ws,qs,[&](int wi, int qi) -> comp{
+            int comp_idx = composite_index_2(wi,qi,nq);
+            return data_points[comp_idx];
+        });
+
+        return result;
+    };
+
+    void save() {
+        rvec Gamma_p_Re(nw*nq);
+        rvec Gamma_p_Im(nw*nq);
+
+        for (int i = 0; i < data_points.size(); ++i) {
+            Gamma_p_Re[i] = real(data_points[i]);
+            Gamma_p_Im[i] = imag(data_points[i]);
+        }
+
+        std::string filename = "../Data/k1pladder_";
+        filename += std::string(1,chan) + "_list_wq_nw=" + std::to_string(nw)
+                    + "_nq=" + std::to_string(nq) + "_reg=" + std::to_string(REG) + "_kint=" + std::to_string(inttypek) + "_vint=" + std::to_string(inttypev)
+                    + ".h5";
+        write_h5_rvecs(filename,
+                       {"ws", "qs", "vertex_Re", "vertex_Im"},
+                       {ws.grid_points, qs.grid_points, Gamma_p_Re, Gamma_p_Im});
+    }
+};
+
 template <typename Q>
 class F_mu {
 private:

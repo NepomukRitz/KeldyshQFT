@@ -24,13 +24,14 @@ comp hartree_term (int particle) { // -g*(2mi*mui)^(3/2)/(6pi^2)
 class Loopintegrand_2D {
 private:
     double v, vpp, k;
+    K1_ladder k1pcd;
 
 public:
     /**
      * Constructor:
      */
-    Loopintegrand_2D(double v_in, double vpp_in, double k_in)
-            :v(v_in), vpp(vpp_in), k(k_in){
+    Loopintegrand_2D(double v_in, double vpp_in, double k_in, K1_ladder k1pcd_in)
+            :v(v_in), vpp(vpp_in), k(k_in), k1pcd(k1pcd_in){//k1pcd(std::move(k1pcd_in)){
     };
 
     /**
@@ -40,7 +41,8 @@ public:
      */
     auto operator() (std::array<double,2> kvec) const -> comp {
         double kpp, x, ksquared;
-        comp k1pcd, output;
+        comp k1_val;
+        comp output;
         if (kvec[0] == 0){
             output = 0;
         }
@@ -49,23 +51,25 @@ public:
             x = kvec[1];
             ksquared = kpp*kpp - 2*k*kpp*x + k*k;
             //k1pcd = perform_Pi0_vpp_integral(vpp, kpp, 0, 1, 'p', 0, 1);
-            k1pcd = ladder(vpp,kpp,'p',0,1);
-            output = - 1./(4*M_PI*M_PI)*k1pcd*G0(vpp-v,ksquared,0)/(kvec[0]*kvec[0]);
+            //k1pcd = ladder(vpp,kpp,'p',0,1);
+            k1_val = k1pcd.valsmooth(vpp,kpp);
+            output = - 1./(4*M_PI*M_PI)*kpp*kpp*k1_val*G0(vpp-v,ksquared,0)/(kvec[0]*kvec[0]);
         }
         return output;
     };
 
     auto operator() (double tkpp) const -> comp {
         double kpp;
-        comp k1pcd, output;
+        comp k1_val, output;
         if (tkpp == 0){
             output = 0;
         }
         else {
             kpp = (1-tkpp)/tkpp;
             //k1pcd = perform_Pi0_vpp_integral(vpp, kpp, 0, 1, 'p', 0, 1);
-            k1pcd = ladder(vpp,kpp,'p',0,1);
-            output = - 2./(4*M_PI*M_PI)*k1pcd*G0(vpp-v,kpp*kpp,0)/(tkpp*tkpp);
+            //k1pcd = ladder(vpp,kpp,'p',0,1);
+            k1_val = k1pcd.valsmooth(vpp,kpp);
+            output = - 2./(4*M_PI*M_PI)*kpp*kpp*k1_val*G0(vpp-v,kpp*kpp,0)/(tkpp*tkpp);
         }
         return output;
     };
@@ -73,24 +77,25 @@ public:
     //void save_integrand();
 };
 
-comp perform_loop_integral_2D (double v, double vpp, double k){
+comp perform_loop_integral_2D (double v, double vpp, double k, K1_ladder k1pcd){
     comp integral;
+    Loopintegrand_2D loopintegrand2D(v, vpp, k,k1pcd);
 
     if (k == 0) {
-        Loopintegrand_2D loopintegrand2D(v, vpp, 0);
+        //Loopintegrand_2D loopintegrand2D(v, vpp, 0, std::move(k1pcd));
 
         paid::Domain<1> d({0.}, {1.});
         paid::PAIDInput<1, Loopintegrand_2D, int> integrand_loop_2D_paid{d, loopintegrand2D, 0};
-        paid::PAIDConfig config(1e8, 1e-6, 0, 8);
+        paid::PAIDConfig config(1e8, 1e-4, 0, 8);
         paid::PAID<1, Loopintegrand_2D, comp, int, double> loopintegral2D_paid(config);
         integral = loopintegral2D_paid.solve({integrand_loop_2D_paid})[0];
     }
     else {
-        Loopintegrand_2D loopintegrand2D(v, vpp, k);
+        //Loopintegrand_2D loopintegrand2D(v, vpp, k, std::move(k1pcd));
 
         paid::Domain<2> d({0., -1.}, {1., 1.});
         paid::PAIDInput<2, Loopintegrand_2D, int> integrand_loop_2D_paid{d, loopintegrand2D, 0};
-        paid::PAIDConfig config(1e9, 1e-6, 0, 8);
+        paid::PAIDConfig config(1e9, 1e-4, 0, 8);
         paid::PAID<2, Loopintegrand_2D, comp, int, std::array<double, 2>> loopintegral2D_paid(config);
         integral = loopintegral2D_paid.solve({integrand_loop_2D_paid})[0];
     }
@@ -101,13 +106,14 @@ class Integrand_loop_vpp {
 private:
     double v, k;
     //int inttype; // kint_type = 0 exact, 1 Gauss-Lobatto, 2 PAID Clenshaw-Curtis
+    K1_ladder k1pcd;
 
 public:
     /**
      * Constructor:
      */
-    Integrand_loop_vpp(double v_in, double k_in)//, int inttype_in)
-            :v(v_in), k(k_in){//, inttype(inttype_in){
+    Integrand_loop_vpp(double v_in, double k_in, K1_ladder k1pcd_in)//, int inttype_in)
+            :v(v_in), k(k_in), k1pcd(k1pcd_in){//, inttype(inttype_in){
     };
 
     /**
@@ -116,13 +122,13 @@ public:
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
     auto operator() (double vpp) const -> comp {
-        return perform_loop_integral_2D(v, vpp, k);
+        return perform_loop_integral_2D(v, vpp, k, k1pcd);
     }
 
     //void save_integrand();
 };
 
-comp perform_loop_vpp_integral (double v, double k){
+comp perform_loop_vpp_integral(double v, double k, K1_ladder k1pcd){
     comp output;
     double Lambda_mu, Lambda_mm, Lambda_ml;
     rvec Lambdas;
@@ -176,7 +182,7 @@ comp perform_loop_vpp_integral (double v, double k){
         Lambdas[1] = Lambda_ml;
     }*/
 
-    Integrand_loop_vpp integrand_loop_vpp(v, k);
+    Integrand_loop_vpp integrand_loop_vpp(v, k,k1pcd);
     /*
     if (inttypev == 1) {
         cvec ints_pos(Lambdas.size()), ints_neg(Lambdas.size());
@@ -188,7 +194,7 @@ comp perform_loop_vpp_integral (double v, double k){
     }
     else if (inttypev == 2) {*/
         vec<paid::PAIDInput<1, Integrand_loop_vpp,int>> ints_paid;
-        paid::PAIDConfig config(1e7,1e-6,0,8);
+        paid::PAIDConfig config(1e7,1e-4,0,8);
         for (int idx = 0; idx<Lambdas.size()-1; ++idx){
             paid::Domain<1> d_pos({Lambdas[idx]},{Lambdas[idx+1]});
             paid::Domain<1> d_neg({-Lambdas[idx+1]},{-Lambdas[idx]});
