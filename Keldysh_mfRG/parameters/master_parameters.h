@@ -16,7 +16,7 @@
 constexpr bool VERBOSE = true;
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-//#define HUBBARD
+#define HUBBARD
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
@@ -32,7 +32,7 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM
+//#define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 
@@ -51,7 +51,7 @@ constexpr int N_LOOPS = 3;  // Number of loops
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 constexpr double glb_T = 2./M_PI; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 1.0;                     // Temperature
+constexpr double glb_T = 0.1;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
@@ -79,7 +79,7 @@ constexpr int n_spin = 1;
 /// Parameters for internal structure ///
 
 // Dimension of the space defining the internal structure for the Hubbard model
-constexpr int glb_N_q = 9;                                  // Number of transfer momentum points in one dimension.
+constexpr int glb_N_q = 11; // 51;                                 // Number of transfer momentum points in one dimension.
 constexpr int glb_N_ff = 1;                                 // Number of form factors. Should be {1, 5, 9, 13, 19, ...} for the n-nearest neighbor interpretation
 
 /** Parities of form factors under the three symmetry operations of the Hubbard model dispersion:

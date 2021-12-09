@@ -12,6 +12,7 @@
 
 #include "../../data_structures.h"
 #include "../../parameters/master_parameters.h"  // define system parameters
+#include "../../utilities/hdf5_routines.h"
 
 // include tests that should be run
 #include "test_ODE_solver.h"
@@ -38,9 +39,8 @@
 
 int main(int argc, char* argv[]) {
 #ifdef INTEGRATION_TESTS
-    if (MPI_FLAG){
-        MPI_Init(nullptr, nullptr);
-    }
+    if (MPI_FLAG) MPI_Init(nullptr, nullptr);
+
     // run integration tests
     print("Start integration tests.", true);
 
@@ -83,9 +83,24 @@ int main(int argc, char* argv[]) {
 
 
     //test_Bubble_in_Momentum_Space();
+    /*
+    double lambda = 1;
+    State<comp> state_ini (lambda);
+    state_ini.initialize();
+    sopt_state(state_ini, lambda);
 
+    Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
+    auto Pi = PT_initialize_Bubble(barePropagator);
+    // save_PreBubble_in_freq_space(Pi, 0);
+
+    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/";
+    const std::string filename  = "SOPT_test_Nq_" + std::to_string(glb_N_q) + "_T_" + std::to_string(glb_T) + "_Lambda_" + std::to_string(lambda) + "_no_Hartree";
+    write_hdf<comp>(directory+filename, lambda, 1, state_ini);
+    */
 
     return Catch::Session().run(argc, argv);
-    MPI_Finalize();
-    //return 0;
+#ifdef INTEGRATION_TESTS
+    if (MPI_FLAG) MPI_Finalize();
+#endif
+    return 0;
 }

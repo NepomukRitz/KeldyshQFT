@@ -245,7 +245,7 @@ if (INTERPOLATION == cubic) {
     for (int iw = 1; iw < N - 1; iw++) {
         indices.w = avertex.K1.K1_gridtransf_inv(-1. + iw * inter);
 
-        values[iw] = avertex.K1.interpolate(indices);
+        //values[iw] = avertex.K1.interpolate(indices); TODO: Does not always return a double!!
         double error = std::abs(
                 avertex.K1.interpolate(indices) - cubicFunction1D(avertex.K1.K1_gridtransf(indices.w)));
         cumul_interpolation_error += error;

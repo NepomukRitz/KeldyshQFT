@@ -1719,7 +1719,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
                 val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
                 Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
-                PT_state.vertex[0].tvertex().K3.setvert(-2*(val_K3-val_K3_ap), 0, i, j, k, 0);
+                PT_state.vertex[0].tvertex().K3.setvert(-2.*(val_K3-val_K3_ap), 0, i, j, k, 0);
             }
         }
     }

@@ -75,7 +75,7 @@ public:
 template <typename Q> void State<Q>::initialize() {
     // Initial conditions
     // Assign initial conditions to self energy
-    if (!KELDYSH && PARTICLE_HOLE_SYMMETRY) this->selfenergy.initialize(0. , 0.);
+    if ((!KELDYSH && PARTICLE_HOLE_SYMMETRY) || HUBBARD_MODEL) this->selfenergy.initialize(0. , 0.); // TODO(high): Proper treatment for the Hubbard model.
     else this->selfenergy.initialize(glb_U/2., 0.);
 
     // Assign initial conditions to bare vertex

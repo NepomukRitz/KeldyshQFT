@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "openmp-use-default-none"
 //
 // Created by SAguirre on 9/07/2020.
 //
@@ -7,10 +9,13 @@
 
 #include "selfenergy.h"
 #include "grids/frequency_grid.h"
+#include "grids/momentum_grid.h"
+#include "data_structures.h"
 #include "propagator.h"
 #include "state.h"
 #include "bubbles.h"
 #include "loop.h"
+#include "HUBBARD_sopt_selfenergy.h"
 
 template <typename Q>
 auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
@@ -24,8 +29,13 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 }
 
 template <typename Q, class Bubble_Object>
-void vertexInSOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    for (char r: "apt") {
+void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
+    std::string channels = "apt";
+    for (char r: channels) {
+#if not defined(NDEBUG)
+        print("Computing the vertex in SOPT in channel ", false);
+        print_add(r, true);
+#endif
         bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
     }
 }
@@ -39,6 +49,14 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const B
 
     //Calculate the Self-Energy
     loop(PsiSelfEnergy, bareState.vertex, barePropagator, false);
+}
+
+void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
+                              const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT,
+                              const double Lambda){
+    assert(HUBBARD_MODEL);
+    assert(KELDYSH);         // TODO: Matsubara version?
+    Hubbard_SE_SOPT_Computer(Lambda, PsiSelfEnergy, bareState, vertex_in_SOPT).compute_HUBBARD_SE_SOPT();
 }
 
 template <typename Q, class Bubble_Object>
@@ -102,27 +120,43 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
  * @param state        : State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q, class Bubble_Object>
-void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, double Lambda) {
+void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda) {
     State<Q> bareState (Psi, Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
+#if not defined(NDEBUG)
+    print("Computing the vertex in SOPT...", true);
+#endif
     //Calculate the bubbles -> Vertex in SOPT saved in Psi
     vertexInSOPT(Psi.vertex, bareState, Pi, Lambda);
 
+#if not defined(NDEBUG)
+    print("Computing the self energy in SOPT...", true);
+#endif
     //Calculate the self-energy in SOPT, saved in Psi
-    selfEnergyInSOPT(Psi.selfenergy, bareState, Pi, Lambda);
+    if constexpr(HUBBARD_MODEL) selfEnergyInSOPT_HUBBARD(Psi.selfenergy, bareState, Psi.vertex, Lambda);
+    else                        selfEnergyInSOPT(Psi.selfenergy, bareState, Pi, Lambda);
 
 }
 
 // Overload of sopt_state, in case no Bubble object has been initialized yet.
 template<typename Q>
-void sopt_state(State<Q>& Psi, double Lambda) {
+void sopt_state(State<Q>& Psi, const double Lambda) {
     State<Q> bareState (Psi, Lambda); // copy frequency grids
-    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value (except currently for the Hubbard model)
+
+#if not defined(NDEBUG)
+    print("Start initializing bubble object...", true);
+#endif
 
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     auto Pi = PT_initialize_Bubble(barePropagator);
+
+#if not defined(NDEBUG)
+    print("...done.", true);
+#endif
+
     sopt_state(Psi, Pi, Lambda);
 }
 
@@ -177,3 +211,4 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 }
 
 #endif //KELDYSH_MFRG_PERTURBATION_THEORY_H
+#pragma clang diagnostic pop

@@ -213,7 +213,7 @@ public:
                        const bool diff_in)
                        :g(G_in), s(S_in), diff(diff_in),
                        Helper_Bubble(G_in, S_in, diff),
-                       fermionic_grid('f', 1, G_in.Lambda){
+                       fermionic_grid(G_in.selfenergy.frequencies){
         if (diff) {print("Precalculating a differentiated bubble...", true);}
         else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();
@@ -360,10 +360,10 @@ int PrecalculateBubble<Q>::get_iK_actual(const int iK_bubble) const {
 template<typename Q>
 void PrecalculateBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
                                                             Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
-    double v1 = fermionic_grid.get_ws(iv1);
-    double v2 = fermionic_grid.get_ws(iv2);
+    const double v1 = fermionic_grid.get_ws(iv1);
+    const double v2 = fermionic_grid.get_ws(iv2);
 
-    vec<comp> values_of_bubble (glb_N_transfer);
+    vec<comp> values_of_bubble (n_in);
     compute_internal_bubble(iK, v1, v2, Swave_Bubble_Calculator, values_of_bubble);
 
     for (int i_in = 0; i_in < n_in; ++i_in) {
@@ -854,7 +854,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_v
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
     /// Define standard frequency points on which to evaluate the integrand
-    int npoints = nBOS;
+    int npoints = 10000;//nBOS;
     if (diag_class == k2) {npoints = 1000;}
     else if (diag_class == k3) {npoints = 100;}
 
@@ -864,25 +864,29 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
         double wl, wu;
         switch (diag_class) {
             case k1:
-                wl = vertex1[spin].avertex().K1_get_wlower() * 2.;
-                wu = vertex1[spin].avertex().K1_get_wupper() * 2.;
+                wl = vertex1[spin].avertex().K1.K1_get_wlower();
+                wu = vertex1[spin].avertex().K1.K1_get_wupper();
+                wl *= 2.;
+                wu *= 2.;
                 break;
             case k2:
-                wl = vertex1[spin].avertex().K2_get_wlower_f();
-                wu = vertex1[spin].avertex().K2_get_wupper_f();
+                wl = vertex1[spin].avertex().K2.K2_get_wlower_f();
+                wu = vertex1[spin].avertex().K2.K2_get_wupper_f();
                 break;
             case k3:
-                wl = vertex1[spin].avertex().K3_get_wlower_f();
-                wu = vertex1[spin].avertex().K3_get_wupper_f();
+                wl = vertex1[spin].avertex().K3.K3_get_wlower_f();
+                wu = vertex1[spin].avertex().K3.K3_get_wupper_f();
                 break;
             default:;
         }
         double vpp = wl + i * (wu - wl) / (npoints - 1);
-        if (diag_class == k1) { vpp = vertex1[spin].avertex().K1_get_freq_w(vpp, i); }
+        if (diag_class == k1 and not HUBBARD_MODEL) {vertex1[spin].avertex().K1.K1_get_freq_w(vpp, i);}
         freqs[i] = vpp;
     }
 
-    save_integrand(freqs, "");
+    std::string filename_prefix = "";
+    if (HUBBARD_MODEL) filename_prefix = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/integrands/";
+    save_integrand(freqs, filename_prefix);
 
 }
 
@@ -898,13 +902,16 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
 
     get_integrand_vals(freqs, integrand_re, integrand_im, Pival_re, Pival_im);
 
-    std::string filename = data_dir+filename_prefix+"integrand_K" + std::to_string(diag_class);
+    std::string filename = "";
+    if (not HUBBARD_MODEL) filename += data_dir;
+    filename += filename_prefix+"integrand_K" + std::to_string(diag_class);
     filename += channel;
     filename += "_i0=" + std::to_string(i0)
                 + "_i2=" + std::to_string(i2)
                 + "_w=" + std::to_string(w);
     if (diag_class == k2) {filename += "_v=" + std::to_string(v);}
     else if (diag_class == k3) {filename += "_vp=" + std::to_string(vp);}
+    filename += "_i_in=" + std::to_string(i_in);
     filename += + ".h5";
     write_h5_rvecs(filename,
                    {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
@@ -1052,8 +1059,15 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
-    vmin = std::min(dgamma[spin].avertex().K1.K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
-    vmax = std::max(dgamma[spin].avertex().K1.K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
+    if (HUBBARD_MODEL){ // In the HM we have a larger frequency box for the SE and want to limit us to the range of bosonic vertex frequencies.
+        vmin = dgamma[spin].avertex().K1.K1_get_wlower();
+        vmax = dgamma[spin].avertex().K1.K1_get_wupper();
+    }
+    else{
+        vmin = std::min(dgamma[spin].avertex().K1.K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
+        vmax = std::max(dgamma[spin].avertex().K1.K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
+    }
+
     if (MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
         vmin = std::min(vmin, dgamma[spin].avertex().K2.K2_get_wlower_f());
@@ -1207,7 +1221,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #else
             trafo = get_trafo_K1(i0, w);
 #endif
-            if (trafo == 0) {calculate_value_K1(value, i0, i_in, w); }
+            if (trafo == 0 || HUBBARD_MODEL) {calculate_value_K1(value, i0, i_in, w); } // TODO: Freqency symmetries for the Hubbard model?
             break;
         case k2:
             convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
@@ -1217,7 +1231,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #else
             trafo = get_trafo_K2(i0, w, v);
 #endif
-            if (trafo == 0) {calculate_value_K2(value, i0, i_in, w, v); }
+            if (trafo == 0 || HUBBARD_MODEL) {calculate_value_K2(value, i0, i_in, w, v); }
             break;
 #ifdef DEBUG_SYMMETRIES
         case k2b:
@@ -1237,7 +1251,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #else
             trafo = get_trafo_K3(i0, w, v, vp);
 #endif
-            if (trafo == 0) {
+            if (trafo == 0 || HUBBARD_MODEL) {
                 if (channel == 'a') {calculate_value_K3(value, i0, i_in, iw, w, v, vp); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
                 if (channel == 'p') {calculate_value_K3(value, i0, i_in, iv, w, v, vp); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
                 if (channel == 't') {calculate_value_K3(value, i0, i_in, ivp,w, v, vp); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
@@ -1260,6 +1274,11 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
         Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                 integrand_K1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, channel, diff, spin, k1);
+#ifndef NDEBUG // save integrand at some values for w. Only works when this loop is not parallelized.
+        //if (((std::abs(w) < 0.0001) || std::abs(w - 270.0) < 0.01 || std::abs(w - 232.5164) < 0.01 ||
+        //std::abs(w - 203.7943) < 0.01 || std::abs(w - 51.92837) < 0.01 || std::abs(w - 106.15800) < 0.01)
+        //&& (i_in == 0) && (channel != 't') && HUBBARD_MODEL) integrand_K1.save_integrand();
+#endif // NDEBUG
         if (KELDYSH){
             value += bubble_value_prefactor() * integrator<Q>(integrand_K1, vmin, vmax, -w / 2., w / 2., Delta);
         }
@@ -1279,9 +1298,12 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifdef SWITCH_KELDYSH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
 #endif
-    value += bubble_value_prefactor() *
-                asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
-                                         w, 0., 0., i0, i2, i_in, channel, diff, spin);
+        // TODO: Asymptotic corrections for the Hubbard model!
+        if (not HUBBARD_MODEL) {
+            value += bubble_value_prefactor() *
+                     asymp_corrections_bubble(k1, vertex1, vertex2, Pi.g, vmin, vmax,
+                                              w, 0., 0., i0, i2, i_in, channel, diff, spin);
+        }
 
     }
 }
@@ -1322,7 +1344,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifdef SWITCH_KELDYSH_SUM_N_INTEGRAL
             for (int i2 : glb_non_zero_Keldysh_bubble) {
 #endif
-            value += bubble_value_prefactor() *
+                    if (not HUBBARD_MODEL) value += bubble_value_prefactor() *
                      asymp_corrections_bubble(k2, vertex1, vertex2, Pi.g,
                                               vmin, vmax, w, v, 0., i0, i2, i_in, channel, diff, spin);
 
@@ -1409,7 +1431,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifdef SWITCH_KELDYSH_SUM_N_INTEGRAL
         for (int i2 : glb_non_zero_Keldysh_bubble) {
 #endif
-        value += bubble_value_prefactor() *
+                if (not HUBBARD_MODEL)  value += bubble_value_prefactor() *
                 asymp_corrections_bubble(k3, vertex1, vertex2, Pi.g,
                                          vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff, spin);
 
@@ -1452,21 +1474,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             dgamma[spin].avertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].avertex().enforce_freqsymmetriesK1(dgamma[spin].avertex());
+            if (not HUBBARD_MODEL) dgamma[spin].avertex().enforce_freqsymmetriesK1(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
             dgamma[spin].pvertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].pvertex().enforce_freqsymmetriesK1(dgamma[spin].pvertex());
+            if (not HUBBARD_MODEL) dgamma[spin].pvertex().enforce_freqsymmetriesK1(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
             dgamma[spin].tvertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].tvertex().enforce_freqsymmetriesK1(dgamma[spin].tvertex());
+            if (not HUBBARD_MODEL) dgamma[spin].tvertex().enforce_freqsymmetriesK1(dgamma[spin].tvertex());
 #endif
             break;
         default: ;
@@ -1484,21 +1506,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             dgamma[spin].avertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].avertex().enforce_freqsymmetriesK2(dgamma[spin].avertex());
+            if (not HUBBARD_MODEL) dgamma[spin].avertex().enforce_freqsymmetriesK2(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
             dgamma[spin].pvertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].pvertex().enforce_freqsymmetriesK2(dgamma[spin].pvertex());
+            if (not HUBBARD_MODEL) dgamma[spin].pvertex().enforce_freqsymmetriesK2(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
             dgamma[spin].tvertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].tvertex().enforce_freqsymmetriesK2(dgamma[spin].tvertex());
+            if (not HUBBARD_MODEL) dgamma[spin].tvertex().enforce_freqsymmetriesK2(dgamma[spin].tvertex());
 #endif
             break;
         default: ;
@@ -1549,21 +1571,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             dgamma[spin].avertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].avertex().enforce_freqsymmetriesK3(dgamma[spin].avertex());
+            if (not HUBBARD_MODEL) dgamma[spin].avertex().enforce_freqsymmetriesK3(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
             dgamma[spin].pvertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].pvertex().enforce_freqsymmetriesK3(dgamma[spin].pvertex());
+            if (not HUBBARD_MODEL) dgamma[spin].pvertex().enforce_freqsymmetriesK3(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
             dgamma[spin].tvertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-            dgamma[spin].tvertex().enforce_freqsymmetriesK3(dgamma[spin].tvertex());
+            if (not HUBBARD_MODEL) dgamma[spin].tvertex().enforce_freqsymmetriesK3(dgamma[spin].tvertex());
 #endif
             break;
         default: ;
@@ -1786,6 +1808,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if constexpr (KELDYSH) return prefactor * (1. / (2. * M_PI * glb_i));
     else                   return prefactor * (1. / (2. * M_PI));
 }
+
 
 
 // bubble_function using the new class BubbleFunctionCalculator

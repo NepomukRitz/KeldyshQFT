@@ -177,5 +177,4 @@ void Minimal_2D_FFT_Machine::create_plans() {
                                                      FFTW_FORWARD, FFTW_MEASURE);
 }
 
-
 #endif //KELDYSH_MFRG_TESTING_MOMENTUM_GRID_H

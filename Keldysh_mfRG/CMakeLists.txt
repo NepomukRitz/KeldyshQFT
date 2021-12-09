@@ -5,8 +5,8 @@ project(FPP_mfRG)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
+#set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3")
 
 set(CMAKE_CXX_COMPILER mpicxx)
 
@@ -71,7 +71,8 @@ add_executable(Keldysh_mfRG
         utilities/math_utils.h
         tests/test_symmetries.h
         multidimensional/multiarray.hpp
-        multidimensional/ranged_view.hpp)
+        multidimensional/ranged_view.hpp
+        HUBBARD_sopt_selfenergy.h)
 
 
 # executable for unit tests using Catch
@@ -134,7 +135,8 @@ add_executable(Keldysh_mfRG_testing
         utilities/math_utils.h
         tests/test_symmetries.h
         multidimensional/multiarray.hpp
-        multidimensional/ranged_view.hpp)
+        multidimensional/ranged_view.hpp
+        HUBBARD_sopt_selfenergy.h)
 
 # standard executable for integration tests and production runs
 add_executable(FPP_mfRG
@@ -197,7 +199,8 @@ add_executable(FPP_mfRG
         utilities/math_utils.h
         tests/test_symmetries.h
         multidimensional/multiarray.hpp
-        multidimensional/ranged_view.hpp)
+        multidimensional/ranged_view.hpp
+        HUBBARD_sopt_selfenergy.h)
 
 add_executable(get_integrand_dGammaL
         tests/get_integrand_dGammaL.cpp
@@ -251,7 +254,8 @@ add_executable(get_integrand_dGammaL
         vertex_buffer.h utilities/template_utils.h
         tests/test_symmetries.h
         multidimensional/multiarray.hpp
-        multidimensional/ranged_view.hpp)
+        multidimensional/ranged_view.hpp
+        HUBBARD_sopt_selfenergy.h)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)

@@ -291,4 +291,23 @@ void test_Bubble_in_Momentum_Space(){
 #endif
     }
 
+void save_PreBubble_in_freq_space(const PrecalculateBubble<comp> Pi, const int i_in){
+    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/bare_bubble/";
+    const std::string filename  = directory + "bare_bubble_on_fermionic_grid_in_" + std::to_string(i_in) + "n_in_" + std::to_string(n_in) + ".h5";
+    vec<comp> pi (glb_number_of_Keldysh_components_bubble * nFER * nFER);
+    for (int iK_bubble = 0; iK_bubble < glb_number_of_Keldysh_components_bubble; ++iK_bubble) {
+        for (int iv1 = 0; iv1 < nFER; ++iv1) {
+            for (int iv2 = 0; iv2 < nFER; ++iv2) {
+                const double v1 = Pi.fermionic_grid.get_ws(iv1);
+                const double v2 = Pi.fermionic_grid.get_ws(iv2);
+                comp val = Pi.value_on_fermionic_grid(iK_bubble, v1, v2, i_in);
+                pi[iK_bubble * nFER * nFER + iv1 * nFER + iv2] = val;
+            }
+        }
+    }
+    write_h5_rvecs(filename,
+                   {"frequencies", "RealBubble", "ImagBubble"},
+                   {Pi.fermionic_grid.get_ws_vec(), pi.real(), pi.imag()});
+}
+
 #endif //KELDYSH_MFRG_TESTING_TEST_PRECALCULATEBUBBLE_H
