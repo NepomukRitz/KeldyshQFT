@@ -26,39 +26,29 @@ class IntegrandSE {
 
     const Vertex<Q>& vertex;
     const Propagator<Q>& propagator;
+
+    const int iK;
     const double v;
     const int i_in;
-    const bool all_spins;
+    const int i_spin;
 
     void set_Keldysh_components_to_be_calculated();
 
     Q Keldysh_value(double vp) const;
     Q Matsubara_value(double vp) const;
 
-    void evaluate_propagator(Q& GR, Q& GA, Q& GK, double vp) const;
-    void evaluate_propagator(Q& GM, double vp) const; // Matsubara version
+    void evaluate_propagator(Q& Gi, const int iK, const double vp) const;
+    void evaluate_propagator(Q& GM, const double vp) const; // Matsubara version
 
-    void evaluate_vertex(Q& factorRetardedClosedAbove, Q& factorAdvancedClosedAbove, Q& factorKeldyshClosedAbove,
-                         Q& factorRetardedClosedBelow, Q& factorAdvancedClosedBelow, Q& factorKeldyshClosedBelow,
-                         double vp) const; // for symmetrized Keldysh flow
-    void evaluate_vertex(Q& factorRetardedClosedAbove, Q& factorAdvancedClosedAbove, Q& factorKeldyshClosedAbove,
-                         double vp) const; // for unsymmetrized Keldysh flow
-    void evaluate_vertex(Q& factorClosedAbove, double vp) const; // Matsubara version
-
-    /// Used to set all three Keldysh factors by reading out the vertices
-    void set_factors(Q& factorRetardedClosed, Q& factorAdvancedClosed, Q& factorKeldyshClosed,
-                      VertexInput& inputRetardedClosed, VertexInput& inputAdvancedClosed,
-                      VertexInput& inputKeldyshClosed) const;
-
-    /// Used to add contribution of all-spins-equal vertex: V -> 2*V + V^ if taking all spins for Keldysh
-    void add_contribution_from_other_spins(Q& factorRetardedClosed, Q& factorAdvancedClosed, Q& factorKeldyshClosed,
-                                           VertexInput& inputRetardedClosed, VertexInput& inputAdvancedClosed,
-                                           VertexInput& inputKeldyshClosed) const;
+    void evaluate_vertex(Q& factorClosedAbove, Q& factorAClosedBelow,
+                         const int iK, const double vp) const; // for symmetrized Keldysh flow
+    void evaluate_vertex(Q& factorClosedAbove,
+                         const int iK, const double vp) const; // for unsymmetrized Keldysh/Matsubara flow
 
 public:
     IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator<Q>& prop_in,
-                const double v_in, const int i_in_in, const bool all_spins_in)
-                :type(type_in), vertex(vertex_in), propagator(prop_in), v(v_in), i_in(i_in_in), all_spins(all_spins_in){
+                const int iK_in, const double v_in, const int i_in_in, const int i_spin_in)
+                :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), v(v_in), i_in(i_in_in), i_spin(i_spin_in){
         if (KELDYSH){set_Keldysh_components_to_be_calculated();}
     }
 
@@ -165,28 +155,17 @@ void IntegrandSE<Q>::save_integrand(const rvec& freqs) const {
 
 template<typename Q>
 Q IntegrandSE<Q>::Keldysh_value(const double vp) const {
-    Q GR, GA, GK;
-    evaluate_propagator(GR, GA, GK, vp);
+    Q Gi;
+    evaluate_propagator(Gi, iK, vp);
 
-    Q symmetrization_prefactor = 1.;
-    Q factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove;
+    Q factorClosedAbove;
 #ifdef SYMMETRIZED_SELF_ENERGY_FLOW
-    symmetrization_prefactor = 1./2.;
-    Q factorRetardedClosedBelow, factorAdvancedClosedBelow, factorKeldyshClosedBelow;
-
-    read_vertex_values(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove,
-                       factorRetardedClosedBelow, factorAdvancedClosedBelow, factorKeldyshClosedBelow,
-                       vp);
-
-    return symmetrization_prefactor*( GR*(factorRetardedClosedAbove + factorRetardedClosedBelow) +
-                                      GA*(factorAdvancedClosedAbove + factorAdvancedClosedBelow) +
-                                      GK*(factorKeldyshClosedAbove  + factorKeldyshClosedBelow ) );
+    Q factorClosedBelow;
+    evaluate_vertex(factorClosedAbove, factorClosedBelow, iK, vp);
+    return (1./2.) * Gi * (factorClosedAbove + factorClosedBelow);
 #else
-    evaluate_vertex(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove, vp);
-
-    return symmetrization_prefactor * ( GR * factorRetardedClosedAbove +
-                                        GA * factorAdvancedClosedAbove +
-                                        GK * factorKeldyshClosedAbove );
+    evaluate_vertex(factorClosedAbove, iK, vp);
+    return Gi * factorClosedAbove;
 #endif
 
 
@@ -198,7 +177,7 @@ Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
     evaluate_propagator(GM, vp);
 
     Q factorClosedAbove;
-    evaluate_vertex(factorClosedAbove, vp);
+    evaluate_vertex(factorClosedAbove, 0, vp);
 
     if (!PARTICLE_HOLE_SYMMETRY) {
         return (GM * factorClosedAbove);
@@ -211,113 +190,50 @@ Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
     }
 }
 
-template<typename Q>
-void IntegrandSE<Q>::evaluate_propagator(Q &GR, Q &GA, Q &GK, double vp) const {
-    GR = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
-    GA = myconj(GR);  // advanced propagator (full or single scale)
-    GK = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
+template <typename Q>
+void IntegrandSE<Q>::evaluate_propagator(Q &Gi, const int iK, const double vp) const {
+    switch (iK) {
+        case 0:
+            Gi = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
+            break;
+        case 1:
+            Gi = myconj(propagator.valsmooth(0, vp, i_in));  // advanced propagator (full or single scale)
+            break;
+        case 2:
+            Gi = propagator.valsmooth(1, vp, i_in);        // Keldysh propagator (full or single scale)
+            break;
+        default:;
+    }
 }
 
 template<typename Q>
-void IntegrandSE<Q>::evaluate_propagator(Q &GM, double vp) const {
+void IntegrandSE<Q>::evaluate_propagator(Q &GM, const double vp) const {
     GM = propagator.valsmooth(0, vp, i_in);           // Matsubara propagator (full or single scale)
 }
 
-template<typename Q>
-void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
-                                     Q &factorKeldyshClosedAbove, Q &factorRetardedClosedBelow,
-                                     Q &factorAdvancedClosedBelow, Q &factorKeldyshClosedBelow,
-                                     double vp) const {
-    VertexInput inputRetardedClosedAbove (components[0], 0., vp, v, i_in, 0, 't');
-    VertexInput inputAdvancedClosedAbove (components[1], 0., vp, v, i_in, 0, 't');
-    VertexInput inputKeldyshClosedAbove  (components[2], 0., vp, v, i_in, 0, 't');
-
-    VertexInput inputRetardedClosedBelow (components[3], 0., v, vp, i_in, 0, 't');
-    VertexInput inputAdvancedClosedBelow (components[4], 0., v, vp, i_in, 0, 't');
-    VertexInput inputKeldyshClosedBelow  (components[5], 0., v, vp, i_in, 0, 't');
-
-    set_factors(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove,
-                inputRetardedClosedAbove, inputAdvancedClosedAbove, inputKeldyshClosedAbove);
-
-    set_factors(factorRetardedClosedBelow, factorAdvancedClosedBelow, factorKeldyshClosedBelow,
-                inputRetardedClosedBelow, inputAdvancedClosedBelow, inputKeldyshClosedBelow);
-
-    //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
-    if(all_spins){
-        add_contribution_from_other_spins(factorRetardedClosedAbove,factorAdvancedClosedAbove,factorKeldyshClosedAbove,
-                                          inputRetardedClosedAbove,inputAdvancedClosedAbove,inputKeldyshClosedAbove);
-
-        add_contribution_from_other_spins(factorRetardedClosedBelow,factorAdvancedClosedBelow,factorKeldyshClosedBelow,
-                                          inputRetardedClosedBelow,inputAdvancedClosedBelow,inputKeldyshClosedBelow);
-    }
-}
-
-template<typename Q>
-void IntegrandSE<Q>::evaluate_vertex(Q &factorRetardedClosedAbove, Q &factorAdvancedClosedAbove,
-                                     Q &factorKeldyshClosedAbove, double vp) const {
-    VertexInput inputRetardedClosedAbove (components[0], 0., vp, v, i_in, 0, 't');
-    VertexInput inputAdvancedClosedAbove (components[1], 0., vp, v, i_in, 0, 't');
-    VertexInput inputKeldyshClosedAbove  (components[2], 0., vp, v, i_in, 0, 't');
-
-    set_factors(factorRetardedClosedAbove, factorAdvancedClosedAbove, factorKeldyshClosedAbove,
-                inputRetardedClosedAbove, inputAdvancedClosedAbove, inputKeldyshClosedAbove);
-
-    //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
-    if(all_spins){
-        add_contribution_from_other_spins(factorRetardedClosedAbove,factorAdvancedClosedAbove,factorKeldyshClosedAbove,
-                                          inputRetardedClosedAbove,inputAdvancedClosedAbove,inputKeldyshClosedAbove);
-    }
-}
-
-template<typename Q>
-void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, double vp) const {
-    VertexInput inputClosedAbove (0, 0, vp, v, i_in, 0, 't');
+template <typename Q>
+void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
+                                     const int iK, const double vp) const {
+    VertexInput inputClosedAbove (components[iK],    0., vp, v, i_in, i_spin, 't');
+    VertexInput inputClosedBelow (components[iK+3],  0., v, vp, i_in, i_spin, 't');
     factorClosedAbove = vertex.value(inputClosedAbove);
-
-    //If taking all spins, add contribution of all-spins-equal vertex: V -> 2*V + V^
-    if(all_spins){
-        factorClosedAbove *= 2.;
-        inputClosedAbove.spin = 1;
-        factorClosedAbove += vertex.value(inputClosedAbove);
-    }
+    factorClosedBelow = vertex.value(inputClosedBelow);
 }
 
-template<typename Q>
-void IntegrandSE<Q>::set_factors(Q &factorRetardedClosed, Q &factorAdvancedClosed, Q &factorKeldyshClosed,
-                                 VertexInput &inputRetardedClosed,
-                                 VertexInput &inputAdvancedClosed,
-                                 VertexInput &inputKeldyshClosed) const {
-    factorRetardedClosed = vertex.value(inputRetardedClosed);
-    factorAdvancedClosed = vertex.value(inputAdvancedClosed);
-    factorKeldyshClosed  = vertex.value(inputKeldyshClosed);
+template <typename Q>
+void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, const int iK, const double vp) const {
+    // "components" are all zero in Matsubara case -> this function also works for Matsubara
+    VertexInput inputClosedAbove (components[iK], 0, vp, v, i_in, i_spin, 't');
+    factorClosedAbove = vertex.value(inputClosedAbove);
 }
 
-template<typename Q>
-void IntegrandSE<Q>::add_contribution_from_other_spins(Q &factorRetardedClosed, Q &factorAdvancedClosed,
-                                                       Q &factorKeldyshClosed,
-                                                       VertexInput &inputRetardedClosed,
-                                                       VertexInput &inputAdvancedClosed,
-                                                       VertexInput &inputKeldyshClosed) const {
-    factorRetardedClosed *= 2.;
-    factorAdvancedClosed *= 2.;
-    factorKeldyshClosed  *= 2.;
-
-    inputRetardedClosed.spin = 1;
-    inputAdvancedClosed.spin = 1;
-    inputKeldyshClosed.spin = 1;
-
-    factorRetardedClosed += vertex.value(inputRetardedClosed);
-    factorAdvancedClosed += vertex.value(inputAdvancedClosed);
-    factorKeldyshClosed  += vertex.value(inputKeldyshClosed);
-}
 
 
 /// Class to actually calculate the loop integral for a given external fermionic frequency and internal index.
 template <typename Q>
 class LoopCalculator{
     SelfEnergy<Q>& self;
-    const Vertex<Q>& fullvertex_initial;
-    Vertex<Q> fullvertex = fullvertex_initial;;
+    const Vertex<Q>& fullvertex;
     const Propagator<Q>& prop;
     const bool all_spins;
 
@@ -332,11 +248,8 @@ class LoopCalculator{
     int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!
     void set_v_limits();
 
-    IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', fullvertex, prop, v, i_in, all_spins);
     // TODO(medium): There is a lot of redundancy and duplication here - unify the LoopCalculator and IntegrandSE class?
     //  Note though: The integrator needs an integrand (template there).
-
-    IntegrandSE<Q> integrandK = IntegrandSE<Q> ('k', fullvertex, prop, v, i_in, all_spins); // Only ever needed in Keldysh, but has to be declared also for Matsubara
 
     Q set_prefactor();
     Q Keldysh_prefactor();
@@ -354,7 +267,7 @@ class LoopCalculator{
 public:
     LoopCalculator(SelfEnergy<Q>& self_in, const Vertex<Q>& fullvertex_in, const Propagator<Q>& prop_in,
                    const bool all_spins_in, const int iSE)
-                   : self(self_in), fullvertex_initial(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
+                   : self(self_in), fullvertex(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){
         set_v_limits();
         fullvertex.initializeInterpol();
@@ -417,42 +330,75 @@ void LoopCalculator<Q>::perform_computation() {
     }
 }
 
-template<typename Q>
+template <typename Q>
 void LoopCalculator<Q>::compute_Keldysh() {
     if (isfinite(v)) {
-        integratedR = prefactor * integrator<Q>(integrandR, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta);
-        integratedK = prefactor * integrator<Q>(integrandK, v_lower - std::abs(v), v_upper + std::abs(v), -v, v, Delta);
+        for (int iK=0; iK<3; ++iK) {
+            // V component
+            IntegrandSE<Q> integrandR ('r', fullvertex, prop, iK, v, i_in, 0);
+            IntegrandSE<Q> integrandK ('k', fullvertex, prop, iK, v, i_in, 0);
+            integratedR = prefactor * integrator<Q>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+            integratedK = prefactor * integrator<Q>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
 
-        // add analytical results for the tails
-        integratedR +=
-                prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower - std::abs(v), v_upper + std::abs(v),
-                                                      v, 0, i_in, all_spins);
-        integratedK +=
-                prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower - std::abs(v), v_upper + std::abs(v),
-                                                      v, 1, i_in, all_spins);
+            // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
+            if (all_spins) {
+                IntegrandSE<Q> integrandR_Vhat ('r', fullvertex, prop, iK, v, i_in, 1);
+                IntegrandSE<Q> integrandK_Vhat ('k', fullvertex, prop, iK, v, i_in, 1);
+                integratedR = 2. * integratedR
+                        + prefactor * integrator<Q>(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+                integratedK = 2. * integratedK
+                        + prefactor * integrator<Q>(integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+            }
 
-        //The results are emplaced in the right place of the answer object.
-        self.addself(0, iv, i_in, integratedR);
-        self.addself(1, iv, i_in, integratedK);
+            // add analytical results for the tails
+            integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+                                                                 v, 0, i_in, all_spins);
+            integratedK += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+                                                                 v, 1, i_in, all_spins);
+
+            //The results are emplaced in the right place of the answer object.
+            self.addself(0, iv, i_in, integratedR);
+            self.addself(1, iv, i_in, integratedK);
+        }
+
     }
     else {
         self.setself(0, iv, i_in, self.asymp_val_R);
     }
 }
 
-template<typename Q>
+template <typename Q>
 void LoopCalculator<Q>::compute_Matsubara_zeroT() {
     if (isfinite(v)) {
+        // V component
+        IntegrandSE<Q> integrand = IntegrandSE<Q> ('r', fullvertex, prop, 0, v, i_in, 0);
         // split up the integrand at discontinuities and (possible) kinks:
         if (std::abs(v) > inter_tol) {
-            integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-std::abs(v), -std::abs(v)   , 0.);
-            integratedR += prefactor * integrator<Q>(integrandR, -std::abs(v)        , -inter_tol     , 0.);
-            integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  std::abs(v)        , 0.);
-            integratedR += prefactor * integrator<Q>(integrandR,  std::abs(v)        ,  v_upper+std::abs(v), 0.);
+            integratedR  = prefactor * integrator<Q>(integrand,  v_lower-std::abs(v), -std::abs(v)        , 0.);
+            integratedR += prefactor * integrator<Q>(integrand, -std::abs(v)        , -inter_tol     , 0.);
+            integratedR += prefactor * integrator<Q>(integrand, +inter_tol     ,  std::abs(v)        , 0.);
+            integratedR += prefactor * integrator<Q>(integrand,  std::abs(v)        ,  v_upper+std::abs(v), 0.);
         }
         else {
-            integratedR  = prefactor * integrator<Q>(integrandR,  v_lower-std::abs(v), -inter_tol     , 0.);
-            integratedR += prefactor * integrator<Q>(integrandR, +inter_tol     ,  v_upper+std::abs(v), 0.);
+            integratedR  = prefactor * integrator<Q>(integrand,  v_lower-std::abs(v), -inter_tol     , 0.);
+            integratedR += prefactor * integrator<Q>(integrand, +inter_tol     ,  v_upper+std::abs(v), 0.);
+        }
+
+        // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
+        if (all_spins) {
+            integratedR *= 2.;
+            IntegrandSE<Q> integrand_Vhat = IntegrandSE<Q> ('r', fullvertex, prop, 0, v, i_in, 1);
+            // split up the integrand at discontinuities and (possible) kinks:
+            if (std::abs(v) > inter_tol) {
+                integratedR += prefactor * integrator<Q>(integrand_Vhat,  v_lower-std::abs(v), -std::abs(v)        , 0.);
+                integratedR += prefactor * integrator<Q>(integrand_Vhat, -std::abs(v)        , -inter_tol     , 0.);
+                integratedR += prefactor * integrator<Q>(integrand_Vhat, +inter_tol     ,  std::abs(v)        , 0.);
+                integratedR += prefactor * integrator<Q>(integrand_Vhat,  std::abs(v)        ,  v_upper+std::abs(v), 0.);
+            }
+            else {
+                integratedR += prefactor * integrator<Q>(integrand_Vhat,  v_lower-std::abs(v), -inter_tol     , 0.);
+                integratedR += prefactor * integrator<Q>(integrand_Vhat, +inter_tol     ,  v_upper+std::abs(v), 0.);
+            }
         }
 
         integratedR += -1./(2.*M_PI)
@@ -465,17 +411,18 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
     }
 }
 
-template<typename Q>
+template <typename Q>
 void LoopCalculator<Q>::compute_Matsubara_finiteT() {
     if (isfinite(v)) {
-    int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
-//#ifndef KELDYSH_FORMALISM // TODO(high): Figure out type problems in matsubarasum
-    integratedR = - glb_T * matsubarasum<Q>(integrandR, Nmin-vint, Nmax+vint);
+        IntegrandSE<Q> integrand = IntegrandSE<Q> ('r', fullvertex, prop, 0, v, i_in, all_spins);
+        int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
+    //#ifndef KELDYSH_FORMALISM // TODO(high): Figure out type problems in matsubarasum
+        integratedR = - glb_T * matsubarasum<Q>(integrand, Nmin-vint, Nmax+vint);
 
-    integratedR += - 1./(2.*M_PI)
-                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
-//#endif
-    self.addself(0, iv, i_in, integratedR);
+        integratedR += - 1./(2.*M_PI)
+                           * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
+    //#endif
+        self.addself(0, iv, i_in, integratedR);
     }
     else {
         self.setself(0, iv, i_in, self.asymp_val_R);

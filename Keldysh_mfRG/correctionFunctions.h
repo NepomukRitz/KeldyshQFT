@@ -621,7 +621,7 @@ auto asymp_corrections_bubble(K_class k,
     else {
         Delta = glb_Gamma / 2.;                    // Hybridization (~ flow parameter) at which the bubble is evaluated
     }
-    Q res, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
+    Q res{}, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
 
     std::vector<int> indices = {0, 0}; // Already right for Matsubara
     if (KELDYSH){
@@ -703,18 +703,42 @@ auto asymp_corrections_bubble(K_class k,
         case k1:
             res_l_V = vertex1.left_same_bare(input_l);
             res_r_V = vertex2.right_same_bare(input_r);
+            if (channel != 'a') {
+                input_l.spin = 1;
+                input_r.spin = 1;
+                res_l_Vhat = vertex1.left_same_bare(input_l);
+                res_r_Vhat = vertex2.right_same_bare(input_r);
+            }
             break;
         case k2:
             res_l_V = vertex1.left_diff_bare(input_l);
             res_r_V = vertex2.right_same_bare(input_r);
+            if (channel != 'a') {
+                input_l.spin = 1;
+                input_r.spin = 1;
+                res_l_Vhat = vertex1.left_diff_bare(input_l);
+                res_r_Vhat = vertex2.right_same_bare(input_r);
+            }
             break;
         case k2b:
             res_l_V = vertex1.left_same_bare(input_l);
             res_r_V = vertex2.right_diff_bare(input_r);
+                if (channel != 'a') {
+                    input_l.spin = 1;
+                    input_r.spin = 1;
+                    res_l_Vhat = vertex1.left_same_bare(input_l);
+                    res_r_Vhat = vertex2.right_diff_bare(input_r);
+                }
             break;
         case k3:
             res_l_V = vertex1.left_diff_bare(input_l);
             res_r_V = vertex2.right_diff_bare(input_r);
+                if (channel != 'a') {
+                    input_l.spin = 1;
+                    input_r.spin = 1;
+                    res_l_Vhat = vertex1.left_diff_bare(input_l);
+                    res_r_Vhat = vertex2.right_diff_bare(input_r);
+                }
             break;
         default:;
     }
@@ -722,44 +746,40 @@ auto asymp_corrections_bubble(K_class k,
     // compute the value of the (analytically integrated) bubble
     Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
 
-    // In the a and p channel, return result. In the t channel, add the other spin component.
-    if ((channel == 'a' and spin == 0) or (channel == 't' and spin == 1))
-        res = res_l_V * Pival * res_r_V;
-    else {
-        input_l.spin = 1 - input_l.spin; // switch between V and Vhat
-        input_r.spin = 1 - input_r.spin; // switch between V and Vhat
-
-        switch (k) {
-            case k1:
-                res_l_Vhat = vertex1.left_same_bare(input_l);
-                res_r_Vhat = vertex2.right_same_bare(input_r);
-                break;
-            case k2:
-                res_l_Vhat = vertex1.left_diff_bare(input_l);
-                res_r_Vhat = vertex2.right_same_bare(input_r);
-                break;
-            case k2b:
-                res_l_Vhat = vertex1.left_same_bare(input_l);
-                res_r_Vhat = vertex2.right_diff_bare(input_r);
-                break;
-            case k3:
-                res_l_Vhat = vertex1.left_diff_bare(input_l);
-                res_r_Vhat = vertex2.right_diff_bare(input_r);
-                break;
-            default:;
-        }
-
-        if (channel == 'p' and spin == 0) {
-            res = (res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat) * 0.5;
-        }
+    // compute result, with spin sum depending on the channel
+    switch (channel) {
+        case 'a':
+            if (spin == 0) {
+                res = res_l_V * Pival * res_r_V;
+            }
 #ifdef DEBUG_SYMMETRIES
-        else if (channel == 'p' and spin == 1) {
-            res = (res_l_V * Pival * res_r_Vhat + res_l_Vhat * Pival * res_r_V) * 0.5;
-        }
+            else if (spin == 1) {
+                res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+            }
 #endif
-        else {
-            res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-        }
+            res = res_l_V * Pival * res_r_V;
+            break;
+        case 'p':
+            if (spin == 0) {
+                res = res_l_V * Pival * res_r_V;
+            }
+#ifdef DEBUG_SYMMETRIES
+            else if (spin == 1) {
+                res = res_l_V * Pival * res_r_Vhat;
+            }
+#endif
+            break;
+        case 't':
+            if (spin == 0) {
+                res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+            }
+#ifdef DEBUG_SYMMETRIES
+            else if (spin == 1) {
+                 res = res_l_V * Pival * res_r_V;
+            }
+#endif
+            break;
+        default:;
     }
     return res;
 }

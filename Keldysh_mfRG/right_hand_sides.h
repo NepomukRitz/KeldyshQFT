@@ -60,17 +60,28 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     // initialize empty state with frequency grids corresponding to those in Psi:
     State<Q> dPsi(Psi, Lambda); // result
 
-
+#ifndef STATIC_FEEDBACK
     Propagator<Q> S (Lambda, Psi.selfenergy, 's');
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+#else
+    SelfEnergy<Q> bareSelfEnergy (Psi.selfenergy.frequencies);
+    bareSelfEnergy.initialize(glb_U/2., 0.);
+
+    Propagator<Q> S (Lambda, bareSelfEnergy, 's');
+    Propagator<Q> G (Lambda, bareSelfEnergy, 'g');
+#endif
 
     //For flow without self-energy, comment out this line
     selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
     dPsi.selfenergy.check_resolution();
 
+#ifndef STATIC_FEEDBACK
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
     //Run alternatively, for no self-energy feedback
-//    Propagator dG (Lambda, Psi.selfenergy, 's');
+//    Propagator<Q> dG (Lambda, Psi.selfenergy, 's');
+#else
+    Propagator<Q> dG (Lambda, bareSelfEnergy, 's');
+#endif
 
     // Initialize bubble objects;
 #ifdef HUBBARD // Use precalculated bubble in this case
@@ -135,8 +146,6 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
         dPsi.vertex += dGammaT;
 
 
-
-
         if (N_LOOPS >= 3) {
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
@@ -156,10 +165,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 #endif
 
                 // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
-                GeneralVertex<Q, non_symmetric> dGammaL(n_spin, Lambda);
-
+                GeneralVertex<Q, non_symmetric> dGammaL(n_spin, Psi.vertex);
                 dGammaL[0].half1() = dGammaL_half1[0].half1();  // assign half 1 to dGammaL
-                dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> left()=right()]
+                dGammaL[0].half2() = dGammaR_half1[0].half1();  // assign half 2 as half 1 of dGammaR [symmetric -> half1()=half2()]
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaL, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, nLambda_layers);
                 }
@@ -177,7 +185,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 }
 
                 // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-                GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
+                GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Psi.vertex);
                 dGammaR[0].half1() = dGammaR_half1[0].half1();  // assign half 1
                 dGammaR[0].half2() = dGammaL_half1[0].half1();  // assign half 2 as half 1 of dGammaL
                 if (VERBOSE) {
@@ -351,7 +359,6 @@ template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric>& nonsymVertex,
                                        const Bubble_Object& Pi) -> Vertex<Q> {
     Vertex<Q> dGammaC (n_spin, PsiVertex);
-
 
     GeneralVertex<Q, non_symmetric> nonsymVertex_calc = nonsymVertex;
     nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble

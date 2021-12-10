@@ -19,6 +19,7 @@ Project name for LS vonDelft: **pn34vu**
    - page size 16 MB -> **Do not use many small files!**
    - quota: 100 TB for the chair 
    
+<br />
 
 - LRZ DSS (data science storage), organized in containers 
     - LRZ documentation:
@@ -35,10 +36,6 @@ Project name for LS vonDelft: **pn34vu**
         - useful for new projects that need a lot of storage (ask chair admin)
     - share containers via globus (https://doku.lrz.de/display/PUBLIC/DSS+How+Globus+Data+Transfer+and+Globus+Sharing+for+DSS+works)
 
-**TODO:**
-- What do GPFS and DSS stand for?
-- What is a container?
-- What is globus?
 
 ### Setting up a .bashrc file
 It is highly recommended to set up a `.bashrc` file to configure shortcuts 
@@ -75,8 +72,8 @@ as the `.bashrc` file is always automatically loaded upon login.
 
 Grants access to pre-installed packages. Useful commands:
 
-| command| functionality |
-|----|---|
+| Command | Explanation |
+| ------- | ----------- |
 | `module avail` | shows available modules |
 | `module list`  | shows the currently loaded modules |
 | `module load <module_name>`  | loads the module \<module_name> |
@@ -166,7 +163,7 @@ mpiexec -n $SLURM_NTASKS ./main.o
 #### Description:
 
 | Option | Explanation |
-|---|---|
+| ------ | ----------- |
 | `job-name` | Name of job in slurm queue. |
 | `mem` | Requested memory (minimum) in MB. |
 | `time` | Job wall time: after this time, the job will be killed by slurm. Maximum runtime is 3 days. |
@@ -189,12 +186,12 @@ If activated, Slurm informs per email when jobs start/finish/fail etc. Deactivat
 
 ### Useful SLURM commands
 
-| command| functionality |
-|---|---|
+| Command | Explanation |
+| ------- | ----------- |
 | `sinfo` | view information about SLURM nodes and partitions.  |
 | `squeue`  | show all information about pending and running jobs |
 | `squeue -u <lrz-ID>`  | show all information about pending and running jobs of \<lrz-ID> |
-| `sbatch batchfile_loc.sh`  | submit a job configured in `batchfile_loc.sh`  |
+| `sbatch batchfile.sh`  | submit a job configured in `batchfile.sh`  |
 | `scancel <job-ID>`  | cancel the job \<job-ID> |
 
 ### Accessing the data
