@@ -270,7 +270,6 @@ public:
                    : self(self_in), fullvertex(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){
         set_v_limits();
-        fullvertex.initializeInterpol();
     };
 
     void perform_computation();
@@ -441,11 +440,15 @@ void LoopCalculator<Q>::compute_Matsubara_finiteT() {
 template <typename Q>
 void loop(SelfEnergy<state_datatype>& self, const Vertex<Q>& fullvertex, const Propagator<Q>& prop,
           const bool all_spins){
+    fullvertex.initializeInterpol();
 #pragma omp parallel for schedule(dynamic) default(none) shared(self, fullvertex, prop)
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
         LoopCalculator<Q> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);
         LoopIntegrationMachine.perform_computation();
     }
+
+
+    fullvertex.set_initializedInterpol(false);
 }
 
 #endif //KELDYSH_MFRG_LOOP_H

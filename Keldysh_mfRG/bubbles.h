@@ -681,7 +681,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 template<typename Q, template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
 auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(double vpp) const -> Q {
     Q result;
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
 
     if (case_always_has_to_be_zero()) {return 0.;}
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
@@ -742,7 +742,7 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
 #else
 
     /// TODO: fix conflict with sum over internal spins
-    assert(false);
+    //assert(false);
     VertexInput input_external (i0, w, v, vp,  i_in, spin, channel, diag_class, iw);
 
     if (channel == 'a')
@@ -1335,7 +1335,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::calculate_value_K1(Q& value, const int i0, const int i_in, const double w){
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
         if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
@@ -1368,7 +1368,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 }
 
             }
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
         }
 #else
         for (int i2 : glb_non_zero_Keldysh_bubble) {
@@ -1391,7 +1391,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (false and vertex2[spin].Ir()) {value = 0.;} // right part of multi-loop contribution does not contribute to K2 class
                                                     // don't do this; this is a bug for the Parquet solver
     else {
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
         for (int i2 : glb_non_zero_Keldysh_bubble) {
             int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
             if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
@@ -1420,7 +1420,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
                     }
                 }
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
             }
 #else
             for (int i2 : glb_non_zero_Keldysh_bubble) {
@@ -1444,7 +1444,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (false and vertex1[spin].Ir()) {value = 0.;} // left part of multi-loop contribution does not contribute to K2 class
                                                     // don't do this; this is a bug for the Parquet solver
     else {
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
         for (int i2 : glb_non_zero_Keldysh_bubble) {
             int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
             if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
@@ -1474,7 +1474,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 }
             }
 
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
             }
 #else
             for (int i2 : glb_non_zero_Keldysh_bubble) {
@@ -1494,7 +1494,7 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value_K3(Q& value, const int i0, const int i_in, const int iw,
                                                 const double w, const double v, const double vp){
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
         if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
@@ -1526,7 +1526,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 }
             }
 
-#ifndef SWITCH_KELDYSH_SUM_N_INTEGRAL
+#ifndef SWITCH_SUM_N_INTEGRAL
         }
 #else
         for (int i2 : glb_non_zero_Keldysh_bubble) {
