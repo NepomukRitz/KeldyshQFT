@@ -289,14 +289,20 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
             // compute multiloop corrections to self-energy flow
             selfEnergyFlowCorrections(dPsi.selfenergy, dGammaC_tbar, Psi, G);
+#ifdef DEBUG_SYMMETRIES
+            State<Q> Psi_SEcorrection(dPsi, Lambda);
+            selfEnergyFlowCorrections(dPsi.selfenergy, dGammaC_tbar, Psi, G); // isolated SE correction
+#endif
 /// save intermediate states:
             if (save_intermediate) {
                 State<Q> dPsi_C_tbar(dGammaC_tbar, dPsi.selfenergy);
                 if (iteration == 0) {
                     write_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, nODE + U_NRG.size() + 1, dPsi_C_tbar);
+                    write_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), Psi.Lambda, nODE + U_NRG.size() + 1, Psi_SEcorrection);
                 }
                 else {
                     add_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, dPsi_C_tbar);
+                    add_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, Psi_SEcorrection);
 
                 }
             }

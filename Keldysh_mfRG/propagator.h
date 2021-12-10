@@ -276,7 +276,7 @@ auto Propagator<Q>::GM(const double v, const double ksquared, const int i_in) co
     else if (REG == 3){
         return GM_REG3_FPP(v,ksquared,i_in);
     }
-    else std::cout << "The Regulator " << REG << "is not implemented. \n";
+    else {std::cout << "The Regulator " << REG << "is not implemented. \n"; assert(false);}
 }
 
 template <typename Q>
@@ -296,14 +296,14 @@ auto Propagator<Q>::SM(const double v, const int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::SM(const double v, const double ksquared, const int i_in) const -> Q
 {
-    //assert(FPP);
+    assert(FPP);
     if      (REG == 1)  {
         return SM_REG1_FPP(v,ksquared,i_in);
     }
     else if (REG == 3) {
         return SM_REG3_FPP(v,ksquared, i_in);
     }
-    else std::cout << "The Regulator " << REG << "is not implemented. \n";
+    else {std::cout << "The Regulator " << REG << "is not implemented. \n"; assert(false);}
 }
 
 template <typename Q>
@@ -338,7 +338,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                 }
             }
             else{
-                return SM(v, 0, i_in);
+                return SM(v, i_in);
             }
 
         case 'k': // including the Katanin extension
@@ -357,7 +357,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                 }
             }
             else{
-                return SM(v, 0, i_in)
+                return SM(v, i_in)
                        + GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
             }
 
