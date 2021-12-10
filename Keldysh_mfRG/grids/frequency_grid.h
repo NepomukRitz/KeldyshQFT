@@ -386,10 +386,10 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
         index = std::min(N_w - 3 - FREQ_PADDING, index);
     }
     else {
-        //if (ws[index+1+FREQ_PADDING] < w_in and index < N_w-1)
-        //    index++;
-        //if (ws[index+FREQ_PADDING] > w_in and index > 0)
-        //    index--;
+        if (ws[index+1+FREQ_PADDING] < w_in and index < N_w-1)
+            index++;
+        if (ws[index+FREQ_PADDING] > w_in and index > 0)
+            index--;
         index = std::max(-FREQ_PADDING, index);
         index = std::min(N_w - 2 - FREQ_PADDING, index);
         assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0); /// TODO: If this is not satisfied -> use locate

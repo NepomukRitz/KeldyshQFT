@@ -75,6 +75,8 @@ int main(int argc, char* argv[]) {
     MPI_Init(nullptr, nullptr);
     print("   -----   Performing unit tests   -----", true);
 
+    check_input();
+
     //test_PrecalculateBubble<comp> test_Bubble ;
     //test_Bubble.perform_test();
 
