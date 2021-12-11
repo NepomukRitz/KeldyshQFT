@@ -703,42 +703,38 @@ auto asymp_corrections_bubble(K_class k,
         case k1:
             res_l_V = vertex1.left_same_bare(input_l);
             res_r_V = vertex2.right_same_bare(input_r);
-            if (channel != 'a') {
-                input_l.spin = 1;
-                input_r.spin = 1;
-                res_l_Vhat = vertex1.left_same_bare(input_l);
-                res_r_Vhat = vertex2.right_same_bare(input_r);
-            }
+            input_l.spin = 1 - spin;
+            input_r.spin = 1 - spin;
+            res_l_Vhat = vertex1.left_same_bare(input_l);
+            res_r_Vhat = vertex2.right_same_bare(input_r);
+
             break;
         case k2:
             res_l_V = vertex1.left_diff_bare(input_l);
             res_r_V = vertex2.right_same_bare(input_r);
-            if (channel != 'a') {
-                input_l.spin = 1;
-                input_r.spin = 1;
-                res_l_Vhat = vertex1.left_diff_bare(input_l);
-                res_r_Vhat = vertex2.right_same_bare(input_r);
-            }
+            input_l.spin = 1 - spin;
+            input_r.spin = 1 - spin;
+            res_l_Vhat = vertex1.left_diff_bare(input_l);
+            res_r_Vhat = vertex2.right_same_bare(input_r);
+
             break;
         case k2b:
             res_l_V = vertex1.left_same_bare(input_l);
             res_r_V = vertex2.right_diff_bare(input_r);
-                if (channel != 'a') {
-                    input_l.spin = 1;
-                    input_r.spin = 1;
-                    res_l_Vhat = vertex1.left_same_bare(input_l);
-                    res_r_Vhat = vertex2.right_diff_bare(input_r);
-                }
+            input_l.spin = 1 - spin;
+            input_r.spin = 1 - spin;
+            res_l_Vhat = vertex1.left_same_bare(input_l);
+            res_r_Vhat = vertex2.right_diff_bare(input_r);
+
             break;
         case k3:
             res_l_V = vertex1.left_diff_bare(input_l);
             res_r_V = vertex2.right_diff_bare(input_r);
-                if (channel != 'a') {
-                    input_l.spin = 1;
-                    input_r.spin = 1;
-                    res_l_Vhat = vertex1.left_diff_bare(input_l);
-                    res_r_Vhat = vertex2.right_diff_bare(input_r);
-                }
+
+            input_l.spin = 1 - spin;
+            input_r.spin = 1 - spin;
+            res_l_Vhat = vertex1.left_diff_bare(input_l);
+            res_r_Vhat = vertex2.right_diff_bare(input_r);
             break;
         default:;
     }
@@ -757,7 +753,6 @@ auto asymp_corrections_bubble(K_class k,
                 res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
 #endif
-            res = res_l_V * Pival * res_r_V;
             break;
         case 'p':
             if (spin == 0) {

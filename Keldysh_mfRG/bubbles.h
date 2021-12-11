@@ -846,7 +846,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
             }
 #endif
         }
-        else {
+        else { // relevant for t-channel (spin component 0) and a-channel (spin component 1): there i_spin = 0, 1, 2
 
             if (channel == 't'
 #ifdef DEBUG_SYMMETRIES
@@ -861,7 +861,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
                     else
                         res_l_V = vertex1.left_diff_bare(input_l);
                     // compute res_r_Vhat
-                    input_r.spin = 1;
+                    input_r.spin = 1 - spin;
                     if (diag_class == k3 or diag_class == k2b)
                         res_r_Vhat = vertex2.right_diff_bare(input_r);
                     else
@@ -876,7 +876,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
                     else
                         res_r_V = vertex2.right_same_bare(input_r);
                     // compute res_l_Vhat
-                    input_l.spin = 1;
+                    input_l.spin = 1 - spin;
                     if (diag_class == k1 or diag_class == k2b)
                         res_l_Vhat = vertex1.left_same_bare(input_l);
                     else
