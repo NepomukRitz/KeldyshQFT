@@ -1272,7 +1272,7 @@ void fullvert<Q>::calculate_all_cross_projections() {
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
     if(p==0) {//infinity (max) norm
         double max = 0;
-        for(int iflat=0; iflat < getFlatSize(avertex.K1.get_dims()); iflat++) {
+        for(int iflat=0; iflat < dimsK1_flat; iflat++) {
             int iK, ispin, iw, i_in;
             getMultIndex<4,int,int,int,int>(iK, ispin, iw, i_in, iflat, avertex.K1.get_dims());
             if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
@@ -1302,7 +1302,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
 
     else {//p-norm
         double result = 0;
-        for(int iflat=0; iflat < getFlatSize(avertex.K1.get_dims()); iflat++) {
+        for(int iflat=0; iflat < dimsK1_flat; iflat++) {
             int iK, ispin, iw, iv, i_in;
             getMultIndex<4,int,int,int,int>(iK, ispin, iw, i_in, iflat, avertex.K1.get_dims());
             if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
@@ -1325,7 +1325,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
 template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
     if(p==0) { //infinity (max) norm
         double max = 0.;
-        for(int iflat=0; iflat < getFlatSize(avertex.K2.get_dims()); iflat++) {
+        for(int iflat=0; iflat < dimsK2_flat; iflat++) {
             int iK, ispin, iw, iv, i_in;
             getMultIndex<5,int,int,int,int,int>(iK, ispin, iw, iv, i_in, iflat, avertex.K2.get_dims());
             if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
@@ -1355,7 +1355,7 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
     }
     else{//p-norm
         double result = 0.;
-        for(int iflat=0; iflat < getFlatSize(avertex.K2.get_dims()); iflat++) {
+        for(int iflat=0; iflat < dimsK2_flat; iflat++) {
             int iK, ispin, iw, iv, i_in;
             getMultIndex<5,int,int,int,int,int>(iK, ispin, iw, iv, i_in, iflat, avertex.K2.get_dims());
             if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
@@ -1379,7 +1379,7 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
 template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
     if(p==0) {
         double max = 0.;
-        for(int iflat=0; iflat < getFlatSize(avertex.K3.get_dims()); iflat++) {
+        for(int iflat=0; iflat < dimsK3_flat; iflat++) {
             int iK, ispin, iw, iv1, iv2, i_in;
             getMultIndex<6,int,int,int,int,int,int>(iK, ispin, iw, iv1, iv2, i_in, iflat, avertex.K3.get_dims());
             if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
@@ -1413,7 +1413,7 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
 
     else { //p-norm
         double result = 0.;
-        for(int iflat=0; iflat < getFlatSize(avertex.K3.get_dims()); iflat++) {
+        for(int iflat=0; iflat < dimsK3_flat; iflat++) {
             int iK, ispin, iw, iv1, iv2, i_in;
             getMultIndex<6,int,int,int,int,int,int>(iK, ispin, iw, iv1, iv2, i_in, iflat, avertex.K3.get_dims());
             if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara

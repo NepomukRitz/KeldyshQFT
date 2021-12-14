@@ -109,7 +109,7 @@ public:
     double * bfreqsp_buffer;
     double * bfreqst_buffer;
     double * ffreqs_buffer;
-    const size_t self_dim = collapse_all(dimsSE, [](const size_t& a, const size_t& b) -> size_t {return a*b;});    // length of self-energy buffer
+    const size_t self_dim = dimsSE_flat;    // length of self-energy buffer
 #ifdef KELDYSH_FORMALISM
     const int irred_dim = 16 * n_in;                                  // length of irreducible vertex buffer
 #else
@@ -119,7 +119,7 @@ public:
     h5_comp * irreducible_class;
 
 #if MAX_DIAG_CLASS >= 1
-    const size_t K1_dim = collapse_all(dimsK1, [](const size_t& a, const size_t& b) -> size_t {return a*b;});                         // length of K1 buffer
+    const size_t K1_dim = dimsK1_flat;                         // length of K1 buffer
     h5_comp * K1_class_a;
     h5_comp * K1_class_p;
     h5_comp * K1_class_t;
@@ -131,7 +131,7 @@ public:
     double * ffreqs2p_buffer;
     double * bfreqs2t_buffer;
     double * ffreqs2t_buffer;
-    const size_t K2_dim = collapse_all(dimsK2, [](const size_t& a, const size_t& b) -> size_t {return a*b;});               // length of K2 buffer
+    const size_t K2_dim = dimsK2_flat;               // length of K2 buffer
     h5_comp * K2_class_a;
     h5_comp * K2_class_p;
     h5_comp * K2_class_t;
@@ -143,7 +143,7 @@ public:
     double * ffreqs3p_buffer;
     double * bfreqs3t_buffer;
     double * ffreqs3t_buffer;
-    const size_t K3_dim = collapse_all(dimsK3, [](const size_t& a, const size_t& b) -> size_t {return a*b;});    // length of K3 buffer
+    const size_t K3_dim = dimsK3_flat;    // length of K3 buffer
     h5_comp * K3_class_a;
     h5_comp * K3_class_p;
     h5_comp * K3_class_t;

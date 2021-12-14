@@ -39,7 +39,10 @@ const vec<size_t> dimsSE = vec<size_t>({nK_SE, FREQ_PADDING*2+nFER, n_in_K1});
 const vec<size_t> dimsK1 = vec<size_t>({nK_K1, n_spin, FREQ_PADDING*2+nBOS, n_in_K1});
 const vec<size_t> dimsK2 = vec<size_t>({nK_K2, n_spin, FREQ_PADDING*2+nBOS2, FREQ_PADDING*2+nFER2, n_in_K2});
 const vec<size_t> dimsK3 = vec<size_t>({nK_K3, n_spin, FREQ_PADDING*2+nBOS3, FREQ_PADDING*2+nFER3, FREQ_PADDING*2+nFER3, n_in_K3});
-
+const size_t dimsSE_flat = collapse_all(dimsSE, [](size_t a, size_t b) -> size_t {return a * b;});
+const size_t dimsK1_flat = collapse_all(dimsK1, [](size_t a, size_t b) -> size_t {return a * b;});
+const size_t dimsK2_flat = collapse_all(dimsK2, [](size_t a, size_t b) -> size_t {return a * b;});
+const size_t dimsK3_flat = collapse_all(dimsK3, [](size_t a, size_t b) -> size_t {return a * b;});
 
 #ifdef KELDYSH_FORMALISM
 // Vector of indices of the non-zero Keldysh components of the bubbles

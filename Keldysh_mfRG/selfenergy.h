@@ -13,7 +13,7 @@
 template <typename Q>
 class SelfEnergy{
     vec<Q> empty_Sigma() {
-        return vec<Q> (collapse_all(dimsSE, [](const size_t& a, const size_t& b) -> size_t {return a*b;}));           // only one component in Matsubara formalism
+        return vec<Q> (dimsSE_flat);           // only one component in Matsubara formalism
     }
 
     std::array<size_t,3> dims;
@@ -89,9 +89,7 @@ public:
         return lhs;
     }
 
-    //FrequencyGrid shrink_freq_box(double rel_tail_threshold) const;
-//
-    //double analyze_tails(bool verbose) const;
+
 
     void check_resolution() const;
 };

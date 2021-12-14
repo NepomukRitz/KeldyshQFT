@@ -816,7 +816,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
     }
     else{
         std::vector<int> indices = indices_sum(i0, i2, channel);
-        VertexInput input_l (indices, spin, w, v, vpp,  i_in, channel, diag_class, iw);
+        VertexInput input_l (indices[0], spin, w, v, vpp,  i_in, channel, diag_class, iw);
         VertexInput input_r (indices[1], spin, w, vpp, vp, i_in, channel, diag_class, iw);
 
         if (i_spin == 0) { // first summand in all channels is res_l_V * Pival * res_r_V
