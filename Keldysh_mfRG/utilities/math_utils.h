@@ -159,7 +159,7 @@ inline auto lagrangePoly(const Q x, const double (&xs)[degreeplus], const Q (&ys
 
 
 template<size_t rank>
-size_t getFlatSize(const std::array<size_t,rank>& dims) {
+constexpr size_t getFlatSize(const std::array<size_t,rank>& dims) {
     size_t result = dims[0];
     for (int it = 1; it < rank; it++) result *= dims[it];
     return result;

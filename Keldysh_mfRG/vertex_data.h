@@ -76,15 +76,15 @@ protected:
 
 public:
     /// constructor:
-    explicit vertexContainerBase(const std::vector<size_t> dims_in) {
-        assert(dims_in.size() == rank);
+    explicit vertexContainerBase(const std::array<size_t,rank> dims_in) {
+        //assert(dims_in.size() == rank);
         for (size_t i = 0; i < rank; i++) dims[i] = dims_in[i];
     };
     /// Wrappers for above constructor - currently unused
     template <typename... Types,
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
-    explicit vertexContainerBase(const Types &... dims) : vertexContainerBase(std::vector<size_t>({static_cast<size_t>(dims)...})) {};
-    vertexContainerBase(const size_t dims_in[rank], const vec<Q> &data_in) : data(data_in) {};
+    explicit vertexContainerBase(const Types &... dims) : vertexContainerBase(std::array<size_t,rank>({static_cast<size_t>(dims)...})) {};
+    vertexContainerBase(const std::array<size_t,rank> dims, const vec<Q> &data_in) : dims(dims), data(data_in) {};
 
     /// Reserves space for the data and fills it with zeros
     void reserve() { data = vec<Q>(getFlatSize<rank>(dims)); }
