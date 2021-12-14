@@ -412,14 +412,14 @@ struct VertexInput{
     K_class kClass_aim;
     int iw_r;
 
-    VertexInput(int iK_in, double w_in, double v1_in, double v2_in, int i_in_in, int spin_in, char channel_in, K_class k_in=k1, int iw_in=0)
+    VertexInput(int iK_in, int spin_in, double w_in, double v1_in, double v2_in, int i_in_in, char channel_in, K_class k_in=k1, int iw_in=0)
             :
 //#ifdef KELDYSH_FORMALISM
             iK(iK_in),
 //#else
 //            iK(0),
 //#endif
-            w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel(channel_in), kClass_aim(k_in), iw_r(iw_in)
+            spin(spin_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), channel(channel_in), kClass_aim(k_in), iw_r(iw_in)
     {}
 };
 

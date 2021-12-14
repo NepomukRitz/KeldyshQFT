@@ -11,25 +11,26 @@
 TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[interpolations]" ) {
 
 
-    rvert<state_datatype> avertex('a', Lambda_ini);
+    rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK = 0;
+    int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0; iw<nBOS; iw++){
-        avertex.K1.setvert(value, iK, iw, i_in);
+        avertex.K1.setvert(value, iK, i_spin, iw, i_in);
         value +=1;
     }
 
     double cumul_interpolation_error = 0;
     vec<double> errors (nBOS);
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+    IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     for (int iw = 0; iw<nBOS; iw++){
         avertex.K1.K1_get_freq_w(indices.w, iw);
 
         state_datatype result_interpol = avertex.K1.interpolate(indices);
-        state_datatype result_exact = avertex.K1.val(iK, iw, i_in);
+        state_datatype result_exact = avertex.K1.val(iK, i_spin, iw, i_in);
         double error = std::abs(result_interpol - result_exact);
         cumul_interpolation_error += error;
         errors[iw] = error;
@@ -53,13 +54,14 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
 TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[interpolations]" ) {
 
 
-    rvert<state_datatype> avertex('a', Lambda_ini);
+    rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK = 0;
+    int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0; iw<nBOS2; iw++){
         for (int iv = 0; iv<nFER2; iv++) {
-            avertex.K2.setvert(value, iK, iw, iv, i_in);
+            avertex.K2.setvert(value, iK, i_spin, iw, iv, i_in);
             value +=1;
         }
     }
@@ -68,12 +70,12 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     avertex.initInterpolator();
     vec<double> errors (nBOS2*nFER2);
     int iter = 0;
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+    IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     for (int iw = 0; iw<nBOS2; iw++){
         for (int iv = 0; iv<nFER2; iv++) {
             avertex.K2.K2_get_freqs_w(indices.w, indices.v1, iw, iv);
 
-            double error = std::abs(avertex.K2.interpolate(indices) -  avertex.K2.val(iK, iw, iv, i_in));
+            double error = std::abs(avertex.K2.interpolate(indices) -  avertex.K2.val(iK, i_spin, iw, iv, i_in));
             cumul_interpolation_error += error;
             errors[iter] = error;
             iter++;
@@ -96,14 +98,15 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
 TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[interpolations]" ) {
 
 
-    rvert<state_datatype> avertex('a', Lambda_ini);
+    rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK = 0;
+    int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
-                avertex.K3.setvert(value, iK, iw, iv, ivp, i_in);
+                avertex.K3.setvert(value, iK, i_spin, iw, iv, ivp, i_in);
                 value += 1;
             }
         }
@@ -113,7 +116,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     vec<double> errors ((nBOS3)*(nFER3)*(nFER3));
     vec<state_datatype> vals_interp ((nBOS3)*(nFER3)*(nFER3));
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+    IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     for (int iw = 0; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
@@ -124,7 +127,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
 
                 state_datatype val_interp =  avertex.K3.interpolate(indices);
                 vals_interp[iw*(nFER3)*(nFER3) + iv*(nFER3) + ivp] = val_interp;
-                double error = std::abs( val_interp - avertex.K3.val(iK, iw, iv, ivp, i_in));
+                double error = std::abs( val_interp - avertex.K3.val(iK, i_spin, iw, iv, ivp, i_in));
                 errors[iw*(nFER3-1)*(nFER3-1) + iv*(nFER3-1) + ivp] = error;
                 if (error > 1e-6)
                     cumul_interpolation_error += error;
@@ -162,8 +165,9 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     bool geq_interpolation_tolerance = false;
     double cumul_interpolation_tolerance = 1e-12 * nBOS;
 
-    rvert<state_datatype> avertex('a', Lambda_ini);
+    rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK = 0;
+    int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = -FREQ_PADDING; iw<nBOS+FREQ_PADDING; iw++){
@@ -171,13 +175,13 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
         if (INTERPOLATION == linear)  avertex.K1.K1_get_freq_w(w, iw);
         else avertex.K1.K1_get_freq_aux(w, iw);
         value = linearFunction1D(w);
-        avertex.K1.setvert(value, iK, iw, i_in);
+        avertex.K1.setvert(value, iK, i_spin, iw, i_in);
     }
 
     double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+    IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     int N = nBOS * 3;
     vec<double> errors (N);
@@ -220,23 +224,24 @@ if (INTERPOLATION == cubic) {
     bool geq_interpolation_tolerance = false;
     double cumul_interpolation_tolerance = 1e-12 * nBOS;
 
-    rvert<state_datatype> avertex('a', Lambda_ini);
+    rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK;
     if (KELDYSH) iK = 1;
     else iK = 0;
+    int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0-FREQ_PADDING; iw < nBOS+FREQ_PADDING; iw++) {
         double w;
         avertex.K1.K1_get_freq_aux(w, iw);
         value = cubicFunction1D(w);
-        avertex.K1.setvert(value, iK, iw, i_in);
+        avertex.K1.setvert(value, iK, i_spin, iw, i_in);
     }
 
     double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+    IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     int N = nBOS * 500;
     vec<state_datatype> values(N);
@@ -282,10 +287,11 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     double cumul_interpolation_tolerance = 1e-11 * nBOS2*nFER2;
 
 
-    rvert<state_datatype> avertex('a', Lambda_ini);
+    rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK;
     if (KELDYSH) iK = 1;
     else iK = 0;
+    int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0-FREQ_PADDING; iw<nBOS2+FREQ_PADDING; iw++){
@@ -298,7 +304,7 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
             if (INTERPOLATION == linear)  avertex.K2.K2_get_freqs_w(w, v, iw, iv);
             else avertex.K2.K2_get_freqs_aux(w, v, iw, iv);
             value = linearFunction2D(w, v);
-            avertex.K2.setvert(value, iK, iw, iv, i_in);
+            avertex.K2.setvert(value, iK, i_spin, iw, iv, i_in);
             value +=1;
         }
     }
@@ -306,7 +312,8 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+    int spin = 0;
+    IndicesSymmetryTransformations indices(iK, spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     double error;
     int N = (nBOS2 - 2) * 4 - 3;
     int M = (nFER2 - 2) * 4 - 3;
@@ -352,10 +359,11 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         double cumul_interpolation_tolerance = 1e-11 * nBOS2 * nFER2;
 
 
-        rvert<state_datatype> avertex('a', Lambda_ini);
+        rvert<state_datatype> avertex('a', Lambda_ini, true);
         int iK;
         if (KELDYSH) iK = 4;
         else iK = 0;
+        int i_spin = 0;
         int i_in = 0;
         state_datatype value = 0.;
         for (int iw = 0-FREQ_PADDING; iw < nBOS2+FREQ_PADDING; iw++) {
@@ -366,7 +374,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
                 //= avertex.frequencies_K2.b.ts[iw];
                 //double v = avertex.frequencies_K2.f.ts[iv];
                 value = cubicFunction2D(w, v);
-                avertex.K2.setvert(value, iK, iw, iv, i_in);
+                avertex.K2.setvert(value, iK, i_spin, iw, iv, i_in);
                 value += 1;
             }
         }
@@ -374,7 +382,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         double t_start = get_time();
         double cumul_interpolation_error = 0;
         avertex.initInterpolator();
-        IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+        int spin = 0;
+        IndicesSymmetryTransformations indices(iK, spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
         double error;
         int N = (nBOS2 - 2) * 4 - 3;
         int M = (nFER2 - 2) * 4 - 3;
@@ -429,8 +438,9 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     double cumul_interpolation_tolerance = 1e-10 * nBOS3*nFER3*nFER3;
 
 
-    rvert<state_datatype> avertex('a', Lambda_ini);
+    rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK;
+    int i_spin = 0;
     if (KELDYSH) iK = 1;
     else iK = 0;
     int i_in = 0;
@@ -443,7 +453,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
                 if (INTERPOLATION == linear)  avertex.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
                 else avertex.K3.K3_get_freqs_aux(w, v, vp, iw, iv, ivp);
                 value = linearFunction3D(w, v, vp);
-                avertex.K3.setvert(value, iK, iw, iv, ivp, i_in);
+                avertex.K3.setvert(value, iK, i_spin, iw, iv, ivp, i_in);
             }
         }
     }
@@ -451,7 +461,8 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     double t_start = get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
-    IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+    int spin = 0;
+    IndicesSymmetryTransformations indices(iK, spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     double error;
     int N = nBOS3 * 4;
     int M = nFER3 * 4;
@@ -504,8 +515,9 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         double cumul_interpolation_tolerance = 1e-10 * nBOS3 * nFER3 * nFER3;
 
 
-        rvert<state_datatype> avertex('a', Lambda_ini);
+        rvert<state_datatype> avertex('a', Lambda_ini, true);
         int iK;
+        int i_spin = 0;
         if (KELDYSH) iK = 5;
         else iK = 0;
         int i_in = 0;
@@ -520,7 +532,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
                     //double v = avertex.frequencies_K3.f.ts[iv];
                     //double vp= avertex.frequencies_K3.f.ts[ivp];
                     value = cubicFunction3D(w, v, vp);
-                    avertex.K3.setvert(value, iK, iw, iv, ivp, i_in);
+                    avertex.K3.setvert(value, iK, i_spin, iw, iv, ivp, i_in);
                 }
             }
         }
@@ -528,7 +540,8 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         double t_start = get_time();
         double cumul_interpolation_error = 0;
         avertex.initInterpolator();
-        IndicesSymmetryTransformations indices(iK, 0., 0., 0., i_in, 'a', k1, 0, 'a');
+        int spin = 0;
+        IndicesSymmetryTransformations indices(iK, spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
         double error;
         int N = nBOS3 * 5;
         int M = nFER3 * 5;

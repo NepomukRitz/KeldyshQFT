@@ -22,8 +22,8 @@ constexpr bool VERBOSE = true;
 //#define FERMI_POLARON_PROBLEM
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM
-//#define SWITCH_SUM_N_INTEGRAL
+//#define KELDYSH_FORMALISM
+#define SWITCH_SUM_N_INTEGRAL
 #ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
@@ -35,7 +35,7 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 
 // Determines whether particle-hole symmetry is assumed
-//#define PARTICLE_HOLE_SYMM
+#define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 

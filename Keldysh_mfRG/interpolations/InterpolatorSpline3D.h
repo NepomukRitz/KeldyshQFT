@@ -117,7 +117,7 @@ protected:
     bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
     Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
     //bool m_made_monotonic = false;
-    vec<Q> get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t ivp, size_t i_in, double dw, double dv, double dvp) const;  // calculate c_i, d_i from b_i
+    vec<Q> get_coeffs_from_derivs(size_t iK, size_t spin, size_t iw, size_t iv, size_t ivp, size_t i_in, double dw, double dv, double dvp) const;  // calculate c_i, d_i from b_i
 public:
 
     mutable bool initialized = false;
@@ -128,81 +128,81 @@ public:
     void initInterpolator() const;
 
     // evaluates the SplineK3 at point x
-    Q interpolK3 (int iK, double w, double v, double vp, int i_in) const;
+    Q interpolK3 (int iK, int spin, double w, double v, double vp, int i_in) const;
 
 
 };
 
 
 template <class DataContainer, typename Q>
-vec<Q> SplineK3<DataContainer,Q>::get_coeffs_from_derivs(size_t iK, size_t iw, size_t iv, size_t ivp, size_t i_in, double dw, double dv, double dvp) const
+vec<Q> SplineK3<DataContainer,Q>::get_coeffs_from_derivs(const size_t iK, const size_t spin, const size_t iw, const size_t iv, const size_t ivp, const size_t i_in, const double dw, const double dv, const double dvp) const
 {
 
     const vec<Q> fs = {
-            DataContainer::data[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            DataContainer::data[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw * m_deriv_x[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv * m_deriv_y[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dvp* m_deriv_z[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv * m_deriv_xy[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dvp* m_deriv_xz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dv*dvp* m_deriv_yz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
-            dw*dv*dvp* m_deriv_xyz[::getFlatIndex(iK, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+            DataContainer::data[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dw * m_deriv_x[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dw * m_deriv_x[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dw * m_deriv_x[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dw * m_deriv_x[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dw * m_deriv_x[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dw * m_deriv_x[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dw * m_deriv_x[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dw * m_deriv_x[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dv * m_deriv_y[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dv * m_deriv_y[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dv * m_deriv_y[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dv * m_deriv_y[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dv * m_deriv_y[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dv * m_deriv_y[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dv * m_deriv_y[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dv * m_deriv_y[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dvp* m_deriv_z[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dvp* m_deriv_z[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dvp* m_deriv_z[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dvp* m_deriv_z[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dvp* m_deriv_z[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dvp* m_deriv_z[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dvp* m_deriv_z[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+                 dvp* m_deriv_z[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dv * m_deriv_xy[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dv * m_deriv_xy[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dv * m_deriv_xy[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dv * m_deriv_xy[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dv * m_deriv_xy[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dv * m_deriv_xy[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dv * m_deriv_xy[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dv * m_deriv_xy[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dvp* m_deriv_xz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dvp* m_deriv_xz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dvp* m_deriv_xz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dvp* m_deriv_xz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dvp* m_deriv_xz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dvp* m_deriv_xz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dvp* m_deriv_xz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dw*dvp* m_deriv_xz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dv*dvp* m_deriv_yz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dv*dvp* m_deriv_yz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dv*dvp* m_deriv_yz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dv*dvp* m_deriv_yz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+             dv*dvp* m_deriv_yz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dv*dvp* m_deriv_yz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dv*dvp* m_deriv_yz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+             dv*dvp* m_deriv_yz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+         dw*dv*dvp* m_deriv_xyz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+         dw*dv*dvp* m_deriv_xyz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+         dw*dv*dvp* m_deriv_xyz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+         dw*dv*dvp* m_deriv_xyz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp     + FREQ_PADDING, i_in, DataContainer::dims)],
+         dw*dv*dvp* m_deriv_xyz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+         dw*dv*dvp* m_deriv_xyz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv     + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+         dw*dv*dvp* m_deriv_xyz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw     + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
+         dw*dv*dvp* m_deriv_xyz[::getFlatIndex<6,int,int,int,int,int,int>(iK, spin, iw + 1 + FREQ_PADDING, iv + 1 + FREQ_PADDING, ivp + 1 + FREQ_PADDING, i_in, DataContainer::dims)],
     };
 
     //vec<Q> coeffs = vec<Q> (64);
@@ -298,7 +298,7 @@ void SplineK3<DataContainer,Q>::initInterpolator() const
 
 
 template <class DataContainer, typename Q>
-Q SplineK3<DataContainer,Q>::interpolK3 (int iK, double w, double v, double vp, int i_in) const
+Q SplineK3<DataContainer,Q>::interpolK3 (const int iK, const int spin, const double w, const double v, const double vp, const int i_in) const
 {
     assert(initialized);
     double tw;
@@ -316,7 +316,7 @@ Q SplineK3<DataContainer,Q>::interpolK3 (int iK, double w, double v, double vp, 
     const double hvp= (tvp- DataContainer::frequencies_K3.f.get_ts(ivp)) / dvp;
 
 
-    const vec<Q> coeffs = get_coeffs_from_derivs(iK, iw, iv, ivp, i_in, dw, dv, dvp);
+    const vec<Q> coeffs = get_coeffs_from_derivs(iK, spin, iw, iv, ivp, i_in, dw, dv, dvp);
 
     Q result = 0.;
     const std::array<size_t,3> dims = {4,4,4};
@@ -327,7 +327,7 @@ Q SplineK3<DataContainer,Q>::interpolK3 (int iK, double w, double v, double vp, 
     for (int i = 0; i<4; i++) {
         for (int j = 0; j<4; j++) {
             for (int k = 0; k<4; k++) {
-                result += coeffs[::getFlatIndex(i, j, k, dims)] * dvppow[i] * dvpow[j] * dwpow[k];
+                result += coeffs[::getFlatIndex<3,int,int,int>(i, j, k, dims)] * dvppow[i] * dvpow[j] * dwpow[k];
             }
         }
     }

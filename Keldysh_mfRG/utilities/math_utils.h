@@ -1,7 +1,8 @@
-#ifndef FPP_MFRG_MATH_UTILS_H
+/**/#ifndef FPP_MFRG_MATH_UTILS_H
 #define FPP_MFRG_MATH_UTILS_H
 
 #include "../data_structures.h"
+#include "template_utils.h"
 #include "RuntimeError.h"
 
 // signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
@@ -171,20 +172,23 @@ size_t getFlatSize(const std::array<size_t,rank>& dims) {
  * @param dims              number of grid points in the different directions
  * @return
  */
-template<size_t rank>
-inline size_t getFlatIndex(const std::array<size_t,rank>&  indx, const std::array<size_t,rank>&  dims) {
-    size_t result = indx[0];
-    for (int it = 1; it < rank; it++) {
-        result *= dims [it];
-        result += indx [it];
+    template<size_t rank>
+    inline size_t getFlatIndex(const std::array<size_t, rank> &indx, const std::array<size_t, rank> &dims) {
+        size_t result = indx[0];
+        for (int it = 1; it < rank; it++) {
+            result *= dims[it];
+            result += indx[it];
+        }
+        return result;
     }
-    return result;
-}
+
 /// Template specialization for special case rank == 1
-template<>
-inline size_t getFlatIndex<1>(const std::array<size_t,1>&  indx, const std::array<size_t,1>&  dims) {
-    return dims[0];
-}
+    template<>
+    inline size_t getFlatIndex<1>(const std::array<size_t, 1> &indx, const std::array<size_t, 1> &dims) {
+        return dims[0];
+    }
+
+namespace math_impl {
 /**
  * Returns a flattened index of a multi-dimensional vector
  * @tparam rank   number of dimensions
@@ -197,33 +201,68 @@ inline size_t getFlatIndex<1>(const std::array<size_t,1>&  indx, const std::arra
  *                          perms into the native order.
  * @return
  */
-template<size_t rank>
-inline size_t getFlatIndex(const std::array<size_t,rank>&  indx, const std::array<size_t,rank>&  dims, const std::array<size_t,rank>&  permutation) {
-    size_t result = indx[permutation[0]];
-    for (int it = 1; it < rank; it++) {
-        result *= dims [permutation[it]];
-        result += indx [permutation[it]];
+    template<size_t rank>
+    inline size_t getFlatIndex(const std::array<size_t, rank> &indx, const std::array<size_t, rank> &dims,
+                               const std::array<size_t, rank> &permutation) {
+        size_t result = indx[permutation[0]];
+        for (int it = 1; it < rank; it++) {
+            result *= dims[permutation[it]];
+            result += indx[permutation[it]];
+        }
+        return result;
     }
-    return result;
 }
 /// Overloads of above function for 5, 4, 3 or 2 indices (with the array dims containing number of grids points in each direction)
-inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const  size_t m, const std::array<size_t,5>&  dims) {
-    std::array<size_t,5>  indx = {i, j, k ,l ,m};
-    return getFlatIndex<5>(indx, dims);
+//inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const  size_t m, const std::array<size_t,5>&  dims) {
+//    std::array<size_t,5>  indx = {i, j, k ,l ,m};
+//    return getFlatIndex<5>(indx, dims);
+//}
+//inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const std::array<size_t,4>& dims) {
+//    std::array<size_t,4>  indx = {i, j, k ,l};
+//    return getFlatIndex<4>(indx, dims);
+//}
+//inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const std::array<size_t,3>& dims) {
+//    std::array<size_t,3>  indx = {i, j, k};
+//    return getFlatIndex<3>(indx, dims);
+//}
+//inline size_t getFlatIndex(const size_t i, const  size_t j, const std::array<size_t,2> & dims) {
+//    std::array<size_t,2>  indx = {i, j};
+//    return getFlatIndex<2>(indx, dims);
+//}
+template<size_t rank, typename... Types,    /// "..." is syntax for a parameter pack
+        typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<int, Types...>::value), bool> = true>
+inline int getFlatIndex(const Types &... i, const std::array<size_t,rank>&  dims) {
+    auto temp = to_array<size_t, Types...>(i...);
+    return getFlatIndex<rank>(temp, dims);
 }
-inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const std::array<size_t,4>& dims) {
-    std::array<size_t,4>  indx = {i, j, k ,l};
-    return getFlatIndex<4>(indx, dims);
-}
-inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const std::array<size_t,3>& dims) {
-    std::array<size_t,3>  indx = {i, j, k};
-    return getFlatIndex<3>(indx, dims);
-}
-inline size_t getFlatIndex(const size_t i, const  size_t j, const std::array<size_t,2> & dims) {
-    std::array<size_t,2>  indx = {i, j};
-    return getFlatIndex<2>(indx, dims);
+template<size_t rank, typename... Types,    /// "..." is syntax for a parameter pack
+        typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<int, Types...>::value), bool> = true>
+inline int getFlatIndex(const Types &&... i, const std::array<size_t,rank>&  dims) {
+    auto temp = to_array<size_t, Types...>(i...);
+    return getFlatIndex<rank>(temp, dims);
 }
 
+
+//template<size_t rank>
+//inline void getMultIndex(std::array<size_t,rank>&&  indx, const size_t iflat, const std::array<size_t,rank>&  dims) {
+//    size_t temp = iflat;
+//    size_t dimtemp = 1;
+//    for (int it = 1; it < rank; it++) {
+//        dimtemp *= dims[it];
+//    }
+//    indx[0] = temp / dimtemp;
+//    temp -= indx[0] * dimtemp;
+//    for (int it = 1; it < rank; it++) {
+//        dimtemp = dimtemp / dims[it];
+//        indx[it] = temp / dimtemp;
+//        temp -= indx[it] * dimtemp;
+//    }
+//}
+///// Template specialization for special case rank == 1
+//template<>
+//inline void getMultIndex<1>(std::array<size_t,1>&& indx, const size_t iflat, const std::array<size_t,1>&  dims) {
+//    indx[0] = iflat;
+//}
 
 template<size_t rank>
 inline void getMultIndex(std::array<size_t,rank>&  indx, const size_t iflat, const std::array<size_t,rank>&  dims) {
@@ -244,7 +283,15 @@ inline void getMultIndex(std::array<size_t,rank>&  indx, const size_t iflat, con
 template<>
 inline void getMultIndex<1>(std::array<size_t,1>& indx, const size_t iflat, const std::array<size_t,1>&  dims) {
     indx[0] = iflat;
+}
 
+template<size_t rank, typename... Types,    /// "..." is syntax for a parameter pack
+        typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<int, Types...>::value), bool> = true>
+inline void getMultIndex(Types &... i, const size_t iflat, const std::array<size_t,rank>&  dims) {
+    std::array<size_t,rank> temp = {{static_cast<size_t>(i)...}};
+    getMultIndex<rank>(temp, iflat, dims);
+    int it = 0;
+    ((i = temp[it], it++), ...);
 }
 
 /**
@@ -263,7 +310,7 @@ template<size_t rank>
 size_t rotateFlatIndex(const size_t iflat, const std::array<size_t,rank>& dims, const std::array<size_t,rank>& permutation){
     std::array<size_t,rank> multIndx;
     getMultIndex<rank>(multIndx, iflat, dims);
-    size_t iflat_new = getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [rank], size_t (&dims) [rank], size_t (&permutation) [rank]) {
+    size_t iflat_new = math_impl::getFlatIndex(multIndx, dims, permutation); //(const size_t (&indx) [rank], size_t (&dims) [rank], size_t (&permutation) [rank]) {
     return iflat_new;
 }
 /**

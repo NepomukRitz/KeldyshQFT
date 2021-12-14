@@ -573,10 +573,10 @@ public:
     Integrand(const GeneralVertex<Q, symmetry_left>& vertex1_in,
               const GeneralVertex<Q, symmetry_right>& vertex2_in,
               const Bubble_Object& Pi_in,
-              int i0_in, int i2_in, const int iw_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
-              const int i_spin_in, const char ch_in, const bool diff_in, const int spin_in, const K_class k_in)
+              int i0_in, int i2_in, const int spin_in, const int iw_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
+              const int i_spin_in, const char ch_in, const bool diff_in, const K_class k_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
-              i2(i2_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), channel(ch_in), diff(diff_in), spin(spin_in), diag_class(k_in){
+              i2(i2_in), spin(spin_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), channel(ch_in), diff(diff_in), diag_class(k_in){
         set_Keldysh_index_i0(i0_in);
         if (MAX_DIAG_CLASS < 2) {precompute_vertices();}
     }
@@ -636,10 +636,10 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 #ifdef KELDYSH_FORMALISM
     std::vector<int> indices = indices_sum(i0, i2, channel);
 
-    VertexInput input_l (indices[0], w, 0., 0., i_in, 0, channel);
-    VertexInput input_r (indices[1], w, 0., 0., i_in, 0, channel);
+    VertexInput input_l (indices[0], spin, w, 0., 0., i_in, channel);
+    VertexInput input_r (indices[1], spin, w, 0., 0., i_in, channel);
 #else
-    VertexInput input_l (0, w, 0., 0., i_in, 0, channel);
+    VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
     VertexInput &input_r = input_l;
 #endif
     res_l_V_initial = vertex1.left_same_bare(input_l);
@@ -655,10 +655,10 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 #ifdef KELDYSH_FORMALISM
     std::vector<int> indices = indices_sum(i0, i2, channel);
 
-    VertexInput input_l (indices[0], w, 0., 0., i_in, spin, channel);
-    VertexInput input_r (indices[1], w, 0., 0., i_in, spin, channel);
+    VertexInput input_l (indices[0], spin, w, 0., 0., i_in, channel);
+    VertexInput input_r (indices[1], spin, w, 0., 0., i_in, channel);
 #else
-    VertexInput input_l (0, w, 0., 0., i_in, spin, channel);
+    VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
     VertexInput &input_r = input_l;
 #endif
     res_l_V_initial = vertex1.left_same_bare(input_l);
@@ -743,7 +743,7 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
 
     /// TODO: fix conflict with sum over internal spins
     //assert(false);
-    VertexInput input_external (i0, w, v, vp,  i_in, spin, channel, diag_class, iw);
+    VertexInput input_external (i0, spin, w, v, vp, i_in, channel, diag_class, iw);
 
     if (channel == 'a')
         result = sum_over_internal<'a',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
@@ -816,8 +816,8 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
     }
     else{
         std::vector<int> indices = indices_sum(i0, i2, channel);
-        VertexInput input_l (indices[0], w, v, vpp,  i_in, spin, channel, diag_class, iw);
-        VertexInput input_r (indices[1], w, vpp, vp, i_in, spin, channel, diag_class, iw);
+        VertexInput input_l (indices[0], spin, w, v, vpp,  i_in, channel, diag_class, iw);
+        VertexInput input_r (indices[1], spin, w, vpp, vp, i_in, channel, diag_class, iw);
 
         if (i_spin == 0) { // first summand in all channels is res_l_V * Pival * res_r_V
             if (diag_class == k1 or diag_class == k2b)
@@ -1004,7 +1004,6 @@ class BubbleFunctionCalculator{
     const Bubble_Object& Pi;
     const char channel;
     const bool diff = Pi.diff;
-    const int spin;
 
     const double Delta = (Pi.g.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
@@ -1026,7 +1025,7 @@ class BubbleFunctionCalculator{
 
     void calculate_bubble_function(K_class diag_class);
     Q get_value(int i_mpi, int i_omp, int n_omp, K_class diag_class);
-    void calculate_value(Q &value, int i0, int i_in, int iw, double w, double v, double vp, K_class k);
+    void calculate_value(Q &value, int i0, int i_in,  int ispin, int iw, double w, double v, double vp, K_class k);
 
     void write_out_results(const vec<Q>& Ordered_result, K_class diag_class);
     void write_out_results_K1(const vec<Q>& K1_ordered_result);
@@ -1036,15 +1035,15 @@ class BubbleFunctionCalculator{
 
     void set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, K_class diag_class);
 
-    void convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
+    void convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, double& w,
                                                                  int i_mpi, int n_omp, int i_omp);
-    void convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& iw, int& iv, int& i_in,
+    void convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& ispin, int& iw, int& iv, int& i_in,
                                                                  double& w, double& v,
                                                                  int i_mpi, int n_omp, int i_omp);
-    void convert_external_MPI_OMP_indices_to_physical_indices_K2b(int& iK2, int& i0, int& iw, int& ivp, int& i_in,
+    void convert_external_MPI_OMP_indices_to_physical_indices_K2b(int& iK2, int& i0, int& ispin, int& iw, int& ivp, int& i_in,
                                                                  double& w, double& vp,
                                                                  int i_mpi, int n_omp, int i_omp);
-    void convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& iw, int& iv, int& ivp, int& i_in,
+    void convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& ispin, int& iw, int& iv, int& ivp, int& i_in,
                                                                  double& w, double& v, double& vp,
                                                                  int i_mpi, int n_omp, int i_omp);
 
@@ -1063,9 +1062,9 @@ class BubbleFunctionCalculator{
                              const GeneralVertex<Q, symmetry_left>& vertex1_in,
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
                              const Bubble_Object& Pi_in,
-                             const char channel_in, int spin_in)
+                             const char channel_in)
                              :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
-                             Pi(Pi_in), channel(channel_in), spin(spin_in){
+                             Pi(Pi_in), channel(channel_in){
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
 
@@ -1124,23 +1123,23 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
     if (HUBBARD_MODEL){ // In the HM we have a larger frequency box for the SE and want to limit us to the range of bosonic vertex frequencies.
-        vmin = dgamma[spin].avertex().K1.K1_get_wlower();
-        vmax = dgamma[spin].avertex().K1.K1_get_wupper();
+        vmin = dgamma[0].avertex().K1.K1_get_wlower();
+        vmax = dgamma[0].avertex().K1.K1_get_wupper();
     }
     else{
-        vmin = std::min(dgamma[spin].avertex().K1.K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
-        vmax = std::max(dgamma[spin].avertex().K1.K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
+        vmin = std::min(dgamma[0].avertex().K1.K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
+        vmax = std::max(dgamma[0].avertex().K1.K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
     }
 
     if (MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma[spin].avertex().K2.K2_get_wlower_f());
-        vmax = std::max(vmax, dgamma[spin].avertex().K2.K2_get_wupper_f());
+        vmin = std::min(vmin, dgamma[0].avertex().K2.K2_get_wlower_f());
+        vmax = std::max(vmax, dgamma[0].avertex().K2.K2_get_wupper_f());
     }
     if (MAX_DIAG_CLASS >= 3){
         // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma[spin].avertex().K3.K3_get_wlower_f());
-        vmax = std::max(vmax, dgamma[spin].avertex().K3.K3_get_wupper_f());
+        vmin = std::min(vmin, dgamma[0].avertex().K3.K3_get_wlower_f());
+        vmax = std::max(vmax, dgamma[0].avertex().K3.K3_get_wupper_f());
     }
     if ((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
@@ -1160,28 +1159,28 @@ bool
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::missing_cross_projection() {
     switch (channel) {
         case 'a':
-            if (!vertex1[spin].pvertex().calculated_crossprojections ||
-                !vertex1[spin].tvertex().calculated_crossprojections ||
-                !vertex2[spin].pvertex().calculated_crossprojections ||
-                !vertex2[spin].tvertex().calculated_crossprojections)
+            if (!vertex1[0].pvertex().calculated_crossprojections ||
+                !vertex1[0].tvertex().calculated_crossprojections ||
+                !vertex2[0].pvertex().calculated_crossprojections ||
+                !vertex2[0].tvertex().calculated_crossprojections)
             {
                 return true;
             }
             break;
         case 'p':
-            if (!vertex1[spin].avertex().calculated_crossprojections ||
-                !vertex1[spin].tvertex().calculated_crossprojections ||
-                !vertex2[spin].avertex().calculated_crossprojections ||
-                !vertex2[spin].tvertex().calculated_crossprojections)
+            if (!vertex1[0].avertex().calculated_crossprojections ||
+                !vertex1[0].tvertex().calculated_crossprojections ||
+                !vertex2[0].avertex().calculated_crossprojections ||
+                !vertex2[0].tvertex().calculated_crossprojections)
             {
                 return true;
             }
             break;
         case 't':
-            if (!vertex1[spin].avertex().calculated_crossprojections ||
-                !vertex1[spin].pvertex().calculated_crossprojections ||
-                !vertex2[spin].avertex().calculated_crossprojections ||
-                !vertex2[spin].pvertex().calculated_crossprojections)
+            if (!vertex1[0].avertex().calculated_crossprojections ||
+                !vertex1[0].pvertex().calculated_crossprojections ||
+                !vertex2[0].avertex().calculated_crossprojections ||
+                !vertex2[0].pvertex().calculated_crossprojections)
             {
                 return true;
             }
@@ -1273,12 +1272,12 @@ Q
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::get_value(const int i_mpi, const int i_omp, const int n_omp, const K_class diag_class){
     Q value = 0.;
-    int iK1, iK2, i0, iw, iv, ivp, i_in;
+    int iK1, iK2, i0, ispin, iw, iv, ivp, i_in;
     double w, v, vp;
     int trafo;
     switch (diag_class) {
         case k1:
-            convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, iw, i_in, w,
+            convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, ispin,iw, i_in, w,
                                                                     i_mpi, n_omp, i_omp);
 #ifdef DEBUG_SYMMETRIES
             trafo = 0; // compute integrals for all frequency components
@@ -1287,31 +1286,31 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
             if (trafo == 0 || HUBBARD_MODEL) {
 
-                calculate_value(value, i0, i_in, 0, w, 0, 0, k1);
+                calculate_value(value, i0, i_in, ispin, 0, w, 0, 0, k1);
             } // TODO: Freqency symmetries for the Hubbard model?
             break;
         case k2:
-            convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, iw, iv, i_in, w, v,
+            convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, ispin, iw, iv, i_in, w, v,
                                                                     i_mpi, n_omp, i_omp);
 #ifdef DEBUG_SYMMETRIES
             trafo = 0; // compute integrals for all frequency components
 #else
             trafo = get_trafo_K2(i0, w, v);
 #endif
-            if (trafo == 0 || HUBBARD_MODEL) {calculate_value(value, i0, i_in, 0, w, v, 0, k2); }
+            if (trafo == 0 || HUBBARD_MODEL) {calculate_value(value, i0, i_in, ispin, 0, w, v, 0, k2); }
             break;
 #ifdef DEBUG_SYMMETRIES
         case k2b:
-            convert_external_MPI_OMP_indices_to_physical_indices_K2b(iK2, i0, iw, ivp, i_in, w, vp,
+            convert_external_MPI_OMP_indices_to_physical_indices_K2b(iK2, i0, ispin, iw, ivp, i_in, w, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = 0; // compute integrals for all frequency components
 #else
             //trafo = get_trafo_K2(i0, w, v);
 #endif
-            if (trafo == 0) {calculate_value(value, i0, i_in, 0, w, 0, vp, k2b); }
+            if (trafo == 0) {calculate_value(value, i0, i_in, ispin, 0, w, 0, vp, k2b); }
             break;
         case k3:
-            convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, iw, iv, ivp, i_in, w, v, vp,
+            convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, ispin, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
 #ifdef DEBUG_SYMMETRIES
             trafo = 0; // compute integrals for all frequency components
@@ -1319,9 +1318,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             trafo = get_trafo_K3(i0, w, v, vp);
 #endif
             if (trafo == 0 || HUBBARD_MODEL) {
-                if (channel == 'a') {calculate_value(value, i0, i_in, iw, w, v, vp, k3); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
-                if (channel == 'p') {calculate_value(value, i0, i_in, iv, w, v, vp, k3); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
-                if (channel == 't') {calculate_value(value, i0, i_in, ivp,w, v, vp, k3); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
+                if (channel == 'a') {calculate_value(value, i0, i_in, ispin, iw, w, v, vp, k3); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
+                if (channel == 'p') {calculate_value(value, i0, i_in, ispin, iv, w, v, vp, k3); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
+                if (channel == 't') {calculate_value(value, i0, i_in, ispin, ivp,w, v, vp, k3); } // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
             }
             break;
         default:;
@@ -1333,7 +1332,7 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::calculate_value(Q& value, const int i0, const int i_in, const int iw,
+        Bubble_Object>::calculate_value(Q& value, const int i0, const int i_in, const int ispin, const int iw,
                                            const double w, const double v, const double vp, const K_class k){
 #ifndef SWITCH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
@@ -1346,7 +1345,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
             // initialize the integrand object and perform frequency integration
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
-                    integrand(vertex1, vertex2, Pi, i0, i2, iw, w, v, vp, i_in, i_spin, channel, diff, spin, k);
+                    integrand(vertex1, vertex2, Pi, i0, i2, ispin, iw, w, v, vp, i_in, i_spin, channel, diff, k);
             if (KELDYSH) {
                 value += bubble_value_prefactor() * integrator<Q>(integrand, vmin, vmax, -w / 2., w / 2., Delta);
             }
@@ -1393,7 +1392,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         // asymptotic corrections include spin sum
         if (not HUBBARD_MODEL) value += bubble_value_prefactor() *
                                         asymp_corrections_bubble(k, vertex1, vertex2, Pi.g,
-                                                                 vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff, spin);
+                                                                 vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff, ispin);
 
     }
 }
@@ -1431,21 +1430,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::write_out_results_K1(const vec<Q>& K1_ordered_result){
     switch (channel) {
         case 'a':
-            dgamma[spin].avertex().K1.add_vec(K1_ordered_result);
+            dgamma[0].avertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].avertex().enforce_freqsymmetriesK1(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
-            dgamma[spin].pvertex().K1.add_vec(K1_ordered_result);
+            dgamma[0].pvertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].pvertex().enforce_freqsymmetriesK1(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
-            dgamma[spin].tvertex().K1.add_vec(K1_ordered_result);
+            dgamma[0].tvertex().K1.add_vec(K1_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].tvertex().enforce_freqsymmetriesK1(dgamma[spin].tvertex());
@@ -1460,24 +1459,24 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
-    assert( K2_ordered_result.size() == nK_K2*nBOS2*nFER2*n_in);
+    assert( K2_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
     switch (channel) {
         case 'a':
-            dgamma[spin].avertex().K2.add_vec(K2_ordered_result);
+            dgamma[0].avertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].avertex().enforce_freqsymmetriesK2(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
-            dgamma[spin].pvertex().K2.add_vec(K2_ordered_result);
+            dgamma[0].pvertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].pvertex().enforce_freqsymmetriesK2(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
-            dgamma[spin].tvertex().K2.add_vec(K2_ordered_result);
+            dgamma[0].tvertex().K2.add_vec(K2_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].tvertex().enforce_freqsymmetriesK2(dgamma[spin].tvertex());
@@ -1496,22 +1495,22 @@ template<typename Q, template <typename> class symmetry_result, template <typena
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2b(const vec<Q>& K2b_ordered_result){
-    assert( K2b_ordered_result.size() == nK_K2*nBOS2*nFER2*n_in);
+    assert( K2b_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
     switch (channel) {
         case 'a':
-            dgamma[spin].avertex().K2b.add_vec(K2b_ordered_result);
+            dgamma[0].avertex().K2b.add_vec(K2b_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             //dgamma[spin].avertex().enforce_freqsymmetriesK2(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
-            dgamma[spin].pvertex().K2b.add_vec(K2b_ordered_result);
+            dgamma[0].pvertex().K2b.add_vec(K2b_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             //dgamma[spin].pvertex().enforce_freqsymmetriesK2(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
-            dgamma[spin].tvertex().K2b.add_vec(K2b_ordered_result);
+            dgamma[0].tvertex().K2b.add_vec(K2b_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             //dgamma[spin].tvertex().enforce_freqsymmetriesK2(dgamma[spin].tvertex());
 #endif
@@ -1528,21 +1527,21 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K3(const vec<Q>& K3_ordered_result){
     switch (channel) {
         case 'a':
-            dgamma[spin].avertex().K3.add_vec(K3_ordered_result);
+            dgamma[0].avertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].avertex().enforce_freqsymmetriesK3(dgamma[spin].avertex());
 #endif
             break;
         case 'p':
-            dgamma[spin].pvertex().K3.add_vec(K3_ordered_result);
+            dgamma[0].pvertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].pvertex().enforce_freqsymmetriesK3(dgamma[spin].pvertex());
 #endif
             break;
         case 't':
-            dgamma[spin].tvertex().K3.add_vec(K3_ordered_result);
+            dgamma[0].tvertex().K3.add_vec(K3_ordered_result);
 #ifndef DEBUG_SYMMETRIES
             dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
             if (not HUBBARD_MODEL) dgamma[spin].tvertex().enforce_freqsymmetriesK3(dgamma[spin].tvertex());
@@ -1562,16 +1561,16 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, const K_class diag_class){
     switch (diag_class) {
         case k1:
-            n_mpi = nK_K1;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+            n_mpi = nK_K1 * n_spin;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
             n_omp = nw1_w * n_in_K1; // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
             break;
         case k2:
         case k2b:
-            n_mpi = nK_K2 * nw2_w;
+            n_mpi = nK_K2 * n_spin * nw2_w;
             n_omp = nw2_v * n_in_K2;
             break;
         case k3:
-            n_mpi = nK_K3 * nw3_w;
+            n_mpi = nK_K3 * n_spin * nw3_w;
             n_omp = nw3_v * nw3_v_p * n_in_K3;
             break;
         default: ;
@@ -1582,32 +1581,35 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& iw, int& i_in, double& w,
+        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, double& w,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK1 = i_mpi * n_omp + i_omp;
-    i0 = iK1/(nw1_w*n_in_K1);                              // exterior Keldysh indices of the bubble
-    iw = iK1/(n_in_K1) - i0*nw1_w;                         // frequency index
-    i_in = iK1 - i0*nw1_w*n_in_K1 - iw*n_in_K1;            // internal index
-    if (channel == 'a') dgamma[spin].avertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
-    if (channel == 'p') dgamma[spin].pvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
-    if (channel == 't') dgamma[spin].tvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
+    //i0 = iK1/(nw1_w*n_in_K1);                              // exterior Keldysh indices of the bubble
+    //iw = iK1/(n_in_K1) - i0*nw1_w;                         // frequency index
+    //i_in = iK1 - i0*nw1_w*n_in_K1 - iw*n_in_K1;            // internal index
+    getMultIndex<4,int,int,int,int>(i0, ispin, iw, i_in, iK1, vertex1[0].avertex().K1.get_dims());
+
+    if (channel == 'a') dgamma[0].avertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
+    if (channel == 'p') dgamma[0].pvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
+    if (channel == 't') dgamma[0].tvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
 }
 
 template<typename Q, template <typename> class symmetry_result, template <typename> class symmetry_left,
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& iw, int& iv, int& i_in,
+        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& ispin,  int& iw, int& iv, int& i_in,
                                                                                 double& w, double& v,
                                                                                 const int i_mpi, const int n_omp, const int i_omp){
     iK2 = i_mpi * n_omp + i_omp;
-    i0 = iK2 / (nw2_w * nw2_v * n_in_K2);
-    iw = iK2 / (nw2_v * n_in_K2) - i0 * nw2_w;
-    iv = iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
-    i_in = iK2 - iv * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
-    if (channel == 'a') dgamma[spin].avertex().K2.K2_get_freqs_w(w, v, iw, iv);
-    if (channel == 'p') dgamma[spin].pvertex().K2.K2_get_freqs_w(w, v, iw, iv);
-    if (channel == 't') dgamma[spin].tvertex().K2.K2_get_freqs_w(w, v, iw, iv);
+    //i0 = iK2 / (nw2_w * nw2_v * n_in_K2);
+    //iw = iK2 / (nw2_v * n_in_K2) - i0 * nw2_w;
+    //iv = iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
+    //i_in = iK2 - iv * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
+    getMultIndex<5,int,int,int,int,int>(i0, ispin, iw, iv, i_in, iK2, vertex1[0].avertex().K2.get_dims());
+    if (channel == 'a') dgamma[0].avertex().K2.K2_get_freqs_w(w, v, iw, iv);
+    if (channel == 'p') dgamma[0].pvertex().K2.K2_get_freqs_w(w, v, iw, iv);
+    if (channel == 't') dgamma[0].tvertex().K2.K2_get_freqs_w(w, v, iw, iv);
 }
 
 #ifdef DEBUG_SYMMETRIES
@@ -1615,17 +1617,18 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2b(int& iK2, int& i0, int& iw, int& ivp, int& i_in,
+        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2b(int& iK2, int& i0, int& ispin,  int& iw, int& ivp, int& i_in,
                                                                                 double& w, double& vp,
                                                                                 const int i_mpi, const int n_omp, const int i_omp){
     iK2 = i_mpi * n_omp + i_omp;
-    i0 = iK2 / (nw2_w * nw2_v * n_in_K2);
-    iw = iK2 / (nw2_v * n_in_K2) - i0 * nw2_w;
-    ivp= iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
-    i_in = iK2 - ivp * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
-    if (channel == 'a') dgamma[spin].avertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
-    if (channel == 'p') dgamma[spin].pvertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
-    if (channel == 't') dgamma[spin].tvertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
+    //i0 = iK2 / (nw2_w * nw2_v * n_in_K2);
+    //iw = iK2 / (nw2_v * n_in_K2) - i0 * nw2_w;
+    //ivp= iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
+    //i_in = iK2 - ivp * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
+    getMultIndex<5,int,int,int,int,int>(i0, ispin, iw, ivp, i_in, iK2, vertex1[0].avertex().K2b.get_dims());
+    if (channel == 'a') dgamma[0].avertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
+    if (channel == 'p') dgamma[0].pvertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
+    if (channel == 't') dgamma[0].tvertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
 }
 #endif
 
@@ -1633,18 +1636,19 @@ template<typename Q, template <typename> class symmetry_result, template <typena
         template <typename> class symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& iw, int& iv, int& ivp, int& i_in,
+        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& ispin,  int& iw, int& iv, int& ivp, int& i_in,
                                                                                      double& w, double& v, double& vp,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK3 = i_mpi * n_omp + i_omp;
-    i0 = iK3/(nw3_w * nw3_v * nw3_v_p * n_in_K3);
-    iw = iK3/(nw3_v * nw3_v_p * n_in_K3) - i0*nw3_w;
-    iv = iK3/(nw3_v * n_in_K3) - i0*nw3_w*nw3_v - iw*nw3_v;
-    ivp =iK3/(n_in_K3) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
-    i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in_K3 - iw*nw3_v*nw3_v_p*n_in_K3 - iv*nw3_v_p*n_in_K3 - ivp*n_in_K3;
-    if (channel == 'a') dgamma[spin].avertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
-    if (channel == 'p') dgamma[spin].pvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'p');
-    if (channel == 't') dgamma[spin].tvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 't');
+    //i0 = iK3/(nw3_w * nw3_v * nw3_v_p * n_in_K3);
+    //iw = iK3/(nw3_v * nw3_v_p * n_in_K3) - i0*nw3_w;
+    //iv = iK3/(nw3_v * n_in_K3) - i0*nw3_w*nw3_v - iw*nw3_v;
+    //ivp =iK3/(n_in_K3) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
+    //i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in_K3 - iw*nw3_v*nw3_v_p*n_in_K3 - iv*nw3_v_p*n_in_K3 - ivp*n_in_K3;
+    getMultIndex<6,int,int,int,int,int,int>(i0, ispin, iw, iv, ivp, i_in, iK3, vertex1[0].avertex().K3.get_dims());
+    if (channel == 'a') dgamma[0].avertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+    if (channel == 'p') dgamma[0].pvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'p');
+    if (channel == 't') dgamma[0].tvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 't');
 }
 
 
@@ -1782,12 +1786,11 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                  const GeneralVertex<Q, symmetry_right>& vertex2,
                                  const Bubble_Object& Pi,
                                  const char channel){
-    for (int i_spin = 0; i_spin < n_spin; i_spin++) {
-        BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
-                BubbleComputer (dgamma, vertex1, vertex2, Pi, channel, i_spin);
-        if (channel == 'a' or channel == 'p' or channel == 't') BubbleComputer.perform_computation();
-        //else {print("Error! Incompatible channel given to bubble_function. Abort"); }
-    }
+    BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
+            BubbleComputer (dgamma, vertex1, vertex2, Pi, channel);
+    if (channel == 'a' or channel == 'p' or channel == 't') BubbleComputer.perform_computation();
+    //else {print("Error! Incompatible channel given to bubble_function. Abort"); }
+
 }
 
 /// Overload for bubble_function in case no Bubble object has been initialized yet. ONLY WORKS FOR SIAM!!

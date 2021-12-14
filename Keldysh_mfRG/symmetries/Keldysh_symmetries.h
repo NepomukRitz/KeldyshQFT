@@ -36,9 +36,9 @@ const int nK_K3 = 1;
 #endif // KELDYSH_FORMALISM
 
 const vec<size_t> dimsSE = vec<size_t>({nK_SE, FREQ_PADDING*2+nFER, n_in_K1});
-const vec<size_t> dimsK1 = vec<size_t>({nK_K1, FREQ_PADDING*2+nBOS, n_in_K1});
-const vec<size_t> dimsK2 = vec<size_t>({nK_K2, FREQ_PADDING*2+nBOS2, FREQ_PADDING*2+nFER2, n_in_K2});
-const vec<size_t> dimsK3 = vec<size_t>({nK_K3, FREQ_PADDING*2+nBOS3, FREQ_PADDING*2+nFER3, FREQ_PADDING*2+nFER3, n_in_K3});
+const vec<size_t> dimsK1 = vec<size_t>({nK_K1, n_spin, FREQ_PADDING*2+nBOS, n_in_K1});
+const vec<size_t> dimsK2 = vec<size_t>({nK_K2, n_spin, FREQ_PADDING*2+nBOS2, FREQ_PADDING*2+nFER2, n_in_K2});
+const vec<size_t> dimsK3 = vec<size_t>({nK_K3, n_spin, FREQ_PADDING*2+nBOS3, FREQ_PADDING*2+nFER3, FREQ_PADDING*2+nFER3, n_in_K3});
 
 
 #ifdef KELDYSH_FORMALISM
@@ -177,9 +177,9 @@ Q load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_v
         const std::array<size_t,4> dims_K = {2,2, 2,2};
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
-                if constexpr(ch == 'a') {input_tmp.iK = getFlatIndex(alpha[0]-1, i, j, alpha[3]-1, dims_K);}
-                else if constexpr(ch == 'p') {input_tmp.iK = getFlatIndex(alpha[0]-1, alpha[1]-1, j, i, dims_K);}
-                else if constexpr(ch == 't') {input_tmp.iK = getFlatIndex(i, alpha[1]-1, j, alpha[3]-1, dims_K);}
+                if constexpr(ch == 'a') {input_tmp.iK = getFlatIndex<4,int,int,int,int>(alpha[0]-1, i, j, alpha[3]-1, dims_K);}
+                else if constexpr(ch == 'p') {input_tmp.iK = getFlatIndex<4,int,int,int,int>(alpha[0]-1, alpha[1]-1, j, i, dims_K);}
+                else if constexpr(ch == 't') {input_tmp.iK = getFlatIndex<4,int,int,int,int>(i, alpha[1]-1, j, alpha[3]-1, dims_K);}
                 else assert(false);
 
                 v_temp.at(i,j) = value_vertex(input_tmp);
@@ -228,9 +228,9 @@ Q load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_
         const std::array<size_t, 4> dims_K = {2, 2, 2, 2};
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
-                if constexpr(ch == 'a') { input_tmp.iK = getFlatIndex(i, alpha[1] - 1, alpha[2] - 1, j, dims_K); }
-                else if constexpr(ch == 'p') { input_tmp.iK = getFlatIndex(j, i, alpha[2] - 1, alpha[3] - 1, dims_K); }
-                else if constexpr(ch == 't') { input_tmp.iK = getFlatIndex(alpha[0] - 1, i, alpha[2] - 1, j, dims_K); }
+                if constexpr(ch == 'a') { input_tmp.iK = getFlatIndex<4,int,int,int,int>(i, alpha[1] - 1, alpha[2] - 1, j, dims_K); }
+                else if constexpr(ch == 'p') { input_tmp.iK = getFlatIndex<4,int,int,int,int>(j, i, alpha[2] - 1, alpha[3] - 1, dims_K); }
+                else if constexpr(ch == 't') { input_tmp.iK = getFlatIndex<4,int,int,int,int>(alpha[0] - 1, i, alpha[2] - 1, j, dims_K); }
                 else
                     assert(false);
 

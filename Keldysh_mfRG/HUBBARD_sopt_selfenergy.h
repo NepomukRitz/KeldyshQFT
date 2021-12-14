@@ -133,6 +133,7 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
                                                    const int iK, const int iK_internal,
                                                    const int iv1, const int iw1) const {
     const double v1 = barePropagator.selfenergy.frequencies.get_ws(iv1);
+    int it_spin = 0;
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
         switch (iK_internal) {
             case 0:
@@ -150,7 +151,7 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
         double w1 = 0.;
         vertex_in_SOPT[0].avertex().K1.K1_get_freq_w(w1, iw1);
 
-        VertexInput input(vertex_Keldysh_component(iK, iK_internal), w1, 0., 0., i_in, 0, 'a'); // TODO: Spin sum!?
+        VertexInput input(vertex_Keldysh_component(iK, iK_internal), it_spin, w1, 0., 0., i_in, 'a'); // TODO: Spin sum!?
         vertex_values[i_in] = vertex_in_SOPT[0].avertex().value(input, vertex_in_SOPT[0].tvertex());
         if (iK==1 && iK_internal==0 && iv1==0 && i_in==0) {
             print("iw1 = " +std::to_string(iw1) + ", w1 = " + std::to_string(w1) + ": ", false);

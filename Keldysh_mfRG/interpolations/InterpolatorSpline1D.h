@@ -66,7 +66,7 @@ protected:
 
 public:
     explicit SplineK1(double Lambda)
-            :   DataContainer(Lambda), n(getFlatSize(DataContainer::dims)), i_x(1)
+            :   DataContainer(Lambda), n(getFlatSize(DataContainer::dims)), i_x(2)
     {
         //this->initializeK1();
     }
@@ -83,7 +83,7 @@ public:
     //bool make_monotonic();
 
     // evaluates the SplineK1 at point x
-    Q interpolK1 (int iK, double x, int i_in) const;
+    Q interpolK1 (int iK, int ispin, double x, int i_in) const;
     // evaluates derivative of interpolant
     //Q deriv(int order, double x) const;
 
@@ -219,18 +219,18 @@ public:
      */
 
     template <class DataContainer, typename Q>
-    Q SplineK1<DataContainer,Q>::interpolK1 (int iK, double x, int i_in) const
+    Q SplineK1<DataContainer,Q>::interpolK1 (int iK, int ispin, double x, int i_in) const
     {
     assert(initialized);
     double t;
-    size_t idx=DataContainer::frequencies_K1.b.fconv(t, x); // idx in [-FREQ_PADDING, n-FREQ_PADDING]
+    int idx=DataContainer::frequencies_K1.b.fconv(t, x); // idx in [-FREQ_PADDING, n-FREQ_PADDING]
 
     double h = t - DataContainer::frequencies_K1.b.get_ts(idx);
     Q interpol;
-    interpol   =((m_d[::getFlatIndex(iK, idx+FREQ_PADDING, i_in, DataContainer::dims)]*h
-                + m_c[::getFlatIndex(iK, idx+FREQ_PADDING, i_in, DataContainer::dims)])*h
-                + m_b[::getFlatIndex(iK, idx+FREQ_PADDING, i_in, DataContainer::dims)])*h
-+ DataContainer::data[::getFlatIndex(iK, idx+FREQ_PADDING, i_in, DataContainer::dims)];
+    interpol   =((m_d[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx+FREQ_PADDING, i_in, DataContainer::dims)]*h
+                + m_c[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx+FREQ_PADDING, i_in, DataContainer::dims)])*h
+                + m_b[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx+FREQ_PADDING, i_in, DataContainer::dims)])*h
++ DataContainer::data[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx+FREQ_PADDING, i_in, DataContainer::dims)];
 
     assert(isfinite(interpol));
     return interpol;

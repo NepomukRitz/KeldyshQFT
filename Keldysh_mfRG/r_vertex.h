@@ -265,7 +265,7 @@ public:
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
     void K1_crossproject(char channel_out);
-    Q K1_BZ_average(const int iK, const int iw);
+    Q K1_BZ_average(const int iK, int ispin, const int iw);
 
     /** K2 functionality */
 
@@ -527,12 +527,15 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
     // K1:
     vec<Q> deviations_K1(getFlatSize(K1.get_dims()));
-    for (int iK = 0; iK < nK_K1; iK++) {
-        for (int iw = 0; iw < nBOS; iw++) {
-            for (int i_in = 0; i_in < n_in; i_in++) {
+    for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
+        int iK, ispin, iw, i_in;
+        getMultIndex<4,int,int,int,int>(iK, ispin, iw, i_in, iflat, K1.get_dims());
+        //for (int iK = 0; iK < nK_K1; iK++) {
+        //for (int iw = 0; iw < nBOS; iw++) {
+        //    for (int i_in = 0; i_in < n_in; i_in++) {
                 double w;
                 K1.K1_get_freq_w(w, iw);
-                VertexInput input(iK, w, 0., 0., i_in, spin, channel);
+                VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
                 IndicesSymmetryTransformations indices(input, channel);
                 Q value_direct = read_symmetryreduced_rvert<k1>(indices, *this);
 
@@ -541,13 +544,13 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
                 Q deviation = value_direct - value_symmet;
                 if (components.K[k1][input.spin][input.iK] != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
-                    deviations_K1[getFlatIndex(iK, iw + FREQ_PADDING, i_in, K1.get_dims())] = deviation;
+                    deviations_K1[getFlatIndex<4,int,int,int,int>(iK, ispin, iw + FREQ_PADDING, i_in, K1.get_dims())] = deviation;
                 }
 
                 // test frequency symmetries for symmetry-reduced Keldysh components:
                 if (transformations.K[k1][input.spin][input.iK] == 0 and components.K[k1][input.spin][input.iK] != -1 and (channel == 'a' ? isInList(iK, non_zero_Keldysh_K1a) : ( channel == 'p' ? isInList(iK, non_zero_Keldysh_K1p) : isInList(iK, non_zero_Keldysh_K1t) ) )) {
                     // Check frequency symmetries
-                    IndicesSymmetryTransformations indices(iK, w, 0., 0., i_in, channel, k1, 0, channel);
+                    IndicesSymmetryTransformations indices(iK, ispin, w, 0., 0., i_in, channel, k1, 0, channel);
                     int sign_w = sign_index(indices.w);
                     int itK;
                     // find position of iK and store it in itK:
@@ -559,132 +562,156 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
                         Q result_freqsymm = read_symmetryreduced_rvert<k1>(indices, *this);
                         deviation = value_direct - result_freqsymm;
-                        deviations_K1[getFlatIndex(iK, iw, i_in, K1.get_dims())] = deviation;
+                        deviations_K1[getFlatIndex<4,int,int,int,int>(iK, ispin, iw, i_in, K1.get_dims())] = deviation;
                     }
                 }
-            }
-        }
+        //    }
+        //}
     }
 
     if ( K1.get_vec().max_norm() > 1e-30) print("K1: \t", deviations_K1.max_norm() / K1.get_vec().max_norm(), "\n");
 
-
-    // K2:
     rvec deviations_K2(getFlatSize(K2.get_dims()));
-    for (int iK = 0; iK < nK_K2; iK++) {
-        for (int iw = 0; iw < nBOS2; iw++) {
-            for (int iv = 0; iv < nFER2; iv++) {
-                for (int i_in = 0; i_in < n_in; i_in++) {
-                    double w, v;
-                    K2.K2_get_freqs_w(w, v, iw, iv);
-                    VertexInput input(iK, w, v, 0., i_in, spin, channel);
-                    IndicesSymmetryTransformations indices(input, channel);
-                    Q value_direct = read_symmetryreduced_rvert<k2>(indices, *this);
-
-                    rvert<Q> readMe = symmetry_reduce<k2>(input, indices, rvert_this, rvert_crossing);
-                    Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
-
-                    Q deviation = value_direct - value_symmet;
-                    if (components.K[k2][input.spin][input.iK] != -1) {// zero component is not being computed anyway
-                        deviations_K2[getFlatIndex(iK, iw, iv, i_in, K2.get_dims())] = std::abs(deviation);
-                    }
-
-                    // test frequency symmetries for symmetry-reduced Keldysh components:
-                    if (transformations.K[k2][input.spin][input.iK] == 0 and components.K[k2][input.spin][input.iK] != -1 and (channel == 'a' ? isInList(iK, non_zero_Keldysh_K2a) : ( channel == 'p' ? isInList(iK, non_zero_Keldysh_K2p) : isInList(iK, non_zero_Keldysh_K2t) ) )) {
-                        IndicesSymmetryTransformations indices(iK, w, v, 0., i_in, channel, k2, 0, channel);
-                        int sign_w = sign_index(w);
-                        int sign_v1 = sign_index(v);
-                        int itK;
-                        locate((channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p' ? non_zero_Keldysh_K2p : non_zero_Keldysh_K2t)) , non_zero_Keldysh_K2t.size(), iK, itK, 0, non_zero_Keldysh_K2t.size());
-                        int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
-                        Ti(indices, trafo_index);
-                        //indices.iK = itK;
-
-                        Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
-                        deviation = value_direct - result_freqsymm;
-                        deviations_K2[getFlatIndex(iK, iw+FREQ_PADDING, iv+FREQ_PADDING, i_in, K2.get_dims())] = std::abs(deviation);
-                    }
-                }
-            }
-        }
-    }
-
-    if ( K2.get_vec().max_norm() > 1e-30) print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
-
-
-    // K2b:
     rvec deviations_K2b(getFlatSize(K2b.get_dims()));
-    for (int iK = 0; iK < nK_K2; iK++) {
-        for (int iw = 0; iw < nBOS2; iw++) {
-            for (int iv = 0; iv < nFER2; iv++) {
-                for (int i_in = 0; i_in < n_in; i_in++) {
-                    double w, vp;
-                    K2b.K2_get_freqs_w(w, vp, iw, iv);
-                    VertexInput input(iK, w, 0., vp,  i_in, spin, channel);
-                    IndicesSymmetryTransformations indices(input, channel);
-                    Q value_direct = read_symmetryreduced_rvert<k2b>(indices, *this);
+    if (MAX_DIAG_CLASS > 1) {
+        // K2:
+        for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
+            int iK, ispin, iw, iv, i_in;
+            getMultIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in, iflat, K2.get_dims());
+            //for (int iK = 0; iK < nK_K2; iK++) {
+            //    for (int iw = 0; iw < nBOS2; iw++) {
+            //        for (int iv = 0; iv < nFER2; iv++) {
+            //            for (int i_in = 0; i_in < n_in; i_in++) {
+            double w, v;
+            K2.K2_get_freqs_w(w, v, iw, iv);
+            VertexInput input(iK, ispin, w, v, 0., i_in, channel);
+            IndicesSymmetryTransformations indices(input, channel);
+            Q value_direct = read_symmetryreduced_rvert<k2>(indices, *this);
 
-                    rvert<Q> readMe = symmetry_reduce<k2b>(input, indices, rvert_this, rvert_crossing);
-                    Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+            rvert<Q> readMe = symmetry_reduce<k2>(input, indices, rvert_this, rvert_crossing);
+            Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
 
-                    Q deviation = value_direct - value_symmet;
-                    if (components.K[k2b][input.spin][input.iK] != -1) {// zero component is not being computed anyway
-                        deviations_K2b[getFlatIndex(iK, iw + FREQ_PADDING, iv + FREQ_PADDING, i_in, K2b.get_dims())] = std::abs(deviation);
-                    }
-                }
+            Q deviation = value_direct - value_symmet;
+            if (components.K[k2][input.spin][input.iK] != -1) {// zero component is not being computed anyway
+                deviations_K2[getFlatIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in,
+                                                                       K2.get_dims())] = std::abs(deviation);
             }
+
+            // test frequency symmetries for symmetry-reduced Keldysh components:
+            if (transformations.K[k2][input.spin][input.iK] == 0 and components.K[k2][input.spin][input.iK] != -1 and
+                (channel == 'a' ? isInList(iK, non_zero_Keldysh_K2a) : (channel == 'p' ? isInList(iK,
+                                                                                                  non_zero_Keldysh_K2p)
+                                                                                       : isInList(iK,
+                                                                                                  non_zero_Keldysh_K2t)))) {
+                IndicesSymmetryTransformations indices(iK, ispin, w, v, 0., i_in, channel, k2, 0, channel);
+                int sign_w = sign_index(w);
+                int sign_v1 = sign_index(v);
+                int itK;
+                locate((channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p' ? non_zero_Keldysh_K2p
+                                                                                : non_zero_Keldysh_K2t)),
+                       non_zero_Keldysh_K2t.size(), iK, itK, 0, non_zero_Keldysh_K2t.size());
+                int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
+                Ti(indices, trafo_index);
+                //indices.iK = itK;
+
+                Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
+                deviation = value_direct - result_freqsymm;
+                deviations_K2[getFlatIndex<5, int, int, int, int, int>(iK, ispin, iw + FREQ_PADDING, iv + FREQ_PADDING,
+                                                                       i_in, K2.get_dims())] = std::abs(deviation);
+            }
+            //        }
+            //    }
+            //}
         }
+
+        if (K2.get_vec().max_norm() > 1e-30) print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
+
+
+        // K2b:
+        for (int iflat = 0; iflat < getFlatSize(K2b.get_dims()); iflat++) {
+            int iK, ispin, iw, iv, i_in;
+            getMultIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in, iflat, K2b.get_dims());
+            //for (int iK = 0; iK < nK_K2; iK++) {
+            //    for (int iw = 0; iw < nBOS2; iw++) {
+            //        for (int iv = 0; iv < nFER2; iv++) {
+            //            for (int i_in = 0; i_in < n_in; i_in++) {
+            double w, vp;
+            K2b.K2_get_freqs_w(w, vp, iw, iv);
+            VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
+            IndicesSymmetryTransformations indices(input, channel);
+            Q value_direct = read_symmetryreduced_rvert<k2b>(indices, *this);
+
+            rvert<Q> readMe = symmetry_reduce<k2b>(input, indices, rvert_this, rvert_crossing);
+            Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+
+            Q deviation = value_direct - value_symmet;
+            if (components.K[k2b][input.spin][input.iK] != -1) {// zero component is not being computed anyway
+                deviations_K2b[getFlatIndex<5, int, int, int, int, int>(iK, ispin, iw + FREQ_PADDING, iv + FREQ_PADDING,
+                                                                        i_in, K2b.get_dims())] = std::abs(deviation);
+            }
+            //        }
+            //    }
+            //}
+        }
+
+        if (K2b.get_vec().max_norm() > 1e-30)
+            print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
     }
 
-    if ( K2b.get_vec().max_norm() > 1e-30) print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
-
-
-    // K3:
     rvec deviations_K3(getFlatSize(K3.get_dims()));
-    for (int iK = 0; iK < nK_K3; iK++) {
-        for (int iw = 0; iw < nBOS3; iw++) {
-            for (int iv = 0; iv < nFER3; iv++) {
-                for (int ivp = 0; ivp < nFER3; ivp++) {
-                    for (int i_in = 0; i_in < n_in; i_in++) {
-                        double w, v, vp;
-                        K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
-                        VertexInput input(iK, w, v, vp, i_in, spin, channel);
-                        IndicesSymmetryTransformations indices(input, channel);
-                        Q value_direct = read_symmetryreduced_rvert<k3>(indices, *this);
+    if (MAX_DIAG_CLASS > 2) {
+        // K3:
+        for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
+            int iK, ispin, iw, iv, ivp, i_in;
+            getMultIndex<6, int, int, int, int, int, int>(iK, ispin, iw, iv, ivp, i_in, iflat, K3.get_dims());
+            //for (int iK = 0; iK < nK_K3; iK++) {
+            //    for (int iw = 0; iw < nBOS3; iw++) {
+            //        for (int iv = 0; iv < nFER3; iv++) {
+            //            for (int ivp = 0; ivp < nFER3; ivp++) {
+            //                for (int i_in = 0; i_in < n_in; i_in++) {
+            double w, v, vp;
+            K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
+            VertexInput input(iK, ispin, w, v, vp, i_in, channel);
+            IndicesSymmetryTransformations indices(input, channel);
+            Q value_direct = read_symmetryreduced_rvert<k3>(indices, *this);
 
-                        rvert<Q> readMe = symmetry_reduce<k3>(input, indices, rvert_this, rvert_crossing);
-                        Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
+            rvert<Q> readMe = symmetry_reduce<k3>(input, indices, rvert_this, rvert_crossing);
+            Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
 
-                        Q deviation = value_direct - value_symmet;
-                        if (components.K[k1][input.spin][input.iK] != -1) { // zero component is not being computed anyway
-                            deviations_K3[getFlatIndex(iK, iw + FREQ_PADDING, iv + FREQ_PADDING, ivp + FREQ_PADDING, i_in, K3.get_dims())] = std::abs(deviation);
-                        }
-
-                        // test frequency symmetries for symmetry-reduced Keldysh components:
-                        if (transformations.K[k3][input.spin][input.iK] == 0  and components.K[k3][input.spin][input.iK] != -1 and isInList(iK, non_zero_Keldysh_K3)) {
-                            IndicesSymmetryTransformations indices(iK, w, v, vp, i_in, channel, k2, 0, channel);
-                            int sign_w = sign_index(w);
-                            int sign_f = sign_index(indices.v1 + indices.v2);
-                            int sign_fp= sign_index(indices.v1 - indices.v2);
-                            int itK;
-                            locate(non_zero_Keldysh_K3, non_zero_Keldysh_K3.size(), iK, itK, 0, non_zero_Keldysh_K3.size());
-
-                            int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
-                            Ti(indices, trafo_index);
-                            //indices.iK = itK;
-
-                            Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
-                            deviation = value_direct - result_freqsymm;
-                            deviations_K3[getFlatIndex(iK, iw, iv, ivp, i_in, K3.get_dims())] = std::abs(deviation);
-                        }
-                    }
-                }
+            Q deviation = value_direct - value_symmet;
+            if (components.K[k1][input.spin][input.iK] != -1) { // zero component is not being computed anyway
+                deviations_K3[getFlatIndex<6, int, int, int, int, int, int>(iK, ispin, iw + FREQ_PADDING,
+                                                                            iv + FREQ_PADDING, ivp + FREQ_PADDING, i_in,
+                                                                            K3.get_dims())] = std::abs(deviation);
             }
+
+            // test frequency symmetries for symmetry-reduced Keldysh components:
+            if (transformations.K[k3][input.spin][input.iK] == 0 and components.K[k3][input.spin][input.iK] != -1 and
+                isInList(iK, non_zero_Keldysh_K3)) {
+                IndicesSymmetryTransformations indices(iK, ispin, w, v, vp, i_in, channel, k2, 0, channel);
+                int sign_w = sign_index(w);
+                int sign_f = sign_index(indices.v1 + indices.v2);
+                int sign_fp = sign_index(indices.v1 - indices.v2);
+                int itK;
+                locate(non_zero_Keldysh_K3, non_zero_Keldysh_K3.size(), iK, itK, 0, non_zero_Keldysh_K3.size());
+
+                int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
+                Ti(indices, trafo_index);
+                //indices.iK = itK;
+
+                Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
+                deviation = value_direct - result_freqsymm;
+                deviations_K3[getFlatIndex<6, int, int, int, int, int, int>(iK, ispin, iw, iv, ivp, i_in,
+                                                                            K3.get_dims())] = std::abs(deviation);
+            }
+            //            }
+            //        }
+            //    }
+            //}
         }
+
+        if (K3.get_vec().max_norm() > 1e-30) print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
     }
-
-    if ( K3.get_vec().max_norm() > 1e-30) print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
-
 
     write_h5_rvecs(data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + ".h5" ,
                    {
@@ -1031,17 +1058,24 @@ namespace {
     class UpdateGrid<k1,Q> {
     public:
         void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k1>& frequencies_new, const rvert<Q>& rvert4data) {
-            vec<Q> K1_new (nK_K1 * (nw1+2*FREQ_PADDING) * n_in_K1);  // temporary K1 vector
-            for (int iK1=0; iK1<nK_K1; ++iK1) {
-                for (int iw=0; iw<nw1; ++iw) {
-                    for (int i_in=0; i_in<n_in_K1; ++i_in) {
-                        double w;
-                        frequencies_new.get_freqs_w(w, iw);
-                        IndicesSymmetryTransformations indices (iK1, w, 0., 0., i_in, vertex.channel, k1, iw, rvert4data.channel);
-                        // interpolate old values to new vector
-                        K1_new[iK1 * (nw1+2*FREQ_PADDING) * n_in_K1 + (iw+FREQ_PADDING) * n_in_K1 + i_in] = rvert4data.K1.interpolate(indices);
-                    }
-                }
+            vec<Q> K1_new (getFlatSize(vertex.K1.get_dims()));  // temporary K1 vector
+            for (int iflat=0; iflat< getFlatSize(rvert4data.K1.get_dims()); ++iflat) {
+            //for (int iK1=0; iK1<nK_K1; ++iK1) {
+            //    for (int i_spin=0; i_spin<n_spin; i_spin++) {
+            //        for (int iw=0; iw<nw1; ++iw) {
+            //            for (int i_in = 0; i_in < n_in_K1; ++i_in) {
+            int iK1, i_spin, iw, i_in;
+            ::getMultIndex<4,int,int,int,int>(iK1, i_spin, iw, i_in, iflat, rvert4data.K1.get_dims()) ;
+                            double w;
+                            frequencies_new.get_freqs_w(w, iw);
+                            IndicesSymmetryTransformations indices(iK1, i_spin, w, 0., 0., i_in, vertex.channel, k1, iw,
+                                                                   rvert4data.channel);
+                            // interpolate old values to new vector
+                            K1_new[iK1 * (nw1 + 2 * FREQ_PADDING) * n_in_K1 + (iw + FREQ_PADDING) * n_in_K1 +
+                                   i_in] = rvert4data.K1.interpolate(indices);
+            //            }
+            //        }
+            //    }
             }
             vertex.K1.set_vec(K1_new); // update vertex to new interpolated values
             vertex.K1.set_VertexFreqGrid(frequencies_new);
@@ -1051,22 +1085,29 @@ namespace {
     class UpdateGrid<k2,Q> {
     public:
          void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k2>& frequencies_new, const rvert<Q>& rvert4data) {
-            vec<Q> K2_new (nK_K2 * (nw2+2*FREQ_PADDING) * (nv2+2*FREQ_PADDING) * n_in_K2);  // temporary K2 vector
-            for (int iK2=0; iK2<nK_K2; ++iK2) {
-                for (int iw=0; iw<nw2; ++iw) {
-                    for (int iv=0; iv<nv2; ++iv) {
-                        for (int i_in = 0; i_in<n_in_K2; ++i_in) {
-                            double w, v;
-                            frequencies_new.get_freqs_w(w, v, iw, iv);
-                            IndicesSymmetryTransformations indices (iK2,
-                                                                    w, v, 0.,
-                                                                    i_in, vertex.channel, k2, iw, rvert4data.channel);
-                            // interpolate old values to new vector
-                            K2_new[iK2 * (nw2+2*FREQ_PADDING) * (nv2+2*FREQ_PADDING)* n_in_K2 + (iw+FREQ_PADDING) * (nv2+2*FREQ_PADDING)* n_in_K2 + (iv+FREQ_PADDING) * n_in_K2 + i_in]
-                                    = rvert4data.K2.interpolate(indices);
-                        }
-                    }
-                }
+            vec<Q> K2_new (getFlatSize(vertex.K2.get_dims()));  // temporary K2 vector
+            //for (int iK2=0; iK2<nK_K2; ++iK2) {
+            //    for (int i_spin=0; i_spin<n_spin; i_spin++) {
+            //        for (int iw=0; iw<nw2; ++iw) {
+            //            for (int iv = 0; iv < nv2; ++iv) {
+            //                for (int i_in = 0; i_in < n_in_K2; ++i_in) {
+            for (std::size_t i_flat = 0; i_flat < getFlatSize(vertex.K2.get_dims()); i_flat++) {
+                int iK2, i_spin, iw, iv, i_in;
+                getMultIndex<5,int,int,int,int,int>(iK2, i_spin, iw, iv, i_in, i_flat, vertex.K2.get_dims());
+                                double w, v;
+                                frequencies_new.get_freqs_w(w, v, iw, iv);
+                                IndicesSymmetryTransformations indices(iK2, i_spin,
+                                                                       w, v, 0.,
+                                                                       i_in, vertex.channel, k2, iw, rvert4data.channel);
+                                // interpolate old values to new vector
+                                K2_new[iK2 * (nw2 + 2 * FREQ_PADDING) * (nv2 + 2 * FREQ_PADDING) * n_in_K2 +
+                                       (iw + FREQ_PADDING) * (nv2 + 2 * FREQ_PADDING) * n_in_K2 +
+                                       (iv + FREQ_PADDING) * n_in_K2 + i_in]
+                                        = rvert4data.K2.interpolate(indices);
+               //             }
+               //         }
+               //     }
+               // }
             }
             vertex.K2.set_vec(K2_new); // update vertex to new interpolated values
              vertex.K2.set_VertexFreqGrid(frequencies_new);
@@ -1077,28 +1118,31 @@ namespace {
     public:
         void operator() (rvert<Q>& vertex, const VertexFrequencyGrid<k3>& frequencies_new, const rvert<Q>& rvert4data) {
             assert(vertex.channel == rvert4data.channel);
-            vec<Q> K3_new (nK_K3 * (nw3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3);  // temporary K3 vector
-            for (int iK3=0; iK3<nK_K3; ++iK3) {
-                for (int iw=0; iw<nw3; ++iw) {
-                    for (int iv=0; iv<nv3; ++iv) {
-                        for (int ivp=0; ivp<nv3; ++ivp) {
-                            for (int i_in = 0; i_in<n_in_K3; ++i_in) {
-                                double w, v, vp;
-                                frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp, vertex.channel);
-                                IndicesSymmetryTransformations indices (iK3,
-                                                                        w, v, vp,
-                                                                        i_in, vertex.channel, k3, vertex.channel == 'a' ? iw : (vertex.channel == 'p' ? iv : ivp), rvert4data.channel);
-                                // interpolate old values to new vector
-                                K3_new[iK3 * (nw3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
-                                      + (iw+FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
-                                      + (iv+FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
-                                      + (ivp+FREQ_PADDING) * n_in_K3
-                                      + i_in]
-                                        = rvert4data.K3.interpolate(indices);
-                            }
-                        }
-                    }
-                }
+            vec<Q> K3_new (getFlatSize(vertex.K3.get_dims()));  // temporary K3 vector
+            for (std::size_t i_flat = 0; i_flat < getFlatSize(vertex.K3.get_dims()); i_flat++) {
+                int iK3, i_spin, iw, iv, ivp, i_in;
+                getMultIndex<5,int,int,int,int,int>(iK3, i_spin, iw, iv, i_in, i_flat, vertex.K2.get_dims());
+            //for (int iK3=0; iK3<nK_K3; ++iK3) {
+            //    for (int iw=0; iw<nw3; ++iw) {
+            //        for (int iv=0; iv<nv3; ++iv) {
+            //            for (int ivp=0; ivp<nv3; ++ivp) {
+            //                for (int i_in = 0; i_in<n_in_K3; ++i_in) {
+                double w, v, vp;
+                frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp, vertex.channel);
+                IndicesSymmetryTransformations indices (iK3, i_spin,
+                                                        w, v, vp,
+                                                        i_in, vertex.channel, k3, vertex.channel == 'a' ? iw : (vertex.channel == 'p' ? iv : ivp), rvert4data.channel);
+                // interpolate old values to new vector
+                K3_new[iK3 * (nw3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
+                      + (iw+FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
+                      + (iv+FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
+                      + (ivp+FREQ_PADDING) * n_in_K3
+                      + i_in]
+                        = rvert4data.K3.interpolate(indices);
+                //            }
+                //        }
+                //    }
+                //}
             }
             vertex.K3.set_vec(K3_new); // update vertex to new interpolated values
             vertex.K3.set_VertexFreqGrid(frequencies_new);
@@ -1486,47 +1530,35 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
         int i0_tmp = 0;
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         switch (channel) {
-            case 'a': i0_tmp = non_zero_Keldysh_K1a[itK]; break;
-            case 'p': i0_tmp = non_zero_Keldysh_K1p[itK]; break;
-            case 't': i0_tmp = non_zero_Keldysh_K1t[itK]; break;
-            default: ;
+            case 'a':
+                i0_tmp = non_zero_Keldysh_K1a[itK];
+                break;
+            case 'p':
+                i0_tmp = non_zero_Keldysh_K1p[itK];
+                break;
+            case 't':
+                i0_tmp = non_zero_Keldysh_K1t[itK];
+                break;
+            default:;
         }
-        for (int itw = 0; itw < nw1; itw++) {
-            double w_in;
-            K1.K1_get_freq_w(w_in, itw);
-            IndicesSymmetryTransformations indices(i0_tmp, w_in, 0., 0., 0, channel, k1, 0, channel);
-            int sign_w = sign_index(indices.w);
-            int trafo_index = freq_transformations.K1[itK][sign_w];
-            if (trafo_index != 0){
-                Ti(indices, trafo_index);
-                indices.iK = itK;
+        for (int it_spin = 0; it_spin < n_spin; it_spin++) {
+            for (int itw = 0; itw < nw1; itw++) {
+                double w_in;
+                K1.K1_get_freq_w(w_in, itw);
+                IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, 0., 0., 0, channel, k1, 0, channel);
+                int sign_w = sign_index(indices.w);
+                int trafo_index = freq_transformations.K1[itK][sign_w];
+                if (trafo_index != 0) {
+                    Ti(indices, trafo_index);
+                    indices.iK = itK;
 
-                Q result;
-                if (indices.asymmetry_transform)
-                    result = read_symmetryreduced_rvert<k1>(indices, vertex_symmrelated);
-                else
-                    result = read_symmetryreduced_rvert<k1>(indices, *this);
+                    Q result;
+                    if (indices.asymmetry_transform)
+                        result = read_symmetryreduced_rvert<k1>(indices, vertex_symmrelated);
+                    else
+                        result = read_symmetryreduced_rvert<k1>(indices, *this);
 
-                K1.setvert(result, itK, itw, 0);
-            }
-        }
-
-    }
-}
-
-template<typename Q>
-void rvert<Q>::K1_crossproject(const char channel_out) {
-    /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
-    for (int iK = 0; iK < nK_K1; ++iK) {
-#pragma omp parallel for schedule(dynamic) default(none) shared(iK)
-        for (int iw = 0; iw < nw1; ++iw) {
-            Q projected_value = K1_BZ_average(iK, iw);
-            for (int i_in = 0; i_in < n_in_K1; ++i_in) {
-                switch (channel_out) {
-                    case 'a': K1_a_proj.setvert(projected_value, iK, iw, i_in); break; // All internal arguments get the same value for K1!
-                    case 'p': K1_p_proj.setvert(projected_value, iK, iw, i_in); break;
-                    case 't': K1_t_proj.setvert(projected_value, iK, iw, i_in); break;
-                    default: print("Incompatible channel for K1 cross-projection!");
+                    K1.setvert(result, itK, it_spin, itw, 0);
                 }
             }
         }
@@ -1534,18 +1566,46 @@ void rvert<Q>::K1_crossproject(const char channel_out) {
 }
 
 template<typename Q>
-Q rvert<Q>::K1_BZ_average(const int iK, const int iw) {
+void rvert<Q>::K1_crossproject(const char channel_out) {
+    /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
+    for (int iK = 0; iK < nK_K1; ++iK) {
+        for (int it_spin = 0; it_spin < n_spin; it_spin++) {
+#pragma omp parallel for schedule(dynamic) default(none) shared(iK)
+            for (int iw = 0; iw < nw1; ++iw) {
+                Q projected_value = K1_BZ_average(iK, it_spin, iw);
+                for (int i_in = 0; i_in < n_in_K1; ++i_in) {
+                    switch (channel_out) {
+                        case 'a':
+                            K1_a_proj.setvert(projected_value, iK, it_spin, iw, i_in);
+                            break; // All internal arguments get the same value for K1!
+                        case 'p':
+                            K1_p_proj.setvert(projected_value, iK, it_spin, iw, i_in);
+                            break;
+                        case 't':
+                            K1_t_proj.setvert(projected_value, iK, it_spin, iw, i_in);
+                            break;
+                        default:
+                            print("Incompatible channel for K1 cross-projection!");
+                    }
+                }
+            }
+        }
+    }
+}
+
+template<typename Q>
+Q rvert<Q>::K1_BZ_average(const int iK, const int ispin, const int iw) {
     /// Perform the average over the BZ by calculating the q-sum over the REDUCED BZ (see notes for details!)
     Q value = 0.;
-    value += K1.val(iK, iw, momentum_index(0, 0));
-    value += K1.val(iK, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
-    value += 2. * K1.val(iK, iw, momentum_index(glb_N_q - 1, 0));
+    value += K1.val(iK, ispin, iw, momentum_index(0, 0));
+    value += K1.val(iK, ispin, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
+    value += 2. * K1.val(iK, ispin, iw, momentum_index(glb_N_q - 1, 0));
     for (int n = 1; n < glb_N_q - 1; ++n) {
-        value += 4. * K1.val(iK, iw, momentum_index(n, 0));
-        value += 4. * K1.val(iK, iw, momentum_index(glb_N_q - 1, n));
-        value += 4. * K1.val(iK, iw, momentum_index(n, n));
+        value += 4. * K1.val(iK, ispin, iw, momentum_index(n, 0));
+        value += 4. * K1.val(iK, ispin, iw, momentum_index(glb_N_q - 1, n));
+        value += 4. * K1.val(iK, ispin, iw, momentum_index(n, n));
         for (int np = 1; np < n; ++np) {
-            value += 8. * K1.val(iK, iw, momentum_index(n, np));
+            value += 8. * K1.val(iK, ispin, iw, momentum_index(n, np));
         }
     }
     value /= 4. * (glb_N_q - 1) * (glb_N_q - 1);
@@ -1563,27 +1623,28 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             case 't': i0_tmp = non_zero_Keldysh_K2t[itK]; break;
             default: ;
         }
+        for (int it_spin = 0; it_spin < n_spin; it_spin++) {
+            for (int itw = 0; itw < nw2; itw++) {
+                for (int itv = 0; itv < nv2; itv++) {
+                    double w_in, v_in;
+                    K2.K2_get_freqs_w(w_in, v_in, itw, itv);
+                    IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, 0., 0, channel, k2, 0, channel);
+                    int sign_w = sign_index(w_in);
+                    int sign_v1 = sign_index(v_in);
+                    int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
+                    Ti(indices, trafo_index);
+                    indices.iK = itK;
 
-        for (int itw = 0; itw < nw2; itw++){
-            for (int itv = 0; itv < nv2; itv++){
-                double w_in, v_in;
-                K2.K2_get_freqs_w(w_in, v_in, itw, itv);
-                IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, 0., 0, channel, k2, 0, channel);
-                int sign_w = sign_index(w_in);
-                int sign_v1 = sign_index(v_in);
-                int trafo_index = freq_transformations.K2[itK][sign_w*2 + sign_v1];
-                Ti(indices, trafo_index);
-                indices.iK = itK;
+                    if (trafo_index != 0) {
 
-                if (trafo_index != 0) {
+                        Q result;
+                        if (indices.asymmetry_transform)
+                            result = read_symmetryreduced_rvert<k2>(indices, vertex_symmrelated);
+                        else
+                            result = read_symmetryreduced_rvert<k2>(indices, *this);
 
-                    Q result;
-                    if (indices.asymmetry_transform)
-                        result = read_symmetryreduced_rvert<k2>(indices, vertex_symmrelated);
-                    else
-                        result = read_symmetryreduced_rvert<k2>(indices, *this);
-
-                    K2.setvert(result, itK, itw, itv, 0);
+                        K2.setvert(result, itK, it_spin, itw, itv, 0);
+                    }
                 }
             }
         }
@@ -1604,28 +1665,31 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         i0_tmp = non_zero_Keldysh_K3[itK];
 
-        for (int itw = 0; itw < nw3; itw++){
-            for (int itv = 0; itv < nv3; itv++){
-                for (int itvp = 0; itvp < nv3; itvp++) {
-                    double w_in, v_in, vp_in;
-                    K3.K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp, channel);
-                    IndicesSymmetryTransformations indices(i0_tmp, w_in, v_in, vp_in, 0, channel, k2, 0, channel);
-                    int sign_w = sign_index(w_in);
-                    int sign_f = sign_index(indices.v1 + indices.v2);
-                    int sign_fp= sign_index(indices.v1 - indices.v2);
-                    int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
-                    Ti(indices, trafo_index);
-                    indices.iK = itK;
+        for (int it_spin = 0; it_spin < n_spin; it_spin++) {
+            for (int itw = 0; itw < nw3; itw++){
+                for (int itv = 0; itv < nv3; itv++) {
+                    for (int itvp = 0; itvp < nv3; itvp++) {
+                        double w_in, v_in, vp_in;
+                        K3.K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp, channel);
+                        IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, vp_in, 0, channel, k2, 0, channel);
+                        int sign_w = sign_index(w_in);
+                        int sign_f = sign_index(indices.v1 + indices.v2);
+                        int sign_fp = sign_index(indices.v1 - indices.v2);
+                        int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
+                        Ti(indices, trafo_index);
+                        indices.iK = itK;
 
-                    if (trafo_index != 0) {
+                        if (trafo_index != 0) {
 
-                        Q result;
-                        if (indices.asymmetry_transform)
-                            result = read_symmetryreduced_rvert<k3>(indices, vertex_symmrelated); // vertex_symmrelated.K3.interpolate(indices);
-                        else
-                            result = read_symmetryreduced_rvert<k3>(indices, *this);
+                            Q result;
+                            if (indices.asymmetry_transform)
+                                result = read_symmetryreduced_rvert<k3>(indices,
+                                                                        vertex_symmrelated); // vertex_symmrelated.K3.interpolate(indices);
+                            else
+                                result = read_symmetryreduced_rvert<k3>(indices, *this);
 
-                        K3.setvert(result, itK, itw, itv, itvp, 0);
+                            K3.setvert(result, itK, it_spin, itw, itv, itvp, 0);
+                        }
                     }
                 }
             }

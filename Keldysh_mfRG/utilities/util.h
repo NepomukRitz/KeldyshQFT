@@ -266,6 +266,14 @@ void check_input() {
 #endif
 }
 
+//template <typename T, typename... Args>
+//constexpr std::array<T, sizeof...(Args)> to_array (const Args && ... args)
+//{ return {{ static_cast<T>(std::forward<Args>(args))... }}; }
+
+
+template <typename T, typename... Args>
+constexpr std::array<T, sizeof...(Args)> to_array (const Args & ... args)
+{ return {{ static_cast<T>(args)... } }; }
 
 
 

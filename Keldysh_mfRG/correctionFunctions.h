@@ -695,8 +695,8 @@ auto asymp_corrections_bubble(K_class k,
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
-    VertexInput input_l (indices[0], w, v, 10.*vmin, i_in, spin, channel);
-    VertexInput input_r (indices[1], w, 10.*vmin, vp, i_in, spin, channel);
+    VertexInput input_l (indices[0], spin, w, v, 10.*vmin, i_in, channel);
+    VertexInput input_r (indices[1], spin, w, 10.*vmin, vp, i_in, channel);
 
     // compute values of left/right vertex
     switch (k) {
@@ -902,7 +902,7 @@ template <typename Q> // TODO(medium): split up into two functions
 auto asymp_corrections_loop(const Vertex<Q>& vertex,
                             const Propagator<Q>& G,
                             double vmin, double vmax,
-                            double v, int iK, int i_in, const bool all_spins) -> Q {
+                            double v, int iK, int ispin, int i_in, const bool all_spins) -> Q {
 
     Q Sigma_H = G.selfenergy.asymp_val_R;       // Hartree self-energy
     double Delta = (glb_Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
@@ -912,9 +912,9 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
         std::vector<std::vector<int> > components {{3, 6, 7}, {1, 4, 5}};
 
         // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
-        VertexInput inputRetarded (components[iK][0], 0., 0., v, i_in, 0, 't');
-        VertexInput inputAdvanced (components[iK][1], 0., 0., v, i_in, 0, 't');
-        VertexInput inputKeldysh (components[iK][2], 0., 0., v, i_in, 0, 't');
+        VertexInput inputRetarded (components[iK][0], ispin, 0., 0., v, i_in, 't');
+        VertexInput inputAdvanced (components[iK][1], ispin, 0., 0., v, i_in, 't');
+        VertexInput inputKeldysh  (components[iK][2], ispin, 0., 0., v, i_in, 't');
         Q factorRetarded = vertex[0].irred().val(components[iK][0], i_in, 0) // Gamma_0
                            + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
         Q factorAdvanced = vertex[0].irred().val(components[iK][1], i_in, 0) // Gamma_0
@@ -947,7 +947,7 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
     }
     else{
         // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
-        VertexInput input (0, 0., 0., v, i_in, 0, 't');
+        VertexInput input (0, ispin, 0., 0., v, i_in, 't');
         Q Vertexfactor = vertex[0].irred().val(0, i_in, 0) // Gamma_0
                          + vertex[0].tvertex().left_same_bare(input, vertex[0].avertex()); // K1t(0) + K2't(0,v)
 

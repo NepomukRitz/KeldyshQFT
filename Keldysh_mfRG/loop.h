@@ -240,6 +240,7 @@ class LoopCalculator{
     const double Delta = (prop.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
     const int iv;
+    const int spin = 0;
     const int i_in;
 
     const double v = self.frequencies.get_ws(iv);
@@ -351,9 +352,9 @@ void LoopCalculator<Q>::compute_Keldysh() {
 
             // add analytical results for the tails
             integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
-                                                                 v, 0, i_in, all_spins);
+                                                                 v, 0, spin, i_in, all_spins);
             integratedK += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
-                                                                 v, 1, i_in, all_spins);
+                                                                 v, 1, spin, i_in, all_spins);
 
             //The results are emplaced in the right place of the answer object.
             self.addself(0, iv, i_in, integratedR);
@@ -401,7 +402,7 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
         }
 
         integratedR += -1./(2.*M_PI)
-                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, i_in, all_spins);
+                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, spin, i_in, all_spins);
         self.addself(0, iv, i_in, integratedR);
 
     }
@@ -419,7 +420,7 @@ void LoopCalculator<Q>::compute_Matsubara_finiteT() {
         integratedR = - glb_T * matsubarasum<Q>(integrand, Nmin-vint, Nmax+vint);
 
         integratedR += - 1./(2.*M_PI)
-                           * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, i_in, all_spins);
+                           * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, spin, i_in, all_spins);
     //#endif
         self.addself(0, iv, i_in, integratedR);
     }

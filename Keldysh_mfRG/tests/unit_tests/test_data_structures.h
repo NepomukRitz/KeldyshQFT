@@ -56,7 +56,7 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
 
 
     SECTION( "Get flat index" ) {
-        int errorcount = 0;
+        int errorcount_flat = 0,  errorcount_multi = 0;
         std::array<size_t,rank> dimstmp = {3, 5, 7, 1};
 
         int flatidx_unrot = 0;
@@ -66,14 +66,18 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
                     for (size_t l = 0; l < dimstmp[3]; l++) {
                         std::array<size_t,rank> multiindex = {i,j,k,l};
                         size_t test = ::getFlatIndex<rank>(multiindex, dimstmp);
-                        if (test != flatidx_unrot) errorcount++;
+                        if (test != flatidx_unrot) errorcount_flat++;
+                        int a,b,c,d;
+                        getMultIndex<4,int,int,int,int>(a,b,c,d, test, dimstmp);
+                        if (a != i or b != j or c != k or d != l) errorcount_multi++;
                         flatidx_unrot++;
                     }
                 }
             }
         }
 
-        REQUIRE( errorcount == 0);
+        REQUIRE( errorcount_flat == 0);
+        REQUIRE( errorcount_multi == 0);
     }
 
     SECTION( "Get rotated flat index" ) {
@@ -86,7 +90,7 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
                 for (size_t k = 0; k < dimstmp[2]; k++) {
                     for (size_t l = 0; l < dimstmp[3]; l++) {
                         std::array<size_t,rank> multiindex = {i,j,k,l};
-                        size_t test = ::getFlatIndex<rank>(multiindex, dimstmp, permutation);
+                        size_t test = math_impl::getFlatIndex<rank>(multiindex, dimstmp, permutation);
                         std::array<size_t,rank> multiindex_permd = {multiindex[permutation[0]], multiindex[permutation[1]], multiindex[permutation[2]], multiindex[permutation[3]]};
                         if (test != ::getFlatIndex<rank>(multiindex_permd, dims)) errorcount++;
                     }

@@ -1815,47 +1815,48 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
         }
     }
 
+    int spin = 0;
     for (int iK=0; iK<nK_K1; ++iK) {
         for (int i_in=0; i_in<n_in; ++i_in) {
 #if MAX_DIAG_CLASS >= 1
             for (int iw1=0; iw1<nBOS+FREQ_PADDING*2; ++iw1) {
-                if (state.vertex[0].avertex().K1.val(iK, iw1, i_in) != out.vertex[0].avertex().K1.val(iK, iw1, i_in)) {
+                if (state.vertex[0].avertex().K1.val(iK, spin, iw1, i_in) != out.vertex[0].avertex().K1.val(iK, spin, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
-                if (state.vertex[0].pvertex().K1.val(iK, iw1, i_in) != out.vertex[0].pvertex().K1.val(iK, iw1, i_in)) {
+                if (state.vertex[0].pvertex().K1.val(iK, spin, iw1, i_in) != out.vertex[0].pvertex().K1.val(iK, spin, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
-                if (state.vertex[0].tvertex().K1.val(iK, iw1, i_in) != out.vertex[0].tvertex().K1.val(iK, iw1, i_in)) {
+                if (state.vertex[0].tvertex().K1.val(iK, spin, iw1, i_in) != out.vertex[0].tvertex().K1.val(iK, spin, iw1, i_in)) {
                     std::cout << "Vertex not equal, " << iK << ", " << iw1 << std::endl;
                     cnt += 1;
                 }
 #if MAX_DIAG_CLASS >= 2
                 for (int iw2=0; iw2<nFER+FREQ_PADDING*2; ++iw2) {
-                    if (state.vertex[0].avertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].avertex().K2.val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].avertex().K2.val(iK, spin, iw1, iw2, i_in) != out.vertex[0].avertex().K2.val(iK, spin, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
-                    if (state.vertex[0].pvertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].pvertex().K2.val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].pvertex().K2.val(iK, spin, iw1, iw2, i_in) != out.vertex[0].pvertex().K2.val(iK, spin, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
-                    if (state.vertex[0].tvertex().K2.val(iK, iw1, iw2, i_in) != out.vertex[0].tvertex().K2.val(iK, iw1, iw2, i_in)) {
+                    if (state.vertex[0].tvertex().K2.val(iK, spin, iw1, iw2, i_in) != out.vertex[0].tvertex().K2.val(iK, spin, iw1, iw2, i_in)) {
                         std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << std::endl;
                         cnt += 1;
                     }
 #if MAX_DIAG_CLASS == 3
                     for (int iw3=0; iw3<nFER; ++iw3) {
-                        if (state.vertex[0].avertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].avertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].avertex().K3.val(iK, spin, iw1, iw2, iw3, i_in) != out.vertex[0].avertex().K3.val(iK, spin, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
-                        if (state.vertex[0].pvertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].pvertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].pvertex().K3.val(iK, spin, iw1, iw2, iw3, i_in) != out.vertex[0].pvertex().K3.val(iK, spin, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }
-                        if (state.vertex[0].tvertex().K3.val(iK, iw1, iw2, iw3, i_in) != out.vertex[0].tvertex().K3.val(iK, iw1, iw2, iw3, i_in)) {
+                        if (state.vertex[0].tvertex().K3.val(iK, spin, iw1, iw2, iw3, i_in) != out.vertex[0].tvertex().K3.val(iK, spin, iw1, iw2, iw3, i_in)) {
                             std::cout << "Vertex not equal, " << iK << ", " << iw1 << ", " << iw2 << ", " << iw3 << std::endl;
                             cnt += 1;
                         }

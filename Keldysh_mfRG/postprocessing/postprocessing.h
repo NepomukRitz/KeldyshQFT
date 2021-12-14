@@ -14,15 +14,16 @@ public:
     const Propagator<Q>& G;
     const Vertex<Q>& vertex;
     const double vp;
+    const int it_spin = 0;
     const int i_in;
 
     Integrand_Phi_tilde(const Propagator<Q>& G_in, const Vertex<Q>& vertex_in, const double vp_in, const int i_in_in)
             : G(G_in), vertex(vertex_in), vp(vp_in), i_in(i_in_in) {}
 
     auto operator() (double v) const -> Q {
-        VertexInput input1 (6, 0., v, vp, i_in, 0, 'a');
-        VertexInput input2 (7, 0., v, vp, i_in, 0, 'a');
-        VertexInput input3 (14, 0., v, vp, i_in, 0, 'a');
+        VertexInput input1 (6 , it_spin, 0., v, vp, i_in, 'a');
+        VertexInput input2 (7 , it_spin, 0., v, vp, i_in, 'a');
+        VertexInput input3 (14, it_spin, 0., v, vp, i_in, 'a');
         return G.GA(v, i_in) * G.GR(v, i_in)
                * (vertex.value(input1) - Fermi_fac(v, glb_mu) * (vertex.value(input2) - vertex.value(input3)));
     }
@@ -123,6 +124,7 @@ void compute_Phi_tilde(const std::string filename) {
 
 
 class Integrand_sum_rule_K1tK {
+    int it_spin = 0;
     Vertex<state_datatype> vertex;
 public:
     Integrand_sum_rule_K1tK(Vertex<state_datatype>& vertex_in) : vertex(vertex_in) {}
@@ -131,7 +133,7 @@ public:
         state_datatype result;
         // Keldysh component (Keldysh index 3) in the t channel
 #ifdef KELDYSH_FORMALISM
-        VertexInput input(3, w, 0., 0., 0, 0, 't');
+        VertexInput input(3, it_spin,  w, 0., 0., 0, 't');
 #else
         VertexInput input(0, w, 0., 0., 0, 0, 't');
 #endif
