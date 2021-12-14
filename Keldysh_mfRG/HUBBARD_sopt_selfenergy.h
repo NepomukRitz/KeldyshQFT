@@ -43,7 +43,7 @@ public:
               bareState(bareState_in), vertex_in_SOPT(vertex_in_SOPT_in){
         assert(HUBBARD_MODEL);
         assert(KELDYSH);         // TODO(low): Extend to Matsubara formalism
-        vertex_in_SOPT[0].half1().initializeInterpol();
+        vertex_in_SOPT.half1().initializeInterpol();
     }
 
     void compute_HUBBARD_SE_SOPT();
@@ -149,10 +149,10 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
         }
 
         double w1 = 0.;
-        vertex_in_SOPT[0].avertex().K1.K1_get_freq_w(w1, iw1);
+        vertex_in_SOPT.avertex().K1.K1_get_freq_w(w1, iw1);
 
         VertexInput input(vertex_Keldysh_component(iK, iK_internal), it_spin, w1, 0., 0., i_in, 'a'); // TODO: Spin sum!?
-        vertex_values[i_in] = vertex_in_SOPT[0].avertex().value(input, vertex_in_SOPT[0].tvertex());
+        vertex_values[i_in] = vertex_in_SOPT.avertex().value(input, vertex_in_SOPT.tvertex());
         if (iK==1 && iK_internal==0 && iv1==0 && i_in==0) {
             print("iw1 = " +std::to_string(iw1) + ", w1 = " + std::to_string(w1) + ": ", false);
             print(vertex_values[i_in], true);
@@ -169,7 +169,7 @@ void Hubbard_SE_SOPT_Computer::compute_frequency_integrals(const vec<comp>& inte
             Integrand_SE_SOPT_Hubbard integrand_w \
                 (integrand, v, i_in,
                  barePropagator.selfenergy.frequencies,                              // frequency grid of propagator
-                 vertex_in_SOPT[0].avertex().K1.K1_get_freqGrid());     // frequency grid of SOPT vertex
+                 vertex_in_SOPT.avertex().K1.K1_get_freqGrid());     // frequency grid of SOPT vertex
             auto val = integrator<comp>(integrand_w, v_lower - std::abs(v), v_upper + std::abs(v), -v, 0, Delta);
             // TODO: What about asymptotic corrections?
             SOPT_SE_Hubbard.addself(iK, iv, i_in, prefactor*val);
@@ -205,7 +205,7 @@ void Hubbard_SE_SOPT_Computer::save_integrand(const vec<comp>& integrand, const 
     write_h5_rvecs(filename,
                    {"prop_freq", "vert_freq", "integrand_re", "integrand_im"},
                    {barePropagator.selfenergy.frequencies.get_ws_vec(),
-                    vertex_in_SOPT[0].avertex().K1.K1_get_freqGrid().get_ws_vec(),
+                    vertex_in_SOPT.avertex().K1.K1_get_freqGrid().get_ws_vec(),
                     integrand.real(), integrand.imag()});
 }
 

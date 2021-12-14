@@ -40,7 +40,7 @@ namespace saveIntegrand {
         return freqs;
     }
 
-    template <typename Q,template <typename> class symmetry_left, template <typename> class symmetry_right, class Bubble_Object>
+    template <typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
     void saveIntegrandBubble(const std::string& filename_prefix, GeneralVertex<Q, symmetry_left>& vertex1, GeneralVertex<Q, symmetry_right>& vertex2,
                        const Bubble_Object& Pi, const bool diff, const rvec& freqs, const K_class k_class, const char channel,
                        const int i0, const int i2, const double w, const double v, const double vp, const int i_in) {

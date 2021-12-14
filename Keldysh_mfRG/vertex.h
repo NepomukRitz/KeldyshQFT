@@ -87,9 +87,9 @@ public:
 
     bool completely_crossprojected = false; // Have all reducible parts fully been cross-projected? Needed for the Hubbard model.
 
-    explicit fullvert(double Lambda) : avertex('a', Lambda),
-                              pvertex('p', Lambda),
-                              tvertex('t', Lambda) {}
+    explicit fullvert(const double Lambda, const bool is_reserve) : avertex('a', Lambda, is_reserve),
+                              pvertex('p', Lambda, is_reserve),
+                              tvertex('t', Lambda, is_reserve) {}
 
     // Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
     // Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin
@@ -219,78 +219,166 @@ public:
 
     void set_initializedInterpol(bool is_init) const;
 
-    void check_symmetries(std::string identifier, int spin, const fullvert<Q>& vertex_symred) const;
+    void check_symmetries(std::string identifier) const;
 };
 
+
 /** symmetric vertex container class (contains only half 1, since half 1 and 2 are related by symmetry) */
-template <typename Q>
-class symmetric {
-    template <typename T, template <typename> class symmetry_type> friend class vertex_container;
+template <typename Q, symmetryType symmtype>
+class GeneralVertex {
+    //template <typename T, template <typename> class symmetry_type> friend class vertex_container;
     fullvert<Q> vertex;
+    fullvert<Q> vertex_half2;
+
 public:
-    explicit symmetric(const fullvert<Q>& vertex_in) : vertex(vertex_in) {}
-    symmetric(const fullvert<Q>& half1, const fullvert<Q>& half2) : vertex(half1) {}
+    explicit GeneralVertex(const fullvert<Q>& vertex_in) : vertex(vertex_in), vertex_half2(fullvert<Q>(0,false)) {static_assert(symmtype==symmetric, "Only use single-argument constructor for symmetric vertex!");}
+    GeneralVertex(const fullvert<Q>& half1, const fullvert<Q>& half2) : vertex(half1), vertex_half2(half2) {static_assert(symmtype==non_symmetric, "Only use two-argument constructor for non_symmetric vertex!");}
+    explicit GeneralVertex(const double Lambda_in) : vertex(fullvert<Q>(Lambda_in, true)), vertex_half2(fullvert<Q>(Lambda_in, symmtype==symmetric)) {}
 
     // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
-    fullvert<Q>& half1() { return vertex; }
-    fullvert<Q>& half2() { return vertex; }
+    fullvert<Q>& half1() { return vertex;}
+    fullvert<Q>& half2() { if constexpr(symmtype==symmetric) return vertex; else return vertex_half2;}
     const fullvert<Q>& half1() const { return vertex; }
-    const fullvert<Q>& half2() const { return vertex; }
-private:
-    // wrappers for access functions of fullvert
-    auto value(const VertexInput& input) const -> Q           { return vertex.value(input); }
-    auto gammaRb(const VertexInput& input) const -> Q         { return vertex.gammaRb(input); }
-    auto left_same_bare(const VertexInput& input)  const -> Q { return vertex.left_same_bare(input); }
-    auto right_same_bare(const VertexInput& input) const -> Q { return vertex.right_same_bare(input); }
-    auto left_diff_bare(const VertexInput& input)  const -> Q { return vertex.left_diff_bare(input); }
-    auto right_diff_bare(const VertexInput& input) const -> Q { return vertex.right_diff_bare(input); }
+    const fullvert<Q>& half2() const { if constexpr(symmtype==symmetric) return vertex; else return vertex_half2; }
 
-    void check_symmetries(const std::string identifier, const int spin, const fullvert<Q>& vertex_symred) const {vertex.check_symmetries(identifier, spin, vertex_symred);}
+    irreducible<Q>& irred() { return vertex.irred;}
+    rvert<Q>& avertex() { return vertex.avertex;}
+    rvert<Q>& pvertex() { return vertex.pvertex;}
+    rvert<Q>& tvertex() { return vertex.tvertex;}
+    const irreducible<Q>& irred() const { return vertex.irred;}
+    const rvert<Q>& avertex() const { return vertex.avertex;}
+    const rvert<Q>& pvertex() const { return vertex.pvertex;}
+    const rvert<Q>& tvertex() const { return vertex.tvertex;}
+
+    // wrappers for access functions of fullvert
+    auto value(const VertexInput& input) const -> Q           {
+        if constexpr(symmtype==symmetric) return vertex.value(input);
+        else                              return vertex.value(input, vertex_half2);
+        }
+    auto gammaRb(const VertexInput& input) const -> Q         {
+        if constexpr(symmtype==symmetric) return vertex.gammaRb(input);
+        else                              return vertex.gammaRb(input, vertex_half2);
+    }
+    auto left_same_bare(const VertexInput& input)  const -> Q {
+        if constexpr(symmtype==symmetric) return vertex.left_same_bare(input);
+        else                              return vertex.left_same_bare(input, vertex_half2);
+    }
+    auto right_same_bare(const VertexInput& input) const -> Q {
+        if constexpr(symmtype==symmetric) return vertex.right_same_bare(input);
+        else                              return vertex.right_same_bare(input, vertex_half2);
+    }
+    auto left_diff_bare(const VertexInput& input)  const -> Q {
+        if constexpr(symmtype==symmetric) return vertex.left_diff_bare(input);
+        else                              return vertex.left_diff_bare(input, vertex_half2);
+    }
+    auto right_diff_bare(const VertexInput& input) const -> Q {
+        if constexpr(symmtype==symmetric) return vertex.right_diff_bare(input);
+        else                              return vertex.right_diff_bare(input, vertex_half2);
+    }
+
+
+    double norm(){
+        if constexpr(symmtype==symmetric) return vertex.sum_norm(2);
+        else                              return vertex.sum_norm(2) + vertex_half2.sum_norm(2);
+    }
+    double sum_norm(int i) { return vertex.sum_norm(i); }
+    double norm_K1(int i)  { return vertex.norm_K1(i); }
+    double norm_K2(int i)  { return vertex.norm_K2(i); }
+    double norm_K3(int i)  { return vertex.norm_K3(i); }
+
+    void set_frequency_grid(const GeneralVertex<Q, symmtype>& vertex_in) {
+        vertex.set_frequency_grid(vertex_in.vertex);
+        if constexpr(symmtype==non_symmetric) vertex_half2.set_frequency_grid(vertex_in.vertex_half2);
+    }
+
+    void update_grid(double Lambda) {  // Interpolate vertex to updated grid
+        vertex.update_grid(Lambda);
+        if constexpr(symmtype==non_symmetric) vertex_half2.update_grid(Lambda);
+    };
+
+    void set_Ir(bool Ir) {  // set the Ir flag (irreducible or full) for all spin components
+        vertex.Ir = Ir;
+        if constexpr(symmtype==non_symmetric) vertex_half2.Ir=Ir;
+    }
+    void set_only_same_channel(bool only_same_channel) {
+        vertex.only_same_channel = only_same_channel;
+        if constexpr(symmtype==non_symmetric) vertex_half2.only_same_channel = only_same_channel;
+    }
+
+    void calculate_all_cross_projections() {
+        vertex.calculate_all_cross_projections();
+        if constexpr(symmtype==non_symmetric) vertex_half2.calculate_all_cross_projections();
+    }
+
+    void initialize(Q val) {
+        vertex.initialize(val);
+        if constexpr(symmtype==non_symmetric) vertex_half2.initialize(val);
+    }
+
+    void initializeInterpol() const {
+        vertex.initializeInterpol();
+        if constexpr(symmtype==non_symmetric) vertex_half2.initializeInterpol();
+    }
+    void set_initializedInterpol(const bool initialized) const {
+        vertex.set_initializedInterpol(initialized);
+        if constexpr(symmtype==non_symmetric) vertex_half2.set_initializedInterpol(initialized);
+    }
+
+    void check_symmetries(const std::string identifier) const {
+        vertex.check_symmetries(identifier);
+    }
 
 public:
-    auto operator+= (const symmetric<Q>& vertex1) -> symmetric<Q> {
+    auto operator+= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
         this->vertex += vertex1.vertex;
+        if constexpr(symmtype == non_symmetric) this->vertex_half2 += vertex1.vertex_half2;
         return *this;
     }
-    friend symmetric<Q> operator+ (symmetric<Q> lhs, const symmetric<Q>& rhs) {
+    friend GeneralVertex<Q,symmtype> operator+ (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
         lhs += rhs;
         return lhs;
     }
-    auto operator+= (const double& alpha) -> symmetric<Q> {
+    auto operator+= (const double& alpha) -> GeneralVertex<Q,symmtype> {
         this->vertex += alpha;
+        if constexpr(symmtype == non_symmetric) this->vertex_half2 += alpha;
         return *this;
     }
-    friend symmetric<Q> operator+ (symmetric<Q> lhs, const double& rhs) {
+    friend GeneralVertex<Q,symmtype> operator+ (GeneralVertex<Q,symmtype> lhs, const double& rhs) {
         lhs += rhs;
         return lhs;
     }
-    auto operator*= (const symmetric<Q>& vertex1) -> symmetric<Q> {
+    auto operator*= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
         this->vertex *= vertex1.vertex;
+        if constexpr(symmtype == non_symmetric) this->vertex_half2 *= vertex1.vertex_half2;
         return *this;
     }
-    friend symmetric<Q> operator* (symmetric<Q> lhs, const symmetric<Q>& rhs) {
+    friend GeneralVertex<Q,symmtype> operator* (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator*= (const double& alpha) -> symmetric<Q> {
+    auto operator*= (const double& alpha) -> GeneralVertex<Q,symmtype> {
         this->vertex *= alpha;
+        if constexpr(symmtype == non_symmetric) this->vertex_half2 += alpha;
         return *this;
     }
-    friend symmetric<Q> operator* (symmetric<Q> lhs, const double& rhs) {
+    friend GeneralVertex<Q,symmtype> operator* (GeneralVertex<Q,symmtype> lhs, const double& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator-= (const symmetric<Q>& vertex1) -> symmetric<Q> {
+    auto operator-= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
         this->vertex -= vertex1.vertex;
+        if constexpr(symmtype == non_symmetric) this->vertex_half2 -= vertex1.vertex_half2;
         return *this;
     }
-    friend symmetric<Q> operator- (symmetric<Q> lhs, const symmetric<Q>& rhs) {
+    friend GeneralVertex<Q,symmtype> operator- (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
         lhs -= rhs;
         return lhs;
     }
 };
 
+
 /** non-symmetric vertex container class (half 1 and half 2 are different) */
+/*
 template <typename Q>
 class non_symmetric {
     template <typename T, template <typename> class symmetry_type> friend class vertex_container;
@@ -366,8 +454,10 @@ public:
         return lhs;
     }
 };
+*/
 
 /** template vertex container class that can contain either a symmetric or a non-symmetric vertex container */
+/*
 template <typename Q, template <typename> class symmetry_type>
 class vertex_container {
     template <typename T, template <typename> class symm_type> friend class GeneralVertex;
@@ -503,8 +593,9 @@ public:
         return lhs;
     }
 };
-
+/*
 /** Vertex class: vector of vertex_container (one element for each spin component) */
+/*
 template <typename Q, template <typename> class symmetry_type>
 class GeneralVertex : public vec<vertex_container<Q, symmetry_type> > {
 public:
@@ -680,6 +771,7 @@ public:
         }
     }
 };
+*/
 
 /** Define Vertex as symmetric GeneralVertex */
 template <typename Q>
@@ -1621,10 +1713,10 @@ void fullvert<Q>::set_initializedInterpol(const bool is_init) const {
 }
 
 
-template <typename Q> void fullvert<Q>::check_symmetries(const std::string identifier, const int spin, const fullvert<Q>& vertex_symred) const {
-    this->avertex.check_symmetries(identifier, spin, vertex_symred.avertex, vertex_symred.tvertex);
-    this->pvertex.check_symmetries(identifier, spin, vertex_symred.pvertex, vertex_symred.pvertex);
-    this->tvertex.check_symmetries(identifier, spin, vertex_symred.tvertex, vertex_symred.avertex);
+template <typename Q> void fullvert<Q>::check_symmetries(const std::string identifier) const {
+    this->avertex.check_symmetries(identifier, avertex, tvertex);
+    this->pvertex.check_symmetries(identifier, pvertex, pvertex);
+    this->tvertex.check_symmetries(identifier, tvertex, avertex);
 }
 
 #endif //KELDYSH_MFRG_VERTEX_H

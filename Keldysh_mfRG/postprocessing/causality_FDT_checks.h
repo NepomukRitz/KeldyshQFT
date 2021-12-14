@@ -101,9 +101,9 @@ void check_FDTs(const State<Q>& state, bool verbose) {
     /** 2nd check: real part of Keldysh component of K1 in all channels has to be zero */
 
     // take K1 vertices in all channels
-    vec<Q> K1a = state.vertex[0].avertex().K1.get_vec();
-    vec<Q> K1p = state.vertex[0].pvertex().K1.get_vec();
-    vec<Q> K1t = state.vertex[0].tvertex().K1.get_vec();
+    vec<Q> K1a = state.vertex.avertex().K1.get_vec();
+    vec<Q> K1p = state.vertex.pvertex().K1.get_vec();
+    vec<Q> K1t = state.vertex.tvertex().K1.get_vec();
     // take second half of K1 vertices (Keldysh comp.)
     vec<Q> K1a_K (&K1a[K1a.size()/2], &K1a[K1a.size()]);
     vec<Q> K1p_K (&K1p[K1p.size()/2], &K1p[K1p.size()]);
@@ -147,7 +147,7 @@ void check_FDTs(const Q& state) {}
  * Function that computes vertex components with the help of fluctuation-dissipation relations.
  * Components obtainable by FDTs:
  * K1r[1] (with r = a/p/t)
- * K2a[0], K2a[2], K2a[3]
+ * K2a, K2a[2], K2a[3]
  * K2p[0], K2p[1], K2p[3]
  * K2t[0], K2t[2], K2t[3]
  * K3r[0], K3r[1] (with r = a/p/t)
@@ -589,17 +589,17 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 /*
  * Wrapper for above function (here defined for GeneralVertex)
  */
-template <typename Q, template <typename> class symmetry_type>
+template <typename Q, symmetryType symmetry_type>
 void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out, const GeneralVertex<Q,symmetry_type>& vertex_in) {
     vertex_in.initializeInterpol();
-    for (char r:"apt") compute_components_through_FDTs(vertex_out[0].half1(), vertex_in[0].half1(), vertex_in[0].half1(), r);
+    for (char r:"apt") compute_components_through_FDTs(vertex_out.half1(), vertex_in.half1(), vertex_in.half1(), r);
     vertex_in.set_initializedInterpol(false);
 }
 
 /*
  *
  */
-template <typename Q, template <typename> class symmetry_type>
+template <typename Q, symmetryType symmetry_type>
 void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
     if(KELDYSH) {
 
@@ -609,25 +609,25 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
         print("Checking the FDTs for Lambda_it", Lambda_it, true);
         GeneralVertex<Q,symmetry_type> vertex_diff = vertex_in - vertex_out;
         print("K2: max-norm of deviation = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_diff[0].half1().norm_K2(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0) std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
         print("K2: relative deviation = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_diff[0].half1().norm_K2(0)/vertex_out[0].half1().norm_K2(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0) std::cout << vertex_diff.half1().norm_K2(0)/vertex_out.half1().norm_K2(0) << std::scientific << '\n';
         print("K2: max-norm = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_out[0].half1().norm_K2(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0) std::cout << vertex_out.half1().norm_K2(0) << std::scientific << '\n';
         print("K3: max-norm of deviation = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_diff[0].half1().norm_K3(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0) std::cout << vertex_diff.half1().norm_K3(0) << std::scientific << '\n';
         print("K3: relative deviation = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_diff[0].half1().norm_K3(0)/vertex_out[0].half1().norm_K3(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0) std::cout << vertex_diff.half1().norm_K3(0)/vertex_out.half1().norm_K3(0) << std::scientific << '\n';
         print("K3: max-norm ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_out[0].half1().norm_K3(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0) std::cout << vertex_out.half1().norm_K3(0) << std::scientific << '\n';
         //
 
         if (write_flag) {
             SelfEnergy<Q> SE_empty(Lambda);
-            Vertex<Q> temp_diff(n_spin, Lambda);
-            temp_diff[0].half1() = vertex_diff[0].half1();
-            Vertex<Q> temp_out(n_spin, Lambda);
-            temp_out[0].half1() = vertex_out[0].half1();
+            Vertex<Q> temp_diff(Lambda);
+            temp_diff.half1() = vertex_diff.half1();
+            Vertex<Q> temp_out(Lambda);
+            temp_out.half1() = vertex_out.half1();
             State<Q> state_out(temp_out, SE_empty);
             State<Q> state_diff(temp_diff, SE_empty);
             if (Lambda_it == 0) {

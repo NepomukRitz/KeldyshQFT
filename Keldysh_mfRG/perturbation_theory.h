@@ -61,16 +61,19 @@ void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
 
 template <typename Q, class Bubble_Object>
 void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, const Bubble_Object& Pi, double Lambda){
-    Vertex<Q> bubblevertex_a(1, PsiVertex);
-    bubblevertex_a[0].initialize(0.);
+    Vertex<Q> bubblevertex_a(Lambda);
+    bubblevertex_a.set_frequency_grid(PsiVertex);
+    bubblevertex_a.initialize(0.);
     bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
-    Vertex<Q> bubblevertex_p(1, PsiVertex);
-    bubblevertex_p[0].initialize(0.);
+    Vertex<Q> bubblevertex_p(Lambda);
+    bubblevertex_p.set_frequency_grid(PsiVertex);
+    bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
 
 #ifdef DEBUG_SYMMETRIES
-    Vertex<Q> bubblevertex_t(1, PsiVertex);
-    bubblevertex_p[0].initialize(0.);
+    Vertex<Q> bubblevertex_t(Lambda);
+    bubblevertex_t.set_frequency_grid(PsiVertex);
+    bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
     bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'a'); // TOPT diagram for K1a
     bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'p'); // TOPT diagram for K1p
@@ -94,14 +97,17 @@ void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, 
 
 template <typename Q, class Bubble_Object>
 void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    Vertex<Q> bubblevertex_a(1, PsiVertex);
-    bubblevertex_a[0].initialize(0.);
+    Vertex<Q> bubblevertex_a(Lambda);
+    bubblevertex_a.set_frequency_grid(PsiVertex);
+    bubblevertex_a.initialize(0.);
     bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
-    Vertex<Q> bubblevertex_p(1, PsiVertex);
-    bubblevertex_p[0].initialize(0.);
+    Vertex<Q> bubblevertex_p(Lambda);
+    bubblevertex_p.set_frequency_grid(PsiVertex);
+    bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
-    Vertex<Q> bubblevertex_t(1, PsiVertex);
-    bubblevertex_t[0].initialize(0.);
+    Vertex<Q> bubblevertex_t(Lambda);
+    bubblevertex_t.set_frequency_grid(PsiVertex);
+    bubblevertex_t.initialize(0.);
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
 
 #ifdef DEBUG_SYMMETRIES

@@ -395,6 +395,12 @@ std::ostream& operator << (std::ostream& out, K_class k) {
     else {out << "K" << static_cast<int>(k) << "'";}
     return out;
 }
+enum symmetryType {symmetric=0, non_symmetric=1};
+std::ostream& operator << (std::ostream& out, symmetryType symmtype) {
+    if (symmtype == symmetric) {out << "symmetric";}
+    else {out << "non-symmetric" ;}
+    return out;
+}
 
 /** auxiliary struct that contains all input variables of vertices
  * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)

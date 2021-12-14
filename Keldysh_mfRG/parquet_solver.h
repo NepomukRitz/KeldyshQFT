@@ -48,8 +48,8 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
  */
 template <typename Q>
 void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
-    Vertex<Q> Gamma_BSE_L (n_spin, Lambda);
-    Vertex<Q> Gamma_BSE_R (n_spin, Lambda);
+    Vertex<Q> Gamma_BSE_L (Lambda);
+    Vertex<Q> Gamma_BSE_R (Lambda);
     compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, state_in, Lambda);
 
 #ifndef NDEBUG
@@ -71,19 +71,19 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double La
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
                  const State<Q>& state_in, const double Lambda) {
-    Vertex<Q> Gamma_0 (n_spin, Lambda);                  // bare vertex
+    Vertex<Q> Gamma_0 (Lambda);                  // bare vertex
     Gamma_0.set_frequency_grid(state_in.vertex);
-    if (KELDYSH) Gamma_0[0].initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
-    else         Gamma_0[0].initialize(-glb_U);              // initialize bare vertex (Matsubara)
+    if (KELDYSH) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
+    else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
 
     // compute the a bubble with full vertex on the right
-    Vertex<Q> bubble_a_r (n_spin, Lambda);
+    Vertex<Q> bubble_a_r (Lambda);
     bubble_a_r.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_a_r, Gamma_0, state_in.vertex, G, G, 'a', false);  // full vertex on the right
 
     // compute the a bubble with full vertex on the left
-    Vertex<Q> bubble_a_l (n_spin, Lambda);
+    Vertex<Q> bubble_a_l (Lambda);
     bubble_a_l.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_a_l, state_in.vertex, Gamma_0, G, G, 'a', false);  // full vertex on the left
 
@@ -94,12 +94,12 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     loop(Sigma_SDE_a, bubble_a, G, false);
 
     // compute the p bubble with full vertex on the right
-    Vertex<Q> bubble_p_r (n_spin, Lambda);
+    Vertex<Q> bubble_p_r (Lambda);
     bubble_p_r.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_p_r, Gamma_0, state_in.vertex, G, G, 'p', false);  // full vertex on the right
 
     // compute the p bubble with full vertex on the left
-    Vertex<Q> bubble_p_l (n_spin, Lambda);
+    Vertex<Q> bubble_p_l (Lambda);
     bubble_p_l.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_p_l, state_in.vertex, Gamma_0, G, G, 'p', false);  // full vertex on the left
 
@@ -139,44 +139,45 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
                                      const State<Q>& state, const double Lambda) {
     Vertex<Q> Gamma = state.vertex;  // full vertex (just a redefinition
 
-    Vertex<Q> Gamma_0 (n_spin, Lambda);                     // bare vertex
-    Gamma_0[0].initialize(-glb_U / 2.);             // initialize bare vertex
+    Vertex<Q> Gamma_0 (Lambda);                     // bare vertex
+    Gamma_0.set_frequency_grid(Gamma);
+    Gamma_0.initialize(-glb_U / 2.);             // initialize bare vertex
     Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
 
     // compute susceptibilities in all three channels
     for (char r : "apt") {
         // contribution from the bare bubble
-        Vertex<Q> chi_0 (n_spin, Lambda);
+        Vertex<Q> chi_0 (Lambda);
         chi_0.set_frequency_grid(Gamma);
         bubble_function(chi_0, Gamma_0, Gamma_0, G, G, r, false);
 
         // temporary vertex with full vertex on the right (first: compute half1)
-        Vertex<Q> Gamma0_Gamma_half1 (n_spin, Lambda);
+        Vertex<Q> Gamma0_Gamma_half1 (Lambda);
         Gamma0_Gamma_half1.set_frequency_grid(Gamma);
         bubble_function(Gamma0_Gamma_half1, Gamma_0, Gamma, G, G, r, false);
 
         // temporary vertex with full vertex on the left (first: compute half1)
-        Vertex<Q> Gamma_Gamma0_half1 (n_spin, Lambda);
+        Vertex<Q> Gamma_Gamma0_half1 (Lambda);
         Gamma_Gamma0_half1.set_frequency_grid(Gamma);
         bubble_function(Gamma_Gamma0_half1, Gamma, Gamma_0, G, G, r, false);
 
         // construct non-symmetric vertices out of the two half1 vertices above
-        GeneralVertex<Q, non_symmetric> Gamma0_Gamma (n_spin, Lambda);
-        Gamma0_Gamma[0].half1() = Gamma0_Gamma_half1[0].half1();
-        Gamma0_Gamma[0].half2() = Gamma_Gamma0_half1[0].half1();
+        GeneralVertex<Q, non_symmetric> Gamma0_Gamma (Lambda);
+        Gamma0_Gamma.half1() = Gamma0_Gamma_half1.half1();
+        Gamma0_Gamma.half2() = Gamma_Gamma0_half1.half1();
         Gamma0_Gamma.set_only_same_channel(true);  // left/right bubble need to be in the same channel
 
-        GeneralVertex<Q, non_symmetric> Gamma_Gamma0 (n_spin, Lambda);
-        Gamma_Gamma0[0].half1() = Gamma_Gamma0_half1[0].half1();
-        Gamma_Gamma0[0].half2() = Gamma0_Gamma_half1[0].half1();
+        GeneralVertex<Q, non_symmetric> Gamma_Gamma0 (Lambda);
+        Gamma_Gamma0.half1() = Gamma_Gamma0_half1.half1();
+        Gamma_Gamma0.half2() = Gamma0_Gamma_half1.half1();
 
         // contribution from the full vertex, with temporary vertex on the left
-        Vertex<Q> chi_L (n_spin, Lambda);
+        Vertex<Q> chi_L (Lambda);
         chi_L.set_frequency_grid(Gamma);
         bubble_function(chi_L, Gamma0_Gamma, Gamma_0, G, G, r, false);
 
         // contribution from the full vertex, with temporary vertex on the right
-        Vertex<Q> chi_R (n_spin, Lambda);
+        Vertex<Q> chi_R (Lambda);
         chi_R.set_frequency_grid(Gamma);
         bubble_function(chi_R, Gamma_0, Gamma_Gamma0, G, G, r, false);
 
@@ -185,19 +186,19 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
 
         switch (r) {
             case 'a':
-                chi[0].avertex().K1 = chi_tot[0].avertex().K1;
+                chi.avertex().K1 = chi_tot.avertex().K1;
                 // compute difference between K1 from input state and post-processed susceptibility
-                chi_diff[0].avertex().K1 = Gamma[0].avertex().K1 - chi[0].avertex().K1;
+                chi_diff.avertex().K1 = Gamma.avertex().K1 - chi.avertex().K1;
                 break;
             case 'p':
-                chi[0].pvertex().K1 = chi_tot[0].pvertex().K1;
+                chi.pvertex().K1 = chi_tot.pvertex().K1;
                 // compute difference between K1 from input state and post-processed susceptibility
-                chi_diff[0].pvertex().K1 = Gamma[0].pvertex().K1 - chi[0].pvertex().K1;
+                chi_diff.pvertex().K1 = Gamma.pvertex().K1 - chi.pvertex().K1;
                 break;
             case 't':
-                chi[0].tvertex().K1 = chi_tot[0].tvertex().K1;
+                chi.tvertex().K1 = chi_tot.tvertex().K1;
                 // compute difference between K1 from input state and post-processed susceptibility
-                chi_diff[0].tvertex().K1 = Gamma[0].tvertex().K1 - chi[0].tvertex().K1;
+                chi_diff.tvertex().K1 = Gamma.tvertex().K1 - chi.tvertex().K1;
                 break;
             default:;
         }
@@ -228,7 +229,7 @@ void parquet_checks(const std::string filename) {
         print("State read from file.", true);
 
         // compute vertex from BSE
-        Vertex<state_datatype> Gamma_BSE (n_spin, Lambdas[i]);
+        Vertex<state_datatype> Gamma_BSE (Lambdas[i]);
         compute_BSE(Gamma_BSE, state, Lambdas[i], i);       // compute the lhs of the BSE
         Vertex<state_datatype> Gamma_diff = state.vertex - Gamma_BSE;  // compute the difference between input and lhs of BSE
         print("Computed BSE.", true);
@@ -248,18 +249,18 @@ void parquet_checks(const std::string filename) {
         norm_SE_SDE[i]  = (Sigma_SDE - Sigma_Hartree).norm(2);
         norm_SE_diff[i] = Sigma_diff.norm(2);
 
-        norm_K1_fRG[i]  = state.vertex[0].norm_K1(2);
-        norm_K1_BSE[i]  = Gamma_BSE[0].norm_K1(2);
-        norm_K1_diff[i] = Gamma_diff[0].norm_K1(2);
+        norm_K1_fRG[i]  = state.vertex.norm_K1(2);
+        norm_K1_BSE[i]  = Gamma_BSE.norm_K1(2);
+        norm_K1_diff[i] = Gamma_diff.norm_K1(2);
         if (MAX_DIAG_CLASS >= 2) {
-            norm_K2_fRG[i] = state.vertex[0].norm_K2(2);
-            norm_K2_BSE[i] = Gamma_BSE[0].norm_K2(2);
-            norm_K2_diff[i] = Gamma_diff[0].norm_K2(2);
+            norm_K2_fRG[i] = state.vertex.norm_K2(2);
+            norm_K2_BSE[i] = Gamma_BSE.norm_K2(2);
+            norm_K2_diff[i] = Gamma_diff.norm_K2(2);
         }
         if (MAX_DIAG_CLASS >= 3) {
-            norm_K3_fRG[i] = state.vertex[0].norm_K3(2);
-            norm_K3_BSE[i] = Gamma_BSE[0].norm_K3(2);
-            norm_K3_diff[i] = Gamma_diff[0].norm_K3(2);
+            norm_K3_fRG[i] = state.vertex.norm_K3(2);
+            norm_K3_BSE[i] = Gamma_BSE.norm_K3(2);
+            norm_K3_diff[i] = Gamma_diff.norm_K3(2);
         }
         // save the norm vectors
         write_h5_rvecs(filename + "_parquet_checks_norm",
@@ -284,7 +285,7 @@ void parquet_checks(const std::string filename) {
 
 
         // post-processing susceptibilities:
-        Vertex<state_datatype> chi (n_spin, Lambdas[i]), chi_diff (n_spin, Lambdas[i]);
+        Vertex<state_datatype> chi (Lambdas[i]), chi_diff (Lambdas[i]);
         chi.set_frequency_grid(state.vertex);
         chi_diff.set_frequency_grid(state.vertex);
 

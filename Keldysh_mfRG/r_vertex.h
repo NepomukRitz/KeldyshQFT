@@ -124,7 +124,7 @@ public:
      * @param channel_in
      * @param Lambda
      */
-    rvert(const char channel_in, double Lambda)
+    rvert(const char channel_in, const double Lambda, const bool is_reserve)
     : channel(channel_in), //components (Components(channel_in)), transformations (Transformations(channel_in)),
       //freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
       K1(Lambda), K2(Lambda), K3(Lambda)
@@ -132,30 +132,32 @@ public:
     , K2b(Lambda)
 #endif
       {
-        if (MAX_DIAG_CLASS >= 1) K1.reserve();
-        if (MAX_DIAG_CLASS >= 2) K2.reserve();
-        if (MAX_DIAG_CLASS >= 3) K3.reserve();
-        if constexpr(HUBBARD_MODEL){
-            if (MAX_DIAG_CLASS >= 1){
-                K1_a_proj.reserve();
-                K1_p_proj.reserve();
-                K1_t_proj.reserve();
+        if (is_reserve) {
+            if (MAX_DIAG_CLASS >= 1) K1.reserve();
+            if (MAX_DIAG_CLASS >= 2) K2.reserve();
+            if (MAX_DIAG_CLASS >= 3) K3.reserve();
+            if constexpr(HUBBARD_MODEL) {
+                if (MAX_DIAG_CLASS >= 1) {
+                    K1_a_proj.reserve();
+                    K1_p_proj.reserve();
+                    K1_t_proj.reserve();
+                }
+                if (MAX_DIAG_CLASS >= 2) {
+                    K2_a_proj.reserve();
+                    K2_p_proj.reserve();
+                    K2_t_proj.reserve();
+                }
+                if (MAX_DIAG_CLASS >= 3) {
+                    K3_a_proj.reserve();
+                    K3_p_proj.reserve();
+                    K3_t_proj.reserve();
+                }
             }
-            if (MAX_DIAG_CLASS >= 2){
-                K2_a_proj.reserve();
-                K2_p_proj.reserve();
-                K2_t_proj.reserve();
-            }
-            if (MAX_DIAG_CLASS >= 3){
-                K3_a_proj.reserve();
-                K3_p_proj.reserve();
-                K3_t_proj.reserve();
-            }
-        }
 
 #ifdef DEBUG_SYMMETRIES
-        K2b.reserve();
+            K2b.reserve();
 #endif
+        }
       };
     rvert() = delete;
 
@@ -303,7 +305,7 @@ public:
      * @param rvert_this        rvert of the related vertex with spin 0 (contains symmetry reduced sector of vertex)
      * @param rvert_crossing    rvert that is related to rvert_this via crossing symmetry
      */
-    void check_symmetries(std::string identifier, int spin, const rvert<Q>& rvert_this, const rvert<Q> &rvert_crossing) const;
+    void check_symmetries(std::string identifier, const rvert<Q>& rvert_this, const rvert<Q> &rvert_crossing) const;
 
     /// Arithmetric operators act on vertexBuffers:
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
@@ -521,9 +523,9 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
  * Iterates over all vertex components and compares with the value obtained from application of the symmetry relations
  * @tparam Q
  */
-template<typename Q> void rvert<Q>::check_symmetries(const std::string identifier, const int spin, const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing) const {
+template<typename Q> void rvert<Q>::check_symmetries(const std::string identifier, const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing) const {
 
-    print("maximal deviation in symmetry in " + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + " (normalized by maximal absolute value of K_i)", "\n");
+    print("maximal deviation in symmetry in " + identifier +"_channel" + channel + " (normalized by maximal absolute value of K_i)", "\n");
 
     // K1:
     vec<Q> deviations_K1(getFlatSize(K1.get_dims()));
@@ -713,7 +715,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         if (K3.get_vec().max_norm() > 1e-30) print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
     }
 
-    write_h5_rvecs(data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + "_spin" + std::to_string(spin) + ".h5" ,
+    write_h5_rvecs(data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + ".h5" ,
                    {
                             "K1_re",
                             "K1_im",

@@ -23,11 +23,11 @@ public:
     Vertex<Q> vertex;
 
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (1, Lambda)), Lambda(Lambda) {};
+    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (Lambda)), Lambda(Lambda) {};
 
     /// Constructor, which gets a State (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!)
     State(const State<Q>& state_in, const double Lambda_in)
-    : selfenergy(SelfEnergy<Q> (state_in.selfenergy.frequencies)), vertex(Vertex<Q> (1, state_in.vertex)), Lambda(Lambda_in) {};
+    : selfenergy(SelfEnergy<Q> (state_in.selfenergy.frequencies)), vertex(Vertex<Q> (state_in.vertex)), Lambda(Lambda_in) {};
 
     /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
     State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in)
@@ -98,27 +98,27 @@ template <typename Q> void State<Q>::update_grid(double Lambda) {
 
 template <typename Q> void State<Q>::findBestFreqGrid(const bool verbose) {
     this->selfenergy.findBestFreqGrid(verbose);
-    this->vertex[0].half1().findBestFreqGrid(verbose);
+    this->vertex.half1().findBestFreqGrid(verbose);
 }
 
 template <typename Q> void State<Q>::check_resolution() const {
-    vertex[0].half1().check_resolution();
+    vertex.half1().check_resolution();
     selfenergy.check_resolution();
 }
 
 template <typename Q> void State<Q>::analyze_tails() const {
     selfenergy.analyze_tails(true);
-    vertex[0].half1().analyze_tails_K1(true);
-    if (MAX_DIAG_CLASS > 1) {vertex[0].half1().analyze_tails_K2w(true); vertex[0].half1().analyze_tails_K2v(true);}
-    if (MAX_DIAG_CLASS > 2) {vertex[0].half1().analyze_tails_K3w(true); vertex[0].half1().analyze_tails_K3v(true); vertex[0].half1().analyze_tails_K3vp(true);}
+    vertex.half1().analyze_tails_K1(true);
+    if (MAX_DIAG_CLASS > 1) {vertex.half1().analyze_tails_K2w(true); vertex.half1().analyze_tails_K2v(true);}
+    if (MAX_DIAG_CLASS > 2) {vertex.half1().analyze_tails_K3w(true); vertex.half1().analyze_tails_K3v(true); vertex.half1().analyze_tails_K3vp(true);}
 }
 
 
 template<typename Q>
 auto max_rel_err(const State<Q>& err, const vec<State<Q>>& scale_States, const double minimum_value_considered) -> double {
     double scale_Vert = 0.;
-    for (auto state: scale_States) {scale_Vert += state.vertex[0].half1().sum_norm(0);}
-    double max_vert = err.vertex[0].half1().sum_norm(0) / scale_Vert * scale_States.size();
+    for (auto state: scale_States) {scale_Vert += state.vertex.half1().sum_norm(0);}
+    double max_vert = err.vertex.half1().sum_norm(0) / scale_Vert * scale_States.size();
 
     double scale_SE = 0.;
     for (auto state: scale_States) {scale_SE += state.selfenergy.norm(0);}

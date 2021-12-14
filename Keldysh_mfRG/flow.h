@@ -39,9 +39,9 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
         parquet_solver(data_dir + "parqueInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_temp, Lambda_ini, 1e-4, 2);
 
-        state_temp.vertex[0].half1().check_vertex_resolution();
+        state_temp.vertex.half1().check_vertex_resolution();
         state_temp.findBestFreqGrid(true);
-        state_temp.vertex[0].half1().check_vertex_resolution();
+        state_temp.vertex.half1().check_vertex_resolution();
 
         state_ini.set_frequency_grid(state_temp); // copy frequency grid
     }
@@ -60,9 +60,9 @@ State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermed
 
 
     write_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-    state_ini.vertex[0].half1().check_vertex_resolution();
+    state_ini.vertex.half1().check_vertex_resolution();
     state_ini.findBestFreqGrid(true);
-    state_ini.vertex[0].half1().check_vertex_resolution();
+    state_ini.vertex.half1().check_vertex_resolution();
     write_hdf(outputFileName+"_postOpt", Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
     //if (save_intermediate_results) {
@@ -106,7 +106,7 @@ State<state_datatype> n_loop_flow(std::string inputFileName, const int it_start,
             write_hdf(inputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
         }
         state_ini.findBestFreqGrid(true);
-        state_ini.vertex[0].half1().check_vertex_resolution();
+        state_ini.vertex.half1().check_vertex_resolution();
 
         std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 

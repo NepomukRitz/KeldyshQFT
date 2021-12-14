@@ -21,7 +21,7 @@ public:
         FOPTstate.initialize();             // initialize state
 
         fopt_state(FOPTstate, Lambda);
-        FOPTstate.vertex[0].half1().initializeInterpol();
+        FOPTstate.vertex.half1().initializeInterpol();
     }
 
     void save_integrand(double vmax) {
@@ -37,8 +37,8 @@ public:
         double spacing = 2. / (double)npoints;
         for (int i=1; i<npoints-1; ++i) {
             double vpp = bfreqs.grid_transf_inv(-1 + i * spacing);
-            IndicesSymmetryTransformations indices (0, vpp, 0, 0., 0, 'a', k1, 0, 'a');
-            Q integrand_value = FOPTstate.vertex[0].half1().avertex.K1.interpolate(indices);
+            IndicesSymmetryTransformations indices (0, 0, vpp, 0, 0., 0, 'a', k1, 0,'a');
+            Q integrand_value = FOPTstate.vertex.half1().avertex.K1.interpolate(indices);
             freqs[i] = vpp;
 
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
@@ -83,8 +83,8 @@ public:
 
                 double w = bfreqs2.grid_transf_inv(-1 + i * spacing);
                 double v = ffreqs2.grid_transf_inv(-1 + j * spacing);
-                IndicesSymmetryTransformations indices (0, w, v, 0., 0, 'a', k1, 0, 'a');
-                Q integrand_value = FOPTstate.vertex[0].half1().avertex.K2.interpolate(indices);
+                IndicesSymmetryTransformations indices (0, 0, w, v, 0., 0, 'a', k1, 0,'a');
+                Q integrand_value = FOPTstate.vertex.half1().avertex.K2.interpolate(indices);
                 bfreqsK2[i] = w;
                 ffreqsK2[i] = v;
 
@@ -113,7 +113,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -126,7 +126,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->FOPTstate.vertex[0].half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -153,7 +153,7 @@ public:
 
     auto operator() (double vpp) const -> Q {
         VertexInput input(0, vpp, v, vp + vpp, 0, 0, channel);
-        return FOPTstate.vertex[0].half1().avertex.value(input, this->FOPTstate.vertex[0].half1().avertex) ;
+        return FOPTstate.vertex.half1().avertex.value(input, this->FOPTstate.vertex.half1().avertex) ;
         //return vpp*vpp;
     }
 };
@@ -169,7 +169,7 @@ void test_interpolate_K12(double Lambda) {
     double v = 1e2;
     double vp = -1e2;
     TestInterpolantK1a<Q> InterpolantK1a(Lambda, 'a', 0., v, vp);
-    InterpolantK1a.FOPTstate.vertex[0].half1().initializeInterpol();
+    InterpolantK1a.FOPTstate.vertex.half1().initializeInterpol();
     InterpolantK1a.save_integrand(1e4);
 
 }
@@ -191,14 +191,14 @@ namespace {
             for (int i = 0; i<nBOS2; i++) {
                 for (int j = 0; j<nFER2; j++) {
                     double w, v;
-                    K2aexact.vertex[0].avertex().K2_get_freqs_w(w, v, i, j);
+                    K2aexact.vertex.avertex().K2_get_freqs_w(w, v, i, j);
                     Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, false, Pi);
                     double vmax = 100.;
                     double Delta = (glb_Gamma+Lambda)/2.;
                     Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
-                    K2aexact.vertex[0].avertex().K2_setvert(0, i, j, 0, val_K2);
-                    K2aexact.vertex[0].pvertex().K2_setvert(0, i, j, 0, val_K2);
-                    K2aexact.vertex[0].tvertex().K2_setvert(0, i, j, 0, val_K2);
+                    K2aexact.vertex.avertex().K2_setvert(0, i, j, 0, val_K2);
+                    K2aexact.vertex.pvertex().K2_setvert(0, i, j, 0, val_K2);
+                    K2aexact.vertex.tvertex().K2_setvert(0, i, j, 0, val_K2);
                 }
             }
             print("Finished computing exact result for K2.", true);
@@ -210,16 +210,16 @@ namespace {
             // set freqgrid parameter and update SOPTvertex on the new grid
 
             State<Q> SOPTstate(Lambda);
-            VertexFrequencyGrid<k1> bfreq = SOPTstate.vertex[0].half1().avertex.get_VertexFreqGrid();
+            VertexFrequencyGrid<k1> bfreq = SOPTstate.vertex.half1().avertex.get_VertexFreqGrid();
             bfreq.b.update_Wscale(wscale_test);
-            SOPTstate.vertex[0].half1().template update_grid<k1>(bfreq, SOPTstate.vertex[0].half1());
+            SOPTstate.vertex.half1().template update_grid<k1>(bfreq, SOPTstate.vertex.half1());
             vertexInSOPT(SOPTstate.vertex, bareState, Pi, Lambda);
 
             write_hdf("Cost_pick_Wscale_4_K1_SOPTstate", Lambda, 1, SOPTstate);
 
             State<Q> TOPTstate(Lambda);
             // set freqgrid parameter and update TOPTvertex on the new grid
-            TOPTstate.vertex[0].half1().template update_grid<k1>(bfreq, TOPTstate.vertex[0].half1());
+            TOPTstate.vertex.half1().template update_grid<k1>(bfreq, TOPTstate.vertex.half1());
 
             print("Starting to compute Vertex in TOPT: ", true);
             vertexInTOPT(TOPTstate.vertex, bareState, SOPTstate, Pi, Lambda);
@@ -229,7 +229,7 @@ namespace {
             State<Q> diff = TOPTstate-K2aexact;
             write_hdf("Cost_pick_Wscale_4_K1_K2diff", Lambda, 1, diff);
             write_hdf("Cost_pick_Wscale_4_K1_K2cpp", Lambda, 1, TOPTstate);
-            double result = diff.vertex[0].half1().norm_K2(0);
+            double result = diff.vertex.half1().norm_K2(0);
             print("!!!!!!!! Maximal deviation in K2: ", result, true);
             return result;
         }

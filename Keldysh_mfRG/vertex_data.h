@@ -18,8 +18,8 @@
 template <typename Q> class rvert; // forward declaration of rvert
 template <typename Q> class fullvert; // forward declaration of fullvert
 template <typename Q> class State; // forward declaration of State
-template <typename Q, template <typename> class symmetry_type> class GeneralVertex;
-template <typename Q>class symmetric;
+template <typename Q, symmetryType symm_type> class GeneralVertex;
+//template <typename Q>class symmetric;
 template <typename Q>using Vertex = GeneralVertex<Q, symmetric>;
 class Buffer;
 

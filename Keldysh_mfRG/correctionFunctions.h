@@ -602,8 +602,8 @@ auto correctionFunctionBubble (double w, double vmin, double vmax,
  * @return                : Value of the asymptotic correction
  */
 template <typename Q,
-          template <typename> class symmetry_left,
-          template <typename> class symmetry_right>
+          symmetryType symmetry_left,
+          symmetryType symmetry_right>
 auto asymp_corrections_bubble(K_class k,
                               const GeneralVertex<Q, symmetry_left>& vertex1,
                               const GeneralVertex<Q, symmetry_right>& vertex2,
@@ -915,12 +915,12 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
         VertexInput inputRetarded (components[iK][0], ispin, 0., 0., v, i_in, 't');
         VertexInput inputAdvanced (components[iK][1], ispin, 0., 0., v, i_in, 't');
         VertexInput inputKeldysh  (components[iK][2], ispin, 0., 0., v, i_in, 't');
-        Q factorRetarded = vertex[0].irred().val(components[iK][0], i_in, 0) // Gamma_0
-                           + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-        Q factorAdvanced = vertex[0].irred().val(components[iK][1], i_in, 0) // Gamma_0
-                           + vertex[0].tvertex().left_same_bare(inputAdvanced, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-        Q factorKeldysh  = vertex[0].irred().val(components[iK][2], i_in, 0) // Gamma_0
-                           + vertex[0].tvertex().left_same_bare(inputKeldysh, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        Q factorRetarded = vertex.irred().val(components[iK][0], i_in, 0) // Gamma_0
+                           + vertex.tvertex().left_same_bare(inputRetarded, vertex.avertex()); // K1t(0) + K2't(0,v)
+        Q factorAdvanced = vertex.irred().val(components[iK][1], i_in, 0) // Gamma_0
+                           + vertex.tvertex().left_same_bare(inputAdvanced, vertex.avertex()); // K1t(0) + K2't(0,v)
+        Q factorKeldysh  = vertex.irred().val(components[iK][2], i_in, 0) // Gamma_0
+                           + vertex.tvertex().left_same_bare(inputKeldysh, vertex.avertex()); // K1t(0) + K2't(0,v)
 
         // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
         if (all_spins) {
@@ -930,12 +930,12 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
             inputRetarded.spin = 1;
             inputAdvanced.spin = 1;
             inputKeldysh.spin  = 1;
-            factorRetarded += vertex[0].irred().val(components[iK][0], i_in, 1) // Gamma_0
-                              + vertex[0].tvertex().left_same_bare(inputRetarded, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-            factorAdvanced += vertex[0].irred().val(components[iK][1], i_in, 1) // Gamma_0
-                              + vertex[0].tvertex().left_same_bare(inputAdvanced, vertex[0].avertex()); // K1t(0) + K2't(0,v)
-            factorKeldysh  += vertex[0].irred().val(components[iK][2], i_in, 1) // Gamma_0
-                              + vertex[0].tvertex().left_same_bare(inputKeldysh, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+            factorRetarded += vertex.irred().val(components[iK][0], i_in, 1) // Gamma_0
+                              + vertex.tvertex().left_same_bare(inputRetarded, vertex.avertex()); // K1t(0) + K2't(0,v)
+            factorAdvanced += vertex.irred().val(components[iK][1], i_in, 1) // Gamma_0
+                              + vertex.tvertex().left_same_bare(inputAdvanced, vertex.avertex()); // K1t(0) + K2't(0,v)
+            factorKeldysh  += vertex.irred().val(components[iK][2], i_in, 1) // Gamma_0
+                              + vertex.tvertex().left_same_bare(inputKeldysh, vertex.avertex()); // K1t(0) + K2't(0,v)
         }
 
         // analytical integration of the propagator
@@ -948,14 +948,14 @@ auto asymp_corrections_loop(const Vertex<Q>& vertex,
     else{
         // determine the value of the vertex in the tails (only Gamma_0, K1t(w = 0), and K2't(w = 0, v' = v) contribute!)
         VertexInput input (0, ispin, 0., 0., v, i_in, 't');
-        Q Vertexfactor = vertex[0].irred().val(0, i_in, 0) // Gamma_0
-                         + vertex[0].tvertex().left_same_bare(input, vertex[0].avertex()); // K1t(0) + K2't(0,v)
+        Q Vertexfactor = vertex.irred().val(0, i_in, 0) // Gamma_0
+                         + vertex.tvertex().left_same_bare(input, vertex.avertex()); // K1t(0) + K2't(0,v)
 
         // if spin sum is performed, add contribution of all-spins-equal vertex: V -> 2*V + V^
         if (all_spins) {
             Vertexfactor *= 2.;
             input.spin = 1;
-            Vertexfactor += vertex[0].tvertex().left_same_bare(input, vertex[0].avertex());
+            Vertexfactor += vertex.tvertex().left_same_bare(input, vertex.avertex());
         }
         // analytical integration of the propagator
         Q Gfactor = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
