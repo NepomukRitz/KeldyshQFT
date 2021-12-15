@@ -546,7 +546,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
                 Q deviation = value_direct - value_symmet;
                 if (components.K[k1][input.spin][input.iK] != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
-                    deviations_K1[getFlatIndex<4,int,int,int,int>(iK, ispin, iw + FREQ_PADDING, i_in, K1.get_dims())] = deviation;
+                    deviations_K1[getFlatIndex<4,int,int,int,int>(iK, ispin, iw , i_in, K1.get_dims())] = deviation;
                 }
 
                 // test frequency symmetries for symmetry-reduced Keldysh components:
@@ -618,7 +618,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
                 Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
                 deviation = value_direct - result_freqsymm;
-                deviations_K2[getFlatIndex<5, int, int, int, int, int>(iK, ispin, iw + FREQ_PADDING, iv + FREQ_PADDING,
+                deviations_K2[getFlatIndex<5, int, int, int, int, int>(iK, ispin, iw , iv ,
                                                                        i_in, K2.get_dims())] = std::abs(deviation);
             }
             //        }
@@ -648,7 +648,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
             Q deviation = value_direct - value_symmet;
             if (components.K[k2b][input.spin][input.iK] != -1) {// zero component is not being computed anyway
-                deviations_K2b[getFlatIndex<5, int, int, int, int, int>(iK, ispin, iw + FREQ_PADDING, iv + FREQ_PADDING,
+                deviations_K2b[getFlatIndex<5, int, int, int, int, int>(iK, ispin, iw , iv ,
                                                                         i_in, K2b.get_dims())] = std::abs(deviation);
             }
             //        }
@@ -682,8 +682,8 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
             Q deviation = value_direct - value_symmet;
             if (components.K[k1][input.spin][input.iK] != -1) { // zero component is not being computed anyway
-                deviations_K3[getFlatIndex<6, int, int, int, int, int, int>(iK, ispin, iw + FREQ_PADDING,
-                                                                            iv + FREQ_PADDING, ivp + FREQ_PADDING, i_in,
+                deviations_K3[getFlatIndex<6, int, int, int, int, int, int>(iK, ispin, iw ,
+                                                                            iv , ivp , i_in,
                                                                             K3.get_dims())] = std::abs(deviation);
             }
 
@@ -1069,7 +1069,7 @@ namespace {
                 IndicesSymmetryTransformations indices(iK1, i_spin, w, 0., 0., i_in, vertex.channel, k1, iw,
                                                        rvert4data.channel);
                 // interpolate old values to new vector
-                K1_new[iK1 * (nw1 + 2 * FREQ_PADDING) * n_in_K1 + (iw + FREQ_PADDING) * n_in_K1 +
+                K1_new[iK1 * (nw1) * n_in_K1 + (iw ) * n_in_K1 +
                        i_in] = rvert4data.K1.interpolate(indices);
             }
             vertex.K1.set_vec(K1_new); // update vertex to new interpolated values
@@ -1090,9 +1090,9 @@ namespace {
                                                        w, v, 0.,
                                                        i_in, vertex.channel, k2, iw, rvert4data.channel);
                 // interpolate old values to new vector
-                K2_new[iK2 * (nw2 + 2 * FREQ_PADDING) * (nv2 + 2 * FREQ_PADDING) * n_in_K2 +
-                       (iw + FREQ_PADDING) * (nv2 + 2 * FREQ_PADDING) * n_in_K2 +
-                       (iv + FREQ_PADDING) * n_in_K2 + i_in]
+                K2_new[iK2 * (nw2) * (nv2) * n_in_K2 +
+                       (iw ) * (nv2) * n_in_K2 +
+                       (iv ) * n_in_K2 + i_in]
                         = rvert4data.K2.interpolate(indices);
             }
             vertex.K2.set_vec(K2_new); // update vertex to new interpolated values
@@ -1114,10 +1114,10 @@ namespace {
                                                         w, v, vp,
                                                         i_in, vertex.channel, k3, vertex.channel == 'a' ? iw : (vertex.channel == 'p' ? iv : ivp), rvert4data.channel);
                 // interpolate old values to new vector
-                K3_new[iK3 * (nw3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
-                      + (iw+FREQ_PADDING) * (nv3+2*FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
-                      + (iv+FREQ_PADDING) * (nv3+2*FREQ_PADDING) * n_in_K3
-                      + (ivp+FREQ_PADDING) * n_in_K3
+                K3_new[iK3 * (nw3) * (nv3) * (nv3) * n_in_K3
+                      + (iw) * (nv3) * (nv3) * n_in_K3
+                      + (iv) * (nv3) * n_in_K3
+                      + (ivp) * n_in_K3
                       + i_in]
                         = rvert4data.K3.interpolate(indices);
             }

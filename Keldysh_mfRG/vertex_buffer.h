@@ -33,11 +33,11 @@ public:
 
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
-#if FREQ_PADDING == 0
+
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (std::abs(indices.w) < vertexDataContainer<k1, Q>::frequencies_K1.b.w_upper + inter_tol)
         {
-#endif
+
             Q result;
             if constexpr(inter == linear_on_aux) {
                 result =  interpolate_lin_on_aux1D<Q>(indices.w, vertexDataContainer<k1, Q>::get_VertexFreqGrid().b,
@@ -65,11 +65,11 @@ public:
 
             assert(isfinite(result));
             return result;
-#if FREQ_PADDING == 0
+
         } else {
             return 0.;  // asymptotic value
         }
-#endif
+
     };
 
     auto operator+= (const vertexBuffer<k1,Q,inter>& rhs) -> vertexBuffer<k1,Q,inter> {vertexDataContainer<k1,Q>::data += rhs.data; return *this;}
@@ -99,12 +99,12 @@ public:
         double v_temp = indices.v1;
         K2_convert2internalFreqs(w_temp, v_temp); // convert natural frequency parametrization in channel r to internal parametrization
 
-#if FREQ_PADDING == 0
+
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (    std::abs(indices.w ) < vertexDataContainer<k2, Q>::frequencies_K2.b.w_upper + inter_tol
                 && std::abs(indices.v1) < vertexDataContainer<k2, Q>::frequencies_K2.f.w_upper + inter_tol )
         {
-#endif
+
             Q result;
             if constexpr(inter == linear_on_aux) {
                 result =  interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
@@ -141,12 +141,12 @@ public:
 
             assert(isfinite(result));
             return result;
-#if FREQ_PADDING == 0
+
         }
         else {
             return 0.;      // asymptotic value
         }
-#endif
+
     }
 
     auto operator+= (const vertexBuffer<k2,Q,inter>& rhs) -> vertexBuffer<k2,Q,inter> {vertexDataContainer<k2,Q>::data += rhs.data; return *this;}
@@ -177,12 +177,12 @@ public:
         double v_temp = indices.v2;
         K2_convert2internalFreqs(w_temp, v_temp); // convert natural frequency parametrization in channel r to internal parametrization
 
-#if FREQ_PADDING == 0
+
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (    std::abs(indices.w ) < vertexDataContainer<k2b, Q>::frequencies_K2.b.w_upper + inter_tol
                 && std::abs(indices.v2) < vertexDataContainer<k2b, Q>::frequencies_K2.f.w_upper + inter_tol )
         {
-#endif
+
             Q result;
             if constexpr(inter == linear_on_aux){
                 result =  interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
@@ -218,12 +218,12 @@ public:
 
             assert(isfinite(result));
             return result;
-#if FREQ_PADDING == 0
+
         }
         else {
             return 0.;      // asymptotic value
         }
-#endif
+
     }
 
     auto operator+= (const vertexBuffer<k2b,Q,inter>& rhs) -> vertexBuffer<k2b,Q,inter> {vertexDataContainer<k2b,Q>::data += rhs.data; return *this;}
@@ -257,13 +257,13 @@ public:
             else if (indices.channel == 'p') { switch2bosonicFreqs<'p'>(w_temp, v_temp, vp_temp); }
             else if (indices.channel == 't') { switch2bosonicFreqs<'t'>(w_temp, v_temp, vp_temp); }
         }
-#if FREQ_PADDING == 0
+
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (std::abs(indices.w) < vertexDataContainer<k3, Q>::frequencies_K3.b.w_upper + inter_tol
             && std::abs(indices.v1) < vertexDataContainer<k3, Q>::frequencies_K3.f.w_upper + inter_tol
             && std::abs(indices.v2) < vertexDataContainer<k3, Q>::frequencies_K3.f.w_upper + inter_tol)
         {
-#endif
+
             Q result;
 
 
@@ -388,11 +388,11 @@ public:
             assert(isfinite(result));
             return result;
 
-#if FREQ_PADDING == 0
+
         } else {
             return 0.;  // asymptotic value
         }
-#endif
+
     }
 
     auto operator+= (const vertexBuffer<k3,Q,inter>& rhs) -> vertexBuffer<k3,Q,inter> {vertexDataContainer<k3,Q>::data += rhs.data; return *this;}

@@ -32,7 +32,6 @@ template<K_class k, typename Q> class vertexDataContainer; // forward declaratio
 
 
 #define PARAMETRIZED_GRID
-#define FREQ_PADDING 0  // set to 0 for NO padding; set to 1 for padding the frequency grid with -inf and +inf
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 #define DENSEGRID
 #endif
@@ -82,7 +81,7 @@ public:
             case 'b':
                 switch (diag_class) {
                     case 1:
-                        N_w = nBOS+FREQ_PADDING*2;
+                        N_w = nBOS;
                         if (KELDYSH) {
                             U_factor = 30. / 3.;
                             Delta_factor = 30.;
@@ -93,7 +92,7 @@ public:
                         }
                         break;
                     case 2:
-                        N_w = nBOS2+FREQ_PADDING*2;
+                        N_w = nBOS2;
 #ifdef ROTATEK2
                         if (KELDYSH){
                             U_factor = 10./3.;
@@ -115,7 +114,7 @@ public:
 #endif
                         break;
                     case 3:
-                        N_w = nBOS3+FREQ_PADDING*2;
+                        N_w = nBOS3;
                         break;
                     default:;
                 }
@@ -123,7 +122,7 @@ public:
             case 'f':
                 switch (diag_class) {
                     case 1:
-                        N_w = nFER+FREQ_PADDING*2;
+                        N_w = nFER;
                         if (KELDYSH) {
                             U_factor = 40. / 3.;
                             Delta_factor = 40.;
@@ -138,7 +137,7 @@ public:
                         }
                         break;
                     case 2:
-                        N_w = nFER2+FREQ_PADDING*2;
+                        N_w = nFER2;
 #ifdef ROTATEK2
                         /// Needs to be the same as for 'b'!!!
                         if (KELDYSH) {
@@ -161,7 +160,7 @@ public:
 #endif
                         break;
                     case 3:
-                        N_w = nFER3+FREQ_PADDING*2;
+                        N_w = nFER3;
                         break;
                     default:;
                 }
@@ -191,8 +190,8 @@ public:
         return *this;
     }
 
-    auto get_ws(int index) const -> double {assert(index>=-FREQ_PADDING); assert(index<N_w-FREQ_PADDING); assert(isfinite(ws[index+FREQ_PADDING])); return ws[index+FREQ_PADDING];};
-    auto get_ts(int index) const -> double {assert(index>=-FREQ_PADDING); assert(index<N_w-FREQ_PADDING); assert(isfinite(ts[index+FREQ_PADDING])); return ts[index+FREQ_PADDING];};
+    auto get_ws(int index) const -> double {assert(index>=0); assert(index<N_w); assert(isfinite(ws[index])); return ws[index];};
+    auto get_ts(int index) const -> double {assert(index>=0); assert(index<N_w); assert(isfinite(ts[index])); return ts[index];};
     auto get_ws_vec() const -> vec<double> {return ws;}
     auto get_ts_vec() const -> vec<double> {return ts;}
     auto scale_factor(double Lambda) -> double;
@@ -239,15 +238,9 @@ void FrequencyGrid::initialize_grid() {
     double W;
     t_upper = grid_transf(w_upper);
     t_lower = grid_transf(w_lower);
-    dt = (t_upper - t_lower) / ((double) (N_w - 1. - FREQ_PADDING*2));
-    if (FREQ_PADDING == 1) {
-        ts[0] = -1.;
-        ts[N_w - 1] = 1.;
-        ws[0] = -std::numeric_limits<double>::infinity();
-        ws[N_w - 1] = std::numeric_limits<double>::infinity();
-    }
-    for(int i=FREQ_PADDING; i<N_w-FREQ_PADDING; ++i) {
-        W = t_lower + (i-FREQ_PADDING) * dt;
+    dt = (t_upper - t_lower) / ((double) (N_w));
+    for(int i=0; i<N_w; ++i) {
+        W = t_lower + i * dt;
         ws[i] = grid_transf_inv(W);
         assert(isfinite(ws[i]));
         if (!KELDYSH && !ZERO_T){
@@ -340,19 +333,19 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     double t = grid_transf(w_in);
 
     t = (t - t_lower) / dt;
-    auto index = ((int) (t+FREQ_PADDING)) - FREQ_PADDING;
+    auto index = ((int) t) ;
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
-        index = std::min(N_w - 2 - 2*FREQ_PADDING, index);
+        index = std::min(N_w - 2, index);
     }
     else if (INTERPOLATION==sloppycubic) {
-        index = std::max(1-FREQ_PADDING, index);
-        index = std::min(N_w - 3 - FREQ_PADDING, index);
+        index = std::max(1, index);
+        index = std::min(N_w - 3, index);
     }
     else {
-        if (ws[index+1+FREQ_PADDING] < w_in) index++;
-        index = std::max(-FREQ_PADDING, index);
-        index = std::min(N_w - 2 - FREQ_PADDING, index);
+        if (ws[index+1] < w_in) index++;
+        index = std::max(0, index);
+        index = std::min(N_w - 2, index);
     }
     return index;
 
@@ -360,9 +353,9 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
     int j;
     if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
     else {locate(ws, N_w, w_in, j, 0, N_w-1); }
-    int index = j - FREQ_PADDING;
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
+    int index = j;
+        assert(ws[index] - w_in  <= 1e-5 or index == 0);
+        assert(w_in - ws[index+1] < 1e-5 or index == N_w-1);
     return index;
 #endif
 }
@@ -376,24 +369,24 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
 #ifdef PARAMETRIZED_GRID
 
     double t_rescaled = (t - t_lower) / dt;
-    auto index = ((int) (t_rescaled+FREQ_PADDING)) - FREQ_PADDING;  // round down
+    auto index = ((int) t_rescaled) ;  // round down
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
-        index = std::min(N_w - 2 - 2*FREQ_PADDING, index);
+        index = std::min(N_w - 2, index);
     }
     else if (INTERPOLATION==sloppycubic) {
-        index = std::max(1-FREQ_PADDING, index);
-        index = std::min(N_w - 3 - FREQ_PADDING, index);
+        index = std::max(1, index);
+        index = std::min(N_w - 3, index);
     }
     else {
-        if (ws[index+1+FREQ_PADDING] < w_in and index < N_w-1)
+        if (ws[index+1] < w_in and index < N_w-1)
             index++;
-        if (ws[index+FREQ_PADDING] > w_in and index > 0)
+        if (ws[index] > w_in and index > 0)
             index--;
-        index = std::max(-FREQ_PADDING, index);
-        index = std::min(N_w - 2 - FREQ_PADDING, index);
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5*std::abs(w_in) or index == 0); /// TODO: If this is not satisfied -> use locate
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-2-FREQ_PADDING);
+        index = std::max(0, index);
+        index = std::min(N_w - 2, index);
+        assert(ws[index] - w_in  <= 1e-5*std::abs(w_in) or index == 0); /// TODO: If this is not satisfied -> use locate
+        assert(w_in - ws[index+1] < 1e-5 or index == N_w-2);
     }
     return index;
 
@@ -401,9 +394,9 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
     int j;
     if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
     else {locate(ts, N_w, t, j, 0, N_w-1); }
-    int index = j - FREQ_PADDING;
-        assert(ws[index+FREQ_PADDING] - w_in  <= 1e-5 or index == 0);
-        assert(w_in - ws[index+1+FREQ_PADDING] < 1e-5 or index == N_w-1);
+    int index = j;
+        assert(ws[index] - w_in  <= 1e-5 or index == 0);
+        assert(w_in - ws[index+1] < 1e-5 or index == N_w-1);
     return index;
 #endif
 
@@ -932,22 +925,21 @@ namespace freqGrid {
 
         if (maxabs_along_x.max_norm() < 1e-20) return frequencies_new; // don't shrink if there is no data yet
 
-        int index = -1+FREQ_PADDING;
+        int index = -1;
         while (true) {
             if (maxabs_along_x[index+1] >= rel_tail_threshold) break;
             index++;
         }
-        index -= FREQ_PADDING;
         if (index > -1) { // if the frequency box is too big, shrink to appropriate size
             if (verbose and mpi_world_rank() == 0) std::cout << "Shrinking frequency box ";
             double t_belowthresh = freqGrid.get_ts(index); // auxiliary frequency point before passing threshold
             double t_abovethresh = freqGrid.get_ts(index+1); // auxiliary frequency point after  passing threshold
-            double h = (rel_tail_threshold - maxabs_along_x[index+FREQ_PADDING]) * (t_abovethresh - t_belowthresh) / (maxabs_along_x[index+1+FREQ_PADDING] - maxabs_along_x[index+FREQ_PADDING]);
+            double h = (rel_tail_threshold - maxabs_along_x[index]) * (t_abovethresh - t_belowthresh) / (maxabs_along_x[index+1] - maxabs_along_x[index]);
             const double safety = 0.9;
             frequencies_new.set_w_upper(std::abs(freqGrid.grid_transf_inv(t_belowthresh + h*safety)));
         }
         else if (index == -1){ // if data on outermost grid point is too big, then enlarge the box OR print warning
-            //double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-freqGrid.t_upper) / (maxabs_along_x[maxabs_along_x.size() -1 - FREQ_PADDING]);
+            //double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-freqGrid.t_upper) / (maxabs_along_x[maxabs_along_x.size() -1]);
             //double w_upper_new = frequencies_new.grid_transf_inv(t_upper_new);
             //frequencies_new.set_w_upper(w_upper_new);
         }

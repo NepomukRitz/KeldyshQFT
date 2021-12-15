@@ -35,10 +35,10 @@ const int nK_K2 = 1;
 const int nK_K3 = 1;
 #endif // KELDYSH_FORMALISM
 
-constexpr std::array<size_t,3> dimsSE = std::array<size_t,3>({nK_SE, FREQ_PADDING*2+nFER, n_in_K1});
-constexpr std::array<size_t,4> dimsK1 = std::array<size_t,4>({nK_K1, n_spin, FREQ_PADDING*2+nBOS, n_in_K1});
-constexpr std::array<size_t,5> dimsK2 = std::array<size_t,5>({nK_K2, n_spin, FREQ_PADDING*2+nBOS2, FREQ_PADDING*2+nFER2, n_in_K2});
-constexpr std::array<size_t,6> dimsK3 = std::array<size_t,6>({nK_K3, n_spin, FREQ_PADDING*2+nBOS3, FREQ_PADDING*2+nFER3, FREQ_PADDING*2+nFER3, n_in_K3});
+constexpr std::array<size_t,3> dimsSE = std::array<size_t,3>({nK_SE, nFER, n_in_K1});
+constexpr std::array<size_t,4> dimsK1 = std::array<size_t,4>({nK_K1, n_spin, nBOS, n_in_K1});
+constexpr std::array<size_t,5> dimsK2 = std::array<size_t,5>({nK_K2, n_spin, nBOS2, nFER2, n_in_K2});
+constexpr std::array<size_t,6> dimsK3 = std::array<size_t,6>({nK_K3, n_spin, nBOS3, nFER3, nFER3, n_in_K3});
 constexpr size_t dimsSE_flat = getFlatSize(dimsSE);
 constexpr size_t dimsK1_flat = getFlatSize(dimsK1);
 constexpr size_t dimsK2_flat = getFlatSize(dimsK2);

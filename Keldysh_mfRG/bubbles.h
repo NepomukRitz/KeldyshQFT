@@ -636,7 +636,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 #ifdef KELDYSH_FORMALISM
     std::vector<int> indices = indices_sum(i0, i2, channel);
 
-    VertexInput input_l (indices, spin, w, 0., 0., i_in, channel);
+    VertexInput input_l (indices[0], spin, w, 0., 0., i_in, channel);
     VertexInput input_r (indices[1], spin, w, 0., 0., i_in, channel);
 #else
     VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
@@ -1337,7 +1337,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifndef SWITCH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
-        if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
+        if ((channel == 't' and ispin == 0) or (channel == 'a' and ispin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
         for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
 #else
             int i2 = 0;

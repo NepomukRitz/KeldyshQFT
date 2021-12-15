@@ -46,28 +46,15 @@ private:
      *    K1 --> iK, iw,          i_in
      *    K2 --> iK, iw, iv,      i_in
      *    K3 --> iK, iw, iv, ivp, i_in
-     * If the flag FREQ_PADDING == 0, then the vertex data is stored as usual. With N frequency points one needs the indices iw in [0, N-1].
-     * If the flag FREQ_PADDING == 1, then the vertex data is padded with zeros (corresponding to the asymptotic value at infinity.)
-     * The values at infinity are accessed via the indices -1 and N.
-     * Hence, to read out the regular data one needs the indices iw in [0, N-1]
-     * e.g. for K1 and FREQ_PADDING == 1: There are nK_K1 Keldysh components, nBOS+2 frequency points and n_in internal dof.
-     *                                    => flattenIndex(iK, iw, i_in) returns (iK * (nBOS+2) + iw+1) * n_in + i_in
      */
     template <typename... Types,    /// "..." is syntax for a parameter pack
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true> /// checks that the number of arguments is rank and their types are integral (int, size_t etc.)
     size_t flattenIndex(const Types &... i) const {
+
         int it = 0;
         (( assert(i < dims[it]) , it++), ...);
-#if FREQ_PADDING == 0
         return getFlatIndex({static_cast<size_t>(i)...}, dims);
-#else
-        std::array<size_t,rank> idx = {static_cast<size_t>(i+1)...};
-        idx[0] -= 1; idx[rank-1] -= 1;
 
-        size_t flatidx = getFlatIndex(idx, dims);
-        assert(flatidx < data.size());
-        return flatidx;
-#endif
     }
 
 protected:
@@ -117,25 +104,8 @@ public:
     void set_vec(const vec<Q> &data_in) {assert(data.size() == data_in.size()); data = data_in;}
     /// Adds a vector to the data
     void add_vec(const vec<Q> &summand) {
-#if FREQ_PADDING == 0
         assert(getFlatSize<rank>(dims) == summand.size()); /// Check that summand has the right length
         data += summand;
-#else
-        /// For FREQ_PADDING == 1 the vector summand does not contain the asymtotic values. Hence it needs to be padded with zeros at +/- infinity first.
-        std::array<size_t,rank> dims_no_padding = dims; /// dims of summand
-        for (size_t i = 1; i < rank-1; i++) dims_no_padding[i] -= 2*FREQ_PADDING;
-        assert(getFlatSize<rank>(dims_no_padding) == summand.size()); /// Check that summand has the right length
-
-        /// Translate the flat index of summand into a flat index of the padded data
-        std::array<size_t,rank> multIndex;
-        for (size_t i = 0; i < summand.size(); i++) {
-            getMultIndex(multIndex, i, dims_no_padding); /// multiIndex of summand
-            for (size_t j = 1; j < rank-1; j++) multIndex[j] += FREQ_PADDING; /// frequency indices need to be shifted by FREQ_PADDING(==1)
-            size_t idx = getFlatIndex(multIndex, dims); /// gets flat index for accessing the correct value in data
-            assert(idx < data.size());
-            data[idx] += summand[i];
-        }
-#endif
     }
 
 
@@ -160,10 +130,6 @@ public:
 
     /**
      * gets the frequency corresponding to the frequency index i
-     * If FREQ_PADDING == 0: nothing unusual, for N frequency points i ranges in [0,N-1]
-     * If FREQ_PADDING == 1: frequency grid is padded at +/- infinity
-     *                       -infinity corresponds to i = -1
-     *                       +infinity corresponds to i =  N
      */
     void K2_get_freqs_w(double& w, double& v, int iw, int iv) const;
     void K2_get_freqs_aux(double& w, double& v, int iw, int iv) const;
@@ -231,10 +197,6 @@ public:
 
     /**
      * gets the frequency corresponding to the frequency index i
-     * If FREQ_PADDING == 0: nothing unusual, for N frequency points i ranges in [0,N-1]
-     * If FREQ_PADDING == 1: frequency grid is padded at +/- infinity
-     *                       -infinity corresponds to i = -1
-     *                       +infinity corresponds to i =  N
      */
     void K1_get_freq_w(double& w, int i) const;     /// returns regular frequency
     void K1_get_freq_aux(double& w, int i) const;   /// returns frequency on the auxiliary grid
@@ -416,7 +378,7 @@ template <typename Q> double vertexDataContainer<k1,Q>::analyze_tails_K1() const
     double maxabs_K1_total = vertexContainerBase<Q,4>::data.max_norm();
     vec<double> maxabsK1_along_w = maxabs(vertexContainerBase<Q,4>::data, vertexContainerBase<Q,4>::dims, 2);
 
-    return maxabsK1_along_w[FREQ_PADDING] / maxabs_K1_total;
+    return maxabsK1_along_w[0] / maxabs_K1_total;
 }
 
 
@@ -556,13 +518,13 @@ template <K_class k, typename Q> double vertexDataContainer<k,Q>::analyze_tails_
     double maxmax = vertexContainerBase<Q,5>::data.max_norm();
     vec<double> maxabsK2_along_w = maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 2) * (1/maxmax);
 
-    return maxabsK2_along_w[FREQ_PADDING];
+    return maxabsK2_along_w[0];
 }
 template <K_class k, typename Q> double vertexDataContainer<k,Q>::analyze_tails_K2_y() const {
     double maxmax = vertexContainerBase<Q,5>::data.max_norm();
     vec<double> maxabsK2_along_v = maxabs(vertexContainerBase<Q,5>::data, vertexContainerBase<Q,5>::dims, 3) * (1/maxmax);
 
-    return maxabsK2_along_v[FREQ_PADDING];
+    return maxabsK2_along_v[0];
 }
 
 template <K_class k, typename Q> auto vertexDataContainer<k,Q>::shrink_freq_box(const double rel_tail_threshold, const bool verbose) const -> VertexFrequencyGrid<k2> {

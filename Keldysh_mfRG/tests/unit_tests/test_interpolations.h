@@ -170,7 +170,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = -FREQ_PADDING; iw<nBOS+FREQ_PADDING; iw++){
+    for (int iw = 0; iw<nBOS; iw++){
         double w;
         if (INTERPOLATION == linear)  avertex.K1.K1_get_freq_w(w, iw);
         else avertex.K1.K1_get_freq_aux(w, iw);
@@ -231,7 +231,7 @@ if (INTERPOLATION == cubic) {
     int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0-FREQ_PADDING; iw < nBOS+FREQ_PADDING; iw++) {
+    for (int iw = 0; iw < nBOS; iw++) {
         double w;
         avertex.K1.K1_get_freq_aux(w, iw);
         value = cubicFunction1D(w);
@@ -294,8 +294,8 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0-FREQ_PADDING; iw<nBOS2+FREQ_PADDING; iw++){
-        for (int iv = 0-FREQ_PADDING; iv<nFER2+FREQ_PADDING; iv++) {
+    for (int iw = 0; iw<nBOS2; iw++){
+        for (int iv = 0; iv<nFER2; iv++) {
 
             double w;
             double v;
@@ -366,8 +366,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         int i_spin = 0;
         int i_in = 0;
         state_datatype value = 0.;
-        for (int iw = 0-FREQ_PADDING; iw < nBOS2+FREQ_PADDING; iw++) {
-            for (int iv = 0-FREQ_PADDING; iv < nFER2+FREQ_PADDING; iv++) {
+        for (int iw = 0; iw < nBOS2; iw++) {
+            for (int iv = 0; iv < nFER2; iv++) {
 
                 double w, v;
                 avertex.K2.K2_get_freqs_aux(w, v, iw, iv);
@@ -445,9 +445,9 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     else iK = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 0-FREQ_PADDING; iw<nBOS3+FREQ_PADDING; iw++){
-        for (int iv = 0-FREQ_PADDING; iv<nFER3+FREQ_PADDING; iv++) {
-            for (int ivp = 0-FREQ_PADDING; ivp<nFER3+FREQ_PADDING; ivp++) {
+    for (int iw = 0; iw<nBOS3; iw++){
+        for (int iv = 0; iv<nFER3; iv++) {
+            for (int ivp = 0; ivp<nFER3; ivp++) {
 
                 double w, v, vp;
                 if (INTERPOLATION == linear)  avertex.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
@@ -522,9 +522,9 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         else iK = 0;
         int i_in = 0;
         state_datatype value = 0.;
-        for (int iw = 0-FREQ_PADDING; iw < nBOS3+FREQ_PADDING; iw++) {
-            for (int iv = 0-FREQ_PADDING; iv < nFER3+FREQ_PADDING; iv++) {
-                for (int ivp = 0-FREQ_PADDING; ivp < nFER3+FREQ_PADDING; ivp++) {
+        for (int iw = 0; iw < nBOS3; iw++) {
+            for (int iv = 0; iv < nFER3; iv++) {
+                for (int ivp = 0; ivp < nFER3; ivp++) {
 
                     double w, v, vp;
                     avertex.K3.K3_get_freqs_aux(w, v, vp, iw, iv, ivp);
