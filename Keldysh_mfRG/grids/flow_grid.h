@@ -30,7 +30,7 @@ namespace flowgrid {
         rvec Lambda_CPs;
 #if REG == 2
         for (int i = 0; i < n; i++){
-            double y = Us[i]/glb_U - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
+            double y = glb_U / Us[i] - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
 
             if(y<0){
                 break;

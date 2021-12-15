@@ -214,9 +214,8 @@ void IntegrandSE<Q>::evaluate_propagator(Q &GM, const double vp) const {
 template <typename Q>
 void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
                                      const int iK, const double vp) const {
-    const int spin = 0;
-    VertexInput inputClosedAbove (components[iK]  , spin,   0., vp, v, i_in, 't');
-    VertexInput inputClosedBelow (components[iK+3], spin, 0., v, vp, i_in, 't');
+    VertexInput inputClosedAbove (components[iK]  , i_spin, 0., vp, v, i_in, 't');
+    VertexInput inputClosedBelow (components[iK+3], i_spin, 0., v, vp, i_in, 't');
     factorClosedAbove = vertex.value(inputClosedAbove);
     factorClosedBelow = vertex.value(inputClosedBelow);
 }
@@ -224,8 +223,7 @@ void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
 template <typename Q>
 void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, const int iK, const double vp) const {
     // "components" are all zero in Matsubara case -> this function also works for Matsubara
-    const int spin = 0;
-    VertexInput inputClosedAbove (components[iK], spin, 0, vp, v, i_in, 't');
+    VertexInput inputClosedAbove (components[iK], i_spin, 0, vp, v, i_in, 't');
     factorClosedAbove = vertex.value(inputClosedAbove);
 }
 

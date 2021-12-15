@@ -238,7 +238,7 @@ void FrequencyGrid::initialize_grid() {
     double W;
     t_upper = grid_transf(w_upper);
     t_lower = grid_transf(w_lower);
-    dt = (t_upper - t_lower) / ((double) (N_w));
+    dt = (t_upper - t_lower) / ((double) (N_w-1));
     for(int i=0; i<N_w; ++i) {
         W = t_lower + i * dt;
         ws[i] = grid_transf_inv(W);

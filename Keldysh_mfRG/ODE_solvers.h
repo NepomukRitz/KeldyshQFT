@@ -216,8 +216,8 @@ namespace ode_solver_impl
             {
                 return 0.;
             }
-            assert(row_index * (stages - 1) + column_index >= 0);
-            return a[(row_index -1) * (stages - 1) + column_index];
+            assert((row_index - 1) * (stages - 1) + column_index >= 0);
+            return a[(row_index - 1) * (stages - 1) + column_index];
         }
 
         double get_node(size_t stage) const
@@ -386,7 +386,7 @@ namespace ode_solver_impl
         for (const double checkpoint : lambda_checkpoints)
         {
             // Guard against float arithmetic fails
-            if ((Lambda_i - checkpoint) * (Lambda_next - checkpoint) < -1e-14)
+            if ((Lambda_i - checkpoint) * (Lambda_next - checkpoint) < -1e-14 and tableau.adaptive)
             {
                 htry = checkpoint - Lambda_i;
                 break;
@@ -413,17 +413,6 @@ namespace ode_solver_impl
             ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs, iteration);
 
             if (not tableau.adaptive) break;
-            //// compute parquet checks
-            //if (world_rank == 0)
-            //{
-            //    std::cout << "Make parquet check: (Lambda = " << FlowGrid::lambda_from_t(t_value + t_step) << "): " << std::endl;
-            //};
-//
-            //parquet_state = temporary;
-            //initial_sd(parquet_state, FlowGrid::lambda_from_t(t_value + t_step));
-            //initial_bs(parquet_state, FlowGrid::lambda_from_t(t_value + t_step));
-            //State<state_datatype> parquet_check_diff = temporary + (-1) * parquet_state;
-            //double errmax_parquet = max_err(parquet_check_diff, temporary);
 
             /// === Error checking ===
             //errmax = max_rel_err<state_datatype>(err, yscal, 1.e-6);
@@ -628,7 +617,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
         if (verbose and mpi_world_rank() == 0) get_time(t0); // measure time for one iteration
 
 
-        lambdas[i] = Lambda;
+        lambdas[i+1] = Lambda;
 
         // if Y == State: save state in hdf5
         postRKstep_stuff<Y>(result, Lambda, lambdas, i, filename, verbose);
