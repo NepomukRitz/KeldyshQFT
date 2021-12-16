@@ -135,20 +135,20 @@ mpiCC --std=c++17  ../tests/get_integrand_dGammaC.cpp -o ../tests/get_integrand_
     os.system("rm ./compile_asc_saveIntegrand.sh")
 
 
-def get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in):
-    cmd = exe_dir + 'get_integrand_dGamma_1loop_fromFlow.o ' + data_dir + " " + filename + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in)
+def get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in):
+    cmd = exe_dir + 'get_integrand_dGamma_1loop_fromFlow.o ' + data_dir + " " + filename + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2)  + " " + str(spin) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in)
     os.system(cmd)
 
-def get_integrand_dGamma_1loop(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in):
-    cmd = exe_dir + 'get_integrand_dGamma_1loop.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in)
+def get_integrand_dGamma_1loop(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in):
+    cmd = exe_dir + 'get_integrand_dGamma_1loop.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2)  + " " + str(spin) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in)
     os.system(cmd)
 
-def get_integrand_dGammaL(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, i_loop):
-    cmd = exe_dir + 'get_integrand_dGammaL.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in) + " " + str(i_loop)
+def get_integrand_dGammaL(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, i_loop):
+    cmd = exe_dir + 'get_integrand_dGammaL.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2)  + " " + str(spin) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in) + " " + str(i_loop)
     os.system(cmd)
 
-def get_integrand_dGammaC(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, i_loop):
-    cmd = exe_dir + 'get_integrand_dGammaC.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in) + " " + str(i_loop)
+def get_integrand_dGammaC(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, i_loop):
+    cmd = exe_dir + 'get_integrand_dGammaC.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2)  + " " + str(spin) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in) + " " + str(i_loop)
     os.system(cmd)
 
 def get_integrand_filename_dGamma_1loop(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in):
@@ -215,6 +215,7 @@ if __name__ == '__main__':
     channel = 'a'
     i0 = 0
     i2 = 0
+    spin = 0
     w = 0
     v = 0
     vp = 0
@@ -223,7 +224,7 @@ if __name__ == '__main__':
 
     compile_get_integrand_dGamma_1loop_fromFlow_Cpp()
     filename = "flow_K3_3l_i6_freq_sym_asymp_corr_parquet_intersections2"
-    get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)
+    get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in)
 
     integrandFilename = get_integrand_filename_dGamma_1loop(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)
     fig0, axs0 = plt.subplots(num=0, nrows=1, ncols=1)
@@ -233,7 +234,7 @@ if __name__ == '__main__':
 
     '''
     #compile_get_integrand_dGamma_1loop_Cpp()
-    get_integrand_dGamma_1loop(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)
+    get_integrand_dGamma_1loop(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in)
 
     integrandFilename = get_integrand_filename_dGamma_1loop(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)
     fig1, axs1 = plt.subplots(num=1, nrows=1, ncols=1)
@@ -245,7 +246,7 @@ if __name__ == '__main__':
     i_loop = 3
 
     #compile_get_integrand_dGammaL_Cpp()
-    get_integrand_dGammaL(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, i_loop)
+    get_integrand_dGammaL(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, i_loop)
 
     integrandFilename = get_integrand_filename_dGammaL(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, i_loop)
     fig2, axs2 = plt.subplots(num=2, nrows=1, ncols=1)
@@ -255,7 +256,7 @@ if __name__ == '__main__':
 
 
     #compile_get_integrand_dGammaC_Cpp()
-    get_integrand_dGammaC(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, i_loop)
+    get_integrand_dGammaC(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, i_loop)
 
     integrandFilename = get_integrand_filename_dGammaC(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, i_loop)
     fig3, axs3 = plt.subplots(num=3, nrows=1, ncols=1)

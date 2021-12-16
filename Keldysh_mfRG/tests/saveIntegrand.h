@@ -43,28 +43,28 @@ namespace saveIntegrand {
     template <typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
     void saveIntegrandBubble(const std::string& filename_prefix, GeneralVertex<Q, symmetry_left>& vertex1, GeneralVertex<Q, symmetry_right>& vertex2,
                        const Bubble_Object& Pi, const bool diff, const rvec& freqs, const K_class k_class, const char channel,
-                       const int i0, const int i2, const double w, const double v, const double vp, const int i_in) {
+                       const int i0, const int i2, const int spin, const double w, const double v, const double vp, const int i_in) {
 
         vertex1.initializeInterpol();
         vertex2.initializeInterpol();
         switch (k_class) {
             case k1: {
-                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, channel, diff, 0, k1);
+                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0, k1);
                 integrandK1.save_integrand(freqs, filename_prefix);
                 break;
             }
             case k2: {
-                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, 0, w,  v, 0., i_in, channel, diff, 0, k2);
+                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0, k2);
                 integrandK2.save_integrand(freqs, filename_prefix);
                 break;
             }
             case k3: {
-                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, 0, w,  v, vp, i_in, channel, diff, 0, k3);
+                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0, k3);
                 integrandK3.save_integrand(freqs, filename_prefix);
                 break;
             }
             default:
-                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrand(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, channel, diff, 0, k1);
+                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrand(vertex1, vertex2, Pi, i0, i2, 0, spin, w, 0., 0., i_in, channel, diff, 0, k1);
                 assert(false);
         }
 
@@ -75,7 +75,7 @@ namespace saveIntegrand {
 
     template <typename Q>
     void dGamma_1Loop(const std::string& filename_prefix, const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda,
-                      const K_class k_class, const char channel, const int i0, const int i2, const double w,
+                      const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
                       const double v, const double vp, const int i_in) {
 
 
@@ -95,13 +95,13 @@ namespace saveIntegrand {
         Bubble<Q> dPi(G, dG, diff);
 
         const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
-        saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, w, v, vp, i_in);
+        saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
 
     template <typename Q>
     void dGamma_1Loop_fromFlow(const std::string& filename_prefix, const std::string& file_Psi, const int it_Lambda,
-                      const K_class k_class, const char channel, const int i0, const int i2, const double w,
+                      const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
                       const double v, const double vp, const int i_in) {
 
 
@@ -126,13 +126,13 @@ namespace saveIntegrand {
         Bubble<Q> dPi(G, dG, diff);
 
         const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
-        saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, w, v, vp, i_in);
+        saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
 
     template <typename Q>
     void dGamma_L(const std::string& filename_prefix, const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda,
-                const K_class k_class, const char channel, const int i0, const int i2, const double w,
+                const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
                 const double v, const double vp, const int i_in) {
         // read Psi for vertex
         State<Q> Psi = read_hdf(file_Psi,  it_Lambda); // read Psi
@@ -150,13 +150,13 @@ namespace saveIntegrand {
 
         dPsi.vertex.set_Ir(true);
         const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
-        saveIntegrandBubble(filename_prefix, dPsi.vertex, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, w, v, vp, i_in);
+        saveIntegrandBubble(filename_prefix, dPsi.vertex, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
 
     template <typename Q>
     void dGamma_R(const std::string& filename_prefix, const std::string& file_Psi, const std::string& file_dPsi, const int it_Lambda,
-                const K_class k_class, const char channel, const int i0, const int i2, const double w,
+                const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
                 const double v, const double vp, const int i_in) {
         /// TODO: Sanity check for input parameters
 
@@ -176,14 +176,14 @@ namespace saveIntegrand {
 
         dPsi.vertex.set_Ir(true);
         const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
-        saveIntegrandBubble(filename_prefix, Psi.vertex, dPsi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, w, v, vp, i_in);
+        saveIntegrandBubble(filename_prefix, Psi.vertex, dPsi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
 
 
     template <typename Q>
     void dGamma_C_left_insertion(const std::string& filename_prefix, const std::string& file_Psi, const std::string& file_dGammaL, const std::string& file_dGammaR, const int it_Lambda,
-                const K_class k_class, const char channel, const int i0, const int i2, const double w,
+                const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
                 const double v, const double vp, const int i_in) {
         // read Psi for vertex
         State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
@@ -209,13 +209,13 @@ namespace saveIntegrand {
 
         dGammaR.set_only_same_channel(true);
         const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
-        saveIntegrandBubble(filename_prefix, dGammaR, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, w, v, vp, i_in);
+        saveIntegrandBubble(filename_prefix, dGammaR, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
 
     template <typename Q>
     void dGamma_C_right_insertion(const std::string& filename_prefix, const std::string& file_Psi, const std::string& file_dGammaL, const std::string& file_dGammaR, const int it_Lambda,
-        const K_class k_class, const char channel, const int i0, const int i2, const double w,
+        const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
         const double v, const double vp, const int i_in) {
         // read Psi for vertex
         State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
@@ -241,7 +241,7 @@ namespace saveIntegrand {
 
         dGammaL.set_only_same_channel(true);
         const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
-        saveIntegrandBubble(filename_prefix, Psi.vertex, dGammaL, Pi, diff, freqs, k_class, channel, i0, i2, w, v, vp, i_in);
+        saveIntegrandBubble(filename_prefix, Psi.vertex, dGammaL, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
 
@@ -295,6 +295,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
     char channel = 'a';
     int i0 = 0;         // external Keldysh indices ranging in [0,...,15]
     int i2 = 0;         // internal Keldysh indices ranging in [0,..., 9] (--> directly corresponding to non-zero components of the BubbleObject)
+    int spin = 0;       // spin component; currently 0 = V, 1 = Vhat
     double w = 0.;      // frequencies in the natural parametrization of channel
     double v = 0.;      // frequencies in the natural parametrization of channel
     double vp= 0.;      // frequencies in the natural parametrization of channel
@@ -312,7 +313,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
 
     for (double w_temp: ws) {
         for (double v_temp: vs) {
-            saveIntegrand::dGamma_1Loop<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w_temp, v_temp, vp, i_in);
+            saveIntegrand::dGamma_1Loop<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w_temp, v_temp, vp, i_in);
 
 
         }
@@ -346,6 +347,7 @@ void get_integrand_dGammaL(std::string dir_str, const int it_Lambda, const int r
     char channel = 'a';
     int i0 = 0;
     int i2 = 0;
+    int spin = 0;       // spin component; currently 0 = V, 1 = Vhat
     double w = 1.;
     double v = 1.;
     double vp= 1.;
@@ -356,7 +358,7 @@ void get_integrand_dGammaL(std::string dir_str, const int it_Lambda, const int r
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaL_RKstep"+std::to_string(rkStep);
-    saveIntegrand::dGamma_L<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+    saveIntegrand::dGamma_L<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
 }
 
@@ -379,6 +381,7 @@ void get_integrand_dGammaR(std::string dir_str, const int it_Lambda, const int r
     char channel = 'a';
     int i0 = 0;
     int i2 = 0;
+    int spin = 0;       // spin component; currently 0 = V, 1 = Vhat
     double w = 1.;
     double v = 1.;
     double vp= 1.;
@@ -389,7 +392,7 @@ void get_integrand_dGammaR(std::string dir_str, const int it_Lambda, const int r
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaR_RKstep"+std::to_string(rkStep);
-    saveIntegrand::dGamma_R<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+    saveIntegrand::dGamma_R<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
 }
 
@@ -408,6 +411,7 @@ void get_integrand_dGammaC_left(std::string dir_str, const int it_Lambda, const 
     char channel = 'a';
     int i0 = 0;
     int i2 = 0;
+    int spin = 0;       // spin component; currently 0 = V, 1 = Vhat
     double w = 1.;
     double v = 1.;
     double vp= 1.;
@@ -418,7 +422,7 @@ void get_integrand_dGammaC_left(std::string dir_str, const int it_Lambda, const 
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaC_left_insertion_RKstep"+std::to_string(rkStep);
-    saveIntegrand::dGamma_C_left_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+    saveIntegrand::dGamma_C_left_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
 }
 
@@ -436,6 +440,7 @@ void get_integrand_dGammaC_right(std::string dir_str, const int it_Lambda, const
     char channel = 'a';
     int i0 = 0;
     int i2 = 0;
+    int spin = 0;       // spin component; currently 0 = V, 1 = Vhat
     double w = 1.;
     double v = 1.;
     double vp= 1.;
@@ -446,7 +451,7 @@ void get_integrand_dGammaC_right(std::string dir_str, const int it_Lambda, const
     std::string dir_integrand_str = dir_str + "integrands/";
     makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaC_right_insertion_RKstep"+std::to_string(rkStep);
-    saveIntegrand::dGamma_C_right_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+    saveIntegrand::dGamma_C_right_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
 }
 

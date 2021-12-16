@@ -1547,7 +1547,7 @@ void rvert<Q>::K1_crossproject(const char channel_out) {
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
     for (int iK = 0; iK < nK_K1; ++iK) {
         for (int it_spin = 0; it_spin < n_spin; it_spin++) {
-#pragma omp parallel for schedule(dynamic) default(none) shared(iK)
+#pragma omp parallel for schedule(dynamic) default(none) shared(iK, it_spin)
             for (int iw = 0; iw < nw1; ++iw) {
                 Q projected_value = K1_BZ_average(iK, it_spin, iw);
                 for (int i_in = 0; i_in < n_in_K1; ++i_in) {

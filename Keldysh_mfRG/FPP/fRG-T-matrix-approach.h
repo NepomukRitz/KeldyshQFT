@@ -342,10 +342,10 @@ comp fRG_solve_K1r(double w, double q, char chan, int inttype) {
     y_ini.value = (comp) 0.0;
 
 
-    ODE_solver_RK4(y_fin, Lambda_fin, y_ini, Lambda_ini,
-                   rhs_K1l1fRG, flowgrid::log_substitution, flowgrid::log_resubstitution, nODE);
-    //ode_solver<FRG_solvand_nsc<comp>, flowgrid::log_parametrization>(y_fin, Lambda_fin, y_ini, Lambda_ini, rhs_K1l1fRG,
-    //                                                                 std::vector<double>(), "", nODE);
+    //ODE_solver_RK4(y_fin, Lambda_fin, y_ini, Lambda_ini,
+    //               rhs_K1l1fRG, flowgrid::log_substitution, flowgrid::log_resubstitution, nODE);
+    ode_solver<FRG_solvand_nsc<comp>, flowgrid::log_parametrization>(y_fin, Lambda_fin, y_ini, Lambda_ini, rhs_K1l1fRG,
+                                                                     std::vector<double>(), "", nODE);
 
     return y_fin.value;
 }
