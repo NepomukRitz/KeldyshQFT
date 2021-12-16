@@ -9,18 +9,10 @@
 #include <mpi.h>             // basic mpi functionality
 
 // Get the rank(ID) of the current process
-int mpi_world_rank() {
-    int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-    return world_rank;
-}
+int mpi_world_rank();
 
 // Get the number of processes
-int mpi_world_size() {
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-    return world_size;
-}
+int mpi_world_size();
 
 /**
  * initialize buffer into which each MPI process can write
@@ -59,11 +51,7 @@ vec<Q> mpi_initialize_result(int n_mpi, int n_omp) {
  * @param n_mpi  : # of MPI tasks (# of grid points for external variable(s) in which we do MPI parallelization)
  * @param n_omp  : # of OMP tasks (# of grid points for external variable(s) in which we do OMP parallelization)
  */
-void mpi_collect(vec<comp>& buffer, vec<comp>& result, int n_mpi, int n_omp) {
-    int world_size = mpi_world_size();
-    MPI_Allgather(&buffer[0], static_cast<int>(2*n_omp*(n_mpi/world_size+1)), MPI_COMPLEX,
-                  &result[0], static_cast<int>(2*n_omp*(n_mpi/world_size+1)), MPI_COMPLEX, MPI_COMM_WORLD);
-}
+void mpi_collect(vec<comp>& buffer, vec<comp>& result, int n_mpi, int n_omp);
 
 /**
  * distribute results between all MPI processes, using MPI_Allgather (for data type double)
@@ -72,12 +60,7 @@ void mpi_collect(vec<comp>& buffer, vec<comp>& result, int n_mpi, int n_omp) {
  * @param n_mpi  : # of MPI tasks (# of grid points for external variable(s) in which we do MPI parallelization)
  * @param n_omp  : # of OMP tasks (# of grid points for external variable(s) in which we do OMP parallelization)
  */
-void mpi_collect(vec<double>& buffer, vec<double>& result, int n_mpi, int n_omp) {
-    int world_size = mpi_world_size();
-
-    MPI_Allgather(&buffer[0], static_cast<int>(n_omp*(n_mpi/world_size+1)), MPI_DOUBLE,
-                  &result[0], static_cast<int>(n_omp*(n_mpi/world_size+1)), MPI_DOUBLE, MPI_COMM_WORLD);
-}
+void mpi_collect(vec<double>& buffer, vec<double>& result, int n_mpi, int n_omp);
 
 /**
  * bring results collected from all MPI processes via mpi_collect(...) into the correct order to store them into

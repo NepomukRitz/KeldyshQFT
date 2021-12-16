@@ -11,29 +11,16 @@
 
 
 // Fermi--Dirac distribution function
-auto Fermi_distr(double v, double mu) -> double {
-    // return 1./(exp((v-mu)/glb_T)+1.);
-    return 0.5 * (1. - tanh((v-mu)/(2.*glb_T))); // numerically preferential
-}
+auto Fermi_distr(double v, double mu) -> double;
 
 // Fermi distribution factor: 1. - 2. * Fermi_distr
-auto Fermi_fac(double v, double mu) -> double {
-    return tanh((v-mu)/(2.*glb_T));
-}
+auto Fermi_fac(double v, double mu) -> double;
 
 // effective distribution function
-auto Eff_distr(double v) -> double {
-    if (EQUILIBRIUM) return Fermi_distr(v, glb_mu);
-    else return 0.5 * (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
-}
+auto Eff_distr(double v) -> double;
 
 // effective distribution factor: 1. - 2. * Eff_distr
-auto Eff_fac(double v) -> double {
-    if (EQUILIBRIUM) return Fermi_fac(v, glb_mu);
-    else return 1. - (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
-}
-
-
+auto Eff_fac(double v) -> double;
 
 
 /// Propagator class ///
@@ -199,12 +186,6 @@ auto Propagator<Q>::GK(const double v, const int i_in) const -> Q
     }
 }
 
-template <>
-auto Propagator<double>::GK(const double v, const int i_in) const -> double {
-    print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
 
 template <typename Q>
 auto Propagator<Q>::SR(const double v, const int i_in) const -> Q
@@ -244,12 +225,6 @@ auto Propagator<Q>::SK(const double v, const int i_in) const -> Q
     }
 }
 
-template <>
-auto Propagator<double>::SK(const double v, const int i_in) const -> double {
-    print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
 
 template <typename Q>
 auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
@@ -463,13 +438,6 @@ auto Propagator<Q>::GR_REG2_SIAM(const double v, const int i_in) const -> Q {
     return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
 }
 
-template <>
-auto Propagator<double>::GR_REG2_SIAM(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
-
 template <typename Q>
 auto Propagator<Q>::GA_REG2_Hubbard(const double v, const int i_in) const -> Q {
     double k_x, k_y;
@@ -478,23 +446,9 @@ auto Propagator<Q>::GA_REG2_Hubbard(const double v, const int i_in) const -> Q {
     // TODO: Currently only at half filling!
 }
 
-template <>
-auto Propagator<double>::GA_REG2_Hubbard(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
-
 template <typename Q>
 auto Propagator<Q>::GA_REG2_SIAM(const double v, const int i_in) const -> Q {
     return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
-}
-
-template <>
-auto Propagator<double>::GA_REG2_SIAM(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
 }
 
 template <typename Q>
@@ -505,13 +459,6 @@ auto Propagator<Q>::SR_REG2(const double v, const int i_in) const -> Q {
     return -0.5*glb_i*G*G; // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
 }
 
-template <>
-auto Propagator<double>::SR_REG2(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
-
 // full propagator (Matsubara)
 template <typename Q>
 auto Propagator<Q>::GM_REG2_Hubbard(const double v, const int i_in) const -> Q {
@@ -519,13 +466,6 @@ auto Propagator<Q>::GM_REG2_Hubbard(const double v, const int i_in) const -> Q {
     get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
     return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
     // TODO: Currently only at half filling!
-}
-
-template <>
-auto Propagator<double>::GM_REG2_Hubbard(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
 }
 
 template <typename Q>
@@ -544,13 +484,6 @@ template <typename Q>
 auto Propagator<Q>::GM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> Q {
     assert(v != 0.);
     return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
-}
-
-template <>
-auto Propagator<double>::GM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
-    assert(false);
-    return 0.;
 }
 
 // single scale propagator (Matsubara)
@@ -580,13 +513,6 @@ auto Propagator<Q>::SM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> 
     return -0.5*glb_i*G*G*sign(v);
 }
 
-template <>
-auto Propagator<double>::SM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
-    assert(false);
-    return 0.;
-}
-
 
 // TODO(high): Does the w-regulator even make sense for Keldysh?
 /////// PROPAGATOR FUNCTIONS for frequency-regulator ///////
@@ -602,13 +528,6 @@ auto Propagator<Q>::GR_REG3_SIAM(const double v, const int i_in) const -> Q {
     return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
 }
 
-template <>
-auto Propagator<double>::GR_REG3_SIAM(const double v, const int i_in) const -> double {
-    print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
-
 template <typename Q>
 auto Propagator<Q>::GA_REG3_Hubbard(const double v, const int i_in) const -> Q {
     return 0.;
@@ -618,13 +537,6 @@ auto Propagator<Q>::GA_REG3_Hubbard(const double v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::GA_REG3_SIAM(const double v, const int i_in) const -> Q {
     return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
-}
-
-template <>
-auto Propagator<double>::GA_REG3_SIAM(const double v, const int i_in) const -> double {
-    print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0.;
 }
 
 template <typename Q>
@@ -710,13 +622,6 @@ auto Propagator<Q>::GM_REG3_SIAM_PHS(const double v, const int i_in) const -> Q 
 template <typename Q>
 auto Propagator<Q>::GM_REG3_SIAM_NoPHS(const double v, const int i_in) const -> Q {
     return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
-}
-
-template <>
-auto Propagator<double>::GM_REG3_SIAM_NoPHS(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
-    assert(false);
-    return 0.;
 }
 
 // single scale propagator (Matsubara)

@@ -41,9 +41,7 @@ inline auto myconj(const Q x) -> Q {return conj(x);};
 template<>
 inline auto myconj<double>(const double x) -> double {return x;};
 
-auto isfinite(comp z) -> bool {
-    return std::isfinite(real(z)) and std::isfinite(imag(z));
-};
+auto isfinite(comp z) -> bool;
 
 template<typename T, typename std::enable_if<std::is_floating_point<T>::value>::type* = nullptr >
 auto isfinite(T z) -> bool {
@@ -392,18 +390,9 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 
 enum K_class {k1=0, k2=1, k2b=2, k3=3};
-std::ostream& operator << (std::ostream& out, K_class k) {
-    if (k == k1 or k == k2) {out << "K" << static_cast<int>(k+1);}
-    else if(k == k3) {out << "K" << static_cast<int>(k);}
-    else {out << "K" << static_cast<int>(k) << "'";}
-    return out;
-}
+std::ostream& operator << (std::ostream& out, K_class k);
 enum symmetryType {symmetric=0, non_symmetric=1};
-std::ostream& operator << (std::ostream& out, symmetryType symmtype) {
-    if (symmtype == symmetric) {out << "symmetric";}
-    else {out << "non-symmetric" ;}
-    return out;
-}
+std::ostream& operator << (std::ostream& out, symmetryType symmtype);
 
 /** auxiliary struct that contains all input variables of vertices
  * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)
