@@ -1,16 +1,16 @@
 #include <iostream>          // text input/output
 #include <sys/stat.h>
 #include <bits/stdc++.h>
-#include "parameters/master_parameters.h"
-#include "symmetries/Keldysh_symmetries.h"
+#include "parameters/master_parameters.hpp"
+#include "symmetries/Keldysh_symmetries.hpp"
 #include <mpi.h>
-#include "utilities/mpi_setup.h"
-#include "mfRG_flow/flow.h"
-#include "tests/test_perturbation_theory.h"
-#include "tests/test_interpolation.h"
-#include "utilities/util.h"
-#include "tests/integrand_tests/saveIntegrand.h"
-#include "tests/test_symmetries.h"
+#include "utilities/mpi_setup.hpp"
+#include "mfRG_flow/flow.hpp"
+#include "tests/test_perturbation_theory.hpp"
+#include "tests/test_interpolation.hpp"
+#include "utilities/util.hpp"
+#include "tests/integrand_tests/saveIntegrand.hpp"
+#include "tests/test_symmetries.hpp"
 
 
 std::string generate_filename() {

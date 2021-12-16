@@ -7,9 +7,9 @@
 
 #include "Momentum-integral-Bubble.h"
 #include "Ladder-approximation.h"
-#include "../utilities/util.h"
-#include "../ODE_solvers/ODE_solvers.h"
-#include "../grids/flow_grid.h"
+#include "../utilities/util.hpp"
+#include "../ODE_solvers/ODE_solvers.hpp"
+#include "../grids/flow_grid.hpp"
 #include "zeros.h"
 
 // class for the vpp-integral for soft v-regulator

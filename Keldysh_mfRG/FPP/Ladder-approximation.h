@@ -6,7 +6,7 @@
 #define MAIN_CPP_LADDER_APPROXIMATION_H
 
 #include "Momentum-integral-Bubble.h"
-#include "../utilities/write_data2file.h"             // write vectors into hdf5 file
+#include "../utilities/write_data2file.hpp"             // write vectors into hdf5 file
 #include "fRG-T-matrix-approach.h"
 #include "../paid-integrator/paid.hpp"
 

@@ -10,23 +10,23 @@
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 
-#include "../../data_structures.h"
-#include "../../parameters/master_parameters.h"  // define system parameters
-#include "../../utilities/hdf5_routines.h"
+#include "../../data_structures.hpp"
+#include "../../parameters/master_parameters.hpp"  // define system parameters
+#include "../../utilities/hdf5_routines.hpp"
 
 // include tests that should be run
-#include "test_ODE_solver.h"
-#include "test_data_structures.h"
-#include "test_integrator.h"
-#include "test_symmetry_transformations.h"
-#include "../test_PrecalculateBubble.h"
+#include "test_ODE_solver.hpp"
+#include "test_data_structures.hpp"
+#include "test_integrator.hpp"
+#include "test_symmetry_transformations.hpp"
+#include "../test_PrecalculateBubble.hpp"
 
-#include "test_frequencygrid.h"
-#include "test_interpolations.h"
-#include "test_minimizer.h"
-#include "test_rvertex.h"
+#include "test_frequencygrid.hpp"
+#include "test_interpolations.hpp"
+#include "test_minimizer.hpp"
+#include "test_rvertex.hpp"
 //#ifdef HUBBARD
-#include "test_momentum_grid.h"
+#include "test_momentum_grid.hpp"
 //#endif
 
 

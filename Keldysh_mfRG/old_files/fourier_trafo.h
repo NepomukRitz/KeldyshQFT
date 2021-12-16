@@ -3,13 +3,13 @@
 
 #include <cmath>                    // exp (to adjust Fourier convention), M_PI = 3.1415...
 #include <fftw3.h>                  // Fast Fourier transform library
-#include "../data_structures.h"        // real/complex vector classes, imag. unit
-#include "../utilities/write_data2file.h"        // writing data into text or hdf5 files
+#include "../data_structures.hpp"        // real/complex vector classes, imag. unit
+#include "../utilities/write_data2file.hpp"        // writing data into text or hdf5 files
 #include <iostream>                 // text input/output
-#include "../correlation_functions/two_point/propagator.h"             // propagator to perform second-order perturbation theory (SOPT)
-#include "../correlation_functions/two_point/selfenergy.h"             // self-energy filled in SOPT
-#include "../correlation_functions/four_point/r_vertex.h"               // reducible vertex in channel r (for K1a, K1p in SOPT)
-#include "../utilities/util.h"                   // sign function
+#include "../correlation_functions/two_point/propagator.hpp"             // propagator to perform second-order perturbation theory (SOPT)
+#include "../correlation_functions/two_point/selfenergy.hpp"             // self-energy filled in SOPT
+#include "../correlation_functions/four_point/r_vertex.hpp"               // reducible vertex in channel r (for K1a, K1p in SOPT)
+#include "../utilities/util.hpp"                   // sign function
 
 
 double Theta(double x) { // Heaviside step function for analytical Fourier transform

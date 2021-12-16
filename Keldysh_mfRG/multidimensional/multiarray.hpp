@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "ranged_view.hpp"
-#include "../data_structures.h"
+#include "../data_structures.hpp"
 
 
 #if DEBUG >= 1

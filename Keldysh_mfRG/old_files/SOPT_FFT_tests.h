@@ -1,12 +1,12 @@
 #ifndef FPP_MFRG_SOPT_FFT_TESTS_H
 #define FPP_MFRG_SOPT_FFT_TESTS_H
 
-#include "../parameters/master_parameters.h"
-#include "../data_structures.h"
-#include "../correlation_functions/two_point/selfenergy.h"
-#include "../correlation_functions/two_point/propagator.h"
+#include "../parameters/master_parameters.hpp"
+#include "../data_structures.hpp"
+#include "../correlation_functions/two_point/selfenergy.hpp"
+#include "../correlation_functions/two_point/propagator.hpp"
 #include "fourier_trafo.h"
-#include "../ODE_solvers/ODE_solvers.h"
+#include "../ODE_solvers/ODE_solvers.hpp"
 
 
 // Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h

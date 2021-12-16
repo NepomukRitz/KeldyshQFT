@@ -11,17 +11,17 @@
 
 #include <numeric>
 #include <string>
-#include "../data_structures.h"                // real and complex vectors
-#include "../utilities/write_data2file.h"             // write vectors into hdf5 file
+#include "../data_structures.hpp"                // real and complex vectors
+#include "../utilities/write_data2file.hpp"             // write vectors into hdf5 file
 #include <complex>          // for usage of complex numbers
 #include <cmath>            // for math. operations (real, imag, std::abs etc.)
 #include <vector>           // vec class is derived from vector class
 #include <initializer_list> // to initialize vec class with initializer list
-#include "../integrator/integrator.h"
+#include "../integrator/integrator.hpp"
 #include "../paid-integrator/paid.hpp"
-#include "../parameters/master_parameters.h"
-#include "../correlation_functions/two_point/propagator.h"
-#include "../utilities/util.h"
+#include "../parameters/master_parameters.hpp"
+#include "../correlation_functions/two_point/propagator.hpp"
+#include "../utilities/util.hpp"
 #include "FPP_grids.hpp"
 
 // PARAMETERS

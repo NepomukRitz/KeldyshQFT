@@ -2,8 +2,8 @@
 #include <bits/stdc++.h>
 #include <iostream>          // text input/output
 #include <sys/stat.h>
-#include "../../parameters/master_parameters.h"
-#include "saveIntegrand.h"
+#include "../../parameters/master_parameters.hpp"
+#include "saveIntegrand.hpp"
 
 auto main(int argc, char * argv[]) -> int {
     if (MPI_FLAG) {

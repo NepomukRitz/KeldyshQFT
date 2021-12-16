@@ -5,7 +5,7 @@
 #ifndef MAIN_CPP_FPP_GRIDS_HPP
 #define MAIN_CPP_FPP_GRIDS_HPP
 
-#include "../data_structures.h"
+#include "../data_structures.hpp"
 
 class FPP_Grid {
 private:
