@@ -8,6 +8,7 @@
 #include "../../loop/loop.hpp"
 #include "../../mfRG_flow/right_hand_sides.hpp"
 #include "../../bubble/integrand.hpp"
+#include "../../loop/integrandSE.hpp"
 
 /**
  * Functions to plot Integrands in the bubble or the loop
