@@ -19,7 +19,7 @@
 #include "test_data_structures.hpp"
 #include "test_integrator.hpp"
 #include "test_symmetry_transformations.hpp"
-#include "../test_PrecalculateBubble.hpp"
+#include "../test_PrecalculatedBubble.hpp"
 
 #include "test_frequencygrid.hpp"
 #include "test_interpolations.hpp"

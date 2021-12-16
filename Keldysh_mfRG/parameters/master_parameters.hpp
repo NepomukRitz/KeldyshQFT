@@ -5,6 +5,7 @@
 #include "technical_parameters.hpp"
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
+#include <string>
 
 // For production: uncomment the following line to switch off assert()-functions
 //#define NDEBUG

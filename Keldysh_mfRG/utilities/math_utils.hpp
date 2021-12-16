@@ -4,6 +4,9 @@
 #include "../data_structures.hpp"
 #include "template_utils.hpp"
 #include "runtime_error.hpp"
+#include "util.hpp"
+#include <iostream>
+#include <cassert>
 
 // signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
 template <typename T>

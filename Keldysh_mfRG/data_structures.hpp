@@ -13,6 +13,9 @@
 #include <cmath>            // for math. operations (real, imag, abs etc.)
 #include <vector>           // vec class is derived from vector class
 #include <initializer_list> // to initialize vec class with initializer list
+#include <functional>
+#include <cassert>
+#include <numeric>
 #include "parameters/master_parameters.hpp"
 //#include "utilities/math_utils.h"
 
@@ -323,7 +326,7 @@ vec<T> vec<T>::diff() const {
 // sum of all elements
 template <typename T>
 T vec<T>::sum() const {
-    return accumulate(this->begin(), this->end(), (T)0);
+    return std::accumulate(this->begin(), this->end(), (T)0);
 }
 
 /// NON-MEMBER FUNCTIONS ///

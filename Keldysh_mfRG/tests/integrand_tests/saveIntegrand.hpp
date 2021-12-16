@@ -23,24 +23,10 @@
 namespace saveIntegrand {
 
 
-    rvec get_freqs_equidistant(const size_t nfreqs, const double wmin, const double wmax) {
-        rvec freqs (nfreqs);
-        double inter = (wmax - wmin) / (double) nfreqs;
-        for (int i = 0; i < nfreqs; i++) {
-            freqs[i] = wmin + inter * i;
-        }
-        return freqs;
-    }
+    rvec get_freqs_equidistant(const size_t nfreqs, const double wmin, const double wmax);
 
 
-    rvec get_freqs_equidistant_aux(const size_t nfreqs, const double tmin, const double tmax, FrequencyGrid& frequencyGrid) {
-        rvec freqs (nfreqs);
-        double inter = (tmax - tmin) / (double) nfreqs;
-        for (int i = 0; i < nfreqs; i++) {
-            freqs[i] = frequencyGrid.grid_transf_inv(tmin + inter * i);
-        }
-        return freqs;
-    }
+    rvec get_freqs_equidistant_aux(const size_t nfreqs, const double tmin, const double tmax, FrequencyGrid& frequencyGrid);
 
     template <typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
     void saveIntegrandBubble(const std::string& filename_prefix, GeneralVertex<Q, symmetry_left>& vertex1, GeneralVertex<Q, symmetry_right>& vertex2,
