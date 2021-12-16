@@ -7,7 +7,7 @@
 #include "../correlation_functions/four_point/vertex.hpp"         // use Vertex class
 #include "../correlation_functions/two_point/selfenergy.hpp"
 #include "../utilities/hdf5_routines.hpp"  // read data from HDF5 file
-#include "../bubble/bubbles.hpp"        // compute bubble function
+#include "../bubble/bubble_function.hpp"        // compute bubble function
 #include "../loop/loop.hpp"           // compute loop function
 
 /**

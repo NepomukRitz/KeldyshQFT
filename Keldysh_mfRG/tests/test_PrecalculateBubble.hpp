@@ -11,12 +11,13 @@
 #include "../data_structures.hpp"
 #include "../correlation_functions/state.hpp"
 #include "../perturbation_theory_and_parquet/perturbation_theory.hpp"
-#include "../bubble/bubbles.hpp"
+#include "../bubble/bubble_function.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"
 #include "../utilities/write_data2file.hpp"            // write vectors into hdf5 file
 #include "../utilities/util.hpp"
 #include "../symmetries/Keldysh_symmetries.hpp"
-
+#include "../bubble/bubble.hpp"
+#include "../bubble/precalculated_bubble.hpp"
 
 
 template<typename Q>

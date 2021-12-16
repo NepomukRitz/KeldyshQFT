@@ -5,7 +5,7 @@
 #include "../correlation_functions/two_point/propagator.hpp"                // propagators
 #include "../correlation_functions/state.hpp"                  // State class
 #include "../loop/loop.hpp"                   // self-energy loop
-#include "../bubble/bubbles.hpp"                // bubble function
+#include "../bubble/bubble_function.hpp"                // bubble function
 #include "../ODE_solvers/ODE_solvers.hpp"               // ODE solvers
 #include "../mfRG_flow/right_hand_sides.hpp"       // compute the right hand sides of flow equations
 #include "../utilities/write_data2file.hpp"        // writing data to txt or hdf5 file

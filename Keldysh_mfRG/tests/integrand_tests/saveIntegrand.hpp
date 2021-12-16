@@ -4,9 +4,10 @@
 #include <cassert>
 #include "../../utilities/hdf5_routines.hpp"
 #include "../../correlation_functions/state.hpp"
-#include "../../bubble/bubbles.hpp"
+#include "../../bubble/bubble_function.hpp"
 #include "../../loop/loop.hpp"
 #include "../../mfRG_flow/right_hand_sides.hpp"
+#include "../../bubble/integrand.hpp"
 
 /**
  * Functions to plot Integrands in the bubble or the loop

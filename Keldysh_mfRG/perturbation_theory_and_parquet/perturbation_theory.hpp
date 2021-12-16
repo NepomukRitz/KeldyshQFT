@@ -13,9 +13,10 @@
 #include "../data_structures.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"
 #include "../correlation_functions/state.hpp"
-#include "../bubble/bubbles.hpp"
+#include "../bubble/bubble_function.hpp"
 #include "../loop/loop.hpp"
 #include "HUBBARD_sopt_selfenergy.hpp"
+#include "../bubble/precalculated_bubble.hpp"
 
 template <typename Q>
 auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){

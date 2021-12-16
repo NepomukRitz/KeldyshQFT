@@ -8,12 +8,13 @@
 #include "../correlation_functions/state.hpp"                      // state to perform full flow
 #include "../correlation_functions/four_point/vertex.hpp"                     // Vertices to put into bubbles
 #include "../loop/loop.hpp"                       // compute self-energy loop
-#include "../bubble/bubbles.hpp"                    // compute vertex bubbles
+#include "../bubble/bubble_function.hpp"                    // compute vertex bubbles
 #include "../parameters/master_parameters.hpp"                 // system parameters (lengths of vectors etc.)
 #include "../ODE_solvers/ODE_solvers.hpp"                // ODE solvers
 #include <cassert>
 #include "../utilities/hdf5_routines.hpp"
 #include "../utilities/util.hpp"
+#include "../bubble/precalculated_bubble.hpp"
 
 
 template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -> State<Q>;

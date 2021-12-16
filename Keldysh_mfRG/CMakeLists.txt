@@ -23,24 +23,24 @@ file(GLOB keldysh_SRC CONFIGURE_DEPENDS "*.h" "*.hpp")  # collects all filenames
 add_executable(Keldysh_mfRG
         main.cpp
         ${keldysh_SRC}
-        )
+        bubble/bubble.hpp)
 
 ## executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
         tests/unit_tests/unit_tests.cpp
         ${keldysh_SRC}
-        )
+        bubble/bubble.hpp)
 
 ## standard executable for integration tests and production runs
 add_executable(FPP_mfRG
         FPP/FPP_main.cpp
         ${keldysh_SRC}
-        )
+        bubble/bubble.hpp)
 
 add_executable(get_integrand_dGammaL
         tests/integrand_tests/get_integrand_dGammaL.cpp
         ${keldysh_SRC}
-        )
+        bubble/bubble.hpp)
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
