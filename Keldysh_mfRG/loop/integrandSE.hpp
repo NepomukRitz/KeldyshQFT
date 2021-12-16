@@ -8,7 +8,7 @@
 #include "../parameters/master_parameters.hpp"             // system parameters (vector lengths etc.)
 #include "../integrator/integrator.hpp"             // integration routines
 #include "../utilities/write_data2file.hpp"        // save integrand for debugging purposes
-#include "../asymptotic_corrections/correctionFunctions.hpp"    // analytical results for the tails of the loop integral
+#include "../asymptotic_corrections/correction_functions.hpp"    // analytical results for the tails of the loop integral
 
 /**
  * Class for the integrand of the Retarded SelfEnergy
