@@ -3,12 +3,12 @@
 
 #include <cassert>
 //#include "interpolations/vertex_interpolations.h"
-#include "interpolations/InterpolatorSpline1D.h"
-#include "interpolations/InterpolatorSpline2D.h"
-#include "interpolations/InterpolatorSpline3D.h"
-#include "interpolations/InterpolatorLinOrSloppy.h"
-#include "symmetries/symmetry_table.h"
-#include "symmetries/symmetry_transformations.h"
+#include "../../interpolations/InterpolatorSpline1D.h"
+#include "../../interpolations/InterpolatorSpline2D.h"
+#include "../../interpolations/InterpolatorSpline3D.h"
+#include "../../interpolations/InterpolatorLinOrSloppy.h"
+#include "../../symmetries/symmetry_table.h"
+#include "../../symmetries/symmetry_transformations.h"
 
 
 /**

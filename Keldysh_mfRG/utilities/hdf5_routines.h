@@ -13,7 +13,7 @@
 #include "../data_structures.h"    // comp data type, std::real/complex vector class
 #include "../grids/frequency_grid.h"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
-#include "../state.h"
+#include "../correlation_functions/state.h"
 
 //template<typename Q> class State;
 /// TODO: Save frequency grids and frequency parameters for each channel individually

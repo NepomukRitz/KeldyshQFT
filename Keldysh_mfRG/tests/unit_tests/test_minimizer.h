@@ -1,7 +1,7 @@
 #ifndef FPP_MFRG_TEST_MINIMIZER_H
 #define FPP_MFRG_TEST_MINIMIZER_H
 
-#include "../../minimizer.h"
+#include "../../utilities/minimizer.h"
 
 /* Test integrand class with int template parameter to select different test integrand functions */
 class TestCost {

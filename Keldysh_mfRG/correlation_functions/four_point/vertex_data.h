@@ -5,13 +5,13 @@
  * This header contains a class which is responsible for saving and retrieving vertex data
  */
 
-#include "utilities/template_utils.h"
-#include "utilities/math_utils.h"
-#include "symmetries/Keldysh_symmetries.h"
-#include "data_structures.h"          // real/complex vector classes
-#include "parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
-#include "parameters/frequency_parameters.h"
-#include "grids/frequency_grid.h"            // functionality for the internal structure of the Hubbard model
+#include "../../utilities/template_utils.h"
+#include "../../utilities/math_utils.h"
+#include "../../symmetries/Keldysh_symmetries.h"
+#include "../../data_structures.h"          // real/complex vector classes
+#include "../../parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
+#include "../../parameters/frequency_parameters.h"
+#include "../../grids/frequency_grid.h"            // functionality for the internal structure of the Hubbard model
 
 
 

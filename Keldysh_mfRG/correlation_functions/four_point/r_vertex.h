@@ -7,17 +7,17 @@
 #ifndef KELDYSH_MFRG_R_VERTEX_H
 #define KELDYSH_MFRG_R_VERTEX_H
 
-#include "data_structures.h"          // real/complex vector classes
-#include "parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
-#include "symmetries/Keldysh_symmetries.h"       // transformations on Keldysh indices
-#include "symmetries/internal_symmetries.h"      // symmetry transformations for internal indices (momentum etc.), currently trivial
-#include "symmetries/symmetry_transformations.h" // symmetry transformations of frequencies
-#include "symmetries/symmetry_table.h"           // table containing information when to apply which symmetry transformations
-#include "grids/momentum_grid.h"            // functionality for the internal structure of the Hubbard model
-#include "utilities/math_utils.h"
+#include "../../data_structures.h"          // real/complex vector classes
+#include "../../parameters/master_parameters.h"               // system parameters (lengths of vectors etc.)
+#include "../../symmetries/Keldysh_symmetries.h"       // transformations on Keldysh indices
+#include "../../symmetries/internal_symmetries.h"      // symmetry transformations for internal indices (momentum etc.), currently trivial
+#include "../../symmetries/symmetry_transformations.h" // symmetry transformations of frequencies
+#include "../../symmetries/symmetry_table.h"           // table containing information when to apply which symmetry transformations
+#include "../../grids/momentum_grid.h"            // functionality for the internal structure of the Hubbard model
+#include "../../utilities/math_utils.h"
 #include "vertex_data.h"
 #include "vertex_buffer.h"
-#include "minimizer.h"
+#include "../../utilities/minimizer.h"
 
 template <typename Q> class fullvert; // forward declaration of fullvert
 template <K_class k, typename Q, interpolMethod inter> class vertexBuffer; // forward declaration of vertexDataContainer

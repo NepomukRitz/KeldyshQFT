@@ -1,19 +1,19 @@
 #ifndef RIGHT_HAND_SIDES_H
 #define RIGHT_HAND_SIDES_H
 
-#include "data_structures.h"            // real/complex vector classes, imag. unit
-#include "utilities/write_data2file.h"  // writing data into text or hdf5 files
-#include "propagator.h"                 // propagator to perform second-order perturbation theory (SOPT)
-#include "selfenergy.h"                 // self-energy used in SOPT
-#include "state.h"                      // state to perform full flow
-#include "vertex.h"                     // Vertices to put into bubbles
-#include "loop.h"                       // compute self-energy loop
-#include "bubbles.h"                    // compute vertex bubbles
-#include "parameters/master_parameters.h"                 // system parameters (lengths of vectors etc.)
-#include "ODE_solvers.h"                // ODE solvers
+#include "../data_structures.h"            // real/complex vector classes, imag. unit
+#include "../utilities/write_data2file.h"  // writing data into text or hdf5 files
+#include "../correlation_functions/two_point/propagator.h"                 // propagator to perform second-order perturbation theory (SOPT)
+#include "../correlation_functions/two_point/selfenergy.h"                 // self-energy used in SOPT
+#include "../correlation_functions/state.h"                      // state to perform full flow
+#include "../correlation_functions/four_point/vertex.h"                     // Vertices to put into bubbles
+#include "../loop/loop.h"                       // compute self-energy loop
+#include "../bubble/bubbles.h"                    // compute vertex bubbles
+#include "../parameters/master_parameters.h"                 // system parameters (lengths of vectors etc.)
+#include "../ODE_solvers/ODE_solvers.h"                // ODE solvers
 #include <cassert>
-#include "utilities/hdf5_routines.h"
-#include "utilities/util.h"
+#include "../utilities/hdf5_routines.h"
+#include "../utilities/util.h"
 
 
 template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -> State<Q>;

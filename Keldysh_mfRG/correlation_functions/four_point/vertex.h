@@ -2,10 +2,10 @@
 #define KELDYSH_MFRG_VERTEX_H
 
 #include <cmath>
-#include "data_structures.h"    // real/complex vector classes
-#include "parameters/master_parameters.h"         // system parameters (vector lengths etc.)
+#include "../../data_structures.h"    // real/complex vector classes
+#include "../../parameters/master_parameters.h"         // system parameters (vector lengths etc.)
 #include "r_vertex.h"           // reducible vertex in channel r
-#include "minimizer.h"
+#include "../../utilities/minimizer.h"
 
 
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/

@@ -3,9 +3,9 @@
 
 #include "../parameters/master_parameters.h"
 #include "../data_structures.h"
-#include "../state.h"
-#include "../perturbation_theory.h"
-#include "../right_hand_sides.h"
+#include "../correlation_functions/state.h"
+#include "../perturbation_theory_and_parquet/perturbation_theory.h"
+#include "../mfRG_flow/right_hand_sides.h"
 
 
 /**

@@ -38,7 +38,7 @@ add_executable(FPP_mfRG
         )
 
 add_executable(get_integrand_dGammaL
-        tests/get_integrand_dGammaL.cpp
+        tests/integrand_tests/get_integrand_dGammaL.cpp
         ${keldysh_SRC}
         )
 

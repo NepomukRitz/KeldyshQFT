@@ -6,13 +6,13 @@
 
 #include <cmath>                    // for using the macro M_PI as pi
 
-#include "selfenergy.h"             // self-energy class
-#include "vertex.h"                 // vertex class
-#include "propagator.h"             // propagator class
-#include "parameters/master_parameters.h"             // system parameters (vector lengths etc.)
-#include "integrator/integrator.h"             // integration routines
-#include "utilities/write_data2file.h"        // save integrand for debugging purposes
-#include "correctionFunctions.h"    // analytical results for the tails of the loop integral
+#include "../correlation_functions/two_point/selfenergy.h"             // self-energy class
+#include "../correlation_functions/four_point/vertex.h"                 // vertex class
+#include "../correlation_functions/two_point/propagator.h"             // propagator class
+#include "../parameters/master_parameters.h"             // system parameters (vector lengths etc.)
+#include "../integrator/integrator.h"             // integration routines
+#include "../utilities/write_data2file.h"        // save integrand for debugging purposes
+#include "../asymptotic_corrections/correctionFunctions.h"    // analytical results for the tails of the loop integral
 
 /**
  * Class for the integrand of the Retarded SelfEnergy

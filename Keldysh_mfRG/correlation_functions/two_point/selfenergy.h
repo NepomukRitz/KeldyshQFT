@@ -1,13 +1,13 @@
 #ifndef KELDYSH_MFRG_SELFENERGY_H
 #define KELDYSH_MFRG_SELFENERGY_H
 
-#include "data_structures.h" // real/complex vector classes
-#include "grids/frequency_grid.h"  // interpolate self-energy on new frequency grid
-#include "minimizer.h"
+#include "../../data_structures.h" // real/complex vector classes
+#include "../../grids/frequency_grid.h"  // interpolate self-energy on new frequency grid
+#include "../../utilities/minimizer.h"
 #include <omp.h>             // parallelize initialization of self-energy
-#include "symmetries/Keldysh_symmetries.h"
-#include "utilities/write_data2file.h"
-#include "interpolations/InterpolatorLinOrSloppy.h"
+#include "../../symmetries/Keldysh_symmetries.h"
+#include "../../utilities/write_data2file.h"
+#include "../../interpolations/InterpolatorLinOrSloppy.h"
 
 /****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>

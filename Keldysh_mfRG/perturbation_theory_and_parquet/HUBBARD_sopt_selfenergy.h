@@ -2,7 +2,7 @@
 #define FPP_MFRG_HUBBARD_SOPT_SELFENERGY_H
 
 #include <cassert>
-#include "utilities/util.h"
+#include "../utilities/util.h"
 
 class Integrand_SE_SOPT_Hubbard{
 public:

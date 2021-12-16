@@ -1,7 +1,7 @@
 #ifndef FPP_MFRG_TEST_INTERPOLATION_H
 #define FPP_MFRG_TEST_INTERPOLATION_H
 
-#include "../state.h"
+#include "../correlation_functions/state.h"
 #include "test_perturbation_theory.h"
 
 #if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)

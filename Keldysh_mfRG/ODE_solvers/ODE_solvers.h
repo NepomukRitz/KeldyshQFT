@@ -2,13 +2,13 @@
 #define KELDYSH_MFRG_SOLVERS_H
 
 #include <cmath>                                    // needed for exponential and sqrt function
-#include "grids/flow_grid.h"                        // flow grid
-#include "utilities/util.h"                         // text input/output
-#include "utilities/write_data2file.h"              // writing data into text or hdf5 files
-#include "parameters/master_parameters.h"                             // needed for the vector of grid values to add
-#include "postprocessing/causality_FDT_checks.h"    // check causality and FDTs at each step in the flow
-#include "utilities/hdf5_routines.h"
-#include "state.h"
+#include "../grids/flow_grid.h"                        // flow grid
+#include "../utilities/util.h"                         // text input/output
+#include "../utilities/write_data2file.h"              // writing data into text or hdf5 files
+#include "../parameters/master_parameters.h"                             // needed for the vector of grid values to add
+#include "../postprocessing/causality_FDT_checks.h"    // check causality and FDTs at each step in the flow
+#include "../utilities/hdf5_routines.h"
+#include "../correlation_functions/state.h"
 
 namespace old_ode_solvers {
 

@@ -3,10 +3,10 @@
 
 #include "../parameters/master_parameters.h"
 #include "../data_structures.h"
-#include "../selfenergy.h"
-#include "../propagator.h"
+#include "../correlation_functions/two_point/selfenergy.h"
+#include "../correlation_functions/two_point/propagator.h"
 #include "fourier_trafo.h"
-#include "../ODE_solvers.h"
+#include "../ODE_solvers/ODE_solvers.h"
 
 
 // Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h

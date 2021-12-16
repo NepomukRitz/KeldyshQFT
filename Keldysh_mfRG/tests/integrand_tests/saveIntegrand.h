@@ -2,11 +2,11 @@
 #define FPP_MFRG_PLOTINTEGRAND_H
 
 #include <cassert>
-#include "../utilities/hdf5_routines.h"
-#include "../state.h"
-#include "../bubbles.h"
-#include "../loop.h"
-#include "../right_hand_sides.h"
+#include "../../utilities/hdf5_routines.h"
+#include "../../correlation_functions/state.h"
+#include "../../bubble/bubbles.h"
+#include "../../loop/loop.h"
+#include "../../mfRG_flow/right_hand_sides.h"
 
 /**
  * Functions to plot Integrands in the bubble or the loop

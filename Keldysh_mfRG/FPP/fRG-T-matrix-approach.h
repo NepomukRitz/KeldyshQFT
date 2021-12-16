@@ -8,7 +8,7 @@
 #include "Momentum-integral-Bubble.h"
 #include "Ladder-approximation.h"
 #include "../utilities/util.h"
-#include "../ODE_solvers.h"
+#include "../ODE_solvers/ODE_solvers.h"
 #include "../grids/flow_grid.h"
 #include "zeros.h"
 

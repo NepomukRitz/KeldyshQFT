@@ -5,11 +5,11 @@
 #include "symmetries/Keldysh_symmetries.h"
 #include <mpi.h>
 #include "utilities/mpi_setup.h"
-#include "flow.h"
+#include "mfRG_flow/flow.h"
 #include "tests/test_perturbation_theory.h"
 #include "tests/test_interpolation.h"
 #include "utilities/util.h"
-#include "tests/saveIntegrand.h"
+#include "tests/integrand_tests/saveIntegrand.h"
 #include "tests/test_symmetries.h"
 
 

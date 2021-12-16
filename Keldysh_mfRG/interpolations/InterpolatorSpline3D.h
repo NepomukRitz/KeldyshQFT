@@ -6,7 +6,7 @@
 #include <cassert>
 #include <cmath>
 #include <vector>
-#include "../vertex_data.h"
+#include "../correlation_functions/four_point/vertex_data.h"
 
 
 

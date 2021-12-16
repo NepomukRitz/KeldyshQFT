@@ -2,8 +2,8 @@
 #define KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
 
 #include "../../data_structures.h"
-#include "../../vertex_buffer.h"
-#include "../../r_vertex.h"
+#include "../../correlation_functions/four_point/vertex_buffer.h"
+#include "../../correlation_functions/four_point/r_vertex.h"
 #include "../../symmetries/symmetry_transformations.h"
 
 

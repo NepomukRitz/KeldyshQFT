@@ -15,10 +15,10 @@
 #include "fRG-T-matrix-approach.h"
 #include "1D-integrals.h"
 #include "../utilities/util.h"
-#include "../ODE_solvers.h"
+#include "../ODE_solvers/ODE_solvers.h"
 #include "../grids/flow_grid.h"
 #include "../data_structures.h"
-//#include "../OldFiles/paid.hpp"
+//#include "../old_files/paid.hpp"
 //#include "zeros.h"
 #include "FPP_grids.hpp"
 

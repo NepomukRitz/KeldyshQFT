@@ -5,10 +5,10 @@
 #ifndef KELDYSH_MFRG_STATE_H
 #define KELDYSH_MFRG_STATE_H
 
-#include "vertex.h"                   // vertex class
-#include "selfenergy.h"               // self-energy class
-#include "propagator.h"               // propagator class
-#include "utilities/util.h"                     // printing text output
+#include "four_point/vertex.h"                   // vertex class
+#include "two_point/selfenergy.h"               // self-energy class
+#include "two_point/propagator.h"               // propagator class
+#include "../utilities/util.h"                     // printing text output
 
 template <typename Q>
 class State{

@@ -1,14 +1,14 @@
 #ifndef KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 #define KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 
-#include "parameters/master_parameters.h"     // system parameters
-#include "grids/flow_grid.h"// flow grid
-#include "state.h"          // use State class
-#include "vertex.h"         // use Vertex class
-#include "selfenergy.h"
-#include "utilities/hdf5_routines.h"  // read data from HDF5 file
-#include "bubbles.h"        // compute bubble function
-#include "loop.h"           // compute loop function
+#include "../parameters/master_parameters.h"     // system parameters
+#include "../grids/flow_grid.h"// flow grid
+#include "../correlation_functions/state.h"          // use State class
+#include "../correlation_functions/four_point/vertex.h"         // use Vertex class
+#include "../correlation_functions/two_point/selfenergy.h"
+#include "../utilities/hdf5_routines.h"  // read data from HDF5 file
+#include "../bubble/bubbles.h"        // compute bubble function
+#include "../loop/loop.h"           // compute loop function
 
 /**
  * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.

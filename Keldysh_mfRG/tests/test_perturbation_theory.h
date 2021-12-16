@@ -2,15 +2,15 @@
 #define KELDYSH_MFRG_TESTFUNCTIONS_H
 
 #include <cmath>                    // use M_PI as pi
-#include "../propagator.h"                // propagators
-#include "../state.h"                  // State class
-#include "../loop.h"                   // self-energy loop
-#include "../bubbles.h"                // bubble function
-#include "../ODE_solvers.h"               // ODE solvers
-#include "../right_hand_sides.h"       // compute the right hand sides of flow equations
+#include "../correlation_functions/two_point/propagator.h"                // propagators
+#include "../correlation_functions/state.h"                  // State class
+#include "../loop/loop.h"                   // self-energy loop
+#include "../bubble/bubbles.h"                // bubble function
+#include "../ODE_solvers/ODE_solvers.h"               // ODE solvers
+#include "../mfRG_flow/right_hand_sides.h"       // compute the right hand sides of flow equations
 #include "../utilities/write_data2file.h"        // writing data to txt or hdf5 file
 #include "../utilities/hdf5_routines.h"          // writing states to hdf5 file
-#include "../perturbation_theory.h"
+#include "../perturbation_theory_and_parquet/perturbation_theory.h"
 #include <boost/math/special_functions/polygamma.hpp> // Polygamma function
 #include "../integrator/integrator.h"
 #include "../postprocessing/causality_FDT_checks.h"   // check causality and FDTs

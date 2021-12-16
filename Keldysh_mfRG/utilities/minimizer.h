@@ -6,7 +6,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_min.h>
 #include <gsl/gsl_multimin.h>
-#include "utilities/mpi_setup.h"
+#include "mpi_setup.h"
 
 /* compute real part of integrand (for GSL/PAID) */
 template <typename CostFunction>

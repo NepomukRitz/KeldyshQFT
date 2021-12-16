@@ -14,17 +14,17 @@
 #define KELDYSH_MFRG_BUBBLES_H
 
 #include <cmath>                            // for using the macro M_PI as pi
-#include "symmetries/Keldysh_symmetries.h"  // for independent Keldysh components and utilities
-#include "vertex.h"                         // vertex class
-#include "selfenergy.h"                     // self-energy class
-#include "propagator.h"                     // propagator class
-#include "integrator/integrator.h"          // integration routines
-#include "utilities/util.h"                 // measuring time, printing text output
-#include "utilities/mpi_setup.h"            // mpi parallelization routines
-#include "correctionFunctions.h"            // correction terms due to finite integration range
-#include "utilities/write_data2file.h"      // write vectors into hdf5 file
-#include "grids/momentum_grid.h"            // Momentum grid specific to the 2D Hubbard model
-#include "vertex_data.h"
+#include "../symmetries/Keldysh_symmetries.h"  // for independent Keldysh components and utilities
+#include "../correlation_functions/four_point/vertex.h"                         // vertex class
+#include "../correlation_functions/two_point/selfenergy.h"                     // self-energy class
+#include "../correlation_functions/two_point/propagator.h"                     // propagator class
+#include "../integrator/integrator.h"          // integration routines
+#include "../utilities/util.h"                 // measuring time, printing text output
+#include "../utilities/mpi_setup.h"            // mpi parallelization routines
+#include "../asymptotic_corrections/correctionFunctions.h"            // correction terms due to finite integration range
+#include "../utilities/write_data2file.h"      // write vectors into hdf5 file
+#include "../grids/momentum_grid.h"            // Momentum grid specific to the 2D Hubbard model
+#include "../correlation_functions/four_point/vertex_data.h"
 
 
 /// Class combining two propagators, either GG or GS+SG

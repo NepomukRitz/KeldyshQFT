@@ -20,7 +20,7 @@
 #include "../integrator/integrator.h"
 #include "../paid-integrator/paid.hpp"
 #include "../parameters/master_parameters.h"
-#include "../propagator.h"
+#include "../correlation_functions/two_point/propagator.h"
 #include "../utilities/util.h"
 #include "FPP_grids.hpp"
 

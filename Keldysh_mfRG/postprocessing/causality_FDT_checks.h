@@ -2,8 +2,8 @@
 #define KELDYSH_MFRG_TESTING_CAUSALITY_FDT_CHECKS_H
 
 #include "../data_structures.h"        // vector class
-#include "../state.h"                  // State class
-#include "../selfenergy.h"             // Self-energy class
+#include "../correlation_functions/state.h"                  // State class
+#include "../correlation_functions/two_point/selfenergy.h"             // Self-energy class
 #include "../utilities/util.h"                   // print output
 #include "../utilities/hdf5_routines.h"
 

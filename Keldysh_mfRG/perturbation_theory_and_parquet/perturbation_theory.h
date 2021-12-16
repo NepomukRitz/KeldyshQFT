@@ -7,14 +7,14 @@
 #ifndef KELDYSH_MFRG_PERTURBATION_THEORY_H
 #define KELDYSH_MFRG_PERTURBATION_THEORY_H
 
-#include "selfenergy.h"
-#include "grids/frequency_grid.h"
-#include "grids/momentum_grid.h"
-#include "data_structures.h"
-#include "propagator.h"
-#include "state.h"
-#include "bubbles.h"
-#include "loop.h"
+#include "../correlation_functions/two_point/selfenergy.h"
+#include "../grids/frequency_grid.h"
+#include "../grids/momentum_grid.h"
+#include "../data_structures.h"
+#include "../correlation_functions/two_point/propagator.h"
+#include "../correlation_functions/state.h"
+#include "../bubble/bubbles.h"
+#include "../loop/loop.h"
 #include "HUBBARD_sopt_selfenergy.h"
 
 template <typename Q>

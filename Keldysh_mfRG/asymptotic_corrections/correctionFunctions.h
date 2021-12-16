@@ -1,10 +1,10 @@
 #ifndef KELDYSH_MFRG_CORRECTIONFUNCTIONS_H
 #define KELDYSH_MFRG_CORRECTIONFUNCTIONS_H
 
-#include "data_structures.h"            // real/complex vector classes
-#include "vertex.h"                     // vertex class
-#include "parameters/master_parameters.h"                 // global system parameters
-#include "utilities/util.h"                       // printing text output
+#include "../data_structures.h"            // real/complex vector classes
+#include "../correlation_functions/four_point/vertex.h"                     // vertex class
+#include "../parameters/master_parameters.h"                 // global system parameters
+#include "../utilities/util.h"                       // printing text output
 #include <cmath>                        // for log function
 
 // TODO(medium) Write a class containing functions for all correction functions to minimize the number of times that many arguments have to be given to functions.

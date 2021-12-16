@@ -9,10 +9,10 @@
 #include <string>
 #include "../parameters/master_parameters.h"
 #include "../data_structures.h"
-#include "../state.h"
-#include "../perturbation_theory.h"
-#include "../bubbles.h"
-#include "../propagator.h"
+#include "../correlation_functions/state.h"
+#include "../perturbation_theory_and_parquet/perturbation_theory.h"
+#include "../bubble/bubbles.h"
+#include "../correlation_functions/two_point/propagator.h"
 #include "../utilities/write_data2file.h"            // write vectors into hdf5 file
 #include "../utilities/util.h"
 #include "../symmetries/Keldysh_symmetries.h"

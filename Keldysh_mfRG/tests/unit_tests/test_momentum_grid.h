@@ -7,7 +7,7 @@
 
 #include "../../grids/momentum_grid.h"
 #include "../../data_structures.h"
-#include "../../r_vertex.h"
+#include "../../correlation_functions/four_point/r_vertex.h"
 #include "../../parameters/master_parameters.h"
 #include <random>
 
