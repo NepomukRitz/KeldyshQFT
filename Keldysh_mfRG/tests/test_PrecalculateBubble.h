@@ -70,7 +70,7 @@ template<typename Q> double test_PrecalculateBubble<Q>::iterate_through_channels
 }
 
 template<typename Q> double test_PrecalculateBubble<Q>::find_largest_deviation_from_bubble(const bool dot_in, const char channel){
-    PrecalculateBubble<Q> Pre_Bubble(g, s, dot_in, channel);
+    PrecalculatedBubble<Q> Pre_Bubble(g, s, dot_in, channel);
     Bubble<Q> Usual_Bubble (g, s, dot_in);
 
     vec<Q> ValuesOfPreBubble (glb_number_of_Keldysh_components_bubble * nBOS * nFER * n_in);
@@ -162,7 +162,7 @@ template<typename Q>
 class Runtime_comparison{
     Propagator<Q> g;
     Propagator<Q> s;
-    PrecalculateBubble<Q> Pre_Bubble; // free versions of the bubbles
+    PrecalculatedBubble<Q> Pre_Bubble; // free versions of the bubbles
     Bubble<Q> Usual_Bubble;
 public:
     Runtime_comparison(): g (Lambda_ini, 'g'), s (Lambda_ini, 's'),
@@ -224,13 +224,13 @@ void test_Bubble_in_Momentum_Space(){
     Propagator<comp> s (Lambda, 's');
 
     double starting_time = get_time();
-    PrecalculateBubble<comp> DotBubble (g, s, true);
+    PrecalculatedBubble<comp> DotBubble (g, s, true);
     double end_time = get_time();
     double diff = (end_time - starting_time); // time given in seconds
     std::cout << "Time for differentiated Bubble = " << diff << " s." << "\n";
 
     starting_time =  get_time();
-    PrecalculateBubble<comp> Bubble (g, s, false);
+    PrecalculatedBubble<comp> Bubble (g, s, false);
     end_time = get_time();
     diff = (end_time - starting_time);
     std::cout << "Time for undifferentiated Bubble = " << diff << " s." << "\n";
@@ -291,7 +291,7 @@ void test_Bubble_in_Momentum_Space(){
 #endif
     }
 
-void save_PreBubble_in_freq_space(const PrecalculateBubble<comp> Pi, const int i_in){
+void save_PreBubble_in_freq_space(const PrecalculatedBubble<comp> Pi, const int i_in){
     const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/bare_bubble/";
     const std::string filename  = directory + "bare_bubble_on_fermionic_grid_in_" + std::to_string(i_in) + "n_in_" + std::to_string(n_in) + ".h5";
     vec<comp> pi (glb_number_of_Keldysh_components_bubble * nFER * nFER);

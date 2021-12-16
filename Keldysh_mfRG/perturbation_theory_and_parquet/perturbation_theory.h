@@ -20,7 +20,7 @@
 template <typename Q>
 auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 #ifdef HUBBARD // Use precalculated bubble in this case
-    PrecalculateBubble<comp> Pi (barePropagator, barePropagator, false);
+    PrecalculatedBubble<comp> Pi (barePropagator, barePropagator, false);
     return Pi;
 #else // Otherwise, use same type of bubble as before, which directly interpolates
     Bubble<Q> Pi (barePropagator, barePropagator, false);

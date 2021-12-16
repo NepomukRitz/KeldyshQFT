@@ -85,8 +85,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
     // Initialize bubble objects;
 #ifdef HUBBARD // Use precalculated bubble in this case
-    PrecalculateBubble<comp> Pi(G, dG, false);
-    PrecalculateBubble<comp> dPi(G, dG, true);
+    PrecalculatedBubble<comp> Pi(G, dG, false);
+    PrecalculatedBubble<comp> dPi(G, dG, true);
 #else // Otherwise use same type of bubble as before, which directly interpolates
     Bubble<Q> Pi(G, dG, false);
     Bubble<Q> dPi(G, dG, true);
