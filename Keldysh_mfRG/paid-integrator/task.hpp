@@ -35,6 +35,7 @@ struct Task {
         this->val = other.val;
         this->error = other.error;
         this->idx = other.idx;
+        this->f = other.f;
         //do not copy f
 
         return *this;

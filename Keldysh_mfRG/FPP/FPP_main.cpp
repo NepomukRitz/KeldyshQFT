@@ -550,6 +550,12 @@ int main() {
     //double muladder1 = find_root_ladder (0.0,0.0,1e4,1e-10,1,-5.0,0.5,1e-10,100,1e-16);
     //std::cout << "a^{-1} = " << glb_ainv << ": mu_fRG = " << mufRG1 << ", mu_ladder = " << muladder1 << "\n";
     //std::cout << "mud_i = " << mud_before << ", mud_f = " << glb_mud << "\n";
+    glb_mud = -10.0;
+    /*
+    comp test1 = fRG_solve_nsc(0,0,0);
+    std::cout << "fRG = " << test1 << "\n";
+    test1 = ladder(0,0,'p',0,1);
+    std::cout << "ladder = " << test1 << "\n";
     /*
     fRG_p_list(0,-2*sqrt(2),2*sqrt(2),-10.0,0.5,100,1e-10,101);
     ladder_list('p',0,1,-2*sqrt(2),2*sqrt(2),-10.0,1e-10,100,1e-16,301);
@@ -1475,7 +1481,23 @@ int main() {
 
     FPP_Grid ws_grid({5,60,20,7,5},{1e-10,0.05,10,50,100,1e6},1, 1, {1,0,1,1,1});
     FPP_Grid qs_grid({5,60,20,7,5},{1e-10,0.5,5,10,100,1e6},0,1,{1,0,1,1,1});
-
+     // test whether transf_inv corresponds with inverse grid
+    for (int i = 0; i < qs_grid.size(); ++i){
+        double q = qs_grid[i];
+        int i_inv = qs_grid.grid_transf_inv(q);
+        if (i != i_inv) {
+            std::cout << "i = " << i << ", q[i] = " << q << ", i[q[i]] = " << i_inv << ", FAILED!!!\n";
+        }
+    }
+    for (int i = 0; i < ws_grid.size(); ++i){
+        double w = ws_grid[i];
+        int i_inv = ws_grid.grid_transf_inv(w);
+        std::cout << "i = " << i << ", w[i] = " << w << ", i[w[i]] = " << i_inv;
+        if (i != i_inv) {
+            std::cout << ", FAILED!!!";
+        }
+        std::cout << "\n";
+    }
     //FPP_Grid ws_grid({99},{1e-1,10},1, 1, {0});
     //FPP_Grid qs_grid({99},{1e-1,10},0,1,{0});
 
@@ -1489,7 +1511,7 @@ int main() {
     std::cout << "gint = " << gint() << "\n";*/
 
     //ladder_list ('p', 0, 1, -2*sqrt(2), 2*sqrt(2), -10, 1e-6, 1000, 1e-16, 100);
-
+    /*
     comp interpolated, exact;
     rvec control_points_w{-100.2,-99,-0.23,-0.1,-0.05,-0.0013,-0.00012,0,0.00012,0.0013,0.05,0.1,0.23,99,100.2};
     rvec control_points_q{0,0.00012,0.0013,0.05,0.1,0.23,99,100.2};
@@ -1502,21 +1524,38 @@ int main() {
             exact = ladder(w,q,'p',0,1);
             std::cout << "w = " << w << ", q = " << q << " K1p: interpolated = " << interpolated << ", exact = " << exact << "\n";
         }
-    }
+    }*/
     k1p.save();
-    //comp selfenergy00 = perform_loop_vpp_integral(0,0,k1p);
+    // comp selfenergy00 = perform_loop_vpp_integral(0,0,k1p);
     //std::cout << "Sigma(0,0) = " << selfenergy00 << "\n";
 
     comp hartree = hartree_term(0);
     std::cout << "hartree = " << hartree << "\n";
 
     get_time(t0);
-    /*
+
     double t_test_loop_k = get_time();
-    comp test_loop_k = perform_loop_integral_2D (0, 3, 1, k1p);
-    std::cout << "integrated over k :" << test_loop_k << "\n";
+
+    comp test_loop_k;
+    /*FPP_Grid vpps_grid({2},{1e-10,10},0, 0, {0});
+    for (int i = 0; i < vpps_grid.grid_points.size(); ++i){
+        test_loop_k = perform_loop_integral_2D (0, vpps_grid[i], 0, k1p);
+        std::cout << "integrated over k :" << test_loop_k << "\n";
+    }*/
+    /*perform_loop_vpp_integral(0, 0, k1p);
+    save_integrands();*/
+    FPP_Grid tks({220},{0,1},0,0,{0});
+    FPP_Grid tvs({220},{1/(Lambda_ini+1),1/(Lambda_fin+1)},0,0,{0});
+
+    std::ofstream integrand_data("../Data/integrands.csv");
+    integrand_data << "tk,tv,Reint,Imint\n";
+    Loopintegrand_2D_kv loopintegrand_2D_kv(k1p,integrand_data);
+    //loopintegrand_2D_kv.save_integrand(tks,tvs);
+    test_loop_k = perform_loop_integral_2D_kv(k1p,integrand_data);
+    std::cout << "result of loop integral = " << test_loop_k << "\n";
+    integrand_data.close();
+
     get_time(t_test_loop_k);
-    */
 
 
         /*

@@ -11,7 +11,7 @@
 //#define HUBBARD
 
 // Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
-//#define FERMI_POLARON_PROBLEM
+#define FERMI_POLARON_PROBLEM
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
@@ -108,7 +108,7 @@ constexpr int nODE = 50;
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 1e4; // 20;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 1e-10; // 0;
+constexpr double Lambda_fin = 1e-8; // 0;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)

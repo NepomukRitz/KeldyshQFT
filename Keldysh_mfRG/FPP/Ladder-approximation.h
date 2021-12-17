@@ -231,7 +231,8 @@ public:
         int wi, qi;
         comp result;
 
-        if ((std::abs(w) > ws[ws.size()-1]) or (std::abs(q) > qs[qs.size()-1])){
+        if ((std::abs(w) > ws[nw-1]) or (std::abs(q) > qs[nq-1])){
+
             return 0;
         }
 
@@ -263,6 +264,20 @@ public:
                        {"ws", "qs", "vertex_Re", "vertex_Im"},
                        {ws.grid_points, qs.grid_points, Gamma_p_Re, Gamma_p_Im});
     }
+    /*
+    K1_ladder& operator=(const K1_ladder& other) { // Copy assignment
+        this->ws = other.ws;
+        this->qs = other.qs;
+        this->chan = other.chan;
+        this->inttypek = other.inttypek;
+        this->inttypev = other.inttypev;
+        this->nw = other.nw;
+        this->nq = other.nq;
+        this->data_points = other.data_points;
+
+
+        return *this;
+    }*/
 };
 
 template <typename Q>

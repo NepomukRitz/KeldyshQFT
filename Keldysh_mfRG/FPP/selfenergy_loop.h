@@ -17,9 +17,14 @@ comp hartree_term (int particle) { // -g*(2mi*mui)^(3/2)/(6pi^2)
         mi = glb_md;
         mui = heaviside(glb_mud)*glb_mud;
     }
-    output = -gint()*pow(2*mi*mui,1.5)/(6*M_PI*M_PI);
+    output = gint()*pow(2*mi*mui,1.5)/(6*M_PI*M_PI); //TODO check sign!
     return output;
 }
+
+rvec tkpps;
+cvec integrands;
+rvec xs;
+rvec vpps;
 
 class Loopintegrand_2D {
 private:
@@ -55,6 +60,11 @@ public:
             k1_val = k1pcd.valsmooth(vpp,kpp);
             output = - 1./(4*M_PI*M_PI)*kpp*kpp*k1_val*G0(vpp-v,ksquared,0)/(kvec[0]*kvec[0]);
         }
+        std::cout << "t(k) = " << kvec[0] << ", x = " << x << ", vpp = " << vpp << ", integrand = " << output << "\n";
+        /*xs.push_back(x);
+        vpps.push_back(vpp);
+        tkpps.push_back(kvec[0]);
+        integrands.push_back(output);*/
         return output;
     };
 
@@ -71,11 +81,17 @@ public:
             k1_val = k1pcd.valsmooth(vpp,kpp);
             output = - 2./(4*M_PI*M_PI)*kpp*kpp*k1_val*G0(vpp-v,kpp*kpp,0)/(tkpp*tkpp);
         }
+        std::cout << "t(k) = " << tkpp << ", x = " << 0 << ", vpp = " << vpp << ", integrand = " << output << "\n";
+        /*xs.push_back(0);
+        vpps.push_back(vpp);
+        tkpps.push_back(tkpp);
+        integrands.push_back(output);*/
         return output;
     };
-
     //void save_integrand();
 };
+
+
 
 comp perform_loop_integral_2D (double v, double vpp, double k, K1_ladder k1pcd){
     comp integral;
@@ -86,7 +102,7 @@ comp perform_loop_integral_2D (double v, double vpp, double k, K1_ladder k1pcd){
 
         paid::Domain<1> d({0.}, {1.});
         paid::PAIDInput<1, Loopintegrand_2D, int> integrand_loop_2D_paid{d, loopintegrand2D, 0};
-        paid::PAIDConfig config(1e8, 1e-4, 0, 8);
+        paid::PAIDConfig config(1e8, 1e-3, 0, 8);
         paid::PAID<1, Loopintegrand_2D, comp, int, double> loopintegral2D_paid(config);
         integral = loopintegral2D_paid.solve({integrand_loop_2D_paid})[0];
     }
@@ -101,6 +117,21 @@ comp perform_loop_integral_2D (double v, double vpp, double k, K1_ladder k1pcd){
     }
     return integral;
 }
+
+void save_integrands() {
+    rvec integrands_Re;
+    rvec integrands_Im;
+
+    for (std::size_t i = 0; i < integrands.size(); ++i) {
+        integrands_Re[i] = real(integrands[i]);
+        integrands_Im[i] = imag(integrands[i]);
+    }
+    std::string filename = "../Data/integrands_";
+    filename += "_nint=" + std::to_string(integrands.size()) + ".h5";
+        write_h5_rvecs(filename,
+        {"tkpps", "xs", "vpps", "integrands_Re", "integrands_Im"},
+        {tkpps, xs, vpps, integrands_Re, integrands_Im});
+};
 
 class Integrand_loop_vpp {
 private:
@@ -132,13 +163,23 @@ comp perform_loop_vpp_integral(double v, double k, K1_ladder k1pcd){
     comp output;
     double Lambda_mu, Lambda_mm, Lambda_ml;
     rvec Lambdas;
+    Integrand_loop_vpp integrand_loop_vpp(v, k,k1pcd);
+    vec<paid::PAIDInput<1, Integrand_loop_vpp,int>> ints_paid;
+    paid::PAIDConfig config(1e7,1e-4,0,8);
+    paid::PAID<1,Integrand_loop_vpp,comp,int,double> integral_Pi0_vpp_paid(config);
 
     if ((Lambda_ini > std::abs(v)) and (std::abs(v) > Lambda_fin)) {
-        Lambdas = {Lambda_fin,Lambda_ini*Lambda_fin,1.0,std::abs(v),Lambda_ini};
-        std::sort (Lambdas.begin(), Lambdas.end());
+        //Lambdas = {Lambda_fin,Lambda_ini*Lambda_fin,1.0,std::abs(v),Lambda_ini};
+        //std::sort (Lambdas.begin(), Lambdas.end());
         /* Lambda_mu = Lambdas[3];
         Lambda_mm = Lambdas[2];
         Lambda_ml = Lambdas[1]; */
+        paid::Domain<1> d_1({-Lambda_ini},{v-Lambda_fin});
+        paid::Domain<1> d_2({v+Lambda_fin},{Lambda_ini});
+        paid::PAIDInput<1,Integrand_loop_vpp,int> paid_integrand_pos{d_1,integrand_loop_vpp,0};
+        ints_paid.push_back(paid_integrand_pos);
+        paid::PAIDInput<1,Integrand_loop_vpp,int> paid_integrand_neg{d_2,integrand_loop_vpp,0};
+        ints_paid.push_back(paid_integrand_neg);
     }
     else {
         Lambdas = {Lambda_fin, Lambda_ini*Lambda_fin,1.0,Lambda_ini};
@@ -146,55 +187,6 @@ comp perform_loop_vpp_integral(double v, double k, K1_ladder k1pcd){
         /* Lambda_mu = Lambdas[2];
         Lambda_mm = Lambda_mu;
         Lambda_ml = Lambdas[1]; */
-    }
-    /*
-    double d_mu, d_mm, d_ml; // cut out |vpp|=|w|/2 from the integral range
-    d_mu = 0;
-    d_mm = 0;
-    d_ml = 0;
-    if (std::abs(std::abs(w/2)-Lambda_mu)<1e-15) {
-        d_mu = 1e-10;
-    }
-    if (std::abs(std::abs(w/2)-Lambda_mm)<1e-15) {
-        d_mm = 1e-10;
-    }
-    if (std::abs(std::abs(w/2)-Lambda_ml)<1e-15) {
-        d_ml = 1e-10;
-    }
-
-    while (isnan(std::abs(exact_bare_bubble (w, Lambda_mu, q, i, j, chan)))) {
-        Lambda_mu = Lambda_mu + (Lambda_mu-Lambda_mm)/10.;
-    }
-    while (isnan(std::abs(exact_bare_bubble (w, Lambda_mm, q, i, j, chan)))) {
-        Lambda_mm = Lambda_mm + (Lambda_mm-Lambda_ml)/10.;
-    }
-    while (isnan(std::abs(exact_bare_bubble (w, Lambda_ml, q, i, j, chan)))) {
-        Lambda_ml = Lambda_ml - (Lambda_mm-Lambda_ml)/10.;
-    }
-
-    if ((Lambda_ini > std::abs(w/2)) and (std::abs(w/2) > Lambda_fin)) {
-        Lambdas[3] = Lambda_mu;
-        Lambdas[2] = Lambda_mm;
-        Lambdas[1] = Lambda_ml;
-    }
-    else {
-        Lambdas[2] = Lambda_mu;
-        Lambdas[1] = Lambda_ml;
-    }*/
-
-    Integrand_loop_vpp integrand_loop_vpp(v, k,k1pcd);
-    /*
-    if (inttypev == 1) {
-        cvec ints_pos(Lambdas.size()), ints_neg(Lambdas.size());
-        for (int idx = 0; idx<Lambdas.size()-1; ++idx){
-            ints_pos[idx] = integrator<comp>(integrand_Pi0_vpp, Lambdas[idx], Lambdas[idx+1]);
-            ints_neg[idx] = integrator<comp>(integrand_Pi0_vpp, -Lambdas[idx+1], -Lambdas[idx]);
-            output += prefactor*1./(2.*M_PI)*(ints_pos[idx]+ints_neg[idx]);
-        }
-    }
-    else if (inttypev == 2) {*/
-        vec<paid::PAIDInput<1, Integrand_loop_vpp,int>> ints_paid;
-        paid::PAIDConfig config(1e7,1e-4,0,8);
         for (int idx = 0; idx<Lambdas.size()-1; ++idx){
             paid::Domain<1> d_pos({Lambdas[idx]},{Lambdas[idx+1]});
             paid::Domain<1> d_neg({-Lambdas[idx+1]},{-Lambdas[idx]});
@@ -204,13 +196,140 @@ comp perform_loop_vpp_integral(double v, double k, K1_ladder k1pcd){
             paid::PAIDInput<1,Integrand_loop_vpp,int> paid_integrand_neg{d_neg,integrand_loop_vpp,0};
             ints_paid.push_back(paid_integrand_neg);
         }
-        paid::PAID<1,Integrand_loop_vpp,comp,int,double> integral_Pi0_vpp_paid(config);
-        output = 1./(2.*M_PI)*integral_Pi0_vpp_paid.solve(ints_paid)[0];
-    /*}
-    else {
-        std::cout << "wrong integral type in v-integral\n";
-    }*/
+    }
+
+    output = 1./(2.*M_PI)*integral_Pi0_vpp_paid.solve(ints_paid)[0];
+
     return output;
+}
+
+class Loopintegrand_2D_kv {
+private:
+    K1_ladder k1pcd;
+    //FPP_Grid tks, tvs;
+    std::ofstream& integrand_data;
+    //std::vector<int> number_tkv;
+    //rvec read_tk = {}, read_tv = {};
+
+public:
+    /**
+     * Constructor:
+     */
+    Loopintegrand_2D_kv(K1_ladder k1pcd_in, std::ofstream& integrand_data_in)
+            :k1pcd(k1pcd_in), integrand_data(integrand_data_in){//k1pcd(std::move(k1pcd_in)){
+        /*int comp_size = tk.size()*tv.size();
+        for (int i = 0; i < comp_size; ++i) {
+            number_tkv[i] = 0;*/
+        };
+
+    /**
+     * Call operator:
+     * @param x : angle variable at which to evaluate integrand (to be integrated over)
+     * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
+     */
+    // const removed
+    auto operator() (std::array<double,2> kv) const -> comp {
+        //int comp_ind = tk.grid_transf_inv(kv[0])*tv.size() + tv.grid_transf_inv(kv[1]);
+        //number_tkv[comp_ind] += 1;
+
+
+        double kpp;
+        double vpp;
+        comp k1_val_pos;
+        comp k1_val_neg;
+        double prefactor;
+        comp output;
+        if ((kv[0] == 0) or (kv[1] == 0)){
+            output = 0;
+        }
+        else {
+            kpp = (1-kv[0])/kv[0];
+            vpp = (1-kv[1])/kv[1];
+            //k1pcd = perform_Pi0_vpp_integral(vpp, kpp, 0, 1, 'p', 0, 1);
+            //k1pcd = ladder(vpp,kpp,'p',0,1);
+            k1_val_pos = k1pcd.valsmooth(vpp,kpp);
+            k1_val_neg = k1pcd.valsmooth(vpp,kpp);
+            prefactor = - 2./(4*M_PI*M_PI*2*M_PI)*kpp*kpp/(kv[0]*kv[0]*kv[1]*kv[1]);
+            output = prefactor*(k1_val_pos*G0(vpp,kpp*kpp,0)+k1_val_neg*G0(-vpp,kpp*kpp,0));
+        }
+        std::cout << "tk = " << kv[0] << ", tv = " << kv[1] << ", integrand = " << output << "\n";
+        /*xs.push_back(x);
+        vpps.push_back(vpp);
+        tkpps.push_back(kvec[0]);
+        integrands.push_back(output);*/
+
+        //integrand_data("../Data/integrands.txt", std::fstream::out | std::fstream::app);
+        integrand_data << kv[0] << "," << kv[1] << "," << real(output) << "," << imag(output) << "\n";
+        //integrand_data.close();
+
+        return output;
+    };
+
+    /*void save_numbers() {
+        rvec number_tkv(helper_number_tkv.size());
+        for (int i = 0; i < helper_number_tkv.size(); ++i) {
+            number_tkv[i] = helper_number_tkv[i].size();
+            std::cout << "number_tkv[" << i <<"]= " << number_tkv[i]<< "\n";
+        }
+
+        std::string filename = "../Data/integrands_numbers_";
+        filename += "_ntk=" + std::to_string(tk.size()) + "_ntv=" + std::to_string(tv.size()) + ".h5";
+        write_h5_rvecs(filename,
+                       {"tks", "tvs", "number_tkv"},
+                       {tk.grid_points, tv.grid_points, number_tkv});
+    }*/
+
+    void save_integrand(FPP_Grid tks, FPP_Grid tvs) {
+        rvec integrands_Re(tks.size()*tvs.size());
+        rvec integrands_Im(tks.size()*tvs.size());
+        comp integrand;
+
+        for (std::size_t i = 0; i < integrands_Re.size(); ++i) {
+            Two_Indices two_i = invert_composite_index_2(i, tvs.size());
+            integrand = (*this)({tks[two_i.i1],tvs[two_i.i2]});
+            //std::cout << "tk = " << tks[two_i.i1] << ", tv = " << tvs[two_i.i2] << ", integrand = " << integrand << "\n";
+            integrands_Re[i] = real(integrand);
+            integrands_Im[i] = imag(integrand);
+        }
+        std::string filename = "../Data/integrands_";
+        filename += "ntks=" + std::to_string(tks.size()) + "_ntvs=" + std::to_string(tvs.size()) +".h5";
+        write_h5_rvecs(filename,
+                       {"tks", "tvs", "integrands_Re", "integrands_Im"},
+                       {tks.grid_points, tvs.grid_points, integrands_Re, integrands_Im});
+    };
+
+    Loopintegrand_2D_kv& operator=(const Loopintegrand_2D_kv& other){ // Copy assignment
+        //this->integrand_data = other.integrand_data;
+        this->k1pcd = other.k1pcd;
+
+        return *this;
+    }
+
+    //void save_integrand();
+};
+
+comp perform_loop_integral_2D_kv (K1_ladder k1pcd,std::ofstream& integrand_data){
+    /*FPP_Grid tk({100},{0,1},0,0,{0});
+    FPP_Grid tv({100},{1./(Lambda_ini+1.),1./(Lambda_fin+1.)},0,0,{0});
+    std::vector<std::vector<int>> number_tkv(tk.size()*tv.size());
+    for (int i = 0; i < number_tkv.size(); ++i) {
+        number_tkv[i] = {};
+    }*/
+
+    comp integral;
+    Loopintegrand_2D_kv loopintegrand2D_kv(k1pcd, integrand_data);
+
+    //Loopintegrand_2D loopintegrand2D(v, vpp, k, std::move(k1pcd));
+
+    paid::Domain<2> d({0., 1./(Lambda_ini+1.)}, {1., 1./(Lambda_fin+1.)});
+    paid::PAIDInput<2, Loopintegrand_2D_kv, int> integrand_loop_2D_kv_paid{d, loopintegrand2D_kv, 0};
+    paid::PAIDConfig config(1e5, 1e-1, 0, 8);
+    paid::PAID<2, Loopintegrand_2D_kv, comp, int, std::array<double, 2>> loopintegral2D_kv_paid(config);
+    integral = loopintegral2D_kv_paid.solve({integrand_loop_2D_kv_paid})[0];
+
+    //loopintegrand2D_kv.save_numbers();
+
+    return integral;
 }
 
 template <typename Q>
