@@ -15,18 +15,18 @@
 #include "../../utilities/hdf5_routines.hpp"
 
 // include tests that should be run
-#include "test_ODE_solver.hpp"
-#include "test_data_structures.hpp"
-#include "test_integrator.hpp"
-#include "test_symmetry_transformations.hpp"
+//#include "test_ODE_solver.hpp"
+//#include "test_data_structures.hpp"
+//#include "test_integrator.hpp"
+//#include "test_symmetry_transformations.hpp"
 #include "../test_PrecalculatedBubble.hpp"
 
-#include "test_frequencygrid.hpp"
-#include "test_interpolations.hpp"
-#include "test_minimizer.hpp"
-#include "test_rvertex.hpp"
+//#include "test_frequencygrid.hpp"
+//#include "test_interpolations.hpp"
+//#include "test_minimizer.hpp"
+//#include "test_rvertex.hpp"
 //#ifdef HUBBARD
-#include "test_momentum_grid.hpp"
+//#include "test_momentum_grid.hpp"
 //#endif
 
 

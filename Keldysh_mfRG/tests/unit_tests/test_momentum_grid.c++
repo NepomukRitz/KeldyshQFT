@@ -1,10 +1,7 @@
-//
-// Created by nepomuk on 27.04.21.
-//
-
 #ifndef KELDYSH_MFRG_TESTING_TEST_MOMENTUM_GRID_H
 #define KELDYSH_MFRG_TESTING_TEST_MOMENTUM_GRID_H
 
+#include "catch.hpp"
 #include "../../grids/momentum_grid.hpp"
 #include "../../data_structures.hpp"
 #include "../../correlation_functions/four_point/r_vertex.hpp"

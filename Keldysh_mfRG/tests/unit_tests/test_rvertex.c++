@@ -1,6 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_RVERTEX_H
 #define KELDYSH_MFRG_TESTING_TEST_RVERTEX_H
 
+#include "catch.hpp"
 #include "../../correlation_functions/four_point/r_vertex.hpp"
 
 // TODO(high): Write unit tests for cross projection functionality!

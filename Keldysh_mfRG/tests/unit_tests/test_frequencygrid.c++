@@ -1,6 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H
 #define KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H
 
+#include "catch.hpp"
 #include "../../grids/frequency_grid.hpp"
 #include "../../utilities/util.hpp"
 

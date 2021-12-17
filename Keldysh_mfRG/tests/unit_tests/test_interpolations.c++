@@ -1,11 +1,11 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
 #define KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
 
+#include "catch.hpp"
 #include "../../data_structures.hpp"
 #include "../../correlation_functions/four_point/vertex_buffer.hpp"
 #include "../../correlation_functions/four_point/r_vertex.hpp"
 #include "../../symmetries/symmetry_transformations.hpp"
-
 
 
 TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[interpolations]" ) {

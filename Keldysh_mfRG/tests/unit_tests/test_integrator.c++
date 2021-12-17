@@ -1,6 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_INTEGRATOR_H
 #define KELDYSH_MFRG_TESTING_TEST_INTEGRATOR_H
 
+#include "catch.hpp"
 #include "../../integrator/integrator.hpp"
 #include "../../utilities/util.hpp"
 #include "../../integrator/integrator_NR.hpp"

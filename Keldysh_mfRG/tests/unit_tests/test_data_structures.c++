@@ -1,10 +1,9 @@
 #ifndef KELDYSH_MFRG_TESTING_TEST_DATA_STRUCTURES_H
 #define KELDYSH_MFRG_TESTING_TEST_DATA_STRUCTURES_H
 
+#include "catch.hpp"
 #include "../../data_structures.hpp"
 #include "../../utilities/math_utils.hpp"
-
-//kommentar
 
 TEST_CASE( "vector operations", "[data_structures]" ) {
 

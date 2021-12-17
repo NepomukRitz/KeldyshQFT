@@ -1,6 +1,7 @@
 #ifndef FPP_MFRG_TEST_MINIMIZER_H
 #define FPP_MFRG_TEST_MINIMIZER_H
 
+#include "catch.hpp"
 #include "../../utilities/minimizer.hpp"
 
 /* Test integrand class with int template parameter to select different test integrand functions */

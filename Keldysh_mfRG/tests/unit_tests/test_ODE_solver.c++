@@ -1,12 +1,15 @@
 #ifndef FPP_MFRG_TEST_ODE_SOLVER_H
 #define FPP_MFRG_TEST_ODE_SOLVER_H
 
+#include "catch.hpp"
+#include "../../data_structures.hpp"
+#include "../../ODE_solvers/ODE_solvers.hpp"
+
+
 double max_rel_err(double x, vec<double> scale, double tiny) {
     return std::abs(x/scale.max_norm());
 }
 
-
-#include "../../ODE_solvers/ODE_solvers.hpp"
 
 template<> void postRKstep_stuff<double>(double& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
     if (verbose) std::cout <<"Intermediate result of ODE solver: " << y << std::endl;
