@@ -547,7 +547,7 @@ double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax,
 }
 
 
-auto freqGrid::shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, const bool verbose=true) -> FrequencyGrid {
+auto freqGrid::shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, const bool verbose) -> FrequencyGrid {
         assert(freqGrid.get_ws_vec().size() == maxabs_along_x.size());
 
         FrequencyGrid frequencies_new = freqGrid;

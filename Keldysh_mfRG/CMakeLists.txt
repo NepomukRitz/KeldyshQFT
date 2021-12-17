@@ -17,26 +17,32 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 #set(SOURCE_FILES main.cpp) # diagrammatic_combinations.h interpolations.h testFunctions.h correctionFunctions.h)
 #add_executable(openmp_test_clion ${SOURCE_FILES})
 
-file(GLOB keldysh_SRC CONFIGURE_DEPENDS "*.h" "*.hpp" "*.c++")  # collects all filenames with extension .h, .hpp and .c++
+include_directories(${CMAKE_SOURCE_DIR})
+file(GLOB_RECURSE keldysh_SRC *.c++)
+file(GLOB_RECURSE keldysh_H *.hpp *.h)
+##file(GLOB keldysh_H CONFIGURE_DEPENDS "*.h" "*.hpp")  # collects all filenames with extension .h and .hpp
+##file(GLOB keldysh_SRC CONFIGURE_DEPENDS "*.c++")      # collects all filenames with extension .c++
+
 
 ## standard executable for integration tests and production runs
 add_executable(Keldysh_mfRG
         main.cpp
-        ${keldysh_SRC} grids/momentum_grid.c++ symmetries/symmetry_transformations.c++ postprocessing/KramersKronig.c++ utilities/write_data2file.c++ mfRG_flow/flow.c++ utilities/hdf5_routines.c++ utilities/util.cpp utilities/math_utils.cpp data_structures.cpp utilities/mpi_setup.cpp symmetries/Keldysh_symmetries.cpp integrator/integrator.cpp)
+        ${keldysh_H} ${keldysh_SRC})
 
 ## executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
         tests/unit_tests/unit_tests.cpp
-        ${keldysh_SRC} grids/momentum_grid.c++ symmetries/symmetry_transformations.c++ postprocessing/KramersKronig.c++ utilities/write_data2file.c++ mfRG_flow/flow.c++ utilities/hdf5_routines.c++ utilities/util.cpp utilities/math_utils.cpp data_structures.cpp utilities/mpi_setup.cpp symmetries/Keldysh_symmetries.cpp integrator/integrator.cpp)
+        ${keldysh_H} ${keldysh_SRC})
 
 ## standard executable for integration tests and production runs
 add_executable(FPP_mfRG
         FPP/FPP_main.cpp
-        ${keldysh_SRC} grids/momentum_grid.c++ symmetries/symmetry_transformations.c++ postprocessing/KramersKronig.c++ postprocessing/postprocessing.c++ utilities/write_data2file.c++ mfRG_flow/flow.c++ utilities/hdf5_routines.c++ tests/test_PrecalculatedBubble.c++ tests/test_symmetries.c++ utilities/util.cpp utilities/math_utils.cpp data_structures.cpp utilities/mpi_setup.cpp symmetries/Keldysh_symmetries.cpp correlation_functions/two_point/propagator.cpp integrator/integrator.cpp)
+        ${keldysh_H} ${keldysh_SRC})
 
 add_executable(get_integrand_dGammaL
         tests/integrand_tests/get_integrand_dGammaL.cpp
-        ${keldysh_SRC} grids/momentum_grid.c++ symmetries/symmetry_transformations.c++ postprocessing/KramersKronig.c++ utilities/write_data2file.c++ mfRG_flow/flow.c++ utilities/hdf5_routines.c++ tests/integrand_tests/saveIntegrand.c++ utilities/util.cpp utilities/math_utils.cpp data_structures.cpp utilities/mpi_setup.cpp symmetries/Keldysh_symmetries.cpp integrator/integrator.cpp)
+        ${keldysh_H} ${keldysh_SRC})
+
 
 include_directories(/usr/include/mpi/)
 include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)

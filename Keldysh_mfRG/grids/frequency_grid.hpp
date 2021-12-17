@@ -412,7 +412,7 @@ double integration_measure_v3(double t, double W_scale);
 double integration_measure_v4(double t, double W_scale);
 
 namespace freqGrid {
-    auto shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, const bool verbose=true) -> FrequencyGrid;
+    auto shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, bool verbose=true) -> FrequencyGrid;
 }
 
 

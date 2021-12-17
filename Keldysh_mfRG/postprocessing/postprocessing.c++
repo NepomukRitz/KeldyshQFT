@@ -93,22 +93,22 @@ void check_Kramers_Kronig(const std::string filename) {
         // get retarded component (first half of stored data points)
         rvec SigmaR_re = state.selfenergy.Sigma(0, nSE-1).real();  // real part from flow
         rvec SigmaR_im = state.selfenergy.Sigma(0, nSE-1).imag();  // imaginary part from flow
-        rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im);  // compute real part from imaginary part via KK
+        rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im, 0);  // compute real part from imaginary part via KK
 
         // check Kramers-Kronig for retarded component of K1r
         rvec wK1 = state.vertex.avertex().K1.get_VertexFreqGrid().b.get_ws_vec();  // frequency grid points
         // get retarded component of K1a (first half of stored data points)
         rvec K1aR_re = state.vertex.avertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
         rvec K1aR_im = state.vertex.avertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
-        rvec K1aR_re_KK = KKi2r(wK1, K1aR_im);  // compute real part from imaginary part via KK
+        rvec K1aR_re_KK = KKi2r(wK1, K1aR_im, 0);  // compute real part from imaginary part via KK
         // get retarded component of K1p (first half of stored data points)
         rvec K1pR_re = state.vertex.pvertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
         rvec K1pR_im = state.vertex.pvertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
-        rvec K1pR_re_KK = KKi2r(wK1, K1pR_im);  // compute real part from imaginary part via KK
+        rvec K1pR_re_KK = KKi2r(wK1, K1pR_im, 0);  // compute real part from imaginary part via KK
         // get retarded component of K1t (first half of stored data points)
         rvec K1tR_re = state.vertex.tvertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
         rvec K1tR_im = state.vertex.tvertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
-        rvec K1tR_re_KK = KKi2r(wK1, K1tR_im);  // compute real part from imaginary part via KK
+        rvec K1tR_re_KK = KKi2r(wK1, K1tR_im, 0);  // compute real part from imaginary part via KK
 
         // save data to file
         write_h5_rvecs(filename + "_KKi2r_i" + std::to_string(iLambdas[i]),

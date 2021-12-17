@@ -20,7 +20,7 @@
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
  * Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin.
  */
-State<state_datatype> n_loop_flow(std::string& outputFileName, bool save_intermediate_results);
+State<state_datatype> n_loop_flow(std::string outputFileName, bool save_intermediate_results);
 
 /**
  * Checkpointing: Continue to compute an n-loop flow that has been canceled before, e.g. due to running into the wall

@@ -96,11 +96,7 @@ Q LoopCalculator<Q>::Keldysh_prefactor() {
     return -1./(2.*M_PI*glb_i);
 }
 template<>
-double LoopCalculator<double>::Keldysh_prefactor() {
-    print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0;
-}
+double LoopCalculator<double>::Keldysh_prefactor();
 
 template<typename Q>
 Q LoopCalculator<Q>::Matsubara_prefactor() {

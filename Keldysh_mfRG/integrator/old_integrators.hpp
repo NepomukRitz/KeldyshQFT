@@ -9,10 +9,10 @@
 #include "../grids/frequency_grid.hpp"           // for defining global frequency grids bfreqs and ffreqs
 
 // Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
-FrequencyGrid frequencyGrid_bos ('b', 1, Lambda_ini);
-FrequencyGrid frequencyGrid_fer ('f', 1, Lambda_ini);
-rvec bfreqs = frequencyGrid_bos.get_ws_vec();
-rvec ffreqs = frequencyGrid_fer.get_ws_vec();
+extern FrequencyGrid frequencyGrid_bos;
+extern FrequencyGrid frequencyGrid_fer;
+extern rvec bfreqs;
+extern rvec ffreqs;
 
 /* compute the dot product of two vectors (integrand values and weights) */
 template <typename Q>

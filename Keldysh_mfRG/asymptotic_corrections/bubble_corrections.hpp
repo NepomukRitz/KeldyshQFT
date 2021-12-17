@@ -42,11 +42,7 @@ auto correctionFunctionBubbleAT_REG2_Keldysh(double w, double vmin, double vmax,
 template <>
 auto correctionFunctionBubbleAT_REG2_Keldysh(double w, double vmin, double vmax,
                                              double eps_p, double Delta, double Lambda,
-                                             double eta_1, double eta_2, bool diff) -> double {
-    print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
+                                             double eta_1, double eta_2, bool diff) -> double;
 
 template <typename Q>
 auto correctionFunctionBubbleAT_REG2_Matsubara_PHS(double w, double vmin, double vmax,
@@ -92,11 +88,7 @@ auto correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(double w, double vmin, doub
 template <>
 auto correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
                                                      double eps_p, double Delta, double Lambda,
-                                                     double eta_1, double eta_2, bool diff) -> double {
-    print("Error! Computations without particle hole symmetry require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
+                                                     double eta_1, double eta_2, bool diff) -> double;
 
 template <typename Q>
 auto correctionFunctionBubbleP_REG2_Keldysh(double w, double vmin, double vmax,
@@ -117,11 +109,7 @@ auto correctionFunctionBubbleP_REG2_Keldysh(double w, double vmin, double vmax,
 template <>
 auto correctionFunctionBubbleP_REG2_Keldysh(double w, double vmin, double vmax,
                                             double eps_p, double Delta, double Lambda,
-                                            double eta_1, double eta_2, bool diff) -> double {
-    print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
+                                            double eta_1, double eta_2, bool diff) -> double;
 
 template <typename Q>
 auto correctionFunctionBubbleP_REG2_Matsubara_PHS(double w, double vmin, double vmax,
@@ -163,11 +151,7 @@ auto correctionFunctionBubbleP_REG2_Matsubara_NoPHS(double w, double vmin, doubl
 template <>
 auto correctionFunctionBubbleP_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
                                                     double eps_p, double Delta, double Lambda,
-                                                    double eta_1, double eta_2, bool diff) -> double {
-    print("Error! Computations without particle hole symmetry require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
+                                                    double eta_1, double eta_2, bool diff) -> double;
 
 template <typename Q> // TODO(medium): Split up into several functions?
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,

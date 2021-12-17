@@ -12,7 +12,7 @@
 
 template <typename Q>
 class State{
-    friend State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_intermediate_results);
+    friend State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_intermediate_results);
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool diff);
 
 private:

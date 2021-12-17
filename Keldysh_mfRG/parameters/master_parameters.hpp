@@ -82,11 +82,11 @@ constexpr int n_spin = 1;
 
 /// Parameters for Fermi-polaron problem ///
 
-double glb_muc = 1.;
-double glb_mud;
-double glb_mc = 1.;
-double glb_md = 1.;
-double glb_ainv;
+extern double glb_muc;
+extern double glb_mud;
+extern double glb_mc;
+extern double glb_md;
+extern double glb_ainv;
 
 /// Parameters for internal structure ///
 

@@ -14,6 +14,7 @@
 #include <boost/math/special_functions/polygamma.hpp> // Polygamma function
 #include "../integrator/integrator.hpp"
 #include "../postprocessing/causality_FDT_checks.hpp"   // check causality and FDTs
+#include "../utilities/util.hpp"
 
 
 

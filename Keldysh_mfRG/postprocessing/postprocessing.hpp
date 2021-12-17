@@ -6,6 +6,7 @@
 #include "../grids/flow_grid.hpp"              // flow grid
 #include "../correlation_functions/state.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"
+#include "../integrator/integrator.hpp"
 #include "KramersKronig.hpp"   // perform check of Kramers-Kronig relation
 
 template <typename Q>
