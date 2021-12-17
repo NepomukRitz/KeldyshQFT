@@ -18,7 +18,7 @@
 #include <vector>           // vec class is derived from vector class
 #include <initializer_list> // to initialize vec class with initializer list
 #include "../integrator/integrator.hpp"
-#include "../paid-integrator/paid.hpp"
+#include "../integrator/paid-integrator/paid.hpp"
 #include "../parameters/master_parameters.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"
 #include "../utilities/util.hpp"

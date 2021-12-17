@@ -8,7 +8,7 @@
 #include "Momentum-integral-Bubble.h"
 #include "../utilities/write_data2file.hpp"             // write vectors into hdf5 file
 #include "fRG-T-matrix-approach.h"
-#include "../paid-integrator/paid.hpp"
+#include "../integrator/paid-integrator/paid.hpp"
 
 template <typename Q>
 class Integrand_Pi0_vpp {
