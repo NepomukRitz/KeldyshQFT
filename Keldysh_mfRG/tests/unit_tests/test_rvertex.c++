@@ -1,6 +1,3 @@
-#ifndef KELDYSH_MFRG_TESTING_TEST_RVERTEX_H
-#define KELDYSH_MFRG_TESTING_TEST_RVERTEX_H
-
 #include "catch.hpp"
 #include "../../correlation_functions/four_point/r_vertex.hpp"
 
@@ -227,6 +224,3 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
 #endif // PARTICLE_HOLE_SYMM
 
 #endif // KELDYSH_FORMALISM
-
-
-#endif //KELDYSH_MFRG_TESTING_TEST_RVERTEX_H

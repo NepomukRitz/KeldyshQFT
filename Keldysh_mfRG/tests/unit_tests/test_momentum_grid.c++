@@ -1,6 +1,3 @@
-#ifndef KELDYSH_MFRG_TESTING_TEST_MOMENTUM_GRID_H
-#define KELDYSH_MFRG_TESTING_TEST_MOMENTUM_GRID_H
-
 #include "catch.hpp"
 #include "../../grids/momentum_grid.hpp"
 #include "../../data_structures.hpp"
@@ -108,5 +105,3 @@ TEST_CASE("K1 BZ Average", "Test that the q-sum over the reduced BZ is normalize
         CHECK(K1_BZ_sum_double - 1. < 10e-30);
     }
 }
-
-#endif //KELDYSH_MFRG_TESTING_TEST_MOMENTUM_GRID_H

@@ -1,6 +1,3 @@
-#ifndef KELDYSH_MFRG_TESTING_TEST_INTEGRATOR_H
-#define KELDYSH_MFRG_TESTING_TEST_INTEGRATOR_H
-
 #include "catch.hpp"
 #include "../../integrator/integrator.hpp"
 #include "../../utilities/util.hpp"
@@ -77,5 +74,3 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
         CHECK( res == Approx(exact[i]).epsilon(0.0001));
     }
 }
-
-#endif //KELDYSH_MFRG_TESTING_TEST_INTEGRATOR_H

@@ -1,6 +1,3 @@
-#ifndef KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H
-#define KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H
-
 #include "catch.hpp"
 #include "../../grids/frequency_grid.hpp"
 #include "../../utilities/util.hpp"
@@ -93,5 +90,3 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
     REQUIRE(tdeviations.max_norm() < tolerance);
 
 }
-
-#endif //KELDYSH_MFRG_TESTING_TEST_FREQUENCYGRID_H

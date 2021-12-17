@@ -1,6 +1,3 @@
-#ifndef FPP_MFRG_TEST_ODE_SOLVER_H
-#define FPP_MFRG_TEST_ODE_SOLVER_H
-
 #include "catch.hpp"
 #include "../../data_structures.hpp"
 #include "../../ODE_solvers/ODE_solvers.hpp"
@@ -70,6 +67,3 @@ TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
 
 }
 */
-
-
-#endif //FPP_MFRG_TEST_ODE_SOLVER_H

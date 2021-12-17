@@ -1,6 +1,3 @@
-#ifndef FPP_MFRG_TEST_MINIMIZER_H
-#define FPP_MFRG_TEST_MINIMIZER_H
-
 #include "catch.hpp"
 #include "../../utilities/minimizer.hpp"
 
@@ -81,6 +78,3 @@ TEST_CASE( "Minimize different cost functions for multi-dimensional minimization
         CHECK( (res -  exact[i]).max_norm() < 0.0001 );
     }
 }
-
-
-#endif //FPP_MFRG_TEST_MINIMIZER_H

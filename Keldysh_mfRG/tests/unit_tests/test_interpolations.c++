@@ -1,6 +1,3 @@
-#ifndef KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
-#define KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H
-
 #include "catch.hpp"
 #include "../../data_structures.hpp"
 #include "../../correlation_functions/four_point/vertex_buffer.hpp"
@@ -589,5 +586,3 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
     }
 }
 #endif
-
-#endif //KELDYSH_MFRG_TESTING_TEST_INTERPOLATIONS_H

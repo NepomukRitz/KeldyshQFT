@@ -1,6 +1,3 @@
-#ifndef KELDYSH_MFRG_TESTING_TEST_SYMMETRY_TRANSFORMATIONS_H
-#define KELDYSH_MFRG_TESTING_TEST_SYMMETRY_TRANSFORMATIONS_H
-
 #include "catch.hpp"
 #include "../../symmetries/symmetry_transformations.hpp"
 #include "../../utilities/util.hpp"
@@ -624,5 +621,3 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
         }
     }
 };
-
-#endif //KELDYSH_MFRG_TESTING_TEST_SYMMETRY_TRANSFORMATIONS_H
