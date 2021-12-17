@@ -19,6 +19,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 
 include_directories(${CMAKE_SOURCE_DIR})
 file(GLOB_RECURSE keldysh_SRC *.c++)    # collects all filenames with extension .c++
+file(GLOB_RECURSE test_SRC ${CMAKE_SOURCE_DIR}/tests/unit_tests/*.cxx)    # collects all filenames with extension .cxx
 file(GLOB_RECURSE keldysh_H *.hpp *.h)  # collects all filenames with extension .h and .hpp
 ##file(GLOB keldysh_H CONFIGURE_DEPENDS "*.h" "*.hpp")
 ##file(GLOB keldysh_SRC CONFIGURE_DEPENDS "*.c++")
@@ -32,7 +33,7 @@ add_executable(Keldysh_mfRG
 ## executable for unit tests using Catch
 add_executable(Keldysh_mfRG_testing
         tests/unit_tests/unit_tests.cpp
-        ${keldysh_H} ${keldysh_SRC})
+        ${keldysh_H} ${keldysh_SRC} ${test_SRC})
 
 ## standard executable for integration tests and production runs
 add_executable(FPP_mfRG
