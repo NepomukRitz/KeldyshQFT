@@ -4,6 +4,8 @@
 #include "../../data_structures.hpp"
 #include "../../utilities/math_utils.hpp"
 
+//kommentar
+
 TEST_CASE( "vector operations", "[data_structures]" ) {
 
     vec<comp> v (10);

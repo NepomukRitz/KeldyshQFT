@@ -4,8 +4,8 @@ project(Keldysh_mfRG)
 set(CMAKE_CXX_STANDARD 17)
 
 ## Set optimization level of compiler:
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
-#set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3")
+##set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
+##set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3")
 
 set(CMAKE_CXX_COMPILER mpicxx)
 
@@ -18,10 +18,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 #add_executable(openmp_test_clion ${SOURCE_FILES})
 
 include_directories(${CMAKE_SOURCE_DIR})
-file(GLOB_RECURSE keldysh_SRC *.c++)
-file(GLOB_RECURSE keldysh_H *.hpp *.h)
-##file(GLOB keldysh_H CONFIGURE_DEPENDS "*.h" "*.hpp")  # collects all filenames with extension .h and .hpp
-##file(GLOB keldysh_SRC CONFIGURE_DEPENDS "*.c++")      # collects all filenames with extension .c++
+file(GLOB_RECURSE keldysh_SRC *.c++)    # collects all filenames with extension .c++
+file(GLOB_RECURSE keldysh_H *.hpp *.h)  # collects all filenames with extension .h and .hpp
+##file(GLOB keldysh_H CONFIGURE_DEPENDS "*.h" "*.hpp")
+##file(GLOB keldysh_SRC CONFIGURE_DEPENDS "*.c++")
 
 
 ## standard executable for integration tests and production runs

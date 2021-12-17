@@ -1,58 +1,62 @@
 #include "postprocessing.hpp"
 
 void compute_Phi_tilde(const std::string filename) {
-    //rvec Lambdas = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE);
-    rvec Lambdas = read_Lambdas_from_hdf(filename);
+    assert(KELDYSH);
+    if constexpr (not KELDYSH) return; // works only for Keldysh computations
+    else{
+        //rvec Lambdas = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE);
+        rvec Lambdas = read_Lambdas_from_hdf(filename);
 
-    rvec vs (Lambdas.size() * nFER * n_in);
-    rvec ImSigma (Lambdas.size() * nFER * n_in);
-    rvec Phi (Lambdas.size() * nFER * n_in);
-    rvec Phi_integrated (Lambdas.size() * n_in);
+        rvec vs (Lambdas.size() * nFER * n_in);
+        rvec ImSigma (Lambdas.size() * nFER * n_in);
+        rvec Phi (Lambdas.size() * nFER * n_in);
+        rvec Phi_integrated (Lambdas.size() * n_in);
 
-    for (int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
-        State<state_datatype> state = read_hdf(filename, iLambda);
-        state.selfenergy.asymp_val_R = glb_U / 2.;
+        for (int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
+            State<state_datatype> state = read_hdf(filename, iLambda);
+            state.selfenergy.asymp_val_R = glb_U / 2.;
 
-        double vmin = state.selfenergy.frequencies.w_lower;
-        double vmax = state.selfenergy.frequencies.w_upper;
+            double vmin = state.selfenergy.frequencies.w_lower;
+            double vmax = state.selfenergy.frequencies.w_upper;
 
-        Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
+            Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
 
-        for (int i_in=0; i_in<n_in; ++i_in) {
-#pragma omp parallel for
-            for (int iv=0; iv<nFER; ++iv) {
-                double v = state.selfenergy.frequencies.get_ws(iv);
-                vs[iLambda * nFER + iv * n_in + i_in] = v;
-                // lhs of Ward identity
-                ImSigma[iLambda * nFER + iv * n_in + i_in] = -2. * myimag(state.selfenergy.val(0, iv, i_in));
-                // rhs of Ward identity
-                Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);
-                Phi[iLambda * nFER * n_in + iv * n_in + i_in]
-                        = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
+            for (int i_in=0; i_in<n_in; ++i_in) {
+    #pragma omp parallel for
+                for (int iv=0; iv<nFER; ++iv) {
+                    double v = state.selfenergy.frequencies.get_ws(iv);
+                    vs[iLambda * nFER + iv * n_in + i_in] = v;
+                    // lhs of Ward identity
+                    ImSigma[iLambda * nFER + iv * n_in + i_in] = -2. * myimag(state.selfenergy.val(0, iv, i_in));
+                    // rhs of Ward identity
+                    Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);
+                    Phi[iLambda * nFER * n_in + iv * n_in + i_in]
+                            = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
+                }
+                // integrate difference of lhs and rhs of Ward identity
+                Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
+                                                                        iLambda, i_in);
+                // integrate lhs of Ward identity (for computing relative error): set Phi to zero (empty vector)
+                rvec Phi_0 (Lambdas.size() * nFER * n_in);
+                Integrand_Ward_id_integrated integrandWardIdIntegrated_0 (state.selfenergy.frequencies, Phi_0, state.selfenergy,
+                                                                          iLambda, i_in);
+                // compute relative error
+                Phi_integrated[iLambda * n_in + i_in]
+                        = myreal(integrator<double>(integrandWardIdIntegrated, vmin, vmax))
+                          / myreal(integrator<double>(integrandWardIdIntegrated_0, vmin, vmax));
             }
-            // integrate difference of lhs and rhs of Ward identity
-            Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
-                                                                    iLambda, i_in);
-            // integrate lhs of Ward identity (for computing relative error): set Phi to zero (empty vector)
-            rvec Phi_0 (Lambdas.size() * nFER * n_in);
-            Integrand_Ward_id_integrated integrandWardIdIntegrated_0 (state.selfenergy.frequencies, Phi_0, state.selfenergy,
-                                                                      iLambda, i_in);
-            // compute relative error
-            Phi_integrated[iLambda * n_in + i_in]
-                    = myreal(integrator<double>(integrandWardIdIntegrated, vmin, vmax))
-                      / myreal(integrator<double>(integrandWardIdIntegrated_0, vmin, vmax));
         }
+
+        std::string filename_out;
+        if (filename.substr(filename.length()-3, 3) == ".h5")
+            filename_out = filename.substr(0, filename.length()-3);
+        else
+            filename_out = filename;
+
+        write_h5_rvecs(filename_out + "_Phi.h5",
+                       {"v", "-2ImSigma", "Phi", "Phi_integrated", "Lambdas"},
+                       {vs, ImSigma, Phi, Phi_integrated, Lambdas});
     }
-
-    std::string filename_out;
-    if (filename.substr(filename.length()-3, 3) == ".h5")
-        filename_out = filename.substr(0, filename.length()-3);
-    else
-        filename_out = filename;
-
-    write_h5_rvecs(filename_out + "_Phi.h5",
-                   {"v", "-2ImSigma", "Phi", "Phi_integrated", "Lambdas"},
-                   {vs, ImSigma, Phi, Phi_integrated, Lambdas});
 }
 
 void sum_rule_K1tK(const std::string filename) {

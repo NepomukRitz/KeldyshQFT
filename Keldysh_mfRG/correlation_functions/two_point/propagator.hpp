@@ -135,8 +135,8 @@ auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
         else               {return GR_REG1_SIAM(v, i_in);}        // SIAM
     }
     else if (REG == 2) {
-        if (HUBBARD_MODEL) return GR_REG2_Hubbard(v, i_in);
-        else               return GR_REG2_SIAM(v, i_in);          // SIAM
+        if constexpr (HUBBARD_MODEL)    return GR_REG2_Hubbard(v, i_in);
+        else                            return GR_REG2_SIAM(v, i_in);          // SIAM
     }
     else if (REG == 3) {
 
@@ -154,8 +154,8 @@ auto Propagator<Q>::GA(const double v, const int i_in) const -> Q
         else               return GA_REG1_SIAM(v, i_in);
     }
     else if (REG == 2) {
-        if (HUBBARD_MODEL) return GA_REG2_Hubbard(v, i_in);
-        else               return GA_REG2_SIAM(v, i_in);
+        if constexpr (HUBBARD_MODEL)    return GA_REG2_Hubbard(v, i_in);
+        else                            return GA_REG2_SIAM(v, i_in);
     }
     else if (REG == 3) {
 
@@ -232,12 +232,12 @@ auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
     assert(!FPP);
     if      (REG == 1)      {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
     else if (REG == 2) {
-        if (HUBBARD_MODEL)  return GM_REG2_Hubbard(v, i_in);
-        else                return GM_REG2_SIAM(v, i_in);
+        if constexpr (HUBBARD_MODEL)    return GM_REG2_Hubbard(v, i_in);
+        else                            return GM_REG2_SIAM(v, i_in);
     }
     else if (REG == 3) {
-        if(HUBBARD_MODEL)        return GM_REG3_Hubbard(v, i_in);
-        else                     return GM_REG3_SIAM(v, i_in);
+        if constexpr (HUBBARD_MODEL)    return GM_REG3_Hubbard(v, i_in);
+        else                            return GM_REG3_SIAM(v, i_in);
     }
     else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
@@ -260,8 +260,8 @@ auto Propagator<Q>::SM(const double v, const int i_in) const -> Q
     assert(!FPP);
     if      (REG == 1)      {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
     else if (REG == 2) {
-        if (HUBBARD_MODEL)  return SM_REG2_Hubbard(v, i_in);
-        else                return SM_REG2_SIAM(v, i_in);
+        if constexpr (HUBBARD_MODEL)    return SM_REG2_Hubbard(v, i_in);
+        else                            return SM_REG2_SIAM(v, i_in);
     }
     else if (REG == 3)      return SM_REG3(v, i_in);
     else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
@@ -285,7 +285,7 @@ template <typename Q>
 auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) const -> Q {
     switch (type){
         case 'g' :                              //Good ol' regular propagator
-            if (KELDYSH){
+            if constexpr (KELDYSH){
                 switch (iK){
                     case 0:
                         return GR(v, i_in);
@@ -301,7 +301,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             }
 
         case 's':
-            if (KELDYSH){
+            if constexpr (KELDYSH){
                 switch (iK){
                     case 0:
                         return SR(v, i_in);
@@ -317,7 +317,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             }
 
         case 'k': // including the Katanin extension
-            if (KELDYSH){
+            if constexpr (KELDYSH){
                 switch (iK){
                     case 0:
                         return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
@@ -337,7 +337,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             }
 
         case 'e': // purely the Katanin extension
-            if (KELDYSH){
+            if constexpr (KELDYSH){
                 switch (iK){
                     case 0:
                         return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
@@ -470,8 +470,8 @@ auto Propagator<Q>::GM_REG2_Hubbard(const double v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::GM_REG2_SIAM(const double v, const int i_in) const -> Q {
-    if (PARTICLE_HOLE_SYMMETRY) return GM_REG2_SIAM_PHS(v, i_in);
-    else                        return GM_REG2_SIAM_NoPHS(v, i_in);
+    if constexpr (PARTICLE_HOLE_SYMMETRY)   return GM_REG2_SIAM_PHS(v, i_in);
+    else                                    return GM_REG2_SIAM_NoPHS(v, i_in);
 }
 
 template <typename Q>
@@ -495,8 +495,8 @@ auto Propagator<Q>::SM_REG2_Hubbard(const double v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::SM_REG2_SIAM(const double v, const int i_in) const -> Q{
-    if (PARTICLE_HOLE_SYMMETRY) return SM_REG2_SIAM_PHS(v, i_in);
-    else                        return SM_REG2_SIAM_NoPHS(v, i_in);
+    if constexpr (PARTICLE_HOLE_SYMMETRY)   return SM_REG2_SIAM_PHS(v, i_in);
+    else                                    return SM_REG2_SIAM_NoPHS(v, i_in);
 }
 
 template <typename Q>
@@ -609,8 +609,8 @@ auto Propagator<Q>::GM_REG3_Hubbard(const double v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::GM_REG3_SIAM(const double v, const int i_in) const -> Q {
-    if (PARTICLE_HOLE_SYMMETRY) return GM_REG3_SIAM_PHS(v, i_in);
-    else                        return GM_REG3_SIAM_NoPHS(v, i_in);
+    if constexpr (PARTICLE_HOLE_SYMMETRY)   return GM_REG3_SIAM_PHS(v, i_in);
+    else                                    return GM_REG3_SIAM_NoPHS(v, i_in);
 }
 
 template <typename Q>
