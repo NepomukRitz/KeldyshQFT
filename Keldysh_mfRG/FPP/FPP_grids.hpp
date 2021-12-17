@@ -49,8 +49,18 @@ public:
         }
         return result;
     }
+    /*
+    FPP_Grid(){
+        Ns_grid = {0};
+        specific_points = {0,1};
+        negative_values = 0;
+        zero_included = 0;
+        grid_types = {0};
+        grid_points = {0};
+    };*/
 
-    FPP_Grid(std::vector<int> Ns_grid_in, rvec specific_points_in, bool negative_values_in, bool zero_included_in, std::vector<int> grid_types_in)
+    FPP_Grid() = delete;
+    FPP_Grid(const std::vector<int> Ns_grid_in, rvec specific_points_in, bool negative_values_in, bool zero_included_in, std::vector<int> grid_types_in)
     :Ns_grid(Ns_grid_in), specific_points(specific_points_in), negative_values(negative_values_in), zero_included(zero_included_in), grid_types(grid_types_in){
         assert(Ns_grid.size() == grid_types.size());
         assert(Ns_grid.size()+1 == specific_points.size());
@@ -130,6 +140,13 @@ public:
         return grid_points.size();
     }
 
+    auto back() const -> double {
+        int i = grid_points.size()-1;
+        double result;
+        result = grid_points[i];
+        return result;
+    }
+
     auto operator[] (int i) const -> double {
         return grid_points[i];
     }
@@ -143,7 +160,8 @@ public:
         int sum_Ns_neg = 0;
         int sum_Ns_pos = 0;
 
-        if (x >= specific_points[specific_points.size()-1]) { // may be out of range
+        // specific_points.back()
+        if (x >= specific_points.back()) { // may be out of range
             return grid_points.size()-1;
         }
         if (negative_values) {
@@ -158,13 +176,19 @@ public:
                     lower = specific_points[j_back];
                     if (x >= -upper and x < -lower) {
                         grid_idx = sum_Ns_neg + N_grid + 1 - calculate_grid_idx(upper, lower, -x, N_grid, grid_type);
-                        return (int) grid_idx;
+                        if (grid_idx < 0){
+                            std::cout << "error!\n";
+                        }
+                        return (int)round(grid_idx);
                     }
                     sum_Ns_neg += N_grid - 1;
                 }
             }
-            sum_Ns_neg = (int) (grid_points.size()/2);
+            sum_Ns_neg = (int)round(grid_points.size()/2);
             if (x >= -specific_points[0] and x < 0) {
+                if (sum_Ns_neg-1 < 0){
+                    std::cout << "error!\n";
+                }
                 return sum_Ns_neg-1;
             }
         }
@@ -172,6 +196,9 @@ public:
             sum_Ns_neg -= 1;
         }
         if ((x >= 0) and (x < specific_points[0])) {
+            if (sum_Ns_neg < 0){
+                std::cout << "error!\n";
+            }
             return sum_Ns_neg;
         }
         if (!zero_included and !negative_values) {
@@ -184,11 +211,14 @@ public:
             grid_type = grid_types[j];
             if ((x >= lower) and (x < upper)) {
                 grid_idx = sum_Ns_neg + sum_Ns_pos + calculate_grid_idx(upper,lower,x,N_grid,grid_type);
-                return (int) grid_idx;
+                if (grid_idx < 0){
+                    std::cout << "error!\n";
+                }
+                return (int)round(grid_idx);
             }
             sum_Ns_pos += N_grid - 1;
         }
-        if (x < -specific_points[specific_points.size()-1]) {
+        if (x < -specific_points.back()) {
             std::cout << "out of grid!\n";
             return 0;
         }
@@ -240,7 +270,7 @@ public:
     }
 
     auto fconv(double x) const -> int {
-        //assert((x >= grid_points[0]) and (x <= grid_points[grid_points.size()-1]));
+        //assert((x >= grid_points[0]) and (x <= grid_points.back());
         /*for (int i = 0; i < grid_points.size(); ++i){
             if (x > grid_points[i] and x < grid_points[i+1]){
                 return i;
