@@ -10,7 +10,7 @@
 #include "old_integrators.hpp"                    // Riemann, Simpson, PAID integrator (should not needed)
 #include "integrator_NR.hpp"                      // adaptive Gauss-Lobatto integrator with Kronrod extension
 #include "../utilities/util.hpp"                  // for rounding functions
-#include "paid-integrator/paid.hpp"                 // for PAID integrator
+#include "../integrator/paid-integrator/paid.hpp"                 // for PAID integrator
 
 /* compute real part of integrand (for GSL/PAID) */
 template <typename Integrand>
