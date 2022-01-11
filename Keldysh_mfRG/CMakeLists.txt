@@ -4,8 +4,8 @@ project(Keldysh_mfRG)
 set(CMAKE_CXX_STANDARD 17)
 
 ## Set optimization level of compiler:
-##set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
-##set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3  -march=native -flto" )
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3  -march=native -flto"     )
 
 set(CMAKE_CXX_COMPILER mpicxx)
 
