@@ -363,6 +363,7 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value(Q& value, const int i0, const int i_in, const int ispin, const int iw,
                                            const double w, const double v, const double vp, const K_class k){
+    double vmax_temp = vmax;
 #ifndef SWITCH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
@@ -405,11 +406,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                     }
                 }
                 else {
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP) // TODO(high): Figure out type problems in matsubarasum
                     int interval_correction =  (int)(signFlipCorrection_MF(w)/(2*M_PI*glb_T) + 0.1);
+                    vmax_temp = vmax + interval_correction * 2 * M_PI * glb_T;
                     // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
                     value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand, Nmin, Nmax  + interval_correction);
-#endif
                 }
             }
 

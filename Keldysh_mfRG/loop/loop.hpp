@@ -77,7 +77,7 @@ void LoopCalculator<Q>::set_v_limits() {
     else{
         // make sure that the limits for the Matsubara sum are fermionic
         Nmin = (int) (prop.selfenergy.frequencies.w_lower/(M_PI*glb_T)-1)/2;
-        Nmax = (int) (prop.selfenergy.frequencies.w_upper/(M_PI*glb_T)-1)/2;
+        Nmax = - Nmin - 1;
         v_lower = (Nmin*2+1)*(M_PI*glb_T);
         v_upper = (Nmax*2+1)*(M_PI*glb_T);
     }
@@ -199,7 +199,7 @@ void LoopCalculator<Q>::compute_Matsubara_finiteT() {
     if (isfinite(v)) {
         IntegrandSE<Q> integrand = IntegrandSE<Q> ('r', fullvertex, prop, 0, 0, v, i_in);
         int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
-    //#ifndef KELDYSH_FORMALISM // TODO(high): Figure out type problems in matsubarasum
+
         integratedR = - glb_T * matsubarasum<Q>(integrand, Nmin-vint, Nmax+vint);
 
         if (all_spins) {
@@ -208,9 +208,10 @@ void LoopCalculator<Q>::compute_Matsubara_finiteT() {
             integratedR = - glb_T * matsubarasum<Q>(integrand, Nmin-vint, Nmax+vint);
         }
 
+        /// in MF: use symmetric integration interval => asymptotic correction=0
         integratedR += - 1./(2.*M_PI)
-                           * asymp_corrections_loop<Q>(fullvertex, prop, v_lower + M_PI*glb_T*(2*vint), v_upper + M_PI*glb_T*(2*vint+2), v, 0, spin, i_in, all_spins);
-    //#endif
+                           * asymp_corrections_loop<Q>(fullvertex, prop, v_lower - std::abs(v), v_upper + std::abs(v), v, 0, spin, i_in, all_spins);
+
         self.addself(0, iv, i_in, integratedR);
     }
     else {
