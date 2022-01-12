@@ -212,6 +212,7 @@ auto asymp_corrections_bubble(K_class k,
             break;
         default:;
     }
+    assert(isfinite(res));
     return res;
 }
 

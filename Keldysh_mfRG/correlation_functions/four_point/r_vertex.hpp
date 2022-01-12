@@ -724,11 +724,11 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                             "K3"
                             },
                    {
-                           deviations_K1.real(),
-                           deviations_K1.imag(),
-                           deviations_K2,
-                           deviations_K2b,
-                           deviations_K3
+                           deviations_K1.real() * (1/K1.get_vec().max_norm()),
+                           deviations_K1.imag() * (1/K1.get_vec().max_norm()),
+                           deviations_K2        * (1/K2.get_vec().max_norm()),
+                           deviations_K2b       * (1/K2b.get_vec().max_norm()) ,
+                           deviations_K3        * (1/K3.get_vec().max_norm())
                             });
 
 }

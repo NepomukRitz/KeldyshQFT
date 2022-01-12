@@ -586,15 +586,16 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
     int N = Nmax - Nmin  + 1;
 
     //// Straightforward summation:
-    //vec<Q> values(N);
-    //double vpp;
-    //for (int i = 0; i < N; i++) {
-    //    vpp = vmin + i * (2 * M_PI * glb_T);
-    //    values[i] = integrand(vpp);
-    //}
-    //return values.sum();
+    vec<Q> values(N);
+    double vpp;
+    for (int i = 0; i < N; i++) {
+        vpp = ((Nmin + i)*2 + 1) * (M_PI * glb_T);
+        values[i] = integrand(vpp);
+    }
+    return values.sum();
 
     //// Adaptive summator:
+    /*
     if (N_tresh * balance_fac >= N) {
 
         //cout << "Direct SUMMATION on interval[" << Nmin << ", " << Nmax << "] of length " << N <<  "!!! \n";
@@ -643,6 +644,7 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
 
 
     }
+    */
 }
 
 #endif //KELDYSH_MFRG_INTEGRATOR_HPP

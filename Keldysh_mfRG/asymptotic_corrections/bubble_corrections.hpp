@@ -48,42 +48,50 @@ template <typename Q>
 auto correctionFunctionBubbleAT_REG2_Matsubara_PHS(double w, double vmin, double vmax,
                                                    Q eps_p, double Delta, double Lambda,
                                                    double eta_1, double eta_2, bool diff) -> Q {
+    Q val;
+    double x;
     if (diff){
-        return 1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2., 2))
+        val = 1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2., 2))
                           + 1. / (pow(vmax + Delta, 2) - pow(w / 2., 2)));
     }
     else{
         if (w == 0.) {
-            return -1. / (vmax + Delta)
+            val = -1. / (vmax + Delta)
                    + 1. / (vmin - Delta);
         }
         else {
-            return 1. / w * log(((-vmin - w / 2. + Delta) * (vmax - w / 2. + Delta))
-                                / ((-vmin + w / 2. + Delta) * (vmax + w / 2. + Delta)));
+            x = ((-vmin - w / 2. + Delta) * (vmax - w / 2. + Delta))
+                       / ((-vmin + w / 2. + Delta) * (vmax + w / 2. + Delta));
+            val = 1. / w * log(x);
         }
     }
+    isfinite(val);
+    return val;
 }
 
 template <typename Q>
 auto correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
                                                      Q eps_p, double Delta, double Lambda,
                                                      double eta_1, double eta_2, bool diff) -> Q {
+    Q val;
     if (diff){
-        return 1. / 2. * (1. / (pow(-vmin - glb_i * eps_p + Delta, 2) - pow(w / 2., 2))
+        val = 1. / 2. * (1. / (pow(-vmin - glb_i * eps_p + Delta, 2) - pow(w / 2., 2))
                           + 1. / (pow(vmax + glb_i * eps_p + Delta, 2) - pow(w / 2., 2)));
     }
     else{
         if (w == 0.) {
-            return -1. / (vmax + glb_i * eps_p + Delta)
+            val = -1. / (vmax + glb_i * eps_p + Delta)
                    + 1. / (vmin + glb_i * eps_p - Delta);
         }
         else {
-            return 1. / w *
+            val = 1. / w *
                    log(((-vmin - w / 2. - glb_i * eps_p + Delta) * (vmax - w / 2. + glb_i * eps_p + Delta))
                        / ((-vmin + w / 2. - glb_i * eps_p + Delta) *
                           (vmax + w / 2. + glb_i * eps_p + Delta)));
         }
     }
+    isfinite(val);
+    return val;
 }
 template <>
 auto correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(double w, double vmin, double vmax,
