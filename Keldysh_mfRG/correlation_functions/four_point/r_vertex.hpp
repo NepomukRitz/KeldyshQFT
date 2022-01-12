@@ -910,7 +910,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
                         w  = input.v1-input.v2;                                     // input.w  = w_t
                         floor2bf_w = floor2bfreq(w / 2.);
                         v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
-                        v2 = input.v1 + floor2bf_w - floor2bf_inputw;               // input.v2 = v'_t
+                        v2 = input.v1 + floor2bf_w - w - floor2bf_inputw;               // input.v2 = v'_t
                     }
                     break;
                 case 'f':
@@ -956,7 +956,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
                     else {
                         w = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
                         floor2bf_w = floor2bfreq(w / 2.);
-                        v1 = -input.v1 + floor2bf_w + floor2bf_inputw;                 // input.v1 = v_t
+                        v1 =          - input.v1 + floor2bf_w + floor2bf_inputw;                 // input.v1 = v_t
                         v2 = -input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
                     }
                     break;
@@ -999,7 +999,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
                     else{
                         w  = input.v1-input.v2;                                     // input.w  = w_p
                         floor2bf_w = floor2bfreq(w / 2.);
-                        v1 = - input.v1 + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
+                        v1 =-input.v1           + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
                         v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
                     }
                     break;
