@@ -157,6 +157,7 @@ namespace {
     auto cubicFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 0.5*z + x*y + 2.*y*y*z + 3.*z*z*z + x*x*x + y*y*y;}
 }
 
+#ifndef DENSEGRID
 TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]" ) {
     double interpolation_tolerance = 1e-11;
     bool geq_interpolation_tolerance = false;
@@ -586,3 +587,5 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
     }
 }
 #endif
+
+#endif // DENSEGRID
