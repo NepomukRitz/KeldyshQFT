@@ -39,6 +39,13 @@ public:
         {
 
             Q result;
+#ifdef DENSEGRID
+            result =  interpolate_nearest1D<Q>(indices.w, vertexDataContainer<k1, Q>::get_VertexFreqGrid().b,
+                                                  [&](int i) -> Q {
+                                                      return vertexDataContainer<k1, Q>::val(indices.iK, indices.spin, i,
+                                                                                             indices.i_in);
+                                                  });
+#else
             if constexpr(inter == linear_on_aux) {
                 result =  interpolate_lin_on_aux1D<Q>(indices.w, vertexDataContainer<k1, Q>::get_VertexFreqGrid().b,
                                                         [&](int i) -> Q {
@@ -62,6 +69,7 @@ public:
             }
             else assert(false);
             // Lambda function (aka anonymous function) in last argument
+#endif
 
             assert(isfinite(result));
             return result;
@@ -106,6 +114,16 @@ public:
         {
 
             Q result;
+#ifdef DENSEGRID
+            result =  interpolate_nearest2D<Q>(w_temp, v_temp,
+                                               vertexDataContainer<k2, Q>::get_VertexFreqGrid().b,
+                                               vertexDataContainer<k2, Q>::get_VertexFreqGrid().f,
+                                               [&](int i, int j) -> Q {
+                                                   return vertexDataContainer<k2, Q>::val(indices.iK, indices.spin, i,
+                                                                                           j,
+                                                                                           indices.i_in);
+                                               });
+#else
             if constexpr(inter == linear_on_aux) {
                 result =  interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
                                                       vertexDataContainer<k2, Q>::get_VertexFreqGrid().b,
@@ -138,7 +156,7 @@ public:
                                                      });
             }
             else assert(false);
-
+#endif
             assert(isfinite(result));
             return result;
 
@@ -184,6 +202,17 @@ public:
         {
 
             Q result;
+
+#ifdef DENSEGRID
+            result =  interpolate_nearest2D<Q>(w_temp, v_temp,
+                                               vertexDataContainer<k2b, Q>::get_VertexFreqGrid().b,
+                                               vertexDataContainer<k2b, Q>::get_VertexFreqGrid().f,
+                                               [&](int i, int j) -> Q {
+                                                   return vertexDataContainer<k2b, Q>::val(indices.iK, indices.spin, i,
+                                                                                           j,
+                                                                                           indices.i_in);
+                                               });
+#else
             if constexpr(inter == linear_on_aux){
                 result =  interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
                                                       vertexDataContainer<k2b, Q>::get_VertexFreqGrid().b,
@@ -215,7 +244,7 @@ public:
                                                });
             }
             else assert(false);
-
+#endif
             assert(isfinite(result));
             return result;
 
@@ -267,6 +296,17 @@ public:
             Q result;
 
 
+#ifdef DENSEGRID
+            result =  interpolate_nearest3D<Q>(w_temp, v_temp, vp_temp,
+                                               vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
+                                               vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
+                                               vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
+                                               [&](int i, int j, int k) -> Q {
+                                                   return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,
+                                                                                          j, k,
+                                                                                          indices.i_in);
+                                               });
+#else
             if (not INTERPOL2D_FOR_K3 or indices.kClass_aim != k3) {
 
                 if constexpr(inter == linear_on_aux) {
@@ -384,7 +424,7 @@ public:
                 }
                 else assert(false);
             }
-
+#endif
             assert(isfinite(result));
             return result;
 

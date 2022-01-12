@@ -168,8 +168,12 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
     Q result;
+#ifdef DENSEGRID
+    result = interpolate_nearest1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+#else
     if (INTERPOLATION == linear) result = interpolate_lin1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
     else result = interpolate_lin_on_aux1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+#endif
     return result;
     }
 

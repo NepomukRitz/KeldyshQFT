@@ -16,6 +16,78 @@
 
 
 
+/**
+ * Interpolates in 0th order in 1D (on linear, auxiliary frequency grid)
+ * ATTENTION!: all
+ * @tparam Q            double or comp
+ * @param x
+ * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param val           any function that takes one integer and returns a value of type Q
+ * @return
+ */
+template <typename Q, typename Grid>
+static auto interpolate_nearest1D(const double& x, const Grid& frequencies, const std::function<Q(const int&)> val) -> Q {
+
+    int index = frequencies.fconv(x, true);
+
+    Q result = val(index);
+
+    assert(isfinite(result));
+    return result;
+}
+/**
+ * Interpolates in 0th order in 2D (on linear, auxiliary frequency grid)
+ * @tparam Q            double or comp
+ * @param x
+ * @param y
+ * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
+ * @param val           any function f(i,j) that takes two integers and returns a value of type Q
+ *                      where integer i belongs to x
+ *                        and integer j belongs to y
+ * @return
+ */
+template <typename Q, typename Grid>
+static auto interpolate_nearest2D(const double& x, const double& y,
+                              const Grid& xfrequencies, const Grid& yfrequencies,
+                              const std::function<Q(const int&, const int&)> val) -> Q {
+
+    int index = xfrequencies.fconv(x, true);
+
+    Q result = interpolate_nearest1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
+
+    assert(isfinite(result));
+    return result;
+}
+
+/**
+ * Interpolates in 0th order in 3D (on linear, auxiliary frequency grid)
+ * @tparam Q            double or comp
+ * @param x
+ * @param y
+ * @param z
+ * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
+ * @param zfrequencies  frequencyGrid with the functions fconv and with z-values in vector ws
+ * @param val           any function f(i,j,k) that takes three integers and returns a value of type Q
+ *                      where integer i belongs to x
+ *                        and integer j belongs to y
+ *                        and integer k belongs to z
+ * @return
+ */
+template <typename Q, typename Grid>
+static auto interpolate_nearest3D(const double& x, const double& y, const double& z,
+                              const Grid& xfrequencies, const Grid& yfrequencies, const Grid& zfrequencies,
+                              const std::function<Q(const int&, const int&, const int&)> val) -> Q {
+
+    int index = xfrequencies.fconv(x, true);
+
+    Q result = interpolate_nearest2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
+
+    assert(isfinite(result));
+    return result;
+}
+
 
 
 /**
