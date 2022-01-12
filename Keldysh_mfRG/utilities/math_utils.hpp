@@ -47,6 +47,8 @@ auto ceil2ffreq(double w) -> double;
 auto round2ffreq(double w) -> double;
 
 auto signFlipCorrection_MF(const double w) -> double;
+int signFlipCorrection_MF_int(const double w);
+
 
 // Check whether there are doubly occuring frequencies
 auto is_doubleOccurencies(const rvec& freqs) -> int;
