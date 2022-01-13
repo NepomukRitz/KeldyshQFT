@@ -339,7 +339,7 @@ namespace ode_solver_impl
             // === Evaluation ===
             if (verbose and world_rank == 0)
             {
-                std::cout << "Try stepsize t " << t_step << " (from Lambda / J = " << Lambda_i
+                std::cout << "Try stepsize t " << t_step << " (from Lambda = " << Lambda_i
                           << " to " << FlowGrid::lambda_from_t(t_value + t_step)
                           << ")." << std::endl;
             };
@@ -367,7 +367,7 @@ namespace ode_solver_impl
 
             // accept result
             // if step was minimal step size, accept step in any case. This keeps program from crashing
-            if (errmax <= 1. || t_step <= min_t_step)
+            if (errmax <= 1. || std::abs(t_step) <= min_t_step)
             {
                 break;
             }
@@ -381,7 +381,7 @@ namespace ode_solver_impl
 
             rejected = true;
             const double t_step_resized = SAFETY * t_step * pow(errmax, PSHRINK);
-            t_step = std::max({t_step_resized, 0.1 * t_step, min_t_step});
+            t_step = sgn(t_step) * std::max({std::abs(t_step_resized), 0.1 * std::abs(t_step), min_t_step});
 
             if (t_value + t_step == t_value)
             {
@@ -400,31 +400,31 @@ namespace ode_solver_impl
         {
             t_next_step = SAFETY * t_step * std::pow(errmax, PGROW);
 
-            assert(t_next_step>=0);
+            //assert(t_next_step>=0);
         }
         else
         {
             t_next_step = MAXGROW * t_step;
 
-            assert(t_next_step>=0);
+            //assert(t_next_step>=0);
         }
 
         // Don't increase step size immediately after rejecting a step; further shrinking is ok
         if (rejected)
         {
-            t_next_step = std::min(t_next_step, t_step);
-            assert(t_next_step>=0);
+            t_next_step = sgn(t_step) * std::min(std::abs(t_next_step), std::abs(t_step));
+            //assert(t_next_step>=0);
         }
 
         // clip to interval [min_t_step, max_t_step]
-        t_next_step = std::min(std::max(min_t_step, t_next_step), max_t_step);
+        t_next_step = sgn(t_next_step) * std::min(std::max(min_t_step, std::abs(t_next_step)), max_t_step);
 
         // === Update output ref's ===
         Lambda_i = FlowGrid::lambda_from_t(t_value + t_step);
         hdid = Lambda_i - FlowGrid::lambda_from_t(t_value);
         hnext = FlowGrid::lambda_from_t(t_value + t_step + t_next_step) - Lambda_i;
         state_i = temporary;
-        assert(t_next_step>=0);
+        //assert(t_next_step>=0);
     }
 
 } // namespace ode_solver_impl
