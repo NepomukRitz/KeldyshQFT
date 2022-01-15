@@ -205,7 +205,7 @@ void LoopCalculator<Q>::compute_Matsubara_finiteT() {
         if (all_spins) {
             integratedR *= 2.;
             IntegrandSE<Q> integrand_Vhat = IntegrandSE<Q> ('r', fullvertex, prop, 0, 1, v, i_in);
-            integratedR = - glb_T * matsubarasum<Q>(integrand, Nmin-vint, Nmax+vint);
+            integratedR += - glb_T * matsubarasum<Q>(integrand_Vhat, Nmin-vint, Nmax+vint);
         }
 
         /// in MF: use symmetric integration interval => asymptotic correction=0
