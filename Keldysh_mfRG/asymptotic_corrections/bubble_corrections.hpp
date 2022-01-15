@@ -161,6 +161,51 @@ auto correctionFunctionBubbleP_REG2_Matsubara_NoPHS(double w, double vmin, doubl
                                                     double eps_p, double Delta, double Lambda,
                                                     double eta_1, double eta_2, bool diff) -> double;
 
+template <typename Q>
+auto correctionFunctionBubble_REG4_Matsubara_PHS(double w, double vmin, double vmax, double Delta) -> Q {
+    if (std::abs(w) < 1e-20) {
+        return - 1. / (vmax + Delta) + 1. / (vmin - Delta) ;
+    }
+    else {
+        return - log((vmax + w*0.5 + Delta) * (vmin - w*0.5 - Delta)
+                    /((vmax - w*0.5 + Delta)*(vmin + w*0.5 - Delta))) / w;
+    }
+}
+
+/// Correction functions for interaction regulator (REG == 4)
+template <typename Q>
+auto correctionFunctionBubbleAT_REG4_Matsubara_PHS(double w, double vmin, double vmax,
+                                                   Q eps_p, double Delta, double Lambda,
+                                                   double eta_1, double eta_2, bool diff) -> Q {
+    Q val;
+    if (diff) {
+        val = 2 * Lambda * correctionFunctionBubble_REG4_Matsubara_PHS<Q>(w, vmin, vmax, Delta);
+    }
+    else {
+        val = Lambda * Lambda * correctionFunctionBubble_REG4_Matsubara_PHS<Q>(w, vmin, vmax, Delta);
+    }
+
+    isfinite(val);
+    return val;
+}
+
+template <typename Q>
+auto correctionFunctionBubbleP_REG4_Matsubara_PHS(double w, double vmin, double vmax,
+                                                  Q eps_p, double Delta, double Lambda,
+                                                  double eta_1, double eta_2, bool diff) -> Q {
+    Q val;
+    if (diff) {
+        val = - 2 * Lambda * correctionFunctionBubble_REG4_Matsubara_PHS<Q>(w, vmin, vmax, Delta);
+    }
+    else {
+        val = - Lambda * Lambda * correctionFunctionBubble_REG4_Matsubara_PHS<Q>(w, vmin, vmax, Delta);
+    }
+
+    return val;
+}
+
+
+
 template <typename Q> // TODO(medium): Split up into several functions?
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                                  Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
@@ -330,6 +375,12 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
                         (4 * Lambda * Lambda + w * w) * (Lambda * Lambda + pow(Delta + w, 2)));
             }
         }
+    }
+    else if (REG == 4) {
+        if (PARTICLE_HOLE_SYMMETRY) {
+            return correctionFunctionBubbleAT_REG4_Matsubara_PHS(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
+        }
+        else std::runtime_error("Bubble correction not implemented for interaction cutoff yet.");
     }
     else {
         return 0.;
@@ -502,6 +553,12 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
                         (4 * Lambda * Lambda + w * w) * (Lambda * Lambda + pow(Delta + w, 2)));
             }
         }
+    }
+    else if (REG == 4) {
+        if (PARTICLE_HOLE_SYMMETRY) {
+            return correctionFunctionBubbleP_REG4_Matsubara_PHS(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
+        }
+        else std::runtime_error("Bubble correction not implemented for interaction cutoff yet.");
     }
     else {
         return 0.;

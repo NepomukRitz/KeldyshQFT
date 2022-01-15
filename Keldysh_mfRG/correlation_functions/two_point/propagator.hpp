@@ -123,6 +123,9 @@ public:
     Q SM_REG3(double v, int i_in) const;
     Q SM_REG3_FPP(double v, double ksquared, int i_in) const;
 
+    Q GM_REG4_SIAM(double v, int i_in) const;
+    Q GM_REG4_SIAM_PHS(double v, int i_in) const;
+    Q SM_REG4(double v, int i_in) const;
 
 };
 
@@ -239,6 +242,10 @@ auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
         if constexpr (HUBBARD_MODEL)    return GM_REG3_Hubbard(v, i_in);
         else                            return GM_REG3_SIAM(v, i_in);
     }
+    else if (REG == 4) {
+        if constexpr (HUBBARD_MODEL)    std::runtime_error("Interaction Regulator not yet implemented for Hubbard model");
+        else return GM_REG4_SIAM(v, i_in);
+    }
     else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
@@ -264,6 +271,7 @@ auto Propagator<Q>::SM(const double v, const int i_in) const -> Q
         else                            return SM_REG2_SIAM(v, i_in);
     }
     else if (REG == 3)      return SM_REG3(v, i_in);
+    else if (REG == 4)      return SM_REG4(v, i_in);
     else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
@@ -630,6 +638,31 @@ auto Propagator<Q>::SM_REG3(const double v, const int i_in) const -> Q {
     assert(v != 0.);
     Q G = GM(v, i_in);
     return -2 * Lambda / (v * v + Lambda * Lambda) * G;
+// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+}
+
+template <typename Q>
+auto Propagator<Q>::GM_REG4_SIAM(const double v, const int i_in) const -> Q {
+    if constexpr (PARTICLE_HOLE_SYMMETRY)   return GM_REG4_SIAM_PHS(v, i_in);
+    else                                    std::runtime_error("Interaction Regulator not yet implemented for non-PHS.");
+}
+
+template <typename Q>
+auto Propagator<Q>::GM_REG4_SIAM_PHS(const double v, const int i_in) const -> Q {
+    assert(v != 0.);
+    Q val =  Lambda /( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+    assert(isfinite(val));
+    return val;
+}
+
+// single scale propagator (Matsubara)
+template <typename Q>
+auto Propagator<Q>::SM_REG4(const double v, const int i_in) const -> Q {
+    assert(v != 0.);
+    Q G = 1. /( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+    Q val = (v + (glb_Gamma)/2.*sign(v)) * G * G;
+    assert(isfinite(val));
+    return val;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
 
