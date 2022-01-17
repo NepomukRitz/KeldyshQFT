@@ -228,15 +228,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function(k1);
         tK1 = get_time() - t_start;
-        print("K1", channel, " done, ");
-        get_time(t_start);
+        //print("K1", channel, " done, ");
+        //get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 2) {
         t_start = get_time();
         calculate_bubble_function(k2);
         tK2 = get_time() - t_start;
-        print("K2", channel, " done, ");
-        get_time(t_start);
+        //print("K2", channel, " done, ");
+        //get_time(t_start);
 
 #ifdef DEBUG_SYMMETRIES
         t_start = get_time();
@@ -250,8 +250,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         t_start = get_time();
         calculate_bubble_function(k3);
         tK3 = get_time() - t_start;
-        print("K3", channel, " done, ");
-        get_time(t_start);
+        //print("K3", channel, " done, ");
+        //get_time(t_start);
     }
 
 }
@@ -731,6 +731,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         default:
             print("Something went wrong in get_trafo_K2! Abort."); assert(false);
     }
+    if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w) < vertex1.avertex().K2.K2_get_wlower_f()) {
+        trafo = 0;
+    }
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
     switch (channel) {
         case 'a':
@@ -781,6 +784,9 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             break;
         default:
             print("Something went wrong in get_trafo_K3! Abort."); assert(false);
+    }
+    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w) < vertex1.avertex().K3.K3_get_wlower_f() or -vp + signFlipCorrection_MF(w) < vertex1.avertex().K3.K3_get_wlower_f())) {
+        trafo = 0;
     }
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
     if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration

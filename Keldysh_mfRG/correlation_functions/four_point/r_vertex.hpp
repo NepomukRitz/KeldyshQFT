@@ -1612,6 +1612,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                     Ti(indices, trafo_index);
                     indices.iK = itK;
 
+                    if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in) < K2.K2_get_wlower_f()) {
+                        trafo_index = 0;
+                    }
+
                     if (trafo_index != 0) {
 
                         Q result;
@@ -1655,6 +1659,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                         int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
                         Ti(indices, trafo_index);
                         indices.iK = itK;
+
+                        //if (!KELDYSH and !ZERO_T and (-v_in + signFlipCorrection_MF(w_in) < K3.K3_get_wlower_f() or -vp_in + signFlipCorrection_MF(w_in) < K3.K3_get_wlower_f())) {
+                        //    trafo_index = 0;
+                        //}
 
                         if (trafo_index != 0) {
 
