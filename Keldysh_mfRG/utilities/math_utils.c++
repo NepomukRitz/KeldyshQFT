@@ -17,14 +17,14 @@ auto heaviside (const double x) -> double {
 }
 
 auto round2Infty(double x) -> double {
-    const double tol = 1e-15;
+    const double tol = 1e-10;
     // trunc() rounds towards zero
     if (x <= 0.) return floor(x+tol);
     else return ceil(x-tol);
 }
 
 auto myround(double x) -> double {
-    const double tol = 1e-15;
+    const double tol = 1e-10;
     if (x <= -0.5) return floor(x+tol);
     else return ceil(x-tol);
 }
@@ -35,7 +35,7 @@ auto floor2bfreq(double w) -> double {
     double result = floor(w / a+tol) * a;
     assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result <= w + 1e-15);
+    assert(result <= w + 1e-10);
     return result;
 }
 auto ceil2bfreq(double w) -> double {
@@ -44,7 +44,7 @@ auto ceil2bfreq(double w) -> double {
     double result = ceil(w / a-tol) * a;
     assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result >= w - 1e-15);
+    assert(result >= w - 1e-10);
     return result;
 }
 auto round2bfreq(double w) -> double {
