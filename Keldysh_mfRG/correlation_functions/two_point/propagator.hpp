@@ -650,7 +650,7 @@ auto Propagator<Q>::GM_REG4_SIAM(const double v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::GM_REG4_SIAM_PHS(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    Q val =  Lambda /( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+    Q val =  Lambda /( v + (glb_Gamma)/2.*sign(v) - Lambda * selfenergy.valsmooth(0, v, i_in) );
     assert(isfinite(val));
     return val;
 }
@@ -659,7 +659,7 @@ auto Propagator<Q>::GM_REG4_SIAM_PHS(const double v, const int i_in) const -> Q 
 template <typename Q>
 auto Propagator<Q>::SM_REG4(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    Q G = 1. /( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+    Q G = 1. /( v + (glb_Gamma)/2.*sign(v) - Lambda * selfenergy.valsmooth(0, v, i_in) );
     Q val = (v + (glb_Gamma)/2.*sign(v)) * G * G;
     assert(isfinite(val));
     return val;
